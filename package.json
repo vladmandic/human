@@ -1,0 +1,51 @@
+{
+  "name": "@vladmandic/human",
+  "version": "0.1.3",
+  "description": "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
+  "sideEffects": false,
+  "main": "src/index.js",
+  "module": "dist/human.esm.js",
+  "browser": "dist/human.js",
+  "author": "Vladimir Mandic <mandic00@live.com>",
+  "bugs": {
+    "url": "https://github.com/vladmandic/human/issues"
+  },
+  "homepage": "https://github.com/vladmandic/human#readme",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vladmandic/human.git"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^2.6.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.7.13",
+    "eslint": "^7.10.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-json": "^2.1.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "rimraf": "^3.0.2"
+  },
+  "scripts": {
+    "build": "rimraf dist/ && npm run build-esm && npm run build-iife",
+    "build-esm": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:@tensorflow --outfile=dist/human.esm.js src/index.js",
+    "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --global-name=human --outfile=dist/human.js src/index.js"
+  },
+  "keywords": [
+    "face detection",
+    "detection",
+    "recognition",
+    "blazeface",
+    "facemesh",
+    "ssrnet",
+    "tensorflow",
+    "tensorflowjs",
+    "tfjs"
+  ]
+}

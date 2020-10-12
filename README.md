@@ -25,7 +25,7 @@ This is an amalgamation of multiple existing models:
 
 ## Installation
 
-There are several ways to use Human: 
+There are several ways to use `Human` library: 
 
 **Important**  
 *This version of `Human` includes `TensorFlow/JS (TFJS) 2.6.0` library which can be accessed via `human.tf`*  
@@ -49,7 +49,7 @@ Script is distributed in minified form with attached sourcemap
 
 #### 2.1 With Bundler
 
-If you're using bundler *(such as rollup, webpack, esbuild)* to package your client application, you can import ESM version of `Human` which supports full tree shaking  
+If you're using bundler *(such as rollup, webpack, esbuild)* to package your client application, you can import ESM version of `Human` library which supports full tree shaking  
 
 ```js
   import human from 'dist/human.esm.js';
@@ -140,7 +140,7 @@ human.defaults = {
   face: {
     enabled: true,
     detector: {
-      modelPath: '/models/human/blazeface/model.json',
+      modelPath: '../models/human/blazeface/model.json',
       maxFaces: 10,
       skipFrames: 5,
       minConfidence: 0.8,
@@ -149,25 +149,25 @@ human.defaults = {
     },
     mesh: {
       enabled: true,
-      modelPath: '/models/human/facemesh/model.json',
+      modelPath: '../models/human/facemesh/model.json',
     },
     iris: {
       enabled: true,
-      modelPath: '/models/human/iris/model.json',
+      modelPath: '../models/human/iris/model.json',
     },
     age: {
       enabled: true,
-      modelPath: '/models/human/ssrnet-imdb-age/model.json',
+      modelPath: '../models/human/ssrnet-imdb-age/model.json',
       skipFrames: 5,
     },
     gender: {
       enabled: true,
-      modelPath: '/models/human/ssrnet-imdb-gender/model.json',
+      modelPath: '../models/human/ssrnet-imdb-gender/model.json',
     },
   },
   body: {
     enabled: true,
-    modelPath: '/models/human/posenet/model.json',
+    modelPath: '../models/human/posenet/model.json',
     maxDetections: 5,
     scoreThreshold: 0.75,
     nmsRadius: 20,
@@ -179,11 +179,11 @@ human.defaults = {
     iouThreshold: 0.3,
     scoreThreshold: 0.75,
     detector: {
-      anchors: '/models/human/handdetect/anchors.json',
-      modelPath: '/models/human/handdetect/model.json',
+      anchors: '../models/human/handdetect/anchors.json',
+      modelPath: '../models/human/handdetect/model.json',
     },
     skeleton: {
-      modelPath: '/models/human/handskeleton/model.json',
+      modelPath: '../models/human/handskeleton/model.json',
     },
   },
 };
@@ -228,10 +228,12 @@ result = {
   ],
   hand:            // <array of detected objects>
   [
-    confidence:    // <number>,
-    box:           // <array [x, y, width, height]>,
-    landmarks:     // <array of points [x, y,z]> (21 points)
-    annotations:   // <array of landmarks [ landmark: <array of points> ]> (5 annotated landmakrs)
+    {
+      confidence:    // <number>,
+      box:           // <array [x, y, width, height]>,
+      landmarks:     // <array of points [x, y,z]> (21 points)
+      annotations:   // <array of landmarks [ landmark: <array of points> ]> (5 annotated landmakrs)
+    }
   ]
 }
 ```
@@ -240,8 +242,9 @@ result = {
 
 ## Performance
 
-Of course, performance will vary depending on your hardware, but also on number of enabled modules as well as their parameters.  
-For example, on a low-end nVidia GTX1050 it can perform face detection at 50+ FPS, but drop to <5 FPS if all modules are enabled.
+Performance will vary depending on your hardware, but also on number of resolution of input video/image, enabled modules as well as their parameters  
+For example, on a desktop with a low-end nVidia GTX1050 it can perform multiple face detections at 50+ FPS, but drops to 5-10 FPS on a medium complex images if all modules are enabled  
+Library can also be used on mobile devices  
 
 <hr>
 

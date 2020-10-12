@@ -4,6 +4,8 @@ URL: <https://github.com/vladmandic/human>
 
 *Suggestions are welcome!*
 
+<hr>
+
 ## Credits
 
 This is an amalgamation of multiple existing models:
@@ -15,21 +17,80 @@ This is an amalgamation of multiple existing models:
 - Body Pose Detection: [**PoseNet**](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5)
 - Age & Gender Prediction: [**SSR-Net**](https://github.com/shamangary/SSR-Net)
 
-## Install
+<hr>
 
-```shell
-npm install @vladmandic/human
+## Installation
+
+There are several ways to use Human: 
+
+**Important**  
+*This version of `Human` includes `TensorFlow/JS (TFJS) 2.6.0` library which can be accessed via `human.tf`*  
+*You should not manually load another instance of `tfjs`, but if you do, be aware of possible version conflicts*  
+
+### 1. IIFE script
+
+This is simplest way for usage within Browser
+Simply download `dist/human.js`, include it in your `HTML` file & it's ready to use.
+
+```html
+<script src="dist/human.js"><script>
+``` 
+
+IIFE script auto-registers global namespace `human` within Window object.  
+
+### 2. ESM module
+
+#### 2.1 With Bundler
+
+If you're using bundler *(such as rollup, webpack, esbuild)* to package your client application, you can import ESM version of `Human` which supports full tree shaking  
+
+```js
+  import human from 'dist/human.esm.js';
 ```
 
-All pre-trained models are included in folder `/models` (25MB total)
+#### 2.2 Using Script Module
+You could use same syntax within your main `JS` file if it's imported with `<script type="module">`  
+
+```html
+  <script src="./index.js" type="module">
+```
+and then in your `index.js`
+
+```js
+  import human from 'dist/human.esm.js';
+```
+
+### 3. NPM module
+
+Simmilar to ESM module, but with full sources as it points to `build/src/index.js` instead  
+Recommended for `NodeJS` projects
+
+Install with:
+```shell
+  npm install @tensorflow/tfjs @vladmandic/Human 
+```
+And then use with:
+```js
+  import * as tf from '@tensorflow/tfjs';
+  import human from '@vladmandic/Human';
+```
+
+### Weights
+
+Pretrained model weights are includes in `./models`.
+
+<hr>
 
 ## Demo
 
-Demo is included in `/demo`
+Demos are included in `/demo`:
 
-## Requirements
+- `demo-esm`: Demo using ESM module
+- `demo-iife`: Demo using IIFE module
 
-`Human` library is based on [TensorFlow/JS (TFJS)](js.tensorflow.org), but does not package it to allow for indepdenent version management - import `tfjs` before importing `Human`
+Both demos are identical, they just illustrate different ways to load `Human` library
+
+<hr>
 
 ## Usage
 
@@ -47,12 +108,15 @@ import human from '@vladmandic/human';
 const results = await human.detect(image, options?)
 ```
 
-Additionally, `Human` library exposes two classes:
+Additionally, `Human` library exposes several classes:
 
 ```js
 human.defaults // default configuration object
 human.models   // dynamically maintained object of any loaded models
+human.tf       // instance of tfjs used by human
 ```
+
+<hr>
 
 ## Configuration 
 
@@ -124,6 +188,8 @@ Where:
 - `scoreThreshold`: threshold for deciding when to remove boxes based on score in non-maximum suppression
 - `nmsRadius`: radius for deciding points are too close in non-maximum suppression
 
+<hr>
+
 ## Outputs
 
 Result of `humand.detect()` is a single object that includes data for all enabled modules and all detected objects:
@@ -159,15 +225,19 @@ result = {
 }
 ```
 
+<hr>
+
 ## Performance
 
 Of course, performance will vary depending on your hardware, but also on number of enabled modules as well as their parameters.  
 For example, on a low-end nVidia GTX1050 it can perform face detection at 50+ FPS, but drop to <5 FPS if all modules are enabled.
 
+<hr>
+
 ## Todo
 
 - Improve detection of smaller faces, add BlazeFace back model
-- Create demo, host it on gitpages
-- Implement draw helper functions
+- Memory leak in facemesh detector
+- Host demo it on gitpages
 - Sample Images
 - Rename human to human

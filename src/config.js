@@ -2,7 +2,7 @@ export default {
   face: {
     enabled: true, // refers to detector, but since all other face modules rely on detector, it should be a global
     detector: {
-      modelPath: '/models/blazeface/model.json',
+      modelPath: '../models/blazeface/model.json',
       inputSize: 128, // fixed value
       maxFaces: 10, // maximum number of faces detected in the input, should be set to the minimum number for performance
       skipFrames: 5, // how many frames to go without running the bounding box detector, only relevant if maxFaces > 1
@@ -12,7 +12,7 @@ export default {
     },
     mesh: {
       enabled: true,
-      modelPath: '/models/facemesh/model.json',
+      modelPath: '../models/facemesh/model.json',
       inputSize: 192, // fixed value
     },
     iris: {

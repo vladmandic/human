@@ -212,7 +212,7 @@ result = {
     {
       confidence:  // <number>
       box:         // <array [x, y, width, height]>
-      mesh:        // <array of points [x, y, z]> (468 base points & 10 iris points)
+      mesh:        // <array of 3D points [x, y, z]> (468 base points & 10 iris points)
       annotations: // <list of object { landmark: array of points }> (32 base annotated landmarks & 2 iris annotations)
       iris:        // <number> (relative distance of iris to camera, multiple by focal lenght to get actual distance)
       age:         // <number> (estimated age)
@@ -223,7 +223,7 @@ result = {
   [
     {
       score:       // <number>,
-      keypoints:   // <array of landmarks [ score, landmark, position [x, y] ]> (17 annotated landmarks)
+      keypoints:   // <array of 2D landmarks [ score, landmark, position [x, y] ]> (17 annotated landmarks)
     }
   ],
   hand:            // <array of detected objects>
@@ -231,8 +231,8 @@ result = {
     {
       confidence:    // <number>,
       box:           // <array [x, y, width, height]>,
-      landmarks:     // <array of points [x, y,z]> (21 points)
-      annotations:   // <array of landmarks [ landmark: <array of points> ]> (5 annotated landmakrs)
+      landmarks:     // <array of 3D points [x, y,z]> (21 points)
+      annotations:   // <array of 3D landmarks [ landmark: <array of points> ]> (5 annotated landmakrs)
     }
   ]
 }
@@ -240,10 +240,31 @@ result = {
 
 <hr>
 
+## Build
+
+If you want to modify the library and perform a full rebuild:  
+*clone repository, install dependencies, check for errors and run full rebuild from which creates bundles from `/src` into `/dist`:*
+
+```shell
+git clone https://github.com/vladmandic/human
+cd human
+npm install # installs all project dependencies
+npm run lint
+npm run build
+```
+
+Project is written in pure `JavaScript`, [ECMAScript version 2020](https://www.ecma-international.org/ecma-262/11.0/index.html)  
+
+Only project depdendency is [@tensorflow/tfjs](https://github.com/tensorflow/tfjs), the rest are devDependencies tools: [eslint](https://github.com/eslint) used for linting and [esbuild](https://github.com/evanw/esbuild) used for bundling  
+
+<hr>
+
 ## Performance
 
 Performance will vary depending on your hardware, but also on number of resolution of input video/image, enabled modules as well as their parameters  
+
 For example, on a desktop with a low-end nVidia GTX1050 it can perform multiple face detections at 50+ FPS, but drops to 5-10 FPS on a medium complex images if all modules are enabled  
+
 Library can also be used on mobile devices  
 
 <hr>

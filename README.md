@@ -1,7 +1,8 @@
 # Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking and Age & Gender Prediction
 
-Repository: <https://github.com/vladmandic/human>
-Live Demo: <https://vladmandic.github.io/human/demo/demo-esm.html>
+**Code Repository**: <https://github.com/vladmandic/human>  
+**Documentation**: <https://github.com/vladmandic/human#readme>  
+**Live Demo**: <https://vladmandic.github.io/human/demo/demo-esm.html>  
 
 *Suggestions are welcome!*
 

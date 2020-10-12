@@ -29,6 +29,8 @@ There are several ways to use Human:
 *This version of `Human` includes `TensorFlow/JS (TFJS) 2.6.0` library which can be accessed via `human.tf`*  
 *You should not manually load another instance of `tfjs`, but if you do, be aware of possible version conflicts*  
 
+There are multiple ways to use `Human` library, pick one that suits you:
+
 ### 1. IIFE script
 
 This is simplest way for usage within Browser
@@ -38,7 +40,8 @@ Simply download `dist/human.js`, include it in your `HTML` file & it's ready to 
 <script src="dist/human.js"><script>
 ``` 
 
-IIFE script auto-registers global namespace `human` within Window object.  
+IIFE script auto-registers global namespace `human` within Window object  
+Script is distributed in minified form with attached sourcemap  
 
 ### 2. ESM module
 
@@ -62,9 +65,11 @@ and then in your `index.js`
   import human from 'dist/human.esm.js';
 ```
 
+Script is distributed in minified form with attached sourcemap  
+
 ### 3. NPM module
 
-Simmilar to ESM module, but with full sources as it points to `build/src/index.js` instead  
+Simmilar to ESM module, but with full sources as it points to actual sources entry point `build/src/index.js` instead  
 Recommended for `NodeJS` projects
 
 Install with:

@@ -84,7 +84,9 @@ And then use with:
 
 ### Weights
 
-Pretrained model weights are includes in `./models`.
+Pretrained model weights are includes in `./models`  
+Default configuration uses relative paths to you entry script pointing to `../models`  
+If your application resides in a different folder, modify `modelPath` property in configuration of each module  
 
 <hr>
 

@@ -3,8 +3,10 @@ const blazeface = require('../blazeface');
 const keypoints = require('./keypoints');
 const pipe = require('./pipeline');
 const uv_coords = require('./uvcoords');
+const triangulation = require('./triangulation').default;
 
 exports.uv_coords = uv_coords;
+exports.triangulation = triangulation;
 
 async function loadDetectorModel(config) {
   return blazeface.load(config);

@@ -16,7 +16,7 @@ const models = {
 function mergeDeep(...objects) {
   const isObject = (obj) => obj && typeof obj === 'object';
   return objects.reduce((prev, obj) => {
-    Object.keys(obj).forEach((key) => {
+    Object.keys(obj || {}).forEach((key) => {
       const pVal = prev[key];
       const oVal = obj[key];
       if (Array.isArray(pVal) && Array.isArray(oVal)) {
@@ -79,3 +79,7 @@ async function detect(input, userConfig) {
 exports.detect = detect;
 exports.defaults = defaults;
 exports.models = models;
+exports.facemesh = facemesh;
+exports.ssrnet = ssrnet;
+exports.posenet = posenet;
+exports.handpose = handpose;

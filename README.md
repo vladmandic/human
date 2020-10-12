@@ -122,7 +122,7 @@ import human from '@vladmandic/human';
 
 // 'image': can be of any type of an image object: HTMLImage, HTMLVideo, HTMLMedia, Canvas, Tensor4D
 // 'options': optional parameter used to override any options present in default configuration
-const results = await human.detect(image, options?)
+const result = await human.detect(image, options?)
 ```
 
 Additionally, `Human` library exposes several classes:
@@ -146,7 +146,7 @@ human.defaults = {
   face: {
     enabled: true,
     detector: {
-      modelPath: '../models/human/blazeface/model.json',
+      modelPath: '../models/blazeface/model.json',
       maxFaces: 10,
       skipFrames: 5,
       minConfidence: 0.8,
@@ -155,25 +155,25 @@ human.defaults = {
     },
     mesh: {
       enabled: true,
-      modelPath: '../models/human/facemesh/model.json',
+      modelPath: '../models/facemesh/model.json',
     },
     iris: {
       enabled: true,
-      modelPath: '../models/human/iris/model.json',
+      modelPath: '../models/iris/model.json',
     },
     age: {
       enabled: true,
-      modelPath: '../models/human/ssrnet-imdb-age/model.json',
+      modelPath: '../models/ssrnet-imdb-age/model.json',
       skipFrames: 5,
     },
     gender: {
       enabled: true,
-      modelPath: '../models/human/ssrnet-imdb-gender/model.json',
+      modelPath: '../models/ssrnet-imdb-gender/model.json',
     },
   },
   body: {
     enabled: true,
-    modelPath: '../models/human/posenet/model.json',
+    modelPath: '../models/posenet/model.json',
     maxDetections: 5,
     scoreThreshold: 0.75,
     nmsRadius: 20,
@@ -185,11 +185,11 @@ human.defaults = {
     iouThreshold: 0.3,
     scoreThreshold: 0.75,
     detector: {
-      anchors: '../models/human/handdetect/anchors.json',
-      modelPath: '../models/human/handdetect/model.json',
+      anchors: '../models/handdetect/anchors.json',
+      modelPath: '../models/handdetect/model.json',
     },
     skeleton: {
-      modelPath: '../models/human/handskeleton/model.json',
+      modelPath: '../models/handskeleton/model.json',
     },
   },
 };
@@ -249,6 +249,7 @@ result = {
 ## Build
 
 If you want to modify the library and perform a full rebuild:  
+
 *clone repository, install dependencies, check for errors and run full rebuild from which creates bundles from `/src` into `/dist`:*
 
 ```shell
@@ -259,9 +260,10 @@ npm run lint
 npm run build
 ```
 
-Project is written in pure `JavaScript`, [ECMAScript version 2020](https://www.ecma-international.org/ecma-262/11.0/index.html)  
+Project is written in pure `JavaScript` [ECMAScript version 2020](https://www.ecma-international.org/ecma-262/11.0/index.html)  
 
-Only project depdendency is [@tensorflow/tfjs](https://github.com/tensorflow/tfjs), the rest are devDependencies tools: [eslint](https://github.com/eslint) used for linting and [esbuild](https://github.com/evanw/esbuild) used for bundling  
+Only project depdendency is [@tensorflow/tfjs](https://github.com/tensorflow/tfjs)
+Development dependencies are [eslint](https://github.com/eslint) used for code linting and [esbuild](https://github.com/evanw/esbuild) used for IIFE and ESM script bundling  
 
 <hr>
 

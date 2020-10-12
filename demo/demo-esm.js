@@ -5,15 +5,15 @@ import human from '../dist/human.esm.js';
 
 const config = {
   face: {
-    enabled: false,
+    enabled: true,
     detector: { maxFaces: 10, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
-    mesh: { enabled: false },
-    iris: { enabled: false },
-    age: { enabled: false, skipFrames: 5 },
-    gender: { enabled: false },
+    mesh: { enabled: true },
+    iris: { enabled: true },
+    age: { enabled: true, skipFrames: 5 },
+    gender: { enabled: true },
   },
-  body: { enabled: false, maxDetections: 5, scoreThreshold: 0.75, nmsRadius: 20 },
-  hand: { enabled: false, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
+  body: { enabled: true, maxDetections: 5, scoreThreshold: 0.75, nmsRadius: 20 },
+  hand: { enabled: true, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
 };
 let settings;
 
@@ -189,6 +189,7 @@ async function runHumanDetect() {
 }
 
 function setupGUI() {
+  settings = QuickSettings.create(10, 10, 'Settings', document.getElementById('main'));
   settings.addRange('FPS', 0, 100, 0, 1);
   settings.addBoolean('Pause', false, (val) => {
     if (val) document.getElementById('video').pause();
@@ -237,7 +238,6 @@ async function setupCanvas() {
   const canvas = document.getElementById('canvas');
   canvas.width = video.width;
   canvas.height = video.height;
-  settings = QuickSettings.create(10, 10, 'Settings', document.getElementById('main'));
 }
 
 async function setupCamera() {
@@ -257,6 +257,20 @@ async function setupCamera() {
   });
 }
 
+// eslint-disable-next-line no-unused-vars
+async function runImageDemo() {
+  const image = document.getElementById('image');
+  const canvas = document.getElementById('canvas');
+  canvas.width = image.width;
+  canvas.height = image.height;
+  const result = await human.detect(image, config);
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
+  drawFace(result.face);
+  drawBody(result.body);
+  drawHand(result.hand);
+}
+
 async function main() {
   await human.tf.setBackend('webgl');
   await human.tf.ready();
@@ -264,6 +278,7 @@ async function main() {
   await setupCanvas();
   await setupGUI();
   runHumanDetect();
+  // runImageDemo();
 }
 
 window.onload = main;

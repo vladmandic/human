@@ -267,3 +267,4 @@ async function main() {
 }
 
 window.onload = main;
+window.onresize = main;

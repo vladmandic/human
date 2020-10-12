@@ -72,7 +72,9 @@ class MediaPipeFaceMesh {
       tf.dispose(prediction.confidence);
       tf.dispose(prediction.image);
       tf.dispose(prediction.coords);
+      tf.dispose(prediction);
     }
+    tf.dispose(predictions);
     return results;
   }
 }

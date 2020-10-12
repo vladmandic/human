@@ -1,9 +1,8 @@
+const tf = require('@tensorflow/tfjs');
 const facemesh = require('./facemesh/index.js');
 const ssrnet = require('./ssrnet/index.js');
 const posenet = require('./posenet/index.js');
 const handpose = require('./handpose/index.js');
-// const image = require('./image.js');
-// const triangulation = require('./triangulation.js').default;
 const defaults = require('./config.js').default;
 
 const models = {
@@ -83,3 +82,4 @@ exports.facemesh = facemesh;
 exports.ssrnet = ssrnet;
 exports.posenet = posenet;
 exports.handpose = handpose;
+exports.tf = tf;

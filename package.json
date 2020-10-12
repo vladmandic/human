@@ -34,7 +34,7 @@
   },
   "scripts": {
     "build": "rimraf dist/ && npm run build-esm && npm run build-iife",
-    "build-esm": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:@tensorflow --outfile=dist/human.esm.js src/index.js",
+    "build-esm": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --outfile=dist/human.esm.js src/index.js",
     "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --global-name=human --outfile=dist/human.js src/index.js"
   },
   "keywords": [

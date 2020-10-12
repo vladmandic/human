@@ -12,7 +12,7 @@ const config = {
     age: { enabled: false, skipFrames: 5 },
     gender: { enabled: false },
   },
-  body: { enabled: false, maxDetections: 5, scoreThreshold: 0.75, nmsRadius: 20, },
+  body: { enabled: false, maxDetections: 5, scoreThreshold: 0.75, nmsRadius: 20 },
   hand: { enabled: false, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
 };
 let settings;

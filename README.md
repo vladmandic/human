@@ -6,6 +6,8 @@
 
 *Suggestions are welcome!*
 
+![Sample](demo/sample.jpg)
+
 <hr>
 
 ## Credits

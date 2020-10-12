@@ -25,11 +25,9 @@ This is an amalgamation of multiple existing models:
 
 ## Installation
 
-There are several ways to use `Human` library: 
-
 **Important**  
-*This version of `Human` includes `TensorFlow/JS (TFJS) 2.6.0` library which can be accessed via `human.tf`*  
-*You should not manually load another instance of `tfjs`, but if you do, be aware of possible version conflicts*  
+*The packaged (IIFE and ESM) version of `Human` includes `TensorFlow/JS (TFJS) 2.6.0` library which can be accessed via `human.tf`*  
+*You should NOT manually load another instance of `tfjs`, but if you do, be aware of possible version conflicts*  
 
 There are multiple ways to use `Human` library, pick one that suits you:
 
@@ -71,12 +69,14 @@ Script is distributed in minified form with attached sourcemap
 
 ### 3. NPM module
 
-Simmilar to ESM module, but with full sources as it points to actual sources entry point `build/src/index.js` instead  
-Recommended for `NodeJS` projects
+Recommended for `NodeJS` projects  
+
+Entry point is actual source `build/src/index.js`  
+You also need to install and includ `tfjs` in your project  
 
 Install with:
 ```shell
-  npm install @tensorflow/tfjs @vladmandic/Human 
+  npm install @tensorflow/tfjs @vladmandic/human
 ```
 And then use with:
 ```js

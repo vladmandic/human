@@ -17,23 +17,23 @@ export default {
     },
     iris: {
       enabled: true,
-      modelPath: '/models/iris/model.json',
+      modelPath: '../models/iris/model.json',
       inputSize: 192, // fixed value
     },
     age: {
       enabled: true,
-      modelPath: '/models/ssrnet-age/imdb/model.json',
+      modelPath: '../models/ssrnet-age/imdb/model.json',
       inputSize: 64, // fixed value
       skipFrames: 5,
     },
     gender: {
       enabled: true,
-      modelPath: '/models/ssrnet-gender/imdb/model.json',
+      modelPath: '../models/ssrnet-gender/imdb/model.json',
     },
   },
   body: {
     enabled: true,
-    modelPath: '/models/posenet/model.json',
+    modelPath: '../models/posenet/model.json',
     inputResolution: 257, // fixed value
     outputStride: 16, // fixed value
     maxDetections: 5,
@@ -48,11 +48,11 @@ export default {
     iouThreshold: 0.3,
     scoreThreshold: 0.75,
     detector: {
-      anchors: '/models/handdetect/anchors.json',
-      modelPath: '/models/handdetect/model.json',
+      anchors: '../models/handdetect/anchors.json',
+      modelPath: '../models/handdetect/model.json',
     },
     skeleton: {
-      modelPath: '/models/handskeleton/model.json',
+      modelPath: '../models/handskeleton/model.json',
     },
   },
 };

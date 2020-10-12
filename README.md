@@ -243,8 +243,5 @@ For example, on a low-end nVidia GTX1050 it can perform face detection at 50+ FP
 
 ## Todo
 
-- Improve detection of smaller faces, add BlazeFace back model
-- Memory leak in facemesh detector
-- Host demo it on gitpages
-- Sample Images
-- Rename human to human
+- Improve detection of smaller faces
+- Fix memory leak in face detector

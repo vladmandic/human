@@ -1,7 +1,8 @@
 # Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking and Age & Gender Prediction
 
-**Code Repository**: <https://github.com/vladmandic/human>  
 **Documentation**: <https://github.com/vladmandic/human#readme>  
+**Code Repository**: <https://github.com/vladmandic/human>  
+**Package**: <https://www.npmjs.com/package/@vladmandic/human>  
 **Live Demo**: <https://vladmandic.github.io/human/demo/demo-esm.html>  
 
 *Suggestions are welcome!*
@@ -31,19 +32,24 @@ This is an amalgamation of multiple existing models:
 
 There are multiple ways to use `Human` library, pick one that suits you:
 
-### 1. IIFE script
+### 1. [IIFE](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) script
 
-This is simplest way for usage within Browser
+*Simplest way for usage within Browser*
+
 Simply download `dist/human.js`, include it in your `HTML` file & it's ready to use.
 
 ```html
 <script src="dist/human.js"><script>
 ``` 
 
-IIFE script auto-registers global namespace `human` within Window object  
-Script is distributed in minified form with attached sourcemap  
+IIFE script auto-registers global namespace `human` within global `Window` object  
+This way you can also use `Human` library within embbedded `<script>` tag within your `html` page for all-in-one approach  
 
-### 2. ESM module
+IIFE script is distributed in minified form with attached sourcemap  
+
+### 2. [ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) module
+
+*Recommended for usage within `Browser`*  
 
 #### 2.1 With Bundler
 
@@ -65,11 +71,11 @@ and then in your `index.js`
   import human from 'dist/human.esm.js';
 ```
 
-Script is distributed in minified form with attached sourcemap  
+ESM script is distributed in minified form with attached sourcemap  
 
-### 3. NPM module
+### 3. [NPM](https://www.npmjs.com/) module
 
-Recommended for `NodeJS` projects  
+*Recommended for `NodeJS` projects*  
 
 Entry point is actual source `build/src/index.js`  
 You also need to install and includ `tfjs` in your project  

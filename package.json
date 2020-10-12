@@ -39,14 +39,15 @@
     "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --global-name=human --outfile=dist/human.js src/index.js"
   },
   "keywords": [
-    "face detection",
-    "detection",
-    "recognition",
-    "blazeface",
-    "facemesh",
-    "ssrnet",
-    "tensorflow",
     "tensorflowjs",
-    "tfjs"
+    "tfjs",
+    "face-detection",
+    "face-geometry",
+    "body-tracking",
+    "hand-tracking",
+    "iris-tracking",
+    "age-estimation",
+    "gender-prediction",
+    "gesture-recognition"
   ]
 }

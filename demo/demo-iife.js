@@ -3,15 +3,15 @@
 
 const config = {
   face: {
-    enabled: false,
+    enabled: true,
     detector: { maxFaces: 10, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
-    mesh: { enabled: false },
-    iris: { enabled: false },
-    age: { enabled: false, skipFrames: 5 },
-    gender: { enabled: false },
+    mesh: { enabled: true },
+    iris: { enabled: true },
+    age: { enabled: true, skipFrames: 5 },
+    gender: { enabled: true },
   },
-  body: { enabled: false, maxDetections: 5, scoreThreshold: 0.75, nmsRadius: 20 },
-  hand: { enabled: false, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
+  body: { enabled: true, maxDetections: 5, scoreThreshold: 0.75, nmsRadius: 20 },
+  hand: { enabled: true, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
 };
 let settings;
 
@@ -159,7 +159,7 @@ async function runHumanDetect() {
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const log = document.getElementById('log');
-  const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
+  const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : true;
   if (live) {
     // perform detection
     const t0 = performance.now();
@@ -188,7 +188,7 @@ async function runHumanDetect() {
 
 function setupGUI() {
   settings.addRange('FPS', 0, 100, 0, 1);
-  settings.addBoolean('Pause', false, (val) => {
+  settings.addBoolean('Pause', true, (val) => {
     if (val) document.getElementById('video').pause();
     else document.getElementById('video').play();
     runHumanDetect();
@@ -241,7 +241,7 @@ async function setupCanvas() {
 async function setupCamera() {
   const video = document.getElementById('video');
   const stream = await navigator.mediaDevices.getUserMedia({
-    audio: false,
+    audio: true,
     video: { facingMode: 'user', width: window.innerWidth, height: window.innerHeight },
   });
   video.srcObject = stream;

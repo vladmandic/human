@@ -33,28 +33,31 @@ function mergeDeep(...objects) {
 async function detect(input, userConfig) {
   const config = mergeDeep(defaults, userConfig);
 
+  // load models if enabled
+  if (config.body.enabled && !models.posenet) models.posenet = await posenet.load(config.body);
+  if (config.hand.enabled && !models.handpose) models.handpose = await handpose.load(config.hand);
+  if (config.face.enabled && !models.facemesh) models.facemesh = await facemesh.load(config.face);
+  if (config.face.age.enabled) await ssrnet.loadAge(config);
+  if (config.face.gender.enabled) await ssrnet.loadGender(config);
+
+  tf.engine().startScope();
+
   // run posenet
   let poseRes = [];
-  if (config.body.enabled) {
-    if (!models.posenet) models.posenet = await posenet.load(config.body);
-    poseRes = await models.posenet.estimateMultiplePoses(input, config.body);
-  }
+  if (config.body.enabled) poseRes = await models.posenet.estimateMultiplePoses(input, config.body);
 
   // run handpose
   let handRes = [];
-  if (config.hand.enabled) {
-    if (!models.handpose) models.handpose = await handpose.load(config.hand);
-    handRes = await models.handpose.estimateHands(input, config.hand);
-  }
+  if (config.hand.enabled) handRes = await models.handpose.estimateHands(input, config.hand);
 
   // run facemesh, includes blazeface and iris
   const faceRes = [];
   if (config.face.enabled) {
-    if (!models.facemesh) models.facemesh = await facemesh.load(config.face);
     const faces = await models.facemesh.estimateFaces(input, config.face);
     for (const face of faces) {
       // run ssr-net age & gender, inherits face from blazeface
       const ssrdata = (config.face.age.enabled || config.face.gender.enabled) ? await ssrnet.predict(face.image, config) : {};
+      face.image.dispose();
       // iris: array[ bottom, left, top, right, center ]
       const iris = (face.annotations.leftEyeIris && face.annotations.rightEyeIris)
         ? Math.max(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0], face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0])
@@ -70,6 +73,8 @@ async function detect(input, userConfig) {
       });
     }
   }
+
+  tf.engine().endScope();
 
   // combine results
   return { face: faceRes, body: poseRes, hand: handRes };

@@ -7,13 +7,13 @@ const config = {
   face: {
     enabled: true,
     detector: { maxFaces: 10, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
-    mesh: { enabled: true },
-    iris: { enabled: true },
-    age: { enabled: true, skipFrames: 5 },
-    gender: { enabled: true },
+    mesh: { enabled: false },
+    iris: { enabled: false },
+    age: { enabled: false, skipFrames: 5 },
+    gender: { enabled: false },
   },
-  body: { enabled: true, maxDetections: 5, scoreThreshold: 0.75, nmsRadius: 20 },
-  hand: { enabled: true, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
+  body: { enabled: false, maxDetections: 5, scoreThreshold: 0.75, nmsRadius: 20 },
+  hand: { enabled: false, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
 };
 let settings;
 
@@ -181,10 +181,11 @@ async function runHumanDetect() {
     log.innerText = `
       TFJS Version: ${human.tf.version_core} Memory: ${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors
       GPU Memory: used ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes free ${Math.floor(1024 * 1024 * engine.backendInstance.numMBBeforeWarning).toLocaleString()} bytes
-      Result: Face: ${(JSON.stringify(result.face)).length.toLocaleString()} bytes Body: ${(JSON.stringify(result.body)).length.toLocaleString()} bytes Hand: ${(JSON.stringify(result.hand)).length.toLocaleString()} bytes
+      Result Object Size: Face: ${(JSON.stringify(result.face)).length.toLocaleString()} bytes Body: ${(JSON.stringify(result.body)).length.toLocaleString()} bytes Hand: ${(JSON.stringify(result.hand)).length.toLocaleString()} bytes
     `;
     // rinse & repeate
-    requestAnimationFrame(runHumanDetect);
+    // setTimeout(() => runHumanDetect(), 1000); // slow loop for debugging purposes
+    requestAnimationFrame(runHumanDetect); // immediate loop
   }
 }
 
@@ -242,6 +243,10 @@ async function setupCanvas() {
 
 async function setupCamera() {
   const video = document.getElementById('video');
+  if (!navigator.mediaDevices) {
+    document.getElementById('log').innerText = 'Video not supported';
+    return;
+  }
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: { facingMode: 'user', width: window.innerWidth, height: window.innerHeight },

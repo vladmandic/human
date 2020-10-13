@@ -142,38 +142,31 @@ class Pipeline {
 
   async predict(input, predictIrises, predictMesh) {
     if (this.shouldUpdateRegionsOfInterest()) {
-      const returnTensors = false;
-      const annotateFace = true;
-      const { boxes, scaleFactor } = await this.boundingBoxDetector.getBoundingBoxes(input, returnTensors, annotateFace);
+      const { boxes, scaleFactor } = await this.boundingBoxDetector.getBoundingBoxes(input);
       if (boxes.length === 0) {
         this.regionsOfInterest = [];
         return null;
       }
       const scaledBoxes = boxes.map((prediction) => {
-        const predictionBoxCPU = {
+        const predictionBox = {
           startPoint: prediction.box.startPoint.squeeze().arraySync(),
           endPoint: prediction.box.endPoint.squeeze().arraySync(),
         };
-        const scaledBox = bounding.scaleBoxCoordinates(predictionBoxCPU, scaleFactor);
+        prediction.box.startPoint.dispose();
+        prediction.box.endPoint.dispose();
+        const scaledBox = bounding.scaleBoxCoordinates(predictionBox, scaleFactor);
         const enlargedBox = bounding.enlargeBox(scaledBox);
-        return {
-          ...enlargedBox,
-          landmarks: prediction.landmarks.arraySync(),
-        };
-      });
-      boxes.forEach((box) => {
-        if (box != null && box.startPoint != null) {
-          box.startEndTensor.dispose();
-          box.startPoint.dispose();
-          box.endPoint.dispose();
-        }
+        const landmarks = prediction.landmarks.arraySync();
+        prediction.landmarks.dispose();
+        prediction.probability.dispose();
+        return { ...enlargedBox, landmarks };
       });
       this.updateRegionsOfInterest(scaledBoxes);
       this.runsWithoutFaceDetector = 0;
     } else {
       this.runsWithoutFaceDetector++;
     }
-    return tf.tidy(() => this.regionsOfInterest.map((box, i) => {
+    const results = tf.tidy(() => this.regionsOfInterest.map((box, i) => {
       let angle = 0;
       // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
       const boxLandmarksFromMeshModel = box.landmarks.length >= LANDMARKS_COUNT;
@@ -201,6 +194,7 @@ class Pipeline {
         const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face, RIGHT_EYE_BOUNDS[0], RIGHT_EYE_BOUNDS[1]);
         const eyePredictions = (this.irisModel.predict(tf.concat([leftEyeCrop, rightEyeCrop])));
         const eyePredictionsData = eyePredictions.dataSync();
+        eyePredictions.dispose();
         const leftEyeData = eyePredictionsData.slice(0, IRIS_NUM_COORDINATES * 3);
         const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = this.getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
         const rightEyeData = eyePredictionsData.slice(IRIS_NUM_COORDINATES * 3);
@@ -226,7 +220,6 @@ class Pipeline {
         const transformedCoords = tf.tensor2d(transformedCoordsData);
         this.regionsOfInterest[i] = { ...landmarksBox, landmarks: transformedCoords.arraySync() };
         const prediction = {
-          // coords: tf.tensor2d(rawCoords, [rawCoords.length, 3]),
           coords: transformedCoords,
           box: landmarksBox,
           confidence: flag.squeeze(),
@@ -236,13 +229,13 @@ class Pipeline {
       }
       const prediction = {
         coords: null,
-        // scaledCoords: null,
         box: landmarksBox,
         confidence: flag.squeeze(),
         image: face,
       };
       return prediction;
     }));
+    return results;
   }
 
   // Updates regions of interest if the intersection over union between the incoming and previous regions falls below a threshold.

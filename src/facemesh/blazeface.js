@@ -1,10 +1,10 @@
 const tf = require('@tensorflow/tfjs');
-const bounding = require('./box');
 
 const ANCHORS_CONFIG = {
   strides: [8, 16],
   anchors: [2, 6],
 };
+
 const NUM_LANDMARKS = 6;
 function generateAnchors(width, height, outputSpec) {
   const anchors = [];
@@ -25,6 +25,26 @@ function generateAnchors(width, height, outputSpec) {
   }
   return anchors;
 }
+
+const disposeBox = (box) => {
+  box.startEndTensor.dispose();
+  box.startPoint.dispose();
+  box.endPoint.dispose();
+};
+
+const createBox = (startEndTensor) => ({
+  startEndTensor,
+  startPoint: tf.slice(startEndTensor, [0, 0], [-1, 2]),
+  endPoint: tf.slice(startEndTensor, [0, 2], [-1, 2]),
+});
+
+const scaleBox = (box, factors) => {
+  const starts = tf.mul(box.startPoint, factors);
+  const ends = tf.mul(box.endPoint, factors);
+  const newCoordinates = tf.concat2d([starts, ends], 1);
+  return createBox(newCoordinates);
+};
+
 function decodeBounds(boxOutputs, anchors, inputSize) {
   const boxStarts = tf.slice(boxOutputs, [0, 1], [-1, 2]);
   const centers = tf.add(boxStarts, anchors);
@@ -39,12 +59,14 @@ function decodeBounds(boxOutputs, anchors, inputSize) {
   const concatAxis = 1;
   return tf.concat2d([startNormalized, endNormalized], concatAxis);
 }
+
 function scaleBoxFromPrediction(face, scaleFactor) {
   return tf.tidy(() => {
     const box = face['box'] ? face['box'] : face;
-    return bounding.scaleBox(box, scaleFactor).startEndTensor.squeeze();
+    return scaleBox(box, scaleFactor).startEndTensor.squeeze();
   });
 }
+
 class BlazeFaceModel {
   constructor(model, config) {
     this.blazeFaceModel = model;
@@ -59,11 +81,10 @@ class BlazeFaceModel {
     this.scoreThreshold = config.detector.scoreThreshold;
   }
 
-  async getBoundingBoxes(inputImage, returnTensors, annotateBoxes = true) {
+  async getBoundingBoxes(inputImage) {
     const [detectedOutputs, boxes, scores] = tf.tidy(() => {
       const resizedImage = inputImage.resizeBilinear([this.width, this.height]);
       const normalizedImage = tf.mul(tf.sub(resizedImage.div(255), 0.5), 2);
-      // [1, 897, 17] 1 = batch, 897 = number of anchors
       const batchedPrediction = this.blazeFaceModel.predict(normalizedImage);
       const prediction = batchedPrediction.squeeze();
       const decodedBounds = decodeBounds(prediction, this.anchors, this.inputSize);
@@ -71,45 +92,23 @@ class BlazeFaceModel {
       const scoresOut = tf.sigmoid(logits).squeeze();
       return [prediction, decodedBounds, scoresOut];
     });
+
     const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.maxFaces, this.iouThreshold, this.scoreThreshold);
     const boxIndices = await boxIndicesTensor.array();
     boxIndicesTensor.dispose();
     let boundingBoxes = boxIndices.map((boxIndex) => tf.slice(boxes, [boxIndex, 0], [1, -1]));
-    if (!returnTensors) {
-      boundingBoxes = await Promise.all(boundingBoxes.map(async (boundingBox) => {
-        const vals = await boundingBox.array();
-        boundingBox.dispose();
-        return vals;
-      }));
-    }
-    const originalHeight = inputImage.shape[1];
-    const originalWidth = inputImage.shape[2];
-    let scaleFactor;
-    if (returnTensors) {
-      scaleFactor = tf.div([originalWidth, originalHeight], this.inputSize);
-    } else {
-      scaleFactor = [
-        originalWidth / this.inputSizeData[0],
-        originalHeight / this.inputSizeData[1],
-      ];
-    }
+    boundingBoxes = await Promise.all(boundingBoxes.map(async (boundingBox) => {
+      const vals = await boundingBox.array();
+      boundingBox.dispose();
+      return vals;
+    }));
     const annotatedBoxes = [];
     for (let i = 0; i < boundingBoxes.length; i++) {
       const boundingBox = boundingBoxes[i];
       const annotatedBox = tf.tidy(() => {
-        const box = boundingBox instanceof tf.Tensor
-          ? bounding.createBox(boundingBox)
-          : bounding.createBox(tf.tensor2d(boundingBox));
-        if (!annotateBoxes) {
-          return box;
-        }
+        const box = createBox(boundingBox);
         const boxIndex = boxIndices[i];
-        let anchor;
-        if (returnTensors) {
-          anchor = this.anchors.slice([boxIndex, 0], [1, 2]);
-        } else {
-          anchor = this.anchorsData[boxIndex];
-        }
+        const anchor = this.anchorsData[boxIndex];
         const landmarks = tf.slice(detectedOutputs, [boxIndex, NUM_LANDMARKS - 1], [1, -1])
           .squeeze()
           .reshape([NUM_LANDMARKS, -1]);
@@ -123,7 +122,7 @@ class BlazeFaceModel {
     detectedOutputs.dispose();
     return {
       boxes: annotatedBoxes,
-      scaleFactor,
+      scaleFactor: [inputImage.shape[2] / this.inputSizeData[0], inputImage.shape[1] / this.inputSizeData[1]],
     };
   }
 
@@ -134,7 +133,7 @@ class BlazeFaceModel {
       }
       return input.toFloat().expandDims(0);
     });
-    const { boxes, scaleFactor } = await this.getBoundingBoxes(image, returnTensors, annotateBoxes);
+    const { boxes, scaleFactor } = await this.getBoundingBoxes(image);
     image.dispose();
     if (returnTensors) {
       return boxes.map((face) => {
@@ -176,7 +175,7 @@ class BlazeFaceModel {
           landmarks: scaledLandmarks,
           probability: probabilityData,
         };
-        bounding.disposeBox(face.box);
+        disposeBox(face.box);
         face.landmarks.dispose();
         face.probability.dispose();
       }
@@ -185,4 +184,13 @@ class BlazeFaceModel {
     }));
   }
 }
+
+async function load(config) {
+  const blazeface = await tf.loadGraphModel(config.detector.modelPath, { fromTFHub: config.detector.modelPath.includes('tfhub.dev') });
+  const model = new BlazeFaceModel(blazeface, config);
+  return model;
+}
+
+exports.load = load;
 exports.BlazeFaceModel = BlazeFaceModel;
+exports.disposeBox = disposeBox;

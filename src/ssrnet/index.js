@@ -15,14 +15,20 @@ async function getImage(image, size) {
   return tensor;
 }
 
+async function loadAge(config) {
+  if (!models.age) models.age = await tf.loadGraphModel(config.face.age.modelPath);
+}
+
+async function loadGender(config) {
+  if (!models.gender) models.gender = await tf.loadGraphModel(config.face.gender.modelPath);
+}
+
 async function predict(image, config) {
   frame += 1;
   if (frame >= config.face.age.skipFrames) {
     frame = 0;
     return last;
   }
-  if (!models.age && config.face.age.enabled) models.age = await tf.loadGraphModel(config.face.age.modelPath);
-  if (!models.gender && config.face.gender.enabled) models.gender = await tf.loadGraphModel(config.face.gender.modelPath);
   let enhance;
   if (image instanceof tf.Tensor) {
     const resize = tf.image.resizeBilinear(image, [config.face.age.inputSize, config.face.age.inputSize], false);
@@ -48,3 +54,5 @@ async function predict(image, config) {
 }
 
 exports.predict = predict;
+exports.loadAge = loadAge;
+exports.loadGender = loadGender;

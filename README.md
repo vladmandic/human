@@ -280,4 +280,4 @@ Library can also be used on mobile devices
 ## Todo
 
 - Improve detection of smaller faces
-- Fix memory leak in face detector
+- Verify age/gender models

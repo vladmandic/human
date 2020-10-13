@@ -7,7 +7,13 @@
 
 *Suggestions are welcome!*
 
-![Sample](demo/sample.jpg)
+<hr>
+
+**Example using static image:**  
+![Example Using Image](demo/sample-image.jpg)
+
+**Example using webcam:**  
+![Example Using WebCam](demo/sample-video.jpg)
 
 <hr>
 

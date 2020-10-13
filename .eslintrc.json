@@ -39,6 +39,7 @@
     "no-restricted-globals": "off",
     "no-restricted-syntax": "off",
     "no-underscore-dangle": "off",
+    "no-return-assign": "off",
     "newline-per-chained-call": "off",
     "node/no-unsupported-features/es-syntax": "off",
     "node/shebang": "off",

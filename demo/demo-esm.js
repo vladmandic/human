@@ -1,7 +1,12 @@
 /* global QuickSettings */
-/* eslint-disable no-return-assign */
 
 import human from '../dist/human.esm.js';
+
+const ui = {
+  baseColor: 'rgba(255, 200, 255, 0.3)',
+  baseFont: 'small-caps 1.2rem "Segoe UI"',
+  baseLineWidth: 16,
+};
 
 const config = {
   face: {
@@ -17,17 +22,20 @@ const config = {
 };
 let settings;
 
-async function drawFace(result) {
-  const canvas = document.getElementById('canvas');
+async function drawFace(result, canvas) {
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = 'lightcoral';
-  ctx.strokeStyle = 'lightcoral';
-  ctx.font = 'small-caps 1rem "Segoe UI"';
+  ctx.fillStyle = ui.baseColor;
+  ctx.strokeStyle = ui.baseColor;
+  ctx.font = ui.baseFont;
   for (const face of result) {
+    ctx.lineWidth = ui.baseLineWidth;
     ctx.beginPath();
-    ctx.rect(face.box[0], face.box[1], face.box[2], face.box[3]);
-    ctx.fillText(`face ${face.gender || ''} ${face.age || ''} ${face.iris ? 'iris: ' + face.iris : ''}`, face.box[0] + 2, face.box[1] + 16, face.box[2]);
+    if (settings.getValue('Draw Boxes')) {
+      ctx.rect(face.box[0], face.box[1], face.box[2], face.box[3]);
+    }
+    ctx.fillText(`face ${face.gender || ''} ${face.age || ''} ${face.iris ? 'iris: ' + face.iris : ''}`, face.box[0] + 2, face.box[1] + 22, face.box[2]);
     ctx.stroke();
+    ctx.lineWidth = 1;
     if (face.mesh) {
       if (settings.getValue('Draw Points')) {
         for (const point of face.mesh) {
@@ -50,10 +58,10 @@ async function drawFace(result) {
             path.lineTo(point[0], point[1]);
           }
           path.closePath();
-          ctx.fillStyle = `rgba(${127.5 + (2 * points[0][2])}, ${127.5 - (2 * points[0][2])}, 255, 0.5)`;
-          ctx.strokeStyle = `rgba(${127.5 + (2 * points[0][2])}, ${127.5 - (2 * points[0][2])}, 255, 0.5)`;
+          ctx.strokeStyle = `rgba(${127.5 + (2 * points[0][2])}, ${127.5 - (2 * points[0][2])}, 255, 0.3)`;
           ctx.stroke(path);
           if (settings.getValue('Fill Polygons')) {
+            ctx.fillStyle = `rgba(${127.5 + (2 * points[0][2])}, ${127.5 - (2 * points[0][2])}, 255, 0.3)`;
             ctx.fill(path);
           }
         }
@@ -62,12 +70,12 @@ async function drawFace(result) {
   }
 }
 
-async function drawBody(result) {
-  const canvas = document.getElementById('canvas');
+async function drawBody(result, canvas) {
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = 'lightcoral';
-  ctx.strokeStyle = 'lightcoral';
-  ctx.font = 'small-caps 1rem "Segoe UI"';
+  ctx.fillStyle = ui.baseColor;
+  ctx.strokeStyle = ui.baseColor;
+  ctx.font = ui.baseFont;
+  ctx.lineWidth = ui.baseLineWidth;
   for (const pose of result) {
     if (settings.getValue('Draw Points')) {
       for (const point of pose.keypoints) {
@@ -123,12 +131,19 @@ async function drawBody(result) {
   }
 }
 
-async function drawHand(result) {
-  const canvas = document.getElementById('canvas');
+async function drawHand(result, canvas) {
   const ctx = canvas.getContext('2d');
-  ctx.font = 'small-caps 1rem "Segoe UI"';
+  ctx.font = ui.baseFont;
+  ctx.lineWidth = ui.baseLineWidth;
   window.result = result;
   for (const hand of result) {
+    if (settings.getValue('Draw Boxes')) {
+      ctx.lineWidth = ui.baseLineWidth;
+      ctx.beginPath();
+      ctx.rect(hand.box[0], hand.box[1], hand.box[2], hand.box[3]);
+      ctx.fillText('hand', hand.box[0] + 2, hand.box[1] + 22, hand.box[2]);
+      ctx.stroke();
+    }
     if (settings.getValue('Draw Points')) {
       for (const point of hand.landmarks) {
         ctx.fillStyle = `rgba(${127.5 + (2 * point[2])}, ${127.5 - (2 * point[2])}, 255, 0.5)`;
@@ -139,13 +154,14 @@ async function drawHand(result) {
     }
     if (settings.getValue('Draw Polygons')) {
       const addPart = (part) => {
-        ctx.beginPath();
-        for (const i in part) {
+        for (let i = 1; i < part.length; i++) {
+          ctx.lineWidth = ui.baseLineWidth;
+          ctx.beginPath();
           ctx.strokeStyle = `rgba(${127.5 + (2 * part[i][2])}, ${127.5 - (2 * part[i][2])}, 255, 0.5)`;
-          if (i === 0) ctx.moveTo(part[i][0], part[i][1]);
-          else ctx.lineTo(part[i][0], part[i][1]);
+          ctx.moveTo(part[i - 1][0], part[i - 1][1]);
+          ctx.lineTo(part[i][0], part[i][1]);
+          ctx.stroke();
         }
-        ctx.stroke();
       };
       addPart(hand.annotations.indexFinger);
       addPart(hand.annotations.middleFinger);
@@ -157,25 +173,30 @@ async function drawHand(result) {
   }
 }
 
-async function runHumanDetect() {
-  const video = document.getElementById('video');
-  const canvas = document.getElementById('canvas');
+async function runHumanDetect(input, canvas) {
   const log = document.getElementById('log');
-  const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
-  if (live) {
+  const live = input.srcObject ? ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused)) : false;
+  // perform detect if live video or not video at all
+  if (live || !(input instanceof HTMLVideoElement)) {
     // perform detection
     const t0 = performance.now();
-    const result = await human.detect(video, config);
+    let result;
+    try {
+      result = await human.detect(input, config);
+    } catch (err) {
+      log.innerText = err.message;
+    }
+    if (!result) return;
     const t1 = performance.now();
     // update fps
     settings.setValue('FPS', Math.round(1000 / (t1 - t0)));
     // draw image from video
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, video.width, video.height, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
     // draw all results
-    drawFace(result.face);
-    drawBody(result.body);
-    drawHand(result.hand);
+    drawFace(result.face, canvas);
+    drawBody(result.body, canvas);
+    drawHand(result.hand, canvas);
     // update log
     const engine = await human.tf.engine();
     log.innerText = `
@@ -184,12 +205,13 @@ async function runHumanDetect() {
       Result Object Size: Face: ${(JSON.stringify(result.face)).length.toLocaleString()} bytes Body: ${(JSON.stringify(result.body)).length.toLocaleString()} bytes Hand: ${(JSON.stringify(result.hand)).length.toLocaleString()} bytes
     `;
     // rinse & repeate
-    // setTimeout(() => runHumanDetect(), 1000); // slow loop for debugging purposes
-    requestAnimationFrame(runHumanDetect); // immediate loop
+    // if (input.readyState) setTimeout(() => runHumanDetect(), 1000); // slow loop for debugging purposes
+    if (input.readyState) requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop
   }
 }
 
 function setupGUI() {
+  // add all variables to ui control panel
   settings = QuickSettings.create(10, 10, 'Settings', document.getElementById('main'));
   settings.addRange('FPS', 0, 100, 0, 1);
   settings.addBoolean('Pause', false, (val) => {
@@ -198,9 +220,13 @@ function setupGUI() {
     runHumanDetect();
   });
   settings.addHTML('line1', '<hr>'); settings.hideTitle('line1');
+  settings.addBoolean('Draw Boxes', false);
   settings.addBoolean('Draw Points', true);
   settings.addBoolean('Draw Polygons', true);
   settings.addBoolean('Fill Polygons', true);
+  settings.bindText('baseColor', ui.baseColor, config);
+  settings.bindText('baseFont', ui.baseFont, config);
+  settings.bindRange('baseLineWidth', 1, 100, ui.baseLineWidth, 1, config);
   settings.addHTML('line2', '<hr>'); settings.hideTitle('line2');
   settings.addBoolean('Face Detect', config.face.enabled, (val) => config.face.enabled = val);
   settings.addBoolean('Face Mesh', config.face.mesh.enabled, (val) => config.face.mesh.enabled = val);
@@ -234,18 +260,21 @@ function setupGUI() {
   });
 }
 
-async function setupCanvas() {
-  const video = document.getElementById('video');
+async function setupCanvas(input) {
+  // setup canvas object to same size as input as camera resolution may change
   const canvas = document.getElementById('canvas');
-  canvas.width = video.width;
-  canvas.height = video.height;
+  canvas.width = input.width;
+  canvas.height = input.height;
+  return canvas;
 }
 
+// eslint-disable-next-line no-unused-vars
 async function setupCamera() {
+  // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
   const video = document.getElementById('video');
   if (!navigator.mediaDevices) {
     document.getElementById('log').innerText = 'Video not supported';
-    return;
+    return null;
   }
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
@@ -263,27 +292,30 @@ async function setupCamera() {
 }
 
 // eslint-disable-next-line no-unused-vars
-async function runImageDemo() {
+async function setupImage() {
   const image = document.getElementById('image');
-  const canvas = document.getElementById('canvas');
-  canvas.width = image.width;
-  canvas.height = image.height;
-  const result = await human.detect(image, config);
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
-  drawFace(result.face);
-  drawBody(result.body);
-  drawHand(result.hand);
+  image.width = window.innerWidth;
+  image.height = window.innerHeight;
+  return new Promise((resolve) => {
+    image.onload = () => resolve(image);
+    image.src = 'sample.jpg';
+  });
 }
 
 async function main() {
+  // initialize tensorflow
   await human.tf.setBackend('webgl');
   await human.tf.ready();
-  await setupCamera();
-  await setupCanvas();
+  // setup ui control panel
   await setupGUI();
-  runHumanDetect();
-  // runImageDemo();
+  // setup webcam
+  const video = await setupCamera();
+  // or setup image
+  // const image = await setupImage();
+  // setup output canvas from input object, select video or image
+  const canvas = await setupCanvas(video);
+  // run actual detection. if input is video, it will run in a loop else it will run only once
+  runHumanDetect(video, canvas);
 }
 
 window.onload = main;

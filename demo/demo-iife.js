@@ -1,4 +1,3 @@
-/* eslint-disable no-return-assign */
 /* global human, QuickSettings */
 
 const config = {

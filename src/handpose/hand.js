@@ -92,12 +92,10 @@ class HandDetector {
       image.dispose();
       return null;
     }
-    // Calling arraySync on both boxes and palmLandmarks because the tensors are
-    // very small so it's not worth calling await array().
-    const boundingBoxes = prediction.boxes.arraySync();
+    const boundingBoxes = await prediction.boxes.array();
     const startPoint = boundingBoxes[0].slice(0, 2);
     const endPoint = boundingBoxes[0].slice(2, 4);
-    const palmLandmarks = prediction.palmLandmarks.arraySync();
+    const palmLandmarks = await prediction.palmLandmarks.array();
     image.dispose();
     prediction.boxes.dispose();
     prediction.palmLandmarks.dispose();

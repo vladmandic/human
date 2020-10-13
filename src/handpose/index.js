@@ -56,18 +56,6 @@ class HandPose {
     this.pipeline = pipeline;
   }
 
-  static getAnnotations() {
-    return keypoints.MESH_ANNOTATIONS;
-  }
-
-  /**
-     * Finds hands in the input image.
-     *
-     * @param input The image to classify. Can be a tensor, DOM element image,
-     * video, or canvas.
-     * @param flipHorizontal Whether to flip the hand keypoints horizontally.
-     * Should be true for videos that are flipped by default (e.g. webcams).
-     */
   async estimateHands(input, config) {
     const image = tf.tidy(() => {
       if (!(input instanceof tf.Tensor)) {

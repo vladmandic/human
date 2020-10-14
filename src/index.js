@@ -1,8 +1,8 @@
 const tf = require('@tensorflow/tfjs');
-const facemesh = require('./facemesh/index.js');
-const ssrnet = require('./ssrnet/index.js');
-const posenet = require('./posenet/index.js');
-const handpose = require('./handpose/index.js');
+const facemesh = require('./facemesh/facemesh.js');
+const ssrnet = require('./ssrnet/ssrnet.js');
+const posenet = require('./posenet/posenet.js');
+const handpose = require('./handpose/handpose.js');
 const defaults = require('./config.js').default;
 
 const models = {
@@ -44,9 +44,15 @@ async function detect(input, userConfig) {
 
     tf.engine().startScope();
 
+    let savedWebglPackDepthwiseConvFlag;
+    if (tf.getBackend() === 'webgl') {
+      savedWebglPackDepthwiseConvFlag = tf.env().get('WEBGL_PACK_DEPTHWISECONV');
+      tf.env().set('WEBGL_PACK_DEPTHWISECONV', true);
+    }
+
     // run posenet
     let poseRes = [];
-    if (config.body.enabled) poseRes = await models.posenet.estimateMultiplePoses(input, config.body);
+    if (config.body.enabled) poseRes = await models.posenet.estimatePoses(input, config.body);
 
     // run handpose
     let handRes = [];
@@ -75,6 +81,8 @@ async function detect(input, userConfig) {
         });
       }
     }
+
+    tf.env().set('WEBGL_PACK_DEPTHWISECONV', savedWebglPackDepthwiseConvFlag);
 
     tf.engine().endScope();
     // combine results

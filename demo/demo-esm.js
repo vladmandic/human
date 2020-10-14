@@ -203,6 +203,7 @@ async function runHumanDetect(input, canvas) {
       TFJS Version: ${human.tf.version_core} Memory: ${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors
       GPU Memory: used ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes free ${Math.floor(1024 * 1024 * engine.backendInstance.numMBBeforeWarning).toLocaleString()} bytes
       Result Object Size: Face: ${(JSON.stringify(result.face)).length.toLocaleString()} bytes Body: ${(JSON.stringify(result.body)).length.toLocaleString()} bytes Hand: ${(JSON.stringify(result.hand)).length.toLocaleString()} bytes
+      Performance: ${JSON.stringify(result.performance)}
     `;
     // rinse & repeate
     // if (input.readyState) setTimeout(() => runHumanDetect(), 1000); // slow loop for debugging purposes

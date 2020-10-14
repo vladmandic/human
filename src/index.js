@@ -50,21 +50,32 @@ async function detect(input, userConfig) {
       tf.env().set('WEBGL_PACK_DEPTHWISECONV', true);
     }
 
+    const perf = {};
+    let timeStamp;
+
     // run posenet
+    timeStamp = performance.now();
     let poseRes = [];
     if (config.body.enabled) poseRes = await models.posenet.estimatePoses(input, config.body);
+    perf.body = Math.trunc(performance.now() - timeStamp);
 
     // run handpose
+    timeStamp = performance.now();
     let handRes = [];
     if (config.hand.enabled) handRes = await models.handpose.estimateHands(input, config.hand);
+    perf.hand = Math.trunc(performance.now() - timeStamp);
 
     // run facemesh, includes blazeface and iris
     const faceRes = [];
     if (config.face.enabled) {
+      timeStamp = performance.now();
       const faces = await models.facemesh.estimateFaces(input, config.face);
+      perf.face = Math.trunc(performance.now() - timeStamp);
       for (const face of faces) {
         // run ssr-net age & gender, inherits face from blazeface
+        timeStamp = performance.now();
         const ssrdata = (config.face.age.enabled || config.face.gender.enabled) ? await ssrnet.predict(face.image, config) : {};
+        perf.agegender = Math.trunc(performance.now() - timeStamp);
         face.image.dispose();
         // iris: array[ bottom, left, top, right, center ]
         const iris = (face.annotations.leftEyeIris && face.annotations.rightEyeIris)
@@ -86,7 +97,9 @@ async function detect(input, userConfig) {
 
     tf.engine().endScope();
     // combine results
-    resolve({ face: faceRes, body: poseRes, hand: handRes });
+    perf.total = Object.values(perf).reduce((a, b) => a + b);
+    console.log('total', perf.total);
+    resolve({ face: faceRes, body: poseRes, hand: handRes, performance: perf });
   });
 }
 

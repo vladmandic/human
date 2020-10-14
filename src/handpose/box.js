@@ -7,6 +7,7 @@ function getBoxSize(box) {
   ];
 }
 exports.getBoxSize = getBoxSize;
+
 function getBoxCenter(box) {
   return [
     box.startPoint[0] + (box.endPoint[0] - box.startPoint[0]) / 2,
@@ -14,6 +15,7 @@ function getBoxCenter(box) {
   ];
 }
 exports.getBoxCenter = getBoxCenter;
+
 function cutBoxFromImageAndResize(box, image, cropSize) {
   const h = image.shape[1];
   const w = image.shape[2];
@@ -24,6 +26,7 @@ function cutBoxFromImageAndResize(box, image, cropSize) {
   return tf.image.cropAndResize(image, boxes, [0], cropSize);
 }
 exports.cutBoxFromImageAndResize = cutBoxFromImageAndResize;
+
 function scaleBoxCoordinates(box, factor) {
   const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
   const endPoint = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]];
@@ -34,6 +37,7 @@ function scaleBoxCoordinates(box, factor) {
   return { startPoint, endPoint, palmLandmarks };
 }
 exports.scaleBoxCoordinates = scaleBoxCoordinates;
+
 function enlargeBox(box, factor = 1.5) {
   const center = getBoxCenter(box);
   const size = getBoxSize(box);
@@ -43,6 +47,7 @@ function enlargeBox(box, factor = 1.5) {
   return { startPoint, endPoint, palmLandmarks: box.palmLandmarks };
 }
 exports.enlargeBox = enlargeBox;
+
 function squarifyBox(box) {
   const centers = getBoxCenter(box);
   const size = getBoxSize(box);
@@ -53,6 +58,7 @@ function squarifyBox(box) {
   return { startPoint, endPoint, palmLandmarks: box.palmLandmarks };
 }
 exports.squarifyBox = squarifyBox;
+
 function shiftBox(box, shiftFactor) {
   const boxSize = [
     box.endPoint[0] - box.startPoint[0], box.endPoint[1] - box.startPoint[1],

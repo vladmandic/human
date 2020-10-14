@@ -2,17 +2,14 @@ const tf = require('@tensorflow/tfjs');
 const bounding = require('./box');
 
 class HandDetector {
-  constructor(model, width, height, anchors, iouThreshold, scoreThreshold, maxHands) {
+  constructor(model, anchors, config) {
     this.model = model;
-    this.width = width;
-    this.height = height;
-    this.iouThreshold = iouThreshold;
-    this.scoreThreshold = scoreThreshold;
-    this.maxHands = maxHands;
+    this.width = config.inputSize;
+    this.height = config.inputSize;
     this.anchors = anchors.map((anchor) => [anchor.x_center, anchor.y_center]);
     this.anchorsTensor = tf.tensor2d(this.anchors);
-    this.inputSizeTensor = tf.tensor1d([width, height]);
-    this.doubleInputSizeTensor = tf.tensor1d([width * 2, height * 2]);
+    this.inputSizeTensor = tf.tensor1d([config.inputSize, config.inputSize]);
+    this.doubleInputSizeTensor = tf.tensor1d([config.inputSize * 2, config.inputSize * 2]);
   }
 
   normalizeBoxes(boxes) {
@@ -73,9 +70,12 @@ class HandDetector {
      *
      * @param input The image to classify.
      */
-  async estimateHandBounds(input) {
+  async estimateHandBounds(input, config) {
     const inputHeight = input.shape[1];
     const inputWidth = input.shape[2];
+    this.iouThreshold = config.iouThreshold;
+    this.scoreThreshold = config.scoreThreshold;
+    this.maxHands = config.maxHands;
     const image = tf.tidy(() => input.resizeBilinear([this.width, this.height]).div(255));
     const predictions = await this.getBoundingBoxes(image);
     image.dispose();

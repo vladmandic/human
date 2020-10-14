@@ -31,6 +31,14 @@ export default {
       enabled: true,
       modelPath: '../models/ssrnet-gender/imdb/model.json',
     },
+    emotion: {
+      enabled: true,
+      inputSize: 64, // fixed value
+      minConfidence: 0.5,
+      skipFrames: 10,
+      useGrayscale: true,
+      modelPath: '../models/emotion/model.json',
+    },
   },
   body: {
     enabled: true,

@@ -26,7 +26,7 @@ const logger = new console.Console({
 const config = {
   face: {
     enabled: false,
-    detector: { modelPath: 'file://models/blazeface/model.json', inputSize: 128, maxFaces: 10, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
+    detector: { modelPath: 'file://models/blazeface/model.json', inputSize: 128, maxFaces: 10, skipFrames: 10, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
     mesh: { enabled: true, modelPath: 'file://models/facemesh/model.json', inputSize: 192 },
     iris: { enabled: true, modelPath: 'file://models/iris/model.json', inputSize: 192 },
     age: { enabled: true, modelPath: 'file://models/ssrnet-age/imdb/model.json', inputSize: 64, skipFrames: 5 },
@@ -36,7 +36,7 @@ const config = {
   hand: {
     enabled: false,
     inputSize: 256,
-    skipFrames: 5,
+    skipFrames: 10,
     minConfidence: 0.8,
     iouThreshold: 0.3,
     scoreThreshold: 0.75,

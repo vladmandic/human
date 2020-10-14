@@ -1,13 +1,5 @@
 const tf = require('@tensorflow/tfjs');
-/**
- * PoseNet supports using various convolution neural network models
- * (e.g. ResNet and MobileNetV1) as its underlying base model.
- * The following BaseModel interface defines a unified interface for
- * creating such PoseNet base models. Currently both MobileNet (in
- * ./mobilenet.ts) and ResNet (in ./resnet.ts) implements the BaseModel
- * interface. New base models that conform to the BaseModel interface can be
- * added to PoseNet.
- */
+
 class BaseModel {
   constructor(model, outputStride) {
     this.model = model;

@@ -19,23 +19,11 @@ const IRIS_UPPER_CENTER_INDEX = 3;
 const IRIS_LOWER_CENTER_INDEX = 4;
 const IRIS_IRIS_INDEX = 71;
 const IRIS_NUM_COORDINATES = 76;
-const ENLARGE_EYE_RATIO = 2.3; // Factor by which to enlarge the box around the eye landmarks so the input region matches the expectations of the iris model.
-const IRIS_MODEL_INPUT_SIZE = 64;
-const MESH_TO_IRIS_INDICES_MAP = [ // A mapping from facemesh model keypoints to iris model keypoints.
-  { key: 'EyeUpper0', indices: [9, 10, 11, 12, 13, 14, 15] },
-  { key: 'EyeUpper1', indices: [25, 26, 27, 28, 29, 30, 31] },
-  { key: 'EyeUpper2', indices: [41, 42, 43, 44, 45, 46, 47] },
-  { key: 'EyeLower0', indices: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
-  { key: 'EyeLower1', indices: [16, 17, 18, 19, 20, 21, 22, 23, 24] },
-  { key: 'EyeLower2', indices: [32, 33, 34, 35, 36, 37, 38, 39, 40] },
-  { key: 'EyeLower3', indices: [54, 55, 56, 57, 58, 59, 60, 61, 62] },
-  { key: 'EyebrowUpper', indices: [63, 64, 65, 66, 67, 68, 69, 70] },
-  { key: 'EyebrowLower', indices: [48, 49, 50, 51, 52, 53] },
-];
+
 // Replace the raw coordinates returned by facemesh with refined iris model coordinates. Update the z coordinate to be an average of the original and the new. This produces the best visual effect.
 function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
-  for (let i = 0; i < MESH_TO_IRIS_INDICES_MAP.length; i++) {
-    const { key, indices } = MESH_TO_IRIS_INDICES_MAP[i];
+  for (let i = 0; i < keypoints.MESH_TO_IRIS_INDICES_MAP.length; i++) {
+    const { key, indices } = keypoints.MESH_TO_IRIS_INDICES_MAP[i];
     const originalIndices = keypoints.MESH_ANNOTATIONS[`${prefix}${key}`];
     const shouldReplaceAllKeys = keys == null;
     if (shouldReplaceAllKeys || keys.includes(key)) {
@@ -60,8 +48,8 @@ class Pipeline {
     this.irisModel = irisModel;
     this.meshWidth = config.mesh.inputSize;
     this.meshHeight = config.mesh.inputSize;
-    this.skipFrames = config.detector.skipFrames;
-    this.maxFaces = config.detector.maxFaces;
+    this.irisSize = config.iris.inputSize;
+    this.irisEnlarge = config.iris.enlargeFactor;
   }
 
   transformRawCoords(rawCoords, box, angle, rotationMatrix) {
@@ -93,13 +81,13 @@ class Pipeline {
 
   // Returns a box describing a cropped region around the eye fit for passing to the iris model.
   getEyeBox(rawCoords, face, eyeInnerCornerIndex, eyeOuterCornerIndex, flip = false) {
-    const box = bounding.squarifyBox(bounding.enlargeBox(this.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), ENLARGE_EYE_RATIO));
+    const box = bounding.squarifyBox(bounding.enlargeBox(this.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), this.irisEnlarge));
     const boxSize = bounding.getBoxSize(box);
     let crop = tf.image.cropAndResize(face, [[
       box.startPoint[1] / this.meshHeight,
       box.startPoint[0] / this.meshWidth, box.endPoint[1] / this.meshHeight,
       box.endPoint[0] / this.meshWidth,
-    ]], [0], [IRIS_MODEL_INPUT_SIZE, IRIS_MODEL_INPUT_SIZE]);
+    ]], [0], [this.irisSize, this.irisSize]);
     if (flip) {
       crop = tf.image.flipLeftRight(crop);
     }
@@ -115,9 +103,9 @@ class Pipeline {
       const z = eyeData[i * 3 + 2];
       eyeRawCoords.push([
         (flip
-          ? (1 - (x / IRIS_MODEL_INPUT_SIZE))
-          : (x / IRIS_MODEL_INPUT_SIZE)) * eyeBoxSize[0] + eyeBox.startPoint[0],
-        (y / IRIS_MODEL_INPUT_SIZE) * eyeBoxSize[1] + eyeBox.startPoint[1], z,
+          ? (1 - (x / this.irisSize))
+          : (x / this.irisSize)) * eyeBoxSize[0] + eyeBox.startPoint[0],
+        (y / this.irisSize) * eyeBoxSize[1] + eyeBox.startPoint[1], z,
       ]);
     }
     return { rawCoords: eyeRawCoords, iris: eyeRawCoords.slice(IRIS_IRIS_INDEX) };
@@ -140,7 +128,9 @@ class Pipeline {
     });
   }
 
-  async predict(input, predictIrises, predictMesh) {
+  async predict(input, config) {
+    this.skipFrames = config.detector.skipFrames;
+    this.maxFaces = config.detector.maxFaces;
     if (this.shouldUpdateRegionsOfInterest()) {
       const { boxes, scaleFactor } = await this.boundingBoxDetector.getBoundingBoxes(input);
       if (boxes.length === 0) {
@@ -189,7 +179,7 @@ class Pipeline {
       const [, flag, coords] = this.meshDetector.predict(face);
       const coordsReshaped = tf.reshape(coords, [-1, 3]);
       let rawCoords = coordsReshaped.arraySync();
-      if (predictIrises) {
+      if (config.iris.enabled) {
         const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face, LEFT_EYE_BOUNDS[0], LEFT_EYE_BOUNDS[1], true);
         const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face, RIGHT_EYE_BOUNDS[0], RIGHT_EYE_BOUNDS[1]);
         const eyePredictions = (this.irisModel.predict(tf.concat([leftEyeCrop, rightEyeCrop])));
@@ -216,7 +206,7 @@ class Pipeline {
       const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
       tf.dispose(rawCoords);
       const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
-      if (predictMesh) {
+      if (config.mesh.enabled) {
         const transformedCoords = tf.tensor2d(transformedCoordsData);
         this.regionsOfInterest[i] = { ...landmarksBox, landmarks: transformedCoords.arraySync() };
         const prediction = {

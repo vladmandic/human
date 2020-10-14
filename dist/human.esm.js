@@ -65534,6 +65534,17 @@ var require_keypoints = __commonJS((exports) => {
     rightCheek: [205],
     leftCheek: [425]
   };
+  exports.MESH_TO_IRIS_INDICES_MAP = [
+    {key: "EyeUpper0", indices: [9, 10, 11, 12, 13, 14, 15]},
+    {key: "EyeUpper1", indices: [25, 26, 27, 28, 29, 30, 31]},
+    {key: "EyeUpper2", indices: [41, 42, 43, 44, 45, 46, 47]},
+    {key: "EyeLower0", indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]},
+    {key: "EyeLower1", indices: [16, 17, 18, 19, 20, 21, 22, 23, 24]},
+    {key: "EyeLower2", indices: [32, 33, 34, 35, 36, 37, 38, 39, 40]},
+    {key: "EyeLower3", indices: [54, 55, 56, 57, 58, 59, 60, 61, 62]},
+    {key: "EyebrowUpper", indices: [63, 64, 65, 66, 67, 68, 69, 70]},
+    {key: "EyebrowLower", indices: [48, 49, 50, 51, 52, 53]}
+  ];
 });
 
 // src/facemesh/box.js
@@ -65696,22 +65707,9 @@ var require_pipeline = __commonJS((exports) => {
   const IRIS_LOWER_CENTER_INDEX = 4;
   const IRIS_IRIS_INDEX = 71;
   const IRIS_NUM_COORDINATES = 76;
-  const ENLARGE_EYE_RATIO = 2.3;
-  const IRIS_MODEL_INPUT_SIZE = 64;
-  const MESH_TO_IRIS_INDICES_MAP = [
-    {key: "EyeUpper0", indices: [9, 10, 11, 12, 13, 14, 15]},
-    {key: "EyeUpper1", indices: [25, 26, 27, 28, 29, 30, 31]},
-    {key: "EyeUpper2", indices: [41, 42, 43, 44, 45, 46, 47]},
-    {key: "EyeLower0", indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]},
-    {key: "EyeLower1", indices: [16, 17, 18, 19, 20, 21, 22, 23, 24]},
-    {key: "EyeLower2", indices: [32, 33, 34, 35, 36, 37, 38, 39, 40]},
-    {key: "EyeLower3", indices: [54, 55, 56, 57, 58, 59, 60, 61, 62]},
-    {key: "EyebrowUpper", indices: [63, 64, 65, 66, 67, 68, 69, 70]},
-    {key: "EyebrowLower", indices: [48, 49, 50, 51, 52, 53]}
-  ];
   function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
-    for (let i = 0; i < MESH_TO_IRIS_INDICES_MAP.length; i++) {
-      const {key, indices} = MESH_TO_IRIS_INDICES_MAP[i];
+    for (let i = 0; i < keypoints.MESH_TO_IRIS_INDICES_MAP.length; i++) {
+      const {key, indices} = keypoints.MESH_TO_IRIS_INDICES_MAP[i];
       const originalIndices = keypoints.MESH_ANNOTATIONS[`${prefix}${key}`];
       const shouldReplaceAllKeys = keys == null;
       if (shouldReplaceAllKeys || keys.includes(key)) {
@@ -65735,8 +65733,8 @@ var require_pipeline = __commonJS((exports) => {
       this.irisModel = irisModel;
       this.meshWidth = config.mesh.inputSize;
       this.meshHeight = config.mesh.inputSize;
-      this.skipFrames = config.detector.skipFrames;
-      this.maxFaces = config.detector.maxFaces;
+      this.irisSize = config.iris.inputSize;
+      this.irisEnlarge = config.iris.enlargeFactor;
     }
     transformRawCoords(rawCoords, box, angle, rotationMatrix) {
       const boxSize = bounding.getBoxSize({startPoint: box.startPoint, endPoint: box.endPoint});
@@ -65766,14 +65764,14 @@ var require_pipeline = __commonJS((exports) => {
       return leftEyeZ - rightEyeZ;
     }
     getEyeBox(rawCoords, face, eyeInnerCornerIndex, eyeOuterCornerIndex, flip = false) {
-      const box = bounding.squarifyBox(bounding.enlargeBox(this.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), ENLARGE_EYE_RATIO));
+      const box = bounding.squarifyBox(bounding.enlargeBox(this.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), this.irisEnlarge));
       const boxSize = bounding.getBoxSize(box);
       let crop = tf.image.cropAndResize(face, [[
         box.startPoint[1] / this.meshHeight,
         box.startPoint[0] / this.meshWidth,
         box.endPoint[1] / this.meshHeight,
         box.endPoint[0] / this.meshWidth
-      ]], [0], [IRIS_MODEL_INPUT_SIZE, IRIS_MODEL_INPUT_SIZE]);
+      ]], [0], [this.irisSize, this.irisSize]);
       if (flip) {
         crop = tf.image.flipLeftRight(crop);
       }
@@ -65786,8 +65784,8 @@ var require_pipeline = __commonJS((exports) => {
         const y = eyeData[i * 3 + 1];
         const z = eyeData[i * 3 + 2];
         eyeRawCoords.push([
-          (flip ? 1 - x / IRIS_MODEL_INPUT_SIZE : x / IRIS_MODEL_INPUT_SIZE) * eyeBoxSize[0] + eyeBox.startPoint[0],
-          y / IRIS_MODEL_INPUT_SIZE * eyeBoxSize[1] + eyeBox.startPoint[1],
+          (flip ? 1 - x / this.irisSize : x / this.irisSize) * eyeBoxSize[0] + eyeBox.startPoint[0],
+          y / this.irisSize * eyeBoxSize[1] + eyeBox.startPoint[1],
           z
         ]);
       }
@@ -65807,7 +65805,9 @@ var require_pipeline = __commonJS((exports) => {
         return [coord[0], coord[1], z];
       });
     }
-    async predict(input, predictIrises, predictMesh) {
+    async predict(input, config) {
+      this.skipFrames = config.detector.skipFrames;
+      this.maxFaces = config.detector.maxFaces;
       if (this.shouldUpdateRegionsOfInterest()) {
         const {boxes, scaleFactor} = await this.boundingBoxDetector.getBoundingBoxes(input);
         if (boxes.length === 0) {
@@ -65854,7 +65854,7 @@ var require_pipeline = __commonJS((exports) => {
         const [, flag, coords] = this.meshDetector.predict(face);
         const coordsReshaped = tf.reshape(coords, [-1, 3]);
         let rawCoords = coordsReshaped.arraySync();
-        if (predictIrises) {
+        if (config.iris.enabled) {
           const {box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop} = this.getEyeBox(rawCoords, face, LEFT_EYE_BOUNDS[0], LEFT_EYE_BOUNDS[1], true);
           const {box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop} = this.getEyeBox(rawCoords, face, RIGHT_EYE_BOUNDS[0], RIGHT_EYE_BOUNDS[1]);
           const eyePredictions = this.irisModel.predict(tf.concat([leftEyeCrop, rightEyeCrop]));
@@ -65880,7 +65880,7 @@ var require_pipeline = __commonJS((exports) => {
         const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
         tf.dispose(rawCoords);
         const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
-        if (predictMesh) {
+        if (config.mesh.enabled) {
           const transformedCoords = tf.tensor2d(transformedCoordsData);
           this.regionsOfInterest[i] = {...landmarksBox, landmarks: transformedCoords.arraySync()};
           const prediction2 = {
@@ -69098,7 +69098,7 @@ var require_facemesh = __commonJS((exports) => {
           input = tf.browser.fromPixels(input);
         return input.toFloat().expandDims(0);
       });
-      const predictions = await this.pipeline.predict(image, this.config.iris.enabled, this.config.mesh.enabled);
+      const predictions = await this.pipeline.predict(image, config);
       tf.dispose(image);
       const results = [];
       for (const prediction of predictions || []) {
@@ -69182,12 +69182,14 @@ var require_ssrnet = __commonJS((exports) => {
     const obj = {};
     if (config.face.age.enabled) {
       const ageT = await models.age.predict(enhance);
-      obj.age = Math.trunc(10 * ageT.dataSync()[0]) / 10;
+      const data = await ageT.data();
+      obj.age = Math.trunc(10 * data[0]) / 10;
       tf.dispose(ageT);
     }
     if (config.face.gender.enabled) {
       const genderT = await models.gender.predict(enhance);
-      obj.gender = Math.trunc(100 * genderT.dataSync()[0]) < 50 ? "female" : "male";
+      const data = await genderT.data();
+      obj.gender = Math.trunc(100 * data[0]) < 50 ? "female" : "male";
       tf.dispose(genderT);
     }
     tf.dispose(enhance);
@@ -69718,15 +69720,13 @@ var require_modelPoseNet = __commonJS((exports) => {
   const decodeMultiple = require_decodeMultiple();
   const util = require_util3();
   class PoseNet {
-    constructor(net, inputResolution) {
+    constructor(net) {
       this.baseModel = net;
-      this.inputResolution = inputResolution;
     }
     async estimatePoses(input, config) {
-      const outputStride = this.baseModel.outputStride;
-      const inputResolution = this.inputResolution;
+      const outputStride = config.outputStride;
       const [height, width] = util.getInputTensorDimensions(input);
-      const {resized, padding} = util.padAndResizeTo(input, [inputResolution, inputResolution]);
+      const {resized, padding} = util.padAndResizeTo(input, [config.inputResolution, config.inputResolution]);
       const {heatmapScores, offsets, displacementFwd, displacementBwd} = this.baseModel.predict(resized);
       const allTensorBuffers = await util.toTensorBuffers3D([heatmapScores, offsets, displacementFwd, displacementBwd]);
       const scoresBuffer = allTensorBuffers[0];
@@ -69734,7 +69734,7 @@ var require_modelPoseNet = __commonJS((exports) => {
       const displacementsFwdBuffer = allTensorBuffers[2];
       const displacementsBwdBuffer = allTensorBuffers[3];
       const poses = await decodeMultiple.decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, outputStride, config.maxDetections, config.scoreThreshold, config.nmsRadius);
-      const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [inputResolution, inputResolution], padding);
+      const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config.inputResolution, config.inputResolution], padding);
       heatmapScores.dispose();
       offsets.dispose();
       displacementFwd.dispose();
@@ -69748,10 +69748,9 @@ var require_modelPoseNet = __commonJS((exports) => {
   }
   exports.PoseNet = PoseNet;
   async function loadMobileNet(config) {
-    const outputStride = config.outputStride;
     const graphModel = await tf.loadGraphModel(config.modelPath);
-    const mobilenet = new modelMobileNet.MobileNet(graphModel, outputStride);
-    return new PoseNet(mobilenet, config.inputResolution);
+    const mobilenet = new modelMobileNet.MobileNet(graphModel, config.outputStride);
+    return new PoseNet(mobilenet);
   }
   async function load(config) {
     return loadMobileNet(config);
@@ -69857,17 +69856,14 @@ var require_handdetector = __commonJS((exports) => {
   const tf = require_tf_node();
   const bounding = require_box2();
   class HandDetector {
-    constructor(model, width, height, anchors, iouThreshold, scoreThreshold, maxHands) {
+    constructor(model, anchors, config) {
       this.model = model;
-      this.width = width;
-      this.height = height;
-      this.iouThreshold = iouThreshold;
-      this.scoreThreshold = scoreThreshold;
-      this.maxHands = maxHands;
+      this.width = config.inputSize;
+      this.height = config.inputSize;
       this.anchors = anchors.map((anchor) => [anchor.x_center, anchor.y_center]);
       this.anchorsTensor = tf.tensor2d(this.anchors);
-      this.inputSizeTensor = tf.tensor1d([width, height]);
-      this.doubleInputSizeTensor = tf.tensor1d([width * 2, height * 2]);
+      this.inputSizeTensor = tf.tensor1d([config.inputSize, config.inputSize]);
+      this.doubleInputSizeTensor = tf.tensor1d([config.inputSize * 2, config.inputSize * 2]);
     }
     normalizeBoxes(boxes) {
       return tf.tidy(() => {
@@ -69921,9 +69917,12 @@ var require_handdetector = __commonJS((exports) => {
       });
       return detectedHands;
     }
-    async estimateHandBounds(input) {
+    async estimateHandBounds(input, config) {
       const inputHeight = input.shape[1];
       const inputWidth = input.shape[2];
+      this.iouThreshold = config.iouThreshold;
+      this.scoreThreshold = config.scoreThreshold;
+      this.maxHands = config.maxHands;
       const image = tf.tidy(() => input.resizeBilinear([this.width, this.height]).div(255));
       const predictions = await this.getBoundingBoxes(image);
       image.dispose();
@@ -70037,24 +70036,20 @@ var require_pipeline2 = __commonJS((exports) => {
   const util = require_util4();
   const UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD = 0.8;
   const PALM_BOX_SHIFT_VECTOR = [0, -0.4];
-  const PALM_BOX_ENLARGE_FACTOR = 3;
   const HAND_BOX_SHIFT_VECTOR = [0, -0.1];
   const HAND_BOX_ENLARGE_FACTOR = 1.65;
   const PALM_LANDMARK_IDS = [0, 5, 9, 13, 17, 1, 2];
   const PALM_LANDMARKS_INDEX_OF_PALM_BASE = 0;
   const PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
   class HandPipeline {
-    constructor(boundingBoxDetector, meshDetector, meshWidth, meshHeight, maxContinuousChecks, detectionConfidence, maxHands) {
+    constructor(boundingBoxDetector, meshDetector, config) {
       this.regionsOfInterest = [];
       this.runsWithoutHandDetector = 0;
       this.boundingBoxDetector = boundingBoxDetector;
       this.meshDetector = meshDetector;
-      this.maxContinuousChecks = maxContinuousChecks;
-      this.detectionConfidence = detectionConfidence;
-      this.maxHands = maxHands;
-      this.meshWidth = meshWidth;
-      this.meshHeight = meshHeight;
-      this.maxHandsNumber = 1;
+      this.meshWidth = config.inputSize;
+      this.meshHeight = config.inputSize;
+      this.enlargeFactor = config.enlargeFactor;
     }
     getBoxForPalmLandmarks(palmLandmarks, rotationMatrix) {
       const rotatedPalmLandmarks = palmLandmarks.map((coord) => {
@@ -70062,7 +70057,7 @@ var require_pipeline2 = __commonJS((exports) => {
         return util.rotatePoint(homogeneousCoordinate, rotationMatrix);
       });
       const boxAroundPalm = this.calculateLandmarksBoundingBox(rotatedPalmLandmarks);
-      return bounding.enlargeBox(bounding.squarifyBox(bounding.shiftBox(boxAroundPalm, PALM_BOX_SHIFT_VECTOR)), PALM_BOX_ENLARGE_FACTOR);
+      return bounding.enlargeBox(bounding.squarifyBox(bounding.shiftBox(boxAroundPalm, PALM_BOX_SHIFT_VECTOR)), this.enlargeFactor);
     }
     getBoxForHandLandmarks(landmarks) {
       const boundingBox = this.calculateLandmarksBoundingBox(landmarks);
@@ -70099,10 +70094,13 @@ var require_pipeline2 = __commonJS((exports) => {
         coord[2]
       ]);
     }
-    async estimateHand(image, config) {
+    async estimateHands(image, config) {
+      this.maxContinuousChecks = config.skipFrames;
+      this.detectionConfidence = config.minConfidence;
+      this.maxHands = config.maxHands;
       const useFreshBox = this.shouldUpdateRegionsOfInterest();
       if (useFreshBox === true) {
-        const boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image);
+        const boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config);
         this.regionsOfInterest = [];
         for (const i in boundingBoxPredictions) {
           this.updateRegionsOfInterest(boundingBoxPredictions[i], true, i);
@@ -70188,7 +70186,7 @@ var require_pipeline2 = __commonJS((exports) => {
       }
     }
     shouldUpdateRegionsOfInterest() {
-      return this.regionsOfInterest === 0 || this.runsWithoutHandDetector >= this.maxContinuousChecks;
+      return !this.regionsOfInterest || this.regionsOfInterest.length === 0 || this.runsWithoutHandDetector >= this.maxContinuousChecks;
     }
   }
   exports.HandPipeline = HandPipeline;
@@ -70200,44 +70198,21 @@ var require_handpose = __commonJS((exports) => {
   const hand = require_handdetector();
   const keypoints = require_keypoints3();
   const pipe = require_pipeline2();
-  async function loadHandDetectorModel(url) {
-    return tf.loadGraphModel(url, {fromTFHub: url.includes("tfhub.dev")});
-  }
-  async function loadHandPoseModel(url) {
-    return tf.loadGraphModel(url, {fromTFHub: url.includes("tfhub.dev")});
-  }
-  async function loadAnchors(url) {
-    if (tf.env().features.IS_NODE) {
-      const fs = require("fs");
-      const data = await fs.readFileSync(url.replace("file://", ""));
-      return JSON.parse(data);
-    }
-    return tf.util.fetch(url).then((d) => d.json());
-  }
-  async function load(config) {
-    const [ANCHORS, handDetectorModel, handPoseModel] = await Promise.all([
-      loadAnchors(config.detector.anchors),
-      loadHandDetectorModel(config.detector.modelPath),
-      loadHandPoseModel(config.skeleton.modelPath)
-    ]);
-    const detector = new hand.HandDetector(handDetectorModel, config.inputSize, config.inputSize, ANCHORS, config.iouThreshold, config.scoreThreshold, config.maxHands);
-    const pipeline = new pipe.HandPipeline(detector, handPoseModel, config.inputSize, config.inputSize, config.skipFrames, config.minConfidence, config.maxHands);
-    const handpose = new HandPose(pipeline);
-    return handpose;
-  }
-  exports.load = load;
   class HandPose {
     constructor(pipeline) {
       this.pipeline = pipeline;
     }
     async estimateHands(input, config) {
+      this.maxContinuousChecks = config.skipFrames;
+      this.detectionConfidence = config.minConfidence;
+      this.maxHands = config.maxHands;
       const image = tf.tidy(() => {
         if (!(input instanceof tf.Tensor)) {
           input = tf.browser.fromPixels(input);
         }
         return input.toFloat().expandDims(0);
       });
-      const predictions = await this.pipeline.estimateHand(image, config);
+      const predictions = await this.pipeline.estimateHands(image, config);
       image.dispose();
       const hands = [];
       if (!predictions)
@@ -70260,6 +70235,26 @@ var require_handpose = __commonJS((exports) => {
     }
   }
   exports.HandPose = HandPose;
+  async function loadAnchors(url) {
+    if (tf.env().features.IS_NODE) {
+      const fs = require("fs");
+      const data = await fs.readFileSync(url.replace("file://", ""));
+      return JSON.parse(data);
+    }
+    return tf.util.fetch(url).then((d) => d.json());
+  }
+  async function load(config) {
+    const [anchors, handDetectorModel, handPoseModel] = await Promise.all([
+      loadAnchors(config.detector.anchors),
+      tf.loadGraphModel(config.detector.modelPath, {fromTFHub: config.detector.modelPath.includes("tfhub.dev")}),
+      tf.loadGraphModel(config.skeleton.modelPath, {fromTFHub: config.skeleton.modelPath.includes("tfhub.dev")})
+    ]);
+    const detector = new hand.HandDetector(handDetectorModel, anchors, config);
+    const pipeline = new pipe.HandPipeline(detector, handPoseModel, config);
+    const handpose = new HandPose(pipeline);
+    return handpose;
+  }
+  exports.load = load;
 });
 
 // src/config.js
@@ -70277,7 +70272,7 @@ var require_config = __commonJS((exports) => {
         skipFrames: 10,
         minConfidence: 0.5,
         iouThreshold: 0.3,
-        scoreThreshold: 0.5
+        scoreThreshold: 0.7
       },
       mesh: {
         enabled: true,
@@ -70287,7 +70282,8 @@ var require_config = __commonJS((exports) => {
       iris: {
         enabled: true,
         modelPath: "../models/iris/model.json",
-        inputSize: 192
+        enlargeFactor: 2.3,
+        inputSize: 64
       },
       age: {
         enabled: true,
@@ -70306,7 +70302,7 @@ var require_config = __commonJS((exports) => {
       inputResolution: 257,
       outputStride: 16,
       maxDetections: 5,
-      scoreThreshold: 0.5,
+      scoreThreshold: 0.7,
       nmsRadius: 20
     },
     hand: {
@@ -70315,7 +70311,8 @@ var require_config = __commonJS((exports) => {
       skipFrames: 10,
       minConfidence: 0.5,
       iouThreshold: 0.3,
-      scoreThreshold: 0.5,
+      scoreThreshold: 0.7,
+      enlargeFactor: 1.65,
       maxHands: 2,
       detector: {
         anchors: "../models/handdetect/anchors.json",
@@ -70378,17 +70375,27 @@ var require_src = __commonJS((exports) => {
         savedWebglPackDepthwiseConvFlag = tf.env().get("WEBGL_PACK_DEPTHWISECONV");
         tf.env().set("WEBGL_PACK_DEPTHWISECONV", true);
       }
+      const perf = {};
+      let timeStamp;
+      timeStamp = performance.now();
       let poseRes = [];
       if (config.body.enabled)
         poseRes = await models.posenet.estimatePoses(input, config.body);
+      perf.body = Math.trunc(performance.now() - timeStamp);
+      timeStamp = performance.now();
       let handRes = [];
       if (config.hand.enabled)
         handRes = await models.handpose.estimateHands(input, config.hand);
+      perf.hand = Math.trunc(performance.now() - timeStamp);
       const faceRes = [];
       if (config.face.enabled) {
+        timeStamp = performance.now();
         const faces = await models.facemesh.estimateFaces(input, config.face);
+        perf.face = Math.trunc(performance.now() - timeStamp);
         for (const face of faces) {
+          timeStamp = performance.now();
           const ssrdata = config.face.age.enabled || config.face.gender.enabled ? await ssrnet.predict(face.image, config) : {};
+          perf.agegender = Math.trunc(performance.now() - timeStamp);
           face.image.dispose();
           const iris = face.annotations.leftEyeIris && face.annotations.rightEyeIris ? Math.max(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0], face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0]) : 0;
           faceRes.push({
@@ -70404,7 +70411,9 @@ var require_src = __commonJS((exports) => {
       }
       tf.env().set("WEBGL_PACK_DEPTHWISECONV", savedWebglPackDepthwiseConvFlag);
       tf.engine().endScope();
-      resolve({face: faceRes, body: poseRes, hand: handRes});
+      perf.total = Object.values(perf).reduce((a, b) => a + b);
+      console.log("total", perf.total);
+      resolve({face: faceRes, body: poseRes, hand: handRes, performance: perf});
     });
   }
   exports.detect = detect;

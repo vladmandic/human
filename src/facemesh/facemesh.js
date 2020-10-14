@@ -17,7 +17,7 @@ class MediaPipeFaceMesh {
       if (!(input instanceof tf.Tensor)) input = tf.browser.fromPixels(input);
       return input.toFloat().expandDims(0);
     });
-    const predictions = await this.pipeline.predict(image, this.config.iris.enabled, this.config.mesh.enabled);
+    const predictions = await this.pipeline.predict(image, config);
     tf.dispose(image);
     const results = [];
     for (const prediction of (predictions || [])) {

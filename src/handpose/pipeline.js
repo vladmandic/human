@@ -4,7 +4,6 @@ const util = require('./util');
 
 const UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD = 0.8;
 const PALM_BOX_SHIFT_VECTOR = [0, -0.4];
-const PALM_BOX_ENLARGE_FACTOR = 3;
 const HAND_BOX_SHIFT_VECTOR = [0, -0.1];
 const HAND_BOX_ENLARGE_FACTOR = 1.65;
 const PALM_LANDMARK_IDS = [0, 5, 9, 13, 17, 1, 2];
@@ -13,18 +12,14 @@ const PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
 
 // The Pipeline coordinates between the bounding box and skeleton models.
 class HandPipeline {
-  constructor(boundingBoxDetector, meshDetector, meshWidth, meshHeight, maxContinuousChecks, detectionConfidence, maxHands) {
-    // An array of hand bounding boxes.
+  constructor(boundingBoxDetector, meshDetector, config) {
     this.regionsOfInterest = [];
     this.runsWithoutHandDetector = 0;
     this.boundingBoxDetector = boundingBoxDetector;
     this.meshDetector = meshDetector;
-    this.maxContinuousChecks = maxContinuousChecks;
-    this.detectionConfidence = detectionConfidence;
-    this.maxHands = maxHands;
-    this.meshWidth = meshWidth;
-    this.meshHeight = meshHeight;
-    this.maxHandsNumber = 1; // TODO(annxingyuan): Add multi-hand support.
+    this.meshWidth = config.inputSize;
+    this.meshHeight = config.inputSize;
+    this.enlargeFactor = config.enlargeFactor;
   }
 
   // Get the bounding box surrounding the hand, given palm landmarks.
@@ -36,7 +31,7 @@ class HandPipeline {
     const boxAroundPalm = this.calculateLandmarksBoundingBox(rotatedPalmLandmarks);
     // boxAroundPalm only surrounds the palm - therefore we shift it
     // upwards so it will capture fingers once enlarged + squarified.
-    return bounding.enlargeBox(bounding.squarifyBox(bounding.shiftBox(boxAroundPalm, PALM_BOX_SHIFT_VECTOR)), PALM_BOX_ENLARGE_FACTOR);
+    return bounding.enlargeBox(bounding.squarifyBox(bounding.shiftBox(boxAroundPalm, PALM_BOX_SHIFT_VECTOR)), this.enlargeFactor);
   }
 
   // Get the bounding box surrounding the hand, given all hand landmarks.
@@ -80,10 +75,13 @@ class HandPipeline {
     ]);
   }
 
-  async estimateHand(image, config) {
+  async estimateHands(image, config) {
+    this.maxContinuousChecks = config.skipFrames;
+    this.detectionConfidence = config.minConfidence;
+    this.maxHands = config.maxHands;
     const useFreshBox = this.shouldUpdateRegionsOfInterest();
     if (useFreshBox === true) {
-      const boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image);
+      const boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config);
       this.regionsOfInterest = [];
       for (const i in boundingBoxPredictions) {
         this.updateRegionsOfInterest(boundingBoxPredictions[i], true /* force update */, i);
@@ -174,7 +172,7 @@ class HandPipeline {
   }
 
   shouldUpdateRegionsOfInterest() {
-    return (this.regionsOfInterest === 0) || (this.runsWithoutHandDetector >= this.maxContinuousChecks);
+    return !this.regionsOfInterest || (this.regionsOfInterest.length === 0) || (this.runsWithoutHandDetector >= this.maxContinuousChecks);
   }
 }
 exports.HandPipeline = HandPipeline;

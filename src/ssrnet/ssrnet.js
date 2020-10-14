@@ -40,12 +40,14 @@ async function predict(image, config) {
   const obj = {};
   if (config.face.age.enabled) {
     const ageT = await models.age.predict(enhance);
-    obj.age = Math.trunc(10 * ageT.dataSync()[0]) / 10;
+    const data = await ageT.data();
+    obj.age = Math.trunc(10 * data[0]) / 10;
     tf.dispose(ageT);
   }
   if (config.face.gender.enabled) {
     const genderT = await models.gender.predict(enhance);
-    obj.gender = Math.trunc(100 * genderT.dataSync()[0]) < 50 ? 'female' : 'male';
+    const data = await genderT.data();
+    obj.gender = Math.trunc(100 * data[0]) < 50 ? 'female' : 'male';
     tf.dispose(genderT);
   }
   tf.dispose(enhance);

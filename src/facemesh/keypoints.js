@@ -36,3 +36,14 @@ exports.MESH_ANNOTATIONS = {
   rightCheek: [205],
   leftCheek: [425],
 };
+exports.MESH_TO_IRIS_INDICES_MAP = [ // A mapping from facemesh model keypoints to iris model keypoints.
+  { key: 'EyeUpper0', indices: [9, 10, 11, 12, 13, 14, 15] },
+  { key: 'EyeUpper1', indices: [25, 26, 27, 28, 29, 30, 31] },
+  { key: 'EyeUpper2', indices: [41, 42, 43, 44, 45, 46, 47] },
+  { key: 'EyeLower0', indices: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
+  { key: 'EyeLower1', indices: [16, 17, 18, 19, 20, 21, 22, 23, 24] },
+  { key: 'EyeLower2', indices: [32, 33, 34, 35, 36, 37, 38, 39, 40] },
+  { key: 'EyeLower3', indices: [54, 55, 56, 57, 58, 59, 60, 61, 62] },
+  { key: 'EyebrowUpper', indices: [63, 64, 65, 66, 67, 68, 69, 70] },
+  { key: 'EyebrowLower', indices: [48, 49, 50, 51, 52, 53] },
+];

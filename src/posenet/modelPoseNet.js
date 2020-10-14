@@ -4,9 +4,8 @@ const decodeMultiple = require('./decodeMultiple');
 const util = require('./util');
 
 class PoseNet {
-  constructor(net, inputResolution) {
+  constructor(net) {
     this.baseModel = net;
-    this.inputResolution = inputResolution;
   }
 
   /**
@@ -30,10 +29,10 @@ class PoseNet {
      * in the same scale as the original image
      */
   async estimatePoses(input, config) {
-    const outputStride = this.baseModel.outputStride;
-    const inputResolution = this.inputResolution;
+    const outputStride = config.outputStride;
+    // const inputResolution = config.inputResolution;
     const [height, width] = util.getInputTensorDimensions(input);
-    const { resized, padding } = util.padAndResizeTo(input, [inputResolution, inputResolution]);
+    const { resized, padding } = util.padAndResizeTo(input, [config.inputResolution, config.inputResolution]);
     const { heatmapScores, offsets, displacementFwd, displacementBwd } = this.baseModel.predict(resized);
     const allTensorBuffers = await util.toTensorBuffers3D([heatmapScores, offsets, displacementFwd, displacementBwd]);
     const scoresBuffer = allTensorBuffers[0];
@@ -41,7 +40,7 @@ class PoseNet {
     const displacementsFwdBuffer = allTensorBuffers[2];
     const displacementsBwdBuffer = allTensorBuffers[3];
     const poses = await decodeMultiple.decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, outputStride, config.maxDetections, config.scoreThreshold, config.nmsRadius);
-    const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [inputResolution, inputResolution], padding);
+    const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config.inputResolution, config.inputResolution], padding);
     heatmapScores.dispose();
     offsets.dispose();
     displacementFwd.dispose();
@@ -56,10 +55,9 @@ class PoseNet {
 }
 exports.PoseNet = PoseNet;
 async function loadMobileNet(config) {
-  const outputStride = config.outputStride;
   const graphModel = await tf.loadGraphModel(config.modelPath);
-  const mobilenet = new modelMobileNet.MobileNet(graphModel, outputStride);
-  return new PoseNet(mobilenet, config.inputResolution);
+  const mobilenet = new modelMobileNet.MobileNet(graphModel, config.outputStride);
+  return new PoseNet(mobilenet);
 }
 /**
  * Loads the PoseNet model instance from a checkpoint, with the MobileNet architecture. The model to be loaded is configurable using the

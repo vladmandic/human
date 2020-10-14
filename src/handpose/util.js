@@ -2,11 +2,13 @@ function normalizeRadians(angle) {
   return angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
 }
 exports.normalizeRadians = normalizeRadians;
+
 function computeRotation(point1, point2) {
   const radians = Math.PI / 2 - Math.atan2(-(point2[1] - point1[1]), point2[0] - point1[0]);
   return normalizeRadians(radians);
 }
 exports.computeRotation = computeRotation;
+
 const buildTranslationMatrix = (x, y) => ([[1, 0, x], [0, 1, y], [0, 0, 1]]);
 function dot(v1, v2) {
   let product = 0;
@@ -16,6 +18,7 @@ function dot(v1, v2) {
   return product;
 }
 exports.dot = dot;
+
 function getColumnFrom2DArr(arr, columnIndex) {
   const column = [];
   for (let i = 0; i < arr.length; i++) {
@@ -24,6 +27,7 @@ function getColumnFrom2DArr(arr, columnIndex) {
   return column;
 }
 exports.getColumnFrom2DArr = getColumnFrom2DArr;
+
 function multiplyTransformMatrices(mat1, mat2) {
   const product = [];
   const size = mat1.length;
@@ -45,6 +49,7 @@ function buildRotationMatrix(rotation, center) {
   return multiplyTransformMatrices(translationTimesRotation, negativeTranslationMatrix);
 }
 exports.buildRotationMatrix = buildRotationMatrix;
+
 function invertTransformMatrix(matrix) {
   const rotationComponent = [[matrix[0][0], matrix[1][0]], [matrix[0][1], matrix[1][1]]];
   const translationComponent = [matrix[0][2], matrix[1][2]];
@@ -59,6 +64,7 @@ function invertTransformMatrix(matrix) {
   ];
 }
 exports.invertTransformMatrix = invertTransformMatrix;
+
 function rotatePoint(homogeneousCoordinate, rotationMatrix) {
   return [
     dot(homogeneousCoordinate, rotationMatrix[0]),

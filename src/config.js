@@ -18,7 +18,8 @@ export default {
     iris: {
       enabled: true,
       modelPath: '../models/iris/model.json',
-      inputSize: 192, // fixed value
+      enlargeFactor: 2.3, // empiric tuning
+      inputSize: 64, // fixed value
     },
     age: {
       enabled: true,
@@ -47,6 +48,7 @@ export default {
     minConfidence: 0.5,
     iouThreshold: 0.3,
     scoreThreshold: 0.7,
+    enlargeFactor: 1.65, // empiric tuning
     maxHands: 2,
     detector: {
       anchors: '../models/handdetect/anchors.json',

@@ -1,6 +1,7 @@
 const tf = require('@tensorflow/tfjs');
 const facemesh = require('./facemesh/facemesh.js');
 const ssrnet = require('./ssrnet/ssrnet.js');
+const emotion = require('./emotion/emotion.js');
 const posenet = require('./posenet/posenet.js');
 const handpose = require('./handpose/handpose.js');
 const defaults = require('./config.js').default;
@@ -38,6 +39,7 @@ async function detect(input, userConfig) {
     // load models if enabled
     if (config.face.age.enabled) await ssrnet.loadAge(config);
     if (config.face.gender.enabled) await ssrnet.loadGender(config);
+    if (config.face.emotion.enabled) await emotion.load(config);
     if (config.body.enabled && !models.posenet) models.posenet = await posenet.load(config.body);
     if (config.hand.enabled && !models.handpose) models.handpose = await handpose.load(config.hand);
     if (config.face.enabled && !models.facemesh) models.facemesh = await facemesh.load(config.face);
@@ -76,7 +78,12 @@ async function detect(input, userConfig) {
         timeStamp = performance.now();
         const ssrdata = (config.face.age.enabled || config.face.gender.enabled) ? await ssrnet.predict(face.image, config) : {};
         perf.agegender = Math.trunc(performance.now() - timeStamp);
+        // run emotion, inherits face from blazeface
+        timeStamp = performance.now();
+        const emotiondata = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
+        perf.emotion = Math.trunc(performance.now() - timeStamp);
         face.image.dispose();
+        // calculate iris distance
         // iris: array[ bottom, left, top, right, center ]
         const iris = (face.annotations.leftEyeIris && face.annotations.rightEyeIris)
           ? Math.max(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0], face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0])
@@ -88,7 +95,8 @@ async function detect(input, userConfig) {
           annotations: face.annotations,
           age: ssrdata.age,
           gender: ssrdata.gender,
-          iris: (iris !== 0) ? Math.trunc(100 * 11.7 / iris) / 100 : 0,
+          emotion: emotiondata,
+          iris: (iris !== 0) ? Math.trunc(100 * 11.7 /* human iris size in mm */ / iris) / 100 : 0,
         });
       }
     }
@@ -98,7 +106,6 @@ async function detect(input, userConfig) {
     tf.engine().endScope();
     // combine results
     perf.total = Object.values(perf).reduce((a, b) => a + b);
-    console.log('total', perf.total);
     resolve({ face: faceRes, body: poseRes, hand: handRes, performance: perf });
   });
 }

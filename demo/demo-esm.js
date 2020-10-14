@@ -4,36 +4,52 @@ import human from '../dist/human.esm.js';
 
 const ui = {
   baseColor: 'rgba(255, 200, 255, 0.3)',
+  baseLabel: 'rgba(255, 200, 255, 0.8)',
   baseFont: 'small-caps 1.2rem "Segoe UI"',
   baseLineWidth: 16,
 };
 
 const config = {
   face: {
-    enabled: false,
+    enabled: true,
     detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
     mesh: { enabled: true },
     iris: { enabled: true },
     age: { enabled: true, skipFrames: 10 },
     gender: { enabled: true },
+    emotion: { enabled: true, minConfidence: 0.5, useGrayscale: true },
   },
-  body: { enabled: false, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
+  body: { enabled: true, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
   hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
 };
 let settings;
 
+function str(...msg) {
+  if (!Array.isArray(msg)) return msg;
+  let line = '';
+  for (const entry of msg) {
+    if (typeof entry === 'object') line += JSON.stringify(entry).replace(/{|}|"|\[|\]/g, '').replace(/,/g, ', ');
+    else line += entry;
+  }
+  return line;
+}
+
 async function drawFace(result, canvas) {
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = ui.baseColor;
   ctx.strokeStyle = ui.baseColor;
   ctx.font = ui.baseFont;
   for (const face of result) {
+    ctx.fillStyle = ui.baseColor;
     ctx.lineWidth = ui.baseLineWidth;
     ctx.beginPath();
     if (settings.getValue('Draw Boxes')) {
       ctx.rect(face.box[0], face.box[1], face.box[2], face.box[3]);
     }
-    ctx.fillText(`face ${face.gender || ''} ${face.age || ''} ${face.iris ? 'iris: ' + face.iris : ''}`, face.box[0] + 2, face.box[1] + 22, face.box[2]);
+    const labelAgeGender = `${face.gender || ''} ${face.age || ''}`;
+    const labelIris = face.iris ? `iris: ${face.iris}` : '';
+    const labelEmotion = face.emotion && face.emotion[0] ? `emotion: ${Math.trunc(100 * face.emotion[0].score)}% ${face.emotion[0].emotion}` : '';
+    ctx.fillStyle = ui.baseLabel;
+    ctx.fillText(`face ${labelAgeGender} ${labelIris} ${labelEmotion}`, face.box[0] + 2, face.box[1] + 22, face.box[2]);
     ctx.stroke();
     ctx.lineWidth = 1;
     if (face.mesh) {
@@ -140,7 +156,9 @@ async function drawHand(result, canvas) {
     if (settings.getValue('Draw Boxes')) {
       ctx.lineWidth = ui.baseLineWidth;
       ctx.beginPath();
+      ctx.fillStyle = ui.baseColor;
       ctx.rect(hand.box[0], hand.box[1], hand.box[2], hand.box[3]);
+      ctx.fillStyle = ui.baseLabel;
       ctx.fillText('hand', hand.box[0] + 2, hand.box[1] + 22, hand.box[2]);
       ctx.stroke();
     }
@@ -199,11 +217,10 @@ async function runHumanDetect(input, canvas) {
     drawHand(result.hand, canvas);
     // update log
     const engine = await human.tf.engine();
+    const memory = `Memory: ${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors`;
     log.innerText = `
-      TFJS Version: ${human.tf.version_core} Memory: ${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors
-      GPU Memory: used ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes free ${Math.floor(1024 * 1024 * engine.backendInstance.numMBBeforeWarning).toLocaleString()} bytes
-      Result Object Size: Face: ${(JSON.stringify(result.face)).length.toLocaleString()} bytes Body: ${(JSON.stringify(result.body)).length.toLocaleString()} bytes Hand: ${(JSON.stringify(result.hand)).length.toLocaleString()} bytes
-      Performance: ${JSON.stringify(result.performance)}
+      TFJS Version: ${human.tf.version_core} | ${memory} | GPU: ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes
+      Performance: ${str(result.performance)} | Object size: ${(str(result)).length.toLocaleString()} bytes
     `;
     // rinse & repeate
     // if (input.readyState) setTimeout(() => runHumanDetect(), 1000); // slow loop for debugging purposes
@@ -214,28 +231,36 @@ async function runHumanDetect(input, canvas) {
 function setupGUI() {
   // add all variables to ui control panel
   settings = QuickSettings.create(10, 10, 'Settings', document.getElementById('main'));
-  settings.addRange('FPS', 0, 100, 0, 1);
-  settings.addBoolean('Pause', false, (val) => {
+  const style = document.createElement('style');
+  // style.type = 'text/css';
+  style.innerHTML = `
+    .qs_main { font: 1rem "Segoe UI"; }
+    .qs_label { font: 0.8rem "Segoe UI"; }
+    .qs_title_bar { display: none; }
+    .qs_content { background: darkslategray; }
+    .qs_container { background: transparent; color: white; margin: 6px; padding: 6px; }
+    .qs_checkbox_label { top: 2px; }
+    .qs_button { width: -webkit-fill-available; font: 1rem "Segoe UI"; cursor: pointer; }
+  `;
+  document.getElementsByTagName('head')[0].appendChild(style);
+  settings.addButton('Play/Pause', () => {
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
-    if (val) video.pause();
-    else video.play();
+    if (!video.paused) {
+      document.getElementById('log').innerText = 'Paused ...';
+      video.pause();
+    } else {
+      document.getElementById('log').innerText = 'Starting Human Library ...';
+      video.play();
+    }
     runHumanDetect(video, canvas);
   });
-  settings.addHTML('line1', '<hr>'); settings.hideTitle('line1');
-  settings.addBoolean('Draw Boxes', false);
-  settings.addBoolean('Draw Points', true);
-  settings.addBoolean('Draw Polygons', true);
-  settings.addBoolean('Fill Polygons', true);
-  settings.bindText('baseColor', ui.baseColor, config);
-  settings.bindText('baseFont', ui.baseFont, config);
-  settings.bindRange('baseLineWidth', 1, 100, ui.baseLineWidth, 1, config);
-  settings.addHTML('line2', '<hr>'); settings.hideTitle('line2');
   settings.addBoolean('Face Detect', config.face.enabled, (val) => config.face.enabled = val);
   settings.addBoolean('Face Mesh', config.face.mesh.enabled, (val) => config.face.mesh.enabled = val);
   settings.addBoolean('Face Iris', config.face.iris.enabled, (val) => config.face.iris.enabled = val);
   settings.addBoolean('Face Age', config.face.age.enabled, (val) => config.face.age.enabled = val);
   settings.addBoolean('Face Gender', config.face.gender.enabled, (val) => config.face.gender.enabled = val);
+  settings.addBoolean('Face Emotion', config.face.emotion.enabled, (val) => config.face.emotion.enabled = val);
   settings.addBoolean('Body Pose', config.body.enabled, (val) => config.body.enabled = val);
   settings.addBoolean('Hand Pose', config.hand.enabled, (val) => config.hand.enabled = val);
   settings.addHTML('line3', '<hr>'); settings.hideTitle('line3');
@@ -245,11 +270,13 @@ function setupGUI() {
   });
   settings.addRange('Skip Frames', 1, 20, config.face.detector.skipFrames, 1, (val) => {
     config.face.detector.skipFrames = parseInt(val);
+    config.face.emotion.skipFrames = parseInt(val);
     config.face.age.skipFrames = parseInt(val);
     config.hand.skipFrames = parseInt(val);
   });
   settings.addRange('Min Confidence', 0.1, 1.0, config.face.detector.minConfidence, 0.05, (val) => {
     config.face.detector.minConfidence = parseFloat(val);
+    config.face.emotion.minConfidence = parseFloat(val);
     config.hand.minConfidence = parseFloat(val);
   });
   settings.addRange('Score Threshold', 0.1, 1.0, config.face.detector.scoreThreshold, 0.05, (val) => {
@@ -261,6 +288,13 @@ function setupGUI() {
     config.face.detector.iouThreshold = parseFloat(val);
     config.hand.iouThreshold = parseFloat(val);
   });
+  settings.addHTML('line1', '<hr>'); settings.hideTitle('line1');
+  settings.addBoolean('Draw Boxes', true);
+  settings.addBoolean('Draw Points', true);
+  settings.addBoolean('Draw Polygons', true);
+  settings.addBoolean('Fill Polygons', true);
+  settings.addHTML('line1', '<hr>'); settings.hideTitle('line1');
+  settings.addRange('FPS', 0, 100, 0, 1);
 }
 
 async function setupCanvas(input) {
@@ -289,6 +323,7 @@ async function setupCamera() {
       video.width = video.videoWidth;
       video.height = video.videoHeight;
       video.play();
+      video.pause();
       resolve(video);
     };
   });
@@ -316,9 +351,9 @@ async function main() {
   // or setup image
   // const image = await setupImage();
   // setup output canvas from input object, select video or image
-  const canvas = await setupCanvas(video);
+  await setupCanvas(video);
   // run actual detection. if input is video, it will run in a loop else it will run only once
-  runHumanDetect(video, canvas);
+  // runHumanDetect(video, canvas);
 }
 
 window.onload = main;

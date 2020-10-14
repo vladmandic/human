@@ -1,4 +1,4 @@
-# Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking and Age & Gender Prediction
+# Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction & Emotion Prediction
 
 - [**Documentation**](https://github.com/vladmandic/human#readme)
 - [**Code Repository**](https://github.com/vladmandic/human)
@@ -19,19 +19,6 @@ Compatible with Browser, WebWorker and NodeJS execution!
 
 **Example using webcam:**  
 ![Example Using WebCam](demo/sample-video.jpg)
-
-<hr>
-
-## Credits
-
-This is an amalgamation of multiple existing models:
-
-- Face Detection: [**MediaPipe BlazeFace**](https://drive.google.com/file/d/1f39lSzU5Oq-j_OXgS67KfN5wNsoeAZ4V/view)
-- Facial Spacial Geometry: [**MediaPipe FaceMesh**](https://drive.google.com/file/d/1VFC_wIpw4O7xBOiTgUldl79d9LA-LsnA/view)
-- Eye Iris Details: [**MediaPipe Iris**](https://drive.google.com/file/d/1bsWbokp9AklH2ANjCfmjqEzzxO1CNbMu/view)
-- Hand Detection & Skeleton: [**MediaPipe HandPose**](https://drive.google.com/file/d/1sv4sSb9BSNVZhLzxXJ0jBv9DqD-4jnAz/view)
-- Body Pose Detection: [**PoseNet**](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5)
-- Age & Gender Prediction: [**SSR-Net**](https://github.com/shamangary/SSR-Net)
 
 <hr>
 
@@ -198,7 +185,7 @@ human.defaults = {
     detector: {
       modelPath: '../models/blazeface/model.json',
       maxFaces: 10,
-      skipFrames: 5,
+      skipFrames: 10,
       minConfidence: 0.8,
       iouThreshold: 0.3,
       scoreThreshold: 0.75,
@@ -214,11 +201,18 @@ human.defaults = {
     age: {
       enabled: true,
       modelPath: '../models/ssrnet-imdb-age/model.json',
-      skipFrames: 5,
+      skipFrames: 10,
     },
     gender: {
       enabled: true,
       modelPath: '../models/ssrnet-imdb-gender/model.json',
+    },
+    emotion: {
+      enabled: true,
+      minConfidence: 0.5,
+      skipFrames: 10,
+      useGrayscale: true,
+      modelPath: '../models/emotion/model.json',
     },
   },
   body: {
@@ -230,7 +224,7 @@ human.defaults = {
   },
   hand: {
     enabled: true,
-    skipFrames: 5,
+    skipFrames: 10,
     minConfidence: 0.8,
     iouThreshold: 0.3,
     scoreThreshold: 0.75,
@@ -253,6 +247,7 @@ Where:
 - `minConfidence`: threshold for discarding a prediction
 - `iouThreshold`: threshold for deciding whether boxes overlap too much in non-maximum suppression
 - `scoreThreshold`: threshold for deciding when to remove boxes based on score in non-maximum suppression
+- `useGrayscale`: convert color input to grayscale before processing or use single channels when color input is not supported
 - `nmsRadius`: radius for deciding points are too close in non-maximum suppression
 
 <hr>
@@ -268,18 +263,18 @@ result = {
     {
       confidence,  // <number>
       box,         // <array [x, y, width, height]>
-      mesh,        // <array of 3D points [x, y, z]> (468 base points & 10 iris points)
-      annotations, // <list of object { landmark: array of points }> (32 base annotated landmarks & 2 iris annotations)
-      iris,        // <number> (relative distance of iris to camera, multiple by focal lenght to get actual distance)
-      age,         // <number> (estimated age)
-      gender,      // <string> (male or female)
+      mesh,        // <array of 3D points [x, y, z]> 468 base points & 10 iris points
+      annotations, // <list of object { landmark: array of points }> 32 base annotated landmarks & 2 iris annotations
+      iris,        // <number> relative distance of iris to camera, multiple by focal lenght to get actual distance
+      age,         // <number> estimated age
+      gender,      // <string> 'male', 'female'
     }
   ],
   body:            // <array of detected objects>
   [
     {
       score,       // <number>,
-      keypoints,   // <array of 2D landmarks [ score, landmark, position [x, y] ]> (17 annotated landmarks)
+      keypoints,   // <array of 2D landmarks [ score, landmark, position [x, y] ]> 17 annotated landmarks
     }
   ],
   hand:            // <array of detected objects>
@@ -287,8 +282,15 @@ result = {
     {
       confidence,  // <number>,
       box,         // <array [x, y, width, height]>,
-      landmarks,   // <array of 3D points [x, y,z]> (21 points)
-      annotations, // <array of 3D landmarks [ landmark: <array of points> ]> (5 annotated landmakrs)
+      landmarks,   // <array of 3D points [x, y,z]> 21 points
+      annotations, // <array of 3D landmarks [ landmark: <array of points> ]> 5 annotated landmakrs
+    }
+  ],
+  emotion:         // <array of emotions>
+  [
+    {
+      score,       // <number> probabily of emotion
+      emotion,     // <string> 'angry', 'discust', 'fear', 'happy', 'sad', 'surpise', 'neutral'
     }
   ],
 }
@@ -302,6 +304,7 @@ Additionally, `result` object includes internal performance data - total time sp
     hand,
     face,
     agegender,
+    emotion,
     total,
   }
 ```
@@ -343,6 +346,7 @@ Performance per module:
 - Face Iris: 25 FPS (includes face detect and face geometry)
 - Age: 60 FPS (includes face detect)
 - Gender: 60 FPS (includes face detect)
+- Emotion: 60 FPS (includes face detect)
 - Hand: 40 FPS
 - Body: 50 FPS
 
@@ -350,7 +354,19 @@ Library can also be used on mobile devices
 
 <hr>
 
+## Credits
+
+- Face Detection: [**MediaPipe BlazeFace**](https://drive.google.com/file/d/1f39lSzU5Oq-j_OXgS67KfN5wNsoeAZ4V/view)
+- Facial Spacial Geometry: [**MediaPipe FaceMesh**](https://drive.google.com/file/d/1VFC_wIpw4O7xBOiTgUldl79d9LA-LsnA/view)
+- Eye Iris Details: [**MediaPipe Iris**](https://drive.google.com/file/d/1bsWbokp9AklH2ANjCfmjqEzzxO1CNbMu/view)
+- Hand Detection & Skeleton: [**MediaPipe HandPose**](https://drive.google.com/file/d/1sv4sSb9BSNVZhLzxXJ0jBv9DqD-4jnAz/view)
+- Body Pose Detection: [**PoseNet**](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5)
+- Age & Gender Prediction: [**SSR-Net**](https://github.com/shamangary/SSR-Net)
+- Emotion Prediction: [**Oarriaga**](https://github.com/oarriaga/face_classification)
+
+<hr>
+
 ## Todo
 
-- Tweak default parameters
+- Tweak default parameters and factorization for age/gender/emotion
 - Verify age/gender models

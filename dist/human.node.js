@@ -3939,6 +3939,67 @@ var require_ssrnet = __commonJS((exports2) => {
   exports2.loadGender = loadGender;
 });
 
+// src/emotion/emotion.js
+var require_emotion = __commonJS((exports2) => {
+  const tf2 = require("@tensorflow/tfjs");
+  const annotations = ["angry", "discust", "fear", "happy", "sad", "surpise", "neutral"];
+  const models2 = {};
+  let last = [];
+  let frame = 0;
+  const multiplier = 1.5;
+  function getImage(image, size) {
+    const tensor = tf2.tidy(() => {
+      const buffer = tf2.browser.fromPixels(image, 1);
+      const resize = tf2.image.resizeBilinear(buffer, [size, size]);
+      const expand = tf2.cast(tf2.expandDims(resize, 0), "float32");
+      return expand;
+    });
+    return tensor;
+  }
+  async function load(config) {
+    if (!models2.emotion)
+      models2.emotion = await tf2.loadGraphModel(config.face.emotion.modelPath);
+  }
+  async function predict(image, config) {
+    frame += 1;
+    if (frame >= config.face.emotion.skipFrames) {
+      frame = 0;
+      return last;
+    }
+    const enhance = tf2.tidy(() => {
+      if (image instanceof tf2.Tensor) {
+        const resize = tf2.image.resizeBilinear(image, [config.face.emotion.inputSize, config.face.emotion.inputSize], false);
+        const [r, g, b] = tf2.split(resize, 3, 3);
+        if (config.face.emotion.useGrayscale) {
+          const r1 = tf2.mul(r, [0.2989]);
+          const g1 = tf2.mul(g, [0.587]);
+          const b1 = tf2.mul(b, [0.114]);
+          const grayscale = tf2.addN([r1, g1, b1]);
+          return grayscale;
+        }
+        return g;
+      }
+      return getImage(image, config.face.emotion.inputSize);
+    });
+    const obj = [];
+    if (config.face.emotion.enabled) {
+      const emotionT = await models2.emotion.predict(enhance);
+      const data = await emotionT.data();
+      for (let i = 0; i < data.length; i++) {
+        if (multiplier * data[i] > config.face.emotion.minConfidence)
+          obj.push({score: Math.min(0.99, Math.trunc(100 * multiplier * data[i]) / 100), emotion: annotations[i]});
+      }
+      obj.sort((a, b) => b.score - a.score);
+      tf2.dispose(emotionT);
+    }
+    tf2.dispose(enhance);
+    last = obj;
+    return obj;
+  }
+  exports2.predict = predict;
+  exports2.load = load;
+});
+
 // src/posenet/modelBase.js
 var require_modelBase = __commonJS((exports2) => {
   const tf2 = require("@tensorflow/tfjs");
@@ -5032,6 +5093,14 @@ var require_config = __commonJS((exports2) => {
       gender: {
         enabled: true,
         modelPath: "../models/ssrnet-gender/imdb/model.json"
+      },
+      emotion: {
+        enabled: true,
+        inputSize: 64,
+        minConfidence: 0.5,
+        skipFrames: 10,
+        useGrayscale: true,
+        modelPath: "../models/emotion/model.json"
       }
     },
     body: {
@@ -5067,6 +5136,7 @@ var require_config = __commonJS((exports2) => {
 const tf = require("@tensorflow/tfjs");
 const facemesh = require_facemesh();
 const ssrnet = require_ssrnet();
+const emotion = require_emotion();
 const posenet = require_posenet();
 const handpose = require_handpose();
 const defaults = require_config().default;
@@ -5100,6 +5170,8 @@ async function detect(input, userConfig) {
       await ssrnet.loadAge(config);
     if (config.face.gender.enabled)
       await ssrnet.loadGender(config);
+    if (config.face.emotion.enabled)
+      await emotion.load(config);
     if (config.body.enabled && !models.posenet)
       models.posenet = await posenet.load(config.body);
     if (config.hand.enabled && !models.handpose)
@@ -5133,6 +5205,9 @@ async function detect(input, userConfig) {
         timeStamp = performance.now();
         const ssrdata = config.face.age.enabled || config.face.gender.enabled ? await ssrnet.predict(face.image, config) : {};
         perf.agegender = Math.trunc(performance.now() - timeStamp);
+        timeStamp = performance.now();
+        const emotiondata = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
+        perf.emotion = Math.trunc(performance.now() - timeStamp);
         face.image.dispose();
         const iris = face.annotations.leftEyeIris && face.annotations.rightEyeIris ? Math.max(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0], face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0]) : 0;
         faceRes.push({
@@ -5142,6 +5217,7 @@ async function detect(input, userConfig) {
           annotations: face.annotations,
           age: ssrdata.age,
           gender: ssrdata.gender,
+          emotion: emotiondata,
           iris: iris !== 0 ? Math.trunc(100 * 11.7 / iris) / 100 : 0
         });
       }
@@ -5149,7 +5225,6 @@ async function detect(input, userConfig) {
     tf.env().set("WEBGL_PACK_DEPTHWISECONV", savedWebglPackDepthwiseConvFlag);
     tf.engine().endScope();
     perf.total = Object.values(perf).reduce((a, b) => a + b);
-    console.log("total", perf.total);
     resolve({face: faceRes, body: poseRes, hand: handRes, performance: perf});
   });
 }

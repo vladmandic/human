@@ -11,14 +11,14 @@ const ui = {
 const config = {
   face: {
     enabled: true,
-    detector: { maxFaces: 10, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
+    detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
     mesh: { enabled: true },
     iris: { enabled: true },
     age: { enabled: true, skipFrames: 5 },
     gender: { enabled: true },
   },
   body: { enabled: true, maxDetections: 5, scoreThreshold: 0.75, nmsRadius: 20 },
-  hand: { enabled: true, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
+  hand: { enabled: true, skipFrames: 10, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
 };
 let settings;
 let worker;

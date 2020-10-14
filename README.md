@@ -294,6 +294,18 @@ result = {
 }
 ```
 
+Additionally, `result` object includes internal performance data - total time spend and time per module (measured in ms):
+
+```js
+  result.performance = {
+    body,
+    hand,
+    face,
+    agegender,
+    total,
+  }
+```
+
 <hr>
 
 ## Build
@@ -321,7 +333,18 @@ Development dependencies are [eslint](https://github.com/eslint) used for code l
 
 Performance will vary depending on your hardware, but also on number of resolution of input video/image, enabled modules as well as their parameters  
 
-For example, on a desktop with a low-end nVidia GTX1050 it can perform multiple face detections at 50+ FPS, but drops to 5-10 FPS on a medium complex images if all modules are enabled  
+For example, on a desktop with a low-end nVidia GTX1050 it can perform multiple face detections at 60+ FPS, but drops to 10 FPS on a medium complex images if all modules are enabled  
+
+Performance per module:
+
+- Enabled all: 10 FPS
+- Face Detect: 80 FPS
+- Face Geometry: 30 FPS (includes face detect)
+- Face Iris: 25 FPS (includes face detect and face geometry)
+- Age: 60 FPS (includes face detect)
+- Gender: 60 FPS (includes face detect)
+- Hand: 40 FPS
+- Body: 50 FPS
 
 Library can also be used on mobile devices  
 

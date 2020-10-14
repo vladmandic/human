@@ -83,10 +83,10 @@ ESM script is distributed in minified form with attached sourcemap
 
 ### 3. [NPM](https://www.npmjs.com/) module
 
-*Recommended for `NodeJS` projects*  
+*Recommended for `NodeJS` projects that will execute in the backend*  
 
-Entry point is actual source `build/src/index.js`  
-You also need to install and includ `tfjs` in your project  
+Entry point is bundle in CJS format `dist/human.node.js`  
+You also need to install and include `tfjs-node` or `tfjs-node-gpu` in your project so it can register an optimized backend  
 
 Install with:
 ```shell

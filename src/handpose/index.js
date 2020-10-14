@@ -17,9 +17,13 @@ async function loadHandPoseModel(url) {
 // of bounding boxes, each of which is assigned a score during prediction. The
 // anchors define the coordinates of these boxes.
 async function loadAnchors(url) {
-  return tf.util
-    .fetch(url)
-    .then((d) => d.json());
+  if (tf.env().features.IS_NODE) {
+    // eslint-disable-next-line global-require
+    const fs = require('fs');
+    const data = await fs.readFileSync(url.replace('file://', ''));
+    return JSON.parse(data);
+  }
+  return tf.util.fetch(url).then((d) => d.json());
 }
 
 /**

@@ -5,6 +5,8 @@
 **Package**: <https://www.npmjs.com/package/@vladmandic/human>  
 **Live Demo**: <https://vladmandic.github.io/human/demo/demo-esm.html>  
 
+Compatible with Browser, WebWorker and NodeJS** execution!
+
 *Suggestions are welcome!*
 
 <hr>
@@ -88,13 +90,15 @@ You also need to install and includ `tfjs` in your project
 
 Install with:
 ```shell
-  npm install @tensorflow/tfjs @vladmandic/human
+  npm install @tensorflow/tfjs-node @vladmandic/human
 ```
 And then use with:
 ```js
-  import * as tf from '@tensorflow/tfjs';
-  import human from '@vladmandic/Human';
+  const tf = require('@tensorflow/tfjs-node');
+  const human = require('@vladmandic/human');
 ```
+*See limitations for NodeJS usage under `demo`*  
+
 
 ### Weights
 
@@ -108,10 +112,20 @@ If your application resides in a different folder, modify `modelPath` property i
 
 Demos are included in `/demo`:
 
-- `demo-esm`: Demo using ESM module
-- `demo-iife`: Demo using IIFE module
+Browser:
+- `demo-esm`: Demo using Browser with ESM module
+- `demo-iife`: Demo using Browser with IIFE module
+- `demo-webworker`: Demo using Browser with ESM module and Web Workers
+*All three following demos are identical, they just illustrate different ways to load and work with `Human` library:*
 
-Both demos are identical, they just illustrate different ways to load `Human` library
+NodeJS:
+- `demo-node`: Demo using NodeJS with CJS module  
+  This is a very simple demo as althought `Human` library is compatible with NodeJS execution  
+  and is able to load images and models from local filesystem,  
+  `tfjs-node` backend does not implement function required for execution of some models
+
+  Currently only body pose detection works while face and hand models are not supported  
+  See `tfjs-node` issue <https://github.com/tensorflow/tfjs/issues/4066> for details  
 
 <hr>
 
@@ -219,34 +233,34 @@ Result of `humand.detect()` is a single object that includes data for all enable
 
 ```js
 result = {
-  face: // <array of detected objects>
+  face:            // <array of detected objects>
   [
     {
-      confidence:  // <number>
-      box:         // <array [x, y, width, height]>
-      mesh:        // <array of 3D points [x, y, z]> (468 base points & 10 iris points)
-      annotations: // <list of object { landmark: array of points }> (32 base annotated landmarks & 2 iris annotations)
-      iris:        // <number> (relative distance of iris to camera, multiple by focal lenght to get actual distance)
-      age:         // <number> (estimated age)
-      gender:      // <string> (male or female)
+      confidence,  // <number>
+      box,         // <array [x, y, width, height]>
+      mesh,        // <array of 3D points [x, y, z]> (468 base points & 10 iris points)
+      annotations, // <list of object { landmark: array of points }> (32 base annotated landmarks & 2 iris annotations)
+      iris,        // <number> (relative distance of iris to camera, multiple by focal lenght to get actual distance)
+      age,         // <number> (estimated age)
+      gender,      // <string> (male or female)
     }
   ],
-  body: // <array of detected objects>
+  body:            // <array of detected objects>
   [
     {
-      score:       // <number>,
-      keypoints:   // <array of 2D landmarks [ score, landmark, position [x, y] ]> (17 annotated landmarks)
+      score,       // <number>,
+      keypoints,   // <array of 2D landmarks [ score, landmark, position [x, y] ]> (17 annotated landmarks)
     }
   ],
   hand:            // <array of detected objects>
   [
     {
-      confidence:    // <number>,
-      box:           // <array [x, y, width, height]>,
-      landmarks:     // <array of 3D points [x, y,z]> (21 points)
-      annotations:   // <array of 3D landmarks [ landmark: <array of points> ]> (5 annotated landmakrs)
+      confidence,  // <number>,
+      box,         // <array [x, y, width, height]>,
+      landmarks,   // <array of 3D points [x, y,z]> (21 points)
+      annotations, // <array of 3D landmarks [ landmark: <array of points> ]> (5 annotated landmakrs)
     }
-  ]
+  ],
 }
 ```
 
@@ -286,4 +300,6 @@ Library can also be used on mobile devices
 ## Todo
 
 - Improve detection of smaller faces
+- Tweak default parameters
 - Verify age/gender models
+- Make it work with multiple hands

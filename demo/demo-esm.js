@@ -215,9 +215,11 @@ function setupGUI() {
   settings = QuickSettings.create(10, 10, 'Settings', document.getElementById('main'));
   settings.addRange('FPS', 0, 100, 0, 1);
   settings.addBoolean('Pause', false, (val) => {
-    if (val) document.getElementById('video').pause();
-    else document.getElementById('video').play();
-    runHumanDetect();
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    if (val) video.pause();
+    else video.play();
+    runHumanDetect(video, canvas);
   });
   settings.addHTML('line1', '<hr>'); settings.hideTitle('line1');
   settings.addBoolean('Draw Boxes', false);
@@ -283,10 +285,10 @@ async function setupCamera() {
   video.srcObject = stream;
   return new Promise((resolve) => {
     video.onloadedmetadata = () => {
-      resolve(video);
       video.width = video.videoWidth;
       video.height = video.videoHeight;
       video.play();
+      resolve(video);
     };
   });
 }

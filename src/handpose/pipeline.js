@@ -13,7 +13,7 @@ const PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
 
 // The Pipeline coordinates between the bounding box and skeleton models.
 class HandPipeline {
-  constructor(boundingBoxDetector, meshDetector, meshWidth, meshHeight, maxContinuousChecks, detectionConfidence) {
+  constructor(boundingBoxDetector, meshDetector, meshWidth, meshHeight, maxContinuousChecks, detectionConfidence, maxHands) {
     // An array of hand bounding boxes.
     this.regionsOfInterest = [];
     this.runsWithoutHandDetector = 0;
@@ -21,6 +21,7 @@ class HandPipeline {
     this.meshDetector = meshDetector;
     this.maxContinuousChecks = maxContinuousChecks;
     this.detectionConfidence = detectionConfidence;
+    this.maxHands = maxHands;
     this.meshWidth = meshWidth;
     this.meshHeight = meshHeight;
     this.maxHandsNumber = 1; // TODO(annxingyuan): Add multi-hand support.
@@ -82,72 +83,59 @@ class HandPipeline {
   async estimateHand(image, config) {
     const useFreshBox = this.shouldUpdateRegionsOfInterest();
     if (useFreshBox === true) {
-      const boundingBoxPrediction = await this.boundingBoxDetector.estimateHandBounds(image);
-      if (boundingBoxPrediction === null) {
-        image.dispose();
-        this.regionsOfInterest = [];
-        return null;
+      const boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image);
+      this.regionsOfInterest = [];
+      for (const i in boundingBoxPredictions) {
+        this.updateRegionsOfInterest(boundingBoxPredictions[i], true /* force update */, i);
       }
-      this.updateRegionsOfInterest(boundingBoxPrediction, true /* force update */);
       this.runsWithoutHandDetector = 0;
     } else {
       this.runsWithoutHandDetector++;
     }
     // Rotate input so the hand is vertically oriented.
-    const currentBox = this.regionsOfInterest[0];
-    const angle = util.computeRotation(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]);
-    const palmCenter = bounding.getBoxCenter(currentBox);
-    const palmCenterNormalized = [palmCenter[0] / image.shape[2], palmCenter[1] / image.shape[1]];
-    const rotatedImage = tf.image.rotateWithOffset(image, angle, 0, palmCenterNormalized);
-    const rotationMatrix = util.buildRotationMatrix(-angle, palmCenter);
-    // The bounding box detector only detects palms, so if we're using a fresh
-    // bounding box prediction, we have to construct the hand bounding box from
-    // the palm keypoints.
-    const box = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
-    const croppedInput = bounding.cutBoxFromImageAndResize(box, rotatedImage, [this.meshWidth, this.meshHeight]);
-    const handImage = croppedInput.div(255);
-    croppedInput.dispose();
-    rotatedImage.dispose();
-    let prediction;
-    if (tf.getBackend() === 'webgl') {
-      // Currently tfjs-core does not pack depthwiseConv because it fails for
-      // very large inputs (https://github.com/tensorflow/tfjs/issues/1652).
-      // TODO(annxingyuan): call tf.enablePackedDepthwiseConv when available
-      // (https://github.com/tensorflow/tfjs/issues/2821)
-      const savedWebglPackDepthwiseConvFlag = tf.env().get('WEBGL_PACK_DEPTHWISECONV');
-      tf.env().set('WEBGL_PACK_DEPTHWISECONV', true);
-      prediction = this.meshDetector.predict(handImage);
-      tf.env().set('WEBGL_PACK_DEPTHWISECONV', savedWebglPackDepthwiseConvFlag);
-    } else {
-      prediction = this.meshDetector.predict(handImage);
-    }
-    const [flag, keypoints] = prediction;
-    handImage.dispose();
-    const flagValue = flag.dataSync()[0];
-    flag.dispose();
-    if (flagValue < config.minConfidence) {
+    const hands = [];
+    if (!this.regionsOfInterest) return hands;
+    for (const i in this.regionsOfInterest) {
+      const currentBox = this.regionsOfInterest[i][0];
+      if (!currentBox) return hands;
+      const angle = util.computeRotation(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]);
+      const palmCenter = bounding.getBoxCenter(currentBox);
+      const palmCenterNormalized = [palmCenter[0] / image.shape[2], palmCenter[1] / image.shape[1]];
+      const rotatedImage = tf.image.rotateWithOffset(image, angle, 0, palmCenterNormalized);
+      const rotationMatrix = util.buildRotationMatrix(-angle, palmCenter);
+      const box = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
+      const croppedInput = bounding.cutBoxFromImageAndResize(box, rotatedImage, [this.meshWidth, this.meshHeight]);
+      const handImage = croppedInput.div(255);
+      croppedInput.dispose();
+      rotatedImage.dispose();
+      const prediction = this.meshDetector.predict(handImage);
+      const [flag, keypoints] = prediction;
+      handImage.dispose();
+      const flagValue = flag.dataSync()[0];
+      flag.dispose();
+      if (flagValue < config.minConfidence) {
+        keypoints.dispose();
+        this.regionsOfInterest[i] = [];
+        return hands;
+      }
+      const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
+      const rawCoords = await keypointsReshaped.array();
       keypoints.dispose();
-      this.regionsOfInterest = [];
-      return null;
+      keypointsReshaped.dispose();
+      const coords = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
+      const nextBoundingBox = this.getBoxForHandLandmarks(coords);
+      this.updateRegionsOfInterest(nextBoundingBox, false /* force replace */, i);
+      const result = {
+        landmarks: coords,
+        confidence: flagValue,
+        box: {
+          topLeft: nextBoundingBox.startPoint,
+          bottomRight: nextBoundingBox.endPoint,
+        },
+      };
+      hands.push(result);
     }
-    const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
-    // Calling arraySync() because the tensor is very small so it's not worth
-    // calling await array().
-    const rawCoords = keypointsReshaped.arraySync();
-    keypoints.dispose();
-    keypointsReshaped.dispose();
-    const coords = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
-    const nextBoundingBox = this.getBoxForHandLandmarks(coords);
-    this.updateRegionsOfInterest(nextBoundingBox, false /* force replace */);
-    const result = {
-      landmarks: coords,
-      confidence: flagValue,
-      box: {
-        topLeft: nextBoundingBox.startPoint,
-        bottomRight: nextBoundingBox.endPoint,
-      },
-    };
-    return result;
+    return hands;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -161,11 +149,11 @@ class HandPipeline {
 
   // Updates regions of interest if the intersection over union between
   // the incoming and previous regions falls below a threshold.
-  updateRegionsOfInterest(box, forceUpdate) {
+  updateRegionsOfInterest(box, forceUpdate, index) {
     if (forceUpdate) {
-      this.regionsOfInterest = [box];
+      this.regionsOfInterest[index] = [box];
     } else {
-      const previousBox = this.regionsOfInterest[0];
+      const previousBox = this.regionsOfInterest[index][0];
       let iou = 0;
       if (previousBox != null && previousBox.startPoint != null) {
         const [boxStartX, boxStartY] = box.startPoint;
@@ -181,13 +169,12 @@ class HandPipeline {
         const previousBoxArea = (previousBoxEndX - previousBoxStartX) * (previousBoxEndY - boxStartY);
         iou = intersection / (boxArea + previousBoxArea - intersection);
       }
-      this.regionsOfInterest[0] = iou > UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD ? previousBox : box;
+      this.regionsOfInterest[index][0] = iou > UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD ? previousBox : box;
     }
   }
 
   shouldUpdateRegionsOfInterest() {
-    const roisCount = this.regionsOfInterest.length;
-    return roisCount !== this.maxHandsNumber || this.runsWithoutHandDetector >= this.maxContinuousChecks;
+    return (this.regionsOfInterest === 0) || (this.runsWithoutHandDetector >= this.maxContinuousChecks);
   }
 }
 exports.HandPipeline = HandPipeline;

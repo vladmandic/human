@@ -1,7 +1,7 @@
+const tf = require('@tensorflow/tfjs-node');
 const fs = require('fs');
 const process = require('process');
 const console = require('console');
-const tf = require('@tensorflow/tfjs-node');
 const human = require('..'); // this would be '@vladmandic/human'
 
 const logger = new console.Console({
@@ -54,6 +54,7 @@ async function detect(input, output) {
   const image = tf.node.decodeImage(buffer);
   logger.log('Processing:', image.shape);
   const result = await human.detect(image, config);
+  image.dispose();
   logger.log(result);
   // Draw detected data and save processed image
   logger.log('Saving:', output);

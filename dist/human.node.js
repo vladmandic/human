@@ -3814,7 +3814,7 @@ var require_triangulation = __commonJS((exports2) => {
   ];
 });
 
-// src/facemesh/index.js
+// src/facemesh/facemesh.js
 var require_facemesh = __commonJS((exports2) => {
   const tf2 = require("@tensorflow/tfjs");
   const blazeface = require_blazeface();
@@ -3880,7 +3880,7 @@ var require_facemesh = __commonJS((exports2) => {
   exports2.triangulation = triangulation;
 });
 
-// src/ssrnet/index.js
+// src/ssrnet/ssrnet.js
 var require_ssrnet = __commonJS((exports2) => {
   const tf2 = require("@tensorflow/tfjs");
   const models2 = {};
@@ -4339,97 +4339,6 @@ var require_decodeMultiple = __commonJS((exports2) => {
   exports2.decodeMultiplePoses = decodeMultiplePoses;
 });
 
-// src/posenet/decoders.js
-var require_decoders = __commonJS((exports2) => {
-  const tf2 = require("@tensorflow/tfjs");
-  const kpt = require_keypoints2();
-  function getPointsConfidence(heatmapScores, heatMapCoords) {
-    const numKeypoints = heatMapCoords.shape[0];
-    const result = new Float32Array(numKeypoints);
-    for (let keypoint = 0; keypoint < numKeypoints; keypoint++) {
-      const y = heatMapCoords.get(keypoint, 0);
-      const x = heatMapCoords.get(keypoint, 1);
-      result[keypoint] = heatmapScores.get(y, x, keypoint);
-    }
-    return result;
-  }
-  exports2.getPointsConfidence = getPointsConfidence;
-  function getOffsetPoint(y, x, keypoint, offsetsBuffer) {
-    return {
-      y: offsetsBuffer.get(y, x, keypoint),
-      x: offsetsBuffer.get(y, x, keypoint + kpt.NUM_KEYPOINTS)
-    };
-  }
-  function getOffsetVectors(heatMapCoordsBuffer, offsetsBuffer) {
-    const result = [];
-    for (let keypoint = 0; keypoint < kpt.NUM_KEYPOINTS; keypoint++) {
-      const heatmapY = heatMapCoordsBuffer.get(keypoint, 0).valueOf();
-      const heatmapX = heatMapCoordsBuffer.get(keypoint, 1).valueOf();
-      const {x, y} = getOffsetPoint(heatmapY, heatmapX, keypoint, offsetsBuffer);
-      result.push(y);
-      result.push(x);
-    }
-    return tf2.tensor2d(result, [kpt.NUM_KEYPOINTS, 2]);
-  }
-  exports2.getOffsetVectors = getOffsetVectors;
-  function getOffsetPoints(heatMapCoordsBuffer, outputStride, offsetsBuffer) {
-    return tf2.tidy(() => {
-      const offsetVectors = getOffsetVectors(heatMapCoordsBuffer, offsetsBuffer);
-      return heatMapCoordsBuffer.toTensor().mul(tf2.scalar(outputStride, "int32")).toFloat().add(offsetVectors);
-    });
-  }
-  exports2.getOffsetPoints = getOffsetPoints;
-  function mod(a, b) {
-    return tf2.tidy(() => {
-      const floored = a.div(tf2.scalar(b, "int32"));
-      return a.sub(floored.mul(tf2.scalar(b, "int32")));
-    });
-  }
-  function argmax2d(inputs) {
-    const [height, width, depth] = inputs.shape;
-    return tf2.tidy(() => {
-      const reshaped = inputs.reshape([height * width, depth]);
-      const coords = reshaped.argMax(0);
-      const yCoords = coords.div(tf2.scalar(width, "int32")).expandDims(1);
-      const xCoords = mod(coords, width).expandDims(1);
-      return tf2.concat([yCoords, xCoords], 1);
-    });
-  }
-  exports2.argmax2d = argmax2d;
-});
-
-// src/posenet/decodeSingle.js
-var require_decodeSingle = __commonJS((exports2) => {
-  const kpt = require_keypoints2();
-  const decoders = require_decoders();
-  async function decodeSinglePose(heatmapScores, offsets, outputStride) {
-    let totalScore = 0;
-    const heatmapValues = decoders.argmax2d(heatmapScores);
-    const allTensorBuffers = await Promise.all([heatmapScores.buffer(), offsets.buffer(), heatmapValues.buffer()]);
-    const scoresBuffer = allTensorBuffers[0];
-    const offsetsBuffer = allTensorBuffers[1];
-    const heatmapValuesBuffer = allTensorBuffers[2];
-    const offsetPoints = decoders.getOffsetPoints(heatmapValuesBuffer, outputStride, offsetsBuffer);
-    const offsetPointsBuffer = await offsetPoints.buffer();
-    const keypointConfidence = Array.from(decoders.getPointsConfidence(scoresBuffer, heatmapValuesBuffer));
-    const keypoints = keypointConfidence.map((score, keypointId) => {
-      totalScore += score;
-      return {
-        position: {
-          y: offsetPointsBuffer.get(keypointId, 0),
-          x: offsetPointsBuffer.get(keypointId, 1)
-        },
-        part: kpt.partNames[keypointId],
-        score
-      };
-    });
-    heatmapValues.dispose();
-    offsetPoints.dispose();
-    return {keypoints, score: totalScore / keypoints.length};
-  }
-  exports2.decodeSinglePose = decodeSinglePose;
-});
-
 // src/posenet/util.js
 var require_util2 = __commonJS((exports2) => {
   const tf2 = require("@tensorflow/tfjs");
@@ -4545,14 +4454,13 @@ var require_modelPoseNet = __commonJS((exports2) => {
   const tf2 = require("@tensorflow/tfjs");
   const modelMobileNet = require_modelMobileNet();
   const decodeMultiple = require_decodeMultiple();
-  const decodeSingle = require_decodeSingle();
   const util = require_util2();
   class PoseNet {
     constructor(net, inputResolution) {
       this.baseModel = net;
       this.inputResolution = inputResolution;
     }
-    async estimateMultiplePoses(input, config) {
+    async estimatePoses(input, config) {
       const outputStride = this.baseModel.outputStride;
       const inputResolution = this.inputResolution;
       const [height, width] = util.getInputTensorDimensions(input);
@@ -4572,22 +4480,6 @@ var require_modelPoseNet = __commonJS((exports2) => {
       resized.dispose();
       return resultPoses;
     }
-    async estimateSinglePose(input) {
-      const outputStride = this.baseModel.outputStride;
-      const inputResolution = this.inputResolution;
-      const [height, width] = util.getInputTensorDimensions(input);
-      const {resized, padding} = util.padAndResizeTo(input, inputResolution);
-      const {heatmapScores, offsets, displacementFwd, displacementBwd} = this.baseModel.predict(resized);
-      const pose = await decodeSingle.decodeSinglePose(heatmapScores, offsets, outputStride);
-      const poses = [pose];
-      const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [inputResolution, inputResolution], padding);
-      heatmapScores.dispose();
-      offsets.dispose();
-      displacementFwd.dispose();
-      displacementBwd.dispose();
-      resized.dispose();
-      return resultPoses[0];
-    }
     dispose() {
       this.baseModel.dispose();
     }
@@ -4605,19 +4497,17 @@ var require_modelPoseNet = __commonJS((exports2) => {
   exports2.load = load;
 });
 
-// src/posenet/index.js
+// src/posenet/posenet.js
 var require_posenet = __commonJS((exports2) => {
   const modelMobileNet = require_modelMobileNet();
   const modelPoseNet = require_modelPoseNet();
   const decodeMultiple = require_decodeMultiple();
-  const decodeSingle = require_decodeSingle();
   const keypoints = require_keypoints2();
   const util = require_util2();
   exports2.load = modelPoseNet.load;
   exports2.PoseNet = modelPoseNet.PoseNet;
   exports2.MobileNet = modelMobileNet.MobileNet;
   exports2.decodeMultiplePoses = decodeMultiple.decodeMultiplePoses;
-  exports2.decodeSinglePose = decodeSingle.decodeSinglePose;
   exports2.partChannels = keypoints.partChannels;
   exports2.partIds = keypoints.partIds;
   exports2.partNames = keypoints.partNames;
@@ -4700,17 +4590,18 @@ var require_box2 = __commonJS((exports2) => {
   exports2.shiftBox = shiftBox;
 });
 
-// src/handpose/hand.js
-var require_hand = __commonJS((exports2) => {
+// src/handpose/handdetector.js
+var require_handdetector = __commonJS((exports2) => {
   const tf2 = require("@tensorflow/tfjs");
   const bounding = require_box2();
   class HandDetector {
-    constructor(model, width, height, anchors, iouThreshold, scoreThreshold) {
+    constructor(model, width, height, anchors, iouThreshold, scoreThreshold, maxHands) {
       this.model = model;
       this.width = width;
       this.height = height;
       this.iouThreshold = iouThreshold;
       this.scoreThreshold = scoreThreshold;
+      this.maxHands = maxHands;
       this.anchors = anchors.map((anchor) => [anchor.x_center, anchor.y_center]);
       this.anchorsTensor = tf2.tensor2d(this.anchors);
       this.inputSizeTensor = tf2.tensor1d([width, height]);
@@ -4735,20 +4626,12 @@ var require_hand = __commonJS((exports2) => {
     }
     async getBoundingBoxes(input) {
       const normalizedInput = tf2.tidy(() => tf2.mul(tf2.sub(input, 0.5), 2));
-      let batchedPrediction;
-      if (tf2.getBackend() === "webgl") {
-        const savedWebglPackDepthwiseConvFlag = tf2.env().get("WEBGL_PACK_DEPTHWISECONV");
-        tf2.env().set("WEBGL_PACK_DEPTHWISECONV", true);
-        batchedPrediction = this.model.predict(normalizedInput);
-        tf2.env().set("WEBGL_PACK_DEPTHWISECONV", savedWebglPackDepthwiseConvFlag);
-      } else {
-        batchedPrediction = this.model.predict(normalizedInput);
-      }
+      const batchedPrediction = this.model.predict(normalizedInput);
       const prediction = batchedPrediction.squeeze();
       const scores = tf2.tidy(() => tf2.sigmoid(tf2.slice(prediction, [0, 0], [-1, 1])).squeeze());
       const rawBoxes = tf2.slice(prediction, [0, 1], [-1, 4]);
       const boxes = this.normalizeBoxes(rawBoxes);
-      const boxesWithHandsTensor = await tf2.image.nonMaxSuppressionAsync(boxes, scores, 1, this.iouThreshold, this.scoreThreshold);
+      const boxesWithHandsTensor = await tf2.image.nonMaxSuppressionAsync(boxes, scores, this.maxHands, this.iouThreshold, this.scoreThreshold);
       const boxesWithHands = await boxesWithHandsTensor.array();
       const toDispose = [
         normalizedInput,
@@ -4763,34 +4646,39 @@ var require_hand = __commonJS((exports2) => {
         toDispose.forEach((tensor) => tensor.dispose());
         return null;
       }
-      const boxIndex = boxesWithHands[0];
-      const matchingBox = tf2.slice(boxes, [boxIndex, 0], [1, -1]);
-      const rawPalmLandmarks = tf2.slice(prediction, [boxIndex, 5], [1, 14]);
-      const palmLandmarks = tf2.tidy(() => this.normalizeLandmarks(rawPalmLandmarks, boxIndex).reshape([
-        -1,
-        2
-      ]));
-      toDispose.push(rawPalmLandmarks);
-      toDispose.forEach((tensor) => tensor.dispose());
-      return {boxes: matchingBox, palmLandmarks};
+      const detectedHands = tf2.tidy(() => {
+        const detectedBoxes = [];
+        for (const i in boxesWithHands) {
+          const boxIndex = boxesWithHands[i];
+          const matchingBox = tf2.slice(boxes, [boxIndex, 0], [1, -1]);
+          const rawPalmLandmarks = tf2.slice(prediction, [boxIndex, 5], [1, 14]);
+          const palmLandmarks = tf2.tidy(() => this.normalizeLandmarks(rawPalmLandmarks, boxIndex).reshape([-1, 2]));
+          detectedBoxes.push({boxes: matchingBox, palmLandmarks});
+        }
+        return detectedBoxes;
+      });
+      return detectedHands;
     }
     async estimateHandBounds(input) {
       const inputHeight = input.shape[1];
       const inputWidth = input.shape[2];
       const image = tf2.tidy(() => input.resizeBilinear([this.width, this.height]).div(255));
-      const prediction = await this.getBoundingBoxes(image);
-      if (prediction === null) {
-        image.dispose();
-        return null;
-      }
-      const boundingBoxes = await prediction.boxes.array();
-      const startPoint = boundingBoxes[0].slice(0, 2);
-      const endPoint = boundingBoxes[0].slice(2, 4);
-      const palmLandmarks = await prediction.palmLandmarks.array();
+      const predictions = await this.getBoundingBoxes(image);
       image.dispose();
-      prediction.boxes.dispose();
-      prediction.palmLandmarks.dispose();
-      return bounding.scaleBoxCoordinates({startPoint, endPoint, palmLandmarks}, [inputWidth / this.width, inputHeight / this.height]);
+      if (!predictions || predictions.length === 0)
+        return null;
+      const hands = [];
+      for (const i in predictions) {
+        const prediction = predictions[i];
+        const boundingBoxes = await prediction.boxes.array();
+        const startPoint = boundingBoxes[0].slice(0, 2);
+        const endPoint = boundingBoxes[0].slice(2, 4);
+        const palmLandmarks = await prediction.palmLandmarks.array();
+        prediction.boxes.dispose();
+        prediction.palmLandmarks.dispose();
+        hands.push(bounding.scaleBoxCoordinates({startPoint, endPoint, palmLandmarks}, [inputWidth / this.width, inputHeight / this.height]));
+      }
+      return hands;
     }
   }
   exports2.HandDetector = HandDetector;
@@ -4894,13 +4782,14 @@ var require_pipeline2 = __commonJS((exports2) => {
   const PALM_LANDMARKS_INDEX_OF_PALM_BASE = 0;
   const PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
   class HandPipeline {
-    constructor(boundingBoxDetector, meshDetector, meshWidth, meshHeight, maxContinuousChecks, detectionConfidence) {
+    constructor(boundingBoxDetector, meshDetector, meshWidth, meshHeight, maxContinuousChecks, detectionConfidence, maxHands) {
       this.regionsOfInterest = [];
       this.runsWithoutHandDetector = 0;
       this.boundingBoxDetector = boundingBoxDetector;
       this.meshDetector = meshDetector;
       this.maxContinuousChecks = maxContinuousChecks;
       this.detectionConfidence = detectionConfidence;
+      this.maxHands = maxHands;
       this.meshWidth = meshWidth;
       this.meshHeight = meshHeight;
       this.maxHandsNumber = 1;
@@ -4951,62 +4840,60 @@ var require_pipeline2 = __commonJS((exports2) => {
     async estimateHand(image, config) {
       const useFreshBox = this.shouldUpdateRegionsOfInterest();
       if (useFreshBox === true) {
-        const boundingBoxPrediction = await this.boundingBoxDetector.estimateHandBounds(image);
-        if (boundingBoxPrediction === null) {
-          image.dispose();
-          this.regionsOfInterest = [];
-          return null;
+        const boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image);
+        this.regionsOfInterest = [];
+        for (const i in boundingBoxPredictions) {
+          this.updateRegionsOfInterest(boundingBoxPredictions[i], true, i);
         }
-        this.updateRegionsOfInterest(boundingBoxPrediction, true);
         this.runsWithoutHandDetector = 0;
       } else {
         this.runsWithoutHandDetector++;
       }
-      const currentBox = this.regionsOfInterest[0];
-      const angle = util.computeRotation(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]);
-      const palmCenter = bounding.getBoxCenter(currentBox);
-      const palmCenterNormalized = [palmCenter[0] / image.shape[2], palmCenter[1] / image.shape[1]];
-      const rotatedImage = tf2.image.rotateWithOffset(image, angle, 0, palmCenterNormalized);
-      const rotationMatrix = util.buildRotationMatrix(-angle, palmCenter);
-      const box = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
-      const croppedInput = bounding.cutBoxFromImageAndResize(box, rotatedImage, [this.meshWidth, this.meshHeight]);
-      const handImage = croppedInput.div(255);
-      croppedInput.dispose();
-      rotatedImage.dispose();
-      let prediction;
-      if (tf2.getBackend() === "webgl") {
-        const savedWebglPackDepthwiseConvFlag = tf2.env().get("WEBGL_PACK_DEPTHWISECONV");
-        tf2.env().set("WEBGL_PACK_DEPTHWISECONV", true);
-        prediction = this.meshDetector.predict(handImage);
-        tf2.env().set("WEBGL_PACK_DEPTHWISECONV", savedWebglPackDepthwiseConvFlag);
-      } else {
-        prediction = this.meshDetector.predict(handImage);
-      }
-      const [flag, keypoints] = prediction;
-      handImage.dispose();
-      const flagValue = flag.dataSync()[0];
-      flag.dispose();
-      if (flagValue < config.minConfidence) {
-        keypoints.dispose();
-        this.regionsOfInterest = [];
-        return null;
-      }
-      const keypointsReshaped = tf2.reshape(keypoints, [-1, 3]);
-      const rawCoords = keypointsReshaped.arraySync();
-      keypoints.dispose();
-      keypointsReshaped.dispose();
-      const coords = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
-      const nextBoundingBox = this.getBoxForHandLandmarks(coords);
-      this.updateRegionsOfInterest(nextBoundingBox, false);
-      const result = {
-        landmarks: coords,
-        confidence: flagValue,
-        box: {
-          topLeft: nextBoundingBox.startPoint,
-          bottomRight: nextBoundingBox.endPoint
+      const hands = [];
+      if (!this.regionsOfInterest)
+        return hands;
+      for (const i in this.regionsOfInterest) {
+        const currentBox = this.regionsOfInterest[i][0];
+        if (!currentBox)
+          return hands;
+        const angle = util.computeRotation(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]);
+        const palmCenter = bounding.getBoxCenter(currentBox);
+        const palmCenterNormalized = [palmCenter[0] / image.shape[2], palmCenter[1] / image.shape[1]];
+        const rotatedImage = tf2.image.rotateWithOffset(image, angle, 0, palmCenterNormalized);
+        const rotationMatrix = util.buildRotationMatrix(-angle, palmCenter);
+        const box = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
+        const croppedInput = bounding.cutBoxFromImageAndResize(box, rotatedImage, [this.meshWidth, this.meshHeight]);
+        const handImage = croppedInput.div(255);
+        croppedInput.dispose();
+        rotatedImage.dispose();
+        const prediction = this.meshDetector.predict(handImage);
+        const [flag, keypoints] = prediction;
+        handImage.dispose();
+        const flagValue = flag.dataSync()[0];
+        flag.dispose();
+        if (flagValue < config.minConfidence) {
+          keypoints.dispose();
+          this.regionsOfInterest[i] = [];
+          return hands;
         }
-      };
-      return result;
+        const keypointsReshaped = tf2.reshape(keypoints, [-1, 3]);
+        const rawCoords = await keypointsReshaped.array();
+        keypoints.dispose();
+        keypointsReshaped.dispose();
+        const coords = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
+        const nextBoundingBox = this.getBoxForHandLandmarks(coords);
+        this.updateRegionsOfInterest(nextBoundingBox, false, i);
+        const result = {
+          landmarks: coords,
+          confidence: flagValue,
+          box: {
+            topLeft: nextBoundingBox.startPoint,
+            bottomRight: nextBoundingBox.endPoint
+          }
+        };
+        hands.push(result);
+      }
+      return hands;
     }
     calculateLandmarksBoundingBox(landmarks) {
       const xs = landmarks.map((d) => d[0]);
@@ -5015,11 +4902,11 @@ var require_pipeline2 = __commonJS((exports2) => {
       const endPoint = [Math.max(...xs), Math.max(...ys)];
       return {startPoint, endPoint};
     }
-    updateRegionsOfInterest(box, forceUpdate) {
+    updateRegionsOfInterest(box, forceUpdate, index) {
       if (forceUpdate) {
-        this.regionsOfInterest = [box];
+        this.regionsOfInterest[index] = [box];
       } else {
-        const previousBox = this.regionsOfInterest[0];
+        const previousBox = this.regionsOfInterest[index][0];
         let iou = 0;
         if (previousBox != null && previousBox.startPoint != null) {
           const [boxStartX, boxStartY] = box.startPoint;
@@ -5035,21 +4922,20 @@ var require_pipeline2 = __commonJS((exports2) => {
           const previousBoxArea = (previousBoxEndX - previousBoxStartX) * (previousBoxEndY - boxStartY);
           iou = intersection / (boxArea + previousBoxArea - intersection);
         }
-        this.regionsOfInterest[0] = iou > UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD ? previousBox : box;
+        this.regionsOfInterest[index][0] = iou > UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD ? previousBox : box;
       }
     }
     shouldUpdateRegionsOfInterest() {
-      const roisCount = this.regionsOfInterest.length;
-      return roisCount !== this.maxHandsNumber || this.runsWithoutHandDetector >= this.maxContinuousChecks;
+      return this.regionsOfInterest === 0 || this.runsWithoutHandDetector >= this.maxContinuousChecks;
     }
   }
   exports2.HandPipeline = HandPipeline;
 });
 
-// src/handpose/index.js
+// src/handpose/handpose.js
 var require_handpose = __commonJS((exports2) => {
   const tf2 = require("@tensorflow/tfjs");
-  const hand = require_hand();
+  const hand = require_handdetector();
   const keypoints = require_keypoints3();
   const pipe = require_pipeline2();
   async function loadHandDetectorModel(url) {
@@ -5072,8 +4958,8 @@ var require_handpose = __commonJS((exports2) => {
       loadHandDetectorModel(config.detector.modelPath),
       loadHandPoseModel(config.skeleton.modelPath)
     ]);
-    const detector = new hand.HandDetector(handDetectorModel, config.inputSize, config.inputSize, ANCHORS, config.iouThreshold, config.scoreThreshold);
-    const pipeline = new pipe.HandPipeline(detector, handPoseModel, config.inputSize, config.inputSize, config.skipFrames, config.minConfidence);
+    const detector = new hand.HandDetector(handDetectorModel, config.inputSize, config.inputSize, ANCHORS, config.iouThreshold, config.scoreThreshold, config.maxHands);
+    const pipeline = new pipe.HandPipeline(detector, handPoseModel, config.inputSize, config.inputSize, config.skipFrames, config.minConfidence, config.maxHands);
     const handpose2 = new HandPose(pipeline);
     return handpose2;
   }
@@ -5089,20 +4975,26 @@ var require_handpose = __commonJS((exports2) => {
         }
         return input.toFloat().expandDims(0);
       });
-      const prediction = await this.pipeline.estimateHand(image, config);
+      const predictions = await this.pipeline.estimateHand(image, config);
       image.dispose();
-      if (!prediction)
-        return [];
-      const annotations = {};
-      for (const key of Object.keys(keypoints.MESH_ANNOTATIONS)) {
-        annotations[key] = keypoints.MESH_ANNOTATIONS[key].map((index) => prediction.landmarks[index]);
+      const hands = [];
+      if (!predictions)
+        return hands;
+      for (const prediction of predictions) {
+        if (!prediction)
+          return [];
+        const annotations = {};
+        for (const key of Object.keys(keypoints.MESH_ANNOTATIONS)) {
+          annotations[key] = keypoints.MESH_ANNOTATIONS[key].map((index) => prediction.landmarks[index]);
+        }
+        hands.push({
+          confidence: prediction.confidence || 0,
+          box: prediction.box ? [prediction.box.topLeft[0], prediction.box.topLeft[1], prediction.box.bottomRight[0] - prediction.box.topLeft[0], prediction.box.bottomRight[1] - prediction.box.topLeft[1]] : 0,
+          landmarks: prediction.landmarks,
+          annotations
+        });
       }
-      return [{
-        confidence: prediction.confidence || 0,
-        box: prediction.box ? [prediction.box.topLeft[0], prediction.box.topLeft[1], prediction.box.bottomRight[0] - prediction.box.topLeft[0], prediction.box.bottomRight[1] - prediction.box.topLeft[1]] : 0,
-        landmarks: prediction.landmarks,
-        annotations
-      }];
+      return hands;
     }
   }
   exports2.HandPose = HandPose;
@@ -5120,10 +5012,10 @@ var require_config = __commonJS((exports2) => {
         modelPath: "../models/blazeface/model.json",
         inputSize: 128,
         maxFaces: 10,
-        skipFrames: 5,
-        minConfidence: 0.8,
+        skipFrames: 10,
+        minConfidence: 0.5,
         iouThreshold: 0.3,
-        scoreThreshold: 0.75
+        scoreThreshold: 0.5
       },
       mesh: {
         enabled: true,
@@ -5139,7 +5031,7 @@ var require_config = __commonJS((exports2) => {
         enabled: true,
         modelPath: "../models/ssrnet-age/imdb/model.json",
         inputSize: 64,
-        skipFrames: 5
+        skipFrames: 10
       },
       gender: {
         enabled: true,
@@ -5152,16 +5044,17 @@ var require_config = __commonJS((exports2) => {
       inputResolution: 257,
       outputStride: 16,
       maxDetections: 5,
-      scoreThreshold: 0.75,
+      scoreThreshold: 0.5,
       nmsRadius: 20
     },
     hand: {
       enabled: true,
       inputSize: 256,
-      skipFrames: 5,
-      minConfidence: 0.8,
+      skipFrames: 10,
+      minConfidence: 0.5,
       iouThreshold: 0.3,
-      scoreThreshold: 0.75,
+      scoreThreshold: 0.5,
+      maxHands: 2,
       detector: {
         anchors: "../models/handdetect/anchors.json",
         modelPath: "../models/handdetect/model.json"
@@ -5217,9 +5110,14 @@ async function detect(input, userConfig) {
     if (config.face.enabled && !models.facemesh)
       models.facemesh = await facemesh.load(config.face);
     tf.engine().startScope();
+    let savedWebglPackDepthwiseConvFlag;
+    if (tf.getBackend() === "webgl") {
+      savedWebglPackDepthwiseConvFlag = tf.env().get("WEBGL_PACK_DEPTHWISECONV");
+      tf.env().set("WEBGL_PACK_DEPTHWISECONV", true);
+    }
     let poseRes = [];
     if (config.body.enabled)
-      poseRes = await models.posenet.estimateMultiplePoses(input, config.body);
+      poseRes = await models.posenet.estimatePoses(input, config.body);
     let handRes = [];
     if (config.hand.enabled)
       handRes = await models.handpose.estimateHands(input, config.hand);
@@ -5241,6 +5139,7 @@ async function detect(input, userConfig) {
         });
       }
     }
+    tf.env().set("WEBGL_PACK_DEPTHWISECONV", savedWebglPackDepthwiseConvFlag);
     tf.engine().endScope();
     resolve({face: faceRes, body: poseRes, hand: handRes});
   });

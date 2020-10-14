@@ -1,7 +1,6 @@
 const tf = require('@tensorflow/tfjs');
 const modelMobileNet = require('./modelMobileNet');
 const decodeMultiple = require('./decodeMultiple');
-const decodeSingle = require('./decodeSingle');
 const util = require('./util');
 
 class PoseNet {
@@ -30,7 +29,7 @@ class PoseNet {
      * the corresponding keypoint scores.  The positions of the keypoints are
      * in the same scale as the original image
      */
-  async estimateMultiplePoses(input, config) {
+  async estimatePoses(input, config) {
     const outputStride = this.baseModel.outputStride;
     const inputResolution = this.inputResolution;
     const [height, width] = util.getInputTensorDimensions(input);
@@ -49,41 +48,6 @@ class PoseNet {
     displacementBwd.dispose();
     resized.dispose();
     return resultPoses;
-  }
-
-  /**
-     * Infer through PoseNet, and estimates a single pose using the outputs.
-     * This does standard ImageNet pre-processing before inferring through the
-     * model. The image should pixels should have values [0-255]. It detects
-     * multiple poses and finds their parts from part scores and displacement
-     * vectors using a fast greedy decoding algorithm.  It returns a single pose
-     *
-     * @param input
-     * ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement) The input
-     * image to feed through the network.
-     *
-     * @param config SinglePersonEstimationConfig object that contains
-     * parameters for the PoseNet inference using single pose estimation.
-     *
-     * @return An pose and its scores, containing keypoints and
-     * the corresponding keypoint scores.  The positions of the keypoints are
-     * in the same scale as the original image
-     */
-  async estimateSinglePose(input) {
-    const outputStride = this.baseModel.outputStride;
-    const inputResolution = this.inputResolution;
-    const [height, width] = util.getInputTensorDimensions(input);
-    const { resized, padding } = util.padAndResizeTo(input, inputResolution);
-    const { heatmapScores, offsets, displacementFwd, displacementBwd } = this.baseModel.predict(resized);
-    const pose = await decodeSingle.decodeSinglePose(heatmapScores, offsets, outputStride);
-    const poses = [pose];
-    const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [inputResolution, inputResolution], padding);
-    heatmapScores.dispose();
-    offsets.dispose();
-    displacementFwd.dispose();
-    displacementBwd.dispose();
-    resized.dispose();
-    return resultPoses[0];
   }
 
   dispose() {

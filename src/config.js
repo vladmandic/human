@@ -5,10 +5,10 @@ export default {
       modelPath: '../models/blazeface/model.json',
       inputSize: 128, // fixed value
       maxFaces: 10, // maximum number of faces detected in the input, should be set to the minimum number for performance
-      skipFrames: 5, // how many frames to go without running the bounding box detector, only relevant if maxFaces > 1
-      minConfidence: 0.8, // threshold for discarding a prediction
-      iouThreshold: 0.3, // threshold for deciding whether boxes overlap too much in non-maximum suppression, must be between [0, 1]
-      scoreThreshold: 0.75, // threshold for deciding when to remove boxes based on score in non-maximum suppression
+      skipFrames: 10, // how many frames to go without running the bounding box detector
+      minConfidence: 0.5, // threshold for discarding a prediction
+      iouThreshold: 0.3, // threshold for deciding whether boxes overlap too much in non-maximum suppression
+      scoreThreshold: 0.7, // threshold for deciding when to remove boxes based on score in non-maximum suppression
     },
     mesh: {
       enabled: true,
@@ -24,7 +24,7 @@ export default {
       enabled: true,
       modelPath: '../models/ssrnet-age/imdb/model.json',
       inputSize: 64, // fixed value
-      skipFrames: 5,
+      skipFrames: 10,
     },
     gender: {
       enabled: true,
@@ -37,16 +37,17 @@ export default {
     inputResolution: 257, // fixed value
     outputStride: 16, // fixed value
     maxDetections: 5,
-    scoreThreshold: 0.75,
+    scoreThreshold: 0.7,
     nmsRadius: 20,
   },
   hand: {
     enabled: true,
     inputSize: 256, // fixed value
-    skipFrames: 5,
-    minConfidence: 0.8,
+    skipFrames: 10,
+    minConfidence: 0.5,
     iouThreshold: 0.3,
-    scoreThreshold: 0.75,
+    scoreThreshold: 0.7,
+    maxHands: 2,
     detector: {
       anchors: '../models/handdetect/anchors.json',
       modelPath: '../models/handdetect/model.json',

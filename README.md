@@ -1,11 +1,14 @@
 # Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking and Age & Gender Prediction
 
-**Documentation**: <https://github.com/vladmandic/human#readme>  
-**Code Repository**: <https://github.com/vladmandic/human>  
-**Package**: <https://www.npmjs.com/package/@vladmandic/human>  
-**Live Demo**: <https://vladmandic.github.io/human/demo/demo-esm.html>  
+- [**Documentation**](https://github.com/vladmandic/human#readme)
+- [**Code Repository**](https://github.com/vladmandic/human)
+- [**Package**](https://www.npmjs.com/package/@vladmandic/human)
+- [**Issues Tracker**](https://github.com/vladmandic/human/issues)
+- [**Live Demo**](https://vladmandic.github.io/human/demo/demo-esm.html)
 
-Compatible with Browser, WebWorker and NodeJS** execution!
+Compatible with Browser, WebWorker and NodeJS execution!
+
+*This is a pre-release project, see [issues](https://github.com/vladmandic/human/issues) for list of known limitations*  
 
 *Suggestions are welcome!*
 
@@ -47,7 +50,7 @@ There are multiple ways to use `Human` library, pick one that suits you:
 Simply download `dist/human.js`, include it in your `HTML` file & it's ready to use.
 
 ```html
-<script src="dist/human.js"><script>
+  <script src="dist/human.js"><script>
 ``` 
 
 IIFE script auto-registers global namespace `human` within global `Window` object  
@@ -64,8 +67,16 @@ IIFE script is distributed in minified form with attached sourcemap
 If you're using bundler *(such as rollup, webpack, esbuild)* to package your client application, you can import ESM version of `Human` library which supports full tree shaking  
 
 ```js
-  import human from 'dist/human.esm.js';
+  import human from '@vladmandic/human'; // points to @vladmandic/human/dist/human.esm.js
 ```
+
+Or if you prefer to package your version of `tfjs`, you can use `nobundle` version
+
+```js
+  import tf from '@tensorflow/tfjs'
+  import human from '@vladmandic/human/dist/human.nobundle.js'; // same functionality as default import, but without tfjs bundled
+```
+
 
 #### 2.2 Using Script Module
 You could use same syntax within your main `JS` file if it's imported with `<script type="module">`  
@@ -94,11 +105,26 @@ Install with:
 ```
 And then use with:
 ```js
-  const tf = require('@tensorflow/tfjs-node');
-  const human = require('@vladmandic/human');
+  const tf = require('@tensorflow/tfjs-node'); 
+  const human = require('@vladmandic/human'); // points to @vladmandic/human/dist/human.node.js
 ```
-*See limitations for NodeJS usage under `demo`*  
 
+Since NodeJS projects load `weights` from local filesystem instead of using `http` calls, you must modify default configuration to include correct paths with `file://` prefix  
+For example:
+```js
+const config = {
+  body: { enabled: true, modelPath: 'file://models/posenet/model.json' },
+}
+```
+
+Note that when using `Human` in NodeJS, you must load and parse the image *before* you pass it for detection  
+For example:
+```js
+  const buffer = fs.readFileSync(input);
+  const image = tf.node.decodeImage(buffer);
+  const result = human.detect(image, config);
+  image.dispose();
+```
 
 ### Weights
 
@@ -122,10 +148,6 @@ NodeJS:
 - `demo-node`: Demo using NodeJS with CJS module  
   This is a very simple demo as althought `Human` library is compatible with NodeJS execution  
   and is able to load images and models from local filesystem,  
-  `tfjs-node` backend does not implement function required for execution of some models
-
-  Currently only body pose detection works while face and hand models are not supported  
-  See `tfjs-node` issue <https://github.com/tensorflow/tfjs/issues/4066> for details  
 
 <hr>
 
@@ -137,20 +159,28 @@ All configuration is done in a single JSON object and all model weights will be 
 There is only *ONE* method you need:
 
 ```js
-import * as tf from '@tensorflow/tfjs';
-import human from '@vladmandic/human';
+  import * as tf from '@tensorflow/tfjs';
+  import human from '@vladmandic/human';
 
-// 'image': can be of any type of an image object: HTMLImage, HTMLVideo, HTMLMedia, Canvas, Tensor4D
-// 'options': optional parameter used to override any options present in default configuration
-const result = await human.detect(image, options?)
+  // 'image': can be of any type of an image object: HTMLImage, HTMLVideo, HTMLMedia, Canvas, Tensor4D
+  // 'options': optional parameter used to override any options present in default configuration
+  const result = await human.detect(image, options?)
+```
+
+or if you want to use promises
+
+```js
+  human.detect(image, options?).then((result) => {
+    // your code
+  })
 ```
 
 Additionally, `Human` library exposes several classes:
 
 ```js
-human.defaults // default configuration object
-human.models   // dynamically maintained object of any loaded models
-human.tf       // instance of tfjs used by human
+  human.defaults // default configuration object
+  human.models   // dynamically maintained object of any loaded models
+  human.tf       // instance of tfjs used by human
 ```
 
 <hr>
@@ -299,7 +329,5 @@ Library can also be used on mobile devices
 
 ## Todo
 
-- Improve detection of smaller faces
 - Tweak default parameters
 - Verify age/gender models
-- Make it work with multiple hands

@@ -19,12 +19,13 @@
     "type": "git",
     "url": "git+https://github.com/vladmandic/human.git"
   },
-  "dependencies": {
-    "@tensorflow/tfjs": "^2.6.0",
+  "dependencies": {},
+  "peerDependencies": {
     "@tensorflow/tfjs-node": "^2.6.0"
   },
   "devDependencies": {
-    "esbuild": "^0.7.13",
+    "@tensorflow/tfjs": "^2.6.0",
+    "esbuild": "^0.7.15",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.1",
@@ -39,7 +40,8 @@
     "build": "rimraf dist/ && npm run build-esm && npm run build-iife && npm run build-node",
     "build-esm": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:fs --outfile=dist/human.esm.js src/index.js",
     "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --external:fs --global-name=human --outfile=dist/human.js src/index.js",
-    "build-node": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --outfile=dist/human.node.js src/index.js"
+    "build-node": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --outfile=dist/human.node.js src/index.js",
+    "update": "npm update --depth 20 && npm dedupe && npm prune && npm audit"
   },
   "keywords": [
     "tensorflowjs",

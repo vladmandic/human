@@ -10,15 +10,15 @@ const ui = {
 
 const config = {
   face: {
-    enabled: true,
-    detector: { maxFaces: 10, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
+    enabled: false,
+    detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
     mesh: { enabled: true },
     iris: { enabled: true },
-    age: { enabled: true, skipFrames: 5 },
+    age: { enabled: true, skipFrames: 10 },
     gender: { enabled: true },
   },
-  body: { enabled: true, maxDetections: 5, scoreThreshold: 0.75, nmsRadius: 20 },
-  hand: { enabled: true, skipFrames: 5, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },
+  body: { enabled: false, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
+  hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
 };
 let settings;
 

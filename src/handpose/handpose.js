@@ -1,5 +1,5 @@
 const tf = require('@tensorflow/tfjs');
-const hand = require('./hand');
+const hand = require('./handdetector');
 const keypoints = require('./keypoints');
 const pipe = require('./pipeline');
 
@@ -47,8 +47,8 @@ async function load(config) {
     loadHandDetectorModel(config.detector.modelPath),
     loadHandPoseModel(config.skeleton.modelPath),
   ]);
-  const detector = new hand.HandDetector(handDetectorModel, config.inputSize, config.inputSize, ANCHORS, config.iouThreshold, config.scoreThreshold);
-  const pipeline = new pipe.HandPipeline(detector, handPoseModel, config.inputSize, config.inputSize, config.skipFrames, config.minConfidence);
+  const detector = new hand.HandDetector(handDetectorModel, config.inputSize, config.inputSize, ANCHORS, config.iouThreshold, config.scoreThreshold, config.maxHands);
+  const pipeline = new pipe.HandPipeline(detector, handPoseModel, config.inputSize, config.inputSize, config.skipFrames, config.minConfidence, config.maxHands);
   // eslint-disable-next-line no-use-before-define
   const handpose = new HandPose(pipeline);
   return handpose;
@@ -67,19 +67,24 @@ class HandPose {
       }
       return input.toFloat().expandDims(0);
     });
-    const prediction = await this.pipeline.estimateHand(image, config);
+    const predictions = await this.pipeline.estimateHand(image, config);
     image.dispose();
-    if (!prediction) return [];
-    const annotations = {};
-    for (const key of Object.keys(keypoints.MESH_ANNOTATIONS)) {
-      annotations[key] = keypoints.MESH_ANNOTATIONS[key].map((index) => prediction.landmarks[index]);
+    const hands = [];
+    if (!predictions) return hands;
+    for (const prediction of predictions) {
+      if (!prediction) return [];
+      const annotations = {};
+      for (const key of Object.keys(keypoints.MESH_ANNOTATIONS)) {
+        annotations[key] = keypoints.MESH_ANNOTATIONS[key].map((index) => prediction.landmarks[index]);
+      }
+      hands.push({
+        confidence: prediction.confidence || 0,
+        box: prediction.box ? [prediction.box.topLeft[0], prediction.box.topLeft[1], prediction.box.bottomRight[0] - prediction.box.topLeft[0], prediction.box.bottomRight[1] - prediction.box.topLeft[1]] : 0,
+        landmarks: prediction.landmarks,
+        annotations,
+      });
     }
-    return [{
-      confidence: prediction.confidence || 0,
-      box: prediction.box ? [prediction.box.topLeft[0], prediction.box.topLeft[1], prediction.box.bottomRight[0] - prediction.box.topLeft[0], prediction.box.bottomRight[1] - prediction.box.topLeft[1]] : 0,
-      landmarks: prediction.landmarks,
-      annotations,
-    }];
+    return hands;
   }
 }
 exports.HandPose = HandPose;

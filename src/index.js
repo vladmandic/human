@@ -5,6 +5,9 @@ const emotion = require('./emotion/emotion.js');
 const posenet = require('./posenet/posenet.js');
 const handpose = require('./handpose/handpose.js');
 const defaults = require('./config.js').default;
+const app = require('../package.json');
+
+let config;
 
 // object that contains all initialized models
 const models = {
@@ -15,6 +18,11 @@ const models = {
   age: null,
   gender: null,
   emotion: null,
+};
+
+const log = (...msg) => {
+  // eslint-disable-next-line no-console
+  if (config.console) console.log(...msg);
 };
 
 // helper function that performs deep merge of multiple objects so it allows full inheriance with overrides
@@ -39,7 +47,24 @@ function mergeDeep(...objects) {
 async function detect(input, userConfig) {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve) => {
-    const config = mergeDeep(defaults, userConfig);
+    config = mergeDeep(defaults, userConfig);
+
+    // check number of loaded models
+    const loadedModels = Object.values(models).filter((a) => a).length;
+    if (loadedModels === 0) log('Human library starting');
+
+    // configure backend
+    if (tf.getBackend() !== config.backend) {
+      log('Human library setting backend:', config.backend);
+      await tf.setBackend(config.backend);
+      await tf.ready();
+    }
+    // explictly enable depthwiseconv since it's diasabled by default due to issues with large shaders
+    let savedWebglPackDepthwiseConvFlag;
+    if (tf.getBackend() === 'webgl') {
+      savedWebglPackDepthwiseConvFlag = tf.env().get('WEBGL_PACK_DEPTHWISECONV');
+      tf.env().set('WEBGL_PACK_DEPTHWISECONV', true);
+    }
 
     // load models if enabled
     if (config.face.enabled && !models.facemesh) models.facemesh = await facemesh.load(config.face);
@@ -48,13 +73,6 @@ async function detect(input, userConfig) {
     if (config.face.enabled && config.face.age.enabled && !models.age) models.age = await ssrnet.loadAge(config);
     if (config.face.enabled && config.face.gender.enabled && !models.gender) models.gender = await ssrnet.loadGender(config);
     if (config.face.enabled && config.face.emotion.enabled && !models.emotion) models.emotion = await emotion.load(config);
-
-    // explictly enable depthwiseconv since it's diasabled by default due to issues with large shaders
-    let savedWebglPackDepthwiseConvFlag;
-    if (tf.getBackend() === 'webgl') {
-      savedWebglPackDepthwiseConvFlag = tf.env().get('WEBGL_PACK_DEPTHWISECONV');
-      tf.env().set('WEBGL_PACK_DEPTHWISECONV', true);
-    }
 
     const perf = {};
     let timeStamp;
@@ -122,9 +140,11 @@ async function detect(input, userConfig) {
 
 exports.detect = detect;
 exports.defaults = defaults;
+exports.config = config;
 exports.models = models;
 exports.facemesh = facemesh;
 exports.ssrnet = ssrnet;
 exports.posenet = posenet;
 exports.handpose = handpose;
 exports.tf = tf;
+exports.version = app.version;

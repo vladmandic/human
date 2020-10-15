@@ -17,16 +17,17 @@ const config = {
     detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
     mesh: { enabled: true },
     iris: { enabled: true },
-    age: { enabled: true, skipFrames: 10 },
-    gender: { enabled: true },
-    emotion: { enabled: true, minConfidence: 0.5, useGrayscale: true },
+    age: { enabled: false, skipFrames: 10 },
+    gender: { enabled: false },
+    emotion: { enabled: false, minConfidence: 0.5, useGrayscale: true },
   },
-  body: { enabled: true, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
-  hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
+  body: { enabled: false, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
+  hand: { enabled: false, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
 };
 let settings;
 let worker;
 let timeStamp;
+const fps = [];
 
 function str(...msg) {
   if (!Array.isArray(msg)) return msg;
@@ -44,6 +45,7 @@ const log = (...msg) => {
 };
 
 async function drawFace(result, canvas) {
+  if (!result) return;
   const ctx = canvas.getContext('2d');
   ctx.strokeStyle = ui.baseColor;
   ctx.font = ui.baseFont;
@@ -96,6 +98,7 @@ async function drawFace(result, canvas) {
 }
 
 async function drawBody(result, canvas) {
+  if (!result) return;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = ui.baseColor;
   ctx.strokeStyle = ui.baseColor;
@@ -157,6 +160,7 @@ async function drawBody(result, canvas) {
 }
 
 async function drawHand(result, canvas) {
+  if (!result) return;
   const ctx = canvas.getContext('2d');
   ctx.font = ui.baseFont;
   ctx.lineWidth = ui.baseLineWidth;
@@ -203,6 +207,13 @@ async function drawHand(result, canvas) {
 async function drawResults(input, result, canvas) {
   // update fps
   settings.setValue('FPS', Math.round(1000 / (performance.now() - timeStamp)));
+  fps.push(1000 / (performance.now() - timeStamp));
+  if (fps.length > 20) fps.shift();
+  settings.setValue('FPS', Math.round(10 * fps.reduce((a, b) => a + b) / fps.length) / 10);
+
+  // eslint-disable-next-line no-use-before-define
+  requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop
+
   // draw image from video
   const ctx = canvas.getContext('2d');
   ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
@@ -213,27 +224,24 @@ async function drawResults(input, result, canvas) {
   // update log
   const engine = await human.tf.engine();
   const memory = `${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors`;
-  const gpu = engine.backendInstance.numBytesInGPU ? `GPU: ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes` : '';
+  const gpu = engine.backendInstance ? `GPU: ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes` : '';
   document.getElementById('log').innerText = `
     TFJS Version: ${human.tf.version_core} | Backend: ${human.tf.getBackend()} | Memory: ${memory} ${gpu}
     Performance: ${str(result.performance)} | Object size: ${(str(result)).length.toLocaleString()} bytes
   `;
 }
 
-async function webWorker(input, image, canvas) {
+// simple wrapper for worker.postmessage that creates worker if one does not exist
+function webWorker(input, image, canvas) {
   if (!worker) {
+    // create new webworker and add event handler only once
     log('Creating worker thread');
-    // create new webworker
     worker = new Worker('demo-esm-webworker.js', { type: 'module' });
     // after receiving message from webworker, parse&draw results and send new frame for processing
-    worker.addEventListener('message', async (msg) => {
-      await drawResults(input, msg.data, canvas);
-      // eslint-disable-next-line no-use-before-define
-      requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop
-    });
+    worker.addEventListener('message', async (msg) => drawResults(input, msg.data, canvas));
   }
-  // const offscreen = image.transferControlToOffscreen();
-  worker.postMessage({ image, config });
+  // pass image data as arraybuffer to worker by reference to avoid copy
+  worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, config }, [image.data.buffer]);
 }
 
 async function runHumanDetect(input, canvas) {
@@ -247,17 +255,17 @@ async function runHumanDetect(input, canvas) {
       const ctx = offscreen.getContext('2d');
       ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      // perform detection
-      await webWorker(input, data, canvas);
+      // perform detection in worker
+      webWorker(input, data, canvas);
     } else {
       let result = {};
       try {
+        // perform detection
         result = await human.detect(input, config);
       } catch (err) {
         log('Error during execution:', err.message);
       }
-      await drawResults(input, result, canvas);
-      if (input.readyState) requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop
+      drawResults(input, result, canvas);
     }
   }
 }

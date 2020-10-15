@@ -1,8 +1,9 @@
-/* global QuickSettings */
+/* global tf, QuickSettings */
 
 import human from '../dist/human.esm.js';
 
 const ui = {
+  backend: 'wasm',
   baseColor: 'rgba(255, 200, 255, 0.3)',
   baseLabel: 'rgba(255, 200, 255, 0.8)',
   baseFont: 'small-caps 1.2rem "Segoe UI"',
@@ -32,6 +33,15 @@ function str(...msg) {
     else line += entry;
   }
   return line;
+}
+
+async function setupTF() {
+  if (ui.backend === 'wasm') {
+    tf.env().set('WASM_HAS_SIMD_SUPPORT', false);
+    tf.env().set('WASM_HAS_MULTITHREAD_SUPPORT', true);
+  }
+  await human.tf.setBackend(ui.backend);
+  await human.tf.ready();
 }
 
 async function drawFace(result, canvas) {
@@ -217,9 +227,10 @@ async function runHumanDetect(input, canvas) {
     drawHand(result.hand, canvas);
     // update log
     const engine = await human.tf.engine();
-    const memory = `Memory: ${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors`;
+    const memory = `${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors`;
+    const gpu = engine.backendInstance.numBytesInGPU ? `GPU: ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes` : '';
     log.innerText = `
-      TFJS Version: ${human.tf.version_core} | ${memory} | GPU: ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes
+      TFJS Version: ${human.tf.version_core} | Backend: ${human.tf.getBackend()} | Memory: ${memory} ${gpu}
       Performance: ${str(result.performance)} | Object size: ${(str(result)).length.toLocaleString()} bytes
     `;
     // rinse & repeate
@@ -255,6 +266,11 @@ function setupGUI() {
     }
     runHumanDetect(video, canvas);
   });
+  settings.addDropDown('Backend', ['webgl', 'wasm', 'cpu'], (val) => {
+    ui.backend = val.value;
+    setupTF();
+  });
+  settings.addHTML('title', 'Enabled Models'); settings.hideTitle('title');
   settings.addBoolean('Face Detect', config.face.enabled, (val) => config.face.enabled = val);
   settings.addBoolean('Face Mesh', config.face.mesh.enabled, (val) => config.face.mesh.enabled = val);
   settings.addBoolean('Face Iris', config.face.iris.enabled, (val) => config.face.iris.enabled = val);
@@ -263,7 +279,7 @@ function setupGUI() {
   settings.addBoolean('Face Emotion', config.face.emotion.enabled, (val) => config.face.emotion.enabled = val);
   settings.addBoolean('Body Pose', config.body.enabled, (val) => config.body.enabled = val);
   settings.addBoolean('Hand Pose', config.hand.enabled, (val) => config.hand.enabled = val);
-  settings.addHTML('line3', '<hr>'); settings.hideTitle('line3');
+  settings.addHTML('title', 'Model Parameters'); settings.hideTitle('title');
   settings.addRange('Max Objects', 1, 20, 5, 1, (val) => {
     config.face.detector.maxFaces = parseInt(val);
     config.body.maxDetections = parseInt(val);
@@ -288,7 +304,7 @@ function setupGUI() {
     config.face.detector.iouThreshold = parseFloat(val);
     config.hand.iouThreshold = parseFloat(val);
   });
-  settings.addHTML('line1', '<hr>'); settings.hideTitle('line1');
+  settings.addHTML('title', 'UI Options'); settings.hideTitle('title');
   settings.addBoolean('Draw Boxes', true);
   settings.addBoolean('Draw Points', true);
   settings.addBoolean('Draw Polygons', true);
@@ -342,8 +358,7 @@ async function setupImage() {
 
 async function main() {
   // initialize tensorflow
-  await human.tf.setBackend('webgl');
-  await human.tf.ready();
+  await setupTF();
   // setup ui control panel
   await setupGUI();
   // setup webcam

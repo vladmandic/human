@@ -50,6 +50,7 @@
     "promise/no-nesting": "off",
     "import/no-absolute-path": "off",
     "import/no-extraneous-dependencies": "off",
+    "node/no-unpublished-import": "off",
     "node/no-unpublished-require": "off",
     "no-regex-spaces": "off",
     "radix": "off"

@@ -1,9 +1,8 @@
-/* global tf, QuickSettings */
+/* global QuickSettings */
 
 import human from '../dist/human.esm.js';
 
 const ui = {
-  backend: 'webgl',
   baseColor: 'rgba(255, 200, 255, 0.3)',
   baseLabel: 'rgba(255, 200, 255, 0.8)',
   baseFont: 'small-caps 1.2rem "Segoe UI"',
@@ -11,6 +10,8 @@ const ui = {
 };
 
 const config = {
+  backend: 'webgl',
+  console: true,
   face: {
     enabled: true,
     detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
@@ -37,31 +38,10 @@ function str(...msg) {
   return line;
 }
 
-async function setupTF(input) {
-  // pause video if running before changing backend
-  const live = input.srcObject ? ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused)) : false;
-  if (live) await input.pause();
-
-  // if user explicitly loaded tfjs, override one used in human library
-  if (window.tf) human.tf = window.tf;
-
-  // cheks for wasm backend
-  if (ui.backend === 'wasm') {
-    if (!window.tf) {
-      document.getElementById('log').innerText = 'Error: WASM Backend is not loaded, enable it in HTML file';
-      ui.backend = 'webgl';
-    } else {
-      human.tf = window.tf;
-      tf.env().set('WASM_HAS_SIMD_SUPPORT', false);
-      tf.env().set('WASM_HAS_MULTITHREAD_SUPPORT', true);
-    }
-  }
-  await human.tf.setBackend(ui.backend);
-  await human.tf.ready();
-
-  // continue video if it was previously running
-  if (live) await input.play();
-}
+const log = (...msg) => {
+  // eslint-disable-next-line no-console
+  if (config.console) console.log(...msg);
+};
 
 async function drawFace(result, canvas) {
   const ctx = canvas.getContext('2d');
@@ -234,15 +214,15 @@ async function drawResults(input, result, canvas) {
   const engine = await human.tf.engine();
   const memory = `${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors`;
   const gpu = engine.backendInstance.numBytesInGPU ? `GPU: ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes` : '';
-  const log = document.getElementById('log');
-  log.innerText = `
-    TFJS Version: ${human.tf.version_core} | Backend: {human.tf.getBackend()} | Memory: ${memory} ${gpu}
+  document.getElementById('log').innerText = `
+    TFJS Version: ${human.tf.version_core} | Backend: ${human.tf.getBackend()} | Memory: ${memory} ${gpu}
     Performance: ${str(result.performance)} | Object size: ${(str(result)).length.toLocaleString()} bytes
   `;
 }
 
 async function webWorker(input, image, canvas) {
   if (!worker) {
+    log('Creating worker thread');
     // create new webworker
     worker = new Worker('demo-esm-webworker.js', { type: 'module' });
     // after receiving message from webworker, parse&draw results and send new frame for processing
@@ -270,14 +250,19 @@ async function runHumanDetect(input, canvas) {
       // perform detection
       await webWorker(input, data, canvas);
     } else {
-      const result = await human.detect(input, config);
+      let result = {};
+      try {
+        result = await human.detect(input, config);
+      } catch (err) {
+        log('Error during execution:', err.message);
+      }
       await drawResults(input, result, canvas);
       if (input.readyState) requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop
     }
   }
 }
 
-function setupUI(input) {
+function setupUI() {
   // add all variables to ui control panel
   settings = QuickSettings.create(10, 10, 'Settings', document.getElementById('main'));
   const style = document.createElement('style');
@@ -304,10 +289,7 @@ function setupUI(input) {
     }
     runHumanDetect(video, canvas);
   });
-  settings.addDropDown('Backend', ['webgl', 'wasm', 'cpu'], async (val) => {
-    ui.backend = val.value;
-    await setupTF(input);
-  });
+  settings.addDropDown('Backend', ['webgl', 'wasm', 'cpu'], async (val) => config.backend = val.value);
   settings.addHTML('title', 'Enabled Models'); settings.hideTitle('title');
   settings.addBoolean('Face Detect', config.face.enabled, (val) => config.face.enabled = val);
   settings.addBoolean('Face Mesh', config.face.mesh.enabled, (val) => config.face.mesh.enabled = val);
@@ -362,6 +344,7 @@ async function setupCanvas(input) {
 
 // eslint-disable-next-line no-unused-vars
 async function setupCamera() {
+  log('Setting up camera');
   // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
   const video = document.getElementById('video');
   if (!navigator.mediaDevices) {
@@ -396,17 +379,22 @@ async function setupImage() {
 }
 
 async function main() {
+  log('Human starting ...');
+
+  // setup ui control panel
+  await setupUI();
   // setup webcam
   const input = await setupCamera();
   // or setup image
   // const input = await setupImage();
   // setup output canvas from input object
   await setupCanvas(input);
+
+  const msg = `Human ready: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
+  document.getElementById('log').innerText = msg;
+  log(msg);
+
   // run actual detection. if input is video, it will run in a loop else it will run only once
-  // setup ui control panel
-  await setupUI(input);
-  // initialize tensorflow
-  await setupTF(input);
   // runHumanDetect(video, canvas);
 }
 

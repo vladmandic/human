@@ -197,8 +197,9 @@ or if you want to use promises
 Additionally, `Human` library exposes several classes:
 
 ```js
-  human.defaults // default configuration object
-  human.models   // dynamically maintained object of any loaded models
+  human.config   // access to configuration object, normally set as parameter to detect()
+  human.defaults // read-only view of default configuration object
+  human.models   // dynamically maintained list of object of any loaded models
   human.tf       // instance of tfjs used by human
 ```
 
@@ -212,15 +213,17 @@ Note that user object and default configuration are merged using deep-merge, so 
 
 ```js
 human.defaults = {
+  console: true,            // enable debugging output to console
+  backend: 'webgl',         // select tfjs backend to use
   face: {
-    enabled: true,
+    enabled: true,          // controls if specified modul is enabled (note: module is not loaded until it is required)
     detector: {
-      modelPath: '../models/blazeface/model.json',
-      maxFaces: 10,
-      skipFrames: 10,
-      minConfidence: 0.8,
-      iouThreshold: 0.3,
-      scoreThreshold: 0.75,
+      modelPath: '../models/blazeface/model.json', // path to specific pre-trained model
+      maxFaces: 10,         // how many faces are we trying to analyze. limiting number in busy scenes will result in higher performance
+      skipFrames: 10,       // how many frames to skip before re-running bounding box detection
+      minConfidence: 0.8,   // threshold for discarding a prediction
+      iouThreshold: 0.3,    // threshold for deciding whether boxes overlap too much in non-maximum suppression
+      scoreThreshold: 0.75, // threshold for deciding when to remove boxes based on score in non-maximum suppression
     },
     mesh: {
       enabled: true,
@@ -233,7 +236,7 @@ human.defaults = {
     age: {
       enabled: true,
       modelPath: '../models/ssrnet-imdb-age/model.json',
-      skipFrames: 10,
+      skipFrames: 10,       // how many frames to skip before re-running bounding box detection
     },
     gender: {
       enabled: true,
@@ -241,25 +244,25 @@ human.defaults = {
     },
     emotion: {
       enabled: true,
-      minConfidence: 0.5,
-      skipFrames: 10,
-      useGrayscale: true,
+      minConfidence: 0.5,   // threshold for discarding a prediction
+      skipFrames: 10,       // how many frames to skip before re-running bounding box detection
+      useGrayscale: true,   // convert color input to grayscale before processing or use single channels when color input is not supported
       modelPath: '../models/emotion/model.json',
     },
   },
   body: {
     enabled: true,
     modelPath: '../models/posenet/model.json',
-    maxDetections: 5,
-    scoreThreshold: 0.75,
-    nmsRadius: 20,
+    maxDetections: 5,       // how many faces are we trying to analyze. limiting number in busy scenes will result in higher performance  
+    scoreThreshold: 0.75,   // threshold for deciding when to remove boxes based on score in non-maximum suppression
+    nmsRadius: 20,          // radius for deciding points are too close in non-maximum suppression
   },
   hand: {
     enabled: true,
-    skipFrames: 10,
-    minConfidence: 0.8,
-    iouThreshold: 0.3,
-    scoreThreshold: 0.75,
+    skipFrames: 10,         // how many frames to skip before re-running bounding box detection
+    minConfidence: 0.8,     // threshold for discarding a prediction
+    iouThreshold: 0.3,      // threshold for deciding whether boxes overlap too much in non-maximum suppression
+    scoreThreshold: 0.75,   // threshold for deciding when to remove boxes based on score in non-maximum suppression
     detector: {
       anchors: '../models/handdetect/anchors.json',
       modelPath: '../models/handdetect/model.json',
@@ -271,17 +274,6 @@ human.defaults = {
 };
 ```
 
-Where:
-- `enabled`: controls if specified modul is enabled (note: module is not loaded until it is required)
-- `modelPath`: path to specific pre-trained model weights
-- `maxFaces`, `maxDetections`: how many faces or people are we trying to analyze. limiting number in busy scenes will result in higher performance
-- `skipFrames`: how many frames to skip before re-running bounding box detection (e.g., face position does not move fast within a video, so it's ok to use previously detected face position and just run face geometry analysis)
-- `minConfidence`: threshold for discarding a prediction
-- `iouThreshold`: threshold for deciding whether boxes overlap too much in non-maximum suppression
-- `scoreThreshold`: threshold for deciding when to remove boxes based on score in non-maximum suppression
-- `useGrayscale`: convert color input to grayscale before processing or use single channels when color input is not supported
-- `nmsRadius`: radius for deciding points are too close in non-maximum suppression
-
 <hr>
 
 ## Outputs
@@ -290,6 +282,7 @@ Result of `humand.detect()` is a single object that includes data for all enable
 
 ```js
 result = {
+  version:         // <string> version string of the human library
   face:            // <array of detected objects>
   [
     {
@@ -325,13 +318,7 @@ result = {
       emotion,     // <string> 'angry', 'discust', 'fear', 'happy', 'sad', 'surpise', 'neutral'
     }
   ],
-}
-```
-
-Additionally, `result` object includes internal performance data - total time spend and time per module (measured in ms):
-
-```js
-  result.performance = {
+  performance = {  // performance data of last execution for each module measuredin miliseconds
     body,
     hand,
     face,
@@ -339,6 +326,7 @@ Additionally, `result` object includes internal performance data - total time sp
     emotion,
     total,
   }
+}
 ```
 
 <hr>
@@ -402,3 +390,5 @@ Library can also be used on mobile devices
 
 - Tweak default parameters and factorization for age/gender/emotion
 - Verify age/gender models
+- Face scalling
+- NSFW

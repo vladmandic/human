@@ -3887,21 +3887,20 @@ var require_ssrnet = __commonJS((exports2) => {
   let last = {age: 0, gender: ""};
   let frame = 0;
   async function getImage(image, size) {
-    const tensor = tf2.tidy(() => {
-      const buffer = tf2.browser.fromPixels(image);
-      const resize = tf2.image.resizeBilinear(buffer, [size, size]);
-      const expand = tf2.cast(tf2.expandDims(resize, 0), "float32");
-      return expand;
-    });
-    return tensor;
+    const buffer = tf2.browser.fromPixels(image);
+    const resize = tf2.image.resizeBilinear(buffer, [size, size]);
+    const expand = tf2.cast(tf2.expandDims(resize, 0), "float32");
+    return expand;
   }
   async function loadAge(config) {
     if (!models2.age)
       models2.age = await tf2.loadGraphModel(config.face.age.modelPath);
+    return models2.age;
   }
   async function loadGender(config) {
     if (!models2.gender)
       models2.gender = await tf2.loadGraphModel(config.face.gender.modelPath);
+    return models2.gender;
   }
   async function predict(image, config) {
     frame += 1;
@@ -3959,6 +3958,7 @@ var require_emotion = __commonJS((exports2) => {
   async function load(config) {
     if (!models2.emotion)
       models2.emotion = await tf2.loadGraphModel(config.face.emotion.modelPath);
+    return models2.emotion;
   }
   async function predict(image, config) {
     frame += 1;
@@ -5142,9 +5142,12 @@ const handpose = require_handpose();
 const defaults = require_config().default;
 const models = {
   facemesh: null,
-  blazeface: null,
-  ssrnet: null,
-  iris: null
+  posenet: null,
+  handpose: null,
+  iris: null,
+  age: null,
+  gender: null,
+  emotion: null
 };
 function mergeDeep(...objects) {
   const isObject = (obj) => obj && typeof obj === "object";
@@ -5166,19 +5169,18 @@ function mergeDeep(...objects) {
 async function detect(input, userConfig) {
   return new Promise(async (resolve) => {
     const config = mergeDeep(defaults, userConfig);
-    if (config.face.age.enabled)
-      await ssrnet.loadAge(config);
-    if (config.face.gender.enabled)
-      await ssrnet.loadGender(config);
-    if (config.face.emotion.enabled)
-      await emotion.load(config);
+    if (config.face.enabled && !models.facemesh)
+      models.facemesh = await facemesh.load(config.face);
     if (config.body.enabled && !models.posenet)
       models.posenet = await posenet.load(config.body);
     if (config.hand.enabled && !models.handpose)
       models.handpose = await handpose.load(config.hand);
-    if (config.face.enabled && !models.facemesh)
-      models.facemesh = await facemesh.load(config.face);
-    tf.engine().startScope();
+    if (config.face.enabled && config.face.age.enabled && !models.age)
+      models.age = await ssrnet.loadAge(config);
+    if (config.face.enabled && config.face.gender.enabled && !models.gender)
+      models.gender = await ssrnet.loadGender(config);
+    if (config.face.enabled && config.face.emotion.enabled && !models.emotion)
+      models.emotion = await emotion.load(config);
     let savedWebglPackDepthwiseConvFlag;
     if (tf.getBackend() === "webgl") {
       savedWebglPackDepthwiseConvFlag = tf.env().get("WEBGL_PACK_DEPTHWISECONV");
@@ -5188,25 +5190,30 @@ async function detect(input, userConfig) {
     let timeStamp;
     timeStamp = performance.now();
     let poseRes = [];
+    tf.engine().startScope();
     if (config.body.enabled)
       poseRes = await models.posenet.estimatePoses(input, config.body);
+    tf.engine().endScope();
     perf.body = Math.trunc(performance.now() - timeStamp);
     timeStamp = performance.now();
     let handRes = [];
+    tf.engine().startScope();
     if (config.hand.enabled)
       handRes = await models.handpose.estimateHands(input, config.hand);
+    tf.engine().endScope();
     perf.hand = Math.trunc(performance.now() - timeStamp);
     const faceRes = [];
     if (config.face.enabled) {
       timeStamp = performance.now();
+      tf.engine().startScope();
       const faces = await models.facemesh.estimateFaces(input, config.face);
       perf.face = Math.trunc(performance.now() - timeStamp);
       for (const face of faces) {
         timeStamp = performance.now();
-        const ssrdata = config.face.age.enabled || config.face.gender.enabled ? await ssrnet.predict(face.image, config) : {};
+        const ssrData = config.face.age.enabled || config.face.gender.enabled ? await ssrnet.predict(face.image, config) : {};
         perf.agegender = Math.trunc(performance.now() - timeStamp);
         timeStamp = performance.now();
-        const emotiondata = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
+        const emotionData = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
         perf.emotion = Math.trunc(performance.now() - timeStamp);
         face.image.dispose();
         const iris = face.annotations.leftEyeIris && face.annotations.rightEyeIris ? Math.max(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0], face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0]) : 0;
@@ -5215,15 +5222,15 @@ async function detect(input, userConfig) {
           box: face.box,
           mesh: face.mesh,
           annotations: face.annotations,
-          age: ssrdata.age,
-          gender: ssrdata.gender,
-          emotion: emotiondata,
+          age: ssrData.age,
+          gender: ssrData.gender,
+          emotion: emotionData,
           iris: iris !== 0 ? Math.trunc(100 * 11.7 / iris) / 100 : 0
         });
       }
+      tf.engine().endScope();
     }
     tf.env().set("WEBGL_PACK_DEPTHWISECONV", savedWebglPackDepthwiseConvFlag);
-    tf.engine().endScope();
     perf.total = Object.values(perf).reduce((a, b) => a + b);
     resolve({face: faceRes, body: poseRes, hand: handRes, performance: perf});
   });

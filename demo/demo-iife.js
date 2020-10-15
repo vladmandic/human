@@ -178,12 +178,7 @@ async function runHumanDetect(input, canvas) {
   if (live || !(input instanceof HTMLVideoElement)) {
     // perform detection
     const t0 = performance.now();
-    let result;
-    try {
-      result = await human.detect(input, config);
-    } catch (err) {
-      log.innerText = err.message;
-    }
+    const result = await human.detect(input, config);
     if (!result) return;
     const t1 = performance.now();
     // update fps

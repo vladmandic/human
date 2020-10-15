@@ -3,7 +3,7 @@
 import human from '../dist/human.esm.js';
 
 const ui = {
-  backend: 'wasm',
+  backend: 'webgl',
   baseColor: 'rgba(255, 200, 255, 0.3)',
   baseLabel: 'rgba(255, 200, 255, 0.8)',
   baseFont: 'small-caps 1.2rem "Segoe UI"',
@@ -24,6 +24,8 @@ const config = {
   hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
 };
 let settings;
+let worker;
+let timeStamp;
 
 function str(...msg) {
   if (!Array.isArray(msg)) return msg;
@@ -35,13 +37,30 @@ function str(...msg) {
   return line;
 }
 
-async function setupTF() {
+async function setupTF(input) {
+  // pause video if running before changing backend
+  const live = input.srcObject ? ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused)) : false;
+  if (live) await input.pause();
+
+  // if user explicitly loaded tfjs, override one used in human library
+  if (window.tf) human.tf = window.tf;
+
+  // cheks for wasm backend
   if (ui.backend === 'wasm') {
-    tf.env().set('WASM_HAS_SIMD_SUPPORT', false);
-    tf.env().set('WASM_HAS_MULTITHREAD_SUPPORT', true);
+    if (!window.tf) {
+      document.getElementById('log').innerText = 'Error: WASM Backend is not loaded, enable it in HTML file';
+      ui.backend = 'webgl';
+    } else {
+      human.tf = window.tf;
+      tf.env().set('WASM_HAS_SIMD_SUPPORT', false);
+      tf.env().set('WASM_HAS_MULTITHREAD_SUPPORT', true);
+    }
   }
   await human.tf.setBackend(ui.backend);
   await human.tf.ready();
+
+  // continue video if it was previously running
+  if (live) await input.play();
 }
 
 async function drawFace(result, canvas) {
@@ -201,45 +220,64 @@ async function drawHand(result, canvas) {
   }
 }
 
-async function runHumanDetect(input, canvas) {
+async function drawResults(input, result, canvas) {
+  // update fps
+  settings.setValue('FPS', Math.round(1000 / (performance.now() - timeStamp)));
+  // draw image from video
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
+  // draw all results
+  drawFace(result.face, canvas);
+  drawBody(result.body, canvas);
+  drawHand(result.hand, canvas);
+  // update log
+  const engine = await human.tf.engine();
+  const memory = `${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors`;
+  const gpu = engine.backendInstance.numBytesInGPU ? `GPU: ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes` : '';
   const log = document.getElementById('log');
+  log.innerText = `
+    TFJS Version: ${human.tf.version_core} | Backend: {human.tf.getBackend()} | Memory: ${memory} ${gpu}
+    Performance: ${str(result.performance)} | Object size: ${(str(result)).length.toLocaleString()} bytes
+  `;
+}
+
+async function webWorker(input, image, canvas) {
+  if (!worker) {
+    // create new webworker
+    worker = new Worker('demo-esm-webworker.js', { type: 'module' });
+    // after receiving message from webworker, parse&draw results and send new frame for processing
+    worker.addEventListener('message', async (msg) => {
+      await drawResults(input, msg.data, canvas);
+      // eslint-disable-next-line no-use-before-define
+      requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop
+    });
+  }
+  // const offscreen = image.transferControlToOffscreen();
+  worker.postMessage({ image, config });
+}
+
+async function runHumanDetect(input, canvas) {
   const live = input.srcObject ? ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused)) : false;
+  timeStamp = performance.now();
   // perform detect if live video or not video at all
   if (live || !(input instanceof HTMLVideoElement)) {
-    // perform detection
-    const t0 = performance.now();
-    let result;
-    try {
-      result = await human.detect(input, config);
-    } catch (err) {
-      log.innerText = err.message;
+    if (settings.getValue('Use Web Worker')) {
+      // get image data from video as we cannot send html objects to webworker
+      const offscreen = new OffscreenCanvas(canvas.width, canvas.height);
+      const ctx = offscreen.getContext('2d');
+      ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      // perform detection
+      await webWorker(input, data, canvas);
+    } else {
+      const result = await human.detect(input, config);
+      await drawResults(input, result, canvas);
+      if (input.readyState) requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop
     }
-    if (!result) return;
-    const t1 = performance.now();
-    // update fps
-    settings.setValue('FPS', Math.round(1000 / (t1 - t0)));
-    // draw image from video
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
-    // draw all results
-    drawFace(result.face, canvas);
-    drawBody(result.body, canvas);
-    drawHand(result.hand, canvas);
-    // update log
-    const engine = await human.tf.engine();
-    const memory = `${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors`;
-    const gpu = engine.backendInstance.numBytesInGPU ? `GPU: ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes` : '';
-    log.innerText = `
-      TFJS Version: ${human.tf.version_core} | Backend: ${human.tf.getBackend()} | Memory: ${memory} ${gpu}
-      Performance: ${str(result.performance)} | Object size: ${(str(result)).length.toLocaleString()} bytes
-    `;
-    // rinse & repeate
-    // if (input.readyState) setTimeout(() => runHumanDetect(), 1000); // slow loop for debugging purposes
-    if (input.readyState) requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop
   }
 }
 
-function setupGUI() {
+function setupUI(input) {
   // add all variables to ui control panel
   settings = QuickSettings.create(10, 10, 'Settings', document.getElementById('main'));
   const style = document.createElement('style');
@@ -266,9 +304,9 @@ function setupGUI() {
     }
     runHumanDetect(video, canvas);
   });
-  settings.addDropDown('Backend', ['webgl', 'wasm', 'cpu'], (val) => {
+  settings.addDropDown('Backend', ['webgl', 'wasm', 'cpu'], async (val) => {
     ui.backend = val.value;
-    setupTF();
+    await setupTF(input);
   });
   settings.addHTML('title', 'Enabled Models'); settings.hideTitle('title');
   settings.addBoolean('Face Detect', config.face.enabled, (val) => config.face.enabled = val);
@@ -305,6 +343,7 @@ function setupGUI() {
     config.hand.iouThreshold = parseFloat(val);
   });
   settings.addHTML('title', 'UI Options'); settings.hideTitle('title');
+  settings.addBoolean('Use Web Worker', false);
   settings.addBoolean('Draw Boxes', true);
   settings.addBoolean('Draw Points', true);
   settings.addBoolean('Draw Polygons', true);
@@ -357,17 +396,17 @@ async function setupImage() {
 }
 
 async function main() {
-  // initialize tensorflow
-  await setupTF();
-  // setup ui control panel
-  await setupGUI();
   // setup webcam
-  const video = await setupCamera();
+  const input = await setupCamera();
   // or setup image
-  // const image = await setupImage();
-  // setup output canvas from input object, select video or image
-  await setupCanvas(video);
+  // const input = await setupImage();
+  // setup output canvas from input object
+  await setupCanvas(input);
   // run actual detection. if input is video, it will run in a loop else it will run only once
+  // setup ui control panel
+  await setupUI(input);
+  // initialize tensorflow
+  await setupTF(input);
   // runHumanDetect(video, canvas);
 }
 

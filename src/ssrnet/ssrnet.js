@@ -5,22 +5,20 @@ let last = { age: 0, gender: '' };
 let frame = 0;
 
 async function getImage(image, size) {
-  const tensor = tf.tidy(() => {
-    const buffer = tf.browser.fromPixels(image);
-    const resize = tf.image.resizeBilinear(buffer, [size, size]);
-    const expand = tf.cast(tf.expandDims(resize, 0), 'float32');
-    // const normalize = tf.mul(expand, [1.0 / 1.0]);
-    return expand;
-  });
-  return tensor;
+  const buffer = tf.browser.fromPixels(image);
+  const resize = tf.image.resizeBilinear(buffer, [size, size]);
+  const expand = tf.cast(tf.expandDims(resize, 0), 'float32');
+  return expand;
 }
 
 async function loadAge(config) {
   if (!models.age) models.age = await tf.loadGraphModel(config.face.age.modelPath);
+  return models.age;
 }
 
 async function loadGender(config) {
   if (!models.gender) models.gender = await tf.loadGraphModel(config.face.gender.modelPath);
+  return models.gender;
 }
 
 async function predict(image, config) {

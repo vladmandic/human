@@ -6,13 +6,18 @@ const posenet = require('./posenet/posenet.js');
 const handpose = require('./handpose/handpose.js');
 const defaults = require('./config.js').default;
 
+// object that contains all initialized models
 const models = {
   facemesh: null,
-  blazeface: null,
-  ssrnet: null,
+  posenet: null,
+  handpose: null,
   iris: null,
+  age: null,
+  gender: null,
+  emotion: null,
 };
 
+// helper function that performs deep merge of multiple objects so it allows full inheriance with overrides
 function mergeDeep(...objects) {
   const isObject = (obj) => obj && typeof obj === 'object';
   return objects.reduce((prev, obj) => {
@@ -37,15 +42,14 @@ async function detect(input, userConfig) {
     const config = mergeDeep(defaults, userConfig);
 
     // load models if enabled
-    if (config.face.age.enabled) await ssrnet.loadAge(config);
-    if (config.face.gender.enabled) await ssrnet.loadGender(config);
-    if (config.face.emotion.enabled) await emotion.load(config);
+    if (config.face.enabled && !models.facemesh) models.facemesh = await facemesh.load(config.face);
     if (config.body.enabled && !models.posenet) models.posenet = await posenet.load(config.body);
     if (config.hand.enabled && !models.handpose) models.handpose = await handpose.load(config.hand);
-    if (config.face.enabled && !models.facemesh) models.facemesh = await facemesh.load(config.face);
+    if (config.face.enabled && config.face.age.enabled && !models.age) models.age = await ssrnet.loadAge(config);
+    if (config.face.enabled && config.face.gender.enabled && !models.gender) models.gender = await ssrnet.loadGender(config);
+    if (config.face.enabled && config.face.emotion.enabled && !models.emotion) models.emotion = await emotion.load(config);
 
-    tf.engine().startScope();
-
+    // explictly enable depthwiseconv since it's diasabled by default due to issues with large shaders
     let savedWebglPackDepthwiseConvFlag;
     if (tf.getBackend() === 'webgl') {
       savedWebglPackDepthwiseConvFlag = tf.env().get('WEBGL_PACK_DEPTHWISECONV');
@@ -58,29 +62,34 @@ async function detect(input, userConfig) {
     // run posenet
     timeStamp = performance.now();
     let poseRes = [];
+    tf.engine().startScope();
     if (config.body.enabled) poseRes = await models.posenet.estimatePoses(input, config.body);
+    tf.engine().endScope();
     perf.body = Math.trunc(performance.now() - timeStamp);
 
     // run handpose
     timeStamp = performance.now();
     let handRes = [];
+    tf.engine().startScope();
     if (config.hand.enabled) handRes = await models.handpose.estimateHands(input, config.hand);
+    tf.engine().endScope();
     perf.hand = Math.trunc(performance.now() - timeStamp);
 
     // run facemesh, includes blazeface and iris
     const faceRes = [];
     if (config.face.enabled) {
       timeStamp = performance.now();
+      tf.engine().startScope();
       const faces = await models.facemesh.estimateFaces(input, config.face);
       perf.face = Math.trunc(performance.now() - timeStamp);
       for (const face of faces) {
         // run ssr-net age & gender, inherits face from blazeface
         timeStamp = performance.now();
-        const ssrdata = (config.face.age.enabled || config.face.gender.enabled) ? await ssrnet.predict(face.image, config) : {};
+        const ssrData = (config.face.age.enabled || config.face.gender.enabled) ? await ssrnet.predict(face.image, config) : {};
         perf.agegender = Math.trunc(performance.now() - timeStamp);
         // run emotion, inherits face from blazeface
         timeStamp = performance.now();
-        const emotiondata = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
+        const emotionData = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
         perf.emotion = Math.trunc(performance.now() - timeStamp);
         face.image.dispose();
         // calculate iris distance
@@ -93,18 +102,19 @@ async function detect(input, userConfig) {
           box: face.box,
           mesh: face.mesh,
           annotations: face.annotations,
-          age: ssrdata.age,
-          gender: ssrdata.gender,
-          emotion: emotiondata,
+          age: ssrData.age,
+          gender: ssrData.gender,
+          emotion: emotionData,
           iris: (iris !== 0) ? Math.trunc(100 * 11.7 /* human iris size in mm */ / iris) / 100 : 0,
         });
       }
+      tf.engine().endScope();
     }
 
+    // set depthwiseconv to original value
     tf.env().set('WEBGL_PACK_DEPTHWISECONV', savedWebglPackDepthwiseConvFlag);
 
-    tf.engine().endScope();
-    // combine results
+    // combine and return results
     perf.total = Object.values(perf).reduce((a, b) => a + b);
     resolve({ face: faceRes, body: poseRes, hand: handRes, performance: perf });
   });

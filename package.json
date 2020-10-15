@@ -37,7 +37,7 @@
     "start": "node --trace-warnings --trace-uncaught --no-deprecation demo/demo-node.js",
     "lint": "eslint src/*.js demo/*.js",
     "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --external:fs --global-name=human --outfile=dist/human.js src/index.js",
-    "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:fs --outfile=dist/human.esm.js src/index.js",
+    "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:fs --outfile=dist/human.esm.js src/index.js",
     "build-esm-nobundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:@tensorflow --external:fs --outfile=dist/human.esm-nobundle.js src/index.js",
     "build-node-bundle": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --minify --outfile=dist/human.cjs src/index.js",
     "build-node-nobundle": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --outfile=dist/human-nobundle.cjs src/index.js",

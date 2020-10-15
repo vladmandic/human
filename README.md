@@ -160,10 +160,8 @@ If your application resides in a different folder, modify `modelPath` property i
 Demos are included in `/demo`:
 
 Browser:
-- `demo-esm`: Demo using Browser with ESM module
-- `demo-iife`: Demo using Browser with IIFE module
-- `demo-webworker`: Demo using Browser with ESM module and Web Workers
-*All three following demos are identical, they just illustrate different ways to load and work with `Human` library:*
+- `demo-esm`: Full demo using Browser with ESM module, includes selectable backends and webworkers
+- `demo-iife`: Older demo using Browser with IIFE module
 
 NodeJS:
 - `demo-node`: Demo using NodeJS with CJS module  

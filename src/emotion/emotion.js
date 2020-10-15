@@ -18,6 +18,7 @@ function getImage(image, size) {
 
 async function load(config) {
   if (!models.emotion) models.emotion = await tf.loadGraphModel(config.face.emotion.modelPath);
+  return models.emotion;
 }
 
 async function predict(image, config) {
@@ -31,7 +32,7 @@ async function predict(image, config) {
       const resize = tf.image.resizeBilinear(image, [config.face.emotion.inputSize, config.face.emotion.inputSize], false);
       const [r, g, b] = tf.split(resize, 3, 3);
       if (config.face.emotion.useGrayscale) {
-        // 0.2989 * R + 0.5870 * G + 0.1140 * B // https://www.mathworks.com/help/matlab/ref/rgb2gray.html
+        // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html
         const r1 = tf.mul(r, [0.2989]);
         const g1 = tf.mul(g, [0.5870]);
         const b1 = tf.mul(b, [0.1140]);

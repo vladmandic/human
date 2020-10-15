@@ -79,17 +79,17 @@ var require_blazeface = __commonJS((exports2) => {
     });
   }
   class BlazeFaceModel {
-    constructor(model, config) {
+    constructor(model, config2) {
       this.blazeFaceModel = model;
-      this.width = config.detector.inputSize;
-      this.height = config.detector.inputSize;
-      this.maxFaces = config.detector.maxFaces;
-      this.anchorsData = generateAnchors(config.detector.inputSize, config.detector.inputSize, ANCHORS_CONFIG);
+      this.width = config2.detector.inputSize;
+      this.height = config2.detector.inputSize;
+      this.maxFaces = config2.detector.maxFaces;
+      this.anchorsData = generateAnchors(config2.detector.inputSize, config2.detector.inputSize, ANCHORS_CONFIG);
       this.anchors = tf2.tensor2d(this.anchorsData);
-      this.inputSizeData = [config.detector.inputSize, config.detector.inputSize];
-      this.inputSize = tf2.tensor1d([config.detector.inputSize, config.detector.inputSize]);
-      this.iouThreshold = config.detector.iouThreshold;
-      this.scoreThreshold = config.detector.scoreThreshold;
+      this.inputSizeData = [config2.detector.inputSize, config2.detector.inputSize];
+      this.inputSize = tf2.tensor1d([config2.detector.inputSize, config2.detector.inputSize]);
+      this.iouThreshold = config2.detector.iouThreshold;
+      this.scoreThreshold = config2.detector.scoreThreshold;
     }
     async getBoundingBoxes(inputImage) {
       const [detectedOutputs, boxes, scores] = tf2.tidy(() => {
@@ -189,9 +189,9 @@ var require_blazeface = __commonJS((exports2) => {
       }));
     }
   }
-  async function load(config) {
-    const blazeface = await tf2.loadGraphModel(config.detector.modelPath, {fromTFHub: config.detector.modelPath.includes("tfhub.dev")});
-    const model = new BlazeFaceModel(blazeface, config);
+  async function load(config2) {
+    const blazeface = await tf2.loadGraphModel(config2.detector.modelPath, {fromTFHub: config2.detector.modelPath.includes("tfhub.dev")});
+    const model = new BlazeFaceModel(blazeface, config2);
     return model;
   }
   exports2.load = load;
@@ -463,16 +463,16 @@ var require_pipeline = __commonJS((exports2) => {
     }
   }
   class Pipeline {
-    constructor(boundingBoxDetector, meshDetector, irisModel, config) {
+    constructor(boundingBoxDetector, meshDetector, irisModel, config2) {
       this.regionsOfInterest = [];
       this.runsWithoutFaceDetector = 0;
       this.boundingBoxDetector = boundingBoxDetector;
       this.meshDetector = meshDetector;
       this.irisModel = irisModel;
-      this.meshWidth = config.mesh.inputSize;
-      this.meshHeight = config.mesh.inputSize;
-      this.irisSize = config.iris.inputSize;
-      this.irisEnlarge = config.iris.enlargeFactor;
+      this.meshWidth = config2.mesh.inputSize;
+      this.meshHeight = config2.mesh.inputSize;
+      this.irisSize = config2.iris.inputSize;
+      this.irisEnlarge = config2.iris.enlargeFactor;
     }
     transformRawCoords(rawCoords, box, angle, rotationMatrix) {
       const boxSize = bounding.getBoxSize({startPoint: box.startPoint, endPoint: box.endPoint});
@@ -543,9 +543,9 @@ var require_pipeline = __commonJS((exports2) => {
         return [coord[0], coord[1], z];
       });
     }
-    async predict(input, config) {
-      this.skipFrames = config.detector.skipFrames;
-      this.maxFaces = config.detector.maxFaces;
+    async predict(input, config2) {
+      this.skipFrames = config2.detector.skipFrames;
+      this.maxFaces = config2.detector.maxFaces;
       if (this.shouldUpdateRegionsOfInterest()) {
         const {boxes, scaleFactor} = await this.boundingBoxDetector.getBoundingBoxes(input);
         if (boxes.length === 0) {
@@ -592,7 +592,7 @@ var require_pipeline = __commonJS((exports2) => {
         const [, flag, coords] = this.meshDetector.predict(face);
         const coordsReshaped = tf2.reshape(coords, [-1, 3]);
         let rawCoords = coordsReshaped.arraySync();
-        if (config.iris.enabled) {
+        if (config2.iris.enabled) {
           const {box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop} = this.getEyeBox(rawCoords, face, LEFT_EYE_BOUNDS[0], LEFT_EYE_BOUNDS[1], true);
           const {box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop} = this.getEyeBox(rawCoords, face, RIGHT_EYE_BOUNDS[0], RIGHT_EYE_BOUNDS[1]);
           const eyePredictions = this.irisModel.predict(tf2.concat([leftEyeCrop, rightEyeCrop]));
@@ -618,7 +618,7 @@ var require_pipeline = __commonJS((exports2) => {
         const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
         tf2.dispose(rawCoords);
         const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
-        if (config.mesh.enabled) {
+        if (config2.mesh.enabled) {
           const transformedCoords = tf2.tensor2d(transformedCoordsData);
           this.regionsOfInterest[i] = {...landmarksBox, landmarks: transformedCoords.arraySync()};
           const prediction2 = {
@@ -3823,20 +3823,20 @@ var require_facemesh = __commonJS((exports2) => {
   const uv_coords = require_uvcoords();
   const triangulation = require_triangulation().default;
   class MediaPipeFaceMesh {
-    constructor(blazeFace, blazeMeshModel, irisModel, config) {
-      this.pipeline = new pipe.Pipeline(blazeFace, blazeMeshModel, irisModel, config);
-      if (config)
-        this.config = config;
+    constructor(blazeFace, blazeMeshModel, irisModel, config2) {
+      this.pipeline = new pipe.Pipeline(blazeFace, blazeMeshModel, irisModel, config2);
+      if (config2)
+        this.config = config2;
     }
-    async estimateFaces(input, config) {
-      if (config)
-        this.config = config;
+    async estimateFaces(input, config2) {
+      if (config2)
+        this.config = config2;
       const image = tf2.tidy(() => {
         if (!(input instanceof tf2.Tensor))
           input = tf2.browser.fromPixels(input);
         return input.toFloat().expandDims(0);
       });
-      const predictions = await this.pipeline.predict(image, config);
+      const predictions = await this.pipeline.predict(image, config2);
       tf2.dispose(image);
       const results = [];
       for (const prediction of predictions || []) {
@@ -3865,13 +3865,13 @@ var require_facemesh = __commonJS((exports2) => {
       return results;
     }
   }
-  async function load(config) {
+  async function load(config2) {
     const models2 = await Promise.all([
-      blazeface.load(config),
-      tf2.loadGraphModel(config.mesh.modelPath, {fromTFHub: config.mesh.modelPath.includes("tfhub.dev")}),
-      tf2.loadGraphModel(config.iris.modelPath, {fromTFHub: config.iris.modelPath.includes("tfhub.dev")})
+      blazeface.load(config2),
+      tf2.loadGraphModel(config2.mesh.modelPath, {fromTFHub: config2.mesh.modelPath.includes("tfhub.dev")}),
+      tf2.loadGraphModel(config2.iris.modelPath, {fromTFHub: config2.iris.modelPath.includes("tfhub.dev")})
     ]);
-    const faceMesh = new MediaPipeFaceMesh(models2[0], models2[1], models2[2], config);
+    const faceMesh = new MediaPipeFaceMesh(models2[0], models2[1], models2[2], config2);
     return faceMesh;
   }
   exports2.load = load;
@@ -3892,38 +3892,38 @@ var require_ssrnet = __commonJS((exports2) => {
     const expand = tf2.cast(tf2.expandDims(resize, 0), "float32");
     return expand;
   }
-  async function loadAge(config) {
+  async function loadAge(config2) {
     if (!models2.age)
-      models2.age = await tf2.loadGraphModel(config.face.age.modelPath);
+      models2.age = await tf2.loadGraphModel(config2.face.age.modelPath);
     return models2.age;
   }
-  async function loadGender(config) {
+  async function loadGender(config2) {
     if (!models2.gender)
-      models2.gender = await tf2.loadGraphModel(config.face.gender.modelPath);
+      models2.gender = await tf2.loadGraphModel(config2.face.gender.modelPath);
     return models2.gender;
   }
-  async function predict(image, config) {
+  async function predict(image, config2) {
     frame += 1;
-    if (frame >= config.face.age.skipFrames) {
+    if (frame >= config2.face.age.skipFrames) {
       frame = 0;
       return last;
     }
     let enhance;
     if (image instanceof tf2.Tensor) {
-      const resize = tf2.image.resizeBilinear(image, [config.face.age.inputSize, config.face.age.inputSize], false);
+      const resize = tf2.image.resizeBilinear(image, [config2.face.age.inputSize, config2.face.age.inputSize], false);
       enhance = tf2.mul(resize, [255]);
       tf2.dispose(resize);
     } else {
-      enhance = await getImage(image, config.face.age.inputSize);
+      enhance = await getImage(image, config2.face.age.inputSize);
     }
     const obj = {};
-    if (config.face.age.enabled) {
+    if (config2.face.age.enabled) {
       const ageT = await models2.age.predict(enhance);
       const data = await ageT.data();
       obj.age = Math.trunc(10 * data[0]) / 10;
       tf2.dispose(ageT);
     }
-    if (config.face.gender.enabled) {
+    if (config2.face.gender.enabled) {
       const genderT = await models2.gender.predict(enhance);
       const data = await genderT.data();
       obj.gender = Math.trunc(100 * data[0]) < 50 ? "female" : "male";
@@ -3955,22 +3955,22 @@ var require_emotion = __commonJS((exports2) => {
     });
     return tensor;
   }
-  async function load(config) {
+  async function load(config2) {
     if (!models2.emotion)
-      models2.emotion = await tf2.loadGraphModel(config.face.emotion.modelPath);
+      models2.emotion = await tf2.loadGraphModel(config2.face.emotion.modelPath);
     return models2.emotion;
   }
-  async function predict(image, config) {
+  async function predict(image, config2) {
     frame += 1;
-    if (frame >= config.face.emotion.skipFrames) {
+    if (frame >= config2.face.emotion.skipFrames) {
       frame = 0;
       return last;
     }
     const enhance = tf2.tidy(() => {
       if (image instanceof tf2.Tensor) {
-        const resize = tf2.image.resizeBilinear(image, [config.face.emotion.inputSize, config.face.emotion.inputSize], false);
+        const resize = tf2.image.resizeBilinear(image, [config2.face.emotion.inputSize, config2.face.emotion.inputSize], false);
         const [r, g, b] = tf2.split(resize, 3, 3);
-        if (config.face.emotion.useGrayscale) {
+        if (config2.face.emotion.useGrayscale) {
           const r1 = tf2.mul(r, [0.2989]);
           const g1 = tf2.mul(g, [0.587]);
           const b1 = tf2.mul(b, [0.114]);
@@ -3979,14 +3979,14 @@ var require_emotion = __commonJS((exports2) => {
         }
         return g;
       }
-      return getImage(image, config.face.emotion.inputSize);
+      return getImage(image, config2.face.emotion.inputSize);
     });
     const obj = [];
-    if (config.face.emotion.enabled) {
+    if (config2.face.emotion.enabled) {
       const emotionT = await models2.emotion.predict(enhance);
       const data = await emotionT.data();
       for (let i = 0; i < data.length; i++) {
-        if (multiplier * data[i] > config.face.emotion.minConfidence)
+        if (multiplier * data[i] > config2.face.emotion.minConfidence)
           obj.push({score: Math.min(0.99, Math.trunc(100 * multiplier * data[i]) / 100), emotion: annotations[i]});
       }
       obj.sort((a, b) => b.score - a.score);
@@ -4522,18 +4522,18 @@ var require_modelPoseNet = __commonJS((exports2) => {
     constructor(net) {
       this.baseModel = net;
     }
-    async estimatePoses(input, config) {
-      const outputStride = config.outputStride;
+    async estimatePoses(input, config2) {
+      const outputStride = config2.outputStride;
       const [height, width] = util.getInputTensorDimensions(input);
-      const {resized, padding} = util.padAndResizeTo(input, [config.inputResolution, config.inputResolution]);
+      const {resized, padding} = util.padAndResizeTo(input, [config2.inputResolution, config2.inputResolution]);
       const {heatmapScores, offsets, displacementFwd, displacementBwd} = this.baseModel.predict(resized);
       const allTensorBuffers = await util.toTensorBuffers3D([heatmapScores, offsets, displacementFwd, displacementBwd]);
       const scoresBuffer = allTensorBuffers[0];
       const offsetsBuffer = allTensorBuffers[1];
       const displacementsFwdBuffer = allTensorBuffers[2];
       const displacementsBwdBuffer = allTensorBuffers[3];
-      const poses = await decodeMultiple.decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, outputStride, config.maxDetections, config.scoreThreshold, config.nmsRadius);
-      const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config.inputResolution, config.inputResolution], padding);
+      const poses = await decodeMultiple.decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, outputStride, config2.maxDetections, config2.scoreThreshold, config2.nmsRadius);
+      const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config2.inputResolution, config2.inputResolution], padding);
       heatmapScores.dispose();
       offsets.dispose();
       displacementFwd.dispose();
@@ -4546,13 +4546,13 @@ var require_modelPoseNet = __commonJS((exports2) => {
     }
   }
   exports2.PoseNet = PoseNet;
-  async function loadMobileNet(config) {
-    const graphModel = await tf2.loadGraphModel(config.modelPath);
-    const mobilenet = new modelMobileNet.MobileNet(graphModel, config.outputStride);
+  async function loadMobileNet(config2) {
+    const graphModel = await tf2.loadGraphModel(config2.modelPath);
+    const mobilenet = new modelMobileNet.MobileNet(graphModel, config2.outputStride);
     return new PoseNet(mobilenet);
   }
-  async function load(config) {
-    return loadMobileNet(config);
+  async function load(config2) {
+    return loadMobileNet(config2);
   }
   exports2.load = load;
 });
@@ -4655,14 +4655,14 @@ var require_handdetector = __commonJS((exports2) => {
   const tf2 = require("@tensorflow/tfjs");
   const bounding = require_box2();
   class HandDetector {
-    constructor(model, anchors, config) {
+    constructor(model, anchors, config2) {
       this.model = model;
-      this.width = config.inputSize;
-      this.height = config.inputSize;
+      this.width = config2.inputSize;
+      this.height = config2.inputSize;
       this.anchors = anchors.map((anchor) => [anchor.x_center, anchor.y_center]);
       this.anchorsTensor = tf2.tensor2d(this.anchors);
-      this.inputSizeTensor = tf2.tensor1d([config.inputSize, config.inputSize]);
-      this.doubleInputSizeTensor = tf2.tensor1d([config.inputSize * 2, config.inputSize * 2]);
+      this.inputSizeTensor = tf2.tensor1d([config2.inputSize, config2.inputSize]);
+      this.doubleInputSizeTensor = tf2.tensor1d([config2.inputSize * 2, config2.inputSize * 2]);
     }
     normalizeBoxes(boxes) {
       return tf2.tidy(() => {
@@ -4716,12 +4716,12 @@ var require_handdetector = __commonJS((exports2) => {
       });
       return detectedHands;
     }
-    async estimateHandBounds(input, config) {
+    async estimateHandBounds(input, config2) {
       const inputHeight = input.shape[1];
       const inputWidth = input.shape[2];
-      this.iouThreshold = config.iouThreshold;
-      this.scoreThreshold = config.scoreThreshold;
-      this.maxHands = config.maxHands;
+      this.iouThreshold = config2.iouThreshold;
+      this.scoreThreshold = config2.scoreThreshold;
+      this.maxHands = config2.maxHands;
       const image = tf2.tidy(() => input.resizeBilinear([this.width, this.height]).div(255));
       const predictions = await this.getBoundingBoxes(image);
       image.dispose();
@@ -4841,14 +4841,14 @@ var require_pipeline2 = __commonJS((exports2) => {
   const PALM_LANDMARKS_INDEX_OF_PALM_BASE = 0;
   const PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
   class HandPipeline {
-    constructor(boundingBoxDetector, meshDetector, config) {
+    constructor(boundingBoxDetector, meshDetector, config2) {
       this.regionsOfInterest = [];
       this.runsWithoutHandDetector = 0;
       this.boundingBoxDetector = boundingBoxDetector;
       this.meshDetector = meshDetector;
-      this.meshWidth = config.inputSize;
-      this.meshHeight = config.inputSize;
-      this.enlargeFactor = config.enlargeFactor;
+      this.meshWidth = config2.inputSize;
+      this.meshHeight = config2.inputSize;
+      this.enlargeFactor = config2.enlargeFactor;
     }
     getBoxForPalmLandmarks(palmLandmarks, rotationMatrix) {
       const rotatedPalmLandmarks = palmLandmarks.map((coord) => {
@@ -4893,13 +4893,13 @@ var require_pipeline2 = __commonJS((exports2) => {
         coord[2]
       ]);
     }
-    async estimateHands(image, config) {
-      this.maxContinuousChecks = config.skipFrames;
-      this.detectionConfidence = config.minConfidence;
-      this.maxHands = config.maxHands;
+    async estimateHands(image, config2) {
+      this.maxContinuousChecks = config2.skipFrames;
+      this.detectionConfidence = config2.minConfidence;
+      this.maxHands = config2.maxHands;
       const useFreshBox = this.shouldUpdateRegionsOfInterest();
       if (useFreshBox === true) {
-        const boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config);
+        const boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config2);
         this.regionsOfInterest = [];
         for (const i in boundingBoxPredictions) {
           this.updateRegionsOfInterest(boundingBoxPredictions[i], true, i);
@@ -4930,7 +4930,7 @@ var require_pipeline2 = __commonJS((exports2) => {
         handImage.dispose();
         const flagValue = flag.dataSync()[0];
         flag.dispose();
-        if (flagValue < config.minConfidence) {
+        if (flagValue < config2.minConfidence) {
           keypoints.dispose();
           this.regionsOfInterest[i] = [];
           return hands;
@@ -5001,17 +5001,17 @@ var require_handpose = __commonJS((exports2) => {
     constructor(pipeline) {
       this.pipeline = pipeline;
     }
-    async estimateHands(input, config) {
-      this.maxContinuousChecks = config.skipFrames;
-      this.detectionConfidence = config.minConfidence;
-      this.maxHands = config.maxHands;
+    async estimateHands(input, config2) {
+      this.maxContinuousChecks = config2.skipFrames;
+      this.detectionConfidence = config2.minConfidence;
+      this.maxHands = config2.maxHands;
       const image = tf2.tidy(() => {
         if (!(input instanceof tf2.Tensor)) {
           input = tf2.browser.fromPixels(input);
         }
         return input.toFloat().expandDims(0);
       });
-      const predictions = await this.pipeline.estimateHands(image, config);
+      const predictions = await this.pipeline.estimateHands(image, config2);
       image.dispose();
       const hands = [];
       if (!predictions)
@@ -5042,14 +5042,14 @@ var require_handpose = __commonJS((exports2) => {
     }
     return tf2.util.fetch(url).then((d) => d.json());
   }
-  async function load(config) {
+  async function load(config2) {
     const [anchors, handDetectorModel, handPoseModel] = await Promise.all([
-      loadAnchors(config.detector.anchors),
-      tf2.loadGraphModel(config.detector.modelPath, {fromTFHub: config.detector.modelPath.includes("tfhub.dev")}),
-      tf2.loadGraphModel(config.skeleton.modelPath, {fromTFHub: config.skeleton.modelPath.includes("tfhub.dev")})
+      loadAnchors(config2.detector.anchors),
+      tf2.loadGraphModel(config2.detector.modelPath, {fromTFHub: config2.detector.modelPath.includes("tfhub.dev")}),
+      tf2.loadGraphModel(config2.skeleton.modelPath, {fromTFHub: config2.skeleton.modelPath.includes("tfhub.dev")})
     ]);
-    const detector = new hand.HandDetector(handDetectorModel, anchors, config);
-    const pipeline = new pipe.HandPipeline(detector, handPoseModel, config);
+    const detector = new hand.HandDetector(handDetectorModel, anchors, config2);
+    const pipeline = new pipe.HandPipeline(detector, handPoseModel, config2);
     const handpose2 = new HandPose(pipeline);
     return handpose2;
   }
@@ -5132,6 +5132,69 @@ var require_config = __commonJS((exports2) => {
   };
 });
 
+// package.json
+var require_package = __commonJS((exports2, module2) => {
+  module2.exports = {
+    name: "@vladmandic/human",
+    version: "0.3.1",
+    description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
+    sideEffects: false,
+    main: "dist/human.cjs",
+    module: "dist/human.esm.js",
+    browser: "dist/human.esm.js",
+    author: "Vladimir Mandic <mandic00@live.com>",
+    bugs: {
+      url: "https://github.com/vladmandic/human/issues"
+    },
+    homepage: "https://github.com/vladmandic/human#readme",
+    license: "MIT",
+    engines: {
+      node: ">=14.0.0"
+    },
+    repository: {
+      type: "git",
+      url: "git+https://github.com/vladmandic/human.git"
+    },
+    dependencies: {},
+    peerDependencies: {},
+    devDependencies: {
+      "@tensorflow/tfjs": "^2.6.0",
+      "@tensorflow/tfjs-node": "^2.6.0",
+      esbuild: "^0.7.15",
+      eslint: "^7.10.0",
+      "eslint-config-airbnb-base": "^14.2.0",
+      "eslint-plugin-import": "^2.22.1",
+      "eslint-plugin-json": "^2.1.2",
+      "eslint-plugin-node": "^11.1.0",
+      "eslint-plugin-promise": "^4.2.1",
+      rimraf: "^3.0.2"
+    },
+    scripts: {
+      start: "node --trace-warnings --trace-uncaught --no-deprecation demo/demo-node.js",
+      lint: "eslint src/*.js demo/*.js",
+      "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --external:fs --global-name=human --outfile=dist/human.js src/index.js",
+      "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:fs --outfile=dist/human.esm.js src/index.js",
+      "build-esm-nobundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:@tensorflow --external:fs --outfile=dist/human.esm-nobundle.js src/index.js",
+      "build-node-bundle": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --minify --outfile=dist/human.cjs src/index.js",
+      "build-node-nobundle": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --outfile=dist/human-nobundle.cjs src/index.js",
+      build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node-bundle && npm run build-node-nobundle && ls -l dist/",
+      update: "npm update --depth 20 && npm dedupe && npm prune && npm audit"
+    },
+    keywords: [
+      "tensorflowjs",
+      "face-detection",
+      "face-geometry",
+      "body-tracking",
+      "hand-tracking",
+      "iris-tracking",
+      "age-estimation",
+      "emotion-detection",
+      "gender-prediction",
+      "gesture-recognition"
+    ]
+  };
+});
+
 // src/index.js
 const tf = require("@tensorflow/tfjs");
 const facemesh = require_facemesh();
@@ -5140,6 +5203,8 @@ const emotion = require_emotion();
 const posenet = require_posenet();
 const handpose = require_handpose();
 const defaults = require_config().default;
+const app = require_package();
+let config;
 const models = {
   facemesh: null,
   posenet: null,
@@ -5148,6 +5213,10 @@ const models = {
   age: null,
   gender: null,
   emotion: null
+};
+const log = (...msg) => {
+  if (config.console)
+    console.log(...msg);
 };
 function mergeDeep(...objects) {
   const isObject = (obj) => obj && typeof obj === "object";
@@ -5168,7 +5237,20 @@ function mergeDeep(...objects) {
 }
 async function detect(input, userConfig) {
   return new Promise(async (resolve) => {
-    const config = mergeDeep(defaults, userConfig);
+    config = mergeDeep(defaults, userConfig);
+    const loadedModels = Object.values(models).filter((a) => a).length;
+    if (loadedModels === 0)
+      log("Human library starting");
+    if (tf.getBackend() !== config.backend) {
+      log("Human library setting backend:", config.backend);
+      await tf.setBackend(config.backend);
+      await tf.ready();
+    }
+    let savedWebglPackDepthwiseConvFlag;
+    if (tf.getBackend() === "webgl") {
+      savedWebglPackDepthwiseConvFlag = tf.env().get("WEBGL_PACK_DEPTHWISECONV");
+      tf.env().set("WEBGL_PACK_DEPTHWISECONV", true);
+    }
     if (config.face.enabled && !models.facemesh)
       models.facemesh = await facemesh.load(config.face);
     if (config.body.enabled && !models.posenet)
@@ -5181,11 +5263,6 @@ async function detect(input, userConfig) {
       models.gender = await ssrnet.loadGender(config);
     if (config.face.enabled && config.face.emotion.enabled && !models.emotion)
       models.emotion = await emotion.load(config);
-    let savedWebglPackDepthwiseConvFlag;
-    if (tf.getBackend() === "webgl") {
-      savedWebglPackDepthwiseConvFlag = tf.env().get("WEBGL_PACK_DEPTHWISECONV");
-      tf.env().set("WEBGL_PACK_DEPTHWISECONV", true);
-    }
     const perf = {};
     let timeStamp;
     timeStamp = performance.now();
@@ -5237,10 +5314,12 @@ async function detect(input, userConfig) {
 }
 exports.detect = detect;
 exports.defaults = defaults;
+exports.config = config;
 exports.models = models;
 exports.facemesh = facemesh;
 exports.ssrnet = ssrnet;
 exports.posenet = posenet;
 exports.handpose = handpose;
 exports.tf = tf;
+exports.version = app.version;
 //# sourceMappingURL=human-nobundle.cjs.map

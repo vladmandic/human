@@ -89,6 +89,7 @@ var require_blazeface = __commonJS((exports2) => {
       this.inputSizeData = [config2.detector.inputSize, config2.detector.inputSize];
       this.inputSize = tf2.tensor1d([config2.detector.inputSize, config2.detector.inputSize]);
       this.iouThreshold = config2.detector.iouThreshold;
+      this.scaleFaces = 0.8;
       this.scoreThreshold = config2.detector.scoreThreshold;
     }
     async getBoundingBoxes(inputImage) {
@@ -132,7 +133,7 @@ var require_blazeface = __commonJS((exports2) => {
         scaleFactor: [inputImage.shape[2] / this.inputSizeData[0], inputImage.shape[1] / this.inputSizeData[1]]
       };
     }
-    async estimateFaces(input, returnTensors = false, annotateBoxes = true) {
+    async estimateFaces(input) {
       const image = tf2.tidy(() => {
         if (!(input instanceof tf2.Tensor)) {
           input = tf2.browser.fromPixels(input);
@@ -141,49 +142,24 @@ var require_blazeface = __commonJS((exports2) => {
       });
       const {boxes, scaleFactor} = await this.getBoundingBoxes(image);
       image.dispose();
-      if (returnTensors) {
-        return boxes.map((face) => {
-          const scaledBox = scaleBoxFromPrediction(face, scaleFactor);
-          const normalizedFace = {
-            topLeft: scaledBox.slice([0], [2]),
-            bottomRight: scaledBox.slice([2], [2])
-          };
-          if (annotateBoxes) {
-            const {landmarks, probability, anchor} = face;
-            const normalizedLandmarks = landmarks.add(anchor).mul(scaleFactor);
-            normalizedFace.landmarks = normalizedLandmarks;
-            normalizedFace.probability = probability;
-          }
-          return normalizedFace;
-        });
-      }
       return Promise.all(boxes.map(async (face) => {
         const scaledBox = scaleBoxFromPrediction(face, scaleFactor);
-        let normalizedFace;
-        if (!annotateBoxes) {
-          const boxData = await scaledBox.array();
-          normalizedFace = {
-            topLeft: boxData.slice(0, 2),
-            bottomRight: boxData.slice(2)
-          };
-        } else {
-          const [landmarkData, boxData, probabilityData] = await Promise.all([face.landmarks, scaledBox, face.probability].map(async (d) => d.array()));
-          const anchor = face.anchor;
-          const [scaleFactorX, scaleFactorY] = scaleFactor;
-          const scaledLandmarks = landmarkData.map((landmark) => [
-            (landmark[0] + anchor[0]) * scaleFactorX,
-            (landmark[1] + anchor[1]) * scaleFactorY
-          ]);
-          normalizedFace = {
-            topLeft: boxData.slice(0, 2),
-            bottomRight: boxData.slice(2),
-            landmarks: scaledLandmarks,
-            probability: probabilityData
-          };
-          disposeBox(face.box);
-          face.landmarks.dispose();
-          face.probability.dispose();
-        }
+        const [landmarkData, boxData, probabilityData] = await Promise.all([face.landmarks, scaledBox, face.probability].map(async (d) => d.array()));
+        const anchor = face.anchor;
+        const [scaleFactorX, scaleFactorY] = scaleFactor;
+        const scaledLandmarks = landmarkData.map((landmark) => [
+          (landmark[0] + anchor[0]) * scaleFactorX,
+          (landmark[1] + anchor[1]) * scaleFactorY
+        ]);
+        const normalizedFace = {
+          topLeft: boxData.slice(0, 2),
+          bottomRight: boxData.slice(2),
+          landmarks: scaledLandmarks,
+          probability: probabilityData
+        };
+        disposeBox(face.box);
+        face.landmarks.dispose();
+        face.probability.dispose();
         scaledBox.dispose();
         return normalizedFace;
       }));

@@ -1,8 +1,10 @@
-# Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction & Emotion Prediction
+# Human Library
+
+## 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction & Emotion Prediction
 
 - [**Documentation**](https://github.com/vladmandic/human#readme)
 - [**Code Repository**](https://github.com/vladmandic/human)
-- [**Package**](https://www.npmjs.com/package/@vladmandic/human)
+- [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
 - [**Live Demo**](https://vladmandic.github.io/human/demo/demo-esm.html)
 
@@ -30,6 +32,25 @@ Compatible with Browser, WebWorker and NodeJS execution!
 
 There are multiple ways to use `Human` library, pick one that suits you:
 
+### Included
+
+- `dist/human.js`: IIFE format minified bundle with TFJS for Browsers
+- `dist/human.esm.js`: ESM format minified bundle with TFJS for Browsers
+- `dist/human.esm-nobundle.js`: ESM format non-minified bundle without TFJS for Browsers
+- `dist/human.cjs`: CommonJS format minified bundle with TFJS for NodeJS
+- `dist/human-nobundle.cjs`: CommonJS format non-minified bundle without TFJS for NodeJS
+
+All versions include `sourcemap`
+
+Defaults:
+```json
+  {
+    "main": "dist/human.cjs",
+    "module": "dist/human.esm.js",
+    "browser": "dist/human.esm.js",
+  }
+```
+
 ### 1. [IIFE](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) script
 
 *Simplest way for usage within Browser*
@@ -43,8 +64,6 @@ Simply download `dist/human.js`, include it in your `HTML` file & it's ready to 
 IIFE script auto-registers global namespace `human` within global `Window` object  
 This way you can also use `Human` library within embbedded `<script>` tag within your `html` page for all-in-one approach  
 
-IIFE script is distributed in minified form with attached sourcemap  
-
 ### 2. [ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) module
 
 *Recommended for usage within `Browser`*  
@@ -53,17 +72,24 @@ IIFE script is distributed in minified form with attached sourcemap
 
 If you're using bundler *(such as rollup, webpack, esbuild)* to package your client application, you can import ESM version of `Human` library which supports full tree shaking  
 
+Install with:
+```shell
+  npm install @vladmandic/human
+```
 ```js
   import human from '@vladmandic/human'; // points to @vladmandic/human/dist/human.esm.js
 ```
 
 Or if you prefer to package your version of `tfjs`, you can use `nobundle` version
 
+Install with:
+```shell
+  npm install @vladmandic/human @tensorflow/tfjs-node
+```
 ```js
   import tf from '@tensorflow/tfjs'
-  import human from '@vladmandic/human/dist/human.nobundle.js'; // same functionality as default import, but without tfjs bundled
+  import human from '@vladmandic/human/dist/human.esm-nobundle.js'; // same functionality as default import, but without tfjs bundled
 ```
-
 
 #### 2.2 Using Script Module
 You could use same syntax within your main `JS` file if it's imported with `<script type="module">`  
@@ -74,10 +100,9 @@ You could use same syntax within your main `JS` file if it's imported with `<scr
 and then in your `index.js`
 
 ```js
-  import human from 'dist/human.esm.js';
+  import * as tf from `https://cdnjs.cloudflare.com/ajax/libs/tensorflow/2.6.0/tf.es2017.min.js`; // load tfjs directly from CDN link
+  import human from 'dist/human.esm.js'; // for direct import must use path to module, not package name
 ```
-
-ESM script is distributed in minified form with attached sourcemap  
 
 ### 3. [NPM](https://www.npmjs.com/) module
 
@@ -88,13 +113,22 @@ You also need to install and include `tfjs-node` or `tfjs-node-gpu` in your proj
 
 Install with:
 ```shell
-  npm install @tensorflow/tfjs-node @vladmandic/human
+  npm install @vladmandic/human
 ```
 And then use with:
 ```js
-  const tf = require('@tensorflow/tfjs-node'); 
-  const human = require('@vladmandic/human'); // points to @vladmandic/human/dist/human.node.js
+  const human = require('@vladmandic/human'); // points to @vladmandic/human/dist/human.cjs
 ```
+or
+```shell
+  npm install @vladmandic/human @tensorflow/tfjs-node
+```
+And then use with:
+```js
+  const tf = require('@tensorflow/tfjs-node'); // can also use '@tensorflow/tfjs-node-gpu' if you have environment with CUDA extensions
+  const human = require('@vladmandic/human/dist/human-nobundle.cjs');
+```
+
 
 Since NodeJS projects load `weights` from local filesystem instead of using `http` calls, you must modify default configuration to include correct paths with `file://` prefix  
 For example:

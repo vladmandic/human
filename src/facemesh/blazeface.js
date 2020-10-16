@@ -83,6 +83,8 @@ class BlazeFaceModel {
   }
 
   async getBoundingBoxes(inputImage) {
+    // sanity check on input
+    if ((!inputImage) || (inputImage.isDisposedInternal) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return null;
     const [detectedOutputs, boxes, scores] = tf.tidy(() => {
       const resizedImage = inputImage.resizeBilinear([this.width, this.height]);
       const normalizedImage = tf.mul(tf.sub(resizedImage.div(255), 0.5), 2);
@@ -101,7 +103,6 @@ class BlazeFaceModel {
       const decodedBounds = decodeBounds(prediction, this.anchors, this.inputSize);
       const logits = tf.slice(prediction, [0, 0], [-1, 1]);
       const scoresOut = tf.sigmoid(logits).squeeze();
-      // console.log(prediction, decodedBounds, logits, scoresOut);
       return [prediction, decodedBounds, scoresOut];
     });
 

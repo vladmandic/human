@@ -8,7 +8,8 @@
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
 - [**Live Demo**](https://vladmandic.github.io/human/demo/demo-esm.html)
 
-Compatible with Browser, WebWorker and NodeJS execution!
+Compatible with Browser, WebWorker and NodeJS execution!  
+(and maybe with React-Native as it doesn't use any DOM objects)  
 
 *This is a pre-release project, see [issues](https://github.com/vladmandic/human/issues) for list of known limitations*  
 
@@ -414,8 +415,3 @@ Library can also be used on mobile devices
 - Emotion Prediction: [**Oarriaga**](https://github.com/oarriaga/face_classification)
 
 <hr>
-
-## Todo
-
-- Tweak default models, parameters and factorization for age/gender/emotion/blazeface
-- Add sample images

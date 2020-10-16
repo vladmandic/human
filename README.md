@@ -389,7 +389,5 @@ Library can also be used on mobile devices
 
 ## Todo
 
-- Tweak default parameters and factorization for age/gender/emotion
-- Verify age/gender models
-- Face scalling
-- NSFW
+- Tweak default models, parameters and factorization for age/gender/emotion/blazeface
+- Add sample images

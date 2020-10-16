@@ -4,9 +4,8 @@ export default {
   face: {
     enabled: true, // refers to detector, but since all other face modules rely on detector, it should be a global
     detector: {
-      modelPath: '../models/blazeface/tfhub/model.json', // can be blazeface-front or blazeface-back
-      anchorSize: 128, // fixed regardless of model
-      inputSize: 128, // fixed value: 128 for front and tfhub and 256 for back
+      modelPath: '../models/blazeface/back/model.json', // can be blazeface-front or blazeface-back
+      inputSize: 256, // fixed value: 128 for front and tfhub and 256 for back
       maxFaces: 10, // maximum number of faces detected in the input, should be set to the minimum number for performance
       skipFrames: 10, // how many frames to go without running the bounding box detector
       minConfidence: 0.5, // threshold for discarding a prediction

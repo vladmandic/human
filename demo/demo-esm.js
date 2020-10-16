@@ -8,6 +8,7 @@ const ui = {
   baseFont: 'small-caps 1.2rem "Segoe UI"',
   baseLineWidth: 16,
   busy: false,
+  facing: 'user',
 };
 
 const config = {
@@ -17,7 +18,7 @@ const config = {
     enabled: true,
     detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
     mesh: { enabled: true },
-    iris: { enabled: false },
+    iris: { enabled: true },
     age: { enabled: true, skipFrames: 10 },
     gender: { enabled: true },
     emotion: { enabled: true, minConfidence: 0.5, useGrayscale: true },
@@ -286,7 +287,6 @@ function setupUI() {
   style.innerHTML = `
     .qs_main { font: 1rem "Segoe UI"; }
     .qs_label { font: 0.8rem "Segoe UI"; }
-    .qs_title_bar { display: none; }
     .qs_content { background: darkslategray; }
     .qs_container { background: transparent; color: white; margin: 6px; padding: 6px; }
     .qs_checkbox_label { top: 2px; }
@@ -297,10 +297,10 @@ function setupUI() {
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     if (!video.paused) {
-      document.getElementById('log').innerText = 'Paused ...';
+      document.getElementById('log').innerText += '\nPaused ...';
       video.pause();
     } else {
-      document.getElementById('log').innerText = 'Starting Human Library ...';
+      document.getElementById('log').innerText += '\nStarting Human Library ...';
       video.play();
     }
     runHumanDetect(video, canvas);
@@ -342,6 +342,11 @@ function setupUI() {
   });
   settings.addHTML('title', 'UI Options'); settings.hideTitle('title');
   settings.addBoolean('Use Web Worker', false);
+  settings.addBoolean('Camera Front/Back', true, (val) => {
+    ui.facing = val ? 'user' : 'environment';
+    // eslint-disable-next-line no-use-before-define
+    setupCamera();
+  });
   settings.addBoolean('Draw Boxes', true);
   settings.addBoolean('Draw Points', true);
   settings.addBoolean('Draw Polygons', true);
@@ -358,19 +363,26 @@ async function setupCamera() {
   const canvas = document.getElementById('canvas');
   const output = document.getElementById('log');
   const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
-  log('Setting up camera: live:', live);
+  log(`Setting up camera: live: ${live} facing: ${ui.facing}`);
   // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
   if (!navigator.mediaDevices) {
     const msg = 'Camera access not supported';
-    output.innerText = msg;
+    output.innerText += '\n' + msg;
     log(msg);
     return null;
   }
-  const stream = await navigator.mediaDevices.getUserMedia({
-    audio: false,
-    video: { facingMode: 'user', width: window.innerWidth, height: window.innerHeight },
-  });
-  video.srcObject = stream;
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: { facingMode: ui.facing, width: window.innerWidth, height: window.innerHeight },
+    });
+  } catch (err) {
+    output.innerText += '\nCamera permission denied';
+    log(err);
+  }
+  if (stream) video.srcObject = stream;
+  else return null;
   return new Promise((resolve) => {
     video.onloadeddata = async () => {
       video.width = video.videoWidth;
@@ -409,7 +421,7 @@ async function main() {
   // const input = await setupImage();
 
   const msg = `Human ready: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
-  document.getElementById('log').innerText = msg;
+  document.getElementById('log').innerText += '\n' + msg;
   log(msg);
 
   // run actual detection. if input is video, it will run in a loop else it will run only once

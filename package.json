@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/human",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
   "sideEffects": false,
   "main": "dist/human-nobundle.cjs",
@@ -19,8 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/vladmandic/human.git"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "peerDependencies": {},
   "devDependencies": {
     "@vladmandic/pilogger": "^0.2.6",

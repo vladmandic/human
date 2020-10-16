@@ -7,6 +7,7 @@ const ui = {
   baseLabel: 'rgba(255, 200, 255, 0.8)',
   baseFont: 'small-caps 1.2rem "Segoe UI"',
   baseLineWidth: 16,
+  busy: false,
 };
 
 const config = {
@@ -16,13 +17,13 @@ const config = {
     enabled: true,
     detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
     mesh: { enabled: true },
-    iris: { enabled: true },
+    iris: { enabled: false },
     age: { enabled: true, skipFrames: 10 },
     gender: { enabled: true },
     emotion: { enabled: true, minConfidence: 0.5, useGrayscale: true },
   },
-  body: { enabled: true, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
-  hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
+  body: { enabled: false, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
+  hand: { enabled: false, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
 };
 let settings;
 let worker;
@@ -245,10 +246,16 @@ function webWorker(input, image, canvas) {
 }
 
 async function runHumanDetect(input, canvas) {
-  const live = input.srcObject ? ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused)) : false;
   timeStamp = performance.now();
   // perform detect if live video or not video at all
-  if (live || !(input instanceof HTMLVideoElement)) {
+  if (input.srcObject) {
+    // if video not ready, just redo
+    const live = (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
+    if (!live) {
+      if (!input.paused) log(`Video not ready: state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
+      setTimeout(() => runHumanDetect(input, canvas), 500);
+      return;
+    }
     if (settings.getValue('Use Web Worker')) {
       // get image data from video as we cannot send html objects to webworker
       const offscreen = new OffscreenCanvas(canvas.width, canvas.height);
@@ -265,7 +272,8 @@ async function runHumanDetect(input, canvas) {
       } catch (err) {
         log('Error during execution:', err.message);
       }
-      drawResults(input, result, canvas);
+      if (result.error) log(result.error);
+      else drawResults(input, result, canvas);
     }
   }
 }
@@ -333,7 +341,7 @@ function setupUI() {
     config.hand.iouThreshold = parseFloat(val);
   });
   settings.addHTML('title', 'UI Options'); settings.hideTitle('title');
-  settings.addBoolean('Use Web Worker', true);
+  settings.addBoolean('Use Web Worker', false);
   settings.addBoolean('Draw Boxes', true);
   settings.addBoolean('Draw Points', true);
   settings.addBoolean('Draw Polygons', true);
@@ -342,21 +350,20 @@ function setupUI() {
   settings.addRange('FPS', 0, 100, 0, 1);
 }
 
-async function setupCanvas(input) {
-  // setup canvas object to same size as input as camera resolution may change
-  const canvas = document.getElementById('canvas');
-  canvas.width = input.width;
-  canvas.height = input.height;
-  return canvas;
-}
-
 // eslint-disable-next-line no-unused-vars
 async function setupCamera() {
-  log('Setting up camera');
-  // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
+  if (ui.busy) return null;
+  ui.busy = true;
   const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const output = document.getElementById('log');
+  const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
+  log('Setting up camera: live:', live);
+  // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
   if (!navigator.mediaDevices) {
-    document.getElementById('log').innerText = 'Video not supported';
+    const msg = 'Camera access not supported';
+    output.innerText = msg;
+    log(msg);
     return null;
   }
   const stream = await navigator.mediaDevices.getUserMedia({
@@ -365,11 +372,15 @@ async function setupCamera() {
   });
   video.srcObject = stream;
   return new Promise((resolve) => {
-    video.onloadedmetadata = () => {
+    video.onloadeddata = async () => {
       video.width = video.videoWidth;
       video.height = video.videoHeight;
-      video.play();
-      video.pause();
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      if (live) video.play();
+      ui.busy = false;
+      // do once more because onresize events can be delayed or skipped
+      if (video.width !== window.innerWidth) await setupCamera();
       resolve(video);
     };
   });
@@ -387,16 +398,15 @@ async function setupImage() {
 }
 
 async function main() {
-  log('Human starting ...');
+  log('Human demo starting ...');
 
   // setup ui control panel
   await setupUI();
   // setup webcam
-  const input = await setupCamera();
+  await setupCamera();
   // or setup image
   // const input = await setupImage();
   // setup output canvas from input object
-  await setupCanvas(input);
 
   const msg = `Human ready: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
   document.getElementById('log').innerText = msg;
@@ -407,4 +417,4 @@ async function main() {
 }
 
 window.onload = main;
-window.onresize = main;
+window.onresize = setupCamera;

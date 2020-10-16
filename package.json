@@ -3,7 +3,7 @@
   "version": "0.3.3",
   "description": "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
   "sideEffects": false,
-  "main": "dist/human.cjs",
+  "main": "dist/human-nobundle.cjs",
   "module": "dist/human.esm.js",
   "browser": "dist/human.esm.js",
   "author": "Vladimir Mandic <mandic00@live.com>",

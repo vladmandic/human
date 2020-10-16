@@ -19,6 +19,10 @@ const models = {
   gender: null,
   emotion: null,
 };
+const now = () => {
+  if (typeof performance !== 'undefined') return performance.now();
+  return parseInt(Number(process.hrtime.bigint()) / 1000 / 1000);
+};
 
 const log = (...msg) => {
   // eslint-disable-next-line no-console
@@ -44,11 +48,31 @@ function mergeDeep(...objects) {
   }, {});
 }
 
+function sanity(input) {
+  if (!input) return 'input is not defined';
+  const width = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
+  if (!width || (width === 0)) return 'input is empty';
+  if (input.readyState && (input.readyState <= 2)) return 'input is not ready';
+  try {
+    tf.getBackend();
+  } catch {
+    return 'backend not loaded';
+  }
+  return null;
+}
+
 async function detect(input, userConfig) {
+  config = mergeDeep(defaults, userConfig);
+
+  // sanity checks
+  const error = sanity(input);
+  if (error) {
+    log(error, input);
+    return { error };
+  }
+
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve) => {
-    config = mergeDeep(defaults, userConfig);
-
     // check number of loaded models
     const loadedModels = Object.values(models).filter((a) => a).length;
     if (loadedModels === 0) log('Human library starting');
@@ -78,35 +102,40 @@ async function detect(input, userConfig) {
     let timeStamp;
 
     // run posenet
-    timeStamp = performance.now();
+    timeStamp = now();
     tf.engine().startScope();
     const poseRes = config.body.enabled ? await models.posenet.estimatePoses(input, config.body) : [];
     tf.engine().endScope();
-    perf.body = Math.trunc(performance.now() - timeStamp);
+    perf.body = Math.trunc(now() - timeStamp);
 
     // run handpose
-    timeStamp = performance.now();
+    timeStamp = now();
     tf.engine().startScope();
     const handRes = config.hand.enabled ? await models.handpose.estimateHands(input, config.hand) : [];
     tf.engine().endScope();
-    perf.hand = Math.trunc(performance.now() - timeStamp);
+    perf.hand = Math.trunc(now() - timeStamp);
 
     // run facemesh, includes blazeface and iris
     const faceRes = [];
     if (config.face.enabled) {
-      timeStamp = performance.now();
+      timeStamp = now();
       tf.engine().startScope();
       const faces = await models.facemesh.estimateFaces(input, config.face);
-      perf.face = Math.trunc(performance.now() - timeStamp);
+      perf.face = Math.trunc(now() - timeStamp);
       for (const face of faces) {
+        // is something went wrong, skip the face
+        if (!face.image || face.image.isDisposedInternal) {
+          log('face object is disposed:', face.image);
+          continue;
+        }
         // run ssr-net age & gender, inherits face from blazeface
-        timeStamp = performance.now();
+        timeStamp = now();
         const ssrData = (config.face.age.enabled || config.face.gender.enabled) ? await ssrnet.predict(face.image, config) : {};
-        perf.agegender = Math.trunc(performance.now() - timeStamp);
+        perf.agegender = Math.trunc(now() - timeStamp);
         // run emotion, inherits face from blazeface
-        timeStamp = performance.now();
+        timeStamp = now();
         const emotionData = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
-        perf.emotion = Math.trunc(performance.now() - timeStamp);
+        perf.emotion = Math.trunc(now() - timeStamp);
         face.image.dispose();
         // calculate iris distance
         // iris: array[ bottom, left, top, right, center ]

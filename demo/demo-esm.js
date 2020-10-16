@@ -404,9 +404,9 @@ async function main() {
   await setupUI();
   // setup webcam
   await setupCamera();
+
   // or setup image
   // const input = await setupImage();
-  // setup output canvas from input object
 
   const msg = `Human ready: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
   document.getElementById('log').innerText = msg;

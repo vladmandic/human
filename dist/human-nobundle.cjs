@@ -18,18 +18,15 @@ var __export = (target, all) => {
 // src/facemesh/blazeface.js
 var require_blazeface = __commonJS((exports2) => {
   const tf2 = require("@tensorflow/tfjs");
-  const ANCHORS_CONFIG = {
-    strides: [8, 16],
-    anchors: [2, 6]
-  };
   const NUM_LANDMARKS = 6;
-  function generateAnchors(anchorSize, outputSpec) {
+  function generateAnchors(inputSize) {
+    const spec = {strides: [inputSize / 16, inputSize / 8], anchors: [2, 6]};
     const anchors = [];
-    for (let i = 0; i < outputSpec.strides.length; i++) {
-      const stride = outputSpec.strides[i];
-      const gridRows = Math.floor((anchorSize + stride - 1) / stride);
-      const gridCols = Math.floor((anchorSize + stride - 1) / stride);
-      const anchorsNum = outputSpec.anchors[i];
+    for (let i = 0; i < spec.strides.length; i++) {
+      const stride = spec.strides[i];
+      const gridRows = Math.floor((inputSize + stride - 1) / stride);
+      const gridCols = Math.floor((inputSize + stride - 1) / stride);
+      const anchorsNum = spec.anchors[i];
       for (let gridY = 0; gridY < gridRows; gridY++) {
         const anchorY = stride * (gridY + 0.5);
         for (let gridX = 0; gridX < gridCols; gridX++) {
@@ -83,9 +80,8 @@ var require_blazeface = __commonJS((exports2) => {
       this.blazeFaceModel = model;
       this.width = config2.detector.inputSize;
       this.height = config2.detector.inputSize;
-      this.anchorSize = config2.detector.anchorSize;
       this.maxFaces = config2.detector.maxFaces;
-      this.anchorsData = generateAnchors(config2.detector.anchorSize, ANCHORS_CONFIG);
+      this.anchorsData = generateAnchors(config2.detector.inputSize);
       this.anchors = tf2.tensor2d(this.anchorsData);
       this.inputSize = tf2.tensor1d([this.width, this.height]);
       this.iouThreshold = config2.detector.iouThreshold;
@@ -5054,9 +5050,8 @@ var require_config = __commonJS((exports2) => {
     face: {
       enabled: true,
       detector: {
-        modelPath: "../models/blazeface/tfhub/model.json",
-        anchorSize: 128,
-        inputSize: 128,
+        modelPath: "../models/blazeface/back/model.json",
+        inputSize: 256,
         maxFaces: 10,
         skipFrames: 10,
         minConfidence: 0.5,

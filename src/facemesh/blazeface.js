@@ -1,18 +1,15 @@
 const tf = require('@tensorflow/tfjs');
 
-const ANCHORS_CONFIG = {
-  strides: [8, 16],
-  anchors: [2, 6],
-};
-
 const NUM_LANDMARKS = 6;
-function generateAnchors(anchorSize, outputSpec) {
+
+function generateAnchors(inputSize) {
+  const spec = { strides: [inputSize / 16, inputSize / 8], anchors: [2, 6] };
   const anchors = [];
-  for (let i = 0; i < outputSpec.strides.length; i++) {
-    const stride = outputSpec.strides[i];
-    const gridRows = Math.floor((anchorSize + stride - 1) / stride);
-    const gridCols = Math.floor((anchorSize + stride - 1) / stride);
-    const anchorsNum = outputSpec.anchors[i];
+  for (let i = 0; i < spec.strides.length; i++) {
+    const stride = spec.strides[i];
+    const gridRows = Math.floor((inputSize + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize + stride - 1) / stride);
+    const anchorsNum = spec.anchors[i];
     for (let gridY = 0; gridY < gridRows; gridY++) {
       const anchorY = stride * (gridY + 0.5);
       for (let gridX = 0; gridX < gridCols; gridX++) {
@@ -72,9 +69,8 @@ class BlazeFaceModel {
     this.blazeFaceModel = model;
     this.width = config.detector.inputSize;
     this.height = config.detector.inputSize;
-    this.anchorSize = config.detector.anchorSize;
     this.maxFaces = config.detector.maxFaces;
-    this.anchorsData = generateAnchors(config.detector.anchorSize, ANCHORS_CONFIG);
+    this.anchorsData = generateAnchors(config.detector.inputSize);
     this.anchors = tf.tensor2d(this.anchorsData);
     this.inputSize = tf.tensor1d([this.width, this.height]);
     this.iouThreshold = config.detector.iouThreshold;

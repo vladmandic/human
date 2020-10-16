@@ -4,9 +4,11 @@ import human from '../dist/human.esm.js';
 
 const ui = {
   baseColor: 'rgba(255, 200, 255, 0.3)',
-  baseLabel: 'rgba(255, 200, 255, 0.8)',
+  baseLabel: 'rgba(255, 200, 255, 0.9)',
   baseFont: 'small-caps 1.2rem "Segoe UI"',
   baseLineWidth: 16,
+  baseLineHeight: 2,
+  columns: 3,
   busy: false,
   facing: 'user',
 };
@@ -23,8 +25,8 @@ const config = {
     gender: { enabled: true },
     emotion: { enabled: true, minConfidence: 0.5, useGrayscale: true },
   },
-  body: { enabled: false, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
-  hand: { enabled: false, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
+  body: { enabled: true, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
+  hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
 };
 let settings;
 let worker;
@@ -49,20 +51,23 @@ const log = (...msg) => {
 async function drawFace(result, canvas) {
   if (!result) return;
   const ctx = canvas.getContext('2d');
-  ctx.strokeStyle = ui.baseColor;
-  ctx.font = ui.baseFont;
   for (const face of result) {
+    ctx.font = ui.baseFont;
+    ctx.strokeStyle = ui.baseColor;
     ctx.fillStyle = ui.baseColor;
     ctx.lineWidth = ui.baseLineWidth;
     ctx.beginPath();
     if (settings.getValue('Draw Boxes')) {
       ctx.rect(face.box[0], face.box[1], face.box[2], face.box[3]);
     }
-    const labelAgeGender = `${face.gender || ''} ${face.age || ''}`;
-    const labelIris = face.iris ? `iris: ${face.iris}` : '';
-    const labelEmotion = face.emotion && face.emotion[0] ? `emotion: ${Math.trunc(100 * face.emotion[0].score)}% ${face.emotion[0].emotion}` : '';
+    // silly hack since fillText does not suport new line
+    const labels = [];
+    if (face.agConfidence) labels.push(`${Math.trunc(100 * face.agConfidence)}% ${face.gender || ''}`);
+    if (face.age) labels.push(`Age:${face.age || ''}`);
+    if (face.iris) labels.push(`iris: ${face.iris}`);
+    if (face.emotion && face.emotion[0]) labels.push(`${Math.trunc(100 * face.emotion[0].score)}% ${face.emotion[0].emotion}`);
     ctx.fillStyle = ui.baseLabel;
-    ctx.fillText(`${Math.trunc(100 * face.confidence)}% face ${labelAgeGender} ${labelIris} ${labelEmotion}`, face.box[0] + 2, face.box[1] + 22);
+    for (const i in labels) ctx.fillText(labels[i], face.box[0] + 6, face.box[1] + 24 + ((i + 1) * ui.baseLineHeight));
     ctx.stroke();
     ctx.lineWidth = 1;
     if (face.mesh) {
@@ -102,11 +107,11 @@ async function drawFace(result, canvas) {
 async function drawBody(result, canvas) {
   if (!result) return;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = ui.baseColor;
-  ctx.strokeStyle = ui.baseColor;
-  ctx.font = ui.baseFont;
-  ctx.lineWidth = ui.baseLineWidth;
   for (const pose of result) {
+    ctx.fillStyle = ui.baseColor;
+    ctx.strokeStyle = ui.baseColor;
+    ctx.font = ui.baseFont;
+    ctx.lineWidth = ui.baseLineWidth;
     if (settings.getValue('Draw Points')) {
       for (const point of pose.keypoints) {
         ctx.beginPath();
@@ -164,13 +169,13 @@ async function drawBody(result, canvas) {
 async function drawHand(result, canvas) {
   if (!result) return;
   const ctx = canvas.getContext('2d');
-  ctx.font = ui.baseFont;
-  ctx.lineWidth = ui.baseLineWidth;
-  window.result = result;
   for (const hand of result) {
+    ctx.font = ui.baseFont;
+    ctx.lineWidth = ui.baseLineWidth;
     if (settings.getValue('Draw Boxes')) {
       ctx.lineWidth = ui.baseLineWidth;
       ctx.beginPath();
+      ctx.strokeStyle = ui.baseColor;
       ctx.fillStyle = ui.baseColor;
       ctx.rect(hand.box[0], hand.box[1], hand.box[2], hand.box[3]);
       ctx.fillStyle = ui.baseLabel;
@@ -398,15 +403,59 @@ async function setupCamera() {
   });
 }
 
-// eslint-disable-next-line no-unused-vars
-async function setupImage() {
-  const image = document.getElementById('image');
-  image.width = window.innerWidth;
-  image.height = window.innerHeight;
+async function processImage(input) {
+  ui.baseColor = 'rgba(200, 255, 255, 0.5)';
+  ui.baseLabel = 'rgba(200, 255, 255, 0.8)';
+  ui.baseFont = 'small-caps 3.5rem "Segoe UI"';
+  ui.baseLineWidth = 16;
+  ui.baseLineHeight = 5;
+  ui.columns = 3;
+  const cfg = {
+    backend: 'webgl',
+    console: true,
+    face: {
+      enabled: true,
+      detector: { maxFaces: 10, skipFrames: 0, minConfidence: 0.1, iouThreshold: 0.3, scoreThreshold: 0.3 },
+      mesh: { enabled: true },
+      iris: { enabled: true },
+      age: { enabled: true, skipFrames: 0 },
+      gender: { enabled: true },
+      emotion: { enabled: true, minConfidence: 0.1, useGrayscale: true },
+    },
+    body: { enabled: true, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
+    hand: { enabled: true, skipFrames: 0, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.5 },
+  };
   return new Promise((resolve) => {
-    image.onload = () => resolve(image);
-    image.src = 'sample.jpg';
+    const image = document.getElementById('image');
+    image.onload = async () => {
+      log('Processing image:', image.src);
+      const canvas = document.getElementById('canvas');
+      image.width = image.naturalWidth;
+      image.height = image.naturalHeight;
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+      const result = await human.detect(image, cfg);
+      await drawResults(image, result, canvas);
+      const thumb = document.createElement('canvas');
+      thumb.width = window.innerWidth / (ui.columns + 0.02);
+      thumb.height = canvas.height / (window.innerWidth / thumb.width);
+      const ctx = thumb.getContext('2d');
+      ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, thumb.width, thumb.height);
+      document.getElementById('samples').appendChild(thumb);
+      image.src = '';
+      resolve(true);
+    };
+    image.src = input;
   });
+}
+
+// eslint-disable-next-line no-unused-vars
+async function detectSampleImages() {
+  ui.baseFont = 'small-caps 3rem "Segoe UI"';
+  document.getElementById('canvas').style.display = 'none';
+  log('Running detection of sample images');
+  const samples = ['../assets/sample1.jpg', '../assets/sample2.jpg', '../assets/sample3.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample6.jpg'];
+  for (const sample of samples) await processImage(sample);
 }
 
 async function main() {
@@ -414,18 +463,14 @@ async function main() {
 
   // setup ui control panel
   await setupUI();
-  // setup webcam
-  await setupCamera();
-
-  // or setup image
-  // const input = await setupImage();
 
   const msg = `Human ready: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
   document.getElementById('log').innerText += '\n' + msg;
   log(msg);
 
-  // run actual detection. if input is video, it will run in a loop else it will run only once
-  // runHumanDetect(video, canvas);
+  // use one of the two:
+  await setupCamera();
+  // await detectSampleImages();
 }
 
 window.onload = main;

@@ -2,7 +2,7 @@ const tf = require('@tensorflow/tfjs-node');
 const fs = require('fs');
 const process = require('process');
 const console = require('console');
-const human = require('..'); // this would be '@vladmandic/human'
+const human = require('..'); // this resolves to project root which is '@vladmandic/human'
 
 const logger = new console.Console({
   stdout: process.stdout,
@@ -24,6 +24,8 @@ const logger = new console.Console({
 });
 
 const config = {
+  backend: 'tensorflow',
+  console: true,
   face: {
     enabled: false,
     detector: { modelPath: 'file://models/blazeface/model.json', inputSize: 128, maxFaces: 10, skipFrames: 10, minConfidence: 0.8, iouThreshold: 0.3, scoreThreshold: 0.75 },

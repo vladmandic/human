@@ -1,4 +1,6 @@
 export default {
+  backend: 'webgl',
+  console: true,
   face: {
     enabled: true, // refers to detector, but since all other face modules rely on detector, it should be a global
     detector: {

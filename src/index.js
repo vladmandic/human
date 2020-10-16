@@ -84,11 +84,11 @@ async function detect(input, userConfig) {
       await tf.ready();
     }
     // explictly enable depthwiseconv since it's diasabled by default due to issues with large shaders
-    let savedWebglPackDepthwiseConvFlag;
-    if (tf.getBackend() === 'webgl') {
-      savedWebglPackDepthwiseConvFlag = tf.env().get('WEBGL_PACK_DEPTHWISECONV');
-      tf.env().set('WEBGL_PACK_DEPTHWISECONV', true);
-    }
+    // let savedWebglPackDepthwiseConvFlag;
+    // if (tf.getBackend() === 'webgl') {
+    //   savedWebglPackDepthwiseConvFlag = tf.env().get('WEBGL_PACK_DEPTHWISECONV');
+    //  tf.env().set('WEBGL_PACK_DEPTHWISECONV', true);
+    // }
 
     // load models if enabled
     if (config.face.enabled && !models.facemesh) models.facemesh = await facemesh.load(config.face);
@@ -149,6 +149,7 @@ async function detect(input, userConfig) {
           annotations: face.annotations,
           age: ssrData.age,
           gender: ssrData.gender,
+          agConfidence: ssrData.confidence,
           emotion: emotionData,
           iris: (iris !== 0) ? Math.trunc(100 * 11.7 /* human iris size in mm */ / iris) / 100 : 0,
         });
@@ -157,7 +158,7 @@ async function detect(input, userConfig) {
     }
 
     // set depthwiseconv to original value
-    tf.env().set('WEBGL_PACK_DEPTHWISECONV', savedWebglPackDepthwiseConvFlag);
+    // tf.env().set('WEBGL_PACK_DEPTHWISECONV', savedWebglPackDepthwiseConvFlag);
 
     // combine and return results
     perf.total = Object.values(perf).reduce((a, b) => a + b);

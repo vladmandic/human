@@ -3886,11 +3886,13 @@ var require_ssrnet = __commonJS((exports2) => {
     return models2.gender;
   }
   async function predict(image, config2) {
-    frame += 1;
-    if (frame >= config2.face.age.skipFrames) {
+    if (frame > config2.face.age.skipFrames) {
       frame = 0;
-      return last;
+    } else {
+      frame += 1;
     }
+    if (frame === 0)
+      return last;
     let enhance;
     if (image instanceof tf2.Tensor) {
       const resize = tf2.image.resizeBilinear(image, [config2.face.age.inputSize, config2.face.age.inputSize], false);
@@ -3909,7 +3911,11 @@ var require_ssrnet = __commonJS((exports2) => {
     if (config2.face.gender.enabled) {
       const genderT = await models2.gender.predict(enhance);
       const data = await genderT.data();
-      obj.gender = Math.trunc(100 * data[0]) < 50 ? "female" : "male";
+      const confidence = Math.trunc(Math.abs(1.9 * 100 * (data[0] - 0.5))) / 100;
+      if (confidence > config2.face.gender.minConfidence) {
+        obj.gender = data[0] <= 0.5 ? "female" : "male";
+        obj.confidence = confidence;
+      }
       tf2.dispose(genderT);
     }
     tf2.dispose(enhance);
@@ -5077,6 +5083,7 @@ var require_config = __commonJS((exports2) => {
       },
       gender: {
         enabled: true,
+        minConfidence: 0.8,
         modelPath: "../models/ssrnet-gender/imdb/model.json"
       },
       emotion: {
@@ -5093,7 +5100,7 @@ var require_config = __commonJS((exports2) => {
       modelPath: "../models/posenet/model.json",
       inputResolution: 257,
       outputStride: 16,
-      maxDetections: 5,
+      maxDetections: 10,
       scoreThreshold: 0.7,
       nmsRadius: 20
     },
@@ -5105,7 +5112,7 @@ var require_config = __commonJS((exports2) => {
       iouThreshold: 0.3,
       scoreThreshold: 0.7,
       enlargeFactor: 1.65,
-      maxHands: 2,
+      maxHands: 10,
       detector: {
         anchors: "../models/handdetect/anchors.json",
         modelPath: "../models/handdetect/model.json"
@@ -5256,11 +5263,6 @@ async function detect(input, userConfig) {
       await tf.setBackend(config.backend);
       await tf.ready();
     }
-    let savedWebglPackDepthwiseConvFlag;
-    if (tf.getBackend() === "webgl") {
-      savedWebglPackDepthwiseConvFlag = tf.env().get("WEBGL_PACK_DEPTHWISECONV");
-      tf.env().set("WEBGL_PACK_DEPTHWISECONV", true);
-    }
     if (config.face.enabled && !models.facemesh)
       models.facemesh = await facemesh.load(config.face);
     if (config.body.enabled && !models.posenet)
@@ -5311,13 +5313,13 @@ async function detect(input, userConfig) {
           annotations: face.annotations,
           age: ssrData.age,
           gender: ssrData.gender,
+          agConfidence: ssrData.confidence,
           emotion: emotionData,
           iris: iris !== 0 ? Math.trunc(100 * 11.7 / iris) / 100 : 0
         });
       }
       tf.engine().endScope();
     }
-    tf.env().set("WEBGL_PACK_DEPTHWISECONV", savedWebglPackDepthwiseConvFlag);
     perf.total = Object.values(perf).reduce((a, b) => a + b);
     resolve({face: faceRes, body: poseRes, hand: handRes, performance: perf});
   });

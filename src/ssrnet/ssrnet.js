@@ -22,11 +22,12 @@ async function loadGender(config) {
 }
 
 async function predict(image, config) {
-  frame += 1;
-  if (frame >= config.face.age.skipFrames) {
+  if (frame > config.face.age.skipFrames) {
     frame = 0;
-    return last;
+  } else {
+    frame += 1;
   }
+  if (frame === 0) return last;
   let enhance;
   if (image instanceof tf.Tensor) {
     const resize = tf.image.resizeBilinear(image, [config.face.age.inputSize, config.face.age.inputSize], false);
@@ -45,7 +46,11 @@ async function predict(image, config) {
   if (config.face.gender.enabled) {
     const genderT = await models.gender.predict(enhance);
     const data = await genderT.data();
-    obj.gender = Math.trunc(100 * data[0]) < 50 ? 'female' : 'male';
+    const confidence = Math.trunc(Math.abs(1.9 * 100 * (data[0] - 0.5))) / 100;
+    if (confidence > config.face.gender.minConfidence) {
+      obj.gender = data[0] <= 0.5 ? 'female' : 'male';
+      obj.confidence = confidence;
+    }
     tf.dispose(genderT);
   }
   tf.dispose(enhance);

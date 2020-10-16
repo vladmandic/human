@@ -16,11 +16,13 @@ Compatible with Browser, WebWorker and NodeJS execution!
 
 <hr>
 
-**Example using static image:**  
-![Example Using Image](demo/sample-image.jpg)
+## Examples
 
-**Example using webcam:**  
-![Example Using WebCam](demo/sample-video.jpg)
+**Using static images:**  
+![Example Using Image](assets/screenshot1.jpg)
+
+**Using webcam:**  
+![Example Using WebCam](assets/screenshot2.jpg)
 
 <hr>
 
@@ -211,59 +213,85 @@ Below is output of `human.defaults` object
 Any property can be overriden by passing user object during `human.detect()`  
 Note that user object and default configuration are merged using deep-merge, so you do not need to redefine entire configuration  
 
+Configurtion object is large, but typically you only need to modify few values:
+
+- `enabled`: Choose which models to use
+- `skipFrames`: Must be set to 0 for static images
+- `modelPath`: Update as needed to reflect your application's relative path
+
+
 ```js
-human.defaults = {
-  console: true,            // enable debugging output to console
-  backend: 'webgl',         // select tfjs backend to use
+export default {
+  backend: 'webgl',          // select tfjs backend to use
+  console: true,             // enable debugging output to console
   face: {
-    enabled: true,          // controls if specified modul is enabled (note: module is not loaded until it is required)
+    enabled: true,           // controls if specified modul is enabled
+                             // face.enabled is required for all face models: detector, mesh, iris, age, gender, emotion
+                             // note: module is not loaded until it is required
     detector: {
-      modelPath: '../models/blazeface/tfhub/model.json', // can be 'tfhub', 'front' or 'back'
-      inputSize: 128,       // 128 for tfhub and front models, 256 for back
-      maxFaces: 10,         // how many faces are we trying to analyze. limiting number in busy scenes will result in higher performance
-      skipFrames: 10,       // how many frames to skip before re-running bounding box detection
-      minConfidence: 0.5,   // threshold for discarding a prediction
-      iouThreshold: 0.3,    // threshold for deciding whether boxes overlap too much in non-maximum suppression
-      scoreThreshold: 0.7,  // threshold for deciding when to remove boxes based on score in non-maximum suppression
+      modelPath: '../models/blazeface/back/model.json', // can be 'tfhub', 'front' or 'back'.
+                                                        // 'front' is optimized for large faces such as front-facing camera and 'back' is optimized for distanct faces.
+      inputSize: 256,        // fixed value: 128 for front and 'tfhub' and 'front' and 256 for 'back'
+      maxFaces: 10,          // maximum number of faces detected in the input, should be set to the minimum number for performance
+      skipFrames: 10,        // how many frames to go without re-running the face bounding box detector
+                             // if model is running st 25 FPS, we can re-use existing bounding box for updated face mesh analysis
+                             // as face probably hasn't moved much in short time (10 * 1/25 = 0.25 sec)
+      minConfidence: 0.5,    // threshold for discarding a prediction
+      iouThreshold: 0.3,     // threshold for deciding whether boxes overlap too much in non-maximum suppression
+      scoreThreshold: 0.7,   // threshold for deciding when to remove boxes based on score in non-maximum suppression
     },
     mesh: {
       enabled: true,
       modelPath: '../models/facemesh/model.json',
+      inputSize: 192,        // fixed value
     },
     iris: {
       enabled: true,
       modelPath: '../models/iris/model.json',
+      enlargeFactor: 2.3,    // empiric tuning
+      inputSize: 64,         // fixed value
     },
     age: {
       enabled: true,
       modelPath: '../models/ssrnet-age/imdb/model.json', // can be 'imdb' or 'wiki'
-      skipFrames: 10,       // how many frames to skip before re-running bounding box detection
+                                                         // which determines training set for model
+      inputSize: 64,         // fixed value
+      skipFrames: 10,        // how many frames to go without re-running the detector
     },
     gender: {
       enabled: true,
-      modelPath: '../models/ssrnet-gender/imdb/model.json', // can be 'imdb' or 'wiki'
+      minConfidence: 0.8,    // threshold for discarding a prediction
+      modelPath: '../models/ssrnet-gender/imdb/model.json',
     },
     emotion: {
       enabled: true,
-      minConfidence: 0.5,   // threshold for discarding a prediction
-      skipFrames: 10,       // how many frames to skip before re-running bounding box detection
-      useGrayscale: true,   // convert color input to grayscale before processing or use single channels when color input is not supported
+      inputSize: 64,         // fixed value
+      minConfidence: 0.5,    // threshold for discarding a prediction
+      skipFrames: 10,        // how many frames to go without re-running the detector
+      useGrayscale: true,    // convert image to grayscale before prediction or use highest channel
       modelPath: '../models/emotion/model.json',
     },
   },
   body: {
     enabled: true,
     modelPath: '../models/posenet/model.json',
-    maxDetections: 5,       // how many faces are we trying to analyze. limiting number in busy scenes will result in higher performance  
-    scoreThreshold: 0.7,    // threshold for deciding when to remove boxes based on score in non-maximum suppression
-    nmsRadius: 20,          // radius for deciding points are too close in non-maximum suppression
+    inputResolution: 257,    // fixed value
+    outputStride: 16,        // fixed value
+    maxDetections: 10,       // maximum number of people detected in the input, should be set to the minimum number for performance
+    scoreThreshold: 0.7,     // threshold for deciding when to remove boxes based on score in non-maximum suppression
+    nmsRadius: 20,           // radius for deciding points are too close in non-maximum suppression
   },
   hand: {
     enabled: true,
-    skipFrames: 10,         // how many frames to skip before re-running bounding box detection
-    minConfidence: 0.5,     // threshold for discarding a prediction
-    iouThreshold: 0.3,      // threshold for deciding whether boxes overlap too much in non-maximum suppression
-    scoreThreshold: 0.7,    // threshold for deciding when to remove boxes based on score in non-maximum suppression
+    inputSize: 256,          // fixed value
+    skipFrames: 10,          // how many frames to go without re-running the hand bounding box detector
+                             // if model is running st 25 FPS, we can re-use existing bounding box for updated hand skeleton analysis
+                             // as face probably hasn't moved much in short time (10 * 1/25 = 0.25 sec)
+    minConfidence: 0.5,      // threshold for discarding a prediction
+    iouThreshold: 0.3,       // threshold for deciding whether boxes overlap too much in non-maximum suppression
+    scoreThreshold: 0.7,     // threshold for deciding when to remove boxes based on score in non-maximum suppression
+    enlargeFactor: 1.65,     // empiric tuning as skeleton prediction prefers hand box with some whitespace
+    maxHands: 10,            // maximum number of hands detected in the input, should be set to the minimum number for performance
     detector: {
       anchors: '../models/handdetect/anchors.json',
       modelPath: '../models/handdetect/model.json',

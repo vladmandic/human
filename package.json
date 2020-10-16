@@ -19,9 +19,13 @@
     "type": "git",
     "url": "git+https://github.com/vladmandic/human.git"
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "peerDependencies": {},
   "devDependencies": {
+    "@vladmandic/pilogger": "^0.2.6",
+    "dayjs": "^1.9.3",
+    "simple-git": "^2.21.0",
     "@tensorflow/tfjs": "^2.6.0",
     "@tensorflow/tfjs-node": "^2.6.0",
     "esbuild": "^0.7.15",
@@ -42,7 +46,8 @@
     "build-node-bundle": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --minify --outfile=dist/human.cjs src/index.js",
     "build-node-nobundle": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --outfile=dist/human-nobundle.cjs src/index.js",
     "build": "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node-bundle && npm run build-node-nobundle && ls -l dist/",
-    "update": "npm update --depth 20 && npm dedupe && npm prune && npm audit"
+    "update": "npm update --depth 20 && npm dedupe && npm prune && npm audit",
+    "changelog": "node changelog.js"
   },
   "keywords": [
     "tensorflowjs",

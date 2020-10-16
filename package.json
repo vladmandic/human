@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/human",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
   "sideEffects": false,
   "main": "dist/human-nobundle.cjs",

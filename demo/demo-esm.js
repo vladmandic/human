@@ -60,7 +60,7 @@ async function drawFace(result, canvas) {
     const labelIris = face.iris ? `iris: ${face.iris}` : '';
     const labelEmotion = face.emotion && face.emotion[0] ? `emotion: ${Math.trunc(100 * face.emotion[0].score)}% ${face.emotion[0].emotion}` : '';
     ctx.fillStyle = ui.baseLabel;
-    ctx.fillText(`face ${labelAgeGender} ${labelIris} ${labelEmotion}`, face.box[0] + 2, face.box[1] + 22, face.box[2]);
+    ctx.fillText(`${Math.trunc(100 * face.confidence)}% face ${labelAgeGender} ${labelIris} ${labelEmotion}`, face.box[0] + 2, face.box[1] + 22);
     ctx.stroke();
     ctx.lineWidth = 1;
     if (face.mesh) {
@@ -238,7 +238,7 @@ function webWorker(input, image, canvas) {
     log('Creating worker thread');
     worker = new Worker('demo-esm-webworker.js', { type: 'module' });
     // after receiving message from webworker, parse&draw results and send new frame for processing
-    worker.addEventListener('message', async (msg) => drawResults(input, msg.data, canvas));
+    worker.addEventListener('message', (msg) => drawResults(input, msg.data, canvas));
   }
   // pass image data as arraybuffer to worker by reference to avoid copy
   worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, config }, [image.data.buffer]);

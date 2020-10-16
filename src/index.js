@@ -79,17 +79,15 @@ async function detect(input, userConfig) {
 
     // run posenet
     timeStamp = performance.now();
-    let poseRes = [];
     tf.engine().startScope();
-    if (config.body.enabled) poseRes = await models.posenet.estimatePoses(input, config.body);
+    const poseRes = config.body.enabled ? await models.posenet.estimatePoses(input, config.body) : [];
     tf.engine().endScope();
     perf.body = Math.trunc(performance.now() - timeStamp);
 
     // run handpose
     timeStamp = performance.now();
-    let handRes = [];
     tf.engine().startScope();
-    if (config.hand.enabled) handRes = await models.handpose.estimateHands(input, config.hand);
+    const handRes = config.hand.enabled ? await models.handpose.estimateHands(input, config.hand) : [];
     tf.engine().endScope();
     perf.hand = Math.trunc(performance.now() - timeStamp);
 

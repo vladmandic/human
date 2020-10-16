@@ -218,12 +218,13 @@ human.defaults = {
   face: {
     enabled: true,          // controls if specified modul is enabled (note: module is not loaded until it is required)
     detector: {
-      modelPath: '../models/blazeface/model.json', // path to specific pre-trained model
+      modelPath: '../models/blazeface/tfhub/model.json', // can be 'tfhub', 'front' or 'back'
+      inputSize: 128,       // 128 for tfhub and front models, 256 for back
       maxFaces: 10,         // how many faces are we trying to analyze. limiting number in busy scenes will result in higher performance
       skipFrames: 10,       // how many frames to skip before re-running bounding box detection
-      minConfidence: 0.8,   // threshold for discarding a prediction
+      minConfidence: 0.5,   // threshold for discarding a prediction
       iouThreshold: 0.3,    // threshold for deciding whether boxes overlap too much in non-maximum suppression
-      scoreThreshold: 0.75, // threshold for deciding when to remove boxes based on score in non-maximum suppression
+      scoreThreshold: 0.7,  // threshold for deciding when to remove boxes based on score in non-maximum suppression
     },
     mesh: {
       enabled: true,
@@ -235,12 +236,12 @@ human.defaults = {
     },
     age: {
       enabled: true,
-      modelPath: '../models/ssrnet-imdb-age/model.json',
+      modelPath: '../models/ssrnet-age/imdb/model.json', // can be 'imdb' or 'wiki'
       skipFrames: 10,       // how many frames to skip before re-running bounding box detection
     },
     gender: {
       enabled: true,
-      modelPath: '../models/ssrnet-imdb-gender/model.json',
+      modelPath: '../models/ssrnet-gender/imdb/model.json', // can be 'imdb' or 'wiki'
     },
     emotion: {
       enabled: true,
@@ -254,15 +255,15 @@ human.defaults = {
     enabled: true,
     modelPath: '../models/posenet/model.json',
     maxDetections: 5,       // how many faces are we trying to analyze. limiting number in busy scenes will result in higher performance  
-    scoreThreshold: 0.75,   // threshold for deciding when to remove boxes based on score in non-maximum suppression
+    scoreThreshold: 0.7,    // threshold for deciding when to remove boxes based on score in non-maximum suppression
     nmsRadius: 20,          // radius for deciding points are too close in non-maximum suppression
   },
   hand: {
     enabled: true,
     skipFrames: 10,         // how many frames to skip before re-running bounding box detection
-    minConfidence: 0.8,     // threshold for discarding a prediction
+    minConfidence: 0.5,     // threshold for discarding a prediction
     iouThreshold: 0.3,      // threshold for deciding whether boxes overlap too much in non-maximum suppression
-    scoreThreshold: 0.75,   // threshold for deciding when to remove boxes based on score in non-maximum suppression
+    scoreThreshold: 0.7,    // threshold for deciding when to remove boxes based on score in non-maximum suppression
     detector: {
       anchors: '../models/handdetect/anchors.json',
       modelPath: '../models/handdetect/model.json',
@@ -361,14 +362,14 @@ For example, on a desktop with a low-end nVidia GTX1050 it can perform multiple 
 Performance per module:
 
 - Enabled all: 10 FPS
-- Face Detect: 80 FPS
+- Face Detect: 80 FPS (standalone)
 - Face Geometry: 30 FPS (includes face detect)
 - Face Iris: 25 FPS (includes face detect and face geometry)
 - Age: 60 FPS (includes face detect)
 - Gender: 60 FPS (includes face detect)
 - Emotion: 60 FPS (includes face detect)
-- Hand: 40 FPS
-- Body: 50 FPS
+- Hand: 40 FPS (standalone)
+- Body: 50 FPS (standalone)
 
 Library can also be used on mobile devices  
 

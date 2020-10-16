@@ -23,12 +23,12 @@ var require_blazeface = __commonJS((exports2) => {
     anchors: [2, 6]
   };
   const NUM_LANDMARKS = 6;
-  function generateAnchors(width, height, outputSpec) {
+  function generateAnchors(anchorSize, outputSpec) {
     const anchors = [];
     for (let i = 0; i < outputSpec.strides.length; i++) {
       const stride = outputSpec.strides[i];
-      const gridRows = Math.floor((height + stride - 1) / stride);
-      const gridCols = Math.floor((width + stride - 1) / stride);
+      const gridRows = Math.floor((anchorSize + stride - 1) / stride);
+      const gridCols = Math.floor((anchorSize + stride - 1) / stride);
       const anchorsNum = outputSpec.anchors[i];
       for (let gridY = 0; gridY < gridRows; gridY++) {
         const anchorY = stride * (gridY + 0.5);
@@ -83,11 +83,11 @@ var require_blazeface = __commonJS((exports2) => {
       this.blazeFaceModel = model;
       this.width = config2.detector.inputSize;
       this.height = config2.detector.inputSize;
+      this.anchorSize = config2.detector.anchorSize;
       this.maxFaces = config2.detector.maxFaces;
-      this.anchorsData = generateAnchors(config2.detector.inputSize, config2.detector.inputSize, ANCHORS_CONFIG);
+      this.anchorsData = generateAnchors(config2.detector.anchorSize, ANCHORS_CONFIG);
       this.anchors = tf2.tensor2d(this.anchorsData);
-      this.inputSizeData = [config2.detector.inputSize, config2.detector.inputSize];
-      this.inputSize = tf2.tensor1d([config2.detector.inputSize, config2.detector.inputSize]);
+      this.inputSize = tf2.tensor1d([this.width, this.height]);
       this.iouThreshold = config2.detector.iouThreshold;
       this.scaleFaces = 0.8;
       this.scoreThreshold = config2.detector.scoreThreshold;
@@ -97,7 +97,16 @@ var require_blazeface = __commonJS((exports2) => {
         const resizedImage = inputImage.resizeBilinear([this.width, this.height]);
         const normalizedImage = tf2.mul(tf2.sub(resizedImage.div(255), 0.5), 2);
         const batchedPrediction = this.blazeFaceModel.predict(normalizedImage);
-        const prediction = batchedPrediction.squeeze();
+        let prediction;
+        if (Array.isArray(batchedPrediction)) {
+          const sorted = batchedPrediction.sort((a, b) => a.size - b.size);
+          const concat384 = tf2.concat([sorted[0], sorted[2]], 2);
+          const concat512 = tf2.concat([sorted[1], sorted[3]], 2);
+          const concat = tf2.concat([concat512, concat384], 1);
+          prediction = concat.squeeze(0);
+        } else {
+          prediction = batchedPrediction.squeeze();
+        }
         const decodedBounds = decodeBounds(prediction, this.anchors, this.inputSize);
         const logits = tf2.slice(prediction, [0, 0], [-1, 1]);
         const scoresOut = tf2.sigmoid(logits).squeeze();
@@ -130,7 +139,7 @@ var require_blazeface = __commonJS((exports2) => {
       detectedOutputs.dispose();
       return {
         boxes: annotatedBoxes,
-        scaleFactor: [inputImage.shape[2] / this.inputSizeData[0], inputImage.shape[1] / this.inputSizeData[1]]
+        scaleFactor: [inputImage.shape[2] / this.width, inputImage.shape[1] / this.height]
       };
     }
     async estimateFaces(input) {
@@ -5041,7 +5050,8 @@ var require_config = __commonJS((exports2) => {
     face: {
       enabled: true,
       detector: {
-        modelPath: "../models/blazeface/model.json",
+        modelPath: "../models/blazeface/tfhub/model.json",
+        anchorSize: 128,
         inputSize: 128,
         maxFaces: 10,
         skipFrames: 10,
@@ -5112,7 +5122,7 @@ var require_config = __commonJS((exports2) => {
 var require_package = __commonJS((exports2, module2) => {
   module2.exports = {
     name: "@vladmandic/human",
-    version: "0.3.1",
+    version: "0.3.2",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.cjs",
@@ -5242,17 +5252,13 @@ async function detect(input, userConfig) {
     const perf = {};
     let timeStamp;
     timeStamp = performance.now();
-    let poseRes = [];
     tf.engine().startScope();
-    if (config.body.enabled)
-      poseRes = await models.posenet.estimatePoses(input, config.body);
+    const poseRes = config.body.enabled ? await models.posenet.estimatePoses(input, config.body) : [];
     tf.engine().endScope();
     perf.body = Math.trunc(performance.now() - timeStamp);
     timeStamp = performance.now();
-    let handRes = [];
     tf.engine().startScope();
-    if (config.hand.enabled)
-      handRes = await models.handpose.estimateHands(input, config.hand);
+    const handRes = config.hand.enabled ? await models.handpose.estimateHands(input, config.hand) : [];
     tf.engine().endScope();
     perf.hand = Math.trunc(performance.now() - timeStamp);
     const faceRes = [];

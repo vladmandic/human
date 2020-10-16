@@ -13,8 +13,7 @@ onmessage = async (msg) => {
   config = msg.data.config;
   let result = {};
   try {
-    // result = await human.detect(image, config);
-    result = {};
+    result = await human.detect(image, config);
   } catch (err) {
     result.error = err.message;
     log('Worker thread error:', err.message);

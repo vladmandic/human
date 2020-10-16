@@ -6,12 +6,12 @@ const ANCHORS_CONFIG = {
 };
 
 const NUM_LANDMARKS = 6;
-function generateAnchors(width, height, outputSpec) {
+function generateAnchors(anchorSize, outputSpec) {
   const anchors = [];
   for (let i = 0; i < outputSpec.strides.length; i++) {
     const stride = outputSpec.strides[i];
-    const gridRows = Math.floor((height + stride - 1) / stride);
-    const gridCols = Math.floor((width + stride - 1) / stride);
+    const gridRows = Math.floor((anchorSize + stride - 1) / stride);
+    const gridCols = Math.floor((anchorSize + stride - 1) / stride);
     const anchorsNum = outputSpec.anchors[i];
     for (let gridY = 0; gridY < gridRows; gridY++) {
       const anchorY = stride * (gridY + 0.5);
@@ -72,11 +72,11 @@ class BlazeFaceModel {
     this.blazeFaceModel = model;
     this.width = config.detector.inputSize;
     this.height = config.detector.inputSize;
+    this.anchorSize = config.detector.anchorSize;
     this.maxFaces = config.detector.maxFaces;
-    this.anchorsData = generateAnchors(config.detector.inputSize, config.detector.inputSize, ANCHORS_CONFIG);
+    this.anchorsData = generateAnchors(config.detector.anchorSize, ANCHORS_CONFIG);
     this.anchors = tf.tensor2d(this.anchorsData);
-    this.inputSizeData = [config.detector.inputSize, config.detector.inputSize];
-    this.inputSize = tf.tensor1d([config.detector.inputSize, config.detector.inputSize]);
+    this.inputSize = tf.tensor1d([this.width, this.height]);
     this.iouThreshold = config.detector.iouThreshold;
     this.scaleFaces = 0.8;
     this.scoreThreshold = config.detector.scoreThreshold;
@@ -87,11 +87,21 @@ class BlazeFaceModel {
       const resizedImage = inputImage.resizeBilinear([this.width, this.height]);
       const normalizedImage = tf.mul(tf.sub(resizedImage.div(255), 0.5), 2);
       const batchedPrediction = this.blazeFaceModel.predict(normalizedImage);
-      // todo: add handler for blazeface-front and blazeface-back
-      const prediction = batchedPrediction.squeeze();
+      let prediction;
+      // are we using tfhub or pinto converted model?
+      if (Array.isArray(batchedPrediction)) {
+        const sorted = batchedPrediction.sort((a, b) => a.size - b.size);
+        const concat384 = tf.concat([sorted[0], sorted[2]], 2); // dim: 384, 1 + 16
+        const concat512 = tf.concat([sorted[1], sorted[3]], 2); // dim: 512, 1 + 16
+        const concat = tf.concat([concat512, concat384], 1);
+        prediction = concat.squeeze(0);
+      } else {
+        prediction = batchedPrediction.squeeze(); // when using tfhub model
+      }
       const decodedBounds = decodeBounds(prediction, this.anchors, this.inputSize);
       const logits = tf.slice(prediction, [0, 0], [-1, 1]);
       const scoresOut = tf.sigmoid(logits).squeeze();
+      // console.log(prediction, decodedBounds, logits, scoresOut);
       return [prediction, decodedBounds, scoresOut];
     });
 
@@ -125,7 +135,7 @@ class BlazeFaceModel {
     detectedOutputs.dispose();
     return {
       boxes: annotatedBoxes,
-      scaleFactor: [inputImage.shape[2] / this.inputSizeData[0], inputImage.shape[1] / this.inputSizeData[1]],
+      scaleFactor: [inputImage.shape[2] / this.width, inputImage.shape[1] / this.height],
     };
   }
 

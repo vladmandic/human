@@ -17,12 +17,12 @@ const config = {
     detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
     mesh: { enabled: true },
     iris: { enabled: true },
-    age: { enabled: false, skipFrames: 10 },
-    gender: { enabled: false },
-    emotion: { enabled: false, minConfidence: 0.5, useGrayscale: true },
+    age: { enabled: true, skipFrames: 10 },
+    gender: { enabled: true },
+    emotion: { enabled: true, minConfidence: 0.5, useGrayscale: true },
   },
-  body: { enabled: false, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
-  hand: { enabled: false, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
+  body: { enabled: true, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
+  hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
 };
 let settings;
 let worker;
@@ -333,7 +333,7 @@ function setupUI() {
     config.hand.iouThreshold = parseFloat(val);
   });
   settings.addHTML('title', 'UI Options'); settings.hideTitle('title');
-  settings.addBoolean('Use Web Worker', false);
+  settings.addBoolean('Use Web Worker', true);
   settings.addBoolean('Draw Boxes', true);
   settings.addBoolean('Draw Points', true);
   settings.addBoolean('Draw Polygons', true);

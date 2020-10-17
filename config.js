@@ -9,9 +9,9 @@ export default {
                              // face.enabled is required for all face models: detector, mesh, iris, age, gender, emotion
                              // (note: module is not loaded until it is required)
     detector: {
-      modelPath: '../models/blazeface/back/model.json', // can be 'tfhub', 'front' or 'back'.
+      modelPath: '../models/blazeface/back/model.json', // can be 'front' or 'back'.
                                                         // 'front' is optimized for large faces such as front-facing camera and 'back' is optimized for distanct faces.
-      inputSize: 256,        // fixed value: 128 for front and 'tfhub' and 'front' and 256 for 'back'
+      inputSize: 256,        // fixed value: 128 for front and 256 for 'back'
       maxFaces: 10,          // maximum number of faces detected in the input, should be set to the minimum number for performance
       skipFrames: 10,        // how many frames to go without re-running the face bounding box detector
                              // if model is running st 25 FPS, we can re-use existing bounding box for updated face mesh analysis

@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 4536,
+      "bytes": 4774,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js": {
@@ -161,7 +161,7 @@
       ]
     },
     "src/facemesh/blazeface.js": {
-      "bytes": 7042,
+      "bytes": 7407,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -177,7 +177,7 @@
       ]
     },
     "src/facemesh/facemesh.js": {
-      "bytes": 2649,
+      "bytes": 2816,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -204,7 +204,7 @@
       "imports": []
     },
     "src/facemesh/pipeline.js": {
-      "bytes": 14108,
+      "bytes": 14393,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -241,7 +241,7 @@
       ]
     },
     "src/handpose/handdetector.js": {
-      "bytes": 4253,
+      "bytes": 4296,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -291,7 +291,7 @@
       "imports": []
     },
     "src/index.js": {
-      "bytes": 6474,
+      "bytes": 7175,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -464,7 +464,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 4955971
+      "bytes": 4958494
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -527,7 +527,7 @@
           "bytesInOutput": 765
         },
         "src/facemesh/blazeface.js": {
-          "bytesInOutput": 3238
+          "bytesInOutput": 3268
         },
         "src/facemesh/keypoints.js": {
           "bytesInOutput": 1951
@@ -539,7 +539,7 @@
           "bytesInOutput": 1195
         },
         "src/facemesh/pipeline.js": {
-          "bytesInOutput": 5520
+          "bytesInOutput": 5577
         },
         "src/facemesh/uvcoords.js": {
           "bytesInOutput": 16791
@@ -548,7 +548,7 @@
           "bytesInOutput": 9996
         },
         "src/facemesh/facemesh.js": {
-          "bytesInOutput": 1306
+          "bytesInOutput": 1376
         },
         "src/ssrnet/ssrnet.js": {
           "bytesInOutput": 1100
@@ -593,7 +593,7 @@
           "bytesInOutput": 1386
         },
         "src/handpose/handdetector.js": {
-          "bytesInOutput": 2084
+          "bytesInOutput": 2050
         },
         "src/handpose/keypoints.js": {
           "bytesInOutput": 161
@@ -608,16 +608,16 @@
           "bytesInOutput": 1312
         },
         "config.js": {
-          "bytesInOutput": 1137
+          "bytesInOutput": 1147
         },
         "package.json": {
           "bytesInOutput": 2276
         },
         "src/index.js": {
-          "bytesInOutput": 2963
+          "bytesInOutput": 3495
         }
       },
-      "bytes": 1105435
+      "bytes": 1106100
     }
   }
 }

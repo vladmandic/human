@@ -3,6 +3,7 @@
 import human from '../dist/human.esm.js';
 import draw from './draw.js';
 
+// ui options
 const ui = {
   baseColor: 'rgba(255, 200, 255, 0.3)',
   baseLabel: 'rgba(255, 200, 255, 0.9)',
@@ -20,11 +21,11 @@ const ui = {
   drawPolygons: true,
   fillPolygons: true,
   useDepth: true,
+  console: true,
 };
 
+// configuration overrides
 const config = {
-  backend: 'webgl',
-  console: true,
   face: {
     enabled: true,
     detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
@@ -37,11 +38,14 @@ const config = {
   body: { enabled: true, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
   hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
 };
+
+// global variables
 let settings;
 let worker;
 let timeStamp;
 const fps = [];
 
+// helper function: translates json to human readable string
 function str(...msg) {
   if (!Array.isArray(msg)) return msg;
   let line = '';
@@ -52,11 +56,13 @@ function str(...msg) {
   return line;
 }
 
+// helper function: wrapper around console output
 const log = (...msg) => {
   // eslint-disable-next-line no-console
-  if (config.console) console.log(...msg);
+  if (ui.console) console.log(...msg);
 };
 
+// draws processed results and starts processing of a next frame
 async function drawResults(input, result, canvas) {
   // update fps
   settings.setValue('FPS', Math.round(1000 / (performance.now() - timeStamp)));
@@ -84,53 +90,7 @@ async function drawResults(input, result, canvas) {
   `;
 }
 
-// simple wrapper for worker.postmessage that creates worker if one does not exist
-function webWorker(input, image, canvas) {
-  if (!worker) {
-    // create new webworker and add event handler only once
-    log('Creating worker thread');
-    worker = new Worker(ui.worker, { type: 'module' });
-    // after receiving message from webworker, parse&draw results and send new frame for processing
-    worker.addEventListener('message', (msg) => drawResults(input, msg.data, canvas));
-  }
-  // pass image data as arraybuffer to worker by reference to avoid copy
-  worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, config }, [image.data.buffer]);
-}
-
-async function runHumanDetect(input, canvas) {
-  timeStamp = performance.now();
-  // perform detect if live video or not video at all
-  if (input.srcObject) {
-    // if video not ready, just redo
-    const live = (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
-    if (!live) {
-      if (!input.paused) log(`Video not ready: state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
-      setTimeout(() => runHumanDetect(input, canvas), 500);
-      return;
-    }
-    if (ui.useWorker) {
-      // get image data from video as we cannot send html objects to webworker
-      const offscreen = new OffscreenCanvas(canvas.width, canvas.height);
-      const ctx = offscreen.getContext('2d');
-      ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
-      const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      // perform detection in worker
-      webWorker(input, data, canvas);
-    } else {
-      let result = {};
-      try {
-        // perform detection
-        result = await human.detect(input, config);
-      } catch (err) {
-        log('Error during execution:', err.message);
-      }
-      if (result.error) log(result.error);
-      else drawResults(input, result, canvas);
-    }
-  }
-}
-
-// eslint-disable-next-line no-unused-vars
+// setup webcam
 async function setupCamera() {
   if (ui.busy) return null;
   ui.busy = true;
@@ -173,12 +133,55 @@ async function setupCamera() {
   });
 }
 
+// wrapper for worker.postmessage that creates worker if one does not exist
+function webWorker(input, image, canvas) {
+  if (!worker) {
+    // create new webworker and add event handler only once
+    log('Creating worker thread');
+    worker = new Worker(ui.worker, { type: 'module' });
+    // after receiving message from webworker, parse&draw results and send new frame for processing
+    worker.addEventListener('message', (msg) => drawResults(input, msg.data, canvas));
+  }
+  // pass image data as arraybuffer to worker by reference to avoid copy
+  worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, config }, [image.data.buffer]);
+}
+
+// main processing function when input is webcam, can use direct invocation or web worker
+async function runHumanDetect(input, canvas) {
+  timeStamp = performance.now();
+  // perform detect if live video or not video at all
+  if (input.srcObject) {
+    // if video not ready, just redo
+    const live = (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
+    if (!live) {
+      if (!input.paused) log(`Video not ready: state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
+      setTimeout(() => runHumanDetect(input, canvas), 500);
+      return;
+    }
+    if (ui.useWorker) {
+      // get image data from video as we cannot send html objects to webworker
+      const offscreen = new OffscreenCanvas(canvas.width, canvas.height);
+      const ctx = offscreen.getContext('2d');
+      ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      // perform detection in worker
+      webWorker(input, data, canvas);
+    } else {
+      let result = {};
+      try {
+        // perform detection
+        result = await human.detect(input, config);
+      } catch (err) {
+        log('Error during execution:', err.message);
+      }
+      if (result.error) log(result.error);
+      else drawResults(input, result, canvas);
+    }
+  }
+}
+
+// main processing function when input is image, can use direct invocation or web worker
 async function processImage(input) {
-  ui.baseColor = 'rgba(200, 255, 255, 0.5)';
-  ui.baseLabel = 'rgba(200, 255, 255, 0.8)';
-  ui.baseFont = 'small-caps 3.5rem "Segoe UI"';
-  ui.baseLineWidth = 16;
-  ui.columns = 3;
   const cfg = {
     backend: 'webgl',
     console: true,
@@ -218,6 +221,7 @@ async function processImage(input) {
   });
 }
 
+// just initialize everything and call main function
 async function detectVideo() {
   document.getElementById('samples').style.display = 'none';
   document.getElementById('canvas').style.display = 'block';
@@ -236,7 +240,7 @@ async function detectVideo() {
   runHumanDetect(video, canvas);
 }
 
-// eslint-disable-next-line no-unused-vars
+// just initialize everything and call main function
 async function detectSampleImages() {
   ui.baseFont = ui.baseFontProto.replace(/{size}/, `${ui.columns}rem`);
   ui.baseLineHeight = ui.baseLineHeightProto * ui.columns;
@@ -246,8 +250,8 @@ async function detectSampleImages() {
   for (const sample of ui.samples) await processImage(sample);
 }
 
+// setup settings panel
 function setupUI() {
-  // add all variables to ui control panel
   settings = QuickSettings.create(10, 10, 'Settings', document.getElementById('main'));
   const style = document.createElement('style');
   style.innerHTML = `
@@ -314,7 +318,6 @@ function setupUI() {
 async function main() {
   log('Human demo starting ...');
   setupUI();
-
   const msg = `Human ready: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
   document.getElementById('log').innerText += '\n' + msg;
   log(msg);

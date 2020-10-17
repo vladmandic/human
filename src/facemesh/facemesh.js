@@ -13,10 +13,11 @@ class MediaPipeFaceMesh {
 
   async estimateFaces(input, config) {
     if (config) this.config = config;
-    const image = tf.tidy(() => {
-      if (!(input instanceof tf.Tensor)) input = tf.browser.fromPixels(input);
-      return input.toFloat().expandDims(0);
-    });
+    const imageRaw = !(input instanceof tf.Tensor) ? tf.browser.fromPixels(input) : input;
+    const imageCast = imageRaw.toFloat();
+    const image = imageCast.expandDims(0);
+    imageRaw.dispose();
+    imageCast.dispose();
     const predictions = await this.pipeline.predict(image, config);
     tf.dispose(image);
     const results = [];
@@ -42,8 +43,9 @@ class MediaPipeFaceMesh {
           image: prediction.image ? tf.clone(prediction.image) : null,
         });
       }
-      prediction.confidence.dispose();
-      prediction.image.dispose();
+      if (prediction.confidence) prediction.confidence.dispose();
+      if (prediction.coords) prediction.coords.dispose();
+      if (prediction.image) prediction.image.dispose();
     }
     return results;
   }

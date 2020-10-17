@@ -113,8 +113,8 @@ var require_blazeface = __commonJS((exports2) => {
       const boxIndicesTensor = await tf2.image.nonMaxSuppressionAsync(boxes, scores, this.maxFaces, this.iouThreshold, this.scoreThreshold);
       const boxIndices = await boxIndicesTensor.array();
       boxIndicesTensor.dispose();
-      let boundingBoxes = boxIndices.map((boxIndex) => tf2.slice(boxes, [boxIndex, 0], [1, -1]));
-      boundingBoxes = await Promise.all(boundingBoxes.map(async (boundingBox) => {
+      const boundingBoxesMap = boxIndices.map((boxIndex) => tf2.slice(boxes, [boxIndex, 0], [1, -1]));
+      const boundingBoxes = await Promise.all(boundingBoxesMap.map(async (boundingBox) => {
         const vals = await boundingBox.array();
         boundingBox.dispose();
         return vals;
@@ -122,16 +122,19 @@ var require_blazeface = __commonJS((exports2) => {
       const annotatedBoxes = [];
       for (let i = 0; i < boundingBoxes.length; i++) {
         const boundingBox = boundingBoxes[i];
-        const annotatedBox = tf2.tidy(() => {
-          const box = createBox(boundingBox);
-          const boxIndex = boxIndices[i];
-          const anchor = this.anchorsData[boxIndex];
-          const landmarks = tf2.slice(detectedOutputs, [boxIndex, NUM_LANDMARKS - 1], [1, -1]).squeeze().reshape([NUM_LANDMARKS, -1]);
-          const probability = tf2.slice(scores, [boxIndex], [1]);
-          return {box, landmarks, probability, anchor};
-        });
+        const box = createBox(boundingBox);
+        const boxIndex = boxIndices[i];
+        const anchor = this.anchorsData[boxIndex];
+        const sliced = tf2.slice(detectedOutputs, [boxIndex, NUM_LANDMARKS - 1], [1, -1]);
+        const squeezed = sliced.squeeze();
+        const landmarks = squeezed.reshape([NUM_LANDMARKS, -1]);
+        const probability = tf2.slice(scores, [boxIndex], [1]);
+        const annotatedBox = {box, landmarks, probability, anchor};
         annotatedBoxes.push(annotatedBox);
+        sliced.dispose();
+        squeezed.dispose();
       }
+      detectedOutputs.dispose();
       boxes.dispose();
       scores.dispose();
       detectedOutputs.dispose();
@@ -141,12 +144,11 @@ var require_blazeface = __commonJS((exports2) => {
       };
     }
     async estimateFaces(input) {
-      const image = tf2.tidy(() => {
-        if (!(input instanceof tf2.Tensor)) {
-          input = tf2.browser.fromPixels(input);
-        }
-        return input.toFloat().expandDims(0);
-      });
+      const imageRaw = !(input instanceof tf2.Tensor) ? tf2.browser.fromPixels(input) : input;
+      const imageCast = imageRaw.toFloat();
+      const image = imageCast.expandDims(0);
+      imageRaw.dispose();
+      imageCast.dispose();
       const {boxes, scaleFactor} = await this.getBoundingBoxes(image);
       image.dispose();
       return Promise.all(boxes.map(async (face) => {
@@ -172,12 +174,12 @@ var require_blazeface = __commonJS((exports2) => {
       }));
     }
   }
-  async function load(config2) {
+  async function load2(config2) {
     const blazeface = await tf2.loadGraphModel(config2.detector.modelPath, {fromTFHub: config2.detector.modelPath.includes("tfhub.dev")});
     const model = new BlazeFaceModel(blazeface, config2);
     return model;
   }
-  exports2.load = load;
+  exports2.load = load2;
   exports2.BlazeFaceModel = BlazeFaceModel;
   exports2.disposeBox = disposeBox;
 });
@@ -530,21 +532,25 @@ var require_pipeline = __commonJS((exports2) => {
       this.skipFrames = config2.detector.skipFrames;
       this.maxFaces = config2.detector.maxFaces;
       if (this.shouldUpdateRegionsOfInterest()) {
-        const {boxes, scaleFactor} = await this.boundingBoxDetector.getBoundingBoxes(input);
-        if (boxes.length === 0) {
+        const detector = await this.boundingBoxDetector.getBoundingBoxes(input);
+        if (detector.boxes.length === 0) {
           this.regionsOfInterest = [];
           return null;
         }
-        const scaledBoxes = boxes.map((prediction) => {
+        const scaledBoxes = detector.boxes.map((prediction) => {
+          const startPoint = prediction.box.startPoint.squeeze();
+          const endPoint = prediction.box.endPoint.squeeze();
           const predictionBox = {
-            startPoint: prediction.box.startPoint.squeeze().arraySync(),
-            endPoint: prediction.box.endPoint.squeeze().arraySync()
+            startPoint: startPoint.arraySync(),
+            endPoint: endPoint.arraySync()
           };
-          prediction.box.startPoint.dispose();
-          prediction.box.endPoint.dispose();
-          const scaledBox = bounding.scaleBoxCoordinates(predictionBox, scaleFactor);
+          startPoint.dispose();
+          endPoint.dispose();
+          const scaledBox = bounding.scaleBoxCoordinates(predictionBox, detector.scaleFactor);
           const enlargedBox = bounding.enlargeBox(scaledBox);
           const landmarks = prediction.landmarks.arraySync();
+          prediction.box.startPoint.dispose();
+          prediction.box.endPoint.dispose();
           prediction.landmarks.dispose();
           prediction.probability.dispose();
           return {...enlargedBox, landmarks};
@@ -601,13 +607,15 @@ var require_pipeline = __commonJS((exports2) => {
         const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
         tf2.dispose(rawCoords);
         const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
+        const confidence = flag.squeeze();
+        tf2.dispose(flag);
         if (config2.mesh.enabled) {
           const transformedCoords = tf2.tensor2d(transformedCoordsData);
           this.regionsOfInterest[i] = {...landmarksBox, landmarks: transformedCoords.arraySync()};
           const prediction2 = {
             coords: transformedCoords,
             box: landmarksBox,
-            confidence: flag.squeeze(),
+            confidence,
             image: face
           };
           return prediction2;
@@ -615,7 +623,7 @@ var require_pipeline = __commonJS((exports2) => {
         const prediction = {
           coords: null,
           box: landmarksBox,
-          confidence: flag.squeeze(),
+          confidence,
           image: face
         };
         return prediction;
@@ -668,7 +676,7 @@ var require_pipeline = __commonJS((exports2) => {
       const ys = landmarks.map((d) => d[1]);
       const startPoint = [Math.min(...xs), Math.min(...ys)];
       const endPoint = [Math.max(...xs), Math.max(...ys)];
-      return {startPoint, endPoint};
+      return {startPoint, endPoint, landmarks};
     }
   }
   exports2.Pipeline = Pipeline;
@@ -3814,11 +3822,11 @@ var require_facemesh = __commonJS((exports2) => {
     async estimateFaces(input, config2) {
       if (config2)
         this.config = config2;
-      const image = tf2.tidy(() => {
-        if (!(input instanceof tf2.Tensor))
-          input = tf2.browser.fromPixels(input);
-        return input.toFloat().expandDims(0);
-      });
+      const imageRaw = !(input instanceof tf2.Tensor) ? tf2.browser.fromPixels(input) : input;
+      const imageCast = imageRaw.toFloat();
+      const image = imageCast.expandDims(0);
+      imageRaw.dispose();
+      imageCast.dispose();
       const predictions = await this.pipeline.predict(image, config2);
       tf2.dispose(image);
       const results = [];
@@ -3844,13 +3852,17 @@ var require_facemesh = __commonJS((exports2) => {
             image: prediction.image ? tf2.clone(prediction.image) : null
           });
         }
-        prediction.confidence.dispose();
-        prediction.image.dispose();
+        if (prediction.confidence)
+          prediction.confidence.dispose();
+        if (prediction.coords)
+          prediction.coords.dispose();
+        if (prediction.image)
+          prediction.image.dispose();
       }
       return results;
     }
   }
-  async function load(config2) {
+  async function load2(config2) {
     const models2 = await Promise.all([
       blazeface.load(config2),
       tf2.loadGraphModel(config2.mesh.modelPath, {fromTFHub: config2.mesh.modelPath.includes("tfhub.dev")}),
@@ -3859,7 +3871,7 @@ var require_facemesh = __commonJS((exports2) => {
     const faceMesh = new MediaPipeFaceMesh(models2[0], models2[1], models2[2], config2);
     return faceMesh;
   }
-  exports2.load = load;
+  exports2.load = load2;
   exports2.MediaPipeFaceMesh = MediaPipeFaceMesh;
   exports2.uv_coords = uv_coords;
   exports2.triangulation = triangulation;
@@ -3946,7 +3958,7 @@ var require_emotion = __commonJS((exports2) => {
     });
     return tensor;
   }
-  async function load(config2) {
+  async function load2(config2) {
     if (!models2.emotion)
       models2.emotion = await tf2.loadGraphModel(config2.face.emotion.modelPath);
     return models2.emotion;
@@ -3988,7 +4000,7 @@ var require_emotion = __commonJS((exports2) => {
     return obj;
   }
   exports2.predict = predict;
-  exports2.load = load;
+  exports2.load = load2;
 });
 
 // src/posenet/modelBase.js
@@ -4542,10 +4554,10 @@ var require_modelPoseNet = __commonJS((exports2) => {
     const mobilenet = new modelMobileNet.MobileNet(graphModel, config2.outputStride);
     return new PoseNet(mobilenet);
   }
-  async function load(config2) {
+  async function load2(config2) {
     return loadMobileNet(config2);
   }
-  exports2.load = load;
+  exports2.load = load2;
 });
 
 // src/posenet/posenet.js
@@ -4681,19 +4693,7 @@ var require_handdetector = __commonJS((exports2) => {
       const boxes = this.normalizeBoxes(rawBoxes);
       const boxesWithHandsTensor = await tf2.image.nonMaxSuppressionAsync(boxes, scores, this.maxHands, this.iouThreshold, this.scoreThreshold);
       const boxesWithHands = await boxesWithHandsTensor.array();
-      const toDispose = [
-        normalizedInput,
-        batchedPrediction,
-        boxesWithHandsTensor,
-        prediction,
-        boxes,
-        rawBoxes,
-        scores
-      ];
-      if (boxesWithHands.length === 0) {
-        toDispose.forEach((tensor) => tensor.dispose());
-        return null;
-      }
+      const toDispose = [normalizedInput, batchedPrediction, boxesWithHandsTensor, prediction, boxes, rawBoxes, scores];
       const detectedHands = tf2.tidy(() => {
         const detectedBoxes = [];
         for (const i in boxesWithHands) {
@@ -4705,6 +4705,7 @@ var require_handdetector = __commonJS((exports2) => {
         }
         return detectedBoxes;
       });
+      toDispose.forEach((tensor) => tensor.dispose());
       return detectedHands;
     }
     async estimateHandBounds(input, config2) {
@@ -5033,7 +5034,7 @@ var require_handpose = __commonJS((exports2) => {
     }
     return tf2.util.fetch(url).then((d) => d.json());
   }
-  async function load(config2) {
+  async function load2(config2) {
     const [anchors, handDetectorModel, handPoseModel] = await Promise.all([
       loadAnchors(config2.detector.anchors),
       tf2.loadGraphModel(config2.detector.modelPath, {fromTFHub: config2.detector.modelPath.includes("tfhub.dev")}),
@@ -5044,7 +5045,7 @@ var require_handpose = __commonJS((exports2) => {
     const handpose2 = new HandPose(pipeline);
     return handpose2;
   }
-  exports2.load = load;
+  exports2.load = load2;
 });
 
 // config.js
@@ -5055,6 +5056,7 @@ var require_config = __commonJS((exports2) => {
   var config_default = {
     backend: "webgl",
     console: true,
+    scoped: false,
     face: {
       enabled: true,
       detector: {
@@ -5202,6 +5204,7 @@ const handpose = require_handpose();
 const defaults = require_config().default;
 const app = require_package();
 let config;
+let state = "idle";
 const models = {
   facemesh: null,
   posenet: null,
@@ -5217,8 +5220,20 @@ const now = () => {
   return parseInt(Number(process.hrtime.bigint()) / 1e3 / 1e3);
 };
 const log = (...msg) => {
-  if (config.console)
+  if (msg && config.console)
     console.log(...msg);
+};
+let numTensors = 0;
+const analyzeMemoryLeaks = false;
+const analyze = (...msg) => {
+  if (!analyzeMemoryLeaks)
+    return;
+  const current = tf.engine().state.numTensors;
+  const previous = numTensors;
+  numTensors = current;
+  const leaked = current - previous;
+  if (leaked !== 0)
+    log(...msg, leaked);
 };
 function mergeDeep(...objects) {
   const isObject = (obj) => obj && typeof obj === "object";
@@ -5252,8 +5267,26 @@ function sanity(input) {
   }
   return null;
 }
-async function detect(input, userConfig) {
+async function load(userConfig) {
+  if (userConfig)
+    config = mergeDeep(defaults, userConfig);
+  if (config.face.enabled && !models.facemesh)
+    models.facemesh = await facemesh.load(config.face);
+  if (config.body.enabled && !models.posenet)
+    models.posenet = await posenet.load(config.body);
+  if (config.hand.enabled && !models.handpose)
+    models.handpose = await handpose.load(config.hand);
+  if (config.face.enabled && config.face.age.enabled && !models.age)
+    models.age = await ssrnet.loadAge(config);
+  if (config.face.enabled && config.face.gender.enabled && !models.gender)
+    models.gender = await ssrnet.loadGender(config);
+  if (config.face.enabled && config.face.emotion.enabled && !models.emotion)
+    models.emotion = await emotion.load(config);
+}
+async function detect(input, userConfig = {}) {
+  state = "config";
   config = mergeDeep(defaults, userConfig);
+  state = "check";
   const error = sanity(input);
   if (error) {
     log(error, input);
@@ -5264,34 +5297,35 @@ async function detect(input, userConfig) {
     if (loadedModels === 0)
       log("Human library starting");
     if (tf.getBackend() !== config.backend) {
+      state = "backend";
       log("Human library setting backend:", config.backend);
       await tf.setBackend(config.backend);
       await tf.ready();
     }
-    if (config.face.enabled && !models.facemesh)
-      models.facemesh = await facemesh.load(config.face);
-    if (config.body.enabled && !models.posenet)
-      models.posenet = await posenet.load(config.body);
-    if (config.hand.enabled && !models.handpose)
-      models.handpose = await handpose.load(config.hand);
-    if (config.face.enabled && config.face.age.enabled && !models.age)
-      models.age = await ssrnet.loadAge(config);
-    if (config.face.enabled && config.face.gender.enabled && !models.gender)
-      models.gender = await ssrnet.loadGender(config);
-    if (config.face.enabled && config.face.emotion.enabled && !models.emotion)
-      models.emotion = await emotion.load(config);
+    state = "load";
+    await load();
     const perf = {};
     let timeStamp;
-    tf.engine().startScope();
+    if (config.scoped)
+      tf.engine().startScope();
+    analyze("Start Detect:");
+    state = "run:body";
     timeStamp = now();
+    analyze("Start PoseNet");
     const poseRes = config.body.enabled ? await models.posenet.estimatePoses(input, config.body) : [];
+    analyze("End PoseNet:");
     perf.body = Math.trunc(now() - timeStamp);
+    state = "run:hand";
     timeStamp = now();
+    analyze("Start HandPose:");
     const handRes = config.hand.enabled ? await models.handpose.estimateHands(input, config.hand) : [];
+    analyze("End HandPose:");
     perf.hand = Math.trunc(now() - timeStamp);
     const faceRes = [];
     if (config.face.enabled) {
+      state = "run:face";
       timeStamp = now();
+      analyze("Start FaceMesh:");
       const faces = await models.facemesh.estimateFaces(input, config.face);
       perf.face = Math.trunc(now() - timeStamp);
       for (const face of faces) {
@@ -5299,13 +5333,16 @@ async function detect(input, userConfig) {
           log("face object is disposed:", face.image);
           continue;
         }
+        state = "run:agegender";
         timeStamp = now();
         const ssrData = config.face.age.enabled || config.face.gender.enabled ? await ssrnet.predict(face.image, config) : {};
         perf.agegender = Math.trunc(now() - timeStamp);
+        state = "run:emotion";
         timeStamp = now();
         const emotionData = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
         perf.emotion = Math.trunc(now() - timeStamp);
         face.image.dispose();
+        delete face.image;
         const iris = face.annotations.leftEyeIris && face.annotations.rightEyeIris ? Math.max(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0], face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0]) : 0;
         faceRes.push({
           confidence: face.confidence,
@@ -5319,8 +5356,12 @@ async function detect(input, userConfig) {
           iris: iris !== 0 ? Math.trunc(100 * 11.7 / iris) / 100 : 0
         });
       }
+      analyze("End FaceMesh:");
     }
-    tf.engine().endScope();
+    state = "idle";
+    if (config.scoped)
+      tf.engine().endScope();
+    analyze("End Scope:");
     perf.total = Object.values(perf).reduce((a, b) => a + b);
     resolve({face: faceRes, body: poseRes, hand: handRes, performance: perf});
   });
@@ -5335,4 +5376,5 @@ exports.posenet = posenet;
 exports.handpose = handpose;
 exports.tf = tf;
 exports.version = app.version;
+exports.state = state;
 //# sourceMappingURL=human.cjs.map

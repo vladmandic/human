@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 4536,
+      "bytes": 4774,
       "imports": []
     },
     "package.json": {
@@ -13,7 +13,7 @@
       "imports": []
     },
     "src/facemesh/blazeface.js": {
-      "bytes": 7042,
+      "bytes": 7407,
       "imports": []
     },
     "src/facemesh/box.js": {
@@ -21,7 +21,7 @@
       "imports": []
     },
     "src/facemesh/facemesh.js": {
-      "bytes": 2649,
+      "bytes": 2816,
       "imports": [
         {
           "path": "src/facemesh/blazeface.js"
@@ -45,7 +45,7 @@
       "imports": []
     },
     "src/facemesh/pipeline.js": {
-      "bytes": 14108,
+      "bytes": 14393,
       "imports": [
         {
           "path": "src/facemesh/box.js"
@@ -75,7 +75,7 @@
       "imports": []
     },
     "src/handpose/handdetector.js": {
-      "bytes": 4253,
+      "bytes": 4296,
       "imports": [
         {
           "path": "src/handpose/box.js"
@@ -116,7 +116,7 @@
       "imports": []
     },
     "src/index.js": {
-      "bytes": 6474,
+      "bytes": 7175,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -253,13 +253,13 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 194920
+      "bytes": 197443
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
       "inputs": {
         "src/facemesh/blazeface.js": {
-          "bytesInOutput": 3223
+          "bytesInOutput": 3255
         },
         "src/facemesh/keypoints.js": {
           "bytesInOutput": 1950
@@ -271,7 +271,7 @@
           "bytesInOutput": 1176
         },
         "src/facemesh/pipeline.js": {
-          "bytesInOutput": 5541
+          "bytesInOutput": 5602
         },
         "src/facemesh/uvcoords.js": {
           "bytesInOutput": 16790
@@ -280,7 +280,7 @@
           "bytesInOutput": 9995
         },
         "src/facemesh/facemesh.js": {
-          "bytesInOutput": 1320
+          "bytesInOutput": 1391
         },
         "src/ssrnet/ssrnet.js": {
           "bytesInOutput": 1099
@@ -325,31 +325,31 @@
           "bytesInOutput": 1400
         },
         "src/handpose/handdetector.js": {
-          "bytesInOutput": 2074
+          "bytesInOutput": 2040
         },
         "src/handpose/keypoints.js": {
           "bytesInOutput": 160
         },
         "src/handpose/util.js": {
-          "bytesInOutput": 977
+          "bytesInOutput": 984
         },
         "src/handpose/pipeline.js": {
-          "bytesInOutput": 3230
+          "bytesInOutput": 3232
         },
         "src/handpose/handpose.js": {
           "bytesInOutput": 1326
         },
         "config.js": {
-          "bytesInOutput": 1136
+          "bytesInOutput": 1146
         },
         "package.json": {
           "bytesInOutput": 2275
         },
         "src/index.js": {
-          "bytesInOutput": 2904
+          "bytesInOutput": 3410
         }
       },
-      "bytes": 68538
+      "bytes": 69193
     }
   }
 }

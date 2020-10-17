@@ -132,21 +132,26 @@ class Pipeline {
     this.skipFrames = config.detector.skipFrames;
     this.maxFaces = config.detector.maxFaces;
     if (this.shouldUpdateRegionsOfInterest()) {
-      const { boxes, scaleFactor } = await this.boundingBoxDetector.getBoundingBoxes(input);
-      if (boxes.length === 0) {
+      // const { boxes, scaleFactor } = await this.boundingBoxDetector.getBoundingBoxes(input);
+      const detector = await this.boundingBoxDetector.getBoundingBoxes(input);
+      if (detector.boxes.length === 0) {
         this.regionsOfInterest = [];
         return null;
       }
-      const scaledBoxes = boxes.map((prediction) => {
+      const scaledBoxes = detector.boxes.map((prediction) => {
+        const startPoint = prediction.box.startPoint.squeeze();
+        const endPoint = prediction.box.endPoint.squeeze();
         const predictionBox = {
-          startPoint: prediction.box.startPoint.squeeze().arraySync(),
-          endPoint: prediction.box.endPoint.squeeze().arraySync(),
+          startPoint: startPoint.arraySync(),
+          endPoint: endPoint.arraySync(),
         };
-        prediction.box.startPoint.dispose();
-        prediction.box.endPoint.dispose();
-        const scaledBox = bounding.scaleBoxCoordinates(predictionBox, scaleFactor);
+        startPoint.dispose();
+        endPoint.dispose();
+        const scaledBox = bounding.scaleBoxCoordinates(predictionBox, detector.scaleFactor);
         const enlargedBox = bounding.enlargeBox(scaledBox);
         const landmarks = prediction.landmarks.arraySync();
+        prediction.box.startPoint.dispose();
+        prediction.box.endPoint.dispose();
         prediction.landmarks.dispose();
         prediction.probability.dispose();
         return { ...enlargedBox, landmarks };
@@ -206,13 +211,15 @@ class Pipeline {
       const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
       tf.dispose(rawCoords);
       const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
+      const confidence = flag.squeeze();
+      tf.dispose(flag);
       if (config.mesh.enabled) {
         const transformedCoords = tf.tensor2d(transformedCoordsData);
         this.regionsOfInterest[i] = { ...landmarksBox, landmarks: transformedCoords.arraySync() };
         const prediction = {
           coords: transformedCoords,
           box: landmarksBox,
-          confidence: flag.squeeze(),
+          confidence,
           image: face,
         };
         return prediction;
@@ -220,7 +227,7 @@ class Pipeline {
       const prediction = {
         coords: null,
         box: landmarksBox,
-        confidence: flag.squeeze(),
+        confidence,
         image: face,
       };
       return prediction;
@@ -278,7 +285,7 @@ class Pipeline {
     const ys = landmarks.map((d) => d[1]);
     const startPoint = [Math.min(...xs), Math.min(...ys)];
     const endPoint = [Math.max(...xs), Math.max(...ys)];
-    return { startPoint, endPoint };
+    return { startPoint, endPoint, landmarks };
   }
 }
 exports.Pipeline = Pipeline;

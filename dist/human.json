@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 4569,
+      "bytes": 4536,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js": {
@@ -177,7 +177,7 @@
       ]
     },
     "src/facemesh/facemesh.js": {
-      "bytes": 2493,
+      "bytes": 2649,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -291,7 +291,7 @@
       "imports": []
     },
     "src/index.js": {
-      "bytes": 6592,
+      "bytes": 6474,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -464,7 +464,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 4956003
+      "bytes": 4955971
     },
     "dist/human.js": {
       "imports": [],
@@ -548,7 +548,7 @@
           "bytesInOutput": 9996
         },
         "src/facemesh/facemesh.js": {
-          "bytesInOutput": 1273
+          "bytesInOutput": 1306
         },
         "src/ssrnet/ssrnet.js": {
           "bytesInOutput": 1100
@@ -614,10 +614,10 @@
           "bytesInOutput": 2276
         },
         "src/index.js": {
-          "bytesInOutput": 3058
+          "bytesInOutput": 2963
         }
       },
-      "bytes": 1105506
+      "bytes": 1105444
     }
   }
 }

@@ -3823,6 +3823,8 @@ var require_facemesh = __commonJS((exports2) => {
       tf2.dispose(image);
       const results = [];
       for (const prediction of predictions || []) {
+        if (prediction.isDisposedInternal)
+          continue;
         const confidence = prediction.confidence.arraySync();
         if (confidence >= this.config.detector.minConfidence) {
           const mesh = prediction.coords ? prediction.coords.arraySync() : null;
@@ -5280,20 +5282,16 @@ async function detect(input, userConfig) {
       models.emotion = await emotion.load(config);
     const perf = {};
     let timeStamp;
-    timeStamp = now();
     tf.engine().startScope();
+    timeStamp = now();
     const poseRes = config.body.enabled ? await models.posenet.estimatePoses(input, config.body) : [];
-    tf.engine().endScope();
     perf.body = Math.trunc(now() - timeStamp);
     timeStamp = now();
-    tf.engine().startScope();
     const handRes = config.hand.enabled ? await models.handpose.estimateHands(input, config.hand) : [];
-    tf.engine().endScope();
     perf.hand = Math.trunc(now() - timeStamp);
     const faceRes = [];
     if (config.face.enabled) {
       timeStamp = now();
-      tf.engine().startScope();
       const faces = await models.facemesh.estimateFaces(input, config.face);
       perf.face = Math.trunc(now() - timeStamp);
       for (const face of faces) {
@@ -5321,8 +5319,8 @@ async function detect(input, userConfig) {
           iris: iris !== 0 ? Math.trunc(100 * 11.7 / iris) / 100 : 0
         });
       }
-      tf.engine().endScope();
     }
+    tf.engine().endScope();
     perf.total = Object.values(perf).reduce((a, b) => a + b);
     resolve({face: faceRes, body: poseRes, hand: handRes, performance: perf});
   });

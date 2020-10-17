@@ -21,6 +21,8 @@ class MediaPipeFaceMesh {
     tf.dispose(image);
     const results = [];
     for (const prediction of (predictions || [])) {
+      // guard against disposed tensors on long running operations such as pause in middle of processing
+      if (prediction.isDisposedInternal) continue;
       const confidence = prediction.confidence.arraySync();
       if (confidence >= this.config.detector.minConfidence) {
         const mesh = prediction.coords ? prediction.coords.arraySync() : null;

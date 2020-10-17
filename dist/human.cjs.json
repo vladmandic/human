@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 4569,
+      "bytes": 4536,
       "imports": []
     },
     "package.json": {
@@ -21,7 +21,7 @@
       "imports": []
     },
     "src/facemesh/facemesh.js": {
-      "bytes": 2493,
+      "bytes": 2649,
       "imports": [
         {
           "path": "src/facemesh/blazeface.js"
@@ -116,7 +116,7 @@
       "imports": []
     },
     "src/index.js": {
-      "bytes": 6592,
+      "bytes": 6474,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -253,7 +253,7 @@
     "dist/human.cjs.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 216661
+      "bytes": 216628
     },
     "dist/human.cjs": {
       "imports": [],
@@ -280,7 +280,7 @@
           "bytesInOutput": 23311
         },
         "src/facemesh/facemesh.js": {
-          "bytesInOutput": 2695
+          "bytesInOutput": 2758
         },
         "src/ssrnet/ssrnet.js": {
           "bytesInOutput": 2068
@@ -346,10 +346,10 @@
           "bytesInOutput": 2748
         },
         "src/index.js": {
-          "bytesInOutput": 5268
+          "bytesInOutput": 5148
         }
       },
-      "bytes": 132235
+      "bytes": 132178
     }
   }
 }

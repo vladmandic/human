@@ -8,6 +8,7 @@ const defaults = require('../config.js').default;
 const app = require('../package.json');
 
 let config;
+let state = 'idle';
 
 // object that contains all initialized models
 const models = {
@@ -61,10 +62,22 @@ function sanity(input) {
   return null;
 }
 
-async function detect(input, userConfig) {
+async function load(userConfig) {
+  if (userConfig) config = mergeDeep(defaults, userConfig);
+  if (config.face.enabled && !models.facemesh) models.facemesh = await facemesh.load(config.face);
+  if (config.body.enabled && !models.posenet) models.posenet = await posenet.load(config.body);
+  if (config.hand.enabled && !models.handpose) models.handpose = await handpose.load(config.hand);
+  if (config.face.enabled && config.face.age.enabled && !models.age) models.age = await ssrnet.loadAge(config);
+  if (config.face.enabled && config.face.gender.enabled && !models.gender) models.gender = await ssrnet.loadGender(config);
+  if (config.face.enabled && config.face.emotion.enabled && !models.emotion) models.emotion = await emotion.load(config);
+}
+
+async function detect(input, userConfig = {}) {
+  state = 'config';
   config = mergeDeep(defaults, userConfig);
 
   // sanity checks
+  state = 'check';
   const error = sanity(input);
   if (error) {
     log(error, input);
@@ -79,6 +92,7 @@ async function detect(input, userConfig) {
 
     // configure backend
     if (tf.getBackend() !== config.backend) {
+      state = 'backend';
       log('Human library setting backend:', config.backend);
       await tf.setBackend(config.backend);
       await tf.ready();
@@ -91,35 +105,31 @@ async function detect(input, userConfig) {
     // }
 
     // load models if enabled
-    if (config.face.enabled && !models.facemesh) models.facemesh = await facemesh.load(config.face);
-    if (config.body.enabled && !models.posenet) models.posenet = await posenet.load(config.body);
-    if (config.hand.enabled && !models.handpose) models.handpose = await handpose.load(config.hand);
-    if (config.face.enabled && config.face.age.enabled && !models.age) models.age = await ssrnet.loadAge(config);
-    if (config.face.enabled && config.face.gender.enabled && !models.gender) models.gender = await ssrnet.loadGender(config);
-    if (config.face.enabled && config.face.emotion.enabled && !models.emotion) models.emotion = await emotion.load(config);
+    state = 'load';
+    await load();
 
     const perf = {};
     let timeStamp;
 
-    // run posenet
-    timeStamp = now();
     tf.engine().startScope();
+
+    // run posenet
+    state = 'run:body';
+    timeStamp = now();
     const poseRes = config.body.enabled ? await models.posenet.estimatePoses(input, config.body) : [];
-    tf.engine().endScope();
     perf.body = Math.trunc(now() - timeStamp);
 
     // run handpose
+    state = 'run:hand';
     timeStamp = now();
-    tf.engine().startScope();
     const handRes = config.hand.enabled ? await models.handpose.estimateHands(input, config.hand) : [];
-    tf.engine().endScope();
     perf.hand = Math.trunc(now() - timeStamp);
 
     // run facemesh, includes blazeface and iris
     const faceRes = [];
     if (config.face.enabled) {
+      state = 'run:face';
       timeStamp = now();
-      tf.engine().startScope();
       const faces = await models.facemesh.estimateFaces(input, config.face);
       perf.face = Math.trunc(now() - timeStamp);
       for (const face of faces) {
@@ -129,10 +139,12 @@ async function detect(input, userConfig) {
           continue;
         }
         // run ssr-net age & gender, inherits face from blazeface
+        state = 'run:agegender';
         timeStamp = now();
         const ssrData = (config.face.age.enabled || config.face.gender.enabled) ? await ssrnet.predict(face.image, config) : {};
         perf.agegender = Math.trunc(now() - timeStamp);
         // run emotion, inherits face from blazeface
+        state = 'run:emotion';
         timeStamp = now();
         const emotionData = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
         perf.emotion = Math.trunc(now() - timeStamp);
@@ -154,11 +166,13 @@ async function detect(input, userConfig) {
           iris: (iris !== 0) ? Math.trunc(100 * 11.7 /* human iris size in mm */ / iris) / 100 : 0,
         });
       }
-      tf.engine().endScope();
+      state = 'idle';
     }
 
     // set depthwiseconv to original value
     // tf.env().set('WEBGL_PACK_DEPTHWISECONV', savedWebglPackDepthwiseConvFlag);
+
+    tf.engine().endScope();
 
     // combine and return results
     perf.total = Object.values(perf).reduce((a, b) => a + b);
@@ -176,3 +190,4 @@ exports.posenet = posenet;
 exports.handpose = handpose;
 exports.tf = tf;
 exports.version = app.version;
+exports.state = state;

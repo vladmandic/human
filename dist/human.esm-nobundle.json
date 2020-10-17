@@ -116,7 +116,7 @@
       "imports": []
     },
     "src/index.js": {
-      "bytes": 7437,
+      "bytes": 7526,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -253,7 +253,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 198045
+      "bytes": 198188
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -313,7 +313,7 @@
           "bytesInOutput": 608
         },
         "src/posenet/util.js": {
-          "bytesInOutput": 1843
+          "bytesInOutput": 1850
         },
         "src/posenet/modelPoseNet.js": {
           "bytesInOutput": 885
@@ -346,10 +346,10 @@
           "bytesInOutput": 2275
         },
         "src/index.js": {
-          "bytesInOutput": 3513
+          "bytesInOutput": 3564
         }
       },
-      "bytes": 69346
+      "bytes": 69404
     }
   }
 }

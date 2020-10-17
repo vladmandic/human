@@ -5306,9 +5306,6 @@ async function detect(input, userConfig = {}) {
   perf.sanity = Math.trunc(now() - timeStamp);
   return new Promise(async (resolve) => {
     const timeStart = now();
-    const loadedModels = Object.values(models).filter((a) => a).length;
-    if (loadedModels === 0)
-      log("Human library starting");
     timeStamp = now();
     if (tf.getBackend() !== config.backend) {
       state = "backend";
@@ -5316,7 +5313,13 @@ async function detect(input, userConfig = {}) {
       await tf.setBackend(config.backend);
       await tf.ready();
     }
-    perf.body = Math.trunc(now() - timeStamp);
+    perf.backend = Math.trunc(now() - timeStamp);
+    const loadedModels = Object.values(models).filter((a) => a).length;
+    if (loadedModels === 0) {
+      log("Human library starting");
+      log("Configuration:", config);
+      log("Flags:", tf.ENV.flags);
+    }
     timeStamp = now();
     state = "load";
     await load();

@@ -98,11 +98,13 @@ async function setupCamera() {
   const canvas = document.getElementById('canvas');
   const output = document.getElementById('log');
   const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
-  log(`Setting up camera: live: ${live} facing: ${ui.facing}`);
+  let msg = `Setting up camera: live: ${live} facing: ${ui.facing}`;
+  output.innerText += `\n${msg}`;
+  log(msg);
   // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
   if (!navigator.mediaDevices) {
-    const msg = 'Camera access not supported';
-    output.innerText += '\n' + msg;
+    msg = 'Camera access not supported';
+    output.innerText += `\n${msg}`;
     log(msg);
     return null;
   }
@@ -127,7 +129,8 @@ async function setupCamera() {
       if (live) video.play();
       ui.busy = false;
       // do once more because onresize events can be delayed or skipped
-      if (video.width !== window.innerWidth) await setupCamera();
+      if (video.width > window.innerWidth) await setupCamera();
+      output.innerText += `\nCamera resolution: ${video.width} x ${video.height}`;
       resolve(video);
     };
   });
@@ -229,7 +232,7 @@ async function detectVideo() {
   const canvas = document.getElementById('canvas');
   ui.baseFont = ui.baseFontProto.replace(/{size}/, '1.2rem');
   ui.baseLineHeight = ui.baseLineHeightProto;
-  if (!video.paused) {
+  if ((video.srcObject !== null) && !video.paused) {
     document.getElementById('log').innerText += '\nPaused ...';
     video.pause();
   } else {

@@ -89,36 +89,46 @@ async function load(userConfig) {
 
 async function detect(input, userConfig = {}) {
   state = 'config';
+  const perf = {};
+  let timeStamp;
+
+  timeStamp = now();
   config = mergeDeep(defaults, userConfig);
+  perf.config = Math.trunc(now() - timeStamp);
 
   // sanity checks
+  timeStamp = now();
   state = 'check';
   const error = sanity(input);
   if (error) {
     log(error, input);
     return { error };
   }
+  perf.sanity = Math.trunc(now() - timeStamp);
 
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve) => {
+    const timeStart = now();
+
     // check number of loaded models
     const loadedModels = Object.values(models).filter((a) => a).length;
     if (loadedModels === 0) log('Human library starting');
 
     // configure backend
+    timeStamp = now();
     if (tf.getBackend() !== config.backend) {
       state = 'backend';
       log('Human library setting backend:', config.backend);
       await tf.setBackend(config.backend);
       await tf.ready();
     }
+    perf.body = Math.trunc(now() - timeStamp);
 
     // load models if enabled
+    timeStamp = now();
     state = 'load';
     await load();
-
-    const perf = {};
-    let timeStamp;
+    perf.load = Math.trunc(now() - timeStamp);
 
     if (config.scoped) tf.engine().startScope();
 
@@ -164,8 +174,9 @@ async function detect(input, userConfig = {}) {
         timeStamp = now();
         const emotionData = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
         perf.emotion = Math.trunc(now() - timeStamp);
+
+        // dont need face anymore
         face.image.dispose();
-        delete face.image;
         // calculate iris distance
         // iris: array[ bottom, left, top, right, center ]
         const iris = (face.annotations.leftEyeIris && face.annotations.rightEyeIris)
@@ -191,8 +202,7 @@ async function detect(input, userConfig = {}) {
     if (config.scoped) tf.engine().endScope();
     analyze('End Scope:');
 
-    // combine and return results
-    perf.total = Object.values(perf).reduce((a, b) => a + b);
+    perf.total = Math.trunc(now() - timeStart);
     resolve({ face: faceRes, body: poseRes, hand: handRes, performance: perf });
   });
 }

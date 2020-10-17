@@ -116,7 +116,7 @@
       "imports": []
     },
     "src/index.js": {
-      "bytes": 7175,
+      "bytes": 7437,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -245,7 +245,7 @@
       ]
     },
     "src/ssrnet/ssrnet.js": {
-      "bytes": 1856,
+      "bytes": 1965,
       "imports": []
     }
   },
@@ -253,7 +253,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 197443
+      "bytes": 198045
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -283,7 +283,7 @@
           "bytesInOutput": 1391
         },
         "src/ssrnet/ssrnet.js": {
-          "bytesInOutput": 1099
+          "bytesInOutput": 1149
         },
         "src/emotion/emotion.js": {
           "bytesInOutput": 1148
@@ -346,10 +346,10 @@
           "bytesInOutput": 2275
         },
         "src/index.js": {
-          "bytesInOutput": 3410
+          "bytesInOutput": 3513
         }
       },
-      "bytes": 69193
+      "bytes": 69346
     }
   }
 }

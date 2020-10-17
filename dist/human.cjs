@@ -3915,15 +3915,21 @@ var require_ssrnet = __commonJS((exports2) => {
     } else {
       enhance = await getImage(image, config2.face.age.inputSize);
     }
+    const promises = [];
+    let ageT;
+    let genderT;
+    if (config2.face.age.enabled)
+      promises.push(ageT = models2.age.predict(enhance));
+    if (config2.face.gender.enabled)
+      promises.push(genderT = models2.gender.predict(enhance));
+    await Promise.all(promises);
     const obj = {};
-    if (config2.face.age.enabled) {
-      const ageT = await models2.age.predict(enhance);
+    if (ageT) {
       const data = await ageT.data();
       obj.age = Math.trunc(10 * data[0]) / 10;
       tf2.dispose(ageT);
     }
-    if (config2.face.gender.enabled) {
-      const genderT = await models2.gender.predict(enhance);
+    if (genderT) {
       const data = await genderT.data();
       const confidence = Math.trunc(Math.abs(1.9 * 100 * (data[0] - 0.5))) / 100;
       if (confidence > config2.face.gender.minConfidence) {
@@ -5132,7 +5138,7 @@ var require_config = __commonJS((exports2) => {
 var require_package = __commonJS((exports2, module2) => {
   module2.exports = {
     name: "@vladmandic/human",
-    version: "0.3.5",
+    version: "0.3.6",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.cjs",
@@ -5285,27 +5291,36 @@ async function load(userConfig) {
 }
 async function detect(input, userConfig = {}) {
   state = "config";
+  const perf = {};
+  let timeStamp;
+  timeStamp = now();
   config = mergeDeep(defaults, userConfig);
+  perf.config = Math.trunc(now() - timeStamp);
+  timeStamp = now();
   state = "check";
   const error = sanity(input);
   if (error) {
     log(error, input);
     return {error};
   }
+  perf.sanity = Math.trunc(now() - timeStamp);
   return new Promise(async (resolve) => {
+    const timeStart = now();
     const loadedModels = Object.values(models).filter((a) => a).length;
     if (loadedModels === 0)
       log("Human library starting");
+    timeStamp = now();
     if (tf.getBackend() !== config.backend) {
       state = "backend";
       log("Human library setting backend:", config.backend);
       await tf.setBackend(config.backend);
       await tf.ready();
     }
+    perf.body = Math.trunc(now() - timeStamp);
+    timeStamp = now();
     state = "load";
     await load();
-    const perf = {};
-    let timeStamp;
+    perf.load = Math.trunc(now() - timeStamp);
     if (config.scoped)
       tf.engine().startScope();
     analyze("Start Detect:");
@@ -5342,7 +5357,6 @@ async function detect(input, userConfig = {}) {
         const emotionData = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
         perf.emotion = Math.trunc(now() - timeStamp);
         face.image.dispose();
-        delete face.image;
         const iris = face.annotations.leftEyeIris && face.annotations.rightEyeIris ? Math.max(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0], face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0]) : 0;
         faceRes.push({
           confidence: face.confidence,
@@ -5362,7 +5376,7 @@ async function detect(input, userConfig = {}) {
     if (config.scoped)
       tf.engine().endScope();
     analyze("End Scope:");
-    perf.total = Object.values(perf).reduce((a, b) => a + b);
+    perf.total = Math.trunc(now() - timeStart);
     resolve({face: faceRes, body: poseRes, hand: handRes, performance: perf});
   });
 }

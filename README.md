@@ -43,7 +43,7 @@ There are multiple ways to use `Human` library, pick one that suits you:
 - `dist/human.esm-nobundle.js`: ESM format non-minified bundle without TFJS for Browsers
 - `dist/human.cjs`: CommonJS format non-minified bundle without TFJS for NodeJS
 
-All versions include `sourcemap`
+All versions include `sourcemap` and build `manifest`
 
 Defaults:
 ```json
@@ -348,12 +348,15 @@ result = {
     }
   ],
   performance = {  // performance data of last execution for each module measuredin miliseconds
-    body,
-    hand,
-    face,
-    agegender,
-    emotion,
-    total,
+    config,        // time to parse configuration
+    load,          // time to load models
+    sanity,        // time for input verification
+    body,          // model time
+    hand,          // model time
+    face,          // model time
+    agegender,     // model time
+    emotion,       // model time
+    total,         // end to end time
   }
 }
 ```

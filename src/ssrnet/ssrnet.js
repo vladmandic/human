@@ -36,15 +36,21 @@ async function predict(image, config) {
   } else {
     enhance = await getImage(image, config.face.age.inputSize);
   }
+
+  const promises = [];
+  let ageT;
+  let genderT;
+  if (config.face.age.enabled) promises.push(ageT = models.age.predict(enhance));
+  if (config.face.gender.enabled) promises.push(genderT = models.gender.predict(enhance));
+  await Promise.all(promises);
+
   const obj = {};
-  if (config.face.age.enabled) {
-    const ageT = await models.age.predict(enhance);
+  if (ageT) {
     const data = await ageT.data();
     obj.age = Math.trunc(10 * data[0]) / 10;
     tf.dispose(ageT);
   }
-  if (config.face.gender.enabled) {
-    const genderT = await models.gender.predict(enhance);
+  if (genderT) {
     const data = await genderT.data();
     const confidence = Math.trunc(Math.abs(1.9 * 100 * (data[0] - 0.5))) / 100;
     if (confidence > config.face.gender.minConfidence) {
@@ -53,6 +59,7 @@ async function predict(image, config) {
     }
     tf.dispose(genderT);
   }
+
   tf.dispose(enhance);
   last = obj;
   return obj;

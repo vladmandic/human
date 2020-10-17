@@ -1,6 +1,7 @@
 /* global QuickSettings */
 
 import human from '../dist/human.esm.js';
+import draw from './draw.js';
 
 const ui = {
   baseColor: 'rgba(255, 200, 255, 0.3)',
@@ -11,8 +12,14 @@ const ui = {
   columns: 3,
   busy: false,
   facing: 'user',
+  useWorker: false,
   worker: 'worker.js',
   samples: ['../assets/sample1.jpg', '../assets/sample2.jpg', '../assets/sample3.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample6.jpg'],
+  drawBoxes: true,
+  drawPoints: false,
+  drawPolygons: true,
+  fillPolygons: true,
+  useDepth: true,
 };
 
 const config = {
@@ -50,169 +57,6 @@ const log = (...msg) => {
   if (config.console) console.log(...msg);
 };
 
-async function drawFace(result, canvas) {
-  if (!result) return;
-  const ctx = canvas.getContext('2d');
-  for (const face of result) {
-    ctx.font = ui.baseFont;
-    ctx.strokeStyle = ui.baseColor;
-    ctx.fillStyle = ui.baseColor;
-    ctx.lineWidth = ui.baseLineWidth;
-    ctx.beginPath();
-    if (settings.getValue('Draw Boxes')) {
-      ctx.rect(face.box[0], face.box[1], face.box[2], face.box[3]);
-    }
-    // silly hack since fillText does not suport new line
-    const labels = [];
-    if (face.agConfidence) labels.push(`${Math.trunc(100 * face.agConfidence)}% ${face.gender || ''}`);
-    if (face.age) labels.push(`Age:${face.age || ''}`);
-    if (face.iris) labels.push(`iris: ${face.iris}`);
-    if (face.emotion && face.emotion[0]) labels.push(`${Math.trunc(100 * face.emotion[0].score)}% ${face.emotion[0].emotion}`);
-    ctx.fillStyle = ui.baseLabel;
-    for (const i in labels) ctx.fillText(labels[i], face.box[0] + 6, face.box[1] + 24 + ((i + 1) * ui.baseLineHeight));
-    ctx.stroke();
-    ctx.lineWidth = 1;
-    if (face.mesh) {
-      if (settings.getValue('Draw Points')) {
-        for (const point of face.mesh) {
-          ctx.fillStyle = `rgba(${127.5 + (2 * point[2])}, ${127.5 - (2 * point[2])}, 255, 0.5)`;
-          ctx.beginPath();
-          ctx.arc(point[0], point[1], 2, 0, 2 * Math.PI);
-          ctx.fill();
-        }
-      }
-      if (settings.getValue('Draw Polygons')) {
-        for (let i = 0; i < human.facemesh.triangulation.length / 3; i++) {
-          const points = [
-            human.facemesh.triangulation[i * 3 + 0],
-            human.facemesh.triangulation[i * 3 + 1],
-            human.facemesh.triangulation[i * 3 + 2],
-          ].map((index) => face.mesh[index]);
-          const path = new Path2D();
-          path.moveTo(points[0][0], points[0][1]);
-          for (const point of points) {
-            path.lineTo(point[0], point[1]);
-          }
-          path.closePath();
-          ctx.strokeStyle = `rgba(${127.5 + (2 * points[0][2])}, ${127.5 - (2 * points[0][2])}, 255, 0.3)`;
-          ctx.stroke(path);
-          if (settings.getValue('Fill Polygons')) {
-            ctx.fillStyle = `rgba(${127.5 + (2 * points[0][2])}, ${127.5 - (2 * points[0][2])}, 255, 0.3)`;
-            ctx.fill(path);
-          }
-        }
-      }
-    }
-  }
-}
-
-async function drawBody(result, canvas) {
-  if (!result) return;
-  const ctx = canvas.getContext('2d');
-  for (const pose of result) {
-    ctx.fillStyle = ui.baseColor;
-    ctx.strokeStyle = ui.baseColor;
-    ctx.font = ui.baseFont;
-    ctx.lineWidth = ui.baseLineWidth;
-    if (settings.getValue('Draw Points')) {
-      for (const point of pose.keypoints) {
-        ctx.beginPath();
-        ctx.arc(point.position.x, point.position.y, 2, 0, 2 * Math.PI);
-        ctx.fill();
-      }
-    }
-    if (settings.getValue('Draw Polygons')) {
-      const path = new Path2D();
-      let part;
-      // torso
-      part = pose.keypoints.find((a) => a.part === 'leftShoulder');
-      path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightShoulder');
-      path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightHip');
-      path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftHip');
-      path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftShoulder');
-      path.lineTo(part.position.x, part.position.y);
-      // legs
-      part = pose.keypoints.find((a) => a.part === 'leftHip');
-      path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftKnee');
-      path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftAnkle');
-      path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightHip');
-      path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightKnee');
-      path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightAnkle');
-      path.lineTo(part.position.x, part.position.y);
-      // arms
-      part = pose.keypoints.find((a) => a.part === 'leftShoulder');
-      path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftElbow');
-      path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftWrist');
-      path.lineTo(part.position.x, part.position.y);
-      // arms
-      part = pose.keypoints.find((a) => a.part === 'rightShoulder');
-      path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightElbow');
-      path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightWrist');
-      path.lineTo(part.position.x, part.position.y);
-      // draw all
-      ctx.stroke(path);
-    }
-  }
-}
-
-async function drawHand(result, canvas) {
-  if (!result) return;
-  const ctx = canvas.getContext('2d');
-  for (const hand of result) {
-    ctx.font = ui.baseFont;
-    ctx.lineWidth = ui.baseLineWidth;
-    if (settings.getValue('Draw Boxes')) {
-      ctx.lineWidth = ui.baseLineWidth;
-      ctx.beginPath();
-      ctx.strokeStyle = ui.baseColor;
-      ctx.fillStyle = ui.baseColor;
-      ctx.rect(hand.box[0], hand.box[1], hand.box[2], hand.box[3]);
-      ctx.fillStyle = ui.baseLabel;
-      ctx.fillText('hand', hand.box[0] + 2, hand.box[1] + 22, hand.box[2]);
-      ctx.stroke();
-    }
-    if (settings.getValue('Draw Points')) {
-      for (const point of hand.landmarks) {
-        ctx.fillStyle = `rgba(${127.5 + (2 * point[2])}, ${127.5 - (2 * point[2])}, 255, 0.5)`;
-        ctx.beginPath();
-        ctx.arc(point[0], point[1], 2, 0, 2 * Math.PI);
-        ctx.fill();
-      }
-    }
-    if (settings.getValue('Draw Polygons')) {
-      const addPart = (part) => {
-        for (let i = 1; i < part.length; i++) {
-          ctx.lineWidth = ui.baseLineWidth;
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(${127.5 + (2 * part[i][2])}, ${127.5 - (2 * part[i][2])}, 255, 0.5)`;
-          ctx.moveTo(part[i - 1][0], part[i - 1][1]);
-          ctx.lineTo(part[i][0], part[i][1]);
-          ctx.stroke();
-        }
-      };
-      addPart(hand.annotations.indexFinger);
-      addPart(hand.annotations.middleFinger);
-      addPart(hand.annotations.ringFinger);
-      addPart(hand.annotations.pinky);
-      addPart(hand.annotations.thumb);
-      addPart(hand.annotations.palmBase);
-    }
-  }
-}
-
 async function drawResults(input, result, canvas) {
   // update fps
   settings.setValue('FPS', Math.round(1000 / (performance.now() - timeStamp)));
@@ -227,9 +71,9 @@ async function drawResults(input, result, canvas) {
   const ctx = canvas.getContext('2d');
   ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
   // draw all results
-  drawFace(result.face, canvas);
-  drawBody(result.body, canvas);
-  drawHand(result.hand, canvas);
+  draw.face(result.face, canvas, ui, human.facemesh.triangulation);
+  draw.body(result.body, canvas, ui);
+  draw.hand(result.hand, canvas, ui);
   // update log
   const engine = await human.tf.engine();
   const memory = `${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors`;
@@ -264,7 +108,7 @@ async function runHumanDetect(input, canvas) {
       setTimeout(() => runHumanDetect(input, canvas), 500);
       return;
     }
-    if (settings.getValue('Use Web Worker')) {
+    if (ui.useWorker) {
       // get image data from video as we cannot send html objects to webworker
       const offscreen = new OffscreenCanvas(canvas.width, canvas.height);
       const ctx = offscreen.getContext('2d');
@@ -453,15 +297,16 @@ function setupUI() {
     config.hand.iouThreshold = parseFloat(val);
   });
   settings.addHTML('title', 'UI Options'); settings.hideTitle('title');
-  settings.addBoolean('Use Web Worker', false);
+  settings.addBoolean('Use Web Worker', ui.useWorker, (val) => ui.useWorker = val);
   settings.addBoolean('Camera Front/Back', true, (val) => {
     ui.facing = val ? 'user' : 'environment';
     setupCamera();
   });
-  settings.addBoolean('Draw Boxes', true);
-  settings.addBoolean('Draw Points', true);
-  settings.addBoolean('Draw Polygons', true);
-  settings.addBoolean('Fill Polygons', true);
+  settings.addBoolean('Use 3D Depth', ui.useDepth, (val) => ui.useDepth = val);
+  settings.addBoolean('Draw Boxes', ui.drawBoxes, (val) => ui.drawBoxes = val);
+  settings.addBoolean('Draw Points', ui.drawPoints, (val) => ui.drawPoints = val);
+  settings.addBoolean('Draw Polygons', ui.drawPolygons, (val) => ui.drawPolygons = val);
+  settings.addBoolean('Fill Polygons', ui.fillPolygons, (val) => ui.fillPolygons = val);
   settings.addHTML('line1', '<hr>'); settings.hideTitle('line1');
   settings.addRange('FPS', 0, 100, 0, 1);
 }

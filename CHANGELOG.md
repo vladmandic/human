@@ -1,7 +1,7 @@
 
 # @vladmandic/human  
 
-Version: **0.3.5**  
+Version: **0.3.6**  
 Description: **human: 3D Face Detection, Iris Tracking and Age & Gender Prediction**  
 
 Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -9,6 +9,18 @@ License: **MIT** </LICENSE>
 Repository: **<git+https://github.com/vladmandic/human.git>**  
 
 ## Changelog
+
+### **HEAD -> main** 2020/10/17 mandic00@live.com
+- parallelized agegender operations
+
+### **origin/main, origin/HEAD** 2020/10/17 mandic00@live.com
+
+### **0.3.6** 2020/10/17 mandic00@live.com
+- fixed webcam initialization
+- fixed memory leaks and added scoped runs
+- modularized draw
+- added state handling
+- refactored package file layout
 
 ### **0.3.5** 2020/10/16 mandic00@live.com
 - added auto-generated changelog

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Human</title>
+  <meta http-equiv="content-type">
+  <meta content="text/html">
+  <meta charset="UTF-8">
+  <meta name="description" content="3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction & Emotion Prediction; Author: Vladimir Mandic <mandic00@live.com>">
+  <meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.1, maximum-scale=4.0, shrink-to-fit=yes, user-scalable=yes">
+  <meta name="theme-color" content="black"/>
+  <meta name="application-name" content="Human">
+  <meta name="msapplication-tooltip" content="Human: AI-powered 3D Human Detection">
+  <link rel="manifest" href="../dist/human.esm.json">
+  <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+    <!-- <script src="../assets/tf.min.js"></script> -->
+    <!-- <script src="../assets/tf-backend-wasm.min.js"></script> -->
+    <script src="../assets/quicksettings.js"></script>
+    <script src="./browser.js" type="module"></script>
+  </head>
+  <body style="margin: 0; background: black; color: white; font-family: 'Segoe UI'; font-size: 16px; font-variant: small-caps; overflow-x: hidden">
+    <video id="video" playsinline style="display: none"></video>
+    <image id="image" src="" style="display: none"></video>
+    <canvas id="canvas"></canvas>
+    <div id="samples" style="display: flex; flex-wrap: wrap"></div>
+    <div id="log" style="position: fixed; bottom: 0">Human library</div>
+  </body>
+</html>

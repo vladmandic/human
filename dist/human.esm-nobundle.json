@@ -1,0 +1,355 @@
+{
+  "inputs": {
+    "config.js": {
+      "bytes": 4569,
+      "imports": []
+    },
+    "package.json": {
+      "bytes": 2605,
+      "imports": []
+    },
+    "src/emotion/emotion.js": {
+      "bytes": 2020,
+      "imports": []
+    },
+    "src/facemesh/blazeface.js": {
+      "bytes": 7042,
+      "imports": []
+    },
+    "src/facemesh/box.js": {
+      "bytes": 1924,
+      "imports": []
+    },
+    "src/facemesh/facemesh.js": {
+      "bytes": 2493,
+      "imports": [
+        {
+          "path": "src/facemesh/blazeface.js"
+        },
+        {
+          "path": "src/facemesh/keypoints.js"
+        },
+        {
+          "path": "src/facemesh/pipeline.js"
+        },
+        {
+          "path": "src/facemesh/uvcoords.js"
+        },
+        {
+          "path": "src/facemesh/triangulation.js"
+        }
+      ]
+    },
+    "src/facemesh/keypoints.js": {
+      "bytes": 2507,
+      "imports": []
+    },
+    "src/facemesh/pipeline.js": {
+      "bytes": 14108,
+      "imports": [
+        {
+          "path": "src/facemesh/box.js"
+        },
+        {
+          "path": "src/facemesh/keypoints.js"
+        },
+        {
+          "path": "src/facemesh/util.js"
+        }
+      ]
+    },
+    "src/facemesh/triangulation.js": {
+      "bytes": 12940,
+      "imports": []
+    },
+    "src/facemesh/util.js": {
+      "bytes": 3078,
+      "imports": []
+    },
+    "src/facemesh/uvcoords.js": {
+      "bytes": 19592,
+      "imports": []
+    },
+    "src/handpose/box.js": {
+      "bytes": 2627,
+      "imports": []
+    },
+    "src/handpose/handdetector.js": {
+      "bytes": 4253,
+      "imports": [
+        {
+          "path": "src/handpose/box.js"
+        }
+      ]
+    },
+    "src/handpose/handpose.js": {
+      "bytes": 2365,
+      "imports": [
+        {
+          "path": "src/handpose/handdetector.js"
+        },
+        {
+          "path": "src/handpose/keypoints.js"
+        },
+        {
+          "path": "src/handpose/pipeline.js"
+        }
+      ]
+    },
+    "src/handpose/keypoints.js": {
+      "bytes": 193,
+      "imports": []
+    },
+    "src/handpose/pipeline.js": {
+      "bytes": 8202,
+      "imports": [
+        {
+          "path": "src/handpose/box.js"
+        },
+        {
+          "path": "src/handpose/util.js"
+        }
+      ]
+    },
+    "src/handpose/util.js": {
+      "bytes": 2488,
+      "imports": []
+    },
+    "src/index.js": {
+      "bytes": 6592,
+      "imports": [
+        {
+          "path": "src/facemesh/facemesh.js"
+        },
+        {
+          "path": "src/ssrnet/ssrnet.js"
+        },
+        {
+          "path": "src/emotion/emotion.js"
+        },
+        {
+          "path": "src/posenet/posenet.js"
+        },
+        {
+          "path": "src/handpose/handpose.js"
+        },
+        {
+          "path": "config.js"
+        },
+        {
+          "path": "package.json"
+        }
+      ]
+    },
+    "src/posenet/buildParts.js": {
+      "bytes": 2035,
+      "imports": [
+        {
+          "path": "src/posenet/heapSort.js"
+        }
+      ]
+    },
+    "src/posenet/decodeMultiple.js": {
+      "bytes": 5605,
+      "imports": [
+        {
+          "path": "src/posenet/buildParts.js"
+        },
+        {
+          "path": "src/posenet/decodePose.js"
+        },
+        {
+          "path": "src/posenet/vectors.js"
+        }
+      ]
+    },
+    "src/posenet/decodePose.js": {
+      "bytes": 4540,
+      "imports": [
+        {
+          "path": "src/posenet/keypoints.js"
+        },
+        {
+          "path": "src/posenet/vectors.js"
+        }
+      ]
+    },
+    "src/posenet/heapSort.js": {
+      "bytes": 1590,
+      "imports": []
+    },
+    "src/posenet/keypoints.js": {
+      "bytes": 2291,
+      "imports": []
+    },
+    "src/posenet/modelBase.js": {
+      "bytes": 1719,
+      "imports": []
+    },
+    "src/posenet/modelMobileNet.js": {
+      "bytes": 593,
+      "imports": [
+        {
+          "path": "src/posenet/modelBase.js"
+        }
+      ]
+    },
+    "src/posenet/modelPoseNet.js": {
+      "bytes": 3472,
+      "imports": [
+        {
+          "path": "src/posenet/modelMobileNet.js"
+        },
+        {
+          "path": "src/posenet/decodeMultiple.js"
+        },
+        {
+          "path": "src/posenet/util.js"
+        }
+      ]
+    },
+    "src/posenet/posenet.js": {
+      "bytes": 830,
+      "imports": [
+        {
+          "path": "src/posenet/modelMobileNet.js"
+        },
+        {
+          "path": "src/posenet/modelPoseNet.js"
+        },
+        {
+          "path": "src/posenet/decodeMultiple.js"
+        },
+        {
+          "path": "src/posenet/keypoints.js"
+        },
+        {
+          "path": "src/posenet/util.js"
+        }
+      ]
+    },
+    "src/posenet/util.js": {
+      "bytes": 4202,
+      "imports": [
+        {
+          "path": "src/posenet/keypoints.js"
+        }
+      ]
+    },
+    "src/posenet/vectors.js": {
+      "bytes": 1273,
+      "imports": [
+        {
+          "path": "src/posenet/keypoints.js"
+        }
+      ]
+    },
+    "src/ssrnet/ssrnet.js": {
+      "bytes": 1856,
+      "imports": []
+    }
+  },
+  "outputs": {
+    "dist/human.esm-nobundle.js.map": {
+      "imports": [],
+      "inputs": {},
+      "bytes": 194952
+    },
+    "dist/human.esm-nobundle.js": {
+      "imports": [],
+      "inputs": {
+        "src/facemesh/blazeface.js": {
+          "bytesInOutput": 3223
+        },
+        "src/facemesh/keypoints.js": {
+          "bytesInOutput": 1950
+        },
+        "src/facemesh/box.js": {
+          "bytesInOutput": 1026
+        },
+        "src/facemesh/util.js": {
+          "bytesInOutput": 1176
+        },
+        "src/facemesh/pipeline.js": {
+          "bytesInOutput": 5541
+        },
+        "src/facemesh/uvcoords.js": {
+          "bytesInOutput": 16790
+        },
+        "src/facemesh/triangulation.js": {
+          "bytesInOutput": 9995
+        },
+        "src/facemesh/facemesh.js": {
+          "bytesInOutput": 1287
+        },
+        "src/ssrnet/ssrnet.js": {
+          "bytesInOutput": 1099
+        },
+        "src/emotion/emotion.js": {
+          "bytesInOutput": 1148
+        },
+        "src/posenet/modelBase.js": {
+          "bytesInOutput": 597
+        },
+        "src/posenet/modelMobileNet.js": {
+          "bytesInOutput": 272
+        },
+        "src/posenet/heapSort.js": {
+          "bytesInOutput": 1046
+        },
+        "src/posenet/buildParts.js": {
+          "bytesInOutput": 551
+        },
+        "src/posenet/keypoints.js": {
+          "bytesInOutput": 1626
+        },
+        "src/posenet/vectors.js": {
+          "bytesInOutput": 612
+        },
+        "src/posenet/decodePose.js": {
+          "bytesInOutput": 1021
+        },
+        "src/posenet/decodeMultiple.js": {
+          "bytesInOutput": 608
+        },
+        "src/posenet/util.js": {
+          "bytesInOutput": 1843
+        },
+        "src/posenet/modelPoseNet.js": {
+          "bytesInOutput": 885
+        },
+        "src/posenet/posenet.js": {
+          "bytesInOutput": 464
+        },
+        "src/handpose/box.js": {
+          "bytesInOutput": 1400
+        },
+        "src/handpose/handdetector.js": {
+          "bytesInOutput": 2074
+        },
+        "src/handpose/keypoints.js": {
+          "bytesInOutput": 160
+        },
+        "src/handpose/util.js": {
+          "bytesInOutput": 977
+        },
+        "src/handpose/pipeline.js": {
+          "bytesInOutput": 3230
+        },
+        "src/handpose/handpose.js": {
+          "bytesInOutput": 1326
+        },
+        "config.js": {
+          "bytesInOutput": 1136
+        },
+        "package.json": {
+          "bytesInOutput": 2275
+        },
+        "src/index.js": {
+          "bytesInOutput": 2995
+        }
+      },
+      "bytes": 68596
+    }
+  }
+}

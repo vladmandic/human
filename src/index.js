@@ -110,10 +110,6 @@ async function detect(input, userConfig = {}) {
   return new Promise(async (resolve) => {
     const timeStart = now();
 
-    // check number of loaded models
-    const loadedModels = Object.values(models).filter((a) => a).length;
-    if (loadedModels === 0) log('Human library starting');
-
     // configure backend
     timeStamp = now();
     if (tf.getBackend() !== config.backend) {
@@ -122,7 +118,15 @@ async function detect(input, userConfig = {}) {
       await tf.setBackend(config.backend);
       await tf.ready();
     }
-    perf.body = Math.trunc(now() - timeStamp);
+    perf.backend = Math.trunc(now() - timeStamp);
+
+    // check number of loaded models
+    const loadedModels = Object.values(models).filter((a) => a).length;
+    if (loadedModels === 0) {
+      log('Human library starting');
+      log('Configuration:', config);
+      log('Flags:', tf.ENV.flags);
+    }
 
     // load models if enabled
     timeStamp = now();

@@ -41,8 +41,7 @@ There are multiple ways to use `Human` library, pick one that suits you:
 - `dist/human.js`: IIFE format minified bundle with TFJS for Browsers
 - `dist/human.esm.js`: ESM format minified bundle with TFJS for Browsers
 - `dist/human.esm-nobundle.js`: ESM format non-minified bundle without TFJS for Browsers
-- `dist/human.cjs`: CommonJS format minified bundle with TFJS for NodeJS
-- `dist/human-nobundle.cjs`: CommonJS format non-minified bundle without TFJS for NodeJS
+- `dist/human.cjs`: CommonJS format non-minified bundle without TFJS for NodeJS
 
 All versions include `sourcemap`
 
@@ -117,20 +116,12 @@ You also need to install and include `tfjs-node` or `tfjs-node-gpu` in your proj
 
 Install with:
 ```shell
-  npm install @vladmandic/human
-```
-And then use with:
-```js
-  const human = require('@vladmandic/human'); // points to @vladmandic/human/dist/human.cjs
-```
-or
-```shell
   npm install @vladmandic/human @tensorflow/tfjs-node
 ```
 And then use with:
 ```js
   const tf = require('@tensorflow/tfjs-node'); // can also use '@tensorflow/tfjs-node-gpu' if you have environment with CUDA extensions
-  const human = require('@vladmandic/human/dist/human-nobundle.cjs');
+  const human = require('@vladmandic/human'); // points to @vladmandic/human/dist/human.cjs
 ```
 
 
@@ -164,11 +155,10 @@ If your application resides in a different folder, modify `modelPath` property i
 Demos are included in `/demo`:
 
 Browser:
-- `demo-esm`: Full demo using Browser with ESM module, includes selectable backends and webworkers
-- `demo-iife`: Older demo using Browser with IIFE module
+- `index.html`, `browser.js`, `worker.js`: Full demo using Browser with ESM module, includes selectable backends and webworkers
 
 NodeJS:
-- `demo-node`: Demo using NodeJS with CJS module  
+- `node.js`: Demo using NodeJS with CJS module  
   This is a very simple demo as althought `Human` library is compatible with NodeJS execution  
   and is able to load images and models from local filesystem,  
 

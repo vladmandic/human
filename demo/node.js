@@ -59,7 +59,7 @@ async function detect(input, output) {
   image.dispose();
   logger.log(result);
   // Draw detected data and save processed image
-  logger.log('Saving:', output);
+  logger.log('TODO Saving:', output);
 }
 
 async function main() {

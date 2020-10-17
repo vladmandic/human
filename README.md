@@ -7,7 +7,7 @@
 - [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
 - [**Change Log**](./CHANGELOG.md)
-- [**Live Demo**](https://vladmandic.github.io/human/demo/demo-esm.html)
+- [**Live Demo**](https://vladmandic.github.io/human/demo/index.html)
 
 Compatible with Browser, WebWorker and NodeJS execution!  
 (and maybe with React-Native as it doesn't use any DOM objects)  
@@ -221,6 +221,9 @@ Configurtion object is large, but typically you only need to modify few values:
 config = {
   backend: 'webgl',          // select tfjs backend to use
   console: true,             // enable debugging output to console
+  scoped: false,             // enable scoped runs
+                             // some models *may* have memory leaks, this wrapps everything in a local scope at a cost of performance
+                             // typically not needed
   face: {
     enabled: true,           // controls if specified modul is enabled
                              // face.enabled is required for all face models: detector, mesh, iris, age, gender, emotion

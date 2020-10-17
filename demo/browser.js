@@ -5,13 +5,14 @@ import human from '../dist/human.esm.js';
 const ui = {
   baseColor: 'rgba(255, 200, 255, 0.3)',
   baseLabel: 'rgba(255, 200, 255, 0.9)',
-  baseFont: 'small-caps 1.2rem "Segoe UI"',
+  baseFontProto: 'small-caps {size} "Segoe UI"',
   baseLineWidth: 16,
-  baseLineHeight: 2,
+  baseLineHeightProto: 2,
   columns: 3,
   busy: false,
   facing: 'user',
   worker: 'worker.js',
+  samples: ['../assets/sample1.jpg', '../assets/sample2.jpg', '../assets/sample3.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample6.jpg'],
 };
 
 const config = {
@@ -285,82 +286,6 @@ async function runHumanDetect(input, canvas) {
   }
 }
 
-function setupUI() {
-  // add all variables to ui control panel
-  settings = QuickSettings.create(10, 10, 'Settings', document.getElementById('main'));
-  const style = document.createElement('style');
-  // style.type = 'text/css';
-  style.innerHTML = `
-    .qs_main { font: 1rem "Segoe UI"; }
-    .qs_label { font: 0.8rem "Segoe UI"; }
-    .qs_content { background: darkslategray; }
-    .qs_container { background: transparent; color: white; margin: 6px; padding: 6px; }
-    .qs_checkbox_label { top: 2px; }
-    .qs_button { width: -webkit-fill-available; font: 1rem "Segoe UI"; cursor: pointer; }
-  `;
-  document.getElementsByTagName('head')[0].appendChild(style);
-  settings.addButton('Play/Pause', () => {
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    if (!video.paused) {
-      document.getElementById('log').innerText += '\nPaused ...';
-      video.pause();
-    } else {
-      document.getElementById('log').innerText += '\nStarting Human Library ...';
-      video.play();
-    }
-    runHumanDetect(video, canvas);
-  });
-  settings.addDropDown('Backend', ['webgl', 'wasm', 'cpu'], async (val) => config.backend = val.value);
-  settings.addHTML('title', 'Enabled Models'); settings.hideTitle('title');
-  settings.addBoolean('Face Detect', config.face.enabled, (val) => config.face.enabled = val);
-  settings.addBoolean('Face Mesh', config.face.mesh.enabled, (val) => config.face.mesh.enabled = val);
-  settings.addBoolean('Face Iris', config.face.iris.enabled, (val) => config.face.iris.enabled = val);
-  settings.addBoolean('Face Age', config.face.age.enabled, (val) => config.face.age.enabled = val);
-  settings.addBoolean('Face Gender', config.face.gender.enabled, (val) => config.face.gender.enabled = val);
-  settings.addBoolean('Face Emotion', config.face.emotion.enabled, (val) => config.face.emotion.enabled = val);
-  settings.addBoolean('Body Pose', config.body.enabled, (val) => config.body.enabled = val);
-  settings.addBoolean('Hand Pose', config.hand.enabled, (val) => config.hand.enabled = val);
-  settings.addHTML('title', 'Model Parameters'); settings.hideTitle('title');
-  settings.addRange('Max Objects', 1, 20, 5, 1, (val) => {
-    config.face.detector.maxFaces = parseInt(val);
-    config.body.maxDetections = parseInt(val);
-  });
-  settings.addRange('Skip Frames', 1, 20, config.face.detector.skipFrames, 1, (val) => {
-    config.face.detector.skipFrames = parseInt(val);
-    config.face.emotion.skipFrames = parseInt(val);
-    config.face.age.skipFrames = parseInt(val);
-    config.hand.skipFrames = parseInt(val);
-  });
-  settings.addRange('Min Confidence', 0.1, 1.0, config.face.detector.minConfidence, 0.05, (val) => {
-    config.face.detector.minConfidence = parseFloat(val);
-    config.face.emotion.minConfidence = parseFloat(val);
-    config.hand.minConfidence = parseFloat(val);
-  });
-  settings.addRange('Score Threshold', 0.1, 1.0, config.face.detector.scoreThreshold, 0.05, (val) => {
-    config.face.detector.scoreThreshold = parseFloat(val);
-    config.hand.scoreThreshold = parseFloat(val);
-    config.body.scoreThreshold = parseFloat(val);
-  });
-  settings.addRange('IOU Threshold', 0.1, 1.0, config.face.detector.iouThreshold, 0.05, (val) => {
-    config.face.detector.iouThreshold = parseFloat(val);
-    config.hand.iouThreshold = parseFloat(val);
-  });
-  settings.addHTML('title', 'UI Options'); settings.hideTitle('title');
-  settings.addBoolean('Use Web Worker', false);
-  settings.addBoolean('Camera Front/Back', true, (val) => {
-    ui.facing = val ? 'user' : 'environment';
-    // eslint-disable-next-line no-use-before-define
-    setupCamera();
-  });
-  settings.addBoolean('Draw Boxes', true);
-  settings.addBoolean('Draw Points', true);
-  settings.addBoolean('Draw Polygons', true);
-  settings.addBoolean('Fill Polygons', true);
-  settings.addHTML('line1', '<hr>'); settings.hideTitle('line1');
-  settings.addRange('FPS', 0, 100, 0, 1);
-}
-
 // eslint-disable-next-line no-unused-vars
 async function setupCamera() {
   if (ui.busy) return null;
@@ -409,7 +334,6 @@ async function processImage(input) {
   ui.baseLabel = 'rgba(200, 255, 255, 0.8)';
   ui.baseFont = 'small-caps 3.5rem "Segoe UI"';
   ui.baseLineWidth = 16;
-  ui.baseLineHeight = 5;
   ui.columns = 3;
   const cfg = {
     backend: 'webgl',
@@ -450,28 +374,105 @@ async function processImage(input) {
   });
 }
 
+async function detectVideo() {
+  document.getElementById('samples').style.display = 'none';
+  document.getElementById('canvas').style.display = 'block';
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  ui.baseFont = ui.baseFontProto.replace(/{size}/, '1.2rem');
+  ui.baseLineHeight = ui.baseLineHeightProto;
+  if (!video.paused) {
+    document.getElementById('log').innerText += '\nPaused ...';
+    video.pause();
+  } else {
+    await setupCamera();
+    document.getElementById('log').innerText += '\nStarting Human Library ...';
+    video.play();
+  }
+  runHumanDetect(video, canvas);
+}
+
 // eslint-disable-next-line no-unused-vars
 async function detectSampleImages() {
-  ui.baseFont = 'small-caps 3rem "Segoe UI"';
+  ui.baseFont = ui.baseFontProto.replace(/{size}/, `${ui.columns}rem`);
+  ui.baseLineHeight = ui.baseLineHeightProto * ui.columns;
   document.getElementById('canvas').style.display = 'none';
+  document.getElementById('samples').style.display = 'block';
   log('Running detection of sample images');
-  const samples = ['../assets/sample1.jpg', '../assets/sample2.jpg', '../assets/sample3.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample6.jpg'];
-  for (const sample of samples) await processImage(sample);
+  for (const sample of ui.samples) await processImage(sample);
+}
+
+function setupUI() {
+  // add all variables to ui control panel
+  settings = QuickSettings.create(10, 10, 'Settings', document.getElementById('main'));
+  const style = document.createElement('style');
+  style.innerHTML = `
+    .qs_main { font: 1rem "Segoe UI"; }
+    .qs_label { font: 0.8rem "Segoe UI"; }
+    .qs_content { background: darkslategray; }
+    .qs_container { background: transparent; color: white; margin: 6px; padding: 6px; }
+    .qs_checkbox_label { top: 2px; }
+    .qs_button { width: -webkit-fill-available; font: 1rem "Segoe UI"; cursor: pointer; }
+  `;
+  document.getElementsByTagName('head')[0].appendChild(style);
+  settings.addButton('Play/Pause WebCam', () => detectVideo());
+  settings.addButton('Process Images', () => detectSampleImages());
+  settings.addDropDown('Backend', ['webgl', 'wasm', 'cpu'], async (val) => config.backend = val.value);
+  settings.addHTML('title', 'Enabled Models'); settings.hideTitle('title');
+  settings.addBoolean('Face Detect', config.face.enabled, (val) => config.face.enabled = val);
+  settings.addBoolean('Face Mesh', config.face.mesh.enabled, (val) => config.face.mesh.enabled = val);
+  settings.addBoolean('Face Iris', config.face.iris.enabled, (val) => config.face.iris.enabled = val);
+  settings.addBoolean('Face Age', config.face.age.enabled, (val) => config.face.age.enabled = val);
+  settings.addBoolean('Face Gender', config.face.gender.enabled, (val) => config.face.gender.enabled = val);
+  settings.addBoolean('Face Emotion', config.face.emotion.enabled, (val) => config.face.emotion.enabled = val);
+  settings.addBoolean('Body Pose', config.body.enabled, (val) => config.body.enabled = val);
+  settings.addBoolean('Hand Pose', config.hand.enabled, (val) => config.hand.enabled = val);
+  settings.addHTML('title', 'Model Parameters'); settings.hideTitle('title');
+  settings.addRange('Max Objects', 1, 20, 5, 1, (val) => {
+    config.face.detector.maxFaces = parseInt(val);
+    config.body.maxDetections = parseInt(val);
+  });
+  settings.addRange('Skip Frames', 1, 20, config.face.detector.skipFrames, 1, (val) => {
+    config.face.detector.skipFrames = parseInt(val);
+    config.face.emotion.skipFrames = parseInt(val);
+    config.face.age.skipFrames = parseInt(val);
+    config.hand.skipFrames = parseInt(val);
+  });
+  settings.addRange('Min Confidence', 0.1, 1.0, config.face.detector.minConfidence, 0.05, (val) => {
+    config.face.detector.minConfidence = parseFloat(val);
+    config.face.emotion.minConfidence = parseFloat(val);
+    config.hand.minConfidence = parseFloat(val);
+  });
+  settings.addRange('Score Threshold', 0.1, 1.0, config.face.detector.scoreThreshold, 0.05, (val) => {
+    config.face.detector.scoreThreshold = parseFloat(val);
+    config.hand.scoreThreshold = parseFloat(val);
+    config.body.scoreThreshold = parseFloat(val);
+  });
+  settings.addRange('IOU Threshold', 0.1, 1.0, config.face.detector.iouThreshold, 0.05, (val) => {
+    config.face.detector.iouThreshold = parseFloat(val);
+    config.hand.iouThreshold = parseFloat(val);
+  });
+  settings.addHTML('title', 'UI Options'); settings.hideTitle('title');
+  settings.addBoolean('Use Web Worker', false);
+  settings.addBoolean('Camera Front/Back', true, (val) => {
+    ui.facing = val ? 'user' : 'environment';
+    setupCamera();
+  });
+  settings.addBoolean('Draw Boxes', true);
+  settings.addBoolean('Draw Points', true);
+  settings.addBoolean('Draw Polygons', true);
+  settings.addBoolean('Fill Polygons', true);
+  settings.addHTML('line1', '<hr>'); settings.hideTitle('line1');
+  settings.addRange('FPS', 0, 100, 0, 1);
 }
 
 async function main() {
   log('Human demo starting ...');
-
-  // setup ui control panel
-  await setupUI();
+  setupUI();
 
   const msg = `Human ready: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
   document.getElementById('log').innerText += '\n' + msg;
   log(msg);
-
-  // use one of the two:
-  await setupCamera();
-  // await detectSampleImages();
 }
 
 window.onload = main;

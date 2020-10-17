@@ -133,15 +133,6 @@ const config = {
 }
 ```
 
-Note that when using `Human` in NodeJS, you must load and parse the image *before* you pass it for detection  
-For example:
-```js
-  const buffer = fs.readFileSync(input);
-  const image = tf.node.decodeImage(buffer);
-  const result = human.detect(image, config);
-  image.dispose();
-```
-
 ### Weights
 
 Pretrained model weights are includes in `./models`  
@@ -167,34 +158,48 @@ NodeJS:
 ## Usage
 
 `Human` library does not require special initialization.
-All configuration is done in a single JSON object and all model weights will be dynamically loaded upon their first usage(and only then, `Human` will not load weights that it doesn't need according to configuration).
+All configuration is done in a single JSON object and all model weights will be dynamically loaded upon their first usage  
+(and only then, `Human` will not load weights that it doesn't need according to configuration).
 
 There is only *ONE* method you need:
 
 ```js
-  import * as tf from '@tensorflow/tfjs';
-  import human from '@vladmandic/human';
-
-  // 'image': can be of any type of an image object: HTMLImage, HTMLVideo, HTMLMedia, Canvas, Tensor4D
-  // 'options': optional parameter used to override any options present in default configuration
-  const result = await human.detect(image, options?)
+  // 'image': can be of any type of an image object: HTMLImage, HTMLVideo, HTMLMedia, Canvas, Tensor4D  
+  // 'config': optional parameter used to override any options present in default configuration  
+  // configuration is fully dynamic and can change between different calls to 'detect()'  
+  const result = await human.detect(image, config?)
 ```
 
 or if you want to use promises
 
 ```js
-  human.detect(image, options?).then((result) => {
+  human.detect(image, config?).then((result) => {
     // your code
   })
 ```
 
-Additionally, `Human` library exposes several classes:
+Additionally, `Human` library exposes several objects and methods:
 
 ```js
-  human.config   // access to configuration object, normally set as parameter to detect()
-  human.defaults // read-only view of default configuration object
-  human.models   // dynamically maintained list of object of any loaded models
-  human.tf       // instance of tfjs used by human
+  human.config        // access to configuration object, normally set as parameter to detect()
+  human.defaults      // read-only view of default configuration object
+  human.models        // dynamically maintained list of object of any loaded models
+  human.tf            // instance of tfjs used by human
+  human.state         // <string> describing current operation in progress
+                      // progresses through: 'config', 'check', 'backend', 'load', 'run:<model>', 'idle'
+  human.load(config)  // explicitly call load method that loads configured models
+                      // if you want to pre-load them instead of on-demand loading during 'human.detect()'
+```
+
+Note that when using `Human` library in `NodeJS`, you must load and parse the image *before* you pass it for detection and dispose it afterwards  
+
+For example:
+```js
+  const imageFile = '../assets/sample1.jpg';
+  const buffer = fs.readFileSync(imageFile);
+  const image = tf.node.decodeImage(buffer);
+  const result = human.detect(image, config);
+  image.dispose();
 ```
 
 <hr>
@@ -213,7 +218,7 @@ Configurtion object is large, but typically you only need to modify few values:
 
 
 ```js
-export default {
+config = {
   backend: 'webgl',          // select tfjs backend to use
   console: true,             // enable debugging output to console
   face: {
@@ -221,9 +226,9 @@ export default {
                              // face.enabled is required for all face models: detector, mesh, iris, age, gender, emotion
                              // note: module is not loaded until it is required
     detector: {
-      modelPath: '../models/blazeface/back/model.json', // can be 'tfhub', 'front' or 'back'.
+      modelPath: '../models/blazeface/back/model.json', // can be 'front' or 'back'.
                                                         // 'front' is optimized for large faces such as front-facing camera and 'back' is optimized for distanct faces.
-      inputSize: 256,        // fixed value: 128 for front and 'tfhub' and 'front' and 256 for 'back'
+      inputSize: 256,        // fixed value: 128 for front and 256 for 'back'
       maxFaces: 10,          // maximum number of faces detected in the input, should be set to the minimum number for performance
       skipFrames: 10,        // how many frames to go without re-running the face bounding box detector
                              // if model is running st 25 FPS, we can re-use existing bounding box for updated face mesh analysis

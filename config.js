@@ -4,6 +4,9 @@
 export default {
   backend: 'webgl',          // select tfjs backend to use
   console: true,             // enable debugging output to console
+  scoped: false,             // enable scoped runs
+                             // some models *may* have memory leaks, this wrapps everything in a local scope at a cost of performance
+                             // typically not needed
   face: {
     enabled: true,           // controls if specified modul is enabled
                              // face.enabled is required for all face models: detector, mesh, iris, age, gender, emotion

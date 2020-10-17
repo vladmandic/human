@@ -42,14 +42,11 @@ class HandDetector {
     const boxes = this.normalizeBoxes(rawBoxes);
     const boxesWithHandsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.maxHands, this.iouThreshold, this.scoreThreshold);
     const boxesWithHands = await boxesWithHandsTensor.array();
-    const toDispose = [
-      normalizedInput, batchedPrediction, boxesWithHandsTensor, prediction,
-      boxes, rawBoxes, scores,
-    ];
-    if (boxesWithHands.length === 0) {
-      toDispose.forEach((tensor) => tensor.dispose());
-      return null;
-    }
+    const toDispose = [normalizedInput, batchedPrediction, boxesWithHandsTensor, prediction, boxes, rawBoxes, scores];
+    // if (boxesWithHands.length === 0) {
+    // toDispose.forEach((tensor) => tensor.dispose());
+    //  return null;
+    // }
     const detectedHands = tf.tidy(() => {
       const detectedBoxes = [];
       for (const i in boxesWithHands) {
@@ -61,6 +58,7 @@ class HandDetector {
       }
       return detectedBoxes;
     });
+    toDispose.forEach((tensor) => tensor.dispose());
     return detectedHands;
   }
 

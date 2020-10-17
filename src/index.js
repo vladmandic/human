@@ -20,17 +20,32 @@ const models = {
   gender: null,
   emotion: null,
 };
+
+// helper function: gets elapsed time on both browser and nodejs
 const now = () => {
   if (typeof performance !== 'undefined') return performance.now();
   return parseInt(Number(process.hrtime.bigint()) / 1000 / 1000);
 };
 
+// helper function: wrapper around console output
 const log = (...msg) => {
   // eslint-disable-next-line no-console
-  if (config.console) console.log(...msg);
+  if (msg && config.console) console.log(...msg);
 };
 
-// helper function that performs deep merge of multiple objects so it allows full inheriance with overrides
+// helper function: measure tensor leak
+let numTensors = 0;
+const analyzeMemoryLeaks = false;
+const analyze = (...msg) => {
+  if (!analyzeMemoryLeaks) return;
+  const current = tf.engine().state.numTensors;
+  const previous = numTensors;
+  numTensors = current;
+  const leaked = current - previous;
+  if (leaked !== 0) log(...msg, leaked);
+};
+
+// helper function: perform deep merge of multiple objects so it allows full inheriance with overrides
 function mergeDeep(...objects) {
   const isObject = (obj) => obj && typeof obj === 'object';
   return objects.reduce((prev, obj) => {
@@ -97,12 +112,6 @@ async function detect(input, userConfig = {}) {
       await tf.setBackend(config.backend);
       await tf.ready();
     }
-    // explictly enable depthwiseconv since it's diasabled by default due to issues with large shaders
-    // let savedWebglPackDepthwiseConvFlag;
-    // if (tf.getBackend() === 'webgl') {
-    //   savedWebglPackDepthwiseConvFlag = tf.env().get('WEBGL_PACK_DEPTHWISECONV');
-    //  tf.env().set('WEBGL_PACK_DEPTHWISECONV', true);
-    // }
 
     // load models if enabled
     state = 'load';
@@ -111,18 +120,24 @@ async function detect(input, userConfig = {}) {
     const perf = {};
     let timeStamp;
 
-    tf.engine().startScope();
+    if (config.scoped) tf.engine().startScope();
+
+    analyze('Start Detect:');
 
     // run posenet
     state = 'run:body';
     timeStamp = now();
+    analyze('Start PoseNet');
     const poseRes = config.body.enabled ? await models.posenet.estimatePoses(input, config.body) : [];
+    analyze('End PoseNet:');
     perf.body = Math.trunc(now() - timeStamp);
 
     // run handpose
     state = 'run:hand';
     timeStamp = now();
+    analyze('Start HandPose:');
     const handRes = config.hand.enabled ? await models.handpose.estimateHands(input, config.hand) : [];
+    analyze('End HandPose:');
     perf.hand = Math.trunc(now() - timeStamp);
 
     // run facemesh, includes blazeface and iris
@@ -130,6 +145,7 @@ async function detect(input, userConfig = {}) {
     if (config.face.enabled) {
       state = 'run:face';
       timeStamp = now();
+      analyze('Start FaceMesh:');
       const faces = await models.facemesh.estimateFaces(input, config.face);
       perf.face = Math.trunc(now() - timeStamp);
       for (const face of faces) {
@@ -149,6 +165,7 @@ async function detect(input, userConfig = {}) {
         const emotionData = config.face.emotion.enabled ? await emotion.predict(face.image, config) : {};
         perf.emotion = Math.trunc(now() - timeStamp);
         face.image.dispose();
+        delete face.image;
         // calculate iris distance
         // iris: array[ bottom, left, top, right, center ]
         const iris = (face.annotations.leftEyeIris && face.annotations.rightEyeIris)
@@ -166,13 +183,13 @@ async function detect(input, userConfig = {}) {
           iris: (iris !== 0) ? Math.trunc(100 * 11.7 /* human iris size in mm */ / iris) / 100 : 0,
         });
       }
-      state = 'idle';
+      analyze('End FaceMesh:');
     }
 
-    // set depthwiseconv to original value
-    // tf.env().set('WEBGL_PACK_DEPTHWISECONV', savedWebglPackDepthwiseConvFlag);
+    state = 'idle';
 
-    tf.engine().endScope();
+    if (config.scoped) tf.engine().endScope();
+    analyze('End Scope:');
 
     // combine and return results
     perf.total = Object.values(perf).reduce((a, b) => a + b);

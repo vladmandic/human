@@ -4,7 +4,7 @@ const ssrnet = require('./ssrnet/ssrnet.js');
 const emotion = require('./emotion/emotion.js');
 const posenet = require('./posenet/posenet.js');
 const handpose = require('./handpose/handpose.js');
-const defaults = require('./config.js').default;
+const defaults = require('../config.js').default;
 const app = require('../package.json');
 
 let config;

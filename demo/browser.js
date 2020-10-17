@@ -11,6 +11,7 @@ const ui = {
   columns: 3,
   busy: false,
   facing: 'user',
+  worker: 'worker.js',
 };
 
 const config = {
@@ -243,7 +244,7 @@ function webWorker(input, image, canvas) {
   if (!worker) {
     // create new webworker and add event handler only once
     log('Creating worker thread');
-    worker = new Worker('demo-esm-webworker.js', { type: 'module' });
+    worker = new Worker(ui.worker, { type: 'module' });
     // after receiving message from webworker, parse&draw results and send new frame for processing
     worker.addEventListener('message', (msg) => drawResults(input, msg.data, canvas));
   }

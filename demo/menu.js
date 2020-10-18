@@ -1,7 +1,12 @@
+let instance = 0;
+
 const css = `
-  .menu-container { display: block; background: darkslategray; position: fixed; top: 0rem; right: 0; width: fit-content; padding: 0 0.8rem 0 0.8rem; line-height: 1.8rem; z-index: 10; max-height: calc(100% - 4rem); box-shadow: 0 0 8px dimgrey; }
-  .menu-container:hover { box-shadow: 0 0 8px lightgrey; }
-  .menu { display: flex; white-space: nowrap; background: darkslategray; padding: 0.2rem; width: max-content; }
+  .menu { position: fixed; top: 0rem; right: 0; width: fit-content; padding: 0 0.8rem 0 0.8rem; line-height: 1.8rem; z-index: 10; max-height: calc(100% - 4rem); box-shadow: 0 0 8px dimgrey; background: darkslategray; }
+  .menu:hover { box-shadow: 0 0 8px lightgrey; }
+  .menu-container { display: block; max-height: 100vh; }
+  .menu-container-fadeout { max-height: 0; overflow: hidden; transition: max-height, 0.5s ease; }
+  .menu-container-fadein { max-height: 100vh; overflow: hidden; transition: max-height, 0.5s ease; }
+  .menu-item { display: flex; white-space: nowrap; background: darkslategray; padding: 0.2rem; width: max-content; }
   .menu-title { text-align: right; cursor: pointer; }
   .menu-hr { margin: 0.2rem; border: 1px solid rgba(0, 0, 0, 0.5) }
   .menu-label { padding: 0; }
@@ -33,31 +38,54 @@ function createCSS() {
   document.getElementsByTagName('head')[0].appendChild(el);
 }
 
-function createElem(parent) {
+function createMenu(parent, title, position = { top: null, left: null, bottom: null, right: null }) {
   const el = document.createElement('div');
-  el.id = 'menu';
-  el.className = 'menu-container';
+  el.id = `menu-${instance}`;
+  el.className = 'menu';
+  if (position) {
+    if (position.top) el.style.top = position.top;
+    if (position.bottom) el.style.bottom = position.bottom;
+    if (position.left) el.style.left = position.left;
+    if (position.right) el.style.right = position.right;
+  }
+
+  const elContainer = document.createElement('div');
+  elContainer.id = `menu-container-${instance}`;
+  elContainer.className = 'menu-container menu-container-fadein';
+
+  const elTitle = document.createElement('div');
+  elTitle.className = 'menu-title';
+  elTitle.id = `menu-title-${instance}`;
+  elTitle.innerHTML = title;
+  el.appendChild(elTitle);
+  elTitle.addEventListener('click', () => {
+    elContainer.classList.toggle('menu-container-fadeout');
+    elContainer.classList.toggle('menu-container-fadein');
+  });
+  el.appendChild(elContainer);
   if (typeof parent === 'object') parent.appendChild(el);
   else document.getElementById(parent).appendChild(el);
-  return el;
+  return [el, elContainer];
 }
 
 class Menu {
-  constructor(parent) {
+  constructor(parent, title, position) {
     createCSS();
-    this.menu = createElem(parent);
-    this._id = 0;
+    [this.menu, this.container] = createMenu(parent, title, position);
+    this.id = 0;
+    this.instance = instance;
+    instance++;
     this._maxFPS = 0;
     this.hidden = 0;
   }
 
   get newID() {
-    this._id++;
-    return `menu-${this._id}`;
+    this.id++;
+    return `menu-${this.instance}-${this.id}`;
   }
 
   get ID() {
-    return `menu-${this._id}`;
+    return `menu-${this.instance}-${this.id}`;
   }
 
   get width() {
@@ -77,23 +105,25 @@ class Menu {
     el.addEventListener('click', () => {
       this.hidden = !this.hidden;
       const all = document.getElementsByClassName('menu');
-      for (const item of all) item.style.display = this.hidden ? 'none' : 'flex';
+      for (const item of all) {
+        item.style.display = this.hidden ? 'none' : 'flex';
+      }
     });
   }
 
   async addLabel(title) {
     const el = document.createElement('div');
-    el.className = 'menu menu-label';
+    el.className = 'menu-item menu-label';
     el.id = this.newID;
     el.innerHTML = title;
-    this.menu.appendChild(el);
+    this.container.appendChild(el);
   }
 
   async addBool(title, object, variable, callback) {
     const el = document.createElement('div');
-    el.className = 'menu';
+    el.className = 'menu-item';
     el.innerHTML = `<div class="menu-checkbox"><input class="menu-checkbox" type="checkbox" id="${this.newID}" ${object[variable] ? 'checked' : ''}/><label class="menu-checkbox-label" for="${this.ID}"></label></div>${title}`;
-    this.menu.appendChild(el);
+    this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
       object[variable] = evt.target.checked;
       if (callback) callback(evt.target.checked);
@@ -102,9 +132,9 @@ class Menu {
 
   async addRange(title, object, variable, min, max, step, callback) {
     const el = document.createElement('div');
-    el.className = 'menu';
+    el.className = 'menu-item';
     el.innerHTML = `<input class="menu-range" type="range" id="${this.newID}" min="${min}" max="${max}" step="${step}" value="${object[variable]}">${title}`;
-    this.menu.appendChild(el);
+    this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
       object[variable] = evt.target.value;
       evt.target.setAttribute('value', evt.target.value);
@@ -114,22 +144,22 @@ class Menu {
 
   async addHTML(html) {
     const el = document.createElement('div');
-    el.className = 'menu';
+    el.className = 'menu-item';
     el.id = this.newID;
     if (html) el.innerHTML = html;
-    this.menu.appendChild(el);
+    this.container.appendChild(el);
   }
 
   async addButton(titleOn, titleOff, callback) {
     const el = document.createElement('button');
-    el.className = 'menu menu-button';
+    el.className = 'menu-item menu-button';
     el.style.fontFamily = document.body.style.fontFamily;
     el.style.fontSize = document.body.style.fontSize;
     el.style.fontVariant = document.body.style.fontVariant;
     el.type = 'button';
     el.id = this.newID;
     el.innerText = titleOn;
-    this.menu.appendChild(el);
+    this.container.appendChild(el);
     el.addEventListener('click', () => {
       if (el.innerText === titleOn) el.innerText = titleOff;
       else el.innerText = titleOn;
@@ -139,10 +169,10 @@ class Menu {
 
   async addValue(title, val) {
     const el = document.createElement('div');
-    el.className = 'menu';
+    el.className = 'menu-item';
     el.id = title;
     el.innerText = `${title}: ${val}`;
-    this.menu.appendChild(el);
+    this.contaner.appendChild(el);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -153,10 +183,10 @@ class Menu {
 
   async addChart(title, id) {
     const el = document.createElement('div');
-    el.className = 'menu menu-chart-title';
+    el.className = 'menu-item menu-chart-title';
     el.id = this.newID;
     el.innerHTML = `${title}<canvas id="menu-canvas-${id}" class="menu-chart-canvas" width="180px" height="40px"></canvas>`;
-    this.menu.appendChild(el);
+    this.container.appendChild(el);
   }
 
   // eslint-disable-next-line class-methods-use-this

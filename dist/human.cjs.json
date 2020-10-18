@@ -1,15 +1,15 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 4774,
+      "bytes": 4862,
       "imports": []
     },
     "package.json": {
-      "bytes": 2605,
+      "bytes": 2635,
       "imports": []
     },
     "src/emotion/emotion.js": {
-      "bytes": 2020,
+      "bytes": 2019,
       "imports": []
     },
     "src/facemesh/blazeface.js": {
@@ -45,7 +45,7 @@
       "imports": []
     },
     "src/facemesh/pipeline.js": {
-      "bytes": 14393,
+      "bytes": 14262,
       "imports": [
         {
           "path": "src/facemesh/box.js"
@@ -83,7 +83,7 @@
       ]
     },
     "src/handpose/handpose.js": {
-      "bytes": 2365,
+      "bytes": 2356,
       "imports": [
         {
           "path": "src/handpose/handdetector.js"
@@ -101,7 +101,7 @@
       "imports": []
     },
     "src/handpose/pipeline.js": {
-      "bytes": 8202,
+      "bytes": 8178,
       "imports": [
         {
           "path": "src/handpose/box.js"
@@ -115,8 +115,8 @@
       "bytes": 2488,
       "imports": []
     },
-    "src/index.js": {
-      "bytes": 7526,
+    "src/human.js": {
+      "bytes": 8299,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -245,7 +245,7 @@
       ]
     },
     "src/ssrnet/ssrnet.js": {
-      "bytes": 1965,
+      "bytes": 1937,
       "imports": []
     }
   },
@@ -253,7 +253,7 @@
     "dist/human.cjs.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 219894
+      "bytes": 220934
     },
     "dist/human.cjs": {
       "imports": [],
@@ -271,7 +271,7 @@
           "bytesInOutput": 3027
         },
         "src/facemesh/pipeline.js": {
-          "bytesInOutput": 13366
+          "bytesInOutput": 13270
         },
         "src/facemesh/uvcoords.js": {
           "bytesInOutput": 20586
@@ -283,10 +283,10 @@
           "bytesInOutput": 2950
         },
         "src/ssrnet/ssrnet.js": {
-          "bytesInOutput": 2194
+          "bytesInOutput": 2158
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 2134
+          "bytesInOutput": 2133
         },
         "src/posenet/modelBase.js": {
           "bytesInOutput": 1120
@@ -334,22 +334,22 @@
           "bytesInOutput": 2671
         },
         "src/handpose/pipeline.js": {
-          "bytesInOutput": 7651
+          "bytesInOutput": 7625
         },
         "src/handpose/handpose.js": {
-          "bytesInOutput": 2518
+          "bytesInOutput": 2509
         },
         "config.js": {
           "bytesInOutput": 1872
         },
         "package.json": {
-          "bytesInOutput": 2748
+          "bytesInOutput": 2778
         },
-        "src/index.js": {
-          "bytesInOutput": 6514
+        "src/human.js": {
+          "bytesInOutput": 7273
         }
       },
-      "bytes": 134107
+      "bytes": 134728
     }
   }
 }

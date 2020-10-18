@@ -9,7 +9,7 @@ class HandPose {
   }
 
   async estimateHands(input, config) {
-    this.maxContinuousChecks = config.skipFrames;
+    this.skipFrames = config.skipFrames;
     this.detectionConfidence = config.minConfidence;
     this.maxHands = config.maxHands;
     const image = tf.tidy(() => {

@@ -22,11 +22,11 @@ async function load(config) {
 }
 
 async function predict(image, config) {
-  frame += 1;
-  if (frame >= config.face.emotion.skipFrames) {
-    frame = 0;
+  if (frame < config.face.emotion.skipFrames) {
+    frame += 1;
     return last;
   }
+  frame = 0;
   const enhance = tf.tidy(() => {
     if (image instanceof tf.Tensor) {
       const resize = tf.image.resizeBilinear(image, [config.face.emotion.inputSize, config.face.emotion.inputSize], false);

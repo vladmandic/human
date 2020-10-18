@@ -531,6 +531,7 @@ var require_pipeline = __commonJS((exports2) => {
     async predict(input, config2) {
       this.skipFrames = config2.detector.skipFrames;
       this.maxFaces = config2.detector.maxFaces;
+      this.runsWithoutFaceDetector++;
       if (this.shouldUpdateRegionsOfInterest()) {
         const detector = await this.boundingBoxDetector.getBoundingBoxes(input);
         if (detector.boxes.length === 0) {
@@ -557,8 +558,6 @@ var require_pipeline = __commonJS((exports2) => {
         });
         this.updateRegionsOfInterest(scaledBoxes);
         this.runsWithoutFaceDetector = 0;
-      } else {
-        this.runsWithoutFaceDetector++;
       }
       const results = tf2.tidy(() => this.regionsOfInterest.map((box, i) => {
         let angle = 0;
@@ -664,12 +663,9 @@ var require_pipeline = __commonJS((exports2) => {
       }
     }
     shouldUpdateRegionsOfInterest() {
-      const roisCount = this.regionsOfInterest.length;
-      const noROIs = roisCount === 0;
-      if (this.maxFaces === 1 || noROIs) {
-        return noROIs;
-      }
-      return roisCount !== this.maxFaces && this.runsWithoutFaceDetector >= this.skipFrames;
+      if (this.regionsOfInterest.length === 0)
+        return true;
+      return this.regionsOfInterest.length !== this.maxFaces && this.runsWithoutFaceDetector >= this.skipFrames;
     }
     calculateLandmarksBoundingBox(landmarks) {
       const xs = landmarks.map((d) => d[0]);
@@ -3900,13 +3896,11 @@ var require_ssrnet = __commonJS((exports2) => {
     return models2.gender;
   }
   async function predict(image, config2) {
-    if (frame > config2.face.age.skipFrames) {
-      frame = 0;
-    } else {
+    if (frame < config2.face.age.skipFrames) {
       frame += 1;
-    }
-    if (frame === 0)
       return last;
+    }
+    frame = 0;
     let enhance;
     if (image instanceof tf2.Tensor) {
       const resize = tf2.image.resizeBilinear(image, [config2.face.age.inputSize, config2.face.age.inputSize], false);
@@ -3970,11 +3964,11 @@ var require_emotion = __commonJS((exports2) => {
     return models2.emotion;
   }
   async function predict(image, config2) {
-    frame += 1;
-    if (frame >= config2.face.emotion.skipFrames) {
-      frame = 0;
+    if (frame < config2.face.emotion.skipFrames) {
+      frame += 1;
       return last;
     }
+    frame = 0;
     const enhance = tf2.tidy(() => {
       if (image instanceof tf2.Tensor) {
         const resize = tf2.image.resizeBilinear(image, [config2.face.emotion.inputSize, config2.face.emotion.inputSize], false);
@@ -4895,6 +4889,7 @@ var require_pipeline2 = __commonJS((exports2) => {
       this.maxContinuousChecks = config2.skipFrames;
       this.detectionConfidence = config2.minConfidence;
       this.maxHands = config2.maxHands;
+      this.runsWithoutHandDetector++;
       const useFreshBox = this.shouldUpdateRegionsOfInterest();
       if (useFreshBox === true) {
         const boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config2);
@@ -4903,8 +4898,6 @@ var require_pipeline2 = __commonJS((exports2) => {
           this.updateRegionsOfInterest(boundingBoxPredictions[i], true, i);
         }
         this.runsWithoutHandDetector = 0;
-      } else {
-        this.runsWithoutHandDetector++;
       }
       const hands = [];
       if (!this.regionsOfInterest)
@@ -4983,7 +4976,7 @@ var require_pipeline2 = __commonJS((exports2) => {
       }
     }
     shouldUpdateRegionsOfInterest() {
-      return !this.regionsOfInterest || this.regionsOfInterest.length === 0 || this.runsWithoutHandDetector >= this.maxContinuousChecks;
+      return !this.regionsOfInterest || this.regionsOfInterest.length === 0 || this.runsWithoutHandDetector >= this.skipFrames;
     }
   }
   exports2.HandPipeline = HandPipeline;
@@ -5000,7 +4993,7 @@ var require_handpose = __commonJS((exports2) => {
       this.pipeline = pipeline;
     }
     async estimateHands(input, config2) {
-      this.maxContinuousChecks = config2.skipFrames;
+      this.skipFrames = config2.skipFrames;
       this.detectionConfidence = config2.minConfidence;
       this.maxHands = config2.maxHands;
       const image = tf2.tidy(() => {
@@ -5138,7 +5131,7 @@ var require_config = __commonJS((exports2) => {
 var require_package = __commonJS((exports2, module2) => {
   module2.exports = {
     name: "@vladmandic/human",
-    version: "0.3.6",
+    version: "0.3.8",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.cjs",
@@ -5175,12 +5168,12 @@ var require_package = __commonJS((exports2, module2) => {
       rimraf: "^3.0.2"
     },
     scripts: {
-      start: "node --trace-warnings --trace-uncaught --no-deprecation demo/node.js",
+      start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation demo/node.js",
       lint: "eslint src/*.js demo/*.js",
-      "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --external:fs --global-name=human --metafile=dist/human.json --outfile=dist/human.js src/index.js",
-      "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/index.js",
-      "build-esm-nobundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/index.js",
-      "build-node": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --metafile=dist/human.cjs.json --outfile=dist/human.cjs src/index.js",
+      "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --external:fs --global-name=human --metafile=dist/human.json --outfile=dist/human.js src/human.js",
+      "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js",
+      "build-esm-nobundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js",
+      "build-node": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --metafile=dist/human.cjs.json --outfile=dist/human.cjs src/human.js",
       build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && ls -l dist/",
       update: "npm update --depth 20 && npm dedupe && npm prune && npm audit",
       changelog: "node changelog.js"
@@ -5200,7 +5193,7 @@ var require_package = __commonJS((exports2, module2) => {
   };
 });
 
-// src/index.js
+// src/human.js
 const tf = require("@tensorflow/tfjs");
 const facemesh = require_facemesh();
 const ssrnet = require_ssrnet();
@@ -5219,6 +5212,10 @@ const models = {
   age: null,
   gender: null,
   emotion: null
+};
+const override = {
+  face: {detector: {skipFrames: 0}, age: {skipFrames: 0}, emotion: {skipFrames: 0}},
+  hand: {skipFrames: 0}
 };
 const now = () => {
   if (typeof performance !== "undefined")
@@ -5261,11 +5258,18 @@ function mergeDeep(...objects) {
 function sanity(input) {
   if (!input)
     return "input is not defined";
-  const width = input.naturalWidth || input.videoWidth || input.width || input.shape && input.shape[1] > 0;
-  if (!width || width === 0)
-    return "input is empty";
-  if (input.readyState && input.readyState <= 2)
-    return "input is not ready";
+  if (tf.ENV.flags.IS_BROWSER && (input instanceof ImageData || input instanceof HTMLImageElement || input instanceof HTMLCanvasElement || input instanceof HTMLVideoElement || input instanceof HTMLMediaElement)) {
+    const width = input.naturalWidth || input.videoWidth || input.width || input.shape && input.shape[1] > 0;
+    if (!width || width === 0)
+      return "input is empty";
+  }
+  if (tf.ENV.flags.IS_BROWSER && (input instanceof HTMLVideoElement || input instanceof HTMLMediaElement)) {
+    if (input.readyState && input.readyState <= 2)
+      return "input is not ready";
+  }
+  if (tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) {
+    return "input must be a tensor";
+  }
   try {
     tf.getBackend();
   } catch {
@@ -5294,7 +5298,8 @@ async function detect(input, userConfig = {}) {
   const perf = {};
   let timeStamp;
   timeStamp = now();
-  config = mergeDeep(defaults, userConfig);
+  const shouldOverride = tf.ENV.flags.IS_NODE || tf.ENV.flags.IS_BROWSER && !(input instanceof HTMLVideoElement || input instanceof HTMLMediaElement);
+  config = mergeDeep(defaults, userConfig, shouldOverride ? override : {});
   perf.config = Math.trunc(now() - timeStamp);
   timeStamp = now();
   state = "check";

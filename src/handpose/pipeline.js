@@ -79,6 +79,7 @@ class HandPipeline {
     this.maxContinuousChecks = config.skipFrames;
     this.detectionConfidence = config.minConfidence;
     this.maxHands = config.maxHands;
+    this.runsWithoutHandDetector++;
     const useFreshBox = this.shouldUpdateRegionsOfInterest();
     if (useFreshBox === true) {
       const boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config);
@@ -87,8 +88,6 @@ class HandPipeline {
         this.updateRegionsOfInterest(boundingBoxPredictions[i], true /* force update */, i);
       }
       this.runsWithoutHandDetector = 0;
-    } else {
-      this.runsWithoutHandDetector++;
     }
     // Rotate input so the hand is vertically oriented.
     const hands = [];
@@ -172,7 +171,7 @@ class HandPipeline {
   }
 
   shouldUpdateRegionsOfInterest() {
-    return !this.regionsOfInterest || (this.regionsOfInterest.length === 0) || (this.runsWithoutHandDetector >= this.maxContinuousChecks);
+    return !this.regionsOfInterest || (this.regionsOfInterest.length === 0) || (this.runsWithoutHandDetector >= this.skipFrames);
   }
 }
 exports.HandPipeline = HandPipeline;

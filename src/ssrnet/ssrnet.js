@@ -22,12 +22,11 @@ async function loadGender(config) {
 }
 
 async function predict(image, config) {
-  if (frame > config.face.age.skipFrames) {
-    frame = 0;
-  } else {
+  if (frame < config.face.age.skipFrames) {
     frame += 1;
+    return last;
   }
-  if (frame === 0) return last;
+  frame = 0;
   let enhance;
   if (image instanceof tf.Tensor) {
     const resize = tf.image.resizeBilinear(image, [config.face.age.inputSize, config.face.age.inputSize], false);

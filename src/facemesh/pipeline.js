@@ -131,8 +131,8 @@ class Pipeline {
   async predict(input, config) {
     this.skipFrames = config.detector.skipFrames;
     this.maxFaces = config.detector.maxFaces;
+    this.runsWithoutFaceDetector++;
     if (this.shouldUpdateRegionsOfInterest()) {
-      // const { boxes, scaleFactor } = await this.boundingBoxDetector.getBoundingBoxes(input);
       const detector = await this.boundingBoxDetector.getBoundingBoxes(input);
       if (detector.boxes.length === 0) {
         this.regionsOfInterest = [];
@@ -158,8 +158,6 @@ class Pipeline {
       });
       this.updateRegionsOfInterest(scaledBoxes);
       this.runsWithoutFaceDetector = 0;
-    } else {
-      this.runsWithoutFaceDetector++;
     }
     const results = tf.tidy(() => this.regionsOfInterest.map((box, i) => {
       let angle = 0;
@@ -272,12 +270,8 @@ class Pipeline {
   }
 
   shouldUpdateRegionsOfInterest() {
-    const roisCount = this.regionsOfInterest.length;
-    const noROIs = roisCount === 0;
-    if (this.maxFaces === 1 || noROIs) {
-      return noROIs;
-    }
-    return roisCount !== this.maxFaces && this.runsWithoutFaceDetector >= this.skipFrames;
+    if (this.regionsOfInterest.length === 0) return true; // nothing detected, so run detector on the next frame
+    return (this.regionsOfInterest.length !== this.maxFaces) && (this.runsWithoutFaceDetector >= this.skipFrames);
   }
 
   calculateLandmarksBoundingBox(landmarks) {

@@ -28,6 +28,12 @@ Compatible with Browser, WebWorker and NodeJS execution!
 
 <hr>
 
+## Options
+
+Detailed configuration options are explained below, but they are best seen in the menus in `demo`:
+
+![Menus](assets/screenshot-menu.png)
+
 ## Installation
 
 **Important**  
@@ -412,6 +418,7 @@ For example, on a desktop with a low-end nVidia GTX1050 it can perform multiple 
 Performance per module:
 
 - Enabled all: 10 FPS
+- Image filters: 80 FPS (standalone)
 - Face Detect: 80 FPS (standalone)
 - Face Geometry: 30 FPS (includes face detect)
 - Face Iris: 25 FPS (includes face detect and face geometry)
@@ -421,7 +428,7 @@ Performance per module:
 - Hand: 40 FPS (standalone)
 - Body: 50 FPS (standalone)
 
-Library can also be used on mobile devices  
+For performance details, see output of `result.performance` object during runtime  
 
 <hr>
 

@@ -1,31 +1,32 @@
-/* global QuickSettings */
-
 import human from '../dist/human.esm.js';
 import draw from './draw.js';
+import Menu from './menu.js';
 
 // ui options
 const ui = {
-  baseColor: 'rgba(255, 200, 255, 0.3)',
-  baseLabel: 'rgba(255, 200, 255, 0.9)',
+  baseColor: 'rgba(173, 216, 230, 0.3)', // this is 'lightblue', just with alpha channel
+  baseLabel: 'rgba(173, 216, 230, 0.9)',
   baseFontProto: 'small-caps {size} "Segoe UI"',
   baseLineWidth: 16,
   baseLineHeightProto: 2,
-  columns: 3,
+  columns: 2,
   busy: false,
-  facing: 'user',
+  facing: true,
   useWorker: false,
   worker: 'worker.js',
-  samples: ['../assets/sample1.jpg', '../assets/sample2.jpg', '../assets/sample3.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample6.jpg'],
+  samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'],
   drawBoxes: true,
   drawPoints: false,
   drawPolygons: true,
   fillPolygons: true,
   useDepth: true,
   console: true,
+  maxFrames: 10,
 };
 
 // configuration overrides
 const config = {
+  backend: 'webgl', // if you want to use 'wasm' backend, enable script load of tf and tf-backend-wasm in index.html
   face: {
     enabled: true,
     detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
@@ -40,7 +41,7 @@ const config = {
 };
 
 // global variables
-let settings;
+let menu;
 let worker;
 let timeStamp;
 const fps = [];
@@ -63,12 +64,11 @@ const log = (...msg) => {
 };
 
 // draws processed results and starts processing of a next frame
-async function drawResults(input, result, canvas) {
+function drawResults(input, result, canvas) {
   // update fps
-  settings.setValue('FPS', Math.round(1000 / (performance.now() - timeStamp)));
   fps.push(1000 / (performance.now() - timeStamp));
-  if (fps.length > 20) fps.shift();
-  settings.setValue('FPS', Math.round(10 * fps.reduce((a, b) => a + b) / fps.length) / 10);
+  if (fps.length > ui.maxFrames) fps.shift();
+  menu.updateChart('FPS', fps);
 
   // eslint-disable-next-line no-use-before-define
   requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop
@@ -81,7 +81,7 @@ async function drawResults(input, result, canvas) {
   draw.body(result.body, canvas, ui);
   draw.hand(result.hand, canvas, ui);
   // update log
-  const engine = await human.tf.engine();
+  const engine = human.tf.engine();
   const memory = `${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors`;
   const gpu = engine.backendInstance ? `GPU: ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes` : '';
   document.getElementById('log').innerText = `
@@ -98,7 +98,7 @@ async function setupCamera() {
   const canvas = document.getElementById('canvas');
   const output = document.getElementById('log');
   const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
-  let msg = `Setting up camera: live: ${live} facing: ${ui.facing}`;
+  let msg = `Setting up camera: live: ${live} facing: ${ui.facing ? 'front' : 'back'}`;
   output.innerText += `\n${msg}`;
   log(msg);
   // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
@@ -112,7 +112,7 @@ async function setupCamera() {
   try {
     stream = await navigator.mediaDevices.getUserMedia({
       audio: false,
-      video: { facingMode: ui.facing, width: window.innerWidth, height: window.innerHeight },
+      video: { facingMode: (ui.facing ? 'user' : 'environment'), width: window.innerWidth, height: window.innerHeight },
     });
   } catch (err) {
     output.innerText += '\nCamera permission denied';
@@ -150,7 +150,7 @@ function webWorker(input, image, canvas) {
 }
 
 // main processing function when input is webcam, can use direct invocation or web worker
-async function runHumanDetect(input, canvas) {
+function runHumanDetect(input, canvas) {
   timeStamp = performance.now();
   // perform detect if live video or not video at all
   if (input.srcObject) {
@@ -170,36 +170,23 @@ async function runHumanDetect(input, canvas) {
       // perform detection in worker
       webWorker(input, data, canvas);
     } else {
-      let result = {};
-      try {
-        // perform detection
-        result = await human.detect(input, config);
-      } catch (err) {
-        log('Error during execution:', err.message);
-      }
-      if (result.error) log(result.error);
-      else drawResults(input, result, canvas);
+      human.detect(input, config).then((result) => {
+        if (result.error) log(result.error);
+        else drawResults(input, result, canvas);
+      });
     }
   }
 }
 
 // main processing function when input is image, can use direct invocation or web worker
 async function processImage(input) {
-  const cfg = {
-    backend: 'webgl',
-    console: true,
-    face: {
-      enabled: true,
-      detector: { maxFaces: 10, skipFrames: 0, minConfidence: 0.1, iouThreshold: 0.3, scoreThreshold: 0.3 },
-      mesh: { enabled: true },
-      iris: { enabled: true },
-      age: { enabled: true, skipFrames: 0 },
-      gender: { enabled: true },
-      emotion: { enabled: true, minConfidence: 0.1, useGrayscale: true },
-    },
-    body: { enabled: true, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
-    hand: { enabled: true, skipFrames: 0, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.5 },
-  };
+  // must be zero for images
+  config.face.detector.skipFrames = 0;
+  config.face.emotion.skipFrames = 0;
+  config.face.age.skipFrames = 0;
+  config.hand.skipFrames = 0;
+
+  timeStamp = performance.now();
   return new Promise((resolve) => {
     const image = document.getElementById('image');
     image.onload = async () => {
@@ -209,11 +196,13 @@ async function processImage(input) {
       image.height = image.naturalHeight;
       canvas.width = image.naturalWidth;
       canvas.height = image.naturalHeight;
-      const result = await human.detect(image, cfg);
-      await drawResults(image, result, canvas);
+      const result = await human.detect(image, config);
+      drawResults(image, result, canvas);
       const thumb = document.createElement('canvas');
-      thumb.width = window.innerWidth / (ui.columns + 0.02);
+      thumb.width = (window.innerWidth - menu.width) / (ui.columns + 0.1);
       thumb.height = canvas.height / (window.innerWidth / thumb.width);
+      thumb.style.margin = '8px';
+      thumb.style.boxShadow = '4px 4px 4px 0 dimgrey';
       const ctx = thumb.getContext('2d');
       ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, thumb.width, thumb.height);
       document.getElementById('samples').appendChild(thumb);
@@ -253,74 +242,68 @@ async function detectSampleImages() {
   for (const sample of ui.samples) await processImage(sample);
 }
 
-// setup settings panel
-function setupUI() {
-  settings = QuickSettings.create(10, 10, 'Settings', document.getElementById('main'));
-  const style = document.createElement('style');
-  style.innerHTML = `
-    .qs_main { font: 1rem "Segoe UI"; }
-    .qs_label { font: 0.8rem "Segoe UI"; }
-    .qs_content { background: darkslategray; }
-    .qs_container { background: transparent; color: white; margin: 6px; padding: 6px; }
-    .qs_checkbox_label { top: 2px; }
-    .qs_button { width: -webkit-fill-available; font: 1rem "Segoe UI"; cursor: pointer; }
-  `;
-  document.getElementsByTagName('head')[0].appendChild(style);
-  settings.addButton('Play/Pause WebCam', () => detectVideo());
-  settings.addButton('Process Images', () => detectSampleImages());
-  settings.addDropDown('Backend', ['webgl', 'wasm', 'cpu'], async (val) => config.backend = val.value);
-  settings.addHTML('title', 'Enabled Models'); settings.hideTitle('title');
-  settings.addBoolean('Face Detect', config.face.enabled, (val) => config.face.enabled = val);
-  settings.addBoolean('Face Mesh', config.face.mesh.enabled, (val) => config.face.mesh.enabled = val);
-  settings.addBoolean('Face Iris', config.face.iris.enabled, (val) => config.face.iris.enabled = val);
-  settings.addBoolean('Face Age', config.face.age.enabled, (val) => config.face.age.enabled = val);
-  settings.addBoolean('Face Gender', config.face.gender.enabled, (val) => config.face.gender.enabled = val);
-  settings.addBoolean('Face Emotion', config.face.emotion.enabled, (val) => config.face.emotion.enabled = val);
-  settings.addBoolean('Body Pose', config.body.enabled, (val) => config.body.enabled = val);
-  settings.addBoolean('Hand Pose', config.hand.enabled, (val) => config.hand.enabled = val);
-  settings.addHTML('title', 'Model Parameters'); settings.hideTitle('title');
-  settings.addRange('Max Objects', 1, 20, 5, 1, (val) => {
+function setupMenu() {
+  menu = new Menu(document.body);
+  menu.addButton('Start Video', 'Pause Video', (evt) => detectVideo(evt));
+  menu.addButton('Process Images', 'Process Images', () => detectSampleImages());
+
+  menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
+  menu.addLabel('Enabled Models');
+  menu.addBool('Face Detect', config.face, 'enabled');
+  menu.addBool('Face Mesh', config.face.mesh, 'enabled');
+  menu.addBool('Face Iris', config.face.iris, 'enabled');
+  menu.addBool('Face Age', config.face.age, 'enabled');
+  menu.addBool('Face Gender', config.face.gender, 'enabled');
+  menu.addBool('Face Emotion', config.face.emotion, 'enabled');
+  menu.addBool('Body Pose', config.body, 'enabled');
+  menu.addBool('Hand Pose', config.hand, 'enabled');
+
+  menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
+  menu.addLabel('Model Parameters');
+  menu.addRange('Max Objects', config.face.detector, 'maxFaces', 0, 50, 1, (val) => {
     config.face.detector.maxFaces = parseInt(val);
     config.body.maxDetections = parseInt(val);
+    config.hand.maxHands = parseInt(val);
   });
-  settings.addRange('Skip Frames', 1, 20, config.face.detector.skipFrames, 1, (val) => {
+  menu.addRange('Skip Frames', config.face.detector, 'skipFrames', 0, 50, 1, (val) => {
     config.face.detector.skipFrames = parseInt(val);
     config.face.emotion.skipFrames = parseInt(val);
     config.face.age.skipFrames = parseInt(val);
     config.hand.skipFrames = parseInt(val);
   });
-  settings.addRange('Min Confidence', 0.1, 1.0, config.face.detector.minConfidence, 0.05, (val) => {
+  menu.addRange('Min Confidence', config.face.detector, 'minConfidence', 0.0, 1.0, 0.05, (val) => {
     config.face.detector.minConfidence = parseFloat(val);
     config.face.emotion.minConfidence = parseFloat(val);
     config.hand.minConfidence = parseFloat(val);
   });
-  settings.addRange('Score Threshold', 0.1, 1.0, config.face.detector.scoreThreshold, 0.05, (val) => {
+  menu.addRange('Score Threshold', config.face.detector, 'scoreThreshold', 0.1, 1.0, 0.05, (val) => {
     config.face.detector.scoreThreshold = parseFloat(val);
     config.hand.scoreThreshold = parseFloat(val);
     config.body.scoreThreshold = parseFloat(val);
   });
-  settings.addRange('IOU Threshold', 0.1, 1.0, config.face.detector.iouThreshold, 0.05, (val) => {
+  menu.addRange('IOU Threshold', config.face.detector, 'iouThreshold', 0.1, 1.0, 0.05, (val) => {
     config.face.detector.iouThreshold = parseFloat(val);
     config.hand.iouThreshold = parseFloat(val);
   });
-  settings.addHTML('title', 'UI Options'); settings.hideTitle('title');
-  settings.addBoolean('Use Web Worker', ui.useWorker, (val) => ui.useWorker = val);
-  settings.addBoolean('Camera Front/Back', true, (val) => {
-    ui.facing = val ? 'user' : 'environment';
-    setupCamera();
-  });
-  settings.addBoolean('Use 3D Depth', ui.useDepth, (val) => ui.useDepth = val);
-  settings.addBoolean('Draw Boxes', ui.drawBoxes, (val) => ui.drawBoxes = val);
-  settings.addBoolean('Draw Points', ui.drawPoints, (val) => ui.drawPoints = val);
-  settings.addBoolean('Draw Polygons', ui.drawPolygons, (val) => ui.drawPolygons = val);
-  settings.addBoolean('Fill Polygons', ui.fillPolygons, (val) => ui.fillPolygons = val);
-  settings.addHTML('line1', '<hr>'); settings.hideTitle('line1');
-  settings.addRange('FPS', 0, 100, 0, 1);
+
+  menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
+  menu.addLabel('UI Options');
+  menu.addBool('Use Web Worker', ui, 'useWorker');
+  menu.addBool('Camera Front/Back', ui, 'facing', () => setupCamera());
+  menu.addBool('Use 3D Depth', ui, 'useDepth');
+  menu.addBool('Draw Boxes', ui, 'drawBoxes');
+  menu.addBool('Draw Points', ui, 'drawPoints');
+  menu.addBool('Draw Polygons', ui, 'drawPolygons');
+  menu.addBool('Fill Polygons', ui, 'fillPolygons');
+
+  menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
+  menu.addValue('State', '');
+  menu.addChart('FPS', 'FPS');
 }
 
 async function main() {
   log('Human demo starting ...');
-  setupUI();
+  setupMenu();
   const msg = `Human ready: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
   document.getElementById('log').innerText += '\n' + msg;
   log(msg);

@@ -21,6 +21,11 @@ const models = {
   emotion: null,
 };
 
+const override = {
+  face: { detector: { skipFrames: 0 }, age: { skipFrames: 0 }, emotion: { skipFrames: 0 } },
+  hand: { skipFrames: 0 },
+};
+
 // helper function: gets elapsed time on both browser and nodejs
 const now = () => {
   if (typeof performance !== 'undefined') return performance.now();
@@ -66,9 +71,16 @@ function mergeDeep(...objects) {
 
 function sanity(input) {
   if (!input) return 'input is not defined';
-  const width = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
-  if (!width || (width === 0)) return 'input is empty';
-  if (input.readyState && (input.readyState <= 2)) return 'input is not ready';
+  if (tf.ENV.flags.IS_BROWSER && (input instanceof ImageData || input instanceof HTMLImageElement || input instanceof HTMLCanvasElement || input instanceof HTMLVideoElement || input instanceof HTMLMediaElement)) {
+    const width = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
+    if (!width || (width === 0)) return 'input is empty';
+  }
+  if (tf.ENV.flags.IS_BROWSER && (input instanceof HTMLVideoElement || input instanceof HTMLMediaElement)) {
+    if (input.readyState && (input.readyState <= 2)) return 'input is not ready';
+  }
+  if (tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) {
+    return 'input must be a tensor';
+  }
   try {
     tf.getBackend();
   } catch {
@@ -93,7 +105,8 @@ async function detect(input, userConfig = {}) {
   let timeStamp;
 
   timeStamp = now();
-  config = mergeDeep(defaults, userConfig);
+  const shouldOverride = tf.ENV.flags.IS_NODE || (tf.ENV.flags.IS_BROWSER && !((input instanceof HTMLVideoElement) || (input instanceof HTMLMediaElement)));
+  config = mergeDeep(defaults, userConfig, shouldOverride ? override : {});
   perf.config = Math.trunc(now() - timeStamp);
 
   // sanity checks
@@ -222,3 +235,5 @@ exports.handpose = handpose;
 exports.tf = tf;
 exports.version = app.version;
 exports.state = state;
+
+// Error: Failed to compile fragment shader

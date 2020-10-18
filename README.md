@@ -268,7 +268,6 @@ config = {
       inputSize: 64,         // fixed value
       minConfidence: 0.5,    // threshold for discarding a prediction
       skipFrames: 10,        // how many frames to go without re-running the detector, only used for video inputs
-      useGrayscale: true,    // convert image to grayscale before prediction or use highest channel
       modelPath: '../models/emotion/model.json',
     },
   },

@@ -4,11 +4,14 @@ const ssrnet = require('./ssrnet/ssrnet.js');
 const emotion = require('./emotion/emotion.js');
 const posenet = require('./posenet/posenet.js');
 const handpose = require('./handpose/handpose.js');
+const fxImage = require('./imagefx.js');
 const defaults = require('../config.js').default;
 const app = require('../package.json');
 
 let config;
+let fx;
 let state = 'idle';
+let offscreenCanvas;
 
 // object that contains all initialized models
 const models = {
@@ -93,26 +96,75 @@ function sanity(input) {
 
 async function load(userConfig) {
   if (userConfig) config = mergeDeep(defaults, userConfig);
-  if (config.face.enabled && !models.facemesh) models.facemesh = await facemesh.load(config.face);
-  if (config.body.enabled && !models.posenet) models.posenet = await posenet.load(config.body);
-  if (config.hand.enabled && !models.handpose) models.handpose = await handpose.load(config.hand);
-  if (config.face.enabled && config.face.age.enabled && !models.age) models.age = await ssrnet.loadAge(config);
-  if (config.face.enabled && config.face.gender.enabled && !models.gender) models.gender = await ssrnet.loadGender(config);
-  if (config.face.enabled && config.face.emotion.enabled && !models.emotion) models.emotion = await emotion.load(config);
+  if (config.face.enabled && !models.facemesh) {
+    log('Load model: Face');
+    models.facemesh = await facemesh.load(config.face);
+  }
+  if (config.body.enabled && !models.posenet) {
+    log('Load model: Body');
+    models.posenet = await posenet.load(config.body);
+  }
+  if (config.hand.enabled && !models.handpose) {
+    log('Load model: Hand');
+    models.handpose = await handpose.load(config.hand);
+  }
+  if (config.face.enabled && config.face.age.enabled && !models.age) {
+    log('Load model: Age');
+    models.age = await ssrnet.loadAge(config);
+  }
+  if (config.face.enabled && config.face.gender.enabled && !models.gender) {
+    log('Load model: Gender');
+    models.gender = await ssrnet.loadGender(config);
+  }
+  if (config.face.enabled && config.face.emotion.enabled && !models.emotion) {
+    log('Load model: Emotion');
+    models.emotion = await emotion.load(config);
+  }
 }
 
 function tfImage(input) {
-  let image;
+  // let imageData;
+  let filtered;
+  if (tf.ENV.flags.IS_BROWSER && config.filter.enabled && !(input instanceof tf.Tensor)) {
+    const width = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
+    const height = input.naturalHeight || input.videoHeight || input.Height || (input.shape && (input.shape[2] > 0));
+    // if (!offscreenCanvas) offscreenCanvas = new OffscreenCanvas(width, height);
+    if (!offscreenCanvas) {
+      offscreenCanvas = document.createElement('canvas');
+      offscreenCanvas.width = width;
+      offscreenCanvas.height = height;
+    }
+    const ctx = offscreenCanvas.getContext('2d');
+    ctx.drawImage(input, 0, 0, width, height, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
+    if (!fx) fx = new fxImage.Canvas();
+    else fx.reset();
+    fx.addFilter('brightness', config.filter.brightness); // must have at least one filter enabled
+    if (config.filter.contrast !== 0) fx.addFilter('contrast', config.filter.contrast);
+    if (config.filter.sharpness !== 0) fx.addFilter('sharpen', config.filter.sharpness);
+    if (config.filter.blur !== 0) fx.addFilter('blur', config.filter.blur);
+    if (config.filter.saturation !== 0) fx.addFilter('saturation', config.filter.saturation);
+    if (config.filter.hue !== 0) fx.addFilter('hue', config.filter.hue);
+    if (config.filter.negative) fx.addFilter('negative');
+    if (config.filter.sepia) fx.addFilter('sepia');
+    if (config.filter.vintage) fx.addFilter('brownie');
+    if (config.filter.sepia) fx.addFilter('sepia');
+    if (config.filter.kodachrome) fx.addFilter('kodachrome');
+    if (config.filter.technicolor) fx.addFilter('technicolor');
+    if (config.filter.polaroid) fx.addFilter('polaroid');
+    if (config.filter.pixelate !== 0) fx.addFilter('pixelate', config.filter.pixelate);
+    filtered = fx.apply(offscreenCanvas);
+  }
+  let tensor;
   if (input instanceof tf.Tensor) {
-    image = tf.clone(input);
+    tensor = tf.clone(input);
   } else {
-    const pixels = tf.browser.fromPixels(input);
+    const pixels = tf.browser.fromPixels(filtered || input);
     const casted = pixels.toFloat();
-    image = casted.expandDims(0);
+    tensor = casted.expandDims(0);
     pixels.dispose();
     casted.dispose();
   }
-  return image;
+  return { tensor, canvas: config.filter.return ? filtered : null };
 }
 
 async function detect(input, userConfig = {}) {
@@ -167,7 +219,10 @@ async function detect(input, userConfig = {}) {
 
     analyze('Start Detect:');
 
-    const imageTensor = tfImage(input);
+    timeStamp = now();
+    const image = tfImage(input);
+    perf.image = Math.trunc(now() - timeStamp);
+    const imageTensor = image.tensor;
 
     // run posenet
     state = 'run:body';
@@ -239,7 +294,7 @@ async function detect(input, userConfig = {}) {
     analyze('End Scope:');
 
     perf.total = Math.trunc(now() - timeStart);
-    resolve({ face: faceRes, body: poseRes, hand: handRes, performance: perf });
+    resolve({ face: faceRes, body: poseRes, hand: handRes, performance: perf, canvas: image.canvas });
   });
 }
 

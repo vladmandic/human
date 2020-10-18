@@ -34,7 +34,6 @@ class HandDetector {
   async getBoundingBoxes(input) {
     const batchedPrediction = this.model.predict(input);
     const prediction = batchedPrediction.squeeze();
-    console.log(prediction);
     // Regression score for each anchor point.
     const scores = tf.tidy(() => tf.sigmoid(tf.slice(prediction, [0, 0], [-1, 1])).squeeze());
     // Bounding box for each anchor point.

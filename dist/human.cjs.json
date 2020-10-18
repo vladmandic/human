@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 4762,
+      "bytes": 5828,
       "imports": []
     },
     "package.json": {
@@ -75,7 +75,7 @@
       "imports": []
     },
     "src/handpose/handdetector.js": {
-      "bytes": 4277,
+      "bytes": 4248,
       "imports": [
         {
           "path": "src/handpose/box.js"
@@ -116,7 +116,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 8784,
+      "bytes": 11161,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -134,12 +134,19 @@
           "path": "src/handpose/handpose.js"
         },
         {
+          "path": "src/imagefx.js"
+        },
+        {
           "path": "config.js"
         },
         {
           "path": "package.json"
         }
       ]
+    },
+    "src/imagefx.js": {
+      "bytes": 19452,
+      "imports": []
     },
     "src/posenet/buildParts.js": {
       "bytes": 2035,
@@ -253,7 +260,7 @@
     "dist/human.cjs.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 215962
+      "bytes": 251682
     },
     "dist/human.cjs": {
       "imports": [],
@@ -325,7 +332,7 @@
           "bytesInOutput": 2813
         },
         "src/handpose/handdetector.js": {
-          "bytesInOutput": 4161
+          "bytesInOutput": 4130
         },
         "src/handpose/keypoints.js": {
           "bytesInOutput": 265
@@ -339,17 +346,20 @@
         "src/handpose/handpose.js": {
           "bytesInOutput": 2288
         },
+        "src/imagefx.js": {
+          "bytesInOutput": 20197
+        },
         "config.js": {
-          "bytesInOutput": 1844
+          "bytesInOutput": 2173
         },
         "package.json": {
           "bytesInOutput": 2778
         },
         "src/human.js": {
-          "bytesInOutput": 7694
+          "bytesInOutput": 9977
         }
       },
-      "bytes": 131607
+      "bytes": 154404
     }
   }
 }

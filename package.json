@@ -37,7 +37,7 @@
     "rimraf": "^3.0.2"
   },
   "scripts": {
-    "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation demo/node.js",
+    "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
     "lint": "eslint src/*.js demo/*.js",
     "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --external:fs --global-name=human --metafile=dist/human.json --outfile=dist/human.js src/human.js",
     "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js",

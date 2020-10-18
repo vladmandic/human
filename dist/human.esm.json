@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 4762,
+      "bytes": 5828,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js": {
@@ -241,7 +241,7 @@
       ]
     },
     "src/handpose/handdetector.js": {
-      "bytes": 4277,
+      "bytes": 4248,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -291,7 +291,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 8784,
+      "bytes": 11161,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -312,12 +312,19 @@
           "path": "src/handpose/handpose.js"
         },
         {
+          "path": "src/imagefx.js"
+        },
+        {
           "path": "config.js"
         },
         {
           "path": "package.json"
         }
       ]
+    },
+    "src/imagefx.js": {
+      "bytes": 19452,
+      "imports": []
     },
     "src/posenet/buildParts.js": {
       "bytes": 2035,
@@ -461,7 +468,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 4955479
+      "bytes": 4988533
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -590,7 +597,7 @@
           "bytesInOutput": 1386
         },
         "src/handpose/handdetector.js": {
-          "bytesInOutput": 2073
+          "bytesInOutput": 2052
         },
         "src/handpose/keypoints.js": {
           "bytesInOutput": 161
@@ -604,17 +611,20 @@
         "src/handpose/handpose.js": {
           "bytesInOutput": 1189
         },
+        "src/imagefx.js": {
+          "bytesInOutput": 11089
+        },
         "config.js": {
-          "bytesInOutput": 1131
+          "bytesInOutput": 1307
         },
         "package.json": {
           "bytesInOutput": 2306
         },
         "src/human.js": {
-          "bytesInOutput": 4464
+          "bytesInOutput": 5876
         }
       },
-      "bytes": 1105498
+      "bytes": 1118154
     }
   }
 }

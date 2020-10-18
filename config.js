@@ -7,6 +7,23 @@ export default {
   scoped: false,             // enable scoped runs
                              // some models *may* have memory leaks, this wrapps everything in a local scope at a cost of performance
                              // typically not needed
+  filter: {
+    enabled: true,           // enable image pre-processing filters
+    return: true,            // return processed canvas imagedata in result
+    brightness: 0,           // range: -1 (darken) to 1 (lighten)
+    contrast: 0,             // range: -1 (reduce contrast) to 1 (increase contrast)
+    sharpness: 0,            // range: 0 (no sharpening) to 1 (maximum sharpening)
+    blur: 0,                 // range: 0 (no blur) to N (blur radius in pixels)
+    saturation: 0,           // range: -1 (reduce saturation) to 1 (increase saturation)
+    hue: 0,                  // range: 0 (no change) to 360 (hue rotation in degrees)
+    negative: false,         // image negative
+    sepia: false,            // image sepia colors
+    vintage: false,          // image vintage colors
+    kodachrome: false,       // image kodachrome colors
+    technicolor: false,      // image technicolor colors
+    polaroid: false,         // image polaroid camera effect
+    pixelate: 0,             // range: 0 (no pixelate) to N (number of pixels to pixelate)
+  },
   face: {
     enabled: true,           // controls if specified modul is enabled
                              // face.enabled is required for all face models: detector, mesh, iris, age, gender, emotion

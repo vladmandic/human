@@ -27,6 +27,7 @@ const ui = {
 // configuration overrides
 const config = {
   backend: 'webgl', // if you want to use 'wasm' backend, enable script load of tf and tf-backend-wasm in index.html
+  filter: { enabled: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0 },
   face: {
     enabled: true,
     detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
@@ -42,6 +43,7 @@ const config = {
 
 // global variables
 let menu;
+let menuFX;
 let worker;
 let timeStamp;
 const fps = [];
@@ -75,7 +77,8 @@ function drawResults(input, result, canvas) {
 
   // draw image from video
   const ctx = canvas.getContext('2d');
-  ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
+  if (result.canvas) ctx.drawImage(result.canvas, 0, 0, result.canvas.width, result.canvas.height, 0, 0, canvas.width, canvas.height);
+  else ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
   // draw all results
   draw.face(result.face, canvas, ui, human.facemesh.triangulation);
   draw.body(result.body, canvas, ui);
@@ -193,7 +196,7 @@ async function processImage(input) {
       const result = await human.detect(image, config);
       drawResults(image, result, canvas);
       const thumb = document.createElement('canvas');
-      thumb.width = (window.innerWidth - menu.width) / (ui.columns + 0.1);
+      thumb.width = window.innerWidth / (ui.columns + 0.1);
       thumb.height = canvas.height / (window.innerWidth / thumb.width);
       thumb.style.margin = '8px';
       thumb.style.boxShadow = '4px 4px 4px 0 dimgrey';
@@ -237,11 +240,12 @@ async function detectSampleImages() {
 }
 
 function setupMenu() {
-  menu = new Menu(document.body);
-  menu.addTitle('...');
+  menu = new Menu(document.body, '...', { top: '1rem', right: '1rem' });
   menu.addButton('Start Video', 'Pause Video', (evt) => detectVideo(evt));
   menu.addButton('Process Images', 'Process Images', () => detectSampleImages());
 
+  menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
+  menu.addBool('Use Web Worker', ui, 'useWorker');
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addLabel('Enabled Models');
   menu.addBool('Face Detect', config.face, 'enabled');
@@ -282,17 +286,32 @@ function setupMenu() {
   });
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menu.addLabel('UI Options');
-  menu.addBool('Use Web Worker', ui, 'useWorker');
-  menu.addBool('Camera Front/Back', ui, 'facing', () => setupCamera());
-  menu.addBool('Use 3D Depth', ui, 'useDepth');
-  menu.addBool('Draw Boxes', ui, 'drawBoxes');
-  menu.addBool('Draw Points', ui, 'drawPoints');
-  menu.addBool('Draw Polygons', ui, 'drawPolygons');
-  menu.addBool('Fill Polygons', ui, 'fillPolygons');
-
-  menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addChart('FPS', 'FPS');
+
+  menuFX = new Menu(document.body, '...', { top: '1rem', right: '18rem' });
+  menuFX.addLabel('UI Options');
+  menuFX.addBool('Camera Front/Back', ui, 'facing', () => setupCamera());
+  menuFX.addBool('Use 3D Depth', ui, 'useDepth');
+  menuFX.addBool('Draw Boxes', ui, 'drawBoxes');
+  menuFX.addBool('Draw Points', ui, 'drawPoints');
+  menuFX.addBool('Draw Polygons', ui, 'drawPolygons');
+  menuFX.addBool('Fill Polygons', ui, 'fillPolygons');
+  menuFX.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
+  menuFX.addLabel('Image Filters');
+  menuFX.addBool('Enabled', config.filter, 'enabled');
+  menuFX.addRange('Brightness', config.filter, 'brightness', -1.0, 1.0, 0.05, (val) => config.filter.brightness = parseFloat(val));
+  menuFX.addRange('Contrast', config.filter, 'contrast', -1.0, 1.0, 0.05, (val) => config.filter.contrast = parseFloat(val));
+  menuFX.addRange('Sharpness', config.filter, 'sharpness', 0, 1.0, 0.05, (val) => config.filter.sharpness = parseFloat(val));
+  menuFX.addRange('Blur', config.filter, 'blur', 0, 20, 1, (val) => config.filter.blur = parseInt(val));
+  menuFX.addRange('Saturation', config.filter, 'saturation', -1.0, 1.0, 0.05, (val) => config.filter.saturation = parseFloat(val));
+  menuFX.addRange('Hue', config.filter, 'hue', 0, 360, 5, (val) => config.filter.hue = parseInt(val));
+  menuFX.addRange('Pixelate', config.filter, 'pixelate', 0, 32, 1, (val) => config.filter.pixelate = parseInt(val));
+  menuFX.addBool('Negative', config.filter, 'negative');
+  menuFX.addBool('Sepia', config.filter, 'sepia');
+  menuFX.addBool('Vintage', config.filter, 'vintage');
+  menuFX.addBool('Kodachrome', config.filter, 'kodachrome');
+  menuFX.addBool('Technicolor', config.filter, 'technicolor');
+  menuFX.addBool('Polaroid', config.filter, 'polaroid');
 }
 
 async function main() {

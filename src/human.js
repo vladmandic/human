@@ -74,15 +74,6 @@ function mergeDeep(...objects) {
 
 function sanity(input) {
   if (!input) return 'input is not defined';
-  if (!(input instanceof tf.Tensor)
-      || (tf.ENV.flags.IS_BROWSER
-         && (input instanceof ImageData || input instanceof HTMLImageElement || input instanceof HTMLCanvasElement || input instanceof HTMLVideoElement || input instanceof HTMLMediaElement))) {
-    const width = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
-    if (!width || (width === 0)) return 'input is empty';
-  }
-  if (tf.ENV.flags.IS_BROWSER && (input instanceof HTMLVideoElement || input instanceof HTMLMediaElement)) {
-    if (input.readyState && (input.readyState <= 2)) return 'input is not ready';
-  }
   if (tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) {
     return 'input must be a tensor';
   }
@@ -127,15 +118,18 @@ function tfImage(input) {
   let filtered;
   if (tf.ENV.flags.IS_BROWSER && config.filter.enabled && !(input instanceof tf.Tensor)) {
     const width = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
-    const height = input.naturalHeight || input.videoHeight || input.Height || (input.shape && (input.shape[2] > 0));
-    // if (!offscreenCanvas) offscreenCanvas = new OffscreenCanvas(width, height);
+    const height = input.naturalHeight || input.videoHeight || input.height || (input.shape && (input.shape[2] > 0));
+    if (!offscreenCanvas) offscreenCanvas = new OffscreenCanvas(width, height);
+    /*
     if (!offscreenCanvas) {
       offscreenCanvas = document.createElement('canvas');
       offscreenCanvas.width = width;
       offscreenCanvas.height = height;
     }
+    */
     const ctx = offscreenCanvas.getContext('2d');
-    ctx.drawImage(input, 0, 0, width, height, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
+    if (input instanceof ImageData) ctx.putImageData(input, 0, 0);
+    else ctx.drawImage(input, 0, 0, width, height, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
     if (!fx) fx = new fxImage.Canvas();
     else fx.reset();
     fx.addFilter('brightness', config.filter.brightness); // must have at least one filter enabled
@@ -173,8 +167,8 @@ async function detect(input, userConfig = {}) {
   let timeStamp;
 
   timeStamp = now();
-  const shouldOverride = tf.ENV.flags.IS_NODE || (tf.ENV.flags.IS_BROWSER && !((input instanceof HTMLVideoElement) || (input instanceof HTMLMediaElement)));
-  config = mergeDeep(defaults, userConfig, shouldOverride ? override : {});
+  config = mergeDeep(defaults, userConfig);
+  if (!config.videoOptimized) config = mergeDeep(config, override);
   perf.config = Math.trunc(now() - timeStamp);
 
   // sanity checks

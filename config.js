@@ -7,6 +7,7 @@ export default {
   scoped: false,             // enable scoped runs
                              // some models *may* have memory leaks, this wrapps everything in a local scope at a cost of performance
                              // typically not needed
+  videoOptimized: true,      // perform additional optimizations when input is video, must be disabled for images
   filter: {
     enabled: true,           // enable image pre-processing filters
     return: true,            // return processed canvas imagedata in result

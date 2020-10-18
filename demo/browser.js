@@ -180,12 +180,6 @@ function runHumanDetect(input, canvas) {
 
 // main processing function when input is image, can use direct invocation or web worker
 async function processImage(input) {
-  // must be zero for images
-  config.face.detector.skipFrames = 0;
-  config.face.emotion.skipFrames = 0;
-  config.face.age.skipFrames = 0;
-  config.hand.skipFrames = 0;
-
   timeStamp = performance.now();
   return new Promise((resolve) => {
     const image = document.getElementById('image');
@@ -234,7 +228,7 @@ async function detectVideo() {
 
 // just initialize everything and call main function
 async function detectSampleImages() {
-  ui.baseFont = ui.baseFontProto.replace(/{size}/, `${ui.columns}rem`);
+  ui.baseFont = ui.baseFontProto.replace(/{size}/, `${1.2 * ui.columns}rem`);
   ui.baseLineHeight = ui.baseLineHeightProto * ui.columns;
   document.getElementById('canvas').style.display = 'none';
   document.getElementById('samples').style.display = 'block';
@@ -244,6 +238,7 @@ async function detectSampleImages() {
 
 function setupMenu() {
   menu = new Menu(document.body);
+  menu.addTitle('...');
   menu.addButton('Start Video', 'Pause Video', (evt) => detectVideo(evt));
   menu.addButton('Process Images', 'Process Images', () => detectSampleImages());
 
@@ -297,7 +292,6 @@ function setupMenu() {
   menu.addBool('Fill Polygons', ui, 'fillPolygons');
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menu.addValue('State', '');
   menu.addChart('FPS', 'FPS');
 }
 

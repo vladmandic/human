@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 5828,
+      "bytes": 5942,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js": {
@@ -149,7 +149,7 @@
       ]
     },
     "package.json": {
-      "bytes": 2635,
+      "bytes": 2634,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -291,7 +291,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 11161,
+      "bytes": 10488,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -468,7 +468,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 4988533
+      "bytes": 4987630
     },
     "dist/human.js": {
       "imports": [],
@@ -615,16 +615,16 @@
           "bytesInOutput": 11089
         },
         "config.js": {
-          "bytesInOutput": 1307
+          "bytesInOutput": 1325
         },
         "package.json": {
-          "bytesInOutput": 2306
+          "bytesInOutput": 2305
         },
         "src/human.js": {
-          "bytesInOutput": 5876
+          "bytesInOutput": 5335
         }
       },
-      "bytes": 1118163
+      "bytes": 1117639
     }
   }
 }

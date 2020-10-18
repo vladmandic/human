@@ -229,7 +229,8 @@ config = {
   scoped: false,             // enable scoped runs
                              // some models *may* have memory leaks, this wrapps everything in a local scope at a cost of performance
                              // typically not needed
-  filter: {
+  videoOptimized: true,      // perform additional optimizations when input is video, must be disabled for images
+  filter: {                  // note: image filters are only available in Browser environments and not in NodeJS as they require WebGL for processing
     enabled: true,           // enable image pre-processing filters
     return: true,            // return processed canvas imagedata in result
     brightness: 0,           // range: -1 (darken) to 1 (lighten)
@@ -429,6 +430,15 @@ Performance per module:
 - Body: 50 FPS (standalone)
 
 For performance details, see output of `result.performance` object during runtime  
+
+<hr>
+
+## Limitations
+
+`Human` library can be used in any modern Browser or NodeJS environment, but there are several items to be aware of:
+
+- **NodeJS**: Due to a missing feature in `tfjs-node`, only some models are available <https://github.com/tensorflow/tfjs/issues/4066>
+- **Browser**: `filters` module cannot be used when using web workers <https://github.com/phoboslab/WebGLImageFilter/issues/27>
 
 <hr>
 

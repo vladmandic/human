@@ -28,6 +28,7 @@ const ui = {
 const config = {
   backend: 'webgl', // if you want to use 'wasm' backend, enable script load of tf and tf-backend-wasm in index.html
   filter: { enabled: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0 },
+  videoOptimized: true,
   face: {
     enabled: true,
     detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },

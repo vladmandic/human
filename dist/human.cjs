@@ -5685,6 +5685,7 @@ var require_config = __commonJS((exports2) => {
     backend: "webgl",
     console: true,
     scoped: false,
+    videoOptimized: true,
     filter: {
       enabled: true,
       return: true,
@@ -5776,7 +5777,7 @@ var require_config = __commonJS((exports2) => {
 var require_package = __commonJS((exports2, module2) => {
   module2.exports = {
     name: "@vladmandic/human",
-    version: "0.3.8",
+    version: "0.3.9",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.cjs",
@@ -5813,7 +5814,7 @@ var require_package = __commonJS((exports2, module2) => {
       rimraf: "^3.0.2"
     },
     scripts: {
-      start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation demo/node.js",
+      start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
       lint: "eslint src/*.js demo/*.js",
       "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --external:fs --global-name=human --metafile=dist/human.json --outfile=dist/human.js src/human.js",
       "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js",
@@ -5906,15 +5907,6 @@ function mergeDeep(...objects) {
 function sanity(input) {
   if (!input)
     return "input is not defined";
-  if (!(input instanceof tf.Tensor) || tf.ENV.flags.IS_BROWSER && (input instanceof ImageData || input instanceof HTMLImageElement || input instanceof HTMLCanvasElement || input instanceof HTMLVideoElement || input instanceof HTMLMediaElement)) {
-    const width = input.naturalWidth || input.videoWidth || input.width || input.shape && input.shape[1] > 0;
-    if (!width || width === 0)
-      return "input is empty";
-  }
-  if (tf.ENV.flags.IS_BROWSER && (input instanceof HTMLVideoElement || input instanceof HTMLMediaElement)) {
-    if (input.readyState && input.readyState <= 2)
-      return "input is not ready";
-  }
   if (tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) {
     return "input must be a tensor";
   }
@@ -5957,14 +5949,14 @@ function tfImage(input) {
   let filtered;
   if (tf.ENV.flags.IS_BROWSER && config.filter.enabled && !(input instanceof tf.Tensor)) {
     const width = input.naturalWidth || input.videoWidth || input.width || input.shape && input.shape[1] > 0;
-    const height = input.naturalHeight || input.videoHeight || input.Height || input.shape && input.shape[2] > 0;
-    if (!offscreenCanvas) {
-      offscreenCanvas = document.createElement("canvas");
-      offscreenCanvas.width = width;
-      offscreenCanvas.height = height;
-    }
+    const height = input.naturalHeight || input.videoHeight || input.height || input.shape && input.shape[2] > 0;
+    if (!offscreenCanvas)
+      offscreenCanvas = new OffscreenCanvas(width, height);
     const ctx = offscreenCanvas.getContext("2d");
-    ctx.drawImage(input, 0, 0, width, height, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
+    if (input instanceof ImageData)
+      ctx.putImageData(input, 0, 0);
+    else
+      ctx.drawImage(input, 0, 0, width, height, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
     if (!fx)
       fx = new fxImage.Canvas();
     else
@@ -6015,8 +6007,9 @@ async function detect(input, userConfig = {}) {
   const perf = {};
   let timeStamp;
   timeStamp = now();
-  const shouldOverride = tf.ENV.flags.IS_NODE || tf.ENV.flags.IS_BROWSER && !(input instanceof HTMLVideoElement || input instanceof HTMLMediaElement);
-  config = mergeDeep(defaults, userConfig, shouldOverride ? override : {});
+  config = mergeDeep(defaults, userConfig);
+  if (!config.videoOptimized)
+    config = mergeDeep(config, override);
   perf.config = Math.trunc(now() - timeStamp);
   timeStamp = now();
   state = "check";

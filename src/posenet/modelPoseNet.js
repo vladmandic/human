@@ -31,8 +31,9 @@ class PoseNet {
   async estimatePoses(input, config) {
     const outputStride = config.outputStride;
     // const inputResolution = config.inputResolution;
-    const [height, width] = util.getInputTensorDimensions(input);
-    const { resized, padding } = util.padAndResizeTo(input, [config.inputResolution, config.inputResolution]);
+    const height = input.shape[1];
+    const width = input.shape[2];
+    const resized = util.resizeTo(input, [config.inputResolution, config.inputResolution]);
     const { heatmapScores, offsets, displacementFwd, displacementBwd } = this.baseModel.predict(resized);
     const allTensorBuffers = await util.toTensorBuffers3D([heatmapScores, offsets, displacementFwd, displacementBwd]);
     const scoresBuffer = allTensorBuffers[0];
@@ -40,7 +41,7 @@ class PoseNet {
     const displacementsFwdBuffer = allTensorBuffers[2];
     const displacementsBwdBuffer = allTensorBuffers[3];
     const poses = await decodeMultiple.decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, outputStride, config.maxDetections, config.scoreThreshold, config.nmsRadius);
-    const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config.inputResolution, config.inputResolution], padding);
+    const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config.inputResolution, config.inputResolution]);
     heatmapScores.dispose();
     offsets.dispose();
     displacementFwd.dispose();

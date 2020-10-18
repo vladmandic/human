@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 4862,
+      "bytes": 4762,
       "imports": []
     },
     "package.json": {
@@ -9,11 +9,11 @@
       "imports": []
     },
     "src/emotion/emotion.js": {
-      "bytes": 2019,
+      "bytes": 1646,
       "imports": []
     },
     "src/facemesh/blazeface.js": {
-      "bytes": 7407,
+      "bytes": 7161,
       "imports": []
     },
     "src/facemesh/box.js": {
@@ -21,7 +21,7 @@
       "imports": []
     },
     "src/facemesh/facemesh.js": {
-      "bytes": 2816,
+      "bytes": 2568,
       "imports": [
         {
           "path": "src/facemesh/blazeface.js"
@@ -75,7 +75,7 @@
       "imports": []
     },
     "src/handpose/handdetector.js": {
-      "bytes": 4296,
+      "bytes": 4277,
       "imports": [
         {
           "path": "src/handpose/box.js"
@@ -83,7 +83,7 @@
       ]
     },
     "src/handpose/handpose.js": {
-      "bytes": 2356,
+      "bytes": 2152,
       "imports": [
         {
           "path": "src/handpose/handdetector.js"
@@ -101,7 +101,7 @@
       "imports": []
     },
     "src/handpose/pipeline.js": {
-      "bytes": 8178,
+      "bytes": 8169,
       "imports": [
         {
           "path": "src/handpose/box.js"
@@ -116,7 +116,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 8299,
+      "bytes": 8784,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -195,7 +195,7 @@
       ]
     },
     "src/posenet/modelPoseNet.js": {
-      "bytes": 3472,
+      "bytes": 3447,
       "imports": [
         {
           "path": "src/posenet/modelMobileNet.js"
@@ -229,7 +229,7 @@
       ]
     },
     "src/posenet/util.js": {
-      "bytes": 4202,
+      "bytes": 2260,
       "imports": [
         {
           "path": "src/posenet/keypoints.js"
@@ -245,7 +245,7 @@
       ]
     },
     "src/ssrnet/ssrnet.js": {
-      "bytes": 1937,
+      "bytes": 1574,
       "imports": []
     }
   },
@@ -253,13 +253,13 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 199199
+      "bytes": 194427
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
       "inputs": {
         "src/facemesh/blazeface.js": {
-          "bytesInOutput": 3255
+          "bytesInOutput": 3131
         },
         "src/facemesh/keypoints.js": {
           "bytesInOutput": 1950
@@ -280,13 +280,13 @@
           "bytesInOutput": 9995
         },
         "src/facemesh/facemesh.js": {
-          "bytesInOutput": 1391
+          "bytesInOutput": 1259
         },
         "src/ssrnet/ssrnet.js": {
-          "bytesInOutput": 1142
+          "bytesInOutput": 934
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1147
+          "bytesInOutput": 944
         },
         "src/posenet/modelBase.js": {
           "bytesInOutput": 597
@@ -313,10 +313,10 @@
           "bytesInOutput": 608
         },
         "src/posenet/util.js": {
-          "bytesInOutput": 1850
+          "bytesInOutput": 1058
         },
         "src/posenet/modelPoseNet.js": {
-          "bytesInOutput": 885
+          "bytesInOutput": 846
         },
         "src/posenet/posenet.js": {
           "bytesInOutput": 464
@@ -325,31 +325,31 @@
           "bytesInOutput": 1400
         },
         "src/handpose/handdetector.js": {
-          "bytesInOutput": 2040
+          "bytesInOutput": 2067
         },
         "src/handpose/keypoints.js": {
           "bytesInOutput": 160
         },
         "src/handpose/util.js": {
-          "bytesInOutput": 984
+          "bytesInOutput": 977
         },
         "src/handpose/pipeline.js": {
-          "bytesInOutput": 3218
+          "bytesInOutput": 3209
         },
         "src/handpose/handpose.js": {
-          "bytesInOutput": 1317
+          "bytesInOutput": 1211
         },
         "config.js": {
-          "bytesInOutput": 1146
+          "bytesInOutput": 1130
         },
         "package.json": {
           "bytesInOutput": 2305
         },
         "src/human.js": {
-          "bytesInOutput": 4135
+          "bytesInOutput": 4349
         }
       },
-      "bytes": 69965
+      "bytes": 68570
     }
   }
 }

@@ -32,9 +32,9 @@ class HandDetector {
   }
 
   async getBoundingBoxes(input) {
-    const normalizedInput = tf.tidy(() => tf.mul(tf.sub(input, 0.5), 2));
-    const batchedPrediction = this.model.predict(normalizedInput);
+    const batchedPrediction = this.model.predict(input);
     const prediction = batchedPrediction.squeeze();
+    console.log(prediction);
     // Regression score for each anchor point.
     const scores = tf.tidy(() => tf.sigmoid(tf.slice(prediction, [0, 0], [-1, 1])).squeeze());
     // Bounding box for each anchor point.
@@ -42,11 +42,7 @@ class HandDetector {
     const boxes = this.normalizeBoxes(rawBoxes);
     const boxesWithHandsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.maxHands, this.iouThreshold, this.scoreThreshold);
     const boxesWithHands = await boxesWithHandsTensor.array();
-    const toDispose = [normalizedInput, batchedPrediction, boxesWithHandsTensor, prediction, boxes, rawBoxes, scores];
-    // if (boxesWithHands.length === 0) {
-    // toDispose.forEach((tensor) => tensor.dispose());
-    //  return null;
-    // }
+    const toDispose = [batchedPrediction, boxesWithHandsTensor, prediction, boxes, rawBoxes, scores];
     const detectedHands = tf.tidy(() => {
       const detectedBoxes = [];
       for (const i in boxesWithHands) {
@@ -69,12 +65,18 @@ class HandDetector {
      * @param input The image to classify.
      */
   async estimateHandBounds(input, config) {
-    const inputHeight = input.shape[1];
-    const inputWidth = input.shape[2];
+    // const inputHeight = input.shape[2];
+    // const inputWidth = input.shape[1];
     this.iouThreshold = config.iouThreshold;
     this.scoreThreshold = config.scoreThreshold;
     this.maxHands = config.maxHands;
-    const image = tf.tidy(() => input.resizeBilinear([this.width, this.height]).div(255));
+    const resized = input.resizeBilinear([this.width, this.height]);
+    const divided = resized.div(255);
+    const normalized = divided.sub(0.5);
+    const image = normalized.mul(2.0);
+    resized.dispose();
+    divided.dispose();
+    normalized.dispose();
     const predictions = await this.getBoundingBoxes(image);
     image.dispose();
     if (!predictions || (predictions.length === 0)) return null;
@@ -87,7 +89,7 @@ class HandDetector {
       const palmLandmarks = await prediction.palmLandmarks.array();
       prediction.boxes.dispose();
       prediction.palmLandmarks.dispose();
-      hands.push(bounding.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks }, [inputWidth / this.width, inputHeight / this.height]));
+      hands.push(bounding.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks }, [input.shape[2] / this.width, input.shape[1] / this.height]));
     }
     return hands;
   }

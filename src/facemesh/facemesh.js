@@ -13,13 +13,7 @@ class MediaPipeFaceMesh {
 
   async estimateFaces(input, config) {
     if (config) this.config = config;
-    const imageRaw = !(input instanceof tf.Tensor) ? tf.browser.fromPixels(input) : input;
-    const imageCast = imageRaw.toFloat();
-    const image = imageCast.expandDims(0);
-    imageRaw.dispose();
-    imageCast.dispose();
-    const predictions = await this.pipeline.predict(image, config);
-    tf.dispose(image);
+    const predictions = await this.pipeline.predict(input, config);
     const results = [];
     for (const prediction of (predictions || [])) {
       // guard against disposed tensors on long running operations such as pause in middle of processing

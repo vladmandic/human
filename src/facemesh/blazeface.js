@@ -144,13 +144,7 @@ class BlazeFaceModel {
   }
 
   async estimateFaces(input) {
-    const imageRaw = !(input instanceof tf.Tensor) ? tf.browser.fromPixels(input) : input;
-    const imageCast = imageRaw.toFloat();
-    const image = imageCast.expandDims(0);
-    imageRaw.dispose();
-    imageCast.dispose();
-    const { boxes, scaleFactor } = await this.getBoundingBoxes(image);
-    image.dispose();
+    const { boxes, scaleFactor } = await this.getBoundingBoxes(input);
     return Promise.all(boxes.map(async (face) => {
       const scaledBox = scaleBoxFromPrediction(face, scaleFactor);
       const [landmarkData, boxData, probabilityData] = await Promise.all([face.landmarks, scaledBox, face.probability].map(async (d) => d.array()));

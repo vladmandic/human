@@ -76,7 +76,7 @@ class HandPipeline {
   }
 
   async estimateHands(image, config) {
-    this.maxContinuousChecks = config.skipFrames;
+    this.skipFrames = config.skipFrames;
     this.detectionConfidence = config.minConfidence;
     this.maxHands = config.maxHands;
     this.runsWithoutHandDetector++;

@@ -4,13 +4,6 @@ const models = {};
 let last = { age: 0, gender: '' };
 let frame = 0;
 
-async function getImage(image, size) {
-  const buffer = tf.browser.fromPixels(image);
-  const resize = tf.image.resizeBilinear(buffer, [size, size]);
-  const expand = tf.cast(tf.expandDims(resize, 0), 'float32');
-  return expand;
-}
-
 async function loadAge(config) {
   if (!models.age) models.age = await tf.loadGraphModel(config.face.age.modelPath);
   return models.age;
@@ -27,14 +20,9 @@ async function predict(image, config) {
     return last;
   }
   frame = 0;
-  let enhance;
-  if (image instanceof tf.Tensor) {
-    const resize = tf.image.resizeBilinear(image, [config.face.age.inputSize, config.face.age.inputSize], false);
-    enhance = tf.mul(resize, [255.0]);
-    tf.dispose(resize);
-  } else {
-    enhance = await getImage(image, config.face.age.inputSize);
-  }
+  const resize = tf.image.resizeBilinear(image, [config.face.age.inputSize, config.face.age.inputSize], false);
+  const enhance = tf.mul(resize, [255.0]);
+  tf.dispose(resize);
 
   const promises = [];
   let ageT;

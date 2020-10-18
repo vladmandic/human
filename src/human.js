@@ -71,7 +71,9 @@ function mergeDeep(...objects) {
 
 function sanity(input) {
   if (!input) return 'input is not defined';
-  if (tf.ENV.flags.IS_BROWSER && (input instanceof ImageData || input instanceof HTMLImageElement || input instanceof HTMLCanvasElement || input instanceof HTMLVideoElement || input instanceof HTMLMediaElement)) {
+  if (!(input instanceof tf.Tensor)
+      || (tf.ENV.flags.IS_BROWSER
+         && (input instanceof ImageData || input instanceof HTMLImageElement || input instanceof HTMLCanvasElement || input instanceof HTMLVideoElement || input instanceof HTMLMediaElement))) {
     const width = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
     if (!width || (width === 0)) return 'input is empty';
   }
@@ -97,6 +99,20 @@ async function load(userConfig) {
   if (config.face.enabled && config.face.age.enabled && !models.age) models.age = await ssrnet.loadAge(config);
   if (config.face.enabled && config.face.gender.enabled && !models.gender) models.gender = await ssrnet.loadGender(config);
   if (config.face.enabled && config.face.emotion.enabled && !models.emotion) models.emotion = await emotion.load(config);
+}
+
+function tfImage(input) {
+  let image;
+  if (input instanceof tf.Tensor) {
+    image = tf.clone(input);
+  } else {
+    const pixels = tf.browser.fromPixels(input);
+    const casted = pixels.toFloat();
+    image = casted.expandDims(0);
+    pixels.dispose();
+    casted.dispose();
+  }
+  return image;
 }
 
 async function detect(input, userConfig = {}) {
@@ -151,11 +167,13 @@ async function detect(input, userConfig = {}) {
 
     analyze('Start Detect:');
 
+    const imageTensor = tfImage(input);
+
     // run posenet
     state = 'run:body';
     timeStamp = now();
     analyze('Start PoseNet');
-    const poseRes = config.body.enabled ? await models.posenet.estimatePoses(input, config.body) : [];
+    const poseRes = config.body.enabled ? await models.posenet.estimatePoses(imageTensor, config.body) : [];
     analyze('End PoseNet:');
     perf.body = Math.trunc(now() - timeStamp);
 
@@ -163,7 +181,7 @@ async function detect(input, userConfig = {}) {
     state = 'run:hand';
     timeStamp = now();
     analyze('Start HandPose:');
-    const handRes = config.hand.enabled ? await models.handpose.estimateHands(input, config.hand) : [];
+    const handRes = config.hand.enabled ? await models.handpose.estimateHands(imageTensor, config.hand) : [];
     analyze('End HandPose:');
     perf.hand = Math.trunc(now() - timeStamp);
 
@@ -173,7 +191,7 @@ async function detect(input, userConfig = {}) {
       state = 'run:face';
       timeStamp = now();
       analyze('Start FaceMesh:');
-      const faces = await models.facemesh.estimateFaces(input, config.face);
+      const faces = await models.facemesh.estimateFaces(imageTensor, config.face);
       perf.face = Math.trunc(now() - timeStamp);
       for (const face of faces) {
         // is something went wrong, skip the face
@@ -210,10 +228,11 @@ async function detect(input, userConfig = {}) {
           emotion: emotionData,
           iris: (iris !== 0) ? Math.trunc(100 * 11.7 /* human iris size in mm */ / iris) / 100 : 0,
         });
+        analyze('End FaceMesh:');
       }
-      analyze('End FaceMesh:');
     }
 
+    imageTensor.dispose();
     state = 'idle';
 
     if (config.scoped) tf.engine().endScope();

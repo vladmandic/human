@@ -1,7 +1,7 @@
 
 # @vladmandic/human  
 
-Version: **0.3.6**  
+Version: **0.4.1**  
 Description: **human: 3D Face Detection, Iris Tracking and Age & Gender Prediction**  
 
 Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -10,10 +10,22 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2020/10/17 mandic00@live.com
-- parallelized agegender operations
+### **0.4.1** 2020/10/19 mandic00@live.com
+- breaking change: convert to object class
 
-### **origin/main, origin/HEAD** 2020/10/17 mandic00@live.com
+### **origin/main, origin/HEAD** 2020/10/18 mandic00@live.com
+
+### **0.3.9** 2020/10/18 mandic00@live.com
+- implemented image filters
+- pure tensor pipeline without image converts
+- autodetect skipframes
+
+### **0.3.8** 2020/10/17 mandic00@live.com
+- new menu layout
+
+### **0.3.7** 2020/10/17 mandic00@live.com
+- added diagnostics output
+- parallelized agegender operations
 
 ### **0.3.6** 2020/10/17 mandic00@live.com
 - fixed webcam initialization

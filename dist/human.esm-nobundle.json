@@ -116,7 +116,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 10488,
+      "bytes": 11405,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -260,7 +260,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 226578
+      "bytes": 228083
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -272,10 +272,10 @@
           "bytesInOutput": 1950
         },
         "src/facemesh/box.js": {
-          "bytesInOutput": 1033
+          "bytesInOutput": 1026
         },
         "src/facemesh/util.js": {
-          "bytesInOutput": 1183
+          "bytesInOutput": 1176
         },
         "src/facemesh/pipeline.js": {
           "bytesInOutput": 5576
@@ -287,7 +287,7 @@
           "bytesInOutput": 9995
         },
         "src/facemesh/facemesh.js": {
-          "bytesInOutput": 1264
+          "bytesInOutput": 1259
         },
         "src/ssrnet/ssrnet.js": {
           "bytesInOutput": 934
@@ -314,7 +314,7 @@
           "bytesInOutput": 612
         },
         "src/posenet/decodePose.js": {
-          "bytesInOutput": 1028
+          "bytesInOutput": 1021
         },
         "src/posenet/decodeMultiple.js": {
           "bytesInOutput": 608
@@ -338,10 +338,10 @@
           "bytesInOutput": 160
         },
         "src/handpose/util.js": {
-          "bytesInOutput": 984
+          "bytesInOutput": 977
         },
         "src/handpose/pipeline.js": {
-          "bytesInOutput": 3216
+          "bytesInOutput": 3207
         },
         "src/handpose/handpose.js": {
           "bytesInOutput": 1211
@@ -356,10 +356,13 @@
           "bytesInOutput": 2304
         },
         "src/human.js": {
-          "bytesInOutput": 5180
+          "bytesInOutput": 6417
+        },
+        "src/human.js": {
+          "bytesInOutput": 0
         }
       },
-      "bytes": 80684
+      "bytes": 81881
     }
   }
 }

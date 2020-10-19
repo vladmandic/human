@@ -1,6 +1,6 @@
 const console = require('console');
 const tf = require('@tensorflow/tfjs-node');
-const human = require('..'); // this resolves to project root which is '@vladmandic/human'
+const Human = require('..').default; // this resolves to project root which is '@vladmandic/human'
 
 const logger = new console.Console({
   stdout: process.stdout,
@@ -21,12 +21,37 @@ const logger = new console.Console({
   },
 });
 
+const config = {
+  backend: 'tensorflow',
+  console: false,
+  videoOptimized: false,
+  face: {
+    detector: { modelPath: 'file://models/blazeface/back/model.json' },
+    mesh: { modelPath: 'file://models/facemesh/model.json' },
+    iris: { modelPath: 'file://models/iris/model.json' },
+    age: { modelPath: 'file://models/ssrnet-age/imdb/model.json' },
+    gender: { modelPath: 'file://models/ssrnet-gender/imdb/model.json' },
+    emotion: { modelPath: 'file://models/emotion/model.json' },
+  },
+  body: { modelPath: 'file://models/posenet/model.json' },
+  hand: {
+    detector: { anchors: 'file://models/handdetect/anchors.json', modelPath: 'file://models/handdetect/model.json' },
+    skeleton: { modelPath: 'file://models/handskeleton/model.json' },
+  },
+};
+
 async function main() {
   await tf.ready();
+  const human = new Human();
   logger.info('Human:', human.version);
-  logger.info('Default Configuration', human.defaults);
+  logger.info('Default Configuration', human.config);
   logger.info('TFJS Version:', tf.version_core, 'Backend:', tf.getBackend());
   logger.info('TFJS Flags:', tf.env().features);
+  logger.info('Loading models:');
+  await human.load(config);
+  for (const model of Object.keys(human.models)) logger.info('  Loaded:', model);
+  logger.info('Memory state:', human.tf.engine().memory());
+  logger.info('Test Complete');
 }
 
 main();

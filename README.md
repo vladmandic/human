@@ -70,23 +70,46 @@ Simply download `dist/human.js`, include it in your `HTML` file & it's ready to 
   <script src="dist/human.js"><script>
 ``` 
 
-IIFE script auto-registers global namespace `human` within global `Window` object  
+IIFE script auto-registers global namespace `Human` within global `Window` object  
+Which you can use to create instance of `human` library: 
+
+```js
+  const human = new Human();
+```
+
 This way you can also use `Human` library within embbedded `<script>` tag within your `html` page for all-in-one approach  
 
 ### 2. [ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) module
 
 *Recommended for usage within `Browser`*  
 
-#### 2.1 With Bundler
+#### **2.1 Using Script Module**
+You could use same syntax within your main `JS` file if it's imported with `<script type="module">`  
 
-If you're using bundler *(such as rollup, webpack, esbuild)* to package your client application, you can import ESM version of `Human` library which supports full tree shaking  
+```html
+  <script src="./index.js" type="module">
+```
+and then in your `index.js`
+
+```js
+  import Human from 'dist/human.esm.js'; // for direct import must use path to module, not package name
+  const human = new Human();
+```
+
+#### **2.2 With Bundler**
+
+If you're using bundler *(such as rollup, webpack, parcel, browserify, esbuild)*  to package your client application,  
+you can import ESM version of `Human` library which supports full tree shaking  
 
 Install with:
 ```shell
   npm install @vladmandic/human
 ```
 ```js
-  import human from '@vladmandic/human'; // points to @vladmandic/human/dist/human.esm.js
+  import Human from '@vladmandic/human'; // points to @vladmandic/human/dist/human.esm.js
+                                         // you can also force-load specific version
+                                         // for example: `@vladmandic/human/dist/human.esm.js`
+  const human = new Human();
 ```
 
 Or if you prefer to package your version of `tfjs`, you can use `nobundle` version
@@ -97,20 +120,8 @@ Install with:
 ```
 ```js
   import tf from '@tensorflow/tfjs'
-  import human from '@vladmandic/human/dist/human.esm-nobundle.js'; // same functionality as default import, but without tfjs bundled
-```
-
-#### 2.2 Using Script Module
-You could use same syntax within your main `JS` file if it's imported with `<script type="module">`  
-
-```html
-  <script src="./index.js" type="module">
-```
-and then in your `index.js`
-
-```js
-  import * as tf from `https://cdnjs.cloudflare.com/ajax/libs/tensorflow/2.6.0/tf.es2017.min.js`; // load tfjs directly from CDN link
-  import human from 'dist/human.esm.js'; // for direct import must use path to module, not package name
+  import Human from '@vladmandic/human/dist/human.esm-nobundle.js'; // same functionality as default import, but without tfjs bundled
+  const human = new Human();
 ```
 
 ### 3. [NPM](https://www.npmjs.com/) module
@@ -127,7 +138,8 @@ Install with:
 And then use with:
 ```js
   const tf = require('@tensorflow/tfjs-node'); // can also use '@tensorflow/tfjs-node-gpu' if you have environment with CUDA extensions
-  const human = require('@vladmandic/human'); // points to @vladmandic/human/dist/human.cjs
+  const Human = require('@vladmandic/human').default; // points to @vladmandic/human/dist/human.cjs
+  const human = new Human();
 ```
 
 Since NodeJS projects load `weights` from local filesystem instead of using `http` calls, you must modify default configuration to include correct paths with `file://` prefix  
@@ -198,13 +210,20 @@ Additionally, `Human` library exposes several objects and methods:
 ```
 
 Note that when using `Human` library in `NodeJS`, you must load and parse the image *before* you pass it for detection and dispose it afterwards  
+Input format is `Tensor4D[1, width, height, 3]` of type `float32` 
 
 For example:
 ```js
   const imageFile = '../assets/sample1.jpg';
   const buffer = fs.readFileSync(imageFile);
-  const image = tf.node.decodeImage(buffer);
-  const result = human.detect(image, config);
+  const decoded = tf.node.decodeImage(buffer);
+  const casted = decoded.toFloat();
+  const image = casted.expandDims(0);
+  decoded.dispose();
+  casted.dispose();
+  logger.log('Processing:', image.shape);
+  const human = new Human.Human();
+  const result = await human.detect(image, config);
   image.dispose();
 ```
 
@@ -414,15 +433,15 @@ Development dependencies are [eslint](https://github.com/eslint) used for code l
 
 Performance will vary depending on your hardware, but also on number of resolution of input video/image, enabled modules as well as their parameters  
 
-For example, on a desktop with a low-end nVidia GTX1050 it can perform multiple face detections at 60+ FPS, but drops to 10 FPS on a medium complex images if all modules are enabled  
+For example, on a desktop with a low-end nVidia GTX1050 it can perform multiple face detections at 60+ FPS, but drops to ~15 FPS on a medium complex images if all modules are enabled  
 
 Performance per module:
 
-- Enabled all: 10 FPS
+- Enabled all: 15 FPS
 - Image filters: 80 FPS (standalone)
 - Face Detect: 80 FPS (standalone)
 - Face Geometry: 30 FPS (includes face detect)
-- Face Iris: 25 FPS (includes face detect and face geometry)
+- Face Iris: 30 FPS (includes face detect and face geometry)
 - Age: 60 FPS (includes face detect)
 - Gender: 60 FPS (includes face detect)
 - Emotion: 60 FPS (includes face detect)
@@ -437,8 +456,11 @@ For performance details, see output of `result.performance` object during runtim
 
 `Human` library can be used in any modern Browser or NodeJS environment, but there are several items to be aware of:
 
-- **NodeJS**: Due to a missing feature in `tfjs-node`, only some models are available <https://github.com/tensorflow/tfjs/issues/4066>
-- **Browser**: `filters` module cannot be used when using web workers <https://github.com/phoboslab/WebGLImageFilter/issues/27>
+- **NodeJS**: Due to a missing feature in `tfjs-node`, only some models are available  
+  For unsupported models, error is: `TypeError: forwardFunc is not a function`  
+  <https://github.com/tensorflow/tfjs/issues/4066>  
+- **Browser**: Module `filters` cannot be used when using web workers  
+  <https://github.com/phoboslab/WebGLImageFilter/issues/27>  
 
 <hr>
 

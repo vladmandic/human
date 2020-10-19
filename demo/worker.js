@@ -1,7 +1,8 @@
-import human from '../dist/human.esm.js';
+import Human from '../dist/human.esm.js';
 
 let config;
 let busy = false;
+const human = new Human();
 
 const log = (...msg) => {
   // eslint-disable-next-line no-console

@@ -1,6 +1,8 @@
-import human from '../dist/human.esm.js';
+import Human from '../dist/human.esm.js';
 import draw from './draw.js';
 import Menu from './menu.js';
+
+const human = new Human();
 
 // ui options
 const ui = {

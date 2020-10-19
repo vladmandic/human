@@ -2,7 +2,7 @@ const tf = require('@tensorflow/tfjs-node');
 const fs = require('fs');
 const process = require('process');
 const console = require('console');
-const human = require('..'); // this resolves to project root which is '@vladmandic/human'
+const Human = require('..').default; // this resolves to project root which is '@vladmandic/human'
 
 const logger = new console.Console({
   stdout: process.stdout,
@@ -26,6 +26,7 @@ const logger = new console.Console({
 const config = {
   backend: 'tensorflow',
   console: true,
+  videoOptimized: false,
   face: {
     detector: { modelPath: 'file://models/blazeface/back/model.json' },
     mesh: { modelPath: 'file://models/facemesh/model.json' },
@@ -47,8 +48,13 @@ async function detect(input, output) {
   logger.info('TFJS Flags:', tf.env().features);
   logger.log('Loading:', input);
   const buffer = fs.readFileSync(input);
-  const image = tf.node.decodeImage(buffer);
+  const decoded = tf.node.decodeImage(buffer);
+  const casted = decoded.toFloat();
+  const image = casted.expandDims(0);
+  decoded.dispose();
+  casted.dispose();
   logger.log('Processing:', image.shape);
+  const human = new Human();
   const result = await human.detect(image, config);
   image.dispose();
   logger.log(result);

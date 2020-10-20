@@ -5777,7 +5777,7 @@ var require_config = __commonJS((exports2) => {
 var require_package = __commonJS((exports2, module2) => {
   module2.exports = {
     name: "@vladmandic/human",
-    version: "0.3.9",
+    version: "0.4.1",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.cjs",
@@ -5816,7 +5816,7 @@ var require_package = __commonJS((exports2, module2) => {
     scripts: {
       start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
       lint: "eslint src/*.js demo/*.js",
-      "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --external:fs --global-name=human --metafile=dist/human.json --outfile=dist/human.js src/human.js",
+      "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --minify --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js",
       "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js",
       "build-esm-nobundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --minify --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js",
       "build-node": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --metafile=dist/human.cjs.json --outfile=dist/human.cjs src/human.js",
@@ -5852,6 +5852,7 @@ const handpose = require_handpose();
 const fxImage = require_imagefx();
 const defaults = require_config().default;
 const app = require_package();
+let first = true;
 const override = {
   face: {detector: {skipFrames: 0}, age: {skipFrames: 0}, emotion: {skipFrames: 0}},
   hand: {skipFrames: 0}
@@ -6038,11 +6039,11 @@ class Human {
         await tf.ready();
       }
       perf.backend = Math.trunc(now() - timeStamp);
-      const loadedModels = Object.values(this.models).filter((a) => a).length;
-      if (loadedModels === 0) {
+      if (first) {
         this.log("Human library starting");
         this.log("Configuration:", this.config);
         this.log("Flags:", tf.ENV.flags);
+        first = false;
       }
       timeStamp = now();
       this.state = "load";

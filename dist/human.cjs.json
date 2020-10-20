@@ -116,7 +116,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 11405,
+      "bytes": 11355,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -260,7 +260,7 @@
     "dist/human.cjs.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 264025
+      "bytes": 263891
     },
     "dist/human.cjs": {
       "imports": [],
@@ -359,10 +359,10 @@
           "bytesInOutput": 47
         },
         "src/human.js": {
-          "bytesInOutput": 10244
+          "bytesInOutput": 10193
         }
       },
-      "bytes": 154612
+      "bytes": 154561
     }
   }
 }

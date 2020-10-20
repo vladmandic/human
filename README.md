@@ -30,7 +30,7 @@ Compatible with Browser, WebWorker and NodeJS execution!
 
 ## Options
 
-Detailed configuration options are explained below, but they are best seen in the menus in `demo`:
+Detailed configuration options are explained below, but they are best seen in the menus present in the `demo` application:
 
 ![Menus](assets/screenshot-menu.png)
 

@@ -8,6 +8,8 @@ const fxImage = require('./imagefx.js');
 const defaults = require('../config.js').default;
 const app = require('../package.json');
 
+let first = true;
+
 // static config override for non-video detection
 const override = {
   face: { detector: { skipFrames: 0 }, age: { skipFrames: 0 }, emotion: { skipFrames: 0 } },
@@ -199,11 +201,11 @@ class Human {
       perf.backend = Math.trunc(now() - timeStamp);
 
       // check number of loaded models
-      const loadedModels = Object.values(this.models).filter((a) => a).length;
-      if (loadedModels === 0) {
+      if (first) {
         this.log('Human library starting');
         this.log('Configuration:', this.config);
         this.log('Flags:', tf.ENV.flags);
+        first = false;
       }
 
       // load models if enabled

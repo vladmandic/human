@@ -1,7 +1,7 @@
 
 # @vladmandic/human  
 
-Version: **0.4.1**  
+Version: **0.4.2**  
 Description: **human: 3D Face Detection, Iris Tracking and Age & Gender Prediction**  
 
 Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -10,10 +10,14 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2020/10/22 mandic00@live.com
+
+### **0.4.2** 2020/10/20 mandic00@live.com
+- log initialization
+
 ### **0.4.1** 2020/10/19 mandic00@live.com
 - breaking change: convert to object class
-
-### **origin/main, origin/HEAD** 2020/10/18 mandic00@live.com
+- compatibility notes
 
 ### **0.3.9** 2020/10/18 mandic00@live.com
 - implemented image filters

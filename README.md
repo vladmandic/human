@@ -44,12 +44,13 @@ There are multiple ways to use `Human` library, pick one that suits you:
 
 ### Included
 
-- `dist/human.js`: IIFE format minified bundle with TFJS for Browsers
-- `dist/human.esm.js`: ESM format minified bundle with TFJS for Browsers
-- `dist/human.esm-nobundle.js`: ESM format non-minified bundle without TFJS for Browsers
-- `dist/human.cjs`: CommonJS format non-minified bundle without TFJS for NodeJS
+- `dist/human.js`: IIFE format bundle with TFJS for Browsers
+- `dist/human.esm.js`: ESM format bundle with TFJS for Browsers
+- `dist/human.esm-nobundle.js`: ESM format bundle without TFJS for Browsers
+- `dist/human.cjs`: CommonJS format bundle without TFJS for NodeJS
 
-All versions include `sourcemap` and build `manifest`
+All versions include `sourcemap` and build `manifest`  
+While `Human` is in pre-release mode, all bundles are non-minified  
 
 Defaults:
 ```json
@@ -433,9 +434,9 @@ Development dependencies are [eslint](https://github.com/eslint) used for code l
 
 Performance will vary depending on your hardware, but also on number of resolution of input video/image, enabled modules as well as their parameters  
 
-For example, on a desktop with a low-end nVidia GTX1050 it can perform multiple face detections at 60+ FPS, but drops to ~15 FPS on a medium complex images if all modules are enabled  
+For example, it can perform multiple face detections at 60+ FPS, but drops to ~15 FPS on a medium complex images if all modules are enabled  
 
-Performance per module:
+Performance per module on a **notebook** with nVidia GTX1050 GPU:
 
 - Enabled all: 15 FPS
 - Image filters: 80 FPS (standalone)
@@ -447,6 +448,19 @@ Performance per module:
 - Emotion: 60 FPS (includes face detect)
 - Hand: 40 FPS (standalone)
 - Body: 50 FPS (standalone)
+
+Performance per module on a **smartphone** with Snapdragon 855:
+
+- Enabled all: 3 FPS
+- Image filters: 30 FPS (standalone)
+- Face Detect: 20 FPS (standalone)
+- Face Geometry: 10 FPS (includes face detect)
+- Face Iris: 5 FPS (includes face detect and face geometry)
+- Age: 20 FPS (includes face detect)
+- Gender: 20 FPS (includes face detect)
+- Emotion: 20 FPS (includes face detect)
+- Hand: 40 FPS (standalone)
+- Body: 10 FPS (standalone)
 
 For performance details, see output of `result.performance` object during runtime  
 

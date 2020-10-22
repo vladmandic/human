@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/human",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
   "sideEffects": false,
   "main": "dist/human.cjs",

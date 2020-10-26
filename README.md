@@ -436,7 +436,7 @@ Performance will vary depending on your hardware, but also on number of resoluti
 
 For example, it can perform multiple face detections at 60+ FPS, but drops to ~15 FPS on a medium complex images if all modules are enabled  
 
-Performance per module on a **notebook** with nVidia GTX1050 GPU:
+### Performance per module on a **notebook** with nVidia GTX1050 GPU:
 
 - Enabled all: 15 FPS
 - Image filters: 80 FPS (standalone)
@@ -449,7 +449,7 @@ Performance per module on a **notebook** with nVidia GTX1050 GPU:
 - Hand: 40 FPS (standalone)
 - Body: 50 FPS (standalone)
 
-Performance per module on a **smartphone** with Snapdragon 855:
+### Performance per module on a **smartphone** with Snapdragon 855:
 
 - Enabled all: 3 FPS
 - Image filters: 30 FPS (standalone)

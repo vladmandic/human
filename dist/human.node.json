@@ -5,7 +5,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2607,
+      "bytes": 2616,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -257,12 +257,12 @@
     }
   },
   "outputs": {
-    "dist/human.cjs.map": {
+    "dist/human.node.js.map": {
       "imports": [],
       "inputs": {},
       "bytes": 260880
     },
-    "dist/human.cjs": {
+    "dist/human.node.js": {
       "imports": [],
       "inputs": {
         "src/facemesh/blazeface.js": {
@@ -353,7 +353,7 @@
           "bytesInOutput": 2232
         },
         "package.json": {
-          "bytesInOutput": 2750
+          "bytesInOutput": 2759
         },
         "src/human.js": {
           "bytesInOutput": 47
@@ -362,7 +362,7 @@
           "bytesInOutput": 10775
         }
       },
-      "bytes": 155114
+      "bytes": 155127
     }
   }
 }

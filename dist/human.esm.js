@@ -71039,7 +71039,7 @@ var require_config = __commonJS((exports) => {
 var require_package = __commonJS((exports, module) => {
   module.exports = {
     name: "@vladmandic/human",
-    version: "0.4.6",
+    version: "0.4.7",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.node.js",

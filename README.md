@@ -37,7 +37,7 @@ Detailed configuration options are explained below, but they are best seen in th
 ## Installation
 
 **Important**  
-*The packaged (IIFE and ESM) version of `Human` includes `TensorFlow/JS (TFJS) 2.6.0` library which can be accessed via `human.tf`*  
+*The packaged (IIFE and ESM) version of `Human` includes `TensorFlow/JS (TFJS) 2.7.0` library which can be accessed via `human.tf`*  
 *You should NOT manually load another instance of `tfjs`, but if you do, be aware of possible version conflicts*  
 
 There are multiple ways to use `Human` library, pick one that suits you:
@@ -253,6 +253,12 @@ config = {
   filter: {                  // note: image filters are only available in Browser environments and not in NodeJS as they require WebGL for processing
     enabled: true,           // enable image pre-processing filters
     return: true,            // return processed canvas imagedata in result
+    width: 0,                // resize input width
+    height: 0,               // resize input height
+                             // usefull on low-performance devices to reduce the size of processed input
+                             // if both width and height are set to 0, there is no resizing
+                             // if just one is set, second one is scaled automatically
+                             // if both are set, values are used as-is
     brightness: 0,           // range: -1 (darken) to 1 (lighten)
     contrast: 0,             // range: -1 (reduce contrast) to 1 (increase contrast)
     sharpness: 0,            // range: 0 (no sharpening) to 1 (maximum sharpening)
@@ -436,7 +442,7 @@ Performance will vary depending on your hardware, but also on number of resoluti
 
 For example, it can perform multiple face detections at 60+ FPS, but drops to ~15 FPS on a medium complex images if all modules are enabled  
 
-### Performance per module on a **notebook** with nVidia GTX1050 GPU:
+### Performance per module on a **notebook** with nVidia GTX1050 GPU on a FullHD input:
 
 - Enabled all: 15 FPS
 - Image filters: 80 FPS (standalone)
@@ -449,7 +455,7 @@ For example, it can perform multiple face detections at 60+ FPS, but drops to ~1
 - Hand: 40 FPS (standalone)
 - Body: 50 FPS (standalone)
 
-### Performance per module on a **smartphone** with Snapdragon 855:
+### Performance per module on a **smartphone** with Snapdragon 855 on a FullHD input:
 
 - Enabled all: 3 FPS
 - Image filters: 30 FPS (standalone)

@@ -130,12 +130,20 @@ class Human {
     // let imageData;
     let filtered;
     if (this.fx && this.config.filter.enabled && !(input instanceof tf.Tensor)) {
-      const width = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
-      const height = input.naturalHeight || input.videoHeight || input.height || (input.shape && (input.shape[2] > 0));
-      const offscreenCanvas = new OffscreenCanvas(width, height);
+      const originalWidth = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
+      const originalHeight = input.naturalHeight || input.videoHeight || input.height || (input.shape && (input.shape[2] > 0));
+
+      let targetWidth = originalWidth;
+      if (this.config.filter.width > 0) targetWidth = this.config.filter.width;
+      else if (this.config.filter.height > 0) targetWidth = originalWidth * (this.config.filter.height / originalHeight);
+      let targetHeight = originalHeight;
+      if (this.config.filter.height > 0) targetHeight = this.config.filter.height;
+      else if (this.config.filter.width > 0) targetHeight = originalHeight * (this.config.filter.width / originalWidth);
+
+      const offscreenCanvas = new OffscreenCanvas(targetWidth, targetHeight);
       const ctx = offscreenCanvas.getContext('2d');
       if (input instanceof ImageData) ctx.putImageData(input, 0, 0);
-      else ctx.drawImage(input, 0, 0, width, height, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
+      else ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
       this.fx.reset();
       this.fx.addFilter('brightness', this.config.filter.brightness); // must have at least one filter enabled
       if (this.config.filter.contrast !== 0) this.fx.addFilter('contrast', this.config.filter.contrast);

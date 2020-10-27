@@ -72826,7 +72826,7 @@ var require_config = __commonJS((exports) => {
 var require_package = __commonJS((exports, module) => {
   module.exports = {
     name: "@vladmandic/human",
-    version: "0.4.3",
+    version: "0.4.4",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.cjs",
@@ -73072,19 +73072,15 @@ class Human {
     this.state = "config";
     const perf = {};
     let timeStamp;
-    timeStamp = now();
     this.config = mergeDeep(defaults, userConfig);
     if (!this.config.videoOptimized)
       this.config = mergeDeep(this.config, override);
-    perf.config = Math.trunc(now() - timeStamp);
-    timeStamp = now();
     this.state = "check";
     const error = sanity(input);
     if (error) {
       this.log(error, input);
       return {error};
     }
-    perf.sanity = Math.trunc(now() - timeStamp);
     return new Promise(async (resolve) => {
       const timeStart = now();
       timeStamp = now();

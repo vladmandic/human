@@ -28,12 +28,6 @@ Compatible with Browser, WebWorker and NodeJS execution!
 
 <hr>
 
-## Options
-
-Detailed configuration options are explained below, but they are best seen in the menus present in the `demo` application:
-
-![Menus](assets/screenshot-menu.png)
-
 ## Installation
 
 **Important**  
@@ -231,6 +225,10 @@ For example:
 <hr>
 
 ## Configuration 
+
+Detailed configuration options are explained below, but they are best seen in the menus present in the `demo` application:  
+
+![Menus](assets/screenshot-menu.png)  
 
 Below is output of `human.defaults` object  
 Any property can be overriden by passing user object during `human.detect()`  

@@ -179,20 +179,16 @@ class Human {
     const perf = {};
     let timeStamp;
 
-    timeStamp = now();
     this.config = mergeDeep(defaults, userConfig);
     if (!this.config.videoOptimized) this.config = mergeDeep(this.config, override);
-    perf.config = Math.trunc(now() - timeStamp);
 
     // sanity checks
-    timeStamp = now();
     this.state = 'check';
     const error = sanity(input);
     if (error) {
       this.log(error, input);
       return { error };
     }
-    perf.sanity = Math.trunc(now() - timeStamp);
 
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {

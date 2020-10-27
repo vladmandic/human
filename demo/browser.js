@@ -32,7 +32,7 @@ const config = {
   backend: 'webgl', // if you want to use 'wasm' backend, enable script load of tf and tf-backend-wasm in index.html
   filter: {
     enabled: true,
-    width: 720,
+    width: 0,
     height: 0,
     brightness: 0,
     contrast: 0,

@@ -10,6 +10,11 @@ export default {
   videoOptimized: true,      // perform additional optimizations when input is video, must be disabled for images
   filter: {
     enabled: true,           // enable image pre-processing filters
+    width: 0,                // resize input width
+    height: 0,               // resize input height
+                             // if both width and height are set to 0, there is no resizing
+                             // if just one is set, second one is scaled automatically
+                             // if both are set, values are used as-is
     return: true,            // return processed canvas imagedata in result
     brightness: 0,           // range: -1 (darken) to 1 (lighten)
     contrast: 0,             // range: -1 (reduce contrast) to 1 (increase contrast)

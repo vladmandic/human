@@ -7,6 +7,7 @@ const human = new Human();
 // ui options
 const ui = {
   baseColor: 'rgba(173, 216, 230, 0.3)', // this is 'lightblue', just with alpha channel
+  baseBackground: 'rgba(50, 50, 50, 1)', // this is 'lightblue', just with alpha channel
   baseLabel: 'rgba(173, 216, 230, 0.9)',
   baseFontProto: 'small-caps {size} "Segoe UI"',
   baseLineWidth: 16,
@@ -29,7 +30,23 @@ const ui = {
 // configuration overrides
 const config = {
   backend: 'webgl', // if you want to use 'wasm' backend, enable script load of tf and tf-backend-wasm in index.html
-  filter: { enabled: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0 },
+  filter: {
+    enabled: true,
+    width: 720,
+    height: 0,
+    brightness: 0,
+    contrast: 0,
+    sharpness: 0,
+    blur: 0,
+    saturation: 0,
+    hue: 0,
+    negative: false,
+    sepia: false,
+    vintage: false,
+    kodachrome: false,
+    technicolor: false,
+    polaroid: false,
+    pixelate: 0 },
   videoOptimized: true,
   face: {
     enabled: true,
@@ -80,7 +97,9 @@ function drawResults(input, result, canvas) {
 
   // draw image from video
   const ctx = canvas.getContext('2d');
-  if (result.canvas) ctx.drawImage(result.canvas, 0, 0, result.canvas.width, result.canvas.height, 0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = ui.baseBackground;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if (result.canvas) ctx.drawImage(result.canvas, 0, 0, result.canvas.width, result.canvas.height, 0, 0, result.canvas.width, result.canvas.height);
   else ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
   // draw all results
   draw.face(result.face, canvas, ui, human.facemesh.triangulation);
@@ -130,8 +149,8 @@ async function setupCamera() {
     video.onloadeddata = async () => {
       video.width = video.videoWidth;
       video.height = video.videoHeight;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      canvas.width = video.width;
+      canvas.height = video.height;
       if (live) video.play();
       ui.busy = false;
       // do once more because onresize events can be delayed or skipped
@@ -194,8 +213,8 @@ async function processImage(input) {
       const canvas = document.getElementById('canvas');
       image.width = image.naturalWidth;
       image.height = image.naturalHeight;
-      canvas.width = image.naturalWidth;
-      canvas.height = image.naturalHeight;
+      canvas.width = config.filter.width && config.filter.width > 0 ? config.filter.width : image.naturalWidth;
+      canvas.height = config.filter.height && config.filter.height > 0 ? config.filter.height : image.naturalHeight;
       const result = await human.detect(image, config);
       drawResults(image, result, canvas);
       const thumb = document.createElement('canvas');
@@ -302,6 +321,8 @@ function setupMenu() {
   menuFX.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menuFX.addLabel('Image Filters');
   menuFX.addBool('Enabled', config.filter, 'enabled');
+  menuFX.addRange('Image width', config.filter, 'width', 100, 3840, 10, (val) => config.filter.width = parseInt(val));
+  menuFX.addRange('Image height', config.filter, 'height', 100, 2160, 10, (val) => config.filter.height = parseInt(val));
   menuFX.addRange('Brightness', config.filter, 'brightness', -1.0, 1.0, 0.05, (val) => config.filter.brightness = parseFloat(val));
   menuFX.addRange('Contrast', config.filter, 'contrast', -1.0, 1.0, 0.05, (val) => config.filter.contrast = parseFloat(val));
   menuFX.addRange('Sharpness', config.filter, 'sharpness', 0, 1.0, 0.05, (val) => config.filter.sharpness = parseFloat(val));

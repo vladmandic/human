@@ -133,10 +133,15 @@ class Menu {
   async addRange(title, object, variable, min, max, step, callback) {
     const el = document.createElement('div');
     el.className = 'menu-item';
-    el.innerHTML = `<input class="menu-range" type="range" id="${this.newID}" min="${min}" max="${max}" step="${step}" value="${object[variable]}">${title}`;
+    const arr = Array.isArray(variable);
+    el.innerHTML = `<input class="menu-range" type="range" id="${this.newID}" min=${min} max=${max} step=${step} value=${arr ? object[variable[0]] : object[variable]}>${title}`;
     this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
-      object[variable] = evt.target.value;
+      const int = parseInt(evt.target.value) === parseFloat(evt.target.value);
+      const val = Array.isArray(variable) ? variable : [variable];
+      for (const item of val) {
+        object[item] = int ? parseInt(evt.target.value) : parseFloat(evt.target.value);
+      }
       evt.target.setAttribute('value', evt.target.value);
       if (callback) callback(evt.target.value);
     });

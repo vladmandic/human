@@ -5777,7 +5777,7 @@ var require_config = __commonJS((exports2) => {
 var require_package = __commonJS((exports2, module2) => {
   module2.exports = {
     name: "@vladmandic/human",
-    version: "0.4.4",
+    version: "0.4.5",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.cjs",
@@ -5974,7 +5974,9 @@ class Human {
         targetHeight = this.config.filter.height;
       else if (this.config.filter.width > 0)
         targetHeight = originalHeight * (this.config.filter.width / originalWidth);
-      const offscreenCanvas = new OffscreenCanvas(targetWidth, targetHeight);
+      const offscreenCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
+      offscreenCanvas.width = targetWidth;
+      offscreenCanvas.height = targetHeight;
       const ctx = offscreenCanvas.getContext("2d");
       if (input instanceof ImageData)
         ctx.putImageData(input, 0, 0);

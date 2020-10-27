@@ -139,8 +139,9 @@ class Human {
       let targetHeight = originalHeight;
       if (this.config.filter.height > 0) targetHeight = this.config.filter.height;
       else if (this.config.filter.width > 0) targetHeight = originalHeight * (this.config.filter.width / originalWidth);
-
-      const offscreenCanvas = new OffscreenCanvas(targetWidth, targetHeight);
+      const offscreenCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
+      offscreenCanvas.width = targetWidth;
+      offscreenCanvas.height = targetHeight;
       const ctx = offscreenCanvas.getContext('2d');
       if (input instanceof ImageData) ctx.putImageData(input, 0, 0);
       else ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, offscreenCanvas.width, offscreenCanvas.height);

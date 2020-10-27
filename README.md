@@ -398,10 +398,8 @@ result = {
     }
   ],
   performance = {  // performance data of last execution for each module measuredin miliseconds
-    config,        // time to parse configuration
     backend,       // time to initialize tf backend
     load,          // time to load models
-    sanity,        // time for input verification
     image,         // time for image processing
     body,          // model time
     hand,          // model time

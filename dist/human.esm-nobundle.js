@@ -1,4 +1,5 @@
-var __defineProperty = Object.defineProperty;
+var __defProp = Object.defineProperty;
+var __markAsModule = (target) => __defProp(target, "__esModule", {value: true});
 var __commonJS = (callback, module) => () => {
   if (!module) {
     module = {exports: {}};
@@ -6,13 +7,10 @@ var __commonJS = (callback, module) => () => {
   }
   return module.exports;
 };
-var __markAsModule = (target) => {
-  return __defineProperty(target, "__esModule", {value: true});
-};
 var __export = (target, all) => {
   __markAsModule(target);
   for (var name in all)
-    __defineProperty(target, name, {get: all[name], enumerable: true});
+    __defProp(target, name, {get: all[name], enumerable: true});
 };
 
 // src/facemesh/blazeface.js
@@ -5688,6 +5686,8 @@ var require_config = __commonJS((exports) => {
     videoOptimized: true,
     filter: {
       enabled: true,
+      width: 0,
+      height: 0,
       return: true,
       brightness: 0,
       contrast: 0,
@@ -5777,7 +5777,7 @@ var require_config = __commonJS((exports) => {
 var require_package = __commonJS((exports, module) => {
   module.exports = {
     name: "@vladmandic/human",
-    version: "0.4.2",
+    version: "0.4.3",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.cjs",
@@ -5799,19 +5799,19 @@ var require_package = __commonJS((exports, module) => {
     dependencies: {},
     peerDependencies: {},
     devDependencies: {
+      "@tensorflow/tfjs": "^2.7.0",
+      "@tensorflow/tfjs-node": "^2.7.0",
       "@vladmandic/pilogger": "^0.2.6",
-      dayjs: "^1.9.3",
-      "simple-git": "^2.21.0",
-      "@tensorflow/tfjs": "^2.6.0",
-      "@tensorflow/tfjs-node": "^2.6.0",
-      esbuild: "^0.7.15",
-      eslint: "^7.10.0",
+      dayjs: "^1.9.4",
+      esbuild: "^0.7.21",
+      eslint: "^7.12.1",
       "eslint-config-airbnb-base": "^14.2.0",
       "eslint-plugin-import": "^2.22.1",
       "eslint-plugin-json": "^2.1.2",
       "eslint-plugin-node": "^11.1.0",
       "eslint-plugin-promise": "^4.2.1",
-      rimraf: "^3.0.2"
+      rimraf: "^3.0.2",
+      "simple-git": "^2.21.0"
     },
     scripts: {
       start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
@@ -5959,14 +5959,24 @@ class Human {
   tfImage(input) {
     let filtered;
     if (this.fx && this.config.filter.enabled && !(input instanceof tf.Tensor)) {
-      const width = input.naturalWidth || input.videoWidth || input.width || input.shape && input.shape[1] > 0;
-      const height = input.naturalHeight || input.videoHeight || input.height || input.shape && input.shape[2] > 0;
-      const offscreenCanvas = new OffscreenCanvas(width, height);
+      const originalWidth = input.naturalWidth || input.videoWidth || input.width || input.shape && input.shape[1] > 0;
+      const originalHeight = input.naturalHeight || input.videoHeight || input.height || input.shape && input.shape[2] > 0;
+      let targetWidth = originalWidth;
+      if (this.config.filter.width > 0)
+        targetWidth = this.config.filter.width;
+      else if (this.config.filter.height > 0)
+        targetWidth = originalWidth * (this.config.filter.height / originalHeight);
+      let targetHeight = originalHeight;
+      if (this.config.filter.height > 0)
+        targetHeight = this.config.filter.height;
+      else if (this.config.filter.width > 0)
+        targetHeight = originalHeight * (this.config.filter.width / originalWidth);
+      const offscreenCanvas = new OffscreenCanvas(targetWidth, targetHeight);
       const ctx = offscreenCanvas.getContext("2d");
       if (input instanceof ImageData)
         ctx.putImageData(input, 0, 0);
       else
-        ctx.drawImage(input, 0, 0, width, height, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
+        ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
       this.fx.reset();
       this.fx.addFilter("brightness", this.config.filter.brightness);
       if (this.config.filter.contrast !== 0)

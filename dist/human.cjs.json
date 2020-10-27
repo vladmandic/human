@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 5942,
+      "bytes": 6295,
       "imports": []
     },
     "package.json": {
@@ -116,7 +116,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 11355,
+      "bytes": 11887,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -260,7 +260,7 @@
     "dist/human.cjs.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 263891
+      "bytes": 260858
     },
     "dist/human.cjs": {
       "imports": [],
@@ -350,7 +350,7 @@
           "bytesInOutput": 20197
         },
         "config.js": {
-          "bytesInOutput": 2199
+          "bytesInOutput": 2232
         },
         "package.json": {
           "bytesInOutput": 2750
@@ -359,10 +359,10 @@
           "bytesInOutput": 47
         },
         "src/human.js": {
-          "bytesInOutput": 10193
+          "bytesInOutput": 10755
         }
       },
-      "bytes": 154534
+      "bytes": 155094
     }
   }
 }

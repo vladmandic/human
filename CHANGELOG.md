@@ -1,7 +1,7 @@
 
 # @vladmandic/human  
 
-Version: **0.4.2**  
+Version: **0.4.8**  
 Description: **human: 3D Face Detection, Iris Tracking and Age & Gender Prediction**  
 
 Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -10,7 +10,22 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2020/10/22 mandic00@live.com
+### **0.4.8** 2020/10/28 mandic00@live.com
+- revert "updated menu handler"
+
+### **origin/main, origin/HEAD** 2020/10/27 mandic00@live.com
+
+### **0.4.7** 2020/10/27 mandic00@live.com
+
+### **0.4.6** 2020/10/27 mandic00@live.com
+- fix firefox compatibility bug
+
+### **0.4.5** 2020/10/27 mandic00@live.com
+
+### **0.4.4** 2020/10/27 mandic00@live.com
+- implelented input resizing
+
+### **0.4.3** 2020/10/22 mandic00@live.com
 
 ### **0.4.2** 2020/10/20 mandic00@live.com
 - log initialization

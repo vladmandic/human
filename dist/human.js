@@ -71040,7 +71040,7 @@ var Human = (() => {
   var require_package = __commonJS((exports, module) => {
     module.exports = {
       name: "@vladmandic/human",
-      version: "0.4.6",
+      version: "0.4.7",
       description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
       sideEffects: false,
       main: "dist/human.node.js",
@@ -71082,8 +71082,9 @@ var Human = (() => {
         "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js",
         "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js",
         "build-esm-nobundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js",
-        "build-node": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js",
-        build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && ls -l dist/",
+        "build-node": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js",
+        "build-node-nobundle": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js",
+        build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && ls -l dist/",
         update: "npm update --depth 20 && npm dedupe && npm prune && npm audit",
         changelog: "node changelog.js"
       },

@@ -149,7 +149,7 @@
       ]
     },
     "package.json": {
-      "bytes": 2616,
+      "bytes": 2834,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -468,7 +468,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 4993458
+      "bytes": 4993459
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -618,7 +618,7 @@
           "bytesInOutput": 2230
         },
         "package.json": {
-          "bytesInOutput": 2756
+          "bytesInOutput": 2976
         },
         "src/human.js": {
           "bytesInOutput": 10765
@@ -627,7 +627,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 2845238
+      "bytes": 2845458
     }
   }
 }

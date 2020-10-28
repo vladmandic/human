@@ -41,15 +41,16 @@ There are multiple ways to use `Human` library, pick one that suits you:
 - `dist/human.js`: IIFE format bundle with TFJS for Browsers
 - `dist/human.esm.js`: ESM format bundle with TFJS for Browsers
 - `dist/human.esm-nobundle.js`: ESM format bundle without TFJS for Browsers
-- `dist/human.cjs`: CommonJS format bundle without TFJS for NodeJS
+- `dist/human.node.js`: CommonJS format bundle with TFJS for NodeJS
+- `dist/human.node-nobundle.js`: CommonJS format bundle without TFJS for NodeJS
 
-All versions include `sourcemap` and build `manifest`  
+All versions include `sourcemap` *(.map)* and build `manifest` *(.json)*  
 While `Human` is in pre-release mode, all bundles are non-minified  
 
 Defaults:
 ```json
   {
-    "main": "dist/human.cjs",
+    "main": "dist/human.node.js",
     "module": "dist/human.esm.js",
     "browser": "dist/human.esm.js",
   }
@@ -103,7 +104,7 @@ Install with:
 ```js
   import Human from '@vladmandic/human'; // points to @vladmandic/human/dist/human.esm.js
                                          // you can also force-load specific version
-                                         // for example: `@vladmandic/human/dist/human.esm.js`
+                                         // for example: `@vladmandic/human/dist/human.esm-nobundle.js`
   const human = new Human();
 ```
 
@@ -123,7 +124,7 @@ Install with:
 
 *Recommended for `NodeJS` projects that will execute in the backend*  
 
-Entry point is bundle in CJS format `dist/human.node.js`  
+Entry point is bundle in CommonJS format `dist/human.node.js`  
 You also need to install and include `tfjs-node` or `tfjs-node-gpu` in your project so it can register an optimized backend  
 
 Install with:
@@ -133,7 +134,7 @@ Install with:
 And then use with:
 ```js
   const tf = require('@tensorflow/tfjs-node'); // can also use '@tensorflow/tfjs-node-gpu' if you have environment with CUDA extensions
-  const Human = require('@vladmandic/human').default; // points to @vladmandic/human/dist/human.cjs
+  const Human = require('@vladmandic/human').default; // points to @vladmandic/human/dist/human.node.js
   const human = new Human();
 ```
 
@@ -162,7 +163,7 @@ Browser:
 - `index.html`, `browser.js`, `worker.js`: Full demo using Browser with ESM module, includes selectable backends and webworkers
 
 NodeJS:
-- `node.js`: Demo using NodeJS with CJS module  
+- `node.js`: Demo using NodeJS with CommonJS module  
   This is a very simple demo as althought `Human` library is compatible with NodeJS execution  
   and is able to load images and models from local filesystem,  
 

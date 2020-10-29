@@ -5,7 +5,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2834,
+      "bytes": 2952,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -353,7 +353,7 @@
           "bytesInOutput": 2232
         },
         "package.json": {
-          "bytesInOutput": 2979
+          "bytesInOutput": 3097
         },
         "src/human.js": {
           "bytesInOutput": 47
@@ -362,7 +362,7 @@
           "bytesInOutput": 10775
         }
       },
-      "bytes": 155356
+      "bytes": 155474
     }
   }
 }

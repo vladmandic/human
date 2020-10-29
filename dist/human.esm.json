@@ -5,18 +5,15 @@
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js": {
-      "bytes": 272720,
+      "bytes": 297728,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs-core/dist/tf-core.node.js"
-        },
-        {
-          "path": "node_modules/seedrandom/index.js"
         }
       ]
     },
     "node_modules/@tensorflow/tfjs-backend-webgl/dist/tf-backend-webgl.node.js": {
-      "bytes": 571410,
+      "bytes": 607535,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs-core/dist/tf-core.node.js"
@@ -24,7 +21,7 @@
       ]
     },
     "node_modules/@tensorflow/tfjs-converter/dist/tf-converter.node.js": {
-      "bytes": 294510,
+      "bytes": 312103,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs-core/dist/tf-core.node.js"
@@ -32,7 +29,7 @@
       ]
     },
     "node_modules/@tensorflow/tfjs-core/dist/tf-core.node.js": {
-      "bytes": 1305668,
+      "bytes": 1313261,
       "imports": [
         {
           "path": "empty:/home/vlado/dev/human/node_modules/node-fetch/browser.js"
@@ -46,7 +43,7 @@
       ]
     },
     "node_modules/@tensorflow/tfjs-data/dist/tf-data.node.js": {
-      "bytes": 217016,
+      "bytes": 217014,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs-core/dist/tf-core.node.js"
@@ -90,66 +87,8 @@
         }
       ]
     },
-    "node_modules/seedrandom/index.js": {
-      "bytes": 2110,
-      "imports": [
-        {
-          "path": "node_modules/seedrandom/lib/alea.js"
-        },
-        {
-          "path": "node_modules/seedrandom/lib/xor128.js"
-        },
-        {
-          "path": "node_modules/seedrandom/lib/xorwow.js"
-        },
-        {
-          "path": "node_modules/seedrandom/lib/xorshift7.js"
-        },
-        {
-          "path": "node_modules/seedrandom/lib/xor4096.js"
-        },
-        {
-          "path": "node_modules/seedrandom/lib/tychei.js"
-        },
-        {
-          "path": "node_modules/seedrandom/seedrandom.js"
-        }
-      ]
-    },
-    "node_modules/seedrandom/lib/alea.js": {
-      "bytes": 3243,
-      "imports": []
-    },
-    "node_modules/seedrandom/lib/tychei.js": {
-      "bytes": 2525,
-      "imports": []
-    },
-    "node_modules/seedrandom/lib/xor128.js": {
-      "bytes": 1748,
-      "imports": []
-    },
-    "node_modules/seedrandom/lib/xor4096.js": {
-      "bytes": 4559,
-      "imports": []
-    },
-    "node_modules/seedrandom/lib/xorshift7.js": {
-      "bytes": 2418,
-      "imports": []
-    },
-    "node_modules/seedrandom/lib/xorwow.js": {
-      "bytes": 1919,
-      "imports": []
-    },
-    "node_modules/seedrandom/seedrandom.js": {
-      "bytes": 8358,
-      "imports": [
-        {
-          "path": "empty:crypto"
-        }
-      ]
-    },
     "package.json": {
-      "bytes": 2834,
+      "bytes": 2952,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -468,7 +407,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 4993459
+      "bytes": 5083151
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -483,49 +422,25 @@
           "bytesInOutput": 44
         },
         "node_modules/@tensorflow/tfjs-core/dist/tf-core.node.js": {
-          "bytesInOutput": 1004764
+          "bytesInOutput": 1010313
         },
         "node_modules/@tensorflow/tfjs-layers/dist/tf-layers.node.js": {
           "bytesInOutput": 514491
         },
         "node_modules/@tensorflow/tfjs-converter/dist/tf-converter.node.js": {
-          "bytesInOutput": 246275
+          "bytesInOutput": 258960
         },
         "empty:/home/vlado/dev/human/node_modules/string_decoder/lib/string_decoder.js": {
           "bytesInOutput": 52
         },
         "node_modules/@tensorflow/tfjs-data/dist/tf-data.node.js": {
-          "bytesInOutput": 129586
-        },
-        "node_modules/seedrandom/lib/alea.js": {
-          "bytesInOutput": 2112
-        },
-        "node_modules/seedrandom/lib/xor128.js": {
-          "bytesInOutput": 1699
-        },
-        "node_modules/seedrandom/lib/xorwow.js": {
-          "bytesInOutput": 1897
-        },
-        "node_modules/seedrandom/lib/xorshift7.js": {
-          "bytesInOutput": 2307
-        },
-        "node_modules/seedrandom/lib/xor4096.js": {
-          "bytesInOutput": 2742
-        },
-        "node_modules/seedrandom/lib/tychei.js": {
-          "bytesInOutput": 1940
-        },
-        "node_modules/seedrandom/seedrandom.js": {
-          "bytesInOutput": 4019
-        },
-        "node_modules/seedrandom/index.js": {
-          "bytesInOutput": 458
+          "bytesInOutput": 129561
         },
         "node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js": {
-          "bytesInOutput": 246000
+          "bytesInOutput": 272394
         },
         "node_modules/@tensorflow/tfjs-backend-webgl/dist/tf-backend-webgl.node.js": {
-          "bytesInOutput": 527935
+          "bytesInOutput": 561656
         },
         "node_modules/@tensorflow/tfjs/dist/tf.node.js": {
           "bytesInOutput": 3025
@@ -618,7 +533,7 @@
           "bytesInOutput": 2230
         },
         "package.json": {
-          "bytesInOutput": 2976
+          "bytesInOutput": 3094
         },
         "src/human.js": {
           "bytesInOutput": 10765
@@ -627,7 +542,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 2845458
+      "bytes": 2906393
     }
   }
 }

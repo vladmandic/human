@@ -178,7 +178,7 @@ var require_tf_core_node = __commonJS((exports) => {
   }
   /**
    * @license
-   * Copyright 2018 Google LLC. All Rights Reserved.
+   * Copyright 2020 Google LLC. All Rights Reserved.
    * Licensed under the Apache License, Version 2.0 (the "License");
    * you may not use this file except in compliance with the License.
    * You may obtain a copy of the License at
@@ -680,449 +680,7 @@ var require_tf_core_node = __commonJS((exports) => {
   }
   /**
    * @license
-   * Copyright 2017 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  var TENSORFLOWJS_FLAGS_PREFIX = "tfjsflags";
-  var Environment = function() {
-    function Environment2(global2) {
-      this.global = global2;
-      this.flags = {};
-      this.flagRegistry = {};
-      this.urlFlags = {};
-      this.populateURLFlags();
-    }
-    Environment2.prototype.setPlatform = function(platformName, platform) {
-      if (this.platform != null) {
-        console.warn("Platform " + this.platformName + " has already been set. " + ("Overwriting the platform with " + platform + "."));
-      }
-      this.platformName = platformName;
-      this.platform = platform;
-    };
-    Environment2.prototype.registerFlag = function(flagName, evaluationFn, setHook) {
-      this.flagRegistry[flagName] = {evaluationFn, setHook};
-      if (this.urlFlags[flagName] != null) {
-        var flagValue = this.urlFlags[flagName];
-        console.warn("Setting feature override from URL " + flagName + ": " + flagValue + ".");
-        this.set(flagName, flagValue);
-      }
-    };
-    Environment2.prototype.getAsync = function(flagName) {
-      return __awaiter(this, void 0, void 0, function() {
-        var _a, _b;
-        return __generator(this, function(_c) {
-          switch (_c.label) {
-            case 0:
-              if (flagName in this.flags) {
-                return [2, this.flags[flagName]];
-              }
-              _a = this.flags;
-              _b = flagName;
-              return [4, this.evaluateFlag(flagName)];
-            case 1:
-              _a[_b] = _c.sent();
-              return [2, this.flags[flagName]];
-          }
-        });
-      });
-    };
-    Environment2.prototype.get = function(flagName) {
-      if (flagName in this.flags) {
-        return this.flags[flagName];
-      }
-      var flagValue = this.evaluateFlag(flagName);
-      if (flagValue instanceof Promise) {
-        throw new Error("Flag " + flagName + " cannot be synchronously evaluated. Please use getAsync() instead.");
-      }
-      this.flags[flagName] = flagValue;
-      return this.flags[flagName];
-    };
-    Environment2.prototype.getNumber = function(flagName) {
-      return this.get(flagName);
-    };
-    Environment2.prototype.getBool = function(flagName) {
-      return this.get(flagName);
-    };
-    Environment2.prototype.getFlags = function() {
-      return this.flags;
-    };
-    Object.defineProperty(Environment2.prototype, "features", {
-      get: function() {
-        return this.flags;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Environment2.prototype.set = function(flagName, value) {
-      if (this.flagRegistry[flagName] == null) {
-        throw new Error("Cannot set flag " + flagName + " as it has not been registered.");
-      }
-      this.flags[flagName] = value;
-      if (this.flagRegistry[flagName].setHook != null) {
-        this.flagRegistry[flagName].setHook(value);
-      }
-    };
-    Environment2.prototype.evaluateFlag = function(flagName) {
-      if (this.flagRegistry[flagName] == null) {
-        throw new Error("Cannot evaluate flag '" + flagName + "': no evaluation function found.");
-      }
-      return this.flagRegistry[flagName].evaluationFn();
-    };
-    Environment2.prototype.setFlags = function(flags) {
-      this.flags = Object.assign({}, flags);
-    };
-    Environment2.prototype.reset = function() {
-      this.flags = {};
-      this.urlFlags = {};
-      this.populateURLFlags();
-    };
-    Environment2.prototype.populateURLFlags = function() {
-      var _this = this;
-      if (typeof this.global === "undefined" || typeof this.global.location === "undefined" || typeof this.global.location.search === "undefined") {
-        return;
-      }
-      var urlParams = getQueryParams(this.global.location.search);
-      if (TENSORFLOWJS_FLAGS_PREFIX in urlParams) {
-        var keyValues = urlParams[TENSORFLOWJS_FLAGS_PREFIX].split(",");
-        keyValues.forEach(function(keyValue) {
-          var _a = keyValue.split(":"), key = _a[0], value = _a[1];
-          _this.urlFlags[key] = parseValue(key, value);
-        });
-      }
-    };
-    return Environment2;
-  }();
-  function getQueryParams(queryString) {
-    var params = {};
-    queryString.replace(/[?&]([^=?&]+)(?:=([^&]*))?/g, function(s) {
-      var t = [];
-      for (var _i2 = 1; _i2 < arguments.length; _i2++) {
-        t[_i2 - 1] = arguments[_i2];
-      }
-      decodeParam(params, t[0], t[1]);
-      return t.join("=");
-    });
-    return params;
-  }
-  function decodeParam(params, name, value) {
-    params[decodeURIComponent(name)] = decodeURIComponent(value || "");
-  }
-  function parseValue(flagName, value) {
-    value = value.toLowerCase();
-    if (value === "true" || value === "false") {
-      return value === "true";
-    } else if ("" + +value === value) {
-      return +value;
-    }
-    throw new Error("Could not parse value flag value " + value + " for flag " + flagName + ".");
-  }
-  function env() {
-    return exports.ENV;
-  }
-  exports.ENV = null;
-  function setEnvironmentGlobal(environment) {
-    exports.ENV = environment;
-  }
-  /**
-   * @license
    * Copyright 2020 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  var globalNameSpace;
-  function getGlobalNamespace() {
-    if (globalNameSpace == null) {
-      var ns = void 0;
-      if (typeof window !== "undefined") {
-        ns = window;
-      } else if (typeof global !== "undefined") {
-        ns = global;
-      } else if (typeof process !== "undefined") {
-        ns = process;
-      } else if (typeof self !== "undefined") {
-        ns = self;
-      } else {
-        throw new Error("Could not find a global object");
-      }
-      globalNameSpace = ns;
-    }
-    return globalNameSpace;
-  }
-  function getGlobalMap() {
-    var ns = getGlobalNamespace();
-    if (ns._tfGlobals == null) {
-      ns._tfGlobals = new Map();
-    }
-    return ns._tfGlobals;
-  }
-  function getGlobal(key, init) {
-    var globalMap = getGlobalMap();
-    if (globalMap.has(key)) {
-      return globalMap.get(key);
-    } else {
-      var singleton = init();
-      globalMap.set(key, singleton);
-      return globalMap.get(key);
-    }
-  }
-  var Abs = "Abs";
-  var Acos = "Acos";
-  var Acosh = "Acosh";
-  var Add = "Add";
-  var AddN = "AddN";
-  var All = "All";
-  var Any = "Any";
-  var ArgMax = "ArgMax";
-  var ArgMin = "ArgMin";
-  var Asin = "Asin";
-  var Asinh = "Asinh";
-  var Atan = "Atan";
-  var Atanh = "Atanh";
-  var Atan2 = "Atan2";
-  var AvgPool = "AvgPool";
-  var AvgPoolBackprop = "AvgPoolBackprop";
-  var AvgPool3D = "AvgPool3D";
-  var AvgPool3DBackprop = "AvgPool3DBackprop";
-  var BatchMatMul = "BatchMatMul";
-  var BatchToSpaceND = "BatchToSpaceND";
-  var BroadcastTo = "BroadcastTo";
-  var Cast = "Cast";
-  var Ceil = "Ceil";
-  var ClipByValue = "ClipByValue";
-  var Complex = "Complex";
-  var Concat = "Concat";
-  var Conv2D = "Conv2D";
-  var Conv2DBackpropFilter = "Conv2DBackpropFilter";
-  var Conv2DBackpropInput = "Conv2DBackpropInput";
-  var Conv3D = "Conv3D";
-  var Conv3DBackpropFilterV2 = "Conv3DBackpropFilterV2";
-  var Conv3DBackpropInputV2 = "Conv3DBackpropInputV2";
-  var Cos = "Cos";
-  var Cosh = "Cosh";
-  var Cumsum = "Cumsum";
-  var CropAndResize = "CropAndResize";
-  var DepthToSpace = "DepthToSpace";
-  var DepthwiseConv2dNative = "DepthwiseConv2dNative";
-  var DepthwiseConv2dNativeBackpropFilter = "DepthwiseConv2dNativeBackpropFilter";
-  var DepthwiseConv2dNativeBackpropInput = "DepthwiseConv2dNativeBackpropInput";
-  var Diag = "Diag";
-  var Dilation2D = "Dilation2D";
-  var Dilation2DBackpropInput = "Dilation2DBackpropInput";
-  var Dilation2DBackpropFilter = "Dilation2DBackpropFilter";
-  var Div = "Div";
-  var Elu = "Elu";
-  var EluGrad = "EluGrad";
-  var Erf = "Erf";
-  var Equal = "Equal";
-  var Exp = "Exp";
-  var Expm1 = "Expm1";
-  var FFT = "FFT";
-  var Fill = "Fill";
-  var FlipLeftRight = "FlipLeftRight";
-  var Floor = "Floor";
-  var FloorDiv = "FloorDiv";
-  var FusedBatchNorm = "FusedBatchNorm";
-  var GatherV2 = "GatherV2";
-  var GatherNd = "GatherNd";
-  var Greater = "Greater";
-  var GreaterEqual = "GreaterEqual";
-  var Identity = "Identity";
-  var IFFT = "IFFT";
-  var Imag = "Imag";
-  var IsFinite = "IsFinite";
-  var IsInf = "IsInf";
-  var IsNan = "IsNan";
-  var Less = "Less";
-  var LessEqual = "LessEqual";
-  var LinSpace = "LinSpace";
-  var Log = "Log";
-  var Log1p = "Log1p";
-  var LogicalAnd = "LogicalAnd";
-  var LogicalNot = "LogicalNot";
-  var LogicalOr = "LogicalOr";
-  var LogSoftmax = "LogSoftmax";
-  var LRN = "LRN";
-  var LRNBackprop = "LRNBackprop";
-  var Max = "Max";
-  var Maximum = "Maximum";
-  var MaxPool = "MaxPool";
-  var MaxPoolBackprop = "MaxPoolBackprop";
-  var MaxPool3D = "MaxPool3D";
-  var MaxPool3DBackprop = "MaxPool3DBackprop";
-  var MaxPoolWithArgmax = "MaxPoolWithArgmax";
-  var Mean = "Mean";
-  var Min = "Min";
-  var Minimum = "Minimum";
-  var Mod = "Mod";
-  var Multiply = "Multiply";
-  var Negate = "Negate";
-  var NotEqual = "NotEqual";
-  var NonMaxSuppressionV3 = "NonMaxSuppressionV3";
-  var NonMaxSuppressionV4 = "NonMaxSuppressionV4";
-  var NonMaxSuppressionV5 = "NonMaxSuppressionV5";
-  var OnesLike = "OnesLike";
-  var OneHot = "OneHot";
-  var PadV2 = "PadV2";
-  var Pool = "Pool";
-  var Pow = "Pow";
-  var Prelu = "Prelu";
-  var Prod = "Prod";
-  var Range = "Range";
-  var Real = "Real";
-  var Reciprocal = "Reciprocal";
-  var Relu = "Relu";
-  var Reshape = "Reshape";
-  var ResizeNearestNeighbor = "ResizeNearestNeighbor";
-  var ResizeNearestNeighborGrad = "ResizeNearestNeighborGrad";
-  var ResizeBilinear = "ResizeBilinear";
-  var ResizeBilinearGrad = "ResizeBilinearGrad";
-  var Relu6 = "Relu6";
-  var Reverse = "Reverse";
-  var Round = "Round";
-  var Rsqrt = "Rsqrt";
-  var ScatterNd = "ScatterNd";
-  var SelectV2 = "SelectV2";
-  var Selu = "Selu";
-  var Slice = "Slice";
-  var Sin = "Sin";
-  var Sinh = "Sinh";
-  var Sign = "Sign";
-  var Sigmoid = "Sigmoid";
-  var Softplus = "Softplus";
-  var Sqrt = "Sqrt";
-  var Sum = "Sum";
-  var SpaceToBatchND = "SpaceToBatchND";
-  var SplitV = "SplitV";
-  var Softmax = "Softmax";
-  var SquaredDifference = "SquaredDifference";
-  var Square = "Square";
-  var Sub = "Sub";
-  var SparseToDense = "SparseToDense";
-  var StridedSlice = "StridedSlice";
-  var Tan = "Tan";
-  var Tanh = "Tanh";
-  var Tile = "Tile";
-  var TopK = "TopK";
-  var Transpose = "Transpose";
-  var Unique = "Unique";
-  var Unpack = "Unpack";
-  var UnsortedSegmentSum = "UnsortedSegmentSum";
-  var ZerosLike = "ZerosLike";
-  var Step = "Step";
-  var FromPixels = "FromPixels";
-  var RotateWithOffset = "RotateWithOffset";
-  var _FusedMatMul = "_FusedMatMul";
-  var FusedConv2D = "FusedConv2D";
-  var FusedDepthwiseConv2D = "FusedDepthwiseConv2D";
-  /**
-   * @license
-   * Copyright 2019 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  var kernelRegistry = getGlobal("kernelRegistry", function() {
-    return new Map();
-  });
-  var gradRegistry = getGlobal("gradRegistry", function() {
-    return new Map();
-  });
-  function getKernel(kernelName, backendName) {
-    var key = makeKey(kernelName, backendName);
-    return kernelRegistry.get(key);
-  }
-  function getGradient(kernelName) {
-    return gradRegistry.get(kernelName);
-  }
-  function getKernelsForBackend(backendName) {
-    var it = kernelRegistry.entries();
-    var result = [];
-    while (true) {
-      var _a = it.next(), done = _a.done, value = _a.value;
-      if (done) {
-        break;
-      }
-      var key = value[0], config = value[1];
-      var backend2 = key.split("_")[0];
-      if (backend2 === backendName) {
-        result.push(config);
-      }
-    }
-    return result;
-  }
-  function registerKernel(config) {
-    var kernelName = config.kernelName, backendName = config.backendName;
-    var key = makeKey(kernelName, backendName);
-    if (kernelRegistry.has(key)) {
-      console.warn("The kernel '" + kernelName + "' for backend " + ("'" + backendName + "' is already registered"));
-    }
-    kernelRegistry.set(key, config);
-  }
-  function registerGradient(config) {
-    var kernelName = config.kernelName;
-    if (gradRegistry.has(kernelName)) {
-      if (env().getBool("DEBUG")) {
-        console.warn("Overriding the gradient for '" + kernelName + "'");
-      }
-    }
-    gradRegistry.set(kernelName, config);
-  }
-  function unregisterKernel(kernelName, backendName) {
-    var key = makeKey(kernelName, backendName);
-    if (!kernelRegistry.has(key)) {
-      throw new Error("The kernel '" + kernelName + "' for backend " + ("'" + backendName + "' is not registered"));
-    }
-    kernelRegistry.delete(key);
-  }
-  function unregisterGradient(kernelName) {
-    if (!gradRegistry.has(kernelName)) {
-      throw new Error("The gradient '" + kernelName + "' for backend is not registered");
-    }
-    gradRegistry.delete(kernelName);
-  }
-  function copyRegisteredKernels(registeredBackendName, newBackendName) {
-    var kernels = getKernelsForBackend(registeredBackendName);
-    kernels.forEach(function(kernelConfig) {
-      var newKernelConfig = Object.assign({}, kernelConfig, {backendName: newBackendName});
-      registerKernel(newKernelConfig);
-    });
-  }
-  function makeKey(kernelName, backendName) {
-    return backendName + "_" + kernelName;
-  }
-  /**
-   * @license
-   * Copyright 2017 Google LLC. All Rights Reserved.
    * Licensed under the Apache License, Version 2.0 (the "License");
    * you may not use this file except in compliance with the License.
    * You may obtain a copy of the License at
@@ -1501,41 +1059,6 @@ var require_tf_core_node = __commonJS((exports) => {
     }
     return strides;
   }
-  function createScalarValue(value, dtype) {
-    if (dtype === "string") {
-      return encodeString(value);
-    }
-    return toTypedArray([value], dtype);
-  }
-  function toTypedArray(a, dtype) {
-    if (dtype === "string") {
-      throw new Error("Cannot convert a string[] to a TypedArray");
-    }
-    if (Array.isArray(a)) {
-      a = flatten(a);
-    }
-    if (env().getBool("DEBUG")) {
-      checkConversionForErrors(a, dtype);
-    }
-    if (noConversionNeeded(a, dtype)) {
-      return a;
-    }
-    if (dtype == null || dtype === "float32" || dtype === "complex64") {
-      return new Float32Array(a);
-    } else if (dtype === "int32") {
-      return new Int32Array(a);
-    } else if (dtype === "bool") {
-      var bool = new Uint8Array(a.length);
-      for (var i = 0; i < bool.length; ++i) {
-        if (Math.round(a[i]) !== 0) {
-          bool[i] = 1;
-        }
-      }
-      return bool;
-    } else {
-      throw new Error("Unknown data type " + dtype);
-    }
-  }
   function createNestedArray(offset, shape, a) {
     var ret = new Array();
     if (shape.length === 1) {
@@ -1570,9 +1093,6 @@ var require_tf_core_node = __commonJS((exports) => {
     }
     return createNestedArray(0, shape, a);
   }
-  function noConversionNeeded(a, dtype) {
-    return a instanceof Float32Array && dtype === "float32" || a instanceof Int32Array && dtype === "int32" || a instanceof Uint8Array && dtype === "bool";
-  }
   function makeOnesTypedArray(size, dtype) {
     var array = makeZerosTypedArray(size, dtype);
     for (var i = 0; i < array.length; i++) {
@@ -1605,32 +1125,12 @@ var require_tf_core_node = __commonJS((exports) => {
       throw new Error("Unknown data type " + dtype);
     }
   }
-  function now2() {
-    return env().platform.now();
-  }
   function assertNonNegativeIntegerDimensions(shape) {
     shape.forEach(function(dimSize) {
       assert(Number.isInteger(dimSize) && dimSize >= 0, function() {
         return "Tensor must have a shape comprised of positive integers but got " + ("shape [" + shape + "].");
       });
     });
-  }
-  function fetch$1(path, requestInits) {
-    return env().platform.fetch(path, requestInits);
-  }
-  function encodeString(s, encoding) {
-    if (encoding === void 0) {
-      encoding = "utf-8";
-    }
-    encoding = encoding || "utf-8";
-    return env().platform.encode(s, encoding);
-  }
-  function decodeString(bytes, encoding) {
-    if (encoding === void 0) {
-      encoding = "utf-8";
-    }
-    encoding = encoding || "utf-8";
-    return env().platform.decode(bytes, encoding);
   }
   function locToIndex(locs, rank, strides) {
     if (rank === 0) {
@@ -1658,8 +1158,534 @@ var require_tf_core_node = __commonJS((exports) => {
     locs[locs.length - 1] = index;
     return locs;
   }
+  function isPromise(object) {
+    return object && object.then && typeof object.then === "function";
+  }
+  /**
+   * @license
+   * Copyright 2017 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var TENSORFLOWJS_FLAGS_PREFIX = "tfjsflags";
+  var Environment = function() {
+    function Environment2(global2) {
+      this.global = global2;
+      this.flags = {};
+      this.flagRegistry = {};
+      this.urlFlags = {};
+      this.populateURLFlags();
+    }
+    Environment2.prototype.setPlatform = function(platformName, platform) {
+      if (this.platform != null) {
+        console.warn("Platform " + this.platformName + " has already been set. " + ("Overwriting the platform with " + platform + "."));
+      }
+      this.platformName = platformName;
+      this.platform = platform;
+    };
+    Environment2.prototype.registerFlag = function(flagName, evaluationFn, setHook) {
+      this.flagRegistry[flagName] = {evaluationFn, setHook};
+      if (this.urlFlags[flagName] != null) {
+        var flagValue = this.urlFlags[flagName];
+        console.warn("Setting feature override from URL " + flagName + ": " + flagValue + ".");
+        this.set(flagName, flagValue);
+      }
+    };
+    Environment2.prototype.getAsync = function(flagName) {
+      return __awaiter(this, void 0, void 0, function() {
+        var _a, _b;
+        return __generator(this, function(_c) {
+          switch (_c.label) {
+            case 0:
+              if (flagName in this.flags) {
+                return [2, this.flags[flagName]];
+              }
+              _a = this.flags;
+              _b = flagName;
+              return [4, this.evaluateFlag(flagName)];
+            case 1:
+              _a[_b] = _c.sent();
+              return [2, this.flags[flagName]];
+          }
+        });
+      });
+    };
+    Environment2.prototype.get = function(flagName) {
+      if (flagName in this.flags) {
+        return this.flags[flagName];
+      }
+      var flagValue = this.evaluateFlag(flagName);
+      if (isPromise(flagValue)) {
+        throw new Error("Flag " + flagName + " cannot be synchronously evaluated. Please use getAsync() instead.");
+      }
+      this.flags[flagName] = flagValue;
+      return this.flags[flagName];
+    };
+    Environment2.prototype.getNumber = function(flagName) {
+      return this.get(flagName);
+    };
+    Environment2.prototype.getBool = function(flagName) {
+      return this.get(flagName);
+    };
+    Environment2.prototype.getFlags = function() {
+      return this.flags;
+    };
+    Object.defineProperty(Environment2.prototype, "features", {
+      get: function() {
+        return this.flags;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Environment2.prototype.set = function(flagName, value) {
+      if (this.flagRegistry[flagName] == null) {
+        throw new Error("Cannot set flag " + flagName + " as it has not been registered.");
+      }
+      this.flags[flagName] = value;
+      if (this.flagRegistry[flagName].setHook != null) {
+        this.flagRegistry[flagName].setHook(value);
+      }
+    };
+    Environment2.prototype.evaluateFlag = function(flagName) {
+      if (this.flagRegistry[flagName] == null) {
+        throw new Error("Cannot evaluate flag '" + flagName + "': no evaluation function found.");
+      }
+      return this.flagRegistry[flagName].evaluationFn();
+    };
+    Environment2.prototype.setFlags = function(flags) {
+      this.flags = Object.assign({}, flags);
+    };
+    Environment2.prototype.reset = function() {
+      this.flags = {};
+      this.urlFlags = {};
+      this.populateURLFlags();
+    };
+    Environment2.prototype.populateURLFlags = function() {
+      var _this = this;
+      if (typeof this.global === "undefined" || typeof this.global.location === "undefined" || typeof this.global.location.search === "undefined") {
+        return;
+      }
+      var urlParams = getQueryParams(this.global.location.search);
+      if (TENSORFLOWJS_FLAGS_PREFIX in urlParams) {
+        var keyValues = urlParams[TENSORFLOWJS_FLAGS_PREFIX].split(",");
+        keyValues.forEach(function(keyValue) {
+          var _a = keyValue.split(":"), key = _a[0], value = _a[1];
+          _this.urlFlags[key] = parseValue(key, value);
+        });
+      }
+    };
+    return Environment2;
+  }();
+  function getQueryParams(queryString) {
+    var params = {};
+    queryString.replace(/[?&]([^=?&]+)(?:=([^&]*))?/g, function(s) {
+      var t = [];
+      for (var _i2 = 1; _i2 < arguments.length; _i2++) {
+        t[_i2 - 1] = arguments[_i2];
+      }
+      decodeParam(params, t[0], t[1]);
+      return t.join("=");
+    });
+    return params;
+  }
+  function decodeParam(params, name, value) {
+    params[decodeURIComponent(name)] = decodeURIComponent(value || "");
+  }
+  function parseValue(flagName, value) {
+    value = value.toLowerCase();
+    if (value === "true" || value === "false") {
+      return value === "true";
+    } else if ("" + +value === value) {
+      return +value;
+    }
+    throw new Error("Could not parse value flag value " + value + " for flag " + flagName + ".");
+  }
+  function env() {
+    return exports.ENV;
+  }
+  exports.ENV = null;
+  function setEnvironmentGlobal(environment) {
+    exports.ENV = environment;
+  }
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var globalNameSpace;
+  function getGlobalNamespace() {
+    if (globalNameSpace == null) {
+      var ns = void 0;
+      if (typeof window !== "undefined") {
+        ns = window;
+      } else if (typeof global !== "undefined") {
+        ns = global;
+      } else if (typeof process !== "undefined") {
+        ns = process;
+      } else if (typeof self !== "undefined") {
+        ns = self;
+      } else {
+        throw new Error("Could not find a global object");
+      }
+      globalNameSpace = ns;
+    }
+    return globalNameSpace;
+  }
+  function getGlobalMap() {
+    var ns = getGlobalNamespace();
+    if (ns._tfGlobals == null) {
+      ns._tfGlobals = new Map();
+    }
+    return ns._tfGlobals;
+  }
+  function getGlobal(key, init) {
+    var globalMap = getGlobalMap();
+    if (globalMap.has(key)) {
+      return globalMap.get(key);
+    } else {
+      var singleton = init();
+      globalMap.set(key, singleton);
+      return globalMap.get(key);
+    }
+  }
+  var Abs = "Abs";
+  var Acos = "Acos";
+  var Acosh = "Acosh";
+  var Add = "Add";
+  var AddN = "AddN";
+  var All = "All";
+  var Any = "Any";
+  var ArgMax = "ArgMax";
+  var ArgMin = "ArgMin";
+  var Asin = "Asin";
+  var Asinh = "Asinh";
+  var Atan = "Atan";
+  var Atanh = "Atanh";
+  var Atan2 = "Atan2";
+  var AvgPool = "AvgPool";
+  var AvgPoolBackprop = "AvgPoolBackprop";
+  var AvgPool3D = "AvgPool3D";
+  var AvgPool3DBackprop = "AvgPool3DBackprop";
+  var BatchMatMul = "BatchMatMul";
+  var BatchToSpaceND = "BatchToSpaceND";
+  var BroadcastTo = "BroadcastTo";
+  var Cast = "Cast";
+  var Ceil = "Ceil";
+  var ClipByValue = "ClipByValue";
+  var Complex = "Complex";
+  var Concat = "Concat";
+  var Conv2D = "Conv2D";
+  var Conv2DBackpropFilter = "Conv2DBackpropFilter";
+  var Conv2DBackpropInput = "Conv2DBackpropInput";
+  var Conv3D = "Conv3D";
+  var Conv3DBackpropFilterV2 = "Conv3DBackpropFilterV2";
+  var Conv3DBackpropInputV2 = "Conv3DBackpropInputV2";
+  var Cos = "Cos";
+  var Cosh = "Cosh";
+  var Cumsum = "Cumsum";
+  var CropAndResize = "CropAndResize";
+  var DepthToSpace = "DepthToSpace";
+  var DepthwiseConv2dNative = "DepthwiseConv2dNative";
+  var DepthwiseConv2dNativeBackpropFilter = "DepthwiseConv2dNativeBackpropFilter";
+  var DepthwiseConv2dNativeBackpropInput = "DepthwiseConv2dNativeBackpropInput";
+  var Diag = "Diag";
+  var Dilation2D = "Dilation2D";
+  var Dilation2DBackpropInput = "Dilation2DBackpropInput";
+  var Dilation2DBackpropFilter = "Dilation2DBackpropFilter";
+  var Div = "Div";
+  var Elu = "Elu";
+  var EluGrad = "EluGrad";
+  var Erf = "Erf";
+  var Equal = "Equal";
+  var Exp = "Exp";
+  var Expm1 = "Expm1";
+  var FFT = "FFT";
+  var Fill = "Fill";
+  var FlipLeftRight = "FlipLeftRight";
+  var Floor = "Floor";
+  var FloorDiv = "FloorDiv";
+  var FusedBatchNorm = "FusedBatchNorm";
+  var GatherV2 = "GatherV2";
+  var GatherNd = "GatherNd";
+  var Greater = "Greater";
+  var GreaterEqual = "GreaterEqual";
+  var Identity = "Identity";
+  var IFFT = "IFFT";
+  var Imag = "Imag";
+  var IsFinite = "IsFinite";
+  var IsInf = "IsInf";
+  var IsNan = "IsNan";
+  var Less = "Less";
+  var LessEqual = "LessEqual";
+  var LinSpace = "LinSpace";
+  var Log = "Log";
+  var Log1p = "Log1p";
+  var LogicalAnd = "LogicalAnd";
+  var LogicalNot = "LogicalNot";
+  var LogicalOr = "LogicalOr";
+  var LogSoftmax = "LogSoftmax";
+  var LRN = "LRN";
+  var LRNBackprop = "LRNBackprop";
+  var Max = "Max";
+  var Maximum = "Maximum";
+  var MaxPool = "MaxPool";
+  var MaxPoolBackprop = "MaxPoolBackprop";
+  var MaxPool3D = "MaxPool3D";
+  var MaxPool3DBackprop = "MaxPool3DBackprop";
+  var MaxPoolWithArgmax = "MaxPoolWithArgmax";
+  var Mean = "Mean";
+  var Min = "Min";
+  var Minimum = "Minimum";
+  var MirrorPad = "MirrorPad";
+  var Mod = "Mod";
+  var Multiply = "Multiply";
+  var Negate = "Negate";
+  var NotEqual = "NotEqual";
+  var NonMaxSuppressionV3 = "NonMaxSuppressionV3";
+  var NonMaxSuppressionV4 = "NonMaxSuppressionV4";
+  var NonMaxSuppressionV5 = "NonMaxSuppressionV5";
+  var OnesLike = "OnesLike";
+  var OneHot = "OneHot";
+  var PadV2 = "PadV2";
+  var Pool = "Pool";
+  var Pow = "Pow";
+  var Prelu = "Prelu";
+  var Prod = "Prod";
+  var Range = "Range";
+  var Real = "Real";
+  var Reciprocal = "Reciprocal";
+  var Relu = "Relu";
+  var Reshape = "Reshape";
+  var ResizeNearestNeighbor = "ResizeNearestNeighbor";
+  var ResizeNearestNeighborGrad = "ResizeNearestNeighborGrad";
+  var ResizeBilinear = "ResizeBilinear";
+  var ResizeBilinearGrad = "ResizeBilinearGrad";
+  var Relu6 = "Relu6";
+  var Reverse = "Reverse";
+  var Round = "Round";
+  var Rsqrt = "Rsqrt";
+  var ScatterNd = "ScatterNd";
+  var SelectV2 = "SelectV2";
+  var Selu = "Selu";
+  var Slice = "Slice";
+  var Sin = "Sin";
+  var Sinh = "Sinh";
+  var Sign = "Sign";
+  var Sigmoid = "Sigmoid";
+  var Softplus = "Softplus";
+  var Sqrt = "Sqrt";
+  var Sum = "Sum";
+  var SpaceToBatchND = "SpaceToBatchND";
+  var SplitV = "SplitV";
+  var Softmax = "Softmax";
+  var SquaredDifference = "SquaredDifference";
+  var Square = "Square";
+  var Sub = "Sub";
+  var SparseToDense = "SparseToDense";
+  var StridedSlice = "StridedSlice";
+  var Tan = "Tan";
+  var Tanh = "Tanh";
+  var Tile = "Tile";
+  var TopK = "TopK";
+  var Transpose = "Transpose";
+  var Unique = "Unique";
+  var Unpack = "Unpack";
+  var UnsortedSegmentSum = "UnsortedSegmentSum";
+  var ZerosLike = "ZerosLike";
+  var Step = "Step";
+  var FromPixels = "FromPixels";
+  var RotateWithOffset = "RotateWithOffset";
+  var _FusedMatMul = "_FusedMatMul";
+  var FusedConv2D = "FusedConv2D";
+  var FusedDepthwiseConv2D = "FusedDepthwiseConv2D";
+  /**
+   * @license
+   * Copyright 2019 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var kernelRegistry = getGlobal("kernelRegistry", function() {
+    return new Map();
+  });
+  var gradRegistry = getGlobal("gradRegistry", function() {
+    return new Map();
+  });
+  function getKernel(kernelName, backendName) {
+    var key = makeKey(kernelName, backendName);
+    return kernelRegistry.get(key);
+  }
+  function getGradient(kernelName) {
+    return gradRegistry.get(kernelName);
+  }
+  function getKernelsForBackend(backendName) {
+    var it = kernelRegistry.entries();
+    var result = [];
+    while (true) {
+      var _a = it.next(), done = _a.done, value = _a.value;
+      if (done) {
+        break;
+      }
+      var key = value[0], config = value[1];
+      var backend2 = key.split("_")[0];
+      if (backend2 === backendName) {
+        result.push(config);
+      }
+    }
+    return result;
+  }
+  function registerKernel(config) {
+    var kernelName = config.kernelName, backendName = config.backendName;
+    var key = makeKey(kernelName, backendName);
+    if (kernelRegistry.has(key)) {
+      console.warn("The kernel '" + kernelName + "' for backend " + ("'" + backendName + "' is already registered"));
+    }
+    kernelRegistry.set(key, config);
+  }
+  function registerGradient(config) {
+    var kernelName = config.kernelName;
+    if (gradRegistry.has(kernelName)) {
+      if (env().getBool("DEBUG")) {
+        console.warn("Overriding the gradient for '" + kernelName + "'");
+      }
+    }
+    gradRegistry.set(kernelName, config);
+  }
+  function unregisterKernel(kernelName, backendName) {
+    var key = makeKey(kernelName, backendName);
+    if (!kernelRegistry.has(key)) {
+      throw new Error("The kernel '" + kernelName + "' for backend " + ("'" + backendName + "' is not registered"));
+    }
+    kernelRegistry.delete(key);
+  }
+  function unregisterGradient(kernelName) {
+    if (!gradRegistry.has(kernelName)) {
+      throw new Error("The gradient '" + kernelName + "' for backend is not registered");
+    }
+    gradRegistry.delete(kernelName);
+  }
+  function copyRegisteredKernels(registeredBackendName, newBackendName) {
+    var kernels = getKernelsForBackend(registeredBackendName);
+    kernels.forEach(function(kernelConfig) {
+      var newKernelConfig = Object.assign({}, kernelConfig, {backendName: newBackendName});
+      registerKernel(newKernelConfig);
+    });
+  }
+  function makeKey(kernelName, backendName) {
+    return backendName + "_" + kernelName;
+  }
+  /**
+   * @license
+   * Copyright 2017 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function createScalarValue(value, dtype) {
+    if (dtype === "string") {
+      return encodeString(value);
+    }
+    return toTypedArray([value], dtype);
+  }
+  function noConversionNeeded(a, dtype) {
+    return a instanceof Float32Array && dtype === "float32" || a instanceof Int32Array && dtype === "int32" || a instanceof Uint8Array && dtype === "bool";
+  }
+  function toTypedArray(a, dtype) {
+    if (dtype === "string") {
+      throw new Error("Cannot convert a string[] to a TypedArray");
+    }
+    if (Array.isArray(a)) {
+      a = flatten(a);
+    }
+    if (env().getBool("DEBUG")) {
+      checkConversionForErrors(a, dtype);
+    }
+    if (noConversionNeeded(a, dtype)) {
+      return a;
+    }
+    if (dtype == null || dtype === "float32" || dtype === "complex64") {
+      return new Float32Array(a);
+    } else if (dtype === "int32") {
+      return new Int32Array(a);
+    } else if (dtype === "bool") {
+      var bool = new Uint8Array(a.length);
+      for (var i = 0; i < bool.length; ++i) {
+        if (Math.round(a[i]) !== 0) {
+          bool[i] = 1;
+        }
+      }
+      return bool;
+    } else {
+      throw new Error("Unknown data type " + dtype);
+    }
+  }
+  function now2() {
+    return env().platform.now();
+  }
+  function fetch$1(path, requestInits) {
+    return env().platform.fetch(path, requestInits);
+  }
+  function encodeString(s, encoding) {
+    if (encoding === void 0) {
+      encoding = "utf-8";
+    }
+    encoding = encoding || "utf-8";
+    return env().platform.encode(s, encoding);
+  }
+  function decodeString(bytes, encoding) {
+    if (encoding === void 0) {
+      encoding = "utf-8";
+    }
+    encoding = encoding || "utf-8";
+    return env().platform.decode(bytes, encoding);
+  }
   var util = {
     __proto__: null,
+    createScalarValue,
+    toTypedArray,
+    now: now2,
+    fetch: fetch$1,
+    encodeString,
+    decodeString,
     shuffle,
     clamp,
     nearestLargerEven,
@@ -1697,19 +1723,14 @@ var require_tf_core_node = __commonJS((exports) => {
     isFunction,
     nearestDivisor,
     computeStrides,
-    createScalarValue,
-    toTypedArray,
     toNestedArray,
     makeOnesTypedArray,
     makeZerosTypedArray,
     makeZerosNestedTypedArray,
-    now: now2,
     assertNonNegativeIntegerDimensions,
-    fetch: fetch$1,
-    encodeString,
-    decodeString,
     locToIndex,
-    indexToLoc
+    indexToLoc,
+    isPromise
   };
   /**
    * @license
@@ -3663,7 +3684,7 @@ var require_tf_core_node = __commonJS((exports) => {
       ENGINE.startScope(opName);
       try {
         var result = fn.apply(void 0, args);
-        if (result instanceof Promise) {
+        if (isPromise(result)) {
           console.error("Cannot return a Promise inside of tidy.");
         }
         ENGINE.endScope(result);
@@ -3966,6 +3987,8 @@ var require_tf_core_node = __commonJS((exports) => {
           var realTensor = tensor(real2, shape, "float32");
           var imageTensor = tensor(image2, shape, "float32");
           out[name_2] = complex(realTensor, imageTensor);
+          realTensor.dispose();
+          imageTensor.dispose();
         } else {
           throw new Error("Unsupported dtype in weight '" + name_2 + "': " + dtype);
         }
@@ -5922,34 +5945,33 @@ var require_tf_core_node = __commonJS((exports) => {
     var $a = convertToTensor(a, "a", "matMul");
     var $b = convertToTensor(b, "b", "matMul");
     _a = makeTypesMatch($a, $b), $a = _a[0], $b = _a[1];
-    assert($a.rank >= 2 && $b.rank >= 2 && $a.rank === $b.rank, function() {
-      return "Error in matMul: inputs must have the same rank of at least 2, " + ("got ranks " + $a.rank + " and " + $b.rank + ".");
-    });
-    var innerShapeA = transposeA ? $a.shape[$a.rank - 2] : $a.shape[$a.rank - 1];
-    var innerShapeB = transposeB ? $b.shape[$b.rank - 1] : $b.shape[$b.rank - 2];
-    var outerShapeA = transposeA ? $a.shape[$a.rank - 1] : $a.shape[$a.rank - 2];
-    var outerShapeB = transposeB ? $b.shape[$b.rank - 2] : $b.shape[$b.rank - 1];
-    var outerDimsA = $a.shape.slice(0, -2);
-    var outerDimsB = $b.shape.slice(0, -2);
-    var batchDimA = sizeFromShape(outerDimsA);
-    var batchDimB = sizeFromShape(outerDimsB);
-    assert(arraysEqual(outerDimsA, outerDimsB), function() {
-      return "Error in matMul: outer dimensions (" + outerDimsA + ") and (" + (outerDimsB + ") of Tensors with shapes " + $a.shape + " and ") + ($b.shape + " must match.");
-    });
-    assert(innerShapeA === innerShapeB, function() {
-      return "Error in matMul: inner shapes (" + innerShapeA + ") and (" + (innerShapeB + ") of Tensors with shapes " + $a.shape + " and ") + ($b.shape + " and transposeA=" + transposeA) + (" and transposeB=" + transposeB + " must match.");
-    });
-    var outShape = $a.shape.slice(0, -2).concat([outerShapeA, outerShapeB]);
-    var a3D = transposeA ? reshape($a, [batchDimA, innerShapeA, outerShapeA]) : reshape($a, [batchDimA, outerShapeA, innerShapeA]);
-    var b3D = transposeB ? reshape($b, [batchDimB, outerShapeB, innerShapeB]) : reshape($b, [batchDimB, innerShapeB, outerShapeB]);
     var forward = function(backend2, save) {
-      save([a3D, b3D]);
-      return backend2.batchMatMul(a3D, b3D, transposeA, transposeB);
+      save([$a, $b]);
+      var innerShapeA = transposeA ? $a.shape[$a.rank - 2] : $a.shape[$a.rank - 1];
+      var innerShapeB = transposeB ? $b.shape[$b.rank - 1] : $b.shape[$b.rank - 2];
+      var outerShapeA = transposeA ? $a.shape[$a.rank - 1] : $a.shape[$a.rank - 2];
+      var outerShapeB = transposeB ? $b.shape[$b.rank - 2] : $b.shape[$b.rank - 1];
+      var outerDimsA = $a.shape.slice(0, -2);
+      var outerDimsB = $b.shape.slice(0, -2);
+      var batchDimA = sizeFromShape(outerDimsA);
+      var batchDimB = sizeFromShape(outerDimsB);
+      var batchDimsCompatible = batchDimA === batchDimB || batchDimA === 1 || batchDimB === 1;
+      assert($a.rank >= 2 && $b.rank >= 2 && batchDimsCompatible, function() {
+        return "Error in matMul: the input batch dimensions must either be the same or at least one input batch dimension must be 1. Got input " + ("batch dimensions of (" + outerDimsA + ") and (" + outerDimsB + ").");
+      });
+      assert(innerShapeA === innerShapeB, function() {
+        return "Error in matMul: inner shapes (" + innerShapeA + ") and (" + (innerShapeB + ") of Tensors with shapes " + $a.shape + " and ") + ($b.shape + " and transposeA=" + transposeA) + (" and transposeB=" + transposeB + " must match.");
+      });
+      var outShapeOuterDims = batchDimA > batchDimB ? outerDimsA : outerDimsB;
+      var outShape = outShapeOuterDims.concat([outerShapeA, outerShapeB]);
+      var a3D = transposeA ? reshape($a, [batchDimA, innerShapeA, outerShapeA]) : reshape($a, [batchDimA, outerShapeA, innerShapeA]);
+      var b3D = transposeB ? reshape($b, [batchDimB, outerShapeB, innerShapeB]) : reshape($b, [batchDimB, innerShapeB, outerShapeB]);
+      var res3d = backend2.batchMatMul(a3D, b3D, transposeA, transposeB);
+      return reshape(res3d, outShape);
     };
-    var inputs = {a: a3D, b: b3D};
+    var inputs = {a: $a, b: $b};
     var attrs = {transposeA, transposeB};
-    var res = ENGINE.runKernelFunc(forward, inputs, null, BatchMatMul, attrs);
-    return reshape(res, outShape);
+    return ENGINE.runKernelFunc(forward, inputs, null, BatchMatMul, attrs);
   }
   var matMul = op({matMul_});
   /**
@@ -6067,7 +6089,8 @@ var require_tf_core_node = __commonJS((exports) => {
     var oneHotLabels = oneHot(cast($labels, "int32"), numClasses);
     var oneHotPredictions = oneHot(cast($predictions, "int32"), numClasses);
     var oneHotLabelsT = transpose(oneHotLabels);
-    return cast(matMul(oneHotLabelsT, oneHotPredictions), "int32");
+    var product = matMul(oneHotLabelsT, oneHotPredictions);
+    return cast(product, "int32");
   }
   var confusionMatrix = op({confusionMatrix_});
   /**
@@ -6836,7 +6859,7 @@ var require_tf_core_node = __commonJS((exports) => {
     expectArrayBuffersEqual
   };
   /** @license See the LICENSE file. */
-  var version = "2.6.0";
+  var version = "2.7.0";
   /**
    * @license
    * Copyright 2018 Google LLC. All Rights Reserved.
@@ -8908,8 +8931,8 @@ var require_tf_core_node = __commonJS((exports) => {
       var convInfo = computeConv3DInfo(xShape5D, filter.shape, strides, dilations, pad2);
       return backend2.conv3dDerInput(dy5D, filter, convInfo);
     };
-    var inputs = {dy: dy5D};
-    var attrs = {pad: pad2};
+    var inputs = {dy: dy5D, filter};
+    var attrs = {pad: pad2, strides, inputShape: xShape5D};
     var res = ENGINE.runKernelFunc(forward, inputs, null, Conv3DBackpropInputV2, attrs);
     if (reshapedTo5D) {
       return reshape(res, [res.shape[1], res.shape[2], res.shape[3], res.shape[4]]);
@@ -11062,11 +11085,16 @@ var require_tf_core_node = __commonJS((exports) => {
     var shapes = computeOutAndReduceShapes($x.shape, axes);
     var reduceShape = shapes[1];
     var reduceSize = sizeFromShape(reduceShape);
-    var customOp = customGrad(function(x2) {
+    var inputs = {x: $x};
+    var attrs = {axis, keepDims};
+    var forward = function() {
       var reduceSizeScalar = scalar(reduceSize);
-      var xReduce = reduceSizeScalar.dtype === x2.dtype ? x2 : cast(x2, reduceSizeScalar.dtype);
+      var xReduce = reduceSizeScalar.dtype === $x.dtype ? $x : cast($x, reduceSizeScalar.dtype);
       var res = div(xReduce, reduceSizeScalar);
-      var value = sum$1(res, axis, keepDims);
+      return sum$1(res, axis, keepDims);
+    };
+    var customOp = customGrad(function(x2) {
+      var value = ENGINE.runKernelFunc(forward, inputs, null, Mean, attrs);
       var gradFunc = function(dy) {
         var expandedDyShape = x2.shape.slice();
         axes.forEach(function(axis2) {
@@ -11151,6 +11179,50 @@ var require_tf_core_node = __commonJS((exports) => {
     return ENGINE.runKernelFunc(forward, inputs, null, Minimum);
   }
   var minimum = op({minimum_});
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function mirrorPad_(x, paddings, mode) {
+    assert(mode === "reflect" || mode === "symmetric", function() {
+      return "Invalid mode. Mode must be either reflect or symmetric. " + ("Got " + mode + ".");
+    });
+    var $x = convertToTensor(x, "x", "mirrorPad");
+    if ($x.rank === 0) {
+      throw new Error("mirrorPad(scalar) is not defined. Pass non-scalar to mirrorPad");
+    }
+    assert(paddings.length === $x.rank, function() {
+      return "Padding doesn't match input. Must be " + $x.rank + ". " + ("Got " + paddings.length + ".");
+    });
+    var shapeOffset = mode === "reflect" ? 1 : 0;
+    var _loop_1 = function(i2) {
+      assert(paddings[i2].length === 2, function() {
+        return "Invalid number of paddings. Must be length of 2 each.";
+      });
+      assert(paddings[i2][0] >= 0 && paddings[i2][0] <= $x.shape[i2] - shapeOffset && paddings[i2][1] >= 0 && paddings[i2][1] <= $x.shape[i2] - shapeOffset, function() {
+        return "Padding in dimension " + i2 + " cannot be greater than or equal " + ("to " + ($x.shape[i2] - shapeOffset) + " or less than 0 for input of ") + ("shape " + $x.shape);
+      });
+    };
+    for (var i = 0; i < $x.rank; i++) {
+      _loop_1(i);
+    }
+    var attrs = {paddings, mode};
+    var inputs = {x: $x};
+    return ENGINE.runKernel(MirrorPad, inputs, attrs);
+  }
+  var mirrorPad = op({mirrorPad_});
   /**
    * @license
    * Copyright 2020 Google LLC. All Rights Reserved.
@@ -11691,10 +11763,10 @@ var require_tf_core_node = __commonJS((exports) => {
       keepDims = false;
     }
     var $x = convertToTensor(x, "x", "prod");
+    if ($x.dtype === "bool") {
+      $x = cast($x, "int32");
+    }
     var forward = function(backend2) {
-      if ($x.dtype === "bool") {
-        $x = cast($x, "int32");
-      }
       var axes = parseAxisParam(axis, $x.shape);
       var permutation = getAxesPermutation(axes, $x.rank);
       var reductionAxes = axes;
@@ -11754,7 +11826,7 @@ var require_tf_core_node = __commonJS((exports) => {
     return module2 = {exports: {}}, fn(module2, module2.exports), module2.exports;
   }
   var alea = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function Alea(seed) {
         var me = this, mash = Mash();
         me.next = function() {
@@ -11826,8 +11898,8 @@ var require_tf_core_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -11836,7 +11908,7 @@ var require_tf_core_node = __commonJS((exports) => {
     })(commonjsGlobal, module2, false);
   });
   var xor128 = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function XorGen(seed) {
         var me = this, strseed = "";
         me.x = 0;
@@ -11890,8 +11962,8 @@ var require_tf_core_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -11900,7 +11972,7 @@ var require_tf_core_node = __commonJS((exports) => {
     })(commonjsGlobal, module2, false);
   });
   var xorwow = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function XorGen(seed) {
         var me = this, strseed = "";
         me.next = function() {
@@ -11961,8 +12033,8 @@ var require_tf_core_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -11971,7 +12043,7 @@ var require_tf_core_node = __commonJS((exports) => {
     })(commonjsGlobal, module2, false);
   });
   var xorshift7 = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function XorGen(seed) {
         var me = this;
         me.next = function() {
@@ -12048,8 +12120,8 @@ var require_tf_core_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -12058,7 +12130,7 @@ var require_tf_core_node = __commonJS((exports) => {
     })(commonjsGlobal, module2, false);
   });
   var xor4096 = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function XorGen(seed) {
         var me = this;
         me.next = function() {
@@ -12149,8 +12221,8 @@ var require_tf_core_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -12159,7 +12231,7 @@ var require_tf_core_node = __commonJS((exports) => {
     })(commonjsGlobal, module2, false);
   });
   var tychei = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function XorGen(seed) {
         var me = this, strseed = "";
         me.next = function() {
@@ -12218,8 +12290,8 @@ var require_tf_core_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -14805,7 +14877,7 @@ var require_tf_core_node = __commonJS((exports) => {
       return backend2.conv2dDerFilter(x4D, dy4D, convInfo);
     };
     var inputs = {x: x4D, dy: dy4D};
-    var attrs = {strides, pad: pad2, dataFormat, dimRoundingMode};
+    var attrs = {strides, pad: pad2, dataFormat, dimRoundingMode, filterShape};
     return ENGINE.runKernelFunc(forward, inputs, null, Conv2DBackpropFilter, attrs);
   }
   var conv2DBackpropFilter = op({conv2DBackpropFilter_});
@@ -14997,7 +15069,10 @@ var require_tf_core_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  function depthwiseConv2dNativeBackpropFilter_(x, dy, filterShape, convInfo) {
+  function depthwiseConv2dNativeBackpropFilter_(x, dy, filterShape, strides, pad2, dilations, dimRoundingMode) {
+    if (dilations === void 0) {
+      dilations = [1, 1];
+    }
     var x4D = x;
     if (x.rank === 3) {
       x4D = reshape(x, [1, x.shape[0], x.shape[1], x.shape[2]]);
@@ -15007,10 +15082,12 @@ var require_tf_core_node = __commonJS((exports) => {
       dy4D = reshape(dy, [1, dy.shape[0], dy.shape[1], dy.shape[2]]);
     }
     var forward = function(backend2) {
+      var convInfo = computeConv2DInfo(x.shape, filterShape, strides, dilations, pad2, dimRoundingMode, true);
       return backend2.depthwiseConv2DDerFilter(x4D, dy4D, convInfo);
     };
     var inputs = {x: x4D, dy: dy4D};
-    return ENGINE.runKernelFunc(forward, inputs, null, DepthwiseConv2dNativeBackpropFilter);
+    var attrs = {strides, pad: pad2, dimRoundingMode, dilations, filterShape};
+    return ENGINE.runKernelFunc(forward, inputs, null, DepthwiseConv2dNativeBackpropFilter, attrs);
   }
   var depthwiseConv2dNativeBackpropFilter = op({depthwiseConv2dNativeBackpropFilter_});
   /**
@@ -15029,7 +15106,10 @@ var require_tf_core_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  function depthwiseConv2dNativeBackpropInput_(xShape, dy, filter, convInfo) {
+  function depthwiseConv2dNativeBackpropInput_(xShape, dy, filter, strides, pad2, dilations, dimRoundingMode) {
+    if (dilations === void 0) {
+      dilations = [1, 1];
+    }
     var dy4D = dy;
     var reshapedTo4D = false;
     if (dy.rank === 3) {
@@ -15037,10 +15117,12 @@ var require_tf_core_node = __commonJS((exports) => {
       dy4D = reshape(dy, [1, dy.shape[0], dy.shape[1], dy.shape[2]]);
     }
     var forward = function(backend2) {
+      var convInfo = computeConv2DInfo(xShape, filter.shape, strides, dilations, pad2, dimRoundingMode, true);
       return backend2.depthwiseConv2DDerInput(dy4D, filter, convInfo);
     };
-    var inputs = {dy: dy4D};
-    var res = ENGINE.runKernelFunc(forward, inputs, null, DepthwiseConv2dNativeBackpropInput);
+    var inputs = {dy: dy4D, filter};
+    var attrs = {strides, pad: pad2, dimRoundingMode, dilations, inputShape: xShape};
+    var res = ENGINE.runKernelFunc(forward, inputs, null, DepthwiseConv2dNativeBackpropInput, attrs);
     if (reshapedTo4D) {
       return reshape(res, [res.shape[1], res.shape[2], res.shape[3]]);
     }
@@ -15117,8 +15199,8 @@ var require_tf_core_node = __commonJS((exports) => {
       });
       var $filter2 = saved[0], x4D2 = saved[1], y = saved[2], bias2 = saved[3];
       var dyActivation = getFusedDyActivation(dy, y, activation);
-      var xDer = depthwiseConv2dNativeBackpropInput(x4D2.shape, dyActivation, $filter2, convInfo);
-      var filterDer = depthwiseConv2dNativeBackpropFilter(x4D2, dyActivation, $filter2.shape, convInfo);
+      var xDer = depthwiseConv2dNativeBackpropInput(x4D2.shape, dyActivation, $filter2, strides, pad2, dilations, dimRoundingMode);
+      var filterDer = depthwiseConv2dNativeBackpropFilter(x4D2, dyActivation, $filter2.shape, strides, pad2, dilations, dimRoundingMode);
       if (bias2 != null) {
         var biasDer = getFusedBiasGradient($bias, dyActivation);
         return [xDer, filterDer, biasDer];
@@ -19029,8 +19111,8 @@ var require_tf_core_node = __commonJS((exports) => {
     kernelName: BatchMatMul,
     inputsToSave: ["a", "b"],
     gradFunc: function(dy, saved, attrs) {
-      var _a = saved, a = _a[0], b = _a[1];
-      var _b = attrs, transposeA = _b.transposeA, transposeB = _b.transposeB;
+      var a = saved[0], b = saved[1];
+      var _a = attrs, transposeA = _a.transposeA, transposeB = _a.transposeB;
       if (!transposeA && !transposeB) {
         return {
           a: function() {
@@ -19361,8 +19443,8 @@ var require_tf_core_node = __commonJS((exports) => {
       var convInfo = computeConv3DInfo(x5D.shape, filterShape, strides, dilations, pad2);
       return backend2.conv3dDerFilter(x5D, dy5D, convInfo);
     };
-    var inputs = {x: x5D, y: dy5D};
-    var attrs = {strides, pad: pad2};
+    var inputs = {x: x5D, dy: dy5D};
+    var attrs = {strides, pad: pad2, filterShape};
     return ENGINE.runKernelFunc(forward, inputs, null, Conv3DBackpropFilterV2, attrs);
   }
   var conv3DBackpropFilter = op({conv3DBackpropFilter_});
@@ -19530,13 +19612,12 @@ var require_tf_core_node = __commonJS((exports) => {
           return "Error in depthwiseConv2d: pad must be an integer when using, " + ("dimRoundingMode " + dimRoundingMode + " but got pad " + pad2 + ".");
         });
       }
-      var convInfo = computeConv2DInfo(x.shape, filter.shape, strides, $dilations, pad2, dimRoundingMode, true);
       return {
         x: function() {
-          return depthwiseConv2dNativeBackpropInput(x.shape, dy, filter, convInfo);
+          return depthwiseConv2dNativeBackpropInput(x.shape, dy, filter, strides, pad2, dilations, dimRoundingMode);
         },
         filter: function() {
-          return depthwiseConv2dNativeBackpropFilter(x, dy, filter.shape, convInfo);
+          return depthwiseConv2dNativeBackpropFilter(x, dy, filter.shape, strides, pad2, dilations, dimRoundingMode);
         }
       };
     }
@@ -20227,7 +20308,7 @@ var require_tf_core_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  function gradForMinAndMax(dy, y, xOrig, origAxes, permutedAxes) {
+  function gradForMinAndMax(dy, y, xOrig, origAxes) {
     if (y.rank < xOrig.rank) {
       y = reshape(y, expandShapeToKeepDim(y.shape, origAxes));
     }
@@ -20237,7 +20318,7 @@ var require_tf_core_node = __commonJS((exports) => {
     return {
       x: function() {
         var dx = mul(dy, cast(equal(xOrig, y), dy.dtype));
-        return permutedAxes == null ? dx : transpose(dx, permutedAxes);
+        return dx;
       }
     };
   }
@@ -20264,17 +20345,13 @@ var require_tf_core_node = __commonJS((exports) => {
     gradFunc: function(dy, saved, attrs) {
       var maxAttrs = attrs;
       var reductionIndices = maxAttrs.reductionIndices;
-      var x = saved[0], y = saved[1];
+      var x = saved[0];
+      var y = saved[1];
       var origAxes = parseAxisParam(reductionIndices, x.shape);
-      var permutedAxes = getAxesPermutation(origAxes, x.rank);
-      var maxGrad = gradForMinAndMax(dy, y, x, origAxes, permutedAxes);
+      var maxGrad = gradForMinAndMax(dy, y, x, origAxes);
       return {
         x: function() {
-          var out = maxGrad["x"]();
-          if (permutedAxes != null) {
-            out = transpose(out);
-          }
-          return out;
+          return maxGrad["x"]();
         }
       };
     }
@@ -20513,15 +20590,10 @@ var require_tf_core_node = __commonJS((exports) => {
       var axis = minAttrs.axis;
       var x = saved[0], y = saved[1];
       var origAxes = parseAxisParam(axis, x.shape);
-      var permutedAxes = getAxesPermutation(origAxes, x.rank);
-      var minGrad = gradForMinAndMax(dy, y, x, origAxes, permutedAxes);
+      var minGrad = gradForMinAndMax(dy, y, x, origAxes);
       return {
         x: function() {
-          var out = minGrad["x"]();
-          if (permutedAxes != null) {
-            out = transpose(out);
-          }
-          return out;
+          return minGrad["x"]();
         }
       };
     }
@@ -20554,6 +20626,36 @@ var require_tf_core_node = __commonJS((exports) => {
         return mul(dy, cast(greater(a, b), "float32"));
       };
       return {a: derA, b: derB};
+    }
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var mirrorPadGradConfig = {
+    kernelName: MirrorPad,
+    inputsToSave: ["x"],
+    gradFunc: function(dy, saved, attrs) {
+      var x = saved[0];
+      var paddings = attrs.paddings;
+      var begin = paddings.map(function(p) {
+        return p[0];
+      });
+      return {x: function() {
+        return slice(dy, begin, x.shape);
+      }};
     }
   };
   /**
@@ -21868,6 +21970,7 @@ var require_tf_core_node = __commonJS((exports) => {
     maxPoolGradConfig,
     minGradConfig,
     minimumGradConfig,
+    mirrorPadGradConfig,
     modGradConfig,
     multiplyGradConfig,
     negateGradConfig,
@@ -23700,6 +23803,26 @@ var require_tf_core_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
+  Tensor.prototype.mirrorPad = function(paddings, mode) {
+    this.throwIfDisposed();
+    return mirrorPad(this, paddings, mode);
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
   Tensor.prototype.modStrict = function(x) {
     this.throwIfDisposed();
     return modStrict(this, x);
@@ -25029,6 +25152,7 @@ var require_tf_core_node = __commonJS((exports) => {
   exports.Mean = Mean;
   exports.Min = Min;
   exports.Minimum = Minimum;
+  exports.MirrorPad = MirrorPad;
   exports.Mod = Mod;
   exports.MomentumOptimizer = MomentumOptimizer;
   exports.Multiply = Multiply;
@@ -25234,6 +25358,7 @@ var require_tf_core_node = __commonJS((exports) => {
   exports.min = min;
   exports.minimum = minimum;
   exports.minimumStrict = minimumStrict;
+  exports.mirrorPad = mirrorPad;
   exports.mod = mod;
   exports.modStrict = modStrict;
   exports.moments = moments;
@@ -29445,7 +29570,7 @@ var require_tf_layers_node = __commonJS((exports) => {
     }
   }
   /** @license See the LICENSE file. */
-  var version = "2.6.0";
+  var version = "2.7.0";
   /**
    * @license
    * Copyright 2018 Google LLC
@@ -39093,6 +39218,32 @@ var require_tf_converter_node = __commonJS((exports) => {
       return {value: op[0] ? op[1] : void 0, done: true};
     }
   }
+  function __read(o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m)
+      return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+      while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
+        ar.push(r.value);
+    } catch (error) {
+      e = {error};
+    } finally {
+      try {
+        if (r && !r.done && (m = i["return"]))
+          m.call(i);
+      } finally {
+        if (e)
+          throw e.error;
+      }
+    }
+    return ar;
+  }
+  function __spread() {
+    for (var ar = [], i = 0; i < arguments.length; i++)
+      ar = ar.concat(__read(arguments[i]));
+    return ar;
+  }
   /**
    * @license
    * Copyright 2019 Google LLC. All Rights Reserved.
@@ -39200,29 +39351,35 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  function getParamValue(paramName, node, tensorMap, context) {
+  function getParamValue(paramName, node, tensorMap, context, resourceManager) {
     var inputParam = node.inputParams[paramName];
     if (inputParam && inputParam.inputIndexStart !== void 0) {
       var start = inputParam.inputIndexStart;
       var end = inputParam.inputIndexEnd === 0 ? void 0 : inputParam.inputIndexEnd === void 0 ? start + 1 : inputParam.inputIndexEnd;
       if (inputParam.type === "tensor") {
-        return getTensor(node.inputNames[inputParam.inputIndexStart], tensorMap, context);
+        return getTensor(node.inputNames[inputParam.inputIndexStart], tensorMap, context, resourceManager);
       }
       if (inputParam.type === "tensors") {
         var inputs = node.inputNames.slice(start, end);
         return inputs.map(function(name) {
-          return getTensor(name, tensorMap, context);
+          return getTensor(name, tensorMap, context, resourceManager);
         });
       }
-      var tensor = getTensor(node.inputNames.slice(start)[0], tensorMap, context);
+      var tensor = getTensor(node.inputNames.slice(start)[0], tensorMap, context, resourceManager);
       var data = tensor.dataSync();
       return inputParam.type === "number" ? data[0] : tfOps.util.toNestedArray(tensor.shape, data);
     }
     var attrParam = node.attrParams[paramName];
     return attrParam && attrParam.value;
   }
-  function getTensor(name, tensorsMap, context) {
-    var _a = parseNodeName(name), nodeName = _a[0], index = _a[1];
+  function getTensor(name, tensorsMap, context, resourceManager) {
+    var _a = __read(parseNodeName(name), 2), nodeName = _a[0], index = _a[1];
+    if (resourceManager != null) {
+      var tensor = resourceManager.getHashTableHandleByName(nodeName);
+      if (tensor != null) {
+        return tensor;
+      }
+    }
     var contextId = context.currentContextIds.find(function(contextId2) {
       return !!tensorsMap[getNodeNameWithContextId(nodeName, contextId2)];
     });
@@ -39232,7 +39389,7 @@ var require_tf_converter_node = __commonJS((exports) => {
     return tensorsMap[getNodeNameWithContextId(name, context.currentContextId)];
   }
   function getNodeNameAndIndex(inputName, context) {
-    var _a = parseNodeName(inputName), nodeName = _a[0], index = _a[1];
+    var _a = __read(parseNodeName(inputName), 2), nodeName = _a[0], index = _a[1];
     return [
       getNodeNameWithContextId(nodeName, context && context.currentContextId),
       index
@@ -39939,22 +40096,6 @@ var require_tf_converter_node = __commonJS((exports) => {
     __proto__: null,
     json: json$1
   };
-  /**
-   * @license
-   * Copyright 2018 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
   var json$2 = [
     {
       tfOpName: "LoopCond",
@@ -40282,7 +40423,9 @@ var require_tf_converter_node = __commonJS((exports) => {
         {start: 0, name: "tensorListId", type: "tensor"},
         {start: 1, name: "tensor", type: "tensor"}
       ],
-      attrs: [{tfName: "element_dtype", name: "elementDType", type: "dtype"}]
+      attrs: [
+        {tfName: "element_dtype", name: "elementDType", type: "dtype"}
+      ]
     }
   ];
   var control = {
@@ -41095,6 +41238,114 @@ var require_tf_converter_node = __commonJS((exports) => {
     __proto__: null,
     json: json$7
   };
+  var json$8 = [
+    {
+      tfOpName: "HashTable",
+      category: "hash_table",
+      inputs: [],
+      attrs: [
+        {tfName: "shared_name", name: "sharedName", type: "string"},
+        {
+          tfName: "use_node_name_sharing",
+          name: "useNodeNameSharing",
+          type: "bool"
+        },
+        {tfName: "key_dtype", name: "keyDType", type: "dtype"},
+        {tfName: "value_dtype", name: "valueDType", type: "dtype"}
+      ]
+    },
+    {
+      tfOpName: "HashTableV2",
+      category: "hash_table",
+      inputs: [],
+      attrs: [
+        {tfName: "shared_name", name: "sharedName", type: "string"},
+        {
+          tfName: "use_node_name_sharing",
+          name: "useNodeNameSharing",
+          type: "bool"
+        },
+        {tfName: "key_dtype", name: "keyDType", type: "dtype"},
+        {tfName: "value_dtype", name: "valueDType", type: "dtype"}
+      ]
+    },
+    {
+      tfOpName: "LookupTableImport",
+      category: "hash_table",
+      inputs: [
+        {start: 0, name: "tableHandle", type: "tensor"},
+        {start: 1, name: "keys", type: "tensor"},
+        {start: 2, name: "values", type: "tensor"}
+      ],
+      attrs: [
+        {tfName: "Tin", name: "tIn", type: "dtype", notSupported: true},
+        {
+          tfName: "Tout",
+          name: "tOut",
+          type: "dtype",
+          notSupported: true
+        }
+      ]
+    },
+    {
+      tfOpName: "LookupTableImportV2",
+      category: "hash_table",
+      inputs: [
+        {start: 0, name: "tableHandle", type: "tensor"},
+        {start: 1, name: "keys", type: "tensor"},
+        {start: 2, name: "values", type: "tensor"}
+      ],
+      attrs: [
+        {tfName: "Tin", name: "tIn", type: "dtype", notSupported: true},
+        {
+          tfName: "Tout",
+          name: "tOut",
+          type: "dtype",
+          notSupported: true
+        }
+      ]
+    },
+    {
+      tfOpName: "LookupTableFind",
+      category: "hash_table",
+      inputs: [
+        {start: 0, name: "tableHandle", type: "tensor"},
+        {start: 1, name: "keys", type: "tensor"},
+        {start: 2, name: "defaultValue", type: "tensor"}
+      ],
+      attrs: [
+        {tfName: "Tin", name: "tIn", type: "dtype", notSupported: true},
+        {
+          tfName: "Tout",
+          name: "tOut",
+          type: "dtype",
+          notSupported: true
+        }
+      ]
+    },
+    {
+      tfOpName: "LookupTableFindV2",
+      category: "hash_table",
+      inputs: [
+        {start: 0, name: "tableHandle", type: "tensor"},
+        {start: 1, name: "keys", type: "tensor"},
+        {start: 2, name: "defaultValue", type: "tensor"}
+      ],
+      attrs: [
+        {tfName: "Tin", name: "tIn", type: "dtype", notSupported: true},
+        {
+          tfName: "Tout",
+          name: "tOut",
+          type: "dtype",
+          notSupported: true
+        }
+      ]
+    }
+  ];
+  var hashTable = {
+    __proto__: null,
+    json: json$8
+  };
   /**
    * @license
    * Copyright 2018 Google LLC. All Rights Reserved.
@@ -41111,7 +41362,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var json$8 = [
+  var json$9 = [
     {
       tfOpName: "ResizeBilinear",
       category: "image",
@@ -41157,7 +41408,7 @@ var require_tf_converter_node = __commonJS((exports) => {
   ];
   var image = {
     __proto__: null,
-    json: json$8
+    json: json$9
   };
   /**
    * @license
@@ -41175,7 +41426,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var json$9 = [
+  var json$a = [
     {
       tfOpName: "Equal",
       category: "logical",
@@ -41304,7 +41555,7 @@ var require_tf_converter_node = __commonJS((exports) => {
   ];
   var logical = {
     __proto__: null,
-    json: json$9
+    json: json$a
   };
   /**
    * @license
@@ -41322,7 +41573,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var json$a = [
+  var json$b = [
     {
       tfOpName: "_FusedMatMul",
       category: "matrices",
@@ -41446,7 +41697,7 @@ var require_tf_converter_node = __commonJS((exports) => {
   ];
   var matrices = {
     __proto__: null,
-    json: json$a
+    json: json$b
   };
   /**
    * @license
@@ -41464,7 +41715,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var json$b = [
+  var json$c = [
     {
       tfOpName: "FusedBatchNorm",
       category: "normalization",
@@ -41598,7 +41849,7 @@ var require_tf_converter_node = __commonJS((exports) => {
   ];
   var normalization = {
     __proto__: null,
-    json: json$b
+    json: json$c
   };
   /**
    * @license
@@ -41616,7 +41867,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var json$c = [
+  var json$d = [
     {
       tfOpName: "Max",
       category: "reduction",
@@ -41711,7 +41962,7 @@ var require_tf_converter_node = __commonJS((exports) => {
   ];
   var reduction = {
     __proto__: null,
-    json: json$c
+    json: json$d
   };
   /**
    * @license
@@ -41729,7 +41980,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var json$d = [
+  var json$e = [
     {
       tfOpName: "ConcatV2",
       category: "slice_join",
@@ -41936,7 +42187,7 @@ var require_tf_converter_node = __commonJS((exports) => {
   ];
   var sliceJoin = {
     __proto__: null,
-    json: json$d
+    json: json$e
   };
   /**
    * @license
@@ -41954,7 +42205,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var json$e = [
+  var json$f = [
     {
       tfOpName: "FFT",
       category: "spectral",
@@ -41994,7 +42245,7 @@ var require_tf_converter_node = __commonJS((exports) => {
   ];
   var spectral = {
     __proto__: null,
-    json: json$e
+    json: json$f
   };
   /**
    * @license
@@ -42012,7 +42263,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var json$f = [
+  var json$g = [
     {
       tfOpName: "Cast",
       category: "transformation",
@@ -42036,6 +42287,15 @@ var require_tf_converter_node = __commonJS((exports) => {
         {start: 0, name: "x", type: "tensor"},
         {start: 1, name: "axis", type: "number"}
       ]
+    },
+    {
+      tfOpName: "MirrorPad",
+      category: "transformation",
+      inputs: [
+        {start: 0, name: "x", type: "tensor"},
+        {start: 1, name: "padding", type: "number[]"}
+      ],
+      attrs: [{tfName: "mode", name: "mode", type: "string"}]
     },
     {
       tfOpName: "Pad",
@@ -42127,7 +42387,7 @@ var require_tf_converter_node = __commonJS((exports) => {
   ];
   var transformation = {
     __proto__: null,
-    json: json$f
+    json: json$g
   };
   /**
    * @license
@@ -42163,11 +42423,12 @@ var require_tf_converter_node = __commonJS((exports) => {
         reduction,
         sliceJoin,
         spectral,
-        transformation
+        transformation,
+        hashTable
       ];
-      var mappersJson = [].concat.apply([], ops.map(function(op) {
+      var mappersJson = [].concat.apply([], __spread(ops.map(function(op) {
         return op.json;
-      }));
+      })));
       this.opMappers = mappersJson.reduce(function(map, mapper) {
         map[mapper.tfOpName] = mapper;
         return map;
@@ -42212,7 +42473,7 @@ var require_tf_converter_node = __commonJS((exports) => {
       allNodes.forEach(function(key) {
         var node = nodes[key];
         node.inputNames.forEach(function(name) {
-          var nodeName = getNodeNameAndIndex(name)[0];
+          var _a = __read(getNodeNameAndIndex(name), 1), nodeName = _a[0];
           node.inputs.push(nodes[nodeName]);
           nodes[nodeName].children.push(node);
         });
@@ -42226,7 +42487,7 @@ var require_tf_converter_node = __commonJS((exports) => {
         });
       } else {
         Object.keys(outputNodeNameToKey).forEach(function(name) {
-          var nodeName = getNodeNameAndIndex(name)[0];
+          var _a = __read(getNodeNameAndIndex(name), 1), nodeName = _a[0];
           var node = nodes[nodeName];
           if (node != null) {
             node.signatureKey = outputNodeNameToKey[name];
@@ -42236,7 +42497,7 @@ var require_tf_converter_node = __commonJS((exports) => {
       }
       if (Object.keys(inputNodeNameToKey).length > 0) {
         Object.keys(inputNodeNameToKey).forEach(function(name) {
-          var nodeName = getNodeNameAndIndex(name)[0];
+          var _a = __read(getNodeNameAndIndex(name), 1), nodeName = _a[0];
           var node = nodes[nodeName];
           if (node) {
             node.signatureKey = inputNodeNameToKey[name];
@@ -42394,7 +42655,7 @@ var require_tf_converter_node = __commonJS((exports) => {
       var inputs = [];
       var outputs = [];
       functionDef.signature.inputArg.forEach(function(arg) {
-        var nodeName = getNodeNameAndIndex(arg.name)[0];
+        var _a = __read(getNodeNameAndIndex(arg.name), 1), nodeName = _a[0];
         var node = {
           name: nodeName,
           op: "Placeholder",
@@ -42413,14 +42674,14 @@ var require_tf_converter_node = __commonJS((exports) => {
       allNodes.forEach(function(key) {
         var node = nodes[key];
         node.inputNames.forEach(function(name) {
-          var nodeName = getNodeNameAndIndex(name)[0];
+          var _a = __read(getNodeNameAndIndex(name), 1), nodeName = _a[0];
           node.inputs.push(nodes[nodeName]);
           nodes[nodeName].children.push(node);
         });
       });
       var returnNodeMap = functionDef.ret;
       functionDef.signature.outputArg.forEach(function(output) {
-        var _a = getNodeNameAndIndex(returnNodeMap[output.name]), nodeName = _a[0], index = _a[1];
+        var _a = __read(getNodeNameAndIndex(returnNodeMap[output.name]), 2), nodeName = _a[0], index = _a[1];
         var node = nodes[nodeName];
         if (node != null) {
           node.defaultOutput = index;
@@ -43029,7 +43290,7 @@ var require_tf_converter_node = __commonJS((exports) => {
       if (indices.length !== tensor.shape[0]) {
         throw new Error("Expected len(indices) == tensor.shape[0], but saw: " + indices.length + " vs. " + tensor.shape[0]);
       }
-      var maxIndex = Math.max.apply(Math, indices);
+      var maxIndex = Math.max.apply(Math, __spread(indices));
       if (!this.dynamicSize && maxIndex >= this.maxSize) {
         throw new Error("Max index must be < array size (" + maxIndex + "  vs. " + this.maxSize + ")");
       }
@@ -43116,7 +43377,7 @@ var require_tf_converter_node = __commonJS((exports) => {
       configurable: true
     });
     TensorList2.prototype.copy = function() {
-      return new TensorList2(this.tensors.slice(), this.elementShape, this.elementDtype);
+      return new TensorList2(__spread(this.tensors), this.elementShape, this.elementDtype);
     };
     TensorList2.prototype.clearAndClose = function(keepIds) {
       this.tensors.forEach(function(tensor) {
@@ -43259,7 +43520,7 @@ var require_tf_converter_node = __commonJS((exports) => {
     if (indices.length !== tensor.shape[0]) {
       throw new Error("Expected len(indices) == tensor.shape[0], but saw: " + indices.length + " vs. " + tensor.shape[0]);
     }
-    var maxIndex = Math.max.apply(Math, indices);
+    var maxIndex = Math.max.apply(Math, __spread(indices));
     if (numElements != null && numElements !== -1 && maxIndex >= numElements) {
       throw new Error("Max index must be < array size (" + maxIndex + "  vs. " + numElements + ")");
     }
@@ -43675,7 +43936,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * =============================================================================
    */
   function fusedConvAndDepthWiseParams(node, tensorMap, context) {
-    var _a = getParamValue("fusedOps", node, tensorMap, context), extraOp = _a[0], activationFunc = _a[1];
+    var _a = __read(getParamValue("fusedOps", node, tensorMap, context), 2), extraOp = _a[0], activationFunc = _a[1];
     var isBiasAdd = extraOp === "biasadd";
     var isPrelu = activationFunc === "prelu";
     var isBatchNorm = extraOp === "fusedbatchnorm";
@@ -43695,7 +43956,7 @@ var require_tf_converter_node = __commonJS((exports) => {
     var pad = getPadding(node, tensorMap, context);
     var dataFormat = getParamValue("dataFormat", node, tensorMap, context).toUpperCase();
     var dilations = getParamValue("dilations", node, tensorMap, context);
-    var _b = getParamValue("args", node, tensorMap, context), biasArg = _b[0], preluArg = _b[1];
+    var _b = __read(getParamValue("args", node, tensorMap, context), 2), biasArg = _b[0], preluArg = _b[1];
     return {
       stride,
       pad,
@@ -44088,6 +44349,171 @@ var require_tf_converter_node = __commonJS((exports) => {
         throw TypeError("Node type " + node.op + " is not implemented");
     }
   };
+  var HashTable = function() {
+    function HashTable2(keyDType, valueDType) {
+      this.keyDType = keyDType;
+      this.valueDType = valueDType;
+      this.handle = tfOps.scalar(0);
+      this.tensorMap = new Map();
+      tfOps.keep(this.handle);
+    }
+    Object.defineProperty(HashTable2.prototype, "id", {
+      get: function() {
+        return this.handle.id;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    HashTable2.prototype.clearAndClose = function() {
+      this.tensorMap.forEach(function(value) {
+        return value.dispose();
+      });
+      this.tensorMap.clear();
+      this.handle.dispose();
+    };
+    HashTable2.prototype.size = function() {
+      return this.tensorMap.size;
+    };
+    HashTable2.prototype.import = function(keys, values) {
+      return __awaiter(this, void 0, void 0, function() {
+        var $keys;
+        var _this2 = this;
+        return __generator(this, function(_a) {
+          switch (_a.label) {
+            case 0:
+              this.checkKeyAndValueTensor(keys, values);
+              return [4, keys.data()];
+            case 1:
+              $keys = _a.sent();
+              this.tensorMap.forEach(function(value) {
+                return value.dispose();
+              });
+              this.tensorMap.clear();
+              return [2, tfOps.tidy(function() {
+                var $values = tfOps.unstack(values);
+                var keysLength = $keys.length;
+                var valuesLength = $values.length;
+                tfOps.util.assert(keysLength === valuesLength, function() {
+                  return "The number of elements doesn't match, keys has " + (keysLength + " elements, the values has " + valuesLength + " ") + "elements.";
+                });
+                for (var i = 0; i < keysLength; i++) {
+                  var key = $keys[i];
+                  var value = $values[i];
+                  tfOps.keep(value);
+                  _this2.tensorMap.set(key, value);
+                }
+                return _this2.handle;
+              })];
+          }
+        });
+      });
+    };
+    HashTable2.prototype.find = function(keys, defaultValue) {
+      return __awaiter(this, void 0, void 0, function() {
+        var $keys;
+        var _this2 = this;
+        return __generator(this, function(_a) {
+          switch (_a.label) {
+            case 0:
+              this.checkKeyAndValueTensor(keys, defaultValue);
+              return [4, keys.data()];
+            case 1:
+              $keys = _a.sent();
+              return [2, tfOps.tidy(function() {
+                var result = [];
+                for (var i = 0; i < $keys.length; i++) {
+                  var key = $keys[i];
+                  var value = _this2.findWithDefault(key, defaultValue);
+                  result.push(value);
+                }
+                return tfOps.stack(result);
+              })];
+          }
+        });
+      });
+    };
+    HashTable2.prototype.findWithDefault = function(key, defaultValue) {
+      var result = this.tensorMap.get(key);
+      return result != null ? result : defaultValue;
+    };
+    HashTable2.prototype.checkKeyAndValueTensor = function(key, value) {
+      if (key.dtype !== this.keyDType) {
+        throw new Error("Expect key dtype " + this.keyDType + ", but got " + ("" + key.dtype));
+      }
+      if (value.dtype !== this.valueDType) {
+        throw new Error("Expect value dtype " + this.valueDType + ", but got " + ("" + value.dtype));
+      }
+    };
+    return HashTable2;
+  }();
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var _this$2 = void 0;
+  var executeOp$8 = function(node, tensorMap, context, resourceManager) {
+    return __awaiter(_this$2, void 0, void 0, function() {
+      var _a, keyDType, valueDType, hashTable2, handle, keys, values, hashTable2, handle, keys, defaultValue, hashTable2;
+      return __generator(this, function(_b) {
+        switch (_b.label) {
+          case 0:
+            _a = node.op;
+            switch (_a) {
+              case "HashTable":
+                return [3, 1];
+              case "HashTableV2":
+                return [3, 1];
+              case "LookupTableImport":
+                return [3, 2];
+              case "LookupTableImportV2":
+                return [3, 2];
+              case "LookupTableFind":
+                return [3, 4];
+              case "LookupTableFindV2":
+                return [3, 4];
+            }
+            return [3, 6];
+          case 1: {
+            keyDType = getParamValue("keyDType", node, tensorMap, context);
+            valueDType = getParamValue("valueDType", node, tensorMap, context);
+            hashTable2 = new HashTable(keyDType, valueDType);
+            resourceManager.addHashTable(node.name, hashTable2);
+            return [2, [hashTable2.handle]];
+          }
+          case 2:
+            handle = getParamValue("tableHandle", node, tensorMap, context, resourceManager);
+            keys = getParamValue("keys", node, tensorMap, context);
+            values = getParamValue("values", node, tensorMap, context);
+            hashTable2 = resourceManager.getHashTableById(handle.id);
+            return [4, hashTable2.import(keys, values)];
+          case 3:
+            return [2, [_b.sent()]];
+          case 4:
+            handle = getParamValue("tableHandle", node, tensorMap, context, resourceManager);
+            keys = getParamValue("keys", node, tensorMap, context);
+            defaultValue = getParamValue("defaultValue", node, tensorMap, context);
+            hashTable2 = resourceManager.getHashTableById(handle.id);
+            return [4, hashTable2.find(keys, defaultValue)];
+          case 5:
+            return [2, [_b.sent()]];
+          case 6:
+            throw TypeError("Node type " + node.op + " is not implemented");
+        }
+      });
+    });
+  };
   /**
    * @license
    * Copyright 2018 Google LLC. All Rights Reserved.
@@ -44104,7 +44530,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var executeOp$8 = function(node, tensorMap, context) {
+  var executeOp$9 = function(node, tensorMap, context) {
     switch (node.op) {
       case "ResizeBilinear": {
         var images = getParamValue("images", node, tensorMap, context);
@@ -44147,7 +44573,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var executeOp$9 = function(node, tensorMap, context) {
+  var executeOp$a = function(node, tensorMap, context) {
     switch (node.op) {
       case "Equal": {
         return [tfOps.equal(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
@@ -44200,7 +44626,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var executeOp$a = function(node, tensorMap, context) {
+  var executeOp$b = function(node, tensorMap, context) {
     switch (node.op) {
       case "BatchMatMul":
       case "BatchMatMulV2":
@@ -44209,7 +44635,7 @@ var require_tf_converter_node = __commonJS((exports) => {
       case "Transpose":
         return [tfOps.transpose(getParamValue("x", node, tensorMap, context), getParamValue("perm", node, tensorMap, context))];
       case "_FusedMatMul":
-        var _a = getParamValue("fusedOps", node, tensorMap, context), extraOp = _a[0], activationFunc = _a[1];
+        var _a = __read(getParamValue("fusedOps", node, tensorMap, context), 2), extraOp = _a[0], activationFunc = _a[1];
         var isBiasAdd = extraOp === "biasadd";
         var isPrelu = activationFunc === "prelu";
         var numArgs = getParamValue("numArgs", node, tensorMap, context);
@@ -44221,7 +44647,7 @@ var require_tf_converter_node = __commonJS((exports) => {
             throw new Error("Fused MatMul with BiasAdd must have one extra argument: bias.");
           }
         }
-        var _b = getParamValue("args", node, tensorMap, context), biasArg = _b[0], preluArg = _b[1];
+        var _b = __read(getParamValue("args", node, tensorMap, context), 2), biasArg = _b[0], preluArg = _b[1];
         return [tfOps.fused.matMul({
           a: getParamValue("a", node, tensorMap, context),
           b: getParamValue("b", node, tensorMap, context),
@@ -44251,7 +44677,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var executeOp$b = function(node, tensorMap, context) {
+  var executeOp$c = function(node, tensorMap, context) {
     switch (node.op) {
       case "FusedBatchNorm":
       case "FusedBatchNormV2": {
@@ -44292,7 +44718,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var executeOp$c = function(node, tensorMap, context) {
+  var executeOp$d = function(node, tensorMap, context) {
     switch (node.op) {
       case "Max": {
         var axis = getParamValue("axis", node, tensorMap, context);
@@ -44363,7 +44789,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var executeOp$d = function(node, tensorMap, context) {
+  var executeOp$e = function(node, tensorMap, context) {
     switch (node.op) {
       case "ConcatV2":
       case "Concat": {
@@ -44473,7 +44899,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var executeOp$e = function(node, tensorMap, context) {
+  var executeOp$f = function(node, tensorMap, context) {
     switch (node.op) {
       case "FFT": {
         return [tfOps.fft(getParamValue("x", node, tensorMap, context))];
@@ -44507,7 +44933,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var executeOp$f = function(node, tensorMap, context) {
+  var executeOp$g = function(node, tensorMap, context) {
     switch (node.op) {
       case "Cast": {
         return [tfOps.cast(getParamValue("x", node, tensorMap, context), getParamValue("dtype", node, tensorMap, context))];
@@ -44522,6 +44948,9 @@ var require_tf_converter_node = __commonJS((exports) => {
       }
       case "Reshape": {
         return [tfOps.reshape(getParamValue("x", node, tensorMap, context), getParamValue("shape", node, tensorMap, context))];
+      }
+      case "MirrorPad": {
+        return [tfOps.mirrorPad(getParamValue("x", node, tensorMap, context), getParamValue("padding", node, tensorMap, context), getParamValue("mode", node, tensorMap, context))];
       }
       case "PadV2":
       case "Pad": {
@@ -44565,7 +44994,7 @@ var require_tf_converter_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  function executeOp$g(node, tensorMap, context) {
+  function executeOp$h(node, tensorMap, context, resourceManager) {
     var value = function(node2, tensorMap2, context2) {
       switch (node2.category) {
         case "arithmetic":
@@ -44594,7 +45023,7 @@ var require_tf_converter_node = __commonJS((exports) => {
           });
         case "image":
           return tfOps.tidy(function() {
-            return executeOp$8(node2, tensorMap2, context2);
+            return executeOp$9(node2, tensorMap2, context2);
           });
         case "graph":
           return tfOps.tidy(function() {
@@ -44602,32 +45031,34 @@ var require_tf_converter_node = __commonJS((exports) => {
           });
         case "logical":
           return tfOps.tidy(function() {
-            return executeOp$9(node2, tensorMap2, context2);
+            return executeOp$a(node2, tensorMap2, context2);
           });
         case "matrices":
           return tfOps.tidy(function() {
-            return executeOp$a(node2, tensorMap2, context2);
+            return executeOp$b(node2, tensorMap2, context2);
           });
         case "normalization":
           return tfOps.tidy(function() {
-            return executeOp$b(node2, tensorMap2, context2);
+            return executeOp$c(node2, tensorMap2, context2);
           });
         case "reduction":
           return tfOps.tidy(function() {
-            return executeOp$c(node2, tensorMap2, context2);
+            return executeOp$d(node2, tensorMap2, context2);
           });
         case "slice_join":
           return tfOps.tidy(function() {
-            return executeOp$d(node2, tensorMap2, context2);
+            return executeOp$e(node2, tensorMap2, context2);
           });
         case "spectral":
           return tfOps.tidy(function() {
-            return executeOp$e(node2, tensorMap2, context2);
+            return executeOp$f(node2, tensorMap2, context2);
           });
         case "transformation":
           return tfOps.tidy(function() {
-            return executeOp$f(node2, tensorMap2, context2);
+            return executeOp$g(node2, tensorMap2, context2);
           });
+        case "hash_table":
+          return executeOp$8(node2, tensorMap2, context2, resourceManager);
         case "custom":
           var opMapper = getRegisteredOp(node2.op);
           if (opMapper && opMapper.customExecutor) {
@@ -44639,7 +45070,7 @@ var require_tf_converter_node = __commonJS((exports) => {
           throw TypeError("Unknown op '" + node2.op + "'. File an issue at https://github.com/tensorflow/tfjs/issues so we can add it, or register a custom execution with tf.registerOp()");
       }
     }(node, tensorMap, context);
-    if (value instanceof Promise) {
+    if (tfOps.util.isPromise(value)) {
       return value.then(function(data) {
         return [].concat(data);
       });
@@ -44799,10 +45230,10 @@ var require_tf_converter_node = __commonJS((exports) => {
         return parseNodeName(node2.name)[0];
       });
     }
-    var frontier = outputs.slice();
+    var frontier = __spread(outputs);
     while (frontier.length > 0) {
       var node = frontier.pop();
-      if (isControlFlow(node) || isDynamicShape(node)) {
+      if (isControlFlow(node) || isDynamicShape(node) || isHashTable(node)) {
         if (dynamicNode == null) {
           dynamicNode = node;
           syncInputs = dynamicNode.children.map(function(child) {
@@ -44897,11 +45328,22 @@ var require_tf_converter_node = __commonJS((exports) => {
     "NonMaxSuppressionV5",
     "Where"
   ];
+  var HASH_TABLE_OPS = [
+    "HashTable",
+    "HashTableV2",
+    "LookupTableImport",
+    "LookupTableImportV2",
+    "LookupTableFind",
+    "LookupTableFindV2"
+  ];
   function isControlFlow(node) {
     return CONTROL_FLOW_OPS.indexOf(node.op) >= 0;
   }
   function isDynamicShape(node) {
     return DYNAMIC_SHAPE_OPS.indexOf(node.op) >= 0;
+  }
+  function isHashTable(node) {
+    return HASH_TABLE_OPS.indexOf(node.op) >= 0;
   }
   /**
    * @license
@@ -44964,8 +45406,15 @@ var require_tf_converter_node = __commonJS((exports) => {
             return tensor.id;
           });
         });
-        this._weightIds = [].concat.apply([], weightIds);
+        this._weightIds = [].concat.apply([], __spread(weightIds));
         this._weightMap = weightMap;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(GraphExecutor2.prototype, "resourceManager", {
+      set: function(resourceManager) {
+        this._resourceManager = resourceManager;
       },
       enumerable: true,
       configurable: true
@@ -45082,7 +45531,7 @@ var require_tf_converter_node = __commonJS((exports) => {
         var context = new ExecutionContext(_this2.weightMap, tensorArrayMap, tensorListMap, _this2.functionExecutorMap);
         var tensorsMap = __assign({}, _this2.weightMap);
         Object.keys(inputs).forEach(function(name) {
-          var _a = parseNodeName(name), nodeName = _a[0], index = _a[1];
+          var _a = __read(parseNodeName(name), 2), nodeName = _a[0], index = _a[1];
           var tensors2 = [];
           tensors2[index] = inputs[name];
           tensorsMap[nodeName] = tensors2;
@@ -45092,8 +45541,8 @@ var require_tf_converter_node = __commonJS((exports) => {
         for (var i = 0; i < orderedNodes.length; i++) {
           var node = orderedNodes[i];
           if (!tensorsMap[node.name]) {
-            var tensors = executeOp$g(node, tensorsMap, context);
-            if (tensors instanceof Promise) {
+            var tensors = executeOp$h(node, tensorsMap, context, _this2._resourceManager);
+            if (tfOps.util.isPromise(tensors)) {
               throw new Error("The execution of the op '" + node.op + "' returned a promise. Please use model.executeAsync() instead.");
             }
             tensorsMap[node.name] = tensors;
@@ -45188,7 +45637,7 @@ var require_tf_converter_node = __commonJS((exports) => {
               inputIds = Object.keys(inputs).map(function(name) {
                 return inputs[name].id;
               });
-              keepIds = new Set(outputIds.concat(inputIds, this.weightIds));
+              keepIds = new Set(__spread(outputIds, inputIds, this.weightIds));
               Object.keys(tensorMap).forEach(function(key) {
                 var tensorArray = tensorMap[key];
                 tensorArray.forEach(function(tensor) {
@@ -45235,13 +45684,16 @@ var require_tf_converter_node = __commonJS((exports) => {
               outputNodes = outputNodeNames.map(function(name) {
                 return _this2.graph.nodes[name];
               });
-              _a = getExecutionSubgraph(inputs, outputNodes, this.weightMap), usedNodes = _a.usedNodes, missingInputs = _a.missingInputs, dynamicNode = _a.dynamicNode, syncInputs = _a.syncInputs;
-              stack = inputNodes.concat(this.graph.weights).map(function(node) {
+              if (outputNodes.length === 0) {
+                outputNodes = this._outputs;
+              }
+              _a = getExecutionSubgraph(inputs, outputNodes, this.weightMap, this._initNodes), usedNodes = _a.usedNodes, missingInputs = _a.missingInputs, dynamicNode = _a.dynamicNode, syncInputs = _a.syncInputs;
+              stack = __spread(inputNodes, this.graph.weights, this._initNodes || []).map(function(node) {
                 return {node, contexts: context.currentContext};
               });
               tensorsMap = __assign({}, this.weightMap);
               Object.keys(inputs).forEach(function(name) {
-                var _a2 = parseNodeName(name), nodeName = _a2[0], index = _a2[1];
+                var _a2 = __read(parseNodeName(name), 2), nodeName = _a2[0], index = _a2[1];
                 var tensors = [];
                 tensors[index] = inputs[name];
                 tensorsMap[nodeName] = tensors;
@@ -45283,19 +45735,20 @@ var require_tf_converter_node = __commonJS((exports) => {
       var _this2 = this;
       var promises = [];
       var _loop_1 = function() {
+        var _a, _b;
         var item = stack.pop();
         context.currentContext = item.contexts;
         var nodeName = "";
         if (item.node.op === "Enter" && getParamValue("isConstant", item.node, tensorMap, context)) {
-          nodeName = getNodeNameAndIndex(item.node.name, context)[0];
+          _a = __read(getNodeNameAndIndex(item.node.name, context), 1), nodeName = _a[0];
         }
-        if (inputNodes.indexOf(item.node) === -1) {
-          var tensors = executeOp$g(item.node, tensorMap, context);
+        if (tensorMap[item.node.name] == null) {
+          var tensors = executeOp$h(item.node, tensorMap, context, this_1._resourceManager);
           if (!nodeName) {
-            nodeName = getNodeNameAndIndex(item.node.name, context)[0];
+            _b = __read(getNodeNameAndIndex(item.node.name, context), 1), nodeName = _b[0];
           }
           var currentContext_1 = context.currentContext;
-          if (tensors instanceof Promise) {
+          if (tfOps.util.isPromise(tensors)) {
             promises.push(tensors.then(function(t) {
               tensorMap[nodeName] = t;
               context.currentContext = currentContext_1;
@@ -45320,7 +45773,7 @@ var require_tf_converter_node = __commonJS((exports) => {
     };
     GraphExecutor2.prototype.processChildNodes = function(node, stack, context, tensorMap, added, usedNodes) {
       node.children.forEach(function(childNode) {
-        var nodeName = getNodeNameAndIndex(childNode.name, context)[0];
+        var _a = __read(getNodeNameAndIndex(childNode.name, context), 1), nodeName = _a[0];
         if (added[nodeName] || !usedNodes.has(childNode.name)) {
           return;
         }
@@ -45351,7 +45804,7 @@ var require_tf_converter_node = __commonJS((exports) => {
       var _this2 = this;
       Object.keys(inputs).forEach(function(name) {
         var input = inputs[name];
-        var nodeName = parseNodeName(name)[0];
+        var _a = __read(parseNodeName(name), 1), nodeName = _a[0];
         var node = _this2.graph.nodes[nodeName];
         if (node.attrParams["shape"] && node.attrParams["shape"].value) {
           var shape_1 = node.attrParams["shape"].value;
@@ -45384,7 +45837,7 @@ var require_tf_converter_node = __commonJS((exports) => {
     GraphExecutor2.prototype.checkInputs = function(inputs) {
       var _this2 = this;
       var notInGraph = Object.keys(inputs).filter(function(name) {
-        var nodeName = parseNodeName(name)[0];
+        var _a = __read(parseNodeName(name), 1), nodeName = _a[0];
         return _this2.graph.nodes[nodeName] == null;
       });
       if (notInGraph.length > 0) {
@@ -45404,13 +45857,46 @@ var require_tf_converter_node = __commonJS((exports) => {
     GraphExecutor2.prototype.checkOutputs = function(outputs) {
       var _this2 = this;
       outputs.forEach(function(name) {
-        var normalizedName = parseNodeName(name)[0];
+        var _a = __read(parseNodeName(name), 1), normalizedName = _a[0];
         if (!_this2.graph.nodes[normalizedName]) {
           throw new Error("The output '" + name + "' is not found in the graph");
         }
       });
     };
     return GraphExecutor2;
+  }();
+  var ResourceManager = function() {
+    function ResourceManager2(hashTableNameToHandle, hashTableMap) {
+      if (hashTableNameToHandle === void 0) {
+        hashTableNameToHandle = {};
+      }
+      if (hashTableMap === void 0) {
+        hashTableMap = {};
+      }
+      this.hashTableNameToHandle = hashTableNameToHandle;
+      this.hashTableMap = hashTableMap;
+    }
+    ResourceManager2.prototype.addHashTable = function(name, hashTable2) {
+      this.hashTableNameToHandle[name] = hashTable2.handle;
+      this.hashTableMap[hashTable2.id] = hashTable2;
+    };
+    ResourceManager2.prototype.getHashTableHandleByName = function(name) {
+      return this.hashTableNameToHandle[name];
+    };
+    ResourceManager2.prototype.getHashTableById = function(id) {
+      return this.hashTableMap[id];
+    };
+    ResourceManager2.prototype.dispose = function() {
+      for (var key in this.hashTableMap) {
+        this.hashTableMap[key].clearAndClose();
+        delete this.hashTableMap[key];
+      }
+      for (var name_1 in this.hashTableNameToHandle) {
+        this.hashTableNameToHandle[name_1].dispose();
+        delete this.hashTableNameToHandle[name_1];
+      }
+    };
+    return ResourceManager2;
   }();
   /**
    * @license
@@ -45441,6 +45927,7 @@ var require_tf_converter_node = __commonJS((exports) => {
       if (loadOptions == null) {
         this.loadOptions = {};
       }
+      this.resourceManager = new ResourceManager();
     }
     Object.defineProperty(GraphModel2.prototype, "modelVersion", {
       get: function() {
@@ -45529,11 +46016,13 @@ var require_tf_converter_node = __commonJS((exports) => {
       var weightMap = tfOps.io.decodeWeights(this.artifacts.weightData, this.artifacts.weightSpecs);
       this.executor = new GraphExecutor(OperationMapper.Instance.transformGraph(graph2, signature));
       this.executor.weightMap = this.convertTensorMapToTensorsMap(weightMap);
+      this.executor.resourceManager = this.resourceManager;
       if (artifacts.modelInitializer != null) {
         var initializer = OperationMapper.Instance.transformGraph(artifacts.modelInitializer);
         this.initializer = new GraphExecutor(initializer);
         this.initializer.weightMap = this.executor.weightMap;
-        this.initializer.execute({}, []);
+        this.initializer.resourceManager = this.resourceManager;
+        this.initializer.executeAsync({}, []);
       }
       return true;
     };
@@ -45610,6 +46099,7 @@ var require_tf_converter_node = __commonJS((exports) => {
       if (this.initializer) {
         this.initializer.dispose();
       }
+      this.resourceManager.dispose();
     };
     return GraphModel2;
   }();
@@ -45646,7 +46136,7 @@ var require_tf_converter_node = __commonJS((exports) => {
     });
   }
   /** @license See the LICENSE file. */
-  var version = "2.6.0";
+  var version = "2.7.0";
   exports.GraphModel = GraphModel;
   exports.deregisterOp = deregisterOp;
   exports.loadGraphModel = loadGraphModel;
@@ -45815,7 +46305,7 @@ var require_tf_data_node = __commonJS((exports) => {
     return module2 = {exports: {}}, fn(module2, module2.exports), module2.exports;
   }
   var alea = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function Alea(seed) {
         var me = this, mash = Mash();
         me.next = function() {
@@ -45887,8 +46377,8 @@ var require_tf_data_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -45897,7 +46387,7 @@ var require_tf_data_node = __commonJS((exports) => {
     })(commonjsGlobal, module2, false);
   });
   var xor128 = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function XorGen(seed) {
         var me = this, strseed = "";
         me.x = 0;
@@ -45951,8 +46441,8 @@ var require_tf_data_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -45961,7 +46451,7 @@ var require_tf_data_node = __commonJS((exports) => {
     })(commonjsGlobal, module2, false);
   });
   var xorwow = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function XorGen(seed) {
         var me = this, strseed = "";
         me.next = function() {
@@ -46022,8 +46512,8 @@ var require_tf_data_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -46032,7 +46522,7 @@ var require_tf_data_node = __commonJS((exports) => {
     })(commonjsGlobal, module2, false);
   });
   var xorshift7 = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function XorGen(seed) {
         var me = this;
         me.next = function() {
@@ -46109,8 +46599,8 @@ var require_tf_data_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -46119,7 +46609,7 @@ var require_tf_data_node = __commonJS((exports) => {
     })(commonjsGlobal, module2, false);
   });
   var xor4096 = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function XorGen(seed) {
         var me = this;
         me.next = function() {
@@ -46210,8 +46700,8 @@ var require_tf_data_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -46220,7 +46710,7 @@ var require_tf_data_node = __commonJS((exports) => {
     })(commonjsGlobal, module2, false);
   });
   var tychei = createCommonjsModule(function(module2) {
-    (function(global2, module3, define2) {
+    (function(global2, module3, define) {
       function XorGen(seed) {
         var me = this, strseed = "";
         me.next = function() {
@@ -46279,8 +46769,8 @@ var require_tf_data_node = __commonJS((exports) => {
       }
       if (module3 && module3.exports) {
         module3.exports = impl;
-      } else if (define2 && define2.amd) {
-        define2(function() {
+      } else if (define && define.amd) {
+        define(function() {
           return impl;
         });
       } else {
@@ -46540,7 +47030,7 @@ var require_tf_data_node = __commonJS((exports) => {
               return [3, 4];
             key = _a[_i];
             value = seen.get(key);
-            if (!(value instanceof Promise))
+            if (!tf2.util.isPromise(value))
               return [3, 3];
             return [4, value];
           case 2:
@@ -49360,7 +49850,7 @@ var require_tf_data_node = __commonJS((exports) => {
     });
   }
   /** @license See the LICENSE file. */
-  var version = "2.6.0";
+  var version = "2.7.0";
   exports.CSVDataset = CSVDataset;
   exports.Dataset = Dataset;
   exports.FileDataSource = FileDataSource;
@@ -49374,642 +49864,6 @@ var require_tf_data_node = __commonJS((exports) => {
   exports.version_data = version;
   exports.webcam = webcam;
   exports.zip = zip;
-});
-
-// node_modules/seedrandom/lib/alea.js
-var require_alea = __commonJS((exports, module) => {
-  (function(global2, module2, define2) {
-    function Alea(seed) {
-      var me = this, mash = Mash();
-      me.next = function() {
-        var t = 2091639 * me.s0 + me.c * 23283064365386963e-26;
-        me.s0 = me.s1;
-        me.s1 = me.s2;
-        return me.s2 = t - (me.c = t | 0);
-      };
-      me.c = 1;
-      me.s0 = mash(" ");
-      me.s1 = mash(" ");
-      me.s2 = mash(" ");
-      me.s0 -= mash(seed);
-      if (me.s0 < 0) {
-        me.s0 += 1;
-      }
-      me.s1 -= mash(seed);
-      if (me.s1 < 0) {
-        me.s1 += 1;
-      }
-      me.s2 -= mash(seed);
-      if (me.s2 < 0) {
-        me.s2 += 1;
-      }
-      mash = null;
-    }
-    function copy(f, t) {
-      t.c = f.c;
-      t.s0 = f.s0;
-      t.s1 = f.s1;
-      t.s2 = f.s2;
-      return t;
-    }
-    function impl(seed, opts) {
-      var xg = new Alea(seed), state = opts && opts.state, prng = xg.next;
-      prng.int32 = function() {
-        return xg.next() * 4294967296 | 0;
-      };
-      prng.double = function() {
-        return prng() + (prng() * 2097152 | 0) * 11102230246251565e-32;
-      };
-      prng.quick = prng;
-      if (state) {
-        if (typeof state == "object")
-          copy(state, xg);
-        prng.state = function() {
-          return copy(xg, {});
-        };
-      }
-      return prng;
-    }
-    function Mash() {
-      var n = 4022871197;
-      var mash = function(data) {
-        data = data.toString();
-        for (var i = 0; i < data.length; i++) {
-          n += data.charCodeAt(i);
-          var h = 0.02519603282416938 * n;
-          n = h >>> 0;
-          h -= n;
-          h *= n;
-          n = h >>> 0;
-          h -= n;
-          n += h * 4294967296;
-        }
-        return (n >>> 0) * 23283064365386963e-26;
-      };
-      return mash;
-    }
-    if (module2 && module2.exports) {
-      module2.exports = impl;
-    } else if (define2 && define2.amd) {
-      define2(function() {
-        return impl;
-      });
-    } else {
-      this.alea = impl;
-    }
-  })(exports, typeof module == "object" && module, typeof define == "function" && define);
-});
-
-// node_modules/seedrandom/lib/xor128.js
-var require_xor128 = __commonJS((exports, module) => {
-  (function(global2, module2, define2) {
-    function XorGen(seed) {
-      var me = this, strseed = "";
-      me.x = 0;
-      me.y = 0;
-      me.z = 0;
-      me.w = 0;
-      me.next = function() {
-        var t = me.x ^ me.x << 11;
-        me.x = me.y;
-        me.y = me.z;
-        me.z = me.w;
-        return me.w ^= me.w >>> 19 ^ t ^ t >>> 8;
-      };
-      if (seed === (seed | 0)) {
-        me.x = seed;
-      } else {
-        strseed += seed;
-      }
-      for (var k = 0; k < strseed.length + 64; k++) {
-        me.x ^= strseed.charCodeAt(k) | 0;
-        me.next();
-      }
-    }
-    function copy(f, t) {
-      t.x = f.x;
-      t.y = f.y;
-      t.z = f.z;
-      t.w = f.w;
-      return t;
-    }
-    function impl(seed, opts) {
-      var xg = new XorGen(seed), state = opts && opts.state, prng = function() {
-        return (xg.next() >>> 0) / 4294967296;
-      };
-      prng.double = function() {
-        do {
-          var top = xg.next() >>> 11, bot = (xg.next() >>> 0) / 4294967296, result = (top + bot) / (1 << 21);
-        } while (result === 0);
-        return result;
-      };
-      prng.int32 = xg.next;
-      prng.quick = prng;
-      if (state) {
-        if (typeof state == "object")
-          copy(state, xg);
-        prng.state = function() {
-          return copy(xg, {});
-        };
-      }
-      return prng;
-    }
-    if (module2 && module2.exports) {
-      module2.exports = impl;
-    } else if (define2 && define2.amd) {
-      define2(function() {
-        return impl;
-      });
-    } else {
-      this.xor128 = impl;
-    }
-  })(exports, typeof module == "object" && module, typeof define == "function" && define);
-});
-
-// node_modules/seedrandom/lib/xorwow.js
-var require_xorwow = __commonJS((exports, module) => {
-  (function(global2, module2, define2) {
-    function XorGen(seed) {
-      var me = this, strseed = "";
-      me.next = function() {
-        var t = me.x ^ me.x >>> 2;
-        me.x = me.y;
-        me.y = me.z;
-        me.z = me.w;
-        me.w = me.v;
-        return (me.d = me.d + 362437 | 0) + (me.v = me.v ^ me.v << 4 ^ (t ^ t << 1)) | 0;
-      };
-      me.x = 0;
-      me.y = 0;
-      me.z = 0;
-      me.w = 0;
-      me.v = 0;
-      if (seed === (seed | 0)) {
-        me.x = seed;
-      } else {
-        strseed += seed;
-      }
-      for (var k = 0; k < strseed.length + 64; k++) {
-        me.x ^= strseed.charCodeAt(k) | 0;
-        if (k == strseed.length) {
-          me.d = me.x << 10 ^ me.x >>> 4;
-        }
-        me.next();
-      }
-    }
-    function copy(f, t) {
-      t.x = f.x;
-      t.y = f.y;
-      t.z = f.z;
-      t.w = f.w;
-      t.v = f.v;
-      t.d = f.d;
-      return t;
-    }
-    function impl(seed, opts) {
-      var xg = new XorGen(seed), state = opts && opts.state, prng = function() {
-        return (xg.next() >>> 0) / 4294967296;
-      };
-      prng.double = function() {
-        do {
-          var top = xg.next() >>> 11, bot = (xg.next() >>> 0) / 4294967296, result = (top + bot) / (1 << 21);
-        } while (result === 0);
-        return result;
-      };
-      prng.int32 = xg.next;
-      prng.quick = prng;
-      if (state) {
-        if (typeof state == "object")
-          copy(state, xg);
-        prng.state = function() {
-          return copy(xg, {});
-        };
-      }
-      return prng;
-    }
-    if (module2 && module2.exports) {
-      module2.exports = impl;
-    } else if (define2 && define2.amd) {
-      define2(function() {
-        return impl;
-      });
-    } else {
-      this.xorwow = impl;
-    }
-  })(exports, typeof module == "object" && module, typeof define == "function" && define);
-});
-
-// node_modules/seedrandom/lib/xorshift7.js
-var require_xorshift7 = __commonJS((exports, module) => {
-  (function(global2, module2, define2) {
-    function XorGen(seed) {
-      var me = this;
-      me.next = function() {
-        var X = me.x, i = me.i, t, v, w;
-        t = X[i];
-        t ^= t >>> 7;
-        v = t ^ t << 24;
-        t = X[i + 1 & 7];
-        v ^= t ^ t >>> 10;
-        t = X[i + 3 & 7];
-        v ^= t ^ t >>> 3;
-        t = X[i + 4 & 7];
-        v ^= t ^ t << 7;
-        t = X[i + 7 & 7];
-        t = t ^ t << 13;
-        v ^= t ^ t << 9;
-        X[i] = v;
-        me.i = i + 1 & 7;
-        return v;
-      };
-      function init(me2, seed2) {
-        var j, w, X = [];
-        if (seed2 === (seed2 | 0)) {
-          w = X[0] = seed2;
-        } else {
-          seed2 = "" + seed2;
-          for (j = 0; j < seed2.length; ++j) {
-            X[j & 7] = X[j & 7] << 15 ^ seed2.charCodeAt(j) + X[j + 1 & 7] << 13;
-          }
-        }
-        while (X.length < 8)
-          X.push(0);
-        for (j = 0; j < 8 && X[j] === 0; ++j)
-          ;
-        if (j == 8)
-          w = X[7] = -1;
-        else
-          w = X[j];
-        me2.x = X;
-        me2.i = 0;
-        for (j = 256; j > 0; --j) {
-          me2.next();
-        }
-      }
-      init(me, seed);
-    }
-    function copy(f, t) {
-      t.x = f.x.slice();
-      t.i = f.i;
-      return t;
-    }
-    function impl(seed, opts) {
-      if (seed == null)
-        seed = +new Date();
-      var xg = new XorGen(seed), state = opts && opts.state, prng = function() {
-        return (xg.next() >>> 0) / 4294967296;
-      };
-      prng.double = function() {
-        do {
-          var top = xg.next() >>> 11, bot = (xg.next() >>> 0) / 4294967296, result = (top + bot) / (1 << 21);
-        } while (result === 0);
-        return result;
-      };
-      prng.int32 = xg.next;
-      prng.quick = prng;
-      if (state) {
-        if (state.x)
-          copy(state, xg);
-        prng.state = function() {
-          return copy(xg, {});
-        };
-      }
-      return prng;
-    }
-    if (module2 && module2.exports) {
-      module2.exports = impl;
-    } else if (define2 && define2.amd) {
-      define2(function() {
-        return impl;
-      });
-    } else {
-      this.xorshift7 = impl;
-    }
-  })(exports, typeof module == "object" && module, typeof define == "function" && define);
-});
-
-// node_modules/seedrandom/lib/xor4096.js
-var require_xor4096 = __commonJS((exports, module) => {
-  (function(global2, module2, define2) {
-    function XorGen(seed) {
-      var me = this;
-      me.next = function() {
-        var w = me.w, X = me.X, i = me.i, t, v;
-        me.w = w = w + 1640531527 | 0;
-        v = X[i + 34 & 127];
-        t = X[i = i + 1 & 127];
-        v ^= v << 13;
-        t ^= t << 17;
-        v ^= v >>> 15;
-        t ^= t >>> 12;
-        v = X[i] = v ^ t;
-        me.i = i;
-        return v + (w ^ w >>> 16) | 0;
-      };
-      function init(me2, seed2) {
-        var t, v, i, j, w, X = [], limit = 128;
-        if (seed2 === (seed2 | 0)) {
-          v = seed2;
-          seed2 = null;
-        } else {
-          seed2 = seed2 + "\0";
-          v = 0;
-          limit = Math.max(limit, seed2.length);
-        }
-        for (i = 0, j = -32; j < limit; ++j) {
-          if (seed2)
-            v ^= seed2.charCodeAt((j + 32) % seed2.length);
-          if (j === 0)
-            w = v;
-          v ^= v << 10;
-          v ^= v >>> 15;
-          v ^= v << 4;
-          v ^= v >>> 13;
-          if (j >= 0) {
-            w = w + 1640531527 | 0;
-            t = X[j & 127] ^= v + w;
-            i = t == 0 ? i + 1 : 0;
-          }
-        }
-        if (i >= 128) {
-          X[(seed2 && seed2.length || 0) & 127] = -1;
-        }
-        i = 127;
-        for (j = 4 * 128; j > 0; --j) {
-          v = X[i + 34 & 127];
-          t = X[i = i + 1 & 127];
-          v ^= v << 13;
-          t ^= t << 17;
-          v ^= v >>> 15;
-          t ^= t >>> 12;
-          X[i] = v ^ t;
-        }
-        me2.w = w;
-        me2.X = X;
-        me2.i = i;
-      }
-      init(me, seed);
-    }
-    function copy(f, t) {
-      t.i = f.i;
-      t.w = f.w;
-      t.X = f.X.slice();
-      return t;
-    }
-    ;
-    function impl(seed, opts) {
-      if (seed == null)
-        seed = +new Date();
-      var xg = new XorGen(seed), state = opts && opts.state, prng = function() {
-        return (xg.next() >>> 0) / 4294967296;
-      };
-      prng.double = function() {
-        do {
-          var top = xg.next() >>> 11, bot = (xg.next() >>> 0) / 4294967296, result = (top + bot) / (1 << 21);
-        } while (result === 0);
-        return result;
-      };
-      prng.int32 = xg.next;
-      prng.quick = prng;
-      if (state) {
-        if (state.X)
-          copy(state, xg);
-        prng.state = function() {
-          return copy(xg, {});
-        };
-      }
-      return prng;
-    }
-    if (module2 && module2.exports) {
-      module2.exports = impl;
-    } else if (define2 && define2.amd) {
-      define2(function() {
-        return impl;
-      });
-    } else {
-      this.xor4096 = impl;
-    }
-  })(exports, typeof module == "object" && module, typeof define == "function" && define);
-});
-
-// node_modules/seedrandom/lib/tychei.js
-var require_tychei = __commonJS((exports, module) => {
-  (function(global2, module2, define2) {
-    function XorGen(seed) {
-      var me = this, strseed = "";
-      me.next = function() {
-        var b = me.b, c = me.c, d = me.d, a = me.a;
-        b = b << 25 ^ b >>> 7 ^ c;
-        c = c - d | 0;
-        d = d << 24 ^ d >>> 8 ^ a;
-        a = a - b | 0;
-        me.b = b = b << 20 ^ b >>> 12 ^ c;
-        me.c = c = c - d | 0;
-        me.d = d << 16 ^ c >>> 16 ^ a;
-        return me.a = a - b | 0;
-      };
-      me.a = 0;
-      me.b = 0;
-      me.c = 2654435769 | 0;
-      me.d = 1367130551;
-      if (seed === Math.floor(seed)) {
-        me.a = seed / 4294967296 | 0;
-        me.b = seed | 0;
-      } else {
-        strseed += seed;
-      }
-      for (var k = 0; k < strseed.length + 20; k++) {
-        me.b ^= strseed.charCodeAt(k) | 0;
-        me.next();
-      }
-    }
-    function copy(f, t) {
-      t.a = f.a;
-      t.b = f.b;
-      t.c = f.c;
-      t.d = f.d;
-      return t;
-    }
-    ;
-    function impl(seed, opts) {
-      var xg = new XorGen(seed), state = opts && opts.state, prng = function() {
-        return (xg.next() >>> 0) / 4294967296;
-      };
-      prng.double = function() {
-        do {
-          var top = xg.next() >>> 11, bot = (xg.next() >>> 0) / 4294967296, result = (top + bot) / (1 << 21);
-        } while (result === 0);
-        return result;
-      };
-      prng.int32 = xg.next;
-      prng.quick = prng;
-      if (state) {
-        if (typeof state == "object")
-          copy(state, xg);
-        prng.state = function() {
-          return copy(xg, {});
-        };
-      }
-      return prng;
-    }
-    if (module2 && module2.exports) {
-      module2.exports = impl;
-    } else if (define2 && define2.amd) {
-      define2(function() {
-        return impl;
-      });
-    } else {
-      this.tychei = impl;
-    }
-  })(exports, typeof module == "object" && module, typeof define == "function" && define);
-});
-
-// node_modules/seedrandom/seedrandom.js
-var require_seedrandom = __commonJS((exports, module) => {
-  (function(pool, math) {
-    var global2 = this, width = 256, chunks = 6, digits = 52, rngname = "random", startdenom = math.pow(width, chunks), significance = math.pow(2, digits), overflow = significance * 2, mask = width - 1, nodecrypto;
-    function seedrandom(seed, options, callback) {
-      var key = [];
-      options = options == true ? {entropy: true} : options || {};
-      var shortseed = mixkey(flatten(options.entropy ? [seed, tostring(pool)] : seed == null ? autoseed() : seed, 3), key);
-      var arc4 = new ARC4(key);
-      var prng = function() {
-        var n = arc4.g(chunks), d = startdenom, x = 0;
-        while (n < significance) {
-          n = (n + x) * width;
-          d *= width;
-          x = arc4.g(1);
-        }
-        while (n >= overflow) {
-          n /= 2;
-          d /= 2;
-          x >>>= 1;
-        }
-        return (n + x) / d;
-      };
-      prng.int32 = function() {
-        return arc4.g(4) | 0;
-      };
-      prng.quick = function() {
-        return arc4.g(4) / 4294967296;
-      };
-      prng.double = prng;
-      mixkey(tostring(arc4.S), pool);
-      return (options.pass || callback || function(prng2, seed2, is_math_call, state) {
-        if (state) {
-          if (state.S) {
-            copy(state, arc4);
-          }
-          prng2.state = function() {
-            return copy(arc4, {});
-          };
-        }
-        if (is_math_call) {
-          math[rngname] = prng2;
-          return seed2;
-        } else
-          return prng2;
-      })(prng, shortseed, "global" in options ? options.global : this == math, options.state);
-    }
-    math["seed" + rngname] = seedrandom;
-    function ARC4(key) {
-      var t, keylen = key.length, me = this, i = 0, j = me.i = me.j = 0, s = me.S = [];
-      if (!keylen) {
-        key = [keylen++];
-      }
-      while (i < width) {
-        s[i] = i++;
-      }
-      for (i = 0; i < width; i++) {
-        s[i] = s[j = mask & j + key[i % keylen] + (t = s[i])];
-        s[j] = t;
-      }
-      (me.g = function(count) {
-        var t2, r = 0, i2 = me.i, j2 = me.j, s2 = me.S;
-        while (count--) {
-          t2 = s2[i2 = mask & i2 + 1];
-          r = r * width + s2[mask & (s2[i2] = s2[j2 = mask & j2 + t2]) + (s2[j2] = t2)];
-        }
-        me.i = i2;
-        me.j = j2;
-        return r;
-      })(width);
-    }
-    function copy(f, t) {
-      t.i = f.i;
-      t.j = f.j;
-      t.S = f.S.slice();
-      return t;
-    }
-    ;
-    function flatten(obj, depth) {
-      var result = [], typ = typeof obj, prop;
-      if (depth && typ == "object") {
-        for (prop in obj) {
-          try {
-            result.push(flatten(obj[prop], depth - 1));
-          } catch (e) {
-          }
-        }
-      }
-      return result.length ? result : typ == "string" ? obj : obj + "\0";
-    }
-    function mixkey(seed, key) {
-      var stringseed = seed + "", smear, j = 0;
-      while (j < stringseed.length) {
-        key[mask & j] = mask & (smear ^= key[mask & j] * 19) + stringseed.charCodeAt(j++);
-      }
-      return tostring(key);
-    }
-    function autoseed() {
-      try {
-        var out;
-        if (nodecrypto && (out = nodecrypto.randomBytes)) {
-          out = out(width);
-        } else {
-          out = new Uint8Array(width);
-          (global2.crypto || global2.msCrypto).getRandomValues(out);
-        }
-        return tostring(out);
-      } catch (e) {
-        var browser = global2.navigator, plugins = browser && browser.plugins;
-        return [+new Date(), global2, plugins, global2.screen, tostring(pool)];
-      }
-    }
-    function tostring(a) {
-      return String.fromCharCode.apply(0, a);
-    }
-    mixkey(math.random(), pool);
-    if (typeof module == "object" && module.exports) {
-      module.exports = seedrandom;
-      try {
-        nodecrypto = require_crypto();
-      } catch (ex) {
-      }
-    } else if (typeof define == "function" && define.amd) {
-      define(function() {
-        return seedrandom;
-      });
-    }
-  })([], Math);
-});
-
-// node_modules/seedrandom/index.js
-var require_seedrandom2 = __commonJS((exports, module) => {
-  var alea = require_alea();
-  var xor128 = require_xor128();
-  var xorwow = require_xorwow();
-  var xorshift7 = require_xorshift7();
-  var xor4096 = require_xor4096();
-  var tychei = require_tychei();
-  var sr = require_seedrandom();
-  sr.alea = alea;
-  sr.xor128 = xor128;
-  sr.xorwow = xorwow;
-  sr.xorshift7 = xorshift7;
-  sr.xor4096 = xor4096;
-  sr.tychei = tychei;
-  module.exports = sr;
 });
 
 // node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js
@@ -50033,7 +49887,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   "use strict";
   Object.defineProperty(exports, "__esModule", {value: true});
   var tf2 = require_tf_core_node();
-  var seedrandom = require_seedrandom2();
+  var seedrandom = require("seedrandom");
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation. All rights reserved.
   Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -50074,22 +49928,22 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
     return new (P || (P = Promise))(function(resolve, reject) {
       function fulfilled(value) {
         try {
-          step(generator.next(value));
+          step2(generator.next(value));
         } catch (e) {
           reject(e);
         }
       }
       function rejected(value) {
         try {
-          step(generator["throw"](value));
+          step2(generator["throw"](value));
         } catch (e) {
           reject(e);
         }
       }
-      function step(result) {
+      function step2(result) {
         result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
       }
-      step((generator = generator.apply(thisArg, _arguments || [])).next());
+      step2((generator = generator.apply(thisArg, _arguments || [])).next());
     });
   }
   function __generator(thisArg, body) {
@@ -50103,10 +49957,10 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
     }), g;
     function verb(n) {
       return function(v) {
-        return step([n, v]);
+        return step2([n, v]);
       };
     }
-    function step(op) {
+    function step2(op) {
       if (f)
         throw new TypeError("Generator is already executing.");
       while (_)
@@ -50217,20 +50071,6 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var tile = tf2.kernel_impls.tile;
   var topkImpl = tf2.kernel_impls.topkImpl;
   var whereImpl = tf2.kernel_impls.whereImpl;
-  function mapActivation(backend, x, activation, preluActivationWeights) {
-    if (activation === "linear") {
-      return backend.linear(x);
-    } else if (activation === "relu") {
-      return backend.relu(x);
-    } else if (activation === "elu") {
-      return tf2.elu(x);
-    } else if (activation === "relu6") {
-      return backend.relu6(x);
-    } else if (activation === "prelu") {
-      return backend.prelu(x, preluActivationWeights);
-    }
-    throw new Error("Activation " + activation + " has not been implemented for the CPU backend.");
-  }
   var MathBackendCPU = function(_super) {
     __extends(MathBackendCPU2, _super);
     function MathBackendCPU2() {
@@ -50252,7 +50092,15 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
       return dataId;
     };
     MathBackendCPU2.prototype.makeTensorInfo = function(shape, dtype, values) {
-      var outId = this.write(values, shape, dtype);
+      var outId;
+      if (dtype === "string" && values != null && values.length > 0 && tf2.util.isString(values[0])) {
+        var encodedValues = values.map(function(d) {
+          return tf2.util.encodeString(d);
+        });
+        outId = this.write(encodedValues, shape, dtype);
+      } else {
+        outId = this.write(values, shape, dtype);
+      }
       return {dataId: outId, shape, dtype};
     };
     MathBackendCPU2.prototype.incRef = function(dataId) {
@@ -50441,53 +50289,6 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
       return this.broadcastedBinaryOp(a, b, a.dtype, function(aValue, bValue) {
         return Math.pow(aValue, bValue);
       });
-    };
-    MathBackendCPU2.prototype.batchMatMul = function(a, b, transposeA, transposeB) {
-      assertNotComplex([a, b], "matMul");
-      var sharedDim = transposeA ? a.shape[1] : a.shape[2];
-      var leftDim = transposeA ? a.shape[2] : a.shape[1];
-      var rightDim = transposeB ? b.shape[1] : b.shape[2];
-      var batchDim = a.shape[0];
-      var aValues = this.readSync(a.dataId);
-      var bValues = this.readSync(b.dataId);
-      var _a = transposeA ? [a.strides[0], 1, a.strides[1]] : [a.strides[0], a.strides[1], 1], aBatch = _a[0], aOuterStep = _a[1], aInnerStep = _a[2];
-      var _b = transposeB ? [1, b.strides[1], b.strides[0]] : [b.strides[1], 1, b.strides[0]], bInnerStep = _b[0], bOuterStep = _b[1], bBatch = _b[2];
-      var size = leftDim * rightDim;
-      var result = tf2.buffer([batchDim, leftDim, rightDim], a.dtype);
-      var resVals = result.values;
-      var blockSize = this.blockSize;
-      for (var b_1 = 0; b_1 < batchDim; b_1++) {
-        for (var i0 = 0; i0 < leftDim; i0 += blockSize) {
-          for (var j0 = 0; j0 < rightDim; j0 += blockSize) {
-            for (var k0 = 0; k0 < sharedDim; k0 += blockSize) {
-              var iBlock = Math.min(i0 + blockSize, leftDim);
-              var jBlock = Math.min(j0 + blockSize, rightDim);
-              var kBlock = Math.min(k0 + blockSize, sharedDim);
-              for (var i = i0; i < iBlock; i++) {
-                for (var j = j0; j < jBlock; j++) {
-                  var sum = 0;
-                  for (var k = k0; k < kBlock; k++) {
-                    sum += aValues[b_1 * aBatch + i * aOuterStep + k * aInnerStep] * bValues[k * bInnerStep + j * bOuterStep + b_1 * bBatch];
-                  }
-                  resVals[b_1 * size + (i * rightDim + j)] += sum;
-                }
-              }
-            }
-          }
-        }
-      }
-      return result.toTensor();
-    };
-    MathBackendCPU2.prototype.fusedBatchMatMul = function(_a) {
-      var a = _a.a, b = _a.b, transposeA = _a.transposeA, transposeB = _a.transposeB, bias = _a.bias, activation = _a.activation, preluActivationWeights = _a.preluActivationWeights;
-      var result = this.batchMatMul(a, b, transposeA, transposeB);
-      if (bias) {
-        result = tf2.add(result, bias);
-      }
-      if (activation) {
-        result = mapActivation(this, result, activation, preluActivationWeights);
-      }
-      return result;
     };
     MathBackendCPU2.prototype.floorDiv = function(a, b) {
       assertNotComplex([a, b], "floorDiv");
@@ -50792,35 +50593,6 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
         return diff * diff;
       });
     };
-    MathBackendCPU2.prototype.linear = function(x) {
-      return x;
-    };
-    MathBackendCPU2.prototype.relu = function(x) {
-      assertNotComplex(x, "relu");
-      var res = tf2.zeros(x.shape, x.dtype);
-      var resVals = this.readSync(res.dataId);
-      var inVals = this.readSync(x.dataId);
-      for (var i = 0; i < inVals.length; ++i) {
-        resVals[i] = Math.max(0, inVals[i]);
-      }
-      return res;
-    };
-    MathBackendCPU2.prototype.relu6 = function(x) {
-      assertNotComplex(x, "relu");
-      var res = tf2.zeros(x.shape, x.dtype);
-      var resVals = this.readSync(res.dataId);
-      var inVals = this.readSync(x.dataId);
-      for (var i = 0; i < inVals.length; ++i) {
-        resVals[i] = Math.min(Math.max(0, inVals[i]), 6);
-      }
-      return res;
-    };
-    MathBackendCPU2.prototype.prelu = function(x, a) {
-      assertNotComplex([x, a], "prelu");
-      return this.broadcastedBinaryOp(x, a, x.dtype, function(xValue, aValue) {
-        return xValue < 0 ? aValue * xValue : xValue;
-      });
-    };
     MathBackendCPU2.prototype.eluDer = function(dy, y) {
       assertNotComplex([dy, y], "eluDer");
       var resultValues = new Float32Array(y.size);
@@ -50841,490 +50613,6 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
       return this.broadcastedBinaryOp(a, b, a.dtype, function(aValue, bValue) {
         return Math.atan2(aValue, bValue);
       });
-    };
-    MathBackendCPU2.prototype.fusedConv2d = function(_a) {
-      var input = _a.input, filter = _a.filter, convInfo = _a.convInfo, bias = _a.bias, activation = _a.activation, preluActivationWeights = _a.preluActivationWeights;
-      var result = this.conv2d(input, filter, convInfo);
-      if (bias) {
-        result = tf2.add(result, bias);
-      }
-      if (activation) {
-        result = mapActivation(this, result, activation, preluActivationWeights);
-      }
-      return result;
-    };
-    MathBackendCPU2.prototype.conv2d = function(x, filter, convInfo) {
-      assertNotComplex([x, filter], "conv2d");
-      var filterHeight = convInfo.filterHeight;
-      var filterWidth = convInfo.filterWidth;
-      var dilationHeight = convInfo.dilationHeight;
-      var dilationWidth = convInfo.dilationWidth;
-      var padLeft = convInfo.padInfo.left;
-      var padTop = convInfo.padInfo.top;
-      var isChannelsLast = convInfo.dataFormat === "channelsLast";
-      var y = tf2.buffer(convInfo.outShape, x.dtype);
-      var xBatchStride = x.strides[0];
-      var xRowStride = isChannelsLast ? x.strides[1] : x.strides[2];
-      var xColStride = isChannelsLast ? x.strides[2] : 1;
-      var xChannelStride = isChannelsLast ? 1 : x.strides[1];
-      var yBatchStride = y.strides[0];
-      var yRowStride = isChannelsLast ? y.strides[1] : y.strides[2];
-      var yColStride = isChannelsLast ? y.strides[2] : 1;
-      var yChannelStride = isChannelsLast ? 1 : y.strides[1];
-      var xVals = this.readSync(x.dataId);
-      var wVals = this.readSync(filter.dataId);
-      var yVals = y.values;
-      for (var b = 0; b < convInfo.batchSize; ++b) {
-        var xOffset1 = b * xBatchStride;
-        var yOffset1 = b * yBatchStride;
-        for (var yR = 0; yR < convInfo.outHeight; ++yR) {
-          var yOffset2 = yOffset1 + yR * yRowStride;
-          var xRCorner = yR * convInfo.strideHeight - padTop;
-          for (var wR = 0; wR < filterHeight; wR++) {
-            var xR = xRCorner + wR * dilationHeight;
-            if (xR < 0 || xR >= convInfo.inHeight) {
-              continue;
-            }
-            var wOffset1 = wR * filter.strides[0];
-            var xOffset2 = xOffset1 + xR * xRowStride;
-            for (var yC = 0; yC < convInfo.outWidth; ++yC) {
-              var yOffset3 = yOffset2 + yC * yColStride;
-              var xCCorner = yC * convInfo.strideWidth - padLeft;
-              for (var wC = 0; wC < filterWidth; wC++) {
-                var xC = xCCorner + wC * dilationWidth;
-                if (xC < 0 || xC >= convInfo.inWidth) {
-                  continue;
-                }
-                var wOffset2 = wOffset1 + wC * filter.strides[1];
-                var xOffset3 = xOffset2 + xC * xColStride;
-                var wOffset3 = wOffset2;
-                for (var d1 = 0; d1 < convInfo.inChannels; ++d1) {
-                  var xVal = xVals[xOffset3 + d1 * xChannelStride];
-                  for (var d2 = 0; d2 < convInfo.outChannels; ++d2) {
-                    yVals[yOffset3 + d2 * yChannelStride] += xVal * wVals[wOffset3 + d2];
-                  }
-                  wOffset3 += convInfo.outChannels;
-                }
-              }
-            }
-          }
-        }
-      }
-      return y.toTensor();
-    };
-    MathBackendCPU2.prototype.conv3d = function(x, filter, convInfo) {
-      var filterDepth = convInfo.filterDepth;
-      var filterHeight = convInfo.filterHeight;
-      var filterWidth = convInfo.filterWidth;
-      var dilationDepth = convInfo.dilationDepth;
-      var dilationHeight = convInfo.dilationHeight;
-      var dilationWidth = convInfo.dilationWidth;
-      var padFront = convInfo.padInfo.front;
-      var padLeft = convInfo.padInfo.left;
-      var padTop = convInfo.padInfo.top;
-      var y = tf2.buffer(convInfo.outShape, x.dtype);
-      var xVals = this.readSync(x.dataId);
-      var wVals = this.readSync(filter.dataId);
-      var yVals = y.values;
-      for (var b = 0; b < convInfo.batchSize; ++b) {
-        var xOffset1 = b * x.strides[0];
-        var yOffset1 = b * y.strides[0];
-        for (var yF = 0; yF < convInfo.outDepth; ++yF) {
-          var yOffset2 = yOffset1 + yF * y.strides[1];
-          var xFCorner = yF * convInfo.strideDepth - padFront;
-          for (var wF = 0; wF < filterDepth; wF++) {
-            var xF = xFCorner + wF * dilationDepth;
-            if (xF < 0 || xF >= convInfo.inDepth) {
-              continue;
-            }
-            var wOffset1 = wF * filter.strides[0];
-            var xOffset2 = xOffset1 + xF * x.strides[1];
-            for (var yR = 0; yR < convInfo.outHeight; ++yR) {
-              var yOffset3 = yOffset2 + yR * y.strides[2];
-              var xRCorner = yR * convInfo.strideHeight - padTop;
-              for (var wR = 0; wR < filterHeight; wR++) {
-                var xR = xRCorner + wR * dilationHeight;
-                if (xR < 0 || xR >= convInfo.inHeight) {
-                  continue;
-                }
-                var wOffset2 = wOffset1 + wR * filter.strides[1];
-                var xOffset3 = xOffset2 + xR * x.strides[2];
-                for (var yC = 0; yC < convInfo.outWidth; ++yC) {
-                  var yOffset4 = yOffset3 + yC * convInfo.outChannels;
-                  var xCCorner = yC * convInfo.strideWidth - padLeft;
-                  for (var wC = 0; wC < filterWidth; wC++) {
-                    var xC = xCCorner + wC * dilationWidth;
-                    if (xC < 0 || xC >= convInfo.inWidth) {
-                      continue;
-                    }
-                    var wOffset3 = wOffset2 + wC * filter.strides[2];
-                    var xOffset4 = xOffset3 + xC * convInfo.inChannels;
-                    var wOffset4 = wOffset3;
-                    for (var d1 = 0; d1 < convInfo.inChannels; ++d1) {
-                      var xVal = xVals[xOffset4 + d1];
-                      for (var d2 = 0; d2 < convInfo.outChannels; ++d2) {
-                        yVals[yOffset4 + d2] += xVal * wVals[wOffset4 + d2];
-                      }
-                      wOffset4 += convInfo.outChannels;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      return y.toTensor();
-    };
-    MathBackendCPU2.prototype.conv2dDerInput = function(dy, filter, convInfo) {
-      assertNotComplex([dy, filter], "conv2dDerInput");
-      var dx = tf2.buffer(convInfo.inShape, "float32");
-      var dxValues = dx.values;
-      var dyValues = this.readSync(dy.dataId);
-      var fltValues = this.readSync(filter.dataId);
-      var _a = filter.strides, fltS0 = _a[0], fltS1 = _a[1], fltS2 = _a[2];
-      var batchSize = convInfo.batchSize, filterHeight = convInfo.filterHeight, filterWidth = convInfo.filterWidth, inChannels = convInfo.inChannels, inHeight = convInfo.inHeight, inWidth = convInfo.inWidth, outChannels = convInfo.outChannels, outHeight = convInfo.outHeight, outWidth = convInfo.outWidth, strideHeight = convInfo.strideHeight, strideWidth = convInfo.strideWidth, dataFormat = convInfo.dataFormat;
-      var topPad = filterHeight - 1 - convInfo.padInfo.top;
-      var leftPad = filterWidth - 1 - convInfo.padInfo.left;
-      var isChannelsLast = dataFormat === "channelsLast";
-      var xBatchStride = dx.strides[0];
-      var xRowStride = isChannelsLast ? dx.strides[1] : dx.strides[2];
-      var xColStride = isChannelsLast ? dx.strides[2] : 1;
-      var xChannelStride = isChannelsLast ? 1 : dx.strides[1];
-      var yBatchStride = dy.strides[0];
-      var yRowStride = isChannelsLast ? dy.strides[1] : dy.strides[2];
-      var yColStride = isChannelsLast ? dy.strides[2] : 1;
-      var yChannelStride = isChannelsLast ? 1 : dy.strides[1];
-      for (var b = 0; b < batchSize; ++b) {
-        for (var d1 = 0; d1 < inChannels; ++d1) {
-          for (var xR = 0; xR < inHeight; ++xR) {
-            var xRCorner = xR - topPad;
-            var xRMin = Math.max(0, Math.ceil(xRCorner / strideHeight));
-            var yRMax = Math.min(outHeight, (filterHeight + xRCorner) / strideHeight);
-            for (var xC = 0; xC < inWidth; ++xC) {
-              var xCCorner = xC - leftPad;
-              var xCMin = Math.max(0, Math.ceil(xCCorner / strideWidth));
-              var yCMax = Math.min(outWidth, (filterWidth + xCCorner) / strideWidth);
-              var dotProd = 0;
-              for (var yR = xRMin; yR < yRMax; ++yR) {
-                var wR = yR * strideHeight - xRCorner;
-                for (var yC = xCMin; yC < yCMax; ++yC) {
-                  var wC = yC * strideWidth - xCCorner;
-                  var dyOffset = yBatchStride * b + yRowStride * yR + yColStride * yC;
-                  var fltOffset = fltS0 * (filterHeight - 1 - wR) + fltS1 * (filterWidth - 1 - wC) + fltS2 * d1;
-                  for (var d2 = 0; d2 < outChannels; ++d2) {
-                    var pixel = dyValues[dyOffset + yChannelStride * d2];
-                    var weight = fltValues[fltOffset + d2];
-                    dotProd += pixel * weight;
-                  }
-                }
-              }
-              var dxOffset = xBatchStride * b + xRowStride * xR + xColStride * xC + xChannelStride * d1;
-              dxValues[dxOffset] = dotProd;
-            }
-          }
-        }
-      }
-      return dx.toTensor();
-    };
-    MathBackendCPU2.prototype.conv3dDerInput = function(dy, filter, convInfo) {
-      var dx = tf2.buffer(convInfo.inShape, "float32");
-      var dxValues = dx.values;
-      var _a = dx.strides, dxS0 = _a[0], dxS1 = _a[1], dxS2 = _a[2], dxS3 = _a[3];
-      var dyValues = this.readSync(dy.dataId);
-      var _b = dy.strides, dyS0 = _b[0], dyS1 = _b[1], dyS2 = _b[2], dyS3 = _b[3];
-      var fltValues = this.readSync(filter.dataId);
-      var _c = filter.strides, fltS0 = _c[0], fltS1 = _c[1], fltS2 = _c[2], fltS3 = _c[3];
-      var batchSize = convInfo.batchSize, filterDepth = convInfo.filterDepth, filterHeight = convInfo.filterHeight, filterWidth = convInfo.filterWidth, inChannels = convInfo.inChannels, inDepth = convInfo.inDepth, inHeight = convInfo.inHeight, inWidth = convInfo.inWidth, outChannels = convInfo.outChannels, outDepth = convInfo.outDepth, outHeight = convInfo.outHeight, outWidth = convInfo.outWidth, strideDepth = convInfo.strideDepth, strideHeight = convInfo.strideHeight, strideWidth = convInfo.strideWidth;
-      var frontPad = filterDepth - 1 - convInfo.padInfo.front;
-      var topPad = filterHeight - 1 - convInfo.padInfo.top;
-      var leftPad = filterWidth - 1 - convInfo.padInfo.left;
-      for (var b = 0; b < batchSize; ++b) {
-        for (var d1 = 0; d1 < inChannels; ++d1) {
-          for (var xF = 0; xF < inDepth; ++xF) {
-            var xFCorner = xF - frontPad;
-            var xFMin = Math.max(0, Math.ceil(xFCorner / strideDepth));
-            var yFMax = Math.min(outDepth, (filterDepth + xFCorner) / strideDepth);
-            for (var xR = 0; xR < inHeight; ++xR) {
-              var xRCorner = xR - topPad;
-              var xRMin = Math.max(0, Math.ceil(xRCorner / strideHeight));
-              var yRMax = Math.min(outHeight, (filterHeight + xRCorner) / strideHeight);
-              for (var xC = 0; xC < inWidth; ++xC) {
-                var xCCorner = xC - leftPad;
-                var xCMin = Math.max(0, Math.ceil(xCCorner / strideWidth));
-                var yCMax = Math.min(outWidth, (filterWidth + xCCorner) / strideWidth);
-                var dotProd = 0;
-                for (var yF = xFMin; yF < yFMax; ++yF) {
-                  var wF = yF * strideDepth - xFCorner;
-                  for (var yR = xRMin; yR < yRMax; ++yR) {
-                    var wR = yR * strideHeight - xRCorner;
-                    for (var yC = xCMin; yC < yCMax; ++yC) {
-                      var wC = yC * strideWidth - xCCorner;
-                      var dyOffset = dyS0 * b + dyS1 * yF + dyS2 * yR + dyS3 * yC;
-                      var fltOffset = fltS0 * (filterDepth - 1 - wF) + fltS1 * (filterHeight - 1 - wR) + fltS2 * (filterWidth - 1 - wC) + fltS3 * d1;
-                      for (var d2 = 0; d2 < outChannels; ++d2) {
-                        var pixel = dyValues[dyOffset + d2];
-                        var weight = fltValues[fltOffset + d2];
-                        dotProd += pixel * weight;
-                      }
-                    }
-                  }
-                }
-                dxValues[dxS0 * b + dxS1 * xF + dxS2 * xR + dxS3 * xC + d1] = dotProd;
-              }
-            }
-          }
-        }
-      }
-      return dx.toTensor();
-    };
-    MathBackendCPU2.prototype.conv2dDerFilter = function(x, dy, convInfo) {
-      assertNotComplex([x, dy], "conv2dDerFilter");
-      var strideHeight = convInfo.strideHeight;
-      var strideWidth = convInfo.strideWidth;
-      var filterHeight = convInfo.filterHeight;
-      var filterWidth = convInfo.filterWidth;
-      var isChannelsLast = convInfo.dataFormat === "channelsLast";
-      var dW = tf2.buffer(convInfo.filterShape, "float32");
-      var leftPad = convInfo.padInfo.left;
-      var topPad = convInfo.padInfo.top;
-      var xBuf = this.bufferSync(x);
-      var dyBuf = this.bufferSync(dy);
-      for (var wR = 0; wR < filterHeight; ++wR) {
-        var yRMin = Math.max(0, Math.ceil((topPad - wR) / strideHeight));
-        var yRMax = Math.min(convInfo.outHeight, (convInfo.inHeight + topPad - wR) / strideHeight);
-        for (var wC = 0; wC < filterWidth; ++wC) {
-          var yCMin = Math.max(0, Math.ceil((leftPad - wC) / strideWidth));
-          var yCMax = Math.min(convInfo.outWidth, (convInfo.inWidth + leftPad - wC) / strideWidth);
-          for (var d1 = 0; d1 < convInfo.inChannels; ++d1) {
-            for (var d2 = 0; d2 < convInfo.outChannels; ++d2) {
-              var dotProd = 0;
-              for (var b = 0; b < convInfo.batchSize; ++b) {
-                for (var yR = yRMin; yR < yRMax; ++yR) {
-                  var xR = wR + yR * strideHeight - topPad;
-                  for (var yC = yCMin; yC < yCMax; ++yC) {
-                    var xC = wC + yC * strideWidth - leftPad;
-                    if (isChannelsLast) {
-                      dotProd += xBuf.get(b, xR, xC, d1) * dyBuf.get(b, yR, yC, d2);
-                    } else {
-                      dotProd += xBuf.get(b, d1, xR, xC) * dyBuf.get(b, d2, yR, yC);
-                    }
-                  }
-                }
-              }
-              dW.set(dotProd, wR, wC, d1, d2);
-            }
-          }
-        }
-      }
-      return dW.toTensor();
-    };
-    MathBackendCPU2.prototype.conv3dDerFilter = function(x, dy, convInfo) {
-      var strideDepth = convInfo.strideDepth;
-      var strideHeight = convInfo.strideHeight;
-      var strideWidth = convInfo.strideWidth;
-      var filterDepth = convInfo.filterDepth;
-      var filterHeight = convInfo.filterHeight;
-      var filterWidth = convInfo.filterWidth;
-      var dw = tf2.buffer(convInfo.filterShape, "float32");
-      var dwValues = dw.values;
-      var _a = dw.strides, dwS0 = _a[0], dwS1 = _a[1], dwS2 = _a[2], dwS3 = _a[3];
-      var dyValues = this.readSync(dy.dataId);
-      var _b = dy.strides, dyS0 = _b[0], dyS1 = _b[1], dyS2 = _b[2], dyS3 = _b[3];
-      var xValues = this.readSync(x.dataId);
-      var _c = x.strides, xS0 = _c[0], xS1 = _c[1], xS2 = _c[2], xS3 = _c[3];
-      var frontPad = convInfo.padInfo.front;
-      var leftPad = convInfo.padInfo.left;
-      var topPad = convInfo.padInfo.top;
-      for (var wF = 0; wF < filterDepth; ++wF) {
-        var yFMin = Math.max(0, Math.ceil((frontPad - wF) / strideDepth));
-        var yFMax = Math.min(convInfo.outDepth, (convInfo.inDepth + frontPad - wF) / strideDepth);
-        var wOffset1 = wF * dwS0;
-        for (var wR = 0; wR < filterHeight; ++wR) {
-          var yRMin = Math.max(0, Math.ceil((topPad - wR) / strideHeight));
-          var yRMax = Math.min(convInfo.outHeight, (convInfo.inHeight + topPad - wR) / strideHeight);
-          var wOffset2 = wR * dwS1 + wOffset1;
-          for (var wC = 0; wC < filterWidth; ++wC) {
-            var yCMin = Math.max(0, Math.ceil((leftPad - wC) / strideWidth));
-            var yCMax = Math.min(convInfo.outWidth, (convInfo.inWidth + leftPad - wC) / strideWidth);
-            var wOffset3 = wC * dwS2 + wOffset2;
-            for (var d1 = 0; d1 < convInfo.inChannels; ++d1) {
-              var wOffset4 = d1 * dwS3 + wOffset3;
-              for (var d2 = 0; d2 < convInfo.outChannels; ++d2) {
-                var dotProd = 0;
-                for (var b = 0; b < convInfo.batchSize; ++b) {
-                  var xOffset1 = b * xS0;
-                  var yOffset1 = b * dyS0;
-                  for (var yF = yFMin; yF < yFMax; ++yF) {
-                    var xF = wF + yF * strideDepth - frontPad;
-                    var xOffset2 = xF * xS1 + xOffset1;
-                    var yOffset2 = yF * dyS1 + yOffset1;
-                    for (var yR = yRMin; yR < yRMax; ++yR) {
-                      var xR = wR + yR * strideHeight - topPad;
-                      var xOffset3 = xR * xS2 + xOffset2;
-                      var yOffset3 = yR * dyS2 + yOffset2;
-                      for (var yC = yCMin; yC < yCMax; ++yC) {
-                        var xC = wC + yC * strideWidth - leftPad;
-                        var xOffset4 = xC * xS3 + xOffset3;
-                        var yOffset4 = yC * dyS3 + yOffset3;
-                        dotProd += xValues[xOffset4 + d1] * dyValues[yOffset4 + d2];
-                      }
-                    }
-                  }
-                }
-                dwValues[wOffset4 + d2] = dotProd;
-              }
-            }
-          }
-        }
-      }
-      return dw.toTensor();
-    };
-    MathBackendCPU2.prototype.fusedDepthwiseConv2D = function(_a) {
-      var input = _a.input, filter = _a.filter, convInfo = _a.convInfo, bias = _a.bias, activation = _a.activation, preluActivationWeights = _a.preluActivationWeights;
-      var result = this.depthwiseConv2D(input, filter, convInfo);
-      if (bias) {
-        result = tf2.add(result, bias);
-      }
-      if (activation) {
-        result = mapActivation(this, result, activation, preluActivationWeights);
-      }
-      return result;
-    };
-    MathBackendCPU2.prototype.depthwiseConv2D = function(x, filter, convInfo) {
-      assertNotComplex([x, filter], "depthwiseConv2D");
-      var filterHeight = convInfo.filterHeight;
-      var filterWidth = convInfo.filterWidth;
-      var dilationHeight = convInfo.dilationHeight;
-      var dilationWidth = convInfo.dilationWidth;
-      var padLeft = convInfo.padInfo.left;
-      var padTop = convInfo.padInfo.top;
-      var chMul = convInfo.outChannels / convInfo.inChannels;
-      var y = tf2.buffer(convInfo.outShape, x.dtype);
-      var xVals = this.readSync(x.dataId);
-      var wVals = this.readSync(filter.dataId);
-      var yVals = y.values;
-      for (var b = 0; b < convInfo.batchSize; ++b) {
-        var xOffset1 = b * x.strides[0];
-        var yOffset1 = b * y.strides[0];
-        for (var yR = 0; yR < convInfo.outHeight; ++yR) {
-          var yOffset2 = yOffset1 + yR * y.strides[1];
-          var xRCorner = yR * convInfo.strideHeight - padLeft;
-          for (var wR = 0; wR < filterHeight; ++wR) {
-            var xR = xRCorner + wR * dilationHeight;
-            if (xR < 0 || xR >= convInfo.inHeight) {
-              continue;
-            }
-            var wOffset1 = wR * filter.strides[0];
-            var xOffset2 = xOffset1 + xR * x.strides[1];
-            for (var yC = 0; yC < convInfo.outWidth; ++yC) {
-              var yOffset3 = yOffset2 + yC * y.strides[2];
-              var xCCorner = yC * convInfo.strideWidth - padTop;
-              for (var wC = 0; wC < filterWidth; ++wC) {
-                var xC = xCCorner + wC * dilationWidth;
-                if (xC < 0 || xC >= convInfo.inWidth) {
-                  continue;
-                }
-                var wOffset2 = wOffset1 + wC * filter.strides[1];
-                var xOffset3 = xOffset2 + xC * convInfo.inChannels;
-                var yOffset4 = yOffset3;
-                var wOffset3 = wOffset2;
-                for (var d1 = 0; d1 < convInfo.inChannels; ++d1) {
-                  var xVal = xVals[xOffset3 + d1];
-                  for (var q = 0; q < chMul; ++q) {
-                    yVals[yOffset4 + q] += xVal * wVals[wOffset3 + q];
-                  }
-                  yOffset4 += chMul;
-                  wOffset3 += chMul;
-                }
-              }
-            }
-          }
-        }
-      }
-      return y.toTensor();
-    };
-    MathBackendCPU2.prototype.depthwiseConv2DDerInput = function(dy, filter, convInfo) {
-      assertNotComplex([dy, filter], "depthwiseConv2DDerInput");
-      var dx = tf2.buffer(convInfo.inShape, "float32");
-      var dxValues = dx.values;
-      var _a = dx.strides, dxS0 = _a[0], dxS1 = _a[1], dxS2 = _a[2];
-      var dyValues = this.readSync(dy.dataId);
-      var _b = dy.strides, dyS0 = _b[0], dyS1 = _b[1], dyS2 = _b[2];
-      var fltValues = this.readSync(filter.dataId);
-      var _c = filter.strides, fltS0 = _c[0], fltS1 = _c[1], fltS2 = _c[2];
-      var batchSize = convInfo.batchSize, filterHeight = convInfo.filterHeight, filterWidth = convInfo.filterWidth, inChannels = convInfo.inChannels, inHeight = convInfo.inHeight, inWidth = convInfo.inWidth, outChannels = convInfo.outChannels, outHeight = convInfo.outHeight, outWidth = convInfo.outWidth, strideHeight = convInfo.strideHeight, strideWidth = convInfo.strideWidth;
-      var topPad = filterHeight - 1 - convInfo.padInfo.top;
-      var leftPad = filterWidth - 1 - convInfo.padInfo.left;
-      var chMul = outChannels / inChannels;
-      for (var b = 0; b < batchSize; ++b) {
-        for (var d1 = 0; d1 < inChannels; ++d1) {
-          for (var xR = 0; xR < inHeight; ++xR) {
-            var xRCorner = xR - topPad;
-            var xRMin = Math.max(0, Math.ceil(xRCorner / strideHeight));
-            var yRMax = Math.min(outHeight, (filterHeight + xRCorner) / strideHeight);
-            for (var xC = 0; xC < inWidth; ++xC) {
-              var xCCorner = xC - leftPad;
-              var xCMin = Math.max(0, Math.ceil(xCCorner / strideWidth));
-              var yCMax = Math.min(outWidth, (filterWidth + xCCorner) / strideWidth);
-              var dotProd = 0;
-              for (var yR = xRMin; yR < yRMax; ++yR) {
-                var wR = yR * strideHeight - xRCorner;
-                for (var yC = xCMin; yC < yCMax; ++yC) {
-                  var wC = yC * strideWidth - xCCorner;
-                  var dyOffset = dyS0 * b + dyS1 * yR + dyS2 * yC;
-                  var fltOffset = fltS0 * (filterHeight - 1 - wR) + fltS1 * (filterWidth - 1 - wC) + fltS2 * d1;
-                  for (var dm = 0; dm < chMul; ++dm) {
-                    var d2 = d1 * chMul + dm;
-                    var pixel = dyValues[dyOffset + d2];
-                    var weight = fltValues[fltOffset + dm];
-                    dotProd += pixel * weight;
-                  }
-                }
-              }
-              dxValues[dxS0 * b + dxS1 * xR + dxS2 * xC + d1] = dotProd;
-            }
-          }
-        }
-      }
-      return dx.toTensor();
-    };
-    MathBackendCPU2.prototype.depthwiseConv2DDerFilter = function(x, dy, convInfo) {
-      assertNotComplex([x, dy], "depthwiseConv2DDerFilter");
-      var strideHeight = convInfo.strideHeight;
-      var strideWidth = convInfo.strideWidth;
-      var filterHeight = convInfo.filterHeight;
-      var filterWidth = convInfo.filterWidth;
-      var dW = tf2.buffer(convInfo.filterShape, "float32");
-      var leftPad = convInfo.padInfo.left;
-      var topPad = convInfo.padInfo.top;
-      var chMul = convInfo.outChannels / convInfo.inChannels;
-      var xBuf = this.bufferSync(x);
-      var dyBuf = this.bufferSync(dy);
-      for (var wR = 0; wR < filterHeight; ++wR) {
-        var yRMin = Math.max(0, Math.ceil((topPad - wR) / strideHeight));
-        var yRMax = Math.min(convInfo.outHeight, (convInfo.inHeight + topPad - wR) / strideHeight);
-        for (var wC = 0; wC < filterWidth; ++wC) {
-          var yCMin = Math.max(0, Math.ceil((leftPad - wC) / strideWidth));
-          var yCMax = Math.min(convInfo.outWidth, (convInfo.inWidth + leftPad - wC) / strideWidth);
-          for (var d2 = 0; d2 < convInfo.outChannels; ++d2) {
-            var d1 = Math.trunc(d2 / chMul);
-            var dm = d2 % chMul;
-            var dotProd = 0;
-            for (var b = 0; b < convInfo.batchSize; ++b) {
-              for (var yR = yRMin; yR < yRMax; ++yR) {
-                var xR = wR + yR * strideHeight - topPad;
-                for (var yC = yCMin; yC < yCMax; ++yC) {
-                  var xC = wC + yC * strideWidth - leftPad;
-                  dotProd += xBuf.get(b, xR, xC, d1) * dyBuf.get(b, yR, yC, d2);
-                }
-              }
-            }
-            dW.set(dotProd, wR, wC, d1, dm);
-          }
-        }
-      }
-      return dW.toTensor();
     };
     MathBackendCPU2.prototype.tile = function(x, reps) {
       assertNotComplex(x, "tile");
@@ -52139,17 +51427,11 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
       var sumDupeIndices = true;
       return this.scatter(indices, updates, shape, outputSize, sliceSize, numUpdates, sliceRank, strides, defaultValue, sumDupeIndices);
     };
-    MathBackendCPU2.prototype.fill = function(shape, value, dtype) {
-      dtype = dtype || tf2.util.inferDtype(value);
-      var values = tf2.util.getArrayFromDType(dtype, tf2.util.sizeFromShape(shape));
-      values.fill(value);
-      return tf2.engine().makeTensor(values, shape, dtype, this);
-    };
     MathBackendCPU2.prototype.onesLike = function(x) {
       if (x.dtype === "string") {
         throw new Error("onesLike is not supported for string tensors");
       } else {
-        return this.fill(x.shape, 1, x.dtype);
+        return tf2.fill(x.shape, 1, x.dtype);
       }
     };
     MathBackendCPU2.prototype.zerosLike = function(x) {
@@ -52214,7 +51496,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
     }
     return resultValues;
   }
-  var absKernelFunc = function(args) {
+  var abs = function(args) {
     var x = args.inputs.x;
     var cpuBackend = args.backend;
     var resultValues = new Float32Array(tf2.util.sizeFromShape(x.shape));
@@ -52238,7 +51520,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var absConfig = {
     kernelName: tf2.Abs,
     backendName: "cpu",
-    kernelFunc: absKernelFunc
+    kernelFunc: abs
   };
   /**
    * @license
@@ -52680,11 +51962,11 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var ceilImpl = createSimpleUnaryImpl(function(xi) {
     return Math.ceil(xi);
   });
-  var ceilKernelFunc = unaryKernelFuncFromImpl(tf2.Ceil, ceilImpl);
+  var ceil = unaryKernelFuncFromImpl(tf2.Ceil, ceilImpl);
   var ceilConfig = {
     kernelName: tf2.Ceil,
     backendName: "cpu",
-    kernelFunc: ceilKernelFunc
+    kernelFunc: ceil
   };
   /**
    * @license
@@ -52705,11 +51987,11 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var expImpl = createSimpleUnaryImpl(function(xi) {
     return Math.exp(xi);
   });
-  var expKernelFunc = unaryKernelFuncFromImpl(tf2.Exp, expImpl);
+  var exp = unaryKernelFuncFromImpl(tf2.Exp, expImpl);
   var expConfig = {
     kernelName: tf2.Exp,
     backendName: "cpu",
-    kernelFunc: expKernelFunc
+    kernelFunc: exp
   };
   /**
    * @license
@@ -52730,11 +52012,11 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var expm1Impl = createSimpleUnaryImpl(function(xi) {
     return Math.expm1(xi);
   });
-  var expm1KernelFunc = unaryKernelFuncFromImpl(tf2.Expm1, expm1Impl);
+  var expm1 = unaryKernelFuncFromImpl(tf2.Expm1, expm1Impl);
   var expm1Config = {
     kernelName: tf2.Expm1,
     backendName: "cpu",
-    kernelFunc: expm1KernelFunc
+    kernelFunc: expm1
   };
   /**
    * @license
@@ -52755,11 +52037,11 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var floorImpl = createSimpleUnaryImpl(function(xi) {
     return Math.floor(xi);
   });
-  var floorKernelFunc = unaryKernelFuncFromImpl(tf2.Floor, floorImpl);
+  var floor = unaryKernelFuncFromImpl(tf2.Floor, floorImpl);
   var floorConfig = {
     kernelName: tf2.Floor,
     backendName: "cpu",
-    kernelFunc: floorKernelFunc
+    kernelFunc: floor
   };
   /**
    * @license
@@ -52780,11 +52062,11 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var logImpl = createSimpleUnaryImpl(function(xi) {
     return Math.log(xi);
   });
-  var logKernelFunc = unaryKernelFuncFromImpl(tf2.Log, logImpl);
+  var log = unaryKernelFuncFromImpl(tf2.Log, logImpl);
   var logConfig = {
     kernelName: tf2.Log,
     backendName: "cpu",
-    kernelFunc: logKernelFunc
+    kernelFunc: log
   };
   /**
    * @license
@@ -52851,6 +52133,31 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   /**
    * @license
    * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var notEqualImpl = createSimpleBinaryKernelImpl(function(a, b) {
+    return a !== b ? 1 : 0;
+  });
+  var notEqual = binaryKernelFunc(tf2.NotEqual, notEqualImpl, null, "bool");
+  var notEqualConfig = {
+    kernelName: tf2.NotEqual,
+    backendName: "cpu",
+    kernelFunc: notEqual
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
    * Licensed under the Apache License, Version 2.0 (the License);
    * you may not use this file except in compliance with the License.
    * You may obtain a copy of the License at
@@ -52867,11 +52174,11 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var rsqrtImpl = createSimpleUnaryImpl(function(xi) {
     return 1 / Math.sqrt(xi);
   });
-  var rsqrtKernelFunc = unaryKernelFuncFromImpl(tf2.Rsqrt, rsqrtImpl);
+  var rsqrt = unaryKernelFuncFromImpl(tf2.Rsqrt, rsqrtImpl);
   var rsqrtConfig = {
     kernelName: tf2.Rsqrt,
     backendName: "cpu",
-    kernelFunc: rsqrtKernelFunc
+    kernelFunc: rsqrt
   };
   /**
    * @license
@@ -52925,6 +52232,32 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
     kernelName: tf2.Slice,
     backendName: "cpu",
     kernelFunc: slice
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var squaredDifferenceImpl = createSimpleBinaryKernelImpl(function(a, b) {
+    var diff = a - b;
+    return diff * diff;
+  });
+  var squaredDifference = binaryKernelFunc(tf2.SquaredDifference, squaredDifferenceImpl);
+  var squaredDifferenceConfig = {
+    kernelName: tf2.SquaredDifference,
+    backendName: "cpu",
+    kernelFunc: squaredDifference
   };
   /**
    * @license
@@ -53085,14 +52418,16 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
     logImpl,
     maxImpl,
     multiplyImpl,
+    notEqualImpl,
     rsqrtImpl,
     sliceImpl,
+    squaredDifferenceImpl,
     subImpl,
     transposeImpl,
     uniqueImpl
   };
   /** @license See the LICENSE file. */
-  var version = "2.6.0";
+  var version = "2.7.0";
   /**
    * @license
    * Copyright 2020 Google LLC. All Rights Reserved.
@@ -53128,13 +52463,327 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var acosKernelFunc = unaryKernelFunc(tf2.Acos, function(xi) {
+  var elu = unaryKernelFunc(tf2.Elu, function(xi) {
+    return xi >= 0 ? xi : Math.exp(xi) - 1;
+  });
+  var eluConfig = {
+    kernelName: tf2.Elu,
+    backendName: "cpu",
+    kernelFunc: elu
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an AS IS BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var preluImpl = createSimpleBinaryKernelImpl(function(xValue, aValue) {
+    return xValue < 0 ? aValue * xValue : xValue;
+  });
+  function prelu(args) {
+    var inputs = args.inputs, backend = args.backend;
+    var x = inputs.x, alpha = inputs.alpha;
+    assertNotComplex([x, alpha], "prelu");
+    var aVals = backend.data.get(x.dataId).values;
+    var bVals = backend.data.get(alpha.dataId).values;
+    var _a = preluImpl(x.shape, alpha.shape, aVals, bVals, x.dtype), resultData = _a[0], resultShape = _a[1];
+    return backend.makeTensorInfo(resultShape, x.dtype, resultData);
+  }
+  var preluConfig = {
+    kernelName: tf2.Prelu,
+    backendName: "cpu",
+    kernelFunc: prelu
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an AS IS BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var relu = unaryKernelFunc(tf2.Relu, function(xi) {
+    return Math.max(0, xi);
+  });
+  var reluConfig = {
+    kernelName: tf2.Relu,
+    backendName: "cpu",
+    kernelFunc: relu
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an AS IS BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var relu6 = unaryKernelFunc(tf2.Relu6, function(xi) {
+    return Math.min(Math.max(0, xi), 6);
+  });
+  var relu6Config = {
+    kernelName: tf2.Relu6,
+    backendName: "cpu",
+    kernelFunc: relu6
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function applyActivation(backend, x, activation, preluActivationWeights) {
+    if (activation === "linear") {
+      return identity({inputs: {x}, backend});
+    } else if (activation === "relu") {
+      return relu({inputs: {x}, backend});
+    } else if (activation === "elu") {
+      return elu({inputs: {x}, backend});
+    } else if (activation === "relu6") {
+      return relu6({inputs: {x}, backend});
+    } else if (activation === "prelu") {
+      return prelu({inputs: {x, alpha: preluActivationWeights}, backend});
+    }
+    throw new Error("Activation " + activation + " has not been implemented for the CPU backend.");
+  }
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function reshape(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x;
+    var shape = attrs.shape;
+    var xSize = tf2.util.sizeFromShape(x.shape);
+    var $shape = tf2.util.inferFromImplicitShape(shape, xSize);
+    var $xSize = tf2.util.sizeFromShape($shape);
+    tf2.util.assert(xSize === $xSize, function() {
+      return "The new shape (" + $shape + ") has " + $xSize + " elements and the old " + ("shape (" + x.shape + ") has " + xSize + " elements. The new shape and old ") + "shape must have the same number of elements.";
+    });
+    backend.incRef(x.dataId);
+    var xData = backend.data.get(x.dataId);
+    if (xData.complexTensorInfos != null) {
+      var real2 = xData.complexTensorInfos.real;
+      var imag2 = xData.complexTensorInfos.imag;
+      real2.shape = $shape;
+      imag2.shape = $shape;
+    }
+    return {dataId: x.dataId, shape: $shape, dtype: x.dtype};
+  }
+  var reshapeConfig = {
+    kernelName: tf2.Reshape,
+    backendName: "cpu",
+    kernelFunc: reshape
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an AS IS BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function batchMatMul(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var a = inputs.a, b = inputs.b;
+    var transposeA = attrs.transposeA, transposeB = attrs.transposeB;
+    assertNotComplex([a, b], "matMul");
+    var aRank = a.shape.length;
+    var bRank = b.shape.length;
+    var innerShapeA = transposeA ? a.shape[aRank - 2] : a.shape[aRank - 1];
+    var innerShapeB = transposeB ? b.shape[bRank - 1] : b.shape[bRank - 2];
+    var outerShapeA = transposeA ? a.shape[aRank - 1] : a.shape[aRank - 2];
+    var outerShapeB = transposeB ? b.shape[bRank - 2] : b.shape[bRank - 1];
+    var outerDimsA = a.shape.slice(0, -2);
+    var outerDimsB = b.shape.slice(0, -2);
+    var batchDimA = tf2.util.sizeFromShape(outerDimsA);
+    var batchDimB = tf2.util.sizeFromShape(outerDimsB);
+    var batchDimsCompatible = batchDimA === batchDimB || batchDimA === 1 || batchDimB === 1;
+    tf2.util.assert(aRank >= 2 && bRank >= 2 && batchDimsCompatible, function() {
+      return "Error in matMul: the input batch dimensions must either be the same or at least one input batch dimension must be 1. Got input " + ("batch dimensions of (" + outerDimsA + ") and (" + outerDimsB + ").");
+    });
+    var outShapeOuterDims = batchDimA > batchDimB ? a.shape.slice(0, -2) : b.shape.slice(0, -2);
+    var outShape = outShapeOuterDims.concat([outerShapeA, outerShapeB]);
+    tf2.util.assert(innerShapeA === innerShapeB, function() {
+      return "Error in matMul: inner shapes (" + innerShapeA + ") and (" + (innerShapeB + ") of Tensors with shapes " + a.shape + " and ") + (b.shape + " and transposeA=" + transposeA) + (" and transposeB=" + transposeB + " must match.");
+    });
+    var a3dShape = transposeA ? [batchDimA, innerShapeA, outerShapeA] : [batchDimA, outerShapeA, innerShapeA];
+    var b3dShape = transposeB ? [batchDimB, outerShapeB, innerShapeB] : [batchDimB, innerShapeB, outerShapeB];
+    var a3d = reshape({inputs: {x: a}, backend, attrs: {shape: a3dShape}});
+    var b3d = reshape({inputs: {x: b}, backend, attrs: {shape: b3dShape}});
+    var sharedDim = transposeA ? a3d.shape[1] : a3d.shape[2];
+    var leftDim = transposeA ? a3d.shape[2] : a3d.shape[1];
+    var rightDim = transposeB ? b3d.shape[1] : b3d.shape[2];
+    var batchDim = Math.max(batchDimA, batchDimB);
+    var a3dValues = backend.data.get(a3d.dataId).values;
+    var b3dValues = backend.data.get(b3d.dataId).values;
+    var a3dStrides = tf2.util.computeStrides(a3d.shape);
+    var b3dStrides = tf2.util.computeStrides(b3d.shape);
+    var _a = transposeA ? [a3dStrides[0], 1, a3dStrides[1]] : [a3dStrides[0], a3dStrides[1], 1], aBatch = _a[0], aOuterStep = _a[1], aInnerStep = _a[2];
+    var _b = transposeB ? [1, b3dStrides[1], b3dStrides[0]] : [b3dStrides[1], 1, b3dStrides[0]], bInnerStep = _b[0], bOuterStep = _b[1], bBatch = _b[2];
+    var size = leftDim * rightDim;
+    var result = tf2.buffer([batchDim, leftDim, rightDim], a3d.dtype);
+    var resVals = result.values;
+    var blockSize = backend.blockSize;
+    for (var bi = 0; bi < batchDim; bi++) {
+      for (var i0 = 0; i0 < leftDim; i0 += blockSize) {
+        for (var j0 = 0; j0 < rightDim; j0 += blockSize) {
+          for (var k0 = 0; k0 < sharedDim; k0 += blockSize) {
+            var iBlock = Math.min(i0 + blockSize, leftDim);
+            var jBlock = Math.min(j0 + blockSize, rightDim);
+            var kBlock = Math.min(k0 + blockSize, sharedDim);
+            for (var i = i0; i < iBlock; i++) {
+              for (var j = j0; j < jBlock; j++) {
+                var sum = 0;
+                for (var k = k0; k < kBlock; k++) {
+                  var batchOffsetA = Math.min(bi, batchDimA - 1) * aBatch;
+                  var batchOffsetB = Math.min(bi, batchDimB - 1) * bBatch;
+                  var aVal = a3dValues[batchOffsetA + i * aOuterStep + k * aInnerStep];
+                  var bVal = b3dValues[k * bInnerStep + j * bOuterStep + batchOffsetB];
+                  sum += aVal * bVal;
+                }
+                resVals[bi * size + (i * rightDim + j)] += sum;
+              }
+            }
+          }
+        }
+      }
+    }
+    backend.disposeIntermediateTensorInfo(a3d);
+    backend.disposeIntermediateTensorInfo(b3d);
+    return backend.makeTensorInfo(outShape, result.dtype, result.values);
+  }
+  var batchMatMulConfig = {
+    kernelName: tf2.BatchMatMul,
+    backendName: "cpu",
+    kernelFunc: batchMatMul
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an AS IS BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function _fusedMatMul(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var a = inputs.a, b = inputs.b, bias = inputs.bias, preluActivationWeights = inputs.preluActivationWeights;
+    var transposeA = attrs.transposeA, transposeB = attrs.transposeB, activation = attrs.activation;
+    var current;
+    var addRes;
+    var activationRes;
+    var intermediates = [];
+    var matMulRes = batchMatMul({inputs: {a, b}, attrs: {transposeA, transposeB}, backend});
+    current = matMulRes;
+    if (bias) {
+      addRes = add({inputs: {a: current, b: bias}, backend});
+      intermediates.push(current);
+      current = addRes;
+    }
+    if (activation) {
+      activationRes = applyActivation(backend, current, activation, preluActivationWeights);
+      intermediates.push(current);
+      current = activationRes;
+    }
+    for (var _i2 = 0, intermediates_1 = intermediates; _i2 < intermediates_1.length; _i2++) {
+      var i = intermediates_1[_i2];
+      backend.disposeIntermediateTensorInfo(i);
+    }
+    return current;
+  }
+  var _fusedMatMulConfig = {
+    kernelName: tf2._FusedMatMul,
+    backendName: "cpu",
+    kernelFunc: _fusedMatMul
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an AS IS BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var acos = unaryKernelFunc(tf2.Acos, function(xi) {
     return Math.acos(xi);
   });
   var acosConfig = {
     kernelName: tf2.Acos,
     backendName: "cpu",
-    kernelFunc: acosKernelFunc
+    kernelFunc: acos
   };
   /**
    * @license
@@ -53152,13 +52801,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var acoshKernelFunc = unaryKernelFunc(tf2.Acosh, function(xi) {
+  var acosh = unaryKernelFunc(tf2.Acosh, function(xi) {
     return Math.acosh(xi);
   });
   var acoshConfig = {
     kernelName: tf2.Acosh,
     backendName: "cpu",
-    kernelFunc: acoshKernelFunc
+    kernelFunc: acosh
   };
   /**
    * @license
@@ -53176,13 +52825,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var asinKernelFunc = unaryKernelFunc(tf2.Asin, function(xi) {
+  var asin = unaryKernelFunc(tf2.Asin, function(xi) {
     return Math.asin(xi);
   });
   var asinConfig = {
     kernelName: tf2.Asin,
     backendName: "cpu",
-    kernelFunc: asinKernelFunc
+    kernelFunc: asin
   };
   /**
    * @license
@@ -53200,13 +52849,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var asinhKernelFunc = unaryKernelFunc(tf2.Asinh, function(xi) {
+  var asinh = unaryKernelFunc(tf2.Asinh, function(xi) {
     return Math.asinh(xi);
   });
   var asinhConfig = {
     kernelName: tf2.Asinh,
     backendName: "cpu",
-    kernelFunc: asinhKernelFunc
+    kernelFunc: asinh
   };
   /**
    * @license
@@ -53224,13 +52873,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var atanKernelFunc = unaryKernelFunc(tf2.Atan, function(xi) {
+  var atan = unaryKernelFunc(tf2.Atan, function(xi) {
     return Math.atan(xi);
   });
   var atanConfig = {
     kernelName: tf2.Atan,
     backendName: "cpu",
-    kernelFunc: atanKernelFunc
+    kernelFunc: atan
   };
   /**
    * @license
@@ -53248,13 +52897,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var atanhKernelFunc = unaryKernelFunc(tf2.Atanh, function(xi) {
+  var atanh = unaryKernelFunc(tf2.Atanh, function(xi) {
     return Math.atanh(xi);
   });
   var atanhConfig = {
     kernelName: tf2.Atanh,
     backendName: "cpu",
-    kernelFunc: atanhKernelFunc
+    kernelFunc: atanh
   };
   /**
    * @license
@@ -53512,7 +53161,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  function batchNormKernelFunc(args) {
+  function batchNorm(args) {
     var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
     var x = inputs.x, scale2 = inputs.scale, offset = inputs.offset, mean = inputs.mean, variance = inputs.variance;
     tf2.util.assert(mean.shape.length === variance.shape.length, function() {
@@ -53563,7 +53212,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var batchNormConfig = {
     kernelName: tf2.FusedBatchNorm,
     backendName: "cpu",
-    kernelFunc: batchNormKernelFunc
+    kernelFunc: batchNorm
   };
   /**
    * @license
@@ -53581,7 +53230,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var clipKernelFunc = unaryKernelFunc(tf2.ClipByValue, function(xi, attrs) {
+  var clip = unaryKernelFunc(tf2.ClipByValue, function(xi, attrs) {
     var clipAttrs = attrs;
     if (xi > clipAttrs.clipValueMax) {
       return clipAttrs.clipValueMax;
@@ -53591,7 +53240,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var clipConfig = {
     kernelName: tf2.ClipByValue,
     backendName: "cpu",
-    kernelFunc: clipKernelFunc
+    kernelFunc: clip
   };
   /**
    * @license
@@ -53637,47 +53286,6 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  function reshape(args) {
-    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
-    var x = inputs.x;
-    var shape = attrs.shape;
-    var xSize = tf2.util.sizeFromShape(x.shape);
-    var $shape = tf2.util.inferFromImplicitShape(shape, xSize);
-    var $xSize = tf2.util.sizeFromShape($shape);
-    tf2.util.assert(xSize === $xSize, function() {
-      return "The new shape (" + $shape + ") has " + $xSize + " elements and the old " + ("shape (" + x.shape + ") has " + xSize + " elements. The new shape and old ") + "shape must have the same number of elements.";
-    });
-    backend.incRef(x.dataId);
-    var xData = backend.data.get(x.dataId);
-    if (xData.complexTensorInfos != null) {
-      var real2 = xData.complexTensorInfos.real;
-      var imag2 = xData.complexTensorInfos.imag;
-      real2.shape = $shape;
-      imag2.shape = $shape;
-    }
-    return {dataId: x.dataId, shape: $shape, dtype: x.dtype};
-  }
-  var reshapeConfig = {
-    kernelName: tf2.Reshape,
-    backendName: "cpu",
-    kernelFunc: reshape
-  };
-  /**
-   * @license
-   * Copyright 2020 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
   function concat(args) {
     var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
     var axis = attrs.axis;
@@ -53705,8 +53313,8 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
       var imags = $inputs.map(function(t) {
         return imag({inputs: {input: t}, backend});
       });
-      var realConcated = concat({inputs: reals, backend, attrs: {axis}});
-      var imagConcated = concat({inputs: imags, backend, attrs: {axis}});
+      var realConcated = concat({inputs: reals, backend, attrs: {axis: $axis}});
+      var imagConcated = concat({inputs: imags, backend, attrs: {axis: $axis}});
       var result = complex({inputs: {real: realConcated, imag: imagConcated}, backend});
       reals.forEach(function(r) {
         return backend.disposeIntermediateTensorInfo(r);
@@ -53779,13 +53387,501 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var cosKernelFunc = unaryKernelFunc(tf2.Cos, function(xi) {
+  function conv2D(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x, filter = inputs.filter;
+    var strides = attrs.strides, pad = attrs.pad, dataFormat = attrs.dataFormat, dilations = attrs.dilations, dimRoundingMode = attrs.dimRoundingMode;
+    assertNotComplex([x, filter], "conv2d");
+    var $dataFormat = tf2.backend_util.convertConv2DDataFormat(dataFormat);
+    var convInfo = tf2.backend_util.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad, dimRoundingMode, false, $dataFormat);
+    var filterHeight = convInfo.filterHeight;
+    var filterWidth = convInfo.filterWidth;
+    var dilationHeight = convInfo.dilationHeight;
+    var dilationWidth = convInfo.dilationWidth;
+    var padLeft = convInfo.padInfo.left;
+    var padTop = convInfo.padInfo.top;
+    var isChannelsLast = convInfo.dataFormat === "channelsLast";
+    var y = new tf2.TensorBuffer(convInfo.outShape, x.dtype);
+    var xStrides = tf2.util.computeStrides(x.shape);
+    var filterStrides = tf2.util.computeStrides(filter.shape);
+    var xBatchStride = xStrides[0];
+    var xRowStride = isChannelsLast ? xStrides[1] : xStrides[2];
+    var xColStride = isChannelsLast ? xStrides[2] : 1;
+    var xChannelStride = isChannelsLast ? 1 : xStrides[1];
+    var yBatchStride = y.strides[0];
+    var yRowStride = isChannelsLast ? y.strides[1] : y.strides[2];
+    var yColStride = isChannelsLast ? y.strides[2] : 1;
+    var yChannelStride = isChannelsLast ? 1 : y.strides[1];
+    var xVals = backend.data.get(x.dataId).values;
+    var wVals = backend.data.get(filter.dataId).values;
+    var yVals = y.values;
+    for (var b = 0; b < convInfo.batchSize; ++b) {
+      var xOffset1 = b * xBatchStride;
+      var yOffset1 = b * yBatchStride;
+      for (var yR = 0; yR < convInfo.outHeight; ++yR) {
+        var yOffset2 = yOffset1 + yR * yRowStride;
+        var xRCorner = yR * convInfo.strideHeight - padTop;
+        for (var wR = 0; wR < filterHeight; ++wR) {
+          var xR = xRCorner + wR * dilationHeight;
+          if (xR < 0 || xR >= convInfo.inHeight) {
+            continue;
+          }
+          var wOffset1 = wR * filterStrides[0];
+          var xOffset2 = xOffset1 + xR * xRowStride;
+          for (var yC = 0; yC < convInfo.outWidth; ++yC) {
+            var yOffset3 = yOffset2 + yC * yColStride;
+            var xCCorner = yC * convInfo.strideWidth - padLeft;
+            for (var wC = 0; wC < filterWidth; ++wC) {
+              var xC = xCCorner + wC * dilationWidth;
+              if (xC < 0 || xC >= convInfo.inWidth) {
+                continue;
+              }
+              var wOffset2 = wOffset1 + wC * filterStrides[1];
+              var xOffset3 = xOffset2 + xC * xColStride;
+              var wOffset3 = wOffset2;
+              for (var d1 = 0; d1 < convInfo.inChannels; ++d1) {
+                var xVal = xVals[xOffset3 + d1 * xChannelStride];
+                for (var d2 = 0; d2 < convInfo.outChannels; ++d2) {
+                  yVals[yOffset3 + d2 * yChannelStride] += xVal * wVals[wOffset3 + d2];
+                }
+                wOffset3 += convInfo.outChannels;
+              }
+            }
+          }
+        }
+      }
+    }
+    return backend.makeTensorInfo(y.shape, y.dtype, yVals);
+  }
+  var conv2DConfig = {
+    kernelName: tf2.Conv2D,
+    backendName: "cpu",
+    kernelFunc: conv2D
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function conv2DBackpropFilter(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x, dy = inputs.dy;
+    var strides = attrs.strides, pad = attrs.pad, dataFormat = attrs.dataFormat, dimRoundingMode = attrs.dimRoundingMode, filterShape = attrs.filterShape;
+    assertNotComplex([x, dy], "conv2dBackpropFilter");
+    var $dataFormat = tf2.backend_util.convertConv2DDataFormat(dataFormat);
+    var convInfo = tf2.backend_util.computeConv2DInfo(x.shape, filterShape, strides, 1, pad, dimRoundingMode, false, $dataFormat);
+    var strideHeight = convInfo.strideHeight, strideWidth = convInfo.strideWidth, filterHeight = convInfo.filterHeight, filterWidth = convInfo.filterWidth;
+    var isChannelsLast = convInfo.dataFormat === "channelsLast";
+    var dW = new tf2.TensorBuffer(convInfo.filterShape, "float32");
+    var leftPad = convInfo.padInfo.left;
+    var topPad = convInfo.padInfo.top;
+    var xVals = backend.data.get(x.dataId).values;
+    var dyVals = backend.data.get(dy.dataId).values;
+    var xBuf = new tf2.TensorBuffer(x.shape, x.dtype, xVals);
+    var dyBuf = new tf2.TensorBuffer(dy.shape, dy.dtype, dyVals);
+    for (var wR = 0; wR < filterHeight; ++wR) {
+      var yRMin = Math.max(0, Math.ceil((topPad - wR) / strideHeight));
+      var yRMax = Math.min(convInfo.outHeight, (convInfo.inHeight + topPad - wR) / strideHeight);
+      for (var wC = 0; wC < filterWidth; ++wC) {
+        var yCMin = Math.max(0, Math.ceil((leftPad - wC) / strideWidth));
+        var yCMax = Math.min(convInfo.outWidth, (convInfo.inWidth + leftPad - wC) / strideWidth);
+        for (var d1 = 0; d1 < convInfo.inChannels; ++d1) {
+          for (var d2 = 0; d2 < convInfo.outChannels; ++d2) {
+            var dotProd = 0;
+            for (var b = 0; b < convInfo.batchSize; ++b) {
+              for (var yR = yRMin; yR < yRMax; ++yR) {
+                var xR = wR + yR * strideHeight - topPad;
+                for (var yC = yCMin; yC < yCMax; ++yC) {
+                  var xC = wC + yC * strideWidth - leftPad;
+                  if (isChannelsLast) {
+                    dotProd += xBuf.get(b, xR, xC, d1) * dyBuf.get(b, yR, yC, d2);
+                  } else {
+                    dotProd += xBuf.get(b, d1, xR, xC) * dyBuf.get(b, d2, yR, yC);
+                  }
+                }
+              }
+            }
+            dW.set(dotProd, wR, wC, d1, d2);
+          }
+        }
+      }
+    }
+    return backend.makeTensorInfo(dW.shape, dW.dtype, dW.values);
+  }
+  var conv2DBackpropFilterConfig = {
+    kernelName: tf2.Conv2DBackpropFilter,
+    backendName: "cpu",
+    kernelFunc: conv2DBackpropFilter
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function conv2DBackpropInput(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var dy = inputs.dy, filter = inputs.filter;
+    var inputShape = attrs.inputShape, strides = attrs.strides, pad = attrs.pad, dataFormat = attrs.dataFormat, dimRoundingMode = attrs.dimRoundingMode;
+    assertNotComplex([dy, filter], "conv2dBackpropInput");
+    var filterStrides = tf2.util.computeStrides(filter.shape);
+    var dyStrides = tf2.util.computeStrides(dy.shape);
+    var $dataFormat = tf2.backend_util.convertConv2DDataFormat(dataFormat);
+    var convInfo = tf2.backend_util.computeConv2DInfo(inputShape, filter.shape, strides, 1, pad, dimRoundingMode, false, $dataFormat);
+    var dx = new tf2.TensorBuffer(convInfo.inShape, "float32");
+    var dxValues = dx.values;
+    var dyValues = backend.data.get(dy.dataId).values;
+    var fltValues = backend.data.get(filter.dataId).values;
+    var fltS0 = filterStrides[0], fltS1 = filterStrides[1], fltS2 = filterStrides[2];
+    var batchSize = convInfo.batchSize, filterHeight = convInfo.filterHeight, filterWidth = convInfo.filterWidth, inChannels = convInfo.inChannels, inHeight = convInfo.inHeight, inWidth = convInfo.inWidth, outChannels = convInfo.outChannels, outHeight = convInfo.outHeight, outWidth = convInfo.outWidth, strideHeight = convInfo.strideHeight, strideWidth = convInfo.strideWidth;
+    $dataFormat = convInfo.dataFormat;
+    var topPad = filterHeight - 1 - convInfo.padInfo.top;
+    var leftPad = filterWidth - 1 - convInfo.padInfo.left;
+    var isChannelsLast = $dataFormat === "channelsLast";
+    var xBatchStride = dx.strides[0];
+    var xRowStride = isChannelsLast ? dx.strides[1] : dx.strides[2];
+    var xColStride = isChannelsLast ? dx.strides[2] : 1;
+    var xChannelStride = isChannelsLast ? 1 : dx.strides[1];
+    var yBatchStride = dyStrides[0];
+    var yRowStride = isChannelsLast ? dyStrides[1] : dyStrides[2];
+    var yColStride = isChannelsLast ? dyStrides[2] : 1;
+    var yChannelStride = isChannelsLast ? 1 : dyStrides[1];
+    for (var b = 0; b < batchSize; ++b) {
+      for (var d1 = 0; d1 < inChannels; ++d1) {
+        for (var xR = 0; xR < inHeight; ++xR) {
+          var xRCorner = xR - topPad;
+          var xRMin = Math.max(0, Math.ceil(xRCorner / strideHeight));
+          var yRMax = Math.min(outHeight, (filterHeight + xRCorner) / strideHeight);
+          for (var xC = 0; xC < inWidth; ++xC) {
+            var xCCorner = xC - leftPad;
+            var xCMin = Math.max(0, Math.ceil(xCCorner / strideWidth));
+            var yCMax = Math.min(outWidth, (filterWidth + xCCorner) / strideWidth);
+            var dotProd = 0;
+            for (var yR = xRMin; yR < yRMax; ++yR) {
+              var wR = yR * strideHeight - xRCorner;
+              for (var yC = xCMin; yC < yCMax; ++yC) {
+                var wC = yC * strideWidth - xCCorner;
+                var dyOffset = yBatchStride * b + yRowStride * yR + yColStride * yC;
+                var fltOffset = fltS0 * (filterHeight - 1 - wR) + fltS1 * (filterWidth - 1 - wC) + fltS2 * d1;
+                for (var d2 = 0; d2 < outChannels; ++d2) {
+                  var pixel = dyValues[dyOffset + yChannelStride * d2];
+                  var weight = fltValues[fltOffset + d2];
+                  dotProd += pixel * weight;
+                }
+              }
+            }
+            var dxOffset = xBatchStride * b + xRowStride * xR + xColStride * xC + xChannelStride * d1;
+            dxValues[dxOffset] = dotProd;
+          }
+        }
+      }
+    }
+    return backend.makeTensorInfo(dx.shape, dx.dtype, dx.values);
+  }
+  var conv2DBackpropInputConfig = {
+    kernelName: tf2.Conv2DBackpropInput,
+    backendName: "cpu",
+    kernelFunc: conv2DBackpropInput
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function conv3D(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x, filter = inputs.filter;
+    var strides = attrs.strides, pad = attrs.pad, dilations = attrs.dilations;
+    assertNotComplex([x, filter], "conv3d");
+    var convInfo = tf2.backend_util.computeConv3DInfo(x.shape, filter.shape, strides, dilations, pad);
+    var filterDepth = convInfo.filterDepth, filterHeight = convInfo.filterHeight, filterWidth = convInfo.filterWidth, dilationDepth = convInfo.dilationDepth, dilationHeight = convInfo.dilationHeight, dilationWidth = convInfo.dilationWidth, padInfo = convInfo.padInfo;
+    var padFront = padInfo.front;
+    var padLeft = padInfo.left;
+    var padTop = padInfo.top;
+    var y = new tf2.TensorBuffer(convInfo.outShape, x.dtype);
+    var xVals = backend.data.get(x.dataId).values;
+    var wVals = backend.data.get(filter.dataId).values;
+    var yVals = y.values;
+    var xStrides = tf2.util.computeStrides(x.shape);
+    var filterStrides = tf2.util.computeStrides(filter.shape);
+    for (var b = 0; b < convInfo.batchSize; ++b) {
+      var xOffset1 = b * xStrides[0];
+      var yOffset1 = b * y.strides[0];
+      for (var yF = 0; yF < convInfo.outDepth; ++yF) {
+        var yOffset2 = yOffset1 + yF * y.strides[1];
+        var xFCorner = yF * convInfo.strideDepth - padFront;
+        for (var wF = 0; wF < filterDepth; ++wF) {
+          var xF = xFCorner + wF * dilationDepth;
+          if (xF < 0 || xF >= convInfo.inDepth) {
+            continue;
+          }
+          var wOffset1 = wF * filterStrides[0];
+          var xOffset2 = xOffset1 + xF * xStrides[1];
+          for (var yR = 0; yR < convInfo.outHeight; ++yR) {
+            var yOffset3 = yOffset2 + yR * y.strides[2];
+            var xRCorner = yR * convInfo.strideHeight - padTop;
+            for (var wR = 0; wR < filterHeight; ++wR) {
+              var xR = xRCorner + wR * dilationHeight;
+              if (xR < 0 || xR >= convInfo.inHeight) {
+                continue;
+              }
+              var wOffset2 = wOffset1 + wR * filterStrides[1];
+              var xOffset3 = xOffset2 + xR * xStrides[2];
+              for (var yC = 0; yC < convInfo.outWidth; ++yC) {
+                var yOffset4 = yOffset3 + yC * convInfo.outChannels;
+                var xCCorner = yC * convInfo.strideWidth - padLeft;
+                for (var wC = 0; wC < filterWidth; ++wC) {
+                  var xC = xCCorner + wC * dilationWidth;
+                  if (xC < 0 || xC >= convInfo.inWidth) {
+                    continue;
+                  }
+                  var wOffset3 = wOffset2 + wC * filterStrides[2];
+                  var xOffset4 = xOffset3 + xC * convInfo.inChannels;
+                  var wOffset4 = wOffset3;
+                  for (var d1 = 0; d1 < convInfo.inChannels; ++d1) {
+                    var xVal = xVals[xOffset4 + d1];
+                    for (var d2 = 0; d2 < convInfo.outChannels; ++d2) {
+                      yVals[yOffset4 + d2] += xVal * wVals[wOffset4 + d2];
+                    }
+                    wOffset4 += convInfo.outChannels;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return backend.makeTensorInfo(y.shape, y.dtype, y.values);
+  }
+  var conv3DConfig = {
+    kernelName: tf2.Conv3D,
+    backendName: "cpu",
+    kernelFunc: conv3D
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function conv3DBackpropFilterV2(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x, dy = inputs.dy;
+    var strides = attrs.strides, pad = attrs.pad, filterShape = attrs.filterShape;
+    assertNotComplex([x, dy], "conv3dBackpropFilterV2");
+    var xStrides = tf2.util.computeStrides(x.shape);
+    var dyStrides = tf2.util.computeStrides(dy.shape);
+    var convInfo = tf2.backend_util.computeConv3DInfo(x.shape, filterShape, strides, 1, pad);
+    var strideDepth = convInfo.strideDepth;
+    var strideHeight = convInfo.strideHeight;
+    var strideWidth = convInfo.strideWidth;
+    var filterDepth = convInfo.filterDepth;
+    var filterHeight = convInfo.filterHeight;
+    var filterWidth = convInfo.filterWidth;
+    var dw = new tf2.TensorBuffer(convInfo.filterShape, "float32");
+    var dwValues = dw.values;
+    var _a = dw.strides, dwS0 = _a[0], dwS1 = _a[1], dwS2 = _a[2], dwS3 = _a[3];
+    var dyValues = backend.data.get(dy.dataId).values;
+    var dyS0 = dyStrides[0], dyS1 = dyStrides[1], dyS2 = dyStrides[2], dyS3 = dyStrides[3];
+    var xValues = backend.data.get(x.dataId).values;
+    var xS0 = xStrides[0], xS1 = xStrides[1], xS2 = xStrides[2], xS3 = xStrides[3];
+    var frontPad = convInfo.padInfo.front;
+    var leftPad = convInfo.padInfo.left;
+    var topPad = convInfo.padInfo.top;
+    for (var wF = 0; wF < filterDepth; ++wF) {
+      var yFMin = Math.max(0, Math.ceil((frontPad - wF) / strideDepth));
+      var yFMax = Math.min(convInfo.outDepth, (convInfo.inDepth + frontPad - wF) / strideDepth);
+      var wOffset1 = wF * dwS0;
+      for (var wR = 0; wR < filterHeight; ++wR) {
+        var yRMin = Math.max(0, Math.ceil((topPad - wR) / strideHeight));
+        var yRMax = Math.min(convInfo.outHeight, (convInfo.inHeight + topPad - wR) / strideHeight);
+        var wOffset2 = wR * dwS1 + wOffset1;
+        for (var wC = 0; wC < filterWidth; ++wC) {
+          var yCMin = Math.max(0, Math.ceil((leftPad - wC) / strideWidth));
+          var yCMax = Math.min(convInfo.outWidth, (convInfo.inWidth + leftPad - wC) / strideWidth);
+          var wOffset3 = wC * dwS2 + wOffset2;
+          for (var d1 = 0; d1 < convInfo.inChannels; ++d1) {
+            var wOffset4 = d1 * dwS3 + wOffset3;
+            for (var d2 = 0; d2 < convInfo.outChannels; ++d2) {
+              var dotProd = 0;
+              for (var b = 0; b < convInfo.batchSize; ++b) {
+                var xOffset1 = b * xS0;
+                var yOffset1 = b * dyS0;
+                for (var yF = yFMin; yF < yFMax; ++yF) {
+                  var xF = wF + yF * strideDepth - frontPad;
+                  var xOffset2 = xF * xS1 + xOffset1;
+                  var yOffset2 = yF * dyS1 + yOffset1;
+                  for (var yR = yRMin; yR < yRMax; ++yR) {
+                    var xR = wR + yR * strideHeight - topPad;
+                    var xOffset3 = xR * xS2 + xOffset2;
+                    var yOffset3 = yR * dyS2 + yOffset2;
+                    for (var yC = yCMin; yC < yCMax; ++yC) {
+                      var xC = wC + yC * strideWidth - leftPad;
+                      var xOffset4 = xC * xS3 + xOffset3;
+                      var yOffset4 = yC * dyS3 + yOffset3;
+                      dotProd += xValues[xOffset4 + d1] * dyValues[yOffset4 + d2];
+                    }
+                  }
+                }
+              }
+              dwValues[wOffset4 + d2] = dotProd;
+            }
+          }
+        }
+      }
+    }
+    return backend.makeTensorInfo(dw.shape, dw.dtype, dw.values);
+  }
+  var conv3DBackpropFilterV2Config = {
+    kernelName: tf2.Conv3DBackpropFilterV2,
+    backendName: "cpu",
+    kernelFunc: conv3DBackpropFilterV2
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function conv3DBackpropInputV2(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var dy = inputs.dy, filter = inputs.filter;
+    var pad = attrs.pad, strides = attrs.strides, inputShape = attrs.inputShape;
+    assertNotComplex([dy], "conv3dBackpropInputV2");
+    var dyStrides = tf2.util.computeStrides(dy.shape);
+    var filterStrides = tf2.util.computeStrides(filter.shape);
+    var convInfo = tf2.backend_util.computeConv3DInfo(inputShape, filter.shape, strides, 1, pad);
+    var dx = new tf2.TensorBuffer(convInfo.inShape, "float32");
+    var dxValues = dx.values;
+    var _a = dx.strides, dxS0 = _a[0], dxS1 = _a[1], dxS2 = _a[2], dxS3 = _a[3];
+    var dyValues = backend.data.get(dy.dataId).values;
+    var dyS0 = dyStrides[0], dyS1 = dyStrides[1], dyS2 = dyStrides[2], dyS3 = dyStrides[3];
+    var fltValues = backend.data.get(filter.dataId).values;
+    var fltS0 = filterStrides[0], fltS1 = filterStrides[1], fltS2 = filterStrides[2], fltS3 = filterStrides[3];
+    var batchSize = convInfo.batchSize, filterDepth = convInfo.filterDepth, filterHeight = convInfo.filterHeight, filterWidth = convInfo.filterWidth, inChannels = convInfo.inChannels, inDepth = convInfo.inDepth, inHeight = convInfo.inHeight, inWidth = convInfo.inWidth, outChannels = convInfo.outChannels, outDepth = convInfo.outDepth, outHeight = convInfo.outHeight, outWidth = convInfo.outWidth, strideDepth = convInfo.strideDepth, strideHeight = convInfo.strideHeight, strideWidth = convInfo.strideWidth;
+    var frontPad = filterDepth - 1 - convInfo.padInfo.front;
+    var topPad = filterHeight - 1 - convInfo.padInfo.top;
+    var leftPad = filterWidth - 1 - convInfo.padInfo.left;
+    for (var b = 0; b < batchSize; ++b) {
+      for (var d1 = 0; d1 < inChannels; ++d1) {
+        for (var xF = 0; xF < inDepth; ++xF) {
+          var xFCorner = xF - frontPad;
+          var xFMin = Math.max(0, Math.ceil(xFCorner / strideDepth));
+          var yFMax = Math.min(outDepth, (filterDepth + xFCorner) / strideDepth);
+          for (var xR = 0; xR < inHeight; ++xR) {
+            var xRCorner = xR - topPad;
+            var xRMin = Math.max(0, Math.ceil(xRCorner / strideHeight));
+            var yRMax = Math.min(outHeight, (filterHeight + xRCorner) / strideHeight);
+            for (var xC = 0; xC < inWidth; ++xC) {
+              var xCCorner = xC - leftPad;
+              var xCMin = Math.max(0, Math.ceil(xCCorner / strideWidth));
+              var yCMax = Math.min(outWidth, (filterWidth + xCCorner) / strideWidth);
+              var dotProd = 0;
+              for (var yF = xFMin; yF < yFMax; ++yF) {
+                var wF = yF * strideDepth - xFCorner;
+                for (var yR = xRMin; yR < yRMax; ++yR) {
+                  var wR = yR * strideHeight - xRCorner;
+                  for (var yC = xCMin; yC < yCMax; ++yC) {
+                    var wC = yC * strideWidth - xCCorner;
+                    var dyOffset = dyS0 * b + dyS1 * yF + dyS2 * yR + dyS3 * yC;
+                    var fltOffset = fltS0 * (filterDepth - 1 - wF) + fltS1 * (filterHeight - 1 - wR) + fltS2 * (filterWidth - 1 - wC) + fltS3 * d1;
+                    for (var d2 = 0; d2 < outChannels; ++d2) {
+                      var pixel = dyValues[dyOffset + d2];
+                      var weight = fltValues[fltOffset + d2];
+                      dotProd += pixel * weight;
+                    }
+                  }
+                }
+              }
+              dxValues[dxS0 * b + dxS1 * xF + dxS2 * xR + dxS3 * xC + d1] = dotProd;
+            }
+          }
+        }
+      }
+    }
+    return backend.makeTensorInfo(dx.shape, dx.dtype, dx.values);
+  }
+  var conv3DBackpropInputV2Config = {
+    kernelName: tf2.Conv3DBackpropInputV2,
+    backendName: "cpu",
+    kernelFunc: conv3DBackpropInputV2
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var cos = unaryKernelFunc(tf2.Cos, function(xi) {
     return Math.cos(xi);
   });
   var cosConfig = {
     kernelName: tf2.Cos,
     backendName: "cpu",
-    kernelFunc: cosKernelFunc
+    kernelFunc: cos
   };
   /**
    * @license
@@ -53803,13 +53899,230 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var coshKernelFunc = unaryKernelFunc(tf2.Cosh, function(xi) {
+  var cosh = unaryKernelFunc(tf2.Cosh, function(xi) {
     return Math.cosh(xi);
   });
   var coshConfig = {
     kernelName: tf2.Cosh,
     backendName: "cpu",
-    kernelFunc: coshKernelFunc
+    kernelFunc: cosh
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function depthwiseConv2dNative(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x, filter = inputs.filter;
+    var strides = attrs.strides, pad = attrs.pad, dilations = attrs.dilations, dimRoundingMode = attrs.dimRoundingMode;
+    assertNotComplex([x, filter], "depthwiseConv2DNative");
+    var xStrides = tf2.util.computeStrides(x.shape);
+    var filterStrides = tf2.util.computeStrides(filter.shape);
+    var $dilations = dilations;
+    if ($dilations == null) {
+      $dilations = [1, 1];
+    }
+    tf2.util.assert(tf2.backend_util.eitherStridesOrDilationsAreOne(strides, $dilations), function() {
+      return "Error in depthwiseConv2d: Either strides or dilations must be " + ("1. Got strides " + strides + " and dilations '" + $dilations + "'");
+    });
+    var convInfo = tf2.backend_util.computeConv2DInfo(x.shape, filter.shape, strides, $dilations, pad, dimRoundingMode, true);
+    var filterHeight = convInfo.filterHeight, filterWidth = convInfo.filterWidth, dilationHeight = convInfo.dilationHeight, dilationWidth = convInfo.dilationWidth, padInfo = convInfo.padInfo;
+    var padLeft = padInfo.left;
+    var padTop = padInfo.top;
+    var chMul = convInfo.outChannels / convInfo.inChannels;
+    var y = new tf2.TensorBuffer(convInfo.outShape, x.dtype);
+    var xVals = backend.data.get(x.dataId).values;
+    var wVals = backend.data.get(filter.dataId).values;
+    var yVals = y.values;
+    for (var b = 0; b < convInfo.batchSize; ++b) {
+      var xOffset1 = b * xStrides[0];
+      var yOffset1 = b * y.strides[0];
+      for (var yR = 0; yR < convInfo.outHeight; ++yR) {
+        var yOffset2 = yOffset1 + yR * y.strides[1];
+        var xRCorner = yR * convInfo.strideHeight - padLeft;
+        for (var wR = 0; wR < filterHeight; ++wR) {
+          var xR = xRCorner + wR * dilationHeight;
+          if (xR < 0 || xR >= convInfo.inHeight) {
+            continue;
+          }
+          var wOffset1 = wR * filterStrides[0];
+          var xOffset2 = xOffset1 + xR * xStrides[1];
+          for (var yC = 0; yC < convInfo.outWidth; ++yC) {
+            var yOffset3 = yOffset2 + yC * y.strides[2];
+            var xCCorner = yC * convInfo.strideWidth - padTop;
+            for (var wC = 0; wC < filterWidth; ++wC) {
+              var xC = xCCorner + wC * dilationWidth;
+              if (xC < 0 || xC >= convInfo.inWidth) {
+                continue;
+              }
+              var wOffset2 = wOffset1 + wC * filterStrides[1];
+              var xOffset3 = xOffset2 + xC * convInfo.inChannels;
+              var yOffset4 = yOffset3;
+              var wOffset3 = wOffset2;
+              for (var d1 = 0; d1 < convInfo.inChannels; ++d1) {
+                var xVal = xVals[xOffset3 + d1];
+                for (var q = 0; q < chMul; ++q) {
+                  yVals[yOffset4 + q] += xVal * wVals[wOffset3 + q];
+                }
+                yOffset4 += chMul;
+                wOffset3 += chMul;
+              }
+            }
+          }
+        }
+      }
+    }
+    return backend.makeTensorInfo(y.shape, y.dtype, y.values);
+  }
+  var depthwiseConv2dNativeConfig = {
+    kernelName: tf2.DepthwiseConv2dNative,
+    backendName: "cpu",
+    kernelFunc: depthwiseConv2dNative
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function depthwiseConv2dNativeBackpropFilter(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x, dy = inputs.dy;
+    var strides = attrs.strides, dilations = attrs.dilations, pad = attrs.pad, dimRoundingMode = attrs.dimRoundingMode, filterShape = attrs.filterShape;
+    assertNotComplex([x, dy], "depthwiseConv2dNativeBackpropFilter");
+    var convInfo = tf2.backend_util.computeConv2DInfo(x.shape, filterShape, strides, dilations, pad, dimRoundingMode, true);
+    var strideHeight = convInfo.strideHeight, strideWidth = convInfo.strideWidth, filterHeight = convInfo.filterHeight, filterWidth = convInfo.filterWidth;
+    var dW = new tf2.TensorBuffer(convInfo.filterShape, "float32");
+    var leftPad = convInfo.padInfo.left;
+    var topPad = convInfo.padInfo.top;
+    var chMul = convInfo.outChannels / convInfo.inChannels;
+    var xVals = backend.data.get(x.dataId).values;
+    var xBuf = new tf2.TensorBuffer(x.shape, x.dtype, xVals);
+    var dyVals = backend.data.get(dy.dataId).values;
+    var dyBuf = new tf2.TensorBuffer(dy.shape, dy.dtype, dyVals);
+    for (var wR = 0; wR < filterHeight; ++wR) {
+      var yRMin = Math.max(0, Math.ceil((topPad - wR) / strideHeight));
+      var yRMax = Math.min(convInfo.outHeight, (convInfo.inHeight + topPad - wR) / strideHeight);
+      for (var wC = 0; wC < filterWidth; ++wC) {
+        var yCMin = Math.max(0, Math.ceil((leftPad - wC) / strideWidth));
+        var yCMax = Math.min(convInfo.outWidth, (convInfo.inWidth + leftPad - wC) / strideWidth);
+        for (var d2 = 0; d2 < convInfo.outChannels; ++d2) {
+          var d1 = Math.trunc(d2 / chMul);
+          var dm = d2 % chMul;
+          var dotProd = 0;
+          for (var b = 0; b < convInfo.batchSize; ++b) {
+            for (var yR = yRMin; yR < yRMax; ++yR) {
+              var xR = wR + yR * strideHeight - topPad;
+              for (var yC = yCMin; yC < yCMax; ++yC) {
+                var xC = wC + yC * strideWidth - leftPad;
+                dotProd += xBuf.get(b, xR, xC, d1) * dyBuf.get(b, yR, yC, d2);
+              }
+            }
+          }
+          dW.set(dotProd, wR, wC, d1, dm);
+        }
+      }
+    }
+    return backend.makeTensorInfo(dW.shape, dW.dtype, dW.values);
+  }
+  var depthwiseConv2dNativeBackpropFilterConfig = {
+    kernelName: tf2.DepthwiseConv2dNativeBackpropFilter,
+    backendName: "cpu",
+    kernelFunc: depthwiseConv2dNativeBackpropFilter
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function depthwiseConv2dNativeBackpropInput(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var dy = inputs.dy, filter = inputs.filter;
+    var strides = attrs.strides, dilations = attrs.dilations, pad = attrs.pad, dimRoundingMode = attrs.dimRoundingMode, inputShape = attrs.inputShape;
+    assertNotComplex([dy, filter], "depthwiseConv2DNativeBackpropInput");
+    var dyStrides = tf2.util.computeStrides(dy.shape);
+    var filterStrides = tf2.util.computeStrides(filter.shape);
+    var convInfo = tf2.backend_util.computeConv2DInfo(inputShape, filter.shape, strides, dilations, pad, dimRoundingMode, true);
+    var dx = new tf2.TensorBuffer(convInfo.inShape, "float32");
+    var dxValues = dx.values;
+    var _a = dx.strides, dxS0 = _a[0], dxS1 = _a[1], dxS2 = _a[2];
+    var dyValues = backend.data.get(dy.dataId).values;
+    var dyS0 = dyStrides[0], dyS1 = dyStrides[1], dyS2 = dyStrides[2];
+    var fltValues = backend.data.get(filter.dataId).values;
+    var fltS0 = filterStrides[0], fltS1 = filterStrides[1], fltS2 = filterStrides[2];
+    var batchSize = convInfo.batchSize, filterHeight = convInfo.filterHeight, filterWidth = convInfo.filterWidth, inChannels = convInfo.inChannels, inHeight = convInfo.inHeight, inWidth = convInfo.inWidth, outChannels = convInfo.outChannels, outHeight = convInfo.outHeight, outWidth = convInfo.outWidth, strideHeight = convInfo.strideHeight, strideWidth = convInfo.strideWidth;
+    var topPad = filterHeight - 1 - convInfo.padInfo.top;
+    var leftPad = filterWidth - 1 - convInfo.padInfo.left;
+    var chMul = outChannels / inChannels;
+    for (var b = 0; b < batchSize; ++b) {
+      for (var d1 = 0; d1 < inChannels; ++d1) {
+        for (var xR = 0; xR < inHeight; ++xR) {
+          var xRCorner = xR - topPad;
+          var xRMin = Math.max(0, Math.ceil(xRCorner / strideHeight));
+          var yRMax = Math.min(outHeight, (filterHeight + xRCorner) / strideHeight);
+          for (var xC = 0; xC < inWidth; ++xC) {
+            var xCCorner = xC - leftPad;
+            var xCMin = Math.max(0, Math.ceil(xCCorner / strideWidth));
+            var yCMax = Math.min(outWidth, (filterWidth + xCCorner) / strideWidth);
+            var dotProd = 0;
+            for (var yR = xRMin; yR < yRMax; ++yR) {
+              var wR = yR * strideHeight - xRCorner;
+              for (var yC = xCMin; yC < yCMax; ++yC) {
+                var wC = yC * strideWidth - xCCorner;
+                var dyOffset = dyS0 * b + dyS1 * yR + dyS2 * yC;
+                var fltOffset = fltS0 * (filterHeight - 1 - wR) + fltS1 * (filterWidth - 1 - wC) + fltS2 * d1;
+                for (var dm = 0; dm < chMul; ++dm) {
+                  var d2 = d1 * chMul + dm;
+                  var pixel = dyValues[dyOffset + d2];
+                  var weight = fltValues[fltOffset + dm];
+                  dotProd += pixel * weight;
+                }
+              }
+            }
+            dxValues[dxS0 * b + dxS1 * xR + dxS2 * xC + d1] = dotProd;
+          }
+        }
+      }
+    }
+    return backend.makeTensorInfo(dx.shape, dx.dtype, dx.values);
+  }
+  var depthwiseConv2dNativeBackpropInputConfig = {
+    kernelName: tf2.DepthwiseConv2dNativeBackpropInput,
+    backendName: "cpu",
+    kernelFunc: depthwiseConv2dNativeBackpropInput
   };
   /**
    * @license
@@ -54049,46 +54362,22 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var eluKernelFunc = unaryKernelFunc(tf2.Elu, function(xi) {
-    return xi >= 0 ? xi : Math.exp(xi) - 1;
-  });
-  var eluConfig = {
-    kernelName: tf2.Elu,
-    backendName: "cpu",
-    kernelFunc: eluKernelFunc
-  };
-  /**
-   * @license
-   * Copyright 2020 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an AS IS BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
   var p = tf2.backend_util.ERF_P;
   var a1 = tf2.backend_util.ERF_A1;
   var a2 = tf2.backend_util.ERF_A2;
   var a3 = tf2.backend_util.ERF_A3;
   var a4 = tf2.backend_util.ERF_A4;
   var a5 = tf2.backend_util.ERF_A5;
-  var erfKernelFunc = unaryKernelFunc(tf2.Erf, function(xi) {
-    var sign = Math.sign(xi);
+  var erf = unaryKernelFunc(tf2.Erf, function(xi) {
+    var sign2 = Math.sign(xi);
     var v = Math.abs(xi);
     var t = 1 / (1 + p * v);
-    return sign * (1 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-v * v));
+    return sign2 * (1 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-v * v));
   });
   var erfConfig = {
     kernelName: tf2.Erf,
     backendName: "cpu",
-    kernelFunc: erfKernelFunc
+    kernelFunc: erf
   };
   /**
    * @license
@@ -54348,6 +54637,42 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
+  function fill(args) {
+    var backend = args.backend, attrs = args.attrs;
+    var shape = attrs.shape, value = attrs.value, dtype = attrs.dtype;
+    var $dtype = dtype || tf2.util.inferDtype(value);
+    var values = tf2.util.getArrayFromDType($dtype, tf2.util.sizeFromShape(shape));
+    fillValues(values, value, $dtype);
+    return backend.makeTensorInfo(shape, $dtype, values);
+  }
+  var fillConfig = {
+    kernelName: tf2.Fill,
+    backendName: "cpu",
+    kernelFunc: fill
+  };
+  function fillValues(values, value, dtype) {
+    if (dtype === "string") {
+      values.fill(value);
+    } else {
+      values.fill(value);
+    }
+  }
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
   var flipLeftRightConfig = {
     kernelName: tf2.FlipLeftRight,
     backendName: "cpu",
@@ -54383,6 +54708,90 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
       var dataId = cpuBackend.write(output, image.shape, image.dtype);
       return {dataId, shape: image.shape, dtype: image.dtype};
     }
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function fusedConv2D(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x, filter = inputs.filter, bias = inputs.bias, preluActivationWeights = inputs.preluActivationWeights;
+    var strides = attrs.strides, pad = attrs.pad, dataFormat = attrs.dataFormat, dilations = attrs.dilations, dimRoundingMode = attrs.dimRoundingMode, activation = attrs.activation;
+    var result = conv2D({
+      inputs: {x, filter},
+      backend,
+      attrs: {strides, pad, dataFormat, dilations, dimRoundingMode}
+    });
+    if (bias) {
+      var resultOld = result;
+      result = add({inputs: {a: result, b: bias}, backend});
+      backend.disposeIntermediateTensorInfo(resultOld);
+    }
+    if (activation) {
+      var resultOld = result;
+      result = applyActivation(backend, result, activation, preluActivationWeights);
+      backend.disposeIntermediateTensorInfo(resultOld);
+    }
+    return result;
+  }
+  var fusedConv2DConfig = {
+    kernelName: tf2.FusedConv2D,
+    backendName: "cpu",
+    kernelFunc: fusedConv2D
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function fusedDepthwiseConv2D(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x, filter = inputs.filter, bias = inputs.bias, preluActivationWeights = inputs.preluActivationWeights;
+    var strides = attrs.strides, pad = attrs.pad, dataFormat = attrs.dataFormat, dilations = attrs.dilations, dimRoundingMode = attrs.dimRoundingMode, activation = attrs.activation;
+    var result = depthwiseConv2dNative({
+      inputs: {x, filter},
+      backend,
+      attrs: {strides, pad, dataFormat, dilations, dimRoundingMode}
+    });
+    if (bias) {
+      var oldResult = result;
+      result = add({inputs: {a: result, b: bias}, backend});
+      backend.disposeIntermediateTensorInfo(oldResult);
+    }
+    if (activation) {
+      var oldResult = result;
+      result = applyActivation(backend, result, activation, preluActivationWeights);
+      backend.disposeIntermediateTensorInfo(oldResult);
+    }
+    return result;
+  }
+  var fusedDepthwiseConv2DConfig = {
+    kernelName: tf2.FusedDepthwiseConv2D,
+    backendName: "cpu",
+    kernelFunc: fusedDepthwiseConv2D
   };
   /**
    * @license
@@ -54438,13 +54847,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var isFiniteKernelFunc = unaryKernelFunc(tf2.IsFinite, function(xi) {
+  var isFinite2 = unaryKernelFunc(tf2.IsFinite, function(xi) {
     return Number.isFinite(xi) ? 1 : 0;
   }, "bool");
   var isFiniteConfig = {
     kernelName: tf2.IsFinite,
     backendName: "cpu",
-    kernelFunc: isFiniteKernelFunc
+    kernelFunc: isFinite2
   };
   /**
    * @license
@@ -54462,13 +54871,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var isInfKernelFunc = unaryKernelFunc(tf2.IsInf, function(xi) {
+  var isInf = unaryKernelFunc(tf2.IsInf, function(xi) {
     return Math.abs(xi) === Infinity ? 1 : 0;
   }, "bool");
   var isInfConfig = {
     kernelName: tf2.IsInf,
     backendName: "cpu",
-    kernelFunc: isInfKernelFunc
+    kernelFunc: isInf
   };
   /**
    * @license
@@ -54486,13 +54895,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var isNaNKernelFunc = unaryKernelFunc(tf2.IsNan, function(xi) {
+  var isNaN$1 = unaryKernelFunc(tf2.IsNan, function(xi) {
     return Number.isNaN(xi) ? 1 : 0;
   }, "bool");
   var isNaNConfig = {
     kernelName: tf2.IsNan,
     backendName: "cpu",
-    kernelFunc: isNaNKernelFunc
+    kernelFunc: isNaN$1
   };
   /**
    * @license
@@ -54510,13 +54919,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var log1pKernelFunc = unaryKernelFunc(tf2.Log1p, function(xi) {
+  var log1p = unaryKernelFunc(tf2.Log1p, function(xi) {
     return Math.log1p(xi);
   });
   var log1pConfig = {
     kernelName: tf2.Log1p,
     backendName: "cpu",
-    kernelFunc: log1pKernelFunc
+    kernelFunc: log1p
   };
   /**
    * @license
@@ -54534,13 +54943,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var logicalNotKernelFunc = unaryKernelFunc(tf2.LogicalNot, function(xi) {
+  var logicalNot = unaryKernelFunc(tf2.LogicalNot, function(xi) {
     return xi ? 0 : 1;
   }, "bool");
   var logicalNotConfig = {
     kernelName: tf2.LogicalNot,
     backendName: "cpu",
-    kernelFunc: logicalNotKernelFunc
+    kernelFunc: logicalNot
   };
   /**
    * @license
@@ -54786,6 +55195,67 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
+  function mirrorPad(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x;
+    var paddings = attrs.paddings, mode = attrs.mode;
+    assertNotComplex(x, "mirrorPad");
+    var outShape = paddings.map(function(p2, i2) {
+      return p2[0] + x.shape[i2] + p2[1];
+    });
+    var start = paddings.map(function(p2) {
+      return p2[0];
+    });
+    var end = paddings.map(function(p2, i2) {
+      return p2[0] + x.shape[i2];
+    });
+    var offset = mode === "reflect" ? 0 : 1;
+    var xVals = backend.data.get(x.dataId).values;
+    var xRank = x.shape.length;
+    var xStrides = tf2.util.computeStrides(x.shape);
+    var resultSize = tf2.util.sizeFromShape(outShape);
+    var resultRank = outShape.length;
+    var resultStrides = tf2.util.computeStrides(outShape);
+    var resVals = tf2.util.getTypedArrayFromDType(x.dtype, resultSize);
+    for (var i = 0; i < resultSize; i++) {
+      var coords = tf2.util.indexToLoc(i, resultRank, resultStrides);
+      for (var i_1 = 0; i_1 < resultRank; i_1++) {
+        if (coords[i_1] < start[i_1]) {
+          coords[i_1] = start[i_1] * 2 - coords[i_1] - offset;
+        } else if (coords[i_1] >= end[i_1]) {
+          coords[i_1] = (end[i_1] - 1) * 2 - coords[i_1] + offset;
+        }
+      }
+      coords = coords.map(function(c, i2) {
+        return c - start[i2];
+      });
+      var inIndex = tf2.util.locToIndex(coords, xRank, xStrides);
+      resVals[i] = xVals[inIndex];
+    }
+    var outId = backend.write(resVals, outShape, x.dtype);
+    return {dataId: outId, shape: outShape, dtype: x.dtype};
+  }
+  var mirrorPadConfig = {
+    kernelName: tf2.MirrorPad,
+    backendName: "cpu",
+    kernelFunc: mirrorPad
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
   var nonMaxSuppressionV4Impl = tf2.kernel_impls.nonMaxSuppressionV4Impl;
   var nonMaxSuppressionV4Config = {
     kernelName: tf2.NonMaxSuppressionV4,
@@ -54837,31 +55307,6 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
       var _d = nonMaxSuppressionV5Impl(boxesVals, scoresVals, maxOutputSizeVal, iouThresholdVal, scoreThresholdVal, softNmsSigmaVal), selectedIndices = _d.selectedIndices, selectedScores = _d.selectedScores;
       return [selectedIndices, selectedScores];
     }
-  };
-  /**
-   * @license
-   * Copyright 2020 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  var notEqualImpl = createSimpleBinaryKernelImpl(function(a, b) {
-    return a !== b ? 1 : 0;
-  });
-  var notEqual = binaryKernelFunc(tf2.NotEqual, notEqualImpl, null, "bool");
-  var notEqualConfig = {
-    kernelName: tf2.NotEqual,
-    backendName: "cpu",
-    kernelFunc: notEqual
   };
   /**
    * @license
@@ -54933,13 +55378,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var reciprocalKernelFunc = unaryKernelFunc(tf2.Reciprocal, function(xi) {
+  var reciprocal = unaryKernelFunc(tf2.Reciprocal, function(xi) {
     return 1 / xi;
   });
   var reciprocalConfig = {
     kernelName: tf2.Reciprocal,
     backendName: "cpu",
-    kernelFunc: reciprocalKernelFunc
+    kernelFunc: reciprocal
   };
   /**
    * @license
@@ -55026,7 +55471,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var roundKernelFunc = unaryKernelFunc(tf2.Round, function(xi) {
+  var round = unaryKernelFunc(tf2.Round, function(xi) {
     var base = Math.floor(xi);
     if (xi - base < 0.5) {
       return Math.floor(xi);
@@ -55043,7 +55488,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var roundConfig = {
     kernelName: tf2.Round,
     backendName: "cpu",
-    kernelFunc: roundKernelFunc
+    kernelFunc: round
   };
   /**
    * @license
@@ -55063,7 +55508,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    */
   var scaleAlpha = tf2.backend_util.SELU_SCALEALPHA;
   var scale = tf2.backend_util.SELU_SCALE;
-  var seluKernelFunc = unaryKernelFunc(tf2.Selu, function(xi) {
+  var selu = unaryKernelFunc(tf2.Selu, function(xi) {
     if (xi >= 0) {
       return scale * xi;
     } else {
@@ -55073,7 +55518,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var seluConfig = {
     kernelName: tf2.Selu,
     backendName: "cpu",
-    kernelFunc: seluKernelFunc
+    kernelFunc: selu
   };
   /**
    * @license
@@ -55091,13 +55536,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var sigmoidKernelFunc = unaryKernelFunc(tf2.Sigmoid, function(xi) {
+  var sigmoid = unaryKernelFunc(tf2.Sigmoid, function(xi) {
     return 1 / (1 + Math.exp(-xi));
   });
   var sigmoidConfig = {
     kernelName: tf2.Sigmoid,
     backendName: "cpu",
-    kernelFunc: sigmoidKernelFunc
+    kernelFunc: sigmoid
   };
   /**
    * @license
@@ -55115,7 +55560,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var signKernelFunc = unaryKernelFunc(tf2.Sign, function(xi) {
+  var sign = unaryKernelFunc(tf2.Sign, function(xi) {
     if (xi < 0) {
       return -1;
     } else if (xi > 0) {
@@ -55127,7 +55572,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var signConfig = {
     kernelName: tf2.Sign,
     backendName: "cpu",
-    kernelFunc: signKernelFunc
+    kernelFunc: sign
   };
   /**
    * @license
@@ -55145,13 +55590,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var sinKernelFunc = unaryKernelFunc(tf2.Sin, function(xi) {
+  var sin = unaryKernelFunc(tf2.Sin, function(xi) {
     return Math.sin(xi);
   });
   var sinConfig = {
     kernelName: tf2.Sin,
     backendName: "cpu",
-    kernelFunc: sinKernelFunc
+    kernelFunc: sin
   };
   /**
    * @license
@@ -55169,13 +55614,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var sinhKernelFunc = unaryKernelFunc(tf2.Sinh, function(xi) {
+  var sinh = unaryKernelFunc(tf2.Sinh, function(xi) {
     return Math.sinh(xi);
   });
   var sinhConfig = {
     kernelName: tf2.Sinh,
     backendName: "cpu",
-    kernelFunc: sinhKernelFunc
+    kernelFunc: sinh
   };
   /**
    * @license
@@ -55195,7 +55640,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    */
   var epsilon = 11920928955078125e-23;
   var threshold = Math.log(epsilon) + 2;
-  var softplusKernelFunc = unaryKernelFunc(tf2.Softplus, function(xi) {
+  var softplus = unaryKernelFunc(tf2.Softplus, function(xi) {
     var tooLarge = xi > -threshold;
     var tooSmall = xi < threshold;
     var expX = Math.exp(xi);
@@ -55212,7 +55657,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var softplusConfig = {
     kernelName: tf2.Softplus,
     backendName: "cpu",
-    kernelFunc: softplusKernelFunc
+    kernelFunc: softplus
   };
   /**
    * @license
@@ -55320,13 +55765,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var sqrtKernelFunc = unaryKernelFunc(tf2.Sqrt, function(xi) {
+  var sqrt = unaryKernelFunc(tf2.Sqrt, function(xi) {
     return Math.sqrt(xi);
   });
   var sqrtConfig = {
     kernelName: tf2.Sqrt,
     backendName: "cpu",
-    kernelFunc: sqrtKernelFunc
+    kernelFunc: sqrt
   };
   /**
    * @license
@@ -55365,32 +55810,6 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   /**
    * @license
    * Copyright 2020 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  var squaredDifferenceImpl = createSimpleBinaryKernelImpl(function(a, b) {
-    var diff = a - b;
-    return diff * diff;
-  });
-  var squaredDifference = binaryKernelFunc(tf2.SquaredDifference, squaredDifferenceImpl);
-  var squaredDifferenceConfig = {
-    kernelName: tf2.SquaredDifference,
-    backendName: "cpu",
-    kernelFunc: squaredDifference
-  };
-  /**
-   * @license
-   * Copyright 2020 Google LLC. All Rights Reserved.
    * Licensed under the Apache License, Version 2.0 (the License);
    * you may not use this file except in compliance with the License.
    * You may obtain a copy of the License at
@@ -55404,7 +55823,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var stepKernelFunc = unaryKernelFunc(tf2.Step, function(xi, attrs) {
+  var step = unaryKernelFunc(tf2.Step, function(xi, attrs) {
     var stepAttrs = attrs;
     if (isNaN(xi)) {
       return NaN;
@@ -55415,7 +55834,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
   var stepConfig = {
     kernelName: tf2.Step,
     backendName: "cpu",
-    kernelFunc: stepKernelFunc
+    kernelFunc: step
   };
   /**
    * @license
@@ -55433,13 +55852,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var tanKernelFunc = unaryKernelFunc(tf2.Tan, function(xi) {
+  var tan = unaryKernelFunc(tf2.Tan, function(xi) {
     return Math.tan(xi);
   });
   var tanConfig = {
     kernelName: tf2.Tan,
     backendName: "cpu",
-    kernelFunc: tanKernelFunc
+    kernelFunc: tan
   };
   /**
    * @license
@@ -55457,13 +55876,13 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var tanhKernelFunc = unaryKernelFunc(tf2.Tanh, function(xi) {
+  var tanh = unaryKernelFunc(tf2.Tanh, function(xi) {
     return Math.tanh(xi);
   });
   var tanhConfig = {
     kernelName: tf2.Tanh,
     backendName: "cpu",
-    kernelFunc: tanhKernelFunc
+    kernelFunc: tanh
   };
   /**
    * @license
@@ -55515,6 +55934,7 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
    * =============================================================================
    */
   var kernelConfigs = [
+    _fusedMatMulConfig,
     absConfig,
     acosConfig,
     acoshConfig,
@@ -55525,14 +55945,24 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
     atanhConfig,
     avgPoolConfig,
     avgPoolBackpropConfig,
+    batchMatMulConfig,
     batchNormConfig,
     castConfig,
     ceilConfig,
     clipConfig,
     complexConfig,
     concatConfig,
+    conv2DBackpropFilterConfig,
+    conv2DBackpropInputConfig,
+    conv2DConfig,
+    conv3DBackpropFilterV2Config,
+    conv3DBackpropInputV2Config,
+    conv3DConfig,
     cosConfig,
     coshConfig,
+    depthwiseConv2dNativeConfig,
+    depthwiseConv2dNativeBackpropFilterConfig,
+    depthwiseConv2dNativeBackpropInputConfig,
     dilation2dConfig,
     dilation2dBackpropInputConfig,
     dilation2dBackpropFilterConfig,
@@ -55542,8 +55972,11 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
     expConfig,
     expm1Config,
     fftConfig,
+    fillConfig,
     flipLeftRightConfig,
     floorConfig,
+    fusedConv2DConfig,
+    fusedDepthwiseConv2DConfig,
     identityConfig,
     ifftConfig,
     imagConfig,
@@ -55557,13 +55990,17 @@ var require_tf_backend_cpu_node = __commonJS((exports) => {
     maxPoolBackpropConfig,
     maxPoolWithArgmaxConfig,
     maxConfig,
+    mirrorPadConfig,
     multiplyConfig,
     nonMaxSuppressionV4Config,
     nonMaxSuppressionV5Config,
     notEqualConfig,
     padV2Config,
+    preluConfig,
     realConfig,
     reciprocalConfig,
+    reluConfig,
+    relu6Config,
     reshapeConfig,
     rotateWithOffsetConfig,
     roundConfig,
@@ -58083,34 +58520,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
   }();
   /**
    * @license
-   * Copyright 2018 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  var COMPLEX_MULTIPLY = {
-    REAL: "return areal * breal - aimag * bimag;",
-    IMAG: "return areal * bimag + aimag * breal;"
-  };
-  var BinaryOpComplexProgram = function() {
-    function BinaryOpComplexProgram2(op, aShape, bShape) {
-      this.variableNames = ["AReal", "AImag", "BReal", "BImag"];
-      this.outputShape = tf2.backend_util.assertAndGetBroadcastShape(aShape, bShape);
-      this.userCode = "\n      float binaryOpComplex(\n          float areal, float aimag, float breal, float bimag) {\n        " + op + "\n      }\n\n      void main() {\n        float areal = getARealAtOutCoords();\n        float aimag = getAImagAtOutCoords();\n        float breal = getBRealAtOutCoords();\n        float bimag = getBImagAtOutCoords();\n        setOutput(binaryOpComplex(areal, aimag, breal, bimag));\n      }\n    ";
-    }
-    return BinaryOpComplexProgram2;
-  }();
-  /**
-   * @license
    * Copyright 2017 Google LLC. All Rights Reserved.
    * Licensed under the Apache License, Version 2.0 (the "License");
    * you may not use this file except in compliance with the License.
@@ -58126,13 +58535,9 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    * =============================================================================
    */
   var CHECK_NAN_SNIPPET = "\n  if (isnan(a)) return a;\n  if (isnan(b)) return b;\n";
-  var ADD = "return a + b;";
-  var SUB = "return a - b;";
-  var MUL = "return a * b;";
   var INT_DIV = "\n  float s = sign(a) * sign(b);\n  int ia = round(a);\n  int ib = round(b);\n  if (ib != 0) {\n    // Windows (D3D) wants guaranteed non-zero int division at compile-time.\n    return float(idiv(ia, ib, s));\n  } else {\n    return NAN;\n  }\n";
   var POW = "\nif(a < 0.0 && floor(b) < b){\n  return NAN;\n}\nif (b == 0.0) {\n  return 1.0;\n}\nreturn (round(mod(b, 2.0)) != 1) ?\n    pow(abs(a), b) : sign(a) * pow(abs(a), b);\n";
   var EQUAL = "return float(a == b);";
-  var NOT_EQUAL = "return float(a != b);";
   var LESS = "return float(a < b);";
   var LESS_EQUAL = "return float(a <= b);";
   var GREATER = "return float(a > b);";
@@ -58174,7 +58579,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
   var PRELU$1 = "\n  vec4 aLessThanZero = vec4(lessThan(a, vec4(0.)));\n  return (aLessThanZero * (b * a)) + ((vec4(1.0) - aLessThanZero) * a);\n";
   var ELU_DER$1 = "\n  vec4 bGTEZero = vec4(greaterThanEqual(b, vec4(0.)));\n  return (bGTEZero * a) + ((vec4(1.0) - bGTEZero) * (a * (b + vec4(1.0))));\n";
   var EQUAL$1 = "\n  return vec4(equal(a, b));\n";
-  var NOT_EQUAL$1 = "\n  return vec4(notEqual(a, b));\n";
   var LESS$1 = "\n  return vec4(lessThan(a, b));\n";
   var LESS_EQUAL$1 = "\n  return vec4(lessThanEqual(a, b));\n";
   var GREATER$1 = "\n  return vec4(greaterThan(a, b));\n";
@@ -58310,109 +58714,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
     }
     return ComplexAbsProgram2;
   }();
-  /**
-   * @license
-   * Copyright 2017 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  var ConcatProgram = function() {
-    function ConcatProgram2(shapes) {
-      this.outputShape = [];
-      this.outputShape = tf2.backend_util.computeOutShape(shapes, 1);
-      this.variableNames = shapes.map(function(_, i2) {
-        return "T" + i2;
-      });
-      var offsets = new Array(shapes.length - 1);
-      offsets[0] = shapes[0][1];
-      for (var i = 1; i < offsets.length; i++) {
-        offsets[i] = offsets[i - 1] + shapes[i][1];
-      }
-      var snippets = ["if (yC < " + offsets[0] + ") setOutput(getT0(yR, yC));"];
-      for (var i = 1; i < offsets.length; i++) {
-        var shift = offsets[i - 1];
-        snippets.push("else if (yC < " + offsets[i] + ") " + ("setOutput(getT" + i + "(yR, yC-" + shift + "));"));
-      }
-      var lastIndex = offsets.length;
-      var lastShift = offsets[offsets.length - 1];
-      snippets.push("else setOutput(getT" + lastIndex + "(yR, yC-" + lastShift + "));");
-      this.userCode = "\n      void main() {\n        ivec2 coords = getOutputCoords();\n        int yR = coords.x;\n        int yC = coords.y;\n\n        " + snippets.join("\n        ") + "\n      }\n    ";
-    }
-    return ConcatProgram2;
-  }();
-  /**
-   * @license
-   * Copyright 2019 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  var ConcatPackedProgram = function() {
-    function ConcatPackedProgram2(shapes, axis) {
-      this.packedInputs = true;
-      this.packedOutput = true;
-      this.outputShape = [];
-      this.outputShape = tf2.backend_util.computeOutShape(shapes, axis);
-      var shape = this.outputShape;
-      var rank = shape.length;
-      var dtype = getCoordsDataType(rank);
-      var coords2 = getChannels("coords", rank);
-      var channels = ["x", "y", "z", "w", "u", "v"].slice(0, rank);
-      this.variableNames = shapes.map(function(_, i2) {
-        return "T" + i2;
-      });
-      var offsets = new Array(shapes.length - 1);
-      offsets[0] = shapes[0][axis];
-      for (var i = 1; i < offsets.length; i++) {
-        offsets[i] = offsets[i - 1] + shapes[i][axis];
-      }
-      var channel = channels[axis];
-      var lastChannels = channels.slice(-2);
-      var allChannels = channels.join();
-      var getValueSnippet = "if (" + channel + " < " + offsets[0] + ") {\n        return getChannel(\n            getT0(" + allChannels + "), vec2(" + lastChannels.join() + "));\n        }";
-      for (var i = 1; i < offsets.length; i++) {
-        var shift_1 = offsets[i - 1];
-        getValueSnippet += "\n        if (" + channel + " < " + offsets[i] + "  && " + channel + " >= " + offsets[i - 1] + ") {\n          return getChannel(\n            getT" + i + "(" + shiftedChannels(channels, channel, shift_1) + "),\n            vec2(" + shiftedChannels(lastChannels, channel, shift_1) + "));\n        }";
-      }
-      var lastIndex = offsets.length;
-      var shift = offsets[offsets.length - 1];
-      getValueSnippet += "\n        return getChannel(\n          getT" + lastIndex + "(" + shiftedChannels(channels, channel, shift) + "),\n          vec2(" + shiftedChannels(lastChannels, channel, shift) + "));";
-      this.userCode = "\n      float getValue(" + channels.map(function(x) {
-        return "int " + x;
-      }) + ") {\n        " + getValueSnippet + "\n      }\n\n      void main() {\n        " + dtype + " coords = getOutputCoords();\n        vec4 result = vec4(getValue(" + coords2 + "), 0., 0., 0.);\n\n        " + coords2[rank - 1] + " = " + coords2[rank - 1] + " + 1;\n        if (" + coords2[rank - 1] + " < " + shape[rank - 1] + ") {\n          result.g = getValue(" + coords2 + ");\n        }\n\n        " + coords2[rank - 2] + " = " + coords2[rank - 2] + " + 1;\n        if (" + coords2[rank - 2] + " < " + shape[rank - 2] + ") {\n          result.a = getValue(" + coords2 + ");\n        }\n\n        " + coords2[rank - 1] + " = " + coords2[rank - 1] + " - 1;\n        if (" + coords2[rank - 2] + " < " + shape[rank - 2] + " &&\n            " + coords2[rank - 1] + " < " + shape[rank - 1] + ") {\n          result.b = getValue(" + coords2 + ");\n        }\n        setOutput(result);\n      }\n    ";
-    }
-    return ConcatPackedProgram2;
-  }();
-  function shiftedChannels(channels, channel, shift) {
-    var channelIdx = channels.indexOf(channel);
-    var res = channels.map(function(c, idx) {
-      if (idx === channelIdx) {
-        return c + " - " + shift;
-      } else {
-        return c;
-      }
-    });
-    return res.join();
-  }
   /**
    * @license
    * Copyright 2017 Google LLC. All Rights Reserved.
@@ -59177,37 +59478,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       this.userCode = "\n      " + getFlatIndexFrom3D(outputShape) + "\n\n      void main() {\n        ivec3 coords = getOutputCoords();\n\n        vec4 result = vec4(0.);\n        int flatIndex, r, c, offset;\n        ivec3 localCoords;\n        vec2 uv;\n        vec4 values;\n\n        " + mainLoop + "\n\n        " + glsl.output + " = " + output + ";\n      }\n    ";
     }
     return EncodeMatrixPackedProgram2;
-  }();
-  /**
-   * @license
-   * Copyright 2018 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  var COMPLEX_FFT = {
-    REAL: "return real * expR - imag * expI;",
-    IMAG: "return real * expI + imag * expR;"
-  };
-  var FFTProgram = function() {
-    function FFTProgram2(op, inputShape, inverse) {
-      this.variableNames = ["real", "imag"];
-      var innerDim = inputShape[1];
-      this.outputShape = inputShape;
-      var exponentMultiplierSnippet = inverse ? "2.0 * " + Math.PI : "-2.0 * " + Math.PI;
-      var resultDenominator = inverse ? innerDim + ".0" : "1.0";
-      this.userCode = "\n      const float exponentMultiplier = " + exponentMultiplierSnippet + ";\n\n      float unaryOpComplex(float real, float expR, float imag, float expI) {\n        " + op + "\n      }\n\n      float mulMatDFT(int batch, int index) {\n        float indexRatio = float(index) / float(" + innerDim + ");\n        float exponentMultiplierTimesIndexRatio =\n            exponentMultiplier * indexRatio;\n\n        float result = 0.0;\n\n        for (int i = 0; i < " + innerDim + "; i++) {\n          // x = (-2|2 * PI / N) * index * i;\n          float x = exponentMultiplierTimesIndexRatio * float(i);\n          float expR = cos(x);\n          float expI = sin(x);\n          float real = getReal(batch, i);\n          float imag = getImag(batch, i);\n\n          result +=\n              unaryOpComplex(real, expR, imag, expI) / " + resultDenominator + ";\n        }\n\n        return result;\n      }\n\n      void main() {\n        ivec2 coords = getOutputCoords();\n        setOutput(mulMatDFT(coords[0], coords[1]));\n      }\n    ";
-    }
-    return FFTProgram2;
   }();
   /**
    * @license
@@ -60367,7 +60637,7 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    * =============================================================================
    */
   var MatMulPackedProgram = function() {
-    function MatMulPackedProgram2(aShape, outputShape, transposeA, transposeB, addBias, activation, hasPreluActivation) {
+    function MatMulPackedProgram2(aShape, bShape, outputShape, transposeA, transposeB, addBias, activation, hasPreluActivation) {
       if (transposeA === void 0) {
         transposeA = false;
       }
@@ -60409,7 +60679,14 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       if (hasPreluActivation) {
         this.variableNames.push("preluActivationWeights");
       }
-      this.userCode = "\n      " + activationSnippet + "\n\n      const float sharedDimension = " + sharedDimensionPacked + ".0;\n\n      vec4 dot2x2ARowBCol(ivec3 rc) {\n        vec4 result = vec4(0);\n        for (int i = 0; i < " + sharedDimensionPacked + "; i++) {\n          vec4 a = getMatrixA(rc.x, " + aSample + ");\n          vec4 b = getMatrixB(rc.x, " + bSample + ");\n\n          // These swizzled products need to be separately added.\n          // See: https://github.com/tensorflow/tfjs/issues/1735\n          result += (" + aSwizzle[0] + " * " + bSwizzle[0] + ");\n          result += (" + aSwizzle[1] + " * " + bSwizzle[1] + ");\n        }\n        return result;\n      }\n\n      void main() {\n        ivec3 rc = getOutputCoords();\n        vec4 result = dot2x2ARowBCol(rc);\n\n        " + addBiasSnippet + "\n\n        " + applyActivationSnippet + "\n\n        setOutput(result);\n      }\n    ";
+      var batchASnippet = "rc.x";
+      var batchBSnippet = "rc.x";
+      if (aShape[0] < bShape[0]) {
+        batchASnippet = "int(min(float(rc.x), " + (aShape[0] - 1) + ".))";
+      } else if (bShape[0] < aShape[0]) {
+        batchBSnippet = "int(min(float(rc.x), " + (bShape[0] - 1) + ".))";
+      }
+      this.userCode = "\n      " + activationSnippet + "\n\n      const float sharedDimension = " + sharedDimensionPacked + ".0;\n\n      vec4 dot2x2ARowBCol(ivec3 rc) {\n        vec4 result = vec4(0);\n        for (int i = 0; i < " + sharedDimensionPacked + "; i++) {\n          int batchA = " + batchASnippet + ";\n          int batchB = " + batchBSnippet + ";\n          vec4 a = getMatrixA(batchA, " + aSample + ");\n          vec4 b = getMatrixB(batchB, " + bSample + ");\n\n          // These swizzled products need to be separately added.\n          // See: https://github.com/tensorflow/tfjs/issues/1735\n          result += (" + aSwizzle[0] + " * " + bSwizzle[0] + ");\n          result += (" + aSwizzle[1] + " * " + bSwizzle[1] + ");\n        }\n        return result;\n      }\n\n      void main() {\n        ivec3 rc = getOutputCoords();\n        vec4 result = dot2x2ARowBCol(rc);\n\n        " + addBiasSnippet + "\n\n        " + applyActivationSnippet + "\n\n        setOutput(result);\n      }\n    ";
     }
     return MatMulPackedProgram2;
   }();
@@ -61756,7 +62033,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
   var ERF = '\n  // Error function is calculated approximately with elementary function.\n  // See "Handbook of Mathematical Functions with Formulas,\n  // Graphs, and Mathematical Tables", Abramowitz and Stegun.\n  float p = ' + tf2.backend_util.ERF_P + ";\n  float a1 = " + tf2.backend_util.ERF_A1 + ";\n  float a2 = " + tf2.backend_util.ERF_A2 + ";\n  float a3 = " + tf2.backend_util.ERF_A3 + ";\n  float a4 = " + tf2.backend_util.ERF_A4 + ";\n  float a5 = " + tf2.backend_util.ERF_A5 + ";\n\n  float sign = sign(x);\n  x = abs(x);\n  float t = 1.0 / (1.0 + p * x);\n  return sign * (1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*exp(-x*x));\n";
   var RECIPROCAL = "return 1.0 / x;";
   var LOGICAL_NOT = "return float(!(x >= 1.0));";
-  var TO_INT = "return float(int(x));";
   var CLONE = "return x;";
   /**
    * @license
@@ -61938,7 +62214,14 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
         throw new Error("Cannot write to a complex64 dtype. Please use tf.complex(real, imag).");
       }
       var dataId = {};
-      this.texData.set(dataId, {shape, dtype, values, usage: TextureUsage.UPLOAD, refCount: 1});
+      this.texData.set(dataId, {
+        shape,
+        dtype,
+        values,
+        usage: TextureUsage.UPLOAD,
+        refCount: 1,
+        complexParentRefCount: 0
+      });
       return dataId;
     };
     MathBackendWebGL2.prototype.incRef = function(dataId) {
@@ -61958,7 +62241,14 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       if (dtype === "complex64") {
         throw new Error("Cannot write to a complex64 dtype. Please use tf.complex(real, imag).");
       }
-      this.texData.set(dataId, {shape, dtype, values, usage: TextureUsage.UPLOAD, refCount: 1});
+      this.texData.set(dataId, {
+        shape,
+        dtype,
+        values,
+        usage: TextureUsage.UPLOAD,
+        refCount: 1,
+        complexParentRefCount: 0
+      });
     };
     MathBackendWebGL2.prototype.disposeIntermediateTensorInfo = function(tensorInfo) {
       var dataId = tensorInfo.dataId;
@@ -61972,7 +62262,7 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
     };
     MathBackendWebGL2.prototype.readSync = function(dataId) {
       var texData = this.texData.get(dataId);
-      var values = texData.values, dtype = texData.dtype, complexTensors = texData.complexTensors, slice = texData.slice, shape = texData.shape, isPacked = texData.isPacked;
+      var values = texData.values, dtype = texData.dtype, complexTensorInfos = texData.complexTensorInfos, slice = texData.slice, shape = texData.shape, isPacked = texData.isPacked;
       if (slice != null) {
         var program = void 0;
         if (isPacked) {
@@ -61998,8 +62288,8 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       }
       var result;
       if (dtype === "complex64") {
-        var realValues = complexTensors.real.dataSync();
-        var imagValues = complexTensors.imag.dataSync();
+        var realValues = this.readSync(complexTensorInfos.real.dataId);
+        var imagValues = this.readSync(complexTensorInfos.imag.dataId);
         result = tf2.backend_util.mergeRealAndImagArrays(realValues, imagValues);
       } else {
         result = this.getValuesFromTexture(dataId);
@@ -62011,7 +62301,7 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
     };
     MathBackendWebGL2.prototype.read = function(dataId) {
       return __awaiter(this, void 0, void 0, function() {
-        var subscribers_1, texData, values, shape, slice, dtype, complexTensors, isPacked, program, res, data, buffer, tmpDownloadTarget, tmpData, vals, ps, realValues, imagValues, size, dTypeVals, subscribers;
+        var subscribers_1, texData, values, shape, slice, dtype, complexTensorInfos, isPacked, program, res, data, buffer, tmpDownloadTarget, tmpData, vals, ps, realValues, imagValues, size, dTypeVals, subscribers;
         var _a;
         return __generator(this, function(_b) {
           switch (_b.label) {
@@ -62023,7 +62313,7 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
                 })];
               }
               texData = this.texData.get(dataId);
-              values = texData.values, shape = texData.shape, slice = texData.slice, dtype = texData.dtype, complexTensors = texData.complexTensors, isPacked = texData.isPacked;
+              values = texData.values, shape = texData.shape, slice = texData.slice, dtype = texData.dtype, complexTensorInfos = texData.complexTensorInfos, isPacked = texData.isPacked;
               if (slice != null) {
                 program = void 0;
                 if (isPacked) {
@@ -62058,7 +62348,10 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
             case 2:
               if (!(dtype === "complex64"))
                 return [3, 4];
-              return [4, Promise.all([complexTensors.real.data(), complexTensors.imag.data()])];
+              return [4, Promise.all([
+                this.read(complexTensorInfos.real.dataId),
+                this.read(complexTensorInfos.imag.dataId)
+              ])];
             case 3:
               ps = _b.sent();
               realValues = ps[0];
@@ -62237,11 +62530,17 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       if (!this.texData.has(dataId)) {
         return;
       }
+      if (this.texData.get(dataId).complexParentRefCount > 0) {
+        this.texData.get(dataId).refCount--;
+        return;
+      }
       this.releaseGPUData(dataId);
-      var complexTensors = this.texData.get(dataId).complexTensors;
-      if (complexTensors != null) {
-        complexTensors.real.dispose();
-        complexTensors.imag.dispose();
+      var complexTensorInfos = this.texData.get(dataId).complexTensorInfos;
+      if (complexTensorInfos != null) {
+        this.texData.get(complexTensorInfos.real.dataId).complexParentRefCount--;
+        this.disposeIntermediateTensorInfo(complexTensorInfos.real);
+        this.texData.get(complexTensorInfos.imag.dataId).complexParentRefCount--;
+        this.disposeIntermediateTensorInfo(complexTensorInfos.imag);
       }
       this.texData.delete(dataId);
     };
@@ -62296,23 +62595,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
     };
     MathBackendWebGL2.prototype.getGPGPUContext = function() {
       return this.gpgpu;
-    };
-    MathBackendWebGL2.prototype.complex = function(real, imag) {
-      var result = this.makeOutput(real.shape, "complex64");
-      var resultData = this.texData.get(result.dataId);
-      resultData.complexTensors = {
-        real: tf2.engine().keep(real.clone()),
-        imag: tf2.engine().keep(imag.clone())
-      };
-      return result;
-    };
-    MathBackendWebGL2.prototype.real = function(input) {
-      var resultData = this.texData.get(input.dataId);
-      return resultData.complexTensors.real.clone();
-    };
-    MathBackendWebGL2.prototype.imag = function(input) {
-      var resultData = this.texData.get(input.dataId);
-      return resultData.complexTensors.imag.clone();
     };
     MathBackendWebGL2.prototype.slice = function(x, begin, size) {
       if (this.shouldExecuteOnCPU([x])) {
@@ -62372,43 +62654,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       var program = tf2.env().getBool("WEBGL_PACK_ARRAY_OPERATIONS") ? new ReversePackedProgram(x.shape, axis) : new ReverseProgram(x.shape, axis);
       return this.compileAndRun(program, [x]);
     };
-    MathBackendWebGL2.prototype.concat = function(tensors, axis) {
-      if (tensors[0].dtype === "complex64") {
-        var reals = tensors.map(function(t) {
-          return tf2.real(t);
-        });
-        var imags = tensors.map(function(t) {
-          return tf2.imag(t);
-        });
-        return tf2.complex(this.concat(reals, axis), this.concat(imags, axis));
-      }
-      if (tensors.length === 1) {
-        return tensors[0];
-      }
-      if (tensors.length > tf2.env().getNumber("WEBGL_MAX_TEXTURES_IN_SHADER")) {
-        var midIndex = Math.floor(tensors.length / 2);
-        var leftSide = this.concat(tensors.slice(0, midIndex), axis);
-        var rightSide = this.concat(tensors.slice(midIndex), axis);
-        return this.concat([leftSide, rightSide], axis);
-      }
-      if (tf2.env().getBool("WEBGL_PACK_ARRAY_OPERATIONS") && tensors[0].rank > 1) {
-        var program_1 = new ConcatPackedProgram(tensors.map(function(t) {
-          return t.shape;
-        }), axis);
-        return this.compileAndRun(program_1, tensors);
-      }
-      var outShape = tf2.backend_util.computeOutShape(tensors.map(function(t) {
-        return t.shape;
-      }), axis);
-      var tensors2D = tensors.map(function(t) {
-        return t.as2D(-1, tf2.util.sizeFromShape(t.shape.slice(axis)));
-      });
-      var program = new ConcatProgram(tensors2D.map(function(t) {
-        return t.shape;
-      }));
-      var res = this.compileAndRun(program, tensors2D);
-      return res.reshape(outShape);
-    };
     MathBackendWebGL2.prototype.neg = function(x) {
       var _this = this;
       var cpuRes = this.tryRunOnCpuOrThrow([x], function() {
@@ -62427,7 +62672,7 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       var outerShapeA = transposeA ? a.shape[2] : a.shape[1];
       var outerShapeB = transposeB ? b.shape[1] : b.shape[2];
       var sharedDim = transposeA ? a.shape[1] : a.shape[2];
-      var _a = a.shape, batch = _a[0];
+      var batch = Math.max(a.shape[0], b.shape[0]);
       if ((outerShapeA === 1 || outerShapeB === 1) && sharedDim > MATMUL_SHARED_DIM_THRESHOLD) {
         if (transposeA) {
           a = tf2.transpose(a, [0, 2, 1]);
@@ -62438,22 +62683,23 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
         var a3D = outerShapeB === 1 ? a : a.as3D(batch, sharedDim, 1);
         var axis = outerShapeB === 1 ? 2 : 1;
         var b3D = outerShapeB === 1 ? b.as3D(batch, 1, sharedDim) : b;
-        return this.multiply(a3D, b3D).sum(axis, true);
+        var product = tf2.mul(a3D, b3D);
+        return product.sum(axis, true);
       }
       var dtype = tf2.upcastType(a.dtype, b.dtype);
-      var program = new MatMulPackedProgram(a.shape, [batch, outerShapeA, outerShapeB], transposeA, transposeB);
+      var program = new MatMulPackedProgram(a.shape, b.shape, [batch, outerShapeA, outerShapeB], transposeA, transposeB);
       return this.compileAndRun(program, [a, b], dtype);
     };
     MathBackendWebGL2.prototype.fusedBatchMatMul = function(_a) {
       var a = _a.a, b = _a.b, transposeA = _a.transposeA, transposeB = _a.transposeB, bias = _a.bias, activation = _a.activation, preluActivationWeights = _a.preluActivationWeights;
       var outerShapeA = transposeA ? a.shape[2] : a.shape[1];
       var outerShapeB = transposeB ? b.shape[1] : b.shape[2];
-      var _b = a.shape, batch = _b[0];
+      var batch = Math.max(a.shape[0], b.shape[0]);
       var dtype = tf2.upcastType(a.dtype, b.dtype);
       var hasBias = bias != null;
       var hasPreluActivationWeights = preluActivationWeights != null;
       var fusedActivation = activation ? mapActivationToShaderProgram(activation, true) : null;
-      var program = new MatMulPackedProgram(a.shape, [batch, outerShapeA, outerShapeB], transposeA, transposeB, hasBias, fusedActivation, hasPreluActivationWeights);
+      var program = new MatMulPackedProgram(a.shape, b.shape, [batch, outerShapeA, outerShapeB], transposeA, transposeB, hasBias, fusedActivation, hasPreluActivationWeights);
       var inputs = [a, b];
       if (bias) {
         inputs.push(bias);
@@ -62462,38 +62708,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
         inputs.push(preluActivationWeights);
       }
       return this.compileAndRun(program, inputs, dtype);
-    };
-    MathBackendWebGL2.prototype.multiply = function(a, b) {
-      if (a.dtype === "complex64") {
-        var aData = this.texData.get(a.dataId);
-        var bData = this.texData.get(b.dataId);
-        var realProgram = new BinaryOpComplexProgram(COMPLEX_MULTIPLY.REAL, a.shape, b.shape);
-        var imagProgram = new BinaryOpComplexProgram(COMPLEX_MULTIPLY.IMAG, a.shape, b.shape);
-        var inputs = [
-          this.makeComplexComponentTensorInfo(a, aData.complexTensors.real),
-          this.makeComplexComponentTensorInfo(a, aData.complexTensors.imag),
-          this.makeComplexComponentTensorInfo(b, bData.complexTensors.real),
-          this.makeComplexComponentTensorInfo(b, bData.complexTensors.imag)
-        ];
-        var real_1 = this.compileAndRun(realProgram, inputs);
-        var imag_1 = this.compileAndRun(imagProgram, inputs);
-        var complex_1 = this.complex(real_1, imag_1);
-        real_1.dispose();
-        imag_1.dispose();
-        return complex_1;
-      }
-      var dtype = tf2.upcastType(a.dtype, b.dtype);
-      if (this.shouldExecuteOnCPU([a, b])) {
-        var aData = this.texData.get(a.dataId);
-        var bData = this.texData.get(b.dataId);
-        var _a = multiplyImplCPU(a.shape, b.shape, aData.values, bData.values, dtype), outValues = _a[0], outShape = _a[1];
-        return this.makeOutput(outShape, dtype, outValues);
-      }
-      if (tf2.env().getBool("WEBGL_PACK_BINARY_OPERATIONS")) {
-        return this.packedBinaryOp(a, b, MUL, a.dtype);
-      }
-      var program = new BinaryOpProgram(MUL, a.shape, b.shape);
-      return this.compileAndRun(program, [a, b], a.dtype);
     };
     MathBackendWebGL2.prototype.localResponseNormalization4D = function(x, radius, bias, alpha, beta) {
       var program = tf2.env().getBool("WEBGL_PACK_NORMALIZATION") ? new LRNPackedProgram(x.shape, radius, bias, alpha, beta) : new LRNProgram(x.shape, radius, bias, alpha, beta);
@@ -62717,13 +62931,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       var program = new BinaryOpProgram(EQUAL, a.shape, b.shape);
       return this.compileAndRun(program, [a, b], "bool");
     };
-    MathBackendWebGL2.prototype.notEqual = function(a, b) {
-      if (tf2.env().getBool("WEBGL_PACK_BINARY_OPERATIONS")) {
-        return this.packedBinaryOp(a, b, NOT_EQUAL$1, "bool");
-      }
-      var program = new BinaryOpProgram(NOT_EQUAL, a.shape, b.shape);
-      return this.compileAndRun(program, [a, b], "bool");
-    };
     MathBackendWebGL2.prototype.less = function(a, b) {
       var _this = this;
       var cpuRes = this.tryRunOnCpuOrThrow([a, b], function() {
@@ -62853,23 +63060,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       var program = new BinaryOpProgram(op, a.shape, b.shape);
       return this.compileAndRun(program, [a, b], outputDtype);
     };
-    MathBackendWebGL2.prototype.add = function(a, b) {
-      if (a.dtype === "complex64" && b.dtype === "complex64") {
-        return this.complexSeparableBinaryOp(a, b, ADD);
-      }
-      var dtype = tf2.upcastType(a.dtype, b.dtype);
-      if (this.shouldExecuteOnCPU([a, b])) {
-        var aData = this.texData.get(a.dataId);
-        var bData = this.texData.get(b.dataId);
-        var _a = addImplCPU(a.shape, b.shape, aData.values, bData.values, dtype), outValues = _a[0], outShape = _a[1];
-        return this.makeOutput(outShape, dtype, outValues);
-      }
-      if (tf2.env().getBool("WEBGL_PACK_BINARY_OPERATIONS")) {
-        return this.packedBinaryOp(a, b, ADD, dtype);
-      }
-      var program = new BinaryOpProgram(ADD, a.shape, b.shape);
-      return this.compileAndRun(program, [a, b], dtype);
-    };
     MathBackendWebGL2.prototype.packedUnaryOp = function(x, op, dtype) {
       var program = new UnaryOpPackedProgram(x.shape, op);
       return this.compileAndRun(program, [x], dtype);
@@ -62880,25 +63070,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       }
       var program = new BinaryOpPackedProgram(op, a.shape, b.shape, checkOutOfBounds);
       return this.compileAndRun(program, [a, b], dtype);
-    };
-    MathBackendWebGL2.prototype.complexSeparableBinaryOp = function(a, b, op) {
-      var _this = this;
-      var aData = this.texData.get(a.dataId);
-      var bData = this.texData.get(b.dataId);
-      var _a = [
-        [aData.complexTensors.real, bData.complexTensors.real],
-        [aData.complexTensors.imag, bData.complexTensors.imag]
-      ].map(function(complexParts) {
-        var aPart = complexParts[0], bPart = complexParts[1];
-        var aHandle = _this.makeComplexComponentTensorInfo(a, aPart);
-        var bHandle = _this.makeComplexComponentTensorInfo(b, bPart);
-        var program = new BinaryOpProgram(op, a.shape, b.shape);
-        return _this.compileAndRun(program, [aHandle, bHandle], tf2.upcastType(aPart.dtype, bPart.dtype));
-      }), real = _a[0], imag = _a[1];
-      var complex = this.complex(real, imag);
-      real.dispose();
-      imag.dispose();
-      return complex;
     };
     MathBackendWebGL2.prototype.makeComplexComponentTensorInfo = function(complexTensor, complexPart) {
       return {
@@ -62928,23 +63099,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       var usePackedOp = tf2.env().getBool("WEBGL_PACK");
       var program = usePackedOp ? new AddNPackedProgram(tensors[0].shape, shapes) : new AddNProgram(tensors[0].shape, shapes);
       return this.compileAndRun(program, tensors, dtype);
-    };
-    MathBackendWebGL2.prototype.subtract = function(a, b) {
-      if (a.dtype === "complex64" && b.dtype === "complex64") {
-        return this.complexSeparableBinaryOp(a, b, SUB);
-      }
-      var dtype = tf2.upcastType(a.dtype, b.dtype);
-      if (this.shouldExecuteOnCPU([a, b])) {
-        var aData = this.texData.get(a.dataId);
-        var bData = this.texData.get(b.dataId);
-        var _a = subImplCPU(a.shape, b.shape, aData.values, bData.values, dtype), outValues = _a[0], outShape = _a[1];
-        return this.makeOutput(outShape, dtype, outValues);
-      }
-      if (tf2.env().getBool("WEBGL_PACK_BINARY_OPERATIONS")) {
-        return this.packedBinaryOp(a, b, SUB, a.dtype);
-      }
-      var program = new BinaryOpProgram(SUB, a.shape, b.shape);
-      return this.compileAndRun(program, [a, b], dtype);
     };
     MathBackendWebGL2.prototype.pow = function(a, b) {
       var usePackedOp = tf2.env().getBool("WEBGL_PACK_BINARY_OPERATIONS");
@@ -63020,7 +63174,7 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       var axes = tf2.util.parseAxisParam([dim], logits.shape);
       var maxLogit = tf2.max(logits, axes);
       var expandedShape = tf2.backend_util.expandShapeToKeepDim(maxLogit.shape, axes);
-      var a = this.subtract(logits, maxLogit.reshape(expandedShape));
+      var a = tf2.sub(logits, maxLogit.reshape(expandedShape));
       var b = this.exp(a);
       var sumExp = this.sum(b, axes).reshape(expandedShape);
       return tf2.div(b, sumExp);
@@ -63093,10 +63247,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       var program = new UnaryOpProgram(x.shape, SELU);
       return this.compileAndRun(program, [x]);
     };
-    MathBackendWebGL2.prototype.int = function(x) {
-      var program = new UnaryOpProgram(x.shape, TO_INT);
-      return this.compileAndRun(program, [x], "int32");
-    };
     MathBackendWebGL2.prototype.clip = function(x, min, max) {
       var program;
       if (tf2.env().getBool("WEBGL_PACK_CLIP")) {
@@ -63122,8 +63272,8 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       var xData = this.texData.get(x.dataId);
       var program = new ComplexAbsProgram(x.shape);
       var inputs = [
-        this.makeComplexComponentTensorInfo(x, xData.complexTensors.real),
-        this.makeComplexComponentTensorInfo(x, xData.complexTensors.imag)
+        this.makeComplexComponentTensorInfo(x, xData.complexTensorInfos.real),
+        this.makeComplexComponentTensorInfo(x, xData.complexTensorInfos.imag)
       ];
       return this.compileAndRun(program, inputs);
     };
@@ -63254,7 +63404,7 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       var hasBias = bias != null;
       var hasPreluActivationWeights = preluActivationWeights != null;
       var fusedActivation = activation ? mapActivationToShaderProgram(activation, true) : null;
-      var matmulProgram = new MatMulPackedProgram(im2Col.shape, [1, numCols, convInfo.outChannels], transposeA, transposeB, hasBias, fusedActivation, hasPreluActivationWeights);
+      var matmulProgram = new MatMulPackedProgram(im2Col.shape, w2Row.shape, [1, numCols, convInfo.outChannels], transposeA, transposeB, hasBias, fusedActivation, hasPreluActivationWeights);
       var inputs = [im2Col, w2Row];
       if (bias) {
         inputs.push(bias);
@@ -63357,9 +63507,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
     MathBackendWebGL2.prototype.conv3dDerFilter = function(x, dy, convInfo) {
       var program = new Conv3DDerFilterProgram(convInfo);
       return this.compileAndRun(program, [x, dy]);
-    };
-    MathBackendWebGL2.prototype.cast = function(x, dtype) {
-      return tf2.backend_util.castTensor(x, dtype, this);
     };
     MathBackendWebGL2.prototype.unstack = function(x, axis) {
       var num = x.shape[axis];
@@ -63474,29 +63621,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
       var program = new ScatterProgram(numUpdates, sliceRank, sparseIndices.rank, sparseValues.rank, strides, [outputSize, 1], sumDupeIndices);
       var res = this.compileAndRun(program, [sparseValues, sparseIndices, defaultValue]);
       return res.reshape(outputShape);
-    };
-    MathBackendWebGL2.prototype.fft = function(x) {
-      var inverse = false;
-      return this.fftImpl(x, inverse);
-    };
-    MathBackendWebGL2.prototype.ifft = function(x) {
-      var inverse = true;
-      return this.fftImpl(x, inverse);
-    };
-    MathBackendWebGL2.prototype.fftImpl = function(x, inverse) {
-      var xData = this.texData.get(x.dataId);
-      var realProgram = new FFTProgram(COMPLEX_FFT.REAL, x.shape, inverse);
-      var imagProgram = new FFTProgram(COMPLEX_FFT.IMAG, x.shape, inverse);
-      var inputs = [
-        this.makeComplexComponentTensorInfo(x, xData.complexTensors.real),
-        this.makeComplexComponentTensorInfo(x, xData.complexTensors.imag)
-      ];
-      var real = this.compileAndRun(realProgram, inputs);
-      var imag = this.compileAndRun(imagProgram, inputs);
-      var complex = this.complex(real, imag).as2D(x.shape[0], x.shape[1]);
-      real.dispose();
-      imag.dispose();
-      return complex;
     };
     MathBackendWebGL2.prototype.gatherND = function(x, indices) {
       var indicesShape = indices.shape;
@@ -63830,7 +63954,7 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
     }
   }
   /** @license See the LICENSE file. */
-  var version = "2.6.0";
+  var version = "2.7.0";
   /**
    * @license
    * Copyright 2019 Google LLC. All Rights Reserved.
@@ -63872,53 +63996,6 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
     }, 2);
   }
   var webgl = {forceHalfFloat};
-  var CHECK_NAN_SNIPPET_UNARY = "if (isnan(x)) return x;";
-  var CHECK_NAN_SNIPPET_BINARY = "\n  if (isnan(a)) return a;\n  if (isnan(b)) return b;\n";
-  var CHECK_NAN_SNIPPET_BINARY_PACKED = "\n  result.r = isNaN.r > 0. ? NAN : result.r;\n  result.g = isNaN.g > 0. ? NAN : result.g;\n  result.b = isNaN.b > 0. ? NAN : result.b;\n  result.a = isNaN.a > 0. ? NAN : result.a;\n";
-  function unaryKernelFunc(opSnippet) {
-    return function(_a) {
-      var inputs = _a.inputs, backend = _a.backend;
-      var x = inputs.x;
-      var webglBackend = backend;
-      var program = new UnaryOpProgram(x.shape, opSnippet);
-      return webglBackend.runWebGLProgram(program, [x], x.dtype);
-    };
-  }
-  function binaryKernelFunc(opSnippet, packedOpSnippet, checkOutOfBoundsForPackedProgram, dtype) {
-    return function(_a) {
-      var inputs = _a.inputs, backend = _a.backend;
-      var _b = inputs, a = _b.a, b = _b.b;
-      var webglBackend = backend;
-      var program = tf2.env().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new BinaryOpPackedProgram(packedOpSnippet, a.shape, b.shape, !!checkOutOfBoundsForPackedProgram) : new BinaryOpProgram(opSnippet, a.shape, b.shape);
-      var $dtype = dtype || a.dtype;
-      var output = webglBackend.runWebGLProgram(program, [a, b], $dtype);
-      return output;
-    };
-  }
-  /**
-   * @license
-   * Copyright 2020 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  var ATAN2 = CHECK_NAN_SNIPPET_BINARY + "\n  return atan(a, b);\n";
-  var ATAN2_PACKED = "\n  vec4 result = atan(a, b);\n  vec4 isNaN = min(vec4(isnan(a)) + vec4(isnan(b)), vec4(1.0));\n  " + CHECK_NAN_SNIPPET_BINARY_PACKED + "\n  return result;\n";
-  var atan2KernelFunc = binaryKernelFunc(ATAN2, ATAN2_PACKED);
-  var atan2Config = {
-    kernelName: tf2.Atan2,
-    backendName: "webgl",
-    kernelFunc: atan2KernelFunc
-  };
   /**
    * @license
    * Copyright 2020 Google LLC. All Rights Reserved.
@@ -63945,6 +64022,173 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
     kernelName: tf2.Identity,
     backendName: "webgl",
     kernelFunc: identity
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function complex(args) {
+    var inputs = args.inputs, backend = args.backend;
+    var real2 = inputs.real, imag2 = inputs.imag;
+    var complexInfo = backend.makeTensorInfo(real2.shape, "complex64");
+    var complex2 = backend.texData.get(complexInfo.dataId);
+    var realTensorInfo = identity({inputs: {x: real2}, backend});
+    var realData = backend.texData.get(realTensorInfo.dataId);
+    realData.complexParentRefCount++;
+    var imagTensorInfo = identity({inputs: {x: imag2}, backend});
+    var imagData = backend.texData.get(imagTensorInfo.dataId);
+    imagData.complexParentRefCount++;
+    complex2.complexTensorInfos = {real: realTensorInfo, imag: imagTensorInfo};
+    return complexInfo;
+  }
+  var complexConfig = {
+    kernelName: tf2.Complex,
+    backendName: "webgl",
+    kernelFunc: complex
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var CHECK_NAN_SNIPPET_UNARY = "if (isnan(x)) return x;";
+  var CHECK_NAN_SNIPPET_BINARY = "\n  if (isnan(a)) return a;\n  if (isnan(b)) return b;\n";
+  var CHECK_NAN_SNIPPET_BINARY_PACKED = "\n  result.r = isNaN.r > 0. ? NAN : result.r;\n  result.g = isNaN.g > 0. ? NAN : result.g;\n  result.b = isNaN.b > 0. ? NAN : result.b;\n  result.a = isNaN.a > 0. ? NAN : result.a;\n";
+  function unaryKernelFunc(opSnippet) {
+    return function(_a) {
+      var inputs = _a.inputs, backend = _a.backend;
+      var x = inputs.x;
+      var webglBackend = backend;
+      var program = new UnaryOpProgram(x.shape, opSnippet);
+      return webglBackend.runWebGLProgram(program, [x], x.dtype);
+    };
+  }
+  function binaryKernelFunc(_a) {
+    var opSnippet = _a.opSnippet, packedOpSnippet = _a.packedOpSnippet, _b = _a.checkOutOfBounds, checkOutOfBounds = _b === void 0 ? false : _b, _c = _a.supportsComplex, supportsComplex = _c === void 0 ? false : _c, cpuKernelImpl = _a.cpuKernelImpl, dtype = _a.dtype;
+    return function(_a2) {
+      var inputs = _a2.inputs, backend = _a2.backend;
+      var _b2 = inputs, a = _b2.a, b = _b2.b;
+      var webglBackend = backend;
+      if (supportsComplex && a.dtype === "complex64") {
+        var aData = webglBackend.texData.get(a.dataId);
+        var bData = webglBackend.texData.get(b.dataId);
+        var _c2 = [
+          [aData.complexTensorInfos.real, bData.complexTensorInfos.real],
+          [aData.complexTensorInfos.imag, bData.complexTensorInfos.imag]
+        ].map(function(complexParts) {
+          var aPart = complexParts[0], bPart = complexParts[1];
+          var aHandle = {
+            dataId: aPart.dataId,
+            dtype: aPart.dtype,
+            shape: a.shape
+          };
+          var bHandle = {
+            dataId: bPart.dataId,
+            dtype: bPart.dtype,
+            shape: b.shape
+          };
+          var program2 = new BinaryOpProgram(opSnippet, a.shape, b.shape);
+          return webglBackend.runWebGLProgram(program2, [aHandle, bHandle], tf2.upcastType(aPart.dtype, bPart.dtype));
+        }), real2 = _c2[0], imag2 = _c2[1];
+        var complexOutput = complex({inputs: {real: real2, imag: imag2}, backend: webglBackend});
+        webglBackend.disposeIntermediateTensorInfo(real2);
+        webglBackend.disposeIntermediateTensorInfo(imag2);
+        return complexOutput;
+      }
+      var $dtype = dtype || tf2.upcastType(a.dtype, b.dtype);
+      if (webglBackend.shouldExecuteOnCPU([a, b]) && cpuKernelImpl != null) {
+        var aData = webglBackend.texData.get(a.dataId);
+        var bData = webglBackend.texData.get(b.dataId);
+        var _d = cpuKernelImpl(a.shape, b.shape, aData.values, bData.values, $dtype), outValues = _d[0], outShape = _d[1];
+        var out = webglBackend.makeTensorInfo(outShape, $dtype);
+        var outData = webglBackend.texData.get(out.dataId);
+        outData.values = outValues;
+        return out;
+      }
+      var shouldUsePackedProgram = tf2.env().getBool("WEBGL_PACK_BINARY_OPERATIONS") && packedOpSnippet != null;
+      var program;
+      if (shouldUsePackedProgram) {
+        program = new BinaryOpPackedProgram(packedOpSnippet, a.shape, b.shape, checkOutOfBounds);
+      } else {
+        program = new BinaryOpProgram(opSnippet, a.shape, b.shape);
+      }
+      return webglBackend.runWebGLProgram(program, [a, b], $dtype);
+    };
+  }
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var ADD = "return a + b;";
+  var addKernelFunc = binaryKernelFunc({
+    opSnippet: ADD,
+    packedOpSnippet: ADD,
+    supportsComplex: true,
+    cpuKernelImpl: addImplCPU
+  });
+  var addConfig = {
+    kernelName: tf2.Add,
+    backendName: "webgl",
+    kernelFunc: addKernelFunc
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var ATAN2 = CHECK_NAN_SNIPPET_BINARY + "\n  return atan(a, b);\n";
+  var ATAN2_PACKED = "\n  vec4 result = atan(a, b);\n  vec4 isNaN = min(vec4(isnan(a)) + vec4(isnan(b)), vec4(1.0));\n  " + CHECK_NAN_SNIPPET_BINARY_PACKED + "\n  return result;\n";
+  var atan2 = binaryKernelFunc({opSnippet: ATAN2, packedOpSnippet: ATAN2_PACKED});
+  var atan2Config = {
+    kernelName: tf2.Atan2,
+    backendName: "webgl",
+    kernelFunc: atan2
   };
   /**
    * @license
@@ -64109,7 +64353,7 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
-  var batchNormKernelFunc = function(_a) {
+  var batchNorm = function(_a) {
     var inputs = _a.inputs, backend = _a.backend, attrs = _a.attrs;
     var x = inputs.x, mean = inputs.mean, variance = inputs.variance, offset = inputs.offset, scale = inputs.scale;
     tf2.util.assert(mean.shape.length === variance.shape.length, function() {
@@ -64143,7 +64387,452 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
   var batchNormConfig = {
     kernelName: tf2.FusedBatchNorm,
     backendName: "webgl",
-    kernelFunc: batchNormKernelFunc
+    kernelFunc: batchNorm
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var NOT_EQUAL = "return float(a != b);";
+  var notEqual = binaryKernelFunc({opSnippet: NOT_EQUAL, dtype: "bool"});
+  var notEqualConfig = {
+    kernelName: tf2.NotEqual,
+    backendName: "webgl",
+    kernelFunc: notEqual
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function real(args) {
+    var inputs = args.inputs, backend = args.backend;
+    var input = inputs.input;
+    var inputData = backend.texData.get(input.dataId);
+    return identity({inputs: {x: inputData.complexTensorInfos.real}, backend});
+  }
+  var realConfig = {
+    kernelName: tf2.Real,
+    backendName: "webgl",
+    kernelFunc: real
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var TO_INT = "return float(int(x));";
+  function int(input, backend) {
+    var program = new UnaryOpProgram(input.shape, TO_INT);
+    var output = backend.runWebGLProgram(program, [input], "int32");
+    return {dataId: output.dataId, shape: output.shape, dtype: output.dtype};
+  }
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function cast(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x;
+    var dtype = attrs.dtype;
+    if (dtype === "complex64") {
+      if (x.dtype === "complex64") {
+        return identity({inputs: {x}, backend});
+      }
+      var zerosTensor = tf2.zeros(x.shape);
+      var floatX = cast({inputs: {x}, backend, attrs: {dtype: "float32"}});
+      var result = complex({inputs: {real: floatX, imag: zerosTensor}, backend});
+      zerosTensor.dispose();
+      backend.disposeIntermediateTensorInfo(floatX);
+      return result;
+    }
+    if (x.dtype === "complex64") {
+      var realPart = real({inputs: {input: x}, backend});
+      var result = cast({inputs: {x: realPart}, backend, attrs: {dtype}});
+      backend.disposeIntermediateTensorInfo(realPart);
+      return result;
+    }
+    if (!tf2.util.hasEncodingLoss(x.dtype, dtype)) {
+      var result = identity({inputs: {x}, backend});
+      return {dataId: result.dataId, shape: result.shape, dtype};
+    }
+    if (dtype === "int32") {
+      return int(x, backend);
+    }
+    if (dtype === "bool") {
+      var zerosTensorInfo = backend.makeTensorInfo([], "bool", tf2.util.getTypedArrayFromDType("bool", 1));
+      var binaryInputs = {a: x, b: zerosTensorInfo};
+      var result = notEqual({inputs: binaryInputs, backend});
+      backend.disposeIntermediateTensorInfo(zerosTensorInfo);
+      return result;
+    }
+    throw new Error("Error in Cast: failed to cast " + x.dtype + " to " + dtype);
+  }
+  var castConfig = {
+    kernelName: tf2.Cast,
+    backendName: "webgl",
+    kernelFunc: cast
+  };
+  /**
+   * @license
+   * Copyright 2017 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var ConcatProgram = function() {
+    function ConcatProgram2(shapes) {
+      this.outputShape = [];
+      this.outputShape = tf2.backend_util.computeOutShape(shapes, 1);
+      this.variableNames = shapes.map(function(_, i2) {
+        return "T" + i2;
+      });
+      var offsets = new Array(shapes.length - 1);
+      offsets[0] = shapes[0][1];
+      for (var i = 1; i < offsets.length; i++) {
+        offsets[i] = offsets[i - 1] + shapes[i][1];
+      }
+      var snippets = ["if (yC < " + offsets[0] + ") setOutput(getT0(yR, yC));"];
+      for (var i = 1; i < offsets.length; i++) {
+        var shift = offsets[i - 1];
+        snippets.push("else if (yC < " + offsets[i] + ") " + ("setOutput(getT" + i + "(yR, yC-" + shift + "));"));
+      }
+      var lastIndex = offsets.length;
+      var lastShift = offsets[offsets.length - 1];
+      snippets.push("else setOutput(getT" + lastIndex + "(yR, yC-" + lastShift + "));");
+      this.userCode = "\n      void main() {\n        ivec2 coords = getOutputCoords();\n        int yR = coords.x;\n        int yC = coords.y;\n\n        " + snippets.join("\n        ") + "\n      }\n    ";
+    }
+    return ConcatProgram2;
+  }();
+  /**
+   * @license
+   * Copyright 2019 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var ConcatPackedProgram = function() {
+    function ConcatPackedProgram2(shapes, axis) {
+      this.packedInputs = true;
+      this.packedOutput = true;
+      this.outputShape = [];
+      this.outputShape = tf2.backend_util.computeOutShape(shapes, axis);
+      var shape = this.outputShape;
+      var rank = shape.length;
+      var dtype = getCoordsDataType(rank);
+      var coords2 = getChannels("coords", rank);
+      var channels = ["x", "y", "z", "w", "u", "v"].slice(0, rank);
+      this.variableNames = shapes.map(function(_, i2) {
+        return "T" + i2;
+      });
+      var offsets = new Array(shapes.length - 1);
+      offsets[0] = shapes[0][axis];
+      for (var i = 1; i < offsets.length; i++) {
+        offsets[i] = offsets[i - 1] + shapes[i][axis];
+      }
+      var channel = channels[axis];
+      var lastChannels = channels.slice(-2);
+      var allChannels = channels.join();
+      var getValueSnippet = "if (" + channel + " < " + offsets[0] + ") {\n        return getChannel(\n            getT0(" + allChannels + "), vec2(" + lastChannels.join() + "));\n        }";
+      for (var i = 1; i < offsets.length; i++) {
+        var shift_1 = offsets[i - 1];
+        getValueSnippet += "\n        if (" + channel + " < " + offsets[i] + "  && " + channel + " >= " + offsets[i - 1] + ") {\n          return getChannel(\n            getT" + i + "(" + shiftedChannels(channels, channel, shift_1) + "),\n            vec2(" + shiftedChannels(lastChannels, channel, shift_1) + "));\n        }";
+      }
+      var lastIndex = offsets.length;
+      var shift = offsets[offsets.length - 1];
+      getValueSnippet += "\n        return getChannel(\n          getT" + lastIndex + "(" + shiftedChannels(channels, channel, shift) + "),\n          vec2(" + shiftedChannels(lastChannels, channel, shift) + "));";
+      this.userCode = "\n      float getValue(" + channels.map(function(x) {
+        return "int " + x;
+      }) + ") {\n        " + getValueSnippet + "\n      }\n\n      void main() {\n        " + dtype + " coords = getOutputCoords();\n        vec4 result = vec4(getValue(" + coords2 + "), 0., 0., 0.);\n\n        " + coords2[rank - 1] + " = " + coords2[rank - 1] + " + 1;\n        if (" + coords2[rank - 1] + " < " + shape[rank - 1] + ") {\n          result.g = getValue(" + coords2 + ");\n        }\n\n        " + coords2[rank - 2] + " = " + coords2[rank - 2] + " + 1;\n        if (" + coords2[rank - 2] + " < " + shape[rank - 2] + ") {\n          result.a = getValue(" + coords2 + ");\n        }\n\n        " + coords2[rank - 1] + " = " + coords2[rank - 1] + " - 1;\n        if (" + coords2[rank - 2] + " < " + shape[rank - 2] + " &&\n            " + coords2[rank - 1] + " < " + shape[rank - 1] + ") {\n          result.b = getValue(" + coords2 + ");\n        }\n        setOutput(result);\n      }\n    ";
+    }
+    return ConcatPackedProgram2;
+  }();
+  function shiftedChannels(channels, channel, shift) {
+    var channelIdx = channels.indexOf(channel);
+    var res = channels.map(function(c, idx) {
+      if (idx === channelIdx) {
+        return c + " - " + shift;
+      } else {
+        return c;
+      }
+    });
+    return res.join();
+  }
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function imag(args) {
+    var inputs = args.inputs, backend = args.backend;
+    var input = inputs.input;
+    var inputData = backend.texData.get(input.dataId);
+    return identity({inputs: {x: inputData.complexTensorInfos.imag}, backend});
+  }
+  var imagConfig = {
+    kernelName: tf2.Imag,
+    backendName: "webgl",
+    kernelFunc: imag
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function packedReshape(input, afterShape, backend) {
+    var input3DShape = [getBatchDim(input.shape)].concat(getRowsCols(input.shape));
+    var input3D = {
+      dtype: input.dtype,
+      shape: input3DShape,
+      dataId: input.dataId
+    };
+    var afterShapeAs3D = [getBatchDim(afterShape)].concat(getRowsCols(afterShape));
+    var program = new ReshapePackedProgram(afterShapeAs3D, input3DShape);
+    var preventEagerUnpackingOfOutput = true;
+    var output = backend.runWebGLProgram(program, [input3D], input.dtype, null, preventEagerUnpackingOfOutput);
+    return {dataId: output.dataId, shape: afterShape, dtype: output.dtype};
+  }
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function reshape(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var x = inputs.x;
+    var shape = attrs.shape;
+    var webglBackend = backend;
+    var xSize = tf2.util.sizeFromShape(x.shape);
+    var $shape = tf2.util.inferFromImplicitShape(shape, xSize);
+    var $xSize = tf2.util.sizeFromShape($shape);
+    tf2.util.assert(xSize === $xSize, function() {
+      return "The new shape (" + $shape + ") has " + $xSize + " elements and the old " + ("shape (" + x.shape + ") has " + xSize + " elements. The new shape and old ") + "shape must have the same number of elements.";
+    });
+    var xTexData = webglBackend.texData.get(x.dataId);
+    if (xTexData.isPacked && !isReshapeFree(x.shape, $shape) && !(xTexData.texture !== null && isReshapeFree(xTexData.shape, $shape))) {
+      return packedReshape(x, $shape, webglBackend);
+    }
+    webglBackend.incRef(x.dataId);
+    return {dataId: x.dataId, shape: $shape, dtype: x.dtype};
+  }
+  var reshapeConfig = {
+    kernelName: tf2.Reshape,
+    backendName: "webgl",
+    kernelFunc: reshape
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function concatImpl(inputs, axis, backend) {
+    var dtype = inputs[0].dtype;
+    if (dtype === "complex64") {
+      var reals = inputs.map(function(t) {
+        return real({inputs: {input: t}, backend});
+      });
+      var imags = inputs.map(function(t) {
+        return imag({inputs: {input: t}, backend});
+      });
+      var realConcated = concatImpl(reals, axis, backend);
+      var imagConcated = concatImpl(imags, axis, backend);
+      var result_1 = complex({inputs: {real: realConcated, imag: imagConcated}, backend});
+      reals.forEach(function(r) {
+        return backend.disposeIntermediateTensorInfo(r);
+      });
+      imags.forEach(function(i) {
+        return backend.disposeIntermediateTensorInfo(i);
+      });
+      backend.disposeIntermediateTensorInfo(realConcated);
+      backend.disposeIntermediateTensorInfo(imagConcated);
+      return result_1;
+    }
+    if (inputs.length > tf2.env().getNumber("WEBGL_MAX_TEXTURES_IN_SHADER")) {
+      var midIndex = Math.floor(inputs.length / 2);
+      var leftSide = concatImpl(inputs.slice(0, midIndex), axis, backend);
+      var rightSide = concatImpl(inputs.slice(midIndex), axis, backend);
+      var result_2 = concatImpl([leftSide, rightSide], axis, backend);
+      backend.disposeIntermediateTensorInfo(leftSide);
+      backend.disposeIntermediateTensorInfo(rightSide);
+      return result_2;
+    }
+    if (tf2.env().getBool("WEBGL_PACK_ARRAY_OPERATIONS") && inputs[0].shape.length > 1) {
+      var program_1 = new ConcatPackedProgram(inputs.map(function(t) {
+        return t.shape;
+      }), axis);
+      return backend.runWebGLProgram(program_1, inputs, dtype);
+    }
+    var outShape = tf2.backend_util.computeOutShape(inputs.map(function(t) {
+      return t.shape;
+    }), axis);
+    var tensors2D = inputs.map(function(x) {
+      return reshape({
+        inputs: {x},
+        attrs: {shape: [-1, tf2.util.sizeFromShape(x.shape.slice(axis))]},
+        backend
+      });
+    });
+    var program = new ConcatProgram(tensors2D.map(function(t) {
+      return t.shape;
+    }));
+    var result = backend.runWebGLProgram(program, tensors2D, dtype);
+    tensors2D.forEach(function(r) {
+      return backend.disposeIntermediateTensorInfo(r);
+    });
+    var reshapedResult = reshape({inputs: {x: result}, attrs: {shape: outShape}, backend});
+    backend.disposeIntermediateTensorInfo(result);
+    return reshapedResult;
+  }
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function concat(args) {
+    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
+    var axis = attrs.axis;
+    var $axis = tf2.util.parseAxisParam(axis, inputs[0].shape)[0];
+    var outShape = tf2.backend_util.computeOutShape(inputs.map(function(t) {
+      return t.shape;
+    }), $axis);
+    if (tf2.util.sizeFromShape(outShape) === 0) {
+      return backend.makeTensorInfo(outShape, inputs[0].dtype, []);
+    }
+    var $inputs = inputs.filter(function(t) {
+      return tf2.util.sizeFromShape(t.shape) > 0;
+    });
+    if ($inputs.length === 1) {
+      return $inputs[0];
+    }
+    var shapes = $inputs.map(function(t) {
+      return t.shape;
+    });
+    tf2.backend_util.assertParamsConsistent(shapes, $axis);
+    return concatImpl($inputs, $axis, backend);
+  }
+  var concatConfig = {
+    kernelName: tf2.Concat,
+    backendName: "webgl",
+    kernelFunc: concat
   };
   /**
    * @license
@@ -64162,11 +64851,11 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    * =============================================================================
    */
   var COS = CHECK_NAN_SNIPPET_UNARY + "\n  return cos(x);\n";
-  var cosKernelFunc = unaryKernelFunc(COS);
+  var cos = unaryKernelFunc(COS);
   var cosConfig = {
     kernelName: tf2.Cos,
     backendName: "webgl",
-    kernelFunc: cosKernelFunc
+    kernelFunc: cos
   };
   /**
    * @license
@@ -64186,11 +64875,118 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    */
   var DIV = "\nif (a == b) {\n  return 1.0;\n};\nreturn a / b;";
   var DIV_PACKED = "\n  // vec4 one = vec4(equal(a, b));\n  // return one + (vec4(1.0) - one) * a / b;\n  vec4 result = a / b;\n  if(a.x == b.x) {\n    result.x = 1.;\n  }\n  if(a.y == b.y) {\n    result.y = 1.;\n  }\n  if(a.z == b.z) {\n    result.z = 1.;\n  }\n  if(a.w == b.w) {\n    result.w = 1.;\n  }\n\n  return result;\n";
-  var divKernelFunc = binaryKernelFunc(DIV, DIV_PACKED, true);
+  var div = binaryKernelFunc({opSnippet: DIV, packedOpSnippet: DIV_PACKED, checkOutOfBounds: true});
   var divConfig = {
     kernelName: tf2.Div,
     backendName: "webgl",
-    kernelFunc: divKernelFunc
+    kernelFunc: div
+  };
+  /**
+   * @license
+   * Copyright 2018 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var FFTProgram = function() {
+    function FFTProgram2(component, inputShape, inverse) {
+      this.variableNames = ["real", "imag"];
+      var innerDim = inputShape[1];
+      this.outputShape = inputShape;
+      var exponentMultiplierSnippet = inverse ? "2.0 * " + Math.PI : "-2.0 * " + Math.PI;
+      var resultDenominator = inverse ? innerDim + ".0" : "1.0";
+      var opString;
+      if (component === "real") {
+        opString = "return real * expR - imag * expI;";
+      } else if (component === "imag") {
+        opString = "return real * expI + imag * expR;";
+      } else {
+        throw new Error('FFT component must be either "real" or "imag", got ' + component + ".");
+      }
+      this.userCode = "\n      const float exponentMultiplier = " + exponentMultiplierSnippet + ";\n\n      float unaryOpComplex(float real, float expR, float imag, float expI) {\n        " + opString + "\n      }\n\n      float mulMatDFT(int batch, int index) {\n        float indexRatio = float(index) / float(" + innerDim + ");\n        float exponentMultiplierTimesIndexRatio =\n            exponentMultiplier * indexRatio;\n\n        float result = 0.0;\n\n        for (int i = 0; i < " + innerDim + "; i++) {\n          // x = (-2|2 * PI / N) * index * i;\n          float x = exponentMultiplierTimesIndexRatio * float(i);\n          float expR = cos(x);\n          float expI = sin(x);\n          float real = getReal(batch, i);\n          float imag = getImag(batch, i);\n\n          result +=\n              unaryOpComplex(real, expR, imag, expI) / " + resultDenominator + ";\n        }\n\n        return result;\n      }\n\n      void main() {\n        ivec2 coords = getOutputCoords();\n        setOutput(mulMatDFT(coords[0], coords[1]));\n      }\n    ";
+    }
+    return FFTProgram2;
+  }();
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function fftImpl(x, inverse, backend) {
+    var xData = backend.texData.get(x.dataId);
+    var inputSize = tf2.util.sizeFromShape(x.shape);
+    var innerDimensionSize = x.shape[x.shape.length - 1];
+    var batch = inputSize / innerDimensionSize;
+    var input2D = reshape({inputs: {x}, backend, attrs: {shape: [batch, innerDimensionSize]}});
+    var xShape = input2D.shape;
+    var realProgram = new FFTProgram("real", xShape, inverse);
+    var imagProgram = new FFTProgram("imag", xShape, inverse);
+    var inputs = [
+      {
+        dataId: xData.complexTensorInfos.real.dataId,
+        dtype: xData.complexTensorInfos.real.dtype,
+        shape: xShape
+      },
+      {
+        dataId: xData.complexTensorInfos.imag.dataId,
+        dtype: xData.complexTensorInfos.imag.dtype,
+        shape: xShape
+      }
+    ];
+    var realPart = backend.runWebGLProgram(realProgram, inputs, "float32");
+    var imagPart = backend.runWebGLProgram(imagProgram, inputs, "float32");
+    var complexOutput = complex({inputs: {real: realPart, imag: imagPart}, backend});
+    backend.disposeIntermediateTensorInfo(realPart);
+    backend.disposeIntermediateTensorInfo(imagPart);
+    var complexOutputReshaped = reshape({inputs: {x: complexOutput}, backend, attrs: {shape: x.shape}});
+    backend.disposeIntermediateTensorInfo(complexOutputReshaped);
+    return complexOutputReshaped;
+  }
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  function fft(args) {
+    var inputs = args.inputs, backend = args.backend;
+    var input = inputs.input;
+    return fftImpl(input, false, backend);
+  }
+  var fftConfig = {
+    kernelName: tf2.FFT,
+    backendName: "webgl",
+    kernelFunc: fft
   };
   /**
    * @license
@@ -64367,6 +65163,68 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
+  function ifft(args) {
+    var inputs = args.inputs, backend = args.backend;
+    var input = inputs.input;
+    return fftImpl(input, true, backend);
+  }
+  var ifftConfig = {
+    kernelName: tf2.IFFT,
+    backendName: "webgl",
+    kernelFunc: ifft
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var MeanProgram = function() {
+    function MeanProgram2(reduceInfo, divisor) {
+      this.variableNames = ["x"];
+      var windowSize = reduceInfo.windowSize, batchSize = reduceInfo.batchSize, inSize = reduceInfo.inSize, outSize = reduceInfo.outSize;
+      this.outputShape = [batchSize, outSize];
+      var windowSizeNearestVec4 = Math.floor(windowSize / 4) * 4;
+      var windowSizeVec4Remainder = windowSize % 4;
+      var updateSnippet = "sumValue += dot(values, ones);";
+      if (divisor != null) {
+        var denominator = 1 / divisor;
+        updateSnippet = "sumValue += dot(values * " + (tf2.util.isInt(denominator) ? denominator.toPrecision(2) : denominator) + ", ones);";
+      }
+      var checkOutOfBounds = "";
+      if (inSize % windowSize > 0) {
+        checkOutOfBounds = "\n        if (inIdx < 0 || inIdx >= " + inSize + ") {\n          return 0.0;\n        }\n      ";
+      }
+      this.userCode = "\n      const vec4 ones = vec4(1.0, 1.0, 1.0, 1.0);\n\n      float getValue(int batch, int inIdx) {\n        " + checkOutOfBounds + "\n        return getX(batch, inIdx);\n      }\n\n      void main() {\n        ivec2 coords = getOutputCoords();\n        int batch = coords[0];\n        int outIdx = coords[1];\n        int inOffset = outIdx * " + windowSize + ";\n\n        float sumValue = 0.0;\n\n        for (int i = 0; i < " + windowSizeNearestVec4 + "; i += 4) {\n          int inIdx = inOffset + i;\n          vec4 values = vec4(\n            getValue(batch, inIdx),\n            getValue(batch, inIdx + 1),\n            getValue(batch, inIdx + 2),\n            getValue(batch, inIdx + 3)\n          );\n\n          " + updateSnippet + "\n        }\n\n        int inIdx = inOffset + " + windowSizeNearestVec4 + ";\n        if (" + (windowSizeVec4Remainder === 1) + ") {\n          vec4 values = vec4(getValue(batch, inIdx), 0.0, 0.0, 0.0);\n\n          " + updateSnippet + "\n        } else if (" + (windowSizeVec4Remainder === 2) + ") {\n          vec4 values = vec4(\n            getValue(batch, inIdx),\n            getValue(batch, inIdx + 1), 0.0, 0.0);\n\n          " + updateSnippet + "\n        } else if (" + (windowSizeVec4Remainder === 3) + ") {\n          vec4 values = vec4(\n            getValue(batch, inIdx),\n            getValue(batch, inIdx + 1),\n            getValue(batch, inIdx + 2), 0.0);\n\n          " + updateSnippet + "\n        }\n        setOutput(sumValue);\n      }\n    ";
+    }
+    return MeanProgram2;
+  }();
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
   function getReductionStages(inShape) {
     var stages = [];
     while (stages.length === 0 || stages[stages.length - 1].outSize !== 1) {
@@ -64385,83 +65243,21 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
     var result = x;
     for (var i = 0; i < reductionStages.length; i++) {
       var _a = reductionStages[i], inSize = _a.inSize, windowSize = _a.windowSize, outSize = _a.outSize;
-      var program = new ReduceProgram({windowSize, inSize, batchSize: x.shape[0], outSize}, reductionType);
-      var previousResult = result;
+      var program = void 0;
+      var previousResult = void 0;
+      if (reductionType === "mean") {
+        program = i === 0 ? new MeanProgram({windowSize, inSize, batchSize: x.shape[0], outSize}, inSize) : new MeanProgram({windowSize, inSize, batchSize: x.shape[0], outSize});
+      } else {
+        program = new ReduceProgram({windowSize, inSize, batchSize: x.shape[0], outSize}, reductionType);
+      }
+      previousResult = result;
       result = backend.runWebGLProgram(program, [result], dtype);
       if (previousResult.dataId !== x.dataId) {
-        backend.disposeData(previousResult.dataId);
+        backend.disposeIntermediateTensorInfo(previousResult);
       }
     }
     return result;
   }
-  /**
-   * @license
-   * Copyright 2020 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  function packedReshape(input, afterShape, backend) {
-    var input3DShape = [getBatchDim(input.shape)].concat(getRowsCols(input.shape));
-    var input3D = {
-      dtype: input.dtype,
-      shape: input3DShape,
-      dataId: input.dataId
-    };
-    var afterShapeAs3D = [getBatchDim(afterShape)].concat(getRowsCols(afterShape));
-    var program = new ReshapePackedProgram(afterShapeAs3D, input3DShape);
-    var preventEagerUnpackingOfOutput = true;
-    var output = backend.runWebGLProgram(program, [input3D], input.dtype, null, preventEagerUnpackingOfOutput);
-    return {dataId: output.dataId, shape: afterShape, dtype: output.dtype};
-  }
-  /**
-   * @license
-   * Copyright 2020 Google LLC. All Rights Reserved.
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   * =============================================================================
-   */
-  function reshape(args) {
-    var inputs = args.inputs, backend = args.backend, attrs = args.attrs;
-    var x = inputs.x;
-    var shape = attrs.shape;
-    var webglBackend = backend;
-    var xSize = tf2.util.sizeFromShape(x.shape);
-    var $shape = tf2.util.inferFromImplicitShape(shape, xSize);
-    var $xSize = tf2.util.sizeFromShape($shape);
-    tf2.util.assert(xSize === $xSize, function() {
-      return "The new shape (" + $shape + ") has " + $xSize + " elements and the old " + ("shape (" + x.shape + ") has " + xSize + " elements. The new shape and old ") + "shape must have the same number of elements.";
-    });
-    var xTexData = webglBackend.texData.get(x.dataId);
-    if (xTexData.isPacked && !isReshapeFree(x.shape, $shape) && !(xTexData.texture !== null && isReshapeFree(xTexData.shape, $shape))) {
-      return packedReshape(x, $shape, webglBackend);
-    }
-    webglBackend.incRef(x.dataId);
-    return {dataId: x.dataId, shape: $shape, dtype: x.dtype};
-  }
-  var reshapeConfig = {
-    kernelName: tf2.Reshape,
-    backendName: "webgl",
-    kernelFunc: reshape
-  };
   /**
    * @license
    * Copyright 2020 Google LLC. All Rights Reserved.
@@ -64814,6 +65610,320 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    * limitations under the License.
    * =============================================================================
    */
+  function meanImpl(x, reduceShape, outShape, backend) {
+    var inSize = tf2.util.sizeFromShape(reduceShape);
+    var xSize = tf2.util.sizeFromShape(x.shape);
+    var batchSize = xSize / inSize;
+    var reshapedInput = reshape({inputs: {x}, attrs: {shape: [batchSize, inSize]}, backend});
+    var reduced = reduce(reshapedInput, "float32", "mean", backend);
+    var reshapedOutput = reshape({inputs: {x: reduced}, attrs: {shape: outShape}, backend});
+    backend.disposeIntermediateTensorInfo(reshapedInput);
+    backend.disposeIntermediateTensorInfo(reduced);
+    return reshapedOutput;
+  }
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var meanConfig = {
+    kernelName: tf2.Mean,
+    backendName: "webgl",
+    kernelFunc: function(_a) {
+      var inputs = _a.inputs, attrs = _a.attrs, backend = _a.backend;
+      var x = inputs.x;
+      var _b = attrs, keepDims = _b.keepDims, axis = _b.axis;
+      var webglBackend = backend;
+      var xRank = x.shape.length;
+      var origAxes = tf2.util.parseAxisParam(axis, x.shape);
+      var axes = origAxes;
+      var permutedAxes = tf2.backend_util.getAxesPermutation(axes, xRank);
+      var meanInputIsTransposed = permutedAxes != null;
+      var shouldExecuteOnCPU = webglBackend.shouldExecuteOnCPU([x]);
+      var intermediates = [];
+      var meanInput = x;
+      if (meanInputIsTransposed) {
+        if (shouldExecuteOnCPU) {
+          var xTexData = webglBackend.texData.get(meanInput.dataId);
+          var values = xTexData.values;
+          var newShape = new Array(xRank);
+          for (var i = 0; i < newShape.length; i++) {
+            newShape[i] = x.shape[permutedAxes[i]];
+          }
+          var meanInputValues = transposeImplCPU(values, x.shape, x.dtype, permutedAxes, newShape);
+          meanInput = webglBackend.makeTensorInfo(newShape, x.dtype);
+          var meanInputData = webglBackend.texData.get(meanInput.dataId);
+          meanInputData.values = meanInputValues;
+        } else {
+          meanInput = transposeImpl$1(x, permutedAxes, webglBackend);
+        }
+        intermediates.push(meanInput);
+        axes = tf2.backend_util.getInnerMostAxes(axes.length, xRank);
+      }
+      tf2.backend_util.assertAxesAreInnerMostDims("sum", axes, xRank);
+      var _c = tf2.backend_util.computeOutAndReduceShapes(meanInput.shape, axes), meanOutShape = _c[0], reduceShape = _c[1];
+      var outShape = meanOutShape;
+      if (keepDims) {
+        outShape = tf2.backend_util.expandShapeToKeepDim(meanOutShape, origAxes);
+      }
+      var out = meanImpl(meanInput, reduceShape, outShape, webglBackend);
+      for (var _i2 = 0, intermediates_1 = intermediates; _i2 < intermediates_1.length; _i2++) {
+        var i = intermediates_1[_i2];
+        webglBackend.disposeIntermediateTensorInfo(i);
+      }
+      return out;
+    }
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var MirrorPadProgram = function() {
+    function MirrorPadProgram2(xShape, paddings, mode) {
+      this.variableNames = ["x"];
+      this.outputShape = paddings.map(function(p, i) {
+        return p[0] + xShape[i] + p[1];
+      });
+      var rank = xShape.length;
+      var dtype = getCoordsDataType(rank);
+      var start = paddings.map(function(p) {
+        return p[0];
+      }).join(",");
+      var end = paddings.map(function(p, i) {
+        return p[0] + xShape[i];
+      }).join(",");
+      var unpackedCoords = ["coords[0]", "coords[1]", "coords[2]", "coords[3]"].slice(0, rank);
+      var offset = mode === "reflect" ? 0 : 1;
+      if (rank === 1) {
+        this.userCode = "\n        int start = " + start + ";\n        int end = " + end + ";\n\n        void main() {\n          int outC = getOutputCoords();\n          if (outC < start) {\n            outC = start * 2 - outC - " + offset + ";\n          } else if(outC >= end) {\n            outC = (end - 1) * 2 - outC + " + offset + ";\n          }\n          setOutput(getX(outC - start));\n        }\n      ";
+        return;
+      }
+      this.userCode = "\n      " + dtype + " start = " + dtype + "(" + start + ");\n      " + dtype + " end = " + dtype + "(" + end + ");\n\n      void main() {\n        " + dtype + " outC = getOutputCoords();\n        for (int i = 0; i < " + rank + "; i++) {\n          if (outC[i] < start[i]) {\n            outC[i] = start[i] * 2 - outC[i] - " + offset + ";\n          } else if(outC[i] >= end[i]) {\n            outC[i] = (end[i] - 1) * 2 - outC[i] + " + offset + ";\n          }\n        }\n        " + dtype + " coords = outC - start;\n        setOutput(getX(" + unpackedCoords + "));\n      }\n    ";
+    }
+    return MirrorPadProgram2;
+  }();
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var MirrorPadPackedProgram = function() {
+    function MirrorPadPackedProgram2(xShape, paddings, mode) {
+      this.variableNames = ["x"];
+      this.packedInputs = true;
+      this.packedOutput = true;
+      this.outputShape = paddings.map(function(p, i) {
+        return p[0] + xShape[i] + p[1];
+      });
+      var rank = xShape.length;
+      var dtype = getCoordsDataType(rank);
+      var start = paddings.map(function(p) {
+        return p[0];
+      }).join(",");
+      var end = paddings.map(function(p, i) {
+        return p[0] + xShape[i];
+      }).join(",");
+      var coords2 = getChannels("rc", rank);
+      var source = getChannels("source", rank);
+      var cLimit = coords2[rank - 1] + " < " + this.outputShape[rank - 1];
+      var innerDims = rank === 1 ? "source" : "vec2(" + source.slice(-2).join() + ")";
+      var offset = mode === "reflect" ? 0 : 1;
+      var mainLoop = "";
+      if (rank === 1) {
+        var padSetup = "\n        " + dtype + " source = rc;\n        if (source < start) {\n          source = start * 2 - source - " + offset + ";\n        } else if (source >= end) {\n          source = (end - 1) * 2 - source + " + offset + ";\n        }\n        source -= start;\n      ";
+        mainLoop = "\n        " + dtype + " rc = outputLoc;\n        " + padSetup + "\n        result[0] = getChannel(getX(" + source.join() + "), " + innerDims + ");\n        " + coords2[rank - 1] + " += 1;\n        if(" + cLimit + ") {\n          " + padSetup + "\n          result[1] = getChannel(getX(" + source.join() + "), " + innerDims + ");\n        }\n      ";
+      } else {
+        var padSetup = "\n        " + dtype + " source = rc;\n        " + dtype + " lt = " + dtype + "(lessThan(source, start));\n        " + dtype + " gte = " + dtype + "(greaterThanEqual(source, end));\n        " + dtype + " orig = 1 - (lt + gte);\n        source = orig * source +\n                lt * (start * 2 - source - " + offset + ") +\n                gte * ((end - 1) * 2 - source + " + offset + ");\n        source -= start;\n      ";
+        mainLoop = "\n        " + dtype + " rc = outputLoc;\n        " + padSetup + "\n        result[0] = getChannel(getX(" + source.join() + "), " + innerDims + ");\n        " + coords2[rank - 1] + " += 1;\n        if(" + cLimit + ") {\n          " + padSetup + "\n          result[1] = getChannel(getX(" + source.join() + "), " + innerDims + ");\n        }\n        rc = outputLoc;\n        " + coords2[rank - 2] + " += 1;\n        if(" + coords2[rank - 2] + " < " + this.outputShape[rank - 2] + ") {\n          " + padSetup + "\n          result[2] = getChannel(getX(" + source.join() + "), " + innerDims + ");\n          " + coords2[rank - 1] + " += 1;\n          if(" + cLimit + ") {\n            " + padSetup + "\n            result[3] = getChannel(getX(" + source.join() + "), " + innerDims + ");\n          }\n        }\n      ";
+      }
+      this.userCode = "\n      const " + dtype + " start = " + dtype + "(" + start + ");\n      const " + dtype + " end = " + dtype + "(" + end + ");\n\n      void main() {\n        " + dtype + " outputLoc = getOutputCoords();\n        vec4 result = vec4(0.);\n        " + mainLoop + "\n        setOutput(result);\n      }\n    ";
+    }
+    return MirrorPadPackedProgram2;
+  }();
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var mirrorPadKernelFunc = function(_a) {
+    var inputs = _a.inputs, backend = _a.backend, attrs = _a.attrs;
+    var x = inputs.x;
+    var paddings = attrs.paddings, mode = attrs.mode;
+    var program = tf2.env().getBool("WEBGL_PACK_ARRAY_OPERATIONS") ? new MirrorPadPackedProgram(x.shape, paddings, mode) : new MirrorPadProgram(x.shape, paddings, mode);
+    var output = backend.runWebGLProgram(program, [x], x.dtype);
+    return output;
+  };
+  var mirrorPadConfig = {
+    kernelName: tf2.MirrorPad,
+    backendName: "webgl",
+    kernelFunc: mirrorPadKernelFunc
+  };
+  /**
+   * @license
+   * Copyright 2018 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var COMPLEX_MULTIPLY = {
+    REAL: "return areal * breal - aimag * bimag;",
+    IMAG: "return areal * bimag + aimag * breal;"
+  };
+  var BinaryOpComplexProgram = function() {
+    function BinaryOpComplexProgram2(op, aShape, bShape) {
+      this.variableNames = ["AReal", "AImag", "BReal", "BImag"];
+      this.outputShape = tf2.backend_util.assertAndGetBroadcastShape(aShape, bShape);
+      this.userCode = "\n      float binaryOpComplex(\n          float areal, float aimag, float breal, float bimag) {\n        " + op + "\n      }\n\n      void main() {\n        float areal = getARealAtOutCoords();\n        float aimag = getAImagAtOutCoords();\n        float breal = getBRealAtOutCoords();\n        float bimag = getBImagAtOutCoords();\n        setOutput(binaryOpComplex(areal, aimag, breal, bimag));\n      }\n    ";
+    }
+    return BinaryOpComplexProgram2;
+  }();
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var MUL = "return a * b;";
+  function multiply(args) {
+    var inputs = args.inputs, backend = args.backend;
+    var a = inputs.a, b = inputs.b;
+    var dtype = tf2.backend_util.upcastType(a.dtype, b.dtype);
+    if (a.dtype === "complex64") {
+      var aData = backend.texData.get(a.dataId);
+      var bData = backend.texData.get(b.dataId);
+      var realProgram = new BinaryOpComplexProgram(COMPLEX_MULTIPLY.REAL, a.shape, b.shape);
+      var imagProgram = new BinaryOpComplexProgram(COMPLEX_MULTIPLY.IMAG, a.shape, b.shape);
+      var inputs_1 = [
+        {
+          dataId: aData.complexTensorInfos.real.dataId,
+          dtype: aData.complexTensorInfos.real.dtype,
+          shape: a.shape
+        },
+        {
+          dataId: aData.complexTensorInfos.imag.dataId,
+          dtype: aData.complexTensorInfos.imag.dtype,
+          shape: a.shape
+        },
+        {
+          dataId: bData.complexTensorInfos.real.dataId,
+          dtype: bData.complexTensorInfos.real.dtype,
+          shape: b.shape
+        },
+        {
+          dataId: bData.complexTensorInfos.imag.dataId,
+          dtype: bData.complexTensorInfos.imag.dtype,
+          shape: b.shape
+        }
+      ];
+      var realPart = backend.runWebGLProgram(realProgram, inputs_1, "float32");
+      var imagPart = backend.runWebGLProgram(imagProgram, inputs_1, "float32");
+      var complexOutput = complex({inputs: {real: realPart, imag: imagPart}, backend});
+      backend.disposeIntermediateTensorInfo(realPart);
+      backend.disposeIntermediateTensorInfo(imagPart);
+      return complexOutput;
+    }
+    if (backend.shouldExecuteOnCPU([a, b])) {
+      var aData = backend.texData.get(a.dataId);
+      var bData = backend.texData.get(b.dataId);
+      var _a = multiplyImplCPU(a.shape, b.shape, aData.values, bData.values, dtype), outValues = _a[0], outShape = _a[1];
+      var out = backend.makeTensorInfo(outShape, dtype);
+      var outData = backend.texData.get(out.dataId);
+      outData.values = outValues;
+      return out;
+    }
+    var program;
+    if (tf2.env().getBool("WEBGL_PACK_BINARY_OPERATIONS")) {
+      program = new BinaryOpPackedProgram(MUL, a.shape, b.shape);
+    } else {
+      program = new BinaryOpProgram(MUL, a.shape, b.shape);
+    }
+    return backend.runWebGLProgram(program, [a, b], dtype);
+  }
+  var multiplyConfig = {
+    kernelName: tf2.Multiply,
+    backendName: "webgl",
+    kernelFunc: multiply
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
   var nonMaxSuppressionV3Config = {
     kernelName: tf2.NonMaxSuppressionV3,
     backendName: "webgl",
@@ -64983,11 +66093,11 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    * =============================================================================
    */
   var SIN = CHECK_NAN_SNIPPET_UNARY + "\n  return sin(x);\n";
-  var sinKernelFunc = unaryKernelFunc(SIN);
+  var sin = unaryKernelFunc(SIN);
   var sinConfig = {
     kernelName: tf2.Sin,
     backendName: "webgl",
-    kernelFunc: sinKernelFunc
+    kernelFunc: sin
   };
   /**
    * @license
@@ -65006,11 +66116,11 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    * =============================================================================
    */
   var SQUARE = "return x * x;";
-  var squareKernelFunc = unaryKernelFunc(SQUARE);
+  var square = unaryKernelFunc(SQUARE);
   var squareConfig = {
     kernelName: tf2.Square,
     backendName: "webgl",
-    kernelFunc: squareKernelFunc
+    kernelFunc: square
   };
   /**
    * @license
@@ -65029,11 +66139,39 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    * =============================================================================
    */
   var SQUARED_DIFFERENCE = "return (a - b) * (a - b);";
-  var squaredDifferenceKernelFunc = binaryKernelFunc(SQUARED_DIFFERENCE, SQUARED_DIFFERENCE);
+  var squaredDifference = binaryKernelFunc({opSnippet: SQUARED_DIFFERENCE, packedOpSnippet: SQUARED_DIFFERENCE});
   var squaredDifferenceConfig = {
     kernelName: tf2.SquaredDifference,
     backendName: "webgl",
-    kernelFunc: squaredDifferenceKernelFunc
+    kernelFunc: squaredDifference
+  };
+  /**
+   * @license
+   * Copyright 2020 Google LLC. All Rights Reserved.
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   * =============================================================================
+   */
+  var SUB = "return a - b;";
+  var subKernelFunc = binaryKernelFunc({
+    opSnippet: SUB,
+    packedOpSnippet: SUB,
+    supportsComplex: true,
+    cpuKernelImpl: subImplCPU
+  });
+  var subConfig = {
+    kernelName: tf2.Sub,
+    backendName: "webgl",
+    kernelFunc: subKernelFunc
   };
   /**
    * @license
@@ -65052,11 +66190,11 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    * =============================================================================
    */
   var TAN = "return tan(x);";
-  var tanKernelFunc = unaryKernelFunc(TAN);
+  var tan = unaryKernelFunc(TAN);
   var tanConfig = {
     kernelName: tf2.Tan,
     backendName: "webgl",
-    kernelFunc: tanKernelFunc
+    kernelFunc: tan
   };
   /**
    * @license
@@ -65152,26 +66290,39 @@ var require_tf_backend_webgl_node = __commonJS((exports) => {
    * =============================================================================
    */
   var kernelConfigs = [
+    addConfig,
     atan2Config,
     avgPoolConfig,
     avgPoolBackpropConfig,
     batchNormConfig,
+    castConfig,
+    complexConfig,
+    concatConfig,
     cosConfig,
     divConfig,
+    fftConfig,
     flipLeftRightConfig,
     fromPixelsConfig,
     identityConfig,
+    ifftConfig,
+    imagConfig,
     maxConfig,
     maxPoolConfig,
     maxPoolBackpropConfig,
     maxPoolWithArgmaxConfig,
+    meanConfig,
+    mirrorPadConfig,
+    multiplyConfig,
     nonMaxSuppressionV3Config,
     nonMaxSuppressionV4Config,
     nonMaxSuppressionV5Config,
+    notEqualConfig,
+    realConfig,
     reshapeConfig,
     rotateWithOffsetConfig,
     sinConfig,
     squareConfig,
+    subConfig,
     squaredDifferenceConfig,
     tanConfig,
     transposeConfig,
@@ -65218,7 +66369,7 @@ var require_tf_node = __commonJS((exports) => {
   var tfjsBackendCpu = require_tf_backend_cpu_node();
   var tfjsBackendWebgl = require_tf_backend_webgl_node();
   /** @license See the LICENSE file. */
-  var version = "2.6.0";
+  var version = "2.7.0";
   /**
    * @license
    * Copyright 2018 Google LLC. All Rights Reserved.
@@ -71039,7 +72190,7 @@ var require_config = __commonJS((exports) => {
 var require_package = __commonJS((exports, module) => {
   module.exports = {
     name: "@vladmandic/human",
-    version: "0.4.7",
+    version: "0.4.8",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.node.js",
@@ -71065,7 +72216,7 @@ var require_package = __commonJS((exports, module) => {
       "@tensorflow/tfjs-node": "^2.7.0",
       "@vladmandic/pilogger": "^0.2.6",
       dayjs: "^1.9.4",
-      esbuild: "^0.7.21",
+      esbuild: "^0.7.22",
       eslint: "^7.12.1",
       "eslint-config-airbnb-base": "^14.2.0",
       "eslint-plugin-import": "^2.22.1",
@@ -71078,13 +72229,13 @@ var require_package = __commonJS((exports, module) => {
     scripts: {
       start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
       lint: "eslint src/*.js demo/*.js",
-      "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js",
-      "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js",
-      "build-esm-nobundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js",
-      "build-node": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js",
-      "build-node-nobundle": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js",
+      "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --external:fs --external:seedrandom --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js",
+      "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:fs --external:seedrandom --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js",
+      "build-esm-nobundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:@tensorflow --external:fs --external:seedrandom --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js",
+      "build-node": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --metafile=dist/human.node.json --external:seedrandom --outfile=dist/human.node.js src/human.js",
+      "build-node-nobundle": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --external:seedrandom --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js",
       build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && ls -l dist/",
-      update: "npm update --depth 20 && npm dedupe && npm prune && npm audit",
+      update: "npm update --depth 20 --force && npm dedupe && npm prune && npm audit",
       changelog: "node changelog.js"
     },
     keywords: [

@@ -465,19 +465,7 @@ For example, it can perform multiple face detections at 60+ FPS, but drops to ~1
 - Hand: 40 FPS (standalone)
 - Body: 10 FPS (standalone)
 
-For performance details, see output of `result.performance` object during runtime  
-
-<hr>
-
-## Limitations
-
-`Human` library can be used in any modern Browser or NodeJS environment, but there are several items to be aware of:
-
-- **NodeJS**: Due to a missing feature in `tfjs-node`, only some models are available  
-  For unsupported models, error is: `TypeError: forwardFunc is not a function`  
-  <https://github.com/tensorflow/tfjs/issues/4066>  
-- **Browser**: Module `filters` cannot be used when using web workers  
-  <https://github.com/phoboslab/WebGLImageFilter/issues/27>  
+For performance details, see output of `result.performance` object during after running inference  
 
 <hr>
 

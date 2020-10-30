@@ -5777,7 +5777,7 @@ var require_config = __commonJS((exports) => {
 var require_package = __commonJS((exports, module) => {
   module.exports = {
     name: "@vladmandic/human",
-    version: "0.5.1",
+    version: "0.5.2",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.node.js",
@@ -5918,7 +5918,7 @@ class Human {
   }
   log(...msg) {
     if (msg && this.config.console)
-      console.log(...msg);
+      console.log("Human:", ...msg);
   }
   analyze(...msg) {
     if (!this.analyzeMemoryLeaks)
@@ -5958,19 +5958,15 @@ class Human {
       this.models.emotion = await emotion.load(this.config);
     }
   }
-  async resetBackend(backendName) {
+  async checkBackend() {
     if (tf.getBackend() !== this.config.backend) {
       this.state = "backend";
-      if (backendName in tf.engine().registry) {
-        this.log("Human library setting backend:", this.config.backend);
-        this.config.backend = backendName;
-        const backendFactory = tf.findBackendFactory(backendName);
-        tf.removeBackend(backendName);
-        tf.registerBackend(backendName, backendFactory);
-        await tf.setBackend(backendName);
+      if (this.config.backend in tf.engine().registry) {
+        this.log("Setting backend:", this.config.backend);
+        await tf.setBackend(this.config.backend);
         await tf.ready();
       } else {
-        this.log("Human library backend not registred:", backendName);
+        this.log("Backend not registred:", this.config.backend);
       }
     }
   }
@@ -6067,10 +6063,10 @@ class Human {
     return new Promise(async (resolve) => {
       const timeStart = now();
       timeStamp = now();
-      await this.resetBackend(this.config.backend);
+      await this.checkBackend();
       perf.backend = Math.trunc(now() - timeStamp);
       if (first) {
-        this.log("Human library starting");
+        this.log("Starting");
         this.log("Configuration:", this.config);
         this.log("Flags:", tf.ENV.flags);
         first = false;
@@ -6107,7 +6103,7 @@ class Human {
         perf.face = Math.trunc(now() - timeStamp);
         for (const face of faces) {
           if (!face.image || face.image.isDisposedInternal) {
-            this.log("face object is disposed:", face.image);
+            this.log("Face object is disposed:", face.image);
             continue;
           }
           this.state = "run:agegender";

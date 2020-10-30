@@ -57,6 +57,7 @@ async function drawFace(result, canvas, ui, triangulation) {
 async function drawBody(result, canvas, ui) {
   if (!result) return;
   const ctx = canvas.getContext('2d');
+  ctx.lineJoin = 'round';
   for (const pose of result) {
     ctx.fillStyle = ui.baseColor;
     ctx.strokeStyle = ui.baseColor;
@@ -97,15 +98,19 @@ async function drawBody(result, canvas, ui) {
       part = pose.keypoints.find((a) => a.part === 'rightAnkle');
       path.lineTo(part.position.x, part.position.y);
       // arms
-      part = pose.keypoints.find((a) => a.part === 'leftShoulder');
+      part = pose.keypoints.find((a) => a.part === 'rightShoulder');
       path.moveTo(part.position.x, part.position.y);
+      part = pose.keypoints.find((a) => a.part === 'leftShoulder');
+      path.lineTo(part.position.x, part.position.y);
       part = pose.keypoints.find((a) => a.part === 'leftElbow');
       path.lineTo(part.position.x, part.position.y);
       part = pose.keypoints.find((a) => a.part === 'leftWrist');
       path.lineTo(part.position.x, part.position.y);
       // arms
-      part = pose.keypoints.find((a) => a.part === 'rightShoulder');
+      part = pose.keypoints.find((a) => a.part === 'leftShoulder');
       path.moveTo(part.position.x, part.position.y);
+      part = pose.keypoints.find((a) => a.part === 'rightShoulder');
+      path.lineTo(part.position.x, part.position.y);
       part = pose.keypoints.find((a) => a.part === 'rightElbow');
       path.lineTo(part.position.x, part.position.y);
       part = pose.keypoints.find((a) => a.part === 'rightWrist');
@@ -119,6 +124,7 @@ async function drawBody(result, canvas, ui) {
 async function drawHand(result, canvas, ui) {
   if (!result) return;
   const ctx = canvas.getContext('2d');
+  ctx.lineJoin = 'round';
   for (const hand of result) {
     ctx.font = ui.baseFont;
     ctx.lineWidth = ui.baseLineWidth;
@@ -142,11 +148,11 @@ async function drawHand(result, canvas, ui) {
     }
     if (ui.drawPolygons) {
       const addPart = (part) => {
-        for (let i = 1; i < part.length; i++) {
+        for (let i = 0; i < part.length; i++) {
           ctx.lineWidth = ui.baseLineWidth;
           ctx.beginPath();
           ctx.strokeStyle = ui.useDepth ? `rgba(${127.5 + (2 * part[i][2])}, ${127.5 - (2 * part[i][2])}, 255, 0.5)` : ui.baseColor;
-          ctx.moveTo(part[i - 1][0], part[i - 1][1]);
+          ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
           ctx.lineTo(part[i][0], part[i][1]);
           ctx.stroke();
         }
@@ -156,7 +162,7 @@ async function drawHand(result, canvas, ui) {
       addPart(hand.annotations.ringFinger);
       addPart(hand.annotations.pinky);
       addPart(hand.annotations.thumb);
-      addPart(hand.annotations.palmBase);
+      // addPart(hand.annotations.palmBase);
     }
   }
 }

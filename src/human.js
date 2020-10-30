@@ -85,7 +85,7 @@ class Human {
   // helper function: wrapper around console output
   log(...msg) {
     // eslint-disable-next-line no-console
-    if (msg && this.config.console) console.log(...msg);
+    if (msg && this.config.console) console.log('Human:', ...msg);
   }
 
   // helper function: measure tensor leak
@@ -126,19 +126,18 @@ class Human {
     }
   }
 
-  async resetBackend(backendName) {
+  async checkBackend() {
     if (tf.getBackend() !== this.config.backend) {
       this.state = 'backend';
-      if (backendName in tf.engine().registry) {
-        this.log('Human library setting backend:', this.config.backend);
-        this.config.backend = backendName;
-        const backendFactory = tf.findBackendFactory(backendName);
-        tf.removeBackend(backendName);
-        tf.registerBackend(backendName, backendFactory);
-        await tf.setBackend(backendName);
+      if (this.config.backend in tf.engine().registry) {
+        this.log('Setting backend:', this.config.backend);
+        // const backendFactory = tf.findBackendFactory(backendName);
+        // tf.removeBackend(backendName);
+        // tf.registerBackend(backendName, backendFactory);
+        await tf.setBackend(this.config.backend);
         await tf.ready();
       } else {
-        this.log('Human library backend not registred:', backendName);
+        this.log('Backend not registred:', this.config.backend);
       }
     }
   }
@@ -226,12 +225,12 @@ class Human {
 
       // configure backend
       timeStamp = now();
-      await this.resetBackend(this.config.backend);
+      await this.checkBackend();
       perf.backend = Math.trunc(now() - timeStamp);
 
       // check number of loaded models
       if (first) {
-        this.log('Human library starting');
+        this.log('Starting');
         this.log('Configuration:', this.config);
         this.log('Flags:', tf.ENV.flags);
         first = false;
@@ -279,7 +278,7 @@ class Human {
         for (const face of faces) {
           // is something went wrong, skip the face
           if (!face.image || face.image.isDisposedInternal) {
-            this.log('face object is disposed:', face.image);
+            this.log('Face object is disposed:', face.image);
             continue;
           }
           // run ssr-net age & gender, inherits face from blazeface

@@ -8,8 +8,12 @@ const css = `
   .menu-container-fadein { max-height: 100vh; overflow: hidden; transition: max-height, 0.5s ease; }
   .menu-item { display: flex; white-space: nowrap; background: darkslategray; padding: 0.2rem; width: max-content; }
   .menu-title { text-align: right; cursor: pointer; }
-  .menu-hr { margin: 0.2rem; border: 1px solid rgba(0, 0, 0, 0.5) }
+  .menu-hr { margin: 0.2rem; border: 1px solid rgba(0, 0, 0, 0.5); }
   .menu-label { padding: 0; }
+
+  .menu-list { margin-right: 0.8rem; }
+  select:focus { outline: none; }
+  .menu-list-item { background: black; color: white; border: none; padding: 0.2rem; font-family: inherit; font-variant: inherit; border-radius: 1rem; }
 
   .menu-chart-title { align-items: center; }
   .menu-chart-canvas { background: transparent; height: 40px; width: 180px; margin: 0.2rem 0.2rem 0.2rem 1rem; }
@@ -127,6 +131,24 @@ class Menu {
     el.addEventListener('change', (evt) => {
       object[variable] = evt.target.checked;
       if (callback) callback(evt.target.checked);
+    });
+  }
+
+  async addList(title, items, selected, callback) {
+    const el = document.createElement('div');
+    el.className = 'menu-item';
+    let options = '';
+    for (const item of items) {
+      const def = item === selected ? 'selected' : '';
+      options += `<option value="${item}" ${def}>${item}</option>`;
+    }
+    el.innerHTML = `<div class="menu-list"><select name="${this.ID}" class="menu-list-item">${options}</select><label for="${this.ID}"></label></div>${title}`;
+    el.style.fontFamily = document.body.style.fontFamily;
+    el.style.fontSize = document.body.style.fontSize;
+    el.style.fontVariant = document.body.style.fontVariant;
+    this.container.appendChild(el);
+    el.addEventListener('change', (evt) => {
+      if (callback) callback(items[evt.target.selectedIndex]);
     });
   }
 

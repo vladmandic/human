@@ -72826,7 +72826,7 @@ var require_config = __commonJS((exports) => {
 var require_package = __commonJS((exports, module) => {
   module.exports = {
     name: "@vladmandic/human",
-    version: "0.4.10",
+    version: "0.5.1",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.node.js",
@@ -72848,10 +72848,9 @@ var require_package = __commonJS((exports, module) => {
     dependencies: {},
     peerDependencies: {},
     devDependencies: {
-      seedrandom: "^3.0.5",
       "@tensorflow/tfjs": "^2.7.0",
       "@tensorflow/tfjs-node": "^2.7.0",
-      "@vladmandic/pilogger": "^0.2.6",
+      "@vladmandic/pilogger": "^0.2.7",
       dayjs: "^1.9.4",
       esbuild: "^0.7.22",
       eslint: "^7.12.1",
@@ -72861,6 +72860,7 @@ var require_package = __commonJS((exports, module) => {
       "eslint-plugin-node": "^11.1.0",
       "eslint-plugin-promise": "^4.2.1",
       rimraf: "^3.0.2",
+      seedrandom: "^3.0.5",
       "simple-git": "^2.21.0"
     },
     scripts: {
@@ -73007,17 +73007,33 @@ class Human {
       this.models.emotion = await emotion.load(this.config);
     }
   }
+  async resetBackend(backendName) {
+    if (tf.getBackend() !== this.config.backend) {
+      this.state = "backend";
+      if (backendName in tf.engine().registry) {
+        this.log("Human library setting backend:", this.config.backend);
+        this.config.backend = backendName;
+        const backendFactory = tf.findBackendFactory(backendName);
+        tf.removeBackend(backendName);
+        tf.registerBackend(backendName, backendFactory);
+        await tf.setBackend(backendName);
+        await tf.ready();
+      } else {
+        this.log("Human library backend not registred:", backendName);
+      }
+    }
+  }
   tfImage(input) {
     let filtered;
+    const originalWidth = input.naturalWidth || input.videoWidth || input.width || input.shape && input.shape[1] > 0;
+    const originalHeight = input.naturalHeight || input.videoHeight || input.height || input.shape && input.shape[2] > 0;
+    let targetWidth = originalWidth;
+    let targetHeight = originalHeight;
     if (this.fx && this.config.filter.enabled && !(input instanceof tf.Tensor)) {
-      const originalWidth = input.naturalWidth || input.videoWidth || input.width || input.shape && input.shape[1] > 0;
-      const originalHeight = input.naturalHeight || input.videoHeight || input.height || input.shape && input.shape[2] > 0;
-      let targetWidth = originalWidth;
       if (this.config.filter.width > 0)
         targetWidth = this.config.filter.width;
       else if (this.config.filter.height > 0)
         targetWidth = originalWidth * (this.config.filter.height / originalHeight);
-      let targetHeight = originalHeight;
       if (this.config.filter.height > 0)
         targetHeight = this.config.filter.height;
       else if (this.config.filter.width > 0)
@@ -73064,7 +73080,19 @@ class Human {
     if (input instanceof tf.Tensor) {
       tensor = tf.clone(input);
     } else {
-      const pixels = tf.browser.fromPixels(filtered || input);
+      const canvas = filtered || input;
+      let pixels;
+      if (this.config.backend === "webgl" || canvas instanceof ImageData)
+        pixels = tf.browser.fromPixels(canvas);
+      else {
+        const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
+        tempCanvas.width = targetWidth;
+        tempCanvas.height = targetHeight;
+        const tempCtx = tempCanvas.getContext("2d");
+        tempCtx.drawImage(canvas, 0, 0);
+        const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+        pixels = tf.browser.fromPixels(data);
+      }
       const casted = pixels.toFloat();
       tensor = casted.expandDims(0);
       pixels.dispose();
@@ -73088,12 +73116,7 @@ class Human {
     return new Promise(async (resolve) => {
       const timeStart = now();
       timeStamp = now();
-      if (tf.getBackend() !== this.config.backend) {
-        this.state = "backend";
-        this.log("Human library setting backend:", this.config.backend);
-        await tf.setBackend(this.config.backend);
-        await tf.ready();
-      }
+      await this.resetBackend(this.config.backend);
       perf.backend = Math.trunc(now() - timeStamp);
       if (first) {
         this.log("Human library starting");

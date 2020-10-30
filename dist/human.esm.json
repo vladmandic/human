@@ -149,7 +149,7 @@
       ]
     },
     "package.json": {
-      "bytes": 2871,
+      "bytes": 2870,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -291,7 +291,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 11908,
+      "bytes": 13144,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -468,7 +468,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5121936
+      "bytes": 5123652
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -618,16 +618,16 @@
           "bytesInOutput": 2230
         },
         "package.json": {
-          "bytesInOutput": 3013
+          "bytesInOutput": 3012
         },
         "src/human.js": {
-          "bytesInOutput": 10765
+          "bytesInOutput": 11771
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 2924203
+      "bytes": 2925208
     }
   }
 }

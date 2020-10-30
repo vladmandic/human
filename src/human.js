@@ -126,17 +126,33 @@ class Human {
     }
   }
 
+  async resetBackend(backendName) {
+    if (tf.getBackend() !== this.config.backend) {
+      this.state = 'backend';
+      if (backendName in tf.engine().registry) {
+        this.log('Human library setting backend:', this.config.backend);
+        this.config.backend = backendName;
+        const backendFactory = tf.findBackendFactory(backendName);
+        tf.removeBackend(backendName);
+        tf.registerBackend(backendName, backendFactory);
+        await tf.setBackend(backendName);
+        await tf.ready();
+      } else {
+        this.log('Human library backend not registred:', backendName);
+      }
+    }
+  }
+
   tfImage(input) {
     // let imageData;
     let filtered;
+    const originalWidth = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
+    const originalHeight = input.naturalHeight || input.videoHeight || input.height || (input.shape && (input.shape[2] > 0));
+    let targetWidth = originalWidth;
+    let targetHeight = originalHeight;
     if (this.fx && this.config.filter.enabled && !(input instanceof tf.Tensor)) {
-      const originalWidth = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
-      const originalHeight = input.naturalHeight || input.videoHeight || input.height || (input.shape && (input.shape[2] > 0));
-
-      let targetWidth = originalWidth;
       if (this.config.filter.width > 0) targetWidth = this.config.filter.width;
       else if (this.config.filter.height > 0) targetWidth = originalWidth * (this.config.filter.height / originalHeight);
-      let targetHeight = originalHeight;
       if (this.config.filter.height > 0) targetHeight = this.config.filter.height;
       else if (this.config.filter.width > 0) targetHeight = originalHeight * (this.config.filter.width / originalWidth);
       const offscreenCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
@@ -166,7 +182,20 @@ class Human {
     if (input instanceof tf.Tensor) {
       tensor = tf.clone(input);
     } else {
-      const pixels = tf.browser.fromPixels(filtered || input);
+      const canvas = filtered || input;
+      let pixels;
+      // tf kernel-optimized method to get imagedata, also if input is imagedata, just use it
+      if ((this.config.backend === 'webgl') || (canvas instanceof ImageData)) pixels = tf.browser.fromPixels(canvas);
+      // cpu and wasm kernel does not implement efficient fromPixels method nor we can use canvas as-is, so we do a silly one more canvas
+      else {
+        const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
+        tempCanvas.width = targetWidth;
+        tempCanvas.height = targetHeight;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(canvas, 0, 0);
+        const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+        pixels = tf.browser.fromPixels(data);
+      }
       const casted = pixels.toFloat();
       tensor = casted.expandDims(0);
       pixels.dispose();
@@ -197,12 +226,7 @@ class Human {
 
       // configure backend
       timeStamp = now();
-      if (tf.getBackend() !== this.config.backend) {
-        this.state = 'backend';
-        this.log('Human library setting backend:', this.config.backend);
-        await tf.setBackend(this.config.backend);
-        await tf.ready();
-      }
+      await this.resetBackend(this.config.backend);
       perf.backend = Math.trunc(now() - timeStamp);
 
       // check number of loaded models

@@ -5,7 +5,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2871,
+      "bytes": 2870,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -116,7 +116,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 11908,
+      "bytes": 13144,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -260,7 +260,7 @@
     "dist/human.node-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 260882
+      "bytes": 263858
     },
     "dist/human.node-nobundle.js": {
       "imports": [],
@@ -353,16 +353,16 @@
           "bytesInOutput": 2232
         },
         "package.json": {
-          "bytesInOutput": 3016
+          "bytesInOutput": 3015
         },
         "src/human.js": {
           "bytesInOutput": 47
         },
         "src/human.js": {
-          "bytesInOutput": 10775
+          "bytesInOutput": 11781
         }
       },
-      "bytes": 155393
+      "bytes": 156398
     }
   }
 }

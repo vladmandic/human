@@ -29,7 +29,8 @@ const ui = {
 
 // configuration overrides
 const config = {
-  backend: 'webgl', // if you want to use 'wasm' backend, enable script load of tf and tf-backend-wasm in index.html
+  backend: 'webgl',
+  wasm: { path: '../assets' },
   filter: {
     enabled: true,
     width: 0,
@@ -108,7 +109,7 @@ function drawResults(input, result, canvas) {
   // update log
   const engine = human.tf.engine();
   const memory = `${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors`;
-  const gpu = engine.backendInstance ? `GPU: ${engine.backendInstance.numBytesInGPU.toLocaleString()} bytes` : '';
+  const gpu = engine.backendInstance ? `GPU: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
   document.getElementById('log').innerText = `
     TFJS Version: ${human.tf.version_core} | Backend: ${human.tf.getBackend()} | Memory: ${memory} ${gpu}
     Performance: ${str(result.performance)} | Object size: ${(str(result)).length.toLocaleString()} bytes
@@ -267,6 +268,7 @@ function setupMenu() {
   menu.addButton('Process Images', 'Process Images', () => detectSampleImages());
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
+  menu.addList('Backend', ['cpu', 'webgl', 'wasm', 'webgpu'], config.backend, (val) => config.backend = val);
   menu.addBool('Use Web Worker', ui, 'useWorker');
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addLabel('Enabled Models');

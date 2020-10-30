@@ -9,7 +9,8 @@
 - [**Change Log**](./CHANGELOG.md)
 - [**Live Demo**](https://vladmandic.github.io/human/demo/index.html)
 
-Compatible with Browser, WebWorker and NodeJS execution!  
+Compatible with *Browser*, *WebWorker* and *NodeJS* execution  
+Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  
 (and maybe with React-Native as it doesn't use any DOM objects)  
 
 *This is a pre-release project, see [issues](https://github.com/vladmandic/human/issues) for list of known limitations and planned enhancements*  
@@ -159,10 +160,12 @@ If your application resides in a different folder, modify `modelPath` property i
 
 Demos are included in `/demo`:
 
-Browser:
+**Browser**:
 - `index.html`, `browser.js`, `worker.js`: Full demo using Browser with ESM module, includes selectable backends and webworkers
 
-NodeJS:
+*If you want to test `wasm` or `webgpu` backends, enable loading in `index.html`*
+
+**NodeJS**:
 - `node.js`: Demo using NodeJS with CommonJS module  
   This is a very simple demo as althought `Human` library is compatible with NodeJS execution  
   and is able to load images and models from local filesystem,  

@@ -22,10 +22,9 @@
   "dependencies": {},
   "peerDependencies": {},
   "devDependencies": {
-    "seedrandom": "^3.0.5",
     "@tensorflow/tfjs": "^2.7.0",
     "@tensorflow/tfjs-node": "^2.7.0",
-    "@vladmandic/pilogger": "^0.2.6",
+    "@vladmandic/pilogger": "^0.2.7",
     "dayjs": "^1.9.4",
     "esbuild": "^0.7.22",
     "eslint": "^7.12.1",
@@ -35,6 +34,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "rimraf": "^3.0.2",
+    "seedrandom": "^3.0.5",
     "simple-git": "^2.21.0"
   },
   "scripts": {

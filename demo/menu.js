@@ -1,7 +1,7 @@
 let instance = 0;
 
 const css = `
-  .menu { position: fixed; top: 0rem; right: 0; width: fit-content; padding: 0 0.8rem 0 0.8rem; line-height: 1.8rem; z-index: 10; max-height: calc(100% - 4rem); box-shadow: 0 0 8px dimgrey; background: darkslategray; }
+  .menu { position: fixed; top: 0rem; right: 0; width: fit-content; padding: 0 0.8rem 0 0.8rem; line-height: 1.8rem; z-index: 10; max-height: calc(100% - 4rem); box-shadow: 0 0 8px dimgrey; background: darkslategray; border-radius: 1rem; }
   .menu:hover { box-shadow: 0 0 8px lightgrey; }
   .menu-container { display: block; max-height: 100vh; }
   .menu-container-fadeout { max-height: 0; overflow: hidden; transition: max-height, 0.5s ease; }
@@ -18,7 +18,7 @@ const css = `
   .menu-chart-title { align-items: center; }
   .menu-chart-canvas { background: transparent; height: 40px; width: 180px; margin: 0.2rem 0.2rem 0.2rem 1rem; }
   
-  .menu-button { border: 0; background: lightblue; width: -webkit-fill-available; padding: 8px; margin: 8px 0 8px 0; cursor: pointer; box-shadow: 4px 4px 4px 0 dimgrey; }
+  .menu-button { border: 0; background: lightblue; width: -webkit-fill-available; padding: 8px; margin: 8px 0 8px 0; cursor: pointer; box-shadow: 4px 4px 4px 0 dimgrey; border-radius: 1rem; justify-content: center; }
   .menu-button:hover { background: lightgreen; box-shadow: 4px 4px 4px 0 black; }
   .menu-button:focus { outline: none; }
 

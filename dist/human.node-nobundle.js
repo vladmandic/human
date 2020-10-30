@@ -5777,7 +5777,7 @@ var require_config = __commonJS((exports2) => {
 var require_package = __commonJS((exports2, module2) => {
   module2.exports = {
     name: "@vladmandic/human",
-    version: "0.4.8",
+    version: "0.4.9",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.node.js",
@@ -5799,6 +5799,7 @@ var require_package = __commonJS((exports2, module2) => {
     dependencies: {},
     peerDependencies: {},
     devDependencies: {
+      seedrandom: "^3.0.5",
       "@tensorflow/tfjs": "^2.7.0",
       "@tensorflow/tfjs-node": "^2.7.0",
       "@vladmandic/pilogger": "^0.2.6",
@@ -5816,11 +5817,11 @@ var require_package = __commonJS((exports2, module2) => {
     scripts: {
       start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
       lint: "eslint src/*.js demo/*.js",
-      "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --external:fs --external:seedrandom --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js",
-      "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:fs --external:seedrandom --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js",
-      "build-esm-nobundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:@tensorflow --external:fs --external:seedrandom --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js",
-      "build-node": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --metafile=dist/human.node.json --external:seedrandom --outfile=dist/human.node.js src/human.js",
-      "build-node-nobundle": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --external:seedrandom --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js",
+      "build-iife": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=iife --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js",
+      "build-esm-bundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js",
+      "build-esm-nobundle": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js",
+      "build-node": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js",
+      "build-node-nobundle": "esbuild --bundle --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js",
       build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && ls -l dist/",
       update: "npm update --depth 20 --force && npm dedupe && npm prune && npm audit",
       changelog: "node changelog.js"

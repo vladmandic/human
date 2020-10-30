@@ -5,7 +5,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2952,
+      "bytes": 2870,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -260,7 +260,7 @@
     "dist/human.node-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 260881
+      "bytes": 260882
     },
     "dist/human.node-nobundle.js": {
       "imports": [],
@@ -353,7 +353,7 @@
           "bytesInOutput": 2232
         },
         "package.json": {
-          "bytesInOutput": 3097
+          "bytesInOutput": 3015
         },
         "src/human.js": {
           "bytesInOutput": 47
@@ -362,7 +362,7 @@
           "bytesInOutput": 10775
         }
       },
-      "bytes": 155474
+      "bytes": 155392
     }
   }
 }

@@ -9,6 +9,67 @@
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs-core/dist/tf-core.node.js"
+        },
+        {
+          "path": "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/index.js"
+        }
+      ]
+    },
+    "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/index.js": {
+      "bytes": 2110,
+      "imports": [
+        {
+          "path": "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/alea.js"
+        },
+        {
+          "path": "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xor128.js"
+        },
+        {
+          "path": "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xorwow.js"
+        },
+        {
+          "path": "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xorshift7.js"
+        },
+        {
+          "path": "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xor4096.js"
+        },
+        {
+          "path": "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/tychei.js"
+        },
+        {
+          "path": "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/seedrandom.js"
+        }
+      ]
+    },
+    "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/alea.js": {
+      "bytes": 3243,
+      "imports": []
+    },
+    "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/tychei.js": {
+      "bytes": 2525,
+      "imports": []
+    },
+    "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xor128.js": {
+      "bytes": 1748,
+      "imports": []
+    },
+    "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xor4096.js": {
+      "bytes": 4559,
+      "imports": []
+    },
+    "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xorshift7.js": {
+      "bytes": 2418,
+      "imports": []
+    },
+    "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xorwow.js": {
+      "bytes": 1919,
+      "imports": []
+    },
+    "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/seedrandom.js": {
+      "bytes": 8358,
+      "imports": [
+        {
+          "path": "empty:crypto"
         }
       ]
     },
@@ -88,7 +149,7 @@
       ]
     },
     "package.json": {
-      "bytes": 2952,
+      "bytes": 2870,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -407,7 +468,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5086901
+      "bytes": 5125792
     },
     "dist/human.js": {
       "imports": [],
@@ -422,7 +483,7 @@
           "bytesInOutput": 48
         },
         "node_modules/@tensorflow/tfjs-core/dist/tf-core.node.js": {
-          "bytesInOutput": 1061222
+          "bytesInOutput": 1061246
         },
         "node_modules/@tensorflow/tfjs-layers/dist/tf-layers.node.js": {
           "bytesInOutput": 541660
@@ -434,7 +495,31 @@
           "bytesInOutput": 56
         },
         "node_modules/@tensorflow/tfjs-data/dist/tf-data.node.js": {
-          "bytesInOutput": 136948
+          "bytesInOutput": 136972
+        },
+        "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/alea.js": {
+          "bytesInOutput": 2276
+        },
+        "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xor128.js": {
+          "bytesInOutput": 1827
+        },
+        "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xorwow.js": {
+          "bytesInOutput": 2039
+        },
+        "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xorshift7.js": {
+          "bytesInOutput": 2481
+        },
+        "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/xor4096.js": {
+          "bytesInOutput": 2946
+        },
+        "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/tychei.js": {
+          "bytesInOutput": 2080
+        },
+        "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/seedrandom.js": {
+          "bytesInOutput": 4275
+        },
+        "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/index.js": {
+          "bytesInOutput": 490
         },
         "node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js": {
           "bytesInOutput": 284249
@@ -533,13 +618,13 @@
           "bytesInOutput": 2424
         },
         "package.json": {
-          "bytesInOutput": 3224
+          "bytesInOutput": 3144
         },
         "src/human.js": {
           "bytesInOutput": 11994
         }
       },
-      "bytes": 3051012
+      "bytes": 3070079
     }
   }
 }

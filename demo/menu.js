@@ -282,7 +282,7 @@ class Menu {
       ctx.fillStyle = gradient;
       ctx.fillRect(i * width, 0, width - 4, canvas.height);
       ctx.fillStyle = theme.background;
-      ctx.font = `${width / 1.4}px "Segoe UI"`;
+      ctx.font = `${width / 1.5}px "Segoe UI"`;
       ctx.fillText(Math.round(values[i]), i * width + 1, canvas.height - 1, width - 1);
     }
   }

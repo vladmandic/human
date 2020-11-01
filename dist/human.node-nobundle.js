@@ -3859,9 +3859,37 @@ var require_facemesh = __commonJS((exports2) => {
   exports2.triangulation = triangulation;
 });
 
+// src/profile.js
+var require_profile = __commonJS((exports2) => {
+  const profileData = {};
+  function profile2(name, data) {
+    if (!data || !data.kernels)
+      return;
+    const maxResults = 5;
+    const time = data.kernels.filter((a) => a.kernelTimeMs > 0).reduce((a, b) => a += b.kernelTimeMs, 0);
+    const slowest = data.kernels.map((a, i) => {
+      a.id = i;
+      return a;
+    }).filter((a) => a.kernelTimeMs > 0).sort((a, b) => b.kernelTimeMs - a.kernelTimeMs);
+    const largest = data.kernels.map((a, i) => {
+      a.id = i;
+      return a;
+    }).filter((a) => a.totalBytesSnapshot > 0).sort((a, b) => b.totalBytesSnapshot - a.totalBytesSnapshot);
+    if (slowest.length > maxResults)
+      slowest.length = maxResults;
+    if (largest.length > maxResults)
+      largest.length = maxResults;
+    const res = {newBytes: data.newBytes, newTensors: data.newTensors, peakBytes: data.peakBytes, numKernelOps: data.kernels.length, timeKernelOps: time, slowestKernelOps: slowest, largestKernelOps: largest};
+    profileData[name] = res;
+  }
+  exports2.run = profile2;
+  exports2.data = profileData;
+});
+
 // src/ssrnet/ssrnet.js
 var require_ssrnet = __commonJS((exports2) => {
   const tf2 = require("@tensorflow/tfjs");
+  const profile2 = require_profile();
   const models = {};
   let last = {age: 0, gender: ""};
   let frame = 0;
@@ -3887,12 +3915,23 @@ var require_ssrnet = __commonJS((exports2) => {
     const promises = [];
     let ageT;
     let genderT;
-    if (config.face.age.enabled)
-      promises.push(ageT = models.age.predict(enhance));
-    if (config.face.gender.enabled)
-      promises.push(genderT = models.gender.predict(enhance));
-    await Promise.all(promises);
     const obj = {};
+    if (!config.profile) {
+      if (config.face.age.enabled)
+        promises.push(ageT = models.age.predict(enhance));
+      if (config.face.gender.enabled)
+        promises.push(genderT = models.gender.predict(enhance));
+      await Promise.all(promises);
+    } else {
+      const profileAge = config.face.age.enabled ? await tf2.profile(() => models.age.predict(enhance)) : {};
+      ageT = profileAge.result.clone();
+      profileAge.result.dispose();
+      profile2.run("age", profileAge);
+      const profileGender = config.face.gender.enabled ? await tf2.profile(() => models.gender.predict(enhance)) : {};
+      genderT = profileGender.result.clone();
+      profileGender.result.dispose();
+      profile2.run("gender", profileGender);
+    }
     if (ageT) {
       const data = await ageT.data();
       obj.age = Math.trunc(10 * data[0]) / 10;
@@ -3919,6 +3958,7 @@ var require_ssrnet = __commonJS((exports2) => {
 // src/emotion/emotion.js
 var require_emotion = __commonJS((exports2) => {
   const tf2 = require("@tensorflow/tfjs");
+  const profile2 = require_profile();
   const annotations = ["angry", "discust", "fear", "happy", "sad", "surpise", "neutral"];
   const models = {};
   let last = [];
@@ -3950,14 +3990,22 @@ var require_emotion = __commonJS((exports2) => {
     blueNorm.dispose();
     const obj = [];
     if (config.face.emotion.enabled) {
-      const emotionT = await models.emotion.predict(grayscale);
-      const data = await emotionT.data();
+      let data;
+      if (!config.profile) {
+        const emotionT = await models.emotion.predict(grayscale);
+        data = await emotionT.data();
+        tf2.dispose(emotionT);
+      } else {
+        const profileData = await tf2.profile(() => models.emotion.predict(grayscale));
+        data = await profileData.result.data();
+        profileData.result.dispose();
+        profile2.run("emotion", profileData);
+      }
       for (let i = 0; i < data.length; i++) {
         if (multiplier * data[i] > config.face.emotion.minConfidence)
           obj.push({score: Math.min(0.99, Math.trunc(100 * multiplier * data[i]) / 100), emotion: annotations[i]});
       }
       obj.sort((a, b) => b.score - a.score);
-      tf2.dispose(emotionT);
     }
     tf2.dispose(grayscale);
     last = obj;
@@ -3974,8 +4022,6 @@ var require_modelBase = __commonJS((exports2) => {
     constructor(model, outputStride) {
       this.model = model;
       this.outputStride = outputStride;
-      const inputShape = this.model.inputs[0].shape;
-      tf2.util.assert(inputShape[1] === -1 && inputShape[2] === -1, () => `Input shape [${inputShape[1]}, ${inputShape[2]}] must both be equal to or -1`);
     }
     predict(input) {
       return tf2.tidy(() => {
@@ -5682,6 +5728,8 @@ var require_config = __commonJS((exports2) => {
   var config_default = {
     backend: "webgl",
     console: true,
+    profile: true,
+    deallocate: true,
     scoped: false,
     videoOptimized: true,
     filter: {
@@ -5777,7 +5825,7 @@ var require_config = __commonJS((exports2) => {
 var require_package = __commonJS((exports2, module2) => {
   module2.exports = {
     name: "@vladmandic/human",
-    version: "0.5.2",
+    version: "0.5.3",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.node.js",
@@ -5852,6 +5900,7 @@ const emotion = require_emotion();
 const posenet = require_posenet();
 const handpose = require_handpose();
 const fxImage = require_imagefx();
+const profile = require_profile();
 const defaults = require_config().default;
 const app = require_package();
 let first = true;
@@ -5923,6 +5972,11 @@ class Human {
     if (msg && this.config.console)
       console.log("Human:", ...msg);
   }
+  profile() {
+    if (this.config.profile)
+      return profile.data;
+    return {};
+  }
   analyze(...msg) {
     if (!this.analyzeMemoryLeaks)
       return;
@@ -5964,13 +6018,14 @@ class Human {
   async checkBackend() {
     if (tf.getBackend() !== this.config.backend) {
       this.state = "backend";
-      if (this.config.backend in tf.engine().registry) {
-        this.log("Setting backend:", this.config.backend);
-        await tf.setBackend(this.config.backend);
-        await tf.ready();
-      } else {
-        this.log("Backend not registred:", this.config.backend);
+      this.log("Setting backend:", this.config.backend);
+      await tf.setBackend(this.config.backend);
+      tf.enableProdMode();
+      if (this.config.deallocate && this.config.backend === "webgl") {
+        this.log("Changing WebGL: WEBGL_DELETE_TEXTURE_THRESHOLD:", this.config.deallocate);
+        tf.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", this.config.deallocate ? 0 : -1);
       }
+      await tf.ready();
     }
   }
   tfImage(input) {

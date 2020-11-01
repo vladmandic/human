@@ -1,4 +1,5 @@
 const tf = require('@tensorflow/tfjs');
+const profile = require('../profile.js');
 
 const models = {};
 let last = { age: 0, gender: '' };
@@ -27,11 +28,23 @@ async function predict(image, config) {
   const promises = [];
   let ageT;
   let genderT;
-  if (config.face.age.enabled) promises.push(ageT = models.age.predict(enhance));
-  if (config.face.gender.enabled) promises.push(genderT = models.gender.predict(enhance));
-  await Promise.all(promises);
-
   const obj = {};
+
+  if (!config.profile) {
+    if (config.face.age.enabled) promises.push(ageT = models.age.predict(enhance));
+    if (config.face.gender.enabled) promises.push(genderT = models.gender.predict(enhance));
+    await Promise.all(promises);
+  } else {
+    const profileAge = config.face.age.enabled ? await tf.profile(() => models.age.predict(enhance)) : {};
+    ageT = profileAge.result.clone();
+    profileAge.result.dispose();
+    profile.run('age', profileAge);
+    const profileGender = config.face.gender.enabled ? await tf.profile(() => models.gender.predict(enhance)) : {};
+    genderT = profileGender.result.clone();
+    profileGender.result.dispose();
+    profile.run('gender', profileGender);
+  }
+
   if (ageT) {
     const data = await ageT.data();
     obj.age = Math.trunc(10 * data[0]) / 10;

@@ -4,8 +4,6 @@ class BaseModel {
   constructor(model, outputStride) {
     this.model = model;
     this.outputStride = outputStride;
-    const inputShape = this.model.inputs[0].shape;
-    tf.util.assert((inputShape[1] === -1) && (inputShape[2] === -1), () => `Input shape [${inputShape[1]}, ${inputShape[2]}] must both be equal to or -1`);
   }
 
   /**

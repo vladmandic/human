@@ -30,6 +30,8 @@ const ui = {
 // configuration overrides
 const config = {
   backend: 'webgl',
+  profile: false,
+  deallocate: false,
   wasm: { path: '../assets' },
   filter: {
     enabled: true,
@@ -199,6 +201,7 @@ function runHumanDetect(input, canvas) {
       human.detect(input, config).then((result) => {
         if (result.error) log(result.error);
         else drawResults(input, result, canvas);
+        if (config.profile) log('Profile data:', human.profile());
       });
     }
   }
@@ -269,6 +272,8 @@ function setupMenu() {
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addList('Backend', ['cpu', 'webgl', 'wasm', 'webgpu'], config.backend, (val) => config.backend = val);
+  menu.addBool('Enable Profiler', config, 'profile');
+  menu.addBool('Memory Deallocator', config, 'deallocate');
   menu.addBool('Use Web Worker', ui, 'useWorker');
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addLabel('Enabled Models');

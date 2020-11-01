@@ -1,4 +1,5 @@
 const tf = require('@tensorflow/tfjs');
+const profile = require('../profile.js');
 
 const annotations = ['angry', 'discust', 'fear', 'happy', 'sad', 'surpise', 'neutral'];
 const models = {};
@@ -33,13 +34,21 @@ async function predict(image, config) {
   blueNorm.dispose();
   const obj = [];
   if (config.face.emotion.enabled) {
-    const emotionT = await models.emotion.predict(grayscale);
-    const data = await emotionT.data();
+    let data;
+    if (!config.profile) {
+      const emotionT = await models.emotion.predict(grayscale);
+      data = await emotionT.data();
+      tf.dispose(emotionT);
+    } else {
+      const profileData = await tf.profile(() => models.emotion.predict(grayscale));
+      data = await profileData.result.data();
+      profileData.result.dispose();
+      profile.run('emotion', profileData);
+    }
     for (let i = 0; i < data.length; i++) {
       if (multiplier * data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * multiplier * data[i]) / 100), emotion: annotations[i] });
     }
     obj.sort((a, b) => b.score - a.score);
-    tf.dispose(emotionT);
   }
   tf.dispose(grayscale);
   last = obj;

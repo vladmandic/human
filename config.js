@@ -4,6 +4,12 @@
 export default {
   backend: 'webgl',          // select tfjs backend to use
   console: true,             // enable debugging output to console
+  profile: true,             // enable tfjs profiling
+                             // this has significant performance impact, only enable for debugging purposes
+                             // currently only implemented for age,gender,emotion models
+  deallocate: true,          // aggresively deallocate gpu memory after each usage
+                             // only valid for webgl backend and only during first call, cannot be changed unless library is reloaded
+                             // this has significant performance impact, only enable on low-memory devices
   scoped: false,             // enable scoped runs
                              // some models *may* have memory leaks, this wrapps everything in a local scope at a cost of performance
                              // typically not needed

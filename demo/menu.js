@@ -12,6 +12,7 @@ let theme = {
   checkboxOff: 'lightcoral',
   rangeBackground: 'lightblue',
   rangeLabel: 'white',
+  chartColor: 'lightblue',
 };
 
 function createCSS() {
@@ -69,8 +70,6 @@ class Menu {
     instance++;
     this._maxFPS = 0;
     this.hidden = 0;
-    this.chartFGcolor = 'lightblue';
-    this.chartBGcolor = 'lightgray';
   }
 
   createMenu(parent, title = '', position = { top: null, left: null, bottom: null, right: null }) {
@@ -256,13 +255,12 @@ class Menu {
     else this.addValue(title, val);
   }
 
-  addChart(title, id, width = 200, height = 40, fgColor, bgColor) {
-    if (fgColor) this.chartFGcolor = fgColor;
-    if (bgColor) this.chartBGcolor = bgColor;
+  addChart(title, id, width = 200, height = 40, color) {
+    if (color) theme.chartColor = color;
     const el = document.createElement('div');
     el.className = 'menu-item menu-chart-title';
     el.id = this.newID;
-    el.innerHTML = `<font color=${this.chartFGcolor}>${title}</font><canvas id="menu-canvas-${id}" class="menu-chart-canvas" width="${width}px" height="${height}px"></canvas>`;
+    el.innerHTML = `<font color=${theme.chartColor}>${title}</font><canvas id="menu-canvas-${id}" class="menu-chart-canvas" width="${width}px" height="${height}px"></canvas>`;
     this.container.appendChild(el);
   }
 
@@ -272,18 +270,18 @@ class Menu {
     const canvas = document.getElementById(`menu-canvas-${id}`);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = this.chartBGcolor;
+    ctx.fillStyle = theme.background;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     const width = canvas.width / values.length;
     const max = 1 + Math.max(...values);
     const height = canvas.height / max;
     for (const i in values) {
       const gradient = ctx.createLinearGradient(0, (max - values[i]) * height, 0, 0);
-      gradient.addColorStop(0.1, this.chartFGcolor);
-      gradient.addColorStop(0.4, this.chartBGcolor);
+      gradient.addColorStop(0.1, theme.chartColor);
+      gradient.addColorStop(0.4, theme.background);
       ctx.fillStyle = gradient;
       ctx.fillRect(i * width, 0, width - 4, canvas.height);
-      ctx.fillStyle = this.chartBGcolor;
+      ctx.fillStyle = theme.background;
       ctx.font = `${width / 1.4}px "Segoe UI"`;
       ctx.fillText(Math.round(values[i]), i * width + 1, canvas.height - 1, width - 1);
     }

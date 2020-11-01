@@ -5,6 +5,7 @@ const emotion = require('./emotion/emotion.js');
 const posenet = require('./posenet/posenet.js');
 const handpose = require('./handpose/handpose.js');
 const fxImage = require('./imagefx.js');
+const profile = require('./profile.js');
 const defaults = require('../config.js').default;
 const app = require('../package.json');
 
@@ -88,6 +89,11 @@ class Human {
     if (msg && this.config.console) console.log('Human:', ...msg);
   }
 
+  profile() {
+    if (this.config.profile) return profile.data;
+    return {};
+  }
+
   // helper function: measure tensor leak
   analyze(...msg) {
     if (!this.analyzeMemoryLeaks) return;
@@ -129,16 +135,27 @@ class Human {
   async checkBackend() {
     if (tf.getBackend() !== this.config.backend) {
       this.state = 'backend';
+      /* force backend reload
       if (this.config.backend in tf.engine().registry) {
-        this.log('Setting backend:', this.config.backend);
-        // const backendFactory = tf.findBackendFactory(backendName);
-        // tf.removeBackend(backendName);
-        // tf.registerBackend(backendName, backendFactory);
-        await tf.setBackend(this.config.backend);
-        await tf.ready();
+        const backendFactory = tf.findBackendFactory(this.config.backend);
+        tf.removeBackend(this.config.backend);
+        tf.registerBackend(this.config.backend, backendFactory);
       } else {
         this.log('Backend not registred:', this.config.backend);
       }
+      */
+      this.log('Setting backend:', this.config.backend);
+      await tf.setBackend(this.config.backend);
+      tf.enableProdMode();
+      /* debug mode is really too mcuh
+      if (this.config.profile) tf.enableDebugMode();
+      else tf.enableProdMode();
+      */
+      if (this.config.deallocate && this.config.backend === 'webgl') {
+        this.log('Changing WebGL: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
+        tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
+      }
+      await tf.ready();
     }
   }
 

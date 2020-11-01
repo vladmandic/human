@@ -5728,8 +5728,8 @@ var require_config = __commonJS((exports2) => {
   var config_default = {
     backend: "webgl",
     console: true,
-    profile: true,
-    deallocate: true,
+    profile: false,
+    deallocate: false,
     scoped: false,
     videoOptimized: true,
     filter: {
@@ -5825,7 +5825,7 @@ var require_config = __commonJS((exports2) => {
 var require_package = __commonJS((exports2, module2) => {
   module2.exports = {
     name: "@vladmandic/human",
-    version: "0.5.3",
+    version: "0.5.5",
     description: "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
     sideEffects: false,
     main: "dist/human.node.js",

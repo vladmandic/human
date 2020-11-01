@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 6870,
+      "bytes": 7075,
       "imports": []
     },
     "package.json": {
@@ -275,7 +275,7 @@
     "dist/human.node-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 268314
+      "bytes": 268521
     },
     "dist/human.node-nobundle.js": {
       "imports": [],
@@ -368,7 +368,7 @@
           "bytesInOutput": 20197
         },
         "config.js": {
-          "bytesInOutput": 2273
+          "bytesInOutput": 2275
         },
         "package.json": {
           "bytesInOutput": 3015
@@ -380,7 +380,7 @@
           "bytesInOutput": 11796
         }
       },
-      "bytes": 158252
+      "bytes": 158254
     }
   }
 }

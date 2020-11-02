@@ -294,7 +294,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 13768,
+      "bytes": 14560,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -481,7 +481,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5131716
+      "bytes": 5133045
     },
     "dist/human.js": {
       "imports": [],
@@ -637,10 +637,10 @@
           "bytesInOutput": 3144
         },
         "src/human.js": {
-          "bytesInOutput": 13235
+          "bytesInOutput": 14131
         }
       },
-      "bytes": 3073187
+      "bytes": 3074083
     }
   }
 }

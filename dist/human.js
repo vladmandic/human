@@ -72069,19 +72069,19 @@ var Human = (() => {
           return match;
         });
       };
-      const _compile = function(gl2, source, type) {
-        const shader = gl2.createShader(type);
-        gl2.shaderSource(shader, source);
-        gl2.compileShader(shader);
-        if (!gl2.getShaderParameter(shader, gl2.COMPILE_STATUS)) {
-          throw new Error("Filter: GL compile failed", gl2.getShaderInfoLog(shader));
+      const _compile = function(source, type) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          throw new Error("Filter: GL compile failed", gl.getShaderInfoLog(shader));
         }
         return shader;
       };
       this.uniform = {};
       this.attribute = {};
-      const _vsh = _compile(gl, vertexSource, gl.VERTEX_SHADER);
-      const _fsh = _compile(gl, fragmentSource, gl.FRAGMENT_SHADER);
+      const _vsh = _compile(vertexSource, gl.VERTEX_SHADER);
+      const _fsh = _compile(fragmentSource, gl.FRAGMENT_SHADER);
       this.id = gl.createProgram();
       gl.attachShader(this.id, _vsh);
       gl.attachShader(this.id, _fsh);
@@ -72138,7 +72138,6 @@ var Human = (() => {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         if (_filterChain.length === 0) {
-          const program = _compileShader(SHADER.FRAGMENT_IDENTITY);
           _draw();
           return _canvas;
         }
@@ -72153,8 +72152,10 @@ var Human = (() => {
         if (width === _width && height === _height) {
           return;
         }
-        _canvas.width = _width = width;
-        _canvas.height = _height = height;
+        _canvas.width = width;
+        _width = width;
+        _canvas.height = height;
+        _height = height;
         if (!_vertexBuffer) {
           const vertices = new Float32Array([
             -1,
@@ -73095,8 +73096,10 @@ var Human = (() => {
           else if (this.config.filter.width > 0)
             targetHeight = originalHeight * (this.config.filter.width / originalWidth);
           const offscreenCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
-          offscreenCanvas.width = targetWidth;
-          offscreenCanvas.height = targetHeight;
+          if (offscreenCanvas.width !== targetWidth)
+            offscreenCanvas.width = targetWidth;
+          if (offscreenCanvas.height !== targetHeight)
+            offscreenCanvas.height = targetHeight;
           const ctx = offscreenCanvas.getContext("2d");
           if (input instanceof ImageData)
             ctx.putImageData(input, 0, 0);
@@ -73138,9 +73141,9 @@ var Human = (() => {
         } else {
           const canvas = filtered || input;
           let pixels;
-          if (this.config.backend === "webgl" || canvas instanceof ImageData)
+          if (this.config.backend === "webgl" || canvas instanceof ImageData) {
             pixels = tf.browser.fromPixels(canvas);
-          else {
+          } else {
             const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
             tempCanvas.width = targetWidth;
             tempCanvas.height = targetHeight;

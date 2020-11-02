@@ -294,7 +294,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 13664,
+      "bytes": 13768,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -329,7 +329,7 @@
       ]
     },
     "src/imagefx.js": {
-      "bytes": 19452,
+      "bytes": 19396,
       "imports": []
     },
     "src/posenet/buildParts.js": {
@@ -481,7 +481,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5131640
+      "bytes": 5131716
     },
     "dist/human.js": {
       "imports": [],
@@ -628,7 +628,7 @@
           "bytesInOutput": 2365
         },
         "src/imagefx.js": {
-          "bytesInOutput": 21613
+          "bytesInOutput": 21557
         },
         "config.js": {
           "bytesInOutput": 2471
@@ -637,10 +637,10 @@
           "bytesInOutput": 3144
         },
         "src/human.js": {
-          "bytesInOutput": 13119
+          "bytesInOutput": 13235
         }
       },
-      "bytes": 3073127
+      "bytes": 3073187
     }
   }
 }

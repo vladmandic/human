@@ -40,8 +40,7 @@ class HandDetector {
     const rawBoxes = tf.slice(prediction, [0, 1], [-1, 4]);
     const boxes = this.normalizeBoxes(rawBoxes);
     const boxesWithHandsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.maxHands, this.iouThreshold, this.scoreThreshold);
-    const boxesWithHands = await boxesWithHandsTensor.array();
-    const toDispose = [batchedPrediction, boxesWithHandsTensor, prediction, boxes, rawBoxes, scores];
+    const boxesWithHands = boxesWithHandsTensor.arraySync();
     const detectedHands = tf.tidy(() => {
       const detectedBoxes = [];
       for (const i in boxesWithHands) {
@@ -53,7 +52,7 @@ class HandDetector {
       }
       return detectedBoxes;
     });
-    toDispose.forEach((tensor) => tensor.dispose());
+    [batchedPrediction, boxesWithHandsTensor, prediction, boxes, rawBoxes, scores].forEach((tensor) => tensor.dispose());
     return detectedHands;
   }
 
@@ -64,28 +63,24 @@ class HandDetector {
      * @param input The image to classify.
      */
   async estimateHandBounds(input, config) {
-    // const inputHeight = input.shape[2];
-    // const inputWidth = input.shape[1];
     this.iouThreshold = config.iouThreshold;
     this.scoreThreshold = config.scoreThreshold;
     this.maxHands = config.maxHands;
     const resized = input.resizeBilinear([this.width, this.height]);
-    const divided = resized.div(255);
-    const normalized = divided.sub(0.5);
-    const image = normalized.mul(2.0);
+    const divided = resized.mul([1 / 127.5]);
+    const image = divided.sub(0.5);
     resized.dispose();
     divided.dispose();
-    normalized.dispose();
     const predictions = await this.getBoundingBoxes(image);
     image.dispose();
     if (!predictions || (predictions.length === 0)) return null;
     const hands = [];
     for (const i in predictions) {
       const prediction = predictions[i];
-      const boundingBoxes = await prediction.boxes.array();
-      const startPoint = boundingBoxes[0].slice(0, 2);
-      const endPoint = boundingBoxes[0].slice(2, 4);
-      const palmLandmarks = await prediction.palmLandmarks.array();
+      const boundingBoxes = prediction.boxes.dataSync();
+      const startPoint = [boundingBoxes[0], boundingBoxes[1]];
+      const endPoint = [boundingBoxes[2], boundingBoxes[3]];
+      const palmLandmarks = prediction.palmLandmarks.arraySync();
       prediction.boxes.dispose();
       prediction.palmLandmarks.dispose();
       hands.push(bounding.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks }, [input.shape[2] / this.width, input.shape[1] / this.height]));

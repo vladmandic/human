@@ -249,10 +249,13 @@ Configurtion object is large, but typically you only need to modify few values:
 config = {
   backend: 'webgl',          // select tfjs backend to use
   console: true,             // enable debugging output to console
-  profile: true,             // enable tfjs profiling
+  async: false,              // execute enabled models in parallel
+                             // this disables per-model performance data but slightly increases performance
+                             // cannot be used if profiling is enabled
+  profile: false,            // enable tfjs profiling
                              // this has significant performance impact, only enable for debugging purposes
                              // currently only implemented for age,gender,emotion models
-  deallocate: true,          // aggresively deallocate gpu memory after each usage
+  deallocate: false,         // aggresively deallocate gpu memory after each usage
                              // only valid for webgl backend and only during first call, cannot be changed unless library is reloaded
                              // this has significant performance impact, only enable on low-memory devices
   scoped: false,             // enable scoped runs

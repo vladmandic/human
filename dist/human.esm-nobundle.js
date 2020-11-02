@@ -109,14 +109,14 @@ var require_blazeface = __commonJS((exports) => {
         return [prediction, decodedBounds, scoresOut];
       });
       const boxIndicesTensor = await tf2.image.nonMaxSuppressionAsync(boxes, scores, this.maxFaces, this.iouThreshold, this.scoreThreshold);
-      const boxIndices = await boxIndicesTensor.array();
+      const boxIndices = boxIndicesTensor.arraySync();
       boxIndicesTensor.dispose();
       const boundingBoxesMap = boxIndices.map((boxIndex) => tf2.slice(boxes, [boxIndex, 0], [1, -1]));
-      const boundingBoxes = await Promise.all(boundingBoxesMap.map(async (boundingBox) => {
-        const vals = await boundingBox.array();
+      const boundingBoxes = boundingBoxesMap.map((boundingBox) => {
+        const vals = boundingBox.arraySync();
         boundingBox.dispose();
         return vals;
-      }));
+      });
       const annotatedBoxes = [];
       for (let i = 0; i < boundingBoxes.length; i++) {
         const boundingBox = boundingBoxes[i];
@@ -143,9 +143,12 @@ var require_blazeface = __commonJS((exports) => {
     }
     async estimateFaces(input) {
       const {boxes, scaleFactor} = await this.getBoundingBoxes(input);
-      return Promise.all(boxes.map(async (face) => {
+      const faces = [];
+      for (const face of boxes) {
+        const landmarkData = face.landmarks.arraySync();
         const scaledBox = scaleBoxFromPrediction(face, scaleFactor);
-        const [landmarkData, boxData, probabilityData] = await Promise.all([face.landmarks, scaledBox, face.probability].map(async (d) => d.array()));
+        const boxData = scaleBox.arraySync();
+        const probabilityData = face.probability.arraySync();
         const anchor = face.anchor;
         const [scaleFactorX, scaleFactorY] = scaleFactor;
         const scaledLandmarks = landmarkData.map((landmark) => [
@@ -162,8 +165,9 @@ var require_blazeface = __commonJS((exports) => {
         face.landmarks.dispose();
         face.probability.dispose();
         scaledBox.dispose();
-        return normalizedFace;
-      }));
+        faces.push(normalizedFace);
+      }
+      return faces;
     }
   }
   async function load(config) {
@@ -3916,7 +3920,7 @@ var require_ssrnet = __commonJS((exports) => {
     let ageT;
     let genderT;
     const obj = {};
-    if (!config.profile) {
+    if (!config.profile || config.async) {
       if (config.face.age.enabled)
         promises.push(ageT = models.age.predict(enhance));
       if (config.face.gender.enabled)
@@ -3933,12 +3937,12 @@ var require_ssrnet = __commonJS((exports) => {
       profile2.run("gender", profileGender);
     }
     if (ageT) {
-      const data = await ageT.data();
+      const data = ageT.dataSync();
       obj.age = Math.trunc(10 * data[0]) / 10;
       tf2.dispose(ageT);
     }
     if (genderT) {
-      const data = await genderT.data();
+      const data = genderT.dataSync();
       const confidence = Math.trunc(Math.abs(1.9 * 100 * (data[0] - 0.5))) / 100;
       if (confidence > config.face.gender.minConfidence) {
         obj.gender = data[0] <= 0.5 ? "female" : "male";
@@ -3993,11 +3997,11 @@ var require_emotion = __commonJS((exports) => {
       let data;
       if (!config.profile) {
         const emotionT = await models.emotion.predict(grayscale);
-        data = await emotionT.data();
+        data = emotionT.dataSync();
         tf2.dispose(emotionT);
       } else {
         const profileData = await tf2.profile(() => models.emotion.predict(grayscale));
-        data = await profileData.result.data();
+        data = profileData.result.dataSync();
         profileData.result.dispose();
         profile2.run("emotion", profileData);
       }
@@ -4580,10 +4584,7 @@ var require_box2 = __commonJS((exports) => {
   function scaleBoxCoordinates(box, factor) {
     const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
     const endPoint = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]];
-    const palmLandmarks = box.palmLandmarks.map((coord) => {
-      const scaledCoord = [coord[0] * factor[0], coord[1] * factor[1]];
-      return scaledCoord;
-    });
+    const palmLandmarks = box.palmLandmarks.map((coord) => [coord[0] * factor[0], coord[1] * factor[1]]);
     return {startPoint, endPoint, palmLandmarks};
   }
   exports.scaleBoxCoordinates = scaleBoxCoordinates;
@@ -4657,8 +4658,7 @@ var require_handdetector = __commonJS((exports) => {
       const rawBoxes = tf2.slice(prediction, [0, 1], [-1, 4]);
       const boxes = this.normalizeBoxes(rawBoxes);
       const boxesWithHandsTensor = await tf2.image.nonMaxSuppressionAsync(boxes, scores, this.maxHands, this.iouThreshold, this.scoreThreshold);
-      const boxesWithHands = await boxesWithHandsTensor.array();
-      const toDispose = [batchedPrediction, boxesWithHandsTensor, prediction, boxes, rawBoxes, scores];
+      const boxesWithHands = boxesWithHandsTensor.arraySync();
       const detectedHands = tf2.tidy(() => {
         const detectedBoxes = [];
         for (const i in boxesWithHands) {
@@ -4670,7 +4670,7 @@ var require_handdetector = __commonJS((exports) => {
         }
         return detectedBoxes;
       });
-      toDispose.forEach((tensor) => tensor.dispose());
+      [batchedPrediction, boxesWithHandsTensor, prediction, boxes, rawBoxes, scores].forEach((tensor) => tensor.dispose());
       return detectedHands;
     }
     async estimateHandBounds(input, config) {
@@ -4678,12 +4678,10 @@ var require_handdetector = __commonJS((exports) => {
       this.scoreThreshold = config.scoreThreshold;
       this.maxHands = config.maxHands;
       const resized = input.resizeBilinear([this.width, this.height]);
-      const divided = resized.div(255);
-      const normalized = divided.sub(0.5);
-      const image = normalized.mul(2);
+      const divided = resized.mul([1 / 127.5]);
+      const image = divided.sub(0.5);
       resized.dispose();
       divided.dispose();
-      normalized.dispose();
       const predictions = await this.getBoundingBoxes(image);
       image.dispose();
       if (!predictions || predictions.length === 0)
@@ -4691,10 +4689,10 @@ var require_handdetector = __commonJS((exports) => {
       const hands = [];
       for (const i in predictions) {
         const prediction = predictions[i];
-        const boundingBoxes = await prediction.boxes.array();
-        const startPoint = boundingBoxes[0].slice(0, 2);
-        const endPoint = boundingBoxes[0].slice(2, 4);
-        const palmLandmarks = await prediction.palmLandmarks.array();
+        const boundingBoxes = prediction.boxes.dataSync();
+        const startPoint = [boundingBoxes[0], boundingBoxes[1]];
+        const endPoint = [boundingBoxes[2], boundingBoxes[3]];
+        const palmLandmarks = prediction.palmLandmarks.arraySync();
         prediction.boxes.dispose();
         prediction.palmLandmarks.dispose();
         hands.push(bounding.scaleBoxCoordinates({startPoint, endPoint, palmLandmarks}, [input.shape[2] / this.width, input.shape[1] / this.height]));
@@ -4802,11 +4800,11 @@ var require_pipeline2 = __commonJS((exports) => {
   const PALM_LANDMARKS_INDEX_OF_PALM_BASE = 0;
   const PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
   class HandPipeline {
-    constructor(boundingBoxDetector, meshDetector, config) {
+    constructor(boundingBoxDetector, detector, config) {
       this.regionsOfInterest = [];
       this.runsWithoutHandDetector = 0;
       this.boundingBoxDetector = boundingBoxDetector;
-      this.meshDetector = meshDetector;
+      this.detector = detector;
       this.meshWidth = config.inputSize;
       this.meshHeight = config.inputSize;
       this.enlargeFactor = config.enlargeFactor;
@@ -4872,7 +4870,7 @@ var require_pipeline2 = __commonJS((exports) => {
       if (!this.regionsOfInterest)
         return hands;
       for (const i in this.regionsOfInterest) {
-        const currentBox = this.regionsOfInterest[i][0];
+        const currentBox = this.regionsOfInterest[i] ? this.regionsOfInterest[i][0] : null;
         if (!currentBox)
           return hands;
         const angle = util.computeRotation(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]);
@@ -4885,18 +4883,18 @@ var require_pipeline2 = __commonJS((exports) => {
         const handImage = croppedInput.div(255);
         croppedInput.dispose();
         rotatedImage.dispose();
-        const prediction = this.meshDetector.predict(handImage);
-        const [flag, keypoints] = prediction;
+        const prediction = this.detector.predict(handImage);
+        const [confidence, keypoints] = prediction;
         handImage.dispose();
-        const flagValue = flag.dataSync()[0];
-        flag.dispose();
-        if (flagValue < config.minConfidence) {
+        const confidenceVal = confidence.dataSync()[0];
+        confidence.dispose();
+        if (confidenceVal < config.minConfidence) {
           keypoints.dispose();
           this.regionsOfInterest[i] = [];
           return hands;
         }
         const keypointsReshaped = tf2.reshape(keypoints, [-1, 3]);
-        const rawCoords = await keypointsReshaped.array();
+        const rawCoords = keypointsReshaped.arraySync();
         keypoints.dispose();
         keypointsReshaped.dispose();
         const coords = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
@@ -4904,7 +4902,7 @@ var require_pipeline2 = __commonJS((exports) => {
         this.updateRegionsOfInterest(nextBoundingBox, false, i);
         const result = {
           landmarks: coords,
-          confidence: flagValue,
+          confidence: confidenceVal,
           box: {
             topLeft: nextBoundingBox.startPoint,
             bottomRight: nextBoundingBox.endPoint
@@ -5729,6 +5727,7 @@ var require_config = __commonJS((exports) => {
   var config_default = {
     backend: "webgl",
     console: true,
+    async: false,
     profile: false,
     deallocate: false,
     scoped: false,
@@ -5947,10 +5946,12 @@ class Human {
     this.version = app.version;
     this.defaults = defaults;
     this.config = defaults;
-    this.fx = tf.ENV.flags.IS_BROWSER && typeof document !== "undefined" ? new fxImage.Canvas() : null;
+    this.fx = null;
     this.state = "idle";
     this.numTensors = 0;
     this.analyzeMemoryLeaks = false;
+    this.inCanvas = null;
+    this.outCanvas = null;
     this.models = {
       facemesh: null,
       posenet: null,
@@ -6027,12 +6028,14 @@ class Human {
     }
   }
   tfImage(input) {
-    let filtered;
-    const originalWidth = input.naturalWidth || input.videoWidth || input.width || input.shape && input.shape[1] > 0;
-    const originalHeight = input.naturalHeight || input.videoHeight || input.height || input.shape && input.shape[2] > 0;
-    let targetWidth = originalWidth;
-    let targetHeight = originalHeight;
-    if (this.fx && this.config.filter.enabled && !(input instanceof tf.Tensor)) {
+    let tensor;
+    if (input instanceof tf.Tensor) {
+      tensor = tf.clone(input);
+    } else {
+      const originalWidth = input.naturalWidth || input.videoWidth || input.width || input.shape && input.shape[1] > 0;
+      const originalHeight = input.naturalHeight || input.videoHeight || input.height || input.shape && input.shape[2] > 0;
+      let targetWidth = originalWidth;
+      let targetHeight = originalHeight;
       if (this.config.filter.width > 0)
         targetWidth = this.config.filter.width;
       else if (this.config.filter.height > 0)
@@ -6041,60 +6044,69 @@ class Human {
         targetHeight = this.config.filter.height;
       else if (this.config.filter.width > 0)
         targetHeight = originalHeight * (this.config.filter.width / originalWidth);
-      const offscreenCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
-      if (offscreenCanvas.width !== targetWidth)
-        offscreenCanvas.width = targetWidth;
-      if (offscreenCanvas.height !== targetHeight)
-        offscreenCanvas.height = targetHeight;
-      const ctx = offscreenCanvas.getContext("2d");
+      if (!this.inCanvas || this.inCanvas.width !== originalWidth || this.inCanvas.height !== originalHeight) {
+        this.inCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
+        if (this.inCanvas.width !== targetWidth)
+          this.inCanvas.width = targetWidth;
+        if (this.inCanvas.height !== targetHeight)
+          this.inCanvas.height = targetHeight;
+      }
+      const ctx = this.inCanvas.getContext("2d");
       if (input instanceof ImageData)
         ctx.putImageData(input, 0, 0);
       else
-        ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
-      this.fx.reset();
-      this.fx.addFilter("brightness", this.config.filter.brightness);
-      if (this.config.filter.contrast !== 0)
-        this.fx.addFilter("contrast", this.config.filter.contrast);
-      if (this.config.filter.sharpness !== 0)
-        this.fx.addFilter("sharpen", this.config.filter.sharpness);
-      if (this.config.filter.blur !== 0)
-        this.fx.addFilter("blur", this.config.filter.blur);
-      if (this.config.filter.saturation !== 0)
-        this.fx.addFilter("saturation", this.config.filter.saturation);
-      if (this.config.filter.hue !== 0)
-        this.fx.addFilter("hue", this.config.filter.hue);
-      if (this.config.filter.negative)
-        this.fx.addFilter("negative");
-      if (this.config.filter.sepia)
-        this.fx.addFilter("sepia");
-      if (this.config.filter.vintage)
-        this.fx.addFilter("brownie");
-      if (this.config.filter.sepia)
-        this.fx.addFilter("sepia");
-      if (this.config.filter.kodachrome)
-        this.fx.addFilter("kodachrome");
-      if (this.config.filter.technicolor)
-        this.fx.addFilter("technicolor");
-      if (this.config.filter.polaroid)
-        this.fx.addFilter("polaroid");
-      if (this.config.filter.pixelate !== 0)
-        this.fx.addFilter("pixelate", this.config.filter.pixelate);
-      filtered = this.fx.apply(offscreenCanvas);
-    }
-    let tensor;
-    if (input instanceof tf.Tensor) {
-      tensor = tf.clone(input);
-    } else {
-      const canvas = filtered || input;
+        ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, this.inCanvas.width, this.inCanvas.height);
+      if (this.config.filter.enabled) {
+        if (!this.outCanvas || this.inCanvas.width !== this.outCanvas.width || this.inCanvas.height !== this.outCanvas.height) {
+          this.outCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(this.inCanvas.width, this.inCanvas.height) : document.createElement("canvas");
+          if (this.outCanvas.width !== this.inCanvas.width)
+            this.outCanvas.width = this.inCanvas.width;
+          if (this.outCanvas.height !== this.inCanvas.height)
+            this.outCanvas.height = this.inCanvas.height;
+        }
+        if (!this.fx)
+          this.fx = tf.ENV.flags.IS_BROWSER && typeof document !== "undefined" ? new fxImage.Canvas({canvas: this.outCanvas}) : null;
+        this.fx.reset();
+        this.fx.addFilter("brightness", this.config.filter.brightness);
+        if (this.config.filter.contrast !== 0)
+          this.fx.addFilter("contrast", this.config.filter.contrast);
+        if (this.config.filter.sharpness !== 0)
+          this.fx.addFilter("sharpen", this.config.filter.sharpness);
+        if (this.config.filter.blur !== 0)
+          this.fx.addFilter("blur", this.config.filter.blur);
+        if (this.config.filter.saturation !== 0)
+          this.fx.addFilter("saturation", this.config.filter.saturation);
+        if (this.config.filter.hue !== 0)
+          this.fx.addFilter("hue", this.config.filter.hue);
+        if (this.config.filter.negative)
+          this.fx.addFilter("negative");
+        if (this.config.filter.sepia)
+          this.fx.addFilter("sepia");
+        if (this.config.filter.vintage)
+          this.fx.addFilter("brownie");
+        if (this.config.filter.sepia)
+          this.fx.addFilter("sepia");
+        if (this.config.filter.kodachrome)
+          this.fx.addFilter("kodachrome");
+        if (this.config.filter.technicolor)
+          this.fx.addFilter("technicolor");
+        if (this.config.filter.polaroid)
+          this.fx.addFilter("polaroid");
+        if (this.config.filter.pixelate !== 0)
+          this.fx.addFilter("pixelate", this.config.filter.pixelate);
+        this.fx.apply(this.inCanvas);
+      }
+      if (!this.outCanvas)
+        this.outCanvas = this.inCanvas;
       let pixels;
-      if (this.config.backend === "webgl" || canvas instanceof ImageData) {
-        pixels = tf.browser.fromPixels(canvas);
+      if (this.config.backend === "webgl" || this.outCanvas instanceof ImageData) {
+        pixels = tf.browser.fromPixels(this.outCanvas);
       } else {
         const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
         tempCanvas.width = targetWidth;
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext("2d");
-        tempCtx.drawImage(canvas, 0, 0);
+        tempCtx.drawImage(this.outCanvas, 0, 0);
         const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
         pixels = tf.browser.fromPixels(data);
       }
@@ -6103,7 +6115,7 @@ class Human {
       pixels.dispose();
       casted.dispose();
     }
-    return {tensor, canvas: this.config.filter.return ? filtered : null};
+    return {tensor, canvas: this.config.filter.return ? this.outCanvas : null};
   }
   async detect(input, userConfig = {}) {
     this.state = "config";
@@ -6119,6 +6131,10 @@ class Human {
       return {error};
     }
     return new Promise(async (resolve) => {
+      let poseRes;
+      let handRes;
+      let ssrRes;
+      let emotionRes;
       const timeStart = now();
       timeStamp = now();
       await this.checkBackend();
@@ -6140,18 +6156,28 @@ class Human {
       const image = this.tfImage(input);
       perf.image = Math.trunc(now() - timeStamp);
       const imageTensor = image.tensor;
-      this.state = "run:body";
-      timeStamp = now();
-      this.analyze("Start PoseNet");
-      const poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(imageTensor, this.config.body) : [];
-      this.analyze("End PoseNet:");
-      perf.body = Math.trunc(now() - timeStamp);
-      this.state = "run:hand";
-      timeStamp = now();
-      this.analyze("Start HandPose:");
-      const handRes = this.config.hand.enabled ? await this.models.handpose.estimateHands(imageTensor, this.config.hand) : [];
-      this.analyze("End HandPose:");
-      perf.hand = Math.trunc(now() - timeStamp);
+      if (this.config.async) {
+        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(imageTensor, this.config.body) : [];
+      } else {
+        this.state = "run:body";
+        timeStamp = now();
+        this.analyze("Start PoseNet");
+        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(imageTensor, this.config.body) : [];
+        this.analyze("End PoseNet:");
+        perf.body = Math.trunc(now() - timeStamp);
+      }
+      if (this.config.async) {
+        handRes = this.config.hand.enabled ? this.models.handpose.estimateHands(imageTensor, this.config.hand) : [];
+      } else {
+        this.state = "run:hand";
+        timeStamp = now();
+        this.analyze("Start HandPose:");
+        handRes = this.config.hand.enabled ? await this.models.handpose.estimateHands(imageTensor, this.config.hand) : [];
+        this.analyze("End HandPose:");
+        perf.hand = Math.trunc(now() - timeStamp);
+      }
+      if (this.config.async)
+        [poseRes, handRes] = await Promise.all([poseRes, handRes]);
       const faceRes = [];
       if (this.config.face.enabled) {
         this.state = "run:face";
@@ -6166,11 +6192,11 @@ class Human {
           }
           this.state = "run:agegender";
           timeStamp = now();
-          const ssrData = this.config.face.age.enabled || this.config.face.gender.enabled ? await ssrnet.predict(face.image, this.config) : {};
+          ssrRes = this.config.face.age.enabled || this.config.face.gender.enabled ? await ssrnet.predict(face.image, this.config) : {};
           perf.agegender = Math.trunc(now() - timeStamp);
           this.state = "run:emotion";
           timeStamp = now();
-          const emotionData = this.config.face.emotion.enabled ? await emotion.predict(face.image, this.config) : {};
+          emotionRes = this.config.face.emotion.enabled ? await emotion.predict(face.image, this.config) : {};
           perf.emotion = Math.trunc(now() - timeStamp);
           face.image.dispose();
           const iris = face.annotations.leftEyeIris && face.annotations.rightEyeIris ? Math.max(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0], face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0]) : 0;
@@ -6179,10 +6205,10 @@ class Human {
             box: face.box,
             mesh: face.mesh,
             annotations: face.annotations,
-            age: ssrData.age,
-            gender: ssrData.gender,
-            agConfidence: ssrData.confidence,
-            emotion: emotionData,
+            age: ssrRes.age,
+            gender: ssrRes.gender,
+            agConfidence: ssrRes.confidence,
+            emotion: emotionRes,
             iris: iris !== 0 ? Math.trunc(100 * 11.7 / iris) / 100 : 0
           });
           this.analyze("End FaceMesh:");

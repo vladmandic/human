@@ -90,14 +90,18 @@ const log = (...msg) => {
 
 // draws processed results and starts processing of a next frame
 function drawResults(input, result, canvas) {
-  // update fps
+  // update fps data
   fps.push(1000 / (performance.now() - timeStamp));
   if (fps.length > ui.maxFrames) fps.shift();
-  menu.updateChart('FPS', fps);
+
+  // enable for continous performance monitoring
+  // console.log(result.performance);
 
   // eslint-disable-next-line no-use-before-define
-  requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop
+  requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop before we even draw results
 
+  // draw fps chart
+  menu.updateChart('FPS', fps);
   // draw image from video
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = ui.baseBackground;

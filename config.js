@@ -4,6 +4,9 @@
 export default {
   backend: 'webgl',          // select tfjs backend to use
   console: true,             // enable debugging output to console
+  async: false,               // execute enabled models in parallel
+                             // this disables per-model performance data but slightly increases performance
+                             // cannot be used if profiling is enabled
   profile: false,            // enable tfjs profiling
                              // this has significant performance impact, only enable for debugging purposes
                              // currently only implemented for age,gender,emotion models

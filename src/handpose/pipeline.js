@@ -12,11 +12,11 @@ const PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
 
 // The Pipeline coordinates between the bounding box and skeleton models.
 class HandPipeline {
-  constructor(boundingBoxDetector, meshDetector, config) {
+  constructor(boundingBoxDetector, detector, config) {
     this.regionsOfInterest = [];
     this.runsWithoutHandDetector = 0;
     this.boundingBoxDetector = boundingBoxDetector;
-    this.meshDetector = meshDetector;
+    this.detector = detector;
     this.meshWidth = config.inputSize;
     this.meshHeight = config.inputSize;
     this.enlargeFactor = config.enlargeFactor;
@@ -93,7 +93,7 @@ class HandPipeline {
     const hands = [];
     if (!this.regionsOfInterest) return hands;
     for (const i in this.regionsOfInterest) {
-      const currentBox = this.regionsOfInterest[i][0];
+      const currentBox = this.regionsOfInterest[i] ? this.regionsOfInterest[i][0] : null;
       if (!currentBox) return hands;
       const angle = util.computeRotation(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]);
       const palmCenter = bounding.getBoxCenter(currentBox);
@@ -105,18 +105,18 @@ class HandPipeline {
       const handImage = croppedInput.div(255);
       croppedInput.dispose();
       rotatedImage.dispose();
-      const prediction = this.meshDetector.predict(handImage);
-      const [flag, keypoints] = prediction;
+      const prediction = this.detector.predict(handImage);
+      const [confidence, keypoints] = prediction;
       handImage.dispose();
-      const flagValue = flag.dataSync()[0];
-      flag.dispose();
-      if (flagValue < config.minConfidence) {
+      const confidenceVal = confidence.dataSync()[0];
+      confidence.dispose();
+      if (confidenceVal < config.minConfidence) {
         keypoints.dispose();
         this.regionsOfInterest[i] = [];
         return hands;
       }
       const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
-      const rawCoords = await keypointsReshaped.array();
+      const rawCoords = keypointsReshaped.arraySync();
       keypoints.dispose();
       keypointsReshaped.dispose();
       const coords = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
@@ -124,7 +124,7 @@ class HandPipeline {
       this.updateRegionsOfInterest(nextBoundingBox, false /* force replace */, i);
       const result = {
         landmarks: coords,
-        confidence: flagValue,
+        confidence: confidenceVal,
         box: {
           topLeft: nextBoundingBox.startPoint,
           bottomRight: nextBoundingBox.endPoint,

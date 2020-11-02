@@ -103,14 +103,15 @@ class BlazeFaceModel {
       return [prediction, decodedBounds, scoresOut];
     });
     const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.maxFaces, this.iouThreshold, this.scoreThreshold);
-    const boxIndices = await boxIndicesTensor.array();
+    const boxIndices = boxIndicesTensor.arraySync();
     boxIndicesTensor.dispose();
     const boundingBoxesMap = boxIndices.map((boxIndex) => tf.slice(boxes, [boxIndex, 0], [1, -1]));
-    const boundingBoxes = await Promise.all(boundingBoxesMap.map(async (boundingBox) => {
-      const vals = await boundingBox.array();
+    const boundingBoxes = boundingBoxesMap.map((boundingBox) => {
+      const vals = boundingBox.arraySync();
       boundingBox.dispose();
       return vals;
-    }));
+    });
+
     const annotatedBoxes = [];
     for (let i = 0; i < boundingBoxes.length; i++) {
       const boundingBox = boundingBoxes[i];
@@ -120,12 +121,6 @@ class BlazeFaceModel {
       const sliced = tf.slice(detectedOutputs, [boxIndex, NUM_LANDMARKS - 1], [1, -1]);
       const squeezed = sliced.squeeze();
       const landmarks = squeezed.reshape([NUM_LANDMARKS, -1]);
-      /*
-      const landmarks = tf
-        .slice(detectedOutputs, [boxIndex, NUM_LANDMARKS - 1], [1, -1])
-        .squeeze()
-        .reshape([NUM_LANDMARKS, -1]);
-      */
       const probability = tf.slice(scores, [boxIndex], [1]);
       const annotatedBox = { box, landmarks, probability, anchor };
       annotatedBoxes.push(annotatedBox);
@@ -145,9 +140,12 @@ class BlazeFaceModel {
 
   async estimateFaces(input) {
     const { boxes, scaleFactor } = await this.getBoundingBoxes(input);
-    return Promise.all(boxes.map(async (face) => {
+    const faces = [];
+    for (const face of boxes) {
+      const landmarkData = face.landmarks.arraySync();
       const scaledBox = scaleBoxFromPrediction(face, scaleFactor);
-      const [landmarkData, boxData, probabilityData] = await Promise.all([face.landmarks, scaledBox, face.probability].map(async (d) => d.array()));
+      const boxData = scaleBox.arraySync();
+      const probabilityData = face.probability.arraySync();
       const anchor = face.anchor;
       const [scaleFactorX, scaleFactorY] = scaleFactor;
       const scaledLandmarks = landmarkData
@@ -165,8 +163,9 @@ class BlazeFaceModel {
       face.landmarks.dispose();
       face.probability.dispose();
       scaledBox.dispose();
-      return normalizedFace;
-    }));
+      faces.push(normalizedFace);
+    }
+    return faces;
   }
 }
 

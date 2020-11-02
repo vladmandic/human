@@ -30,7 +30,7 @@ async function predict(image, config) {
   let genderT;
   const obj = {};
 
-  if (!config.profile) {
+  if (!config.profile || config.async) {
     if (config.face.age.enabled) promises.push(ageT = models.age.predict(enhance));
     if (config.face.gender.enabled) promises.push(genderT = models.gender.predict(enhance));
     await Promise.all(promises);
@@ -46,12 +46,12 @@ async function predict(image, config) {
   }
 
   if (ageT) {
-    const data = await ageT.data();
+    const data = ageT.dataSync();
     obj.age = Math.trunc(10 * data[0]) / 10;
     tf.dispose(ageT);
   }
   if (genderT) {
-    const data = await genderT.data();
+    const data = genderT.dataSync();
     const confidence = Math.trunc(Math.abs(1.9 * 100 * (data[0] - 0.5))) / 100;
     if (confidence > config.face.gender.minConfidence) {
       obj.gender = data[0] <= 0.5 ? 'female' : 'male';

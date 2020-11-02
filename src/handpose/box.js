@@ -30,10 +30,7 @@ exports.cutBoxFromImageAndResize = cutBoxFromImageAndResize;
 function scaleBoxCoordinates(box, factor) {
   const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
   const endPoint = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]];
-  const palmLandmarks = box.palmLandmarks.map((coord) => {
-    const scaledCoord = [coord[0] * factor[0], coord[1] * factor[1]];
-    return scaledCoord;
-  });
+  const palmLandmarks = box.palmLandmarks.map((coord) => [coord[0] * factor[0], coord[1] * factor[1]]);
   return { startPoint, endPoint, palmLandmarks };
 }
 exports.scaleBoxCoordinates = scaleBoxCoordinates;

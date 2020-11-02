@@ -37,11 +37,11 @@ async function predict(image, config) {
     let data;
     if (!config.profile) {
       const emotionT = await models.emotion.predict(grayscale);
-      data = await emotionT.data();
+      data = emotionT.dataSync();
       tf.dispose(emotionT);
     } else {
       const profileData = await tf.profile(() => models.emotion.predict(grayscale));
-      data = await profileData.result.data();
+      data = profileData.result.dataSync();
       profileData.result.dispose();
       profile.run('emotion', profileData);
     }

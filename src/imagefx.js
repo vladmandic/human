@@ -1,13 +1,8 @@
-/* eslint-disable no-shadow */
-/* eslint-disable prefer-rest-params */
-/* eslint-disable no-sequences */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-multi-assign */
 /* eslint-disable no-use-before-define */
 /*
 WebGLImageFilter - MIT Licensed
 2013, Dominic Szablewski - phoboslab.org
+<https://github.com/phoboslab/WebGLImageFilter>
 */
 
 const WebGLProgram = function (gl, vertexSource, fragmentSource) {
@@ -19,7 +14,7 @@ const WebGLProgram = function (gl, vertexSource, fragmentSource) {
     });
   };
 
-  const _compile = function (gl, source, type) {
+  const _compile = function (source, type) {
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
@@ -33,8 +28,8 @@ const WebGLProgram = function (gl, vertexSource, fragmentSource) {
   this.uniform = {};
   this.attribute = {};
 
-  const _vsh = _compile(gl, vertexSource, gl.VERTEX_SHADER);
-  const _fsh = _compile(gl, fragmentSource, gl.FRAGMENT_SHADER);
+  const _vsh = _compile(vertexSource, gl.VERTEX_SHADER);
+  const _fsh = _compile(fragmentSource, gl.FRAGMENT_SHADER);
 
   this.id = gl.createProgram();
   gl.attachShader(this.id, _vsh);
@@ -82,6 +77,7 @@ const WebGLImageFilter = function (params) {
   if (!gl) throw new Error('Filter: getContext() failed');
 
   this.addFilter = function (name) {
+    // eslint-disable-next-line prefer-rest-params
     const args = Array.prototype.slice.call(arguments, 1);
     const filter = _filter[name];
 
@@ -107,7 +103,7 @@ const WebGLImageFilter = function (params) {
 
     // No filters? Just draw
     if (_filterChain.length === 0) {
-      const program = _compileShader(SHADER.FRAGMENT_IDENTITY);
+      // const program = _compileShader(SHADER.FRAGMENT_IDENTITY);
       _draw();
       return _canvas;
     }
@@ -125,8 +121,10 @@ const WebGLImageFilter = function (params) {
     // Same width/height? Nothing to do here
     if (width === _width && height === _height) { return; }
 
-    _canvas.width = _width = width;
-    _canvas.height = _height = height;
+    _canvas.width = width;
+    _width = width;
+    _canvas.height = height;
+    _height = height;
 
     // Create the context if we don't have it yet
     if (!_vertexBuffer) {
@@ -135,8 +133,8 @@ const WebGLImageFilter = function (params) {
         -1, -1, 0, 1, 1, -1, 1, 1, -1, 1, 0, 0,
         -1, 1, 0, 0, 1, -1, 1, 1, 1, 1, 1, 0,
       ]);
-      _vertexBuffer = gl.createBuffer(),
-      gl.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+      // eslint-disable-next-line no-unused-expressions
+      (_vertexBuffer = gl.createBuffer(), gl.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer));
       gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 
       // Note sure if this is a good idea; at least it makes texture loading

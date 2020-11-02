@@ -61,10 +61,13 @@ class Human {
     this.version = app.version;
     this.defaults = defaults;
     this.config = defaults;
-    this.fx = (tf.ENV.flags.IS_BROWSER && (typeof document !== 'undefined')) ? new fxImage.Canvas() : null;
+    this.fx = null;
     this.state = 'idle';
     this.numTensors = 0;
     this.analyzeMemoryLeaks = false;
+    // internal temp canvases
+    this.inCanvas = null;
+    this.outCanvas = null;
     // object that contains all initialized models
     this.models = {
       facemesh: null,
@@ -160,56 +163,62 @@ class Human {
   }
 
   tfImage(input) {
-    // let imageData;
-    let filtered;
-    const originalWidth = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
-    const originalHeight = input.naturalHeight || input.videoHeight || input.height || (input.shape && (input.shape[2] > 0));
-    let targetWidth = originalWidth;
-    let targetHeight = originalHeight;
-    if (this.fx && this.config.filter.enabled && !(input instanceof tf.Tensor)) {
-      if (this.config.filter.width > 0) targetWidth = this.config.filter.width;
-      else if (this.config.filter.height > 0) targetWidth = originalWidth * (this.config.filter.height / originalHeight);
-      if (this.config.filter.height > 0) targetHeight = this.config.filter.height;
-      else if (this.config.filter.width > 0) targetHeight = originalHeight * (this.config.filter.width / originalWidth);
-      const offscreenCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
-      if (offscreenCanvas.width !== targetWidth) offscreenCanvas.width = targetWidth;
-      if (offscreenCanvas.height !== targetHeight) offscreenCanvas.height = targetHeight;
-      const ctx = offscreenCanvas.getContext('2d');
-      if (input instanceof ImageData) ctx.putImageData(input, 0, 0);
-      else ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
-      this.fx.reset();
-      this.fx.addFilter('brightness', this.config.filter.brightness); // must have at least one filter enabled
-      if (this.config.filter.contrast !== 0) this.fx.addFilter('contrast', this.config.filter.contrast);
-      if (this.config.filter.sharpness !== 0) this.fx.addFilter('sharpen', this.config.filter.sharpness);
-      if (this.config.filter.blur !== 0) this.fx.addFilter('blur', this.config.filter.blur);
-      if (this.config.filter.saturation !== 0) this.fx.addFilter('saturation', this.config.filter.saturation);
-      if (this.config.filter.hue !== 0) this.fx.addFilter('hue', this.config.filter.hue);
-      if (this.config.filter.negative) this.fx.addFilter('negative');
-      if (this.config.filter.sepia) this.fx.addFilter('sepia');
-      if (this.config.filter.vintage) this.fx.addFilter('brownie');
-      if (this.config.filter.sepia) this.fx.addFilter('sepia');
-      if (this.config.filter.kodachrome) this.fx.addFilter('kodachrome');
-      if (this.config.filter.technicolor) this.fx.addFilter('technicolor');
-      if (this.config.filter.polaroid) this.fx.addFilter('polaroid');
-      if (this.config.filter.pixelate !== 0) this.fx.addFilter('pixelate', this.config.filter.pixelate);
-      filtered = this.fx.apply(offscreenCanvas);
-    }
     let tensor;
     if (input instanceof tf.Tensor) {
       tensor = tf.clone(input);
     } else {
-      const canvas = filtered || input;
+      const originalWidth = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
+      const originalHeight = input.naturalHeight || input.videoHeight || input.height || (input.shape && (input.shape[2] > 0));
+      let targetWidth = originalWidth;
+      let targetHeight = originalHeight;
+      if (this.config.filter.width > 0) targetWidth = this.config.filter.width;
+      else if (this.config.filter.height > 0) targetWidth = originalWidth * (this.config.filter.height / originalHeight);
+      if (this.config.filter.height > 0) targetHeight = this.config.filter.height;
+      else if (this.config.filter.width > 0) targetHeight = originalHeight * (this.config.filter.width / originalWidth);
+      if (!this.inCanvas || (this.inCanvas.width !== originalWidth) || (this.inCanvas.height !== originalHeight)) {
+        this.inCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
+        if (this.inCanvas.width !== targetWidth) this.inCanvas.width = targetWidth;
+        if (this.inCanvas.height !== targetHeight) this.inCanvas.height = targetHeight;
+      }
+      const ctx = this.inCanvas.getContext('2d');
+      if (input instanceof ImageData) ctx.putImageData(input, 0, 0);
+      else ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, this.inCanvas.width, this.inCanvas.height);
+      if (this.config.filter.enabled) {
+        if (!this.outCanvas || (this.inCanvas.width !== this.outCanvas.width) || (this.inCanvas.height !== this.outCanvas.height)) {
+          this.outCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(this.inCanvas.width, this.inCanvas.height) : document.createElement('canvas');
+          if (this.outCanvas.width !== this.inCanvas.width) this.outCanvas.width = this.inCanvas.width;
+          if (this.outCanvas.height !== this.inCanvas.height) this.outCanvas.height = this.inCanvas.height;
+        }
+        if (!this.fx) this.fx = (tf.ENV.flags.IS_BROWSER && (typeof document !== 'undefined')) ? new fxImage.Canvas({ canvas: this.outCanvas }) : null;
+        this.fx.reset();
+        this.fx.addFilter('brightness', this.config.filter.brightness); // must have at least one filter enabled
+        if (this.config.filter.contrast !== 0) this.fx.addFilter('contrast', this.config.filter.contrast);
+        if (this.config.filter.sharpness !== 0) this.fx.addFilter('sharpen', this.config.filter.sharpness);
+        if (this.config.filter.blur !== 0) this.fx.addFilter('blur', this.config.filter.blur);
+        if (this.config.filter.saturation !== 0) this.fx.addFilter('saturation', this.config.filter.saturation);
+        if (this.config.filter.hue !== 0) this.fx.addFilter('hue', this.config.filter.hue);
+        if (this.config.filter.negative) this.fx.addFilter('negative');
+        if (this.config.filter.sepia) this.fx.addFilter('sepia');
+        if (this.config.filter.vintage) this.fx.addFilter('brownie');
+        if (this.config.filter.sepia) this.fx.addFilter('sepia');
+        if (this.config.filter.kodachrome) this.fx.addFilter('kodachrome');
+        if (this.config.filter.technicolor) this.fx.addFilter('technicolor');
+        if (this.config.filter.polaroid) this.fx.addFilter('polaroid');
+        if (this.config.filter.pixelate !== 0) this.fx.addFilter('pixelate', this.config.filter.pixelate);
+        this.outCanvas = this.fx.apply(this.inCanvas);
+      }
+      if (!this.outCanvas) this.outCanvas = this.inCanvas;
       let pixels;
-      if ((this.config.backend === 'webgl') || (canvas instanceof ImageData)) {
+      if ((this.config.backend === 'webgl') || (this.outCanvas instanceof ImageData)) {
         // tf kernel-optimized method to get imagedata, also if input is imagedata, just use it
-        pixels = tf.browser.fromPixels(canvas);
+        pixels = tf.browser.fromPixels(this.outCanvas);
       } else {
         // cpu and wasm kernel does not implement efficient fromPixels method nor we can use canvas as-is, so we do a silly one more canvas
         const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
         tempCanvas.width = targetWidth;
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(canvas, 0, 0);
+        tempCtx.drawImage(this.outCanvas, 0, 0);
         const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
         pixels = tf.browser.fromPixels(data);
       }
@@ -218,7 +227,7 @@ class Human {
       pixels.dispose();
       casted.dispose();
     }
-    return { tensor, canvas: this.config.filter.return ? filtered : null };
+    return { tensor, canvas: this.config.filter.return ? this.outCanvas : null };
   }
 
   async detect(input, userConfig = {}) {

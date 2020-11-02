@@ -407,8 +407,8 @@ result = {
     }
   ],
   performance = {  // performance data of last execution for each module measuredin miliseconds
-    backend,       // time to initialize tf backend
-    load,          // time to load models
+    backend,       // time to initialize tf backend, valid only during backend startup
+    load,          // time to load models, valid only during model load
     image,         // time for image processing
     body,          // model time
     hand,          // model time

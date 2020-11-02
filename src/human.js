@@ -172,8 +172,8 @@ class Human {
       if (this.config.filter.height > 0) targetHeight = this.config.filter.height;
       else if (this.config.filter.width > 0) targetHeight = originalHeight * (this.config.filter.width / originalWidth);
       const offscreenCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
-      offscreenCanvas.width = targetWidth;
-      offscreenCanvas.height = targetHeight;
+      if (offscreenCanvas.width !== targetWidth) offscreenCanvas.width = targetWidth;
+      if (offscreenCanvas.height !== targetHeight) offscreenCanvas.height = targetHeight;
       const ctx = offscreenCanvas.getContext('2d');
       if (input instanceof ImageData) ctx.putImageData(input, 0, 0);
       else ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
@@ -200,10 +200,11 @@ class Human {
     } else {
       const canvas = filtered || input;
       let pixels;
-      // tf kernel-optimized method to get imagedata, also if input is imagedata, just use it
-      if ((this.config.backend === 'webgl') || (canvas instanceof ImageData)) pixels = tf.browser.fromPixels(canvas);
-      // cpu and wasm kernel does not implement efficient fromPixels method nor we can use canvas as-is, so we do a silly one more canvas
-      else {
+      if ((this.config.backend === 'webgl') || (canvas instanceof ImageData)) {
+        // tf kernel-optimized method to get imagedata, also if input is imagedata, just use it
+        pixels = tf.browser.fromPixels(canvas);
+      } else {
+        // cpu and wasm kernel does not implement efficient fromPixels method nor we can use canvas as-is, so we do a silly one more canvas
         const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
         tempCanvas.width = targetWidth;
         tempCanvas.height = targetHeight;

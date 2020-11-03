@@ -6,9 +6,9 @@ const human = new Human();
 
 // ui options
 const ui = {
-  baseColor: 'rgba(173, 216, 230, 0.3)', // this is 'lightblue', just with alpha channel
-  baseBackground: 'rgba(50, 50, 50, 1)', // this is 'lightblue', just with alpha channel
-  baseLabel: 'rgba(173, 216, 230, 0.9)',
+  baseColor: 'rgba(173, 216, 230, 0.3)', // 'lightblue' with light alpha channel
+  baseBackground: 'rgba(50, 50, 50, 1)', // 'grey'
+  baseLabel: 'rgba(173, 216, 230, 0.9)', // 'lightblue' with dark alpha channel
   baseFontProto: 'small-caps {size} "Segoe UI"',
   baseLineWidth: 16,
   baseLineHeightProto: 2,
@@ -88,6 +88,11 @@ const log = (...msg) => {
   if (ui.console) console.log(...msg);
 };
 
+const status = (msg) => {
+  // eslint-disable-next-line no-console
+  document.getElementById('status').innerText = msg;
+};
+
 // draws processed results and starts processing of a next frame
 function drawResults(input, result, canvas) {
   // update fps data
@@ -131,13 +136,15 @@ async function setupCamera() {
   const output = document.getElementById('log');
   const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
   let msg = `Setting up camera: live: ${live} facing: ${ui.facing ? 'front' : 'back'}`;
+  status('starting camera');
   output.innerText += `\n${msg}`;
   log(msg);
   // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
   if (!navigator.mediaDevices) {
-    msg = 'Camera access not supported';
+    msg = 'camera access not supported';
     output.innerText += `\n${msg}`;
     log(msg);
+    status(msg);
     return null;
   }
   let stream;
@@ -148,6 +155,7 @@ async function setupCamera() {
     });
   } catch (err) {
     output.innerText += '\nCamera permission denied';
+    status('camera permission denied');
     log(err);
   }
   if (stream) video.srcObject = stream;
@@ -250,11 +258,13 @@ async function detectVideo() {
   ui.baseFont = ui.baseFontProto.replace(/{size}/, '1.2rem');
   ui.baseLineHeight = ui.baseLineHeightProto;
   if ((video.srcObject !== null) && !video.paused) {
-    document.getElementById('log').innerText += '\nPaused ...';
+    document.getElementById('play').style.display = 'block';
+    status('paused');
     video.pause();
   } else {
     await setupCamera();
-    document.getElementById('log').innerText += '\nStarting Human Library ...';
+    document.getElementById('play').style.display = 'none';
+    status('');
     video.play();
   }
   runHumanDetect(video, canvas);
@@ -262,6 +272,7 @@ async function detectVideo() {
 
 // just initialize everything and call main function
 async function detectSampleImages() {
+  document.getElementById('play').style.display = 'none';
   config.videoOptimized = false;
   ui.baseFont = ui.baseFontProto.replace(/{size}/, `${1.2 * ui.columns}rem`);
   ui.baseLineHeight = ui.baseLineHeightProto * ui.columns;
@@ -273,8 +284,9 @@ async function detectSampleImages() {
 
 function setupMenu() {
   menu = new Menu(document.body, '...', { top: '1rem', right: '1rem' });
-  menu.addButton('Start Video', 'Pause Video', (evt) => detectVideo(evt));
+  const btn = menu.addButton('Start Video', 'Pause Video', () => detectVideo());
   menu.addButton('Process Images', 'Process Images', () => detectSampleImages());
+  document.getElementById('play').addEventListener('click', () => btn.click());
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addList('Backend', ['cpu', 'webgl', 'wasm', 'webgpu'], config.backend, (val) => config.backend = val);
@@ -354,9 +366,15 @@ function setupMenu() {
 async function main() {
   log('Human demo starting ...');
   setupMenu();
-  const msg = `Human ready: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
-  document.getElementById('log').innerText += '\n' + msg;
+  const msg = `Human Library: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
+  document.getElementById('log').innerText = msg;
+  status('loading');
   log(msg);
+  await human.load();
+  status('initializing');
+  const warmup = new ImageData(50, 50);
+  await human.detect(warmup);
+  status('human: ready');
 }
 
 window.onload = main;

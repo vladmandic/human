@@ -164,6 +164,7 @@ class Menu {
         item.style.display = this.hidden ? 'none' : 'block';
       }
     });
+    return el;
   }
 
   addLabel(title) {
@@ -172,6 +173,7 @@ class Menu {
     el.id = this.newID;
     el.innerHTML = title;
     this.container.appendChild(el);
+    return el;
   }
 
   addBool(title, object, variable, callback) {
@@ -183,6 +185,7 @@ class Menu {
       object[variable] = evt.target.checked;
       if (callback) callback(evt.target.checked);
     });
+    return el;
   }
 
   async addList(title, items, selected, callback) {
@@ -201,6 +204,7 @@ class Menu {
     el.addEventListener('change', (evt) => {
       if (callback) callback(items[evt.target.selectedIndex]);
     });
+    return el;
   }
 
   addRange(title, object, variable, min, max, step, callback) {
@@ -213,6 +217,7 @@ class Menu {
       evt.target.setAttribute('value', evt.target.value);
       if (callback) callback(evt.target.value);
     });
+    return el;
   }
 
   addHTML(html) {
@@ -221,6 +226,7 @@ class Menu {
     el.id = this.newID;
     if (html) el.innerHTML = html;
     this.container.appendChild(el);
+    return el;
   }
 
   addButton(titleOn, titleOff, callback) {
@@ -238,6 +244,7 @@ class Menu {
       else el.innerText = titleOn;
       if (callback) callback(el.innerText !== titleOn);
     });
+    return el;
   }
 
   addValue(title, val, suffix = '') {
@@ -246,6 +253,7 @@ class Menu {
     el.id = `menu-val-${title}`;
     el.innerText = `${title}: ${val}${suffix}`;
     this.container.appendChild(el);
+    return el;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -262,6 +270,7 @@ class Menu {
     el.id = this.newID;
     el.innerHTML = `<font color=${theme.chartColor}>${title}</font><canvas id="menu-canvas-${id}" class="menu-chart-canvas" width="${width}px" height="${height}px"></canvas>`;
     this.container.appendChild(el);
+    return el;
   }
 
   // eslint-disable-next-line class-methods-use-this

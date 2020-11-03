@@ -197,8 +197,10 @@ function runHumanDetect(input, canvas) {
     // if video not ready, just redo
     const live = (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
     if (!live) {
-      if (!input.paused) log(`Video not ready: state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
-      setTimeout(() => runHumanDetect(input, canvas), 500);
+      if (!input.paused) {
+        log(`Video not ready: state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
+        setTimeout(() => runHumanDetect(input, canvas), 500);
+      }
       return;
     }
     if (ui.useWorker) {

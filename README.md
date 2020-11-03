@@ -355,7 +355,6 @@ config = {
     enlargeFactor: 1.65,     // empiric tuning as skeleton prediction prefers hand box with some whitespace
     maxHands: 10,            // maximum number of hands detected in the input, should be set to the minimum number for performance
     detector: {
-      anchors: '../models/handdetect/anchors.json',
       modelPath: '../models/handdetect/model.json',
     },
     skeleton: {

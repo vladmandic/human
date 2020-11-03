@@ -3,7 +3,7 @@ const profile = require('../profile.js');
 
 const models = {};
 let last = { age: 0, gender: '' };
-let frame = 0;
+let frame = Number.MAX_SAFE_INTEGER;
 
 async function loadAge(config) {
   if (!models.age) models.age = await tf.loadGraphModel(config.face.age.modelPath);

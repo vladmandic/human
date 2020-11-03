@@ -70946,7 +70946,7 @@ var Human = (() => {
     const profile = require_profile();
     const models = {};
     let last = {age: 0, gender: ""};
-    let frame = 0;
+    let frame = Number.MAX_SAFE_INTEGER;
     async function loadAge(config) {
       if (!models.age)
         models.age = await tf.loadGraphModel(config.face.age.modelPath);
@@ -73111,15 +73111,14 @@ var Human = (() => {
           else
             ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, this.inCanvas.width, this.inCanvas.height);
           if (this.config.filter.enabled) {
-            if (!this.outCanvas || this.inCanvas.width !== this.outCanvas.width || this.inCanvas.height !== this.outCanvas.height) {
+            if (!this.fx || !this.outCanvas || this.inCanvas.width !== this.outCanvas.width || this.inCanvas.height !== this.outCanvas.height) {
               this.outCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(this.inCanvas.width, this.inCanvas.height) : document.createElement("canvas");
               if (this.outCanvas.width !== this.inCanvas.width)
                 this.outCanvas.width = this.inCanvas.width;
               if (this.outCanvas.height !== this.inCanvas.height)
                 this.outCanvas.height = this.inCanvas.height;
-            }
-            if (!this.fx)
               this.fx = tf.ENV.flags.IS_BROWSER && typeof document !== "undefined" ? new fxImage.Canvas({canvas: this.outCanvas}) : null;
+            }
             this.fx.reset();
             this.fx.addFilter("brightness", this.config.filter.brightness);
             if (this.config.filter.contrast !== 0)

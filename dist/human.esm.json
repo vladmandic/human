@@ -450,7 +450,7 @@
       "imports": []
     },
     "src/ssrnet/ssrnet.js": {
-      "bytes": 2127,
+      "bytes": 2149,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -481,7 +481,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5129756
+      "bytes": 5129779
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -571,7 +571,7 @@
           "bytesInOutput": 1092
         },
         "src/ssrnet/ssrnet.js": {
-          "bytesInOutput": 2312
+          "bytesInOutput": 2334
         },
         "src/emotion/emotion.js": {
           "bytesInOutput": 2030
@@ -637,13 +637,13 @@
           "bytesInOutput": 3012
         },
         "src/human.js": {
-          "bytesInOutput": 13231
+          "bytesInOutput": 13221
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 2928384
+      "bytes": 2928396
     }
   }
 }

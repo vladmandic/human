@@ -35,7 +35,7 @@ const config = {
   },
   body: { modelPath: 'file://models/posenet/model.json' },
   hand: {
-    detector: { anchors: 'file://models/handdetect/anchors.json', modelPath: 'file://models/handdetect/model.json' },
+    detector: { modelPath: 'file://models/handdetect/model.json' },
     skeleton: { modelPath: 'file://models/handskeleton/model.json' },
   },
 };

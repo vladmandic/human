@@ -109,28 +109,36 @@ class Human {
 
   async load(userConfig) {
     if (userConfig) this.config = mergeDeep(defaults, userConfig);
+
+    if (first) {
+      this.log(`version: ${this.version} TensorFlow/JS version: ${tf.version_core}`);
+      this.log('configuration:', this.config);
+      this.log('flags:', tf.ENV.flags);
+      first = false;
+    }
+
     if (this.config.face.enabled && !this.models.facemesh) {
-      this.log('Load model: Face');
+      this.log('load model: face');
       this.models.facemesh = await facemesh.load(this.config.face);
     }
     if (this.config.body.enabled && !this.models.posenet) {
-      this.log('Load model: Body');
+      this.log('load model: body');
       this.models.posenet = await posenet.load(this.config.body);
     }
     if (this.config.hand.enabled && !this.models.handpose) {
-      this.log('Load model: Hand');
+      this.log('load model: hand');
       this.models.handpose = await handpose.load(this.config.hand);
     }
     if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) {
-      this.log('Load model: Age');
+      this.log('load model: age');
       this.models.age = await ssrnet.loadAge(this.config);
     }
     if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) {
-      this.log('Load model: Gender');
+      this.log('load model: gender');
       this.models.gender = await ssrnet.loadGender(this.config);
     }
     if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) {
-      this.log('Load model: Emotion');
+      this.log('load model: emotion');
       this.models.emotion = await emotion.load(this.config);
     }
   }
@@ -259,14 +267,6 @@ class Human {
       timeStamp = now();
       await this.checkBackend();
       perf.backend = Math.trunc(now() - timeStamp);
-
-      // check number of loaded models
-      if (first) {
-        this.log('Starting');
-        this.log('Configuration:', this.config);
-        this.log('Flags:', tf.ENV.flags);
-        first = false;
-      }
 
       // load models if enabled
       timeStamp = now();

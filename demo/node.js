@@ -28,17 +28,17 @@ const config = {
   console: true,
   videoOptimized: false,
   face: {
-    detector: { modelPath: 'file://models/blazeface/back/model.json' },
-    mesh: { modelPath: 'file://models/facemesh/model.json' },
-    iris: { modelPath: 'file://models/iris/model.json' },
-    age: { modelPath: 'file://models/ssrnet-age/imdb/model.json' },
-    gender: { modelPath: 'file://models/ssrnet-gender/imdb/model.json' },
-    emotion: { modelPath: 'file://models/emotion/model.json' },
+    detector: { modelPath: 'file://models/blazeface-back.json' },
+    mesh: { modelPath: 'file://models/facemesh.json' },
+    iris: { modelPath: 'file://models/iris.json' },
+    age: { modelPath: 'file://models/ssrnet-age-imdb.json' },
+    gender: { modelPath: 'file://models/ssrnet-gender-imdb.json' },
+    emotion: { modelPath: 'file://models/emotion.json' },
   },
-  body: { modelPath: 'file://models/posenet/model.json' },
+  body: { modelPath: 'file://models/posenet.json' },
   hand: {
-    detector: { anchors: 'file://models/handdetect/anchors.json', modelPath: 'file://models/handdetect/model.json' },
-    skeleton: { modelPath: 'file://models/handskeleton/model.json' },
+    detector: { modelPath: 'file://models/handdetect.json' },
+    skeleton: { modelPath: 'file://models/handskeleton.json' },
   },
 };
 

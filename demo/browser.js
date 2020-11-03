@@ -126,10 +126,10 @@ function drawResults(input, result, canvas) {
   // update log
   const engine = human.tf.engine();
   const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
-  const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} tensors: ${engine.state.numTensors.toLocaleString()}`;
+  const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : '';
   document.getElementById('log').innerText = `
-    video: ${camera.name} facing: ${camera.facing} resolution: ${camera.width} x ${camera.height} ${processing}
+    video: ${camera.name} | facing: ${camera.facing} | resolution: ${camera.width} x ${camera.height} ${processing}
     backend: ${human.tf.getBackend()} | ${memory} | object size: ${(str(result)).length.toLocaleString()} bytes
     performance: ${str(result.performance)}
   `;
@@ -306,7 +306,7 @@ function setupMenu() {
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addList('Backend', ['cpu', 'webgl', 'wasm', 'webgpu'], config.backend, (val) => config.backend = val);
   menu.addBool('Enable Profiler', config, 'profile');
-  menu.addBool('Memory Deallocator', config, 'deallocate');
+  menu.addBool('Memory Shield', config, 'deallocate');
   menu.addBool('Use Web Worker', ui, 'useWorker');
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addLabel('Enabled Models');
@@ -359,7 +359,7 @@ function setupMenu() {
   menuFX.addBool('Draw Polygons', ui, 'drawPolygons');
   menuFX.addBool('Fill Polygons', ui, 'fillPolygons');
   menuFX.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menuFX.addLabel('Image Filters');
+  menuFX.addLabel('Image Processing');
   menuFX.addBool('Enabled', config.filter, 'enabled');
   menuFX.addRange('Image width', config.filter, 'width', 0, 3840, 10, (val) => config.filter.width = parseInt(val));
   menuFX.addRange('Image height', config.filter, 'height', 0, 2160, 10, (val) => config.filter.height = parseInt(val));
@@ -381,7 +381,7 @@ function setupMenu() {
 async function main() {
   log('Human: demo starting ...');
   setupMenu();
-  document.getElementById('log').innerText = `Human: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
+  document.getElementById('log').innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
   // this is not required, just pre-warms the library
   status('loading');
   await human.load();

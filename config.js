@@ -46,7 +46,7 @@ export default {
                              // face.enabled is required for all face models: detector, mesh, iris, age, gender, emotion
                              // (note: module is not loaded until it is required)
     detector: {
-      modelPath: '../models/blazeface/back/model.json', // can be 'front' or 'back'.
+      modelPath: '../models/blazeface-back.json', // can be 'front' or 'back'.
                                                         // 'front' is optimized for large faces such as front-facing camera and 'back' is optimized for distanct faces.
       inputSize: 256,        // fixed value: 128 for front and 256 for 'back'
       maxFaces: 10,          // maximum number of faces detected in the input, should be set to the minimum number for performance
@@ -59,18 +59,18 @@ export default {
     },
     mesh: {
       enabled: true,
-      modelPath: '../models/facemesh/model.json',
+      modelPath: '../models/facemesh.json',
       inputSize: 192,        // fixed value
     },
     iris: {
       enabled: true,
-      modelPath: '../models/iris/model.json',
+      modelPath: '../models/iris.json',
       enlargeFactor: 2.3,    // empiric tuning
       inputSize: 64,         // fixed value
     },
     age: {
       enabled: true,
-      modelPath: '../models/ssrnet-age/imdb/model.json', // can be 'imdb' or 'wiki'
+      modelPath: '../models/ssrnet-age-imdb.json', // can be 'imdb' or 'wiki'
                                                          // which determines training set for model
       inputSize: 64,         // fixed value
       skipFrames: 10,        // how many frames to go without re-running the detector, only used for video inputs
@@ -78,19 +78,19 @@ export default {
     gender: {
       enabled: true,
       minConfidence: 0.8,    // threshold for discarding a prediction
-      modelPath: '../models/ssrnet-gender/imdb/model.json',
+      modelPath: '../models/ssrnet-gender-imdb.json',
     },
     emotion: {
       enabled: true,
       inputSize: 64,         // fixed value
       minConfidence: 0.5,    // threshold for discarding a prediction
       skipFrames: 10,        // how many frames to go without re-running the detector
-      modelPath: '../models/emotion/model.json',
+      modelPath: '../models/emotion.json',
     },
   },
   body: {
     enabled: true,
-    modelPath: '../models/posenet/model.json',
+    modelPath: '../models/posenet.json',
     inputResolution: 257,    // fixed value
     outputStride: 16,        // fixed value
     maxDetections: 10,       // maximum number of people detected in the input, should be set to the minimum number for performance
@@ -109,11 +109,10 @@ export default {
     enlargeFactor: 1.65,     // empiric tuning as skeleton prediction prefers hand box with some whitespace
     maxHands: 10,            // maximum number of hands detected in the input, should be set to the minimum number for performance
     detector: {
-      anchors: '../models/handdetect/anchors.json',
-      modelPath: '../models/handdetect/model.json',
+      modelPath: '../models/handdetect.json',
     },
     skeleton: {
-      modelPath: '../models/handskeleton/model.json',
+      modelPath: '../models/handskeleton.json',
     },
   },
 };

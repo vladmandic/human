@@ -17,19 +17,42 @@
     <!-- <script src="../assets/tf-backend-webgpu.js"></script> -->
     <!-- <script src='../assets/tfjs-vis.min.js'></script> -->
     <script src="./browser.js" type="module"></script>
+    <style>
+      body { margin: 0; background: black; color: white; font-family: 'Segoe UI'; font-size: 16px; font-variant: small-caps; overflow-x: hidden; scrollbar-width: none; }
+      body::-webkit-scrollbar { display: none; }
+      .play { position: absolute; width: 300px; height: 300px; z-index: 25; top: 30%; left: 50%; margin-left: -150px; display: none; }
+      .play-background { fill:darkslategray; cursor:pointer; opacity: 0.6; }
+      .play-foreground { fill:white; cursor:pointer; opacity: 0.8; }
+      .play-foreground:hover { opacity: 1; }
+      .status { position: absolute; width: 100vw; top: 100px; text-align: center; font-size: 4rem; font-weight: 100; text-shadow: 2px 2px darkslategrey; }
+      .thumbnail { margin: 8px; box-shadow: 0 0 4px 4px dimgrey; }
+      .thumbnail:hover { box-shadow: 0 0 8px 8px dimgrey; filter: grayscale(1); }
+      .log { position: fixed; bottom: 0; }
+      .samples-container { display: flex; flex-wrap: wrap; }
+      .video { display: none; }
+      .canvas { margin: 0 auto; width: 100%; }
+      .loader { width: 300px; height: 300px; border: 3px solid transparent; border-radius: 50%; border-top: 4px solid #f15e41; animation: spin 4s linear infinite; position: absolute; top: 30%; left: 50%; margin-left: -150px; }
+      .loader::before, .loader::after { content: ""; position: absolute; top: 6px; bottom: 6px; left: 6px; right: 6px; border-radius: 50%; border: 4px solid transparent; }
+      .loader::before { border-top-color: #bad375; animation: 3s spin linear infinite; }
+      .loader::after { border-top-color: #26a9e0; animation: spin 1.5s linear infinite; }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    </style>
   </head>
-  <body style="margin: 0; background: black; color: white; font-family: 'Segoe UI'; font-size: 16px; font-variant: small-caps; overflow: hidden">
-    <div id="play" style="position: absolute; width: 250px; height: 250px; z-index: 25; top: 30%; left: 50%; margin-left: -125px">
+  <body>
+    <div id="play" class="play">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-        <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z" style="fill:darkslategray; cursor:pointer; opacity: 0.6"/>
-        <path d="M371.7 280l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z" style="fill:white; cursor:pointer"/>
+        <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z" class="play-background"/>
+        <path d="M371.7 280l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z" class="play-foreground"/>
       </svg>
     </div>
-    <div id="status" style="position: absolute; width: 100vw; top: 100px; text-align: center; font-size: 4rem; font-weight: 100; text-shadow: 2px 2px darkslategrey;"></div>
-    <video id="video" playsinline style="display: none"></video>
-    <image id="image" src="" style="display: none"></video>
-    <canvas id="canvas" style="margin: 0 auto; width: 100%"></canvas>
-    <div id="samples" style="display: flex; flex-wrap: wrap"></div>
-    <div id="log" style="position: fixed; bottom: 0"></div>
+    <div id="loader" class="loader"></div>
+    <div id="status" class="status"></div>
+    <video id="video" playsinline class="video"></video>
+    <canvas id="canvas" class="canvas"></canvas>
+    <div id="samples-container" class="samples-container"></div>
+    <div id="log" class="log"></div>
   </body>
 </html>

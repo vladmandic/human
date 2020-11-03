@@ -223,7 +223,7 @@ function runHumanDetect(input, canvas) {
 async function processImage(input) {
   timeStamp = performance.now();
   return new Promise((resolve) => {
-    const image = document.getElementById('image');
+    const image = new Image();
     image.onload = async () => {
       log('Processing image:', image.src);
       const canvas = document.getElementById('canvas');
@@ -234,13 +234,12 @@ async function processImage(input) {
       const result = await human.detect(image, config);
       drawResults(image, result, canvas);
       const thumb = document.createElement('canvas');
+      thumb.className = 'thumbnail';
       thumb.width = window.innerWidth / (ui.columns + 0.1);
       thumb.height = canvas.height / (window.innerWidth / thumb.width);
-      thumb.style.margin = '8px';
-      thumb.style.boxShadow = '4px 4px 4px 0 dimgrey';
       const ctx = thumb.getContext('2d');
       ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, thumb.width, thumb.height);
-      document.getElementById('samples').appendChild(thumb);
+      document.getElementById('samples-container').appendChild(thumb);
       image.src = '';
       resolve(true);
     };
@@ -251,7 +250,7 @@ async function processImage(input) {
 // just initialize everything and call main function
 async function detectVideo() {
   config.videoOptimized = true;
-  document.getElementById('samples').style.display = 'none';
+  document.getElementById('samples-container').style.display = 'none';
   document.getElementById('canvas').style.display = 'block';
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
@@ -277,9 +276,12 @@ async function detectSampleImages() {
   ui.baseFont = ui.baseFontProto.replace(/{size}/, `${1.2 * ui.columns}rem`);
   ui.baseLineHeight = ui.baseLineHeightProto * ui.columns;
   document.getElementById('canvas').style.display = 'none';
-  document.getElementById('samples').style.display = 'block';
+  document.getElementById('samples-container').style.display = 'block';
   log('Running detection of sample images');
+  status('processing images');
+  document.getElementById('samples-container').innerHTML = '';
   for (const sample of ui.samples) await processImage(sample);
+  status('');
 }
 
 function setupMenu() {
@@ -364,17 +366,18 @@ function setupMenu() {
 }
 
 async function main() {
-  log('Human demo starting ...');
+  log('Human: demo starting ...');
   setupMenu();
-  const msg = `Human Library: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
-  document.getElementById('log').innerText = msg;
+  document.getElementById('log').innerText = `Human: version: ${human.version} TensorFlow/JS version: ${human.tf.version_core}`;
+  // this is not required, just pre-warms the library
   status('loading');
-  log(msg);
   await human.load();
   status('initializing');
   const warmup = new ImageData(50, 50);
   await human.detect(warmup);
   status('human: ready');
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('play').style.display = 'block';
 }
 
 window.onload = main;

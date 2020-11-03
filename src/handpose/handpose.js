@@ -2,6 +2,7 @@ const tf = require('@tensorflow/tfjs');
 const hand = require('./handdetector');
 const keypoints = require('./keypoints');
 const pipe = require('./pipeline');
+const anchors = require('./anchors.js');
 
 class HandPose {
   constructor(pipeline) {
@@ -33,23 +34,12 @@ class HandPose {
 }
 exports.HandPose = HandPose;
 
-async function loadAnchors(url) {
-  if (tf.env().features.IS_NODE) {
-    // eslint-disable-next-line global-require
-    const fs = require('fs');
-    const data = await fs.readFileSync(url.replace('file://', ''));
-    return JSON.parse(data);
-  }
-  return tf.util.fetch(url).then((d) => d.json());
-}
-
 async function load(config) {
-  const [anchors, handDetectorModel, handPoseModel] = await Promise.all([
-    loadAnchors(config.detector.anchors),
+  const [handDetectorModel, handPoseModel] = await Promise.all([
     tf.loadGraphModel(config.detector.modelPath, { fromTFHub: config.detector.modelPath.includes('tfhub.dev') }),
     tf.loadGraphModel(config.skeleton.modelPath, { fromTFHub: config.skeleton.modelPath.includes('tfhub.dev') }),
   ]);
-  const detector = new hand.HandDetector(handDetectorModel, anchors, config);
+  const detector = new hand.HandDetector(handDetectorModel, anchors.anchors, config);
   const pipeline = new pipe.HandPipeline(detector, handPoseModel, config);
   const handpose = new HandPose(pipeline);
   return handpose;

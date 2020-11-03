@@ -73,7 +73,7 @@ const WebGLImageFilter = function (params) {
   // key is the shader program source, value is the compiled program
   const _shaderProgramCache = { };
 
-  const gl = _canvas.getContext('webgl') || _canvas.getContext('experimental-webgl');
+  const gl = _canvas.getContext('webgl');
   if (!gl) throw new Error('Filter: getContext() failed');
 
   this.addFilter = function (name) {

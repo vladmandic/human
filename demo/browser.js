@@ -69,6 +69,7 @@ let menu;
 let menuFX;
 let worker;
 let timeStamp;
+let camera = {};
 const fps = [];
 
 // helper function: translates json to human readable string
@@ -111,19 +112,26 @@ function drawResults(input, result, canvas) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = ui.baseBackground;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  if (result.canvas) ctx.drawImage(result.canvas, 0, 0, result.canvas.width, result.canvas.height, 0, 0, result.canvas.width, result.canvas.height);
-  else ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
+  if (result.canvas) {
+    if (result.canvas.width !== canvas.width) canvas.width = result.canvas.width;
+    if (result.canvas.height !== canvas.height) canvas.height = result.canvas.height;
+    ctx.drawImage(result.canvas, 0, 0, result.canvas.width, result.canvas.height, 0, 0, result.canvas.width, result.canvas.height);
+  } else {
+    ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
+  }
   // draw all results
   draw.face(result.face, canvas, ui, human.facemesh.triangulation);
   draw.body(result.body, canvas, ui);
   draw.hand(result.hand, canvas, ui);
   // update log
   const engine = human.tf.engine();
-  const memory = `${engine.state.numBytes.toLocaleString()} bytes ${engine.state.numDataBuffers.toLocaleString()} buffers ${engine.state.numTensors.toLocaleString()} tensors`;
-  const gpu = engine.backendInstance ? `GPU: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
+  const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
+  const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} tensors: ${engine.state.numTensors.toLocaleString()}`;
+  const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : '';
   document.getElementById('log').innerText = `
-    TFJS Version: ${human.tf.version_core} | Backend: ${human.tf.getBackend()} | Memory: ${memory} ${gpu}
-    Performance: ${str(result.performance)} | Object size: ${(str(result)).length.toLocaleString()} bytes
+    video: ${camera.name} facing: ${camera.facing} resolution: ${camera.width} x ${camera.height} ${processing}
+    backend: ${human.tf.getBackend()} | ${memory} | object size: ${(str(result)).length.toLocaleString()} bytes
+    performance: ${str(result.performance)}
   `;
 }
 
@@ -151,7 +159,7 @@ async function setupCamera() {
   try {
     stream = await navigator.mediaDevices.getUserMedia({
       audio: false,
-      video: { facingMode: (ui.facing ? 'user' : 'environment'), width: window.innerWidth, height: window.innerHeight },
+      video: { facingMode: (ui.facing ? 'user' : 'environment'), width: window.innerWidth, height: window.innerHeight, resizeMode: 'none' },
     });
   } catch (err) {
     output.innerText += '\nCamera permission denied';
@@ -160,6 +168,10 @@ async function setupCamera() {
   }
   if (stream) video.srcObject = stream;
   else return null;
+  const track = stream.getVideoTracks()[0];
+  const settings = track.getSettings();
+  log('camera settings:', settings);
+  camera = { name: track.label, width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   return new Promise((resolve) => {
     video.onloadeddata = async () => {
       video.width = video.videoWidth;
@@ -169,8 +181,7 @@ async function setupCamera() {
       if (live) video.play();
       ui.busy = false;
       // do once more because onresize events can be delayed or skipped
-      if (video.width > window.innerWidth) await setupCamera();
-      output.innerText += `\nCamera resolution: ${video.width} x ${video.height}`;
+      // if (video.width > window.innerWidth) await setupCamera();
       resolve(video);
     };
   });
@@ -350,8 +361,8 @@ function setupMenu() {
   menuFX.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menuFX.addLabel('Image Filters');
   menuFX.addBool('Enabled', config.filter, 'enabled');
-  menuFX.addRange('Image width', config.filter, 'width', 100, 3840, 10, (val) => config.filter.width = parseInt(val));
-  menuFX.addRange('Image height', config.filter, 'height', 100, 2160, 10, (val) => config.filter.height = parseInt(val));
+  menuFX.addRange('Image width', config.filter, 'width', 0, 3840, 10, (val) => config.filter.width = parseInt(val));
+  menuFX.addRange('Image height', config.filter, 'height', 0, 2160, 10, (val) => config.filter.height = parseInt(val));
   menuFX.addRange('Brightness', config.filter, 'brightness', -1.0, 1.0, 0.05, (val) => config.filter.brightness = parseFloat(val));
   menuFX.addRange('Contrast', config.filter, 'contrast', -1.0, 1.0, 0.05, (val) => config.filter.contrast = parseFloat(val));
   menuFX.addRange('Sharpness', config.filter, 'sharpness', 0, 1.0, 0.05, (val) => config.filter.sharpness = parseFloat(val));

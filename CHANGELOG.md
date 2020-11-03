@@ -1,7 +1,7 @@
 
 # @vladmandic/human  
 
-Version: **0.6.1**  
+Version: **0.6.2**  
 Description: **human: 3D Face Detection, Iris Tracking and Age & Gender Prediction**  
 
 Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -10,13 +10,21 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2020/11/03 mandic00@live.com
+- fix pause restart
+- complete model refactoring
+- fixed typo
+
+### **0.6.2** 2020/11/02 mandic00@live.com
+- optimized demo
+- package update
+
 ### **0.6.1** 2020/11/02 mandic00@live.com
 - major performance improvements for all models
 - revert "optimized canvas handling"
 - optimized canvas handling
 - minor optimization to imagefx
-
-### **origin/main, origin/HEAD** 2020/11/01 mandic00@live.com
+- fix demo image sample
 - added tfjs-vis to distribution
 
 ### **0.5.5** 2020/11/01 mandic00@live.com

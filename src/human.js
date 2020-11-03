@@ -184,12 +184,12 @@ class Human {
       if (input instanceof ImageData) ctx.putImageData(input, 0, 0);
       else ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, this.inCanvas.width, this.inCanvas.height);
       if (this.config.filter.enabled) {
-        if (!this.outCanvas || (this.inCanvas.width !== this.outCanvas.width) || (this.inCanvas.height !== this.outCanvas.height)) {
+        if (!this.fx || !this.outCanvas || (this.inCanvas.width !== this.outCanvas.width) || (this.inCanvas.height !== this.outCanvas.height)) {
           this.outCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(this.inCanvas.width, this.inCanvas.height) : document.createElement('canvas');
           if (this.outCanvas.width !== this.inCanvas.width) this.outCanvas.width = this.inCanvas.width;
           if (this.outCanvas.height !== this.inCanvas.height) this.outCanvas.height = this.inCanvas.height;
+          this.fx = (tf.ENV.flags.IS_BROWSER && (typeof document !== 'undefined')) ? new fxImage.Canvas({ canvas: this.outCanvas }) : null;
         }
-        if (!this.fx) this.fx = (tf.ENV.flags.IS_BROWSER && (typeof document !== 'undefined')) ? new fxImage.Canvas({ canvas: this.outCanvas }) : null;
         this.fx.reset();
         this.fx.addFilter('brightness', this.config.filter.brightness); // must have at least one filter enabled
         if (this.config.filter.contrast !== 0) this.fx.addFilter('contrast', this.config.filter.contrast);

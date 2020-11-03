@@ -4,7 +4,7 @@ const profile = require('../profile.js');
 const annotations = ['angry', 'discust', 'fear', 'happy', 'sad', 'surpise', 'neutral'];
 const models = {};
 let last = [];
-let frame = 0;
+let frame = Number.MAX_SAFE_INTEGER;
 const multiplier = 1.5;
 
 async function load(config) {

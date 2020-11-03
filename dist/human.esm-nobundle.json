@@ -9,7 +9,7 @@
       "imports": []
     },
     "src/emotion/emotion.js": {
-      "bytes": 1954,
+      "bytes": 1976,
       "imports": [
         {
           "path": "src/profile.js"
@@ -127,7 +127,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15055,
+      "bytes": 15164,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -282,7 +282,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 605105
+      "bytes": 605307
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -318,7 +318,7 @@
           "bytesInOutput": 1236
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1082
+          "bytesInOutput": 1104
         },
         "src/posenet/modelBase.js": {
           "bytesInOutput": 455
@@ -384,13 +384,13 @@
           "bytesInOutput": 2567
         },
         "src/human.js": {
-          "bytesInOutput": 8359
+          "bytesInOutput": 8439
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 211512
+      "bytes": 211614
     }
   }
 }

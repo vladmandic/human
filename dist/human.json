@@ -153,7 +153,7 @@
       "imports": []
     },
     "src/emotion/emotion.js": {
-      "bytes": 1954,
+      "bytes": 1976,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -301,7 +301,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15055,
+      "bytes": 15164,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -488,7 +488,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5400883
+      "bytes": 5401085
     },
     "dist/human.js": {
       "imports": [],
@@ -581,7 +581,7 @@
           "bytesInOutput": 1236
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1071
+          "bytesInOutput": 1093
         },
         "src/posenet/modelBase.js": {
           "bytesInOutput": 433
@@ -647,10 +647,10 @@
           "bytesInOutput": 2567
         },
         "src/human.js": {
-          "bytesInOutput": 8413
+          "bytesInOutput": 8493
         }
       },
-      "bytes": 1273103
+      "bytes": 1273205
     }
   }
 }

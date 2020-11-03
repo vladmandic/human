@@ -9,8 +9,6 @@ const profile = require('./profile.js');
 const defaults = require('../config.js').default;
 const app = require('../package.json');
 
-let first = true;
-
 // static config override for non-video detection
 const override = {
   face: { detector: { skipFrames: 0 }, age: { skipFrames: 0 }, emotion: { skipFrames: 0 } },
@@ -42,19 +40,6 @@ function mergeDeep(...objects) {
   }, {});
 }
 
-function sanity(input) {
-  if (!input) return 'input is not defined';
-  if (tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) {
-    return 'input must be a tensor';
-  }
-  try {
-    tf.getBackend();
-  } catch {
-    return 'backend not loaded';
-  }
-  return null;
-}
-
 class Human {
   constructor() {
     this.tf = tf;
@@ -65,6 +50,8 @@ class Human {
     this.state = 'idle';
     this.numTensors = 0;
     this.analyzeMemoryLeaks = false;
+    this.checkSanity = false;
+    this.firstRun = true;
     // internal temp canvases
     this.inCanvas = null;
     this.outCanvas = null;
@@ -107,14 +94,28 @@ class Human {
     if (leaked !== 0) this.log(...msg, leaked);
   }
 
+  sanity(input) {
+    if (!this.checkSanity) return null;
+    if (!input) return 'input is not defined';
+    if (tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) {
+      return 'input must be a tensor';
+    }
+    try {
+      tf.getBackend();
+    } catch {
+      return 'backend not loaded';
+    }
+    return null;
+  }
+
   async load(userConfig) {
     if (userConfig) this.config = mergeDeep(defaults, userConfig);
 
-    if (first) {
+    if (this.firstRun) {
       this.log(`version: ${this.version} TensorFlow/JS version: ${tf.version_core}`);
       this.log('configuration:', this.config);
       this.log('flags:', tf.ENV.flags);
-      first = false;
+      this.firstRun = false;
     }
 
     if (this.config.face.enabled && !this.models.facemesh) {
@@ -183,7 +184,7 @@ class Human {
       else if (this.config.filter.height > 0) targetWidth = originalWidth * (this.config.filter.height / originalHeight);
       if (this.config.filter.height > 0) targetHeight = this.config.filter.height;
       else if (this.config.filter.width > 0) targetHeight = originalHeight * (this.config.filter.width / originalWidth);
-      if (!this.inCanvas || (this.inCanvas.width !== originalWidth) || (this.inCanvas.height !== originalHeight)) {
+      if (!this.inCanvas || (this.inCanvas.width !== targetWidth) || (this.inCanvas.height !== targetHeight)) {
         this.inCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
         if (this.inCanvas.width !== targetWidth) this.inCanvas.width = targetWidth;
         if (this.inCanvas.height !== targetHeight) this.inCanvas.height = targetHeight;
@@ -248,7 +249,7 @@ class Human {
 
     // sanity checks
     this.state = 'check';
-    const error = sanity(input);
+    const error = this.sanity(input);
     if (error) {
       this.log(error, input);
       return { error };

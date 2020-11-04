@@ -242,10 +242,6 @@ Note that user object and default configuration are merged using deep-merge, so 
 
 All configuration details can be changed in real-time!  
 
-Configurtion object is large, but typically you only need to modify few values:
-
-- `enabled`: Choose which models to use
-- `modelPath`: Update as needed to reflect your application's relative path
 
 ```js
 config = {
@@ -369,6 +365,22 @@ config = {
                              // easily expandable via code, see `src/gesture.js`
   },
 };
+```
+
+Any user configuration and default configuration are merged using deep-merge, so you do not need to redefine entire configuration  
+Configurtion object is large, but typically you only need to modify few values:  
+
+- `enabled`: Choose which models to use
+- `modelPath`: Update as needed to reflect your application's relative path
+
+for example,
+
+```js
+const myConfig = {
+  backend: 'wasm',
+  filter: { enabled: false },
+}
+const result = await human.detect(image, myConfig)
 ```
 
 <hr>

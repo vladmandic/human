@@ -1,7 +1,7 @@
 {
   "name": "@vladmandic/human",
   "version": "0.6.6",
-  "description": "human: 3D Face Detection, Iris Tracking and Age & Gender Prediction",
+  "description": "human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition",
   "sideEffects": false,
   "main": "dist/human.node.js",
   "module": "dist/human.esm.js",

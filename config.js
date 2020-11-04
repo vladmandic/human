@@ -41,6 +41,9 @@ export default {
     polaroid: false,         // image polaroid camera effect
     pixelate: 0,             // range: 0 (no pixelate) to N (number of pixels to pixelate)
   },
+  gesture: {
+    enabled: true,           // enable simple gesture recognition
+  },
   face: {
     enabled: true,           // controls if specified modul is enabled
                              // face.enabled is required for all face models: detector, mesh, iris, age, gender, emotion

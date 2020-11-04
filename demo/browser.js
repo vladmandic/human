@@ -332,7 +332,7 @@ function setupMenu() {
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addLabel('Model Parameters');
-  menu.addRange('Max Objects', config.face.detector, 'maxFaces', 0, 50, 1, (val) => {
+  menu.addRange('Max Objects', config.face.detector, 'maxFaces', 1, 50, 1, (val) => {
     config.face.detector.maxFaces = parseInt(val);
     config.body.maxDetections = parseInt(val);
     config.hand.maxHands = parseInt(val);

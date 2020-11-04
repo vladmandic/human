@@ -35,8 +35,8 @@ class HandPipeline {
     this.inputSize = inputSize;
     this.regionsOfInterest = [];
     this.runsWithoutHandDetector = 0;
-    this.maxHandsNumber = 1;
     this.skipFrames = 0;
+    this.detectedHands = 0;
   }
 
   getBoxForPalmLandmarks(palmLandmarks, rotationMatrix) {
@@ -87,12 +87,18 @@ class HandPipeline {
 
   async estimateHands(image, config) {
     this.skipFrames = config.skipFrames;
-    const useFreshBox = this.shouldUpdateRegionsOfInterest();
+    // don't need box detection if we have sufficient number of boxes
+    let useFreshBox = (this.detectedHands === 0) || (this.detectedHands !== this.regionsOfInterest.length);
+    let boundingBoxPredictions;
+    // but every skipFrames check if detect boxes number changed
+    if (useFreshBox || this.runsWithoutHandDetector > this.skipFrames) boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config);
+    // if there are new boxes and number of boxes doesn't match use new boxes, but not if maxhands is fixed to 1
+    if (config.maxHands > 1 && boundingBoxPredictions && boundingBoxPredictions.length > 0 && boundingBoxPredictions.length !== this.detectedHands) useFreshBox = true;
     if (useFreshBox) {
-      const boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config);
       this.regionsOfInterest = [];
       if (!boundingBoxPredictions || boundingBoxPredictions.length === 0) {
         image.dispose();
+        this.detectedHands = 0;
         return null;
       }
       for (const boundingBoxPrediction of boundingBoxPredictions) {
@@ -121,28 +127,38 @@ class HandPipeline {
       handImage.dispose();
       const confidenceValue = confidence.dataSync()[0];
       confidence.dispose();
-      if (confidenceValue < config.minConfidence) {
+      if (confidenceValue >= config.minConfidence) {
+        const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
+        const rawCoords = keypointsReshaped.arraySync();
         keypoints.dispose();
-        this.regionsOfInterest[i] = null;
-        return null;
+        keypointsReshaped.dispose();
+        const coords = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
+        const nextBoundingBox = this.getBoxForHandLandmarks(coords);
+        this.updateRegionsOfInterest(nextBoundingBox, i);
+        const result = {
+          landmarks: coords,
+          handInViewConfidence: confidenceValue,
+          boundingBox: {
+            topLeft: nextBoundingBox.startPoint,
+            bottomRight: nextBoundingBox.endPoint,
+          },
+        };
+        hands.push(result);
+      } else {
+        /*
+        const result = {
+          handInViewConfidence: confidenceValue,
+          boundingBox: {
+            topLeft: currentBox.startPoint,
+            bottomRight: currentBox.endPoint,
+          },
+        };
+        hands.push(result);
+        */
       }
-      const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
-      const rawCoords = keypointsReshaped.arraySync();
       keypoints.dispose();
-      keypointsReshaped.dispose();
-      const coords = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
-      const nextBoundingBox = this.getBoxForHandLandmarks(coords);
-      this.updateRegionsOfInterest(nextBoundingBox, i);
-      const result = {
-        landmarks: coords,
-        handInViewConfidence: confidenceValue,
-        boundingBox: {
-          topLeft: nextBoundingBox.startPoint,
-          bottomRight: nextBoundingBox.endPoint,
-        },
-      };
-      hands.push(result);
     }
+    this.detectedHands = hands.length;
     return hands;
   }
 
@@ -173,10 +189,6 @@ class HandPipeline {
       iou = intersection / (boxArea + previousBoxArea - intersection);
     }
     this.regionsOfInterest[i] = iou > UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD ? previousBox : newBox;
-  }
-
-  shouldUpdateRegionsOfInterest() {
-    return !this.regionsOfInterest || (this.regionsOfInterest.length === 0) || (this.runsWithoutHandDetector >= this.skipFrames);
   }
 }
 

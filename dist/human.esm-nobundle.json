@@ -25,7 +25,7 @@
       "imports": []
     },
     "src/facemesh/facemesh.js": {
-      "bytes": 2568,
+      "bytes": 2572,
       "imports": [
         {
           "path": "src/facemesh/blazeface.js"
@@ -34,7 +34,7 @@
           "path": "src/facemesh/keypoints.js"
         },
         {
-          "path": "src/facemesh/pipeline.js"
+          "path": "src/facemesh/facepipeline.js"
         },
         {
           "path": "src/facemesh/uvcoords.js"
@@ -44,12 +44,8 @@
         }
       ]
     },
-    "src/facemesh/keypoints.js": {
-      "bytes": 2507,
-      "imports": []
-    },
-    "src/facemesh/pipeline.js": {
-      "bytes": 14262,
+    "src/facemesh/facepipeline.js": {
+      "bytes": 14296,
       "imports": [
         {
           "path": "src/facemesh/box.js"
@@ -61,6 +57,10 @@
           "path": "src/facemesh/util.js"
         }
       ]
+    },
+    "src/facemesh/keypoints.js": {
+      "bytes": 2507,
+      "imports": []
     },
     "src/facemesh/triangulation.js": {
       "bytes": 12940,
@@ -79,40 +79,19 @@
       "imports": []
     },
     "src/handpose/box.js": {
-      "bytes": 2572,
+      "bytes": 3192,
       "imports": []
     },
     "src/handpose/handdetector.js": {
-      "bytes": 4077,
+      "bytes": 4484,
       "imports": [
         {
           "path": "src/handpose/box.js"
         }
       ]
     },
-    "src/handpose/handpose.js": {
-      "bytes": 1849,
-      "imports": [
-        {
-          "path": "src/handpose/handdetector.js"
-        },
-        {
-          "path": "src/handpose/keypoints.js"
-        },
-        {
-          "path": "src/handpose/pipeline.js"
-        },
-        {
-          "path": "src/handpose/anchors.js"
-        }
-      ]
-    },
-    "src/handpose/keypoints.js": {
-      "bytes": 193,
-      "imports": []
-    },
-    "src/handpose/pipeline.js": {
-      "bytes": 8216,
+    "src/handpose/handpipeline.js": {
+      "bytes": 8058,
       "imports": [
         {
           "path": "src/handpose/box.js"
@@ -122,12 +101,26 @@
         }
       ]
     },
+    "src/handpose/handpose.js": {
+      "bytes": 2772,
+      "imports": [
+        {
+          "path": "src/handpose/handdetector.js"
+        },
+        {
+          "path": "src/handpose/handpipeline.js"
+        },
+        {
+          "path": "src/handpose/anchors.js"
+        }
+      ]
+    },
     "src/handpose/util.js": {
-      "bytes": 2488,
+      "bytes": 3030,
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15164,
+      "bytes": 15209,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -282,7 +275,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 605307
+      "bytes": 607262
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -299,8 +292,8 @@
         "src/facemesh/util.js": {
           "bytesInOutput": 1171
         },
-        "src/facemesh/pipeline.js": {
-          "bytesInOutput": 5571
+        "src/facemesh/facepipeline.js": {
+          "bytesInOutput": 5585
         },
         "src/facemesh/uvcoords.js": {
           "bytesInOutput": 16785
@@ -318,7 +311,7 @@
           "bytesInOutput": 1236
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1104
+          "bytesInOutput": 1098
         },
         "src/posenet/modelBase.js": {
           "bytesInOutput": 455
@@ -333,46 +326,43 @@
           "bytesInOutput": 546
         },
         "src/posenet/keypoints.js": {
-          "bytesInOutput": 1621
+          "bytesInOutput": 1620
         },
         "src/posenet/vectors.js": {
-          "bytesInOutput": 607
+          "bytesInOutput": 606
         },
         "src/posenet/decodePose.js": {
-          "bytesInOutput": 1016
+          "bytesInOutput": 1015
         },
         "src/posenet/decodeMultiple.js": {
           "bytesInOutput": 603
         },
         "src/posenet/util.js": {
-          "bytesInOutput": 1053
+          "bytesInOutput": 1052
         },
         "src/posenet/modelPoseNet.js": {
           "bytesInOutput": 841
         },
         "src/posenet/posenet.js": {
-          "bytesInOutput": 459
+          "bytesInOutput": 458
         },
         "src/handpose/box.js": {
-          "bytesInOutput": 1376
+          "bytesInOutput": 1420
         },
         "src/handpose/handdetector.js": {
-          "bytesInOutput": 2004
-        },
-        "src/handpose/keypoints.js": {
-          "bytesInOutput": 155
+          "bytesInOutput": 1891
         },
         "src/handpose/util.js": {
-          "bytesInOutput": 972
+          "bytesInOutput": 997
         },
-        "src/handpose/pipeline.js": {
-          "bytesInOutput": 3223
+        "src/handpose/handpipeline.js": {
+          "bytesInOutput": 3233
         },
         "src/handpose/anchors.js": {
           "bytesInOutput": 127000
         },
         "src/handpose/handpose.js": {
-          "bytesInOutput": 1014
+          "bytesInOutput": 1112
         },
         "src/imagefx.js": {
           "bytesInOutput": 11013
@@ -384,13 +374,13 @@
           "bytesInOutput": 2567
         },
         "src/human.js": {
-          "bytesInOutput": 8439
+          "bytesInOutput": 8467
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 211614
+      "bytes": 212257
     }
   }
 }

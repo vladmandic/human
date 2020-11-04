@@ -180,7 +180,7 @@
       ]
     },
     "src/facemesh/facemesh.js": {
-      "bytes": 2568,
+      "bytes": 2572,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -192,7 +192,7 @@
           "path": "src/facemesh/keypoints.js"
         },
         {
-          "path": "src/facemesh/pipeline.js"
+          "path": "src/facemesh/facepipeline.js"
         },
         {
           "path": "src/facemesh/uvcoords.js"
@@ -202,12 +202,8 @@
         }
       ]
     },
-    "src/facemesh/keypoints.js": {
-      "bytes": 2507,
-      "imports": []
-    },
-    "src/facemesh/pipeline.js": {
-      "bytes": 14262,
+    "src/facemesh/facepipeline.js": {
+      "bytes": 14296,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -222,6 +218,10 @@
           "path": "src/facemesh/util.js"
         }
       ]
+    },
+    "src/facemesh/keypoints.js": {
+      "bytes": 2507,
+      "imports": []
     },
     "src/facemesh/triangulation.js": {
       "bytes": 12940,
@@ -240,7 +240,7 @@
       "imports": []
     },
     "src/handpose/box.js": {
-      "bytes": 2572,
+      "bytes": 3192,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -248,7 +248,7 @@
       ]
     },
     "src/handpose/handdetector.js": {
-      "bytes": 4077,
+      "bytes": 4484,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -258,32 +258,8 @@
         }
       ]
     },
-    "src/handpose/handpose.js": {
-      "bytes": 1849,
-      "imports": [
-        {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
-        },
-        {
-          "path": "src/handpose/handdetector.js"
-        },
-        {
-          "path": "src/handpose/keypoints.js"
-        },
-        {
-          "path": "src/handpose/pipeline.js"
-        },
-        {
-          "path": "src/handpose/anchors.js"
-        }
-      ]
-    },
-    "src/handpose/keypoints.js": {
-      "bytes": 193,
-      "imports": []
-    },
-    "src/handpose/pipeline.js": {
-      "bytes": 8216,
+    "src/handpose/handpipeline.js": {
+      "bytes": 8058,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -296,12 +272,29 @@
         }
       ]
     },
+    "src/handpose/handpose.js": {
+      "bytes": 2772,
+      "imports": [
+        {
+          "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
+        },
+        {
+          "path": "src/handpose/handdetector.js"
+        },
+        {
+          "path": "src/handpose/handpipeline.js"
+        },
+        {
+          "path": "src/handpose/anchors.js"
+        }
+      ]
+    },
     "src/handpose/util.js": {
-      "bytes": 2488,
+      "bytes": 3030,
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15164,
+      "bytes": 15209,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -488,7 +481,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5401085
+      "bytes": 5403040
     },
     "dist/human.js": {
       "imports": [],
@@ -562,8 +555,8 @@
         "src/facemesh/util.js": {
           "bytesInOutput": 1190
         },
-        "src/facemesh/pipeline.js": {
-          "bytesInOutput": 5563
+        "src/facemesh/facepipeline.js": {
+          "bytesInOutput": 5577
         },
         "src/facemesh/uvcoords.js": {
           "bytesInOutput": 16786
@@ -617,25 +610,22 @@
           "bytesInOutput": 474
         },
         "src/handpose/box.js": {
-          "bytesInOutput": 1362
+          "bytesInOutput": 1398
         },
         "src/handpose/handdetector.js": {
-          "bytesInOutput": 2010
-        },
-        "src/handpose/keypoints.js": {
-          "bytesInOutput": 156
+          "bytesInOutput": 1900
         },
         "src/handpose/util.js": {
-          "bytesInOutput": 988
+          "bytesInOutput": 1005
         },
-        "src/handpose/pipeline.js": {
-          "bytesInOutput": 3221
+        "src/handpose/handpipeline.js": {
+          "bytesInOutput": 3231
         },
         "src/handpose/anchors.js": {
           "bytesInOutput": 127001
         },
         "src/handpose/handpose.js": {
-          "bytesInOutput": 992
+          "bytesInOutput": 1090
         },
         "src/imagefx.js": {
           "bytesInOutput": 11014
@@ -647,10 +637,10 @@
           "bytesInOutput": 2567
         },
         "src/human.js": {
-          "bytesInOutput": 8493
+          "bytesInOutput": 8522
         }
       },
-      "bytes": 1273205
+      "bytes": 1273846
     }
   }
 }

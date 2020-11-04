@@ -1,30 +1,54 @@
+/**
+ * @license
+ * Copyright 2020 Google LLC. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * =============================================================================
+ */
 const tf = require('@tensorflow/tfjs');
-const hand = require('./handdetector');
-const keypoints = require('./keypoints');
-const pipe = require('./pipeline');
-const anchors = require('./anchors.js');
+const handdetector = require('./handdetector');
+const pipeline = require('./handpipeline');
+const anchors = require('./anchors');
+
+const MESH_ANNOTATIONS = {
+  thumb: [1, 2, 3, 4],
+  indexFinger: [5, 6, 7, 8],
+  middleFinger: [9, 10, 11, 12],
+  ringFinger: [13, 14, 15, 16],
+  pinky: [17, 18, 19, 20],
+  palmBase: [0],
+};
 
 class HandPose {
-  constructor(pipeline) {
-    this.pipeline = pipeline;
+  constructor(pipe) {
+    this.pipeline = pipe;
+  }
+
+  static getAnnotations() {
+    return MESH_ANNOTATIONS;
   }
 
   async estimateHands(input, config) {
-    this.skipFrames = config.skipFrames;
-    this.detectionConfidence = config.minConfidence;
-    this.maxHands = config.maxHands;
     const predictions = await this.pipeline.estimateHands(input, config);
+    if (!predictions) return [];
     const hands = [];
-    if (!predictions) return hands;
     for (const prediction of predictions) {
-      if (!prediction) return [];
       const annotations = {};
-      for (const key of Object.keys(keypoints.MESH_ANNOTATIONS)) {
-        annotations[key] = keypoints.MESH_ANNOTATIONS[key].map((index) => prediction.landmarks[index]);
+      for (const key of Object.keys(MESH_ANNOTATIONS)) {
+        annotations[key] = MESH_ANNOTATIONS[key].map((index) => prediction.landmarks[index]);
       }
       hands.push({
-        confidence: prediction.confidence || 0,
-        box: prediction.box ? [prediction.box.topLeft[0], prediction.box.topLeft[1], prediction.box.bottomRight[0] - prediction.box.topLeft[0], prediction.box.bottomRight[1] - prediction.box.topLeft[1]] : 0,
+        confidence: prediction.handInViewConfidence,
+        box: prediction.boundingBox ? [prediction.boundingBox.topLeft[0], prediction.boundingBox.topLeft[1], prediction.boundingBox.bottomRight[0] - prediction.boundingBox.topLeft[0], prediction.boundingBox.bottomRight[1] - prediction.boundingBox.topLeft[1]] : 0,
         landmarks: prediction.landmarks,
         annotations,
       });
@@ -35,13 +59,14 @@ class HandPose {
 exports.HandPose = HandPose;
 
 async function load(config) {
+  // maxContinuousChecks = Infinity, detectionConfidence = 0.8, iouThreshold = 0.3, scoreThreshold = 0.5
   const [handDetectorModel, handPoseModel] = await Promise.all([
     tf.loadGraphModel(config.detector.modelPath, { fromTFHub: config.detector.modelPath.includes('tfhub.dev') }),
     tf.loadGraphModel(config.skeleton.modelPath, { fromTFHub: config.skeleton.modelPath.includes('tfhub.dev') }),
   ]);
-  const detector = new hand.HandDetector(handDetectorModel, anchors.anchors, config);
-  const pipeline = new pipe.HandPipeline(detector, handPoseModel, config);
-  const handpose = new HandPose(pipeline);
+  const detector = new handdetector.HandDetector(handDetectorModel, config.inputSize, anchors.anchors);
+  const pipe = new pipeline.HandPipeline(detector, handPoseModel, config.inputSize);
+  const handpose = new HandPose(pipe);
   return handpose;
 }
 exports.load = load;

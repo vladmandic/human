@@ -1,7 +1,7 @@
 const tf = require('@tensorflow/tfjs');
 const blazeface = require('./blazeface');
 const keypoints = require('./keypoints');
-const pipe = require('./pipeline');
+const pipe = require('./facepipeline');
 const uv_coords = require('./uvcoords');
 const triangulation = require('./triangulation').default;
 

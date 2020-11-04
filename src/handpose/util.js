@@ -1,15 +1,27 @@
+/**
+ * @license
+ * Copyright 2020 Google LLC. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * =============================================================================
+ */
 function normalizeRadians(angle) {
   return angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
 }
-exports.normalizeRadians = normalizeRadians;
-
 function computeRotation(point1, point2) {
   const radians = Math.PI / 2 - Math.atan2(-(point2[1] - point1[1]), point2[0] - point1[0]);
   return normalizeRadians(radians);
 }
-exports.computeRotation = computeRotation;
-
-const buildTranslationMatrix = (x, y) => ([[1, 0, x], [0, 1, y], [0, 0, 1]]);
+const buildTranslationMatrix = (x, y) => [[1, 0, x], [0, 1, y], [0, 0, 1]];
 function dot(v1, v2) {
   let product = 0;
   for (let i = 0; i < v1.length; i++) {
@@ -17,8 +29,6 @@ function dot(v1, v2) {
   }
   return product;
 }
-exports.dot = dot;
-
 function getColumnFrom2DArr(arr, columnIndex) {
   const column = [];
   for (let i = 0; i < arr.length; i++) {
@@ -26,8 +36,6 @@ function getColumnFrom2DArr(arr, columnIndex) {
   }
   return column;
 }
-exports.getColumnFrom2DArr = getColumnFrom2DArr;
-
 function multiplyTransformMatrices(mat1, mat2) {
   const product = [];
   const size = mat1.length;
@@ -48,8 +56,6 @@ function buildRotationMatrix(rotation, center) {
   const negativeTranslationMatrix = buildTranslationMatrix(-center[0], -center[1]);
   return multiplyTransformMatrices(translationTimesRotation, negativeTranslationMatrix);
 }
-exports.buildRotationMatrix = buildRotationMatrix;
-
 function invertTransformMatrix(matrix) {
   const rotationComponent = [[matrix[0][0], matrix[1][0]], [matrix[0][1], matrix[1][1]]];
   const translationComponent = [matrix[0][2], matrix[1][2]];
@@ -63,12 +69,18 @@ function invertTransformMatrix(matrix) {
     [0, 0, 1],
   ];
 }
-exports.invertTransformMatrix = invertTransformMatrix;
-
 function rotatePoint(homogeneousCoordinate, rotationMatrix) {
   return [
     dot(homogeneousCoordinate, rotationMatrix[0]),
     dot(homogeneousCoordinate, rotationMatrix[1]),
   ];
 }
-exports.rotatePoint = rotatePoint;
+export {
+  buildRotationMatrix,
+  computeRotation,
+  dot,
+  getColumnFrom2DArr,
+  invertTransformMatrix,
+  normalizeRadians,
+  rotatePoint,
+};

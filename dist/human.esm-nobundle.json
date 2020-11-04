@@ -75,7 +75,7 @@
       "imports": []
     },
     "src/gesture.js": {
-      "bytes": 2122,
+      "bytes": 2175,
       "imports": []
     },
     "src/handpose/anchors.js": {
@@ -87,7 +87,7 @@
       "imports": []
     },
     "src/handpose/handdetector.js": {
-      "bytes": 4484,
+      "bytes": 4313,
       "imports": [
         {
           "path": "src/handpose/box.js"
@@ -95,7 +95,7 @@
       ]
     },
     "src/handpose/handpipeline.js": {
-      "bytes": 7959,
+      "bytes": 8657,
       "imports": [
         {
           "path": "src/handpose/box.js"
@@ -106,7 +106,7 @@
       ]
     },
     "src/handpose/handpose.js": {
-      "bytes": 2667,
+      "bytes": 2766,
       "imports": [
         {
           "path": "src/handpose/handdetector.js"
@@ -124,7 +124,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 11168,
+      "bytes": 11165,
       "imports": [
         {
           "path": "src/facemesh/facemesh.js"
@@ -290,7 +290,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 610884
+      "bytes": 611623
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -365,22 +365,22 @@
           "bytesInOutput": 1420
         },
         "src/handpose/handdetector.js": {
-          "bytesInOutput": 1891
+          "bytesInOutput": 1806
         },
         "src/handpose/util.js": {
           "bytesInOutput": 997
         },
         "src/handpose/handpipeline.js": {
-          "bytesInOutput": 3054
+          "bytesInOutput": 3069
         },
         "src/handpose/anchors.js": {
           "bytesInOutput": 127000
         },
         "src/handpose/handpose.js": {
-          "bytesInOutput": 1112
+          "bytesInOutput": 1127
         },
         "src/gesture.js": {
-          "bytesInOutput": 1200
+          "bytesInOutput": 1219
         },
         "src/imagefx.js": {
           "bytesInOutput": 11013
@@ -395,13 +395,13 @@
           "bytesInOutput": 2862
         },
         "src/human.js": {
-          "bytesInOutput": 5570
+          "bytesInOutput": 5611
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 213089
+      "bytes": 213094
     }
   }
 }

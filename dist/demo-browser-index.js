@@ -3686,7 +3686,7 @@ var ei = we((A) => {
       return i([t]), t.dtype === "complex64" ? r.complexAbs(t) : r.abs(t);
     }, e, null, mc);
   }
-  var jt = U({abs_: UI});
+  var $t = U({abs_: UI});
   function BI(n) {
     var t = R(n, "x", "acos"), e = {x: t};
     return z.runKernelFunc(function(r, i) {
@@ -5249,12 +5249,12 @@ var ei = we((A) => {
       return s([t]), a.square(t);
     }, {x: t}, null, "Square", e, r, i);
   }
-  var Xe = U({square_: eT});
+  var $e = U({square_: eT});
   function tT(n, t, e) {
     t === void 0 && (t = null), e === void 0 && (e = false), n = R(n, "x", "moments");
     var r = rt(t, n.shape), i = Oa(n, r, e), a = i.shape;
     e || (a = an(i.shape, r));
-    var s = Xe(be(he(n, "float32"), Y(i, a))), o = Oa(s, r, e);
+    var s = $e(be(he(n, "float32"), Y(i, a))), o = Oa(s, r, e);
     return {mean: i, variance: o};
   }
   var nT = U({moments_: tT});
@@ -6486,29 +6486,29 @@ var ei = we((A) => {
   }
   function f0(n, t, e) {
     if (e === void 0 && (e = null), n.rank === 0)
-      return jt(n);
+      return $t(n);
     if (n.rank !== 1 && e === null)
       return f0(Y(n, [-1]), t, e);
     if (n.rank === 1 || typeof e == "number" || Array.isArray(e) && e.length === 1) {
       if (t === 1)
-        return _e(jt(n), e);
+        return _e($t(n), e);
       if (t === Infinity)
-        return Kr(jt(n), e);
+        return Kr($t(n), e);
       if (t === -Infinity)
-        return Ks(jt(n), e);
+        return Ks($t(n), e);
       if (t === "euclidean" || t === 2)
-        return Ht(_e(Xn(jt(n), Le(2, "int32")), e));
+        return Ht(_e(Xn($t(n), Le(2, "int32")), e));
       throw new Error("Error in norm: invalid ord value: " + t);
     }
     if (Array.isArray(e) && e.length === 2) {
       if (t === 1)
-        return Kr(_e(jt(n), e[0]), e[1] - 1);
+        return Kr(_e($t(n), e[0]), e[1] - 1);
       if (t === Infinity)
-        return Kr(_e(jt(n), e[1]), e[0]);
+        return Kr(_e($t(n), e[1]), e[0]);
       if (t === -Infinity)
-        return Ks(_e(jt(n), e[1]), e[0]);
+        return Ks(_e($t(n), e[1]), e[0]);
       if (t === "fro" || t === "euclidean")
-        return Ht(_e(Xe(n), e));
+        return Ht(_e($e(n), e));
       throw new Error("Error in norm: invalid ord value: " + t);
     }
     throw new Error("Error in norm: invalid axis: " + e);
@@ -7255,7 +7255,7 @@ var ei = we((A) => {
     r === void 0 && (r = A.Reduction.SUM_BY_NONZERO_WEIGHTS);
     var i = R(n, "labels", "absoluteDifference"), a = R(t, "predictions", "absoluteDifference"), s = null;
     e != null && (s = R(e, "weights", "absoluteDifference")), Pe(i.shape, a.shape, "Error in absoluteDifference: ");
-    var o = jt(be(i, a));
+    var o = $t(be(i, a));
     return Zn(o, s, r);
   }
   var yC = U({absoluteDifference_: gC});
@@ -7281,7 +7281,7 @@ var ei = we((A) => {
     r === void 0 && (r = 1), i === void 0 && (i = A.Reduction.SUM_BY_NONZERO_WEIGHTS);
     var a = R(n, "labels", "huberLoss"), s = R(t, "predictions", "huberLoss"), o = null;
     e != null && (o = R(e, "weights", "huberLoss")), Pe(a.shape, s.shape, "Error in huberLoss: ");
-    var c = Le(r), l = jt(be(s, a)), u = js(l, c), h = be(l, u), d = ge(Z(Le(0.5), Xe(u)), Z(c, h));
+    var c = Le(r), l = $t(be(s, a)), u = js(l, c), h = be(l, u), d = ge(Z(Le(0.5), $e(u)), Z(c, h));
     return Zn(d, o, i);
   }
   var SC = U({huberLoss_: LC});
@@ -7304,7 +7304,7 @@ var ei = we((A) => {
   function _C(n, t) {
     var e = R(n, "labels", "sigmoidCrossEntropyWithLogits"), r = R(t, "logits", "sigmoidCrossEntropyWithLogits");
     Pe(e.shape, r.shape, "Error in sigmoidCrossEntropyWithLogits: ");
-    var i = Da(r), a = Z(r, e), s = Vu(yn(xt(jt(r))));
+    var i = Da(r), a = Z(r, e), s = Vu(yn(xt($t(r))));
     return ge(be(i, a), s);
   }
   function CC(n, t, e, r, i) {
@@ -7426,7 +7426,7 @@ var ei = we((A) => {
           return;
         var u = r.accumulatedGrads[s].variable, h = r.accumulatedUpdates[s].variable;
         wt(function() {
-          var d = ge(Z(u, r.rho), Z(Xe(l), 1 - r.rho)), p = Z(Ne(Ht(ge(h, r.epsilon)), Ht(ge(u, r.epsilon))), l), f = ge(Z(h, r.rho), Z(Xe(p), 1 - r.rho));
+          var d = ge(Z(u, r.rho), Z($e(l), 1 - r.rho)), p = Z(Ne(Ht(ge(h, r.epsilon)), Ht(ge(u, r.epsilon))), l), f = ge(Z(h, r.rho), Z($e(p), 1 - r.rho));
           u.assign(d), h.assign(f);
           var m = ge(Z(p, -r.learningRate), o);
           o.assign(m);
@@ -7499,7 +7499,7 @@ var ei = we((A) => {
           return;
         var u = r.accumulatedGrads[s].variable;
         wt(function() {
-          var h = ge(u, Xe(l));
+          var h = ge(u, $e(l));
           u.assign(h);
           var d = ge(Z(Ne(l, Ht(ge(h, z.backend.epsilon()))), -r.learningRate), o);
           o.assign(d);
@@ -7568,7 +7568,7 @@ var ei = we((A) => {
           var h = Array.isArray(e) ? e[c].tensor : e[o];
           if (h == null)
             return;
-          var d = r.accumulatedFirstMoment[c].variable, p = r.accumulatedSecondMoment[c].variable, f = ge(Z(d, r.beta1), Z(h, 1 - r.beta1)), m = ge(Z(p, r.beta2), Z(Xe(h), 1 - r.beta2)), g = Ne(f, a), y = Ne(m, s);
+          var d = r.accumulatedFirstMoment[c].variable, p = r.accumulatedSecondMoment[c].variable, f = ge(Z(d, r.beta1), Z(h, 1 - r.beta1)), m = ge(Z(p, r.beta2), Z($e(h), 1 - r.beta2)), g = Ne(f, a), y = Ne(m, s);
           d.assign(f), p.assign(m);
           var w = ge(Z(Ne(g, ge(Ht(y), r.epsilon)), -r.learningRate), l);
           l.assign(w);
@@ -7640,7 +7640,7 @@ var ei = we((A) => {
           var h = Array.isArray(e) ? e[c].tensor : e[o];
           if (h == null)
             return;
-          var d = r.accumulatedFirstMoment[c].variable, p = r.accumulatedWeightedInfNorm[c].variable, f = ge(Z(d, r.beta1), Z(h, 1 - r.beta1)), m = Z(p, r.beta2), g = jt(h), y = Fi(m, g);
+          var d = r.accumulatedFirstMoment[c].variable, p = r.accumulatedWeightedInfNorm[c].variable, f = ge(Z(d, r.beta1), Z(h, 1 - r.beta1)), m = Z(p, r.beta2), g = $t(h), y = Fi(m, g);
           d.assign(f), p.assign(y);
           var w = ge(Z(Ne(s, a), Ne(f, ge(y, r.epsilon))), l);
           l.assign(w);
@@ -7820,14 +7820,14 @@ var ei = we((A) => {
           return;
         var u = r.accumulatedMeanSquares[s].variable, h = r.accumulatedMoments[s].variable;
         wt(function() {
-          var d = ge(Z(u, r.decay), Z(Xe(l), 1 - r.decay));
+          var d = ge(Z(u, r.decay), Z($e(l), 1 - r.decay));
           if (r.centered) {
-            var p = r.accumulatedMeanGrads[s].variable, f = ge(Z(p, r.decay), Z(l, 1 - r.decay)), m = Ne(Z(l, r.learningRate), Ht(be(d, ge(Xe(f), r.epsilon)))), g = ge(Z(h, r.momentum), m);
+            var p = r.accumulatedMeanGrads[s].variable, f = ge(Z(p, r.decay), Z(l, 1 - r.decay)), m = Ne(Z(l, r.learningRate), Ht(be(d, ge($e(f), r.epsilon)))), g = ge(Z(h, r.momentum), m);
             u.assign(d), p.assign(f), h.assign(g);
             var y = be(o, g);
             o.assign(y);
           } else {
-            var w = ge(Z(u, r.decay), Z(Xe(l), 1 - r.decay)), g = ge(Z(h, r.momentum), Ne(Z(l, r.learningRate), Ht(ge(w, r.epsilon))));
+            var w = ge(Z(u, r.decay), Z($e(l), 1 - r.decay)), g = ge(Z(h, r.momentum), Ne(Z(l, r.learningRate), Ht(ge(w, r.epsilon))));
             u.assign(w), h.assign(g);
             var y = be(o, g);
             o.assign(y);
@@ -8089,14 +8089,14 @@ var ei = we((A) => {
   var wR = {kernelName: gc, inputsToSave: ["x"], gradFunc: function(n, t) {
     var e = t[0];
     return {x: function() {
-      var r = Xe(he(e, "float32")), i = Ht(be(Le(1), r));
+      var r = $e(he(e, "float32")), i = Ht(be(Le(1), r));
       return xt(Ne(n, i));
     }};
   }};
   var bR = {kernelName: yc, inputsToSave: ["x"], gradFunc: function(n, t) {
     var e = t[0];
     return {x: function() {
-      var r = Ht(be(Xe(he(e, "float32")), 1));
+      var r = Ht(be($e(he(e, "float32")), 1));
       return Ne(n, r);
     }};
   }};
@@ -8133,22 +8133,22 @@ var ei = we((A) => {
   var AR = {kernelName: xc, inputsToSave: ["x"], gradFunc: function(n, t) {
     var e = t[0];
     return {x: function() {
-      return Ne(n, Ht(be(Le(1), Xe(he(e, "float32")))));
+      return Ne(n, Ht(be(Le(1), $e(he(e, "float32")))));
     }};
   }};
   var TR = {kernelName: Lc, inputsToSave: ["x"], gradFunc: function(n, t) {
     var e = t[0];
     return {x: function() {
-      var r = Ht(ge(Le(1), Xe(he(e, "float32"))));
+      var r = Ht(ge(Le(1), $e(he(e, "float32"))));
       return Ne(n, r);
     }};
   }};
   var NR = {kernelName: Ac, inputsToSave: ["a", "b"], gradFunc: function(n, t) {
     var e = t[0], r = t[1], i = it(e.shape, r.shape), a = function() {
-      var o = ge(Xe(e), Xe(r)), c = Z(n, Ne(r, o)), l = bt(e.shape, i);
+      var o = ge($e(e), $e(r)), c = Z(n, Ne(r, o)), l = bt(e.shape, i);
       return l.length > 0 && (c = _e(c, l)), Y(c, e.shape);
     }, s = function() {
-      var o = ge(Xe(e), Xe(r)), c = xt(Z(n, Ne(e, o))), l = bt(r.shape, i);
+      var o = ge($e(e), $e(r)), c = xt(Z(n, Ne(e, o))), l = bt(r.shape, i);
       return l.length > 0 && (c = _e(c, l)), Y(c, r.shape);
     };
     return {a, b: s};
@@ -8156,13 +8156,13 @@ var ei = we((A) => {
   var _R = {kernelName: Sc, inputsToSave: ["x"], gradFunc: function(n, t) {
     var e = t[0];
     return {x: function() {
-      return Ne(n, ge(Xe(he(e, "float32")), 1));
+      return Ne(n, ge($e(he(e, "float32")), 1));
     }};
   }};
   var CR = {kernelName: Ic, inputsToSave: ["x"], gradFunc: function(n, t) {
     var e = t[0];
     return {x: function() {
-      return Ne(n, be(Le(1), Xe(he(e, "float32"))));
+      return Ne(n, be(Le(1), $e(he(e, "float32"))));
     }};
   }};
   function RR(n, t, e, r, i, a, s) {
@@ -8388,7 +8388,7 @@ var ei = we((A) => {
     }, s = function() {
       var o = Z(n, he(e, "float32")), c = bt(r.shape, i);
       c.length > 0 && (o = Y(_e(o, c), r.shape));
-      var l = Xe(r);
+      var l = $e(r);
       return xt(Ne(o, he(l, "float32")));
     };
     return {a, b: s};
@@ -8402,7 +8402,7 @@ var ei = we((A) => {
     }};
   }};
   var t3 = {kernelName: Gc, inputsToSave: ["x"], gradFunc: function(n, t) {
-    var e = t[0], r = Z(yn(xt(Xe(e))), 2 / Math.sqrt(Math.PI));
+    var e = t[0], r = Z(yn(xt($e(e))), 2 / Math.sqrt(Math.PI));
     return {x: function() {
       return Z(n, r);
     }};
@@ -8431,7 +8431,7 @@ var ei = we((A) => {
     }, s = function() {
       var o = Z(n, he(e, "float32")), c = bt(r.shape, i);
       c.length > 0 && (o = Y(_e(o, c), r.shape));
-      var l = Xe(r);
+      var l = $e(r);
       return xt(Ne(o, he(l, "float32")));
     };
     return {a, b: s};
@@ -8700,7 +8700,7 @@ var ei = we((A) => {
   var W3 = {kernelName: xl, inputsToSave: ["x"], gradFunc: function(n, t) {
     var e = t[0];
     return {x: function() {
-      return Ne(n, xt(Xe(e)));
+      return Ne(n, xt($e(e)));
     }};
   }};
   var U3 = {kernelName: Tl, inputsToSave: ["x"], gradFunc: function(n, t) {
@@ -8875,13 +8875,13 @@ var ei = we((A) => {
   var sO = {kernelName: ql, inputsToSave: ["x"], gradFunc: function(n, t) {
     var e = t[0];
     return {x: function() {
-      return Ne(n, Xe(Ps(e)));
+      return Ne(n, $e(Ps(e)));
     }};
   }};
   var oO = {kernelName: Yl, outputsToSave: [true], gradFunc: function(n, t) {
     var e = t[0];
     return {x: function() {
-      return Z(be(Le(1), Xe(e)), n);
+      return Z(be(Le(1), $e(e)), n);
     }};
   }};
   var cO = {kernelName: Kl, inputsToSave: ["x"], gradFunc: function(n, t, e) {
@@ -8947,7 +8947,7 @@ var ei = we((A) => {
     om(mO);
   }
   K.prototype.abs = function() {
-    return this.throwIfDisposed(), jt(this);
+    return this.throwIfDisposed(), $t(this);
   };
   K.prototype.acos = function() {
     return this.throwIfDisposed(), Qm(this);
@@ -9333,7 +9333,7 @@ var ei = we((A) => {
     return this.throwIfDisposed(), Ht(this);
   };
   K.prototype.square = function() {
-    return this.throwIfDisposed(), Xe(this);
+    return this.throwIfDisposed(), $e(this);
   };
   K.prototype.squaredDifference = function(n) {
     return this.throwIfDisposed(), Qs(this, n);
@@ -9568,7 +9568,7 @@ var ei = we((A) => {
   A.Variable = La;
   A.ZerosLike = Jl;
   A._FusedMatMul = eu;
-  A.abs = jt;
+  A.abs = $t;
   A.acos = Qm;
   A.acosh = eg;
   A.add = ge;
@@ -9788,7 +9788,7 @@ var ei = we((A) => {
   A.spectral = kC;
   A.split = zi;
   A.sqrt = Ht;
-  A.square = Xe;
+  A.square = $e;
   A.squaredDifference = Qs;
   A.squaredDifferenceStrict = d0;
   A.squeeze = eo;
@@ -9853,15 +9853,15 @@ var l1 = we((tt) => {
     }
     n.prototype = t === null ? Object.create(t) : (e.prototype = t.prototype, new e());
   }
-  var $t = function() {
-    return $t = Object.assign || function(t) {
+  var Xt = function() {
+    return Xt = Object.assign || function(t) {
       for (var e, r = 1, i = arguments.length; r < i; r++) {
         e = arguments[r];
         for (var a in e)
           Object.prototype.hasOwnProperty.call(e, a) && (t[a] = e[a]);
       }
       return t;
-    }, $t.apply(this, arguments);
+    }, Xt.apply(this, arguments);
   };
   function gO(n, t) {
     var e = {};
@@ -10102,20 +10102,20 @@ var l1 = we((tt) => {
         }
         var x = u.config;
         x.customObjects = f;
-        for (var L = $t({}, un), N = 0, I = Object.keys(e); N < I.length; N++) {
+        for (var L = Xt({}, un), N = 0, I = Object.keys(e); N < I.length; N++) {
           var y = I[N];
           un[y] = e[y];
         }
         wh(u.config);
         var C = p(d, u.config, e, i);
-        return un = $t({}, L), C;
+        return un = Xt({}, L), C;
       } else {
-        for (var L = $t({}, un), O = 0, D = Object.keys(e); O < D.length; O++) {
+        for (var L = Xt({}, un), O = 0, D = Object.keys(e); O < D.length; O++) {
           var y = D[O];
           un[y] = e[y];
         }
         var C = new d(u.config);
-        return un = $t({}, L), C;
+        return un = Xt({}, L), C;
       }
     }
   }
@@ -10701,7 +10701,7 @@ var l1 = we((tt) => {
     }
     return [e, r];
   }
-  var Xt = function(n) {
+  var Jt = function(n) {
     Q(t, n);
     function t(e) {
       var r = n.call(this) || this;
@@ -10724,16 +10724,16 @@ var l1 = we((tt) => {
       return {scale: this.scale, mode: this.mode, distribution: this.distribution, seed: this.seed};
     }, t.className = "VarianceScaling", t;
   }(hn);
-  v.serialization.registerClass(Xt);
+  v.serialization.registerClass(Jt);
   var Nh = function(n) {
     Q(t, n);
     function t(e) {
       return n.call(this, {scale: 1, mode: "fanAvg", distribution: "uniform", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Xt.className;
+      return Jt.className;
     }, t.className = "GlorotUniform", t;
-  }(Xt);
+  }(Jt);
   v.serialization.registerClass(Nh);
   var _h = function(n) {
     Q(t, n);
@@ -10741,9 +10741,9 @@ var l1 = we((tt) => {
       return n.call(this, {scale: 1, mode: "fanAvg", distribution: "normal", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Xt.className;
+      return Jt.className;
     }, t.className = "GlorotNormal", t;
-  }(Xt);
+  }(Jt);
   v.serialization.registerClass(_h);
   var Ch = function(n) {
     Q(t, n);
@@ -10751,9 +10751,9 @@ var l1 = we((tt) => {
       return n.call(this, {scale: 2, mode: "fanIn", distribution: "normal", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Xt.className;
+      return Jt.className;
     }, t.className = "HeNormal", t;
-  }(Xt);
+  }(Jt);
   v.serialization.registerClass(Ch);
   var Rh = function(n) {
     Q(t, n);
@@ -10761,9 +10761,9 @@ var l1 = we((tt) => {
       return n.call(this, {scale: 2, mode: "fanIn", distribution: "uniform", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Xt.className;
+      return Jt.className;
     }, t.className = "HeUniform", t;
-  }(Xt);
+  }(Jt);
   v.serialization.registerClass(Rh);
   var Oh = function(n) {
     Q(t, n);
@@ -10771,9 +10771,9 @@ var l1 = we((tt) => {
       return n.call(this, {scale: 1, mode: "fanIn", distribution: "normal", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Xt.className;
+      return Jt.className;
     }, t.className = "LeCunNormal", t;
-  }(Xt);
+  }(Jt);
   v.serialization.registerClass(Oh);
   var Eh = function(n) {
     Q(t, n);
@@ -10781,9 +10781,9 @@ var l1 = we((tt) => {
       return n.call(this, {scale: 1, mode: "fanIn", distribution: "uniform", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Xt.className;
+      return Jt.className;
     }, t.className = "LeCunNormal", t;
-  }(Xt);
+  }(Jt);
   v.serialization.registerClass(Eh);
   var oy = function(n) {
     Q(t, n);
@@ -10856,7 +10856,7 @@ var l1 = we((tt) => {
     return new sy(n);
   }
   function JO(n) {
-    return new Xt(n);
+    return new Jt(n);
   }
   function ZO(n) {
     return new Nh(n);
@@ -10904,7 +10904,7 @@ var l1 = we((tt) => {
       t = n;
     return t;
   }
-  function Je(n) {
+  function Xe(n) {
     if (Array.isArray(n) && Array.isArray(n[0])) {
       if (n.length === 1)
         return n = n, n[0];
@@ -12377,14 +12377,14 @@ var l1 = we((tt) => {
       }), r.internalOutputShapes = r.outputs.map(function(Te) {
         return Te.shape;
       });
-      for (var g = {}, y = {}, w = {}, b = {}, x = {}, L = [], N = function(Te, ht, ft, Ge, Kt, qn) {
-        (Ge == null || Kt == null || qn == null) && (Ge = Te.sourceLayer, Kt = Te.nodeIndex, qn = Te.tensorIndex);
-        var kt = Ge.inboundNodes[Kt];
+      for (var g = {}, y = {}, w = {}, b = {}, x = {}, L = [], N = function(Te, ht, ft, Ge, jt, qn) {
+        (Ge == null || jt == null || qn == null) && (Ge = Te.sourceLayer, jt = Te.nodeIndex, qn = Te.tensorIndex);
+        var kt = Ge.inboundNodes[jt];
         if (ft.indexOf(kt) !== -1)
           throw new Dn("The tensor " + Te.name + ' at layer "' + Ge.name + '" is part of a cycle.');
         if (ht.indexOf(kt) !== -1)
           return;
-        r.containerNodes.add(t.nodeKey(Ge, Kt)), Ge.id in x || (x[Ge.id] = Object.keys(x).length), ft.indexOf(kt) === -1 && ft.push(kt);
+        r.containerNodes.add(t.nodeKey(Ge, jt)), Ge.id in x || (x[Ge.id] = Object.keys(x).length), ft.indexOf(kt) === -1 && ft.push(kt);
         for (var ma = kt.inboundLayers.length, cr = 0; cr < ma; cr++) {
           var bi = kt.inputTensors[cr], cc = kt.inboundLayers[cr], lc = kt.nodeIndices[cr], Qx = kt.tensorIndices[cr];
           N(bi, ht, ft, cc, lc, Qx);
@@ -12423,8 +12423,8 @@ var l1 = we((tt) => {
       for (var re = 0, ie = ne; re < ie.length; re++) {
         var P = ie[re], oe = ee[P];
         oe.sort(function(ht, ft) {
-          var Ge = x[ht.id], Kt = x[ft.id];
-          return Ge < Kt ? -1 : Ge > Kt ? 1 : 0;
+          var Ge = x[ht.id], jt = x[ft.id];
+          return Ge < jt ? -1 : Ge > jt ? 1 : 0;
         });
         for (var se = 0, me = oe; se < me.length; se++) {
           var c = me[se];
@@ -12443,8 +12443,8 @@ var l1 = we((tt) => {
               if (ye.indexOf(o) === -1)
                 throw new Dn("Graph disconnected: cannot obtain value for tensor " + o + (' at layer "' + c.name + '". ') + "The following previous layers were accessed without " + ("issue: " + ve));
             }
-            for (var ue = 0, et = V.outputTensors; ue < et.length; ue++) {
-              var o = et[ue];
+            for (var ue = 0, Qe = V.outputTensors; ue < Qe.length; ue++) {
+              var o = Qe[ue];
               ye.push(o);
             }
             ve.push(c.name);
@@ -14014,7 +14014,7 @@ var l1 = we((tt) => {
     }, t.prototype.call = function(e, r) {
       return this.model == null && this.build(), this.model.call(e, r);
     }, t.prototype.build = function(e) {
-      if (Je(e), this.inputs.length === 0 || this.outputs.length === 0)
+      if (Xe(e), this.inputs.length === 0 || this.outputs.length === 0)
         throw new TypeError("Sequential model cannot be built: model is empty. Add some layers first.");
       this.model = new Ar({inputs: this.inputs, outputs: this.outputs[0], name: this.name + "_model"}), this.model.trainable = this.trainable, this.supportsMasking = this.model.supportsMasking, this.inputLayers = this.model.inputLayers, this.inputLayersNodeIndices = this.model.inputLayersNodeIndices, this.inputLayersTensorIndices = this.model.inputLayersTensorIndices, this.outputLayers = this.model.outputLayers, this.outputLayersNodeIndices = this.model.outputLayersNodeIndices, this.outputLayersTensorIndices = this.model.outputLayersTensorIndices, this.nodesByDepth = this.model.nodesByDepth, this.containerNodes = this.model.containerNodes, this.outputNames = this.model.outputNames, this.inputNames = this.model.inputNames, this.built = true;
     }, t.prototype.countParams = function() {
@@ -14118,7 +14118,7 @@ var l1 = we((tt) => {
   function p7(n, t) {
     xy.registerCallbackConstructor(n, t);
   }
-  var Jt = function(n) {
+  var Zt = function(n) {
     Q(t, n);
     function t() {
       return n !== null && n.apply(this, arguments) || this;
@@ -14134,7 +14134,7 @@ var l1 = we((tt) => {
     return t.prototype.apply = function(e, r) {
       return r === void 0 && (r = 1), WO(e, r);
     }, t.className = "elu", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(f7);
   var m7 = function(n) {
     Q(t, n);
@@ -14144,7 +14144,7 @@ var l1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return v.selu(e);
     }, t.className = "selu", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(m7);
   var g7 = function(n) {
     Q(t, n);
@@ -14154,7 +14154,7 @@ var l1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return v.relu(e);
     }, t.className = "relu", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(g7);
   var y7 = function(n) {
     Q(t, n);
@@ -14166,7 +14166,7 @@ var l1 = we((tt) => {
         return v.minimum(6, v.relu(e));
       });
     }, t.className = "relu6", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(y7);
   var v7 = function(n) {
     Q(t, n);
@@ -14176,7 +14176,7 @@ var l1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return e;
     }, t.className = "linear", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(v7);
   var w7 = function(n) {
     Q(t, n);
@@ -14186,7 +14186,7 @@ var l1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return v.sigmoid(e);
     }, t.className = "sigmoid", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(w7);
   var b7 = function(n) {
     Q(t, n);
@@ -14196,7 +14196,7 @@ var l1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return BO(e);
     }, t.className = "hardSigmoid", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(b7);
   var x7 = function(n) {
     Q(t, n);
@@ -14206,7 +14206,7 @@ var l1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return v.softplus(e);
     }, t.className = "softplus", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(x7);
   var L7 = function(n) {
     Q(t, n);
@@ -14216,7 +14216,7 @@ var l1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return UO(e);
     }, t.className = "softsign", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(L7);
   var S7 = function(n) {
     Q(t, n);
@@ -14226,7 +14226,7 @@ var l1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return v.tanh(e);
     }, t.className = "tanh", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(S7);
   var Vy = function(n) {
     Q(t, n);
@@ -14236,7 +14236,7 @@ var l1 = we((tt) => {
     return t.prototype.apply = function(e, r) {
       return r === void 0 && (r = -1), v.softmax(e, r);
     }, t.className = "softmax", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(Vy);
   var I7 = function(n) {
     Q(t, n);
@@ -14246,7 +14246,7 @@ var l1 = we((tt) => {
     return t.prototype.apply = function(e, r) {
       return r === void 0 && (r = -1), v.logSoftmax(e, r);
     }, t.className = "logSoftmax", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(I7);
   var A7 = function(n) {
     Q(t, n);
@@ -14258,7 +14258,7 @@ var l1 = we((tt) => {
         return v.sigmoid(e.mul(r)).mul(e);
       });
     }, t.className = "swish", t;
-  }(Jt);
+  }(Zt);
   v.serialization.registerClass(A7);
   function Tr(n) {
     return n.getClassName();
@@ -14275,7 +14275,7 @@ var l1 = we((tt) => {
       var t = {};
       return t.className = n, t.config = {}, Xh(t);
     } else
-      return n instanceof Jt ? n : Xh(n);
+      return n instanceof Zt ? n : Xh(n);
   }
   function Jh(n) {
     if (n != null && typeof n != "object")
@@ -14313,7 +14313,7 @@ var l1 = we((tt) => {
     return Jh(n), new Ao({l2: n != null ? n.l2 : null, l1: 0});
   }
   var qy = {l1l2: "L1L2"};
-  function Ze(n) {
+  function Je(n) {
     return vh(n);
   }
   function Yy(n, t) {
@@ -14378,7 +14378,7 @@ var l1 = we((tt) => {
       return r;
     }
     return t.prototype.build = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r = e.slice(1);
       if (this.sharedAxes != null)
         for (var i = 0, a = this.sharedAxes; i < a.length; i++) {
@@ -14394,7 +14394,7 @@ var l1 = we((tt) => {
     }, t.prototype.call = function(e, r) {
       return e = Oe(e), v.prelu(e, this.alpha.read());
     }, t.prototype.getConfig = function() {
-      var e = {alphaInitializer: lt(this.alphaInitializer), alphaRegularizer: Ze(this.alphaRegularizer), alphaConstraint: St(this.alphaConstraint), sharedAxes: this.sharedAxes}, r = n.prototype.getConfig.call(this);
+      var e = {alphaInitializer: lt(this.alphaInitializer), alphaRegularizer: Je(this.alphaRegularizer), alphaConstraint: St(this.alphaConstraint), sharedAxes: this.sharedAxes}, r = n.prototype.getConfig.call(this);
       return Object.assign(e, r), e;
     }, t.className = "PReLU", t;
   }(Fe);
@@ -14554,7 +14554,7 @@ var l1 = we((tt) => {
       if (kn("kernelSize" in e, "required key 'kernelSize' not in config"), typeof e.kernelSize != "number" && !bh(e.kernelSize, "number", 1, 3))
         throw new M("BaseConv expects config.kernelSize to be number or number[] with " + ("length 1, 2, or 3, but received " + JSON.stringify(e.kernelSize) + "."));
     }, t.prototype.getConfig = function() {
-      var e = {kernelSize: this.kernelSize, strides: this.strides, padding: this.padding, dataFormat: this.dataFormat, dilationRate: this.dilationRate, activation: Tr(this.activation), useBias: this.useBias, biasInitializer: lt(this.biasInitializer), biasRegularizer: Ze(this.biasRegularizer), activityRegularizer: Ze(this.activityRegularizer), biasConstraint: St(this.biasConstraint)}, r = n.prototype.getConfig.call(this);
+      var e = {kernelSize: this.kernelSize, strides: this.strides, padding: this.padding, dataFormat: this.dataFormat, dilationRate: this.dilationRate, activation: Tr(this.activation), useBias: this.useBias, biasInitializer: lt(this.biasInitializer), biasRegularizer: Je(this.biasRegularizer), activityRegularizer: Je(this.activityRegularizer), biasConstraint: St(this.biasConstraint)}, r = n.prototype.getConfig.call(this);
       return Object.assign(e, r), e;
     }, t;
   }(Fe), No = function(n) {
@@ -14565,7 +14565,7 @@ var l1 = we((tt) => {
     }
     return t.prototype.build = function(e) {
       var r;
-      e = Je(e);
+      e = Xe(e);
       var i = this.dataFormat === "channelsFirst" ? 1 : e.length - 1;
       if (e[i] == null)
         throw new M("The channel dimension of the input should be defined. " + ("Found " + e[i]));
@@ -14592,7 +14592,7 @@ var l1 = we((tt) => {
         return a;
       });
     }, t.prototype.computeOutputShape = function(e) {
-      e = Je(e);
+      e = Xe(e);
       for (var r = [], i = this.dataFormat === "channelsLast" ? e.slice(1, e.length - 1) : e.slice(2), a = 0; a < i.length; ++a) {
         var s = Sn(i[a], this.kernelSize[a], this.padding, this.strides[a], typeof this.dilationRate == "number" ? this.dilationRate : this.dilationRate[a]);
         r.push(s);
@@ -14600,7 +14600,7 @@ var l1 = we((tt) => {
       var o = [e[0]];
       return this.dataFormat === "channelsLast" ? (o = o.concat(r), o.push(this.filters)) : (o.push(this.filters), o = o.concat(r)), o;
     }, t.prototype.getConfig = function() {
-      var e = {filters: this.filters, kernelInitializer: lt(this.kernelInitializer), kernelRegularizer: Ze(this.kernelRegularizer), kernelConstraint: St(this.kernelConstraint)}, r = n.prototype.getConfig.call(this);
+      var e = {filters: this.filters, kernelInitializer: lt(this.kernelInitializer), kernelRegularizer: Je(this.kernelRegularizer), kernelConstraint: St(this.kernelConstraint)}, r = n.prototype.getConfig.call(this);
       return Object.assign(e, r), e;
     }, t.verifyArgs = function(e) {
       if (!("filters" in e) || typeof e.filters != "number" || e.filters < 1)
@@ -14646,7 +14646,7 @@ var l1 = we((tt) => {
     }
     return t.prototype.build = function(e) {
       var r;
-      if (e = Je(e), e.length !== 4)
+      if (e = Xe(e), e.length !== 4)
         throw new M("Input should have rank 4; Received input shape: " + JSON.stringify(e));
       var i = this.dataFormat === "channelsFirst" ? 1 : e.length - 1;
       if (e[i] == null)
@@ -14667,7 +14667,7 @@ var l1 = we((tt) => {
         return i.dataFormat !== "channelsLast" && (b = v.transpose(b, [0, 3, 1, 2])), i.bias != null && (b = Wn(b, i.bias.read(), i.dataFormat)), i.activation != null && (b = i.activation.apply(b)), b;
       });
     }, t.prototype.computeOutputShape = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r = e.slice(), i, a, s;
       this.dataFormat === "channelsFirst" ? (i = 1, a = 2, s = 3) : (i = 3, a = 1, s = 2);
       var o = this.kernelSize[0], c = this.kernelSize[1], l = this.strides[0], u = this.strides[1];
@@ -14692,7 +14692,7 @@ var l1 = we((tt) => {
     }
     return t.prototype.build = function(e) {
       var r;
-      if (e = Je(e), e.length < this.rank + 2)
+      if (e = Xe(e), e.length < this.rank + 2)
         throw new M("Inputs to SeparableConv" + this.rank + "D should have rank " + (this.rank + 2 + ", but received input shape: ") + ("" + JSON.stringify(e)));
       var i = this.dataFormat === "channelsFirst" ? 1 : e.length - 1;
       if (e[i] == null || e[i] < 0)
@@ -14713,7 +14713,7 @@ var l1 = we((tt) => {
       });
     }, t.prototype.getConfig = function() {
       var e = n.prototype.getConfig.call(this);
-      return delete e.rank, delete e.kernelInitializer, delete e.kernelRegularizer, delete e.kernelConstraint, e.depthwiseInitializer = lt(this.depthwiseInitializer), e.pointwiseInitializer = lt(this.pointwiseInitializer), e.depthwiseRegularizer = Ze(this.depthwiseRegularizer), e.pointwiseRegularizer = Ze(this.pointwiseRegularizer), e.depthwiseConstraint = St(this.depthwiseConstraint), e.pointwiseConstraint = St(this.pointwiseConstraint), e;
+      return delete e.rank, delete e.kernelInitializer, delete e.kernelRegularizer, delete e.kernelConstraint, e.depthwiseInitializer = lt(this.depthwiseInitializer), e.pointwiseInitializer = lt(this.pointwiseInitializer), e.depthwiseRegularizer = Je(this.depthwiseRegularizer), e.pointwiseRegularizer = Je(this.pointwiseRegularizer), e.depthwiseConstraint = St(this.depthwiseConstraint), e.pointwiseConstraint = St(this.pointwiseConstraint), e;
     }, t.className = "SeparableConv", t;
   }(No), iv = function(n) {
     Q(t, n);
@@ -14814,7 +14814,7 @@ var l1 = we((tt) => {
       return r.depthwiseKernel = null, r.depthMultiplier = e.depthMultiplier == null ? 1 : e.depthMultiplier, r.depthwiseInitializer = at(e.depthwiseInitializer || r.DEFAULT_KERNEL_INITIALIZER), r.depthwiseConstraint = It(e.depthwiseConstraint), r.depthwiseRegularizer = st(e.depthwiseRegularizer), r;
     }
     return t.prototype.build = function(e) {
-      if (e = Je(e), e.length < 4)
+      if (e = Xe(e), e.length < 4)
         throw new M("Inputs to DepthwiseConv2D should have rank 4. " + ("Received input shape: " + JSON.stringify(e) + "."));
       var r = this.dataFormat === "channelsFirst" ? 1 : 3;
       if (e[r] == null || e[r] < 0)
@@ -14829,12 +14829,12 @@ var l1 = we((tt) => {
         return i.useBias && (a = Wn(a, i.bias.read(), i.dataFormat)), i.activation != null && (a = i.activation.apply(a)), a;
       });
     }, t.prototype.computeOutputShape = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r = this.dataFormat === "channelsFirst" ? e[2] : e[1], i = this.dataFormat === "channelsFirst" ? e[3] : e[2], a = this.dataFormat === "channelsFirst" ? e[1] * this.depthMultiplier : e[3] * this.depthMultiplier, s = Sn(r, this.kernelSize[0], this.padding, this.strides[0]), o = Sn(i, this.kernelSize[1], this.padding, this.strides[1]);
       return this.dataFormat === "channelsFirst" ? [e[0], a, s, o] : [e[0], s, o, a];
     }, t.prototype.getConfig = function() {
       var e = n.prototype.getConfig.call(this);
-      return e.depthMultiplier = this.depthMultiplier, e.depthwiseInitializer = lt(this.depthwiseInitializer), e.depthwiseRegularizer = Ze(this.depthwiseRegularizer), e.depthwiseConstraint = St(this.depthwiseRegularizer), e;
+      return e.depthMultiplier = this.depthMultiplier, e.depthwiseInitializer = lt(this.depthwiseInitializer), e.depthwiseRegularizer = Je(this.depthwiseRegularizer), e.depthwiseConstraint = St(this.depthwiseRegularizer), e;
     }, t.className = "DepthwiseConv2D", t;
   }(tv);
   v.serialization.registerClass(cv);
@@ -15049,7 +15049,7 @@ var l1 = we((tt) => {
       var e = n.prototype.getConfig.call(this), r = {returnSequences: this.returnSequences, returnState: this.returnState, goBackwards: this.goBackwards, stateful: this.stateful, unroll: this.unroll};
       this.numConstants != null && (r.numConstants = this.numConstants);
       var i = this.cell.getConfig();
-      return this.getClassName() === t.className && (r.cell = {className: this.cell.getClassName(), config: i}), $t({}, i, e, r);
+      return this.getClassName() === t.className && (r.cell = {className: this.cell.getClassName(), config: i}), Xt({}, i, e, r);
     }, t.fromConfig = function(e, r, i) {
       i === void 0 && (i = {});
       var a = r.cell, s = Ln(a, i);
@@ -15070,7 +15070,7 @@ var l1 = we((tt) => {
       return r.DEFAULT_ACTIVATION = "tanh", r.DEFAULT_KERNEL_INITIALIZER = "glorotNormal", r.DEFAULT_RECURRENT_INITIALIZER = "orthogonal", r.DEFAULT_BIAS_INITIALIZER = "zeros", r.units = e.units, _t(r.units, "units"), r.activation = Nr(e.activation == null ? r.DEFAULT_ACTIVATION : e.activation), r.useBias = e.useBias == null ? true : e.useBias, r.kernelInitializer = at(e.kernelInitializer || r.DEFAULT_KERNEL_INITIALIZER), r.recurrentInitializer = at(e.recurrentInitializer || r.DEFAULT_RECURRENT_INITIALIZER), r.biasInitializer = at(e.biasInitializer || r.DEFAULT_BIAS_INITIALIZER), r.kernelRegularizer = st(e.kernelRegularizer), r.recurrentRegularizer = st(e.recurrentRegularizer), r.biasRegularizer = st(e.biasRegularizer), r.kernelConstraint = It(e.kernelConstraint), r.recurrentConstraint = It(e.recurrentConstraint), r.biasConstraint = It(e.biasConstraint), r.dropout = Gi([1, Sr([0, e.dropout == null ? 0 : e.dropout])]), r.recurrentDropout = Gi([1, Sr([0, e.recurrentDropout == null ? 0 : e.recurrentDropout])]), r.stateSize = r.units, r.dropoutMask = null, r.recurrentDropoutMask = null, r;
     }
     return t.prototype.build = function(e) {
-      e = Je(e), this.kernel = this.addWeight("kernel", [e[e.length - 1], this.units], null, this.kernelInitializer, this.kernelRegularizer, true, this.kernelConstraint), this.recurrentKernel = this.addWeight("recurrent_kernel", [this.units, this.units], null, this.recurrentInitializer, this.recurrentRegularizer, true, this.recurrentConstraint), this.useBias ? this.bias = this.addWeight("bias", [this.units], null, this.biasInitializer, this.biasRegularizer, true, this.biasConstraint) : this.bias = null, this.built = true;
+      e = Xe(e), this.kernel = this.addWeight("kernel", [e[e.length - 1], this.units], null, this.kernelInitializer, this.kernelRegularizer, true, this.kernelConstraint), this.recurrentKernel = this.addWeight("recurrent_kernel", [this.units, this.units], null, this.recurrentInitializer, this.recurrentRegularizer, true, this.recurrentConstraint), this.useBias ? this.bias = this.addWeight("bias", [this.units], null, this.biasInitializer, this.biasRegularizer, true, this.biasConstraint) : this.bias = null, this.built = true;
     }, t.prototype.call = function(e, r) {
       var i = this;
       return v.tidy(function() {
@@ -15090,8 +15090,8 @@ var l1 = we((tt) => {
         return i.activation != null && (u = i.activation.apply(u)), [u, u];
       });
     }, t.prototype.getConfig = function() {
-      var e = n.prototype.getConfig.call(this), r = {units: this.units, activation: Tr(this.activation), useBias: this.useBias, kernelInitializer: lt(this.kernelInitializer), recurrentInitializer: lt(this.recurrentInitializer), biasInitializer: lt(this.biasInitializer), kernelRegularizer: Ze(this.kernelRegularizer), recurrentRegularizer: Ze(this.recurrentRegularizer), biasRegularizer: Ze(this.biasRegularizer), activityRegularizer: Ze(this.activityRegularizer), kernelConstraint: St(this.kernelConstraint), recurrentConstraint: St(this.recurrentConstraint), biasConstraint: St(this.biasConstraint), dropout: this.dropout, recurrentDropout: this.recurrentDropout};
-      return $t({}, e, r);
+      var e = n.prototype.getConfig.call(this), r = {units: this.units, activation: Tr(this.activation), useBias: this.useBias, kernelInitializer: lt(this.kernelInitializer), recurrentInitializer: lt(this.recurrentInitializer), biasInitializer: lt(this.biasInitializer), kernelRegularizer: Je(this.kernelRegularizer), recurrentRegularizer: Je(this.recurrentRegularizer), biasRegularizer: Je(this.biasRegularizer), activityRegularizer: Je(this.activityRegularizer), kernelConstraint: St(this.kernelConstraint), recurrentConstraint: St(this.recurrentConstraint), biasConstraint: St(this.biasConstraint), dropout: this.dropout, recurrentDropout: this.recurrentDropout};
+      return Xt({}, e, r);
     }, t.className = "SimpleRNNCell", t;
   }($i);
   v.serialization.registerClass(td);
@@ -15122,7 +15122,7 @@ var l1 = we((tt) => {
       return r.units = e.units, _t(r.units, "units"), r.activation = Nr(e.activation === void 0 ? r.DEFAULT_ACTIVATION : e.activation), r.recurrentActivation = Nr(e.recurrentActivation === void 0 ? r.DEFAULT_RECURRENT_ACTIVATION : e.recurrentActivation), r.useBias = e.useBias == null ? true : e.useBias, r.kernelInitializer = at(e.kernelInitializer || r.DEFAULT_KERNEL_INITIALIZER), r.recurrentInitializer = at(e.recurrentInitializer || r.DEFAULT_RECURRENT_INITIALIZER), r.biasInitializer = at(e.biasInitializer || r.DEFAULT_BIAS_INITIALIZER), r.kernelRegularizer = st(e.kernelRegularizer), r.recurrentRegularizer = st(e.recurrentRegularizer), r.biasRegularizer = st(e.biasRegularizer), r.kernelConstraint = It(e.kernelConstraint), r.recurrentConstraint = It(e.recurrentConstraint), r.biasConstraint = It(e.biasConstraint), r.dropout = Gi([1, Sr([0, e.dropout == null ? 0 : e.dropout])]), r.recurrentDropout = Gi([1, Sr([0, e.recurrentDropout == null ? 0 : e.recurrentDropout])]), r.implementation = e.implementation, r.stateSize = r.units, r.dropoutMask = null, r.recurrentDropoutMask = null, r;
     }
     return t.prototype.build = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r = e[e.length - 1];
       this.kernel = this.addWeight("kernel", [r, this.units * 3], null, this.kernelInitializer, this.kernelRegularizer, true, this.kernelConstraint), this.recurrentKernel = this.addWeight("recurrent_kernel", [this.units, this.units * 3], null, this.recurrentInitializer, this.recurrentRegularizer, true, this.recurrentConstraint), this.useBias ? this.bias = this.addWeight("bias", [this.units * 3], null, this.biasInitializer, this.biasRegularizer, true, this.biasConstraint) : this.bias = null, this.built = true;
     }, t.prototype.call = function(e, r) {
@@ -15148,8 +15148,8 @@ var l1 = we((tt) => {
         return [D, D];
       });
     }, t.prototype.getConfig = function() {
-      var e = n.prototype.getConfig.call(this), r = {units: this.units, activation: Tr(this.activation), recurrentActivation: Tr(this.recurrentActivation), useBias: this.useBias, kernelInitializer: lt(this.kernelInitializer), recurrentInitializer: lt(this.recurrentInitializer), biasInitializer: lt(this.biasInitializer), kernelRegularizer: Ze(this.kernelRegularizer), recurrentRegularizer: Ze(this.recurrentRegularizer), biasRegularizer: Ze(this.biasRegularizer), activityRegularizer: Ze(this.activityRegularizer), kernelConstraint: St(this.kernelConstraint), recurrentConstraint: St(this.recurrentConstraint), biasConstraint: St(this.biasConstraint), dropout: this.dropout, recurrentDropout: this.recurrentDropout, implementation: this.implementation, resetAfter: false};
-      return $t({}, e, r);
+      var e = n.prototype.getConfig.call(this), r = {units: this.units, activation: Tr(this.activation), recurrentActivation: Tr(this.recurrentActivation), useBias: this.useBias, kernelInitializer: lt(this.kernelInitializer), recurrentInitializer: lt(this.recurrentInitializer), biasInitializer: lt(this.biasInitializer), kernelRegularizer: Je(this.kernelRegularizer), recurrentRegularizer: Je(this.recurrentRegularizer), biasRegularizer: Je(this.biasRegularizer), activityRegularizer: Je(this.activityRegularizer), kernelConstraint: St(this.kernelConstraint), recurrentConstraint: St(this.recurrentConstraint), biasConstraint: St(this.biasConstraint), dropout: this.dropout, recurrentDropout: this.recurrentDropout, implementation: this.implementation, resetAfter: false};
+      return Xt({}, e, r);
     }, t.className = "GRUCell", t;
   }($i);
   v.serialization.registerClass(nd);
@@ -15179,7 +15179,7 @@ var l1 = we((tt) => {
     }
     return t.prototype.build = function(e) {
       var r;
-      e = Je(e);
+      e = Xe(e);
       var i = e[e.length - 1];
       this.kernel = this.addWeight("kernel", [i, this.units * 4], null, this.kernelInitializer, this.kernelRegularizer, true, this.kernelConstraint), this.recurrentKernel = this.addWeight("recurrent_kernel", [this.units, this.units * 4], null, this.recurrentInitializer, this.recurrentRegularizer, true, this.recurrentConstraint);
       var a;
@@ -15224,8 +15224,8 @@ var l1 = we((tt) => {
         return [x, x, d];
       });
     }, t.prototype.getConfig = function() {
-      var e = n.prototype.getConfig.call(this), r = {units: this.units, activation: Tr(this.activation), recurrentActivation: Tr(this.recurrentActivation), useBias: this.useBias, kernelInitializer: lt(this.kernelInitializer), recurrentInitializer: lt(this.recurrentInitializer), biasInitializer: lt(this.biasInitializer), unitForgetBias: this.unitForgetBias, kernelRegularizer: Ze(this.kernelRegularizer), recurrentRegularizer: Ze(this.recurrentRegularizer), biasRegularizer: Ze(this.biasRegularizer), activityRegularizer: Ze(this.activityRegularizer), kernelConstraint: St(this.kernelConstraint), recurrentConstraint: St(this.recurrentConstraint), biasConstraint: St(this.biasConstraint), dropout: this.dropout, recurrentDropout: this.recurrentDropout, implementation: this.implementation};
-      return $t({}, e, r);
+      var e = n.prototype.getConfig.call(this), r = {units: this.units, activation: Tr(this.activation), recurrentActivation: Tr(this.recurrentActivation), useBias: this.useBias, kernelInitializer: lt(this.kernelInitializer), recurrentInitializer: lt(this.recurrentInitializer), biasInitializer: lt(this.biasInitializer), unitForgetBias: this.unitForgetBias, kernelRegularizer: Je(this.kernelRegularizer), recurrentRegularizer: Je(this.recurrentRegularizer), biasRegularizer: Je(this.biasRegularizer), activityRegularizer: Je(this.activityRegularizer), kernelConstraint: St(this.kernelConstraint), recurrentConstraint: St(this.recurrentConstraint), biasConstraint: St(this.biasConstraint), dropout: this.dropout, recurrentDropout: this.recurrentDropout, implementation: this.implementation};
+      return Xt({}, e, r);
     }, t.className = "LSTMCell", t;
   }($i);
   v.serialization.registerClass(_o);
@@ -15291,7 +15291,7 @@ var l1 = we((tt) => {
       var e = n.prototype.getConfig.call(this), r = function(s) {
         return {className: s.getClassName(), config: s.getConfig()};
       }, i = this.cells.map(r), a = {cells: i};
-      return $t({}, e, a);
+      return Xt({}, e, a);
     }, t.fromConfig = function(e, r, i) {
       i === void 0 && (i = {});
       for (var a = [], s = 0, o = r.cells; s < o.length; s++) {
@@ -15419,7 +15419,7 @@ var l1 = we((tt) => {
     Q(t, n);
     function t(e) {
       var r = this, i = e.filters, a = e.kernelSize, s = e.strides, o = e.padding, c = e.dataFormat, l = e.dilationRate;
-      return r = n.call(this, $t({}, e, {units: i})) || this, r.filters = i, _t(r.filters, "filters"), r.kernelSize = ji(a, 2, "kernelSize"), r.kernelSize.forEach(function(u) {
+      return r = n.call(this, Xt({}, e, {units: i})) || this, r.filters = i, _t(r.filters, "filters"), r.kernelSize = ji(a, 2, "kernelSize"), r.kernelSize.forEach(function(u) {
         return _t(u, "kernelSize");
       }), r.strides = ji(s || 1, 2, "strides"), r.strides.forEach(function(u) {
         return _t(u, "strides");
@@ -15429,7 +15429,7 @@ var l1 = we((tt) => {
     }
     return t.prototype.build = function(e) {
       var r;
-      e = Je(e);
+      e = Xe(e);
       var i = this.dataFormat === "channelsFirst" ? 1 : e.length - 1;
       if (e[i] == null)
         throw new M("The channel dimension of the input should be defined. " + ("Found " + e[i]));
@@ -15479,7 +15479,7 @@ var l1 = we((tt) => {
       });
     }, t.prototype.getConfig = function() {
       var e = n.prototype.getConfig.call(this), r = e.units, i = gO(e, ["units"]), a = {filters: this.filters, kernelSize: this.kernelSize, padding: this.padding, dataFormat: this.dataFormat, dilationRate: this.dilationRate, strides: this.strides};
-      return $t({}, i, a);
+      return Xt({}, i, a);
     }, t.prototype.inputConv = function(e, r, i, a) {
       var s = v.conv2d(e, r, this.strides, a || "valid", this.dataFormat === "channelsFirst" ? "NCHW" : "NHWC", this.dilationRate);
       return i ? Wn(s, i, this.dataFormat) : s;
@@ -15493,7 +15493,7 @@ var l1 = we((tt) => {
     Q(t, n);
     function t(e) {
       var r = this, i = new rd(e);
-      return r = n.call(this, $t({}, e, {cell: i})) || this, r;
+      return r = n.call(this, Xt({}, e, {cell: i})) || this, r;
     }
     return t.fromConfig = function(e, r) {
       return new e(r);
@@ -15559,11 +15559,11 @@ var l1 = we((tt) => {
     }
     return t.prototype.build = function(e) {
       var r;
-      e = Je(e);
+      e = Xe(e);
       var i = e[e.length - 1];
       this.kernel == null && (this.kernel = this.addWeight("kernel", [i, this.units], null, this.kernelInitializer, this.kernelRegularizer, true, this.kernelConstraint), this.useBias && (this.bias = this.addWeight("bias", [this.units], null, this.biasInitializer, this.biasRegularizer, true, this.biasConstraint))), this.inputSpec = [{minNDim: 2, axes: (r = {}, r[-1] = i, r)}], this.built = true;
     }, t.prototype.computeOutputShape = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r = e.slice();
       return r[r.length - 1] = this.units, r;
     }, t.prototype.call = function(e, r) {
@@ -15574,7 +15574,7 @@ var l1 = we((tt) => {
         return s != null ? o = Fn(a, i.kernel.read(), s, i.bias ? i.bias.read() : null) : (o = Fn(a, i.kernel.read()), i.bias != null && (o = Wn(o, i.bias.read())), i.activation != null && (o = i.activation.apply(o))), o;
       });
     }, t.prototype.getConfig = function() {
-      var e = {units: this.units, activation: Tr(this.activation), useBias: this.useBias, kernelInitializer: lt(this.kernelInitializer), biasInitializer: lt(this.biasInitializer), kernelRegularizer: Ze(this.kernelRegularizer), biasRegularizer: Ze(this.biasRegularizer), activityRegularizer: Ze(this.activityRegularizer), kernelConstraint: St(this.kernelConstraint), biasConstraint: St(this.biasConstraint)}, r = n.prototype.getConfig.call(this);
+      var e = {units: this.units, activation: Tr(this.activation), useBias: this.useBias, kernelInitializer: lt(this.kernelInitializer), biasInitializer: lt(this.biasInitializer), kernelRegularizer: Je(this.kernelRegularizer), biasRegularizer: Je(this.biasRegularizer), activityRegularizer: Je(this.activityRegularizer), kernelConstraint: St(this.kernelConstraint), biasConstraint: St(this.biasConstraint)}, r = n.prototype.getConfig.call(this);
       return Object.assign(e, r), e;
     }, t.className = "Dense", t;
   }(Fe);
@@ -15586,7 +15586,7 @@ var l1 = we((tt) => {
       return e = e || {}, r = n.call(this, e) || this, r.inputSpec = [{minNDim: 3}], r.dataFormat = e.dataFormat, r;
     }
     return t.prototype.computeOutputShape = function(e) {
-      e = Je(e);
+      e = Xe(e);
       for (var r = 0, i = e.slice(1); r < i.length; r++) {
         var a = i[r];
         if (a == null)
@@ -15715,7 +15715,7 @@ var l1 = we((tt) => {
       return r.dims = e.dims, r.dimsIncludingBatch = [0].concat(r.dims), r.inputSpec = [new Ct({ndim: r.dims.length + 1})], r;
     }
     return t.prototype.computeOutputShape = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r = e.slice();
       return this.dims.forEach(function(i, a) {
         r[a + 1] = e[i];
@@ -15771,7 +15771,7 @@ var l1 = we((tt) => {
         return i.maskZero ? (e = Oe(e), v.notEqual(e, v.zerosLike(e))) : null;
       });
     }, t.prototype.computeOutputShape = function(e) {
-      if (e = Je(e), this.inputLength == null)
+      if (e = Xe(e), this.inputLength == null)
         return e.concat([this.outputDim]);
       var r = nt(this.inputLength);
       if (r.length !== e.length - 1)
@@ -15790,10 +15790,10 @@ var l1 = we((tt) => {
         var a = Oe(e);
         a.dtype !== "int32" && (a = za(a, "int32"));
         var s = Q0(i.embeddings.read(), a.as1D());
-        return s.reshape(Je(i.computeOutputShape(a.shape)));
+        return s.reshape(Xe(i.computeOutputShape(a.shape)));
       });
     }, t.prototype.getConfig = function() {
-      var e = {inputDim: this.inputDim, outputDim: this.outputDim, embeddingsInitializer: lt(this.embeddingsInitializer), embeddingsRegularizer: Ze(this.embeddingsRegularizer), activityRegularizer: Ze(this.activityRegularizer), embeddingsConstraint: St(this.embeddingsConstraint), maskZero: this.maskZero, inputLength: this.inputLength}, r = n.prototype.getConfig.call(this);
+      var e = {inputDim: this.inputDim, outputDim: this.outputDim, embeddingsInitializer: lt(this.embeddingsInitializer), embeddingsRegularizer: Je(this.embeddingsRegularizer), activityRegularizer: Je(this.activityRegularizer), embeddingsConstraint: St(this.embeddingsConstraint), maskZero: this.maskZero, inputLength: this.inputLength}, r = n.prototype.getConfig.call(this);
       return Object.assign(e, r), e;
     }, t.className = "Embedding", t;
   }(Fe);
@@ -15829,7 +15829,7 @@ var l1 = we((tt) => {
       }
       return i;
     }, t.prototype.build = function(e) {
-      if (Array.isArray(e) && !Array.isArray(e[0]) && (e = [Je(e)]), e = e, e.length < 2)
+      if (Array.isArray(e) && !Array.isArray(e[0]) && (e = [Xe(e)]), e = e, e.length < 2)
         throw new M("A merge layer should be called on an Array of at least 2 inputs." + (" Got " + e.length + " input(s)."));
       for (var r = [], i = 0, a = e; i < a.length; i++) {
         var s = a[i];
@@ -16291,7 +16291,7 @@ var l1 = we((tt) => {
     }
     return t.prototype.build = function(e) {
       var r;
-      e = Je(e);
+      e = Xe(e);
       var i = this.axis >= 0 ? this.axis : this.axis + e.length, a = e[i];
       if (a == null)
         throw new M("Axis " + i + " of input tensor should have a defined dimension but the layer received an input with shape " + (JSON.stringify(e) + "."));
@@ -16327,7 +16327,7 @@ var l1 = we((tt) => {
         return x(), g;
       });
     }, t.prototype.getConfig = function() {
-      var e = {axis: this.axis, momentum: this.momentum, epsilon: this.epsilon, center: this.center, scale: this.scale, betaInitializer: lt(this.betaInitializer), gammaInitializer: lt(this.gammaInitializer), movingMeanInitializer: lt(this.movingMeanInitializer), movingVarianceInitializer: lt(this.movingVarianceInitializer), betaRegularizer: Ze(this.betaRegularizer), gammaRegularizer: Ze(this.gammaRegularizer), betaConstraint: St(this.betaConstraint), gammaConstraint: St(this.gammaConstraint)}, r = n.prototype.getConfig.call(this);
+      var e = {axis: this.axis, momentum: this.momentum, epsilon: this.epsilon, center: this.center, scale: this.scale, betaInitializer: lt(this.betaInitializer), gammaInitializer: lt(this.gammaInitializer), movingMeanInitializer: lt(this.movingMeanInitializer), movingVarianceInitializer: lt(this.movingVarianceInitializer), betaRegularizer: Je(this.betaRegularizer), gammaRegularizer: Je(this.gammaRegularizer), betaConstraint: St(this.betaConstraint), gammaConstraint: St(this.gammaConstraint)}, r = n.prototype.getConfig.call(this);
       return Object.assign(e, r), e;
     }, t.className = "BatchNormalization", t;
   }(Fe);
@@ -16350,7 +16350,7 @@ var l1 = we((tt) => {
       return r.epsilon = e.epsilon == null ? 1e-3 : e.epsilon, r.center = e.center == null ? true : e.center, r.scale = e.scale == null ? true : e.scale, r.betaInitializer = at(e.betaInitializer || "zeros"), r.gammaInitializer = at(e.gammaInitializer || "ones"), r.betaRegularizer = st(e.betaRegularizer), r.gammaRegularizer = st(e.gammaRegularizer), r.supportsMasking = true, r;
     }
     return t.prototype.build = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r = e.length;
       typeof this.axis == "number" && (this.axis = [this.axis]);
       for (var i = 0; i < this.axis.length; ++i)
@@ -16380,7 +16380,7 @@ var l1 = we((tt) => {
         return u = u.tile(b), h = h.tile(b), y = y.tile(x), w = w.tile(x), $a(a, u, h, w, y, i.epsilon);
       });
     }, t.prototype.getConfig = function() {
-      var e = {axis: this.axis, epsilon: this.epsilon, center: this.center, scale: this.scale, betaInitializer: lt(this.betaInitializer), gammaInitializer: lt(this.gammaInitializer), betaRegularizer: Ze(this.betaRegularizer), gammaRegularizer: Ze(this.gammaRegularizer)}, r = n.prototype.getConfig.call(this);
+      var e = {axis: this.axis, epsilon: this.epsilon, center: this.center, scale: this.scale, betaInitializer: lt(this.betaInitializer), gammaInitializer: lt(this.gammaInitializer), betaRegularizer: Je(this.betaRegularizer), gammaRegularizer: Je(this.gammaRegularizer)}, r = n.prototype.getConfig.call(this);
       return Object.assign(e, r), e;
     }, t.className = "LayerNormalization", t;
   }(Fe);
@@ -16423,7 +16423,7 @@ var l1 = we((tt) => {
       return r.inputSpec = [new Ct({ndim: 4})], r;
     }
     return t.prototype.computeOutputShape = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r, i;
       return this.dataFormat === "channelsFirst" ? (e[2] != null && e[2] >= 0 ? r = e[2] + this.padding[0][0] + this.padding[0][1] : r = null, e[3] != null && e[3] >= 0 ? i = e[3] + this.padding[1][0] + this.padding[1][1] : i = null, [e[0], e[1], r, i]) : (e[1] != null && e[1] >= 0 ? r = e[1] + this.padding[0][0] + this.padding[0][1] : r = null, e[2] != null && e[2] >= 0 ? i = e[2] + this.padding[1][0] + this.padding[1][1] : i = null, [e[0], r, i, e[3]]);
     }, t.prototype.call = function(e, r) {
@@ -16472,7 +16472,7 @@ var l1 = we((tt) => {
       return _t(r.strides, "strides"), r.padding = e.padding == null ? "valid" : e.padding, sn(r.padding), r.inputSpec = [new Ct({ndim: 3})], r;
     }
     return t.prototype.computeOutputShape = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r = Sn(e[1], this.poolSize[0], this.padding, this.strides[0]);
       return [e[0], r, e[2]];
     }, t.prototype.call = function(e, r) {
@@ -16521,7 +16521,7 @@ var l1 = we((tt) => {
       return _t(r.poolSize, "poolSize"), _t(r.strides, "strides"), r.padding = e.padding == null ? "valid" : e.padding, r.dataFormat = e.dataFormat == null ? "channelsLast" : e.dataFormat, mt(r.dataFormat), sn(r.padding), r.inputSpec = [new Ct({ndim: 4})], r;
     }
     return t.prototype.computeOutputShape = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r = this.dataFormat === "channelsFirst" ? e[2] : e[1], i = this.dataFormat === "channelsFirst" ? e[3] : e[2];
       return r = Sn(r, this.poolSize[0], this.padding, this.strides[0]), i = Sn(i, this.poolSize[1], this.padding, this.strides[1]), this.dataFormat === "channelsFirst" ? [e[0], e[1], r, i] : [e[0], r, i, e[3]];
     }, t.prototype.call = function(e, r) {
@@ -16568,7 +16568,7 @@ var l1 = we((tt) => {
       return _t(r.poolSize, "poolSize"), _t(r.strides, "strides"), r.padding = e.padding == null ? "valid" : e.padding, r.dataFormat = e.dataFormat == null ? "channelsLast" : e.dataFormat, mt(r.dataFormat), sn(r.padding), r.inputSpec = [new Ct({ndim: 5})], r;
     }
     return t.prototype.computeOutputShape = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r = this.dataFormat === "channelsFirst" ? e[2] : e[1], i = this.dataFormat === "channelsFirst" ? e[3] : e[2], a = this.dataFormat === "channelsFirst" ? e[4] : e[3];
       return r = Sn(r, this.poolSize[0], this.padding, this.strides[0]), i = Sn(i, this.poolSize[1], this.padding, this.strides[1]), a = Sn(a, this.poolSize[2], this.padding, this.strides[2]), this.dataFormat === "channelsFirst" ? [e[0], e[1], r, i, a] : [e[0], r, i, a, e[4]];
     }, t.prototype.call = function(e, r) {
@@ -16722,13 +16722,13 @@ var l1 = we((tt) => {
       return r.supportsMasking = true, r;
     }
     return t.prototype.build = function(e) {
-      if (e = Je(e), e.length < 3)
+      if (e = Xe(e), e.length < 3)
         throw new M("TimeDistributed layer expects an input shape >= 3D, but received " + ("input shape " + JSON.stringify(e)));
       this.inputSpec = [{shape: e}];
       var r = [e[0]].concat(e.slice(2));
       this.layer.built || (this.layer.build(r), this.layer.built = true), n.prototype.build.call(this, e);
     }, t.prototype.computeOutputShape = function(e) {
-      e = Je(e);
+      e = Xe(e);
       var r = [e[0]].concat(e.slice(2)), i = this.layer.computeOutputShape(r), a = e[1];
       return [i[0], a].concat(i.slice(1));
     }, t.prototype.call = function(e, r) {
@@ -17232,7 +17232,7 @@ var I1 = we((ci) => {
       c((r = r.apply(n, t || [])).next());
     });
   }
-  function Zt(n, t) {
+  function Qt(n, t) {
     var e = {label: 0, sent: function() {
       if (a[0] & 1)
         throw a[1];
@@ -17364,7 +17364,7 @@ var I1 = we((ci) => {
     return h && h.value;
   }
   function Gt(n, t, e, r) {
-    var i = gt(Qt(n), 2), a = i[0], s = i[1];
+    var i = gt(en(n), 2), a = i[0], s = i[1];
     if (r != null) {
       var o = r.getHashTableHandleByName(a);
       if (o != null)
@@ -17379,13 +17379,13 @@ var I1 = we((ci) => {
     return t[Oo(n, e.currentContextId)];
   }
   function er(n, t) {
-    var e = gt(Qt(n), 2), r = e[0], i = e[1];
+    var e = gt(en(n), 2), r = e[0], i = e[1];
     return [Oo(r, t && t.currentContextId), i];
   }
   function Oo(n, t) {
     return t ? n + "-" + t : n;
   }
-  function Qt(n) {
+  function en(n) {
     var t = n.split(":");
     if (t.length === 1)
       return [n, 0];
@@ -18060,8 +18060,8 @@ var I1 = we((ci) => {
   }
   var dk = void 0, pk = function(n, t, e) {
     return on(dk, void 0, void 0, function() {
-      var r, i, a, s, o, c, l, u, o, h, d, c, p, f, m, m, g, y, g, w, g, g, g, b, x, L, N, I, C, O, D, F, k, B, V, P, G, j, q, H, J, $, ee, te, ne, re, ie, oe, se, me, ye, ve, Ee, Be, We, Ke, ze, Ie, k, B, ue, Ie, G, L, et, ue, te, ne, L, pt, ue, L, He, pt, ue, q, H, L, He, ue, Ie, L, He, pt, ue, Ot, L, He, ue, ie, ue, se, L, Ie, B, ue, Ie, L, et, ue, ye, L, ve, ue;
-      return Zt(this, function(ut) {
+      var r, i, a, s, o, c, l, u, o, h, d, c, p, f, m, m, g, y, g, w, g, g, g, b, x, L, N, I, C, O, D, F, k, B, V, P, G, j, q, H, J, $, ee, te, ne, re, ie, oe, se, me, ye, ve, Ee, Be, We, Ke, ze, Ie, k, B, ue, Ie, G, L, Qe, ue, te, ne, L, pt, ue, L, He, pt, ue, q, H, L, He, ue, Ie, L, He, pt, ue, Ot, L, He, ue, ie, ue, se, L, Ie, B, ue, Ie, L, Qe, ue, ye, L, ve, ue;
+      return Qt(this, function(ut) {
         switch (ut.label) {
           case 0:
             r = n.op;
@@ -18145,7 +18145,7 @@ var I1 = we((ci) => {
               !vt.kept && d.indexOf(vt.id) === -1 && vt.dispose();
             }), p = o, f = function() {
               var vt, Te, ht;
-              return Zt(this, function(ft) {
+              return Qt(this, function(ft) {
                 switch (ft.label) {
                   case 0:
                     return vt = p, [4, e.functionMap[l].executeFunctionAsync(p, e.tensorArrayMap, e.tensorListMap)];
@@ -18207,7 +18207,7 @@ var I1 = we((ci) => {
           case 25:
             return Ie = T("tensorListId", n, t, e), k = T("index", n, t, e), B = T("tensor", n, t, e), ue = e.getTensorList(Ie.id), ue.setItem(k, B), [2, [ue.idTensor]];
           case 26:
-            return Ie = T("tensorListId", n, t, e), G = T("index", n, t, e), L = T("elementShape", n, t, e), et = T("elementDType", n, t, e), ue = e.getTensorList(Ie.id), [2, [ue.getItem(G, L, et)]];
+            return Ie = T("tensorListId", n, t, e), G = T("index", n, t, e), L = T("elementShape", n, t, e), Qe = T("elementDType", n, t, e), ue = e.getTensorList(Ie.id), [2, [ue.getItem(G, L, Qe)]];
           case 27:
             return te = T("indices", n, t, e), ne = T("tensor", n, t, e), L = T("elementShape", n, t, e), pt = T("numElements", n, t, e), ue = uk(ne, te, L, pt), e.addTensorList(ue), [2, [ue.idTensor]];
           case 28:
@@ -18223,7 +18223,7 @@ var I1 = we((ci) => {
           case 33:
             return Ie = T("tensorListId", n, t, e), B = T("tensor", n, t, e), ue = e.getTensorList(Ie.id), ue.pushBack(B), [2, [ue.idTensor]];
           case 34:
-            return Ie = T("tensorListId", n, t, e), L = T("elementShape", n, t, e), et = T("elementDType", n, t, e), ue = e.getTensorList(Ie.id), [2, [ue.popBack(L, et)]];
+            return Ie = T("tensorListId", n, t, e), L = T("elementShape", n, t, e), Qe = T("elementDType", n, t, e), ue = e.getTensorList(Ie.id), [2, [ue.popBack(L, Qe)]];
           case 35:
             return ye = T("tensor", n, t, e), L = T("elementShape", n, t, e), ve = T("lengths", n, t, e), ue = hk(ye, ve, L), e.addTensorList(ue), [2, [ue.idTensor]];
           case 36:
@@ -18353,7 +18353,7 @@ var I1 = we((ci) => {
   var yk = function(n, t, e) {
     return on(gk, void 0, void 0, function() {
       var r, i, a, s, o, c, l, u, h, d, a, s, o, c, l, p, h, f, a, s, o, c, l, m, h;
-      return Zt(this, function(g) {
+      return Qt(this, function(g) {
         switch (g.label) {
           case 0:
             r = n.op;
@@ -18472,7 +18472,7 @@ var I1 = we((ci) => {
     }, n.prototype.import = function(t, e) {
       return on(this, void 0, void 0, function() {
         var r, i = this;
-        return Zt(this, function(a) {
+        return Qt(this, function(a) {
           switch (a.label) {
             case 0:
               return this.checkKeyAndValueTensor(t, e), [4, t.data()];
@@ -18496,7 +18496,7 @@ var I1 = we((ci) => {
     }, n.prototype.find = function(t, e) {
       return on(this, void 0, void 0, function() {
         var r, i = this;
-        return Zt(this, function(a) {
+        return Qt(this, function(a) {
           switch (a.label) {
             case 0:
               return this.checkKeyAndValueTensor(t, e), [4, t.data()];
@@ -18524,7 +18524,7 @@ var I1 = we((ci) => {
   var xk = void 0, Lk = function(n, t, e, r) {
     return on(xk, void 0, void 0, function() {
       var i, a, s, o, c, l, u, o, c, l, h, o;
-      return Zt(this, function(d) {
+      return Qt(this, function(d) {
         switch (d.label) {
           case 0:
             i = n.op;
@@ -18941,10 +18941,10 @@ var I1 = we((ci) => {
   }();
   function x1(n, t, e, r) {
     var i = new Set(), a = [], s = null, o = null, c = new Set(), l = Object.keys(n).map(function(p) {
-      return Qt(p)[0];
+      return en(p)[0];
     }), u = [];
     r != null && (u = r.map(function(p) {
-      return Qt(p.name)[0];
+      return en(p.name)[0];
     }));
     for (var h = Rr(t); h.length > 0; ) {
       var d = h.pop();
@@ -18972,7 +18972,7 @@ var I1 = we((ci) => {
   }
   function Dk(n, t, e) {
     var r = e.usedNodes, i = e.inputs, a = [], s = Object.keys(i).map(function(h) {
-      return Qt(h)[0];
+      return en(h)[0];
     }).map(function(h) {
       return n.nodes[h];
     }), o = n.initNodes;
@@ -19071,9 +19071,9 @@ var I1 = we((ci) => {
       var i = Object.keys(t).sort();
       this.checkInputs(t), this.checkInputShapeAndType(t), e = this.mapOutputs(e), this.checkOutputs(e);
       var a = i.map(function(d) {
-        return r.graph.nodes[Qt(d)[0]];
+        return r.graph.nodes[en(d)[0]];
       }), s = e.map(function(d) {
-        return Qt(d)[0];
+        return en(d)[0];
       }), o = s.map(function(d) {
         return r.graph.nodes[d];
       });
@@ -19084,7 +19084,7 @@ var I1 = we((ci) => {
       return W.tidy(function() {
         var d = new w1(r.weightMap, u, h, r.functionExecutorMap), p = u1({}, r.weightMap);
         Object.keys(t).forEach(function(b) {
-          var x = gt(Qt(b), 2), L = x[0], N = x[1], I = [];
+          var x = gt(en(b), 2), L = x[0], N = x[1], I = [];
           I[N] = t[b], p[L] = I;
         });
         for (var f = r.getFrozenTensorIds(p), m = {}, g = 0; g < l.length; g++) {
@@ -19127,14 +19127,14 @@ var I1 = we((ci) => {
       });
     }, n.prototype.executeAsync = function(t, e) {
       return on(this, void 0, void 0, function() {
-        return Zt(this, function(r) {
+        return Qt(this, function(r) {
           return [2, this._executeAsync(t, e)];
         });
       });
     }, n.prototype._executeAsync = function(t, e, r, i, a) {
       return r === void 0 && (r = false), i === void 0 && (i = {}), a === void 0 && (a = {}), on(this, void 0, void 0, function() {
         var s, o, c, l, u, h;
-        return Zt(this, function(d) {
+        return Qt(this, function(d) {
           switch (d.label) {
             case 0:
               return r || (t = this.mapInputs(t), this.checkInputs(t), this.checkInputShapeAndType(t), e = this.mapOutputs(e), this.checkOutputs(e)), s = new w1(this.weightMap, i, a, this.functionExecutorMap), [4, this.executeWithControlFlow(t, s, e, r)];
@@ -19157,7 +19157,7 @@ var I1 = we((ci) => {
     }, n.prototype.executeFunctionAsync = function(t, e, r) {
       return on(this, void 0, void 0, function() {
         var i, a = this;
-        return Zt(this, function(s) {
+        return Qt(this, function(s) {
           return i = t.reduce(function(o, c, l) {
             return o[a.inputs[l].name] = c, o;
           }, {}), [2, this._executeAsync(i, this.outputNodes, true, e, r)];
@@ -19166,19 +19166,19 @@ var I1 = we((ci) => {
     }, n.prototype.executeWithControlFlow = function(t, e, r, i) {
       return on(this, void 0, void 0, function() {
         var a, s, o, c, l, u, h, d, p, f, m, g, y, w, b, x, L, N = this;
-        return Zt(this, function(I) {
+        return Qt(this, function(I) {
           switch (I.label) {
             case 0:
               a = Object.keys(t), s = a.map(function(C) {
-                return N.graph.nodes[Qt(C)[0]];
+                return N.graph.nodes[en(C)[0]];
               }), o = r.map(function(C) {
-                return Qt(C)[0];
+                return en(C)[0];
               }), c = o.map(function(C) {
                 return N.graph.nodes[C];
               }), c.length === 0 && (c = this._outputs), l = x1(t, c, this.weightMap, this._initNodes), u = l.usedNodes, h = l.missingInputs, d = l.dynamicNode, p = l.syncInputs, f = Rr(s, this.graph.weights, this._initNodes || []).map(function(C) {
                 return {node: C, contexts: e.currentContext};
               }), m = u1({}, this.weightMap), Object.keys(t).forEach(function(C) {
-                var O = gt(Qt(C), 2), D = O[0], F = O[1], k = [];
+                var O = gt(en(C), 2), D = O[0], F = O[1], k = [];
                 k[F] = t[C], m[D] = k;
               }), g = {}, y = this.getFrozenTensorIds(m), w = {}, I.label = 1;
             case 1:
@@ -19234,7 +19234,7 @@ var I1 = we((ci) => {
     }, n.prototype.checkInputShapeAndType = function(t) {
       var e = this;
       Object.keys(t).forEach(function(r) {
-        var i = t[r], a = gt(Qt(r), 1), s = a[0], o = e.graph.nodes[s];
+        var i = t[r], a = gt(en(r), 1), s = a[0], o = e.graph.nodes[s];
         if (o.attrParams.shape && o.attrParams.shape.value) {
           var c = o.attrParams.shape.value, l = c.length === i.shape.length && i.shape.every(function(u, h) {
             return c[h] === -1 || c[h] === u;
@@ -19258,7 +19258,7 @@ var I1 = we((ci) => {
       return e;
     }, n.prototype.checkInputs = function(t) {
       var e = this, r = Object.keys(t).filter(function(i) {
-        var a = gt(Qt(i), 1), s = a[0];
+        var a = gt(en(i), 1), s = a[0];
         return e.graph.nodes[s] == null;
       });
       if (r.length > 0)
@@ -19275,7 +19275,7 @@ var I1 = we((ci) => {
     }, n.prototype.checkOutputs = function(t) {
       var e = this;
       t.forEach(function(r) {
-        var i = gt(Qt(r), 1), a = i[0];
+        var i = gt(en(r), 1), a = i[0];
         if (!e.graph.nodes[a])
           throw new Error("The output '" + r + "' is not found in the graph");
       });
@@ -19330,7 +19330,7 @@ var I1 = we((ci) => {
     }, n.prototype.load = function() {
       return on(this, void 0, void 0, function() {
         var t;
-        return Zt(this, function(e) {
+        return Qt(this, function(e) {
           switch (e.label) {
             case 0:
               if (this.findIOHandler(), this.handler.load == null)
@@ -19354,7 +19354,7 @@ var I1 = we((ci) => {
     }, n.prototype.save = function(t, e) {
       return on(this, void 0, void 0, function() {
         var r;
-        return Zt(this, function(i) {
+        return Qt(this, function(i) {
           if (typeof t == "string") {
             if (r = W.io.getSaveHandlers(t), r.length === 0)
               throw new Error("Cannot find any save handlers for URL '" + t + "'");
@@ -19386,7 +19386,7 @@ var I1 = we((ci) => {
     }, n.prototype.executeAsync = function(t, e) {
       return on(this, void 0, void 0, function() {
         var r;
-        return Zt(this, function(i) {
+        return Qt(this, function(i) {
           switch (i.label) {
             case 0:
               return t = this.normalizeInputs(t), e = this.normalizeOutputs(e), [4, this.executor.executeAsync(t, e)];
@@ -19406,7 +19406,7 @@ var I1 = we((ci) => {
   function Pk(n, t) {
     return t === void 0 && (t = {}), on(this, void 0, void 0, function() {
       var e;
-      return Zt(this, function(r) {
+      return Qt(this, function(r) {
         switch (r.label) {
           case 0:
             if (n == null)
@@ -20615,7 +20615,7 @@ var q1 = we((qt) => {
       ` + t;
       });
       var a;
-      return this.size === Infinity || this.size == null ? a = this.size : e ? a = Math.ceil(this.size / t) : a = Math.floor(this.size / t), en(function() {
+      return this.size === Infinity || this.size == null ? a = this.size : e ? a = Math.ceil(this.size / t) : a = Math.floor(this.size / t), tn(function() {
         return ce(r, void 0, void 0, function() {
           return le(this, function(s) {
             switch (s.label) {
@@ -20629,7 +20629,7 @@ var q1 = we((qt) => {
       }, a);
     }, n.prototype.concatenate = function(t) {
       var e = this, r = this, i;
-      return this.size === Infinity || t.size === Infinity ? i = Infinity : this.size != null && t.size != null ? i = this.size + t.size : i = null, en(function() {
+      return this.size === Infinity || t.size === Infinity ? i = Infinity : this.size != null && t.size != null ? i = this.size + t.size : i = null, tn(function() {
         return ce(e, void 0, void 0, function() {
           var a, s;
           return le(this, function(o) {
@@ -20646,7 +20646,7 @@ var q1 = we((qt) => {
       }, i);
     }, n.prototype.filter = function(t) {
       var e = this, r = this, i;
-      return this.size === Infinity ? i = Infinity : i = null, en(function() {
+      return this.size === Infinity ? i = Infinity : i = null, tn(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(a) {
             switch (a.label) {
@@ -20675,7 +20675,7 @@ var q1 = we((qt) => {
       });
     }, n.prototype.map = function(t) {
       var e = this, r = this;
-      return en(function() {
+      return tn(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(i) {
             switch (i.label) {
@@ -20693,7 +20693,7 @@ var q1 = we((qt) => {
       }, this.size);
     }, n.prototype.mapAsync = function(t) {
       var e = this, r = this;
-      return en(function() {
+      return tn(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(i) {
             switch (i.label) {
@@ -20710,7 +20710,7 @@ var q1 = we((qt) => {
       if (t == null)
         throw new RangeError("`Dataset.prefetch()` requires bufferSize to be specified.");
       var r = this;
-      return en(function() {
+      return tn(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(i) {
             switch (i.label) {
@@ -20724,7 +20724,7 @@ var q1 = we((qt) => {
       }, this.size);
     }, n.prototype.repeat = function(t) {
       var e = this, r = this, i;
-      return this.size != null && t > 0 ? i = this.size * t : t === 0 ? i = 0 : this.size != null && (t === void 0 || t < 0) ? i = Infinity : i = null, en(function() {
+      return this.size != null && t > 0 ? i = this.size * t : t === 0 ? i = 0 : this.size != null && (t === void 0 || t < 0) ? i = Infinity : i = null, tn(function() {
         return ce(e, void 0, void 0, function() {
           var a, s = this;
           return le(this, function(o) {
@@ -20746,7 +20746,7 @@ var q1 = we((qt) => {
       }, i);
     }, n.prototype.skip = function(t) {
       var e = this, r = this, i;
-      return this.size != null && t >= 0 && this.size >= t ? i = this.size - t : this.size != null && (this.size < t || t === void 0 || t < 0) ? i = 0 : i = null, en(function() {
+      return this.size != null && t >= 0 && this.size >= t ? i = this.size - t : this.size != null && (this.size < t || t === void 0 || t < 0) ? i = 0 : i = null, tn(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(a) {
             switch (a.label) {
@@ -20763,7 +20763,7 @@ var q1 = we((qt) => {
       if (r === void 0 && (r = true), t == null || t < 0)
         throw this.size == null ? new RangeError("`Dataset.shuffle()` requires bufferSize to be specified.") : new RangeError("`Dataset.shuffle()` requires bufferSize to be specified.  If your data fits in main memory (for regular JS objects), and/or GPU memory (for `tf.Tensor`s), consider setting " + ("bufferSize to the dataset size (" + this.size + " elements)"));
       var a = this, s = T1(e || Ce.util.now().toString());
-      return en(function() {
+      return tn(function() {
         return ce(i, void 0, void 0, function() {
           var o;
           return le(this, function(c) {
@@ -20778,7 +20778,7 @@ var q1 = we((qt) => {
       }, this.size);
     }, n.prototype.take = function(t) {
       var e = this, r = this, i;
-      return this.size != null && this.size > t ? i = t : this.size != null && this.size <= t ? i = this.size : i = null, en(function() {
+      return this.size != null && this.size > t ? i = t : this.size != null && this.size <= t ? i = this.size : i = null, tn(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(a) {
             switch (a.label) {
@@ -20818,7 +20818,7 @@ var q1 = we((qt) => {
       });
     }, n.MAX_BUFFER_SIZE = 1e4, n;
   }();
-  function en(n, t) {
+  function tn(n, t) {
     return t === void 0 && (t = null), new (function(e) {
       Ye(r, e);
       function r() {
@@ -20836,7 +20836,7 @@ var q1 = we((qt) => {
   }
   function y6(n) {
     var t = this;
-    return en(function() {
+    return tn(function() {
       return ce(t, void 0, void 0, function() {
         return le(this, function(e) {
           return [2, O1(n)];
@@ -20855,7 +20855,7 @@ var q1 = we((qt) => {
     else if (n instanceof Object)
       for (var i in n)
         e = e == null ? n[i].size : Math.min(e, n[i].size);
-    return en(function() {
+    return tn(function() {
       return ce(t, void 0, void 0, function() {
         var a;
         return le(this, function(s) {
@@ -21530,7 +21530,7 @@ var q1 = we((qt) => {
   }
   function R6(n) {
     var t = this, e = Ld(n);
-    return en(function() {
+    return tn(function() {
       return ce(t, void 0, void 0, function() {
         return le(this, function(r) {
           return [2, e];
@@ -21540,7 +21540,7 @@ var q1 = we((qt) => {
   }
   function O6(n) {
     var t = this;
-    return en(function() {
+    return tn(function() {
       return ce(t, void 0, void 0, function() {
         var e;
         return le(this, function(r) {
@@ -23050,8 +23050,8 @@ Hi there \u{1F44B}. Looks like you are running TensorFlow.js in Node.js. To spee
           for (var Ee = 0; Ee < O; Ee += se)
             for (var Be = Math.min(ye + se, D), We = Math.min(ve + se, F), Ke = Math.min(Ee + se, O), ze = ye; ze < Be; ze++)
               for (var Ie = ve; Ie < We; Ie++) {
-                for (var ue = 0, et = Ee; et < Ke; et++) {
-                  var pt = Math.min(me, g - 1) * q, He = Math.min(me, y - 1) * ne, Ot = B[pt + ze * H + et * J], ut = V[et * ee + Ie * te + He];
+                for (var ue = 0, Qe = Ee; Qe < Ke; Qe++) {
+                  var pt = Math.min(me, g - 1) * q, He = Math.min(me, y - 1) * ne, Ot = B[pt + ze * H + Qe * J], ut = V[Qe * ee + Ie * te + He];
                   ue += Ot * ut;
                 }
                 oe[me * re + (ze * F + Ie)] += ue;
@@ -23299,9 +23299,9 @@ Hi there \u{1F44B}. Looks like you are running TensorFlow.js in Node.js. To spee
       for (var me = 0; me < O; ++me)
         for (var ye = 0; ye < D; ++ye)
           for (var ve = ye - j, Ee = Math.max(0, Math.ceil(ve / P)), Be = Math.min(B, (I + ve) / P), We = 0; We < F; ++We) {
-            for (var Ke = We - q, ze = Math.max(0, Math.ceil(Ke / G)), Ie = Math.min(V, (C + Ke) / G), ue = 0, et = Ee; et < Be; ++et)
-              for (var pt = et * P - ve, He = ze; He < Ie; ++He)
-                for (var Ot = He * G - Ke, ut = ne * se + re * et + ie * He, vt = b * (I - 1 - pt) + x * (C - 1 - Ot) + L * me, Te = 0; Te < k; ++Te) {
+            for (var Ke = We - q, ze = Math.max(0, Math.ceil(Ke / G)), Ie = Math.min(V, (C + Ke) / G), ue = 0, Qe = Ee; Qe < Be; ++Qe)
+              for (var pt = Qe * P - ve, He = ze; He < Ie; ++He)
+                for (var Ot = He * G - Ke, ut = ne * se + re * Qe + ie * He, vt = b * (I - 1 - pt) + x * (C - 1 - Ot) + L * me, Te = 0; Te < k; ++Te) {
                   var ht = y[ut + oe * Te], ft = w[vt + Te];
                   ue += ht * ft;
                 }
@@ -23350,10 +23350,10 @@ Hi there \u{1F44B}. Looks like you are running TensorFlow.js in Node.js. To spee
           for (var ve = Math.max(0, Math.ceil((J - ye) / f)), Ee = Math.min(h.outWidth, (h.inWidth + J - ye) / f), Be = ye * I + me, We = 0; We < h.inChannels; ++We)
             for (var Ke = We * C + Be, ze = 0; ze < h.outChannels; ++ze) {
               for (var Ie = 0, ue = 0; ue < h.batchSize; ++ue)
-                for (var et = ue * P, pt = ue * D, He = te; He < ne; ++He)
-                  for (var Ot = ee + He * d - H, ut = Ot * G + et, vt = He * F + pt, Te = oe; Te < se; ++Te)
-                    for (var ht = ie + Te * p - $, ft = ht * j + ut, Ge = Te * k + vt, Kt = ve; Kt < Ee; ++Kt) {
-                      var qn = ye + Kt * f - J, kt = qn * q + ft, ma = Kt * B + Ge;
+                for (var Qe = ue * P, pt = ue * D, He = te; He < ne; ++He)
+                  for (var Ot = ee + He * d - H, ut = Ot * G + Qe, vt = He * F + pt, Te = oe; Te < se; ++Te)
+                    for (var ht = ie + Te * p - $, ft = ht * j + ut, Ge = Te * k + vt, jt = ve; jt < Ee; ++jt) {
+                      var qn = ye + jt * f - J, kt = qn * q + ft, ma = jt * B + Ge;
                       Ie += V[kt + We] * O[ma + ze];
                     }
               b[Ke + ze] = Ie;
@@ -23368,11 +23368,11 @@ Hi there \u{1F44B}. Looks like you are running TensorFlow.js in Node.js. To spee
       for (var Ee = 0; Ee < j; ++Ee)
         for (var Be = 0; Be < q; ++Be)
           for (var We = Be - se, Ke = Math.max(0, Math.ceil(We / re)), ze = Math.min(ee, (V + We) / re), Ie = 0; Ie < H; ++Ie)
-            for (var ue = Ie - me, et = Math.max(0, Math.ceil(ue / ie)), pt = Math.min(te, (P + ue) / ie), He = 0; He < J; ++He) {
+            for (var ue = Ie - me, Qe = Math.max(0, Math.ceil(ue / ie)), pt = Math.min(te, (P + ue) / ie), He = 0; He < J; ++He) {
               for (var Ot = He - ye, ut = Math.max(0, Math.ceil(Ot / oe)), vt = Math.min(ne, (G + Ot) / oe), Te = 0, ht = Ke; ht < ze; ++ht)
-                for (var ft = ht * re - We, Ge = et; Ge < pt; ++Ge)
-                  for (var Kt = Ge * ie - ue, qn = ut; qn < vt; ++qn)
-                    for (var kt = qn * oe - Ot, ma = x * ve + L * ht + N * Ge + I * qn, cr = O * (V - 1 - ft) + D * (P - 1 - Kt) + F * (G - 1 - kt) + k * Ee, bi = 0; bi < $; ++bi) {
+                for (var ft = ht * re - We, Ge = Qe; Ge < pt; ++Ge)
+                  for (var jt = Ge * ie - ue, qn = ut; qn < vt; ++qn)
+                    for (var kt = qn * oe - Ot, ma = x * ve + L * ht + N * Ge + I * qn, cr = O * (V - 1 - ft) + D * (P - 1 - jt) + F * (G - 1 - kt) + k * Ee, bi = 0; bi < $; ++bi) {
                       var cc = b[ma + bi], lc = C[cr + bi];
                       Te += cc * lc;
                     }
@@ -23440,8 +23440,8 @@ Hi there \u{1F44B}. Looks like you are running TensorFlow.js in Node.js. To spee
         for (var se = 0; se < G; ++se)
           for (var me = se - te, ye = Math.max(0, Math.ceil(me / $)), ve = Math.min(H, (B + me) / $), Ee = 0; Ee < j; ++Ee) {
             for (var Be = Ee - ne, We = Math.max(0, Math.ceil(Be / ee)), Ke = Math.min(J, (V + Be) / ee), ze = 0, Ie = ye; Ie < ve; ++Ie)
-              for (var ue = Ie * $ - me, et = We; et < Ke; ++et)
-                for (var pt = et * ee - Be, He = L * ie + N * Ie + I * et, Ot = O * (B - 1 - ue) + D * (V - 1 - pt) + F * oe, ut = 0; ut < re; ++ut) {
+              for (var ue = Ie * $ - me, Qe = We; Qe < Ke; ++Qe)
+                for (var pt = Qe * ee - Be, He = L * ie + N * Ie + I * Qe, Ot = O * (B - 1 - ue) + D * (V - 1 - pt) + F * oe, ut = 0; ut < re; ++ut) {
                   var vt = oe * re + ut, Te = x[He + vt], ht = C[Ot + ut];
                   ze += Te * ht;
                 }
@@ -25680,7 +25680,7 @@ vec2 packedUVfrom3D(int texNumR, int texNumC,
   `;
   }
   function yU(n, t) {
-    var e = n.name, r = e.charAt(0).toUpperCase() + e.slice(1), i = "get" + r + "AtOutCoords", a = n.shapeInfo.logicalShape.length, s = t.logicalShape.length, o = fb(n.shapeInfo.logicalShape, t.logicalShape), c = Qe(s), l = s - a, u, h = ["x", "y", "z", "w", "u", "v"];
+    var e = n.name, r = e.charAt(0).toUpperCase() + e.slice(1), i = "get" + r + "AtOutCoords", a = n.shapeInfo.logicalShape.length, s = t.logicalShape.length, o = fb(n.shapeInfo.logicalShape, t.logicalShape), c = Ze(s), l = s - a, u, h = ["x", "y", "z", "w", "u", "v"];
     a === 0 ? u = "" : s < 2 && o.length >= 1 ? u = "coords = 0;" : u = o.map(function(x) {
       return "coords." + h[x + l] + " = 0;";
     }).join(`
@@ -25721,7 +25721,7 @@ vec2 packedUVfrom3D(int texNumR, int texNumC,
         return sampleTexture(` + e + `, resultUV);
       }
     `;
-    var l = Qe(c), u = fb(n.shapeInfo.logicalShape, t.logicalShape), h = c - o, d, p = ["x", "y", "z", "w", "u", "v"];
+    var l = Ze(c), u = fb(n.shapeInfo.logicalShape, t.logicalShape), h = c - o, d, p = ["x", "y", "z", "w", "u", "v"];
     o === 0 ? d = "" : c < 2 && u.length >= 1 ? d = "coords = 0;" : d = u.map(function(m) {
       return "coords." + p[m + h] + " = 0;";
     }).join(`
@@ -25737,7 +25737,7 @@ vec2 packedUVfrom3D(int texNumR, int texNumC,
     }
   `;
   }
-  function Qe(n) {
+  function Ze(n) {
     if (n <= 1)
       return "int";
     if (n === 2)
@@ -25768,10 +25768,10 @@ vec2 packedUVfrom3D(int texNumR, int texNumC,
       });
       var a = t[t.length - 1], s = Math.ceil(a / e);
       this.outputShape = t.slice(0, -1), s > 1 && this.outputShape.push(s), i || this.variableNames.push("bestIndicesA");
-      var o = this.outputShape, c = o.length, l = Qe(c), u = Ut("coords", c), h, d;
+      var o = this.outputShape, c = o.length, l = Ze(c), u = Ut("coords", c), h, d;
       if (s === 1) {
         d = c + 1;
-        var p = Qe(d);
+        var p = Ze(d);
         h = `
         ` + p + " sourceLocR = " + p + "(" + u.join() + `, 0);
         ++` + u[c - 1] + `;
@@ -26094,7 +26094,7 @@ return (round(mod(b, 2.0)) != 1) ?
           result.w = 0.;
         `;
         else {
-          var o = Qe(a);
+          var o = Ze(a);
           if (s = `
           ` + o + ` coords = getOutputCoords();
         `, a === 1)
@@ -27074,7 +27074,7 @@ return (round(mod(b, 2.0)) != 1) ?
       e ? (o = r ? "end != " + (s - 1) : "end != 0", c = r ? "end + 1" : "end - 1") : (o = r ? "end + pow2 < " + s : "end >= pow2", c = r ? "end + pow2" : "end - pow2"), this.userCode = `
       uniform float index;
       void main() {
-        ` + Qe(i) + ` coords = getOutputCoords();
+        ` + Ze(i) + ` coords = getOutputCoords();
         int end = ` + Ib(i, "coords") + `;
         float val = ` + a + `;
         int pow2 = int(pow(2.0, index));
@@ -27374,7 +27374,7 @@ return (round(mod(b, 2.0)) != 1) ?
       this.variableNames = ["A", "indices"];
       var i = t.slice();
       i[r] = e, this.outputShape = i, this.rank = i.length;
-      var a = Qe(this.rank), s = NB(t, r);
+      var a = Ze(this.rank), s = NB(t, r);
       this.userCode = `
       void main() {
         ` + a + ` resRC = getOutputCoords();
@@ -27397,7 +27397,7 @@ return (round(mod(b, 2.0)) != 1) ?
   var CB = function() {
     function n(t, e, r) {
       this.sliceDim = t, this.strides = e, this.variableNames = ["x", "indices"], this.outputShape = r;
-      var i = Qe(e.length), a = Qe(r.length), s = this.sliceDim > 1 ? "strides[j]" : "strides";
+      var i = Ze(e.length), a = Ze(r.length), s = this.sliceDim > 1 ? "strides[j]" : "strides";
       this.userCode = `
         ` + i + " strides = " + i + "(" + this.strides + `);
          void main() {
@@ -28323,7 +28323,7 @@ return (round(mod(b, 2.0)) != 1) ?
         }
       `;
       else {
-        var r = Ut("rc", e), i = Qe(e), a = VB(e, t, r), s = GB(e, t[t.length - 1], t[t.length - 2], r), o = qB(t, r);
+        var r = Ut("rc", e), i = Ze(e), a = VB(e, t, r), s = GB(e, t[t.length - 1], t[t.length - 2], r), o = qB(t, r);
         this.userCode = `
         void main() {
           ` + i + ` rc = getOutputCoords();
@@ -28385,7 +28385,7 @@ return (round(mod(b, 2.0)) != 1) ?
       this.variableNames = ["x"], this.outputShape = e.map(function(l, u) {
         return l[0] + t[u] + l[1];
       });
-      var i = t.length, a = Qe(i), s = e.map(function(l) {
+      var i = t.length, a = Ze(i), s = e.map(function(l) {
         return l[0];
       }).join(","), o = e.map(function(l, u) {
         return l[0] + t[u];
@@ -28428,7 +28428,7 @@ return (round(mod(b, 2.0)) != 1) ?
       this.variableNames = ["x"], this.packedInputs = true, this.packedOutput = true, this.outputShape = e.map(function(y, w) {
         return y[0] + t[w] + y[1];
       });
-      for (var i = t.length, a = Qe(i), s = e.map(function(y) {
+      for (var i = t.length, a = Ze(i), s = e.map(function(y) {
         return y[0];
       }).join(","), o = e.map(function(y, w) {
         return y[0] + t[w];
@@ -29301,7 +29301,7 @@ return (round(mod(b, 2.0)) != 1) ?
         return e.indexOf(o) !== -1 && t[o] !== 1 ? t[o] + " - coords[" + o + "] - 1" : "coords[" + o + "]";
       }, a = t.map(function(o, c) {
         return i(c);
-      }).join(","), s = Qe(r);
+      }).join(","), s = Ze(r);
       this.userCode = `
       void main() {
         ` + s + ` coords = getOutputCoords();
@@ -29318,7 +29318,7 @@ return (round(mod(b, 2.0)) != 1) ?
       if (r > 4)
         throw new Error("WebGL backend: Reverse of rank-" + r + " tensor is not yet supported");
       this.outputShape = t;
-      var i = Ut("rc", r), a = i[r - 1] + " + 1 < " + this.outputShape[r - 1], s = i[r - 2] + " + 1 < " + this.outputShape[r - 2], o = Qe(r);
+      var i = Ut("rc", r), a = i[r - 1] + " + 1 < " + this.outputShape[r - 1], s = i[r - 2] + " + 1 < " + this.outputShape[r - 2], o = Ze(r);
       r === 1 ? this.userCode = `
         void main(){
           int rc = getOutputCoords();
@@ -29375,7 +29375,7 @@ return (round(mod(b, 2.0)) != 1) ?
   var Yb = function() {
     function n(t, e, r, i, a, s, o) {
       this.variableNames = ["updates", "indices", "defaultValue"], this.outputShape = s;
-      var c = Qe(a.length), l = Qe(s.length), u = "";
+      var c = Ze(a.length), l = Ze(s.length), u = "";
       r === 1 ? u = "i" : r === 2 && (u = "i, j");
       var h = "getIndices(" + u + ")", d = "";
       i === 1 ? d = "i" : i === 2 && (d = "i, coords[1]");
@@ -29535,7 +29535,7 @@ return (round(mod(b, 2.0)) != 1) ?
           c.push("" + s[l]), l < t && o.push("" + s[l]);
         i = o.join(), a = c.join();
       }
-      var u = Qe(r);
+      var u = Ze(r);
       this.userCode = `
       void main() {
         ` + u + ` resRC = getOutputCoords();
@@ -29553,7 +29553,7 @@ return (round(mod(b, 2.0)) != 1) ?
   var oz = function() {
     function n(t) {
       this.variableNames = ["source"], this.outputShape = t, this.rank = t.length;
-      var e = Qe(this.rank), r = "uniform int start[" + this.rank + "];", i = sz(this.rank), a, s = t.map(function(o, c) {
+      var e = Ze(this.rank), r = "uniform int start[" + this.rank + "];", i = sz(this.rank), a, s = t.map(function(o, c) {
         return "sourceLoc." + rp[c] + " = start[" + c + "] + coords." + rp[c] + ";";
       });
       a = `
@@ -29592,7 +29592,7 @@ return (round(mod(b, 2.0)) != 1) ?
   var cz = function() {
     function n(t) {
       this.variableNames = ["source"], this.packedInputs = true, this.packedOutput = true, this.outputShape = t, this.rank = t.length;
-      var e = Qe(this.rank), r = Ut("coords", this.rank), i = Ut("sourceLoc", this.rank), a = this.rank === 1 ? "sourceLoc" : "vec2(" + i.slice(-2).join() + ")", s = "getChannel(getSource(" + i.join() + "), " + a + ")", o = `
+      var e = Ze(this.rank), r = Ut("coords", this.rank), i = Ut("sourceLoc", this.rank), a = this.rank === 1 ? "sourceLoc" : "vec2(" + i.slice(-2).join() + ")", s = "getChannel(getSource(" + i.join() + "), " + a + ")", o = `
       result.x = ` + s + `;
       if (++` + r[this.rank - 1] + " < " + t[this.rank - 1] + `) {
         ++` + i[this.rank - 1] + `;
@@ -29643,7 +29643,7 @@ return (round(mod(b, 2.0)) != 1) ?
   var lz = function() {
     function n(t, e, r) {
       this.variableNames = ["x"], this.outputShape = r;
-      var i = r.length, a = Qe(r.length), s = Qe(r.length), o = "";
+      var i = r.length, a = Ze(r.length), s = Ze(r.length), o = "";
       if (i === 1)
         o = "coords * strides + begin";
       else {
@@ -29783,7 +29783,7 @@ return (round(mod(b, 2.0)) != 1) ?
       for (var r = new Array(t.length), i = 0; i < r.length; i++)
         r[i] = t[i] * e[i];
       this.outputShape = r, this.rank = r.length;
-      var a = Qe(this.rank), s = fz(t);
+      var a = Ze(this.rank), s = fz(t);
       this.userCode = `
       void main() {
         ` + a + ` resRC = getOutputCoords();
@@ -29973,7 +29973,7 @@ return (round(mod(b, 2.0)) != 1) ?
   var Gz = function() {
     function n(t) {
       this.variableNames = ["A"], this.packedInputs = true, this.packedOutput = false, this.outputShape = t;
-      var e = t.length, r = Ut("rc", e), i = Qe(e), a = $W(e, r), s = r.slice(-2), o = e <= 1 ? "rc" : "vec2(" + s.join(",") + ")";
+      var e = t.length, r = Ut("rc", e), i = Ze(e), a = $W(e, r), s = r.slice(-2), o = e <= 1 ? "rc" : "vec2(" + s.join(",") + ")";
       this.userCode = `
       void main() {
         ` + i + ` rc = getOutputCoords();
@@ -31128,7 +31128,7 @@ return (round(mod(b, 2.0)) != 1) ?
   var CP = function() {
     function n(t, e) {
       this.packedInputs = true, this.packedOutput = true, this.outputShape = [], this.outputShape = _.backend_util.computeOutShape(t, e);
-      var r = this.outputShape, i = r.length, a = Qe(i), s = Ut("coords", i), o = ["x", "y", "z", "w", "u", "v"].slice(0, i);
+      var r = this.outputShape, i = r.length, a = Ze(i), s = Ut("coords", i), o = ["x", "y", "z", "w", "u", "v"].slice(0, i);
       this.variableNames = t.map(function(y, w) {
         return "T" + w;
       });
@@ -31552,7 +31552,7 @@ return a / b;`, zP = `
       for (var r = new Array(t.length), i = 0; i < r.length; i++)
         r[i] = t[e[i]];
       this.outputShape = r, this.rank = r.length;
-      var a = Qe(this.rank), s = eM(e);
+      var a = Ze(this.rank), s = eM(e);
       this.userCode = `
     void main() {
       ` + a + ` resRC = getOutputCoords();
@@ -31577,7 +31577,7 @@ return a / b;`, zP = `
         r[i] = t[e[i]];
       if (this.outputShape = r, this.rank = r.length, this.rank > 6)
         throw Error("Packed transpose for rank " + this.rank + " is not yet supported.");
-      for (var a = Qe(this.rank), s = db("rc", this.rank), o = new Array(this.rank), i = 0; i < e.length; i++)
+      for (var a = Ze(this.rank), s = db("rc", this.rank), o = new Array(this.rank), i = 0; i < e.length; i++)
         o[e[i]] = s[i];
       var c = "vec2(" + o.slice(-2).join() + ")", l = "++" + s[this.rank - 1] + " < " + r[this.rank - 1], u = "getChannel(getA(" + o.join() + "), " + c + ")";
       this.userCode = `
@@ -31703,7 +31703,7 @@ return a / b;`, zP = `
       this.variableNames = ["x"], this.outputShape = e.map(function(u, h) {
         return u[0] + t[h] + u[1];
       });
-      var i = t.length, a = Qe(i), s = e.map(function(u) {
+      var i = t.length, a = Ze(i), s = e.map(function(u) {
         return u[0];
       }).join(","), o = e.map(function(u, h) {
         return u[0] + t[h];
@@ -31750,7 +31750,7 @@ return a / b;`, zP = `
       this.variableNames = ["x"], this.packedInputs = true, this.packedOutput = true, this.outputShape = e.map(function(m, g) {
         return m[0] + t[g] + m[1];
       });
-      var i = t.length, a = Qe(i), s = e.map(function(m) {
+      var i = t.length, a = Ze(i), s = e.map(function(m) {
         return m[0];
       }).join(","), o = e.map(function(m, g) {
         return m[0] + t[g];
@@ -32674,21 +32674,21 @@ var Sx = we((Dp) => {
   }
   Dp.load = pV;
 });
-var Ax = we((tn) => {
+var Ax = we((nn) => {
   const fV = Ap(), Ix = Sx(), mV = Op(), rc = fs(), gs = Ep();
-  tn.load = Ix.load;
-  tn.PoseNet = Ix.PoseNet;
-  tn.MobileNet = fV.MobileNet;
-  tn.decodeMultiplePoses = mV.decodeMultiplePoses;
-  tn.partChannels = rc.partChannels;
-  tn.partIds = rc.partIds;
-  tn.partNames = rc.partNames;
-  tn.poseChain = rc.poseChain;
-  tn.getAdjacentKeyPoints = gs.getAdjacentKeyPoints;
-  tn.getBoundingBox = gs.getBoundingBox;
-  tn.getBoundingBoxPoints = gs.getBoundingBoxPoints;
-  tn.scaleAndFlipPoses = gs.scaleAndFlipPoses;
-  tn.scalePose = gs.scalePose;
+  nn.load = Ix.load;
+  nn.PoseNet = Ix.PoseNet;
+  nn.MobileNet = fV.MobileNet;
+  nn.decodeMultiplePoses = mV.decodeMultiplePoses;
+  nn.partChannels = rc.partChannels;
+  nn.partIds = rc.partIds;
+  nn.partNames = rc.partNames;
+  nn.poseChain = rc.poseChain;
+  nn.getAdjacentKeyPoints = gs.getAdjacentKeyPoints;
+  nn.getBoundingBox = gs.getBoundingBox;
+  nn.getBoundingBoxPoints = gs.getBoundingBoxPoints;
+  nn.scaleAndFlipPoses = gs.scaleAndFlipPoses;
+  nn.scalePose = gs.scalePose;
 });
 var Up = we((gV) => {
   vs(gV, {cutBoxFromImageAndResize: () => vV, enlargeBox: () => bV, getBoxCenter: () => Wp, getBoxSize: () => Fp, scaleBoxCoordinates: () => wV, shiftBox: () => LV, squarifyBox: () => xV});
@@ -32724,42 +32724,42 @@ var Up = we((gV) => {
   }
 });
 var Nx = we((Tx) => {
-  const $e = zt(), SV = Up();
+  const et = zt(), SV = Up();
   class IV {
     constructor(n, t, e) {
-      this.model = n, this.width = t, this.height = t, this.anchors = e.map((r) => [r.x_center, r.y_center]), this.anchorsTensor = $e.tensor2d(this.anchors), this.inputSizeTensor = $e.tensor1d([t, t]), this.doubleInputSizeTensor = $e.tensor1d([t * 2, t * 2]);
+      this.model = n, this.anchors = e.map((r) => [r.x_center, r.y_center]), this.anchorsTensor = et.tensor2d(this.anchors), this.inputSizeTensor = et.tensor1d([t, t]), this.doubleInputSizeTensor = et.tensor1d([t * 2, t * 2]);
     }
     normalizeBoxes(n) {
-      return $e.tidy(() => {
-        const t = $e.slice(n, [0, 0], [-1, 2]), e = $e.slice(n, [0, 2], [-1, 2]), r = $e.add($e.div(t, this.inputSizeTensor), this.anchorsTensor), i = $e.div(e, this.doubleInputSizeTensor), a = $e.mul($e.sub(r, i), this.inputSizeTensor), s = $e.mul($e.add(r, i), this.inputSizeTensor);
-        return $e.concat2d([a, s], 1);
+      return et.tidy(() => {
+        const t = et.slice(n, [0, 0], [-1, 2]), e = et.slice(n, [0, 2], [-1, 2]), r = et.add(et.div(t, this.inputSizeTensor), this.anchorsTensor), i = et.div(e, this.doubleInputSizeTensor), a = et.mul(et.sub(r, i), this.inputSizeTensor), s = et.mul(et.add(r, i), this.inputSizeTensor);
+        return et.concat2d([a, s], 1);
       });
     }
     normalizeLandmarks(n, t) {
-      return $e.tidy(() => {
-        const e = $e.add($e.div(n.reshape([-1, 7, 2]), this.inputSizeTensor), this.anchors[t]);
-        return $e.mul(e, this.inputSizeTensor);
+      return et.tidy(() => {
+        const e = et.add(et.div(n.reshape([-1, 7, 2]), this.inputSizeTensor), this.anchors[t]);
+        return et.mul(e, this.inputSizeTensor);
       });
     }
     async getBoundingBoxes(n, t) {
-      const e = $e.tidy(() => $e.mul($e.sub(n, 0.5), 2)), r = this.model.predict(e), i = r.squeeze(), a = $e.tidy(() => $e.sigmoid($e.slice(i, [0, 0], [-1, 1])).squeeze()), s = $e.slice(i, [0, 1], [-1, 4]), o = this.normalizeBoxes(s), c = $e.image.nonMaxSuppression(o, a, t.maxHands, t.iouThreshold, t.scoreThreshold), l = c.arraySync(), u = [e, r, c, i, o, s, a];
-      if (l.length === 0)
-        return u.forEach((d) => d.dispose()), null;
-      const h = [];
-      for (const d of l) {
-        const p = $e.slice(o, [d, 0], [1, -1]), f = $e.slice(i, [d, 5], [1, 14]), m = $e.tidy(() => this.normalizeLandmarks(f, d).reshape([-1, 2]));
-        f.dispose(), h.push({boxes: p, palmLandmarks: m});
+      const e = this.model.predict(n), r = e.squeeze(), i = et.tidy(() => et.sigmoid(et.slice(r, [0, 0], [-1, 1])).squeeze()), a = et.slice(r, [0, 1], [-1, 4]), s = this.normalizeBoxes(a), o = et.image.nonMaxSuppression(s, i, t.maxHands, t.iouThreshold, 0.95), c = o.arraySync(), l = [e, o, r, s, a, i];
+      if (c.length === 0)
+        return l.forEach((h) => h.dispose()), null;
+      const u = [];
+      for (const h of c) {
+        const d = et.slice(s, [h, 0], [1, -1]), p = et.slice(r, [h, 5], [1, 14]), f = et.tidy(() => this.normalizeLandmarks(p, h).reshape([-1, 2]));
+        p.dispose(), u.push({boxes: d, palmLandmarks: f});
       }
-      return u.forEach((d) => d.dispose()), h;
+      return l.forEach((h) => h.dispose()), u;
     }
     async estimateHandBounds(n, t) {
-      const e = n.shape[1], r = n.shape[2], i = $e.tidy(() => n.resizeBilinear([this.width, this.height]).div(255)), a = await this.getBoundingBoxes(i, t);
-      if (!a || a.length === 0)
-        return i.dispose(), null;
+      const e = n.shape[1], r = n.shape[2], i = et.tidy(() => n.resizeBilinear([t.inputSize, t.inputSize]).div(127.5).sub(1)), a = await this.getBoundingBoxes(i, t);
+      if (i.dispose(), !a || a.length === 0)
+        return null;
       const s = [];
       for (const o of a) {
-        const c = o.boxes.arraySync(), l = c[0].slice(0, 2), u = c[0].slice(2, 4), h = o.palmLandmarks.arraySync();
-        i.dispose(), o.boxes.dispose(), o.palmLandmarks.dispose(), s.push(SV.scaleBoxCoordinates({startPoint: l, endPoint: u, palmLandmarks: h}, [r / this.width, e / this.height]));
+        const c = o.boxes.dataSync(), l = c.slice(0, 2), u = c.slice(2, 4), h = o.palmLandmarks.arraySync();
+        o.boxes.dispose(), o.palmLandmarks.dispose(), s.push(SV.scaleBoxCoordinates({startPoint: l, endPoint: u, palmLandmarks: h}, [r / t.inputSize, e / t.inputSize]));
       }
       return s;
     }
@@ -32813,7 +32813,7 @@ var Wx = we((Dx) => {
   const kx = zt(), Gn = Up(), Ur = Ex(), RV = 0.8, OV = [0, -0.4], EV = 3, DV = [0, -0.1], kV = 1.65, Fx = [0, 5, 9, 13, 17, 1, 2], FV = 0, WV = 2;
   class UV {
     constructor(n, t, e) {
-      this.boundingBoxDetector = n, this.meshDetector = t, this.inputSize = e, this.regionsOfInterest = [], this.runsWithoutHandDetector = 0, this.maxHandsNumber = 1, this.skipFrames = 0;
+      this.boundingBoxDetector = n, this.meshDetector = t, this.inputSize = e, this.regionsOfInterest = [], this.runsWithoutHandDetector = 0, this.skipFrames = 0, this.detectedHands = 0;
     }
     getBoxForPalmLandmarks(n, t) {
       const e = n.map((i) => {
@@ -32837,36 +32837,36 @@ var Wx = we((Dx) => {
     }
     async estimateHands(n, t) {
       this.skipFrames = t.skipFrames;
-      const e = this.shouldUpdateRegionsOfInterest();
-      if (e) {
-        const i = await this.boundingBoxDetector.estimateHandBounds(n, t);
-        if (this.regionsOfInterest = [], !i || i.length === 0)
-          return n.dispose(), null;
-        for (const a of i)
+      let e = this.detectedHands === 0 || this.detectedHands !== this.regionsOfInterest.length, r;
+      if ((e || this.runsWithoutHandDetector > this.skipFrames) && (r = await this.boundingBoxDetector.estimateHandBounds(n, t)), t.maxHands > 1 && r && r.length > 0 && r.length !== this.detectedHands && (e = true), e) {
+        if (this.regionsOfInterest = [], !r || r.length === 0)
+          return n.dispose(), this.detectedHands = 0, null;
+        for (const a of r)
           this.regionsOfInterest.push(a);
         this.runsWithoutHandDetector = 0;
       } else
         this.runsWithoutHandDetector++;
-      const r = [];
-      for (const i in this.regionsOfInterest) {
-        const a = this.regionsOfInterest[i];
-        if (!a)
+      const i = [];
+      for (const a in this.regionsOfInterest) {
+        const s = this.regionsOfInterest[a];
+        if (!s)
           continue;
-        const s = Ur.computeRotation(a.palmLandmarks[FV], a.palmLandmarks[WV]), o = Gn.getBoxCenter(a), c = [o[0] / n.shape[2], o[1] / n.shape[1]], l = kx.image.rotateWithOffset(n, s, 0, c), u = Ur.buildRotationMatrix(-s, o), h = e ? this.getBoxForPalmLandmarks(a.palmLandmarks, u) : a, d = Gn.cutBoxFromImageAndResize(h, l, [this.inputSize, this.inputSize]), p = d.div(255);
-        d.dispose(), l.dispose();
-        const f = this.meshDetector.predict(p), [m, g] = f;
-        p.dispose();
-        const y = m.dataSync()[0];
-        if (m.dispose(), y < t.minConfidence)
-          return g.dispose(), this.regionsOfInterest[i] = null, null;
-        const w = kx.reshape(g, [-1, 3]), b = w.arraySync();
-        g.dispose(), w.dispose();
-        const x = this.transformRawCoords(b, h, s, u), L = this.getBoxForHandLandmarks(x);
-        this.updateRegionsOfInterest(L, i);
-        const N = {landmarks: x, handInViewConfidence: y, boundingBox: {topLeft: L.startPoint, bottomRight: L.endPoint}};
-        r.push(N);
+        const o = Ur.computeRotation(s.palmLandmarks[FV], s.palmLandmarks[WV]), c = Gn.getBoxCenter(s), l = [c[0] / n.shape[2], c[1] / n.shape[1]], u = kx.image.rotateWithOffset(n, o, 0, l), h = Ur.buildRotationMatrix(-o, c), d = e ? this.getBoxForPalmLandmarks(s.palmLandmarks, h) : s, p = Gn.cutBoxFromImageAndResize(d, u, [this.inputSize, this.inputSize]), f = p.div(255);
+        p.dispose(), u.dispose();
+        const m = this.meshDetector.predict(f), [g, y] = m;
+        f.dispose();
+        const w = g.dataSync()[0];
+        if (g.dispose(), w >= t.minConfidence) {
+          const b = kx.reshape(y, [-1, 3]), x = b.arraySync();
+          y.dispose(), b.dispose();
+          const L = this.transformRawCoords(x, d, o, h), N = this.getBoxForHandLandmarks(L);
+          this.updateRegionsOfInterest(N, a);
+          const I = {landmarks: L, handInViewConfidence: w, boundingBox: {topLeft: N.startPoint, bottomRight: N.endPoint}};
+          i.push(I);
+        }
+        y.dispose();
       }
-      return r;
+      return this.detectedHands = i.length, i;
     }
     calculateLandmarksBoundingBox(n) {
       const t = n.map((a) => a[0]), e = n.map((a) => a[1]), r = [Math.min(...t), Math.min(...e)], i = [Math.max(...t), Math.max(...e)];
@@ -32880,9 +32880,6 @@ var Wx = we((Dx) => {
         r = g / (y + w - g);
       }
       this.regionsOfInterest[t] = r > RV ? e : n;
-    }
-    shouldUpdateRegionsOfInterest() {
-      return !this.regionsOfInterest || this.regionsOfInterest.length === 0 || this.runsWithoutHandDetector >= this.skipFrames;
     }
   }
   Dx.HandPipeline = UV;
@@ -32906,8 +32903,9 @@ var Mx = we((Bp) => {
       const r = [];
       for (const i of e) {
         const a = {};
-        for (const s of Object.keys(zp))
-          a[s] = zp[s].map((o) => i.landmarks[o]);
+        if (i.landmarks)
+          for (const s of Object.keys(zp))
+            a[s] = zp[s].map((o) => i.landmarks[o]);
         r.push({confidence: i.handInViewConfidence, box: i.boundingBox ? [i.boundingBox.topLeft[0], i.boundingBox.topLeft[1], i.boundingBox.bottomRight[0] - i.boundingBox.topLeft[0], i.boundingBox.bottomRight[1] - i.boundingBox.topLeft[1]] : 0, landmarks: i.landmarks, annotations: a});
       }
       return r;
@@ -32947,10 +32945,12 @@ var Hx = we((ic) => {
     const t = [];
     for (const e of n) {
       const r = [];
-      for (const [s, o] of Object.entries(e.annotations))
-        s !== "palmBase" && r.push({name: s.toLowerCase(), position: o[0]});
-      const i = r.reduce((s, o) => s.position[2] < o.position[2] ? s : o), a = r.reduce((s, o) => s.position[1] < o.position[1] ? s : o);
-      t.push(`${i.name} forward ${a.name} up`);
+      for (const [i, a] of Object.entries(e.annotations))
+        i !== "palmBase" && r.push({name: i.toLowerCase(), position: a[0]});
+      if (r && r.length > 0) {
+        const i = r.reduce((s, o) => s.position[2] < o.position[2] ? s : o), a = r.reduce((s, o) => s.position[1] < o.position[1] ? s : o);
+        t.push(`${i.name} forward ${a.name} up`);
+      }
     }
     return t;
   };
@@ -33135,7 +33135,7 @@ var Kx = we((YV) => {
 var $x = we((JG, jx) => {
   jx.exports = {name: "@vladmandic/human", version: "0.7.1", description: "human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition", sideEffects: false, main: "dist/human.node.js", module: "dist/human.esm.js", browser: "dist/human.esm.js", author: "Vladimir Mandic <mandic00@live.com>", bugs: {url: "https://github.com/vladmandic/human/issues"}, homepage: "https://github.com/vladmandic/human#readme", license: "MIT", engines: {node: ">=14.0.0"}, repository: {type: "git", url: "git+https://github.com/vladmandic/human.git"}, dependencies: {}, peerDependencies: {}, devDependencies: {"@tensorflow/tfjs": "^2.7.0", "@tensorflow/tfjs-node": "^2.7.0", "@vladmandic/pilogger": "^0.2.7", dayjs: "^1.9.4", esbuild: "^0.7.22", eslint: "^7.12.1", "eslint-config-airbnb-base": "^14.2.0", "eslint-plugin-import": "^2.22.1", "eslint-plugin-json": "^2.1.2", "eslint-plugin-node": "^11.1.0", "eslint-plugin-promise": "^4.2.1", rimraf: "^3.0.2", seedrandom: "^3.0.5", "simple-git": "^2.21.0"}, scripts: {start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js", lint: "eslint src/*.js demo/*.js", "build-iife": "esbuild --bundle --minify --platform=browser --sourcemap --target=esnext --format=iife --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js", "build-esm-bundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=esnext --format=esm --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js", "build-esm-nobundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=esnext --format=esm --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js", "build-node": "esbuild --bundle --minify --platform=node --sourcemap --target=esnext --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js", "build-node-nobundle": "esbuild --bundle --minify --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js", "build-demo": "esbuild --bundle --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/demo-browser-index.json --outfile=dist/demo-browser-index.js demo/browser.js", build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && npm run build-demo && ls -l dist/", update: "npm update --depth 20 --force && npm dedupe && npm prune && npm audit", changelog: "node changelog.js"}, keywords: ["tensorflowjs", "face-detection", "face-geometry", "body-tracking", "hand-tracking", "iris-tracking", "age-estimation", "emotion-detection", "gender-prediction", "gesture-recognition"]};
 });
-const nn = zt();
+const Kt = zt();
 const Xx = K2();
 const ac = J2();
 const Pp = ex();
@@ -33157,7 +33157,7 @@ function oc(...n) {
 }
 class ZV {
   constructor() {
-    this.tf = nn, this.version = XV.version, this.defaults = sc, this.config = sc, this.fx = null, this.state = "idle", this.numTensors = 0, this.analyzeMemoryLeaks = false, this.checkSanity = false, this.firstRun = true, this.models = {facemesh: null, posenet: null, handpose: null, iris: null, age: null, gender: null, emotion: null}, this.facemesh = Xx, this.ssrnet = ac, this.emotion = Pp, this.posenet = Jx, this.handpose = Zx;
+    this.tf = Kt, this.version = XV.version, this.defaults = sc, this.config = sc, this.fx = null, this.state = "idle", this.numTensors = 0, this.analyzeMemoryLeaks = false, this.checkSanity = false, this.firstRun = true, this.models = {facemesh: null, posenet: null, handpose: null, iris: null, age: null, gender: null, emotion: null}, this.facemesh = Xx, this.ssrnet = ac, this.emotion = Pp, this.posenet = Jx, this.handpose = Zx;
   }
   log(...n) {
     n && this.config.console && console.log("Human:", ...n);
@@ -33168,7 +33168,7 @@ class ZV {
   analyze(...n) {
     if (!this.analyzeMemoryLeaks)
       return;
-    const t = nn.engine().state.numTensors, e = this.numTensors;
+    const t = Kt.engine().state.numTensors, e = this.numTensors;
     this.numTensors = t;
     const r = t - e;
     r !== 0 && this.log(...n, r);
@@ -33178,20 +33178,20 @@ class ZV {
       return null;
     if (!n)
       return "input is not defined";
-    if (nn.ENV.flags.IS_NODE && !(n instanceof nn.Tensor))
+    if (Kt.ENV.flags.IS_NODE && !(n instanceof Kt.Tensor))
       return "input must be a tensor";
     try {
-      nn.getBackend();
+      Kt.getBackend();
     } catch (e) {
       return "backend not loaded";
     }
     return null;
   }
   async load(n) {
-    n && (this.config = oc(sc, n)), this.firstRun && (this.checkBackend(true), this.log(`version: ${this.version} TensorFlow/JS version: ${nn.version_core}`), this.log("configuration:", this.config), this.log("flags:", nn.ENV.flags), this.firstRun = false), this.config.face.enabled && !this.models.facemesh && (this.log("load model: face"), this.models.facemesh = await Xx.load(this.config.face)), this.config.body.enabled && !this.models.posenet && (this.log("load model: body"), this.models.posenet = await Jx.load(this.config.body)), this.config.hand.enabled && !this.models.handpose && (this.log("load model: hand"), this.models.handpose = await Zx.load(this.config.hand)), this.config.face.enabled && this.config.face.age.enabled && !this.models.age && (this.log("load model: age"), this.models.age = await ac.loadAge(this.config)), this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender && (this.log("load model: gender"), this.models.gender = await ac.loadGender(this.config)), this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion && (this.log("load model: emotion"), this.models.emotion = await Pp.load(this.config));
+    n && (this.config = oc(sc, n)), this.firstRun && (this.checkBackend(true), this.log(`version: ${this.version} TensorFlow/JS version: ${Kt.version_core}`), this.log("configuration:", this.config), this.log("flags:", Kt.ENV.flags), this.firstRun = false), this.config.face.enabled && !this.models.facemesh && (this.log("load model: face"), this.models.facemesh = await Xx.load(this.config.face)), this.config.body.enabled && !this.models.posenet && (this.log("load model: body"), this.models.posenet = await Jx.load(this.config.body)), this.config.hand.enabled && !this.models.handpose && (this.log("load model: hand"), this.models.handpose = await Zx.load(this.config.hand)), this.config.face.enabled && this.config.face.age.enabled && !this.models.age && (this.log("load model: age"), this.models.age = await ac.loadAge(this.config)), this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender && (this.log("load model: gender"), this.models.gender = await ac.loadGender(this.config)), this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion && (this.log("load model: emotion"), this.models.emotion = await Pp.load(this.config));
   }
   async checkBackend(n) {
-    (n || nn.getBackend() !== this.config.backend) && (this.state = "backend", this.log("setting backend:", this.config.backend), await nn.setBackend(this.config.backend), nn.enableProdMode(), this.config.deallocate && this.config.backend === "webgl" && (this.log("Changing WebGL: WEBGL_DELETE_TEXTURE_THRESHOLD:", this.config.deallocate), nn.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", this.config.deallocate ? 0 : -1)), await nn.ready());
+    (n || Kt.getBackend() !== this.config.backend) && (this.state = "backend", this.log("setting backend:", this.config.backend), await Kt.setBackend(this.config.backend), Kt.enableProdMode(), this.config.deallocate && this.config.backend === "webgl" && (this.log("Changing WebGL: WEBGL_DELETE_TEXTURE_THRESHOLD:", this.config.deallocate), Kt.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", this.config.deallocate ? 0 : -1)), Kt.ENV.set("WEBGL_PACK_DEPTHWISECONV", true), await Kt.ready());
   }
   async detect(n, t = {}) {
     this.state = "config";
@@ -33202,7 +33202,7 @@ class ZV {
     return i ? (this.log(i, n), {error: i}) : new Promise(async (a) => {
       let s, o, c, l;
       const u = At();
-      r = At(), await this.checkBackend(), e.backend = Math.trunc(At() - r), r = At(), this.state = "load", await this.load(), e.load = Math.trunc(At() - r), this.config.scoped && nn.engine().startScope(), this.analyze("Start Detect:"), r = At();
+      r = At(), await this.checkBackend(), e.backend = Math.trunc(At() - r), r = At(), this.state = "load", await this.load(), e.load = Math.trunc(At() - r), this.config.scoped && Kt.engine().startScope(), this.analyze("Start Detect:"), r = At();
       const h = jV.process(n, this.config);
       e.image = Math.trunc(At() - r);
       const d = [];
@@ -33220,7 +33220,7 @@ class ZV {
           d.push({confidence: m.confidence, box: m.box, mesh: m.mesh, annotations: m.annotations, age: c.age, gender: c.gender, agConfidence: c.confidence, emotion: l, iris: g !== 0 ? Math.trunc(100 * 11.7 / g) / 100 : 0}), this.analyze("End FaceMesh:");
         }
       }
-      this.config.async ? s = this.config.body.enabled ? this.models.posenet.estimatePoses(h.tensor, this.config.body) : [] : (this.state = "run:body", r = At(), this.analyze("Start PoseNet"), s = this.config.body.enabled ? await this.models.posenet.estimatePoses(h.tensor, this.config.body) : [], this.analyze("End PoseNet:"), e.body = Math.trunc(At() - r)), this.config.async ? o = this.config.hand.enabled ? this.models.handpose.estimateHands(h.tensor, this.config.hand) : [] : (this.state = "run:hand", r = At(), this.analyze("Start HandPose:"), o = this.config.hand.enabled ? await this.models.handpose.estimateHands(h.tensor, this.config.hand) : [], this.analyze("End HandPose:"), e.hand = Math.trunc(At() - r)), this.config.async && ([s, o] = await Promise.all([s, o])), h.tensor.dispose(), this.state = "idle", this.config.scoped && nn.engine().endScope(), this.analyze("End Scope:");
+      this.config.async ? s = this.config.body.enabled ? this.models.posenet.estimatePoses(h.tensor, this.config.body) : [] : (this.state = "run:body", r = At(), this.analyze("Start PoseNet"), s = this.config.body.enabled ? await this.models.posenet.estimatePoses(h.tensor, this.config.body) : [], this.analyze("End PoseNet:"), e.body = Math.trunc(At() - r)), this.config.async ? o = this.config.hand.enabled ? this.models.handpose.estimateHands(h.tensor, this.config.hand) : [] : (this.state = "run:hand", r = At(), this.analyze("Start HandPose:"), o = this.config.hand.enabled ? await this.models.handpose.estimateHands(h.tensor, this.config.hand) : [], this.analyze("End HandPose:"), e.hand = Math.trunc(At() - r)), this.config.async && ([s, o] = await Promise.all([s, o])), h.tensor.dispose(), this.state = "idle", this.config.scoped && Kt.engine().endScope(), this.analyze("End Scope:");
       let p = [];
       this.config.gesture.enabled && (r = At(), p = {body: Mp.body(s), hand: Mp.hand(o), face: Mp.face(d)}, e.gesture = Math.trunc(At() - r)), e.total = Math.trunc(At() - u), a({face: d, body: s, hand: o, gesture: p, performance: e, canvas: h.canvas});
     });
@@ -33588,15 +33588,19 @@ async function drawHand(result, canvas, ui2) {
       ctx.stroke();
     }
     if (ui2.drawPoints) {
-      for (const point of hand.landmarks) {
-        ctx.fillStyle = ui2.useDepth ? `rgba(${127.5 + 2 * point[2]}, ${127.5 - 2 * point[2]}, 255, 0.5)` : ui2.baseColor;
-        ctx.beginPath();
-        ctx.arc(point[0], point[1], 2, 0, 2 * Math.PI);
-        ctx.fill();
+      if (hand.landmarks && hand.landmarks.length > 0) {
+        for (const point of hand.landmarks) {
+          ctx.fillStyle = ui2.useDepth ? `rgba(${127.5 + 2 * point[2]}, ${127.5 - 2 * point[2]}, 255, 0.5)` : ui2.baseColor;
+          ctx.beginPath();
+          ctx.arc(point[0], point[1], 2, 0, 2 * Math.PI);
+          ctx.fill();
+        }
       }
     }
     if (ui2.drawPolygons) {
       const addPart = (part) => {
+        if (!part)
+          return;
         for (let i = 0; i < part.length; i++) {
           ctx.lineWidth = ui2.baseLineWidth;
           ctx.beginPath();
@@ -34217,7 +34221,7 @@ function setupMenu() {
   menu2.addBool("Gesture Analysis", config.gesture, "enabled");
   menu2.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu2.addLabel("Model Parameters");
-  menu2.addRange("Max Objects", config.face.detector, "maxFaces", 0, 50, 1, (val) => {
+  menu2.addRange("Max Objects", config.face.detector, "maxFaces", 1, 50, 1, (val) => {
     config.face.detector.maxFaces = parseInt(val);
     config.body.maxDetections = parseInt(val);
     config.hand.maxHands = parseInt(val);

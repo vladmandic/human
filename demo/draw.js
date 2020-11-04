@@ -154,15 +154,18 @@ async function drawHand(result, canvas, ui) {
       ctx.stroke();
     }
     if (ui.drawPoints) {
-      for (const point of hand.landmarks) {
-        ctx.fillStyle = ui.useDepth ? `rgba(${127.5 + (2 * point[2])}, ${127.5 - (2 * point[2])}, 255, 0.5)` : ui.baseColor;
-        ctx.beginPath();
-        ctx.arc(point[0], point[1], 2, 0, 2 * Math.PI);
-        ctx.fill();
+      if (hand.landmarks && hand.landmarks.length > 0) {
+        for (const point of hand.landmarks) {
+          ctx.fillStyle = ui.useDepth ? `rgba(${127.5 + (2 * point[2])}, ${127.5 - (2 * point[2])}, 255, 0.5)` : ui.baseColor;
+          ctx.beginPath();
+          ctx.arc(point[0], point[1], 2, 0, 2 * Math.PI);
+          ctx.fill();
+        }
       }
     }
     if (ui.drawPolygons) {
       const addPart = (part) => {
+        if (!part) return;
         for (let i = 0; i < part.length; i++) {
           ctx.lineWidth = ui.baseLineWidth;
           ctx.beginPath();

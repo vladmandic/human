@@ -14,6 +14,8 @@
  * limitations under the License.
  * =============================================================================
  */
+// https://storage.googleapis.com/tfjs-models/demos/handpose/index.html
+
 const tf = require('@tensorflow/tfjs');
 const handdetector = require('./handdetector');
 const pipeline = require('./handpipeline');
@@ -43,12 +45,19 @@ class HandPose {
     const hands = [];
     for (const prediction of predictions) {
       const annotations = {};
-      for (const key of Object.keys(MESH_ANNOTATIONS)) {
-        annotations[key] = MESH_ANNOTATIONS[key].map((index) => prediction.landmarks[index]);
+      if (prediction.landmarks) {
+        for (const key of Object.keys(MESH_ANNOTATIONS)) {
+          annotations[key] = MESH_ANNOTATIONS[key].map((index) => prediction.landmarks[index]);
+        }
       }
       hands.push({
         confidence: prediction.handInViewConfidence,
-        box: prediction.boundingBox ? [prediction.boundingBox.topLeft[0], prediction.boundingBox.topLeft[1], prediction.boundingBox.bottomRight[0] - prediction.boundingBox.topLeft[0], prediction.boundingBox.bottomRight[1] - prediction.boundingBox.topLeft[1]] : 0,
+        box: prediction.boundingBox ? [
+          prediction.boundingBox.topLeft[0],
+          prediction.boundingBox.topLeft[1],
+          prediction.boundingBox.bottomRight[0] - prediction.boundingBox.topLeft[0],
+          prediction.boundingBox.bottomRight[1] - prediction.boundingBox.topLeft[1],
+        ] : 0,
         landmarks: prediction.landmarks,
         annotations,
       });

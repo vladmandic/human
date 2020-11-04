@@ -149,7 +149,7 @@
       ]
     },
     "package.json": {
-      "bytes": 3225,
+      "bytes": 3216,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -658,7 +658,7 @@
           "bytesInOutput": 1294
         },
         "package.json": {
-          "bytesInOutput": 2872
+          "bytesInOutput": 2863
         },
         "src/human.js": {
           "bytesInOutput": 5583
@@ -667,7 +667,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 1274644
+      "bytes": 1274635
     }
   }
 }

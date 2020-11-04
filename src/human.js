@@ -167,6 +167,7 @@ class Human {
         this.log('Changing WebGL: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
         tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
       }
+      tf.ENV.set('WEBGL_CPU_FORWARD', true);
       await tf.ready();
     }
   }
@@ -284,32 +285,6 @@ class Human {
       perf.image = Math.trunc(now() - timeStamp);
       const imageTensor = image.tensor;
 
-      // run posenet
-      if (this.config.async) {
-        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(imageTensor, this.config.body) : [];
-      } else {
-        this.state = 'run:body';
-        timeStamp = now();
-        this.analyze('Start PoseNet');
-        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(imageTensor, this.config.body) : [];
-        this.analyze('End PoseNet:');
-        perf.body = Math.trunc(now() - timeStamp);
-      }
-
-      // run handpose
-      if (this.config.async) {
-        handRes = this.config.hand.enabled ? this.models.handpose.estimateHands(imageTensor, this.config.hand) : [];
-      } else {
-        this.state = 'run:hand';
-        timeStamp = now();
-        this.analyze('Start HandPose:');
-        handRes = this.config.hand.enabled ? await this.models.handpose.estimateHands(imageTensor, this.config.hand) : [];
-        this.analyze('End HandPose:');
-        perf.hand = Math.trunc(now() - timeStamp);
-      }
-
-      if (this.config.async) [poseRes, handRes] = await Promise.all([poseRes, handRes]);
-
       // run facemesh, includes blazeface and iris
       const faceRes = [];
       if (this.config.face.enabled) {
@@ -356,6 +331,32 @@ class Human {
           this.analyze('End FaceMesh:');
         }
       }
+
+      // run posenet
+      if (this.config.async) {
+        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(imageTensor, this.config.body) : [];
+      } else {
+        this.state = 'run:body';
+        timeStamp = now();
+        this.analyze('Start PoseNet');
+        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(imageTensor, this.config.body) : [];
+        this.analyze('End PoseNet:');
+        perf.body = Math.trunc(now() - timeStamp);
+      }
+
+      // run handpose
+      if (this.config.async) {
+        handRes = this.config.hand.enabled ? this.models.handpose.estimateHands(imageTensor, this.config.hand) : [];
+      } else {
+        this.state = 'run:hand';
+        timeStamp = now();
+        this.analyze('Start HandPose:');
+        handRes = this.config.hand.enabled ? await this.models.handpose.estimateHands(imageTensor, this.config.hand) : [];
+        this.analyze('End HandPose:');
+        perf.hand = Math.trunc(now() - timeStamp);
+      }
+
+      if (this.config.async) [poseRes, handRes] = await Promise.all([poseRes, handRes]);
 
       imageTensor.dispose();
       this.state = 'idle';

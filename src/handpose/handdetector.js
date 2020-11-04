@@ -1,15 +1,32 @@
+/**
+ * @license
+ * Copyright 2020 Google LLC. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * =============================================================================
+ */
+
 const tf = require('@tensorflow/tfjs');
-const bounding = require('./box');
+const box = require('./box');
 
 class HandDetector {
-  constructor(model, anchors, config) {
+  constructor(model, inputSize, anchorsAnnotated) {
     this.model = model;
-    this.width = config.inputSize;
-    this.height = config.inputSize;
-    this.anchors = anchors.map((anchor) => [anchor.x_center, anchor.y_center]);
+    this.width = inputSize;
+    this.height = inputSize;
+    this.anchors = anchorsAnnotated.map((anchor) => [anchor.x_center, anchor.y_center]);
     this.anchorsTensor = tf.tensor2d(this.anchors);
-    this.inputSizeTensor = tf.tensor1d([config.inputSize, config.inputSize]);
-    this.doubleInputSizeTensor = tf.tensor1d([config.inputSize * 2, config.inputSize * 2]);
+    this.inputSizeTensor = tf.tensor1d([inputSize, inputSize]);
+    this.doubleInputSizeTensor = tf.tensor1d([inputSize * 2, inputSize * 2]);
   }
 
   normalizeBoxes(boxes) {
@@ -31,59 +48,59 @@ class HandDetector {
     });
   }
 
-  async getBoundingBoxes(input) {
-    const batchedPrediction = this.model.predict(input);
+  async getBoundingBoxes(input, config) {
+    const normalizedInput = tf.tidy(() => tf.mul(tf.sub(input, 0.5), 2));
+    const batchedPrediction = this.model.predict(normalizedInput);
     const prediction = batchedPrediction.squeeze();
-    // Regression score for each anchor point.
     const scores = tf.tidy(() => tf.sigmoid(tf.slice(prediction, [0, 0], [-1, 1])).squeeze());
-    // Bounding box for each anchor point.
     const rawBoxes = tf.slice(prediction, [0, 1], [-1, 4]);
     const boxes = this.normalizeBoxes(rawBoxes);
-    const boxesWithHandsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.maxHands, this.iouThreshold, this.scoreThreshold);
+    const boxesWithHandsTensor = tf.image.nonMaxSuppression(boxes, scores, config.maxHands, config.iouThreshold, config.scoreThreshold);
     const boxesWithHands = boxesWithHandsTensor.arraySync();
-    const detectedHands = tf.tidy(() => {
-      const detectedBoxes = [];
-      for (const i in boxesWithHands) {
-        const boxIndex = boxesWithHands[i];
-        const matchingBox = tf.slice(boxes, [boxIndex, 0], [1, -1]);
-        const rawPalmLandmarks = tf.slice(prediction, [boxIndex, 5], [1, 14]);
-        const palmLandmarks = tf.tidy(() => this.normalizeLandmarks(rawPalmLandmarks, boxIndex).reshape([-1, 2]));
-        detectedBoxes.push({ boxes: matchingBox, palmLandmarks });
-      }
-      return detectedBoxes;
-    });
-    [batchedPrediction, boxesWithHandsTensor, prediction, boxes, rawBoxes, scores].forEach((tensor) => tensor.dispose());
-    return detectedHands;
+    const toDispose = [
+      normalizedInput,
+      batchedPrediction,
+      boxesWithHandsTensor,
+      prediction,
+      boxes,
+      rawBoxes,
+      scores,
+    ];
+    if (boxesWithHands.length === 0) {
+      toDispose.forEach((tensor) => tensor.dispose());
+      return null;
+    }
+    const hands = [];
+    for (const boxIndex of boxesWithHands) {
+      const matchingBox = tf.slice(boxes, [boxIndex, 0], [1, -1]);
+      const rawPalmLandmarks = tf.slice(prediction, [boxIndex, 5], [1, 14]);
+      const palmLandmarks = tf.tidy(() => this.normalizeLandmarks(rawPalmLandmarks, boxIndex).reshape([-1, 2]));
+      rawPalmLandmarks.dispose();
+      hands.push({ boxes: matchingBox, palmLandmarks });
+    }
+    toDispose.forEach((tensor) => tensor.dispose());
+    return hands;
   }
 
-  /**
-     * Returns a Box identifying the bounding box of a hand within the image.
-     * Returns null if there is no hand in the image.
-     *
-     * @param input The image to classify.
-     */
   async estimateHandBounds(input, config) {
-    this.iouThreshold = config.iouThreshold;
-    this.scoreThreshold = config.scoreThreshold;
-    this.maxHands = config.maxHands;
-    const resized = input.resizeBilinear([this.width, this.height]);
-    const divided = resized.mul([1 / 127.5]);
-    const image = divided.sub(0.5);
-    resized.dispose();
-    divided.dispose();
-    const predictions = await this.getBoundingBoxes(image);
-    image.dispose();
-    if (!predictions || (predictions.length === 0)) return null;
+    const inputHeight = input.shape[1];
+    const inputWidth = input.shape[2];
+    const image = tf.tidy(() => input.resizeBilinear([this.width, this.height]).div(255));
+    const predictions = await this.getBoundingBoxes(image, config);
+    if (!predictions || predictions.length === 0) {
+      image.dispose();
+      return null;
+    }
     const hands = [];
-    for (const i in predictions) {
-      const prediction = predictions[i];
-      const boundingBoxes = prediction.boxes.dataSync();
-      const startPoint = [boundingBoxes[0], boundingBoxes[1]];
-      const endPoint = [boundingBoxes[2], boundingBoxes[3]];
+    for (const prediction of predictions) {
+      const boundingBoxes = prediction.boxes.arraySync();
+      const startPoint = boundingBoxes[0].slice(0, 2);
+      const endPoint = boundingBoxes[0].slice(2, 4);
       const palmLandmarks = prediction.palmLandmarks.arraySync();
+      image.dispose();
       prediction.boxes.dispose();
       prediction.palmLandmarks.dispose();
-      hands.push(bounding.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks }, [input.shape[2] / this.width, input.shape[1] / this.height]));
+      hands.push(box.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks }, [inputWidth / this.width, inputHeight / this.height]));
     }
     return hands;
   }

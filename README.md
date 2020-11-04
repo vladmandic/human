@@ -1,6 +1,6 @@
 # Human Library
 
-## 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction & Emotion Prediction
+## 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition
 
 - [**Documentation**](https://github.com/vladmandic/human#readme)
 - [**Code Repository**](https://github.com/vladmandic/human)
@@ -361,6 +361,11 @@ config = {
       modelPath: '../models/handskeleton/model.json',
     },
   },
+  gesture: {
+    enabled: true,           // enable simple gesture recognition
+                             // takes processed data and based on geometry detects simple gestures
+                             // easily expandable via code, see `src/gesture.js`
+  },
 };
 ```
 
@@ -408,10 +413,17 @@ result = {
       emotion,     // <string> 'angry', 'discust', 'fear', 'happy', 'sad', 'surpise', 'neutral'
     }
   ],
+  gesture:         // object containing parsed gestures
+  {
+    face,          // <array of string>
+    body,          // <array of string>
+    hand,          // <array of string>
+  }
   performance = {  // performance data of last execution for each module measuredin miliseconds
     backend,       // time to initialize tf backend, valid only during backend startup
     load,          // time to load models, valid only during model load
     image,         // time for image processing
+    gesture,       // gesture analysis time
     body,          // model time
     hand,          // model time
     face,          // model time
@@ -484,6 +496,7 @@ For example, it can perform multiple face detections at 60+ FPS, but drops to ~1
 
 - Enabled all: 15 FPS
 - Image filters: 80 FPS (standalone)
+- Gesture: 80 FPS (standalone)
 - Face Detect: 80 FPS (standalone)
 - Face Geometry: 30 FPS (includes face detect)
 - Face Iris: 30 FPS (includes face detect and face geometry)
@@ -495,8 +508,9 @@ For example, it can perform multiple face detections at 60+ FPS, but drops to ~1
 
 ### Performance per module on a **smartphone** with Snapdragon 855 on a FullHD input:
 
-- Enabled all: 3 FPS
+- Enabled all: 5 FPS
 - Image filters: 30 FPS (standalone)
+- Gesture: 30 FPS (standalone)
 - Face Detect: 20 FPS (standalone)
 - Face Geometry: 10 FPS (includes face detect)
 - Face Iris: 5 FPS (includes face detect and face geometry)

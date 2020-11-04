@@ -25,6 +25,8 @@ const ui = {
   useDepth: true,
   console: true,
   maxFrames: 10,
+  modelsPreload: true,
+  modelsWarmup: true,
 };
 
 // configuration overrides
@@ -62,6 +64,7 @@ const config = {
   },
   body: { enabled: true, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
   hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
+  gesture: { enabled: true },
 };
 
 // global variables
@@ -123,15 +126,17 @@ function drawResults(input, result, canvas) {
   draw.face(result.face, canvas, ui, human.facemesh.triangulation);
   draw.body(result.body, canvas, ui);
   draw.hand(result.hand, canvas, ui);
+  draw.gesture(result.gesture, canvas, ui);
   // update log
   const engine = human.tf.engine();
   const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
   const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : '';
+  const avg = Math.trunc(10 * fps.reduce((a, b) => a + b) / fps.length) / 10;
   document.getElementById('log').innerText = `
     video: ${camera.name} | facing: ${camera.facing} | resolution: ${camera.width} x ${camera.height} ${processing}
     backend: ${human.tf.getBackend()} | ${memory} | object size: ${(str(result)).length.toLocaleString()} bytes
-    performance: ${str(result.performance)}
+    performance: ${str(result.performance)} FPS:${avg}
   `;
 }
 
@@ -159,7 +164,13 @@ async function setupCamera() {
   try {
     stream = await navigator.mediaDevices.getUserMedia({
       audio: false,
-      video: { facingMode: (ui.facing ? 'user' : 'environment'), width: window.innerWidth, height: window.innerHeight, resizeMode: 'none' },
+      video: {
+        facingMode: (ui.facing ? 'user' : 'environment'),
+        width: window.innerWidth,
+        height: window.innerHeight,
+        resizeMode: 'none',
+        contrast: 75,
+      },
     });
   } catch (err) {
     output.innerText += '\nCamera permission denied';
@@ -267,7 +278,7 @@ async function detectVideo() {
   document.getElementById('canvas').style.display = 'block';
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
-  ui.baseFont = ui.baseFontProto.replace(/{size}/, '1.2rem');
+  ui.baseFont = ui.baseFontProto.replace(/{size}/, '1.3rem');
   ui.baseLineHeight = ui.baseLineHeightProto;
   if ((video.srcObject !== null) && !video.paused) {
     document.getElementById('play').style.display = 'block';
@@ -286,7 +297,7 @@ async function detectVideo() {
 async function detectSampleImages() {
   document.getElementById('play').style.display = 'none';
   config.videoOptimized = false;
-  ui.baseFont = ui.baseFontProto.replace(/{size}/, `${1.2 * ui.columns}rem`);
+  ui.baseFont = ui.baseFontProto.replace(/{size}/, `${1.3 * ui.columns}rem`);
   ui.baseLineHeight = ui.baseLineHeightProto * ui.columns;
   document.getElementById('canvas').style.display = 'none';
   document.getElementById('samples-container').style.display = 'block';
@@ -318,6 +329,7 @@ function setupMenu() {
   menu.addBool('Face Emotion', config.face.emotion, 'enabled');
   menu.addBool('Body Pose', config.body, 'enabled');
   menu.addBool('Hand Pose', config.hand, 'enabled');
+  menu.addBool('Gesture Analysis', config.gesture, 'enabled');
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addLabel('Model Parameters');
@@ -383,11 +395,15 @@ async function main() {
   setupMenu();
   document.getElementById('log').innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
   // this is not required, just pre-warms the library
-  status('loading');
-  await human.load();
-  status('initializing');
-  const warmup = new ImageData(50, 50);
-  await human.detect(warmup);
+  if (ui.modelsPreload) {
+    status('loading');
+    await human.load();
+  }
+  if (ui.modelsWarmup) {
+    status('initializing');
+    const warmup = new ImageData(50, 50);
+    await human.detect(warmup);
+  }
   status('human: ready');
   document.getElementById('loader').style.display = 'none';
   document.getElementById('play').style.display = 'block';

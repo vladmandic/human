@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 7216,
+      "bytes": 7300,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js": {
@@ -149,7 +149,7 @@
       ]
     },
     "package.json": {
-      "bytes": 2915,
+      "bytes": 2989,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -235,6 +235,10 @@
       "bytes": 19592,
       "imports": []
     },
+    "src/gesture.js": {
+      "bytes": 2122,
+      "imports": []
+    },
     "src/handpose/anchors.js": {
       "bytes": 224151,
       "imports": []
@@ -259,7 +263,7 @@
       ]
     },
     "src/handpose/handpipeline.js": {
-      "bytes": 7861,
+      "bytes": 7959,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -294,7 +298,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15209,
+      "bytes": 11168,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -315,7 +319,10 @@
           "path": "src/handpose/handpose.js"
         },
         {
-          "path": "src/imagefx.js"
+          "path": "src/gesture.js"
+        },
+        {
+          "path": "src/image.js"
         },
         {
           "path": "src/profile.js"
@@ -325,6 +332,17 @@
         },
         {
           "path": "package.json"
+        }
+      ]
+    },
+    "src/image.js": {
+      "bytes": 4603,
+      "imports": [
+        {
+          "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
+        },
+        {
+          "path": "src/imagefx.js"
         }
       ]
     },
@@ -481,7 +499,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5402750
+      "bytes": 5406771
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -627,23 +645,29 @@
         "src/handpose/handpose.js": {
           "bytesInOutput": 1090
         },
+        "src/gesture.js": {
+          "bytesInOutput": 1201
+        },
         "src/imagefx.js": {
           "bytesInOutput": 11014
         },
+        "src/image.js": {
+          "bytesInOutput": 2395
+        },
         "config.js": {
-          "bytesInOutput": 1273
+          "bytesInOutput": 1294
         },
         "package.json": {
-          "bytesInOutput": 2568
+          "bytesInOutput": 2642
         },
         "src/human.js": {
-          "bytesInOutput": 8484
+          "bytesInOutput": 5583
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 1273622
+      "bytes": 1274414
     }
   }
 }

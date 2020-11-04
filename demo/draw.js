@@ -1,3 +1,18 @@
+async function drawGesture(result, canvas, ui) {
+  if (!result) return;
+  const ctx = canvas.getContext('2d');
+  ctx.font = ui.baseFont;
+  ctx.fillStyle = ui.baseLabel;
+  let i = 1;
+  for (const [key, val] of Object.entries(result)) {
+    if (val.length > 0) {
+      const label = `${key}: ${val.join(', ')}`;
+      ctx.fillText(label, 6, i * (ui.baseLineHeight + 24));
+      i += 1;
+    }
+  }
+}
+
 async function drawFace(result, canvas, ui, triangulation) {
   if (!result) return;
   const ctx = canvas.getContext('2d');
@@ -17,7 +32,7 @@ async function drawFace(result, canvas, ui, triangulation) {
     if (face.iris) labels.push(`iris: ${face.iris}`);
     if (face.emotion && face.emotion[0]) labels.push(`${Math.trunc(100 * face.emotion[0].score)}% ${face.emotion[0].emotion}`);
     ctx.fillStyle = ui.baseLabel;
-    for (const i in labels) ctx.fillText(labels[i], face.box[0] + 6, face.box[1] + 24 + ((i + 1) * ui.baseLineHeight));
+    for (const i in labels) ctx.fillText(labels[i], face.box[0] + 8, face.box[1] + 24 + ((i + 1) * ui.baseLineHeight));
     ctx.stroke();
     ctx.lineWidth = 1;
     if (face.mesh) {
@@ -171,6 +186,7 @@ const draw = {
   face: drawFace,
   body: drawBody,
   hand: drawHand,
+  gesture: drawGesture,
 };
 
 export default draw;

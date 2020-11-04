@@ -55,15 +55,15 @@ const config = {
   videoOptimized: true,
   face: {
     enabled: true,
-    detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
+    detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.5 },
     mesh: { enabled: true },
     iris: { enabled: true },
     age: { enabled: true, skipFrames: 10 },
     gender: { enabled: true },
     emotion: { enabled: true, minConfidence: 0.5, useGrayscale: true },
   },
-  body: { enabled: true, maxDetections: 10, scoreThreshold: 0.7, nmsRadius: 20 },
-  hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.7 },
+  body: { enabled: true, maxDetections: 10, scoreThreshold: 0.5, nmsRadius: 20 },
+  hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.5 },
   gesture: { enabled: true },
 };
 
@@ -148,10 +148,8 @@ async function setupCamera() {
   const canvas = document.getElementById('canvas');
   const output = document.getElementById('log');
   const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
-  let msg = `Setting up camera: live: ${live} facing: ${ui.facing ? 'front' : 'back'}`;
+  let msg = '';
   status('starting camera');
-  output.innerText += `\n${msg}`;
-  log(msg);
   // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
   if (!navigator.mediaDevices) {
     msg = 'camera access not supported';
@@ -182,6 +180,7 @@ async function setupCamera() {
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
   log('camera settings:', settings);
+  log('camera track:', track);
   camera = { name: track.label, width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   return new Promise((resolve) => {
     video.onloadeddata = async () => {

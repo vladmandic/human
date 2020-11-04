@@ -5,7 +5,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2989,
+      "bytes": 3225,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -106,7 +106,7 @@
       ]
     },
     "src/handpose/handpose.js": {
-      "bytes": 2772,
+      "bytes": 2667,
       "imports": [
         {
           "path": "src/handpose/handdetector.js"
@@ -290,7 +290,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 610990
+      "bytes": 610884
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -392,7 +392,7 @@
           "bytesInOutput": 1293
         },
         "package.json": {
-          "bytesInOutput": 2641
+          "bytesInOutput": 2871
         },
         "src/human.js": {
           "bytesInOutput": 5570
@@ -401,7 +401,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 212868
+      "bytes": 213098
     }
   }
 }

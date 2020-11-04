@@ -149,7 +149,7 @@
       ]
     },
     "package.json": {
-      "bytes": 2989,
+      "bytes": 3225,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -277,7 +277,7 @@
       ]
     },
     "src/handpose/handpose.js": {
-      "bytes": 2772,
+      "bytes": 2667,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -499,7 +499,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5406771
+      "bytes": 5406665
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -658,7 +658,7 @@
           "bytesInOutput": 1294
         },
         "package.json": {
-          "bytesInOutput": 2642
+          "bytesInOutput": 2872
         },
         "src/human.js": {
           "bytesInOutput": 5583
@@ -667,7 +667,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 1274414
+      "bytes": 1274644
     }
   }
 }

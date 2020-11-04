@@ -59,7 +59,6 @@ class HandPose {
 exports.HandPose = HandPose;
 
 async function load(config) {
-  // maxContinuousChecks = Infinity, detectionConfidence = 0.8, iouThreshold = 0.3, scoreThreshold = 0.5
   const [handDetectorModel, handPoseModel] = await Promise.all([
     tf.loadGraphModel(config.detector.modelPath, { fromTFHub: config.detector.modelPath.includes('tfhub.dev') }),
     tf.loadGraphModel(config.skeleton.modelPath, { fromTFHub: config.skeleton.modelPath.includes('tfhub.dev') }),

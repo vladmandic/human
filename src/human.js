@@ -171,7 +171,7 @@ class Human {
       }
       // tf.ENV.set('WEBGL_CPU_FORWARD', true);
       // tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
-      // tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
+      tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
       await tf.ready();
     }
   }

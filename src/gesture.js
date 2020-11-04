@@ -37,9 +37,11 @@ exports.hand = (res) => {
     for (const [finger, pos] of Object.entries(hand['annotations'])) {
       if (finger !== 'palmBase') fingers.push({ name: finger.toLowerCase(), position: pos[0] }); // get tip of each finger
     }
-    const closest = fingers.reduce((best, a) => (best.position[2] < a.position[2] ? best : a));
-    const highest = fingers.reduce((best, a) => (best.position[1] < a.position[1] ? best : a));
-    gestures.push(`${closest.name} forward ${highest.name} up`);
+    if (fingers && fingers.length > 0) {
+      const closest = fingers.reduce((best, a) => (best.position[2] < a.position[2] ? best : a));
+      const highest = fingers.reduce((best, a) => (best.position[1] < a.position[1] ? best : a));
+      gestures.push(`${closest.name} forward ${highest.name} up`);
+    }
   }
   return gestures;
 };

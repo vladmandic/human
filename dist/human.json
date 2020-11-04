@@ -259,7 +259,7 @@
       ]
     },
     "src/handpose/handpipeline.js": {
-      "bytes": 8058,
+      "bytes": 7861,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -481,7 +481,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5403040
+      "bytes": 5402746
     },
     "dist/human.js": {
       "imports": [],
@@ -619,7 +619,7 @@
           "bytesInOutput": 1005
         },
         "src/handpose/handpipeline.js": {
-          "bytesInOutput": 3231
+          "bytesInOutput": 3052
         },
         "src/handpose/anchors.js": {
           "bytesInOutput": 127001
@@ -640,7 +640,7 @@
           "bytesInOutput": 8522
         }
       },
-      "bytes": 1273846
+      "bytes": 1273667
     }
   }
 }

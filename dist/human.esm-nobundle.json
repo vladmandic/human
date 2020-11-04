@@ -91,7 +91,7 @@
       ]
     },
     "src/handpose/handpipeline.js": {
-      "bytes": 8058,
+      "bytes": 7861,
       "imports": [
         {
           "path": "src/handpose/box.js"
@@ -275,7 +275,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 607262
+      "bytes": 606968
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -356,7 +356,7 @@
           "bytesInOutput": 997
         },
         "src/handpose/handpipeline.js": {
-          "bytesInOutput": 3233
+          "bytesInOutput": 3054
         },
         "src/handpose/anchors.js": {
           "bytesInOutput": 127000
@@ -380,7 +380,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 212257
+      "bytes": 212078
     }
   }
 }

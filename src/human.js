@@ -4,7 +4,8 @@ const ssrnet = require('./ssrnet/ssrnet.js');
 const emotion = require('./emotion/emotion.js');
 const posenet = require('./posenet/posenet.js');
 const handpose = require('./handpose/handpose.js');
-const fxImage = require('./imagefx.js');
+const gesture = require('./gesture.js');
+const image = require('./image.js');
 const profile = require('./profile.js');
 const defaults = require('../config.js').default;
 const app = require('../package.json');
@@ -52,9 +53,6 @@ class Human {
     this.analyzeMemoryLeaks = false;
     this.checkSanity = false;
     this.firstRun = true;
-    // internal temp canvases
-    this.inCanvas = null;
-    this.outCanvas = null;
     // object that contains all initialized models
     this.models = {
       facemesh: null,
@@ -94,6 +92,7 @@ class Human {
     if (leaked !== 0) this.log(...msg, leaked);
   }
 
+  // quick sanity check on inputs
   sanity(input) {
     if (!this.checkSanity) return null;
     if (!input) return 'input is not defined';
@@ -108,10 +107,12 @@ class Human {
     return null;
   }
 
+  // preload models, not explicitly required as it's done automatically on first use
   async load(userConfig) {
     if (userConfig) this.config = mergeDeep(defaults, userConfig);
 
     if (this.firstRun) {
+      this.checkBackend(true);
       this.log(`version: ${this.version} TensorFlow/JS version: ${tf.version_core}`);
       this.log('configuration:', this.config);
       this.log('flags:', tf.ENV.flags);
@@ -144,8 +145,9 @@ class Human {
     }
   }
 
-  async checkBackend() {
-    if (tf.getBackend() !== this.config.backend) {
+  // check if backend needs initialization if it changed
+  async checkBackend(force) {
+    if (force || (tf.getBackend() !== this.config.backend)) {
       this.state = 'backend';
       /* force backend reload
       if (this.config.backend in tf.engine().registry) {
@@ -156,7 +158,7 @@ class Human {
         this.log('Backend not registred:', this.config.backend);
       }
       */
-      this.log('Setting backend:', this.config.backend);
+      this.log('setting backend:', this.config.backend);
       await tf.setBackend(this.config.backend);
       tf.enableProdMode();
       /* debug mode is really too mcuh
@@ -167,84 +169,20 @@ class Human {
         this.log('Changing WebGL: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
         tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
       }
-      tf.ENV.set('WEBGL_CPU_FORWARD', true);
+      // tf.ENV.set('WEBGL_CPU_FORWARD', true);
+      // tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
+      // tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
       await tf.ready();
     }
   }
 
-  tfImage(input) {
-    let tensor;
-    if (input instanceof tf.Tensor) {
-      tensor = tf.clone(input);
-    } else {
-      const originalWidth = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
-      const originalHeight = input.naturalHeight || input.videoHeight || input.height || (input.shape && (input.shape[2] > 0));
-      let targetWidth = originalWidth;
-      let targetHeight = originalHeight;
-      if (this.config.filter.width > 0) targetWidth = this.config.filter.width;
-      else if (this.config.filter.height > 0) targetWidth = originalWidth * (this.config.filter.height / originalHeight);
-      if (this.config.filter.height > 0) targetHeight = this.config.filter.height;
-      else if (this.config.filter.width > 0) targetHeight = originalHeight * (this.config.filter.width / originalWidth);
-      if (!this.inCanvas || (this.inCanvas.width !== targetWidth) || (this.inCanvas.height !== targetHeight)) {
-        this.inCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
-        if (this.inCanvas.width !== targetWidth) this.inCanvas.width = targetWidth;
-        if (this.inCanvas.height !== targetHeight) this.inCanvas.height = targetHeight;
-      }
-      const ctx = this.inCanvas.getContext('2d');
-      if (input instanceof ImageData) ctx.putImageData(input, 0, 0);
-      else ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, this.inCanvas.width, this.inCanvas.height);
-      if (this.config.filter.enabled) {
-        if (!this.fx || !this.outCanvas || (this.inCanvas.width !== this.outCanvas.width) || (this.inCanvas.height !== this.outCanvas.height)) {
-          this.outCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(this.inCanvas.width, this.inCanvas.height) : document.createElement('canvas');
-          if (this.outCanvas.width !== this.inCanvas.width) this.outCanvas.width = this.inCanvas.width;
-          if (this.outCanvas.height !== this.inCanvas.height) this.outCanvas.height = this.inCanvas.height;
-          this.fx = (tf.ENV.flags.IS_BROWSER && (typeof document !== 'undefined')) ? new fxImage.Canvas({ canvas: this.outCanvas }) : null;
-        }
-        this.fx.reset();
-        this.fx.addFilter('brightness', this.config.filter.brightness); // must have at least one filter enabled
-        if (this.config.filter.contrast !== 0) this.fx.addFilter('contrast', this.config.filter.contrast);
-        if (this.config.filter.sharpness !== 0) this.fx.addFilter('sharpen', this.config.filter.sharpness);
-        if (this.config.filter.blur !== 0) this.fx.addFilter('blur', this.config.filter.blur);
-        if (this.config.filter.saturation !== 0) this.fx.addFilter('saturation', this.config.filter.saturation);
-        if (this.config.filter.hue !== 0) this.fx.addFilter('hue', this.config.filter.hue);
-        if (this.config.filter.negative) this.fx.addFilter('negative');
-        if (this.config.filter.sepia) this.fx.addFilter('sepia');
-        if (this.config.filter.vintage) this.fx.addFilter('brownie');
-        if (this.config.filter.sepia) this.fx.addFilter('sepia');
-        if (this.config.filter.kodachrome) this.fx.addFilter('kodachrome');
-        if (this.config.filter.technicolor) this.fx.addFilter('technicolor');
-        if (this.config.filter.polaroid) this.fx.addFilter('polaroid');
-        if (this.config.filter.pixelate !== 0) this.fx.addFilter('pixelate', this.config.filter.pixelate);
-        this.fx.apply(this.inCanvas);
-      }
-      if (!this.outCanvas) this.outCanvas = this.inCanvas;
-      let pixels;
-      if ((this.config.backend === 'webgl') || (this.outCanvas instanceof ImageData)) {
-        // tf kernel-optimized method to get imagedata, also if input is imagedata, just use it
-        pixels = tf.browser.fromPixels(this.outCanvas);
-      } else {
-        // cpu and wasm kernel does not implement efficient fromPixels method nor we can use canvas as-is, so we do a silly one more canvas
-        const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
-        tempCanvas.width = targetWidth;
-        tempCanvas.height = targetHeight;
-        const tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(this.outCanvas, 0, 0);
-        const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
-        pixels = tf.browser.fromPixels(data);
-      }
-      const casted = pixels.toFloat();
-      tensor = casted.expandDims(0);
-      pixels.dispose();
-      casted.dispose();
-    }
-    return { tensor, canvas: this.config.filter.return ? this.outCanvas : null };
-  }
-
+  // main detect function
   async detect(input, userConfig = {}) {
     this.state = 'config';
     const perf = {};
     let timeStamp;
 
+    // update configuration
     this.config = mergeDeep(defaults, userConfig);
     if (!this.config.videoOptimized) this.config = mergeDeep(this.config, override);
 
@@ -256,6 +194,7 @@ class Human {
       return { error };
     }
 
+    // detection happens inside a promise
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       let poseRes;
@@ -281,9 +220,8 @@ class Human {
       this.analyze('Start Detect:');
 
       timeStamp = now();
-      const image = this.tfImage(input);
+      const process = image.process(input, this.config);
       perf.image = Math.trunc(now() - timeStamp);
-      const imageTensor = image.tensor;
 
       // run facemesh, includes blazeface and iris
       const faceRes = [];
@@ -291,7 +229,7 @@ class Human {
         this.state = 'run:face';
         timeStamp = now();
         this.analyze('Start FaceMesh:');
-        const faces = await this.models.facemesh.estimateFaces(imageTensor, this.config.face);
+        const faces = await this.models.facemesh.estimateFaces(process.tensor, this.config.face);
         perf.face = Math.trunc(now() - timeStamp);
         for (const face of faces) {
           // is something went wrong, skip the face
@@ -334,38 +272,45 @@ class Human {
 
       // run posenet
       if (this.config.async) {
-        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(imageTensor, this.config.body) : [];
+        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(process.tensor, this.config.body) : [];
       } else {
         this.state = 'run:body';
         timeStamp = now();
         this.analyze('Start PoseNet');
-        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(imageTensor, this.config.body) : [];
+        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(process.tensor, this.config.body) : [];
         this.analyze('End PoseNet:');
         perf.body = Math.trunc(now() - timeStamp);
       }
 
       // run handpose
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? this.models.handpose.estimateHands(imageTensor, this.config.hand) : [];
+        handRes = this.config.hand.enabled ? this.models.handpose.estimateHands(process.tensor, this.config.hand) : [];
       } else {
         this.state = 'run:hand';
         timeStamp = now();
         this.analyze('Start HandPose:');
-        handRes = this.config.hand.enabled ? await this.models.handpose.estimateHands(imageTensor, this.config.hand) : [];
+        handRes = this.config.hand.enabled ? await this.models.handpose.estimateHands(process.tensor, this.config.hand) : [];
         this.analyze('End HandPose:');
         perf.hand = Math.trunc(now() - timeStamp);
       }
 
       if (this.config.async) [poseRes, handRes] = await Promise.all([poseRes, handRes]);
 
-      imageTensor.dispose();
+      process.tensor.dispose();
       this.state = 'idle';
 
       if (this.config.scoped) tf.engine().endScope();
       this.analyze('End Scope:');
 
+      let gestureRes = [];
+      if (this.config.gesture.enabled) {
+        timeStamp = now();
+        gestureRes = { body: gesture.body(poseRes), hand: gesture.hand(handRes), face: gesture.face(faceRes) };
+        perf.gesture = Math.trunc(now() - timeStamp);
+      }
+
       perf.total = Math.trunc(now() - timeStart);
-      resolve({ face: faceRes, body: poseRes, hand: handRes, performance: perf, canvas: image.canvas });
+      resolve({ face: faceRes, body: poseRes, hand: handRes, gesture: gestureRes, performance: perf, canvas: process.canvas });
     });
   }
 }

@@ -481,6 +481,8 @@ npm run lint
 npm run build
 ```
 
+This will rebuild library itself (all variations) as well as demo  
+
 Project is written in pure `JavaScript` [ECMAScript version 2020](https://www.ecma-international.org/ecma-262/11.0/index.html)  
 
 Only project depdendency is [@tensorflow/tfjs](https://github.com/tensorflow/tfjs)

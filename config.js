@@ -58,7 +58,7 @@ export default {
                              // as face probably hasn't moved much in short time (10 * 1/25 = 0.25 sec)
       minConfidence: 0.5,    // threshold for discarding a prediction
       iouThreshold: 0.3,     // threshold for deciding whether boxes overlap too much in non-maximum suppression
-      scoreThreshold: 0.7,   // threshold for deciding when to remove boxes based on score in non-maximum suppression
+      scoreThreshold: 0.5,   // threshold for deciding when to remove boxes based on score in non-maximum suppression
     },
     mesh: {
       enabled: true,
@@ -97,7 +97,7 @@ export default {
     inputResolution: 257,    // fixed value
     outputStride: 16,        // fixed value
     maxDetections: 10,       // maximum number of people detected in the input, should be set to the minimum number for performance
-    scoreThreshold: 0.7,     // threshold for deciding when to remove boxes based on score in non-maximum suppression
+    scoreThreshold: 0.5,     // threshold for deciding when to remove boxes based on score in non-maximum suppression
     nmsRadius: 20,           // radius for deciding points are too close in non-maximum suppression
   },
   hand: {
@@ -108,7 +108,7 @@ export default {
                              // as the hand probably hasn't moved much in short time (10 * 1/25 = 0.25 sec)
     minConfidence: 0.5,      // threshold for discarding a prediction
     iouThreshold: 0.3,       // threshold for deciding whether boxes overlap too much in non-maximum suppression
-    scoreThreshold: 0.7,     // threshold for deciding when to remove boxes based on score in non-maximum suppression
+    scoreThreshold: 0.5,     // threshold for deciding when to remove boxes based on score in non-maximum suppression
     enlargeFactor: 1.65,     // empiric tuning as skeleton prediction prefers hand box with some whitespace
     maxHands: 10,            // maximum number of hands detected in the input, should be set to the minimum number for performance
     detector: {

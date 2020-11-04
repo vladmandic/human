@@ -161,7 +161,9 @@ If your application resides in a different folder, modify `modelPath` property i
 Demos are included in `/demo`:
 
 **Browser**:
-- `index.html`, `browser.js`, `worker.js`: Full demo using Browser with ESM module, includes selectable backends and webworkers
+- `index.html`: Full demo using Browser with ESM module, includes selectable backends and webworkers  
+  it loads `dist/demo-browser-index.js` which is built from sources in `demo`, starting with `demo/browser`  
+  alternatively you can load `demo/browser.js` directly  
 
 *If you want to test `wasm` or `webgpu` backends, enable loading in `index.html`*
 

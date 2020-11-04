@@ -1840,7 +1840,7 @@ var ei = we((A) => {
         throw new Error("Cannot compute gradient of y=f(x) with respect to x. Make sure that the f you passed encloses all operations that lead from x to y.");
       return this.tidy("backward", function() {
         var c = {};
-        c[s.id] = r ?? VL(s.shape), DL(c, o, function(u) {
+        c[s.id] = r != null ? r : VL(s.shape), DL(c, o, function(u) {
           return a.tidy(u);
         }, GL);
         var l = e.map(function(u) {
@@ -2882,7 +2882,7 @@ var ei = we((A) => {
     return new ES(n);
   }
   function Cm(n, t, e, r) {
-    s(n), e = e ?? 0, r = r ?? 1, o(e, r);
+    s(n), e = e != null ? e : 0, r = r != null ? r : 1, o(e, r);
     var i = 0, a = function(c) {
       return c.then(function(l) {
         var u = e + ++i / n.length * (r - e);
@@ -5690,7 +5690,7 @@ var ei = we((A) => {
       function p(x, L, N) {
         var I = [];
         L = L == true ? {entropy: true} : L || {};
-        var C = y(g(L.entropy ? [x, b(t)] : x ?? w(), 3), I), O = new f(I), D = function() {
+        var C = y(g(L.entropy ? [x, b(t)] : x != null ? x : w(), 3), I), O = new f(I), D = function() {
           for (var F = O.g(a), k = c, B = 0; F < l; )
             F = (F + B) * i, k *= i, B = O.g(1);
           for (; F >= u; )
@@ -6388,7 +6388,7 @@ var ei = we((A) => {
       return fe(this, function(g) {
         switch (g.label) {
           case 0:
-            for (r = R(n, "tensor", "boolMask"), i = R(t, "mask", "boolMask", "bool"), a = e ?? 0, s = i.rank, o = r.shape, E(s > 0, function() {
+            for (r = R(n, "tensor", "boolMask"), i = R(t, "mask", "boolMask", "bool"), a = e != null ? e : 0, s = i.rank, o = r.shape, E(s > 0, function() {
               return "mask cannot be scalar";
             }), Pe(o.slice(a, a + s), i.shape, "mask's shape must match the first K dimensions of tensor's shape,"), c = 1, l = a; l < a + s; l++)
               c *= o[l];
@@ -8185,7 +8185,7 @@ var ei = we((A) => {
   }
   var OR = U({avgPool3dBackprop_: RR});
   var ER = {kernelName: Nc, inputsToSave: ["x"], gradFunc: function(n, t, e) {
-    var r = t[0], i = e, a = i.filterSize, s = i.strides, o = i.dilations, c = i.pad, l = i.dimRoundingMode, u = o ?? [1, 1, 1];
+    var r = t[0], i = e, a = i.filterSize, s = i.strides, o = i.dilations, c = i.pad, l = i.dimRoundingMode, u = o != null ? o : [1, 1, 1];
     return {x: function() {
       return OR(n, r, a, s, u, c, l);
     }};
@@ -8352,7 +8352,7 @@ var ei = we((A) => {
     }};
   }};
   var JR = {kernelName: Pc, inputsToSave: ["x", "filter"], gradFunc: function(n, t, e) {
-    var r = e, i = r.dilations, a = r.strides, s = r.pad, o = r.dimRoundingMode, c = i ?? [1, 1];
+    var r = e, i = r.dilations, a = r.strides, s = r.pad, o = r.dimRoundingMode, c = i != null ? i : [1, 1];
     E(yr(c), function() {
       return "Error in gradient of depthwiseConv2dNative: dilation rates greater than 1 are not yet supported. Got dilations " + ("'" + c + "'");
     });
@@ -8437,7 +8437,7 @@ var ei = we((A) => {
     return {a, b: s};
   }};
   var s3 = {kernelName: $c, inputsToSave: ["x", "mean", "variance", "scale"], gradFunc: function(n, t, e) {
-    var r = e.varianceEpsilon, i = t[0], a = t[1], s = t[2], o = t[3], c = o ?? Le(1), l = bt(a.shape, i.shape), u = [];
+    var r = e.varianceEpsilon, i = t[0], a = t[1], s = t[2], o = t[3], c = o != null ? o : Le(1), l = bt(a.shape, i.shape), u = [];
     if (a.rank === 1) {
       for (var h = 0; h < i.shape.length - 1; ++h)
         u.push(i.shape[h]);
@@ -8583,7 +8583,7 @@ var ei = we((A) => {
   }
   var x3 = U({maxPool3dBackprop_: b3});
   var L3 = {kernelName: ll, inputsToSave: ["x"], outputsToSave: [true], gradFunc: function(n, t, e) {
-    var r = t, i = r[0], a = r[1], s = e, o = s.filterSize, c = s.strides, l = s.dilations, u = s.pad, h = s.dimRoundingMode, d = l ?? [1, 1, 1];
+    var r = t, i = r[0], a = r[1], s = e, o = s.filterSize, c = s.strides, l = s.dilations, u = s.pad, h = s.dimRoundingMode, d = l != null ? l : [1, 1, 1];
     return {x: function() {
       return x3(n, i, a, o, c, d, u, h);
     }};
@@ -10923,7 +10923,7 @@ var l1 = we((tt) => {
   }
   var hy = "Variable", dy = function() {
     function n(t, e, r, i, a) {
-      e === void 0 && (e = "float32"), r === void 0 && (r = hy), i === void 0 && (i = true), a === void 0 && (a = null), this.dtype = e ?? "float32", this.shape = t.shape, this.id = uy(), r = r ?? hy, this.originalName = $0(r), this.name = X0(this.originalName), this.trainable_ = i, this.constraint = a, this.val = v.variable(t, this.trainable_, this.name, this.dtype);
+      e === void 0 && (e = "float32"), r === void 0 && (r = hy), i === void 0 && (i = true), a === void 0 && (a = null), this.dtype = e != null ? e : "float32", this.shape = t.shape, this.id = uy(), r = r != null ? r : hy, this.originalName = $0(r), this.name = X0(this.originalName), this.trainable_ = i, this.constraint = a, this.val = v.variable(t, this.trainable_, this.name, this.dtype);
     }
     return n.prototype.read = function() {
       return this.assertNotDisposed(), this.val;
@@ -14331,7 +14331,7 @@ var l1 = we((tt) => {
   var Ky = function(n) {
     Q(t, n);
     function t(e) {
-      var r = n.call(this, e ?? {}) || this;
+      var r = n.call(this, e != null ? e : {}) || this;
       return r.supportsMasking = true, e != null && (r.maxValue = e.maxValue), r;
     }
     return t.prototype.call = function(e, r) {
@@ -14349,7 +14349,7 @@ var l1 = we((tt) => {
   var jy = function(n) {
     Q(t, n);
     function t(e) {
-      var r = n.call(this, e ?? {}) || this;
+      var r = n.call(this, e != null ? e : {}) || this;
       return r.DEFAULT_ALPHA = 0.3, e == null && (e = {}), r.alpha = e.alpha == null ? r.DEFAULT_ALPHA : e.alpha, r;
     }
     return t.prototype.call = function(e, r) {
@@ -14366,7 +14366,7 @@ var l1 = we((tt) => {
   var $y = function(n) {
     Q(t, n);
     function t(e) {
-      var r = n.call(this, e ?? {}) || this;
+      var r = n.call(this, e != null ? e : {}) || this;
       if (r.DEFAULT_ALPHA_INITIALIZER = "zeros", e == null && (e = {}), r.supportsMasking = true, r.alphaInitializer = at(e.alphaInitializer || r.DEFAULT_ALPHA_INITIALIZER), r.alphaRegularizer = st(e.alphaRegularizer), r.alphaConstraint = It(e.alphaConstraint), e.sharedAxes == null)
         r.sharedAxes = null;
       else if (Array.isArray(e.sharedAxes))
@@ -14402,7 +14402,7 @@ var l1 = we((tt) => {
   var Xy = function(n) {
     Q(t, n);
     function t(e) {
-      var r = n.call(this, e ?? {}) || this;
+      var r = n.call(this, e != null ? e : {}) || this;
       if (r.DEFAULT_ALPHA = 1, e == null && (e = {}), e.alpha != null && e.alpha !== r.DEFAULT_ALPHA)
         throw new Re("Non-default alpha value (" + e.alpha + ") is not supported by the ELU layer yet.");
       return r.alpha = e.alpha == null ? r.DEFAULT_ALPHA : e.alpha, r;
@@ -14421,7 +14421,7 @@ var l1 = we((tt) => {
   var Jy = function(n) {
     Q(t, n);
     function t(e) {
-      var r = n.call(this, e ?? {}) || this;
+      var r = n.call(this, e != null ? e : {}) || this;
       return r.DEFAULT_THETA = 1, e == null && (e = {}), r.theta = e.theta == null ? r.DEFAULT_THETA : e.theta, r;
     }
     return t.prototype.call = function(e, r) {
@@ -14438,7 +14438,7 @@ var l1 = we((tt) => {
   var Zy = function(n) {
     Q(t, n);
     function t(e) {
-      var r = n.call(this, e ?? {}) || this;
+      var r = n.call(this, e != null ? e : {}) || this;
       return r.DEFAULT_AXIS = 1, e == null && (e = {}), r.softmax = new Vy().apply, r.axis = e.axis == null ? r.DEFAULT_AXIS : e.axis, r;
     }
     return t.prototype.call = function(e, r) {
@@ -15731,7 +15731,7 @@ var l1 = we((tt) => {
   var Lv = function(n) {
     Q(t, n);
     function t(e) {
-      var r = n.call(this, e ?? {}) || this;
+      var r = n.call(this, e != null ? e : {}) || this;
       return r.supportsMasking = true, e != null ? r.maskValue = e.maskValue == null ? 0 : e.maskValue : r.maskValue = 0, r;
     }
     return t.prototype.computeOutputShape = function(e) {
@@ -18513,7 +18513,7 @@ var I1 = we((ci) => {
       });
     }, n.prototype.findWithDefault = function(t, e) {
       var r = this.tensorMap.get(t);
-      return r ?? e;
+      return r != null ? r : e;
     }, n.prototype.checkKeyAndValueTensor = function(t, e) {
       if (t.dtype !== this.keyDType)
         throw new Error("Expect key dtype " + this.keyDType + ", but got " + ("" + t.dtype));
@@ -19761,7 +19761,7 @@ var q1 = we((qt) => {
       function p(x, L, N) {
         var I = [];
         L = L == true ? {entropy: true} : L || {};
-        var C = y(g(L.entropy ? [x, b(t)] : x ?? w(), 3), I), O = new f(I), D = function() {
+        var C = y(g(L.entropy ? [x, b(t)] : x != null ? x : w(), 3), I), O = new f(I), D = function() {
           for (var F = O.g(a), k = c, B = 0; F < l; )
             F = (F + B) * i, k *= i, B = O.g(1);
           for (; F >= u; )
@@ -21812,7 +21812,7 @@ var iw = we((fG, Uo) => {
     function d(b, x, L) {
       var N = [];
       x = x == true ? {entropy: true} : x || {};
-      var I = g(m(x.entropy ? [b, w(n)] : b ?? y(), 3), N), C = new p(N), O = function() {
+      var I = g(m(x.entropy ? [b, w(n)] : b != null ? b : y(), 3), N), C = new p(N), O = function() {
         for (var D = C.g(i), F = o, k = 0; D < c; )
           D = (D + k) * r, F *= r, k = C.g(1);
         for (; D >= l; )
@@ -33133,7 +33133,7 @@ var Kx = we((YV) => {
   var KV = {backend: "webgl", console: true, async: false, profile: false, deallocate: false, scoped: false, videoOptimized: true, filter: {enabled: true, width: 0, height: 0, return: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0}, gesture: {enabled: true}, face: {enabled: true, detector: {modelPath: "../models/blazeface-back.json", inputSize: 256, maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.5}, mesh: {enabled: true, modelPath: "../models/facemesh.json", inputSize: 192}, iris: {enabled: true, modelPath: "../models/iris.json", enlargeFactor: 2.3, inputSize: 64}, age: {enabled: true, modelPath: "../models/ssrnet-age-imdb.json", inputSize: 64, skipFrames: 10}, gender: {enabled: true, minConfidence: 0.8, modelPath: "../models/ssrnet-gender-imdb.json"}, emotion: {enabled: true, inputSize: 64, minConfidence: 0.5, skipFrames: 10, modelPath: "../models/emotion.json"}}, body: {enabled: true, modelPath: "../models/posenet.json", inputResolution: 257, outputStride: 16, maxDetections: 10, scoreThreshold: 0.5, nmsRadius: 20}, hand: {enabled: true, inputSize: 256, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.5, enlargeFactor: 1.65, maxHands: 10, detector: {modelPath: "../models/handdetect.json"}, skeleton: {modelPath: "../models/handskeleton.json"}}};
 });
 var $x = we((JG, jx) => {
-  jx.exports = {name: "@vladmandic/human", version: "0.7.1", description: "human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition", sideEffects: false, main: "dist/human.node.js", module: "dist/human.esm.js", browser: "dist/human.esm.js", author: "Vladimir Mandic <mandic00@live.com>", bugs: {url: "https://github.com/vladmandic/human/issues"}, homepage: "https://github.com/vladmandic/human#readme", license: "MIT", engines: {node: ">=14.0.0"}, repository: {type: "git", url: "git+https://github.com/vladmandic/human.git"}, dependencies: {}, peerDependencies: {}, devDependencies: {"@tensorflow/tfjs": "^2.7.0", "@tensorflow/tfjs-node": "^2.7.0", "@vladmandic/pilogger": "^0.2.7", dayjs: "^1.9.4", esbuild: "^0.7.22", eslint: "^7.12.1", "eslint-config-airbnb-base": "^14.2.0", "eslint-plugin-import": "^2.22.1", "eslint-plugin-json": "^2.1.2", "eslint-plugin-node": "^11.1.0", "eslint-plugin-promise": "^4.2.1", rimraf: "^3.0.2", seedrandom: "^3.0.5", "simple-git": "^2.21.0"}, scripts: {start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js", lint: "eslint src/*.js demo/*.js", "build-iife": "esbuild --bundle --minify --platform=browser --sourcemap --target=esnext --format=iife --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js", "build-esm-bundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=esnext --format=esm --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js", "build-esm-nobundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=esnext --format=esm --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js", "build-node": "esbuild --bundle --minify --platform=node --sourcemap --target=esnext --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js", "build-node-nobundle": "esbuild --bundle --minify --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js", "build-demo": "esbuild --bundle --platform=browser --sourcemap --target=esnext --format=esm --external:fs --metafile=dist/demo-browser-index.json --outfile=dist/demo-browser-index.js demo/browser.js", build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && npm run build-demo && ls -l dist/", update: "npm update --depth 20 --force && npm dedupe && npm prune && npm audit", changelog: "node changelog.js"}, keywords: ["tensorflowjs", "face-detection", "face-geometry", "body-tracking", "hand-tracking", "iris-tracking", "age-estimation", "emotion-detection", "gender-prediction", "gesture-recognition"]};
+  jx.exports = {name: "@vladmandic/human", version: "0.7.1", description: "human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition", sideEffects: false, main: "dist/human.node.js", module: "dist/human.esm.js", browser: "dist/human.esm.js", author: "Vladimir Mandic <mandic00@live.com>", bugs: {url: "https://github.com/vladmandic/human/issues"}, homepage: "https://github.com/vladmandic/human#readme", license: "MIT", engines: {node: ">=14.0.0"}, repository: {type: "git", url: "git+https://github.com/vladmandic/human.git"}, dependencies: {}, peerDependencies: {}, devDependencies: {"@tensorflow/tfjs": "^2.7.0", "@tensorflow/tfjs-node": "^2.7.0", "@vladmandic/pilogger": "^0.2.7", dayjs: "^1.9.4", esbuild: "^0.7.22", eslint: "^7.12.1", "eslint-config-airbnb-base": "^14.2.0", "eslint-plugin-import": "^2.22.1", "eslint-plugin-json": "^2.1.2", "eslint-plugin-node": "^11.1.0", "eslint-plugin-promise": "^4.2.1", rimraf: "^3.0.2", seedrandom: "^3.0.5", "simple-git": "^2.21.0"}, scripts: {start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js", lint: "eslint src/*.js demo/*.js", "build-iife": "esbuild --bundle --minify --platform=browser --sourcemap --target=esnext --format=iife --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js", "build-esm-bundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=esnext --format=esm --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js", "build-esm-nobundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=esnext --format=esm --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js", "build-node": "esbuild --bundle --minify --platform=node --sourcemap --target=esnext --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js", "build-node-nobundle": "esbuild --bundle --minify --platform=node --sourcemap --target=esnext --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js", "build-demo": "esbuild --bundle --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/demo-browser-index.json --outfile=dist/demo-browser-index.js demo/browser.js", build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && npm run build-demo && ls -l dist/", update: "npm update --depth 20 --force && npm dedupe && npm prune && npm audit", changelog: "node changelog.js"}, keywords: ["tensorflowjs", "face-detection", "face-geometry", "body-tracking", "hand-tracking", "iris-tracking", "age-estimation", "emotion-detection", "gender-prediction", "gesture-recognition"]};
 });
 const nn = zt();
 const Xx = K2();
@@ -33182,7 +33182,7 @@ class ZV {
       return "input must be a tensor";
     try {
       nn.getBackend();
-    } catch {
+    } catch (e) {
       return "backend not loaded";
     }
     return null;

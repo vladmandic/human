@@ -176,7 +176,6 @@ class HandPipeline {
   }
 
   shouldUpdateRegionsOfInterest() {
-    console.log(this.regionsOfInterest.length, this.runsWithoutHandDetector, !this.regionsOfInterest || (this.regionsOfInterest.length === 0) || (this.runsWithoutHandDetector >= this.skipFrames));
     return !this.regionsOfInterest || (this.regionsOfInterest.length === 0) || (this.runsWithoutHandDetector >= this.skipFrames);
   }
 }

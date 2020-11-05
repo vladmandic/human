@@ -20,8 +20,10 @@ onmessage = async (msg) => {
     result = await human.detect(image, config);
   } catch (err) {
     result.error = err.message;
-    log('Worker thread error:', err.message);
+    log('worker thread error:', err.message);
   }
-  postMessage(result);
+  // must strip canvas from return value as it cannot be transfered from worker thread
+  if (result.canvas) result.canvas = null;
+  postMessage({ result });
   busy = false;
 };

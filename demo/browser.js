@@ -201,10 +201,18 @@ async function setupCamera() {
 function webWorker(input, image, canvas) {
   if (!worker) {
     // create new webworker and add event handler only once
-    log('Creating worker thread');
+    log('creating worker thread');
     worker = new Worker(ui.worker, { type: 'module' });
+    worker.warned = false;
     // after receiving message from webworker, parse&draw results and send new frame for processing
-    worker.addEventListener('message', (msg) => drawResults(input, msg.data, canvas));
+    worker.addEventListener('message', (msg) => {
+      if (!worker.warned) {
+        log('warning: cannot transfer canvas from worked thread');
+        log('warning: image will not show filter effects');
+        worker.warned = true;
+      }
+      drawResults(input, msg.data.result, canvas);
+    });
   }
   // pass image data as arraybuffer to worker by reference to avoid copy
   worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, config }, [image.data.buffer]);
@@ -219,7 +227,7 @@ function runHumanDetect(input, canvas) {
     const live = (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
     if (!live) {
       if (!input.paused) {
-        log(`Video not ready: state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
+        log(`video not ready: state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
         setTimeout(() => runHumanDetect(input, canvas), 500);
       }
       return;
@@ -236,7 +244,7 @@ function runHumanDetect(input, canvas) {
       human.detect(input, config).then((result) => {
         if (result.error) log(result.error);
         else drawResults(input, result, canvas);
-        if (config.profile) log('Profile data:', human.profile());
+        if (config.profile) log('profile data:', human.profile());
       });
     }
   }
@@ -394,11 +402,11 @@ async function main() {
   setupMenu();
   document.getElementById('log').innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
   // this is not required, just pre-warms the library
-  if (ui.modelsPreload) {
+  if (!ui.modelsPreload) {
     status('loading');
     await human.load();
   }
-  if (ui.modelsWarmup) {
+  if (!ui.modelsWarmup) {
     status('initializing');
     const warmup = new ImageData(50, 50);
     await human.detect(warmup);

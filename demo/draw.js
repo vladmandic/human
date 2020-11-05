@@ -30,7 +30,10 @@ async function drawFace(result, canvas, ui, triangulation) {
     if (face.agConfidence) labels.push(`${Math.trunc(100 * face.agConfidence)}% ${face.gender || ''}`);
     if (face.age) labels.push(`age: ${face.age || ''}`);
     if (face.iris) labels.push(`iris: ${face.iris}`);
-    if (face.emotion && face.emotion[0]) labels.push(`${Math.trunc(100 * face.emotion[0].score)}% ${face.emotion[0].emotion}`);
+    if (face.emotion && face.emotion.length > 0) {
+      const emotion = face.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
+      labels.push(emotion.join(' '));
+    }
     ctx.fillStyle = ui.baseLabel;
     for (const i in labels) ctx.fillText(labels[i], face.box[0] + 8, face.box[1] + 24 + ((i + 1) * ui.baseLineHeight));
     ctx.stroke();

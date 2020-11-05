@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 7300,
+      "bytes": 7375,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js": {
@@ -153,7 +153,7 @@
       "imports": []
     },
     "src/emotion/emotion.js": {
-      "bytes": 1976,
+      "bytes": 2596,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -468,7 +468,7 @@
       "imports": []
     },
     "src/ssrnet/ssrnet.js": {
-      "bytes": 2149,
+      "bytes": 2587,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -499,7 +499,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5407676
+      "bytes": 5409355
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -589,10 +589,10 @@
           "bytesInOutput": 620
         },
         "src/ssrnet/ssrnet.js": {
-          "bytesInOutput": 1236
+          "bytesInOutput": 1397
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1093
+          "bytesInOutput": 1295
         },
         "src/posenet/modelBase.js": {
           "bytesInOutput": 433
@@ -655,7 +655,7 @@
           "bytesInOutput": 2365
         },
         "config.js": {
-          "bytesInOutput": 1294
+          "bytesInOutput": 1300
         },
         "package.json": {
           "bytesInOutput": 2881
@@ -667,7 +667,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 1274776
+      "bytes": 1275145
     }
   }
 }

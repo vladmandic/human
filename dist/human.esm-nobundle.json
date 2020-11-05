@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 7300,
+      "bytes": 7375,
       "imports": []
     },
     "package.json": {
@@ -9,7 +9,7 @@
       "imports": []
     },
     "src/emotion/emotion.js": {
-      "bytes": 1976,
+      "bytes": 2596,
       "imports": [
         {
           "path": "src/profile.js"
@@ -278,7 +278,7 @@
       "imports": []
     },
     "src/ssrnet/ssrnet.js": {
-      "bytes": 2149,
+      "bytes": 2587,
       "imports": [
         {
           "path": "src/profile.js"
@@ -290,7 +290,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 611695
+      "bytes": 613374
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -323,10 +323,10 @@
           "bytesInOutput": 619
         },
         "src/ssrnet/ssrnet.js": {
-          "bytesInOutput": 1236
+          "bytesInOutput": 1397
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1104
+          "bytesInOutput": 1305
         },
         "src/posenet/modelBase.js": {
           "bytesInOutput": 455
@@ -389,7 +389,7 @@
           "bytesInOutput": 2349
         },
         "config.js": {
-          "bytesInOutput": 1293
+          "bytesInOutput": 1299
         },
         "package.json": {
           "bytesInOutput": 2880
@@ -401,7 +401,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 213085
+      "bytes": 213453
     }
   }
 }

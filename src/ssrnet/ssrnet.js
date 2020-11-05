@@ -5,6 +5,9 @@ const models = {};
 let last = { age: 0, gender: '' };
 let frame = Number.MAX_SAFE_INTEGER;
 
+// tuning values
+const zoom = [0, 0]; // 0..1 meaning 0%..100%
+
 async function loadAge(config) {
   if (!models.age) models.age = await tf.loadGraphModel(config.face.age.modelPath);
   return models.age;
@@ -21,7 +24,14 @@ async function predict(image, config) {
     return last;
   }
   frame = 0;
-  const resize = tf.image.resizeBilinear(image, [config.face.age.inputSize, config.face.age.inputSize], false);
+  const box = [[
+    (image.shape[1] * zoom[0]) / image.shape[1],
+    (image.shape[2] * zoom[1]) / image.shape[2],
+    (image.shape[1] - (image.shape[1] * zoom[0])) / image.shape[1],
+    (image.shape[2] - (image.shape[2] * zoom[1])) / image.shape[2],
+  ]];
+  const resize = tf.image.cropAndResize(image, box, [0], [config.face.age.inputSize, config.face.age.inputSize]);
+  // const resize = tf.image.resizeBilinear(image, [config.face.age.inputSize, config.face.age.inputSize], false);
   const enhance = tf.mul(resize, [255.0]);
   tf.dispose(resize);
 

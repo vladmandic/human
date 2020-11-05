@@ -34161,7 +34161,6 @@ async function processImage(input) {
       image.src = "";
       resolve(true);
     };
-    image.crossOrigin = "anonymous";
     image.src = input;
   });
 }
@@ -34199,24 +34198,11 @@ async function detectSampleImages() {
     await processImage(sample);
   status("");
 }
-async function detectExternalSources(url) {
-  await processImage(url);
-}
-async function getExternalSources() {
-  const res = await fetch("external.json");
-  if (res && res.ok)
-    return res.json();
-  return [];
-}
-async function setupMenu() {
+function setupMenu() {
   menu2 = new menu_default(document.body, "...", {top: "1rem", right: "1rem"});
   const btn = menu2.addButton("Start Video", "Pause Video", () => detectVideo());
   menu2.addButton("Process Images", "Process Images", () => detectSampleImages());
   document.getElementById("play").addEventListener("click", () => btn.click());
-  const sources = await getExternalSources();
-  for (const source of sources) {
-    menu2.addButton(`Poll: ${source.name}`, `Stop: ${source.name}`, () => detectExternalSources(source.url));
-  }
   menu2.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu2.addList("Backend", ["cpu", "webgl", "wasm", "webgpu"], config.backend, (val) => config.backend = val);
   menu2.addBool("Enable Profiler", config, "profile");

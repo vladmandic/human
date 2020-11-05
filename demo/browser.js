@@ -10,7 +10,7 @@ const ui = {
   baseBackground: 'rgba(50, 50, 50, 1)', // 'grey'
   baseLabel: 'rgba(173, 216, 230, 0.9)', // 'lightblue' with dark alpha channel
   baseFontProto: 'small-caps {size} "Segoe UI"',
-  baseLineWidth: 16,
+  baseLineWidth: 12,
   baseLineHeightProto: 2,
   columns: 2,
   busy: false,
@@ -55,15 +55,15 @@ const config = {
   videoOptimized: true,
   face: {
     enabled: true,
-    detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.5 },
+    detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5 },
     mesh: { enabled: true },
     iris: { enabled: true },
     age: { enabled: true, skipFrames: 10 },
     gender: { enabled: true },
-    emotion: { enabled: true, minConfidence: 0.5, useGrayscale: true },
+    emotion: { enabled: true, minConfidence: 0.3, useGrayscale: true },
   },
   body: { enabled: true, maxDetections: 10, scoreThreshold: 0.5, nmsRadius: 20 },
-  hand: { enabled: true, skipFrames: 10, minConfidence: 0.5, iouThreshold: 0.3, scoreThreshold: 0.5 },
+  hand: { enabled: true, skipFrames: 10, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5 },
   gesture: { enabled: true },
 };
 
@@ -149,7 +149,7 @@ async function setupCamera() {
   const output = document.getElementById('log');
   const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
   let msg = '';
-  status('starting camera');
+  status('setting up camera');
   // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
   if (!navigator.mediaDevices) {
     msg = 'camera access not supported';
@@ -179,9 +179,7 @@ async function setupCamera() {
   else return null;
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
-  log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight });
-  log('camera settings:', settings);
-  log('camera track:', track);
+  log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight }, 'settings:', settings, 'track:', track);
   camera = { name: track.label, width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   return new Promise((resolve) => {
     video.onloadeddata = async () => {
@@ -193,6 +191,7 @@ async function setupCamera() {
       ui.busy = false;
       // do once more because onresize events can be delayed or skipped
       // if (video.width > window.innerWidth) await setupCamera();
+      status('');
       resolve(video);
     };
   });
@@ -222,32 +221,29 @@ function webWorker(input, image, canvas) {
 // main processing function when input is webcam, can use direct invocation or web worker
 function runHumanDetect(input, canvas) {
   timeStamp = performance.now();
-  // perform detect if live video or not video at all
-  if (input.srcObject) {
-    // if video not ready, just redo
-    const live = (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
-    if (!live) {
-      if (!input.paused) {
-        log(`video not ready: state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
-        setTimeout(() => runHumanDetect(input, canvas), 500);
-      }
-      return;
-    }
-    if (ui.useWorker) {
-      // get image data from video as we cannot send html objects to webworker
-      const offscreen = new OffscreenCanvas(canvas.width, canvas.height);
-      const ctx = offscreen.getContext('2d');
-      ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
-      const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      // perform detection in worker
-      webWorker(input, data, canvas);
-    } else {
-      human.detect(input, config).then((result) => {
-        if (result.error) log(result.error);
-        else drawResults(input, result, canvas);
-        if (config.profile) log('profile data:', human.profile());
-      });
-    }
+  // if live video
+  const live = input.srcObject && (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
+  if (!live) {
+    // if we want to continue and camera not ready, retry in 0.5sec, else just give up
+    if ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
+    else log(`camera not ready: track state: ${input.srcObject?.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
+    return;
+  }
+  status('');
+  if (ui.useWorker) {
+    // get image data from video as we cannot send html objects to webworker
+    const offscreen = new OffscreenCanvas(canvas.width, canvas.height);
+    const ctx = offscreen.getContext('2d');
+    ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    // perform detection in worker
+    webWorker(input, data, canvas);
+  } else {
+    human.detect(input, config).then((result) => {
+      if (result.error) log(result.error);
+      else drawResults(input, result, canvas);
+      if (config.profile) log('profile data:', human.profile());
+    });
   }
 }
 
@@ -286,7 +282,8 @@ async function detectVideo() {
   document.getElementById('canvas').style.display = 'block';
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
-  ui.baseFont = ui.baseFontProto.replace(/{size}/, '1.3rem');
+  const size = 12 + Math.trunc(window.innerWidth / 400);
+  ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
   ui.baseLineHeight = ui.baseLineHeightProto;
   if ((video.srcObject !== null) && !video.paused) {
     document.getElementById('play').style.display = 'block';
@@ -305,7 +302,8 @@ async function detectVideo() {
 async function detectSampleImages() {
   document.getElementById('play').style.display = 'none';
   config.videoOptimized = false;
-  ui.baseFont = ui.baseFontProto.replace(/{size}/, `${1.3 * ui.columns}rem`);
+  const size = Math.trunc(ui.columns * 25600 / window.innerWidth);
+  ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
   ui.baseLineHeight = ui.baseLineHeightProto * ui.columns;
   document.getElementById('canvas').style.display = 'none';
   document.getElementById('samples-container').style.display = 'block';

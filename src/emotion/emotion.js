@@ -5,7 +5,11 @@ const annotations = ['angry', 'discust', 'fear', 'happy', 'sad', 'surpise', 'neu
 const models = {};
 let last = [];
 let frame = Number.MAX_SAFE_INTEGER;
-const multiplier = 1.5;
+
+// tuning values
+const zoom = [0, 0]; // 0..1 meaning 0%..100%
+const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
+const scale = 1; // score multiplication factor
 
 async function load(config) {
   if (!models.emotion) models.emotion = await tf.loadGraphModel(config.face.emotion.modelPath);
@@ -18,17 +22,25 @@ async function predict(image, config) {
     return last;
   }
   frame = 0;
-  const resize = tf.image.resizeBilinear(image, [config.face.emotion.inputSize, config.face.emotion.inputSize], false);
+  const box = [[
+    (image.shape[1] * zoom[0]) / image.shape[1],
+    (image.shape[2] * zoom[1]) / image.shape[2],
+    (image.shape[1] - (image.shape[1] * zoom[0])) / image.shape[1],
+    (image.shape[2] - (image.shape[2] * zoom[1])) / image.shape[2],
+  ]];
+  const resize = tf.image.cropAndResize(image, box, [0], [config.face.emotion.inputSize, config.face.emotion.inputSize]);
+  // const resize = tf.image.resizeBilinear(image, [config.face.emotion.inputSize, config.face.emotion.inputSize], false);
   const [red, green, blue] = tf.split(resize, 3, 3);
   resize.dispose();
   // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html
-  const redNorm = tf.mul(red, [0.2989]);
-  const greenNorm = tf.mul(green, [0.5870]);
-  const blueNorm = tf.mul(blue, [0.1140]);
+  const redNorm = tf.mul(red, rgb[0]);
+  const greenNorm = tf.mul(green, rgb[1]);
+  const blueNorm = tf.mul(blue, rgb[2]);
   red.dispose();
   green.dispose();
   blue.dispose();
   const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
+  const normalize = tf.tidy(() => grayscale.sub(0.5).mul(2));
   redNorm.dispose();
   greenNorm.dispose();
   blueNorm.dispose();
@@ -36,7 +48,7 @@ async function predict(image, config) {
   if (config.face.emotion.enabled) {
     let data;
     if (!config.profile) {
-      const emotionT = await models.emotion.predict(grayscale);
+      const emotionT = await models.emotion.predict(normalize);
       data = emotionT.dataSync();
       tf.dispose(emotionT);
     } else {
@@ -46,7 +58,7 @@ async function predict(image, config) {
       profile.run('emotion', profileData);
     }
     for (let i = 0; i < data.length; i++) {
-      if (multiplier * data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * multiplier * data[i]) / 100), emotion: annotations[i] });
+      if (scale * data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * scale * data[i]) / 100), emotion: annotations[i] });
     }
     obj.sort((a, b) => b.score - a.score);
   }

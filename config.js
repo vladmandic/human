@@ -56,7 +56,7 @@ export default {
       skipFrames: 10,        // how many frames to go without re-running the face bounding box detector, only used for video inputs
                              // if model is running st 25 FPS, we can re-use existing bounding box for updated face mesh analysis
                              // as face probably hasn't moved much in short time (10 * 1/25 = 0.25 sec)
-      minConfidence: 0.5,    // threshold for discarding a prediction
+      minConfidence: 0.3,    // threshold for discarding a prediction
       iouThreshold: 0.3,     // threshold for deciding whether boxes overlap too much in non-maximum suppression
       scoreThreshold: 0.5,   // threshold for deciding when to remove boxes based on score in non-maximum suppression
     },
@@ -74,21 +74,21 @@ export default {
     age: {
       enabled: true,
       modelPath: '../models/ssrnet-age-imdb.json', // can be 'imdb' or 'wiki'
-                                                         // which determines training set for model
+                                                   // which determines training set for model
       inputSize: 64,         // fixed value
       skipFrames: 10,        // how many frames to go without re-running the detector, only used for video inputs
     },
     gender: {
       enabled: true,
-      minConfidence: 0.8,    // threshold for discarding a prediction
+      minConfidence: 0.3,    // threshold for discarding a prediction
       modelPath: '../models/ssrnet-gender-imdb.json',
     },
     emotion: {
       enabled: true,
-      inputSize: 64,         // fixed value
-      minConfidence: 0.5,    // threshold for discarding a prediction
+      inputSize: 64,         // fixed value, 64 for 'mini' and 'lage', 48 for 'cnn'
+      minConfidence: 0.3,    // threshold for discarding a prediction
       skipFrames: 10,        // how many frames to go without re-running the detector
-      modelPath: '../models/emotion.json',
+      modelPath: '../models/emotion-large.json', // can be 'mini', 'large' or 'cnn'
     },
   },
   body: {
@@ -106,7 +106,7 @@ export default {
     skipFrames: 10,          // how many frames to go without re-running the hand bounding box detector, only used for video inputs
                              // if model is running st 25 FPS, we can re-use existing bounding box for updated hand skeleton analysis
                              // as the hand probably hasn't moved much in short time (10 * 1/25 = 0.25 sec)
-    minConfidence: 0.5,      // threshold for discarding a prediction
+    minConfidence: 0.3,      // threshold for discarding a prediction
     iouThreshold: 0.3,       // threshold for deciding whether boxes overlap too much in non-maximum suppression
     scoreThreshold: 0.5,     // threshold for deciding when to remove boxes based on score in non-maximum suppression
     enlargeFactor: 1.65,     // empiric tuning as skeleton prediction prefers hand box with some whitespace

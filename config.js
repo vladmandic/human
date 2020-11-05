@@ -53,7 +53,7 @@ export default {
                                                         // 'front' is optimized for large faces such as front-facing camera and 'back' is optimized for distanct faces.
       inputSize: 256,        // fixed value: 128 for front and 256 for 'back'
       maxFaces: 10,          // maximum number of faces detected in the input, should be set to the minimum number for performance
-      skipFrames: 10,        // how many frames to go without re-running the face bounding box detector, only used for video inputs
+      skipFrames: 15,        // how many frames to go without re-running the face bounding box detector, only used for video inputs
                              // if model is running st 25 FPS, we can re-use existing bounding box for updated face mesh analysis
                              // as face probably hasn't moved much in short time (10 * 1/25 = 0.25 sec)
       minConfidence: 0.3,    // threshold for discarding a prediction
@@ -76,7 +76,7 @@ export default {
       modelPath: '../models/ssrnet-age-imdb.json', // can be 'imdb' or 'wiki'
                                                    // which determines training set for model
       inputSize: 64,         // fixed value
-      skipFrames: 10,        // how many frames to go without re-running the detector, only used for video inputs
+      skipFrames: 15,        // how many frames to go without re-running the detector, only used for video inputs
     },
     gender: {
       enabled: true,
@@ -87,7 +87,7 @@ export default {
       enabled: true,
       inputSize: 64,         // fixed value, 64 for 'mini' and 'lage', 48 for 'cnn'
       minConfidence: 0.3,    // threshold for discarding a prediction
-      skipFrames: 10,        // how many frames to go without re-running the detector
+      skipFrames: 15,        // how many frames to go without re-running the detector
       modelPath: '../models/emotion-large.json', // can be 'mini', 'large' or 'cnn'
     },
   },
@@ -103,7 +103,7 @@ export default {
   hand: {
     enabled: true,
     inputSize: 256,          // fixed value
-    skipFrames: 10,          // how many frames to go without re-running the hand bounding box detector, only used for video inputs
+    skipFrames: 15,          // how many frames to go without re-running the hand bounding box detector, only used for video inputs
                              // if model is running st 25 FPS, we can re-use existing bounding box for updated hand skeleton analysis
                              // as the hand probably hasn't moved much in short time (10 * 1/25 = 0.25 sec)
     minConfidence: 0.3,      // threshold for discarding a prediction

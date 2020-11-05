@@ -55,15 +55,15 @@ const config = {
   videoOptimized: true,
   face: {
     enabled: true,
-    detector: { maxFaces: 10, skipFrames: 10, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5 },
+    detector: { maxFaces: 10, skipFrames: 15, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5 },
     mesh: { enabled: true },
     iris: { enabled: true },
-    age: { enabled: true, skipFrames: 10 },
+    age: { enabled: true, skipFrames: 15 },
     gender: { enabled: true },
     emotion: { enabled: true, minConfidence: 0.3, useGrayscale: true },
   },
   body: { enabled: true, maxDetections: 10, scoreThreshold: 0.5, nmsRadius: 20 },
-  hand: { enabled: true, skipFrames: 10, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5 },
+  hand: { enabled: true, skipFrames: 15, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5 },
   gesture: { enabled: true },
 };
 
@@ -187,6 +187,8 @@ async function setupCamera() {
       video.height = video.videoHeight;
       canvas.width = video.width;
       canvas.height = video.height;
+      canvas.style.width = canvas.width > canvas.height ? '100vw' : '';
+      canvas.style.height = canvas.width > canvas.height ? '' : '100vh';
       if (live) video.play();
       ui.busy = false;
       // do once more because onresize events can be delayed or skipped

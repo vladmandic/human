@@ -496,6 +496,7 @@ npm run build
 This will rebuild library itself (all variations) as well as demo  
 
 Project is written in pure `JavaScript` [ECMAScript version 2020](https://www.ecma-international.org/ecma-262/11.0/index.html)  
+Build target is `JavaScript` **EMCAScript version 2018**  
 
 Only project depdendency is [@tensorflow/tfjs](https://github.com/tensorflow/tfjs)
 Development dependencies are [eslint](https://github.com/eslint) used for code linting and [esbuild](https://github.com/evanw/esbuild) used for IIFE and ESM script bundling  

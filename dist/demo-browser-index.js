@@ -32358,7 +32358,7 @@ var ex = we((nc) => {
   nc.loadGender = OH;
 });
 var rx = we((Ap) => {
-  const Nn = zt(), DH = tc(), kH = ["angry", "discust", "fear", "happy", "sad", "surpise", "neutral"], ps = {};
+  const Nn = zt(), DH = tc(), kH = ["angry", "disgust", "fear", "happy", "sad", "surpise", "neutral"], ps = {};
   let tx = [], Tp = Number.MAX_SAFE_INTEGER;
   const ic = [0, 0], Np = [0.2989, 0.587, 0.114], nx = 1;
   async function FH(n) {
@@ -33131,7 +33131,7 @@ var $x = we((jx) => {
 });
 var Xx = we(($V) => {
   vs($V, {default: () => XV});
-  var XV = {backend: "webgl", console: true, async: false, profile: false, deallocate: false, scoped: false, videoOptimized: true, filter: {enabled: true, width: 0, height: 0, return: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0}, gesture: {enabled: true}, face: {enabled: true, detector: {modelPath: "../models/blazeface-back.json", inputSize: 256, maxFaces: 10, skipFrames: 10, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5}, mesh: {enabled: true, modelPath: "../models/facemesh.json", inputSize: 192}, iris: {enabled: true, modelPath: "../models/iris.json", enlargeFactor: 2.3, inputSize: 64}, age: {enabled: true, modelPath: "../models/ssrnet-age-imdb.json", inputSize: 64, skipFrames: 10}, gender: {enabled: true, minConfidence: 0.3, modelPath: "../models/ssrnet-gender-imdb.json"}, emotion: {enabled: true, inputSize: 64, minConfidence: 0.3, skipFrames: 10, modelPath: "../models/emotion-large.json"}}, body: {enabled: true, modelPath: "../models/posenet.json", inputResolution: 257, outputStride: 16, maxDetections: 10, scoreThreshold: 0.5, nmsRadius: 20}, hand: {enabled: true, inputSize: 256, skipFrames: 10, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5, enlargeFactor: 1.65, maxHands: 10, detector: {modelPath: "../models/handdetect.json"}, skeleton: {modelPath: "../models/handskeleton.json"}}};
+  var XV = {backend: "webgl", console: true, async: false, profile: false, deallocate: false, scoped: false, videoOptimized: true, filter: {enabled: true, width: 0, height: 0, return: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0}, gesture: {enabled: true}, face: {enabled: true, detector: {modelPath: "../models/blazeface-back.json", inputSize: 256, maxFaces: 10, skipFrames: 15, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5}, mesh: {enabled: true, modelPath: "../models/facemesh.json", inputSize: 192}, iris: {enabled: true, modelPath: "../models/iris.json", enlargeFactor: 2.3, inputSize: 64}, age: {enabled: true, modelPath: "../models/ssrnet-age-imdb.json", inputSize: 64, skipFrames: 15}, gender: {enabled: true, minConfidence: 0.3, modelPath: "../models/ssrnet-gender-imdb.json"}, emotion: {enabled: true, inputSize: 64, minConfidence: 0.3, skipFrames: 15, modelPath: "../models/emotion-large.json"}}, body: {enabled: true, modelPath: "../models/posenet.json", inputResolution: 257, outputStride: 16, maxDetections: 10, scoreThreshold: 0.5, nmsRadius: 20}, hand: {enabled: true, inputSize: 256, skipFrames: 15, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5, enlargeFactor: 1.65, maxHands: 10, detector: {modelPath: "../models/handdetect.json"}, skeleton: {modelPath: "../models/handskeleton.json"}}};
 });
 var Zx = we((eq, Jx) => {
   Jx.exports = {name: "@vladmandic/human", version: "0.7.3", description: "human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition", sideEffects: false, main: "dist/human.node.js", module: "dist/human.esm.js", browser: "dist/human.esm.js", author: "Vladimir Mandic <mandic00@live.com>", bugs: {url: "https://github.com/vladmandic/human/issues"}, homepage: "https://github.com/vladmandic/human#readme", license: "MIT", engines: {node: ">=14.0.0"}, repository: {type: "git", url: "git+https://github.com/vladmandic/human.git"}, dependencies: {}, peerDependencies: {}, devDependencies: {"@tensorflow/tfjs": "^2.7.0", "@tensorflow/tfjs-node": "^2.7.0", "@vladmandic/pilogger": "^0.2.7", dayjs: "^1.9.4", esbuild: "^0.7.22", eslint: "^7.12.1", "eslint-config-airbnb-base": "^14.2.0", "eslint-plugin-import": "^2.22.1", "eslint-plugin-json": "^2.1.2", "eslint-plugin-node": "^11.1.0", "eslint-plugin-promise": "^4.2.1", rimraf: "^3.0.2", seedrandom: "^3.0.5", "simple-git": "^2.21.0"}, scripts: {start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js", lint: "eslint src/*.js demo/*.js", "build-iife": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=iife --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js", "build-esm-bundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js", "build-esm-nobundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=esm --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js", "build-node": "esbuild --bundle --minify --platform=node --sourcemap --target=es2018 --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js", "build-node-nobundle": "esbuild --bundle --minify --platform=node --sourcemap --target=es2018 --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js", "build-demo": "esbuild --bundle --log-level=error --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/demo-browser-index.json --outfile=dist/demo-browser-index.js demo/browser.js", build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && npm run build-demo && ls -l dist/", update: "npm update --depth 20 --force && npm dedupe && npm prune && npm audit", changelog: "node changelog.js"}, keywords: ["tensorflowjs", "face-detection", "face-geometry", "body-tracking", "hand-tracking", "iris-tracking", "age-estimation", "emotion-detection", "gender-prediction", "gesture-recognition"]};
@@ -33978,15 +33978,15 @@ const config = {
   videoOptimized: true,
   face: {
     enabled: true,
-    detector: {maxFaces: 10, skipFrames: 10, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5},
+    detector: {maxFaces: 10, skipFrames: 15, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5},
     mesh: {enabled: true},
     iris: {enabled: true},
-    age: {enabled: true, skipFrames: 10},
+    age: {enabled: true, skipFrames: 15},
     gender: {enabled: true},
     emotion: {enabled: true, minConfidence: 0.3, useGrayscale: true}
   },
   body: {enabled: true, maxDetections: 10, scoreThreshold: 0.5, nmsRadius: 20},
-  hand: {enabled: true, skipFrames: 10, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5},
+  hand: {enabled: true, skipFrames: 15, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5},
   gesture: {enabled: true}
 };
 let menu2;
@@ -34102,6 +34102,8 @@ ${msg}`;
       video.height = video.videoHeight;
       canvas.width = video.width;
       canvas.height = video.height;
+      canvas.style.width = canvas.width > canvas.height ? "100vw" : "";
+      canvas.style.height = canvas.width > canvas.height ? "" : "100vh";
       if (live)
         video.play();
       ui.busy = false;

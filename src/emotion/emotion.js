@@ -1,7 +1,7 @@
 const tf = require('@tensorflow/tfjs');
 const profile = require('../profile.js');
 
-const annotations = ['angry', 'discust', 'fear', 'happy', 'sad', 'surpise', 'neutral'];
+const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surpise', 'neutral'];
 const models = {};
 let last = [];
 let frame = Number.MAX_SAFE_INTEGER;

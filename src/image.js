@@ -34,7 +34,7 @@ function process(input, config) {
         outCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(inCanvas.width, inCanvas.height) : document.createElement('canvas');
         if (outCanvas.width !== inCanvas.width) outCanvas.width = inCanvas.width;
         if (outCanvas.height !== inCanvas.height) outCanvas.height = inCanvas.height;
-        this.fx = (tf.ENV.flags.IS_BROWSER && (typeof document !== 'undefined')) ? new fxImage.Canvas({ canvas: outCanvas }) : null;
+        this.fx = tf.ENV.flags.IS_BROWSER ? new fxImage.Canvas({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
       }
       this.fx.reset();
       this.fx.addFilter('brightness', config.filter.brightness); // must have at least one filter enabled

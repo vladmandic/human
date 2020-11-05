@@ -1,7 +1,7 @@
 
 # @vladmandic/human  
 
-Version: **0.7.0**  
+Version: **0.7.3**  
 Description: **human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition**  
 
 Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -10,7 +10,18 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2020/11/04 mandic00@live.com
+### **HEAD -> main** 2020/11/05 mandic00@live.com
+
+### **0.7.3** 2020/11/05 mandic00@live.com
+- optimized camera and mobile layout
+- fixed worker and filter compatibility
+- removed test code
+
+### **0.7.2** 2020/11/04 mandic00@live.com
+- major work on handpose model
+
+### **0.7.1** 2020/11/04 mandic00@live.com
+- changed demo build process
 
 ### **0.6.7** 2020/11/04 mandic00@live.com
 - implemented simple gesture recognition

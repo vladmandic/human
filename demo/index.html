@@ -6,7 +6,7 @@
   <meta content="text/html">
   <meta charset="UTF-8">
   <meta name="description" content="3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction & Emotion Prediction; Author: Vladimir Mandic <mandic00@live.com>">
-  <meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.1, maximum-scale=4.0, shrink-to-fit=yes, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=0.6, minimum-scale=0.1, maximum-scale=4.0, shrink-to-fit=yes, user-scalable=yes">
   <meta name="theme-color" content="#000000"/>
   <meta name="application-name" content="Human">
   <meta name="msapplication-tooltip" content="Human: AI-powered 3D Human Detection">
@@ -22,20 +22,21 @@
     <!-- alternatively load demo sources directly -->
     <!-- <script src="browser.js" type="module"></script> -->
     <style>
-      body { margin: 0; background: black; color: white; font-family: 'Segoe UI'; font-size: 16px; font-variant: small-caps; overflow-x: hidden; scrollbar-width: none; }
+      html { font-family: 'Segoe UI'; font-size: 16px; font-variant: small-caps; }
+      body { margin: 0; background: black; color: white; overflow-x: hidden; scrollbar-width: none; }
       body::-webkit-scrollbar { display: none; }
-      .play { position: absolute; width: 300px; height: 300px; z-index: 25; top: 30%; left: 50%; margin-left: -150px; display: none; }
+      .play { position: absolute; width: 300px; height: 300px; z-index: 9; top: 30%; left: 50%; margin-left: -150px; display: none; }
       .play-background { fill:darkslategray; cursor:pointer; opacity: 0.6; }
       .play-foreground { fill:white; cursor:pointer; opacity: 0.8; }
       .play-foreground:hover { opacity: 1; }
-      .status { position: absolute; width: 100vw; top: 100px; text-align: center; font-size: 4rem; font-weight: 100; text-shadow: 2px 2px darkslategrey; }
+      .status { position: absolute; width: 100vw; bottom: 15%; text-align: center; font-size: 4rem; font-weight: 100; text-shadow: 2px 2px darkslategrey; }
       .thumbnail { margin: 8px; box-shadow: 0 0 4px 4px dimgrey; }
       .thumbnail:hover { box-shadow: 0 0 8px 8px dimgrey; filter: grayscale(1); }
-      .log { position: fixed; bottom: 0; margin: 0.4rem; }
+      .log { position: fixed; bottom: 0; margin: 0.4rem; font-size: 0.9rem; }
       .samples-container { display: flex; flex-wrap: wrap; }
       .video { display: none; }
-      .canvas { margin: 0 auto; width: 100%; }
-      .loader { width: 300px; height: 300px; border: 3px solid transparent; border-radius: 50%; border-top: 4px solid #f15e41; animation: spin 4s linear infinite; position: absolute; top: 30%; left: 50%; margin-left: -150px; }
+      .canvas { margin: 0 auto; height: 100%; }
+      .loader { width: 300px; height: 300px; border: 3px solid transparent; border-radius: 50%; border-top: 4px solid #f15e41; animation: spin 4s linear infinite; position: absolute; top: 30%; left: 50%; margin-left: -150px; z-index: 15; }
       .loader::before, .loader::after { content: ""; position: absolute; top: 6px; bottom: 6px; left: 6px; right: 6px; border-radius: 50%; border: 4px solid transparent; }
       .loader::before { border-top-color: #bad375; animation: 3s spin linear infinite; }
       .loader::after { border-top-color: #26a9e0; animation: spin 1.5s linear infinite; }

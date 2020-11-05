@@ -159,7 +159,7 @@
       ]
     },
     "src/image.js": {
-      "bytes": 4603,
+      "bytes": 4604,
       "imports": [
         {
           "path": "src/imagefx.js"
@@ -290,7 +290,7 @@
     "dist/human.node-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 623210
+      "bytes": 623195
     },
     "dist/human.node-nobundle.js": {
       "imports": [],
@@ -386,7 +386,7 @@
           "bytesInOutput": 11013
         },
         "src/image.js": {
-          "bytesInOutput": 2379
+          "bytesInOutput": 2349
         },
         "config.js": {
           "bytesInOutput": 1292
@@ -401,7 +401,7 @@
           "bytesInOutput": 5611
         }
       },
-      "bytes": 213101
+      "bytes": 213071
     }
   }
 }

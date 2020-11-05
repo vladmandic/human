@@ -33109,7 +33109,7 @@ var Yx = we((qx) => {
       let a = r, s = i;
       t.filter.width > 0 ? a = t.filter.width : t.filter.height > 0 && (a = r * (t.filter.height / i)), t.filter.height > 0 ? s = t.filter.height : t.filter.width > 0 && (s = i * (t.filter.width / r)), (!yt || yt.width !== a || yt.height !== s) && (yt = typeof OffscreenCanvas != "undefined" ? new OffscreenCanvas(a, s) : document.createElement("canvas"), yt.width !== a && (yt.width = a), yt.height !== s && (yt.height = s));
       const o = yt.getContext("2d");
-      n instanceof ImageData ? o.putImageData(n, 0, 0) : o.drawImage(n, 0, 0, r, i, 0, 0, yt.width, yt.height), t.filter.enabled && ((!this.fx || !Yt || yt.width !== Yt.width || yt.height !== Yt.height) && (Yt = typeof OffscreenCanvas != "undefined" ? new OffscreenCanvas(yt.width, yt.height) : document.createElement("canvas"), Yt.width !== yt.width && (Yt.width = yt.width), Yt.height !== yt.height && (Yt.height = yt.height), this.fx = ys.ENV.flags.IS_BROWSER && typeof document != "undefined" ? new GV.Canvas({canvas: Yt}) : null), this.fx.reset(), this.fx.addFilter("brightness", t.filter.brightness), t.filter.contrast !== 0 && this.fx.addFilter("contrast", t.filter.contrast), t.filter.sharpness !== 0 && this.fx.addFilter("sharpen", t.filter.sharpness), t.filter.blur !== 0 && this.fx.addFilter("blur", t.filter.blur), t.filter.saturation !== 0 && this.fx.addFilter("saturation", t.filter.saturation), t.filter.hue !== 0 && this.fx.addFilter("hue", t.filter.hue), t.filter.negative && this.fx.addFilter("negative"), t.filter.sepia && this.fx.addFilter("sepia"), t.filter.vintage && this.fx.addFilter("brownie"), t.filter.sepia && this.fx.addFilter("sepia"), t.filter.kodachrome && this.fx.addFilter("kodachrome"), t.filter.technicolor && this.fx.addFilter("technicolor"), t.filter.polaroid && this.fx.addFilter("polaroid"), t.filter.pixelate !== 0 && this.fx.addFilter("pixelate", t.filter.pixelate), this.fx.apply(yt)), Yt || (Yt = yt);
+      n instanceof ImageData ? o.putImageData(n, 0, 0) : o.drawImage(n, 0, 0, r, i, 0, 0, yt.width, yt.height), t.filter.enabled && ((!this.fx || !Yt || yt.width !== Yt.width || yt.height !== Yt.height) && (Yt = typeof OffscreenCanvas != "undefined" ? new OffscreenCanvas(yt.width, yt.height) : document.createElement("canvas"), Yt.width !== yt.width && (Yt.width = yt.width), Yt.height !== yt.height && (Yt.height = yt.height), this.fx = ys.ENV.flags.IS_BROWSER ? new GV.Canvas({canvas: Yt}) : null), this.fx.reset(), this.fx.addFilter("brightness", t.filter.brightness), t.filter.contrast !== 0 && this.fx.addFilter("contrast", t.filter.contrast), t.filter.sharpness !== 0 && this.fx.addFilter("sharpen", t.filter.sharpness), t.filter.blur !== 0 && this.fx.addFilter("blur", t.filter.blur), t.filter.saturation !== 0 && this.fx.addFilter("saturation", t.filter.saturation), t.filter.hue !== 0 && this.fx.addFilter("hue", t.filter.hue), t.filter.negative && this.fx.addFilter("negative"), t.filter.sepia && this.fx.addFilter("sepia"), t.filter.vintage && this.fx.addFilter("brownie"), t.filter.sepia && this.fx.addFilter("sepia"), t.filter.kodachrome && this.fx.addFilter("kodachrome"), t.filter.technicolor && this.fx.addFilter("technicolor"), t.filter.polaroid && this.fx.addFilter("polaroid"), t.filter.pixelate !== 0 && this.fx.addFilter("pixelate", t.filter.pixelate), this.fx.apply(yt)), Yt || (Yt = yt);
       let c;
       if (t.backend === "webgl" || Yt instanceof ImageData)
         c = ys.browser.fromPixels(Yt);
@@ -34103,9 +34103,17 @@ ${msg}`;
 }
 function webWorker(input, image, canvas) {
   if (!worker) {
-    log("Creating worker thread");
+    log("creating worker thread");
     worker = new Worker(ui.worker, {type: "module"});
-    worker.addEventListener("message", (msg) => drawResults(input, msg.data, canvas));
+    worker.warned = false;
+    worker.addEventListener("message", (msg) => {
+      if (!worker.warned) {
+        log("warning: cannot transfer canvas from worked thread");
+        log("warning: image will not show filter effects");
+        worker.warned = true;
+      }
+      drawResults(input, msg.data.result, canvas);
+    });
   }
   worker.postMessage({image: image.data.buffer, width: canvas.width, height: canvas.height, config}, [image.data.buffer]);
 }
@@ -34115,7 +34123,7 @@ function runHumanDetect(input, canvas) {
     const live = input.srcObject.getVideoTracks()[0].readyState === "live" && input.readyState > 2 && !input.paused;
     if (!live) {
       if (!input.paused) {
-        log(`Video not ready: state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
+        log(`video not ready: state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
         setTimeout(() => runHumanDetect(input, canvas), 500);
       }
       return;
@@ -34133,7 +34141,7 @@ function runHumanDetect(input, canvas) {
         else
           drawResults(input, result, canvas);
         if (config.profile)
-          log("Profile data:", human.profile());
+          log("profile data:", human.profile());
       });
     }
   }
@@ -34279,11 +34287,11 @@ async function main() {
   log("Human: demo starting ...");
   setupMenu();
   document.getElementById("log").innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
-  if (ui.modelsPreload) {
+  if (!ui.modelsPreload) {
     status("loading");
     await human.load();
   }
-  if (ui.modelsWarmup) {
+  if (!ui.modelsWarmup) {
     status("initializing");
     const warmup = new ImageData(50, 50);
     await human.detect(warmup);

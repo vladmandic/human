@@ -149,7 +149,7 @@
       ]
     },
     "package.json": {
-      "bytes": 3216,
+      "bytes": 3234,
       "imports": []
     },
     "src/emotion/emotion.js": {
@@ -499,7 +499,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5407464
+      "bytes": 5407676
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -514,19 +514,19 @@
           "bytesInOutput": 13
         },
         "node_modules/@tensorflow/tfjs-core/dist/tf-core.node.js": {
-          "bytesInOutput": 295099
+          "bytesInOutput": 295162
         },
         "node_modules/@tensorflow/tfjs-layers/dist/tf-layers.node.js": {
-          "bytesInOutput": 238715
+          "bytesInOutput": 238778
         },
         "node_modules/@tensorflow/tfjs-converter/dist/tf-converter.node.js": {
-          "bytesInOutput": 115224
+          "bytesInOutput": 115231
         },
         "empty:/home/vlado/dev/human/node_modules/string_decoder/lib/string_decoder.js": {
           "bytesInOutput": 13
         },
         "node_modules/@tensorflow/tfjs-data/dist/tf-data.node.js": {
-          "bytesInOutput": 52357
+          "bytesInOutput": 52364
         },
         "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/lib/alea.js": {
           "bytesInOutput": 990
@@ -547,7 +547,7 @@
           "bytesInOutput": 880
         },
         "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/seedrandom.js": {
-          "bytesInOutput": 1607
+          "bytesInOutput": 1614
         },
         "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/index.js": {
           "bytesInOutput": 171
@@ -658,16 +658,16 @@
           "bytesInOutput": 1294
         },
         "package.json": {
-          "bytesInOutput": 2863
+          "bytesInOutput": 2881
         },
         "src/human.js": {
-          "bytesInOutput": 5625
+          "bytesInOutput": 5628
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 1274608
+      "bytes": 1274776
     }
   }
 }

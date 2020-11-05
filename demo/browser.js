@@ -135,7 +135,7 @@ function drawResults(input, result, canvas) {
   const avg = Math.trunc(10 * fps.reduce((a, b) => a + b) / fps.length) / 10;
   document.getElementById('log').innerText = `
     video: ${camera.name} | facing: ${camera.facing} | resolution: ${camera.width} x ${camera.height} ${processing}
-    backend: ${human.tf.getBackend()} | ${memory} | object size: ${(str(result)).length.toLocaleString()} bytes
+    backend: ${human.tf.getBackend()} | ${memory}
     performance: ${str(result.performance)} FPS:${avg}
   `;
 }
@@ -159,26 +159,27 @@ async function setupCamera() {
     return null;
   }
   let stream;
+  const constraints = {
+    audio: false,
+    video: { facingMode: (ui.facing ? 'user' : 'environment'), resizeMode: 'none' },
+  };
   try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: {
-        facingMode: (ui.facing ? 'user' : 'environment'),
-        width: window.innerWidth,
-        height: window.innerHeight,
-        resizeMode: 'none',
-        contrast: 75,
-      },
-    });
+    if (window.innerWidth > window.innerHeight) constraints.video.width = { ideal: window.innerWidth };
+    else constraints.video.height = { ideal: window.innerHeight };
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
   } catch (err) {
-    output.innerText += '\nCamera permission denied';
-    status('camera permission denied');
+    if (err.name === 'PermissionDeniedError') msg = 'camera permission denied';
+    else if (err.name === 'SourceUnavailableError') msg = 'camera not available';
+    else msg = 'camera error';
+    output.innerText += `\n${msg}`;
+    status(msg);
     log(err);
   }
   if (stream) video.srcObject = stream;
   else return null;
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
+  log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight });
   log('camera settings:', settings);
   log('camera track:', track);
   camera = { name: track.label, width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
@@ -402,11 +403,11 @@ async function main() {
   setupMenu();
   document.getElementById('log').innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
   // this is not required, just pre-warms the library
-  if (!ui.modelsPreload) {
+  if (ui.modelsPreload) {
     status('loading');
     await human.load();
   }
-  if (!ui.modelsWarmup) {
+  if (ui.modelsWarmup) {
     status('initializing');
     const warmup = new ImageData(50, 50);
     await human.detect(warmup);

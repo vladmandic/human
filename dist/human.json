@@ -277,7 +277,7 @@
       ]
     },
     "src/handpose/handpose.js": {
-      "bytes": 2766,
+      "bytes": 2839,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -499,7 +499,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5407400
+      "bytes": 5407475
     },
     "dist/human.js": {
       "imports": [],

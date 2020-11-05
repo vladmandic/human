@@ -106,7 +106,7 @@
       ]
     },
     "src/handpose/handpose.js": {
-      "bytes": 2766,
+      "bytes": 2839,
       "imports": [
         {
           "path": "src/handpose/handdetector.js"
@@ -290,7 +290,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 611623
+      "bytes": 611698
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],

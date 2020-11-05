@@ -4,7 +4,7 @@
   "icons": [
     { "src": "../assets/icon.png", "sizes": "853x853", "type": "image/png", "purpose": "any maskable" }
     ],
-  "start_url": "/",
+  "start_url": "./index.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#000000",

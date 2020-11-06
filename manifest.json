@@ -1,0 +1,12 @@
+{
+  "name": "Human Library",
+  "short_name": "Human",
+  "icons": [
+    { "src": "../assets/icon.png", "sizes": "853x853", "type": "image/png", "purpose": "any maskable" }
+    ],
+  "start_url": "./index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000"
+}

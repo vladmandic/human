@@ -16,7 +16,7 @@ const ui = {
   busy: false,
   facing: true,
   useWorker: false,
-  worker: 'worker.js',
+  worker: 'demo/worker.js',
   samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'],
   drawBoxes: true,
   drawPoints: false,
@@ -27,45 +27,6 @@ const ui = {
   maxFrames: 10,
   modelsPreload: true,
   modelsWarmup: true,
-};
-
-// configuration overrides
-const config = {
-  backend: 'webgl',
-  profile: false,
-  deallocate: false,
-  wasm: { path: '../assets' },
-  async: true,
-  filter: {
-    enabled: true,
-    width: 0,
-    height: 0,
-    brightness: 0,
-    contrast: 0,
-    sharpness: 0,
-    blur: 0,
-    saturation: 0,
-    hue: 0,
-    negative: false,
-    sepia: false,
-    vintage: false,
-    kodachrome: false,
-    technicolor: false,
-    polaroid: false,
-    pixelate: 0 },
-  videoOptimized: true,
-  face: {
-    enabled: true,
-    detector: { maxFaces: 10, skipFrames: 15, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5 },
-    mesh: { enabled: true },
-    iris: { enabled: true },
-    age: { enabled: true, skipFrames: 15 },
-    gender: { enabled: true },
-    emotion: { enabled: true, minConfidence: 0.3, useGrayscale: true },
-  },
-  body: { enabled: true, maxDetections: 10, scoreThreshold: 0.5, nmsRadius: 20 },
-  hand: { enabled: true, skipFrames: 15, minConfidence: 0.3, iouThreshold: 0.3, scoreThreshold: 0.5 },
-  gesture: { enabled: true },
 };
 
 // global variables
@@ -218,7 +179,7 @@ function webWorker(input, image, canvas) {
     });
   }
   // pass image data as arraybuffer to worker by reference to avoid copy
-  worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, config }, [image.data.buffer]);
+  worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height }, [image.data.buffer]);
 }
 
 // main processing function when input is webcam, can use direct invocation or web worker
@@ -242,10 +203,10 @@ function runHumanDetect(input, canvas) {
     // perform detection in worker
     webWorker(input, data, canvas);
   } else {
-    human.detect(input, config).then((result) => {
+    human.detect(input).then((result) => {
       if (result.error) log(result.error);
       else drawResults(input, result, canvas);
-      if (config.profile) log('profile data:', human.profile());
+      if (human.config.profile) log('profile data:', human.profile());
     });
   }
 }
@@ -260,9 +221,9 @@ async function processImage(input) {
       const canvas = document.getElementById('canvas');
       image.width = image.naturalWidth;
       image.height = image.naturalHeight;
-      canvas.width = config.filter.width && config.filter.width > 0 ? config.filter.width : image.naturalWidth;
-      canvas.height = config.filter.height && config.filter.height > 0 ? config.filter.height : image.naturalHeight;
-      const result = await human.detect(image, config);
+      canvas.width = human.config.filter.width && human.config.filter.width > 0 ? human.config.filter.width : image.naturalWidth;
+      canvas.height = human.config.filter.height && human.config.filter.height > 0 ? human.config.filter.height : image.naturalHeight;
+      const result = await human.detect(image);
       drawResults(image, result, canvas);
       const thumb = document.createElement('canvas');
       thumb.className = 'thumbnail';
@@ -280,7 +241,7 @@ async function processImage(input) {
 
 // just initialize everything and call main function
 async function detectVideo() {
-  config.videoOptimized = true;
+  human.config.videoOptimized = true;
   document.getElementById('samples-container').style.display = 'none';
   document.getElementById('canvas').style.display = 'block';
   const video = document.getElementById('video');
@@ -304,7 +265,7 @@ async function detectVideo() {
 // just initialize everything and call main function
 async function detectSampleImages() {
   document.getElementById('play').style.display = 'none';
-  config.videoOptimized = false;
+  human.config.videoOptimized = false;
   const size = Math.trunc(ui.columns * 25600 / window.innerWidth);
   ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
   ui.baseLineHeight = ui.baseLineHeightProto * ui.columns;
@@ -324,49 +285,49 @@ function setupMenu() {
   document.getElementById('play').addEventListener('click', () => btn.click());
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menu.addList('Backend', ['cpu', 'webgl', 'wasm', 'webgpu'], config.backend, (val) => config.backend = val);
-  menu.addBool('Async Operations', config, 'async');
-  menu.addBool('Enable Profiler', config, 'profile');
-  menu.addBool('Memory Shield', config, 'deallocate');
+  menu.addList('Backend', ['cpu', 'webgl', 'wasm', 'webgpu'], human.config.backend, (val) => human.config.backend = val);
+  menu.addBool('Async Operations', human.config, 'async');
+  menu.addBool('Enable Profiler', human.config, 'profile');
+  menu.addBool('Memory Shield', human.config, 'deallocate');
   menu.addBool('Use Web Worker', ui, 'useWorker');
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addLabel('Enabled Models');
-  menu.addBool('Face Detect', config.face, 'enabled');
-  menu.addBool('Face Mesh', config.face.mesh, 'enabled');
-  menu.addBool('Face Iris', config.face.iris, 'enabled');
-  menu.addBool('Face Age', config.face.age, 'enabled');
-  menu.addBool('Face Gender', config.face.gender, 'enabled');
-  menu.addBool('Face Emotion', config.face.emotion, 'enabled');
-  menu.addBool('Body Pose', config.body, 'enabled');
-  menu.addBool('Hand Pose', config.hand, 'enabled');
-  menu.addBool('Gesture Analysis', config.gesture, 'enabled');
+  menu.addBool('Face Detect', human.config.face, 'enabled');
+  menu.addBool('Face Mesh', human.config.face.mesh, 'enabled');
+  menu.addBool('Face Iris', human.config.face.iris, 'enabled');
+  menu.addBool('Face Age', human.config.face.age, 'enabled');
+  menu.addBool('Face Gender', human.config.face.gender, 'enabled');
+  menu.addBool('Face Emotion', human.config.face.emotion, 'enabled');
+  menu.addBool('Body Pose', human.config.body, 'enabled');
+  menu.addBool('Hand Pose', human.config.hand, 'enabled');
+  menu.addBool('Gesture Analysis', human.config.gesture, 'enabled');
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addLabel('Model Parameters');
-  menu.addRange('Max Objects', config.face.detector, 'maxFaces', 1, 50, 1, (val) => {
-    config.face.detector.maxFaces = parseInt(val);
-    config.body.maxDetections = parseInt(val);
-    config.hand.maxHands = parseInt(val);
+  menu.addRange('Max Objects', human.config.face.detector, 'maxFaces', 1, 50, 1, (val) => {
+    human.config.face.detector.maxFaces = parseInt(val);
+    human.config.body.maxDetections = parseInt(val);
+    human.config.hand.maxHands = parseInt(val);
   });
-  menu.addRange('Skip Frames', config.face.detector, 'skipFrames', 0, 50, 1, (val) => {
-    config.face.detector.skipFrames = parseInt(val);
-    config.face.emotion.skipFrames = parseInt(val);
-    config.face.age.skipFrames = parseInt(val);
-    config.hand.skipFrames = parseInt(val);
+  menu.addRange('Skip Frames', human.config.face.detector, 'skipFrames', 0, 50, 1, (val) => {
+    human.config.face.detector.skipFrames = parseInt(val);
+    human.config.face.emotion.skipFrames = parseInt(val);
+    human.config.face.age.skipFrames = parseInt(val);
+    human.config.hand.skipFrames = parseInt(val);
   });
-  menu.addRange('Min Confidence', config.face.detector, 'minConfidence', 0.0, 1.0, 0.05, (val) => {
-    config.face.detector.minConfidence = parseFloat(val);
-    config.face.emotion.minConfidence = parseFloat(val);
-    config.hand.minConfidence = parseFloat(val);
+  menu.addRange('Min Confidence', human.config.face.detector, 'minConfidence', 0.0, 1.0, 0.05, (val) => {
+    human.config.face.detector.minConfidence = parseFloat(val);
+    human.config.face.emotion.minConfidence = parseFloat(val);
+    human.config.hand.minConfidence = parseFloat(val);
   });
-  menu.addRange('Score Threshold', config.face.detector, 'scoreThreshold', 0.1, 1.0, 0.05, (val) => {
-    config.face.detector.scoreThreshold = parseFloat(val);
-    config.hand.scoreThreshold = parseFloat(val);
-    config.body.scoreThreshold = parseFloat(val);
+  menu.addRange('Score Threshold', human.config.face.detector, 'scoreThreshold', 0.1, 1.0, 0.05, (val) => {
+    human.config.face.detector.scoreThreshold = parseFloat(val);
+    human.config.hand.scoreThreshold = parseFloat(val);
+    human.config.body.scoreThreshold = parseFloat(val);
   });
-  menu.addRange('IOU Threshold', config.face.detector, 'iouThreshold', 0.1, 1.0, 0.05, (val) => {
-    config.face.detector.iouThreshold = parseFloat(val);
-    config.hand.iouThreshold = parseFloat(val);
+  menu.addRange('IOU Threshold', human.config.face.detector, 'iouThreshold', 0.1, 1.0, 0.05, (val) => {
+    human.config.face.detector.iouThreshold = parseFloat(val);
+    human.config.hand.iouThreshold = parseFloat(val);
   });
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
@@ -382,22 +343,22 @@ function setupMenu() {
   menuFX.addBool('Fill Polygons', ui, 'fillPolygons');
   menuFX.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menuFX.addLabel('Image Processing');
-  menuFX.addBool('Enabled', config.filter, 'enabled');
-  menuFX.addRange('Image width', config.filter, 'width', 0, 3840, 10, (val) => config.filter.width = parseInt(val));
-  menuFX.addRange('Image height', config.filter, 'height', 0, 2160, 10, (val) => config.filter.height = parseInt(val));
-  menuFX.addRange('Brightness', config.filter, 'brightness', -1.0, 1.0, 0.05, (val) => config.filter.brightness = parseFloat(val));
-  menuFX.addRange('Contrast', config.filter, 'contrast', -1.0, 1.0, 0.05, (val) => config.filter.contrast = parseFloat(val));
-  menuFX.addRange('Sharpness', config.filter, 'sharpness', 0, 1.0, 0.05, (val) => config.filter.sharpness = parseFloat(val));
-  menuFX.addRange('Blur', config.filter, 'blur', 0, 20, 1, (val) => config.filter.blur = parseInt(val));
-  menuFX.addRange('Saturation', config.filter, 'saturation', -1.0, 1.0, 0.05, (val) => config.filter.saturation = parseFloat(val));
-  menuFX.addRange('Hue', config.filter, 'hue', 0, 360, 5, (val) => config.filter.hue = parseInt(val));
-  menuFX.addRange('Pixelate', config.filter, 'pixelate', 0, 32, 1, (val) => config.filter.pixelate = parseInt(val));
-  menuFX.addBool('Negative', config.filter, 'negative');
-  menuFX.addBool('Sepia', config.filter, 'sepia');
-  menuFX.addBool('Vintage', config.filter, 'vintage');
-  menuFX.addBool('Kodachrome', config.filter, 'kodachrome');
-  menuFX.addBool('Technicolor', config.filter, 'technicolor');
-  menuFX.addBool('Polaroid', config.filter, 'polaroid');
+  menuFX.addBool('Enabled', human.config.filter, 'enabled');
+  menuFX.addRange('Image width', human.config.filter, 'width', 0, 3840, 10, (val) => human.config.filter.width = parseInt(val));
+  menuFX.addRange('Image height', human.config.filter, 'height', 0, 2160, 10, (val) => human.config.filter.height = parseInt(val));
+  menuFX.addRange('Brightness', human.config.filter, 'brightness', -1.0, 1.0, 0.05, (val) => human.config.filter.brightness = parseFloat(val));
+  menuFX.addRange('Contrast', human.config.filter, 'contrast', -1.0, 1.0, 0.05, (val) => human.config.filter.contrast = parseFloat(val));
+  menuFX.addRange('Sharpness', human.config.filter, 'sharpness', 0, 1.0, 0.05, (val) => human.config.filter.sharpness = parseFloat(val));
+  menuFX.addRange('Blur', human.config.filter, 'blur', 0, 20, 1, (val) => human.config.filter.blur = parseInt(val));
+  menuFX.addRange('Saturation', human.config.filter, 'saturation', -1.0, 1.0, 0.05, (val) => human.config.filter.saturation = parseFloat(val));
+  menuFX.addRange('Hue', human.config.filter, 'hue', 0, 360, 5, (val) => human.config.filter.hue = parseInt(val));
+  menuFX.addRange('Pixelate', human.config.filter, 'pixelate', 0, 32, 1, (val) => human.config.filter.pixelate = parseInt(val));
+  menuFX.addBool('Negative', human.config.filter, 'negative');
+  menuFX.addBool('Sepia', human.config.filter, 'sepia');
+  menuFX.addBool('Vintage', human.config.filter, 'vintage');
+  menuFX.addBool('Kodachrome', human.config.filter, 'kodachrome');
+  menuFX.addBool('Technicolor', human.config.filter, 'technicolor');
+  menuFX.addBool('Polaroid', human.config.filter, 'polaroid');
 }
 
 async function main() {

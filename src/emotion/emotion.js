@@ -17,12 +17,12 @@ async function load(config) {
 }
 
 async function predict(image, config) {
+  if ((frame < config.face.emotion.skipFrames) && (last.length > 0)) {
+    frame += 1;
+    return last;
+  }
+  frame = 0;
   return new Promise(async (resolve) => {
-    if (frame < config.face.emotion.skipFrames) {
-      frame += 1;
-      resolve(last);
-    }
-    frame = 0;
     const box = [[
       (image.shape[1] * zoom[0]) / image.shape[1],
       (image.shape[2] * zoom[1]) / image.shape[2],

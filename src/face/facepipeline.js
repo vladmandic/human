@@ -129,13 +129,19 @@ class Pipeline {
   }
 
   async predict(input, config) {
-    this.skipFrames = config.detector.skipFrames;
-    this.maxFaces = config.detector.maxFaces;
-    this.runsWithoutFaceDetector++;
-    if (this.shouldUpdateRegionsOfInterest()) {
-      const detector = await this.boundingBoxDetector.getBoundingBoxes(input);
+    this.runsWithoutFaceDetector += 1;
+
+    let useFreshBox = (this.detectedFaces === 0) || (this.detectedFaces !== this.regionsOfInterest.length);
+    let detector;
+    // but every skipFrames check if detect boxes number changed
+    if (useFreshBox || (this.runsWithoutFaceDetector > config.detector.skipFrames)) detector = await this.boundingBoxDetector.getBoundingBoxes(input);
+    // if there are new boxes and number of boxes doesn't match use new boxes, but not if maxhands is fixed to 1
+    if (config.detector.maxFaces > 1 && detector && detector.boxes && detector.boxes.length > 0 && detector.boxes.length !== this.detectedFaces) useFreshBox = true;
+    if (useFreshBox) {
+      // const detector = await this.boundingBoxDetector.getBoundingBoxes(input);
       if (!detector || !detector.boxes || (detector.boxes.length === 0)) {
         this.regionsOfInterest = [];
+        this.detectedFaces = 0;
         return null;
       }
       const scaledBoxes = detector.boxes.map((prediction) => {
@@ -159,7 +165,7 @@ class Pipeline {
       this.updateRegionsOfInterest(scaledBoxes);
       this.runsWithoutFaceDetector = 0;
     }
-    const results = tf.tidy(() => this.regionsOfInterest.map((box, i) => {
+    let results = tf.tidy(() => this.regionsOfInterest.map((box, i) => {
       let angle = 0;
       // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
       const boxLandmarksFromMeshModel = box.landmarks.length >= LANDMARKS_COUNT;
@@ -173,14 +179,19 @@ class Pipeline {
       let rotatedImage = input;
       let rotationMatrix = util.IDENTITY_MATRIX;
       if (angle !== 0) {
-        // bug: input becomes disposed here when running in async mode!
         rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
         rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
       }
       const boxCPU = { startPoint: box.startPoint, endPoint: box.endPoint };
       const face = bounding.cutBoxFromImageAndResize(boxCPU, rotatedImage, [this.meshHeight, this.meshWidth]).div(255);
       // The first returned tensor represents facial contours, which are included in the coordinates.
-      const [, flag, coords] = this.meshDetector.predict(face);
+      const [, confidence, coords] = this.meshDetector.predict(face);
+      const confidenceVal = confidence.dataSync()[0];
+      confidence.dispose();
+      if (confidenceVal < config.detector.minConfidence) {
+        coords.dispose();
+        return null;
+      }
       const coordsReshaped = tf.reshape(coords, [-1, 3]);
       let rawCoords = coordsReshaped.arraySync();
       if (config.iris.enabled) {
@@ -210,27 +221,21 @@ class Pipeline {
       const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
       tf.dispose(rawCoords);
       const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
-      const confidence = flag.squeeze();
-      tf.dispose(flag);
-      if (config.mesh.enabled) {
-        const transformedCoords = tf.tensor2d(transformedCoordsData);
-        this.regionsOfInterest[i] = { ...landmarksBox, landmarks: transformedCoords.arraySync() };
-        const prediction = {
-          coords: transformedCoords,
-          box: landmarksBox,
-          confidence,
-          image: face,
-        };
-        return prediction;
-      }
       const prediction = {
         coords: null,
         box: landmarksBox,
-        confidence,
+        confidence: confidenceVal,
         image: face,
       };
+      if (config.mesh.enabled) {
+        const transformedCoords = tf.tensor2d(transformedCoordsData);
+        this.regionsOfInterest[i] = { ...landmarksBox, landmarks: transformedCoords.arraySync() };
+        prediction.coords = transformedCoords;
+      }
       return prediction;
     }));
+    results = results.filter((a) => a !== null);
+    this.detectedFaces = results.length;
     return results;
   }
 
@@ -268,11 +273,6 @@ class Pipeline {
         ...this.regionsOfInterest.slice(index + 1),
       ];
     }
-  }
-
-  shouldUpdateRegionsOfInterest() {
-    if (this.regionsOfInterest.length === 0) return true; // nothing detected, so run detector on the next frame
-    return (this.regionsOfInterest.length !== this.maxFaces) && (this.runsWithoutFaceDetector >= this.skipFrames);
   }
 
   calculateLandmarksBoundingBox(landmarks) {

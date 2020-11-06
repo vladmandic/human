@@ -27,6 +27,7 @@ async function drawFace(result, canvas, ui, triangulation) {
     }
     // silly hack since fillText does not suport new line
     const labels = [];
+    // labels.push(`${Math.trunc(100 * face.confidence)}% face`);
     if (face.genderConfidence) labels.push(`${Math.trunc(100 * face.genderConfidence)}% ${face.gender || ''}`);
     if (face.age) labels.push(`age: ${face.age || ''}`);
     if (face.iris) labels.push(`iris: ${face.iris}`);

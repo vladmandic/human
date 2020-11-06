@@ -25,7 +25,7 @@ const options = {
   key: fs.readFileSync('/home/vlado/dev/piproxy/cert/private.pem'),
   cert: fs.readFileSync('/home/vlado/dev/piproxy/cert/fullchain.pem'),
   root: '.',
-  default: 'index.html',
+  default: 'demo/index.html',
   port: 8000,
   monitor: ['package.json', 'config.js', 'demo', 'src'],
 };
@@ -114,7 +114,7 @@ function content(url) {
     obj.stat = fs.statSync(obj.file);
     // should really use streams here instead of reading entire content in-memory, but this is micro-http2 not intended to serve huge files
     if (obj.stat.isFile()) obj.ok = true;
-    if (obj.stat.isDirectory()) {
+    if (!obj.ok && obj.stat.isDirectory()) {
       obj.file = path.join(obj.file, options.default);
       obj = content(obj.file);
     }

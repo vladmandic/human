@@ -35,6 +35,7 @@ const config = {
   profile: false,
   deallocate: false,
   wasm: { path: '../assets' },
+  async: true,
   filter: {
     enabled: true,
     width: 0,
@@ -324,6 +325,7 @@ function setupMenu() {
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addList('Backend', ['cpu', 'webgl', 'wasm', 'webgpu'], config.backend, (val) => config.backend = val);
+  menu.addBool('Async Operations', config, 'async');
   menu.addBool('Enable Profiler', config, 'profile');
   menu.addBool('Memory Shield', config, 'deallocate');
   menu.addBool('Use Web Worker', ui, 'useWorker');

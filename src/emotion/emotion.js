@@ -17,54 +17,57 @@ async function load(config) {
 }
 
 async function predict(image, config) {
-  if (frame < config.face.emotion.skipFrames) {
-    frame += 1;
-    return last;
-  }
-  frame = 0;
-  const box = [[
-    (image.shape[1] * zoom[0]) / image.shape[1],
-    (image.shape[2] * zoom[1]) / image.shape[2],
-    (image.shape[1] - (image.shape[1] * zoom[0])) / image.shape[1],
-    (image.shape[2] - (image.shape[2] * zoom[1])) / image.shape[2],
-  ]];
-  const resize = tf.image.cropAndResize(image, box, [0], [config.face.emotion.inputSize, config.face.emotion.inputSize]);
-  // const resize = tf.image.resizeBilinear(image, [config.face.emotion.inputSize, config.face.emotion.inputSize], false);
-  const [red, green, blue] = tf.split(resize, 3, 3);
-  resize.dispose();
-  // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html
-  const redNorm = tf.mul(red, rgb[0]);
-  const greenNorm = tf.mul(green, rgb[1]);
-  const blueNorm = tf.mul(blue, rgb[2]);
-  red.dispose();
-  green.dispose();
-  blue.dispose();
-  const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
-  const normalize = tf.tidy(() => grayscale.sub(0.5).mul(2));
-  redNorm.dispose();
-  greenNorm.dispose();
-  blueNorm.dispose();
-  const obj = [];
-  if (config.face.emotion.enabled) {
-    let data;
-    if (!config.profile) {
-      const emotionT = await models.emotion.predict(normalize);
-      data = emotionT.dataSync();
-      tf.dispose(emotionT);
-    } else {
-      const profileData = await tf.profile(() => models.emotion.predict(grayscale));
-      data = profileData.result.dataSync();
-      profileData.result.dispose();
-      profile.run('emotion', profileData);
+  return new Promise(async (resolve) => {
+    if (frame < config.face.emotion.skipFrames) {
+      frame += 1;
+      resolve(last);
     }
-    for (let i = 0; i < data.length; i++) {
-      if (scale * data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * scale * data[i]) / 100), emotion: annotations[i] });
+    frame = 0;
+    const box = [[
+      (image.shape[1] * zoom[0]) / image.shape[1],
+      (image.shape[2] * zoom[1]) / image.shape[2],
+      (image.shape[1] - (image.shape[1] * zoom[0])) / image.shape[1],
+      (image.shape[2] - (image.shape[2] * zoom[1])) / image.shape[2],
+    ]];
+    const resize = tf.image.cropAndResize(image, box, [0], [config.face.emotion.inputSize, config.face.emotion.inputSize]);
+    // const resize = tf.image.resizeBilinear(image, [config.face.emotion.inputSize, config.face.emotion.inputSize], false);
+    const [red, green, blue] = tf.split(resize, 3, 3);
+    resize.dispose();
+    // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html
+    const redNorm = tf.mul(red, rgb[0]);
+    const greenNorm = tf.mul(green, rgb[1]);
+    const blueNorm = tf.mul(blue, rgb[2]);
+    red.dispose();
+    green.dispose();
+    blue.dispose();
+    const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
+    redNorm.dispose();
+    greenNorm.dispose();
+    blueNorm.dispose();
+    const normalize = tf.tidy(() => grayscale.sub(0.5).mul(2));
+    grayscale.dispose();
+    const obj = [];
+    if (config.face.emotion.enabled) {
+      let data;
+      if (!config.profile) {
+        const emotionT = await models.emotion.predict(normalize);
+        data = emotionT.dataSync();
+        tf.dispose(emotionT);
+      } else {
+        const profileData = await tf.profile(() => models.emotion.predict(grayscale));
+        data = profileData.result.dataSync();
+        profileData.result.dispose();
+        profile.run('emotion', profileData);
+      }
+      for (let i = 0; i < data.length; i++) {
+        if (scale * data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * scale * data[i]) / 100), emotion: annotations[i] });
+      }
+      obj.sort((a, b) => b.score - a.score);
     }
-    obj.sort((a, b) => b.score - a.score);
-  }
-  tf.dispose(grayscale);
-  last = obj;
-  return obj;
+    normalize.dispose();
+    last = obj;
+    resolve(obj);
+  });
 }
 
 exports.predict = predict;

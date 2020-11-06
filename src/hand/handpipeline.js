@@ -97,7 +97,6 @@ class HandPipeline {
     if (useFreshBox) {
       this.regionsOfInterest = [];
       if (!boundingBoxPredictions || boundingBoxPredictions.length === 0) {
-        image.dispose();
         this.detectedHands = 0;
         return null;
       }

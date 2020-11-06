@@ -1,9 +1,10 @@
 const tf = require('@tensorflow/tfjs');
-const facemesh = require('./facemesh/facemesh.js');
-const ssrnet = require('./ssrnet/ssrnet.js');
+const facemesh = require('./face/facemesh.js');
+const age = require('./age/ssrnet.js');
+const gender = require('./gender/ssrnet.js');
 const emotion = require('./emotion/emotion.js');
-const posenet = require('./posenet/posenet.js');
-const handpose = require('./handpose/handpose.js');
+const posenet = require('./body/posenet.js');
+const handpose = require('./hand/handpose.js');
 const gesture = require('./gesture.js');
 const image = require('./image.js');
 const profile = require('./profile.js');
@@ -53,6 +54,7 @@ class Human {
     this.analyzeMemoryLeaks = false;
     this.checkSanity = false;
     this.firstRun = true;
+    this.perf = {};
     // object that contains all initialized models
     this.models = {
       facemesh: null,
@@ -65,10 +67,11 @@ class Human {
     };
     // export raw access to underlying models
     this.facemesh = facemesh;
-    this.ssrnet = ssrnet;
+    this.age = age;
+    this.gender = gender;
     this.emotion = emotion;
-    this.posenet = posenet;
-    this.handpose = handpose;
+    this.body = posenet;
+    this.hand = handpose;
   }
 
   // helper function: wrapper around console output
@@ -109,6 +112,8 @@ class Human {
 
   // preload models, not explicitly required as it's done automatically on first use
   async load(userConfig) {
+    this.state = 'load';
+    const timeStamp = now();
     if (userConfig) this.config = mergeDeep(defaults, userConfig);
 
     if (this.firstRun) {
@@ -118,35 +123,55 @@ class Human {
       this.log('flags:', tf.ENV.flags);
       this.firstRun = false;
     }
-
-    if (this.config.face.enabled && !this.models.facemesh) {
-      this.log('load model: face');
-      this.models.facemesh = await facemesh.load(this.config.face);
+    if (this.config.async) {
+      [
+        this.models.age,
+        this.models.gender,
+        this.models.emotion,
+        this.models.facemesh,
+        this.models.posenet,
+        this.models.handpose,
+      ] = await Promise.all([
+        this.models.age || age.load(this.config),
+        this.models.gender || gender.load(this.config),
+        this.models.emotion || emotion.load(this.config),
+        this.models.facemesh || facemesh.load(this.config.face),
+        this.models.posenet || posenet.load(this.config.body),
+        this.models.handpose || handpose.load(this.config.hand),
+      ]);
+    } else {
+      if (this.config.face.enabled && !this.models.facemesh) {
+        this.log('load model: face');
+        this.models.facemesh = await facemesh.load(this.config.face);
+      }
+      if (this.config.body.enabled && !this.models.posenet) {
+        this.log('load model: body');
+        this.models.posenet = await posenet.load(this.config.body);
+      }
+      if (this.config.hand.enabled && !this.models.handpose) {
+        this.log('load model: hand');
+        this.models.handpose = await handpose.load(this.config.hand);
+      }
+      if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) {
+        this.log('load model: age');
+        this.models.age = await age.load(this.config);
+      }
+      if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) {
+        this.log('load model: gender');
+        this.models.gender = await gender.load(this.config);
+      }
+      if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) {
+        this.log('load model: emotion');
+        this.models.emotion = await emotion.load(this.config);
+      }
     }
-    if (this.config.body.enabled && !this.models.posenet) {
-      this.log('load model: body');
-      this.models.posenet = await posenet.load(this.config.body);
-    }
-    if (this.config.hand.enabled && !this.models.handpose) {
-      this.log('load model: hand');
-      this.models.handpose = await handpose.load(this.config.hand);
-    }
-    if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) {
-      this.log('load model: age');
-      this.models.age = await ssrnet.loadAge(this.config);
-    }
-    if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) {
-      this.log('load model: gender');
-      this.models.gender = await ssrnet.loadGender(this.config);
-    }
-    if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) {
-      this.log('load model: emotion');
-      this.models.emotion = await emotion.load(this.config);
-    }
+    const current = Math.trunc(now() - timeStamp);
+    if (current > (this.perf.load || 0)) this.perf.load = current;
   }
 
   // check if backend needs initialization if it changed
   async checkBackend(force) {
+    const timeStamp = now();
     if (force || (tf.getBackend() !== this.config.backend)) {
       this.state = 'backend';
       /* force backend reload
@@ -174,12 +199,104 @@ class Human {
       tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
       await tf.ready();
     }
+    const current = Math.trunc(now() - timeStamp);
+    if (current > (this.perf.backend || 0)) this.perf.backend = current;
+  }
+
+  async detectFace(input) {
+    // run facemesh, includes blazeface and iris
+    // eslint-disable-next-line no-async-promise-executor
+    let timeStamp;
+    let ageRes;
+    let genderRes;
+    let emotionRes;
+    const faceRes = [];
+    this.state = 'run:face';
+    timeStamp = now();
+    const faces = await this.models.facemesh.estimateFaces(input, this.config.face);
+    this.perf.face = Math.trunc(now() - timeStamp);
+    for (const face of faces) {
+      this.analyze('Get Face');
+      // is something went wrong, skip the face
+      if (!face.image || face.image.isDisposedInternal) {
+        this.log('Face object is disposed:', face.image);
+        continue;
+      }
+      // run age, inherits face from blazeface
+      this.analyze('Start Age:');
+      if (this.config.async) {
+        ageRes = this.config.face.age.enabled ? age.predict(face.image, this.config) : {};
+      } else {
+        this.state = 'run:age';
+        timeStamp = now();
+        ageRes = this.config.face.age.enabled ? await age.predict(face.image, this.config) : {};
+        this.perf.age = Math.trunc(now() - timeStamp);
+      }
+
+      // run gender, inherits face from blazeface
+      this.analyze('Start Gender:');
+      if (this.config.async) {
+        genderRes = this.config.face.gender.enabled ? gender.predict(face.image, this.config) : {};
+      } else {
+        this.state = 'run:gender';
+        timeStamp = now();
+        genderRes = this.config.face.gender.enabled ? await gender.predict(face.image, this.config) : {};
+        this.perf.gender = Math.trunc(now() - timeStamp);
+      }
+      // run emotion, inherits face from blazeface
+      this.analyze('Start Emotion:');
+      if (this.config.async) {
+        emotionRes = this.config.face.emotion.enabled ? emotion.predict(face.image, this.config) : {};
+      } else {
+        this.state = 'run:emotion';
+        timeStamp = now();
+        emotionRes = this.config.face.emotion.enabled ? await emotion.predict(face.image, this.config) : {};
+        this.perf.emotion = Math.trunc(now() - timeStamp);
+      }
+      this.analyze('End Emotion:');
+
+      // if async wait for results
+      if (this.config.async) {
+        [ageRes, genderRes, emotionRes] = await Promise.all([ageRes, genderRes, emotionRes]);
+      }
+
+      this.analyze('Finish Face:');
+      // dont need face anymore
+      face.image.dispose();
+
+      // calculate iris distance
+      // iris: array[ bottom, left, top, right, center ]
+      const iris = (face.annotations.leftEyeIris && face.annotations.rightEyeIris)
+        ? Math.max(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0], face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0])
+        : 0;
+
+      // combine results
+      faceRes.push({
+        confidence: face.confidence,
+        box: face.box,
+        mesh: face.mesh,
+        annotations: face.annotations,
+        age: ageRes.age,
+        gender: genderRes.gender,
+        genderConfidence: genderRes.confidence,
+        emotion: emotionRes,
+        iris: (iris !== 0) ? Math.trunc(100 * 11.7 /* human iris size in mm */ / iris) / 100 : 0,
+      });
+      this.analyze('End Face');
+    }
+    this.analyze('End FaceMesh:');
+    if (this.config.async) {
+      if (this.perf.face) delete this.perf.face;
+      if (this.perf.age) delete this.perf.age;
+      if (this.perf.gender) delete this.perf.gender;
+      if (this.perf.emotion) delete this.perf.emotion;
+    }
+    return faceRes;
   }
 
   // main detect function
   async detect(input, userConfig = {}) {
     this.state = 'config';
-    const perf = {};
     let timeStamp;
 
     // update configuration
@@ -195,109 +312,69 @@ class Human {
     }
 
     // detection happens inside a promise
-    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       let poseRes;
       let handRes;
-      let ssrRes;
-      let emotionRes;
+      let faceRes;
 
       const timeStart = now();
 
       // configure backend
-      timeStamp = now();
       await this.checkBackend();
-      perf.backend = Math.trunc(now() - timeStamp);
 
       // load models if enabled
-      timeStamp = now();
-      this.state = 'load';
       await this.load();
-      perf.load = Math.trunc(now() - timeStamp);
 
       if (this.config.scoped) tf.engine().startScope();
-
-      this.analyze('Start Detect:');
+      this.analyze('Start Scope:');
 
       timeStamp = now();
       const process = image.process(input, this.config);
-      perf.image = Math.trunc(now() - timeStamp);
+      this.perf.image = Math.trunc(now() - timeStamp);
+      this.analyze('Get Image:');
 
-      // run facemesh, includes blazeface and iris
-      const faceRes = [];
-      if (this.config.face.enabled) {
+      // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
+      if (this.config.async) {
+        faceRes = this.config.face.enabled ? this.detectFace(process.tensor) : [];
+        if (this.perf.face) delete this.perf.face;
+      } else {
         this.state = 'run:face';
         timeStamp = now();
-        this.analyze('Start FaceMesh:');
-        const faces = await this.models.facemesh.estimateFaces(process.tensor, this.config.face);
-        perf.face = Math.trunc(now() - timeStamp);
-        for (const face of faces) {
-          // is something went wrong, skip the face
-          if (!face.image || face.image.isDisposedInternal) {
-            this.log('Face object is disposed:', face.image);
-            continue;
-          }
-          // run ssr-net age & gender, inherits face from blazeface
-          this.state = 'run:agegender';
-          timeStamp = now();
-          ssrRes = (this.config.face.age.enabled || this.config.face.gender.enabled) ? await ssrnet.predict(face.image, this.config) : {};
-          perf.agegender = Math.trunc(now() - timeStamp);
-          // run emotion, inherits face from blazeface
-          this.state = 'run:emotion';
-          timeStamp = now();
-          emotionRes = this.config.face.emotion.enabled ? await emotion.predict(face.image, this.config) : {};
-          perf.emotion = Math.trunc(now() - timeStamp);
-
-          // dont need face anymore
-          face.image.dispose();
-          // calculate iris distance
-          // iris: array[ bottom, left, top, right, center ]
-          const iris = (face.annotations.leftEyeIris && face.annotations.rightEyeIris)
-            ? Math.max(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0], face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0])
-            : 0;
-          faceRes.push({
-            confidence: face.confidence,
-            box: face.box,
-            mesh: face.mesh,
-            annotations: face.annotations,
-            age: ssrRes.age,
-            gender: ssrRes.gender,
-            agConfidence: ssrRes.confidence,
-            emotion: emotionRes,
-            iris: (iris !== 0) ? Math.trunc(100 * 11.7 /* human iris size in mm */ / iris) / 100 : 0,
-          });
-          this.analyze('End FaceMesh:');
-        }
+        faceRes = this.config.face.enabled ? await this.detectFace(process.tensor) : [];
+        this.perf.face = Math.trunc(now() - timeStamp);
       }
 
       // run posenet
+      this.analyze('Start Body:');
       if (this.config.async) {
         poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(process.tensor, this.config.body) : [];
+        if (this.perf.body) delete this.perf.body;
       } else {
         this.state = 'run:body';
         timeStamp = now();
-        this.analyze('Start PoseNet');
         poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(process.tensor, this.config.body) : [];
-        this.analyze('End PoseNet:');
-        perf.body = Math.trunc(now() - timeStamp);
+        this.perf.body = Math.trunc(now() - timeStamp);
       }
+      this.analyze('End Body:');
 
       // run handpose
+      this.analyze('Start Hand:');
       if (this.config.async) {
         handRes = this.config.hand.enabled ? this.models.handpose.estimateHands(process.tensor, this.config.hand) : [];
+        if (this.perf.hand) delete this.perf.hand;
       } else {
         this.state = 'run:hand';
         timeStamp = now();
-        this.analyze('Start HandPose:');
         handRes = this.config.hand.enabled ? await this.models.handpose.estimateHands(process.tensor, this.config.hand) : [];
-        this.analyze('End HandPose:');
-        perf.hand = Math.trunc(now() - timeStamp);
+        this.perf.hand = Math.trunc(now() - timeStamp);
       }
+      // this.analyze('End Hand:');
 
-      if (this.config.async) [poseRes, handRes] = await Promise.all([poseRes, handRes]);
-
+      // if async wait for results
+      if (this.config.async) {
+        [faceRes, poseRes, handRes] = await Promise.all([faceRes, poseRes, handRes]);
+      }
       process.tensor.dispose();
-      this.state = 'idle';
 
       if (this.config.scoped) tf.engine().endScope();
       this.analyze('End Scope:');
@@ -306,11 +383,13 @@ class Human {
       if (this.config.gesture.enabled) {
         timeStamp = now();
         gestureRes = { body: gesture.body(poseRes), hand: gesture.hand(handRes), face: gesture.face(faceRes) };
-        perf.gesture = Math.trunc(now() - timeStamp);
+        if (!this.config.async) this.perf.gesture = Math.trunc(now() - timeStamp);
+        else if (this.perf.gesture) delete this.perf.gesture;
       }
 
-      perf.total = Math.trunc(now() - timeStart);
-      resolve({ face: faceRes, body: poseRes, hand: handRes, gesture: gestureRes, performance: perf, canvas: process.canvas });
+      this.perf.total = Math.trunc(now() - timeStart);
+      this.state = 'idle';
+      resolve({ face: faceRes, body: poseRes, hand: handRes, gesture: gestureRes, performance: this.perf, canvas: process.canvas });
     });
   }
 }

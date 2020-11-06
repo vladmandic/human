@@ -48,6 +48,7 @@
     "promise/always-return": "off",
     "promise/catch-or-return": "off",
     "promise/no-nesting": "off",
+    "no-async-promise-executor": "off",
     "import/no-absolute-path": "off",
     "import/no-extraneous-dependencies": "off",
     "node/no-unpublished-import": "off",

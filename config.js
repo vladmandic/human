@@ -4,7 +4,7 @@
 export default {
   backend: 'webgl',          // select tfjs backend to use
   console: true,             // enable debugging output to console
-  async: false,               // execute enabled models in parallel
+  async: true,               // execute enabled models in parallel
                              // this disables per-model performance data but slightly increases performance
                              // cannot be used if profiling is enabled
   profile: false,            // enable tfjs profiling

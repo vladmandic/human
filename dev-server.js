@@ -6,9 +6,11 @@
   - monitors specified filed and folders for changes
   - triggers library and application rebuild
   - any build errors are immediately displayed and can be corrected without need for restart
+  - passthrough data compression
 */
 
 const fs = require('fs');
+const zlib = require('zlib');
 const path = require('path');
 const http2 = require('http2');
 const chokidar = require('chokidar');
@@ -106,12 +108,12 @@ async function watch() {
 // get file content for a valid url request
 function content(url) {
   return new Promise((resolve) => {
-    let obj = {};
+    let obj = { ok: false };
     obj.file = url;
     if (!fs.existsSync(obj.file)) resolve(null);
     obj.stat = fs.statSync(obj.file);
     // should really use streams here instead of reading entire content in-memory, but this is micro-http2 not intended to serve huge files
-    if (obj.stat.isFile()) obj.data = fs.readFileSync(obj.file);
+    if (obj.stat.isFile()) obj.ok = true;
     if (obj.stat.isDirectory()) {
       obj.file = path.join(obj.file, options.default);
       obj = content(obj.file);
@@ -125,20 +127,32 @@ async function httpRequest(req, res) {
   content(path.join(__dirname, options.root, req.url)).then((result) => {
     const forwarded = (req.headers['forwarded'] || '').match(/for="\[(.*)\]:/);
     const ip = (Array.isArray(forwarded) ? forwarded[1] : null) || req.headers['x-forwarded-for'] || req.ip || req.socket.remoteAddress;
-    if (!result || !result.data) {
+    if (!result || !result.ok) {
       res.writeHead(404, { 'Content-Type': 'text/html' });
       res.end('Error 404: Not Found\n', 'utf-8');
-      log.warn(`${req.method}/${req.httpVersion}`, res.statusCode, `${req.headers['host']}${req.url}`, ip);
+      log.warn(`${req.method}/${req.httpVersion}`, res.statusCode, req.url, ip);
     } else {
       const ext = String(path.extname(result.file)).toLowerCase();
       const contentType = mime[ext] || 'application/octet-stream';
+      const accept = req.headers['accept-encoding'] ? req.headers['accept-encoding'].includes('br') : false; // does target accept brotli compressed data
       res.writeHead(200, {
-        'Content-Language': 'en', 'Content-Type': contentType, 'Content-Encoding': '', 'Content-Length': result.stat.size, 'Last-Modified': result.stat.mtime, 'Cache-Control': 'no-cache', 'X-Powered-By': `NodeJS/${process.version}`,
+        'Content-Language': 'en', 'Content-Type': contentType, 'Content-Encoding': accept ? 'br' : '', 'Last-Modified': result.stat.mtime, 'Cache-Control': 'no-cache', 'X-Powered-By': `NodeJS/${process.version}`, // 'Content-Length': result.stat.size,
       });
-      // ideally this should be passed through compress
-      res.end(result.data);
-      log.data(`${req.method}/${req.httpVersion}`, res.statusCode, contentType, result.stat.size, `${req.headers['host']}${req.url}`, ip);
-      res.end();
+      const compress = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 5 } }); // instance of brotli compression with level 5
+      const stream = fs.createReadStream(result.file);
+      if (!accept) stream.pipe(res); // don't compress data
+      else stream.pipe(compress).pipe(res); // compress data
+
+      // alternative methods of sending data
+      /// 2. read stream and send by chunk
+      // const stream = fs.createReadStream(result.file);
+      // stream.on('data', (chunk) => res.write(chunk));
+      // stream.on('end', () => res.end());
+
+      // 3. read entire file and send it as blob
+      // const data = fs.readFileSync(result.file);
+      // res.write(data);
+      log.data(`${req.method}/${req.httpVersion}`, res.statusCode, contentType, result.stat.size, req.url, ip);
     }
   });
 }

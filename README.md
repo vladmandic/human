@@ -19,6 +19,53 @@ Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends
 
 <hr>
 
+## Demo
+
+Demos are included in `/demo`:
+
+**Browser**:
+- `index.html`: Full demo using Browser with ESM module, includes selectable backends and webworkers  
+  it loads `dist/demo-browser-index.js` which is built from sources in `demo`, starting with `demo/browser`  
+  alternatively you can load `demo/browser.js` directly  
+
+*You can run browser demo either live from git pages, by serving demo folder from your web server or use  
+included micro http2 server with source file monitoring and dynamic rebuild*
+
+### Dev Server
+
+To start micro http2 dev server, you must provide your own SSL certificate (production or self-signed)  
+and place them in `dev-server.js`  
+
+Once SSL certificates have been provided, simply run  
+```shell
+npm run dev
+```  
+On first start, it will install all development dependencies required to rebuild `Human` library  
+
+```log
+> @vladmandic/human@0.7.5 dev /home/vlado/dev/human
+> npm install && node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation dev-server.js
+
+audited 321 packages in 2.506s
+found 0 vulnerabilities
+
+2020-11-06 16:19:09 INFO:  @vladmandic/human version 0.7.5
+2020-11-06 16:19:09 INFO:  User: vlado Platform: linux Arch: x64 Node: v15.0.1
+2020-11-06 16:19:09 STATE:  HTTP2 server listening: 8000
+2020-11-06 16:19:09 STATE:  Monitoring: [ 'package.json', 'config.js', 'demo', 'src', [length]: 4 ]
+2020-11-06 16:19:16 DATA:  GET/2.0 200 text/html 4866 / ::ffff:192.168.0.200
+2020-11-06 16:19:16 DATA:  GET/2.0 200 text/javascript 1708910 /dist/demo-browser-index.js ::ffff:192.168.0.200
+```
+
+*If you want to test `wasm` or `webgpu` backends, enable loading in `index.html`*
+
+**NodeJS**:
+- `node.js`: Demo using NodeJS with CommonJS module  
+  This is a very simple demo as althought `Human` library is compatible with NodeJS execution  
+  and is able to load images and models from local filesystem,  
+
+<hr>
+
 ## Examples
 
 **Using static images:**  
@@ -153,24 +200,6 @@ const config = {
 Pretrained model weights are includes in `./models`  
 Default configuration uses relative paths to you entry script pointing to `../models`  
 If your application resides in a different folder, modify `modelPath` property in configuration of each module  
-
-<hr>
-
-## Demo
-
-Demos are included in `/demo`:
-
-**Browser**:
-- `index.html`: Full demo using Browser with ESM module, includes selectable backends and webworkers  
-  it loads `dist/demo-browser-index.js` which is built from sources in `demo`, starting with `demo/browser`  
-  alternatively you can load `demo/browser.js` directly  
-
-*If you want to test `wasm` or `webgpu` backends, enable loading in `index.html`*
-
-**NodeJS**:
-- `node.js`: Demo using NodeJS with CommonJS module  
-  This is a very simple demo as althought `Human` library is compatible with NodeJS execution  
-  and is able to load images and models from local filesystem,  
 
 <hr>
 

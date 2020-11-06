@@ -69,7 +69,7 @@ function drawResults(input, result, canvas) {
   // console.log(result.performance);
 
   // eslint-disable-next-line no-use-before-define
-  requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop before we even draw results
+  if (input.srcObject) requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop before we even draw results
 
   // draw fps chart
   menu.updateChart('FPS', fps);
@@ -187,7 +187,7 @@ function runHumanDetect(input, canvas) {
   timeStamp = performance.now();
   // if live video
   const live = input.srcObject && (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
-  if (!live) {
+  if (!live && input.srcObject) {
     // if we want to continue and camera not ready, retry in 0.5sec, else just give up
     if ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
     else log(`camera not ready: track state: ${input.srcObject?.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
@@ -317,6 +317,7 @@ function setupMenu() {
   });
   menu.addRange('Min Confidence', human.config.face.detector, 'minConfidence', 0.0, 1.0, 0.05, (val) => {
     human.config.face.detector.minConfidence = parseFloat(val);
+    human.config.face.gender.minConfidence = parseFloat(val);
     human.config.face.emotion.minConfidence = parseFloat(val);
     human.config.hand.minConfidence = parseFloat(val);
   });

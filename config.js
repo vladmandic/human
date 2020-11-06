@@ -50,7 +50,7 @@ export default {
                              // (note: module is not loaded until it is required)
     detector: {
       modelPath: '../models/blazeface-back.json', // can be 'front' or 'back'.
-                                                        // 'front' is optimized for large faces such as front-facing camera and 'back' is optimized for distanct faces.
+                                                  // 'front' is optimized for large faces such as front-facing camera and 'back' is optimized for distanct faces.
       inputSize: 256,        // fixed value: 128 for front and 256 for 'back'
       maxFaces: 10,          // maximum number of faces detected in the input, should be set to the minimum number for performance
       skipFrames: 15,        // how many frames to go without re-running the face bounding box detector, only used for video inputs
@@ -85,10 +85,10 @@ export default {
     },
     emotion: {
       enabled: true,
-      inputSize: 64,         // fixed value, 64 for 'mini' and 'lage', 48 for 'cnn'
+      inputSize: 64,         // fixed value
       minConfidence: 0.3,    // threshold for discarding a prediction
       skipFrames: 15,        // how many frames to go without re-running the detector
-      modelPath: '../models/emotion-large.json', // can be 'mini', 'large' or 'cnn'
+      modelPath: '../models/emotion-large.json', // can be 'mini', 'large'
     },
   },
   body: {

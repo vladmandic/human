@@ -25,6 +25,7 @@
     "@tensorflow/tfjs": "^2.7.0",
     "@tensorflow/tfjs-node": "^2.7.0",
     "@vladmandic/pilogger": "^0.2.7",
+    "chokidar": "^3.4.3",
     "dayjs": "^1.9.4",
     "esbuild": "^0.7.22",
     "eslint": "^7.12.1",

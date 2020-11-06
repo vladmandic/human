@@ -1,0 +1,155 @@
+#!/usr/bin/env -S node --trace-warnings
+
+/*
+  micro http2 server with file monitoring and automatic app rebuild
+  - can process concurrent http requests
+  - monitors specified filed and folders for changes
+  - triggers library and application rebuild
+  - any build errors are immediately displayed and can be corrected without need for restart
+*/
+
+const fs = require('fs');
+const path = require('path');
+const http2 = require('http2');
+const chokidar = require('chokidar');
+const process = require('process');
+const esbuild = require('esbuild');
+const log = require('@vladmandic/pilogger');
+
+// app configuration
+// must provide your own server key and certificate, can be self-signed
+// client app does not work without secure server since browsers enforce https for webcam access
+const options = {
+  key: fs.readFileSync('/home/vlado/dev/piproxy/cert/private.pem'),
+  cert: fs.readFileSync('/home/vlado/dev/piproxy/cert/fullchain.pem'),
+  root: '.',
+  default: 'index.html',
+  port: 8000,
+  monitor: ['package.json', 'config.js', 'demo', 'src'],
+};
+
+// just some predefined mime types
+const mime = {
+  '.html': 'text/html',
+  '.js': 'text/javascript',
+  '.css': 'text/css',
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.jpg': 'image/jpg',
+  '.gif': 'image/gif',
+  '.ico': 'image/x-icon',
+  '.svg': 'image/svg+xml',
+  '.wav': 'audio/wav',
+  '.mp4': 'video/mp4',
+  '.woff': 'application/font-woff',
+  '.ttf': 'application/font-ttf',
+  '.wasm': 'application/wasm',
+};
+
+// keeps esbuild service instance cached
+let es;
+
+// rebuild on file change
+async function build(f, msg) {
+  log.info('Monitor: file', msg, f);
+  if (!es) es = await esbuild.startService();
+  // common build options
+  const cfg = {
+    minify: false,
+    bundle: true,
+    sourcemap: true,
+    logLevel: 'error',
+    platform: 'browser',
+    target: 'es2018',
+    format: 'esm',
+    external: ['fs'],
+  };
+  // only rebuilding esm module and demo application
+  // for full production build use "npm run build"
+  try {
+    // rebuild library fist
+    cfg.entryPoints = ['src/human.js'];
+    cfg.outfile = 'dist/human.esm.js';
+    cfg.metafile = 'dist/human.esm.json';
+    await es.build(cfg);
+    // then rebuild client app so it can use freshly rebuild library
+    cfg.entryPoints = ['demo/browser.js'];
+    cfg.outfile = 'dist/demo-browser-index.js';
+    cfg.metafile = 'dist/demo-browser-index.json';
+    await es.build(cfg);
+    log.state('Build complete');
+  } catch (err) {
+    log.error('Build error', JSON.stringify(err.errors || err, null, 2));
+  }
+}
+
+// watch filesystem for any changes and notify build when needed
+async function watch() {
+  const watcher = chokidar.watch(options.monitor, {
+    persistent: true,
+    ignorePermissionErrors: false,
+    alwaysStat: false,
+    ignoreInitial: true,
+    followSymlinks: true,
+    usePolling: false,
+    useFsEvents: false,
+    atomic: true,
+  });
+  watcher
+    .on('add', (evt) => build(evt, 'add'))
+    .on('change', (evt) => build(evt, 'modify'))
+    .on('unlink', (evt) => build(evt, 'remove'))
+    .on('error', (err) => log.error(`Client watcher error: ${err}`))
+    .on('ready', () => log.state('Monitoring:', options.monitor));
+}
+
+// get file content for a valid url request
+function content(url) {
+  return new Promise((resolve) => {
+    let obj = {};
+    obj.file = url;
+    if (!fs.existsSync(obj.file)) resolve(null);
+    obj.stat = fs.statSync(obj.file);
+    // should really use streams here instead of reading entire content in-memory, but this is micro-http2 not intended to serve huge files
+    if (obj.stat.isFile()) obj.data = fs.readFileSync(obj.file);
+    if (obj.stat.isDirectory()) {
+      obj.file = path.join(obj.file, options.default);
+      obj = content(obj.file);
+    }
+    resolve(obj);
+  });
+}
+
+// process http requests
+async function httpRequest(req, res) {
+  content(path.join(__dirname, options.root, req.url)).then((result) => {
+    const forwarded = (req.headers['forwarded'] || '').match(/for="\[(.*)\]:/);
+    const ip = (Array.isArray(forwarded) ? forwarded[1] : null) || req.headers['x-forwarded-for'] || req.ip || req.socket.remoteAddress;
+    if (!result || !result.data) {
+      res.writeHead(404, { 'Content-Type': 'text/html' });
+      res.end('Error 404: Not Found\n', 'utf-8');
+      log.warn(`${req.method}/${req.httpVersion}`, res.statusCode, `${req.headers['host']}${req.url}`, ip);
+    } else {
+      const ext = String(path.extname(result.file)).toLowerCase();
+      const contentType = mime[ext] || 'application/octet-stream';
+      res.writeHead(200, {
+        'Content-Language': 'en', 'Content-Type': contentType, 'Content-Encoding': '', 'Content-Length': result.stat.size, 'Last-Modified': result.stat.mtime, 'Cache-Control': 'no-cache', 'X-Powered-By': `NodeJS/${process.version}`,
+      });
+      // ideally this should be passed through compress
+      res.end(result.data);
+      log.data(`${req.method}/${req.httpVersion}`, res.statusCode, contentType, result.stat.size, `${req.headers['host']}${req.url}`, ip);
+      res.end();
+    }
+  });
+}
+
+// app main entry point
+async function main() {
+  log.header();
+  await watch();
+  const server = http2.createSecureServer(options, httpRequest);
+  server.on('listening', () => log.state('HTTP2 server listening:', options.port));
+  server.listen(options.port);
+}
+
+main();

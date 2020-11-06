@@ -1,7 +1,7 @@
 const tf = require('@tensorflow/tfjs');
 const facemesh = require('./face/facemesh.js');
-const age = require('./age/ssrnet.js');
-const gender = require('./gender/ssrnet.js');
+const age = require('./age/age.js');
+const gender = require('./gender/gender.js');
 const emotion = require('./emotion/emotion.js');
 const posenet = require('./body/posenet.js');
 const handpose = require('./hand/handpose.js');
@@ -13,8 +13,7 @@ const app = require('../package.json');
 
 // static config override for non-video detection
 const override = {
-  face: { detector: { skipFrames: 0 }, age: { skipFrames: 0 }, emotion: { skipFrames: 0 } },
-  hand: { skipFrames: 0 },
+  face: { detector: { skipFrames: 0 }, age: { skipFrames: 0 }, gender: { skipFrames: 0 }, emotion: { skipFrames: 0 } }, hand: { skipFrames: 0 },
 };
 
 // helper function: gets elapsed time on both browser and nodejs
@@ -46,7 +45,6 @@ class Human {
   constructor() {
     this.tf = tf;
     this.version = app.version;
-    this.defaults = defaults;
     this.config = defaults;
     this.fx = null;
     this.state = 'idle';
@@ -114,7 +112,7 @@ class Human {
   async load(userConfig) {
     this.state = 'load';
     const timeStamp = now();
-    if (userConfig) this.config = mergeDeep(defaults, userConfig);
+    if (userConfig) this.config = mergeDeep(this.config, userConfig);
 
     if (this.firstRun) {
       this.checkBackend(true);
@@ -300,7 +298,7 @@ class Human {
     let timeStamp;
 
     // update configuration
-    this.config = mergeDeep(defaults, userConfig);
+    this.config = mergeDeep(this.config, userConfig);
     if (!this.config.videoOptimized) this.config = mergeDeep(this.config, override);
 
     // sanity checks

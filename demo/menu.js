@@ -213,7 +213,7 @@ class Menu {
     el.innerHTML = `<input class="menu-range" type="range" id="${this.newID}" min="${min}" max="${max}" step="${step}" value="${object[variable]}">${title}`;
     this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
-      object[variable] = evt.target.value;
+      object[variable] = parseInt(evt.target.value) === parseFloat(evt.target.value) ? parseInt(evt.target.value) : parseFloat(evt.target.value);
       evt.target.setAttribute('value', evt.target.value);
       if (callback) callback(evt.target.value);
     });

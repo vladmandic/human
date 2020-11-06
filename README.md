@@ -247,7 +247,7 @@ All configuration details can be changed in real-time!
 config = {
   backend: 'webgl',          // select tfjs backend to use
   console: true,             // enable debugging output to console
-  async: false,              // execute enabled models in parallel
+  async: true,               // execute enabled models in parallel
                              // this disables per-model performance data but slightly increases performance
                              // cannot be used if profiling is enabled
   profile: false,            // enable tfjs profiling
@@ -434,8 +434,9 @@ result = {
     hand,          // <array of string>
   }
   performance = {  // performance data of last execution for each module measuredin miliseconds
-    backend,       // time to initialize tf backend, valid only during backend startup
-    load,          // time to load models, valid only during model load
+                   // note that per-model performance data is not available in async execution mode
+    backend,       // time to initialize tf backend, keeps longest value measured
+    load,          // time to load models, keeps longest value measured
     image,         // time for image processing
     gesture,       // gesture analysis time
     body,          // model time

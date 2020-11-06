@@ -130,7 +130,6 @@ class Pipeline {
 
   async predict(input, config) {
     this.runsWithoutFaceDetector += 1;
-
     let useFreshBox = (this.detectedFaces === 0) || (this.detectedFaces !== this.regionsOfInterest.length);
     let detector;
     // but every skipFrames check if detect boxes number changed
@@ -156,14 +155,18 @@ class Pipeline {
         const scaledBox = bounding.scaleBoxCoordinates(predictionBox, detector.scaleFactor);
         const enlargedBox = bounding.enlargeBox(scaledBox);
         const landmarks = prediction.landmarks.arraySync();
-        prediction.box.startPoint.dispose();
-        prediction.box.endPoint.dispose();
-        prediction.landmarks.dispose();
-        prediction.probability.dispose();
         return { ...enlargedBox, landmarks };
       });
       this.updateRegionsOfInterest(scaledBoxes);
       this.runsWithoutFaceDetector = 0;
+    }
+    if (detector && detector.boxes) {
+      detector.boxes.forEach((prediction) => {
+        prediction.box.startPoint.dispose();
+        prediction.box.endPoint.dispose();
+        prediction.landmarks.dispose();
+        prediction.probability.dispose();
+      });
     }
     let results = tf.tidy(() => this.regionsOfInterest.map((box, i) => {
       let angle = 0;

@@ -14,10 +14,9 @@ onmessage = async (msg) => {
   busy = true;
   // worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, config }, [image.data.buffer]);
   const image = new ImageData(new Uint8ClampedArray(msg.data.image), msg.data.width, msg.data.height);
-  config = msg.data.config;
   let result = {};
   try {
-    result = await human.detect(image, config);
+    result = await human.detect(image);
   } catch (err) {
     result.error = err.message;
     log('worker thread error:', err.message);

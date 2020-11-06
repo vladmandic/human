@@ -69,22 +69,20 @@ class BlazeFaceModel {
     this.blazeFaceModel = model;
     this.width = config.detector.inputSize;
     this.height = config.detector.inputSize;
-    this.maxFaces = config.detector.maxFaces;
     this.anchorsData = generateAnchors(config.detector.inputSize);
     this.anchors = tf.tensor2d(this.anchorsData);
     this.inputSize = tf.tensor1d([this.width, this.height]);
-    this.iouThreshold = config.detector.iouThreshold;
+    this.config = config;
     this.scaleFaces = 0.8;
-    this.scoreThreshold = config.detector.scoreThreshold;
   }
 
-  // toto blazeface leaks two tensors per run
   async getBoundingBoxes(inputImage) {
     // sanity check on input
     if ((!inputImage) || (inputImage.isDisposedInternal) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return null;
     const [detectedOutputs, boxes, scores] = tf.tidy(() => {
       const resizedImage = inputImage.resizeBilinear([this.width, this.height]);
-      const normalizedImage = tf.mul(tf.sub(resizedImage.div(255), 0.5), 2);
+      // const normalizedImage = tf.mul(tf.sub(resizedImage.div(255), 0.5), 2);
+      const normalizedImage = tf.sub(resizedImage.div(127.5), 1);
       const batchedPrediction = this.blazeFaceModel.predict(normalizedImage);
       let prediction;
       // are we using tfhub or pinto converted model?
@@ -99,10 +97,12 @@ class BlazeFaceModel {
       }
       const decodedBounds = decodeBounds(prediction, this.anchors, this.inputSize);
       const logits = tf.slice(prediction, [0, 0], [-1, 1]);
-      const scoresOut = tf.sigmoid(logits).squeeze();
+      // const scoresOut = tf.sigmoid(logits).squeeze();
+      const scoresOut = logits.squeeze();
       return [prediction, decodedBounds, scoresOut];
     });
-    const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.maxFaces, this.iouThreshold, this.scoreThreshold);
+    // activation ('elu'|'hardSigmoid'|'linear'|'relu'|'relu6'| 'selu'|'sigmoid'|'softmax'|'softplus'|'softsign'|'tanh')
+    const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.detector.maxFaces, this.config.detector.iouThreshold, this.config.detector.scoreThreshold);
     const boxIndices = boxIndicesTensor.arraySync();
     boxIndicesTensor.dispose();
     const boundingBoxesMap = boxIndices.map((boxIndex) => tf.slice(boxes, [boxIndex, 0], [1, -1]));

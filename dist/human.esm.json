@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 7319,
+      "bytes": 7664,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js": {
@@ -152,7 +152,7 @@
       "bytes": 3389,
       "imports": []
     },
-    "src/age/ssrnet.js": {
+    "src/age/age.js": {
       "bytes": 1766,
       "imports": [
         {
@@ -288,7 +288,7 @@
       ]
     },
     "src/face/blazeface.js": {
-      "bytes": 6991,
+      "bytes": 7096,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -359,8 +359,8 @@
       "bytes": 19592,
       "imports": []
     },
-    "src/gender/ssrnet.js": {
-      "bytes": 2015,
+    "src/gender/gender.js": {
+      "bytes": 3042,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -433,7 +433,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 14051,
+      "bytes": 14049,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -442,10 +442,10 @@
           "path": "src/face/facemesh.js"
         },
         {
-          "path": "src/age/ssrnet.js"
+          "path": "src/age/age.js"
         },
         {
-          "path": "src/gender/ssrnet.js"
+          "path": "src/gender/gender.js"
         },
         {
           "path": "src/emotion/emotion.js"
@@ -513,7 +513,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5607938
+      "bytes": 5609921
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -576,7 +576,7 @@
           "bytesInOutput": 3025
         },
         "src/face/blazeface.js": {
-          "bytesInOutput": 7123
+          "bytesInOutput": 7010
         },
         "src/face/keypoints.js": {
           "bytesInOutput": 2768
@@ -602,11 +602,11 @@
         "src/profile.js": {
           "bytesInOutput": 1092
         },
-        "src/age/ssrnet.js": {
-          "bytesInOutput": 1747
+        "src/age/age.js": {
+          "bytesInOutput": 1744
         },
-        "src/gender/ssrnet.js": {
-          "bytesInOutput": 2007
+        "src/gender/gender.js": {
+          "bytesInOutput": 2892
         },
         "src/emotion/emotion.js": {
           "bytesInOutput": 2612
@@ -672,19 +672,19 @@
           "bytesInOutput": 4482
         },
         "config.js": {
-          "bytesInOutput": 2230
+          "bytesInOutput": 2277
         },
         "package.json": {
           "bytesInOutput": 3533
         },
         "src/human.js": {
-          "bytesInOutput": 11852
+          "bytesInOutput": 11849
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 3196136
+      "bytes": 3196946
     }
   }
 }

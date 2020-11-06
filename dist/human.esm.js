@@ -67127,20 +67127,18 @@ var require_blazeface = __commonJS((exports) => {
       this.blazeFaceModel = model;
       this.width = config.detector.inputSize;
       this.height = config.detector.inputSize;
-      this.maxFaces = config.detector.maxFaces;
       this.anchorsData = generateAnchors(config.detector.inputSize);
       this.anchors = tf2.tensor2d(this.anchorsData);
       this.inputSize = tf2.tensor1d([this.width, this.height]);
-      this.iouThreshold = config.detector.iouThreshold;
+      this.config = config;
       this.scaleFaces = 0.8;
-      this.scoreThreshold = config.detector.scoreThreshold;
     }
     async getBoundingBoxes(inputImage) {
       if (!inputImage || inputImage.isDisposedInternal || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
         return null;
       const [detectedOutputs, boxes, scores] = tf2.tidy(() => {
         const resizedImage = inputImage.resizeBilinear([this.width, this.height]);
-        const normalizedImage = tf2.mul(tf2.sub(resizedImage.div(255), 0.5), 2);
+        const normalizedImage = tf2.sub(resizedImage.div(127.5), 1);
         const batchedPrediction = this.blazeFaceModel.predict(normalizedImage);
         let prediction;
         if (Array.isArray(batchedPrediction)) {
@@ -67154,10 +67152,10 @@ var require_blazeface = __commonJS((exports) => {
         }
         const decodedBounds = decodeBounds(prediction, this.anchors, this.inputSize);
         const logits = tf2.slice(prediction, [0, 0], [-1, 1]);
-        const scoresOut = tf2.sigmoid(logits).squeeze();
+        const scoresOut = logits.squeeze();
         return [prediction, decodedBounds, scoresOut];
       });
-      const boxIndicesTensor = await tf2.image.nonMaxSuppressionAsync(boxes, scores, this.maxFaces, this.iouThreshold, this.scoreThreshold);
+      const boxIndicesTensor = await tf2.image.nonMaxSuppressionAsync(boxes, scores, this.config.detector.maxFaces, this.config.detector.iouThreshold, this.config.detector.scoreThreshold);
       const boxIndices = boxIndicesTensor.arraySync();
       boxIndicesTensor.dispose();
       const boundingBoxesMap = boxIndices.map((boxIndex) => tf2.slice(boxes, [boxIndex, 0], [1, -1]));
@@ -70933,8 +70931,8 @@ var require_profile = __commonJS((exports) => {
   exports.data = profileData;
 });
 
-// src/age/ssrnet.js
-var require_ssrnet = __commonJS((exports) => {
+// src/age/age.js
+var require_age = __commonJS((exports) => {
   const tf2 = require_tf_node();
   const profile2 = require_profile();
   const models = {};
@@ -70987,21 +70985,24 @@ var require_ssrnet = __commonJS((exports) => {
   exports.load = load;
 });
 
-// src/gender/ssrnet.js
-var require_ssrnet2 = __commonJS((exports) => {
+// src/gender/gender.js
+var require_gender = __commonJS((exports) => {
   const tf2 = require_tf_node();
   const profile2 = require_profile();
   const models = {};
   let last = {gender: ""};
   let frame = Number.MAX_SAFE_INTEGER;
+  let alternative = false;
   const zoom = [0, 0];
+  const rgb = [0.2989, 0.587, 0.114];
   async function load(config) {
     if (!models.gender)
       models.gender = await tf2.loadGraphModel(config.face.gender.modelPath);
+    alternative = models.gender.inputs[0].shape[3] === 1;
     return models.gender;
   }
   async function predict(image2, config) {
-    if (frame < config.face.age.skipFrames && last.gender !== "") {
+    if (frame < config.face.gender.skipFrames && last.gender !== "") {
       frame += 1;
       return last;
     }
@@ -71013,8 +71014,20 @@ var require_ssrnet2 = __commonJS((exports) => {
         (image2.shape[1] - image2.shape[1] * zoom[0]) / image2.shape[1],
         (image2.shape[2] - image2.shape[2] * zoom[1]) / image2.shape[2]
       ]];
-      const resize = tf2.image.cropAndResize(image2, box, [0], [config.face.age.inputSize, config.face.age.inputSize]);
-      const enhance = tf2.mul(resize, [255]);
+      const resize = tf2.image.cropAndResize(image2, box, [0], [config.face.gender.inputSize, config.face.gender.inputSize]);
+      let enhance;
+      if (alternative) {
+        enhance = tf2.tidy(() => {
+          const [red, green, blue] = tf2.split(resize, 3, 3);
+          const redNorm = tf2.mul(red, rgb[0]);
+          const greenNorm = tf2.mul(green, rgb[1]);
+          const blueNorm = tf2.mul(blue, rgb[2]);
+          const grayscale = tf2.addN([redNorm, greenNorm, blueNorm]);
+          return grayscale.sub(0.5).mul(2);
+        });
+      } else {
+        enhance = tf2.mul(resize, [255]);
+      }
       tf2.dispose(resize);
       let genderT;
       const obj = {};
@@ -71030,10 +71043,18 @@ var require_ssrnet2 = __commonJS((exports) => {
       enhance.dispose();
       if (genderT) {
         const data = genderT.dataSync();
-        const confidence = Math.trunc(Math.abs(1.9 * 100 * (data[0] - 0.5))) / 100;
-        if (confidence > config.face.gender.minConfidence) {
-          obj.gender = data[0] <= 0.5 ? "female" : "male";
-          obj.confidence = confidence;
+        if (alternative) {
+          const confidence = Math.trunc(100 * Math.abs(data[0] - data[1])) / 100;
+          if (confidence > config.face.gender.minConfidence) {
+            obj.gender = data[0] > data[1] ? "female" : "male";
+            obj.confidence = confidence;
+          }
+        } else {
+          const confidence = Math.trunc(200 * Math.abs(data[0] - 0.5)) / 100;
+          if (confidence > config.face.gender.minConfidence) {
+            obj.gender = data[0] <= 0.5 ? "female" : "male";
+            obj.confidence = confidence;
+          }
         }
       }
       genderT.dispose();
@@ -90762,9 +90783,9 @@ var require_config = __commonJS((exports) => {
         inputSize: 256,
         maxFaces: 10,
         skipFrames: 15,
-        minConfidence: 0.5,
-        iouThreshold: 0.3,
-        scoreThreshold: 0.8
+        minConfidence: 0.1,
+        iouThreshold: 0.1,
+        scoreThreshold: 0.1
       },
       mesh: {
         enabled: true,
@@ -90779,19 +90800,21 @@ var require_config = __commonJS((exports) => {
       },
       age: {
         enabled: true,
-        modelPath: "../models/ssrnet-age-imdb.json",
+        modelPath: "../models/age-ssrnet-imdb.json",
         inputSize: 64,
         skipFrames: 15
       },
       gender: {
         enabled: true,
-        minConfidence: 0.5,
-        modelPath: "../models/ssrnet-gender-imdb.json"
+        minConfidence: 0.1,
+        modelPath: "../models/gender-ssrnet-imdb.json",
+        inputSize: 64,
+        skipFrames: 15
       },
       emotion: {
         enabled: true,
         inputSize: 64,
-        minConfidence: 0.5,
+        minConfidence: 0.2,
         skipFrames: 15,
         modelPath: "../models/emotion-large.json"
       }
@@ -90809,9 +90832,9 @@ var require_config = __commonJS((exports) => {
       enabled: true,
       inputSize: 256,
       skipFrames: 15,
-      minConfidence: 0.5,
-      iouThreshold: 0.3,
-      scoreThreshold: 0.8,
+      minConfidence: 0.1,
+      iouThreshold: 0.2,
+      scoreThreshold: 0.1,
       enlargeFactor: 1.65,
       maxHands: 10,
       detector: {
@@ -90898,8 +90921,8 @@ var require_package = __commonJS((exports, module) => {
 // src/human.js
 const tf = require_tf_node();
 const facemesh = require_facemesh();
-const age = require_ssrnet();
-const gender = require_ssrnet2();
+const age = require_age();
+const gender = require_gender();
 const emotion = require_emotion();
 const posenet = require_posenet();
 const handpose = require_handpose();
@@ -90909,7 +90932,7 @@ const profile = require_profile();
 const defaults = require_config().default;
 const app = require_package();
 const override = {
-  face: {detector: {skipFrames: 0}, age: {skipFrames: 0}, emotion: {skipFrames: 0}},
+  face: {detector: {skipFrames: 0}, age: {skipFrames: 0}, gender: {skipFrames: 0}, emotion: {skipFrames: 0}},
   hand: {skipFrames: 0}
 };
 const now = () => {
@@ -90938,7 +90961,6 @@ class Human {
   constructor() {
     this.tf = tf;
     this.version = app.version;
-    this.defaults = defaults;
     this.config = defaults;
     this.fx = null;
     this.state = "idle";
@@ -91001,7 +91023,7 @@ class Human {
     this.state = "load";
     const timeStamp = now();
     if (userConfig)
-      this.config = mergeDeep(defaults, userConfig);
+      this.config = mergeDeep(this.config, userConfig);
     if (this.firstRun) {
       this.checkBackend(true);
       this.log(`version: ${this.version} TensorFlow/JS version: ${tf.version_core}`);
@@ -91152,7 +91174,7 @@ class Human {
   async detect(input, userConfig = {}) {
     this.state = "config";
     let timeStamp;
-    this.config = mergeDeep(defaults, userConfig);
+    this.config = mergeDeep(this.config, userConfig);
     if (!this.config.videoOptimized)
       this.config = mergeDeep(this.config, override);
     this.state = "check";

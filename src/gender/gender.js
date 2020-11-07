@@ -11,8 +11,12 @@ const zoom = [0, 0]; // 0..1 meaning 0%..100%
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
 
 async function load(config) {
-  if (!models.gender) models.gender = await tf.loadGraphModel(config.face.gender.modelPath);
-  alternative = models.gender.inputs[0].shape[3] === 1;
+  if (!models.gender) {
+    models.gender = await tf.loadGraphModel(config.face.gender.modelPath);
+    alternative = models.gender.inputs[0].shape[3] === 1;
+    // eslint-disable-next-line no-console
+    console.log(`Human: load model: ${config.face.gender.modelPath.match(/\/(.*)\./)[1]}`);
+  }
   return models.gender;
 }
 

@@ -9,7 +9,11 @@ let frame = Number.MAX_SAFE_INTEGER;
 const zoom = [0, 0]; // 0..1 meaning 0%..100%
 
 async function load(config) {
-  if (!models.age) models.age = await tf.loadGraphModel(config.face.age.modelPath);
+  if (!models.age) {
+    models.age = await tf.loadGraphModel(config.face.age.modelPath);
+    // eslint-disable-next-line no-console
+    console.log(`Human: load model: ${config.face.age.modelPath.match(/\/(.*)\./)[1]}`);
+  }
   return models.age;
 }
 

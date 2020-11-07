@@ -89,7 +89,6 @@ class HandPipeline {
     this.skipFrames = config.skipFrames;
     // don't need box detection if we have sufficient number of boxes
     let useFreshBox = (this.runsWithoutHandDetector > this.skipFrames) || (this.detectedHands !== this.regionsOfInterest.length);
-    console.log(this.runsWithoutHandDetector, this.skipFrames, this.detectedHands, this.regionsOfInterest.length);
     let boundingBoxPredictions;
     // but every skipFrames check if detect boxes number changed
     if (useFreshBox) boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config);

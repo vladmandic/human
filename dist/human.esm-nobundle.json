@@ -206,7 +206,7 @@
       "imports": []
     },
     "src/hand/handdetector.js": {
-      "bytes": 4313,
+      "bytes": 4316,
       "imports": [
         {
           "path": "src/hand/box.js"
@@ -301,7 +301,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 622186
+      "bytes": 622200
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -379,7 +379,7 @@
           "bytesInOutput": 1420
         },
         "src/hand/handdetector.js": {
-          "bytesInOutput": 1806
+          "bytesInOutput": 1830
         },
         "src/hand/util.js": {
           "bytesInOutput": 997
@@ -415,7 +415,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 216260
+      "bytes": 216284
     }
   }
 }

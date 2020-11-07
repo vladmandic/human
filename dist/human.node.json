@@ -206,7 +206,7 @@
       "imports": []
     },
     "src/hand/handdetector.js": {
-      "bytes": 4313,
+      "bytes": 4316,
       "imports": [
         {
           "path": "src/hand/box.js"
@@ -301,7 +301,7 @@
     "dist/human.node-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 636659
+      "bytes": 636673
     },
     "dist/human.node-nobundle.js": {
       "imports": [],
@@ -379,7 +379,7 @@
           "bytesInOutput": 1419
         },
         "src/hand/handdetector.js": {
-          "bytesInOutput": 1806
+          "bytesInOutput": 1830
         },
         "src/hand/util.js": {
           "bytesInOutput": 996
@@ -415,7 +415,7 @@
           "bytesInOutput": 7379
         }
       },
-      "bytes": 216267
+      "bytes": 216291
     }
   }
 }

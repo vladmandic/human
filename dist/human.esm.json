@@ -387,7 +387,7 @@
       ]
     },
     "src/hand/handdetector.js": {
-      "bytes": 4313,
+      "bytes": 4316,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -513,7 +513,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5418171
+      "bytes": 5418185
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -648,7 +648,7 @@
           "bytesInOutput": 1398
         },
         "src/hand/handdetector.js": {
-          "bytesInOutput": 1812
+          "bytesInOutput": 1836
         },
         "src/hand/util.js": {
           "bytesInOutput": 1005
@@ -684,7 +684,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 1277930
+      "bytes": 1277954
     }
   }
 }

@@ -32,12 +32,13 @@ function createCSS() {
 
   .menu-list { margin-right: 0.8rem; }
   select:focus { outline: none; }
-  .menu-list-item { background: ${theme.itemBackground}; color: ${theme.itemColor}; border: none; padding: 0.2rem; font-family: inherit; font-variant: inherit; border-radius: 1rem; }
+  .menu-list-item { background: ${theme.itemBackground}; color: ${theme.itemColor}; border: none; padding: 0.2rem; font-family: inherit; font-variant: inherit; border-radius: 1rem; font-weight: 800; }
 
   .menu-chart-title { padding: 0; font-size: 0.8rem; font-weight: 800; align-items: center}
   .menu-chart-canvas { background: transparent; margin: 0.2rem 0 0.2rem 0.6rem; }
   
-  .menu-button { border: 0; background: ${theme.buttonBackground}; width: -webkit-fill-available; padding: 8px; margin: 8px 0 8px 0; cursor: pointer; box-shadow: 4px 4px 4px 0 dimgrey; border-radius: 1rem; justify-content: center; }
+  .menu-button { border: 0; background: ${theme.buttonBackground}; width: -webkit-fill-available; padding: 8px; margin: 8px 0 8px 0; cursor: pointer; box-shadow: 4px 4px 4px 0 dimgrey;
+                 border-radius: 1rem; justify-content: center; font-family: inherit; font-variant: inherit; font-size: 1rem; font-weight: 800; }
   .menu-button:hover { background: ${theme.buttonHover}; box-shadow: 4px 4px 4px 0 black; }
   .menu-button:focus { outline: none; }
 

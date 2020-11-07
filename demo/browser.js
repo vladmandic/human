@@ -286,15 +286,15 @@ async function detectSampleImages() {
 
 function setupMenu() {
   menu = new Menu(document.body, '...', { top: '1rem', right: '1rem' });
-  const btn = menu.addButton('Start Video', 'Pause Video', () => detectVideo());
-  menu.addButton('Process Images', 'Process Images', () => detectSampleImages());
+  const btn = menu.addButton('start video', 'pause video', () => detectVideo());
+  menu.addButton('process images', 'process images', () => detectSampleImages());
   document.getElementById('play').addEventListener('click', () => btn.click());
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addList('Backend', ['cpu', 'webgl', 'wasm', 'webgpu'], human.config.backend, (val) => human.config.backend = val);
-  menu.addBool('Async Operations', human.config, 'async');
-  menu.addBool('Enable Profiler', human.config, 'profile');
-  menu.addBool('Memory Shield', human.config, 'deallocate');
+  menu.addBool('Async Operations', human.config, 'async', (val) => human.config.async = val);
+  menu.addBool('Enable Profiler', human.config, 'profile', (val) => human.config.profile = val);
+  menu.addBool('Memory Shield', human.config, 'deallocate', (val) => human.config.deallocate = val);
   menu.addBool('Use Web Worker', ui, 'useWorker');
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addLabel('Enabled Models');

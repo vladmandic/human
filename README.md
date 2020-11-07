@@ -12,17 +12,17 @@
 
 ### Wiki pages:
 
-- [**Home**](wiki)
-- [**Installation**](wiki/Install)
-- [**Usage**](wiki/Usage)
-- [**Configuration**](wiki/Configuration)
-- [**Outputs**](wiki/Outputs)
-- [**Demos**](wiki/Demos)
-- [**Development Server**](wiki/Development-Server)
-- [**Build Process**](wiki/Build-Process)
-- [**Profiling**](wiki/Profiling)
-- [**Performance Notes**](wiki/Performance)
-- [**Credits**](wiki/Credits)
+- [**Home**](https://github.com/vladmandic/human/wiki)
+- [**Installation**](https://github.com/vladmandic/human/wiki/Install)
+- [**Usage**](https://github.com/vladmandic/human/wiki/Usage)
+- [**Configuration**](https://github.com/vladmandic/human/wiki/Configuration)
+- [**Outputs**](https://github.com/vladmandic/human/wiki/Outputs)
+- [**Demos**](https://github.com/vladmandic/human/wiki/Demos)
+- [**Development Server**](https://github.com/vladmandic/human/wiki/Development-Server)
+- [**Build Process**](https://github.com/vladmandic/human/wiki/Build-Process)
+- [**Profiling**](https://github.com/vladmandic/human/wiki/Profiling)
+- [**Performance Notes**](https://github.com/vladmandic/human/wiki/Performance)
+- [**Credits**](https://github.com/vladmandic/human/wiki/Credits)
 
 Compatible with *Browser*, *WebWorker* and *NodeJS* execution  
 - Browser/WebWorker: Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  

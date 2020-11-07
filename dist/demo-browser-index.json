@@ -31,28 +31,28 @@
     "dist/demo-browser-index.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5521361
+      "bytes": 5533079
     },
     "dist/demo-browser-index.js": {
       "imports": [],
       "inputs": {
         "dist/human.esm.js": {
-          "bytesInOutput": 1288452
+          "bytesInOutput": 1665015
         },
         "dist/human.esm.js": {
-          "bytesInOutput": 0
+          "bytesInOutput": 8716
         },
         "demo/draw.js": {
-          "bytesInOutput": 4708
+          "bytesInOutput": 7451
         },
         "demo/menu.js": {
-          "bytesInOutput": 9789
+          "bytesInOutput": 12678
         },
         "demo/browser.js": {
-          "bytesInOutput": 11434
+          "bytesInOutput": 15855
         }
       },
-      "bytes": 1323147
+      "bytes": 1709837
     }
   }
 }

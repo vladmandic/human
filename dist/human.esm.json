@@ -398,7 +398,7 @@
       ]
     },
     "src/hand/handpipeline.js": {
-      "bytes": 8632,
+      "bytes": 8839,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -433,7 +433,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 13709,
+      "bytes": 13727,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -513,7 +513,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5419375
+      "bytes": 5419716
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -654,7 +654,7 @@
           "bytesInOutput": 1005
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 3055
+          "bytesInOutput": 3239
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 127001
@@ -684,7 +684,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 1278477
+      "bytes": 1278661
     }
   }
 }

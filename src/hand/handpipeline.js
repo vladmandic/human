@@ -88,10 +88,11 @@ class HandPipeline {
   async estimateHands(image, config) {
     this.skipFrames = config.skipFrames;
     // don't need box detection if we have sufficient number of boxes
-    let useFreshBox = (this.detectedHands === 0) || (this.detectedHands !== this.regionsOfInterest.length);
+    let useFreshBox = (this.runsWithoutHandDetector > this.skipFrames) || (this.detectedHands !== this.regionsOfInterest.length);
+    console.log(this.runsWithoutHandDetector, this.skipFrames, this.detectedHands, this.regionsOfInterest.length);
     let boundingBoxPredictions;
     // but every skipFrames check if detect boxes number changed
-    if (useFreshBox || this.runsWithoutHandDetector > this.skipFrames) boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config);
+    if (useFreshBox) boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config);
     // if there are new boxes and number of boxes doesn't match use new boxes, but not if maxhands is fixed to 1
     if (config.maxHands > 1 && boundingBoxPredictions && boundingBoxPredictions.length > 0 && boundingBoxPredictions.length !== this.detectedHands) useFreshBox = true;
     if (useFreshBox) {
@@ -144,6 +145,7 @@ class HandPipeline {
         };
         hands.push(result);
       } else {
+        this.updateRegionsOfInterest(null, i);
         /*
         const result = {
           handInViewConfidence: confidenceValue,
@@ -157,6 +159,7 @@ class HandPipeline {
       }
       keypoints.dispose();
     }
+    this.regionsOfInterest = this.regionsOfInterest.filter((a) => a !== null);
     this.detectedHands = hands.length;
     return hands;
   }
@@ -173,7 +176,7 @@ class HandPipeline {
   updateRegionsOfInterest(newBox, i) {
     const previousBox = this.regionsOfInterest[i];
     let iou = 0;
-    if (previousBox != null && previousBox.startPoint != null) {
+    if (newBox && previousBox && previousBox.startPoint) {
       const [boxStartX, boxStartY] = newBox.startPoint;
       const [boxEndX, boxEndY] = newBox.endPoint;
       const [previousBoxStartX, previousBoxStartY] = previousBox.startPoint;

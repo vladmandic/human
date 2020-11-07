@@ -9,21 +9,25 @@
   - passthrough data compression
 */
 
+const process = require('process');
 const fs = require('fs');
 const zlib = require('zlib');
-const path = require('path');
 const http2 = require('http2');
+const path = require('path');
 const chokidar = require('chokidar');
-const process = require('process');
 const esbuild = require('esbuild');
 const log = require('@vladmandic/pilogger');
 
 // app configuration
-// must provide your own server key and certificate, can be self-signed
+// you can provide your server key and certificate or use provided self-signed ones
+// self-signed certificate generated using:
+// openssl req -x509 -newkey rsa:4096 -nodes -keyout dev-server.key -out dev-server.crt -days 365 -subj "/C=US/ST=Florida/L=Miami/O=@vladmandic"
 // client app does not work without secure server since browsers enforce https for webcam access
 const options = {
-  key: fs.readFileSync('/home/vlado/dev/piproxy/cert/private.pem'),
-  cert: fs.readFileSync('/home/vlado/dev/piproxy/cert/fullchain.pem'),
+  // key: fs.readFileSync('/home/vlado/dev/piproxy/cert/private.pem'),
+  // cert: fs.readFileSync('/home/vlado/dev/piproxy/cert/fullchain.pem'),
+  key: fs.readFileSync('./dev-server.key'),
+  cert: fs.readFileSync('./dev-server.crt'),
   root: '.',
   default: 'demo/index.html',
   port: 8000,
@@ -57,7 +61,7 @@ async function build(f, msg) {
   if (!es) es = await esbuild.startService();
   // common build options
   const cfg = {
-    minify: false,
+    minify: true,
     bundle: true,
     sourcemap: true,
     logLevel: 'error',
@@ -79,8 +83,10 @@ async function build(f, msg) {
     cfg.outfile = 'dist/demo-browser-index.js';
     cfg.metafile = 'dist/demo-browser-index.json';
     await es.build(cfg);
+    // done
     log.state('Build complete');
   } catch (err) {
+    // catch errors and print where it occured
     log.error('Build error', JSON.stringify(err.errors || err, null, 2));
   }
 }
@@ -97,6 +103,7 @@ async function watch() {
     useFsEvents: false,
     atomic: true,
   });
+  // single event handler for file add/change/delete
   watcher
     .on('add', (evt) => build(evt, 'add'))
     .on('change', (evt) => build(evt, 'modify'))
@@ -106,17 +113,16 @@ async function watch() {
 }
 
 // get file content for a valid url request
-function content(url) {
+function handle(url) {
   return new Promise((resolve) => {
     let obj = { ok: false };
     obj.file = url;
     if (!fs.existsSync(obj.file)) resolve(null);
     obj.stat = fs.statSync(obj.file);
-    // should really use streams here instead of reading entire content in-memory, but this is micro-http2 not intended to serve huge files
     if (obj.stat.isFile()) obj.ok = true;
     if (!obj.ok && obj.stat.isDirectory()) {
       obj.file = path.join(obj.file, options.default);
-      obj = content(obj.file);
+      obj = handle(obj.file);
     }
     resolve(obj);
   });
@@ -124,7 +130,8 @@ function content(url) {
 
 // process http requests
 async function httpRequest(req, res) {
-  content(path.join(__dirname, options.root, req.url)).then((result) => {
+  handle(path.join(__dirname, options.root, req.url)).then((result) => {
+    // get original ip of requestor, regardless if it's behind proxy or not
     const forwarded = (req.headers['forwarded'] || '').match(/for="\[(.*)\]:/);
     const ip = (Array.isArray(forwarded) ? forwarded[1] : null) || req.headers['x-forwarded-for'] || req.ip || req.socket.remoteAddress;
     if (!result || !result.ok) {
@@ -136,7 +143,8 @@ async function httpRequest(req, res) {
       const contentType = mime[ext] || 'application/octet-stream';
       const accept = req.headers['accept-encoding'] ? req.headers['accept-encoding'].includes('br') : false; // does target accept brotli compressed data
       res.writeHead(200, {
-        'Content-Language': 'en', 'Content-Type': contentType, 'Content-Encoding': accept ? 'br' : '', 'Last-Modified': result.stat.mtime, 'Cache-Control': 'no-cache', 'X-Powered-By': `NodeJS/${process.version}`, // 'Content-Length': result.stat.size,
+        // 'Content-Length': result.stat.size, // not using as it's misleading for compressed streams
+        'Content-Language': 'en', 'Content-Type': contentType, 'Content-Encoding': accept ? 'br' : '', 'Last-Modified': result.stat.mtime, 'Cache-Control': 'no-cache', 'X-Powered-By': `NodeJS/${process.version}`,
       });
       const compress = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 5 } }); // instance of brotli compression with level 5
       const stream = fs.createReadStream(result.file);

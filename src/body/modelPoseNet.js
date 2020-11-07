@@ -60,6 +60,8 @@ exports.PoseNet = PoseNet;
 async function loadMobileNet(config) {
   const graphModel = await tf.loadGraphModel(config.modelPath);
   const mobilenet = new modelMobileNet.MobileNet(graphModel, config.outputStride);
+  // eslint-disable-next-line no-console
+  console.log(`Human: load model: ${config.modelPath.match(/\/(.*)\./)[1]}`);
   return new PoseNet(mobilenet);
 }
 /**

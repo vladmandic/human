@@ -48,6 +48,10 @@ async function load(config) {
     tf.loadGraphModel(config.iris.modelPath, { fromTFHub: config.iris.modelPath.includes('tfhub.dev') }),
   ]);
   const faceMesh = new MediaPipeFaceMesh(models[0], models[1], models[2], config);
+  // eslint-disable-next-line no-console
+  console.log(`Human: load model: ${config.mesh.modelPath.match(/\/(.*)\./)[1]}`);
+  // eslint-disable-next-line no-console
+  console.log(`Human: load model: ${config.iris.modelPath.match(/\/(.*)\./)[1]}`);
   return faceMesh;
 }
 

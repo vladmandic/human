@@ -138,30 +138,12 @@ class Human {
         this.models.handpose || handpose.load(this.config.hand),
       ]);
     } else {
-      if (this.config.face.enabled && !this.models.facemesh) {
-        this.log('load model: face');
-        this.models.facemesh = await facemesh.load(this.config.face);
-      }
-      if (this.config.body.enabled && !this.models.posenet) {
-        this.log('load model: body');
-        this.models.posenet = await posenet.load(this.config.body);
-      }
-      if (this.config.hand.enabled && !this.models.handpose) {
-        this.log('load model: hand');
-        this.models.handpose = await handpose.load(this.config.hand);
-      }
-      if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) {
-        this.log('load model: age');
-        this.models.age = await age.load(this.config);
-      }
-      if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) {
-        this.log('load model: gender');
-        this.models.gender = await gender.load(this.config);
-      }
-      if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) {
-        this.log('load model: emotion');
-        this.models.emotion = await emotion.load(this.config);
-      }
+      if (this.config.face.enabled && !this.models.facemesh) this.models.facemesh = await facemesh.load(this.config.face);
+      if (this.config.body.enabled && !this.models.posenet) this.models.posenet = await posenet.load(this.config.body);
+      if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config.hand);
+      if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) this.models.age = await age.load(this.config);
+      if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) this.models.gender = await gender.load(this.config);
+      if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) this.models.emotion = await emotion.load(this.config);
     }
     const current = Math.trunc(now() - timeStamp);
     if (current > (this.perf.load || 0)) this.perf.load = current;

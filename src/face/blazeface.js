@@ -172,6 +172,8 @@ class BlazeFaceModel {
 async function load(config) {
   const blazeface = await tf.loadGraphModel(config.detector.modelPath, { fromTFHub: config.detector.modelPath.includes('tfhub.dev') });
   const model = new BlazeFaceModel(blazeface, config);
+  // eslint-disable-next-line no-console
+  console.log(`Human: load model: ${config.detector.modelPath.match(/\/(.*)\./)[1]}`);
   return model;
 }
 

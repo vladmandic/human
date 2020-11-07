@@ -33158,7 +33158,7 @@ var sL = we((aL) => {
 });
 var oL = we((sG) => {
   Is(sG, {default: () => oG});
-  var oG = {backend: "webgl", console: true, async: true, profile: false, deallocate: false, scoped: false, videoOptimized: true, filter: {enabled: true, width: 0, height: 0, return: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0}, gesture: {enabled: true}, face: {enabled: true, detector: {modelPath: "../models/blazeface-back.json", inputSize: 256, maxFaces: 10, skipFrames: 15, minConfidence: 0.1, iouThreshold: 0.1, scoreThreshold: 0.1}, mesh: {enabled: true, modelPath: "../models/facemesh.json", inputSize: 192}, iris: {enabled: true, modelPath: "../models/iris.json", enlargeFactor: 2.3, inputSize: 64}, age: {enabled: true, modelPath: "../models/age-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, gender: {enabled: true, minConfidence: 0.1, modelPath: "../models/gender-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, emotion: {enabled: true, inputSize: 64, minConfidence: 0.2, skipFrames: 15, modelPath: "../models/emotion-large.json"}}, body: {enabled: true, modelPath: "../models/posenet.json", inputResolution: 257, outputStride: 16, maxDetections: 10, scoreThreshold: 0.8, nmsRadius: 20}, hand: {enabled: true, inputSize: 256, skipFrames: 15, minConfidence: 0.1, iouThreshold: 0.2, scoreThreshold: 0.1, enlargeFactor: 1.65, maxHands: 10, detector: {modelPath: "../models/handdetect.json"}, skeleton: {modelPath: "../models/handskeleton.json"}}};
+  var oG = {backend: "webgl", console: true, async: true, profile: false, deallocate: false, scoped: false, videoOptimized: true, filter: {enabled: true, width: 0, height: 0, return: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0}, gesture: {enabled: true}, face: {enabled: true, detector: {modelPath: "../models/blazeface-back.json", inputSize: 256, maxFaces: 10, skipFrames: 15, minConfidence: 0.1, iouThreshold: 0.1, scoreThreshold: 0.1}, mesh: {enabled: true, modelPath: "../models/facemesh.json", inputSize: 192}, iris: {enabled: true, modelPath: "../models/iris.json", enlargeFactor: 2.3, inputSize: 64}, age: {enabled: true, modelPath: "../models/age-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, gender: {enabled: true, minConfidence: 0.1, modelPath: "../models/gender-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, emotion: {enabled: true, inputSize: 64, minConfidence: 0.2, skipFrames: 15, modelPath: "../models/emotion-large.json"}}, body: {enabled: true, modelPath: "../models/posenet.json", inputResolution: 257, outputStride: 16, maxDetections: 10, scoreThreshold: 0.8, nmsRadius: 20}, hand: {enabled: true, inputSize: 256, skipFrames: 15, minConfidence: 0.2, iouThreshold: 0.2, scoreThreshold: 0.2, enlargeFactor: 1.65, maxHands: 10, detector: {modelPath: "../models/handdetect.json"}, skeleton: {modelPath: "../models/handskeleton.json"}}};
 });
 var lL = we((pq, cL) => {
   cL.exports = {name: "@vladmandic/human", version: "0.7.6", description: "human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition", sideEffects: false, main: "dist/human.node.js", module: "dist/human.esm.js", browser: "dist/human.esm.js", author: "Vladimir Mandic <mandic00@live.com>", bugs: {url: "https://github.com/vladmandic/human/issues"}, homepage: "https://github.com/vladmandic/human#readme", license: "MIT", engines: {node: ">=14.0.0"}, repository: {type: "git", url: "git+https://github.com/vladmandic/human.git"}, dependencies: {}, peerDependencies: {}, devDependencies: {"@tensorflow/tfjs": "^2.7.0", "@tensorflow/tfjs-node": "^2.7.0", "@vladmandic/pilogger": "^0.2.7", chokidar: "^3.4.3", dayjs: "^1.9.4", esbuild: "^0.7.22", eslint: "^7.12.1", "eslint-config-airbnb-base": "^14.2.0", "eslint-plugin-import": "^2.22.1", "eslint-plugin-json": "^2.1.2", "eslint-plugin-node": "^11.1.0", "eslint-plugin-promise": "^4.2.1", rimraf: "^3.0.2", seedrandom: "^3.0.5", "simple-git": "^2.21.0"}, scripts: {start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js", lint: "eslint src/*.js demo/*.js", dev: "npm install && node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation dev-server.js", "build-iife": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=iife --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js", "build-esm-bundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js", "build-esm-nobundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=esm --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js", "build-node": "esbuild --bundle --minify --platform=node --sourcemap --target=es2018 --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js", "build-node-nobundle": "esbuild --bundle --minify --platform=node --sourcemap --target=es2018 --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js", "build-demo": "esbuild --bundle --log-level=error --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/demo-browser-index.json --outfile=dist/demo-browser-index.js demo/browser.js", build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && npm run build-demo && ls -l dist/", update: "npm update --depth 20 --force && npm dedupe && npm prune && npm audit", changelog: "node changelog.js"}, keywords: ["tensorflowjs", "face-detection", "face-geometry", "body-tracking", "hand-tracking", "iris-tracking", "age-estimation", "emotion-detection", "gender-prediction", "gesture-recognition"]};
@@ -34067,13 +34067,14 @@ ${msg}`;
   let stream;
   const constraints = {
     audio: false,
-    video: {facingMode: ui.facing ? "user" : "environment", resizeMode: "none"}
+    video: {
+      facingMode: ui.facing ? "user" : "environment",
+      resizeMode: "none",
+      width: {ideal: window.innerWidth},
+      height: {ideal: window.innerHeight}
+    }
   };
   try {
-    if (window.innerWidth > window.innerHeight)
-      constraints.video.width = {ideal: window.innerWidth};
-    else
-      constraints.video.height = {ideal: window.innerHeight};
     stream = await navigator.mediaDevices.getUserMedia(constraints);
   } catch (err) {
     if (err.name === "PermissionDeniedError")
@@ -34103,6 +34104,8 @@ ${msg}`;
       canvas.height = video.height;
       canvas.style.width = canvas.width > canvas.height ? "100vw" : "";
       canvas.style.height = canvas.width > canvas.height ? "" : "100vh";
+      const size = 14 + 6 * canvas.width / window.innerWidth;
+      ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
       if (live)
         video.play();
       ui.busy = false;
@@ -34188,8 +34191,6 @@ async function detectVideo() {
   document.getElementById("canvas").style.display = "block";
   const video = document.getElementById("video");
   const canvas = document.getElementById("canvas");
-  const size = 12 + Math.trunc(window.innerWidth / 400);
-  ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
   ui.baseLineHeight = ui.baseLineHeightProto;
   if (video.srcObject !== null && !video.paused) {
     document.getElementById("play").style.display = "block";
@@ -34206,7 +34207,7 @@ async function detectVideo() {
 async function detectSampleImages() {
   document.getElementById("play").style.display = "none";
   human.config.videoOptimized = false;
-  const size = Math.trunc(ui.columns * 25600 / window.innerWidth);
+  const size = 12 + Math.trunc(12 * ui.columns * window.innerWidth / document.body.clientWidth);
   ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
   ui.baseLineHeight = ui.baseLineHeightProto * ui.columns;
   document.getElementById("canvas").style.display = "none";

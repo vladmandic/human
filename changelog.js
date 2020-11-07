@@ -45,5 +45,5 @@ async function update(f) {
 exports.update = update;
 
 if (!module.parent) {
-  update('CHANGELOG.md');
+  update('wiki/Change-Log.md');
 }

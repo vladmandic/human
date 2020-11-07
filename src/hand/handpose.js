@@ -75,6 +75,10 @@ async function load(config) {
   const detector = new handdetector.HandDetector(handDetectorModel, config.inputSize, anchors.anchors);
   const pipe = new pipeline.HandPipeline(detector, handPoseModel, config.inputSize);
   const handpose = new HandPose(pipe);
+  // eslint-disable-next-line no-console
+  console.log(`Human: load model: ${config.detector.modelPath.match(/\/(.*)\./)[1]}`);
+  // eslint-disable-next-line no-console
+  console.log(`Human: load model: ${config.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
   return handpose;
 }
 exports.load = load;

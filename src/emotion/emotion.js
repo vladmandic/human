@@ -12,7 +12,11 @@ const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when 
 const scale = 1; // score multiplication factor
 
 async function load(config) {
-  if (!models.emotion) models.emotion = await tf.loadGraphModel(config.face.emotion.modelPath);
+  if (!models.emotion) {
+    models.emotion = await tf.loadGraphModel(config.face.emotion.modelPath);
+    // eslint-disable-next-line no-console
+    console.log(`Human: load model: ${config.face.emotion.modelPath.match(/\/(.*)\./)[1]}`);
+  }
   return models.emotion;
 }
 

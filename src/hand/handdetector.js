@@ -52,7 +52,7 @@ class HandDetector {
     const scores = tf.tidy(() => tf.sigmoid(tf.slice(prediction, [0, 0], [-1, 1])).squeeze());
     const rawBoxes = tf.slice(prediction, [0, 1], [-1, 4]);
     const boxes = this.normalizeBoxes(rawBoxes);
-    const boxesWithHandsTensor = tf.image.nonMaxSuppression(boxes, scores, config.maxHands, config.iouThreshold, 0.95); // config.scoreThreshold
+    const boxesWithHandsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, config.maxHands, config.iouThreshold, config.scoreThreshold);
     const boxesWithHands = boxesWithHandsTensor.arraySync();
     const toDispose = [
       batchedPrediction,

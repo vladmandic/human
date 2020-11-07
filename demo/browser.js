@@ -123,11 +123,16 @@ async function setupCamera() {
   let stream;
   const constraints = {
     audio: false,
-    video: { facingMode: (ui.facing ? 'user' : 'environment'), resizeMode: 'none' },
+    video: {
+      facingMode: (ui.facing ? 'user' : 'environment'),
+      resizeMode: 'none',
+      width: { ideal: window.innerWidth },
+      height: { ideal: window.innerHeight },
+    },
   };
   try {
-    if (window.innerWidth > window.innerHeight) constraints.video.width = { ideal: window.innerWidth };
-    else constraints.video.height = { ideal: window.innerHeight };
+    // if (window.innerWidth > window.innerHeight) constraints.video.width = { ideal: window.innerWidth };
+    // else constraints.video.height = { ideal: window.innerHeight };
     stream = await navigator.mediaDevices.getUserMedia(constraints);
   } catch (err) {
     if (err.name === 'PermissionDeniedError') msg = 'camera permission denied';
@@ -151,6 +156,9 @@ async function setupCamera() {
       canvas.height = video.height;
       canvas.style.width = canvas.width > canvas.height ? '100vw' : '';
       canvas.style.height = canvas.width > canvas.height ? '' : '100vh';
+      // silly font resizing for paint-on-canvas since viewport can be zoomed
+      const size = 14 + (6 * canvas.width / window.innerWidth);
+      ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
       if (live) video.play();
       ui.busy = false;
       // do once more because onresize events can be delayed or skipped
@@ -246,8 +254,6 @@ async function detectVideo() {
   document.getElementById('canvas').style.display = 'block';
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
-  const size = 12 + Math.trunc(window.innerWidth / 400);
-  ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
   ui.baseLineHeight = ui.baseLineHeightProto;
   if ((video.srcObject !== null) && !video.paused) {
     document.getElementById('play').style.display = 'block';
@@ -266,7 +272,7 @@ async function detectVideo() {
 async function detectSampleImages() {
   document.getElementById('play').style.display = 'none';
   human.config.videoOptimized = false;
-  const size = Math.trunc(ui.columns * 25600 / window.innerWidth);
+  const size = 12 + Math.trunc(12 * ui.columns * window.innerWidth / document.body.clientWidth);
   ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
   ui.baseLineHeight = ui.baseLineHeightProto * ui.columns;
   document.getElementById('canvas').style.display = 'none';

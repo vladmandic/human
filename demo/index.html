@@ -22,7 +22,8 @@
     <!-- alternatively load demo sources directly -->
     <!-- <script src="browser.js" type="module"></script> -->
     <style>
-      html { font-family: 'Segoe UI'; font-size: 16px; font-variant: small-caps; }
+      @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 400; src: local('Lato'), url('../assets/lato.ttf') format('truetype'); }
+      html { font-family: 'Lato', 'Segoe UI'; font-size: 16px; font-variant: small-caps; }
       body { margin: 0; background: black; color: white; overflow-x: hidden; scrollbar-width: none; }
       body::-webkit-scrollbar { display: none; }
       .play { position: absolute; width: 300px; height: 300px; z-index: 9; top: 30%; left: 50%; margin-left: -150px; display: none; }

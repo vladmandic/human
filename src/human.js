@@ -12,7 +12,7 @@ const defaults = require('../config.js').default;
 const app = require('../package.json');
 
 // static config override for non-video detection
-const override = {
+const disableSkipFrames = {
   face: { detector: { skipFrames: 0 }, age: { skipFrames: 0 }, gender: { skipFrames: 0 }, emotion: { skipFrames: 0 } }, hand: { skipFrames: 0 },
 };
 
@@ -281,7 +281,7 @@ class Human {
 
     // update configuration
     this.config = mergeDeep(this.config, userConfig);
-    if (!this.config.videoOptimized) this.config = mergeDeep(this.config, override);
+    if (!this.config.videoOptimized) this.config = mergeDeep(this.config, disableSkipFrames);
 
     // sanity checks
     this.state = 'check';

@@ -29,7 +29,7 @@ function createCSS() {
   .menu-item { display: flex; white-space: nowrap; padding: 0.2rem; width: max-content; cursor: default; }
   .menu-title { text-align: right; cursor: pointer; }
   .menu-hr { margin: 0.2rem; border: 1px solid rgba(0, 0, 0, 0.5) }
-  .menu-label { padding: 0; }
+  .menu-label { padding: 0; font-weight: 800; }
 
   .menu-list { margin-right: 0.8rem; }
   select:focus { outline: none; }

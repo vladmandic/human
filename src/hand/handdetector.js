@@ -57,6 +57,7 @@ class HandDetector {
     rawBoxes.dispose();
     const filteredT = await tf.image.nonMaxSuppressionAsync(boxes, scores, config.maxHands, config.iouThreshold, config.scoreThreshold);
     const filtered = filteredT.arraySync();
+
     scores.dispose();
     filteredT.dispose();
     const hands = [];

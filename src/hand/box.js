@@ -46,7 +46,7 @@ function scaleBoxCoordinates(box, factor) {
     const scaledCoord = [coord[0] * factor[0], coord[1] * factor[1]];
     return scaledCoord;
   });
-  return { startPoint, endPoint, palmLandmarks };
+  return { startPoint, endPoint, palmLandmarks, confidence: box.confidence };
 }
 function enlargeBox(box, factor = 1.5) {
   const center = getBoxCenter(box);

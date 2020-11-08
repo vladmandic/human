@@ -51,12 +51,12 @@ class HandPose {
         }
       }
       hands.push({
-        confidence: prediction.handInViewConfidence,
-        box: prediction.boundingBox ? [
-          prediction.boundingBox.topLeft[0],
-          prediction.boundingBox.topLeft[1],
-          prediction.boundingBox.bottomRight[0] - prediction.boundingBox.topLeft[0],
-          prediction.boundingBox.bottomRight[1] - prediction.boundingBox.topLeft[1],
+        confidence: prediction.confidence,
+        box: prediction.box ? [
+          prediction.box.topLeft[0],
+          prediction.box.topLeft[1],
+          prediction.box.bottomRight[0] - prediction.box.topLeft[0],
+          prediction.box.bottomRight[1] - prediction.box.topLeft[1],
         ] : 0,
         landmarks: prediction.landmarks,
         annotations,

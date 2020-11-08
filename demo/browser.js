@@ -27,6 +27,10 @@ const ui = {
   maxFrames: 10,
   modelsPreload: true,
   modelsWarmup: true,
+  menuWidth: 0,
+  menuHeight: 0,
+  camera: {},
+  fps: [],
 };
 
 // global variables
@@ -34,8 +38,6 @@ let menu;
 let menuFX;
 let worker;
 let timeStamp;
-let camera = {};
-const fps = [];
 
 // helper function: translates json to human readable string
 function str(...msg) {
@@ -62,17 +64,22 @@ const status = (msg) => {
 // draws processed results and starts processing of a next frame
 function drawResults(input, result, canvas) {
   // update fps data
-  fps.push(1000 / (performance.now() - timeStamp));
-  if (fps.length > ui.maxFrames) fps.shift();
+  const elapsed = performance.now() - timeStamp;
+  ui.fps.push(1000 / elapsed);
+  if (ui.fps.length > ui.maxFrames) ui.fps.shift();
 
   // enable for continous performance monitoring
   // console.log(result.performance);
 
-  // eslint-disable-next-line no-use-before-define
-  if (input.srcObject) requestAnimationFrame(() => runHumanDetect(input, canvas)); // immediate loop before we even draw results
-
+  // immediate loop before we even draw results, but limit frame rate to 30
+  if (input.srcObject) {
+    // eslint-disable-next-line no-use-before-define
+    if (elapsed > 33) requestAnimationFrame(() => runHumanDetect(input, canvas));
+    // eslint-disable-next-line no-use-before-define
+    else setTimeout(() => runHumanDetect(input, canvas), 33 - elapsed);
+  }
   // draw fps chart
-  menu.updateChart('FPS', fps);
+  menu.updateChart('FPS', ui.fps);
   // draw image from video
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = ui.baseBackground;
@@ -94,9 +101,9 @@ function drawResults(input, result, canvas) {
   const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
   const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : '';
-  const avg = Math.trunc(10 * fps.reduce((a, b) => a + b) / fps.length) / 10;
+  const avg = Math.trunc(10 * ui.fps.reduce((a, b) => a + b) / ui.fps.length) / 10;
   document.getElementById('log').innerText = `
-    video: ${camera.name} | facing: ${camera.facing} | resolution: ${camera.width} x ${camera.height} ${processing}
+    video: ${ui.camera.name} | facing: ${ui.camera.facing} | resolution: ${ui.camera.width} x ${ui.camera.height} ${processing}
     backend: ${human.tf.getBackend()} | ${memory}
     performance: ${str(result.performance)} FPS:${avg}
   `;
@@ -147,7 +154,7 @@ async function setupCamera() {
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
   log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight }, 'settings:', settings, 'track:', track);
-  camera = { name: track.label, width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
+  ui.camera = { name: track.label, width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   return new Promise((resolve) => {
     video.onloadeddata = async () => {
       video.width = video.videoWidth;
@@ -156,6 +163,8 @@ async function setupCamera() {
       canvas.height = video.height;
       canvas.style.width = canvas.width > canvas.height ? '100vw' : '';
       canvas.style.height = canvas.width > canvas.height ? '' : '100vh';
+      ui.menuWidth.input.setAttribute('value', video.width);
+      ui.menuHeight.input.setAttribute('value', video.height);
       // silly font resizing for paint-on-canvas since viewport can be zoomed
       const size = 14 + (6 * canvas.width / window.innerWidth);
       ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
@@ -351,8 +360,8 @@ function setupMenu() {
   menuFX.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menuFX.addLabel('Image Processing');
   menuFX.addBool('Enabled', human.config.filter, 'enabled');
-  menuFX.addRange('Image width', human.config.filter, 'width', 0, 3840, 10, (val) => human.config.filter.width = parseInt(val));
-  menuFX.addRange('Image height', human.config.filter, 'height', 0, 2160, 10, (val) => human.config.filter.height = parseInt(val));
+  ui.menuWidth = menuFX.addRange('Image width', human.config.filter, 'width', 0, 3840, 10, (val) => human.config.filter.width = parseInt(val));
+  ui.menuHeight = menuFX.addRange('Image height', human.config.filter, 'height', 0, 2160, 10, (val) => human.config.filter.height = parseInt(val));
   menuFX.addRange('Brightness', human.config.filter, 'brightness', -1.0, 1.0, 0.05, (val) => human.config.filter.brightness = parseFloat(val));
   menuFX.addRange('Contrast', human.config.filter, 'contrast', -1.0, 1.0, 0.05, (val) => human.config.filter.contrast = parseFloat(val));
   menuFX.addRange('Sharpness', human.config.filter, 'sharpness', 0, 1.0, 0.05, (val) => human.config.filter.sharpness = parseFloat(val));

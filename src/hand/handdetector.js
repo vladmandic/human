@@ -49,29 +49,28 @@ class HandDetector {
   async getBoxes(input, config) {
     const batched = this.model.predict(input);
     const predictions = batched.squeeze();
+    batched.dispose();
     const scores = tf.tidy(() => tf.sigmoid(tf.slice(predictions, [0, 0], [-1, 1])).squeeze());
-    // const scoresVal = scores.dataSync(); // scoresVal[boxIndex] is box confidence
+    const scoresVal = scores.dataSync();
     const rawBoxes = tf.slice(predictions, [0, 1], [-1, 4]);
     const boxes = this.normalizeBoxes(rawBoxes);
-    const boxesWithHandsT = await tf.image.nonMaxSuppressionAsync(boxes, scores, config.maxHands, config.iouThreshold, config.scoreThreshold);
-    const boxesWithHands = boxesWithHandsT.arraySync();
-    const toDispose = [
-      batched,
-      boxesWithHandsT,
-      predictions,
-      boxes,
-      rawBoxes,
-      scores,
-    ];
+    rawBoxes.dispose();
+    const filteredT = await tf.image.nonMaxSuppressionAsync(boxes, scores, config.maxHands, config.iouThreshold, config.scoreThreshold);
+    const filtered = filteredT.arraySync();
+    scores.dispose();
+    filteredT.dispose();
     const hands = [];
-    for (const boxIndex of boxesWithHands) {
-      const matchingBox = tf.slice(boxes, [boxIndex, 0], [1, -1]);
-      const rawPalmLandmarks = tf.slice(predictions, [boxIndex, 5], [1, 14]);
-      const palmLandmarks = tf.tidy(() => this.normalizeLandmarks(rawPalmLandmarks, boxIndex).reshape([-1, 2]));
-      rawPalmLandmarks.dispose();
-      hands.push({ box: matchingBox, palmLandmarks });
+    for (const boxIndex of filtered) {
+      if (scoresVal[boxIndex] >= config.minConfidence) {
+        const matchingBox = tf.slice(boxes, [boxIndex, 0], [1, -1]);
+        const rawPalmLandmarks = tf.slice(predictions, [boxIndex, 5], [1, 14]);
+        const palmLandmarks = tf.tidy(() => this.normalizeLandmarks(rawPalmLandmarks, boxIndex).reshape([-1, 2]));
+        rawPalmLandmarks.dispose();
+        hands.push({ box: matchingBox, palmLandmarks, confidence: scoresVal[boxIndex] });
+      }
     }
-    toDispose.forEach((tensor) => tensor.dispose());
+    predictions.dispose();
+    boxes.dispose();
     return hands;
   }
 
@@ -84,13 +83,13 @@ class HandDetector {
     if (!predictions || predictions.length === 0) return null;
     const hands = [];
     for (const prediction of predictions) {
-      const boundingBoxes = prediction.box.dataSync();
-      const startPoint = boundingBoxes.slice(0, 2);
-      const endPoint = boundingBoxes.slice(2, 4);
+      const boxes = prediction.box.dataSync();
+      const startPoint = boxes.slice(0, 2);
+      const endPoint = boxes.slice(2, 4);
       const palmLandmarks = prediction.palmLandmarks.arraySync();
       prediction.box.dispose();
       prediction.palmLandmarks.dispose();
-      hands.push(box.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks }, [inputWidth / config.inputSize, inputHeight / config.inputSize]));
+      hands.push(box.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks, confidence: prediction.confidence }, [inputWidth / config.inputSize, inputHeight / config.inputSize]));
     }
     return hands;
   }

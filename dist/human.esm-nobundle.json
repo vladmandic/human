@@ -5,7 +5,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 3374,
+      "bytes": 3417,
       "imports": []
     },
     "src/age/age.js": {
@@ -406,7 +406,7 @@
           "bytesInOutput": 1325
         },
         "package.json": {
-          "bytesInOutput": 3004
+          "bytesInOutput": 3047
         },
         "src/human.js": {
           "bytesInOutput": 7201
@@ -415,7 +415,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 216530
+      "bytes": 216573
     }
   }
 }

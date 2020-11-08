@@ -3,7 +3,7 @@ const path = require('path');
 const dayjs = require('dayjs');
 const simpleGit = require('simple-git/promise');
 const logger = require('@vladmandic/pilogger');
-const app = require('./package.json');
+const app = require('../package.json');
 
 const git = simpleGit();
 
@@ -45,5 +45,5 @@ async function update(f) {
 exports.update = update;
 
 if (!module.parent) {
-  update('wiki/Change-Log.md');
+  update('../wiki/Change-Log.md');
 }

@@ -113,6 +113,7 @@ export default {
     scoreThreshold: 0.8,     // threshold for deciding when to remove boxes based on score in non-maximum suppression
     enlargeFactor: 1.65,     // empiric tuning as skeleton prediction prefers hand box with some whitespace
     maxHands: 1,             // maximum number of hands detected in the input, should be set to the minimum number for performance
+    landmarks: true,         // detect hand landmarks or just hand boundary box
     detector: {
       modelPath: '../models/handdetect.json',
     },

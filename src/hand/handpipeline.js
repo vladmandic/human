@@ -19,7 +19,6 @@ const tf = require('@tensorflow/tfjs');
 const box = require('./box');
 const util = require('./util');
 
-const UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD = 0.8;
 const PALM_BOX_SHIFT_VECTOR = [0, -0.4];
 const PALM_BOX_ENLARGE_FACTOR = 3;
 const HAND_BOX_SHIFT_VECTOR = [0, -0.1]; // move detected hand box by x,y to ease landmark detection
@@ -87,68 +86,75 @@ class HandPipeline {
   async estimateHands(image, config) {
     this.skipped++;
     let useFreshBox = false;
-    // run new detector every skipFrames
-    const boxes = (this.skipped > config.skipFrames)
-      ? await this.boxDetector.estimateHandBounds(image, config) : null;
+
+    // run new detector every skipFrames unless we only want box to start with
+    let boxes;
+    if ((this.skipped > config.skipFrames) || !config.landmarks) {
+      boxes = await this.boxDetector.estimateHandBounds(image, config);
+      this.skipped = 0;
+    }
+
     // if detector result count doesn't match current working set, use it to reset current working set
-    if (boxes && (boxes.length !== this.detectedHands) && (this.detectedHands !== config.maxHands)) {
-      // console.log(this.skipped, config.maxHands, this.detectedHands, this.storedBoxes.length, boxes.length);
+    if (boxes && (boxes.length > 0) && ((boxes.length !== this.detectedHands) && (this.detectedHands !== config.maxHands) || !config.landmarks)) {
       this.storedBoxes = [];
       this.detectedHands = 0;
       for (const possible of boxes) this.storedBoxes.push(possible);
       if (this.storedBoxes.length > 0) useFreshBox = true;
-      this.skipped = 0;
     }
     const hands = [];
+    // console.log(`skipped: ${this.skipped} max: ${config.maxHands} detected: ${this.detectedHands} stored: ${this.storedBoxes.length} new: ${boxes?.length}`);
+
     // go through working set of boxes
     for (const i in this.storedBoxes) {
       const currentBox = this.storedBoxes[i];
       if (!currentBox) continue;
-      const angle = util.computeRotation(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]);
-      const palmCenter = box.getBoxCenter(currentBox);
-      const palmCenterNormalized = [palmCenter[0] / image.shape[2], palmCenter[1] / image.shape[1]];
-      const rotatedImage = tf.image.rotateWithOffset(image, angle, 0, palmCenterNormalized);
-      const rotationMatrix = util.buildRotationMatrix(-angle, palmCenter);
-      const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
-      const croppedInput = box.cutBoxFromImageAndResize(newBox, rotatedImage, [this.inputSize, this.inputSize]);
-      const handImage = croppedInput.div(255);
-      croppedInput.dispose();
-      rotatedImage.dispose();
-      const [confidence, keypoints] = await this.meshDetector.predict(handImage);
-      handImage.dispose();
-      const confidenceValue = confidence.dataSync()[0];
-      confidence.dispose();
-      if (confidenceValue >= config.minConfidence) {
-        const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
-        const rawCoords = keypointsReshaped.arraySync();
+      if (config.landmarks) {
+        const angle = util.computeRotation(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]);
+        const palmCenter = box.getBoxCenter(currentBox);
+        const palmCenterNormalized = [palmCenter[0] / image.shape[2], palmCenter[1] / image.shape[1]];
+        const rotatedImage = tf.image.rotateWithOffset(image, angle, 0, palmCenterNormalized);
+        const rotationMatrix = util.buildRotationMatrix(-angle, palmCenter);
+        const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
+        const croppedInput = box.cutBoxFromImageAndResize(newBox, rotatedImage, [this.inputSize, this.inputSize]);
+        const handImage = croppedInput.div(255);
+        croppedInput.dispose();
+        rotatedImage.dispose();
+        const [confidence, keypoints] = await this.meshDetector.predict(handImage);
+        handImage.dispose();
+        const confidenceValue = confidence.dataSync()[0];
+        confidence.dispose();
+        if (confidenceValue >= config.minConfidence) {
+          const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
+          const rawCoords = keypointsReshaped.arraySync();
+          keypoints.dispose();
+          keypointsReshaped.dispose();
+          const coords = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
+          const nextBoundingBox = this.getBoxForHandLandmarks(coords);
+          this.storedBoxes[i] = nextBoundingBox;
+          const result = {
+            landmarks: coords,
+            confidence: confidenceValue,
+            box: {
+              topLeft: nextBoundingBox.startPoint,
+              bottomRight: nextBoundingBox.endPoint,
+            },
+          };
+          hands.push(result);
+        } else {
+          this.storedBoxes[i] = null;
+        }
         keypoints.dispose();
-        keypointsReshaped.dispose();
-        const coords = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
-        const nextBoundingBox = this.getBoxForHandLandmarks(coords);
-        this.updateStoredBoxes(nextBoundingBox, i);
-        const result = {
-          landmarks: coords,
-          handInViewConfidence: confidenceValue,
-          boundingBox: {
-            topLeft: nextBoundingBox.startPoint,
-            bottomRight: nextBoundingBox.endPoint,
-          },
-        };
-        hands.push(result);
       } else {
-        this.updateStoredBoxes(null, i);
-        /*
+        const enlarged = box.enlargeBox(box.squarifyBox(box.shiftBox(currentBox, HAND_BOX_SHIFT_VECTOR)), HAND_BOX_ENLARGE_FACTOR);
         const result = {
-          handInViewConfidence: confidenceValue,
-          boundingBox: {
-            topLeft: currentBox.startPoint,
-            bottomRight: currentBox.endPoint,
+          confidence: currentBox.confidence,
+          box: {
+            topLeft: enlarged.startPoint,
+            bottomRight: enlarged.endPoint,
           },
         };
         hands.push(result);
-        */
       }
-      keypoints.dispose();
     }
     this.storedBoxes = this.storedBoxes.filter((a) => a !== null);
     this.detectedHands = hands.length;
@@ -162,26 +168,6 @@ class HandPipeline {
     const startPoint = [Math.min(...xs), Math.min(...ys)];
     const endPoint = [Math.max(...xs), Math.max(...ys)];
     return { startPoint, endPoint };
-  }
-
-  updateStoredBoxes(newBox, i) {
-    const previousBox = this.storedBoxes[i];
-    let iou = 0;
-    if (newBox && previousBox && previousBox.startPoint) {
-      const [boxStartX, boxStartY] = newBox.startPoint;
-      const [boxEndX, boxEndY] = newBox.endPoint;
-      const [previousBoxStartX, previousBoxStartY] = previousBox.startPoint;
-      const [previousBoxEndX, previousBoxEndY] = previousBox.endPoint;
-      const xStartMax = Math.max(boxStartX, previousBoxStartX);
-      const yStartMax = Math.max(boxStartY, previousBoxStartY);
-      const xEndMin = Math.min(boxEndX, previousBoxEndX);
-      const yEndMin = Math.min(boxEndY, previousBoxEndY);
-      const intersection = (xEndMin - xStartMax) * (yEndMin - yStartMax);
-      const boxArea = (boxEndX - boxStartX) * (boxEndY - boxStartY);
-      const previousBoxArea = (previousBoxEndX - previousBoxStartX) * (previousBoxEndY - boxStartY);
-      iou = intersection / (boxArea + previousBoxArea - intersection);
-    }
-    this.storedBoxes[i] = iou > UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD ? previousBox : newBox;
   }
 }
 

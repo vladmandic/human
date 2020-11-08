@@ -26,9 +26,9 @@ const log = require('@vladmandic/pilogger');
 const options = {
   // key: fs.readFileSync('/home/vlado/dev/piproxy/cert/private.pem'),
   // cert: fs.readFileSync('/home/vlado/dev/piproxy/cert/fullchain.pem'),
-  key: fs.readFileSync('./dev-server.key'),
-  cert: fs.readFileSync('./dev-server.crt'),
-  root: '.',
+  key: fs.readFileSync('dev-server/dev-server.key'),
+  cert: fs.readFileSync('dev-server/dev-server.crt'),
+  root: '..',
   default: 'demo/index.html',
   port: 8000,
   monitor: ['package.json', 'config.js', 'demo', 'src'],

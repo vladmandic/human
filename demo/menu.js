@@ -219,6 +219,7 @@ class Menu {
       evt.target.setAttribute('value', evt.target.value);
       if (callback) callback(evt.target.value);
     });
+    el.input = el.children[0];
     return el;
   }
 

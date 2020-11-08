@@ -1,6 +1,9 @@
 # Human Library
 
-## 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition
+## 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking,  
+## Age & Gender Prediction, Emotion Prediction & Gesture Recognition
+
+<br>
 
 ### Project pages:
 
@@ -24,7 +27,7 @@
 - [**Performance Notes**](https://github.com/vladmandic/human/wiki/Performance)
 - [**Credits**](https://github.com/vladmandic/human/wiki/Credits)
 
-Compatible with *Browser*, *WebWorker* and *NodeJS* execution  
+Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows and Linux  
 - Browser/WebWorker: Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  
 - NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
 
@@ -34,7 +37,9 @@ Compatible with *Browser*, *WebWorker* and *NodeJS* execution
 
 *Suggestions are welcome!*  
 
+<br>
 <hr>  
+<br>
 
 ## Examples
 

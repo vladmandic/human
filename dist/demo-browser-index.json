@@ -23,7 +23,7 @@
       "imports": []
     },
     "dist/human.esm.js": {
-      "bytes": 1278550,
+      "bytes": 1278535,
       "imports": []
     }
   },
@@ -37,7 +37,7 @@
       "imports": [],
       "inputs": {
         "dist/human.esm.js": {
-          "bytesInOutput": 1665015
+          "bytesInOutput": 1665000
         },
         "dist/human.esm.js": {
           "bytesInOutput": 8716
@@ -52,7 +52,7 @@
           "bytesInOutput": 15855
         }
       },
-      "bytes": 1709837
+      "bytes": 1709822
     }
   }
 }

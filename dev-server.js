@@ -61,7 +61,7 @@ async function build(f, msg) {
   if (!es) es = await esbuild.startService();
   // common build options
   const cfg = {
-    minify: true,
+    minify: false,
     bundle: true,
     sourcemap: true,
     logLevel: 'error',

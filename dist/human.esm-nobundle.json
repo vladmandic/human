@@ -206,7 +206,7 @@
       "imports": []
     },
     "src/hand/handdetector.js": {
-      "bytes": 4316,
+      "bytes": 4220,
       "imports": [
         {
           "path": "src/hand/box.js"
@@ -214,7 +214,7 @@
       ]
     },
     "src/hand/handpipeline.js": {
-      "bytes": 8724,
+      "bytes": 8214,
       "imports": [
         {
           "path": "src/hand/box.js"
@@ -301,7 +301,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 623550
+      "bytes": 622741
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -379,13 +379,13 @@
           "bytesInOutput": 1420
         },
         "src/hand/handdetector.js": {
-          "bytesInOutput": 1830
+          "bytesInOutput": 1748
         },
         "src/hand/util.js": {
           "bytesInOutput": 997
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 3130
+          "bytesInOutput": 2878
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 127000
@@ -403,7 +403,7 @@
           "bytesInOutput": 2349
         },
         "config.js": {
-          "bytesInOutput": 1326
+          "bytesInOutput": 1325
         },
         "package.json": {
           "bytesInOutput": 3004
@@ -415,7 +415,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 216865
+      "bytes": 216530
     }
   }
 }

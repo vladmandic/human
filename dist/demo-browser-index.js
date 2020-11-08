@@ -32769,25 +32769,22 @@ var Mx = we((Px) => {
         return et.mul(e, this.inputSizeTensor);
       });
     }
-    async getBoundingBoxes(n, t) {
-      const e = this.model.predict(n), r = e.squeeze(), i = et.tidy(() => et.sigmoid(et.slice(r, [0, 0], [-1, 1])).squeeze()), a = et.slice(r, [0, 1], [-1, 4]), s = this.normalizeBoxes(a), o = await et.image.nonMaxSuppressionAsync(s, i, t.maxHands, t.iouThreshold, t.scoreThreshold), c = o.arraySync(), l = [e, o, r, s, a, i];
-      if (c.length === 0)
-        return l.forEach((h) => h.dispose()), null;
-      const u = [];
+    async getBoxes(n, t) {
+      const e = this.model.predict(n), r = e.squeeze(), i = et.tidy(() => et.sigmoid(et.slice(r, [0, 0], [-1, 1])).squeeze()), a = et.slice(r, [0, 1], [-1, 4]), s = this.normalizeBoxes(a), o = await et.image.nonMaxSuppressionAsync(s, i, t.maxHands, t.iouThreshold, t.scoreThreshold), c = o.arraySync(), l = [e, o, r, s, a, i], u = [];
       for (const h of c) {
         const d = et.slice(s, [h, 0], [1, -1]), p = et.slice(r, [h, 5], [1, 14]), f = et.tidy(() => this.normalizeLandmarks(p, h).reshape([-1, 2]));
-        p.dispose(), u.push({boxes: d, palmLandmarks: f});
+        p.dispose(), u.push({box: d, palmLandmarks: f});
       }
       return l.forEach((h) => h.dispose()), u;
     }
     async estimateHandBounds(n, t) {
-      const e = n.shape[1], r = n.shape[2], i = et.tidy(() => n.resizeBilinear([t.inputSize, t.inputSize]).div(127.5).sub(1)), a = await this.getBoundingBoxes(i, t);
+      const e = n.shape[1], r = n.shape[2], i = et.tidy(() => n.resizeBilinear([t.inputSize, t.inputSize]).div(127.5).sub(1)), a = await this.getBoxes(i, t);
       if (i.dispose(), !a || a.length === 0)
         return null;
       const s = [];
       for (const o of a) {
-        const c = o.boxes.dataSync(), l = c.slice(0, 2), u = c.slice(2, 4), h = o.palmLandmarks.arraySync();
-        o.boxes.dispose(), o.palmLandmarks.dispose(), s.push(UV.scaleBoxCoordinates({startPoint: l, endPoint: u, palmLandmarks: h}, [r / t.inputSize, e / t.inputSize]));
+        const c = o.box.dataSync(), l = c.slice(0, 2), u = c.slice(2, 4), h = o.palmLandmarks.arraySync();
+        o.box.dispose(), o.palmLandmarks.dispose(), s.push(UV.scaleBoxCoordinates({startPoint: l, endPoint: u, palmLandmarks: h}, [r / t.inputSize, e / t.inputSize]));
       }
       return s;
     }
@@ -32841,7 +32838,7 @@ var Xx = we((Kx) => {
   const jx = Ut(), Vn = Jp(), Wr = Yx(), GV = 0.8, qV = [0, -0.4], YV = 3, KV = [0, -0.1], jV = 1.65, $x = [0, 5, 9, 13, 17, 1, 2], $V = 0, XV = 2;
   class JV {
     constructor(n, t, e) {
-      this.boundingBoxDetector = n, this.meshDetector = t, this.inputSize = e, this.regionsOfInterest = [], this.runsWithoutHandDetector = 0, this.skipFrames = 0, this.detectedHands = 0;
+      this.boxDetector = n, this.meshDetector = t, this.inputSize = e, this.storedBoxes = [], this.skipped = 0, this.detectedHands = 0;
     }
     getBoxForPalmLandmarks(n, t) {
       const e = n.map((i) => {
@@ -32864,51 +32861,50 @@ var Xx = we((Kx) => {
       return c.map((d) => [d[0] + h[0], d[1] + h[1], d[2]]);
     }
     async estimateHands(n, t) {
-      this.skipFrames = t.skipFrames;
-      let e = this.runsWithoutHandDetector > this.skipFrames || this.detectedHands !== this.regionsOfInterest.length, r;
-      if (e && (r = await this.boundingBoxDetector.estimateHandBounds(n, t)), t.maxHands > 1 && r && r.length > 0 && r.length !== this.detectedHands && (e = true), e) {
-        if (this.regionsOfInterest = [], !r || r.length === 0)
-          return this.detectedHands = 0, null;
+      this.skipped++;
+      let e = false;
+      const r = this.skipped > t.skipFrames ? await this.boxDetector.estimateHandBounds(n, t) : null;
+      if (r && r.length !== this.detectedHands && this.detectedHands !== t.maxHands) {
+        this.storedBoxes = [], this.detectedHands = 0;
         for (const a of r)
-          this.regionsOfInterest.push(a);
-        this.runsWithoutHandDetector = 0;
-      } else
-        this.runsWithoutHandDetector++;
+          this.storedBoxes.push(a);
+        this.storedBoxes.length > 0 && (e = true), this.skipped = 0;
+      }
       const i = [];
-      for (const a in this.regionsOfInterest) {
-        const s = this.regionsOfInterest[a];
+      for (const a in this.storedBoxes) {
+        const s = this.storedBoxes[a];
         if (!s)
           continue;
         const o = Wr.computeRotation(s.palmLandmarks[$V], s.palmLandmarks[XV]), c = Vn.getBoxCenter(s), l = [c[0] / n.shape[2], c[1] / n.shape[1]], u = jx.image.rotateWithOffset(n, o, 0, l), h = Wr.buildRotationMatrix(-o, c), d = e ? this.getBoxForPalmLandmarks(s.palmLandmarks, h) : s, p = Vn.cutBoxFromImageAndResize(d, u, [this.inputSize, this.inputSize]), f = p.div(255);
         p.dispose(), u.dispose();
-        const m = this.meshDetector.predict(f), [g, y] = m;
+        const [m, g] = await this.meshDetector.predict(f);
         f.dispose();
-        const w = g.dataSync()[0];
-        if (g.dispose(), w >= t.minConfidence) {
-          const b = jx.reshape(y, [-1, 3]), L = b.arraySync();
-          y.dispose(), b.dispose();
-          const x = this.transformRawCoords(L, d, o, h), N = this.getBoxForHandLandmarks(x);
-          this.updateRegionsOfInterest(N, a);
-          const I = {landmarks: x, handInViewConfidence: w, boundingBox: {topLeft: N.startPoint, bottomRight: N.endPoint}};
-          i.push(I);
+        const y = m.dataSync()[0];
+        if (m.dispose(), y >= t.minConfidence) {
+          const w = jx.reshape(g, [-1, 3]), b = w.arraySync();
+          g.dispose(), w.dispose();
+          const L = this.transformRawCoords(b, d, o, h), x = this.getBoxForHandLandmarks(L);
+          this.updateStoredBoxes(x, a);
+          const N = {landmarks: L, handInViewConfidence: y, boundingBox: {topLeft: x.startPoint, bottomRight: x.endPoint}};
+          i.push(N);
         } else
-          this.updateRegionsOfInterest(null, a);
-        y.dispose();
+          this.updateStoredBoxes(null, a);
+        g.dispose();
       }
-      return this.regionsOfInterest = this.regionsOfInterest.filter((a) => a !== null), this.detectedHands = i.length, i;
+      return this.storedBoxes = this.storedBoxes.filter((a) => a !== null), this.detectedHands = i.length, i;
     }
     calculateLandmarksBoundingBox(n) {
       const t = n.map((a) => a[0]), e = n.map((a) => a[1]), r = [Math.min(...t), Math.min(...e)], i = [Math.max(...t), Math.max(...e)];
       return {startPoint: r, endPoint: i};
     }
-    updateRegionsOfInterest(n, t) {
-      const e = this.regionsOfInterest[t];
+    updateStoredBoxes(n, t) {
+      const e = this.storedBoxes[t];
       let r = 0;
       if (n && e && e.startPoint) {
         const [i, a] = n.startPoint, [s, o] = n.endPoint, [c, l] = e.startPoint, [u, h] = e.endPoint, d = Math.max(i, c), p = Math.max(a, l), f = Math.min(s, u), m = Math.min(o, h), g = (f - d) * (m - p), y = (s - i) * (o - a), w = (u - c) * (h - a);
         r = g / (y + w - g);
       }
-      this.regionsOfInterest[t] = r > GV ? e : n;
+      this.storedBoxes[t] = r > GV ? e : n;
     }
   }
   Kx.HandPipeline = JV;
@@ -33159,7 +33155,7 @@ var sL = we((aL) => {
 });
 var oL = we((sG) => {
   Is(sG, {default: () => oG});
-  var oG = {backend: "webgl", console: true, async: true, profile: false, deallocate: false, scoped: false, videoOptimized: true, filter: {enabled: true, width: 0, height: 0, return: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0}, gesture: {enabled: true}, face: {enabled: true, detector: {modelPath: "../models/blazeface-back.json", inputSize: 256, maxFaces: 10, skipFrames: 15, minConfidence: 0.1, iouThreshold: 0.1, scoreThreshold: 0.2}, mesh: {enabled: true, modelPath: "../models/facemesh.json", inputSize: 192}, iris: {enabled: true, modelPath: "../models/iris.json", enlargeFactor: 2.3, inputSize: 64}, age: {enabled: true, modelPath: "../models/age-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, gender: {enabled: true, minConfidence: 0.1, modelPath: "../models/gender-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, emotion: {enabled: true, inputSize: 64, minConfidence: 0.2, skipFrames: 15, modelPath: "../models/emotion-large.json"}}, body: {enabled: true, modelPath: "../models/posenet.json", inputResolution: 257, outputStride: 16, maxDetections: 10, scoreThreshold: 0.8, nmsRadius: 20}, hand: {enabled: true, inputSize: 256, skipFrames: 15, minConfidence: 0.5, iouThreshold: 0.2, scoreThreshold: 0.5, enlargeFactor: 1.65, maxHands: 10, detector: {modelPath: "../models/handdetect.json"}, skeleton: {modelPath: "../models/handskeleton.json"}}};
+  var oG = {backend: "webgl", console: true, async: true, profile: false, deallocate: false, scoped: false, videoOptimized: true, filter: {enabled: true, width: 0, height: 0, return: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0}, gesture: {enabled: true}, face: {enabled: true, detector: {modelPath: "../models/blazeface-back.json", inputSize: 256, maxFaces: 10, skipFrames: 15, minConfidence: 0.1, iouThreshold: 0.1, scoreThreshold: 0.2}, mesh: {enabled: true, modelPath: "../models/facemesh.json", inputSize: 192}, iris: {enabled: true, modelPath: "../models/iris.json", enlargeFactor: 2.3, inputSize: 64}, age: {enabled: true, modelPath: "../models/age-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, gender: {enabled: true, minConfidence: 0.1, modelPath: "../models/gender-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, emotion: {enabled: true, inputSize: 64, minConfidence: 0.2, skipFrames: 15, modelPath: "../models/emotion-large.json"}}, body: {enabled: true, modelPath: "../models/posenet.json", inputResolution: 257, outputStride: 16, maxDetections: 10, scoreThreshold: 0.8, nmsRadius: 20}, hand: {enabled: true, inputSize: 256, skipFrames: 15, minConfidence: 0.5, iouThreshold: 0.1, scoreThreshold: 0.8, enlargeFactor: 1.65, maxHands: 1, detector: {modelPath: "../models/handdetect.json"}, skeleton: {modelPath: "../models/handskeleton.json"}}};
 });
 var lL = we((pq, cL) => {
   cL.exports = {name: "@vladmandic/human", version: "0.8.1", description: "human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition", sideEffects: false, main: "dist/human.node.js", module: "dist/human.esm.js", browser: "dist/human.esm.js", author: "Vladimir Mandic <mandic00@live.com>", bugs: {url: "https://github.com/vladmandic/human/issues"}, homepage: "https://github.com/vladmandic/human#readme", license: "MIT", engines: {node: ">=14.0.0"}, repository: {type: "git", url: "git+https://github.com/vladmandic/human.git"}, dependencies: {}, peerDependencies: {}, devDependencies: {"@tensorflow/tfjs": "^2.7.0", "@tensorflow/tfjs-node": "^2.7.0", "@vladmandic/pilogger": "^0.2.7", chokidar: "^3.4.3", dayjs: "^1.9.5", esbuild: "^0.7.22", eslint: "^7.13.0", "eslint-config-airbnb-base": "^14.2.1", "eslint-plugin-import": "^2.22.1", "eslint-plugin-json": "^2.1.2", "eslint-plugin-node": "^11.1.0", "eslint-plugin-promise": "^4.2.1", rimraf: "^3.0.2", seedrandom: "^3.0.5", "simple-git": "^2.21.0"}, scripts: {start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js", lint: "eslint src/*.js demo/*.js", dev: "npm install && node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation dev-server.js", "build-iife": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=iife --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js", "build-esm-bundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js", "build-esm-nobundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=esm --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js", "build-node": "esbuild --bundle --minify --platform=node --sourcemap --target=es2018 --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js", "build-node-nobundle": "esbuild --bundle --minify --platform=node --sourcemap --target=es2018 --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js", "build-demo": "esbuild --bundle --log-level=error --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/demo-browser-index.json --outfile=dist/demo-browser-index.js demo/browser.js", build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && npm run build-demo", update: "npm update --depth 20 --force && npm dedupe && npm prune && npm audit", changelog: "node changelog.js"}, keywords: ["tensorflowjs", "face-detection", "face-geometry", "body-tracking", "hand-tracking", "iris-tracking", "age-estimation", "emotion-detection", "gender-prediction", "gesture-recognition"]};

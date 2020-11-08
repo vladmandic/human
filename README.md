@@ -13,6 +13,8 @@
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
 - [**Change Log**](https://github.com/vladmandic/human/wiki/Change-Log)
 
+<br>
+
 ### Wiki pages:
 
 - [**Home**](https://github.com/vladmandic/human/wiki)
@@ -27,11 +29,15 @@
 - [**Performance Notes**](https://github.com/vladmandic/human/wiki/Performance)
 - [**Credits**](https://github.com/vladmandic/human/wiki/Credits)
 
+<br>
+
 Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows and Linux  
 - Browser/WebWorker: Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  
 - NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
 
 (and maybe with React-Native as it doesn't use any DOM objects)  
+
+<br>
 
 *This is a pre-release project, see [issues](https://github.com/vladmandic/human/issues) for list of known limitations and planned enhancements*  
 

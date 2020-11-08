@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 7744,
+      "bytes": 8366,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.node.js": {
@@ -224,7 +224,7 @@
       ]
     },
     "src/body/modelPoseNet.js": {
-      "bytes": 3658,
+      "bytes": 1946,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -261,7 +261,7 @@
       ]
     },
     "src/body/util.js": {
-      "bytes": 2260,
+      "bytes": 2262,
       "imports": [
         {
           "path": "src/body/keypoints.js"
@@ -288,7 +288,7 @@
       ]
     },
     "src/face/blazeface.js": {
-      "bytes": 7226,
+      "bytes": 7058,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -327,7 +327,7 @@
       ]
     },
     "src/face/facepipeline.js": {
-      "bytes": 14774,
+      "bytes": 14752,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -387,7 +387,7 @@
       ]
     },
     "src/hand/handdetector.js": {
-      "bytes": 4229,
+      "bytes": 4230,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -433,7 +433,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 13727,
+      "bytes": 13707,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -489,7 +489,7 @@
       "imports": []
     },
     "src/profile.js": {
-      "bytes": 1004,
+      "bytes": 1061,
       "imports": []
     },
     "empty:/home/vlado/dev/human/node_modules/node-fetch/browser.js": {
@@ -513,7 +513,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5609744
+      "bytes": 5608490
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -576,7 +576,7 @@
           "bytesInOutput": 3025
         },
         "src/face/blazeface.js": {
-          "bytesInOutput": 7099
+          "bytesInOutput": 7112
         },
         "src/face/keypoints.js": {
           "bytesInOutput": 2768
@@ -588,7 +588,7 @@
           "bytesInOutput": 3017
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 13567
+          "bytesInOutput": 13545
         },
         "src/face/uvcoords.js": {
           "bytesInOutput": 20584
@@ -600,7 +600,7 @@
           "bytesInOutput": 2590
         },
         "src/profile.js": {
-          "bytesInOutput": 1092
+          "bytesInOutput": 1108
         },
         "src/age/age.js": {
           "bytesInOutput": 1843
@@ -639,7 +639,7 @@
           "bytesInOutput": 2398
         },
         "src/body/modelPoseNet.js": {
-          "bytesInOutput": 2100
+          "bytesInOutput": 2026
         },
         "src/body/posenet.js": {
           "bytesInOutput": 903
@@ -672,19 +672,19 @@
           "bytesInOutput": 4482
         },
         "config.js": {
-          "bytesInOutput": 2299
+          "bytesInOutput": 2220
         },
         "package.json": {
           "bytesInOutput": 3561
         },
         "src/human.js": {
-          "bytesInOutput": 11575
+          "bytesInOutput": 11555
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 3196462
+      "bytes": 3196296
     }
   }
 }

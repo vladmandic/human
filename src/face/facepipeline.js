@@ -49,7 +49,7 @@ class Pipeline {
     this.meshWidth = config.mesh.inputSize;
     this.meshHeight = config.mesh.inputSize;
     this.irisSize = config.iris.inputSize;
-    this.irisEnlarge = config.iris.enlargeFactor;
+    this.irisEnlarge = 2.3;
   }
 
   transformRawCoords(rawCoords, box, angle, rotationMatrix) {

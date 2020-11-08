@@ -30,11 +30,13 @@ function getBoundingBox(keypoints) {
   });
 }
 exports.getBoundingBox = getBoundingBox;
+
 function getBoundingBoxPoints(keypoints) {
   const { minX, minY, maxX, maxY } = getBoundingBox(keypoints);
   return [{ x: minX, y: minY }, { x: maxX, y: minY }, { x: maxX, y: maxY }, { x: minX, y: maxY }];
 }
 exports.getBoundingBoxPoints = getBoundingBoxPoints;
+
 async function toTensorBuffers3D(tensors) {
   return Promise.all(tensors.map((tensor) => tensor.buffer()));
 }

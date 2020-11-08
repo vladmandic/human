@@ -12,6 +12,7 @@ const ui = {
   baseFontProto: 'small-caps {size} "Segoe UI"',
   baseLineWidth: 12,
   baseLineHeightProto: 2,
+  crop: true,
   columns: 2,
   busy: false,
   facing: true,
@@ -21,7 +22,7 @@ const ui = {
   drawBoxes: true,
   drawPoints: false,
   drawPolygons: true,
-  fillPolygons: true,
+  fillPolygons: false,
   useDepth: true,
   console: true,
   maxFrames: 10,
@@ -132,7 +133,7 @@ async function setupCamera() {
     audio: false,
     video: {
       facingMode: (ui.facing ? 'user' : 'environment'),
-      resizeMode: 'none',
+      resizeMode: ui.crop ? 'crop-and-scale' : 'none',
       width: { ideal: window.innerWidth },
       height: { ideal: window.innerHeight },
     },
@@ -206,7 +207,8 @@ function runHumanDetect(input, canvas) {
   const live = input.srcObject && (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
   if (!live && input.srcObject) {
     // if we want to continue and camera not ready, retry in 0.5sec, else just give up
-    if ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
+    if (input.paused) log('camera paused');
+    else if ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
     else log(`camera not ready: track state: ${input.srcObject?.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
     return;
   }
@@ -223,7 +225,6 @@ function runHumanDetect(input, canvas) {
     human.detect(input).then((result) => {
       if (result.error) log(result.error);
       else drawResults(input, result, canvas);
-      if (human.config.profile) log('profile data:', human.profile());
     });
   }
 }
@@ -300,48 +301,48 @@ function setupMenu() {
   document.getElementById('play').addEventListener('click', () => btn.click());
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menu.addList('Backend', ['cpu', 'webgl', 'wasm', 'webgpu'], human.config.backend, (val) => human.config.backend = val);
-  menu.addBool('Async Operations', human.config, 'async', (val) => human.config.async = val);
-  menu.addBool('Enable Profiler', human.config, 'profile', (val) => human.config.profile = val);
-  menu.addBool('Memory Shield', human.config, 'deallocate', (val) => human.config.deallocate = val);
-  menu.addBool('Use Web Worker', ui, 'useWorker');
+  menu.addList('backend', ['cpu', 'webgl', 'wasm', 'webgpu'], human.config.backend, (val) => human.config.backend = val);
+  menu.addBool('async operations', human.config, 'async', (val) => human.config.async = val);
+  menu.addBool('enable profiler', human.config, 'profile', (val) => human.config.profile = val);
+  menu.addBool('memory shield', human.config, 'deallocate', (val) => human.config.deallocate = val);
+  menu.addBool('use web worker', ui, 'useWorker');
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menu.addLabel('Enabled Models');
-  menu.addBool('Face Detect', human.config.face, 'enabled');
-  menu.addBool('Face Mesh', human.config.face.mesh, 'enabled');
-  menu.addBool('Face Iris', human.config.face.iris, 'enabled');
-  menu.addBool('Face Age', human.config.face.age, 'enabled');
-  menu.addBool('Face Gender', human.config.face.gender, 'enabled');
-  menu.addBool('Face Emotion', human.config.face.emotion, 'enabled');
-  menu.addBool('Body Pose', human.config.body, 'enabled');
-  menu.addBool('Hand Pose', human.config.hand, 'enabled');
-  menu.addBool('Gesture Analysis', human.config.gesture, 'enabled');
+  menu.addLabel('enabled models');
+  menu.addBool('face detect', human.config.face, 'enabled');
+  menu.addBool('face mesh', human.config.face.mesh, 'enabled');
+  menu.addBool('face iris', human.config.face.iris, 'enabled');
+  menu.addBool('face age', human.config.face.age, 'enabled');
+  menu.addBool('face gender', human.config.face.gender, 'enabled');
+  menu.addBool('face emotion', human.config.face.emotion, 'enabled');
+  menu.addBool('body pose', human.config.body, 'enabled');
+  menu.addBool('hand pose', human.config.hand, 'enabled');
+  menu.addBool('gesture analysis', human.config.gesture, 'enabled');
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menu.addLabel('Model Parameters');
-  menu.addRange('Max Objects', human.config.face.detector, 'maxFaces', 1, 50, 1, (val) => {
+  menu.addLabel('model parameters');
+  menu.addRange('max objects', human.config.face.detector, 'maxFaces', 1, 50, 1, (val) => {
     human.config.face.detector.maxFaces = parseInt(val);
     human.config.body.maxDetections = parseInt(val);
     human.config.hand.maxHands = parseInt(val);
   });
-  menu.addRange('Skip Frames', human.config.face.detector, 'skipFrames', 0, 50, 1, (val) => {
+  menu.addRange('skip frames', human.config.face.detector, 'skipFrames', 0, 50, 1, (val) => {
     human.config.face.detector.skipFrames = parseInt(val);
     human.config.face.emotion.skipFrames = parseInt(val);
     human.config.face.age.skipFrames = parseInt(val);
     human.config.hand.skipFrames = parseInt(val);
   });
-  menu.addRange('Min Confidence', human.config.face.detector, 'minConfidence', 0.0, 1.0, 0.05, (val) => {
+  menu.addRange('min confidence', human.config.face.detector, 'minConfidence', 0.0, 1.0, 0.05, (val) => {
     human.config.face.detector.minConfidence = parseFloat(val);
     human.config.face.gender.minConfidence = parseFloat(val);
     human.config.face.emotion.minConfidence = parseFloat(val);
     human.config.hand.minConfidence = parseFloat(val);
   });
-  menu.addRange('Score Threshold', human.config.face.detector, 'scoreThreshold', 0.1, 1.0, 0.05, (val) => {
+  menu.addRange('score threshold', human.config.face.detector, 'scoreThreshold', 0.1, 1.0, 0.05, (val) => {
     human.config.face.detector.scoreThreshold = parseFloat(val);
     human.config.hand.scoreThreshold = parseFloat(val);
     human.config.body.scoreThreshold = parseFloat(val);
   });
-  menu.addRange('IOU Threshold', human.config.face.detector, 'iouThreshold', 0.1, 1.0, 0.05, (val) => {
+  menu.addRange('overlap', human.config.face.detector, 'iouThreshold', 0.1, 1.0, 0.05, (val) => {
     human.config.face.detector.iouThreshold = parseFloat(val);
     human.config.hand.iouThreshold = parseFloat(val);
   });
@@ -350,31 +351,32 @@ function setupMenu() {
   menu.addChart('FPS', 'FPS');
 
   menuFX = new Menu(document.body, '...', { top: '1rem', right: '18rem' });
-  menuFX.addLabel('UI Options');
-  menuFX.addBool('Camera Front/Back', ui, 'facing', () => setupCamera());
-  menuFX.addBool('Use 3D Depth', ui, 'useDepth');
-  menuFX.addBool('Draw Boxes', ui, 'drawBoxes');
-  menuFX.addBool('Draw Points', ui, 'drawPoints');
-  menuFX.addBool('Draw Polygons', ui, 'drawPolygons');
+  menuFX.addLabel('ui options');
+  menuFX.addBool('crop & scale', ui, 'crop', () => setupCamera());
+  menuFX.addBool('camera front/back', ui, 'facing', () => setupCamera());
+  menuFX.addBool('use 3D depth', ui, 'useDepth');
+  menuFX.addBool('draw boxes', ui, 'drawBoxes');
+  menuFX.addBool('draw polygons', ui, 'drawPolygons');
   menuFX.addBool('Fill Polygons', ui, 'fillPolygons');
+  menuFX.addBool('draw points', ui, 'drawPoints');
   menuFX.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menuFX.addLabel('Image Processing');
-  menuFX.addBool('Enabled', human.config.filter, 'enabled');
-  ui.menuWidth = menuFX.addRange('Image width', human.config.filter, 'width', 0, 3840, 10, (val) => human.config.filter.width = parseInt(val));
-  ui.menuHeight = menuFX.addRange('Image height', human.config.filter, 'height', 0, 2160, 10, (val) => human.config.filter.height = parseInt(val));
-  menuFX.addRange('Brightness', human.config.filter, 'brightness', -1.0, 1.0, 0.05, (val) => human.config.filter.brightness = parseFloat(val));
-  menuFX.addRange('Contrast', human.config.filter, 'contrast', -1.0, 1.0, 0.05, (val) => human.config.filter.contrast = parseFloat(val));
-  menuFX.addRange('Sharpness', human.config.filter, 'sharpness', 0, 1.0, 0.05, (val) => human.config.filter.sharpness = parseFloat(val));
-  menuFX.addRange('Blur', human.config.filter, 'blur', 0, 20, 1, (val) => human.config.filter.blur = parseInt(val));
-  menuFX.addRange('Saturation', human.config.filter, 'saturation', -1.0, 1.0, 0.05, (val) => human.config.filter.saturation = parseFloat(val));
-  menuFX.addRange('Hue', human.config.filter, 'hue', 0, 360, 5, (val) => human.config.filter.hue = parseInt(val));
-  menuFX.addRange('Pixelate', human.config.filter, 'pixelate', 0, 32, 1, (val) => human.config.filter.pixelate = parseInt(val));
-  menuFX.addBool('Negative', human.config.filter, 'negative');
-  menuFX.addBool('Sepia', human.config.filter, 'sepia');
-  menuFX.addBool('Vintage', human.config.filter, 'vintage');
-  menuFX.addBool('Kodachrome', human.config.filter, 'kodachrome');
-  menuFX.addBool('Technicolor', human.config.filter, 'technicolor');
-  menuFX.addBool('Polaroid', human.config.filter, 'polaroid');
+  menuFX.addLabel('image processing');
+  menuFX.addBool('enabled', human.config.filter, 'enabled');
+  ui.menuWidth = menuFX.addRange('image width', human.config.filter, 'width', 0, 3840, 10, (val) => human.config.filter.width = parseInt(val));
+  ui.menuHeight = menuFX.addRange('image height', human.config.filter, 'height', 0, 2160, 10, (val) => human.config.filter.height = parseInt(val));
+  menuFX.addRange('brightness', human.config.filter, 'brightness', -1.0, 1.0, 0.05, (val) => human.config.filter.brightness = parseFloat(val));
+  menuFX.addRange('contrast', human.config.filter, 'contrast', -1.0, 1.0, 0.05, (val) => human.config.filter.contrast = parseFloat(val));
+  menuFX.addRange('sharpness', human.config.filter, 'sharpness', 0, 1.0, 0.05, (val) => human.config.filter.sharpness = parseFloat(val));
+  menuFX.addRange('blur', human.config.filter, 'blur', 0, 20, 1, (val) => human.config.filter.blur = parseInt(val));
+  menuFX.addRange('saturation', human.config.filter, 'saturation', -1.0, 1.0, 0.05, (val) => human.config.filter.saturation = parseFloat(val));
+  menuFX.addRange('hue', human.config.filter, 'hue', 0, 360, 5, (val) => human.config.filter.hue = parseInt(val));
+  menuFX.addRange('pixelate', human.config.filter, 'pixelate', 0, 32, 1, (val) => human.config.filter.pixelate = parseInt(val));
+  menuFX.addBool('negative', human.config.filter, 'negative');
+  menuFX.addBool('sepia', human.config.filter, 'sepia');
+  menuFX.addBool('vintage', human.config.filter, 'vintage');
+  menuFX.addBool('kodachrome', human.config.filter, 'kodachrome');
+  menuFX.addBool('technicolor', human.config.filter, 'technicolor');
+  menuFX.addBool('polaroid', human.config.filter, 'polaroid');
 }
 
 async function main() {

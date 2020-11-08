@@ -97,9 +97,7 @@ class BlazeFaceModel {
       }
       const decodedBounds = decodeBounds(prediction, this.anchors, this.inputSize);
       const logits = tf.slice(prediction, [0, 0], [-1, 1]);
-      // activation ('elu'|'hardSigmoid'|'linear'|'relu'|'relu6'| 'selu'|'sigmoid'|'softmax'|'softplus'|'softsign'|'tanh')
-      // const scoresOut = tf.sigmoid(logits).squeeze();
-      const scoresOut = logits.squeeze();
+      const scoresOut = tf.sigmoid(logits).squeeze();
       return [prediction, decodedBounds, scoresOut];
     });
     const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.detector.maxFaces, this.config.detector.iouThreshold, this.config.detector.scoreThreshold);

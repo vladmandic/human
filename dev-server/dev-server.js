@@ -24,8 +24,6 @@ const log = require('@vladmandic/pilogger');
 // openssl req -x509 -newkey rsa:4096 -nodes -keyout dev-server.key -out dev-server.crt -days 365 -subj "/C=US/ST=Florida/L=Miami/O=@vladmandic"
 // client app does not work without secure server since browsers enforce https for webcam access
 const options = {
-  // key: fs.readFileSync('/home/vlado/dev/piproxy/cert/private.pem'),
-  // cert: fs.readFileSync('/home/vlado/dev/piproxy/cert/fullchain.pem'),
   key: fs.readFileSync('dev-server/dev-server.key'),
   cert: fs.readFileSync('dev-server/dev-server.crt'),
   root: '..',

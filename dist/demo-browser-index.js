@@ -67113,7 +67113,7 @@ var require_blazeface = __commonJS((exports) => {
         }
         const decodedBounds = decodeBounds(prediction, this.anchors, this.inputSize);
         const logits = tf2.slice(prediction, [0, 0], [-1, 1]);
-        const scoresOut = logits.squeeze();
+        const scoresOut = tf2.sigmoid(logits).squeeze();
         return [prediction, decodedBounds, scoresOut];
       });
       const boxIndicesTensor = await tf2.image.nonMaxSuppressionAsync(boxes, scores, this.config.detector.maxFaces, this.config.detector.iouThreshold, this.config.detector.scoreThreshold);
@@ -67454,7 +67454,7 @@ var require_facepipeline = __commonJS((exports) => {
       this.meshWidth = config.mesh.inputSize;
       this.meshHeight = config.mesh.inputSize;
       this.irisSize = config.iris.inputSize;
-      this.irisEnlarge = config.iris.enlargeFactor;
+      this.irisEnlarge = 2.3;
     }
     transformRawCoords(rawCoords, box, angle, rotationMatrix) {
       const boxSize = bounding.getBoxSize({startPoint: box.startPoint, endPoint: box.endPoint});
@@ -70878,9 +70878,9 @@ var require_profile = __commonJS((exports) => {
       largest.length = maxResults;
     const res = {newBytes: data.newBytes, newTensors: data.newTensors, peakBytes: data.peakBytes, numKernelOps: data.kernels.length, timeKernelOps: time, slowestKernelOps: slowest, largestKernelOps: largest};
     profileData[name] = res;
+    console.log("Human profiler", name, res);
   }
   exports.run = profile2;
-  exports.data = profileData;
 });
 var require_age = __commonJS((exports) => {
   const tf2 = require_tf_node();
@@ -71070,7 +71070,7 @@ var require_emotion = __commonJS((exports) => {
           data = emotionT.dataSync();
           tf2.dispose(emotionT);
         } else {
-          const profileData = await tf2.profile(() => models.emotion.predict(grayscale));
+          const profileData = await tf2.profile(() => models.emotion.predict(normalize));
           data = profileData.result.dataSync();
           profileData.result.dispose();
           profile2.run("emotion", profileData);
@@ -71544,25 +71544,25 @@ var require_modelPoseNet = __commonJS((exports) => {
   class PoseNet {
     constructor(net) {
       this.baseModel = net;
+      this.outputStride = 16;
     }
     async estimatePoses(input, config) {
       return new Promise(async (resolve) => {
-        const outputStride = config.outputStride;
         const height = input.shape[1];
         const width = input.shape[2];
-        const resized = util.resizeTo(input, [config.inputResolution, config.inputResolution]);
-        const {heatmapScores, offsets, displacementFwd, displacementBwd} = this.baseModel.predict(resized);
-        const allTensorBuffers = await util.toTensorBuffers3D([heatmapScores, offsets, displacementFwd, displacementBwd]);
+        const resized = util.resizeTo(input, [config.body.inputResolution, config.body.inputResolution]);
+        const res = this.baseModel.predict(resized);
+        const allTensorBuffers = await util.toTensorBuffers3D([res.heatmapScores, res.offsets, res.displacementFwd, res.displacementBwd]);
         const scoresBuffer = allTensorBuffers[0];
         const offsetsBuffer = allTensorBuffers[1];
         const displacementsFwdBuffer = allTensorBuffers[2];
         const displacementsBwdBuffer = allTensorBuffers[3];
-        const poses = await decodeMultiple.decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, outputStride, config.maxDetections, config.scoreThreshold, config.nmsRadius);
-        const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config.inputResolution, config.inputResolution]);
-        heatmapScores.dispose();
-        offsets.dispose();
-        displacementFwd.dispose();
-        displacementBwd.dispose();
+        const poses = await decodeMultiple.decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, this.outputStride, config.body.maxDetections, config.body.scoreThreshold, config.body.nmsRadius);
+        const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config.body.inputResolution, config.body.inputResolution]);
+        res.heatmapScores.dispose();
+        res.offsets.dispose();
+        res.displacementFwd.dispose();
+        res.displacementBwd.dispose();
         resized.dispose();
         resolve(resultPoses);
       });
@@ -71572,14 +71572,11 @@ var require_modelPoseNet = __commonJS((exports) => {
     }
   }
   exports.PoseNet = PoseNet;
-  async function loadMobileNet(config) {
-    const graphModel = await tf2.loadGraphModel(config.modelPath);
-    const mobilenet = new modelMobileNet.MobileNet(graphModel, config.outputStride);
-    console.log(`Human: load model: ${config.modelPath.match(/\/(.*)\./)[1]}`);
-    return new PoseNet(mobilenet);
-  }
   async function load(config) {
-    return loadMobileNet(config);
+    const graphModel = await tf2.loadGraphModel(config.body.modelPath);
+    const mobilenet = new modelMobileNet.MobileNet(graphModel, this.outputStride);
+    console.log(`Human: load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
+    return new PoseNet(mobilenet);
   }
   exports.load = load;
 });
@@ -90691,7 +90688,6 @@ var require_config = __commonJS((exports) => {
       iris: {
         enabled: true,
         modelPath: "../models/iris.json",
-        enlargeFactor: 2.3,
         inputSize: 64
       },
       age: {
@@ -90719,7 +90715,6 @@ var require_config = __commonJS((exports) => {
       enabled: true,
       modelPath: "../models/posenet.json",
       inputResolution: 257,
-      outputStride: 16,
       maxDetections: 10,
       scoreThreshold: 0.8,
       nmsRadius: 20
@@ -90731,7 +90726,6 @@ var require_config = __commonJS((exports) => {
       minConfidence: 0.5,
       iouThreshold: 0.1,
       scoreThreshold: 0.8,
-      enlargeFactor: 1.65,
       maxHands: 1,
       landmarks: true,
       detector: {
@@ -90937,14 +90931,14 @@ class Human {
         this.models.gender || gender.load(this.config),
         this.models.emotion || emotion.load(this.config),
         this.models.facemesh || facemesh.load(this.config.face),
-        this.models.posenet || posenet.load(this.config.body),
+        this.models.posenet || posenet.load(this.config),
         this.models.handpose || handpose.load(this.config.hand)
       ]);
     } else {
       if (this.config.face.enabled && !this.models.facemesh)
         this.models.facemesh = await facemesh.load(this.config.face);
       if (this.config.body.enabled && !this.models.posenet)
-        this.models.posenet = await posenet.load(this.config.body);
+        this.models.posenet = await posenet.load(this.config);
       if (this.config.hand.enabled && !this.models.handpose)
         this.models.handpose = await handpose.load(this.config.hand);
       if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age)
@@ -91090,13 +91084,13 @@ class Human {
       }
       this.analyze("Start Body:");
       if (this.config.async) {
-        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(process2.tensor, this.config.body) : [];
+        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(process2.tensor, this.config) : [];
         if (this.perf.body)
           delete this.perf.body;
       } else {
         this.state = "run:body";
         timeStamp2 = now();
-        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(process2.tensor, this.config.body) : [];
+        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(process2.tensor, this.config) : [];
         this.perf.body = Math.trunc(now() - timeStamp2);
       }
       this.analyze("End Body:");
@@ -91362,7 +91356,7 @@ function createCSS() {
   .menu-item { display: flex; white-space: nowrap; padding: 0.2rem; width: max-content; cursor: default; }
   .menu-title { text-align: right; cursor: pointer; }
   .menu-hr { margin: 0.2rem; border: 1px solid rgba(0, 0, 0, 0.5) }
-  .menu-label { padding: 0; }
+  .menu-label { padding: 0; font-weight: 800; }
 
   .menu-list { margin-right: 0.8rem; }
   select:focus { outline: none; }
@@ -91641,6 +91635,7 @@ const ui = {
   baseFontProto: 'small-caps {size} "Segoe UI"',
   baseLineWidth: 12,
   baseLineHeightProto: 2,
+  crop: true,
   columns: 2,
   busy: false,
   facing: true,
@@ -91650,7 +91645,7 @@ const ui = {
   drawBoxes: true,
   drawPoints: false,
   drawPolygons: true,
-  fillPolygons: true,
+  fillPolygons: false,
   useDepth: true,
   console: true,
   maxFrames: 10,
@@ -91746,7 +91741,7 @@ ${msg}`;
     audio: false,
     video: {
       facingMode: ui.facing ? "user" : "environment",
-      resizeMode: "none",
+      resizeMode: ui.crop ? "crop-and-scale" : "none",
       width: {ideal: window.innerWidth},
       height: {ideal: window.innerHeight}
     }
@@ -91814,7 +91809,9 @@ function runHumanDetect(input, canvas) {
   timeStamp = performance.now();
   const live = input.srcObject && input.srcObject.getVideoTracks()[0].readyState === "live" && input.readyState > 2 && !input.paused;
   if (!live && input.srcObject) {
-    if (input.srcObject.getVideoTracks()[0].readyState === "live" && input.readyState <= 2)
+    if (input.paused)
+      log("camera paused");
+    else if (input.srcObject.getVideoTracks()[0].readyState === "live" && input.readyState <= 2)
       setTimeout(() => runHumanDetect(input, canvas), 500);
     else
       log(`camera not ready: track state: ${(_a = input.srcObject) == null ? void 0 : _a.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
@@ -91833,8 +91830,6 @@ function runHumanDetect(input, canvas) {
         log(result.error);
       else
         drawResults(input, result, canvas);
-      if (human.config.profile)
-        log("profile data:", human.profile());
     });
   }
 }
@@ -91904,78 +91899,79 @@ function setupMenu() {
   menu2.addButton("process images", "process images", () => detectSampleImages());
   document.getElementById("play").addEventListener("click", () => btn.click());
   menu2.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menu2.addList("Backend", ["cpu", "webgl", "wasm", "webgpu"], human.config.backend, (val) => human.config.backend = val);
-  menu2.addBool("Async Operations", human.config, "async", (val) => human.config.async = val);
-  menu2.addBool("Enable Profiler", human.config, "profile", (val) => human.config.profile = val);
-  menu2.addBool("Memory Shield", human.config, "deallocate", (val) => human.config.deallocate = val);
-  menu2.addBool("Use Web Worker", ui, "useWorker");
+  menu2.addList("backend", ["cpu", "webgl", "wasm", "webgpu"], human.config.backend, (val) => human.config.backend = val);
+  menu2.addBool("async operations", human.config, "async", (val) => human.config.async = val);
+  menu2.addBool("enable profiler", human.config, "profile", (val) => human.config.profile = val);
+  menu2.addBool("memory shield", human.config, "deallocate", (val) => human.config.deallocate = val);
+  menu2.addBool("use web worker", ui, "useWorker");
   menu2.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menu2.addLabel("Enabled Models");
-  menu2.addBool("Face Detect", human.config.face, "enabled");
-  menu2.addBool("Face Mesh", human.config.face.mesh, "enabled");
-  menu2.addBool("Face Iris", human.config.face.iris, "enabled");
-  menu2.addBool("Face Age", human.config.face.age, "enabled");
-  menu2.addBool("Face Gender", human.config.face.gender, "enabled");
-  menu2.addBool("Face Emotion", human.config.face.emotion, "enabled");
-  menu2.addBool("Body Pose", human.config.body, "enabled");
-  menu2.addBool("Hand Pose", human.config.hand, "enabled");
-  menu2.addBool("Gesture Analysis", human.config.gesture, "enabled");
+  menu2.addLabel("enabled models");
+  menu2.addBool("face detect", human.config.face, "enabled");
+  menu2.addBool("face mesh", human.config.face.mesh, "enabled");
+  menu2.addBool("face iris", human.config.face.iris, "enabled");
+  menu2.addBool("face age", human.config.face.age, "enabled");
+  menu2.addBool("face gender", human.config.face.gender, "enabled");
+  menu2.addBool("face emotion", human.config.face.emotion, "enabled");
+  menu2.addBool("body pose", human.config.body, "enabled");
+  menu2.addBool("hand pose", human.config.hand, "enabled");
+  menu2.addBool("gesture analysis", human.config.gesture, "enabled");
   menu2.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menu2.addLabel("Model Parameters");
-  menu2.addRange("Max Objects", human.config.face.detector, "maxFaces", 1, 50, 1, (val) => {
+  menu2.addLabel("model parameters");
+  menu2.addRange("max objects", human.config.face.detector, "maxFaces", 1, 50, 1, (val) => {
     human.config.face.detector.maxFaces = parseInt(val);
     human.config.body.maxDetections = parseInt(val);
     human.config.hand.maxHands = parseInt(val);
   });
-  menu2.addRange("Skip Frames", human.config.face.detector, "skipFrames", 0, 50, 1, (val) => {
+  menu2.addRange("skip frames", human.config.face.detector, "skipFrames", 0, 50, 1, (val) => {
     human.config.face.detector.skipFrames = parseInt(val);
     human.config.face.emotion.skipFrames = parseInt(val);
     human.config.face.age.skipFrames = parseInt(val);
     human.config.hand.skipFrames = parseInt(val);
   });
-  menu2.addRange("Min Confidence", human.config.face.detector, "minConfidence", 0, 1, 0.05, (val) => {
+  menu2.addRange("min confidence", human.config.face.detector, "minConfidence", 0, 1, 0.05, (val) => {
     human.config.face.detector.minConfidence = parseFloat(val);
     human.config.face.gender.minConfidence = parseFloat(val);
     human.config.face.emotion.minConfidence = parseFloat(val);
     human.config.hand.minConfidence = parseFloat(val);
   });
-  menu2.addRange("Score Threshold", human.config.face.detector, "scoreThreshold", 0.1, 1, 0.05, (val) => {
+  menu2.addRange("score threshold", human.config.face.detector, "scoreThreshold", 0.1, 1, 0.05, (val) => {
     human.config.face.detector.scoreThreshold = parseFloat(val);
     human.config.hand.scoreThreshold = parseFloat(val);
     human.config.body.scoreThreshold = parseFloat(val);
   });
-  menu2.addRange("IOU Threshold", human.config.face.detector, "iouThreshold", 0.1, 1, 0.05, (val) => {
+  menu2.addRange("overlap", human.config.face.detector, "iouThreshold", 0.1, 1, 0.05, (val) => {
     human.config.face.detector.iouThreshold = parseFloat(val);
     human.config.hand.iouThreshold = parseFloat(val);
   });
   menu2.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu2.addChart("FPS", "FPS");
   menuFX = new menu_default(document.body, "...", {top: "1rem", right: "18rem"});
-  menuFX.addLabel("UI Options");
-  menuFX.addBool("Camera Front/Back", ui, "facing", () => setupCamera());
-  menuFX.addBool("Use 3D Depth", ui, "useDepth");
-  menuFX.addBool("Draw Boxes", ui, "drawBoxes");
-  menuFX.addBool("Draw Points", ui, "drawPoints");
-  menuFX.addBool("Draw Polygons", ui, "drawPolygons");
+  menuFX.addLabel("ui options");
+  menuFX.addBool("crop & scale", ui, "crop", () => setupCamera());
+  menuFX.addBool("camera front/back", ui, "facing", () => setupCamera());
+  menuFX.addBool("use 3D depth", ui, "useDepth");
+  menuFX.addBool("draw boxes", ui, "drawBoxes");
+  menuFX.addBool("draw polygons", ui, "drawPolygons");
   menuFX.addBool("Fill Polygons", ui, "fillPolygons");
+  menuFX.addBool("draw points", ui, "drawPoints");
   menuFX.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menuFX.addLabel("Image Processing");
-  menuFX.addBool("Enabled", human.config.filter, "enabled");
-  ui.menuWidth = menuFX.addRange("Image width", human.config.filter, "width", 0, 3840, 10, (val) => human.config.filter.width = parseInt(val));
-  ui.menuHeight = menuFX.addRange("Image height", human.config.filter, "height", 0, 2160, 10, (val) => human.config.filter.height = parseInt(val));
-  menuFX.addRange("Brightness", human.config.filter, "brightness", -1, 1, 0.05, (val) => human.config.filter.brightness = parseFloat(val));
-  menuFX.addRange("Contrast", human.config.filter, "contrast", -1, 1, 0.05, (val) => human.config.filter.contrast = parseFloat(val));
-  menuFX.addRange("Sharpness", human.config.filter, "sharpness", 0, 1, 0.05, (val) => human.config.filter.sharpness = parseFloat(val));
-  menuFX.addRange("Blur", human.config.filter, "blur", 0, 20, 1, (val) => human.config.filter.blur = parseInt(val));
-  menuFX.addRange("Saturation", human.config.filter, "saturation", -1, 1, 0.05, (val) => human.config.filter.saturation = parseFloat(val));
-  menuFX.addRange("Hue", human.config.filter, "hue", 0, 360, 5, (val) => human.config.filter.hue = parseInt(val));
-  menuFX.addRange("Pixelate", human.config.filter, "pixelate", 0, 32, 1, (val) => human.config.filter.pixelate = parseInt(val));
-  menuFX.addBool("Negative", human.config.filter, "negative");
-  menuFX.addBool("Sepia", human.config.filter, "sepia");
-  menuFX.addBool("Vintage", human.config.filter, "vintage");
-  menuFX.addBool("Kodachrome", human.config.filter, "kodachrome");
-  menuFX.addBool("Technicolor", human.config.filter, "technicolor");
-  menuFX.addBool("Polaroid", human.config.filter, "polaroid");
+  menuFX.addLabel("image processing");
+  menuFX.addBool("enabled", human.config.filter, "enabled");
+  ui.menuWidth = menuFX.addRange("image width", human.config.filter, "width", 0, 3840, 10, (val) => human.config.filter.width = parseInt(val));
+  ui.menuHeight = menuFX.addRange("image height", human.config.filter, "height", 0, 2160, 10, (val) => human.config.filter.height = parseInt(val));
+  menuFX.addRange("brightness", human.config.filter, "brightness", -1, 1, 0.05, (val) => human.config.filter.brightness = parseFloat(val));
+  menuFX.addRange("contrast", human.config.filter, "contrast", -1, 1, 0.05, (val) => human.config.filter.contrast = parseFloat(val));
+  menuFX.addRange("sharpness", human.config.filter, "sharpness", 0, 1, 0.05, (val) => human.config.filter.sharpness = parseFloat(val));
+  menuFX.addRange("blur", human.config.filter, "blur", 0, 20, 1, (val) => human.config.filter.blur = parseInt(val));
+  menuFX.addRange("saturation", human.config.filter, "saturation", -1, 1, 0.05, (val) => human.config.filter.saturation = parseFloat(val));
+  menuFX.addRange("hue", human.config.filter, "hue", 0, 360, 5, (val) => human.config.filter.hue = parseInt(val));
+  menuFX.addRange("pixelate", human.config.filter, "pixelate", 0, 32, 1, (val) => human.config.filter.pixelate = parseInt(val));
+  menuFX.addBool("negative", human.config.filter, "negative");
+  menuFX.addBool("sepia", human.config.filter, "sepia");
+  menuFX.addBool("vintage", human.config.filter, "vintage");
+  menuFX.addBool("kodachrome", human.config.filter, "kodachrome");
+  menuFX.addBool("technicolor", human.config.filter, "technicolor");
+  menuFX.addBool("polaroid", human.config.filter, "polaroid");
 }
 async function main() {
   log("Human: demo starting ...");

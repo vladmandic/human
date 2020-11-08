@@ -67152,7 +67152,7 @@ var require_blazeface = __commonJS((exports) => {
         }
         const decodedBounds = decodeBounds(prediction, this.anchors, this.inputSize);
         const logits = tf2.slice(prediction, [0, 0], [-1, 1]);
-        const scoresOut = logits.squeeze();
+        const scoresOut = tf2.sigmoid(logits).squeeze();
         return [prediction, decodedBounds, scoresOut];
       });
       const boxIndicesTensor = await tf2.image.nonMaxSuppressionAsync(boxes, scores, this.config.detector.maxFaces, this.config.detector.iouThreshold, this.config.detector.scoreThreshold);
@@ -67501,7 +67501,7 @@ var require_facepipeline = __commonJS((exports) => {
       this.meshWidth = config.mesh.inputSize;
       this.meshHeight = config.mesh.inputSize;
       this.irisSize = config.iris.inputSize;
-      this.irisEnlarge = config.iris.enlargeFactor;
+      this.irisEnlarge = 2.3;
     }
     transformRawCoords(rawCoords, box, angle, rotationMatrix) {
       const boxSize = bounding.getBoxSize({startPoint: box.startPoint, endPoint: box.endPoint});
@@ -70933,9 +70933,9 @@ var require_profile = __commonJS((exports) => {
       largest.length = maxResults;
     const res = {newBytes: data.newBytes, newTensors: data.newTensors, peakBytes: data.peakBytes, numKernelOps: data.kernels.length, timeKernelOps: time, slowestKernelOps: slowest, largestKernelOps: largest};
     profileData[name] = res;
+    console.log("Human profiler", name, res);
   }
   exports.run = profile2;
-  exports.data = profileData;
 });
 
 // src/age/age.js
@@ -71131,7 +71131,7 @@ var require_emotion = __commonJS((exports) => {
           data = emotionT.dataSync();
           tf2.dispose(emotionT);
         } else {
-          const profileData = await tf2.profile(() => models.emotion.predict(grayscale));
+          const profileData = await tf2.profile(() => models.emotion.predict(normalize));
           data = profileData.result.dataSync();
           profileData.result.dispose();
           profile2.run("emotion", profileData);
@@ -71625,25 +71625,25 @@ var require_modelPoseNet = __commonJS((exports) => {
   class PoseNet {
     constructor(net) {
       this.baseModel = net;
+      this.outputStride = 16;
     }
     async estimatePoses(input, config) {
       return new Promise(async (resolve) => {
-        const outputStride = config.outputStride;
         const height = input.shape[1];
         const width = input.shape[2];
-        const resized = util.resizeTo(input, [config.inputResolution, config.inputResolution]);
-        const {heatmapScores, offsets, displacementFwd, displacementBwd} = this.baseModel.predict(resized);
-        const allTensorBuffers = await util.toTensorBuffers3D([heatmapScores, offsets, displacementFwd, displacementBwd]);
+        const resized = util.resizeTo(input, [config.body.inputResolution, config.body.inputResolution]);
+        const res = this.baseModel.predict(resized);
+        const allTensorBuffers = await util.toTensorBuffers3D([res.heatmapScores, res.offsets, res.displacementFwd, res.displacementBwd]);
         const scoresBuffer = allTensorBuffers[0];
         const offsetsBuffer = allTensorBuffers[1];
         const displacementsFwdBuffer = allTensorBuffers[2];
         const displacementsBwdBuffer = allTensorBuffers[3];
-        const poses = await decodeMultiple.decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, outputStride, config.maxDetections, config.scoreThreshold, config.nmsRadius);
-        const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config.inputResolution, config.inputResolution]);
-        heatmapScores.dispose();
-        offsets.dispose();
-        displacementFwd.dispose();
-        displacementBwd.dispose();
+        const poses = await decodeMultiple.decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, this.outputStride, config.body.maxDetections, config.body.scoreThreshold, config.body.nmsRadius);
+        const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config.body.inputResolution, config.body.inputResolution]);
+        res.heatmapScores.dispose();
+        res.offsets.dispose();
+        res.displacementFwd.dispose();
+        res.displacementBwd.dispose();
         resized.dispose();
         resolve(resultPoses);
       });
@@ -71653,14 +71653,11 @@ var require_modelPoseNet = __commonJS((exports) => {
     }
   }
   exports.PoseNet = PoseNet;
-  async function loadMobileNet(config) {
-    const graphModel = await tf2.loadGraphModel(config.modelPath);
-    const mobilenet = new modelMobileNet.MobileNet(graphModel, config.outputStride);
-    console.log(`Human: load model: ${config.modelPath.match(/\/(.*)\./)[1]}`);
-    return new PoseNet(mobilenet);
-  }
   async function load(config) {
-    return loadMobileNet(config);
+    const graphModel = await tf2.loadGraphModel(config.body.modelPath);
+    const mobilenet = new modelMobileNet.MobileNet(graphModel, this.outputStride);
+    console.log(`Human: load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
+    return new PoseNet(mobilenet);
   }
   exports.load = load;
 });
@@ -90794,7 +90791,6 @@ var require_config = __commonJS((exports) => {
       iris: {
         enabled: true,
         modelPath: "../models/iris.json",
-        enlargeFactor: 2.3,
         inputSize: 64
       },
       age: {
@@ -90822,7 +90818,6 @@ var require_config = __commonJS((exports) => {
       enabled: true,
       modelPath: "../models/posenet.json",
       inputResolution: 257,
-      outputStride: 16,
       maxDetections: 10,
       scoreThreshold: 0.8,
       nmsRadius: 20
@@ -90834,7 +90829,6 @@ var require_config = __commonJS((exports) => {
       minConfidence: 0.5,
       iouThreshold: 0.1,
       scoreThreshold: 0.8,
-      enlargeFactor: 1.65,
       maxHands: 1,
       landmarks: true,
       detector: {
@@ -91044,14 +91038,14 @@ class Human {
         this.models.gender || gender.load(this.config),
         this.models.emotion || emotion.load(this.config),
         this.models.facemesh || facemesh.load(this.config.face),
-        this.models.posenet || posenet.load(this.config.body),
+        this.models.posenet || posenet.load(this.config),
         this.models.handpose || handpose.load(this.config.hand)
       ]);
     } else {
       if (this.config.face.enabled && !this.models.facemesh)
         this.models.facemesh = await facemesh.load(this.config.face);
       if (this.config.body.enabled && !this.models.posenet)
-        this.models.posenet = await posenet.load(this.config.body);
+        this.models.posenet = await posenet.load(this.config);
       if (this.config.hand.enabled && !this.models.handpose)
         this.models.handpose = await handpose.load(this.config.hand);
       if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age)
@@ -91197,13 +91191,13 @@ class Human {
       }
       this.analyze("Start Body:");
       if (this.config.async) {
-        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(process2.tensor, this.config.body) : [];
+        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(process2.tensor, this.config) : [];
         if (this.perf.body)
           delete this.perf.body;
       } else {
         this.state = "run:body";
         timeStamp = now();
-        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(process2.tensor, this.config.body) : [];
+        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(process2.tensor, this.config) : [];
         this.perf.body = Math.trunc(now() - timeStamp);
       }
       this.analyze("End Body:");

@@ -134,12 +134,12 @@ class Human {
         this.models.gender || gender.load(this.config),
         this.models.emotion || emotion.load(this.config),
         this.models.facemesh || facemesh.load(this.config.face),
-        this.models.posenet || posenet.load(this.config.body),
+        this.models.posenet || posenet.load(this.config),
         this.models.handpose || handpose.load(this.config.hand),
       ]);
     } else {
       if (this.config.face.enabled && !this.models.facemesh) this.models.facemesh = await facemesh.load(this.config.face);
-      if (this.config.body.enabled && !this.models.posenet) this.models.posenet = await posenet.load(this.config.body);
+      if (this.config.body.enabled && !this.models.posenet) this.models.posenet = await posenet.load(this.config);
       if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config.hand);
       if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) this.models.age = await age.load(this.config);
       if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) this.models.gender = await gender.load(this.config);
@@ -327,12 +327,12 @@ class Human {
       // run posenet
       this.analyze('Start Body:');
       if (this.config.async) {
-        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(process.tensor, this.config.body) : [];
+        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(process.tensor, this.config) : [];
         if (this.perf.body) delete this.perf.body;
       } else {
         this.state = 'run:body';
         timeStamp = now();
-        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(process.tensor, this.config.body) : [];
+        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(process.tensor, this.config) : [];
         this.perf.body = Math.trunc(now() - timeStamp);
       }
       this.analyze('End Body:');

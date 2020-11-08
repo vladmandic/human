@@ -26,7 +26,7 @@
 
 Compatible with *Browser*, *WebWorker* and *NodeJS* execution  
 - Browser/WebWorker: Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  
-- NodeJS: Compatible with software *tfjs-node* and CUSA accelerated backends *tfjs-node-gpu*  
+- NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
 
 (and maybe with React-Native as it doesn't use any DOM objects)  
 

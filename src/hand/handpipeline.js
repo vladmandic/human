@@ -30,12 +30,11 @@ const PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
 
 class HandPipeline {
   constructor(boundingBoxDetector, meshDetector, inputSize) {
-    this.boundingBoxDetector = boundingBoxDetector;
+    this.boxDetector = boundingBoxDetector;
     this.meshDetector = meshDetector;
     this.inputSize = inputSize;
-    this.regionsOfInterest = [];
-    this.runsWithoutHandDetector = 0;
-    this.skipFrames = 0;
+    this.storedBoxes = [];
+    this.skipped = 0;
     this.detectedHands = 0;
   }
 
@@ -86,30 +85,24 @@ class HandPipeline {
   }
 
   async estimateHands(image, config) {
-    this.skipFrames = config.skipFrames;
-    // don't need box detection if we have sufficient number of boxes
-    let useFreshBox = (this.runsWithoutHandDetector > this.skipFrames) || (this.detectedHands !== this.regionsOfInterest.length);
-    let boundingBoxPredictions;
-    // but every skipFrames check if detect boxes number changed
-    if (useFreshBox) boundingBoxPredictions = await this.boundingBoxDetector.estimateHandBounds(image, config);
-    // if there are new boxes and number of boxes doesn't match use new boxes, but not if maxhands is fixed to 1
-    if (config.maxHands > 1 && boundingBoxPredictions && boundingBoxPredictions.length > 0 && boundingBoxPredictions.length !== this.detectedHands) useFreshBox = true;
-    if (useFreshBox) {
-      this.regionsOfInterest = [];
-      if (!boundingBoxPredictions || boundingBoxPredictions.length === 0) {
-        this.detectedHands = 0;
-        return null;
-      }
-      for (const boundingBoxPrediction of boundingBoxPredictions) {
-        this.regionsOfInterest.push(boundingBoxPrediction);
-      }
-      this.runsWithoutHandDetector = 0;
-    } else {
-      this.runsWithoutHandDetector++;
+    this.skipped++;
+    let useFreshBox = false;
+    // run new detector every skipFrames
+    const boxes = (this.skipped > config.skipFrames)
+      ? await this.boxDetector.estimateHandBounds(image, config) : null;
+    // if detector result count doesn't match current working set, use it to reset current working set
+    if (boxes && (boxes.length !== this.detectedHands) && (this.detectedHands !== config.maxHands)) {
+      // console.log(this.skipped, config.maxHands, this.detectedHands, this.storedBoxes.length, boxes.length);
+      this.storedBoxes = [];
+      this.detectedHands = 0;
+      for (const possible of boxes) this.storedBoxes.push(possible);
+      if (this.storedBoxes.length > 0) useFreshBox = true;
+      this.skipped = 0;
     }
     const hands = [];
-    for (const i in this.regionsOfInterest) {
-      const currentBox = this.regionsOfInterest[i];
+    // go through working set of boxes
+    for (const i in this.storedBoxes) {
+      const currentBox = this.storedBoxes[i];
       if (!currentBox) continue;
       const angle = util.computeRotation(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]);
       const palmCenter = box.getBoxCenter(currentBox);
@@ -121,8 +114,7 @@ class HandPipeline {
       const handImage = croppedInput.div(255);
       croppedInput.dispose();
       rotatedImage.dispose();
-      const prediction = this.meshDetector.predict(handImage);
-      const [confidence, keypoints] = prediction;
+      const [confidence, keypoints] = await this.meshDetector.predict(handImage);
       handImage.dispose();
       const confidenceValue = confidence.dataSync()[0];
       confidence.dispose();
@@ -133,7 +125,7 @@ class HandPipeline {
         keypointsReshaped.dispose();
         const coords = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
         const nextBoundingBox = this.getBoxForHandLandmarks(coords);
-        this.updateRegionsOfInterest(nextBoundingBox, i);
+        this.updateStoredBoxes(nextBoundingBox, i);
         const result = {
           landmarks: coords,
           handInViewConfidence: confidenceValue,
@@ -144,7 +136,7 @@ class HandPipeline {
         };
         hands.push(result);
       } else {
-        this.updateRegionsOfInterest(null, i);
+        this.updateStoredBoxes(null, i);
         /*
         const result = {
           handInViewConfidence: confidenceValue,
@@ -158,7 +150,7 @@ class HandPipeline {
       }
       keypoints.dispose();
     }
-    this.regionsOfInterest = this.regionsOfInterest.filter((a) => a !== null);
+    this.storedBoxes = this.storedBoxes.filter((a) => a !== null);
     this.detectedHands = hands.length;
     return hands;
   }
@@ -172,8 +164,8 @@ class HandPipeline {
     return { startPoint, endPoint };
   }
 
-  updateRegionsOfInterest(newBox, i) {
-    const previousBox = this.regionsOfInterest[i];
+  updateStoredBoxes(newBox, i) {
+    const previousBox = this.storedBoxes[i];
     let iou = 0;
     if (newBox && previousBox && previousBox.startPoint) {
       const [boxStartX, boxStartY] = newBox.startPoint;
@@ -189,7 +181,7 @@ class HandPipeline {
       const previousBoxArea = (previousBoxEndX - previousBoxStartX) * (previousBoxEndY - boxStartY);
       iou = intersection / (boxArea + previousBoxArea - intersection);
     }
-    this.regionsOfInterest[i] = iou > UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD ? previousBox : newBox;
+    this.storedBoxes[i] = iou > UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD ? previousBox : newBox;
   }
 }
 

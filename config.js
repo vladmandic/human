@@ -109,10 +109,10 @@ export default {
                              // if model is running st 25 FPS, we can re-use existing bounding box for updated hand skeleton analysis
                              // as the hand probably hasn't moved much in short time (10 * 1/25 = 0.25 sec)
     minConfidence: 0.5,      // threshold for discarding a prediction
-    iouThreshold: 0.2,       // threshold for deciding whether boxes overlap too much in non-maximum suppression
-    scoreThreshold: 0.5,     // threshold for deciding when to remove boxes based on score in non-maximum suppression
+    iouThreshold: 0.1,       // threshold for deciding whether boxes overlap too much in non-maximum suppression
+    scoreThreshold: 0.8,     // threshold for deciding when to remove boxes based on score in non-maximum suppression
     enlargeFactor: 1.65,     // empiric tuning as skeleton prediction prefers hand box with some whitespace
-    maxHands: 10,            // maximum number of hands detected in the input, should be set to the minimum number for performance
+    maxHands: 1,             // maximum number of hands detected in the input, should be set to the minimum number for performance
     detector: {
       modelPath: '../models/handdetect.json',
     },

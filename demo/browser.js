@@ -154,7 +154,7 @@ async function setupCamera() {
   else return null;
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
-  log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight }, 'settings:', settings, 'track:', track);
+  // log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight }, 'settings:', settings, 'track:', track);
   ui.camera = { name: track.label, width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   return new Promise((resolve) => {
     video.onloadeddata = async () => {

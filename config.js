@@ -121,7 +121,7 @@ export default {
   body: {
     enabled: true,
     modelPath: '../models/posenet.json',
-    inputResolution: 257,    // fixed value
+    inputSize: 257,          // fixed value
     maxDetections: 10,       // maximum number of people detected in the input
                              // should be set to the minimum number for performance
     scoreThreshold: 0.8,     // threshold for deciding when to remove boxes based on score

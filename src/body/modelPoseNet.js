@@ -13,7 +13,7 @@ class PoseNet {
     return new Promise(async (resolve) => {
       const height = input.shape[1];
       const width = input.shape[2];
-      const resized = util.resizeTo(input, [config.body.inputResolution, config.body.inputResolution]);
+      const resized = util.resizeTo(input, [config.body.inputSize, config.body.inputSize]);
       const res = this.baseModel.predict(resized);
       const allTensorBuffers = await util.toTensorBuffers3D([res.heatmapScores, res.offsets, res.displacementFwd, res.displacementBwd]);
       const scoresBuffer = allTensorBuffers[0];
@@ -21,7 +21,7 @@ class PoseNet {
       const displacementsFwdBuffer = allTensorBuffers[2];
       const displacementsBwdBuffer = allTensorBuffers[3];
       const poses = await decodeMultiple.decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, this.outputStride, config.body.maxDetections, config.body.scoreThreshold, config.body.nmsRadius);
-      const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config.body.inputResolution, config.body.inputResolution]);
+      const resultPoses = util.scaleAndFlipPoses(poses, [height, width], [config.body.inputSize, config.body.inputSize]);
       res.heatmapScores.dispose();
       res.offsets.dispose();
       res.displacementFwd.dispose();

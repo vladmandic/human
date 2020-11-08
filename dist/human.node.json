@@ -1,7 +1,7 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 7664,
+      "bytes": 8366,
       "imports": []
     },
     "package.json": {
@@ -58,7 +58,7 @@
       "imports": []
     },
     "src/body/modelBase.js": {
-      "bytes": 1512,
+      "bytes": 883,
       "imports": []
     },
     "src/body/modelMobileNet.js": {
@@ -70,7 +70,7 @@
       ]
     },
     "src/body/modelPoseNet.js": {
-      "bytes": 3658,
+      "bytes": 1922,
       "imports": [
         {
           "path": "src/body/modelMobileNet.js"
@@ -104,7 +104,7 @@
       ]
     },
     "src/body/util.js": {
-      "bytes": 2260,
+      "bytes": 2262,
       "imports": [
         {
           "path": "src/body/keypoints.js"
@@ -128,7 +128,7 @@
       ]
     },
     "src/face/blazeface.js": {
-      "bytes": 7226,
+      "bytes": 7058,
       "imports": []
     },
     "src/face/box.js": {
@@ -156,7 +156,7 @@
       ]
     },
     "src/face/facepipeline.js": {
-      "bytes": 14774,
+      "bytes": 14752,
       "imports": [
         {
           "path": "src/face/box.js"
@@ -202,11 +202,11 @@
       "imports": []
     },
     "src/hand/box.js": {
-      "bytes": 3192,
+      "bytes": 3220,
       "imports": []
     },
     "src/hand/handdetector.js": {
-      "bytes": 4220,
+      "bytes": 4230,
       "imports": [
         {
           "path": "src/hand/box.js"
@@ -214,7 +214,7 @@
       ]
     },
     "src/hand/handpipeline.js": {
-      "bytes": 8214,
+      "bytes": 7445,
       "imports": [
         {
           "path": "src/hand/box.js"
@@ -225,7 +225,7 @@
       ]
     },
     "src/hand/handpose.js": {
-      "bytes": 3095,
+      "bytes": 3029,
       "imports": [
         {
           "path": "src/hand/handdetector.js"
@@ -243,7 +243,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 13727,
+      "bytes": 13707,
       "imports": [
         {
           "path": "src/face/facemesh.js"
@@ -293,7 +293,7 @@
       "imports": []
     },
     "src/profile.js": {
-      "bytes": 1004,
+      "bytes": 1061,
       "imports": []
     }
   },
@@ -301,13 +301,13 @@
     "dist/human.node-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 636874
+      "bytes": 634170
     },
     "dist/human.node-nobundle.js": {
       "imports": [],
       "inputs": {
         "src/face/blazeface.js": {
-          "bytesInOutput": 3082
+          "bytesInOutput": 3093
         },
         "src/face/keypoints.js": {
           "bytesInOutput": 1945
@@ -319,7 +319,7 @@
           "bytesInOutput": 1171
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 5664
+          "bytesInOutput": 5647
         },
         "src/face/uvcoords.js": {
           "bytesInOutput": 16785
@@ -331,7 +331,7 @@
           "bytesInOutput": 1308
         },
         "src/profile.js": {
-          "bytesInOutput": 619
+          "bytesInOutput": 642
         },
         "src/age/age.js": {
           "bytesInOutput": 994
@@ -370,28 +370,28 @@
           "bytesInOutput": 1053
         },
         "src/body/modelPoseNet.js": {
-          "bytesInOutput": 938
+          "bytesInOutput": 994
         },
         "src/body/posenet.js": {
           "bytesInOutput": 459
         },
         "src/hand/box.js": {
-          "bytesInOutput": 1419
+          "bytesInOutput": 1443
         },
         "src/hand/handdetector.js": {
-          "bytesInOutput": 1748
+          "bytesInOutput": 1876
         },
         "src/hand/util.js": {
           "bytesInOutput": 996
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 2878
+          "bytesInOutput": 2741
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 127000
         },
         "src/hand/handpose.js": {
-          "bytesInOutput": 1285
+          "bytesInOutput": 1219
         },
         "src/gesture.js": {
           "bytesInOutput": 1219
@@ -403,7 +403,7 @@
           "bytesInOutput": 2349
         },
         "config.js": {
-          "bytesInOutput": 1324
+          "bytesInOutput": 1278
         },
         "package.json": {
           "bytesInOutput": 3047
@@ -412,10 +412,10 @@
           "bytesInOutput": 28
         },
         "src/human.js": {
-          "bytesInOutput": 7201
+          "bytesInOutput": 7181
         }
       },
-      "bytes": 216580
+      "bytes": 216536
     }
   }
 }

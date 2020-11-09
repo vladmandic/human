@@ -393,8 +393,7 @@ async function main() {
   // this is not required, just pre-warms all models for faster initial inference
   if (ui.modelsWarmup) {
     status('initializing');
-    const warmup = new ImageData(256, 256);
-    await human.detect(warmup, userConfig);
+    await human.warmup(userConfig);
   }
   status('human: ready');
   document.getElementById('loader').style.display = 'none';

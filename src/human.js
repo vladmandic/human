@@ -373,6 +373,12 @@ class Human {
       resolve({ face: faceRes, body: poseRes, hand: handRes, gesture: gestureRes, performance: this.perf, canvas: process.canvas });
     });
   }
+
+  async warmup(userConfig) {
+    const warmup = new ImageData(255, 255);
+    await this.detect(warmup, userConfig);
+    this.log('warmed up');
+  }
 }
 
 export { Human as default };

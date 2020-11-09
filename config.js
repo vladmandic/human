@@ -71,10 +71,10 @@ export default {
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated face analysis as the head probably hasn't moved much
                              // in short time (10 * 1/25 = 0.25 sec)
-      minConfidence: 0.1,    // threshold for discarding a prediction
-      iouThreshold: 0.1,     // threshold for deciding whether boxes overlap too much in
+      minConfidence: 0.5,    // threshold for discarding a prediction
+      iouThreshold: 0.2,     // threshold for deciding whether boxes overlap too much in
                              // non-maximum suppression (0.1 means drop if overlap 10%)
-      scoreThreshold: 0.2,   // threshold for deciding when to remove boxes based on score
+      scoreThreshold: 0.5,   // threshold for deciding when to remove boxes based on score
                              // in non-maximum suppression,
                              // this is applied on detection objects only and before minConfidence
     },

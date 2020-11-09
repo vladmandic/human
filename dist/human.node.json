@@ -243,7 +243,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 13707,
+      "bytes": 13725,
       "imports": [
         {
           "path": "src/face/facemesh.js"
@@ -301,7 +301,7 @@
     "dist/human.node-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 634170
+      "bytes": 634264
     },
     "dist/human.node-nobundle.js": {
       "imports": [],
@@ -412,10 +412,10 @@
           "bytesInOutput": 28
         },
         "src/human.js": {
-          "bytesInOutput": 7181
+          "bytesInOutput": 7240
         }
       },
-      "bytes": 216536
+      "bytes": 216595
     }
   }
 }

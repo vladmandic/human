@@ -42,10 +42,10 @@ function mergeDeep(...objects) {
 }
 
 class Human {
-  constructor() {
+  constructor(userConfig = {}) {
     this.tf = tf;
     this.version = app.version;
-    this.config = defaults;
+    this.config = mergeDeep(defaults, userConfig);
     this.fx = null;
     this.state = 'idle';
     this.numTensors = 0;
@@ -152,7 +152,7 @@ class Human {
   // check if backend needs initialization if it changed
   async checkBackend(force) {
     const timeStamp = now();
-    if (force || (tf.getBackend() !== this.config.backend)) {
+    if (this.config.backend && (this.config.backend !== '') && force || (tf.getBackend() !== this.config.backend)) {
       this.state = 'backend';
       /* force backend reload
       if (this.config.backend in tf.engine().registry) {
@@ -167,16 +167,16 @@ class Human {
       await tf.setBackend(this.config.backend);
       tf.enableProdMode();
       /* debug mode is really too mcuh
-      if (this.config.profile) tf.enableDebugMode();
-      else tf.enableProdMode();
+      tf.enableDebugMode();
       */
-      if (this.config.deallocate && this.config.backend === 'webgl') {
-        this.log('Changing WebGL: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
-        tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
+      if (this.config.backend === 'webgl') {
+        if (this.config.deallocate) {
+          this.log('Changing WebGL: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
+          tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
+        }
+        // tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
+        tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
       }
-      // tf.ENV.set('WEBGL_CPU_FORWARD', true);
-      // tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
-      tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
       await tf.ready();
     }
     const current = Math.trunc(now() - timeStamp);

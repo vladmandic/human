@@ -243,7 +243,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 13707,
+      "bytes": 13725,
       "imports": [
         {
           "path": "src/face/facemesh.js"
@@ -301,7 +301,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 620057
+      "bytes": 620133
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -409,13 +409,13 @@
           "bytesInOutput": 3047
         },
         "src/human.js": {
-          "bytesInOutput": 7181
+          "bytesInOutput": 7240
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 216529
+      "bytes": 216588
     }
   }
 }

@@ -68,6 +68,31 @@ async function drawFace(result, canvas, ui, triangulation) {
             ctx.fill(path);
           }
         }
+        // iris: array[center, left, top, right, bottom]
+        if (face.annotations && face.annotations.leftEyeIris) {
+          ctx.strokeStyle = ui.useDepth ? 'rgba(255, 200, 255, 0.3)' : ui.baseColor;
+          ctx.beginPath();
+          const sizeX = Math.abs(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0]) / 2;
+          const sizeY = Math.abs(face.annotations.leftEyeIris[4][1] - face.annotations.leftEyeIris[2][1]) / 2;
+          ctx.ellipse(face.annotations.leftEyeIris[0][0], face.annotations.leftEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+          if (ui.fillPolygons) {
+            ctx.fillStyle = ui.useDepth ? 'rgba(255, 255, 200, 0.3)' : ui.baseColor;
+            ctx.fill();
+          }
+        }
+        if (face.annotations && face.annotations.rightEyeIris) {
+          ctx.strokeStyle = ui.useDepth ? 'rgba(255, 200, 255, 0.3)' : ui.baseColor;
+          ctx.beginPath();
+          const sizeX = Math.abs(face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0]) / 2;
+          const sizeY = Math.abs(face.annotations.rightEyeIris[4][1] - face.annotations.rightEyeIris[2][1]) / 2;
+          ctx.ellipse(face.annotations.rightEyeIris[0][0], face.annotations.rightEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+          if (ui.fillPolygons) {
+            ctx.fillStyle = ui.useDepth ? 'rgba(255, 255, 200, 0.3)' : ui.baseColor;
+            ctx.fill();
+          }
+        }
       }
     }
   }

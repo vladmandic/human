@@ -194,7 +194,7 @@
       ]
     },
     "src/gesture.js": {
-      "bytes": 2175,
+      "bytes": 2680,
       "imports": []
     },
     "src/hand/anchors.js": {
@@ -243,7 +243,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 13725,
+      "bytes": 13770,
       "imports": [
         {
           "path": "src/face/facemesh.js"
@@ -301,7 +301,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 620133
+      "bytes": 620981
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -394,7 +394,7 @@
           "bytesInOutput": 1219
         },
         "src/gesture.js": {
-          "bytesInOutput": 1219
+          "bytesInOutput": 1459
         },
         "src/imagefx.js": {
           "bytesInOutput": 11013
@@ -409,13 +409,13 @@
           "bytesInOutput": 3047
         },
         "src/human.js": {
-          "bytesInOutput": 7240
+          "bytesInOutput": 7256
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 216588
+      "bytes": 216844
     }
   }
 }

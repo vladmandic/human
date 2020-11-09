@@ -245,9 +245,10 @@ class Human {
       face.image.dispose();
 
       // calculate iris distance
-      // iris: array[ bottom, left, top, right, center ]
-      const iris = (face.annotations.leftEyeIris && face.annotations.rightEyeIris)
-        ? Math.max(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0], face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0])
+      // iris: array[ center, left, top, right, bottom]
+      const irisSize = (face.annotations.leftEyeIris && face.annotations.rightEyeIris)
+        /* average human iris size is 11.7mm */
+        ? 11.7 * Math.max(Math.abs(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0]), Math.abs(face.annotations.rightEyeIris[4][1] - face.annotations.rightEyeIris[2][1]))
         : 0;
 
       // combine results
@@ -260,7 +261,7 @@ class Human {
         gender: genderRes.gender,
         genderConfidence: genderRes.confidence,
         emotion: emotionRes,
-        iris: (iris !== 0) ? Math.trunc(100 * 11.7 /* human iris size in mm */ / iris) / 100 : 0,
+        iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
       });
       this.analyze('End Face');
     }

@@ -32958,8 +32958,13 @@ var rL = we((pc) => {
     if (!n)
       return [];
     const t = [];
-    for (const e of n)
+    for (const e of n) {
       e.annotations.rightCheek && e.annotations.leftCheek && e.annotations.rightCheek.length > 0 && e.annotations.leftCheek.length > 0 && t.push(`facing ${e.annotations.rightCheek[0][2] > 0 || e.annotations.leftCheek[0][2] < 0 ? "right" : "left"}`);
+      const r = Math.abs(e.mesh[374][1] - e.mesh[386][1]) / Math.abs(e.mesh[443][1] - e.mesh[450][1]);
+      r < 0.2 && t.push("blink left eye");
+      const i = Math.abs(e.mesh[145][1] - e.mesh[159][1]) / Math.abs(e.mesh[223][1] - e.mesh[230][1]);
+      i < 0.2 && t.push("blink right eye");
+    }
     return t;
   };
   pc.hand = (n) => {
@@ -33236,8 +33241,8 @@ class hG {
         continue;
       }
       this.analyze("Start Age:"), this.config.async ? e = this.config.face.age.enabled ? xs.predict(o.image, this.config) : {} : (this.state = "run:age", t = ut(), e = this.config.face.age.enabled ? await xs.predict(o.image, this.config) : {}, this.perf.age = Math.trunc(ut() - t)), this.analyze("Start Gender:"), this.config.async ? r = this.config.face.gender.enabled ? Ls.predict(o.image, this.config) : {} : (this.state = "run:gender", t = ut(), r = this.config.face.gender.enabled ? await Ls.predict(o.image, this.config) : {}, this.perf.gender = Math.trunc(ut() - t)), this.analyze("Start Emotion:"), this.config.async ? i = this.config.face.emotion.enabled ? Ss.predict(o.image, this.config) : {} : (this.state = "run:emotion", t = ut(), i = this.config.face.emotion.enabled ? await Ss.predict(o.image, this.config) : {}, this.perf.emotion = Math.trunc(ut() - t)), this.analyze("End Emotion:"), this.config.async && ([e, r, i] = await Promise.all([e, r, i])), this.analyze("Finish Face:"), o.image.dispose();
-      const c = o.annotations.leftEyeIris && o.annotations.rightEyeIris ? Math.max(o.annotations.leftEyeIris[3][0] - o.annotations.leftEyeIris[1][0], o.annotations.rightEyeIris[3][0] - o.annotations.rightEyeIris[1][0]) : 0;
-      a.push({confidence: o.confidence, box: o.box, mesh: o.mesh, annotations: o.annotations, age: e.age, gender: r.gender, genderConfidence: r.confidence, emotion: i, iris: c !== 0 ? Math.trunc(100 * 11.7 / c) / 100 : 0}), this.analyze("End Face");
+      const c = o.annotations.leftEyeIris && o.annotations.rightEyeIris ? 11.7 * Math.max(Math.abs(o.annotations.leftEyeIris[3][0] - o.annotations.leftEyeIris[1][0]), Math.abs(o.annotations.rightEyeIris[4][1] - o.annotations.rightEyeIris[2][1])) : 0;
+      a.push({confidence: o.confidence, box: o.box, mesh: o.mesh, annotations: o.annotations, age: e.age, gender: r.gender, genderConfidence: r.confidence, emotion: i, iris: c !== 0 ? Math.trunc(c) / 100 : 0}), this.analyze("End Face");
     }
     return this.analyze("End FaceMesh:"), this.config.async && (this.perf.face && delete this.perf.face, this.perf.age && delete this.perf.age, this.perf.gender && delete this.perf.gender, this.perf.emotion && delete this.perf.emotion), a;
   }
@@ -33536,6 +33541,30 @@ async function drawFace(result, canvas, ui2, triangulation) {
             ctx.fill(path);
           }
         }
+        if (face.annotations && face.annotations.leftEyeIris) {
+          ctx.strokeStyle = ui2.useDepth ? "rgba(255, 200, 255, 0.3)" : ui2.baseColor;
+          ctx.beginPath();
+          const sizeX = Math.abs(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0]) / 2;
+          const sizeY = Math.abs(face.annotations.leftEyeIris[4][1] - face.annotations.leftEyeIris[2][1]) / 2;
+          ctx.ellipse(face.annotations.leftEyeIris[0][0], face.annotations.leftEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+          if (ui2.fillPolygons) {
+            ctx.fillStyle = ui2.useDepth ? "rgba(255, 255, 200, 0.3)" : ui2.baseColor;
+            ctx.fill();
+          }
+        }
+        if (face.annotations && face.annotations.rightEyeIris) {
+          ctx.strokeStyle = ui2.useDepth ? "rgba(255, 200, 255, 0.3)" : ui2.baseColor;
+          ctx.beginPath();
+          const sizeX = Math.abs(face.annotations.rightEyeIris[3][0] - face.annotations.rightEyeIris[1][0]) / 2;
+          const sizeY = Math.abs(face.annotations.rightEyeIris[4][1] - face.annotations.rightEyeIris[2][1]) / 2;
+          ctx.ellipse(face.annotations.rightEyeIris[0][0], face.annotations.rightEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+          if (ui2.fillPolygons) {
+            ctx.fillStyle = ui2.useDepth ? "rgba(255, 255, 200, 0.3)" : ui2.baseColor;
+            ctx.fill();
+          }
+        }
       }
     }
   }
@@ -33716,6 +33745,9 @@ function createCSS() {
   input[type=range] { -webkit-appearance: none; }
   input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1rem; cursor: pointer; background: ${theme.itemBackground}; border-radius: var(--rounded); border: 1px; }
   input[type=range]::-webkit-slider-thumb { border: 1px solid #000000; margin-top: 0.05rem; height: 0.9rem; width: 1.5rem; border-radius: var(--rounded); background: ${theme.rangeBackground}; cursor: pointer; -webkit-appearance: none; }
+
+  .svg-background { fill:darkslategrey; cursor:pointer; opacity: 0.6; }
+  .svg-foreground { fill:white; cursor:pointer; opacity: 0.8; }
   `;
   const el = document.createElement("style");
   el.innerHTML = css;
@@ -33751,18 +33783,20 @@ class Menu {
     this.container = document.createElement("div");
     this.container.id = `menu-container-${instance}`;
     this.container.className = "menu-container menu-container-fadein";
-    if (title !== "") {
-      const elTitle = document.createElement("div");
-      elTitle.className = "menu-title";
-      elTitle.id = `menu-title-${instance}`;
-      elTitle.innerHTML = title;
-      this.menu.appendChild(elTitle);
-      elTitle.addEventListener("click", () => {
-        this.container.classList.toggle("menu-container-fadeout");
-        this.container.classList.toggle("menu-container-fadein");
-        this.menu.style.borderStyle = this.container.classList.contains("menu-container-fadeout") ? "none" : "solid";
-      });
-    }
+    const elTitle = document.createElement("div");
+    elTitle.className = "menu-title";
+    elTitle.id = `menu-title-${instance}`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 2rem; height: 2rem; vertical-align: top;">
+        <path d="M400 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48zm-51.37 182.31L232.06 348.16a10.38 10.38 0 0 1-16.12 0L99.37 214.31C92.17 206 97.28 192 107.43 192h233.14c10.15 0 15.26 14 8.06 22.31z" class="svg-background"/>
+        <path d="M348.63 214.31L232.06 348.16a10.38 10.38 0 0 1-16.12 0L99.37 214.31C92.17 206 97.28 192 107.43 192h233.14c10.15 0 15.26 14 8.06 22.31z" class="svg-foreground"/>
+      </svg>`;
+    elTitle.innerHTML = `${title}${svg}`;
+    this.menu.appendChild(elTitle);
+    elTitle.addEventListener("click", () => {
+      this.container.classList.toggle("menu-container-fadeout");
+      this.container.classList.toggle("menu-container-fadein");
+      this.menu.style.borderStyle = this.container.classList.contains("menu-container-fadeout") ? "none" : "solid";
+    });
     this.menu.appendChild(this.container);
     if (typeof parent === "object")
       parent.appendChild(this.menu);
@@ -34228,7 +34262,7 @@ async function detectSampleImages() {
   status("");
 }
 function setupMenu() {
-  menu2 = new menu_default(document.body, "...", {top: "1rem", right: "1rem"});
+  menu2 = new menu_default(document.body, "", {top: "1rem", right: "1rem"});
   const btn = menu2.addButton("start video", "pause video", () => detectVideo());
   menu2.addButton("process images", "process images", () => detectSampleImages());
   document.getElementById("play").addEventListener("click", () => btn.click());
@@ -34279,7 +34313,7 @@ function setupMenu() {
   });
   menu2.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu2.addChart("FPS", "FPS");
-  menuFX = new menu_default(document.body, "...", {top: "1rem", right: "18rem"});
+  menuFX = new menu_default(document.body, "", {top: "1rem", right: "18rem"});
   menuFX.addLabel("ui options");
   menuFX.addBool("crop & scale", ui, "crop", () => setupCamera());
   menuFX.addBool("camera front/back", ui, "facing", () => setupCamera());

@@ -371,7 +371,7 @@
       ]
     },
     "src/gesture.js": {
-      "bytes": 2175,
+      "bytes": 2680,
       "imports": []
     },
     "src/hand/anchors.js": {
@@ -433,7 +433,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 13725,
+      "bytes": 13770,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.node.js"
@@ -513,7 +513,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5416114
+      "bytes": 5416962
     },
     "dist/human.js": {
       "imports": [],
@@ -663,7 +663,7 @@
           "bytesInOutput": 1197
         },
         "src/gesture.js": {
-          "bytesInOutput": 1220
+          "bytesInOutput": 1460
         },
         "src/imagefx.js": {
           "bytesInOutput": 11014
@@ -678,10 +678,10 @@
           "bytesInOutput": 3047
         },
         "src/human.js": {
-          "bytesInOutput": 7296
+          "bytesInOutput": 7312
         }
       },
-      "bytes": 1278307
+      "bytes": 1278563
     }
   }
 }

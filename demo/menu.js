@@ -55,6 +55,9 @@ function createCSS() {
   input[type=range] { -webkit-appearance: none; }
   input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1rem; cursor: pointer; background: ${theme.itemBackground}; border-radius: var(--rounded); border: 1px; }
   input[type=range]::-webkit-slider-thumb { border: 1px solid #000000; margin-top: 0.05rem; height: 0.9rem; width: 1.5rem; border-radius: var(--rounded); background: ${theme.rangeBackground}; cursor: pointer; -webkit-appearance: none; }
+
+  .svg-background { fill:darkslategrey; cursor:pointer; opacity: 0.6; }
+  .svg-foreground { fill:white; cursor:pointer; opacity: 0.8; }
   `;
   const el = document.createElement('style');
   el.innerHTML = css;
@@ -89,18 +92,22 @@ class Menu {
     this.container.id = `menu-container-${instance}`;
     this.container.className = 'menu-container menu-container-fadein';
 
-    if (title !== '') {
-      const elTitle = document.createElement('div');
-      elTitle.className = 'menu-title';
-      elTitle.id = `menu-title-${instance}`;
-      elTitle.innerHTML = title;
-      this.menu.appendChild(elTitle);
-      elTitle.addEventListener('click', () => {
-        this.container.classList.toggle('menu-container-fadeout');
-        this.container.classList.toggle('menu-container-fadein');
-        this.menu.style.borderStyle = this.container.classList.contains('menu-container-fadeout') ? 'none' : 'solid';
-      });
-    }
+    // set menu title with pulldown arrow
+    const elTitle = document.createElement('div');
+    elTitle.className = 'menu-title';
+    elTitle.id = `menu-title-${instance}`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 2rem; height: 2rem; vertical-align: top;">
+        <path d="M400 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48zm-51.37 182.31L232.06 348.16a10.38 10.38 0 0 1-16.12 0L99.37 214.31C92.17 206 97.28 192 107.43 192h233.14c10.15 0 15.26 14 8.06 22.31z" class="svg-background"/>
+        <path d="M348.63 214.31L232.06 348.16a10.38 10.38 0 0 1-16.12 0L99.37 214.31C92.17 206 97.28 192 107.43 192h233.14c10.15 0 15.26 14 8.06 22.31z" class="svg-foreground"/>
+      </svg>`;
+    elTitle.innerHTML = `${title}${svg}`;
+    this.menu.appendChild(elTitle);
+    elTitle.addEventListener('click', () => {
+      this.container.classList.toggle('menu-container-fadeout');
+      this.container.classList.toggle('menu-container-fadein');
+      this.menu.style.borderStyle = this.container.classList.contains('menu-container-fadeout') ? 'none' : 'solid';
+    });
+
     this.menu.appendChild(this.container);
     if (typeof parent === 'object') parent.appendChild(this.menu);
     else document.getElementById(parent).appendChild(this.menu);

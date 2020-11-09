@@ -22,6 +22,7 @@
 - [**Usage**](https://github.com/vladmandic/human/wiki/Usage)
 - [**Configuration**](https://github.com/vladmandic/human/wiki/Configuration)
 - [**Outputs**](https://github.com/vladmandic/human/wiki/Outputs)
+- [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)
 - [**Demos**](https://github.com/vladmandic/human/wiki/Demos)
 - [**Development Server**](https://github.com/vladmandic/human/wiki/Development-Server)
 - [**Build Process**](https://github.com/vladmandic/human/wiki/Build-Process)

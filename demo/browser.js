@@ -4,6 +4,8 @@ import Menu from './menu.js';
 
 const human = new Human();
 
+const userConfig = {}; // add any user configuration overrides
+
 // ui options
 const ui = {
   baseColor: 'rgba(173, 216, 230, 0.3)', // 'lightblue' with light alpha channel
@@ -220,9 +222,9 @@ function runHumanDetect(input, canvas) {
     ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     // perform detection in worker
-    webWorker(input, data, canvas);
+    webWorker(input, data, canvas, userConfig);
   } else {
-    human.detect(input).then((result) => {
+    human.detect(input, userConfig).then((result) => {
       if (result.error) log(result.error);
       else drawResults(input, result, canvas);
     });
@@ -241,7 +243,7 @@ async function processImage(input) {
       image.height = image.naturalHeight;
       canvas.width = human.config.filter.width && human.config.filter.width > 0 ? human.config.filter.width : image.naturalWidth;
       canvas.height = human.config.filter.height && human.config.filter.height > 0 ? human.config.filter.height : image.naturalHeight;
-      const result = await human.detect(image);
+      const result = await human.detect(image, userConfig);
       drawResults(image, result, canvas);
       const thumb = document.createElement('canvas');
       thumb.className = 'thumbnail';
@@ -383,15 +385,16 @@ async function main() {
   log('Human: demo starting ...');
   setupMenu();
   document.getElementById('log').innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
-  // this is not required, just pre-warms the library
+  // this is not required, just pre-loads all models
   if (ui.modelsPreload) {
     status('loading');
-    await human.load();
+    await human.load(userConfig);
   }
+  // this is not required, just pre-warms all models for faster initial inference
   if (ui.modelsWarmup) {
     status('initializing');
-    const warmup = new ImageData(50, 50);
-    await human.detect(warmup);
+    const warmup = new ImageData(256, 256);
+    await human.detect(warmup, userConfig);
   }
   status('human: ready');
   document.getElementById('loader').style.display = 'none';

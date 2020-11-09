@@ -3686,7 +3686,7 @@ var Qr = we((A) => {
       return i([t]), t.dtype === "complex64" ? r.complexAbs(t) : r.abs(t);
     }, e, null, xc);
   }
-  var $t = U({abs_: $I});
+  var jt = U({abs_: $I});
   function XI(n) {
     var t = R(n, "x", "acos"), e = {x: t};
     return z.runKernelFunc(function(r, i) {
@@ -6486,27 +6486,27 @@ var Qr = we((A) => {
   }
   function C0(n, t, e) {
     if (e === void 0 && (e = null), n.rank === 0)
-      return $t(n);
+      return jt(n);
     if (n.rank !== 1 && e === null)
       return C0(Y(n, [-1]), t, e);
     if (n.rank === 1 || typeof e == "number" || Array.isArray(e) && e.length === 1) {
       if (t === 1)
-        return _e($t(n), e);
+        return _e(jt(n), e);
       if (t === Infinity)
-        return Yr($t(n), e);
+        return Yr(jt(n), e);
       if (t === -Infinity)
-        return eo($t(n), e);
+        return eo(jt(n), e);
       if (t === "euclidean" || t === 2)
-        return Ht(_e($n($t(n), Le(2, "int32")), e));
+        return Ht(_e($n(jt(n), Le(2, "int32")), e));
       throw new Error("Error in norm: invalid ord value: " + t);
     }
     if (Array.isArray(e) && e.length === 2) {
       if (t === 1)
-        return Yr(_e($t(n), e[0]), e[1] - 1);
+        return Yr(_e(jt(n), e[0]), e[1] - 1);
       if (t === Infinity)
-        return Yr(_e($t(n), e[1]), e[0]);
+        return Yr(_e(jt(n), e[1]), e[0]);
       if (t === -Infinity)
-        return eo(_e($t(n), e[1]), e[0]);
+        return eo(_e(jt(n), e[1]), e[0]);
       if (t === "fro" || t === "euclidean")
         return Ht(_e($e(n), e));
       throw new Error("Error in norm: invalid ord value: " + t);
@@ -7255,7 +7255,7 @@ var Qr = we((A) => {
     r === void 0 && (r = A.Reduction.SUM_BY_NONZERO_WEIGHTS);
     var i = R(n, "labels", "absoluteDifference"), a = R(t, "predictions", "absoluteDifference"), s = null;
     e != null && (s = R(e, "weights", "absoluteDifference")), Pe(i.shape, a.shape, "Error in absoluteDifference: ");
-    var o = $t(be(i, a));
+    var o = jt(be(i, a));
     return Jn(o, s, r);
   }
   var CC = U({absoluteDifference_: _C});
@@ -7281,7 +7281,7 @@ var Qr = we((A) => {
     r === void 0 && (r = 1), i === void 0 && (i = A.Reduction.SUM_BY_NONZERO_WEIGHTS);
     var a = R(n, "labels", "huberLoss"), s = R(t, "predictions", "huberLoss"), o = null;
     e != null && (o = R(e, "weights", "huberLoss")), Pe(a.shape, s.shape, "Error in huberLoss: ");
-    var c = Le(r), l = $t(be(s, a)), u = to(l, c), h = be(l, u), d = ge(Z(Le(0.5), $e(u)), Z(c, h));
+    var c = Le(r), l = jt(be(s, a)), u = to(l, c), h = be(l, u), d = ge(Z(Le(0.5), $e(u)), Z(c, h));
     return Jn(d, o, i);
   }
   var FC = U({huberLoss_: kC});
@@ -7304,7 +7304,7 @@ var Qr = we((A) => {
   function PC(n, t) {
     var e = R(n, "labels", "sigmoidCrossEntropyWithLogits"), r = R(t, "logits", "sigmoidCrossEntropyWithLogits");
     Pe(e.shape, r.shape, "Error in sigmoidCrossEntropyWithLogits: ");
-    var i = Da(r), a = Z(r, e), s = $u(vn(Lt($t(r))));
+    var i = Da(r), a = Z(r, e), s = $u(vn(Lt(jt(r))));
     return ge(be(i, a), s);
   }
   function MC(n, t, e, r, i) {
@@ -7640,7 +7640,7 @@ var Qr = we((A) => {
           var h = Array.isArray(e) ? e[c].tensor : e[o];
           if (h == null)
             return;
-          var d = r.accumulatedFirstMoment[c].variable, p = r.accumulatedWeightedInfNorm[c].variable, f = ge(Z(d, r.beta1), Z(h, 1 - r.beta1)), m = Z(p, r.beta2), g = $t(h), y = ki(m, g);
+          var d = r.accumulatedFirstMoment[c].variable, p = r.accumulatedWeightedInfNorm[c].variable, f = ge(Z(d, r.beta1), Z(h, 1 - r.beta1)), m = Z(p, r.beta2), g = jt(h), y = ki(m, g);
           d.assign(f), p.assign(y);
           var w = ge(Z(Ne(s, a), Ne(f, ge(y, r.epsilon))), l);
           l.assign(w);
@@ -8947,7 +8947,7 @@ var Qr = we((A) => {
     Lm(NO);
   }
   K.prototype.abs = function() {
-    return this.throwIfDisposed(), $t(this);
+    return this.throwIfDisposed(), jt(this);
   };
   K.prototype.acos = function() {
     return this.throwIfDisposed(), fg(this);
@@ -9568,7 +9568,7 @@ var Qr = we((A) => {
   A.Variable = La;
   A.ZerosLike = ru;
   A._FusedMatMul = su;
-  A.abs = $t;
+  A.abs = jt;
   A.acos = fg;
   A.acosh = mg;
   A.add = ge;
@@ -9853,15 +9853,15 @@ var I1 = we((tt) => {
     }
     n.prototype = t === null ? Object.create(t) : (e.prototype = t.prototype, new e());
   }
-  var Xt = function() {
-    return Xt = Object.assign || function(t) {
+  var $t = function() {
+    return $t = Object.assign || function(t) {
       for (var e, r = 1, i = arguments.length; r < i; r++) {
         e = arguments[r];
         for (var a in e)
           Object.prototype.hasOwnProperty.call(e, a) && (t[a] = e[a]);
       }
       return t;
-    }, Xt.apply(this, arguments);
+    }, $t.apply(this, arguments);
   };
   function _O(n, t) {
     var e = {};
@@ -10004,7 +10004,7 @@ var I1 = we((tt) => {
       return Object.setPrototypeOf(r, t.prototype), r;
     }
     return t;
-  }(Error), bG = function(n) {
+  }(Error), wG = function(n) {
     Q(t, n);
     function t(e) {
       var r = n.call(this, e) || this;
@@ -10102,20 +10102,20 @@ var I1 = we((tt) => {
         }
         var L = u.config;
         L.customObjects = f;
-        for (var x = Xt({}, hn), N = 0, I = Object.keys(e); N < I.length; N++) {
+        for (var x = $t({}, hn), N = 0, I = Object.keys(e); N < I.length; N++) {
           var y = I[N];
           hn[y] = e[y];
         }
         Ah(u.config);
         var C = p(d, u.config, e, i);
-        return hn = Xt({}, x), C;
+        return hn = $t({}, x), C;
       } else {
-        for (var x = Xt({}, hn), O = 0, D = Object.keys(e); O < D.length; O++) {
+        for (var x = $t({}, hn), O = 0, D = Object.keys(e); O < D.length; O++) {
           var y = D[O];
           hn[y] = e[y];
         }
         var C = new d(u.config);
-        return hn = Xt({}, x), C;
+        return hn = $t({}, x), C;
       }
     }
   }
@@ -10701,7 +10701,7 @@ var I1 = we((tt) => {
     }
     return [e, r];
   }
-  var Jt = function(n) {
+  var Xt = function(n) {
     Q(t, n);
     function t(e) {
       var r = n.call(this) || this;
@@ -10724,16 +10724,16 @@ var I1 = we((tt) => {
       return {scale: this.scale, mode: this.mode, distribution: this.distribution, seed: this.seed};
     }, t.className = "VarianceScaling", t;
   }(dn);
-  v.serialization.registerClass(Jt);
+  v.serialization.registerClass(Xt);
   var Dh = function(n) {
     Q(t, n);
     function t(e) {
       return n.call(this, {scale: 1, mode: "fanAvg", distribution: "uniform", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Jt.className;
+      return Xt.className;
     }, t.className = "GlorotUniform", t;
-  }(Jt);
+  }(Xt);
   v.serialization.registerClass(Dh);
   var kh = function(n) {
     Q(t, n);
@@ -10741,9 +10741,9 @@ var I1 = we((tt) => {
       return n.call(this, {scale: 1, mode: "fanAvg", distribution: "normal", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Jt.className;
+      return Xt.className;
     }, t.className = "GlorotNormal", t;
-  }(Jt);
+  }(Xt);
   v.serialization.registerClass(kh);
   var Fh = function(n) {
     Q(t, n);
@@ -10751,9 +10751,9 @@ var I1 = we((tt) => {
       return n.call(this, {scale: 2, mode: "fanIn", distribution: "normal", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Jt.className;
+      return Xt.className;
     }, t.className = "HeNormal", t;
-  }(Jt);
+  }(Xt);
   v.serialization.registerClass(Fh);
   var Wh = function(n) {
     Q(t, n);
@@ -10761,9 +10761,9 @@ var I1 = we((tt) => {
       return n.call(this, {scale: 2, mode: "fanIn", distribution: "uniform", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Jt.className;
+      return Xt.className;
     }, t.className = "HeUniform", t;
-  }(Jt);
+  }(Xt);
   v.serialization.registerClass(Wh);
   var Uh = function(n) {
     Q(t, n);
@@ -10771,9 +10771,9 @@ var I1 = we((tt) => {
       return n.call(this, {scale: 1, mode: "fanIn", distribution: "normal", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Jt.className;
+      return Xt.className;
     }, t.className = "LeCunNormal", t;
-  }(Jt);
+  }(Xt);
   v.serialization.registerClass(Uh);
   var Bh = function(n) {
     Q(t, n);
@@ -10781,9 +10781,9 @@ var I1 = we((tt) => {
       return n.call(this, {scale: 1, mode: "fanIn", distribution: "uniform", seed: e == null ? null : e.seed}) || this;
     }
     return t.prototype.getClassName = function() {
-      return Jt.className;
+      return Xt.className;
     }, t.className = "LeCunNormal", t;
-  }(Jt);
+  }(Xt);
   v.serialization.registerClass(Bh);
   var Ly = function(n) {
     Q(t, n);
@@ -10856,7 +10856,7 @@ var I1 = we((tt) => {
     return new xy(n);
   }
   function lE(n) {
-    return new Jt(n);
+    return new Xt(n);
   }
   function uE(n) {
     return new Dh(n);
@@ -12377,14 +12377,14 @@ var I1 = we((tt) => {
       }), r.internalOutputShapes = r.outputs.map(function(Te) {
         return Te.shape;
       });
-      for (var g = {}, y = {}, w = {}, b = {}, L = {}, x = [], N = function(Te, dt, mt, Ve, jt, Gn) {
-        (Ve == null || jt == null || Gn == null) && (Ve = Te.sourceLayer, jt = Te.nodeIndex, Gn = Te.tensorIndex);
-        var kt = Ve.inboundNodes[jt];
+      for (var g = {}, y = {}, w = {}, b = {}, L = {}, x = [], N = function(Te, dt, mt, Ve, Kt, Gn) {
+        (Ve == null || Kt == null || Gn == null) && (Ve = Te.sourceLayer, Kt = Te.nodeIndex, Gn = Te.tensorIndex);
+        var kt = Ve.inboundNodes[Kt];
         if (mt.indexOf(kt) !== -1)
           throw new Fn("The tensor " + Te.name + ' at layer "' + Ve.name + '" is part of a cycle.');
         if (dt.indexOf(kt) !== -1)
           return;
-        r.containerNodes.add(t.nodeKey(Ve, jt)), Ve.id in L || (L[Ve.id] = Object.keys(L).length), mt.indexOf(kt) === -1 && mt.push(kt);
+        r.containerNodes.add(t.nodeKey(Ve, Kt)), Ve.id in L || (L[Ve.id] = Object.keys(L).length), mt.indexOf(kt) === -1 && mt.push(kt);
         for (var ma = kt.inboundLayers.length, sr = 0; sr < ma; sr++) {
           var wi = kt.inputTensors[sr], fc = kt.inboundLayers[sr], mc = kt.nodeIndices[sr], hL = kt.tensorIndices[sr];
           N(wi, dt, mt, fc, mc, hL);
@@ -12423,8 +12423,8 @@ var I1 = we((tt) => {
       for (var re = 0, ie = ne; re < ie.length; re++) {
         var P = ie[re], oe = ee[P];
         oe.sort(function(dt, mt) {
-          var Ve = L[dt.id], jt = L[mt.id];
-          return Ve < jt ? -1 : Ve > jt ? 1 : 0;
+          var Ve = L[dt.id], Kt = L[mt.id];
+          return Ve < Kt ? -1 : Ve > Kt ? 1 : 0;
         });
         for (var se = 0, me = oe; se < me.length; se++) {
           var c = me[se];
@@ -14118,7 +14118,7 @@ var I1 = we((tt) => {
   function A7(n, t) {
     Wy.registerCallbackConstructor(n, t);
   }
-  var Zt = function(n) {
+  var Jt = function(n) {
     Q(t, n);
     function t() {
       return n !== null && n.apply(this, arguments) || this;
@@ -14134,7 +14134,7 @@ var I1 = we((tt) => {
     return t.prototype.apply = function(e, r) {
       return r === void 0 && (r = 1), jO(e, r);
     }, t.className = "elu", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(T7);
   var N7 = function(n) {
     Q(t, n);
@@ -14144,7 +14144,7 @@ var I1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return v.selu(e);
     }, t.className = "selu", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(N7);
   var _7 = function(n) {
     Q(t, n);
@@ -14154,7 +14154,7 @@ var I1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return v.relu(e);
     }, t.className = "relu", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(_7);
   var C7 = function(n) {
     Q(t, n);
@@ -14166,7 +14166,7 @@ var I1 = we((tt) => {
         return v.minimum(6, v.relu(e));
       });
     }, t.className = "relu6", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(C7);
   var R7 = function(n) {
     Q(t, n);
@@ -14176,7 +14176,7 @@ var I1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return e;
     }, t.className = "linear", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(R7);
   var O7 = function(n) {
     Q(t, n);
@@ -14186,7 +14186,7 @@ var I1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return v.sigmoid(e);
     }, t.className = "sigmoid", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(O7);
   var E7 = function(n) {
     Q(t, n);
@@ -14196,7 +14196,7 @@ var I1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return XO(e);
     }, t.className = "hardSigmoid", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(E7);
   var D7 = function(n) {
     Q(t, n);
@@ -14206,7 +14206,7 @@ var I1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return v.softplus(e);
     }, t.className = "softplus", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(D7);
   var k7 = function(n) {
     Q(t, n);
@@ -14216,7 +14216,7 @@ var I1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return $O(e);
     }, t.className = "softsign", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(k7);
   var F7 = function(n) {
     Q(t, n);
@@ -14226,7 +14226,7 @@ var I1 = we((tt) => {
     return t.prototype.apply = function(e) {
       return v.tanh(e);
     }, t.className = "tanh", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(F7);
   var iv = function(n) {
     Q(t, n);
@@ -14236,7 +14236,7 @@ var I1 = we((tt) => {
     return t.prototype.apply = function(e, r) {
       return r === void 0 && (r = -1), v.softmax(e, r);
     }, t.className = "softmax", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(iv);
   var W7 = function(n) {
     Q(t, n);
@@ -14246,7 +14246,7 @@ var I1 = we((tt) => {
     return t.prototype.apply = function(e, r) {
       return r === void 0 && (r = -1), v.logSoftmax(e, r);
     }, t.className = "logSoftmax", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(W7);
   var U7 = function(n) {
     Q(t, n);
@@ -14258,7 +14258,7 @@ var I1 = we((tt) => {
         return v.sigmoid(e.mul(r)).mul(e);
       });
     }, t.className = "swish", t;
-  }(Zt);
+  }(Jt);
   v.serialization.registerClass(U7);
   function Ir(n) {
     return n.getClassName();
@@ -14275,7 +14275,7 @@ var I1 = we((tt) => {
       var t = {};
       return t.className = n, t.config = {}, nd(t);
     } else
-      return n instanceof Zt ? n : nd(n);
+      return n instanceof Jt ? n : nd(n);
   }
   function rd(n) {
     if (n != null && typeof n != "object")
@@ -15049,7 +15049,7 @@ var I1 = we((tt) => {
       var e = n.prototype.getConfig.call(this), r = {returnSequences: this.returnSequences, returnState: this.returnState, goBackwards: this.goBackwards, stateful: this.stateful, unroll: this.unroll};
       this.numConstants != null && (r.numConstants = this.numConstants);
       var i = this.cell.getConfig();
-      return this.getClassName() === t.className && (r.cell = {className: this.cell.getClassName(), config: i}), Xt({}, i, e, r);
+      return this.getClassName() === t.className && (r.cell = {className: this.cell.getClassName(), config: i}), $t({}, i, e, r);
     }, t.fromConfig = function(e, r, i) {
       i === void 0 && (i = {});
       var a = r.cell, s = Sn(a, i);
@@ -15091,7 +15091,7 @@ var I1 = we((tt) => {
       });
     }, t.prototype.getConfig = function() {
       var e = n.prototype.getConfig.call(this), r = {units: this.units, activation: Ir(this.activation), useBias: this.useBias, kernelInitializer: lt(this.kernelInitializer), recurrentInitializer: lt(this.recurrentInitializer), biasInitializer: lt(this.biasInitializer), kernelRegularizer: Je(this.kernelRegularizer), recurrentRegularizer: Je(this.recurrentRegularizer), biasRegularizer: Je(this.biasRegularizer), activityRegularizer: Je(this.activityRegularizer), kernelConstraint: It(this.kernelConstraint), recurrentConstraint: It(this.recurrentConstraint), biasConstraint: It(this.biasConstraint), dropout: this.dropout, recurrentDropout: this.recurrentDropout};
-      return Xt({}, e, r);
+      return $t({}, e, r);
     }, t.className = "SimpleRNNCell", t;
   }(ji);
   v.serialization.registerClass(od);
@@ -15149,7 +15149,7 @@ var I1 = we((tt) => {
       });
     }, t.prototype.getConfig = function() {
       var e = n.prototype.getConfig.call(this), r = {units: this.units, activation: Ir(this.activation), recurrentActivation: Ir(this.recurrentActivation), useBias: this.useBias, kernelInitializer: lt(this.kernelInitializer), recurrentInitializer: lt(this.recurrentInitializer), biasInitializer: lt(this.biasInitializer), kernelRegularizer: Je(this.kernelRegularizer), recurrentRegularizer: Je(this.recurrentRegularizer), biasRegularizer: Je(this.biasRegularizer), activityRegularizer: Je(this.activityRegularizer), kernelConstraint: It(this.kernelConstraint), recurrentConstraint: It(this.recurrentConstraint), biasConstraint: It(this.biasConstraint), dropout: this.dropout, recurrentDropout: this.recurrentDropout, implementation: this.implementation, resetAfter: false};
-      return Xt({}, e, r);
+      return $t({}, e, r);
     }, t.className = "GRUCell", t;
   }(ji);
   v.serialization.registerClass(cd);
@@ -15225,7 +15225,7 @@ var I1 = we((tt) => {
       });
     }, t.prototype.getConfig = function() {
       var e = n.prototype.getConfig.call(this), r = {units: this.units, activation: Ir(this.activation), recurrentActivation: Ir(this.recurrentActivation), useBias: this.useBias, kernelInitializer: lt(this.kernelInitializer), recurrentInitializer: lt(this.recurrentInitializer), biasInitializer: lt(this.biasInitializer), unitForgetBias: this.unitForgetBias, kernelRegularizer: Je(this.kernelRegularizer), recurrentRegularizer: Je(this.recurrentRegularizer), biasRegularizer: Je(this.biasRegularizer), activityRegularizer: Je(this.activityRegularizer), kernelConstraint: It(this.kernelConstraint), recurrentConstraint: It(this.recurrentConstraint), biasConstraint: It(this.biasConstraint), dropout: this.dropout, recurrentDropout: this.recurrentDropout, implementation: this.implementation};
-      return Xt({}, e, r);
+      return $t({}, e, r);
     }, t.className = "LSTMCell", t;
   }(ji);
   v.serialization.registerClass(Fo);
@@ -15291,7 +15291,7 @@ var I1 = we((tt) => {
       var e = n.prototype.getConfig.call(this), r = function(s) {
         return {className: s.getClassName(), config: s.getConfig()};
       }, i = this.cells.map(r), a = {cells: i};
-      return Xt({}, e, a);
+      return $t({}, e, a);
     }, t.fromConfig = function(e, r, i) {
       i === void 0 && (i = {});
       for (var a = [], s = 0, o = r.cells; s < o.length; s++) {
@@ -15347,7 +15347,7 @@ var I1 = we((tt) => {
       return v.keep(u.clone());
     });
   }
-  var xG = function(n) {
+  var bG = function(n) {
     Q(t, n);
     function t() {
       return n !== null && n.apply(this, arguments) || this;
@@ -15419,7 +15419,7 @@ var I1 = we((tt) => {
     Q(t, n);
     function t(e) {
       var r = this, i = e.filters, a = e.kernelSize, s = e.strides, o = e.padding, c = e.dataFormat, l = e.dilationRate;
-      return r = n.call(this, Xt({}, e, {units: i})) || this, r.filters = i, _t(r.filters, "filters"), r.kernelSize = Ki(a, 2, "kernelSize"), r.kernelSize.forEach(function(u) {
+      return r = n.call(this, $t({}, e, {units: i})) || this, r.filters = i, _t(r.filters, "filters"), r.kernelSize = Ki(a, 2, "kernelSize"), r.kernelSize.forEach(function(u) {
         return _t(u, "kernelSize");
       }), r.strides = Ki(s || 1, 2, "strides"), r.strides.forEach(function(u) {
         return _t(u, "strides");
@@ -15479,7 +15479,7 @@ var I1 = we((tt) => {
       });
     }, t.prototype.getConfig = function() {
       var e = n.prototype.getConfig.call(this), r = e.units, i = _O(e, ["units"]), a = {filters: this.filters, kernelSize: this.kernelSize, padding: this.padding, dataFormat: this.dataFormat, dilationRate: this.dilationRate, strides: this.strides};
-      return Xt({}, i, a);
+      return $t({}, i, a);
     }, t.prototype.inputConv = function(e, r, i, a) {
       var s = v.conv2d(e, r, this.strides, a || "valid", this.dataFormat === "channelsFirst" ? "NCHW" : "NHWC", this.dilationRate);
       return i ? Bn(s, i, this.dataFormat) : s;
@@ -15493,7 +15493,7 @@ var I1 = we((tt) => {
     Q(t, n);
     function t(e) {
       var r = this, i = new ld(e);
-      return r = n.call(this, Xt({}, e, {cell: i})) || this, r;
+      return r = n.call(this, $t({}, e, {cell: i})) || this, r;
     }
     return t.fromConfig = function(e, r) {
       return new e(r);
@@ -17232,7 +17232,7 @@ var z1 = we((oi) => {
       c((r = r.apply(n, t || [])).next());
     });
   }
-  function Qt(n, t) {
+  function Zt(n, t) {
     var e = {label: 0, sent: function() {
       if (a[0] & 1)
         throw a[1];
@@ -17364,7 +17364,7 @@ var z1 = we((oi) => {
     return h && h.value;
   }
   function Gt(n, t, e, r) {
-    var i = yt(en(n), 2), a = i[0], s = i[1];
+    var i = yt(Qt(n), 2), a = i[0], s = i[1];
     if (r != null) {
       var o = r.getHashTableHandleByName(a);
       if (o != null)
@@ -17379,13 +17379,13 @@ var z1 = we((oi) => {
     return t[Bo(n, e.currentContextId)];
   }
   function Qn(n, t) {
-    var e = yt(en(n), 2), r = e[0], i = e[1];
+    var e = yt(Qt(n), 2), r = e[0], i = e[1];
     return [Bo(r, t && t.currentContextId), i];
   }
   function Bo(n, t) {
     return t ? n + "-" + t : n;
   }
-  function en(n) {
+  function Qt(n) {
     var t = n.split(":");
     if (t.length === 1)
       return [n, 0];
@@ -18061,7 +18061,7 @@ var z1 = we((oi) => {
   var Ik = void 0, Ak = function(n, t, e) {
     return on(Ik, void 0, void 0, function() {
       var r, i, a, s, o, c, l, u, o, h, d, c, p, f, m, m, g, y, g, w, g, g, g, b, L, x, N, I, C, O, D, F, k, B, V, P, G, j, q, H, J, $, ee, te, ne, re, ie, oe, se, me, ye, ve, Ee, Be, We, Ke, ze, Ie, k, B, ue, Ie, G, x, Qe, ue, te, ne, x, ft, ue, x, He, ft, ue, q, H, x, He, ue, Ie, x, He, ft, ue, Ot, x, He, ue, ie, ue, se, x, Ie, B, ue, Ie, x, Qe, ue, ye, x, ve, ue;
-      return Qt(this, function(ht) {
+      return Zt(this, function(ht) {
         switch (ht.label) {
           case 0:
             r = n.op;
@@ -18145,7 +18145,7 @@ var z1 = we((oi) => {
               !wt.kept && d.indexOf(wt.id) === -1 && wt.dispose();
             }), p = o, f = function() {
               var wt, Te, dt;
-              return Qt(this, function(mt) {
+              return Zt(this, function(mt) {
                 switch (mt.label) {
                   case 0:
                     return wt = p, [4, e.functionMap[l].executeFunctionAsync(p, e.tensorArrayMap, e.tensorListMap)];
@@ -18353,7 +18353,7 @@ var z1 = we((oi) => {
   var Ck = function(n, t, e) {
     return on(_k, void 0, void 0, function() {
       var r, i, a, s, o, c, l, u, h, d, a, s, o, c, l, p, h, f, a, s, o, c, l, m, h;
-      return Qt(this, function(g) {
+      return Zt(this, function(g) {
         switch (g.label) {
           case 0:
             r = n.op;
@@ -18472,7 +18472,7 @@ var z1 = we((oi) => {
     }, n.prototype.import = function(t, e) {
       return on(this, void 0, void 0, function() {
         var r, i = this;
-        return Qt(this, function(a) {
+        return Zt(this, function(a) {
           switch (a.label) {
             case 0:
               return this.checkKeyAndValueTensor(t, e), [4, t.data()];
@@ -18496,7 +18496,7 @@ var z1 = we((oi) => {
     }, n.prototype.find = function(t, e) {
       return on(this, void 0, void 0, function() {
         var r, i = this;
-        return Qt(this, function(a) {
+        return Zt(this, function(a) {
           switch (a.label) {
             case 0:
               return this.checkKeyAndValueTensor(t, e), [4, t.data()];
@@ -18524,7 +18524,7 @@ var z1 = we((oi) => {
   var Dk = void 0, kk = function(n, t, e, r) {
     return on(Dk, void 0, void 0, function() {
       var i, a, s, o, c, l, u, o, c, l, h, o;
-      return Qt(this, function(d) {
+      return Zt(this, function(d) {
         switch (d.label) {
           case 0:
             i = n.op;
@@ -18941,10 +18941,10 @@ var z1 = we((oi) => {
   }();
   function W1(n, t, e, r) {
     var i = new Set(), a = [], s = null, o = null, c = new Set(), l = Object.keys(n).map(function(p) {
-      return en(p)[0];
+      return Qt(p)[0];
     }), u = [];
     r != null && (u = r.map(function(p) {
-      return en(p.name)[0];
+      return Qt(p.name)[0];
     }));
     for (var h = _r(t); h.length > 0; ) {
       var d = h.pop();
@@ -18972,7 +18972,7 @@ var z1 = we((oi) => {
   }
   function qk(n, t, e) {
     var r = e.usedNodes, i = e.inputs, a = [], s = Object.keys(i).map(function(h) {
-      return en(h)[0];
+      return Qt(h)[0];
     }).map(function(h) {
       return n.nodes[h];
     }), o = n.initNodes;
@@ -19071,9 +19071,9 @@ var z1 = we((oi) => {
       var i = Object.keys(t).sort();
       this.checkInputs(t), this.checkInputShapeAndType(t), e = this.mapOutputs(e), this.checkOutputs(e);
       var a = i.map(function(d) {
-        return r.graph.nodes[en(d)[0]];
+        return r.graph.nodes[Qt(d)[0]];
       }), s = e.map(function(d) {
-        return en(d)[0];
+        return Qt(d)[0];
       }), o = s.map(function(d) {
         return r.graph.nodes[d];
       });
@@ -19084,7 +19084,7 @@ var z1 = we((oi) => {
       return W.tidy(function() {
         var d = new k1(r.weightMap, u, h, r.functionExecutorMap), p = A1({}, r.weightMap);
         Object.keys(t).forEach(function(b) {
-          var L = yt(en(b), 2), x = L[0], N = L[1], I = [];
+          var L = yt(Qt(b), 2), x = L[0], N = L[1], I = [];
           I[N] = t[b], p[x] = I;
         });
         for (var f = r.getFrozenTensorIds(p), m = {}, g = 0; g < l.length; g++) {
@@ -19127,14 +19127,14 @@ var z1 = we((oi) => {
       });
     }, n.prototype.executeAsync = function(t, e) {
       return on(this, void 0, void 0, function() {
-        return Qt(this, function(r) {
+        return Zt(this, function(r) {
           return [2, this._executeAsync(t, e)];
         });
       });
     }, n.prototype._executeAsync = function(t, e, r, i, a) {
       return r === void 0 && (r = false), i === void 0 && (i = {}), a === void 0 && (a = {}), on(this, void 0, void 0, function() {
         var s, o, c, l, u, h;
-        return Qt(this, function(d) {
+        return Zt(this, function(d) {
           switch (d.label) {
             case 0:
               return r || (t = this.mapInputs(t), this.checkInputs(t), this.checkInputShapeAndType(t), e = this.mapOutputs(e), this.checkOutputs(e)), s = new k1(this.weightMap, i, a, this.functionExecutorMap), [4, this.executeWithControlFlow(t, s, e, r)];
@@ -19157,7 +19157,7 @@ var z1 = we((oi) => {
     }, n.prototype.executeFunctionAsync = function(t, e, r) {
       return on(this, void 0, void 0, function() {
         var i, a = this;
-        return Qt(this, function(s) {
+        return Zt(this, function(s) {
           return i = t.reduce(function(o, c, l) {
             return o[a.inputs[l].name] = c, o;
           }, {}), [2, this._executeAsync(i, this.outputNodes, true, e, r)];
@@ -19166,19 +19166,19 @@ var z1 = we((oi) => {
     }, n.prototype.executeWithControlFlow = function(t, e, r, i) {
       return on(this, void 0, void 0, function() {
         var a, s, o, c, l, u, h, d, p, f, m, g, y, w, b, L, x, N = this;
-        return Qt(this, function(I) {
+        return Zt(this, function(I) {
           switch (I.label) {
             case 0:
               a = Object.keys(t), s = a.map(function(C) {
-                return N.graph.nodes[en(C)[0]];
+                return N.graph.nodes[Qt(C)[0]];
               }), o = r.map(function(C) {
-                return en(C)[0];
+                return Qt(C)[0];
               }), c = o.map(function(C) {
                 return N.graph.nodes[C];
               }), c.length === 0 && (c = this._outputs), l = W1(t, c, this.weightMap, this._initNodes), u = l.usedNodes, h = l.missingInputs, d = l.dynamicNode, p = l.syncInputs, f = _r(s, this.graph.weights, this._initNodes || []).map(function(C) {
                 return {node: C, contexts: e.currentContext};
               }), m = A1({}, this.weightMap), Object.keys(t).forEach(function(C) {
-                var O = yt(en(C), 2), D = O[0], F = O[1], k = [];
+                var O = yt(Qt(C), 2), D = O[0], F = O[1], k = [];
                 k[F] = t[C], m[D] = k;
               }), g = {}, y = this.getFrozenTensorIds(m), w = {}, I.label = 1;
             case 1:
@@ -19234,7 +19234,7 @@ var z1 = we((oi) => {
     }, n.prototype.checkInputShapeAndType = function(t) {
       var e = this;
       Object.keys(t).forEach(function(r) {
-        var i = t[r], a = yt(en(r), 1), s = a[0], o = e.graph.nodes[s];
+        var i = t[r], a = yt(Qt(r), 1), s = a[0], o = e.graph.nodes[s];
         if (o.attrParams.shape && o.attrParams.shape.value) {
           var c = o.attrParams.shape.value, l = c.length === i.shape.length && i.shape.every(function(u, h) {
             return c[h] === -1 || c[h] === u;
@@ -19258,7 +19258,7 @@ var z1 = we((oi) => {
       return e;
     }, n.prototype.checkInputs = function(t) {
       var e = this, r = Object.keys(t).filter(function(i) {
-        var a = yt(en(i), 1), s = a[0];
+        var a = yt(Qt(i), 1), s = a[0];
         return e.graph.nodes[s] == null;
       });
       if (r.length > 0)
@@ -19275,7 +19275,7 @@ var z1 = we((oi) => {
     }, n.prototype.checkOutputs = function(t) {
       var e = this;
       t.forEach(function(r) {
-        var i = yt(en(r), 1), a = i[0];
+        var i = yt(Qt(r), 1), a = i[0];
         if (!e.graph.nodes[a])
           throw new Error("The output '" + r + "' is not found in the graph");
       });
@@ -19330,7 +19330,7 @@ var z1 = we((oi) => {
     }, n.prototype.load = function() {
       return on(this, void 0, void 0, function() {
         var t;
-        return Qt(this, function(e) {
+        return Zt(this, function(e) {
           switch (e.label) {
             case 0:
               if (this.findIOHandler(), this.handler.load == null)
@@ -19354,7 +19354,7 @@ var z1 = we((oi) => {
     }, n.prototype.save = function(t, e) {
       return on(this, void 0, void 0, function() {
         var r;
-        return Qt(this, function(i) {
+        return Zt(this, function(i) {
           if (typeof t == "string") {
             if (r = W.io.getSaveHandlers(t), r.length === 0)
               throw new Error("Cannot find any save handlers for URL '" + t + "'");
@@ -19386,7 +19386,7 @@ var z1 = we((oi) => {
     }, n.prototype.executeAsync = function(t, e) {
       return on(this, void 0, void 0, function() {
         var r;
-        return Qt(this, function(i) {
+        return Zt(this, function(i) {
           switch (i.label) {
             case 0:
               return t = this.normalizeInputs(t), e = this.normalizeOutputs(e), [4, this.executor.executeAsync(t, e)];
@@ -19406,7 +19406,7 @@ var z1 = we((oi) => {
   function Zk(n, t) {
     return t === void 0 && (t = {}), on(this, void 0, void 0, function() {
       var e;
-      return Qt(this, function(r) {
+      return Zt(this, function(r) {
         switch (r.label) {
           case 0:
             if (n == null)
@@ -20615,7 +20615,7 @@ var sw = we((qt) => {
       ` + t;
       });
       var a;
-      return this.size === Infinity || this.size == null ? a = this.size : e ? a = Math.ceil(this.size / t) : a = Math.floor(this.size / t), tn(function() {
+      return this.size === Infinity || this.size == null ? a = this.size : e ? a = Math.ceil(this.size / t) : a = Math.floor(this.size / t), en(function() {
         return ce(r, void 0, void 0, function() {
           return le(this, function(s) {
             switch (s.label) {
@@ -20629,7 +20629,7 @@ var sw = we((qt) => {
       }, a);
     }, n.prototype.concatenate = function(t) {
       var e = this, r = this, i;
-      return this.size === Infinity || t.size === Infinity ? i = Infinity : this.size != null && t.size != null ? i = this.size + t.size : i = null, tn(function() {
+      return this.size === Infinity || t.size === Infinity ? i = Infinity : this.size != null && t.size != null ? i = this.size + t.size : i = null, en(function() {
         return ce(e, void 0, void 0, function() {
           var a, s;
           return le(this, function(o) {
@@ -20646,7 +20646,7 @@ var sw = we((qt) => {
       }, i);
     }, n.prototype.filter = function(t) {
       var e = this, r = this, i;
-      return this.size === Infinity ? i = Infinity : i = null, tn(function() {
+      return this.size === Infinity ? i = Infinity : i = null, en(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(a) {
             switch (a.label) {
@@ -20675,7 +20675,7 @@ var sw = we((qt) => {
       });
     }, n.prototype.map = function(t) {
       var e = this, r = this;
-      return tn(function() {
+      return en(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(i) {
             switch (i.label) {
@@ -20693,7 +20693,7 @@ var sw = we((qt) => {
       }, this.size);
     }, n.prototype.mapAsync = function(t) {
       var e = this, r = this;
-      return tn(function() {
+      return en(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(i) {
             switch (i.label) {
@@ -20710,7 +20710,7 @@ var sw = we((qt) => {
       if (t == null)
         throw new RangeError("`Dataset.prefetch()` requires bufferSize to be specified.");
       var r = this;
-      return tn(function() {
+      return en(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(i) {
             switch (i.label) {
@@ -20724,7 +20724,7 @@ var sw = we((qt) => {
       }, this.size);
     }, n.prototype.repeat = function(t) {
       var e = this, r = this, i;
-      return this.size != null && t > 0 ? i = this.size * t : t === 0 ? i = 0 : this.size != null && (t === void 0 || t < 0) ? i = Infinity : i = null, tn(function() {
+      return this.size != null && t > 0 ? i = this.size * t : t === 0 ? i = 0 : this.size != null && (t === void 0 || t < 0) ? i = Infinity : i = null, en(function() {
         return ce(e, void 0, void 0, function() {
           var a, s = this;
           return le(this, function(o) {
@@ -20746,7 +20746,7 @@ var sw = we((qt) => {
       }, i);
     }, n.prototype.skip = function(t) {
       var e = this, r = this, i;
-      return this.size != null && t >= 0 && this.size >= t ? i = this.size - t : this.size != null && (this.size < t || t === void 0 || t < 0) ? i = 0 : i = null, tn(function() {
+      return this.size != null && t >= 0 && this.size >= t ? i = this.size - t : this.size != null && (this.size < t || t === void 0 || t < 0) ? i = 0 : i = null, en(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(a) {
             switch (a.label) {
@@ -20763,7 +20763,7 @@ var sw = we((qt) => {
       if (r === void 0 && (r = true), t == null || t < 0)
         throw this.size == null ? new RangeError("`Dataset.shuffle()` requires bufferSize to be specified.") : new RangeError("`Dataset.shuffle()` requires bufferSize to be specified.  If your data fits in main memory (for regular JS objects), and/or GPU memory (for `tf.Tensor`s), consider setting " + ("bufferSize to the dataset size (" + this.size + " elements)"));
       var a = this, s = M1(e || Ce.util.now().toString());
-      return tn(function() {
+      return en(function() {
         return ce(i, void 0, void 0, function() {
           var o;
           return le(this, function(c) {
@@ -20778,7 +20778,7 @@ var sw = we((qt) => {
       }, this.size);
     }, n.prototype.take = function(t) {
       var e = this, r = this, i;
-      return this.size != null && this.size > t ? i = t : this.size != null && this.size <= t ? i = this.size : i = null, tn(function() {
+      return this.size != null && this.size > t ? i = t : this.size != null && this.size <= t ? i = this.size : i = null, en(function() {
         return ce(e, void 0, void 0, function() {
           return le(this, function(a) {
             switch (a.label) {
@@ -20818,7 +20818,7 @@ var sw = we((qt) => {
       });
     }, n.MAX_BUFFER_SIZE = 1e4, n;
   }();
-  function tn(n, t) {
+  function en(n, t) {
     return t === void 0 && (t = null), new (function(e) {
       qe(r, e);
       function r() {
@@ -20836,7 +20836,7 @@ var sw = we((qt) => {
   }
   function C6(n) {
     var t = this;
-    return tn(function() {
+    return en(function() {
       return ce(t, void 0, void 0, function() {
         return le(this, function(e) {
           return [2, Y1(n)];
@@ -20855,7 +20855,7 @@ var sw = we((qt) => {
     else if (n instanceof Object)
       for (var i in n)
         e = e == null ? n[i].size : Math.min(e, n[i].size);
-    return tn(function() {
+    return en(function() {
       return ce(t, void 0, void 0, function() {
         var a;
         return le(this, function(s) {
@@ -21530,7 +21530,7 @@ var sw = we((qt) => {
   }
   function H6(n) {
     var t = this, e = _d(n);
-    return tn(function() {
+    return en(function() {
       return ce(t, void 0, void 0, function() {
         return le(this, function(r) {
           return [2, e];
@@ -21540,7 +21540,7 @@ var sw = we((qt) => {
   }
   function V6(n) {
     var t = this;
-    return tn(function() {
+    return en(function() {
       return ce(t, void 0, void 0, function() {
         var e;
         return le(this, function(r) {
@@ -21806,7 +21806,7 @@ var vw = we((yw, Wd) => {
     }) : this.tychei = a;
   })(yw, typeof Wd == "object" && Wd, typeof define == "function" && define);
 });
-var ww = we((NG, Go) => {
+var ww = we((TG, Go) => {
   (function(n, t) {
     var e = this, r = 256, i = 6, a = 52, s = "random", o = t.pow(r, i), c = t.pow(2, a), l = c * 2, u = r - 1, h;
     function d(b, L, x) {
@@ -21884,7 +21884,7 @@ var ww = we((NG, Go) => {
       });
   })([], Math);
 });
-var xw = we((_G, bw) => {
+var xw = we((NG, bw) => {
   var K6 = cw(), j6 = uw(), $6 = dw(), X6 = fw(), J6 = gw(), Z6 = vw(), ui2 = ww();
   ui2.alea = K6;
   ui2.xor128 = j6;
@@ -23352,8 +23352,8 @@ Hi there \u{1F44B}. Looks like you are running TensorFlow.js in Node.js. To spee
               for (var Ie = 0, ue = 0; ue < h.batchSize; ++ue)
                 for (var Qe = ue * P, ft = ue * D, He = te; He < ne; ++He)
                   for (var Ot = ee + He * d - H, ht = Ot * G + Qe, wt = He * F + ft, Te = oe; Te < se; ++Te)
-                    for (var dt = ie + Te * p - $, mt = dt * j + ht, Ve = Te * k + wt, jt = ve; jt < Ee; ++jt) {
-                      var Gn = ye + jt * f - J, kt = Gn * q + mt, ma = jt * B + Ve;
+                    for (var dt = ie + Te * p - $, mt = dt * j + ht, Ve = Te * k + wt, Kt = ve; Kt < Ee; ++Kt) {
+                      var Gn = ye + Kt * f - J, kt = Gn * q + mt, ma = Kt * B + Ve;
                       Ie += V[kt + We] * O[ma + ze];
                     }
               b[Ke + ze] = Ie;
@@ -23371,8 +23371,8 @@ Hi there \u{1F44B}. Looks like you are running TensorFlow.js in Node.js. To spee
             for (var ue = Ie - me, Qe = Math.max(0, Math.ceil(ue / ie)), ft = Math.min(te, (P + ue) / ie), He = 0; He < J; ++He) {
               for (var Ot = He - ye, ht = Math.max(0, Math.ceil(Ot / oe)), wt = Math.min(ne, (G + Ot) / oe), Te = 0, dt = Ke; dt < ze; ++dt)
                 for (var mt = dt * re - We, Ve = Qe; Ve < ft; ++Ve)
-                  for (var jt = Ve * ie - ue, Gn = ht; Gn < wt; ++Gn)
-                    for (var kt = Gn * oe - Ot, ma = L * ve + x * dt + N * Ve + I * Gn, sr = O * (V - 1 - mt) + D * (P - 1 - jt) + F * (G - 1 - kt) + k * Ee, wi = 0; wi < $; ++wi) {
+                  for (var Kt = Ve * ie - ue, Gn = ht; Gn < wt; ++Gn)
+                    for (var kt = Gn * oe - Ot, ma = L * ve + x * dt + N * Ve + I * Gn, sr = O * (V - 1 - mt) + D * (P - 1 - Kt) + F * (G - 1 - kt) + k * Ee, wi = 0; wi < $; ++wi) {
                       var fc = b[ma + wi], mc = C[sr + wi];
                       Te += fc * mc;
                     }
@@ -32015,26 +32015,29 @@ var j2 = we((sc) => {
       if (!n || n.isDisposedInternal || n.shape.length !== 4 || n.shape[1] < 1 || n.shape[2] < 1)
         return null;
       const [t, e, r] = Ye.tidy(() => {
-        const l = n.resizeBilinear([this.width, this.height]), u = Ye.sub(l.div(127.5), 1), h = this.blazeFaceModel.predict(u);
-        let d;
-        if (Array.isArray(h)) {
-          const g = h.sort((L, x) => L.size - x.size), y = Ye.concat([g[0], g[2]], 2), w = Ye.concat([g[1], g[3]], 2), b = Ye.concat([w, y], 1);
-          d = b.squeeze(0);
+        const u = n.resizeBilinear([this.width, this.height]), h = Ye.sub(u.div(127.5), 1), d = this.blazeFaceModel.predict(h);
+        let p;
+        if (Array.isArray(d)) {
+          const y = d.sort((x, N) => x.size - N.size), w = Ye.concat([y[0], y[2]], 2), b = Ye.concat([y[1], y[3]], 2), L = Ye.concat([b, w], 1);
+          p = L.squeeze(0);
         } else
-          d = h.squeeze();
-        const p = sH(d, this.anchors, this.inputSize), f = Ye.slice(d, [0, 0], [-1, 1]), m = Ye.sigmoid(f).squeeze();
-        return [d, p, m];
+          p = d.squeeze();
+        const f = sH(p, this.anchors, this.inputSize), m = Ye.slice(p, [0, 0], [-1, 1]), g = Ye.sigmoid(m).squeeze();
+        return [p, f, g];
       }), i = await Ye.image.nonMaxSuppressionAsync(e, r, this.config.detector.maxFaces, this.config.detector.iouThreshold, this.config.detector.scoreThreshold), a = i.arraySync();
       i.dispose();
-      const s = a.map((l) => Ye.slice(e, [l, 0], [1, -1])), o = s.map((l) => {
-        const u = l.arraySync();
-        return l.dispose(), u;
-      }), c = [];
-      for (let l = 0; l < o.length; l++) {
-        const u = o[l], h = q2(u), d = a[l], p = this.anchorsData[d], f = Ye.slice(t, [d, V2 - 1], [1, -1]), m = f.squeeze(), g = m.reshape([V2, -1]), y = Ye.slice(r, [d], [1]), w = {box: h, landmarks: g, probability: y, anchor: p};
-        c.push(w), f.dispose(), m.dispose();
+      const s = a.map((u) => Ye.slice(e, [u, 0], [1, -1])), o = s.map((u) => {
+        const h = u.arraySync();
+        return u.dispose(), h;
+      }), c = r.dataSync(), l = [];
+      for (const u in o) {
+        const h = a[u], d = c[h];
+        if (d > this.config.detector.minConfidence) {
+          const p = q2(o[u]), f = this.anchorsData[h], m = Ye.tidy(() => Ye.slice(t, [h, V2 - 1], [1, -1]).squeeze().reshape([V2, -1]));
+          l.push({box: p, landmarks: m, anchor: f, confidence: d});
+        }
       }
-      return t.dispose(), e.dispose(), r.dispose(), t.dispose(), {boxes: c, scaleFactor: [n.shape[2] / this.width, n.shape[1] / this.height]};
+      return t.dispose(), e.dispose(), r.dispose(), t.dispose(), {boxes: l, scaleFactor: [n.shape[2] / this.width, n.shape[1] / this.height]};
     }
     async estimateFaces(n) {
       const {boxes: t, scaleFactor: e} = await this.getBoundingBoxes(n), r = [];
@@ -32149,7 +32152,7 @@ var ex = we((Nn) => {
   Nn.xyDistanceBetweenPoints = wH;
 });
 var nx = we((tx) => {
-  const Or = Ut(), Hn = $2(), Er = vp(), Dr = ex(), bH = 468, xH = 0.25, LH = 13, SH = [LH, Er.MESH_ANNOTATIONS.midwayBetweenEyes[0]], IH = 3, AH = 2, TH = [IH, AH], xp = Er.MESH_ANNOTATIONS.leftEyeLower0, Lp = [xp[0], xp[xp.length - 1]], Sp = Er.MESH_ANNOTATIONS.rightEyeLower0, Ip = [Sp[0], Sp[Sp.length - 1]], NH = 3, _H = 4, CH = 71, Ap = 76;
+  const Or = Ut(), Hn = $2(), Er = vp(), Dr = ex(), bH = 468, xH = 13, LH = [xH, Er.MESH_ANNOTATIONS.midwayBetweenEyes[0]], SH = 3, IH = 2, AH = [SH, IH], xp = Er.MESH_ANNOTATIONS.leftEyeLower0, Lp = [xp[0], xp[xp.length - 1]], Sp = Er.MESH_ANNOTATIONS.rightEyeLower0, Ip = [Sp[0], Sp[Sp.length - 1]], TH = 3, NH = 4, _H = 71, Ap = 76;
   function oc(n, t, e, r) {
     for (let i = 0; i < Er.MESH_TO_IRIS_INDICES_MAP.length; i++) {
       const {key: a, indices: s} = Er.MESH_TO_IRIS_INDICES_MAP[i], o = Er.MESH_ANNOTATIONS[`${e}${a}`], c = r == null;
@@ -32160,9 +32163,9 @@ var nx = we((tx) => {
         }
     }
   }
-  class RH {
+  class CH {
     constructor(n, t, e, r) {
-      this.regionsOfInterest = [], this.runsWithoutFaceDetector = 0, this.boundingBoxDetector = n, this.meshDetector = t, this.irisModel = e, this.meshWidth = r.mesh.inputSize, this.meshHeight = r.mesh.inputSize, this.irisSize = r.iris.inputSize, this.irisEnlarge = 2.3;
+      this.storedBoxes = [], this.runsWithoutFaceDetector = 0, this.boundingBoxDetector = n, this.meshDetector = t, this.irisModel = e, this.meshWidth = r.mesh.inputSize, this.meshHeight = r.mesh.inputSize, this.irisSize = r.iris.inputSize, this.irisEnlarge = 2.3, this.skipped = 1e3, this.detectedFaces = 0;
     }
     transformRawCoords(n, t, e, r) {
       const i = Hn.getBoxSize({startPoint: t.startPoint, endPoint: t.endPoint}), a = [i[0] / this.meshWidth, i[1] / this.meshHeight], s = n.map((d) => [a[0] * (d[0] - this.meshWidth / 2), a[1] * (d[1] - this.meshHeight / 2), d[2]]), o = Dr.buildRotationMatrix(e, [0, 0]), c = s.map((d) => [...Dr.rotatePoint(d, o), d[2]]), l = Dr.invertTransformMatrix(r), u = [...Hn.getBoxCenter({startPoint: t.startPoint, endPoint: t.endPoint}), 1], h = [Dr.dot(u, l[0]), Dr.dot(u, l[1])];
@@ -32183,98 +32186,88 @@ var nx = we((tx) => {
         const s = n[a * 3], o = n[a * 3 + 1], c = n[a * 3 + 2];
         i.push([(r ? 1 - s / this.irisSize : s / this.irisSize) * e[0] + t.startPoint[0], o / this.irisSize * e[1] + t.startPoint[1], c]);
       }
-      return {rawCoords: i, iris: i.slice(CH)};
+      return {rawCoords: i, iris: i.slice(_H)};
     }
     getAdjustedIrisCoords(n, t, e) {
-      const r = n[Er.MESH_ANNOTATIONS[`${e}EyeUpper0`][NH]][2], i = n[Er.MESH_ANNOTATIONS[`${e}EyeLower0`][_H]][2], a = (r + i) / 2;
+      const r = n[Er.MESH_ANNOTATIONS[`${e}EyeUpper0`][TH]][2], i = n[Er.MESH_ANNOTATIONS[`${e}EyeLower0`][NH]][2], a = (r + i) / 2;
       return t.map((s, o) => {
         let c = a;
         return o === 2 ? c = r : o === 4 && (c = i), [s[0], s[1], c];
       });
     }
     async predict(n, t) {
-      this.runsWithoutFaceDetector += 1;
-      let e = this.detectedFaces === 0 || this.detectedFaces !== this.regionsOfInterest.length, r;
-      if ((e || this.runsWithoutFaceDetector > t.detector.skipFrames) && (r = await this.boundingBoxDetector.getBoundingBoxes(n)), t.detector.maxFaces > 1 && r && r.boxes && r.boxes.length > 0 && r.boxes.length !== this.detectedFaces && (e = true), e) {
+      this.skipped++;
+      let e = false, r;
+      if ((this.skipped > t.detector.skipFrames || !t.mesh.enabled) && (r = await this.boundingBoxDetector.getBoundingBoxes(n), n.shape[1] !== 255 && n.shape[2] !== 255 && (this.skipped = 0)), r && r.boxes && r.boxes.length > 0 && (!t.mesh.enabled || r.boxes.length !== this.detectedFaces && this.detectedFaces !== t.detector.maxFaces)) {
+        this.storedBoxes = [], this.detectedFaces = 0;
+        for (const a of r.boxes)
+          this.storedBoxes.push({startPoint: a.box.startPoint.dataSync(), endPoint: a.box.endPoint.dataSync(), landmarks: a.landmarks, confidence: a.confidence});
+        this.storedBoxes.length > 0 && (e = true);
+      }
+      if (e) {
         if (!r || !r.boxes || r.boxes.length === 0)
-          return this.regionsOfInterest = [], this.detectedFaces = 0, null;
-        const a = r.boxes.map((s) => {
-          const o = s.box.startPoint.squeeze(), c = s.box.endPoint.squeeze(), l = {startPoint: o.arraySync(), endPoint: c.arraySync()};
-          o.dispose(), c.dispose();
-          const u = Hn.scaleBoxCoordinates(l, r.scaleFactor), h = Hn.enlargeBox(u), d = s.landmarks.arraySync();
-          return {...h, landmarks: d};
-        });
-        this.updateRegionsOfInterest(a), this.runsWithoutFaceDetector = 0;
+          return this.storedBoxes = [], this.detectedFaces = 0, null;
+        for (const a in this.storedBoxes) {
+          const s = Hn.scaleBoxCoordinates({startPoint: this.storedBoxes[a].startPoint, endPoint: this.storedBoxes[a].endPoint}, r.scaleFactor), o = Hn.enlargeBox(s), c = this.storedBoxes[a].landmarks.arraySync(), l = this.storedBoxes[a].confidence;
+          this.storedBoxes[a] = {...o, confidence: l, landmarks: c};
+        }
+        this.runsWithoutFaceDetector = 0;
       }
       r && r.boxes && r.boxes.forEach((a) => {
-        a.box.startPoint.dispose(), a.box.endPoint.dispose(), a.landmarks.dispose(), a.probability.dispose();
+        a.box.startPoint.dispose(), a.box.endPoint.dispose(), a.landmarks.dispose();
       });
-      let i = Or.tidy(() => this.regionsOfInterest.map((a, s) => {
+      let i = Or.tidy(() => this.storedBoxes.map((a, s) => {
         let o = 0;
         const c = a.landmarks.length >= bH;
-        let [l, u] = SH;
-        c === false && ([l, u] = TH), o = Dr.computeRotation(a.landmarks[l], a.landmarks[u]);
+        let [l, u] = LH;
+        c === false && ([l, u] = AH), o = Dr.computeRotation(a.landmarks[l], a.landmarks[u]);
         const h = Hn.getBoxCenter({startPoint: a.startPoint, endPoint: a.endPoint}), d = [h[0] / n.shape[2], h[1] / n.shape[1]];
         let p = n, f = Dr.IDENTITY_MATRIX;
         o !== 0 && (p = Or.image.rotateWithOffset(n, o, 0, d), f = Dr.buildRotationMatrix(-o, h));
-        const m = {startPoint: a.startPoint, endPoint: a.endPoint}, g = Hn.cutBoxFromImageAndResize(m, p, [this.meshHeight, this.meshWidth]).div(255), [, y, w] = this.meshDetector.predict(g), b = y.dataSync()[0];
+        const m = {startPoint: a.startPoint, endPoint: a.endPoint}, g = Hn.cutBoxFromImageAndResize(m, p, [this.meshHeight, this.meshWidth]).div(255);
+        if (!t.mesh.enabled) {
+          const D = {coords: null, box: a, faceConfidence: null, confidence: a.confidence, image: g};
+          return D;
+        }
+        const [, y, w] = this.meshDetector.predict(g), b = y.dataSync()[0];
         if (y.dispose(), b < t.detector.minConfidence)
           return w.dispose(), null;
         const L = Or.reshape(w, [-1, 3]);
         let x = L.arraySync();
         if (t.iris.enabled) {
-          const {box: O, boxSize: D, crop: F} = this.getEyeBox(x, g, Lp[0], Lp[1], true), {box: k, boxSize: B, crop: V} = this.getEyeBox(x, g, Ip[0], Ip[1]), P = this.irisModel.predict(Or.concat([F, V])), G = P.dataSync();
-          P.dispose();
-          const j = G.slice(0, Ap * 3), {rawCoords: q, iris: H} = this.getEyeCoords(j, O, D, true), J = G.slice(Ap * 3), {rawCoords: $, iris: ee} = this.getEyeCoords(J, k, B), te = this.getLeftToRightEyeDepthDifference(x);
-          Math.abs(te) < 30 ? (oc(x, q, "left"), oc(x, $, "right")) : te < 1 ? oc(x, q, "left", ["EyeUpper0", "EyeLower0"]) : oc(x, $, "right", ["EyeUpper0", "EyeLower0"]);
-          const ne = this.getAdjustedIrisCoords(x, H, "left"), re = this.getAdjustedIrisCoords(x, ee, "right");
-          x = x.concat(ne).concat(re);
+          const {box: D, boxSize: F, crop: k} = this.getEyeBox(x, g, Lp[0], Lp[1], true), {box: B, boxSize: V, crop: P} = this.getEyeBox(x, g, Ip[0], Ip[1]), G = this.irisModel.predict(Or.concat([k, P])), j = G.dataSync();
+          G.dispose();
+          const q = j.slice(0, Ap * 3), {rawCoords: H, iris: J} = this.getEyeCoords(q, D, F, true), $ = j.slice(Ap * 3), {rawCoords: ee, iris: te} = this.getEyeCoords($, B, V), ne = this.getLeftToRightEyeDepthDifference(x);
+          Math.abs(ne) < 30 ? (oc(x, H, "left"), oc(x, ee, "right")) : ne < 1 ? oc(x, H, "left", ["EyeUpper0", "EyeLower0"]) : oc(x, ee, "right", ["EyeUpper0", "EyeLower0"]);
+          const re = this.getAdjustedIrisCoords(x, J, "left"), ie = this.getAdjustedIrisCoords(x, te, "right");
+          x = x.concat(re).concat(ie);
         }
         const N = this.transformRawCoords(x, a, o, f);
         Or.dispose(x);
-        const I = Hn.enlargeBox(this.calculateLandmarksBoundingBox(N)), C = {coords: null, box: I, confidence: b, image: g};
-        if (t.mesh.enabled) {
-          const O = Or.tensor2d(N);
-          this.regionsOfInterest[s] = {...I, landmarks: O.arraySync()}, C.coords = O;
-        }
-        return C;
+        const I = Hn.enlargeBox(this.calculateLandmarksBoundingBox(N)), C = Or.tensor2d(N), O = {coords: C, box: I, faceConfidence: b, confidence: a.confidence, image: g};
+        return this.storedBoxes[s] = {...I, landmarks: C.arraySync(), confidence: a.confidence, faceConfidence: b}, O;
       }));
       return i = i.filter((a) => a !== null), this.detectedFaces = i.length, i;
-    }
-    updateRegionsOfInterest(n) {
-      for (let t = 0; t < n.length; t++) {
-        const e = n[t], r = this.regionsOfInterest[t];
-        let i = 0;
-        if (r && r.startPoint) {
-          const [a, s] = e.startPoint, [o, c] = e.endPoint, [l, u] = r.startPoint, [h, d] = r.endPoint, p = Math.max(a, l), f = Math.max(s, u), m = Math.min(o, h), g = Math.min(c, d), y = (m - p) * (g - f), w = (o - a) * (c - s), b = (h - l) * (d - s);
-          i = y / (w + b - y);
-        }
-        i < xH && (this.regionsOfInterest[t] = e);
-      }
-      this.regionsOfInterest = this.regionsOfInterest.slice(0, n.length);
-    }
-    clearRegionOfInterest(n) {
-      this.regionsOfInterest[n] != null && (this.regionsOfInterest = [...this.regionsOfInterest.slice(0, n), ...this.regionsOfInterest.slice(n + 1)]);
     }
     calculateLandmarksBoundingBox(n) {
       const t = n.map((a) => a[0]), e = n.map((a) => a[1]), r = [Math.min(...t), Math.min(...e)], i = [Math.max(...t), Math.max(...e)];
       return {startPoint: r, endPoint: i, landmarks: n};
     }
   }
-  tx.Pipeline = RH;
+  tx.Pipeline = CH;
 });
 var ix = we((rx) => {
   rx.UV_COORDS = [[0.499976992607117, 0.652534008026123], [0.500025987625122, 0.547487020492554], [0.499974012374878, 0.602371990680695], [0.482113003730774, 0.471979022026062], [0.500150978565216, 0.527155995368958], [0.499909996986389, 0.498252987861633], [0.499523013830185, 0.40106201171875], [0.289712011814117, 0.380764007568359], [0.499954998493195, 0.312398016452789], [0.499987006187439, 0.269918978214264], [0.500023007392883, 0.107050001621246], [0.500023007392883, 0.666234016418457], [0.5000159740448, 0.679224014282227], [0.500023007392883, 0.692348003387451], [0.499976992607117, 0.695277988910675], [0.499976992607117, 0.70593398809433], [0.499976992607117, 0.719385027885437], [0.499976992607117, 0.737019002437592], [0.499967992305756, 0.781370997428894], [0.499816000461578, 0.562981009483337], [0.473773002624512, 0.573909997940063], [0.104906998574734, 0.254140973091125], [0.365929991006851, 0.409575998783112], [0.338757991790771, 0.41302502155304], [0.311120003461838, 0.409460008144379], [0.274657994508743, 0.389131009578705], [0.393361985683441, 0.403706014156342], [0.345234006643295, 0.344011008739471], [0.370094001293182, 0.346076011657715], [0.319321990013123, 0.347265005111694], [0.297903001308441, 0.353591024875641], [0.24779200553894, 0.410809993743896], [0.396889001131058, 0.842755019664764], [0.280097991228104, 0.375599980354309], [0.106310002505779, 0.399955987930298], [0.2099249958992, 0.391353011131287], [0.355807989835739, 0.534406006336212], [0.471751004457474, 0.65040397644043], [0.474155008792877, 0.680191993713379], [0.439785003662109, 0.657229006290436], [0.414617002010345, 0.66654098033905], [0.450374007225037, 0.680860996246338], [0.428770989179611, 0.682690978050232], [0.374971002340317, 0.727805018424988], [0.486716985702515, 0.547628998756409], [0.485300987958908, 0.527395009994507], [0.257764995098114, 0.314490020275116], [0.401223003864288, 0.455172002315521], [0.429818987846375, 0.548614978790283], [0.421351999044418, 0.533740997314453], [0.276895999908447, 0.532056987285614], [0.483370006084442, 0.499586999416351], [0.33721199631691, 0.282882988452911], [0.296391993761063, 0.293242990970612], [0.169294998049736, 0.193813979625702], [0.447580009698868, 0.302609980106354], [0.392390012741089, 0.353887975215912], [0.354490011930466, 0.696784019470215], [0.067304998636246, 0.730105042457581], [0.442739009857178, 0.572826027870178], [0.457098007202148, 0.584792017936707], [0.381974011659622, 0.694710969924927], [0.392388999462128, 0.694203019142151], [0.277076005935669, 0.271932005882263], [0.422551989555359, 0.563233017921448], [0.385919004678726, 0.281364023685455], [0.383103013038635, 0.255840003490448], [0.331431001424789, 0.119714021682739], [0.229923993349075, 0.232002973556519], [0.364500999450684, 0.189113974571228], [0.229622006416321, 0.299540996551514], [0.173287004232407, 0.278747975826263], [0.472878992557526, 0.666198015213013], [0.446828007698059, 0.668527007102966], [0.422762006521225, 0.673889994621277], [0.445307999849319, 0.580065965652466], [0.388103008270264, 0.693961024284363], [0.403039008378983, 0.706539988517761], [0.403629004955292, 0.693953037261963], [0.460041999816895, 0.557139039039612], [0.431158006191254, 0.692366003990173], [0.452181994915009, 0.692366003990173], [0.475387006998062, 0.692366003990173], [0.465828001499176, 0.779190003871918], [0.472328990697861, 0.736225962638855], [0.473087012767792, 0.717857003211975], [0.473122000694275, 0.704625964164734], [0.473033010959625, 0.695277988910675], [0.427942007780075, 0.695277988910675], [0.426479011774063, 0.703539967536926], [0.423162013292313, 0.711845993995667], [0.4183090031147, 0.720062971115112], [0.390094995498657, 0.639572978019714], [0.013953999616206, 0.560034036636353], [0.499913990497589, 0.58014702796936], [0.413199990987778, 0.69539999961853], [0.409626007080078, 0.701822996139526], [0.468080013990402, 0.601534962654114], [0.422728985548019, 0.585985004901886], [0.463079988956451, 0.593783974647522], [0.37211999297142, 0.47341400384903], [0.334562003612518, 0.496073007583618], [0.411671012639999, 0.546965003013611], [0.242175996303558, 0.14767599105835], [0.290776997804642, 0.201445996761322], [0.327338010072708, 0.256527006626129], [0.399509996175766, 0.748921036720276], [0.441727995872498, 0.261676013469696], [0.429764986038208, 0.187834024429321], [0.412198007106781, 0.108901023864746], [0.288955003023148, 0.398952007293701], [0.218936994671822, 0.435410976409912], [0.41278201341629, 0.398970007896423], [0.257135003805161, 0.355440020561218], [0.427684992551804, 0.437960982322693], [0.448339998722076, 0.536936044692993], [0.178560003638268, 0.45755398273468], [0.247308000922203, 0.457193970680237], [0.286267012357712, 0.467674970626831], [0.332827985286713, 0.460712015628815], [0.368755996227264, 0.447206974029541], [0.398963987827301, 0.432654976844788], [0.476410001516342, 0.405806005001068], [0.189241006970406, 0.523923993110657], [0.228962004184723, 0.348950982093811], [0.490725994110107, 0.562400996685028], [0.404670000076294, 0.485132992267609], [0.019469000399113, 0.401564002037048], [0.426243007183075, 0.420431017875671], [0.396993011236191, 0.548797011375427], [0.266469985246658, 0.376977026462555], [0.439121007919312, 0.51895797252655], [0.032313998788595, 0.644356966018677], [0.419054001569748, 0.387154996395111], [0.462783008813858, 0.505746960639954], [0.238978996872902, 0.779744982719421], [0.198220998048782, 0.831938028335571], [0.107550002634525, 0.540755033493042], [0.183610007166862, 0.740257024765015], [0.134409993886948, 0.333683013916016], [0.385764002799988, 0.883153975009918], [0.490967005491257, 0.579378008842468], [0.382384985685349, 0.508572995662689], [0.174399003386497, 0.397670984268188], [0.318785011768341, 0.39623498916626], [0.343364000320435, 0.400596976280212], [0.396100014448166, 0.710216999053955], [0.187885001301765, 0.588537991046906], [0.430987000465393, 0.944064974784851], [0.318993002176285, 0.898285031318665], [0.266247987747192, 0.869701027870178], [0.500023007392883, 0.190576016902924], [0.499976992607117, 0.954452991485596], [0.366169989109039, 0.398822009563446], [0.393207013607025, 0.39553701877594], [0.410373002290726, 0.391080021858215], [0.194993004202843, 0.342101991176605], [0.388664990663528, 0.362284004688263], [0.365961998701096, 0.355970978736877], [0.343364000320435, 0.355356991291046], [0.318785011768341, 0.35834002494812], [0.301414996385574, 0.363156020641327], [0.058132998645306, 0.319076001644135], [0.301414996385574, 0.387449026107788], [0.499987989664078, 0.618434011936188], [0.415838003158569, 0.624195992946625], [0.445681989192963, 0.566076993942261], [0.465844005346298, 0.620640993118286], [0.49992299079895, 0.351523995399475], [0.288718998432159, 0.819945991039276], [0.335278987884521, 0.852819979190826], [0.440512001514435, 0.902418971061707], [0.128294005990028, 0.791940987110138], [0.408771991729736, 0.373893976211548], [0.455606997013092, 0.451801002025604], [0.499877005815506, 0.908990025520325], [0.375436991453171, 0.924192011356354], [0.11421000212431, 0.615022003650665], [0.448662012815475, 0.695277988910675], [0.4480200111866, 0.704632043838501], [0.447111994028091, 0.715808033943176], [0.444831997156143, 0.730794012546539], [0.430011987686157, 0.766808986663818], [0.406787008047104, 0.685672998428345], [0.400738000869751, 0.681069016456604], [0.392399996519089, 0.677703022956848], [0.367855995893478, 0.663918972015381], [0.247923001646996, 0.601333022117615], [0.452769994735718, 0.420849978923798], [0.43639200925827, 0.359887003898621], [0.416164010763168, 0.368713974952698], [0.413385987281799, 0.692366003990173], [0.228018000721931, 0.683571994304657], [0.468268007040024, 0.352671027183533], [0.411361992359161, 0.804327011108398], [0.499989002943039, 0.469825029373169], [0.479153990745544, 0.442654013633728], [0.499974012374878, 0.439637005329132], [0.432112008333206, 0.493588984012604], [0.499886006116867, 0.866917014122009], [0.49991300702095, 0.821729004383087], [0.456548988819122, 0.819200992584229], [0.344549000263214, 0.745438992977142], [0.37890899181366, 0.574010014533997], [0.374292999505997, 0.780184984207153], [0.319687992334366, 0.570737957954407], [0.357154995203018, 0.604269981384277], [0.295284003019333, 0.621580958366394], [0.447750002145767, 0.862477004528046], [0.410986006259918, 0.508723020553589], [0.31395098567009, 0.775308012962341], [0.354128003120422, 0.812552988529205], [0.324548006057739, 0.703992962837219], [0.189096003770828, 0.646299958229065], [0.279776990413666, 0.71465802192688], [0.1338230073452, 0.682700991630554], [0.336768001317978, 0.644733011722565], [0.429883986711502, 0.466521978378296], [0.455527991056442, 0.548622965812683], [0.437114000320435, 0.558896005153656], [0.467287987470627, 0.529924988746643], [0.414712011814117, 0.335219979286194], [0.37704598903656, 0.322777986526489], [0.344107985496521, 0.320150971412659], [0.312875986099243, 0.32233202457428], [0.283526003360748, 0.333190023899078], [0.241245999932289, 0.382785975933075], [0.102986000478268, 0.468762993812561], [0.267612010240555, 0.424560010433197], [0.297879010438919, 0.433175981044769], [0.333433985710144, 0.433878004550934], [0.366427004337311, 0.426115989685059], [0.396012008190155, 0.416696012020111], [0.420121014118195, 0.41022801399231], [0.007561000064015, 0.480777025222778], [0.432949006557465, 0.569517970085144], [0.458638995885849, 0.479089021682739], [0.473466008901596, 0.545744001865387], [0.476087987422943, 0.563830018043518], [0.468472003936768, 0.555056989192963], [0.433990985155106, 0.582361996173859], [0.483518004417419, 0.562983989715576], [0.482482999563217, 0.57784903049469], [0.42645001411438, 0.389798998832703], [0.438998997211456, 0.39649498462677], [0.450067013502121, 0.400434017181396], [0.289712011814117, 0.368252992630005], [0.276670008897781, 0.363372981548309], [0.517862021923065, 0.471948027610779], [0.710287988185883, 0.380764007568359], [0.526226997375488, 0.573909997940063], [0.895093023777008, 0.254140973091125], [0.634069979190826, 0.409575998783112], [0.661242008209229, 0.41302502155304], [0.688880026340485, 0.409460008144379], [0.725341975688934, 0.389131009578705], [0.606630027294159, 0.40370500087738], [0.654766023159027, 0.344011008739471], [0.629905998706818, 0.346076011657715], [0.680678009986877, 0.347265005111694], [0.702096998691559, 0.353591024875641], [0.75221198797226, 0.410804986953735], [0.602918028831482, 0.842862963676453], [0.719901978969574, 0.375599980354309], [0.893692970275879, 0.399959981441498], [0.790081977844238, 0.391354024410248], [0.643998026847839, 0.534487962722778], [0.528249025344849, 0.65040397644043], [0.525849997997284, 0.680191040039062], [0.560214996337891, 0.657229006290436], [0.585384011268616, 0.66654098033905], [0.549625992774963, 0.680860996246338], [0.57122802734375, 0.682691991329193], [0.624852001667023, 0.72809898853302], [0.513050019741058, 0.547281980514526], [0.51509702205658, 0.527251958847046], [0.742246985435486, 0.314507007598877], [0.598631024360657, 0.454979002475739], [0.570338010787964, 0.548575043678284], [0.578631997108459, 0.533622980117798], [0.723087012767792, 0.532054007053375], [0.516445994377136, 0.499638974666595], [0.662801027297974, 0.282917976379395], [0.70362401008606, 0.293271005153656], [0.830704987049103, 0.193813979625702], [0.552385985851288, 0.302568018436432], [0.607609987258911, 0.353887975215912], [0.645429015159607, 0.696707010269165], [0.932694971561432, 0.730105042457581], [0.557260990142822, 0.572826027870178], [0.542901992797852, 0.584792017936707], [0.6180260181427, 0.694710969924927], [0.607590973377228, 0.694203019142151], [0.722943007946014, 0.271963000297546], [0.577413976192474, 0.563166975975037], [0.614082992076874, 0.281386971473694], [0.616907000541687, 0.255886018276215], [0.668509006500244, 0.119913995265961], [0.770092010498047, 0.232020974159241], [0.635536015033722, 0.189248979091644], [0.77039098739624, 0.299556016921997], [0.826722025871277, 0.278755009174347], [0.527121007442474, 0.666198015213013], [0.553171992301941, 0.668527007102966], [0.577238023281097, 0.673889994621277], [0.554691970348358, 0.580065965652466], [0.611896991729736, 0.693961024284363], [0.59696102142334, 0.706539988517761], [0.596370995044708, 0.693953037261963], [0.539958000183105, 0.557139039039612], [0.568841993808746, 0.692366003990173], [0.547818005084991, 0.692366003990173], [0.52461302280426, 0.692366003990173], [0.534089982509613, 0.779141008853912], [0.527670979499817, 0.736225962638855], [0.526912987232208, 0.717857003211975], [0.526877999305725, 0.704625964164734], [0.526966989040375, 0.695277988910675], [0.572058022022247, 0.695277988910675], [0.573521018028259, 0.703539967536926], [0.57683801651001, 0.711845993995667], [0.581691026687622, 0.720062971115112], [0.609944999217987, 0.639909982681274], [0.986046016216278, 0.560034036636353], [0.5867999792099, 0.69539999961853], [0.590372025966644, 0.701822996139526], [0.531915009021759, 0.601536989212036], [0.577268004417419, 0.585934996604919], [0.536915004253387, 0.593786001205444], [0.627542972564697, 0.473352015018463], [0.665585994720459, 0.495950996875763], [0.588353991508484, 0.546862006187439], [0.757824003696442, 0.14767599105835], [0.709249973297119, 0.201507985591888], [0.672684013843536, 0.256581008434296], [0.600408971309662, 0.74900496006012], [0.55826598405838, 0.261672019958496], [0.570303976535797, 0.187870979309082], [0.588165998458862, 0.109044015407562], [0.711045026779175, 0.398952007293701], [0.781069993972778, 0.435405015945435], [0.587247014045715, 0.398931980133057], [0.742869973182678, 0.355445981025696], [0.572156012058258, 0.437651991844177], [0.55186802148819, 0.536570012569427], [0.821442008018494, 0.457556009292603], [0.752701997756958, 0.457181990146637], [0.71375697851181, 0.467626988887787], [0.66711300611496, 0.460672974586487], [0.631101012229919, 0.447153985500336], [0.6008620262146, 0.432473003864288], [0.523481011390686, 0.405627012252808], [0.810747981071472, 0.523926019668579], [0.771045982837677, 0.348959028720856], [0.509127020835876, 0.562718033790588], [0.595292985439301, 0.485023975372314], [0.980530977249146, 0.401564002037048], [0.573499977588654, 0.420000016689301], [0.602994978427887, 0.548687994480133], [0.733529984951019, 0.376977026462555], [0.560611009597778, 0.519016981124878], [0.967685997486115, 0.644356966018677], [0.580985009670258, 0.387160003185272], [0.537728011608124, 0.505385041236877], [0.760966002941132, 0.779752969741821], [0.801778972148895, 0.831938028335571], [0.892440974712372, 0.54076099395752], [0.816350996494293, 0.740260004997253], [0.865594983100891, 0.333687007427216], [0.614073991775513, 0.883246004581451], [0.508952975273132, 0.579437971115112], [0.617941975593567, 0.508316040039062], [0.825608015060425, 0.397674977779388], [0.681214988231659, 0.39623498916626], [0.656635999679565, 0.400596976280212], [0.603900015354156, 0.710216999053955], [0.81208598613739, 0.588539004325867], [0.56801301240921, 0.944564998149872], [0.681007981300354, 0.898285031318665], [0.733752012252808, 0.869701027870178], [0.633830010890961, 0.398822009563446], [0.606792986392975, 0.39553701877594], [0.589659988880157, 0.391062021255493], [0.805015981197357, 0.342108011245728], [0.611334979534149, 0.362284004688263], [0.634037971496582, 0.355970978736877], [0.656635999679565, 0.355356991291046], [0.681214988231659, 0.35834002494812], [0.698584973812103, 0.363156020641327], [0.941866993904114, 0.319076001644135], [0.698584973812103, 0.387449026107788], [0.584177017211914, 0.624107003211975], [0.554318010807037, 0.566076993942261], [0.534153997898102, 0.62064003944397], [0.711217999458313, 0.819975018501282], [0.664629995822906, 0.852871000766754], [0.559099972248077, 0.902631998062134], [0.871706008911133, 0.791940987110138], [0.591234028339386, 0.373893976211548], [0.544341027736664, 0.451583981513977], [0.624562978744507, 0.924192011356354], [0.88577002286911, 0.615028977394104], [0.551338016986847, 0.695277988910675], [0.551980018615723, 0.704632043838501], [0.552887976169586, 0.715808033943176], [0.555167973041534, 0.730794012546539], [0.569944024085999, 0.767035007476807], [0.593203008174896, 0.685675978660583], [0.599261999130249, 0.681069016456604], [0.607599973678589, 0.677703022956848], [0.631937980651855, 0.663500010967255], [0.752032995223999, 0.601315021514893], [0.547226011753082, 0.420395016670227], [0.563543975353241, 0.359827995300293], [0.583841025829315, 0.368713974952698], [0.586614012718201, 0.692366003990173], [0.771915018558502, 0.683578014373779], [0.531597018241882, 0.352482974529266], [0.588370978832245, 0.804440975189209], [0.52079701423645, 0.442565023899078], [0.567984998226166, 0.493479013442993], [0.543282985687256, 0.819254994392395], [0.655317008495331, 0.745514988899231], [0.621008992195129, 0.574018001556396], [0.625559985637665, 0.78031200170517], [0.680198013782501, 0.570719003677368], [0.64276397228241, 0.604337990283966], [0.704662978649139, 0.621529996395111], [0.552012026309967, 0.862591981887817], [0.589071989059448, 0.508637011051178], [0.685944974422455, 0.775357007980347], [0.645735025405884, 0.812640011310577], [0.675342977046967, 0.703978002071381], [0.810858011245728, 0.646304965019226], [0.72012197971344, 0.714666962623596], [0.866151988506317, 0.682704985141754], [0.663187026977539, 0.644596993923187], [0.570082008838654, 0.466325998306274], [0.544561982154846, 0.548375964164734], [0.562758982181549, 0.558784961700439], [0.531987011432648, 0.530140042304993], [0.585271000862122, 0.335177004337311], [0.622952997684479, 0.32277899980545], [0.655896008014679, 0.320163011550903], [0.687132000923157, 0.322345972061157], [0.716481983661652, 0.333200991153717], [0.758756995201111, 0.382786989212036], [0.897013008594513, 0.468769013881683], [0.732392013072968, 0.424547016620636], [0.70211398601532, 0.433162987232208], [0.66652500629425, 0.433866024017334], [0.633504986763, 0.426087975502014], [0.603875994682312, 0.416586995124817], [0.579657971858978, 0.409945011138916], [0.992439985275269, 0.480777025222778], [0.567192018032074, 0.569419980049133], [0.54136598110199, 0.478899002075195], [0.526564002037048, 0.546118021011353], [0.523913025856018, 0.563830018043518], [0.531529009342194, 0.555056989192963], [0.566035985946655, 0.582329034805298], [0.51631098985672, 0.563053965568542], [0.5174720287323, 0.577877044677734], [0.573594987392426, 0.389806985855103], [0.560697972774506, 0.395331978797913], [0.549755990505219, 0.399751007556915], [0.710287988185883, 0.368252992630005], [0.723330020904541, 0.363372981548309]];
 });
-var ax = we((OH) => {
-  As(OH, {default: () => EH});
-  var EH = [127, 34, 139, 11, 0, 37, 232, 231, 120, 72, 37, 39, 128, 121, 47, 232, 121, 128, 104, 69, 67, 175, 171, 148, 157, 154, 155, 118, 50, 101, 73, 39, 40, 9, 151, 108, 48, 115, 131, 194, 204, 211, 74, 40, 185, 80, 42, 183, 40, 92, 186, 230, 229, 118, 202, 212, 214, 83, 18, 17, 76, 61, 146, 160, 29, 30, 56, 157, 173, 106, 204, 194, 135, 214, 192, 203, 165, 98, 21, 71, 68, 51, 45, 4, 144, 24, 23, 77, 146, 91, 205, 50, 187, 201, 200, 18, 91, 106, 182, 90, 91, 181, 85, 84, 17, 206, 203, 36, 148, 171, 140, 92, 40, 39, 193, 189, 244, 159, 158, 28, 247, 246, 161, 236, 3, 196, 54, 68, 104, 193, 168, 8, 117, 228, 31, 189, 193, 55, 98, 97, 99, 126, 47, 100, 166, 79, 218, 155, 154, 26, 209, 49, 131, 135, 136, 150, 47, 126, 217, 223, 52, 53, 45, 51, 134, 211, 170, 140, 67, 69, 108, 43, 106, 91, 230, 119, 120, 226, 130, 247, 63, 53, 52, 238, 20, 242, 46, 70, 156, 78, 62, 96, 46, 53, 63, 143, 34, 227, 173, 155, 133, 123, 117, 111, 44, 125, 19, 236, 134, 51, 216, 206, 205, 154, 153, 22, 39, 37, 167, 200, 201, 208, 36, 142, 100, 57, 212, 202, 20, 60, 99, 28, 158, 157, 35, 226, 113, 160, 159, 27, 204, 202, 210, 113, 225, 46, 43, 202, 204, 62, 76, 77, 137, 123, 116, 41, 38, 72, 203, 129, 142, 64, 98, 240, 49, 102, 64, 41, 73, 74, 212, 216, 207, 42, 74, 184, 169, 170, 211, 170, 149, 176, 105, 66, 69, 122, 6, 168, 123, 147, 187, 96, 77, 90, 65, 55, 107, 89, 90, 180, 101, 100, 120, 63, 105, 104, 93, 137, 227, 15, 86, 85, 129, 102, 49, 14, 87, 86, 55, 8, 9, 100, 47, 121, 145, 23, 22, 88, 89, 179, 6, 122, 196, 88, 95, 96, 138, 172, 136, 215, 58, 172, 115, 48, 219, 42, 80, 81, 195, 3, 51, 43, 146, 61, 171, 175, 199, 81, 82, 38, 53, 46, 225, 144, 163, 110, 246, 33, 7, 52, 65, 66, 229, 228, 117, 34, 127, 234, 107, 108, 69, 109, 108, 151, 48, 64, 235, 62, 78, 191, 129, 209, 126, 111, 35, 143, 163, 161, 246, 117, 123, 50, 222, 65, 52, 19, 125, 141, 221, 55, 65, 3, 195, 197, 25, 7, 33, 220, 237, 44, 70, 71, 139, 122, 193, 245, 247, 130, 33, 71, 21, 162, 153, 158, 159, 170, 169, 150, 188, 174, 196, 216, 186, 92, 144, 160, 161, 2, 97, 167, 141, 125, 241, 164, 167, 37, 72, 38, 12, 145, 159, 160, 38, 82, 13, 63, 68, 71, 226, 35, 111, 158, 153, 154, 101, 50, 205, 206, 92, 165, 209, 198, 217, 165, 167, 97, 220, 115, 218, 133, 112, 243, 239, 238, 241, 214, 135, 169, 190, 173, 133, 171, 208, 32, 125, 44, 237, 86, 87, 178, 85, 86, 179, 84, 85, 180, 83, 84, 181, 201, 83, 182, 137, 93, 132, 76, 62, 183, 61, 76, 184, 57, 61, 185, 212, 57, 186, 214, 207, 187, 34, 143, 156, 79, 239, 237, 123, 137, 177, 44, 1, 4, 201, 194, 32, 64, 102, 129, 213, 215, 138, 59, 166, 219, 242, 99, 97, 2, 94, 141, 75, 59, 235, 24, 110, 228, 25, 130, 226, 23, 24, 229, 22, 23, 230, 26, 22, 231, 112, 26, 232, 189, 190, 243, 221, 56, 190, 28, 56, 221, 27, 28, 222, 29, 27, 223, 30, 29, 224, 247, 30, 225, 238, 79, 20, 166, 59, 75, 60, 75, 240, 147, 177, 215, 20, 79, 166, 187, 147, 213, 112, 233, 244, 233, 128, 245, 128, 114, 188, 114, 217, 174, 131, 115, 220, 217, 198, 236, 198, 131, 134, 177, 132, 58, 143, 35, 124, 110, 163, 7, 228, 110, 25, 356, 389, 368, 11, 302, 267, 452, 350, 349, 302, 303, 269, 357, 343, 277, 452, 453, 357, 333, 332, 297, 175, 152, 377, 384, 398, 382, 347, 348, 330, 303, 304, 270, 9, 336, 337, 278, 279, 360, 418, 262, 431, 304, 408, 409, 310, 415, 407, 270, 409, 410, 450, 348, 347, 422, 430, 434, 313, 314, 17, 306, 307, 375, 387, 388, 260, 286, 414, 398, 335, 406, 418, 364, 367, 416, 423, 358, 327, 251, 284, 298, 281, 5, 4, 373, 374, 253, 307, 320, 321, 425, 427, 411, 421, 313, 18, 321, 405, 406, 320, 404, 405, 315, 16, 17, 426, 425, 266, 377, 400, 369, 322, 391, 269, 417, 465, 464, 386, 257, 258, 466, 260, 388, 456, 399, 419, 284, 332, 333, 417, 285, 8, 346, 340, 261, 413, 441, 285, 327, 460, 328, 355, 371, 329, 392, 439, 438, 382, 341, 256, 429, 420, 360, 364, 394, 379, 277, 343, 437, 443, 444, 283, 275, 440, 363, 431, 262, 369, 297, 338, 337, 273, 375, 321, 450, 451, 349, 446, 342, 467, 293, 334, 282, 458, 461, 462, 276, 353, 383, 308, 324, 325, 276, 300, 293, 372, 345, 447, 382, 398, 362, 352, 345, 340, 274, 1, 19, 456, 248, 281, 436, 427, 425, 381, 256, 252, 269, 391, 393, 200, 199, 428, 266, 330, 329, 287, 273, 422, 250, 462, 328, 258, 286, 384, 265, 353, 342, 387, 259, 257, 424, 431, 430, 342, 353, 276, 273, 335, 424, 292, 325, 307, 366, 447, 345, 271, 303, 302, 423, 266, 371, 294, 455, 460, 279, 278, 294, 271, 272, 304, 432, 434, 427, 272, 407, 408, 394, 430, 431, 395, 369, 400, 334, 333, 299, 351, 417, 168, 352, 280, 411, 325, 319, 320, 295, 296, 336, 319, 403, 404, 330, 348, 349, 293, 298, 333, 323, 454, 447, 15, 16, 315, 358, 429, 279, 14, 15, 316, 285, 336, 9, 329, 349, 350, 374, 380, 252, 318, 402, 403, 6, 197, 419, 318, 319, 325, 367, 364, 365, 435, 367, 397, 344, 438, 439, 272, 271, 311, 195, 5, 281, 273, 287, 291, 396, 428, 199, 311, 271, 268, 283, 444, 445, 373, 254, 339, 263, 466, 249, 282, 334, 296, 449, 347, 346, 264, 447, 454, 336, 296, 299, 338, 10, 151, 278, 439, 455, 292, 407, 415, 358, 371, 355, 340, 345, 372, 390, 249, 466, 346, 347, 280, 442, 443, 282, 19, 94, 370, 441, 442, 295, 248, 419, 197, 263, 255, 359, 440, 275, 274, 300, 383, 368, 351, 412, 465, 263, 467, 466, 301, 368, 389, 380, 374, 386, 395, 378, 379, 412, 351, 419, 436, 426, 322, 373, 390, 388, 2, 164, 393, 370, 462, 461, 164, 0, 267, 302, 11, 12, 374, 373, 387, 268, 12, 13, 293, 300, 301, 446, 261, 340, 385, 384, 381, 330, 266, 425, 426, 423, 391, 429, 355, 437, 391, 327, 326, 440, 457, 438, 341, 382, 362, 459, 457, 461, 434, 430, 394, 414, 463, 362, 396, 369, 262, 354, 461, 457, 316, 403, 402, 315, 404, 403, 314, 405, 404, 313, 406, 405, 421, 418, 406, 366, 401, 361, 306, 408, 407, 291, 409, 408, 287, 410, 409, 432, 436, 410, 434, 416, 411, 264, 368, 383, 309, 438, 457, 352, 376, 401, 274, 275, 4, 421, 428, 262, 294, 327, 358, 433, 416, 367, 289, 455, 439, 462, 370, 326, 2, 326, 370, 305, 460, 455, 254, 449, 448, 255, 261, 446, 253, 450, 449, 252, 451, 450, 256, 452, 451, 341, 453, 452, 413, 464, 463, 441, 413, 414, 258, 442, 441, 257, 443, 442, 259, 444, 443, 260, 445, 444, 467, 342, 445, 459, 458, 250, 289, 392, 290, 290, 328, 460, 376, 433, 435, 250, 290, 392, 411, 416, 433, 341, 463, 464, 453, 464, 465, 357, 465, 412, 343, 412, 399, 360, 363, 440, 437, 399, 456, 420, 456, 363, 401, 435, 288, 372, 383, 353, 339, 255, 249, 448, 261, 255, 133, 243, 190, 133, 155, 112, 33, 246, 247, 33, 130, 25, 398, 384, 286, 362, 398, 414, 362, 463, 341, 263, 359, 467, 263, 249, 255, 466, 467, 260, 75, 60, 166, 238, 239, 79, 162, 127, 139, 72, 11, 37, 121, 232, 120, 73, 72, 39, 114, 128, 47, 233, 232, 128, 103, 104, 67, 152, 175, 148, 173, 157, 155, 119, 118, 101, 74, 73, 40, 107, 9, 108, 49, 48, 131, 32, 194, 211, 184, 74, 185, 191, 80, 183, 185, 40, 186, 119, 230, 118, 210, 202, 214, 84, 83, 17, 77, 76, 146, 161, 160, 30, 190, 56, 173, 182, 106, 194, 138, 135, 192, 129, 203, 98, 54, 21, 68, 5, 51, 4, 145, 144, 23, 90, 77, 91, 207, 205, 187, 83, 201, 18, 181, 91, 182, 180, 90, 181, 16, 85, 17, 205, 206, 36, 176, 148, 140, 165, 92, 39, 245, 193, 244, 27, 159, 28, 30, 247, 161, 174, 236, 196, 103, 54, 104, 55, 193, 8, 111, 117, 31, 221, 189, 55, 240, 98, 99, 142, 126, 100, 219, 166, 218, 112, 155, 26, 198, 209, 131, 169, 135, 150, 114, 47, 217, 224, 223, 53, 220, 45, 134, 32, 211, 140, 109, 67, 108, 146, 43, 91, 231, 230, 120, 113, 226, 247, 105, 63, 52, 241, 238, 242, 124, 46, 156, 95, 78, 96, 70, 46, 63, 116, 143, 227, 116, 123, 111, 1, 44, 19, 3, 236, 51, 207, 216, 205, 26, 154, 22, 165, 39, 167, 199, 200, 208, 101, 36, 100, 43, 57, 202, 242, 20, 99, 56, 28, 157, 124, 35, 113, 29, 160, 27, 211, 204, 210, 124, 113, 46, 106, 43, 204, 96, 62, 77, 227, 137, 116, 73, 41, 72, 36, 203, 142, 235, 64, 240, 48, 49, 64, 42, 41, 74, 214, 212, 207, 183, 42, 184, 210, 169, 211, 140, 170, 176, 104, 105, 69, 193, 122, 168, 50, 123, 187, 89, 96, 90, 66, 65, 107, 179, 89, 180, 119, 101, 120, 68, 63, 104, 234, 93, 227, 16, 15, 85, 209, 129, 49, 15, 14, 86, 107, 55, 9, 120, 100, 121, 153, 145, 22, 178, 88, 179, 197, 6, 196, 89, 88, 96, 135, 138, 136, 138, 215, 172, 218, 115, 219, 41, 42, 81, 5, 195, 51, 57, 43, 61, 208, 171, 199, 41, 81, 38, 224, 53, 225, 24, 144, 110, 105, 52, 66, 118, 229, 117, 227, 34, 234, 66, 107, 69, 10, 109, 151, 219, 48, 235, 183, 62, 191, 142, 129, 126, 116, 111, 143, 7, 163, 246, 118, 117, 50, 223, 222, 52, 94, 19, 141, 222, 221, 65, 196, 3, 197, 45, 220, 44, 156, 70, 139, 188, 122, 245, 139, 71, 162, 145, 153, 159, 149, 170, 150, 122, 188, 196, 206, 216, 92, 163, 144, 161, 164, 2, 167, 242, 141, 241, 0, 164, 37, 11, 72, 12, 144, 145, 160, 12, 38, 13, 70, 63, 71, 31, 226, 111, 157, 158, 154, 36, 101, 205, 203, 206, 165, 126, 209, 217, 98, 165, 97, 237, 220, 218, 237, 239, 241, 210, 214, 169, 140, 171, 32, 241, 125, 237, 179, 86, 178, 180, 85, 179, 181, 84, 180, 182, 83, 181, 194, 201, 182, 177, 137, 132, 184, 76, 183, 185, 61, 184, 186, 57, 185, 216, 212, 186, 192, 214, 187, 139, 34, 156, 218, 79, 237, 147, 123, 177, 45, 44, 4, 208, 201, 32, 98, 64, 129, 192, 213, 138, 235, 59, 219, 141, 242, 97, 97, 2, 141, 240, 75, 235, 229, 24, 228, 31, 25, 226, 230, 23, 229, 231, 22, 230, 232, 26, 231, 233, 112, 232, 244, 189, 243, 189, 221, 190, 222, 28, 221, 223, 27, 222, 224, 29, 223, 225, 30, 224, 113, 247, 225, 99, 60, 240, 213, 147, 215, 60, 20, 166, 192, 187, 213, 243, 112, 244, 244, 233, 245, 245, 128, 188, 188, 114, 174, 134, 131, 220, 174, 217, 236, 236, 198, 134, 215, 177, 58, 156, 143, 124, 25, 110, 7, 31, 228, 25, 264, 356, 368, 0, 11, 267, 451, 452, 349, 267, 302, 269, 350, 357, 277, 350, 452, 357, 299, 333, 297, 396, 175, 377, 381, 384, 382, 280, 347, 330, 269, 303, 270, 151, 9, 337, 344, 278, 360, 424, 418, 431, 270, 304, 409, 272, 310, 407, 322, 270, 410, 449, 450, 347, 432, 422, 434, 18, 313, 17, 291, 306, 375, 259, 387, 260, 424, 335, 418, 434, 364, 416, 391, 423, 327, 301, 251, 298, 275, 281, 4, 254, 373, 253, 375, 307, 321, 280, 425, 411, 200, 421, 18, 335, 321, 406, 321, 320, 405, 314, 315, 17, 423, 426, 266, 396, 377, 369, 270, 322, 269, 413, 417, 464, 385, 386, 258, 248, 456, 419, 298, 284, 333, 168, 417, 8, 448, 346, 261, 417, 413, 285, 326, 327, 328, 277, 355, 329, 309, 392, 438, 381, 382, 256, 279, 429, 360, 365, 364, 379, 355, 277, 437, 282, 443, 283, 281, 275, 363, 395, 431, 369, 299, 297, 337, 335, 273, 321, 348, 450, 349, 359, 446, 467, 283, 293, 282, 250, 458, 462, 300, 276, 383, 292, 308, 325, 283, 276, 293, 264, 372, 447, 346, 352, 340, 354, 274, 19, 363, 456, 281, 426, 436, 425, 380, 381, 252, 267, 269, 393, 421, 200, 428, 371, 266, 329, 432, 287, 422, 290, 250, 328, 385, 258, 384, 446, 265, 342, 386, 387, 257, 422, 424, 430, 445, 342, 276, 422, 273, 424, 306, 292, 307, 352, 366, 345, 268, 271, 302, 358, 423, 371, 327, 294, 460, 331, 279, 294, 303, 271, 304, 436, 432, 427, 304, 272, 408, 395, 394, 431, 378, 395, 400, 296, 334, 299, 6, 351, 168, 376, 352, 411, 307, 325, 320, 285, 295, 336, 320, 319, 404, 329, 330, 349, 334, 293, 333, 366, 323, 447, 316, 15, 315, 331, 358, 279, 317, 14, 316, 8, 285, 9, 277, 329, 350, 253, 374, 252, 319, 318, 403, 351, 6, 419, 324, 318, 325, 397, 367, 365, 288, 435, 397, 278, 344, 439, 310, 272, 311, 248, 195, 281, 375, 273, 291, 175, 396, 199, 312, 311, 268, 276, 283, 445, 390, 373, 339, 295, 282, 296, 448, 449, 346, 356, 264, 454, 337, 336, 299, 337, 338, 151, 294, 278, 455, 308, 292, 415, 429, 358, 355, 265, 340, 372, 388, 390, 466, 352, 346, 280, 295, 442, 282, 354, 19, 370, 285, 441, 295, 195, 248, 197, 457, 440, 274, 301, 300, 368, 417, 351, 465, 251, 301, 389, 385, 380, 386, 394, 395, 379, 399, 412, 419, 410, 436, 322, 387, 373, 388, 326, 2, 393, 354, 370, 461, 393, 164, 267, 268, 302, 12, 386, 374, 387, 312, 268, 13, 298, 293, 301, 265, 446, 340, 380, 385, 381, 280, 330, 425, 322, 426, 391, 420, 429, 437, 393, 391, 326, 344, 440, 438, 458, 459, 461, 364, 434, 394, 428, 396, 262, 274, 354, 457, 317, 316, 402, 316, 315, 403, 315, 314, 404, 314, 313, 405, 313, 421, 406, 323, 366, 361, 292, 306, 407, 306, 291, 408, 291, 287, 409, 287, 432, 410, 427, 434, 411, 372, 264, 383, 459, 309, 457, 366, 352, 401, 1, 274, 4, 418, 421, 262, 331, 294, 358, 435, 433, 367, 392, 289, 439, 328, 462, 326, 94, 2, 370, 289, 305, 455, 339, 254, 448, 359, 255, 446, 254, 253, 449, 253, 252, 450, 252, 256, 451, 256, 341, 452, 414, 413, 463, 286, 441, 414, 286, 258, 441, 258, 257, 442, 257, 259, 443, 259, 260, 444, 260, 467, 445, 309, 459, 250, 305, 289, 290, 305, 290, 460, 401, 376, 435, 309, 250, 392, 376, 411, 433, 453, 341, 464, 357, 453, 465, 343, 357, 412, 437, 343, 399, 344, 360, 440, 420, 437, 456, 360, 420, 363, 361, 401, 288, 265, 372, 353, 390, 339, 249, 339, 448, 255];
+var ax = we((RH) => {
+  As(RH, {default: () => OH});
+  var OH = [127, 34, 139, 11, 0, 37, 232, 231, 120, 72, 37, 39, 128, 121, 47, 232, 121, 128, 104, 69, 67, 175, 171, 148, 157, 154, 155, 118, 50, 101, 73, 39, 40, 9, 151, 108, 48, 115, 131, 194, 204, 211, 74, 40, 185, 80, 42, 183, 40, 92, 186, 230, 229, 118, 202, 212, 214, 83, 18, 17, 76, 61, 146, 160, 29, 30, 56, 157, 173, 106, 204, 194, 135, 214, 192, 203, 165, 98, 21, 71, 68, 51, 45, 4, 144, 24, 23, 77, 146, 91, 205, 50, 187, 201, 200, 18, 91, 106, 182, 90, 91, 181, 85, 84, 17, 206, 203, 36, 148, 171, 140, 92, 40, 39, 193, 189, 244, 159, 158, 28, 247, 246, 161, 236, 3, 196, 54, 68, 104, 193, 168, 8, 117, 228, 31, 189, 193, 55, 98, 97, 99, 126, 47, 100, 166, 79, 218, 155, 154, 26, 209, 49, 131, 135, 136, 150, 47, 126, 217, 223, 52, 53, 45, 51, 134, 211, 170, 140, 67, 69, 108, 43, 106, 91, 230, 119, 120, 226, 130, 247, 63, 53, 52, 238, 20, 242, 46, 70, 156, 78, 62, 96, 46, 53, 63, 143, 34, 227, 173, 155, 133, 123, 117, 111, 44, 125, 19, 236, 134, 51, 216, 206, 205, 154, 153, 22, 39, 37, 167, 200, 201, 208, 36, 142, 100, 57, 212, 202, 20, 60, 99, 28, 158, 157, 35, 226, 113, 160, 159, 27, 204, 202, 210, 113, 225, 46, 43, 202, 204, 62, 76, 77, 137, 123, 116, 41, 38, 72, 203, 129, 142, 64, 98, 240, 49, 102, 64, 41, 73, 74, 212, 216, 207, 42, 74, 184, 169, 170, 211, 170, 149, 176, 105, 66, 69, 122, 6, 168, 123, 147, 187, 96, 77, 90, 65, 55, 107, 89, 90, 180, 101, 100, 120, 63, 105, 104, 93, 137, 227, 15, 86, 85, 129, 102, 49, 14, 87, 86, 55, 8, 9, 100, 47, 121, 145, 23, 22, 88, 89, 179, 6, 122, 196, 88, 95, 96, 138, 172, 136, 215, 58, 172, 115, 48, 219, 42, 80, 81, 195, 3, 51, 43, 146, 61, 171, 175, 199, 81, 82, 38, 53, 46, 225, 144, 163, 110, 246, 33, 7, 52, 65, 66, 229, 228, 117, 34, 127, 234, 107, 108, 69, 109, 108, 151, 48, 64, 235, 62, 78, 191, 129, 209, 126, 111, 35, 143, 163, 161, 246, 117, 123, 50, 222, 65, 52, 19, 125, 141, 221, 55, 65, 3, 195, 197, 25, 7, 33, 220, 237, 44, 70, 71, 139, 122, 193, 245, 247, 130, 33, 71, 21, 162, 153, 158, 159, 170, 169, 150, 188, 174, 196, 216, 186, 92, 144, 160, 161, 2, 97, 167, 141, 125, 241, 164, 167, 37, 72, 38, 12, 145, 159, 160, 38, 82, 13, 63, 68, 71, 226, 35, 111, 158, 153, 154, 101, 50, 205, 206, 92, 165, 209, 198, 217, 165, 167, 97, 220, 115, 218, 133, 112, 243, 239, 238, 241, 214, 135, 169, 190, 173, 133, 171, 208, 32, 125, 44, 237, 86, 87, 178, 85, 86, 179, 84, 85, 180, 83, 84, 181, 201, 83, 182, 137, 93, 132, 76, 62, 183, 61, 76, 184, 57, 61, 185, 212, 57, 186, 214, 207, 187, 34, 143, 156, 79, 239, 237, 123, 137, 177, 44, 1, 4, 201, 194, 32, 64, 102, 129, 213, 215, 138, 59, 166, 219, 242, 99, 97, 2, 94, 141, 75, 59, 235, 24, 110, 228, 25, 130, 226, 23, 24, 229, 22, 23, 230, 26, 22, 231, 112, 26, 232, 189, 190, 243, 221, 56, 190, 28, 56, 221, 27, 28, 222, 29, 27, 223, 30, 29, 224, 247, 30, 225, 238, 79, 20, 166, 59, 75, 60, 75, 240, 147, 177, 215, 20, 79, 166, 187, 147, 213, 112, 233, 244, 233, 128, 245, 128, 114, 188, 114, 217, 174, 131, 115, 220, 217, 198, 236, 198, 131, 134, 177, 132, 58, 143, 35, 124, 110, 163, 7, 228, 110, 25, 356, 389, 368, 11, 302, 267, 452, 350, 349, 302, 303, 269, 357, 343, 277, 452, 453, 357, 333, 332, 297, 175, 152, 377, 384, 398, 382, 347, 348, 330, 303, 304, 270, 9, 336, 337, 278, 279, 360, 418, 262, 431, 304, 408, 409, 310, 415, 407, 270, 409, 410, 450, 348, 347, 422, 430, 434, 313, 314, 17, 306, 307, 375, 387, 388, 260, 286, 414, 398, 335, 406, 418, 364, 367, 416, 423, 358, 327, 251, 284, 298, 281, 5, 4, 373, 374, 253, 307, 320, 321, 425, 427, 411, 421, 313, 18, 321, 405, 406, 320, 404, 405, 315, 16, 17, 426, 425, 266, 377, 400, 369, 322, 391, 269, 417, 465, 464, 386, 257, 258, 466, 260, 388, 456, 399, 419, 284, 332, 333, 417, 285, 8, 346, 340, 261, 413, 441, 285, 327, 460, 328, 355, 371, 329, 392, 439, 438, 382, 341, 256, 429, 420, 360, 364, 394, 379, 277, 343, 437, 443, 444, 283, 275, 440, 363, 431, 262, 369, 297, 338, 337, 273, 375, 321, 450, 451, 349, 446, 342, 467, 293, 334, 282, 458, 461, 462, 276, 353, 383, 308, 324, 325, 276, 300, 293, 372, 345, 447, 382, 398, 362, 352, 345, 340, 274, 1, 19, 456, 248, 281, 436, 427, 425, 381, 256, 252, 269, 391, 393, 200, 199, 428, 266, 330, 329, 287, 273, 422, 250, 462, 328, 258, 286, 384, 265, 353, 342, 387, 259, 257, 424, 431, 430, 342, 353, 276, 273, 335, 424, 292, 325, 307, 366, 447, 345, 271, 303, 302, 423, 266, 371, 294, 455, 460, 279, 278, 294, 271, 272, 304, 432, 434, 427, 272, 407, 408, 394, 430, 431, 395, 369, 400, 334, 333, 299, 351, 417, 168, 352, 280, 411, 325, 319, 320, 295, 296, 336, 319, 403, 404, 330, 348, 349, 293, 298, 333, 323, 454, 447, 15, 16, 315, 358, 429, 279, 14, 15, 316, 285, 336, 9, 329, 349, 350, 374, 380, 252, 318, 402, 403, 6, 197, 419, 318, 319, 325, 367, 364, 365, 435, 367, 397, 344, 438, 439, 272, 271, 311, 195, 5, 281, 273, 287, 291, 396, 428, 199, 311, 271, 268, 283, 444, 445, 373, 254, 339, 263, 466, 249, 282, 334, 296, 449, 347, 346, 264, 447, 454, 336, 296, 299, 338, 10, 151, 278, 439, 455, 292, 407, 415, 358, 371, 355, 340, 345, 372, 390, 249, 466, 346, 347, 280, 442, 443, 282, 19, 94, 370, 441, 442, 295, 248, 419, 197, 263, 255, 359, 440, 275, 274, 300, 383, 368, 351, 412, 465, 263, 467, 466, 301, 368, 389, 380, 374, 386, 395, 378, 379, 412, 351, 419, 436, 426, 322, 373, 390, 388, 2, 164, 393, 370, 462, 461, 164, 0, 267, 302, 11, 12, 374, 373, 387, 268, 12, 13, 293, 300, 301, 446, 261, 340, 385, 384, 381, 330, 266, 425, 426, 423, 391, 429, 355, 437, 391, 327, 326, 440, 457, 438, 341, 382, 362, 459, 457, 461, 434, 430, 394, 414, 463, 362, 396, 369, 262, 354, 461, 457, 316, 403, 402, 315, 404, 403, 314, 405, 404, 313, 406, 405, 421, 418, 406, 366, 401, 361, 306, 408, 407, 291, 409, 408, 287, 410, 409, 432, 436, 410, 434, 416, 411, 264, 368, 383, 309, 438, 457, 352, 376, 401, 274, 275, 4, 421, 428, 262, 294, 327, 358, 433, 416, 367, 289, 455, 439, 462, 370, 326, 2, 326, 370, 305, 460, 455, 254, 449, 448, 255, 261, 446, 253, 450, 449, 252, 451, 450, 256, 452, 451, 341, 453, 452, 413, 464, 463, 441, 413, 414, 258, 442, 441, 257, 443, 442, 259, 444, 443, 260, 445, 444, 467, 342, 445, 459, 458, 250, 289, 392, 290, 290, 328, 460, 376, 433, 435, 250, 290, 392, 411, 416, 433, 341, 463, 464, 453, 464, 465, 357, 465, 412, 343, 412, 399, 360, 363, 440, 437, 399, 456, 420, 456, 363, 401, 435, 288, 372, 383, 353, 339, 255, 249, 448, 261, 255, 133, 243, 190, 133, 155, 112, 33, 246, 247, 33, 130, 25, 398, 384, 286, 362, 398, 414, 362, 463, 341, 263, 359, 467, 263, 249, 255, 466, 467, 260, 75, 60, 166, 238, 239, 79, 162, 127, 139, 72, 11, 37, 121, 232, 120, 73, 72, 39, 114, 128, 47, 233, 232, 128, 103, 104, 67, 152, 175, 148, 173, 157, 155, 119, 118, 101, 74, 73, 40, 107, 9, 108, 49, 48, 131, 32, 194, 211, 184, 74, 185, 191, 80, 183, 185, 40, 186, 119, 230, 118, 210, 202, 214, 84, 83, 17, 77, 76, 146, 161, 160, 30, 190, 56, 173, 182, 106, 194, 138, 135, 192, 129, 203, 98, 54, 21, 68, 5, 51, 4, 145, 144, 23, 90, 77, 91, 207, 205, 187, 83, 201, 18, 181, 91, 182, 180, 90, 181, 16, 85, 17, 205, 206, 36, 176, 148, 140, 165, 92, 39, 245, 193, 244, 27, 159, 28, 30, 247, 161, 174, 236, 196, 103, 54, 104, 55, 193, 8, 111, 117, 31, 221, 189, 55, 240, 98, 99, 142, 126, 100, 219, 166, 218, 112, 155, 26, 198, 209, 131, 169, 135, 150, 114, 47, 217, 224, 223, 53, 220, 45, 134, 32, 211, 140, 109, 67, 108, 146, 43, 91, 231, 230, 120, 113, 226, 247, 105, 63, 52, 241, 238, 242, 124, 46, 156, 95, 78, 96, 70, 46, 63, 116, 143, 227, 116, 123, 111, 1, 44, 19, 3, 236, 51, 207, 216, 205, 26, 154, 22, 165, 39, 167, 199, 200, 208, 101, 36, 100, 43, 57, 202, 242, 20, 99, 56, 28, 157, 124, 35, 113, 29, 160, 27, 211, 204, 210, 124, 113, 46, 106, 43, 204, 96, 62, 77, 227, 137, 116, 73, 41, 72, 36, 203, 142, 235, 64, 240, 48, 49, 64, 42, 41, 74, 214, 212, 207, 183, 42, 184, 210, 169, 211, 140, 170, 176, 104, 105, 69, 193, 122, 168, 50, 123, 187, 89, 96, 90, 66, 65, 107, 179, 89, 180, 119, 101, 120, 68, 63, 104, 234, 93, 227, 16, 15, 85, 209, 129, 49, 15, 14, 86, 107, 55, 9, 120, 100, 121, 153, 145, 22, 178, 88, 179, 197, 6, 196, 89, 88, 96, 135, 138, 136, 138, 215, 172, 218, 115, 219, 41, 42, 81, 5, 195, 51, 57, 43, 61, 208, 171, 199, 41, 81, 38, 224, 53, 225, 24, 144, 110, 105, 52, 66, 118, 229, 117, 227, 34, 234, 66, 107, 69, 10, 109, 151, 219, 48, 235, 183, 62, 191, 142, 129, 126, 116, 111, 143, 7, 163, 246, 118, 117, 50, 223, 222, 52, 94, 19, 141, 222, 221, 65, 196, 3, 197, 45, 220, 44, 156, 70, 139, 188, 122, 245, 139, 71, 162, 145, 153, 159, 149, 170, 150, 122, 188, 196, 206, 216, 92, 163, 144, 161, 164, 2, 167, 242, 141, 241, 0, 164, 37, 11, 72, 12, 144, 145, 160, 12, 38, 13, 70, 63, 71, 31, 226, 111, 157, 158, 154, 36, 101, 205, 203, 206, 165, 126, 209, 217, 98, 165, 97, 237, 220, 218, 237, 239, 241, 210, 214, 169, 140, 171, 32, 241, 125, 237, 179, 86, 178, 180, 85, 179, 181, 84, 180, 182, 83, 181, 194, 201, 182, 177, 137, 132, 184, 76, 183, 185, 61, 184, 186, 57, 185, 216, 212, 186, 192, 214, 187, 139, 34, 156, 218, 79, 237, 147, 123, 177, 45, 44, 4, 208, 201, 32, 98, 64, 129, 192, 213, 138, 235, 59, 219, 141, 242, 97, 97, 2, 141, 240, 75, 235, 229, 24, 228, 31, 25, 226, 230, 23, 229, 231, 22, 230, 232, 26, 231, 233, 112, 232, 244, 189, 243, 189, 221, 190, 222, 28, 221, 223, 27, 222, 224, 29, 223, 225, 30, 224, 113, 247, 225, 99, 60, 240, 213, 147, 215, 60, 20, 166, 192, 187, 213, 243, 112, 244, 244, 233, 245, 245, 128, 188, 188, 114, 174, 134, 131, 220, 174, 217, 236, 236, 198, 134, 215, 177, 58, 156, 143, 124, 25, 110, 7, 31, 228, 25, 264, 356, 368, 0, 11, 267, 451, 452, 349, 267, 302, 269, 350, 357, 277, 350, 452, 357, 299, 333, 297, 396, 175, 377, 381, 384, 382, 280, 347, 330, 269, 303, 270, 151, 9, 337, 344, 278, 360, 424, 418, 431, 270, 304, 409, 272, 310, 407, 322, 270, 410, 449, 450, 347, 432, 422, 434, 18, 313, 17, 291, 306, 375, 259, 387, 260, 424, 335, 418, 434, 364, 416, 391, 423, 327, 301, 251, 298, 275, 281, 4, 254, 373, 253, 375, 307, 321, 280, 425, 411, 200, 421, 18, 335, 321, 406, 321, 320, 405, 314, 315, 17, 423, 426, 266, 396, 377, 369, 270, 322, 269, 413, 417, 464, 385, 386, 258, 248, 456, 419, 298, 284, 333, 168, 417, 8, 448, 346, 261, 417, 413, 285, 326, 327, 328, 277, 355, 329, 309, 392, 438, 381, 382, 256, 279, 429, 360, 365, 364, 379, 355, 277, 437, 282, 443, 283, 281, 275, 363, 395, 431, 369, 299, 297, 337, 335, 273, 321, 348, 450, 349, 359, 446, 467, 283, 293, 282, 250, 458, 462, 300, 276, 383, 292, 308, 325, 283, 276, 293, 264, 372, 447, 346, 352, 340, 354, 274, 19, 363, 456, 281, 426, 436, 425, 380, 381, 252, 267, 269, 393, 421, 200, 428, 371, 266, 329, 432, 287, 422, 290, 250, 328, 385, 258, 384, 446, 265, 342, 386, 387, 257, 422, 424, 430, 445, 342, 276, 422, 273, 424, 306, 292, 307, 352, 366, 345, 268, 271, 302, 358, 423, 371, 327, 294, 460, 331, 279, 294, 303, 271, 304, 436, 432, 427, 304, 272, 408, 395, 394, 431, 378, 395, 400, 296, 334, 299, 6, 351, 168, 376, 352, 411, 307, 325, 320, 285, 295, 336, 320, 319, 404, 329, 330, 349, 334, 293, 333, 366, 323, 447, 316, 15, 315, 331, 358, 279, 317, 14, 316, 8, 285, 9, 277, 329, 350, 253, 374, 252, 319, 318, 403, 351, 6, 419, 324, 318, 325, 397, 367, 365, 288, 435, 397, 278, 344, 439, 310, 272, 311, 248, 195, 281, 375, 273, 291, 175, 396, 199, 312, 311, 268, 276, 283, 445, 390, 373, 339, 295, 282, 296, 448, 449, 346, 356, 264, 454, 337, 336, 299, 337, 338, 151, 294, 278, 455, 308, 292, 415, 429, 358, 355, 265, 340, 372, 388, 390, 466, 352, 346, 280, 295, 442, 282, 354, 19, 370, 285, 441, 295, 195, 248, 197, 457, 440, 274, 301, 300, 368, 417, 351, 465, 251, 301, 389, 385, 380, 386, 394, 395, 379, 399, 412, 419, 410, 436, 322, 387, 373, 388, 326, 2, 393, 354, 370, 461, 393, 164, 267, 268, 302, 12, 386, 374, 387, 312, 268, 13, 298, 293, 301, 265, 446, 340, 380, 385, 381, 280, 330, 425, 322, 426, 391, 420, 429, 437, 393, 391, 326, 344, 440, 438, 458, 459, 461, 364, 434, 394, 428, 396, 262, 274, 354, 457, 317, 316, 402, 316, 315, 403, 315, 314, 404, 314, 313, 405, 313, 421, 406, 323, 366, 361, 292, 306, 407, 306, 291, 408, 291, 287, 409, 287, 432, 410, 427, 434, 411, 372, 264, 383, 459, 309, 457, 366, 352, 401, 1, 274, 4, 418, 421, 262, 331, 294, 358, 435, 433, 367, 392, 289, 439, 328, 462, 326, 94, 2, 370, 289, 305, 455, 339, 254, 448, 359, 255, 446, 254, 253, 449, 253, 252, 450, 252, 256, 451, 256, 341, 452, 414, 413, 463, 286, 441, 414, 286, 258, 441, 258, 257, 442, 257, 259, 443, 259, 260, 444, 260, 467, 445, 309, 459, 250, 305, 289, 290, 305, 290, 460, 401, 376, 435, 309, 250, 392, 376, 411, 433, 453, 341, 464, 357, 453, 465, 343, 357, 412, 437, 343, 399, 344, 360, 440, 420, 437, 456, 360, 420, 363, 361, 401, 288, 265, 372, 353, 390, 339, 249, 339, 448, 255];
 });
 var cx = we((ds) => {
-  const Tp = Ut(), DH = j2(), sx = vp(), kH = nx(), FH = ix(), WH = ax().default;
+  const Tp = Ut(), EH = j2(), sx = vp(), DH = nx(), kH = ix(), FH = ax().default;
   class ox {
     constructor(n, t, e, r) {
-      this.pipeline = new kH.Pipeline(n, t, e, r), r && (this.config = r);
+      this.pipeline = new DH.Pipeline(n, t, e, r), r && (this.config = r);
     }
     async estimateFaces(n, t) {
       t && (this.config = t);
@@ -32291,35 +32284,35 @@ var cx = we((ds) => {
       return r;
     }
   }
-  async function UH(n) {
-    const t = await Promise.all([DH.load(n), Tp.loadGraphModel(n.mesh.modelPath, {fromTFHub: n.mesh.modelPath.includes("tfhub.dev")}), Tp.loadGraphModel(n.iris.modelPath, {fromTFHub: n.iris.modelPath.includes("tfhub.dev")})]), e = new ox(t[0], t[1], t[2], n);
+  async function WH(n) {
+    const t = await Promise.all([EH.load(n), Tp.loadGraphModel(n.mesh.modelPath, {fromTFHub: n.mesh.modelPath.includes("tfhub.dev")}), Tp.loadGraphModel(n.iris.modelPath, {fromTFHub: n.iris.modelPath.includes("tfhub.dev")})]), e = new ox(t[0], t[1], t[2], n);
     return console.log(`Human: load model: ${n.mesh.modelPath.match(/\/(.*)\./)[1]}`), console.log(`Human: load model: ${n.iris.modelPath.match(/\/(.*)\./)[1]}`), e;
   }
-  ds.load = UH;
+  ds.load = WH;
   ds.MediaPipeFaceMesh = ox;
-  ds.uv_coords = FH;
-  ds.triangulation = WH;
+  ds.uv_coords = kH;
+  ds.triangulation = FH;
 });
 var ps = we((lx) => {
-  const BH = {};
-  function zH(n, t) {
+  const UH = {};
+  function BH(n, t) {
     if (!t || !t.kernels)
       return;
     const e = 5, r = t.kernels.filter((o) => o.kernelTimeMs > 0).reduce((o, c) => o += c.kernelTimeMs, 0), i = t.kernels.map((o, c) => (o.id = c, o)).filter((o) => o.kernelTimeMs > 0).sort((o, c) => c.kernelTimeMs - o.kernelTimeMs), a = t.kernels.map((o, c) => (o.id = c, o)).filter((o) => o.totalBytesSnapshot > 0).sort((o, c) => c.totalBytesSnapshot - o.totalBytesSnapshot);
     i.length > e && (i.length = e), a.length > e && (a.length = e);
     const s = {newBytes: t.newBytes, newTensors: t.newTensors, peakBytes: t.peakBytes, numKernelOps: t.kernels.length, timeKernelOps: r, slowestKernelOps: i, largestKernelOps: a};
-    BH[n] = s, console.log("Human profiler", n, s);
+    UH[n] = s, console.log("Human profiler", n, s);
   }
-  lx.run = zH;
+  lx.run = BH;
 });
 var ux = we((Np) => {
-  const fs = Ut(), PH = ps(), ms = {};
+  const fs = Ut(), zH = ps(), ms = {};
   let cc = {age: 0}, _p = Number.MAX_SAFE_INTEGER;
   const lc = [0, 0];
-  async function MH(n) {
+  async function PH(n) {
     return ms.age || (ms.age = await fs.loadGraphModel(n.face.age.modelPath), console.log(`Human: load model: ${n.face.age.modelPath.match(/\/(.*)\./)[1]}`)), ms.age;
   }
-  async function HH(n, t) {
+  async function MH(n, t) {
     return _p < t.face.age.skipFrames && cc.age && cc.age > 0 ? (_p += 1, cc) : (_p = 0, new Promise(async (e) => {
       const r = [[n.shape[1] * lc[0] / n.shape[1], n.shape[2] * lc[1] / n.shape[2], (n.shape[1] - n.shape[1] * lc[0]) / n.shape[1], (n.shape[2] - n.shape[2] * lc[1]) / n.shape[2]]], i = fs.image.cropAndResize(n, r, [0], [t.face.age.inputSize, t.face.age.inputSize]), a = fs.mul(i, [255]);
       fs.dispose(i);
@@ -32329,7 +32322,7 @@ var ux = we((Np) => {
         t.face.age.enabled && (s = await ms.age.predict(a));
       else {
         const c = t.face.age.enabled ? await fs.profile(() => ms.age.predict(a)) : {};
-        s = c.result.clone(), c.result.dispose(), PH.run("age", c);
+        s = c.result.clone(), c.result.dispose(), zH.run("age", c);
       }
       if (a.dispose(), s) {
         const c = s.dataSync();
@@ -32338,17 +32331,17 @@ var ux = we((Np) => {
       s.dispose(), cc = o, e(o);
     }));
   }
-  Np.predict = HH;
-  Np.load = MH;
+  Np.predict = MH;
+  Np.load = PH;
 });
 var hx = we((Cp) => {
-  const _n = Ut(), VH = ps(), da = {};
+  const _n = Ut(), HH = ps(), da = {};
   let Rp = {gender: ""}, Op = Number.MAX_SAFE_INTEGER, Ep = false;
   const uc = [0, 0], Dp = [0.2989, 0.587, 0.114];
-  async function GH(n) {
+  async function VH(n) {
     return da.gender || (da.gender = await _n.loadGraphModel(n.face.gender.modelPath), Ep = da.gender.inputs[0].shape[3] === 1, console.log(`Human: load model: ${n.face.gender.modelPath.match(/\/(.*)\./)[1]}`)), da.gender;
   }
-  async function qH(n, t) {
+  async function GH(n, t) {
     return Op < t.face.gender.skipFrames && Rp.gender !== "" ? (Op += 1, Rp) : (Op = 0, new Promise(async (e) => {
       const r = [[n.shape[1] * uc[0] / n.shape[1], n.shape[2] * uc[1] / n.shape[2], (n.shape[1] - n.shape[1] * uc[0]) / n.shape[1], (n.shape[2] - n.shape[2] * uc[1]) / n.shape[2]]], i = _n.image.cropAndResize(n, r, [0], [t.face.gender.inputSize, t.face.gender.inputSize]);
       let a;
@@ -32362,7 +32355,7 @@ var hx = we((Cp) => {
         t.face.gender.enabled && (s = await da.gender.predict(a));
       else {
         const c = t.face.gender.enabled ? await _n.profile(() => da.gender.predict(a)) : {};
-        s = c.result.clone(), c.result.dispose(), VH.run("gender", c);
+        s = c.result.clone(), c.result.dispose(), HH.run("gender", c);
       }
       if (a.dispose(), s) {
         const c = s.dataSync();
@@ -32377,17 +32370,17 @@ var hx = we((Cp) => {
       s.dispose(), Rp = o, e(o);
     }));
   }
-  Cp.predict = qH;
-  Cp.load = GH;
+  Cp.predict = GH;
+  Cp.load = VH;
 });
 var px = we((kp) => {
-  const Vn = Ut(), YH = ps(), KH = ["angry", "disgust", "fear", "happy", "sad", "surpise", "neutral"], gs = {};
+  const Vn = Ut(), qH = ps(), YH = ["angry", "disgust", "fear", "happy", "sad", "surpise", "neutral"], gs = {};
   let Fp = [], Wp = Number.MAX_SAFE_INTEGER;
   const hc = [0, 0], Up = [0.2989, 0.587, 0.114], dx = 1;
-  async function jH(n) {
+  async function KH(n) {
     return gs.emotion || (gs.emotion = await Vn.loadGraphModel(n.face.emotion.modelPath), console.log(`Human: load model: ${n.face.emotion.modelPath.match(/\/(.*)\./)[1]}`)), gs.emotion;
   }
-  async function $H(n, t) {
+  async function jH(n, t) {
     return Wp < t.face.emotion.skipFrames && Fp.length > 0 ? (Wp += 1, Fp) : (Wp = 0, new Promise(async (e) => {
       const r = [[n.shape[1] * hc[0] / n.shape[1], n.shape[2] * hc[1] / n.shape[2], (n.shape[1] - n.shape[1] * hc[0]) / n.shape[1], (n.shape[2] - n.shape[2] * hc[1]) / n.shape[2]]], i = Vn.image.cropAndResize(n, r, [0], [t.face.emotion.inputSize, t.face.emotion.inputSize]), [a, s, o] = Vn.split(i, 3, 3);
       i.dispose();
@@ -32402,29 +32395,29 @@ var px = we((kp) => {
         let f;
         if (t.profile) {
           const m = await Vn.profile(() => gs.emotion.predict(d));
-          f = m.result.dataSync(), m.result.dispose(), YH.run("emotion", m);
+          f = m.result.dataSync(), m.result.dispose(), qH.run("emotion", m);
         } else {
           const m = await gs.emotion.predict(d);
           f = m.dataSync(), Vn.dispose(m);
         }
         for (let m = 0; m < f.length; m++)
-          dx * f[m] > t.face.emotion.minConfidence && p.push({score: Math.min(0.99, Math.trunc(100 * dx * f[m]) / 100), emotion: KH[m]});
+          dx * f[m] > t.face.emotion.minConfidence && p.push({score: Math.min(0.99, Math.trunc(100 * dx * f[m]) / 100), emotion: YH[m]});
         p.sort((m, g) => g.score - m.score);
       }
       d.dispose(), Fp = p, e(p);
     }));
   }
-  kp.predict = $H;
-  kp.load = jH;
+  kp.predict = jH;
+  kp.load = KH;
 });
 var mx = we((fx) => {
-  const XH = Ut();
-  class JH {
+  const $H = Ut();
+  class XH {
     constructor(n, t) {
       this.model = n, this.outputStride = t;
     }
     predict(n) {
-      return XH.tidy(() => {
+      return $H.tidy(() => {
         const t = this.preprocessInput(n.toFloat()), e = t.expandDims(0), r = this.model.predict(e), i = r.map((s) => s.squeeze([0])), a = this.nameOutputResults(i);
         return {heatmapScores: a.heatmap.sigmoid(), offsets: a.offsets, displacementFwd: a.displacementFwd, displacementBwd: a.displacementBwd};
       });
@@ -32433,11 +32426,11 @@ var mx = we((fx) => {
       this.model.dispose();
     }
   }
-  fx.BaseModel = JH;
+  fx.BaseModel = XH;
 });
 var Bp = we((gx) => {
-  const yx = Ut(), ZH = mx();
-  class QH extends ZH.BaseModel {
+  const yx = Ut(), JH = mx();
+  class ZH extends JH.BaseModel {
     preprocessInput(n) {
       return yx.tidy(() => yx.div(n, 127.5).sub(1));
     }
@@ -32446,13 +32439,13 @@ var Bp = we((gx) => {
       return {offsets: t, heatmap: e, displacementFwd: r, displacementBwd: i};
     }
   }
-  gx.MobileNet = QH;
+  gx.MobileNet = ZH;
 });
 var wx = we((vx) => {
   function zp(n) {
     return Math.floor(n / 2);
   }
-  class eV {
+  class QH {
     constructor(n, t) {
       this.priorityQueue = new Array(n), this.numberOfElements = -1, this.getElementValue = t;
     }
@@ -32498,11 +32491,11 @@ var wx = we((vx) => {
       this.priorityQueue[n] = this.priorityQueue[t], this.priorityQueue[t] = e;
     }
   }
-  vx.MaxHeap = eV;
+  vx.MaxHeap = QH;
 });
 var xx = we((bx) => {
-  const tV = wx();
-  function nV(n, t, e, r, i, a) {
+  const eV = wx();
+  function tV(n, t, e, r, i, a) {
     const [s, o] = a.shape;
     let c = true;
     const l = Math.max(e - i, 0), u = Math.min(e + i + 1, s);
@@ -32518,68 +32511,68 @@ var xx = we((bx) => {
     }
     return c;
   }
-  function rV(n, t, e) {
-    const [r, i, a] = e.shape, s = new tV.MaxHeap(r * i * a, ({score: o}) => o);
+  function nV(n, t, e) {
+    const [r, i, a] = e.shape, s = new eV.MaxHeap(r * i * a, ({score: o}) => o);
     for (let o = 0; o < r; ++o)
       for (let c = 0; c < i; ++c)
         for (let l = 0; l < a; ++l) {
           const u = e.get(o, c, l);
           if (u < n)
             continue;
-          nV(l, u, o, c, t, e) && s.enqueue({score: u, part: {heatmapY: o, heatmapX: c, id: l}});
+          tV(l, u, o, c, t, e) && s.enqueue({score: u, part: {heatmapY: o, heatmapX: c, id: l}});
         }
     return s;
   }
-  bx.buildPartWithScoreQueue = rV;
+  bx.buildPartWithScoreQueue = nV;
 });
 var ys = we((Cn) => {
   Cn.partNames = ["nose", "leftEye", "rightEye", "leftEar", "rightEar", "leftShoulder", "rightShoulder", "leftElbow", "rightElbow", "leftWrist", "rightWrist", "leftHip", "rightHip", "leftKnee", "rightKnee", "leftAnkle", "rightAnkle"];
   Cn.NUM_KEYPOINTS = Cn.partNames.length;
   Cn.partIds = Cn.partNames.reduce((n, t, e) => (n[t] = e, n), {});
-  const iV = [["leftHip", "leftShoulder"], ["leftElbow", "leftShoulder"], ["leftElbow", "leftWrist"], ["leftHip", "leftKnee"], ["leftKnee", "leftAnkle"], ["rightHip", "rightShoulder"], ["rightElbow", "rightShoulder"], ["rightElbow", "rightWrist"], ["rightHip", "rightKnee"], ["rightKnee", "rightAnkle"], ["leftShoulder", "rightShoulder"], ["leftHip", "rightHip"]];
+  const rV = [["leftHip", "leftShoulder"], ["leftElbow", "leftShoulder"], ["leftElbow", "leftWrist"], ["leftHip", "leftKnee"], ["leftKnee", "leftAnkle"], ["rightHip", "rightShoulder"], ["rightElbow", "rightShoulder"], ["rightElbow", "rightWrist"], ["rightHip", "rightKnee"], ["rightKnee", "rightAnkle"], ["leftShoulder", "rightShoulder"], ["leftHip", "rightHip"]];
   Cn.poseChain = [["nose", "leftEye"], ["leftEye", "leftEar"], ["nose", "rightEye"], ["rightEye", "rightEar"], ["nose", "leftShoulder"], ["leftShoulder", "leftElbow"], ["leftElbow", "leftWrist"], ["leftShoulder", "leftHip"], ["leftHip", "leftKnee"], ["leftKnee", "leftAnkle"], ["nose", "rightShoulder"], ["rightShoulder", "rightElbow"], ["rightElbow", "rightWrist"], ["rightShoulder", "rightHip"], ["rightHip", "rightKnee"], ["rightKnee", "rightAnkle"]];
-  Cn.connectedPartIndices = iV.map(([n, t]) => [Cn.partIds[n], Cn.partIds[t]]);
+  Cn.connectedPartIndices = rV.map(([n, t]) => [Cn.partIds[n], Cn.partIds[t]]);
   Cn.partChannels = ["left_face", "right_face", "right_upper_leg_front", "right_lower_leg_back", "right_upper_leg_back", "left_lower_leg_front", "left_upper_leg_front", "left_upper_leg_back", "left_lower_leg_back", "right_feet", "right_lower_leg_front", "left_feet", "torso_front", "torso_back", "right_upper_arm_front", "right_upper_arm_back", "right_lower_arm_back", "left_lower_arm_front", "left_upper_arm_front", "left_upper_arm_back", "left_lower_arm_back", "right_hand", "right_lower_arm_front", "left_hand"];
 });
 var Mp = we((kr) => {
-  const aV = ys();
+  const iV = ys();
   function Lx(n, t, e, r) {
-    return {y: r.get(n, t, e), x: r.get(n, t, e + aV.NUM_KEYPOINTS)};
+    return {y: r.get(n, t, e), x: r.get(n, t, e + iV.NUM_KEYPOINTS)};
   }
   kr.getOffsetPoint = Lx;
-  function sV(n, t, e) {
+  function aV(n, t, e) {
     const {heatmapY: r, heatmapX: i, id: a} = n, {y: s, x: o} = Lx(r, i, a, e);
     return {x: n.heatmapX * t + o, y: n.heatmapY * t + s};
   }
-  kr.getImageCoords = sV;
-  function oV(n, t) {
+  kr.getImageCoords = aV;
+  function sV(n, t) {
     const e = new Array(t);
     for (let r = 0; r < t; r++)
       e[r] = n;
     return e;
   }
-  kr.fillArray = oV;
+  kr.fillArray = sV;
   function Pp(n, t, e) {
     return n < t ? t : n > e ? e : n;
   }
   kr.clamp = Pp;
-  function cV(n, t, e, r) {
+  function oV(n, t, e, r) {
     const i = e - n, a = r - t;
     return i * i + a * a;
   }
-  kr.squaredDistance = cV;
-  function lV(n, t) {
+  kr.squaredDistance = oV;
+  function cV(n, t) {
     return {x: n.x + t.x, y: n.y + t.y};
   }
-  kr.addVectors = lV;
-  function uV(n, t, e) {
+  kr.addVectors = cV;
+  function lV(n, t, e) {
     return {y: Pp(n.y, t, e), x: Pp(n.x, t, e)};
   }
-  kr.clampVector = uV;
+  kr.clampVector = lV;
 });
 var Nx = we((Sx) => {
   const vs = ys(), pa = Mp(), Ix = vs.poseChain.map(([n, t]) => [vs.partIds[n], vs.partIds[t]]), Hp = Ix.map(([, n]) => n), Ax = Ix.map(([n]) => n);
-  function hV(n, t, e) {
+  function uV(n, t, e) {
     const r = e.shape[2] / 2;
     return {y: e.get(t.y, t.x, n), x: e.get(t.y, t.x, r + n)};
   }
@@ -32587,7 +32580,7 @@ var Nx = we((Sx) => {
     return {y: pa.clamp(Math.round(n.y / t), 0, e - 1), x: pa.clamp(Math.round(n.x / t), 0, r - 1)};
   }
   function Tx(n, t, e, r, i, a, s, o = 2) {
-    const [c, l] = r.shape, u = Vp(t.position, a, c, l), h = hV(n, u, s), d = pa.addVectors(t.position, h);
+    const [c, l] = r.shape, u = Vp(t.position, a, c, l), h = uV(n, u, s), d = pa.addVectors(t.position, h);
     let p = d;
     for (let g = 0; g < o; g++) {
       const y = Vp(p, a, c, l), w = pa.getOffsetPoint(y.y, y.x, e, i);
@@ -32596,7 +32589,7 @@ var Nx = we((Sx) => {
     const f = Vp(p, a, c, l), m = r.get(f.y, f.x, e);
     return {position: p, part: vs.partNames[e], score: m};
   }
-  function dV(n, t, e, r, i, a) {
+  function hV(n, t, e, r, i, a) {
     const s = t.shape[2], o = Hp.length, c = new Array(s), {part: l, score: u} = n, h = pa.getImageCoords(l, r, e);
     c[l.id] = {score: u, part: vs.partNames[l.id], position: h};
     for (let d = o - 1; d >= 0; --d) {
@@ -32609,81 +32602,81 @@ var Nx = we((Sx) => {
     }
     return c;
   }
-  Sx.decodePose = dV;
+  Sx.decodePose = hV;
 });
 var Gp = we((_x) => {
-  const pV = xx(), fV = Nx(), Cx = Mp();
+  const dV = xx(), pV = Nx(), Cx = Mp();
   function Rx(n, t, {x: e, y: r}, i) {
     return n.some(({keypoints: a}) => {
       const s = a[i].position;
       return Cx.squaredDistance(r, e, s.y, s.x) <= t;
     });
   }
-  function mV(n, t, e) {
+  function fV(n, t, e) {
     const r = e.reduce((i, {position: a, score: s}, o) => (Rx(n, t, a, o) || (i += s), i), 0);
     return r / e.length;
   }
-  const gV = 1;
-  function yV(n, t, e, r, i, a, s = 0.5, o = 20) {
-    const c = [], l = pV.buildPartWithScoreQueue(s, gV, n), u = o * o;
+  const mV = 1;
+  function gV(n, t, e, r, i, a, s = 0.5, o = 20) {
+    const c = [], l = dV.buildPartWithScoreQueue(s, mV, n), u = o * o;
     for (; c.length < a && !l.empty(); ) {
       const h = l.dequeue(), d = Cx.getImageCoords(h.part, i, t);
       if (Rx(c, u, d, h.part.id))
         continue;
-      const p = fV.decodePose(h, n, t, i, e, r), f = mV(c, u, p);
+      const p = pV.decodePose(h, n, t, i, e, r), f = fV(c, u, p);
       c.push({keypoints: p, score: f});
     }
     return c;
   }
-  _x.decodeMultiplePoses = yV;
+  _x.decodeMultiplePoses = gV;
 });
 var qp = we((Fr) => {
-  const vV = ys();
-  function wV(n, t, e) {
+  const yV = ys();
+  function vV(n, t, e) {
     return n < e || t < e;
   }
-  function bV(n, t) {
-    return vV.connectedPartIndices.reduce((e, [r, i]) => (wV(n[r].score, n[i].score, t) || e.push([n[r], n[i]]), e), []);
+  function wV(n, t) {
+    return yV.connectedPartIndices.reduce((e, [r, i]) => (vV(n[r].score, n[i].score, t) || e.push([n[r], n[i]]), e), []);
   }
-  Fr.getAdjacentKeyPoints = bV;
+  Fr.getAdjacentKeyPoints = wV;
   const {NEGATIVE_INFINITY: Ox, POSITIVE_INFINITY: Ex} = Number;
   function Dx(n) {
     return n.reduce(({maxX: t, maxY: e, minX: r, minY: i}, {position: {x: a, y: s}}) => ({maxX: Math.max(t, a), maxY: Math.max(e, s), minX: Math.min(r, a), minY: Math.min(i, s)}), {maxX: Ox, maxY: Ox, minX: Ex, minY: Ex});
   }
   Fr.getBoundingBox = Dx;
-  function xV(n) {
+  function bV(n) {
     const {minX: t, minY: e, maxX: r, maxY: i} = Dx(n);
     return [{x: t, y: e}, {x: r, y: e}, {x: r, y: i}, {x: t, y: i}];
   }
-  Fr.getBoundingBoxPoints = xV;
-  async function LV(n) {
+  Fr.getBoundingBoxPoints = bV;
+  async function xV(n) {
     return Promise.all(n.map((t) => t.buffer()));
   }
-  Fr.toTensorBuffers3D = LV;
+  Fr.toTensorBuffers3D = xV;
   function kx(n, t, e) {
     return {score: n.score, keypoints: n.keypoints.map(({score: r, part: i, position: a}) => ({score: r, part: i, position: {x: a.x * e, y: a.y * t}}))};
   }
   Fr.scalePose = kx;
-  function SV(n, [t, e]) {
+  function LV(n, [t, e]) {
     const r = n.squeeze(0), i = r.resizeBilinear([t, e]);
     return r.dispose(), i;
   }
-  Fr.resizeTo = SV;
-  function IV(n, [t, e], [r, i]) {
+  Fr.resizeTo = LV;
+  function SV(n, [t, e], [r, i]) {
     const a = n.map((s) => kx(s, t / r, e / i));
     return a;
   }
-  Fr.scaleAndFlipPoses = IV;
+  Fr.scaleAndFlipPoses = SV;
 });
 var Wx = we((Yp) => {
-  const AV = Ut(), TV = Bp(), NV = Gp(), Kp = qp();
+  const IV = Ut(), AV = Bp(), TV = Gp(), Kp = qp();
   class Fx {
     constructor(n) {
       this.baseModel = n, this.outputStride = 16;
     }
     async estimatePoses(n, t) {
       return new Promise(async (e) => {
-        const r = n.shape[1], i = n.shape[2], a = Kp.resizeTo(n, [t.body.inputSize, t.body.inputSize]), s = this.baseModel.predict(a), o = await Kp.toTensorBuffers3D([s.heatmapScores, s.offsets, s.displacementFwd, s.displacementBwd]), c = o[0], l = o[1], u = o[2], h = o[3], d = await NV.decodeMultiplePoses(c, l, u, h, this.outputStride, t.body.maxDetections, t.body.scoreThreshold, t.body.nmsRadius), p = Kp.scaleAndFlipPoses(d, [r, i], [t.body.inputSize, t.body.inputSize]);
+        const r = n.shape[1], i = n.shape[2], a = Kp.resizeTo(n, [t.body.inputSize, t.body.inputSize]), s = this.baseModel.predict(a), o = await Kp.toTensorBuffers3D([s.heatmapScores, s.offsets, s.displacementFwd, s.displacementBwd]), c = o[0], l = o[1], u = o[2], h = o[3], d = await TV.decodeMultiplePoses(c, l, u, h, this.outputStride, t.body.maxDetections, t.body.scoreThreshold, t.body.nmsRadius), p = Kp.scaleAndFlipPoses(d, [r, i], [t.body.inputSize, t.body.inputSize]);
         s.heatmapScores.dispose(), s.offsets.dispose(), s.displacementFwd.dispose(), s.displacementBwd.dispose(), a.dispose(), e(p);
       });
     }
@@ -32692,64 +32685,64 @@ var Wx = we((Yp) => {
     }
   }
   Yp.PoseNet = Fx;
-  async function _V(n) {
-    const t = await AV.loadGraphModel(n.body.modelPath), e = new TV.MobileNet(t, this.outputStride);
+  async function NV(n) {
+    const t = await IV.loadGraphModel(n.body.modelPath), e = new AV.MobileNet(t, this.outputStride);
     return console.log(`Human: load model: ${n.body.modelPath.match(/\/(.*)\./)[1]}`), new Fx(e);
   }
-  Yp.load = _V;
+  Yp.load = NV;
 });
-var Bx = we((nn) => {
-  const CV = Bp(), Ux = Wx(), RV = Gp(), dc = ys(), ws = qp();
-  nn.load = Ux.load;
-  nn.PoseNet = Ux.PoseNet;
-  nn.MobileNet = CV.MobileNet;
-  nn.decodeMultiplePoses = RV.decodeMultiplePoses;
-  nn.partChannels = dc.partChannels;
-  nn.partIds = dc.partIds;
-  nn.partNames = dc.partNames;
-  nn.poseChain = dc.poseChain;
-  nn.getAdjacentKeyPoints = ws.getAdjacentKeyPoints;
-  nn.getBoundingBox = ws.getBoundingBox;
-  nn.getBoundingBoxPoints = ws.getBoundingBoxPoints;
-  nn.scaleAndFlipPoses = ws.scaleAndFlipPoses;
-  nn.scalePose = ws.scalePose;
+var Bx = we((tn) => {
+  const _V = Bp(), Ux = Wx(), CV = Gp(), dc = ys(), ws = qp();
+  tn.load = Ux.load;
+  tn.PoseNet = Ux.PoseNet;
+  tn.MobileNet = _V.MobileNet;
+  tn.decodeMultiplePoses = CV.decodeMultiplePoses;
+  tn.partChannels = dc.partChannels;
+  tn.partIds = dc.partIds;
+  tn.partNames = dc.partNames;
+  tn.poseChain = dc.poseChain;
+  tn.getAdjacentKeyPoints = ws.getAdjacentKeyPoints;
+  tn.getBoundingBox = ws.getBoundingBox;
+  tn.getBoundingBoxPoints = ws.getBoundingBoxPoints;
+  tn.scaleAndFlipPoses = ws.scaleAndFlipPoses;
+  tn.scalePose = ws.scalePose;
 });
-var Xp = we((OV) => {
-  As(OV, {cutBoxFromImageAndResize: () => DV, enlargeBox: () => FV, getBoxCenter: () => $p, getBoxSize: () => jp, scaleBoxCoordinates: () => kV, shiftBox: () => UV, squarifyBox: () => WV});
-  const EV = Ut();
+var Xp = we((RV) => {
+  As(RV, {cutBoxFromImageAndResize: () => EV, enlargeBox: () => kV, getBoxCenter: () => $p, getBoxSize: () => jp, scaleBoxCoordinates: () => DV, shiftBox: () => WV, squarifyBox: () => FV});
+  const OV = Ut();
   function jp(n) {
     return [Math.abs(n.endPoint[0] - n.startPoint[0]), Math.abs(n.endPoint[1] - n.startPoint[1])];
   }
   function $p(n) {
     return [n.startPoint[0] + (n.endPoint[0] - n.startPoint[0]) / 2, n.startPoint[1] + (n.endPoint[1] - n.startPoint[1]) / 2];
   }
-  function DV(n, t, e) {
+  function EV(n, t, e) {
     const r = t.shape[1], i = t.shape[2], a = [[n.startPoint[1] / r, n.startPoint[0] / i, n.endPoint[1] / r, n.endPoint[0] / i]];
-    return EV.image.cropAndResize(t, a, [0], e);
+    return OV.image.cropAndResize(t, a, [0], e);
   }
-  function kV(n, t) {
+  function DV(n, t) {
     const e = [n.startPoint[0] * t[0], n.startPoint[1] * t[1]], r = [n.endPoint[0] * t[0], n.endPoint[1] * t[1]], i = n.palmLandmarks.map((a) => {
       const s = [a[0] * t[0], a[1] * t[1]];
       return s;
     });
     return {startPoint: e, endPoint: r, palmLandmarks: i, confidence: n.confidence};
   }
-  function FV(n, t = 1.5) {
+  function kV(n, t = 1.5) {
     const e = $p(n), r = jp(n), i = [t * r[0] / 2, t * r[1] / 2], a = [e[0] - i[0], e[1] - i[1]], s = [e[0] + i[0], e[1] + i[1]];
     return {startPoint: a, endPoint: s, palmLandmarks: n.palmLandmarks};
   }
-  function WV(n) {
+  function FV(n) {
     const t = $p(n), e = jp(n), r = Math.max(...e), i = r / 2, a = [t[0] - i, t[1] - i], s = [t[0] + i, t[1] + i];
     return {startPoint: a, endPoint: s, palmLandmarks: n.palmLandmarks};
   }
-  function UV(n, t) {
+  function WV(n, t) {
     const e = [n.endPoint[0] - n.startPoint[0], n.endPoint[1] - n.startPoint[1]], r = [e[0] * t[0], e[1] * t[1]], i = [n.startPoint[0] + r[0], n.startPoint[1] + r[1]], a = [n.endPoint[0] + r[0], n.endPoint[1] + r[1]];
     return {startPoint: i, endPoint: a, palmLandmarks: n.palmLandmarks};
   }
 });
 var Px = we((zx) => {
-  const et = Ut(), BV = Xp();
-  class zV {
+  const et = Ut(), UV = Xp();
+  class BV {
     constructor(n, t, e) {
       this.model = n, this.anchors = e.map((r) => [r.x_center, r.y_center]), this.anchorsTensor = et.tensor2d(this.anchors), this.inputSizeTensor = et.tensor1d([t, t]), this.doubleInputSizeTensor = et.tensor1d([t * 2, t * 2]);
     }
@@ -32787,19 +32780,19 @@ var Px = we((zx) => {
       const s = [];
       for (const o of a) {
         const c = o.box.dataSync(), l = c.slice(0, 2), u = c.slice(2, 4), h = o.palmLandmarks.arraySync();
-        o.box.dispose(), o.palmLandmarks.dispose(), s.push(BV.scaleBoxCoordinates({startPoint: l, endPoint: u, palmLandmarks: h, confidence: o.confidence}, [r / t.inputSize, e / t.inputSize]));
+        o.box.dispose(), o.palmLandmarks.dispose(), s.push(UV.scaleBoxCoordinates({startPoint: l, endPoint: u, palmLandmarks: h, confidence: o.confidence}, [r / t.inputSize, e / t.inputSize]));
       }
       return s;
     }
   }
-  zx.HandDetector = zV;
+  zx.HandDetector = BV;
 });
-var qx = we((PV) => {
-  As(PV, {buildRotationMatrix: () => HV, computeRotation: () => MV, dot: () => fa, getColumnFrom2DArr: () => Vx, invertTransformMatrix: () => VV, normalizeRadians: () => Mx, rotatePoint: () => GV});
+var qx = we((zV) => {
+  As(zV, {buildRotationMatrix: () => MV, computeRotation: () => PV, dot: () => fa, getColumnFrom2DArr: () => Vx, invertTransformMatrix: () => HV, normalizeRadians: () => Mx, rotatePoint: () => VV});
   function Mx(n) {
     return n - 2 * Math.PI * Math.floor((n + Math.PI) / (2 * Math.PI));
   }
-  function MV(n, t) {
+  function PV(n, t) {
     const e = Math.PI / 2 - Math.atan2(-(t[1] - n[1]), t[0] - n[0]);
     return Mx(e);
   }
@@ -32825,30 +32818,30 @@ var qx = we((PV) => {
     }
     return e;
   }
-  function HV(n, t) {
+  function MV(n, t) {
     const e = Math.cos(n), r = Math.sin(n), i = [[e, -r, 0], [r, e, 0], [0, 0, 1]], a = Hx(t[0], t[1]), s = Gx(a, i), o = Hx(-t[0], -t[1]);
     return Gx(s, o);
   }
-  function VV(n) {
+  function HV(n) {
     const t = [[n[0][0], n[1][0]], [n[0][1], n[1][1]]], e = [n[0][2], n[1][2]], r = [-fa(t[0], e), -fa(t[1], e)];
     return [t[0].concat(r[0]), t[1].concat(r[1]), [0, 0, 1]];
   }
-  function GV(n, t) {
+  function VV(n, t) {
     return [fa(n, t[0]), fa(n, t[1])];
   }
 });
 var Jx = we((Yx) => {
-  const Kx = Ut(), un = Xp(), Wr = qx(), qV = [0, -0.4], YV = 3, jx = [0, -0.1], $x = 1.65, Xx = [0, 5, 9, 13, 17, 1, 2], KV = 0, jV = 2;
-  class $V {
+  const Kx = Ut(), un = Xp(), Wr = qx(), GV = [0, -0.4], qV = 3, jx = [0, -0.1], $x = 1.65, Xx = [0, 5, 9, 13, 17, 1, 2], YV = 0, KV = 2;
+  class jV {
     constructor(n, t, e) {
-      this.boxDetector = n, this.meshDetector = t, this.inputSize = e, this.storedBoxes = [], this.skipped = 0, this.detectedHands = 0;
+      this.boxDetector = n, this.meshDetector = t, this.inputSize = e, this.storedBoxes = [], this.skipped = 1e3, this.detectedHands = 0;
     }
     getBoxForPalmLandmarks(n, t) {
       const e = n.map((i) => {
         const a = [...i, 1];
         return Wr.rotatePoint(a, t);
       }), r = this.calculateLandmarksBoundingBox(e);
-      return un.enlargeBox(un.squarifyBox(un.shiftBox(r, qV)), YV);
+      return un.enlargeBox(un.squarifyBox(un.shiftBox(r, GV)), qV);
     }
     getBoxForHandLandmarks(n) {
       const t = this.calculateLandmarksBoundingBox(n), e = un.enlargeBox(un.squarifyBox(un.shiftBox(t, jx)), $x), r = [];
@@ -32866,7 +32859,7 @@ var Jx = we((Yx) => {
     async estimateHands(n, t) {
       this.skipped++;
       let e = false, r;
-      if ((this.skipped > t.skipFrames || !t.landmarks) && (r = await this.boxDetector.estimateHandBounds(n, t), this.skipped = 0), r && r.length > 0 && (r.length !== this.detectedHands && this.detectedHands !== t.maxHands || !t.landmarks)) {
+      if ((this.skipped > t.skipFrames || !t.landmarks) && (r = await this.boxDetector.estimateHandBounds(n, t), n.shape[1] !== 255 && n.shape[2] !== 255 && (this.skipped = 0)), r && r.length > 0 && (r.length !== this.detectedHands && this.detectedHands !== t.maxHands || !t.landmarks)) {
         this.storedBoxes = [], this.detectedHands = 0;
         for (const a of r)
           this.storedBoxes.push(a);
@@ -32878,7 +32871,7 @@ var Jx = we((Yx) => {
         if (!s)
           continue;
         if (t.landmarks) {
-          const o = Wr.computeRotation(s.palmLandmarks[KV], s.palmLandmarks[jV]), c = un.getBoxCenter(s), l = [c[0] / n.shape[2], c[1] / n.shape[1]], u = Kx.image.rotateWithOffset(n, o, 0, l), h = Wr.buildRotationMatrix(-o, c), d = e ? this.getBoxForPalmLandmarks(s.palmLandmarks, h) : s, p = un.cutBoxFromImageAndResize(d, u, [this.inputSize, this.inputSize]), f = p.div(255);
+          const o = Wr.computeRotation(s.palmLandmarks[YV], s.palmLandmarks[KV]), c = un.getBoxCenter(s), l = [c[0] / n.shape[2], c[1] / n.shape[1]], u = Kx.image.rotateWithOffset(n, o, 0, l), h = Wr.buildRotationMatrix(-o, c), d = e ? this.getBoxForPalmLandmarks(s.palmLandmarks, h) : s, p = un.cutBoxFromImageAndResize(d, u, [this.inputSize, this.inputSize]), f = p.div(255);
           p.dispose(), u.dispose();
           const [m, g] = await this.meshDetector.predict(f);
           f.dispose();
@@ -32905,13 +32898,13 @@ var Jx = we((Yx) => {
       return {startPoint: r, endPoint: i};
     }
   }
-  Yx.HandPipeline = $V;
+  Yx.HandPipeline = jV;
 });
 var Qx = we((Zx) => {
   Zx.anchors = [{w: 1, h: 1, x_center: 0.015625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.015625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.046875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.078125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.109375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.140625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.171875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.203125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.234375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.265625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.296875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.328125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.359375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.390625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.421875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.453125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.484375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.515625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.546875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.578125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.609375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.640625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.671875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.703125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.734375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.765625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.796875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.828125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.859375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.890625}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.921875}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.953125}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.015625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.046875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.078125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.109375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.140625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.171875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.203125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.234375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.265625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.296875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.328125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.359375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.390625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.421875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.453125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.484375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.515625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.546875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.578125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.609375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.640625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.671875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.703125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.734375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.765625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.796875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.828125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.859375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.890625, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.921875, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.953125, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.984375, y_center: 0.984375}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.03125}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.09375}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.15625}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.21875}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.28125}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.34375}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.40625}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.46875}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.53125}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.59375}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.65625}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.71875}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.78125}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.84375}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.90625}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.03125, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.09375, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.15625, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.21875, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.28125, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.34375, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.40625, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.46875, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.53125, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.59375, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.65625, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.71875, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.78125, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.84375, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.90625, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.96875, y_center: 0.96875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.0625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.1875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.3125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.4375}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.5625}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.6875}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.8125}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.0625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.1875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.3125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.4375, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.5625, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.6875, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.8125, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.9375}, {w: 1, h: 1, x_center: 0.9375, y_center: 0.9375}];
 });
 var nL = we((Jp) => {
-  const eL = Ut(), XV = Px(), JV = Jx(), ZV = Qx(), Zp = {thumb: [1, 2, 3, 4], indexFinger: [5, 6, 7, 8], middleFinger: [9, 10, 11, 12], ringFinger: [13, 14, 15, 16], pinky: [17, 18, 19, 20], palmBase: [0]};
+  const eL = Ut(), $V = Px(), XV = Jx(), JV = Qx(), Zp = {thumb: [1, 2, 3, 4], indexFinger: [5, 6, 7, 8], middleFinger: [9, 10, 11, 12], ringFinger: [13, 14, 15, 16], pinky: [17, 18, 19, 20], palmBase: [0]};
   class tL {
     constructor(n) {
       this.pipeline = n;
@@ -32935,11 +32928,11 @@ var nL = we((Jp) => {
     }
   }
   Jp.HandPose = tL;
-  async function QV(n) {
-    const [t, e] = await Promise.all([eL.loadGraphModel(n.detector.modelPath, {fromTFHub: n.detector.modelPath.includes("tfhub.dev")}), eL.loadGraphModel(n.skeleton.modelPath, {fromTFHub: n.skeleton.modelPath.includes("tfhub.dev")})]), r = new XV.HandDetector(t, n.inputSize, ZV.anchors), i = new JV.HandPipeline(r, e, n.inputSize), a = new tL(i);
+  async function ZV(n) {
+    const [t, e] = await Promise.all([eL.loadGraphModel(n.detector.modelPath, {fromTFHub: n.detector.modelPath.includes("tfhub.dev")}), eL.loadGraphModel(n.skeleton.modelPath, {fromTFHub: n.skeleton.modelPath.includes("tfhub.dev")})]), r = new $V.HandDetector(t, n.inputSize, JV.anchors), i = new XV.HandPipeline(r, e, n.inputSize), a = new tL(i);
     return console.log(`Human: load model: ${n.detector.modelPath.match(/\/(.*)\./)[1]}`), console.log(`Human: load model: ${n.skeleton.modelPath.match(/\/(.*)\./)[1]}`), a;
   }
-  Jp.load = QV;
+  Jp.load = ZV;
 });
 var rL = we((pc) => {
   pc.body = (n) => {
@@ -32958,18 +32951,19 @@ var rL = we((pc) => {
     if (!n)
       return [];
     const t = [];
-    for (const e of n) {
-      const r = e.mesh[35][2] - e.mesh[263][2];
-      Math.abs(r) < 10 ? t.push("facing camera") : t.push(`facing ${r < 0 ? "right" : "left"}`);
-      const i = Math.abs(e.mesh[374][1] - e.mesh[386][1]) / Math.abs(e.mesh[443][1] - e.mesh[450][1]);
-      i < 0.2 && t.push("blink left eye");
-      const a = Math.abs(e.mesh[145][1] - e.mesh[159][1]) / Math.abs(e.mesh[223][1] - e.mesh[230][1]);
-      a < 0.2 && t.push("blink right eye");
-      const s = Math.min(100, 500 * Math.abs(e.mesh[13][1] - e.mesh[14][1]) / Math.abs(e.mesh[10][1] - e.mesh[152][1]));
-      s > 10 && t.push(`mouth ${Math.trunc(s)}% open`);
-      const o = e.mesh[152][2];
-      Math.abs(o) > 10 && t.push(`head ${o < 0 ? "up" : "down"}`);
-    }
+    for (const e of n)
+      if (e.mesh && e.mesh.length > 0) {
+        const r = e.mesh[35][2] - e.mesh[263][2];
+        Math.abs(r) < 10 ? t.push("facing camera") : t.push(`facing ${r < 0 ? "right" : "left"}`);
+        const i = Math.abs(e.mesh[374][1] - e.mesh[386][1]) / Math.abs(e.mesh[443][1] - e.mesh[450][1]);
+        i < 0.2 && t.push("blink left eye");
+        const a = Math.abs(e.mesh[145][1] - e.mesh[159][1]) / Math.abs(e.mesh[223][1] - e.mesh[230][1]);
+        a < 0.2 && t.push("blink right eye");
+        const s = Math.min(100, 500 * Math.abs(e.mesh[13][1] - e.mesh[14][1]) / Math.abs(e.mesh[10][1] - e.mesh[152][1]));
+        s > 10 && t.push(`mouth ${Math.trunc(s)}% open`);
+        const o = e.mesh[152][2];
+        Math.abs(o) > 10 && t.push(`head ${o < 0 ? "up" : "down"}`);
+      }
     return t;
   };
   pc.hand = (n) => {
@@ -32989,7 +32983,7 @@ var rL = we((pc) => {
   };
 });
 var aL = we((iL) => {
-  const eG = function(n, t, e) {
+  const QV = function(n, t, e) {
     const r = function(o, c, l) {
       const u = new RegExp("\\b" + c + " \\w+ (\\w+)", "ig");
       o.replace(u, (h, d) => (l[d] = 0, h));
@@ -33009,7 +33003,7 @@ var aL = we((iL) => {
     r(t, "uniform", this.uniform), r(e, "uniform", this.uniform);
     for (const o in this.uniform)
       this.uniform[o] = n.getUniformLocation(this.id, o);
-  }, tG = function(n) {
+  }, eG = function(n) {
     n || (n = {});
     let t = 0, e = null, r = false, i = -1, a = [null, null], s = [], o = -1, c = -1, l = null, u = null;
     const h = n.canvas || document.createElement("canvas"), d = {}, p = h.getContext("webgl");
@@ -33053,7 +33047,7 @@ var aL = we((iL) => {
     }, w = function(N) {
       if (d[N])
         return u = d[N], p.useProgram(u.id), u;
-      u = new eG(p, L.VERTEX_IDENTITY, N);
+      u = new QV(p, L.VERTEX_IDENTITY, N);
       const I = Float32Array.BYTES_PER_ELEMENT, C = 4 * I;
       return p.enableVertexAttribArray(u.attribute.pos), p.vertexAttribPointer(u.attribute.pos, 2, p.FLOAT, false, C, 0 * I), p.enableVertexAttribArray(u.attribute.uv), p.vertexAttribPointer(u.attribute.uv, 2, p.FLOAT, false, C, 2 * I), d[N] = u, u;
     };
@@ -33128,12 +33122,12 @@ var aL = we((iL) => {
     }, x.pixelate.SHADER = ["precision highp float;", "varying vec2 vUv;", "uniform vec2 size;", "uniform sampler2D texture;", "vec2 pixelate(vec2 coord, vec2 size) {", "return floor( coord / size ) * size;", "}", "void main(void) {", "gl_FragColor = vec4(0.0);", "vec2 coord = pixelate(vUv, size);", "gl_FragColor += texture2D(texture, coord);", "}"].join(`
 `);
   };
-  iL.Canvas = tG;
+  iL.Canvas = eG;
 });
 var oL = we((sL) => {
-  const bs = Ut(), nG = aL();
-  let vt = null, Yt = null;
-  function rG(n, t) {
+  const bs = Ut(), tG = aL();
+  let vt = null, nn = null;
+  function nG(n, t) {
     let e;
     if (n instanceof bs.Tensor)
       e = bs.clone(n);
@@ -33142,33 +33136,33 @@ var oL = we((sL) => {
       let a = r, s = i;
       t.filter.width > 0 ? a = t.filter.width : t.filter.height > 0 && (a = r * (t.filter.height / i)), t.filter.height > 0 ? s = t.filter.height : t.filter.width > 0 && (s = i * (t.filter.width / r)), (!vt || vt.width !== a || vt.height !== s) && (vt = typeof OffscreenCanvas != "undefined" ? new OffscreenCanvas(a, s) : document.createElement("canvas"), vt.width !== a && (vt.width = a), vt.height !== s && (vt.height = s));
       const o = vt.getContext("2d");
-      n instanceof ImageData ? o.putImageData(n, 0, 0) : o.drawImage(n, 0, 0, r, i, 0, 0, vt.width, vt.height), t.filter.enabled && ((!this.fx || !Yt || vt.width !== Yt.width || vt.height !== Yt.height) && (Yt = typeof OffscreenCanvas != "undefined" ? new OffscreenCanvas(vt.width, vt.height) : document.createElement("canvas"), Yt.width !== vt.width && (Yt.width = vt.width), Yt.height !== vt.height && (Yt.height = vt.height), this.fx = bs.ENV.flags.IS_BROWSER ? new nG.Canvas({canvas: Yt}) : null), this.fx.reset(), this.fx.addFilter("brightness", t.filter.brightness), t.filter.contrast !== 0 && this.fx.addFilter("contrast", t.filter.contrast), t.filter.sharpness !== 0 && this.fx.addFilter("sharpen", t.filter.sharpness), t.filter.blur !== 0 && this.fx.addFilter("blur", t.filter.blur), t.filter.saturation !== 0 && this.fx.addFilter("saturation", t.filter.saturation), t.filter.hue !== 0 && this.fx.addFilter("hue", t.filter.hue), t.filter.negative && this.fx.addFilter("negative"), t.filter.sepia && this.fx.addFilter("sepia"), t.filter.vintage && this.fx.addFilter("brownie"), t.filter.sepia && this.fx.addFilter("sepia"), t.filter.kodachrome && this.fx.addFilter("kodachrome"), t.filter.technicolor && this.fx.addFilter("technicolor"), t.filter.polaroid && this.fx.addFilter("polaroid"), t.filter.pixelate !== 0 && this.fx.addFilter("pixelate", t.filter.pixelate), this.fx.apply(vt)), Yt || (Yt = vt);
+      n instanceof ImageData ? o.putImageData(n, 0, 0) : o.drawImage(n, 0, 0, r, i, 0, 0, vt.width, vt.height), t.filter.enabled ? ((!this.fx || !nn || vt.width !== nn.width || vt.height !== nn.height) && (nn = typeof OffscreenCanvas != "undefined" ? new OffscreenCanvas(vt.width, vt.height) : document.createElement("canvas"), nn.width !== vt.width && (nn.width = vt.width), nn.height !== vt.height && (nn.height = vt.height), this.fx = bs.ENV.flags.IS_BROWSER ? new tG.Canvas({canvas: nn}) : null), this.fx.reset(), this.fx.addFilter("brightness", t.filter.brightness), t.filter.contrast !== 0 && this.fx.addFilter("contrast", t.filter.contrast), t.filter.sharpness !== 0 && this.fx.addFilter("sharpen", t.filter.sharpness), t.filter.blur !== 0 && this.fx.addFilter("blur", t.filter.blur), t.filter.saturation !== 0 && this.fx.addFilter("saturation", t.filter.saturation), t.filter.hue !== 0 && this.fx.addFilter("hue", t.filter.hue), t.filter.negative && this.fx.addFilter("negative"), t.filter.sepia && this.fx.addFilter("sepia"), t.filter.vintage && this.fx.addFilter("brownie"), t.filter.sepia && this.fx.addFilter("sepia"), t.filter.kodachrome && this.fx.addFilter("kodachrome"), t.filter.technicolor && this.fx.addFilter("technicolor"), t.filter.polaroid && this.fx.addFilter("polaroid"), t.filter.pixelate !== 0 && this.fx.addFilter("pixelate", t.filter.pixelate), this.fx.apply(vt)) : nn = vt;
       let c;
-      if (t.backend === "webgl" || Yt instanceof ImageData)
-        c = bs.browser.fromPixels(Yt);
+      if (t.backend === "webgl" || nn instanceof ImageData)
+        c = bs.browser.fromPixels(nn);
       else {
         const u = typeof OffscreenCanvas != "undefined" ? new OffscreenCanvas(a, s) : document.createElement("canvas");
         u.width = a, u.height = s;
         const h = u.getContext("2d");
-        h.drawImage(Yt, 0, 0);
+        h.drawImage(nn, 0, 0);
         const d = h.getImageData(0, 0, a, s);
         c = bs.browser.fromPixels(d);
       }
       const l = c.toFloat();
       e = l.expandDims(0), c.dispose(), l.dispose();
     }
-    return {tensor: e, canvas: t.filter.return ? Yt : null};
+    return {tensor: e, canvas: t.filter.return ? nn : null};
   }
-  sL.process = rG;
+  sL.process = nG;
 });
-var cL = we((iG) => {
-  As(iG, {default: () => aG});
-  var aG = {backend: "webgl", console: true, async: true, profile: false, deallocate: false, scoped: false, videoOptimized: true, filter: {enabled: true, width: 0, height: 0, return: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0}, gesture: {enabled: true}, face: {enabled: true, detector: {modelPath: "../models/blazeface-back.json", inputSize: 256, maxFaces: 10, skipFrames: 15, minConfidence: 0.1, iouThreshold: 0.1, scoreThreshold: 0.2}, mesh: {enabled: true, modelPath: "../models/facemesh.json", inputSize: 192}, iris: {enabled: true, modelPath: "../models/iris.json", inputSize: 64}, age: {enabled: true, modelPath: "../models/age-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, gender: {enabled: true, minConfidence: 0.1, modelPath: "../models/gender-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, emotion: {enabled: true, inputSize: 64, minConfidence: 0.2, skipFrames: 15, modelPath: "../models/emotion-large.json"}}, body: {enabled: true, modelPath: "../models/posenet.json", inputSize: 257, maxDetections: 10, scoreThreshold: 0.8, nmsRadius: 20}, hand: {enabled: true, inputSize: 256, skipFrames: 15, minConfidence: 0.5, iouThreshold: 0.1, scoreThreshold: 0.8, maxHands: 1, landmarks: true, detector: {modelPath: "../models/handdetect.json"}, skeleton: {modelPath: "../models/handskeleton.json"}}};
+var cL = we((rG) => {
+  As(rG, {default: () => iG});
+  var iG = {backend: "webgl", console: true, async: true, profile: false, deallocate: false, scoped: false, videoOptimized: true, filter: {enabled: true, width: 0, height: 0, return: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0}, gesture: {enabled: true}, face: {enabled: true, detector: {modelPath: "../models/blazeface-back.json", inputSize: 256, maxFaces: 10, skipFrames: 15, minConfidence: 0.5, iouThreshold: 0.2, scoreThreshold: 0.5}, mesh: {enabled: true, modelPath: "../models/facemesh.json", inputSize: 192}, iris: {enabled: true, modelPath: "../models/iris.json", inputSize: 64}, age: {enabled: true, modelPath: "../models/age-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, gender: {enabled: true, minConfidence: 0.1, modelPath: "../models/gender-ssrnet-imdb.json", inputSize: 64, skipFrames: 15}, emotion: {enabled: true, inputSize: 64, minConfidence: 0.2, skipFrames: 15, modelPath: "../models/emotion-large.json"}}, body: {enabled: true, modelPath: "../models/posenet.json", inputSize: 257, maxDetections: 10, scoreThreshold: 0.8, nmsRadius: 20}, hand: {enabled: true, inputSize: 256, skipFrames: 15, minConfidence: 0.5, iouThreshold: 0.1, scoreThreshold: 0.8, maxHands: 1, landmarks: true, detector: {modelPath: "../models/handdetect.json"}, skeleton: {modelPath: "../models/handskeleton.json"}}};
 });
-var uL = we((hq, lL) => {
-  lL.exports = {name: "@vladmandic/human", version: "0.8.3", description: "human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition", sideEffects: false, main: "dist/human.node.js", module: "dist/human.esm.js", browser: "dist/human.esm.js", author: "Vladimir Mandic <mandic00@live.com>", bugs: {url: "https://github.com/vladmandic/human/issues"}, homepage: "https://github.com/vladmandic/human#readme", license: "MIT", engines: {node: ">=14.0.0"}, repository: {type: "git", url: "git+https://github.com/vladmandic/human.git"}, dependencies: {}, peerDependencies: {}, devDependencies: {"@tensorflow/tfjs": "^2.7.0", "@tensorflow/tfjs-node": "^2.7.0", "@vladmandic/pilogger": "^0.2.7", chokidar: "^3.4.3", dayjs: "^1.9.5", esbuild: "^0.7.22", eslint: "^7.13.0", "eslint-config-airbnb-base": "^14.2.1", "eslint-plugin-import": "^2.22.1", "eslint-plugin-json": "^2.1.2", "eslint-plugin-node": "^11.1.0", "eslint-plugin-promise": "^4.2.1", rimraf: "^3.0.2", seedrandom: "^3.0.5", "simple-git": "^2.21.0"}, scripts: {start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js", lint: "eslint src/*.js demo/*.js", dev: "npm install && node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation dev-server/dev-server.js", changelog: "node dev-server/changelog.js", "build-iife": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=iife --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js", "build-esm-bundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js", "build-esm-nobundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=esm --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js", "build-node": "esbuild --bundle --minify --platform=node --sourcemap --target=es2018 --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js", "build-node-nobundle": "esbuild --bundle --minify --platform=node --sourcemap --target=es2018 --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js", "build-demo": "esbuild --bundle --log-level=error --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/demo-browser-index.json --outfile=dist/demo-browser-index.js demo/browser.js", build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && npm run build-demo && npm run changelog", update: "npm update --depth 20 --force && npm dedupe && npm prune && npm audit"}, keywords: ["tensorflowjs", "face-detection", "face-geometry", "body-tracking", "hand-tracking", "iris-tracking", "age-estimation", "emotion-detection", "gender-prediction", "gesture-recognition"]};
+var uL = we((uq, lL) => {
+  lL.exports = {name: "@vladmandic/human", version: "0.8.4", description: "human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition", sideEffects: false, main: "dist/human.node.js", module: "dist/human.esm.js", browser: "dist/human.esm.js", author: "Vladimir Mandic <mandic00@live.com>", bugs: {url: "https://github.com/vladmandic/human/issues"}, homepage: "https://github.com/vladmandic/human#readme", license: "MIT", engines: {node: ">=14.0.0"}, repository: {type: "git", url: "git+https://github.com/vladmandic/human.git"}, dependencies: {}, peerDependencies: {}, devDependencies: {"@tensorflow/tfjs": "^2.7.0", "@tensorflow/tfjs-node": "^2.7.0", "@vladmandic/pilogger": "^0.2.7", chokidar: "^3.4.3", dayjs: "^1.9.5", esbuild: "^0.7.22", eslint: "^7.13.0", "eslint-config-airbnb-base": "^14.2.1", "eslint-plugin-import": "^2.22.1", "eslint-plugin-json": "^2.1.2", "eslint-plugin-node": "^11.1.0", "eslint-plugin-promise": "^4.2.1", rimraf: "^3.0.2", seedrandom: "^3.0.5", "simple-git": "^2.21.0"}, scripts: {start: "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js", lint: "eslint src/*.js demo/*.js", dev: "npm install && node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation dev-server/dev-server.js", changelog: "node dev-server/changelog.js", "build-iife": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=iife --external:fs --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js", "build-esm-bundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js", "build-esm-nobundle": "esbuild --bundle --minify --platform=browser --sourcemap --target=es2018 --format=esm --external:@tensorflow --external:fs --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js", "build-node": "esbuild --bundle --minify --platform=node --sourcemap --target=es2018 --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js", "build-node-nobundle": "esbuild --bundle --minify --platform=node --sourcemap --target=es2018 --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js", "build-demo": "esbuild --bundle --log-level=error --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --metafile=dist/demo-browser-index.json --outfile=dist/demo-browser-index.js demo/browser.js", build: "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && npm run build-demo && npm run changelog", update: "npm update --depth 20 --force && npm dedupe && npm prune && npm audit"}, keywords: ["tensorflowjs", "face-detection", "face-geometry", "body-tracking", "hand-tracking", "iris-tracking", "age-estimation", "emotion-detection", "gender-prediction", "gesture-recognition"]};
 });
-const Kt = Ut();
+const Yt = Ut();
 const Qp = cx();
 const xs = ux();
 const Ls = hx();
@@ -33176,11 +33170,11 @@ const Ss = px();
 const ef = Bx();
 const tf = nL();
 const nf = rL();
-const sG = oL();
-const oG = ps();
-const cG = cL().default;
-const lG = uL();
-const uG = {face: {detector: {skipFrames: 0}, age: {skipFrames: 0}, gender: {skipFrames: 0}, emotion: {skipFrames: 0}}, hand: {skipFrames: 0}};
+const aG = oL();
+const sG = ps();
+const oG = cL().default;
+const cG = uL();
+const lG = {face: {detector: {skipFrames: 0}, age: {skipFrames: 0}, gender: {skipFrames: 0}, emotion: {skipFrames: 0}}, hand: {skipFrames: 0}};
 const ut = () => typeof performance != "undefined" ? performance.now() : parseInt(Number(process.hrtime.bigint()) / 1e3 / 1e3);
 function Is(...n) {
   const t = (e) => e && typeof e == "object";
@@ -33189,20 +33183,20 @@ function Is(...n) {
     Array.isArray(a) && Array.isArray(s) ? e[i] = a.concat(...s) : t(a) && t(s) ? e[i] = Is(a, s) : e[i] = s;
   }), e), {});
 }
-class hG {
+class uG {
   constructor(n = {}) {
-    this.tf = Kt, this.version = lG.version, this.config = Is(cG, n), this.fx = null, this.state = "idle", this.numTensors = 0, this.analyzeMemoryLeaks = false, this.checkSanity = false, this.firstRun = true, this.perf = {}, this.models = {facemesh: null, posenet: null, handpose: null, iris: null, age: null, gender: null, emotion: null}, this.facemesh = Qp, this.age = xs, this.gender = Ls, this.emotion = Ss, this.body = ef, this.hand = tf;
+    this.tf = Yt, this.version = cG.version, this.config = Is(oG, n), this.fx = null, this.state = "idle", this.numTensors = 0, this.analyzeMemoryLeaks = false, this.checkSanity = false, this.firstRun = true, this.perf = {}, this.models = {facemesh: null, posenet: null, handpose: null, iris: null, age: null, gender: null, emotion: null}, this.facemesh = Qp, this.age = xs, this.gender = Ls, this.emotion = Ss, this.body = ef, this.hand = tf;
   }
   log(...n) {
     n && this.config.console && console.log("Human:", ...n);
   }
   profile() {
-    return this.config.profile ? oG.data : {};
+    return this.config.profile ? sG.data : {};
   }
   analyze(...n) {
     if (!this.analyzeMemoryLeaks)
       return;
-    const t = Kt.engine().state.numTensors, e = this.numTensors;
+    const t = Yt.engine().state.numTensors, e = this.numTensors;
     this.numTensors = t;
     const r = t - e;
     r !== 0 && this.log(...n, r);
@@ -33212,10 +33206,10 @@ class hG {
       return null;
     if (!n)
       return "input is not defined";
-    if (Kt.ENV.flags.IS_NODE && !(n instanceof Kt.Tensor))
+    if (Yt.ENV.flags.IS_NODE && !(n instanceof Yt.Tensor))
       return "input must be a tensor";
     try {
-      Kt.getBackend();
+      Yt.getBackend();
     } catch (t) {
       return "backend not loaded";
     }
@@ -33224,13 +33218,13 @@ class hG {
   async load(n) {
     this.state = "load";
     const t = ut();
-    n && (this.config = Is(this.config, n)), this.firstRun && (this.checkBackend(true), this.log(`version: ${this.version} TensorFlow/JS version: ${Kt.version_core}`), this.log("configuration:", this.config), this.log("flags:", Kt.ENV.flags), this.firstRun = false), this.config.async ? [this.models.age, this.models.gender, this.models.emotion, this.models.facemesh, this.models.posenet, this.models.handpose] = await Promise.all([this.models.age || xs.load(this.config), this.models.gender || Ls.load(this.config), this.models.emotion || Ss.load(this.config), this.models.facemesh || Qp.load(this.config.face), this.models.posenet || ef.load(this.config), this.models.handpose || tf.load(this.config.hand)]) : (this.config.face.enabled && !this.models.facemesh && (this.models.facemesh = await Qp.load(this.config.face)), this.config.body.enabled && !this.models.posenet && (this.models.posenet = await ef.load(this.config)), this.config.hand.enabled && !this.models.handpose && (this.models.handpose = await tf.load(this.config.hand)), this.config.face.enabled && this.config.face.age.enabled && !this.models.age && (this.models.age = await xs.load(this.config)), this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender && (this.models.gender = await Ls.load(this.config)), this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion && (this.models.emotion = await Ss.load(this.config)));
+    n && (this.config = Is(this.config, n)), this.firstRun && (this.checkBackend(true), this.log(`version: ${this.version} TensorFlow/JS version: ${Yt.version_core}`), this.log("configuration:", this.config), this.log("flags:", Yt.ENV.flags), this.firstRun = false), this.config.async ? [this.models.age, this.models.gender, this.models.emotion, this.models.facemesh, this.models.posenet, this.models.handpose] = await Promise.all([this.models.age || xs.load(this.config), this.models.gender || Ls.load(this.config), this.models.emotion || Ss.load(this.config), this.models.facemesh || Qp.load(this.config.face), this.models.posenet || ef.load(this.config), this.models.handpose || tf.load(this.config.hand)]) : (this.config.face.enabled && !this.models.facemesh && (this.models.facemesh = await Qp.load(this.config.face)), this.config.body.enabled && !this.models.posenet && (this.models.posenet = await ef.load(this.config)), this.config.hand.enabled && !this.models.handpose && (this.models.handpose = await tf.load(this.config.hand)), this.config.face.enabled && this.config.face.age.enabled && !this.models.age && (this.models.age = await xs.load(this.config)), this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender && (this.models.gender = await Ls.load(this.config)), this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion && (this.models.emotion = await Ss.load(this.config)));
     const e = Math.trunc(ut() - t);
     e > (this.perf.load || 0) && (this.perf.load = e);
   }
   async checkBackend(n) {
     const t = ut();
-    (this.config.backend && this.config.backend !== "" && n || Kt.getBackend() !== this.config.backend) && (this.state = "backend", this.log("setting backend:", this.config.backend), await Kt.setBackend(this.config.backend), Kt.enableProdMode(), this.config.backend === "webgl" && (this.config.deallocate && (this.log("Changing WebGL: WEBGL_DELETE_TEXTURE_THRESHOLD:", this.config.deallocate), Kt.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", this.config.deallocate ? 0 : -1)), Kt.ENV.set("WEBGL_PACK_DEPTHWISECONV", true)), await Kt.ready());
+    (this.config.backend && this.config.backend !== "" && n || Yt.getBackend() !== this.config.backend) && (this.state = "backend", this.log("setting backend:", this.config.backend), await Yt.setBackend(this.config.backend), Yt.enableProdMode(), this.config.backend === "webgl" && (this.config.deallocate && (this.log("Changing WebGL: WEBGL_DELETE_TEXTURE_THRESHOLD:", this.config.deallocate), Yt.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", this.config.deallocate ? 0 : -1)), Yt.ENV.set("WEBGL_PACK_DEPTHWISECONV", true)), await Yt.ready());
     const e = Math.trunc(ut() - t);
     e > (this.perf.backend || 0) && (this.perf.backend = e);
   }
@@ -33254,17 +33248,21 @@ class hG {
   async detect(n, t = {}) {
     this.state = "config";
     let e;
-    this.config = Is(this.config, t), this.config.videoOptimized || (this.config = Is(this.config, uG)), this.state = "check";
+    this.config = Is(this.config, t), this.config.videoOptimized || (this.config = Is(this.config, lG)), this.state = "check";
     const r = this.sanity(n);
     return r ? (this.log(r, n), {error: r}) : new Promise(async (i) => {
       let a, s, o;
       const c = ut();
-      await this.checkBackend(), await this.load(), this.config.scoped && Kt.engine().startScope(), this.analyze("Start Scope:"), e = ut();
-      const l = sG.process(n, this.config);
-      this.perf.image = Math.trunc(ut() - e), this.analyze("Get Image:"), this.config.async ? (o = this.config.face.enabled ? this.detectFace(l.tensor) : [], this.perf.face && delete this.perf.face) : (this.state = "run:face", e = ut(), o = this.config.face.enabled ? await this.detectFace(l.tensor) : [], this.perf.face = Math.trunc(ut() - e)), this.analyze("Start Body:"), this.config.async ? (a = this.config.body.enabled ? this.models.posenet.estimatePoses(l.tensor, this.config) : [], this.perf.body && delete this.perf.body) : (this.state = "run:body", e = ut(), a = this.config.body.enabled ? await this.models.posenet.estimatePoses(l.tensor, this.config) : [], this.perf.body = Math.trunc(ut() - e)), this.analyze("End Body:"), this.analyze("Start Hand:"), this.config.async ? (s = this.config.hand.enabled ? this.models.handpose.estimateHands(l.tensor, this.config.hand) : [], this.perf.hand && delete this.perf.hand) : (this.state = "run:hand", e = ut(), s = this.config.hand.enabled ? await this.models.handpose.estimateHands(l.tensor, this.config.hand) : [], this.perf.hand = Math.trunc(ut() - e)), this.config.async && ([o, a, s] = await Promise.all([o, a, s])), l.tensor.dispose(), this.config.scoped && Kt.engine().endScope(), this.analyze("End Scope:");
+      await this.checkBackend(), await this.load(), this.config.scoped && Yt.engine().startScope(), this.analyze("Start Scope:"), e = ut();
+      const l = aG.process(n, this.config);
+      this.perf.image = Math.trunc(ut() - e), this.analyze("Get Image:"), this.config.async ? (o = this.config.face.enabled ? this.detectFace(l.tensor) : [], this.perf.face && delete this.perf.face) : (this.state = "run:face", e = ut(), o = this.config.face.enabled ? await this.detectFace(l.tensor) : [], this.perf.face = Math.trunc(ut() - e)), this.analyze("Start Body:"), this.config.async ? (a = this.config.body.enabled ? this.models.posenet.estimatePoses(l.tensor, this.config) : [], this.perf.body && delete this.perf.body) : (this.state = "run:body", e = ut(), a = this.config.body.enabled ? await this.models.posenet.estimatePoses(l.tensor, this.config) : [], this.perf.body = Math.trunc(ut() - e)), this.analyze("End Body:"), this.analyze("Start Hand:"), this.config.async ? (s = this.config.hand.enabled ? this.models.handpose.estimateHands(l.tensor, this.config.hand) : [], this.perf.hand && delete this.perf.hand) : (this.state = "run:hand", e = ut(), s = this.config.hand.enabled ? await this.models.handpose.estimateHands(l.tensor, this.config.hand) : [], this.perf.hand = Math.trunc(ut() - e)), this.config.async && ([o, a, s] = await Promise.all([o, a, s])), l.tensor.dispose(), this.config.scoped && Yt.engine().endScope(), this.analyze("End Scope:");
       let u = [];
       this.config.gesture.enabled && (e = ut(), u = {face: nf.face(o), body: nf.body(a), hand: nf.hand(s)}, this.config.async ? this.perf.gesture && delete this.perf.gesture : this.perf.gesture = Math.trunc(ut() - e)), this.perf.total = Math.trunc(ut() - c), this.state = "idle", i({face: o, body: a, hand: s, gesture: u, performance: this.perf, canvas: l.canvas});
     });
+  }
+  async warmup(n) {
+    const t = new ImageData(255, 255);
+    await this.detect(t, n), this.log("warmed up");
   }
 }
 /*! *****************************************************************************
@@ -34000,7 +33998,7 @@ class Menu {
 var menu_default = Menu;
 
 // demo/browser.js
-const human = new hG();
+const human = new uG();
 const userConfig = {};
 const ui = {
   baseColor: "rgba(173, 216, 230, 0.3)",
@@ -34356,8 +34354,7 @@ async function main() {
   }
   if (ui.modelsWarmup) {
     status("initializing");
-    const warmup = new ImageData(256, 256);
-    await human.detect(warmup, userConfig);
+    await human.warmup(userConfig);
   }
   status("human: ready");
   document.getElementById("loader").style.display = "none";

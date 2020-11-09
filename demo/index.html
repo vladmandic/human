@@ -19,8 +19,8 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgpu@0.0.1-alpha.0/dist/tf-webgpu.js"></script> -->
     <!-- load compiled demo js -->
     <script src="../dist/demo-browser-index.js"></script>
-    <!-- alternatively load demo sources directly -->
-    <!-- <script src="browser.js" type="module"></script> -->
+    <!-- alternatively load demo sources directly, this is not supported on mobile platforms as they don't support type=module -->
+    <!-- <script src="./browser.js" type="module"></script> -->
     <style>
       @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 400; src: local('Lato'), url('../assets/lato.ttf') format('truetype'); }
       html { font-family: 'Lato', 'Segoe UI'; font-size: 16px; font-variant: small-caps; }

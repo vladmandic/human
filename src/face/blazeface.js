@@ -110,21 +110,17 @@ class BlazeFaceModel {
       return vals;
     });
 
+    const scoresVal = scores.dataSync();
     const annotatedBoxes = [];
-    for (let i = 0; i < boundingBoxes.length; i++) {
-      const boundingBox = boundingBoxes[i];
-      const box = createBox(boundingBox);
+    for (const i in boundingBoxes) {
       const boxIndex = boxIndices[i];
-      const anchor = this.anchorsData[boxIndex];
-      const sliced = tf.slice(detectedOutputs, [boxIndex, NUM_LANDMARKS - 1], [1, -1]);
-      const squeezed = sliced.squeeze();
-      const landmarks = squeezed.reshape([NUM_LANDMARKS, -1]);
-      const probability = tf.slice(scores, [boxIndex], [1]);
-      const annotatedBox = { box, landmarks, probability, anchor };
-      annotatedBoxes.push(annotatedBox);
-      sliced.dispose();
-      squeezed.dispose();
-      // landmarks.dispose();
+      const confidence = scoresVal[boxIndex];
+      if (confidence > this.config.detector.minConfidence) {
+        const box = createBox(boundingBoxes[i]);
+        const anchor = this.anchorsData[boxIndex];
+        const landmarks = tf.tidy(() => tf.slice(detectedOutputs, [boxIndex, NUM_LANDMARKS - 1], [1, -1]).squeeze().reshape([NUM_LANDMARKS, -1]));
+        annotatedBoxes.push({ box, landmarks, anchor, confidence });
+      }
     }
     detectedOutputs.dispose();
     boxes.dispose();

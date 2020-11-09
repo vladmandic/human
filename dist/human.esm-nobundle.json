@@ -128,11 +128,11 @@
       ]
     },
     "src/face/blazeface.js": {
-      "bytes": 7058,
+      "bytes": 6937,
       "imports": []
     },
     "src/face/box.js": {
-      "bytes": 1924,
+      "bytes": 1929,
       "imports": []
     },
     "src/face/facemesh.js": {
@@ -156,7 +156,7 @@
       ]
     },
     "src/face/facepipeline.js": {
-      "bytes": 14752,
+      "bytes": 13695,
       "imports": [
         {
           "path": "src/face/box.js"
@@ -194,7 +194,7 @@
       ]
     },
     "src/gesture.js": {
-      "bytes": 3233,
+      "bytes": 3306,
       "imports": []
     },
     "src/hand/anchors.js": {
@@ -214,7 +214,7 @@
       ]
     },
     "src/hand/handpipeline.js": {
-      "bytes": 7445,
+      "bytes": 7541,
       "imports": [
         {
           "path": "src/hand/box.js"
@@ -243,7 +243,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 13770,
+      "bytes": 13918,
       "imports": [
         {
           "path": "src/face/facemesh.js"
@@ -281,7 +281,7 @@
       ]
     },
     "src/image.js": {
-      "bytes": 4604,
+      "bytes": 4648,
       "imports": [
         {
           "path": "src/imagefx.js"
@@ -301,13 +301,13 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 621753
+      "bytes": 620819
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
       "inputs": {
         "src/face/blazeface.js": {
-          "bytesInOutput": 3093
+          "bytesInOutput": 3103
         },
         "src/face/keypoints.js": {
           "bytesInOutput": 1945
@@ -319,7 +319,7 @@
           "bytesInOutput": 1171
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 5647
+          "bytesInOutput": 5432
         },
         "src/face/uvcoords.js": {
           "bytesInOutput": 16785
@@ -385,7 +385,7 @@
           "bytesInOutput": 997
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 2741
+          "bytesInOutput": 2781
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 127000
@@ -394,13 +394,13 @@
           "bytesInOutput": 1219
         },
         "src/gesture.js": {
-          "bytesInOutput": 1574
+          "bytesInOutput": 1601
         },
         "src/imagefx.js": {
           "bytesInOutput": 11013
         },
         "src/image.js": {
-          "bytesInOutput": 2349
+          "bytesInOutput": 2343
         },
         "config.js": {
           "bytesInOutput": 1279
@@ -409,13 +409,13 @@
           "bytesInOutput": 3047
         },
         "src/human.js": {
-          "bytesInOutput": 7256
+          "bytesInOutput": 7348
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 216959
+      "bytes": 216907
     }
   }
 }

@@ -6,6 +6,7 @@ function scaleBoxCoordinates(box, factor) {
   return { startPoint, endPoint };
 }
 exports.scaleBoxCoordinates = scaleBoxCoordinates;
+
 function getBoxSize(box) {
   return [
     Math.abs(box.endPoint[0] - box.startPoint[0]),
@@ -13,6 +14,7 @@ function getBoxSize(box) {
   ];
 }
 exports.getBoxSize = getBoxSize;
+
 function getBoxCenter(box) {
   return [
     box.startPoint[0] + (box.endPoint[0] - box.startPoint[0]) / 2,
@@ -20,6 +22,7 @@ function getBoxCenter(box) {
   ];
 }
 exports.getBoxCenter = getBoxCenter;
+
 function cutBoxFromImageAndResize(box, image, cropSize) {
   const h = image.shape[1];
   const w = image.shape[2];
@@ -30,6 +33,7 @@ function cutBoxFromImageAndResize(box, image, cropSize) {
   return tf.image.cropAndResize(image, boxes, [0], cropSize);
 }
 exports.cutBoxFromImageAndResize = cutBoxFromImageAndResize;
+
 function enlargeBox(box, factor = 1.5) {
   const center = getBoxCenter(box);
   const size = getBoxSize(box);
@@ -39,6 +43,7 @@ function enlargeBox(box, factor = 1.5) {
   return { startPoint, endPoint, landmarks: box.landmarks };
 }
 exports.enlargeBox = enlargeBox;
+
 function squarifyBox(box) {
   const centers = getBoxCenter(box);
   const size = getBoxSize(box);

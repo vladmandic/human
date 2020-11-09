@@ -5,7 +5,6 @@ const keypoints = require('./keypoints');
 const util = require('./util');
 
 const LANDMARKS_COUNT = 468;
-const UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD = 0.25;
 const MESH_MOUTH_INDEX = 13;
 const MESH_KEYPOINTS_LINE_OF_SYMMETRY_INDICES = [MESH_MOUTH_INDEX, keypoints.MESH_ANNOTATIONS['midwayBetweenEyes'][0]];
 const BLAZEFACE_MOUTH_INDEX = 3;
@@ -41,7 +40,7 @@ function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
 class Pipeline {
   constructor(boundingBoxDetector, meshDetector, irisModel, config) {
     // An array of facial bounding boxes.
-    this.regionsOfInterest = [];
+    this.storedBoxes = [];
     this.runsWithoutFaceDetector = 0;
     this.boundingBoxDetector = boundingBoxDetector;
     this.meshDetector = meshDetector;
@@ -50,6 +49,8 @@ class Pipeline {
     this.meshHeight = config.mesh.inputSize;
     this.irisSize = config.iris.inputSize;
     this.irisEnlarge = 2.3;
+    this.skipped = 1000;
+    this.detectedFaces = 0;
   }
 
   transformRawCoords(rawCoords, box, angle, rotationMatrix) {
@@ -129,35 +130,39 @@ class Pipeline {
   }
 
   async predict(input, config) {
-    this.runsWithoutFaceDetector += 1;
-    let useFreshBox = (this.detectedFaces === 0) || (this.detectedFaces !== this.regionsOfInterest.length);
+    this.skipped++;
+    let useFreshBox = false;
+    // run new detector every skipFrames unless we only want box to start with
     let detector;
-    // but every skipFrames check if detect boxes number changed
-    if (useFreshBox || (this.runsWithoutFaceDetector > config.detector.skipFrames)) detector = await this.boundingBoxDetector.getBoundingBoxes(input);
-    // if there are new boxes and number of boxes doesn't match use new boxes, but not if maxhands is fixed to 1
-    if (config.detector.maxFaces > 1 && detector && detector.boxes && detector.boxes.length > 0 && detector.boxes.length !== this.detectedFaces) useFreshBox = true;
+    if ((this.skipped > config.detector.skipFrames) || !config.mesh.enabled) {
+      detector = await this.boundingBoxDetector.getBoundingBoxes(input);
+      // don't reset on test image
+      if ((input.shape[1] !== 255) && (input.shape[2] !== 255)) this.skipped = 0;
+    }
+
+    // if detector result count doesn't match current working set, use it to reset current working set
+    if (detector && detector.boxes && (detector.boxes.length > 0) && (!config.mesh.enabled || (detector.boxes.length !== this.detectedFaces) && (this.detectedFaces !== config.detector.maxFaces))) {
+      this.storedBoxes = [];
+      this.detectedFaces = 0;
+      for (const possible of detector.boxes) {
+        this.storedBoxes.push({ startPoint: possible.box.startPoint.dataSync(), endPoint: possible.box.endPoint.dataSync(), landmarks: possible.landmarks, confidence: possible.confidence });
+      }
+      if (this.storedBoxes.length > 0) useFreshBox = true;
+    }
+
     if (useFreshBox) {
-      // const detector = await this.boundingBoxDetector.getBoundingBoxes(input);
       if (!detector || !detector.boxes || (detector.boxes.length === 0)) {
-        this.regionsOfInterest = [];
+        this.storedBoxes = [];
         this.detectedFaces = 0;
         return null;
       }
-      const scaledBoxes = detector.boxes.map((prediction) => {
-        const startPoint = prediction.box.startPoint.squeeze();
-        const endPoint = prediction.box.endPoint.squeeze();
-        const predictionBox = {
-          startPoint: startPoint.arraySync(),
-          endPoint: endPoint.arraySync(),
-        };
-        startPoint.dispose();
-        endPoint.dispose();
-        const scaledBox = bounding.scaleBoxCoordinates(predictionBox, detector.scaleFactor);
+      for (const i in this.storedBoxes) {
+        const scaledBox = bounding.scaleBoxCoordinates({ startPoint: this.storedBoxes[i].startPoint, endPoint: this.storedBoxes[i].endPoint }, detector.scaleFactor);
         const enlargedBox = bounding.enlargeBox(scaledBox);
-        const landmarks = prediction.landmarks.arraySync();
-        return { ...enlargedBox, landmarks };
-      });
-      this.updateRegionsOfInterest(scaledBoxes);
+        const landmarks = this.storedBoxes[i].landmarks.arraySync();
+        const confidence = this.storedBoxes[i].confidence;
+        this.storedBoxes[i] = { ...enlargedBox, confidence, landmarks };
+      }
       this.runsWithoutFaceDetector = 0;
     }
     if (detector && detector.boxes) {
@@ -165,10 +170,12 @@ class Pipeline {
         prediction.box.startPoint.dispose();
         prediction.box.endPoint.dispose();
         prediction.landmarks.dispose();
-        prediction.probability.dispose();
       });
     }
-    let results = tf.tidy(() => this.regionsOfInterest.map((box, i) => {
+
+    // console.log(this.skipped, config.detector.skipFrames, this.detectedFaces, config.detector.maxFaces, detector?.boxes.length, this.storedBoxes.length);
+
+    let results = tf.tidy(() => this.storedBoxes.map((box, i) => {
       let angle = 0;
       // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
       const boxLandmarksFromMeshModel = box.landmarks.length >= LANDMARKS_COUNT;
@@ -187,6 +194,19 @@ class Pipeline {
       }
       const boxCPU = { startPoint: box.startPoint, endPoint: box.endPoint };
       const face = bounding.cutBoxFromImageAndResize(boxCPU, rotatedImage, [this.meshHeight, this.meshWidth]).div(255);
+
+      // if we're not going to produce mesh, don't spend time with further processing
+      if (!config.mesh.enabled) {
+        const prediction = {
+          coords: null,
+          box,
+          faceConfidence: null,
+          confidence: box.confidence,
+          image: face,
+        };
+        return prediction;
+      }
+
       // The first returned tensor represents facial contours, which are included in the coordinates.
       const [, confidence, coords] = this.meshDetector.predict(face);
       const confidenceVal = confidence.dataSync()[0];
@@ -224,58 +244,20 @@ class Pipeline {
       const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
       tf.dispose(rawCoords);
       const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
+      const transformedCoords = tf.tensor2d(transformedCoordsData);
       const prediction = {
-        coords: null,
+        coords: transformedCoords,
         box: landmarksBox,
-        confidence: confidenceVal,
+        faceConfidence: confidenceVal,
+        confidence: box.confidence,
         image: face,
       };
-      if (config.mesh.enabled) {
-        const transformedCoords = tf.tensor2d(transformedCoordsData);
-        this.regionsOfInterest[i] = { ...landmarksBox, landmarks: transformedCoords.arraySync() };
-        prediction.coords = transformedCoords;
-      }
+      this.storedBoxes[i] = { ...landmarksBox, landmarks: transformedCoords.arraySync(), confidence: box.confidence, faceConfidence: confidenceVal };
       return prediction;
     }));
     results = results.filter((a) => a !== null);
     this.detectedFaces = results.length;
     return results;
-  }
-
-  // Updates regions of interest if the intersection over union between the incoming and previous regions falls below a threshold.
-  updateRegionsOfInterest(boxes) {
-    for (let i = 0; i < boxes.length; i++) {
-      const box = boxes[i];
-      const previousBox = this.regionsOfInterest[i];
-      let iou = 0;
-      if (previousBox && previousBox.startPoint) {
-        const [boxStartX, boxStartY] = box.startPoint;
-        const [boxEndX, boxEndY] = box.endPoint;
-        const [previousBoxStartX, previousBoxStartY] = previousBox.startPoint;
-        const [previousBoxEndX, previousBoxEndY] = previousBox.endPoint;
-        const xStartMax = Math.max(boxStartX, previousBoxStartX);
-        const yStartMax = Math.max(boxStartY, previousBoxStartY);
-        const xEndMin = Math.min(boxEndX, previousBoxEndX);
-        const yEndMin = Math.min(boxEndY, previousBoxEndY);
-        const intersection = (xEndMin - xStartMax) * (yEndMin - yStartMax);
-        const boxArea = (boxEndX - boxStartX) * (boxEndY - boxStartY);
-        const previousBoxArea = (previousBoxEndX - previousBoxStartX) * (previousBoxEndY - boxStartY);
-        iou = intersection / (boxArea + previousBoxArea - intersection);
-      }
-      if (iou < UPDATE_REGION_OF_INTEREST_IOU_THRESHOLD) {
-        this.regionsOfInterest[i] = box;
-      }
-    }
-    this.regionsOfInterest = this.regionsOfInterest.slice(0, boxes.length);
-  }
-
-  clearRegionOfInterest(index) {
-    if (this.regionsOfInterest[index] != null) {
-      this.regionsOfInterest = [
-        ...this.regionsOfInterest.slice(0, index),
-        ...this.regionsOfInterest.slice(index + 1),
-      ];
-    }
   }
 
   calculateLandmarksBoundingBox(landmarks) {

@@ -25,6 +25,10 @@ exports.face = (res) => {
     if (face.annotations['rightCheek'] && face.annotations['leftCheek'] && (face.annotations['rightCheek'].length > 0) && (face.annotations['leftCheek'].length > 0)) {
       gestures.push(`facing ${((face.annotations['rightCheek'][0][2] > 0) || (face.annotations['leftCheek'][0][2] < 0)) ? 'right' : 'left'}`);
     }
+    const openLeft = Math.abs(face.mesh[374][1] - face.mesh[386][1]) / Math.abs(face.mesh[443][1] - face.mesh[450][1]); // center of eye inner lid y coord div center of wider eye border y coord
+    if (openLeft < 0.2) gestures.push('blink left eye');
+    const openRight = Math.abs(face.mesh[145][1] - face.mesh[159][1]) / Math.abs(face.mesh[223][1] - face.mesh[230][1]); // center of eye inner lid y coord div center of wider eye border y coord
+    if (openRight < 0.2) gestures.push('blink right eye');
   }
   return gestures;
 };

@@ -297,7 +297,7 @@ async function detectSampleImages() {
 }
 
 function setupMenu() {
-  menu = new Menu(document.body, '...', { top: '1rem', right: '1rem' });
+  menu = new Menu(document.body, '', { top: '1rem', right: '1rem' });
   const btn = menu.addButton('start video', 'pause video', () => detectVideo());
   menu.addButton('process images', 'process images', () => detectSampleImages());
   document.getElementById('play').addEventListener('click', () => btn.click());
@@ -352,7 +352,7 @@ function setupMenu() {
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addChart('FPS', 'FPS');
 
-  menuFX = new Menu(document.body, '...', { top: '1rem', right: '18rem' });
+  menuFX = new Menu(document.body, '', { top: '1rem', right: '18rem' });
   menuFX.addLabel('ui options');
   menuFX.addBool('crop & scale', ui, 'crop', () => setupCamera());
   menuFX.addBool('camera front/back', ui, 'facing', () => setupCamera());

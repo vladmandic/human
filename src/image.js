@@ -52,8 +52,10 @@ function process(input, config) {
       if (config.filter.polaroid) this.fx.addFilter('polaroid');
       if (config.filter.pixelate !== 0) this.fx.addFilter('pixelate', config.filter.pixelate);
       this.fx.apply(inCanvas);
+    } else {
+      outCanvas = inCanvas;
     }
-    if (!outCanvas) outCanvas = inCanvas;
+    // if (!outCanvas) outCanvas = inCanvas;
     let pixels;
     if ((config.backend === 'webgl') || (outCanvas instanceof ImageData)) {
       // tf kernel-optimized method to get imagedata, also if input is imagedata, just use it

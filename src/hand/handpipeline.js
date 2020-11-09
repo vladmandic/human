@@ -33,7 +33,7 @@ class HandPipeline {
     this.meshDetector = meshDetector;
     this.inputSize = inputSize;
     this.storedBoxes = [];
-    this.skipped = 0;
+    this.skipped = 1000;
     this.detectedHands = 0;
   }
 
@@ -91,7 +91,8 @@ class HandPipeline {
     let boxes;
     if ((this.skipped > config.skipFrames) || !config.landmarks) {
       boxes = await this.boxDetector.estimateHandBounds(image, config);
-      this.skipped = 0;
+      // don't reset on test image
+      if ((image.shape[1] !== 255) && (image.shape[2] !== 255)) this.skipped = 0;
     }
 
     // if detector result count doesn't match current working set, use it to reset current working set

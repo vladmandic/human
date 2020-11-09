@@ -194,7 +194,7 @@
       ]
     },
     "src/gesture.js": {
-      "bytes": 2680,
+      "bytes": 3233,
       "imports": []
     },
     "src/hand/anchors.js": {
@@ -301,7 +301,7 @@
     "dist/human.node-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 635158
+      "bytes": 635930
     },
     "dist/human.node-nobundle.js": {
       "imports": [],
@@ -394,7 +394,7 @@
           "bytesInOutput": 1219
         },
         "src/gesture.js": {
-          "bytesInOutput": 1459
+          "bytesInOutput": 1574
         },
         "src/imagefx.js": {
           "bytesInOutput": 11013
@@ -415,7 +415,7 @@
           "bytesInOutput": 7256
         }
       },
-      "bytes": 216851
+      "bytes": 216966
     }
   }
 }

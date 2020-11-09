@@ -32959,11 +32959,16 @@ var rL = we((pc) => {
       return [];
     const t = [];
     for (const e of n) {
-      e.annotations.rightCheek && e.annotations.leftCheek && e.annotations.rightCheek.length > 0 && e.annotations.leftCheek.length > 0 && t.push(`facing ${e.annotations.rightCheek[0][2] > 0 || e.annotations.leftCheek[0][2] < 0 ? "right" : "left"}`);
-      const r = Math.abs(e.mesh[374][1] - e.mesh[386][1]) / Math.abs(e.mesh[443][1] - e.mesh[450][1]);
-      r < 0.2 && t.push("blink left eye");
-      const i = Math.abs(e.mesh[145][1] - e.mesh[159][1]) / Math.abs(e.mesh[223][1] - e.mesh[230][1]);
-      i < 0.2 && t.push("blink right eye");
+      const r = e.mesh[35][2] - e.mesh[263][2];
+      Math.abs(r) < 10 ? t.push("facing camera") : t.push(`facing ${r < 0 ? "right" : "left"}`);
+      const i = Math.abs(e.mesh[374][1] - e.mesh[386][1]) / Math.abs(e.mesh[443][1] - e.mesh[450][1]);
+      i < 0.2 && t.push("blink left eye");
+      const a = Math.abs(e.mesh[145][1] - e.mesh[159][1]) / Math.abs(e.mesh[223][1] - e.mesh[230][1]);
+      a < 0.2 && t.push("blink right eye");
+      const s = Math.min(100, 500 * Math.abs(e.mesh[13][1] - e.mesh[14][1]) / Math.abs(e.mesh[10][1] - e.mesh[152][1]));
+      s > 10 && t.push(`mouth ${Math.trunc(s)}% open`);
+      const o = e.mesh[152][2];
+      Math.abs(o) > 10 && t.push(`head ${o < 0 ? "up" : "down"}`);
     }
     return t;
   };
@@ -33258,7 +33263,7 @@ class hG {
       const l = sG.process(n, this.config);
       this.perf.image = Math.trunc(ut() - e), this.analyze("Get Image:"), this.config.async ? (o = this.config.face.enabled ? this.detectFace(l.tensor) : [], this.perf.face && delete this.perf.face) : (this.state = "run:face", e = ut(), o = this.config.face.enabled ? await this.detectFace(l.tensor) : [], this.perf.face = Math.trunc(ut() - e)), this.analyze("Start Body:"), this.config.async ? (a = this.config.body.enabled ? this.models.posenet.estimatePoses(l.tensor, this.config) : [], this.perf.body && delete this.perf.body) : (this.state = "run:body", e = ut(), a = this.config.body.enabled ? await this.models.posenet.estimatePoses(l.tensor, this.config) : [], this.perf.body = Math.trunc(ut() - e)), this.analyze("End Body:"), this.analyze("Start Hand:"), this.config.async ? (s = this.config.hand.enabled ? this.models.handpose.estimateHands(l.tensor, this.config.hand) : [], this.perf.hand && delete this.perf.hand) : (this.state = "run:hand", e = ut(), s = this.config.hand.enabled ? await this.models.handpose.estimateHands(l.tensor, this.config.hand) : [], this.perf.hand = Math.trunc(ut() - e)), this.config.async && ([o, a, s] = await Promise.all([o, a, s])), l.tensor.dispose(), this.config.scoped && Kt.engine().endScope(), this.analyze("End Scope:");
       let u = [];
-      this.config.gesture.enabled && (e = ut(), u = {body: nf.body(a), hand: nf.hand(s), face: nf.face(o)}, this.config.async ? this.perf.gesture && delete this.perf.gesture : this.perf.gesture = Math.trunc(ut() - e)), this.perf.total = Math.trunc(ut() - c), this.state = "idle", i({face: o, body: a, hand: s, gesture: u, performance: this.perf, canvas: l.canvas});
+      this.config.gesture.enabled && (e = ut(), u = {face: nf.face(o), body: nf.body(a), hand: nf.hand(s)}, this.config.async ? this.perf.gesture && delete this.perf.gesture : this.perf.gesture = Math.trunc(ut() - e)), this.perf.total = Math.trunc(ut() - c), this.state = "idle", i({face: o, body: a, hand: s, gesture: u, performance: this.perf, canvas: l.canvas});
     });
   }
 }

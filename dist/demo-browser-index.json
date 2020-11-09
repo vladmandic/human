@@ -23,7 +23,7 @@
       "imports": []
     },
     "dist/human.esm.js": {
-      "bytes": 1278518,
+      "bytes": 1278633,
       "imports": []
     }
   },
@@ -31,13 +31,13 @@
     "dist/demo-browser-index.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5534714
+      "bytes": 5535482
     },
     "dist/demo-browser-index.js": {
       "imports": [],
       "inputs": {
         "dist/human.esm.js": {
-          "bytesInOutput": 1664968
+          "bytesInOutput": 1665139
         },
         "dist/human.esm.js": {
           "bytesInOutput": 8716
@@ -52,7 +52,7 @@
           "bytesInOutput": 16209
         }
       },
-      "bytes": 1712336
+      "bytes": 1712507
     }
   }
 }

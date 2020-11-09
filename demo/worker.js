@@ -16,7 +16,7 @@ onmessage = async (msg) => {
   const image = new ImageData(new Uint8ClampedArray(msg.data.image), msg.data.width, msg.data.height);
   let result = {};
   try {
-    result = await human.detect(image);
+    result = await human.detect(image, msg.data.userConfig);
   } catch (err) {
     result.error = err.message;
     log('worker thread error:', err.message);

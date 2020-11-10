@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import { loadGraphModel } from '../tf.js';
 import * as modelMobileNet from './modelMobileNet';
 import * as decodeMultiple from './decodeMultiple';
 import * as util from './util';
@@ -38,7 +38,7 @@ class PoseNet {
 exports.PoseNet = PoseNet;
 
 async function load(config) {
-  const graphModel = await tf.loadGraphModel(config.body.modelPath);
+  const graphModel = await loadGraphModel(config.body.modelPath);
   const mobilenet = new modelMobileNet.MobileNet(graphModel, this.outputStride);
   // eslint-disable-next-line no-console
   console.log(`Human: load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);

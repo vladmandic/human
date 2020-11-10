@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import { tf } from '../tf.js';
 import * as bounding from './box';
 import * as keypoints from './keypoints';
 import * as util from './util';

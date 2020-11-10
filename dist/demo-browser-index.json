@@ -1,7 +1,7 @@
 {
   "inputs": {
     "demo/browser.js": {
-      "bytes": 18516,
+      "bytes": 18524,
       "imports": [
         {
           "path": "dist/human.esm.js"
@@ -23,7 +23,7 @@
       "imports": []
     },
     "dist/human.esm.js": {
-      "bytes": 3442260,
+      "bytes": 3441681,
       "imports": []
     }
   },
@@ -31,13 +31,13 @@
     "dist/demo-browser-index.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5419827
+      "bytes": 5406858
     },
     "dist/demo-browser-index.js": {
       "imports": [],
       "inputs": {
         "dist/human.esm.js": {
-          "bytesInOutput": 3431560
+          "bytesInOutput": 3430970
         },
         "demo/draw.js": {
           "bytesInOutput": 8898
@@ -46,10 +46,10 @@
           "bytesInOutput": 13813
         },
         "demo/browser.js": {
-          "bytesInOutput": 16215
+          "bytesInOutput": 16241
         }
       },
-      "bytes": 3470608
+      "bytes": 3470044
     }
   }
 }

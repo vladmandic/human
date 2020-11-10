@@ -12316,10 +12316,10 @@
       "imports": []
     },
     "src/age/age.js": {
-      "bytes": 1926,
+      "bytes": 1912,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/profile.js"
@@ -12368,18 +12368,18 @@
       "imports": []
     },
     "src/body/modelBase.js": {
-      "bytes": 901,
+      "bytes": 874,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         }
       ]
     },
     "src/body/modelMobileNet.js": {
-      "bytes": 611,
+      "bytes": 584,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/body/modelBase.js"
@@ -12387,10 +12387,10 @@
       ]
     },
     "src/body/modelPoseNet.js": {
-      "bytes": 1940,
+      "bytes": 1922,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/body/modelMobileNet.js"
@@ -12440,10 +12440,10 @@
       ]
     },
     "src/emotion/emotion.js": {
-      "bytes": 2942,
+      "bytes": 2928,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/profile.js"
@@ -12451,26 +12451,26 @@
       ]
     },
     "src/face/blazeface.js": {
-      "bytes": 6955,
+      "bytes": 6941,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         }
       ]
     },
     "src/face/box.js": {
-      "bytes": 1947,
+      "bytes": 1920,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         }
       ]
     },
     "src/face/facemesh.js": {
-      "bytes": 2621,
+      "bytes": 2604,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/face/blazeface.js"
@@ -12490,10 +12490,10 @@
       ]
     },
     "src/face/facepipeline.js": {
-      "bytes": 13713,
+      "bytes": 13686,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/face/box.js"
@@ -12523,10 +12523,10 @@
       "imports": []
     },
     "src/gender/gender.js": {
-      "bytes": 3207,
+      "bytes": 3193,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/profile.js"
@@ -12542,18 +12542,18 @@
       "imports": []
     },
     "src/hand/box.js": {
-      "bytes": 3238,
+      "bytes": 3211,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         }
       ]
     },
     "src/hand/handdetector.js": {
-      "bytes": 4248,
+      "bytes": 4221,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/hand/box.js"
@@ -12561,10 +12561,10 @@
       ]
     },
     "src/hand/handpipeline.js": {
-      "bytes": 7559,
+      "bytes": 7532,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/hand/box.js"
@@ -12575,10 +12575,10 @@
       ]
     },
     "src/hand/handpose.js": {
-      "bytes": 3047,
+      "bytes": 3026,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/hand/handdetector.js"
@@ -12596,13 +12596,10 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 14315,
+      "bytes": 14448,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
-        },
-        {
-          "path": "node_modules/@tensorflow/tfjs-backend-wasm/dist/index.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/face/facemesh.js"
@@ -12640,10 +12637,10 @@
       ]
     },
     "src/image.js": {
-      "bytes": 4666,
+      "bytes": 4638,
       "imports": [
         {
-          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+          "path": "src/tf.js"
         },
         {
           "path": "src/imagefx.js"
@@ -12657,6 +12654,17 @@
     "src/profile.js": {
       "bytes": 1061,
       "imports": []
+    },
+    "src/tf.js": {
+      "bytes": 871,
+      "imports": [
+        {
+          "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
+        },
+        {
+          "path": "node_modules/@tensorflow/tfjs-backend-wasm/dist/index.js"
+        }
+      ]
     },
     "empty:/home/vlado/dev/human/node_modules/node-fetch/browser.js": {
       "bytes": 0,
@@ -12683,7 +12691,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5430856
+      "bytes": 5432434
     },
     "dist/human.js": {
       "imports": [],
@@ -12698,7 +12706,7 @@
           "bytesInOutput": 7294
         },
         "node_modules/@tensorflow/tfjs/dist/tf.es2017.js": {
-          "bytesInOutput": 2663526
+          "bytesInOutput": 2663519
         },
         "empty:path": {
           "bytesInOutput": 46
@@ -12716,43 +12724,43 @@
           "bytesInOutput": 41639
         },
         "src/face/blazeface.js": {
-          "bytesInOutput": 7353
+          "bytesInOutput": 7270
         },
         "src/face/keypoints.js": {
           "bytesInOutput": 2936
         },
         "src/face/box.js": {
-          "bytesInOutput": 2208
+          "bytesInOutput": 2154
         },
         "src/face/util.js": {
           "bytesInOutput": 3205
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 12926
+          "bytesInOutput": 12869
         },
         "src/face/uvcoords.js": {
           "bytesInOutput": 21528
         },
         "src/face/facemesh.js": {
-          "bytesInOutput": 2723
+          "bytesInOutput": 2665
         },
         "src/profile.js": {
           "bytesInOutput": 1156
         },
         "src/age/age.js": {
-          "bytesInOutput": 1975
+          "bytesInOutput": 1906
         },
         "src/gender/gender.js": {
-          "bytesInOutput": 3182
+          "bytesInOutput": 3107
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 2883
+          "bytesInOutput": 2809
         },
         "src/body/modelBase.js": {
-          "bytesInOutput": 970
+          "bytesInOutput": 920
         },
         "src/body/modelMobileNet.js": {
-          "bytesInOutput": 548
+          "bytesInOutput": 497
         },
         "src/body/heapSort.js": {
           "bytesInOutput": 1767
@@ -12773,40 +12781,43 @@
           "bytesInOutput": 2100
         },
         "src/body/util.js": {
-          "bytesInOutput": 2538
+          "bytesInOutput": 2536
         },
         "src/body/modelPoseNet.js": {
-          "bytesInOutput": 2148
+          "bytesInOutput": 2095
         },
         "src/body/posenet.js": {
           "bytesInOutput": 1015
         },
         "src/hand/handdetector.js": {
-          "bytesInOutput": 4651
+          "bytesInOutput": 4572
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 7528
+          "bytesInOutput": 7470
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 291926
         },
         "src/hand/handpose.js": {
-          "bytesInOutput": 3262
+          "bytesInOutput": 3205
         },
         "src/gesture.js": {
           "bytesInOutput": 3154
         },
         "src/imagefx.js": {
-          "bytesInOutput": 21517
+          "bytesInOutput": 21513
         },
         "src/image.js": {
-          "bytesInOutput": 4705
+          "bytesInOutput": 4651
         },
         "src/human.js": {
-          "bytesInOutput": 13722
+          "bytesInOutput": 13878
+        },
+        "src/tf.js": {
+          "bytesInOutput": 46
         },
         "node_modules/@tensorflow/tfjs-core/dist/backends/backend.js": {
-          "bytesInOutput": 13308
+          "bytesInOutput": 13307
         },
         "node_modules/@tensorflow/tfjs-core/dist/util_base.js": {
           "bytesInOutput": 13124
@@ -13187,7 +13198,7 @@
           "bytesInOutput": 785
         },
         "node_modules/@tensorflow/tfjs-backend-wasm/dist/kernels/CropAndResize.js": {
-          "bytesInOutput": 2696
+          "bytesInOutput": 2683
         },
         "node_modules/@tensorflow/tfjs-backend-wasm/dist/kernels/Cumsum.js": {
           "bytesInOutput": 2555
@@ -13211,7 +13222,7 @@
           "bytesInOutput": 1073
         },
         "node_modules/@tensorflow/tfjs-backend-wasm/dist/kernels/FlipLeftRight.js": {
-          "bytesInOutput": 1587
+          "bytesInOutput": 1575
         },
         "node_modules/@tensorflow/tfjs-backend-wasm/dist/kernels/FloorDiv.js": {
           "bytesInOutput": 860
@@ -13313,7 +13324,7 @@
           "bytesInOutput": 1839
         },
         "node_modules/@tensorflow/tfjs-backend-wasm/dist/kernels/RotateWithOffset.js": {
-          "bytesInOutput": 2182
+          "bytesInOutput": 2170
         },
         "node_modules/@tensorflow/tfjs-backend-wasm/dist/kernels/Rsqrt.js": {
           "bytesInOutput": 789
@@ -13393,11 +13404,14 @@
         "node_modules/@tensorflow/tfjs-backend-wasm/dist/index.js": {
           "bytesInOutput": 735
         },
+        "src/tf.js": {
+          "bytesInOutput": 44
+        },
         "src/face/triangulation.js": {
           "bytesInOutput": 23182
         },
         "src/hand/box.js": {
-          "bytesInOutput": 3233
+          "bytesInOutput": 3183
         },
         "src/hand/util.js": {
           "bytesInOutput": 3038
@@ -13412,7 +13426,7 @@
           "bytesInOutput": 26
         }
       },
-      "bytes": 3631167
+      "bytes": 3630472
     }
   }
 }

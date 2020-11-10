@@ -28,21 +28,6 @@ var __toModule = (module) => {
 };
 
 // src/face/blazeface.js
-import {
-  add,
-  concat,
-  concat2d,
-  div,
-  image as image3,
-  loadGraphModel,
-  mul,
-  sigmoid,
-  slice,
-  sub,
-  tensor1d,
-  tensor2d,
-  tidy
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_blazeface = __commonJS((exports) => {
   const NUM_LANDMARKS = 6;
   function generateAnchors(inputSize) {
@@ -72,31 +57,31 @@ var require_blazeface = __commonJS((exports) => {
   };
   const createBox = (startEndTensor) => ({
     startEndTensor,
-    startPoint: slice(startEndTensor, [0, 0], [-1, 2]),
-    endPoint: slice(startEndTensor, [0, 2], [-1, 2])
+    startPoint: tf.slice(startEndTensor, [0, 0], [-1, 2]),
+    endPoint: tf.slice(startEndTensor, [0, 2], [-1, 2])
   });
   const scaleBox = (box, factors) => {
-    const starts = mul(box.startPoint, factors);
-    const ends = mul(box.endPoint, factors);
-    const newCoordinates = concat2d([starts, ends], 1);
+    const starts = tf.mul(box.startPoint, factors);
+    const ends = tf.mul(box.endPoint, factors);
+    const newCoordinates = tf.concat2d([starts, ends], 1);
     return createBox(newCoordinates);
   };
   function decodeBounds(boxOutputs, anchors, inputSize) {
-    const boxStarts = slice(boxOutputs, [0, 1], [-1, 2]);
-    const centers = add(boxStarts, anchors);
-    const boxSizes = slice(boxOutputs, [0, 3], [-1, 2]);
-    const boxSizesNormalized = div(boxSizes, inputSize);
-    const centersNormalized = div(centers, inputSize);
-    const halfBoxSize = div(boxSizesNormalized, 2);
-    const starts = sub(centersNormalized, halfBoxSize);
-    const ends = add(centersNormalized, halfBoxSize);
-    const startNormalized = mul(starts, inputSize);
-    const endNormalized = mul(ends, inputSize);
+    const boxStarts = tf.slice(boxOutputs, [0, 1], [-1, 2]);
+    const centers = tf.add(boxStarts, anchors);
+    const boxSizes = tf.slice(boxOutputs, [0, 3], [-1, 2]);
+    const boxSizesNormalized = tf.div(boxSizes, inputSize);
+    const centersNormalized = tf.div(centers, inputSize);
+    const halfBoxSize = tf.div(boxSizesNormalized, 2);
+    const starts = tf.sub(centersNormalized, halfBoxSize);
+    const ends = tf.add(centersNormalized, halfBoxSize);
+    const startNormalized = tf.mul(starts, inputSize);
+    const endNormalized = tf.mul(ends, inputSize);
     const concatAxis = 1;
-    return concat2d([startNormalized, endNormalized], concatAxis);
+    return tf.concat2d([startNormalized, endNormalized], concatAxis);
   }
   function scaleBoxFromPrediction(face2, scaleFactor) {
-    return tidy(() => {
+    return tf.tidy(() => {
       const box = face2["box"] ? face2["box"] : face2;
       return scaleBox(box, scaleFactor).startEndTensor.squeeze();
     });
@@ -107,37 +92,37 @@ var require_blazeface = __commonJS((exports) => {
       this.width = config2.detector.inputSize;
       this.height = config2.detector.inputSize;
       this.anchorsData = generateAnchors(config2.detector.inputSize);
-      this.anchors = tensor2d(this.anchorsData);
-      this.inputSize = tensor1d([this.width, this.height]);
+      this.anchors = tf.tensor2d(this.anchorsData);
+      this.inputSize = tf.tensor1d([this.width, this.height]);
       this.config = config2;
       this.scaleFaces = 0.8;
     }
     async getBoundingBoxes(inputImage) {
       if (!inputImage || inputImage.isDisposedInternal || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
         return null;
-      const [detectedOutputs, boxes, scores] = tidy(() => {
+      const [detectedOutputs, boxes, scores] = tf.tidy(() => {
         const resizedImage = inputImage.resizeBilinear([this.width, this.height]);
-        const normalizedImage = sub(resizedImage.div(127.5), 1);
+        const normalizedImage = tf.sub(resizedImage.div(127.5), 1);
         const batchedPrediction = this.blazeFaceModel.predict(normalizedImage);
         let prediction;
         if (Array.isArray(batchedPrediction)) {
           const sorted = batchedPrediction.sort((a, b) => a.size - b.size);
-          const concat384 = concat([sorted[0], sorted[2]], 2);
-          const concat512 = concat([sorted[1], sorted[3]], 2);
-          const concat2 = concat([concat512, concat384], 1);
-          prediction = concat2.squeeze(0);
+          const concat384 = tf.concat([sorted[0], sorted[2]], 2);
+          const concat512 = tf.concat([sorted[1], sorted[3]], 2);
+          const concat = tf.concat([concat512, concat384], 1);
+          prediction = concat.squeeze(0);
         } else {
           prediction = batchedPrediction.squeeze();
         }
         const decodedBounds = decodeBounds(prediction, this.anchors, this.inputSize);
-        const logits = slice(prediction, [0, 0], [-1, 1]);
-        const scoresOut = sigmoid(logits).squeeze();
+        const logits = tf.slice(prediction, [0, 0], [-1, 1]);
+        const scoresOut = tf.sigmoid(logits).squeeze();
         return [prediction, decodedBounds, scoresOut];
       });
-      const boxIndicesTensor = await image3.nonMaxSuppressionAsync(boxes, scores, this.config.detector.maxFaces, this.config.detector.iouThreshold, this.config.detector.scoreThreshold);
+      const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.detector.maxFaces, this.config.detector.iouThreshold, this.config.detector.scoreThreshold);
       const boxIndices = boxIndicesTensor.arraySync();
       boxIndicesTensor.dispose();
-      const boundingBoxesMap = boxIndices.map((boxIndex) => slice(boxes, [boxIndex, 0], [1, -1]));
+      const boundingBoxesMap = boxIndices.map((boxIndex) => tf.slice(boxes, [boxIndex, 0], [1, -1]));
       const boundingBoxes = boundingBoxesMap.map((boundingBox) => {
         const vals = boundingBox.arraySync();
         boundingBox.dispose();
@@ -151,7 +136,7 @@ var require_blazeface = __commonJS((exports) => {
         if (confidence > this.config.detector.minConfidence) {
           const box = createBox(boundingBoxes[i]);
           const anchor = this.anchorsData[boxIndex];
-          const landmarks = tidy(() => slice(detectedOutputs, [boxIndex, NUM_LANDMARKS - 1], [1, -1]).squeeze().reshape([NUM_LANDMARKS, -1]));
+          const landmarks = tf.tidy(() => tf.slice(detectedOutputs, [boxIndex, NUM_LANDMARKS - 1], [1, -1]).squeeze().reshape([NUM_LANDMARKS, -1]));
           annotatedBoxes.push({box, landmarks, anchor, confidence});
         }
       }
@@ -291,9 +276,6 @@ var require_keypoints = __commonJS((exports) => {
 });
 
 // src/face/box.js
-import {
-  image as image3
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_box = __commonJS((exports) => {
   function scaleBoxCoordinates2(box, factor) {
     const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
@@ -315,16 +297,16 @@ var require_box = __commonJS((exports) => {
     ];
   }
   exports.getBoxCenter = getBoxCenter2;
-  function cutBoxFromImageAndResize2(box, image4, cropSize) {
-    const h = image4.shape[1];
-    const w = image4.shape[2];
+  function cutBoxFromImageAndResize2(box, image2, cropSize) {
+    const h = image2.shape[1];
+    const w = image2.shape[2];
     const boxes = [[
       box.startPoint[1] / h,
       box.startPoint[0] / w,
       box.endPoint[1] / h,
       box.endPoint[0] / w
     ]];
-    return image3.cropAndResize(image4, boxes, [0], cropSize);
+    return tf.image.cropAndResize(image2, boxes, [0], cropSize);
   }
   exports.cutBoxFromImageAndResize = cutBoxFromImageAndResize2;
   function enlargeBox2(box, factor = 1.5) {
@@ -432,14 +414,6 @@ var require_util = __commonJS((exports) => {
 });
 
 // src/face/facepipeline.js
-import {
-  concat,
-  dispose,
-  image as image3,
-  reshape,
-  tensor2d,
-  tidy
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_facepipeline = __commonJS((exports) => {
   const bounding = __toModule(require_box());
   const keypoints = __toModule(require_keypoints());
@@ -519,14 +493,14 @@ var require_facepipeline = __commonJS((exports) => {
     getEyeBox(rawCoords, face2, eyeInnerCornerIndex, eyeOuterCornerIndex, flip = false) {
       const box = bounding.squarifyBox(bounding.enlargeBox(this.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), this.irisEnlarge));
       const boxSize = bounding.getBoxSize(box);
-      let crop = image3.cropAndResize(face2, [[
+      let crop = tf.image.cropAndResize(face2, [[
         box.startPoint[1] / this.meshHeight,
         box.startPoint[0] / this.meshWidth,
         box.endPoint[1] / this.meshHeight,
         box.endPoint[0] / this.meshWidth
       ]], [0], [this.irisSize, this.irisSize]);
       if (flip) {
-        crop = image3.flipLeftRight(crop);
+        crop = tf.image.flipLeftRight(crop);
       }
       return {box, boxSize, crop};
     }
@@ -598,7 +572,7 @@ var require_facepipeline = __commonJS((exports) => {
           prediction.landmarks.dispose();
         });
       }
-      let results = tidy(() => this.storedBoxes.map((box, i) => {
+      let results = tf.tidy(() => this.storedBoxes.map((box, i) => {
         let angle = 0;
         const boxLandmarksFromMeshModel = box.landmarks.length >= LANDMARKS_COUNT;
         let [indexOfMouth, indexOfForehead] = MESH_KEYPOINTS_LINE_OF_SYMMETRY_INDICES;
@@ -611,7 +585,7 @@ var require_facepipeline = __commonJS((exports) => {
         let rotatedImage = input;
         let rotationMatrix = util.IDENTITY_MATRIX;
         if (angle !== 0) {
-          rotatedImage = image3.rotateWithOffset(input, angle, 0, faceCenterNormalized);
+          rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
           rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
         }
         const boxCPU = {startPoint: box.startPoint, endPoint: box.endPoint};
@@ -633,12 +607,12 @@ var require_facepipeline = __commonJS((exports) => {
           coords.dispose();
           return null;
         }
-        const coordsReshaped = reshape(coords, [-1, 3]);
+        const coordsReshaped = tf.reshape(coords, [-1, 3]);
         let rawCoords = coordsReshaped.arraySync();
         if (config2.iris.enabled) {
           const {box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop} = this.getEyeBox(rawCoords, face2, LEFT_EYE_BOUNDS[0], LEFT_EYE_BOUNDS[1], true);
           const {box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop} = this.getEyeBox(rawCoords, face2, RIGHT_EYE_BOUNDS[0], RIGHT_EYE_BOUNDS[1]);
-          const eyePredictions = this.irisModel.predict(concat([leftEyeCrop, rightEyeCrop]));
+          const eyePredictions = this.irisModel.predict(tf.concat([leftEyeCrop, rightEyeCrop]));
           const eyePredictionsData = eyePredictions.dataSync();
           eyePredictions.dispose();
           const leftEyeData = eyePredictionsData.slice(0, IRIS_NUM_COORDINATES * 3);
@@ -659,9 +633,9 @@ var require_facepipeline = __commonJS((exports) => {
           rawCoords = rawCoords.concat(adjustedLeftIrisCoords).concat(adjustedRightIrisCoords);
         }
         const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
-        dispose(rawCoords);
+        tf.dispose(rawCoords);
         const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
-        const transformedCoords = tensor2d(transformedCoordsData);
+        const transformedCoords = tf.tensor2d(transformedCoordsData);
         const prediction = {
           coords: transformedCoords,
           box: landmarksBox,
@@ -1162,10 +1136,6 @@ var require_uvcoords = __commonJS((exports) => {
 });
 
 // src/face/facemesh.js
-import {
-  clone,
-  loadGraphModel
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_facemesh = __commonJS((exports) => {
   const blazeface = __toModule(require_blazeface());
   const keypoints = __toModule(require_keypoints());
@@ -1199,7 +1169,7 @@ var require_facemesh = __commonJS((exports) => {
           box: prediction.box ? [prediction.box.startPoint[0], prediction.box.startPoint[1], prediction.box.endPoint[0] - prediction.box.startPoint[0], prediction.box.endPoint[1] - prediction.box.startPoint[1]] : 0,
           mesh,
           annotations,
-          image: prediction.image ? clone(prediction.image) : null
+          image: prediction.image ? tf.clone(prediction.image) : null
         });
         if (prediction.coords)
           prediction.coords.dispose();
@@ -1254,13 +1224,6 @@ var require_profile = __commonJS((exports) => {
 });
 
 // src/age/age.js
-import {
-  dispose,
-  image as image3,
-  loadGraphModel,
-  mul,
-  profile as profile3
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_age = __commonJS((exports) => {
   const profile2 = __toModule(require_profile());
   const models = {};
@@ -1274,7 +1237,7 @@ var require_age = __commonJS((exports) => {
     }
     return models.age;
   }
-  async function predict(image4, config2) {
+  async function predict(image2, config2) {
     if (frame < config2.face.age.skipFrames && last.age && last.age > 0) {
       frame += 1;
       return last;
@@ -1282,21 +1245,21 @@ var require_age = __commonJS((exports) => {
     frame = 0;
     return new Promise(async (resolve) => {
       const box = [[
-        image4.shape[1] * zoom[0] / image4.shape[1],
-        image4.shape[2] * zoom[1] / image4.shape[2],
-        (image4.shape[1] - image4.shape[1] * zoom[0]) / image4.shape[1],
-        (image4.shape[2] - image4.shape[2] * zoom[1]) / image4.shape[2]
+        image2.shape[1] * zoom[0] / image2.shape[1],
+        image2.shape[2] * zoom[1] / image2.shape[2],
+        (image2.shape[1] - image2.shape[1] * zoom[0]) / image2.shape[1],
+        (image2.shape[2] - image2.shape[2] * zoom[1]) / image2.shape[2]
       ]];
-      const resize = image3.cropAndResize(image4, box, [0], [config2.face.age.inputSize, config2.face.age.inputSize]);
-      const enhance = mul(resize, [255]);
-      dispose(resize);
+      const resize = tf.image.cropAndResize(image2, box, [0], [config2.face.age.inputSize, config2.face.age.inputSize]);
+      const enhance = tf.mul(resize, [255]);
+      tf.dispose(resize);
       let ageT;
       const obj = {};
       if (!config2.profile) {
         if (config2.face.age.enabled)
           ageT = await models.age.predict(enhance);
       } else {
-        const profileAge = config2.face.age.enabled ? await profile3(() => models.age.predict(enhance)) : {};
+        const profileAge = config2.face.age.enabled ? await tf.profile(() => models.age.predict(enhance)) : {};
         ageT = profileAge.result.clone();
         profileAge.result.dispose();
         profile2.run("age", profileAge);
@@ -1316,16 +1279,6 @@ var require_age = __commonJS((exports) => {
 });
 
 // src/gender/gender.js
-import {
-  addN,
-  dispose,
-  image as image3,
-  loadGraphModel,
-  mul,
-  profile as profile3,
-  split,
-  tidy
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_gender = __commonJS((exports) => {
   const profile2 = __toModule(require_profile());
   const models = {};
@@ -1342,7 +1295,7 @@ var require_gender = __commonJS((exports) => {
     }
     return models.gender;
   }
-  async function predict(image4, config2) {
+  async function predict(image2, config2) {
     if (frame < config2.face.gender.skipFrames && last.gender !== "") {
       frame += 1;
       return last;
@@ -1350,33 +1303,33 @@ var require_gender = __commonJS((exports) => {
     frame = 0;
     return new Promise(async (resolve) => {
       const box = [[
-        image4.shape[1] * zoom[0] / image4.shape[1],
-        image4.shape[2] * zoom[1] / image4.shape[2],
-        (image4.shape[1] - image4.shape[1] * zoom[0]) / image4.shape[1],
-        (image4.shape[2] - image4.shape[2] * zoom[1]) / image4.shape[2]
+        image2.shape[1] * zoom[0] / image2.shape[1],
+        image2.shape[2] * zoom[1] / image2.shape[2],
+        (image2.shape[1] - image2.shape[1] * zoom[0]) / image2.shape[1],
+        (image2.shape[2] - image2.shape[2] * zoom[1]) / image2.shape[2]
       ]];
-      const resize = image3.cropAndResize(image4, box, [0], [config2.face.gender.inputSize, config2.face.gender.inputSize]);
+      const resize = tf.image.cropAndResize(image2, box, [0], [config2.face.gender.inputSize, config2.face.gender.inputSize]);
       let enhance;
       if (alternative) {
-        enhance = tidy(() => {
-          const [red, green, blue] = split(resize, 3, 3);
-          const redNorm = mul(red, rgb[0]);
-          const greenNorm = mul(green, rgb[1]);
-          const blueNorm = mul(blue, rgb[2]);
-          const grayscale = addN([redNorm, greenNorm, blueNorm]);
+        enhance = tf.tidy(() => {
+          const [red, green, blue] = tf.split(resize, 3, 3);
+          const redNorm = tf.mul(red, rgb[0]);
+          const greenNorm = tf.mul(green, rgb[1]);
+          const blueNorm = tf.mul(blue, rgb[2]);
+          const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
           return grayscale.sub(0.5).mul(2);
         });
       } else {
-        enhance = mul(resize, [255]);
+        enhance = tf.mul(resize, [255]);
       }
-      dispose(resize);
+      tf.dispose(resize);
       let genderT;
       const obj = {};
       if (!config2.profile) {
         if (config2.face.gender.enabled)
           genderT = await models.gender.predict(enhance);
       } else {
-        const profileGender = config2.face.gender.enabled ? await profile3(() => models.gender.predict(enhance)) : {};
+        const profileGender = config2.face.gender.enabled ? await tf.profile(() => models.gender.predict(enhance)) : {};
         genderT = profileGender.result.clone();
         profileGender.result.dispose();
         profile2.run("gender", profileGender);
@@ -1408,16 +1361,6 @@ var require_gender = __commonJS((exports) => {
 });
 
 // src/emotion/emotion.js
-import {
-  addN,
-  dispose,
-  image as image3,
-  loadGraphModel,
-  mul,
-  profile as profile3,
-  split,
-  tidy
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_emotion = __commonJS((exports) => {
   const profile2 = __toModule(require_profile());
   const annotations = ["angry", "disgust", "fear", "happy", "sad", "surpise", "neutral"];
@@ -1434,7 +1377,7 @@ var require_emotion = __commonJS((exports) => {
     }
     return models.emotion;
   }
-  async function predict(image4, config2) {
+  async function predict(image2, config2) {
     if (frame < config2.face.emotion.skipFrames && last.length > 0) {
       frame += 1;
       return last;
@@ -1442,25 +1385,25 @@ var require_emotion = __commonJS((exports) => {
     frame = 0;
     return new Promise(async (resolve) => {
       const box = [[
-        image4.shape[1] * zoom[0] / image4.shape[1],
-        image4.shape[2] * zoom[1] / image4.shape[2],
-        (image4.shape[1] - image4.shape[1] * zoom[0]) / image4.shape[1],
-        (image4.shape[2] - image4.shape[2] * zoom[1]) / image4.shape[2]
+        image2.shape[1] * zoom[0] / image2.shape[1],
+        image2.shape[2] * zoom[1] / image2.shape[2],
+        (image2.shape[1] - image2.shape[1] * zoom[0]) / image2.shape[1],
+        (image2.shape[2] - image2.shape[2] * zoom[1]) / image2.shape[2]
       ]];
-      const resize = image3.cropAndResize(image4, box, [0], [config2.face.emotion.inputSize, config2.face.emotion.inputSize]);
-      const [red, green, blue] = split(resize, 3, 3);
+      const resize = tf.image.cropAndResize(image2, box, [0], [config2.face.emotion.inputSize, config2.face.emotion.inputSize]);
+      const [red, green, blue] = tf.split(resize, 3, 3);
       resize.dispose();
-      const redNorm = mul(red, rgb[0]);
-      const greenNorm = mul(green, rgb[1]);
-      const blueNorm = mul(blue, rgb[2]);
+      const redNorm = tf.mul(red, rgb[0]);
+      const greenNorm = tf.mul(green, rgb[1]);
+      const blueNorm = tf.mul(blue, rgb[2]);
       red.dispose();
       green.dispose();
       blue.dispose();
-      const grayscale = addN([redNorm, greenNorm, blueNorm]);
+      const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
       redNorm.dispose();
       greenNorm.dispose();
       blueNorm.dispose();
-      const normalize = tidy(() => grayscale.sub(0.5).mul(2));
+      const normalize = tf.tidy(() => grayscale.sub(0.5).mul(2));
       grayscale.dispose();
       const obj = [];
       if (config2.face.emotion.enabled) {
@@ -1468,9 +1411,9 @@ var require_emotion = __commonJS((exports) => {
         if (!config2.profile) {
           const emotionT = await models.emotion.predict(normalize);
           data2 = emotionT.dataSync();
-          dispose(emotionT);
+          tf.dispose(emotionT);
         } else {
-          const profileData = await profile3(() => models.emotion.predict(normalize));
+          const profileData = await tf.profile(() => models.emotion.predict(normalize));
           data2 = profileData.result.dataSync();
           profileData.result.dispose();
           profile2.run("emotion", profileData);
@@ -1491,9 +1434,6 @@ var require_emotion = __commonJS((exports) => {
 });
 
 // src/body/modelBase.js
-import {
-  tidy
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_modelBase = __commonJS((exports) => {
   class BaseModel {
     constructor(model, outputStride) {
@@ -1501,7 +1441,7 @@ var require_modelBase = __commonJS((exports) => {
       this.outputStride = outputStride;
     }
     predict(input) {
-      return tidy(() => {
+      return tf.tidy(() => {
         const asFloat = this.preprocessInput(input.toFloat());
         const asBatch = asFloat.expandDims(0);
         const results = this.model.predict(asBatch);
@@ -1523,15 +1463,11 @@ var require_modelBase = __commonJS((exports) => {
 });
 
 // src/body/modelMobileNet.js
-import {
-  div,
-  tidy
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_modelMobileNet = __commonJS((exports) => {
   const modelBase = __toModule(require_modelBase());
   class MobileNet extends modelBase.BaseModel {
     preprocessInput(input) {
-      return tidy(() => div(input, 127.5).sub(1));
+      return tf.tidy(() => tf.div(input, 127.5).sub(1));
     }
     nameOutputResults(results) {
       const [offsets, heatmap, displacementFwd, displacementBwd] = results;
@@ -1946,8 +1882,8 @@ var require_util2 = __commonJS((exports) => {
     };
   }
   exports.scalePose = scalePose;
-  function resizeTo(image3, [targetH, targetW]) {
-    const input = image3.squeeze(0);
+  function resizeTo(image2, [targetH, targetW]) {
+    const input = image2.squeeze(0);
     const resized = input.resizeBilinear([targetH, targetW]);
     input.dispose();
     return resized;
@@ -1961,9 +1897,6 @@ var require_util2 = __commonJS((exports) => {
 });
 
 // src/body/modelPoseNet.js
-import {
-  loadGraphModel
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_modelPoseNet = __commonJS((exports) => {
   const modelMobileNet = __toModule(require_modelMobileNet());
   const decodeMultiple = __toModule(require_decodeMultiple());
@@ -2031,19 +1964,6 @@ var require_posenet = __commonJS((exports) => {
 });
 
 // src/hand/handdetector.js
-import {
-  add,
-  concat2d,
-  div,
-  image as image3,
-  mul,
-  sigmoid,
-  slice,
-  sub,
-  tensor1d,
-  tensor2d,
-  tidy
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_handdetector = __commonJS((exports) => {
   /**
    * @license
@@ -2065,46 +1985,46 @@ var require_handdetector = __commonJS((exports) => {
     constructor(model, inputSize, anchorsAnnotated) {
       this.model = model;
       this.anchors = anchorsAnnotated.map((anchor) => [anchor.x_center, anchor.y_center]);
-      this.anchorsTensor = tensor2d(this.anchors);
-      this.inputSizeTensor = tensor1d([inputSize, inputSize]);
-      this.doubleInputSizeTensor = tensor1d([inputSize * 2, inputSize * 2]);
+      this.anchorsTensor = tf.tensor2d(this.anchors);
+      this.inputSizeTensor = tf.tensor1d([inputSize, inputSize]);
+      this.doubleInputSizeTensor = tf.tensor1d([inputSize * 2, inputSize * 2]);
     }
     normalizeBoxes(boxes) {
-      return tidy(() => {
-        const boxOffsets = slice(boxes, [0, 0], [-1, 2]);
-        const boxSizes = slice(boxes, [0, 2], [-1, 2]);
-        const boxCenterPoints = add(div(boxOffsets, this.inputSizeTensor), this.anchorsTensor);
-        const halfBoxSizes = div(boxSizes, this.doubleInputSizeTensor);
-        const startPoints = mul(sub(boxCenterPoints, halfBoxSizes), this.inputSizeTensor);
-        const endPoints = mul(add(boxCenterPoints, halfBoxSizes), this.inputSizeTensor);
-        return concat2d([startPoints, endPoints], 1);
+      return tf.tidy(() => {
+        const boxOffsets = tf.slice(boxes, [0, 0], [-1, 2]);
+        const boxSizes = tf.slice(boxes, [0, 2], [-1, 2]);
+        const boxCenterPoints = tf.add(tf.div(boxOffsets, this.inputSizeTensor), this.anchorsTensor);
+        const halfBoxSizes = tf.div(boxSizes, this.doubleInputSizeTensor);
+        const startPoints = tf.mul(tf.sub(boxCenterPoints, halfBoxSizes), this.inputSizeTensor);
+        const endPoints = tf.mul(tf.add(boxCenterPoints, halfBoxSizes), this.inputSizeTensor);
+        return tf.concat2d([startPoints, endPoints], 1);
       });
     }
     normalizeLandmarks(rawPalmLandmarks, index) {
-      return tidy(() => {
-        const landmarks = add(div(rawPalmLandmarks.reshape([-1, 7, 2]), this.inputSizeTensor), this.anchors[index]);
-        return mul(landmarks, this.inputSizeTensor);
+      return tf.tidy(() => {
+        const landmarks = tf.add(tf.div(rawPalmLandmarks.reshape([-1, 7, 2]), this.inputSizeTensor), this.anchors[index]);
+        return tf.mul(landmarks, this.inputSizeTensor);
       });
     }
     async getBoxes(input, config2) {
       const batched = this.model.predict(input);
       const predictions = batched.squeeze();
       batched.dispose();
-      const scores = tidy(() => sigmoid(slice(predictions, [0, 0], [-1, 1])).squeeze());
+      const scores = tf.tidy(() => tf.sigmoid(tf.slice(predictions, [0, 0], [-1, 1])).squeeze());
       const scoresVal = scores.dataSync();
-      const rawBoxes = slice(predictions, [0, 1], [-1, 4]);
+      const rawBoxes = tf.slice(predictions, [0, 1], [-1, 4]);
       const boxes = this.normalizeBoxes(rawBoxes);
       rawBoxes.dispose();
-      const filteredT = await image3.nonMaxSuppressionAsync(boxes, scores, config2.maxHands, config2.iouThreshold, config2.scoreThreshold);
+      const filteredT = await tf.image.nonMaxSuppressionAsync(boxes, scores, config2.maxHands, config2.iouThreshold, config2.scoreThreshold);
       const filtered = filteredT.arraySync();
       scores.dispose();
       filteredT.dispose();
       const hands = [];
       for (const boxIndex of filtered) {
         if (scoresVal[boxIndex] >= config2.minConfidence) {
-          const matchingBox = slice(boxes, [boxIndex, 0], [1, -1]);
-          const rawPalmLandmarks = slice(predictions, [boxIndex, 5], [1, 14]);
-          const palmLandmarks = tidy(() => this.normalizeLandmarks(rawPalmLandmarks, boxIndex).reshape([-1, 2]));
+          const matchingBox = tf.slice(boxes, [boxIndex, 0], [1, -1]);
+          const rawPalmLandmarks = tf.slice(predictions, [boxIndex, 5], [1, 14]);
+          const palmLandmarks = tf.tidy(() => this.normalizeLandmarks(rawPalmLandmarks, boxIndex).reshape([-1, 2]));
           rawPalmLandmarks.dispose();
           hands.push({box: matchingBox, palmLandmarks, confidence: scoresVal[boxIndex]});
         }
@@ -2116,9 +2036,9 @@ var require_handdetector = __commonJS((exports) => {
     async estimateHandBounds(input, config2) {
       const inputHeight = input.shape[1];
       const inputWidth = input.shape[2];
-      const image4 = tidy(() => input.resizeBilinear([config2.inputSize, config2.inputSize]).div(127.5).sub(1));
-      const predictions = await this.getBoxes(image4, config2);
-      image4.dispose();
+      const image2 = tf.tidy(() => input.resizeBilinear([config2.inputSize, config2.inputSize]).div(127.5).sub(1));
+      const predictions = await this.getBoxes(image2, config2);
+      image2.dispose();
       if (!predictions || predictions.length === 0)
         return null;
       const hands = [];
@@ -2138,10 +2058,6 @@ var require_handdetector = __commonJS((exports) => {
 });
 
 // src/hand/handpipeline.js
-import {
-  image as image3,
-  reshape
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_handpipeline = __commonJS((exports) => {
   /**
    * @license
@@ -2218,13 +2134,13 @@ var require_handpipeline = __commonJS((exports) => {
         coord[2]
       ]);
     }
-    async estimateHands(image4, config2) {
+    async estimateHands(image2, config2) {
       this.skipped++;
       let useFreshBox = false;
       let boxes;
       if (this.skipped > config2.skipFrames || !config2.landmarks) {
-        boxes = await this.boxDetector.estimateHandBounds(image4, config2);
-        if (image4.shape[1] !== 255 && image4.shape[2] !== 255)
+        boxes = await this.boxDetector.estimateHandBounds(image2, config2);
+        if (image2.shape[1] !== 255 && image2.shape[2] !== 255)
           this.skipped = 0;
       }
       if (boxes && boxes.length > 0 && (boxes.length !== this.detectedHands && this.detectedHands !== config2.maxHands || !config2.landmarks)) {
@@ -2243,8 +2159,8 @@ var require_handpipeline = __commonJS((exports) => {
         if (config2.landmarks) {
           const angle = computeRotation(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]);
           const palmCenter = getBoxCenter(currentBox);
-          const palmCenterNormalized = [palmCenter[0] / image4.shape[2], palmCenter[1] / image4.shape[1]];
-          const rotatedImage = image3.rotateWithOffset(image4, angle, 0, palmCenterNormalized);
+          const palmCenterNormalized = [palmCenter[0] / image2.shape[2], palmCenter[1] / image2.shape[1]];
+          const rotatedImage = tf.image.rotateWithOffset(image2, angle, 0, palmCenterNormalized);
           const rotationMatrix = buildRotationMatrix(-angle, palmCenter);
           const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
           const croppedInput = cutBoxFromImageAndResize(newBox, rotatedImage, [this.inputSize, this.inputSize]);
@@ -2256,7 +2172,7 @@ var require_handpipeline = __commonJS((exports) => {
           const confidenceValue = confidence.dataSync()[0];
           confidence.dispose();
           if (confidenceValue >= config2.minConfidence) {
-            const keypointsReshaped = reshape(keypoints, [-1, 3]);
+            const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
             const rawCoords = keypointsReshaped.arraySync();
             keypoints.dispose();
             keypointsReshaped.dispose();
@@ -19974,9 +19890,6 @@ var require_anchors = __commonJS((exports) => {
 });
 
 // src/hand/handpose.js
-import {
-  loadGraphModel
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_handpose = __commonJS((exports) => {
   const handdetector = __toModule(require_handdetector());
   const pipeline = __toModule(require_handpipeline());
@@ -20192,8 +20105,8 @@ var require_imagefx = __commonJS((exports) => {
     this.reset = function() {
       _filterChain = [];
     };
-    this.apply = function(image3) {
-      _resize(image3.width, image3.height);
+    this.apply = function(image2) {
+      _resize(image2.width, image2.height);
       _drawCount = 0;
       if (!_sourceTexture)
         _sourceTexture = gl.createTexture();
@@ -20202,7 +20115,7 @@ var require_imagefx = __commonJS((exports) => {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image3);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image2);
       if (_filterChain.length === 0) {
         _draw();
         return _canvas;
@@ -20838,20 +20751,14 @@ var require_imagefx = __commonJS((exports) => {
 });
 
 // src/image.js
-import {
-  ENV,
-  Tensor,
-  browser,
-  clone
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 var require_image = __commonJS((exports) => {
   const fxImage = __toModule(require_imagefx());
   let inCanvas = null;
   let outCanvas = null;
   function process3(input, config2) {
     let tensor;
-    if (input instanceof Tensor) {
-      tensor = clone(input);
+    if (input instanceof tf.Tensor) {
+      tensor = tf.clone(input);
     } else {
       const originalWidth = input.naturalWidth || input.videoWidth || input.width || input.shape && input.shape[1] > 0;
       const originalHeight = input.naturalHeight || input.videoHeight || input.height || input.shape && input.shape[2] > 0;
@@ -20884,7 +20791,7 @@ var require_image = __commonJS((exports) => {
             outCanvas.width = inCanvas.width;
           if (outCanvas.height !== inCanvas.height)
             outCanvas.height = inCanvas.height;
-          this.fx = ENV.flags.IS_BROWSER ? new fxImage.Canvas({canvas: outCanvas}) : null;
+          this.fx = tf.ENV.flags.IS_BROWSER ? new fxImage.Canvas({canvas: outCanvas}) : null;
         }
         this.fx.reset();
         this.fx.addFilter("brightness", config2.filter.brightness);
@@ -20920,7 +20827,7 @@ var require_image = __commonJS((exports) => {
       }
       let pixels;
       if (config2.backend === "webgl" || outCanvas instanceof ImageData) {
-        pixels = browser.fromPixels(outCanvas);
+        pixels = tf.browser.fromPixels(outCanvas);
       } else {
         const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
         tempCanvas.width = targetWidth;
@@ -20928,7 +20835,7 @@ var require_image = __commonJS((exports) => {
         const tempCtx = tempCanvas.getContext("2d");
         tempCtx.drawImage(outCanvas, 0, 0);
         const data2 = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
-        pixels = browser.fromPixels(data2);
+        pixels = tf.browser.fromPixels(data2);
       }
       const casted = pixels.toFloat();
       tensor = casted.expandDims(0);
@@ -20940,9 +20847,10 @@ var require_image = __commonJS((exports) => {
   exports.process = process3;
 });
 
-// src/human.js
-import * as tf2 from "@tensorflow/tfjs/dist/tf.es2017.js";
+// src/tf.js
+import * as tf from "@tensorflow/tfjs/dist/tf.es2017.js";
 import {setWasmPaths} from "@tensorflow/tfjs-backend-wasm/dist/index.js";
+const loadGraphModel = tf.loadGraphModel;
 
 // src/face/triangulation.js
 var triangulation_default = [
@@ -23596,9 +23504,6 @@ const emotion = __toModule(require_emotion());
 const posenet = __toModule(require_posenet());
 
 // src/hand/box.js
-import {
-  image
-} from "@tensorflow/tfjs/dist/tf.es2017.js";
 /**
  * @license
  * Copyright 2020 Google LLC. All Rights Reserved.
@@ -23627,16 +23532,16 @@ function getBoxCenter(box) {
     box.startPoint[1] + (box.endPoint[1] - box.startPoint[1]) / 2
   ];
 }
-function cutBoxFromImageAndResize(box, image3, cropSize) {
-  const h = image3.shape[1];
-  const w = image3.shape[2];
+function cutBoxFromImageAndResize(box, image2, cropSize) {
+  const h = image2.shape[1];
+  const w = image2.shape[2];
   const boxes = [[
     box.startPoint[1] / h,
     box.startPoint[0] / w,
     box.endPoint[1] / h,
     box.endPoint[0] / w
   ]];
-  return image.cropAndResize(image3, boxes, [0], cropSize);
+  return tf.image.cropAndResize(image2, boxes, [0], cropSize);
 }
 function scaleBoxCoordinates(box, factor) {
   const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
@@ -23757,7 +23662,7 @@ function rotatePoint(homogeneousCoordinate, rotationMatrix) {
 // src/human.js
 const handpose = __toModule(require_handpose());
 const gesture = __toModule(require_gesture());
-const image2 = __toModule(require_image());
+const image = __toModule(require_image());
 const profile = __toModule(require_profile());
 
 // config.js
@@ -23861,7 +23766,7 @@ var config_default = {
 };
 
 // package.json
-var version = "0.8.5";
+var version = "0.8.6";
 
 // src/human.js
 const disableSkipFrames = {
@@ -23892,7 +23797,7 @@ function mergeDeep(...objects) {
 }
 class Human {
   constructor(userConfig = {}) {
-    this.tf = tf2;
+    this.tf = tf;
     this.version = version;
     this.config = mergeDeep(config_default, userConfig);
     this.fx = null;
@@ -23930,7 +23835,7 @@ class Human {
   analyze(...msg) {
     if (!this.analyzeMemoryLeaks)
       return;
-    const current = tf2.engine().state.numTensors;
+    const current = tf.engine().state.numTensors;
     const previous = this.numTensors;
     this.numTensors = current;
     const leaked = current - previous;
@@ -23942,11 +23847,11 @@ class Human {
       return null;
     if (!input)
       return "input is not defined";
-    if (tf2.ENV.flags.IS_NODE && !(input instanceof tf2.Tensor)) {
+    if (tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) {
       return "input must be a tensor";
     }
     try {
-      tf2.getBackend();
+      tf.getBackend();
     } catch (e) {
       return "backend not loaded";
     }
@@ -23959,9 +23864,9 @@ class Human {
       this.config = mergeDeep(this.config, userConfig);
     if (this.firstRun) {
       this.checkBackend(true);
-      this.log(`version: ${this.version} TensorFlow/JS version: ${tf2.version_core}`);
+      this.log(`version: ${this.version} TensorFlow/JS version: ${tf.version_core}`);
       this.log("configuration:", this.config);
-      this.log("flags:", tf2.ENV.flags);
+      this.log("flags:", tf.ENV.flags);
       this.firstRun = false;
     }
     if (this.config.async) {
@@ -23973,12 +23878,12 @@ class Human {
         this.models.posenet,
         this.models.handpose
       ] = await Promise.all([
-        this.models.age || age.load(this.config),
-        this.models.gender || gender.load(this.config),
-        this.models.emotion || emotion.load(this.config),
-        this.models.facemesh || facemesh.load(this.config.face),
-        this.models.posenet || posenet.load(this.config),
-        this.models.handpose || handpose.load(this.config.hand)
+        this.config.face.age.enabled ? this.models.age || age.load(this.config) : null,
+        this.config.face.gender.enabled ? this.models.gender || gender.load(this.config) : null,
+        this.config.face.emotion.enabled ? this.models.emotion || emotion.load(this.config) : null,
+        this.config.face.enabled ? this.models.facemesh || facemesh.load(this.config.face) : null,
+        this.config.body.enabled ? this.models.posenet || posenet.load(this.config) : null,
+        this.config.hand.enabled ? this.models.handpose || handpose.load(this.config.hand) : null
       ]);
     } else {
       if (this.config.face.enabled && !this.models.facemesh)
@@ -24000,26 +23905,26 @@ class Human {
   }
   async checkBackend(force) {
     const timeStamp = now();
-    if (this.config.backend && this.config.backend !== "" && force || tf2.getBackend() !== this.config.backend) {
+    if (this.config.backend && this.config.backend !== "" && force || tf.getBackend() !== this.config.backend) {
       this.state = "backend";
       this.log("setting backend:", this.config.backend);
       if (this.config.backend === "wasm") {
         this.log("settings wasm path:", this.config.wasmPath);
         setWasmPaths(this.config.wasmPath);
-        const simd = await tf2.env().getAsync("WASM_HAS_SIMD_SUPPORT");
+        const simd = await tf.env().getAsync("WASM_HAS_SIMD_SUPPORT");
         if (!simd)
           this.log("warning: wasm simd support is not enabled");
       }
-      await tf2.setBackend(this.config.backend);
-      tf2.enableProdMode();
+      await tf.setBackend(this.config.backend);
+      tf.enableProdMode();
       if (this.config.backend === "webgl") {
         if (this.config.deallocate) {
           this.log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", this.config.deallocate);
-          tf2.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", this.config.deallocate ? 0 : -1);
+          tf.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", this.config.deallocate ? 0 : -1);
         }
-        tf2.ENV.set("WEBGL_PACK_DEPTHWISECONV", true);
+        tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", true);
       }
-      await tf2.ready();
+      await tf.ready();
     }
     const current = Math.trunc(now() - timeStamp);
     if (current > (this.perf.backend || 0))
@@ -24121,10 +24026,10 @@ class Human {
       await this.checkBackend();
       await this.load();
       if (this.config.scoped)
-        tf2.engine().startScope();
+        tf.engine().startScope();
       this.analyze("Start Scope:");
       timeStamp = now();
-      const process3 = image2.process(input, this.config);
+      const process3 = image.process(input, this.config);
       this.perf.image = Math.trunc(now() - timeStamp);
       this.analyze("Get Image:");
       if (this.config.async) {
@@ -24165,7 +24070,7 @@ class Human {
       }
       process3.tensor.dispose();
       if (this.config.scoped)
-        tf2.engine().endScope();
+        tf.engine().endScope();
       this.analyze("End Scope:");
       let gestureRes = [];
       if (this.config.gesture.enabled) {

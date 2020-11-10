@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import { tf, loadGraphModel } from '../tf.js';
 
 const NUM_LANDMARKS = 6;
 
@@ -164,7 +164,7 @@ class BlazeFaceModel {
 }
 
 async function load(config) {
-  const blazeface = await tf.loadGraphModel(config.detector.modelPath, { fromTFHub: config.detector.modelPath.includes('tfhub.dev') });
+  const blazeface = await loadGraphModel(config.detector.modelPath, { fromTFHub: config.detector.modelPath.includes('tfhub.dev') });
   const model = new BlazeFaceModel(blazeface, config);
   // eslint-disable-next-line no-console
   console.log(`Human: load model: ${config.detector.modelPath.match(/\/(.*)\./)[1]}`);

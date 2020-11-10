@@ -2,9 +2,9 @@ import Human from '../dist/human.esm.js';
 import draw from './draw.js';
 import Menu from './menu.js';
 
-const human = new Human();
-
 const userConfig = {}; // add any user configuration overrides
+
+const human = new Human(userConfig);
 
 // ui options
 const ui = {
@@ -134,7 +134,7 @@ async function setupCamera() {
   const constraints = {
     audio: false,
     video: {
-      facingMode: (ui.facing ? 'user' : 'environment'),
+      facingMode: ui.facing ? 'user' : 'environment',
       resizeMode: ui.crop ? 'crop-and-scale' : 'none',
       width: { ideal: window.innerWidth },
       height: { ideal: window.innerHeight },

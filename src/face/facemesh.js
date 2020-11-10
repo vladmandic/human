@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import { tf, loadGraphModel } from '../tf.js';
 import * as blazeface from './blazeface';
 import * as keypoints from './keypoints';
 import * as pipe from './facepipeline';
@@ -44,8 +44,8 @@ class MediaPipeFaceMesh {
 async function load(config) {
   const models = await Promise.all([
     blazeface.load(config),
-    tf.loadGraphModel(config.mesh.modelPath, { fromTFHub: config.mesh.modelPath.includes('tfhub.dev') }),
-    tf.loadGraphModel(config.iris.modelPath, { fromTFHub: config.iris.modelPath.includes('tfhub.dev') }),
+    loadGraphModel(config.mesh.modelPath, { fromTFHub: config.mesh.modelPath.includes('tfhub.dev') }),
+    loadGraphModel(config.iris.modelPath, { fromTFHub: config.iris.modelPath.includes('tfhub.dev') }),
   ]);
   const faceMesh = new MediaPipeFaceMesh(models[0], models[1], models[2], config);
   // eslint-disable-next-line no-console

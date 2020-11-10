@@ -1,7 +1,6 @@
 # Human Library
 
-## 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking,  
-## Age & Gender Prediction, Emotion Prediction & Gesture Recognition
+## 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition
 
 <br>
 
@@ -21,14 +20,15 @@
 - [**Demos**](https://github.com/vladmandic/human/wiki/Demos)
 - [**Installation**](https://github.com/vladmandic/human/wiki/Install)
 - [**Usage**](https://github.com/vladmandic/human/wiki/Usage)
-- [**Backends**](https://github.com/vladmandic/human/wiki/Backends)
 - [**Configuration**](https://github.com/vladmandic/human/wiki/Configuration)
 - [**Outputs**](https://github.com/vladmandic/human/wiki/Outputs)
+- [**Notes on Backends**](https://github.com/vladmandic/human/wiki/Backends)
 - [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)
 - [**Development Server**](https://github.com/vladmandic/human/wiki/Development-Server)
 - [**Build Process**](https://github.com/vladmandic/human/wiki/Build-Process)
-- [**Profiling**](https://github.com/vladmandic/human/wiki/Profiling)
+- [**List of Models**](https://github.com/vladmandic/human/wiki/Models)
 - [**Performance Notes**](https://github.com/vladmandic/human/wiki/Performance)
+- [**Performance Profiling**](https://github.com/vladmandic/human/wiki/Profiling)
 - [**Credits**](https://github.com/vladmandic/human/wiki/Credits)
 
 <br>
@@ -36,8 +36,7 @@
 Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows and Linux  
 - Browser/WebWorker: Compatible with *CPU*, *WebGL* and *WASM* backends  
 - NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
-
-(and maybe with React-Native as it doesn't use any DOM objects)  
+- (and maybe with React-Native as it doesn't use any DOM objects)  
 
 <br>
 

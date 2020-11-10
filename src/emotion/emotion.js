@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import { tf, loadGraphModel } from '../tf.js';
 import * as profile from '../profile.js';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surpise', 'neutral'];
@@ -13,7 +13,7 @@ const scale = 1; // score multiplication factor
 
 async function load(config) {
   if (!models.emotion) {
-    models.emotion = await tf.loadGraphModel(config.face.emotion.modelPath);
+    models.emotion = await loadGraphModel(config.face.emotion.modelPath);
     // eslint-disable-next-line no-console
     console.log(`Human: load model: ${config.face.emotion.modelPath.match(/\/(.*)\./)[1]}`);
   }

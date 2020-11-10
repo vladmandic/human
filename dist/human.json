@@ -12292,12 +12292,16 @@
       "bytes": 3526165,
       "imports": [
         {
-          "path": "empty:/home/vlado/dev/human/node_modules/node-fetch/browser.js"
+          "path": "node_modules/node-fetch/browser.js"
         },
         {
           "path": "node_modules/string_decoder/lib/string_decoder.js"
         }
       ]
+    },
+    "node_modules/node-fetch/browser.js": {
+      "bytes": 732,
+      "imports": []
     },
     "node_modules/safe-buffer/index.js": {
       "bytes": 1529,
@@ -12312,7 +12316,7 @@
       ]
     },
     "package.json": {
-      "bytes": 3557,
+      "bytes": 3556,
       "imports": []
     },
     "src/age/age.js": {
@@ -12691,13 +12695,13 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5432434
+      "bytes": 5433478
     },
     "dist/human.js": {
       "imports": [],
       "inputs": {
-        "empty:/home/vlado/dev/human/node_modules/node-fetch/browser.js": {
-          "bytesInOutput": 49
+        "node_modules/node-fetch/browser.js": {
+          "bytesInOutput": 681
         },
         "node_modules/safe-buffer/index.js": {
           "bytesInOutput": 1652
@@ -13426,7 +13430,7 @@
           "bytesInOutput": 26
         }
       },
-      "bytes": 3630472
+      "bytes": 3631076
     }
   }
 }

@@ -12292,12 +12292,16 @@
       "bytes": 3526165,
       "imports": [
         {
-          "path": "empty:/home/vlado/dev/human/node_modules/node-fetch/browser.js"
+          "path": "node_modules/node-fetch/browser.js"
         },
         {
           "path": "node_modules/string_decoder/lib/string_decoder.js"
         }
       ]
+    },
+    "node_modules/node-fetch/browser.js": {
+      "bytes": 732,
+      "imports": []
     },
     "node_modules/safe-buffer/index.js": {
       "bytes": 1529,
@@ -12312,7 +12316,7 @@
       ]
     },
     "package.json": {
-      "bytes": 3557,
+      "bytes": 3556,
       "imports": []
     },
     "src/age/age.js": {
@@ -12656,7 +12660,7 @@
       "imports": []
     },
     "src/tf.js": {
-      "bytes": 871,
+      "bytes": 1135,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
@@ -12691,13 +12695,13 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5456850
+      "bytes": 5458440
     },
     "dist/human.esm.js": {
       "imports": [],
       "inputs": {
-        "empty:/home/vlado/dev/human/node_modules/node-fetch/browser.js": {
-          "bytesInOutput": 45
+        "node_modules/node-fetch/browser.js": {
+          "bytesInOutput": 635
         },
         "node_modules/safe-buffer/index.js": {
           "bytesInOutput": 1546
@@ -13435,7 +13439,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 3441681
+      "bytes": 3442243
     }
   }
 }

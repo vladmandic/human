@@ -32,7 +32,28 @@ var __toModule = (module) => {
     return module;
   return __exportStar(__defProp(__create(__getProtoOf(module)), "default", {value: module, enumerable: true}), module);
 };
-var require_browser = __commonJS(() => {
+var require_browser = __commonJS((exports, module) => {
+  "use strict";
+  var getGlobal2 = function() {
+    if (typeof self !== "undefined") {
+      return self;
+    }
+    if (typeof window !== "undefined") {
+      return window;
+    }
+    if (typeof global2 !== "undefined") {
+      return global2;
+    }
+    throw new Error("unable to locate global object");
+  };
+  var global2 = getGlobal2();
+  module.exports = exports = global2.fetch;
+  if (global2.fetch) {
+    exports.default = global2.fetch.bind(global2);
+  }
+  exports.Headers = global2.Headers;
+  exports.Request = global2.Request;
+  exports.Response = global2.Response;
 });
 var require_safe_buffer = __commonJS((exports, module) => {
   var buffer2 = require("buffer");

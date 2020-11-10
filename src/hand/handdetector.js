@@ -15,8 +15,8 @@
  * =============================================================================
  */
 
-const tf = require('@tensorflow/tfjs');
-const box = require('./box');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import * as box from './box';
 
 class HandDetector {
   constructor(model, inputSize, anchorsAnnotated) {

@@ -1,5 +1,5 @@
-const tf = require('@tensorflow/tfjs');
-const profile = require('../profile.js');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import * as profile from '../profile.js';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surpise', 'neutral'];
 const models = {};

@@ -1,5 +1,5 @@
-const tf = require('@tensorflow/tfjs');
-const profile = require('../profile.js');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import * as profile from '../profile.js';
 
 const models = {};
 let last = { gender: '' };

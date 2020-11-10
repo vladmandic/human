@@ -21,7 +21,7 @@
 - [**Demos**](https://github.com/vladmandic/human/wiki/Demos)
 - [**Installation**](https://github.com/vladmandic/human/wiki/Install)
 - [**Usage**](https://github.com/vladmandic/human/wiki/Usage)
-- [**Usage**](https://github.com/vladmandic/human/wiki/Backends)
+- [**Backends**](https://github.com/vladmandic/human/wiki/Backends)
 - [**Configuration**](https://github.com/vladmandic/human/wiki/Configuration)
 - [**Outputs**](https://github.com/vladmandic/human/wiki/Outputs)
 - [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)

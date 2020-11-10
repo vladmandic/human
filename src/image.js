@@ -1,5 +1,5 @@
-const tf = require('@tensorflow/tfjs');
-const fxImage = require('./imagefx.js');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import * as fxImage from './imagefx.js';
 
 // internal temp canvases
 let inCanvas = null;

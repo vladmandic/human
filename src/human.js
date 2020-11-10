@@ -1,15 +1,16 @@
-const tf = require('@tensorflow/tfjs');
-const facemesh = require('./face/facemesh.js');
-const age = require('./age/age.js');
-const gender = require('./gender/gender.js');
-const emotion = require('./emotion/emotion.js');
-const posenet = require('./body/posenet.js');
-const handpose = require('./hand/handpose.js');
-const gesture = require('./gesture.js');
-const image = require('./image.js');
-const profile = require('./profile.js');
-const defaults = require('../config.js').default;
-const app = require('../package.json');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm/dist/index.js';
+import * as facemesh from './face/facemesh.js';
+import * as age from './age/age.js';
+import * as gender from './gender/gender.js';
+import * as emotion from './emotion/emotion.js';
+import * as posenet from './body/posenet.js';
+import * as handpose from './hand/handpose.js';
+import * as gesture from './gesture.js';
+import * as image from './image.js';
+import * as profile from './profile.js';
+import * as config from '../config.js';
+import * as app from '../package.json';
 
 // static config override for non-video detection
 const disableSkipFrames = {
@@ -45,7 +46,7 @@ class Human {
   constructor(userConfig = {}) {
     this.tf = tf;
     this.version = app.version;
-    this.config = mergeDeep(defaults, userConfig);
+    this.config = mergeDeep(config.default, userConfig);
     this.fx = null;
     this.state = 'idle';
     this.numTensors = 0;
@@ -163,7 +164,16 @@ class Human {
         this.log('Backend not registred:', this.config.backend);
       }
       */
+
       this.log('setting backend:', this.config.backend);
+
+      if (this.config.backend === 'wasm') {
+        this.log('settings wasm path:', this.config.wasmPath);
+        setWasmPaths(this.config.wasmPath);
+        const simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
+        if (!simd) this.log('warning: wasm simd support is not enabled');
+      }
+
       await tf.setBackend(this.config.backend);
       tf.enableProdMode();
       /* debug mode is really too mcuh
@@ -171,7 +181,7 @@ class Human {
       */
       if (this.config.backend === 'webgl') {
         if (this.config.deallocate) {
-          this.log('Changing WebGL: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
+          this.log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
           tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
         }
         // tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);

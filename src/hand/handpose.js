@@ -16,10 +16,10 @@
  */
 // https://storage.googleapis.com/tfjs-models/demos/handpose/index.html
 
-const tf = require('@tensorflow/tfjs');
-const handdetector = require('./handdetector');
-const pipeline = require('./handpipeline');
-const anchors = require('./anchors');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import * as handdetector from './handdetector';
+import * as pipeline from './handpipeline';
+import * as anchors from './anchors';
 
 const MESH_ANNOTATIONS = {
   thumb: [1, 2, 3, 4],

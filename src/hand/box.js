@@ -14,7 +14,7 @@
  * limitations under the License.
  * =============================================================================
  */
-import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import { tf } from '../tf.js';
 
 function getBoxSize(box) {
   return [

@@ -1,5 +1,4 @@
-import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
-import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm/dist/index.js';
+import { tf, setWasmPaths } from './tf.js';
 import * as facemesh from './face/facemesh.js';
 import * as age from './age/age.js';
 import * as gender from './gender/gender.js';
@@ -131,12 +130,12 @@ class Human {
         this.models.posenet,
         this.models.handpose,
       ] = await Promise.all([
-        this.models.age || age.load(this.config),
-        this.models.gender || gender.load(this.config),
-        this.models.emotion || emotion.load(this.config),
-        this.models.facemesh || facemesh.load(this.config.face),
-        this.models.posenet || posenet.load(this.config),
-        this.models.handpose || handpose.load(this.config.hand),
+        this.config.face.age.enabled ? this.models.age || age.load(this.config) : null,
+        this.config.face.gender.enabled ? this.models.gender || gender.load(this.config) : null,
+        this.config.face.emotion.enabled ? this.models.emotion || emotion.load(this.config) : null,
+        this.config.face.enabled ? this.models.facemesh || facemesh.load(this.config.face) : null,
+        this.config.body.enabled ? this.models.posenet || posenet.load(this.config) : null,
+        this.config.hand.enabled ? this.models.handpose || handpose.load(this.config.hand) : null,
       ]);
     } else {
       if (this.config.face.enabled && !this.models.facemesh) this.models.facemesh = await facemesh.load(this.config.face);

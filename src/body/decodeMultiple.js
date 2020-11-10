@@ -1,6 +1,6 @@
-const buildParts = require('./buildParts');
-const decodePose = require('./decodePose');
-const vectors = require('./vectors');
+import * as buildParts from './buildParts';
+import * as decodePose from './decodePose';
+import * as vectors from './vectors';
 
 function withinNmsRadiusOfCorrespondingPoint(poses, squaredNmsRadius, { x, y }, keypointId) {
   return poses.some(({ keypoints }) => {

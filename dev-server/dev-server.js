@@ -66,7 +66,7 @@ async function build(f, msg) {
     platform: 'browser',
     target: 'es2018',
     format: 'esm',
-    external: ['fs'],
+    external: ['fs', 'buffer', 'util'],
   };
   // only rebuilding esm module and demo application
   // for full production build use "npm run build"

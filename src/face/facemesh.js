@@ -1,9 +1,9 @@
-const tf = require('@tensorflow/tfjs');
-const blazeface = require('./blazeface');
-const keypoints = require('./keypoints');
-const pipe = require('./facepipeline');
-const uv_coords = require('./uvcoords');
-const triangulation = require('./triangulation').default;
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import * as blazeface from './blazeface';
+import * as keypoints from './keypoints';
+import * as pipe from './facepipeline';
+import * as uv_coords from './uvcoords';
+import * as triangulation from './triangulation';
 
 class MediaPipeFaceMesh {
   constructor(blazeFace, blazeMeshModel, irisModel, config) {
@@ -58,4 +58,4 @@ async function load(config) {
 exports.load = load;
 exports.MediaPipeFaceMesh = MediaPipeFaceMesh;
 exports.uv_coords = uv_coords;
-exports.triangulation = triangulation;
+exports.triangulation = triangulation.default;

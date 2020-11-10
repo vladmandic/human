@@ -1,4 +1,4 @@
-const tf = require('@tensorflow/tfjs');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
 
 class BaseModel {
   constructor(model, outputStride) {

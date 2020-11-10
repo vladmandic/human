@@ -1,5 +1,5 @@
-const keypoints = require('./keypoints');
-const vectors = require('./vectors');
+import * as keypoints from './keypoints';
+import * as vectors from './vectors';
 
 const parentChildrenTuples = keypoints.poseChain.map(([parentJoinName, childJoinName]) => ([keypoints.partIds[parentJoinName], keypoints.partIds[childJoinName]]));
 const parentToChildEdges = parentChildrenTuples.map(([, childJointId]) => childJointId);

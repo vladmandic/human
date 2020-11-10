@@ -1,5 +1,5 @@
-const tf = require('@tensorflow/tfjs');
-const modelBase = require('./modelBase');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import * as modelBase from './modelBase';
 
 class MobileNet extends modelBase.BaseModel {
   // eslint-disable-next-line class-methods-use-this

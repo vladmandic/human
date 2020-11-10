@@ -1,7 +1,7 @@
-const tf = require('@tensorflow/tfjs');
-const modelMobileNet = require('./modelMobileNet');
-const decodeMultiple = require('./decodeMultiple');
-const util = require('./util');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import * as modelMobileNet from './modelMobileNet';
+import * as decodeMultiple from './decodeMultiple';
+import * as util from './util';
 
 class PoseNet {
   constructor(net) {

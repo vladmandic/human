@@ -18,12 +18,13 @@
 ### Wiki pages:
 
 - [**Home**](https://github.com/vladmandic/human/wiki)
+- [**Demos**](https://github.com/vladmandic/human/wiki/Demos)
 - [**Installation**](https://github.com/vladmandic/human/wiki/Install)
 - [**Usage**](https://github.com/vladmandic/human/wiki/Usage)
+- [**Usage**](https://github.com/vladmandic/human/wiki/Backends)
 - [**Configuration**](https://github.com/vladmandic/human/wiki/Configuration)
 - [**Outputs**](https://github.com/vladmandic/human/wiki/Outputs)
 - [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)
-- [**Demos**](https://github.com/vladmandic/human/wiki/Demos)
 - [**Development Server**](https://github.com/vladmandic/human/wiki/Development-Server)
 - [**Build Process**](https://github.com/vladmandic/human/wiki/Build-Process)
 - [**Profiling**](https://github.com/vladmandic/human/wiki/Profiling)
@@ -33,7 +34,7 @@
 <br>
 
 Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows and Linux  
-- Browser/WebWorker: Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  
+- Browser/WebWorker: Compatible with *CPU*, *WebGL* and *WASM* backends  
 - NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
 
 (and maybe with React-Native as it doesn't use any DOM objects)  

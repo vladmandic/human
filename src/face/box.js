@@ -1,4 +1,4 @@
-const tf = require('@tensorflow/tfjs');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
 
 function scaleBoxCoordinates(box, factor) {
   const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];

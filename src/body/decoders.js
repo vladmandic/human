@@ -1,5 +1,5 @@
-const tf = require('@tensorflow/tfjs');
-const kpt = require('./keypoints');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import * as kpt from './keypoints';
 
 function getPointsConfidence(heatmapScores, heatMapCoords) {
   const numKeypoints = heatMapCoords.shape[0];

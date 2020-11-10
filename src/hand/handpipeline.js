@@ -15,9 +15,9 @@
  * =============================================================================
  */
 
-const tf = require('@tensorflow/tfjs');
-const box = require('./box');
-const util = require('./util');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import * as box from './box';
+import * as util from './util';
 
 const PALM_BOX_SHIFT_VECTOR = [0, -0.4];
 const PALM_BOX_ENLARGE_FACTOR = 3;

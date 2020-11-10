@@ -1,8 +1,8 @@
-const modelMobileNet = require('./modelMobileNet');
-const modelPoseNet = require('./modelPoseNet');
-const decodeMultiple = require('./decodeMultiple');
-const keypoints = require('./keypoints');
-const util = require('./util');
+import * as modelMobileNet from './modelMobileNet';
+import * as modelPoseNet from './modelPoseNet';
+import * as decodeMultiple from './decodeMultiple';
+import * as keypoints from './keypoints';
+import * as util from './util';
 
 exports.load = modelPoseNet.load;
 exports.PoseNet = modelPoseNet.PoseNet;

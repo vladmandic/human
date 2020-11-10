@@ -1,4 +1,4 @@
-const tf = require('@tensorflow/tfjs');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
 
 const NUM_LANDMARKS = 6;
 

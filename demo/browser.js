@@ -157,7 +157,7 @@ async function setupCamera() {
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
   // log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight }, 'settings:', settings, 'track:', track);
-  ui.camera = { name: track.label, width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
+  ui.camera = { name: track.label?.toLowerCase(), width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   return new Promise((resolve) => {
     video.onloadeddata = async () => {
       video.width = video.videoWidth;
@@ -303,7 +303,7 @@ function setupMenu() {
   document.getElementById('play').addEventListener('click', () => btn.click());
 
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
-  menu.addList('backend', ['cpu', 'webgl', 'wasm', 'webgpu'], human.config.backend, (val) => human.config.backend = val);
+  menu.addList('backend', ['cpu', 'webgl', 'wasm'], human.config.backend, (val) => human.config.backend = val);
   menu.addBool('async operations', human.config, 'async', (val) => human.config.async = val);
   menu.addBool('enable profiler', human.config, 'profile', (val) => human.config.profile = val);
   menu.addBool('memory shield', human.config, 'deallocate', (val) => human.config.deallocate = val);

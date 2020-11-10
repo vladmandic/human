@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
-const tf = require('@tensorflow/tfjs');
-const bounding = require('./box');
-const keypoints = require('./keypoints');
-const util = require('./util');
+import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
+import * as bounding from './box';
+import * as keypoints from './keypoints';
+import * as util from './util';
 
 const LANDMARKS_COUNT = 468;
 const MESH_MOUTH_INDEX = 13;

@@ -1,4 +1,4 @@
-const kpt = require('./keypoints');
+import * as kpt from './keypoints';
 
 function getOffsetPoint(y, x, keypoint, offsets) {
   return {

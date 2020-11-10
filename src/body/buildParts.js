@@ -1,4 +1,4 @@
-const heapSort = require('./heapSort');
+import * as heapSort from './heapSort';
 
 function scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, localMaximumRadius, scores) {
   const [height, width] = scores.shape;

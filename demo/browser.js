@@ -105,10 +105,12 @@ function drawResults(input, result, canvas) {
   const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : '';
   const avg = Math.trunc(10 * ui.fps.reduce((a, b) => a + b) / ui.fps.length) / 10;
-  document.getElementById('log').innerText = `
-    video: ${ui.camera.name} | facing: ${ui.camera.facing} | resolution: ${ui.camera.width} x ${ui.camera.height} ${processing}
-    backend: ${human.tf.getBackend()} | ${memory}
-    performance: ${str(result.performance)} FPS:${avg}
+  const warning = (ui.fps.length > 5) && (avg < 5) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
+  document.getElementById('log').innerHTML = `
+    video: ${ui.camera.name} | facing: ${ui.camera.facing} | resolution: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
+    backend: ${human.tf.getBackend()} | ${memory}<br>
+    performance: ${str(result.performance)} FPS:${avg}<br>
+    ${warning}
   `;
 }
 

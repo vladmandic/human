@@ -5,7 +5,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 3556,
+      "bytes": 3554,
       "imports": []
     },
     "src/age/age.js": {
@@ -289,7 +289,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 14448,
+      "bytes": 14460,
       "imports": [
         {
           "path": "src/tf.js"
@@ -330,7 +330,7 @@
       ]
     },
     "src/image.js": {
-      "bytes": 4638,
+      "bytes": 5688,
       "imports": [
         {
           "path": "src/tf.js"
@@ -349,7 +349,7 @@
       "imports": []
     },
     "src/tf.js": {
-      "bytes": 871,
+      "bytes": 1135,
       "imports": []
     }
   },
@@ -357,7 +357,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 766195
+      "bytes": 768064
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -447,7 +447,7 @@
           "bytesInOutput": 20097
         },
         "src/image.js": {
-          "bytesInOutput": 4483
+          "bytesInOutput": 5382
         },
         "src/tf.js": {
           "bytesInOutput": 174
@@ -477,13 +477,13 @@
           "bytesInOutput": 23
         },
         "src/human.js": {
-          "bytesInOutput": 11998
+          "bytesInOutput": 12010
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 417911
+      "bytes": 418822
     }
   }
 }

@@ -19,8 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/vladmandic/human.git"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "peerDependencies": {},
   "devDependencies": {
     "@tensorflow/tfjs": "^2.7.0",

@@ -12316,7 +12316,7 @@
       ]
     },
     "package.json": {
-      "bytes": 3556,
+      "bytes": 3554,
       "imports": []
     },
     "src/age/age.js": {
@@ -12600,7 +12600,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 14448,
+      "bytes": 14460,
       "imports": [
         {
           "path": "src/tf.js"
@@ -12641,7 +12641,7 @@
       ]
     },
     "src/image.js": {
-      "bytes": 4638,
+      "bytes": 5688,
       "imports": [
         {
           "path": "src/tf.js"
@@ -12660,7 +12660,7 @@
       "imports": []
     },
     "src/tf.js": {
-      "bytes": 871,
+      "bytes": 1135,
       "imports": [
         {
           "path": "node_modules/@tensorflow/tfjs/dist/tf.es2017.js"
@@ -12695,7 +12695,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5433478
+      "bytes": 5435596
     },
     "dist/human.js": {
       "imports": [],
@@ -12812,10 +12812,10 @@
           "bytesInOutput": 21513
         },
         "src/image.js": {
-          "bytesInOutput": 4651
+          "bytesInOutput": 5588
         },
         "src/human.js": {
-          "bytesInOutput": 13878
+          "bytesInOutput": 13890
         },
         "src/tf.js": {
           "bytesInOutput": 46
@@ -13430,7 +13430,7 @@
           "bytesInOutput": 26
         }
       },
-      "bytes": 3631076
+      "bytes": 3632025
     }
   }
 }

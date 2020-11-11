@@ -130,12 +130,12 @@ class Human {
         this.models.posenet,
         this.models.handpose,
       ] = await Promise.all([
-        this.config.face.age.enabled ? this.models.age || age.load(this.config) : null,
-        this.config.face.gender.enabled ? this.models.gender || gender.load(this.config) : null,
-        this.config.face.emotion.enabled ? this.models.emotion || emotion.load(this.config) : null,
-        this.config.face.enabled ? this.models.facemesh || facemesh.load(this.config.face) : null,
-        this.config.body.enabled ? this.models.posenet || posenet.load(this.config) : null,
-        this.config.hand.enabled ? this.models.handpose || handpose.load(this.config.hand) : null,
+        this.models.age || (this.config.face.age.enabled ? age.load(this.config) : null),
+        this.models.gender || (this.config.face.gender.enabled ? gender.load(this.config) : null),
+        this.models.emotion || (this.config.face.emotion.enabled ? emotion.load(this.config) : null),
+        this.models.facemesh || (this.config.face.enabled ? facemesh.load(this.config.face) : null),
+        this.models.posenet || (this.config.body.enabled ? posenet.load(this.config) : null),
+        this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config.hand) : null),
       ]);
     } else {
       if (this.config.face.enabled && !this.models.facemesh) this.models.facemesh = await facemesh.load(this.config.face);

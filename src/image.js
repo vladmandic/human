@@ -52,12 +52,34 @@ function process(input, config) {
       if (config.filter.polaroid) this.fx.addFilter('polaroid');
       if (config.filter.pixelate !== 0) this.fx.addFilter('pixelate', config.filter.pixelate);
       this.fx.apply(inCanvas);
+      // read pixel data
+      // const gl = outCanvas.getContext('webgl');
+      const gl = false;
+      if (gl) {
+        const glBuffer = new Uint8Array(outCanvas.width * outCanvas.height * 4);
+        const pixBuffer = new Uint8Array(outCanvas.width * outCanvas.height * 3);
+        gl.readPixels(0, 0, outCanvas.width, outCanvas.height, gl.RGBA, gl.UNSIGNED_BYTE, glBuffer);
+        // gl returns rbga while we only need rgb, so discarding alpha channel
+        // gl returns starting point as lower left, so need to invert vertical
+        let i = 0;
+        for (let y = outCanvas.height - 1; y >= 0; y--) {
+          for (let x = 0; x < outCanvas.width; x++) {
+            const index = (x + y * outCanvas.width) * 4;
+            pixBuffer[i++] = glBuffer[index + 0];
+            pixBuffer[i++] = glBuffer[index + 1];
+            pixBuffer[i++] = glBuffer[index + 2];
+          }
+        }
+        outCanvas.data = pixBuffer;
+      }
     } else {
       outCanvas = inCanvas;
     }
-    // if (!outCanvas) outCanvas = inCanvas;
     let pixels;
-    if ((config.backend === 'webgl') || (outCanvas instanceof ImageData)) {
+    if (outCanvas.data) {
+      const shape = [outCanvas.height, outCanvas.width, 3];
+      pixels = tf.tensor3d(outCanvas.data, shape, 'int32');
+    } else if ((config.backend === 'webgl') || (outCanvas instanceof ImageData)) {
       // tf kernel-optimized method to get imagedata, also if input is imagedata, just use it
       pixels = tf.browser.fromPixels(outCanvas);
     } else {

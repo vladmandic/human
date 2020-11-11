@@ -86320,11 +86320,30 @@ var require_image = __commonJS((exports) => {
         if (config2.filter.pixelate !== 0)
           this.fx.addFilter("pixelate", config2.filter.pixelate);
         this.fx.apply(inCanvas);
+        const gl = false;
+        if (gl) {
+          const glBuffer = new Uint8Array(outCanvas.width * outCanvas.height * 4);
+          const pixBuffer = new Uint8Array(outCanvas.width * outCanvas.height * 3);
+          gl.readPixels(0, 0, outCanvas.width, outCanvas.height, gl.RGBA, gl.UNSIGNED_BYTE, glBuffer);
+          let i = 0;
+          for (let y = outCanvas.height - 1; y >= 0; y--) {
+            for (let x = 0; x < outCanvas.width; x++) {
+              const index = (x + y * outCanvas.width) * 4;
+              pixBuffer[i++] = glBuffer[index + 0];
+              pixBuffer[i++] = glBuffer[index + 1];
+              pixBuffer[i++] = glBuffer[index + 2];
+            }
+          }
+          outCanvas.data = pixBuffer;
+        }
       } else {
         outCanvas = inCanvas;
       }
       let pixels;
-      if (config2.backend === "webgl" || outCanvas instanceof ImageData) {
+      if (outCanvas.data) {
+        const shape = [outCanvas.height, outCanvas.width, 3];
+        pixels = tf.tensor3d(outCanvas.data, shape, "int32");
+      } else if (config2.backend === "webgl" || outCanvas instanceof ImageData) {
         pixels = tf.browser.fromPixels(outCanvas);
       } else {
         const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
@@ -98001,12 +98020,12 @@ class Human {
         this.models.posenet,
         this.models.handpose
       ] = await Promise.all([
-        this.config.face.age.enabled ? this.models.age || age.load(this.config) : null,
-        this.config.face.gender.enabled ? this.models.gender || gender.load(this.config) : null,
-        this.config.face.emotion.enabled ? this.models.emotion || emotion.load(this.config) : null,
-        this.config.face.enabled ? this.models.facemesh || facemesh.load(this.config.face) : null,
-        this.config.body.enabled ? this.models.posenet || posenet.load(this.config) : null,
-        this.config.hand.enabled ? this.models.handpose || handpose.load(this.config.hand) : null
+        this.models.age || (this.config.face.age.enabled ? age.load(this.config) : null),
+        this.models.gender || (this.config.face.gender.enabled ? gender.load(this.config) : null),
+        this.models.emotion || (this.config.face.emotion.enabled ? emotion.load(this.config) : null),
+        this.models.facemesh || (this.config.face.enabled ? facemesh.load(this.config.face) : null),
+        this.models.posenet || (this.config.body.enabled ? posenet.load(this.config) : null),
+        this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config.hand) : null)
       ]);
     } else {
       if (this.config.face.enabled && !this.models.facemesh)
@@ -98836,10 +98855,12 @@ function drawResults(input, result, canvas) {
   const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : "";
   const avg = Math.trunc(10 * ui.fps.reduce((a, b) => a + b) / ui.fps.length) / 10;
-  document.getElementById("log").innerText = `
-    video: ${ui.camera.name} | facing: ${ui.camera.facing} | resolution: ${ui.camera.width} x ${ui.camera.height} ${processing}
-    backend: ${human.tf.getBackend()} | ${memory}
-    performance: ${str(result.performance)} FPS:${avg}
+  const warning = ui.fps.length > 5 && avg < 5 ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : "";
+  document.getElementById("log").innerHTML = `
+    video: ${ui.camera.name} | facing: ${ui.camera.facing} | resolution: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
+    backend: ${human.tf.getBackend()} | ${memory}<br>
+    performance: ${str(result.performance)} FPS:${avg}<br>
+    ${warning}
   `;
 }
 async function setupCamera() {

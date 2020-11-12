@@ -1,18 +1,18 @@
-// custom: bundle 3.4M
-/*
-import * as tf from '../../../dev-clone/tfjs/tfjs/dist/tf.esnext.js';
+// from compileld sources: bundle 2.0M
+import * as tf from '@tensorflow/tfjs/dist/index.js';
 import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm/dist/index.js';
 
 const loadGraphModel = tf.loadGraphModel;
 export { tf, setWasmPaths, loadGraphModel };
-*/
 
-// monolithic: bundle 3.4M
+// from esm bundles: bundle 3.2M
+/*
 import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
 import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm/dist/index.js';
 
 const loadGraphModel = tf.loadGraphModel;
 export { tf, setWasmPaths, loadGraphModel };
+*/
 
 // modular: bundle 4.2M
 /*
@@ -25,4 +25,13 @@ import { setWasmPaths, version_wasm } from '@tensorflow/tfjs-backend-wasm/dist/i
 const version = { core: tf.version, cpu: tfCPU.version_cpu, webgl: tfWebGL.version_webgl, wasm: version_wasm };
 
 export { tf, setWasmPaths, loadGraphModel, version };
+*/
+
+// custom: bundle 3.4M
+/*
+import * as tf from '../../../dev-clone/tfjs/tfjs/dist/index.js';
+import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm/dist/index.js';
+
+const loadGraphModel = tf.loadGraphModel;
+export { tf, setWasmPaths, loadGraphModel };
 */

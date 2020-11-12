@@ -1,9 +1,7 @@
 import { tf, loadGraphModel } from '../tf.js';
-import * as blazeface from './blazeface';
-import * as keypoints from './keypoints';
-import * as pipe from './facepipeline';
-import * as uv_coords from './uvcoords';
-import * as triangulation from './triangulation';
+import * as blazeface from './blazeface.js';
+import * as pipe from './facepipeline.js';
+import * as coords from './coords.js';
 
 class MediaPipeFaceMesh {
   constructor(blazeFace, blazeMeshModel, irisModel, config) {
@@ -21,9 +19,9 @@ class MediaPipeFaceMesh {
       const mesh = prediction.coords ? prediction.coords.arraySync() : null;
       const annotations = {};
       if (mesh && mesh.length > 0) {
-        for (const key in keypoints.MESH_ANNOTATIONS) {
+        for (const key in coords.MESH_ANNOTATIONS) {
           if (this.config.iris.enabled || key.includes('Iris') === false) {
-            annotations[key] = keypoints.MESH_ANNOTATIONS[key].map((index) => mesh[index]);
+            annotations[key] = coords.MESH_ANNOTATIONS[key].map((index) => mesh[index]);
           }
         }
       }
@@ -57,5 +55,4 @@ async function load(config) {
 
 exports.load = load;
 exports.MediaPipeFaceMesh = MediaPipeFaceMesh;
-exports.uv_coords = uv_coords;
-exports.triangulation = triangulation.default;
+exports.triangulation = coords.TRI468;

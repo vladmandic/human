@@ -1,18 +1,18 @@
 /* eslint-disable class-methods-use-this */
 import { tf } from '../tf.js';
 import * as bounding from './box';
-import * as keypoints from './keypoints';
 import * as util from './util';
+import * as coords from './coords.js';
 
 const LANDMARKS_COUNT = 468;
 const MESH_MOUTH_INDEX = 13;
-const MESH_KEYPOINTS_LINE_OF_SYMMETRY_INDICES = [MESH_MOUTH_INDEX, keypoints.MESH_ANNOTATIONS['midwayBetweenEyes'][0]];
+const MESH_KEYPOINTS_LINE_OF_SYMMETRY_INDICES = [MESH_MOUTH_INDEX, coords.MESH_ANNOTATIONS['midwayBetweenEyes'][0]];
 const BLAZEFACE_MOUTH_INDEX = 3;
 const BLAZEFACE_NOSE_INDEX = 2;
 const BLAZEFACE_KEYPOINTS_LINE_OF_SYMMETRY_INDICES = [BLAZEFACE_MOUTH_INDEX, BLAZEFACE_NOSE_INDEX];
-const LEFT_EYE_OUTLINE = keypoints.MESH_ANNOTATIONS['leftEyeLower0'];
+const LEFT_EYE_OUTLINE = coords.MESH_ANNOTATIONS['leftEyeLower0'];
 const LEFT_EYE_BOUNDS = [LEFT_EYE_OUTLINE[0], LEFT_EYE_OUTLINE[LEFT_EYE_OUTLINE.length - 1]];
-const RIGHT_EYE_OUTLINE = keypoints.MESH_ANNOTATIONS['rightEyeLower0'];
+const RIGHT_EYE_OUTLINE = coords.MESH_ANNOTATIONS['rightEyeLower0'];
 const RIGHT_EYE_BOUNDS = [RIGHT_EYE_OUTLINE[0], RIGHT_EYE_OUTLINE[RIGHT_EYE_OUTLINE.length - 1]];
 const IRIS_UPPER_CENTER_INDEX = 3;
 const IRIS_LOWER_CENTER_INDEX = 4;
@@ -21,9 +21,9 @@ const IRIS_NUM_COORDINATES = 76;
 
 // Replace the raw coordinates returned by facemesh with refined iris model coordinates. Update the z coordinate to be an average of the original and the new. This produces the best visual effect.
 function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
-  for (let i = 0; i < keypoints.MESH_TO_IRIS_INDICES_MAP.length; i++) {
-    const { key, indices } = keypoints.MESH_TO_IRIS_INDICES_MAP[i];
-    const originalIndices = keypoints.MESH_ANNOTATIONS[`${prefix}${key}`];
+  for (let i = 0; i < coords.MESH_TO_IRIS_INDICES_MAP.length; i++) {
+    const { key, indices } = coords.MESH_TO_IRIS_INDICES_MAP[i];
+    const originalIndices = coords.MESH_ANNOTATIONS[`${prefix}${key}`];
     const shouldReplaceAllKeys = keys == null;
     if (shouldReplaceAllKeys || keys.includes(key)) {
       for (let j = 0; j < indices.length; j++) {
@@ -114,8 +114,8 @@ class Pipeline {
 
   // The z-coordinates returned for the iris are unreliable, so we take the z values from the surrounding keypoints.
   getAdjustedIrisCoords(rawCoords, irisCoords, direction) {
-    const upperCenterZ = rawCoords[keypoints.MESH_ANNOTATIONS[`${direction}EyeUpper0`][IRIS_UPPER_CENTER_INDEX]][2];
-    const lowerCenterZ = rawCoords[keypoints.MESH_ANNOTATIONS[`${direction}EyeLower0`][IRIS_LOWER_CENTER_INDEX]][2];
+    const upperCenterZ = rawCoords[coords.MESH_ANNOTATIONS[`${direction}EyeUpper0`][IRIS_UPPER_CENTER_INDEX]][2];
+    const lowerCenterZ = rawCoords[coords.MESH_ANNOTATIONS[`${direction}EyeLower0`][IRIS_LOWER_CENTER_INDEX]][2];
     const averageZ = (upperCenterZ + lowerCenterZ) / 2;
     // Iris indices: 0: center | 1: right | 2: above | 3: left | 4: below
     return irisCoords.map((coord, i) => {
@@ -208,14 +208,14 @@ class Pipeline {
       }
 
       // The first returned tensor represents facial contours, which are included in the coordinates.
-      const [, confidence, coords] = this.meshDetector.predict(face);
+      const [, confidence, contourCoords] = this.meshDetector.predict(face);
       const confidenceVal = confidence.dataSync()[0];
       confidence.dispose();
       if (confidenceVal < config.detector.minConfidence) {
-        coords.dispose();
+        contourCoords.dispose();
         return null;
       }
-      const coordsReshaped = tf.reshape(coords, [-1, 3]);
+      const coordsReshaped = tf.reshape(contourCoords, [-1, 3]);
       let rawCoords = coordsReshaped.arraySync();
       if (config.iris.enabled) {
         const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face, LEFT_EYE_BOUNDS[0], LEFT_EYE_BOUNDS[1], true);

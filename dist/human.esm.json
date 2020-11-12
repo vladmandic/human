@@ -12470,8 +12470,12 @@
         }
       ]
     },
+    "src/face/coords.js": {
+      "bytes": 37909,
+      "imports": []
+    },
     "src/face/facemesh.js": {
-      "bytes": 2604,
+      "bytes": 2471,
       "imports": [
         {
           "path": "src/tf.js"
@@ -12480,21 +12484,15 @@
           "path": "src/face/blazeface.js"
         },
         {
-          "path": "src/face/keypoints.js"
-        },
-        {
           "path": "src/face/facepipeline.js"
         },
         {
-          "path": "src/face/uvcoords.js"
-        },
-        {
-          "path": "src/face/triangulation.js"
+          "path": "src/face/coords.js"
         }
       ]
     },
     "src/face/facepipeline.js": {
-      "bytes": 13686,
+      "bytes": 13680,
       "imports": [
         {
           "path": "src/tf.js"
@@ -12503,27 +12501,15 @@
           "path": "src/face/box.js"
         },
         {
-          "path": "src/face/keypoints.js"
+          "path": "src/face/util.js"
         },
         {
-          "path": "src/face/util.js"
+          "path": "src/face/coords.js"
         }
       ]
     },
-    "src/face/keypoints.js": {
-      "bytes": 2507,
-      "imports": []
-    },
-    "src/face/triangulation.js": {
-      "bytes": 12940,
-      "imports": []
-    },
     "src/face/util.js": {
       "bytes": 3078,
-      "imports": []
-    },
-    "src/face/uvcoords.js": {
-      "bytes": 19592,
       "imports": []
     },
     "src/gender/gender.js": {
@@ -12695,7 +12681,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5461268
+      "bytes": 5469818
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -12730,23 +12716,20 @@
         "src/face/blazeface.js": {
           "bytesInOutput": 6972
         },
-        "src/face/keypoints.js": {
-          "bytesInOutput": 2768
-        },
         "src/face/box.js": {
           "bytesInOutput": 2052
         },
         "src/face/util.js": {
           "bytesInOutput": 3043
         },
-        "src/face/facepipeline.js": {
-          "bytesInOutput": 12397
+        "src/face/coords.js": {
+          "bytesInOutput": 51519
         },
-        "src/face/uvcoords.js": {
-          "bytesInOutput": 20584
+        "src/face/facepipeline.js": {
+          "bytesInOutput": 12388
         },
         "src/face/facemesh.js": {
-          "bytesInOutput": 2564
+          "bytesInOutput": 2459
         },
         "src/profile.js": {
           "bytesInOutput": 1118
@@ -12773,25 +12756,25 @@
           "bytesInOutput": 1764
         },
         "src/body/keypoints.js": {
-          "bytesInOutput": 2277
+          "bytesInOutput": 2276
         },
         "src/body/vectors.js": {
-          "bytesInOutput": 1436
+          "bytesInOutput": 1435
         },
         "src/body/decodePose.js": {
-          "bytesInOutput": 3797
+          "bytesInOutput": 3796
         },
         "src/body/decodeMultiple.js": {
           "bytesInOutput": 2026
         },
         "src/body/util.js": {
-          "bytesInOutput": 2412
+          "bytesInOutput": 2411
         },
         "src/body/modelPoseNet.js": {
           "bytesInOutput": 2020
         },
         "src/body/posenet.js": {
-          "bytesInOutput": 975
+          "bytesInOutput": 974
         },
         "src/hand/handdetector.js": {
           "bytesInOutput": 4402
@@ -13408,9 +13391,6 @@
         "src/tf.js": {
           "bytesInOutput": 42
         },
-        "src/face/triangulation.js": {
-          "bytesInOutput": 17898
-        },
         "src/human.js": {
           "bytesInOutput": 227
         },
@@ -13439,7 +13419,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 3443493
+      "bytes": 3453585
     }
   }
 }

@@ -284,6 +284,14 @@ class Human {
     return faceRes;
   }
 
+  async image(input, userConfig = {}) {
+    this.state = 'image';
+    this.config = mergeDeep(this.config, userConfig);
+    const process = image.process(input, this.config);
+    process.tensor.dispose();
+    return process.canvas;
+  }
+
   // main detect function
   async detect(input, userConfig = {}) {
     this.state = 'config';

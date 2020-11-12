@@ -27,20 +27,25 @@ const ui = {
   fillPolygons: false,
   useDepth: true,
   console: true,
-  maxFrames: 10,
+  maxFPSframes: 10,
   modelsPreload: true,
   modelsWarmup: true,
   menuWidth: 0,
   menuHeight: 0,
   camera: {},
   fps: [],
+  buffered: true,
+  bufferedFPSTarget: 24,
+  drawThread: null,
+  framesDraw: 0,
+  framesDetect: 0,
 };
 
 // global variables
 let menu;
 let menuFX;
 let worker;
-let timeStamp;
+let lastDetectedResult = {};
 
 // helper function: translates json to human readable string
 function str(...msg) {
@@ -65,24 +70,24 @@ const status = (msg) => {
 };
 
 // draws processed results and starts processing of a next frame
-function drawResults(input, result, canvas) {
+async function drawResults(input) {
+  const result = lastDetectedResult;
+  const canvas = document.getElementById('canvas');
+
   // update fps data
-  const elapsed = performance.now() - timeStamp;
-  ui.fps.push(1000 / elapsed);
-  if (ui.fps.length > ui.maxFrames) ui.fps.shift();
+  // const elapsed = performance.now() - timeStamp;
+  ui.fps.push(1000 / result.performance.total);
+  if (ui.fps.length > ui.maxFPSframes) ui.fps.shift();
 
   // enable for continous performance monitoring
   // console.log(result.performance);
 
-  // immediate loop before we even draw results, but limit frame rate to 30
-  if (input.srcObject) {
-    // eslint-disable-next-line no-use-before-define
-    if (elapsed > 33) requestAnimationFrame(() => runHumanDetect(input, canvas));
-    // eslint-disable-next-line no-use-before-define
-    else setTimeout(() => runHumanDetect(input, canvas), 33 - elapsed);
-  }
   // draw fps chart
-  menu.updateChart('FPS', ui.fps);
+  await menu.updateChart('FPS', ui.fps);
+
+  // get updated canvas
+  result.canvas = await human.image(input, userConfig);
+
   // draw image from video
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = ui.baseBackground;
@@ -95,10 +100,10 @@ function drawResults(input, result, canvas) {
     ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
   }
   // draw all results
-  draw.face(result.face, canvas, ui, human.facemesh.triangulation);
-  draw.body(result.body, canvas, ui);
-  draw.hand(result.hand, canvas, ui);
-  draw.gesture(result.gesture, canvas, ui);
+  await draw.face(result.face, canvas, ui, human.facemesh.triangulation);
+  await draw.body(result.body, canvas, ui);
+  await draw.hand(result.hand, canvas, ui);
+  await draw.gesture(result.gesture, canvas, ui);
   // update log
   const engine = human.tf.engine();
   const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
@@ -112,6 +117,16 @@ function drawResults(input, result, canvas) {
     performance: ${str(result.performance)} FPS:${avg}<br>
     ${warning}
   `;
+
+  ui.framesDraw++;
+  ui.lastFrame = performance.now();
+  // if buffered, immediate loop but limit frame rate although it's going to run slower as JS is singlethreaded
+  if (ui.buffered && !ui.drawThread) ui.drawThread = setInterval(() => drawResults(input, canvas), 1000 / ui.bufferedFPSTarget);
+  // stop buffering
+  if (!ui.buffered && ui.drawThread) {
+    clearTimeout(ui.drawThread);
+    ui.drawThread = null;
+  }
 }
 
 // setup webcam
@@ -197,7 +212,11 @@ function webWorker(input, image, canvas) {
         log('warning: image will not show filter effects');
         worker.warned = true;
       }
-      drawResults(input, msg.data.result, canvas);
+      lastDetectedResult = msg.data.result;
+      ui.framesDetect++;
+      if (!ui.drawThread) drawResults(input);
+      // eslint-disable-next-line no-use-before-define
+      requestAnimationFrame(() => runHumanDetect(input, canvas));
     });
   }
   // pass image data as arraybuffer to worker by reference to avoid copy
@@ -206,14 +225,19 @@ function webWorker(input, image, canvas) {
 
 // main processing function when input is webcam, can use direct invocation or web worker
 function runHumanDetect(input, canvas) {
-  timeStamp = performance.now();
   // if live video
   const live = input.srcObject && (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
   if (!live && input.srcObject) {
+    // stop ui refresh
+    if (ui.drawThread) clearTimeout(ui.drawThread);
+    ui.drawThread = null;
     // if we want to continue and camera not ready, retry in 0.5sec, else just give up
     if (input.paused) log('camera paused');
     else if ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
     else log(`camera not ready: track state: ${input.srcObject?.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
+    clearTimeout(ui.drawThread);
+    ui.drawThread = null;
+    log('frame statistics: drawn:', ui.framesDraw, 'detected:', ui.framesDetect);
     return;
   }
   status('');
@@ -228,14 +252,18 @@ function runHumanDetect(input, canvas) {
   } else {
     human.detect(input, userConfig).then((result) => {
       if (result.error) log(result.error);
-      else drawResults(input, result, canvas);
+      else {
+        lastDetectedResult = result;
+        if (!ui.drawThread) drawResults(input);
+        ui.framesDetect++;
+        requestAnimationFrame(() => runHumanDetect(input, canvas));
+      }
     });
   }
 }
 
 // main processing function when input is image, can use direct invocation or web worker
 async function processImage(input) {
-  timeStamp = performance.now();
   return new Promise((resolve) => {
     const image = new Image();
     image.onload = async () => {
@@ -356,6 +384,7 @@ function setupMenu() {
 
   menuFX = new Menu(document.body, '', { top: '1rem', right: '18rem' });
   menuFX.addLabel('ui options');
+  menuFX.addBool('buffered output', ui, 'buffered', (val) => ui.buffered = val);
   menuFX.addBool('crop & scale', ui, 'crop', () => setupCamera());
   menuFX.addBool('camera front/back', ui, 'facing', () => setupCamera());
   menuFX.addBool('use 3D depth', ui, 'useDepth');
@@ -387,7 +416,7 @@ async function main() {
   log('Human: demo starting ...');
   setupMenu();
   document.getElementById('log').innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
-  human.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
+  // human.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
   // this is not required, just pre-loads all models
   if (ui.modelsPreload) {
     status('loading');

@@ -98001,7 +98001,7 @@ class Human {
   }
   async load(userConfig2) {
     this.state = "load";
-    const timeStamp2 = now2();
+    const timeStamp = now2();
     if (userConfig2)
       this.config = mergeDeep(this.config, userConfig2);
     if (this.firstRun) {
@@ -98041,12 +98041,12 @@ class Human {
       if (this.config.hand.enabled && !this.models.handpose)
         this.models.handpose = await handpose.load(this.config.hand);
     }
-    const current = Math.trunc(now2() - timeStamp2);
+    const current = Math.trunc(now2() - timeStamp);
     if (current > (this.perf.load || 0))
       this.perf.load = current;
   }
   async checkBackend(force) {
-    const timeStamp2 = now2();
+    const timeStamp = now2();
     if (this.config.backend && this.config.backend !== "" && force || tf.getBackend() !== this.config.backend) {
       this.state = "backend";
       this.log("setting backend:", this.config.backend);
@@ -98068,20 +98068,20 @@ class Human {
       }
       await tf.ready();
     }
-    const current = Math.trunc(now2() - timeStamp2);
+    const current = Math.trunc(now2() - timeStamp);
     if (current > (this.perf.backend || 0))
       this.perf.backend = current;
   }
   async detectFace(input) {
-    let timeStamp2;
+    let timeStamp;
     let ageRes;
     let genderRes;
     let emotionRes;
     const faceRes = [];
     this.state = "run:face";
-    timeStamp2 = now2();
+    timeStamp = now2();
     const faces = await this.models.facemesh.estimateFaces(input, this.config.face);
-    this.perf.face = Math.trunc(now2() - timeStamp2);
+    this.perf.face = Math.trunc(now2() - timeStamp);
     for (const face2 of faces) {
       this.analyze("Get Face");
       if (!face2.image || face2.image.isDisposedInternal) {
@@ -98093,27 +98093,27 @@ class Human {
         ageRes = this.config.face.age.enabled ? age.predict(face2.image, this.config) : {};
       } else {
         this.state = "run:age";
-        timeStamp2 = now2();
+        timeStamp = now2();
         ageRes = this.config.face.age.enabled ? await age.predict(face2.image, this.config) : {};
-        this.perf.age = Math.trunc(now2() - timeStamp2);
+        this.perf.age = Math.trunc(now2() - timeStamp);
       }
       this.analyze("Start Gender:");
       if (this.config.async) {
         genderRes = this.config.face.gender.enabled ? gender.predict(face2.image, this.config) : {};
       } else {
         this.state = "run:gender";
-        timeStamp2 = now2();
+        timeStamp = now2();
         genderRes = this.config.face.gender.enabled ? await gender.predict(face2.image, this.config) : {};
-        this.perf.gender = Math.trunc(now2() - timeStamp2);
+        this.perf.gender = Math.trunc(now2() - timeStamp);
       }
       this.analyze("Start Emotion:");
       if (this.config.async) {
         emotionRes = this.config.face.emotion.enabled ? emotion.predict(face2.image, this.config) : {};
       } else {
         this.state = "run:emotion";
-        timeStamp2 = now2();
+        timeStamp = now2();
         emotionRes = this.config.face.emotion.enabled ? await emotion.predict(face2.image, this.config) : {};
-        this.perf.emotion = Math.trunc(now2() - timeStamp2);
+        this.perf.emotion = Math.trunc(now2() - timeStamp);
       }
       this.analyze("End Emotion:");
       if (this.config.async) {
@@ -98148,9 +98148,16 @@ class Human {
     }
     return faceRes;
   }
+  async image(input, userConfig2 = {}) {
+    this.state = "image";
+    this.config = mergeDeep(this.config, userConfig2);
+    const process3 = image.process(input, this.config);
+    process3.tensor.dispose();
+    return process3.canvas;
+  }
   async detect(input, userConfig2 = {}) {
     this.state = "config";
-    let timeStamp2;
+    let timeStamp;
     this.config = mergeDeep(this.config, userConfig2);
     if (!this.config.videoOptimized)
       this.config = mergeDeep(this.config, disableSkipFrames);
@@ -98170,9 +98177,9 @@ class Human {
       if (this.config.scoped)
         tf.engine().startScope();
       this.analyze("Start Scope:");
-      timeStamp2 = now2();
+      timeStamp = now2();
       const process3 = image.process(input, this.config);
-      this.perf.image = Math.trunc(now2() - timeStamp2);
+      this.perf.image = Math.trunc(now2() - timeStamp);
       this.analyze("Get Image:");
       if (this.config.async) {
         faceRes = this.config.face.enabled ? this.detectFace(process3.tensor) : [];
@@ -98180,9 +98187,9 @@ class Human {
           delete this.perf.face;
       } else {
         this.state = "run:face";
-        timeStamp2 = now2();
+        timeStamp = now2();
         faceRes = this.config.face.enabled ? await this.detectFace(process3.tensor) : [];
-        this.perf.face = Math.trunc(now2() - timeStamp2);
+        this.perf.face = Math.trunc(now2() - timeStamp);
       }
       this.analyze("Start Body:");
       if (this.config.async) {
@@ -98191,9 +98198,9 @@ class Human {
           delete this.perf.body;
       } else {
         this.state = "run:body";
-        timeStamp2 = now2();
+        timeStamp = now2();
         poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(process3.tensor, this.config) : [];
-        this.perf.body = Math.trunc(now2() - timeStamp2);
+        this.perf.body = Math.trunc(now2() - timeStamp);
       }
       this.analyze("End Body:");
       this.analyze("Start Hand:");
@@ -98203,9 +98210,9 @@ class Human {
           delete this.perf.hand;
       } else {
         this.state = "run:hand";
-        timeStamp2 = now2();
+        timeStamp = now2();
         handRes = this.config.hand.enabled ? await this.models.handpose.estimateHands(process3.tensor, this.config.hand) : [];
-        this.perf.hand = Math.trunc(now2() - timeStamp2);
+        this.perf.hand = Math.trunc(now2() - timeStamp);
       }
       if (this.config.async) {
         [faceRes, poseRes, handRes] = await Promise.all([faceRes, poseRes, handRes]);
@@ -98216,10 +98223,10 @@ class Human {
       this.analyze("End Scope:");
       let gestureRes = [];
       if (this.config.gesture.enabled) {
-        timeStamp2 = now2();
+        timeStamp = now2();
         gestureRes = {face: gesture.face(faceRes), body: gesture.body(poseRes), hand: gesture.hand(handRes)};
         if (!this.config.async)
-          this.perf.gesture = Math.trunc(now2() - timeStamp2);
+          this.perf.gesture = Math.trunc(now2() - timeStamp);
         else if (this.perf.gesture)
           delete this.perf.gesture;
       }
@@ -98337,63 +98344,72 @@ async function drawFace(result, canvas, ui2, triangulation) {
     }
   }
 }
+const lastDrawnPose = [];
 async function drawBody(result, canvas, ui2) {
   if (!result)
     return;
   const ctx = canvas.getContext("2d");
   ctx.lineJoin = "round";
-  for (const pose of result) {
+  for (const i in result) {
+    if (!lastDrawnPose[i] && ui2.buffered)
+      lastDrawnPose[i] = {...result[i]};
     ctx.fillStyle = ui2.baseColor;
     ctx.strokeStyle = ui2.baseColor;
     ctx.font = ui2.baseFont;
     ctx.lineWidth = ui2.baseLineWidth;
     if (ui2.drawPoints) {
-      for (const point of pose.keypoints) {
+      for (const pt in result[i].keypoints) {
         ctx.beginPath();
-        ctx.arc(point.position.x, point.position.y, 2, 0, 2 * Math.PI);
+        if (ui2.buffered) {
+          lastDrawnPose[i].keypoints[pt].position.x = (lastDrawnPose[i].keypoints[pt].position.x + result[i].keypoints[pt].position.x) / 2;
+          lastDrawnPose[i].keypoints[pt].position.y = (lastDrawnPose[i].keypoints[pt].position.y + result[i].keypoints[pt].position.y) / 2;
+          ctx.arc(lastDrawnPose[i].keypoints[pt].position.x, lastDrawnPose[i].keypoints[pt].position.y, 2, 0, 2 * Math.PI);
+        } else {
+          ctx.arc(result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 2, 0, 2 * Math.PI);
+        }
         ctx.fill();
       }
     }
     if (ui2.drawPolygons) {
       const path = new Path2D();
       let part;
-      part = pose.keypoints.find((a) => a.part === "leftShoulder");
+      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
       path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "rightShoulder");
+      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "rightHip");
+      part = result[i].keypoints.find((a) => a.part === "rightHip");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "leftHip");
+      part = result[i].keypoints.find((a) => a.part === "leftHip");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "leftShoulder");
+      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "leftHip");
+      part = result[i].keypoints.find((a) => a.part === "leftHip");
       path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "leftKnee");
+      part = result[i].keypoints.find((a) => a.part === "leftKnee");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "leftAnkle");
+      part = result[i].keypoints.find((a) => a.part === "leftAnkle");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "rightHip");
+      part = result[i].keypoints.find((a) => a.part === "rightHip");
       path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "rightKnee");
+      part = result[i].keypoints.find((a) => a.part === "rightKnee");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "rightAnkle");
+      part = result[i].keypoints.find((a) => a.part === "rightAnkle");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "rightShoulder");
+      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
       path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "leftShoulder");
+      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "leftElbow");
+      part = result[i].keypoints.find((a) => a.part === "leftElbow");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "leftWrist");
+      part = result[i].keypoints.find((a) => a.part === "leftWrist");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "leftShoulder");
+      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
       path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "rightShoulder");
+      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "rightElbow");
+      part = result[i].keypoints.find((a) => a.part === "rightElbow");
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === "rightWrist");
+      part = result[i].keypoints.find((a) => a.part === "rightWrist");
       path.lineTo(part.position.x, part.position.y);
       ctx.stroke(path);
     }
@@ -98791,18 +98807,23 @@ const ui = {
   fillPolygons: false,
   useDepth: true,
   console: true,
-  maxFrames: 10,
+  maxFPSframes: 10,
   modelsPreload: true,
   modelsWarmup: true,
   menuWidth: 0,
   menuHeight: 0,
   camera: {},
-  fps: []
+  fps: [],
+  buffered: true,
+  bufferedFPSTarget: 24,
+  drawThread: null,
+  framesDraw: 0,
+  framesDetect: 0
 };
 let menu2;
 let menuFX;
 let worker;
-let timeStamp;
+let lastDetectedResult = {};
 function str(...msg) {
   if (!Array.isArray(msg))
     return msg;
@@ -98822,18 +98843,14 @@ const log2 = (...msg) => {
 const status = (msg) => {
   document.getElementById("status").innerText = msg;
 };
-function drawResults(input, result, canvas) {
-  const elapsed = performance.now() - timeStamp;
-  ui.fps.push(1e3 / elapsed);
-  if (ui.fps.length > ui.maxFrames)
+async function drawResults(input) {
+  const result = lastDetectedResult;
+  const canvas = document.getElementById("canvas");
+  ui.fps.push(1e3 / result.performance.total);
+  if (ui.fps.length > ui.maxFPSframes)
     ui.fps.shift();
-  if (input.srcObject) {
-    if (elapsed > 33)
-      requestAnimationFrame(() => runHumanDetect(input, canvas));
-    else
-      setTimeout(() => runHumanDetect(input, canvas), 33 - elapsed);
-  }
-  menu2.updateChart("FPS", ui.fps);
+  await menu2.updateChart("FPS", ui.fps);
+  result.canvas = await human.image(input, userConfig);
   const ctx = canvas.getContext("2d");
   ctx.fillStyle = ui.baseBackground;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -98846,10 +98863,10 @@ function drawResults(input, result, canvas) {
   } else {
     ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
   }
-  draw_default.face(result.face, canvas, ui, human.facemesh.triangulation);
-  draw_default.body(result.body, canvas, ui);
-  draw_default.hand(result.hand, canvas, ui);
-  draw_default.gesture(result.gesture, canvas, ui);
+  await draw_default.face(result.face, canvas, ui, human.facemesh.triangulation);
+  await draw_default.body(result.body, canvas, ui);
+  await draw_default.hand(result.hand, canvas, ui);
+  await draw_default.gesture(result.gesture, canvas, ui);
   const engine = human.tf.engine();
   const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : "";
   const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
@@ -98862,6 +98879,14 @@ function drawResults(input, result, canvas) {
     performance: ${str(result.performance)} FPS:${avg}<br>
     ${warning}
   `;
+  ui.framesDraw++;
+  ui.lastFrame = performance.now();
+  if (ui.buffered && !ui.drawThread)
+    ui.drawThread = setInterval(() => drawResults(input, canvas), 1e3 / ui.bufferedFPSTarget);
+  if (!ui.buffered && ui.drawThread) {
+    clearTimeout(ui.drawThread);
+    ui.drawThread = null;
+  }
 }
 async function setupCamera() {
   var _a;
@@ -98944,22 +98969,31 @@ function webWorker(input, image2, canvas) {
         log2("warning: image will not show filter effects");
         worker.warned = true;
       }
-      drawResults(input, msg.data.result, canvas);
+      lastDetectedResult = msg.data.result;
+      ui.framesDetect++;
+      if (!ui.drawThread)
+        drawResults(input);
+      requestAnimationFrame(() => runHumanDetect(input, canvas));
     });
   }
   worker.postMessage({image: image2.data.buffer, width: canvas.width, height: canvas.height}, [image2.data.buffer]);
 }
 function runHumanDetect(input, canvas) {
   var _a;
-  timeStamp = performance.now();
   const live = input.srcObject && input.srcObject.getVideoTracks()[0].readyState === "live" && input.readyState > 2 && !input.paused;
   if (!live && input.srcObject) {
+    if (ui.drawThread)
+      clearTimeout(ui.drawThread);
+    ui.drawThread = null;
     if (input.paused)
       log2("camera paused");
     else if (input.srcObject.getVideoTracks()[0].readyState === "live" && input.readyState <= 2)
       setTimeout(() => runHumanDetect(input, canvas), 500);
     else
       log2(`camera not ready: track state: ${(_a = input.srcObject) == null ? void 0 : _a.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
+    clearTimeout(ui.drawThread);
+    ui.drawThread = null;
+    log2("frame statistics: drawn:", ui.framesDraw, "detected:", ui.framesDetect);
     return;
   }
   status("");
@@ -98973,13 +99007,17 @@ function runHumanDetect(input, canvas) {
     human.detect(input, userConfig).then((result) => {
       if (result.error)
         log2(result.error);
-      else
-        drawResults(input, result, canvas);
+      else {
+        lastDetectedResult = result;
+        if (!ui.drawThread)
+          drawResults(input);
+        ui.framesDetect++;
+        requestAnimationFrame(() => runHumanDetect(input, canvas));
+      }
     });
   }
 }
 async function processImage(input) {
-  timeStamp = performance.now();
   return new Promise((resolve) => {
     const image2 = new Image();
     image2.onload = async () => {
@@ -99092,6 +99130,7 @@ function setupMenu() {
   menu2.addChart("FPS", "FPS");
   menuFX = new menu_default(document.body, "", {top: "1rem", right: "18rem"});
   menuFX.addLabel("ui options");
+  menuFX.addBool("buffered output", ui, "buffered", (val) => ui.buffered = val);
   menuFX.addBool("crop & scale", ui, "crop", () => setupCamera());
   menuFX.addBool("camera front/back", ui, "facing", () => setupCamera());
   menuFX.addBool("use 3D depth", ui, "useDepth");
@@ -99122,7 +99161,6 @@ async function main() {
   log2("Human: demo starting ...");
   setupMenu();
   document.getElementById("log").innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
-  human.tf.ENV.set("WEBGL_FORCE_F16_TEXTURES", true);
   if (ui.modelsPreload) {
     status("loading");
     await human.load(userConfig);

@@ -98,19 +98,27 @@ async function drawFace(result, canvas, ui, triangulation) {
   }
 }
 
+const lastDrawnPose = [];
 async function drawBody(result, canvas, ui) {
   if (!result) return;
   const ctx = canvas.getContext('2d');
   ctx.lineJoin = 'round';
-  for (const pose of result) {
+  for (const i in result) {
+    if (!lastDrawnPose[i] && ui.buffered) lastDrawnPose[i] = { ...result[i] };
     ctx.fillStyle = ui.baseColor;
     ctx.strokeStyle = ui.baseColor;
     ctx.font = ui.baseFont;
     ctx.lineWidth = ui.baseLineWidth;
     if (ui.drawPoints) {
-      for (const point of pose.keypoints) {
+      for (const pt in result[i].keypoints) {
         ctx.beginPath();
-        ctx.arc(point.position.x, point.position.y, 2, 0, 2 * Math.PI);
+        if (ui.buffered) {
+          lastDrawnPose[i].keypoints[pt].position.x = (lastDrawnPose[i].keypoints[pt].position.x + result[i].keypoints[pt].position.x) / 2;
+          lastDrawnPose[i].keypoints[pt].position.y = (lastDrawnPose[i].keypoints[pt].position.y + result[i].keypoints[pt].position.y) / 2;
+          ctx.arc(lastDrawnPose[i].keypoints[pt].position.x, lastDrawnPose[i].keypoints[pt].position.y, 2, 0, 2 * Math.PI);
+        } else {
+          ctx.arc(result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 2, 0, 2 * Math.PI);
+        }
         ctx.fill();
       }
     }
@@ -118,46 +126,46 @@ async function drawBody(result, canvas, ui) {
       const path = new Path2D();
       let part;
       // torso
-      part = pose.keypoints.find((a) => a.part === 'leftShoulder');
+      part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
       path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightShoulder');
+      part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightHip');
+      part = result[i].keypoints.find((a) => a.part === 'rightHip');
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftHip');
+      part = result[i].keypoints.find((a) => a.part === 'leftHip');
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftShoulder');
+      part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
       path.lineTo(part.position.x, part.position.y);
       // legs
-      part = pose.keypoints.find((a) => a.part === 'leftHip');
+      part = result[i].keypoints.find((a) => a.part === 'leftHip');
       path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftKnee');
+      part = result[i].keypoints.find((a) => a.part === 'leftKnee');
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftAnkle');
+      part = result[i].keypoints.find((a) => a.part === 'leftAnkle');
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightHip');
+      part = result[i].keypoints.find((a) => a.part === 'rightHip');
       path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightKnee');
+      part = result[i].keypoints.find((a) => a.part === 'rightKnee');
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightAnkle');
+      part = result[i].keypoints.find((a) => a.part === 'rightAnkle');
       path.lineTo(part.position.x, part.position.y);
       // arms
-      part = pose.keypoints.find((a) => a.part === 'rightShoulder');
+      part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
       path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftShoulder');
+      part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftElbow');
+      part = result[i].keypoints.find((a) => a.part === 'leftElbow');
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'leftWrist');
+      part = result[i].keypoints.find((a) => a.part === 'leftWrist');
       path.lineTo(part.position.x, part.position.y);
       // arms
-      part = pose.keypoints.find((a) => a.part === 'leftShoulder');
+      part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
       path.moveTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightShoulder');
+      part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightElbow');
+      part = result[i].keypoints.find((a) => a.part === 'rightElbow');
       path.lineTo(part.position.x, part.position.y);
-      part = pose.keypoints.find((a) => a.part === 'rightWrist');
+      part = result[i].keypoints.find((a) => a.part === 'rightWrist');
       path.lineTo(part.position.x, part.position.y);
       // draw all
       ctx.stroke(path);

@@ -98525,6 +98525,13 @@ class Human {
     }
     return faceRes;
   }
+  async image(input, userConfig = {}) {
+    this.state = "image";
+    this.config = mergeDeep(this.config, userConfig);
+    const process3 = image.process(input, this.config);
+    process3.tensor.dispose();
+    return process3.canvas;
+  }
   async detect(input, userConfig = {}) {
     this.state = "config";
     let timeStamp;

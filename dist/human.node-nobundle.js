@@ -20877,7 +20877,7 @@ __export(exports, {
 });
 
 // src/tf.js
-const tf = __toModule(require("@tensorflow/tfjs/dist/index.js"));
+const tf = __toModule(require("@tensorflow/tfjs/dist/tf.es2017.js"));
 const dist = __toModule(require("@tensorflow/tfjs-backend-wasm/dist/index.js"));
 const loadGraphModel = tf.loadGraphModel;
 

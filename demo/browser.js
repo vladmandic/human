@@ -34,7 +34,7 @@ const ui = {
   menuHeight: 0,
   camera: {},
   fps: [],
-  buffered: true,
+  buffered: false,
   bufferedFPSTarget: 24,
   drawThread: null,
   framesDraw: 0,

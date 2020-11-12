@@ -1,18 +1,9 @@
-// from compileld sources: bundle 2.0M
-import * as tf from '@tensorflow/tfjs/dist/index.js';
-import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm/dist/index.js';
-
-const loadGraphModel = tf.loadGraphModel;
-export { tf, setWasmPaths, loadGraphModel };
-
-// from esm bundles: bundle 3.2M
-/*
+// from esm bundles: bundle 3.3M
 import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
 import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm/dist/index.js';
 
 const loadGraphModel = tf.loadGraphModel;
 export { tf, setWasmPaths, loadGraphModel };
-*/
 
 // modular: bundle 4.2M
 /*

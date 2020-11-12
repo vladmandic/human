@@ -349,7 +349,7 @@
       "imports": []
     },
     "src/tf.js": {
-      "bytes": 1401,
+      "bytes": 1137,
       "imports": []
     }
   },
@@ -357,7 +357,7 @@
     "dist/human.node-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 784814
+      "bytes": 784541
     },
     "dist/human.node-nobundle.js": {
       "imports": [],
@@ -453,7 +453,7 @@
           "bytesInOutput": 47
         },
         "src/tf.js": {
-          "bytesInOutput": 189
+          "bytesInOutput": 193
         },
         "src/face/triangulation.js": {
           "bytesInOutput": 17898
@@ -483,7 +483,7 @@
           "bytesInOutput": 12338
         }
       },
-      "bytes": 419504
+      "bytes": 419508
     }
   }
 }

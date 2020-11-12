@@ -20867,7 +20867,7 @@ var require_image = __commonJS((exports) => {
 });
 
 // src/tf.js
-import * as tf from "@tensorflow/tfjs/dist/index.js";
+import * as tf from "@tensorflow/tfjs/dist/tf.es2017.js";
 import {setWasmPaths} from "@tensorflow/tfjs-backend-wasm/dist/index.js";
 const loadGraphModel = tf.loadGraphModel;
 

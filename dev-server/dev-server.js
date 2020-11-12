@@ -170,6 +170,7 @@ async function main() {
   const server = http2.createSecureServer(options, httpRequest);
   server.on('listening', () => log.state('HTTP2 server listening:', options.port));
   server.listen(options.port);
+  await build('all', 'startup');
 }
 
 main();

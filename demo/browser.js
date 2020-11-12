@@ -387,6 +387,7 @@ async function main() {
   log('Human: demo starting ...');
   setupMenu();
   document.getElementById('log').innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
+  human.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
   // this is not required, just pre-loads all models
   if (ui.modelsPreload) {
     status('loading');

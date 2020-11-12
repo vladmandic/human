@@ -1,6 +1,7 @@
 import Human from '../dist/human.esm.js';
 import draw from './draw.js';
 import Menu from './menu.js';
+import GLBench from '../assets/gl-bench.js';
 
 const userConfig = {}; // add any user configuration overrides
 
@@ -39,12 +40,14 @@ const ui = {
   drawThread: null,
   framesDraw: 0,
   framesDetect: 0,
+  bench: false,
 };
 
 // global variables
 let menu;
 let menuFX;
 let worker;
+let bench;
 let lastDetectedResult = {};
 
 // helper function: translates json to human readable string
@@ -199,32 +202,29 @@ async function setupCamera() {
 }
 
 // wrapper for worker.postmessage that creates worker if one does not exist
-function webWorker(input, image, canvas) {
+function webWorker(input, image, canvas, timestamp) {
   if (!worker) {
     // create new webworker and add event handler only once
     log('creating worker thread');
     worker = new Worker(ui.worker, { type: 'module' });
-    worker.warned = false;
     // after receiving message from webworker, parse&draw results and send new frame for processing
     worker.addEventListener('message', (msg) => {
-      if (!worker.warned) {
-        log('warning: cannot transfer canvas from worked thread');
-        log('warning: image will not show filter effects');
-        worker.warned = true;
-      }
+      if (ui.bench) bench.end();
+      if (ui.bench) bench.nextFrame(timestamp);
       lastDetectedResult = msg.data.result;
       ui.framesDetect++;
       if (!ui.drawThread) drawResults(input);
       // eslint-disable-next-line no-use-before-define
-      requestAnimationFrame(() => runHumanDetect(input, canvas));
+      requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
     });
   }
   // pass image data as arraybuffer to worker by reference to avoid copy
+  if (ui.bench) bench.begin();
   worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height }, [image.data.buffer]);
 }
 
 // main processing function when input is webcam, can use direct invocation or web worker
-function runHumanDetect(input, canvas) {
+function runHumanDetect(input, canvas, timestamp) {
   // if live video
   const live = input.srcObject && (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
   if (!live && input.srcObject) {
@@ -248,15 +248,18 @@ function runHumanDetect(input, canvas) {
     ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     // perform detection in worker
-    webWorker(input, data, canvas, userConfig);
+    webWorker(input, data, canvas, userConfig, timestamp);
   } else {
+    if (ui.bench) bench.begin();
     human.detect(input, userConfig).then((result) => {
+      if (ui.bench) bench.end();
+      if (ui.bench) bench.nextFrame(timestamp);
       if (result.error) log(result.error);
       else {
         lastDetectedResult = result;
         if (!ui.drawThread) drawResults(input);
         ui.framesDetect++;
-        requestAnimationFrame(() => runHumanDetect(input, canvas));
+        requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
       }
     });
   }
@@ -412,9 +415,30 @@ function setupMenu() {
   menuFX.addBool('polaroid', human.config.filter, 'polaroid');
 }
 
+async function setupMonitor() {
+  let gl = human.tf.engine().backend.gpgpu;
+  if (!gl) gl = document.getElementById('bench-canvas').getContext('webgl2');
+  if (!bench) {
+    bench = new GLBench(gl, {
+      trackGPU: true,
+      chartHz: 20,
+      chartLen: 50,
+    });
+  }
+  /*
+  function update(now) {
+    bench.nextFrame(now);
+    requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+  */
+  // class MathBackendWebGL extends tf.KernelBackend property gpgpu is gl context
+}
+
 async function main() {
   log('Human: demo starting ...');
   setupMenu();
+  setupMonitor();
   document.getElementById('log').innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
   // human.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
   // this is not required, just pre-loads all models

@@ -123,27 +123,27 @@ class Human {
     }
     if (this.config.async) {
       [
+        this.models.facemesh,
         this.models.age,
         this.models.gender,
         this.models.emotion,
-        this.models.facemesh,
         this.models.posenet,
         this.models.handpose,
       ] = await Promise.all([
-        this.models.age || (this.config.face.age.enabled ? age.load(this.config) : null),
-        this.models.gender || (this.config.face.gender.enabled ? gender.load(this.config) : null),
-        this.models.emotion || (this.config.face.emotion.enabled ? emotion.load(this.config) : null),
         this.models.facemesh || (this.config.face.enabled ? facemesh.load(this.config.face) : null),
+        this.models.age || ((this.config.face.enabled && this.config.face.age.enabled) ? age.load(this.config) : null),
+        this.models.gender || ((this.config.face.enabled && this.config.face.gender.enabled) ? gender.load(this.config) : null),
+        this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
         this.models.posenet || (this.config.body.enabled ? posenet.load(this.config) : null),
         this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config.hand) : null),
       ]);
     } else {
       if (this.config.face.enabled && !this.models.facemesh) this.models.facemesh = await facemesh.load(this.config.face);
-      if (this.config.body.enabled && !this.models.posenet) this.models.posenet = await posenet.load(this.config);
-      if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config.hand);
       if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) this.models.age = await age.load(this.config);
       if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) this.models.gender = await gender.load(this.config);
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) this.models.emotion = await emotion.load(this.config);
+      if (this.config.body.enabled && !this.models.posenet) this.models.posenet = await posenet.load(this.config);
+      if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config.hand);
     }
     const current = Math.trunc(now() - timeStamp);
     if (current > (this.perf.load || 0)) this.perf.load = current;

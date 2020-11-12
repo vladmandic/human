@@ -12527,7 +12527,7 @@
       "imports": []
     },
     "src/gender/gender.js": {
-      "bytes": 3193,
+      "bytes": 3209,
       "imports": [
         {
           "path": "src/tf.js"
@@ -12600,7 +12600,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 14460,
+      "bytes": 14550,
       "imports": [
         {
           "path": "src/tf.js"
@@ -12695,7 +12695,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5460036
+      "bytes": 5460397
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -12755,7 +12755,7 @@
           "bytesInOutput": 1826
         },
         "src/gender/gender.js": {
-          "bytesInOutput": 2980
+          "bytesInOutput": 2996
         },
         "src/emotion/emotion.js": {
           "bytesInOutput": 2697
@@ -13433,13 +13433,13 @@
           "bytesInOutput": 24
         },
         "src/human.js": {
-          "bytesInOutput": 12036
+          "bytesInOutput": 12120
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 3443154
+      "bytes": 3443254
     }
   }
 }

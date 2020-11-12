@@ -77,7 +77,7 @@ async function predict(image, config) {
         const confidence = Math.trunc(200 * Math.abs((data[0] - 0.5))) / 100;
         if (confidence > config.face.gender.minConfidence) {
           obj.gender = data[0] <= 0.5 ? 'female' : 'male';
-          obj.confidence = confidence;
+          obj.confidence = Math.min(0.99, confidence);
         }
       }
     }

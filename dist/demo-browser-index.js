@@ -66883,7 +66883,7 @@ var require_gender = __commonJS((exports) => {
           const confidence = Math.trunc(200 * Math.abs(data2[0] - 0.5)) / 100;
           if (confidence > config2.face.gender.minConfidence) {
             obj.gender = data2[0] <= 0.5 ? "female" : "male";
-            obj.confidence = confidence;
+            obj.confidence = Math.min(0.99, confidence);
           }
         }
       }
@@ -97910,7 +97910,7 @@ var config_default = {
     }
   }
 };
-var version3 = "0.8.6";
+var version3 = "0.8.7";
 const disableSkipFrames = {
   face: {detector: {skipFrames: 0}, age: {skipFrames: 0}, gender: {skipFrames: 0}, emotion: {skipFrames: 0}},
   hand: {skipFrames: 0}
@@ -98013,33 +98013,33 @@ class Human {
     }
     if (this.config.async) {
       [
+        this.models.facemesh,
         this.models.age,
         this.models.gender,
         this.models.emotion,
-        this.models.facemesh,
         this.models.posenet,
         this.models.handpose
       ] = await Promise.all([
-        this.models.age || (this.config.face.age.enabled ? age.load(this.config) : null),
-        this.models.gender || (this.config.face.gender.enabled ? gender.load(this.config) : null),
-        this.models.emotion || (this.config.face.emotion.enabled ? emotion.load(this.config) : null),
         this.models.facemesh || (this.config.face.enabled ? facemesh.load(this.config.face) : null),
+        this.models.age || (this.config.face.enabled && this.config.face.age.enabled ? age.load(this.config) : null),
+        this.models.gender || (this.config.face.enabled && this.config.face.gender.enabled ? gender.load(this.config) : null),
+        this.models.emotion || (this.config.face.enabled && this.config.face.emotion.enabled ? emotion.load(this.config) : null),
         this.models.posenet || (this.config.body.enabled ? posenet.load(this.config) : null),
         this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config.hand) : null)
       ]);
     } else {
       if (this.config.face.enabled && !this.models.facemesh)
         this.models.facemesh = await facemesh.load(this.config.face);
-      if (this.config.body.enabled && !this.models.posenet)
-        this.models.posenet = await posenet.load(this.config);
-      if (this.config.hand.enabled && !this.models.handpose)
-        this.models.handpose = await handpose.load(this.config.hand);
       if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age)
         this.models.age = await age.load(this.config);
       if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender)
         this.models.gender = await gender.load(this.config);
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion)
         this.models.emotion = await emotion.load(this.config);
+      if (this.config.body.enabled && !this.models.posenet)
+        this.models.posenet = await posenet.load(this.config);
+      if (this.config.hand.enabled && !this.models.handpose)
+        this.models.handpose = await handpose.load(this.config.hand);
     }
     const current = Math.trunc(now2() - timeStamp2);
     if (current > (this.perf.load || 0))
@@ -99122,6 +99122,7 @@ async function main() {
   log2("Human: demo starting ...");
   setupMenu();
   document.getElementById("log").innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
+  human.tf.ENV.set("WEBGL_FORCE_F16_TEXTURES", true);
   if (ui.modelsPreload) {
     status("loading");
     await human.load(userConfig);

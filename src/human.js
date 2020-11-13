@@ -3,6 +3,7 @@ import * as facemesh from './face/facemesh.js';
 import * as age from './age/age.js';
 import * as gender from './gender/gender.js';
 import * as emotion from './emotion/emotion.js';
+import * as embedding from './embedding/embedding.js';
 import * as posenet from './body/posenet.js';
 import * as handpose from './hand/handpose.js';
 import * as gesture from './gesture.js';
@@ -108,6 +109,11 @@ class Human {
     return null;
   }
 
+  simmilarity(embedding1, embedding2) {
+    if (this.config.face.embedding.enabled) return embedding.simmilarity(embedding1, embedding2);
+    return 0;
+  }
+
   // preload models, not explicitly required as it's done automatically on first use
   async load(userConfig) {
     this.state = 'load';
@@ -127,6 +133,7 @@ class Human {
         this.models.age,
         this.models.gender,
         this.models.emotion,
+        this.models.embedding,
         this.models.posenet,
         this.models.handpose,
       ] = await Promise.all([
@@ -134,6 +141,7 @@ class Human {
         this.models.age || ((this.config.face.enabled && this.config.face.age.enabled) ? age.load(this.config) : null),
         this.models.gender || ((this.config.face.enabled && this.config.face.gender.enabled) ? gender.load(this.config) : null),
         this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
+        this.models.embedding || ((this.config.face.enabled && this.config.face.embedding.enabled) ? embedding.load(this.config) : null),
         this.models.posenet || (this.config.body.enabled ? posenet.load(this.config) : null),
         this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config.hand) : null),
       ]);
@@ -142,6 +150,7 @@ class Human {
       if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) this.models.age = await age.load(this.config);
       if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) this.models.gender = await gender.load(this.config);
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) this.models.emotion = await emotion.load(this.config);
+      if (this.config.face.enabled && this.config.face.embedding.enabled && !this.models.embedding) this.models.embedding = await embedding.load(this.config);
       if (this.config.body.enabled && !this.models.posenet) this.models.posenet = await posenet.load(this.config);
       if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config.hand);
     }
@@ -199,6 +208,7 @@ class Human {
     let ageRes;
     let genderRes;
     let emotionRes;
+    let embeddingRes;
     const faceRes = [];
     this.state = 'run:face';
     timeStamp = now();
@@ -206,11 +216,13 @@ class Human {
     this.perf.face = Math.trunc(now() - timeStamp);
     for (const face of faces) {
       this.analyze('Get Face');
+
       // is something went wrong, skip the face
       if (!face.image || face.image.isDisposedInternal) {
         this.log('Face object is disposed:', face.image);
         continue;
       }
+
       // run age, inherits face from blazeface
       this.analyze('Start Age:');
       if (this.config.async) {
@@ -232,6 +244,7 @@ class Human {
         genderRes = this.config.face.gender.enabled ? await gender.predict(face.image, this.config) : {};
         this.perf.gender = Math.trunc(now() - timeStamp);
       }
+
       // run emotion, inherits face from blazeface
       this.analyze('Start Emotion:');
       if (this.config.async) {
@@ -244,9 +257,21 @@ class Human {
       }
       this.analyze('End Emotion:');
 
+      // run emotion, inherits face from blazeface
+      this.analyze('Start Embedding:');
+      if (this.config.async) {
+        embeddingRes = this.config.face.embedding.enabled ? embedding.predict(face.image, this.config) : {};
+      } else {
+        this.state = 'run:embedding';
+        timeStamp = now();
+        embeddingRes = this.config.face.embedding.enabled ? await embedding.predict(face.image, this.config) : {};
+        this.perf.embedding = Math.trunc(now() - timeStamp);
+      }
+      this.analyze('End Emotion:');
+
       // if async wait for results
       if (this.config.async) {
-        [ageRes, genderRes, emotionRes] = await Promise.all([ageRes, genderRes, emotionRes]);
+        [ageRes, genderRes, emotionRes, embeddingRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes]);
       }
 
       this.analyze('Finish Face:');
@@ -270,6 +295,7 @@ class Human {
         gender: genderRes.gender,
         genderConfidence: genderRes.confidence,
         emotion: emotionRes,
+        embedding: embeddingRes,
         iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
       });
       this.analyze('End Face');
@@ -294,23 +320,23 @@ class Human {
 
   // main detect function
   async detect(input, userConfig = {}) {
-    this.state = 'config';
-    let timeStamp;
-
-    // update configuration
-    this.config = mergeDeep(this.config, userConfig);
-    if (!this.config.videoOptimized) this.config = mergeDeep(this.config, disableSkipFrames);
-
-    // sanity checks
-    this.state = 'check';
-    const error = this.sanity(input);
-    if (error) {
-      this.log(error, input);
-      return { error };
-    }
-
     // detection happens inside a promise
     return new Promise(async (resolve) => {
+      this.state = 'config';
+      let timeStamp;
+
+      // update configuration
+      this.config = mergeDeep(this.config, userConfig);
+      if (!this.config.videoOptimized) this.config = mergeDeep(this.config, disableSkipFrames);
+
+      // sanity checks
+      this.state = 'check';
+      const error = this.sanity(input);
+      if (error) {
+        this.log(error, input);
+        resolve({ error });
+      }
+
       let poseRes;
       let handRes;
       let faceRes;
@@ -391,10 +417,11 @@ class Human {
     });
   }
 
-  async warmup(userConfig) {
-    const warmup = new ImageData(255, 255);
-    await this.detect(warmup, userConfig);
+  async warmup(userConfig, sample) {
+    if (!sample) sample = new ImageData(255, 255);
+    const warmup = await this.detect(sample, userConfig);
     this.log('warmed up');
+    return warmup;
   }
 }
 

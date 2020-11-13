@@ -7,7 +7,6 @@ let frame = Number.MAX_SAFE_INTEGER;
 let alternative = false;
 
 // tuning values
-const zoom = [0, 0]; // 0..1 meaning 0%..100%
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
 
 async function load(config) {
@@ -21,12 +20,15 @@ async function load(config) {
 }
 
 async function predict(image, config) {
+  if (!models.gender) return null;
   if ((frame < config.face.gender.skipFrames) && last.gender !== '') {
     frame += 1;
     return last;
   }
   frame = 0;
   return new Promise(async (resolve) => {
+    /*
+    const zoom = [0, 0]; // 0..1 meaning 0%..100%
     const box = [[
       (image.shape[1] * zoom[0]) / image.shape[1],
       (image.shape[2] * zoom[1]) / image.shape[2],
@@ -34,6 +36,8 @@ async function predict(image, config) {
       (image.shape[2] - (image.shape[2] * zoom[1])) / image.shape[2],
     ]];
     const resize = tf.image.cropAndResize(image, box, [0], [config.face.gender.inputSize, config.face.gender.inputSize]);
+    */
+    const resize = tf.image.resizeBilinear(image, [config.face.gender.inputSize, config.face.gender.inputSize], false);
     let enhance;
     if (alternative) {
       enhance = tf.tidy(() => {

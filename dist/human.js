@@ -99241,7 +99241,7 @@ return a / b;`;
   };
 
   // package.json
-  var version3 = "0.8.8";
+  var version3 = "0.9.0";
   return require_human();
 })();
 //# sourceMappingURL=human.js.map

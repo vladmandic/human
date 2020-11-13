@@ -98511,7 +98511,7 @@ var config_default = {
     }
   }
 };
-var version3 = "0.8.8";
+var version3 = "0.9.0";
 const disableSkipFrames = {
   face: {detector: {skipFrames: 0}, age: {skipFrames: 0}, gender: {skipFrames: 0}, emotion: {skipFrames: 0}},
   hand: {skipFrames: 0}

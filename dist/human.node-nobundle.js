@@ -24394,7 +24394,7 @@ var config_default = {
 };
 
 // package.json
-var version = "0.8.8";
+var version = "0.9.0";
 
 // src/human.js
 const disableSkipFrames = {

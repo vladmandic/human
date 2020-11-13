@@ -34113,7 +34113,7 @@ Expected: ${expectedFlat}.`);
     function permute(args) {
       return new Permute(args);
     }
-    function embedding(args) {
+    function embedding2(args) {
       return new Embedding(args);
     }
     function add$3(args) {
@@ -34271,7 +34271,7 @@ Expected: ${expectedFlat}.`);
       repeatVector,
       reshape: reshape$1,
       permute,
-      embedding,
+      embedding: embedding2,
       add: add$3,
       average: average$1,
       concatenate: concatenate$2,
@@ -65751,13 +65751,13 @@ var require_blazeface = __commonJS((exports) => {
       return faces;
     }
   }
-  async function load(config2) {
+  async function load2(config2) {
     const blazeface = await loadGraphModel(config2.detector.modelPath, {fromTFHub: config2.detector.modelPath.includes("tfhub.dev")});
     const model = new BlazeFaceModel(blazeface, config2);
     console.log(`Human: load model: ${config2.detector.modelPath.match(/\/(.*)\./)[1]}`);
     return model;
   }
-  exports.load = load;
+  exports.load = load2;
   exports.BlazeFaceModel = BlazeFaceModel;
   exports.disposeBox = disposeBox;
 });
@@ -69843,15 +69843,15 @@ var require_facepipeline = __commonJS((exports) => {
           rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
           rotationMatrix = util30.buildRotationMatrix(-angle, faceCenter);
         }
-        const boxCPU = {startPoint: box.startPoint, endPoint: box.endPoint};
-        const face2 = bounding.cutBoxFromImageAndResize(boxCPU, rotatedImage, [this.meshHeight, this.meshWidth]).div(255);
+        const face2 = bounding.cutBoxFromImageAndResize({startPoint: box.startPoint, endPoint: box.endPoint}, rotatedImage, [this.meshHeight, this.meshWidth]).div(255);
+        const outputFace = config2.detector.rotation ? tf.image.rotateWithOffset(face2, angle) : face2;
         if (!config2.mesh.enabled) {
           const prediction2 = {
             coords: null,
             box,
             faceConfidence: null,
             confidence: box.confidence,
-            image: face2
+            image: outputFace
           };
           return prediction2;
         }
@@ -69896,7 +69896,7 @@ var require_facepipeline = __commonJS((exports) => {
           box: landmarksBox,
           faceConfidence: confidenceVal,
           confidence: box.confidence,
-          image: face2
+          image: outputFace
         };
         this.storedBoxes[i] = {...landmarksBox, landmarks: transformedCoords.arraySync(), confidence: box.confidence, faceConfidence: confidenceVal};
         return prediction;
@@ -69959,7 +69959,7 @@ var require_facemesh = __commonJS((exports) => {
       return results;
     }
   }
-  async function load(config2) {
+  async function load2(config2) {
     const models = await Promise.all([
       blazeface.load(config2),
       loadGraphModel(config2.mesh.modelPath, {fromTFHub: config2.mesh.modelPath.includes("tfhub.dev")}),
@@ -69970,7 +69970,7 @@ var require_facemesh = __commonJS((exports) => {
     console.log(`Human: load model: ${config2.iris.modelPath.match(/\/(.*)\./)[1]}`);
     return faceMesh;
   }
-  exports.load = load;
+  exports.load = load2;
   exports.MediaPipeFaceMesh = MediaPipeFaceMesh;
   exports.triangulation = coords.TRI468;
 });
@@ -70008,28 +70008,23 @@ var require_age = __commonJS((exports) => {
   const models = {};
   let last = {age: 0};
   let frame = Number.MAX_SAFE_INTEGER;
-  const zoom = [0, 0];
-  async function load(config2) {
+  async function load2(config2) {
     if (!models.age) {
       models.age = await loadGraphModel(config2.face.age.modelPath);
       console.log(`Human: load model: ${config2.face.age.modelPath.match(/\/(.*)\./)[1]}`);
     }
     return models.age;
   }
-  async function predict(image2, config2) {
+  async function predict2(image2, config2) {
+    if (!models.age)
+      return null;
     if (frame < config2.face.age.skipFrames && last.age && last.age > 0) {
       frame += 1;
       return last;
     }
     frame = 0;
     return new Promise(async (resolve) => {
-      const box = [[
-        image2.shape[1] * zoom[0] / image2.shape[1],
-        image2.shape[2] * zoom[1] / image2.shape[2],
-        (image2.shape[1] - image2.shape[1] * zoom[0]) / image2.shape[1],
-        (image2.shape[2] - image2.shape[2] * zoom[1]) / image2.shape[2]
-      ]];
-      const resize = tf.image.cropAndResize(image2, box, [0], [config2.face.age.inputSize, config2.face.age.inputSize]);
+      const resize = tf.image.resizeBilinear(image2, [config2.face.age.inputSize, config2.face.age.inputSize], false);
       const enhance = tf.mul(resize, [255]);
       tf.dispose(resize);
       let ageT;
@@ -70053,8 +70048,8 @@ var require_age = __commonJS((exports) => {
       resolve(obj);
     });
   }
-  exports.predict = predict;
-  exports.load = load;
+  exports.predict = predict2;
+  exports.load = load2;
 });
 
 // src/gender/gender.js
@@ -70064,9 +70059,8 @@ var require_gender = __commonJS((exports) => {
   let last = {gender: ""};
   let frame = Number.MAX_SAFE_INTEGER;
   let alternative = false;
-  const zoom = [0, 0];
   const rgb = [0.2989, 0.587, 0.114];
-  async function load(config2) {
+  async function load2(config2) {
     if (!models.gender) {
       models.gender = await loadGraphModel(config2.face.gender.modelPath);
       alternative = models.gender.inputs[0].shape[3] === 1;
@@ -70074,20 +70068,16 @@ var require_gender = __commonJS((exports) => {
     }
     return models.gender;
   }
-  async function predict(image2, config2) {
+  async function predict2(image2, config2) {
+    if (!models.gender)
+      return null;
     if (frame < config2.face.gender.skipFrames && last.gender !== "") {
       frame += 1;
       return last;
     }
     frame = 0;
     return new Promise(async (resolve) => {
-      const box = [[
-        image2.shape[1] * zoom[0] / image2.shape[1],
-        image2.shape[2] * zoom[1] / image2.shape[2],
-        (image2.shape[1] - image2.shape[1] * zoom[0]) / image2.shape[1],
-        (image2.shape[2] - image2.shape[2] * zoom[1]) / image2.shape[2]
-      ]];
-      const resize = tf.image.cropAndResize(image2, box, [0], [config2.face.gender.inputSize, config2.face.gender.inputSize]);
+      const resize = tf.image.resizeBilinear(image2, [config2.face.gender.inputSize, config2.face.gender.inputSize], false);
       let enhance;
       if (alternative) {
         enhance = tf.tidy(() => {
@@ -70135,8 +70125,8 @@ var require_gender = __commonJS((exports) => {
       resolve(obj);
     });
   }
-  exports.predict = predict;
-  exports.load = load;
+  exports.predict = predict2;
+  exports.load = load2;
 });
 
 // src/emotion/emotion.js
@@ -70146,30 +70136,25 @@ var require_emotion = __commonJS((exports) => {
   const models = {};
   let last = [];
   let frame = Number.MAX_SAFE_INTEGER;
-  const zoom = [0, 0];
   const rgb = [0.2989, 0.587, 0.114];
   const scale = 1;
-  async function load(config2) {
+  async function load2(config2) {
     if (!models.emotion) {
       models.emotion = await loadGraphModel(config2.face.emotion.modelPath);
       console.log(`Human: load model: ${config2.face.emotion.modelPath.match(/\/(.*)\./)[1]}`);
     }
     return models.emotion;
   }
-  async function predict(image2, config2) {
+  async function predict2(image2, config2) {
+    if (!models.emotion)
+      return null;
     if (frame < config2.face.emotion.skipFrames && last.length > 0) {
       frame += 1;
       return last;
     }
     frame = 0;
     return new Promise(async (resolve) => {
-      const box = [[
-        image2.shape[1] * zoom[0] / image2.shape[1],
-        image2.shape[2] * zoom[1] / image2.shape[2],
-        (image2.shape[1] - image2.shape[1] * zoom[0]) / image2.shape[1],
-        (image2.shape[2] - image2.shape[2] * zoom[1]) / image2.shape[2]
-      ]];
-      const resize = tf.image.cropAndResize(image2, box, [0], [config2.face.emotion.inputSize, config2.face.emotion.inputSize]);
+      const resize = tf.image.resizeBilinear(image2, [config2.face.emotion.inputSize, config2.face.emotion.inputSize], false);
       const [red, green, blue] = tf.split(resize, 3, 3);
       resize.dispose();
       const redNorm = tf.mul(red, rgb[0]);
@@ -70208,8 +70193,53 @@ var require_emotion = __commonJS((exports) => {
       resolve(obj);
     });
   }
-  exports.predict = predict;
-  exports.load = load;
+  exports.predict = predict2;
+  exports.load = load2;
+});
+
+// src/embedding/embedding.js
+var require_embedding = __commonJS((exports) => {
+  const profile2 = __toModule(require_profile());
+  const models = {};
+  async function load2(config2) {
+    if (!models.embedding) {
+      models.embedding = await loadGraphModel(config2.face.embedding.modelPath);
+      console.log(`Human: load model: ${config2.face.embedding.modelPath.match(/\/(.*)\./)[1]}`);
+    }
+    return models.embedding;
+  }
+  function simmilarity2(embedding1, embedding2) {
+    if ((embedding1 == null ? void 0 : embedding1.length) !== (embedding2 == null ? void 0 : embedding2.length))
+      return 0;
+    const distance = 10 * Math.sqrt(embedding1.map((val, i) => val - embedding2[i]).reduce((dist2, diff) => dist2 + diff ** 2, 0));
+    const confidence = 2 * (0.5 - distance);
+    return Math.trunc(1e3 * confidence) / 1e3;
+  }
+  async function predict2(image2, config2) {
+    if (!models.embedding)
+      return null;
+    return new Promise(async (resolve) => {
+      const resize = tf.image.resizeBilinear(image2, [config2.face.embedding.inputSize, config2.face.embedding.inputSize], false);
+      let data2 = [];
+      if (config2.face.embedding.enabled) {
+        if (!config2.profile) {
+          const embeddingT = await models.embedding.predict({img_inputs: resize});
+          data2 = [...embeddingT.dataSync()];
+          tf.dispose(embeddingT);
+        } else {
+          const profileData = await tf.profile(() => models.embedding.predict({img_inputs: resize}));
+          data2 = [...profileData.result.dataSync()];
+          profileData.result.dispose();
+          profile2.run("emotion", profileData);
+        }
+      }
+      resize.dispose();
+      resolve(data2);
+    });
+  }
+  exports.predict = predict2;
+  exports.simmilarity = simmilarity2;
+  exports.load = load2;
 });
 
 // src/body/modelBase.js
@@ -70711,13 +70741,13 @@ var require_modelPoseNet = __commonJS((exports) => {
     }
   }
   exports.PoseNet = PoseNet;
-  async function load(config2) {
+  async function load2(config2) {
     const graphModel = await loadGraphModel(config2.body.modelPath);
     const mobilenet = new modelMobileNet.MobileNet(graphModel, this.outputStride);
     console.log(`Human: load model: ${config2.body.modelPath.match(/\/(.*)\./)[1]}`);
     return new PoseNet(mobilenet);
   }
-  exports.load = load;
+  exports.load = load2;
 });
 
 // src/body/posenet.js
@@ -88732,7 +88762,7 @@ var require_handpose = __commonJS((exports) => {
     }
   }
   exports.HandPose = HandPose;
-  async function load(config2) {
+  async function load2(config2) {
     const [handDetectorModel, handPoseModel] = await Promise.all([
       loadGraphModel(config2.detector.modelPath, {fromTFHub: config2.detector.modelPath.includes("tfhub.dev")}),
       loadGraphModel(config2.skeleton.modelPath, {fromTFHub: config2.skeleton.modelPath.includes("tfhub.dev")})
@@ -88744,7 +88774,7 @@ var require_handpose = __commonJS((exports) => {
     console.log(`Human: load model: ${config2.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
     return handpose2;
   }
-  exports.load = load;
+  exports.load = load2;
 });
 
 // src/gesture.js
@@ -98582,6 +98612,7 @@ const facemesh = __toModule(require_facemesh());
 const age = __toModule(require_age());
 const gender = __toModule(require_gender());
 const emotion = __toModule(require_emotion());
+const embedding = __toModule(require_embedding());
 const posenet = __toModule(require_posenet());
 
 // src/hand/box.js
@@ -98783,6 +98814,7 @@ var config_default = {
     detector: {
       modelPath: "../models/blazeface-back.json",
       inputSize: 256,
+      rotation: false,
       maxFaces: 10,
       skipFrames: 15,
       minConfidence: 0.5,
@@ -98818,6 +98850,11 @@ var config_default = {
       minConfidence: 0.2,
       skipFrames: 15,
       modelPath: "../models/emotion-large.json"
+    },
+    embedding: {
+      enabled: false,
+      inputSize: 112,
+      modelPath: "../models/mobilefacenet.json"
     }
   },
   body: {
@@ -98938,6 +98975,11 @@ class Human {
     }
     return null;
   }
+  simmilarity(embedding1, embedding2) {
+    if (this.config.face.embedding.enabled)
+      return embedding.simmilarity(embedding1, embedding2);
+    return 0;
+  }
   async load(userConfig) {
     this.state = "load";
     const timeStamp = now2();
@@ -98956,6 +98998,7 @@ class Human {
         this.models.age,
         this.models.gender,
         this.models.emotion,
+        this.models.embedding,
         this.models.posenet,
         this.models.handpose
       ] = await Promise.all([
@@ -98963,6 +99006,7 @@ class Human {
         this.models.age || (this.config.face.enabled && this.config.face.age.enabled ? age.load(this.config) : null),
         this.models.gender || (this.config.face.enabled && this.config.face.gender.enabled ? gender.load(this.config) : null),
         this.models.emotion || (this.config.face.enabled && this.config.face.emotion.enabled ? emotion.load(this.config) : null),
+        this.models.embedding || (this.config.face.enabled && this.config.face.embedding.enabled ? embedding.load(this.config) : null),
         this.models.posenet || (this.config.body.enabled ? posenet.load(this.config) : null),
         this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config.hand) : null)
       ]);
@@ -98975,6 +99019,8 @@ class Human {
         this.models.gender = await gender.load(this.config);
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion)
         this.models.emotion = await emotion.load(this.config);
+      if (this.config.face.enabled && this.config.face.embedding.enabled && !this.models.embedding)
+        this.models.embedding = await embedding.load(this.config);
       if (this.config.body.enabled && !this.models.posenet)
         this.models.posenet = await posenet.load(this.config);
       if (this.config.hand.enabled && !this.models.handpose)
@@ -99016,6 +99062,7 @@ class Human {
     let ageRes;
     let genderRes;
     let emotionRes;
+    let embeddingRes;
     const faceRes = [];
     this.state = "run:face";
     timeStamp = now2();
@@ -99055,8 +99102,18 @@ class Human {
         this.perf.emotion = Math.trunc(now2() - timeStamp);
       }
       this.analyze("End Emotion:");
+      this.analyze("Start Embedding:");
       if (this.config.async) {
-        [ageRes, genderRes, emotionRes] = await Promise.all([ageRes, genderRes, emotionRes]);
+        embeddingRes = this.config.face.embedding.enabled ? embedding.predict(face2.image, this.config) : {};
+      } else {
+        this.state = "run:embedding";
+        timeStamp = now2();
+        embeddingRes = this.config.face.embedding.enabled ? await embedding.predict(face2.image, this.config) : {};
+        this.perf.embedding = Math.trunc(now2() - timeStamp);
+      }
+      this.analyze("End Emotion:");
+      if (this.config.async) {
+        [ageRes, genderRes, emotionRes, embeddingRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes]);
       }
       this.analyze("Finish Face:");
       face2.image.dispose();
@@ -99070,6 +99127,7 @@ class Human {
         gender: genderRes.gender,
         genderConfidence: genderRes.confidence,
         emotion: emotionRes,
+        embedding: embeddingRes,
         iris: irisSize !== 0 ? Math.trunc(irisSize) / 100 : 0
       });
       this.analyze("End Face");
@@ -99095,18 +99153,18 @@ class Human {
     return process3.canvas;
   }
   async detect(input, userConfig = {}) {
-    this.state = "config";
-    let timeStamp;
-    this.config = mergeDeep(this.config, userConfig);
-    if (!this.config.videoOptimized)
-      this.config = mergeDeep(this.config, disableSkipFrames);
-    this.state = "check";
-    const error = this.sanity(input);
-    if (error) {
-      this.log(error, input);
-      return {error};
-    }
     return new Promise(async (resolve) => {
+      this.state = "config";
+      let timeStamp;
+      this.config = mergeDeep(this.config, userConfig);
+      if (!this.config.videoOptimized)
+        this.config = mergeDeep(this.config, disableSkipFrames);
+      this.state = "check";
+      const error = this.sanity(input);
+      if (error) {
+        this.log(error, input);
+        resolve({error});
+      }
       let poseRes;
       let handRes;
       let faceRes;
@@ -99174,10 +99232,12 @@ class Human {
       resolve({face: faceRes, body: poseRes, hand: handRes, gesture: gestureRes, performance: this.perf, canvas: process3.canvas});
     });
   }
-  async warmup(userConfig) {
-    const warmup = new ImageData(255, 255);
-    await this.detect(warmup, userConfig);
+  async warmup(userConfig, sample) {
+    if (!sample)
+      sample = new ImageData(255, 255);
+    const warmup = await this.detect(sample, userConfig);
     this.log("warmed up");
+    return warmup;
   }
 }
 export {

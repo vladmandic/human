@@ -192,8 +192,8 @@ class Pipeline {
         rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
         rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
       }
-      const boxCPU = { startPoint: box.startPoint, endPoint: box.endPoint };
-      const face = bounding.cutBoxFromImageAndResize(boxCPU, rotatedImage, [this.meshHeight, this.meshWidth]).div(255);
+      const face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshHeight, this.meshWidth]).div(255);
+      const outputFace = config.detector.rotation ? tf.image.rotateWithOffset(face, angle) : face;
 
       // if we're not going to produce mesh, don't spend time with further processing
       if (!config.mesh.enabled) {
@@ -202,7 +202,7 @@ class Pipeline {
           box,
           faceConfidence: null,
           confidence: box.confidence,
-          image: face,
+          image: outputFace,
         };
         return prediction;
       }
@@ -250,7 +250,7 @@ class Pipeline {
         box: landmarksBox,
         faceConfidence: confidenceVal,
         confidence: box.confidence,
-        image: face,
+        image: outputFace,
       };
       this.storedBoxes[i] = { ...landmarksBox, landmarks: transformedCoords.arraySync(), confidence: box.confidence, faceConfidence: confidenceVal };
       return prediction;

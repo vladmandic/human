@@ -22,6 +22,7 @@ const ui = {
   useWorker: false,
   worker: 'demo/worker.js',
   samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'],
+  compare: '../assets/sample-me.jpg',
   drawBoxes: true,
   drawPoints: false,
   drawPolygons: true,
@@ -48,6 +49,7 @@ let menu;
 let menuFX;
 let worker;
 let bench;
+let sample;
 let lastDetectedResult = {};
 
 // helper function: translates json to human readable string
@@ -72,6 +74,16 @@ const status = (msg) => {
   document.getElementById('status').innerText = msg;
 };
 
+async function calcSimmilariry(faces) {
+  if (!faces || !faces[0] || (faces[0].embedding?.length !== 192)) return;
+  const current = faces[0].embedding;
+  const original = (sample && sample.face && sample.face[0] && sample.face[0].embedding) ? sample.face[0].embedding : null;
+  if (original && original.length === 192) {
+    const simmilarity = human.simmilarity(current, original);
+    document.getElementById('simmilarity').innerText = `simmilarity: ${Math.trunc(1000 * simmilarity) / 10}%`;
+  }
+}
+
 // draws processed results and starts processing of a next frame
 async function drawResults(input) {
   const result = lastDetectedResult;
@@ -79,7 +91,7 @@ async function drawResults(input) {
 
   // update fps data
   // const elapsed = performance.now() - timeStamp;
-  ui.fps.push(1000 / result.performance.total);
+  if (result.performance && result.performance.total) ui.fps.push(1000 / result.performance.total);
   if (ui.fps.length > ui.maxFPSframes) ui.fps.shift();
 
   // enable for continous performance monitoring
@@ -89,7 +101,7 @@ async function drawResults(input) {
   await menu.updateChart('FPS', ui.fps);
 
   // get updated canvas
-  result.canvas = await human.image(input, userConfig);
+  if (ui.buffered || !result.canvas) result.canvas = await human.image(input, userConfig);
 
   // draw image from video
   const ctx = canvas.getContext('2d');
@@ -102,17 +114,20 @@ async function drawResults(input) {
   } else {
     ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
   }
+
   // draw all results
   await draw.face(result.face, canvas, ui, human.facemesh.triangulation);
   await draw.body(result.body, canvas, ui);
   await draw.hand(result.hand, canvas, ui);
   await draw.gesture(result.gesture, canvas, ui);
+  await calcSimmilariry(result.face);
+
   // update log
   const engine = human.tf.engine();
   const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
   const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : '';
-  const avg = Math.trunc(10 * ui.fps.reduce((a, b) => a + b) / ui.fps.length) / 10;
+  const avg = Math.trunc(10 * ui.fps.reduce((a, b) => a + b, 0) / ui.fps.length) / 10;
   const warning = (ui.fps.length > 5) && (avg < 5) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
   document.getElementById('log').innerHTML = `
     video: ${ui.camera.name} | facing: ${ui.camera.facing} | resolution: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
@@ -277,7 +292,8 @@ async function processImage(input) {
       canvas.width = human.config.filter.width && human.config.filter.width > 0 ? human.config.filter.width : image.naturalWidth;
       canvas.height = human.config.filter.height && human.config.filter.height > 0 ? human.config.filter.height : image.naturalHeight;
       const result = await human.detect(image, userConfig);
-      drawResults(image, result, canvas);
+      lastDetectedResult = result;
+      await drawResults(image);
       const thumb = document.createElement('canvas');
       thumb.className = 'thumbnail';
       thumb.width = window.innerWidth / (ui.columns + 0.1);
@@ -325,11 +341,12 @@ async function detectSampleImages() {
   log('Running detection of sample images');
   status('processing images');
   document.getElementById('samples-container').innerHTML = '';
-  for (const sample of ui.samples) await processImage(sample);
+  for (const image of ui.samples) await processImage(image);
   status('');
 }
 
 function setupMenu() {
+  document.getElementById('compare-container').style.display = human.config.face.embedding.enabled ? 'block' : 'none';
   menu = new Menu(document.body, '', { top: '1rem', right: '1rem' });
   const btn = menu.addButton('start video', 'pause video', () => detectVideo());
   menu.addButton('process images', 'process images', () => detectSampleImages());
@@ -449,7 +466,7 @@ async function main() {
   // this is not required, just pre-warms all models for faster initial inference
   if (ui.modelsWarmup) {
     status('initializing');
-    await human.warmup(userConfig);
+    sample = await human.warmup(userConfig, document.getElementById('sample-image'));
   }
   status('human: ready');
   document.getElementById('loader').style.display = 'none';

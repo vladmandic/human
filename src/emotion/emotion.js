@@ -7,7 +7,6 @@ let last = [];
 let frame = Number.MAX_SAFE_INTEGER;
 
 // tuning values
-const zoom = [0, 0]; // 0..1 meaning 0%..100%
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
 const scale = 1; // score multiplication factor
 
@@ -21,12 +20,15 @@ async function load(config) {
 }
 
 async function predict(image, config) {
+  if (!models.emotion) return null;
   if ((frame < config.face.emotion.skipFrames) && (last.length > 0)) {
     frame += 1;
     return last;
   }
   frame = 0;
   return new Promise(async (resolve) => {
+    /*
+    const zoom = [0, 0]; // 0..1 meaning 0%..100%
     const box = [[
       (image.shape[1] * zoom[0]) / image.shape[1],
       (image.shape[2] * zoom[1]) / image.shape[2],
@@ -34,7 +36,8 @@ async function predict(image, config) {
       (image.shape[2] - (image.shape[2] * zoom[1])) / image.shape[2],
     ]];
     const resize = tf.image.cropAndResize(image, box, [0], [config.face.emotion.inputSize, config.face.emotion.inputSize]);
-    // const resize = tf.image.resizeBilinear(image, [config.face.emotion.inputSize, config.face.emotion.inputSize], false);
+    */
+    const resize = tf.image.resizeBilinear(image, [config.face.emotion.inputSize, config.face.emotion.inputSize], false);
     const [red, green, blue] = tf.split(resize, 3, 3);
     resize.dispose();
     // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html

@@ -66,6 +66,7 @@ export default {
                                                   // such as front-facing camera and
                                                   // 'back' is optimized for distanct faces.
       inputSize: 256,        // fixed value: 128 for front and 256 for 'back'
+      rotation: false,       // use best-guess rotated face image or just box with rotation as-is
       maxFaces: 10,          // maximum number of faces detected in the input
                              // should be set to the minimum number for performance
       skipFrames: 15,        // how many frames to go without re-running the face bounding box detector
@@ -117,6 +118,12 @@ export default {
       minConfidence: 0.2,    // threshold for discarding a prediction
       skipFrames: 15,        // how many frames to go without re-running the detector
       modelPath: '../models/emotion-large.json', // can be 'mini', 'large'
+    },
+
+    embedding: {
+      enabled: false,
+      inputSize: 112,        // fixed value
+      modelPath: '../models/mobilefacenet.json',
     },
   },
 

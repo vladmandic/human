@@ -1,15 +1,15 @@
 {
   "inputs": {
     "config.js": {
-      "bytes": 8623,
+      "bytes": 8721,
       "imports": []
     },
     "package.json": {
-      "bytes": 3554,
+      "bytes": 3616,
       "imports": []
     },
     "src/age/age.js": {
-      "bytes": 1912,
+      "bytes": 1941,
       "imports": [
         {
           "path": "src/tf.js"
@@ -133,7 +133,7 @@
       ]
     },
     "src/embedding/embedding.js": {
-      "bytes": 3111,
+      "bytes": 2105,
       "imports": [
         {
           "path": "src/tf.js"
@@ -144,7 +144,7 @@
       ]
     },
     "src/emotion/emotion.js": {
-      "bytes": 2928,
+      "bytes": 2979,
       "imports": [
         {
           "path": "src/tf.js"
@@ -192,7 +192,7 @@
       ]
     },
     "src/face/facepipeline.js": {
-      "bytes": 13680,
+      "bytes": 13762,
       "imports": [
         {
           "path": "src/tf.js"
@@ -213,7 +213,7 @@
       "imports": []
     },
     "src/gender/gender.js": {
-      "bytes": 3209,
+      "bytes": 3382,
       "imports": [
         {
           "path": "src/tf.js"
@@ -286,7 +286,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15788,
+      "bytes": 16020,
       "imports": [
         {
           "path": "src/tf.js"
@@ -357,7 +357,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 786297
+      "bytes": 785345
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -375,7 +375,7 @@
           "bytesInOutput": 51519
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 12370
+          "bytesInOutput": 12453
         },
         "src/face/facemesh.js": {
           "bytesInOutput": 2461
@@ -384,16 +384,16 @@
           "bytesInOutput": 1118
         },
         "src/age/age.js": {
-          "bytesInOutput": 1830
+          "bytesInOutput": 1563
         },
         "src/gender/gender.js": {
-          "bytesInOutput": 3000
+          "bytesInOutput": 2736
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 2701
+          "bytesInOutput": 2438
         },
         "src/embedding/embedding.js": {
-          "bytesInOutput": 2487
+          "bytesInOutput": 1769
         },
         "src/body/modelBase.js": {
           "bytesInOutput": 866
@@ -465,7 +465,7 @@
           "bytesInOutput": 186
         },
         "config.js": {
-          "bytesInOutput": 2048
+          "bytesInOutput": 2072
         },
         "package.json": {
           "bytesInOutput": 0
@@ -474,13 +474,13 @@
           "bytesInOutput": 23
         },
         "src/human.js": {
-          "bytesInOutput": 13232
+          "bytesInOutput": 13473
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 432856
+      "bytes": 431692
     }
   }
 }

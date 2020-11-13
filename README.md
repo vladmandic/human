@@ -1,6 +1,6 @@
 # Human Library
 
-## 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition
+## 3D Face Detection, Face Embedding & Recognition, Body Pose Tracking, Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction & Gesture Recognition
 
 <br>
 
@@ -12,18 +12,20 @@
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
 - [**Change Log**](https://github.com/vladmandic/human/wiki/Change-Log)
 
-<br>
-
 ### Wiki pages:
 
 - [**Home**](https://github.com/vladmandic/human/wiki)
 - [**Demos**](https://github.com/vladmandic/human/wiki/Demos)
 - [**Installation**](https://github.com/vladmandic/human/wiki/Install)
-- [**Usage**](https://github.com/vladmandic/human/wiki/Usage)
-- [**Configuration**](https://github.com/vladmandic/human/wiki/Configuration)
-- [**Outputs**](https://github.com/vladmandic/human/wiki/Outputs)
-- [**Notes on Backends**](https://github.com/vladmandic/human/wiki/Backends)
+- [**Usage & Functions**](https://github.com/vladmandic/human/wiki/Usage)
+- [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration)
+- [**Output Details**](https://github.com/vladmandic/human/wiki/Outputs)
+- [**Face Embedding and Recognition**](https://github.com/vladmandic/human/wiki/Embedding)
 - [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)
+
+### Additional notes:
+
+- [**Notes on Backends**](https://github.com/vladmandic/human/wiki/Backends)
 - [**Development Server**](https://github.com/vladmandic/human/wiki/Development-Server)
 - [**Build Process**](https://github.com/vladmandic/human/wiki/Build-Process)
 - [**List of Models**](https://github.com/vladmandic/human/wiki/Models)
@@ -33,8 +35,8 @@
 
 <br>
 
-Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows and Linux  
-- Browser/WebWorker: Compatible with *CPU*, *WebGL* and *WASM* backends  
+Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows and Linux    
+- Browser/WebWorker: Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  
 - NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
 - (and maybe with React-Native as it doesn't use any DOM objects)  
 

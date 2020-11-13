@@ -1,7 +1,7 @@
 {
   "name": "@vladmandic/human",
   "version": "0.8.8",
-  "description": "human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition",
+  "description": "Human: 3D Face Detection, Face Embedding, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition",
   "sideEffects": false,
   "main": "dist/human.node.js",
   "module": "dist/human.esm.js",
@@ -37,7 +37,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
-    "simple-git": "^2.21.0"
+    "simple-git": "^2.22.0"
   },
   "scripts": {
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
@@ -57,6 +57,8 @@
     "tensorflowjs",
     "face-detection",
     "face-geometry",
+    "face-embedding",
+    "face-recognition",
     "body-tracking",
     "hand-tracking",
     "iris-tracking",

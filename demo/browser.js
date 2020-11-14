@@ -35,9 +35,10 @@ const ui = {
   menuWidth: 0,
   menuHeight: 0,
   camera: {},
-  fps: [],
+  detectFPS: [],
+  drawFPS: [],
   buffered: false,
-  bufferedFPSTarget: 24,
+  bufferedFPSTarget: 0,
   drawThread: null,
   detectThread: null,
   framesDraw: 0,
@@ -86,20 +87,21 @@ async function calcSimmilariry(faces) {
 }
 
 // draws processed results and starts processing of a next frame
+let lastDraw = performance.now();
 async function drawResults(input) {
   const result = lastDetectedResult;
   const canvas = document.getElementById('canvas');
 
-  // update fps data
-  // const elapsed = performance.now() - timeStamp;
-  if (result.performance && result.performance.total) ui.fps.push(1000 / result.performance.total);
-  if (ui.fps.length > ui.maxFPSframes) ui.fps.shift();
+  // update draw fps data
+  ui.drawFPS.push(1000 / (performance.now() - lastDraw));
+  if (ui.drawFPS.length > ui.maxFPSframes) ui.drawFPS.shift();
+  lastDraw = performance.now();
 
   // enable for continous performance monitoring
   // console.log(result.performance);
 
   // draw fps chart
-  await menu.updateChart('FPS', ui.fps);
+  await menu.updateChart('FPS', ui.detectFPS);
 
   // get updated canvas
   if (ui.buffered || !result.canvas) result.canvas = await human.image(input, userConfig);
@@ -128,21 +130,26 @@ async function drawResults(input) {
   const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
   const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : '';
-  const avg = Math.trunc(10 * ui.fps.reduce((a, b) => a + b, 0) / ui.fps.length) / 10;
-  const warning = (ui.fps.length > 5) && (avg < 5) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
+  const avgDetect = Math.trunc(10 * ui.detectFPS.reduce((a, b) => a + b, 0) / ui.detectFPS.length) / 10;
+  const avgDraw = Math.trunc(10 * ui.drawFPS.reduce((a, b) => a + b, 0) / ui.drawFPS.length) / 10;
+  const warning = (ui.detectFPS.length > 5) && (avgDetect < 5) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
   document.getElementById('log').innerHTML = `
     video: ${ui.camera.name} | facing: ${ui.camera.facing} | resolution: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
     backend: ${human.tf.getBackend()} | ${memory}<br>
-    performance: ${str(result.performance)} FPS:${avg}<br>
+    performance: ${str(result.performance)} FPS process:${avgDetect} refresh:${avgDraw}<br>
     ${warning}
   `;
 
   ui.framesDraw++;
   ui.lastFrame = performance.now();
   // if buffered, immediate loop but limit frame rate although it's going to run slower as JS is singlethreaded
-  if (ui.buffered && !ui.drawThread) ui.drawThread = setInterval(() => drawResults(input, canvas), 1000 / ui.bufferedFPSTarget);
-  // stop buffering
-  if (!ui.buffered && ui.drawThread) {
+  if ((ui.bufferedFPSTarget === 0) && ui.buffered) {
+    ui.drawThread = requestAnimationFrame(() => drawResults(input, canvas));
+  } else if ((ui.bufferedFPSTarget === 0) && ui.buffered && !ui.drawThread) {
+    log('starting buffered refresh');
+    if (ui.bufferedFPSTarget > 0) ui.drawThread = setInterval(() => drawResults(input, canvas), 1000 / ui.bufferedFPSTarget);
+  } else if (!ui.buffered && ui.drawThread) {
+    log('stopping buffered refresh');
     clearTimeout(ui.drawThread);
     ui.drawThread = null;
   }
@@ -156,7 +163,6 @@ async function setupCamera() {
   const canvas = document.getElementById('canvas');
   const output = document.getElementById('log');
   const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
-  console.log('camera live', live);
   let msg = '';
   status('setting up camera');
   // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
@@ -208,7 +214,6 @@ async function setupCamera() {
       // silly font resizing for paint-on-canvas since viewport can be zoomed
       const size = 14 + (6 * canvas.width / window.innerWidth);
       ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
-      console.log('camera continue', live);
       if (live) video.play();
       // eslint-disable-next-line no-use-before-define
       if (live && !ui.detectThread) runHumanDetect(video, canvas);
@@ -229,6 +234,8 @@ function webWorker(input, image, canvas, timestamp) {
     worker = new Worker(ui.worker, { type: 'module' });
     // after receiving message from webworker, parse&draw results and send new frame for processing
     worker.addEventListener('message', (msg) => {
+      if (msg.data.result.performance && msg.data.result.performance.total) ui.detectFPS.push(1000 / msg.data.result.performance.total);
+      if (ui.detectFPS.length > ui.maxFPSframes) ui.detectFPS.shift();
       if (ui.bench) bench.end();
       if (ui.bench) bench.nextFrame(timestamp);
       lastDetectedResult = msg.data.result;
@@ -274,6 +281,8 @@ function runHumanDetect(input, canvas, timestamp) {
   } else {
     if (ui.bench) bench.begin();
     human.detect(input, userConfig).then((result) => {
+      if (result.performance && result.performance.total) ui.detectFPS.push(1000 / result.performance.total);
+      if (ui.detectFPS.length > ui.maxFPSframes) ui.detectFPS.shift();
       if (ui.bench) bench.end();
       if (ui.bench) bench.nextFrame(timestamp);
       if (result.error) log(result.error);
@@ -446,7 +455,7 @@ async function setupMonitor() {
     bench = new GLBench(gl, {
       trackGPU: true,
       chartHz: 20,
-      chartLen: 50,
+      chartLen: 20,
     });
   }
   /*

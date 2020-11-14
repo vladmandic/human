@@ -99403,6 +99403,18 @@ class Menu {
 var menu_default = Menu;
 
 // assets/gl-bench.js
+const UICSS = `
+  #gl-bench { position: absolute; right: 1rem; bottom: 1rem; z-index:1000; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
+  #gl-bench div { position: relative; display: block; margin: 4px; padding: 0 7px 0 10px; background: darkslategray; border-radius: 0.2rem; cursor: pointer; opacity: 0.9; }
+  #gl-bench svg { height: 60px; margin: 0 4px 0px 4px; }
+  #gl-bench text { font-size: 16px; font-family: 'Lato', 'Segoe UI'; dominant-baseline: middle; text-anchor: middle; }
+  #gl-bench .gl-mem { font-size: 12px; fill: white; }
+  #gl-bench .gl-fps { font-size: 13px; fill: white; }
+  #gl-bench line { stroke-width: 5; stroke: white; stroke-linecap: round; }
+  #gl-bench polyline { fill: none; stroke: white; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3.5; }
+  #gl-bench rect { fill: black; }
+  #gl-bench .opacity { stroke: black; }
+  `;
 const UISVG = `
   <div class="gl-box">
     <svg viewBox="0 0 55 60">
@@ -99414,26 +99426,14 @@ const UISVG = `
     <svg viewBox="0 0 14 60" class="gl-cpu-svg">
       <line x1="7" y1="38" x2="7" y2="11" class="opacity"/>
       <line x1="7" y1="38" x2="7" y2="11" class="gl-cpu" stroke-dasharray="0 27"/>
-      <path d="M5.35 43c-.464 0-.812.377-.812.812v1.16c-.783.1972-1.421.812-1.595 1.624h-1.16c-.435 0-.812.348-.812.812s.348.812.812.812h1.102v1.653H1.812c-.464 0-.812.377-.812.812 0 .464.377.812.812.812h1.131c.1943.783.812 1.392 1.595 1.595v1.131c0 .464.377.812.812.812.464 0 .812-.377.812-.812V53.15h1.653v1.073c0 .464.377.812.812.812.464 0 .812-.377.812-.812v-1.131c.783-.1943 1.392-.812 1.595-1.595h1.131c.464 0 .812-.377.812-.812 0-.464-.377-.812-.812-.812h-1.073V48.22h1.102c.435 0 .812-.348.812-.812s-.348-.812-.812-.812h-1.16c-.1885-.783-.812-1.421-1.595-1.624v-1.131c0-.464-.377-.812-.812-.812-.464 0-.812.377-.812.812v1.073H6.162v-1.073c0-.464-.377-.812-.812-.812zm.58 3.48h2.088c.754 0 1.363.609 1.363 1.363v2.088c0 .754-.609 1.363-1.363 1.363H5.93c-.754 0-1.363-.609-1.363-1.363v-2.088c0-.754.609-1.363 1.363-1.363z"/>
+      <path d="M5.35 43c-.464 0-.812.377-.812.812v1.16c-.783.1972-1.421.812-1.595 1.624h-1.16c-.435 0-.812.348-.812.812s.348.812.812.812h1.102v1.653H1.812c-.464 0-.812.377-.812.812 0 .464.377.812.812.812h1.131c.1943.783.812 1.392 1.595 1.595v1.131c0 .464.377.812.812.812.464 0 .812-.377.812-.812V53.15h1.653v1.073c0 .464.377.812.812.812.464 0 .812-.377.812-.812v-1.131c.783-.1943 1.392-.812 1.595-1.595h1.131c.464 0 .812-.377.812-.812 0-.464-.377-.812-.812-.812h-1.073V48.22h1.102c.435 0 .812-.348.812-.812s-.348-.812-.812-.812h-1.16c-.1885-.783-.812-1.421-1.595-1.624v-1.131c0-.464-.377-.812-.812-.812-.464 0-.812.377-.812.812v1.073H6.162v-1.073c0-.464-.377-.812-.812-.812zm.58 3.48h2.088c.754 0 1.363.609 1.363 1.363v2.088c0 .754-.609 1.363-1.363 1.363H5.93c-.754 0-1.363-.609-1.363-1.363v-2.088c0-.754.609-1.363 1.363-1.363z" style="fill: grey"></path>
     </svg>
     <svg viewBox="0 0 14 60" class="gl-gpu-svg">
       <line x1="7" y1="38" x2="7" y2="11" class="opacity"/>
       <line x1="7" y1="38" x2="7" y2="11" class="gl-gpu" stroke-dasharray="0 27"/>
-      <path d="M1.94775 43.3772a.736.736 0 10-.00416 1.472c.58535.00231.56465.1288.6348.3197.07015.18975.04933.43585.04933.43585l-.00653.05405v8.671a.736.736 0 101.472 0v-1.4145c.253.09522.52785.1495.81765.1495h5.267c1.2535 0 2.254-.9752 2.254-2.185v-3.105c0-1.2075-1.00625-2.185-2.254-2.185h-5.267c-.28865 0-.5635.05405-.8165.1495.01806-.16445.04209-.598-.1357-1.0787-.22425-.6072-.9499-1.2765-2.0125-1.2765zm2.9095 3.6455c.42435 0 .7659.36225.7659.8119v2.9785c0 .44965-.34155.8119-.7659.8119s-.7659-.36225-.7659-.8119v-2.9785c0-.44965.34155-.8119.7659-.8119zm4.117 0a2.3 2.3 0 012.3 2.3 2.3 2.3 0 01-2.3 2.3 2.3 2.3 0 01-2.3-2.3 2.3 2.3 0 012.3-2.3z"/>
+      <path d="M1.94775 43.3772a.736.736 0 10-.00416 1.472c.58535.00231.56465.1288.6348.3197.07015.18975.04933.43585.04933.43585l-.00653.05405v8.671a.736.736 0 101.472 0v-1.4145c.253.09522.52785.1495.81765.1495h5.267c1.2535 0 2.254-.9752 2.254-2.185v-3.105c0-1.2075-1.00625-2.185-2.254-2.185h-5.267c-.28865 0-.5635.05405-.8165.1495.01806-.16445.04209-.598-.1357-1.0787-.22425-.6072-.9499-1.2765-2.0125-1.2765zm2.9095 3.6455c.42435 0 .7659.36225.7659.8119v2.9785c0 .44965-.34155.8119-.7659.8119s-.7659-.36225-.7659-.8119v-2.9785c0-.44965.34155-.8119.7659-.8119zm4.117 0a2.3 2.3 0 012.3 2.3 2.3 2.3 0 01-2.3 2.3 2.3 2.3 0 01-2.3-2.3 2.3 2.3 0 012.3-2.3z" style="fill: grey"></path>
     </svg>
   </div>
-  `;
-const UICSS = `
-  #gl-bench { position: absolute; right:0; bottom:0; z-index:1000; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
-  #gl-bench div { position: relative; display: block; margin: 4px; padding: 0 7px 0 10px; background: darkslategray; border-radius: 0.2rem; cursor: pointer; opacity: 0.9; }
-  #gl-bench svg { height: 60px; margin: 0 -1px; }
-  #gl-bench text { font-size: 12px; font-family: Helvetica,Arial,sans-serif; font-weight: 700; dominant-baseline: middle; text-anchor: middle; }
-  #gl-bench .gl-mem { font-size: 9px; fill: white; }
-  #gl-bench .gl-fps { font-size: 10px; fill: white; }
-  #gl-bench line { stroke-width: 5; stroke: white; stroke-linecap: round; }
-  #gl-bench polyline { fill: none; stroke: white; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3.5; }
-  #gl-bench rect { fill: black; }
-  #gl-bench .opacity { stroke: black; }
   `;
 class GLBench {
   constructor(gl, settings = {}) {
@@ -99452,17 +99452,17 @@ class GLBench {
     this.chart = new Array(this.chartLen);
     this.now = () => performance && performance.now ? performance.now() : Date.now();
     this.updateUI = () => {
-      [].forEach.call(this.nodes["gl-gpu-svg"], (node) => {
-        node.style.display = this.trackGPU ? "inline" : "none";
-      });
+      [].forEach.call(this.nodes["gl-gpu-svg"], (node) => node.style.display = this.trackGPU ? "inline" : "none");
     };
     Object.assign(this, settings);
     this.detected = 0;
     this.finished = [];
     this.isFramebuffer = 0;
     this.frameId = 0;
-    let rafId, n = 0, t0;
-    let loop = (t) => {
+    let rafId;
+    let n = 0;
+    let t0;
+    const loop = (t) => {
       if (++n < 20) {
         rafId = requestAnimationFrame(loop);
       } else {
@@ -99488,32 +99488,24 @@ class GLBench {
         if (self2.trackGPU)
           self2.finished.push(glFinish(t, self2.activeAccums.slice(0)));
       };
-      [
-        "drawArrays",
-        "drawElements",
-        "drawArraysInstanced",
-        "drawBuffers",
-        "drawElementsInstanced",
-        "drawRangeElements"
-      ].forEach((fn) => {
+      ["drawArrays", "drawElements", "drawArraysInstanced", "drawBuffers", "drawElementsInstanced", "drawRangeElements"].forEach((fn) => {
         if (gl[fn])
           gl[fn] = addProfiler(gl[fn], this, gl);
       });
       gl.getExtension = ((fn, self2) => function() {
-        let ext = fn.apply(gl, arguments);
-        if (ext) {
+        const ext = fn.apply(gl, arguments);
+        if (ext)
           ["drawElementsInstancedANGLE", "drawBuffersWEBGL"].forEach((fn2) => {
             if (ext[fn2])
               ext[fn2] = addProfiler(ext[fn2], self2, ext);
           });
-        }
         return ext;
       })(gl.getExtension, this);
     }
     if (!this.withoutUI) {
       if (!this.dom)
         this.dom = document.body;
-      let elm = document.createElement("div");
+      const elm = document.createElement("div");
       elm.id = "gl-bench";
       this.dom.appendChild(elm);
       this.dom.insertAdjacentHTML("afterbegin", '<style id="gl-bench-style">' + this.css + "</style>");
@@ -99524,7 +99516,7 @@ class GLBench {
       });
       this.paramLogger = ((logger, dom, names) => {
         const classes = ["gl-cpu", "gl-gpu", "gl-mem", "gl-fps", "gl-gpu-svg", "gl-chart"];
-        const nodes = Object.assign({}, classes);
+        const nodes = {...classes};
         classes.forEach((c) => nodes[c] = dom.getElementsByClassName(c));
         this.nodes = nodes;
         return (i, cpu, gpu, mem, fps, totalTime, frameId) => {
@@ -99536,15 +99528,14 @@ class GLBench {
         };
       })(this.paramLogger, this.dom, this.names);
       this.chartLogger = ((logger, dom) => {
-        let nodes = {"gl-chart": dom.getElementsByClassName("gl-chart")};
+        const nodes = {"gl-chart": dom.getElementsByClassName("gl-chart")};
         return (i, chart, circularId) => {
           let points = "";
-          let len = chart.length;
-          for (let i2 = 0; i2 < len; i2++) {
-            let id = (circularId + i2 + 1) % len;
-            if (chart[id] != void 0) {
-              points = points + " " + (55 * i2 / (len - 1)).toFixed(1) + "," + (45 - chart[id] * 22 / 60 / this.detected).toFixed(1);
-            }
+          const len = chart.length;
+          for (let j = 0; j < len; j++) {
+            const id = (circularId + j + 1) % len;
+            if (chart[id] !== void 0)
+              points = points + " " + (55 * j / (len - 1)).toFixed(1) + "," + (45 - chart[id] * 22 / 60 / this.detected).toFixed(1);
           }
           nodes["gl-chart"][i].setAttribute("points", points);
           logger(this.names[i], chart, circularId);
@@ -99553,7 +99544,7 @@ class GLBench {
     }
   }
   addUI(name) {
-    if (this.names.indexOf(name) == -1) {
+    if (this.names.indexOf(name) === -1) {
       this.names.push(name);
       if (this.dom) {
         this.dom.insertAdjacentHTML("beforeend", this.svg);
@@ -99566,17 +99557,19 @@ class GLBench {
   }
   nextFrame(now3) {
     this.frameId++;
-    const t = now3 ? now3 : this.now();
+    const t = now3 || this.now();
     if (this.frameId <= 1) {
       this.paramFrame = this.frameId;
       this.paramTime = t;
     } else {
-      let duration = t - this.paramTime;
+      const duration = t - this.paramTime;
       if (duration >= 1e3) {
         const frameCount = this.frameId - this.paramFrame;
         const fps = frameCount / duration * 1e3;
         for (let i = 0; i < this.names.length; i++) {
-          const cpu = this.cpuAccums[i] / duration * 100, gpu = this.gpuAccums[i] / duration * 100, mem = performance && performance.memory ? performance.memory.usedJSHeapSize / (1 << 20) : 0;
+          const cpu = this.cpuAccums[i] / duration * 100;
+          const gpu = this.gpuAccums[i] / duration * 100;
+          const mem = performance && performance.memory ? performance.memory.usedJSHeapSize / (1 << 20) : 0;
           this.paramLogger(i, cpu, gpu, mem, fps, duration, frameCount);
           this.cpuAccums[i] = 0;
           Promise.all(this.finished).then(() => {
@@ -99593,15 +99586,14 @@ class GLBench {
       this.chartTime = t;
       this.circularId = 0;
     } else {
-      let timespan = t - this.chartTime;
+      const timespan = t - this.chartTime;
       let hz = this.chartHz * timespan / 1e3;
       while (--hz > 0 && this.detected) {
         const frameCount = this.frameId - this.chartFrame;
         const fps = frameCount / timespan * 1e3;
         this.chart[this.circularId % this.chartLen] = fps;
-        for (let i = 0; i < this.names.length; i++) {
+        for (let i = 0; i < this.names.length; i++)
           this.chartLogger(i, this.chart, this.circularId);
-        }
         this.circularId++;
         this.chartFrame = this.frameId;
         this.chartTime = t;
@@ -99616,16 +99608,15 @@ class GLBench {
   }
   updateAccums(name) {
     let nameId = this.names.indexOf(name);
-    if (nameId == -1) {
+    if (nameId === -1) {
       nameId = this.names.length;
       this.addUI(name);
     }
     const t = this.now();
     const dt = t - this.t0;
     for (let i = 0; i < nameId + 1; i++) {
-      if (this.activeAccums[i]) {
+      if (this.activeAccums[i])
         this.cpuAccums[i] += dt;
-      }
     }
     this.activeAccums[nameId] = !this.activeAccums[nameId];
     this.t0 = t;
@@ -99663,9 +99654,10 @@ const ui = {
   menuWidth: 0,
   menuHeight: 0,
   camera: {},
-  fps: [],
+  detectFPS: [],
+  drawFPS: [],
   buffered: false,
-  bufferedFPSTarget: 24,
+  bufferedFPSTarget: 0,
   drawThread: null,
   detectThread: null,
   framesDraw: 0,
@@ -99708,14 +99700,15 @@ async function calcSimmilariry(faces) {
     document.getElementById("simmilarity").innerText = `simmilarity: ${Math.trunc(1e3 * simmilarity) / 10}%`;
   }
 }
+let lastDraw = performance.now();
 async function drawResults(input) {
   const result = lastDetectedResult;
   const canvas = document.getElementById("canvas");
-  if (result.performance && result.performance.total)
-    ui.fps.push(1e3 / result.performance.total);
-  if (ui.fps.length > ui.maxFPSframes)
-    ui.fps.shift();
-  await menu2.updateChart("FPS", ui.fps);
+  ui.drawFPS.push(1e3 / (performance.now() - lastDraw));
+  if (ui.drawFPS.length > ui.maxFPSframes)
+    ui.drawFPS.shift();
+  lastDraw = performance.now();
+  await menu2.updateChart("FPS", ui.detectFPS);
   if (ui.buffered || !result.canvas)
     result.canvas = await human.image(input, userConfig);
   const ctx = canvas.getContext("2d");
@@ -99739,19 +99732,25 @@ async function drawResults(input) {
   const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : "";
   const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : "";
-  const avg = Math.trunc(10 * ui.fps.reduce((a, b) => a + b, 0) / ui.fps.length) / 10;
-  const warning = ui.fps.length > 5 && avg < 5 ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : "";
+  const avgDetect = Math.trunc(10 * ui.detectFPS.reduce((a, b) => a + b, 0) / ui.detectFPS.length) / 10;
+  const avgDraw = Math.trunc(10 * ui.drawFPS.reduce((a, b) => a + b, 0) / ui.drawFPS.length) / 10;
+  const warning = ui.detectFPS.length > 5 && avgDetect < 5 ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : "";
   document.getElementById("log").innerHTML = `
     video: ${ui.camera.name} | facing: ${ui.camera.facing} | resolution: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
     backend: ${human.tf.getBackend()} | ${memory}<br>
-    performance: ${str(result.performance)} FPS:${avg}<br>
+    performance: ${str(result.performance)} FPS process:${avgDetect} refresh:${avgDraw}<br>
     ${warning}
   `;
   ui.framesDraw++;
   ui.lastFrame = performance.now();
-  if (ui.buffered && !ui.drawThread)
-    ui.drawThread = setInterval(() => drawResults(input, canvas), 1e3 / ui.bufferedFPSTarget);
-  if (!ui.buffered && ui.drawThread) {
+  if (ui.bufferedFPSTarget === 0 && ui.buffered) {
+    ui.drawThread = requestAnimationFrame(() => drawResults(input, canvas));
+  } else if (ui.bufferedFPSTarget === 0 && ui.buffered && !ui.drawThread) {
+    log2("starting buffered refresh");
+    if (ui.bufferedFPSTarget > 0)
+      ui.drawThread = setInterval(() => drawResults(input, canvas), 1e3 / ui.bufferedFPSTarget);
+  } else if (!ui.buffered && ui.drawThread) {
+    log2("stopping buffered refresh");
     clearTimeout(ui.drawThread);
     ui.drawThread = null;
   }
@@ -99765,7 +99764,6 @@ async function setupCamera() {
   const canvas = document.getElementById("canvas");
   const output = document.getElementById("log");
   const live = video.srcObject ? video.srcObject.getVideoTracks()[0].readyState === "live" && video.readyState > 2 && !video.paused : false;
-  console.log("camera live", live);
   let msg = "";
   status("setting up camera");
   if (!navigator.mediaDevices) {
@@ -99819,7 +99817,6 @@ ${msg}`;
       ui.menuHeight.input.setAttribute("value", video.height);
       const size = 14 + 6 * canvas.width / window.innerWidth;
       ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
-      console.log("camera continue", live);
       if (live)
         video.play();
       if (live && !ui.detectThread)
@@ -99835,6 +99832,10 @@ function webWorker(input, image2, canvas, timestamp) {
     log2("creating worker thread");
     worker = new Worker(ui.worker, {type: "module"});
     worker.addEventListener("message", (msg) => {
+      if (msg.data.result.performance && msg.data.result.performance.total)
+        ui.detectFPS.push(1e3 / msg.data.result.performance.total);
+      if (ui.detectFPS.length > ui.maxFPSframes)
+        ui.detectFPS.shift();
       if (ui.bench)
         bench.end();
       if (ui.bench)
@@ -99882,6 +99883,10 @@ function runHumanDetect(input, canvas, timestamp) {
     if (ui.bench)
       bench.begin();
     human.detect(input, userConfig).then((result) => {
+      if (result.performance && result.performance.total)
+        ui.detectFPS.push(1e3 / result.performance.total);
+      if (ui.detectFPS.length > ui.maxFPSframes)
+        ui.detectFPS.shift();
       if (ui.bench)
         bench.end();
       if (ui.bench)
@@ -100049,7 +100054,7 @@ async function setupMonitor() {
     bench = new gl_bench_default(gl, {
       trackGPU: true,
       chartHz: 20,
-      chartLen: 50
+      chartLen: 20
     });
   }
 }

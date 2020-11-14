@@ -28,10 +28,9 @@
 - [**Notes on Backends**](https://github.com/vladmandic/human/wiki/Backends)
 - [**Development Server**](https://github.com/vladmandic/human/wiki/Development-Server)
 - [**Build Process**](https://github.com/vladmandic/human/wiki/Build-Process)
-- [**List of Models**](https://github.com/vladmandic/human/wiki/Models)
 - [**Performance Notes**](https://github.com/vladmandic/human/wiki/Performance)
 - [**Performance Profiling**](https://github.com/vladmandic/human/wiki/Profiling)
-- [**Credits**](https://github.com/vladmandic/human/wiki/Credits)
+- [**List of Models && Credits**](https://github.com/vladmandic/human/wiki/Models)
 
 <br>
 

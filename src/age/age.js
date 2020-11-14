@@ -16,7 +16,7 @@ async function load(config) {
 
 async function predict(image, config) {
   if (!models.age) return null;
-  if ((frame < config.face.age.skipFrames) && last.age && (last.age > 0)) {
+  if ((frame < config.face.age.skipFrames) && config.videoOptimized && last.age && (last.age > 0)) {
     frame += 1;
     return last;
   }

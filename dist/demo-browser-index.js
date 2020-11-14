@@ -69764,7 +69764,7 @@ var require_facepipeline = __commonJS((exports) => {
       this.skipped++;
       let useFreshBox = false;
       let detector;
-      if (this.skipped > config2.detector.skipFrames || !config2.mesh.enabled) {
+      if (this.skipped > config2.detector.skipFrames || !config2.mesh.enabled || !config2.videoOptimized) {
         detector = await this.boundingBoxDetector.getBoundingBoxes(input);
         if (input.shape[1] !== 255 && input.shape[2] !== 255)
           this.skipped = 0;
@@ -69985,7 +69985,7 @@ var require_age = __commonJS((exports) => {
   async function predict2(image2, config2) {
     if (!models.age)
       return null;
-    if (frame < config2.face.age.skipFrames && last.age && last.age > 0) {
+    if (frame < config2.face.age.skipFrames && config2.videoOptimized && last.age && last.age > 0) {
       frame += 1;
       return last;
     }
@@ -70036,7 +70036,7 @@ var require_gender = __commonJS((exports) => {
   async function predict2(image2, config2) {
     if (!models.gender)
       return null;
-    if (frame < config2.face.gender.skipFrames && last.gender !== "") {
+    if (frame < config2.face.gender.skipFrames && config2.videoOptimized && last.gender !== "") {
       frame += 1;
       return last;
     }
@@ -70111,7 +70111,7 @@ var require_emotion = __commonJS((exports) => {
   async function predict2(image2, config2) {
     if (!models.emotion)
       return null;
-    if (frame < config2.face.emotion.skipFrames && last.length > 0) {
+    if (frame < config2.face.emotion.skipFrames && config2.videoOptimized && last.length > 0) {
       frame += 1;
       return last;
     }
@@ -70882,7 +70882,7 @@ var require_handpipeline = __commonJS((exports) => {
       this.skipped++;
       let useFreshBox = false;
       let boxes;
-      if (this.skipped > config2.skipFrames || !config2.landmarks) {
+      if (this.skipped > config2.skipFrames || !config2.landmarks || !config2.videoOptimized) {
         boxes = await this.boxDetector.estimateHandBounds(image2, config2);
         if (image2.shape[1] !== 255 && image2.shape[2] !== 255)
           this.skipped = 0;
@@ -98511,11 +98511,7 @@ var config_default = {
     }
   }
 };
-var version3 = "0.9.0";
-const disableSkipFrames = {
-  face: {detector: {skipFrames: 0}, age: {skipFrames: 0}, gender: {skipFrames: 0}, emotion: {skipFrames: 0}},
-  hand: {skipFrames: 0}
-};
+var version3 = "0.9.1";
 const now2 = () => {
   if (typeof performance !== "undefined")
     return performance.now();
@@ -98782,8 +98778,6 @@ class Human {
       this.state = "config";
       let timeStamp;
       this.config = mergeDeep(this.config, userConfig2);
-      if (!this.config.videoOptimized)
-        this.config = mergeDeep(this.config, disableSkipFrames);
       this.state = "check";
       const error = this.sanity(input);
       if (error) {
@@ -99673,6 +99667,7 @@ const ui = {
   buffered: false,
   bufferedFPSTarget: 24,
   drawThread: null,
+  detectThread: null,
   framesDraw: 0,
   framesDetect: 0,
   bench: false
@@ -99770,6 +99765,7 @@ async function setupCamera() {
   const canvas = document.getElementById("canvas");
   const output = document.getElementById("log");
   const live = video.srcObject ? video.srcObject.getVideoTracks()[0].readyState === "live" && video.readyState > 2 && !video.paused : false;
+  console.log("camera live", live);
   let msg = "";
   status("setting up camera");
   if (!navigator.mediaDevices) {
@@ -99823,8 +99819,11 @@ ${msg}`;
       ui.menuHeight.input.setAttribute("value", video.height);
       const size = 14 + 6 * canvas.width / window.innerWidth;
       ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
+      console.log("camera continue", live);
       if (live)
         video.play();
+      if (live && !ui.detectThread)
+        runHumanDetect(video, canvas);
       ui.busy = false;
       status("");
       resolve(video);
@@ -99844,7 +99843,7 @@ function webWorker(input, image2, canvas, timestamp) {
       ui.framesDetect++;
       if (!ui.drawThread)
         drawResults(input);
-      requestAnimationFrame((now3) => runHumanDetect(input, canvas, now3));
+      ui.detectThread = requestAnimationFrame((now3) => runHumanDetect(input, canvas, now3));
     });
   }
   if (ui.bench)
@@ -99857,7 +99856,10 @@ function runHumanDetect(input, canvas, timestamp) {
   if (!live && input.srcObject) {
     if (ui.drawThread)
       clearTimeout(ui.drawThread);
+    if (ui.detectThread)
+      cancelAnimationFrame(ui.detectThread);
     ui.drawThread = null;
+    ui.detectThread = null;
     if (input.paused)
       log2("camera paused");
     else if (input.srcObject.getVideoTracks()[0].readyState === "live" && input.readyState <= 2)
@@ -99891,7 +99893,7 @@ function runHumanDetect(input, canvas, timestamp) {
         if (!ui.drawThread)
           drawResults(input);
         ui.framesDetect++;
-        requestAnimationFrame((now3) => runHumanDetect(input, canvas, now3));
+        ui.detectThread = requestAnimationFrame((now3) => runHumanDetect(input, canvas, now3));
       }
     });
   }
@@ -99939,7 +99941,8 @@ async function detectVideo() {
     status("");
     video.play();
   }
-  runHumanDetect(video, canvas);
+  if (!ui.detectThread)
+    runHumanDetect(video, canvas);
 }
 async function detectSampleImages() {
   document.getElementById("play").style.display = "none";

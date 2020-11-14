@@ -134,7 +134,7 @@ class Pipeline {
     let useFreshBox = false;
     // run new detector every skipFrames unless we only want box to start with
     let detector;
-    if ((this.skipped > config.detector.skipFrames) || !config.mesh.enabled) {
+    if ((this.skipped > config.detector.skipFrames) || !config.mesh.enabled || !config.videoOptimized) {
       detector = await this.boundingBoxDetector.getBoundingBoxes(input);
       // don't reset on test image
       if ((input.shape[1] !== 255) && (input.shape[2] !== 255)) this.skipped = 0;

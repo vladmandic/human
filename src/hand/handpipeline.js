@@ -89,7 +89,7 @@ class HandPipeline {
 
     // run new detector every skipFrames unless we only want box to start with
     let boxes;
-    if ((this.skipped > config.skipFrames) || !config.landmarks) {
+    if ((this.skipped > config.skipFrames) || !config.landmarks || !config.videoOptimized) {
       boxes = await this.boxDetector.estimateHandBounds(image, config);
       // don't reset on test image
       if ((image.shape[1] !== 255) && (image.shape[2] !== 255)) this.skipped = 0;

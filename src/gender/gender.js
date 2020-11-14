@@ -21,7 +21,7 @@ async function load(config) {
 
 async function predict(image, config) {
   if (!models.gender) return null;
-  if ((frame < config.face.gender.skipFrames) && last.gender !== '') {
+  if ((frame < config.face.gender.skipFrames) && config.videoOptimized && last.gender !== '') {
     frame += 1;
     return last;
   }

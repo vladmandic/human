@@ -12,11 +12,6 @@ import * as profile from './profile.js';
 import * as config from '../config.js';
 import * as app from '../package.json';
 
-// static config override for non-video detection
-const disableSkipFrames = {
-  face: { detector: { skipFrames: 0 }, age: { skipFrames: 0 }, gender: { skipFrames: 0 }, emotion: { skipFrames: 0 } }, hand: { skipFrames: 0 },
-};
-
 // helper function: gets elapsed time on both browser and nodejs
 const now = () => {
   if (typeof performance !== 'undefined') return performance.now();
@@ -327,7 +322,6 @@ class Human {
 
       // update configuration
       this.config = mergeDeep(this.config, userConfig);
-      if (!this.config.videoOptimized) this.config = mergeDeep(this.config, disableSkipFrames);
 
       // sanity checks
       this.state = 'check';

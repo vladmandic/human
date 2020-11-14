@@ -69792,7 +69792,7 @@ return a / b;`;
         this.skipped++;
         let useFreshBox = false;
         let detector;
-        if (this.skipped > config.detector.skipFrames || !config.mesh.enabled) {
+        if (this.skipped > config.detector.skipFrames || !config.mesh.enabled || !config.videoOptimized) {
           detector = await this.boundingBoxDetector.getBoundingBoxes(input);
           if (input.shape[1] !== 255 && input.shape[2] !== 255)
             this.skipped = 0;
@@ -70019,7 +70019,7 @@ return a / b;`;
     async function predict(image, config) {
       if (!models.age)
         return null;
-      if (frame < config.face.age.skipFrames && last.age && last.age > 0) {
+      if (frame < config.face.age.skipFrames && config.videoOptimized && last.age && last.age > 0) {
         frame += 1;
         return last;
       }
@@ -70072,7 +70072,7 @@ return a / b;`;
     async function predict(image, config) {
       if (!models.gender)
         return null;
-      if (frame < config.face.gender.skipFrames && last.gender !== "") {
+      if (frame < config.face.gender.skipFrames && config.videoOptimized && last.gender !== "") {
         frame += 1;
         return last;
       }
@@ -70149,7 +70149,7 @@ return a / b;`;
     async function predict(image, config) {
       if (!models.emotion)
         return null;
-      if (frame < config.face.emotion.skipFrames && last.length > 0) {
+      if (frame < config.face.emotion.skipFrames && config.videoOptimized && last.length > 0) {
         frame += 1;
         return last;
       }
@@ -70948,7 +70948,7 @@ return a / b;`;
         this.skipped++;
         let useFreshBox = false;
         let boxes;
-        if (this.skipped > config.skipFrames || !config.landmarks) {
+        if (this.skipped > config.skipFrames || !config.landmarks || !config.videoOptimized) {
           boxes = await this.boxDetector.estimateHandBounds(image, config);
           if (image.shape[1] !== 255 && image.shape[2] !== 255)
             this.skipped = 0;
@@ -89691,10 +89691,6 @@ return a / b;`;
     const gesture = __toModule(require_gesture());
     const image = __toModule(require_image());
     const profile = __toModule(require_profile());
-    const disableSkipFrames = {
-      face: {detector: {skipFrames: 0}, age: {skipFrames: 0}, gender: {skipFrames: 0}, emotion: {skipFrames: 0}},
-      hand: {skipFrames: 0}
-    };
     const now2 = () => {
       if (typeof performance !== "undefined")
         return performance.now();
@@ -89961,8 +89957,6 @@ return a / b;`;
           this.state = "config";
           let timeStamp;
           this.config = mergeDeep(this.config, userConfig);
-          if (!this.config.videoOptimized)
-            this.config = mergeDeep(this.config, disableSkipFrames);
           this.state = "check";
           const error = this.sanity(input);
           if (error) {
@@ -99241,7 +99235,7 @@ return a / b;`;
   };
 
   // package.json
-  var version3 = "0.9.0";
+  var version3 = "0.9.2";
   return require_human();
 })();
 //# sourceMappingURL=human.js.map

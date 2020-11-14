@@ -4218,7 +4218,7 @@ var require_facepipeline = __commonJS((exports) => {
       this.skipped++;
       let useFreshBox = false;
       let detector;
-      if (this.skipped > config2.detector.skipFrames || !config2.mesh.enabled) {
+      if (this.skipped > config2.detector.skipFrames || !config2.mesh.enabled || !config2.videoOptimized) {
         detector = await this.boundingBoxDetector.getBoundingBoxes(input);
         if (input.shape[1] !== 255 && input.shape[2] !== 255)
           this.skipped = 0;
@@ -4445,7 +4445,7 @@ var require_age = __commonJS((exports) => {
   async function predict2(image2, config2) {
     if (!models.age)
       return null;
-    if (frame < config2.face.age.skipFrames && last.age && last.age > 0) {
+    if (frame < config2.face.age.skipFrames && config2.videoOptimized && last.age && last.age > 0) {
       frame += 1;
       return last;
     }
@@ -4498,7 +4498,7 @@ var require_gender = __commonJS((exports) => {
   async function predict2(image2, config2) {
     if (!models.gender)
       return null;
-    if (frame < config2.face.gender.skipFrames && last.gender !== "") {
+    if (frame < config2.face.gender.skipFrames && config2.videoOptimized && last.gender !== "") {
       frame += 1;
       return last;
     }
@@ -4575,7 +4575,7 @@ var require_emotion = __commonJS((exports) => {
   async function predict2(image2, config2) {
     if (!models.emotion)
       return null;
-    if (frame < config2.face.emotion.skipFrames && last.length > 0) {
+    if (frame < config2.face.emotion.skipFrames && config2.videoOptimized && last.length > 0) {
       frame += 1;
       return last;
     }
@@ -5374,7 +5374,7 @@ var require_handpipeline = __commonJS((exports) => {
       this.skipped++;
       let useFreshBox = false;
       let boxes;
-      if (this.skipped > config2.skipFrames || !config2.landmarks) {
+      if (this.skipped > config2.skipFrames || !config2.landmarks || !config2.videoOptimized) {
         boxes = await this.boxDetector.estimateHandBounds(image2, config2);
         if (image2.shape[1] !== 255 && image2.shape[2] !== 255)
           this.skipped = 0;
@@ -24384,13 +24384,9 @@ var config_default = {
 };
 
 // package.json
-var version = "0.9.0";
+var version = "0.9.2";
 
 // src/human.js
-const disableSkipFrames = {
-  face: {detector: {skipFrames: 0}, age: {skipFrames: 0}, gender: {skipFrames: 0}, emotion: {skipFrames: 0}},
-  hand: {skipFrames: 0}
-};
 const now = () => {
   if (typeof performance !== "undefined")
     return performance.now();
@@ -24657,8 +24653,6 @@ class Human {
       this.state = "config";
       let timeStamp;
       this.config = mergeDeep(this.config, userConfig);
-      if (!this.config.videoOptimized)
-        this.config = mergeDeep(this.config, disableSkipFrames);
       this.state = "check";
       const error = this.sanity(input);
       if (error) {

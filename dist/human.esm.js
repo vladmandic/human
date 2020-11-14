@@ -98884,7 +98884,7 @@ var config_default = {
 };
 
 // package.json
-var version3 = "0.9.1";
+var version3 = "0.9.2";
 
 // src/human.js
 const now2 = () => {

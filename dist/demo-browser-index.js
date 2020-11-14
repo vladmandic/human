@@ -98511,7 +98511,7 @@ var config_default = {
     }
   }
 };
-var version3 = "0.9.1";
+var version3 = "0.9.2";
 const now2 = () => {
   if (typeof performance !== "undefined")
     return performance.now();

@@ -30,7 +30,7 @@
 - [**Build Process**](https://github.com/vladmandic/human/wiki/Build-Process)
 - [**Performance Notes**](https://github.com/vladmandic/human/wiki/Performance)
 - [**Performance Profiling**](https://github.com/vladmandic/human/wiki/Profiling)
-- [**List of Models && Credits**](https://github.com/vladmandic/human/wiki/Models)
+- [**List of Models & Credits**](https://github.com/vladmandic/human/wiki/Models)
 
 <br>
 

@@ -21,7 +21,7 @@ async function load(config) {
 
 async function predict(image, config) {
   if (!models.emotion) return null;
-  if ((frame < config.face.emotion.skipFrames) && (last.length > 0)) {
+  if ((frame < config.face.emotion.skipFrames) && config.videoOptimized && (last.length > 0)) {
     frame += 1;
     return last;
   }

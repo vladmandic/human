@@ -39,6 +39,7 @@ const ui = {
   buffered: false,
   bufferedFPSTarget: 24,
   drawThread: null,
+  detectThread: null,
   framesDraw: 0,
   framesDetect: 0,
   bench: false,
@@ -155,6 +156,7 @@ async function setupCamera() {
   const canvas = document.getElementById('canvas');
   const output = document.getElementById('log');
   const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
+  console.log('camera live', live);
   let msg = '';
   status('setting up camera');
   // setup webcam. note that navigator.mediaDevices requires that page is accessed via https
@@ -206,7 +208,10 @@ async function setupCamera() {
       // silly font resizing for paint-on-canvas since viewport can be zoomed
       const size = 14 + (6 * canvas.width / window.innerWidth);
       ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
+      console.log('camera continue', live);
       if (live) video.play();
+      // eslint-disable-next-line no-use-before-define
+      if (live && !ui.detectThread) runHumanDetect(video, canvas);
       ui.busy = false;
       // do once more because onresize events can be delayed or skipped
       // if (video.width > window.innerWidth) await setupCamera();
@@ -230,7 +235,7 @@ function webWorker(input, image, canvas, timestamp) {
       ui.framesDetect++;
       if (!ui.drawThread) drawResults(input);
       // eslint-disable-next-line no-use-before-define
-      requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
+      ui.detectThread = requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
     });
   }
   // pass image data as arraybuffer to worker by reference to avoid copy
@@ -245,7 +250,9 @@ function runHumanDetect(input, canvas, timestamp) {
   if (!live && input.srcObject) {
     // stop ui refresh
     if (ui.drawThread) clearTimeout(ui.drawThread);
+    if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
     ui.drawThread = null;
+    ui.detectThread = null;
     // if we want to continue and camera not ready, retry in 0.5sec, else just give up
     if (input.paused) log('camera paused');
     else if ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
@@ -274,7 +281,7 @@ function runHumanDetect(input, canvas, timestamp) {
         lastDetectedResult = result;
         if (!ui.drawThread) drawResults(input);
         ui.framesDetect++;
-        requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
+        ui.detectThread = requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
       }
     });
   }
@@ -326,7 +333,7 @@ async function detectVideo() {
     status('');
     video.play();
   }
-  runHumanDetect(video, canvas);
+  if (!ui.detectThread) runHumanDetect(video, canvas);
 }
 
 // just initialize everything and call main function

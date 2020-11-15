@@ -182,7 +182,7 @@ class Human {
       /* debug mode is really too mcuh
       tf.enableDebugMode();
       */
-      if (this.config.backend === 'webgl') {
+      if (tf.getBackend() === 'webgl') {
         if (this.config.deallocate) {
           this.log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
           tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);

@@ -247,7 +247,7 @@ function webWorker(input, image, canvas, timestamp) {
   }
   // pass image data as arraybuffer to worker by reference to avoid copy
   if (ui.bench) bench.begin();
-  worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height }, [image.data.buffer]);
+  worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, userConfig }, [image.data.buffer]);
 }
 
 // main processing function when input is webcam, can use direct invocation or web worker
@@ -272,7 +272,10 @@ function runHumanDetect(input, canvas, timestamp) {
   status('');
   if (ui.useWorker) {
     // get image data from video as we cannot send html objects to webworker
-    const offscreen = new OffscreenCanvas(canvas.width, canvas.height);
+    const offscreen = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(canvas.width, canvas.height) : document.createElement('canvas');
+    offscreen.width = canvas.width;
+    offscreen.height = canvas.height;
+
     const ctx = offscreen.getContext('2d');
     ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -475,12 +478,12 @@ async function main() {
   document.getElementById('log').innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
   // human.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
   // this is not required, just pre-loads all models
-  if (ui.modelsPreload) {
+  if (ui.modelsPreload && !ui.useWorker) {
     status('loading');
     await human.load(userConfig);
   }
   // this is not required, just pre-warms all models for faster initial inference
-  if (ui.modelsWarmup) {
+  if (ui.modelsWarmup && !ui.useWorker) {
     status('initializing');
     sample = await human.warmup(userConfig, document.getElementById('sample-image'));
   }

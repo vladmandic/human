@@ -24540,17 +24540,17 @@ class Human {
     const timeStamp = now();
     if (this.config.backend && this.config.backend !== "" && force || tf.getBackend() !== this.config.backend) {
       this.state = "backend";
-      this.log("setting backend:", this.config.backend);
-      if (this.config.backend === "wasm") {
-        this.log("settings wasm path:", this.config.wasmPath);
-        dist.setWasmPaths(this.config.wasmPath);
+      this.log("settings wasm path:", this.config.wasmPath);
+      dist.setWasmPaths(this.config.wasmPath);
+      this.log("setting backend:", this.config.backend, "current:", tf.getBackend());
+      if (tf.getBackend() === "wasm") {
         const simd = await tf.env().getAsync("WASM_HAS_SIMD_SUPPORT");
         if (!simd)
           this.log("warning: wasm simd support is not enabled");
       }
       await tf.setBackend(this.config.backend);
       tf.enableProdMode();
-      if (this.config.backend === "webgl") {
+      if (tf.getBackend() === "webgl") {
         if (this.config.deallocate) {
           this.log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", this.config.deallocate);
           tf.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", this.config.deallocate ? 0 : -1);

@@ -286,7 +286,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15697,
+      "bytes": 15714,
       "imports": [
         {
           "path": "src/tf.js"
@@ -357,7 +357,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 784354
+      "bytes": 784414
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -474,13 +474,13 @@
           "bytesInOutput": 23
         },
         "src/human.js": {
-          "bytesInOutput": 13204
+          "bytesInOutput": 13221
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 431555
+      "bytes": 431572
     }
   }
 }

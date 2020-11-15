@@ -98665,7 +98665,7 @@ class Human {
       }
       await tf.setBackend(this.config.backend);
       tf.enableProdMode();
-      if (this.config.backend === "webgl") {
+      if (tf.getBackend() === "webgl") {
         if (this.config.deallocate) {
           this.log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", this.config.deallocate);
           tf.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", this.config.deallocate ? 0 : -1);
@@ -99849,7 +99849,7 @@ function webWorker(input, image2, canvas, timestamp) {
   }
   if (ui.bench)
     bench.begin();
-  worker.postMessage({image: image2.data.buffer, width: canvas.width, height: canvas.height}, [image2.data.buffer]);
+  worker.postMessage({image: image2.data.buffer, width: canvas.width, height: canvas.height, userConfig}, [image2.data.buffer]);
 }
 function runHumanDetect(input, canvas, timestamp) {
   var _a;
@@ -99874,7 +99874,9 @@ function runHumanDetect(input, canvas, timestamp) {
   }
   status("");
   if (ui.useWorker) {
-    const offscreen = new OffscreenCanvas(canvas.width, canvas.height);
+    const offscreen = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(canvas.width, canvas.height) : document.createElement("canvas");
+    offscreen.width = canvas.width;
+    offscreen.height = canvas.height;
     const ctx = offscreen.getContext("2d");
     ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -100063,11 +100065,11 @@ async function main() {
   setupMenu();
   setupMonitor();
   document.getElementById("log").innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
-  if (ui.modelsPreload) {
+  if (ui.modelsPreload && !ui.useWorker) {
     status("loading");
     await human.load(userConfig);
   }
-  if (ui.modelsWarmup) {
+  if (ui.modelsWarmup && !ui.useWorker) {
     status("initializing");
     sample = await human.warmup(userConfig, document.getElementById("sample-image"));
   }

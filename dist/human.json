@@ -12597,7 +12597,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15697,
+      "bytes": 15714,
       "imports": [
         {
           "path": "src/tf.js"
@@ -12695,7 +12695,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5449363
+      "bytes": 5449388
     },
     "dist/human.js": {
       "imports": [],
@@ -12815,7 +12815,7 @@
           "bytesInOutput": 5588
         },
         "src/human.js": {
-          "bytesInOutput": 15237
+          "bytesInOutput": 15254
         },
         "src/tf.js": {
           "bytesInOutput": 46
@@ -13427,7 +13427,7 @@
           "bytesInOutput": 26
         }
       },
-      "bytes": 3646040
+      "bytes": 3646057
     }
   }
 }

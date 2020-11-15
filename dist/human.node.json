@@ -286,7 +286,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15697,
+      "bytes": 15714,
       "imports": [
         {
           "path": "src/tf.js"
@@ -357,7 +357,7 @@
     "dist/human.node-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 800532
+      "bytes": 800609
     },
     "dist/human.node-nobundle.js": {
       "imports": [],
@@ -477,10 +477,10 @@
           "bytesInOutput": 23
         },
         "src/human.js": {
-          "bytesInOutput": 13209
+          "bytesInOutput": 13226
         }
       },
-      "bytes": 431911
+      "bytes": 431928
     }
   }
 }

@@ -99040,7 +99040,7 @@ class Human {
       }
       await tf.setBackend(this.config.backend);
       tf.enableProdMode();
-      if (this.config.backend === "webgl") {
+      if (tf.getBackend() === "webgl") {
         if (this.config.deallocate) {
           this.log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", this.config.deallocate);
           tf.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", this.config.deallocate ? 0 : -1);

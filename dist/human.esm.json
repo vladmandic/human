@@ -12597,7 +12597,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15697,
+      "bytes": 15693,
       "imports": [
         {
           "path": "src/tf.js"
@@ -12695,7 +12695,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5476328
+      "bytes": 5476313
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -13430,13 +13430,13 @@
           "bytesInOutput": 24
         },
         "src/human.js": {
-          "bytesInOutput": 13232
+          "bytesInOutput": 13228
         },
         "src/human.js": {
           "bytesInOutput": 0
         }
       },
-      "bytes": 3455902
+      "bytes": 3455898
     }
   }
 }

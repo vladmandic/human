@@ -47,10 +47,10 @@
     "build-iife": "esbuild --bundle --minify-whitespace --platform=browser --sourcemap --target=es2018 --format=iife --external:fs --external:buffer --external:util --global-name=Human --metafile=dist/human.json --outfile=dist/human.js src/human.js",
     "build-esm-bundle": "esbuild --bundle --minify-whitespace --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --external:buffer --external:util --metafile=dist/human.esm.json --outfile=dist/human.esm.js src/human.js",
     "build-esm-nobundle": "esbuild --bundle --minify-whitespace --platform=browser --sourcemap --target=es2018 --format=esm --external:@tensorflow --external:fs --external:buffer --external:util --metafile=dist/human.esm-nobundle.json --outfile=dist/human.esm-nobundle.js src/human.js",
-    "build-node": "esbuild --bundle --minify-whitespace --platform=node --sourcemap --target=es2018 --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js",
+    "build-node-bundle": "esbuild --bundle --minify-whitespace --platform=node --sourcemap --target=es2018 --format=cjs --metafile=dist/human.node.json --outfile=dist/human.node.js src/human.js",
     "build-node-nobundle": "esbuild --bundle --minify-whitespace --platform=node --sourcemap --target=es2018 --format=cjs --external:@tensorflow --metafile=dist/human.node.json --outfile=dist/human.node-nobundle.js src/human.js",
     "build-demo": "esbuild --bundle --minify-whitespace --log-level=error --platform=browser --sourcemap --target=es2018 --format=esm --external:fs --external:buffer --external:util --metafile=dist/demo-browser-index.json --outfile=dist/demo-browser-index.js demo/browser.js",
-    "build": "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node && npm run build-node-nobundle && npm run build-demo && npm run changelog",
+    "build": "rimraf dist/* && npm run build-iife && npm run build-esm-bundle && npm run build-esm-nobundle && npm run build-node-bundle && npm run build-node-nobundle && npm run build-demo && npm run changelog",
     "update": "npm update --depth 20 --force && npm dedupe && npm prune && npm audit"
   },
   "keywords": [

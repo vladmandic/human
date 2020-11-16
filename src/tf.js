@@ -3,7 +3,8 @@ import * as tf from '@tensorflow/tfjs/dist/tf.es2017.js';
 import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm/dist/index.js';
 
 const loadGraphModel = tf.loadGraphModel;
-export { tf, setWasmPaths, loadGraphModel };
+// const setWasmPaths = tf.setWasmPaths;
+export { tf, loadGraphModel, setWasmPaths };
 
 // modular: bundle 4.2M
 /*

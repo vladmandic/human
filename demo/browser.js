@@ -67,8 +67,10 @@ function str(...msg) {
 
 // helper function: wrapper around console output
 const log = (...msg) => {
+  const dt = new Date();
+  const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
   // eslint-disable-next-line no-console
-  if (ui.console) console.log(...msg);
+  if (ui.console) console.log(ts, ...msg);
 };
 
 const status = (msg) => {
@@ -472,7 +474,7 @@ async function setupMonitor() {
 }
 
 async function main() {
-  log('Human: demo starting ...');
+  log('demo starting ...');
   setupMenu();
   setupMonitor();
   document.getElementById('log').innerText = `Human: version ${human.version} TensorFlow/JS: version ${human.tf.version_core}`;
@@ -490,6 +492,7 @@ async function main() {
   status('human: ready');
   document.getElementById('loader').style.display = 'none';
   document.getElementById('play').style.display = 'block';
+  log('ready');
 }
 
 window.onload = main;

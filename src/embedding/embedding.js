@@ -1,4 +1,4 @@
-import { tf, loadGraphModel } from '../tf.js';
+import { tf } from '../tf.js';
 import * as profile from '../profile.js';
 
 // based on https://github.com/sirius-ai/MobileFaceNet_TF
@@ -8,7 +8,7 @@ const models = {};
 
 async function load(config) {
   if (!models.embedding) {
-    models.embedding = await loadGraphModel(config.face.embedding.modelPath);
+    models.embedding = await tf.loadGraphModel(config.face.embedding.modelPath);
     // eslint-disable-next-line no-console
     console.log(`Human: load model: ${config.face.embedding.modelPath.match(/\/(.*)\./)[1]}`);
   }

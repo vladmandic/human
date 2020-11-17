@@ -9,7 +9,7 @@
       "imports": []
     },
     "src/age/age.js": {
-      "bytes": 1966,
+      "bytes": 1953,
       "imports": [
         {
           "path": "src/tf.js"
@@ -80,7 +80,7 @@
       ]
     },
     "src/body/modelPoseNet.js": {
-      "bytes": 1922,
+      "bytes": 1913,
       "imports": [
         {
           "path": "src/tf.js"
@@ -133,7 +133,7 @@
       ]
     },
     "src/embedding/embedding.js": {
-      "bytes": 2105,
+      "bytes": 2092,
       "imports": [
         {
           "path": "src/tf.js"
@@ -144,7 +144,7 @@
       ]
     },
     "src/emotion/emotion.js": {
-      "bytes": 3004,
+      "bytes": 2991,
       "imports": [
         {
           "path": "src/tf.js"
@@ -155,7 +155,7 @@
       ]
     },
     "src/face/blazeface.js": {
-      "bytes": 6941,
+      "bytes": 6928,
       "imports": [
         {
           "path": "src/tf.js"
@@ -175,7 +175,7 @@
       "imports": []
     },
     "src/face/facemesh.js": {
-      "bytes": 2471,
+      "bytes": 2461,
       "imports": [
         {
           "path": "src/tf.js"
@@ -213,7 +213,7 @@
       "imports": []
     },
     "src/gender/gender.js": {
-      "bytes": 3407,
+      "bytes": 3394,
       "imports": [
         {
           "path": "src/tf.js"
@@ -265,7 +265,7 @@
       ]
     },
     "src/hand/handpose.js": {
-      "bytes": 3026,
+      "bytes": 3020,
       "imports": [
         {
           "path": "src/tf.js"
@@ -286,7 +286,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15693,
+      "bytes": 15690,
       "imports": [
         {
           "path": "src/tf.js"
@@ -349,7 +349,7 @@
       "imports": []
     },
     "src/tf.js": {
-      "bytes": 1178,
+      "bytes": 200,
       "imports": []
     }
   },
@@ -357,7 +357,7 @@
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 670719
+      "bytes": 669648
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -366,7 +366,7 @@
       ],
       "inputs": {
         "src/face/blazeface.js": {
-          "bytesInOutput": 5445
+          "bytesInOutput": 5448
         },
         "src/face/box.js": {
           "bytesInOutput": 1666
@@ -381,22 +381,22 @@
           "bytesInOutput": 9779
         },
         "src/face/facemesh.js": {
-          "bytesInOutput": 1938
+          "bytesInOutput": 1944
         },
         "src/profile.js": {
           "bytesInOutput": 895
         },
         "src/age/age.js": {
-          "bytesInOutput": 1209
+          "bytesInOutput": 1212
         },
         "src/gender/gender.js": {
-          "bytesInOutput": 2029
+          "bytesInOutput": 2032
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1881
+          "bytesInOutput": 1884
         },
         "src/embedding/embedding.js": {
-          "bytesInOutput": 1403
+          "bytesInOutput": 1404
         },
         "src/body/modelBase.js": {
           "bytesInOutput": 640
@@ -426,7 +426,7 @@
           "bytesInOutput": 1955
         },
         "src/body/modelPoseNet.js": {
-          "bytesInOutput": 1668
+          "bytesInOutput": 1671
         },
         "src/body/posenet.js": {
           "bytesInOutput": 863
@@ -441,7 +441,7 @@
           "bytesInOutput": 127037
         },
         "src/hand/handpose.js": {
-          "bytesInOutput": 1825
+          "bytesInOutput": 1831
         },
         "src/gesture.js": {
           "bytesInOutput": 2328
@@ -453,10 +453,10 @@
           "bytesInOutput": 4061
         },
         "src/tf.js": {
-          "bytesInOutput": 163
+          "bytesInOutput": 115
         },
         "src/human.js": {
-          "bytesInOutput": 10583
+          "bytesInOutput": 10588
         },
         "src/hand/box.js": {
           "bytesInOutput": 1979
@@ -471,7 +471,7 @@
           "bytesInOutput": 20
         }
       },
-      "bytes": 250185
+      "bytes": 250170
     }
   }
 }

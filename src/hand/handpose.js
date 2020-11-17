@@ -16,7 +16,7 @@
  */
 // https://storage.googleapis.com/tfjs-models/demos/handpose/index.html
 
-import { loadGraphModel } from '../tf.js';
+import { tf } from '../tf.js';
 import * as handdetector from './handdetector';
 import * as pipeline from './handpipeline';
 import * as anchors from './anchors';
@@ -69,8 +69,8 @@ exports.HandPose = HandPose;
 
 async function load(config) {
   const [handDetectorModel, handPoseModel] = await Promise.all([
-    loadGraphModel(config.detector.modelPath, { fromTFHub: config.detector.modelPath.includes('tfhub.dev') }),
-    loadGraphModel(config.skeleton.modelPath, { fromTFHub: config.skeleton.modelPath.includes('tfhub.dev') }),
+    tf.loadGraphModel(config.detector.modelPath, { fromTFHub: config.detector.modelPath.includes('tfhub.dev') }),
+    tf.loadGraphModel(config.skeleton.modelPath, { fromTFHub: config.skeleton.modelPath.includes('tfhub.dev') }),
   ]);
   const detector = new handdetector.HandDetector(handDetectorModel, config.inputSize, anchors.anchors);
   const pipe = new pipeline.HandPipeline(detector, handPoseModel, config.inputSize);

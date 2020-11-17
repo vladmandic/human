@@ -331,7 +331,7 @@ async function processImage(input) {
 
 // just initialize everything and call main function
 async function detectVideo() {
-  human.config.videoOptimized = true;
+  userConfig.videoOptimized = true;
   document.getElementById('samples-container').style.display = 'none';
   document.getElementById('canvas').style.display = 'block';
   const video = document.getElementById('video');
@@ -353,7 +353,7 @@ async function detectVideo() {
 // just initialize everything and call main function
 async function detectSampleImages() {
   document.getElementById('play').style.display = 'none';
-  human.config.videoOptimized = false;
+  userConfig.videoOptimized = false;
   const size = 12 + Math.trunc(12 * ui.columns * window.innerWidth / document.body.clientWidth);
   ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
   ui.baseLineHeight = ui.baseLineHeightProto * ui.columns;

@@ -55,14 +55,14 @@ class HandDetector {
     const rawBoxes = tf.slice(predictions, [0, 1], [-1, 4]);
     const boxes = this.normalizeBoxes(rawBoxes);
     rawBoxes.dispose();
-    const filteredT = await tf.image.nonMaxSuppressionAsync(boxes, scores, config.maxHands, config.iouThreshold, config.scoreThreshold);
+    const filteredT = await tf.image.nonMaxSuppressionAsync(boxes, scores, config.hand.maxHands, config.hand.iouThreshold, config.hand.scoreThreshold);
     const filtered = filteredT.arraySync();
 
     scores.dispose();
     filteredT.dispose();
     const hands = [];
     for (const boxIndex of filtered) {
-      if (scoresVal[boxIndex] >= config.minConfidence) {
+      if (scoresVal[boxIndex] >= config.hand.minConfidence) {
         const matchingBox = tf.slice(boxes, [boxIndex, 0], [1, -1]);
         const rawPalmLandmarks = tf.slice(predictions, [boxIndex, 5], [1, 14]);
         const palmLandmarks = tf.tidy(() => this.normalizeLandmarks(rawPalmLandmarks, boxIndex).reshape([-1, 2]));
@@ -78,7 +78,7 @@ class HandDetector {
   async estimateHandBounds(input, config) {
     const inputHeight = input.shape[1];
     const inputWidth = input.shape[2];
-    const image = tf.tidy(() => input.resizeBilinear([config.inputSize, config.inputSize]).div(127.5).sub(1));
+    const image = tf.tidy(() => input.resizeBilinear([config.hand.inputSize, config.hand.inputSize]).div(127.5).sub(1));
     const predictions = await this.getBoxes(image, config);
     image.dispose();
     if (!predictions || predictions.length === 0) return null;
@@ -90,7 +90,7 @@ class HandDetector {
       const palmLandmarks = prediction.palmLandmarks.arraySync();
       prediction.box.dispose();
       prediction.palmLandmarks.dispose();
-      hands.push(box.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks, confidence: prediction.confidence }, [inputWidth / config.inputSize, inputHeight / config.inputSize]));
+      hands.push(box.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks, confidence: prediction.confidence }, [inputWidth / config.hand.inputSize, inputHeight / config.hand.inputSize]));
     }
     return hands;
   }

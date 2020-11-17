@@ -4,15 +4,19 @@
       "bytes": 8721,
       "imports": []
     },
+    "dist/tfjs.esm.js": {
+      "bytes": 1586281,
+      "imports": []
+    },
     "package.json": {
       "bytes": 2021,
       "imports": []
     },
     "src/age/age.js": {
-      "bytes": 1953,
+      "bytes": 1967,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/profile.js"
@@ -61,18 +65,18 @@
       "imports": []
     },
     "src/body/modelBase.js": {
-      "bytes": 874,
+      "bytes": 888,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         }
       ]
     },
     "src/body/modelMobileNet.js": {
-      "bytes": 584,
+      "bytes": 598,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/body/modelBase.js"
@@ -80,10 +84,10 @@
       ]
     },
     "src/body/modelPoseNet.js": {
-      "bytes": 1913,
+      "bytes": 1927,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/body/modelMobileNet.js"
@@ -133,10 +137,10 @@
       ]
     },
     "src/embedding/embedding.js": {
-      "bytes": 2092,
+      "bytes": 2106,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/profile.js"
@@ -144,10 +148,10 @@
       ]
     },
     "src/emotion/emotion.js": {
-      "bytes": 2991,
+      "bytes": 3005,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/profile.js"
@@ -155,18 +159,18 @@
       ]
     },
     "src/face/blazeface.js": {
-      "bytes": 6928,
+      "bytes": 6942,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         }
       ]
     },
     "src/face/box.js": {
-      "bytes": 1920,
+      "bytes": 1934,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         }
       ]
     },
@@ -175,10 +179,10 @@
       "imports": []
     },
     "src/face/facemesh.js": {
-      "bytes": 2461,
+      "bytes": 2475,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/face/blazeface.js"
@@ -192,10 +196,10 @@
       ]
     },
     "src/face/facepipeline.js": {
-      "bytes": 13788,
+      "bytes": 13802,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/face/box.js"
@@ -213,10 +217,10 @@
       "imports": []
     },
     "src/gender/gender.js": {
-      "bytes": 3394,
+      "bytes": 3408,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/profile.js"
@@ -232,18 +236,18 @@
       "imports": []
     },
     "src/hand/box.js": {
-      "bytes": 3211,
+      "bytes": 3225,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         }
       ]
     },
     "src/hand/handdetector.js": {
-      "bytes": 4221,
+      "bytes": 4235,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/hand/box.js"
@@ -251,10 +255,10 @@
       ]
     },
     "src/hand/handpipeline.js": {
-      "bytes": 7558,
+      "bytes": 7572,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/hand/box.js"
@@ -265,10 +269,10 @@
       ]
     },
     "src/hand/handpose.js": {
-      "bytes": 3020,
+      "bytes": 3034,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/hand/handdetector.js"
@@ -286,10 +290,10 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15690,
+      "bytes": 15702,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/face/facemesh.js"
@@ -330,10 +334,10 @@
       ]
     },
     "src/image.js": {
-      "bytes": 5688,
+      "bytes": 5700,
       "imports": [
         {
-          "path": "src/tf.js"
+          "path": "dist/tfjs.esm.js"
         },
         {
           "path": "src/imagefx.js"
@@ -347,17 +351,13 @@
     "src/profile.js": {
       "bytes": 1061,
       "imports": []
-    },
-    "src/tf.js": {
-      "bytes": 200,
-      "imports": []
     }
   },
   "outputs": {
     "dist/human.esm-nobundle.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 669648
+      "bytes": 2912224
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
@@ -366,10 +366,10 @@
       ],
       "inputs": {
         "src/face/blazeface.js": {
-          "bytesInOutput": 5448
+          "bytesInOutput": 5797
         },
         "src/face/box.js": {
-          "bytesInOutput": 1666
+          "bytesInOutput": 1677
         },
         "src/face/util.js": {
           "bytesInOutput": 2480
@@ -378,34 +378,34 @@
           "bytesInOutput": 30878
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 9779
+          "bytesInOutput": 9895
         },
         "src/face/facemesh.js": {
-          "bytesInOutput": 1944
+          "bytesInOutput": 1983
         },
         "src/profile.js": {
-          "bytesInOutput": 895
+          "bytesInOutput": 897
         },
         "src/age/age.js": {
-          "bytesInOutput": 1212
+          "bytesInOutput": 1271
         },
         "src/gender/gender.js": {
-          "bytesInOutput": 2032
+          "bytesInOutput": 2157
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1884
+          "bytesInOutput": 2001
         },
         "src/embedding/embedding.js": {
-          "bytesInOutput": 1404
+          "bytesInOutput": 1452
         },
         "src/body/modelBase.js": {
-          "bytesInOutput": 640
+          "bytesInOutput": 655
         },
         "src/body/modelMobileNet.js": {
-          "bytesInOutput": 387
+          "bytesInOutput": 411
         },
         "src/body/heapSort.js": {
-          "bytesInOutput": 1145
+          "bytesInOutput": 1147
         },
         "src/body/buildParts.js": {
           "bytesInOutput": 1353
@@ -414,7 +414,7 @@
           "bytesInOutput": 1822
         },
         "src/body/vectors.js": {
-          "bytesInOutput": 1079
+          "bytesInOutput": 1095
         },
         "src/body/decodePose.js": {
           "bytesInOutput": 3229
@@ -423,55 +423,55 @@
           "bytesInOutput": 1732
         },
         "src/body/util.js": {
-          "bytesInOutput": 1955
+          "bytesInOutput": 1958
         },
         "src/body/modelPoseNet.js": {
-          "bytesInOutput": 1671
+          "bytesInOutput": 1686
         },
         "src/body/posenet.js": {
           "bytesInOutput": 863
         },
         "src/hand/handdetector.js": {
-          "bytesInOutput": 2929
+          "bytesInOutput": 3234
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 4885
+          "bytesInOutput": 4912
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 127037
         },
         "src/hand/handpose.js": {
-          "bytesInOutput": 1831
+          "bytesInOutput": 1855
         },
         "src/gesture.js": {
           "bytesInOutput": 2328
         },
         "src/imagefx.js": {
-          "bytesInOutput": 13872
+          "bytesInOutput": 13892
         },
         "src/image.js": {
-          "bytesInOutput": 4061
+          "bytesInOutput": 4143
         },
-        "src/tf.js": {
-          "bytesInOutput": 115
+        "dist/tfjs.esm.js": {
+          "bytesInOutput": 1579998
         },
         "src/human.js": {
-          "bytesInOutput": 10588
+          "bytesInOutput": 10836
         },
         "src/hand/box.js": {
-          "bytesInOutput": 1979
+          "bytesInOutput": 1990
         },
         "src/hand/util.js": {
-          "bytesInOutput": 1854
+          "bytesInOutput": 1860
         },
         "config.js": {
           "bytesInOutput": 1431
         },
         "package.json": {
-          "bytesInOutput": 20
+          "bytesInOutput": 21
         }
       },
-      "bytes": 250170
+      "bytes": 1838231
     }
   }
 }

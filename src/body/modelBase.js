@@ -1,4 +1,4 @@
-import { tf } from '../tf.js';
+import { tf } from '../../dist/tfjs.esm.js';
 
 class BaseModel {
   constructor(model, outputStride) {

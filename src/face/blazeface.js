@@ -1,4 +1,4 @@
-import { tf } from '../tf.js';
+import { tf } from '../../dist/tfjs.esm.js';
 
 const NUM_LANDMARKS = 6;
 

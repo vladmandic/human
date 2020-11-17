@@ -1,4 +1,4 @@
-import { tf } from '../tf.js';
+import { tf } from '../../dist/tfjs.esm.js';
 import * as modelBase from './modelBase';
 
 class MobileNet extends modelBase.BaseModel {

@@ -1,5 +1,6 @@
 #!/usr/bin/env -S node --trace-warnings
 
+const fs = require('fs');
 const esbuild = require('esbuild');
 const log = require('@vladmandic/pilogger');
 
@@ -13,6 +14,15 @@ const common = {
   sourcemap: true,
   logLevel: 'error',
   target: 'es2018',
+};
+
+const tfjs = {
+  platform: 'browser',
+  format: 'esm',
+  metafile: 'dist/tfjs.esm.json',
+  entryPoints: ['src/tf.js'],
+  outfile: 'dist/tfjs.esm.js',
+  external: ['fs', 'buffer', 'util'],
 };
 
 // all build targets
@@ -67,16 +77,51 @@ const config = {
   },
 };
 
+async function getStats(metafile) {
+  const stats = {};
+  if (!fs.existsSync(metafile)) return stats;
+  const data = fs.readFileSync(metafile);
+  const json = JSON.parse(data);
+  if (json && json.inputs && json.outputs) {
+    for (const [key, val] of Object.entries(json.inputs)) {
+      if (key.startsWith('node_modules')) {
+        stats.modules = (stats.modules || 0) + 1;
+        stats.moduleBytes = (stats.moduleBytes || 0) + val.bytes;
+      } else {
+        stats.imports = (stats.imports || 0) + 1;
+        stats.importBytes = (stats.importBytes || 0) + val.bytes;
+      }
+    }
+    const files = [];
+    for (const [key, val] of Object.entries(json.outputs)) {
+      if (!key.endsWith('.map')) {
+        // stats.outputs += 1;
+        files.push(key);
+        stats.outputBytes = (stats.outputBytes || 0) + val.bytes;
+      }
+    }
+    stats.outputFiles = files.join(', ');
+  }
+  return stats;
+}
+
 // rebuild on file change
 async function build(f, msg) {
-  log.info('Build: file', msg, f);
+  log.info('Build: file', msg, f, 'target:', common.target);
   if (!es) es = await esbuild.startService();
   // common build options
   try {
+    // rebuild tfjs
+    if (f.endsWith('tf.js') || !module.parent) {
+      await es.build({ ...common, ...tfjs });
+      const stats = await getStats(tfjs.metafile);
+      log.state('Build:', stats);
+    }
     // rebuild all targets
     for (const [target, options] of Object.entries(config)) {
       await es.build({ ...common, ...options });
-      log.state('Build complete:', target);
+      const stats = await getStats(options.metafile, target);
+      log.state('Build:', stats);
     }
     if (!module.parent) process.exit(0);
   } catch (err) {

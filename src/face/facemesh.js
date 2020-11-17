@@ -1,4 +1,4 @@
-import { tf } from '../tf.js';
+import { tf } from '../../dist/tfjs.esm.js';
 import * as blazeface from './blazeface.js';
 import * as pipe from './facepipeline.js';
 import * as coords from './coords.js';

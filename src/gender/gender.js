@@ -1,4 +1,4 @@
-import { tf, loadGraphModel } from '../tf.js';
+import { tf } from '../tf.js';
 import * as profile from '../profile.js';
 
 const models = {};
@@ -11,7 +11,7 @@ const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when 
 
 async function load(config) {
   if (!models.gender) {
-    models.gender = await loadGraphModel(config.face.gender.modelPath);
+    models.gender = await tf.loadGraphModel(config.face.gender.modelPath);
     alternative = models.gender.inputs[0].shape[3] === 1;
     // eslint-disable-next-line no-console
     console.log(`Human: load model: ${config.face.gender.modelPath.match(/\/(.*)\./)[1]}`);

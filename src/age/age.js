@@ -1,4 +1,4 @@
-import { tf, loadGraphModel } from '../tf.js';
+import { tf } from '../tf.js';
 import * as profile from '../profile.js';
 
 const models = {};
@@ -7,7 +7,7 @@ let frame = Number.MAX_SAFE_INTEGER;
 
 async function load(config) {
   if (!models.age) {
-    models.age = await loadGraphModel(config.face.age.modelPath);
+    models.age = await tf.loadGraphModel(config.face.age.modelPath);
     // eslint-disable-next-line no-console
     console.log(`Human: load model: ${config.face.age.modelPath.match(/\/(.*)\./)[1]}`);
   }

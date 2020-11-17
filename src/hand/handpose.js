@@ -69,16 +69,16 @@ exports.HandPose = HandPose;
 
 async function load(config) {
   const [handDetectorModel, handPoseModel] = await Promise.all([
-    tf.loadGraphModel(config.detector.modelPath, { fromTFHub: config.detector.modelPath.includes('tfhub.dev') }),
-    tf.loadGraphModel(config.skeleton.modelPath, { fromTFHub: config.skeleton.modelPath.includes('tfhub.dev') }),
+    tf.loadGraphModel(config.hand.detector.modelPath, { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }),
+    tf.loadGraphModel(config.hand.skeleton.modelPath, { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }),
   ]);
-  const detector = new handdetector.HandDetector(handDetectorModel, config.inputSize, anchors.anchors);
-  const pipe = new pipeline.HandPipeline(detector, handPoseModel, config.inputSize);
+  const detector = new handdetector.HandDetector(handDetectorModel, config.hand.inputSize, anchors.anchors);
+  const pipe = new pipeline.HandPipeline(detector, handPoseModel, config.hand.inputSize);
   const handpose = new HandPose(pipe);
   // eslint-disable-next-line no-console
-  console.log(`Human: load model: ${config.detector.modelPath.match(/\/(.*)\./)[1]}`);
+  console.log(`Human: load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);
   // eslint-disable-next-line no-console
-  console.log(`Human: load model: ${config.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
+  console.log(`Human: load model: ${config.hand.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
   return handpose;
 }
 exports.load = load;

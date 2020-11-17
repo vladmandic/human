@@ -67,9 +67,9 @@ function scaleBoxFromPrediction(face, scaleFactor) {
 class BlazeFaceModel {
   constructor(model, config) {
     this.blazeFaceModel = model;
-    this.width = config.detector.inputSize;
-    this.height = config.detector.inputSize;
-    this.anchorsData = generateAnchors(config.detector.inputSize);
+    this.width = config.face.detector.inputSize;
+    this.height = config.face.detector.inputSize;
+    this.anchorsData = generateAnchors(config.face.detector.inputSize);
     this.anchors = tf.tensor2d(this.anchorsData);
     this.inputSize = tf.tensor1d([this.width, this.height]);
     this.config = config;
@@ -100,7 +100,7 @@ class BlazeFaceModel {
       const scoresOut = tf.sigmoid(logits).squeeze();
       return [prediction, decodedBounds, scoresOut];
     });
-    const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.detector.maxFaces, this.config.detector.iouThreshold, this.config.detector.scoreThreshold);
+    const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxFaces, this.config.face.detector.iouThreshold, this.config.face.detector.scoreThreshold);
     const boxIndices = boxIndicesTensor.arraySync();
     boxIndicesTensor.dispose();
     const boundingBoxesMap = boxIndices.map((boxIndex) => tf.slice(boxes, [boxIndex, 0], [1, -1]));
@@ -115,7 +115,7 @@ class BlazeFaceModel {
     for (const i in boundingBoxes) {
       const boxIndex = boxIndices[i];
       const confidence = scoresVal[boxIndex];
-      if (confidence > this.config.detector.minConfidence) {
+      if (confidence > this.config.face.detector.minConfidence) {
         const box = createBox(boundingBoxes[i]);
         const anchor = this.anchorsData[boxIndex];
         const landmarks = tf.tidy(() => tf.slice(detectedOutputs, [boxIndex, NUM_LANDMARKS - 1], [1, -1]).squeeze().reshape([NUM_LANDMARKS, -1]));
@@ -164,10 +164,10 @@ class BlazeFaceModel {
 }
 
 async function load(config) {
-  const blazeface = await tf.loadGraphModel(config.detector.modelPath, { fromTFHub: config.detector.modelPath.includes('tfhub.dev') });
+  const blazeface = await tf.loadGraphModel(config.face.detector.modelPath, { fromTFHub: config.face.detector.modelPath.includes('tfhub.dev') });
   const model = new BlazeFaceModel(blazeface, config);
   // eslint-disable-next-line no-console
-  console.log(`Human: load model: ${config.detector.modelPath.match(/\/(.*)\./)[1]}`);
+  console.log(`Human: load model: ${config.face.detector.modelPath.match(/\/(.*)\./)[1]}`);
   return model;
 }
 

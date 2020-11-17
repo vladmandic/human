@@ -89,27 +89,27 @@ class HandPipeline {
 
     // run new detector every skipFrames unless we only want box to start with
     let boxes;
-    if ((this.skipped > config.skipFrames) || !config.landmarks || !config.videoOptimized) {
+    if ((this.skipped > config.hand.skipFrames) || !config.hand.landmarks || !config.videoOptimized) {
       boxes = await this.boxDetector.estimateHandBounds(image, config);
       // don't reset on test image
       if ((image.shape[1] !== 255) && (image.shape[2] !== 255)) this.skipped = 0;
     }
 
     // if detector result count doesn't match current working set, use it to reset current working set
-    if (boxes && (boxes.length > 0) && ((boxes.length !== this.detectedHands) && (this.detectedHands !== config.maxHands) || !config.landmarks)) {
+    if (boxes && (boxes.length > 0) && ((boxes.length !== this.detectedHands) && (this.detectedHands !== config.hand.maxHands) || !config.hand.landmarks)) {
       this.storedBoxes = [];
       this.detectedHands = 0;
       for (const possible of boxes) this.storedBoxes.push(possible);
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }
     const hands = [];
-    // console.log(`skipped: ${this.skipped} max: ${config.maxHands} detected: ${this.detectedHands} stored: ${this.storedBoxes.length} new: ${boxes?.length}`);
+    // console.log(`skipped: ${this.skipped} max: ${config.hand.maxHands} detected: ${this.detectedHands} stored: ${this.storedBoxes.length} new: ${boxes?.length}`);
 
     // go through working set of boxes
     for (const i in this.storedBoxes) {
       const currentBox = this.storedBoxes[i];
       if (!currentBox) continue;
-      if (config.landmarks) {
+      if (config.hand.landmarks) {
         const angle = util.computeRotation(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]);
         const palmCenter = box.getBoxCenter(currentBox);
         const palmCenterNormalized = [palmCenter[0] / image.shape[2], palmCenter[1] / image.shape[1]];
@@ -124,7 +124,7 @@ class HandPipeline {
         handImage.dispose();
         const confidenceValue = confidence.dataSync()[0];
         confidence.dispose();
-        if (confidenceValue >= config.minConfidence) {
+        if (confidenceValue >= config.hand.minConfidence) {
           const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
           const rawCoords = keypointsReshaped.arraySync();
           keypoints.dispose();

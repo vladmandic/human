@@ -132,22 +132,22 @@ class Human {
         this.models.posenet,
         this.models.handpose,
       ] = await Promise.all([
-        this.models.facemesh || (this.config.face.enabled ? facemesh.load(this.config.face) : null),
+        this.models.facemesh || (this.config.face.enabled ? facemesh.load(this.config) : null),
         this.models.age || ((this.config.face.enabled && this.config.face.age.enabled) ? age.load(this.config) : null),
         this.models.gender || ((this.config.face.enabled && this.config.face.gender.enabled) ? gender.load(this.config) : null),
         this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
         this.models.embedding || ((this.config.face.enabled && this.config.face.embedding.enabled) ? embedding.load(this.config) : null),
         this.models.posenet || (this.config.body.enabled ? posenet.load(this.config) : null),
-        this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config.hand) : null),
+        this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config) : null),
       ]);
     } else {
-      if (this.config.face.enabled && !this.models.facemesh) this.models.facemesh = await facemesh.load(this.config.face);
+      if (this.config.face.enabled && !this.models.facemesh) this.models.facemesh = await facemesh.load(this.config);
       if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) this.models.age = await age.load(this.config);
       if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) this.models.gender = await gender.load(this.config);
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) this.models.emotion = await emotion.load(this.config);
       if (this.config.face.enabled && this.config.face.embedding.enabled && !this.models.embedding) this.models.embedding = await embedding.load(this.config);
       if (this.config.body.enabled && !this.models.posenet) this.models.posenet = await posenet.load(this.config);
-      if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config.hand);
+      if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config);
     }
     const current = Math.trunc(now() - timeStamp);
     if (current > (this.perf.load || 0)) this.perf.load = current;
@@ -207,7 +207,7 @@ class Human {
     const faceRes = [];
     this.state = 'run:face';
     timeStamp = now();
-    const faces = await this.models.facemesh.estimateFaces(input, this.config.face);
+    const faces = await this.models.facemesh.estimateFaces(input, this.config);
     this.perf.face = Math.trunc(now() - timeStamp);
     for (const face of faces) {
       this.analyze('Get Face');
@@ -378,12 +378,12 @@ class Human {
       // run handpose
       this.analyze('Start Hand:');
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? this.models.handpose.estimateHands(process.tensor, this.config.hand) : [];
+        handRes = this.config.hand.enabled ? this.models.handpose.estimateHands(process.tensor, this.config) : [];
         if (this.perf.hand) delete this.perf.hand;
       } else {
         this.state = 'run:hand';
         timeStamp = now();
-        handRes = this.config.hand.enabled ? await this.models.handpose.estimateHands(process.tensor, this.config.hand) : [];
+        handRes = this.config.hand.enabled ? await this.models.handpose.estimateHands(process.tensor, this.config) : [];
         this.perf.hand = Math.trunc(now() - timeStamp);
       }
       // this.analyze('End Hand:');

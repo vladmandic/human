@@ -10,6 +10,7 @@ let es;
 // common configuration
 const common = {
   minifyWhitespace: true,
+  minifySyntax: true,
   bundle: true,
   sourcemap: true,
   logLevel: 'error',

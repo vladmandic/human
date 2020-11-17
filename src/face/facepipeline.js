@@ -45,9 +45,9 @@ class Pipeline {
     this.boundingBoxDetector = boundingBoxDetector;
     this.meshDetector = meshDetector;
     this.irisModel = irisModel;
-    this.meshWidth = config.mesh.inputSize;
-    this.meshHeight = config.mesh.inputSize;
-    this.irisSize = config.iris.inputSize;
+    this.meshWidth = config.face.mesh.inputSize;
+    this.meshHeight = config.face.mesh.inputSize;
+    this.irisSize = config.face.iris.inputSize;
     this.irisEnlarge = 2.3;
     this.skipped = 1000;
     this.detectedFaces = 0;
@@ -134,14 +134,14 @@ class Pipeline {
     let useFreshBox = false;
     // run new detector every skipFrames unless we only want box to start with
     let detector;
-    if ((this.skipped > config.detector.skipFrames) || !config.mesh.enabled || !config.videoOptimized) {
+    if ((this.skipped > config.face.detector.skipFrames) || !config.face.mesh.enabled || !config.videoOptimized) {
       detector = await this.boundingBoxDetector.getBoundingBoxes(input);
       // don't reset on test image
       if ((input.shape[1] !== 255) && (input.shape[2] !== 255)) this.skipped = 0;
     }
 
     // if detector result count doesn't match current working set, use it to reset current working set
-    if (detector && detector.boxes && (detector.boxes.length > 0) && (!config.mesh.enabled || (detector.boxes.length !== this.detectedFaces) && (this.detectedFaces !== config.detector.maxFaces))) {
+    if (detector && detector.boxes && (detector.boxes.length > 0) && (!config.face.mesh.enabled || (detector.boxes.length !== this.detectedFaces) && (this.detectedFaces !== config.face.detector.maxFaces))) {
       this.storedBoxes = [];
       this.detectedFaces = 0;
       for (const possible of detector.boxes) {
@@ -173,7 +173,7 @@ class Pipeline {
       });
     }
 
-    // console.log(this.skipped, config.detector.skipFrames, this.detectedFaces, config.detector.maxFaces, detector?.boxes.length, this.storedBoxes.length);
+    // console.log(this.skipped, config.face.detector.skipFrames, this.detectedFaces, config.face.detector.maxFaces, detector?.boxes.length, this.storedBoxes.length);
 
     let results = tf.tidy(() => this.storedBoxes.map((box, i) => {
       let angle = 0;
@@ -193,10 +193,10 @@ class Pipeline {
         rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
       }
       const face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshHeight, this.meshWidth]).div(255);
-      const outputFace = config.detector.rotation ? tf.image.rotateWithOffset(face, angle) : face;
+      const outputFace = config.face.detector.rotation ? tf.image.rotateWithOffset(face, angle) : face;
 
       // if we're not going to produce mesh, don't spend time with further processing
-      if (!config.mesh.enabled) {
+      if (!config.face.mesh.enabled) {
         const prediction = {
           coords: null,
           box,
@@ -211,13 +211,13 @@ class Pipeline {
       const [, confidence, contourCoords] = this.meshDetector.predict(face);
       const confidenceVal = confidence.dataSync()[0];
       confidence.dispose();
-      if (confidenceVal < config.detector.minConfidence) {
+      if (confidenceVal < config.face.detector.minConfidence) {
         contourCoords.dispose();
         return null;
       }
       const coordsReshaped = tf.reshape(contourCoords, [-1, 3]);
       let rawCoords = coordsReshaped.arraySync();
-      if (config.iris.enabled) {
+      if (config.face.iris.enabled) {
         const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face, LEFT_EYE_BOUNDS[0], LEFT_EYE_BOUNDS[1], true);
         const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face, RIGHT_EYE_BOUNDS[0], RIGHT_EYE_BOUNDS[1]);
         const eyePredictions = (this.irisModel.predict(tf.concat([leftEyeCrop, rightEyeCrop])));

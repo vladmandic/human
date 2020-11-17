@@ -38,16 +38,14 @@
     "dist/demo-browser-index.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 5414452
+      "bytes": 5414456
     },
     "dist/demo-browser-index.js": {
       "imports": [],
+      "exports": [],
       "inputs": {
         "dist/human.esm.js": {
           "bytesInOutput": 1926649
-        },
-        "dist/human.esm.js": {
-          "bytesInOutput": 0
         },
         "demo/draw.js": {
           "bytesInOutput": 7341

@@ -5,7 +5,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 3763,
+      "bytes": 2021,
       "imports": []
     },
     "src/age/age.js": {
@@ -361,6 +361,9 @@
     },
     "dist/human.esm-nobundle.js": {
       "imports": [],
+      "exports": [
+        "default"
+      ],
       "inputs": {
         "src/face/blazeface.js": {
           "bytesInOutput": 5445
@@ -453,7 +456,7 @@
           "bytesInOutput": 163
         },
         "src/human.js": {
-          "bytesInOutput": 260
+          "bytesInOutput": 10583
         },
         "src/hand/box.js": {
           "bytesInOutput": 1979
@@ -461,23 +464,11 @@
         "src/hand/util.js": {
           "bytesInOutput": 1854
         },
-        "src/human.js": {
-          "bytesInOutput": 174
-        },
         "config.js": {
           "bytesInOutput": 1431
         },
         "package.json": {
-          "bytesInOutput": 0
-        },
-        "package.json": {
           "bytesInOutput": 20
-        },
-        "src/human.js": {
-          "bytesInOutput": 10149
-        },
-        "src/human.js": {
-          "bytesInOutput": 0
         }
       },
       "bytes": 250185

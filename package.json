@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/human",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "Human: 3D Face Detection, Face Embedding & Recognition, Body Pose Tracking, Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction & Gesture Recognition",
   "sideEffects": false,
   "main": "dist/human.node.js",

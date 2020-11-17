@@ -1,4 +1,4 @@
-import { tf, setWasmPaths } from './tf.js';
+import { tf, wasm } from './tf.js';
 import * as facemesh from './face/facemesh.js';
 import * as age from './age/age.js';
 import * as gender from './gender/gender.js';
@@ -172,7 +172,7 @@ class Human {
 
       if (this.config.backend === 'wasm') {
         this.log('settings wasm path:', this.config.wasmPath);
-        setWasmPaths(this.config.wasmPath);
+        wasm.setWasmPaths(this.config.wasmPath);
         const simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
         if (!simd) this.log('warning: wasm simd support is not enabled');
       }

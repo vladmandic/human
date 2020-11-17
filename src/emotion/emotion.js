@@ -1,4 +1,4 @@
-import { tf } from '../tf.js';
+import { tf } from '../../dist/tfjs.esm.js';
 import * as profile from '../profile.js';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surpise', 'neutral'];

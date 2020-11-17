@@ -14,7 +14,7 @@
  * limitations under the License.
  * =============================================================================
  */
-import { tf } from '../tf.js';
+import { tf } from '../../dist/tfjs.esm.js';
 
 function getBoxSize(box) {
   return [

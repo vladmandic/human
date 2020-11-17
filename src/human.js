@@ -1,4 +1,4 @@
-import { tf, wasm } from './tf.js';
+import { tf, wasm } from '../dist/tfjs.esm.js';
 import * as facemesh from './face/facemesh.js';
 import * as age from './age/age.js';
 import * as gender from './gender/gender.js';

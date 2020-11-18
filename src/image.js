@@ -1,4 +1,4 @@
-import { tf } from '../dist/tfjs.esm.js';
+import * as tf from '../dist/tfjs.esm.js';
 import * as fxImage from './imagefx.js';
 
 // internal temp canvases

@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { tf } from '../../dist/tfjs.esm.js';
+import * as tf from '../../dist/tfjs.esm.js';
 import * as bounding from './box';
 import * as util from './util';
 import * as coords from './coords.js';

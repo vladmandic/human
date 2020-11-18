@@ -1,4 +1,4 @@
-import { tf } from '../../dist/tfjs.esm.js';
+import * as tf from '../../dist/tfjs.esm.js';
 import * as kpt from './keypoints';
 
 function getPointsConfidence(heatmapScores, heatMapCoords) {

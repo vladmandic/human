@@ -1,4 +1,4 @@
-import { tf } from '../../dist/tfjs.esm.js';
+import * as tf from '../../dist/tfjs.esm.js';
 import * as modelMobileNet from './modelMobileNet';
 import * as decodeMultiple from './decodeMultiple';
 import * as util from './util';

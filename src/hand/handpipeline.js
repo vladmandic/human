@@ -15,7 +15,7 @@
  * =============================================================================
  */
 
-import { tf } from '../../dist/tfjs.esm.js';
+import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as util from './util';
 

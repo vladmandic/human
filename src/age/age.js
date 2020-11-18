@@ -1,4 +1,4 @@
-import { tf } from '../../dist/tfjs.esm.js';
+import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile.js';
 
 const models = {};

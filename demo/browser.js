@@ -136,7 +136,7 @@ async function drawResults(input) {
   const avgDraw = Math.trunc(10 * ui.drawFPS.reduce((a, b) => a + b, 0) / ui.drawFPS.length) / 10;
   const warning = (ui.detectFPS.length > 5) && (avgDetect < 5) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
   document.getElementById('log').innerHTML = `
-    video: ${ui.camera.name} | facing: ${ui.camera.facing} | resolution: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
+    video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
     backend: ${human.tf.getBackend()} | ${memory}<br>
     performance: ${str(result.performance)} FPS process:${avgDetect} refresh:${avgDraw}<br>
     ${warning}
@@ -178,16 +178,11 @@ async function setupCamera() {
   let stream;
   const constraints = {
     audio: false,
-    video: {
-      facingMode: ui.facing ? 'user' : 'environment',
-      resizeMode: ui.crop ? 'crop-and-scale' : 'none',
-      width: { ideal: window.innerWidth },
-      height: { ideal: window.innerHeight },
-    },
+    video: { facingMode: ui.facing ? 'user' : 'environment', resizeMode: ui.crop ? 'crop-and-scale' : 'none' },
   };
+  if (window.innerWidth > window.innerHeight) constraints.video.width = { ideal: window.innerWidth };
+  else constraints.video.height = { ideal: window.innerHeight };
   try {
-    // if (window.innerWidth > window.innerHeight) constraints.video.width = { ideal: window.innerWidth };
-    // else constraints.video.height = { ideal: window.innerHeight };
     stream = await navigator.mediaDevices.getUserMedia(constraints);
   } catch (err) {
     if (err.name === 'PermissionDeniedError') msg = 'camera permission denied';
@@ -376,8 +371,8 @@ function setupMenu() {
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addList('backend', ['cpu', 'webgl', 'wasm'], human.config.backend, (val) => human.config.backend = val);
   menu.addBool('async operations', human.config, 'async', (val) => human.config.async = val);
-  menu.addBool('enable profiler', human.config, 'profile', (val) => human.config.profile = val);
-  menu.addBool('memory shield', human.config, 'deallocate', (val) => human.config.deallocate = val);
+  // menu.addBool('enable profiler', human.config, 'profile', (val) => human.config.profile = val);
+  // menu.addBool('memory shield', human.config, 'deallocate', (val) => human.config.deallocate = val);
   menu.addBool('use web worker', ui, 'useWorker');
   menu.addHTML('<hr style="min-width: 200px; border-style: inset; border-color: dimgray">');
   menu.addLabel('enabled models');
@@ -387,6 +382,10 @@ function setupMenu() {
   menu.addBool('face age', human.config.face.age, 'enabled');
   menu.addBool('face gender', human.config.face.gender, 'enabled');
   menu.addBool('face emotion', human.config.face.emotion, 'enabled');
+  // menu.addBool('face compare', human.config.face.embedding, 'enabled', (val) => {
+  //   human.config.face.embedding.enabled = val;
+  //   document.getElementById('compare-container').style.display = human.config.face.embedding.enabled ? 'block' : 'none';
+  // });
   menu.addBool('body pose', human.config.body, 'enabled');
   menu.addBool('hand pose', human.config.hand, 'enabled');
   menu.addBool('gesture analysis', human.config.gesture, 'enabled');

@@ -19,7 +19,7 @@ function createCSS() {
   if (CSScreated) return;
   const css = `
   :root { --rounded: 0.2rem; }
-  .menu { position: absolute; top: 0rem; right: 0; width: fit-content; padding: 0 0.8rem 0 0.8rem; line-height: 1.8rem; z-index: 10; max-height: calc(100% - 4rem);
+  .menu { position: absolute; top: 0rem; right: 0; width: fit-content; padding: 0 0.8rem 0 0.8rem; line-height: 1.8rem; z-index: 10;
           box-shadow: 0 0 8px dimgrey; background: ${theme.background}; border-radius: var(--rounded); border-color: black; border-style: solid; border-width: thin; }
 
   .menu:hover { box-shadow: 0 0 8px ${theme.hover}; }

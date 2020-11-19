@@ -7,7 +7,10 @@ async function drawGesture(result, canvas, ui) {
   for (const [key, val] of Object.entries(result)) {
     if (val.length > 0) {
       const label = `${key}: ${val.join(', ')}`;
-      ctx.fillText(label, 6, i * (ui.baseLineHeight + 24));
+      ctx.fillStyle = 'black';
+      ctx.fillText(label, 8, 2 + (i * ui.baseLineHeight));
+      ctx.fillStyle = ui.baseLabel;
+      ctx.fillText(label, 6, 0 + (i * ui.baseLineHeight));
       i += 1;
     }
   }
@@ -29,6 +32,7 @@ async function drawFace(result, canvas, ui, triangulation) {
     const labels = [];
     // labels.push(`${Math.trunc(100 * face.confidence)}% face`);
     if (face.genderConfidence) labels.push(`${Math.trunc(100 * face.genderConfidence)}% ${face.gender || ''}`);
+    // if (face.genderConfidence) labels.push(face.gender);
     if (face.age) labels.push(`age: ${face.age || ''}`);
     if (face.iris) labels.push(`iris: ${face.iris}`);
     if (face.emotion && face.emotion.length > 0) {
@@ -36,7 +40,13 @@ async function drawFace(result, canvas, ui, triangulation) {
       labels.push(emotion.join(' '));
     }
     ctx.fillStyle = ui.baseLabel;
-    for (const i in labels) ctx.fillText(labels[i], face.box[0] + 8, face.box[1] + 24 + ((i + 1) * ui.baseLineHeight));
+    for (let i = 0; i < labels.length; i++) {
+      ctx.fillStyle = 'black';
+      ctx.fillText(labels[i], face.box[0] + face.box[2] + 9, ((i + 1) * ui.baseLineHeight) + face.box[1] + 9);
+      ctx.fillStyle = ui.baseLabel;
+      ctx.fillText(labels[i], face.box[0] + face.box[2] + 8, ((i + 1) * ui.baseLineHeight) + face.box[1] + 8);
+    }
+    ctx.fillStyle = ui.baseColor;
     ctx.stroke();
     ctx.lineWidth = 1;
     if (face.mesh) {
@@ -186,8 +196,10 @@ async function drawHand(result, canvas, ui) {
       ctx.strokeStyle = ui.baseColor;
       ctx.fillStyle = ui.baseColor;
       ctx.rect(hand.box[0], hand.box[1], hand.box[2], hand.box[3]);
+      ctx.fillStyle = 'black';
+      ctx.fillText('hand', hand.box[0] + 3, 1 + hand.box[1] + ui.baseLineHeight, hand.box[2]);
       ctx.fillStyle = ui.baseLabel;
-      ctx.fillText('hand', hand.box[0] + 2, hand.box[1] + 22, hand.box[2]);
+      ctx.fillText('hand', hand.box[0] + 2, 0 + hand.box[1] + ui.baseLineHeight, hand.box[2]);
       ctx.stroke();
     }
     if (ui.drawPoints) {
@@ -222,11 +234,10 @@ async function drawHand(result, canvas, ui) {
   }
 }
 
-const draw = {
+// eslint-disable-next-line import/prefer-default-export
+export default {
   face: drawFace,
   body: drawBody,
   hand: drawHand,
   gesture: drawGesture,
 };
-
-export default draw;

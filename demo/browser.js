@@ -77,12 +77,13 @@ const status = (msg) => {
 let original;
 async function calcSimmilariry(result) {
   document.getElementById('compare-container').style.display = human.config.face.embedding.enabled ? 'block' : 'none';
+  if (!human.config.face.embedding.enabled) return;
   if ((result?.face?.length > 0) && (result?.face[0].embedding?.length !== 192)) return;
   if (!original) {
     original = result;
     document.getElementById('compare-canvas').getContext('2d').drawImage(original.canvas, 0, 0, 200, 200);
   }
-  const simmilarity = human.simmilarity(original.face[0].embedding, result.face[0].embedding);
+  const simmilarity = human.simmilarity(original?.face[0]?.embedding, result?.face[0]?.embedding);
   document.getElementById('simmilarity').innerText = `simmilarity: ${Math.trunc(1000 * simmilarity) / 10}%`;
 }
 

@@ -19,22 +19,26 @@
     <!-- <script src="./browser.js" type="module"></script> -->
     <style>
       @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 400; src: local('Lato'), url('../assets/lato.ttf') format('truetype'); }
+      @font-face { font-family: 'FA'; font-display: swap; font-style: normal; font-weight: 900; src: local('FA'), url('../assets/fa-solid-900.woff2'); }
       html { font-family: 'Lato', 'Segoe UI'; font-size: 16px; font-variant: small-caps; }
       body { margin: 0; background: black; color: white; overflow-x: hidden; scrollbar-width: none; }
       body::-webkit-scrollbar { display: none; }
-      .play { position: absolute; width: 300px; height: 300px; z-index: 9; top: 30%; left: 50%; margin-left: -150px; display: none; }
-      .play-background { fill:darkslategray; cursor:pointer; opacity: 0.6; }
-      .play-foreground { fill:white; cursor:pointer; opacity: 0.8; }
-      .play-foreground:hover { opacity: 1; }
+      hr { width: 100%; }
+      .play { position: absolute; width: 250px; height: 250px; z-index: 9; top: 55%; left: 50%; margin-left: -125px; display: none; }
+      .btn-background { fill:grey; cursor: pointer; opacity: 0.6; }
+      .btn-background:hover { opacity: 1; }
+      .btn-foreground { fill:white; cursor: pointer; opacity: 0.8; }
+      .btn-foreground:hover { opacity: 1; }
       .status { position: absolute; width: 100vw; bottom: 15%; text-align: center; font-size: 4rem; font-weight: 100; text-shadow: 2px 2px darkslategrey; }
       .thumbnail { margin: 8px; box-shadow: 0 0 4px 4px dimgrey; }
       .thumbnail:hover { box-shadow: 0 0 8px 8px dimgrey; filter: grayscale(1); }
-      .log { position: fixed; bottom: 0; margin: 0.4rem; font-size: 0.9rem; }
+      .log { position: absolute; bottom: 0; margin: 0.4rem; font-size: 0.9rem; }
+      .menubar { width: 100vw; background: darkslategray; display: flex; justify-content: space-evenly; text-align: center; padding: 8px; cursor: pointer; }
       .samples-container { display: flex; flex-wrap: wrap; }
       .video { display: none; }
       .canvas { margin: 0 auto; }
       .bench { position: absolute; right: 0; bottom: 0; }
-      .compare-image { width: 10vw; position: absolute; top: 150px; left: 30px; box-shadow: 0 0 2px 2px black; background: black; }
+      .compare-image { width: 200px; position: absolute; top: 150px; left: 30px; box-shadow: 0 0 2px 2px black; background: black; }
       .loader { width: 300px; height: 300px; border: 3px solid transparent; border-radius: 50%; border-top: 4px solid #f15e41; animation: spin 4s linear infinite; position: absolute; top: 30%; left: 50%; margin-left: -150px; z-index: 15; }
       .loader::before, .loader::after { content: ""; position: absolute; top: 6px; bottom: 6px; left: 6px; right: 6px; border-radius: 50%; border: 4px solid transparent; }
       .loader::before { border-top-color: #bad375; animation: 3s spin linear infinite; }
@@ -51,13 +55,22 @@
         from { transform: rotate(0deg); }
         from { transform: rotate(360deg); }
       }
+      .button { text-shadow: 2px 2px black; display: flex; }
+      .button:hover { text-shadow: -2px -2px black; color: lightblue; }
+      .button::before { display: inline-block; font-style: normal; font-variant: normal; text-rendering: auto; -webkit-font-smoothing: antialiased; font-family: "FA"; font-weight: 900; font-size: 2.4rem; margin-right: 0.4rem; }
+      .button-display::before { content: "\f8c4"; }
+      .button-image::before { content: "\f3f2"; }
+      .button-process::before { content: "\f3f0"; }
+      .button-model::before { content: "\f2c2"; }
+      .button-start::before { content: "\f144"; }
+      .button-stop::before { content: "\f28b"; }
     </style>
   </head>
   <body>
     <div id="play" class="play">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-        <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z" class="play-background"/>
-        <path d="M371.7 280l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z" class="play-foreground"/>
+        <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z" class="btn-background"/>
+        <path d="M371.7 280l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z" class="btn-foreground"/>
       </svg>
     </div>
     <div id="background">
@@ -67,16 +80,22 @@
     </div>
     <div id="loader" class="loader"></div>
     <div id="status" class="status"></div>
+    <div id="menubar" class="menubar">
+      <span class="button button-display" id="btnDisplay">Display<br>Options</span>
+      <span class="button button-image" id="btnImage">Image<br>Processing</span>
+      <span class="button button-process" id="btnProcess">Model<br>Processing</span>
+      <span class="button button-model" id="btnModel">Model<br>Selection</span>
+      <span class="button button-start" id="btnStart">Start<br>Video</span>
+    </div>
     <div id="media">
       <canvas id="canvas" class="canvas"></canvas>
       <video id="video" playsinline class="video"></video>
     </div>
     <div id="compare-container" style="display: none" class="compare-image">
-      <img id="sample-image" style="width: 100%" src="../assets/sample-me.jpg"></img>
+      <canvas id="compare-canvas" width="200px" height="200px"></canvas>
       <div id="simmilarity"></div>
     </div>
     <div id="samples-container" class="samples-container"></div>
-    <canvas id="bench-canvas" class="bench"></canvas>
     <div id="log" class="log"></div>
   </body>
 </html>

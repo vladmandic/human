@@ -116,8 +116,8 @@ class Human {
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
 
     if (this.firstRun) {
-      this.checkBackend(true);
       this.log(`version: ${this.version} TensorFlow/JS version: ${tf.version_core}`);
+      this.checkBackend(true);
       this.log('configuration:', this.config);
       this.log('flags:', tf.ENV.flags);
       this.firstRun = false;

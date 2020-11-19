@@ -1,9 +1,11 @@
-// modified based on: https://github.com/munrocket/gl-bench
+/* eslint-disable max-len */
+
+// based on: https://github.com/munrocket/gl-bench
 
 const UICSS = `
   #gl-bench { position: absolute; right: 1rem; bottom: 1rem; z-index:1000; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
   #gl-bench div { position: relative; display: block; margin: 4px; padding: 0 7px 0 10px; background: darkslategray; border-radius: 0.2rem; cursor: pointer; opacity: 0.9; }
-  #gl-bench svg { height: 60px; margin: 0 4px 0px 4px; }
+  #gl-bench svg { height: 60px; margin: 0 0px 0px 4px; }
   #gl-bench text { font-size: 16px; font-family: 'Lato', 'Segoe UI'; dominant-baseline: middle; text-anchor: middle; }
   #gl-bench .gl-mem { font-size: 12px; fill: white; }
   #gl-bench .gl-fps { font-size: 13px; fill: white; }
@@ -17,7 +19,7 @@ const UISVG = `
   <div class="gl-box">
     <svg viewBox="0 0 55 60">
       <text x="27" y="56" class="gl-fps">00 FPS</text>
-      <text x="28" y="8" class="gl-mem"></text>
+      <text x="30" y="8" class="gl-mem"></text>
       <rect x="0" y="14" rx="4" ry="4" width="55" height="32"></rect>
       <polyline class="gl-chart"></polyline>
     </svg>
@@ -87,21 +89,41 @@ class GLBench {
         });
       }, 0));
 
-      const addProfiler = (fn, self, target) => function () {
+      const addProfiler = (fn, self, target) => {
         const t = self.now();
         // eslint-disable-next-line prefer-rest-params
         fn.apply(target, arguments);
         if (self.trackGPU) self.finished.push(glFinish(t, self.activeAccums.slice(0)));
       };
 
-      ['drawArrays', 'drawElements', 'drawArraysInstanced', 'drawBuffers', 'drawElementsInstanced', 'drawRangeElements'].forEach((fn) => { if (gl[fn]) gl[fn] = addProfiler(gl[fn], this, gl); });
+      /* ['drawArrays', 'drawElements', 'drawArraysInstanced', 'drawBuffers', 'drawElementsInstanced', 'drawRangeElements'].forEach((fn) => {
+        if (gl[fn]) {
+          gl[fn] = addProfiler(gl[fn], this, gl);
+        }
+      });
+      */
+      const fn = 'drawElements';
+      if (gl[fn]) {
+        gl[fn] = addProfiler(gl[fn], this, gl);
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('bench: cannot attach to webgl function');
+      }
 
-      gl.getExtension = ((fn, self) => function () {
+      /*
+      gl.getExtension = ((fn, self) => {
         // eslint-disable-next-line prefer-rest-params
         const ext = fn.apply(gl, arguments);
-        if (ext) ['drawElementsInstancedANGLE', 'drawBuffersWEBGL'].forEach((fn2) => { if (ext[fn2]) ext[fn2] = addProfiler(ext[fn2], self, ext); });
+        if (ext) {
+          ['drawElementsInstancedANGLE', 'drawBuffersWEBGL'].forEach((fn2) => {
+            if (ext[fn2]) {
+              ext[fn2] = addProfiler(ext[fn2], self, ext);
+            }
+          });
+        }
         return ext;
       })(gl.getExtension, this);
+      */
     }
 
     // init ui and ui loggers
@@ -127,7 +149,7 @@ class GLBench {
           nodes['gl-gpu'][i].style.strokeDasharray = (gpu * 0.27).toFixed(0) + ' 100';
           // eslint-disable-next-line no-nested-ternary
           nodes['gl-mem'][i].innerHTML = names[i] ? names[i] : (mem ? 'mem: ' + mem.toFixed(0) + 'mb' : '');
-          nodes['gl-fps'][i].innerHTML = fps.toFixed(0) + ' FPS';
+          nodes['gl-fps'][i].innerHTML = 'FPS: ' + fps.toFixed(1);
           logger(names[i], cpu, gpu, mem, fps, totalTime, frameId);
         };
       })(this.paramLogger, this.dom, this.names);

@@ -19,15 +19,15 @@ function createCSS() {
   if (CSScreated) return;
   const css = `
   :root { --rounded: 0.2rem; }
-  .menu { position: absolute; top: 0rem; right: 0; width: fit-content; padding: 0 0.8rem 0 0.8rem; line-height: 1.8rem; z-index: 10;
+  .menu { position: absolute; top: 0rem; right: 0; width: fit-content; padding: 0 0.2rem 0 0.2rem; line-height: 1.8rem; z-index: 10;
           box-shadow: 0 0 8px dimgrey; background: ${theme.background}; border-radius: var(--rounded); border-color: black; border-style: solid; border-width: thin; }
 
   .menu:hover { box-shadow: 0 0 8px ${theme.hover}; }
   .menu-container { display: block; max-height: 100vh; }
   .menu-container-fadeout { max-height: 0; overflow: hidden; transition: max-height, 0.5s ease; }
   .menu-container-fadein { max-height: 100vh; overflow: hidden; transition: max-height, 0.5s ease; }
-  .menu-item { display: flex; white-space: nowrap; padding: 0.2rem; width: max-content; cursor: default; }
-  .menu-title { text-align: right; cursor: pointer; }
+  .menu-item { display: flex; white-space: nowrap; padding: 0.2rem; cursor: default; width: 100%; }
+  .menu-title { cursor: pointer; }
   .menu-hr { margin: 0.2rem; border: 1px solid rgba(0, 0, 0, 0.5) }
   .menu-label { padding: 0; font-weight: 800; }
 
@@ -39,12 +39,12 @@ function createCSS() {
   .menu-chart-title { padding: 0; font-size: 0.8rem; font-weight: 800; align-items: center}
   .menu-chart-canvas { background: transparent; margin: 0.2rem 0 0.2rem 0.6rem; }
   
-  .menu-button { border: 0; background: ${theme.buttonBackground}; width: 100%; padding: 8px; margin: 8px 0 8px 0; cursor: pointer; box-shadow: 4px 4px 4px 0 dimgrey;
+  .menu-button { border: 0; background: ${theme.buttonBackground}; width: -webkit-fill-available; padding: 8px; margin: 8px; cursor: pointer; box-shadow: 4px 4px 4px 0 dimgrey;
     border-radius: var(--rounded); justify-content: center; font-family: inherit; font-variant: inherit; font-size: 1rem; font-weight: 800; }
   .menu-button:hover { background: ${theme.buttonHover}; box-shadow: 4px 4px 4px 0 black; }
   .menu-button:focus { outline: none; }
 
-  .menu-checkbox { width: 2.8rem; height: 1rem; background: ${theme.itemBackground}; margin: 0.5rem 0.8rem 0 0; position: relative; border-radius: var(--rounded); }
+  .menu-checkbox { width: 2.8rem; height: 1rem; background: ${theme.itemBackground}; margin: 0.5rem 0.5rem 0 0; position: relative; border-radius: var(--rounded); }
   .menu-checkbox:after { content: 'OFF'; color: ${theme.checkboxOff}; position: absolute; right: 0.2rem; top: -0.4rem; font-weight: 800; font-size: 0.5rem; }
   .menu-checkbox:before { content: 'ON'; color: ${theme.checkboxOn}; position: absolute; left: 0.3rem; top: -0.4rem; font-weight: 800; font-size: 0.5rem; }
   .menu-checkbox-label { width: 1.3rem; height: 0.8rem; cursor: pointer; position: absolute; top: 0.1rem; left: 0.1rem; z-index: 1; background: ${theme.checkboxOff};
@@ -53,14 +53,14 @@ function createCSS() {
   input[type=checkbox] { visibility: hidden; }
   input[type=checkbox]:checked + label { left: 1.4rem; background: ${theme.checkboxOn}; }
 
-  .menu-range { margin: 0 0.8rem 0 0; width: 5rem; background: transparent; color: ${theme.rangeBackground}; }
+  .menu-range { margin: 0.2rem 0.5rem 0 0; width: 3.5rem; background: transparent; color: ${theme.rangeBackground}; }
   .menu-range:before { color: ${theme.rangeLabel}; margin: 0 0.4rem 0 0; font-weight: 800; font-size: 0.6rem; position: relative; top: 0.3rem; content: attr(value); }
 
   input[type=range] { -webkit-appearance: none; }
   input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1rem; cursor: pointer; background: ${theme.itemBackground}; border-radius: var(--rounded); border: 1px; }
   input[type=range]::-moz-range-track { width: 100%; height: 1rem; cursor: pointer; background: ${theme.itemBackground}; border-radius: var(--rounded); border: 1px; }
-  input[type=range]::-webkit-slider-thumb { border: 1px solid #000000; margin-top: 0.05rem; height: 0.9rem; width: 1.5rem; border-radius: var(--rounded); background: ${theme.rangeBackground}; cursor: pointer; -webkit-appearance: none; }
-  input[type=range]::-moz-range-thumb { border: 1px solid #000000; margin-top: 0.05rem; height: 0.9rem; width: 1.5rem; border-radius: var(--rounded); background: ${theme.rangeBackground}; cursor: pointer; -webkit-appearance: none; }
+  input[type=range]::-webkit-slider-thumb { border: 1px solid #000000; margin-top: 0.05rem; height: 0.9rem; width: 1rem; border-radius: var(--rounded); background: ${theme.rangeBackground}; cursor: pointer; -webkit-appearance: none; }
+  input[type=range]::-moz-range-thumb { border: 1px solid #000000; margin-top: 0.05rem; height: 0.9rem; width: 1rem; border-radius: var(--rounded); background: ${theme.rangeBackground}; cursor: pointer; -webkit-appearance: none; }
 
   .svg-background { fill:darkslategrey; cursor:pointer; opacity: 0.6; }
   .svg-foreground { fill:white; cursor:pointer; opacity: 0.8; }
@@ -106,7 +106,7 @@ class Menu {
         <path d="M400 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48zm-51.37 182.31L232.06 348.16a10.38 10.38 0 0 1-16.12 0L99.37 214.31C92.17 206 97.28 192 107.43 192h233.14c10.15 0 15.26 14 8.06 22.31z" class="svg-background"/>
         <path d="M348.63 214.31L232.06 348.16a10.38 10.38 0 0 1-16.12 0L99.37 214.31C92.17 206 97.28 192 107.43 192h233.14c10.15 0 15.26 14 8.06 22.31z" class="svg-foreground"/>
       </svg>`;
-    elTitle.innerHTML = `${title}${svg}`;
+    if (title) elTitle.innerHTML = `${title}${svg}`;
     this.menu.appendChild(elTitle);
     elTitle.addEventListener('click', () => {
       this.container.classList.toggle('menu-container-fadeout');
@@ -152,9 +152,9 @@ class Menu {
     this.container.classList.toggle('menu-container-fadein');
     if (this.container.classList.contains('menu-container-fadein') && evt) {
       const x = evt.x || (evt.touches && evt.touches[0] ? evt.touches[0].pageX : null);
-      const y = evt.y || (evt.touches && evt.touches[0] ? evt.touches[0].pageY : null);
-      if (x) this.menu.style.left = `${x - 105}px`;
-      if (y) this.menu.style.top = '5.5rem'; // `${evt.y + 55}px`;
+      // const y = evt.y || (evt.touches && evt.touches[0] ? evt.touches[0].pageY : null);
+      if (x) this.menu.style.left = `${x - (this.menu.offsetWidth / 2)}px`;
+      // if (y) this.menu.style.top = '5.5rem'; // `${evt.y + 55}px`;
       if (this.menu.offsetLeft < 0) this.menu.style.left = 0;
       if ((this.menu.offsetLeft + this.menu.offsetWidth) > window.innerWidth) {
         this.menu.style.left = null;
@@ -279,7 +279,7 @@ class Menu {
     else this.addValue(title, val);
   }
 
-  addChart(title, id, width = 200, height = 40, color) {
+  addChart(title, id, width = 150, height = 40, color) {
     if (color) theme.chartColor = color;
     const el = document.createElement('div');
     el.className = 'menu-item menu-chart-title';

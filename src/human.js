@@ -187,7 +187,7 @@ class Human {
           this.log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
           tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
         }
-        // tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
+        tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
         tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
       }
       await tf.ready();

@@ -17858,7 +17858,7 @@
     "dist/tfjs.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 1095152
+      "bytes": 1095159
     },
     "dist/tfjs.esm.js": {
       "imports": [],
@@ -21532,7 +21532,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 1531035
+      "bytes": 1531180
     }
   }
 }

@@ -6,15 +6,26 @@ const log = require('@vladmandic/pilogger');
 
 // keeps esbuild service instance cached
 let es;
+// const incremental = {};
+const banner = `
+  /*
+  Human library
+  homepage: <https://github.com/vladmandic/human>
+  author: <https://github.com/vladmandic>'
+  */
+`;
 
 // common configuration
 const common = {
+  banner,
   minifyWhitespace: true,
   minifySyntax: true,
   bundle: true,
   sourcemap: true,
+  // incremental: true,
   logLevel: 'error',
   target: 'es2018',
+  tsconfig: 'server/tfjs-tsconfig.json',
 };
 
 const tfjs = {
@@ -120,6 +131,8 @@ async function build(f, msg) {
     }
     // rebuild all targets
     for (const [target, options] of Object.entries(config)) {
+      // if (!incremental.target) incremental.target = await es.build({ ...common, ...options });
+      // else incremental.target.rebuild({ ...common, ...options });
       await es.build({ ...common, ...options });
       const stats = await getStats(options.metafile, target);
       log.state('Build:', stats);

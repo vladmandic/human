@@ -5,11 +5,11 @@
       "imports": []
     },
     "dist/tfjs.esm.js": {
-      "bytes": 1531035,
+      "bytes": 1531180,
       "imports": []
     },
     "package.json": {
-      "bytes": 2278,
+      "bytes": 2279,
       "imports": []
     },
     "src/age/age.js": {
@@ -357,7 +357,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 2549411
+      "bytes": 2549418
     },
     "dist/human.js": {
       "imports": [],
@@ -454,7 +454,7 @@
           "bytesInOutput": 10547
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1529041
+          "bytesInOutput": 1529065
         },
         "src/hand/box.js": {
           "bytesInOutput": 1880
@@ -469,7 +469,7 @@
           "bytesInOutput": 21
         }
       },
-      "bytes": 1782961
+      "bytes": 1783130
     }
   }
 }

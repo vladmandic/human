@@ -134,10 +134,10 @@ async function drawResults(input) {
   const avgDetect = Math.trunc(10 * ui.detectFPS.reduce((a, b) => a + b, 0) / ui.detectFPS.length) / 10;
   const avgDraw = Math.trunc(10 * ui.drawFPS.reduce((a, b) => a + b, 0) / ui.drawFPS.length) / 10;
   const warning = (ui.detectFPS.length > 5) && (avgDetect < 5) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
-  document.getElementById('log').innerHTML = `
-    video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
-    backend: ${human.tf.getBackend()} | ${memory}<br>
-    performance: ${str(result.performance)} FPS process:${avgDetect} refresh:${avgDraw}<br>
+  document.getElementById('log').innerText = `
+    video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}
+    backend: ${human.tf.getBackend()} | ${memory}
+    performance: ${str(result.performance)}ms FPS process:${avgDetect} refresh:${avgDraw}
     ${warning}
   `;
 
@@ -169,7 +169,8 @@ async function setupCamera() {
     output.innerText += `\n${msg}`;
     log(msg);
     status(msg);
-    return null;
+    ui.busy = false;
+    return msg;
   }
   let stream;
   const constraints = {
@@ -181,15 +182,20 @@ async function setupCamera() {
   try {
     stream = await navigator.mediaDevices.getUserMedia(constraints);
   } catch (err) {
-    if (err.name === 'PermissionDeniedError') msg = 'camera permission denied';
+    if (err.name === 'PermissionDeniedError' || err.name === 'NotAllowedError') msg = 'camera permission denied';
     else if (err.name === 'SourceUnavailableError') msg = 'camera not available';
-    else msg = 'camera error';
+    else msg = `camera error: ${err.message || err}`;
     output.innerText += `\n${msg}`;
     status(msg);
-    log(err);
+    log('camera error:', err);
+    ui.busy = false;
+    return msg;
   }
   if (stream) video.srcObject = stream;
-  else return null;
+  else {
+    ui.busy = false;
+    return 'camera stream empty';
+  }
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
   // log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight }, 'settings:', settings, 'track:', track);
@@ -215,7 +221,7 @@ async function setupCamera() {
       // do once more because onresize events can be delayed or skipped
       // if (video.width > window.innerWidth) await setupCamera();
       status('');
-      resolve(video);
+      resolve();
     };
   });
 }
@@ -299,8 +305,10 @@ function runHumanDetect(input, canvas, timestamp) {
         bench.nextFrame(timestamp);
       }
       if (document.getElementById('gl-bench')) document.getElementById('gl-bench').style.display = ui.bench ? 'block' : 'none';
-      if (result.error) log(result.error);
-      else {
+      if (result.error) {
+        log(result.error);
+        document.getElementById('log').innerText += `\nHuman error: ${result.error}`;
+      } else {
         lastDetectedResult = result;
         if (!ui.drawThread) drawResults(input);
         ui.framesDetect++;
@@ -352,15 +360,19 @@ async function detectVideo() {
     status('paused');
     video.pause();
   } else {
-    await setupCamera();
-    document.getElementById('play').style.display = 'none';
-    for (const m of Object.values(menu)) m.hide();
-    status('');
-    document.getElementById('btnStart').className = 'button button-stop';
-    document.getElementById('btnStart').innerHTML = 'pause<br>video';
-    video.play();
+    const cameraError = await setupCamera();
+    if (!cameraError) {
+      document.getElementById('play').style.display = 'none';
+      for (const m of Object.values(menu)) m.hide();
+      status('');
+      document.getElementById('btnStart').className = 'button button-stop';
+      document.getElementById('btnStart').innerHTML = 'pause<br>video';
+      await video.play();
+      if (!ui.detectThread) runHumanDetect(video, canvas);
+    } else {
+      status(cameraError);
+    }
   }
-  if (!ui.detectThread) runHumanDetect(video, canvas);
 }
 
 // just initialize everything and call main function

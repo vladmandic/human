@@ -22,6 +22,7 @@
   "dependencies": {},
   "peerDependencies": {},
   "devDependencies": {
+    "@tensorflow/tfjs": "^2.7.0",
     "@tensorflow/tfjs-backend-cpu": "^2.7.0",
     "@tensorflow/tfjs-backend-wasm": "^2.7.0",
     "@tensorflow/tfjs-backend-webgl": "^2.7.0",
@@ -30,20 +31,19 @@
     "@tensorflow/tfjs-data": "^2.7.0",
     "@tensorflow/tfjs-layers": "^2.7.0",
     "@tensorflow/tfjs-node": "^2.7.0",
-    "@tensorflow/tfjs": "^2.7.0",
     "@vladmandic/pilogger": "^0.2.7",
     "chokidar": "^3.4.3",
     "dayjs": "^1.9.6",
-    "esbuild": "^0.8.9",
+    "esbuild": "^0.8.11",
+    "eslint": "^7.13.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint": "^7.13.0",
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
-    "simple-git": "^2.22.0"
+    "simple-git": "^2.23.0"
   },
   "scripts": {
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",

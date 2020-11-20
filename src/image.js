@@ -21,6 +21,11 @@ function process(input, config) {
     else if (config.filter.height > 0) targetWidth = originalWidth * (config.filter.height / originalHeight);
     if (config.filter.height > 0) targetHeight = config.filter.height;
     else if (config.filter.width > 0) targetHeight = originalHeight * (config.filter.width / originalWidth);
+    if (!targetWidth || !targetHeight) {
+      // eslint-disable-next-line no-console
+      console.log('Human: invalid input', input);
+      return null;
+    }
     if (!inCanvas || (inCanvas.width !== targetWidth) || (inCanvas.height !== targetHeight)) {
       inCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
       if (inCanvas.width !== targetWidth) inCanvas.width = targetWidth;

@@ -348,6 +348,11 @@ class Human {
 
       timeStamp = now();
       const process = image.process(input, this.config);
+      if (!process || !process.tensor) {
+        this.log('could not convert input to tensor');
+        resolve({ error: 'could not convert input to tensor' });
+        return;
+      }
       this.perf.image = Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
 

@@ -117,9 +117,11 @@ class Human {
 
     if (this.firstRun) {
       this.log(`version: ${this.version} TensorFlow/JS version: ${tf.version_core}`);
-      this.checkBackend(true);
-      this.log('configuration:', this.config);
-      this.log('flags:', tf.ENV.flags);
+      await this.checkBackend(true);
+      if (tf.ENV.flags.IS_BROWSER) {
+        this.log('configuration:', this.config);
+        this.log('tf flags:', tf.ENV.flags);
+      }
       this.firstRun = false;
     }
     if (this.config.async) {
@@ -155,8 +157,8 @@ class Human {
 
   // check if backend needs initialization if it changed
   async checkBackend(force) {
-    const timeStamp = now();
     if (this.config.backend && (this.config.backend !== '') && force || (tf.getBackend() !== this.config.backend)) {
+      const timeStamp = now();
       this.state = 'backend';
       /* force backend reload
       if (this.config.backend in tf.engine().registry) {
@@ -189,11 +191,12 @@ class Human {
         }
         tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
         tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
+        const gl = await tf.backend().getGPGPUContext().gl;
+        this.log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }
       await tf.ready();
+      this.perf.backend = Math.trunc(now() - timeStamp);
     }
-    const current = Math.trunc(now() - timeStamp);
-    if (current > (this.perf.backend || 0)) this.perf.backend = current;
   }
 
   async detectFace(input) {
@@ -418,6 +421,7 @@ class Human {
 
   async warmup(userConfig, sample) {
     if (!sample) sample = new ImageData(255, 255);
+    // const sample = tf.zeros([1, 255, 255, 3]);
     const warmup = await this.detect(sample, userConfig);
     this.log('warmed up');
     return warmup;

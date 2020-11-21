@@ -17818,7 +17818,7 @@
         }
       ]
     },
-    "src/tf.js": {
+    "src/tfjs/tf-browser.js": {
       "bytes": 1798,
       "imports": [
         {
@@ -21264,7 +21264,7 @@
         "node_modules/@tensorflow/tfjs/dist/version.js": {
           "bytesInOutput": 24
         },
-        "src/tf.js": {
+        "src/tfjs/tf-browser.js": {
           "bytesInOutput": 0
         },
         "node_modules/@tensorflow/tfjs-backend-wasm/dist/kernels/types.js": {

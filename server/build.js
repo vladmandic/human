@@ -6,7 +6,6 @@ const log = require('@vladmandic/pilogger');
 
 // keeps esbuild service instance cached
 let es;
-// const incremental = {};
 const banner = `
   /*
   Human library
@@ -22,70 +21,100 @@ const common = {
   minifySyntax: true,
   bundle: true,
   sourcemap: true,
-  // incremental: true,
   logLevel: 'error',
   target: 'es2018',
   tsconfig: 'server/tfjs-tsconfig.json',
 };
 
-const tfjs = {
-  platform: 'browser',
-  format: 'esm',
-  metafile: 'dist/tfjs.esm.json',
-  entryPoints: ['src/tf.js'],
-  outfile: 'dist/tfjs.esm.js',
-  external: ['fs', 'buffer', 'util'],
-};
-
-// all build targets
-const config = {
-  iifeBundle: {
-    platform: 'browser',
-    format: 'iife',
-    globalName: 'Human',
-    metafile: 'dist/human.json',
-    entryPoints: ['src/human.js'],
-    outfile: 'dist/human.js',
-    external: ['fs', 'buffer', 'util'],
+const targets = {
+  node: {
+    tfjs: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/tfjs.esm.json',
+      entryPoints: ['src/tfjs/tf-node.js'],
+      outfile: 'dist/tfjs.esm.js',
+      external: ['@tensorflow'],
+    },
+    node: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/human.node.json',
+      entryPoints: ['src/human.js'],
+      outfile: 'dist/human.node.js',
+      external: ['@tensorflow'],
+    },
   },
-  esmBundle: {
-    platform: 'browser',
-    format: 'esm',
-    metafile: 'dist/human.esm.json',
-    entryPoints: ['src/human.js'],
-    outfile: 'dist/human.esm.js',
-    external: ['fs', 'buffer', 'util'],
+  nodeGPU: {
+    tfjs: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/tfjs.esm.json',
+      entryPoints: ['src/tfjs/tf-node-gpu.js'],
+      outfile: 'dist/tfjs.esm.js',
+      external: ['@tensorflow'],
+    },
+    node: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/human.node.json',
+      entryPoints: ['src/human.js'],
+      outfile: 'dist/human.node-gpu.js',
+      external: ['@tensorflow'],
+    },
   },
-  esmNoBundle: {
-    platform: 'browser',
-    format: 'esm',
-    metafile: 'dist/human.esm-nobundle.json',
-    entryPoints: ['src/human.js'],
-    outfile: 'dist/human.esm-nobundle.js',
-    external: ['fs', 'buffer', 'util', '@tensorflow'],
+  browserNoBundle: {
+    tfjs: {
+      platform: 'browser',
+      format: 'esm',
+      metafile: 'dist/tfjs.esm.json',
+      entryPoints: ['src/tfjs/tf-browser.js'],
+      outfile: 'dist/tfjs.esm.js',
+      external: ['fs', 'buffer', 'util', '@tensorflow'],
+    },
+    esm: {
+      platform: 'browser',
+      format: 'esm',
+      metafile: 'dist/human.esm.json',
+      entryPoints: ['src/human.js'],
+      outfile: 'dist/human.esm-nobundle.js',
+      external: ['fs', 'buffer', 'util', '@tensorflow'],
+    },
   },
-  nodeBundle: {
-    platform: 'node',
-    format: 'cjs',
-    metafile: 'dist/human.node.json',
-    entryPoints: ['src/human.js'],
-    outfile: 'dist/human.node.js',
-  },
-  nodeNoBundle: {
-    platform: 'node',
-    format: 'cjs',
-    metafile: 'dist/human.node-nobundle.json',
-    entryPoints: ['src/human.js'],
-    outfile: 'dist/human.node-nobundle.js',
-    external: ['@tensorflow'],
-  },
-  demo: {
-    platform: 'browser',
-    format: 'esm',
-    metafile: 'dist/demo-browser-index.json',
-    entryPoints: ['demo/browser.js'],
-    outfile: 'dist/demo-browser-index.js',
-    external: ['fs', 'buffer', 'util'],
+  browserBundle: {
+    tfjs: {
+      platform: 'browser',
+      format: 'esm',
+      metafile: 'dist/tfjs.esm.json',
+      entryPoints: ['src/tfjs/tf-browser.js'],
+      outfile: 'dist/tfjs.esm.js',
+      external: ['fs', 'buffer', 'util'],
+    },
+    iife: {
+      platform: 'browser',
+      format: 'iife',
+      globalName: 'Human',
+      metafile: 'dist/human.json',
+      entryPoints: ['src/human.js'],
+      outfile: 'dist/human.js',
+      external: ['fs', 'buffer', 'util'],
+    },
+    esm: {
+      platform: 'browser',
+      format: 'esm',
+      metafile: 'dist/human.esm.json',
+      entryPoints: ['src/human.js'],
+      outfile: 'dist/human.esm.js',
+      external: ['fs', 'buffer', 'util'],
+    },
+    demo: {
+      platform: 'browser',
+      format: 'esm',
+      metafile: 'dist/demo-browser-index.json',
+      entryPoints: ['demo/browser.js'],
+      outfile: 'dist/demo-browser-index.js',
+      external: ['fs', 'buffer', 'util'],
+    },
   },
 };
 
@@ -107,7 +136,6 @@ async function getStats(metafile) {
     const files = [];
     for (const [key, val] of Object.entries(json.outputs)) {
       if (!key.endsWith('.map')) {
-        // stats.outputs += 1;
         files.push(key);
         stats.outputBytes = (stats.outputBytes || 0) + val.bytes;
       }
@@ -123,19 +151,15 @@ async function build(f, msg) {
   if (!es) es = await esbuild.startService();
   // common build options
   try {
-    // rebuild tfjs
-    if (f.endsWith('tf.js') || !module.parent) {
-      await es.build({ ...common, ...tfjs });
-      const stats = await getStats(tfjs.metafile);
-      log.state('Build:', stats);
-    }
-    // rebuild all targets
-    for (const [target, options] of Object.entries(config)) {
-      // if (!incremental.target) incremental.target = await es.build({ ...common, ...options });
-      // else incremental.target.rebuild({ ...common, ...options });
-      await es.build({ ...common, ...options });
-      const stats = await getStats(options.metafile, target);
-      log.state('Build:', stats);
+    // rebuild all target groups and types
+    for (const [targetGroupName, targetGroup] of Object.entries(targets)) {
+      for (const [targetName, targetOptions] of Object.entries(targetGroup)) {
+        // if triggered from watch mode, rebuild only browser bundle
+        if (module.parent && targetGroupName !== 'browserBundle') continue;
+        await es.build({ ...common, ...targetOptions });
+        const stats = await getStats(targetOptions.metafile, targetName);
+        log.state(`Build for: ${targetGroupName} type: ${targetName}:`, stats);
+      }
     }
     if (!module.parent) process.exit(0);
   } catch (err) {

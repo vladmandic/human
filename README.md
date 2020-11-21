@@ -49,11 +49,25 @@ Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows an
 <hr>  
 <br>
 
+## Options ##
+
+![Options visible in demo](assets/screenshot-menu.png)
+
+<br>
+<hr>  
+<br>
+
 ## Examples
 
+<br>
+
 **Using static images:**  
+
 ![Example Using Image](assets/screenshot1.jpg)
 
+<br>
+
 **Using webcam:**  
+
 ![Example Using WebCam](assets/screenshot2.jpg)
 

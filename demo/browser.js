@@ -282,7 +282,7 @@ function runHumanDetect(input, canvas, timestamp) {
     else log(`camera not ready: track state: ${input.srcObject?.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
     clearTimeout(ui.drawThread);
     ui.drawThread = null;
-    log('frame statistics: drawn:', ui.framesDraw, 'detected:', ui.framesDetect);
+    log('frame statistics: process:', ui.framesDetect, 'refresh:', ui.framesDraw);
     return;
   }
   status('');

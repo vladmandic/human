@@ -31,6 +31,7 @@
     "@tensorflow/tfjs-data": "^2.7.0",
     "@tensorflow/tfjs-layers": "^2.7.0",
     "@tensorflow/tfjs-node": "^2.7.0",
+    "@tensorflow/tfjs-node-gpu": "^2.7.0",
     "@vladmandic/pilogger": "^0.2.7",
     "chokidar": "^3.4.3",
     "dayjs": "^1.9.6",
@@ -49,7 +50,7 @@
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
     "lint": "eslint src/*.js demo/*.js",
     "dev": "npm install && node server/dev.js",
-    "build": "npm install && npm run lint && rimraf dist/* && node server/build.js && node server/changelog.js",
+    "build": "npm install && rimraf dist/* && node server/build.js && node server/changelog.js",
     "update": "npm update --depth 20 --force && npm dedupe && npm prune && npm audit"
   },
   "keywords": [

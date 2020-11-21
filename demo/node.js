@@ -1,29 +1,12 @@
-const tf = require('@tensorflow/tfjs-node');
+const log = require('@vladmandic/pilogger');
 const fs = require('fs');
 const process = require('process');
-const console = require('console');
-const Human = require('..').default; // this resolves to project root which is '@vladmandic/human'
+// for Node, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
+const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
+// load specific version of Human library that matches TensorFlow mode
+const Human = require('../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
 
-const logger = new console.Console({
-  stdout: process.stdout,
-  stderr: process.stderr,
-  ignoreErrors: true,
-  groupIndentation: 2,
-  inspectOptions: {
-    showHidden: true,
-    depth: 5,
-    colors: true,
-    showProxy: true,
-    maxArrayLength: 1024,
-    maxStringLength: 10240,
-    breakLength: 200,
-    compact: 64,
-    sorted: false,
-    getters: true,
-  },
-});
-
-const config = {
+const myConfig = {
   backend: 'tensorflow',
   console: true,
   videoOptimized: false,
@@ -31,9 +14,9 @@ const config = {
     detector: { modelPath: 'file://models/blazeface-back.json' },
     mesh: { modelPath: 'file://models/facemesh.json' },
     iris: { modelPath: 'file://models/iris.json' },
-    age: { modelPath: 'file://models/ssrnet-age-imdb.json' },
-    gender: { modelPath: 'file://models/ssrnet-gender-imdb.json' },
-    emotion: { modelPath: 'file://models/emotion.json' },
+    age: { modelPath: 'file://models/age-ssrnet-imdb.json' },
+    gender: { modelPath: 'file://models/gender-ssrnet-imdb.json' },
+    emotion: { modelPath: 'file://models/emotion-large.json' },
   },
   body: { modelPath: 'file://models/posenet.json' },
   hand: {
@@ -42,30 +25,37 @@ const config = {
   },
 };
 
-async function detect(input, output) {
-  await tf.setBackend('tensorflow');
+async function detect(input) {
+  // wait until tf is ready
   await tf.ready();
-  logger.info('TFJS Flags:', tf.env().features);
-  logger.log('Loading:', input);
+  // create instance of human
+  const human = new Human(myConfig);
+  // pre-load models
+  await human.load();
+  // read input image file and create tensor to be used for processing
   const buffer = fs.readFileSync(input);
-  const decoded = tf.node.decodeImage(buffer);
+  const decoded = human.tf.node.decodeImage(buffer);
   const casted = decoded.toFloat();
   const image = casted.expandDims(0);
   decoded.dispose();
   casted.dispose();
-  logger.log('Processing:', image.shape);
-  const human = new Human();
-  const result = await human.detect(image, config);
+  // image shape contains image dimensions and depth
+  log.state('Processing:', image.shape);
+  // must disable face model when runing in tfjs-node as it's missing required ops
+  // see <https://github.com/tensorflow/tfjs/issues/4066>
+  myConfig.face.enabled = false;
+  // run actual detection
+  const result = await human.detect(image, myConfig);
+  // dispose image tensor as we no longer need it
   image.dispose();
-  logger.log(result);
-  // Draw detected data and save processed image
-  logger.log('TODO Saving:', output);
+  // print data to console
+  log.data(result);
 }
 
 async function main() {
-  if (process.argv.length !== 4) logger.error('Parameters: <input image> <output image>');
-  else if (!fs.existsSync(process.argv[2])) logger.error(`File not found: ${process.argv[2]}`);
-  else detect(process.argv[2], process.argv[3]);
+  if (process.argv.length !== 3) log.error('Parameters: <input image>');
+  else if (!fs.existsSync(process.argv[2])) log.error(`File not found: ${process.argv[2]}`);
+  else detect(process.argv[2]);
 }
 
 main();

@@ -17,14 +17,11 @@ async function load(config) {
 
 function simmilarity(embedding1, embedding2) {
   if (embedding1?.length !== embedding2?.length) return 0;
-  // euclidean distance
-  const distance = 10 * Math.sqrt(
-    embedding1
-      .map((val, i) => (val - embedding2[i]))
-      .reduce((dist, diff) => dist + (diff ** 2), 0),
-  );
-  const confidence = 2 * (0.5 - distance); // double confidence output for bigger differences and round to three decimals
-  return Math.trunc(1000 * confidence) / 1000;
+  // general minkowski distance
+  // euclidean distance is limited case where order is 2
+  const order = 2;
+  const distance = 10.0 * ((embedding1.map((val, i) => (val - embedding2[i])).reduce((dist, diff) => dist + (diff ** order), 0) ** (1 / order)));
+  return (Math.trunc(1000 * (1 - distance)) / 1000);
 }
 
 async function predict(image, config) {

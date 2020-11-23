@@ -137,7 +137,7 @@
       ]
     },
     "src/embedding/embedding.js": {
-      "bytes": 2107,
+      "bytes": 2066,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -357,7 +357,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 2549709
+      "bytes": 2549656
     },
     "dist/human.js": {
       "imports": [],
@@ -394,7 +394,7 @@
           "bytesInOutput": 1769
         },
         "src/embedding/embedding.js": {
-          "bytesInOutput": 1338
+          "bytesInOutput": 1325
         },
         "src/body/modelBase.js": {
           "bytesInOutput": 612
@@ -469,7 +469,7 @@
           "bytesInOutput": 22
         }
       },
-      "bytes": 1783252
+      "bytes": 1783239
     }
   }
 }

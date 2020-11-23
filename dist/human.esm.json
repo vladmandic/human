@@ -9,7 +9,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2322,
+      "bytes": 2323,
       "imports": []
     },
     "src/age/age.js": {
@@ -468,10 +468,10 @@
           "bytesInOutput": 1368
         },
         "package.json": {
-          "bytesInOutput": 21
+          "bytesInOutput": 22
         }
       },
-      "bytes": 1783940
+      "bytes": 1783941
     }
   }
 }

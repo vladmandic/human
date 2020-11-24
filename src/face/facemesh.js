@@ -38,17 +38,18 @@ class MediaPipeFaceMesh {
   }
 }
 
+let faceModels = [null, null, null];
 async function load(config) {
-  const models = await Promise.all([
-    blazeface.load(config),
-    tf.loadGraphModel(config.face.mesh.modelPath, { fromTFHub: config.face.mesh.modelPath.includes('tfhub.dev') }),
-    tf.loadGraphModel(config.face.iris.modelPath, { fromTFHub: config.face.iris.modelPath.includes('tfhub.dev') }),
+  faceModels = await Promise.all([
+    (!faceModels[0] && config.face.enabled) ? blazeface.load(config) : null,
+    (!faceModels[1] && config.face.mesh.enabled) ? tf.loadGraphModel(config.face.mesh.modelPath, { fromTFHub: config.face.mesh.modelPath.includes('tfhub.dev') }) : null,
+    (!faceModels[2] && config.face.iris.enabled) ? tf.loadGraphModel(config.face.iris.modelPath, { fromTFHub: config.face.iris.modelPath.includes('tfhub.dev') }) : null,
   ]);
-  const faceMesh = new MediaPipeFaceMesh(models[0], models[1], models[2], config);
+  const faceMesh = new MediaPipeFaceMesh(faceModels[0], faceModels[1], faceModels[2], config);
   // eslint-disable-next-line no-console
-  console.log(`Human: load model: ${config.face.mesh.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.face.mesh.enabled) console.log(`Human: load model: ${config.face.mesh.modelPath.match(/\/(.*)\./)[1]}`);
   // eslint-disable-next-line no-console
-  console.log(`Human: load model: ${config.face.iris.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.face.iris.enabled) console.log(`Human: load model: ${config.face.iris.modelPath.match(/\/(.*)\./)[1]}`);
   return faceMesh;
 }
 

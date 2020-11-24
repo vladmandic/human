@@ -179,7 +179,7 @@
       "imports": []
     },
     "src/face/facemesh.js": {
-      "bytes": 2456,
+      "bytes": 2720,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -227,8 +227,8 @@
         }
       ]
     },
-    "src/gesture.js": {
-      "bytes": 3306,
+    "src/gesture/gesture.js": {
+      "bytes": 2981,
       "imports": []
     },
     "src/hand/anchors.js": {
@@ -269,7 +269,7 @@
       ]
     },
     "src/hand/handpose.js": {
-      "bytes": 3075,
+      "bytes": 3187,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -290,7 +290,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 16049,
+      "bytes": 16057,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -317,7 +317,7 @@
           "path": "src/hand/handpose.js"
         },
         {
-          "path": "src/gesture.js"
+          "path": "src/gesture/gesture.js"
         },
         {
           "path": "src/image.js"
@@ -357,7 +357,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 685654
+      "bytes": 686025
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -382,7 +382,7 @@
           "bytesInOutput": 9509
         },
         "src/face/facemesh.js": {
-          "bytesInOutput": 1930
+          "bytesInOutput": 2168
         },
         "src/profile.js": {
           "bytesInOutput": 860
@@ -442,9 +442,9 @@
           "bytesInOutput": 127034
         },
         "src/hand/handpose.js": {
-          "bytesInOutput": 1873
+          "bytesInOutput": 1973
         },
-        "src/gesture.js": {
+        "src/gesture/gesture.js": {
           "bytesInOutput": 2259
         },
         "src/imagefx.js": {
@@ -469,7 +469,7 @@
           "bytesInOutput": 21
         }
       },
-      "bytes": 249907
+      "bytes": 250245
     }
   }
 }

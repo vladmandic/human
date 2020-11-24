@@ -6,7 +6,7 @@ import * as emotion from './emotion/emotion.js';
 import * as embedding from './embedding/embedding.js';
 import * as posenet from './body/posenet.js';
 import * as handpose from './hand/handpose.js';
-import * as gesture from './gesture.js';
+import * as gesture from './gesture/gesture.js';
 import * as image from './image.js';
 import * as profile from './profile.js';
 import * as config from '../config.js';

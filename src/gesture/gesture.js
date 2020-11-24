@@ -1,19 +1,19 @@
 exports.body = (res) => {
   if (!res) return [];
   const gestures = [];
-  for (const pose of res) {
+  for (const i in res) {
     // raising hands
-    const leftWrist = pose.keypoints.find((a) => (a.part === 'leftWrist'));
-    const rightWrist = pose.keypoints.find((a) => (a.part === 'rightWrist'));
-    const nose = pose.keypoints.find((a) => (a.part === 'nose'));
-    if (nose && leftWrist && rightWrist && (leftWrist.position.y < nose.position.y) && (rightWrist.position.y < nose.position.y)) gestures.push('i give up');
-    else if (nose && leftWrist && (leftWrist.position.y < nose.position.y)) gestures.push('raise left hand');
-    else if (nose && rightWrist && (rightWrist.position.y < nose.position.y)) gestures.push('raise right hand');
+    const leftWrist = res[i].keypoints.find((a) => (a.part === 'leftWrist'));
+    const rightWrist = res[i].keypoints.find((a) => (a.part === 'rightWrist'));
+    const nose = res[i].keypoints.find((a) => (a.part === 'nose'));
+    if (nose && leftWrist && rightWrist && (leftWrist.position.y < nose.position.y) && (rightWrist.position.y < nose.position.y)) gestures.push({ body: i, gesture: 'i give up' });
+    else if (nose && leftWrist && (leftWrist.position.y < nose.position.y)) gestures.push({ body: i, gesture: 'raise left hand' });
+    else if (nose && rightWrist && (rightWrist.position.y < nose.position.y)) gestures.push({ body: i, gesture: 'raise right hand' });
 
     // leaning
-    const leftShoulder = pose.keypoints.find((a) => (a.part === 'leftShoulder'));
-    const rightShoulder = pose.keypoints.find((a) => (a.part === 'rightShoulder'));
-    if (leftShoulder && rightShoulder) gestures.push(`leaning ${(leftShoulder.position.y > rightShoulder.position.y) ? 'left' : 'right'}`);
+    const leftShoulder = res[i].keypoints.find((a) => (a.part === 'leftShoulder'));
+    const rightShoulder = res[i].keypoints.find((a) => (a.part === 'rightShoulder'));
+    if (leftShoulder && rightShoulder) gestures.push({ body: i, gesture: `leaning ${(leftShoulder.position.y > rightShoulder.position.y) ? 'left' : 'right'}` });
   }
   return gestures;
 };
@@ -21,19 +21,19 @@ exports.body = (res) => {
 exports.face = (res) => {
   if (!res) return [];
   const gestures = [];
-  for (const face of res) {
-    if (face.mesh && face.mesh.length > 0) {
-      const eyeFacing = face.mesh[35][2] - face.mesh[263][2];
-      if (Math.abs(eyeFacing) < 10) gestures.push('facing camera');
-      else gestures.push(`facing ${eyeFacing < 0 ? 'right' : 'left'}`);
-      const openLeft = Math.abs(face.mesh[374][1] - face.mesh[386][1]) / Math.abs(face.mesh[443][1] - face.mesh[450][1]); // center of eye inner lid y coord div center of wider eye border y coord
-      if (openLeft < 0.2) gestures.push('blink left eye');
-      const openRight = Math.abs(face.mesh[145][1] - face.mesh[159][1]) / Math.abs(face.mesh[223][1] - face.mesh[230][1]); // center of eye inner lid y coord div center of wider eye border y coord
-      if (openRight < 0.2) gestures.push('blink right eye');
-      const mouthOpen = Math.min(100, 500 * Math.abs(face.mesh[13][1] - face.mesh[14][1]) / Math.abs(face.mesh[10][1] - face.mesh[152][1]));
-      if (mouthOpen > 10) gestures.push(`mouth ${Math.trunc(mouthOpen)}% open`);
-      const chinDepth = face.mesh[152][2];
-      if (Math.abs(chinDepth) > 10) gestures.push(`head ${chinDepth < 0 ? 'up' : 'down'}`);
+  for (const i in res) {
+    if (res[i].mesh && res[i].mesh.length > 0) {
+      const eyeFacing = res[i].mesh[35][2] - res[i].mesh[263][2];
+      if (Math.abs(eyeFacing) < 10) gestures.push({ face: i, gesture: 'facing camera' });
+      else gestures.push({ face: i, gesture: `facing ${eyeFacing < 0 ? 'right' : 'left'}` });
+      const openLeft = Math.abs(res[i].mesh[374][1] - res[i].mesh[386][1]) / Math.abs(res[i].mesh[443][1] - res[i].mesh[450][1]); // center of eye inner lid y coord div center of wider eye border y coord
+      if (openLeft < 0.2) gestures.push({ face: i, gesture: 'blink left eye' });
+      const openRight = Math.abs(res[i].mesh[145][1] - res[i].mesh[159][1]) / Math.abs(res[i].mesh[223][1] - res[i].mesh[230][1]); // center of eye inner lid y coord div center of wider eye border y coord
+      if (openRight < 0.2) gestures.push({ face: i, gesture: 'blink right eye' });
+      const mouthOpen = Math.min(100, 500 * Math.abs(res[i].mesh[13][1] - res[i].mesh[14][1]) / Math.abs(res[i].mesh[10][1] - res[i].mesh[152][1]));
+      if (mouthOpen > 10) gestures.push({ face: i, gesture: `mouth ${Math.trunc(mouthOpen)}% open` });
+      const chinDepth = res[i].mesh[152][2];
+      if (Math.abs(chinDepth) > 10) gestures.push({ face: i, gesture: `head ${chinDepth < 0 ? 'up' : 'down'}` });
     }
   }
   return gestures;
@@ -42,15 +42,15 @@ exports.face = (res) => {
 exports.hand = (res) => {
   if (!res) return [];
   const gestures = [];
-  for (const hand of res) {
+  for (const i in res) {
     const fingers = [];
-    for (const [finger, pos] of Object.entries(hand['annotations'])) {
+    for (const [finger, pos] of Object.entries(res[i]['annotations'])) {
       if (finger !== 'palmBase') fingers.push({ name: finger.toLowerCase(), position: pos[0] }); // get tip of each finger
     }
     if (fingers && fingers.length > 0) {
       const closest = fingers.reduce((best, a) => (best.position[2] < a.position[2] ? best : a));
       const highest = fingers.reduce((best, a) => (best.position[1] < a.position[1] ? best : a));
-      gestures.push(`${closest.name} forward ${highest.name} up`);
+      gestures.push({ hand: i, gesture: `${closest.name} forward ${highest.name} up` });
     }
   }
   return gestures;

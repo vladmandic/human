@@ -4,9 +4,11 @@ async function drawGesture(result, canvas, ui) {
   ctx.font = ui.baseFont;
   ctx.fillStyle = ui.baseLabel;
   let i = 1;
-  for (const [key, val] of Object.entries(result)) {
-    if (val.length > 0) {
-      const label = `${key}: ${val.join(', ')}`;
+  for (const gesture in result) {
+    const [where, what] = Object.entries(result[gesture]);
+    if ((what.length > 1) && (what[1].length > 0)) {
+      const person = where[1] > 0 ? `#${where[1]}` : '';
+      const label = `${where[0]} ${person}: ${what[1]}`;
       ctx.fillStyle = 'black';
       ctx.fillText(label, 8, 2 + (i * ui.baseLineHeight));
       ctx.fillStyle = ui.baseLabel;

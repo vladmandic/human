@@ -228,7 +228,7 @@
       ]
     },
     "src/gesture/gesture.js": {
-      "bytes": 2981,
+      "bytes": 3260,
       "imports": []
     },
     "src/hand/anchors.js": {
@@ -290,7 +290,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 16057,
+      "bytes": 16046,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -357,7 +357,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 686025
+      "bytes": 686589
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -445,7 +445,7 @@
           "bytesInOutput": 1973
         },
         "src/gesture/gesture.js": {
-          "bytesInOutput": 2259
+          "bytesInOutput": 2463
         },
         "src/imagefx.js": {
           "bytesInOutput": 13620
@@ -454,7 +454,7 @@
           "bytesInOutput": 4107
         },
         "src/human.js": {
-          "bytesInOutput": 10692
+          "bytesInOutput": 10686
         },
         "src/hand/box.js": {
           "bytesInOutput": 1917
@@ -469,7 +469,7 @@
           "bytesInOutput": 21
         }
       },
-      "bytes": 250245
+      "bytes": 250443
     }
   }
 }

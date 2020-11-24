@@ -22,9 +22,6 @@ exports.face = (res) => {
   if (!res) return [];
   const gestures = [];
   for (const face of res) {
-    // if (face.annotations['rightCheek'] && face.annotations['leftCheek'] && (face.annotations['rightCheek'].length > 0) && (face.annotations['leftCheek'].length > 0)) {
-    //  gestures.push(`facing ${((face.annotations['rightCheek'][0][2] > 0) || (face.annotations['leftCheek'][0][2] < 0)) ? 'right' : 'left'}`);
-    // }
     if (face.mesh && face.mesh.length > 0) {
       const eyeFacing = face.mesh[35][2] - face.mesh[263][2];
       if (Math.abs(eyeFacing) < 10) gestures.push('facing camera');

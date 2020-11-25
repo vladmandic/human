@@ -155,21 +155,21 @@ async function build(f, msg) {
     for (const [targetGroupName, targetGroup] of Object.entries(targets)) {
       for (const [targetName, targetOptions] of Object.entries(targetGroup)) {
         // if triggered from watch mode, rebuild only browser bundle
-        if (module.parent && targetGroupName !== 'browserBundle') continue;
+        if ((require.main !== module) && (targetGroupName !== 'browserBundle')) continue;
         await es.build({ ...common, ...targetOptions });
         const stats = await getStats(targetOptions.metafile, targetName);
         log.state(`Build for: ${targetGroupName} type: ${targetName}:`, stats);
       }
     }
-    if (!module.parent) process.exit(0);
+    if (require.main === module) process.exit(0);
   } catch (err) {
     // catch errors and print where it occured
     log.error('Build error', JSON.stringify(err.errors || err, null, 2));
-    if (!module.parent) process.exit(1);
+    if (require.main === module) process.exit(1);
   }
 }
 
-if (!module.parent) {
+if (require.main === module) {
   log.header();
   build('all', 'startup');
 } else {

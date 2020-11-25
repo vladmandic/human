@@ -62,17 +62,17 @@ function str(...msg) {
 }
 
 // helper function: wrapper around console output
-const log = (...msg) => {
+function log(...msg) {
   const dt = new Date();
   const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
   // eslint-disable-next-line no-console
   if (ui.console) console.log(ts, ...msg);
-};
+}
 
-const status = (msg) => {
+function status(msg) {
   // eslint-disable-next-line no-console
   document.getElementById('status').innerText = msg;
-};
+}
 
 let original;
 async function calcSimmilariry(result) {

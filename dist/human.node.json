@@ -357,7 +357,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 686589
+      "bytes": 686404
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -367,109 +367,109 @@
           "bytesInOutput": 966
         },
         "src/face/blazeface.js": {
-          "bytesInOutput": 5307
+          "bytesInOutput": 5264
         },
         "src/face/box.js": {
-          "bytesInOutput": 1638
+          "bytesInOutput": 1628
         },
         "src/face/util.js": {
-          "bytesInOutput": 2434
+          "bytesInOutput": 2424
         },
         "src/face/coords.js": {
-          "bytesInOutput": 30830
+          "bytesInOutput": 30828
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 9509
+          "bytesInOutput": 9447
         },
         "src/face/facemesh.js": {
-          "bytesInOutput": 2168
+          "bytesInOutput": 2153
         },
         "src/profile.js": {
-          "bytesInOutput": 860
+          "bytesInOutput": 854
         },
         "src/age/age.js": {
-          "bytesInOutput": 1210
+          "bytesInOutput": 1192
         },
         "src/gender/gender.js": {
-          "bytesInOutput": 1998
+          "bytesInOutput": 1964
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1861
+          "bytesInOutput": 1835
         },
         "src/embedding/embedding.js": {
-          "bytesInOutput": 1398
+          "bytesInOutput": 1384
         },
         "src/body/modelBase.js": {
-          "bytesInOutput": 655
+          "bytesInOutput": 652
         },
         "src/body/modelMobileNet.js": {
-          "bytesInOutput": 421
+          "bytesInOutput": 418
         },
         "src/body/heapSort.js": {
-          "bytesInOutput": 1138
+          "bytesInOutput": 1139
         },
         "src/body/buildParts.js": {
-          "bytesInOutput": 1315
+          "bytesInOutput": 1295
         },
         "src/body/keypoints.js": {
-          "bytesInOutput": 1821
+          "bytesInOutput": 1819
         },
         "src/body/vectors.js": {
-          "bytesInOutput": 1050
+          "bytesInOutput": 1042
         },
         "src/body/decodePose.js": {
-          "bytesInOutput": 3133
+          "bytesInOutput": 3113
         },
         "src/body/decodeMultiple.js": {
-          "bytesInOutput": 1684
+          "bytesInOutput": 1670
         },
         "src/body/util.js": {
-          "bytesInOutput": 1928
+          "bytesInOutput": 1918
         },
         "src/body/modelPoseNet.js": {
-          "bytesInOutput": 1627
+          "bytesInOutput": 1622
         },
         "src/body/posenet.js": {
-          "bytesInOutput": 848
+          "bytesInOutput": 846
         },
         "src/hand/handdetector.js": {
-          "bytesInOutput": 2924
+          "bytesInOutput": 2903
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 4772
+          "bytesInOutput": 4735
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 127034
         },
         "src/hand/handpose.js": {
-          "bytesInOutput": 1973
+          "bytesInOutput": 1958
         },
         "src/gesture/gesture.js": {
-          "bytesInOutput": 2463
+          "bytesInOutput": 2431
         },
         "src/imagefx.js": {
-          "bytesInOutput": 13620
+          "bytesInOutput": 13558
         },
         "src/image.js": {
-          "bytesInOutput": 4107
+          "bytesInOutput": 4077
         },
         "src/human.js": {
-          "bytesInOutput": 10686
+          "bytesInOutput": 10636
         },
         "src/hand/box.js": {
-          "bytesInOutput": 1917
+          "bytesInOutput": 1905
         },
         "src/hand/util.js": {
-          "bytesInOutput": 1802
+          "bytesInOutput": 1790
         },
         "config.js": {
-          "bytesInOutput": 1368
+          "bytesInOutput": 1364
         },
         "package.json": {
-          "bytesInOutput": 21
+          "bytesInOutput": 20
         }
       },
-      "bytes": 250443
+      "bytes": 249843
     }
   }
 }

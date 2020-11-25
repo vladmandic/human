@@ -44,6 +44,10 @@ async function update(f) {
 
 exports.update = update;
 
-if (!module.parent) {
-  update('../wiki/Change-Log.md');
+try {
+  if (require.main === module) {
+    update('../wiki/Change-Log.md');
+  }
+} catch {
+  //
 }

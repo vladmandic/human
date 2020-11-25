@@ -4,7 +4,7 @@
 // { modules: 1061, moduleBytes: 3772720, outputBytes: 1531035 }
 
 export * from '@tensorflow/tfjs/dist/index.js';
-export * from '@tensorflow/tfjs-backend-wasm/dist/index.js';
+export * from '@tensorflow/tfjs-backend-wasm';
 
 // modular
 // { modules: 1064, moduleBytes: 3793219, outputBytes: 1535600 }

@@ -156,7 +156,7 @@ class Pipeline {
         this.detectedFaces = 0;
         return null;
       }
-      for (const i in this.storedBoxes) {
+      for (let i = 0; i < this.storedBoxes.length; i++) {
         const scaledBox = bounding.scaleBoxCoordinates({ startPoint: this.storedBoxes[i].startPoint, endPoint: this.storedBoxes[i].endPoint }, detector.scaleFactor);
         const enlargedBox = bounding.enlargeBox(scaledBox);
         const landmarks = this.storedBoxes[i].landmarks.arraySync();

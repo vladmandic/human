@@ -20,9 +20,7 @@ class ModelWeights {
   }
 
   dispose() {
-    for (const varName in this.variables) {
-      this.variables[varName].dispose();
-    }
+    for (let i = 0; i < this.variables.length; i++) this.variables[i].dispose();
   }
 }
 exports.ModelWeights = ModelWeights;

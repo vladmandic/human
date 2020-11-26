@@ -159,7 +159,7 @@
       ]
     },
     "src/face/blazeface.js": {
-      "bytes": 6993,
+      "bytes": 7009,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -179,7 +179,7 @@
       "imports": []
     },
     "src/face/facemesh.js": {
-      "bytes": 2720,
+      "bytes": 2740,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -196,7 +196,7 @@
       ]
     },
     "src/face/facepipeline.js": {
-      "bytes": 13868,
+      "bytes": 13884,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -228,7 +228,7 @@
       ]
     },
     "src/gesture/gesture.js": {
-      "bytes": 3260,
+      "bytes": 3308,
       "imports": []
     },
     "src/hand/anchors.js": {
@@ -244,7 +244,7 @@
       ]
     },
     "src/hand/handdetector.js": {
-      "bytes": 4276,
+      "bytes": 4252,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -255,7 +255,7 @@
       ]
     },
     "src/hand/handpipeline.js": {
-      "bytes": 7608,
+      "bytes": 7615,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -357,14 +357,14 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 2599797
+      "bytes": 2599995
     },
     "dist/human.js": {
       "imports": [],
       "exports": [],
       "inputs": {
         "src/face/blazeface.js": {
-          "bytesInOutput": 5109
+          "bytesInOutput": 5121
         },
         "src/face/box.js": {
           "bytesInOutput": 1578
@@ -376,10 +376,10 @@
           "bytesInOutput": 30817
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 9391
+          "bytesInOutput": 9403
         },
         "src/face/facemesh.js": {
-          "bytesInOutput": 2108
+          "bytesInOutput": 2124
         },
         "src/profile.js": {
           "bytesInOutput": 854
@@ -430,10 +430,10 @@
           "bytesInOutput": 832
         },
         "src/hand/handdetector.js": {
-          "bytesInOutput": 2765
+          "bytesInOutput": 2741
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 4691
+          "bytesInOutput": 4633
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 127032
@@ -442,7 +442,7 @@
           "bytesInOutput": 1914
         },
         "src/gesture/gesture.js": {
-          "bytesInOutput": 2427
+          "bytesInOutput": 2463
         },
         "src/imagefx.js": {
           "bytesInOutput": 13576
@@ -469,7 +469,7 @@
           "bytesInOutput": 21
         }
       },
-      "bytes": 1774928
+      "bytes": 1774922
     }
   }
 }

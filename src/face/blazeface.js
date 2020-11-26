@@ -112,7 +112,7 @@ class BlazeFaceModel {
 
     const scoresVal = scores.dataSync();
     const annotatedBoxes = [];
-    for (const i in boundingBoxes) {
+    for (let i = 0; i < boundingBoxes.length; i++) {
       const boxIndex = boxIndices[i];
       const confidence = scoresVal[boxIndex];
       if (confidence > this.config.face.detector.minConfidence) {

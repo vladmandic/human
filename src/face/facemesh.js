@@ -18,7 +18,7 @@ class MediaPipeFaceMesh {
       const mesh = prediction.coords ? prediction.coords.arraySync() : null;
       const annotations = {};
       if (mesh && mesh.length > 0) {
-        for (const key in coords.MESH_ANNOTATIONS) {
+        for (let key = 0; key < coords.MESH_ANNOTATIONS.length; key++) {
           if (config.face.iris.enabled || key.includes('Iris') === false) {
             annotations[key] = coords.MESH_ANNOTATIONS[key].map((index) => mesh[index]);
           }

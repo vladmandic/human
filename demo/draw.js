@@ -4,7 +4,7 @@ async function drawGesture(result, canvas, ui) {
   ctx.font = ui.baseFont;
   ctx.fillStyle = ui.baseLabel;
   let i = 1;
-  for (const gesture in result) {
+  for (let gesture = 0; gesture < result.length; gesture++) {
     const [where, what] = Object.entries(result[gesture]);
     if ((what.length > 1) && (what[1].length > 0)) {
       const person = where[1] > 0 ? `#${where[1]}` : '';
@@ -115,14 +115,14 @@ async function drawBody(result, canvas, ui) {
   if (!result) return;
   const ctx = canvas.getContext('2d');
   ctx.lineJoin = 'round';
-  for (const i in result) {
+  for (let i = 0; i < result.length; i++) {
     if (!lastDrawnPose[i] && ui.buffered) lastDrawnPose[i] = { ...result[i] };
     ctx.fillStyle = ui.baseColor;
     ctx.strokeStyle = ui.baseColor;
     ctx.font = ui.baseFont;
     ctx.lineWidth = ui.baseLineWidth;
     if (ui.drawPoints) {
-      for (const pt in result[i].keypoints) {
+      for (let pt = 0; pt < result[i].keypoints.length; pt++) {
         ctx.beginPath();
         if (ui.buffered) {
           lastDrawnPose[i].keypoints[pt].position.x = (lastDrawnPose[i].keypoints[pt].position.x + result[i].keypoints[pt].position.x) / 2;

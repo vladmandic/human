@@ -50,24 +50,24 @@ class HandDetector {
     const batched = this.model.predict(input);
     const predictions = batched.squeeze();
     batched.dispose();
-    const scores = tf.tidy(() => tf.sigmoid(tf.slice(predictions, [0, 0], [-1, 1])).squeeze());
-    const scoresVal = scores.dataSync();
+    const scoresT = tf.tidy(() => tf.sigmoid(tf.slice(predictions, [0, 0], [-1, 1])).squeeze());
+    const scores = scoresT.dataSync();
     const rawBoxes = tf.slice(predictions, [0, 1], [-1, 4]);
     const boxes = this.normalizeBoxes(rawBoxes);
     rawBoxes.dispose();
     const filteredT = await tf.image.nonMaxSuppressionAsync(boxes, scores, config.hand.maxHands, config.hand.iouThreshold, config.hand.scoreThreshold);
     const filtered = filteredT.arraySync();
 
-    scores.dispose();
+    scoresT.dispose();
     filteredT.dispose();
     const hands = [];
-    for (const boxIndex of filtered) {
-      if (scoresVal[boxIndex] >= config.hand.minConfidence) {
-        const matchingBox = tf.slice(boxes, [boxIndex, 0], [1, -1]);
-        const rawPalmLandmarks = tf.slice(predictions, [boxIndex, 5], [1, 14]);
-        const palmLandmarks = tf.tidy(() => this.normalizeLandmarks(rawPalmLandmarks, boxIndex).reshape([-1, 2]));
+    for (const index of filtered) {
+      if (scores[index] >= config.hand.minConfidence) {
+        const matchingBox = tf.slice(boxes, [index, 0], [1, -1]);
+        const rawPalmLandmarks = tf.slice(predictions, [index, 5], [1, 14]);
+        const palmLandmarks = tf.tidy(() => this.normalizeLandmarks(rawPalmLandmarks, index).reshape([-1, 2]));
         rawPalmLandmarks.dispose();
-        hands.push({ box: matchingBox, palmLandmarks, confidence: scoresVal[boxIndex] });
+        hands.push({ box: matchingBox, palmLandmarks, confidence: scores[index] });
       }
     }
     predictions.dispose();

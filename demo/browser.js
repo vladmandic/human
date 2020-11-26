@@ -134,11 +134,11 @@ async function drawResults(input) {
   const avgDetect = Math.trunc(10 * ui.detectFPS.reduce((a, b) => a + b, 0) / ui.detectFPS.length) / 10;
   const avgDraw = Math.trunc(10 * ui.drawFPS.reduce((a, b) => a + b, 0) / ui.drawFPS.length) / 10;
   const warning = (ui.detectFPS.length > 5) && (avgDetect < 5) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
-  document.getElementById('log').innerText = `
-    video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}
-    backend: ${human.tf.getBackend()} | ${memory}
-    performance: ${str(result.performance)}ms FPS process:${avgDetect} refresh:${avgDraw}
-    ${warning}
+  document.getElementById('log').innerHTML = `
+    video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
+    backend: ${human.tf.getBackend()} | ${memory}<br>
+    performance: ${str(result.performance)}ms FPS process:${avgDetect} refresh:${avgDraw}<br>
+    ${warning}<br>
   `;
 
   ui.framesDraw++;

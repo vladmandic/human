@@ -300,7 +300,7 @@ class Menu {
     const width = canvas.width / values.length;
     const max = 1 + Math.max(...values);
     const height = canvas.height / max;
-    for (const i in values) {
+    for (let i = 0; i < values.length; i++) {
       const gradient = ctx.createLinearGradient(0, (max - values[i]) * height, 0, 0);
       gradient.addColorStop(0.1, theme.chartColor);
       gradient.addColorStop(0.4, theme.background);

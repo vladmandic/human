@@ -1,7 +1,7 @@
 exports.body = (res) => {
   if (!res) return [];
   const gestures = [];
-  for (const i in res) {
+  for (let i = 0; i < res.length; i++) {
     // raising hands
     const leftWrist = res[i].keypoints.find((a) => (a.part === 'leftWrist'));
     const rightWrist = res[i].keypoints.find((a) => (a.part === 'rightWrist'));
@@ -21,7 +21,7 @@ exports.body = (res) => {
 exports.face = (res) => {
   if (!res) return [];
   const gestures = [];
-  for (const i in res) {
+  for (let i = 0; i < res.length; i++) {
     if (res[i].mesh && res[i].mesh.length > 0) {
       const eyeFacing = res[i].mesh[35][2] - res[i].mesh[263][2];
       if (Math.abs(eyeFacing) < 10) gestures.push({ face: i, gesture: 'facing camera' });
@@ -42,7 +42,7 @@ exports.face = (res) => {
 exports.hand = (res) => {
   if (!res) return [];
   const gestures = [];
-  for (const i in res) {
+  for (let i = 0; i < res.length; i++) {
     const fingers = [];
     for (const [finger, pos] of Object.entries(res[i]['annotations'])) {
       if (finger !== 'palmBase') fingers.push({ name: finger.toLowerCase(), position: pos[0] }); // get tip of each finger

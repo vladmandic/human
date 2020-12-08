@@ -167,7 +167,7 @@ class BlazeFaceModel {
 async function load(config) {
   const blazeface = await tf.loadGraphModel(config.face.detector.modelPath, { fromTFHub: config.face.detector.modelPath.includes('tfhub.dev') });
   const model = new BlazeFaceModel(blazeface, config);
-  log(`Human: load model: ${config.face.detector.modelPath.match(/\/(.*)\./)[1]}`);
+  log(`load model: ${config.face.detector.modelPath.match(/\/(.*)\./)[1]}`);
   return model;
 }
 

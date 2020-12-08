@@ -61,8 +61,7 @@ function decodePose(root, scores, offsets, outputStride, displacementsFwd, displ
     part: keypoints.partNames[rootPart.id],
     position: rootPoint,
   };
-  // Decode the part positions upwards in the tree, following the backward
-  // displacements.
+  // Decode the part positions upwards in the tree, following the backward displacements.
   for (let edge = numEdges - 1; edge >= 0; --edge) {
     const sourceKeypointId = parentToChildEdges[edge];
     const targetKeypointId = childToParentEdges[edge];
@@ -70,8 +69,7 @@ function decodePose(root, scores, offsets, outputStride, displacementsFwd, displ
       instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, outputStride, displacementsBwd);
     }
   }
-  // Decode the part positions downwards in the tree, following the forward
-  // displacements.
+  // Decode the part positions downwards in the tree, following the forward displacements.
   for (let edge = 0; edge < numEdges; ++edge) {
     const sourceKeypointId = childToParentEdges[edge];
     const targetKeypointId = parentToChildEdges[edge];

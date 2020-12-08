@@ -25,9 +25,15 @@ class MediaPipeFaceMesh {
           }
         }
       }
+      const box = prediction.box ? [
+        Math.max(0, prediction.box.startPoint[0]),
+        Math.max(0, prediction.box.startPoint[1]),
+        Math.min(input.shape[2], prediction.box.endPoint[0]) - prediction.box.startPoint[0],
+        Math.min(input.shape[1], prediction.box.endPoint[1]) - prediction.box.startPoint[1],
+      ] : 0;
       results.push({
         confidence: prediction.confidence || 0,
-        box: prediction.box ? [prediction.box.startPoint[0], prediction.box.startPoint[1], prediction.box.endPoint[0] - prediction.box.startPoint[0], prediction.box.endPoint[1] - prediction.box.startPoint[1]] : 0,
+        box,
         mesh,
         annotations,
         image: prediction.image ? tf.clone(prediction.image) : null,
@@ -47,8 +53,8 @@ async function load(config) {
     (!faceModels[2] && config.face.iris.enabled) ? tf.loadGraphModel(config.face.iris.modelPath, { fromTFHub: config.face.iris.modelPath.includes('tfhub.dev') }) : null,
   ]);
   const faceMesh = new MediaPipeFaceMesh(faceModels[0], faceModels[1], faceModels[2], config);
-  if (config.face.mesh.enabled) log(`Human: load model: ${config.face.mesh.modelPath.match(/\/(.*)\./)[1]}`);
-  if (config.face.iris.enabled) log(`Human: load model: ${config.face.iris.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.face.mesh.enabled) log(`load model: ${config.face.mesh.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.face.iris.enabled) log(`load model: ${config.face.iris.modelPath.match(/\/(.*)\./)[1]}`);
   return faceMesh;
 }
 

@@ -14,9 +14,7 @@ function withinNmsRadiusOfCorrespondingPoint(poses, squaredNmsRadius, { x, y }, 
  */
 function getInstanceScore(existingPoses, squaredNmsRadius, instanceKeypoints) {
   const notOverlappedKeypointScores = instanceKeypoints.reduce((result, { position, score }, keypointId) => {
-    if (!withinNmsRadiusOfCorrespondingPoint(existingPoses, squaredNmsRadius, position, keypointId)) {
-      result += score;
-    }
+    if (!withinNmsRadiusOfCorrespondingPoint(existingPoses, squaredNmsRadius, position, keypointId)) result += score;
     return result;
   }, 0.0);
   return notOverlappedKeypointScores / instanceKeypoints.length;
@@ -80,7 +78,7 @@ const kLocalMaximumRadius = 1;
  * @return An array of poses and their scores, each containing keypoints and
  * the corresponding keypoint scores.
  */
-function decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, outputStride, maxPoseDetections, scoreThreshold = 0.5, nmsRadius = 20) {
+function decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, outputStride, maxPoseDetections, scoreThreshold, nmsRadius) {
   const poses = [];
   const queue = buildParts.buildPartWithScoreQueue(scoreThreshold, kLocalMaximumRadius, scoresBuffer);
   const squaredNmsRadius = nmsRadius * nmsRadius;
@@ -97,7 +95,7 @@ function decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer
     // Start a new detection instance at the position of the root.
     const keypoints = decodePose.decodePose(root, scoresBuffer, offsetsBuffer, outputStride, displacementsFwdBuffer, displacementsBwdBuffer);
     const score = getInstanceScore(poses, squaredNmsRadius, keypoints);
-    poses.push({ keypoints, score });
+    if (score > scoreThreshold) poses.push({ keypoints, score });
   }
   return poses;
 }

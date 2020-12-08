@@ -51,14 +51,15 @@ class HandPose {
           annotations[key] = MESH_ANNOTATIONS[key].map((index) => prediction.landmarks[index]);
         }
       }
+      const box = prediction.box ? [
+        Math.max(0, prediction.box.topLeft[0]),
+        Math.max(0, prediction.box.topLeft[1]),
+        Math.min(input.shape[2], prediction.box.bottomRight[0]) - prediction.box.topLeft[0],
+        Math.min(input.shape[1], prediction.box.bottomRight[1]) - prediction.box.topLeft[1],
+      ] : 0;
       hands.push({
         confidence: prediction.confidence,
-        box: prediction.box ? [
-          prediction.box.topLeft[0],
-          prediction.box.topLeft[1],
-          prediction.box.bottomRight[0] - prediction.box.topLeft[0],
-          prediction.box.bottomRight[1] - prediction.box.topLeft[1],
-        ] : 0,
+        box,
         landmarks: prediction.landmarks,
         annotations,
       });
@@ -76,8 +77,8 @@ async function load(config) {
   const detector = new handdetector.HandDetector(handDetectorModel, config.hand.inputSize, anchors.anchors);
   const pipe = new pipeline.HandPipeline(detector, handPoseModel, config.hand.inputSize);
   const handpose = new HandPose(pipe);
-  if (config.hand.enabled) log(`Human: load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);
-  if (config.hand.landmarks) log(`Human: load model: ${config.hand.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.hand.enabled) log(`load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.hand.landmarks) log(`load model: ${config.hand.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
   return handpose;
 }
 exports.load = load;

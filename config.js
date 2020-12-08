@@ -132,7 +132,7 @@ export default {
     inputSize: 257,          // fixed value
     maxDetections: 10,       // maximum number of people detected in the input
                              // should be set to the minimum number for performance
-    scoreThreshold: 0.8,     // threshold for deciding when to remove boxes based on score
+    scoreThreshold: 0.5,     // threshold for deciding when to remove boxes based on score
                              // in non-maximum suppression
     nmsRadius: 20,           // radius for deciding points are too close in non-maximum suppression
   },

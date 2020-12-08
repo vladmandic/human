@@ -10,7 +10,7 @@ const models = {};
 async function load(config) {
   if (!models.embedding) {
     models.embedding = await tf.loadGraphModel(config.face.embedding.modelPath);
-    log(`Human: load model: ${config.face.embedding.modelPath.match(/\/(.*)\./)[1]}`);
+    log(`load model: ${config.face.embedding.modelPath.match(/\/(.*)\./)[1]}`);
   }
   return models.embedding;
 }

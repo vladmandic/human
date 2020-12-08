@@ -41,7 +41,7 @@ exports.PoseNet = PoseNet;
 async function load(config) {
   const graphModel = await tf.loadGraphModel(config.body.modelPath);
   const mobilenet = new modelMobileNet.MobileNet(graphModel, this.outputStride);
-  log(`Human: load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
+  log(`load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
   return new PoseNet(mobilenet);
 }
 exports.load = load;

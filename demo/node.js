@@ -37,8 +37,6 @@ async function detect(input) {
   const decoded = human.tf.node.decodeImage(buffer);
   const casted = decoded.toFloat();
   const image = casted.expandDims(0);
-  // console.log(image.arraySync());
-  fs.writeFileSync('q.json', JSON.stringify(image.arraySync()));
   decoded.dispose();
   casted.dispose();
   // image shape contains image dimensions and depth

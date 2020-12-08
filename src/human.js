@@ -416,23 +416,27 @@ class Human {
   }
 
   async warmup(userConfig) {
+    if (userConfig) this.config = mergeDeep(this.config, userConfig);
+    const width = 256;
+    const height = 256;
+    const video = this.config.videoOptimized;
+    this.config.videoOptimized = false;
     return new Promise((resolve) => {
-      log('Starting warmup');
-      const img = new Image(256, 256);
+      const img = new Image(width, height);
       img.onload = () => {
-        log('Loading sample');
-        const canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(256, 256) : document.createElement('canvas');
-        canvas.width = 256;
-        canvas.height = 256;
+        const canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(width, height) : document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
-        const data = ctx.getImageData(0, 0, 255, 255);
-        this.detect(data, userConfig).then((warmup) => {
+        const data = ctx.getImageData(0, 0, width, height);
+        this.detect(data, config).then((warmup) => {
           log('Warmup', warmup);
+          this.config.videoOptimized = video;
           resolve(warmup);
         });
       };
-      img.src = sample.data;
+      img.src = sample.face;
     });
   }
 }

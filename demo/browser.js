@@ -502,16 +502,13 @@ async function main() {
   log('demo starting ...');
   setupMenu();
   document.getElementById('log').innerText = `Human: version ${human.version}`;
-  // human.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
-  // this is not required, just pre-loads all models
   if (ui.modelsPreload && !ui.useWorker) {
     status('loading');
-    await human.load(userConfig);
+    await human.load(userConfig); // this is not required, just pre-loads all models
   }
-  // this is not required, just pre-warms all models for faster initial inference
   if (ui.modelsWarmup && !ui.useWorker) {
     status('initializing');
-    await human.warmup(userConfig);
+    await human.warmup(userConfig); // this is not required, just pre-warms all models for faster initial inference
   }
   status('human: ready');
   document.getElementById('loader').style.display = 'none';

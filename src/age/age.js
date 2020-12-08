@@ -9,7 +9,6 @@ let frame = Number.MAX_SAFE_INTEGER;
 async function load(config) {
   if (!models.age) {
     models.age = await tf.loadGraphModel(config.face.age.modelPath);
-    // eslint-disable-next-line no-console
     log(`Human: load model: ${config.face.age.modelPath.match(/\/(.*)\./)[1]}`);
   }
   return models.age;

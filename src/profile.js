@@ -1,3 +1,5 @@
+import { log } from './log.js';
+
 const profileData = {};
 
 function profile(name, data) {
@@ -18,8 +20,7 @@ function profile(name, data) {
   if (largest.length > maxResults) largest.length = maxResults;
   const res = { newBytes: data.newBytes, newTensors: data.newTensors, peakBytes: data.peakBytes, numKernelOps: data.kernels.length, timeKernelOps: time, slowestKernelOps: slowest, largestKernelOps: largest };
   profileData[name] = res;
-  // eslint-disable-next-line no-console
-  console.log('Human profiler', name, res);
+  log('Human profiler', name, res);
 }
 
 exports.run = profile;

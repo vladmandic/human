@@ -103,7 +103,7 @@ class HandPipeline {
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }
     const hands = [];
-    // console.log(`skipped: ${this.skipped} max: ${config.hand.maxHands} detected: ${this.detectedHands} stored: ${this.storedBoxes.length} new: ${boxes?.length}`);
+    // log(`skipped: ${this.skipped} max: ${config.hand.maxHands} detected: ${this.detectedHands} stored: ${this.storedBoxes.length} new: ${boxes?.length}`);
 
     // go through working set of boxes
     for (let i = 0; i < this.storedBoxes.length; i++) {

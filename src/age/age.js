@@ -1,3 +1,4 @@
+import { log } from '../log.js';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile.js';
 
@@ -9,7 +10,7 @@ async function load(config) {
   if (!models.age) {
     models.age = await tf.loadGraphModel(config.face.age.modelPath);
     // eslint-disable-next-line no-console
-    console.log(`Human: load model: ${config.face.age.modelPath.match(/\/(.*)\./)[1]}`);
+    log(`Human: load model: ${config.face.age.modelPath.match(/\/(.*)\./)[1]}`);
   }
   return models.age;
 }

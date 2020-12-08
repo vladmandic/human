@@ -1,3 +1,4 @@
+import { log } from './log.js';
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './face/facemesh.js';
 import * as age from './age/age.js';
@@ -68,12 +69,6 @@ class Human {
     this.hand = handpose;
   }
 
-  // helper function: wrapper around console output
-  log(...msg) {
-    // eslint-disable-next-line no-console
-    if (msg && this.config.console) console.log('Human:', ...msg);
-  }
-
   profile() {
     if (this.config.profile) return profile.data;
     return {};
@@ -86,7 +81,7 @@ class Human {
     const previous = this.numTensors;
     this.numTensors = current;
     const leaked = current - previous;
-    if (leaked !== 0) this.log(...msg, leaked);
+    if (leaked !== 0) log(...msg, leaked);
   }
 
   // quick sanity check on inputs
@@ -116,11 +111,11 @@ class Human {
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
 
     if (this.firstRun) {
-      this.log(`version: ${this.version} TensorFlow/JS version: ${tf.version_core}`);
+      log(`version: ${this.version} TensorFlow/JS version: ${tf.version_core}`);
       await this.checkBackend(true);
       if (tf.ENV.flags.IS_BROWSER) {
-        this.log('configuration:', this.config);
-        this.log('tf flags:', tf.ENV.flags);
+        log('configuration:', this.config);
+        log('tf flags:', tf.ENV.flags);
       }
       this.firstRun = false;
     }
@@ -166,17 +161,17 @@ class Human {
         tf.removeBackend(this.config.backend);
         tf.registerBackend(this.config.backend, backendFactory);
       } else {
-        this.log('Backend not registred:', this.config.backend);
+        log('Backend not registred:', this.config.backend);
       }
       */
 
-      this.log('setting backend:', this.config.backend);
+      log('setting backend:', this.config.backend);
 
       if (this.config.backend === 'wasm') {
-        this.log('settings wasm path:', this.config.wasmPath);
+        log('settings wasm path:', this.config.wasmPath);
         tf.setWasmPaths(this.config.wasmPath);
         const simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
-        if (!simd) this.log('warning: wasm simd support is not enabled');
+        if (!simd) log('warning: wasm simd support is not enabled');
       }
 
       await tf.setBackend(this.config.backend);
@@ -186,13 +181,13 @@ class Human {
       */
       if (tf.getBackend() === 'webgl') {
         if (this.config.deallocate) {
-          this.log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
+          log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
           tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
         }
         tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
         tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
         const gl = await tf.backend().getGPGPUContext().gl;
-        this.log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+        log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }
       await tf.ready();
       this.perf.backend = Math.trunc(now() - timeStamp);
@@ -217,7 +212,7 @@ class Human {
 
       // is something went wrong, skip the face
       if (!face.image || face.image.isDisposedInternal) {
-        this.log('Face object is disposed:', face.image);
+        log('Face object is disposed:', face.image);
         continue;
       }
 
@@ -330,7 +325,7 @@ class Human {
       this.state = 'check';
       const error = this.sanity(input);
       if (error) {
-        this.log(error, input);
+        log(error, input);
         resolve({ error });
       }
 
@@ -352,7 +347,7 @@ class Human {
       timeStamp = now();
       const process = image.process(input, this.config);
       if (!process || !process.tensor) {
-        this.log('could not convert input to tensor');
+        log('could not convert input to tensor');
         resolve({ error: 'could not convert input to tensor' });
         return;
       }
@@ -423,7 +418,7 @@ class Human {
     if (!sample) sample = new ImageData(255, 255);
     // const sample = tf.zeros([1, 255, 255, 3]);
     const warmup = await this.detect(sample, userConfig);
-    this.log('warmed up');
+    log('warmed up');
     return warmup;
   }
 }

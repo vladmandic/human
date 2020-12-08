@@ -81,7 +81,7 @@
       ]
     },
     "src/age/age.js": {
-      "bytes": 1993,
+      "bytes": 1950,
       "imports": [
         {
           "path": "src/log.js"
@@ -339,12 +339,16 @@
       "bytes": 8654,
       "imports": []
     },
+    "src/sample.js": {
+      "bytes": 11662,
+      "imports": []
+    },
     "package.json": {
       "bytes": 2323,
       "imports": []
     },
     "src/human.js": {
-      "bytes": 15825,
+      "bytes": 16319,
       "imports": [
         {
           "path": "src/log.js"
@@ -386,6 +390,9 @@
           "path": "config.js"
         },
         {
+          "path": "src/sample.js"
+        },
+        {
           "path": "package.json"
         }
       ]
@@ -395,7 +402,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 2599215
+      "bytes": 2614051
     },
     "dist/human.js": {
       "imports": [],
@@ -489,7 +496,7 @@
           "bytesInOutput": 4040
         },
         "src/human.js": {
-          "bytesInOutput": 10477
+          "bytesInOutput": 10806
         },
         "src/log.js": {
           "bytesInOutput": 266
@@ -504,13 +511,16 @@
           "bytesInOutput": 1796
         },
         "config.js": {
-          "bytesInOutput": 1353
+          "bytesInOutput": 1352
+        },
+        "src/sample.js": {
+          "bytesInOutput": 11646
         },
         "package.json": {
           "bytesInOutput": 21
         }
       },
-      "bytes": 1774957
+      "bytes": 1786932
     }
   }
 }

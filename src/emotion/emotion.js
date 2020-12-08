@@ -1,3 +1,4 @@
+import { log } from '../log.js';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile.js';
 
@@ -13,8 +14,7 @@ const scale = 1; // score multiplication factor
 async function load(config) {
   if (!models.emotion) {
     models.emotion = await tf.loadGraphModel(config.face.emotion.modelPath);
-    // eslint-disable-next-line no-console
-    console.log(`Human: load model: ${config.face.emotion.modelPath.match(/\/(.*)\./)[1]}`);
+    log(`Human: load model: ${config.face.emotion.modelPath.match(/\/(.*)\./)[1]}`);
   }
   return models.emotion;
 }

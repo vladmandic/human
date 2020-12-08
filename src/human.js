@@ -11,6 +11,7 @@ import * as gesture from './gesture/gesture.js';
 import * as image from './image.js';
 import * as profile from './profile.js';
 import * as config from '../config.js';
+import * as sample from './sample.js';
 import * as app from '../package.json';
 
 // helper function: gets elapsed time on both browser and nodejs
@@ -414,12 +415,25 @@ class Human {
     });
   }
 
-  async warmup(userConfig, sample) {
-    if (!sample) sample = new ImageData(255, 255);
-    // const sample = tf.zeros([1, 255, 255, 3]);
-    const warmup = await this.detect(sample, userConfig);
-    log('warmed up');
-    return warmup;
+  async warmup(userConfig) {
+    return new Promise((resolve) => {
+      log('Starting warmup');
+      const img = new Image(256, 256);
+      img.onload = () => {
+        log('Loading sample');
+        const canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(256, 256) : document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, 255, 255);
+        this.detect(data, userConfig).then((warmup) => {
+          log('Warmup', warmup);
+          resolve(warmup);
+        });
+      };
+      img.src = sample.data;
+    });
   }
 }
 

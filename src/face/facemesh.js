@@ -1,3 +1,4 @@
+import { log } from '../log.js';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as blazeface from './blazeface.js';
 import * as pipe from './facepipeline.js';
@@ -46,10 +47,8 @@ async function load(config) {
     (!faceModels[2] && config.face.iris.enabled) ? tf.loadGraphModel(config.face.iris.modelPath, { fromTFHub: config.face.iris.modelPath.includes('tfhub.dev') }) : null,
   ]);
   const faceMesh = new MediaPipeFaceMesh(faceModels[0], faceModels[1], faceModels[2], config);
-  // eslint-disable-next-line no-console
-  if (config.face.mesh.enabled) console.log(`Human: load model: ${config.face.mesh.modelPath.match(/\/(.*)\./)[1]}`);
-  // eslint-disable-next-line no-console
-  if (config.face.iris.enabled) console.log(`Human: load model: ${config.face.iris.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.face.mesh.enabled) log(`Human: load model: ${config.face.mesh.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.face.iris.enabled) log(`Human: load model: ${config.face.iris.modelPath.match(/\/(.*)\./)[1]}`);
   return faceMesh;
 }
 

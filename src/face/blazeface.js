@@ -1,3 +1,4 @@
+import { log } from '../log.js';
 import * as tf from '../../dist/tfjs.esm.js';
 
 const NUM_LANDMARKS = 6;
@@ -166,8 +167,7 @@ class BlazeFaceModel {
 async function load(config) {
   const blazeface = await tf.loadGraphModel(config.face.detector.modelPath, { fromTFHub: config.face.detector.modelPath.includes('tfhub.dev') });
   const model = new BlazeFaceModel(blazeface, config);
-  // eslint-disable-next-line no-console
-  console.log(`Human: load model: ${config.face.detector.modelPath.match(/\/(.*)\./)[1]}`);
+  log(`Human: load model: ${config.face.detector.modelPath.match(/\/(.*)\./)[1]}`);
   return model;
 }
 

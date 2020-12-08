@@ -1,3 +1,4 @@
+import { log } from './log.js';
 import * as tf from '../dist/tfjs.esm.js';
 import * as fxImage from './imagefx.js';
 
@@ -22,8 +23,7 @@ function process(input, config) {
     if (config.filter.height > 0) targetHeight = config.filter.height;
     else if (config.filter.width > 0) targetHeight = originalHeight * (config.filter.width / originalWidth);
     if (!targetWidth || !targetHeight) {
-      // eslint-disable-next-line no-console
-      console.log('Human: invalid input', input);
+      log('Human: invalid input', input);
       return null;
     }
     if (!inCanvas || (inCanvas.width !== targetWidth) || (inCanvas.height !== targetHeight)) {

@@ -16,6 +16,7 @@
  */
 // https://storage.googleapis.com/tfjs-models/demos/handpose/index.html
 
+import { log } from '../log.js';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
 import * as pipeline from './handpipeline';
@@ -75,10 +76,8 @@ async function load(config) {
   const detector = new handdetector.HandDetector(handDetectorModel, config.hand.inputSize, anchors.anchors);
   const pipe = new pipeline.HandPipeline(detector, handPoseModel, config.hand.inputSize);
   const handpose = new HandPose(pipe);
-  // eslint-disable-next-line no-console
-  if (config.hand.enabled) console.log(`Human: load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);
-  // eslint-disable-next-line no-console
-  if (config.hand.landmarks) console.log(`Human: load model: ${config.hand.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.hand.enabled) log(`Human: load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.hand.landmarks) log(`Human: load model: ${config.hand.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
   return handpose;
 }
 exports.load = load;

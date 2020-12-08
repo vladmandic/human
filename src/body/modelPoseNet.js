@@ -1,3 +1,4 @@
+import { log } from '../log.js';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as modelMobileNet from './modelMobileNet';
 import * as decodeMultiple from './decodeMultiple';
@@ -40,8 +41,7 @@ exports.PoseNet = PoseNet;
 async function load(config) {
   const graphModel = await tf.loadGraphModel(config.body.modelPath);
   const mobilenet = new modelMobileNet.MobileNet(graphModel, this.outputStride);
-  // eslint-disable-next-line no-console
-  console.log(`Human: load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
+  log(`Human: load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
   return new PoseNet(mobilenet);
 }
 exports.load = load;

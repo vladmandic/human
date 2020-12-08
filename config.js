@@ -5,7 +5,6 @@ export default {
   backend: 'webgl',          // select tfjs backend to use
   wasmPath: '../assets/',      // path for wasm binaries
                              // only used for backend: wasm
-  console: true,             // enable debugging output to console
   async: true,               // execute enabled models in parallel
                              // this disables per-model performance data but
                              // slightly increases performance

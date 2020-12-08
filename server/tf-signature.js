@@ -12,8 +12,8 @@ async function analyzeGraph(modelPath) {
   if (stat.isFile()) model = await tf.loadGraphModel(`file://${modelPath}`);
   else model = await tf.loadGraphModel(`file://${path.join(modelPath, 'model.json')}`);
   log.info('graph model:', modelPath, tf.memory());
-  // console.log(model.executor.graph.signature.inputs);
-  // console.log(model.executor.graph.inputs);
+  // log(model.executor.graph.signature.inputs);
+  // log(model.executor.graph.inputs);
   if (model.executor.graph.signature.inputs) {
     const inputs = Object.values(model.executor.graph.signature.inputs)[0];
     log.data('inputs:', { name: inputs.name, dtype: inputs.dtype, shape: inputs.tensorShape.dim });

@@ -173,7 +173,7 @@ class Pipeline {
       });
     }
 
-    // console.log(this.skipped, config.face.detector.skipFrames, this.detectedFaces, config.face.detector.maxFaces, detector?.boxes.length, this.storedBoxes.length);
+    // log(this.skipped, config.face.detector.skipFrames, this.detectedFaces, config.face.detector.maxFaces, detector?.boxes.length, this.storedBoxes.length);
 
     let results = tf.tidy(() => this.storedBoxes.map((box, i) => {
       let angle = 0;

@@ -1,13 +1,14 @@
 import Human from '../dist/human.esm.js';
 
-let config;
 let busy = false;
 const human = new Human();
 
-const log = (...msg) => {
+function log(...msg) {
+  const dt = new Date();
+  const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
   // eslint-disable-next-line no-console
-  if (config.console) console.log(...msg);
-};
+  if (msg) console.log(ts, 'Human:', ...msg);
+}
 
 onmessage = async (msg) => {
   if (busy) return;

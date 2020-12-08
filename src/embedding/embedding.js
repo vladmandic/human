@@ -1,3 +1,4 @@
+import { log } from '../log.js';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile.js';
 
@@ -9,8 +10,7 @@ const models = {};
 async function load(config) {
   if (!models.embedding) {
     models.embedding = await tf.loadGraphModel(config.face.embedding.modelPath);
-    // eslint-disable-next-line no-console
-    console.log(`Human: load model: ${config.face.embedding.modelPath.match(/\/(.*)\./)[1]}`);
+    log(`Human: load model: ${config.face.embedding.modelPath.match(/\/(.*)\./)[1]}`);
   }
   return models.embedding;
 }

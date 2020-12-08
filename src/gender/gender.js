@@ -14,7 +14,7 @@ async function load(config) {
   if (!models.gender) {
     models.gender = await tf.loadGraphModel(config.face.gender.modelPath);
     alternative = models.gender.inputs[0].shape[3] === 1;
-    log(`Human: load model: ${config.face.gender.modelPath.match(/\/(.*)\./)[1]}`);
+    log(`load model: ${config.face.gender.modelPath.match(/\/(.*)\./)[1]}`);
   }
   return models.gender;
 }

@@ -19,7 +19,7 @@
 import { log } from '../log.js';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
-import * as pipeline from './handpipeline';
+import * as handpipeline from './handpipeline';
 import * as anchors from './anchors';
 
 const MESH_ANNOTATIONS = {
@@ -32,8 +32,8 @@ const MESH_ANNOTATIONS = {
 };
 
 class HandPose {
-  constructor(pipe) {
-    this.pipeline = pipe;
+  constructor(handPipeline) {
+    this.handPipeline = handPipeline;
   }
 
   static getAnnotations() {
@@ -41,7 +41,7 @@ class HandPose {
   }
 
   async estimateHands(input, config) {
-    const predictions = await this.pipeline.estimateHands(input, config);
+    const predictions = await this.handPipeline.estimateHands(input, config);
     if (!predictions) return [];
     const hands = [];
     for (const prediction of predictions) {
@@ -74,11 +74,11 @@ async function load(config) {
     config.hand.enabled ? tf.loadGraphModel(config.hand.detector.modelPath, { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) : null,
     config.hand.landmarks ? tf.loadGraphModel(config.hand.skeleton.modelPath, { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) : null,
   ]);
-  const detector = new handdetector.HandDetector(handDetectorModel, config.hand.inputSize, anchors.anchors);
-  const pipe = new pipeline.HandPipeline(detector, handPoseModel, config.hand.inputSize);
-  const handpose = new HandPose(pipe);
+  const handDetector = new handdetector.HandDetector(handDetectorModel, config.hand.inputSize, anchors.anchors);
+  const handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel, config.hand.inputSize);
+  const handPose = new HandPose(handPipeline);
   if (config.hand.enabled) log(`load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);
   if (config.hand.landmarks) log(`load model: ${config.hand.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
-  return handpose;
+  return handPose;
 }
 exports.load = load;

@@ -36,7 +36,7 @@
       "imports": []
     },
     "src/face/facepipeline.js": {
-      "bytes": 13817,
+      "bytes": 13856,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -279,7 +279,7 @@
       "imports": []
     },
     "src/hand/handpipeline.js": {
-      "bytes": 7607,
+      "bytes": 7923,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -289,6 +289,9 @@
         },
         {
           "path": "src/hand/util.js"
+        },
+        {
+          "path": "src/log.js"
         }
       ]
     },
@@ -297,7 +300,7 @@
       "imports": []
     },
     "src/hand/handpose.js": {
-      "bytes": 3194,
+      "bytes": 3250,
       "imports": [
         {
           "path": "src/log.js"
@@ -339,7 +342,7 @@
       ]
     },
     "config.js": {
-      "bytes": 8779,
+      "bytes": 8990,
       "imports": []
     },
     "src/sample.js": {
@@ -351,7 +354,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 16523,
+      "bytes": 16524,
       "imports": [
         {
           "path": "src/log.js"
@@ -405,7 +408,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 2651614
+      "bytes": 2652161
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -426,7 +429,7 @@
           "bytesInOutput": 30817
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 9297
+          "bytesInOutput": 9323
         },
         "src/face/facemesh.js": {
           "bytesInOutput": 2182
@@ -483,13 +486,13 @@
           "bytesInOutput": 2730
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 4624
+          "bytesInOutput": 4456
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 127032
         },
         "src/hand/handpose.js": {
-          "bytesInOutput": 1953
+          "bytesInOutput": 2007
         },
         "src/gesture/gesture.js": {
           "bytesInOutput": 2463
@@ -510,13 +513,13 @@
           "bytesInOutput": 10905
         },
         "src/hand/box.js": {
-          "bytesInOutput": 1868
+          "bytesInOutput": 1473
         },
         "src/hand/util.js": {
           "bytesInOutput": 1796
         },
         "config.js": {
-          "bytesInOutput": 1428
+          "bytesInOutput": 1440
         },
         "src/sample.js": {
           "bytesInOutput": 11646
@@ -525,7 +528,7 @@
           "bytesInOutput": 21
         }
       },
-      "bytes": 1786626
+      "bytes": 1786155
     }
   }
 }

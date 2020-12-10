@@ -188,7 +188,8 @@ class Pipeline {
         face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshHeight, this.meshWidth]).div(255);
       } else {
         rotationMatrix = util.IDENTITY_MATRIX;
-        face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, input, [this.meshHeight, this.meshWidth]).div(255);
+        const cloned = input.clone();
+        face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, cloned, [this.meshHeight, this.meshWidth]).div(255);
       }
 
       // if we're not going to produce mesh, don't spend time with further processing

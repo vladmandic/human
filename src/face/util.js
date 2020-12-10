@@ -7,6 +7,7 @@ function normalizeRadians(angle) {
   return angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
 }
 exports.normalizeRadians = normalizeRadians;
+
 /**
  * Computes the angle of rotation between two anchor points.
  * @param point1 First anchor point
@@ -17,13 +18,16 @@ function computeRotation(point1, point2) {
   return normalizeRadians(radians);
 }
 exports.computeRotation = computeRotation;
+
 function radToDegrees(rad) {
   return rad * 180 / Math.PI;
 }
 exports.radToDegrees = radToDegrees;
+
 function buildTranslationMatrix(x, y) {
   return [[1, 0, x], [0, 1, y], [0, 0, 1]];
 }
+
 function dot(v1, v2) {
   let product = 0;
   for (let i = 0; i < v1.length; i++) {
@@ -32,6 +36,7 @@ function dot(v1, v2) {
   return product;
 }
 exports.dot = dot;
+
 function getColumnFrom2DArr(arr, columnIndex) {
   const column = [];
   for (let i = 0; i < arr.length; i++) {
@@ -40,6 +45,7 @@ function getColumnFrom2DArr(arr, columnIndex) {
   return column;
 }
 exports.getColumnFrom2DArr = getColumnFrom2DArr;
+
 function multiplyTransformMatrices(mat1, mat2) {
   const product = [];
   const size = mat1.length;
@@ -61,6 +67,7 @@ function buildRotationMatrix(rotation, center) {
   return multiplyTransformMatrices(translationTimesRotation, negativeTranslationMatrix);
 }
 exports.buildRotationMatrix = buildRotationMatrix;
+
 function invertTransformMatrix(matrix) {
   const rotationComponent = [[matrix[0][0], matrix[1][0]], [matrix[0][1], matrix[1][1]]];
   const translationComponent = [matrix[0][2], matrix[1][2]];
@@ -75,6 +82,7 @@ function invertTransformMatrix(matrix) {
   ];
 }
 exports.invertTransformMatrix = invertTransformMatrix;
+
 function rotatePoint(homogeneousCoordinate, rotationMatrix) {
   return [
     dot(homogeneousCoordinate, rotationMatrix[0]),
@@ -82,6 +90,7 @@ function rotatePoint(homogeneousCoordinate, rotationMatrix) {
   ];
 }
 exports.rotatePoint = rotatePoint;
+
 function xyDistanceBetweenPoints(a, b) {
   return Math.sqrt(((a[0] - b[0]) ** 2) + ((a[1] - b[1]) ** 2));
 }

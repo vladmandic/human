@@ -1,21 +1,20 @@
 import { log } from '../log.js';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as blazeface from './blazeface.js';
-import * as pipe from './facepipeline.js';
+import * as facepipeline from './facepipeline.js';
 import * as coords from './coords.js';
 
 class MediaPipeFaceMesh {
   constructor(blazeFace, blazeMeshModel, irisModel, config) {
-    this.pipeline = new pipe.Pipeline(blazeFace, blazeMeshModel, irisModel, config);
+    this.facePipeline = new facepipeline.Pipeline(blazeFace, blazeMeshModel, irisModel, config);
     this.config = config;
   }
 
   async estimateFaces(input, config) {
-    const predictions = await this.pipeline.predict(input, config);
+    const predictions = await this.facePipeline.predict(input, config);
     const results = [];
     for (const prediction of (predictions || [])) {
-      // guard against disposed tensors on long running operations such as pause in middle of processing
-      if (prediction.isDisposedInternal) continue;
+      if (prediction.isDisposedInternal) continue; // guard against disposed tensors on long running operations such as pause in middle of processing
       const mesh = prediction.coords ? prediction.coords.arraySync() : null;
       const annotations = {};
       if (mesh && mesh.length > 0) {

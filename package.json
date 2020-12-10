@@ -44,7 +44,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
-    "simple-git": "^2.25.0"
+    "simple-git": "^2.26.0"
   },
   "scripts": {
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",

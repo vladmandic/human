@@ -28,7 +28,7 @@
       ]
     },
     "src/face/util.js": {
-      "bytes": 3078,
+      "bytes": 3087,
       "imports": []
     },
     "src/face/coords.js": {
@@ -36,7 +36,7 @@
       "imports": []
     },
     "src/face/facepipeline.js": {
-      "bytes": 13876,
+      "bytes": 13817,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -49,11 +49,14 @@
         },
         {
           "path": "src/face/coords.js"
+        },
+        {
+          "path": "src/log.js"
         }
       ]
     },
     "src/face/facemesh.js": {
-      "bytes": 2798,
+      "bytes": 2816,
       "imports": [
         {
           "path": "src/log.js"
@@ -336,7 +339,7 @@
       ]
     },
     "config.js": {
-      "bytes": 8654,
+      "bytes": 8779,
       "imports": []
     },
     "src/sample.js": {
@@ -402,7 +405,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 2668410
+      "bytes": 2668611
     },
     "dist/human.js": {
       "imports": [],
@@ -421,10 +424,10 @@
           "bytesInOutput": 30817
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 9389
+          "bytesInOutput": 9297
         },
         "src/face/facemesh.js": {
-          "bytesInOutput": 2158
+          "bytesInOutput": 2182
         },
         "src/profile.js": {
           "bytesInOutput": 846
@@ -520,7 +523,7 @@
           "bytesInOutput": 21
         }
       },
-      "bytes": 1786768
+      "bytes": 1786700
     }
   }
 }

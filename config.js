@@ -140,6 +140,8 @@ export default {
 
   hand: {
     enabled: true,
+    rotation: false,         // use best-guess rotated hand image or just box with rotation as-is
+                             // false means higher performance, but incorrect finger mapping if hand is inverted
     inputSize: 256,          // fixed value
     skipFrames: 19,          // how many frames to go without re-running the hand bounding box detector
                              // only used for video inputs

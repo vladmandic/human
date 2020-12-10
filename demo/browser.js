@@ -3,7 +3,10 @@ import draw from './draw.js';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-const userConfig = {}; // add any user configuration overrides
+// const userConfig = {}; // add any user configuration overrides
+const userConfig = {
+  async: false,
+};
 
 const human = new Human(userConfig);
 
@@ -30,7 +33,7 @@ const ui = {
   console: true,
   maxFPSframes: 10,
   modelsPreload: true,
-  modelsWarmup: true,
+  modelsWarmup: false,
   menuWidth: 0,
   menuHeight: 0,
   camera: {},
@@ -41,7 +44,7 @@ const ui = {
   detectThread: null,
   framesDraw: 0,
   framesDetect: 0,
-  bench: false,
+  bench: true,
 };
 
 // global variables
@@ -283,6 +286,7 @@ function runHumanDetect(input, canvas, timestamp) {
     clearTimeout(ui.drawThread);
     ui.drawThread = null;
     log('frame statistics: process:', ui.framesDetect, 'refresh:', ui.framesDraw);
+    log('memory', human.tf.engine().memory());
     return;
   }
   status('');

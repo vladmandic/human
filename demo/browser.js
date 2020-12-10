@@ -3,10 +3,14 @@ import draw from './draw.js';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-// const userConfig = {}; // add any user configuration overrides
+const userConfig = {}; // add any user configuration overrides
+/*
 const userConfig = {
   async: false,
+  face: { enabled: false },
+  body: { enabled: false },
 };
+*/
 
 const human = new Human(userConfig);
 
@@ -33,7 +37,7 @@ const ui = {
   console: true,
   maxFPSframes: 10,
   modelsPreload: true,
-  modelsWarmup: false,
+  modelsWarmup: true,
   menuWidth: 0,
   menuHeight: 0,
   camera: {},
@@ -44,7 +48,7 @@ const ui = {
   detectThread: null,
   framesDraw: 0,
   framesDetect: 0,
-  bench: true,
+  bench: false,
 };
 
 // global variables
@@ -470,6 +474,10 @@ function setupMenu() {
   menu.process.addRange('overlap', human.config.face.detector, 'iouThreshold', 0.1, 1.0, 0.05, (val) => {
     human.config.face.detector.iouThreshold = parseFloat(val);
     human.config.hand.iouThreshold = parseFloat(val);
+  });
+  menu.process.addBool('detection rotation', human.config.face.detector, 'rotation', (val) => {
+    human.config.face.detector.rotation = val;
+    human.config.hand.rotation = val;
   });
   menu.process.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.process.addButton('process sample images', 'process images', () => detectSampleImages());

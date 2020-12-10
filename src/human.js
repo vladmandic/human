@@ -120,6 +120,7 @@ class Human {
       }
       this.firstRun = false;
     }
+
     if (this.config.async) {
       [
         this.models.facemesh,

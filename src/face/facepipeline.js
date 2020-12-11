@@ -51,7 +51,7 @@ class Pipeline {
     this.meshHeight = config.face.mesh.inputSize;
     this.irisSize = config.face.iris.inputSize;
     this.irisEnlarge = 2.3;
-    this.skipped = 1000;
+    this.skipped = 0;
     this.detectedFaces = 0;
   }
 
@@ -129,15 +129,14 @@ class Pipeline {
   }
 
   async predict(input, config) {
-    this.skipped++;
     let useFreshBox = false;
     // run new detector every skipFrames unless we only want box to start with
     let detector;
-    if ((this.skipped > config.face.detector.skipFrames) || !config.face.mesh.enabled || !config.videoOptimized) {
+    if ((this.skipped === 0) || (this.skipped > config.face.detector.skipFrames) || !config.face.mesh.enabled || !config.videoOptimized) {
       detector = await this.boundingBoxDetector.getBoundingBoxes(input);
-      // don't reset on test image
-      if ((input.shape[1] !== 255) && (input.shape[2] !== 255)) this.skipped = 0;
+      this.skipped = 0;
     }
+    if (config.videoOptimized) this.skipped++;
 
     // if detector result count doesn't match current working set, use it to reset current working set
     if (detector && detector.boxes && (detector.boxes.length > 0) && (!config.face.mesh.enabled || (detector.boxes.length !== this.detectedFaces) && (this.detectedFaces !== config.face.detector.maxFaces))) {
@@ -172,7 +171,7 @@ class Pipeline {
       });
     }
 
-    // log(this.skipped, config.face.detector.skipFrames, this.detectedFaces, config.face.detector.maxFaces, detector?.boxes.length, this.storedBoxes.length);
+    // log('face', `skipped: ${this.skipped} max: ${config.face.detector.maxFaces} detected: ${this.detectedFaces} stored: ${this.storedBoxes.length} new: ${detector?.boxes?.length}`);
     let results = tf.tidy(() => this.storedBoxes.map((box, i) => {
       // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
       let face;
@@ -207,7 +206,6 @@ class Pipeline {
       const [, confidence, contourCoords] = this.meshDetector.predict(face); // The first returned tensor represents facial contours, which are included in the coordinates.
       const confidenceVal = confidence.dataSync()[0];
       if (confidenceVal < config.face.detector.minConfidence) return null; // if below confidence just exit
-
       const coordsReshaped = tf.reshape(contourCoords, [-1, 3]);
       let rawCoords = coordsReshaped.arraySync();
 

@@ -5,7 +5,7 @@ import * as profile from '../profile.js';
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surpise', 'neutral'];
 const models = {};
 let last = [];
-let frame = Number.MAX_SAFE_INTEGER;
+let skipped = Number.MAX_SAFE_INTEGER;
 
 // tuning values
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
@@ -21,11 +21,12 @@ async function load(config) {
 
 async function predict(image, config) {
   if (!models.emotion) return null;
-  if ((frame < config.face.emotion.skipFrames) && config.videoOptimized && (last.length > 0)) {
-    frame += 1;
+  if ((skipped < config.face.emotion.skipFrames) && config.videoOptimized && (last.length > 0)) {
+    skipped++;
     return last;
   }
-  frame = 0;
+  if (config.videoOptimized) skipped = 0;
+  else skipped = Number.MAX_SAFE_INTEGER;
   return new Promise(async (resolve) => {
     /*
     const zoom = [0, 0]; // 0..1 meaning 0%..100%

@@ -37,7 +37,6 @@ const ui = {
   console: true,
   maxFPSframes: 10,
   modelsPreload: true,
-  modelsWarmup: true,
   menuWidth: 0,
   menuHeight: 0,
   camera: {},
@@ -518,7 +517,7 @@ async function main() {
     status('loading');
     await human.load(userConfig); // this is not required, just pre-loads all models
   }
-  if (ui.modelsWarmup && !ui.useWorker) {
+  if (!ui.useWorker) {
     status('initializing');
     await human.warmup(userConfig); // this is not required, just pre-warms all models for faster initial inference
   }

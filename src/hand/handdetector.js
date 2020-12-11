@@ -81,8 +81,8 @@ class HandDetector {
     const image = tf.tidy(() => input.resizeBilinear([config.hand.inputSize, config.hand.inputSize]).div(127.5).sub(1));
     const predictions = await this.getBoxes(image, config);
     image.dispose();
-    if (!predictions || predictions.length === 0) return null;
     const hands = [];
+    if (!predictions || predictions.length === 0) return hands;
     for (const prediction of predictions) {
       const boxes = prediction.box.dataSync();
       const startPoint = boxes.slice(0, 2);

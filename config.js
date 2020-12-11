@@ -26,7 +26,9 @@ export default {
                              // must be disabled for images
                              // basically this skips object box boundary detection for every n frames
                              // while maintaining in-box detection since objects cannot move that fast
-
+  warmup: 'full',            // what to use for human.warmup(), can be 'none', 'face', 'full'
+                             // warmup pre-initializes all models for faster inference but can take
+                             // significant time on startup
   filter: {
     enabled: true,           // enable image pre-processing filters
     width: 0,                // resize input width
@@ -69,7 +71,7 @@ export default {
                              // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees
       maxFaces: 10,          // maximum number of faces detected in the input
                              // should be set to the minimum number for performance
-      skipFrames: 20,        // how many frames to go without re-running the face bounding box detector
+      skipFrames: 11,        // how many frames to go without re-running the face bounding box detector
                              // only used for video inputs
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated face analysis as the head probably hasn't moved much
@@ -99,7 +101,7 @@ export default {
       modelPath: '../models/age-ssrnet-imdb.json', // can be 'age-ssrnet-imdb' or 'age-ssrnet-wiki'
                                                    // which determines training set for model
       inputSize: 64,         // fixed value
-      skipFrames: 41,        // how many frames to go without re-running the detector
+      skipFrames: 31,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },
 
@@ -108,7 +110,7 @@ export default {
       minConfidence: 0.1,    // threshold for discarding a prediction
       modelPath: '../models/gender-ssrnet-imdb.json', // can be 'gender', 'gender-ssrnet-imdb' or 'gender-ssrnet-wiki'
       inputSize: 64,         // fixed value
-      skipFrames: 42,        // how many frames to go without re-running the detector
+      skipFrames: 41,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },
 
@@ -143,7 +145,7 @@ export default {
     rotation: false,         // use best-guess rotated hand image or just box with rotation as-is
                              // false means higher performance, but incorrect finger mapping if hand is inverted
     inputSize: 256,          // fixed value
-    skipFrames: 19,          // how many frames to go without re-running the hand bounding box detector
+    skipFrames: 12,          // how many frames to go without re-running the hand bounding box detector
                              // only used for video inputs
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated hand skeleton analysis as the hand probably

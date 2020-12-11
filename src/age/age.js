@@ -4,7 +4,7 @@ import * as profile from '../profile.js';
 
 const models = {};
 let last = { age: 0 };
-let frame = Number.MAX_SAFE_INTEGER;
+let skipped = Number.MAX_SAFE_INTEGER;
 
 async function load(config) {
   if (!models.age) {
@@ -16,11 +16,12 @@ async function load(config) {
 
 async function predict(image, config) {
   if (!models.age) return null;
-  if ((frame < config.face.age.skipFrames) && config.videoOptimized && last.age && (last.age > 0)) {
-    frame += 1;
+  if ((skipped < config.face.age.skipFrames) && config.videoOptimized && last.age && (last.age > 0)) {
+    skipped++;
     return last;
   }
-  frame = 0;
+  if (config.videoOptimized) skipped = 0;
+  else skipped = Number.MAX_SAFE_INTEGER;
   return new Promise(async (resolve) => {
     /*
     const zoom = [0, 0]; // 0..1 meaning 0%..100%

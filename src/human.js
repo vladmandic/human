@@ -418,26 +418,42 @@ class Human {
 
   async warmup(userConfig) {
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
-    const width = 256;
-    const height = 256;
-    const video = this.config.videoOptimized;
-    this.config.videoOptimized = false;
     return new Promise((resolve) => {
-      const img = new Image(width, height);
+      const video = this.config.videoOptimized;
+      this.config.videoOptimized = false;
+      let src;
+      let size;
+      switch (this.config.warmup) {
+        case 'face':
+          size = 256;
+          src = sample.face;
+          break;
+        case 'full':
+          size = 1200;
+          src = sample.body;
+          break;
+        default:
+          size = 0;
+          src = null;
+      }
+      const img = new Image(size, size);
       img.onload = () => {
-        const canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(width, height) : document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
+        const canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(size, size) : document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
-        const data = ctx.getImageData(0, 0, width, height);
+        const data = ctx.getImageData(0, 0, size, size);
+        const t0 = now();
         this.detect(data, config).then((warmup) => {
-          log('Warmup', warmup);
+          const t1 = now();
+          log('Warmup', this.config.warmup, (t1 - t0), warmup);
           this.config.videoOptimized = video;
           resolve(warmup);
         });
       };
-      img.src = sample.face;
+      if (src) img.src = src;
+      else resolve(null);
     });
   }
 }

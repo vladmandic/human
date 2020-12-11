@@ -4,7 +4,7 @@ import * as profile from '../profile.js';
 
 const models = {};
 let last = { gender: '' };
-let frame = Number.MAX_SAFE_INTEGER;
+let skipped = Number.MAX_SAFE_INTEGER;
 let alternative = false;
 
 // tuning values
@@ -21,22 +21,13 @@ async function load(config) {
 
 async function predict(image, config) {
   if (!models.gender) return null;
-  if ((frame < config.face.gender.skipFrames) && config.videoOptimized && last.gender !== '') {
-    frame += 1;
+  if ((skipped < config.face.gender.skipFrames) && config.videoOptimized && last.gender !== '') {
+    skipped++;
     return last;
   }
-  frame = 0;
+  if (config.videoOptimized) skipped = 0;
+  else skipped = Number.MAX_SAFE_INTEGER;
   return new Promise(async (resolve) => {
-    /*
-    const zoom = [0, 0]; // 0..1 meaning 0%..100%
-    const box = [[
-      (image.shape[1] * zoom[0]) / image.shape[1],
-      (image.shape[2] * zoom[1]) / image.shape[2],
-      (image.shape[1] - (image.shape[1] * zoom[0])) / image.shape[1],
-      (image.shape[2] - (image.shape[2] * zoom[1])) / image.shape[2],
-    ]];
-    const resize = tf.image.cropAndResize(image, box, [0], [config.face.gender.inputSize, config.face.gender.inputSize]);
-    */
     const resize = tf.image.resizeBilinear(image, [config.face.gender.inputSize, config.face.gender.inputSize], false);
     let enhance;
     if (alternative) {
@@ -51,7 +42,6 @@ async function predict(image, config) {
     } else {
       enhance = tf.mul(resize, [255.0]);
     }
-    // const resize = tf.image.resizeBilinear(image, [config.face.age.inputSize, config.face.age.inputSize], false);
     tf.dispose(resize);
 
     let genderT;

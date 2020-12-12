@@ -36,7 +36,7 @@
       "imports": []
     },
     "src/face/facepipeline.js": {
-      "bytes": 13856,
+      "bytes": 13836,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -84,7 +84,7 @@
       ]
     },
     "src/age/age.js": {
-      "bytes": 1943,
+      "bytes": 2017,
       "imports": [
         {
           "path": "src/log.js"
@@ -98,7 +98,7 @@
       ]
     },
     "src/gender/gender.js": {
-      "bytes": 3384,
+      "bytes": 2886,
       "imports": [
         {
           "path": "src/log.js"
@@ -112,7 +112,7 @@
       ]
     },
     "src/emotion/emotion.js": {
-      "bytes": 2981,
+      "bytes": 3055,
       "imports": [
         {
           "path": "src/log.js"
@@ -264,7 +264,7 @@
       ]
     },
     "src/hand/handdetector.js": {
-      "bytes": 4252,
+      "bytes": 4253,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -279,7 +279,7 @@
       "imports": []
     },
     "src/hand/handpipeline.js": {
-      "bytes": 7923,
+      "bytes": 7886,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -342,7 +342,7 @@
       ]
     },
     "config.js": {
-      "bytes": 8990,
+      "bytes": 9243,
       "imports": []
     },
     "src/sample.js": {
@@ -354,7 +354,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 16524,
+      "bytes": 16894,
       "imports": [
         {
           "path": "src/log.js"
@@ -408,7 +408,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 755811
+      "bytes": 760521
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -430,7 +430,7 @@
           "bytesInOutput": 30828
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 9371
+          "bytesInOutput": 9364
         },
         "src/face/facemesh.js": {
           "bytesInOutput": 2225
@@ -439,13 +439,13 @@
           "bytesInOutput": 846
         },
         "src/age/age.js": {
-          "bytesInOutput": 1166
+          "bytesInOutput": 1227
         },
         "src/gender/gender.js": {
-          "bytesInOutput": 1936
+          "bytesInOutput": 1997
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1809
+          "bytesInOutput": 1870
         },
         "src/embedding/embedding.js": {
           "bytesInOutput": 1361
@@ -484,10 +484,10 @@
           "bytesInOutput": 846
         },
         "src/hand/handdetector.js": {
-          "bytesInOutput": 2868
+          "bytesInOutput": 2869
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 4500
+          "bytesInOutput": 4491
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 127034
@@ -505,7 +505,7 @@
           "bytesInOutput": 4037
         },
         "src/human.js": {
-          "bytesInOutput": 10993
+          "bytesInOutput": 11159
         },
         "src/log.js": {
           "bytesInOutput": 266
@@ -517,16 +517,16 @@
           "bytesInOutput": 1790
         },
         "config.js": {
-          "bytesInOutput": 1440
+          "bytesInOutput": 1454
         },
         "src/sample.js": {
-          "bytesInOutput": 11646
+          "bytesInOutput": 55341
         },
         "package.json": {
           "bytesInOutput": 20
         }
       },
-      "bytes": 261473
+      "bytes": 305516
     }
   }
 }

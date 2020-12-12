@@ -3,7 +3,7 @@
 
 export default {
   backend: 'webgl',          // select tfjs backend to use
-  wasmPath: '../assets/',      // path for wasm binaries
+  wasmPath: '../assets/',    // path for wasm binaries
                              // only used for backend: wasm
   async: true,               // execute enabled models in parallel
                              // this disables per-model performance data but
@@ -26,7 +26,7 @@ export default {
                              // must be disabled for images
                              // basically this skips object box boundary detection for every n frames
                              // while maintaining in-box detection since objects cannot move that fast
-  warmup: 'full',            // what to use for human.warmup(), can be 'none', 'face', 'full'
+  warmup: 'face',            // what to use for human.warmup(), can be 'none', 'face', 'full'
                              // warmup pre-initializes all models for faster inference but can take
                              // significant time on startup
   filter: {

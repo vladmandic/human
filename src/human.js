@@ -1,5 +1,6 @@
 import { log } from './log.js';
 import * as tf from '../dist/tfjs.esm.js';
+import * as backend from './tfjs/backend.js';
 import * as facemesh from './face/facemesh.js';
 import * as age from './age/age.js';
 import * as gender from './gender/gender.js';
@@ -174,6 +175,11 @@ class Human {
         tf.setWasmPaths(this.config.wasmPath);
         const simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
         if (!simd) log('warning: wasm simd support is not enabled');
+      }
+
+      if (this.config.backend === 'humangl') {
+        log('registering humangl backend');
+        backend.register();
       }
 
       await tf.setBackend(this.config.backend);

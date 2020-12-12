@@ -3,13 +3,12 @@
 // simplified
 // { modules: 1061, moduleBytes: 3772720, outputBytes: 1531035 }
 
-export * from '@tensorflow/tfjs/dist/index.js';
-export * from '@tensorflow/tfjs-backend-wasm';
+// export * from '@tensorflow/tfjs/dist/index.js';
+// export * from '@tensorflow/tfjs-backend-wasm';
 
 // modular
 // { modules: 1064, moduleBytes: 3793219, outputBytes: 1535600 }
 
-/*
 // get versions of all packages.
 import { version as tfjs } from '@tensorflow/tfjs/package.json';
 import { version as versionCore } from '@tensorflow/tfjs-core/package.json';
@@ -41,4 +40,3 @@ export const version = {
   'tfjs-backend-webgl': version_webgl,
   'tfjs-backend-wasm': version_wasm,
 };
-*/

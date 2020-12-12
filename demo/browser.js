@@ -4,13 +4,6 @@ import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
 const userConfig = {}; // add any user configuration overrides
-/*
-const userConfig = {
-  async: false,
-  face: { enabled: false },
-  body: { enabled: false },
-};
-*/
 
 const human = new Human(userConfig);
 
@@ -441,7 +434,7 @@ function setupMenu() {
   menu.image.addBool('polaroid', human.config.filter, 'polaroid');
 
   menu.process = new Menu(document.body, '', { top: `${document.getElementById('menubar').offsetHeight}px`, left: x[2] });
-  menu.process.addList('backend', ['cpu', 'webgl', 'wasm'], human.config.backend, (val) => human.config.backend = val);
+  menu.process.addList('backend', ['cpu', 'webgl', 'wasm', 'humangl'], human.config.backend, (val) => human.config.backend = val);
   menu.process.addBool('async operations', human.config, 'async', (val) => human.config.async = val);
   menu.process.addBool('enable profiler', human.config, 'profile', (val) => human.config.profile = val);
   menu.process.addBool('memory shield', human.config, 'deallocate', (val) => human.config.deallocate = val);

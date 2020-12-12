@@ -35,7 +35,7 @@
     "@vladmandic/pilogger": "^0.2.9",
     "chokidar": "^3.4.3",
     "dayjs": "^1.9.7",
-    "esbuild": "^0.8.21",
+    "esbuild": "^0.8.22",
     "eslint": "^7.15.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
@@ -44,7 +44,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
-    "simple-git": "^2.26.0"
+    "simple-git": "^2.27.0"
   },
   "scripts": {
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",

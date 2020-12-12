@@ -5,7 +5,7 @@
       "imports": []
     },
     "dist/tfjs.esm.js": {
-      "bytes": 1522244,
+      "bytes": 1489546,
       "imports": []
     },
     "src/face/blazeface.js": {
@@ -350,7 +350,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2323,
+      "bytes": 2324,
       "imports": []
     },
     "src/human.js": {
@@ -408,7 +408,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 2673870
+      "bytes": 2640856
     },
     "dist/human.js": {
       "imports": [],
@@ -508,7 +508,7 @@
           "bytesInOutput": 266
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1520210
+          "bytesInOutput": 1487547
         },
         "src/hand/box.js": {
           "bytesInOutput": 1473
@@ -526,7 +526,7 @@
           "bytesInOutput": 21
         }
       },
-      "bytes": 1830260
+      "bytes": 1797597
     }
   }
 }

@@ -4,6 +4,13 @@ import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
 const userConfig = {}; // add any user configuration overrides
+/*
+const userConfig = {
+  face: { enabled: false },
+  body: { enabled: true },
+  hand: { enabled: false },
+};
+*/
 
 const human = new Human(userConfig);
 

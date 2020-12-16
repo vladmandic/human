@@ -12,12 +12,14 @@ function getPointsConfidence(heatmapScores, heatMapCoords) {
   return result;
 }
 exports.getPointsConfidence = getPointsConfidence;
+
 function getOffsetPoint(y, x, keypoint, offsetsBuffer) {
   return {
     y: offsetsBuffer.get(y, x, keypoint),
     x: offsetsBuffer.get(y, x, keypoint + kpt.NUM_KEYPOINTS),
   };
 }
+
 function getOffsetVectors(heatMapCoordsBuffer, offsetsBuffer) {
   const result = [];
   for (let keypoint = 0; keypoint < kpt.NUM_KEYPOINTS; keypoint++) {
@@ -30,14 +32,9 @@ function getOffsetVectors(heatMapCoordsBuffer, offsetsBuffer) {
   return tf.tensor2d(result, [kpt.NUM_KEYPOINTS, 2]);
 }
 exports.getOffsetVectors = getOffsetVectors;
+
 function getOffsetPoints(heatMapCoordsBuffer, outputStride, offsetsBuffer) {
-  return tf.tidy(() => {
-    const offsetVectors = getOffsetVectors(heatMapCoordsBuffer, offsetsBuffer);
-    return heatMapCoordsBuffer.toTensor()
-      .mul(tf.scalar(outputStride, 'int32'))
-      .toFloat()
-      .add(offsetVectors);
-  });
+  return tf.tidy(() => heatMapCoordsBuffer.toTensor().mul(tf.scalar(outputStride, 'int32')).toFloat().add(getOffsetVectors(heatMapCoordsBuffer, offsetsBuffer)));
 }
 exports.getOffsetPoints = getOffsetPoints;
 
@@ -47,6 +44,7 @@ function mod(a, b) {
     return a.sub(floored.mul(tf.scalar(b, 'int32')));
   });
 }
+
 function argmax2d(inputs) {
   const [height, width, depth] = inputs.shape;
   return tf.tidy(() => {

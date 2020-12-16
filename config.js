@@ -138,6 +138,9 @@ export default {
     scoreThreshold: 0.5,     // threshold for deciding when to remove boxes based on score
                              // in non-maximum suppression
     nmsRadius: 20,           // radius for deciding points are too close in non-maximum suppression
+    outputStride: 16,        // size of block in which to run point detectopn, smaller value means higher resolution
+                             // defined by model itself, can be 8, 16, or 32
+    modelType: 'MobileNet',  // Human includes MobileNet version, but you can switch to ResNet
   },
 
   hand: {

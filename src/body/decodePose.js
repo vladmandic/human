@@ -1,5 +1,6 @@
 import * as keypoints from './keypoints';
 import * as vectors from './vectors';
+import * as decoders from './decoders';
 
 const parentChildrenTuples = keypoints.poseChain.map(([parentJoinName, childJoinName]) => ([keypoints.partIds[parentJoinName], keypoints.partIds[childJoinName]]));
 const parentToChildEdges = parentChildrenTuples.map(([, childJointId]) => childJointId);
@@ -17,13 +18,7 @@ function getStridedIndexNearPoint(point, outputStride, height, width) {
     x: vectors.clamp(Math.round(point.x / outputStride), 0, width - 1),
   };
 }
-/**
- * We get a new keypoint along the `edgeId` for the pose instance, assuming
- * that the position of the `idSource` part is already known. For this, we
- * follow the displacement vector from the source to target part (stored in
- * the `i`-t channel of the displacement tensor). The displaced keypoint
- * vector is refined using the offset vector by `offsetRefineStep` times.
- */
+
 function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scoresBuffer, offsets, outputStride, displacements, offsetRefineStep = 2) {
   const [height, width] = scoresBuffer.shape;
   // Nearest neighbor interpolation for the source->target displacements.
@@ -43,12 +38,7 @@ function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scor
   const score = scoresBuffer.get(targetKeyPointIndices.y, targetKeyPointIndices.x, targetKeypointId);
   return { position: targetKeypoint, part: keypoints.partNames[targetKeypointId], score };
 }
-/**
- * Follows the displacement fields to decode the full pose of the object
- * instance given the position of a part that acts as root.
- *
- * @return An array of decoded keypoints and their scores for a single pose
- */
+
 function decodePose(root, scores, offsets, outputStride, displacementsFwd, displacementsBwd) {
   const numParts = scores.shape[2];
   const numEdges = parentToChildEdges.length;
@@ -80,3 +70,31 @@ function decodePose(root, scores, offsets, outputStride, displacementsFwd, displ
   return instanceKeypoints;
 }
 exports.decodePose = decodePose;
+
+async function decodeSinglePose(heatmapScores, offsets, config) {
+  let totalScore = 0.0;
+  const heatmapValues = decoders.argmax2d(heatmapScores);
+  const allTensorBuffers = await Promise.all([heatmapScores.buffer(), offsets.buffer(), heatmapValues.buffer()]);
+  const scoresBuffer = allTensorBuffers[0];
+  const offsetsBuffer = allTensorBuffers[1];
+  const heatmapValuesBuffer = allTensorBuffers[2];
+  const offsetPoints = decoders.getOffsetPoints(heatmapValuesBuffer, config.body.outputStride, offsetsBuffer);
+  const offsetPointsBuffer = await offsetPoints.buffer();
+  const keypointConfidence = Array.from(decoders.getPointsConfidence(scoresBuffer, heatmapValuesBuffer));
+  const instanceKeypoints = keypointConfidence.map((score, i) => {
+    totalScore += score;
+    return {
+      position: {
+        y: offsetPointsBuffer.get(i, 0),
+        x: offsetPointsBuffer.get(i, 1),
+      },
+      part: keypoints.partNames[i],
+      score,
+    };
+  });
+  const filteredKeypoints = instanceKeypoints.filter((kpt) => kpt.score > config.body.scoreThreshold);
+  heatmapValues.dispose();
+  offsetPoints.dispose();
+  return { keypoints: filteredKeypoints, score: totalScore / instanceKeypoints.length };
+}
+exports.decodeSinglePose = decodeSinglePose;

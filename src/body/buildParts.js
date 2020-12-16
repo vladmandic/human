@@ -14,17 +14,11 @@ function scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, loca
         break;
       }
     }
-    if (!localMaximum) {
-      break;
-    }
+    if (!localMaximum) break;
   }
   return localMaximum;
 }
-/**
- * Builds a priority queue with part candidate positions for a specific image in
- * the batch. For this we find all local maxima in the score maps with score
- * values above a threshold. We create a single priority queue across all parts.
- */
+
 function buildPartWithScoreQueue(scoreThreshold, localMaximumRadius, scores) {
   const [height, width, numKeypoints] = scores.shape;
   const queue = new heapSort.MaxHeap(height * width * numKeypoints, ({ score }) => score);

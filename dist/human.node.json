@@ -354,7 +354,7 @@
       "imports": []
     },
     "src/sample.js": {
-      "bytes": 55374,
+      "bytes": 55382,
       "imports": []
     },
     "package.json": {
@@ -362,7 +362,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 17068,
+      "bytes": 16644,
       "imports": [
         {
           "path": "src/log.js"
@@ -419,7 +419,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 780897
+      "bytes": 778529
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -516,7 +516,7 @@
           "bytesInOutput": 4069
         },
         "src/human.js": {
-          "bytesInOutput": 11243
+          "bytesInOutput": 11084
         },
         "src/log.js": {
           "bytesInOutput": 266
@@ -534,13 +534,13 @@
           "bytesInOutput": 1454
         },
         "src/sample.js": {
-          "bytesInOutput": 55341
+          "bytesInOutput": 55295
         },
         "package.json": {
           "bytesInOutput": 20
         }
       },
-      "bytes": 306776
+      "bytes": 306571
     }
   }
 }

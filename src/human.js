@@ -423,44 +423,26 @@ class Human {
   }
 
   async warmup(userConfig) {
+    const b64toBlob = (base64, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
+
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
-    return new Promise((resolve) => {
-      const video = this.config.videoOptimized;
-      this.config.videoOptimized = false;
-      let src;
-      let size;
-      switch (this.config.warmup) {
-        case 'face':
-          size = 256;
-          src = sample.face;
-          break;
-        case 'full':
-          size = 1200;
-          src = sample.body;
-          break;
-        default:
-          size = 0;
-          src = null;
-      }
-      const img = new Image(size, size);
-      img.onload = () => {
-        const canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(size, size) : document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        const data = ctx.getImageData(0, 0, size, size);
-        const t0 = now();
-        this.detect(data, config).then((warmup) => {
-          const t1 = now();
-          log('Warmup', this.config.warmup, (t1 - t0), warmup);
-          this.config.videoOptimized = video;
-          resolve(warmup);
-        });
-      };
-      if (src) img.src = src;
-      else resolve(null);
-    });
+    const video = this.config.videoOptimized;
+    this.config.videoOptimized = false;
+    let blob;
+    switch (this.config.warmup) {
+      case 'face': blob = await b64toBlob(sample.face); break;
+      case 'full': blob = await b64toBlob(sample.body); break;
+      default: blob = null;
+    }
+    if (!blob) return null;
+    const bitmap = await createImageBitmap(blob);
+    const t0 = now();
+    const warmup = await this.detect(bitmap, config);
+    const t1 = now();
+    bitmap.close();
+    log('Warmup', this.config.warmup, (t1 - t0), warmup);
+    this.config.videoOptimized = video;
+    return warmup;
   }
 }
 

@@ -148,21 +148,10 @@
       ]
     },
     "src/body/modelBase.js": {
-      "bytes": 889,
+      "bytes": 1343,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
-        }
-      ]
-    },
-    "src/body/modelMobileNet.js": {
-      "bytes": 599,
-      "imports": [
-        {
-          "path": "dist/tfjs.esm.js"
-        },
-        {
-          "path": "src/body/modelBase.js"
         }
       ]
     },
@@ -171,7 +160,7 @@
       "imports": []
     },
     "src/body/buildParts.js": {
-      "bytes": 2035,
+      "bytes": 1775,
       "imports": [
         {
           "path": "src/body/heapSort.js"
@@ -179,7 +168,7 @@
       ]
     },
     "src/body/keypoints.js": {
-      "bytes": 2291,
+      "bytes": 2011,
       "imports": []
     },
     "src/body/vectors.js": {
@@ -190,19 +179,33 @@
         }
       ]
     },
+    "src/body/decoders.js": {
+      "bytes": 2083,
+      "imports": [
+        {
+          "path": "dist/tfjs.esm.js"
+        },
+        {
+          "path": "src/body/keypoints.js"
+        }
+      ]
+    },
     "src/body/decodePose.js": {
-      "bytes": 4530,
+      "bytes": 5216,
       "imports": [
         {
           "path": "src/body/keypoints.js"
         },
         {
           "path": "src/body/vectors.js"
+        },
+        {
+          "path": "src/body/decoders.js"
         }
       ]
     },
     "src/body/decodeMultiple.js": {
-      "bytes": 5608,
+      "bytes": 2303,
       "imports": [
         {
           "path": "src/body/buildParts.js"
@@ -224,7 +227,7 @@
       ]
     },
     "src/body/modelPoseNet.js": {
-      "bytes": 1905,
+      "bytes": 2395,
       "imports": [
         {
           "path": "src/log.js"
@@ -233,10 +236,13 @@
           "path": "dist/tfjs.esm.js"
         },
         {
-          "path": "src/body/modelMobileNet.js"
+          "path": "src/body/modelBase.js"
         },
         {
           "path": "src/body/decodeMultiple.js"
+        },
+        {
+          "path": "src/body/decodePose.js"
         },
         {
           "path": "src/body/util.js"
@@ -244,16 +250,10 @@
       ]
     },
     "src/body/posenet.js": {
-      "bytes": 830,
+      "bytes": 614,
       "imports": [
         {
-          "path": "src/body/modelMobileNet.js"
-        },
-        {
           "path": "src/body/modelPoseNet.js"
-        },
-        {
-          "path": "src/body/decodeMultiple.js"
         },
         {
           "path": "src/body/keypoints.js"
@@ -287,7 +287,7 @@
       "imports": []
     },
     "src/hand/handpipeline.js": {
-      "bytes": 7886,
+      "bytes": 7951,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -350,7 +350,7 @@
       ]
     },
     "config.js": {
-      "bytes": 9241,
+      "bytes": 9530,
       "imports": []
     },
     "src/sample.js": {
@@ -419,7 +419,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 778529
+      "bytes": 779986
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -462,10 +462,7 @@
           "bytesInOutput": 1369
         },
         "src/body/modelBase.js": {
-          "bytesInOutput": 652
-        },
-        "src/body/modelMobileNet.js": {
-          "bytesInOutput": 418
+          "bytesInOutput": 1116
         },
         "src/body/heapSort.js": {
           "bytesInOutput": 1139
@@ -479,26 +476,29 @@
         "src/body/vectors.js": {
           "bytesInOutput": 1042
         },
+        "src/body/decoders.js": {
+          "bytesInOutput": 1793
+        },
         "src/body/decodePose.js": {
-          "bytesInOutput": 3113
+          "bytesInOutput": 4164
         },
         "src/body/decodeMultiple.js": {
-          "bytesInOutput": 1686
+          "bytesInOutput": 1700
         },
         "src/body/util.js": {
           "bytesInOutput": 1918
         },
         "src/body/modelPoseNet.js": {
-          "bytesInOutput": 1607
+          "bytesInOutput": 2030
         },
         "src/body/posenet.js": {
-          "bytesInOutput": 846
+          "bytesInOutput": 634
         },
         "src/hand/handdetector.js": {
           "bytesInOutput": 2880
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 4503
+          "bytesInOutput": 4559
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 127034
@@ -531,7 +531,7 @@
           "bytesInOutput": 1790
         },
         "config.js": {
-          "bytesInOutput": 1454
+          "bytesInOutput": 1492
         },
         "src/sample.js": {
           "bytesInOutput": 55295
@@ -540,7 +540,7 @@
           "bytesInOutput": 20
         }
       },
-      "bytes": 306571
+      "bytes": 309780
     }
   }
 }

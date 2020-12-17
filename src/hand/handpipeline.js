@@ -59,11 +59,11 @@ class HandPipeline {
 
   transformRawCoords(rawCoords, box2, angle, rotationMatrix) {
     const boxSize = box.getBoxSize(box2);
-    const scaleFactor = [boxSize[0] / this.inputSize, boxSize[1] / this.inputSize];
+    const scaleFactor = [boxSize[0] / this.inputSize, boxSize[1] / this.inputSize, (boxSize[0] + boxSize[1]) / this.inputSize / 2];
     const coordsScaled = rawCoords.map((coord) => [
       scaleFactor[0] * (coord[0] - this.inputSize / 2),
       scaleFactor[1] * (coord[1] - this.inputSize / 2),
-      coord[2],
+      scaleFactor[2] * coord[2],
     ]);
     const coordsRotationMatrix = util.buildRotationMatrix(angle, [0, 0]);
     const coordsRotated = coordsScaled.map((coord) => {

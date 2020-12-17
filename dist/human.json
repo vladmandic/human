@@ -287,7 +287,7 @@
       "imports": []
     },
     "src/hand/handpipeline.js": {
-      "bytes": 7886,
+      "bytes": 7951,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -419,7 +419,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 2123326
+      "bytes": 2123435
     },
     "dist/human.js": {
       "imports": [],
@@ -495,7 +495,7 @@
           "bytesInOutput": 2742
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 4459
+          "bytesInOutput": 4515
         },
         "src/hand/anchors.js": {
           "bytesInOutput": 127032
@@ -540,7 +540,7 @@
           "bytesInOutput": 21
         }
       },
-      "bytes": 1839475
+      "bytes": 1839531
     }
   }
 }

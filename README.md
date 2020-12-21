@@ -12,6 +12,8 @@
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
 - [**Change Log**](https://github.com/vladmandic/human/wiki/Change-Log)
 
+<br>
+
 ### Wiki pages:
 
 - [**Home**](https://github.com/vladmandic/human/wiki)
@@ -22,6 +24,8 @@
 - [**Output Details**](https://github.com/vladmandic/human/wiki/Outputs)
 - [**Face Embedding and Recognition**](https://github.com/vladmandic/human/wiki/Embedding)
 - [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)
+
+<br>
 
 ### Additional notes:
 

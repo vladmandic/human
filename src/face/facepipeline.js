@@ -244,13 +244,13 @@ class Pipeline {
       const transformedCoords = tf.tensor2d(transformedCoordsData);
       const prediction = {
         coords: transformedCoords,
-// AT: rawCoords
-        rawCoords: (config.face.mesh.requestRawData) ? rawCoords : null,
         box: landmarksBox,
         faceConfidence: confidenceVal,
         confidence: box.confidence,
         image: face,
       };
+// AT: rawCoords
+      if (config.face.mesh.returnRawData) prediction.rawCoords = rawCoords;
 // AT: preserve aspect ratio, pulled from Facemesh upstream
       this.storedBoxes[i] = { ...squarifiedLandmarksBox, landmarks: transformedCoords.arraySync(), confidence: box.confidence, faceConfidence: confidenceVal };
 //      this.storedBoxes[i] = { ...landmarksBox, landmarks: transformedCoords.arraySync(), confidence: box.confidence, faceConfidence: confidenceVal };

@@ -291,9 +291,9 @@ class Human {
         confidence: face.confidence,
         box: face.box,
         mesh: face.mesh,
-// AT: box_raw, mesh_raw
-        box_raw: face.box_raw,
-        mesh_raw: face.mesh_raw,
+// AT: boxRaw, meshRaw
+        boxRaw: face.boxRaw,
+        meshRaw: face.meshRaw,
         annotations: face.annotations,
         age: ageRes.age,
         gender: genderRes.gender,

@@ -88,6 +88,7 @@ export default {
       enabled: true,
       modelPath: '../models/facemesh.json',
       inputSize: 192,        // fixed value
+      returnRawData: false,  // in addition to standard mesh and box values, return raw normalized values as well
     },
 
     iris: {

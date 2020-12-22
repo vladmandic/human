@@ -157,9 +157,13 @@ class Pipeline {
       for (let i = 0; i < this.storedBoxes.length; i++) {
         const scaledBox = bounding.scaleBoxCoordinates({ startPoint: this.storedBoxes[i].startPoint, endPoint: this.storedBoxes[i].endPoint }, detector.scaleFactor);
         const enlargedBox = bounding.enlargeBox(scaledBox);
+// AT: preserve aspect ratio, pulled from Facemesh upstream (https://github.com/tensorflow/tfjs-models/commit/85e6e487cc4bd21f0707a509e5024484a0798aa0)
+        const squarifiedBox = bounding.squarifyBox(enlargedBox);
         const landmarks = this.storedBoxes[i].landmarks.arraySync();
         const confidence = this.storedBoxes[i].confidence;
-        this.storedBoxes[i] = { ...enlargedBox, confidence, landmarks };
+// AT: preserve aspect ratio, pulled from Facemesh upstream
+        this.storedBoxes[i] = { ...squarifiedBox, confidence, landmarks };
+//        this.storedBoxes[i] = { ...enlargedBox, confidence, landmarks };
       }
       this.runsWithoutFaceDetector = 0;
     }
@@ -235,15 +239,21 @@ class Pipeline {
 
       const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
       const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
+// AT: preserve aspect ratio, pulled from Facemesh upstream
+      const squarifiedLandmarksBox = bounding.squarifyBox(landmarksBox);
       const transformedCoords = tf.tensor2d(transformedCoordsData);
       const prediction = {
         coords: transformedCoords,
+// AT: rawCoords
+        rawCoords: (config.face.mesh.requestRawData) ? rawCoords : null,
         box: landmarksBox,
         faceConfidence: confidenceVal,
         confidence: box.confidence,
         image: face,
       };
-      this.storedBoxes[i] = { ...landmarksBox, landmarks: transformedCoords.arraySync(), confidence: box.confidence, faceConfidence: confidenceVal };
+// AT: preserve aspect ratio, pulled from Facemesh upstream
+      this.storedBoxes[i] = { ...squarifiedLandmarksBox, landmarks: transformedCoords.arraySync(), confidence: box.confidence, faceConfidence: confidenceVal };
+//      this.storedBoxes[i] = { ...landmarksBox, landmarks: transformedCoords.arraySync(), confidence: box.confidence, faceConfidence: confidenceVal };
 
       return prediction;
     }));

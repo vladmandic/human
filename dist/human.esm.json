@@ -5,7 +5,7 @@
       "imports": []
     },
     "dist/tfjs.esm.js": {
-      "bytes": 1526803,
+      "bytes": 1526705,
       "imports": []
     },
     "src/tfjs/backend.js": {
@@ -44,7 +44,7 @@
       "imports": []
     },
     "src/face/facepipeline.js": {
-      "bytes": 13836,
+      "bytes": 14062,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -64,7 +64,7 @@
       ]
     },
     "src/face/facemesh.js": {
-      "bytes": 2816,
+      "bytes": 3054,
       "imports": [
         {
           "path": "src/log.js"
@@ -350,7 +350,7 @@
       ]
     },
     "config.js": {
-      "bytes": 9530,
+      "bytes": 9644,
       "imports": []
     },
     "src/sample.js": {
@@ -362,7 +362,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 16644,
+      "bytes": 16727,
       "imports": [
         {
           "path": "src/log.js"
@@ -419,7 +419,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 2106312
+      "bytes": 1776771
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -440,10 +440,10 @@
           "bytesInOutput": 30817
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 9329
+          "bytesInOutput": 9513
         },
         "src/face/facemesh.js": {
-          "bytesInOutput": 2202
+          "bytesInOutput": 2378
         },
         "src/profile.js": {
           "bytesInOutput": 846
@@ -518,13 +518,13 @@
           "bytesInOutput": 266
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1525301
+          "bytesInOutput": 1525250
         },
         "src/tfjs/backend.js": {
           "bytesInOutput": 938
         },
         "src/human.js": {
-          "bytesInOutput": 10996
+          "bytesInOutput": 11039
         },
         "src/hand/box.js": {
           "bytesInOutput": 1473
@@ -533,16 +533,16 @@
           "bytesInOutput": 1796
         },
         "config.js": {
-          "bytesInOutput": 1492
+          "bytesInOutput": 1509
         },
         "src/sample.js": {
           "bytesInOutput": 55295
         },
         "package.json": {
-          "bytesInOutput": 21
+          "bytesInOutput": 22
         }
       },
-      "bytes": 1839457
+      "bytes": 1839826
     }
   }
 }

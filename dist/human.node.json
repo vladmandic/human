@@ -44,7 +44,7 @@
       "imports": []
     },
     "src/face/facepipeline.js": {
-      "bytes": 13836,
+      "bytes": 14062,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -64,7 +64,7 @@
       ]
     },
     "src/face/facemesh.js": {
-      "bytes": 2816,
+      "bytes": 3054,
       "imports": [
         {
           "path": "src/log.js"
@@ -350,7 +350,7 @@
       ]
     },
     "config.js": {
-      "bytes": 9530,
+      "bytes": 9644,
       "imports": []
     },
     "src/sample.js": {
@@ -362,7 +362,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 16644,
+      "bytes": 16727,
       "imports": [
         {
           "path": "src/log.js"
@@ -419,7 +419,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 779986
+      "bytes": 702698
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -441,10 +441,10 @@
           "bytesInOutput": 30828
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 9379
+          "bytesInOutput": 9563
         },
         "src/face/facemesh.js": {
-          "bytesInOutput": 2245
+          "bytesInOutput": 2421
         },
         "src/profile.js": {
           "bytesInOutput": 846
@@ -516,7 +516,7 @@
           "bytesInOutput": 4069
         },
         "src/human.js": {
-          "bytesInOutput": 11084
+          "bytesInOutput": 11126
         },
         "src/log.js": {
           "bytesInOutput": 266
@@ -531,7 +531,7 @@
           "bytesInOutput": 1790
         },
         "config.js": {
-          "bytesInOutput": 1492
+          "bytesInOutput": 1509
         },
         "src/sample.js": {
           "bytesInOutput": 55295
@@ -540,7 +540,7 @@
           "bytesInOutput": 20
         }
       },
-      "bytes": 309780
+      "bytes": 310199
     }
   }
 }

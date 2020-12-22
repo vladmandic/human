@@ -16,6 +16,8 @@ class MediaPipeFaceMesh {
     for (const prediction of (predictions || [])) {
       if (prediction.isDisposedInternal) continue; // guard against disposed tensors on long running operations such as pause in middle of processing
       const mesh = prediction.coords ? prediction.coords.arraySync() : null;
+// AT: mesh_raw
+      const mesh_raw = prediction.rawCoords;
       const annotations = {};
       if (mesh && mesh.length > 0) {
         for (let key = 0; key < coords.MESH_ANNOTATIONS.length; key++) {
@@ -24,16 +26,23 @@ class MediaPipeFaceMesh {
           }
         }
       }
+// AT: raw version of box, the same as the TFJS Facemesh output version (.boundingBox)
+      const box_raw = (config.face.mesh.requestRawData && prediction.box) ? {topLeft: prediction.box.startPoint, bottomRight: prediction.box.endPoint} : null;
+
       const box = prediction.box ? [
         Math.max(0, prediction.box.startPoint[0]),
         Math.max(0, prediction.box.startPoint[1]),
         Math.min(input.shape[2], prediction.box.endPoint[0]) - prediction.box.startPoint[0],
         Math.min(input.shape[1], prediction.box.endPoint[1]) - prediction.box.startPoint[1],
       ] : 0;
+
       results.push({
         confidence: prediction.confidence || 0,
         box,
         mesh,
+// AT: box_raw, mesh_raw
+        box_raw,
+        mesh_raw,
         annotations,
         image: prediction.image ? tf.clone(prediction.image) : null,
       });

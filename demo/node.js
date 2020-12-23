@@ -53,6 +53,7 @@ async function detect(input) {
 }
 
 async function main() {
+  log.info('NodeJS:', process.version);
   if (process.argv.length !== 3) log.error('Parameters: <input image>');
   else if (!fs.existsSync(process.argv[2])) log.error(`File not found: ${process.argv[2]}`);
   else detect(process.argv[2]);

@@ -6,7 +6,7 @@ const logger = new console.Console({
   stdout: process.stdout,
   stderr: process.stderr,
   ignoreErrors: true,
-  groupIndentation: 2,
+  // groupIndentation: 2,
   inspectOptions: {
     showHidden: true,
     depth: 5,
@@ -26,17 +26,17 @@ const config = {
   console: false,
   videoOptimized: false,
   face: {
-    detector: { modelPath: 'file://models/blazeface/back/model.json' },
-    mesh: { modelPath: 'file://models/facemesh/model.json' },
-    iris: { modelPath: 'file://models/iris/model.json' },
-    age: { modelPath: 'file://models/ssrnet-age/imdb/model.json' },
-    gender: { modelPath: 'file://models/ssrnet-gender/imdb/model.json' },
-    emotion: { modelPath: 'file://models/emotion/model.json' },
+    detector: { modelPath: 'file://models/blazeface-back.json' },
+    mesh: { modelPath: 'file://models/facemesh.json' },
+    iris: { modelPath: 'file://models/iris.json' },
+    age: { modelPath: 'file://models/age-ssrnet-imdb.json' },
+    gender: { modelPath: 'file://models/gender-ssrnet-imdb.json' },
+    emotion: { modelPath: 'file://models/emotion-large.json' },
   },
-  body: { modelPath: 'file://models/posenet/model.json' },
+  body: { modelPath: 'file://models/posenet.json' },
   hand: {
-    detector: { modelPath: 'file://models/handdetect/model.json' },
-    skeleton: { modelPath: 'file://models/handskeleton/model.json' },
+    detector: { modelPath: 'file://models/handdetect.json' },
+    skeleton: { modelPath: 'file://models/handskeleton.json' },
   },
 };
 

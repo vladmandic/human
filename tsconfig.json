@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "es2020",
+    "target": "es2018",
+    "moduleResolution": "node",
+    "lib": ["es2018", "dom"],
+    "typeRoots": ["node_modules/@types"],
+    "outDir": "types",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "noImplicitAny": false,
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": false,
+    "strictNullChecks": false,
+    "allowJs": true
+  },
+  "formatCodeOptions": { "indentSize": 2, "tabSize": 2 },
+  "include": ["src/*", "demo/*"],
+}

@@ -20,7 +20,9 @@ export const config = {
 
 export function register() {
   if (!tf.findBackend(config.name)) {
+    // @ts-ignore
     config.canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(config.width, config.height) : document.createElement('canvas');
+    // @ts-ignore
     const gl = config.canvas.getContext('webgl2', config.webGLattr);
     tf.setWebGLContext(2, gl);
     const ctx = new tf.GPGPUContext(gl);

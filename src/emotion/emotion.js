@@ -65,6 +65,7 @@ async function predict(image, config) {
         const profileData = await tf.profile(() => models.emotion.predict(normalize));
         data = profileData.result.dataSync();
         profileData.result.dispose();
+        // @ts-ignore
         profile.run('emotion', profileData);
       }
       for (let i = 0; i < data.length; i++) {

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 let instance = 0;
 let CSScreated = false;
 

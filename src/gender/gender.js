@@ -53,6 +53,7 @@ async function predict(image, config) {
       const profileGender = config.face.gender.enabled ? await tf.profile(() => models.gender.predict(enhance)) : {};
       genderT = profileGender.result.clone();
       profileGender.result.dispose();
+      // @ts-ignore
       profile.run('gender', profileGender);
     }
     enhance.dispose();

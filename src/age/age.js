@@ -46,6 +46,7 @@ async function predict(image, config) {
       const profileAge = config.face.age.enabled ? await tf.profile(() => models.age.predict(enhance)) : {};
       ageT = profileAge.result.clone();
       profileAge.result.dispose();
+      // @ts-ignore
       profile.run('age', profileAge);
     }
     enhance.dispose();

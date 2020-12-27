@@ -20,6 +20,7 @@ const WebGLProgram = function (gl, vertexSource, fragmentSource) {
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      // @ts-ignore
       throw new Error('Filter: GL compile failed', gl.getShaderInfoLog(shader));
     }
     return shader;
@@ -37,6 +38,7 @@ const WebGLProgram = function (gl, vertexSource, fragmentSource) {
   gl.linkProgram(this.id);
 
   if (!gl.getProgramParameter(this.id, gl.LINK_STATUS)) {
+    // @ts-ignore
     throw new Error('Filter: GL link failed', gl.getProgramInfoLog(this.id));
   }
 
@@ -149,9 +151,8 @@ const WebGLImageFilter = function (params) {
   };
 
   const _getTempFramebuffer = function (index) {
-    _tempFramebuffers[index] = _tempFramebuffers[index]
-    || _createFramebufferTexture(_width, _height);
-
+    // @ts-ignore
+    _tempFramebuffers[index] = _tempFramebuffers[index] || _createFramebufferTexture(_width, _height);
     return _tempFramebuffers[index];
   };
 
@@ -190,7 +191,8 @@ const WebGLImageFilter = function (params) {
       source = _sourceTexture;
     } else {
       // All following draw calls use the temp buffer last drawn to
-      source = _getTempFramebuffer(_currentFramebufferIndex).texture;
+      // @ts-ignore
+      source = _getTempFramebuffer(_currentFramebufferIndex)?.texture;
     }
     _drawCount++;
 
@@ -203,7 +205,8 @@ const WebGLImageFilter = function (params) {
     } else {
       // Intermediate draw call - get a temp buffer to draw to
       _currentFramebufferIndex = (_currentFramebufferIndex + 1) % 2;
-      target = _getTempFramebuffer(_currentFramebufferIndex).fbo;
+      // @ts-ignore
+      target = _getTempFramebuffer(_currentFramebufferIndex)?.fbo;
     }
 
     // Bind the source and target and draw the two triangles

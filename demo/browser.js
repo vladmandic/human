@@ -252,7 +252,6 @@ function webWorker(input, image, canvas, timestamp) {
     // create new webworker and add event handler only once
     log('creating worker thread');
     worker = new Worker(ui.worker, { type: 'module' });
-    console.log('worker', worker);
     // after receiving message from webworker, parse&draw results and send new frame for processing
     worker.addEventListener('message', (msg) => {
       if (msg.data.result.performance && msg.data.result.performance.total) ui.detectFPS.push(1000 / msg.data.result.performance.total);
@@ -270,7 +269,7 @@ function webWorker(input, image, canvas, timestamp) {
     });
   }
   // pass image data as arraybuffer to worker by reference to avoid copy
-  worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, userConfig }, [image.data.buffer]);
+  worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, userConfig }, 'Human', [image.data.buffer]);
 }
 
 // main processing function when input is webcam, can use direct invocation or web worker

@@ -1,19 +1,3 @@
-/**
- * @license
- * Copyright 2020 Google LLC. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * =============================================================================
- */
 // https://storage.googleapis.com/tfjs-models/demos/handpose/index.html
 
 import { log } from '../log.js';
@@ -74,7 +58,9 @@ async function load(config) {
     config.hand.enabled ? tf.loadGraphModel(config.hand.detector.modelPath, { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) : null,
     config.hand.landmarks ? tf.loadGraphModel(config.hand.skeleton.modelPath, { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) : null,
   ]);
+  // @ts-ignore
   const handDetector = new handdetector.HandDetector(handDetectorModel, config.hand.inputSize, anchors.anchors);
+  // @ts-ignore
   const handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel, config.hand.inputSize);
   const handPose = new HandPose(handPipeline);
   if (config.hand.enabled) log(`load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);

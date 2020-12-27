@@ -18,6 +18,7 @@ import * as app from '../package.json';
 // helper function: gets elapsed time on both browser and nodejs
 const now = () => {
   if (typeof performance !== 'undefined') return performance.now();
+  // @ts-ignore
   return parseInt(Number(process.hrtime.bigint()) / 1000 / 1000);
 };
 
@@ -72,6 +73,7 @@ class Human {
   }
 
   profile() {
+    // @ts-ignore
     if (this.config.profile) return profile.data;
     return {};
   }
@@ -102,6 +104,7 @@ class Human {
   }
 
   simmilarity(embedding1, embedding2) {
+    // @ts-ignore
     if (this.config.face.embedding.enabled) return embedding.simmilarity(embedding1, embedding2);
     return 0;
   }
@@ -132,21 +135,35 @@ class Human {
         this.models.posenet,
         this.models.handpose,
       ] = await Promise.all([
+        // @ts-ignore
         this.models.facemesh || (this.config.face.enabled ? facemesh.load(this.config) : null),
+        // @ts-ignore
         this.models.age || ((this.config.face.enabled && this.config.face.age.enabled) ? age.load(this.config) : null),
+        // @ts-ignore
         this.models.gender || ((this.config.face.enabled && this.config.face.gender.enabled) ? gender.load(this.config) : null),
+        // @ts-ignore
         this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
+        // @ts-ignore
         this.models.embedding || ((this.config.face.enabled && this.config.face.embedding.enabled) ? embedding.load(this.config) : null),
+        // @ts-ignore
         this.models.posenet || (this.config.body.enabled ? posenet.load(this.config) : null),
+        // @ts-ignore
         this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config) : null),
       ]);
     } else {
+      // @ts-ignore
       if (this.config.face.enabled && !this.models.facemesh) this.models.facemesh = await facemesh.load(this.config);
+      // @ts-ignore
       if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) this.models.age = await age.load(this.config);
+      // @ts-ignore
       if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) this.models.gender = await gender.load(this.config);
+      // @ts-ignore
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) this.models.emotion = await emotion.load(this.config);
+      // @ts-ignore
       if (this.config.face.enabled && this.config.face.embedding.enabled && !this.models.embedding) this.models.embedding = await embedding.load(this.config);
+      // @ts-ignore
       if (this.config.body.enabled && !this.models.posenet) this.models.posenet = await posenet.load(this.config);
+      // @ts-ignore
       if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config);
     }
     const current = Math.trunc(now() - timeStamp);
@@ -213,7 +230,8 @@ class Human {
     const faceRes = [];
     this.state = 'run:face';
     timeStamp = now();
-    const faces = await this.models.facemesh.estimateFaces(input, this.config);
+    // @ts-ignore
+    const faces = await this.models.facemesh?.estimateFaces(input, this.config);
     this.perf.face = Math.trunc(now() - timeStamp);
     for (const face of faces) {
       this.analyze('Get Face');
@@ -227,10 +245,12 @@ class Human {
       // run age, inherits face from blazeface
       this.analyze('Start Age:');
       if (this.config.async) {
+        // @ts-ignore
         ageRes = this.config.face.age.enabled ? age.predict(face.image, this.config) : {};
       } else {
         this.state = 'run:age';
         timeStamp = now();
+        // @ts-ignore
         ageRes = this.config.face.age.enabled ? await age.predict(face.image, this.config) : {};
         this.perf.age = Math.trunc(now() - timeStamp);
       }
@@ -238,10 +258,12 @@ class Human {
       // run gender, inherits face from blazeface
       this.analyze('Start Gender:');
       if (this.config.async) {
+        // @ts-ignore
         genderRes = this.config.face.gender.enabled ? gender.predict(face.image, this.config) : {};
       } else {
         this.state = 'run:gender';
         timeStamp = now();
+        // @ts-ignore
         genderRes = this.config.face.gender.enabled ? await gender.predict(face.image, this.config) : {};
         this.perf.gender = Math.trunc(now() - timeStamp);
       }
@@ -249,10 +271,12 @@ class Human {
       // run emotion, inherits face from blazeface
       this.analyze('Start Emotion:');
       if (this.config.async) {
+        // @ts-ignore
         emotionRes = this.config.face.emotion.enabled ? emotion.predict(face.image, this.config) : {};
       } else {
         this.state = 'run:emotion';
         timeStamp = now();
+        // @ts-ignore
         emotionRes = this.config.face.emotion.enabled ? await emotion.predict(face.image, this.config) : {};
         this.perf.emotion = Math.trunc(now() - timeStamp);
       }
@@ -261,10 +285,12 @@ class Human {
       // run emotion, inherits face from blazeface
       this.analyze('Start Embedding:');
       if (this.config.async) {
+        // @ts-ignore
         embeddingRes = this.config.face.embedding.enabled ? embedding.predict(face.image, this.config) : {};
       } else {
         this.state = 'run:embedding';
         timeStamp = now();
+        // @ts-ignore
         embeddingRes = this.config.face.embedding.enabled ? await embedding.predict(face.image, this.config) : {};
         this.perf.embedding = Math.trunc(now() - timeStamp);
       }
@@ -291,7 +317,6 @@ class Human {
         confidence: face.confidence,
         box: face.box,
         mesh: face.mesh,
-// AT: boxRaw, meshRaw
         boxRaw: face.boxRaw,
         meshRaw: face.meshRaw,
         annotations: face.annotations,
@@ -317,6 +342,7 @@ class Human {
   async image(input, userConfig = {}) {
     this.state = 'image';
     this.config = mergeDeep(this.config, userConfig);
+    // @ts-ignore
     const process = image.process(input, this.config);
     process.tensor.dispose();
     return process.canvas;
@@ -356,6 +382,7 @@ class Human {
       this.analyze('Start Scope:');
 
       timeStamp = now();
+      // @ts-ignore
       const process = image.process(input, this.config);
       if (!process || !process.tensor) {
         log('could not convert input to tensor');
@@ -379,12 +406,14 @@ class Human {
       // run posenet
       this.analyze('Start Body:');
       if (this.config.async) {
-        poseRes = this.config.body.enabled ? this.models.posenet.estimatePoses(process.tensor, this.config) : [];
+        // @ts-ignore
+        poseRes = this.config.body.enabled ? this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
         if (this.perf.body) delete this.perf.body;
       } else {
         this.state = 'run:body';
         timeStamp = now();
-        poseRes = this.config.body.enabled ? await this.models.posenet.estimatePoses(process.tensor, this.config) : [];
+        // @ts-ignore
+        poseRes = this.config.body.enabled ? await this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
         this.perf.body = Math.trunc(now() - timeStamp);
       }
       this.analyze('End Body:');
@@ -392,12 +421,14 @@ class Human {
       // run handpose
       this.analyze('Start Hand:');
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? this.models.handpose.estimateHands(process.tensor, this.config) : [];
+        // @ts-ignore
+        handRes = this.config.hand.enabled ? this.models.handpose?.estimateHands(process.tensor, this.config) : [];
         if (this.perf.hand) delete this.perf.hand;
       } else {
         this.state = 'run:hand';
         timeStamp = now();
-        handRes = this.config.hand.enabled ? await this.models.handpose.estimateHands(process.tensor, this.config) : [];
+        // @ts-ignore
+        handRes = this.config.hand.enabled ? await this.models.handpose?.estimateHands(process.tensor, this.config) : [];
         this.perf.hand = Math.trunc(now() - timeStamp);
       }
       // this.analyze('End Hand:');

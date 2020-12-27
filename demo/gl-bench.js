@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable max-len */
 
 // based on: https://github.com/munrocket/gl-bench

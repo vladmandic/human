@@ -39,6 +39,7 @@ async function predict(image, config) {
         const profileData = await tf.profile(() => models.embedding.predict({ img_inputs: resize }));
         data = [...profileData.result.dataSync()];
         profileData.result.dispose();
+        // @ts-ignore
         profile.run('emotion', profileData);
       }
     }

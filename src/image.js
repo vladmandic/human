@@ -41,6 +41,7 @@ function process(input, config) {
         if (outCanvas.height !== inCanvas.height) outCanvas.height = inCanvas.height;
         this.fx = tf.ENV.flags.IS_BROWSER ? new fxImage.Canvas({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
       }
+      if (!this.fx) return inCanvas;
       this.fx.reset();
       this.fx.addFilter('brightness', config.filter.brightness); // must have at least one filter enabled
       if (config.filter.contrast !== 0) this.fx.addFilter('contrast', config.filter.contrast);
@@ -58,8 +59,8 @@ function process(input, config) {
       if (config.filter.pixelate !== 0) this.fx.addFilter('pixelate', config.filter.pixelate);
       this.fx.apply(inCanvas);
       // read pixel data
-      // const gl = outCanvas.getContext('webgl');
-      const gl = false;
+      /*
+      const gl = outCanvas.getContext('webgl');
       if (gl) {
         const glBuffer = new Uint8Array(outCanvas.width * outCanvas.height * 4);
         const pixBuffer = new Uint8Array(outCanvas.width * outCanvas.height * 3);
@@ -77,6 +78,7 @@ function process(input, config) {
         }
         outCanvas.data = pixBuffer;
       }
+      */
     } else {
       outCanvas = inCanvas;
     }
@@ -93,8 +95,8 @@ function process(input, config) {
       tempCanvas.width = targetWidth;
       tempCanvas.height = targetHeight;
       const tempCtx = tempCanvas.getContext('2d');
-      tempCtx.drawImage(outCanvas, 0, 0);
-      const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+      tempCtx?.drawImage(outCanvas, 0, 0);
+      const data = tempCtx?.getImageData(0, 0, targetWidth, targetHeight);
       pixels = tf.browser.fromPixels(data);
     }
     const casted = pixels.toFloat();

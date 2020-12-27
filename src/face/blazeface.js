@@ -134,11 +134,13 @@ class BlazeFaceModel {
   }
 
   async estimateFaces(input) {
+    // @ts-ignore
     const { boxes, scaleFactor } = await this.getBoundingBoxes(input);
     const faces = [];
     for (const face of boxes) {
       const landmarkData = face.landmarks.arraySync();
       const scaledBox = scaleBoxFromPrediction(face, scaleFactor);
+      // @ts-ignore
       const boxData = scaleBox.arraySync();
       const probabilityData = face.probability.arraySync();
       const anchor = face.anchor;

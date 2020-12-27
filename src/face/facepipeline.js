@@ -56,6 +56,7 @@ class Pipeline {
   }
 
   transformRawCoords(rawCoords, box, angle, rotationMatrix) {
+    // @ts-ignore
     const boxSize = bounding.getBoxSize({ startPoint: box.startPoint, endPoint: box.endPoint });
     const scaleFactor = [boxSize[0] / this.meshWidth, boxSize[1] / this.meshHeight];
     const coordsScaled = rawCoords.map((coord) => ([
@@ -65,6 +66,7 @@ class Pipeline {
     const coordsRotationMatrix = (angle !== 0) ? util.buildRotationMatrix(angle, [0, 0]) : util.IDENTITY_MATRIX;
     const coordsRotated = (angle !== 0) ? coordsScaled.map((coord) => ([...util.rotatePoint(coord, coordsRotationMatrix), coord[2]])) : coordsScaled;
     const inverseRotationMatrix = (angle !== 0) ? util.invertTransformMatrix(rotationMatrix) : util.IDENTITY_MATRIX;
+    // @ts-ignore
     const boxCenter = [...bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint }), 1];
     return coordsRotated.map((coord) => ([
       coord[0] + util.dot(boxCenter, inverseRotationMatrix[0]),
@@ -81,7 +83,9 @@ class Pipeline {
 
   // Returns a box describing a cropped region around the eye fit for passing to the iris model.
   getEyeBox(rawCoords, face, eyeInnerCornerIndex, eyeOuterCornerIndex, flip = false) {
+    // @ts-ignore
     const box = bounding.squarifyBox(bounding.enlargeBox(this.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), this.irisEnlarge));
+    // @ts-ignore
     const boxSize = bounding.getBoxSize(box);
     let crop = tf.image.cropAndResize(face, [[
       box.startPoint[1] / this.meshHeight,
@@ -155,8 +159,11 @@ class Pipeline {
         return null;
       }
       for (let i = 0; i < this.storedBoxes.length; i++) {
+        // @ts-ignore
         const scaledBox = bounding.scaleBoxCoordinates({ startPoint: this.storedBoxes[i].startPoint, endPoint: this.storedBoxes[i].endPoint }, detector.scaleFactor);
+        // @ts-ignore
         const enlargedBox = bounding.enlargeBox(scaledBox);
+        // @ts-ignore
         const squarifiedBox = bounding.squarifyBox(enlargedBox);
         const landmarks = this.storedBoxes[i].landmarks.arraySync();
         const confidence = this.storedBoxes[i].confidence;
@@ -181,14 +188,17 @@ class Pipeline {
       if (config.face.detector.rotation) {
         const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= LANDMARKS_COUNT) ? MESH_KEYPOINTS_LINE_OF_SYMMETRY_INDICES : BLAZEFACE_KEYPOINTS_LINE_OF_SYMMETRY_INDICES;
         angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
+        // @ts-ignore
         const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
         const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
         const rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
         rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
+        // @ts-ignore
         face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshHeight, this.meshWidth]).div(255);
       } else {
         rotationMatrix = util.IDENTITY_MATRIX;
         const cloned = input.clone();
+        // @ts-ignore
         face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, cloned, [this.meshHeight, this.meshWidth]).div(255);
       }
 
@@ -235,7 +245,9 @@ class Pipeline {
       }
 
       const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
+      // @ts-ignore
       const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
+      // @ts-ignore
       const squarifiedLandmarksBox = bounding.squarifyBox(landmarksBox);
       const transformedCoords = tf.tensor2d(transformedCoordsData);
       const prediction = {

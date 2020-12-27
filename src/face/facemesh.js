@@ -6,6 +6,7 @@ import * as coords from './coords.js';
 
 class MediaPipeFaceMesh {
   constructor(blazeFace, blazeMeshModel, irisModel, config) {
+    // @ts-ignore
     this.facePipeline = new facepipeline.Pipeline(blazeFace, blazeMeshModel, irisModel, config);
     this.config = config;
   }
@@ -19,21 +20,17 @@ class MediaPipeFaceMesh {
       const meshRaw = prediction.rawCoords;
       const annotations = {};
       if (mesh && mesh.length > 0) {
-        for (let key = 0; key < coords.MESH_ANNOTATIONS.length; key++) {
-          if (config.face.iris.enabled || key.includes('Iris') === false) {
-            annotations[key] = coords.MESH_ANNOTATIONS[key].map((index) => mesh[index]);
-          }
+        for (const key of Object.keys(coords.MESH_ANNOTATIONS)) {
+          annotations[key] = coords.MESH_ANNOTATIONS[key].map((index) => mesh[index]);
         }
       }
       const boxRaw = (config.face.mesh.returnRawData && prediction.box) ? { topLeft: prediction.box.startPoint, bottomRight: prediction.box.endPoint } : null;
-
       const box = prediction.box ? [
         Math.max(0, prediction.box.startPoint[0]),
         Math.max(0, prediction.box.startPoint[1]),
         Math.min(input.shape[2], prediction.box.endPoint[0]) - prediction.box.startPoint[0],
         Math.min(input.shape[1], prediction.box.endPoint[1]) - prediction.box.startPoint[1],
       ] : 0;
-
       results.push({
         confidence: prediction.confidence || 0,
         box,
@@ -53,6 +50,7 @@ class MediaPipeFaceMesh {
 let faceModels = [null, null, null];
 async function load(config) {
   faceModels = await Promise.all([
+    // @ts-ignore
     (!faceModels[0] && config.face.enabled) ? blazeface.load(config) : null,
     (!faceModels[1] && config.face.mesh.enabled) ? tf.loadGraphModel(config.face.mesh.modelPath, { fromTFHub: config.face.mesh.modelPath.includes('tfhub.dev') }) : null,
     (!faceModels[2] && config.face.iris.enabled) ? tf.loadGraphModel(config.face.iris.modelPath, { fromTFHub: config.face.iris.modelPath.includes('tfhub.dev') }) : null,

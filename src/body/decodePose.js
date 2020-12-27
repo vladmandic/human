@@ -14,7 +14,9 @@ function getDisplacement(edgeId, point, displacements) {
 }
 function getStridedIndexNearPoint(point, outputStride, height, width) {
   return {
+    // @ts-ignore
     y: vectors.clamp(Math.round(point.y / outputStride), 0, height - 1),
+    // @ts-ignore
     x: vectors.clamp(Math.round(point.x / outputStride), 0, width - 1),
   };
 }
@@ -24,11 +26,14 @@ function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scor
   // Nearest neighbor interpolation for the source->target displacements.
   const sourceKeypointIndices = getStridedIndexNearPoint(sourceKeypoint.position, outputStride, height, width);
   const displacement = getDisplacement(edgeId, sourceKeypointIndices, displacements);
+  // @ts-ignore
   const displacedPoint = vectors.addVectors(sourceKeypoint.position, displacement);
   let targetKeypoint = displacedPoint;
   for (let i = 0; i < offsetRefineStep; i++) {
     const targetKeypointIndices = getStridedIndexNearPoint(targetKeypoint, outputStride, height, width);
+    // @ts-ignore
     const offsetPoint = vectors.getOffsetPoint(targetKeypointIndices.y, targetKeypointIndices.x, targetKeypointId, offsets);
+    // @ts-ignore
     targetKeypoint = vectors.addVectors({
       x: targetKeypointIndices.x * outputStride,
       y: targetKeypointIndices.y * outputStride,
@@ -45,6 +50,7 @@ function decodePose(root, scores, offsets, outputStride, displacementsFwd, displ
   const instanceKeypoints = new Array(numParts);
   // Start a new detection instance at the position of the root.
   const { part: rootPart, score: rootScore } = root;
+  // @ts-ignore
   const rootPoint = vectors.getImageCoords(rootPart, outputStride, offsets);
   instanceKeypoints[rootPart.id] = {
     score: rootScore,
@@ -73,13 +79,16 @@ exports.decodePose = decodePose;
 
 async function decodeSinglePose(heatmapScores, offsets, config) {
   let totalScore = 0.0;
+  // @ts-ignore
   const heatmapValues = decoders.argmax2d(heatmapScores);
   const allTensorBuffers = await Promise.all([heatmapScores.buffer(), offsets.buffer(), heatmapValues.buffer()]);
   const scoresBuffer = allTensorBuffers[0];
   const offsetsBuffer = allTensorBuffers[1];
   const heatmapValuesBuffer = allTensorBuffers[2];
+  // @ts-ignore
   const offsetPoints = decoders.getOffsetPoints(heatmapValuesBuffer, config.body.outputStride, offsetsBuffer);
   const offsetPointsBuffer = await offsetPoints.buffer();
+  // @ts-ignore
   const keypointConfidence = Array.from(decoders.getPointsConfidence(scoresBuffer, heatmapValuesBuffer));
   const instanceKeypoints = keypointConfidence.map((score, i) => {
     totalScore += score;

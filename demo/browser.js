@@ -269,7 +269,7 @@ function webWorker(input, image, canvas, timestamp) {
     });
   }
   // pass image data as arraybuffer to worker by reference to avoid copy
-  worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, userConfig }, 'Human', [image.data.buffer]);
+  worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, userConfig }, [image.data.buffer]);
 }
 
 // main processing function when input is webcam, can use direct invocation or web worker

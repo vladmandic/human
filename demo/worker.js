@@ -24,6 +24,6 @@ onmessage = async (msg) => {
   }
   // must strip canvas from return value as it cannot be transfered from worker thread
   if (result.canvas) result.canvas = null;
-  postMessage({ result }, 'Human');
+  postMessage({ result });
   busy = false;
 };

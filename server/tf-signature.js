@@ -42,11 +42,11 @@ async function analyzeSaved(modelPath) {
   log.data('tags:', meta[0].tags);
   log.data('signature:', Object.keys(meta[0].signatureDefs));
   const inputs = Object.values(sign.inputs)[0];
-  log.data('inputs:', { name: inputs.name, dtype: inputs.dtype, dimensions: inputs.shape.length });
+  log.data('inputs:', { name: inputs.name, dtype: inputs.dtype, dimensions: inputs.shape?.length });
   const outputs = [];
   let i = 0;
   for (const [key, val] of Object.entries(sign.outputs)) {
-    outputs.push({ id: i++, name: key, dytpe: val.dtype, dimensions: val.shape.length });
+    outputs.push({ id: i++, name: key, dytpe: val.dtype, dimensions: val.shape?.length });
   }
   log.data('outputs:', outputs);
 }

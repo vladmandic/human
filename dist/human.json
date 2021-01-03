@@ -5,7 +5,7 @@
       "imports": []
     },
     "dist/tfjs.esm.js": {
-      "bytes": 1526705,
+      "bytes": 1493996,
       "imports": []
     },
     "src/tfjs/backend.js": {
@@ -419,7 +419,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 1774483
+      "bytes": 1753793
     },
     "dist/human.js": {
       "imports": [],
@@ -519,7 +519,7 @@
           "bytesInOutput": 266
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1525250
+          "bytesInOutput": 1492572
         },
         "src/tfjs/backend.js": {
           "bytesInOutput": 938
@@ -540,7 +540,7 @@
           "bytesInOutput": 22
         }
       },
-      "bytes": 1838910
+      "bytes": 1806232
     }
   }
 }

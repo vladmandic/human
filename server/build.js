@@ -122,7 +122,7 @@ async function getStats(metafile) {
   const stats = {};
   if (!fs.existsSync(metafile)) return stats;
   const data = fs.readFileSync(metafile);
-  const json = JSON.parse(data);
+  const json = JSON.parse(data.toString());
   if (json && json.inputs && json.outputs) {
     for (const [key, val] of Object.entries(json.inputs)) {
       if (key.startsWith('node_modules')) {
@@ -157,7 +157,7 @@ async function build(f, msg) {
         // if triggered from watch mode, rebuild only browser bundle
         if ((require.main !== module) && (targetGroupName !== 'browserBundle')) continue;
         await es.build({ ...common, ...targetOptions });
-        const stats = await getStats(targetOptions.metafile, targetName);
+        const stats = await getStats(targetOptions.metafile);
         log.state(`Build for: ${targetGroupName} type: ${targetName}:`, stats);
       }
     }

@@ -83,6 +83,7 @@ function handle(url) {
     if (obj.stat.isFile()) obj.ok = true;
     if (!obj.ok && obj.stat.isDirectory()) {
       obj.file = path.join(obj.file, options.default);
+      // @ts-ignore
       obj = handle(obj.file);
     }
     resolve(obj);
@@ -130,6 +131,7 @@ async function httpRequest(req, res) {
 async function main() {
   log.header();
   await watch();
+  // @ts-ignore
   const server1 = http.createServer(options, httpRequest);
   server1.on('listening', () => log.state('HTTP server listening:', options.httpPort));
   server1.listen(options.httpPort);

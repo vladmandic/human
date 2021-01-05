@@ -40,7 +40,7 @@
       "imports": []
     },
     "src/face/coords.js": {
-      "bytes": 37909,
+      "bytes": 37915,
       "imports": []
     },
     "src/face/facepipeline.js": {
@@ -362,7 +362,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 17375,
+      "bytes": 17518,
       "imports": [
         {
           "path": "src/log.js"
@@ -419,7 +419,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 700216
+      "bytes": 700318
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -438,7 +438,7 @@
           "bytesInOutput": 2424
         },
         "src/face/coords.js": {
-          "bytesInOutput": 30828
+          "bytesInOutput": 30724
         },
         "src/face/facepipeline.js": {
           "bytesInOutput": 9431
@@ -516,7 +516,7 @@
           "bytesInOutput": 3665
         },
         "src/human.js": {
-          "bytesInOutput": 11238
+          "bytesInOutput": 11346
         },
         "src/log.js": {
           "bytesInOutput": 266
@@ -540,7 +540,7 @@
           "bytesInOutput": 20
         }
       },
-      "bytes": 308544
+      "bytes": 308548
     }
   }
 }

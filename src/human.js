@@ -307,6 +307,10 @@ class Human {
 
       // calculate iris distance
       // iris: array[ center, left, top, right, bottom]
+      if (!this.config.face.iris.enabled) {
+        delete face.annotations.leftEyeIris;
+        delete face.annotations.rightEyeIris;
+      }
       const irisSize = (face.annotations.leftEyeIris && face.annotations.rightEyeIris)
         /* average human iris size is 11.7mm */
         ? 11.7 * Math.max(Math.abs(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0]), Math.abs(face.annotations.rightEyeIris[4][1] - face.annotations.rightEyeIris[2][1]))

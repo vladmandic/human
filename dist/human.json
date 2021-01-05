@@ -40,7 +40,7 @@
       "imports": []
     },
     "src/face/coords.js": {
-      "bytes": 37909,
+      "bytes": 37915,
       "imports": []
     },
     "src/face/facepipeline.js": {
@@ -419,7 +419,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 1825690
+      "bytes": 1825572
     },
     "dist/human.js": {
       "imports": [],
@@ -435,7 +435,7 @@
           "bytesInOutput": 2413
         },
         "src/face/coords.js": {
-          "bytesInOutput": 30817
+          "bytesInOutput": 30713
         },
         "src/face/facepipeline.js": {
           "bytesInOutput": 9381
@@ -540,7 +540,7 @@
           "bytesInOutput": 22
         }
       },
-      "bytes": 1905492
+      "bytes": 1905388
     }
   }
 }

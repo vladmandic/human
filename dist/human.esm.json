@@ -362,7 +362,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 17375,
+      "bytes": 17518,
       "imports": [
         {
           "path": "src/log.js"
@@ -419,7 +419,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 1825565
+      "bytes": 1825785
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -524,7 +524,7 @@
           "bytesInOutput": 918
         },
         "src/human.js": {
-          "bytesInOutput": 11144
+          "bytesInOutput": 11252
         },
         "src/hand/box.js": {
           "bytesInOutput": 1420
@@ -542,7 +542,7 @@
           "bytesInOutput": 22
         }
       },
-      "bytes": 1905314
+      "bytes": 1905422
     }
   }
 }

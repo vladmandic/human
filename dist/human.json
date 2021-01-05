@@ -362,7 +362,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 17375,
+      "bytes": 17518,
       "imports": [
         {
           "path": "src/log.js"
@@ -419,7 +419,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 1825572
+      "bytes": 1825792
     },
     "dist/human.js": {
       "imports": [],
@@ -513,7 +513,7 @@
           "bytesInOutput": 3647
         },
         "src/human.js": {
-          "bytesInOutput": 11205
+          "bytesInOutput": 11313
         },
         "src/log.js": {
           "bytesInOutput": 266
@@ -540,7 +540,7 @@
           "bytesInOutput": 22
         }
       },
-      "bytes": 1905388
+      "bytes": 1905496
     }
   }
 }

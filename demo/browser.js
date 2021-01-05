@@ -6,7 +6,7 @@ import GLBench from './gl-bench.js';
 const userConfig = {}; // add any user configuration overrides
 /*
 const userConfig = {
-  face: { enabled: false },
+  face: { enabled: true, iris: { enabled: false } },
   body: { enabled: true },
   hand: { enabled: false },
 };

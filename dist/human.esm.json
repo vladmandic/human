@@ -120,7 +120,7 @@
       ]
     },
     "src/emotion/emotion.js": {
-      "bytes": 3077,
+      "bytes": 3078,
       "imports": [
         {
           "path": "src/log.js"
@@ -419,7 +419,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 1825785
+      "bytes": 1825786
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -455,7 +455,7 @@
           "bytesInOutput": 1909
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1807
+          "bytesInOutput": 1808
         },
         "src/embedding/embedding.js": {
           "bytesInOutput": 1318
@@ -542,7 +542,7 @@
           "bytesInOutput": 22
         }
       },
-      "bytes": 1905422
+      "bytes": 1905423
     }
   }
 }

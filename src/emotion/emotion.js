@@ -2,7 +2,7 @@ import { log } from '../log.js';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile.js';
 
-const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surpise', 'neutral'];
+const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
 const models = {};
 let last = [];
 let skipped = Number.MAX_SAFE_INTEGER;

@@ -120,7 +120,7 @@
       ]
     },
     "src/emotion/emotion.js": {
-      "bytes": 3077,
+      "bytes": 3078,
       "imports": [
         {
           "path": "src/log.js"
@@ -419,7 +419,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 700318
+      "bytes": 700319
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -456,7 +456,7 @@
           "bytesInOutput": 1991
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1882
+          "bytesInOutput": 1883
         },
         "src/embedding/embedding.js": {
           "bytesInOutput": 1369
@@ -540,7 +540,7 @@
           "bytesInOutput": 20
         }
       },
-      "bytes": 308548
+      "bytes": 308549
     }
   }
 }

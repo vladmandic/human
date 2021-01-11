@@ -39,6 +39,25 @@ exports.face = (res) => {
   return gestures;
 };
 
+exports.iris = (res) => {
+  if (!res) return [];
+  const gestures = [];
+  for (let i = 0; i < res.length; i++) {
+    if (!res[i].annotations || !res[i].annotations.leftEyeIris || !res[i].annotations.rightEyeIris) continue;
+    const sizeXLeft = res[i].annotations.leftEyeIris[3][0] - res[i].annotations.leftEyeIris[1][0];
+    const sizeYLeft = res[i].annotations.leftEyeIris[4][1] - res[i].annotations.leftEyeIris[2][1];
+    const areaLeft = Math.abs(sizeXLeft * sizeYLeft);
+
+    const sizeXRight = res[i].annotations.rightEyeIris[3][0] - res[i].annotations.rightEyeIris[1][0];
+    const sizeYRight = res[i].annotations.rightEyeIris[4][1] - res[i].annotations.rightEyeIris[2][1];
+    const areaRight = Math.abs(sizeXRight * sizeYRight);
+
+    const difference = Math.abs(areaLeft - areaRight) / Math.max(areaLeft, areaRight);
+    if (difference < 0.25) gestures.push({ iris: i, gesture: 'looking at camera' });
+  }
+  return gestures;
+};
+
 exports.hand = (res) => {
   if (!res) return [];
   const gestures = [];

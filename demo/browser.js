@@ -219,7 +219,7 @@ async function setupCamera() {
       // silly font resizing for paint-on-canvas since viewport can be zoomed
       const size = Math.trunc(window.devicePixelRatio * (8 + (4 * canvas.width / window.innerWidth)));
       ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
-      ui.baseLineHeight = size + 4;
+      ui.baseLineHeight = size + 2;
       if (live) video.play();
       // eslint-disable-next-line no-use-before-define
       if (live && !ui.detectThread) runHumanDetect(video, canvas);

@@ -144,6 +144,16 @@ export default {
     modelType: 'MobileNet',  // Human includes MobileNet version, but you can switch to ResNet
   },
 
+  pose: {
+    enabled: false,
+    scoreThreshold: 0.6,     // threshold for deciding when to remove boxes based on score
+                             // in non-maximum suppression
+    iouThreshold: 0.3,       // threshold for deciding whether boxes overlap too much
+                             // in non-maximum suppression
+    modelPath: '../models/blazepose.json',
+    inputSize: 128,          // fixed value
+  },
+
   hand: {
     enabled: true,
     rotation: false,         // use best-guess rotated hand image or just box with rotation as-is

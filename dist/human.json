@@ -5,7 +5,7 @@
       "imports": []
     },
     "dist/tfjs.esm.js": {
-      "bytes": 1591685,
+      "bytes": 1592080,
       "imports": []
     },
     "src/tfjs/backend.js": {
@@ -419,107 +419,107 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 1826359
+      "bytes": 1930388
     },
     "dist/human.js": {
       "imports": [],
       "exports": [],
       "inputs": {
         "src/face/blazeface.js": {
-          "bytesInOutput": 5034
+          "bytesInOutput": 5039
         },
         "src/face/box.js": {
-          "bytesInOutput": 1562
+          "bytesInOutput": 1567
         },
         "src/face/util.js": {
-          "bytesInOutput": 2413
+          "bytesInOutput": 2418
         },
         "src/face/coords.js": {
-          "bytesInOutput": 30713
+          "bytesInOutput": 30718
         },
         "src/face/facepipeline.js": {
-          "bytesInOutput": 9381
+          "bytesInOutput": 9386
         },
         "src/face/facemesh.js": {
-          "bytesInOutput": 2309
+          "bytesInOutput": 2322
         },
         "src/profile.js": {
-          "bytesInOutput": 844
+          "bytesInOutput": 851
         },
         "src/age/age.js": {
-          "bytesInOutput": 1181
+          "bytesInOutput": 1186
         },
         "src/gender/gender.js": {
-          "bytesInOutput": 1909
+          "bytesInOutput": 1914
         },
         "src/emotion/emotion.js": {
-          "bytesInOutput": 1808
+          "bytesInOutput": 1813
         },
         "src/embedding/embedding.js": {
-          "bytesInOutput": 1318
+          "bytesInOutput": 1323
         },
         "src/body/modelBase.js": {
-          "bytesInOutput": 1050
+          "bytesInOutput": 1055
         },
         "src/body/heapSort.js": {
-          "bytesInOutput": 1139
+          "bytesInOutput": 1144
         },
         "src/body/buildParts.js": {
-          "bytesInOutput": 1282
+          "bytesInOutput": 1287
         },
         "src/body/keypoints.js": {
-          "bytesInOutput": 1808
+          "bytesInOutput": 1813
         },
         "src/body/vectors.js": {
-          "bytesInOutput": 1050
+          "bytesInOutput": 1055
         },
         "src/body/decoders.js": {
-          "bytesInOutput": 1704
+          "bytesInOutput": 1709
         },
         "src/body/decodePose.js": {
-          "bytesInOutput": 4093
+          "bytesInOutput": 4098
         },
         "src/body/decodeMultiple.js": {
-          "bytesInOutput": 1632
+          "bytesInOutput": 1643
         },
         "src/body/util.js": {
-          "bytesInOutput": 1887
+          "bytesInOutput": 1892
         },
         "src/body/modelPoseNet.js": {
-          "bytesInOutput": 1992
+          "bytesInOutput": 1997
         },
         "src/body/posenet.js": {
-          "bytesInOutput": 622
+          "bytesInOutput": 627
         },
         "src/hand/handdetector.js": {
-          "bytesInOutput": 2742
+          "bytesInOutput": 2747
         },
         "src/hand/handpipeline.js": {
-          "bytesInOutput": 4479
+          "bytesInOutput": 4484
         },
         "src/hand/anchors.js": {
-          "bytesInOutput": 127032
+          "bytesInOutput": 127037
         },
         "src/hand/handpose.js": {
-          "bytesInOutput": 2018
+          "bytesInOutput": 2023
         },
         "src/gesture/gesture.js": {
-          "bytesInOutput": 3151
+          "bytesInOutput": 3162
         },
         "src/imagefx.js": {
-          "bytesInOutput": 13626
+          "bytesInOutput": 13630
         },
         "src/image.js": {
-          "bytesInOutput": 3647
+          "bytesInOutput": 3652
         },
         "src/human.js": {
-          "bytesInOutput": 11338
+          "bytesInOutput": 11351
         },
         "src/log.js": {
           "bytesInOutput": 266
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1590928
+          "bytesInOutput": 1591040
         },
         "src/tfjs/backend.js": {
           "bytesInOutput": 918
@@ -531,16 +531,16 @@
           "bytesInOutput": 1796
         },
         "config.js": {
-          "bytesInOutput": 1509
+          "bytesInOutput": 1514
         },
         "src/sample.js": {
-          "bytesInOutput": 55295
+          "bytesInOutput": 55299
         },
         "package.json": {
-          "bytesInOutput": 22
+          "bytesInOutput": 23
         }
       },
-      "bytes": 1905404
+      "bytes": 1905681
     }
   }
 }

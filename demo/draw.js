@@ -33,10 +33,10 @@ async function drawFace(result, canvas, ui, triangulation) {
     // silly hack since fillText does not suport new line
     const labels = [];
     // labels.push(`${Math.trunc(100 * face.confidence)}% face`);
-    if (face.genderConfidence) labels.push(`${Math.trunc(100 * face.genderConfidence)}% ${face.gender || ''}`);
+    if (face.genderConfidence) labels.push(`${face.gender || ''} ${Math.trunc(100 * face.genderConfidence)}% confident`);
     // if (face.genderConfidence) labels.push(face.gender);
     if (face.age) labels.push(`age: ${face.age || ''}`);
-    if (face.iris) labels.push(`iris: ${face.iris}`);
+    if (face.iris) labels.push(`iris distance: ${face.iris}`);
     if (face.emotion && face.emotion.length > 0) {
       const emotion = face.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
       labels.push(emotion.join(' '));
@@ -44,9 +44,9 @@ async function drawFace(result, canvas, ui, triangulation) {
     ctx.fillStyle = ui.baseLabel;
     for (let i = 0; i < labels.length; i++) {
       ctx.fillStyle = 'black';
-      ctx.fillText(labels[i], face.box[0] + face.box[2] + 9, ((i + 1) * ui.baseLineHeight) + face.box[1] + 9);
+      ctx.fillText(labels[i], face.box[0] + 1, face.box[1] - ((labels.length - i) * ui.baseLineHeight) + 6);
       ctx.fillStyle = ui.baseLabel;
-      ctx.fillText(labels[i], face.box[0] + face.box[2] + 8, ((i + 1) * ui.baseLineHeight) + face.box[1] + 8);
+      ctx.fillText(labels[i], face.box[0] + 0, face.box[1] - ((labels.length - i) * ui.baseLineHeight) + 5);
     }
     ctx.fillStyle = ui.baseColor;
     ctx.stroke();

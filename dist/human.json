@@ -5,7 +5,7 @@
       "imports": []
     },
     "dist/tfjs.esm.js": {
-      "bytes": 1592533,
+      "bytes": 1591685,
       "imports": []
     },
     "src/tfjs/backend.js": {
@@ -328,7 +328,7 @@
       ]
     },
     "src/gesture/gesture.js": {
-      "bytes": 3308,
+      "bytes": 4245,
       "imports": []
     },
     "src/imagefx.js": {
@@ -358,11 +358,11 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2326,
+      "bytes": 2325,
       "imports": []
     },
     "src/human.js": {
-      "bytes": 17518,
+      "bytes": 17544,
       "imports": [
         {
           "path": "src/log.js"
@@ -419,7 +419,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 1825793
+      "bytes": 1826359
     },
     "dist/human.js": {
       "imports": [],
@@ -504,7 +504,7 @@
           "bytesInOutput": 2018
         },
         "src/gesture/gesture.js": {
-          "bytesInOutput": 2417
+          "bytesInOutput": 3151
         },
         "src/imagefx.js": {
           "bytesInOutput": 13626
@@ -513,13 +513,13 @@
           "bytesInOutput": 3647
         },
         "src/human.js": {
-          "bytesInOutput": 11313
+          "bytesInOutput": 11338
         },
         "src/log.js": {
           "bytesInOutput": 266
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1592483
+          "bytesInOutput": 1590928
         },
         "src/tfjs/backend.js": {
           "bytesInOutput": 918
@@ -540,7 +540,7 @@
           "bytesInOutput": 22
         }
       },
-      "bytes": 1905497
+      "bytes": 1905404
     }
   }
 }

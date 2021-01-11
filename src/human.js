@@ -449,7 +449,7 @@ class Human {
       let gestureRes = [];
       if (this.config.gesture.enabled) {
         timeStamp = now();
-        gestureRes = [...gesture.face(faceRes), ...gesture.body(poseRes), ...gesture.hand(handRes)];
+        gestureRes = [...gesture.face(faceRes), ...gesture.body(poseRes), ...gesture.hand(handRes), ...gesture.iris(faceRes)];
         if (!this.config.async) this.perf.gesture = Math.trunc(now() - timeStamp);
         else if (this.perf.gesture) delete this.perf.gesture;
       }

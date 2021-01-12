@@ -7,7 +7,6 @@ import * as gender from './gender/gender.js';
 import * as emotion from './emotion/emotion.js';
 import * as embedding from './embedding/embedding.js';
 import * as posenet from './posenet/posenet.js';
-import * as blazepose from './blazepose/blazepose.js';
 import * as handpose from './handpose/handpose.js';
 import * as gesture from './gesture/gesture.js';
 import * as image from './image.js';
@@ -120,7 +119,6 @@ class Human {
         log('configuration:', this.config);
         log('tf flags:', tf.ENV.flags);
       }
-      this.firstRun = false;
     }
 
     if (this.config.async) {
@@ -132,7 +130,6 @@ class Human {
         this.models.embedding,
         this.models.posenet,
         this.models.handpose,
-        this.models.blazepose,
       ] = await Promise.all([
         this.models.facemesh || (this.config.face.enabled ? facemesh.load(this.config) : null),
         this.models.age || ((this.config.face.enabled && this.config.face.age.enabled) ? age.load(this.config) : null),
@@ -141,7 +138,6 @@ class Human {
         this.models.embedding || ((this.config.face.enabled && this.config.face.embedding.enabled) ? embedding.load(this.config) : null),
         this.models.posenet || (this.config.body.enabled ? posenet.load(this.config) : null),
         this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config) : null),
-        this.models.blazepose || (this.config.pose.enabled ? blazepose.load(this.config) : null),
       ]);
     } else {
       if (this.config.face.enabled && !this.models.facemesh) this.models.facemesh = await facemesh.load(this.config);
@@ -151,8 +147,13 @@ class Human {
       if (this.config.face.enabled && this.config.face.embedding.enabled && !this.models.embedding) this.models.embedding = await embedding.load(this.config);
       if (this.config.body.enabled && !this.models.posenet) this.models.posenet = await posenet.load(this.config);
       if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config);
-      if (this.config.pose.enabled && !this.models.blazepose) this.models.blazepose = await blazepose.load(this.config);
     }
+
+    if (this.firstRun) {
+      log('tf engine state:', tf.engine().state.numBytes, 'bytes', tf.engine().state.numTensors, 'tensors');
+      this.firstRun = false;
+    }
+
     const current = Math.trunc(now() - timeStamp);
     if (current > (this.perf.load || 0)) this.perf.load = current;
   }
@@ -348,7 +349,6 @@ class Human {
       }
 
       let poseRes;
-      let blazeposeRes;
       let handRes;
       let faceRes;
 
@@ -397,19 +397,6 @@ class Human {
       }
       this.analyze('End Body:');
 
-      // run posenet
-      this.analyze('Start Pose:');
-      if (this.config.async) {
-        blazeposeRes = this.config.pose.enabled ? blazepose.predict(process.tensor, this.config) : [];
-        if (this.perf.pose) delete this.perf.pose;
-      } else {
-        this.state = 'run:pose';
-        timeStamp = now();
-        blazeposeRes = this.config.pose.enabled ? await blazepose.predict(process.tensor, this.config) : [];
-        this.perf.pose = Math.trunc(now() - timeStamp);
-      }
-      this.analyze('End Pose:');
-
       // run handpose
       this.analyze('Start Hand:');
       if (this.config.async) {
@@ -425,7 +412,7 @@ class Human {
 
       // if async wait for results
       if (this.config.async) {
-        [faceRes, poseRes, blazeposeRes, handRes] = await Promise.all([faceRes, poseRes, blazeposeRes, handRes]);
+        [faceRes, poseRes, handRes] = await Promise.all([faceRes, poseRes, handRes]);
       }
       process.tensor.dispose();
 
@@ -442,7 +429,7 @@ class Human {
 
       this.perf.total = Math.trunc(now() - timeStart);
       this.state = 'idle';
-      resolve({ face: faceRes, body: poseRes, hand: handRes, pose: blazeposeRes, gesture: gestureRes, performance: this.perf, canvas: process.canvas });
+      resolve({ face: faceRes, body: poseRes, hand: handRes, gesture: gestureRes, performance: this.perf, canvas: process.canvas });
     });
   }
 
@@ -504,7 +491,7 @@ class Human {
     else res = await this.warmupCanvas();
     this.config.videoOptimized = video;
     const t1 = now();
-    log('Warmup', this.config.warmup, (t1 - t0), res);
+    log('Warmup', this.config.warmup, Math.round(t1 - t0), 'ms', res);
     return res;
   }
 }

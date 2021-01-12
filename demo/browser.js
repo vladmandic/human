@@ -512,7 +512,8 @@ function setupMenu() {
 }
 
 async function main() {
-  log('demo starting ...');
+  log('Demo starting ...');
+  log('Browser:', navigator?.userAgent);
   setupMenu();
   document.getElementById('log').innerText = `Human: version ${human.version}`;
   if (ui.modelsPreload && !ui.useWorker) {
@@ -526,7 +527,7 @@ async function main() {
   status('human: ready');
   document.getElementById('loader').style.display = 'none';
   document.getElementById('play').style.display = 'block';
-  log('ready');
+  log('Demo ready...');
 }
 
 window.onload = main;

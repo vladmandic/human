@@ -446,27 +446,66 @@ class Human {
     });
   }
 
-  async warmup(userConfig) {
+  async warmupBitmap() {
     const b64toBlob = (base64, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
-
-    if (userConfig) this.config = mergeDeep(this.config, userConfig);
-    const video = this.config.videoOptimized;
-    this.config.videoOptimized = false;
     let blob;
+    let res;
     switch (this.config.warmup) {
       case 'face': blob = await b64toBlob(sample.face); break;
       case 'full': blob = await b64toBlob(sample.body); break;
       default: blob = null;
     }
-    if (!blob) return null;
-    const bitmap = await createImageBitmap(blob);
+    if (blob) {
+      const bitmap = await createImageBitmap(blob);
+      res = await this.detect(bitmap, config);
+      bitmap.close();
+    }
+    return res;
+  }
+
+  async warmupCanvas() {
+    return new Promise((resolve) => {
+      let src;
+      let size = 0;
+      switch (this.config.warmup) {
+        case 'face':
+          size = 256;
+          src = 'data:image/jpeg;base64,' + sample.face;
+          break;
+        case 'full':
+          size = 1200;
+          src = 'data:image/jpeg;base64,' + sample.body;
+          break;
+        default:
+          src = null;
+      }
+      const img = new Image(size, size);
+      img.onload = () => {
+        const canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(size, size) : document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, size, size);
+        this.detect(data, config).then((res) => resolve(res));
+      };
+      if (src) img.src = src;
+      else resolve(null);
+    });
+  }
+
+  async warmup(userConfig) {
     const t0 = now();
-    const warmup = await this.detect(bitmap, config);
-    const t1 = now();
-    bitmap.close();
-    log('Warmup', this.config.warmup, (t1 - t0), warmup);
+    if (userConfig) this.config = mergeDeep(this.config, userConfig);
+    const video = this.config.videoOptimized;
+    this.config.videoOptimized = false;
+    let res;
+    if (typeof createImageBitmap === 'function') res = await this.warmupBitmap();
+    else res = await this.warmupCanvas();
     this.config.videoOptimized = video;
-    return warmup;
+    const t1 = now();
+    log('Warmup', this.config.warmup, (t1 - t0), res);
+    return res;
   }
 }
 

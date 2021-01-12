@@ -264,7 +264,7 @@
       ]
     },
     "src/blazepose/blazepose.js": {
-      "bytes": 8999,
+      "bytes": 856,
       "imports": [
         {
           "path": "src/log.js"
@@ -361,7 +361,7 @@
       ]
     },
     "config.js": {
-      "bytes": 10062,
+      "bytes": 10110,
       "imports": []
     },
     "src/sample.js": {
@@ -373,7 +373,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 17787,
+      "bytes": 18921,
       "imports": [
         {
           "path": "src/log.js"
@@ -433,14 +433,14 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 1945575
+      "bytes": 1934780
     },
     "dist/human.js": {
       "imports": [],
       "exports": [],
       "inputs": {
         "src/blazeface/blazeface.js": {
-          "bytesInOutput": 5046
+          "bytesInOutput": 5039
         },
         "src/blazeface/box.js": {
           "bytesInOutput": 1567
@@ -515,7 +515,7 @@
           "bytesInOutput": 127037
         },
         "src/handpose/handpose.js": {
-          "bytesInOutput": 2025
+          "bytesInOutput": 2023
         },
         "src/gesture/gesture.js": {
           "bytesInOutput": 3162
@@ -527,7 +527,7 @@
           "bytesInOutput": 3652
         },
         "src/human.js": {
-          "bytesInOutput": 11986
+          "bytesInOutput": 12725
         },
         "src/log.js": {
           "bytesInOutput": 266
@@ -539,7 +539,7 @@
           "bytesInOutput": 918
         },
         "src/blazepose/blazepose.js": {
-          "bytesInOutput": 6201
+          "bytesInOutput": 572
         },
         "src/handpose/box.js": {
           "bytesInOutput": 1420
@@ -557,7 +557,7 @@
           "bytesInOutput": 23
         }
       },
-      "bytes": 1912658
+      "bytes": 1907759
     }
   }
 }

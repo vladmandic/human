@@ -18,6 +18,7 @@ const banner = `
 const common = {
   banner,
   minifyWhitespace: true,
+  minifyIdentifiers: true,
   minifySyntax: true,
   bundle: true,
   sourcemap: true,

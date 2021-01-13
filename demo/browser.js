@@ -3,7 +3,7 @@ import draw from './draw.js';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-const userConfig = { backend: 'humangl' }; // add any user configuration overrides
+const userConfig = {}; // add any user configuration overrides
 
 /*
 const userConfig = {

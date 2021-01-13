@@ -182,12 +182,12 @@ class Human {
         if (!simd) log('warning: wasm simd support is not enabled');
       }
 
-      if (this.config.backend === 'humangl') {
-        log('registering humangl backend');
-        backend.register();
+      if (this.config.backend === 'humangl') backend.register();
+      try {
+        await tf.setBackend(this.config.backend);
+      } catch (err) {
+        log('error: cannot set backend:', this.config.backend, err);
       }
-
-      await tf.setBackend(this.config.backend);
       tf.enableProdMode();
       /* debug mode is really too mcuh
       tf.enableDebugMode();

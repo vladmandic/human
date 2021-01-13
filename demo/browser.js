@@ -3,10 +3,11 @@ import draw from './draw.js';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-const userConfig = {}; // add any user configuration overrides
+const userConfig = { backend: 'humangl' }; // add any user configuration overrides
 
 /*
 const userConfig = {
+  backend: 'humangl',
   face: { enabled: false, iris: { enabled: false } },
   body: { enabled: false },
   hand: { enabled: false },

@@ -9,8 +9,11 @@
       "imports": []
     },
     "src/tfjs/backend.js": {
-      "bytes": 1376,
+      "bytes": 2171,
       "imports": [
+        {
+          "path": "src/log.js"
+        },
         {
           "path": "dist/tfjs.esm.js"
         }
@@ -358,11 +361,11 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2325,
+      "bytes": 2336,
       "imports": []
     },
     "src/human.js": {
-      "bytes": 18179,
+      "bytes": 18229,
       "imports": [
         {
           "path": "src/log.js"
@@ -419,7 +422,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 708268
+      "bytes": 709451
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -492,7 +495,7 @@
           "bytesInOutput": 1180
         },
         "src/posenet/posenet.js": {
-          "bytesInOutput": 379
+          "bytesInOutput": 385
         },
         "src/handpose/handdetector.js": {
           "bytesInOutput": 1844
@@ -516,13 +519,13 @@
           "bytesInOutput": 2478
         },
         "src/human.js": {
-          "bytesInOutput": 10086
+          "bytesInOutput": 10118
         },
         "src/log.js": {
           "bytesInOutput": 251
         },
         "src/tfjs/backend.js": {
-          "bytesInOutput": 844
+          "bytesInOutput": 1304
         },
         "src/handpose/box.js": {
           "bytesInOutput": 958
@@ -540,7 +543,7 @@
           "bytesInOutput": 16
         }
       },
-      "bytes": 277817
+      "bytes": 278315
     }
   }
 }

@@ -47,7 +47,7 @@
       "imports": []
     },
     "src/blazeface/facepipeline.js": {
-      "bytes": 14306,
+      "bytes": 14275,
       "imports": [
         {
           "path": "dist/tfjs.esm.js"
@@ -422,7 +422,7 @@
     "dist/human.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 1932967
+      "bytes": 1932916
     },
     "dist/human.js": {
       "imports": [],
@@ -441,7 +441,7 @@
           "bytesInOutput": 30718
         },
         "src/blazeface/facepipeline.js": {
-          "bytesInOutput": 9386
+          "bytesInOutput": 9361
         },
         "src/blazeface/facemesh.js": {
           "bytesInOutput": 2322
@@ -543,7 +543,7 @@
           "bytesInOutput": 23
         }
       },
-      "bytes": 1907148
+      "bytes": 1907123
     }
   }
 }

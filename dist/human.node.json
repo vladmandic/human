@@ -12,10 +12,12 @@
       "bytes": 2171,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         },
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -23,10 +25,12 @@
       "bytes": 7024,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         },
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -34,7 +38,8 @@
       "bytes": 1935,
       "imports": [
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -47,22 +52,27 @@
       "imports": []
     },
     "src/blazeface/facepipeline.js": {
-      "bytes": 14306,
+      "bytes": 14275,
       "imports": [
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/blazeface/box.js"
+          "path": "src/blazeface/box.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/blazeface/util.js"
+          "path": "src/blazeface/util.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/blazeface/coords.js"
+          "path": "src/blazeface/coords.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -70,19 +80,24 @@
       "bytes": 2991,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         },
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/blazeface/blazeface.js"
+          "path": "src/blazeface/blazeface.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/blazeface/facepipeline.js"
+          "path": "src/blazeface/facepipeline.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/blazeface/coords.js"
+          "path": "src/blazeface/coords.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -90,7 +105,8 @@
       "bytes": 1045,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -98,13 +114,16 @@
       "bytes": 2037,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         },
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/profile.js"
+          "path": "src/profile.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -112,13 +131,16 @@
       "bytes": 2906,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         },
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/profile.js"
+          "path": "src/profile.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -126,13 +148,16 @@
       "bytes": 3078,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         },
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/profile.js"
+          "path": "src/profile.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -140,13 +165,16 @@
       "bytes": 2063,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         },
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/profile.js"
+          "path": "src/profile.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -154,7 +182,8 @@
       "bytes": 1343,
       "imports": [
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -166,7 +195,8 @@
       "bytes": 1775,
       "imports": [
         {
-          "path": "src/posenet/heapSort.js"
+          "path": "src/posenet/heapSort.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -178,7 +208,8 @@
       "bytes": 1273,
       "imports": [
         {
-          "path": "src/posenet/keypoints.js"
+          "path": "src/posenet/keypoints.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -186,10 +217,12 @@
       "bytes": 2083,
       "imports": [
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/keypoints.js"
+          "path": "src/posenet/keypoints.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -197,13 +230,16 @@
       "bytes": 5368,
       "imports": [
         {
-          "path": "src/posenet/keypoints.js"
+          "path": "src/posenet/keypoints.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/vectors.js"
+          "path": "src/posenet/vectors.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/decoders.js"
+          "path": "src/posenet/decoders.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -211,13 +247,16 @@
       "bytes": 2373,
       "imports": [
         {
-          "path": "src/posenet/buildParts.js"
+          "path": "src/posenet/buildParts.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/decodePose.js"
+          "path": "src/posenet/decodePose.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/vectors.js"
+          "path": "src/posenet/vectors.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -225,7 +264,8 @@
       "bytes": 2262,
       "imports": [
         {
-          "path": "src/posenet/keypoints.js"
+          "path": "src/posenet/keypoints.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -233,22 +273,28 @@
       "bytes": 2519,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         },
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/modelBase.js"
+          "path": "src/posenet/modelBase.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/decodeMultiple.js"
+          "path": "src/posenet/decodeMultiple.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/decodePose.js"
+          "path": "src/posenet/decodePose.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/util.js"
+          "path": "src/posenet/util.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -256,13 +302,16 @@
       "bytes": 712,
       "imports": [
         {
-          "path": "src/posenet/modelPoseNet.js"
+          "path": "src/posenet/modelPoseNet.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/keypoints.js"
+          "path": "src/posenet/keypoints.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/util.js"
+          "path": "src/posenet/util.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -270,7 +319,8 @@
       "bytes": 2522,
       "imports": [
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -278,10 +328,12 @@
       "bytes": 3548,
       "imports": [
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/handpose/box.js"
+          "path": "src/handpose/box.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -293,16 +345,20 @@
       "bytes": 7246,
       "imports": [
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/handpose/box.js"
+          "path": "src/handpose/box.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/handpose/util.js"
+          "path": "src/handpose/util.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -314,19 +370,24 @@
       "bytes": 2578,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         },
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/handpose/handdetector.js"
+          "path": "src/handpose/handdetector.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/handpose/handpipeline.js"
+          "path": "src/handpose/handpipeline.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/handpose/anchors.js"
+          "path": "src/handpose/anchors.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -342,13 +403,16 @@
       "bytes": 5871,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         },
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/imagefx.js"
+          "path": "src/imagefx.js",
+          "kind": "import-statement"
         }
       ]
     },
@@ -368,52 +432,68 @@
       "bytes": 18229,
       "imports": [
         {
-          "path": "src/log.js"
+          "path": "src/log.js",
+          "kind": "import-statement"
         },
         {
-          "path": "dist/tfjs.esm.js"
+          "path": "dist/tfjs.esm.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/tfjs/backend.js"
+          "path": "src/tfjs/backend.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/blazeface/facemesh.js"
+          "path": "src/blazeface/facemesh.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/age/age.js"
+          "path": "src/age/age.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/gender/gender.js"
+          "path": "src/gender/gender.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/emotion/emotion.js"
+          "path": "src/emotion/emotion.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/embedding/embedding.js"
+          "path": "src/embedding/embedding.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/posenet/posenet.js"
+          "path": "src/posenet/posenet.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/handpose/handpose.js"
+          "path": "src/handpose/handpose.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/gesture/gesture.js"
+          "path": "src/gesture/gesture.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/image.js"
+          "path": "src/image.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/profile.js"
+          "path": "src/profile.js",
+          "kind": "import-statement"
         },
         {
-          "path": "config.js"
+          "path": "config.js",
+          "kind": "import-statement"
         },
         {
-          "path": "src/sample.js"
+          "path": "src/sample.js",
+          "kind": "import-statement"
         },
         {
-          "path": "package.json"
+          "path": "package.json",
+          "kind": "import-statement"
         }
       ]
     }
@@ -422,7 +502,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 709451
+      "bytes": 709400
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -444,7 +524,7 @@
           "bytesInOutput": 30504
         },
         "src/blazeface/facepipeline.js": {
-          "bytesInOutput": 5611
+          "bytesInOutput": 5593
         },
         "src/blazeface/facemesh.js": {
           "bytesInOutput": 1556
@@ -543,7 +623,7 @@
           "bytesInOutput": 16
         }
       },
-      "bytes": 278315
+      "bytes": 278297
     }
   }
 }

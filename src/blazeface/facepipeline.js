@@ -143,7 +143,7 @@ class Pipeline {
     if (config.videoOptimized) this.skipped++;
 
     // if detector result count doesn't match current working set, use it to reset current working set
-    if (detector && detector.boxes && (detector.boxes.length > 0) && (!config.face.mesh.enabled || (detector.boxes.length !== this.detectedFaces) && (this.detectedFaces !== config.face.detector.maxFaces))) {
+    if (detector && detector.boxes && (!config.face.mesh.enabled || (detector.boxes.length !== this.detectedFaces) && (this.detectedFaces !== config.face.detector.maxFaces))) {
       this.storedBoxes = [];
       this.detectedFaces = 0;
       for (const possible of detector.boxes) {

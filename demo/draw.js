@@ -41,6 +41,7 @@ async function drawFace(result, canvas, ui, triangulation) {
       const emotion = face.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
       labels.push(emotion.join(' '));
     }
+    if (labels.length === 0) labels.push('face');
     ctx.fillStyle = ui.baseLabel;
     for (let i = 0; i < labels.length; i++) {
       ctx.fillStyle = 'black';

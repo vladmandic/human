@@ -7,11 +7,10 @@ const userConfig = {}; // add any user configuration overrides
 
 /*
 const userConfig = {
-  backend: 'humangl',
-  face: { enabled: false, iris: { enabled: false } },
+  // backend: 'humangl',
+  face: { enabled: true, iris: { enabled: false }, mesh: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false } },
   body: { enabled: false },
   hand: { enabled: false },
-  pose: { enabled: true },
 };
 */
 

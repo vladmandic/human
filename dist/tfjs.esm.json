@@ -1,23 +1,23 @@
 {
   "inputs": {
     "node_modules/@tensorflow/tfjs/package.json": {
-      "bytes": 5096,
+      "bytes": 5081,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-core/package.json": {
-      "bytes": 5269,
+      "bytes": 5254,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-data/package.json": {
-      "bytes": 4186,
+      "bytes": 4171,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-layers/package.json": {
-      "bytes": 3934,
+      "bytes": 3919,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-converter/package.json": {
-      "bytes": 4761,
+      "bytes": 4746,
       "imports": []
     },
     "node_modules/@tensorflow/tfjs-core/dist/backends/backend.js": {

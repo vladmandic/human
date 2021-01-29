@@ -17,9 +17,9 @@ const banner = `
 // common configuration
 const common = {
   banner,
-  minifyWhitespace: true, // this is ok in all versions
-  minifyIdentifiers: true, // this requires tfjs 2.8.1 before it can be used safely
-  minifySyntax: true, // this breaks in tfjs 2.8.4
+  minifyWhitespace: true,
+  minifyIdentifiers: true,
+  minifySyntax: true,
   bundle: true,
   sourcemap: true,
   logLevel: 'error',

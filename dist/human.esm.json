@@ -429,7 +429,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 18229,
+      "bytes": 18719,
       "imports": [
         {
           "path": "src/log.js",
@@ -502,7 +502,7 @@
     "dist/human.esm.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 1926654
+      "bytes": 1927417
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -601,13 +601,13 @@
           "bytesInOutput": 252
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1062882
+          "bytesInOutput": 1062880
         },
         "src/tfjs/backend.js": {
           "bytesInOutput": 1205
         },
         "src/human.js": {
-          "bytesInOutput": 9983
+          "bytesInOutput": 10250
         },
         "src/handpose/box.js": {
           "bytesInOutput": 938
@@ -616,7 +616,7 @@
           "bytesInOutput": 816
         },
         "config.js": {
-          "bytesInOutput": 1460
+          "bytesInOutput": 1426
         },
         "src/sample.js": {
           "bytesInOutput": 55295
@@ -625,7 +625,7 @@
           "bytesInOutput": 16
         }
       },
-      "bytes": 1347090
+      "bytes": 1347321
     }
   }
 }

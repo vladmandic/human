@@ -429,7 +429,7 @@
       "imports": []
     },
     "src/human.js": {
-      "bytes": 18229,
+      "bytes": 18719,
       "imports": [
         {
           "path": "src/log.js",
@@ -502,7 +502,7 @@
     "dist/human.node-gpu.js.map": {
       "imports": [],
       "inputs": {},
-      "bytes": 709400
+      "bytes": 710163
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -599,7 +599,7 @@
           "bytesInOutput": 2478
         },
         "src/human.js": {
-          "bytesInOutput": 10118
+          "bytesInOutput": 10397
         },
         "src/log.js": {
           "bytesInOutput": 251
@@ -614,7 +614,7 @@
           "bytesInOutput": 812
         },
         "config.js": {
-          "bytesInOutput": 1460
+          "bytesInOutput": 1426
         },
         "src/sample.js": {
           "bytesInOutput": 55295
@@ -623,7 +623,7 @@
           "bytesInOutput": 16
         }
       },
-      "bytes": 278297
+      "bytes": 278542
     }
   }
 }

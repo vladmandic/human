@@ -444,7 +444,7 @@ class Human {
     }
     if (blob) {
       const bitmap = await createImageBitmap(blob);
-      res = await this.detect(bitmap, config);
+      res = await this.detect(bitmap, this.config);
       bitmap.close();
     }
     return res;
@@ -474,11 +474,23 @@ class Human {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
         const data = ctx.getImageData(0, 0, size, size);
-        this.detect(data, config).then((res) => resolve(res));
+        this.detect(data, this.config).then((res) => resolve(res));
       };
       if (src) img.src = src;
       else resolve(null);
     });
+  }
+
+  async warmupNode() {
+    const atob = (str) => Buffer.from(str, 'base64');
+    const img = this.config.warmup === 'face' ? atob(sample.face) : atob(sample.body);
+    const data = tf.node.decodeJpeg(img);
+    const expanded = data.expandDims(0);
+    tf.dispose(data);
+    // log('Input:', expanded);
+    const res = await this.detect(expanded, this.config);
+    tf.dispose(expanded);
+    return res;
   }
 
   async warmup(userConfig) {
@@ -488,7 +500,8 @@ class Human {
     this.config.videoOptimized = false;
     let res;
     if (typeof createImageBitmap === 'function') res = await this.warmupBitmap();
-    else res = await this.warmupCanvas();
+    else if (typeof Image !== 'undefined') res = await this.warmupCanvas();
+    else res = await this.warmupNode();
     this.config.videoOptimized = video;
     const t1 = now();
     log('Warmup', this.config.warmup, Math.round(t1 - t0), 'ms', res);

@@ -6,6 +6,8 @@ const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorfl
 // load specific version of Human library that matches TensorFlow mode
 const Human = require('../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
 
+let human = null;
+
 const myConfig = {
   backend: 'tensorflow',
   console: true,
@@ -25,13 +27,16 @@ const myConfig = {
   },
 };
 
-async function detect(input) {
+async function init() {
   // wait until tf is ready
   await tf.ready();
   // create instance of human
-  const human = new Human(myConfig);
+  human = new Human(myConfig);
   // pre-load models
   await human.load();
+}
+
+async function detect(input) {
   // read input image file and create tensor to be used for processing
   const buffer = fs.readFileSync(input);
   const decoded = human.tf.node.decodeImage(buffer);
@@ -40,6 +45,7 @@ async function detect(input) {
   decoded.dispose();
   casted.dispose();
   // image shape contains image dimensions and depth
+  log.warn('Face model is disabled in NodeJS due to missing required TFJS functions');
   log.state('Processing:', image.shape);
   // must disable face model when runing in tfjs-node as it's missing required ops
   // see <https://github.com/tensorflow/tfjs/issues/4066>
@@ -52,11 +58,26 @@ async function detect(input) {
   log.data(result);
 }
 
+async function test() {
+  log.state('Processing embedded warmup image');
+  log.warn('Face model is disabled in NodeJS due to missing required TFJS functions');
+  myConfig.face.enabled = false;
+  myConfig.warmup = 'full';
+  const result = await human.warmup(myConfig);
+  log.data(result);
+}
+
 async function main() {
   log.info('NodeJS:', process.version);
-  if (process.argv.length !== 3) log.error('Parameters: <input image>');
-  else if (!fs.existsSync(process.argv[2])) log.error(`File not found: ${process.argv[2]}`);
-  else detect(process.argv[2]);
+  await init();
+  if (process.argv.length !== 3) {
+    log.warn('Parameters: <input image> missing');
+    await test();
+  } else if (!fs.existsSync(process.argv[2])) {
+    log.error(`File not found: ${process.argv[2]}`);
+  } else {
+    await detect(process.argv[2]);
+  }
 }
 
 main();

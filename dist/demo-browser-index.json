@@ -41,6 +41,7 @@
   "outputs": {
     "dist/demo-browser-index.js.map": {
       "imports": [],
+      "exports": [],
       "inputs": {},
       "bytes": 2023220
     },

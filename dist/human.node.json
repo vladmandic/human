@@ -501,6 +501,7 @@
   "outputs": {
     "dist/human.node-gpu.js.map": {
       "imports": [],
+      "exports": [],
       "inputs": {},
       "bytes": 710163
     },

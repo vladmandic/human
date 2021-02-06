@@ -50,7 +50,7 @@
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
     "lint": "eslint src/*.js demo/*.js",
     "dev": "npm install && node server/dev.js",
-    "build": "npm install && rimraf dist/* && node server/build.js && node server/changelog.js",
+    "build": "rimraf dist/* && node server/build.js && node server/changelog.js",
     "update": "npm update --depth 20 --force && npm dedupe && npm prune && npm audit"
   },
   "keywords": [

@@ -12,8 +12,9 @@ const myConfig = {
   backend: 'tensorflow',
   console: true,
   videoOptimized: false,
+  async: false,
   face: {
-    detector: { modelPath: 'file://models/blazeface-back.json' },
+    detector: { modelPath: 'file://models/faceboxes.json' }, // cannot use blazeface in nodejs due to missing required kernel function in tfjs-node
     mesh: { modelPath: 'file://models/facemesh.json' },
     iris: { modelPath: 'file://models/iris.json' },
     age: { modelPath: 'file://models/age-ssrnet-imdb.json' },
@@ -45,11 +46,7 @@ async function detect(input) {
   decoded.dispose();
   casted.dispose();
   // image shape contains image dimensions and depth
-  log.warn('Face model is disabled in NodeJS due to missing required TFJS functions');
   log.state('Processing:', image.shape);
-  // must disable face model when runing in tfjs-node as it's missing required ops
-  // see <https://github.com/tensorflow/tfjs/issues/4066>
-  myConfig.face.enabled = false;
   // run actual detection
   const result = await human.detect(image, myConfig);
   // dispose image tensor as we no longer need it
@@ -59,12 +56,14 @@ async function detect(input) {
 }
 
 async function test() {
-  log.state('Processing embedded warmup image');
-  log.warn('Face model is disabled in NodeJS due to missing required TFJS functions');
-  myConfig.face.enabled = false;
+  log.state('Processing embedded warmup image: face');
+  myConfig.warmup = 'face';
+  const resultFace = await human.warmup(myConfig);
+  log.data(resultFace);
+  log.state('Processing embedded warmup image: full');
   myConfig.warmup = 'full';
-  const result = await human.warmup(myConfig);
-  log.data(result);
+  const resultFull = await human.warmup(myConfig);
+  log.data(resultFull);
 }
 
 async function main() {

@@ -62,10 +62,10 @@ export default {
                              // detector, mesh, iris, age, gender, emotion
                              // (note: module is not loaded until it is required)
     detector: {
-      modelPath: '../models/blazeface-back.json', // can be 'front' or 'back'.
-                                                  // 'front' is optimized for large faces
-                                                  // such as front-facing camera and
-                                                  // 'back' is optimized for distanct faces.
+      modelPath: '../models/blazeface-back.json', // can be 'blazeface-front', 'blazeface-front' or 'faceboxes'
+                                                  // 'blazeface-front' is blazeface model optimized for large faces such as front-facing camera
+                                                  // 'blazeface-back' is blazeface model optimized for smaller and/or distanct faces
+                                                  // 'faceboxes' is alternative model to 'blazeface
       inputSize: 256,        // fixed value: 128 for front and 256 for 'back'
       rotation: false,       // use best-guess rotated face image or just box with rotation as-is
                              // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees

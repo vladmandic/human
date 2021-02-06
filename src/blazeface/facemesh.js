@@ -50,7 +50,6 @@ class MediaPipeFaceMesh {
 let faceModels = [null, null, null];
 async function load(config) {
   faceModels = await Promise.all([
-    // @ts-ignore
     (!faceModels[0] && config.face.enabled) ? blazeface.load(config) : null,
     (!faceModels[1] && config.face.mesh.enabled) ? tf.loadGraphModel(config.face.mesh.modelPath, { fromTFHub: config.face.mesh.modelPath.includes('tfhub.dev') }) : null,
     (!faceModels[2] && config.face.iris.enabled) ? tf.loadGraphModel(config.face.iris.modelPath, { fromTFHub: config.face.iris.modelPath.includes('tfhub.dev') }) : null,

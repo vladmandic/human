@@ -32,10 +32,10 @@
     "@tensorflow/tfjs-layers": "^3.0.0",
     "@tensorflow/tfjs-node": "^3.0.0",
     "@tensorflow/tfjs-node-gpu": "^3.0.0",
-    "@vladmandic/pilogger": "^0.2.13",
+    "@vladmandic/pilogger": "^0.2.14",
     "chokidar": "^3.5.1",
     "dayjs": "^1.10.4",
-    "esbuild": "^0.8.39",
+    "esbuild": "^0.8.42",
     "eslint": "^7.19.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
@@ -44,7 +44,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
-    "simple-git": "^2.31.0"
+    "simple-git": "^2.32.0"
   },
   "scripts": {
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",

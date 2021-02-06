@@ -8,7 +8,9 @@ const userConfig = {}; // add any user configuration overrides
 /*
 const userConfig = {
   // backend: 'humangl',
-  face: { enabled: true, iris: { enabled: false }, mesh: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false } },
+  async: false,
+  videoOptimized: false,
+  face: { enabled: true, detector: { modelPath: '../models/faceboxes.json' }, iris: { enabled: false }, mesh: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: true } },
   body: { enabled: false },
   hand: { enabled: false },
 };

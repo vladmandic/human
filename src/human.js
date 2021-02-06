@@ -2,6 +2,7 @@ import { log } from './log.js';
 import * as tf from '../dist/tfjs.esm.js';
 import * as backend from './tfjs/backend.js';
 import * as facemesh from './blazeface/facemesh.js';
+import * as faceboxes from './faceboxes/faceboxes.js';
 import * as age from './age/age.js';
 import * as gender from './gender/gender.js';
 import * as emotion from './emotion/emotion.js';
@@ -120,10 +121,10 @@ class Human {
         log('tf flags:', tf.ENV.flags);
       }
     }
-
+    const face = this.config.face.detector.modelPath.includes('faceboxes') ? faceboxes : facemesh;
     if (this.config.async) {
       [
-        this.models.facemesh,
+        this.models.face,
         this.models.age,
         this.models.gender,
         this.models.emotion,
@@ -131,7 +132,7 @@ class Human {
         this.models.posenet,
         this.models.handpose,
       ] = await Promise.all([
-        this.models.facemesh || (this.config.face.enabled ? facemesh.load(this.config) : null),
+        this.models.face || (this.config.face.enabled ? face.load(this.config) : null),
         this.models.age || ((this.config.face.enabled && this.config.face.age.enabled) ? age.load(this.config) : null),
         this.models.gender || ((this.config.face.enabled && this.config.face.gender.enabled) ? gender.load(this.config) : null),
         this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
@@ -140,7 +141,7 @@ class Human {
         this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config) : null),
       ]);
     } else {
-      if (this.config.face.enabled && !this.models.facemesh) this.models.facemesh = await facemesh.load(this.config);
+      if (this.config.face.enabled && !this.models.face) this.models.face = await face.load(this.config);
       if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) this.models.age = await age.load(this.config);
       if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) this.models.gender = await gender.load(this.config);
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) this.models.emotion = await emotion.load(this.config);
@@ -218,7 +219,7 @@ class Human {
     const faceRes = [];
     this.state = 'run:face';
     timeStamp = now();
-    const faces = await this.models.facemesh?.estimateFaces(input, this.config);
+    const faces = await this.models.face?.estimateFaces(input, this.config);
     this.perf.face = Math.trunc(now() - timeStamp);
     for (const face of faces) {
       this.analyze('Get Face');
@@ -281,16 +282,14 @@ class Human {
       }
 
       this.analyze('Finish Face:');
-      // dont need face anymore
-      face.image.dispose();
 
       // calculate iris distance
       // iris: array[ center, left, top, right, bottom]
-      if (!this.config.face.iris.enabled) {
+      if (!this.config.face.iris.enabled && face?.annotations?.leftEyeIris && face?.annotations?.rightEyeIris) {
         delete face.annotations.leftEyeIris;
         delete face.annotations.rightEyeIris;
       }
-      const irisSize = (face.annotations.leftEyeIris && face.annotations.rightEyeIris)
+      const irisSize = (face.annotations?.leftEyeIris && face.annotations?.rightEyeIris)
         /* average human iris size is 11.7mm */
         ? 11.7 * Math.max(Math.abs(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0]), Math.abs(face.annotations.rightEyeIris[4][1] - face.annotations.rightEyeIris[2][1]))
         : 0;
@@ -309,7 +308,11 @@ class Human {
         emotion: emotionRes,
         embedding: embeddingRes,
         iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
+        image: face.image.toInt().squeeze(),
       });
+
+      // dont need face anymore
+      face.image?.dispose();
       this.analyze('End Face');
     }
     this.analyze('End FaceMesh:');

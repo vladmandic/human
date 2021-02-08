@@ -2,20 +2,20 @@ import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile.js';
 
-const models = { age: null };
+let model;
 let last = { age: 0 };
 let skipped = Number.MAX_SAFE_INTEGER;
 
 export async function load(config) {
-  if (!models.age) {
-    models.age = await tf.loadGraphModel(config.face.age.modelPath);
+  if (!model) {
+    model = await tf.loadGraphModel(config.face.age.modelPath);
     log(`load model: ${config.face.age.modelPath.match(/\/(.*)\./)[1]}`);
   }
-  return models.age;
+  return model;
 }
 
 export async function predict(image, config) {
-  if (!models.age) return null;
+  if (!model) return null;
   if ((skipped < config.face.age.skipFrames) && config.videoOptimized && last.age && (last.age > 0)) {
     skipped++;
     return last;
@@ -38,27 +38,25 @@ export async function predict(image, config) {
     tf.dispose(resize);
 
     let ageT;
-    const obj = { age: undefined };
+    const obj = { age: 0 };
 
-    if (models.age) {
-      if (!config.profile) {
-        if (config.face.age.enabled) ageT = await models.age.predict(enhance);
-      } else {
-        const profileAge = config.face.age.enabled ? await tf.profile(() => models.age.predict(enhance)) : {};
-        ageT = profileAge.result.clone();
-        profileAge.result.dispose();
-        profile.run('age', profileAge);
-      }
-      enhance.dispose();
-
-      if (ageT) {
-        const data = ageT.dataSync();
-        obj.age = Math.trunc(10 * data[0]) / 10;
-      }
-      ageT.dispose();
-
-      last = obj;
+    if (!config.profile) {
+      if (config.face.age.enabled) ageT = await model.predict(enhance);
+    } else {
+      const profileAge = config.face.age.enabled ? await tf.profile(() => model.predict(enhance)) : {};
+      ageT = profileAge.result.clone();
+      profileAge.result.dispose();
+      profile.run('age', profileAge);
     }
+    enhance.dispose();
+
+    if (ageT) {
+      const data = ageT.dataSync();
+      obj.age = Math.trunc(10 * data[0]) / 10;
+    }
+    ageT.dispose();
+
+    last = obj;
     resolve(obj);
   });
 }

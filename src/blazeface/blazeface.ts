@@ -5,7 +5,7 @@ const NUM_LANDMARKS = 6;
 
 function generateAnchors(inputSize) {
   const spec = { strides: [inputSize / 16, inputSize / 8], anchors: [2, 6] };
-  const anchors = [];
+  const anchors: Array<[number, number]> = [];
   for (let i = 0; i < spec.strides.length; i++) {
     const stride = spec.strides[i];
     const gridRows = Math.floor((inputSize + stride - 1) / stride);
@@ -121,7 +121,7 @@ export class BlazeFaceModel {
     });
 
     const scoresVal = scores.dataSync();
-    const annotatedBoxes = [];
+    const annotatedBoxes: Array<{ box: any, landmarks: any, anchor: any, confidence: number }> = [];
     for (let i = 0; i < boundingBoxes.length; i++) {
       const boxIndex = boxIndices[i];
       const confidence = scoresVal[boxIndex];

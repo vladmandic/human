@@ -15,7 +15,7 @@ export class MediaPipeFaceMesh {
 
   async estimateFaces(input, config) {
     const predictions = await this.facePipeline.predict(input, config);
-    const results = [];
+    const results: Array<{}> = [];
     for (const prediction of (predictions || [])) {
       if (prediction.isDisposedInternal) continue; // guard against disposed tensors on long running operations such as pause in middle of processing
       const mesh = prediction.coords ? prediction.coords.arraySync() : null;
@@ -33,15 +33,7 @@ export class MediaPipeFaceMesh {
         Math.min(input.shape[2], prediction.box.endPoint[0]) - prediction.box.startPoint[0],
         Math.min(input.shape[1], prediction.box.endPoint[1]) - prediction.box.startPoint[1],
       ] : 0;
-      results.push({
-        confidence: prediction.confidence || 0,
-        box,
-        mesh,
-        boxRaw,
-        meshRaw,
-        annotations,
-        image: prediction.image ? tf.clone(prediction.image) : null,
-      });
+      results.push({ confidence: prediction.confidence || 0, box, mesh, boxRaw, meshRaw, annotations, image: prediction.image ? tf.clone(prediction.image) : null });
       if (prediction.coords) prediction.coords.dispose();
       if (prediction.image) prediction.image.dispose();
     }
@@ -51,6 +43,7 @@ export class MediaPipeFaceMesh {
 
 let faceModels = [null, null, null];
 export async function load(config) {
+  // @ts-ignore
   faceModels = await Promise.all([
     (!faceModels[0] && config.face.enabled) ? blazeface.load(config) : null,
     (!faceModels[1] && config.face.mesh.enabled) ? tf.loadGraphModel(config.face.mesh.modelPath, { fromTFHub: config.face.mesh.modelPath.includes('tfhub.dev') }) : null,

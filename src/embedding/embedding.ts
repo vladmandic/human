@@ -5,14 +5,14 @@ import * as profile from '../profile.js';
 // based on https://github.com/sirius-ai/MobileFaceNet_TF
 // model converted from https://github.com/sirius-ai/MobileFaceNet_TF/files/3551493/FaceMobileNet192_train_false.zip
 
-const models = { embedding: null };
+let model;
 
 export async function load(config) {
-  if (!models.embedding) {
-    models.embedding = await tf.loadGraphModel(config.face.embedding.modelPath);
+  if (!model) {
+    model = await tf.loadGraphModel(config.face.embedding.modelPath);
     log(`load model: ${config.face.embedding.modelPath.match(/\/(.*)\./)[1]}`);
   }
-  return models.embedding;
+  return model;
 }
 
 export function simmilarity(embedding1, embedding2) {
@@ -25,18 +25,18 @@ export function simmilarity(embedding1, embedding2) {
 }
 
 export async function predict(image, config) {
-  if (!models.embedding) return null;
+  if (!model) return null;
   return new Promise(async (resolve) => {
     const resize = tf.image.resizeBilinear(image, [config.face.embedding.inputSize, config.face.embedding.inputSize], false);
     // const normalize = tf.tidy(() => resize.div(127.5).sub(0.5)); // this is -0.5...0.5 ???
-    let data = [];
+    let data: Array<[]> = [];
     if (config.face.embedding.enabled) {
       if (!config.profile) {
-        const embeddingT = await models.embedding.predict({ img_inputs: resize });
+        const embeddingT = await model.predict({ img_inputs: resize });
         data = [...embeddingT.dataSync()]; // convert object array to standard array
         tf.dispose(embeddingT);
       } else {
-        const profileData = await tf.profile(() => models.embedding.predict({ img_inputs: resize }));
+        const profileData = await tf.profile(() => model.predict({ img_inputs: resize }));
         data = [...profileData.result.dataSync()];
         profileData.result.dispose();
         profile.run('emotion', profileData);

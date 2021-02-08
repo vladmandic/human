@@ -17,9 +17,9 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": false,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "allowJs": true
   },
   "formatCodeOptions": { "indentSize": 2, "tabSize": 2 },
-  "include": ["src/*", "demo/*"],
+  "include": ["src/*", "src/***/*", "demo/*"],
 }

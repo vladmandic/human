@@ -18,7 +18,7 @@ export function dot(v1, v2) {
 }
 
 export function getColumnFrom2DArr(arr, columnIndex) {
-  const column = [];
+  const column: Array<number> = [];
   for (let i = 0; i < arr.length; i++) {
     column.push(arr[i][columnIndex]);
   }
@@ -26,7 +26,7 @@ export function getColumnFrom2DArr(arr, columnIndex) {
 }
 
 export function multiplyTransformMatrices(mat1, mat2) {
-  const product = [];
+  const product: Array<number[]> = [];
   const size = mat1.length;
   for (let row = 0; row < size; row++) {
     product.push([]);

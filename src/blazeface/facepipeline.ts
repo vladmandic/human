@@ -26,8 +26,8 @@ function replaceRawCoordinates(rawCoords, newCoords, prefix, keys = null) {
   for (let i = 0; i < coords.MESH_TO_IRIS_INDICES_MAP.length; i++) {
     const { key, indices } = coords.MESH_TO_IRIS_INDICES_MAP[i];
     const originalIndices = coords.MESH_ANNOTATIONS[`${prefix}${key}`];
-    const shouldReplaceAllKeys = keys === null;
-    if (shouldReplaceAllKeys || keys.includes(key)) {
+    // @ts-ignore
+    if (!keys || keys.includes(key)) {
       for (let j = 0; j < indices.length; j++) {
         const index = indices[j];
         rawCoords[originalIndices[j]] = [
@@ -108,15 +108,13 @@ export class Pipeline {
 
   // Given a cropped image of an eye, returns the coordinates of the contours surrounding the eye and the iris.
   getEyeCoords(eyeData, eyeBox, eyeBoxSize, flip = false) {
-    const eyeRawCoords = [];
+    const eyeRawCoords: Array<any[]> = [];
     for (let i = 0; i < IRIS_NUM_COORDINATES; i++) {
       const x = eyeData[i * 3];
       const y = eyeData[i * 3 + 1];
       const z = eyeData[i * 3 + 2];
       eyeRawCoords.push([
-        (flip
-          ? (1 - (x / this.irisSize))
-          : (x / this.irisSize)) * eyeBoxSize[0] + eyeBox.startPoint[0],
+        (flip ? (1 - (x / this.irisSize)) : (x / this.irisSize)) * eyeBoxSize[0] + eyeBox.startPoint[0],
         (y / this.irisSize) * eyeBoxSize[1] + eyeBox.startPoint[1], z,
       ]);
     }
@@ -237,8 +235,10 @@ export class Pipeline {
           replaceRawCoordinates(rawCoords, rightEyeRawCoords, 'right');
           // If the user is looking to the left or to the right, the iris coordinates tend to diverge too much from the mesh coordinates for them to be merged. So we only update a single contour line above and below the eye.
         } else if (leftToRightEyeDepthDifference < 1) { // User is looking towards the right.
+          // @ts-ignore
           replaceRawCoordinates(rawCoords, leftEyeRawCoords, 'left', ['EyeUpper0', 'EyeLower0']);
         } else { // User is looking towards the left.
+          // @ts-ignore
           replaceRawCoordinates(rawCoords, rightEyeRawCoords, 'right', ['EyeUpper0', 'EyeLower0']);
         }
         const adjustedLeftIrisCoords = this.getAdjustedIrisCoords(rawCoords, leftIrisRawCoords, 'left');

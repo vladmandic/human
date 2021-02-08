@@ -3,8 +3,8 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile.js';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
-const models = { emotion: null };
-let last = [];
+let model;
+let last: Array<{ score: number, emotion: string }> = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 
 // tuning values
@@ -12,15 +12,15 @@ const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when 
 const scale = 1; // score multiplication factor
 
 export async function load(config) {
-  if (!models.emotion) {
-    models.emotion = await tf.loadGraphModel(config.face.emotion.modelPath);
+  if (!model) {
+    model = await tf.loadGraphModel(config.face.emotion.modelPath);
     log(`load model: ${config.face.emotion.modelPath.match(/\/(.*)\./)[1]}`);
   }
-  return models.emotion;
+  return model;
 }
 
 export async function predict(image, config) {
-  if (!models.emotion) return null;
+  if (!model) return null;
   if ((skipped < config.face.emotion.skipFrames) && config.videoOptimized && (last.length > 0)) {
     skipped++;
     return last;
@@ -54,15 +54,15 @@ export async function predict(image, config) {
     blueNorm.dispose();
     const normalize = tf.tidy(() => grayscale.sub(0.5).mul(2));
     grayscale.dispose();
-    const obj = [];
+    const obj: Array<{ score: number, emotion: string }> = [];
     if (config.face.emotion.enabled) {
       let data;
       if (!config.profile) {
-        const emotionT = await models.emotion.predict(normalize);
+        const emotionT = await model.predict(normalize);
         data = emotionT.dataSync();
         tf.dispose(emotionT);
       } else {
-        const profileData = await tf.profile(() => models.emotion.predict(normalize));
+        const profileData = await tf.profile(() => model.predict(normalize));
         data = profileData.result.dataSync();
         profileData.result.dispose();
         profile.run('emotion', profileData);

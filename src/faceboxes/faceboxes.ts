@@ -15,7 +15,7 @@ export class FaceBoxes {
 
   async estimateFaces(input, config) {
     if (config) this.config = config;
-    const results = [];
+    const results: Array<{ confidence: number, box: any, boxRaw: any, image: any }> = [];
     const resizeT = tf.image.resizeBilinear(input, [this.config.face.detector.inputSize, this.config.face.detector.inputSize]);
     const castT = resizeT.toInt();
     let scores;
@@ -51,15 +51,8 @@ export class FaceBoxes {
         const resized = tf.image.cropAndResize(input, [crop], [0], [this.config.face.detector.inputSize, this.config.face.detector.inputSize]);
         const image = resized.div([255]);
         resized.dispose();
-        results.push({
-          confidence: scores[i],
-          box,
-          boxRaw: this.config.face.mesh.returnRawData ? boxRaw : null,
-          image,
-          // mesh,
-          // meshRaw,
-          // annotations,
-        });
+        results.push({ confidence: scores[i], box, boxRaw: this.config.face.mesh.returnRawData ? boxRaw : null, image, });
+        // add mesh, meshRaw, annotations,
       }
     }
     return results;

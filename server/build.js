@@ -1,8 +1,9 @@
 #!/usr/bin/env -S node --trace-warnings
 
 const fs = require('fs');
-const esbuild = require('esbuild');
 const log = require('@vladmandic/pilogger');
+const esbuild = require('esbuild');
+const ts = require('typescript');
 
 // keeps esbuild service instance cached
 let es;
@@ -14,6 +15,29 @@ const banner = `
   author: <https://github.com/vladmandic>'
   */
 `;
+
+// tsc configuration for building types only
+const tsconfig = {
+  noEmitOnError: false,
+  target: ts.ScriptTarget.ES2018,
+  module: ts.ModuleKind.ES2020,
+  outDir: 'types/',
+  declaration: true,
+  emitDeclarationOnly: true,
+  emitDecoratorMetadata: true,
+  experimentalDecorators: true,
+  skipLibCheck: true,
+  importHelpers: true,
+  noImplicitAny: false,
+  preserveConstEnums: true,
+  strictNullChecks: true,
+  baseUrl: './',
+  typeRoots: ['node_modules/@types'],
+  paths: {
+    tslib: ['node_modules/tslib/tslib.d.ts'],
+    '@tensorflow/tfjs-node/dist/io/file_system': ['node_modules/@tensorflow/tfjs-node/dist/io/file_system.js'],
+  },
+};
 
 // common configuration
 const common = {
@@ -29,42 +53,6 @@ const common = {
 };
 
 const targets = {
-  node: {
-    tfjs: {
-      platform: 'node',
-      format: 'cjs',
-      metafile: 'dist/tfjs.esm.json',
-      entryPoints: ['src/tfjs/tf-node.ts'],
-      outfile: 'dist/tfjs.esm.js',
-      external: ['@tensorflow'],
-    },
-    node: {
-      platform: 'node',
-      format: 'cjs',
-      metafile: 'dist/human.node.json',
-      entryPoints: ['src/human.ts'],
-      outfile: 'dist/human.node.js',
-      external: ['@tensorflow'],
-    },
-  },
-  nodeGPU: {
-    tfjs: {
-      platform: 'node',
-      format: 'cjs',
-      metafile: 'dist/tfjs.esm.json',
-      entryPoints: ['src/tfjs/tf-node-gpu.ts'],
-      outfile: 'dist/tfjs.esm.js',
-      external: ['@tensorflow'],
-    },
-    node: {
-      platform: 'node',
-      format: 'cjs',
-      metafile: 'dist/human.node.json',
-      entryPoints: ['src/human.ts'],
-      outfile: 'dist/human.node-gpu.js',
-      external: ['@tensorflow'],
-    },
-  },
   browserNoBundle: {
     tfjs: {
       platform: 'browser',
@@ -118,6 +106,42 @@ const targets = {
       external: ['fs', 'buffer', 'util'],
     },
   },
+  node: {
+    tfjs: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/tfjs.esm.json',
+      entryPoints: ['src/tfjs/tf-node.ts'],
+      outfile: 'dist/tfjs.esm.js',
+      external: ['@tensorflow'],
+    },
+    node: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/human.node.json',
+      entryPoints: ['src/human.ts'],
+      outfile: 'dist/human.node.js',
+      external: ['@tensorflow'],
+    },
+  },
+  nodeGPU: {
+    tfjs: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/tfjs.esm.json',
+      entryPoints: ['src/tfjs/tf-node-gpu.ts'],
+      outfile: 'dist/tfjs.esm.js',
+      external: ['@tensorflow'],
+    },
+    node: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/human.node.json',
+      entryPoints: ['src/human.ts'],
+      outfile: 'dist/human.node-gpu.js',
+      external: ['@tensorflow'],
+    },
+  },
 };
 
 async function getStats(metafile) {
@@ -147,6 +171,28 @@ async function getStats(metafile) {
   return stats;
 }
 
+// rebuild typings
+function compile(fileNames, options) {
+  log.info('Compile:', fileNames);
+  const program = ts.createProgram(fileNames, options);
+  const emit = program.emit();
+  const diag = ts
+    .getPreEmitDiagnostics(program)
+    .concat(emit.diagnostics);
+  for (const info of diag) {
+    // @ts-ignore
+    const msg = info.messageText.messageText || info.messageText;
+    if (msg.includes('package.json')) continue;
+    if (msg.includes('Expected 0 arguments, but got 1')) continue;
+    if (info.file) {
+      const pos = info.file.getLineAndCharacterOfPosition(info.start || 0);
+      log.error(`TSC: ${info.file.fileName} [${pos.line + 1},${pos.character + 1}]:`, msg);
+    } else {
+      log.error('TSC:', msg);
+    }
+  }
+}
+
 // rebuild on file change
 async function build(f, msg) {
   if (busy) {
@@ -169,6 +215,8 @@ async function build(f, msg) {
         log.state(`Build for: ${targetGroupName} type: ${targetName}:`, stats);
       }
     }
+    // generate typings
+    compile(targets.browserBundle.esm.entryPoints, tsconfig);
     if (require.main === module) process.exit(0);
   } catch (err) {
     // catch errors and print where it occured

@@ -29,7 +29,7 @@ export class HandPose {
   async estimateHands(input, config) {
     const predictions = await this.handPipeline.estimateHands(input, config);
     if (!predictions) return [];
-    const hands = [];
+    const hands: Array<{ confidence: number, box: any, landmarks: any, annotations: any }> = [];
     for (const prediction of predictions) {
       const annotations = {};
       if (prediction.landmarks) {
@@ -43,12 +43,7 @@ export class HandPose {
         Math.min(input.shape[2], prediction.box.bottomRight[0]) - prediction.box.topLeft[0],
         Math.min(input.shape[1], prediction.box.bottomRight[1]) - prediction.box.topLeft[1],
       ] : 0;
-      hands.push({
-        confidence: prediction.confidence,
-        box,
-        landmarks: prediction.landmarks,
-        annotations,
-      });
+      hands.push({ confidence: prediction.confidence, box, landmarks: prediction.landmarks, annotations });
     }
     return hands;
   }

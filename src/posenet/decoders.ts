@@ -20,7 +20,7 @@ function getOffsetPoint(y, x, keypoint, offsetsBuffer) {
 }
 
 export function getOffsetVectors(heatMapCoordsBuffer, offsetsBuffer) {
-  const result = [];
+  const result: Array<number> = [];
   for (let keypoint = 0; keypoint < kpt.NUM_KEYPOINTS; keypoint++) {
     const heatmapY = heatMapCoordsBuffer.get(keypoint, 0).valueOf();
     const heatmapX = heatMapCoordsBuffer.get(keypoint, 1).valueOf();

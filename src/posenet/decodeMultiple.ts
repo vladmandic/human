@@ -20,7 +20,7 @@ function getInstanceScore(existingPoses, squaredNmsRadius, instanceKeypoints) {
 }
 
 export function decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, config) {
-  const poses = [];
+  const poses: Array<{ keypoints: any, score: number }> = [];
   const queue = buildParts.buildPartWithScoreQueue(config.body.scoreThreshold, kLocalMaximumRadius, scoresBuffer);
   const squaredNmsRadius = config.body.nmsRadius ^ 2;
   // Generate at most maxDetections object instances per image in decreasing root part score order.

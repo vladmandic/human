@@ -236,7 +236,7 @@ class Human {
     let genderRes;
     let emotionRes;
     let embeddingRes;
-    const faceRes = [];
+    const faceRes: Array<{ confidence: number, box: any, mesh: any, meshRaw: any, boxRaw: any, annotations: any, age: number, gender: string, genderConfidence: number, emotion: string, embedding: any, iris: number }> = [];
     this.state = 'run:face';
     timeStamp = now();
     const faces = await this.models.face?.estimateFaces(input, this.config);
@@ -349,8 +349,8 @@ class Human {
     this.state = 'image';
     this.config = mergeDeep(this.config, userConfig);
     const process = image.process(input, this.config);
-    process.tensor.dispose();
-    return process.canvas;
+    process?.tensor?.dispose();
+    return process?.canvas;
   }
 
   // main detect function
@@ -445,6 +445,7 @@ class Human {
       let gestureRes = [];
       if (this.config.gesture.enabled) {
         timeStamp = now();
+        // @ts-ignore
         gestureRes = [...gesture.face(faceRes), ...gesture.body(poseRes), ...gesture.hand(handRes), ...gesture.iris(faceRes)];
         if (!this.config.async) this.perf.gesture = Math.trunc(now() - timeStamp);
         else if (this.perf.gesture) delete this.perf.gesture;
@@ -495,8 +496,8 @@ class Human {
         canvas.width = size;
         canvas.height = size;
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        const data = ctx.getImageData(0, 0, size, size);
+        ctx?.drawImage(img, 0, 0);
+        const data = ctx?.getImageData(0, 0, size, size);
         this.detect(data, this.config).then((res) => resolve(res));
       };
       if (src) img.src = src;

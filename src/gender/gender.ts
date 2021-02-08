@@ -2,7 +2,7 @@ import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile.js';
 
-const models = { gender: null };
+let model;
 let last = { gender: '' };
 let skipped = Number.MAX_SAFE_INTEGER;
 let alternative = false;
@@ -11,16 +11,16 @@ let alternative = false;
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
 
 export async function load(config) {
-  if (!models.gender) {
-    models.gender = await tf.loadGraphModel(config.face.gender.modelPath);
-    alternative = models.gender.inputs[0].shape[3] === 1;
+  if (!model) {
+    model = await tf.loadGraphModel(config.face.gender.modelPath);
+    alternative = model.inputs[0].shape[3] === 1;
     log(`load model: ${config.face.gender.modelPath.match(/\/(.*)\./)[1]}`);
   }
-  return models.gender;
+  return model;
 }
 
 export async function predict(image, config) {
-  if (!models.gender) return null;
+  if (!model) return null;
   if ((skipped < config.face.gender.skipFrames) && config.videoOptimized && last.gender !== '') {
     skipped++;
     return last;
@@ -45,12 +45,12 @@ export async function predict(image, config) {
     tf.dispose(resize);
 
     let genderT;
-    const obj = { gender: undefined, confidence: undefined };
+    const obj = { gender: '', confidence: 0 };
 
     if (!config.profile) {
-      if (config.face.gender.enabled) genderT = await models.gender.predict(enhance);
+      if (config.face.gender.enabled) genderT = await model.predict(enhance);
     } else {
-      const profileGender = config.face.gender.enabled ? await tf.profile(() => models.gender.predict(enhance)) : {};
+      const profileGender = config.face.gender.enabled ? await tf.profile(() => model.predict(enhance)) : {};
       genderT = profileGender.result.clone();
       profileGender.result.dispose();
       profile.run('gender', profileGender);

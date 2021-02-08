@@ -1,6 +1,6 @@
 export const body = (res) => {
   if (!res) return [];
-  const gestures = [];
+  const gestures: Array<{ body: number, gesture: string }> = [];
   for (let i = 0; i < res.length; i++) {
     // raising hands
     const leftWrist = res[i].keypoints.find((a) => (a.part === 'leftWrist'));
@@ -20,7 +20,7 @@ export const body = (res) => {
 
 export const face = (res) => {
   if (!res) return [];
-  const gestures = [];
+  const gestures: Array<{ face: number, gesture: string }> = [];
   for (let i = 0; i < res.length; i++) {
     if (res[i].mesh && res[i].mesh.length > 0) {
       const eyeFacing = res[i].mesh[35][2] - res[i].mesh[263][2];
@@ -41,7 +41,7 @@ export const face = (res) => {
 
 export const iris = (res) => {
   if (!res) return [];
-  const gestures = [];
+  const gestures: Array<{ iris: number, gesture: string }> = [];
   for (let i = 0; i < res.length; i++) {
     if (!res[i].annotations || !res[i].annotations.leftEyeIris || !res[i].annotations.rightEyeIris) continue;
     const sizeXLeft = res[i].annotations.leftEyeIris[3][0] - res[i].annotations.leftEyeIris[1][0];
@@ -60,10 +60,11 @@ export const iris = (res) => {
 
 export const hand = (res) => {
   if (!res) return [];
-  const gestures = [];
+  const gestures: Array<{ hand: number, gesture: string }> = [];
   for (let i = 0; i < res.length; i++) {
-    const fingers = [];
+    const fingers: Array<{ name: string, position: number }>  = [];
     for (const [finger, pos] of Object.entries(res[i]['annotations'])) {
+      // @ts-ignore
       if (finger !== 'palmBase') fingers.push({ name: finger.toLowerCase(), position: pos[0] }); // get tip of each finger
     }
     if (fingers && fingers.length > 0) {

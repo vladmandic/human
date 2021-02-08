@@ -49,7 +49,7 @@ export class HandDetector {
 
     scoresT.dispose();
     filteredT.dispose();
-    const hands = [];
+    const hands: Array<{ box: any, palmLandmarks: any, confidence: number }>  = [];
     for (const index of filtered) {
       if (scores[index] >= config.hand.minConfidence) {
         const matchingBox = tf.slice(boxes, [index, 0], [1, -1]);
@@ -70,7 +70,7 @@ export class HandDetector {
     const image = tf.tidy(() => input.resizeBilinear([config.hand.inputSize, config.hand.inputSize]).div(127.5).sub(1));
     const predictions = await this.getBoxes(image, config);
     image.dispose();
-    const hands = [];
+    const hands: Array<{}>  = [];
     if (!predictions || predictions.length === 0) return hands;
     for (const prediction of predictions) {
       const boxes = prediction.box.dataSync();

@@ -1,4 +1,4 @@
-exports.body = (res) => {
+export const body = (res) => {
   if (!res) return [];
   const gestures = [];
   for (let i = 0; i < res.length; i++) {
@@ -18,7 +18,7 @@ exports.body = (res) => {
   return gestures;
 };
 
-exports.face = (res) => {
+export const face = (res) => {
   if (!res) return [];
   const gestures = [];
   for (let i = 0; i < res.length; i++) {
@@ -39,7 +39,7 @@ exports.face = (res) => {
   return gestures;
 };
 
-exports.iris = (res) => {
+export const iris = (res) => {
   if (!res) return [];
   const gestures = [];
   for (let i = 0; i < res.length; i++) {
@@ -58,7 +58,7 @@ exports.iris = (res) => {
   return gestures;
 };
 
-exports.hand = (res) => {
+export const hand = (res) => {
   if (!res) return [];
   const gestures = [];
   for (let i = 0; i < res.length; i++) {

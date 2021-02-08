@@ -1,6 +1,6 @@
-import { log } from './log.js';
+import { log } from './log';
 import * as tf from '../dist/tfjs.esm.js';
-import * as fxImage from './imagefx.js';
+import * as fxImage from './imagefx';
 
 // internal temp canvases
 let inCanvas = null;
@@ -9,7 +9,7 @@ let outCanvas = null;
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
 // input is resized and run through imagefx filter
-function process(input, config) {
+export function process(input, config) {
   let tensor;
   if (input instanceof tf.Tensor) {
     tensor = tf.clone(input);
@@ -39,7 +39,7 @@ function process(input, config) {
         outCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(inCanvas.width, inCanvas.height) : document.createElement('canvas');
         if (outCanvas.width !== inCanvas.width) outCanvas.width = inCanvas.width;
         if (outCanvas.height !== inCanvas.height) outCanvas.height = inCanvas.height;
-        this.fx = tf.ENV.flags.IS_BROWSER ? new fxImage.Canvas({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
+        this.fx = tf.ENV.flags.IS_BROWSER ? new fxImage.GLImageFilter({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
       }
       if (!this.fx) return inCanvas;
       this.fx.reset();
@@ -106,5 +106,3 @@ function process(input, config) {
   }
   return { tensor, canvas: config.filter.return ? outCanvas : null };
 }
-
-exports.process = process;

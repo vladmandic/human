@@ -1,9 +1,9 @@
-import { log } from '../log.js';
+import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile.js';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
-const models = {};
+const models = { emotion: null };
 let last = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 
@@ -11,7 +11,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
 const scale = 1; // score multiplication factor
 
-async function load(config) {
+export async function load(config) {
   if (!models.emotion) {
     models.emotion = await tf.loadGraphModel(config.face.emotion.modelPath);
     log(`load model: ${config.face.emotion.modelPath.match(/\/(.*)\./)[1]}`);
@@ -19,7 +19,7 @@ async function load(config) {
   return models.emotion;
 }
 
-async function predict(image, config) {
+export async function predict(image, config) {
   if (!models.emotion) return null;
   if ((skipped < config.face.emotion.skipFrames) && config.videoOptimized && (last.length > 0)) {
     skipped++;
@@ -77,6 +77,3 @@ async function predict(image, config) {
     resolve(obj);
   });
 }
-
-exports.predict = predict;
-exports.load = load;

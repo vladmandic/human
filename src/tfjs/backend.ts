@@ -1,4 +1,4 @@
-import { log } from '../log.js';
+import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
 
 export const config = {

@@ -5,7 +5,7 @@ WebGLImageFilter - MIT Licensed
 <https://github.com/phoboslab/WebGLImageFilter>
 */
 
-const WebGLProgram = function (gl, vertexSource, fragmentSource) {
+const GLProgram = function (gl, vertexSource, fragmentSource) {
   const _collect = function (source, prefix, collection) {
     const r = new RegExp('\\b' + prefix + ' \\w+ (\\w+)', 'ig');
     source.replace(r, (match, name) => {
@@ -58,7 +58,7 @@ const WebGLProgram = function (gl, vertexSource, fragmentSource) {
   }
 };
 
-const WebGLImageFilter = function (params) {
+const GLImageFilter = function (params) {
   if (!params) params = { };
   let _drawCount = 0;
   let _sourceTexture = null;
@@ -180,7 +180,7 @@ const WebGLImageFilter = function (params) {
     return { fbo, texture };
   };
 
-  const _draw = function (flags) {
+  const _draw = function (flags = null) {
     let source = null;
     let target = null;
     let flipY = false;
@@ -225,7 +225,7 @@ const WebGLImageFilter = function (params) {
     }
 
     // Compile shaders
-    _currentProgram = new WebGLProgram(gl, SHADER.VERTEX_IDENTITY, fragmentSource);
+    _currentProgram = new GLProgram(gl, SHADER.VERTEX_IDENTITY, fragmentSource);
 
     const floatSize = Float32Array.BYTES_PER_ELEMENT;
     const vertSize = 4 * floatSize;
@@ -606,4 +606,4 @@ const WebGLImageFilter = function (params) {
   ].join('\n');
 };
 
-exports.Canvas = WebGLImageFilter;
+exports.GLImageFilter = GLImageFilter;

@@ -2,7 +2,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as util from './util';
 // eslint-disable-next-line no-unused-vars
-import { log } from '../log.js';
+import { log } from '../log';
 
 // const PALM_BOX_SHIFT_VECTOR = [0, -0.4];
 const PALM_BOX_ENLARGE_FACTOR = 5; // default 3
@@ -12,7 +12,14 @@ const PALM_LANDMARK_IDS = [0, 5, 9, 13, 17, 1, 2];
 const PALM_LANDMARKS_INDEX_OF_PALM_BASE = 0;
 const PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
 
-class HandPipeline {
+export class HandPipeline {
+  handDetector: any;
+  landmarkDetector: any;
+  inputSize: number;
+  storedBoxes: any;
+  skipped: number;
+  detectedHands: number;
+
   constructor(handDetector, landmarkDetector, inputSize) {
     this.handDetector = handDetector;
     this.landmarkDetector = landmarkDetector;
@@ -154,5 +161,3 @@ class HandPipeline {
     return { startPoint, endPoint };
   }
 }
-
-exports.HandPipeline = HandPipeline;

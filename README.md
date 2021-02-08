@@ -46,7 +46,7 @@ Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows an
 
 <br>
 
-*This is a pre-release project, see [issues](https://github.com/vladmandic/human/issues) for list of known limitations and planned enhancements*  
+*See [issues](https://github.com/vladmandic/human/issues?q=) and [discussions](https://github.com/vladmandic/human/discussions) for list of known limitations and planned enhancements*  
 
 *Suggestions are welcome!*  
 

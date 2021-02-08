@@ -1,25 +1,26 @@
-import { log } from './log.js';
+import { log } from './log';
 import * as tf from '../dist/tfjs.esm.js';
-import * as backend from './tfjs/backend.js';
-import * as facemesh from './blazeface/facemesh.js';
-import * as faceboxes from './faceboxes/faceboxes.js';
-import * as age from './age/age.js';
-import * as gender from './gender/gender.js';
-import * as emotion from './emotion/emotion.js';
-import * as embedding from './embedding/embedding.js';
-import * as posenet from './posenet/posenet.js';
-import * as handpose from './handpose/handpose.js';
-import * as gesture from './gesture/gesture.js';
-import * as image from './image.js';
-import * as profile from './profile.js';
-import * as config from '../config.js';
-import * as sample from './sample.js';
+import * as backend from './tfjs/backend';
+import * as facemesh from './blazeface/facemesh';
+import * as faceboxes from './faceboxes/faceboxes';
+import * as age from './age/age';
+import * as gender from './gender/gender';
+import * as emotion from './emotion/emotion';
+import * as embedding from './embedding/embedding';
+import * as posenet from './posenet/posenet';
+import * as handpose from './handpose/handpose';
+import * as gesture from './gesture/gesture';
+import * as image from './image';
+import * as profile from './profile';
+import * as config from '../config';
+import * as sample from './sample';
 import * as app from '../package.json';
+import { NodeFileSystem } from '@tensorflow/tfjs-node/dist/io/file_system';
 
 // helper function: gets elapsed time on both browser and nodejs
 const now = () => {
   if (typeof performance !== 'undefined') return performance.now();
-  return parseInt(Number(process.hrtime.bigint()) / 1000 / 1000);
+  return parseInt((Number(process.hrtime.bigint()) / 1000 / 1000).toString());
 };
 
 // helper function: perform deep merge of multiple objects so it allows full inheriance with overrides
@@ -42,6 +43,25 @@ function mergeDeep(...objects) {
 }
 
 class Human {
+  tf: any;
+  version: string;
+  config: any;
+  fx: any;
+  state: string;
+  numTensors: number;
+  analyzeMemoryLeaks: boolean;
+  checkSanity: boolean;
+  firstRun: boolean;
+  perf: any;
+  models: any;
+  // models
+  facemesh: any;
+  age: any;
+  gender: any;
+  emotion: any;
+  body: any;
+  hand: any;
+
   constructor(userConfig = {}) {
     this.tf = tf;
     this.version = app.version;
@@ -108,7 +128,7 @@ class Human {
   }
 
   // preload models, not explicitly required as it's done automatically on first use
-  async load(userConfig) {
+  async load(userConfig = null) {
     this.state = 'load';
     const timeStamp = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
@@ -160,7 +180,7 @@ class Human {
   }
 
   // check if backend needs initialization if it changed
-  async checkBackend(force) {
+  async checkBackend(force = false) {
     if (this.config.backend && (this.config.backend !== '') && force || (tf.getBackend() !== this.config.backend)) {
       const timeStamp = now();
       this.state = 'backend';
@@ -308,7 +328,7 @@ class Human {
         emotion: emotionRes,
         embedding: embeddingRes,
         iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
-        image: face.image.toInt().squeeze(),
+        // image: face.image.toInt().squeeze(),
       });
 
       // dont need face anymore
@@ -487,7 +507,8 @@ class Human {
   async warmupNode() {
     const atob = (str) => Buffer.from(str, 'base64');
     const img = this.config.warmup === 'face' ? atob(sample.face) : atob(sample.body);
-    const data = tf.node.decodeJpeg(img);
+    // @ts-ignore
+    const data = tf.node.decodeJpeg(img); // tf.node is only defined when compiling for nodejs
     const expanded = data.expandDims(0);
     tf.dispose(data);
     // log('Input:', expanded);

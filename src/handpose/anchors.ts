@@ -1,4 +1,4 @@
-exports.anchors = [
+export const anchors = [
   {
     w: 1,
     h: 1,

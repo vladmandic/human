@@ -1,7 +1,13 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 
-class HandDetector {
+export class HandDetector {
+  model: any;
+  anchors: any;
+  anchorsTensor: any;
+  inputSizeTensor: any;
+  doubleInputSizeTensor: any;
+  
   constructor(model, inputSize, anchorsAnnotated) {
     this.model = model;
     this.anchors = anchorsAnnotated.map((anchor) => [anchor.x_center, anchor.y_center]);
@@ -78,4 +84,3 @@ class HandDetector {
     return hands;
   }
 }
-exports.HandDetector = HandDetector;

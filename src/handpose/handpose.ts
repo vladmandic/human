@@ -1,6 +1,6 @@
 // https://storage.googleapis.com/tfjs-models/demos/handpose/index.html
 
-import { log } from '../log.js';
+import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
 import * as handpipeline from './handpipeline';
@@ -15,7 +15,9 @@ const MESH_ANNOTATIONS = {
   palmBase: [0],
 };
 
-class HandPose {
+export class HandPose {
+  handPipeline: any;
+
   constructor(handPipeline) {
     this.handPipeline = handPipeline;
   }
@@ -51,20 +53,16 @@ class HandPose {
     return hands;
   }
 }
-exports.HandPose = HandPose;
 
-async function load(config) {
+export async function load(config) {
   const [handDetectorModel, handPoseModel] = await Promise.all([
     config.hand.enabled ? tf.loadGraphModel(config.hand.detector.modelPath, { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) : null,
     config.hand.landmarks ? tf.loadGraphModel(config.hand.skeleton.modelPath, { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) : null,
   ]);
-  // @ts-ignore
   const handDetector = new handdetector.HandDetector(handDetectorModel, config.hand.inputSize, anchors.anchors);
-  // @ts-ignore
   const handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel, config.hand.inputSize);
   const handPose = new HandPose(handPipeline);
   if (config.hand.enabled) log(`load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);
   if (config.hand.landmarks) log(`load model: ${config.hand.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
   return handPose;
 }
-exports.load = load;

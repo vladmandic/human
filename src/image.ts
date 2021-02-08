@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { log } from './log';
 import * as tf from '../dist/tfjs.esm.js';
 import * as fxImage from './imagefx';

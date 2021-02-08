@@ -24,12 +24,14 @@ export function register() {
   if (!tf.findBackend(config.name)) {
     log('backend registration:', config.name);
     try {
+      // @ts-ignore
       config.canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(config.width, config.height) : document.createElement('canvas');
     } catch (err) {
       log('error: cannot create canvas:', err);
       return;
     }
     try {
+      // @ts-ignore
       config.gl = config.canvas.getContext('webgl2', config.webGLattr);
     } catch (err) {
       log('error: cannot get WebGL2 context:', err);
@@ -60,6 +62,7 @@ export function register() {
     }
     try {
       tf.ENV.set('WEBGL_VERSION', 2);
+      // @ts-ignore
       tf.ENV.set('WEBGL_MAX_TEXTURE_SIZE', config.gl.getParameter(config.gl.MAX_TEXTURE_SIZE));
       tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
       tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);

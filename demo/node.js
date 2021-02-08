@@ -56,14 +56,19 @@ async function detect(input) {
 }
 
 async function test() {
+  // test with embedded face image
   log.state('Processing embedded warmup image: face');
   myConfig.warmup = 'face';
   const resultFace = await human.warmup(myConfig);
-  log.data(resultFace);
+  log.data('Face: ', resultFace.face);
+
+  // test with embedded full body image
   log.state('Processing embedded warmup image: full');
   myConfig.warmup = 'full';
   const resultFull = await human.warmup(myConfig);
-  log.data(resultFull);
+  log.data('Body:', resultFull.body);
+  log.data('Hand:', resultFull.hand);
+  log.data('Gesture:', resultFull.gesture);
 }
 
 async function main() {

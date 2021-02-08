@@ -1,6 +1,6 @@
 const console = require('console');
 const tf = require('@tensorflow/tfjs-node');
-const Human = require('..').default; // this resolves to project root which is '@vladmandic/human'
+const Human = require('../dist/human.node').default; // this resolves to project root which is '@vladmandic/human'
 
 const logger = new console.Console({
   stdout: process.stdout,

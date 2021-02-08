@@ -25407,7 +25407,7 @@
         }
       ]
     },
-    "src/tfjs/tf-browser.js": {
+    "src/tfjs/tf-browser.ts": {
       "bytes": 1784,
       "imports": [
         {
@@ -28613,7 +28613,7 @@
         "node_modules/@tensorflow/tfjs-backend-wasm/dist/index.js": {
           "bytesInOutput": 0
         },
-        "src/tfjs/tf-browser.js": {
+        "src/tfjs/tf-browser.ts": {
           "bytesInOutput": 154
         },
         "node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/abs.js": {
@@ -29739,7 +29739,7 @@
           "bytesInOutput": 15
         }
       },
-      "bytes": 1071833
+      "bytes": 1071825
     }
   }
 }

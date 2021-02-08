@@ -1,7 +1,7 @@
 {
   "inputs": {
     "dist/human.esm.js": {
-      "bytes": 1349003,
+      "bytes": 1343005,
       "imports": []
     },
     "demo/draw.js": {
@@ -43,14 +43,14 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 2028101
+      "bytes": 2018414
     },
     "dist/demo-browser-index.js": {
       "imports": [],
       "exports": [],
       "inputs": {
         "dist/human.esm.js": {
-          "bytesInOutput": 1340450
+          "bytesInOutput": 1335513
         },
         "demo/draw.js": {
           "bytesInOutput": 6204
@@ -65,7 +65,7 @@
           "bytesInOutput": 16815
         }
       },
-      "bytes": 1388309
+      "bytes": 1383372
     }
   }
 }

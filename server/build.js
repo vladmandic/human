@@ -6,6 +6,7 @@ const log = require('@vladmandic/pilogger');
 
 // keeps esbuild service instance cached
 let es;
+let busy = false;
 const banner = `
   /*
   Human library
@@ -33,7 +34,7 @@ const targets = {
       platform: 'node',
       format: 'cjs',
       metafile: 'dist/tfjs.esm.json',
-      entryPoints: ['src/tfjs/tf-node.js'],
+      entryPoints: ['src/tfjs/tf-node.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['@tensorflow'],
     },
@@ -41,7 +42,7 @@ const targets = {
       platform: 'node',
       format: 'cjs',
       metafile: 'dist/human.node.json',
-      entryPoints: ['src/human.js'],
+      entryPoints: ['src/human.ts'],
       outfile: 'dist/human.node.js',
       external: ['@tensorflow'],
     },
@@ -51,7 +52,7 @@ const targets = {
       platform: 'node',
       format: 'cjs',
       metafile: 'dist/tfjs.esm.json',
-      entryPoints: ['src/tfjs/tf-node-gpu.js'],
+      entryPoints: ['src/tfjs/tf-node-gpu.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['@tensorflow'],
     },
@@ -59,7 +60,7 @@ const targets = {
       platform: 'node',
       format: 'cjs',
       metafile: 'dist/human.node.json',
-      entryPoints: ['src/human.js'],
+      entryPoints: ['src/human.ts'],
       outfile: 'dist/human.node-gpu.js',
       external: ['@tensorflow'],
     },
@@ -69,7 +70,7 @@ const targets = {
       platform: 'browser',
       format: 'esm',
       metafile: 'dist/tfjs.esm.json',
-      entryPoints: ['src/tfjs/tf-browser.js'],
+      entryPoints: ['src/tfjs/tf-browser.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['fs', 'buffer', 'util', '@tensorflow'],
     },
@@ -77,7 +78,7 @@ const targets = {
       platform: 'browser',
       format: 'esm',
       metafile: 'dist/human.esm.json',
-      entryPoints: ['src/human.js'],
+      entryPoints: ['src/human.ts'],
       outfile: 'dist/human.esm-nobundle.js',
       external: ['fs', 'buffer', 'util', '@tensorflow'],
     },
@@ -87,7 +88,7 @@ const targets = {
       platform: 'browser',
       format: 'esm',
       metafile: 'dist/tfjs.esm.json',
-      entryPoints: ['src/tfjs/tf-browser.js'],
+      entryPoints: ['src/tfjs/tf-browser.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['fs', 'buffer', 'util'],
     },
@@ -95,16 +96,16 @@ const targets = {
       platform: 'browser',
       format: 'iife',
       globalName: 'Human',
-      metafile: 'dist/human.json',
-      entryPoints: ['src/human.js'],
-      outfile: 'dist/human.js',
+      metafile: 'dist/human.tson',
+      entryPoints: ['src/human.ts'],
+      outfile: 'dist/human.ts',
       external: ['fs', 'buffer', 'util'],
     },
     esm: {
       platform: 'browser',
       format: 'esm',
       metafile: 'dist/human.esm.json',
-      entryPoints: ['src/human.js'],
+      entryPoints: ['src/human.ts'],
       outfile: 'dist/human.esm.js',
       external: ['fs', 'buffer', 'util'],
     },
@@ -148,6 +149,12 @@ async function getStats(metafile) {
 
 // rebuild on file change
 async function build(f, msg) {
+  if (busy) {
+    log.state('Build: busy...');
+    setTimeout(() => build(f, msg), 500);
+    return;
+  }
+  busy = true;
   log.info('Build: file', msg, f, 'target:', common.target);
   if (!es) es = await esbuild.startService();
   // common build options
@@ -168,6 +175,7 @@ async function build(f, msg) {
     log.error('Build error', JSON.stringify(err.errors || err, null, 2));
     if (require.main === module) process.exit(1);
   }
+  busy = false;
 }
 
 if (require.main === module) {

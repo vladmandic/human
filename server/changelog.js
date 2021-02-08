@@ -21,9 +21,9 @@ Repository: **<${app.repository.url}>**
 `;
 
 async function update(f) {
-  const all = await git.log();
+  const gitLog = await git.log();
   // @ts-ignore
-  const log = all.all.sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()));
+  const log = gitLog.all.sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()));
 
   let previous = '';
   for (const l of log) {

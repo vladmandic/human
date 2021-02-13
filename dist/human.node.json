@@ -22,7 +22,7 @@
       ]
     },
     "src/blazeface/blazeface.ts": {
-      "bytes": 6119,
+      "bytes": 5688,
       "imports": [
         {
           "path": "src/log.ts",
@@ -52,7 +52,7 @@
       "imports": []
     },
     "src/blazeface/facepipeline.ts": {
-      "bytes": 14251,
+      "bytes": 14175,
       "imports": [
         {
           "path": "dist/tfjs.esm.js",
@@ -73,7 +73,7 @@
       ]
     },
     "src/blazeface/facemesh.ts": {
-      "bytes": 2899,
+      "bytes": 2890,
       "imports": [
         {
           "path": "src/log.ts",
@@ -98,7 +98,7 @@
       ]
     },
     "src/profile.ts": {
-      "bytes": 1004,
+      "bytes": 1017,
       "imports": [
         {
           "path": "src/log.ts",
@@ -107,7 +107,7 @@
       ]
     },
     "src/faceboxes/faceboxes.ts": {
-      "bytes": 2846,
+      "bytes": 2840,
       "imports": [
         {
           "path": "src/log.ts",
@@ -124,7 +124,7 @@
       ]
     },
     "src/age/age.ts": {
-      "bytes": 1949,
+      "bytes": 1946,
       "imports": [
         {
           "path": "src/log.ts",
@@ -141,7 +141,7 @@
       ]
     },
     "src/gender/gender.ts": {
-      "bytes": 2811,
+      "bytes": 2808,
       "imports": [
         {
           "path": "src/log.ts",
@@ -158,7 +158,7 @@
       ]
     },
     "src/emotion/emotion.ts": {
-      "bytes": 3042,
+      "bytes": 3039,
       "imports": [
         {
           "path": "src/log.ts",
@@ -175,7 +175,7 @@
       ]
     },
     "src/embedding/embedding.ts": {
-      "bytes": 1912,
+      "bytes": 1909,
       "imports": [
         {
           "path": "src/log.ts",
@@ -321,7 +321,7 @@
       ]
     },
     "src/handpose/handdetector.ts": {
-      "bytes": 3701,
+      "bytes": 3697,
       "imports": [
         {
           "path": "dist/tfjs.esm.js",
@@ -338,7 +338,7 @@
       "imports": []
     },
     "src/handpose/handpipeline.ts": {
-      "bytes": 7279,
+      "bytes": 7206,
       "imports": [
         {
           "path": "dist/tfjs.esm.js",
@@ -384,7 +384,7 @@
       ]
     },
     "src/gesture/gesture.ts": {
-      "bytes": 4497,
+      "bytes": 4496,
       "imports": []
     },
     "src/imagefx.js": {
@@ -417,11 +417,11 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2459,
+      "bytes": 2529,
       "imports": []
     },
     "src/human.ts": {
-      "bytes": 19619,
+      "bytes": 19543,
       "imports": [
         {
           "path": "src/log.ts",
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 706125
+      "bytes": 705431
     },
     "dist/human.node-gpu.js": {
       "imports": [],

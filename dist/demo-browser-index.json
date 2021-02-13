@@ -13,7 +13,7 @@
       "imports": []
     },
     "demo/gl-bench.js": {
-      "bytes": 10782,
+      "bytes": 10920,
       "imports": []
     },
     "demo/browser.js": {
@@ -43,7 +43,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 2020129
+      "bytes": 2019575
     },
     "dist/demo-browser-index.js": {
       "imports": [],

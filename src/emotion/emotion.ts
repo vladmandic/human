@@ -1,6 +1,6 @@
 import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
-import * as profile from '../profile.js';
+import * as profile from '../profile';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
 let model;

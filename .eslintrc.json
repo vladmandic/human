@@ -8,8 +8,11 @@
       "jquery": true,
       "es2020": true
   },
+  "parser": "@typescript-eslint/parser",
   "parserOptions": { "ecmaVersion": 2020 },
-  "plugins": [ ],
+  "plugins": [
+    "@typescript-eslint"
+  ],
   "extends": [
     "eslint:recommended",
     "plugin:import/errors",
@@ -17,6 +20,8 @@
     "plugin:node/recommended",
     "plugin:promise/recommended",
     "plugin:json/recommended-with-comments",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
     "airbnb-base"
   ],
   "ignorePatterns": [ "dist", "assets", "media", "models", "node_modules" ],
@@ -29,6 +34,7 @@
     "import/no-absolute-path": "off",
     "import/no-extraneous-dependencies": "off",
     "import/prefer-default-export": "off",
+    "import/no-unresolved": "off",
     "max-len": [1, 275, 3],
     "newline-per-chained-call": "off",
     "no-async-promise-executor": "off",
@@ -48,6 +54,10 @@
     "node/no-unpublished-import": "off",
     "node/no-unpublished-require": "off",
     "node/no-unsupported-features/es-syntax": "off",
+    "node/no-missing-import": ["error", {
+      "allowModules": [],
+      "tryExtensions": [".js", ".json", ".ts"]
+    }],
     "node/shebang": "off",
     "object-curly-newline": "off",
     "prefer-destructuring": "off",
@@ -55,6 +65,11 @@
     "promise/always-return": "off",
     "promise/catch-or-return": "off",
     "promise/no-nesting": "off",
-    "radix": "off"
+    "radix": "off",
+    "lines-between-class-members": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }

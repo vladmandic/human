@@ -62,7 +62,7 @@ export const hand = (res) => {
   if (!res) return [];
   const gestures: Array<{ hand: number, gesture: string }> = [];
   for (let i = 0; i < res.length; i++) {
-    const fingers: Array<{ name: string, position: number }>  = [];
+    const fingers: Array<{ name: string, position: number }> = [];
     for (const [finger, pos] of Object.entries(res[i]['annotations'])) {
       // @ts-ignore
       if (finger !== 'palmBase') fingers.push({ name: finger.toLowerCase(), position: pos[0] }); // get tip of each finger

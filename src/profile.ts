@@ -2,7 +2,7 @@ import { log } from './log';
 
 export const data = {};
 
-export function run(name, raw) {
+export function run(name: string, raw: any) {
   if (!raw || !raw.kernels) return;
   const maxResults = 5;
   const time = raw.kernels

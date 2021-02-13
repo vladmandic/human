@@ -417,7 +417,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2403,
+      "bytes": 2437,
       "imports": []
     },
     "src/human.ts": {
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1923329
+      "bytes": 1923299
     },
     "dist/human.esm.js": {
       "imports": [],

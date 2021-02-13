@@ -141,13 +141,18 @@ async function httpRequest(req, res) {
 async function main() {
   log.header();
   await watch();
-  // @ts-ignore
-  const server1 = http.createServer(options, httpRequest);
-  server1.on('listening', () => log.state('HTTP server listening:', options.httpPort));
-  server1.listen(options.httpPort);
-  const server2 = http2.createSecureServer(options, httpRequest);
-  server2.on('listening', () => log.state('HTTP2 server listening:', options.httpsPort));
-  server2.listen(options.httpsPort);
+  if (options.httpPort && options.httpPort > 0) {
+    const server1 = http.createServer(options, httpRequest);
+    server1.on('listening', () => log.state('HTTP server listening:', options.httpPort));
+    server1.on('error', (err) => log.error('HTTP server:', err.message || err));
+    server1.listen(options.httpPort);
+  }
+  if (options.httpsPort && options.httpsPort > 0) {
+    const server2 = http2.createSecureServer(options, httpRequest);
+    server2.on('listening', () => log.state('HTTP2 server listening:', options.httpsPort));
+    server2.on('error', (err) => log.error('HTTP2 server:', err.message || err));
+    server2.listen(options.httpsPort);
+  }
   await build.build('all', 'startup');
 }
 

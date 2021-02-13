@@ -15,7 +15,6 @@ import * as profile from './profile';
 import * as config from '../config';
 import * as sample from './sample';
 import * as app from '../package.json';
-import { NodeFileSystem } from '@tensorflow/tfjs-node/dist/io/file_system';
 
 // helper function: gets elapsed time on both browser and nodejs
 const now = () => {

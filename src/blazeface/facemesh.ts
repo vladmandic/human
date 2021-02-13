@@ -1,8 +1,8 @@
 import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
-import * as blazeface from './blazeface.js';
-import * as facepipeline from './facepipeline.js';
-import * as coords from './coords.js';
+import * as blazeface from './blazeface';
+import * as facepipeline from './facepipeline';
+import * as coords from './coords';
 
 export class MediaPipeFaceMesh {
   facePipeline: any;

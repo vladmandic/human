@@ -1,6 +1,6 @@
 import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
-import * as profile from '../profile.js';
+import * as profile from '../profile';
 
 // based on https://github.com/sirius-ai/MobileFaceNet_TF
 // model converted from https://github.com/sirius-ai/MobileFaceNet_TF/files/3551493/FaceMobileNet192_train_false.zip

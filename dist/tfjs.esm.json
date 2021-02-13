@@ -416,7 +416,7 @@
         }
       ]
     },
-    "empty:/home/vlado/dev/human/node_modules/node-fetch/browser.js": {
+    "(disabled):node_modules/node-fetch/browser.js": {
       "bytes": 0,
       "imports": []
     },
@@ -428,7 +428,7 @@
           "kind": "import-statement"
         },
         {
-          "path": "empty:/home/vlado/dev/human/node_modules/node-fetch/browser.js",
+          "path": "(disabled):node_modules/node-fetch/browser.js",
           "kind": "require-call"
         }
       ]
@@ -3932,7 +3932,7 @@
       "bytes": 2525,
       "imports": []
     },
-    "empty:crypto": {
+    "(disabled):crypto": {
       "bytes": 0,
       "imports": []
     },
@@ -3940,7 +3940,7 @@
       "bytes": 8358,
       "imports": [
         {
-          "path": "empty:crypto",
+          "path": "(disabled):crypto",
           "kind": "require-call"
         }
       ]
@@ -10517,7 +10517,7 @@
       "bytes": 8358,
       "imports": [
         {
-          "path": "empty:crypto",
+          "path": "(disabled):crypto",
           "kind": "require-call"
         }
       ]
@@ -17718,15 +17718,15 @@
         }
       ]
     },
-    "empty:path": {
+    "(disabled):path": {
       "bytes": 0,
       "imports": []
     },
-    "empty:worker_threads": {
+    "(disabled):worker_threads": {
       "bytes": 0,
       "imports": []
     },
-    "empty:perf_hooks": {
+    "(disabled):perf_hooks": {
       "bytes": 0,
       "imports": []
     },
@@ -17734,23 +17734,23 @@
       "bytes": 74186,
       "imports": [
         {
-          "path": "empty:path",
+          "path": "(disabled):path",
           "kind": "require-call"
         },
         {
-          "path": "empty:path",
+          "path": "(disabled):path",
           "kind": "require-call"
         },
         {
-          "path": "empty:worker_threads",
+          "path": "(disabled):worker_threads",
           "kind": "require-call"
         },
         {
-          "path": "empty:path",
+          "path": "(disabled):path",
           "kind": "require-call"
         },
         {
-          "path": "empty:perf_hooks",
+          "path": "(disabled):perf_hooks",
           "kind": "require-call"
         }
       ]
@@ -17763,11 +17763,11 @@
       "bytes": 28523,
       "imports": [
         {
-          "path": "empty:path",
+          "path": "(disabled):path",
           "kind": "require-call"
         },
         {
-          "path": "empty:path",
+          "path": "(disabled):path",
           "kind": "require-call"
         }
       ]
@@ -25056,7 +25056,7 @@
       "bytes": 8602,
       "imports": [
         {
-          "path": "empty:crypto",
+          "path": "(disabled):crypto",
           "kind": "require-call"
         }
       ]
@@ -25244,7 +25244,7 @@
         }
       ]
     },
-    "empty:/home/vlado/dev/human/node_modules/string_decoder/lib/string_decoder.js": {
+    "(disabled):node_modules/string_decoder/lib/string_decoder.js": {
       "bytes": 0,
       "imports": []
     },
@@ -25264,7 +25264,7 @@
           "kind": "import-statement"
         },
         {
-          "path": "empty:/home/vlado/dev/human/node_modules/string_decoder/lib/string_decoder.js",
+          "path": "(disabled):node_modules/string_decoder/lib/string_decoder.js",
           "kind": "require-call"
         }
       ]
@@ -25478,7 +25478,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1206940
+      "bytes": 1206910
     },
     "dist/tfjs.esm.js": {
       "imports": [],
@@ -25958,7 +25958,7 @@
         "zerosLike"
       ],
       "inputs": {
-        "empty:/home/vlado/dev/human/node_modules/node-fetch/browser.js": {
+        "(disabled):node_modules/node-fetch/browser.js": {
           "bytesInOutput": 18
         },
         "node_modules/@tensorflow/tfjs-core/node_modules/seedrandom/lib/alea.js": {
@@ -25979,7 +25979,7 @@
         "node_modules/@tensorflow/tfjs-core/node_modules/seedrandom/lib/tychei.js": {
           "bytesInOutput": 885
         },
-        "empty:crypto": {
+        "(disabled):crypto": {
           "bytesInOutput": 18
         },
         "node_modules/@tensorflow/tfjs-core/node_modules/seedrandom/seedrandom.js": {
@@ -26012,13 +26012,13 @@
         "node_modules/@tensorflow/tfjs-backend-cpu/node_modules/seedrandom/index.js": {
           "bytesInOutput": 177
         },
-        "empty:path": {
+        "(disabled):path": {
           "bytesInOutput": 18
         },
-        "empty:worker_threads": {
+        "(disabled):worker_threads": {
           "bytesInOutput": 18
         },
-        "empty:perf_hooks": {
+        "(disabled):perf_hooks": {
           "bytesInOutput": 18
         },
         "node_modules/@tensorflow/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js": {
@@ -26051,7 +26051,7 @@
         "node_modules/seedrandom/index.js": {
           "bytesInOutput": 189
         },
-        "empty:/home/vlado/dev/human/node_modules/string_decoder/lib/string_decoder.js": {
+        "(disabled):node_modules/string_decoder/lib/string_decoder.js": {
           "bytesInOutput": 18
         },
         "node_modules/@tensorflow/tfjs/package.json": {

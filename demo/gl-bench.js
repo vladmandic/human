@@ -44,7 +44,9 @@ class GLBench {
   constructor(gl, settings = {}) {
     this.css = UICSS;
     this.svg = UISVG;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     this.paramLogger = () => {};
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     this.chartLogger = () => {};
     this.chartLen = 20;
     this.chartHz = 20;

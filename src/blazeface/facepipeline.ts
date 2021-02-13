@@ -2,9 +2,7 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as bounding from './box';
 import * as util from './util';
-import * as coords from './coords.js';
-// eslint-disable-next-line no-unused-vars
-import { log } from '../log';
+import * as coords from './coords';
 
 const LANDMARKS_COUNT = 468;
 const MESH_MOUTH_INDEX = 13;

@@ -36,13 +36,6 @@ const createBox = (startEndTensor) => ({
   endPoint: tf.slice(startEndTensor, [0, 2], [-1, 2]),
 });
 
-const scaleBox = (box, factors) => {
-  const starts = tf.mul(box.startPoint, factors);
-  const ends = tf.mul(box.endPoint, factors);
-  const newCoordinates = tf.concat2d([starts, ends], 1);
-  return createBox(newCoordinates);
-};
-
 function decodeBounds(boxOutputs, anchors, inputSize) {
   const boxStarts = tf.slice(boxOutputs, [0, 1], [-1, 2]);
   const centers = tf.add(boxStarts, anchors);
@@ -56,13 +49,6 @@ function decodeBounds(boxOutputs, anchors, inputSize) {
   const endNormalized = tf.mul(ends, inputSize);
   const concatAxis = 1;
   return tf.concat2d([startNormalized, endNormalized], concatAxis);
-}
-
-function scaleBoxFromPrediction(face, scaleFactor) {
-  return tf.tidy(() => {
-    const box = face['box'] ? face['box'] : face;
-    return scaleBox(box, scaleFactor).startEndTensor.squeeze();
-  });
 }
 
 export class BlazeFaceModel {

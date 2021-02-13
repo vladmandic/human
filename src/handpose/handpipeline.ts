@@ -1,8 +1,6 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as util from './util';
-// eslint-disable-next-line no-unused-vars
-import { log } from '../log';
 
 // const PALM_BOX_SHIFT_VECTOR = [0, -0.4];
 const PALM_BOX_ENLARGE_FACTOR = 5; // default 3

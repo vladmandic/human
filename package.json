@@ -51,7 +51,7 @@
   "scripts": {
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
     "lint": "eslint src/*.js demo/*.js",
-    "dev": "npm install && node server/dev.js",
+    "dev": "npm install && node server/serve.js",
     "build": "rimraf dist/* && rimraf types/* && node server/build.js && node server/changelog.js",
     "update": "npm update --depth 20 --force && npm dedupe && npm prune && npm audit"
   },

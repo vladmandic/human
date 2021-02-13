@@ -26,6 +26,11 @@
   ],
   "ignorePatterns": [ "dist", "assets", "media", "models", "node_modules" ],
   "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-var-requires": "off",
     "camelcase": "off",
     "dot-notation": "off",
     "func-names": "off",
@@ -33,8 +38,9 @@
     "import/extensions": "off",
     "import/no-absolute-path": "off",
     "import/no-extraneous-dependencies": "off",
-    "import/prefer-default-export": "off",
     "import/no-unresolved": "off",
+    "import/prefer-default-export": "off",
+    "lines-between-class-members": "off",
     "max-len": [1, 275, 3],
     "newline-per-chained-call": "off",
     "no-async-promise-executor": "off",
@@ -51,13 +57,10 @@
     "no-restricted-syntax": "off",
     "no-return-assign": "off",
     "no-underscore-dangle": "off",
+    "node/no-missing-import": ["error", { "tryExtensions": [".js", ".json", ".ts"] }],
     "node/no-unpublished-import": "off",
     "node/no-unpublished-require": "off",
     "node/no-unsupported-features/es-syntax": "off",
-    "node/no-missing-import": ["error", {
-      "allowModules": [],
-      "tryExtensions": [".js", ".json", ".ts"]
-    }],
     "node/shebang": "off",
     "object-curly-newline": "off",
     "prefer-destructuring": "off",
@@ -65,11 +68,6 @@
     "promise/always-return": "off",
     "promise/catch-or-return": "off",
     "promise/no-nesting": "off",
-    "radix": "off",
-    "lines-between-class-members": "off",
-    "@typescript-eslint/no-var-requires": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/no-explicit-any": "off"
+    "radix": "off"
   }
 }

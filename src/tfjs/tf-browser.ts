@@ -10,11 +10,11 @@
 // { modules: 1064, moduleBytes: 3793219, outputBytes: 1535600 }
 
 // get versions of all packages.
-import { version as tfjs } from '@tensorflow/tfjs/package.json';
-import { version as versionCore } from '@tensorflow/tfjs-core/package.json';
-import { version as versionData } from '@tensorflow/tfjs-data/package.json';
-import { version as versionLayers } from '@tensorflow/tfjs-layers/package.json';
-import { version as versionConverter } from '@tensorflow/tfjs-converter/package.json';
+import * as packageBundle from '@tensorflow/tfjs/package.json';
+import * as packageCore from '@tensorflow/tfjs-core/package.json';
+import * as packageData from '@tensorflow/tfjs-data/package.json';
+import * as packageLayers from '@tensorflow/tfjs-layers/package.json';
+import * as packageConverter from '@tensorflow/tfjs-converter/package.json';
 // for backends, get version from source so it can register backend during import
 import { version_cpu } from '@tensorflow/tfjs-backend-cpu/dist/index.js';
 import { version_webgl } from '@tensorflow/tfjs-backend-webgl/dist/index.js';
@@ -31,11 +31,11 @@ export * from '@tensorflow/tfjs-backend-wasm/dist/index.js';
 
 // export versions
 export const version = {
-  tfjs,
-  'tfjs-core': versionCore,
-  'tfjs-data': versionData,
-  'tfjs-layers': versionLayers,
-  'tfjs-converter': versionConverter,
+  tfjs: packageBundle.version,
+  'tfjs-core': packageCore.version,
+  'tfjs-data': packageData.version,
+  'tfjs-layers': packageLayers.version,
+  'tfjs-converter': packageConverter.version,
   'tfjs-backend-cpu': version_cpu,
   'tfjs-backend-webgl': version_webgl,
   'tfjs-backend-wasm': version_wasm,

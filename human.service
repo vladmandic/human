@@ -1,0 +1,18 @@
+[Unit]
+Description=human
+After=network.target network-online.target
+
+[Service]
+Type=simple
+Environment="NODE_ENV=production"
+ExecStart=/home/vlado/.nvm/versions/node/v15.7.0/bin/node server/serve.js
+WorkingDirectory=/home/vlado/dev/human
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+RestartSec=300
+User=vlado
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target

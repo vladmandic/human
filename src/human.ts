@@ -43,6 +43,7 @@ function mergeDeep(...objects) {
 
 class Human {
   tf: any;
+  package: any;
   version: string;
   config: any;
   fx: any;
@@ -63,6 +64,7 @@ class Human {
 
   constructor(userConfig = {}) {
     this.tf = tf;
+    this.package = app;
     this.version = app.version;
     this.config = mergeDeep(config.default, userConfig);
     this.fx = null;

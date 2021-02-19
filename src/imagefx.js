@@ -1,11 +1,10 @@
-/* eslint-disable no-use-before-define */
 /*
 WebGLImageFilter - MIT Licensed
 2013, Dominic Szablewski - phoboslab.org
 <https://github.com/phoboslab/WebGLImageFilter>
 */
 
-const GLProgram = function (gl, vertexSource, fragmentSource) {
+function GLProgram(gl, vertexSource, fragmentSource) {
   const _collect = function (source, prefix, collection) {
     const r = new RegExp('\\b' + prefix + ' \\w+ (\\w+)', 'ig');
     source.replace(r, (match, name) => {
@@ -18,7 +17,6 @@ const GLProgram = function (gl, vertexSource, fragmentSource) {
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
       // @ts-ignore
       throw new Error('Filter: GL compile failed', gl.getShaderInfoLog(shader));
@@ -28,10 +26,8 @@ const GLProgram = function (gl, vertexSource, fragmentSource) {
 
   this.uniform = {};
   this.attribute = {};
-
   const _vsh = _compile(vertexSource, gl.VERTEX_SHADER);
   const _fsh = _compile(fragmentSource, gl.FRAGMENT_SHADER);
-
   this.id = gl.createProgram();
   gl.attachShader(this.id, _vsh);
   gl.attachShader(this.id, _fsh);
@@ -43,22 +39,17 @@ const GLProgram = function (gl, vertexSource, fragmentSource) {
   }
 
   gl.useProgram(this.id);
-
   // Collect attributes
   _collect(vertexSource, 'attribute', this.attribute);
-  for (const a in this.attribute) {
-    this.attribute[a] = gl.getAttribLocation(this.id, a);
-  }
-
+  for (const a in this.attribute) this.attribute[a] = gl.getAttribLocation(this.id, a);
   // Collect uniforms
   _collect(vertexSource, 'uniform', this.uniform);
   _collect(fragmentSource, 'uniform', this.uniform);
-  for (const u in this.uniform) {
-    this.uniform[u] = gl.getUniformLocation(this.id, u);
-  }
-};
+  for (const u in this.uniform) this.uniform[u] = gl.getUniformLocation(this.id, u);
+}
 
-const GLImageFilter = function (params) {
+// export const GLImageFilter = function (params) {
+export function GLImageFilter(params) {
   if (!params) params = { };
   let _drawCount = 0;
   let _sourceTexture = null;
@@ -70,11 +61,11 @@ const GLImageFilter = function (params) {
   let _height = -1;
   let _vertexBuffer = null;
   let _currentProgram = null;
+  const _filter = {};
   const _canvas = params.canvas || document.createElement('canvas');
-
   // key is the shader program source, value is the compiled program
   const _shaderProgramCache = { };
-
+  const DRAW = { INTERMEDIATE: 1 };
   const gl = _canvas.getContext('webgl');
   if (!gl) throw new Error('Filter: getContext() failed');
 
@@ -82,7 +73,6 @@ const GLImageFilter = function (params) {
     // eslint-disable-next-line prefer-rest-params
     const args = Array.prototype.slice.call(arguments, 1);
     const filter = _filter[name];
-
     _filterChain.push({ func: filter, args });
   };
 
@@ -90,44 +80,13 @@ const GLImageFilter = function (params) {
     _filterChain = [];
   };
 
-  this.apply = function (image) {
-    _resize(image.width, image.height);
-    _drawCount = 0;
-
-    // Create the texture for the input image if we haven't yet
-    if (!_sourceTexture) _sourceTexture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, _sourceTexture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-
-    // No filters? Just draw
-    if (_filterChain.length === 0) {
-      // const program = _compileShader(SHADER.FRAGMENT_IDENTITY);
-      _draw();
-      return _canvas;
-    }
-
-    for (let i = 0; i < _filterChain.length; i++) {
-      _lastInChain = (i === _filterChain.length - 1);
-      const f = _filterChain[i];
-      f.func.apply(this, f.args || []);
-    }
-
-    return _canvas;
-  };
-
   const _resize = function (width, height) {
     // Same width/height? Nothing to do here
     if (width === _width && height === _height) { return; }
-
     _canvas.width = width;
     _width = width;
     _canvas.height = height;
     _height = height;
-
     // Create the context if we don't have it yet
     if (!_vertexBuffer) {
       // Create the vertex buffer for the two triangles [x, y, u, v] * 6
@@ -138,16 +97,31 @@ const GLImageFilter = function (params) {
       // eslint-disable-next-line no-unused-expressions
       (_vertexBuffer = gl.createBuffer(), gl.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer));
       gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-
       // Note sure if this is a good idea; at least it makes texture loading
       // in Ejecta instant.
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     }
-
     gl.viewport(0, 0, _width, _height);
-
     // Delete old temp framebuffers
     _tempFramebuffers = [null, null];
+  };
+
+  const _createFramebufferTexture = function (width, height) {
+    const fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    const renderbuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    return { fbo, texture };
   };
 
   const _getTempFramebuffer = function (index) {
@@ -156,35 +130,10 @@ const GLImageFilter = function (params) {
     return _tempFramebuffers[index];
   };
 
-  const _createFramebufferTexture = function (width, height) {
-    const fbo = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-
-    const renderbuffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
-
-    const texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-    return { fbo, texture };
-  };
-
   const _draw = function (flags = null) {
     let source = null;
     let target = null;
     let flipY = false;
-
     // Set up the source
     if (_drawCount === 0) {
       // First draw call - use the source texture
@@ -195,7 +144,6 @@ const GLImageFilter = function (params) {
       source = _getTempFramebuffer(_currentFramebufferIndex)?.texture;
     }
     _drawCount++;
-
     // Set up the target
     if (_lastInChain && !(flags & DRAW.INTERMEDIATE)) {
       // Last filter in our chain - draw directly to the WebGL Canvas. We may
@@ -208,13 +156,36 @@ const GLImageFilter = function (params) {
       // @ts-ignore
       target = _getTempFramebuffer(_currentFramebufferIndex)?.fbo;
     }
-
     // Bind the source and target and draw the two triangles
     gl.bindTexture(gl.TEXTURE_2D, source);
     gl.bindFramebuffer(gl.FRAMEBUFFER, target);
-
     gl.uniform1f(_currentProgram.uniform.flipY, (flipY ? -1 : 1));
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+  };
+
+  this.apply = function (image) {
+    _resize(image.width, image.height);
+    _drawCount = 0;
+    // Create the texture for the input image if we haven't yet
+    if (!_sourceTexture) _sourceTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, _sourceTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    // No filters? Just draw
+    if (_filterChain.length === 0) {
+      // const program = _compileShader(SHADER.FRAGMENT_IDENTITY);
+      _draw();
+      return _canvas;
+    }
+    for (let i = 0; i < _filterChain.length; i++) {
+      _lastInChain = (i === _filterChain.length - 1);
+      const f = _filterChain[i];
+      f.func.apply(this, f.args || []);
+    }
+    return _canvas;
   };
 
   const _compileShader = function (fragmentSource) {
@@ -223,52 +194,40 @@ const GLImageFilter = function (params) {
       gl.useProgram(_currentProgram.id);
       return _currentProgram;
     }
-
     // Compile shaders
+    const SHADER = {};
+    SHADER.VERTEX_IDENTITY = [
+      'precision highp float;',
+      'attribute vec2 pos;',
+      'attribute vec2 uv;',
+      'varying vec2 vUv;',
+      'uniform float flipY;',
+      'void main(void) {',
+      'vUv = uv;',
+      'gl_Position = vec4(pos.x, pos.y*flipY, 0.0, 1.);',
+      '}',
+    ].join('\n');
+    SHADER.FRAGMENT_IDENTITY = [
+      'precision highp float;',
+      'varying vec2 vUv;',
+      'uniform sampler2D texture;',
+      'void main(void) {',
+      'gl_FragColor = texture2D(texture, vUv);',
+      '}',
+    ].join('\n');
     _currentProgram = new GLProgram(gl, SHADER.VERTEX_IDENTITY, fragmentSource);
-
     const floatSize = Float32Array.BYTES_PER_ELEMENT;
     const vertSize = 4 * floatSize;
     gl.enableVertexAttribArray(_currentProgram.attribute.pos);
     gl.vertexAttribPointer(_currentProgram.attribute.pos, 2, gl.FLOAT, false, vertSize, 0 * floatSize);
     gl.enableVertexAttribArray(_currentProgram.attribute.uv);
     gl.vertexAttribPointer(_currentProgram.attribute.uv, 2, gl.FLOAT, false, vertSize, 2 * floatSize);
-
     _shaderProgramCache[fragmentSource] = _currentProgram;
     return _currentProgram;
   };
 
-  let DRAW = { INTERMEDIATE: 1 };
-
-  let SHADER = {};
-  SHADER.VERTEX_IDENTITY = [
-    'precision highp float;',
-    'attribute vec2 pos;',
-    'attribute vec2 uv;',
-    'varying vec2 vUv;',
-    'uniform float flipY;',
-
-    'void main(void) {',
-    'vUv = uv;',
-    'gl_Position = vec4(pos.x, pos.y*flipY, 0.0, 1.);',
-    '}',
-  ].join('\n');
-
-  SHADER.FRAGMENT_IDENTITY = [
-    'precision highp float;',
-    'varying vec2 vUv;',
-    'uniform sampler2D texture;',
-
-    'void main(void) {',
-    'gl_FragColor = texture2D(texture, vUv);',
-    '}',
-  ].join('\n');
-
-  let _filter = {};
-
   // -------------------------------------------------------------------------
   // Color Matrix Filter
-
   _filter.colorMatrix = function (matrix) {
     // Create a Float32 Array and normalize the offset component to 0-1
     const m = new Float32Array(matrix);
@@ -276,24 +235,20 @@ const GLImageFilter = function (params) {
     m[9] /= 255;
     m[14] /= 255;
     m[19] /= 255;
-
     // Can we ignore the alpha value? Makes things a bit faster.
     const shader = (m[18] === 1 && m[3] === 0 && m[8] === 0 && m[13] === 0 && m[15] === 0 && m[16] === 0 && m[17] === 0 && m[19] === 0)
       ? _filter.colorMatrix.SHADER.WITHOUT_ALPHA
       : _filter.colorMatrix.SHADER.WITH_ALPHA;
-
     const program = _compileShader(shader);
     gl.uniform1fv(program.uniform.m, m);
     _draw();
   };
-
   _filter.colorMatrix.SHADER = {};
   _filter.colorMatrix.SHADER.WITH_ALPHA = [
     'precision highp float;',
     'varying vec2 vUv;',
     'uniform sampler2D texture;',
     'uniform float m[20];',
-
     'void main(void) {',
     'vec4 c = texture2D(texture, vUv);',
     'gl_FragColor.r = m[0] * c.r + m[1] * c.g + m[2] * c.b + m[3] * c.a + m[4];',
@@ -307,7 +262,6 @@ const GLImageFilter = function (params) {
     'varying vec2 vUv;',
     'uniform sampler2D texture;',
     'uniform float m[20];',
-
     'void main(void) {',
     'vec4 c = texture2D(texture, vUv);',
     'gl_FragColor.r = m[0] * c.r + m[1] * c.g + m[2] * c.b + m[4];',
@@ -448,12 +402,10 @@ const GLImageFilter = function (params) {
 
   // -------------------------------------------------------------------------
   // Convolution Filter
-
   _filter.convolution = function (matrix) {
     const m = new Float32Array(matrix);
     const pixelSizeX = 1 / _width;
     const pixelSizeY = 1 / _height;
-
     const program = _compileShader(_filter.convolution.SHADER);
     gl.uniform1fv(program.uniform.m, m);
     gl.uniform2f(program.uniform.px, pixelSizeX, pixelSizeY);
@@ -466,20 +418,16 @@ const GLImageFilter = function (params) {
     'uniform sampler2D texture;',
     'uniform vec2 px;',
     'uniform float m[9];',
-
     'void main(void) {',
     'vec4 c11 = texture2D(texture, vUv - px);', // top left
     'vec4 c12 = texture2D(texture, vec2(vUv.x, vUv.y - px.y));', // top center
     'vec4 c13 = texture2D(texture, vec2(vUv.x + px.x, vUv.y - px.y));', // top right
-
     'vec4 c21 = texture2D(texture, vec2(vUv.x - px.x, vUv.y) );', // mid left
     'vec4 c22 = texture2D(texture, vUv);', // mid center
     'vec4 c23 = texture2D(texture, vec2(vUv.x + px.x, vUv.y) );', // mid right
-
     'vec4 c31 = texture2D(texture, vec2(vUv.x - px.x, vUv.y + px.y) );', // bottom left
     'vec4 c32 = texture2D(texture, vec2(vUv.x, vUv.y + px.y) );', // bottom center
     'vec4 c33 = texture2D(texture, vUv + px );', // bottom right
-
     'gl_FragColor = ',
     'c11 * m[0] + c12 * m[1] + c22 * m[2] +',
     'c21 * m[3] + c22 * m[4] + c23 * m[5] +',
@@ -532,17 +480,13 @@ const GLImageFilter = function (params) {
 
   // -------------------------------------------------------------------------
   // Blur Filter
-
   _filter.blur = function (size) {
     const blurSizeX = (size / 7) / _width;
     const blurSizeY = (size / 7) / _height;
-
     const program = _compileShader(_filter.blur.SHADER);
-
     // Vertical
     gl.uniform2f(program.uniform.px, 0, blurSizeY);
     _draw(DRAW.INTERMEDIATE);
-
     // Horizontal
     gl.uniform2f(program.uniform.px, blurSizeX, 0);
     _draw();
@@ -553,7 +497,6 @@ const GLImageFilter = function (params) {
     'varying vec2 vUv;',
     'uniform sampler2D texture;',
     'uniform vec2 px;',
-
     'void main(void) {',
     'gl_FragColor = vec4(0.0);',
     'gl_FragColor += texture2D(texture, vUv + vec2(-7.0*px.x, -7.0*px.y))*0.0044299121055113265;',
@@ -576,13 +519,10 @@ const GLImageFilter = function (params) {
 
   // -------------------------------------------------------------------------
   // Pixelate Filter
-
   _filter.pixelate = function (size) {
     const blurSizeX = (size) / _width;
     const blurSizeY = (size) / _height;
-
     const program = _compileShader(_filter.pixelate.SHADER);
-
     // Horizontal
     gl.uniform2f(program.uniform.size, blurSizeX, blurSizeY);
     _draw();
@@ -593,17 +533,13 @@ const GLImageFilter = function (params) {
     'varying vec2 vUv;',
     'uniform vec2 size;',
     'uniform sampler2D texture;',
-
     'vec2 pixelate(vec2 coord, vec2 size) {',
     'return floor( coord / size ) * size;',
     '}',
-
     'void main(void) {',
     'gl_FragColor = vec4(0.0);',
     'vec2 coord = pixelate(vUv, size);',
     'gl_FragColor += texture2D(texture, coord);',
     '}',
   ].join('\n');
-};
-
-exports.GLImageFilter = GLImageFilter;
+}

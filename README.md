@@ -1,6 +1,16 @@
 # Human Library
 
-## 3D Face Detection, Face Embedding & Recognition, Body Pose Tracking, Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction & Gesture Recognition
+### 3D Face Detection, Face Embedding & Recognition,
+### Body Pose Tracking, Hand & Finger Tracking,
+### Iris Analysis, Age & Gender & Emotion Prediction
+### & Gesture Recognition
+
+<br>
+
+Native JavaScript module using TensorFlow/JS Machine Learning library  
+Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows and Linux    
+- Browser/WebWorker: Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  
+- NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
 
 <br>
 
@@ -39,28 +49,17 @@
 
 <br>
 
-Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows and Linux    
-- Browser/WebWorker: Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  
-- NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
-- (and maybe with React-Native as it doesn't use any DOM objects)  
-
-<br>
-
 *See [issues](https://github.com/vladmandic/human/issues?q=) and [discussions](https://github.com/vladmandic/human/discussions) for list of known limitations and planned enhancements*  
 
 *Suggestions are welcome!*  
 
-<br>
-<hr>  
-<br>
+<br><hr><br>
 
 ## Options ##
 
 ![Options visible in demo](assets/screenshot-menu.png)
 
-<br>
-<hr>  
-<br>
+<br><hr><br>
 
 ## Examples
 
@@ -75,4 +74,3 @@ Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows an
 **Using webcam:**  
 
 ![Example Using WebCam](assets/screenshot2.jpg)
-

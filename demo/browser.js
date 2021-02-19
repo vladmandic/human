@@ -1,4 +1,9 @@
-import Human from '../dist/human.esm.js';
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+// import * as tf from '@tensorflow/tfjs';
+// import Human from '../dist/human.esm-nobundle.js';
+
+import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
+
 import draw from './draw.js';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';

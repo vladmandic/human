@@ -5,7 +5,7 @@
       "imports": []
     },
     "dist/tfjs.esm.js": {
-      "bytes": 1073705,
+      "bytes": 1073613,
       "imports": []
     },
     "src/tfjs/backend.ts": {
@@ -388,11 +388,11 @@
       "imports": []
     },
     "src/imagefx.js": {
-      "bytes": 19447,
+      "bytes": 19372,
       "imports": []
     },
     "src/image.ts": {
-      "bytes": 5867,
+      "bytes": 5902,
       "imports": [
         {
           "path": "src/log.ts",
@@ -417,11 +417,11 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2529,
+      "bytes": 2560,
       "imports": []
     },
     "src/human.ts": {
-      "bytes": 19583,
+      "bytes": 19703,
       "imports": [
         {
           "path": "src/log.ts",
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1924959
+      "bytes": 1925031
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -513,14 +513,11 @@
         "src/posenet/keypoints.ts": {
           "bytesInOutput": 1690
         },
-        "src/imagefx.js": {
-          "bytesInOutput": 11016
-        },
         "src/log.ts": {
           "bytesInOutput": 252
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1064700
+          "bytesInOutput": 1064608
         },
         "src/tfjs/backend.ts": {
           "bytesInOutput": 1205
@@ -541,7 +538,7 @@
           "bytesInOutput": 5040
         },
         "src/human.ts": {
-          "bytesInOutput": 10311
+          "bytesInOutput": 10617
         },
         "src/faceboxes/faceboxes.ts": {
           "bytesInOutput": 1549
@@ -609,8 +606,11 @@
         "src/gesture/gesture.ts": {
           "bytesInOutput": 2391
         },
+        "src/imagefx.js": {
+          "bytesInOutput": 10975
+        },
         "src/image.ts": {
-          "bytesInOutput": 2454
+          "bytesInOutput": 2452
         },
         "config.js": {
           "bytesInOutput": 1426
@@ -619,10 +619,10 @@
           "bytesInOutput": 55295
         },
         "package.json": {
-          "bytesInOutput": 2528
+          "bytesInOutput": 2572
         }
       },
-      "bytes": 1347254
+      "bytes": 1347469
     }
   }
 }

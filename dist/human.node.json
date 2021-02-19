@@ -388,11 +388,11 @@
       "imports": []
     },
     "src/imagefx.js": {
-      "bytes": 19447,
+      "bytes": 19372,
       "imports": []
     },
     "src/image.ts": {
-      "bytes": 5867,
+      "bytes": 5902,
       "imports": [
         {
           "path": "src/log.ts",
@@ -417,11 +417,11 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2529,
+      "bytes": 2560,
       "imports": []
     },
     "src/human.ts": {
-      "bytes": 19583,
+      "bytes": 19703,
       "imports": [
         {
           "path": "src/log.ts",
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 705489
+      "bytes": 705616
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -514,11 +514,8 @@
         "src/posenet/keypoints.ts": {
           "bytesInOutput": 1677
         },
-        "src/imagefx.js": {
-          "bytesInOutput": 11012
-        },
         "src/human.ts": {
-          "bytesInOutput": 10478
+          "bytesInOutput": 10625
         },
         "src/log.ts": {
           "bytesInOutput": 251
@@ -542,7 +539,7 @@
           "bytesInOutput": 28973
         },
         "src/faceboxes/faceboxes.ts": {
-          "bytesInOutput": 1591
+          "bytesInOutput": 1586
         },
         "src/profile.ts": {
           "bytesInOutput": 604
@@ -551,7 +548,7 @@
           "bytesInOutput": 822
         },
         "src/gender/gender.ts": {
-          "bytesInOutput": 1310
+          "bytesInOutput": 1302
         },
         "src/emotion/emotion.ts": {
           "bytesInOutput": 1247
@@ -608,7 +605,10 @@
           "bytesInOutput": 2391
         },
         "src/image.ts": {
-          "bytesInOutput": 2455
+          "bytesInOutput": 2458
+        },
+        "src/imagefx.js": {
+          "bytesInOutput": 10973
         },
         "config.js": {
           "bytesInOutput": 1426
@@ -617,10 +617,10 @@
           "bytesInOutput": 55295
         },
         "package.json": {
-          "bytesInOutput": 2525
+          "bytesInOutput": 2569
         }
       },
-      "bytes": 276897
+      "bytes": 277039
     }
   }
 }

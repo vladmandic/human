@@ -101,7 +101,7 @@ class Human {
   // helper function: measure tensor leak
   analyze(...msg) {
     if (!this.analyzeMemoryLeaks) return;
-    const current = tf.engine().state.numTensors;
+    const current = this.tf.engine().state.numTensors;
     const previous = this.numTensors;
     this.numTensors = current;
     const leaked = current - previous;
@@ -112,11 +112,11 @@ class Human {
   sanity(input) {
     if (!this.checkSanity) return null;
     if (!input) return 'input is not defined';
-    if (tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) {
+    if (this.tf.ENV.flags.IS_NODE && !(input instanceof this.tf.Tensor)) {
       return 'input must be a tensor';
     }
     try {
-      tf.getBackend();
+      this.tf.getBackend();
     } catch {
       return 'backend not loaded';
     }
@@ -135,11 +135,11 @@ class Human {
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
 
     if (this.firstRun) {
-      log(`version: ${this.version} TensorFlow/JS version: ${tf.version_core}`);
+      log(`version: ${this.version} TensorFlow/JS version: ${this.tf.version_core}`);
       await this.checkBackend(true);
-      if (tf.ENV.flags.IS_BROWSER) {
+      if (this.tf.ENV.flags.IS_BROWSER) {
         log('configuration:', this.config);
-        log('tf flags:', tf.ENV.flags);
+        log('tf flags:', this.tf.ENV.flags);
       }
     }
     const face = this.config.face.detector.modelPath.includes('faceboxes') ? faceboxes : facemesh;
@@ -172,7 +172,7 @@ class Human {
     }
 
     if (this.firstRun) {
-      log('tf engine state:', tf.engine().state.numBytes, 'bytes', tf.engine().state.numTensors, 'tensors');
+      log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors');
       this.firstRun = false;
     }
 
@@ -182,7 +182,7 @@ class Human {
 
   // check if backend needs initialization if it changed
   async checkBackend(force = false) {
-    if (this.config.backend && (this.config.backend !== '') && force || (tf.getBackend() !== this.config.backend)) {
+    if (this.config.backend && (this.config.backend !== '') && force || (this.tf.getBackend() !== this.config.backend)) {
       const timeStamp = now();
       this.state = 'backend';
       /* force backend reload
@@ -199,32 +199,32 @@ class Human {
 
       if (this.config.backend === 'wasm') {
         log('settings wasm path:', this.config.wasmPath);
-        tf.setWasmPaths(this.config.wasmPath);
-        const simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
+        this.tf.setWasmPaths(this.config.wasmPath);
+        const simd = await this.tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
         if (!simd) log('warning: wasm simd support is not enabled');
       }
 
       if (this.config.backend === 'humangl') backend.register();
       try {
-        await tf.setBackend(this.config.backend);
+        await this.tf.setBackend(this.config.backend);
       } catch (err) {
         log('error: cannot set backend:', this.config.backend, err);
       }
-      tf.enableProdMode();
+      this.tf.enableProdMode();
       /* debug mode is really too mcuh
       tf.enableDebugMode();
       */
-      if (tf.getBackend() === 'webgl') {
+      if (this.tf.getBackend() === 'webgl') {
         if (this.config.deallocate) {
           log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
-          tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
+          this.tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
         }
-        tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
-        tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
-        const gl = await tf.backend().getGPGPUContext().gl;
+        this.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
+        this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
+        const gl = await this.tf.backend().getGPGPUContext().gl;
         log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }
-      await tf.ready();
+      await this.tf.ready();
       this.perf.backend = Math.trunc(now() - timeStamp);
     }
   }
@@ -384,7 +384,7 @@ class Human {
       // load models if enabled
       await this.load();
 
-      if (this.config.scoped) tf.engine().startScope();
+      if (this.config.scoped) this.tf.engine().startScope();
       this.analyze('Start Scope:');
 
       timeStamp = now();
@@ -440,7 +440,7 @@ class Human {
       }
       process.tensor.dispose();
 
-      if (this.config.scoped) tf.engine().endScope();
+      if (this.config.scoped) this.tf.engine().endScope();
       this.analyze('End Scope:');
 
       let gestureRes = [];
@@ -512,10 +512,10 @@ class Human {
     // @ts-ignore
     const data = tf.node.decodeJpeg(img); // tf.node is only defined when compiling for nodejs
     const expanded = data.expandDims(0);
-    tf.dispose(data);
+    this.tf.dispose(data);
     // log('Input:', expanded);
     const res = await this.detect(expanded, this.config);
-    tf.dispose(expanded);
+    this.tf.dispose(expanded);
     return res;
   }
 

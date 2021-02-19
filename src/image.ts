@@ -83,6 +83,7 @@ export function process(input, config) {
       */
     } else {
       outCanvas = inCanvas;
+      if (this.fx) this.fx = null;
     }
     let pixels;
     if (outCanvas.data) {

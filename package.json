@@ -6,6 +6,7 @@
   "main": "dist/human.node.js",
   "module": "dist/human.esm.js",
   "browser": "dist/human.esm.js",
+  "types": "types/human.d.ts",
   "author": "Vladimir Mandic <mandic00@live.com>",
   "bugs": {
     "url": "https://github.com/vladmandic/human/issues"
@@ -32,13 +33,13 @@
     "@tensorflow/tfjs-layers": "^3.1.0",
     "@tensorflow/tfjs-node": "^3.1.0",
     "@tensorflow/tfjs-node-gpu": "^3.1.0",
-    "@types/node": "^14.14.28",
+    "@types/node": "^14.14.30",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
     "@vladmandic/pilogger": "^0.2.14",
     "chokidar": "^3.5.1",
     "dayjs": "^1.10.4",
-    "esbuild": "^0.8.46",
+    "esbuild": "^0.8.49",
     "eslint": "^7.20.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
@@ -47,9 +48,9 @@
     "eslint-plugin-promise": "^4.3.1",
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
-    "simple-git": "^2.35.0",
+    "simple-git": "^2.35.1",
     "tslib": "^2.1.0",
-    "typescript": "^4.3.0-dev.20210217"
+    "typescript": "^4.3.0-dev.20210219"
   },
   "scripts": {
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",

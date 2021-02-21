@@ -38,7 +38,6 @@ declare class Human {
         embedding: any;
         iris: number;
     }[]>;
-    image(input: any, userConfig?: {}): Promise<null | undefined>;
     detect(input: any, userConfig?: {}): Promise<unknown>;
     warmupBitmap(): Promise<any>;
     warmupCanvas(): Promise<unknown>;

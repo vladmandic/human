@@ -40,16 +40,27 @@ const tsconfig = {
 };
 
 // common configuration
-const common = {
-  banner,
-  minifyWhitespace: true,
-  minifyIdentifiers: true,
-  minifySyntax: true,
-  bundle: true,
-  sourcemap: true,
-  logLevel: 'error',
-  target: 'es2018',
-  tsconfig: 'server/tfjs-tsconfig.json',
+const config = {
+  common: {
+    banner,
+    tsconfig: 'server/tfjs-tsconfig.json',
+    bundle: true,
+    logLevel: 'error',
+  },
+  debug: {
+    minifyWhitespace: false,
+    minifyIdentifiers: false,
+    minifySyntax: false,
+    sourcemap: true,
+    target: 'es2018',
+  },
+  production: {
+    minifyWhitespace: true,
+    minifyIdentifiers: true,
+    minifySyntax: true,
+    sourcemap: true,
+    target: 'es2018',
+  },
 };
 
 const targets = {
@@ -194,14 +205,14 @@ function compile(fileNames, options) {
 }
 
 // rebuild on file change
-async function build(f, msg) {
+async function build(f, msg, dev = false) {
   if (busy) {
     log.state('Build: busy...');
     setTimeout(() => build(f, msg), 500);
     return;
   }
   busy = true;
-  log.info('Build: file', msg, f, 'target:', common.target);
+  log.info('Build: file', msg, f, 'type:', dev ? 'debug' : 'production', 'config:', dev ? config.debug : config.production);
   if (!es) es = await esbuild.startService();
   // common build options
   try {
@@ -210,7 +221,8 @@ async function build(f, msg) {
       for (const [targetName, targetOptions] of Object.entries(targetGroup)) {
         // if triggered from watch mode, rebuild only browser bundle
         // if ((require.main !== module) && (targetGroupName !== 'browserBundle')) continue;
-        await es.build({ ...common, ...targetOptions });
+        if (dev) await es.build({ ...config.common, ...config.debug, ...targetOptions });
+        else await es.build({ ...config.common, ...config.production, ...targetOptions });
         const stats = await getStats(targetOptions.metafile);
         log.state(`Build for: ${targetGroupName} type: ${targetName}:`, stats);
       }

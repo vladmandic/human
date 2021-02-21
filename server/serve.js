@@ -57,7 +57,7 @@ const mime = {
 let last = Date.now();
 async function buildAll(evt, msg) {
   const now = Date.now();
-  if ((now - last) > options.minElapsed) build.build(evt, msg);
+  if ((now - last) > options.minElapsed) build.build(evt, msg, true);
   else log.state('Build: merge event file', msg, evt);
   last = now;
 }
@@ -153,7 +153,7 @@ async function main() {
     server2.on('error', (err) => log.error('HTTP2 server:', err.message || err));
     server2.listen(options.httpsPort);
   }
-  await build.build('all', 'startup');
+  await build.build('all', 'startup', true);
 }
 
 main();

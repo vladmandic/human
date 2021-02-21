@@ -388,11 +388,11 @@
       "imports": []
     },
     "src/imagefx.js": {
-      "bytes": 19372,
+      "bytes": 19267,
       "imports": []
     },
     "src/image.ts": {
-      "bytes": 5902,
+      "bytes": 5869,
       "imports": [
         {
           "path": "src/log.ts",
@@ -421,7 +421,7 @@
       "imports": []
     },
     "src/human.ts": {
-      "bytes": 19703,
+      "bytes": 19720,
       "imports": [
         {
           "path": "src/log.ts",
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 705616
+      "bytes": 705270
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -515,7 +515,7 @@
           "bytesInOutput": 1677
         },
         "src/human.ts": {
-          "bytesInOutput": 10625
+          "bytesInOutput": 10449
         },
         "src/log.ts": {
           "bytesInOutput": 251
@@ -548,7 +548,7 @@
           "bytesInOutput": 822
         },
         "src/gender/gender.ts": {
-          "bytesInOutput": 1302
+          "bytesInOutput": 1310
         },
         "src/emotion/emotion.ts": {
           "bytesInOutput": 1247
@@ -605,7 +605,7 @@
           "bytesInOutput": 2391
         },
         "src/image.ts": {
-          "bytesInOutput": 2458
+          "bytesInOutput": 2362
         },
         "src/imagefx.js": {
           "bytesInOutput": 10973
@@ -620,7 +620,7 @@
           "bytesInOutput": 2569
         }
       },
-      "bytes": 277039
+      "bytes": 276775
     }
   }
 }

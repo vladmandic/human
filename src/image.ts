@@ -7,6 +7,8 @@ import * as fxImage from './imagefx';
 // internal temp canvases
 let inCanvas = null;
 let outCanvas = null;
+// instance of fximage
+let fx = null;
 
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
@@ -37,29 +39,30 @@ export function process(input, config) {
     if (input instanceof ImageData) ctx.putImageData(input, 0, 0);
     else ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas.width, inCanvas.height);
     if (config.filter.enabled) {
-      if (!this.fx || !outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas.height !== outCanvas.height)) {
+      if (!fx || !outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas.height !== outCanvas.height)) {
         outCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(inCanvas.width, inCanvas.height) : document.createElement('canvas');
         if (outCanvas.width !== inCanvas.width) outCanvas.width = inCanvas.width;
         if (outCanvas.height !== inCanvas.height) outCanvas.height = inCanvas.height;
-        this.fx = tf.ENV.flags.IS_BROWSER ? new fxImage.GLImageFilter({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
+        log('created FX filter');
+        fx = tf.ENV.flags.IS_BROWSER ? new fxImage.GLImageFilter({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
       }
-      if (!this.fx) return inCanvas;
-      this.fx.reset();
-      this.fx.addFilter('brightness', config.filter.brightness); // must have at least one filter enabled
-      if (config.filter.contrast !== 0) this.fx.addFilter('contrast', config.filter.contrast);
-      if (config.filter.sharpness !== 0) this.fx.addFilter('sharpen', config.filter.sharpness);
-      if (config.filter.blur !== 0) this.fx.addFilter('blur', config.filter.blur);
-      if (config.filter.saturation !== 0) this.fx.addFilter('saturation', config.filter.saturation);
-      if (config.filter.hue !== 0) this.fx.addFilter('hue', config.filter.hue);
-      if (config.filter.negative) this.fx.addFilter('negative');
-      if (config.filter.sepia) this.fx.addFilter('sepia');
-      if (config.filter.vintage) this.fx.addFilter('brownie');
-      if (config.filter.sepia) this.fx.addFilter('sepia');
-      if (config.filter.kodachrome) this.fx.addFilter('kodachrome');
-      if (config.filter.technicolor) this.fx.addFilter('technicolor');
-      if (config.filter.polaroid) this.fx.addFilter('polaroid');
-      if (config.filter.pixelate !== 0) this.fx.addFilter('pixelate', config.filter.pixelate);
-      this.fx.apply(inCanvas);
+      if (!fx) return inCanvas;
+      fx.reset();
+      fx.addFilter('brightness', config.filter.brightness); // must have at least one filter enabled
+      if (config.filter.contrast !== 0) fx.addFilter('contrast', config.filter.contrast);
+      if (config.filter.sharpness !== 0) fx.addFilter('sharpen', config.filter.sharpness);
+      if (config.filter.blur !== 0) fx.addFilter('blur', config.filter.blur);
+      if (config.filter.saturation !== 0) fx.addFilter('saturation', config.filter.saturation);
+      if (config.filter.hue !== 0) fx.addFilter('hue', config.filter.hue);
+      if (config.filter.negative) fx.addFilter('negative');
+      if (config.filter.sepia) fx.addFilter('sepia');
+      if (config.filter.vintage) fx.addFilter('brownie');
+      if (config.filter.sepia) fx.addFilter('sepia');
+      if (config.filter.kodachrome) fx.addFilter('kodachrome');
+      if (config.filter.technicolor) fx.addFilter('technicolor');
+      if (config.filter.polaroid) fx.addFilter('polaroid');
+      if (config.filter.pixelate !== 0) fx.addFilter('pixelate', config.filter.pixelate);
+      fx.apply(inCanvas);
       // read pixel data
       /*
       const gl = outCanvas.getContext('webgl');
@@ -83,7 +86,7 @@ export function process(input, config) {
       */
     } else {
       outCanvas = inCanvas;
-      if (this.fx) this.fx = null;
+      if (fx) fx = null;
     }
     let pixels;
     if (outCanvas.data) {

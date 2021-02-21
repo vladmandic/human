@@ -97,8 +97,6 @@ export function GLImageFilter(params) {
       // eslint-disable-next-line no-unused-expressions
       (_vertexBuffer = gl.createBuffer(), gl.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer));
       gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-      // Note sure if this is a good idea; at least it makes texture loading
-      // in Ejecta instant.
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     }
     gl.viewport(0, 0, _width, _height);

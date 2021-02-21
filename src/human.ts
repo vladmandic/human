@@ -288,11 +288,11 @@ class Human {
       // run emotion, inherits face from blazeface
       this.analyze('Start Embedding:');
       if (this.config.async) {
-        embeddingRes = this.config.face.embedding.enabled ? embedding.predict(face.image, this.config) : {};
+        embeddingRes = this.config.face.embedding.enabled ? embedding.predict(face.image, this.config) : [];
       } else {
         this.state = 'run:embedding';
         timeStamp = now();
-        embeddingRes = this.config.face.embedding.enabled ? await embedding.predict(face.image, this.config) : {};
+        embeddingRes = this.config.face.embedding.enabled ? await embedding.predict(face.image, this.config) : [];
         this.perf.embedding = Math.trunc(now() - timeStamp);
       }
       this.analyze('End Emotion:');

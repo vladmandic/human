@@ -175,7 +175,7 @@
       ]
     },
     "src/embedding/embedding.ts": {
-      "bytes": 2022,
+      "bytes": 2023,
       "imports": [
         {
           "path": "src/log.ts",
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1924848
+      "bytes": 1924855
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -556,7 +556,7 @@
           "bytesInOutput": 1180
         },
         "src/embedding/embedding.ts": {
-          "bytesInOutput": 794
+          "bytesInOutput": 795
         },
         "src/posenet/posenet.ts": {
           "bytesInOutput": 1007
@@ -622,7 +622,7 @@
           "bytesInOutput": 2572
         }
       },
-      "bytes": 1347291
+      "bytes": 1347292
     }
   }
 }

@@ -175,7 +175,7 @@
       ]
     },
     "src/embedding/embedding.ts": {
-      "bytes": 2022,
+      "bytes": 2023,
       "imports": [
         {
           "path": "src/log.ts",
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 705433
+      "bytes": 705440
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -554,7 +554,7 @@
           "bytesInOutput": 1247
         },
         "src/embedding/embedding.ts": {
-          "bytesInOutput": 838
+          "bytesInOutput": 839
         },
         "src/posenet/posenet.ts": {
           "bytesInOutput": 1030
@@ -620,7 +620,7 @@
           "bytesInOutput": 2569
         }
       },
-      "bytes": 276844
+      "bytes": 276845
     }
   }
 }

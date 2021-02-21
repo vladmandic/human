@@ -64,6 +64,43 @@ const config = {
 };
 
 const targets = {
+  node: {
+    tfjs: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/tfjs.esm.json',
+      entryPoints: ['src/tfjs/tf-node.ts'],
+      outfile: 'dist/tfjs.esm.js',
+      external: ['@tensorflow'],
+    },
+    node: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/human.node.json',
+      entryPoints: ['src/human.ts'],
+      outfile: 'dist/human.node.js',
+      external: ['@tensorflow'],
+    },
+  },
+  nodeGPU: {
+    tfjs: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/tfjs.esm.json',
+      entryPoints: ['src/tfjs/tf-node-gpu.ts'],
+      outfile: 'dist/tfjs.esm.js',
+      external: ['@tensorflow'],
+    },
+    node: {
+      platform: 'node',
+      format: 'cjs',
+      metafile: 'dist/human.node.json',
+      entryPoints: ['src/human.ts'],
+      outfile: 'dist/human.node-gpu.js',
+      external: ['@tensorflow'],
+    },
+  },
+
   browserNoBundle: {
     tfjs: {
       platform: 'browser',
@@ -115,42 +152,6 @@ const targets = {
       entryPoints: ['demo/browser.js'],
       outfile: 'dist/demo-browser-index.js',
       external: ['fs', 'buffer', 'util'],
-    },
-  },
-  node: {
-    tfjs: {
-      platform: 'node',
-      format: 'cjs',
-      metafile: 'dist/tfjs.esm.json',
-      entryPoints: ['src/tfjs/tf-node.ts'],
-      outfile: 'dist/tfjs.esm.js',
-      external: ['@tensorflow'],
-    },
-    node: {
-      platform: 'node',
-      format: 'cjs',
-      metafile: 'dist/human.node.json',
-      entryPoints: ['src/human.ts'],
-      outfile: 'dist/human.node.js',
-      external: ['@tensorflow'],
-    },
-  },
-  nodeGPU: {
-    tfjs: {
-      platform: 'node',
-      format: 'cjs',
-      metafile: 'dist/tfjs.esm.json',
-      entryPoints: ['src/tfjs/tf-node-gpu.ts'],
-      outfile: 'dist/tfjs.esm.js',
-      external: ['@tensorflow'],
-    },
-    node: {
-      platform: 'node',
-      format: 'cjs',
-      metafile: 'dist/human.node.json',
-      entryPoints: ['src/human.ts'],
-      outfile: 'dist/human.node-gpu.js',
-      external: ['@tensorflow'],
     },
   },
 };

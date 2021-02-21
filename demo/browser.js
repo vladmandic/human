@@ -15,7 +15,7 @@ const userConfig = {
   backend: 'wasm',
   async: false,
   videoOptimized: false,
-  face: { enabled: true, iris: { enabled: false }, mesh: { enabled: true }, age: { enabled: true }, gender: { enabled: true }, emotion: { enabled: true } },
+  face: { enabled: true, iris: { enabled: false }, mesh: { enabled: true }, age: { enabled: true }, gender: { enabled: true }, emotion: { enabled: true }, embedding: { enabled: true } },
   body: { enabled: false },
   hand: { enabled: false },
 };

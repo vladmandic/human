@@ -16,7 +16,7 @@ export async function load(config) {
 }
 
 export function simmilarity(embedding1, embedding2) {
-  if (!embedding1 || embedding2) return 0;
+  if (!embedding1 || !embedding2) return 0;
   if (embedding1?.length === 0 || embedding2?.length === 0) return 0;
   if (embedding1?.length !== embedding2?.length) return 0;
   // general minkowski distance

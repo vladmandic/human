@@ -132,7 +132,7 @@ const targets = {
       platform: 'browser',
       format: 'iife',
       globalName: 'Human',
-      metafile: 'dist/human.tson',
+      metafile: 'dist/human.iife.json',
       entryPoints: ['src/human.ts'],
       outfile: 'dist/human.ts',
       external: ['fs', 'buffer', 'util'],

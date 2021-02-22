@@ -36,7 +36,7 @@ const ui = {
   facing: true,
   useWorker: false,
   worker: 'worker.js',
-  samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'],
+  samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg', '../assets/sample7.jpg', '../assets/sample8.jpg'],
   compare: '../assets/sample-me.jpg',
   drawBoxes: true,
   drawPoints: false,
@@ -395,7 +395,7 @@ async function detectVideo() {
 async function detectSampleImages() {
   document.getElementById('play').style.display = 'none';
   userConfig.videoOptimized = false;
-  const size = Math.trunc(window.devicePixelRatio * (8 + (4 * ui.columns)));
+  const size = Math.trunc(window.devicePixelRatio * (12 + (4 * ui.columns)));
   ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
   ui.baseLineHeight = size + 2;
   document.getElementById('canvas').style.display = 'none';

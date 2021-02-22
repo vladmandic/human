@@ -23,7 +23,6 @@ const logger = new console.Console({
 
 const config = {
   backend: 'tensorflow',
-  console: false,
   videoOptimized: false,
   face: {
     detector: { modelPath: 'file://models/blazeface-back.json' },

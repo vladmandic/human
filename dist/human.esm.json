@@ -9,7 +9,7 @@
       "imports": []
     },
     "src/tfjs/backend.ts": {
-      "bytes": 2228,
+      "bytes": 2237,
       "imports": [
         {
           "path": "src/log.ts",
@@ -392,7 +392,7 @@
       "imports": []
     },
     "src/image.ts": {
-      "bytes": 5869,
+      "bytes": 5872,
       "imports": [
         {
           "path": "src/log.ts",
@@ -409,7 +409,7 @@
       ]
     },
     "config.js": {
-      "bytes": 9786,
+      "bytes": 9774,
       "imports": []
     },
     "src/sample.ts": {
@@ -421,7 +421,7 @@
       "imports": []
     },
     "src/human.ts": {
-      "bytes": 19720,
+      "bytes": 19726,
       "imports": [
         {
           "path": "src/log.ts",
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1924855
+      "bytes": 1924674
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -520,7 +520,7 @@
           "bytesInOutput": 1064610
         },
         "src/tfjs/backend.ts": {
-          "bytesInOutput": 1205
+          "bytesInOutput": 1053
         },
         "src/blazeface/blazeface.ts": {
           "bytesInOutput": 2185
@@ -538,7 +538,7 @@
           "bytesInOutput": 5040
         },
         "src/human.ts": {
-          "bytesInOutput": 10441
+          "bytesInOutput": 10347
         },
         "src/faceboxes/faceboxes.ts": {
           "bytesInOutput": 1549
@@ -610,10 +610,10 @@
           "bytesInOutput": 10975
         },
         "src/image.ts": {
-          "bytesInOutput": 2379
+          "bytesInOutput": 2355
         },
         "config.js": {
-          "bytesInOutput": 1426
+          "bytesInOutput": 1414
         },
         "src/sample.ts": {
           "bytesInOutput": 55295
@@ -622,7 +622,7 @@
           "bytesInOutput": 2572
         }
       },
-      "bytes": 1347292
+      "bytes": 1347010
     }
   }
 }

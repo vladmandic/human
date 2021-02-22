@@ -63,9 +63,9 @@ export function register() {
     try {
       tf.ENV.set('WEBGL_VERSION', 2);
       // @ts-ignore
-      tf.ENV.set('WEBGL_MAX_TEXTURE_SIZE', config.gl.getParameter(config.gl.MAX_TEXTURE_SIZE));
-      tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
-      tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
+      // tf.ENV.set('WEBGL_MAX_TEXTURE_SIZE', config.gl.getParameter(config.gl.MAX_TEXTURE_SIZE));
+      // tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
+      // tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
     } catch (err) {
       log('error: cannot set WebGL backend flags:', err);
       return;

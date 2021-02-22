@@ -32,7 +32,7 @@ async function drawFace(result, canvas, ui, triangulation) {
     }
     // silly hack since fillText does not suport new line
     const labels = [];
-    // labels.push(`${Math.trunc(100 * face.confidence)}% face`);
+    labels.push(`detect confidence: ${Math.trunc(100 * face.confidence)}%`);
     if (face.genderConfidence) labels.push(`${face.gender || ''} ${Math.trunc(100 * face.genderConfidence)}% confident`);
     // if (face.genderConfidence) labels.push(face.gender);
     if (face.age) labels.push(`age: ${face.age || ''}`);
@@ -43,11 +43,13 @@ async function drawFace(result, canvas, ui, triangulation) {
     }
     if (labels.length === 0) labels.push('face');
     ctx.fillStyle = ui.baseLabel;
-    for (let i = 0; i < labels.length; i++) {
+    for (let i = labels.length - 1; i >= 0; i--) {
       ctx.fillStyle = 'black';
-      ctx.fillText(labels[i], face.box[0] + 1, face.box[1] - ((labels.length - i) * ui.baseLineHeight) + 6);
+      const x = Math.max(face.box[0], 0);
+      const y = i * ui.baseLineHeight + face.box[1];
+      ctx.fillText(labels[i], x + 5, y + 16);
       ctx.fillStyle = ui.baseLabel;
-      ctx.fillText(labels[i], face.box[0] + 0, face.box[1] - ((labels.length - i) * ui.baseLineHeight) + 5);
+      ctx.fillText(labels[i], x + 4, y + 15);
     }
     ctx.fillStyle = ui.baseColor;
     ctx.stroke();

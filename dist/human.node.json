@@ -9,7 +9,7 @@
       "imports": []
     },
     "src/tfjs/backend.ts": {
-      "bytes": 2228,
+      "bytes": 2237,
       "imports": [
         {
           "path": "src/log.ts",
@@ -392,7 +392,7 @@
       "imports": []
     },
     "src/image.ts": {
-      "bytes": 5869,
+      "bytes": 5872,
       "imports": [
         {
           "path": "src/log.ts",
@@ -409,7 +409,7 @@
       ]
     },
     "config.js": {
-      "bytes": 9786,
+      "bytes": 9774,
       "imports": []
     },
     "src/sample.ts": {
@@ -421,7 +421,7 @@
       "imports": []
     },
     "src/human.ts": {
-      "bytes": 19720,
+      "bytes": 19726,
       "imports": [
         {
           "path": "src/log.ts",
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 705440
+      "bytes": 705259
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -515,13 +515,13 @@
           "bytesInOutput": 1677
         },
         "src/human.ts": {
-          "bytesInOutput": 10449
+          "bytesInOutput": 10355
         },
         "src/log.ts": {
           "bytesInOutput": 251
         },
         "src/tfjs/backend.ts": {
-          "bytesInOutput": 1304
+          "bytesInOutput": 1145
         },
         "src/blazeface/blazeface.ts": {
           "bytesInOutput": 2329
@@ -605,13 +605,13 @@
           "bytesInOutput": 2391
         },
         "src/image.ts": {
-          "bytesInOutput": 2362
+          "bytesInOutput": 2339
         },
         "src/imagefx.js": {
           "bytesInOutput": 10973
         },
         "config.js": {
-          "bytesInOutput": 1426
+          "bytesInOutput": 1414
         },
         "src/sample.ts": {
           "bytesInOutput": 55295
@@ -620,7 +620,7 @@
           "bytesInOutput": 2569
         }
       },
-      "bytes": 276845
+      "bytes": 276557
     }
   }
 }

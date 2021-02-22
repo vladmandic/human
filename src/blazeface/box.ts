@@ -30,7 +30,7 @@ export function cutBoxFromImageAndResize(box, image, cropSize) {
   return tf.image.cropAndResize(image, boxes, [0], cropSize);
 }
 
-export function enlargeBox(box, factor = 1.5) {
+export function enlargeBox(box, factor = 1.6) {
   const center = getBoxCenter(box);
   const size = getBoxSize(box);
   const newHalfSize = [factor * size[0] / 2, factor * size[1] / 2];

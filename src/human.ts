@@ -219,8 +219,8 @@ class Human {
           log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
           this.tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
         }
-        this.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
-        this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
+        // this.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
+        // this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
         const gl = await this.tf.backend().getGPGPUContext().gl;
         log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }

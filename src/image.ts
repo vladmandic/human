@@ -43,7 +43,7 @@ export function process(input, config) {
         outCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(inCanvas.width, inCanvas.height) : document.createElement('canvas');
         if (outCanvas.width !== inCanvas.width) outCanvas.width = inCanvas.width;
         if (outCanvas.height !== inCanvas.height) outCanvas.height = inCanvas.height;
-        log('created FX filter');
+        // log('created FX filter');
         fx = tf.ENV.flags.IS_BROWSER ? new fxImage.GLImageFilter({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
       }
       if (!fx) return inCanvas;

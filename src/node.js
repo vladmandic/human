@@ -1,4 +1,6 @@
 const console = require('console');
+const process = require('process');
+// const URL = require('url');
 const tf = require('@tensorflow/tfjs-node');
 const Human = require('../dist/human.node').default; // this resolves to project root which is '@vladmandic/human'
 
@@ -29,8 +31,9 @@ const config = {
     mesh: { modelPath: 'file://models/facemesh.json' },
     iris: { modelPath: 'file://models/iris.json' },
     age: { modelPath: 'file://models/age-ssrnet-imdb.json' },
-    gender: { modelPath: 'file://models/gender-ssrnet-imdb.json' },
+    gender: { modelPath: 'file://models/gender.json' },
     emotion: { modelPath: 'file://models/emotion-large.json' },
+    embedding: { modelPath: 'file://models/mobilefacenet.json' },
   },
   body: { modelPath: 'file://models/posenet.json' },
   hand: {
@@ -41,9 +44,10 @@ const config = {
 
 async function main() {
   await tf.ready();
-  const human = new Human();
+  const human = new Human(config);
   logger.info('Human:', human.version);
-  logger.info('Default Configuration', human.config);
+  logger.info('Current folder:', process.env.PWD);
+  logger.info('Active Configuration', human.config);
   logger.info('TFJS Version:', tf.version_core, 'Backend:', tf.getBackend());
   logger.info('TFJS Flags:', tf.env().features);
   logger.info('Loading models:');

@@ -18,7 +18,7 @@ const myConfig = {
     mesh: { modelPath: 'file://models/facemesh.json' },
     iris: { modelPath: 'file://models/iris.json' },
     age: { modelPath: 'file://models/age-ssrnet-imdb.json' },
-    gender: { modelPath: 'file://models/gender-ssrnet-imdb.json' },
+    gender: { modelPath: 'file://models/gender.json' },
     emotion: { modelPath: 'file://models/emotion-large.json' },
   },
   body: { modelPath: 'file://models/posenet.json' },

@@ -25495,7 +25495,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1209141
+      "bytes": 1241171
     },
     "dist/tfjs.esm.js": {
       "imports": [],
@@ -25974,6 +25974,7 @@
         "zeros",
         "zerosLike"
       ],
+      "entryPoint": "src/tfjs/tf-browser.ts",
       "inputs": {
         "(disabled):node_modules/node-fetch/browser.js": {
           "bytesInOutput": 18

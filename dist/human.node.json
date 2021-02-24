@@ -417,7 +417,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2560,
+      "bytes": 2561,
       "imports": []
     },
     "src/human.ts": {
@@ -499,11 +499,12 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 705259
+      "bytes": 706784
     },
     "dist/human.node-gpu.js": {
       "imports": [],
       "exports": [],
+      "entryPoint": "src/human.ts",
       "inputs": {
         "dist/tfjs.esm.js": {
           "bytesInOutput": 551
@@ -617,10 +618,10 @@
           "bytesInOutput": 55295
         },
         "package.json": {
-          "bytesInOutput": 2569
+          "bytesInOutput": 2570
         }
       },
-      "bytes": 276557
+      "bytes": 276558
     }
   }
 }

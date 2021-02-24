@@ -417,7 +417,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2560,
+      "bytes": 2561,
       "imports": []
     },
     "src/human.ts": {
@@ -499,13 +499,14 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1924674
+      "bytes": 1957830
     },
     "dist/human.esm.js": {
       "imports": [],
       "exports": [
         "default"
       ],
+      "entryPoint": "src/human.ts",
       "inputs": {
         "src/blazeface/facemesh.ts": {
           "bytesInOutput": 1445
@@ -619,10 +620,10 @@
           "bytesInOutput": 55295
         },
         "package.json": {
-          "bytesInOutput": 2572
+          "bytesInOutput": 2573
         }
       },
-      "bytes": 1347010
+      "bytes": 1347011
     }
   }
 }

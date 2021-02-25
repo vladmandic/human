@@ -14,17 +14,17 @@ const myConfig = {
   videoOptimized: false,
   async: false,
   face: {
-    detector: { modelPath: 'file://models/faceboxes.json' }, // cannot use blazeface in nodejs due to missing required kernel function in tfjs-node
-    mesh: { modelPath: 'file://models/facemesh.json' },
-    iris: { modelPath: 'file://models/iris.json' },
-    age: { modelPath: 'file://models/age-ssrnet-imdb.json' },
-    gender: { modelPath: 'file://models/gender.json' },
-    emotion: { modelPath: 'file://models/emotion-large.json' },
+    detector: { modelPath: 'file://../models/faceboxes.json' }, // cannot use blazeface in nodejs due to missing required kernel function in tfjs-node
+    mesh: { modelPath: 'file://../models/facemesh.json' },
+    iris: { modelPath: 'file://../models/iris.json' },
+    age: { modelPath: 'file://../models/age-ssrnet-imdb.json' },
+    gender: { modelPath: 'file://../models/gender-ssrnet-imdb.json' },
+    emotion: { modelPath: 'file://../models/emotion-large.json' },
   },
-  body: { modelPath: 'file://models/posenet.json' },
+  body: { modelPath: 'file://../models/posenet.json' },
   hand: {
-    detector: { modelPath: 'file://models/handdetect.json' },
-    skeleton: { modelPath: 'file://models/handskeleton.json' },
+    detector: { modelPath: 'file://../models/handdetect.json' },
+    skeleton: { modelPath: 'file://../models/handskeleton.json' },
   },
 };
 

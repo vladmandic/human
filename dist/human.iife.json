@@ -5,7 +5,7 @@
       "imports": []
     },
     "dist/tfjs.esm.js": {
-      "bytes": 1073613,
+      "bytes": 1065627,
       "imports": []
     },
     "src/tfjs/backend.ts": {
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1957841
+      "bytes": 1940040
     },
     "dist/human.ts": {
       "imports": [],
@@ -519,7 +519,7 @@
           "bytesInOutput": 252
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1064610
+          "bytesInOutput": 1056626
         },
         "src/tfjs/backend.ts": {
           "bytesInOutput": 1053
@@ -537,7 +537,7 @@
           "bytesInOutput": 28983
         },
         "src/blazeface/facepipeline.ts": {
-          "bytesInOutput": 5040
+          "bytesInOutput": 5042
         },
         "src/faceboxes/faceboxes.ts": {
           "bytesInOutput": 1549
@@ -621,7 +621,7 @@
           "bytesInOutput": 2573
         }
       },
-      "bytes": 1347053
+      "bytes": 1339071
     }
   }
 }

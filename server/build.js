@@ -108,7 +108,7 @@ const targets = {
       metafile: 'dist/tfjs.esm.json',
       entryPoints: ['src/tfjs/tf-browser.ts'],
       outfile: 'dist/tfjs.esm.js',
-      external: ['fs', 'buffer', 'util', '@tensorflow'],
+      external: ['fs', 'buffer', 'util', 'os', '@tensorflow'],
     },
     esm: {
       platform: 'browser',
@@ -116,7 +116,7 @@ const targets = {
       metafile: 'dist/human.esm.json',
       entryPoints: ['src/human.ts'],
       outfile: 'dist/human.esm-nobundle.js',
-      external: ['fs', 'buffer', 'util', '@tensorflow'],
+      external: ['fs', 'buffer', 'util', 'os', '@tensorflow'],
     },
   },
   browserBundle: {
@@ -126,7 +126,7 @@ const targets = {
       metafile: 'dist/tfjs.esm.json',
       entryPoints: ['src/tfjs/tf-browser.ts'],
       outfile: 'dist/tfjs.esm.js',
-      external: ['fs', 'buffer', 'util'],
+      external: ['fs', 'buffer', 'util', 'os'],
     },
     iife: {
       platform: 'browser',
@@ -135,7 +135,7 @@ const targets = {
       metafile: 'dist/human.iife.json',
       entryPoints: ['src/human.ts'],
       outfile: 'dist/human.ts',
-      external: ['fs', 'buffer', 'util'],
+      external: ['fs', 'buffer', 'util', 'os'],
     },
     esm: {
       platform: 'browser',
@@ -143,7 +143,7 @@ const targets = {
       metafile: 'dist/human.esm.json',
       entryPoints: ['src/human.ts'],
       outfile: 'dist/human.esm.js',
-      external: ['fs', 'buffer', 'util'],
+      external: ['fs', 'buffer', 'util', 'os'],
     },
     demo: {
       platform: 'browser',
@@ -151,7 +151,7 @@ const targets = {
       metafile: 'dist/demo-browser-index.json',
       entryPoints: ['demo/browser.js'],
       outfile: 'dist/demo-browser-index.js',
-      external: ['fs', 'buffer', 'util'],
+      external: ['fs', 'buffer', 'util', 'os'],
     },
   },
 };

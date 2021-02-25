@@ -417,7 +417,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2561,
+      "bytes": 2560,
       "imports": []
     },
     "src/human.ts": {
@@ -618,10 +618,10 @@
           "bytesInOutput": 55295
         },
         "package.json": {
-          "bytesInOutput": 2570
+          "bytesInOutput": 2569
         }
       },
-      "bytes": 276558
+      "bytes": 276557
     }
   }
 }

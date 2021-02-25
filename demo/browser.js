@@ -36,7 +36,7 @@ const ui = {
   facing: true,
   useWorker: false,
   worker: 'worker.js',
-  samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg', '../assets/sample7.jpg', '../assets/sample8.jpg'],
+  samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'],
   compare: '../assets/sample-me.jpg',
   drawBoxes: true,
   drawPoints: false,

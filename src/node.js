@@ -52,7 +52,7 @@ async function main() {
   logger.info('TFJS Flags:', tf.env().features);
   logger.info('Loading models:');
   await human.load(config);
-  const loaded = Object.keys(human.models).filter((a) => human.models[a]).map((b) => b);
+  const loaded = Object.keys(human.models).filter((a) => human.models[a]);
   logger.info('Loaded:', loaded);
   logger.info('Memory state:', human.tf.engine().memory());
   logger.info('Test Complete');

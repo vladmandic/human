@@ -8,9 +8,8 @@ import draw from './draw.js';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-const userConfig = {}; // add any user configuration overrides
+// const userConfig = {}; // add any user configuration overrides
 
-/*
 const userConfig = {
   backend: 'wasm',
   async: false,
@@ -19,7 +18,6 @@ const userConfig = {
   body: { enabled: false },
   hand: { enabled: false },
 };
-*/
 
 const human = new Human(userConfig);
 
@@ -532,6 +530,8 @@ async function main() {
   if (ui.modelsPreload && !ui.useWorker) {
     status('loading');
     await human.load(userConfig); // this is not required, just pre-loads all models
+    const loaded = Object.keys(human.models).filter((a) => human.models[a]).map((b) => b);
+    log('Demo loaded models:', loaded);
   }
   if (!ui.useWorker) {
     status('initializing');

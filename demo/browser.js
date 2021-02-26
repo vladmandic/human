@@ -530,7 +530,7 @@ async function main() {
   if (ui.modelsPreload && !ui.useWorker) {
     status('loading');
     await human.load(userConfig); // this is not required, just pre-loads all models
-    const loaded = Object.keys(human.models).filter((a) => human.models[a]).map((b) => b);
+    const loaded = Object.keys(human.models).filter((a) => human.models[a]);
     log('Demo loaded models:', loaded);
   }
   if (!ui.useWorker) {

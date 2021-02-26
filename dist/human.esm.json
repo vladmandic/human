@@ -421,7 +421,7 @@
       "imports": []
     },
     "src/human.ts": {
-      "bytes": 19726,
+      "bytes": 19684,
       "imports": [
         {
           "path": "src/log.ts",
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1940029
+      "bytes": 1939981
     },
     "dist/human.esm.js": {
       "imports": [],

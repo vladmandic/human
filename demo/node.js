@@ -14,7 +14,8 @@ const myConfig = {
   videoOptimized: false,
   async: false,
   face: {
-    detector: { modelPath: 'file://models/faceboxes.json' }, // cannot use blazeface in nodejs due to missing required kernel function in tfjs-node
+    // detector: { modelPath: 'file://models/faceboxes.json' },
+    detector: { modelPath: 'file://models/blazeface-back.json' }, // cannot use blazeface in nodejs due to missing required kernel function in tfjs-node
     mesh: { modelPath: 'file://models/facemesh.json' },
     iris: { modelPath: 'file://models/iris.json' },
     age: { modelPath: 'file://models/age-ssrnet-imdb.json' },

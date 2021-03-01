@@ -76,6 +76,8 @@ export default {
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated face analysis as the head probably hasn't moved much
                              // in short time (10 * 1/25 = 0.25 sec)
+      skipInitial: false,    // if previous detection resulted in no faces detected,
+                             // should skipFrames be reset immediately
       minConfidence: 0.2,    // threshold for discarding a prediction
       iouThreshold: 0.2,     // threshold for deciding whether boxes overlap too much in
                              // non-maximum suppression (0.1 means drop if overlap 10%)
@@ -154,6 +156,8 @@ export default {
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated hand skeleton analysis as the hand probably
                              // hasn't moved much in short time (10 * 1/25 = 0.25 sec)
+    skipInitial: false,      // if previous detection resulted in no faces detected,
+                             // should skipFrames be reset immediately
     minConfidence: 0.1,      // threshold for discarding a prediction
     iouThreshold: 0.1,       // threshold for deciding whether boxes overlap too much
                              // in non-maximum suppression

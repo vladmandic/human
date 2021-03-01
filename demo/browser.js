@@ -8,8 +8,9 @@ import draw from './draw.js';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-// const userConfig = {}; // add any user configuration overrides
+const userConfig = {}; // add any user configuration overrides
 
+/*
 const userConfig = {
   backend: 'wasm',
   async: false,
@@ -18,6 +19,7 @@ const userConfig = {
   body: { enabled: false },
   hand: { enabled: false },
 };
+*/
 
 const human = new Human(userConfig);
 

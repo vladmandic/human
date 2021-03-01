@@ -52,7 +52,7 @@
       "imports": []
     },
     "src/blazeface/facepipeline.ts": {
-      "bytes": 14175,
+      "bytes": 14151,
       "imports": [
         {
           "path": "dist/tfjs.esm.js",
@@ -338,7 +338,7 @@
       "imports": []
     },
     "src/handpose/handpipeline.ts": {
-      "bytes": 7206,
+      "bytes": 7120,
       "imports": [
         {
           "path": "dist/tfjs.esm.js",
@@ -409,7 +409,7 @@
       ]
     },
     "config.js": {
-      "bytes": 9774,
+      "bytes": 10086,
       "imports": []
     },
     "src/sample.ts": {
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 706736
+      "bytes": 707032
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -528,7 +528,7 @@
           "bytesInOutput": 2329
         },
         "src/blazeface/facepipeline.ts": {
-          "bytesInOutput": 5089
+          "bytesInOutput": 5098
         },
         "src/blazeface/box.ts": {
           "bytesInOutput": 854
@@ -594,7 +594,7 @@
           "bytesInOutput": 958
         },
         "src/handpose/handpipeline.ts": {
-          "bytesInOutput": 2470
+          "bytesInOutput": 2531
         },
         "src/handpose/util.ts": {
           "bytesInOutput": 806
@@ -612,7 +612,7 @@
           "bytesInOutput": 10973
         },
         "config.js": {
-          "bytesInOutput": 1414
+          "bytesInOutput": 1444
         },
         "src/sample.ts": {
           "bytesInOutput": 55295
@@ -621,7 +621,7 @@
           "bytesInOutput": 2569
         }
       },
-      "bytes": 276557
+      "bytes": 276657
     }
   }
 }

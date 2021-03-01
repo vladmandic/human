@@ -52,7 +52,7 @@
       "imports": []
     },
     "src/blazeface/facepipeline.ts": {
-      "bytes": 14175,
+      "bytes": 14151,
       "imports": [
         {
           "path": "dist/tfjs.esm.js",
@@ -338,7 +338,7 @@
       "imports": []
     },
     "src/handpose/handpipeline.ts": {
-      "bytes": 7206,
+      "bytes": 7120,
       "imports": [
         {
           "path": "dist/tfjs.esm.js",
@@ -409,7 +409,7 @@
       ]
     },
     "config.js": {
-      "bytes": 9774,
+      "bytes": 10086,
       "imports": []
     },
     "src/sample.ts": {
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1939992
+      "bytes": 1940288
     },
     "dist/human.ts": {
       "imports": [],
@@ -537,7 +537,7 @@
           "bytesInOutput": 28983
         },
         "src/blazeface/facepipeline.ts": {
-          "bytesInOutput": 5042
+          "bytesInOutput": 5051
         },
         "src/faceboxes/faceboxes.ts": {
           "bytesInOutput": 1549
@@ -597,7 +597,7 @@
           "bytesInOutput": 816
         },
         "src/handpose/handpipeline.ts": {
-          "bytesInOutput": 2449
+          "bytesInOutput": 2510
         },
         "src/handpose/anchors.ts": {
           "bytesInOutput": 126985
@@ -612,7 +612,7 @@
           "bytesInOutput": 2355
         },
         "config.js": {
-          "bytesInOutput": 1414
+          "bytesInOutput": 1444
         },
         "src/sample.ts": {
           "bytesInOutput": 55295
@@ -621,7 +621,7 @@
           "bytesInOutput": 2572
         }
       },
-      "bytes": 1339070
+      "bytes": 1339170
     }
   }
 }

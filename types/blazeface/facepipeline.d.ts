@@ -1,6 +1,5 @@
 export declare class Pipeline {
     storedBoxes: any;
-    runsWithoutFaceDetector: number;
     boundingBoxDetector: any;
     meshDetector: any;
     irisModel: any;

@@ -39,7 +39,6 @@ function replaceRawCoordinates(rawCoords, newCoords, prefix, keys = null) {
 // The Pipeline coordinates between the bounding box and skeleton models.
 export class Pipeline {
   storedBoxes: any;
-  runsWithoutFaceDetector: number;
   boundingBoxDetector: any;
   meshDetector: any;
   irisModel: any;
@@ -53,7 +52,6 @@ export class Pipeline {
   constructor(boundingBoxDetector, meshDetector, irisModel, config) {
     // An array of facial bounding boxes.
     this.storedBoxes = [];
-    this.runsWithoutFaceDetector = 0;
     this.boundingBoxDetector = boundingBoxDetector;
     this.meshDetector = meshDetector;
     this.irisModel = irisModel;
@@ -156,6 +154,8 @@ export class Pipeline {
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }
 
+    if (config.face.detector.skipInitial && this.detectedFaces === 0) this.skipped = 0;
+
     if (useFreshBox) {
       if (!detector || !detector.boxes || (detector.boxes.length === 0)) {
         this.storedBoxes = [];
@@ -170,7 +170,6 @@ export class Pipeline {
         const confidence = this.storedBoxes[i].confidence;
         this.storedBoxes[i] = { ...squarifiedBox, confidence, landmarks };
       }
-      this.runsWithoutFaceDetector = 0;
     }
     if (detector && detector.boxes) {
       detector.boxes.forEach((prediction) => {

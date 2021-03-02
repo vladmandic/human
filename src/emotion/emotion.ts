@@ -14,7 +14,7 @@ const scale = 1; // score multiplication factor
 export async function load(config) {
   if (!model) {
     model = await tf.loadGraphModel(config.face.emotion.modelPath);
-    log(`load model: ${config.face.emotion.modelPath.match(/\/(.*)\./)[1]}`);
+    if (config.debug) log(`load model: ${config.face.emotion.modelPath.match(/\/(.*)\./)[1]}`);
   }
   return model;
 }

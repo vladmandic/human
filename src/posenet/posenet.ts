@@ -60,6 +60,6 @@ export class PoseNet {
 export async function load(config) {
   const model = await tf.loadGraphModel(config.body.modelPath);
   const mobilenet = new modelBase.BaseModel(model);
-  log(`load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.debug) log(`load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
   return new PoseNet(mobilenet);
 }

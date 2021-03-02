@@ -61,9 +61,9 @@ export class FaceBoxes {
 
 export async function load(config) {
   const model = await tf.loadGraphModel(config.face.detector.modelPath);
-  log(`load model: ${config.face.detector.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.debug) log(`load model: ${config.face.detector.modelPath.match(/\/(.*)\./)[1]}`);
   const faceboxes = new FaceBoxes(model, config);
-  if (config.face.mesh.enabled) log(`load model: ${config.face.mesh.modelPath.match(/\/(.*)\./)[1]}`);
-  if (config.face.iris.enabled) log(`load model: ${config.face.iris.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.face.mesh.enabled && config.debug) log(`load model: ${config.face.mesh.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.face.iris.enabled && config.debug) log(`load model: ${config.face.iris.modelPath.match(/\/(.*)\./)[1]}`);
   return faceboxes;
 }

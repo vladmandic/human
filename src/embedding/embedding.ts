@@ -10,7 +10,7 @@ let model;
 export async function load(config) {
   if (!model) {
     model = await tf.loadGraphModel(config.face.embedding.modelPath);
-    log(`load model: ${config.face.embedding.modelPath.match(/\/(.*)\./)[1]}`);
+    if (config.debug) log(`load model: ${config.face.embedding.modelPath.match(/\/(.*)\./)[1]}`);
   }
   return model;
 }

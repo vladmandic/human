@@ -131,11 +131,11 @@ class Human {
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
 
     if (this.firstRun) {
-      log(`version: ${this.version} TensorFlow/JS version: ${this.tf.version_core}`);
+      if (this.config.debug) log(`version: ${this.version} TensorFlow/JS version: ${this.tf.version_core}`);
       await this.checkBackend(true);
       if (this.tf.ENV.flags.IS_BROWSER) {
-        log('configuration:', this.config);
-        log('tf flags:', this.tf.ENV.flags);
+        if (this.config.debug) log('configuration:', this.config);
+        if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
       }
     }
     const face = this.config.face.detector.modelPath.includes('faceboxes') ? faceboxes : facemesh;
@@ -168,7 +168,7 @@ class Human {
     }
 
     if (this.firstRun) {
-      log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors');
+      if (this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors');
       this.firstRun = false;
     }
 
@@ -191,20 +191,22 @@ class Human {
       }
       */
 
-      log('setting backend:', this.config.backend);
+      if (this.config.backend && this.config.backend !== '') {
+        if (this.config.debug) log('setting backend:', this.config.backend);
 
-      if (this.config.backend === 'wasm') {
-        log('settings wasm path:', this.config.wasmPath);
-        this.tf.setWasmPaths(this.config.wasmPath);
-        const simd = await this.tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
-        if (!simd) log('warning: wasm simd support is not enabled');
-      }
+        if (this.config.backend === 'wasm') {
+          if (this.config.debug) log('settings wasm path:', this.config.wasmPath);
+          this.tf.setWasmPaths(this.config.wasmPath);
+          const simd = await this.tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
+          if (!simd) log('warning: wasm simd support is not enabled');
+        }
 
-      if (this.config.backend === 'humangl') backend.register();
-      try {
-        await this.tf.setBackend(this.config.backend);
-      } catch (err) {
-        log('error: cannot set backend:', this.config.backend, err);
+        if (this.config.backend === 'humangl') backend.register();
+        try {
+          await this.tf.setBackend(this.config.backend);
+        } catch (err) {
+          log('error: cannot set backend:', this.config.backend, err);
+        }
       }
       this.tf.enableProdMode();
       /* debug mode is really too mcuh
@@ -218,7 +220,7 @@ class Human {
         // this.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
         // this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
         const gl = await this.tf.backend().getGPGPUContext().gl;
-        log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+        if (this.config.debug) log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }
       await this.tf.ready();
       this.perf.backend = Math.trunc(now() - timeStamp);
@@ -528,7 +530,7 @@ class Human {
     else res = await this.warmupNode();
     this.config.videoOptimized = video;
     const t1 = now();
-    log('Warmup', this.config.warmup, Math.round(t1 - t0), 'ms', res);
+    if (this.config.debug) log('Warmup', this.config.warmup, Math.round(t1 - t0), 'ms', res);
     return res;
   }
 }

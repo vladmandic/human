@@ -57,7 +57,7 @@ export async function load(config) {
   const handDetector = new handdetector.HandDetector(handDetectorModel, config.hand.inputSize, anchors.anchors);
   const handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel, config.hand.inputSize);
   const handPose = new HandPose(handPipeline);
-  if (config.hand.enabled) log(`load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);
-  if (config.hand.landmarks) log(`load model: ${config.hand.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.hand.enabled && config.debug) log(`load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.hand.landmarks && config.debug) log(`load model: ${config.hand.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
   return handPose;
 }

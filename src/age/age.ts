@@ -9,7 +9,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 export async function load(config) {
   if (!model) {
     model = await tf.loadGraphModel(config.face.age.modelPath);
-    log(`load model: ${config.face.age.modelPath.match(/\/(.*)\./)[1]}`);
+    if (config.debug) log(`load model: ${config.face.age.modelPath.match(/\/(.*)\./)[1]}`);
   }
   return model;
 }

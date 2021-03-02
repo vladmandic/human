@@ -3,8 +3,12 @@
 
 export default {
   backend: 'webgl',          // select tfjs backend to use
+                             // can be 'webgl', 'wasm', 'cpu', or 'humangl' which is a custom version of webgl
+                             // leave as empty string to continue using default backend
+                             // when backend is set outside of Human library
   wasmPath: '../assets/',    // path for wasm binaries
                              // only used for backend: wasm
+  debug: true,               // print additional status messages to console
   async: true,               // execute enabled models in parallel
                              // this disables per-model performance data but
                              // slightly increases performance

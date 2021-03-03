@@ -31,7 +31,7 @@ const ui = {
   baseFontProto: 'small-caps {size} "Segoe UI"',
   baseLineWidth: 12,
   crop: true,
-  columns: 2,
+  columns: 4,
   busy: false,
   facing: true,
   useWorker: false,
@@ -339,7 +339,7 @@ async function processImage(input) {
   return new Promise((resolve) => {
     const image = new Image();
     image.onload = async () => {
-      log('Processing image:', image.src);
+      log('Processing image:', encodeURI(image.src));
       const canvas = document.getElementById('canvas');
       image.width = image.naturalWidth;
       image.height = image.naturalHeight;
@@ -351,7 +351,12 @@ async function processImage(input) {
       const thumb = document.createElement('canvas');
       thumb.className = 'thumbnail';
       thumb.width = window.innerWidth / (ui.columns + 0.1);
-      thumb.height = canvas.height / (window.innerWidth / thumb.width);
+      thumb.height = thumb.width * canvas.height / canvas.width;
+      if (result.face && result.face.length > 0) {
+        thumb.title = result.face.map((a, i) => `#${i} face: ${Math.trunc(100 * a.faceConfidence)}% box: ${Math.trunc(100 * a.boxConfidence)}% age: ${Math.trunc(a.age)} gender: ${Math.trunc(100 * a.genderConfidence)}% ${a.gender}`).join(' | ');
+      } else {
+        thumb.title = 'no face detected';
+      }
       const ctx = thumb.getContext('2d');
       ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, thumb.width, thumb.height);
       document.getElementById('samples-container').appendChild(thumb);
@@ -403,6 +408,7 @@ async function detectSampleImages() {
   log('Running detection of sample images');
   status('processing images');
   document.getElementById('samples-container').innerHTML = '';
+  for (const m of Object.values(menu)) m.hide();
   for (const image of ui.samples) await processImage(image);
   status('');
 }

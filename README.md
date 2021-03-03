@@ -47,6 +47,8 @@ Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows an
 - [**Platform Support**](https://github.com/vladmandic/human/wiki/Platforms)
 - [**List of Models & Credits**](https://github.com/vladmandic/human/wiki/Models)
 
+And my quick future-looking [**To-do list**](https://github.com/vladmandic/human/wiki/TODO.md)
+
 <br>
 
 *See [issues](https://github.com/vladmandic/human/issues?q=) and [discussions](https://github.com/vladmandic/human/discussions) for list of known limitations and planned enhancements*  

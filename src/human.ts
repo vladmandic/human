@@ -235,7 +235,7 @@ class Human {
     let genderRes;
     let emotionRes;
     let embeddingRes;
-    const faceRes: Array<{ confidence: number, box: any, mesh: any, meshRaw: any, boxRaw: any, annotations: any, age: number, gender: string, genderConfidence: number, emotion: string, embedding: any, iris: number }> = [];
+    const faceRes: Array<{ confidence: number, boxConfidence: number, faceConfidence: number, box: any, mesh: any, meshRaw: any, boxRaw: any, annotations: any, age: number, gender: string, genderConfidence: number, emotion: string, embedding: any, iris: number }> = [];
     this.state = 'run:face';
     timeStamp = now();
     const faces = await this.models.face?.estimateFaces(input, this.config);
@@ -316,6 +316,8 @@ class Human {
       // combine results
       faceRes.push({
         confidence: face.confidence,
+        faceConfidence: face.faceConfidence,
+        boxConfidence: face.boxConfidence,
         box: face.box,
         mesh: face.mesh,
         boxRaw: face.boxRaw,

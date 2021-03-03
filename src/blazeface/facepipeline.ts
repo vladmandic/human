@@ -251,7 +251,7 @@ export class Pipeline {
         coords: transformedCoords,
         box: landmarksBox,
         faceConfidence,
-        confidence: box.confidence,
+        boxConfidence: box.confidence,
         image: face,
         rawCoords,
       };

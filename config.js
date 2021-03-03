@@ -82,10 +82,10 @@ export default {
                              // in short time (10 * 1/25 = 0.25 sec)
       skipInitial: false,    // if previous detection resulted in no faces detected,
                              // should skipFrames be reset immediately
-      minConfidence: 0.2,    // threshold for discarding a prediction
-      iouThreshold: 0.2,     // threshold for deciding whether boxes overlap too much in
+      minConfidence: 0.1,    // threshold for discarding a prediction
+      iouThreshold: 0.1,     // threshold for deciding whether boxes overlap too much in
                              // non-maximum suppression (0.1 means drop if overlap 10%)
-      scoreThreshold: 0.2,   // threshold for deciding when to remove boxes based on score
+      scoreThreshold: 0.1,   // threshold for deciding when to remove boxes based on score
                              // in non-maximum suppression,
                              // this is applied on detection objects only and before minConfidence
     },
@@ -114,7 +114,7 @@ export default {
 
     gender: {
       enabled: true,
-      minConfidence: 0.4,    // threshold for discarding a prediction
+      minConfidence: 0.1,    // threshold for discarding a prediction
       modelPath: '../models/gender.json', // can be 'gender', 'gender-ssrnet-imdb' or 'gender-ssrnet-wiki'
       inputSize: 64,         // fixed value
       skipFrames: 41,        // how many frames to go without re-running the detector
@@ -124,7 +124,7 @@ export default {
     emotion: {
       enabled: true,
       inputSize: 64,         // fixed value
-      minConfidence: 0.2,    // threshold for discarding a prediction
+      minConfidence: 0.1,    // threshold for discarding a prediction
       skipFrames: 21,        // how many frames to go without re-running the detector
       modelPath: '../models/emotion-large.json', // can be 'mini', 'large'
     },

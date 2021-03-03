@@ -87,7 +87,7 @@ async function watch() {
 function handle(url) {
   return new Promise((resolve) => {
     let obj = { ok: false };
-    obj.file = url;
+    obj.file = decodeURI(url);
     if (!fs.existsSync(obj.file)) resolve(null);
     obj.stat = fs.statSync(obj.file);
     if (obj.stat.isFile()) obj.ok = true;

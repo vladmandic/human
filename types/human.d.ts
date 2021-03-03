@@ -26,6 +26,8 @@ declare class Human {
     checkBackend(force?: boolean): Promise<void>;
     detectFace(input: any): Promise<{
         confidence: number;
+        boxConfidence: number;
+        faceConfidence: number;
         box: any;
         mesh: any;
         meshRaw: any;

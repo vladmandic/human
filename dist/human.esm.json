@@ -5,7 +5,7 @@
       "imports": []
     },
     "dist/tfjs.esm.js": {
-      "bytes": 1065627,
+      "bytes": 2912363,
       "imports": []
     },
     "src/tfjs/backend.ts": {
@@ -52,7 +52,7 @@
       "imports": []
     },
     "src/blazeface/facepipeline.ts": {
-      "bytes": 14151,
+      "bytes": 14154,
       "imports": [
         {
           "path": "dist/tfjs.esm.js",
@@ -73,7 +73,7 @@
       ]
     },
     "src/blazeface/facemesh.ts": {
-      "bytes": 2922,
+      "bytes": 3095,
       "imports": [
         {
           "path": "src/log.ts",
@@ -421,7 +421,7 @@
       "imports": []
     },
     "src/human.ts": {
-      "bytes": 19965,
+      "bytes": 20100,
       "imports": [
         {
           "path": "src/log.ts",
@@ -499,7 +499,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1941474
+      "bytes": 2158647
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -509,121 +509,121 @@
       "entryPoint": "src/human.ts",
       "inputs": {
         "src/blazeface/facemesh.ts": {
-          "bytesInOutput": 1463
+          "bytesInOutput": 3035
         },
         "src/posenet/keypoints.ts": {
-          "bytesInOutput": 1690
+          "bytesInOutput": 2522
         },
         "src/log.ts": {
-          "bytesInOutput": 252
+          "bytesInOutput": 307
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1056626
+          "bytesInOutput": 2833855
         },
         "src/tfjs/backend.ts": {
-          "bytesInOutput": 1053
+          "bytesInOutput": 1780
         },
         "src/blazeface/blazeface.ts": {
-          "bytesInOutput": 2194
+          "bytesInOutput": 4949
         },
         "src/blazeface/box.ts": {
-          "bytesInOutput": 834
+          "bytesInOutput": 1663
         },
         "src/blazeface/util.ts": {
-          "bytesInOutput": 858
+          "bytesInOutput": 2253
         },
         "src/blazeface/coords.ts": {
-          "bytesInOutput": 28983
+          "bytesInOutput": 40670
         },
         "src/blazeface/facepipeline.ts": {
-          "bytesInOutput": 5051
+          "bytesInOutput": 11648
         },
         "src/human.ts": {
-          "bytesInOutput": 10550
+          "bytesInOutput": 17108
         },
         "src/faceboxes/faceboxes.ts": {
-          "bytesInOutput": 1576
+          "bytesInOutput": 2761
         },
         "src/profile.ts": {
-          "bytesInOutput": 606
+          "bytesInOutput": 952
         },
         "src/age/age.ts": {
-          "bytesInOutput": 784
+          "bytesInOutput": 1493
         },
         "src/gender/gender.ts": {
-          "bytesInOutput": 1246
+          "bytesInOutput": 2600
         },
         "src/emotion/emotion.ts": {
-          "bytesInOutput": 1189
+          "bytesInOutput": 2304
         },
         "src/embedding/embedding.ts": {
-          "bytesInOutput": 804
+          "bytesInOutput": 1600
         },
         "src/posenet/posenet.ts": {
-          "bytesInOutput": 1016
+          "bytesInOutput": 2195
         },
         "src/posenet/modelBase.ts": {
-          "bytesInOutput": 646
+          "bytesInOutput": 1258
         },
         "src/posenet/heapSort.ts": {
-          "bytesInOutput": 1017
+          "bytesInOutput": 1442
         },
         "src/posenet/buildParts.ts": {
-          "bytesInOutput": 456
+          "bytesInOutput": 1506
         },
         "src/posenet/decodePose.ts": {
-          "bytesInOutput": 1292
+          "bytesInOutput": 4651
         },
         "src/posenet/vectors.ts": {
-          "bytesInOutput": 346
+          "bytesInOutput": 779
         },
         "src/posenet/decoders.ts": {
-          "bytesInOutput": 768
+          "bytesInOutput": 1851
         },
         "src/posenet/decodeMultiple.ts": {
-          "bytesInOutput": 557
+          "bytesInOutput": 1710
         },
         "src/posenet/util.ts": {
-          "bytesInOutput": 354
+          "bytesInOutput": 791
         },
         "src/handpose/handpose.ts": {
-          "bytesInOutput": 1281
+          "bytesInOutput": 2325
         },
         "src/handpose/box.ts": {
-          "bytesInOutput": 938
+          "bytesInOutput": 1893
         },
         "src/handpose/handdetector.ts": {
-          "bytesInOutput": 1668
+          "bytesInOutput": 3379
         },
         "src/handpose/util.ts": {
-          "bytesInOutput": 816
+          "bytesInOutput": 2198
         },
         "src/handpose/handpipeline.ts": {
-          "bytesInOutput": 2510
+          "bytesInOutput": 5897
         },
         "src/handpose/anchors.ts": {
-          "bytesInOutput": 126985
+          "bytesInOutput": 221202
         },
         "src/gesture/gesture.ts": {
-          "bytesInOutput": 2391
+          "bytesInOutput": 4071
         },
         "src/imagefx.js": {
-          "bytesInOutput": 10975
+          "bytesInOutput": 18706
         },
         "src/image.ts": {
-          "bytesInOutput": 2355
+          "bytesInOutput": 4511
         },
         "config.js": {
-          "bytesInOutput": 1453
+          "bytesInOutput": 2225
         },
         "src/sample.ts": {
-          "bytesInOutput": 55295
+          "bytesInOutput": 55311
         },
         "package.json": {
-          "bytesInOutput": 2572
+          "bytesInOutput": 3333
         }
       },
-      "bytes": 1339457
+      "bytes": 3275334
     }
   }
 }

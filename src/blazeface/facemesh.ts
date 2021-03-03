@@ -22,9 +22,7 @@ export class MediaPipeFaceMesh {
       const meshRaw = prediction.rawCoords;
       const annotations = {};
       if (mesh && mesh.length > 0) {
-        for (const key of Object.keys(coords.MESH_ANNOTATIONS)) {
-          annotations[key] = coords.MESH_ANNOTATIONS[key].map((index) => mesh[index]);
-        }
+        for (const key of Object.keys(coords.MESH_ANNOTATIONS)) annotations[key] = coords.MESH_ANNOTATIONS[key].map((index) => mesh[index]);
       }
       const boxRaw = (config.face.mesh.returnRawData && prediction.box) ? { topLeft: prediction.box.startPoint, bottomRight: prediction.box.endPoint } : null;
       const box = prediction.box ? [
@@ -33,7 +31,17 @@ export class MediaPipeFaceMesh {
         Math.min(input.shape[2], prediction.box.endPoint[0]) - prediction.box.startPoint[0],
         Math.min(input.shape[1], prediction.box.endPoint[1]) - prediction.box.startPoint[1],
       ] : 0;
-      results.push({ confidence: prediction.confidence || 0, box, mesh, boxRaw, meshRaw, annotations, image: prediction.image ? tf.clone(prediction.image) : null });
+      results.push({
+        confidence: prediction.faceConfidence || prediction.boxConfidence || 0,
+        boxConfidence: prediction.boxConfidence,
+        faceConfidence: prediction.faceConfidence,
+        box,
+        mesh,
+        boxRaw,
+        meshRaw,
+        annotations,
+        image: prediction.image ? tf.clone(prediction.image) : null,
+      });
       if (prediction.coords) prediction.coords.dispose();
       if (prediction.image) prediction.image.dispose();
     }

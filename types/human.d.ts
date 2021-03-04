@@ -10,6 +10,7 @@ declare class Human {
     checkSanity: boolean;
     firstRun: boolean;
     perf: any;
+    image: any;
     models: any;
     facemesh: any;
     age: any;

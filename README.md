@@ -1,20 +1,23 @@
 # Human Library
 
-### 3D Face Detection, Face Embedding & Recognition,
-### Body Pose Tracking, Hand & Finger Tracking,
-### Iris Analysis, Age & Gender & Emotion Prediction
-### & Gesture Recognition
+**3D Face Detection, Face Embedding & Recognition,**  
+**Body Pose Tracking, Hand & Finger Tracking,**  
+**Iris Analysis, Age & Gender & Emotion Prediction**  
+**& Gesture Recognition**
 
 <br>
 
 Native JavaScript module using TensorFlow/JS Machine Learning library  
-Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows and Linux    
+Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows and Linux
+
 - Browser/WebWorker: Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  
 - NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
 
+Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) for processing of live WebCam video or static images
+
 <br>
 
-### Project pages:
+## Project pages
 
 - [**Live Demo**](https://vladmandic.github.io/human/demo/index.html)
 - [**Code Repository**](https://github.com/vladmandic/human)
@@ -24,7 +27,7 @@ Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows an
 
 <br>
 
-### Wiki pages:
+## Wiki pages
 
 - [**Home**](https://github.com/vladmandic/human/wiki)
 - [**Demos**](https://github.com/vladmandic/human/wiki/Demos)
@@ -37,7 +40,7 @@ Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows an
 
 <br>
 
-### Additional notes:
+## Additional notes
 
 - [**Notes on Backends**](https://github.com/vladmandic/human/wiki/Backends)
 - [**Development Server**](https://github.com/vladmandic/human/wiki/Development-Server)
@@ -49,13 +52,35 @@ Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows an
 
 <br>
 
-*See [issues](https://github.com/vladmandic/human/issues?q=) and [discussions](https://github.com/vladmandic/human/discussions) for list of known limitations and planned enhancements*  
+## Default models
+
+Default models in Human library are:
+
+- **Face Detection**: MediaPipe BlazeFace-Back
+- **Face Mesh**: MediaPipe FaceMesh
+- **Face Iris Analysis**: MediaPipe Iris
+- **Emotion Detection**: Oarriaga Emotion
+- **Gender Detection**: Oarriaga Gender
+- **Age Detection**: SSR-Net Age IMDB
+- **Body Analysis**: PoseNet
+- **Face Embedding**: Sirius-AI MobileFaceNet Embedding
+
+Note that alternative models are provided and can be enabled via configuration  
+For example, `PoseNet` model can be switched for `BlazePose` model depending on the use case  
+
+For more info, see [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration) and [**List of Models**](https://github.com/vladmandic/human/wiki/Models)
+
+<br>
+
+*See [**issues**](https://github.com/vladmandic/human/issues?q=) and [**discussions**](https://github.com/vladmandic/human/discussions) for list of known limitations and planned enhancements*  
 
 *Suggestions are welcome!*  
 
 <br><hr><br>
 
-## Options ##
+## Options
+
+As presented in the demo application...
 
 ![Options visible in demo](assets/screenshot-menu.png)
 
@@ -65,12 +90,17 @@ Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows an
 
 <br>
 
+**Training image:**  
+
+![Example Training Image](assets/screenshot-sample.png)
+
 **Using static images:**  
 
-![Example Using Image](assets/screenshot1.jpg)
+![Example Using Image](assets/screenshot-images.jpg)
+
+**Live WebCam view:**  
+
+![Example Using WebCam](assets/screenshot-webcam.jpg)
+
 
 <br>
-
-**Using webcam:**  
-
-![Example Using WebCam](assets/screenshot2.jpg)

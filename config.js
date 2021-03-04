@@ -105,8 +105,7 @@ export default {
 
     age: {
       enabled: true,
-      modelPath: '../models/age-ssrnet-imdb.json', // can be 'age-ssrnet-imdb' or 'age-ssrnet-wiki'
-                                                   // which determines training set for model
+      modelPath: '../models/age-ssrnet-imdb.json',
       inputSize: 64,         // fixed value
       skipFrames: 31,        // how many frames to go without re-running the detector
                              // only used for video inputs
@@ -115,7 +114,7 @@ export default {
     gender: {
       enabled: true,
       minConfidence: 0.1,    // threshold for discarding a prediction
-      modelPath: '../models/gender.json', // can be 'gender', 'gender-ssrnet-imdb' or 'gender-ssrnet-wiki'
+      modelPath: '../models/gender.json', // can be 'gender' or 'gender-ssrnet-imdb'
       inputSize: 64,         // fixed value
       skipFrames: 41,        // how many frames to go without re-running the detector
                              // only used for video inputs
@@ -126,7 +125,7 @@ export default {
       inputSize: 64,         // fixed value
       minConfidence: 0.1,    // threshold for discarding a prediction
       skipFrames: 21,        // how many frames to go without re-running the detector
-      modelPath: '../models/emotion-large.json', // can be 'mini', 'large'
+      modelPath: '../models/emotion.json',
     },
 
     embedding: {
@@ -138,16 +137,17 @@ export default {
 
   body: {
     enabled: true,
-    modelPath: '../models/posenet.json',
-    inputSize: 257,          // fixed value
+    modelPath: '../models/posenet.json', // can be 'posenet' or 'blazepose'
+    inputSize: 257,          // fixed value, 257 for posenet and 256 for blazepose
     maxDetections: 10,       // maximum number of people detected in the input
                              // should be set to the minimum number for performance
+                             // only valid for posenet as blazepose only detects single pose
     scoreThreshold: 0.5,     // threshold for deciding when to remove boxes based on score
                              // in non-maximum suppression
+                             // only valid for posenet as blazepose only detects single pose
     nmsRadius: 20,           // radius for deciding points are too close in non-maximum suppression
-    outputStride: 16,        // size of block in which to run point detection, smaller value means higher resolution
-                             // defined by model itself, can be 8, 16, or 32
-    modelType: 'MobileNet',  // Human includes MobileNet version, but you can switch to ResNet
+                             // only valid for posenet as blazepose only detects single pose
+    modelType: 'posenet-mobilenet',  // can be 'posenet-mobilenet', 'posenet-resnet', 'blazepose'
   },
 
   hand: {

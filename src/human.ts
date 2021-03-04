@@ -9,6 +9,7 @@ import * as emotion from './emotion/emotion';
 import * as embedding from './embedding/embedding';
 import * as posenet from './posenet/posenet';
 import * as handpose from './handpose/handpose';
+import * as blazepose from './blazepose/blazepose';
 import * as gesture from './gesture/gesture';
 import * as image from './image';
 import * as profile from './profile';
@@ -49,6 +50,7 @@ class Human {
   checkSanity: boolean;
   firstRun: boolean;
   perf: any;
+  image: any;
   models: any;
   // models
   facemesh: any;
@@ -74,18 +76,21 @@ class Human {
     this.models = {
       facemesh: null,
       posenet: null,
+      blazepose: null,
       handpose: null,
       iris: null,
       age: null,
       gender: null,
       emotion: null,
     };
+    // export access to image processing
+    this.image = (input) => image.process(input, this.config);
     // export raw access to underlying models
     this.facemesh = facemesh;
     this.age = age;
     this.gender = gender;
     this.emotion = emotion;
-    this.body = posenet;
+    this.body = this.config.body.modelType.startsWith('posenet') ? posenet : blazepose;
     this.hand = handpose;
   }
 
@@ -146,16 +151,18 @@ class Human {
         this.models.gender,
         this.models.emotion,
         this.models.embedding,
-        this.models.posenet,
         this.models.handpose,
+        this.models.posenet,
+        this.models.blazepose,
       ] = await Promise.all([
         this.models.face || (this.config.face.enabled ? face.load(this.config) : null),
         this.models.age || ((this.config.face.enabled && this.config.face.age.enabled) ? age.load(this.config) : null),
         this.models.gender || ((this.config.face.enabled && this.config.face.gender.enabled) ? gender.load(this.config) : null),
         this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
         this.models.embedding || ((this.config.face.enabled && this.config.face.embedding.enabled) ? embedding.load(this.config) : null),
-        this.models.posenet || (this.config.body.enabled ? posenet.load(this.config) : null),
         this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config) : null),
+        this.models.posenet || (this.config.body.enabled && this.config.body.modelType.startsWith('posenet') ? posenet.load(this.config) : null),
+        this.models.posenet || (this.config.body.enabled && this.config.body.modelType.startsWith('blazepose') ? blazepose.load(this.config) : null),
       ]);
     } else {
       if (this.config.face.enabled && !this.models.face) this.models.face = await face.load(this.config);
@@ -163,8 +170,9 @@ class Human {
       if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) this.models.gender = await gender.load(this.config);
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) this.models.emotion = await emotion.load(this.config);
       if (this.config.face.enabled && this.config.face.embedding.enabled && !this.models.embedding) this.models.embedding = await embedding.load(this.config);
-      if (this.config.body.enabled && !this.models.posenet) this.models.posenet = await posenet.load(this.config);
       if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config);
+      if (this.config.body.enabled && !this.models.posenet && this.config.body.modelType.startsWith('posenet')) this.models.posenet = await posenet.load(this.config);
+      if (this.config.body.enabled && !this.models.blazepose && this.config.body.modelType.startsWith('blazepose')) this.models.blazepose = await blazepose.load(this.config);
     }
 
     if (this.firstRun) {
@@ -346,16 +354,6 @@ class Human {
     return faceRes;
   }
 
-  /*
-  async processImage(input, userConfig = {}) {
-    this.state = 'image';
-    this.config = mergeDeep(this.config, userConfig);
-    const process = image.process(input, this.config);
-    process?.tensor?.dispose();
-    return process?.canvas;
-  }
-  */
-
   // main detect function
   async detect(input, userConfig = {}) {
     // detection happens inside a promise
@@ -374,7 +372,7 @@ class Human {
         resolve({ error });
       }
 
-      let poseRes;
+      let bodyRes;
       let handRes;
       let faceRes;
 
@@ -410,15 +408,17 @@ class Human {
         this.perf.face = Math.trunc(now() - timeStamp);
       }
 
-      // run posenet
+      // run body: can be posenet or blazepose
       this.analyze('Start Body:');
       if (this.config.async) {
-        poseRes = this.config.body.enabled ? this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
+        if (this.config.body.modelType.startsWith('posenet')) bodyRes = this.config.body.enabled ? this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
+        else bodyRes = this.config.body.enabled ? blazepose.predict(process.tensor, this.config) : [];
         if (this.perf.body) delete this.perf.body;
       } else {
         this.state = 'run:body';
         timeStamp = now();
-        poseRes = this.config.body.enabled ? await this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
+        if (this.config.body.modelType.startsWith('posenet')) bodyRes = this.config.body.enabled ? await this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
+        else bodyRes = this.config.body.enabled ? await blazepose.predict(process.tensor, this.config) : [];
         this.perf.body = Math.trunc(now() - timeStamp);
       }
       this.analyze('End Body:');
@@ -438,7 +438,7 @@ class Human {
 
       // if async wait for results
       if (this.config.async) {
-        [faceRes, poseRes, handRes] = await Promise.all([faceRes, poseRes, handRes]);
+        [faceRes, bodyRes, handRes] = await Promise.all([faceRes, bodyRes, handRes]);
       }
       process.tensor.dispose();
 
@@ -449,14 +449,14 @@ class Human {
       if (this.config.gesture.enabled) {
         timeStamp = now();
         // @ts-ignore
-        gestureRes = [...gesture.face(faceRes), ...gesture.body(poseRes), ...gesture.hand(handRes), ...gesture.iris(faceRes)];
+        gestureRes = [...gesture.face(faceRes), ...gesture.body(bodyRes), ...gesture.hand(handRes), ...gesture.iris(faceRes)];
         if (!this.config.async) this.perf.gesture = Math.trunc(now() - timeStamp);
         else if (this.perf.gesture) delete this.perf.gesture;
       }
 
       this.perf.total = Math.trunc(now() - timeStart);
       this.state = 'idle';
-      resolve({ face: faceRes, body: poseRes, hand: handRes, gesture: gestureRes, performance: this.perf, canvas: process.canvas });
+      resolve({ face: faceRes, body: bodyRes, hand: handRes, gesture: gestureRes, performance: this.perf, canvas: process.canvas });
     });
   }
 
@@ -487,21 +487,24 @@ class Human {
           src = 'data:image/jpeg;base64,' + sample.face;
           break;
         case 'full':
+        case 'body':
           size = 1200;
           src = 'data:image/jpeg;base64,' + sample.body;
           break;
         default:
           src = null;
       }
-      const img = new Image(size, size);
-      img.onload = () => {
+      // src = encodeURI('../assets/human-sample-face.jpg');
+      const img = new Image();
+      img.onload = async () => {
         const canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(size, size) : document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(img, 0, 0);
-        const data = ctx?.getImageData(0, 0, size, size);
-        this.detect(data, this.config).then((res) => resolve(res));
+        // const data = ctx?.getImageData(0, 0, canvas.height, canvas.width);
+        const res = await this.detect(canvas, this.config);
+        resolve(res);
       };
       if (src) img.src = src;
       else resolve(null);

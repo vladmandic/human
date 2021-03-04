@@ -1,3 +1,12 @@
+async function drawPoint(canvas, x = 0, y = 0, radius = 0, color = 'black', label) {
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  ctx.fill();
+  if (label) ctx.fillText(label, x + 4, y + 4);
+}
+
 async function drawGesture(result, canvas, ui) {
   if (!result) return;
   const ctx = canvas.getContext('2d');
@@ -11,7 +20,9 @@ async function drawGesture(result, canvas, ui) {
       const label = `${where[0]} ${person}: ${what[1]}`;
       ctx.fillStyle = 'black';
       ctx.fillText(label, 8, 2 + (i * ui.baseLineHeight));
+      // ctx.fillText(label, 151, i * 16 + 101);
       ctx.fillStyle = ui.baseLabel;
+      // ctx.fillText(label, 150, i * 16 + 100);
       ctx.fillText(label, 6, 0 + (i * ui.baseLineHeight));
       i += 1;
     }
@@ -48,8 +59,10 @@ async function drawFace(result, canvas, ui, triangulation) {
       const x = Math.max(face.box[0], 0);
       const y = i * ui.baseLineHeight + face.box[1];
       ctx.fillText(labels[i], x + 5, y + 16);
+      // ctx.fillText(labels[i], 151, i * 16 + 28);
       ctx.fillStyle = ui.baseLabel;
       ctx.fillText(labels[i], x + 4, y + 15);
+      // ctx.fillText(labels[i], 150, i * 16 + 27);
     }
     ctx.fillStyle = ui.baseColor;
     ctx.stroke();
@@ -119,13 +132,17 @@ async function drawBody(result, canvas, ui) {
   const ctx = canvas.getContext('2d');
   ctx.lineJoin = 'round';
   for (let i = 0; i < result.length; i++) {
+    // result[i].keypoints = result[i].keypoints.filter((a) => a.score > 0.5);
     if (!lastDrawnPose[i] && ui.buffered) lastDrawnPose[i] = { ...result[i] };
-    ctx.fillStyle = ui.baseColor;
     ctx.strokeStyle = ui.baseColor;
     ctx.font = ui.baseFont;
     ctx.lineWidth = ui.baseLineWidth;
     if (ui.drawPoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
+        ctx.fillStyle = ui.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + (2 * result[i].keypoints[pt].position.z)}, ${127.5 - (2 * result[i].keypoints[pt].position.z)}, 255, 0.5)` : ui.baseColor;
+        if (ui.drawLabels) {
+          ctx.fillText(`${result[i].keypoints[pt].part}`, result[i].keypoints[pt].position.x + 4, result[i].keypoints[pt].position.y + 4);
+        }
         ctx.beginPath();
         if (ui.buffered) {
           lastDrawnPose[i].keypoints[pt].position.x = (lastDrawnPose[i].keypoints[pt].position.x + result[i].keypoints[pt].position.x) / 2;
@@ -162,6 +179,10 @@ async function drawBody(result, canvas, ui) {
         if (part) path.lineTo(part.position.x, part.position.y);
         part = result[i].keypoints.find((a) => a.part === 'leftAnkle');
         if (part) path.lineTo(part.position.x, part.position.y);
+        part = result[i].keypoints.find((a) => a.part === 'leftHeel');
+        if (part) path.lineTo(part.position.x, part.position.y);
+        part = result[i].keypoints.find((a) => a.part === 'leftFoot');
+        if (part) path.lineTo(part.position.x, part.position.y);
       }
       // leg right
       root = result[i].keypoints.find((a) => a.part === 'rightHip');
@@ -170,6 +191,10 @@ async function drawBody(result, canvas, ui) {
         part = result[i].keypoints.find((a) => a.part === 'rightKnee');
         if (part) path.lineTo(part.position.x, part.position.y);
         part = result[i].keypoints.find((a) => a.part === 'rightAnkle');
+        if (part) path.lineTo(part.position.x, part.position.y);
+        part = result[i].keypoints.find((a) => a.part === 'rightHeel');
+        if (part) path.lineTo(part.position.x, part.position.y);
+        part = result[i].keypoints.find((a) => a.part === 'rightFoot');
         if (part) path.lineTo(part.position.x, part.position.y);
       }
       // arm left
@@ -180,6 +205,8 @@ async function drawBody(result, canvas, ui) {
         if (part) path.lineTo(part.position.x, part.position.y);
         part = result[i].keypoints.find((a) => a.part === 'leftWrist');
         if (part) path.lineTo(part.position.x, part.position.y);
+        part = result[i].keypoints.find((a) => a.part === 'leftPalm');
+        if (part) path.lineTo(part.position.x, part.position.y);
       }
       // arm right
       root = result[i].keypoints.find((a) => a.part === 'rightShoulder');
@@ -188,6 +215,8 @@ async function drawBody(result, canvas, ui) {
         part = result[i].keypoints.find((a) => a.part === 'rightElbow');
         if (part) path.lineTo(part.position.x, part.position.y);
         part = result[i].keypoints.find((a) => a.part === 'rightWrist');
+        if (part) path.lineTo(part.position.x, part.position.y);
+        part = result[i].keypoints.find((a) => a.part === 'rightPalm');
         if (part) path.lineTo(part.position.x, part.position.y);
       }
       // draw all
@@ -253,4 +282,5 @@ export default {
   body: drawBody,
   hand: drawHand,
   gesture: drawGesture,
+  point: drawPoint,
 };

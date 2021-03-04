@@ -14,10 +14,12 @@ const userConfig = {}; // add any user configuration overrides
 const userConfig = {
   backend: 'wasm',
   async: false,
+  warmup: 'full',
   videoOptimized: false,
-  face: { enabled: true, iris: { enabled: false }, mesh: { enabled: true }, age: { enabled: true }, gender: { enabled: true }, emotion: { enabled: true }, embedding: { enabled: true } },
-  body: { enabled: false },
-  hand: { enabled: false },
+  face: { enabled: true, iris: { enabled: true }, mesh: { enabled: true }, age: { enabled: true }, gender: { enabled: true }, emotion: { enabled: true }, embedding: { enabled: true } },
+  hand: { enabled: true },
+  gestures: { enabled: true },
+  body: { enabled: true, modelType: 'blazepose', modelPath: '../models/blazepose.json' },
 };
 */
 
@@ -31,15 +33,16 @@ const ui = {
   baseFontProto: 'small-caps {size} "Segoe UI"',
   baseLineWidth: 12,
   crop: true,
-  columns: 4,
+  columns: 2,
   busy: false,
   facing: true,
   useWorker: false,
   worker: 'worker.js',
   samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'],
   compare: '../assets/sample-me.jpg',
+  drawLabels: true,
   drawBoxes: true,
-  drawPoints: false,
+  drawPoints: true,
   drawPolygons: true,
   fillPolygons: false,
   useDepth: true,
@@ -52,6 +55,7 @@ const ui = {
   detectFPS: [],
   drawFPS: [],
   buffered: false,
+  drawWarmup: false,
   drawThread: null,
   detectThread: null,
   framesDraw: 0,
@@ -120,7 +124,7 @@ async function drawResults(input) {
   await menu.process.updateChart('FPS', ui.detectFPS);
 
   // get updated canvas
-  if (ui.buffered || !result.canvas) result.canvas = await human.image(input, userConfig);
+  if (ui.buffered || !result.canvas) result.canvas = await human.image(input).canvas;
 
   // draw image from video
   const ctx = canvas.getContext('2d');
@@ -436,6 +440,7 @@ function setupMenu() {
   });
   menu.display.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.display.addBool('use 3D depth', ui, 'useDepth');
+  menu.display.addBool('print labels', ui, 'drawLabels');
   menu.display.addBool('draw boxes', ui, 'drawBoxes');
   menu.display.addBool('draw polygons', ui, 'drawPolygons');
   menu.display.addBool('Fill Polygons', ui, 'fillPolygons');
@@ -530,6 +535,18 @@ function setupMenu() {
   document.getElementById('play').addEventListener('click', () => detectVideo());
 }
 
+async function drawWarmup(res) {
+  const canvas = document.getElementById('canvas');
+  canvas.width = res.canvas.width;
+  canvas.height = res.canvas.height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(res.canvas, 0, 0, res.canvas.width, res.canvas.height, 0, 0, canvas.width, canvas.height);
+  await draw.face(res.face, canvas, ui, human.facemesh.triangulation);
+  await draw.body(res.body, canvas, ui);
+  await draw.hand(res.hand, canvas, ui);
+  await draw.gesture(res.gesture, canvas, ui);
+}
+
 async function main() {
   log('Demo starting ...');
   log('Browser:', navigator?.userAgent);
@@ -543,7 +560,9 @@ async function main() {
   }
   if (!ui.useWorker) {
     status('initializing');
-    await human.warmup(userConfig); // this is not required, just pre-warms all models for faster initial inference
+    const res = await human.warmup(userConfig); // this is not required, just pre-warms all models for faster initial inference
+    ui.baseFont = ui.baseFontProto.replace(/{size}/, '16px');
+    if (res && res.canvas && ui.drawWarmup) await drawWarmup(res);
   }
   status('human: ready');
   document.getElementById('loader').style.display = 'none';

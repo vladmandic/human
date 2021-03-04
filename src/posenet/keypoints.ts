@@ -4,7 +4,7 @@ export const partNames = [
   'leftHip', 'rightHip', 'leftKnee', 'rightKnee', 'leftAnkle', 'rightAnkle',
 ];
 
-export const NUM_KEYPOINTS = exports.partNames.length;
+export const NUM_KEYPOINTS = exports.partNames.length; // 17 keypoints
 
 export const partIds = exports.partNames.reduce((result, jointName, i) => {
   result[jointName] = i;

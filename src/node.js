@@ -32,7 +32,7 @@ const config = {
     iris: { modelPath: 'file://models/iris.json' },
     age: { modelPath: 'file://models/age-ssrnet-imdb.json' },
     gender: { modelPath: 'file://models/gender.json' },
-    emotion: { modelPath: 'file://models/emotion-large.json' },
+    emotion: { modelPath: 'file://models/emotion.json' },
     embedding: { modelPath: 'file://models/mobilefacenet.json' },
   },
   body: { modelPath: 'file://models/posenet.json' },

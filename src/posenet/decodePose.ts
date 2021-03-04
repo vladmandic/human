@@ -5,6 +5,9 @@ import * as decoders from './decoders';
 const parentChildrenTuples = keypoints.poseChain.map(([parentJoinName, childJoinName]) => ([keypoints.partIds[parentJoinName], keypoints.partIds[childJoinName]]));
 const parentToChildEdges = parentChildrenTuples.map(([, childJointId]) => childJointId);
 const childToParentEdges = parentChildrenTuples.map(([parentJointId]) => parentJointId);
+
+const defaultOutputStride = 16;
+
 function getDisplacement(edgeId, point, displacements) {
   const numEdges = displacements.shape[2] / 2;
   return {
@@ -12,6 +15,7 @@ function getDisplacement(edgeId, point, displacements) {
     x: displacements.get(point.y, point.x, numEdges + edgeId),
   };
 }
+
 function getStridedIndexNearPoint(point, outputStride, height, width) {
   return {
     y: vectors.clamp(Math.round(point.y / outputStride), 0, height - 1),
@@ -77,7 +81,7 @@ export async function decodeSinglePose(heatmapScores, offsets, config) {
   const scoresBuffer = allTensorBuffers[0];
   const offsetsBuffer = allTensorBuffers[1];
   const heatmapValuesBuffer = allTensorBuffers[2];
-  const offsetPoints = decoders.getOffsetPoints(heatmapValuesBuffer, config.body.outputStride, offsetsBuffer);
+  const offsetPoints = decoders.getOffsetPoints(heatmapValuesBuffer, defaultOutputStride, offsetsBuffer);
   const offsetPointsBuffer = await offsetPoints.buffer();
   const keypointConfidence = Array.from(decoders.getPointsConfidence(scoresBuffer, heatmapValuesBuffer));
   const instanceKeypoints = keypointConfidence.map((score, i) => {

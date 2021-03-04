@@ -20,11 +20,11 @@ export class BaseModel {
 
   predict(input, config) {
     return tf.tidy(() => {
-      const asFloat = (config.body.modelType === 'ResNet') ? input.toFloat().add(imageNetMean) : input.toFloat().div(127.5).sub(1.0);
+      const asFloat = (config.body.modelType === 'posenet-resnet') ? input.toFloat().add(imageNetMean) : input.toFloat().div(127.5).sub(1.0);
       const asBatch = asFloat.expandDims(0);
       const results = this.model.predict(asBatch);
       const results3d = results.map((y) => y.squeeze([0]));
-      const namedResults = (config.body.modelType === 'ResNet') ? nameOutputResultsResNet(results3d) : nameOutputResultsMobileNet(results3d);
+      const namedResults = (config.body.modelType === 'posenet-resnet') ? nameOutputResultsResNet(results3d) : nameOutputResultsMobileNet(results3d);
       return {
         heatmapScores: namedResults.heatmap.sigmoid(),
         offsets: namedResults.offsets,

@@ -14,7 +14,6 @@ Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows an
 - NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
 
 Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) for processing of live WebCam video or static images  
-Live demo uses `WASM` backend for faster startup, but results are slower than when using `WebGL` backend
 
 <br>
 

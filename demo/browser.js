@@ -1,13 +1,8 @@
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-// import * as tf from '@tensorflow/tfjs';
-// import Human from '../dist/human.esm-nobundle.js';
-
 import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
-
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-const userConfig = { backend: 'wasm' }; // add any user configuration overrides
+const userConfig = { }; // add any user configuration overrides
 
 /*
 const userConfig = {
@@ -18,7 +13,7 @@ const userConfig = {
   face: { enabled: false, iris: { enabled: true }, mesh: { enabled: true }, age: { enabled: true }, gender: { enabled: true }, emotion: { enabled: true }, embedding: { enabled: true } },
   hand: { enabled: false },
   gestures: { enabled: true },
-  body: { enabled: true, modelType: 'blazepose', modelPath: '../models/blazepose-upper.json' },
+  body: { enabled: true, modelType: 'blazepose', modelPath: '../models/blazepose.json' },
 };
 */
 

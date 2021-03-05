@@ -142,7 +142,7 @@ export default {
     maxDetections: 10,       // maximum number of people detected in the input
                              // should be set to the minimum number for performance
                              // only valid for posenet as blazepose only detects single pose
-    scoreThreshold: 0.5,     // threshold for deciding when to remove boxes based on score
+    scoreThreshold: 0.3,     // threshold for deciding when to remove boxes based on score
                              // in non-maximum suppression
                              // only valid for posenet as blazepose only detects single pose
     nmsRadius: 20,           // radius for deciding points are too close in non-maximum suppression

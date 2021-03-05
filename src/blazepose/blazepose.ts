@@ -23,13 +23,12 @@ export async function predict(image, config) {
   const resize = tf.image.resizeBilinear(image, [model.width || config.body.inputSize, model.height || config.body.inputSize], false);
   const normalize = tf.div(resize, [255.0]);
   resize.dispose();
-  // let segmentation; // not used right now since we have keypoints and don't need to go through matrix using strides
-  // let poseflag; // irrelevant
   let points;
   if (!config.profile) { // run through profiler or just execute
     const resT = await model.predict(normalize);
-    // segmentation = resT[0].dataSync();
-    // poseflag = resT[1].dataSync();
+    // const segmentationT = resT.find((t) => (t.size === 16384 || t.size === 0)).squeeze();
+    // const segmentation = segmentationT.arraySync(); // array 128 x 128
+    // tf.dispose(segmentationT);
     points = resT.find((t) => (t.size === 195 || t.size === 155)).dataSync(); // order of output tensors may change between models, full has 195 and upper has 155 items
     resT.forEach((t) => t.dispose());
   } else {

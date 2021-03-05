@@ -7,9 +7,9 @@ export declare const options: {
     lineWidth: number;
     pointSize: number;
     roundRect: number;
+    drawPoints: boolean;
     drawLabels: boolean;
     drawBoxes: boolean;
-    drawPoints: boolean;
     drawPolygons: boolean;
     fillPolygons: boolean;
     useDepth: boolean;

@@ -13,13 +13,14 @@ Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows an
 - Browser/WebWorker: Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  
 - NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
 
-Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) for processing of live WebCam video or static images
+Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) for processing of live WebCam video or static images  
+Live demo uses `WASM` backend for faster startup, but results are slower than when using `WebGL` backend
 
 <br>
 
 ## Project pages
 
-- [**Live Demo**](https://vladmandic.github.io/human/demo/index.html)
+- [**Live Demo**](https://vladmandic.github.io/human/demo/index.html)  
 - [**Code Repository**](https://github.com/vladmandic/human)
 - [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
@@ -102,5 +103,38 @@ As presented in the demo application...
 
 ![Example Using WebCam](assets/screenshot-webcam.jpg)
 
+<br><hr><br>
+
+Example simple app that uses Human to process video input and  
+draw output on screen using internal draw helper functions
+
+```js
+import Human from '@vladmandic/human';
+
+// create instance of human with simple configuration using default values
+const config = { backend: 'wasm' };
+const human = new Human(config);
+
+function detectVideo() {
+  // select input HTMLVideoElement and output HTMLCanvasElement from page
+  const inputVideo = document.getElementById('video-id');
+  const outputCanvas = document.getElementById('canvas-id');
+  // perform processing using default configuration
+  human.detect(inputVideo).then((result) => {
+    // result object will contain detected details as well as the processed canvas itself
+    // first draw processed frame on canvas
+    human.draw.canvas(result.canvas, outputCanvas);
+    // then draw results on the same canvas
+    human.draw.face(outputCanvas, result.face);
+    human.draw.body(outputCanvas, result.body);
+    human.draw.hand(outputCanvas, result.hand);
+    human.draw.gesture(outputCanvas, result.gesture);
+    // loop immediate to next frame
+    requestAnimationFrame(detectVideo);
+  });
+}
+
+detectVideo();
+```
 
 <br>

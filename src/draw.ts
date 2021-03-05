@@ -1,3 +1,4 @@
+import config from '../config';
 import { TRI468 as triangulation } from './blazeface/coords';
 
 export const options = {
@@ -9,11 +10,11 @@ export const options = {
   lineWidth: 6,
   pointSize: 2,
   roundRect: 8,
+  drawPoints: false,
   drawLabels: true,
   drawBoxes: true,
-  drawPoints: false,
   drawPolygons: true,
-  fillPolygons: true,
+  fillPolygons: false,
   useDepth: true,
   bufferedOutput: false,
 };
@@ -42,6 +43,21 @@ function rect(ctx, x, y, width, height) {
     ctx.stroke();
   } else {
     rect(ctx, x, y, width, height);
+  }
+}
+
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+function lines(ctx, points) {
+  ctx.beginPath();
+  const path = new Path2D();
+  path.moveTo(points[0][0], points[0][1]);
+  for (const pt of points) {
+    path.lineTo(pt[0], parseInt(pt[1]));
+  }
+  ctx.stroke(path);
+  if (options.fillPolygons) {
+    ctx.closePath();
+    ctx.fill(path);
   }
 }
 
@@ -177,11 +193,7 @@ export async function face(inCanvas, result) {
     ctx.font = options.font;
     ctx.strokeStyle = options.color;
     ctx.fillStyle = options.color;
-    ctx.lineWidth = options.lineWidth;
-    ctx.beginPath();
-    if (options.drawBoxes) {
-      rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3]);
-    }
+    if (options.drawBoxes) rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3]);
     // silly hack since fillText does not suport new line
     const labels:string[] = [];
     labels.push(`face confidence: ${Math.trunc(100 * f.confidence)}%`);
@@ -205,8 +217,6 @@ export async function face(inCanvas, result) {
       ctx.fillStyle = options.labelColor;
       ctx.fillText(labels[i], x + 4, y + 15);
     }
-    ctx.fillStyle = options.color;
-    ctx.stroke();
     ctx.lineWidth = 1;
     if (f.mesh) {
       if (options.drawPoints) {
@@ -222,18 +232,10 @@ export async function face(inCanvas, result) {
             triangulation[i * 3 + 1],
             triangulation[i * 3 + 2],
           ].map((index) => f.mesh[index]);
-          const path = new Path2D();
-          path.moveTo(points[0][0], points[0][1]);
-          for (const pt of points) {
-            path.lineTo(pt[0], pt[1]);
-          }
-          path.closePath();
           ctx.strokeStyle = options.useDepth ? `rgba(${127.5 + (2 * points[0][2])}, ${127.5 - (2 * points[0][2])}, 255, 0.3)` : options.color;
-          ctx.stroke(path);
-          if (options.fillPolygons) {
-            ctx.fillStyle = options.useDepth ? `rgba(${127.5 + (2 * points[0][2])}, ${127.5 - (2 * points[0][2])}, 255, 0.3)` : options.color;
-            ctx.fill(path);
-          }
+          ctx.fillStyle = options.useDepth ? `rgba(${127.5 + (2 * points[0][2])}, ${127.5 - (2 * points[0][2])}, 255, 0.3)` : options.color;
+          ctx.lineWidth = 1;
+          lines(ctx, points);
         }
         // iris: array[center, left, top, right, bottom]
         if (f.annotations && f.annotations.leftEyeIris) {
@@ -276,23 +278,24 @@ export async function body(inCanvas, result) {
     // result[i].keypoints = result[i].keypoints.filter((a) => a.score > 0.5);
     if (!lastDrawnPose[i] && options.bufferedOutput) lastDrawnPose[i] = { ...result[i] };
     ctx.strokeStyle = options.color;
-    ctx.font = options.font;
     ctx.lineWidth = options.lineWidth;
     if (options.drawPoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
         ctx.fillStyle = options.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + (2 * result[i].keypoints[pt].position.z)}, ${127.5 - (2 * result[i].keypoints[pt].position.z)}, 255, 0.5)` : options.color;
-        if (options.drawLabels) {
-          ctx.fillText(`${result[i].keypoints[pt].part}`, result[i].keypoints[pt][0] + 4, result[i].keypoints[pt][1] + 4);
-        }
-        ctx.beginPath();
         if (options.bufferedOutput) {
-          lastDrawnPose[i].keypoints[pt][0] = (lastDrawnPose[i].keypoints[pt][0] + result[i].keypoints[pt][0]) / 2;
-          lastDrawnPose[i].keypoints[pt][1] = (lastDrawnPose[i].keypoints[pt][1] + result[i].keypoints[pt][1]) / 2;
+          lastDrawnPose[i].keypoints[pt][0] = (lastDrawnPose[i].keypoints[pt][0] + result[i].keypoints[pt].position.x) / 2;
+          lastDrawnPose[i].keypoints[pt][1] = (lastDrawnPose[i].keypoints[pt][1] + result[i].keypoints[pt].position.y) / 2;
           point(ctx, lastDrawnPose[i].keypoints[pt][0], lastDrawnPose[i].keypoints[pt][1]);
         } else {
-          point(ctx, result[i].keypoints[pt][0], result[i].keypoints[pt][1]);
+          point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y);
         }
-        ctx.fill();
+      }
+    }
+    if (options.drawLabels) {
+      ctx.font = options.font;
+      for (const pt of result[i].keypoints) {
+        ctx.fillStyle = options.useDepth && pt.position.z ? `rgba(${127.5 + (2 * pt.position.z)}, ${127.5 - (2 * pt.position.z)}, 255, 0.5)` : options.color;
+        ctx.fillText(`${pt.part}`, pt.position.x + 4, pt.position.y + 4);
       }
     }
     if (options.drawPolygons) {
@@ -301,64 +304,74 @@ export async function body(inCanvas, result) {
       let part;
       // torso
       root = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-      if (root) {
-        path.moveTo(root.position.x, root.position.y);
+      if (root && root.score > config.body.scoreThreshold) {
+        const points: any[] = [];
+        points.push([root.position.x, root.position.y, 'leftShoulder']);
         part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'rightHip');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'leftHip');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+        lines(ctx, points);
       }
       // leg left
       root = result[i].keypoints.find((a) => a.part === 'leftHip');
-      if (root) {
-        path.moveTo(root.position.x, root.position.y);
+      if (root && root.score > config.body.scoreThreshold) {
+        const points: any[] = [];
+        points.push([root.position.x, root.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'leftKnee');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'leftAnkle');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'leftHeel');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'leftFoot');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+        lines(ctx, points);
       }
       // leg right
       root = result[i].keypoints.find((a) => a.part === 'rightHip');
-      if (root) {
-        path.moveTo(root.position.x, root.position.y);
+      if (root && root.score > config.body.scoreThreshold) {
+        const points: any[] = [];
+        points.push([root.position.x, root.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'rightKnee');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'rightAnkle');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'rightHeel');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'rightFoot');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+        lines(ctx, points);
       }
       // arm left
       root = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-      if (root) {
-        path.moveTo(root.position.x, root.position.y);
+      if (root && root.score > config.body.scoreThreshold) {
+        const points: any[] = [];
+        points.push([root.position.x, root.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'leftElbow');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'leftWrist');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'leftPalm');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+        lines(ctx, points);
       }
       // arm right
       root = result[i].keypoints.find((a) => a.part === 'rightShoulder');
-      if (root) {
-        path.moveTo(root.position.x, root.position.y);
+      if (root && root.score > config.body.scoreThreshold) {
+        const points: any[] = [];
+        points.push([root.position.x, root.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'rightElbow');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'rightWrist');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
         part = result[i].keypoints.find((a) => a.part === 'rightPalm');
-        if (part) path.lineTo(part.position.x, part.position.y);
+        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+        lines(ctx, points);
       }
       // draw all
       ctx.stroke(path);
@@ -372,12 +385,9 @@ export async function hand(inCanvas, result) {
   const ctx = inCanvas.getContext('2d');
   if (!ctx) return;
   ctx.lineJoin = 'round';
+  ctx.font = options.font;
   for (const h of result) {
-    ctx.font = options.font;
-    ctx.lineWidth = options.lineWidth;
     if (options.drawBoxes) {
-      ctx.lineWidth = options.lineWidth;
-      ctx.beginPath();
       ctx.strokeStyle = options.color;
       ctx.fillStyle = options.color;
       rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3]);

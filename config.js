@@ -137,7 +137,7 @@ export default {
 
   body: {
     enabled: true,
-    modelPath: '../models/posenet.json', // can be 'posenet' or 'blazepose'
+    modelPath: '../models/posenet.json', // can be 'posenet', 'blazepose' or 'blazepose-upper'
     inputSize: 257,          // fixed value, 257 for posenet and 256 for blazepose
     maxDetections: 10,       // maximum number of people detected in the input
                              // should be set to the minimum number for performance

@@ -1,49 +1,9 @@
 import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
+import * as annotations from './annotations';
 
 let model;
-const labels = [
-  'nose',
-  'leftEyeInside',
-  'leftEye',
-  'leftEyeOutside',
-  'rightEyeInside',
-  'rightEye',
-  'rightEyeOutside',
-  'leftEar',
-  'rightEar',
-  'leftMouth',
-  'rightMouth',
-  'leftShoulder',
-  'rightShoulder',
-  'leftElbow',
-  'rightElbow',
-  'leftWrist',
-  'rightWrist',
-  'leftPalm',
-  'rightPalm',
-  'leftIndex',
-  'rightIndex',
-  'leftPinky',
-  'rightPinky',
-  'leftHip',
-  'rightHip',
-  'leftKnee',
-  'rightKnee',
-  'leftAnkle',
-  'rightAnkle',
-  'leftHeel',
-  'rightHeel',
-  'leftFoot',
-  'rightFoot',
-  'midHip',
-  'forehead',
-  'leftThumb',
-  'leftHand',
-  'rightThumb',
-  'rightHand',
-];
 
 export async function load(config) {
   if (!model) {
@@ -81,17 +41,19 @@ export async function predict(image, config) {
   }
   normalize.dispose();
   const keypoints: Array<{ id, part, position: { x, y, z }, score, presence }> = [];
-  for (let i = 0; i < points.length / 5; i++) {
+  const labels = points.length === 195 ? annotations.full : annotations.upper;
+  const depth = 5;
+  for (let i = 0; i < points.length / depth; i++) {
     keypoints.push({
       id: i,
       part: labels[i],
       position: {
-        x: Math.trunc(imgSize.width * points[5 * i + 0] / 255),
-        y: Math.trunc(imgSize.height * points[5 * i + 1] / 255),
-        z: Math.trunc(points[5 * i + 2]) + 0, // fix negative zero
+        x: Math.trunc(imgSize.width * points[depth * i + 0] / 255),
+        y: Math.trunc(imgSize.height * points[depth * i + 1] / 255),
+        z: Math.trunc(points[depth * i + 2]) + 0, // fix negative zero
       },
-      score: (100 - Math.trunc(100 / (1 + Math.exp(points[5 * i + 3])))) / 100, // reverse sigmoid value
-      presence: (100 - Math.trunc(100 / (1 + Math.exp(points[5 * i + 4])))) / 100, // reverse sigmoid value
+      score: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100, // reverse sigmoid value
+      presence: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 4])))) / 100, // reverse sigmoid value
     });
   }
   // console.log('POINTS', imgSize, pts.length, pts);

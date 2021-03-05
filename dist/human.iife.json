@@ -5,7 +5,7 @@
       "imports": []
     },
     "dist/tfjs.esm.js": {
-      "bytes": 1065627,
+      "bytes": 1065682,
       "imports": []
     },
     "src/tfjs/backend.ts": {
@@ -383,8 +383,12 @@
         }
       ]
     },
+    "src/blazepose/annotations.ts": {
+      "bytes": 1108,
+      "imports": []
+    },
     "src/blazepose/blazepose.ts": {
-      "bytes": 3327,
+      "bytes": 2879,
       "imports": [
         {
           "path": "src/log.ts",
@@ -396,6 +400,10 @@
         },
         {
           "path": "src/profile.ts",
+          "kind": "import-statement"
+        },
+        {
+          "path": "src/blazepose/annotations.ts",
           "kind": "import-statement"
         }
       ]
@@ -426,7 +434,7 @@
       ]
     },
     "config.js": {
-      "bytes": 10403,
+      "bytes": 10422,
       "imports": []
     },
     "src/sample.ts": {
@@ -438,7 +446,7 @@
       "imports": []
     },
     "src/human.ts": {
-      "bytes": 21042,
+      "bytes": 21043,
       "imports": [
         {
           "path": "src/log.ts",
@@ -520,7 +528,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1948313
+      "bytes": 1949300
     },
     "dist/human.ts": {
       "imports": [],
@@ -540,7 +548,7 @@
           "bytesInOutput": 252
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1056636
+          "bytesInOutput": 1056695
         },
         "src/tfjs/backend.ts": {
           "bytesInOutput": 1053
@@ -624,7 +632,10 @@
           "bytesInOutput": 126985
         },
         "src/blazepose/blazepose.ts": {
-          "bytesInOutput": 1613
+          "bytesInOutput": 1153
+        },
+        "src/blazepose/annotations.ts": {
+          "bytesInOutput": 860
         },
         "src/gesture/gesture.ts": {
           "bytesInOutput": 2391
@@ -645,7 +656,7 @@
           "bytesInOutput": 2596
         }
       },
-      "bytes": 1341959
+      "bytes": 1342465
     }
   }
 }

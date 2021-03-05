@@ -494,7 +494,7 @@ class Human {
         default:
           src = null;
       }
-      // src = encodeURI('../assets/human-sample-face.jpg');
+      // src = encodeURI('../assets/human-sample-upper.jpg');
       const img = new Image();
       img.onload = async () => {
         const canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(size, size) : document.createElement('canvas');

@@ -8,20 +8,18 @@ import draw from './draw.js';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-const userConfig = {}; // add any user configuration overrides
+// const userConfig = {}; // add any user configuration overrides
 
-/*
 const userConfig = {
   backend: 'wasm',
   async: false,
   warmup: 'full',
   videoOptimized: false,
-  face: { enabled: true, iris: { enabled: true }, mesh: { enabled: true }, age: { enabled: true }, gender: { enabled: true }, emotion: { enabled: true }, embedding: { enabled: true } },
-  hand: { enabled: true },
+  face: { enabled: false, iris: { enabled: true }, mesh: { enabled: true }, age: { enabled: true }, gender: { enabled: true }, emotion: { enabled: true }, embedding: { enabled: true } },
+  hand: { enabled: false },
   gestures: { enabled: true },
-  body: { enabled: true, modelType: 'blazepose', modelPath: '../models/blazepose.json' },
+  body: { enabled: true, modelType: 'blazepose', modelPath: '../models/blazepose-upper.json' },
 };
-*/
 
 const human = new Human(userConfig);
 

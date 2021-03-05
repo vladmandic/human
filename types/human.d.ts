@@ -1,5 +1,6 @@
 declare class Human {
     tf: any;
+    draw: any;
     package: any;
     version: string;
     config: any;

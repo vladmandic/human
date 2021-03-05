@@ -4,11 +4,10 @@
 
 import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
 
-import draw from './draw.js';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-const userConfig = {}; // add any user configuration overrides
+const userConfig = { backend: 'wasm' }; // add any user configuration overrides
 
 /*
 const userConfig = {
@@ -27,40 +26,31 @@ const human = new Human(userConfig);
 
 // ui options
 const ui = {
-  baseColor: 'rgba(173, 216, 230, 0.3)', // 'lightblue' with light alpha channel
   baseBackground: 'rgba(50, 50, 50, 1)', // 'grey'
-  baseLabel: 'rgba(173, 216, 230, 1)', // 'lightblue' with dark alpha channel
-  baseFontProto: 'small-caps {size} "Segoe UI"',
-  baseLineWidth: 12,
-  crop: true,
-  columns: 2,
-  busy: false,
-  facing: true,
-  useWorker: false,
+  crop: true, // video mode crop to size or leave full frame
+  columns: 2, // when processing sample images create this many columns
+  facing: true, // camera facing front or back
+  useWorker: false, // use web workers for processing
   worker: 'worker.js',
   samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'],
   compare: '../assets/sample-me.jpg',
-  drawLabels: true,
-  drawBoxes: true,
-  drawPoints: true,
-  drawPolygons: true,
-  fillPolygons: false,
-  useDepth: true,
-  console: true,
-  maxFPSframes: 10,
-  modelsPreload: true,
-  menuWidth: 0,
-  menuHeight: 0,
-  camera: {},
-  detectFPS: [],
-  drawFPS: [],
-  buffered: false,
-  drawWarmup: false,
-  drawThread: null,
-  detectThread: null,
-  framesDraw: 0,
-  framesDetect: 0,
-  bench: false,
+  console: true, // log messages to browser console
+  maxFPSframes: 10, // keep fps history for how many frames
+  modelsPreload: true, // preload human models on startup
+  busy: false, // internal camera busy flag
+  menuWidth: 0, // internal
+  menuHeight: 0, // internal
+  camera: {}, // internal, holds details of webcam details
+  detectFPS: [], // internal, holds fps values for detection performance
+  drawFPS: [], // internal, holds fps values for draw performance
+  buffered: false, // experimental, should output be buffered between frames
+  drawWarmup: false, // debug only, should warmup image processing be displayed on startup
+  drawThread: null, // perform draw operations in a separate thread
+  detectThread: null, // perform detect operations in a separate thread
+  framesDraw: 0, // internal, statistics on frames drawn
+  framesDetect: 0, // internal, statistics on frames detected
+  bench: false, // show gl fps benchmark window
+  lastFrame: 0, // time of last frame processing
 };
 
 // global variables
@@ -90,7 +80,8 @@ function log(...msg) {
 
 function status(msg) {
   // eslint-disable-next-line no-console
-  document.getElementById('status').innerText = msg;
+  const div = document.getElementById('status');
+  if (div) div.innerText = msg;
 }
 
 let original;
@@ -139,10 +130,10 @@ async function drawResults(input) {
   }
 
   // draw all results
-  await draw.face(result.face, canvas, ui, human.facemesh.triangulation);
-  await draw.body(result.body, canvas, ui);
-  await draw.hand(result.hand, canvas, ui);
-  await draw.gesture(result.gesture, canvas, ui);
+  await human.draw.face(canvas, result.face);
+  await human.draw.body(canvas, result.body);
+  await human.draw.hand(canvas, result.hand);
+  await human.draw.gesture(canvas, result.gesture);
   await calcSimmilariry(result);
 
   // update log
@@ -230,9 +221,6 @@ async function setupCamera() {
       ui.menuWidth.input.setAttribute('value', video.width);
       ui.menuHeight.input.setAttribute('value', video.height);
       // silly font resizing for paint-on-canvas since viewport can be zoomed
-      const size = Math.trunc(window.devicePixelRatio * (8 + (4 * canvas.width / window.innerWidth)));
-      ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
-      ui.baseLineHeight = size + 2;
       if (live) video.play();
       // eslint-disable-next-line no-use-before-define
       if (live && !ui.detectThread) runHumanDetect(video, canvas);
@@ -404,9 +392,6 @@ async function detectVideo() {
 async function detectSampleImages() {
   document.getElementById('play').style.display = 'none';
   userConfig.videoOptimized = false;
-  const size = Math.trunc(window.devicePixelRatio * (12 + (4 * ui.columns)));
-  ui.baseFont = ui.baseFontProto.replace(/{size}/, `${size}px`);
-  ui.baseLineHeight = size + 2;
   document.getElementById('canvas').style.display = 'none';
   document.getElementById('samples-container').style.display = 'block';
   log('Running detection of sample images');
@@ -439,12 +424,12 @@ function setupMenu() {
     setupCamera();
   });
   menu.display.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.display.addBool('use 3D depth', ui, 'useDepth');
-  menu.display.addBool('print labels', ui, 'drawLabels');
-  menu.display.addBool('draw boxes', ui, 'drawBoxes');
-  menu.display.addBool('draw polygons', ui, 'drawPolygons');
-  menu.display.addBool('Fill Polygons', ui, 'fillPolygons');
-  menu.display.addBool('draw points', ui, 'drawPoints');
+  menu.display.addBool('use 3D depth', human.draw.options, 'useDepth');
+  menu.display.addBool('print labels', human.draw.options, 'drawLabels');
+  menu.display.addBool('draw boxes', human.draw.options, 'drawBoxes');
+  menu.display.addBool('draw polygons', human.draw.options, 'drawPolygons');
+  menu.display.addBool('Fill Polygons', human.draw.options, 'fillPolygons');
+  menu.display.addBool('draw points', human.draw.options, 'drawPoints');
 
   menu.image = new Menu(document.body, '', { top: `${document.getElementById('menubar').offsetHeight}px`, left: x[1] });
   menu.image.addBool('enabled', human.config.filter, 'enabled', (val) => human.config.filter.enabled = val);
@@ -541,10 +526,7 @@ async function drawWarmup(res) {
   canvas.height = res.canvas.height;
   const ctx = canvas.getContext('2d');
   ctx.drawImage(res.canvas, 0, 0, res.canvas.width, res.canvas.height, 0, 0, canvas.width, canvas.height);
-  await draw.face(res.face, canvas, ui, human.facemesh.triangulation);
-  await draw.body(res.body, canvas, ui);
-  await draw.hand(res.hand, canvas, ui);
-  await draw.gesture(res.gesture, canvas, ui);
+  await human.draw.all(canvas, res);
 }
 
 async function main() {
@@ -561,7 +543,6 @@ async function main() {
   if (!ui.useWorker) {
     status('initializing');
     const res = await human.warmup(userConfig); // this is not required, just pre-warms all models for faster initial inference
-    ui.baseFont = ui.baseFontProto.replace(/{size}/, '16px');
     if (res && res.canvas && ui.drawWarmup) await drawWarmup(res);
   }
   status('human: ready');

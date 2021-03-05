@@ -388,7 +388,7 @@
       "imports": []
     },
     "src/blazepose/blazepose.ts": {
-      "bytes": 2879,
+      "bytes": 3290,
       "imports": [
         {
           "path": "src/log.ts",
@@ -445,8 +445,17 @@
       "bytes": 2594,
       "imports": []
     },
+    "src/draw.ts": {
+      "bytes": 18011,
+      "imports": [
+        {
+          "path": "src/blazeface/coords.ts",
+          "kind": "import-statement"
+        }
+      ]
+    },
     "src/human.ts": {
-      "bytes": 21043,
+      "bytes": 21110,
       "imports": [
         {
           "path": "src/log.ts",
@@ -519,6 +528,10 @@
         {
           "path": "package.json",
           "kind": "import-statement"
+        },
+        {
+          "path": "src/draw.ts",
+          "kind": "import-statement"
         }
       ]
     }
@@ -528,7 +541,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 716046
+      "bytes": 743687
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -545,7 +558,7 @@
           "bytesInOutput": 1677
         },
         "src/human.ts": {
-          "bytesInOutput": 11320
+          "bytesInOutput": 11333
         },
         "src/log.ts": {
           "bytesInOutput": 251
@@ -632,7 +645,7 @@
           "bytesInOutput": 126985
         },
         "src/blazepose/blazepose.ts": {
-          "bytesInOutput": 1179
+          "bytesInOutput": 1198
         },
         "src/blazepose/annotations.ts": {
           "bytesInOutput": 860
@@ -654,9 +667,12 @@
         },
         "package.json": {
           "bytesInOutput": 2593
+        },
+        "src/draw.ts": {
+          "bytesInOutput": 8180
         }
       },
-      "bytes": 279967
+      "bytes": 288179
     }
   }
 }

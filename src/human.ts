@@ -16,6 +16,7 @@ import * as profile from './profile';
 import * as config from '../config';
 import * as sample from './sample';
 import * as app from '../package.json';
+import * as draw from './draw';
 
 // helper function: gets elapsed time on both browser and nodejs
 const now = () => {
@@ -40,6 +41,7 @@ function mergeDeep(...objects) {
 
 class Human {
   tf: any;
+  draw: any;
   package: any;
   version: string;
   config: any;
@@ -62,6 +64,7 @@ class Human {
 
   constructor(userConfig = {}) {
     this.tf = tf;
+    this.draw = draw;
     this.package = app;
     this.version = app.version;
     this.config = mergeDeep(config.default, userConfig);

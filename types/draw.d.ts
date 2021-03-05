@@ -1,0 +1,23 @@
+export declare const options: {
+    color: string;
+    labelColor: string;
+    shadowColor: string;
+    font: string;
+    lineHeight: number;
+    lineWidth: number;
+    pointSize: number;
+    roundRect: number;
+    drawLabels: boolean;
+    drawBoxes: boolean;
+    drawPoints: boolean;
+    drawPolygons: boolean;
+    fillPolygons: boolean;
+    useDepth: boolean;
+    bufferedOutput: boolean;
+};
+export declare function gesture(inCanvas: any, result: any): Promise<void>;
+export declare function face(inCanvas: any, result: any): Promise<void>;
+export declare function body(inCanvas: any, result: any): Promise<void>;
+export declare function hand(inCanvas: any, result: any): Promise<void>;
+export declare function canvas(inCanvas: any, outCanvas: any): Promise<void>;
+export declare function all(inCanvas: any, result: any): Promise<void>;

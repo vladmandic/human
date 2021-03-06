@@ -9,13 +9,14 @@ export const options = {
   lineHeight: 20,
   lineWidth: 6,
   pointSize: 2,
-  roundRect: 8,
+  roundRect: 28,
   drawPoints: false,
   drawLabels: true,
   drawBoxes: true,
   drawPolygons: true,
   fillPolygons: false,
   useDepth: true,
+  useCurves: true,
   bufferedOutput: false,
 };
 
@@ -27,9 +28,13 @@ function point(ctx, x, y) {
 }
 
 function rect(ctx, x, y, width, height) {
-  if (options.roundRect && options.roundRect > 0) {
+  ctx.beginPath();
+  if (options.useCurves) {
+    const cx = (x + x + width) / 2;
+    const cy = (y + y + height) / 2;
+    ctx.ellipse(cx, cy, width / 2, height / 2, 0, 0, 2 * Math.PI);
+  } else {
     ctx.lineWidth = options.lineWidth;
-    ctx.beginPath();
     ctx.moveTo(x + options.roundRect, y);
     ctx.lineTo(x + width - options.roundRect, y);
     ctx.quadraticCurveTo(x + width, y, x + width, y + options.roundRect);
@@ -40,122 +45,40 @@ function rect(ctx, x, y, width, height) {
     ctx.lineTo(x, y + options.roundRect);
     ctx.quadraticCurveTo(x, y, x + options.roundRect, y);
     ctx.closePath();
-    ctx.stroke();
-  } else {
-    rect(ctx, x, y, width, height);
   }
+  ctx.stroke();
 }
 
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-function lines(ctx, points) {
+function lines(ctx, points: number[] = []) {
+  if (points === undefined || points.length === 0) return;
   ctx.beginPath();
-  const path = new Path2D();
-  path.moveTo(points[0][0], points[0][1]);
-  for (const pt of points) {
-    path.lineTo(pt[0], parseInt(pt[1]));
-  }
-  ctx.stroke(path);
+  ctx.moveTo(points[0][0], points[0][1]);
+  for (const pt of points) ctx.lineTo(pt[0], parseInt(pt[1]));
+  ctx.stroke();
   if (options.fillPolygons) {
     ctx.closePath();
-    ctx.fill(path);
+    ctx.fill();
   }
 }
 
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-function curve(ctx, points = []) {
-  if (points.length < 2) return;
-  ctx.lineWidth = options.lineWidth;
-  ctx.beginPath();
+function curves(ctx, points: number[] = []) {
+  if (points === undefined || points.length === 0) return;
+  if (!options.useCurves || points.length <= 2) {
+    lines(ctx, points);
+    return;
+  }
   ctx.moveTo(points[0][0], points[0][1]);
-  for (let i = 0; i < points.length - 1; i++) {
-    const xMid = (points[i][0] + points[i + 1][0]) / 2;
-    const yMid = (points[i][1] + points[i + 1][1]) / 2;
-    const cpX1 = (xMid + points[i][0]) / 2;
-    const cpX2 = (xMid + points[i + 1][1]) / 2;
-    ctx.quadraticCurveTo(cpX1, points[i][1], xMid, yMid);
-    ctx.quadraticCurveTo(cpX2, points[i + 1][1], points[i + 1][0], points[i + 1][0]);
+  for (let i = 0; i < points.length - 2; i++) {
+    const xc = (points[i][0] + points[i + 1][0]) / 2;
+    const yc = (points[i][1] + points[i + 1][1]) / 2;
+    ctx.quadraticCurveTo(points[i][0], points[i][1], xc, yc);
   }
-  ctx.strokeStyle = options.color;
+  ctx.quadraticCurveTo(points[points.length - 2][0], points[points.length - 2][1], points[points.length - 1][0], points[points.length - 1][1]);
   ctx.stroke();
-}
-
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-function bezier(ctx, points) {
-  const tension = 0; // tension at 0 will be straight line
-  const factor = 1; // factor is normally 1, but changing the value can control the smoothness too
-  if (points.length < 2) return;
-  ctx.lineWidth = options.lineWidth;
-  ctx.strokeStyle = options.color;
-  ctx.fillStyle = options.color;
-  ctx.beginPath();
-  ctx.moveTo(points[0][0], points[0][1]);
-  let dx1 = 0;
-  let dy1 = 0;
-  let preP = points[0];
-  for (let i = 1; i < points.length; i++) {
-    const curP = points[i];
-    const nexP = points[i + 1];
-    const m = nexP ? (nexP[1] - preP[1]) / (nexP[0] - preP[0]) : 0;
-    const dx2 = nexP ? (nexP[0] - curP[0]) * -factor : 0;
-    const dy2 = nexP ? dx2 * m * tension : 0;
-    ctx.bezierCurveTo(preP[0] - dx1, preP[1] - dy1, curP[0] + dx2, curP[1] + dy2, curP[0], curP[1]);
-    dx1 = dx2;
-    dy1 = dy2;
-    preP = curP;
+  if (options.fillPolygons) {
+    ctx.closePath();
+    ctx.fill();
   }
-  ctx.stroke();
-}
-
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-function spline(ctx, points) {
-  const tension = 0.8;
-  if (points.length < 2) return;
-  const va = (arr, i, j) => [arr[2 * j] - arr[2 * i], arr[2 * j + 1] - arr[2 * i + 1]];
-  const distance = (arr, i, j) => Math.sqrt(((arr[2 * i] - arr[2 * j]) ** 2) + ((arr[2 * i + 1] - arr[2 * j + 1]) ** 2));
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const ctlpts = (x1, y1, x2, y2, x3, y3) => {
-    // eslint-disable-next-line prefer-rest-params
-    const v = va(arguments, 0, 2);
-    // eslint-disable-next-line prefer-rest-params
-    const d01 = distance(arguments, 0, 1);
-    // eslint-disable-next-line prefer-rest-params
-    const d12 = distance(arguments, 1, 2);
-    const d012 = d01 + d12;
-    return [
-      x2 - v[0] * tension * d01 / d012, y2 - v[1] * tension * d01 / d012,
-      x2 + v[0] * tension * d12 / d012, y2 + v[1] * tension * d12 / d012,
-    ];
-  };
-  const pts: any[] = [];
-  for (const pt of points) {
-    pts.push(pt[0]);
-    pts.push(pt[1]);
-  }
-  let cps = [];
-  for (let i = 0; i < pts.length - 2; i += 1) {
-    // @ts-ignore
-    cps = cps.concat(ctlpts(pts[2 * i + 0], pts[2 * i + 1], pts[2 * i + 2], pts[2 * i + 3], pts[2 * i + 4], pts[2 * i + 5]));
-  }
-  ctx.lineWidth = options.lineWidth;
-  ctx.strokeStyle = options.color;
-  if (points.length === 2) {
-    ctx.beginPath();
-    ctx.moveTo(pts[0], pts[1]);
-    ctx.lineTo(pts[2], pts[3]);
-  } else {
-    ctx.beginPath();
-    ctx.moveTo(pts[0], pts[1]);
-    // first segment is a quadratic
-    ctx.quadraticCurveTo(cps[0], cps[1], pts[2], pts[3]);
-    // for all middle points, connect with bezier
-    let i;
-    for (i = 2; i < ((pts.length / 2) - 1); i += 1) {
-      ctx.bezierCurveTo(cps[(2 * (i - 1) - 1) * 2], cps[(2 * (i - 1) - 1) * 2 + 1], cps[(2 * (i - 1)) * 2], cps[(2 * (i - 1)) * 2 + 1], pts[i * 2], pts[i * 2 + 1]);
-    }
-    // last segment is a quadratic
-    ctx.quadraticCurveTo(cps[(2 * (i - 1) - 1) * 2], cps[(2 * (i - 1) - 1) * 2 + 1], pts[i * 2], pts[i * 2 + 1]);
-  }
-  ctx.stroke();
 }
 
 export async function gesture(inCanvas, result) {
@@ -193,7 +116,9 @@ export async function face(inCanvas, result) {
     ctx.font = options.font;
     ctx.strokeStyle = options.color;
     ctx.fillStyle = options.color;
-    if (options.drawBoxes) rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3]);
+    if (options.drawBoxes) {
+      rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3]);
+    }
     // silly hack since fillText does not suport new line
     const labels:string[] = [];
     labels.push(`face confidence: ${Math.trunc(100 * f.confidence)}%`);
@@ -299,82 +224,70 @@ export async function body(inCanvas, result) {
       }
     }
     if (options.drawPolygons) {
-      const path = new Path2D();
-      let root;
       let part;
+      const points: any[] = [];
       // torso
-      root = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-      if (root && root.score > config.body.scoreThreshold) {
-        const points: any[] = [];
-        points.push([root.position.x, root.position.y, 'leftShoulder']);
-        part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'rightHip');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'leftHip');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        lines(ctx, points);
-      }
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'rightHip');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'leftHip');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (points.length === 5) lines(ctx, points); // only draw if we have complete torso
       // leg left
-      root = result[i].keypoints.find((a) => a.part === 'leftHip');
-      if (root && root.score > config.body.scoreThreshold) {
-        const points: any[] = [];
-        points.push([root.position.x, root.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'leftKnee');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'leftAnkle');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'leftHeel');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'leftFoot');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        lines(ctx, points);
-      }
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === 'leftHip');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'leftKnee');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'leftAnkle');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'leftHeel');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'leftFoot');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      curves(ctx, points);
       // leg right
-      root = result[i].keypoints.find((a) => a.part === 'rightHip');
-      if (root && root.score > config.body.scoreThreshold) {
-        const points: any[] = [];
-        points.push([root.position.x, root.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'rightKnee');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'rightAnkle');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'rightHeel');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'rightFoot');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        lines(ctx, points);
-      }
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === 'rightHip');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'rightKnee');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'rightAnkle');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'rightHeel');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'rightFoot');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      curves(ctx, points);
       // arm left
-      root = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-      if (root && root.score > config.body.scoreThreshold) {
-        const points: any[] = [];
-        points.push([root.position.x, root.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'leftElbow');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'leftWrist');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'leftPalm');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        lines(ctx, points);
-      }
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'leftElbow');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'leftWrist');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'leftPalm');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      curves(ctx, points);
       // arm right
-      root = result[i].keypoints.find((a) => a.part === 'rightShoulder');
-      if (root && root.score > config.body.scoreThreshold) {
-        const points: any[] = [];
-        points.push([root.position.x, root.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'rightElbow');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'rightWrist');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        part = result[i].keypoints.find((a) => a.part === 'rightPalm');
-        if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-        lines(ctx, points);
-      }
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'rightElbow');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'rightWrist');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'rightPalm');
+      if (part && part.score > config.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      curves(ctx, points);
       // draw all
-      ctx.stroke(path);
     }
   }
 }

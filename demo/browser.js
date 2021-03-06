@@ -2,7 +2,7 @@ import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-const userConfig = { }; // add any user configuration overrides
+const userConfig = { backend: 'wasm' }; // add any user configuration overrides
 
 /*
 const userConfig = {
@@ -40,11 +40,11 @@ const ui = {
   drawFPS: [], // internal, holds fps values for draw performance
   buffered: false, // experimental, should output be buffered between frames
   drawWarmup: false, // debug only, should warmup image processing be displayed on startup
-  drawThread: null, // perform draw operations in a separate thread
-  detectThread: null, // perform detect operations in a separate thread
+  drawThread: null, // internl, perform draw operations in a separate thread
+  detectThread: null, // internl, perform detect operations in a separate thread
   framesDraw: 0, // internal, statistics on frames drawn
   framesDetect: 0, // internal, statistics on frames detected
-  bench: false, // show gl fps benchmark window
+  bench: true, // show gl fps benchmark window
   lastFrame: 0, // time of last frame processing
 };
 
@@ -110,7 +110,11 @@ async function drawResults(input) {
   await menu.process.updateChart('FPS', ui.detectFPS);
 
   // get updated canvas
-  if (ui.buffered || !result.canvas) result.canvas = await human.image(input).canvas;
+  if (ui.buffered || !result.canvas) {
+    const image = await human.image(input);
+    result.canvas = image.canvas;
+    human.tf.dispose(image.tensor);
+  }
 
   // draw image from video
   const ctx = canvas.getContext('2d');
@@ -421,10 +425,10 @@ function setupMenu() {
   menu.display.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.display.addBool('use 3D depth', human.draw.options, 'useDepth');
   menu.display.addBool('print labels', human.draw.options, 'drawLabels');
+  menu.display.addBool('draw points', human.draw.options, 'drawPoints');
   menu.display.addBool('draw boxes', human.draw.options, 'drawBoxes');
   menu.display.addBool('draw polygons', human.draw.options, 'drawPolygons');
-  menu.display.addBool('Fill Polygons', human.draw.options, 'fillPolygons');
-  menu.display.addBool('draw points', human.draw.options, 'drawPoints');
+  menu.display.addBool('fill polygons', human.draw.options, 'fillPolygons');
 
   menu.image = new Menu(document.body, '', { top: `${document.getElementById('menubar').offsetHeight}px`, left: x[1] });
   menu.image.addBool('enabled', human.config.filter, 'enabled', (val) => human.config.filter.enabled = val);
@@ -449,8 +453,8 @@ function setupMenu() {
   menu.process = new Menu(document.body, '', { top: `${document.getElementById('menubar').offsetHeight}px`, left: x[2] });
   menu.process.addList('backend', ['cpu', 'webgl', 'wasm', 'humangl'], human.config.backend, (val) => human.config.backend = val);
   menu.process.addBool('async operations', human.config, 'async', (val) => human.config.async = val);
-  menu.process.addBool('enable profiler', human.config, 'profile', (val) => human.config.profile = val);
-  menu.process.addBool('memory shield', human.config, 'deallocate', (val) => human.config.deallocate = val);
+  // menu.process.addBool('enable profiler', human.config, 'profile', (val) => human.config.profile = val);
+  // menu.process.addBool('memory shield', human.config, 'deallocate', (val) => human.config.deallocate = val);
   menu.process.addBool('use web worker', ui, 'useWorker');
   menu.process.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.process.addLabel('model parameters');
@@ -526,7 +530,6 @@ async function drawWarmup(res) {
 
 async function main() {
   log('Demo starting ...');
-  log('Browser:', navigator?.userAgent);
   setupMenu();
   document.getElementById('log').innerText = `Human: version ${human.version}`;
   if (ui.modelsPreload && !ui.useWorker) {

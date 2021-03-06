@@ -23,7 +23,7 @@ export const face = (res) => {
   const gestures: Array<{ face: number, gesture: string }> = [];
   for (let i = 0; i < res.length; i++) {
     if (res[i].mesh && res[i].mesh.length > 0) {
-      const eyeFacing = res[i].mesh[35][2] - res[i].mesh[263][2];
+      const eyeFacing = res[i].mesh[33][2] - res[i].mesh[263][2];
       if (Math.abs(eyeFacing) < 10) gestures.push({ face: i, gesture: 'facing camera' });
       else gestures.push({ face: i, gesture: `facing ${eyeFacing < 0 ? 'right' : 'left'}` });
       const openLeft = Math.abs(res[i].mesh[374][1] - res[i].mesh[386][1]) / Math.abs(res[i].mesh[443][1] - res[i].mesh[450][1]); // center of eye inner lid y coord div center of wider eye border y coord

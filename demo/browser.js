@@ -2,18 +2,18 @@ import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-const userConfig = { backend: 'wasm' }; // add any user configuration overrides
+const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 
 /*
 const userConfig = {
   backend: 'wasm',
   async: false,
-  warmup: 'full',
+  warmup: 'face',
   videoOptimized: false,
-  face: { enabled: false, iris: { enabled: true }, mesh: { enabled: true }, age: { enabled: true }, gender: { enabled: true }, emotion: { enabled: true }, embedding: { enabled: true } },
+  face: { enabled: true, iris: { enabled: false }, mesh: { enabled: true }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: false } },
   hand: { enabled: false },
   gestures: { enabled: true },
-  body: { enabled: true, modelType: 'blazepose', modelPath: '../models/blazepose.json' },
+  body: { enabled: false, modelType: 'blazepose', modelPath: '../models/blazepose.json' },
 };
 */
 
@@ -129,10 +129,11 @@ async function drawResults(input) {
   }
 
   // draw all results
-  await human.draw.face(canvas, result.face);
-  await human.draw.body(canvas, result.body);
-  await human.draw.hand(canvas, result.hand);
-  await human.draw.gesture(canvas, result.gesture);
+  human.draw.face(canvas, result.face);
+  human.draw.body(canvas, result.body);
+  human.draw.hand(canvas, result.hand);
+  human.draw.gesture(canvas, result.gesture);
+  human.draw.angles(canvas, result.face);
   await calcSimmilariry(result);
 
   // update log

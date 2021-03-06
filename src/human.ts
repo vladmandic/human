@@ -248,6 +248,25 @@ class Human {
     }
   }
 
+  calculateFaceAngle = (mesh) => {
+    if (!mesh || mesh.length < 152) return {};
+    const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    const degrees = (theta) => Math.abs(((theta * 180) / Math.PI) % 360);
+    const angle = {
+      // roll is face lean left/right
+      // looking at x,y of outside corners of leftEye and rightEye
+      roll: radians(mesh[33][0], mesh[33][1], mesh[263][0], mesh[263][1]),
+      // yaw is face turn left/right
+      // looking at x,z of outside corners of leftEye and rightEye
+      yaw: radians(mesh[33][0], mesh[33][2], mesh[263][0], mesh[263][2]),
+      // pitch is face move up/down
+      // looking at y,x of top and bottom points of the face
+      pitch: radians(mesh[10][1], mesh[10][2], mesh[152][1], mesh[152][2]),
+    };
+    return angle;
+  }
+
   async detectFace(input) {
     // run facemesh, includes blazeface and iris
     // eslint-disable-next-line no-async-promise-executor
@@ -256,7 +275,24 @@ class Human {
     let genderRes;
     let emotionRes;
     let embeddingRes;
-    const faceRes: Array<{ confidence: number, boxConfidence: number, faceConfidence: number, box: any, mesh: any, meshRaw: any, boxRaw: any, annotations: any, age: number, gender: string, genderConfidence: number, emotion: string, embedding: any, iris: number }> = [];
+    const faceRes: Array<{
+      confidence: number,
+      boxConfidence: number,
+      faceConfidence: number,
+      box: any,
+      mesh:any,
+      meshRaw: any,
+      boxRaw: any,
+      annotations: any,
+      age: number,
+      gender: string,
+      genderConfidence: number,
+      emotion: string,
+      embedding: any,
+      iris: number,
+      angle: any
+    }> = [];
+
     this.state = 'run:face';
     timeStamp = now();
     const faces = await this.models.face?.estimateFaces(input, this.config);
@@ -269,6 +305,8 @@ class Human {
         log('Face object is disposed:', face.image);
         continue;
       }
+
+      const angle = this.calculateFaceAngle(face.mesh);
 
       // run age, inherits face from blazeface
       this.analyze('Start Age:');
@@ -350,6 +388,7 @@ class Human {
         emotion: emotionRes,
         embedding: embeddingRes,
         iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
+        angle,
         // image: face.image.toInt().squeeze(),
       });
 
@@ -385,10 +424,6 @@ class Human {
         resolve({ error });
       }
 
-      let bodyRes;
-      let handRes;
-      let faceRes;
-
       const timeStart = now();
 
       // configure backend
@@ -409,6 +444,11 @@ class Human {
       }
       this.perf.image = Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
+
+      // prepare where to store model results
+      let bodyRes;
+      let handRes;
+      let faceRes;
 
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       if (this.config.async) {
@@ -548,7 +588,7 @@ class Human {
     else res = await this.warmupNode();
     this.config.videoOptimized = video;
     const t1 = now();
-    if (this.config.debug) log('Warmup', this.config.warmup, Math.round(t1 - t0), 'ms');
+    if (this.config.debug) log('Warmup', this.config.warmup, Math.round(t1 - t0), 'ms', res);
     return res;
   }
 }

@@ -1,6 +1,6 @@
 # Human Library
 
-**3D Face Detection, Face Embedding & Recognition,**  
+**3D Face Detection & Rotation Tracking, Face Embedding & Recognition,**  
 **Body Pose Tracking, Hand & Finger Tracking,**  
 **Iris Analysis, Age & Gender & Emotion Prediction**  
 **& Gesture Recognition**

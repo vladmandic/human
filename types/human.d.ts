@@ -27,6 +27,7 @@ declare class Human {
     simmilarity(embedding1: any, embedding2: any): number;
     load(userConfig?: null): Promise<void>;
     checkBackend(force?: boolean): Promise<void>;
+    calculateFaceAngle: (mesh: any) => {};
     detectFace(input: any): Promise<{
         confidence: number;
         boxConfidence: number;
@@ -42,6 +43,7 @@ declare class Human {
         emotion: string;
         embedding: any;
         iris: number;
+        angle: any;
     }[]>;
     detect(input: any, userConfig?: {}): Promise<unknown>;
     warmupBitmap(): Promise<any>;

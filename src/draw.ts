@@ -342,6 +342,26 @@ export async function hand(inCanvas, result) {
   }
 }
 
+export async function angles(inCanvas, result) {
+  // todo
+  if (!result || !inCanvas) return;
+  if (!(inCanvas instanceof HTMLCanvasElement)) return;
+  const ctx = inCanvas.getContext('2d');
+  if (!ctx) return;
+  ctx.font = options.font;
+  ctx.strokeStyle = options.color;
+  ctx.fillStyle = options.color;
+  ctx.lineWidth = options.lineWidth;
+  /*
+  const r = 200;
+  for (const res of result) {
+    ctx.moveTo(inCanvas.width - r, inCanvas.height - r);
+    ctx.lineTo(inCanvas.width - r + (r * Math.cos(res.angle.roll)), inCanvas.height - r + (r * Math.sin(res.angle.roll)));
+    ctx.stroke();
+  }
+  */
+}
+
 export async function canvas(inCanvas, outCanvas) {
   if (!inCanvas || !outCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement) || !(outCanvas instanceof HTMLCanvasElement)) return;
@@ -356,4 +376,5 @@ export async function all(inCanvas, result) {
   body(inCanvas, result.body);
   hand(inCanvas, result.hand);
   gesture(inCanvas, result.gesture);
+  angles(inCanvas, result.face);
 }

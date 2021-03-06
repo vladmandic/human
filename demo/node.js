@@ -40,8 +40,6 @@ async function init() {
   // pre-load models
   log.info('Human:', human.version);
   log.info('Active Configuration', human.config);
-  log.info('TFJS Version:', human.tf.version_core, 'Backend:', tf.getBackend());
-  log.info('TFJS Flags:', human.tf.env().features);
   await human.load();
   const loaded = Object.keys(human.models).filter((a) => human.models[a]);
   log.info('Loaded:', loaded);
@@ -63,27 +61,31 @@ async function detect(input) {
   // dispose image tensor as we no longer need it
   image.dispose();
   // print data to console
-  log.data(result);
+  log.data('Face: ', result.face);
+  log.data('Body:', result.body);
+  log.data('Hand:', result.hand);
+  log.data('Gesture:', result.gesture);
 }
 
 async function test() {
-  // test with embedded face image
+  // test with embedded full body image
+  let result;
+
   log.state('Processing embedded warmup image: face');
   myConfig.warmup = 'face';
-  const resultFace = await human.warmup(myConfig);
-  log.data('Face: ', resultFace.face);
+  result = await human.warmup(myConfig);
+  log.data('Face: ', result.face);
 
-  // test with embedded full body image
   log.state('Processing embedded warmup image: full');
   myConfig.warmup = 'full';
-  const resultFull = await human.warmup(myConfig);
-  log.data('Body:', resultFull.body);
-  log.data('Hand:', resultFull.hand);
-  log.data('Gesture:', resultFull.gesture);
+  result = await human.warmup(myConfig);
+  log.data('Body:', result.body);
+  log.data('Hand:', result.hand);
+  log.data('Gesture:', result.gesture);
 }
 
 async function main() {
-  log.info('NodeJS:', process.version);
+  log.header();
   log.info('Current folder:', process.env.PWD);
   await init();
   if (process.argv.length !== 3) {

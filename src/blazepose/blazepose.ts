@@ -26,10 +26,11 @@ export async function predict(image, config) {
   let points;
   if (!config.profile) { // run through profiler or just execute
     const resT = await model.predict(normalize);
-    // const segmentationT = resT.find((t) => (t.size === 16384 || t.size === 0)).squeeze();
+    // const segmentationT = resT.find((t) => (t.size === 16384))?.squeeze();
     // const segmentation = segmentationT.arraySync(); // array 128 x 128
-    // tf.dispose(segmentationT);
+    // segmentationT.dispose();
     points = resT.find((t) => (t.size === 195 || t.size === 155)).dataSync(); // order of output tensors may change between models, full has 195 and upper has 155 items
+    // console.log(resT, points, segmentation);
     resT.forEach((t) => t.dispose());
   } else {
     const profileData = await tf.profile(() => model.predict(normalize));
@@ -57,11 +58,3 @@ export async function predict(image, config) {
   // console.log('POINTS', imgSize, pts.length, pts);
   return [{ keypoints }];
 }
-
-/*
-Model card:
-- https://drive.google.com/file/d/10IU-DRP2ioSNjKFdiGbmmQX81xAYj88s/view
-Download:
-- https://github.com/PINTO0309/PINTO_model_zoo/tree/main/058_BlazePose_Full_Keypoints/10_new_256x256/saved_model/tfjs_model_float16
-- https://github.com/PINTO0309/PINTO_model_zoo/tree/main/053_BlazePose/20_new_256x256/saved_model/tfjs_model_float16
-*/

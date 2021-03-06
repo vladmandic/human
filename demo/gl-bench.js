@@ -20,7 +20,7 @@ const UISVG = `
     <svg viewBox="0 0 55 60">
       <text x="27" y="56" class="gl-fps">00 FPS</text>
       <text x="30" y="8" class="gl-mem"></text>
-      <rect x="0" y="14" rx="4" ry="4" width="55" height="32"></rect>
+      <rect x="0" y="14" rx="4" ry="4" width="65" height="32"></rect>
       <polyline class="gl-chart"></polyline>
     </svg>
     <svg viewBox="0 0 14 60" class="gl-cpu-svg">

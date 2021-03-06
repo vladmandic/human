@@ -1,4 +1,5 @@
 import { log } from './log';
+import * as sysinfo from './sysinfo';
 import * as tf from '../dist/tfjs.esm.js';
 import * as backend from './tfjs/backend';
 import * as facemesh from './blazeface/facemesh';
@@ -61,6 +62,7 @@ class Human {
   emotion: any;
   body: any;
   hand: any;
+  sysinfo: any;
 
   constructor(userConfig = {}) {
     this.tf = tf;
@@ -95,6 +97,8 @@ class Human {
     this.emotion = emotion;
     this.body = this.config.body.modelType.startsWith('posenet') ? posenet : blazepose;
     this.hand = handpose;
+    // include platform info
+    this.sysinfo = sysinfo.info();
   }
 
   profile() {
@@ -139,7 +143,11 @@ class Human {
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
 
     if (this.firstRun) {
-      if (this.config.debug) log(`version: ${this.version} TensorFlow/JS version: ${this.tf.version_core}`);
+      if (this.config.debug) log(`version: ${this.version}`);
+      if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
+      if (this.config.debug) log('platform:', this.sysinfo.platform);
+      if (this.config.debug) log('agent:', this.sysinfo.agent);
+
       await this.checkBackend(true);
       if (this.tf.ENV.flags.IS_BROWSER) {
         if (this.config.debug) log('configuration:', this.config);
@@ -206,9 +214,11 @@ class Human {
         if (this.config.debug) log('setting backend:', this.config.backend);
 
         if (this.config.backend === 'wasm') {
-          if (this.config.debug) log('settings wasm path:', this.config.wasmPath);
+          if (this.config.debug) log('wasm path:', this.config.wasmPath);
           this.tf.setWasmPaths(this.config.wasmPath);
           const simd = await this.tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
+          const mt = await this.tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT');
+          if (this.config.debug) log(`wasm execution: ${simd ? 'SIMD' : 'no SIMD'} ${mt ? 'multithreaded' : 'singlethreaded'}`);
           if (!simd) log('warning: wasm simd support is not enabled');
         }
 
@@ -538,7 +548,7 @@ class Human {
     else res = await this.warmupNode();
     this.config.videoOptimized = video;
     const t1 = now();
-    if (this.config.debug) log('Warmup', this.config.warmup, Math.round(t1 - t0), 'ms', res);
+    if (this.config.debug) log('Warmup', this.config.warmup, Math.round(t1 - t0), 'ms');
     return res;
   }
 }

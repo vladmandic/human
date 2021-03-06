@@ -19,6 +19,7 @@ declare class Human {
     emotion: any;
     body: any;
     hand: any;
+    sysinfo: any;
     constructor(userConfig?: {});
     profile(): {};
     analyze(...msg: any[]): void;

@@ -13,6 +13,7 @@ export declare const options: {
     drawPolygons: boolean;
     fillPolygons: boolean;
     useDepth: boolean;
+    useCurves: boolean;
     bufferedOutput: boolean;
 };
 export declare function gesture(inCanvas: any, result: any): Promise<void>;

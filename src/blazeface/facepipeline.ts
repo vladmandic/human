@@ -19,8 +19,9 @@ const IRIS_LOWER_CENTER_INDEX = 4;
 const IRIS_IRIS_INDEX = 71;
 const IRIS_NUM_COORDINATES = 76;
 
-// Replace the raw coordinates returned by facemesh with refined iris model coordinates. Update the z coordinate to be an average of the original and the new. This produces the best visual effect.
-function replaceRawCoordinates(rawCoords, newCoords, prefix, keys = null) {
+// Replace the raw coordinates returned by facemesh with refined iris model coordinates
+// Update the z coordinate to be an average of the original and the new.
+function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
   for (let i = 0; i < coords.MESH_TO_IRIS_INDICES_MAP.length; i++) {
     const { key, indices } = coords.MESH_TO_IRIS_INDICES_MAP[i];
     const originalIndices = coords.MESH_ANNOTATIONS[`${prefix}${key}`];
@@ -179,7 +180,7 @@ export class Pipeline {
       });
     }
 
-    // log('face', `skipped: ${this.skipped} max: ${config.face.detector.maxFaces} detected: ${this.detectedFaces} stored: ${this.storedBoxes.length} new: ${detector?.boxes?.length}`);
+    // console.log('face', `skipped: ${this.skipped} max: ${config.face.detector.maxFaces} detected: ${this.detectedFaces} stored: ${this.storedBoxes.length} new: ${detector?.boxes?.length}`);
     let results = tf.tidy(() => this.storedBoxes.map((box, i) => {
       // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
       let face;
@@ -211,7 +212,7 @@ export class Pipeline {
         return prediction;
       }
 
-      const [, confidence, contourCoords] = this.meshDetector.predict(face); // The first returned tensor represents facial contours, which are included in the coordinates.
+      const [, confidence, contourCoords] = this.meshDetector.predict(face); // The first returned tensor represents facial contours which are already included in the coordinates.
       const faceConfidence = confidence.dataSync()[0];
       if (faceConfidence < config.face.detector.minConfidence) return null; // if below confidence just exit
       const coordsReshaped = tf.reshape(contourCoords, [-1, 3]);
@@ -228,14 +229,13 @@ export class Pipeline {
         const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = this.getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize);
         const leftToRightEyeDepthDifference = this.getLeftToRightEyeDepthDifference(rawCoords);
         if (Math.abs(leftToRightEyeDepthDifference) < 30) { // User is looking straight ahead.
-          replaceRawCoordinates(rawCoords, leftEyeRawCoords, 'left');
-          replaceRawCoordinates(rawCoords, rightEyeRawCoords, 'right');
-          // If the user is looking to the left or to the right, the iris coordinates tend to diverge too much from the mesh coordinates for them to be merged. So we only update a single contour line above and below the eye.
+          replaceRawCoordinates(rawCoords, leftEyeRawCoords, 'left', null);
+          replaceRawCoordinates(rawCoords, rightEyeRawCoords, 'right', null);
+          // If the user is looking to the left or to the right, the iris coordinates tend to diverge too much from the mesh coordinates for them to be merged
+          // So we only update a single contour line above and below the eye.
         } else if (leftToRightEyeDepthDifference < 1) { // User is looking towards the right.
-          // @ts-ignore
           replaceRawCoordinates(rawCoords, leftEyeRawCoords, 'left', ['EyeUpper0', 'EyeLower0']);
         } else { // User is looking towards the left.
-          // @ts-ignore
           replaceRawCoordinates(rawCoords, rightEyeRawCoords, 'right', ['EyeUpper0', 'EyeLower0']);
         }
         const adjustedLeftIrisCoords = this.getAdjustedIrisCoords(rawCoords, leftIrisRawCoords, 'left');
@@ -256,7 +256,7 @@ export class Pipeline {
         rawCoords,
       };
       if (!config.face.mesh.returnRawData) delete prediction.rawCoords;
-      this.storedBoxes[i] = { ...squarifiedLandmarksBox, landmarks: transformedCoords.arraySync(), confidence: box.confidence, faceConfidence };
+      this.storedBoxes[i] = { ...squarifiedLandmarksBox, landmarks: transformedCoordsData, confidence: box.confidence, faceConfidence };
 
       return prediction;
     }));

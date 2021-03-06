@@ -44,7 +44,7 @@ export function scalePose(pose, scaleY, scaleX) {
     keypoints: pose.keypoints.map(({ score, part, position }) => ({
       score,
       part,
-      position: { x: position.x * scaleX, y: position.y * scaleY },
+      position: { x: Math.trunc(position.x * scaleX), y: Math.trunc(position.y * scaleY) },
     })),
   };
 }

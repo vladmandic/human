@@ -4,6 +4,10 @@
       "bytes": 401,
       "imports": []
     },
+    "src/sysinfo.ts": {
+      "bytes": 612,
+      "imports": []
+    },
     "dist/tfjs.esm.js": {
       "bytes": 737,
       "imports": []
@@ -52,7 +56,7 @@
       "imports": []
     },
     "src/blazeface/facepipeline.ts": {
-      "bytes": 14154,
+      "bytes": 14094,
       "imports": [
         {
           "path": "dist/tfjs.esm.js",
@@ -274,7 +278,7 @@
       ]
     },
     "src/posenet/util.ts": {
-      "bytes": 2017,
+      "bytes": 2041,
       "imports": [
         {
           "path": "src/posenet/keypoints.ts",
@@ -388,7 +392,7 @@
       "imports": []
     },
     "src/blazepose/blazepose.ts": {
-      "bytes": 3259,
+      "bytes": 2939,
       "imports": [
         {
           "path": "src/log.ts",
@@ -442,11 +446,11 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2594,
+      "bytes": 2581,
       "imports": []
     },
     "src/draw.ts": {
-      "bytes": 19435,
+      "bytes": 16222,
       "imports": [
         {
           "path": "config.js",
@@ -459,10 +463,14 @@
       ]
     },
     "src/human.ts": {
-      "bytes": 21110,
+      "bytes": 21589,
       "imports": [
         {
           "path": "src/log.ts",
+          "kind": "import-statement"
+        },
+        {
+          "path": "src/sysinfo.ts",
           "kind": "import-statement"
         },
         {
@@ -545,7 +553,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 746101
+      "bytes": 744738
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -562,10 +570,13 @@
           "bytesInOutput": 1677
         },
         "src/human.ts": {
-          "bytesInOutput": 11332
+          "bytesInOutput": 11632
         },
         "src/log.ts": {
           "bytesInOutput": 251
+        },
+        "src/sysinfo.ts": {
+          "bytesInOutput": 394
         },
         "src/tfjs/backend.ts": {
           "bytesInOutput": 1145
@@ -574,7 +585,7 @@
           "bytesInOutput": 2338
         },
         "src/blazeface/facepipeline.ts": {
-          "bytesInOutput": 5101
+          "bytesInOutput": 5090
         },
         "src/blazeface/box.ts": {
           "bytesInOutput": 854
@@ -628,7 +639,7 @@
           "bytesInOutput": 525
         },
         "src/posenet/util.ts": {
-          "bytesInOutput": 352
+          "bytesInOutput": 376
         },
         "src/handpose/handpose.ts": {
           "bytesInOutput": 1322
@@ -670,13 +681,13 @@
           "bytesInOutput": 55295
         },
         "package.json": {
-          "bytesInOutput": 2593
+          "bytesInOutput": 2580
         },
         "src/draw.ts": {
-          "bytesInOutput": 9054
+          "bytesInOutput": 9486
         }
       },
-      "bytes": 289059
+      "bytes": 290185
     }
   }
 }

@@ -75,7 +75,7 @@ export default {
                              // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees
       maxFaces: 10,          // maximum number of faces detected in the input
                              // should be set to the minimum number for performance
-      skipFrames: 11,        // how many frames to go without re-running the face bounding box detector
+      skipFrames: 21,        // how many frames to go without re-running the face bounding box detector
                              // only used for video inputs
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated face analysis as the head probably hasn't moved much
@@ -94,7 +94,6 @@ export default {
       enabled: true,
       modelPath: '../models/facemesh.json',
       inputSize: 192,        // fixed value
-      returnRawData: false,  // in addition to standard mesh and box values, return raw normalized values as well
     },
 
     iris: {
@@ -116,7 +115,7 @@ export default {
       minConfidence: 0.1,    // threshold for discarding a prediction
       modelPath: '../models/gender.json', // can be 'gender' or 'gender-ssrnet-imdb'
       inputSize: 64,         // fixed value
-      skipFrames: 41,        // how many frames to go without re-running the detector
+      skipFrames: 32,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },
 
@@ -124,7 +123,7 @@ export default {
       enabled: true,
       inputSize: 64,         // fixed value
       minConfidence: 0.1,    // threshold for discarding a prediction
-      skipFrames: 21,        // how many frames to go without re-running the detector
+      skipFrames: 33,        // how many frames to go without re-running the detector
       modelPath: '../models/emotion.json',
     },
 

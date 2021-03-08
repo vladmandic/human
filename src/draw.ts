@@ -16,7 +16,7 @@ export const options = {
   drawPolygons: true,
   fillPolygons: false,
   useDepth: true,
-  useCurves: true,
+  useCurves: false,
   bufferedOutput: false,
 };
 
@@ -130,6 +130,7 @@ export async function face(inCanvas, result) {
       const emotion = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
       labels.push(emotion.join(' '));
     }
+    if (f.angle) labels.push(`roll: ${Math.trunc(100 * f.angle.roll) / 100} yaw:${Math.trunc(100 * f.angle.yaw) / 100} pitch:${Math.trunc(100 * f.angle.pitch) / 100}`);
     if (labels.length === 0) labels.push('face');
     ctx.fillStyle = options.color;
     for (let i = labels.length - 1; i >= 0; i--) {
@@ -342,26 +343,6 @@ export async function hand(inCanvas, result) {
   }
 }
 
-export async function angles(inCanvas, result) {
-  // todo
-  if (!result || !inCanvas) return;
-  if (!(inCanvas instanceof HTMLCanvasElement)) return;
-  const ctx = inCanvas.getContext('2d');
-  if (!ctx) return;
-  ctx.font = options.font;
-  ctx.strokeStyle = options.color;
-  ctx.fillStyle = options.color;
-  ctx.lineWidth = options.lineWidth;
-  /*
-  const r = 200;
-  for (const res of result) {
-    ctx.moveTo(inCanvas.width - r, inCanvas.height - r);
-    ctx.lineTo(inCanvas.width - r + (r * Math.cos(res.angle.roll)), inCanvas.height - r + (r * Math.sin(res.angle.roll)));
-    ctx.stroke();
-  }
-  */
-}
-
 export async function canvas(inCanvas, outCanvas) {
   if (!inCanvas || !outCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement) || !(outCanvas instanceof HTMLCanvasElement)) return;
@@ -376,5 +357,4 @@ export async function all(inCanvas, result) {
   body(inCanvas, result.body);
   hand(inCanvas, result.hand);
   gesture(inCanvas, result.gesture);
-  angles(inCanvas, result.face);
 }

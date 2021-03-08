@@ -249,20 +249,19 @@ class Human {
   }
 
   calculateFaceAngle = (mesh) => {
-    if (!mesh || mesh.length < 152) return {};
+    if (!mesh || mesh.length < 300) return {};
     const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const degrees = (theta) => Math.abs(((theta * 180) / Math.PI) % 360);
     const angle = {
+      // values are in radians in range of -pi/2 to pi/2 which is -90 to +90 degrees
+      // value of 0 means center
       // roll is face lean left/right
-      // looking at x,y of outside corners of leftEye and rightEye
-      roll: radians(mesh[33][0], mesh[33][1], mesh[263][0], mesh[263][1]),
+      roll: radians(mesh[33][0], mesh[33][1], mesh[263][0], mesh[263][1]), // looking at x,y of outside corners of leftEye and rightEye
       // yaw is face turn left/right
-      // looking at x,z of outside corners of leftEye and rightEye
-      yaw: radians(mesh[33][0], mesh[33][2], mesh[263][0], mesh[263][2]),
+      yaw: radians(mesh[33][0], mesh[33][2], mesh[263][0], mesh[263][2]), // looking at x,z of outside corners of leftEye and rightEye
       // pitch is face move up/down
-      // looking at y,x of top and bottom points of the face
-      pitch: radians(mesh[10][1], mesh[10][2], mesh[152][1], mesh[152][2]),
+      pitch: radians(mesh[10][1], mesh[10][2], mesh[152][1], mesh[152][2]), // looking at y,z of top and bottom points of the face
     };
     return angle;
   }

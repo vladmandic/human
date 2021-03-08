@@ -133,7 +133,6 @@ async function drawResults(input) {
   human.draw.body(canvas, result.body);
   human.draw.hand(canvas, result.hand);
   human.draw.gesture(canvas, result.gesture);
-  human.draw.angles(canvas, result.face);
   await calcSimmilariry(result);
 
   // update log

@@ -180,7 +180,6 @@ export class Pipeline {
       });
     }
 
-    // console.log('face', `skipped: ${this.skipped} max: ${config.face.detector.maxFaces} detected: ${this.detectedFaces} stored: ${this.storedBoxes.length} new: ${detector?.boxes?.length}`);
     let results = tf.tidy(() => this.storedBoxes.map((box, i) => {
       // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
       let face;
@@ -255,12 +254,13 @@ export class Pipeline {
         image: face,
         rawCoords,
       };
-      if (!config.face.mesh.returnRawData) delete prediction.rawCoords;
       this.storedBoxes[i] = { ...squarifiedLandmarksBox, landmarks: transformedCoordsData, confidence: box.confidence, faceConfidence };
 
       return prediction;
     }));
     results = results.filter((a) => a !== null);
+    // remove cache entries for detected boxes on low confidence
+    if (config.face.mesh.enabled) this.storedBoxes = this.storedBoxes.filter((a) => a.faceConfidence > config.face.detector.minConfidence);
     this.detectedFaces = results.length;
     return results;
   }

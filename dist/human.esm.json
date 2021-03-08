@@ -56,7 +56,7 @@
       "imports": []
     },
     "src/blazeface/facepipeline.ts": {
-      "bytes": 14094,
+      "bytes": 14034,
       "imports": [
         {
           "path": "dist/tfjs.esm.js",
@@ -77,7 +77,7 @@
       ]
     },
     "src/blazeface/facemesh.ts": {
-      "bytes": 3095,
+      "bytes": 3061,
       "imports": [
         {
           "path": "src/log.ts",
@@ -111,7 +111,7 @@
       ]
     },
     "src/faceboxes/faceboxes.ts": {
-      "bytes": 2890,
+      "bytes": 2837,
       "imports": [
         {
           "path": "src/log.ts",
@@ -438,7 +438,7 @@
       ]
     },
     "config.js": {
-      "bytes": 10422,
+      "bytes": 10308,
       "imports": []
     },
     "src/sample.ts": {
@@ -446,7 +446,7 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2581,
+      "bytes": 2559,
       "imports": []
     },
     "src/draw.ts": {
@@ -553,7 +553,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1980000
+      "bytes": 1979712
     },
     "dist/human.esm.js": {
       "imports": [],
@@ -563,7 +563,7 @@
       "entryPoint": "src/human.ts",
       "inputs": {
         "src/blazeface/facemesh.ts": {
-          "bytesInOutput": 1546
+          "bytesInOutput": 1519
         },
         "src/posenet/keypoints.ts": {
           "bytesInOutput": 1690
@@ -575,7 +575,7 @@
           "bytesInOutput": 394
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1056721
+          "bytesInOutput": 1056717
         },
         "src/tfjs/backend.ts": {
           "bytesInOutput": 1053
@@ -593,13 +593,13 @@
           "bytesInOutput": 28983
         },
         "src/blazeface/facepipeline.ts": {
-          "bytesInOutput": 5043
+          "bytesInOutput": 5112
         },
         "src/human.ts": {
           "bytesInOutput": 11955
         },
         "src/faceboxes/faceboxes.ts": {
-          "bytesInOutput": 1576
+          "bytesInOutput": 1535
         },
         "src/profile.ts": {
           "bytesInOutput": 606
@@ -677,19 +677,19 @@
           "bytesInOutput": 2355
         },
         "config.js": {
-          "bytesInOutput": 1439
+          "bytesInOutput": 1422
         },
         "src/sample.ts": {
           "bytesInOutput": 55295
         },
         "package.json": {
-          "bytesInOutput": 2583
+          "bytesInOutput": 2541
         },
         "src/draw.ts": {
           "bytesInOutput": 9740
         }
       },
-      "bytes": 1353240
+      "bytes": 1353178
     }
   }
 }

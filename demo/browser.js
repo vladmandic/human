@@ -6,13 +6,13 @@ const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 
 /*
 const userConfig = {
-  backend: 'wasm',
+  backend: 'webgl',
   async: false,
   warmup: 'face',
-  videoOptimized: false,
+  videoOptimized: true,
   face: { enabled: true, iris: { enabled: false }, mesh: { enabled: true }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: false } },
   hand: { enabled: false },
-  gestures: { enabled: true },
+  gesture: { enabled: false },
   body: { enabled: false, modelType: 'blazepose', modelPath: '../models/blazepose.json' },
 };
 */
@@ -424,6 +424,7 @@ function setupMenu() {
   });
   menu.display.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.display.addBool('use 3D depth', human.draw.options, 'useDepth');
+  menu.display.addBool('draw with curves', human.draw.options, 'useCurves');
   menu.display.addBool('print labels', human.draw.options, 'drawLabels');
   menu.display.addBool('draw points', human.draw.options, 'drawPoints');
   menu.display.addBool('draw boxes', human.draw.options, 'drawBoxes');

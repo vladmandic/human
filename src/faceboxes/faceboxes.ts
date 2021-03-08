@@ -51,7 +51,7 @@ export class FaceBoxes {
         const resized = tf.image.cropAndResize(input, [crop], [0], [this.config.face.detector.inputSize, this.config.face.detector.inputSize]);
         const image = resized.div([255]);
         resized.dispose();
-        results.push({ confidence: scores[i], box, boxRaw: this.config.face.mesh.returnRawData ? boxRaw : null, image });
+        results.push({ confidence: scores[i], box, boxRaw, image });
         // add mesh, meshRaw, annotations,
       }
     }

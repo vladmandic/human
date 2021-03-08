@@ -1,5 +1,11 @@
 # Human Library
 
+![Version](https://img.shields.io/github/package-json/v/vladmandic/human?style=flat-square)
+![Last Commit](https://img.shields.io/github/last-commit/vladmandic/human?style=flat-square)
+![License](https://img.shields.io/github/license/vladmandic/human?style=flat-square)
+![GitHub Status Checks](https://img.shields.io/github/checks-status/vladmandic/human/main?style=flat-square])
+![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/vladmandic/human?style=flat-square)
+
 **3D Face Detection & Rotation Tracking, Face Embedding & Recognition,**  
 **Body Pose Tracking, Hand & Finger Tracking,**  
 **Iris Analysis, Age & Gender & Emotion Prediction**  
@@ -23,7 +29,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**Code Repository**](https://github.com/vladmandic/human)
 - [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
-- [**Change Log**](https://github.com/vladmandic/human/wiki/Change-Log)
+- [**Change Log**](https://github.com/vladmandic/human/CHANGELOG.md)
 
 <br>
 
@@ -138,3 +144,8 @@ detectVideo();
 ```
 
 <br>
+
+![Downloads](https://img.shields.io/npm/dm/@vladmandic/human?style=flat-square)
+![Stars](https://img.shields.io/github/stars/vladmandic/human?style=flat-square)
+![Code Size](https://img.shields.io/github/languages/code-size/vladmandic/human?style=flat-square)
+![Commit Activity](https://img.shields.io/github/commit-activity/m/vladmandic/human?style=flat-square)

@@ -52,7 +52,7 @@ exports.update = update;
 
 try {
   if (require.main === module) {
-    update('../wiki/Change-Log.md');
+    update('../CHANGELOG.md');
   }
 } catch {
   //

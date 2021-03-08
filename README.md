@@ -1,10 +1,10 @@
-# Human Library
-
 ![Version](https://img.shields.io/github/package-json/v/vladmandic/human?style=flat-square)
 ![Last Commit](https://img.shields.io/github/last-commit/vladmandic/human?style=flat-square)
 ![License](https://img.shields.io/github/license/vladmandic/human?style=flat-square)
 ![GitHub Status Checks](https://img.shields.io/github/checks-status/vladmandic/human/main?style=flat-square])
 ![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/vladmandic/human?style=flat-square)
+
+# Human Library
 
 **3D Face Detection & Rotation Tracking, Face Embedding & Recognition,**  
 **Body Pose Tracking, Hand & Finger Tracking,**  

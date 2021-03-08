@@ -450,7 +450,7 @@
       "imports": []
     },
     "src/draw.ts": {
-      "bytes": 16861,
+      "bytes": 16392,
       "imports": [
         {
           "path": "config.js",
@@ -463,7 +463,7 @@
       ]
     },
     "src/human.ts": {
-      "bytes": 22707,
+      "bytes": 22807,
       "imports": [
         {
           "path": "src/log.ts",
@@ -553,7 +553,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1980488
+      "bytes": 1980011
     },
     "dist/human.ts": {
       "imports": [],
@@ -576,7 +576,7 @@
           "bytesInOutput": 394
         },
         "dist/tfjs.esm.js": {
-          "bytesInOutput": 1056723
+          "bytesInOutput": 1056721
         },
         "src/tfjs/backend.ts": {
           "bytesInOutput": 1053
@@ -684,10 +684,10 @@
           "bytesInOutput": 2583
         },
         "src/draw.ts": {
-          "bytesInOutput": 9814
+          "bytesInOutput": 9740
         }
       },
-      "bytes": 1353358
+      "bytes": 1353282
     }
   }
 }

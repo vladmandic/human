@@ -450,7 +450,7 @@
       "imports": []
     },
     "src/draw.ts": {
-      "bytes": 16861,
+      "bytes": 16392,
       "imports": [
         {
           "path": "config.js",
@@ -463,7 +463,7 @@
       ]
     },
     "src/human.ts": {
-      "bytes": 22707,
+      "bytes": 22807,
       "imports": [
         {
           "path": "src/log.ts",
@@ -553,7 +553,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 747228
+      "bytes": 746751
     },
     "dist/human.node-gpu.js": {
       "imports": [],
@@ -684,10 +684,10 @@
           "bytesInOutput": 2580
         },
         "src/draw.ts": {
-          "bytesInOutput": 9699
+          "bytesInOutput": 9629
         }
       },
-      "bytes": 290724
+      "bytes": 290654
     }
   }
 }

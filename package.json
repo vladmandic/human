@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/human",
-  "version": "0.40.9",
+  "version": "1.0.0",
   "description": "Human: AI-powered 3D Face Detection, Face Embedding & Recognition, Body Pose Tracking, Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction & Gesture Recognition",
   "sideEffects": false,
   "main": "dist/human.node.js",
@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/vladmandic/human/issues"
   },
-  "homepage": "https://github.com/vladmandic/human#readme",
+  "homepage": "https://vladmandic.github.io/human/demo/index.html",
   "license": "MIT",
   "engines": {
     "node": ">=12.0.0"
@@ -54,6 +54,7 @@
   "scripts": {
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
     "lint": "eslint src demo server",
+    "test": "eslint src demo server",
     "dev": "npm install && node server/serve.js",
     "build": "rimraf dist/* && rimraf types/* && node server/build.js && node server/changelog.js",
     "update": "npm update --depth 20 --force && npm dedupe && npm prune && npm audit"

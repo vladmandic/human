@@ -26,7 +26,7 @@
       ]
     },
     "src/blazeface/blazeface.ts": {
-      "bytes": 5706,
+      "bytes": 5704,
       "imports": [
         {
           "path": "src/log.ts",
@@ -56,7 +56,7 @@
       "imports": []
     },
     "src/blazeface/facepipeline.ts": {
-      "bytes": 14034,
+      "bytes": 14105,
       "imports": [
         {
           "path": "dist/tfjs.esm.js",
@@ -446,11 +446,11 @@
       "imports": []
     },
     "package.json": {
-      "bytes": 2559,
+      "bytes": 2604,
       "imports": []
     },
     "src/draw.ts": {
-      "bytes": 16392,
+      "bytes": 16408,
       "imports": [
         {
           "path": "config.js",
@@ -553,7 +553,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 1979723
+      "bytes": 1979852
     },
     "dist/human.ts": {
       "imports": [],
@@ -582,7 +582,7 @@
           "bytesInOutput": 1053
         },
         "src/blazeface/blazeface.ts": {
-          "bytesInOutput": 2194
+          "bytesInOutput": 2192
         },
         "src/blazeface/box.ts": {
           "bytesInOutput": 834
@@ -594,7 +594,7 @@
           "bytesInOutput": 28983
         },
         "src/blazeface/facepipeline.ts": {
-          "bytesInOutput": 5112
+          "bytesInOutput": 5160
         },
         "src/faceboxes/faceboxes.ts": {
           "bytesInOutput": 1535
@@ -681,13 +681,13 @@
           "bytesInOutput": 55295
         },
         "package.json": {
-          "bytesInOutput": 2541
+          "bytesInOutput": 2578
         },
         "src/draw.ts": {
-          "bytesInOutput": 9740
+          "bytesInOutput": 9754
         }
       },
-      "bytes": 1353220
+      "bytes": 1353317
     }
   }
 }

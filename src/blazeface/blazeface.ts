@@ -78,7 +78,7 @@ export class BlazeFaceModel {
     const [detectedOutputs, boxes, scores] = tf.tidy(() => {
       const resizedImage = inputImage.resizeBilinear([this.width, this.height]);
       // const normalizedImage = tf.mul(tf.sub(resizedImage.div(255), 0.5), 2);
-      const normalizedImage = tf.sub(resizedImage.div(127.5), 1);
+      const normalizedImage = resizedImage.div(127.5).sub(0.5);
       const batchedPrediction = this.blazeFaceModel.predict(normalizedImage);
       let prediction;
       // are we using tfhub or pinto converted model?

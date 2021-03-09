@@ -185,7 +185,7 @@ export class Pipeline {
       let face;
       let angle = 0;
       let rotationMatrix;
-      if (config.face.detector.rotation) {
+      if (config.face.detector.rotation && config.face.mesh.enabled) {
         const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= LANDMARKS_COUNT) ? MESH_KEYPOINTS_LINE_OF_SYMMETRY_INDICES : BLAZEFACE_KEYPOINTS_LINE_OF_SYMMETRY_INDICES;
         angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
         const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
@@ -205,6 +205,7 @@ export class Pipeline {
           coords: null,
           box,
           faceConfidence: null,
+          boxConfidence: box.confidence,
           confidence: box.confidence,
           image: face,
         };
@@ -258,10 +259,12 @@ export class Pipeline {
 
       return prediction;
     }));
+
     results = results.filter((a) => a !== null);
     // remove cache entries for detected boxes on low confidence
     if (config.face.mesh.enabled) this.storedBoxes = this.storedBoxes.filter((a) => a.faceConfidence > config.face.detector.minConfidence);
     this.detectedFaces = results.length;
+
     return results;
   }
 

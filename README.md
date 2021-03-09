@@ -148,4 +148,3 @@ detectVideo();
 ![Downloads](https://img.shields.io/npm/dm/@vladmandic/human?style=flat-square)
 ![Stars](https://img.shields.io/github/stars/vladmandic/human?style=flat-square)
 ![Code Size](https://img.shields.io/github/languages/code-size/vladmandic/human?style=flat-square)
-![Commit Activity](https://img.shields.io/github/commit-activity/m/vladmandic/human?style=flat-square)

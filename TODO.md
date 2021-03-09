@@ -4,3 +4,4 @@
 - Prune pre-packaged models
 - Build Face embedding database
 - Dynamic sample processing
+- Optimize for v1 release

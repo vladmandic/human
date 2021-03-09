@@ -130,7 +130,7 @@ export async function face(inCanvas, result) {
       const emotion = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
       labels.push(emotion.join(' '));
     }
-    if (f.angle) labels.push(`roll: ${Math.trunc(100 * f.angle.roll) / 100} yaw:${Math.trunc(100 * f.angle.yaw) / 100} pitch:${Math.trunc(100 * f.angle.pitch) / 100}`);
+    if (f.angle && f.angle.roll) labels.push(`roll: ${Math.trunc(100 * f.angle.roll) / 100} yaw:${Math.trunc(100 * f.angle.yaw) / 100} pitch:${Math.trunc(100 * f.angle.pitch) / 100}`);
     if (labels.length === 0) labels.push('face');
     ctx.fillStyle = options.color;
     for (let i = labels.length - 1; i >= 0; i--) {

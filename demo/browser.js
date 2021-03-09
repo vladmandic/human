@@ -6,11 +6,11 @@ const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 
 /*
 const userConfig = {
-  backend: 'webgl',
+  backend: 'wasm',
   async: false,
   warmup: 'face',
-  videoOptimized: true,
-  face: { enabled: true, iris: { enabled: false }, mesh: { enabled: true }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: false } },
+  videoOptimized: false,
+  face: { enabled: true, mesh: { enabled: false }, iris: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: false } },
   hand: { enabled: false },
   gesture: { enabled: false },
   body: { enabled: false, modelType: 'blazepose', modelPath: '../models/blazepose.json' },

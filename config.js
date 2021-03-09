@@ -66,13 +66,11 @@ export default {
                              // detector, mesh, iris, age, gender, emotion
                              // (note: module is not loaded until it is required)
     detector: {
-      modelPath: '../models/blazeface-back.json', // can be 'blazeface-front', 'blazeface-back' or 'faceboxes'
-                                                  // 'blazeface-front' is blazeface model optimized for large faces such as front-facing camera
-                                                  // 'blazeface-back' is blazeface model optimized for smaller and/or distanct faces
-                                                  // 'faceboxes' is alternative model to 'blazeface'
-      inputSize: 256,        // fixed value: 128 for front and 256 for 'back'
+      modelPath: '../models/blazeface-back.json',
+      inputSize: 256,        // fixed value
       rotation: true,        // use best-guess rotated face image or just box with rotation as-is
                              // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees
+                             // this parameter is not valid in nodejs
       maxFaces: 10,          // maximum number of faces detected in the input
                              // should be set to the minimum number for performance
       skipFrames: 21,        // how many frames to go without re-running the face bounding box detector
@@ -136,7 +134,7 @@ export default {
 
   body: {
     enabled: true,
-    modelPath: '../models/posenet.json', // can be 'posenet', 'blazepose' or 'blazepose-upper'
+    modelPath: '../models/posenet.json', // can be 'posenet' or 'blazepose'
     inputSize: 257,          // fixed value, 257 for posenet and 256 for blazepose
     maxDetections: 10,       // maximum number of people detected in the input
                              // should be set to the minimum number for performance

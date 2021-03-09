@@ -3,7 +3,6 @@ import * as sysinfo from './sysinfo';
 import * as tf from '../dist/tfjs.esm.js';
 import * as backend from './tfjs/backend';
 import * as facemesh from './blazeface/facemesh';
-import * as faceboxes from './faceboxes/faceboxes';
 import * as age from './age/age';
 import * as gender from './gender/gender';
 import * as emotion from './emotion/emotion';
@@ -154,7 +153,6 @@ class Human {
         if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
       }
     }
-    const face = this.config.face.detector.modelPath.includes('faceboxes') ? faceboxes : facemesh;
     if (this.config.async) {
       [
         this.models.face,
@@ -166,7 +164,7 @@ class Human {
         this.models.posenet,
         this.models.blazepose,
       ] = await Promise.all([
-        this.models.face || (this.config.face.enabled ? face.load(this.config) : null),
+        this.models.face || (this.config.face.enabled ? facemesh.load(this.config) : null),
         this.models.age || ((this.config.face.enabled && this.config.face.age.enabled) ? age.load(this.config) : null),
         this.models.gender || ((this.config.face.enabled && this.config.face.gender.enabled) ? gender.load(this.config) : null),
         this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
@@ -176,7 +174,7 @@ class Human {
         this.models.posenet || (this.config.body.enabled && this.config.body.modelType.startsWith('blazepose') ? blazepose.load(this.config) : null),
       ]);
     } else {
-      if (this.config.face.enabled && !this.models.face) this.models.face = await face.load(this.config);
+      if (this.config.face.enabled && !this.models.face) this.models.face = await facemesh.load(this.config);
       if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age) this.models.age = await age.load(this.config);
       if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender) this.models.gender = await gender.load(this.config);
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) this.models.emotion = await emotion.load(this.config);

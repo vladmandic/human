@@ -97,8 +97,8 @@ export class Pipeline {
       box.startPoint[0] / this.meshWidth, box.endPoint[1] / this.meshHeight,
       box.endPoint[0] / this.meshWidth,
     ]], [0], [this.irisSize, this.irisSize]);
-    if (flip) {
-      crop = tf.image.flipLeftRight(crop);
+    if (flip && tf.ENV.flags.IS_BROWSER) {
+      crop = tf.image.flipLeftRight(crop); // flipLeftRight is not defined for tfjs-node
     }
     return { box, boxSize, crop };
   }
@@ -185,12 +185,12 @@ export class Pipeline {
       let face;
       let angle = 0;
       let rotationMatrix;
-      if (config.face.detector.rotation && config.face.mesh.enabled) {
+      if (config.face.detector.rotation && config.face.mesh.enabled && tf.ENV.flags.IS_BROWSER) {
         const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= LANDMARKS_COUNT) ? MESH_KEYPOINTS_LINE_OF_SYMMETRY_INDICES : BLAZEFACE_KEYPOINTS_LINE_OF_SYMMETRY_INDICES;
         angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
         const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
         const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-        const rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
+        const rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
         rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
         face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshHeight, this.meshWidth]).div(255);
       } else {

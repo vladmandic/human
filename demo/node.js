@@ -15,9 +15,8 @@ const myConfig = {
   async: false,
   face: {
     enabled: true,
-    detector: { modelPath: 'file://models/faceboxes.json', enabled: true, minConfidence: 0.5 },
-    // detector: { modelPath: 'file://models/blazeface-back.json', enabled: false }, // cannot use blazeface in nodejs due to missing required kernel function in tfjs-node
-    mesh: { modelPath: 'file://models/facemesh.json', enabled: false }, // depends on blazeface detector
+    detector: { modelPath: 'file://models/blazeface-back.json', enabled: true },
+    mesh: { modelPath: 'file://models/facemesh.json', enabled: true },
     iris: { modelPath: 'file://models/iris.json', enabled: true },
     age: { modelPath: 'file://models/age-ssrnet-imdb.json', enabled: true },
     gender: { modelPath: 'file://models/gender.json', enabled: true },
@@ -58,13 +57,11 @@ async function detect(input) {
   log.state('Processing:', image.shape);
   // run actual detection
   const result = await human.detect(image, myConfig);
+  // no need to print results as they are printed to console during detection from within the library due to human.config.debug set
   // dispose image tensor as we no longer need it
   image.dispose();
   // print data to console
-  log.data('Face: ', result.face);
-  log.data('Body:', result.body);
-  log.data('Hand:', result.hand);
-  log.data('Gesture:', result.gesture);
+  return result;
 }
 
 async function test() {
@@ -74,14 +71,12 @@ async function test() {
   log.state('Processing embedded warmup image: face');
   myConfig.warmup = 'face';
   result = await human.warmup(myConfig);
-  log.data('Face: ', result.face);
 
   log.state('Processing embedded warmup image: full');
   myConfig.warmup = 'full';
   result = await human.warmup(myConfig);
-  log.data('Body:', result.body);
-  log.data('Hand:', result.hand);
-  log.data('Gesture:', result.gesture);
+  // no need to print results as they are printed to console during detection from within the library due to human.config.debug set
+  return result;
 }
 
 async function main() {

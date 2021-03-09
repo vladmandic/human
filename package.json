@@ -20,6 +20,29 @@
     "type": "git",
     "url": "git+https://github.com/vladmandic/human.git"
   },
+  "scripts": {
+    "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
+    "dev": "npm install && node server/serve.js",
+    "build": "rimraf dist/* && rimraf types/* && node server/build.js && node server/changelog.js",
+    "lint": "eslint src demo server",
+    "test": "eslint src demo server"
+  },
+  "keywords": [
+    "tensorflowjs",
+    "face-detection",
+    "face-geometry",
+    "face-embedding",
+    "face-recognition",
+    "body-tracking",
+    "hand-tracking",
+    "iris-tracking",
+    "age-estimation",
+    "emotion-detection",
+    "gender-prediction",
+    "gesture-recognition",
+    "blazeface",
+    "blazepose"
+  ],
   "peerDependencies": {},
   "devDependencies": {
     "@tensorflow/tfjs": "^3.2.0",
@@ -50,29 +73,5 @@
     "simple-git": "^2.36.1",
     "tslib": "^2.1.0",
     "typescript": "^4.2.3"
-  },
-  "scripts": {
-    "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
-    "lint": "eslint src demo server",
-    "test": "eslint src demo server",
-    "dev": "npm install && node server/serve.js",
-    "build": "rimraf dist/* && rimraf types/* && node server/build.js && node server/changelog.js",
-    "update": "npm update --depth 20 --force && npm dedupe && npm prune && npm audit"
-  },
-  "keywords": [
-    "tensorflowjs",
-    "face-detection",
-    "face-geometry",
-    "face-embedding",
-    "face-recognition",
-    "body-tracking",
-    "hand-tracking",
-    "iris-tracking",
-    "age-estimation",
-    "emotion-detection",
-    "gender-prediction",
-    "gesture-recognition",
-    "blazeface",
-    "blazepose"
-  ]
+  }
 }

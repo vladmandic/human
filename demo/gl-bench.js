@@ -4,7 +4,7 @@
 
 const UICSS = `
   #gl-bench { position: absolute; right: 1rem; bottom: 1rem; z-index:1000; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
-  #gl-bench div { position: relative; display: block; margin: 4px; padding: 0 7px 0 10px; background: darkslategray; border-radius: 0.2rem; cursor: pointer; opacity: 0.9; }
+  #gl-bench div { position: relative; display: block; margin: 4px; padding: 0 2px 0 2px; background: darkslategray; border-radius: 0.1rem; cursor: pointer; opacity: 0.9; }
   #gl-bench svg { height: 60px; margin: 0 0px 0px 4px; }
   #gl-bench text { font-size: 16px; font-family: 'Lato', 'Segoe UI'; dominant-baseline: middle; text-anchor: middle; }
   #gl-bench .gl-mem { font-size: 12px; fill: white; }
@@ -17,10 +17,10 @@ const UICSS = `
 
 const UISVG = `
   <div class="gl-box">
-    <svg viewBox="0 0 55 60">
+    <svg viewBox="0 0 60 60">
       <text x="27" y="56" class="gl-fps">00 FPS</text>
       <text x="30" y="8" class="gl-mem"></text>
-      <rect x="0" y="14" rx="4" ry="4" width="65" height="32"></rect>
+      <rect x="0" y="14" rx="4" ry="4" width="60" height="32"></rect>
       <polyline class="gl-chart"></polyline>
     </svg>
     <svg viewBox="0 0 14 60" class="gl-cpu-svg">
@@ -163,7 +163,7 @@ class GLBench {
           const len = chart.length;
           for (let j = 0; j < len; j++) {
             const id = (circularId + j + 1) % len;
-            if (chart[id] !== undefined) points = points + ' ' + (55 * j / (len - 1)).toFixed(1) + ',' + (45 - chart[id] * 22 / 60 / this.detected).toFixed(1);
+            if (chart[id] !== undefined) points = points + ' ' + (60 * j / (len - 1)).toFixed(1) + ',' + (45 - chart[id] * 0.5 / this.detected).toFixed(1);
           }
           nodes['gl-chart'][i].setAttribute('points', points);
           logger(this.names[i], chart, circularId);

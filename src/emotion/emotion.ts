@@ -9,7 +9,6 @@ let skipped = Number.MAX_SAFE_INTEGER;
 
 // tuning values
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
-const scale = 1; // score multiplication factor
 
 export async function load(config) {
   if (!model) {
@@ -58,7 +57,7 @@ export async function predict(image, config) {
     if (config.face.emotion.enabled) {
       let data;
       if (!config.profile) {
-        const emotionT = await model.predict(normalize);
+        const emotionT = await model.predict(normalize); // result is already in range 0..1, no need for additional activation
         data = emotionT.dataSync();
         tf.dispose(emotionT);
       } else {
@@ -68,7 +67,7 @@ export async function predict(image, config) {
         profile.run('emotion', profileData);
       }
       for (let i = 0; i < data.length; i++) {
-        if (scale * data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * scale * data[i]) / 100), emotion: annotations[i] });
+        if (data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] });
       }
       obj.sort((a, b) => b.score - a.score);
     }

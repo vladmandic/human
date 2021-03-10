@@ -1,4 +1,5 @@
-import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
+// import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
+import Human from '../src/human';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
@@ -8,7 +9,7 @@ const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 const userConfig = {
   backend: 'wasm',
   async: false,
-  warmup: 'face',
+  warmup: 'none',
   videoOptimized: false,
   face: { enabled: true, mesh: { enabled: false }, iris: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: false } },
   hand: { enabled: false },
@@ -360,7 +361,6 @@ async function processImage(input) {
 
 // just initialize everything and call main function
 async function detectVideo() {
-  userConfig.videoOptimized = true;
   document.getElementById('samples-container').style.display = 'none';
   document.getElementById('canvas').style.display = 'block';
   const video = document.getElementById('video');
@@ -389,8 +389,8 @@ async function detectVideo() {
 
 // just initialize everything and call main function
 async function detectSampleImages() {
+  userConfig.videoOptimized = false; // force disable video optimizations
   document.getElementById('play').style.display = 'none';
-  userConfig.videoOptimized = false;
   document.getElementById('canvas').style.display = 'none';
   document.getElementById('samples-container').style.display = 'block';
   log('Running detection of sample images');

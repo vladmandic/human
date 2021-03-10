@@ -1,7 +1,6 @@
 # To-Do list for Human library
 
-- Fix BlazeFace NodeJS missing ops
-- Prune pre-packaged models
+- Strong typing
 - Build Face embedding database
 - Dynamic sample processing
-- Optimize for v1 release
+- Explore EfficientPose: <https://github.com/daniegr/EfficientPose> <https://github.com/PINTO0309/PINTO_model_zoo/tree/main/084_EfficientPose>

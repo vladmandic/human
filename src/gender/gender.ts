@@ -37,10 +37,11 @@ export async function predict(image, config) {
         const greenNorm = tf.mul(green, rgb[1]);
         const blueNorm = tf.mul(blue, rgb[2]);
         const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
-        return grayscale.sub(0.5).mul(2);
+        const normalize = grayscale.sub(0.5).mul(2); // range grayscale:-1..1
+        return normalize;
       });
     } else {
-      enhance = tf.mul(resize, [255.0]);
+      enhance = tf.mul(resize, [255.0]); // range RGB:0..255
     }
     tf.dispose(resize);
 
@@ -61,10 +62,9 @@ export async function predict(image, config) {
       const data = genderT.dataSync();
       if (alternative) {
         // returns two values 0..1, bigger one is prediction
-        const confidence = Math.trunc(100 * Math.abs(data[0] - data[1])) / 100;
-        if (confidence > config.face.gender.minConfidence) {
+        if (data[0] > config.face.gender.minConfidence || data[1] > config.face.gender.minConfidence) {
           obj.gender = data[0] > data[1] ? 'female' : 'male';
-          obj.confidence = confidence;
+          obj.confidence = data[0] > data[1] ? (Math.trunc(100 * data[0]) / 100) : (Math.trunc(100 * data[1]) / 100);
         }
       } else {
         // returns one value 0..1, .5 is prediction threshold

@@ -1,54 +1,78 @@
+import * as tf from '../dist/tfjs.esm.js';
+import * as facemesh from './blazeface/facemesh';
+import * as age from './age/age';
+import * as gender from './gender/gender';
+import * as emotion from './emotion/emotion';
+import * as posenet from './posenet/posenet';
+import * as handpose from './handpose/handpose';
+import * as blazepose from './blazepose/blazepose';
+import * as config from '../config';
+import * as draw from './draw';
 declare class Human {
-    tf: any;
-    draw: any;
-    package: any;
+    #private;
     version: string;
-    config: any;
-    fx: any;
+    config: typeof config.default;
     state: string;
-    numTensors: number;
-    analyzeMemoryLeaks: boolean;
-    checkSanity: boolean;
-    firstRun: boolean;
-    perf: any;
-    image: any;
-    models: any;
-    facemesh: any;
-    age: any;
-    gender: any;
-    emotion: any;
-    body: any;
-    hand: any;
-    sysinfo: any;
+    image: {
+        tensor: any;
+        canvas: any;
+    };
+    tf: typeof tf;
+    draw: typeof draw;
+    models: {
+        face: any;
+        posenet: any;
+        blazepose: any;
+        handpose: any;
+        iris: any;
+        age: any;
+        gender: any;
+        emotion: any;
+        embedding: any;
+    };
+    classes: {
+        facemesh: typeof facemesh;
+        age: typeof age;
+        gender: typeof gender;
+        emotion: typeof emotion;
+        body: typeof posenet | typeof blazepose;
+        hand: typeof handpose;
+    };
+    sysinfo: {
+        platform: any;
+        agent: any;
+    };
     constructor(userConfig?: {});
-    profile(): {};
-    analyze(...msg: any[]): void;
-    sanity(input: any): "input is not defined" | "input must be a tensor" | "backend not loaded" | null;
+    profileData(): {
+        newBytes: any;
+        newTensors: any;
+        peakBytes: any;
+        numKernelOps: any;
+        timeKernelOps: any;
+        slowestKernelOps: any;
+        largestKernelOps: any;
+    } | {};
     simmilarity(embedding1: any, embedding2: any): number;
     load(userConfig?: null): Promise<void>;
-    checkBackend(force?: boolean): Promise<void>;
-    calculateFaceAngle: (mesh: any) => {};
-    detectFace(input: any): Promise<{
-        confidence: number;
-        boxConfidence: number;
-        faceConfidence: number;
-        box: any;
-        mesh: any;
-        meshRaw: any;
-        boxRaw: any;
-        annotations: any;
-        age: number;
-        gender: string;
-        genderConfidence: number;
-        emotion: string;
-        embedding: any;
-        iris: number;
-        angle: any;
-    }[]>;
-    detect(input: any, userConfig?: {}): Promise<unknown>;
-    warmupBitmap(): Promise<any>;
-    warmupCanvas(): Promise<unknown>;
-    warmupNode(): Promise<unknown>;
-    warmup(userConfig: any): Promise<any>;
+    detect(input: any, userConfig?: {}): Promise<{
+        face: any;
+        body: any;
+        hand: any;
+        gesture: any;
+        performance: any;
+        canvas: any;
+    } | {
+        error: any;
+    }>;
+    warmup(userConfig: any): Promise<{
+        face: any;
+        body: any;
+        hand: any;
+        gesture: any;
+        performance: any;
+        canvas: any;
+    } | {
+        error: any;
+    }>;
 }
 export { Human as default };

@@ -13,7 +13,7 @@ let fx = null;
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
 // input is resized and run through imagefx filter
-export function process(input, config) {
+export function process(input, config): { tensor, canvas } {
   let tensor;
   if (input instanceof tf.Tensor) {
     tensor = tf.clone(input);
@@ -28,7 +28,7 @@ export function process(input, config) {
     else if (config.filter.width > 0) targetHeight = originalHeight * (config.filter.width / originalWidth);
     if (!targetWidth || !targetHeight) {
       log('Human: invalid input', input);
-      return null;
+      return { tensor: null, canvas: null };
     }
     if (!inCanvas || (inCanvas.width !== targetWidth) || (inCanvas.height !== targetHeight)) {
       inCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
@@ -46,7 +46,7 @@ export function process(input, config) {
         // log('created FX filter');
         fx = tf.ENV.flags.IS_BROWSER ? new fxImage.GLImageFilter({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
       }
-      if (!fx) return inCanvas;
+      if (!fx) return { tensor: null, canvas: inCanvas };
       fx.reset();
       fx.addFilter('brightness', config.filter.brightness); // must have at least one filter enabled
       if (config.filter.contrast !== 0) fx.addFilter('contrast', config.filter.contrast);
@@ -110,5 +110,6 @@ export function process(input, config) {
     pixels.dispose();
     casted.dispose();
   }
-  return { tensor, canvas: config.filter.return ? outCanvas : null };
+  const canvas = config.filter.return ? outCanvas : null;
+  return { tensor, canvas };
 }

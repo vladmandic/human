@@ -75,26 +75,26 @@ export class BlazeFaceModel {
   async getBoundingBoxes(inputImage) {
     // sanity check on input
     if ((!inputImage) || (inputImage.isDisposedInternal) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return null;
-    const [detectedOutputs, boxes, scores] = tf.tidy(() => {
+    const [batch, boxes, scores] = tf.tidy(() => {
       const resizedImage = inputImage.resizeBilinear([this.width, this.height]);
       // const normalizedImage = tf.mul(tf.sub(resizedImage.div(255), 0.5), 2);
       const normalizedImage = resizedImage.div(127.5).sub(0.5);
       const batchedPrediction = this.blazeFaceModel.predict(normalizedImage);
-      let prediction;
+      let batchOut;
       // are we using tfhub or pinto converted model?
       if (Array.isArray(batchedPrediction)) {
         const sorted = batchedPrediction.sort((a, b) => a.size - b.size);
         const concat384 = tf.concat([sorted[0], sorted[2]], 2); // dim: 384, 1 + 16
         const concat512 = tf.concat([sorted[1], sorted[3]], 2); // dim: 512, 1 + 16
         const concat = tf.concat([concat512, concat384], 1);
-        prediction = concat.squeeze(0);
+        batchOut = concat.squeeze(0);
       } else {
-        prediction = batchedPrediction.squeeze(); // when using tfhub model
+        batchOut = batchedPrediction.squeeze(); // when using tfhub model
       }
-      const decodedBounds = decodeBounds(prediction, this.anchors, this.inputSize);
-      const logits = tf.slice(prediction, [0, 0], [-1, 1]);
+      const boxesOut = decodeBounds(batchOut, this.anchors, this.inputSize);
+      const logits = tf.slice(batchOut, [0, 0], [-1, 1]);
       const scoresOut = tf.sigmoid(logits).squeeze();
-      return [prediction, decodedBounds, scoresOut];
+      return [batchOut, boxesOut, scoresOut];
     });
     const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxFaces, this.config.face.detector.iouThreshold, this.config.face.detector.scoreThreshold);
     const boxIndices = boxIndicesTensor.arraySync();
@@ -114,14 +114,13 @@ export class BlazeFaceModel {
       if (confidence > this.config.face.detector.minConfidence) {
         const box = createBox(boundingBoxes[i]);
         const anchor = this.anchorsData[boxIndex];
-        const landmarks = tf.tidy(() => tf.slice(detectedOutputs, [boxIndex, NUM_LANDMARKS - 1], [1, -1]).squeeze().reshape([NUM_LANDMARKS, -1]));
+        const landmarks = tf.tidy(() => tf.slice(batch, [boxIndex, NUM_LANDMARKS - 1], [1, -1]).squeeze().reshape([NUM_LANDMARKS, -1]));
         annotatedBoxes.push({ box, landmarks, anchor, confidence });
       }
     }
-    detectedOutputs.dispose();
+    batch.dispose();
     boxes.dispose();
     scores.dispose();
-    detectedOutputs.dispose();
     return {
       boxes: annotatedBoxes,
       scaleFactor: [inputImage.shape[2] / this.width, inputImage.shape[1] / this.height],

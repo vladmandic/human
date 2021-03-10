@@ -42,15 +42,15 @@ const config = {
   common: {
     banner,
     tsconfig: 'server/tfjs-tsconfig.json',
-    bundle: true,
     logLevel: 'error',
-    metafile: true,
   },
   debug: {
     minifyWhitespace: false,
     minifyIdentifiers: false,
     minifySyntax: false,
     sourcemap: true,
+    bundle: true,
+    metafile: true,
     target: 'es2018',
   },
   production: {
@@ -58,6 +58,8 @@ const config = {
     minifyIdentifiers: true,
     minifySyntax: true,
     sourcemap: true,
+    bundle: true,
+    metafile: true,
     target: 'es2018',
   },
 };

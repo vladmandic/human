@@ -9,6 +9,13 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/03/10 mandic00@live.com
+
+- enhanced age, gender, emotion detection
+
+### **origin/main** 2021/03/09 mandic00@live.com
+
+
 ### **1.0.2** 2021/03/09 mandic00@live.com
 
 - remove blazeface-front, blazepose-upper, faceboxes

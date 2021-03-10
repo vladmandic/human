@@ -108,6 +108,10 @@ As presented in the demo application...
 
 ![Example Using WebCam](assets/screenshot-webcam.jpg)
 
+**468-Point Face Mesh Defails:**  
+
+![FaceMesh](assets/facemesh.png)
+
 <br><hr><br>
 
 Example simple app that uses Human to process video input and  

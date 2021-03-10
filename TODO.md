@@ -1,6 +1,7 @@
 # To-Do list for Human library
 
 - Strong typing
+- Automated testing
 - Build Face embedding database
 - Dynamic sample processing
 - Explore EfficientPose  

@@ -2,6 +2,7 @@
 
 - Strong typing
 - Automated testing
+- Improve face embedding
 - Build Face embedding database
 - Dynamic sample processing
 - Explore EfficientPose  

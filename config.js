@@ -107,7 +107,7 @@ export default {
     gender: {
       enabled: true,
       minConfidence: 0.1,    // threshold for discarding a prediction
-      modelPath: '../models/gender.json', // can be 'gender' or 'gender-ssrnet-imdb'
+      modelPath: '../models/gender.json',
       skipFrames: 32,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },

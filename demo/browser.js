@@ -6,11 +6,11 @@ import GLBench from './gl-bench.js';
 // const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 
 const userConfig = {
-  backend: 'webgl',
+  backend: 'wasm',
   async: false,
   warmup: 'face',
   videoOptimized: false,
-  face: { enabled: true, mesh: { enabled: false }, iris: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: true } },
+  face: { enabled: true, mesh: { enabled: true }, iris: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: true } },
   hand: { enabled: false },
   gesture: { enabled: false },
   body: { enabled: false, modelPath: '../models/blazepose.json' },
@@ -38,7 +38,7 @@ const ui = {
   detectFPS: [], // internal, holds fps values for detection performance
   drawFPS: [], // internal, holds fps values for draw performance
   buffered: false, // experimental, should output be buffered between frames
-  drawWarmup: true, // debug only, should warmup image processing be displayed on startup
+  drawWarmup: false, // debug only, should warmup image processing be displayed on startup
   drawThread: null, // internl, perform draw operations in a separate thread
   detectThread: null, // internl, perform detect operations in a separate thread
   framesDraw: 0, // internal, statistics on frames drawn

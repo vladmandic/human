@@ -24,7 +24,9 @@ export function cutBoxFromImageAndResize(box, image, cropSize) {
   const h = image.shape[1];
   const w = image.shape[2];
   const boxes = [[
-    box.startPoint[1] / h, box.startPoint[0] / w, box.endPoint[1] / h,
+    box.startPoint[1] / h,
+    box.startPoint[0] / w,
+    box.endPoint[1] / h,
     box.endPoint[0] / w,
   ]];
   return tf.image.cropAndResize(image, boxes, [0], cropSize);

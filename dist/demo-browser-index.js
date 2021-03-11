@@ -79438,35 +79438,39 @@ async function load5(config3) {
   }
   return model5;
 }
-function simmilarity(embedding1, embedding22) {
+function simmilarity(embedding1, embedding22, order = 2) {
   if (!embedding1 || !embedding22)
     return 0;
   if ((embedding1 == null ? void 0 : embedding1.length) === 0 || (embedding22 == null ? void 0 : embedding22.length) === 0)
     return 0;
   if ((embedding1 == null ? void 0 : embedding1.length) !== (embedding22 == null ? void 0 : embedding22.length))
     return 0;
-  const order = 2;
-  const distance = 10 * embedding1.map((val, i) => val - embedding22[i]).reduce((dist, diff) => dist + diff ** order, 0) ** (1 / order);
-  return Math.trunc(1e3 * (1 - distance)) / 1e3;
+  const distance = 50 * embedding1.map((val, i) => val - embedding22[i]).reduce((dist, diff) => dist + diff ** order, 0) ** (1 / order);
+  const res = Math.trunc(1e3 * (1 - (isNaN(distance) ? 1 : distance))) / 1e3;
+  console.log(distance, res);
+  return res;
 }
 async function predict4(image3, config3) {
   if (!model5)
     return null;
   return new Promise(async (resolve) => {
     const resize = image.resizeBilinear(image3, [model5.inputs[0].shape[2], model5.inputs[0].shape[1]], false);
+    const norm2 = resize.sub(0.5);
+    resize.dispose();
     let data2 = [];
     if (config3.face.embedding.enabled) {
       if (!config3.profile) {
-        const embeddingT = await model5.predict({img_inputs: resize});
-        data2 = [...embeddingT.dataSync()];
-        dispose(embeddingT);
+        const res = await model5.predict({img_inputs: norm2});
+        data2 = [...res.dataSync()];
+        dispose(res);
       } else {
-        const profileData = await profile(() => model5.predict({img_inputs: resize}));
+        const profileData = await profile(() => model5.predict({img_inputs: norm2}));
         data2 = [...profileData.result.dataSync()];
         profileData.result.dispose();
         run("emotion", profileData);
       }
     }
+    norm2.dispose();
     resolve(data2);
   });
 }
@@ -101412,17 +101416,17 @@ function status(msg) {
 }
 var original;
 async function calcSimmilariry(result) {
-  var _a, _b, _c, _d;
+  var _a, _b, _c, _d, _e;
   document.getElementById("compare-container").style.display = human.config.face.embedding.enabled ? "block" : "none";
   if (!human.config.face.embedding.enabled)
     return;
-  if (((_a = result == null ? void 0 : result.face) == null ? void 0 : _a.length) > 0 && ((_b = result == null ? void 0 : result.face[0].embedding) == null ? void 0 : _b.length) !== 192)
+  if (!(((_a = result == null ? void 0 : result.face) == null ? void 0 : _a.length) > 0) || ((_c = (_b = result == null ? void 0 : result.face[0]) == null ? void 0 : _b.embedding) == null ? void 0 : _c.length) !== 192)
     return;
   if (!original) {
     original = result;
     document.getElementById("compare-canvas").getContext("2d").drawImage(original.canvas, 0, 0, 200, 200);
   }
-  const simmilarity2 = human.simmilarity((_c = original == null ? void 0 : original.face[0]) == null ? void 0 : _c.embedding, (_d = result == null ? void 0 : result.face[0]) == null ? void 0 : _d.embedding);
+  const simmilarity2 = human.simmilarity((_d = original == null ? void 0 : original.face[0]) == null ? void 0 : _d.embedding, (_e = result == null ? void 0 : result.face[0]) == null ? void 0 : _e.embedding);
   document.getElementById("simmilarity").innerText = `simmilarity: ${Math.trunc(1e3 * simmilarity2) / 10}%`;
 }
 var lastDraw = performance.now();

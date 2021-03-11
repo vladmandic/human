@@ -4350,35 +4350,39 @@ async function load5(config3) {
   }
   return model4;
 }
-function simmilarity(embedding1, embedding2) {
+function simmilarity(embedding1, embedding2, order = 2) {
   if (!embedding1 || !embedding2)
     return 0;
   if ((embedding1 == null ? void 0 : embedding1.length) === 0 || (embedding2 == null ? void 0 : embedding2.length) === 0)
     return 0;
   if ((embedding1 == null ? void 0 : embedding1.length) !== (embedding2 == null ? void 0 : embedding2.length))
     return 0;
-  const order = 2;
-  const distance = 10 * embedding1.map((val, i) => val - embedding2[i]).reduce((dist, diff) => dist + diff ** order, 0) ** (1 / order);
-  return Math.trunc(1e3 * (1 - distance)) / 1e3;
+  const distance = 50 * embedding1.map((val, i) => val - embedding2[i]).reduce((dist, diff) => dist + diff ** order, 0) ** (1 / order);
+  const res = Math.trunc(1e3 * (1 - (isNaN(distance) ? 1 : distance))) / 1e3;
+  console.log(distance, res);
+  return res;
 }
 async function predict4(image13, config3) {
   if (!model4)
     return null;
   return new Promise(async (resolve) => {
     const resize = tf8.image.resizeBilinear(image13, [model4.inputs[0].shape[2], model4.inputs[0].shape[1]], false);
+    const norm = resize.sub(0.5);
+    resize.dispose();
     let data3 = [];
     if (config3.face.embedding.enabled) {
       if (!config3.profile) {
-        const embeddingT = await model4.predict({img_inputs: resize});
-        data3 = [...embeddingT.dataSync()];
-        tf8.dispose(embeddingT);
+        const res = await model4.predict({img_inputs: norm});
+        data3 = [...res.dataSync()];
+        tf8.dispose(res);
       } else {
-        const profileData = await tf8.profile(() => model4.predict({img_inputs: resize}));
+        const profileData = await tf8.profile(() => model4.predict({img_inputs: norm}));
         data3 = [...profileData.result.dataSync()];
         profileData.result.dispose();
         run("emotion", profileData);
       }
     }
+    norm.dispose();
     resolve(data3);
   });
 }

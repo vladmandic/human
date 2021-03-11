@@ -5,6 +5,7 @@ export class HandDetector {
   model: any;
   anchors: any;
   anchorsTensor: any;
+  inputSize: number;
   inputSizeTensor: any;
   doubleInputSizeTensor: any;
 
@@ -12,6 +13,7 @@ export class HandDetector {
     this.model = model;
     this.anchors = anchorsAnnotated.map((anchor) => [anchor.x_center, anchor.y_center]);
     this.anchorsTensor = tf.tensor2d(this.anchors);
+    this.inputSize = inputSize;
     this.inputSizeTensor = tf.tensor1d([inputSize, inputSize]);
     this.doubleInputSizeTensor = tf.tensor1d([inputSize * 2, inputSize * 2]);
   }
@@ -67,7 +69,7 @@ export class HandDetector {
   async estimateHandBounds(input, config) {
     const inputHeight = input.shape[1];
     const inputWidth = input.shape[2];
-    const image = tf.tidy(() => input.resizeBilinear([config.hand.inputSize, config.hand.inputSize]).div(127.5).sub(1));
+    const image = tf.tidy(() => input.resizeBilinear([this.inputSize, this.inputSize]).div(127.5).sub(1));
     const predictions = await this.getBoxes(image, config);
     image.dispose();
     const hands: Array<{}> = [];
@@ -79,7 +81,7 @@ export class HandDetector {
       const palmLandmarks = prediction.palmLandmarks.arraySync();
       prediction.box.dispose();
       prediction.palmLandmarks.dispose();
-      hands.push(box.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks, confidence: prediction.confidence }, [inputWidth / config.hand.inputSize, inputHeight / config.hand.inputSize]));
+      hands.push(box.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks, confidence: prediction.confidence }, [inputWidth / this.inputSize, inputHeight / this.inputSize]));
     }
     return hands;
   }

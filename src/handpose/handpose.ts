@@ -54,8 +54,8 @@ export async function load(config) {
     config.hand.enabled ? tf.loadGraphModel(config.hand.detector.modelPath, { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) : null,
     config.hand.landmarks ? tf.loadGraphModel(config.hand.skeleton.modelPath, { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) : null,
   ]);
-  const handDetector = new handdetector.HandDetector(handDetectorModel, config.hand.inputSize, anchors.anchors);
-  const handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel, config.hand.inputSize);
+  const handDetector = new handdetector.HandDetector(handDetectorModel, handDetectorModel?.inputs[0].shape[2], anchors.anchors);
+  const handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel, handPoseModel?.inputs[0].shape[2]);
   const handPose = new HandPose(handPipeline);
   if (config.hand.enabled && config.debug) log(`load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);
   if (config.hand.landmarks && config.debug) log(`load model: ${config.hand.skeleton.modelPath.match(/\/(.*)\./)[1]}`);

@@ -109,7 +109,7 @@ class Human {
       age,
       gender,
       emotion,
-      body: this.config.body.modelType.startsWith('posenet') ? posenet : blazepose,
+      body: this.config.body.modelPath.includes('posenet') ? posenet : blazepose,
       hand: handpose,
     };
     // include platform info
@@ -186,8 +186,8 @@ class Human {
         this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
         this.models.embedding || ((this.config.face.enabled && this.config.face.embedding.enabled) ? embedding.load(this.config) : null),
         this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config) : null),
-        this.models.posenet || (this.config.body.enabled && this.config.body.modelType.startsWith('posenet') ? posenet.load(this.config) : null),
-        this.models.posenet || (this.config.body.enabled && this.config.body.modelType.startsWith('blazepose') ? blazepose.load(this.config) : null),
+        this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('posenet') ? posenet.load(this.config) : null),
+        this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('blazepose') ? blazepose.load(this.config) : null),
       ]);
     } else {
       if (this.config.face.enabled && !this.models.face) this.models.face = await facemesh.load(this.config);
@@ -196,8 +196,8 @@ class Human {
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) this.models.emotion = await emotion.load(this.config);
       if (this.config.face.enabled && this.config.face.embedding.enabled && !this.models.embedding) this.models.embedding = await embedding.load(this.config);
       if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config);
-      if (this.config.body.enabled && !this.models.posenet && this.config.body.modelType.startsWith('posenet')) this.models.posenet = await posenet.load(this.config);
-      if (this.config.body.enabled && !this.models.blazepose && this.config.body.modelType.startsWith('blazepose')) this.models.blazepose = await blazepose.load(this.config);
+      if (this.config.body.enabled && !this.models.posenet && this.config.body.modelPath.includes('posenet')) this.models.posenet = await posenet.load(this.config);
+      if (this.config.body.enabled && !this.models.blazepose && this.config.body.modelPath.includes('blazepose')) this.models.blazepose = await blazepose.load(this.config);
     }
 
     if (this.#firstRun) {
@@ -477,13 +477,13 @@ class Human {
       // run body: can be posenet or blazepose
       this.#analyze('Start Body:');
       if (this.config.async) {
-        if (this.config.body.modelType.startsWith('posenet')) bodyRes = this.config.body.enabled ? this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
+        if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
         else bodyRes = this.config.body.enabled ? blazepose.predict(process.tensor, this.config) : [];
         if (this.#perf.body) delete this.#perf.body;
       } else {
         this.state = 'run:body';
         timeStamp = now();
-        if (this.config.body.modelType.startsWith('posenet')) bodyRes = this.config.body.enabled ? await this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
+        if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? await this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
         else bodyRes = this.config.body.enabled ? await blazepose.predict(process.tensor, this.config) : [];
         this.#perf.body = Math.trunc(now() - timeStamp);
       }

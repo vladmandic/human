@@ -3,20 +3,18 @@ import Human from '../src/human';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-const userConfig = { backend: 'webgl' }; // add any user configuration overrides
+// const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 
-/*
 const userConfig = {
-  backend: 'wasm',
+  backend: 'webgl',
   async: false,
-  warmup: 'none',
+  warmup: 'face',
   videoOptimized: false,
-  face: { enabled: true, mesh: { enabled: false }, iris: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: false } },
+  face: { enabled: true, mesh: { enabled: false }, iris: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: true } },
   hand: { enabled: false },
   gesture: { enabled: false },
-  body: { enabled: false, modelType: 'blazepose', modelPath: '../models/blazepose.json' },
+  body: { enabled: false, modelPath: '../models/blazepose.json' },
 };
-*/
 
 const human = new Human(userConfig);
 
@@ -40,7 +38,7 @@ const ui = {
   detectFPS: [], // internal, holds fps values for detection performance
   drawFPS: [], // internal, holds fps values for draw performance
   buffered: false, // experimental, should output be buffered between frames
-  drawWarmup: false, // debug only, should warmup image processing be displayed on startup
+  drawWarmup: true, // debug only, should warmup image processing be displayed on startup
   drawThread: null, // internl, perform draw operations in a separate thread
   detectThread: null, // internl, perform detect operations in a separate thread
   framesDraw: 0, // internal, statistics on frames drawn
@@ -103,9 +101,6 @@ async function drawResults(input) {
   ui.drawFPS.push(1000 / (performance.now() - lastDraw));
   if (ui.drawFPS.length > ui.maxFPSframes) ui.drawFPS.shift();
   lastDraw = performance.now();
-
-  // enable for continous performance monitoring
-  // console.log(result.performance);
 
   // draw fps chart
   await menu.process.updateChart('FPS', ui.detectFPS);

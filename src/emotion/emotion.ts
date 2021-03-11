@@ -27,17 +27,7 @@ export async function predict(image, config) {
   if (config.videoOptimized) skipped = 0;
   else skipped = Number.MAX_SAFE_INTEGER;
   return new Promise(async (resolve) => {
-    /*
-    const zoom = [0, 0]; // 0..1 meaning 0%..100%
-    const box = [[
-      (image.shape[1] * zoom[0]) / image.shape[1],
-      (image.shape[2] * zoom[1]) / image.shape[2],
-      (image.shape[1] - (image.shape[1] * zoom[0])) / image.shape[1],
-      (image.shape[2] - (image.shape[2] * zoom[1])) / image.shape[2],
-    ]];
-    const resize = tf.image.cropAndResize(image, box, [0], [config.face.emotion.inputSize, config.face.emotion.inputSize]);
-    */
-    const resize = tf.image.resizeBilinear(image, [config.face.emotion.inputSize, config.face.emotion.inputSize], false);
+    const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
     const [red, green, blue] = tf.split(resize, 3, 3);
     resize.dispose();
     // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html

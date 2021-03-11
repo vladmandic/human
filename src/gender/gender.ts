@@ -28,7 +28,7 @@ export async function predict(image, config) {
   if (config.videoOptimized) skipped = 0;
   else skipped = Number.MAX_SAFE_INTEGER;
   return new Promise(async (resolve) => {
-    const resize = tf.image.resizeBilinear(image, [config.face.gender.inputSize, config.face.gender.inputSize], false);
+    const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
     let enhance;
     if (alternative) {
       enhance = tf.tidy(() => {

@@ -3,13 +3,13 @@ export declare class Pipeline {
     boundingBoxDetector: any;
     meshDetector: any;
     irisModel: any;
-    meshWidth: number;
-    meshHeight: number;
+    boxSize: number;
+    meshSize: number;
     irisSize: number;
     irisEnlarge: number;
     skipped: number;
     detectedFaces: number;
-    constructor(boundingBoxDetector: any, meshDetector: any, irisModel: any, config: any);
+    constructor(boundingBoxDetector: any, meshDetector: any, irisModel: any);
     transformRawCoords(rawCoords: any, box: any, angle: any, rotationMatrix: any): any;
     getLeftToRightEyeDepthDifference(rawCoords: any): number;
     getEyeBox(rawCoords: any, face: any, eyeInnerCornerIndex: any, eyeOuterCornerIndex: any, flip?: boolean): {

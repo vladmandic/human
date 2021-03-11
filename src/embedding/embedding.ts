@@ -2,8 +2,9 @@ import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 
-// based on https://github.com/sirius-ai/MobileFaceNet_TF
-// model converted from https://github.com/sirius-ai/MobileFaceNet_TF/files/3551493/FaceMobileNet192_train_false.zip
+// original: https://github.com/sirius-ai/MobileFaceNet_TF
+// modified: https://github.com/sirius-ai/MobileFaceNet_TF/issues/46
+// download: https://github.com/sirius-ai/MobileFaceNet_TF/files/3551493/FaceMobileNet192_train_false.zip
 
 let model;
 
@@ -29,7 +30,7 @@ export function simmilarity(embedding1, embedding2) {
 export async function predict(image, config) {
   if (!model) return null;
   return new Promise(async (resolve) => {
-    const resize = tf.image.resizeBilinear(image, [config.face.embedding.inputSize, config.face.embedding.inputSize], false);
+    const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
     // const normalize = tf.tidy(() => resize.div(127.5).sub(0.5)); // this is -0.5...0.5 ???
     let data: Array<[]> = [];
     if (config.face.embedding.enabled) {

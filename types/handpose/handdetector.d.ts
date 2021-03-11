@@ -2,6 +2,7 @@ export declare class HandDetector {
     model: any;
     anchors: any;
     anchorsTensor: any;
+    inputSize: number;
     inputSizeTensor: any;
     doubleInputSizeTensor: any;
     constructor(model: any, inputSize: any, anchorsAnnotated: any);

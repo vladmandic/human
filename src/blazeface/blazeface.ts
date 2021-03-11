@@ -57,15 +57,15 @@ export class BlazeFaceModel {
   height: number;
   anchorsData: any;
   anchors: any;
-  inputSize: number;
+  inputSize: any;
   config: any;
   scaleFaces: number;
 
   constructor(model, config) {
     this.blazeFaceModel = model;
-    this.width = config.face.detector.inputSize;
-    this.height = config.face.detector.inputSize;
-    this.anchorsData = generateAnchors(config.face.detector.inputSize);
+    this.width = model.inputs[0].shape[2];
+    this.height = model.inputs[0].shape[1];
+    this.anchorsData = generateAnchors(model.inputs[0].shape[1]);
     this.anchors = tf.tensor2d(this.anchorsData);
     this.inputSize = tf.tensor1d([this.width, this.height]);
     this.config = config;

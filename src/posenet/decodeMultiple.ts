@@ -20,12 +20,12 @@ function getInstanceScore(existingPoses, squaredNmsRadius, instanceKeypoints) {
   return notOverlappedKeypointScores / instanceKeypoints.length;
 }
 
-export function decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, config) {
+export function decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, nmsRadius, maxDetections, scoreThreshold) {
   const poses: Array<{ keypoints: any, score: number }> = [];
-  const queue = buildParts.buildPartWithScoreQueue(config.body.scoreThreshold, kLocalMaximumRadius, scoresBuffer);
-  const squaredNmsRadius = config.body.nmsRadius ^ 2;
+  const queue = buildParts.buildPartWithScoreQueue(scoreThreshold, kLocalMaximumRadius, scoresBuffer);
+  const squaredNmsRadius = nmsRadius ^ 2;
   // Generate at most maxDetections object instances per image in decreasing root part score order.
-  while (poses.length < config.body.maxDetections && !queue.empty()) {
+  while (poses.length < maxDetections && !queue.empty()) {
     // The top element in the queue is the next root candidate.
     const root = queue.dequeue();
     // Part-based non-maximum suppression: We reject a root candidate if it is within a disk of `nmsRadius` pixels from the corresponding part of a previously detected instance.
@@ -34,7 +34,7 @@ export function decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFw
     // Else start a new detection instance at the position of the root.
     const keypoints = decodePose.decodePose(root, scoresBuffer, offsetsBuffer, defaultOutputStride, displacementsFwdBuffer, displacementsBwdBuffer);
     const score = getInstanceScore(poses, squaredNmsRadius, keypoints);
-    if (score > config.body.scoreThreshold) poses.push({ keypoints, score });
+    if (score > scoreThreshold) poses.push({ keypoints, score });
   }
   return poses;
 }

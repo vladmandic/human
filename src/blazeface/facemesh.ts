@@ -9,7 +9,7 @@ export class MediaPipeFaceMesh {
   config: any;
 
   constructor(blazeFace, blazeMeshModel, irisModel, config) {
-    this.facePipeline = new facepipeline.Pipeline(blazeFace, blazeMeshModel, irisModel, config);
+    this.facePipeline = new facepipeline.Pipeline(blazeFace, blazeMeshModel, irisModel);
     this.config = config;
   }
 

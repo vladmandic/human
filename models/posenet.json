@@ -1,12 +1,12 @@
 {
   "format": "graph-model",
   "generatedBy": "2.0.0-dev20190603",
-  "convertedBy": "TensorFlow.js Converter v1.1.2",
+  "convertedBy": "https://github.com/vladmandic",
   "modelTopology":
   {
       "node":
       [
-          {"name":"sub_2","op":"Placeholder","attr":{"dtype":{"type":"DT_FLOAT"},"shape":{"shape":{"dim":[{"size":"1"},{"size":"-1"},{"size":"-1"},{"size":"3"}]}}}},
+          {"name":"sub_2","op":"Placeholder","attr":{"dtype":{"type":"DT_FLOAT"},"shape":{"shape":{"dim":[{"size":"1"},{"size":"257"},{"size":"257"},{"size":"3"}]}}}},
           {"name":"MobilenetV1/offset_2/Conv2D_bias","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"34"}]}}},"dtype":{"type":"DT_FLOAT"}}},
           {"name":"MobilenetV1/offset_2/weights","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"1"},{"size":"1024"},{"size":"34"}]}}},"dtype":{"type":"DT_FLOAT"}}},
           {"name":"MobilenetV1/Conv2d_13_pointwise/Conv2D_bias","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1024"}]}}},"dtype":{"type":"DT_FLOAT"}}},

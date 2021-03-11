@@ -74,7 +74,7 @@ export function decodePose(root, scores, offsets, outputStride, displacementsFwd
   return instanceKeypoints;
 }
 
-export async function decodeSinglePose(heatmapScores, offsets, config) {
+export async function decodeSinglePose(heatmapScores, offsets, minScore) {
   let totalScore = 0.0;
   const heatmapValues = decoders.argmax2d(heatmapScores);
   const allTensorBuffers = await Promise.all([heatmapScores.buffer(), offsets.buffer(), heatmapValues.buffer()]);
@@ -95,7 +95,7 @@ export async function decodeSinglePose(heatmapScores, offsets, config) {
       score,
     };
   });
-  const filteredKeypoints = instanceKeypoints.filter((kpt) => kpt.score > config.body.scoreThreshold);
+  const filteredKeypoints = instanceKeypoints.filter((kpt) => kpt.score > minScore);
   heatmapValues.dispose();
   offsetPoints.dispose();
   return { keypoints: filteredKeypoints, score: totalScore / instanceKeypoints.length };

@@ -67,7 +67,6 @@ export default {
                              // (note: module is not loaded until it is required)
     detector: {
       modelPath: '../models/blazeface-back.json',
-      inputSize: 256,        // fixed value
       rotation: true,        // use best-guess rotated face image or just box with rotation as-is
                              // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees
                              // this parameter is not valid in nodejs
@@ -91,19 +90,16 @@ export default {
     mesh: {
       enabled: true,
       modelPath: '../models/facemesh.json',
-      inputSize: 192,        // fixed value
     },
 
     iris: {
       enabled: true,
       modelPath: '../models/iris.json',
-      inputSize: 64,         // fixed value
     },
 
     age: {
       enabled: true,
-      modelPath: '../models/age-ssrnet-imdb.json',
-      inputSize: 64,         // fixed value
+      modelPath: '../models/age.json',
       skipFrames: 31,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },
@@ -112,14 +108,12 @@ export default {
       enabled: true,
       minConfidence: 0.1,    // threshold for discarding a prediction
       modelPath: '../models/gender.json', // can be 'gender' or 'gender-ssrnet-imdb'
-      inputSize: 64,         // fixed value
       skipFrames: 32,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },
 
     emotion: {
       enabled: true,
-      inputSize: 64,         // fixed value
       minConfidence: 0.1,    // threshold for discarding a prediction
       skipFrames: 33,        // how many frames to go without re-running the detector
       modelPath: '../models/emotion.json',
@@ -127,7 +121,6 @@ export default {
 
     embedding: {
       enabled: false,
-      inputSize: 112,        // fixed value
       modelPath: '../models/mobilefacenet.json',
     },
   },
@@ -135,7 +128,6 @@ export default {
   body: {
     enabled: true,
     modelPath: '../models/posenet.json', // can be 'posenet' or 'blazepose'
-    inputSize: 257,          // fixed value, 257 for posenet and 256 for blazepose
     maxDetections: 10,       // maximum number of people detected in the input
                              // should be set to the minimum number for performance
                              // only valid for posenet as blazepose only detects single pose
@@ -144,14 +136,12 @@ export default {
                              // only valid for posenet as blazepose only detects single pose
     nmsRadius: 20,           // radius for deciding points are too close in non-maximum suppression
                              // only valid for posenet as blazepose only detects single pose
-    modelType: 'posenet-mobilenet',  // can be 'posenet-mobilenet', 'posenet-resnet', 'blazepose'
   },
 
   hand: {
     enabled: true,
     rotation: false,         // use best-guess rotated hand image or just box with rotation as-is
                              // false means higher performance, but incorrect finger mapping if hand is inverted
-    inputSize: 256,          // fixed value
     skipFrames: 12,          // how many frames to go without re-running the hand bounding box detector
                              // only used for video inputs
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding

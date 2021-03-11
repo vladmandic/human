@@ -8,7 +8,6 @@ let model;
 export async function load(config) {
   if (!model) {
     model = await tf.loadGraphModel(config.body.modelPath);
-    // blazepose inputSize is 256x256px, but we can find that out dynamically
     model.width = parseInt(model.signature.inputs['input_1:0'].tensorShape.dim[2].size);
     model.height = parseInt(model.signature.inputs['input_1:0'].tensorShape.dim[1].size);
     if (config.debug) log(`load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
@@ -20,7 +19,7 @@ export async function predict(image, config) {
   if (!model) return null;
   if (!config.body.enabled) return null;
   const imgSize = { width: image.shape[2], height: image.shape[1] };
-  const resize = tf.image.resizeBilinear(image, [model.width || config.body.inputSize, model.height || config.body.inputSize], false);
+  const resize = tf.image.resizeBilinear(image, [model.width, model.height], false);
   const normalize = tf.div(resize, [255.0]);
   resize.dispose();
   let points;
@@ -30,7 +29,6 @@ export async function predict(image, config) {
     // const segmentation = segmentationT.arraySync(); // array 128 x 128
     // segmentationT.dispose();
     points = resT.find((t) => (t.size === 195 || t.size === 155)).dataSync(); // order of output tensors may change between models, full has 195 and upper has 155 items
-    // console.log(resT, points, segmentation);
     resT.forEach((t) => t.dispose());
   } else {
     const profileData = await tf.profile(() => model.predict(normalize));
@@ -55,6 +53,5 @@ export async function predict(image, config) {
       presence: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 4])))) / 100, // reverse sigmoid value
     });
   }
-  // console.log('POINTS', imgSize, pts.length, pts);
   return [{ keypoints }];
 }

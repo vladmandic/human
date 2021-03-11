@@ -43,22 +43,22 @@ export class Pipeline {
   boundingBoxDetector: any;
   meshDetector: any;
   irisModel: any;
-  meshWidth: number;
-  meshHeight: number;
+  boxSize: number;
+  meshSize: number;
   irisSize: number;
   irisEnlarge: number;
   skipped: number;
   detectedFaces: number;
 
-  constructor(boundingBoxDetector, meshDetector, irisModel, config) {
+  constructor(boundingBoxDetector, meshDetector, irisModel) {
     // An array of facial bounding boxes.
     this.storedBoxes = [];
     this.boundingBoxDetector = boundingBoxDetector;
     this.meshDetector = meshDetector;
     this.irisModel = irisModel;
-    this.meshWidth = config.face.mesh.inputSize;
-    this.meshHeight = config.face.mesh.inputSize;
-    this.irisSize = config.face.iris.inputSize;
+    this.boxSize = boundingBoxDetector?.blazeFaceModel?.inputs[0].shape[2] || 0;
+    this.meshSize = meshDetector?.inputs[0].shape[2] || boundingBoxDetector?.blazeFaceModel?.inputs[0].shape[2];
+    this.irisSize = irisModel?.inputs[0].shape[1] || 0;
     this.irisEnlarge = 2.3;
     this.skipped = 0;
     this.detectedFaces = 0;
@@ -66,10 +66,10 @@ export class Pipeline {
 
   transformRawCoords(rawCoords, box, angle, rotationMatrix) {
     const boxSize = bounding.getBoxSize({ startPoint: box.startPoint, endPoint: box.endPoint });
-    const scaleFactor = [boxSize[0] / this.meshWidth, boxSize[1] / this.meshHeight];
+    const scaleFactor = [boxSize[0] / this.meshSize, boxSize[1] / this.boxSize];
     const coordsScaled = rawCoords.map((coord) => ([
-      scaleFactor[0] * (coord[0] - this.meshWidth / 2),
-      scaleFactor[1] * (coord[1] - this.meshHeight / 2), coord[2],
+      scaleFactor[0] * (coord[0] - this.boxSize / 2),
+      scaleFactor[1] * (coord[1] - this.boxSize / 2), coord[2],
     ]));
     const coordsRotationMatrix = (angle !== 0) ? util.buildRotationMatrix(angle, [0, 0]) : util.IDENTITY_MATRIX;
     const coordsRotated = (angle !== 0) ? coordsScaled.map((coord) => ([...util.rotatePoint(coord, coordsRotationMatrix), coord[2]])) : coordsScaled;
@@ -93,9 +93,9 @@ export class Pipeline {
     const box = bounding.squarifyBox(bounding.enlargeBox(this.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), this.irisEnlarge));
     const boxSize = bounding.getBoxSize(box);
     let crop = tf.image.cropAndResize(face, [[
-      box.startPoint[1] / this.meshHeight,
-      box.startPoint[0] / this.meshWidth, box.endPoint[1] / this.meshHeight,
-      box.endPoint[0] / this.meshWidth,
+      box.startPoint[1] / this.meshSize,
+      box.startPoint[0] / this.meshSize, box.endPoint[1] / this.meshSize,
+      box.endPoint[0] / this.meshSize,
     ]], [0], [this.irisSize, this.irisSize]);
     if (flip && tf.ENV.flags.IS_BROWSER) {
       crop = tf.image.flipLeftRight(crop); // flipLeftRight is not defined for tfjs-node
@@ -192,11 +192,11 @@ export class Pipeline {
         const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
         const rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
         rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
-        face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshHeight, this.meshWidth]).div(255);
+        face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize]).div(255);
       } else {
         rotationMatrix = util.IDENTITY_MATRIX;
         const cloned = input.clone();
-        face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, cloned, [this.meshHeight, this.meshWidth]).div(255);
+        face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, cloned, [this.boxSize, this.boxSize]).div(255);
       }
 
       // if we're not going to produce mesh, don't spend time with further processing

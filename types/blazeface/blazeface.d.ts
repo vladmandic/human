@@ -5,7 +5,7 @@ export declare class BlazeFaceModel {
     height: number;
     anchorsData: any;
     anchors: any;
-    inputSize: number;
+    inputSize: any;
     config: any;
     scaleFaces: number;
     constructor(model: any, config: any);

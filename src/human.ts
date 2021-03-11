@@ -303,7 +303,8 @@ class Human {
       emotion: string,
       embedding: any,
       iris: number,
-      angle: any
+      angle: any,
+      tensor: any,
     }> = [];
 
     this.state = 'run:face';
@@ -402,7 +403,7 @@ class Human {
         embedding: embeddingRes,
         iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
         angle,
-        // image: face.image.toInt().squeeze(),
+        tensor: this.config.face.detector.return ? face.image.squeeze() : null,
       });
 
       // dont need face anymore

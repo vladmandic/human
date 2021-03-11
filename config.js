@@ -85,6 +85,7 @@ export default {
       scoreThreshold: 0.2,   // threshold for deciding when to remove boxes based on score
                              // in non-maximum suppression,
                              // this is applied on detection objects only and before minConfidence
+      return: true,          // return extracted face as tensor
     },
 
     mesh: {

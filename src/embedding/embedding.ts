@@ -6,13 +6,6 @@ import * as profile from '../profile';
 // modified: https://github.com/sirius-ai/MobileFaceNet_TF/issues/46
 // download: https://github.com/sirius-ai/MobileFaceNet_TF/files/3551493/FaceMobileNet192_train_false.zip
 
-/* WiP
-
-- Should input box be tightly cropped?
-- What is the best input range? (adjust distance scale accordingly)
-- How to best normalize output
-*/
-
 let model;
 
 export async function load(config) {
@@ -29,58 +22,44 @@ export function simmilarity(embedding1, embedding2, order = 2) {
   if (embedding1?.length !== embedding2?.length) return 0;
   // general minkowski distance
   // euclidean distance is limited case where order is 2
-  const distance = 50.0 * ((embedding1.map((val, i) => (val - embedding2[i])).reduce((dist, diff) => dist + (diff ** order), 0) ** (1 / order)));
-  const res = (Math.trunc(1000 * (1 - (isNaN(distance) ? 1 : distance))) / 1000);
-  console.log(distance, res);
+  const distance = embedding1
+    .map((val, i) => (Math.abs(embedding1[i] - embedding2[i]) ** order)) // distance squared
+    .reduce((sum, now) => (sum + now), 0) // sum all distances
+    ** (1 / order); // get root of
+  const res = Math.trunc(1000 * (1 - (20 * distance))) / 1000;
   return res;
 }
 
-export async function predict(image, config) {
+export async function predict(input, config) {
   if (!model) return null;
   return new Promise(async (resolve) => {
-    const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false); // input is already normalized to 0..1
-    // optionally do a tight box crop
-    /*
-    const box = [[0, 0.2, 0.9, 0.8]]; // top, left, bottom, right
-    const resize = tf.image.cropAndResize(image, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
-    */
-    // debug visualize box
-    // const canvas = document.getElementById('compare-canvas');
-    // await tf.browser.toPixels(resize.squeeze(), canvas);
-    const norm = resize.sub(0.5);
-    // optionally normalizes with mean value being at point 0, better than fixed range -0.5..0.5
-    /*
-    const mean = resize.mean();
-    const norm = resize.sub(mean);
-    */
-    resize.dispose();
+    const image = tf.tidy(() => {
+      const data = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false); // input is already normalized to 0..1
+      // const box = [[0.05, 0.10, 0.85, 0.90]]; // top, left, bottom, right
+      // const crop = tf.image.cropAndResize(data, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]); // optionally do a tight box crop
+      const norm = data.sub(data.mean()); // trick to normalize around image mean value
+      return norm;
+    });
     let data: Array<[]> = [];
     if (config.face.embedding.enabled) {
       if (!config.profile) {
-        const res = await model.predict({ img_inputs: norm });
-        /*
+        const res = await model.predict({ img_inputs: image });
         const scaled = tf.tidy(() => {
-          // run l2 normalization on output
-          const sqr = res.square();
-          const sum = sqr.sum();
-          const sqrt = sum.sqrt();
-          const l2 = res.div(sqrt);
-          // scale outputs
-          const range = l2.max().sub(l2.min());
-          const scale = l2.mul(2).div(range);
+          const l2 = res.norm('euclidean');
+          const scale = res.div(l2);
           return scale;
         });
-        */
-        data = [...res.dataSync()]; // convert object array to standard array
+        data = [...scaled.dataSync()]; // convert object array to standard array
+        tf.dispose(scaled);
         tf.dispose(res);
       } else {
-        const profileData = await tf.profile(() => model.predict({ img_inputs: norm }));
+        const profileData = await tf.profile(() => model.predict({ img_inputs: image }));
         data = [...profileData.result.dataSync()];
         profileData.result.dispose();
         profile.run('emotion', profileData);
       }
     }
-    norm.dispose();
+    image.dispose();
     resolve(data);
   });
 }

@@ -2,6 +2,7 @@
 
 - Strong typing
 - Automated testing
+- Guard against corrupt input
 - Improve face embedding
 - Build Face embedding database
 - Dynamic sample processing

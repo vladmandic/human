@@ -4357,32 +4357,39 @@ function simmilarity(embedding1, embedding2, order = 2) {
     return 0;
   if ((embedding1 == null ? void 0 : embedding1.length) !== (embedding2 == null ? void 0 : embedding2.length))
     return 0;
-  const distance = 50 * embedding1.map((val, i) => val - embedding2[i]).reduce((dist, diff) => dist + diff ** order, 0) ** (1 / order);
-  const res = Math.trunc(1e3 * (1 - (isNaN(distance) ? 1 : distance))) / 1e3;
-  console.log(distance, res);
+  const distance = embedding1.map((val, i) => Math.abs(embedding1[i] - embedding2[i]) ** order).reduce((sum, now2) => sum + now2, 0) ** (1 / order);
+  const res = Math.trunc(1e3 * (1 - 20 * distance)) / 1e3;
   return res;
 }
-async function predict4(image13, config3) {
+async function predict4(input, config3) {
   if (!model4)
     return null;
   return new Promise(async (resolve) => {
-    const resize = tf8.image.resizeBilinear(image13, [model4.inputs[0].shape[2], model4.inputs[0].shape[1]], false);
-    const norm = resize.sub(0.5);
-    resize.dispose();
+    const image13 = tf8.tidy(() => {
+      const data4 = tf8.image.resizeBilinear(input, [model4.inputs[0].shape[2], model4.inputs[0].shape[1]], false);
+      const norm = data4.sub(data4.mean());
+      return norm;
+    });
     let data3 = [];
     if (config3.face.embedding.enabled) {
       if (!config3.profile) {
-        const res = await model4.predict({img_inputs: norm});
-        data3 = [...res.dataSync()];
+        const res = await model4.predict({img_inputs: image13});
+        const scaled = tf8.tidy(() => {
+          const l2 = res.norm("euclidean");
+          const scale = res.div(l2);
+          return scale;
+        });
+        data3 = [...scaled.dataSync()];
+        tf8.dispose(scaled);
         tf8.dispose(res);
       } else {
-        const profileData = await tf8.profile(() => model4.predict({img_inputs: norm}));
+        const profileData = await tf8.profile(() => model4.predict({img_inputs: image13}));
         data3 = [...profileData.result.dataSync()];
         profileData.result.dispose();
         run("emotion", profileData);
       }
     }
-    norm.dispose();
+    image13.dispose();
     resolve(data3);
   });
 }
@@ -23949,7 +23956,8 @@ var config_default = {
       skipInitial: false,
       minConfidence: 0.2,
       iouThreshold: 0.1,
-      scoreThreshold: 0.2
+      scoreThreshold: 0.2,
+      return: true
     },
     mesh: {
       enabled: true,
@@ -25432,7 +25440,8 @@ var Human = class {
           emotion: emotionRes,
           embedding: embeddingRes,
           iris: irisSize !== 0 ? Math.trunc(irisSize) / 100 : 0,
-          angle
+          angle,
+          tensor: this.config.face.detector.return ? face4.image.squeeze() : null
         });
         (_f = face4.image) == null ? void 0 : _f.dispose();
         __privateGet(this, _analyze).call(this, "End Face");

@@ -56,8 +56,8 @@ export class Pipeline {
     this.boundingBoxDetector = boundingBoxDetector;
     this.meshDetector = meshDetector;
     this.irisModel = irisModel;
-    this.boxSize = boundingBoxDetector?.blazeFaceModel?.inputs[0].shape[2] || 0;
-    this.meshSize = meshDetector?.inputs[0].shape[2] || boundingBoxDetector?.blazeFaceModel?.inputs[0].shape[2];
+    this.boxSize = boundingBoxDetector?.model?.inputs[0].shape[2] || 0;
+    this.meshSize = meshDetector?.inputs[0].shape[2] || boundingBoxDetector?.model?.inputs[0].shape[2];
     this.irisSize = irisModel?.inputs[0].shape[1] || 0;
     this.irisEnlarge = 2.3;
     this.skipped = 0;
@@ -66,10 +66,10 @@ export class Pipeline {
 
   transformRawCoords(rawCoords, box, angle, rotationMatrix) {
     const boxSize = bounding.getBoxSize({ startPoint: box.startPoint, endPoint: box.endPoint });
-    const scaleFactor = [boxSize[0] / this.meshSize, boxSize[1] / this.boxSize];
     const coordsScaled = rawCoords.map((coord) => ([
-      scaleFactor[0] * (coord[0] - this.boxSize / 2),
-      scaleFactor[1] * (coord[1] - this.boxSize / 2), coord[2],
+      boxSize[0] / this.meshSize * (coord[0] - this.meshSize / 2),
+      boxSize[1] / this.meshSize * (coord[1] - this.meshSize / 2),
+      coord[2],
     ]));
     const coordsRotationMatrix = (angle !== 0) ? util.buildRotationMatrix(angle, [0, 0]) : util.IDENTITY_MATRIX;
     const coordsRotated = (angle !== 0) ? coordsScaled.map((coord) => ([...util.rotatePoint(coord, coordsRotationMatrix), coord[2]])) : coordsScaled;
@@ -185,6 +185,7 @@ export class Pipeline {
       let face;
       let angle = 0;
       let rotationMatrix;
+
       if (config.face.detector.rotation && config.face.mesh.enabled && tf.ENV.flags.IS_BROWSER) {
         const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= LANDMARKS_COUNT) ? MESH_KEYPOINTS_LINE_OF_SYMMETRY_INDICES : BLAZEFACE_KEYPOINTS_LINE_OF_SYMMETRY_INDICES;
         angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
@@ -192,11 +193,13 @@ export class Pipeline {
         const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
         const rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
         rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
-        face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize]).div(255);
+        if (config.face.mesh.enabled) face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize]).div(255);
+        else face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.boxSize, this.boxSize]).div(255);
       } else {
         rotationMatrix = util.IDENTITY_MATRIX;
-        const cloned = input.clone();
-        face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, cloned, [this.boxSize, this.boxSize]).div(255);
+        const clonedImage = input.clone();
+        if (config.face.mesh.enabled) face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.meshSize, this.meshSize]).div(255);
+        else face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.boxSize, this.boxSize]).div(255);
       }
 
       // if we're not going to produce mesh, don't spend time with further processing
@@ -244,7 +247,7 @@ export class Pipeline {
       }
 
       const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
-      const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
+      const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData), 1.5);
       const squarifiedLandmarksBox = bounding.squarifyBox(landmarksBox);
       const transformedCoords = tf.tensor2d(transformedCoordsData);
       const prediction = {

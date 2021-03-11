@@ -1,13 +1,10 @@
 export declare const disposeBox: (box: any) => void;
 export declare class BlazeFaceModel {
-    blazeFaceModel: any;
-    width: number;
-    height: number;
+    model: any;
     anchorsData: any;
     anchors: any;
-    inputSize: any;
+    inputSize: number;
     config: any;
-    scaleFaces: number;
     constructor(model: any, config: any);
     getBoundingBoxes(inputImage: any): Promise<{
         boxes: {

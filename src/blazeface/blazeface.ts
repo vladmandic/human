@@ -52,34 +52,28 @@ function decodeBounds(boxOutputs, anchors, inputSize) {
 }
 
 export class BlazeFaceModel {
-  blazeFaceModel: any;
-  width: number;
-  height: number;
+  model: any;
   anchorsData: any;
   anchors: any;
-  inputSize: any;
+  inputSize: number;
   config: any;
-  scaleFaces: number;
 
   constructor(model, config) {
-    this.blazeFaceModel = model;
-    this.width = model.inputs[0].shape[2];
-    this.height = model.inputs[0].shape[1];
+    this.model = model;
     this.anchorsData = generateAnchors(model.inputs[0].shape[1]);
     this.anchors = tf.tensor2d(this.anchorsData);
-    this.inputSize = tf.tensor1d([this.width, this.height]);
+    this.inputSize = model.inputs[0].shape[2];
     this.config = config;
-    this.scaleFaces = 0.8;
   }
 
   async getBoundingBoxes(inputImage) {
     // sanity check on input
     if ((!inputImage) || (inputImage.isDisposedInternal) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return null;
     const [batch, boxes, scores] = tf.tidy(() => {
-      const resizedImage = inputImage.resizeBilinear([this.width, this.height]);
+      const resizedImage = inputImage.resizeBilinear([this.inputSize, this.inputSize]);
       // const normalizedImage = tf.mul(tf.sub(resizedImage.div(255), 0.5), 2);
       const normalizedImage = resizedImage.div(127.5).sub(0.5);
-      const batchedPrediction = this.blazeFaceModel.predict(normalizedImage);
+      const batchedPrediction = this.model.predict(normalizedImage);
       let batchOut;
       // are we using tfhub or pinto converted model?
       if (Array.isArray(batchedPrediction)) {
@@ -91,7 +85,7 @@ export class BlazeFaceModel {
       } else {
         batchOut = batchedPrediction.squeeze(); // when using tfhub model
       }
-      const boxesOut = decodeBounds(batchOut, this.anchors, this.inputSize);
+      const boxesOut = decodeBounds(batchOut, this.anchors, [this.inputSize, this.inputSize]);
       const logits = tf.slice(batchOut, [0, 0], [-1, 1]);
       const scoresOut = tf.sigmoid(logits).squeeze();
       return [batchOut, boxesOut, scoresOut];
@@ -123,7 +117,7 @@ export class BlazeFaceModel {
     scores.dispose();
     return {
       boxes: annotatedBoxes,
-      scaleFactor: [inputImage.shape[2] / this.width, inputImage.shape[1] / this.height],
+      scaleFactor: [inputImage.shape[2] / this.inputSize, inputImage.shape[1] / this.inputSize],
     };
   }
 }

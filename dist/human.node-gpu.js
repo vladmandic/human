@@ -386,22 +386,19 @@ function decodeBounds(boxOutputs, anchors3, inputSize) {
 }
 var BlazeFaceModel = class {
   constructor(model6, config3) {
-    this.blazeFaceModel = model6;
-    this.width = model6.inputs[0].shape[2];
-    this.height = model6.inputs[0].shape[1];
+    this.model = model6;
     this.anchorsData = generateAnchors(model6.inputs[0].shape[1]);
     this.anchors = tf2.tensor2d(this.anchorsData);
-    this.inputSize = tf2.tensor1d([this.width, this.height]);
+    this.inputSize = model6.inputs[0].shape[2];
     this.config = config3;
-    this.scaleFaces = 0.8;
   }
   async getBoundingBoxes(inputImage) {
     if (!inputImage || inputImage.isDisposedInternal || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
       return null;
     const [batch, boxes, scores] = tf2.tidy(() => {
-      const resizedImage = inputImage.resizeBilinear([this.width, this.height]);
+      const resizedImage = inputImage.resizeBilinear([this.inputSize, this.inputSize]);
       const normalizedImage = resizedImage.div(127.5).sub(0.5);
-      const batchedPrediction = this.blazeFaceModel.predict(normalizedImage);
+      const batchedPrediction = this.model.predict(normalizedImage);
       let batchOut;
       if (Array.isArray(batchedPrediction)) {
         const sorted = batchedPrediction.sort((a, b) => a.size - b.size);
@@ -412,7 +409,7 @@ var BlazeFaceModel = class {
       } else {
         batchOut = batchedPrediction.squeeze();
       }
-      const boxesOut = decodeBounds(batchOut, this.anchors, this.inputSize);
+      const boxesOut = decodeBounds(batchOut, this.anchors, [this.inputSize, this.inputSize]);
       const logits = tf2.slice(batchOut, [0, 0], [-1, 1]);
       const scoresOut = tf2.sigmoid(logits).squeeze();
       return [batchOut, boxesOut, scoresOut];
@@ -443,7 +440,7 @@ var BlazeFaceModel = class {
     scores.dispose();
     return {
       boxes: annotatedBoxes,
-      scaleFactor: [inputImage.shape[2] / this.width, inputImage.shape[1] / this.height]
+      scaleFactor: [inputImage.shape[2] / this.inputSize, inputImage.shape[1] / this.inputSize]
     };
   }
 };
@@ -3879,8 +3876,8 @@ var Pipeline = class {
     this.boundingBoxDetector = boundingBoxDetector;
     this.meshDetector = meshDetector;
     this.irisModel = irisModel;
-    this.boxSize = ((_a = boundingBoxDetector == null ? void 0 : boundingBoxDetector.blazeFaceModel) == null ? void 0 : _a.inputs[0].shape[2]) || 0;
-    this.meshSize = (meshDetector == null ? void 0 : meshDetector.inputs[0].shape[2]) || ((_b = boundingBoxDetector == null ? void 0 : boundingBoxDetector.blazeFaceModel) == null ? void 0 : _b.inputs[0].shape[2]);
+    this.boxSize = ((_a = boundingBoxDetector == null ? void 0 : boundingBoxDetector.model) == null ? void 0 : _a.inputs[0].shape[2]) || 0;
+    this.meshSize = (meshDetector == null ? void 0 : meshDetector.inputs[0].shape[2]) || ((_b = boundingBoxDetector == null ? void 0 : boundingBoxDetector.model) == null ? void 0 : _b.inputs[0].shape[2]);
     this.irisSize = (irisModel == null ? void 0 : irisModel.inputs[0].shape[1]) || 0;
     this.irisEnlarge = 2.3;
     this.skipped = 0;
@@ -3888,10 +3885,9 @@ var Pipeline = class {
   }
   transformRawCoords(rawCoords, box3, angle, rotationMatrix) {
     const boxSize = getBoxSize({startPoint: box3.startPoint, endPoint: box3.endPoint});
-    const scaleFactor = [boxSize[0] / this.meshSize, boxSize[1] / this.boxSize];
     const coordsScaled = rawCoords.map((coord) => [
-      scaleFactor[0] * (coord[0] - this.boxSize / 2),
-      scaleFactor[1] * (coord[1] - this.boxSize / 2),
+      boxSize[0] / this.meshSize * (coord[0] - this.meshSize / 2),
+      boxSize[1] / this.meshSize * (coord[1] - this.meshSize / 2),
       coord[2]
     ]);
     const coordsRotationMatrix = angle !== 0 ? buildRotationMatrix(angle, [0, 0]) : IDENTITY_MATRIX;
@@ -4004,11 +4000,17 @@ var Pipeline = class {
         const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
         const rotatedImage = tf4.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
         rotationMatrix = buildRotationMatrix(-angle, faceCenter);
-        face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, rotatedImage, [this.meshSize, this.meshSize]).div(255);
+        if (config3.face.mesh.enabled)
+          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, rotatedImage, [this.meshSize, this.meshSize]).div(255);
+        else
+          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, rotatedImage, [this.boxSize, this.boxSize]).div(255);
       } else {
         rotationMatrix = IDENTITY_MATRIX;
-        const cloned = input.clone();
-        face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, cloned, [this.boxSize, this.boxSize]).div(255);
+        const clonedImage = input.clone();
+        if (config3.face.mesh.enabled)
+          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, clonedImage, [this.meshSize, this.meshSize]).div(255);
+        else
+          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, clonedImage, [this.boxSize, this.boxSize]).div(255);
       }
       if (!config3.face.mesh.enabled) {
         const prediction2 = {
@@ -4050,7 +4052,7 @@ var Pipeline = class {
         rawCoords = rawCoords.concat(adjustedLeftIrisCoords).concat(adjustedRightIrisCoords);
       }
       const transformedCoordsData = this.transformRawCoords(rawCoords, box3, angle, rotationMatrix);
-      const landmarksBox = enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData));
+      const landmarksBox = enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData), 1.5);
       const squarifiedLandmarksBox = squarifyBox(landmarksBox);
       const transformedCoords = tf4.tensor2d(transformedCoordsData);
       const prediction = {
@@ -4357,7 +4359,6 @@ async function predict4(image13, config3) {
         run("emotion", profileData);
       }
     }
-    resize.dispose();
     resolve(data2);
   });
 }

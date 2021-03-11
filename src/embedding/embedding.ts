@@ -30,8 +30,9 @@ export function simmilarity(embedding1, embedding2) {
 export async function predict(image, config) {
   if (!model) return null;
   return new Promise(async (resolve) => {
-    const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
-    // const normalize = tf.tidy(() => resize.div(127.5).sub(0.5)); // this is -0.5...0.5 ???
+    const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false); // input is already normalized to 0..1
+    // const mean = resize.mean();
+    // const whiten = resize.sub(mean); // normalizes with mean value being at point 0
     let data: Array<[]> = [];
     if (config.face.embedding.enabled) {
       if (!config.profile) {
@@ -45,8 +46,6 @@ export async function predict(image, config) {
         profile.run('emotion', profileData);
       }
     }
-    resize.dispose();
-    // normalize.dispose();
     resolve(data);
   });
 }

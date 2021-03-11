@@ -1,7 +1,7 @@
 {
   "format": "graph-model",
   "generatedBy": "2.4.1",
-  "convertedBy": "TensorFlow.js Converter v2.8.2",
+  "convertedBy": "https://github.com/vladmandic",
   "signature":
   {
       "inputs":

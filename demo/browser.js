@@ -84,10 +84,21 @@ let original;
 async function calcSimmilariry(result) {
   document.getElementById('compare-container').style.display = human.config.face.embedding.enabled ? 'block' : 'none';
   if (!human.config.face.embedding.enabled) return;
-  if (!(result?.face?.length > 0) || (result?.face[0]?.embedding?.length !== 192)) return;
+  if (!(result?.face?.length > 0) || (result?.face[0]?.embedding?.length !== 256)) return;
   if (!original) {
     original = result;
-    document.getElementById('compare-canvas').getContext('2d').drawImage(original.canvas, 0, 0, 200, 200);
+    if (result.face[0].tensor) {
+      const enhanced = human.enhance(result.face[0]);
+      if (enhanced) {
+        const c = document.getElementById('orig');
+        const squeeze = enhanced.squeeze();
+        human.tf.browser.toPixels(squeeze, c);
+        enhanced.dispose();
+        squeeze.dispose();
+      }
+    } else {
+      document.getElementById('compare-canvas').getContext('2d').drawImage(original.canvas, 0, 0, 200, 200);
+    }
   }
   const simmilarity = human.simmilarity(original?.face[0]?.embedding, result?.face[0]?.embedding);
   document.getElementById('simmilarity').innerText = `simmilarity: ${Math.trunc(1000 * simmilarity) / 10}%`;

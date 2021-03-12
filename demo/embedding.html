@@ -20,12 +20,14 @@
       body { margin: 0; background: black; color: white; overflow-x: hidden; scrollbar-width: none; }
       body::-webkit-scrollbar { display: none; }
       img { object-fit: contain; }
-      .face { width: 200px; height: 200px; }
+      .face { width: 150px; height: 150px; }
     </style>
   </head>
   <body>
     <br>Sample Images:
     <div id="images"></div>
+    <br>Selected Face<br>
+    <canvas id="orig" style="width: 200px; height: 200px;"></canvas>
     <br>Extracted Faces - click on a face to sort by simmilarity:<br>
     <div id="faces"></div>
   </body>

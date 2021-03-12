@@ -121,9 +121,9 @@ export default {
     },
 
     embedding: {
-      enabled: false,        // to improve accuracy of face embedding extraction it is recommended
-                             // to enable detector.rotation and mesh.enabled
-      modelPath: '../models/mobilefacenet.json',
+      enabled: false,        // to improve accuracy of face embedding extraction it is
+                             // highly recommended to enable detector.rotation and mesh.enabled
+      modelPath: '../models/mobileface.json',
     },
   },
 

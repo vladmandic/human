@@ -151,6 +151,11 @@ class Human {
     return 0;
   }
 
+  enhance(input: any): any {
+    if (this.config.face.embedding.enabled) return embedding.enhance(input);
+    return null;
+  }
+
   // preload models, not explicitly required as it's done automatically on first use
   async load(userConfig = null) {
     this.state = 'load';
@@ -359,11 +364,11 @@ class Human {
       // run emotion, inherits face from blazeface
       this.#analyze('Start Embedding:');
       if (this.config.async) {
-        embeddingRes = this.config.face.embedding.enabled ? embedding.predict(face.image, this.config) : [];
+        embeddingRes = this.config.face.embedding.enabled ? embedding.predict(face, this.config) : [];
       } else {
         this.state = 'run:embedding';
         timeStamp = now();
-        embeddingRes = this.config.face.embedding.enabled ? await embedding.predict(face.image, this.config) : [];
+        embeddingRes = this.config.face.embedding.enabled ? await embedding.predict(face, this.config) : [];
         this.#perf.embedding = Math.trunc(now() - timeStamp);
       }
       this.#analyze('End Emotion:');
@@ -388,6 +393,8 @@ class Human {
 
       // combine results
       faceRes.push({
+        ...face,
+        /*
         confidence: face.confidence,
         faceConfidence: face.faceConfidence,
         boxConfidence: face.boxConfidence,
@@ -395,7 +402,9 @@ class Human {
         mesh: face.mesh,
         boxRaw: face.boxRaw,
         meshRaw: face.meshRaw,
+        offsetRaw: face.offsetRaw,
         annotations: face.annotations,
+        */
         age: ageRes.age,
         gender: genderRes.gender,
         genderConfidence: genderRes.confidence,

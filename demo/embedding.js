@@ -9,7 +9,7 @@ const userConfig = {
   videoOptimized: false,
   face: {
     enabled: true,
-    detector: { rotation: true },
+    detector: { rotation: true, return: true },
     mesh: { enabled: true },
     embedding: { enabled: true, modelPath: '../models/mobilefacenet.json' },
     iris: { enabled: false },
@@ -22,9 +22,10 @@ const userConfig = {
   body: { enabled: false },
 };
 const human = new Human(userConfig);
-const samples = ['../assets/sample-me.jpg', '../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg',
-  '../private/me (1).jpg', '../private/me (2).jpg', '../private/me (3).jpg', '../private/me (4).jpg', '../private/me (5).jpg', '../private/me (6).jpg', '../private/me (7).jpg', '../private/me (8).jpg',
-  '../private/me (9).jpg', '../private/me (10).jpg', '../private/me (11).jpg', '../private/me (12).jpg', '../private/me (13).jpg'];
+const samples = ['../assets/sample-me.jpg', '../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'];
+// const samples = ['../assets/sample-me.jpg', '../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg',
+//  '../private/me (1).jpg', '../private/me (2).jpg', '../private/me (3).jpg', '../private/me (4).jpg', '../private/me (5).jpg', '../private/me (6).jpg', '../private/me (7).jpg', '../private/me (8).jpg',
+//  '../private/me (9).jpg', '../private/me (10).jpg', '../private/me (11).jpg', '../private/me (12).jpg', '../private/me (13).jpg'];
 const all = [];
 
 function log(...msg) {
@@ -36,6 +37,12 @@ function log(...msg) {
 
 async function analyze(face) {
   log('Face:', face);
+
+  const box = [[0.05, 0.15, 0.90, 0.85]]; // top, left, bottom, right
+  const crop = human.tf.image.cropAndResize(face.tensor.expandDims(0), box, [0], [200, 200]); // optionally do a tight box crop
+  const c = document.getElementById('orig');
+  human.tf.browser.toPixels(crop.squeeze(), c);
+
   const canvases = document.getElementsByClassName('face');
   for (const canvas of canvases) {
     const res = human.simmilarity(face.embedding, all[canvas.tag.sample][canvas.tag.face].embedding);
@@ -64,7 +71,7 @@ async function faces(index, res) {
     canvas.height = 200;
     canvas.className = 'face';
     canvas.addEventListener('click', (evt) => {
-      log('Select:', evt.target.tag.sample, evt.target.tag.face);
+      log('Select:', 'Image:', evt.target.tag.sample, 'Face:', evt.target.tag.face);
       analyze(all[evt.target.tag.sample][evt.target.tag.face]);
     });
     human.tf.browser.toPixels(res.face[i].tensor, canvas);
@@ -73,7 +80,7 @@ async function faces(index, res) {
 }
 
 async function add(index) {
-  log('Add:', samples[index]);
+  log('Add image:', samples[index]);
   return new Promise((resolve) => {
     const img = new Image(100, 100);
     img.onload = () => {
@@ -89,6 +96,7 @@ async function add(index) {
 async function main() {
   await human.load();
   for (const i in samples) await add(i);
+  log('Ready');
 }
 
 window.onload = main;

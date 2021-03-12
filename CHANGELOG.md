@@ -9,7 +9,14 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/03/10 mandic00@live.com
+### **HEAD -> main** 2021/03/11 mandic00@live.com
+
+- wip on embedding
+- simplify face box coordinate calculations
+- annotated models and removed gender-ssrnet
+- autodetect inputsizes
+
+### **origin/main** 2021/03/10 mandic00@live.com
 
 
 ### **1.0.3** 2021/03/10 mandic00@live.com

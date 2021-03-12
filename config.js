@@ -67,7 +67,7 @@ export default {
                              // (note: module is not loaded until it is required)
     detector: {
       modelPath: '../models/blazeface-back.json',
-      rotation: true,        // use best-guess rotated face image or just box with rotation as-is
+      rotation: false,       // use best-guess rotated face image or just box with rotation as-is
                              // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees
                              // this parameter is not valid in nodejs
       maxFaces: 10,          // maximum number of faces detected in the input
@@ -85,7 +85,7 @@ export default {
       scoreThreshold: 0.2,   // threshold for deciding when to remove boxes based on score
                              // in non-maximum suppression,
                              // this is applied on detection objects only and before minConfidence
-      return: true,          // return extracted face as tensor
+      return: false,         // return extracted face as tensor
     },
 
     mesh: {
@@ -121,7 +121,8 @@ export default {
     },
 
     embedding: {
-      enabled: false,
+      enabled: false,        // to improve accuracy of face embedding extraction it is recommended
+                             // to enable detector.rotation and mesh.enabled
       modelPath: '../models/mobilefacenet.json',
     },
   },

@@ -32,6 +32,7 @@ export class PoseNet {
   constructor(model) {
     this.baseModel = model;
     this.inputSize = model.model.inputs[0].shape[1];
+    if (this.inputSize < 128) this.inputSize = 257;
   }
 
   async estimatePoses(input, config) {

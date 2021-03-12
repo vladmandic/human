@@ -53,6 +53,7 @@ declare class Human {
         largestKernelOps: any;
     } | {};
     simmilarity(embedding1: any, embedding2: any): number;
+    enhance(input: any): any;
     load(userConfig?: null): Promise<void>;
     detect(input: any, userConfig?: {}): Promise<{
         face: any;

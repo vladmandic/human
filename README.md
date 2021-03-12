@@ -69,7 +69,7 @@ Default models in Human library are:
 - **Gender Detection**: Oarriaga Gender
 - **Age Detection**: SSR-Net Age IMDB
 - **Body Analysis**: PoseNet
-- **Face Embedding**: Sirius-AI MobileFaceNet Embedding
+- **Face Embedding**: BecauseofAI MobileFace Embedding
 
 Note that alternative models are provided and can be enabled via configuration  
 For example, `PoseNet` model can be switched for `BlazePose` model depending on the use case  

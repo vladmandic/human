@@ -1,8 +1,10 @@
 const log = require('@vladmandic/pilogger');
 const fs = require('fs');
 const process = require('process');
-// for Node, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
+
+// for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
 const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
+
 // load specific version of Human library that matches TensorFlow mode
 const Human = require('../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
 
@@ -15,15 +17,16 @@ const myConfig = {
   async: false,
   face: {
     enabled: true,
-    detector: { modelPath: 'file://models/blazeface-back.json', enabled: true },
+    detector: { modelPath: 'file://models/blazeface-back.json', enabled: true, rotation: false },
     mesh: { modelPath: 'file://models/facemesh.json', enabled: true },
     iris: { modelPath: 'file://models/iris.json', enabled: true },
     age: { modelPath: 'file://models/age.json', enabled: true },
     gender: { modelPath: 'file://models/gender.json', enabled: true },
     emotion: { modelPath: 'file://models/emotion.json', enabled: true },
+    embedding: { modelPath: 'file://models/mobileface.json', enabled: true },
   },
-  // body: { modelPath: 'file://models/blazepose.json', modelType: 'blazepose', enabled: true },
-  body: { modelPath: 'file://models/posenet.json', modelType: 'posenet', enabled: true },
+  // body: { modelPath: 'file://models/blazepose.json', enabled: true },
+  body: { modelPath: 'file://models/posenet.json', enabled: true },
   hand: {
     enabled: true,
     detector: { modelPath: 'file://models/handdetect.json' },

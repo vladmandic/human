@@ -197,6 +197,8 @@ export class Pipeline {
     }
 
     let results = tf.tidy(() => this.storedBoxes.map((box, i) => {
+      const boxConfidence = box.confidence;
+
       // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
       let face;
       let angle = 0;
@@ -282,7 +284,7 @@ export class Pipeline {
         coords: transformedCoords,
         box,
         faceConfidence,
-        boxConfidence: box.confidence,
+        boxConfidence,
         image: face,
         rawCoords,
       };

@@ -2,10 +2,6 @@ import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 
-// original: https://github.com/sirius-ai/MobileFaceNet_TF
-// modified: https://github.com/sirius-ai/MobileFaceNet_TF/issues/46
-// download: https://github.com/sirius-ai/MobileFaceNet_TF/files/3551493/FaceMobileNet192_train_false.zip
-
 let model;
 
 export async function load(config) {
@@ -26,32 +22,63 @@ export function simmilarity(embedding1, embedding2, order = 2) {
     .map((val, i) => (Math.abs(embedding1[i] - embedding2[i]) ** order)) // distance squared
     .reduce((sum, now) => (sum + now), 0) // sum all distances
     ** (1 / order); // get root of
-  const res = Math.max(Math.trunc(1000 * (1 - (50 * distance))) / 1000, 0);
+  const res = Math.max(Math.trunc(1000 * (1 - (1 * distance))) / 1000, 0);
   return res;
+}
+
+export function enhance(input) {
+  const image = tf.tidy(() => {
+    // input received from detector is already normalized to 0..1
+    // input is also assumed to be straightened
+    // const data = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false); // just resize to fit the embedding model
+
+    // do a tight crop of image and resize it to fit the model
+    // maybe offsets are already prepared by face model, if not use empirical values
+    const box = input.offsetRaw
+      ? [input.offsetRaw] // crop based on face mesh borders
+      : [[0.05, 0.15, 0.85, 0.85]]; // fixed crop for top, left, bottom, right
+    const tensor = input.image || input.tensor;
+    const crop = tensor.shape.length === 3
+      ? tf.image.cropAndResize(tensor.expandDims(0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch if missing
+      : tf.image.cropAndResize(tensor, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
+
+    // convert to black&white to avoid colorization impact
+    const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html
+    const [red, green, blue] = tf.split(crop, 3, 3);
+    const redNorm = tf.mul(red, rgb[0]);
+    const greenNorm = tf.mul(green, rgb[1]);
+    const blueNorm = tf.mul(blue, rgb[2]);
+    const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
+    const merge = tf.stack([grayscale, grayscale, grayscale], 3).squeeze(4);
+
+    // normalize brightness from 0..1
+    const darken = merge.sub(merge.min());
+    const lighten = darken.div(darken.max());
+
+    return lighten;
+  });
+  return image;
 }
 
 export async function predict(input, config) {
   if (!model) return null;
   return new Promise(async (resolve) => {
-    const image = tf.tidy(() => {
-      const data = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false); // input is already normalized to 0..1
-      const box = [[0.05, 0.15, 0.90, 0.85]]; // top, left, bottom, right
-      const crop = tf.image.cropAndResize(data, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]); // optionally do a tight box crop
-      // const norm = crop.sub(crop.min()).sub(0.5); // trick to normalize around image mean value
-      const norm = crop.sub(0.5);
-      return norm;
-    });
-    let data: Array<[]> = [];
+    const image = enhance(input);
+    // let data: Array<[]> = [];
+    let data: Array<number> = [];
     if (config.face.embedding.enabled) {
       if (!config.profile) {
-        const res = await model.predict({ img_inputs: image });
+        const res = await model.predict(image);
+        // optional normalize outputs with l2 normalization
+        /*
         const scaled = tf.tidy(() => {
           const l2 = res.norm('euclidean');
           const scale = res.div(l2);
           return scale;
         });
-        data = scaled.dataSync(); // convert object array to standard array
-        tf.dispose(scaled);
+        */
+        data = res.dataSync();
+        // tf.dispose(scaled);
         tf.dispose(res);
       } else {
         const profileData = await tf.profile(() => model.predict({ img_inputs: image }));
@@ -64,3 +91,19 @@ export async function predict(input, config) {
     resolve(data);
   });
 }
+
+/*
+git clone https://github.com/becauseofAI/MobileFace
+cd MobileFace/MobileFace_Identification
+mmconvert --srcFramework mxnet --inputWeight MobileFace_Identification_V3-0000.params --inputNetwork MobileFace_Identification_V3-symbol.json --inputShape 3,112,112 --dstFramework tensorflow --outputModel saved
+saved_model_cli show --dir saved/
+tensorflowjs_converter --input_format tf_saved_model --output_format tfjs_graph_model --saved_model_tags train saved/ graph/
+~/dev/detector/signature.js graph/
+2021-03-12 08:25:12 DATA:  created on: 2021-03-12T13:17:11.960Z
+2021-03-12 08:25:12 INFO:  graph model: /home/vlado/dev/face/MobileFace/MobileFace_Identification/graph/model.json
+2021-03-12 08:25:12 INFO:  size: { unreliable: true, numTensors: 75, numDataBuffers: 75, numBytes: 2183192 }
+2021-03-12 08:25:12 INFO:  model inputs based on signature
+2021-03-12 08:25:12 INFO:  model outputs based on signature
+2021-03-12 08:25:12 DATA:  inputs: [ { name: 'data:0', dtype: 'DT_FLOAT', shape: [ -1, 112, 112, 3, [length]: 4 ] }, [length]: 1 ]
+2021-03-12 08:25:12 DATA:  outputs: [ { id: 0, name: 'batchnorm0/add_1:0', dytpe: 'DT_FLOAT', shape: [ -1, 256, [length]: 2 ] }, [length]: 1 ]
+*/

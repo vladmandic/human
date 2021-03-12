@@ -16,13 +16,12 @@ export function simmilarity(embedding1, embedding2, order = 2) {
   if (!embedding1 || !embedding2) return 0;
   if (embedding1?.length === 0 || embedding2?.length === 0) return 0;
   if (embedding1?.length !== embedding2?.length) return 0;
-  // general minkowski distance
-  // euclidean distance is limited case where order is 2
+  // general minkowski distance, euclidean distance is limited case where order is 2
   const distance = embedding1
     .map((val, i) => (Math.abs(embedding1[i] - embedding2[i]) ** order)) // distance squared
     .reduce((sum, now) => (sum + now), 0) // sum all distances
     ** (1 / order); // get root of
-  const res = Math.max(Math.trunc(1000 * (1 - (1 * distance))) / 1000, 0);
+  const res = Math.max(Math.trunc(1000 * (1 - distance)) / 1000, 0);
   return res;
 }
 
@@ -33,14 +32,10 @@ export function enhance(input) {
     // const data = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false); // just resize to fit the embedding model
 
     // do a tight crop of image and resize it to fit the model
-    // maybe offsets are already prepared by face model, if not use empirical values
-    const box = input.offsetRaw
-      ? [input.offsetRaw] // crop based on face mesh borders
-      : [[0.05, 0.15, 0.85, 0.85]]; // fixed crop for top, left, bottom, right
-    console.log('BOX', box[0]);
+    const box = [[0.05, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
     const tensor = input.image || input.tensor;
-    const crop = tensor.shape.length === 3
-      ? tf.image.cropAndResize(tensor.expandDims(0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch if missing
+    const crop = (tensor.shape.length === 3)
+      ? tf.image.cropAndResize(tensor.expandDims(0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch dimension if missing
       : tf.image.cropAndResize(tensor, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
 
     // convert to black&white to avoid colorization impact
@@ -77,9 +72,9 @@ export async function predict(input, config) {
           const scale = res.div(l2);
           return scale;
         });
+        tf.dispose(scaled);
         */
         data = res.dataSync();
-        // tf.dispose(scaled);
         tf.dispose(res);
       } else {
         const profileData = await tf.profile(() => model.predict({ img_inputs: image }));

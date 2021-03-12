@@ -32,26 +32,15 @@ export class MediaPipeFaceMesh {
       const box = prediction.box ? [
         Math.max(0, prediction.box.startPoint[0]),
         Math.max(0, prediction.box.startPoint[1]),
-        Math.min(input.shape[2], prediction.box.endPoint[0]) - prediction.box.startPoint[0],
-        Math.min(input.shape[1], prediction.box.endPoint[1]) - prediction.box.startPoint[1],
+        Math.min(input.shape[1], prediction.box.endPoint[0]) - prediction.box.startPoint[0],
+        Math.min(input.shape[2], prediction.box.endPoint[1]) - prediction.box.startPoint[1],
       ] : 0;
       const boxRaw = prediction.box ? [
         Math.max(0, prediction.box.startPoint[0] / input.shape[2]),
         Math.max(0, prediction.box.startPoint[1] / input.shape[1]),
-        Math.min(input.shape[2], (prediction.box.endPoint[0]) - prediction.box.startPoint[0]) / input.shape[2],
-        Math.min(input.shape[1], (prediction.box.endPoint[1]) - prediction.box.startPoint[1]) / input.shape[1],
+        Math.min(input.shape[1], (prediction.box.endPoint[0]) - prediction.box.startPoint[0]) / input.shape[2],
+        Math.min(input.shape[2], (prediction.box.endPoint[1]) - prediction.box.startPoint[1]) / input.shape[1],
       ] : [];
-      let offsetRaw = <any>[];
-      if (meshRaw.length > 0 && boxRaw.length > 0) {
-        const dimX = meshRaw.map((pt) => pt[0]);
-        const dimY = meshRaw.map((pt) => pt[1]);
-        offsetRaw = [
-          Math.max(0, 0 + Math.min(...dimY) - boxRaw[0]), // distance of detected face border to box top edge
-          Math.max(0, 0 + Math.min(...dimX) - boxRaw[1]), // distance of detected face border to box left edge
-          Math.min(1, 1 - Math.max(...dimY) + boxRaw[2]), // distance of detected face border to box bottom edge
-          Math.min(1, 1 - Math.max(...dimX) + boxRaw[3]), // distance of detected face border to box right edge
-        ];
-      }
       results.push({
         confidence: prediction.faceConfidence || prediction.boxConfidence || 0,
         boxConfidence: prediction.boxConfidence,
@@ -60,7 +49,6 @@ export class MediaPipeFaceMesh {
         mesh,
         boxRaw,
         meshRaw,
-        offsetRaw,
         annotations,
         image: prediction.image ? tf.clone(prediction.image) : null,
       });

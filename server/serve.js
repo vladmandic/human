@@ -85,18 +85,22 @@ async function watch() {
 
 // get file content for a valid url request
 function handle(url) {
-  return new Promise((resolve) => {
-    let obj = { ok: false };
-    obj.file = decodeURI(url);
-    if (!fs.existsSync(obj.file)) resolve(null);
-    obj.stat = fs.statSync(obj.file);
-    if (obj.stat.isFile()) obj.ok = true;
-    if (!obj.ok && obj.stat.isDirectory()) {
-      obj.file = path.join(obj.file, options.default);
-      // @ts-ignore
-      obj = handle(obj.file);
+  return new Promise(async (resolve) => {
+    let obj = { ok: false, file: decodeURI(url) };
+    if (!fs.existsSync(obj.file)) {
+      resolve(obj);
+    } else {
+      obj.stat = fs.statSync(obj.file);
+      if (obj.stat.isFile()) obj.ok = true;
+      if (!obj.ok && obj.stat.isDirectory()) {
+        if (fs.existsSync(path.join(obj.file, options.default))) {
+          obj = await handle(path.join(obj.file, options.default));
+        } else {
+          obj.ok = obj.stat.isDirectory();
+        }
+      }
+      resolve(obj);
     }
-    resolve(obj);
   });
 }
 
@@ -106,33 +110,42 @@ async function httpRequest(req, res) {
     // get original ip of requestor, regardless if it's behind proxy or not
     const forwarded = (req.headers['forwarded'] || '').match(/for="\[(.*)\]:/);
     const ip = (Array.isArray(forwarded) ? forwarded[1] : null) || req.headers['x-forwarded-for'] || req.ip || req.socket.remoteAddress;
-    if (!result || !result.ok) {
-      res.writeHead(404, { 'Content-Type': 'text/html' });
+    if (!result || !result.ok || !result.stat) {
+      res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end('Error 404: Not Found\n', 'utf-8');
       log.warn(`${req.method}/${req.httpVersion}`, res.statusCode, req.url, ip);
     } else {
-      const ext = String(path.extname(result.file)).toLowerCase();
-      const contentType = mime[ext] || 'application/octet-stream';
-      const accept = req.headers['accept-encoding'] ? req.headers['accept-encoding'].includes('br') : false; // does target accept brotli compressed data
-      res.writeHead(200, {
-        // 'Content-Length': result.stat.size, // not using as it's misleading for compressed streams
-        'Content-Language': 'en', 'Content-Type': contentType, 'Content-Encoding': accept ? 'br' : '', 'Last-Modified': result.stat.mtime, 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff',
-      });
-      const compress = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 5 } }); // instance of brotli compression with level 5
-      const stream = fs.createReadStream(result.file);
-      if (!accept) stream.pipe(res); // don't compress data
-      else stream.pipe(compress).pipe(res); // compress data
+      if (result?.stat?.isFile()) {
+        const ext = String(path.extname(result.file)).toLowerCase();
+        const contentType = mime[ext] || 'application/octet-stream';
+        const accept = req.headers['accept-encoding'] ? req.headers['accept-encoding'].includes('br') : false; // does target accept brotli compressed data
+        res.writeHead(200, {
+          // 'Content-Length': result.stat.size, // not using as it's misleading for compressed streams
+          'Content-Language': 'en', 'Content-Type': contentType, 'Content-Encoding': accept ? 'br' : '', 'Last-Modified': result.stat.mtime, 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff',
+        });
+        const compress = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 5 } }); // instance of brotli compression with level 5
+        const stream = fs.createReadStream(result.file);
+        if (!accept) stream.pipe(res); // don't compress data
+        else stream.pipe(compress).pipe(res); // compress data
 
-      // alternative methods of sending data
-      /// 2. read stream and send by chunk
-      // const stream = fs.createReadStream(result.file);
-      // stream.on('data', (chunk) => res.write(chunk));
-      // stream.on('end', () => res.end());
+        // alternative methods of sending data
+        /// 2. read stream and send by chunk
+        // const stream = fs.createReadStream(result.file);
+        // stream.on('data', (chunk) => res.write(chunk));
+        // stream.on('end', () => res.end());
 
-      // 3. read entire file and send it as blob
-      // const data = fs.readFileSync(result.file);
-      // res.write(data);
-      log.data(`${req.method}/${req.httpVersion}`, res.statusCode, contentType, result.stat.size, req.url, ip);
+        // 3. read entire file and send it as blob
+        // const data = fs.readFileSync(result.file);
+        // res.write(data);
+        log.data(`${req.method}/${req.httpVersion}`, res.statusCode, contentType, result.stat.size, req.url, ip);
+      }
+      if (result?.stat?.isDirectory()) {
+        res.writeHead(200, { 'Content-Language': 'en', 'Content-Type': 'application/json; charset=utf-8', 'Last-Modified': result.stat.mtime, 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff' });
+        let dir = fs.readdirSync(result.file);
+        dir = dir.map((f) => '/' + path.join(path.basename(result.file), f));
+        res.end(JSON.stringify(dir), 'utf-8');
+        log.data(`${req.method}/${req.httpVersion}`, res.statusCode, 'directory/json', result.stat.size, req.url, ip);
+      }
     }
   });
 }

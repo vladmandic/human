@@ -24,7 +24,7 @@ const userConfig = {
 
 const human = new Human(userConfig); // new instance of human
 
-const samples = ['../assets/sample-me.jpg', '../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'];
+// const samples = ['../assets/sample-me.jpg', '../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'];
 // const samples = ['../assets/sample-me.jpg', '../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg',
 //   '../private/me (1).jpg', '../private/me (2).jpg', '../private/me (3).jpg', '../private/me (4).jpg', '../private/me (5).jpg', '../private/me (6).jpg', '../private/me (7).jpg', '../private/me (8).jpg',
 //   '../private/me (9).jpg', '../private/me (10).jpg', '../private/me (11).jpg', '../private/me (12).jpg', '../private/me (13).jpg'];
@@ -57,7 +57,7 @@ async function analyze(face) {
   const canvases = document.getElementsByClassName('face');
   for (const canvas of canvases) {
     // calculate simmilarity from selected face to current one in the loop
-    const res = human.simmilarity(face.embedding, all[canvas.tag.sample][canvas.tag.face].embedding);
+    const res = human.simmilarity(face.embedding, all[canvas.tag.sample][canvas.tag.face].embedding, 3);
     // draw the canvas and simmilarity score
     canvas.title = res;
     await human.tf.browser.toPixels(all[canvas.tag.sample][canvas.tag.face].tensor, canvas);
@@ -98,8 +98,8 @@ async function faces(index, res) {
   }
 }
 
-async function add(index) {
-  log('Add image:', samples[index]);
+async function add(index, image) {
+  log('Add image:', index + 1, image);
   return new Promise((resolve) => {
     const img = new Image(100, 100);
     img.onload = () => { // must wait until image is loaded
@@ -107,14 +107,27 @@ async function add(index) {
       document.getElementById('images').appendChild(img); // and finally we can add it
       resolve(true);
     };
-    img.title = samples[index];
-    img.src = samples[index];
+    img.title = image;
+    img.src = encodeURI(image);
   });
 }
 
 async function main() {
   await human.load();
-  for (const i in samples) await add(i); // download and analyze all images
+  // enumerate all sample images in /assets
+  let res = await fetch('/assets');
+  let dir = (res && res.ok) ? await res.json() : [];
+  let images = dir.filter((img) => (img.endsWith('.jpg') && img.includes('sample')));
+
+  // enumerate additional private test images in /private, not includded in git repository
+  res = await fetch('/private');
+  dir = (res && res.ok) ? await res.json() : [];
+  images = images.concat(dir.filter((img) => (img.endsWith('.jpg'))));
+
+  // download and analyze all images
+  log('Enumerated:', images.length, 'images');
+  for (const i in images) await add(i, images[i]);
+
   log('Ready');
 }
 

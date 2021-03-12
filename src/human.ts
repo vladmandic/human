@@ -394,17 +394,6 @@ class Human {
       // combine results
       faceRes.push({
         ...face,
-        /*
-        confidence: face.confidence,
-        faceConfidence: face.faceConfidence,
-        boxConfidence: face.boxConfidence,
-        box: face.box,
-        mesh: face.mesh,
-        boxRaw: face.boxRaw,
-        meshRaw: face.meshRaw,
-        offsetRaw: face.offsetRaw,
-        annotations: face.annotations,
-        */
         age: ageRes.age,
         gender: genderRes.gender,
         genderConfidence: genderRes.confidence,

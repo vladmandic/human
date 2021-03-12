@@ -29,7 +29,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**Code Repository**](https://github.com/vladmandic/human)
 - [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
-- [**Change Log**](https://github.com/vladmandic/human/CHANGELOG.md)
+- [**Change Log**](https://github.com/vladmandic/human/blob/main/CHANGELOG.md)
 
 <br>
 

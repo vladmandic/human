@@ -4,20 +4,36 @@ import * as bounding from './box';
 import * as util from './util';
 import * as coords from './coords';
 
-const LANDMARKS_COUNT = 468;
-const MESH_MOUTH_INDEX = 13;
-const MESH_KEYPOINTS_LINE_OF_SYMMETRY_INDICES = [MESH_MOUTH_INDEX, coords.MESH_ANNOTATIONS['midwayBetweenEyes'][0]];
-const BLAZEFACE_MOUTH_INDEX = 3;
-const BLAZEFACE_NOSE_INDEX = 2;
-const BLAZEFACE_KEYPOINTS_LINE_OF_SYMMETRY_INDICES = [BLAZEFACE_MOUTH_INDEX, BLAZEFACE_NOSE_INDEX];
-const LEFT_EYE_OUTLINE = coords.MESH_ANNOTATIONS['leftEyeLower0'];
-const LEFT_EYE_BOUNDS = [LEFT_EYE_OUTLINE[0], LEFT_EYE_OUTLINE[LEFT_EYE_OUTLINE.length - 1]];
-const RIGHT_EYE_OUTLINE = coords.MESH_ANNOTATIONS['rightEyeLower0'];
-const RIGHT_EYE_BOUNDS = [RIGHT_EYE_OUTLINE[0], RIGHT_EYE_OUTLINE[RIGHT_EYE_OUTLINE.length - 1]];
-const IRIS_UPPER_CENTER_INDEX = 3;
-const IRIS_LOWER_CENTER_INDEX = 4;
-const IRIS_IRIS_INDEX = 71;
-const IRIS_NUM_COORDINATES = 76;
+const leftOutline = coords.MESH_ANNOTATIONS['leftEyeLower0'];
+const rightOutline = coords.MESH_ANNOTATIONS['rightEyeLower0'];
+
+const eyeLandmarks = {
+  leftBounds: [leftOutline[0], leftOutline[leftOutline.length - 1]],
+  rightBounds: [rightOutline[0], rightOutline[rightOutline.length - 1]],
+};
+
+const meshLandmarks = {
+  count: 468,
+  mouth: 13,
+  symmetryLine: [13, coords.MESH_ANNOTATIONS['midwayBetweenEyes'][0]],
+};
+
+const blazeFaceLandmarks = {
+  leftEye: 0,
+  rightEye: 1,
+  nose: 2,
+  mouth: 3,
+  leftEar: 4,
+  rightEar: 5,
+  symmetryLine: [3, 2],
+};
+
+const irisLandmarks = {
+  upperCenter: 3,
+  lowerCenter: 4,
+  index: 71,
+  numCoordinates: 76,
+};
 
 // Replace the raw coordinates returned by facemesh with refined iris model coordinates
 // Update the z coordinate to be an average of the original and the new.
@@ -83,8 +99,8 @@ export class Pipeline {
   }
 
   getLeftToRightEyeDepthDifference(rawCoords) {
-    const leftEyeZ = rawCoords[LEFT_EYE_BOUNDS[0]][2];
-    const rightEyeZ = rawCoords[RIGHT_EYE_BOUNDS[0]][2];
+    const leftEyeZ = rawCoords[eyeLandmarks.leftBounds[0]][2];
+    const rightEyeZ = rawCoords[eyeLandmarks.rightBounds[0]][2];
     return leftEyeZ - rightEyeZ;
   }
 
@@ -106,7 +122,7 @@ export class Pipeline {
   // Given a cropped image of an eye, returns the coordinates of the contours surrounding the eye and the iris.
   getEyeCoords(eyeData, eyeBox, eyeBoxSize, flip = false) {
     const eyeRawCoords: Array<any[]> = [];
-    for (let i = 0; i < IRIS_NUM_COORDINATES; i++) {
+    for (let i = 0; i < irisLandmarks.numCoordinates; i++) {
       const x = eyeData[i * 3];
       const y = eyeData[i * 3 + 1];
       const z = eyeData[i * 3 + 2];
@@ -115,13 +131,13 @@ export class Pipeline {
         (y / this.irisSize) * eyeBoxSize[1] + eyeBox.startPoint[1], z,
       ]);
     }
-    return { rawCoords: eyeRawCoords, iris: eyeRawCoords.slice(IRIS_IRIS_INDEX) };
+    return { rawCoords: eyeRawCoords, iris: eyeRawCoords.slice(irisLandmarks.index) };
   }
 
   // The z-coordinates returned for the iris are unreliable, so we take the z values from the surrounding keypoints.
   getAdjustedIrisCoords(rawCoords, irisCoords, direction) {
-    const upperCenterZ = rawCoords[coords.MESH_ANNOTATIONS[`${direction}EyeUpper0`][IRIS_UPPER_CENTER_INDEX]][2];
-    const lowerCenterZ = rawCoords[coords.MESH_ANNOTATIONS[`${direction}EyeLower0`][IRIS_LOWER_CENTER_INDEX]][2];
+    const upperCenterZ = rawCoords[coords.MESH_ANNOTATIONS[`${direction}EyeUpper0`][irisLandmarks.upperCenter]][2];
+    const lowerCenterZ = rawCoords[coords.MESH_ANNOTATIONS[`${direction}EyeLower0`][irisLandmarks.lowerCenter]][2];
     const averageZ = (upperCenterZ + lowerCenterZ) / 2;
     // Iris indices: 0: center | 1: right | 2: above | 3: left | 4: below
     return irisCoords.map((coord, i) => {
@@ -187,7 +203,7 @@ export class Pipeline {
       let rotationMatrix;
 
       if (config.face.detector.rotation && config.face.mesh.enabled && tf.ENV.flags.IS_BROWSER) {
-        const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= LANDMARKS_COUNT) ? MESH_KEYPOINTS_LINE_OF_SYMMETRY_INDICES : BLAZEFACE_KEYPOINTS_LINE_OF_SYMMETRY_INDICES;
+        const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= meshLandmarks.count) ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
         angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
         const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
         const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
@@ -222,13 +238,13 @@ export class Pipeline {
       let rawCoords = coordsReshaped.arraySync();
 
       if (config.face.iris.enabled) {
-        const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face, LEFT_EYE_BOUNDS[0], LEFT_EYE_BOUNDS[1], true);
-        const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face, RIGHT_EYE_BOUNDS[0], RIGHT_EYE_BOUNDS[1]);
+        const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true);
+        const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1]);
         const eyePredictions = this.irisModel.predict(tf.concat([leftEyeCrop, rightEyeCrop]));
         const eyePredictionsData = eyePredictions.dataSync();
-        const leftEyeData = eyePredictionsData.slice(0, IRIS_NUM_COORDINATES * 3);
+        const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
         const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = this.getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
-        const rightEyeData = eyePredictionsData.slice(IRIS_NUM_COORDINATES * 3);
+        const rightEyeData = eyePredictionsData.slice(irisLandmarks.numCoordinates * 3);
         const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = this.getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize);
         const leftToRightEyeDepthDifference = this.getLeftToRightEyeDepthDifference(rawCoords);
         if (Math.abs(leftToRightEyeDepthDifference) < 30) { // User is looking straight ahead.
@@ -246,18 +262,33 @@ export class Pipeline {
         rawCoords = rawCoords.concat(adjustedLeftIrisCoords).concat(adjustedRightIrisCoords);
       }
 
+      // override box from detection with one calculated from mesh
       const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
-      const landmarksBox = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData), 1.5);
-      const squarifiedLandmarksBox = bounding.squarifyBox(landmarksBox);
+      box = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData), 1.5); // redefine box with mesh calculated one
       const transformedCoords = tf.tensor2d(transformedCoordsData);
+
+      // do rotation one more time with mesh keypoints if we want to return perfect image
+      if (config.face.detector.rotation && config.face.mesh.enabled && config.face.detector.return && tf.ENV.flags.IS_BROWSER) {
+        const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= meshLandmarks.count) ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
+        angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
+        const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
+        const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
+        const rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
+        rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
+        face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize]).div(255);
+      }
+
       const prediction = {
         coords: transformedCoords,
-        box: landmarksBox,
+        box,
         faceConfidence,
         boxConfidence: box.confidence,
         image: face,
         rawCoords,
       };
+
+      // updated stored cache values
+      const squarifiedLandmarksBox = bounding.squarifyBox(box);
       this.storedBoxes[i] = { ...squarifiedLandmarksBox, landmarks: transformedCoordsData, confidence: box.confidence, faceConfidence };
 
       return prediction;

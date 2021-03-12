@@ -26,7 +26,7 @@ export function simmilarity(embedding1, embedding2, order = 2) {
     .map((val, i) => (Math.abs(embedding1[i] - embedding2[i]) ** order)) // distance squared
     .reduce((sum, now) => (sum + now), 0) // sum all distances
     ** (1 / order); // get root of
-  const res = Math.trunc(1000 * (1 - (20 * distance))) / 1000;
+  const res = Math.max(Math.trunc(1000 * (1 - (50 * distance))) / 1000, 0);
   return res;
 }
 
@@ -35,9 +35,10 @@ export async function predict(input, config) {
   return new Promise(async (resolve) => {
     const image = tf.tidy(() => {
       const data = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false); // input is already normalized to 0..1
-      // const box = [[0.05, 0.10, 0.85, 0.90]]; // top, left, bottom, right
-      // const crop = tf.image.cropAndResize(data, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]); // optionally do a tight box crop
-      const norm = data.sub(data.mean()); // trick to normalize around image mean value
+      const box = [[0.05, 0.15, 0.90, 0.85]]; // top, left, bottom, right
+      const crop = tf.image.cropAndResize(data, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]); // optionally do a tight box crop
+      // const norm = crop.sub(crop.min()).sub(0.5); // trick to normalize around image mean value
+      const norm = crop.sub(0.5);
       return norm;
     });
     let data: Array<[]> = [];
@@ -49,7 +50,7 @@ export async function predict(input, config) {
           const scale = res.div(l2);
           return scale;
         });
-        data = [...scaled.dataSync()]; // convert object array to standard array
+        data = scaled.dataSync(); // convert object array to standard array
         tf.dispose(scaled);
         tf.dispose(res);
       } else {

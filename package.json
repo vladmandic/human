@@ -21,11 +21,11 @@
     "url": "git+https://github.com/vladmandic/human.git"
   },
   "scripts": {
-    "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation src/node.js",
-    "dev": "npm install && node server/serve.js",
-    "build": "rimraf dist/* && rimraf types/* && node server/build.js && node server/changelog.js",
-    "lint": "eslint src demo server",
-    "test": "eslint src demo server"
+    "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation demo/node.js",
+    "dev": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/serve.js",
+    "build": "rimraf dist/* && rimraf types/* && node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/build.js && node server/changelog.js",
+    "lint": "eslint src server demo",
+    "test": "npm run lint && npm run start"
   },
   "keywords": [
     "tensorflowjs",
@@ -60,7 +60,7 @@
     "@vladmandic/pilogger": "^0.2.14",
     "chokidar": "^3.5.1",
     "dayjs": "^1.10.4",
-    "esbuild": "=0.9.0",
+    "esbuild": "^0.9.2",
     "eslint": "^7.21.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",

@@ -4,6 +4,7 @@ import { log } from './log';
 import * as tf from '../dist/tfjs.esm.js';
 import * as fxImage from './imagefx';
 
+const maxSize = 2048;
 // internal temp canvases
 let inCanvas = null;
 let outCanvas = null;
@@ -22,6 +23,14 @@ export function process(input, config): { tensor, canvas } {
     const originalHeight = input.naturalHeight || input.videoHeight || input.height || (input.shape && (input.shape[2] > 0));
     let targetWidth = originalWidth;
     let targetHeight = originalHeight;
+    if (targetWidth > maxSize) {
+      targetWidth = maxSize;
+      targetHeight = targetWidth * originalHeight / originalWidth;
+    }
+    if (targetHeight > maxSize) {
+      targetHeight = maxSize;
+      targetWidth = targetHeight * originalWidth / originalHeight;
+    }
     if (config.filter.width > 0) targetWidth = config.filter.width;
     else if (config.filter.height > 0) targetWidth = originalWidth * (config.filter.height / originalHeight);
     if (config.filter.height > 0) targetHeight = config.filter.height;

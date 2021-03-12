@@ -20,8 +20,8 @@ export const options = {
   bufferedOutput: false,
 };
 
-function point(ctx, x, y) {
-  ctx.fillStyle = options.color;
+function point(ctx, x, y, z = null) {
+  ctx.fillStyle = options.useDepth && z ? `rgba(${127.5 + (2 * (z || 0))}, ${127.5 - (2 * (z || 0))}, 255, 0.3)` : options.color;
   ctx.beginPath();
   ctx.arc(x, y, options.pointSize, 0, 2 * Math.PI);
   ctx.fill();
@@ -53,7 +53,11 @@ function lines(ctx, points: number[] = []) {
   if (points === undefined || points.length === 0) return;
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
-  for (const pt of points) ctx.lineTo(pt[0], parseInt(pt[1]));
+  for (const pt of points) {
+    ctx.strokeStyle = options.useDepth && pt[2] ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.3)` : options.color;
+    ctx.fillStyle = options.useDepth && pt[2] ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.3)` : options.color;
+    ctx.lineTo(pt[0], parseInt(pt[1]));
+  }
   ctx.stroke();
   if (options.fillPolygons) {
     ctx.closePath();
@@ -118,6 +122,7 @@ export async function face(inCanvas, result) {
     ctx.fillStyle = options.color;
     if (options.drawBoxes) {
       rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3]);
+      // rect(ctx, inCanvas.width * f.boxRaw[0], inCanvas.height * f.boxRaw[1], inCanvas.width * f.boxRaw[2], inCanvas.height * f.boxRaw[3]);
     }
     // silly hack since fillText does not suport new line
     const labels:string[] = [];
@@ -146,21 +151,17 @@ export async function face(inCanvas, result) {
     ctx.lineWidth = 1;
     if (f.mesh) {
       if (options.drawPoints) {
-        for (const pt of f.mesh) {
-          ctx.fillStyle = options.useDepth ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.5)` : options.color;
-          point(ctx, pt[0], pt[1]);
-        }
+        for (const pt of f.mesh) point(ctx, pt[0], pt[1], pt[2]);
+        // for (const pt of f.meshRaw) point(ctx, pt[0] * inCanvas.offsetWidth, pt[1] * inCanvas.offsetHeight, pt[2]);
       }
       if (options.drawPolygons) {
+        ctx.lineWidth = 1;
         for (let i = 0; i < triangulation.length / 3; i++) {
           const points = [
             triangulation[i * 3 + 0],
             triangulation[i * 3 + 1],
             triangulation[i * 3 + 2],
           ].map((index) => f.mesh[index]);
-          ctx.strokeStyle = options.useDepth ? `rgba(${127.5 + (2 * points[0][2])}, ${127.5 - (2 * points[0][2])}, 255, 0.3)` : options.color;
-          ctx.fillStyle = options.useDepth ? `rgba(${127.5 + (2 * points[0][2])}, ${127.5 - (2 * points[0][2])}, 255, 0.3)` : options.color;
-          ctx.lineWidth = 1;
           lines(ctx, points);
         }
         // iris: array[center, left, top, right, bottom]

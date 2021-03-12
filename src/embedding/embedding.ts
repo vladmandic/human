@@ -37,6 +37,7 @@ export function enhance(input) {
     const box = input.offsetRaw
       ? [input.offsetRaw] // crop based on face mesh borders
       : [[0.05, 0.15, 0.85, 0.85]]; // fixed crop for top, left, bottom, right
+    console.log('BOX', box[0]);
     const tensor = input.image || input.tensor;
     const crop = tensor.shape.length === 3
       ? tf.image.cropAndResize(tensor.expandDims(0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch if missing

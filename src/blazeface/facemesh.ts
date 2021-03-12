@@ -39,9 +39,8 @@ export class MediaPipeFaceMesh {
         Math.max(0, prediction.box.startPoint[0] / input.shape[2]),
         Math.max(0, prediction.box.startPoint[1] / input.shape[1]),
         Math.min(input.shape[2], (prediction.box.endPoint[0]) - prediction.box.startPoint[0]) / input.shape[2],
-        Math.min(input.shape[1], (prediction.box.endPoint[1]) - prediction.box.startPoint[1]) / input.shape[2],
+        Math.min(input.shape[1], (prediction.box.endPoint[1]) - prediction.box.startPoint[1]) / input.shape[1],
       ] : [];
-      /*
       let offsetRaw = <any>[];
       if (meshRaw.length > 0 && boxRaw.length > 0) {
         const dimX = meshRaw.map((pt) => pt[0]);
@@ -53,7 +52,6 @@ export class MediaPipeFaceMesh {
           Math.min(1, 1 - Math.max(...dimX) + boxRaw[3]), // distance of detected face border to box right edge
         ];
       }
-      */
       results.push({
         confidence: prediction.faceConfidence || prediction.boxConfidence || 0,
         boxConfidence: prediction.boxConfidence,
@@ -62,7 +60,7 @@ export class MediaPipeFaceMesh {
         mesh,
         boxRaw,
         meshRaw,
-        // offsetRaw,
+        offsetRaw,
         annotations,
         image: prediction.image ? tf.clone(prediction.image) : null,
       });

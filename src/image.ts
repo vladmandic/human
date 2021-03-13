@@ -14,7 +14,7 @@ let fx = null;
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
 // input is resized and run through imagefx filter
-export function process(input, config): { tensor, canvas } {
+export function process(input, config): { tensor: tf.Tensor, canvas: OffscreenCanvas | HTMLCanvasElement } {
   let tensor;
   if (input instanceof tf.Tensor) {
     tensor = tf.clone(input);

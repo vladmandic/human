@@ -4376,7 +4376,9 @@ function enhance(input) {
   const image13 = tf8.tidy(() => {
     const box3 = [[0.05, 0.15, 0.85, 0.85]];
     const tensor = input.image || input.tensor;
-    const crop = tensor.shape.length === 3 ? tf8.image.cropAndResize(tensor.expandDims(0), box3, [0], [model4.inputs[0].shape[2], model4.inputs[0].shape[1]]) : tf8.image.cropAndResize(tensor, box3, [0], [model4.inputs[0].shape[2], model4.inputs[0].shape[1]]);
+    if (!(tensor instanceof tf8.Tensor))
+      return null;
+    const crop = tensor.shape.length === 3 ? tf8.image.cropAndResize(tf8.expandDims(tensor, 0), box3, [0], [model4.inputs[0].shape[2], model4.inputs[0].shape[1]]) : tf8.image.cropAndResize(tensor, box3, [0], [model4.inputs[0].shape[2], model4.inputs[0].shape[1]]);
     const rgb3 = [0.2989, 0.587, 0.114];
     const [red, green, blue] = tf8.split(crop, 3, 3);
     const redNorm = tf8.mul(red, rgb3[0]);
@@ -25331,7 +25333,7 @@ var Human = class {
         return null;
       if (!input)
         return "input is not defined";
-      if (this.tf.ENV.flags.IS_NODE && !(input instanceof this.tf.Tensor)) {
+      if (this.tf.ENV.flags.IS_NODE && !(input instanceof tf18.Tensor)) {
         return "input must be a tensor";
       }
       try {
@@ -25383,7 +25385,7 @@ var Human = class {
     });
     _calculateFaceAngle.set(this, (mesh) => {
       if (!mesh || mesh.length < 300)
-        return {};
+        return {roll: null, yaw: null, pitch: null};
       const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
       const degrees = (theta) => Math.abs(theta * 180 / Math.PI % 360);
       const angle = {

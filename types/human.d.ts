@@ -14,7 +14,7 @@ declare class Human {
     config: typeof config.default;
     state: string;
     image: {
-        tensor: any;
+        tensor: typeof tf.Tensor;
         canvas: OffscreenCanvas | HTMLCanvasElement;
     };
     tf: typeof tf;
@@ -53,22 +53,54 @@ declare class Human {
         largestKernelOps: any;
     } | {};
     simmilarity(embedding1: Array<number>, embedding2: Array<number>): number;
-    enhance(input: any): any;
+    enhance(input: typeof tf.Tensor): typeof tf.Tensor | null;
     load(userConfig?: null): Promise<void>;
     detect(input: any, userConfig?: {}): Promise<{
         face: Array<{
-            any: any;
+            confidence: number;
+            boxConfidence: number;
+            faceConfidence: number;
+            box: [number, number, number, number];
+            mesh: Array<[number, number, number]>;
+            meshRaw: Array<[number, number, number]>;
+            boxRaw: [number, number, number, number];
+            annotations: any;
+            age: number;
+            gender: string;
+            genderConfidence: number;
+            emotion: string;
+            embedding: any;
+            iris: number;
+            angle: {
+                roll: number | null;
+                yaw: number | null;
+                pitch: number | null;
+            };
         }>;
         body: Array<{
-            any: any;
+            id: number;
+            part: string;
+            position: {
+                x: number;
+                y: number;
+                z: number;
+            };
+            score: number;
+            presence: number;
         }>;
         hand: Array<{
-            any: any;
+            confidence: number;
+            box: any;
+            landmarks: any;
+            annotations: any;
         }>;
         gesture: Array<{
-            any: any;
+            part: string;
+            gesture: string;
         }>;
-        performance: object;
+        performance: {
+            any: any;
+        };
         canvas: OffscreenCanvas | HTMLCanvasElement;
     } | {
         error: string;

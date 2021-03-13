@@ -30,12 +30,12 @@ export function enhance(input) {
     // input received from detector is already normalized to 0..1
     // input is also assumed to be straightened
     // const data = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false); // just resize to fit the embedding model
-
     // do a tight crop of image and resize it to fit the model
     const box = [[0.05, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
     const tensor = input.image || input.tensor;
+    if (!(tensor instanceof tf.Tensor)) return null;
     const crop = (tensor.shape.length === 3)
-      ? tf.image.cropAndResize(tensor.expandDims(0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch dimension if missing
+      ? tf.image.cropAndResize(tf.expandDims(tensor, 0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch dimension if missing
       : tf.image.cropAndResize(tensor, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
 
     // convert to black&white to avoid colorization impact

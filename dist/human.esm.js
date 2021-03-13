@@ -78244,7 +78244,9 @@ function enhance(input2) {
   const image3 = tidy(() => {
     const box3 = [[0.05, 0.15, 0.85, 0.85]];
     const tensor2 = input2.image || input2.tensor;
-    const crop = tensor2.shape.length === 3 ? image.cropAndResize(tensor2.expandDims(0), box3, [0], [model5.inputs[0].shape[2], model5.inputs[0].shape[1]]) : image.cropAndResize(tensor2, box3, [0], [model5.inputs[0].shape[2], model5.inputs[0].shape[1]]);
+    if (!(tensor2 instanceof Tensor))
+      return null;
+    const crop = tensor2.shape.length === 3 ? image.cropAndResize(expandDims(tensor2, 0), box3, [0], [model5.inputs[0].shape[2], model5.inputs[0].shape[1]]) : image.cropAndResize(tensor2, box3, [0], [model5.inputs[0].shape[2], model5.inputs[0].shape[1]]);
     const rgb3 = [0.2989, 0.587, 0.114];
     const [red, green, blue] = split(crop, 3, 3);
     const redNorm = mul(red, rgb3[0]);
@@ -99184,7 +99186,7 @@ var Human = class {
         return null;
       if (!input2)
         return "input is not defined";
-      if (this.tf.ENV.flags.IS_NODE && !(input2 instanceof this.tf.Tensor)) {
+      if (this.tf.ENV.flags.IS_NODE && !(input2 instanceof Tensor)) {
         return "input must be a tensor";
       }
       try {
@@ -99236,7 +99238,7 @@ var Human = class {
     });
     _calculateFaceAngle.set(this, (mesh) => {
       if (!mesh || mesh.length < 300)
-        return {};
+        return {roll: null, yaw: null, pitch: null};
       const radians = (a12, a22, b1, b2) => Math.atan2(b2 - a22, b1 - a12);
       const degrees = (theta) => Math.abs(theta * 180 / Math.PI % 360);
       const angle = {

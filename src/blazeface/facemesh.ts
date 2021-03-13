@@ -28,7 +28,6 @@ export class MediaPipeFaceMesh {
       if (mesh && mesh.length > 0) {
         for (const key of Object.keys(coords.MESH_ANNOTATIONS)) annotations[key] = coords.MESH_ANNOTATIONS[key].map((index) => mesh[index]);
       }
-      // const boxRaw = (prediction.box) ? { topLeft: prediction.box.startPoint, bottomRight: prediction.box.endPoint } : null;
       const box = prediction.box ? [
         Math.max(0, prediction.box.startPoint[0]),
         Math.max(0, prediction.box.startPoint[1]),

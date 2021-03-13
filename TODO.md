@@ -4,21 +4,26 @@
 
 - Strong(er) typing
 - Automated testing framework
+- API Documentation
+  - API Extractor: generate dts rollup and docs
+    <https://api-extractor.com/>
+  - TypeDoc: generate docs
+    <http://typedoc.org/>
 
 ## Explore Models
 
 - EfficientPose  
   <https://github.com/daniegr/EfficientPose>  
   <https://github.com/PINTO0309/PINTO_model_zoo/tree/main/084_EfficientPose>
-- ArcFace
-- RetinaFace
-- CenterFace
+- InsightFace  
+  RetinaFace detetor and ArcFace recognition
+  <https://github.com/deepinsight/insightface>  
+- NanoDet  
+  <https://github.com/RangiLyu/nanodet>
 
 ## WiP Items
 
-- Embedding:
-  - Try average of flipped image
-  - Try with variable aspect ratio
+- face.tensor should return image in correct aspect ratio
 
 ## Issues
 

@@ -15,7 +15,7 @@ declare class Human {
     state: string;
     image: {
         tensor: any;
-        canvas: any;
+        canvas: OffscreenCanvas | HTMLCanvasElement;
     };
     tf: typeof tf;
     draw: typeof draw;
@@ -39,8 +39,8 @@ declare class Human {
         hand: typeof handpose;
     };
     sysinfo: {
-        platform: any;
-        agent: any;
+        platform: string;
+        agent: string;
     };
     constructor(userConfig?: {});
     profileData(): {
@@ -52,18 +52,26 @@ declare class Human {
         slowestKernelOps: any;
         largestKernelOps: any;
     } | {};
-    simmilarity(embedding1: any, embedding2: any): number;
+    simmilarity(embedding1: Array<number>, embedding2: Array<number>): number;
     enhance(input: any): any;
     load(userConfig?: null): Promise<void>;
     detect(input: any, userConfig?: {}): Promise<{
-        face: any;
-        body: any;
-        hand: any;
-        gesture: any;
-        performance: any;
-        canvas: any;
+        face: Array<{
+            any: any;
+        }>;
+        body: Array<{
+            any: any;
+        }>;
+        hand: Array<{
+            any: any;
+        }>;
+        gesture: Array<{
+            any: any;
+        }>;
+        performance: object;
+        canvas: OffscreenCanvas | HTMLCanvasElement;
     } | {
-        error: any;
+        error: string;
     }>;
     warmup(userConfig: any): Promise<{
         face: any;

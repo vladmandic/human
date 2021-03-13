@@ -50,7 +50,7 @@ export class MediaPipeFaceMesh {
         boxRaw,
         meshRaw,
         annotations,
-        image: prediction.image ? tf.clone(prediction.image) : null,
+        image: prediction.image ? prediction.image.clone() : null,
       });
       if (prediction.coords) prediction.coords.dispose();
       if (prediction.image) prediction.image.dispose();

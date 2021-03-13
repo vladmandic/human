@@ -5,7 +5,6 @@ const userConfig = {
   async: false,
   warmup: 'none',
   debug: true,
-  filter: false,
   videoOptimized: false,
   face: {
     enabled: true,
@@ -20,14 +19,12 @@ const userConfig = {
   hand: { enabled: false },
   gesture: { enabled: false },
   body: { enabled: false },
+  filter: {
+    enabled: false,
+  },
 };
 
 const human = new Human(userConfig); // new instance of human
-
-// const samples = ['../assets/sample-me.jpg', '../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'];
-// const samples = ['../assets/sample-me.jpg', '../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg',
-//   '../private/me (1).jpg', '../private/me (2).jpg', '../private/me (3).jpg', '../private/me (4).jpg', '../private/me (5).jpg', '../private/me (6).jpg', '../private/me (7).jpg', '../private/me (8).jpg',
-//   '../private/me (9).jpg', '../private/me (10).jpg', '../private/me (11).jpg', '../private/me (12).jpg', '../private/me (13).jpg'];
 
 const all = []; // array that will hold all detected faces
 
@@ -39,8 +36,6 @@ function log(...msg) {
 }
 
 async function analyze(face) {
-  log('Face:', face);
-
   // if we have face image tensor, enhance it and display it
   if (face.tensor) {
     const enhanced = human.enhance(face);
@@ -87,7 +82,7 @@ async function faces(index, res) {
     canvas.className = 'face';
     // mouse click on any face canvas triggers analysis
     canvas.addEventListener('click', (evt) => {
-      log('Select:', 'Image:', evt.target.tag.sample, 'Face:', evt.target.tag.face);
+      log('Select:', 'Image:', evt.target.tag.sample, 'Face:', evt.target.tag.face, all[evt.target.tag.sample][evt.target.tag.face]);
       analyze(all[evt.target.tag.sample][evt.target.tag.face]);
     });
     // if we actually got face image tensor, draw canvas with that face
@@ -98,14 +93,16 @@ async function faces(index, res) {
   }
 }
 
-async function add(index, image) {
-  log('Add image:', index + 1, image);
+async function process(index, image) {
   return new Promise((resolve) => {
-    const img = new Image(100, 100);
+    const img = new Image(128, 128);
     img.onload = () => { // must wait until image is loaded
-      human.detect(img).then((res) => faces(index, res)); // then wait until image is analyzed
-      document.getElementById('images').appendChild(img); // and finally we can add it
-      resolve(true);
+      human.detect(img).then((res) => {
+        faces(index, res); // then wait until image is analyzed
+        log('Add image:', index + 1, image, 'faces:', res.face.length);
+        document.getElementById('images').appendChild(img); // and finally we can add it
+        resolve(true);
+      });
     };
     img.title = image;
     img.src = encodeURI(image);
@@ -126,8 +123,11 @@ async function main() {
 
   // download and analyze all images
   log('Enumerated:', images.length, 'images');
-  for (const i in images) await add(i, images[i]);
+  for (let i = 0; i < images.length; i++) await process(i, images[i]);
 
+  const num = all.reduce((prev, cur) => prev += cur.length, 0);
+  log('Extracted faces:', num, 'from images:', all.length);
+  log(human.tf.engine().memory());
   log('Ready');
 }
 

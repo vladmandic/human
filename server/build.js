@@ -172,9 +172,9 @@ async function getStats(json) {
 }
 
 // rebuild typings
-function compile(fileNames, options) {
-  log.info('Compile typings:', fileNames);
-  const program = ts.createProgram(fileNames, options);
+function compile(entryPoint, options) {
+  log.info('Compile typings:', entryPoint);
+  const program = ts.createProgram(entryPoint, options);
   const emit = program.emit();
   const diag = ts
     .getPreEmitDiagnostics(program)
@@ -183,7 +183,6 @@ function compile(fileNames, options) {
     // @ts-ignore
     const msg = info.messageText.messageText || info.messageText;
     if (msg.includes('package.json')) continue;
-    if (msg.includes('Expected 0 arguments, but got 1')) continue;
     if (info.file) {
       const pos = info.file.getLineAndCharacterOfPosition(info.start || 0);
       log.error(`TSC: ${info.file.fileName} [${pos.line + 1},${pos.character + 1}]:`, msg);

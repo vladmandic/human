@@ -43,7 +43,7 @@ class Human {
   version: string;
   config: typeof config.default;
   state: string;
-  image: { tensor, canvas };
+  image: { tensor: any, canvas: OffscreenCanvas | HTMLCanvasElement };
   // classes
   tf: typeof tf;
   draw: typeof draw;
@@ -67,7 +67,7 @@ class Human {
     body: typeof posenet | typeof blazepose;
     hand: typeof handpose;
   };
-  sysinfo: { platform, agent };
+  sysinfo: { platform: string, agent: string };
   #package: any;
   #perf: any;
   #numTensors: number;
@@ -146,7 +146,7 @@ class Human {
     return null;
   }
 
-  simmilarity(embedding1, embedding2): number {
+  simmilarity(embedding1: Array<number>, embedding2: Array<number>): number {
     if (this.config.face.embedding.enabled) return embedding.simmilarity(embedding1, embedding2);
     return 0;
   }
@@ -309,7 +309,6 @@ class Human {
       embedding: any,
       iris: number,
       angle: any,
-      tensor: any,
     }> = [];
 
     this.state = 'run:face';
@@ -401,11 +400,11 @@ class Human {
         embedding: embeddingRes,
         iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
         angle,
-        tensor: this.config.face.detector.return ? face.image.squeeze() : null,
+        tensor: this.config.face.detector.return ? face.image?.squeeze() : null,
       });
-
-      // dont need face anymore
+      // dispose original face tensor
       face.image?.dispose();
+
       this.#analyze('End Face');
     }
     this.#analyze('End FaceMesh:');
@@ -419,7 +418,7 @@ class Human {
   }
 
   // main detect function
-  async detect(input, userConfig = {}): Promise<{ face, body, hand, gesture, performance, canvas } | { error }> {
+  async detect(input, userConfig = {}): Promise<{ face: Array<{ any }>, body: Array<{ any }>, hand: Array<{ any }>, gesture: Array<{ any }>, performance: object, canvas: OffscreenCanvas | HTMLCanvasElement } | { error: string }> {
     // detection happens inside a promise
     return new Promise(async (resolve) => {
       this.state = 'config';

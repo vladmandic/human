@@ -3,8 +3,9 @@ import Human from '../src/human';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-// const userConfig = { backend: 'webgl' }; // add any user configuration overrides
+const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 
+/*
 const userConfig = {
   backend: 'wasm',
   async: false,
@@ -15,6 +16,7 @@ const userConfig = {
   gesture: { enabled: false },
   body: { enabled: false, modelPath: '../models/blazepose.json' },
 };
+*/
 
 const human = new Human(userConfig);
 

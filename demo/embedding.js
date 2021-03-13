@@ -52,16 +52,16 @@ async function analyze(face) {
   const canvases = document.getElementsByClassName('face');
   for (const canvas of canvases) {
     // calculate simmilarity from selected face to current one in the loop
-    const res = human.simmilarity(face.embedding, all[canvas.tag.sample][canvas.tag.face].embedding, 3);
+    const res = human.simmilarity(face.embedding, all[canvas.tag.sample][canvas.tag.face].embedding, 2);
     // draw the canvas and simmilarity score
     canvas.title = res;
     await human.tf.browser.toPixels(all[canvas.tag.sample][canvas.tag.face].tensor, canvas);
     const ctx = canvas.getContext('2d');
     ctx.font = 'small-caps 1rem "Lato"';
     ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-    ctx.fillText(`${(100 * res).toFixed(1)}%`, 3, 19);
+    ctx.fillText(`${(100 * res).toFixed(1)}%`, 3, 23);
     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-    ctx.fillText(`${(100 * res).toFixed(1)}%`, 4, 20);
+    ctx.fillText(`${(100 * res).toFixed(1)}%`, 4, 24);
   }
 
   // sort all faces by simmilarity

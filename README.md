@@ -13,11 +13,14 @@
 
 <br>
 
-Native JavaScript module using TensorFlow/JS Machine Learning library  
-Compatible with *Browser*, *WebWorker* and *NodeJS* execution on both Windows and Linux
+JavaScript module using TensorFlow/JS Machine Learning library  
 
-- Browser/WebWorker: Compatible with *CPU*, *WebGL*, *WASM* and *WebGPU* backends  
-- NodeJS: Compatible with software *tfjs-node* and CUDA accelerated backends *tfjs-node-gpu*  
+- **Browser**:  
+  Compatible with *CPU*, *WebGL*, *WASM* backends  
+  Compatible with both desktop and mobile platforms  
+  Compatible with *WebWorker* execution
+- **NodeJS**:  
+  Compatible with both software *tfjs-node* and GPU accelerated backends *tfjs-node-gpu* using CUDA libraries  
 
 Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) for processing of live WebCam video or static images  
 
@@ -146,6 +149,12 @@ function detectVideo() {
 
 detectVideo();
 ```
+
+<br><hr><br>
+
+`Human` library is written in `TypeScript` [4.3](https://www.typescriptlang.org/docs/handbook/intro.html)  
+Conforming to `JavaScript` [ECMAScript version 2020](https://www.ecma-international.org/ecma-262/11.0/index.html) standard  
+Build target is `JavaScript` **EMCAScript version 2018**  
 
 <br>
 

@@ -43,7 +43,7 @@ class Human {
   version: string;
   config: typeof config.default;
   state: string;
-  image: { tensor: any, canvas: OffscreenCanvas | HTMLCanvasElement };
+  image: { tensor: typeof tf.Tensor, canvas: OffscreenCanvas | HTMLCanvasElement };
   // classes
   tf: typeof tf;
   draw: typeof draw;
@@ -102,7 +102,7 @@ class Human {
     };
     // export access to image processing
     // @ts-ignore
-    this.image = (input: any) => image.process(input, this.config);
+    this.image = (input: tf.Tensor | ImageData | HTMLCanvasElement | HTMLVideoElement | OffscreenCanvas) => image.process(input, this.config);
     // export raw access to underlying models
     this.classes = {
       facemesh,
@@ -132,10 +132,10 @@ class Human {
   }
 
   // quick sanity check on inputs
-  #sanity = (input) => {
+  #sanity = (input): null | string => {
     if (!this.#checkSanity) return null;
     if (!input) return 'input is not defined';
-    if (this.tf.ENV.flags.IS_NODE && !(input instanceof this.tf.Tensor)) {
+    if (this.tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) {
       return 'input must be a tensor';
     }
     try {
@@ -151,7 +151,7 @@ class Human {
     return 0;
   }
 
-  enhance(input: any): any {
+  enhance(input: typeof tf.Tensor): typeof tf.Tensor | null {
     if (this.config.face.embedding.enabled) return embedding.enhance(input);
     return null;
   }
@@ -267,8 +267,8 @@ class Human {
     }
   }
 
-  #calculateFaceAngle = (mesh) => {
-    if (!mesh || mesh.length < 300) return {};
+  #calculateFaceAngle = (mesh): { roll: number | null, yaw: number | null, pitch: number | null } => {
+    if (!mesh || mesh.length < 300) return { roll: null, yaw: null, pitch: null };
     const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const degrees = (theta) => Math.abs(((theta * 180) / Math.PI) % 360);
@@ -285,7 +285,7 @@ class Human {
     return angle;
   }
 
-  #detectFace = async (input) => {
+  #detectFace = async (input): Promise<any> => {
     // run facemesh, includes blazeface and iris
     // eslint-disable-next-line no-async-promise-executor
     let timeStamp;
@@ -297,10 +297,10 @@ class Human {
       confidence: number,
       boxConfidence: number,
       faceConfidence: number,
-      box: any,
-      mesh:any,
-      meshRaw: any,
-      boxRaw: any,
+      box: [number, number, number, number],
+      mesh: Array<[number, number, number]>
+      meshRaw: Array<[number, number, number]>
+      boxRaw: [number, number, number, number],
       annotations: any,
       age: number,
       gender: string,
@@ -308,7 +308,7 @@ class Human {
       emotion: string,
       embedding: any,
       iris: number,
-      angle: any,
+      angle: { roll: number | null, yaw: number | null, pitch: number | null },
     }> = [];
 
     this.state = 'run:face';
@@ -418,7 +418,45 @@ class Human {
   }
 
   // main detect function
-  async detect(input, userConfig = {}): Promise<{ face: Array<{ any }>, body: Array<{ any }>, hand: Array<{ any }>, gesture: Array<{ any }>, performance: object, canvas: OffscreenCanvas | HTMLCanvasElement } | { error: string }> {
+  async detect(input, userConfig = {}): Promise<{
+      face: Array<{
+        confidence: number,
+        boxConfidence: number,
+        faceConfidence: number,
+        box: [number, number, number, number],
+        mesh: Array<[number, number, number]>
+        meshRaw: Array<[number, number, number]>
+        boxRaw: [number, number, number, number],
+        annotations: any,
+        age: number,
+        gender: string,
+        genderConfidence: number,
+        emotion: string,
+        embedding: any,
+        iris: number,
+        angle: { roll: number | null, yaw: number | null, pitch: number | null },
+      }>,
+      body: Array<{
+        id: number,
+        part: string,
+        position: { x: number, y: number, z: number },
+        score: number,
+        presence: number }>,
+      hand: Array<{
+        confidence: number,
+        box: any,
+        landmarks: any,
+        annotations: any,
+      }>,
+      gesture: Array<{
+        part: string,
+        gesture: string,
+      }>,
+      performance: { any },
+      canvas: OffscreenCanvas | HTMLCanvasElement
+    } | { error: string }> {
+    // end definition
+
     // detection happens inside a promise
     return new Promise(async (resolve) => {
       this.state = 'config';

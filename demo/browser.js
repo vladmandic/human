@@ -82,7 +82,7 @@ let original;
 async function calcSimmilariry(result) {
   document.getElementById('compare-container').style.display = human.config.face.embedding.enabled ? 'block' : 'none';
   if (!human.config.face.embedding.enabled) return;
-  if (!(result?.face?.length > 0) || (result?.face[0]?.embedding?.length !== 256)) return;
+  if (!(result?.face?.length > 0) || (result?.face[0]?.embedding?.length >= 64)) return;
   if (!original) {
     original = result;
     if (result.face[0].tensor) {

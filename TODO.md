@@ -24,6 +24,7 @@
 ## WiP Items
 
 - face.tensor should return image in correct aspect ratio
+- box sizing on mobile
 
 ## Issues
 

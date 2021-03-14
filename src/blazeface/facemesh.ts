@@ -13,9 +13,9 @@ export class MediaPipeFaceMesh {
     this.config = config;
   }
 
-  async estimateFaces(input, config) {
+  async estimateFaces(input, config): Promise<{ confidence, boxConfidence, faceConfidence, box, mesh, boxRaw, meshRaw, annotations, image }[]> {
     const predictions = await this.facePipeline.predict(input, config);
-    const results: Array<{}> = [];
+    const results: Array<{ confidence, boxConfidence, faceConfidence, box, mesh, boxRaw, meshRaw, annotations, image }> = [];
     for (const prediction of (predictions || [])) {
       if (prediction.isDisposedInternal) continue; // guard against disposed tensors on long running operations such as pause in middle of processing
       const mesh = prediction.coords ? prediction.coords.arraySync() : [];

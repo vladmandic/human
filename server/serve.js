@@ -32,7 +32,7 @@ const options = {
   httpsPort: 10031,
   insecureHTTPParser: false,
   minElapsed: 2,
-  monitor: ['package.json', 'config.js', 'demo', 'src'],
+  monitor: ['package.json', 'config.ts', 'demo', 'src'],
 };
 
 // just some predefined mime types

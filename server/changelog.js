@@ -45,15 +45,11 @@ async function update(f) {
 
   const name = path.join(__dirname, f);
   fs.writeFileSync(name, text);
-  logger.state('Change log updated:', name);
+  logger.info('Update Change log:', [name]);
 }
 
-exports.update = update;
-
-try {
-  if (require.main === module) {
-    update('../CHANGELOG.md');
-  }
-} catch {
-  //
+if (require.main === module) {
+  update('../CHANGELOG.md');
+} else {
+  exports.update = update;
 }

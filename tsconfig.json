@@ -22,4 +22,19 @@
   },
   "formatCodeOptions": { "indentSize": 2, "tabSize": 2 },
   "include": ["src/*", "src/***/*", "demo/*"],
+  "typedocOptions": {
+    "excludePrivate": true,
+    "excludeExternals": true,
+    "excludeProtected": true,
+    "excludeInternal": true,
+    "disableSources": true,
+    "gitRevision": "main",
+    "hideGenerator": "true",
+    "theme": "default",
+    "readme": "none",
+    "out": "typedoc",
+    "entryPoints": "src/human.ts",
+    "logLevel": "Error",
+    "logger": "none"
+  }
 }

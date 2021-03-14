@@ -1,11 +1,14 @@
 #!/usr/bin/env -S node --trace-warnings
 
+const ts = require('typescript');
 const log = require('@vladmandic/pilogger');
 const esbuild = require('esbuild');
-const ts = require('typescript');
+const TypeDoc = require('typedoc');
+const changelog = require('./changelog');
 
 // keeps esbuild service instance cached
 let busy = false;
+let td = null;
 const banner = { js: `
   /*
   Human library
@@ -172,7 +175,7 @@ async function getStats(json) {
 }
 
 // rebuild typings
-function compile(entryPoint, options) {
+async function compile(entryPoint, options) {
   log.info('Compile typings:', entryPoint);
   const program = ts.createProgram(entryPoint, options);
   const emit = program.emit();
@@ -190,6 +193,18 @@ function compile(entryPoint, options) {
       log.error('TSC:', msg);
     }
   }
+}
+
+async function typedoc(entryPoint) {
+  log.info('Generate TypeDocs:', entryPoint);
+  if (!td) {
+    td = new TypeDoc.Application();
+    td.options.addReader(new TypeDoc.TSConfigReader());
+    td.bootstrap({ entryPoints: entryPoint });
+  }
+  const project = td.convert();
+  const result = project ? await td.generateDocs(project, 'typedoc') : null;
+  if (result) log.warn('TypeDoc:', result);
 }
 
 // rebuild on file change
@@ -217,8 +232,12 @@ async function build(f, msg, dev = false) {
         log.state(`Build for: ${targetGroupName} type: ${targetName}:`, stats);
       }
     }
-    // generate typings
-    compile(targets.browserBundle.esm.entryPoints, tsconfig);
+    if (!dev) {
+      // generate typings & typedoc only when run as explict build
+      await compile(targets.browserBundle.esm.entryPoints, tsconfig);
+      await changelog.update('../CHANGELOG.md');
+      await typedoc(targets.browserBundle.esm.entryPoints);
+    }
     if (require.main === module) process.exit(0);
   } catch (err) {
     // catch errors and print where it occured

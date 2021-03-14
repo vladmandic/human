@@ -70,7 +70,7 @@ export declare class Human {
     };
     tf: typeof tf;
     draw: {
-        options?: typeof draw.options;
+        options?: typeof draw.drawOptions;
         gesture: Function;
         face: Function;
         body: Function;

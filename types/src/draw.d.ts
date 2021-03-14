@@ -1,4 +1,4 @@
-export declare const options: {
+export declare const drawOptions: {
     color: string;
     labelColor: string;
     shadowColor: string;

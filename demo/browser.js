@@ -431,13 +431,13 @@ function setupMenu() {
     setupCamera();
   });
   menu.display.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.display.addBool('use 3D depth', human.draw.options, 'useDepth');
-  menu.display.addBool('draw with curves', human.draw.options, 'useCurves');
-  menu.display.addBool('print labels', human.draw.options, 'drawLabels');
-  menu.display.addBool('draw points', human.draw.options, 'drawPoints');
-  menu.display.addBool('draw boxes', human.draw.options, 'drawBoxes');
-  menu.display.addBool('draw polygons', human.draw.options, 'drawPolygons');
-  menu.display.addBool('fill polygons', human.draw.options, 'fillPolygons');
+  menu.display.addBool('use 3D depth', human.draw.drawOptions, 'useDepth');
+  menu.display.addBool('draw with curves', human.draw.drawOptions, 'useCurves');
+  menu.display.addBool('print labels', human.draw.drawOptions, 'drawLabels');
+  menu.display.addBool('draw points', human.draw.drawOptions, 'drawPoints');
+  menu.display.addBool('draw boxes', human.draw.drawOptions, 'drawBoxes');
+  menu.display.addBool('draw polygons', human.draw.drawOptions, 'drawPolygons');
+  menu.display.addBool('fill polygons', human.draw.drawOptions, 'fillPolygons');
 
   menu.image = new Menu(document.body, '', { top: `${document.getElementById('menubar').offsetHeight}px`, left: x[1] });
   menu.image.addBool('enabled', human.config.filter, 'enabled', (val) => human.config.filter.enabled = val);

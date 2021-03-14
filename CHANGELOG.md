@@ -11,9 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/03/13 mandic00@live.com
 
-
-### **origin/main** 2021/03/13 mandic00@live.com
-
+- strong typings
 
 ### **1.1.2** 2021/03/12 mandic00@live.com
 

@@ -28,10 +28,11 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 
 ## Project pages
 
-- [**Live Demo**](https://vladmandic.github.io/human/demo/index.html)  
+- [**Live Demo**](https://vladmandic.github.io/human/demo/index.html)
 - [**Code Repository**](https://github.com/vladmandic/human)
 - [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
+- [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/human.html)
 - [**Change Log**](https://github.com/vladmandic/human/blob/main/CHANGELOG.md)
 
 <br>
@@ -155,6 +156,13 @@ detectVideo();
 `Human` library is written in `TypeScript` [4.3](https://www.typescriptlang.org/docs/handbook/intro.html)  
 Conforming to `JavaScript` [ECMAScript version 2020](https://www.ecma-international.org/ecma-262/11.0/index.html) standard  
 Build target is `JavaScript` **EMCAScript version 2018**  
+
+<br>
+
+For details see [**Wiki Pages**](https://github.com/vladmandic/human/wiki)  
+and [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/human.html)
+
+
 
 <br>
 

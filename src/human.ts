@@ -24,6 +24,48 @@ const now = () => {
   return parseInt((Number(process.hrtime.bigint()) / 1000 / 1000).toString());
 };
 
+type Tensor = {};
+type Model = {};
+export type Result = {
+  face: Array<{
+    confidence: Number,
+    boxConfidence: Number,
+    faceConfidence: Number,
+    box: [Number, Number, Number, Number],
+    mesh: Array<[Number, Number, Number]>
+    meshRaw: Array<[Number, Number, Number]>
+    boxRaw: [Number, Number, Number, Number],
+    annotations: any,
+    age: Number,
+    gender: String,
+    genderConfidence: Number,
+    emotion: String,
+    embedding: any,
+    iris: Number,
+    angle: { roll: Number | null, yaw: Number | null, pitch: Number | null },
+  }>,
+  body: Array<{
+    id: Number,
+    part: String,
+    position: { x: Number, y: Number, z: Number },
+    score: Number,
+    presence: Number }>,
+  hand: Array<{
+    confidence: Number,
+    box: any,
+    landmarks: any,
+    annotations: any,
+  }>,
+  gesture: Array<{
+    part: String,
+    gesture: String,
+  }>,
+  performance: { any },
+  canvas: OffscreenCanvas | HTMLCanvasElement,
+}
+
+export type { default as Config } from '../config';
+
 // helper function: perform deep merge of multiple objects so it allows full inheriance with overrides
 function mergeDeep(...objects) {
   const isObject = (obj) => obj && typeof obj === 'object';
@@ -39,25 +81,25 @@ function mergeDeep(...objects) {
   }, {});
 }
 
-class Human {
-  version: string;
+export class Human {
+  version: String;
   config: typeof config.default;
-  state: string;
-  image: { tensor: typeof tf.Tensor, canvas: OffscreenCanvas | HTMLCanvasElement };
+  state: String;
+  image: { tensor: Tensor, canvas: OffscreenCanvas | HTMLCanvasElement };
   // classes
   tf: typeof tf;
-  draw: typeof draw;
+  draw: { options?: typeof draw.options, gesture: Function, face: Function, body: Function, hand: Function, canvas: Function, all: Function };
   // models
   models: {
-    face,
-    posenet,
-    blazepose,
-    handpose,
-    iris,
-    age,
-    gender,
-    emotion,
-    embedding,
+    face: facemesh.MediaPipeFaceMesh | null,
+    posenet: posenet.PoseNet | null,
+    blazepose: Model | null,
+    handpose: handpose.HandPose | null,
+    iris: Model | null,
+    age: Model | null,
+    gender: Model | null,
+    emotion: Model | null,
+    embedding: Model | null,
   };
   classes: {
     facemesh: typeof facemesh;
@@ -67,13 +109,13 @@ class Human {
     body: typeof posenet | typeof blazepose;
     hand: typeof handpose;
   };
-  sysinfo: { platform: string, agent: string };
+  sysinfo: { platform: String, agent: String };
   #package: any;
   #perf: any;
   #numTensors: number;
-  #analyzeMemoryLeaks: boolean;
-  #checkSanity: boolean;
-  #firstRun: boolean;
+  #analyzeMemoryLeaks: Boolean;
+  #checkSanity: Boolean;
+  #firstRun: Boolean;
   // definition end
 
   constructor(userConfig = {}) {
@@ -102,7 +144,7 @@ class Human {
     };
     // export access to image processing
     // @ts-ignore
-    this.image = (input: tf.Tensor | ImageData | HTMLCanvasElement | HTMLVideoElement | OffscreenCanvas) => image.process(input, this.config);
+    this.image = (input: Tensor | ImageData | HTMLCanvasElement | HTMLVideoElement | OffscreenCanvas) => image.process(input, this.config);
     // export raw access to underlying models
     this.classes = {
       facemesh,
@@ -122,6 +164,7 @@ class Human {
   }
 
   // helper function: measure tensor leak
+  /** @hidden */
   #analyze = (...msg) => {
     if (!this.#analyzeMemoryLeaks) return;
     const current = this.tf.engine().state.numTensors;
@@ -132,12 +175,11 @@ class Human {
   }
 
   // quick sanity check on inputs
-  #sanity = (input): null | string => {
+  /** @hidden */
+  #sanity = (input): null | String => {
     if (!this.#checkSanity) return null;
     if (!input) return 'input is not defined';
-    if (this.tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) {
-      return 'input must be a tensor';
-    }
+    if (this.tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) return 'input must be a tensor';
     try {
       this.tf.getBackend();
     } catch {
@@ -146,18 +188,18 @@ class Human {
     return null;
   }
 
-  simmilarity(embedding1: Array<number>, embedding2: Array<number>): number {
+  simmilarity(embedding1: Array<Number>, embedding2: Array<Number>): Number {
     if (this.config.face.embedding.enabled) return embedding.simmilarity(embedding1, embedding2);
     return 0;
   }
 
-  enhance(input: typeof tf.Tensor): typeof tf.Tensor | null {
+  enhance(input: Tensor): Tensor | null {
     if (this.config.face.embedding.enabled) return embedding.enhance(input);
     return null;
   }
 
   // preload models, not explicitly required as it's done automatically on first use
-  async load(userConfig = null) {
+  async load(userConfig: Object = {}) {
     this.state = 'load';
     const timeStamp = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
@@ -215,6 +257,7 @@ class Human {
   }
 
   // check if backend needs initialization if it changed
+  /** @hidden */
   #checkBackend = async (force = false) => {
     if (this.config.backend && (this.config.backend !== '') && force || (this.tf.getBackend() !== this.config.backend)) {
       const timeStamp = now();
@@ -267,7 +310,8 @@ class Human {
     }
   }
 
-  #calculateFaceAngle = (mesh): { roll: number | null, yaw: number | null, pitch: number | null } => {
+  /** @hidden */
+  #calculateFaceAngle = (mesh): { roll: Number | null, yaw: Number | null, pitch: Number | null } => {
     if (!mesh || mesh.length < 300) return { roll: null, yaw: null, pitch: null };
     const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -285,6 +329,7 @@ class Human {
     return angle;
   }
 
+  /** @hidden */
   #detectFace = async (input): Promise<any> => {
     // run facemesh, includes blazeface and iris
     // eslint-disable-next-line no-async-promise-executor
@@ -294,27 +339,29 @@ class Human {
     let emotionRes;
     let embeddingRes;
     const faceRes: Array<{
-      confidence: number,
-      boxConfidence: number,
-      faceConfidence: number,
-      box: [number, number, number, number],
-      mesh: Array<[number, number, number]>
-      meshRaw: Array<[number, number, number]>
-      boxRaw: [number, number, number, number],
+      confidence: Number,
+      boxConfidence: Number,
+      faceConfidence: Number,
+      box: [Number, Number, Number, Number],
+      mesh: Array<[Number, Number, Number]>
+      meshRaw: Array<[Number, Number, Number]>
+      boxRaw: [Number, Number, Number, Number],
       annotations: any,
-      age: number,
-      gender: string,
-      genderConfidence: number,
-      emotion: string,
+      age: Number,
+      gender: String,
+      genderConfidence: Number,
+      emotion: String,
       embedding: any,
-      iris: number,
-      angle: { roll: number | null, yaw: number | null, pitch: number | null },
+      iris: Number,
+      angle: { roll: Number | null, yaw: Number | null, pitch: Number | null },
+      tensor: Tensor,
     }> = [];
 
     this.state = 'run:face';
     timeStamp = now();
     const faces = await this.models.face?.estimateFaces(input, this.config);
     this.#perf.face = Math.trunc(now() - timeStamp);
+    if (!faces) return [];
     for (const face of faces) {
       this.#analyze('Get Face');
 
@@ -418,45 +465,7 @@ class Human {
   }
 
   // main detect function
-  async detect(input, userConfig = {}): Promise<{
-      face: Array<{
-        confidence: number,
-        boxConfidence: number,
-        faceConfidence: number,
-        box: [number, number, number, number],
-        mesh: Array<[number, number, number]>
-        meshRaw: Array<[number, number, number]>
-        boxRaw: [number, number, number, number],
-        annotations: any,
-        age: number,
-        gender: string,
-        genderConfidence: number,
-        emotion: string,
-        embedding: any,
-        iris: number,
-        angle: { roll: number | null, yaw: number | null, pitch: number | null },
-      }>,
-      body: Array<{
-        id: number,
-        part: string,
-        position: { x: number, y: number, z: number },
-        score: number,
-        presence: number }>,
-      hand: Array<{
-        confidence: number,
-        box: any,
-        landmarks: any,
-        annotations: any,
-      }>,
-      gesture: Array<{
-        part: string,
-        gesture: string,
-      }>,
-      performance: { any },
-      canvas: OffscreenCanvas | HTMLCanvasElement
-    } | { error: string }> {
-    // end definition
-
+  async detect(input: Tensor | ImageData | HTMLCanvasElement | HTMLVideoElement | OffscreenCanvas, userConfig: Object = {}): Promise<Result | { error: String }> {
     // detection happens inside a promise
     return new Promise(async (resolve) => {
       this.state = 'config';
@@ -562,6 +571,7 @@ class Human {
     });
   }
 
+  /** @hidden */
   #warmupBitmap = async () => {
     const b64toBlob = (base64, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
     let blob;
@@ -579,6 +589,7 @@ class Human {
     return res;
   }
 
+  /** @hidden */
   #warmupCanvas = async () => new Promise((resolve) => {
     let src;
     let size = 0;
@@ -611,6 +622,7 @@ class Human {
     else resolve(null);
   });
 
+  /** @hidden */
   #warmupNode = async () => {
     const atob = (str) => Buffer.from(str, 'base64');
     const img = this.config.warmup === 'face' ? atob(sample.face) : atob(sample.body);
@@ -624,7 +636,7 @@ class Human {
     return res;
   }
 
-  async warmup(userConfig): Promise<{ face, body, hand, gesture, performance, canvas } | { error }> {
+  async warmup(userConfig: Object = {}): Promise<Result | { error }> {
     const t0 = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
     const video = this.config.videoOptimized;

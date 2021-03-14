@@ -2,22 +2,22 @@ import config from '../config';
 import { TRI468 as triangulation } from './blazeface/coords';
 
 export const options = {
-  color: 'rgba(173, 216, 230, 0.3)', // 'lightblue' with light alpha channel
-  labelColor: 'rgba(173, 216, 230, 1)', // 'lightblue' with dark alpha channel
-  shadowColor: 'black',
-  font: 'small-caps 16px "Segoe UI"',
-  lineHeight: 20,
-  lineWidth: 6,
-  pointSize: 2,
-  roundRect: 28,
-  drawPoints: false,
-  drawLabels: true,
-  drawBoxes: true,
-  drawPolygons: true,
-  fillPolygons: false,
-  useDepth: true,
-  useCurves: false,
-  bufferedOutput: false,
+  color: <string>'rgba(173, 216, 230, 0.3)', // 'lightblue' with light alpha channel
+  labelColor: <string>'rgba(173, 216, 230, 1)', // 'lightblue' with dark alpha channel
+  shadowColor: <string>'black',
+  font: <string>'small-caps 16px "Segoe UI"',
+  lineHeight: <number>20,
+  lineWidth: <number>6,
+  pointSize: <number>2,
+  roundRect: <number>28,
+  drawPoints: <Boolean>false,
+  drawLabels: <Boolean>true,
+  drawBoxes: <Boolean>true,
+  drawPolygons: <Boolean>true,
+  fillPolygons: <Boolean>false,
+  useDepth: <Boolean>true,
+  useCurves: <Boolean>false,
+  bufferedOutput: <Boolean>false,
 };
 
 function point(ctx, x, y, z = null) {

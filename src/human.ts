@@ -88,7 +88,7 @@ export class Human {
   image: { tensor: Tensor, canvas: OffscreenCanvas | HTMLCanvasElement };
   // classes
   tf: typeof tf;
-  draw: { options?: typeof draw.options, gesture: Function, face: Function, body: Function, hand: Function, canvas: Function, all: Function };
+  draw: { options?: typeof draw.drawOptions, gesture: Function, face: Function, body: Function, hand: Function, canvas: Function, all: Function };
   // models
   models: {
     face: facemesh.MediaPipeFaceMesh | null,

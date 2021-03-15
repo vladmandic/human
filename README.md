@@ -32,7 +32,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**Code Repository**](https://github.com/vladmandic/human)
 - [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
-- [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/human.html)
+- [**API Specification**](https://vladmandic.github.io/human/typedoc/index.html)
 - [**Change Log**](https://github.com/vladmandic/human/blob/main/CHANGELOG.md)
 
 <br>
@@ -45,7 +45,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**Usage & Functions**](https://github.com/vladmandic/human/wiki/Usage)
 - [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration)
 - [**Output Details**](https://github.com/vladmandic/human/wiki/Outputs)
-- [**Face Embedding and Recognition**](https://github.com/vladmandic/human/wiki/Embedding)
+- [**Face Recognition & Face Embedding**](https://github.com/vladmandic/human/wiki/Embedding)
 - [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)
 
 <br>
@@ -160,9 +160,7 @@ Build target is `JavaScript` **EMCAScript version 2018**
 <br>
 
 For details see [**Wiki Pages**](https://github.com/vladmandic/human/wiki)  
-and [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/human.html)
-
-
+and [**API Specification**](https://vladmandic.github.io/human/typedoc/index.html)
 
 <br>
 

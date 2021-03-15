@@ -193,9 +193,14 @@ export class Human {
     return 0;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   enhance(input: Tensor): Tensor | null {
-    if (this.config.face.embedding.enabled) return embedding.enhance(input);
-    return null;
+    return embedding.enhance(input);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  match(faceEmbedding: Array<Number>, db: Array<{ name: String, source: String | undefined, embedding: Array<Number> }>, threshold = 0): { name: String, source: String | undefined, simmilarity: Number, embedding: Array<Number> } {
+    return embedding.match(faceEmbedding, db, threshold);
   }
 
   // preload models, not explicitly required as it's done automatically on first use

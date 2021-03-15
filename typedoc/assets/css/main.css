@@ -1,20 +1,21 @@
+@font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../../assets/lato-light.woff2') }
 :root {
-  --color-background: #fdfdfd;
-  --color-text: #222;
-  --color-text-aside: #707070;
-  --color-link: #4da6ff;
+  --color-background: #202020;
+  --color-text: #f0f0f0;
+  --color-text-aside: #A0A0A0;
+  --color-link: lightskyblue;
   --color-menu-divider: #eee;
   --color-menu-divider-focus: #000;
   --color-menu-label: #707070;
-  --color-panel: #fff;
-  --color-panel-divider: #eee;
+  --color-panel: #303030;
+  --color-panel-divider: #404040;
   --color-comment-tag: #707070;
   --color-comment-tag-text: #fff;
   --color-code-background: rgba(#000, 0.04);
-  --color-ts: #9600ff;
+  --color-ts: lightcoral;
   --color-ts-interface: #647f1b;
   --color-ts-enum: #937210;
-  --color-ts-class: #0672de;
+  --color-ts-class: lightskyblue;
   --color-ts-private: #707070;
   --color-toolbar: #fff;
   --color-toolbar-text: #333;
@@ -2498,6 +2499,7 @@ ul.tsd-type-parameters .tsd-comment {
   background: var(--color-toolbar);
   border-bottom: 1px solid var(--color-panel-divider);
   transition: transform 0.3s linear;
+  visibility: hidden;
 }
 .tsd-page-toolbar a {
   color: var(--color-toolbar-text);

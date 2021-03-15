@@ -33,7 +33,7 @@
     "readme": "none",
     "out": "typedoc",
     "entryPoints": "src/human.ts",
-    "logLevel": "Error",
+    "logLevel": "Info",
     "logger": "none",
     "theme": "wiki/theme/"
   }

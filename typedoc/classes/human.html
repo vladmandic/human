@@ -6,8 +6,7 @@
 	<title>Human | @vladmandic/human</title>
 	<meta name="description" content="Documentation for @vladmandic/human">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="../assets/css/main.css">
-	<script async src="../assets/js/search.js" id="search-script"></script>
+	<link rel="stylesheet" href="../assets/typedoc.css">
 </head>
 <body>
 <header>
@@ -101,6 +100,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#detect" class="tsd-kind-icon">detect</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#enhance" class="tsd-kind-icon">enhance</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#load" class="tsd-kind-icon">load</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#match" class="tsd-kind-icon">match</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#profiledata" class="tsd-kind-icon">profile<wbr>Data</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#simmilarity" class="tsd-kind-icon">simmilarity</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#warmup-1" class="tsd-kind-icon">warmup</a></li>
@@ -704,6 +704,46 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="match" class="tsd-anchor"></a>
+					<h3>match</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">match<span class="tsd-signature-symbol">(</span>faceEmbedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Number</span><span class="tsd-signature-symbol">[]</span>, db<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>embedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">; </span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span>, threshold<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>embedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">; </span>simmilarity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Number</span><span class="tsd-signature-symbol">; </span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol"> }</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>faceEmbedding: <span class="tsd-signature-type">Number</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>db: <span class="tsd-signature-symbol">{ </span>embedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">; </span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>threshold: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>embedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">; </span>simmilarity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Number</span><span class="tsd-signature-symbol">; </span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol"> }</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter">
+									<h5>embedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Number</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">String</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>simmilarity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Number</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">String</span></h5>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="profiledata" class="tsd-anchor"></a>
 					<h3>profile<wbr>Data</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -820,6 +860,9 @@
 								<a href="human.html#load" class="tsd-kind-icon">load</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="human.html#match" class="tsd-kind-icon">match</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="human.html#profiledata" class="tsd-kind-icon">profile<wbr>Data</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -856,6 +899,6 @@
 	</div>
 </footer>
 <div class="overlay"></div>
-<script src="../assets/js/main.js"></script>
+<script src="../assets/typedoc.js"></script>
 </body>
 </html>

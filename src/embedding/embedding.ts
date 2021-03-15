@@ -2,6 +2,7 @@ import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 
+type Tensor = {};
 let model;
 
 export async function load(config) {
@@ -12,7 +13,7 @@ export async function load(config) {
   return model;
 }
 
-export function simmilarity(embedding1, embedding2, order = 2) {
+export function simmilarity(embedding1, embedding2, order = 2): Number {
   if (!embedding1 || !embedding2) return 0;
   if (embedding1?.length === 0 || embedding2?.length === 0) return 0;
   if (embedding1?.length !== embedding2?.length) return 0;
@@ -25,7 +26,19 @@ export function simmilarity(embedding1, embedding2, order = 2) {
   return res;
 }
 
-export function enhance(input) {
+export function match(embedding: Array<Number>, db: Array<any>, threshold = 0) {
+  let best = { simmilarity: 0, name: '', source: '', embedding: [] };
+  if (!embedding || !db || !Array.isArray(embedding) || !Array.isArray(db)) return best;
+  for (const f of db) {
+    if (f.embedding && f.name) {
+      const perc = simmilarity(embedding, f.embedding);
+      if (perc > threshold && perc > best.simmilarity) best = { ...f, simmilarity: perc };
+    }
+  }
+  return best;
+}
+
+export function enhance(input): Tensor {
   const image = tf.tidy(() => {
     // input received from detector is already normalized to 0..1
     // input is also assumed to be straightened
@@ -65,8 +78,8 @@ export function enhance(input) {
   return image;
 }
 
-export async function predict(input, config) {
-  if (!model) return null;
+export async function predict(input, config): Promise<number[]> {
+  if (!model) return [];
   return new Promise(async (resolve) => {
     // let data: Array<[]> = [];
     let data: Array<number> = [];
@@ -104,7 +117,7 @@ export async function predict(input, config) {
           const reduce = reshape.logSumExp(1); // reduce 2nd dimension by calculating logSumExp on it
 
           const output: Array<number> = reduce.dataSync();
-          return output;
+          return [...output]; // convert typed array to simple array
         });
       } else {
         const profileData = await tf.profile(() => model.predict({ img_inputs: image }));
@@ -112,7 +125,7 @@ export async function predict(input, config) {
         profileData.result.dispose();
         profile.run('emotion', profileData);
       }
-      image.dispose();
+      tf.dispose(image);
     }
     resolve(data);
   });

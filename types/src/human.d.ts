@@ -113,6 +113,16 @@ export declare class Human {
     } | {};
     simmilarity(embedding1: Array<Number>, embedding2: Array<Number>): Number;
     enhance(input: Tensor): Tensor | null;
+    match(faceEmbedding: Array<Number>, db: Array<{
+        name: String;
+        source: String | undefined;
+        embedding: Array<Number>;
+    }>, threshold?: number): {
+        name: String;
+        source: String | undefined;
+        simmilarity: Number;
+        embedding: Array<Number>;
+    };
     load(userConfig?: Object): Promise<void>;
     detect(input: Tensor | ImageData | HTMLCanvasElement | HTMLVideoElement | OffscreenCanvas, userConfig?: Object): Promise<Result | {
         error: String;

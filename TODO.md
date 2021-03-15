@@ -4,11 +4,7 @@
 
 - Strong(er) typing
 - Automated testing framework
-- API Documentation
-  - API Extractor: generate dts rollup and docs
-    <https://api-extractor.com/>
-  - TypeDoc: generate docs
-    <http://typedoc.org/>
+- TypeDoc comments
 
 ## Explore Models
 
@@ -21,10 +17,6 @@
 - NanoDet  
   <https://github.com/RangiLyu/nanodet>
 
-## WiP Items
-
-- box sizing on mobile
-
 ## Issues
 
-*N/A*
+- box sizing on mobile

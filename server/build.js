@@ -6,7 +6,6 @@ const esbuild = require('esbuild');
 const TypeDoc = require('typedoc');
 const changelog = require('./changelog');
 
-// keeps esbuild service instance cached
 let busy = false;
 let td = null;
 const banner = { js: `

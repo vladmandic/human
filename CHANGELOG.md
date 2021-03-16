@@ -9,6 +9,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/03/15 mandic00@live.com
+
+- custom typedoc
+
 ### **1.1.6** 2021/03/15 mandic00@live.com
 
 - implement human.match and embedding demo

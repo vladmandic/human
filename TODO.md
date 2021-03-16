@@ -14,8 +14,6 @@
 - InsightFace  
   RetinaFace detetor and ArcFace recognition
   <https://github.com/deepinsight/insightface>  
-- NanoDet  
-  <https://github.com/RangiLyu/nanodet>
 
 ## Issues
 

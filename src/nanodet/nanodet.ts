@@ -49,10 +49,10 @@ async function process(res, inputSize, outputShape, config) {
           ];
           boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1))); // fix out-of-bounds coords
           const box = [ // results normalized to input image pixels
-            boxRaw[0] * outputShape[0],
-            boxRaw[1] * outputShape[1],
-            boxRaw[2] * outputShape[0],
-            boxRaw[3] * outputShape[1],
+            Math.max(0, (boxRaw[0] * outputShape[0])),
+            Math.max(0, (boxRaw[1] * outputShape[1])),
+            Math.min(1, (boxRaw[2] * outputShape[0]) - (boxRaw[0] * outputShape[0])),
+            Math.min(1, (boxRaw[3] * outputShape[1]) - (boxRaw[1] * outputShape[1])),
           ];
           const result = {
             score: scoresMax[i],

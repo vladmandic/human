@@ -15,6 +15,7 @@ export declare const drawOptions: {
     useDepth: Boolean;
     useCurves: Boolean;
     bufferedOutput: Boolean;
+    useRawBoxes: Boolean;
 };
 export declare function gesture(inCanvas: any, result: any): Promise<void>;
 export declare function face(inCanvas: any, result: any): Promise<void>;

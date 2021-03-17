@@ -53,6 +53,7 @@ export declare type Result = {
     hand: Array<{
         confidence: Number;
         box: [Number, Number, Number, Number];
+        boxRaw: [Number, Number, Number, Number];
         landmarks: Array<[Number, Number, Number]>;
         annotations: Array<{
             part: String;

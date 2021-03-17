@@ -5,8 +5,8 @@ After=network.target network-online.target
 [Service]
 Type=simple
 Environment="NODE_ENV=production"
-ExecStart=/home/vlado/.nvm/versions/node/v15.7.0/bin/node server/serve.js
-WorkingDirectory=/home/vlado/dev/human
+ExecStart=<path-to-node> server/serve.js
+WorkingDirectory=<your-project-folder>
 StandardOutput=inherit
 StandardError=inherit
 Restart=always

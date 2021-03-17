@@ -31,22 +31,22 @@ export class MediaPipeFaceMesh {
       const box = prediction.box ? [
         Math.max(0, prediction.box.startPoint[0]),
         Math.max(0, prediction.box.startPoint[1]),
-        Math.min(input.shape[1], prediction.box.endPoint[0]) - prediction.box.startPoint[0],
-        Math.min(input.shape[2], prediction.box.endPoint[1]) - prediction.box.startPoint[1],
+        Math.min(input.shape[1], prediction.box.endPoint[0]) - Math.max(0, prediction.box.startPoint[0]),
+        Math.min(input.shape[2], prediction.box.endPoint[1]) - Math.max(0, prediction.box.startPoint[1]),
       ] : 0;
       const boxRaw = prediction.box ? [
-        Math.max(0, prediction.box.startPoint[0] / input.shape[2]),
-        Math.max(0, prediction.box.startPoint[1] / input.shape[1]),
-        Math.min(input.shape[1], (prediction.box.endPoint[0]) - prediction.box.startPoint[0]) / input.shape[2],
-        Math.min(input.shape[2], (prediction.box.endPoint[1]) - prediction.box.startPoint[1]) / input.shape[1],
+        prediction.box.startPoint[0] / input.shape[2],
+        prediction.box.startPoint[1] / input.shape[1],
+        (prediction.box.endPoint[0] - prediction.box.startPoint[0]) / input.shape[2],
+        (prediction.box.endPoint[1] - prediction.box.startPoint[1]) / input.shape[1],
       ] : [];
       results.push({
         confidence: prediction.faceConfidence || prediction.boxConfidence || 0,
         boxConfidence: prediction.boxConfidence,
         faceConfidence: prediction.faceConfidence,
         box,
-        mesh,
         boxRaw,
+        mesh,
         meshRaw,
         annotations,
         image: prediction.image ? prediction.image.clone() : null,

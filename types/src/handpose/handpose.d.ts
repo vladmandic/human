@@ -12,6 +12,7 @@ export declare class HandPose {
     estimateHands(input: any, config: any): Promise<{
         confidence: number;
         box: any;
+        boxRaw: any;
         landmarks: any;
         annotations: any;
     }[]>;

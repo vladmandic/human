@@ -175,7 +175,7 @@ async function getStats(json) {
 
 // rebuild typings
 async function compile(entryPoint, options) {
-  log.info('Compile typings:', entryPoint);
+  log.info('Generate types:', entryPoint);
   const program = ts.createProgram(entryPoint, options);
   const emit = program.emit();
   const diag = ts

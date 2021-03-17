@@ -12,8 +12,8 @@
   --color-comment-tag: #707070;
   --color-comment-tag-text: #fff;
   --color-code-background: rgba(#000, 0.04);
-  --color-ts: lightcoral;
-  --color-ts-interface: #647f1b;
+  --color-ts: lightyellow;
+  --color-ts-interface: lightgreen;
   --color-ts-enum: #937210;
   --color-ts-class: lightskyblue;
   --color-ts-private: #707070;

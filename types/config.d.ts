@@ -1,109 +1,115 @@
-declare const _default: {
-    backend: string;
-    wasmPath: string;
-    debug: boolean;
-    async: boolean;
-    profile: boolean;
-    deallocate: boolean;
-    scoped: boolean;
-    videoOptimized: boolean;
-    warmup: string;
+/**
+ * Configuration interface definition for **Human** library
+ *
+ * Contains all configurable parameters
+ */
+export interface Config {
+    backend: String;
+    wasmPath: String;
+    debug: Boolean;
+    async: Boolean;
+    profile: Boolean;
+    deallocate: Boolean;
+    scoped: Boolean;
+    videoOptimized: Boolean;
+    warmup: String;
     filter: {
-        enabled: boolean;
-        width: number;
-        height: number;
-        return: boolean;
-        brightness: number;
-        contrast: number;
-        sharpness: number;
-        blur: number;
-        saturation: number;
-        hue: number;
-        negative: boolean;
-        sepia: boolean;
-        vintage: boolean;
-        kodachrome: boolean;
-        technicolor: boolean;
-        polaroid: boolean;
-        pixelate: number;
+        enabled: Boolean;
+        width: Number;
+        height: Number;
+        return: Boolean;
+        brightness: Number;
+        contrast: Number;
+        sharpness: Number;
+        blur: Number;
+        saturation: Number;
+        hue: Number;
+        negative: Boolean;
+        sepia: Boolean;
+        vintage: Boolean;
+        kodachrome: Boolean;
+        technicolor: Boolean;
+        polaroid: Boolean;
+        pixelate: Number;
     };
     gesture: {
-        enabled: boolean;
+        enabled: Boolean;
     };
     face: {
-        enabled: boolean;
+        enabled: Boolean;
         detector: {
-            modelPath: string;
-            rotation: boolean;
-            maxFaces: number;
-            skipFrames: number;
-            skipInitial: boolean;
-            minConfidence: number;
-            iouThreshold: number;
-            scoreThreshold: number;
-            return: boolean;
+            modelPath: String;
+            rotation: Boolean;
+            maxFaces: Number;
+            skipFrames: Number;
+            skipInitial: Boolean;
+            minConfidence: Number;
+            iouThreshold: Number;
+            scoreThreshold: Number;
+            return: Boolean;
         };
         mesh: {
-            enabled: boolean;
-            modelPath: string;
+            enabled: Boolean;
+            modelPath: String;
         };
         iris: {
-            enabled: boolean;
-            modelPath: string;
+            enabled: Boolean;
+            modelPath: String;
         };
         age: {
-            enabled: boolean;
-            modelPath: string;
-            skipFrames: number;
+            enabled: Boolean;
+            modelPath: String;
+            skipFrames: Number;
         };
         gender: {
-            enabled: boolean;
-            minConfidence: number;
-            modelPath: string;
-            skipFrames: number;
+            enabled: Boolean;
+            minConfidence: Number;
+            modelPath: String;
+            skipFrames: Number;
         };
         emotion: {
-            enabled: boolean;
-            minConfidence: number;
-            skipFrames: number;
-            modelPath: string;
+            enabled: Boolean;
+            minConfidence: Number;
+            skipFrames: Number;
+            modelPath: String;
         };
         embedding: {
-            enabled: boolean;
-            modelPath: string;
+            enabled: Boolean;
+            modelPath: String;
         };
     };
     body: {
-        enabled: boolean;
-        modelPath: string;
-        maxDetections: number;
-        scoreThreshold: number;
-        nmsRadius: number;
+        enabled: Boolean;
+        modelPath: String;
+        maxDetections: Number;
+        scoreThreshold: Number;
+        nmsRadius: Number;
     };
     hand: {
-        enabled: boolean;
-        rotation: boolean;
-        skipFrames: number;
-        skipInitial: boolean;
-        minConfidence: number;
-        iouThreshold: number;
-        scoreThreshold: number;
-        maxHands: number;
-        landmarks: boolean;
+        enabled: Boolean;
+        rotation: Boolean;
+        skipFrames: Number;
+        skipInitial: Boolean;
+        minConfidence: Number;
+        iouThreshold: Number;
+        scoreThreshold: Number;
+        maxHands: Number;
+        landmarks: Boolean;
         detector: {
-            modelPath: string;
+            modelPath: String;
         };
         skeleton: {
-            modelPath: string;
+            modelPath: String;
         };
     };
     object: {
-        enabled: boolean;
-        modelPath: string;
-        minConfidence: number;
-        iouThreshold: number;
-        maxResults: number;
-        skipFrames: number;
+        enabled: Boolean;
+        modelPath: String;
+        minConfidence: Number;
+        iouThreshold: Number;
+        maxResults: Number;
+        skipFrames: Number;
     };
-};
-export default _default;
+}
+declare const config: Config;
+export { config as defaults };

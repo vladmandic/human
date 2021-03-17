@@ -22,13 +22,13 @@ export declare type Error = {
 };
 export declare type TensorFlow = typeof tf;
 /**
- * Main Class for `Human` library
+ * Main Class for **Human** library
  *
  * All methods and properties are available only as members of Human class
  *
- * Configuration object definition: @link Config
- * Results object definition: @link Result
- * Possible inputs: @link Input
+ * - Configuration object definition: {@link Config}
+ * - Results object definition: {@link Result}
+ * - Possible inputs: {@link Input}
  */
 export declare class Human {
     #private;

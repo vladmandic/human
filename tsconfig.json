@@ -5,7 +5,7 @@
     "moduleResolution": "node",
     "lib": ["es2018", "dom"],
     "typeRoots": ["node_modules/@types"],
-    "outDir": "types",
+    "out": "dist/human.d.ts",
     "declaration": true,
     "emitDeclarationOnly": true,
     "emitDecoratorMetadata": true,

@@ -21,7 +21,7 @@ const tsconfig = {
   noEmitOnError: false,
   target: ts.ScriptTarget.ES2018,
   module: ts.ModuleKind.ES2020,
-  outDir: 'types/',
+  out: 'dist/human.d.ts',
   declaration: true,
   emitDeclarationOnly: true,
   emitDecoratorMetadata: true,

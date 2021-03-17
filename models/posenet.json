@@ -1,6 +1,6 @@
 {
   "format": "graph-model",
-  "generatedBy": "2.0.0-dev20190603",
+  "generatedBy": "https://github.com/tensorflow/tfjs-models",
   "convertedBy": "https://github.com/vladmandic",
   "modelTopology":
   {

@@ -32,6 +32,7 @@ const myConfig = {
     detector: { modelPath: 'file://models/handdetect.json' },
     skeleton: { modelPath: 'file://models/handskeleton.json' },
   },
+  object: { modelPath: 'file://models/nanodet.json', enabled: true },
 };
 
 async function init() {

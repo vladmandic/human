@@ -6,7 +6,7 @@
   "main": "dist/human.node.js",
   "module": "dist/human.esm.js",
   "browser": "dist/human.esm.js",
-  "types": "types/src/human.d.ts",
+  "types": "types/human.d.ts",
   "author": "Vladimir Mandic <mandic00@live.com>",
   "bugs": {
     "url": "https://github.com/vladmandic/human/issues"

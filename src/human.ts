@@ -12,62 +12,31 @@ import * as handpose from './handpose/handpose';
 import * as blazepose from './blazepose/blazepose';
 import * as nanodet from './nanodet/nanodet';
 import * as gesture from './gesture/gesture';
-import * as image from './image';
+import * as image from './image/image';
+import * as draw from './draw/draw';
 import * as profile from './profile';
-import * as config from '../config';
+import { Config, defaults } from './config';
+import { Result } from './result';
 import * as sample from './sample';
 import * as app from '../package.json';
-import * as draw from './draw';
+
+type Tensor = {};
+type Model = {};
+
+export type { Config } from './config';
+export type { Result } from './result';
+
+/** Defines all possible input types for **Human** detection */
+export type Input = Tensor | ImageData | ImageBitmap | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
+/** Error message */
+export type Error = { error: String };
+export type TensorFlow = typeof tf;
 
 // helper function: gets elapsed time on both browser and nodejs
 const now = () => {
   if (typeof performance !== 'undefined') return performance.now();
   return parseInt((Number(process.hrtime.bigint()) / 1000 / 1000).toString());
 };
-
-type Tensor = {};
-type Model = {};
-export type Result = {
-  face: Array<{
-    confidence: Number,
-    boxConfidence: Number,
-    faceConfidence: Number,
-    box: [Number, Number, Number, Number],
-    mesh: Array<[Number, Number, Number]>
-    meshRaw: Array<[Number, Number, Number]>
-    boxRaw: [Number, Number, Number, Number],
-    annotations: Array<{ part: String, points: Array<[Number, Number, Number]>[] }>,
-    age: Number,
-    gender: String,
-    genderConfidence: Number,
-    emotion: Array<{ score: Number, emotion: String }>,
-    embedding: Array<Number>,
-    iris: Number,
-    angle: { roll: Number, yaw: Number, pitch: Number },
-  }>,
-  body: Array<{
-    id: Number,
-    part: String,
-    position: { x: Number, y: Number, z: Number },
-    score: Number,
-    presence: Number }>,
-  hand: Array<{
-    confidence: Number,
-    box: [Number, Number, Number, Number],
-    boxRaw: [Number, Number, Number, Number],
-    landmarks: Array<[Number, Number, Number]>,
-    annotations: Array<{ part: String, points: Array<[Number, Number, Number]>[] }>,
-  }>,
-  gesture: Array<{
-    part: String,
-    gesture: String,
-  }>,
-  object: Array<{ score: Number, strideSize: Number, class: Number, label: String, center: Number[], centerRaw: Number[], box: Number[], boxRaw: Number[] }>,
-  performance: { any },
-  canvas: OffscreenCanvas | HTMLCanvasElement,
-}
-
-export type { default as Config } from '../config';
 
 // helper function: perform deep merge of multiple objects so it allows full inheriance with overrides
 function mergeDeep(...objects) {
@@ -83,15 +52,31 @@ function mergeDeep(...objects) {
     return prev;
   }, {});
 }
-
+/**
+ * Main Class for `Human` library
+ *
+ * All methods and properties are available only as members of Human class
+ *
+ * Configuration object definition: @link Config
+ * Results object definition: @link Result
+ * Possible inputs: @link Input
+ */
 export class Human {
   version: String;
-  config: typeof config.default;
+  config: Config;
   state: String;
   image: { tensor: Tensor, canvas: OffscreenCanvas | HTMLCanvasElement };
   // classes
-  tf: typeof tf;
-  draw: { drawOptions?: typeof draw.drawOptions, gesture: Function, face: Function, body: Function, hand: Function, canvas: Function, all: Function };
+  tf: TensorFlow;
+  draw: {
+    drawOptions?: typeof draw.drawOptions,
+    gesture: typeof draw.gesture,
+    face: typeof draw.face,
+    body: typeof draw.body,
+    hand: typeof draw.hand,
+    canvas: typeof draw.canvas,
+    all: typeof draw.all,
+  };
   // models
   models: {
     face: facemesh.MediaPipeFaceMesh | null,
@@ -123,12 +108,12 @@ export class Human {
   #firstRun: Boolean;
   // definition end
 
-  constructor(userConfig = {}) {
+  constructor(userConfig: Config | Object = {}) {
     this.tf = tf;
     this.draw = draw;
     this.#package = app;
     this.version = app.version;
-    this.config = mergeDeep(config.default, userConfig);
+    this.config = mergeDeep(defaults, userConfig);
     this.state = 'idle';
     this.#numTensors = 0;
     this.#analyzeMemoryLeaks = false;
@@ -150,7 +135,7 @@ export class Human {
     };
     // export access to image processing
     // @ts-ignore
-    this.image = (input: Tensor | ImageData | HTMLCanvasElement | HTMLVideoElement | OffscreenCanvas) => image.process(input, this.config);
+    this.image = (input: Input) => image.process(input, this.config);
     // export raw access to underlying models
     this.classes = {
       facemesh,
@@ -211,7 +196,7 @@ export class Human {
   }
 
   // preload models, not explicitly required as it's done automatically on first use
-  async load(userConfig: Object = {}) {
+  async load(userConfig: Config | Object = {}) {
     this.state = 'load';
     const timeStamp = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
@@ -480,7 +465,7 @@ export class Human {
   }
 
   // main detect function
-  async detect(input: Tensor | ImageData | HTMLCanvasElement | HTMLVideoElement | OffscreenCanvas, userConfig: Object = {}): Promise<Result | { error: String }> {
+  async detect(input: Input, userConfig: Config | Object = {}): Promise<Result | Error> {
     // detection happens inside a promise
     return new Promise(async (resolve) => {
       this.state = 'config';
@@ -675,7 +660,7 @@ export class Human {
     return res;
   }
 
-  async warmup(userConfig: Object = {}): Promise<Result | { error }> {
+  async warmup(userConfig: Config | Object = {}): Promise<Result | { error }> {
     const t0 = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
     const save = this.config.videoOptimized;
@@ -691,4 +676,7 @@ export class Human {
   }
 }
 
+/**
+ * Class Human is also available as default export
+ */
 export { Human as default };

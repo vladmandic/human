@@ -43,7 +43,7 @@ export type Result = {
     emotion: Array<{ score: Number, emotion: String }>,
     embedding: Array<Number>,
     iris: Number,
-    angle: { roll: Number | null, yaw: Number | null, pitch: Number | null },
+    angle: { roll: Number, yaw: Number, pitch: Number },
   }>,
   body: Array<{
     id: Number,
@@ -63,7 +63,7 @@ export type Result = {
   }>,
   object: Array<{ score: Number, strideSize: Number, class: Number, label: String, center: Number[], centerRaw: Number[], box: Number[], boxRaw: Number[] }>,
   performance: { any },
-  canvas: OffscreenCanvas | HTMLCanvasElement | null,
+  canvas: OffscreenCanvas | HTMLCanvasElement,
 }
 
 export type { default as Config } from '../config';

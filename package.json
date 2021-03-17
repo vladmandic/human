@@ -6,7 +6,7 @@
   "main": "dist/human.node.js",
   "module": "dist/human.esm.js",
   "browser": "dist/human.esm.js",
-  "types": "dist/human.d.ts",
+  "types": "types/human.d.ts",
   "author": "Vladimir Mandic <mandic00@live.com>",
   "bugs": {
     "url": "https://github.com/vladmandic/human/issues"
@@ -23,7 +23,7 @@
   "scripts": {
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation demo/node.js",
     "dev": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/serve.js",
-    "build": "rimraf dist/* typedoc/* && node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/build.js",
+    "build": "rimraf dist/* typedoc/* types/* && node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/build.js",
     "lint": "eslint src server demo",
     "test": "npm run lint && npm run start"
   },

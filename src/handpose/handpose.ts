@@ -29,7 +29,7 @@ export class HandPose {
   async estimateHands(input, config) {
     const predictions = await this.handPipeline.estimateHands(input, config);
     if (!predictions) return [];
-    const hands: Array<{ confidence: number, box: any, landmarks: any, annotations: any }> = [];
+    const hands: Array<{ confidence: number, box: any, boxRaw: any, landmarks: any, annotations: any }> = [];
     for (const prediction of predictions) {
       const annotations = {};
       if (prediction.landmarks) {
@@ -40,10 +40,16 @@ export class HandPose {
       const box = prediction.box ? [
         Math.max(0, prediction.box.topLeft[0]),
         Math.max(0, prediction.box.topLeft[1]),
-        Math.min(input.shape[2], prediction.box.bottomRight[0]) - prediction.box.topLeft[0],
-        Math.min(input.shape[1], prediction.box.bottomRight[1]) - prediction.box.topLeft[1],
-      ] : 0;
-      hands.push({ confidence: prediction.confidence, box, landmarks: prediction.landmarks, annotations });
+        Math.min(input.shape[2], prediction.box.bottomRight[0]) - Math.max(0, prediction.box.topLeft[0]),
+        Math.min(input.shape[1], prediction.box.bottomRight[1]) - Math.max(0, prediction.box.topLeft[1]),
+      ] : [];
+      const boxRaw = [
+        (prediction.box.topLeft[0]) / input.shape[2],
+        (prediction.box.topLeft[1]) / input.shape[1],
+        (prediction.box.bottomRight[0] - prediction.box.topLeft[0]) / input.shape[2],
+        (prediction.box.bottomRight[1] - prediction.box.topLeft[1]) / input.shape[1],
+      ];
+      hands.push({ confidence: prediction.confidence, box, boxRaw, landmarks: prediction.landmarks, annotations });
     }
     return hands;
   }

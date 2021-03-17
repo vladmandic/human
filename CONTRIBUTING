@@ -1,3 +1,23 @@
 # Human Library: Contributing Guidelines
 
 <br>
+
+Pull requests from everyone are welcome
+
+<br>
+
+Procedure for contributing:
+- Create a fork of the repository on github  
+  In a top right corner of a GitHub, select "Fork"
+- Clone your forked repository to your local system  
+  `git clone https://github.com/<your-username>/<your-fork>
+- Make your changes  
+- Test your changes against code guidelines  
+  `npm run lint`
+- Push changes to your fork
+- Submit a PR (pull request) to `Human`
+  <https://github.com/vladmandic/human/pulls>
+
+<br>
+
+Your pull request will be reviewed and pending review results, merged into main branch

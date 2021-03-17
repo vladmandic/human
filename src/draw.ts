@@ -18,6 +18,7 @@ export const drawOptions = {
   useDepth: <Boolean>true,
   useCurves: <Boolean>false,
   bufferedOutput: <Boolean>false,
+  useRawBoxes: <Boolean>false,
 };
 
 function point(ctx, x, y, z = null) {
@@ -121,8 +122,8 @@ export async function face(inCanvas, result) {
     ctx.strokeStyle = drawOptions.color;
     ctx.fillStyle = drawOptions.color;
     if (drawOptions.drawBoxes) {
-      rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3]);
-      // rect(ctx, inCanvas.width * f.boxRaw[0], inCanvas.height * f.boxRaw[1], inCanvas.width * f.boxRaw[2], inCanvas.height * f.boxRaw[3]);
+      if (drawOptions.useRawBoxes) rect(ctx, inCanvas.width * f.boxRaw[0], inCanvas.height * f.boxRaw[1], inCanvas.width * f.boxRaw[2], inCanvas.height * f.boxRaw[3]);
+      else rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3]);
     }
     // silly hack since fillText does not suport new line
     const labels:string[] = [];
@@ -305,7 +306,8 @@ export async function hand(inCanvas, result) {
     if (drawOptions.drawBoxes) {
       ctx.strokeStyle = drawOptions.color;
       ctx.fillStyle = drawOptions.color;
-      rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3]);
+      if (drawOptions.useRawBoxes) rect(ctx, inCanvas.width * h.boxRaw[0], inCanvas.height * h.boxRaw[1], inCanvas.width * h.boxRaw[2], inCanvas.height * h.boxRaw[3]);
+      else rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3]);
       if (drawOptions.drawLabels) {
         if (drawOptions.shadowColor && drawOptions.shadowColor !== '') {
           ctx.fillStyle = drawOptions.shadowColor;
@@ -357,7 +359,8 @@ export async function object(inCanvas, result) {
     if (drawOptions.drawBoxes) {
       ctx.strokeStyle = drawOptions.color;
       ctx.fillStyle = drawOptions.color;
-      rect(ctx, h.box[0], h.box[1], h.box[2] - h.box[0], h.box[3] - h.box[1]);
+      if (drawOptions.useRawBoxes) rect(ctx, inCanvas.width * h.boxRaw[0], inCanvas.height * h.boxRaw[1], inCanvas.width * h.boxRaw[2], inCanvas.height * h.boxRaw[3]);
+      else rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3]);
       if (drawOptions.drawLabels) {
         const label = `${Math.round(100 * h.score)}% ${h.label}`;
         if (drawOptions.shadowColor && drawOptions.shadowColor !== '') {

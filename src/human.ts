@@ -54,6 +54,7 @@ export type Result = {
   hand: Array<{
     confidence: Number,
     box: [Number, Number, Number, Number],
+    boxRaw: [Number, Number, Number, Number],
     landmarks: Array<[Number, Number, Number]>,
     annotations: Array<{ part: String, points: Array<[Number, Number, Number]>[] }>,
   }>,
@@ -595,7 +596,17 @@ export class Human {
 
       this.#perf.total = Math.trunc(now() - timeStart);
       this.state = 'idle';
-      resolve({ face: faceRes, body: bodyRes, hand: handRes, gesture: gestureRes, object: objectRes, performance: this.#perf, canvas: process.canvas });
+      const result = {
+        face: faceRes,
+        body: bodyRes,
+        hand: handRes,
+        gesture: gestureRes,
+        object: objectRes,
+        performance: this.#perf,
+        canvas: process.canvas,
+      };
+      // log('Result:', result);
+      resolve(result);
     });
   }
 

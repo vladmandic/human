@@ -7,9 +7,9 @@
 # Human Library
 
 **3D Face Detection & Rotation Tracking, Face Embedding & Recognition,**  
-**Body Pose Tracking, Hand & Finger Tracking,**  
-**Iris Analysis, Age & Gender & Emotion Prediction**  
-**& Gesture Recognition**
+**Body Pose Tracking, 3D Hand & Finger Tracking,**  
+**Iris Analysis, Age & Gender & Emotion Prediction,**  
+**Gesture Recognition**
 
 <br>
 
@@ -20,7 +20,8 @@ JavaScript module using TensorFlow/JS Machine Learning library
   Compatible with both desktop and mobile platforms  
   Compatible with *WebWorker* execution
 - **NodeJS**:  
-  Compatible with both software *tfjs-node* and GPU accelerated backends *tfjs-node-gpu* using CUDA libraries  
+  Compatible with both software *tfjs-node* and  
+  GPU accelerated backends *tfjs-node-gpu* using CUDA libraries  
 
 Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) for processing of live WebCam video or static images  
 

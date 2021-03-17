@@ -10,6 +10,7 @@ import * as embedding from './embedding/embedding';
 import * as posenet from './posenet/posenet';
 import * as handpose from './handpose/handpose';
 import * as blazepose from './blazepose/blazepose';
+import * as nanodet from './nanodet/nanodet';
 import * as gesture from './gesture/gesture';
 import * as image from './image';
 import * as profile from './profile';
@@ -35,12 +36,12 @@ export type Result = {
     mesh: Array<[Number, Number, Number]>
     meshRaw: Array<[Number, Number, Number]>
     boxRaw: [Number, Number, Number, Number],
-    annotations: any,
+    annotations: Array<{ part: String, points: Array<[Number, Number, Number]>[] }>,
     age: Number,
     gender: String,
     genderConfidence: Number,
-    emotion: String,
-    embedding: any,
+    emotion: Array<{ score: Number, emotion: String }>,
+    embedding: Array<Number>,
     iris: Number,
     angle: { roll: Number | null, yaw: Number | null, pitch: Number | null },
   }>,
@@ -52,16 +53,17 @@ export type Result = {
     presence: Number }>,
   hand: Array<{
     confidence: Number,
-    box: any,
-    landmarks: any,
-    annotations: any,
+    box: [Number, Number, Number, Number],
+    landmarks: Array<[Number, Number, Number]>,
+    annotations: Array<{ part: String, points: Array<[Number, Number, Number]>[] }>,
   }>,
   gesture: Array<{
     part: String,
     gesture: String,
   }>,
+  object: Array<{ score: Number, strideSize: Number, class: Number, label: String, center: Number[], centerRaw: Number[], box: Number[], boxRaw: Number[] }>,
   performance: { any },
-  canvas: OffscreenCanvas | HTMLCanvasElement,
+  canvas: OffscreenCanvas | HTMLCanvasElement | null,
 }
 
 export type { default as Config } from '../config';
@@ -100,6 +102,7 @@ export class Human {
     gender: Model | null,
     emotion: Model | null,
     embedding: Model | null,
+    nanodet: Model | null,
   };
   classes: {
     facemesh: typeof facemesh;
@@ -108,6 +111,7 @@ export class Human {
     emotion: typeof emotion;
     body: typeof posenet | typeof blazepose;
     hand: typeof handpose;
+    nanodet: typeof nanodet;
   };
   sysinfo: { platform: String, agent: String };
   #package: any;
@@ -141,6 +145,7 @@ export class Human {
       gender: null,
       emotion: null,
       embedding: null,
+      nanodet: null,
     };
     // export access to image processing
     // @ts-ignore
@@ -153,6 +158,7 @@ export class Human {
       emotion,
       body: this.config.body.modelPath.includes('posenet') ? posenet : blazepose,
       hand: handpose,
+      nanodet,
     };
     // include platform info
     this.sysinfo = sysinfo.info();
@@ -231,6 +237,7 @@ export class Human {
         this.models.handpose,
         this.models.posenet,
         this.models.blazepose,
+        this.models.nanodet,
       ] = await Promise.all([
         this.models.face || (this.config.face.enabled ? facemesh.load(this.config) : null),
         this.models.age || ((this.config.face.enabled && this.config.face.age.enabled) ? age.load(this.config) : null),
@@ -240,6 +247,7 @@ export class Human {
         this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config) : null),
         this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('posenet') ? posenet.load(this.config) : null),
         this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('blazepose') ? blazepose.load(this.config) : null),
+        this.models.nanodet || (this.config.object.enabled ? nanodet.load(this.config) : null),
       ]);
     } else {
       if (this.config.face.enabled && !this.models.face) this.models.face = await facemesh.load(this.config);
@@ -250,6 +258,7 @@ export class Human {
       if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config);
       if (this.config.body.enabled && !this.models.posenet && this.config.body.modelPath.includes('posenet')) this.models.posenet = await posenet.load(this.config);
       if (this.config.body.enabled && !this.models.blazepose && this.config.body.modelPath.includes('blazepose')) this.models.blazepose = await blazepose.load(this.config);
+      if (this.config.object.enabled && !this.models.nanodet) this.models.nanodet = await nanodet.load(this.config);
     }
 
     if (this.#firstRun) {
@@ -512,6 +521,7 @@ export class Human {
       let bodyRes;
       let handRes;
       let faceRes;
+      let objectRes;
 
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       if (this.config.async) {
@@ -552,9 +562,22 @@ export class Human {
       }
       this.#analyze('End Hand:');
 
+      // run nanodet
+      this.#analyze('Start Object:');
+      if (this.config.async) {
+        objectRes = this.config.object.enabled ? nanodet.predict(process.tensor, this.config) : [];
+        if (this.#perf.object) delete this.#perf.object;
+      } else {
+        this.state = 'run:object';
+        timeStamp = now();
+        objectRes = this.config.object.enabled ? await nanodet.predict(process.tensor, this.config) : [];
+        this.#perf.object = Math.trunc(now() - timeStamp);
+      }
+      this.#analyze('End Object:');
+
       // if async wait for results
       if (this.config.async) {
-        [faceRes, bodyRes, handRes] = await Promise.all([faceRes, bodyRes, handRes]);
+        [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
       }
       process.tensor.dispose();
 
@@ -572,7 +595,7 @@ export class Human {
 
       this.#perf.total = Math.trunc(now() - timeStart);
       this.state = 'idle';
-      resolve({ face: faceRes, body: bodyRes, hand: handRes, gesture: gestureRes, performance: this.#perf, canvas: process.canvas });
+      resolve({ face: faceRes, body: bodyRes, hand: handRes, gesture: gestureRes, object: objectRes, performance: this.#perf, canvas: process.canvas });
     });
   }
 
@@ -644,13 +667,13 @@ export class Human {
   async warmup(userConfig: Object = {}): Promise<Result | { error }> {
     const t0 = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
-    const video = this.config.videoOptimized;
+    const save = this.config.videoOptimized;
     this.config.videoOptimized = false;
     let res;
     if (typeof createImageBitmap === 'function') res = await this.#warmupBitmap();
     else if (typeof Image !== 'undefined') res = await this.#warmupCanvas();
     else res = await this.#warmupNode();
-    this.config.videoOptimized = video;
+    this.config.videoOptimized = save;
     const t1 = now();
     if (this.config.debug) log('Warmup', this.config.warmup, Math.round(t1 - t0), 'ms', res);
     return res;

@@ -6,6 +6,7 @@ import * as emotion from './emotion/emotion';
 import * as posenet from './posenet/posenet';
 import * as handpose from './handpose/handpose';
 import * as blazepose from './blazepose/blazepose';
+import * as nanodet from './nanodet/nanodet';
 import * as config from '../config';
 import * as draw from './draw';
 declare type Tensor = {};
@@ -19,12 +20,18 @@ export declare type Result = {
         mesh: Array<[Number, Number, Number]>;
         meshRaw: Array<[Number, Number, Number]>;
         boxRaw: [Number, Number, Number, Number];
-        annotations: any;
+        annotations: Array<{
+            part: String;
+            points: Array<[Number, Number, Number]>[];
+        }>;
         age: Number;
         gender: String;
         genderConfidence: Number;
-        emotion: String;
-        embedding: any;
+        emotion: Array<{
+            score: Number;
+            emotion: String;
+        }>;
+        embedding: Array<Number>;
         iris: Number;
         angle: {
             roll: Number | null;
@@ -45,18 +52,31 @@ export declare type Result = {
     }>;
     hand: Array<{
         confidence: Number;
-        box: any;
-        landmarks: any;
-        annotations: any;
+        box: [Number, Number, Number, Number];
+        landmarks: Array<[Number, Number, Number]>;
+        annotations: Array<{
+            part: String;
+            points: Array<[Number, Number, Number]>[];
+        }>;
     }>;
     gesture: Array<{
         part: String;
         gesture: String;
     }>;
+    object: Array<{
+        score: Number;
+        strideSize: Number;
+        class: Number;
+        label: String;
+        center: Number[];
+        centerRaw: Number[];
+        box: Number[];
+        boxRaw: Number[];
+    }>;
     performance: {
         any: any;
     };
-    canvas: OffscreenCanvas | HTMLCanvasElement;
+    canvas: OffscreenCanvas | HTMLCanvasElement | null;
 };
 export type { default as Config } from '../config';
 export declare class Human {
@@ -88,6 +108,7 @@ export declare class Human {
         gender: Model | null;
         emotion: Model | null;
         embedding: Model | null;
+        nanodet: Model | null;
     };
     classes: {
         facemesh: typeof facemesh;
@@ -96,6 +117,7 @@ export declare class Human {
         emotion: typeof emotion;
         body: typeof posenet | typeof blazepose;
         hand: typeof handpose;
+        nanodet: typeof nanodet;
     };
     sysinfo: {
         platform: String;

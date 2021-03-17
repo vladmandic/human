@@ -149,7 +149,7 @@ export async function face(inCanvas, result) {
       ctx.fillText(labels[i], x + 4, y + 15);
     }
     ctx.lineWidth = 1;
-    if (f.mesh) {
+    if (f.mesh && f.mesh.length > 0) {
       if (drawOptions.drawPoints) {
         for (const pt of f.mesh) point(ctx, pt[0], pt[1], pt[2]);
         // for (const pt of f.meshRaw) point(ctx, pt[0] * inCanvas.offsetWidth, pt[1] * inCanvas.offsetHeight, pt[2]);
@@ -306,12 +306,14 @@ export async function hand(inCanvas, result) {
       ctx.strokeStyle = drawOptions.color;
       ctx.fillStyle = drawOptions.color;
       rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3]);
-      if (drawOptions.shadowColor && drawOptions.shadowColor !== '') {
-        ctx.fillStyle = drawOptions.shadowColor;
-        ctx.fillText('hand', h.box[0] + 3, 1 + h.box[1] + drawOptions.lineHeight, h.box[2]);
+      if (drawOptions.drawLabels) {
+        if (drawOptions.shadowColor && drawOptions.shadowColor !== '') {
+          ctx.fillStyle = drawOptions.shadowColor;
+          ctx.fillText('hand', h.box[0] + 3, 1 + h.box[1] + drawOptions.lineHeight, h.box[2]);
+        }
+        ctx.fillStyle = drawOptions.labelColor;
+        ctx.fillText('hand', h.box[0] + 2, 0 + h.box[1] + drawOptions.lineHeight, h.box[2]);
       }
-      ctx.fillStyle = drawOptions.labelColor;
-      ctx.fillText('hand', h.box[0] + 2, 0 + h.box[1] + drawOptions.lineHeight, h.box[2]);
       ctx.stroke();
     }
     if (drawOptions.drawPoints) {
@@ -344,6 +346,32 @@ export async function hand(inCanvas, result) {
   }
 }
 
+export async function object(inCanvas, result) {
+  if (!result || !inCanvas) return;
+  if (!(inCanvas instanceof HTMLCanvasElement)) return;
+  const ctx = inCanvas.getContext('2d');
+  if (!ctx) return;
+  ctx.lineJoin = 'round';
+  ctx.font = drawOptions.font;
+  for (const h of result) {
+    if (drawOptions.drawBoxes) {
+      ctx.strokeStyle = drawOptions.color;
+      ctx.fillStyle = drawOptions.color;
+      rect(ctx, h.box[0], h.box[1], h.box[2] - h.box[0], h.box[3] - h.box[1]);
+      if (drawOptions.drawLabels) {
+        const label = `${Math.round(100 * h.score)}% ${h.label}`;
+        if (drawOptions.shadowColor && drawOptions.shadowColor !== '') {
+          ctx.fillStyle = drawOptions.shadowColor;
+          ctx.fillText(label, h.box[0] + 3, 1 + h.box[1] + drawOptions.lineHeight, h.box[2]);
+        }
+        ctx.fillStyle = drawOptions.labelColor;
+        ctx.fillText(label, h.box[0] + 2, 0 + h.box[1] + drawOptions.lineHeight, h.box[2]);
+      }
+      ctx.stroke();
+    }
+  }
+}
+
 export async function canvas(inCanvas, outCanvas) {
   if (!inCanvas || !outCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement) || !(outCanvas instanceof HTMLCanvasElement)) return;
@@ -358,4 +386,5 @@ export async function all(inCanvas, result) {
   body(inCanvas, result.body);
   hand(inCanvas, result.hand);
   gesture(inCanvas, result.gesture);
+  object(inCanvas, result.object);
 }

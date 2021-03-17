@@ -97,5 +97,13 @@ declare const _default: {
             modelPath: string;
         };
     };
+    object: {
+        enabled: boolean;
+        modelPath: string;
+        minConfidence: number;
+        iouThreshold: number;
+        maxResults: number;
+        skipFrames: number;
+    };
 };
 export default _default;

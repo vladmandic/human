@@ -53,13 +53,13 @@ function mergeDeep(...objects) {
   }, {});
 }
 /**
- * Main Class for `Human` library
+ * **Human** library main class
  *
  * All methods and properties are available only as members of Human class
  *
- * Configuration object definition: @link Config
- * Results object definition: @link Result
- * Possible inputs: @link Input
+ * - Configuration object definition: {@link Config}
+ * - Results object definition: {@link Result}
+ * - Possible inputs: {@link Input}
  */
 export class Human {
   version: String;

@@ -33,7 +33,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**Code Repository**](https://github.com/vladmandic/human)
 - [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
-- [**API Specification**](https://vladmandic.github.io/human/typedoc/index.html)
+- [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/human.html)
 - [**Change Log**](https://github.com/vladmandic/human/blob/main/CHANGELOG.md)
 
 <br>
@@ -161,7 +161,7 @@ Build target is `JavaScript` **EMCAScript version 2018**
 <br>
 
 For details see [**Wiki Pages**](https://github.com/vladmandic/human/wiki)  
-and [**API Specification**](https://vladmandic.github.io/human/typedoc/index.html)
+and [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/human.html)
 
 <br>
 

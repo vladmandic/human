@@ -9,12 +9,14 @@ const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 const userConfig = {
   backend: 'wasm',
   async: false,
-  warmup: 'face',
-  videoOptimized: false,
+  warmup: 'full',
+  videoOptimized: true,
+  filter: { enabled: true },
   face: { enabled: true, mesh: { enabled: true }, iris: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: false } },
   hand: { enabled: false },
   gesture: { enabled: false },
   body: { enabled: false, modelPath: '../models/blazepose.json' },
+  object: { enabled: false },
 };
 */
 
@@ -141,6 +143,7 @@ async function drawResults(input) {
   human.draw.face(canvas, result.face);
   human.draw.body(canvas, result.body);
   human.draw.hand(canvas, result.hand);
+  human.draw.object(canvas, result.object);
   human.draw.gesture(canvas, result.gesture);
   await calcSimmilariry(result);
 
@@ -514,6 +517,8 @@ function setupMenu() {
   menu.models.addBool('hand pose', human.config.hand, 'enabled', (val) => human.config.hand.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.models.addBool('gestures', human.config.gesture, 'enabled', (val) => human.config.gesture.enabled = val);
+  menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
+  menu.models.addBool('object detection', human.config.object, 'enabled', (val) => human.config.object.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.models.addBool('face compare', human.config.face.embedding, 'enabled', (val) => {
     human.config.face.embedding.enabled = val;

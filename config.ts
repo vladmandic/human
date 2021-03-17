@@ -166,4 +166,14 @@ export default {
       modelPath: '../models/handskeleton.json',
     },
   },
+
+  object: {
+    enabled: false,
+    modelPath: '../models/nanodet.json',
+    minConfidence: 0.15,     // threshold for discarding a prediction
+    iouThreshold: 0.25,      // threshold for deciding whether boxes overlap too much
+                             // in non-maximum suppression
+    maxResults: 10,          // maximum number of objects detected in the input
+    skipFrames: 13,          // how many frames to go without re-running the detector
+  },
 };

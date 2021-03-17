@@ -34,9 +34,9 @@ export declare type Result = {
         embedding: Array<Number>;
         iris: Number;
         angle: {
-            roll: Number | null;
-            yaw: Number | null;
-            pitch: Number | null;
+            roll: Number;
+            yaw: Number;
+            pitch: Number;
         };
     }>;
     body: Array<{
@@ -76,7 +76,7 @@ export declare type Result = {
     performance: {
         any: any;
     };
-    canvas: OffscreenCanvas | HTMLCanvasElement | null;
+    canvas: OffscreenCanvas | HTMLCanvasElement;
 };
 export type { default as Config } from '../config';
 export declare class Human {

@@ -41,7 +41,8 @@
     "gender-prediction",
     "gesture-recognition",
     "blazeface",
-    "blazepose"
+    "blazepose",
+    "nanodet"
   ],
   "devDependencies": {
     "@microsoft/api-extractor": "^7.13.2",

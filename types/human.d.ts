@@ -10,15 +10,15 @@ import * as nanodet from './nanodet/nanodet';
 import * as draw from './draw/draw';
 import { Config } from './config';
 import { Result } from './result';
-declare type Tensor = {};
-declare type Model = {};
+declare type Tensor = Object;
+declare type Model = Object;
 export type { Config } from './config';
 export type { Result } from './result';
 /** Defines all possible input types for **Human** detection */
 export declare type Input = Tensor | ImageData | ImageBitmap | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 /** Error message */
 export declare type Error = {
-    error: String;
+    error: string;
 };
 export declare type TensorFlow = typeof tf;
 /**
@@ -32,9 +32,9 @@ export declare type TensorFlow = typeof tf;
  */
 export declare class Human {
     #private;
-    version: String;
+    version: string;
     config: Config;
-    state: String;
+    state: string;
     image: {
         tensor: Tensor;
         canvas: OffscreenCanvas | HTMLCanvasElement;
@@ -71,8 +71,8 @@ export declare class Human {
         nanodet: typeof nanodet;
     };
     sysinfo: {
-        platform: String;
-        agent: String;
+        platform: string;
+        agent: string;
     };
     constructor(userConfig?: Config | Object);
     profileData(): {
@@ -84,17 +84,17 @@ export declare class Human {
         slowestKernelOps: any;
         largestKernelOps: any;
     } | {};
-    simmilarity(embedding1: Array<Number>, embedding2: Array<Number>): Number;
+    simmilarity(embedding1: Array<number>, embedding2: Array<number>): number;
     enhance(input: Tensor): Tensor | null;
-    match(faceEmbedding: Array<Number>, db: Array<{
-        name: String;
-        source: String | undefined;
-        embedding: Array<Number>;
+    match(faceEmbedding: Array<number>, db: Array<{
+        name: string;
+        source: string;
+        embedding: number[];
     }>, threshold?: number): {
-        name: String;
-        source: String | undefined;
-        simmilarity: Number;
-        embedding: Array<Number>;
+        name: string;
+        source: string;
+        simmilarity: number;
+        embedding: number[];
     };
     load(userConfig?: Config | Object): Promise<void>;
     detect(input: Input, userConfig?: Config | Object): Promise<Result | Error>;

@@ -26,21 +26,21 @@ export interface Result {
    * - angle as object with values for roll, yaw and pitch angles
    */
   face: Array<{
-    confidence: Number,
-    boxConfidence: Number,
-    faceConfidence: Number,
-    box: [Number, Number, Number, Number],
-    boxRaw: [Number, Number, Number, Number],
-    mesh: Array<[Number, Number, Number]>
-    meshRaw: Array<[Number, Number, Number]>
-    annotations: Array<{ part: String, points: Array<[Number, Number, Number]>[] }>,
-    age: Number,
-    gender: String,
-    genderConfidence: Number,
-    emotion: Array<{ score: Number, emotion: String }>,
-    embedding: Array<Number>,
-    iris: Number,
-    angle: { roll: Number, yaw: Number, pitch: Number },
+    confidence: number,
+    boxConfidence: number,
+    faceConfidence: number,
+    box: [number, number, number, number],
+    boxRaw: [number, number, number, number],
+    mesh: Array<[number, number, number]>
+    meshRaw: Array<[number, number, number]>
+    annotations: Array<{ part: string, points: Array<[number, number, number]>[] }>,
+    age: number,
+    gender: string,
+    genderConfidence: number,
+    emotion: Array<{ score: number, emotion: string }>,
+    embedding: Array<number>,
+    iris: number,
+    angle: { roll: number, yaw: number, pitch: number },
   }>,
   /** Body results
    *
@@ -53,11 +53,11 @@ export interface Result {
    * - body part presence value
    */
   body: Array<{
-    id: Number,
-    part: String,
-    position: { x: Number, y: Number, z: Number },
-    score: Number,
-    presence: Number }>,
+    id: number,
+    part: string,
+    position: { x: number, y: number, z: number },
+    score: number,
+    presence: number }>,
   /** Hand results
    *
    * Array of individual results with one object per detected hand
@@ -69,11 +69,11 @@ export interface Result {
    * - annotations as array of annotated face landmark points
    */
   hand: Array<{
-    confidence: Number,
-    box: [Number, Number, Number, Number],
-    boxRaw: [Number, Number, Number, Number],
-    landmarks: Array<[Number, Number, Number]>,
-    annotations: Array<{ part: String, points: Array<[Number, Number, Number]>[] }>,
+    confidence: number,
+    box: [number, number, number, number],
+    boxRaw: [number, number, number, number],
+    landmarks: Array<[number, number, number]>,
+    annotations: Array<{ part: string, points: Array<[number, number, number]>[] }>,
   }>,
   /** Gesture results
    *
@@ -83,8 +83,8 @@ export interface Result {
    * - gesture detected
    */
   gesture: Array<{
-    part: String,
-    gesture: String,
+    part: string,
+    gesture: string,
   }>,
   /** Object results
   *
@@ -98,14 +98,14 @@ export interface Result {
   * - boxRaw as array of [x, y, width, height], normalized to range 0..1
   */
  object: Array<{
-    score: Number,
-    strideSize: Number,
-    class: Number,
-    label: String,
-    center: Number[],
-    centerRaw: Number[],
-    box: Number[],
-    boxRaw: Number[],
+    score: number,
+    strideSize: number,
+    class: number,
+    label: string,
+    center: number[],
+    centerRaw: number[],
+    box: number[],
+    boxRaw: number[],
   }>,
   performance: { any },
   canvas: OffscreenCanvas | HTMLCanvasElement,

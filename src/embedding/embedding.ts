@@ -2,7 +2,8 @@ import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 
-type Tensor = {};
+type Tensor = Object;
+type DB = Array<{ name: string, source: string, embedding: number[] }>;
 let model;
 
 export async function load(config) {
@@ -13,7 +14,7 @@ export async function load(config) {
   return model;
 }
 
-export function simmilarity(embedding1, embedding2, order = 2): Number {
+export function simmilarity(embedding1, embedding2, order = 2): number {
   if (!embedding1 || !embedding2) return 0;
   if (embedding1?.length === 0 || embedding2?.length === 0) return 0;
   if (embedding1?.length !== embedding2?.length) return 0;
@@ -26,8 +27,8 @@ export function simmilarity(embedding1, embedding2, order = 2): Number {
   return res;
 }
 
-export function match(embedding: Array<Number>, db: Array<any>, threshold = 0) {
-  let best = { simmilarity: 0, name: '', source: '', embedding: [] };
+export function match(embedding: Array<number>, db: DB, threshold = 0) {
+  let best = { simmilarity: 0, name: '', source: '', embedding: [] as number[] };
   if (!embedding || !db || !Array.isArray(embedding) || !Array.isArray(db)) return best;
   for (const f of db) {
     if (f.embedding && f.name) {

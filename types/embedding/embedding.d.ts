@@ -1,11 +1,16 @@
-declare type Tensor = {};
+declare type Tensor = Object;
+declare type DB = Array<{
+    name: string;
+    source: string;
+    embedding: number[];
+}>;
 export declare function load(config: any): Promise<any>;
-export declare function simmilarity(embedding1: any, embedding2: any, order?: number): Number;
-export declare function match(embedding: Array<Number>, db: Array<any>, threshold?: number): {
+export declare function simmilarity(embedding1: any, embedding2: any, order?: number): number;
+export declare function match(embedding: Array<number>, db: DB, threshold?: number): {
     simmilarity: number;
     name: string;
     source: string;
-    embedding: never[];
+    embedding: number[];
 };
 export declare function enhance(input: any): Tensor;
 export declare function predict(input: any, config: any): Promise<number[]>;

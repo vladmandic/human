@@ -1,4 +1,4 @@
 export declare function info(): {
-    platform: any;
-    agent: any;
+    platform: string;
+    agent: string;
 };

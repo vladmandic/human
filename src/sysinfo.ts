@@ -1,4 +1,4 @@
-export function info() {
+export function info(): { platform: string, agent: string } {
   let platform;
   let agent;
   if (typeof navigator !== 'undefined') {

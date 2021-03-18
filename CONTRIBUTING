@@ -1,4 +1,4 @@
-# Human Library: Contributing Guidelines
+# Contributing Guidelines
 
 Pull requests from everyone are welcome
 
@@ -12,7 +12,6 @@ Procedure for contributing:
 - Test your changes against code guidelines  
   `npm run lint`
 - Push changes to your fork
-- Submit a PR (pull request) to `Human`
-  <https://github.com/vladmandic/human/pulls>
+- Submit a PR (pull request)
 
 Your pull request will be reviewed and pending review results, merged into main branch

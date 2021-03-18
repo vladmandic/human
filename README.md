@@ -63,26 +63,6 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 
 <br>
 
-## Default models
-
-Default models in Human library are:
-
-- **Face Detection**: MediaPipe BlazeFace-Back
-- **Face Mesh**: MediaPipe FaceMesh
-- **Face Iris Analysis**: MediaPipe Iris
-- **Emotion Detection**: Oarriaga Emotion
-- **Gender Detection**: Oarriaga Gender
-- **Age Detection**: SSR-Net Age IMDB
-- **Body Analysis**: PoseNet
-- **Face Embedding**: BecauseofAI MobileFace Embedding
-
-Note that alternative models are provided and can be enabled via configuration  
-For example, `PoseNet` model can be switched for `BlazePose` model depending on the use case  
-
-For more info, see [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration) and [**List of Models**](https://github.com/vladmandic/human/wiki/Models)
-
-<br>
-
 *See [**issues**](https://github.com/vladmandic/human/issues?q=) and [**discussions**](https://github.com/vladmandic/human/discussions) for list of known limitations and planned enhancements*  
 
 *Suggestions are welcome!*  
@@ -95,7 +75,7 @@ As presented in the demo application...
 
 ![Options visible in demo](assets/screenshot-menu.png)
 
-<br><hr><br>
+<br>
 
 ## Examples
 
@@ -151,6 +131,26 @@ function detectVideo() {
 
 detectVideo();
 ```
+
+<br><hr><br>
+
+## Default models
+
+Default models in Human library are:
+
+- **Face Detection**: MediaPipe BlazeFace-Back
+- **Face Mesh**: MediaPipe FaceMesh
+- **Face Iris Analysis**: MediaPipe Iris
+- **Emotion Detection**: Oarriaga Emotion
+- **Gender Detection**: Oarriaga Gender
+- **Age Detection**: SSR-Net Age IMDB
+- **Body Analysis**: PoseNet
+- **Face Embedding**: BecauseofAI MobileFace Embedding
+
+Note that alternative models are provided and can be enabled via configuration  
+For example, `PoseNet` model can be switched for `BlazePose` model depending on the use case  
+
+For more info, see [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration) and [**List of Models**](https://github.com/vladmandic/human/wiki/Models)
 
 <br><hr><br>
 

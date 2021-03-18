@@ -9,8 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/03/17 mandic00@live.com
+### **HEAD -> main** 2021/03/18 mandic00@live.com
 
+- redefine tensor
 - enforce types
 - regen type declarations
 - switch to single jumbo dts

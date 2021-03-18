@@ -27,8 +27,8 @@
   "ignorePatterns": [ "dist", "assets", "media", "models", "node_modules" ],
   "rules": {
     "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-var-requires": "off",
     "camelcase": "off",
@@ -36,7 +36,6 @@
     "func-names": "off",
     "guard-for-in": "off",
     "import/extensions": "off",
-    "import/no-absolute-path": "off",
     "import/no-extraneous-dependencies": "off",
     "import/no-named-as-default": "off",
     "import/no-unresolved": "off",

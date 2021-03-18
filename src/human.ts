@@ -20,8 +20,8 @@ import { Result } from './result';
 import * as sample from './sample';
 import * as app from '../package.json';
 
-type Tensor = {};
-type Model = {};
+type Tensor = Object;
+type Model = Object;
 
 export type { Config } from './config';
 export type { Result } from './result';
@@ -29,7 +29,7 @@ export type { Result } from './result';
 /** Defines all possible input types for **Human** detection */
 export type Input = Tensor | ImageData | ImageBitmap | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 /** Error message */
-export type Error = { error: String };
+export type Error = { error: string };
 export type TensorFlow = typeof tf;
 
 // helper function: gets elapsed time on both browser and nodejs
@@ -62,9 +62,9 @@ function mergeDeep(...objects) {
  * - Possible inputs: {@link Input}
  */
 export class Human {
-  version: String;
+  version: string;
   config: Config;
-  state: String;
+  state: string;
   image: { tensor: Tensor, canvas: OffscreenCanvas | HTMLCanvasElement };
   // classes
   tf: TensorFlow;
@@ -99,19 +99,17 @@ export class Human {
     hand: typeof handpose;
     nanodet: typeof nanodet;
   };
-  sysinfo: { platform: String, agent: String };
-  #package: any;
+  sysinfo: { platform: string, agent: string };
   #perf: any;
   #numTensors: number;
-  #analyzeMemoryLeaks: Boolean;
-  #checkSanity: Boolean;
-  #firstRun: Boolean;
+  #analyzeMemoryLeaks: boolean;
+  #checkSanity: boolean;
+  #firstRun: boolean;
   // definition end
 
   constructor(userConfig: Config | Object = {}) {
     this.tf = tf;
     this.draw = draw;
-    this.#package = app;
     this.version = app.version;
     this.config = mergeDeep(defaults, userConfig);
     this.state = 'idle';
@@ -168,7 +166,7 @@ export class Human {
 
   // quick sanity check on inputs
   /** @hidden */
-  #sanity = (input): null | String => {
+  #sanity = (input): null | string => {
     if (!this.#checkSanity) return null;
     if (!input) return 'input is not defined';
     if (this.tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) return 'input must be a tensor';
@@ -180,7 +178,7 @@ export class Human {
     return null;
   }
 
-  simmilarity(embedding1: Array<Number>, embedding2: Array<Number>): Number {
+  simmilarity(embedding1: Array<number>, embedding2: Array<number>): number {
     if (this.config.face.embedding.enabled) return embedding.simmilarity(embedding1, embedding2);
     return 0;
   }
@@ -191,7 +189,7 @@ export class Human {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  match(faceEmbedding: Array<Number>, db: Array<{ name: String, source: String | undefined, embedding: Array<Number> }>, threshold = 0): { name: String, source: String | undefined, simmilarity: Number, embedding: Array<Number> } {
+  match(faceEmbedding: Array<number>, db: Array<{ name: string, source: string, embedding: number[] }>, threshold = 0): { name: string, source: string, simmilarity: number, embedding: number[] } {
     return embedding.match(faceEmbedding, db, threshold);
   }
 
@@ -311,7 +309,7 @@ export class Human {
   }
 
   /** @hidden */
-  #calculateFaceAngle = (mesh): { roll: Number | null, yaw: Number | null, pitch: Number | null } => {
+  #calculateFaceAngle = (mesh): { roll: number | null, yaw: number | null, pitch: number | null } => {
     if (!mesh || mesh.length < 300) return { roll: null, yaw: null, pitch: null };
     const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -339,21 +337,21 @@ export class Human {
     let emotionRes;
     let embeddingRes;
     const faceRes: Array<{
-      confidence: Number,
-      boxConfidence: Number,
-      faceConfidence: Number,
-      box: [Number, Number, Number, Number],
-      mesh: Array<[Number, Number, Number]>
-      meshRaw: Array<[Number, Number, Number]>
-      boxRaw: [Number, Number, Number, Number],
-      annotations: any,
-      age: Number,
-      gender: String,
-      genderConfidence: Number,
-      emotion: String,
-      embedding: any,
-      iris: Number,
-      angle: { roll: Number | null, yaw: Number | null, pitch: Number | null },
+      confidence: number,
+      boxConfidence: number,
+      faceConfidence: number,
+      box: [number, number, number, number],
+      mesh: Array<[number, number, number]>
+      meshRaw: Array<[number, number, number]>
+      boxRaw: [number, number, number, number],
+      annotations: Array<{ part: string, points: Array<[number, number, number]>[] }>,
+      age: number,
+      gender: string,
+      genderConfidence: number,
+      emotion: string,
+      embedding: number[],
+      iris: number,
+      angle: { roll: number | null, yaw: number | null, pitch: number | null },
       tensor: Tensor,
     }> = [];
 

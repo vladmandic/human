@@ -2,7 +2,7 @@ import { log } from '../log';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 
-type Tensor = Object;
+type Tensor = typeof tf.Tensor;
 type DB = Array<{ name: string, source: string, embedding: number[] }>;
 let model;
 

@@ -20,7 +20,7 @@ import { Result } from './result';
 import * as sample from './sample';
 import * as app from '../package.json';
 
-type Tensor = Object;
+type Tensor = typeof tf.Tensor;
 type Model = Object;
 
 export type { Config } from './config';

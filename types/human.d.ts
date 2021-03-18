@@ -10,7 +10,7 @@ import * as nanodet from './nanodet/nanodet';
 import * as draw from './draw/draw';
 import { Config } from './config';
 import { Result } from './result';
-declare type Tensor = Object;
+declare type Tensor = typeof tf.Tensor;
 declare type Model = Object;
 export type { Config } from './config';
 export type { Result } from './result';

@@ -1,4 +1,5 @@
-declare type Tensor = Object;
+import * as tf from '../../dist/tfjs.esm.js';
+declare type Tensor = typeof tf.Tensor;
 declare type DB = Array<{
     name: string;
     source: string;

@@ -15,11 +15,12 @@ assignees: vladmandic
 
 **Environment
 
-- `Human` version
-- `Human` module used (e.g. `human.js`, `human.esm`, `human.esm-nobundle`)
-- Browser or NodeJS and version (e.g. NodeJS 14.15 or Chrome 86)
-- OS and Hardware platform (e.g. Windows 10, Ubuntu Linux on x64, Android 10)
-- Packager (if any) (e.g, webpack, rollup, parcel, esbuild, etc.)
+- Module version?
+- Built-in demo or custom code?
+- Type of module used (e.g. `js`, `esm`, `esm-nobundle`)?
+- Browser or NodeJS and version (e.g. NodeJS 14.15 or Chrome 89)?
+- OS and Hardware platform (e.g. Windows 10, Ubuntu Linux on x64, Android 10)?
+- Packager (if any) (e.g, webpack, rollup, parcel, esbuild, etc.)?
 
 **Additional**
 

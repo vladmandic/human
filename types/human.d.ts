@@ -10,8 +10,8 @@ import * as nanodet from './nanodet/nanodet';
 import * as draw from './draw/draw';
 import { Config } from './config';
 import { Result } from './result';
-declare type Tensor = typeof tf.Tensor;
-declare type Model = Object;
+/** Generic Tensor object type */
+export declare type Tensor = typeof tf.Tensor;
 export type { Config } from './config';
 export type { Result } from './result';
 /** Defines all possible input types for **Human** detection */
@@ -20,7 +20,10 @@ export declare type Input = Tensor | ImageData | ImageBitmap | HTMLVideoElement 
 export declare type Error = {
     error: string;
 };
+/** Instance of TensorFlow/JS */
 export declare type TensorFlow = typeof tf;
+/** Generic Model object type, holds instance of individual models */
+declare type Model = Object;
 /**
  * **Human** library main class
  *

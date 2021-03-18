@@ -40,10 +40,8 @@
     "emotion-detection",
     "gender-prediction",
     "gesture-recognition",
-    "blazeface",
-    "blazepose",
-    "nanodet",
     "human",
+    "face",
     "person"
   ],
   "devDependencies": {

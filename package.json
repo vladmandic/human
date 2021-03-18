@@ -42,7 +42,9 @@
     "gesture-recognition",
     "blazeface",
     "blazepose",
-    "nanodet"
+    "nanodet",
+    "human",
+    "person"
   ],
   "devDependencies": {
     "@microsoft/api-extractor": "^7.13.2",

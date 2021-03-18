@@ -20,17 +20,18 @@ import { Result } from './result';
 import * as sample from './sample';
 import * as app from '../package.json';
 
-type Tensor = typeof tf.Tensor;
-type Model = Object;
-
+/** Generic Tensor object type */
+export type Tensor = typeof tf.Tensor;
 export type { Config } from './config';
 export type { Result } from './result';
-
 /** Defines all possible input types for **Human** detection */
 export type Input = Tensor | ImageData | ImageBitmap | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 /** Error message */
 export type Error = { error: string };
+/** Instance of TensorFlow/JS */
 export type TensorFlow = typeof tf;
+/** Generic Model object type, holds instance of individual models */
+type Model = Object;
 
 // helper function: gets elapsed time on both browser and nodejs
 const now = () => {

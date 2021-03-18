@@ -20,7 +20,7 @@ export const config = {
   },
 };
 
-export function register() {
+export function register(): void {
   if (!tf.findBackend(config.name)) {
     log('backend registration:', config.name);
     try {

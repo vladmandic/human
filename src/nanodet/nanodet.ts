@@ -21,7 +21,7 @@ export async function load(config) {
 }
 
 async function process(res, inputSize, outputShape, config) {
-  let results: Array<{ score: Number, strideSize: Number, class: Number, label: String, center: Number[], centerRaw: Number[], box: Number[], boxRaw: Number[] }> = [];
+  let results: Array<{ score: number, strideSize: number, class: number, label: string, center: number[], centerRaw: number[], box: number[], boxRaw: number[] }> = [];
   for (const strideSize of [1, 2, 4]) { // try each stride size as it detects large/medium/small objects
     // find scores, boxes, classes
     tf.tidy(() => { // wrap in tidy to automatically deallocate temp tensors

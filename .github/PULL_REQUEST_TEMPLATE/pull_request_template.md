@@ -1,3 +1,3 @@
-# Human Library: Pull Request Template
+# Pull Request Template
 
 <br>

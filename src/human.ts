@@ -6,6 +6,7 @@ import * as faceall from './faceall';
 import * as facemesh from './blazeface/facemesh';
 import * as age from './age/age';
 import * as gender from './gender/gender';
+import * as faceres from './faceres/faceres';
 import * as emotion from './emotion/emotion';
 import * as embedding from './embedding/embedding';
 import * as posenet from './posenet/posenet';
@@ -71,6 +72,7 @@ export class Human {
     emotion: Model | null,
     embedding: Model | null,
     nanodet: Model | null,
+    faceres: Model | null,
   };
   classes: {
     facemesh: typeof facemesh;
@@ -80,6 +82,7 @@ export class Human {
     body: typeof posenet | typeof blazepose;
     hand: typeof handpose;
     nanodet: typeof nanodet;
+    faceres: typeof faceres;
   };
   sysinfo: { platform: string, agent: string };
   perf: any;
@@ -112,6 +115,7 @@ export class Human {
       emotion: null,
       embedding: null,
       nanodet: null,
+      faceres: null,
     };
     // export access to image processing
     // @ts-ignore
@@ -122,6 +126,7 @@ export class Human {
       age,
       gender,
       emotion,
+      faceres,
       body: this.config.body.modelPath.includes('posenet') ? posenet : blazepose,
       hand: handpose,
       nanodet,
@@ -160,19 +165,20 @@ export class Human {
     return null;
   }
 
-  simmilarity(embedding1: Array<number>, embedding2: Array<number>): number {
-    if (this.config.face.embedding.enabled) return embedding.simmilarity(embedding1, embedding2);
+  similarity(embedding1: Array<number>, embedding2: Array<number>): number {
+    if (this.config.face.description.enabled) return faceres.similarity(embedding1, embedding2);
+    if (this.config.face.embedding.enabled) return embedding.similarity(embedding1, embedding2);
     return 0;
   }
 
   // eslint-disable-next-line class-methods-use-this
   enhance(input: Tensor): Tensor | null {
-    return embedding.enhance(input);
+    return faceres.enhance(input);
   }
 
   // eslint-disable-next-line class-methods-use-this
-  match(faceEmbedding: Array<number>, db: Array<{ name: string, source: string, embedding: number[] }>, threshold = 0): { name: string, source: string, simmilarity: number, embedding: number[] } {
-    return embedding.match(faceEmbedding, db, threshold);
+  match(faceEmbedding: Array<number>, db: Array<{ name: string, source: string, embedding: number[] }>, threshold = 0): { name: string, source: string, similarity: number, embedding: number[] } {
+    return faceres.match(faceEmbedding, db, threshold);
   }
 
   // preload models, not explicitly required as it's done automatically on first use
@@ -204,6 +210,7 @@ export class Human {
         this.models.posenet,
         this.models.blazepose,
         this.models.nanodet,
+        this.models.faceres,
       ] = await Promise.all([
         this.models.face || (this.config.face.enabled ? facemesh.load(this.config) : null),
         this.models.age || ((this.config.face.enabled && this.config.face.age.enabled) ? age.load(this.config) : null),
@@ -214,6 +221,7 @@ export class Human {
         this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('posenet') ? posenet.load(this.config) : null),
         this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('blazepose') ? blazepose.load(this.config) : null),
         this.models.nanodet || (this.config.object.enabled ? nanodet.load(this.config) : null),
+        this.models.faceres || ((this.config.face.enabled && this.config.face.description.enabled) ? faceres.load(this.config) : null),
       ]);
     } else {
       if (this.config.face.enabled && !this.models.face) this.models.face = await facemesh.load(this.config);
@@ -225,6 +233,7 @@ export class Human {
       if (this.config.body.enabled && !this.models.posenet && this.config.body.modelPath.includes('posenet')) this.models.posenet = await posenet.load(this.config);
       if (this.config.body.enabled && !this.models.blazepose && this.config.body.modelPath.includes('blazepose')) this.models.blazepose = await blazepose.load(this.config);
       if (this.config.object.enabled && !this.models.nanodet) this.models.nanodet = await nanodet.load(this.config);
+      if (this.config.face.enabled && this.config.face.description.enabled && !this.models.faceres) this.models.faceres = await faceres.load(this.config);
     }
 
     if (this.#firstRun) {

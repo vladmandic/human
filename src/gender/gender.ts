@@ -59,24 +59,39 @@ export async function predict(image, config) {
     enhance.dispose();
 
     if (genderT) {
-      const data = genderT.dataSync();
-      if (alternative) {
-        // returns two values 0..1, bigger one is prediction
-        if (data[0] > config.face.gender.minConfidence || data[1] > config.face.gender.minConfidence) {
-          obj.gender = data[0] > data[1] ? 'female' : 'male';
-          obj.confidence = data[0] > data[1] ? (Math.trunc(100 * data[0]) / 100) : (Math.trunc(100 * data[1]) / 100);
+      if (!Array.isArray(genderT)) {
+        const data = genderT.dataSync();
+        if (alternative) {
+          // returns two values 0..1, bigger one is prediction
+          if (data[0] > config.face.gender.minConfidence || data[1] > config.face.gender.minConfidence) {
+            obj.gender = data[0] > data[1] ? 'female' : 'male';
+            obj.confidence = data[0] > data[1] ? (Math.trunc(100 * data[0]) / 100) : (Math.trunc(100 * data[1]) / 100);
+          }
+        } else {
+          // returns one value 0..1, .5 is prediction threshold
+          const confidence = Math.trunc(200 * Math.abs((data[0] - 0.5))) / 100;
+          if (confidence > config.face.gender.minConfidence) {
+            obj.gender = data[0] <= 0.5 ? 'female' : 'male';
+            obj.confidence = Math.min(0.99, confidence);
+          }
         }
+        genderT.dispose();
       } else {
-        // returns one value 0..1, .5 is prediction threshold
-        const confidence = Math.trunc(200 * Math.abs((data[0] - 0.5))) / 100;
+        const gender = genderT[0].dataSync();
+        const confidence = Math.trunc(200 * Math.abs((gender[0] - 0.5))) / 100;
         if (confidence > config.face.gender.minConfidence) {
-          obj.gender = data[0] <= 0.5 ? 'female' : 'male';
+          obj.gender = gender[0] <= 0.5 ? 'female' : 'male';
           obj.confidence = Math.min(0.99, confidence);
         }
+        /*
+        let age = genderT[1].argMax(1).dataSync()[0];
+        const all = genderT[1].dataSync();
+        age = Math.round(all[age - 1] > all[age + 1] ? 10 * age - 100 * all[age - 1] : 10 * age + 100 * all[age + 1]) / 10;
+        const descriptor = genderT[1].dataSync();
+        */
+        genderT.forEach((t) => tf.dispose(t));
       }
     }
-    genderT.dispose();
-
     last = obj;
     resolve(obj);
   });

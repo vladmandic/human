@@ -56,6 +56,11 @@ export interface Config {
             enabled: boolean;
             modelPath: string;
         };
+        description: {
+            enabled: boolean;
+            modelPath: string;
+            skipFrames: number;
+        };
         age: {
             enabled: boolean;
             modelPath: string;

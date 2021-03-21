@@ -59,6 +59,11 @@ export interface Config {
       enabled: boolean,
       modelPath: string,
     },
+    description: {
+      enabled: boolean,
+      modelPath: string,
+      skipFrames: number,
+    },
     age: {
       enabled: boolean,
       modelPath: string,
@@ -212,18 +217,11 @@ const config: Config = {
       modelPath: '../models/iris.json',
     },
 
-    age: {
-      enabled: true,
-      modelPath: '../models/age.json',
+    description: {
+      enabled: true,         // to improve accuracy of face embedding extraction it is
+                             // recommended to enable detector.rotation and mesh.enabled
+      modelPath: '../models/faceres.json',
       skipFrames: 31,        // how many frames to go without re-running the detector
-                             // only used for video inputs
-    },
-
-    gender: {
-      enabled: true,
-      minConfidence: 0.1,    // threshold for discarding a prediction
-      modelPath: '../models/gender.json',
-      skipFrames: 32,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },
 
@@ -234,9 +232,23 @@ const config: Config = {
       modelPath: '../models/emotion.json',
     },
 
+    age: {
+      enabled: false,        // obsolete, replaced by description module
+      modelPath: '../models/age.json',
+      skipFrames: 31,        // how many frames to go without re-running the detector
+                             // only used for video inputs
+    },
+
+    gender: {
+      enabled: false,        // obsolete, replaced by description module
+      minConfidence: 0.1,    // threshold for discarding a prediction
+      modelPath: '../models/gender.json',
+      skipFrames: 32,        // how many frames to go without re-running the detector
+                             // only used for video inputs
+    },
+
     embedding: {
-      enabled: false,        // to improve accuracy of face embedding extraction it is
-                             // highly recommended to enable detector.rotation and mesh.enabled
+      enabled: false,        // obsolete, replaced by description module
       modelPath: '../models/mobileface.json',
     },
   },

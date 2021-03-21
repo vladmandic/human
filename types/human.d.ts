@@ -2,6 +2,7 @@ import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as age from './age/age';
 import * as gender from './gender/gender';
+import * as faceres from './faceres/faceres';
 import * as emotion from './emotion/emotion';
 import * as posenet from './posenet/posenet';
 import * as handpose from './handpose/handpose';
@@ -63,6 +64,7 @@ export declare class Human {
         emotion: Model | null;
         embedding: Model | null;
         nanodet: Model | null;
+        faceres: Model | null;
     };
     classes: {
         facemesh: typeof facemesh;
@@ -72,6 +74,7 @@ export declare class Human {
         body: typeof posenet | typeof blazepose;
         hand: typeof handpose;
         nanodet: typeof nanodet;
+        faceres: typeof faceres;
     };
     sysinfo: {
         platform: string;
@@ -90,7 +93,7 @@ export declare class Human {
     } | {};
     /** @hidden */
     analyze: (...msg: any[]) => void;
-    simmilarity(embedding1: Array<number>, embedding2: Array<number>): number;
+    similarity(embedding1: Array<number>, embedding2: Array<number>): number;
     enhance(input: Tensor): Tensor | null;
     match(faceEmbedding: Array<number>, db: Array<{
         name: string;
@@ -99,7 +102,7 @@ export declare class Human {
     }>, threshold?: number): {
         name: string;
         source: string;
-        simmilarity: number;
+        similarity: number;
         embedding: number[];
     };
     load(userConfig?: Config | Object): Promise<void>;

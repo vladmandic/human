@@ -14,7 +14,7 @@ export async function load(config) {
   return model;
 }
 
-export function simmilarity(embedding1, embedding2, order = 2): number {
+export function similarity(embedding1, embedding2, order = 2): number {
   if (!embedding1 || !embedding2) return 0;
   if (embedding1?.length === 0 || embedding2?.length === 0) return 0;
   if (embedding1?.length !== embedding2?.length) return 0;
@@ -28,12 +28,12 @@ export function simmilarity(embedding1, embedding2, order = 2): number {
 }
 
 export function match(embedding: Array<number>, db: DB, threshold = 0) {
-  let best = { simmilarity: 0, name: '', source: '', embedding: [] as number[] };
+  let best = { similarity: 0, name: '', source: '', embedding: [] as number[] };
   if (!embedding || !db || !Array.isArray(embedding) || !Array.isArray(db)) return best;
   for (const f of db) {
     if (f.embedding && f.name) {
-      const perc = simmilarity(embedding, f.embedding);
-      if (perc > threshold && perc > best.simmilarity) best = { ...f, simmilarity: perc };
+      const perc = similarity(embedding, f.embedding);
+      if (perc > threshold && perc > best.similarity) best = { ...f, similarity: perc };
     }
   }
   return best;

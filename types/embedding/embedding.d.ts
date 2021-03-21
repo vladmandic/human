@@ -6,9 +6,9 @@ declare type DB = Array<{
     embedding: number[];
 }>;
 export declare function load(config: any): Promise<any>;
-export declare function simmilarity(embedding1: any, embedding2: any, order?: number): number;
+export declare function similarity(embedding1: any, embedding2: any, order?: number): number;
 export declare function match(embedding: Array<number>, db: DB, threshold?: number): {
-    simmilarity: number;
+    similarity: number;
     name: string;
     source: string;
     embedding: number[];

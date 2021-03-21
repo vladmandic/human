@@ -4,6 +4,7 @@ import * as age from './age/age';
 import * as gender from './gender/gender';
 import * as emotion from './emotion/emotion';
 import * as embedding from './embedding/embedding';
+import * as faceres from './faceres/faceres';
 
 type Tensor = typeof tf.Tensor;
 
@@ -33,6 +34,7 @@ export const detectFace = async (parent, input): Promise<any> => {
   let genderRes;
   let emotionRes;
   let embeddingRes;
+  let descRes;
   const faceRes: Array<{
       confidence: number,
       boxConfidence: number,
@@ -111,11 +113,23 @@ export const detectFace = async (parent, input): Promise<any> => {
       embeddingRes = parent.config.face.embedding.enabled ? await embedding.predict(face, parent.config) : [];
       parent.perf.embedding = Math.trunc(now() - timeStamp);
     }
-    parent.analyze('End Emotion:');
+    parent.analyze('End Embedding:');
+
+    // run emotion, inherits face from blazeface
+    parent.analyze('Start Description:');
+    if (parent.config.async) {
+      descRes = parent.config.face.description.enabled ? faceres.predict(face, parent.config) : [];
+    } else {
+      parent.state = 'run:description';
+      timeStamp = now();
+      descRes = parent.config.face.description.enabled ? await faceres.predict(face.image, parent.config) : [];
+      parent.perf.embedding = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze('End Description:');
 
     // if async wait for results
     if (parent.config.async) {
-      [ageRes, genderRes, emotionRes, embeddingRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes]);
+      [ageRes, genderRes, emotionRes, embeddingRes, descRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes]);
     }
 
     parent.analyze('Finish Face:');
@@ -134,11 +148,11 @@ export const detectFace = async (parent, input): Promise<any> => {
     // combine results
     faceRes.push({
       ...face,
-      age: ageRes.age,
-      gender: genderRes.gender,
-      genderConfidence: genderRes.confidence,
+      age: descRes.age || ageRes.age,
+      gender: descRes.gender || genderRes.gender,
+      genderConfidence: descRes.genderConfidence || genderRes.confidence,
+      embedding: descRes.descriptor || embeddingRes,
       emotion: emotionRes,
-      embedding: embeddingRes,
       iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
       angle,
       tensor: parent.config.face.detector.return ? face.image?.squeeze() : null,

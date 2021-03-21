@@ -12,9 +12,10 @@ const userConfig = {
     mesh: { enabled: true },
     embedding: { enabled: true },
     iris: { enabled: false },
-    age: { enabled: true },
-    gender: { enabled: true },
+    age: { enabled: false },
+    gender: { enabled: false },
     emotion: { enabled: false },
+    description: { enabled: true },
   },
   hand: { enabled: false },
   gesture: { enabled: false },
@@ -40,41 +41,52 @@ async function analyze(face) {
   // if we have face image tensor, enhance it and display it
   if (face.tensor) {
     const enhanced = human.enhance(face);
+    // const desc = document.getElementById('desc');
+    // desc.innerText = `{"name":"unknown", "source":"${face.fileName}", "embedding":[${face.embedding}]},`;
+    navigator.clipboard.writeText(`{"name":"unknown", "source":"${face.fileName}", "embedding":[${face.embedding}]},`);
     if (enhanced) {
       const c = document.getElementById('orig');
-      const squeeze = enhanced.squeeze();
-      human.tf.browser.toPixels(squeeze, c);
+      const squeeze = enhanced.squeeze().div(255);
+      await human.tf.browser.toPixels(squeeze, c);
       enhanced.dispose();
       squeeze.dispose();
+      const ctx = c.getContext('2d');
+      ctx.font = 'small-caps 0.4rem "Lato"';
+      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
     }
   }
 
   // loop through all canvases that contain faces
   const canvases = document.getElementsByClassName('face');
   for (const canvas of canvases) {
-    // calculate simmilarity from selected face to current one in the loop
-    const simmilarity = human.simmilarity(face.embedding, all[canvas.tag.sample][canvas.tag.face].embedding, 2);
+    // calculate similarity from selected face to current one in the loop
+    const current = all[canvas.tag.sample][canvas.tag.face];
+    const similarity = human.similarity(face.embedding, current.embedding, 2);
     // get best match
-    const person = (simmilarity > 0.99) ? await human.match(face.embedding, db) : { name: '' };
-    // draw the canvas and simmilarity score
-    canvas.title = simmilarity;
-    await human.tf.browser.toPixels(all[canvas.tag.sample][canvas.tag.face].tensor, canvas);
+    const person = await human.match(current.embedding, db);
+    // draw the canvas and similarity score
+    canvas.title = similarity;
+    await human.tf.browser.toPixels(current.tensor, canvas);
     const ctx = canvas.getContext('2d');
     ctx.font = 'small-caps 1rem "Lato"';
     ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-    ctx.fillText(`${(100 * simmilarity).toFixed(1)}% ${person.name}`, 3, 23);
+    ctx.fillText(`${(100 * similarity).toFixed(1)}%`, 3, 23);
     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-    ctx.fillText(`${(100 * simmilarity).toFixed(1)}% ${person.name}`, 4, 24);
+    ctx.fillText(`${(100 * similarity).toFixed(1)}%`, 4, 24);
+    ctx.font = 'small-caps 0.8rem "Lato"';
+    ctx.fillText(`${current.age}y ${(100 * current.genderConfidence).toFixed(1)}% ${current.gender}`, 4, canvas.height - 6);
+    ctx.font = 'small-caps 1rem "Lato"';
+    if (person.similarity) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
   }
 
-  // sort all faces by simmilarity
+  // sort all faces by similarity
   const sorted = document.getElementById('faces');
   [...sorted.children]
     .sort((a, b) => parseFloat(b.title) - parseFloat(a.title))
     .forEach((canvas) => sorted.appendChild(canvas));
 }
 
-function faces(index, res, fileName) {
+async function faces(index, res, fileName) {
   all[index] = res.face;
   for (const i in res.face) {
     // log(res.face[i]);
@@ -87,13 +99,19 @@ function faces(index, res, fileName) {
     // mouse click on any face canvas triggers analysis
     canvas.addEventListener('click', (evt) => {
       log('Select:', 'Image:', evt.target.tag.sample, 'Face:', evt.target.tag.face, all[evt.target.tag.sample][evt.target.tag.face]);
-      log('Select:', 'Gender:', all[evt.target.tag.sample][evt.target.tag.face].gender);
       analyze(all[evt.target.tag.sample][evt.target.tag.face]);
     });
     // if we actually got face image tensor, draw canvas with that face
     if (res.face[i].tensor) {
-      human.tf.browser.toPixels(res.face[i].tensor, canvas);
+      await human.tf.browser.toPixels(res.face[i].tensor, canvas);
       document.getElementById('faces').appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      ctx.font = 'small-caps 0.8rem "Lato"';
+      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+      ctx.fillText(`${res.face[i].age}y ${(100 * res.face[i].genderConfidence).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
+      const person = await human.match(res.face[i].embedding, db);
+      ctx.font = 'small-caps 1rem "Lato"';
+      if (person.similarity && person.similarity > 0.60) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
     }
   }
 }
@@ -102,8 +120,8 @@ async function process(index, image) {
   return new Promise((resolve) => {
     const img = new Image(128, 128);
     img.onload = () => { // must wait until image is loaded
-      human.detect(img).then((res) => {
-        faces(index, res, image); // then wait until image is analyzed
+      human.detect(img).then(async (res) => {
+        await faces(index, res, image); // then wait until image is analyzed
         log('Add image:', index + 1, image, 'faces:', res.face.length);
         document.getElementById('images').appendChild(img); // and finally we can add it
         resolve(true);
@@ -136,10 +154,14 @@ async function main() {
   let images = dir.filter((img) => (img.endsWith('.jpg') && img.includes('sample')));
 
   // enumerate additional private test images in /private, not includded in git repository
-  res = await fetch('/private/err');
+  res = await fetch('/private/me');
   dir = (res && res.ok) ? await res.json() : [];
-  // images = images.concat(dir.filter((img) => (img.endsWith('.jpg'))));
-  images = dir.filter((img) => (img.endsWith('.jpg')));
+  images = images.concat(dir.filter((img) => (img.endsWith('.jpg'))));
+
+  // enumerate just possible error images, not includded in git repository
+  // res = await fetch('/private/err');
+  // dir = (res && res.ok) ? await res.json() : [];
+  // images = dir.filter((img) => (img.endsWith('.jpg')));
 
   // download and analyze all images
   log('Enumerated:', images.length, 'images');

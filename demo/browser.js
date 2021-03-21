@@ -102,8 +102,8 @@ async function calcSimmilariry(result) {
       document.getElementById('compare-canvas').getContext('2d').drawImage(original.canvas, 0, 0, 200, 200);
     }
   }
-  const simmilarity = human.simmilarity(original?.face[0]?.embedding, result?.face[0]?.embedding);
-  document.getElementById('simmilarity').innerText = `simmilarity: ${Math.trunc(1000 * simmilarity) / 10}%`;
+  const similarity = human.similarity(original?.face[0]?.embedding, result?.face[0]?.embedding);
+  document.getElementById('similarity').innerText = `similarity: ${Math.trunc(1000 * similarity) / 10}%`;
 }
 
 // draws processed results and starts processing of a next frame

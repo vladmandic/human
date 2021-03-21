@@ -270,7 +270,7 @@ export class Pipeline {
       const transformedCoords = tf.tensor2d(transformedCoordsData);
 
       // do rotation one more time with mesh keypoints if we want to return perfect image
-      if (config.face.detector.rotation && config.face.mesh.enabled && config.face.detector.return && tf.ENV.flags.IS_BROWSER) {
+      if (config.face.detector.rotation && config.face.mesh.enabled && tf.ENV.flags.IS_BROWSER) {
         const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= meshLandmarks.count) ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
         angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
         const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });

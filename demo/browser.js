@@ -82,27 +82,30 @@ function status(msg) {
   if (div) div.innerText = msg;
 }
 
-let original;
+const compare = { enabled: false, original: null };
 async function calcSimmilariry(result) {
-  document.getElementById('compare-container').style.display = human.config.face.embedding.enabled ? 'block' : 'none';
-  if (!human.config.face.embedding.enabled) return;
-  if (!(result?.face?.length > 0) || (result?.face[0]?.embedding?.length >= 64)) return;
-  if (!original) {
-    original = result;
+  document.getElementById('compare-container').style.display = compare.enabled ? 'block' : 'none';
+  if (!compare.enabled) return;
+  if (!(result?.face?.length > 0) || (result?.face[0]?.embedding?.length <= 64)) return;
+  if (!compare.original) {
+    compare.original = result;
+    log('setting face compare baseline:', result.face[0]);
     if (result.face[0].tensor) {
       const enhanced = human.enhance(result.face[0]);
       if (enhanced) {
         const c = document.getElementById('orig');
         const squeeze = enhanced.squeeze();
-        human.tf.browser.toPixels(squeeze, c);
+        const norm = squeeze.div(255);
+        human.tf.browser.toPixels(norm, c);
         enhanced.dispose();
         squeeze.dispose();
+        norm.dispose();
       }
     } else {
-      document.getElementById('compare-canvas').getContext('2d').drawImage(original.canvas, 0, 0, 200, 200);
+      document.getElementById('compare-canvas').getContext('2d').drawImage(compare.original.canvas, 0, 0, 200, 200);
     }
   }
-  const similarity = human.similarity(original?.face[0]?.embedding, result?.face[0]?.embedding);
+  const similarity = human.similarity(compare.original?.face[0]?.embedding, result?.face[0]?.embedding);
   document.getElementById('similarity').innerText = `similarity: ${Math.trunc(1000 * similarity) / 10}%`;
 }
 
@@ -342,7 +345,7 @@ async function processImage(input) {
   return new Promise((resolve) => {
     const image = new Image();
     image.onload = async () => {
-      log('Processing image:', encodeURI(image.src));
+      log('processing image:', encodeURI(image.src));
       const canvas = document.getElementById('canvas');
       image.width = image.naturalWidth;
       image.height = image.naturalHeight;
@@ -404,7 +407,7 @@ async function detectSampleImages() {
   document.getElementById('play').style.display = 'none';
   document.getElementById('canvas').style.display = 'none';
   document.getElementById('samples-container').style.display = 'block';
-  log('Running detection of sample images');
+  log('running detection of sample images');
   status('processing images');
   document.getElementById('samples-container').innerHTML = '';
   for (const m of Object.values(menu)) m.hide();
@@ -509,8 +512,9 @@ function setupMenu() {
   menu.models.addBool('face detect', human.config.face, 'enabled', (val) => human.config.face.enabled = val);
   menu.models.addBool('face mesh', human.config.face.mesh, 'enabled', (val) => human.config.face.mesh.enabled = val);
   menu.models.addBool('face iris', human.config.face.iris, 'enabled', (val) => human.config.face.iris.enabled = val);
-  menu.models.addBool('face age', human.config.face.age, 'enabled', (val) => human.config.face.age.enabled = val);
-  menu.models.addBool('face gender', human.config.face.gender, 'enabled', (val) => human.config.face.gender.enabled = val);
+  menu.models.addBool('face description', human.config.face.description, 'enabled', (val) => human.config.face.age.description = val);
+  // menu.models.addBool('face age', human.config.face.age, 'enabled', (val) => human.config.face.age.enabled = val);
+  // menu.models.addBool('face gender', human.config.face.gender, 'enabled', (val) => human.config.face.gender.enabled = val);
   menu.models.addBool('face emotion', human.config.face.emotion, 'enabled', (val) => human.config.face.emotion.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.models.addBool('body pose', human.config.body, 'enabled', (val) => human.config.body.enabled = val);
@@ -520,9 +524,9 @@ function setupMenu() {
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.models.addBool('object detection', human.config.object, 'enabled', (val) => human.config.object.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.models.addBool('face compare', human.config.face.embedding, 'enabled', (val) => {
-    human.config.face.embedding.enabled = val;
-    original = null;
+  menu.models.addBool('face compare', compare, 'enabled', (val) => {
+    compare.enabled = val;
+    compare.original = null;
   });
 
   document.getElementById('btnDisplay').addEventListener('click', (evt) => menu.display.toggle(evt));
@@ -543,14 +547,14 @@ async function drawWarmup(res) {
 }
 
 async function main() {
-  log('Demo starting ...');
+  log('demo starting ...');
   setupMenu();
   document.getElementById('log').innerText = `Human: version ${human.version}`;
   if (ui.modelsPreload && !ui.useWorker) {
     status('loading');
     await human.load(userConfig); // this is not required, just pre-loads all models
     const loaded = Object.keys(human.models).filter((a) => human.models[a]);
-    log('Demo loaded models:', loaded);
+    log('demo loaded models:', loaded);
   }
   if (!ui.useWorker) {
     status('initializing');
@@ -560,7 +564,7 @@ async function main() {
   status('human: ready');
   document.getElementById('loader').style.display = 'none';
   document.getElementById('play').style.display = 'block';
-  log('Demo ready...');
+  log('demo ready...');
 }
 
 window.onload = main;

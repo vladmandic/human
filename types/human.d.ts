@@ -77,6 +77,7 @@ export declare class Human {
         platform: string;
         agent: string;
     };
+    perf: any;
     constructor(userConfig?: Config | Object);
     profileData(): {
         newBytes: any;
@@ -87,6 +88,8 @@ export declare class Human {
         slowestKernelOps: any;
         largestKernelOps: any;
     } | {};
+    /** @hidden */
+    analyze: (...msg: any[]) => void;
     simmilarity(embedding1: Array<number>, embedding2: Array<number>): number;
     enhance(input: Tensor): Tensor | null;
     match(faceEmbedding: Array<number>, db: Array<{

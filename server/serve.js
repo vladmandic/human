@@ -113,7 +113,7 @@ async function httpRequest(req, res) {
     if (!result || !result.ok || !result.stat) {
       res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end('Error 404: Not Found\n', 'utf-8');
-      log.warn(`${req.method}/${req.httpVersion}`, res.statusCode, req.url, ip);
+      log.warn(`${req.method}/${req.httpVersion}`, res.statusCode, decodeURI(req.url), ip);
     } else {
       if (result?.stat?.isFile()) {
         const ext = String(path.extname(result.file)).toLowerCase();
@@ -142,7 +142,7 @@ async function httpRequest(req, res) {
       if (result?.stat?.isDirectory()) {
         res.writeHead(200, { 'Content-Language': 'en', 'Content-Type': 'application/json; charset=utf-8', 'Last-Modified': result.stat.mtime, 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff' });
         let dir = fs.readdirSync(result.file);
-        dir = dir.map((f) => '/' + path.join(path.basename(result.file), f));
+        dir = dir.map((f) => path.join(decodeURI(req.url), f));
         res.end(JSON.stringify(dir), 'utf-8');
         log.data(`${req.method}/${req.httpVersion}`, res.statusCode, 'directory/json', result.stat.size, req.url, ip);
       }

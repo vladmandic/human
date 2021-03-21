@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { log } from '../log';
+import { log } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as fxImage from './imagefx';
 

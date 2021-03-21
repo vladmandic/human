@@ -1,4 +1,4 @@
-import { log } from '../log';
+import { log } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as blazeface from './blazeface';
 import * as facepipeline from './facepipeline';

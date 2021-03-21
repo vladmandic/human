@@ -9,6 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/03/21 mandic00@live.com
+
+
 ### **1.2.1** 2021/03/21 mandic00@live.com
 
 - new module: face description

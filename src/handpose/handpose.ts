@@ -1,6 +1,6 @@
 // https://storage.googleapis.com/tfjs-models/demos/handpose/index.html
 
-import { log } from '../log';
+import { log } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
 import * as handpipeline from './handpipeline';

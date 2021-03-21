@@ -12,8 +12,8 @@ const userConfig = {
     mesh: { enabled: true },
     embedding: { enabled: true },
     iris: { enabled: false },
-    age: { enabled: false },
-    gender: { enabled: false },
+    age: { enabled: true },
+    gender: { enabled: true },
     emotion: { enabled: false },
   },
   hand: { enabled: false },
@@ -87,6 +87,7 @@ function faces(index, res, fileName) {
     // mouse click on any face canvas triggers analysis
     canvas.addEventListener('click', (evt) => {
       log('Select:', 'Image:', evt.target.tag.sample, 'Face:', evt.target.tag.face, all[evt.target.tag.sample][evt.target.tag.face]);
+      log('Select:', 'Gender:', all[evt.target.tag.sample][evt.target.tag.face].gender);
       analyze(all[evt.target.tag.sample][evt.target.tag.face]);
     });
     // if we actually got face image tensor, draw canvas with that face
@@ -135,9 +136,10 @@ async function main() {
   let images = dir.filter((img) => (img.endsWith('.jpg') && img.includes('sample')));
 
   // enumerate additional private test images in /private, not includded in git repository
-  res = await fetch('/private');
+  res = await fetch('/private/err');
   dir = (res && res.ok) ? await res.json() : [];
-  images = images.concat(dir.filter((img) => (img.endsWith('.jpg'))));
+  // images = images.concat(dir.filter((img) => (img.endsWith('.jpg'))));
+  images = dir.filter((img) => (img.endsWith('.jpg')));
 
   // download and analyze all images
   log('Enumerated:', images.length, 'images');

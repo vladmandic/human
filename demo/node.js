@@ -11,7 +11,7 @@ const Human = require('../dist/human.node.js').default; // or const Human = requ
 let human = null;
 
 const myConfig = {
-  backend: 'tensorflow',
+  // backend: 'tensorflow',
   console: true,
   videoOptimized: false,
   async: false,
@@ -20,10 +20,11 @@ const myConfig = {
     detector: { modelPath: 'file://models/blazeface-back.json', enabled: true, rotation: false },
     mesh: { modelPath: 'file://models/facemesh.json', enabled: true },
     iris: { modelPath: 'file://models/iris.json', enabled: true },
-    age: { modelPath: 'file://models/age.json', enabled: true },
-    gender: { modelPath: 'file://models/gender.json', enabled: true },
+    description: { modelPath: 'file://models/faceres.json', enabled: true },
     emotion: { modelPath: 'file://models/emotion.json', enabled: true },
-    embedding: { modelPath: 'file://models/mobileface.json', enabled: true },
+    age: { modelPath: 'file://models/age.json', enabled: false },
+    gender: { modelPath: 'file://models/gender.json', enabled: false },
+    embedding: { modelPath: 'file://models/mobileface.json', enabled: false },
   },
   // body: { modelPath: 'file://models/blazepose.json', enabled: true },
   body: { modelPath: 'file://models/posenet.json', enabled: true },

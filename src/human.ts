@@ -262,6 +262,8 @@ export class Human {
       */
 
       if (this.config.backend && this.config.backend !== '') {
+        if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === 'tensorflow') this.config.backend = 'webgl';
+        if (this.tf.ENV.flags.IS_NODE && (this.config.backend === 'webgl' || this.config.backend === 'wasm')) this.config.backend = 'tensorflow';
         if (this.config.debug) log('setting backend:', this.config.backend);
 
         if (this.config.backend === 'wasm') {

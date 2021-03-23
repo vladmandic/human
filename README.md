@@ -93,6 +93,10 @@ As presented in the demo application...
 
 ![Example Using WebCam](assets/screenshot-webcam.jpg)
 
+**Face Similarity Matching:**
+
+![Face Matching](assets/screenshot-facematch.jpg)
+
 **468-Point Face Mesh Defails:**  
 
 ![FaceMesh](assets/facemesh.png)

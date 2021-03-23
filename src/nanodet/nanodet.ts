@@ -1,14 +1,14 @@
 import { log } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
+import { labels } from './labels';
 
 let model;
 let last: Array<{}> = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 
 const scaleBox = 2.5; // increase box size
-// eslint-disable-next-line max-len
-const labels = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'vehicle', 'boat', 'traffic light', 'fire hydrant', 'stop sign', 'parking meter', 'bench', 'animal', 'animal', 'animal', 'animal', 'animal', 'animal', 'animal', 'bear', 'animal', 'animal', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'pastry', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush'];
+const activateScore = false;
 
 export async function load(config) {
   if (!model) {
@@ -21,50 +21,51 @@ export async function load(config) {
 }
 
 async function process(res, inputSize, outputShape, config) {
+  let id = 0;
   let results: Array<{ score: number, strideSize: number, class: number, label: string, center: number[], centerRaw: number[], box: number[], boxRaw: number[] }> = [];
   for (const strideSize of [1, 2, 4]) { // try each stride size as it detects large/medium/small objects
     // find scores, boxes, classes
     tf.tidy(() => { // wrap in tidy to automatically deallocate temp tensors
       const baseSize = strideSize * 13; // 13x13=169, 26x26=676, 52x52=2704
       // find boxes and scores output depending on stride
-      // log.info('Variation:', strideSize, 'strides', baseSize, 'baseSize');
-      const scores = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] === 80))?.squeeze();
-      const features = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] === 32))?.squeeze();
-      // log.state('Found features tensor:', features?.shape);
-      // log.state('Found scores tensor:', scores?.shape);
-      const scoreIdx = scores.argMax(1).dataSync(); // location of highest scores
-      const scoresMax = scores.max(1).dataSync(); // values of highest scores
-      const boxesMax = features.reshape([-1, 4, 8]); // reshape [32] to [4,8] where 8 is change of different features inside stride
+      const scoresT = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] === 80))?.squeeze();
+      const featuresT = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] < 80))?.squeeze();
+      const boxesMax = featuresT.reshape([-1, 4, featuresT.shape[1] / 4]); // reshape [output] to [4, output / 4] where number is number of different features inside each stride
       const boxIdx = boxesMax.argMax(2).arraySync(); // what we need is indexes of features with highest scores, not values itself
-      for (let i = 0; i < scores.shape[0]; i++) {
-        if (scoreIdx[i] !== 0 && scoresMax[i] > config.object.minConfidence) {
-          const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize; // center.x normalized to range 0..1
-          const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize; // center.y normalized to range 0..1
-          const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize)); // just grab indexes of features with highest scores
-          let boxRaw = [ // results normalized to range 0..1
-            cx - (scaleBox / strideSize * boxOffset[0]),
-            cy - (scaleBox / strideSize * boxOffset[1]),
-            cx + (scaleBox / strideSize * boxOffset[2]),
-            cy + (scaleBox / strideSize * boxOffset[3]),
-          ];
-          boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1))); // fix out-of-bounds coords
-          const box = [ // results normalized to input image pixels
-            Math.max(0, (boxRaw[0] * outputShape[0])),
-            Math.max(0, (boxRaw[1] * outputShape[1])),
-            Math.min(1, (boxRaw[2] * outputShape[0]) - (boxRaw[0] * outputShape[0])),
-            Math.min(1, (boxRaw[3] * outputShape[1]) - (boxRaw[1] * outputShape[1])),
-          ];
-          const result = {
-            score: scoresMax[i],
-            strideSize,
-            class: scoreIdx[i] + 1,
-            label: labels[scoreIdx[i]],
-            center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
-            centerRaw: [cx, cy],
-            box: box.map((a) => Math.trunc(a)),
-            boxRaw,
-          };
-          results.push(result);
+      const scores = activateScore ? scoresT.exp(1).arraySync() : scoresT.arraySync(); // optionally use exponential scores or just as-is
+      for (let i = 0; i < scoresT.shape[0]; i++) { // total strides (x * y matrix)
+        for (let j = 0; j < scoresT.shape[1]; j++) { // one score for each class
+          const score = scores[i][j] - (activateScore ? 1 : 0); // get score for current position
+          if (score > config.object.minConfidence) {
+            const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize; // center.x normalized to range 0..1
+            const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize; // center.y normalized to range 0..1
+            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize)); // just grab indexes of features with highest scores
+            let boxRaw = [ // results normalized to range 0..1
+              cx - (scaleBox / strideSize * boxOffset[0]),
+              cy - (scaleBox / strideSize * boxOffset[1]),
+              cx + (scaleBox / strideSize * boxOffset[2]),
+              cy + (scaleBox / strideSize * boxOffset[3]),
+            ];
+            boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1))); // fix out-of-bounds coords
+            const box = [ // results normalized to input image pixels
+              boxRaw[0] * outputShape[0],
+              boxRaw[1] * outputShape[1],
+              boxRaw[2] * outputShape[0],
+              boxRaw[3] * outputShape[1],
+            ];
+            const result = {
+              id: id++,
+              strideSize,
+              score,
+              class: j + 1,
+              label: labels[j].label,
+              center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
+              centerRaw: [cx, cy],
+              box: box.map((a) => Math.trunc(a)),
+              boxRaw,
+            };
+            results.push(result);
+          }
         }
       }
     });

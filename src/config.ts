@@ -228,14 +228,14 @@ const config: Config = {
     emotion: {
       enabled: true,
       minConfidence: 0.1,    // threshold for discarding a prediction
-      skipFrames: 33,        // how many frames to go without re-running the detector
+      skipFrames: 32,        // how many frames to go without re-running the detector
       modelPath: '../models/emotion.json',
     },
 
     age: {
       enabled: false,        // obsolete, replaced by description module
       modelPath: '../models/age.json',
-      skipFrames: 31,        // how many frames to go without re-running the detector
+      skipFrames: 33,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },
 
@@ -243,7 +243,7 @@ const config: Config = {
       enabled: false,        // obsolete, replaced by description module
       minConfidence: 0.1,    // threshold for discarding a prediction
       modelPath: '../models/gender.json',
-      skipFrames: 32,        // how many frames to go without re-running the detector
+      skipFrames: 34,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },
 
@@ -296,11 +296,11 @@ const config: Config = {
   object: {
     enabled: false,
     modelPath: '../models/nanodet.json',
-    minConfidence: 0.15,     // threshold for discarding a prediction
-    iouThreshold: 0.25,      // threshold for deciding whether boxes overlap too much
+    minConfidence: 0.20,     // threshold for discarding a prediction
+    iouThreshold: 0.40,      // threshold for deciding whether boxes overlap too much
                              // in non-maximum suppression
     maxResults: 10,          // maximum number of objects detected in the input
-    skipFrames: 13,          // how many frames to go without re-running the detector
+    skipFrames: 41,          // how many frames to go without re-running the detector
   },
 };
 export { config as defaults };

@@ -345,6 +345,7 @@ export class Human {
       let handRes;
       let faceRes;
       let objectRes;
+      let current;
 
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       if (this.config.async) {
@@ -354,7 +355,8 @@ export class Human {
         this.state = 'run:face';
         timeStamp = now();
         faceRes = this.config.face.enabled ? await faceall.detectFace(this, process.tensor) : [];
-        this.perf.face = Math.trunc(now() - timeStamp);
+        current = Math.trunc(now() - timeStamp);
+        if (current > 0) this.perf.face = current;
       }
 
       // run body: can be posenet or blazepose
@@ -368,7 +370,8 @@ export class Human {
         timeStamp = now();
         if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? await this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
         else bodyRes = this.config.body.enabled ? await blazepose.predict(process.tensor, this.config) : [];
-        this.perf.body = Math.trunc(now() - timeStamp);
+        current = Math.trunc(now() - timeStamp);
+        if (current > 0) this.perf.body = current;
       }
       this.analyze('End Body:');
 
@@ -381,7 +384,8 @@ export class Human {
         this.state = 'run:hand';
         timeStamp = now();
         handRes = this.config.hand.enabled ? await this.models.handpose?.estimateHands(process.tensor, this.config) : [];
-        this.perf.hand = Math.trunc(now() - timeStamp);
+        current = Math.trunc(now() - timeStamp);
+        if (current > 0) this.perf.hand = current;
       }
       this.analyze('End Hand:');
 
@@ -394,7 +398,8 @@ export class Human {
         this.state = 'run:object';
         timeStamp = now();
         objectRes = this.config.object.enabled ? await nanodet.predict(process.tensor, this.config) : [];
-        this.perf.object = Math.trunc(now() - timeStamp);
+        current = Math.trunc(now() - timeStamp);
+        if (current > 0) this.perf.object = current;
       }
       this.analyze('End Object:');
 

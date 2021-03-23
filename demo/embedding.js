@@ -61,10 +61,9 @@ async function analyze(face) {
   for (const canvas of canvases) {
     // calculate similarity from selected face to current one in the loop
     const current = all[canvas.tag.sample][canvas.tag.face];
-    const similarity = human.similarity(face.embedding, current.embedding, 2);
+    const similarity = human.similarity(face.embedding, current.embedding, 3);
     // get best match
-    const person = await human.match(current.embedding, db);
-    // draw the canvas and similarity score
+    // draw the canvas
     canvas.title = similarity;
     await human.tf.browser.toPixels(current.tensor, canvas);
     const ctx = canvas.getContext('2d');
@@ -75,8 +74,10 @@ async function analyze(face) {
     ctx.fillText(`${(100 * similarity).toFixed(1)}%`, 4, 24);
     ctx.font = 'small-caps 0.8rem "Lato"';
     ctx.fillText(`${current.age}y ${(100 * current.genderConfidence).toFixed(1)}% ${current.gender}`, 4, canvas.height - 6);
-    ctx.font = 'small-caps 1rem "Lato"';
-    if (person.similarity) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
+    // identify person
+    // ctx.font = 'small-caps 1rem "Lato"';
+    // const person = await human.match(current.embedding, db);
+    // if (person.similarity) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
   }
 
   // sort all faces by similarity
@@ -109,9 +110,9 @@ async function faces(index, res, fileName) {
       ctx.font = 'small-caps 0.8rem "Lato"';
       ctx.fillStyle = 'rgba(255, 255, 255, 1)';
       ctx.fillText(`${res.face[i].age}y ${(100 * res.face[i].genderConfidence).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
-      const person = await human.match(res.face[i].embedding, db);
-      ctx.font = 'small-caps 1rem "Lato"';
-      if (person.similarity && person.similarity > 0.60) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
+      // const person = await human.match(res.face[i].embedding, db);
+      // ctx.font = 'small-caps 1rem "Lato"';
+      // if (person.similarity && person.similarity > 0.60) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
     }
   }
 }

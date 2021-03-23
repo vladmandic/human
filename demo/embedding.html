@@ -23,12 +23,23 @@
     </style>
   </head>
   <body>
-    <br>Sample Images:
-    <div id="images"></div>
-    <br>Selected Face (Enhanced):<br>
-    <canvas id="orig" style="width: 200px; height: 200px;"></canvas>
-    <span id="desc" style="visibility: hidden; font-size: 0.4rem;"></span>
-    <br><br>Extracted Faces - click on a face to sort by similarity and get a known face match:<br>
-    <div id="faces"></div>
+    <div style="display: block">
+      <div style="display: flex">
+        <div>
+          Selected Face<br>
+          <canvas id="orig" style="width: 200px; height: 200px;"></canvas>
+        </div>
+        <div style="width: 20px"></div>
+        <div>
+          Sample Images<br>
+          <div id="images"></div>
+        </div>
+        </span>
+        <span id="desc" style="visibility: hidden; font-size: 0.4rem;"></span><br>
+      </div>
+      <div style="height: 10px"></div>
+      Extracted Faces - click on a face to sort by similarity and get a known face match:<br>
+      <div id="faces"></div>
+  </div>
   </body>
 </html>

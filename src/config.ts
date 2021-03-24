@@ -218,7 +218,7 @@ const config: Config = {
     },
 
     description: {
-      enabled: true,         // to improve accuracy of face embedding extraction it is
+      enabled: true,         // to improve accuracy of face description extraction it is
                              // recommended to enable detector.rotation and mesh.enabled
       modelPath: '../models/faceres.json',
       skipFrames: 31,        // how many frames to go without re-running the detector

@@ -13,7 +13,7 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="../assets/icon.png">
-    <script src="./embedding.js" type="module"></script>
+    <script src="./facematch.js" type="module"></script>
     <style>
       @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../assets/lato-light.woff2') }
       html { font-family: 'Lato', 'Segoe UI'; font-size: 24px; font-variant: small-caps; }
@@ -27,12 +27,12 @@
       <div style="display: flex">
         <div>
           Selected Face<br>
-          <canvas id="orig" style="width: 200px; height: 200px;"></canvas>
+          <canvas id="orig" style="width: 200px; height: 200px; padding: 20px"></canvas>
         </div>
         <div style="width: 20px"></div>
         <div>
           Sample Images<br>
-          <div id="images"></div>
+          <div id="images" style="display: flex; flex-wrap: wrap; width: 85vw"></div>
         </div>
         </span>
         <span id="desc" style="visibility: hidden; font-size: 0.4rem;"></span><br>

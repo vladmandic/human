@@ -6,7 +6,7 @@
 
 # Human Library
 
-**3D Face Detection & Rotation Tracking, Face Embedding & Recognition,**  
+**3D Face Detection & Rotation Tracking, Face Description & Recognition,**  
 **Body Pose Tracking, 3D Hand & Finger Tracking,**  
 **Iris Analysis, Age & Gender & Emotion Prediction,**  
 **Gesture Recognition**
@@ -46,8 +46,9 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**Usage & Functions**](https://github.com/vladmandic/human/wiki/Usage)
 - [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration)
 - [**Output Details**](https://github.com/vladmandic/human/wiki/Outputs)
-- [**Face Recognition & Face Embedding**](https://github.com/vladmandic/human/wiki/Embedding)
+- [**Face Recognition & Face Description**](https://github.com/vladmandic/human/wiki/Embedding)
 - [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)
+- [**Common Issues**](https://github.com/vladmandic/human/wiki/Issues)
 
 <br>
 
@@ -144,12 +145,10 @@ Default models in Human library are:
 
 - **Face Detection**: MediaPipe BlazeFace-Back
 - **Face Mesh**: MediaPipe FaceMesh
+- **Face Description**: HSE FaceRes
 - **Face Iris Analysis**: MediaPipe Iris
 - **Emotion Detection**: Oarriaga Emotion
-- **Gender Detection**: Oarriaga Gender
-- **Age Detection**: SSR-Net Age IMDB
 - **Body Analysis**: PoseNet
-- **Face Embedding**: BecauseofAI MobileFace Embedding
 
 Note that alternative models are provided and can be enabled via configuration  
 For example, `PoseNet` model can be switched for `BlazePose` model depending on the use case  

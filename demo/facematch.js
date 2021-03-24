@@ -30,6 +30,9 @@ const human = new Human(userConfig); // new instance of human
 const all = []; // array that will hold all detected faces
 let db = []; // array that holds all known faces
 
+const minScore = 0.6;
+const minConfidence = 0.8;
+
 function log(...msg) {
   const dt = new Date();
   const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
@@ -37,13 +40,30 @@ function log(...msg) {
   console.log(ts, ...msg);
 }
 
+async function getFaceDB() {
+  // download db with known faces
+  try {
+    const res = await fetch('/demo/faces.json');
+    db = (res && res.ok) ? await res.json() : [];
+    for (const rec of db) {
+      rec.embedding = rec.embedding.map((a) => parseFloat(a.toFixed(4)));
+    }
+  } catch (err) {
+    log('Could not load faces database', err);
+  }
+}
+
 async function analyze(face) {
+  // refresh faces database
+  await getFaceDB();
+
   // if we have face image tensor, enhance it and display it
   if (face.tensor) {
     const enhanced = human.enhance(face);
-    // const desc = document.getElementById('desc');
-    // desc.innerText = `{"name":"unknown", "source":"${face.fileName}", "embedding":[${face.embedding}]},`;
-    navigator.clipboard.writeText(`{"name":"unknown", "source":"${face.fileName}", "embedding":[${face.embedding}]},`);
+    const desc = document.getElementById('desc');
+    desc.innerText = `{"name":"unknown", "source":"${face.fileName}", "embedding":[${face.embedding}]},`;
+    const embedding = face.embedding.map((a) => parseFloat(a.toFixed(4)));
+    navigator.clipboard.writeText(`{"name":"unknown", "source":"${face.fileName}", "embedding":[${embedding}]},`);
     if (enhanced) {
       const c = document.getElementById('orig');
       const squeeze = enhanced.squeeze().div(255);
@@ -73,11 +93,11 @@ async function analyze(face) {
     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
     ctx.fillText(`${(100 * similarity).toFixed(1)}%`, 4, 24);
     ctx.font = 'small-caps 0.8rem "Lato"';
-    ctx.fillText(`${current.age}y ${(100 * current.genderConfidence).toFixed(1)}% ${current.gender}`, 4, canvas.height - 6);
+    ctx.fillText(`${current.age}y ${(100 * (current.genderConfidence || 0)).toFixed(1)}% ${current.gender}`, 4, canvas.height - 6);
     // identify person
-    // ctx.font = 'small-caps 1rem "Lato"';
-    // const person = await human.match(current.embedding, db);
-    // if (person.similarity) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
+    ctx.font = 'small-caps 1rem "Lato"';
+    const person = await human.match(current.embedding, db);
+    if (person.similarity && person.similarity > minScore && current.confidence > minConfidence) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
   }
 
   // sort all faces by similarity
@@ -90,7 +110,6 @@ async function analyze(face) {
 async function faces(index, res, fileName) {
   all[index] = res.face;
   for (const i in res.face) {
-    // log(res.face[i]);
     all[index][i].fileName = fileName;
     const canvas = document.createElement('canvas');
     canvas.tag = { sample: index, face: i };
@@ -109,10 +128,10 @@ async function faces(index, res, fileName) {
       const ctx = canvas.getContext('2d');
       ctx.font = 'small-caps 0.8rem "Lato"';
       ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-      ctx.fillText(`${res.face[i].age}y ${(100 * res.face[i].genderConfidence).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
-      // const person = await human.match(res.face[i].embedding, db);
-      // ctx.font = 'small-caps 1rem "Lato"';
-      // if (person.similarity && person.similarity > 0.60) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
+      ctx.fillText(`${res.face[i].age}y ${(100 * (res.face[i].genderConfidence || 0)).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
+      const person = await human.match(res.face[i].embedding, db);
+      ctx.font = 'small-caps 1rem "Lato"';
+      if (person.similarity && person.similarity > minScore && res.face[i].confidence > minConfidence) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
     }
   }
 }
@@ -145,24 +164,23 @@ async function main() {
   // pre-load human models
   await human.load();
 
-  // download db with known faces
-  let res = await fetch('/demo/faces.json');
-  db = (res && res.ok) ? await res.json() : [];
-
+  let res;
+  let images = [];
+  let dir = [];
+  await getFaceDB();
   // enumerate all sample images in /assets
   res = await fetch('/assets');
-  let dir = (res && res.ok) ? await res.json() : [];
-  let images = dir.filter((img) => (img.endsWith('.jpg') && img.includes('sample')));
-
+  dir = (res && res.ok) ? await res.json() : [];
+  images = images.concat(dir.filter((img) => (img.endsWith('.jpg') && img.includes('sample'))));
   // enumerate additional private test images in /private, not includded in git repository
   res = await fetch('/private/me');
   dir = (res && res.ok) ? await res.json() : [];
   images = images.concat(dir.filter((img) => (img.endsWith('.jpg'))));
 
-  // enumerate just possible error images, not includded in git repository
-  // res = await fetch('/private/err');
-  // dir = (res && res.ok) ? await res.json() : [];
-  // images = dir.filter((img) => (img.endsWith('.jpg')));
+  // enumerate additional error images, not includded in git repository
+  res = await fetch('/private/err');
+  dir = (res && res.ok) ? await res.json() : [];
+  images = images.concat(dir.filter((img) => (img.endsWith('.jpg'))));
 
   // download and analyze all images
   log('Enumerated:', images.length, 'images');

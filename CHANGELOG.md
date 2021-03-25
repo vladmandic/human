@@ -11,9 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/03/24 mandic00@live.com
 
-
-### **origin/main** 2021/03/23 mandic00@live.com
-
+- added face matching example to docs
 - improve fact matching
 
 ### **1.2.4** 2021/03/23 mandic00@live.com

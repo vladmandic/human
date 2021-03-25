@@ -72,4 +72,4 @@ export async function load(config) {
   return faceMesh;
 }
 
-exports.triangulation = coords.TRI468;
+export const triangulation = coords.TRI468;

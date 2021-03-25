@@ -1,6 +1,6 @@
 # @vladmandic/human  
 
-Version: **1.2.4**  
+Version: **1.2.5**  
 Description: **Human: AI-powered 3D Face Detection, Face Description & Recognition, Body Pose Tracking, Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction & Gesture Recognition**  
 
 Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -9,8 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/03/24 mandic00@live.com
+### **1.2.5** 2021/03/25 mandic00@live.com
 
+- fix broken exports
 - added face matching example to docs
 - improve fact matching
 

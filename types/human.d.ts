@@ -54,9 +54,10 @@ export declare class Human {
         all: typeof draw.all;
     };
     models: {
-        face: facemesh.MediaPipeFaceMesh | null;
+        face: facemesh.MediaPipeFaceMesh | Model | null;
         posenet: posenet.PoseNet | null;
         blazepose: Model | null;
+        efficientpose: Model | null;
         handpose: handpose.HandPose | null;
         iris: Model | null;
         age: Model | null;

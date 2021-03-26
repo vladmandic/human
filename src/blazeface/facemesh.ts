@@ -59,7 +59,7 @@ export class MediaPipeFaceMesh {
 }
 
 let faceModels = [null, null, null];
-export async function load(config) {
+export async function load(config): Promise<MediaPipeFaceMesh> {
   // @ts-ignore
   faceModels = await Promise.all([
     (!faceModels[0] && config.face.enabled) ? blazeface.load(config) : null,

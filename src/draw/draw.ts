@@ -221,12 +221,14 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>) {
     }
     if (drawOptions.drawLabels) {
       ctx.font = drawOptions.font;
-      for (const pt of result[i].keypoints) {
-        ctx.fillStyle = drawOptions.useDepth && pt.position.z ? `rgba(${127.5 + (2 * pt.position.z)}, ${127.5 - (2 * pt.position.z)}, 255, 0.5)` : drawOptions.color;
-        ctx.fillText(`${pt.part}`, pt.position.x + 4, pt.position.y + 4);
+      if (result[i].keypoints) {
+        for (const pt of result[i].keypoints) {
+          ctx.fillStyle = drawOptions.useDepth && pt.position.z ? `rgba(${127.5 + (2 * pt.position.z)}, ${127.5 - (2 * pt.position.z)}, 255, 0.5)` : drawOptions.color;
+          ctx.fillText(`${pt.part}`, pt.position.x + 4, pt.position.y + 4);
+        }
       }
     }
-    if (drawOptions.drawPolygons) {
+    if (drawOptions.drawPolygons && result[i].keypoints) {
       let part;
       const points: any[] = [];
       // torso

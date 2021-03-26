@@ -12,6 +12,7 @@ import * as embedding from './embedding/embedding';
 import * as posenet from './posenet/posenet';
 import * as handpose from './handpose/handpose';
 import * as blazepose from './blazepose/blazepose';
+import * as efficientpose from './efficientpose/efficientpose';
 import * as nanodet from './nanodet/nanodet';
 import * as gesture from './gesture/gesture';
 import * as image from './image/image';
@@ -62,9 +63,10 @@ export class Human {
   };
   // models
   models: {
-    face: facemesh.MediaPipeFaceMesh | null,
+    face: facemesh.MediaPipeFaceMesh | Model | null,
     posenet: posenet.PoseNet | null,
     blazepose: Model | null,
+    efficientpose: Model | null,
     handpose: handpose.HandPose | null,
     iris: Model | null,
     age: Model | null,
@@ -108,6 +110,7 @@ export class Human {
       face: null,
       posenet: null,
       blazepose: null,
+      efficientpose: null,
       handpose: null,
       iris: null,
       age: null,
@@ -206,9 +209,12 @@ export class Human {
         this.models.gender,
         this.models.emotion,
         this.models.embedding,
+        // @ts-ignore
         this.models.handpose,
+        // @ts-ignore false warning with latest @typescript-eslint
         this.models.posenet,
         this.models.blazepose,
+        this.models.efficientpose,
         this.models.nanodet,
         this.models.faceres,
       ] = await Promise.all([
@@ -217,9 +223,10 @@ export class Human {
         this.models.gender || ((this.config.face.enabled && this.config.face.gender.enabled) ? gender.load(this.config) : null),
         this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
         this.models.embedding || ((this.config.face.enabled && this.config.face.embedding.enabled) ? embedding.load(this.config) : null),
-        this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config) : null),
+        this.models.handpose || (this.config.hand.enabled ? <Promise<handpose.HandPose>>handpose.load(this.config) : null),
         this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('posenet') ? posenet.load(this.config) : null),
-        this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('blazepose') ? blazepose.load(this.config) : null),
+        this.models.blazepose || (this.config.body.enabled && this.config.body.modelPath.includes('blazepose') ? blazepose.load(this.config) : null),
+        this.models.efficientpose || (this.config.body.enabled && this.config.body.modelPath.includes('efficientpose') ? efficientpose.load(this.config) : null),
         this.models.nanodet || (this.config.object.enabled ? nanodet.load(this.config) : null),
         this.models.faceres || ((this.config.face.enabled && this.config.face.description.enabled) ? faceres.load(this.config) : null),
       ]);
@@ -232,6 +239,7 @@ export class Human {
       if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config);
       if (this.config.body.enabled && !this.models.posenet && this.config.body.modelPath.includes('posenet')) this.models.posenet = await posenet.load(this.config);
       if (this.config.body.enabled && !this.models.blazepose && this.config.body.modelPath.includes('blazepose')) this.models.blazepose = await blazepose.load(this.config);
+      if (this.config.body.enabled && !this.models.efficientpose && this.config.body.modelPath.includes('efficientpose')) this.models.efficientpose = await efficientpose.load(this.config);
       if (this.config.object.enabled && !this.models.nanodet) this.models.nanodet = await nanodet.load(this.config);
       if (this.config.face.enabled && this.config.face.description.enabled && !this.models.faceres) this.models.faceres = await faceres.load(this.config);
     }
@@ -363,13 +371,15 @@ export class Human {
       this.analyze('Start Body:');
       if (this.config.async) {
         if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
-        else bodyRes = this.config.body.enabled ? blazepose.predict(process.tensor, this.config) : [];
+        else if (this.config.body.modelPath.includes('blazepose')) bodyRes = this.config.body.enabled ? blazepose.predict(process.tensor, this.config) : [];
+        else if (this.config.body.modelPath.includes('efficientpose')) bodyRes = this.config.body.enabled ? efficientpose.predict(process.tensor, this.config) : [];
         if (this.perf.body) delete this.perf.body;
       } else {
         this.state = 'run:body';
         timeStamp = now();
         if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? await this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
-        else bodyRes = this.config.body.enabled ? await blazepose.predict(process.tensor, this.config) : [];
+        else if (this.config.body.modelPath.includes('blazepose')) bodyRes = this.config.body.enabled ? await blazepose.predict(process.tensor, this.config) : [];
+        else if (this.config.body.modelPath.includes('efficientpose')) bodyRes = this.config.body.enabled ? await efficientpose.predict(process.tensor, this.config) : [];
         current = Math.trunc(now() - timeStamp);
         if (current > 0) this.perf.body = current;
       }

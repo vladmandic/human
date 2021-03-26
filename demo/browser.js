@@ -3,22 +3,20 @@ import Human from '../src/human';
 import Menu from './menu.js';
 import GLBench from './gl-bench.js';
 
-const userConfig = { backend: 'webgl' }; // add any user configuration overrides
+// const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 
-/*
 const userConfig = {
-  backend: 'wasm',
+  backend: 'webgl',
   async: false,
   warmup: 'full',
   videoOptimized: true,
   filter: { enabled: true },
-  face: { enabled: true, mesh: { enabled: true }, iris: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: false } },
+  face: { enabled: false, mesh: { enabled: false }, iris: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: false } },
   hand: { enabled: false },
   gesture: { enabled: false },
-  body: { enabled: false, modelPath: '../models/blazepose.json' },
+  body: { enabled: true, modelPath: '../models/efficientpose.json' },
   object: { enabled: false },
 };
-*/
 
 const human = new Human(userConfig);
 

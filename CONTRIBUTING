@@ -6,6 +6,7 @@ Procedure for contributing:
 
 - Create a fork of the repository on github  
   In a top right corner of a GitHub, select "Fork"
+  Its recommended to fork latest version from main branch to avoid any possible conflicting code updates
 - Clone your forked repository to your local system  
   `git clone https://github.com/<your-username>/<your-fork>
 - Make your changes  

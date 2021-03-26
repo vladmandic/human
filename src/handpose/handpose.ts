@@ -55,7 +55,7 @@ export class HandPose {
   }
 }
 
-export async function load(config) {
+export async function load(config): Promise<HandPose> {
   const [handDetectorModel, handPoseModel] = await Promise.all([
     config.hand.enabled ? tf.loadGraphModel(config.hand.detector.modelPath, { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) : null,
     config.hand.landmarks ? tf.loadGraphModel(config.hand.skeleton.modelPath, { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) : null,

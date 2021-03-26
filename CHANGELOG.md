@@ -9,6 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/03/26 mandic00@live.com
+
+
 ### **1.2.5** 2021/03/25 mandic00@live.com
 
 - fix broken exports

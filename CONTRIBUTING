@@ -11,7 +11,11 @@ Procedure for contributing:
 - Make your changes  
 - Test your changes against code guidelines  
   `npm run lint`
-- Push changes to your fork
+- Test your changes in Browser and NodeJS  
+  `npm run dev` and naviate to https://localhost:10031  
+  `node demo/node.js`  
+- Push changes to your fork  
+  Exclude files in `/dist', '/types', '/typedoc' from the commit as they are dynamically generated during build
 - Submit a PR (pull request)
 
 Your pull request will be reviewed and pending review results, merged into main branch

@@ -8,22 +8,45 @@ import * as faceres from './faceres/faceres';
 
 type Tensor = typeof tf.Tensor;
 
-const calculateFaceAngle = (mesh): { roll: number | null, yaw: number | null, pitch: number | null } => {
-  if (!mesh || mesh.length < 300) return { roll: null, yaw: null, pitch: null };
-  const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  const degrees = (theta) => Math.abs(((theta * 180) / Math.PI) % 360);
-  const angle = {
-    // values are in radians in range of -pi/2 to pi/2 which is -90 to +90 degrees
-    // value of 0 means center
-    // roll is face lean left/right
-    roll: radians(mesh[33][0], mesh[33][1], mesh[263][0], mesh[263][1]), // looking at x,y of outside corners of leftEye and rightEye
-    // yaw is face turn left/right
-    yaw: radians(mesh[33][0], mesh[33][2], mesh[263][0], mesh[263][2]), // looking at x,z of outside corners of leftEye and rightEye
-    // pitch is face move up/down
-    pitch: radians(mesh[10][1], mesh[10][2], mesh[152][1], mesh[152][2]), // looking at y,z of top and bottom points of the face
+const calculateFaceAngle = (mesh): { matrix: [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number] } => {
+  if (!mesh || mesh.length < 300) return { matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] };
+
+  const normalize = (v) => {
+    const length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    v[0] /= length;
+    v[1] /= length;
+    v[2] /= length;
+    return v;
   };
-  return angle;
+
+  const subVectors = (a, b) => {
+    const x = a[0] - b[0];
+    const y = a[1] - b[1];
+    const z = a[2] - b[2];
+    return [x, y, z];
+  };
+
+  const crossVectors = (a, b) => {
+    const x = a[1] * b[2] - a[2] * b[1];
+    const y = a[2] * b[0] - a[0] * b[2];
+    const z = a[0] * b[1] - a[1] * b[0];
+    return [x, y, z];
+  };
+
+  const y_axis = normalize(subVectors(mesh[152], mesh[10]));
+  let x_axis = normalize(subVectors(mesh[454], mesh[234]));
+  const z_axis = normalize(crossVectors(x_axis, y_axis));
+  // adjust x_axis to make sure that all axes are perpendicular to each other
+  x_axis = crossVectors(y_axis, z_axis);
+
+  // Rotation Matrix from Axis Vectors - http://renderdan.blogspot.com/2006/05/rotation-matrix-from-axis-vectors.html
+  // note that the rotation matrix is flatten to array in column-major order (instead of row-major order), which directly fits three.js Matrix4.fromArray function
+  return { matrix: [
+    x_axis[0], y_axis[0], z_axis[0], 0,
+    x_axis[1], y_axis[1], z_axis[1], 0,
+    x_axis[2], y_axis[2], z_axis[2], 0,
+    0, 0, 0, 1,
+  ] };
 };
 
 export const detectFace = async (parent, input): Promise<any> => {
@@ -50,7 +73,7 @@ export const detectFace = async (parent, input): Promise<any> => {
       emotion: string,
       embedding: number[],
       iris: number,
-      angle: { roll: number | null, yaw: number | null, pitch: number | null },
+      angle: { matrix:[number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number] },
       tensor: Tensor,
     }> = [];
   parent.state = 'run:face';
@@ -67,7 +90,7 @@ export const detectFace = async (parent, input): Promise<any> => {
       continue;
     }
 
-    const angle = calculateFaceAngle(face.mesh);
+    const angle = calculateFaceAngle(face.meshRaw);
 
     // run age, inherits face from blazeface
     parent.analyze('Start Age:');

@@ -8,13 +8,19 @@ import GLBench from './gl-bench.js';
 const userConfig = {
   backend: 'webgl',
   async: false,
+  profile: false,
   warmup: 'full',
   videoOptimized: true,
   filter: { enabled: true },
-  face: { enabled: false, mesh: { enabled: false }, iris: { enabled: false }, age: { enabled: false }, gender: { enabled: false }, emotion: { enabled: false }, embedding: { enabled: false } },
+  face: { enabled: true,
+    mesh: { enabled: true },
+    iris: { enabled: true },
+    description: { enabled: true },
+    emotion: { enabled: true },
+  },
   hand: { enabled: false },
   gesture: { enabled: false },
-  body: { enabled: true, modelPath: '../models/efficientpose.json' },
+  body: { enabled: false, modelPath: '../models/blazepose.json' },
   object: { enabled: false },
 };
 

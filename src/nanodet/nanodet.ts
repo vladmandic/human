@@ -8,7 +8,6 @@ let last: Array<{}> = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 
 const scaleBox = 2.5; // increase box size
-const activateScore = false;
 
 export async function load(config) {
   if (!model) {
@@ -28,24 +27,27 @@ async function process(res, inputSize, outputShape, config) {
     tf.tidy(() => { // wrap in tidy to automatically deallocate temp tensors
       const baseSize = strideSize * 13; // 13x13=169, 26x26=676, 52x52=2704
       // find boxes and scores output depending on stride
-      const scoresT = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] === 80))?.squeeze();
-      const featuresT = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] < 80))?.squeeze();
+      const scoresT = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] === labels.length))?.squeeze();
+      const featuresT = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] < labels.length))?.squeeze();
       const boxesMax = featuresT.reshape([-1, 4, featuresT.shape[1] / 4]); // reshape [output] to [4, output / 4] where number is number of different features inside each stride
       const boxIdx = boxesMax.argMax(2).arraySync(); // what we need is indexes of features with highest scores, not values itself
-      const scores = activateScore ? scoresT.exp(1).arraySync() : scoresT.arraySync(); // optionally use exponential scores or just as-is
+      const scores = scoresT.arraySync(); // optionally use exponential scores or just as-is
       for (let i = 0; i < scoresT.shape[0]; i++) { // total strides (x * y matrix)
         for (let j = 0; j < scoresT.shape[1]; j++) { // one score for each class
-          const score = scores[i][j] - (activateScore ? 1 : 0); // get score for current position
-          if (score > config.object.minConfidence) {
+          const score = scores[i][j]; // get score for current position
+          if (score > config.object.minConfidence && j !== 61) {
             const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize; // center.x normalized to range 0..1
             const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize; // center.y normalized to range 0..1
             const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize)); // just grab indexes of features with highest scores
-            let boxRaw = [ // results normalized to range 0..1
+            const [x, y] = [
               cx - (scaleBox / strideSize * boxOffset[0]),
               cy - (scaleBox / strideSize * boxOffset[1]),
-              cx + (scaleBox / strideSize * boxOffset[2]),
-              cy + (scaleBox / strideSize * boxOffset[3]),
             ];
+            const [w, h] = [
+              cx + (scaleBox / strideSize * boxOffset[2]) - x,
+              cy + (scaleBox / strideSize * boxOffset[3]) - y,
+            ];
+            let boxRaw = [x, y, w, h]; // results normalized to range 0..1
             boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1))); // fix out-of-bounds coords
             const box = [ // results normalized to input image pixels
               boxRaw[0] * outputShape[0],
@@ -77,14 +79,16 @@ async function process(res, inputSize, outputShape, config) {
   // unnecessary boxes and run nms only on good candidates (basically it just does IOU analysis as scores are already filtered)
   const nmsBoxes = results.map((a) => a.boxRaw);
   const nmsScores = results.map((a) => a.score);
-  const nms = await tf.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config.object.maxResults, config.object.iouThreshold, config.object.minConfidence);
-  const nmsIdx = nms.dataSync();
-  tf.dispose(nms);
+  let nmsIdx: any[] = [];
+  if (nmsBoxes && nmsBoxes.length > 0) {
+    const nms = await tf.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config.object.maxResults, config.object.iouThreshold, config.object.minConfidence);
+    nmsIdx = nms.dataSync();
+    tf.dispose(nms);
+  }
 
   // filter & sort results
   results = results
     .filter((a, idx) => nmsIdx.includes(idx))
-    // @ts-ignore
     .sort((a, b) => (b.score - a.score));
 
   return results;
@@ -103,17 +107,16 @@ export async function predict(image, config) {
     const outputSize = [image.shape[2], image.shape[1]];
     const resize = tf.image.resizeBilinear(image, [model.inputSize, model.inputSize], false);
     const norm = resize.div(255);
-    resize.dispose();
     const transpose = norm.transpose([0, 3, 1, 2]);
     norm.dispose();
+    resize.dispose();
 
     let objectT;
     if (!config.profile) {
-      if (config.object.enabled) objectT = await model.predict(transpose);
+      if (config.object.enabled) objectT = await model.executeAsync(transpose);
     } else {
-      const profileObject = config.object.enabled ? await tf.profile(() => model.predict(transpose)) : {};
-      objectT = profileObject.result.clone();
-      profileObject.result.dispose();
+      const profileObject = config.object.enabled ? await tf.profile(() => model.executeAsync(transpose)) : {};
+      objectT = profileObject.result;
       profile.run('object', profileObject);
     }
     transpose.dispose();

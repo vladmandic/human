@@ -292,8 +292,10 @@ export class Human {
       }
       this.tf.enableProdMode();
       /* debug mode is really too mcuh
-      tf.enableDebugMode();
+      this.tf.enableDebugMode();
       */
+      this.tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
+      this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
       if (this.tf.getBackend() === 'webgl') {
         if (this.config.deallocate) {
           log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);

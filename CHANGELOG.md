@@ -9,8 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/03/26 mandic00@live.com
+### **HEAD -> main** 2021/03/27 mandic00@live.com
 
+- start working on efficientpose
 
 ### **1.2.5** 2021/03/25 mandic00@live.com
 

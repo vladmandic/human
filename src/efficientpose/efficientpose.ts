@@ -3,7 +3,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 
 let model;
-let last = { };
+let keypoints = { };
 let skipped = Number.MAX_SAFE_INTEGER;
 
 const bodyParts = ['head', 'neck', 'rightShoulder', 'rightElbow', 'rightWrist', 'chest', 'leftShoulder', 'leftElbow', 'leftWrist', 'pelvis', 'rightHip', 'rightKnee', 'rightAnkle', 'leftHip', 'leftKnee', 'leftAnkle'];
@@ -39,28 +39,31 @@ function max2d(inputs, minScore) {
 
 export async function predict(image, config) {
   if (!model) return null;
-  if ((skipped < config.body.skipFrames) && config.videoOptimized && Object.keys(last).length > 0) {
+  if ((skipped < config.body.skipFrames) && config.videoOptimized && Object.keys(keypoints).length > 0) {
     skipped++;
-    return last;
+    return keypoints;
   }
   if (config.videoOptimized) skipped = 0;
   else skipped = Number.MAX_SAFE_INTEGER;
   return new Promise(async (resolve) => {
-    const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
-    const enhance = tf.mul(resize, [255.0]);
-    tf.dispose(resize);
+    const tensor = tf.tidy(() => {
+      const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+      const enhance = tf.mul(resize, 2);
+      const norm = enhance.sub(1);
+      return norm;
+    });
 
     let resT;
 
     if (!config.profile) {
-      if (config.body.enabled) resT = await model.predict(enhance);
+      if (config.body.enabled) resT = await model.executeAsync(tensor);
     } else {
-      const profileT = config.body.enabled ? await tf.profile(() => model.predict(enhance)) : {};
+      const profileT = config.body.enabled ? await tf.profile(() => model.executeAsync(tensor)) : {};
       resT = profileT.result.clone();
       profileT.result.dispose();
       profile.run('body', profileT);
     }
-    enhance.dispose();
+    tensor.dispose();
 
     if (resT) {
       const parts: Array<{ id, score, part, position: { x, y }, positionRaw: { xRaw, yRaw} }> = [];
@@ -90,8 +93,9 @@ export async function predict(image, config) {
         }
       }
       stack.forEach((s) => tf.dispose(s));
-      last = parts;
+      keypoints = parts;
     }
-    resolve(last);
+    console.log(keypoints);
+    resolve([{ keypoints }]);
   });
 }

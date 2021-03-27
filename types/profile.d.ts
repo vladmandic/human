@@ -1,2 +1,2 @@
 export declare const data: {};
-export declare function run(name: string, raw: any): void;
+export declare function run(modelName: string, profileData: any): void;

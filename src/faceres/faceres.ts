@@ -110,10 +110,9 @@ export async function predict(image, config) {
     if (!config.profile) {
       if (config.face.description.enabled) resT = await model.predict(enhanced);
     } else {
-      const profileAge = config.face.description.enabled ? await tf.profile(() => model.predict(enhanced)) : {};
-      resT = profileAge.result.clone();
-      profileAge.result.dispose();
-      profile.run('age', profileAge);
+      const profileDesc = config.face.description.enabled ? await tf.profile(() => model.predict(enhanced)) : {};
+      resT = profileDesc.result;
+      profile.run('faceres', profileDesc);
     }
     tf.dispose(enhanced);
 

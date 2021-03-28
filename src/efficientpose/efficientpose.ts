@@ -95,7 +95,6 @@ export async function predict(image, config) {
       stack.forEach((s) => tf.dispose(s));
       keypoints = parts;
     }
-    console.log(keypoints);
     resolve([{ keypoints }]);
   });
 }

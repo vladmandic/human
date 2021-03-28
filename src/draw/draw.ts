@@ -231,10 +231,15 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>) {
     if (drawOptions.drawPolygons && result[i].keypoints) {
       let part;
       const points: any[] = [];
-      // torso
+      // shoulder line
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
+      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      curves(ctx, points);
+      // torso main
+      points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightHip');
@@ -243,7 +248,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>) {
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-      if (points.length === 5) lines(ctx, points); // only draw if we have complete torso
+      if (points.length === 4) lines(ctx, points); // only draw if we have complete torso
       // leg left
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'leftHip');

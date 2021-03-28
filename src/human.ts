@@ -270,8 +270,10 @@ export class Human {
       */
 
       if (this.config.backend && this.config.backend !== '') {
+        // force browser vs node backend
         if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === 'tensorflow') this.config.backend = 'webgl';
         if (this.tf.ENV.flags.IS_NODE && (this.config.backend === 'webgl' || this.config.backend === 'wasm')) this.config.backend = 'tensorflow';
+
         if (this.config.debug) log('setting backend:', this.config.backend);
 
         if (this.config.backend === 'wasm') {
@@ -291,18 +293,14 @@ export class Human {
         }
       }
       this.tf.enableProdMode();
-      /* debug mode is really too mcuh
-      this.tf.enableDebugMode();
-      */
-      this.tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
-      this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
-      if (this.tf.getBackend() === 'webgl') {
+      // this.tf.enableDebugMode();
+      if (this.tf.getBackend() === 'webgl' || this.tf.getBackend() === 'humangl') {
+        this.tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
+        this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
         if (this.config.deallocate) {
           log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
           this.tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
         }
-        // this.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
-        // this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
         const gl = await this.tf.backend().getGPGPUContext().gl;
         if (this.config.debug) log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }

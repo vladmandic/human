@@ -7,7 +7,7 @@ const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 
 /*
 const userConfig = {
-  backend: 'webgl',
+  backend: 'humangl',
   async: false,
   profile: false,
   warmup: 'full',
@@ -24,7 +24,7 @@ const userConfig = {
   body: { enabled: false },
   // body: { enabled: true, modelPath: '../models/blazepose.json' },
   // body: { enabled: true, modelPath: '../models/efficientpose.json' },
-  object: { enabled: false },
+  object: { enabled: true },
 };
 */
 

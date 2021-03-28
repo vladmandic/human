@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/03/28 mandic00@live.com
 
+- remove debug output
 - new face rotation calculations
 - cleanup
 - rotationmatrixtoeulerangle, and fixes

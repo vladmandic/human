@@ -9,8 +9,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/03/28 animethemegadget@gmail.com
+### **HEAD -> main** 2021/03/28 mandic00@live.com
 
+- new face rotation calculations
+- cleanup
 - rotationmatrixtoeulerangle, and fixes
 - experimental: add efficientpose
 - implement nanodet

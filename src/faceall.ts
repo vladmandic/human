@@ -39,23 +39,17 @@ const calculateFaceAngle = (face, image_size): { angle: { pitch: number, yaw: nu
     if (r10 < 1) { // YZX calculation
       if (r10 > -1) {
         thetaZ = Math.asin(r10);
+        thetaY = Math.atan2(-r20, r00);
         thetaX = Math.atan2(-r12, r11);
       } else {
         thetaZ = -Math.PI / 2;
+        thetaY = -Math.atan2(r21, r22);
         thetaX = 0;
       }
     } else {
       thetaZ = Math.PI / 2;
+      thetaY = Math.atan2(r21, r22);
       thetaX = 0;
-    }
-    if (r02 < 1) { // compensate Y rotation which is not accurate and too small in YZX calculation
-      if (r02 > -1) {
-        thetaY = Math.asin(r02);
-      } else {
-        thetaY = -Math.PI / 2;
-      }
-    } else {
-      thetaY = Math.PI / 2;
     }
     return { pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ };
   };

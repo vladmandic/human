@@ -8,76 +8,77 @@ import * as faceres from './faceres/faceres';
 
 type Tensor = typeof tf.Tensor;
 
-const calculateFaceAngle = (face, image_size): { pitch: number, yaw: number, row: number, matrix: [number, number, number, number, number, number, number, number, number] } => {
-  // normalize vector
-  function normalize(v) {
+const calculateFaceAngle = (face, image_size): { angle: { pitch: number, yaw: number, roll: number }, matrix: [number, number, number, number, number, number, number, number, number] } => {
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  const degrees = (theta) => (theta * 180) / Math.PI;
+  // const degrees = (theta) => Math.abs(((theta * 180) / Math.PI) % 360);
+  const normalize = (v) => { // normalize vector
     const length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     v[0] /= length;
     v[1] /= length;
     v[2] /= length;
     return v;
-  }
-
-  // vector subtraction (a - b)
-  function subVectors(a, b) {
+  };
+  const subVectors = (a, b) => { // vector subtraction (a - b)
     const x = a[0] - b[0];
     const y = a[1] - b[1];
     const z = a[2] - b[2];
     return [x, y, z];
-  }
-
-  // vector cross product (a x b)
-  function crossVectors(a, b) {
+  };
+  const crossVectors = (a, b) => { // vector cross product (a x b)
     const x = a[1] * b[2] - a[2] * b[1];
     const y = a[2] * b[0] - a[0] * b[2];
     const z = a[0] * b[1] - a[1] * b[0];
     return [x, y, z];
-  }
-
-  // 3x3 rotation matrix to Euler angles
-  // https://www.geometrictools.com/Documentation/EulerAngles.pdf
-  function rotationMatrixToEulerAngle(r) {
-    // r01 is not used yet (no-unused-vars)
-    // eslint-disable-next-line
-    const [ r00, r01, r02, r10, r11, r12, r20, r21, r22 ] = r;
-    const pi = Math.PI;
-
+  };
+  // 3x3 rotation matrix to Euler angles based on https://www.geometrictools.com/Documentation/EulerAngles.pdf
+  const rotationMatrixToEulerAngle = (r) => {
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    const [r00, r01, r02, r10, r11, r12, r20, r21, r22] = r;
     let thetaX; let thetaY; let thetaZ;
-
-    // YZX
-    if (r10 < 1) {
+    if (r10 < 1) { // YZX calculation
       if (r10 > -1) {
         thetaZ = Math.asin(r10);
-        // thetaY = Math.atan2(-r20, r00);
         thetaX = Math.atan2(-r12, r11);
       } else {
-        thetaZ = -pi / 2;
-        // thetaY = -Math.atan2(r21, r22);
+        thetaZ = -Math.PI / 2;
         thetaX = 0;
       }
     } else {
-      thetaZ = pi / 2;
-      // thetaY = Math.atan2(r21, r22);
+      thetaZ = Math.PI / 2;
       thetaX = 0;
     }
-
-    // compensate Y rotation (from XYZ rotation order routine) which is not accurate and too small in YZX calculation
-    if (r02 < 1) {
+    if (r02 < 1) { // compensate Y rotation which is not accurate and too small in YZX calculation
       if (r02 > -1) {
         thetaY = Math.asin(r02);
       } else {
-        thetaY = -pi / 2;
+        thetaY = -Math.PI / 2;
       }
     } else {
-      thetaY = pi / 2;
+      thetaY = Math.PI / 2;
     }
-
-    // pitch, yaw, row
-    return [-thetaX, -thetaY, -thetaZ];
-  }
+    return { pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ };
+  };
+  // simple Euler angle calculation based existing 3D mesh
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  const meshToEulerAngle = (mesh) => {
+    const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    const angle = {
+      // values are in radians in range of -pi/2 to pi/2 which is -90 to +90 degrees
+      // value of 0 means center
+      // pitch is face move up/down
+      pitch: radians(mesh[10][1], mesh[10][2], mesh[152][1], mesh[152][2]), // looking at y,z of top and bottom points of the face
+      // yaw is face turn left/right
+      yaw: radians(mesh[33][0], mesh[33][2], mesh[263][0], mesh[263][2]), // looking at x,z of outside corners of leftEye and rightEye
+      // roll is face lean left/right
+      roll: radians(mesh[33][0], mesh[33][1], mesh[263][0], mesh[263][1]), // looking at x,y of outside corners of leftEye and rightEye
+    };
+    return angle;
+  };
 
   const mesh = face.meshRaw;
-  if (!mesh || mesh.length < 300) return { pitch: 0, yaw: 0, row: 0, matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1] };
+  if (!mesh || mesh.length < 300) return { angle: { pitch: 0, yaw: 0, roll: 0 }, matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1] };
 
   const size = Math.max(face.boxRaw[2] * image_size[0], face.boxRaw[3] * image_size[1]) / 1.5;
   // top, bottom, left, right
@@ -96,20 +97,14 @@ const calculateFaceAngle = (face, image_size): { pitch: number, yaw: number, row
 
   // Rotation Matrix from Axis Vectors - http://renderdan.blogspot.com/2006/05/rotation-matrix-from-axis-vectors.html
   // 3x3 rotation matrix is flatten to array in row-major order. Note that the rotation represented by this matrix is inverted.
-  const r_matrix = [
+  const matrix: [number, number, number, number, number, number, number, number, number] = [
     x_axis[0], x_axis[1], x_axis[2],
     y_axis[0], y_axis[1], y_axis[2],
     z_axis[0], z_axis[1], z_axis[2],
   ];
-
-  const [pitch, yaw, row] = rotationMatrixToEulerAngle(r_matrix);
-
-  return {
-    pitch,
-    yaw,
-    row,
-    matrix: r_matrix,
-  };
+  const angle = rotationMatrixToEulerAngle(matrix);
+  // const angle = meshToEulerAngle(mesh);
+  return { angle, matrix };
 };
 
 export const detectFace = async (parent, input): Promise<any> => {
@@ -136,7 +131,10 @@ export const detectFace = async (parent, input): Promise<any> => {
       emotion: string,
       embedding: number[],
       iris: number,
-      angle: { pitch: number, yaw: number, row: number, matrix: [number, number, number, number, number, number, number, number, number] },
+      rotation: {
+        angle: { pitch: number, yaw: number, roll: number },
+        matrix: [number, number, number, number, number, number, number, number, number]
+      },
       tensor: Tensor,
     }> = [];
   parent.state = 'run:face';
@@ -153,7 +151,7 @@ export const detectFace = async (parent, input): Promise<any> => {
       continue;
     }
 
-    const angle = calculateFaceAngle(face, [input.shape[2], input.shape[1]]);
+    const rotation = calculateFaceAngle(face, [input.shape[2], input.shape[1]]);
 
     // run age, inherits face from blazeface
     parent.analyze('Start Age:');
@@ -240,7 +238,7 @@ export const detectFace = async (parent, input): Promise<any> => {
       embedding: descRes.descriptor || embeddingRes,
       emotion: emotionRes,
       iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
-      angle,
+      rotation,
       tensor: parent.config.face.detector.return ? face.image?.squeeze() : null,
     });
     // dispose original face tensor

@@ -48,28 +48,17 @@ const calculateFaceAngle = (face, image_size): { pitch: number, yaw: number, row
     if (r10 < 1) {
       if (r10 > -1) {
         thetaZ = Math.asin(r10);
-        // thetaY = Math.atan2(-r20, r00);
+        thetaY = Math.atan2(-r20, r00);
         thetaX = Math.atan2(-r12, r11);
       } else {
         thetaZ = -pi / 2;
-        // thetaY = -Math.atan2(r21, r22);
+        thetaY = -Math.atan2(r21, r22);
         thetaX = 0;
       }
     } else {
       thetaZ = pi / 2;
-      // thetaY = Math.atan2(r21, r22);
+      thetaY = Math.atan2(r21, r22);
       thetaX = 0;
-    }
-
-    // compensate Y rotation (from XYZ rotation order routine) which is not accurate and too small in YZX calculation
-    if (r02 < 1) {
-      if (r02 > -1) {
-        thetaY = Math.asin(r02);
-      } else {
-        thetaY = -pi / 2;
-      }
-    } else {
-      thetaY = pi / 2;
     }
 
     // pitch, yaw, row

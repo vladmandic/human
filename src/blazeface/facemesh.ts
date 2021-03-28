@@ -19,11 +19,9 @@ export class MediaPipeFaceMesh {
     for (const prediction of (predictions || [])) {
       if (prediction.isDisposedInternal) continue; // guard against disposed tensors on long running operations such as pause in middle of processing
       const mesh = prediction.coords ? prediction.coords.arraySync() : [];
-      // this should be the best way to get the meshRaw with x and y fitting the box with aspect ratio kept (values still normalized to 0..1)
-      const size = prediction.box ? Math.max((prediction.box.endPoint[0] - prediction.box.startPoint[0]), (prediction.box.endPoint[1] - prediction.box.startPoint[1])) / 1.5 : 1;
       const meshRaw = mesh.map((pt) => [
-        pt[0] / size,
-        pt[1] / size,
+        pt[0] / input.shape[2],
+        pt[1] / input.shape[1],
         pt[2] / this.facePipeline.meshSize,
       ]);
       const annotations = {};

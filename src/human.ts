@@ -86,6 +86,8 @@ export class Human {
     nanodet: typeof nanodet;
     faceres: typeof faceres;
   };
+  faceTriangulation: typeof facemesh.triangulation;
+  faceUVMap: typeof facemesh.uvmap;
   sysinfo: { platform: string, agent: string };
   perf: any;
   #numTensors: number;
@@ -134,6 +136,8 @@ export class Human {
       hand: handpose,
       nanodet,
     };
+    this.faceTriangulation = facemesh.triangulation;
+    this.faceUVMap = facemesh.uvmap;
     // include platform info
     this.sysinfo = sysinfo.info();
   }

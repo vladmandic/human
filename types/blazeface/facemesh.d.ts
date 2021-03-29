@@ -16,3 +16,4 @@ export declare class MediaPipeFaceMesh {
 }
 export declare function load(config: any): Promise<MediaPipeFaceMesh>;
 export declare const triangulation: number[];
+export declare const uvmap: number[][];

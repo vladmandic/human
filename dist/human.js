@@ -75291,7 +75291,8 @@ return a / b;`;
   __export(facemesh_exports, {
     MediaPipeFaceMesh: () => MediaPipeFaceMesh,
     load: () => load7,
-    triangulation: () => triangulation
+    triangulation: () => triangulation,
+    uvmap: () => uvmap
   });
 
   // src/blazeface/blazeface.ts
@@ -79119,6 +79120,7 @@ return a / b;`;
     return faceMesh;
   }
   var triangulation = TRI468;
+  var uvmap = UV468;
 
   // src/posenet/posenet.ts
   var posenet_exports = {};
@@ -98878,6 +98880,8 @@ return a / b;`;
   var fx = null;
   function process3(input2, config3) {
     let tensor2;
+    if (!input2)
+      throw new Error("Human: Input is missing");
     if (input2 instanceof Tensor) {
       tensor2 = clone(input2);
     } else {
@@ -100450,6 +100454,8 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
         hand: handpose_exports,
         nanodet: nanodet_exports
       };
+      this.faceTriangulation = triangulation;
+      this.faceUVMap = uvmap;
       this.sysinfo = info();
     }
     profileData() {

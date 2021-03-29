@@ -73,3 +73,4 @@ export async function load(config): Promise<MediaPipeFaceMesh> {
 }
 
 export const triangulation = coords.TRI468;
+export const uvmap = coords.UV468;

@@ -77,6 +77,8 @@ export declare class Human {
         nanodet: typeof nanodet;
         faceres: typeof faceres;
     };
+    faceTriangulation: typeof facemesh.triangulation;
+    faceUVMap: typeof facemesh.uvmap;
     sysinfo: {
         platform: string;
         agent: string;

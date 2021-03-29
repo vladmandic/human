@@ -16,6 +16,7 @@ let fx = null;
 // input is resized and run through imagefx filter
 export function process(input, config): { tensor: tf.Tensor, canvas: OffscreenCanvas | HTMLCanvasElement } {
   let tensor;
+  if (!input) throw new Error('Human: Input is missing');
   if (input instanceof tf.Tensor) {
     tensor = tf.clone(input);
   } else {

@@ -814,7 +814,8 @@ var facemesh_exports = {};
 __export(facemesh_exports, {
   MediaPipeFaceMesh: () => MediaPipeFaceMesh,
   load: () => load7,
-  triangulation: () => triangulation
+  triangulation: () => triangulation,
+  uvmap: () => uvmap
 });
 var tf10 = __toModule(require_tfjs_esm());
 
@@ -4648,6 +4649,7 @@ async function load7(config3) {
   return faceMesh;
 }
 var triangulation = TRI468;
+var uvmap = UV468;
 
 // src/posenet/posenet.ts
 var posenet_exports = {};
@@ -24424,6 +24426,8 @@ var outCanvas = null;
 var fx = null;
 function process3(input, config3) {
   let tensor;
+  if (!input)
+    throw new Error("Human: Input is missing");
   if (input instanceof tf21.Tensor) {
     tensor = tf21.clone(input);
   } else {
@@ -25996,6 +26000,8 @@ var Human = class {
       hand: handpose_exports,
       nanodet: nanodet_exports
     };
+    this.faceTriangulation = triangulation;
+    this.faceUVMap = uvmap;
     this.sysinfo = info();
   }
   profileData() {

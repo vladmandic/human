@@ -255,7 +255,8 @@ const config: Config = {
 
   body: {
     enabled: true,
-    modelPath: '../models/posenet.json', // can be 'posenet' or 'blazepose'
+    modelPath: '../models/posenet.json', // can be 'posenet', 'blazepose' or 'efficientpose'
+                             // 'blazepose' and 'efficientpose' are experimental
     maxDetections: 10,       // maximum number of people detected in the input
                              // should be set to the minimum number for performance
                              // only valid for posenet as blazepose only detects single pose
@@ -296,6 +297,7 @@ const config: Config = {
   object: {
     enabled: false,
     modelPath: '../models/nanodet.json',
+                             // 'nanodet' is experimental
     minConfidence: 0.20,     // threshold for discarding a prediction
     iouThreshold: 0.40,      // threshold for deciding whether boxes overlap too much
                              // in non-maximum suppression

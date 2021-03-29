@@ -1,9 +1,7 @@
 {
   "name": "Human Library",
   "short_name": "Human",
-  "icons": [
-    { "src": "../assets/icon.png", "sizes": "853x853", "type": "image/png", "purpose": "any maskable" }
-    ],
+  "icons": [{ "src": "../assets/icon.png", "sizes": "500x484", "type": "image/png", "purpose": "any maskable" }],
   "start_url": "./index.html",
   "scope": "/",
   "display": "standalone",

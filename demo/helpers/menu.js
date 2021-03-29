@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 let instance = 0;
 let CSScreated = false;
 
@@ -80,7 +82,7 @@ class Menu {
     this.instance = instance;
     instance++;
     this._maxFPS = 0;
-    this.hidden = 0;
+    this.hidden = false;
   }
 
   createMenu(parent, title = '', position = { top: null, left: null, bottom: null, right: null }) {
@@ -109,9 +111,11 @@ class Menu {
     if (title) elTitle.innerHTML = `${title}${svg}`;
     this.menu.appendChild(elTitle);
     elTitle.addEventListener('click', () => {
-      this.container.classList.toggle('menu-container-fadeout');
-      this.container.classList.toggle('menu-container-fadein');
-      this.menu.style.borderStyle = this.container.classList.contains('menu-container-fadeout') ? 'none' : 'solid';
+      if (this.container && this.menu) {
+        this.container.classList.toggle('menu-container-fadeout');
+        this.container.classList.toggle('menu-container-fadein');
+        this.menu.style.borderStyle = this.container.classList.contains('menu-container-fadeout') ? 'none' : 'solid';
+      }
     });
 
     this.menu.appendChild(this.container);
@@ -129,40 +133,42 @@ class Menu {
   }
 
   get width() {
-    return this.menu.offsetWidth;
+    return this.menu?.offsetWidth || 0;
   }
 
   get height() {
-    return this.menu.offsetHeight;
+    return this.menu?.offsetHeight || 0;
   }
 
   hide() {
-    if (this.container.classList.contains('menu-container-fadein')) {
+    if (this.container && this.container.classList.contains('menu-container-fadein')) {
       this.container.classList.toggle('menu-container-fadeout');
       this.container.classList.toggle('menu-container-fadein');
     }
   }
 
   visible() {
-    return (this.container.classList.contains('menu-container-fadein'));
+    return (this.container ? this.container.classList.contains('menu-container-fadein') : false);
   }
 
   toggle(evt) {
-    this.container.classList.toggle('menu-container-fadeout');
-    this.container.classList.toggle('menu-container-fadein');
-    if (this.container.classList.contains('menu-container-fadein') && evt) {
-      const x = evt.x || (evt.touches && evt.touches[0] ? evt.touches[0].pageX : null);
-      // const y = evt.y || (evt.touches && evt.touches[0] ? evt.touches[0].pageY : null);
-      if (x) this.menu.style.left = `${x - (this.menu.offsetWidth / 2)}px`;
-      // if (y) this.menu.style.top = '5.5rem'; // `${evt.y + 55}px`;
-      if (this.menu.offsetLeft < 0) this.menu.style.left = 0;
-      if ((this.menu.offsetLeft + this.menu.offsetWidth) > window.innerWidth) {
-        this.menu.style.left = null;
-        this.menu.style.right = 0;
+    if (this.container && this.menu) {
+      this.container.classList.toggle('menu-container-fadeout');
+      this.container.classList.toggle('menu-container-fadein');
+      if (this.container.classList.contains('menu-container-fadein') && evt) {
+        const x = evt.x || (evt.touches && evt.touches[0] ? evt.touches[0].pageX : null);
+        // const y = evt.y || (evt.touches && evt.touches[0] ? evt.touches[0].pageY : null);
+        if (x) this.menu.style.left = `${x - (this.menu.offsetWidth / 2)}px`;
+        // if (y) this.menu.style.top = '5.5rem'; // `${evt.y + 55}px`;
+        if (this.menu.offsetLeft < 0) this.menu.style.left = '0';
+        if ((this.menu.offsetLeft + this.menu.offsetWidth) > window.innerWidth) {
+          this.menu.style.left = '';
+          this.menu.style.right = '0';
+        }
+        this.menu.style.borderStyle = 'solid';
+      } else {
+        this.menu.style.borderStyle = 'none';
       }
-      this.menu.style.borderStyle = 'solid';
-    } else {
-      this.menu.style.borderStyle = 'none';
     }
   }
 
@@ -171,7 +177,7 @@ class Menu {
     el.className = 'menu-title';
     el.id = this.newID;
     el.innerHTML = title;
-    this.menu.appendChild(el);
+    if (this.menu) this.menu.appendChild(el);
     el.addEventListener('click', () => {
       this.hidden = !this.hidden;
       const all = document.getElementsByClassName('menu');
@@ -187,7 +193,7 @@ class Menu {
     el.className = 'menu-item menu-label';
     el.id = this.newID;
     el.innerHTML = title;
-    this.container.appendChild(el);
+    if (this.container) this.container.appendChild(el);
     return el;
   }
 
@@ -195,10 +201,10 @@ class Menu {
     const el = document.createElement('div');
     el.className = 'menu-item';
     el.innerHTML = `<div class="menu-checkbox"><input class="menu-checkbox" type="checkbox" id="${this.newID}" ${object[variable] ? 'checked' : ''}/><label class="menu-checkbox-label" for="${this.ID}"></label></div>${title}`;
-    this.container.appendChild(el);
+    if (this.container) this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
-      object[variable] = evt.target.checked;
-      if (callback) callback(evt.target.checked);
+      object[variable] = evt.target?.checked;
+      if (callback) callback(evt.target?.checked);
     });
     return el;
   }
@@ -215,9 +221,9 @@ class Menu {
     el.style.fontFamily = document.body.style.fontFamily;
     el.style.fontSize = document.body.style.fontSize;
     el.style.fontVariant = document.body.style.fontVariant;
-    this.container.appendChild(el);
+    if (this.container) this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
-      if (callback) callback(items[evt.target.selectedIndex]);
+      if (callback) callback(items[evt.target?.selectedIndex]);
     });
     return el;
   }
@@ -226,11 +232,13 @@ class Menu {
     const el = document.createElement('div');
     el.className = 'menu-item';
     el.innerHTML = `<input class="menu-range" type="range" id="${this.newID}" min="${min}" max="${max}" step="${step}" value="${object[variable]}">${title}`;
-    this.container.appendChild(el);
+    if (this.container) this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
-      object[variable] = parseInt(evt.target.value) === parseFloat(evt.target.value) ? parseInt(evt.target.value) : parseFloat(evt.target.value);
-      evt.target.setAttribute('value', evt.target.value);
-      if (callback) callback(evt.target.value);
+      if (evt.target) {
+        object[variable] = parseInt(evt.target?.value) === parseFloat(evt.target?.value) ? parseInt(evt.target?.value) : parseFloat(evt.target?.value);
+        evt.target.setAttribute('value', evt.target.value);
+        if (callback) callback(evt.target?.value);
+      }
     });
     el.input = el.children[0];
     return el;
@@ -241,7 +249,7 @@ class Menu {
     el.className = 'menu-item';
     el.id = this.newID;
     if (html) el.innerHTML = html;
-    this.container.appendChild(el);
+    if (this.container) this.container.appendChild(el);
     return el;
   }
 
@@ -254,7 +262,7 @@ class Menu {
     el.type = 'button';
     el.id = this.newID;
     el.innerText = titleOn;
-    this.container.appendChild(el);
+    if (this.container) this.container.appendChild(el);
     el.addEventListener('click', () => {
       if (el.innerText === titleOn) el.innerText = titleOff;
       else el.innerText = titleOn;
@@ -268,7 +276,7 @@ class Menu {
     el.className = 'menu-item';
     el.id = `menu-val-${title}`;
     el.innerText = `${title}: ${val}${suffix}`;
-    this.container.appendChild(el);
+    if (this.container) this.container.appendChild(el);
     return el;
   }
 
@@ -285,7 +293,7 @@ class Menu {
     el.className = 'menu-item menu-chart-title';
     el.id = this.newID;
     el.innerHTML = `<font color=${theme.chartColor}>${title}</font><canvas id="menu-canvas-${id}" class="menu-chart-canvas" width="${width}px" height="${height}px"></canvas>`;
-    this.container.appendChild(el);
+    if (this.container) this.container.appendChild(el);
     return el;
   }
 

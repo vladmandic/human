@@ -26,8 +26,8 @@ const build = require('./build.js');
 const options = {
   key: fs.readFileSync('server/https.key'),
   cert: fs.readFileSync('server/https.crt'),
-  root: '..',
-  default: 'demo/index.html',
+  defaultFolder: 'demo',
+  defaultFile: 'index.html',
   httpPort: 10030,
   httpsPort: 10031,
   insecureHTTPParser: false,
@@ -84,6 +84,7 @@ async function watch() {
 }
 
 // get file content for a valid url request
+/*
 function handle(url) {
   return new Promise(async (resolve) => {
     let obj = { ok: false, file: decodeURI(url) };
@@ -93,20 +94,58 @@ function handle(url) {
       obj.stat = fs.statSync(obj.file);
       if (obj.stat.isFile()) obj.ok = true;
       if (!obj.ok && obj.stat.isDirectory()) {
-        if (fs.existsSync(path.join(obj.file, options.default))) {
-          obj = await handle(path.join(obj.file, options.default));
+        if (fs.existsSync(path.join(obj.file, options.defaultFile))) {
+          obj = await handle(path.join(obj.file, options.defaultFile));
+        } else if (fs.existsSync(path.join(obj.file, options.defaultFolder, options.defaultFile))) {
+          obj = await handle(path.join(obj.file, options.defaultFolder, options.defaultFile));
         } else {
-          obj.ok = obj.stat.isDirectory();
+        obj.ok = obj.stat.isDirectory();
         }
       }
       resolve(obj);
     }
   });
 }
+*/
+
+function handle(url) {
+  const result = { ok: false, stat: {}, file: '' };
+  const checkFile = (f) => {
+    result.file = f;
+    if (fs.existsSync(f)) {
+      result.stat = fs.statSync(f);
+      if (result.stat.isFile()) {
+        result.ok = true;
+        return true;
+      }
+    }
+    return false;
+  }
+  const checkFolder = (f) => {
+    result.file = f;
+    if (fs.existsSync(f)) {
+      result.stat = fs.statSync(f);
+      if (result.stat.isDirectory()) {
+        result.ok = true;
+        return true;
+      }
+    }
+    return false;
+  }
+  return new Promise((resolve) => {
+    if (checkFile(path.join(process.cwd(), url))) resolve(result);
+    else if (checkFile(path.join(process.cwd(), url, options.defaultFile))) resolve(result);
+    else if (checkFile(path.join(process.cwd(), options.defaultFolder, url))) resolve(result);
+    else if (checkFile(path.join(process.cwd(), options.defaultFolder, url, options.defaultFile))) resolve(result);
+    else if (checkFolder(path.join(process.cwd(), url))) resolve(result);
+    else if (checkFolder(path.join(process.cwd(), options.defaultFolder, url))) resolve(result);
+    else resolve(result);
+  });
+}
 
 // process http requests
 async function httpRequest(req, res) {
-  handle(path.join(__dirname, options.root, req.url)).then((result) => {
+  handle(decodeURI(req.url)).then((result) => {
     // get original ip of requestor, regardless if it's behind proxy or not
     const forwarded = (req.headers['forwarded'] || '').match(/for="\[(.*)\]:/);
     const ip = (Array.isArray(forwarded) ? forwarded[1] : null) || req.headers['x-forwarded-for'] || req.ip || req.socket.remoteAddress;
@@ -154,6 +193,7 @@ async function httpRequest(req, res) {
 async function main() {
   log.header();
   await watch();
+  process.chdir(path.join(__dirname, '..'));
   if (options.httpPort && options.httpPort > 0) {
     const server1 = http.createServer(options, httpRequest);
     server1.on('listening', () => log.state('HTTP server listening:', options.httpPort));

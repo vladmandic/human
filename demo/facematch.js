@@ -43,7 +43,7 @@ function log(...msg) {
 async function getFaceDB() {
   // download db with known faces
   try {
-    const res = await fetch('/demo/faces.json');
+    const res = await fetch('/demo/facematch-faces.json');
     db = (res && res.ok) ? await res.json() : [];
     for (const rec of db) {
       rec.embedding = rec.embedding.map((a) => parseFloat(a.toFixed(4)));

@@ -1,7 +1,7 @@
-// import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
-import Human from '../src/human';
-import Menu from './menu.js';
-import GLBench from './gl-bench.js';
+import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
+// import Human from '../src/human'; // import sources directly
+import Menu from './helpers/menu.js';
+import GLBench from './helpers/gl-bench.js';
 
 const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 
@@ -37,7 +37,7 @@ const ui = {
   columns: 2, // when processing sample images create this many columns
   facing: true, // camera facing front or back
   useWorker: false, // use web workers for processing
-  worker: 'worker.js',
+  worker: 'index-worker.js',
   samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'],
   compare: '../assets/sample-me.jpg',
   console: true, // log messages to browser console

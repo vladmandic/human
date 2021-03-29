@@ -9,7 +9,12 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/03/28 mandic00@live.com
+### **HEAD -> main** 2021/03/29 mandic00@live.com
+
+- new icons
+- new serve module and demo structure
+
+### **origin/main** 2021/03/28 mandic00@live.com
 
 - minor rotation calculation fix
 - remove debug output

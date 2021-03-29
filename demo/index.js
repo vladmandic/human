@@ -49,7 +49,7 @@ const ui = {
   camera: {}, // internal, holds details of webcam details
   detectFPS: [], // internal, holds fps values for detection performance
   drawFPS: [], // internal, holds fps values for draw performance
-  buffered: false, // experimental, should output be buffered between frames
+  buffered: true, // experimental, should output be buffered between frames
   drawWarmup: false, // debug only, should warmup image processing be displayed on startup
   drawThread: null, // internl, perform draw operations in a separate thread
   detectThread: null, // internl, perform detect operations in a separate thread

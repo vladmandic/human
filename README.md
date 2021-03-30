@@ -16,8 +16,8 @@
 JavaScript module using TensorFlow/JS Machine Learning library  
 
 - **Browser**:  
-  Compatible with *CPU*, *WebGL*, *WASM* backends  
   Compatible with both desktop and mobile platforms  
+  Compatible with *CPU*, *WebGL*, *WASM* backends  
   Compatible with *WebWorker* execution
 - **NodeJS**:  
   Compatible with both software *tfjs-node* and  
@@ -27,9 +27,14 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 
 <br>
 
+## Demos
+
+- [**Demo Application**](https://vladmandic.github.io/human/demo/index.html)
+- [**Face Extraction, Description, Identification and Matching**](https://vladmandic.github.io/human/demo/facematch.html)
+- [**Face Extraction and 3D Rendering**](https://vladmandic.github.io/human/demo/face3d.html)
+
 ## Project pages
 
-- [**Live Demo**](https://vladmandic.github.io/human/demo/index.html)
 - [**Code Repository**](https://github.com/vladmandic/human)
 - [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
@@ -97,6 +102,10 @@ As presented in the demo application...
 **Face Similarity Matching:**
 
 ![Face Matching](assets/screenshot-facematch.jpg)
+
+**Face3D OpenGL Rendering:**
+
+![Face Matching](assets/screenshot-face3d.jpg)
 
 **468-Point Face Mesh Defails:**  
 

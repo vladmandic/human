@@ -1,6 +1,5 @@
 // @ts-nocheck
 
-import { log } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as fxImage from './imagefx';
 
@@ -17,6 +16,9 @@ let fx = null;
 export function process(input, config): { tensor: tf.Tensor, canvas: OffscreenCanvas | HTMLCanvasElement } {
   let tensor;
   if (!input) throw new Error('Human: Input is missing');
+  if (!(input instanceof tf.Tensor) && !(input instanceof ImageData) && !(input instanceof ImageBitmap) && !(input instanceof HTMLVideoElement) && !(input instanceof HTMLCanvasElement) && !(input instanceof OffscreenCanvas)) {
+    throw new Error('Human: Input type is not recognized');
+  }
   if (input instanceof tf.Tensor) {
     tensor = tf.clone(input);
   } else {
@@ -36,10 +38,7 @@ export function process(input, config): { tensor: tf.Tensor, canvas: OffscreenCa
     else if (config.filter.height > 0) targetWidth = originalWidth * (config.filter.height / originalHeight);
     if (config.filter.height > 0) targetHeight = config.filter.height;
     else if (config.filter.width > 0) targetHeight = originalHeight * (config.filter.width / originalWidth);
-    if (!targetWidth || !targetHeight) {
-      log('Human: invalid input', input);
-      return { tensor: null, canvas: null };
-    }
+    if (!targetWidth || !targetHeight) throw new Error('Human: Input cannot determine dimension');
     if (!inCanvas || (inCanvas.width !== targetWidth) || (inCanvas.height !== targetHeight)) {
       inCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
       if (inCanvas.width !== targetWidth) inCanvas.width = targetWidth;

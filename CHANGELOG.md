@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/03/29 mandic00@live.com
 
+- enable buffering
 - new icons
 - new serve module and demo structure
 

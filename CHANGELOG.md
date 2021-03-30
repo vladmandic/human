@@ -1,6 +1,6 @@
 # @vladmandic/human  
 
-Version: **1.2.5**  
+Version: **1.3.0**  
 Description: **Human: AI-powered 3D Face Detection, Face Description & Recognition, Body Pose Tracking, Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction & Gesture Recognition**  
 
 Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -9,14 +9,13 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/03/29 mandic00@live.com
+### **HEAD -> main** 2021/03/30 mandic00@live.com
 
+- initial work on face3d three.js demo
 - enable buffering
 - new icons
 - new serve module and demo structure
-
-### **origin/main** 2021/03/28 mandic00@live.com
-
+- move gl flags to correct location
 - minor rotation calculation fix
 - remove debug output
 - new face rotation calculations

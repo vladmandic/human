@@ -34,7 +34,7 @@ export function decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFw
     // Else start a new detection instance at the position of the root.
     const keypoints = decodePose.decodePose(root, scoresBuffer, offsetsBuffer, defaultOutputStride, displacementsFwdBuffer, displacementsBwdBuffer);
     const score = getInstanceScore(poses, squaredNmsRadius, keypoints);
-    if (score > scoreThreshold) poses.push({ keypoints, score });
+    if (score > scoreThreshold) poses.push({ keypoints, score: Math.round(100 * score) / 100 });
   }
   return poses;
 }

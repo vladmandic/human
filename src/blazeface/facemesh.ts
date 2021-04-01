@@ -41,9 +41,9 @@ export class MediaPipeFaceMesh {
         (prediction.box.endPoint[1] - prediction.box.startPoint[1]) / input.shape[1],
       ] : [];
       results.push({
-        confidence: prediction.faceConfidence || prediction.boxConfidence || 0,
-        boxConfidence: prediction.boxConfidence,
-        faceConfidence: prediction.faceConfidence,
+        confidence: Math.round(100 * prediction.faceConfidence || 100 * prediction.boxConfidence || 0) / 100,
+        boxConfidence: Math.round(100 * prediction.boxConfidence) / 100,
+        faceConfidence: Math.round(100 * prediction.faceConfidence) / 100,
         box,
         boxRaw,
         mesh,

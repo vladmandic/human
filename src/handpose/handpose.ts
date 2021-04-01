@@ -49,7 +49,7 @@ export class HandPose {
         (prediction.box.bottomRight[0] - prediction.box.topLeft[0]) / input.shape[2],
         (prediction.box.bottomRight[1] - prediction.box.topLeft[1]) / input.shape[1],
       ];
-      hands.push({ confidence: prediction.confidence, box, boxRaw, landmarks: prediction.landmarks, annotations });
+      hands.push({ confidence: Math.round(100 * prediction.confidence) / 100, box, boxRaw, landmarks: prediction.landmarks, annotations });
     }
     return hands;
   }

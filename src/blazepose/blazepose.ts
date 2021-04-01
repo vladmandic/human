@@ -53,5 +53,6 @@ export async function predict(image, config) {
       presence: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 4])))) / 100, // reverse sigmoid value
     });
   }
-  return [{ keypoints }];
+  const score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
+  return [{ score, keypoints }];
 }

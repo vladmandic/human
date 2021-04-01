@@ -58,7 +58,7 @@ async function process(res, inputSize, outputShape, config) {
             const result = {
               id: id++,
               strideSize,
-              score,
+              score: Math.round(100 * score) / 100,
               class: j + 1,
               label: labels[j].label,
               center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
@@ -113,9 +113,9 @@ export async function predict(image, config) {
 
     let objectT;
     if (!config.profile) {
-      if (config.object.enabled) objectT = await model.executeAsync(transpose);
+      if (config.object.enabled) objectT = await model.predict(transpose);
     } else {
-      const profileObject = config.object.enabled ? await tf.profile(() => model.executeAsync(transpose)) : {};
+      const profileObject = config.object.enabled ? await tf.profile(() => model.predict(transpose)) : {};
       objectT = profileObject.result;
       profile.run('object', profileObject);
     }

@@ -12,7 +12,7 @@ const userConfig = {
   profile: false,
   warmup: 'full',
   videoOptimized: false,
-  filter: { enabled: true },
+  filter: { enabled: false },
   face: { enabled: false,
     mesh: { enabled: true },
     iris: { enabled: true },

@@ -3,7 +3,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 
 let model;
-let keypoints = { };
+let keypoints: Array<any> = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 
 const bodyParts = ['head', 'neck', 'rightShoulder', 'rightElbow', 'rightWrist', 'chest', 'leftShoulder', 'leftElbow', 'leftWrist', 'pelvis', 'rightHip', 'rightKnee', 'rightAnkle', 'leftHip', 'leftKnee', 'leftAnkle'];
@@ -56,9 +56,9 @@ export async function predict(image, config) {
     let resT;
 
     if (!config.profile) {
-      if (config.body.enabled) resT = await model.executeAsync(tensor);
+      if (config.body.enabled) resT = await model.predict(tensor);
     } else {
-      const profileT = config.body.enabled ? await tf.profile(() => model.executeAsync(tensor)) : {};
+      const profileT = config.body.enabled ? await tf.profile(() => model.predict(tensor)) : {};
       resT = profileT.result.clone();
       profileT.result.dispose();
       profile.run('body', profileT);
@@ -79,7 +79,7 @@ export async function predict(image, config) {
         if (score > config.body.scoreThreshold) {
           parts.push({
             id,
-            score,
+            score: Math.round(100 * score) / 100,
             part: bodyParts[id],
             positionRaw: {
               xRaw: x / model.inputs[0].shape[2], // x normalized to 0..1
@@ -95,6 +95,7 @@ export async function predict(image, config) {
       stack.forEach((s) => tf.dispose(s));
       keypoints = parts;
     }
-    resolve([{ keypoints }]);
+    const score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
+    resolve([{ score, keypoints }]);
   });
 }

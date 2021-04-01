@@ -11,8 +11,8 @@ const Human = require('../dist/human.node.js').default; // or const Human = requ
 let human = null;
 
 const myConfig = {
-  // backend: 'tensorflow',
-  console: true,
+  backend: 'tensorflow',
+  debug: true,
   videoOptimized: false,
   async: false,
   face: {
@@ -22,17 +22,15 @@ const myConfig = {
     iris: { modelPath: 'file://models/iris.json', enabled: true },
     description: { modelPath: 'file://models/faceres.json', enabled: true },
     emotion: { modelPath: 'file://models/emotion.json', enabled: true },
-    age: { modelPath: 'file://models/age.json', enabled: false },
-    gender: { modelPath: 'file://models/gender.json', enabled: false },
-    embedding: { modelPath: 'file://models/mobileface.json', enabled: false },
   },
-  // body: { modelPath: 'file://models/blazepose.json', enabled: true },
-  body: { modelPath: 'file://models/posenet.json', enabled: true },
   hand: {
     enabled: true,
     detector: { modelPath: 'file://models/handdetect.json' },
     skeleton: { modelPath: 'file://models/handskeleton.json' },
   },
+  // body: { modelPath: 'file://models/efficientpose.json', enabled: true },
+  // body: { modelPath: 'file://models/blazepose.json', enabled: true },
+  body: { modelPath: 'file://models/posenet.json', enabled: true },
   object: { modelPath: 'file://models/nanodet.json', enabled: true },
 };
 
@@ -66,6 +64,29 @@ async function detect(input) {
   // dispose image tensor as we no longer need it
   image.dispose();
   // print data to console
+  log.data('Results:');
+  for (let i = 0; i < result.face.length; i++) {
+    const face = result.face[i];
+    const emotion = face.emotion.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
+    log.data(`  Face: #${i} boxConfidence:${face.boxConfidence} faceConfidence:${face.boxConfidence} age:${face.age} genderConfidence:${face.genderConfidence} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
+  }
+  for (let i = 0; i < result.body.length; i++) {
+    const body = result.body[i];
+    log.data(`  Body: #${i} score:${body.score}`);
+  }
+  for (let i = 0; i < result.hand.length; i++) {
+    const hand = result.hand[i];
+    log.data(`  Hand: #${i} confidence:${hand.confidence}`);
+  }
+  for (let i = 0; i < result.gesture.length; i++) {
+    const [key, val] = Object.entries(result.gesture[i]);
+    log.data(`  Gesture: ${key[0]}#${key[1]} gesture:${val[1]}`);
+  }
+  for (let i = 0; i < result.object.length; i++) {
+    const object = result.object[i];
+    log.data(`  Object: #${i} score:${object.score} label:${object.label}`);
+  }
+  result.face.length = 0;
   return result;
 }
 

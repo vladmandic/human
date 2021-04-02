@@ -186,6 +186,23 @@ async function main() {
   log('Enumerated:', images.length, 'images');
   for (let i = 0; i < images.length; i++) await process(i, images[i]);
 
+  // could not dynamically enumerate images so using static list
+  if (images.length === 0) {
+    images = [
+      '/assets/sample1.jpg',
+      '/assets/sample2.jpg',
+      '/assets/sample3.jpg',
+      '/assets/sample4.jpg',
+      '/assets/sample5.jpg',
+      '/assets/sample6.jpg',
+      '/assets/sample6.jpg',
+      '/assets/sample-me.jpg',
+      '/assets/human-sample-face.jpg',
+      '/assets/human-sample-upper.jpg',
+      '/assets/human-sample-body.jpg',
+    ];
+  }
+
   // print stats
   const num = all.reduce((prev, cur) => prev += cur.length, 0);
   log('Extracted faces:', num, 'from images:', all.length);

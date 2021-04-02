@@ -9,6 +9,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/04/02 mandic00@live.com
+
+- normalize all scores
+
 ### **1.3.1** 2021/03/30 mandic00@live.com
 
 - added face3d demo

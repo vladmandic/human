@@ -16,7 +16,16 @@ let fx = null;
 export function process(input, config): { tensor: tf.Tensor, canvas: OffscreenCanvas | HTMLCanvasElement } {
   let tensor;
   if (!input) throw new Error('Human: Input is missing');
-  if (!(input instanceof tf.Tensor) && !(input instanceof ImageData) && !(input instanceof ImageBitmap) && !(input instanceof HTMLVideoElement) && !(input instanceof HTMLCanvasElement) && !(input instanceof OffscreenCanvas)) {
+  if (
+    !(input instanceof tf.Tensor)
+    && !(input instanceof Image)
+    && !(input instanceof ImageData)
+    && !(input instanceof ImageBitmap)
+    && !(input instanceof HTMLImageElement)
+    && !(input instanceof HTMLVideoElement)
+    && !(input instanceof HTMLCanvasElement)
+    && !(input instanceof OffscreenCanvas)
+  ) {
     throw new Error('Human: Input type is not recognized');
   }
   if (input instanceof tf.Tensor) {

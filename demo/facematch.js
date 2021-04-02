@@ -201,6 +201,7 @@ async function main() {
       '/assets/human-sample-upper.jpg',
       '/assets/human-sample-body.jpg',
     ];
+    log('Adding static image list:', images.length, 'images');
   }
 
   // print stats

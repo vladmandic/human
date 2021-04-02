@@ -182,9 +182,7 @@ async function main() {
   dir = (res && res.ok) ? await res.json() : [];
   images = images.concat(dir.filter((img) => (img.endsWith('.jpg'))));
 
-  // download and analyze all images
   log('Enumerated:', images.length, 'images');
-  for (let i = 0; i < images.length; i++) await process(i, images[i]);
 
   // could not dynamically enumerate images so using static list
   if (images.length === 0) {
@@ -203,6 +201,9 @@ async function main() {
     ];
     log('Adding static image list:', images.length, 'images');
   }
+
+  // download and analyze all images
+  for (let i = 0; i < images.length; i++) await process(i, images[i]);
 
   // print stats
   const num = all.reduce((prev, cur) => prev += cur.length, 0);

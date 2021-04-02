@@ -134,6 +134,19 @@ async function setupCamera() {
   const stream = await navigator.mediaDevices.getUserMedia(constraints);
   if (stream) video.srcObject = stream;
   else return null;
+  // get information data
+  const track = stream.getVideoTracks()[0];
+  const settings = track.getSettings();
+  // log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight }, 'settings:', settings, 'track:', track);
+  const engineData = human.tf.engine();
+  const gpuData = (engineData.backendInstance && engineData.backendInstance.numBytesInGPU > 0) ? `gpu: ${(engineData.backendInstance.numBytesInGPU ? engineData.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
+  const cameraData = { name: track.label?.toLowerCase(), width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
+  const memoryData = `system: ${engineData.state.numBytes.toLocaleString()} bytes ${gpuData} | tensors: ${engineData.state.numTensors.toLocaleString()}`;
+  document.getElementById('log').innerHTML = `
+  video: ${cameraData.name} | facing: ${cameraData.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${cameraData.width} x ${cameraData.height}<br>
+  backend: ${human.tf.getBackend()} | ${memoryData}<br>
+  `;
+  // return when camera is ready
   return new Promise((resolve) => {
     video.onloadeddata = async () => {
       video.width = video.videoWidth;
@@ -147,6 +160,7 @@ async function setupCamera() {
 }
 
 async function main() {
+  await human.load();
   const video = await setupCamera();
   if (video) {
     const videoTexture = new VideoTexture(video); // now load textures from video

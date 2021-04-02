@@ -43,7 +43,8 @@ function log(...msg) {
 async function getFaceDB() {
   // download db with known faces
   try {
-    const res = await fetch('/demo/facematch-faces.json');
+    let res = await fetch('/demo/facematch-faces.json');
+    if (!res || !res.ok) res = await fetch('/human/demo/facematch-faces.json');
     db = (res && res.ok) ? await res.json() : [];
     for (const rec of db) {
       rec.embedding = rec.embedding.map((a) => parseFloat(a.toFixed(4)));
@@ -171,7 +172,9 @@ async function main() {
   let res;
   let images = [];
   let dir = [];
+  // load face descriptor database
   await getFaceDB();
+
   // enumerate all sample images in /assets
   res = await fetch('/assets');
   dir = (res && res.ok) ? await res.json() : [];
@@ -185,24 +188,25 @@ async function main() {
   res = await fetch('/private/err');
   dir = (res && res.ok) ? await res.json() : [];
   images = images.concat(dir.filter((img) => (img.endsWith('.jpg'))));
-
   log('Enumerated:', images.length, 'images');
 
   // could not dynamically enumerate images so using static list
   if (images.length === 0) {
     images = [
-      '/human/assets/sample1.jpg',
-      '/human/assets/sample2.jpg',
-      '/human/assets/sample3.jpg',
-      '/human/assets/sample4.jpg',
-      '/human/assets/sample5.jpg',
-      '/human/assets/sample6.jpg',
-      '/human/assets/sample6.jpg',
-      '/human/assets/sample-me.jpg',
-      '/human/assets/human-sample-face.jpg',
-      '/human/assets/human-sample-upper.jpg',
-      '/human/assets/human-sample-body.jpg',
+      'sample1.jpg',
+      'sample2.jpg',
+      'sample3.jpg',
+      'sample4.jpg',
+      'sample5.jpg',
+      'sample6.jpg',
+      'sample6.jpg',
+      'sample-me.jpg',
+      'human-sample-face.jpg',
+      'human-sample-upper.jpg',
+      'human-sample-body.jpg',
     ];
+    // add prefix for gitpages
+    images = images.map((a) => `/human/assets/${a}`);
     log('Adding static image list:', images.length, 'images');
   }
 

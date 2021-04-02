@@ -147,6 +147,10 @@ async function process(index, image) {
         resolve(true);
       });
     };
+    img.onerror = () => {
+      log('Add image error:', index + 1, image);
+      resolve(false);
+    };
     img.title = image;
     img.src = encodeURI(image);
   });
@@ -187,17 +191,17 @@ async function main() {
   // could not dynamically enumerate images so using static list
   if (images.length === 0) {
     images = [
-      '/assets/sample1.jpg',
-      '/assets/sample2.jpg',
-      '/assets/sample3.jpg',
-      '/assets/sample4.jpg',
-      '/assets/sample5.jpg',
-      '/assets/sample6.jpg',
-      '/assets/sample6.jpg',
-      '/assets/sample-me.jpg',
-      '/assets/human-sample-face.jpg',
-      '/assets/human-sample-upper.jpg',
-      '/assets/human-sample-body.jpg',
+      '/human/assets/sample1.jpg',
+      '/human/assets/sample2.jpg',
+      '/human/assets/sample3.jpg',
+      '/human/assets/sample4.jpg',
+      '/human/assets/sample5.jpg',
+      '/human/assets/sample6.jpg',
+      '/human/assets/sample6.jpg',
+      '/human/assets/sample-me.jpg',
+      '/human/assets/human-sample-face.jpg',
+      '/human/assets/human-sample-upper.jpg',
+      '/human/assets/human-sample-body.jpg',
     ];
     log('Adding static image list:', images.length, 'images');
   }

@@ -90,7 +90,7 @@ function resize(input) {
   camera.bottom = -height / 2;
   camera.near = -100;
   camera.far = 100;
-  camera.zoom = 3;
+  camera.zoom = 2;
   camera.updateProjectionMatrix();
   renderer.setSize(width, height);
 }

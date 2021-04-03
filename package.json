@@ -42,6 +42,8 @@
     "emotion-detection",
     "gender-prediction",
     "gesture-recognition",
+    "age-gender",
+    "faceapi",
     "face",
     "person",
     "tensorflowjs",

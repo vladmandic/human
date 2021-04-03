@@ -1,8 +1,9 @@
-![Version](https://img.shields.io/github/package-json/v/vladmandic/human?style=flat-square?svg=true)
-![Last Commit](https://img.shields.io/github/last-commit/vladmandic/human?style=flat-square?svg=true)
-![License](https://img.shields.io/github/license/vladmandic/human?style=flat-square?svg=true)
-![GitHub Status Checks](https://img.shields.io/github/checks-status/vladmandic/human/main?style=flat-square?svg=true)
-![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/vladmandic/human?style=flat-square?svg=true)
+![Git Version](https://img.shields.io/github/package-json/v/vladmandic/human?style=flat-square&svg=true&label=git)
+![NPM Version](https://img.shields.io/npm/v/@vladmandic/human.png?style=flat-square)
+![Last Commit](https://img.shields.io/github/last-commit/vladmandic/human?style=flat-square&svg=true)
+![License](https://img.shields.io/github/license/vladmandic/human?style=flat-square&svg=true)
+![GitHub Status Checks](https://img.shields.io/github/checks-status/vladmandic/human/main?style=flat-square&svg=true)
+![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/vladmandic/human?style=flat-square&svg=true)
 
 # Human Library
 
@@ -177,6 +178,8 @@ and [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/h
 
 <br>
 
-![Downloads](https://img.shields.io/npm/dm/@vladmandic/human?style=flat-square?svg=true)
-![Stars](https://img.shields.io/github/stars/vladmandic/human?style=flat-square?svg=true)
-![Code Size](https://img.shields.io/github/languages/code-size/vladmandic/human?style=flat-square?svg=true)
+![Stars](https://img.shields.io/github/stars/vladmandic/human?style=flat-square&svg=true)
+![Code Size](https://img.shields.io/github/languages/code-size/vladmandic/human?style=flat-square&svg=true)
+![Downloads](https://img.shields.io/npm/dw/@vladmandic/human.png?style=flat-square)
+![Downloads](https://img.shields.io/npm/dm/@vladmandic/human.png?style=flat-square)
+![Downloads](https://img.shields.io/npm/dy/@vladmandic/human.png?style=flat-square)

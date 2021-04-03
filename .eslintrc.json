@@ -24,7 +24,7 @@
     "plugin:@typescript-eslint/recommended",
     "airbnb-base"
   ],
-  "ignorePatterns": [ "dist", "assets", "media", "models", "node_modules" ],
+  "ignorePatterns": [ "dist", "assets", "media", "models", "node_modules", "demo/helpers" ],
   "rules": {
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",

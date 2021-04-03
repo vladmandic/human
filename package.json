@@ -25,7 +25,7 @@
     "dev": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/serve.js",
     "build": "rimraf dist/* typedoc/* types/* && node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/build.js",
     "lint": "eslint src server demo",
-    "test": "npm run lint && npm run start"
+    "test": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation test/test-node.js"
   },
   "keywords": [
     "tensorflowjs",

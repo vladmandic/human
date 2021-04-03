@@ -120,7 +120,7 @@ function handle(url) {
       }
     }
     return false;
-  }
+  };
   const checkFolder = (f) => {
     result.file = f;
     if (fs.existsSync(f)) {
@@ -131,7 +131,7 @@ function handle(url) {
       }
     }
     return false;
-  }
+  };
   return new Promise((resolve) => {
     if (checkFile(path.join(process.cwd(), url))) resolve(result);
     else if (checkFile(path.join(process.cwd(), url, options.defaultFile))) resolve(result);

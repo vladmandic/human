@@ -28,11 +28,13 @@
     "test": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation test/test-node.js"
   },
   "keywords": [
-    "tensorflowjs",
+    "human",
+    "face-api",
     "face-detection",
     "face-geometry",
     "face-embedding",
     "face-recognition",
+    "face-description",
     "body-tracking",
     "hand-tracking",
     "iris-tracking",
@@ -40,9 +42,11 @@
     "emotion-detection",
     "gender-prediction",
     "gesture-recognition",
-    "human",
     "face",
-    "person"
+    "person",
+    "tensorflowjs",
+    "tfjs",
+    "tensorflow"
   ],
   "devDependencies": {
     "@microsoft/api-extractor": "^7.13.2",
@@ -62,7 +66,7 @@
     "@vladmandic/pilogger": "^0.2.15",
     "chokidar": "^3.5.1",
     "dayjs": "^1.10.4",
-    "esbuild": "^0.11.2",
+    "esbuild": "^0.11.4",
     "eslint": "^7.23.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",

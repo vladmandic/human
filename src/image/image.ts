@@ -18,13 +18,13 @@ export function process(input, config): { tensor: tf.Tensor, canvas: OffscreenCa
   if (!input) throw new Error('Human: Input is missing');
   if (
     !(input instanceof tf.Tensor)
-    && !(input instanceof Image)
-    && !(input instanceof ImageData)
-    && !(input instanceof ImageBitmap)
-    && !(input instanceof HTMLImageElement)
-    && !(input instanceof HTMLVideoElement)
-    && !(input instanceof HTMLCanvasElement)
-    && !(input instanceof OffscreenCanvas)
+    && !(typeof Image !== 'undefined' && input instanceof Image)
+    && !(typeof ImageData !== 'undefined' && input instanceof ImageData)
+    && !(typeof ImageBitmap !== 'undefined' && input instanceof ImageBitmap)
+    && !(typeof HTMLImageElement !== 'undefined' && input instanceof HTMLImageElement)
+    && !(typeof HTMLVideoElement !== 'undefined' && input instanceof HTMLVideoElement)
+    && !(typeof HTMLCanvasElement !== 'undefined' && input instanceof HTMLCanvasElement)
+    && !(typeof OffscreenCanvas !== 'undefined' && input instanceof OffscreenCanvas)
   ) {
     throw new Error('Human: Input type is not recognized');
   }
@@ -107,14 +107,21 @@ export function process(input, config): { tensor: tf.Tensor, canvas: OffscreenCa
       if (fx) fx = null;
     }
     let pixels;
-    if (outCanvas.data) {
+    if (outCanvas.data) { // if we have data, just convert to tensor
       const shape = [outCanvas.height, outCanvas.width, 3];
       pixels = tf.tensor3d(outCanvas.data, shape, 'int32');
-    } else if ((config.backend === 'webgl') || (outCanvas instanceof ImageData)) {
-      // tf kernel-optimized method to get imagedata, also if input is imagedata, just use it
+    } else if (outCanvas instanceof ImageData) { // if input is imagedata, just use it
       pixels = tf.browser.fromPixels(outCanvas);
-    } else {
-      // cpu and wasm kernel does not implement efficient fromPixels method nor we can use canvas as-is, so we do a silly one more canvas
+    } else if (config.backend === 'webgl' || config.backend === 'humangl') { // tf kernel-optimized method to get imagedata
+      // we can use canvas as-is as it already has a context, so we do a silly one more canvas
+      const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
+      tempCanvas.width = targetWidth;
+      tempCanvas.height = targetHeight;
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx?.drawImage(outCanvas, 0, 0);
+      pixels = tf.browser.fromPixels(tempCanvas);
+    } else { // cpu and wasm kernel does not implement efficient fromPixels method
+      // we can use canvas as-is as it already has a context, so we do a silly one more canvas
       const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
       tempCanvas.width = targetWidth;
       tempCanvas.height = targetHeight;

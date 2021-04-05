@@ -189,6 +189,9 @@ async function drawResults(input) {
 async function setupCamera() {
   if (ui.busy) return null;
   ui.busy = true;
+  const viewportScale = Math.min(1, Math.round(100 * window.outerWidth / 700) / 100);
+  log('demo viewport scale:', viewportScale);
+  document.querySelector('meta[name=viewport]').setAttribute('content', `width=device-width, shrink-to-fit=no; initial-scale=${viewportScale}`);
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const output = document.getElementById('log');
@@ -569,6 +572,7 @@ async function main() {
     const res = await human.warmup(userConfig); // this is not required, just pre-warms all models for faster initial inference
     if (res && res.canvas && ui.drawWarmup) await drawWarmup(res);
   }
+  await setupCamera();
   status('human: ready');
   document.getElementById('loader').style.display = 'none';
   document.getElementById('play').style.display = 'block';

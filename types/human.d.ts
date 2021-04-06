@@ -16,7 +16,7 @@ export declare type Tensor = typeof tf.Tensor;
 export type { Config } from './config';
 export type { Result } from './result';
 /** Defines all possible input types for **Human** detection */
-export declare type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
+export declare type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 /** Error message */
 export declare type Error = {
     error: string;

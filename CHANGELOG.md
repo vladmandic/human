@@ -9,8 +9,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/04/05 mandic00@live.com
+### **HEAD -> main** 2021/04/06 mandic00@live.com
 
+- add dynamic viewport and fix web worker
+- add cdn links
 
 ### **1.3.4** 2021/04/04 mandic00@live.com
 

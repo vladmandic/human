@@ -28,7 +28,8 @@ export type Tensor = typeof tf.Tensor;
 export type { Config } from './config';
 export type { Result } from './result';
 /** Defines all possible input types for **Human** detection */
-export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
+export type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
+
 /** Error message */
 export type Error = { error: string };
 /** Instance of TensorFlow/JS */

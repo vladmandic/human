@@ -22,6 +22,7 @@ export function process(input, config): { tensor: tf.Tensor, canvas: OffscreenCa
     && !(typeof ImageData !== 'undefined' && input instanceof ImageData)
     && !(typeof ImageBitmap !== 'undefined' && input instanceof ImageBitmap)
     && !(typeof HTMLImageElement !== 'undefined' && input instanceof HTMLImageElement)
+    && !(typeof HTMLMediaElement !== 'undefined' && input instanceof HTMLMediaElement)
     && !(typeof HTMLVideoElement !== 'undefined' && input instanceof HTMLVideoElement)
     && !(typeof HTMLCanvasElement !== 'undefined' && input instanceof HTMLCanvasElement)
     && !(typeof OffscreenCanvas !== 'undefined' && input instanceof OffscreenCanvas)

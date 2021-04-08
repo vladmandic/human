@@ -197,8 +197,9 @@ and [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/h
 <br>
 
 ![Stars](https://img.shields.io/github/stars/vladmandic/human?style=flat-square&svg=true)
+![Forks](https://badgen.net/github/forks/vladmandic/human)
 ![Code Size](https://img.shields.io/github/languages/code-size/vladmandic/human?style=flat-square&svg=true)
-![CDN](https://data.jsdelivr.com/v1/package/npm/@vladmandic/human/badge)
+![CDN](https://data.jsdelivr.com/v1/package/npm/@vladmandic/human/badge)<br>
 ![Downloads](https://img.shields.io/npm/dw/@vladmandic/human.png?style=flat-square)
 ![Downloads](https://img.shields.io/npm/dm/@vladmandic/human.png?style=flat-square)
 ![Downloads](https://img.shields.io/npm/dy/@vladmandic/human.png?style=flat-square)

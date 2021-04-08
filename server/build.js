@@ -223,7 +223,7 @@ async function build(f, msg, dev = false) {
     for (const [targetGroupName, targetGroup] of Object.entries(targets)) {
       for (const [targetName, targetOptions] of Object.entries(targetGroup)) {
         // if triggered from watch mode, rebuild only browser bundle
-        if ((require.main !== module) && ((targetGroupName === 'browserNoBundle') || (targetGroupName === 'nodeGPU'))) continue;
+        // if ((require.main !== module) && ((targetGroupName === 'browserNoBundle') || (targetGroupName === 'nodeGPU'))) continue;
         const meta = dev
           // @ts-ignore
           ? await esbuild.build({ ...config.common, ...config.debug, ...targetOptions })

@@ -1,5 +1,6 @@
+/* global tf */
 import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
-// import Human from '../src/human'; // import sources directly
+// import Human from '../dist/human.esm-nobundle.js'; // this requires that tf is loaded manually and bundled before human can be used
 import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
 
@@ -27,8 +28,6 @@ const userConfig = {
   object: { enabled: true },
 };
 */
-
-const human = new Human(userConfig);
 
 // ui options
 const ui = {
@@ -88,6 +87,12 @@ function status(msg) {
   // eslint-disable-next-line no-console
   const div = document.getElementById('status');
   if (div) div.innerText = msg;
+}
+
+const human = new Human(userConfig);
+if (typeof tf !== 'undefined') {
+  log('TensorFlow external version:', tf.version);
+  human.tf = tf; // use externally loaded version of tfjs
 }
 
 const compare = { enabled: false, original: null };
@@ -190,7 +195,7 @@ async function setupCamera() {
   if (ui.busy) return null;
   ui.busy = true;
   const viewportScale = Math.min(1, Math.round(100 * window.outerWidth / 700) / 100);
-  log('demo viewport scale:', viewportScale);
+  // log('demo viewport scale:', viewportScale);
   document.querySelector('meta[name=viewport]').setAttribute('content', `width=device-width, shrink-to-fit=no; initial-scale=${viewportScale}`);
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');

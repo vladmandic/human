@@ -114,12 +114,30 @@ As presented in the demo application...
 
 <br><hr><br>
 
+## Quick Start
+
+Simply load `Human` directly from a CDN in your HTML file:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/human/dist/human.js"></script>
+```
+
+or
+
+```html
+<script src="https://unpkg.dev/@vladmandic/human/dist/human.js"></script>
+```
+
+For details, including how to use `Browser ESM` version or `NodeJS` version of `Human`, see [**Installation**](https://github.com/vladmandic/human/wiki/Install)
+
+<br>
+
+## Example
+
 Example simple app that uses Human to process video input and  
 draw output on screen using internal draw helper functions
 
 ```js
-import Human from '@vladmandic/human';
-
 // create instance of human with simple configuration using default values
 const config = { backend: 'webgl' };
 const human = new Human(config);
@@ -139,7 +157,7 @@ function detectVideo() {
     human.draw.body(outputCanvas, result.body);
     human.draw.hand(outputCanvas, result.hand);
     human.draw.gesture(outputCanvas, result.gesture);
-    // loop immediate to next frame
+    // and loop immediate to next frame
     requestAnimationFrame(detectVideo);
   });
 }

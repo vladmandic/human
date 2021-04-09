@@ -1,8 +1,8 @@
 export declare const config: {
     name: string;
     priority: number;
-    canvas: null;
-    gl: null;
+    canvas: OffscreenCanvas | HTMLCanvasElement | null;
+    gl: any;
     width: number;
     height: number;
     webGLattr: {

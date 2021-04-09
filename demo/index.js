@@ -5,6 +5,7 @@ import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
 
 const userConfig = { backend: 'webgl' }; // add any user configuration overrides
+let human;
 
 /*
 const userConfig = {
@@ -42,6 +43,7 @@ const ui = {
   console: true, // log messages to browser console
   maxFPSframes: 10, // keep fps history for how many frames
   modelsPreload: true, // preload human models on startup
+  modelsWarmup: true, // warmup human models on startup
   busy: false, // internal camera busy flag
   menuWidth: 0, // internal
   menuHeight: 0, // internal
@@ -87,12 +89,6 @@ function status(msg) {
   // eslint-disable-next-line no-console
   const div = document.getElementById('status');
   if (div) div.innerText = msg;
-}
-
-const human = new Human(userConfig);
-if (typeof tf !== 'undefined') {
-  log('TensorFlow external version:', tf.version);
-  human.tf = tf; // use externally loaded version of tfjs
 }
 
 const compare = { enabled: false, original: null };
@@ -564,20 +560,57 @@ async function drawWarmup(res) {
 
 async function main() {
   log('demo starting ...');
+
+  // parse url search params
+  const params = new URLSearchParams(location.search);
+  log('url options:', params.toString());
+  if (params.has('worker')) {
+    ui.useWorker = JSON.parse(params.get('worker'));
+    log('overriding worker:', ui.useWorker);
+  }
+  if (params.has('backend')) {
+    userConfig.backend = JSON.parse(params.get('backend'));
+    log('overriding backend:', userConfig.backend);
+  }
+  if (params.has('preload')) {
+    ui.modelsPreload = JSON.parse(params.get('preload'));
+    log('overriding preload:', ui.modelsPreload);
+  }
+  if (params.has('warmup')) {
+    ui.modelsWarmup = JSON.parse(params.get('warmup'));
+    log('overriding warmup:', ui.modelsWarmup);
+  }
+
+  // create instance of human
+  human = new Human(userConfig);
+  if (typeof tf !== 'undefined') {
+    log('TensorFlow external version:', tf.version);
+    human.tf = tf; // use externally loaded version of tfjs
+  }
+
+  // setup main menu
   setupMenu();
   document.getElementById('log').innerText = `Human: version ${human.version}`;
+
+  // preload models
   if (ui.modelsPreload && !ui.useWorker) {
     status('loading');
     await human.load(userConfig); // this is not required, just pre-loads all models
     const loaded = Object.keys(human.models).filter((a) => human.models[a]);
     log('demo loaded models:', loaded);
   }
-  if (!ui.useWorker) {
+
+  // warmup models
+  if (ui.modelsWarmup && !ui.useWorker) {
     status('initializing');
     const res = await human.warmup(userConfig); // this is not required, just pre-warms all models for faster initial inference
     if (res && res.canvas && ui.drawWarmup) await drawWarmup(res);
   }
+
+  // setup camera
   await setupCamera();
+
+  // ready
   status('human: ready');
   document.getElementById('loader').style.display = 'none';
   document.getElementById('play').style.display = 'block';

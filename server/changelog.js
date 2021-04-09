@@ -21,8 +21,8 @@ Repository: **<${app.repository.url}>**
 
 async function update(f) {
   const gitLog = await git.log();
-  // @ts-ignore
-  const log = gitLog.all.sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()));
+  const entries = [...gitLog.all];
+  const log = entries.sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()));
 
   let previous = '';
   const headings = [];

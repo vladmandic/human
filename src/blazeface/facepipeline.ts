@@ -41,7 +41,6 @@ function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
   for (let i = 0; i < coords.MESH_TO_IRIS_INDICES_MAP.length; i++) {
     const { key, indices } = coords.MESH_TO_IRIS_INDICES_MAP[i];
     const originalIndices = coords.MESH_ANNOTATIONS[`${prefix}${key}`];
-    // @ts-ignore
     if (!keys || keys.includes(key)) {
       for (let j = 0; j < indices.length; j++) {
         const index = indices[j];

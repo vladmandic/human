@@ -184,8 +184,7 @@ async function compile(entryPoint, options) {
     .getPreEmitDiagnostics(program)
     .concat(emit.diagnostics);
   for (const info of diag) {
-    // @ts-ignore
-    const msg = info.messageText.messageText || info.messageText;
+    const msg = info.messageText['messageText'] || info.messageText;
     if (msg.includes('package.json')) continue;
     if (info.file) {
       const pos = info.file.getLineAndCharacterOfPosition(info.start || 0);
@@ -225,9 +224,9 @@ async function build(f, msg, dev = false) {
         // if triggered from watch mode, rebuild only browser bundle
         // if ((require.main !== module) && ((targetGroupName === 'browserNoBundle') || (targetGroupName === 'nodeGPU'))) continue;
         const meta = dev
-          // @ts-ignore
+          // @ts-ignore // eslint-typescript complains about string enums used in js code
           ? await esbuild.build({ ...config.common, ...config.debug, ...targetOptions })
-          // @ts-ignore
+          // @ts-ignore // eslint-typescript complains about string enums used in js code
           : await esbuild.build({ ...config.common, ...config.production, ...targetOptions });
         const stats = await getStats(meta);
         log.state(`Build for: ${targetGroupName} type: ${targetName}:`, stats);

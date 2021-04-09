@@ -109,6 +109,7 @@ function handle(url) {
 */
 
 function handle(url) {
+  url = url.split(/[?#]/)[0];
   const result = { ok: false, stat: {}, file: '' };
   const checkFile = (f) => {
     result.file = f;

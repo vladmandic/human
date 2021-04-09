@@ -30,9 +30,10 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 
 ## Demos
 
-- [**Demo Application**](https://vladmandic.github.io/human/demo/index.html)
+- [**Main Application**](https://vladmandic.github.io/human/demo/index.html)
 - [**Face Extraction, Description, Identification and Matching**](https://vladmandic.github.io/human/demo/facematch.html)
 - [**Face Extraction and 3D Rendering**](https://vladmandic.github.io/human/demo/face3d.html)
+- [**Details on Demo Applications**](https://github.com/vladmandic/human/wiki/Demos)
 
 ## Project pages
 
@@ -47,7 +48,6 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 ## Wiki pages
 
 - [**Home**](https://github.com/vladmandic/human/wiki)
-- [**Demos**](https://github.com/vladmandic/human/wiki/Demos)
 - [**Installation**](https://github.com/vladmandic/human/wiki/Install)
 - [**Usage & Functions**](https://github.com/vladmandic/human/wiki/Usage)
 - [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration)
@@ -185,7 +185,7 @@ For more info, see [**Configuration Details**](https://github.com/vladmandic/hum
 
 <br><hr><br>
 
-`Human` library is written in `TypeScript` [4.3](https://www.typescriptlang.org/docs/handbook/intro.html)  
+`Human` library is written in `TypeScript` [4.2](https://www.typescriptlang.org/docs/handbook/intro.html)  
 Conforming to `JavaScript` [ECMAScript version 2020](https://www.ecma-international.org/ecma-262/11.0/index.html) standard  
 Build target is `JavaScript` **EMCAScript version 2018**  
 

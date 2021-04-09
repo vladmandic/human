@@ -1,4 +1,4 @@
-import { log } from '../helpers';
+import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 
@@ -10,8 +10,9 @@ const bodyParts = ['head', 'neck', 'rightShoulder', 'rightElbow', 'rightWrist', 
 
 export async function load(config) {
   if (!model) {
-    model = await tf.loadGraphModel(config.body.modelPath);
-    if (config.debug) log(`load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));
+    if (!model || !model.modelUrl) log('load model failed:', config.body.modelPath);
+    else if (config.debug) log('load model:', model.modelUrl);
   }
   return model;
 }

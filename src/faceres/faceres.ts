@@ -1,4 +1,4 @@
-import { log } from '../helpers';
+import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 
@@ -11,8 +11,9 @@ type DB = Array<{ name: string, source: string, embedding: number[] }>;
 
 export async function load(config) {
   if (!model) {
-    model = await tf.loadGraphModel(config.face.description.modelPath);
-    if (config.debug) log(`load model: ${config.face.description.modelPath.match(/\/(.*)\./)[1]}`);
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.face.description.modelPath));
+    if (!model || !model.modelUrl) log('load model failed:', config.face.description.modelPath);
+    else if (config.debug) log('load model:', model.modelUrl);
   }
   return model;
 }

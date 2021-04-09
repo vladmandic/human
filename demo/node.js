@@ -12,26 +12,25 @@ let human = null;
 
 const myConfig = {
   backend: 'tensorflow',
+  modelBasePath: 'file://models/',
   debug: true,
   videoOptimized: false,
   async: false,
   face: {
     enabled: true,
-    detector: { modelPath: 'file://models/blazeface-back.json', enabled: true, rotation: false },
-    mesh: { modelPath: 'file://models/facemesh.json', enabled: true },
-    iris: { modelPath: 'file://models/iris.json', enabled: true },
-    description: { modelPath: 'file://models/faceres.json', enabled: true },
-    emotion: { modelPath: 'file://models/emotion.json', enabled: true },
+    detector: { enabled: true, rotation: false },
+    mesh: { enabled: true },
+    iris: { enabled: true },
+    description: { enabled: true },
+    emotion: { enabled: true },
   },
   hand: {
     enabled: true,
-    detector: { modelPath: 'file://models/handdetect.json' },
-    skeleton: { modelPath: 'file://models/handskeleton.json' },
   },
-  // body: { modelPath: 'file://models/efficientpose.json', enabled: true },
-  // body: { modelPath: 'file://models/blazepose.json', enabled: true },
-  body: { modelPath: 'file://models/posenet.json', enabled: true },
-  object: { modelPath: 'file://models/nanodet.json', enabled: true },
+  // body: { modelPath: 'efficientpose.json', enabled: true },
+  // body: { modelPath: 'blazepose.json', enabled: true },
+  body: { enabled: true },
+  object: { enabled: true },
 };
 
 async function init() {

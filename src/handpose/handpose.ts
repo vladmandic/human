@@ -1,6 +1,4 @@
-// https://storage.googleapis.com/tfjs-models/demos/handpose/index.html
-
-import { log } from '../helpers';
+import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
 import * as handpipeline from './handpipeline';
@@ -57,13 +55,18 @@ export class HandPose {
 
 export async function load(config): Promise<HandPose> {
   const [handDetectorModel, handPoseModel] = await Promise.all([
-    config.hand.enabled ? tf.loadGraphModel(config.hand.detector.modelPath, { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) : null,
-    config.hand.landmarks ? tf.loadGraphModel(config.hand.skeleton.modelPath, { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) : null,
+    config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector.modelPath), { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) : null,
+    config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton.modelPath), { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) : null,
   ]);
   const handDetector = new handdetector.HandDetector(handDetectorModel, handDetectorModel?.inputs[0].shape[2], anchors.anchors);
   const handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel, handPoseModel?.inputs[0].shape[2]);
   const handPose = new HandPose(handPipeline);
-  if (config.hand.enabled && config.debug) log(`load model: ${config.hand.detector.modelPath.match(/\/(.*)\./)[1]}`);
-  if (config.hand.landmarks && config.debug) log(`load model: ${config.hand.skeleton.modelPath.match(/\/(.*)\./)[1]}`);
+
+  if (config.hand.enabled) {
+    if (!handDetectorModel || !handDetectorModel.modelUrl) log('load model failed:', config.hand.detector.modelPath);
+    else if (config.debug) log('load model:', handDetectorModel.modelUrl);
+    if (!handPoseModel || !handPoseModel.modelUrl) log('load model failed:', config.hand.skeleton.modelPath);
+    else if (config.debug) log('load model:', handPoseModel.modelUrl);
+  }
   return handPose;
 }

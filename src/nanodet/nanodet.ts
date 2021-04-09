@@ -1,4 +1,4 @@
-import { log } from '../helpers';
+import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 import { labels } from './labels';
@@ -11,10 +11,11 @@ const scaleBox = 2.5; // increase box size
 
 export async function load(config) {
   if (!model) {
-    model = await tf.loadGraphModel(config.object.modelPath);
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath));
     // @ts-ignore
     model.inputSize = parseInt(Object.values(model.modelSignature['inputs'])[0].tensorShape.dim[2].size);
-    if (config.debug) log(`load model: ${config.object.modelPath.match(/\/(.*)\./)[1]}`);
+    if (!model || !model.modelUrl) log('load model failed:', config.object.modelPath);
+    else if (config.debug) log('load model:', model.modelUrl);
   }
   return model;
 }

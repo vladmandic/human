@@ -1,4 +1,4 @@
-import { log } from '../helpers';
+import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 
@@ -12,9 +12,10 @@ const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when 
 
 export async function load(config) {
   if (!model) {
-    model = await tf.loadGraphModel(config.face.gender.modelPath);
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.face.gender.modelPath));
     alternative = model.inputs[0].shape[3] === 1;
-    if (config.debug) log(`load model: ${config.face.gender.modelPath.match(/\/(.*)\./)[1]}`);
+    if (!model || !model.modelUrl) log('load model failed:', config.face.gender.modelPath);
+    else if (config.debug) log('load model:', model.modelUrl);
   }
   return model;
 }

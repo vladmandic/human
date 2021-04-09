@@ -1,19 +1,17 @@
-// @ts-nocheck
-
 import * as tf from '../../dist/tfjs.esm.js';
 import * as fxImage from './imagefx';
 
 const maxSize = 2048;
 // internal temp canvases
-let inCanvas = null;
-let outCanvas = null;
+let inCanvas;
+let outCanvas;
 // instance of fximage
-let fx = null;
+let fx;
 
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
 // input is resized and run through imagefx filter
-export function process(input, config): { tensor: tf.Tensor, canvas: OffscreenCanvas | HTMLCanvasElement } {
+export function process(input, config): { tensor: typeof tf.Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement } {
   let tensor;
   if (!input) throw new Error('Human: Input is missing');
   if (
@@ -32,8 +30,8 @@ export function process(input, config): { tensor: tf.Tensor, canvas: OffscreenCa
   if (input instanceof tf.Tensor) {
     tensor = tf.clone(input);
   } else {
-    const originalWidth = input.naturalWidth || input.videoWidth || input.width || (input.shape && (input.shape[1] > 0));
-    const originalHeight = input.naturalHeight || input.videoHeight || input.height || (input.shape && (input.shape[2] > 0));
+    const originalWidth = input['naturalWidth'] || input['videoWidth'] || input['width'] || (input['shape'] && (input['shape'][1] > 0));
+    const originalHeight = input['naturalHeight'] || input['videoHeight'] || input['height'] || (input['shape'] && (input['shape'][2] > 0));
     let targetWidth = originalWidth;
     let targetHeight = originalHeight;
     if (targetWidth > maxSize) {
@@ -49,19 +47,19 @@ export function process(input, config): { tensor: tf.Tensor, canvas: OffscreenCa
     if (config.filter.height > 0) targetHeight = config.filter.height;
     else if (config.filter.width > 0) targetHeight = originalHeight * (config.filter.width / originalWidth);
     if (!targetWidth || !targetHeight) throw new Error('Human: Input cannot determine dimension');
-    if (!inCanvas || (inCanvas.width !== targetWidth) || (inCanvas.height !== targetHeight)) {
+    if (!inCanvas || (inCanvas?.width !== targetWidth) || (inCanvas?.height !== targetHeight)) {
       inCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
-      if (inCanvas.width !== targetWidth) inCanvas.width = targetWidth;
-      if (inCanvas.height !== targetHeight) inCanvas.height = targetHeight;
+      if (inCanvas?.width !== targetWidth) inCanvas.width = targetWidth;
+      if (inCanvas?.height !== targetHeight) inCanvas.height = targetHeight;
     }
     const ctx = inCanvas.getContext('2d');
     if (input instanceof ImageData) ctx.putImageData(input, 0, 0);
-    else ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas.width, inCanvas.height);
+    else ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
     if (config.filter.enabled) {
-      if (!fx || !outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas.height !== outCanvas.height)) {
-        outCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(inCanvas.width, inCanvas.height) : document.createElement('canvas');
-        if (outCanvas.width !== inCanvas.width) outCanvas.width = inCanvas.width;
-        if (outCanvas.height !== inCanvas.height) outCanvas.height = inCanvas.height;
+      if (!fx || !outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas?.height !== outCanvas?.height)) {
+        outCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(inCanvas?.width, inCanvas?.height) : document.createElement('canvas');
+        if (outCanvas?.width !== inCanvas?.width) outCanvas.width = inCanvas?.width;
+        if (outCanvas?.height !== inCanvas?.height) outCanvas.height = inCanvas?.height;
         // log('created FX filter');
         fx = tf.ENV.flags.IS_BROWSER ? new fxImage.GLImageFilter({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
       }

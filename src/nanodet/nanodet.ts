@@ -12,8 +12,9 @@ const scaleBox = 2.5; // increase box size
 export async function load(config) {
   if (!model) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath));
-    // @ts-ignore
-    model.inputSize = parseInt(Object.values(model.modelSignature['inputs'])[0].tensorShape.dim[2].size);
+    const inputs = Object.values(model.modelSignature['inputs']);
+    model.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
+    if (!model.inputSize) throw new Error(`Human: Cannot determine model inputSize: ${config.object.modelPath}`);
     if (!model || !model.modelUrl) log('load model failed:', config.object.modelPath);
     else if (config.debug) log('load model:', model.modelUrl);
   }

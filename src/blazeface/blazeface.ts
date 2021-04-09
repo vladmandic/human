@@ -1,4 +1,4 @@
-import { log } from '../helpers';
+import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 
 const NUM_LANDMARKS = 6;
@@ -123,8 +123,9 @@ export class BlazeFaceModel {
 }
 
 export async function load(config) {
-  const blazeface = await tf.loadGraphModel(config.face.detector.modelPath, { fromTFHub: config.face.detector.modelPath.includes('tfhub.dev') });
-  const model = new BlazeFaceModel(blazeface, config);
-  if (config.debug) log(`load model: ${config.face.detector.modelPath.match(/\/(.*)\./)[1]}`);
-  return model;
+  const model = await tf.loadGraphModel(join(config.modelBasePath, config.face.detector.modelPath), { fromTFHub: config.face.detector.modelPath.includes('tfhub.dev') });
+  const blazeFace = new BlazeFaceModel(model, config);
+  if (!model || !model.modelUrl) log('load model failed:', config.face.detector.modelPath);
+  else if (config.debug) log('load model:', model.modelUrl);
+  return blazeFace;
 }

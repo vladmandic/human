@@ -16,6 +16,7 @@ export interface Config {
   scoped: boolean,
   videoOptimized: boolean,
   warmup: string,
+  modelBasePath: string,
   filter: {
     enabled: boolean,
     width: number,
@@ -125,6 +126,7 @@ const config: Config = {
                              // can be 'webgl', 'wasm', 'cpu', or 'humangl' which is a custom version of webgl
                              // leave as empty string to continue using default backend
                              // when backend is set outside of Human library
+  modelBasePath: '../models/', // base path for all models
   wasmPath: '../assets/',    // path for wasm binaries
                              // only used for backend: wasm
   debug: true,               // print additional status messages to console
@@ -185,7 +187,8 @@ const config: Config = {
                              // detector, mesh, iris, age, gender, emotion
                              // (note: module is not loaded until it is required)
     detector: {
-      modelPath: '../models/blazeface-back.json',
+      modelPath: 'blazeface-back.json', // detector model
+                             // can be either absolute path or relative to modelBasePath
       rotation: false,       // use best-guess rotated face image or just box with rotation as-is
                              // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees
                              // this parameter is not valid in nodejs
@@ -209,18 +212,21 @@ const config: Config = {
 
     mesh: {
       enabled: true,
-      modelPath: '../models/facemesh.json',
+      modelPath: 'facemesh.json',  // facemesh model
+                             // can be either absolute path or relative to modelBasePath
     },
 
     iris: {
       enabled: true,
-      modelPath: '../models/iris.json',
+      modelPath: 'iris.json',  // face iris model
+                             // can be either absolute path or relative to modelBasePath
     },
 
     description: {
       enabled: true,         // to improve accuracy of face description extraction it is
                              // recommended to enable detector.rotation and mesh.enabled
-      modelPath: '../models/faceres.json',
+      modelPath: 'faceres.json',  // face description model
+                             // can be either absolute path or relative to modelBasePath
       skipFrames: 31,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },
@@ -229,12 +235,14 @@ const config: Config = {
       enabled: true,
       minConfidence: 0.1,    // threshold for discarding a prediction
       skipFrames: 32,        // how many frames to go without re-running the detector
-      modelPath: '../models/emotion.json',
+      modelPath: 'emotion.json',  // face emotion model
+                             // can be either absolute path or relative to modelBasePath
     },
 
     age: {
       enabled: false,        // obsolete, replaced by description module
-      modelPath: '../models/age.json',
+      modelPath: 'age.json',  // age model
+                             // can be either absolute path or relative to modelBasePath
       skipFrames: 33,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },
@@ -242,20 +250,24 @@ const config: Config = {
     gender: {
       enabled: false,        // obsolete, replaced by description module
       minConfidence: 0.1,    // threshold for discarding a prediction
-      modelPath: '../models/gender.json',
+      modelPath: 'gender.json',  // gender model
+                             // can be either absolute path or relative to modelBasePath
       skipFrames: 34,        // how many frames to go without re-running the detector
                              // only used for video inputs
     },
 
     embedding: {
       enabled: false,        // obsolete, replaced by description module
-      modelPath: '../models/mobileface.json',
-    },
+      modelPath: 'mobileface.json',  // face descriptor model
+                             // can be either absolute path or relative to modelBasePath
+                            },
   },
 
   body: {
     enabled: true,
-    modelPath: '../models/posenet.json', // can be 'posenet', 'blazepose' or 'efficientpose'
+    modelPath: 'posenet.json',  // body model
+                             // can be either absolute path or relative to modelBasePath
+                             // can be 'posenet', 'blazepose' or 'efficientpose'
                              // 'blazepose' and 'efficientpose' are experimental
     maxDetections: 10,       // maximum number of people detected in the input
                              // should be set to the minimum number for performance
@@ -287,16 +299,19 @@ const config: Config = {
                              // should be set to the minimum number for performance
     landmarks: true,         // detect hand landmarks or just hand boundary box
     detector: {
-      modelPath: '../models/handdetect.json',
+      modelPath: 'handdetect.json',  // hand detector model
+                             // can be either absolute path or relative to modelBasePath
     },
     skeleton: {
-      modelPath: '../models/handskeleton.json',
+      modelPath: 'handskeleton.json',  // hand skeleton model
+                             // can be either absolute path or relative to modelBasePath
     },
   },
 
   object: {
     enabled: false,
-    modelPath: '../models/nanodet.json',
+    modelPath: 'nanodet.json',  // object detection model
+                             // can be either absolute path or relative to modelBasePath
                              // 'nanodet' is experimental
     minConfidence: 0.20,     // threshold for discarding a prediction
     iouThreshold: 0.40,      // threshold for deciding whether boxes overlap too much

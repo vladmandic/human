@@ -212,7 +212,7 @@ async function typedoc(entryPoint) {
 async function build(f, msg, dev = false) {
   if (busy) {
     log.state('Build: busy...');
-    setTimeout(() => build(f, msg), 500);
+    setTimeout(() => build(f, msg, dev), 500);
     return;
   }
   busy = true;

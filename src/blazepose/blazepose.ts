@@ -1,4 +1,4 @@
-import { log } from '../helpers';
+import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
 import * as annotations from './annotations';
@@ -7,10 +7,11 @@ let model;
 
 export async function load(config) {
   if (!model) {
-    model = await tf.loadGraphModel(config.body.modelPath);
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));
     model.width = parseInt(model.signature.inputs['input_1:0'].tensorShape.dim[2].size);
     model.height = parseInt(model.signature.inputs['input_1:0'].tensorShape.dim[1].size);
-    if (config.debug) log(`load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
+    if (!model || !model.modelUrl) log('load model failed:', config.body.modelPath);
+    else if (config.debug) log('load model:', model.modelUrl);
   }
   return model;
 }

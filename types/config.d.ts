@@ -13,6 +13,7 @@ export interface Config {
     scoped: boolean;
     videoOptimized: boolean;
     warmup: string;
+    modelBasePath: string;
     filter: {
         enabled: boolean;
         width: number;

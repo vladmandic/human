@@ -23,8 +23,8 @@ const userConfig = {
   hand: { enabled: false },
   gesture: { enabled: false },
   body: { enabled: false },
-  // body: { enabled: true, modelPath: '../models/blazepose.json' },
-  // body: { enabled: true, modelPath: '../models/efficientpose.json' },
+  // body: { enabled: true, modelPath: 'blazepose.json' },
+  // body: { enabled: true, modelPath: 'efficientpose.json' },
   object: { enabled: true },
 };
 */

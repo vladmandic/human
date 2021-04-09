@@ -1,4 +1,4 @@
-import { log } from '../helpers';
+import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as modelBase from './modelBase';
 import * as decodeMultiple from './decodeMultiple';
@@ -58,8 +58,9 @@ export class PoseNet {
 }
 
 export async function load(config) {
-  const model = await tf.loadGraphModel(config.body.modelPath);
+  const model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));
   const mobilenet = new modelBase.BaseModel(model);
-  if (config.debug) log(`load model: ${config.body.modelPath.match(/\/(.*)\./)[1]}`);
+  if (!model || !model.modelUrl) log('load model failed:', config.body.modelPath);
+  else if (config.debug) log('load model:', model.modelUrl);
   return new PoseNet(mobilenet);
 }

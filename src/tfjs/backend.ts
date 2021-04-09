@@ -4,8 +4,8 @@ import * as tf from '../../dist/tfjs.esm.js';
 export const config = {
   name: 'humangl',
   priority: 99,
-  canvas: null,
-  gl: null,
+  canvas: <null | OffscreenCanvas | HTMLCanvasElement>null,
+  gl: <any>null,
   width: 1024,
   height: 1024,
   webGLattr: { // https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2
@@ -24,14 +24,12 @@ export function register(): void {
   if (!tf.findBackend(config.name)) {
     log('backend registration:', config.name);
     try {
-      // @ts-ignore
       config.canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(config.width, config.height) : document.createElement('canvas');
     } catch (err) {
       log('error: cannot create canvas:', err);
       return;
     }
     try {
-      // @ts-ignore
       config.gl = config.canvas.getContext('webgl2', config.webGLattr);
     } catch (err) {
       log('error: cannot get WebGL2 context:', err);
@@ -62,7 +60,6 @@ export function register(): void {
     }
     try {
       tf.ENV.set('WEBGL_VERSION', 2);
-      // @ts-ignore
       // tf.ENV.set('WEBGL_MAX_TEXTURE_SIZE', config.gl.getParameter(config.gl.MAX_TEXTURE_SIZE));
       // tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
       // tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);

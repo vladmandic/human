@@ -124,7 +124,7 @@ export class Human {
       faceres: null,
     };
     // export access to image processing
-    // @ts-ignore
+    // @ts-ignore // typescript cannot infer type
     this.image = (input: Input) => image.process(input, this.config);
     // export raw access to underlying models
     this.classes = {
@@ -214,9 +214,9 @@ export class Human {
         this.models.gender,
         this.models.emotion,
         this.models.embedding,
-        // @ts-ignore
+        // @ts-ignore // typescript cannot infer type
         this.models.handpose,
-        // @ts-ignore false warning with latest @typescript-eslint
+        // @ts-ignore // typescript cannot infer type
         this.models.posenet,
         this.models.blazepose,
         this.models.efficientpose,
@@ -422,15 +422,14 @@ export class Human {
       if (this.config.async) {
         [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
       }
-      process.tensor.dispose();
+      tf.dispose(process.tensor);
 
       if (this.config.scoped) this.tf.engine().endScope();
       this.analyze('End Scope:');
 
-      let gestureRes = [];
+      let gestureRes: any[] = [];
       if (this.config.gesture.enabled) {
         timeStamp = now();
-        // @ts-ignore
         gestureRes = [...gesture.face(faceRes), ...gesture.body(bodyRes), ...gesture.hand(handRes), ...gesture.iris(faceRes)];
         if (!this.config.async) this.perf.gesture = Math.trunc(now() - timeStamp);
         else if (this.perf.gesture) delete this.perf.gesture;
@@ -507,8 +506,8 @@ export class Human {
   #warmupNode = async () => {
     const atob = (str) => Buffer.from(str, 'base64');
     const img = this.config.warmup === 'face' ? atob(sample.face) : atob(sample.body);
-    // @ts-ignore
-    const data = tf.node.decodeJpeg(img); // tf.node is only defined when compiling for nodejs
+    // @ts-ignore // tf.node is only defined when compiling for nodejs
+    const data = tf.node?.decodeJpeg(img);
     const expanded = data.expandDims(0);
     this.tf.dispose(data);
     // log('Input:', expanded);

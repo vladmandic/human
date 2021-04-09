@@ -64,8 +64,7 @@ export const hand = (res) => {
   for (let i = 0; i < res.length; i++) {
     const fingers: Array<{ name: string, position: number }> = [];
     for (const [finger, pos] of Object.entries(res[i]['annotations'])) {
-      // @ts-ignore
-      if (finger !== 'palmBase') fingers.push({ name: finger.toLowerCase(), position: pos[0] }); // get tip of each finger
+      if (finger !== 'palmBase' && Array.isArray(pos)) fingers.push({ name: finger.toLowerCase(), position: pos[0] }); // get tip of each finger
     }
     if (fingers && fingers.length > 0) {
       const closest = fingers.reduce((best, a) => (best.position[2] < a.position[2] ? best : a));

@@ -9,6 +9,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/04/09 mandic00@live.com
+
+- exception handling
+
 ### **1.4.1** 2021/04/09 mandic00@live.com
 
 - add modelbasepath option

@@ -200,9 +200,10 @@ async function typedoc(entryPoint) {
   if (!td) {
     td = new TypeDoc.Application();
     td.options.addReader(new TypeDoc.TSConfigReader());
-    td.bootstrap({ entryPoints: entryPoint, theme: 'wiki/theme/' });
+    td.bootstrap({ entryPoints: [entryPoint], theme: 'wiki/theme/' });
   }
   const project = td.convert();
+  if (!project) log.warn('TypeDoc: convert returned empty project');
   const result = project ? await td.generateDocs(project, 'typedoc') : null;
   if (result) log.warn('TypeDoc:', result);
 }

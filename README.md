@@ -70,7 +70,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 
 *Suggestions are welcome!*  
 
-<br><hr><br>
+<hr><br>
 
 ## Options
 

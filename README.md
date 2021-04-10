@@ -43,8 +43,6 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/human.html)
 - [**Change Log**](https://github.com/vladmandic/human/blob/main/CHANGELOG.md)
 
-<br>
-
 ## Wiki pages
 
 - [**Home**](https://github.com/vladmandic/human/wiki)
@@ -55,8 +53,6 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**Face Recognition & Face Description**](https://github.com/vladmandic/human/wiki/Embedding)
 - [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)
 - [**Common Issues**](https://github.com/vladmandic/human/wiki/Issues)
-
-<br>
 
 ## Additional notes
 

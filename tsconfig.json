@@ -21,7 +21,7 @@
     "allowJs": true
   },
   "formatCodeOptions": { "indentSize": 2, "tabSize": 2 },
-  "include": ["src/*", "src/***/*", "demo/*", "demo/helpers/gl-bench.js", "demo/helpers/menu.js"],
+  "include": ["src/*", "src/***/*"],
   "typedocOptions": {
     "excludePrivate": true,
     "excludeExternals": true,

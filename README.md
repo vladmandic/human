@@ -113,16 +113,13 @@ As presented in the demo application...
 
 ## Quick Start
 
-Simply load `Human` directly from a CDN in your HTML file:
+Simply load `Human` (*IIFE version*) directly from a cloud CDN in your HTML file:  
+(pick one: `jsdelirv`, `unpkg` or `cdnjs`)
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@vladmandic/human/dist/human.js"></script>
-```
-
-or
-
-```html
 <script src="https://unpkg.dev/@vladmandic/human/dist/human.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/human/1.4.1/human.js"></script>
 ```
 
 For details, including how to use `Browser ESM` version or `NodeJS` version of `Human`, see [**Installation**](https://github.com/vladmandic/human/wiki/Install)
@@ -154,9 +151,27 @@ function detectVideo() {
     human.draw.body(outputCanvas, result.body);
     human.draw.hand(outputCanvas, result.hand);
     human.draw.gesture(outputCanvas, result.gesture);
-    // and loop immediate to next frame
+    // and loop immediate to the next frame
     requestAnimationFrame(detectVideo);
   });
+}
+
+detectVideo();
+```
+
+or using `async/await`:
+
+```js
+// create instance of human with simple configuration using default values
+const config = { backend: 'webgl' };
+const human = new Human(config);
+
+async function detectVideo() {
+  const inputVideo = document.getElementById('video-id');
+  const outputCanvas = document.getElementById('canvas-id');
+  const result = await human.detect(inputVideo);
+  human.draw.all(outputCanvas, result);
+  requestAnimationFrame(detectVideo);
 }
 
 detectVideo();

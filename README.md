@@ -7,10 +7,9 @@
 
 # Human Library
 
-**3D Face Detection & Rotation Tracking, Face Description & Recognition,**  
-**Body Pose Tracking, 3D Hand & Finger Tracking,**  
-**Iris Analysis, Age & Gender & Emotion Prediction,**  
-**Gesture Recognition**
+**AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition,**  
+**Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis,**  
+**Age & Gender & Emotion Prediction, Gesture Recognition**  
 
 <br>
 

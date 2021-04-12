@@ -5,6 +5,8 @@ import * as decodeMultiple from './decodeMultiple';
 import * as decodePose from './decodePose';
 import * as util from './util';
 
+let model;
+
 async function estimateMultiple(input, res, config, inputSize) {
   return new Promise(async (resolve) => {
     const allTensorBuffers = await util.toTensorBuffers3D([res.heatmapScores, res.offsets, res.displacementFwd, res.displacementBwd]);
@@ -29,9 +31,9 @@ async function estimateSingle(input, res, config, inputSize) {
 export class PoseNet {
   baseModel: any;
   inputSize: number
-  constructor(model) {
-    this.baseModel = model;
-    this.inputSize = model.model.inputs[0].shape[1];
+  constructor(mobilenet) {
+    this.baseModel = mobilenet;
+    this.inputSize = mobilenet.model.inputs[0].shape[1];
     if (this.inputSize < 128) this.inputSize = 257;
   }
 
@@ -58,9 +60,12 @@ export class PoseNet {
 }
 
 export async function load(config) {
-  const model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));
+  if (!model) {
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));
+    if (!model || !model.modelUrl) log('load model failed:', config.body.modelPath);
+    else if (config.debug) log('load model:', model.modelUrl);
+  } else if (config.debug) log('cached model:', model.modelUrl);
   const mobilenet = new modelBase.BaseModel(model);
-  if (!model || !model.modelUrl) log('load model failed:', config.body.modelPath);
-  else if (config.debug) log('load model:', model.modelUrl);
-  return new PoseNet(mobilenet);
+  const poseNet = new PoseNet(mobilenet);
+  return poseNet;
 }

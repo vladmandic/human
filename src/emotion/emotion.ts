@@ -15,7 +15,7 @@ export async function load(config) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.face.emotion.modelPath));
     if (!model || !model.modelUrl) log('load model failed:', config.face.emotion.modelPath);
     else if (config.debug) log('load model:', model.modelUrl);
-  }
+  } else if (config.debug) log('cached model:', model.modelUrl);
   return model;
 }
 

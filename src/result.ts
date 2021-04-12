@@ -40,7 +40,10 @@ export interface Result {
     emotion: Array<{ score: number, emotion: string }>,
     embedding: Array<number>,
     iris: number,
-    angle: { roll: number, yaw: number, pitch: number },
+    rotation: {
+      angle: { roll: number, yaw: number, pitch: number },
+      matrix: Array<[number, number, number, number, number, number, number, number, number]>
+    }
   }>,
   /** Body results
    *

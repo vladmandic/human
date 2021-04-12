@@ -12,7 +12,7 @@ export async function load(config) {
     model.height = parseInt(model.signature.inputs['input_1:0'].tensorShape.dim[1].size);
     if (!model || !model.modelUrl) log('load model failed:', config.body.modelPath);
     else if (config.debug) log('load model:', model.modelUrl);
-  }
+  } else if (config.debug) log('cached model:', model.modelUrl);
   return model;
 }
 

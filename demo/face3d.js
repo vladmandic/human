@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { DoubleSide, Mesh, MeshBasicMaterial, OrthographicCamera, Scene, sRGBEncoding, VideoTexture, WebGLRenderer, BufferGeometry, BufferAttribute } from './helpers/three.js';
 import { OrbitControls } from './helpers/three-orbitControls.js';
 import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
@@ -7,7 +9,7 @@ const userConfig = {
   async: false,
   profile: false,
   warmup: 'full',
-  videoOptimized: false,
+  videoOptimized: true,
   filter: { enabled: false },
   face: { enabled: true,
     detector: { rotation: false, maxFaces: 1 },

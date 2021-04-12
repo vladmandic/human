@@ -149,7 +149,8 @@ const config: Config = {
                              // typically not needed
   videoOptimized: true,      // perform additional optimizations when input is video,
                              // must be disabled for images
-                             // basically this skips object box boundary detection for every n frames
+                             // automatically disabled for Image, ImageData, ImageBitmap and Tensor inputs
+                             // skips boundary detection for every n frames
                              // while maintaining in-box detection since objects cannot move that fast
   warmup: 'face',            // what to use for human.warmup(), can be 'none', 'face', 'full'
                              // warmup pre-initializes all models for faster inference but can take

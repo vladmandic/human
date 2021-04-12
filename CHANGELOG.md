@@ -1,6 +1,6 @@
 # @vladmandic/human  
 
-Version: **1.4.1**  
+Version: **1.4.2**  
 Description: **Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition**  
 
 Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -9,8 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/04/10 mandic00@live.com
+### **1.4.2** 2021/04/12 mandic00@live.com
 
+- added support for multiple instances of human
 - fix typedoc
 - exception handling
 

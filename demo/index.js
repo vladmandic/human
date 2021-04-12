@@ -5,6 +5,7 @@ import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
 // import Human from '../dist/human.esm-nobundle.js'; // this requires that tf is loaded manually and bundled before human can be used
 import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
+import webRTC from './helpers/webrtc.js';
 
 const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 let human;
@@ -42,6 +43,9 @@ const ui = {
   worker: 'index-worker.js',
   samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'],
   compare: '../assets/sample-me.jpg',
+  useWebRTC: false, // use webrtc as camera source instead of local webcam
+  webRTCServer: 'http://localhost:8002',
+  webRTCStream: 'reowhite',
   console: true, // log messages to browser console
   maxFPSframes: 10, // keep fps history for how many frames
   modelsPreload: true, // preload human models on startup
@@ -52,7 +56,7 @@ const ui = {
   camera: {}, // internal, holds details of webcam details
   detectFPS: [], // internal, holds fps values for detection performance
   drawFPS: [], // internal, holds fps values for draw performance
-  buffered: true, // experimental, should output be buffered between frames
+  buffered: true, // should output be buffered between frames
   drawWarmup: false, // debug only, should warmup image processing be displayed on startup
   drawThread: null, // internl, perform draw operations in a separate thread
   detectThread: null, // internl, perform detect operations in a separate thread
@@ -198,6 +202,18 @@ async function setupCamera() {
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const output = document.getElementById('log');
+  if (ui.useWebRTC) {
+    status('setting up webrtc connection');
+    try {
+      video.onloadeddata = () => ui.camera = { name: ui.webRTCStream, width: video.videoWidth, height: video.videoHeight, facing: 'default' };
+      await webRTC(ui.webRTCServer, ui.webRTCStream, video);
+    } catch (err) {
+      log(err);
+    } finally {
+      status('');
+    }
+    return '';
+  }
   const live = video.srcObject ? ((video.srcObject.getVideoTracks()[0].readyState === 'live') && (video.readyState > 2) && (!video.paused)) : false;
   let msg = '';
   status('setting up camera');

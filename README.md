@@ -125,6 +125,26 @@ For details, including how to use `Browser ESM` version or `NodeJS` version of `
 
 <br>
 
+## Inputs
+
+`Human` library can process all known input types:  
+
+- `Image`, `ImageData`, `ImageBitmap`, `Canvas`, `OffscreenCanvas`, `Tensor`,  
+- `HTMLImageElement`, `HTMLCanvasElement`, `HTMLVideoElement`, `HTMLMediaElement`
+
+Additionally, `HTMLVideoElement`, `HTMLMediaElement` can be a standard `<video>` tag that links to:
+
+- WebCam on user's system
+- Any supported video type  
+  For example: `.mp4`, `.avi`, etc.
+- Additional video types supported via *HTML5 Media Source Extensions*  
+  Live streaming examples:
+  - **HLS** (*HTTP Live Streaming*) using `hls.js`
+  - **DASH** (Dynamic Adaptive Streaming over HTTP) using `dash.js`
+- **WebRTC** media track  
+
+<br>
+
 ## Example
 
 Example simple app that uses Human to process video input and  

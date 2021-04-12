@@ -343,6 +343,14 @@ export class Human {
       if (this.config.scoped) this.tf.engine().startScope();
       this.analyze('Start Scope:');
 
+      // disable video optimization for inputs of type image
+      let previousVideoOptimized;
+      if (input && this.config.videoOptimized && (input instanceof HTMLImageElement || input instanceof Image || input instanceof ImageData || input instanceof ImageBitmap || input instanceof tf.Tensor)) {
+        log('disabling video optimization');
+        previousVideoOptimized = this.config.videoOptimized;
+        this.config.videoOptimized = false;
+      }
+
       timeStamp = now();
       const process = image.process(input, this.config);
       if (!process || !process.tensor) {
@@ -427,6 +435,7 @@ export class Human {
       if (this.config.scoped) this.tf.engine().endScope();
       this.analyze('End Scope:');
 
+      // run gesture analysis last
       let gestureRes: any[] = [];
       if (this.config.gesture.enabled) {
         timeStamp = now();
@@ -434,6 +443,9 @@ export class Human {
         if (!this.config.async) this.perf.gesture = Math.trunc(now() - timeStamp);
         else if (this.perf.gesture) delete this.perf.gesture;
       }
+
+      // restore video optimizations if previously disabled
+      if (previousVideoOptimized) this.config.videoOptimized = previousVideoOptimized;
 
       this.perf.total = Math.trunc(now() - timeStart);
       this.state = 'idle';

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import Human from '../dist/human.esm.js';
 
 const userConfig = {

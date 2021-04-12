@@ -16,7 +16,7 @@ export async function load(config) {
     alternative = model.inputs[0].shape[3] === 1;
     if (!model || !model.modelUrl) log('load model failed:', config.face.gender.modelPath);
     else if (config.debug) log('load model:', model.modelUrl);
-  }
+  } else if (config.debug) log('cached model:', model.modelUrl);
   return model;
 }
 

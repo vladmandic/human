@@ -17,7 +17,7 @@ export async function load(config) {
     if (!model.inputSize) throw new Error(`Human: Cannot determine model inputSize: ${config.object.modelPath}`);
     if (!model || !model.modelUrl) log('load model failed:', config.object.modelPath);
     else if (config.debug) log('load model:', model.modelUrl);
-  }
+  } else if (config.debug) log('cached model:', model.modelUrl);
   return model;
 }
 

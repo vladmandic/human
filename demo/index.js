@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /* global tf */
 import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
 // import Human from '../dist/human.esm-nobundle.js'; // this requires that tf is loaded manually and bundled before human can be used

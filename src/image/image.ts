@@ -28,7 +28,8 @@ export function process(input, config): { tensor: typeof tf.Tensor | null, canva
     throw new Error('Human: Input type is not recognized');
   }
   if (input instanceof tf.Tensor) {
-    tensor = tf.clone(input);
+    if (input.shape && input.shape.length === 4 && input.shape[0] === 1 && input.shape[3] === 3) tensor = tf.clone(input);
+    else throw new Error(`Human: Input tensor shape must be [1, height, width, 3] and instead was ${input.shape}`);
   } else {
     const originalWidth = input['naturalWidth'] || input['videoWidth'] || input['width'] || (input['shape'] && (input['shape'][1] > 0));
     const originalHeight = input['naturalHeight'] || input['videoHeight'] || input['height'] || (input['shape'] && (input['shape'][2] > 0));

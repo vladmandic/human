@@ -30,10 +30,15 @@ const config = {
   object: { enabled: true },
 };
 
-async function test() {
-  const human = new Human(config);
+async function testInstance(human) {
   if (human) log.state('passed: create human');
   else log.error('failed: create human');
+
+  // if (!human.tf) human.tf = tf;
+  log.info('human version:', human.version);
+  log.info('tfjs version:', human.tf.version_core);
+  log.info('platform:', human.sysinfo.platform);
+  log.info('agent:', human.sysinfo.agent);
 
   await human.load();
   if (human.models) {
@@ -53,6 +58,28 @@ async function test() {
   } else {
     log.error('failed: warmup');
   }
+  const random = tf.randomNormal([1, 1024, 1024, 3]);
+  const detect = await human.detect(random);
+  tf.dispose(random);
+  if (detect) {
+    log.state('passed: detect:', 'random');
+    log.data(' result: face:', detect.face.length, 'body:', detect.body.length, 'hand:', detect.hand.length, 'gesture:', detect.gesture.length, 'object:', detect.object.length);
+    log.data(' result: performance:', 'load:', detect.performance.load, 'total:', detect.performance.total);
+  } else {
+    log.error('failed: detect');
+  }
+}
+
+async function test() {
+  log.info('testing instance#1');
+  config.warmup = 'face';
+  const human1 = new Human(config);
+  await testInstance(human1);
+
+  log.info('testing instance#2');
+  config.warmup = 'body';
+  const human2 = new Human(config);
+  await testInstance(human2);
 }
 
 test();

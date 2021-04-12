@@ -53,20 +53,26 @@ export class HandPose {
   }
 }
 
+let handDetectorModel;
+let handPoseModel;
 export async function load(config): Promise<HandPose> {
-  const [handDetectorModel, handPoseModel] = await Promise.all([
-    config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector.modelPath), { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) : null,
-    config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton.modelPath), { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) : null,
-  ]);
+  if (!handDetectorModel || !handPoseModel) {
+    [handDetectorModel, handPoseModel] = await Promise.all([
+      config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector.modelPath), { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) : null,
+      config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton.modelPath), { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) : null,
+    ]);
+    if (config.hand.enabled) {
+      if (!handDetectorModel || !handDetectorModel.modelUrl) log('load model failed:', config.hand.detector.modelPath);
+      else if (config.debug) log('load model:', handDetectorModel.modelUrl);
+      if (!handPoseModel || !handPoseModel.modelUrl) log('load model failed:', config.hand.skeleton.modelPath);
+      else if (config.debug) log('load model:', handPoseModel.modelUrl);
+    }
+  } else {
+    if (config.debug) log('cached model:', handDetectorModel.modelUrl);
+    if (config.debug) log('cached model:', handPoseModel.modelUrl);
+  }
   const handDetector = new handdetector.HandDetector(handDetectorModel, handDetectorModel?.inputs[0].shape[2], anchors.anchors);
   const handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel, handPoseModel?.inputs[0].shape[2]);
   const handPose = new HandPose(handPipeline);
-
-  if (config.hand.enabled) {
-    if (!handDetectorModel || !handDetectorModel.modelUrl) log('load model failed:', config.hand.detector.modelPath);
-    else if (config.debug) log('load model:', handDetectorModel.modelUrl);
-    if (!handPoseModel || !handPoseModel.modelUrl) log('load model failed:', config.hand.skeleton.modelPath);
-    else if (config.debug) log('load model:', handPoseModel.modelUrl);
-  }
   return handPose;
 }

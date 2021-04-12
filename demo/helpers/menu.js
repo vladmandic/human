@@ -2,8 +2,8 @@ let instance = 0;
 let CSScreated = false;
 
 let theme = {
-  background: 'darkslategray',
-  hover: 'lightgray',
+  background: '#303030',
+  hover: '#505050',
   itemBackground: 'black',
   itemColor: 'white',
   buttonBackground: 'lightblue',
@@ -19,10 +19,9 @@ function createCSS() {
   if (CSScreated) return;
   const css = `
   :root { --rounded: 0.1rem; }
-  .menu { position: absolute; top: 0rem; right: 0; width: max-content; padding: 0 0.2rem 0 0.2rem; line-height: 1.8rem; z-index: 10;
-          box-shadow: 0 0 8px dimgrey; background: ${theme.background}; border-radius: var(--rounded); border-color: black; border-style: solid; border-width: thin; }
+  .menu { position: absolute; top: 0rem; right: 0; width: max-content; padding: 0 0.2rem 0 0.2rem; line-height: 1.8rem; z-index: 10; background: ${theme.background}; border: none }
 
-  .menu:hover { box-shadow: 0 0 8px ${theme.hover}; }
+  .menu:hover { background: ${theme.hover}; }
   .menu-container { display: block; max-height: 100vh; }
   .menu-container-fadeout { max-height: 0; overflow: hidden; transition: max-height, 0.5s ease; }
   .menu-container-fadein { max-height: 100vh; overflow: hidden; transition: max-height, 0.5s ease; }
@@ -62,7 +61,7 @@ function createCSS() {
   input[type=range]::-webkit-slider-thumb { border: 1px solid #000000; margin-top: 0.05rem; height: 0.9rem; width: 1rem; border-radius: var(--rounded); background: ${theme.rangeBackground}; cursor: pointer; -webkit-appearance: none; }
   input[type=range]::-moz-range-thumb { border: 1px solid #000000; margin-top: 0.05rem; height: 0.9rem; width: 1rem; border-radius: var(--rounded); background: ${theme.rangeBackground}; cursor: pointer; -webkit-appearance: none; }
 
-  .svg-background { fill:darkslategrey; cursor:pointer; opacity: 0.6; }
+  .svg-background { fill:#303030; cursor:pointer; opacity: 0.6; }
   .svg-foreground { fill:white; cursor:pointer; opacity: 0.8; }
   `;
   const el = document.createElement('style');
@@ -88,10 +87,10 @@ class Menu {
     this.menu.id = `menu-${instance}`;
     this.menu.className = 'menu';
     if (position) {
-      if (position.top) this.menu.style.top = position.top;
-      if (position.bottom) this.menu.style.bottom = position.bottom;
-      if (position.left) this.menu.style.left = position.left;
-      if (position.right) this.menu.style.right = position.right;
+      if (position.top) this.menu.style.top = `${position.top}`;
+      if (position.bottom) this.menu.style.bottom = `${position.bottom}`;
+      if (position.left) this.menu.style.left = `${position.left}`;
+      if (position.right) this.menu.style.right = `${position.right}`;
     }
 
     this.container = document.createElement('div');
@@ -118,7 +117,7 @@ class Menu {
 
     this.menu.appendChild(this.container);
     if (typeof parent === 'object') parent.appendChild(this.menu);
-    else document.getElementById(parent).appendChild(this.menu);
+    else document.getElementById(parent)?.appendChild(this.menu);
   }
 
   get newID() {

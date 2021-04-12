@@ -4,7 +4,7 @@
 
 const UICSS = `
   #gl-bench { position: absolute; right: 1rem; bottom: 1rem; z-index:1000; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
-  #gl-bench div { position: relative; display: block; margin: 4px; padding: 0 2px 0 2px; background: darkslategray; border-radius: 0.1rem; cursor: pointer; opacity: 0.9; }
+  #gl-bench div { position: relative; display: block; margin: 4px; padding: 0 2px 0 2px; background: #303030; border-radius: 0.1rem; cursor: pointer; opacity: 0.9; }
   #gl-bench svg { height: 60px; margin: 0 0px 0px 4px; }
   #gl-bench text { font-size: 16px; font-family: 'Lato', 'Segoe UI'; dominant-baseline: middle; text-anchor: middle; }
   #gl-bench .gl-mem { font-size: 12px; fill: white; }

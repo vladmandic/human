@@ -12,7 +12,7 @@ const userConfig = {
     enabled: true,
     detector: { rotation: true, return: true },
     mesh: { enabled: true },
-    embedding: { enabled: true },
+    embedding: { enabled: false },
     iris: { enabled: false },
     age: { enabled: false },
     gender: { enabled: false },

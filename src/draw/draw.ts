@@ -1,7 +1,49 @@
 import { defaults } from '../config';
 import { TRI468 as triangulation } from '../blazeface/coords';
+import { mergeDeep } from '../helpers';
 
-export const drawOptions = {
+/**
+ * Draw Options
+ * Accessed via `human.draw.options` or provided per each draw method as the drawOptions optional parameter
+ * -color: draw color
+ * -labelColor: color for labels
+ * -shadowColor: optional shadow color for labels
+ * -font: font for labels
+ * -lineHeight: line height for labels, used for multi-line labels,
+ * -lineWidth: width of any lines,
+ * -pointSize: size of any point,
+ * -roundRect: for boxes, round corners by this many pixels,
+ * -drawPoints: should points be drawn,
+ * -drawLabels: should labels be drawn,
+ * -drawBoxes: should boxes be drawn,
+ * -drawPolygons: should polygons be drawn,
+ * -fillPolygons: should drawn polygons be filled,
+ * -useDepth: use z-axis coordinate as color shade,
+ * -useCurves: draw polygons as cures or as lines,
+ * -bufferedOutput: experimental: allows to call draw methods multiple times for each detection and interpolate results between results thus achieving smoother animations
+ * -useRawBoxes: Boolean: internal: use non-normalized coordinates when performing draw methods,
+ */
+export interface DrawOptions {
+  color: string,
+  labelColor: string,
+  shadowColor: string,
+  font: string,
+  lineHeight: number,
+  lineWidth: number,
+  pointSize: number,
+  roundRect: number,
+  drawPoints: Boolean,
+  drawLabels: Boolean,
+  drawBoxes: Boolean,
+  drawPolygons: Boolean,
+  fillPolygons: Boolean,
+  useDepth: Boolean,
+  useCurves: Boolean,
+  bufferedOutput: Boolean,
+  useRawBoxes: Boolean,
+}
+
+export const options: DrawOptions = {
   color: <string>'rgba(173, 216, 230, 0.3)', // 'lightblue' with light alpha channel
   labelColor: <string>'rgba(173, 216, 230, 1)', // 'lightblue' with dark alpha channel
   shadowColor: <string>'black',
@@ -21,55 +63,55 @@ export const drawOptions = {
   useRawBoxes: <Boolean>false,
 };
 
-function point(ctx, x, y, z = null) {
-  ctx.fillStyle = drawOptions.useDepth && z ? `rgba(${127.5 + (2 * (z || 0))}, ${127.5 - (2 * (z || 0))}, 255, 0.3)` : drawOptions.color;
+function point(ctx, x, y, z = 0, localOptions) {
+  ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
   ctx.beginPath();
-  ctx.arc(x, y, drawOptions.pointSize, 0, 2 * Math.PI);
+  ctx.arc(x, y, localOptions.pointSize, 0, 2 * Math.PI);
   ctx.fill();
 }
 
-function rect(ctx, x, y, width, height) {
+function rect(ctx, x, y, width, height, localOptions) {
   ctx.beginPath();
-  if (drawOptions.useCurves) {
+  if (localOptions.useCurves) {
     const cx = (x + x + width) / 2;
     const cy = (y + y + height) / 2;
     ctx.ellipse(cx, cy, width / 2, height / 2, 0, 0, 2 * Math.PI);
   } else {
-    ctx.lineWidth = drawOptions.lineWidth;
-    ctx.moveTo(x + drawOptions.roundRect, y);
-    ctx.lineTo(x + width - drawOptions.roundRect, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + drawOptions.roundRect);
-    ctx.lineTo(x + width, y + height - drawOptions.roundRect);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - drawOptions.roundRect, y + height);
-    ctx.lineTo(x + drawOptions.roundRect, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - drawOptions.roundRect);
-    ctx.lineTo(x, y + drawOptions.roundRect);
-    ctx.quadraticCurveTo(x, y, x + drawOptions.roundRect, y);
+    ctx.lineWidth = localOptions.lineWidth;
+    ctx.moveTo(x + localOptions.roundRect, y);
+    ctx.lineTo(x + width - localOptions.roundRect, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + localOptions.roundRect);
+    ctx.lineTo(x + width, y + height - localOptions.roundRect);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - localOptions.roundRect, y + height);
+    ctx.lineTo(x + localOptions.roundRect, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - localOptions.roundRect);
+    ctx.lineTo(x, y + localOptions.roundRect);
+    ctx.quadraticCurveTo(x, y, x + localOptions.roundRect, y);
     ctx.closePath();
   }
   ctx.stroke();
 }
 
-function lines(ctx, points: number[] = []) {
+function lines(ctx, points: number[] = [], localOptions) {
   if (points === undefined || points.length === 0) return;
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
   for (const pt of points) {
-    ctx.strokeStyle = drawOptions.useDepth && pt[2] ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.3)` : drawOptions.color;
-    ctx.fillStyle = drawOptions.useDepth && pt[2] ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.3)` : drawOptions.color;
+    ctx.strokeStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.3)` : localOptions.color;
+    ctx.fillStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.3)` : localOptions.color;
     ctx.lineTo(pt[0], parseInt(pt[1]));
   }
   ctx.stroke();
-  if (drawOptions.fillPolygons) {
+  if (localOptions.fillPolygons) {
     ctx.closePath();
     ctx.fill();
   }
 }
 
-function curves(ctx, points: number[] = []) {
+function curves(ctx, points: number[] = [], localOptions) {
   if (points === undefined || points.length === 0) return;
-  if (!drawOptions.useCurves || points.length <= 2) {
-    lines(ctx, points);
+  if (!localOptions.useCurves || points.length <= 2) {
+    lines(ctx, points, localOptions);
     return;
   }
   ctx.moveTo(points[0][0], points[0][1]);
@@ -80,19 +122,20 @@ function curves(ctx, points: number[] = []) {
   }
   ctx.quadraticCurveTo(points[points.length - 2][0], points[points.length - 2][1], points[points.length - 1][0], points[points.length - 1][1]);
   ctx.stroke();
-  if (drawOptions.fillPolygons) {
+  if (localOptions.fillPolygons) {
     ctx.closePath();
     ctx.fill();
   }
 }
 
-export async function gesture(inCanvas: HTMLCanvasElement, result: Array<any>) {
+export async function gesture(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
   const ctx = inCanvas.getContext('2d');
   if (!ctx) return;
-  ctx.font = drawOptions.font;
-  ctx.fillStyle = drawOptions.color;
+  ctx.font = localOptions.font;
+  ctx.fillStyle = localOptions.color;
   let i = 1;
   for (let j = 0; j < result.length; j++) {
     let where:any[] = [];
@@ -101,29 +144,30 @@ export async function gesture(inCanvas: HTMLCanvasElement, result: Array<any>) {
     if ((what.length > 1) && (what[1].length > 0)) {
       const person = where[1] > 0 ? `#${where[1]}` : '';
       const label = `${where[0]} ${person}: ${what[1]}`;
-      if (drawOptions.shadowColor && drawOptions.shadowColor !== '') {
-        ctx.fillStyle = drawOptions.shadowColor;
-        ctx.fillText(label, 8, 2 + (i * drawOptions.lineHeight));
+      if (localOptions.shadowColor && localOptions.shadowColor !== '') {
+        ctx.fillStyle = localOptions.shadowColor;
+        ctx.fillText(label, 8, 2 + (i * localOptions.lineHeight));
       }
-      ctx.fillStyle = drawOptions.labelColor;
-      ctx.fillText(label, 6, 0 + (i * drawOptions.lineHeight));
+      ctx.fillStyle = localOptions.labelColor;
+      ctx.fillText(label, 6, 0 + (i * localOptions.lineHeight));
       i += 1;
     }
   }
 }
 
-export async function face(inCanvas: HTMLCanvasElement, result: Array<any>) {
+export async function face(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
   const ctx = inCanvas.getContext('2d');
   if (!ctx) return;
   for (const f of result) {
-    ctx.font = drawOptions.font;
-    ctx.strokeStyle = drawOptions.color;
-    ctx.fillStyle = drawOptions.color;
-    if (drawOptions.drawBoxes) {
-      if (drawOptions.useRawBoxes) rect(ctx, inCanvas.width * f.boxRaw[0], inCanvas.height * f.boxRaw[1], inCanvas.width * f.boxRaw[2], inCanvas.height * f.boxRaw[3]);
-      else rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3]);
+    ctx.font = localOptions.font;
+    ctx.strokeStyle = localOptions.color;
+    ctx.fillStyle = localOptions.color;
+    if (localOptions.drawBoxes) {
+      if (localOptions.useRawBoxes) rect(ctx, inCanvas.width * f.boxRaw[0], inCanvas.height * f.boxRaw[1], inCanvas.width * f.boxRaw[2], inCanvas.height * f.boxRaw[3], localOptions);
+      else rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
     }
     // silly hack since fillText does not suport new line
     const labels:string[] = [];
@@ -138,24 +182,24 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<any>) {
     }
     if (f.rotation && f.rotation.angle && f.rotation.angle.roll) labels.push(`roll: ${Math.trunc(100 * f.rotation.angle.roll) / 100} yaw:${Math.trunc(100 * f.rotation.angle.yaw) / 100} pitch:${Math.trunc(100 * f.rotation.angle.pitch) / 100}`);
     if (labels.length === 0) labels.push('face');
-    ctx.fillStyle = drawOptions.color;
+    ctx.fillStyle = localOptions.color;
     for (let i = labels.length - 1; i >= 0; i--) {
       const x = Math.max(f.box[0], 0);
-      const y = i * drawOptions.lineHeight + f.box[1];
-      if (drawOptions.shadowColor && drawOptions.shadowColor !== '') {
-        ctx.fillStyle = drawOptions.shadowColor;
+      const y = i * localOptions.lineHeight + f.box[1];
+      if (localOptions.shadowColor && localOptions.shadowColor !== '') {
+        ctx.fillStyle = localOptions.shadowColor;
         ctx.fillText(labels[i], x + 5, y + 16);
       }
-      ctx.fillStyle = drawOptions.labelColor;
+      ctx.fillStyle = localOptions.labelColor;
       ctx.fillText(labels[i], x + 4, y + 15);
     }
     ctx.lineWidth = 1;
     if (f.mesh && f.mesh.length > 0) {
-      if (drawOptions.drawPoints) {
-        for (const pt of f.mesh) point(ctx, pt[0], pt[1], pt[2]);
+      if (localOptions.drawPoints) {
+        for (const pt of f.mesh) point(ctx, pt[0], pt[1], pt[2], localOptions);
         // for (const pt of f.meshRaw) point(ctx, pt[0] * inCanvas.offsetWidth, pt[1] * inCanvas.offsetHeight, pt[2]);
       }
-      if (drawOptions.drawPolygons) {
+      if (localOptions.drawPolygons) {
         ctx.lineWidth = 1;
         for (let i = 0; i < triangulation.length / 3; i++) {
           const points = [
@@ -163,30 +207,30 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<any>) {
             triangulation[i * 3 + 1],
             triangulation[i * 3 + 2],
           ].map((index) => f.mesh[index]);
-          lines(ctx, points);
+          lines(ctx, points, localOptions);
         }
         // iris: array[center, left, top, right, bottom]
         if (f.annotations && f.annotations.leftEyeIris) {
-          ctx.strokeStyle = drawOptions.useDepth ? 'rgba(255, 200, 255, 0.3)' : drawOptions.color;
+          ctx.strokeStyle = localOptions.useDepth ? 'rgba(255, 200, 255, 0.3)' : localOptions.color;
           ctx.beginPath();
           const sizeX = Math.abs(f.annotations.leftEyeIris[3][0] - f.annotations.leftEyeIris[1][0]) / 2;
           const sizeY = Math.abs(f.annotations.leftEyeIris[4][1] - f.annotations.leftEyeIris[2][1]) / 2;
           ctx.ellipse(f.annotations.leftEyeIris[0][0], f.annotations.leftEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
           ctx.stroke();
-          if (drawOptions.fillPolygons) {
-            ctx.fillStyle = drawOptions.useDepth ? 'rgba(255, 255, 200, 0.3)' : drawOptions.color;
+          if (localOptions.fillPolygons) {
+            ctx.fillStyle = localOptions.useDepth ? 'rgba(255, 255, 200, 0.3)' : localOptions.color;
             ctx.fill();
           }
         }
         if (f.annotations && f.annotations.rightEyeIris) {
-          ctx.strokeStyle = drawOptions.useDepth ? 'rgba(255, 200, 255, 0.3)' : drawOptions.color;
+          ctx.strokeStyle = localOptions.useDepth ? 'rgba(255, 200, 255, 0.3)' : localOptions.color;
           ctx.beginPath();
           const sizeX = Math.abs(f.annotations.rightEyeIris[3][0] - f.annotations.rightEyeIris[1][0]) / 2;
           const sizeY = Math.abs(f.annotations.rightEyeIris[4][1] - f.annotations.rightEyeIris[2][1]) / 2;
           ctx.ellipse(f.annotations.rightEyeIris[0][0], f.annotations.rightEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
           ctx.stroke();
-          if (drawOptions.fillPolygons) {
-            ctx.fillStyle = drawOptions.useDepth ? 'rgba(255, 255, 200, 0.3)' : drawOptions.color;
+          if (localOptions.fillPolygons) {
+            ctx.fillStyle = localOptions.useDepth ? 'rgba(255, 255, 200, 0.3)' : localOptions.color;
             ctx.fill();
           }
         }
@@ -196,7 +240,8 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<any>) {
 }
 
 const lastDrawnPose:any[] = [];
-export async function body(inCanvas: HTMLCanvasElement, result: Array<any>) {
+export async function body(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
   const ctx = inCanvas.getContext('2d');
@@ -204,31 +249,31 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>) {
   ctx.lineJoin = 'round';
   for (let i = 0; i < result.length; i++) {
     // result[i].keypoints = result[i].keypoints.filter((a) => a.score > 0.5);
-    if (!lastDrawnPose[i] && drawOptions.bufferedOutput) lastDrawnPose[i] = { ...result[i] };
-    ctx.strokeStyle = drawOptions.color;
-    ctx.lineWidth = drawOptions.lineWidth;
-    if (drawOptions.drawPoints) {
+    if (!lastDrawnPose[i] && localOptions.bufferedOutput) lastDrawnPose[i] = { ...result[i] };
+    ctx.strokeStyle = localOptions.color;
+    ctx.lineWidth = localOptions.lineWidth;
+    if (localOptions.drawPoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
-        ctx.fillStyle = drawOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + (2 * result[i].keypoints[pt].position.z)}, ${127.5 - (2 * result[i].keypoints[pt].position.z)}, 255, 0.5)` : drawOptions.color;
-        if (drawOptions.bufferedOutput) {
+        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + (2 * result[i].keypoints[pt].position.z)}, ${127.5 - (2 * result[i].keypoints[pt].position.z)}, 255, 0.5)` : localOptions.color;
+        if (localOptions.bufferedOutput) {
           lastDrawnPose[i].keypoints[pt][0] = (lastDrawnPose[i].keypoints[pt][0] + result[i].keypoints[pt].position.x) / 2;
           lastDrawnPose[i].keypoints[pt][1] = (lastDrawnPose[i].keypoints[pt][1] + result[i].keypoints[pt].position.y) / 2;
-          point(ctx, lastDrawnPose[i].keypoints[pt][0], lastDrawnPose[i].keypoints[pt][1]);
+          point(ctx, lastDrawnPose[i].keypoints[pt][0], lastDrawnPose[i].keypoints[pt][1], 0, localOptions);
         } else {
-          point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y);
+          point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 0, localOptions);
         }
       }
     }
-    if (drawOptions.drawLabels) {
-      ctx.font = drawOptions.font;
+    if (localOptions.drawLabels) {
+      ctx.font = localOptions.font;
       if (result[i].keypoints) {
         for (const pt of result[i].keypoints) {
-          ctx.fillStyle = drawOptions.useDepth && pt.position.z ? `rgba(${127.5 + (2 * pt.position.z)}, ${127.5 - (2 * pt.position.z)}, 255, 0.5)` : drawOptions.color;
+          ctx.fillStyle = localOptions.useDepth && pt.position.z ? `rgba(${127.5 + (2 * pt.position.z)}, ${127.5 - (2 * pt.position.z)}, 255, 0.5)` : localOptions.color;
           ctx.fillText(`${pt.part}`, pt.position.x + 4, pt.position.y + 4);
         }
       }
     }
-    if (drawOptions.drawPolygons && result[i].keypoints) {
+    if (localOptions.drawPolygons && result[i].keypoints) {
       let part;
       const points: any[] = [];
       // shoulder line
@@ -237,7 +282,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>) {
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-      curves(ctx, points);
+      curves(ctx, points, localOptions);
       // torso main
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
@@ -248,7 +293,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>) {
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-      if (points.length === 4) lines(ctx, points); // only draw if we have complete torso
+      if (points.length === 4) lines(ctx, points, localOptions); // only draw if we have complete torso
       // leg left
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'leftHip');
@@ -261,7 +306,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>) {
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftFoot');
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-      curves(ctx, points);
+      curves(ctx, points, localOptions);
       // leg right
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'rightHip');
@@ -274,7 +319,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>) {
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightFoot');
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-      curves(ctx, points);
+      curves(ctx, points, localOptions);
       // arm left
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
@@ -285,7 +330,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>) {
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftPalm');
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-      curves(ctx, points);
+      curves(ctx, points, localOptions);
       // arm right
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
@@ -296,50 +341,51 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>) {
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightPalm');
       if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
-      curves(ctx, points);
+      curves(ctx, points, localOptions);
       // draw all
     }
   }
 }
 
-export async function hand(inCanvas: HTMLCanvasElement, result: Array<any>) {
+export async function hand(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
   const ctx = inCanvas.getContext('2d');
   if (!ctx) return;
   ctx.lineJoin = 'round';
-  ctx.font = drawOptions.font;
+  ctx.font = localOptions.font;
   for (const h of result) {
-    if (drawOptions.drawBoxes) {
-      ctx.strokeStyle = drawOptions.color;
-      ctx.fillStyle = drawOptions.color;
-      if (drawOptions.useRawBoxes) rect(ctx, inCanvas.width * h.boxRaw[0], inCanvas.height * h.boxRaw[1], inCanvas.width * h.boxRaw[2], inCanvas.height * h.boxRaw[3]);
-      else rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3]);
-      if (drawOptions.drawLabels) {
-        if (drawOptions.shadowColor && drawOptions.shadowColor !== '') {
-          ctx.fillStyle = drawOptions.shadowColor;
-          ctx.fillText('hand', h.box[0] + 3, 1 + h.box[1] + drawOptions.lineHeight, h.box[2]);
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      if (localOptions.useRawBoxes) rect(ctx, inCanvas.width * h.boxRaw[0], inCanvas.height * h.boxRaw[1], inCanvas.width * h.boxRaw[2], inCanvas.height * h.boxRaw[3], localOptions);
+      else rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
+      if (localOptions.drawLabels) {
+        if (localOptions.shadowColor && localOptions.shadowColor !== '') {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText('hand', h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
         }
-        ctx.fillStyle = drawOptions.labelColor;
-        ctx.fillText('hand', h.box[0] + 2, 0 + h.box[1] + drawOptions.lineHeight, h.box[2]);
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText('hand', h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
       }
       ctx.stroke();
     }
-    if (drawOptions.drawPoints) {
+    if (localOptions.drawPoints) {
       if (h.landmarks && h.landmarks.length > 0) {
         for (const pt of h.landmarks) {
-          ctx.fillStyle = drawOptions.useDepth ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.5)` : drawOptions.color;
-          point(ctx, pt[0], pt[1]);
+          ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.5)` : localOptions.color;
+          point(ctx, pt[0], pt[1], 0, localOptions);
         }
       }
     }
-    if (drawOptions.drawPolygons) {
+    if (localOptions.drawPolygons) {
       const addPart = (part) => {
         if (!part) return;
         for (let i = 0; i < part.length; i++) {
-          ctx.lineWidth = drawOptions.lineWidth;
+          ctx.lineWidth = localOptions.lineWidth;
           ctx.beginPath();
-          ctx.strokeStyle = drawOptions.useDepth ? `rgba(${127.5 + (2 * part[i][2])}, ${127.5 - (2 * part[i][2])}, 255, 0.5)` : drawOptions.color;
+          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + (2 * part[i][2])}, ${127.5 - (2 * part[i][2])}, 255, 0.5)` : localOptions.color;
           ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
           ctx.lineTo(part[i][0], part[i][1]);
           ctx.stroke();
@@ -355,27 +401,28 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<any>) {
   }
 }
 
-export async function object(inCanvas: HTMLCanvasElement, result: Array<any>) {
+export async function object(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
   const ctx = inCanvas.getContext('2d');
   if (!ctx) return;
   ctx.lineJoin = 'round';
-  ctx.font = drawOptions.font;
+  ctx.font = localOptions.font;
   for (const h of result) {
-    if (drawOptions.drawBoxes) {
-      ctx.strokeStyle = drawOptions.color;
-      ctx.fillStyle = drawOptions.color;
-      if (drawOptions.useRawBoxes) rect(ctx, inCanvas.width * h.boxRaw[0], inCanvas.height * h.boxRaw[1], inCanvas.width * h.boxRaw[2], inCanvas.height * h.boxRaw[3]);
-      else rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3]);
-      if (drawOptions.drawLabels) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      if (localOptions.useRawBoxes) rect(ctx, inCanvas.width * h.boxRaw[0], inCanvas.height * h.boxRaw[1], inCanvas.width * h.boxRaw[2], inCanvas.height * h.boxRaw[3], localOptions);
+      else rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
+      if (localOptions.drawLabels) {
         const label = `${Math.round(100 * h.score)}% ${h.label}`;
-        if (drawOptions.shadowColor && drawOptions.shadowColor !== '') {
-          ctx.fillStyle = drawOptions.shadowColor;
-          ctx.fillText(label, h.box[0] + 3, 1 + h.box[1] + drawOptions.lineHeight, h.box[2]);
+        if (localOptions.shadowColor && localOptions.shadowColor !== '') {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
         }
-        ctx.fillStyle = drawOptions.labelColor;
-        ctx.fillText(label, h.box[0] + 2, 0 + h.box[1] + drawOptions.lineHeight, h.box[2]);
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
       }
       ctx.stroke();
     }
@@ -389,12 +436,13 @@ export async function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasE
   outCtx?.drawImage(inCanvas, 0, 0);
 }
 
-export async function all(inCanvas: HTMLCanvasElement, result:any) {
+export async function all(inCanvas: HTMLCanvasElement, result:any, drawOptions?: DrawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
-  face(inCanvas, result.face);
-  body(inCanvas, result.body);
-  hand(inCanvas, result.hand);
-  gesture(inCanvas, result.gesture);
-  object(inCanvas, result.object);
+  face(inCanvas, result.face, localOptions);
+  body(inCanvas, result.body, localOptions);
+  hand(inCanvas, result.hand, localOptions);
+  gesture(inCanvas, result.gesture, localOptions);
+  object(inCanvas, result.object, localOptions);
 }

@@ -115,13 +115,23 @@
 					<div class="tsd-signature tsd-kind-icon">async<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Perform model loading and inference concurrently or sequentially</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="backend" class="tsd-anchor"></a>
 					<h3>backend</h3>
-					<div class="tsd-signature tsd-kind-icon">backend<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<div class="tsd-signature tsd-kind-icon">backend<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;cpu&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;wasm&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;webgl&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;humangl&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;tensorflow&quot;</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Backend used for TFJS operations</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="body" class="tsd-anchor"></a>
@@ -129,6 +139,18 @@
 					<div class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>maxDetections<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>nmsRadius<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>scoreThreshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Controlls and configures all body detection specific options</p>
+							<ul>
+								<li>enabled: true/false</li>
+								<li>modelPath: paths for both hand detector model and hand skeleton model</li>
+								<li>maxDetections: maximum number of people detected in the input, should be set to the minimum number for performance</li>
+								<li>scoreThreshold: threshold for deciding when to remove people based on score in non-maximum suppression</li>
+								<li>nmsRadius: threshold for deciding whether body parts overlap too much in non-maximum suppression</li>
+							</ul>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -156,6 +178,11 @@
 					<div class="tsd-signature tsd-kind-icon">deallocate<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Internal: Use aggressive GPU memory deallocator when backend is set to <code>webgl</code> or <code>humangl</code></p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="debug" class="tsd-anchor"></a>
@@ -163,6 +190,11 @@
 					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Print debug statements to console</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="face" class="tsd-anchor"></a>
@@ -170,6 +202,25 @@
 					<div class="tsd-signature tsd-kind-icon">face<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>age<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>description<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>detector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>iouThreshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>maxFaces<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>return<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>rotation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>scoreThreshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>skipInitial<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>embedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>emotion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>gender<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>iris<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>mesh<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Controlls and configures all face-specific options:</p>
+							<ul>
+								<li>face detection, face mesh detection, age, gender, emotion detection and face description
+								Parameters:</li>
+								<li>enabled: true/false</li>
+								<li>modelPath: path for individual face model</li>
+								<li>rotation: use calculated rotated face image or just box with rotation as-is, false means higher performance, but incorrect mesh mapping on higher face angles</li>
+								<li>maxFaces: maximum number of faces detected in the input, should be set to the minimum number for performance</li>
+								<li>skipFrames: how many frames to go without re-running the face detector and just run modified face mesh analysis, only valid if videoOptimized is set to true</li>
+								<li>skipInitial: if previous detection resulted in no faces detected, should skipFrames be reset immediately to force new detection cycle</li>
+								<li>minConfidence: threshold for discarding a prediction</li>
+								<li>iouThreshold: threshold for deciding whether boxes overlap too much in non-maximum suppression</li>
+								<li>scoreThreshold: threshold for deciding when to remove boxes based on score in non-maximum suppression</li>
+								<li>return extracted face as tensor for futher user processing</li>
+							</ul>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -312,59 +363,157 @@
 					<div class="tsd-signature tsd-kind-icon">filter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>blur<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>brightness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>contrast<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>hue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>kodachrome<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>pixelate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>polaroid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>return<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>saturation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>sepia<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>sharpness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>technicolor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>vintage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Run input through image filters before inference</p>
+							<ul>
+								<li>image filters run with near-zero latency as they are executed on the GPU</li>
+							</ul>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
 								<h5>blur<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Range: 0 (no blur) to N (blur radius in pixels)</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>brightness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Range: -1 (darken) to 1 (lighten)</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>contrast<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Range: -1 (reduce contrast) to 1 (increase contrast)</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
 							</li>
 							<li class="tsd-parameter">
 								<h5>height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Resize input height</p>
+										<ul>
+											<li>if both width and height are set to 0, there is no resizing</li>
+											<li>if just one is set, second one is scaled automatically</li>
+											<li>if both are set, values are used as-is</li>
+										</ul>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>hue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Range: 0 (no change) to 360 (hue rotation in degrees)</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>kodachrome<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Image kodachrome colors</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Image negative</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>pixelate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Range: 0 (no pixelate) to N (number of pixels to pixelate)</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>polaroid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Image polaroid camera effect</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>return<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Return processed canvas imagedata in result</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>saturation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Range: -1 (reduce saturation) to 1 (increase saturation)</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>sepia<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Image sepia colors</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>sharpness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Range: 0 (no sharpening) to 1 (maximum sharpening)</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>technicolor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Image technicolor colors</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>vintage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Image vintage colors</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Resize input width</p>
+										<ul>
+											<li>if both width and height are set to 0, there is no resizing</li>
+											<li>if just one is set, second one is scaled automatically</li>
+											<li>if both are set, values are used as-is</li>
+										</ul>
+									</div>
+								</div>
 							</li>
 						</ul>
 					</div>
@@ -375,6 +524,11 @@
 					<div class="tsd-signature tsd-kind-icon">gesture<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Controlls gesture detection</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -390,6 +544,23 @@
 					<div class="tsd-signature tsd-kind-icon">hand<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>detector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>iouThreshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>landmarks<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>maxHands<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>rotation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>scoreThreshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>skeleton<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>skipInitial<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Controlls and configures all hand detection specific options</p>
+							<ul>
+								<li>enabled: true/false</li>
+								<li>modelPath: paths for both hand detector model and hand skeleton model</li>
+								<li>rotation: use best-guess rotated hand image or just box with rotation as-is, false means higher performance, but incorrect finger mapping if hand is inverted</li>
+								<li>skipFrames: how many frames to go without re-running the hand bounding box detector and just run modified hand skeleton detector, only valid if videoOptimized is set to true</li>
+								<li>skipInitial: if previous detection resulted in no hands detected, should skipFrames be reset immediately to force new detection cycle</li>
+								<li>minConfidence: threshold for discarding a prediction</li>
+								<li>iouThreshold: threshold for deciding whether boxes overlap too much in non-maximum suppression</li>
+								<li>scoreThreshold: threshold for deciding when to remove boxes based on score in non-maximum suppression</li>
+								<li>maxHands: maximum number of hands detected in the input, should be set to the minimum number for performance</li>
+								<li>landmarks: detect hand landmarks or just hand boundary box</li>
+							</ul>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -445,6 +616,14 @@
 					<div class="tsd-signature tsd-kind-icon">model<wbr>Base<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Base model path (typically starting with file://, http:// or https://) for all models</p>
+							<ul>
+								<li>individual modelPath values are joined to this path</li>
+							</ul>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="object" class="tsd-anchor"></a>
@@ -452,6 +631,17 @@
 					<div class="tsd-signature tsd-kind-icon">object<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>iouThreshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>maxResults<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Controlls and configures all object detection specific options</p>
+							<ul>
+								<li>minConfidence: minimum score that detection must have to return as valid object</li>
+								<li>iouThreshold: ammount of overlap between two detected objects before one object is removed</li>
+								<li>maxResults: maximum number of detections to return</li>
+								<li>skipFrames: run object detection every n input frames, only valid if videoOptimized is set to true</li>
+							</ul>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -482,6 +672,11 @@
 					<div class="tsd-signature tsd-kind-icon">profile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Collect and print profiling data during inference operations</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="scoped" class="tsd-anchor"></a>
@@ -489,6 +684,11 @@
 					<div class="tsd-signature tsd-kind-icon">scoped<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Internal: Run all inference operations in an explicit local scope run to avoid memory leaks</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="videooptimized" class="tsd-anchor"></a>
@@ -496,13 +696,33 @@
 					<div class="tsd-signature tsd-kind-icon">video<wbr>Optimized<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Perform additional optimizations when input is video,</p>
+							<ul>
+								<li>must be disabled for images</li>
+								<li>automatically disabled for Image, ImageData, ImageBitmap and Tensor inputs</li>
+								<li>skips boundary detection for every <code>skipFrames</code> frames specified for each model</li>
+								<li>while maintaining in-box detection since objects don&#39;t change definition as fast</li>
+							</ul>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="warmup" class="tsd-anchor"></a>
 					<h3>warmup</h3>
-					<div class="tsd-signature tsd-kind-icon">warmup<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<div class="tsd-signature tsd-kind-icon">warmup<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;none&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;face&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;full&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;body&quot;</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>What to use for <code>human.warmup()</code></p>
+							<ul>
+								<li>warmup pre-initializes all models for faster inference but can take significant time on startup</li>
+								<li>only used for <code>webgl</code> and <code>humangl</code> backends</li>
+							</ul>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="wasmpath" class="tsd-anchor"></a>
@@ -510,6 +730,11 @@
 					<div class="tsd-signature tsd-kind-icon">wasm<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Path to *.wasm files if backend is set to <code>wasm</code></p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -586,6 +811,9 @@
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface">
+						<a href="drawoptions.html" class="tsd-kind-icon">Draw<wbr>Options</a>
+					</li>
 					<li class=" tsd-kind-interface">
 						<a href="result.html" class="tsd-kind-icon">Result</a>
 					</li>

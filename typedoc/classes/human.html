@@ -138,6 +138,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates instance of Human library that is futher used for all operations</p>
+									<ul>
+										<li>@param userConfig: <a href="../interfaces/config.html">Config</a></li>
+									</ul>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -157,6 +165,11 @@
 					<div class="tsd-signature tsd-kind-icon">classes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>age<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">__module</span><span class="tsd-signature-symbol">; </span>body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">__module</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">__module</span><span class="tsd-signature-symbol">; </span>emotion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">__module</span><span class="tsd-signature-symbol">; </span>facemesh<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">__module</span><span class="tsd-signature-symbol">; </span>faceres<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">__module</span><span class="tsd-signature-symbol">; </span>gender<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">__module</span><span class="tsd-signature-symbol">; </span>hand<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">__module</span><span class="tsd-signature-symbol">; </span>nanodet<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">__module</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Internal: Currently loaded classes</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -193,22 +206,43 @@
 					<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <a href="../interfaces/config.html" class="tsd-signature-type" data-tsd-kind="Interface">Config</a></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Current configuration</p>
+							<ul>
+								<li>Details: <a href="../interfaces/config.html">Config</a></li>
+							</ul>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="draw" class="tsd-anchor"></a>
 					<h3>draw</h3>
-					<div class="tsd-signature tsd-kind-icon">draw<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>all<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, outCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>drawOptions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>bufferedOutput<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>drawBoxes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>drawLabels<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>drawPoints<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>drawPolygons<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>fillPolygons<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>font<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>labelColor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>lineHeight<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>lineWidth<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>pointSize<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>roundRect<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>shadowColor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>useCurves<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>useDepth<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>useRawBoxes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>face<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>hand<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">draw<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>all<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, outCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>face<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>hand<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Draw helper classes that can draw detected objects on canvas using specified draw styles</p>
+							<ul>
+								<li>options: global settings for all draw operations, can be overriden for each draw method, for details see <a href="../interfaces/drawoptions.html">DrawOptions</a></li>
+								<li>face: draw detected faces</li>
+								<li>body: draw detected people and body parts</li>
+								<li>hand: draw detected hands and hand parts</li>
+								<li>canvas: draw processed canvas which is a processed copy of the input</li>
+								<li>all: meta-function that performs: canvas, face, body, hand</li>
+							</ul>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
-								<h5>all<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								<h5>all<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<ul class="tsd-parameters">
 									<li class="tsd-parameter-signature">
 										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-literal">
-											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 										</ul>
 										<ul class="tsd-descriptions">
 											<li class="tsd-description">
@@ -220,6 +254,9 @@
 													<li>
 														<h5>result: <span class="tsd-signature-type">any</span></h5>
 													</li>
+													<li>
+														<h5><span class="tsd-flag ts-flagOptional">Optional</span> drawOptions: <a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a></h5>
+													</li>
 												</ul>
 												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 											</li>
@@ -228,11 +265,11 @@
 								</ul>
 							</li>
 							<li class="tsd-parameter">
-								<h5>body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								<h5>body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<ul class="tsd-parameters">
 									<li class="tsd-parameter-signature">
 										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-literal">
-											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 										</ul>
 										<ul class="tsd-descriptions">
 											<li class="tsd-description">
@@ -243,6 +280,9 @@
 													</li>
 													<li>
 														<h5>result: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+													</li>
+													<li>
+														<h5><span class="tsd-flag ts-flagOptional">Optional</span> drawOptions: <a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a></h5>
 													</li>
 												</ul>
 												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -276,67 +316,11 @@
 								</ul>
 							</li>
 							<li class="tsd-parameter">
-								<h5><span class="tsd-flag ts-flagOptional">Optional</span> draw<wbr>Options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>bufferedOutput<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>drawBoxes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>drawLabels<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>drawPoints<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>drawPolygons<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>fillPolygons<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>font<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>labelColor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>lineHeight<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>lineWidth<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>pointSize<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>roundRect<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>shadowColor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>useCurves<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>useDepth<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol">; </span>useRawBoxes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span><span class="tsd-signature-symbol"> }</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter">
-										<h5>buffered<wbr>Output<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>draw<wbr>Boxes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>draw<wbr>Labels<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>draw<wbr>Points<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>draw<wbr>Polygons<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>fill<wbr>Polygons<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>font<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>label<wbr>Color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>line<wbr>Height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>line<wbr>Width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>point<wbr>Size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>round<wbr>Rect<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>shadow<wbr>Color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>use<wbr>Curves<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>use<wbr>Depth<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>use<wbr>Raw<wbr>Boxes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></h5>
-									</li>
-								</ul>
-							</li>
-							<li class="tsd-parameter">
-								<h5>face<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								<h5>face<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<ul class="tsd-parameters">
 									<li class="tsd-parameter-signature">
 										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-literal">
-											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 										</ul>
 										<ul class="tsd-descriptions">
 											<li class="tsd-description">
@@ -348,6 +332,9 @@
 													<li>
 														<h5>result: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 													</li>
+													<li>
+														<h5><span class="tsd-flag ts-flagOptional">Optional</span> drawOptions: <a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a></h5>
+													</li>
 												</ul>
 												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 											</li>
@@ -356,11 +343,11 @@
 								</ul>
 							</li>
 							<li class="tsd-parameter">
-								<h5>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								<h5>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<ul class="tsd-parameters">
 									<li class="tsd-parameter-signature">
 										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-literal">
-											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 										</ul>
 										<ul class="tsd-descriptions">
 											<li class="tsd-description">
@@ -372,6 +359,9 @@
 													<li>
 														<h5>result: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 													</li>
+													<li>
+														<h5><span class="tsd-flag ts-flagOptional">Optional</span> drawOptions: <a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a></h5>
+													</li>
 												</ul>
 												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 											</li>
@@ -380,11 +370,11 @@
 								</ul>
 							</li>
 							<li class="tsd-parameter">
-								<h5>hand<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								<h5>hand<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<ul class="tsd-parameters">
 									<li class="tsd-parameter-signature">
 										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-literal">
-											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 										</ul>
 										<ul class="tsd-descriptions">
 											<li class="tsd-description">
@@ -396,12 +386,18 @@
 													<li>
 														<h5>result: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 													</li>
+													<li>
+														<h5><span class="tsd-flag ts-flagOptional">Optional</span> drawOptions: <a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a></h5>
+													</li>
 												</ul>
 												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 											</li>
 										</ul>
 									</li>
 								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/drawoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a></h5>
 							</li>
 						</ul>
 					</div>
@@ -412,6 +408,11 @@
 					<div class="tsd-signature tsd-kind-icon">face<wbr>Triangulation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Face triangualtion array of 468 points, used for triangle references between points</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="faceuvmap" class="tsd-anchor"></a>
@@ -419,21 +420,31 @@
 					<div class="tsd-signature tsd-kind-icon">faceUVMap<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>UV map of 468 values, used for 3D mapping of the face mesh</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="image" class="tsd-anchor"></a>
 					<h3>image</h3>
-					<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span><span class="tsd-signature-symbol">; </span>tensor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">__class</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span><span class="tsd-signature-symbol">; </span>tensor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">__class</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Internal: Instance of current image being processed</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
-								<h5>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span></h5>
+								<h5>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span></h5>
 							</li>
 							<li class="tsd-parameter">
-								<h5>tensor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">__class</span></h5>
+								<h5>tensor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">__class</span></h5>
 							</li>
 						</ul>
 					</div>
@@ -444,6 +455,11 @@
 					<div class="tsd-signature tsd-kind-icon">models<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>age<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">; </span>blazepose<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">; </span>efficientpose<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">; </span>embedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">; </span>emotion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">; </span>face<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MediaPipeFaceMesh</span><span class="tsd-signature-symbol">; </span>faceres<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">; </span>gender<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">; </span>handpose<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HandPose</span><span class="tsd-signature-symbol">; </span>iris<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">; </span>nanodet<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">; </span>posenet<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">PoseNet</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Internal: Currently loaded models</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -492,6 +508,11 @@
 					<div class="tsd-signature tsd-kind-icon">perf<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Performance object that contains values for all recently performed operations</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="state" class="tsd-anchor"></a>
@@ -499,6 +520,14 @@
 					<div class="tsd-signature tsd-kind-icon">state<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Current state of Human library</p>
+							<ul>
+								<li>Can be polled to determine operations that are currently executed</li>
+							</ul>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="sysinfo" class="tsd-anchor"></a>
@@ -506,6 +535,11 @@
 					<div class="tsd-signature tsd-kind-icon">sysinfo<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>agent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>platform<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Platform and agent information detected by Human</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -524,6 +558,14 @@
 					<div class="tsd-signature tsd-kind-icon">tf<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">__module</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Internal: Instance of TensorFlow/JS used by Human</p>
+							<ul>
+								<li>Can be embedded or externally provided</li>
+							</ul>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="version" class="tsd-anchor"></a>
@@ -531,6 +573,11 @@
 					<div class="tsd-signature tsd-kind-icon">version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Current version of Human library in semver format</p>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -545,6 +592,17 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Main detection method</p>
+									<ul>
+										<li>Analyze configuration: <a href="../interfaces/config.html">Config</a></li>
+										<li>Pre-process input: <a href="../index.html#input">Input</a></li>
+										<li>Run inference for all configured models</li>
+										<li>Process and return result: <a href="../interfaces/result.html">Result</a></li>
+									</ul>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -568,13 +626,22 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Enhance method performs additional enhacements to face image previously detected for futher processing</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>input: <span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">__class</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Tensor as provided in human.result.face[n].tensor</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">__class</span></h4>
+							<p>Tensor</p>
 						</li>
 					</ul>
 				</section>
@@ -588,6 +655,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Load method preloads all configured models on-demand</p>
+									<ul>
+										<li>Not explicitly required as any required model is load implicitly on it&#39;s first run</li>
+									</ul>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -608,6 +683,11 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Math method find best match between provided face descriptor and predefined database of known descriptors</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -621,6 +701,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>embedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>similarity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h4>
+							<p>best match</p>
 							<ul class="tsd-parameters">
 								<li class="tsd-parameter">
 									<h5>embedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
@@ -648,6 +729,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Internal: ProfileData method returns last known profiling information</p>
+									<ul>
+										<li>Requires human.config.profile set to true</li>
+									</ul>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>largestKernelOps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>newBytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>newTensors<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>numKernelOps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>peakBytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>slowestKernelOps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>timeKernelOps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></h4>
 						</li>
 					</ul>
@@ -662,6 +751,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)</p>
+									<ul>
+										<li>Calculation is based on normalized Minkowski distance between</li>
+									</ul>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -685,6 +782,15 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Warmup metho pre-initializes all models for faster inference</p>
+									<ul>
+										<li>can take significant time on startup</li>
+										<li>only used for <code>webgl</code> and <code>humangl</code> backends</li>
+									</ul>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -781,6 +887,9 @@
 				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/config.html" class="tsd-kind-icon">Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/drawoptions.html" class="tsd-kind-icon">Draw<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/result.html" class="tsd-kind-icon">Result</a>

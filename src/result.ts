@@ -24,6 +24,7 @@ export interface Result {
    * - emotion as array of possible emotions with their individual scores
    * - iris as distance value
    * - angle as object with values for roll, yaw and pitch angles
+   * - tensor as Tensor object which contains detected face
    */
   face: Array<{
     confidence: number,
@@ -44,6 +45,7 @@ export interface Result {
       angle: { roll: number, yaw: number, pitch: number },
       matrix: Array<[number, number, number, number, number, number, number, number, number]>
     }
+    tensor: any,
   }>,
   /** Body results
    *
@@ -82,13 +84,12 @@ export interface Result {
    *
    * Array of individual results with one object per detected gesture
    * Each result has:
-   * - part where gesture was detected
-   * - gesture detected
+   * - part: part name and number where gesture was detected: face, iris, body, hand
+   * - gesture: gesture detected
    */
-  gesture: Array<{
-    part: string,
-    gesture: string,
-  }>,
+  gesture: Array<
+    { 'face': number, gesture: string } | { 'iris': number, gesture: string } | { 'body': number, gesture: string } | { 'hand': number, gesture: string }
+  >,
   /** Object results
   *
   * Array of individual results with one object per detected gesture

@@ -402,7 +402,7 @@ export class Human {
 
       // disable video optimization for inputs of type image
       let previousVideoOptimized;
-      if (input && this.config.videoOptimized && (input instanceof HTMLImageElement || input instanceof Image || input instanceof ImageData || input instanceof ImageBitmap || input instanceof tf.Tensor)) {
+      if (input && this.config.videoOptimized && (input instanceof HTMLImageElement || input instanceof Image || input instanceof ImageData || (typeof ImageBitmap !== 'undefined' && image instanceof ImageBitmap) || input instanceof tf.Tensor)) {
         log('disabling video optimization');
         previousVideoOptimized = this.config.videoOptimized;
         this.config.videoOptimized = false;

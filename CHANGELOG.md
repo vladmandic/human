@@ -1,6 +1,6 @@
 # @vladmandic/human  
 
-Version: **1.4.2**  
+Version: **1.5.0**  
 Description: **Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition**  
 
 Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -8,6 +8,10 @@ License: **MIT** </LICENSE>
 Repository: **<git+https://github.com/vladmandic/human.git>**  
 
 ## Changelog
+
+### **1.4.3** 2021/04/12 mandic00@live.com
+
+- implement webrtc
 
 ### **1.4.2** 2021/04/12 mandic00@live.com
 

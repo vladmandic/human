@@ -25,15 +25,20 @@ import * as app from '../package.json';
 
 /** Generic Tensor object type */
 export type Tensor = typeof tf.Tensor;
+
 export type { Config } from './config';
 export type { Result } from './result';
+export type { DrawOptions } from './draw/draw';
+
 /** Defines all possible input types for **Human** detection */
 export type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 
 /** Error message */
 export type Error = { error: string };
+
 /** Instance of TensorFlow/JS */
 export type TensorFlow = typeof tf;
+
 /** Generic Model object type, holds instance of individual models */
 type Model = Object;
 
@@ -47,14 +52,32 @@ type Model = Object;
  * - Possible inputs: {@link Input}
  */
 export class Human {
+  /** Current version of Human library in semver format */
   version: string;
+  /** Current configuration
+   * - Details: {@link Config}
+   */
   config: Config;
+  /** Current state of Human library
+   * - Can be polled to determine operations that are currently executed
+   */
   state: string;
-  image: { tensor: Tensor, canvas: OffscreenCanvas | HTMLCanvasElement };
-  // classes
+  /** Internal: Instance of current image being processed */
+  image: { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null };
+  /** Internal: Instance of TensorFlow/JS used by Human
+   * - Can be embedded or externally provided
+   */
   tf: TensorFlow;
+  /** Draw helper classes that can draw detected objects on canvas using specified draw styles
+   * - options: global settings for all draw operations, can be overriden for each draw method, for details see {@link DrawOptions}
+   * - face: draw detected faces
+   * - body: draw detected people and body parts
+   * - hand: draw detected hands and hand parts
+   * - canvas: draw processed canvas which is a processed copy of the input
+   * - all: meta-function that performs: canvas, face, body, hand
+   */
   draw: {
-    drawOptions?: typeof draw.drawOptions,
+    options: draw.DrawOptions,
     gesture: typeof draw.gesture,
     face: typeof draw.face,
     body: typeof draw.body,
@@ -62,7 +85,7 @@ export class Human {
     canvas: typeof draw.canvas,
     all: typeof draw.all,
   };
-  // models
+  /** Internal: Currently loaded models */
   models: {
     face: facemesh.MediaPipeFaceMesh | Model | null,
     posenet: posenet.PoseNet | null,
@@ -77,6 +100,7 @@ export class Human {
     nanodet: Model | null,
     faceres: Model | null,
   };
+  /** Internal: Currently loaded classes */
   classes: {
     facemesh: typeof facemesh;
     age: typeof age;
@@ -87,16 +111,25 @@ export class Human {
     nanodet: typeof nanodet;
     faceres: typeof faceres;
   };
+  /** Face triangualtion array of 468 points, used for triangle references between points */
   faceTriangulation: typeof facemesh.triangulation;
+  /** UV map of 468 values, used for 3D mapping of the face mesh */
   faceUVMap: typeof facemesh.uvmap;
+  /** Platform and agent information detected by Human */
   sysinfo: { platform: string, agent: string };
+  /** Performance object that contains values for all recently performed operations */
   perf: any;
   #numTensors: number;
   #analyzeMemoryLeaks: boolean;
   #checkSanity: boolean;
   #firstRun: boolean;
+
   // definition end
 
+  /**
+   * Creates instance of Human library that is futher used for all operations
+   * - @param userConfig: {@link Config}
+   */
   constructor(userConfig: Config | Object = {}) {
     this.tf = tf;
     this.draw = draw;
@@ -143,6 +176,9 @@ export class Human {
     this.sysinfo = sysinfo.info();
   }
 
+  /** Internal: ProfileData method returns last known profiling information
+   * - Requires human.config.profile set to true
+   */
   profileData(): { newBytes, newTensors, peakBytes, numKernelOps, timeKernelOps, slowestKernelOps, largestKernelOps } | {} {
     if (this.config.profile) return profile.data;
     return {};
@@ -173,23 +209,39 @@ export class Human {
     return null;
   }
 
+  /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
+   * - Calculation is based on normalized Minkowski distance between
+  */
   similarity(embedding1: Array<number>, embedding2: Array<number>): number {
     if (this.config.face.description.enabled) return faceres.similarity(embedding1, embedding2);
     if (this.config.face.embedding.enabled) return embedding.similarity(embedding1, embedding2);
     return 0;
   }
 
+  /** Enhance method performs additional enhacements to face image previously detected for futher processing
+   * @param input Tensor as provided in human.result.face[n].tensor
+   * @returns Tensor
+   */
   // eslint-disable-next-line class-methods-use-this
   enhance(input: Tensor): Tensor | null {
     return faceres.enhance(input);
   }
 
+  /**
+   * Math method find best match between provided face descriptor and predefined database of known descriptors
+   * @param faceEmbedding: face descriptor previsouly calculated on any face
+   * @param db: array of mapping of face descriptors to known values
+   * @param threshold: minimum score for matching to be considered in the result
+   * @returns best match
+   */
   // eslint-disable-next-line class-methods-use-this
   match(faceEmbedding: Array<number>, db: Array<{ name: string, source: string, embedding: number[] }>, threshold = 0): { name: string, source: string, similarity: number, embedding: number[] } {
     return faceres.match(faceEmbedding, db, threshold);
   }
 
-  // preload models, not explicitly required as it's done automatically on first use
+  /** Load method preloads all configured models on-demand
+   * - Not explicitly required as any required model is load implicitly on it's first run
+  */
   async load(userConfig: Config | Object = {}) {
     this.state = 'load';
     const timeStamp = now();
@@ -261,7 +313,7 @@ export class Human {
   // check if backend needs initialization if it changed
   /** @hidden */
   #checkBackend = async (force = false) => {
-    if (this.config.backend && (this.config.backend !== '') && force || (this.tf.getBackend() !== this.config.backend)) {
+    if (this.config.backend && (this.config.backend.length > 0) && force || (this.tf.getBackend() !== this.config.backend)) {
       const timeStamp = now();
       this.state = 'backend';
       /* force backend reload
@@ -274,7 +326,7 @@ export class Human {
       }
       */
 
-      if (this.config.backend && this.config.backend !== '') {
+      if (this.config.backend && this.config.backend.length > 0) {
         // force browser vs node backend
         if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === 'tensorflow') this.config.backend = 'webgl';
         if (this.tf.ENV.flags.IS_NODE && (this.config.backend === 'webgl' || this.config.backend === 'wasm')) this.config.backend = 'tensorflow';
@@ -314,7 +366,12 @@ export class Human {
     }
   }
 
-  // main detect function
+  /** Main detection method
+   * - Analyze configuration: {@link Config}
+   * - Pre-process input: {@link Input}
+   * - Run inference for all configured models
+   * - Process and return result: {@link Result}
+  */
   async detect(input: Input, userConfig: Config | Object = {}): Promise<Result | Error> {
     // detection happens inside a promise
     return new Promise(async (resolve) => {
@@ -528,6 +585,10 @@ export class Human {
     return res;
   }
 
+  /** Warmup metho pre-initializes all models for faster inference
+   * - can take significant time on startup
+   * - only used for `webgl` and `humangl` backends
+  */
   async warmup(userConfig: Config | Object = {}): Promise<Result | { error }> {
     const t0 = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);

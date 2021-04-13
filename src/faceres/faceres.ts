@@ -23,7 +23,7 @@ export function similarity(embedding1, embedding2, order = 2): number {
   if (embedding1?.length === 0 || embedding2?.length === 0) return 0;
   if (embedding1?.length !== embedding2?.length) return 0;
   // general minkowski distance, euclidean distance is limited case where order is 2
-  const distance = 4.0 * embedding1
+  const distance = 5.0 * embedding1
     .map((val, i) => (Math.abs(embedding1[i] - embedding2[i]) ** order)) // distance squared
     .reduce((sum, now) => (sum + now), 0) // sum all distances
     ** (1 / order); // get root of
@@ -51,6 +51,7 @@ export function enhance(input): Tensor {
     if (!(tensor instanceof tf.Tensor)) return null;
     // do a tight crop of image and resize it to fit the model
     const box = [[0.05, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
+    // const box = [[0.0, 0.0, 1.0, 1.0]]; // basically no crop for test
     const crop = (tensor.shape.length === 3)
       ? tf.image.cropAndResize(tf.expandDims(tensor, 0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch dimension if missing
       : tf.image.cropAndResize(tensor, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
@@ -75,11 +76,13 @@ export function enhance(input): Tensor {
     const factor = 5;
     const contrast = merge.sub(mean).mul(factor).add(mean);
     */
+
     /*
     // normalize brightness from 0..1
     const darken = crop.sub(crop.min());
     const lighten = darken.div(darken.max());
     */
+
     const norm = crop.mul(255);
 
     return norm;
@@ -96,9 +99,6 @@ export async function predict(image, config) {
   if (config.videoOptimized) skipped = 0;
   else skipped = Number.MAX_SAFE_INTEGER;
   return new Promise(async (resolve) => {
-    // const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
-    // const enhanced = tf.mul(resize, [255.0]);
-    // tf.dispose(resize);
     const enhanced = enhance(image);
 
     let resT;

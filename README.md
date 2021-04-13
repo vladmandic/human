@@ -39,8 +39,8 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**Code Repository**](https://github.com/vladmandic/human)
 - [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
-- [**API Specification: Human**](https://vladmandic.github.io/human/typedoc/classes/human.html)
-- [**API Specification: Root**](https://vladmandic.github.io/human/typedoc/)
+- [**TypeDoc API Specification: Human**](https://vladmandic.github.io/human/typedoc/classes/human.html)
+- [**TypeDoc API Specification: Root**](https://vladmandic.github.io/human/typedoc/)
 - [**Change Log**](https://github.com/vladmandic/human/blob/main/CHANGELOG.md)
 
 ## Wiki pages

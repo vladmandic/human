@@ -198,7 +198,7 @@ async function setupCamera() {
   ui.busy = true;
   const viewportScale = Math.min(1, Math.round(100 * window.outerWidth / 700) / 100);
   // log('demo viewport scale:', viewportScale);
-  document.querySelector('meta[name=viewport]').setAttribute('content', `width=device-width, shrink-to-fit=no; initial-scale=${viewportScale}`);
+  document.querySelector('meta[name=viewport]').setAttribute('content', `width=device-width, shrink-to-fit=no, initial-scale=${viewportScale}`);
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const output = document.getElementById('log');
@@ -587,7 +587,7 @@ async function main() {
     log('overriding worker:', ui.useWorker);
   }
   if (params.has('backend')) {
-    userConfig.backend = JSON.parse(params.get('backend'));
+    userConfig.backend = params.get('backend');
     log('overriding backend:', userConfig.backend);
   }
   if (params.has('preload')) {

@@ -274,7 +274,7 @@ export class Pipeline {
         angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
         const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
         const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-        const rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
+        const rotatedImage = tf.image.rotateWithOffset(input.toFloat(), angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
         rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
         face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize]).div(255);
       }

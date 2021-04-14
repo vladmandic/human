@@ -1,4 +1,4 @@
-const Human = require('../dist/human.node.js').default;
+const Human = require('../dist/human.node-gpu.js').default;
 const test = require('./test-main.js').test;
 
 const config = {

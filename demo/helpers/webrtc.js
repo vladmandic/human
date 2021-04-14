@@ -41,7 +41,6 @@ async function webRTC(server, streamName, elementName) {
   connection.ontrack = (event) => {
     stream.addTrack(event.track);
     const video = (typeof elementName === 'string') ? document.getElementById(elementName) : elementName;
-    // @ts-ignore
     if (video instanceof HTMLVideoElement) video.srcObject = stream;
     else log('element is not a video element:', elementName);
     // video.onloadeddata = async () => log('resolution:', video.videoWidth, video.videoHeight);

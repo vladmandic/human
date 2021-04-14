@@ -1,9 +1,10 @@
-const Human = require('../dist/human.node.js').default;
+const Human = require('../dist/human.node-wasm.js').default;
 const test = require('./test-main.js').test;
 
 const config = {
-  modelBasePath: 'file://models/',
-  backend: 'tensorflow',
+  modelBasePath: 'http://localhost:10030/models/',
+  backend: 'wasm',
+  wasmPath: 'assets/',
   debug: false,
   videoOptimized: false,
   async: false,
@@ -20,7 +21,7 @@ const config = {
   },
   hand: { enabled: true },
   body: { enabled: true },
-  object: { enabled: true },
+  object: { enabled: false },
 };
 
 test(Human, config);

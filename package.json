@@ -24,7 +24,7 @@
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation demo/node.js",
     "dev": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/serve.js",
     "build": "rimraf dist/* typedoc/* types/* && node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/build.js",
-    "lint": "eslint src server demo",
+    "lint": "eslint src server demo test",
     "test": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation test/test-node.js"
   },
   "keywords": [

@@ -157,7 +157,7 @@ export class Human {
       faceres: null,
     };
     // export access to image processing
-    // @ts-ignore // typescript cannot infer type
+    // @ts-ignore eslint-typescript cannot correctly infer type in anonymous function
     this.image = (input: Input) => image.process(input, this.config);
     // export raw access to underlying models
     this.classes = {
@@ -266,9 +266,7 @@ export class Human {
         this.models.gender,
         this.models.emotion,
         this.models.embedding,
-        // @ts-ignore // typescript cannot infer type
         this.models.handpose,
-        // @ts-ignore // typescript cannot infer type
         this.models.posenet,
         this.models.blazepose,
         this.models.efficientpose,
@@ -280,8 +278,8 @@ export class Human {
         this.models.gender || ((this.config.face.enabled && this.config.face.gender.enabled) ? gender.load(this.config) : null),
         this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
         this.models.embedding || ((this.config.face.enabled && this.config.face.embedding.enabled) ? embedding.load(this.config) : null),
-        this.models.handpose || (this.config.hand.enabled ? <Promise<handpose.HandPose>>handpose.load(this.config) : null),
-        this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('posenet') ? posenet.load(this.config) : null),
+        this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config) : null),
+        this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('posenet') ? <any>posenet.load(this.config) : null),
         this.models.blazepose || (this.config.body.enabled && this.config.body.modelPath.includes('blazepose') ? blazepose.load(this.config) : null),
         this.models.efficientpose || (this.config.body.enabled && this.config.body.modelPath.includes('efficientpose') ? efficientpose.load(this.config) : null),
         this.models.nanodet || (this.config.object.enabled ? nanodet.load(this.config) : null),
@@ -340,7 +338,7 @@ export class Human {
           const simd = await this.tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
           const mt = await this.tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT');
           if (this.config.debug) log(`wasm execution: ${simd ? 'SIMD' : 'no SIMD'} ${mt ? 'multithreaded' : 'singlethreaded'}`);
-          if (!simd) log('warning: wasm simd support is not enabled');
+          if (this.config.debug && !simd) log('warning: wasm simd support is not enabled');
         }
 
         if (this.config.backend === 'humangl') backend.register();
@@ -574,23 +572,29 @@ export class Human {
 
   /** @hidden */
   #warmupNode = async () => {
-    // @ts-ignore
-    if (typeof tf.node === 'undefined') {
-      if (this.config.debug) log('Warmup tfjs-node not loaded');
-      return null;
-    }
     const atob = (str) => Buffer.from(str, 'base64');
     let img;
     if (this.config.warmup === 'face') img = atob(sample.face);
     if (this.config.warmup === 'body' || this.config.warmup === 'full') img = atob(sample.body);
     if (!img) return null;
-    // @ts-ignore // tf.node is only defined when compiling for nodejs
-    const data = tf.node?.decodeJpeg(img);
-    const expanded = data.expandDims(0);
-    this.tf.dispose(data);
-    // log('Input:', expanded);
-    const res = await this.detect(expanded, this.config);
-    this.tf.dispose(expanded);
+    let res;
+    if (typeof tf['node'] !== 'undefined') {
+      const data = tf['node'].decodeJpeg(img);
+      const expanded = data.expandDims(0);
+      this.tf.dispose(data);
+      // log('Input:', expanded);
+      res = await this.detect(expanded, this.config);
+      this.tf.dispose(expanded);
+    } else {
+      if (this.config.debug) log('Warmup tfjs-node not loaded');
+      /*
+      const input = await canvasJS.loadImage(img);
+      const canvas = canvasJS.createCanvas(input.width, input.height);
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, input.width, input.height);
+      res = await this.detect(input, this.config);
+      */
+    }
     return res;
   }
 

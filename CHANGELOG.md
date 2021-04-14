@@ -9,6 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/04/13 mandic00@live.com
+
+
 ### **1.5.1** 2021/04/13 mandic00@live.com
 
 - fix for safari imagebitmap

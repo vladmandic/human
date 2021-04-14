@@ -61,6 +61,7 @@
     "node/no-unpublished-import": "off",
     "node/no-unpublished-require": "off",
     "node/no-unsupported-features/es-syntax": "off",
+    "no-lonely-if": "off",
     "node/shebang": "off",
     "object-curly-newline": "off",
     "prefer-destructuring": "off",

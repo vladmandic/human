@@ -1,15 +1,14 @@
 const log = require('@vladmandic/pilogger');
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const tf = require('@tensorflow/tfjs-node');
-const Human = require('../dist/human.node.js').default;
+const tf = require('@tensorflow/tfjs');
+const Human = require('../dist/human.node-wasm.js').default;
 
 const config = {
-  backend: 'tensorflow',
+  backend: 'wasm',
+  wasmPath: 'assets/',
   debug: false,
   videoOptimized: false,
   async: false,
-  warmup: 'full',
-  modelBasePath: 'file://models/',
+  modelBasePath: 'http://localhost:10030/models',
   filter: {
     enabled: true,
   },
@@ -27,7 +26,7 @@ const config = {
   // body: { modelPath: 'efficientpose.json', enabled: true },
   // body: { modelPath: 'blazepose.json', enabled: true },
   body: { modelPath: 'posenet.json', enabled: true },
-  object: { enabled: true },
+  object: { enabled: false }, // Error: Kernel 'SparseToDense' not registered for backend 'wasm'
 };
 
 async function testInstance(human) {

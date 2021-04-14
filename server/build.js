@@ -99,6 +99,22 @@ const targets = {
       external: ['@tensorflow'],
     },
   },
+  nodeWASM: {
+    tfjs: {
+      platform: 'node',
+      format: 'cjs',
+      entryPoints: ['src/tfjs/tf-node-wasm.ts'],
+      outfile: 'dist/tfjs.esm.js',
+      external: ['@tensorflow'],
+    },
+    node: {
+      platform: 'node',
+      format: 'cjs',
+      entryPoints: ['src/human.ts'],
+      outfile: 'dist/human.node-wasm.js',
+      external: ['@tensorflow'],
+    },
+  },
 
   browserNoBundle: {
     tfjs: {

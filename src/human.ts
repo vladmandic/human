@@ -329,13 +329,14 @@ export class Human {
       if (this.config.backend && this.config.backend.length > 0) {
         // force browser vs node backend
         if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === 'tensorflow') this.config.backend = 'webgl';
-        if (this.tf.ENV.flags.IS_NODE && (this.config.backend === 'webgl' || this.config.backend === 'wasm')) this.config.backend = 'tensorflow';
+        if (this.tf.ENV.flags.IS_NODE && (this.config.backend === 'webgl' || this.config.backend === 'humangl')) this.config.backend = 'tensorflow';
 
         if (this.config.debug) log('setting backend:', this.config.backend);
 
         if (this.config.backend === 'wasm') {
           if (this.config.debug) log('wasm path:', this.config.wasmPath);
-          this.tf.setWasmPaths(this.config.wasmPath);
+          if (typeof this.tf?.setWasmPaths !== 'undefined') this.tf.setWasmPaths(this.config.wasmPath);
+          else throw new Error('Human: WASM backend is not loaded');
           const simd = await this.tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
           const mt = await this.tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT');
           if (this.config.debug) log(`wasm execution: ${simd ? 'SIMD' : 'no SIMD'} ${mt ? 'multithreaded' : 'singlethreaded'}`);
@@ -573,8 +574,16 @@ export class Human {
 
   /** @hidden */
   #warmupNode = async () => {
+    // @ts-ignore
+    if (typeof tf.node === 'undefined') {
+      if (this.config.debug) log('Warmup tfjs-node not loaded');
+      return null;
+    }
     const atob = (str) => Buffer.from(str, 'base64');
-    const img = this.config.warmup === 'face' ? atob(sample.face) : atob(sample.body);
+    let img;
+    if (this.config.warmup === 'face') img = atob(sample.face);
+    if (this.config.warmup === 'body' || this.config.warmup === 'full') img = atob(sample.body);
+    if (!img) return null;
     // @ts-ignore // tf.node is only defined when compiling for nodejs
     const data = tf.node?.decodeJpeg(img);
     const expanded = data.expandDims(0);
@@ -592,6 +601,7 @@ export class Human {
   async warmup(userConfig: Config | Object = {}): Promise<Result | { error }> {
     const t0 = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
+    if (!this.config.warmup || this.config.warmup === 'none') return { error: 'null' };
     const save = this.config.videoOptimized;
     this.config.videoOptimized = false;
     let res;

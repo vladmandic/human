@@ -21,11 +21,11 @@
     "url": "git+https://github.com/vladmandic/human.git"
   },
   "scripts": {
-    "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation demo/node.js",
+    "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught demo/node.js",
     "dev": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/serve.js",
     "build": "rimraf dist/* typedoc/* types/* && node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/build.js",
     "lint": "eslint src server demo test",
-    "test": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation test/test-node.js"
+    "test": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught test/test.js"
   },
   "keywords": [
     "human",
@@ -61,14 +61,14 @@
     "@tensorflow/tfjs-layers": "^3.4.0",
     "@tensorflow/tfjs-node": "^3.4.0",
     "@tensorflow/tfjs-node-gpu": "^3.4.0",
-    "@types/node": "^14.14.37",
+    "@types/node": "^14.14.39",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
-    "@vladmandic/pilogger": "^0.2.16",
+    "@vladmandic/pilogger": "^0.2.17",
     "canvas": "^2.7.0",
     "chokidar": "^3.5.1",
     "dayjs": "^1.10.4",
-    "esbuild": "^0.11.10",
+    "esbuild": "^0.11.11",
     "eslint": "^7.24.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",

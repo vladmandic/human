@@ -1,5 +1,3 @@
-#!/usr/bin/env -S node --trace-warnings
-
 /*
   micro http2 server with file monitoring and automatic app rebuild
   - can process concurrent http requests

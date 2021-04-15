@@ -1,6 +1,5 @@
-#!/usr/bin/env -S node --trace-warnings
-
 const ts = require('typescript');
+const path = require('path');
 const log = require('@vladmandic/pilogger');
 const esbuild = require('esbuild');
 const TypeDoc = require('typedoc');
@@ -265,6 +264,7 @@ async function build(f, msg, dev = false) {
 }
 
 if (require.main === module) {
+  log.logFile(path.join(__dirname, 'build.log'));
   log.header();
   build('all', 'startup');
 } else {

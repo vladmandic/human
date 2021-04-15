@@ -4,22 +4,23 @@
 
 ### NodeJS using TensorFlow library
 
+- Image filters are disabled due to lack of Canvas and WeBGL access
 - Face rotation is disabled for `NodeJS` platform:  
   `Kernel 'RotateWithOffset' not registered for backend 'tensorflow'`  
   <https://github.com/tensorflow/tfjs/issues/4606>
-- Image filters are disabled due to lack of Canvas and WeBGL access
 
 ### NodeJS with GPU acceleation using CUDA
 
+- Image filters are disabled due to lack of Canvas and WeBGL access
 - Face rotation is disabled for `NodeJS` platform:  
   `Kernel 'RotateWithOffset' not registered for backend 'tensorflow'`  
   <https://github.com/tensorflow/tfjs/issues/4606>
-- Image filters are disabled due to lack of Canvas and WeBGL access
 
 ### NodeJS using WASM
 
 - Requires dev http server  
   See <https://github.com/tensorflow/tfjs/issues/4927>
+- Image filters are disabled due to lack of Canvas and WeBGL access
 - Only supported input is Tensor due to missing image decoders
 - Warmup returns null and is marked as failed  
   Missing native Image implementation in NodeJS

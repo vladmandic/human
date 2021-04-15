@@ -5,8 +5,9 @@ const fetch = require('node-fetch').default;
 let config;
 
 const log = (status, ...data) => {
-  if (typeof process.send !== 'undefined') process.send([status, data]);
-  else process.stdout.write(JSON.stringify(data));
+  if (typeof process.send !== 'undefined') process.send([status, data]); // send to parent process over ipc
+  // eslint-disable-next-line no-console
+  else console.log(status, ...data); // write to console if no parent process
 };
 
 async function testHTTP() {

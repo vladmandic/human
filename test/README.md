@@ -23,7 +23,7 @@
 - Image filters are disabled due to lack of Canvas and WeBGL access
 - Only supported input is Tensor due to missing image decoders
 - Warmup returns null and is marked as failed  
-  Missing native Image implementation in NodeJS
+  Missing image decode in `tfjs-core`
 - Fails on object detection:  
   `Kernel 'SparseToDense' not registered for backend 'wasm'`  
   <https://github.com/tensorflow/tfjs/issues/4824>

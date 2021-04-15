@@ -2,7 +2,7 @@
 
 ## Big Ticket Items
 
-- Improve automated testing framework
+- N/A
 
 ## Explore Models
 

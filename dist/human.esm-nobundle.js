@@ -5,14 +5,25168 @@
   author: <https://github.com/vladmandic>'
   */
 
-var l1=Object.defineProperty;var M0=Object.prototype.hasOwnProperty,v0=Object.getOwnPropertyNames,z0=Object.getOwnPropertyDescriptor;var J=(e,t)=>{for(var n in t)l1(e,n,{get:t[n],enumerable:!0})},l=(e,t,n)=>{if(t&&typeof t=="object"||typeof t=="function")for(let A of v0(t))!M0.call(e,A)&&A!=="default"&&l1(e,A,{get:()=>t[A],enumerable:!(n=z0(t,A))||n.enumerable});return e};var d1=(e,t,n)=>{if(!t.has(e))throw TypeError("Cannot "+n)},C=(e,t,n)=>(d1(e,t,"read from private field"),n?n.call(e):t.get(e)),Ae=(e,t,n,A)=>(d1(e,t,"write to private field"),A?A.call(e,n):t.set(e,n),n);function S(e,t){let n=e.endsWith("/")?"":"/",_=t.startsWith(".")||t.startsWith("/")||t.startsWith("http:")||t.startsWith("https:")||t.startsWith("file:")?`${t}`:`${e}${n}${t}`;if(!_.toLocaleLowerCase().includes(".json"))throw new Error(`Human: ModelPath Error: ${_} Expecting JSON file`);return _}function f(...e){let t=new Date,n=`${t.getHours().toString().padStart(2,"0")}:${t.getMinutes().toString().padStart(2,"0")}:${t.getSeconds().toString().padStart(2,"0")}.${t.getMilliseconds().toString().padStart(3,"0")}`;e&&console.log(n,"Human:",...e)}var z=()=>typeof performance!="undefined"?performance.now():parseInt((Number(process.hrtime.bigint())/1e3/1e3).toString());function U(...e){let t=n=>n&&typeof n=="object";return e.reduce((n,A)=>(Object.keys(A||{}).forEach(_=>{let c=n[_],r=A[_];Array.isArray(c)&&Array.isArray(r)?n[_]=c.concat(...r):t(c)&&t(r)?n[_]=U(c,r):n[_]=r}),n),{})}function f1(){let e,t;if(typeof navigator!="undefined"){let n=navigator.userAgent.match(/\(([^()]+)\)/g);if(n&&n[0]){let A=n[0].match(/\(([^()]+)\)/g);e=A?A[0].replace(/\(|\)/g,""):"",t=navigator.userAgent.replace(n[0],""),e[1]&&(t=t.replace(n[1],"")),t=t.replace(/  /g," ")}}else typeof process!="undefined"&&(e=`${process.platform} ${process.arch}`,t=`NodeJS ${process.version}`);return{platform:e,agent:t}}var o={};J(o,{data:()=>S0,version:()=>W0});l(o,Tn);l(o,Pn);l(o,Mn);l(o,vn);l(o,zn);l(o,En);import*as m1 from"@tensorflow/tfjs/package.json";import*as p1 from"@tensorflow/tfjs-core/package.json";import*as u1 from"@tensorflow/tfjs-data/package.json";import*as b1 from"@tensorflow/tfjs-layers/package.json";import*as g1 from"@tensorflow/tfjs-converter/package.json";import{version_cpu as E0}from"@tensorflow/tfjs-backend-cpu/dist/index.js";import{version_webgl as R0}from"@tensorflow/tfjs-backend-webgl/dist/index.js";import{version_wasm as j0}from"@tensorflow/tfjs-backend-wasm/dist/index.js";import*as Tn from"@tensorflow/tfjs-core/dist/index.js";import*as Pn from"@tensorflow/tfjs-layers/dist/index.js";import*as Mn from"@tensorflow/tfjs-converter/dist/index.js";import*as S0 from"@tensorflow/tfjs-data/dist/index.js";import*as vn from"@tensorflow/tfjs-backend-cpu/dist/index.js";import*as zn from"@tensorflow/tfjs-backend-webgl/dist/index.js";import*as En from"@tensorflow/tfjs-backend-wasm/dist/index.js";var W0={tfjs:(m1==null?void 0:m1.version)||void 0,"tfjs-core":(p1==null?void 0:p1.version)||void 0,"tfjs-data":(u1==null?void 0:u1.version)||void 0,"tfjs-layers":(b1==null?void 0:b1.version)||void 0,"tfjs-converter":(g1==null?void 0:g1.version)||void 0,"tfjs-backend-cpu":E0||void 0,"tfjs-backend-webgl":R0||void 0,"tfjs-backend-wasm":j0||void 0};var F={name:"humangl",priority:99,canvas:null,gl:null,width:1024,height:1024,webGLattr:{alpha:!1,antialias:!1,premultipliedAlpha:!1,preserveDrawingBuffer:!1,depth:!1,stencil:!1,failIfMajorPerformanceCaveat:!1,desynchronized:!0}};function T1(){if(!o.findBackend(F.name)){f("backend registration:",F.name);try{F.canvas=typeof OffscreenCanvas!="undefined"?new OffscreenCanvas(F.width,F.height):document.createElement("canvas")}catch(e){f("error: cannot create canvas:",e);return}try{F.gl=F.canvas.getContext("webgl2",F.webGLattr)}catch(e){f("error: cannot get WebGL2 context:",e);return}try{o.setWebGLContext(2,F.gl)}catch(e){f("error: cannot set WebGL2 context:",e);return}try{let e=new o.GPGPUContext(F.gl);o.registerBackend(F.name,()=>new o.MathBackendWebGL(e),F.priority)}catch(e){f("error: cannot register WebGL backend:",e);return}try{o.getKernelsForBackend("webgl").forEach(t=>{let n={...t,backendName:F.name};o.registerKernel(n)})}catch(e){f("error: cannot update WebGL backend registration:",e);return}try{o.ENV.set("WEBGL_VERSION",2)}catch(e){f("error: cannot set WebGL backend flags:",e);return}f("backend registered:",F.name)}}var st={};J(st,{load:()=>ht,predict:()=>Se});var Ee={};function L(e,t){if(!t||!t.kernels)return;let n=5,A=t.kernels.filter(r=>r.kernelTimeMs>0).reduce((r,s)=>r+=s.kernelTimeMs,0),_=t.kernels.map((r,s)=>(r.id=s,r)).filter(r=>r.kernelTimeMs>0).sort((r,s)=>s.kernelTimeMs-r.kernelTimeMs),c=t.kernels.map((r,s)=>(r.id=s,r)).filter(r=>r.totalBytesSnapshot>0).sort((r,s)=>s.totalBytesSnapshot-r.totalBytesSnapshot);_.length>n&&(_.length=n),c.length>n&&(c.length=n),Ee[e]={model:e,newBytes:t.newBytes,newTensors:t.newTensors,peakBytes:t.peakBytes,numKernelOps:t.kernels.length,timeKernelOps:A,slowestKernelOps:_,largestKernelOps:c},f("profiler",e,Ee[e])}var K,Re={age:0},je=Number.MAX_SAFE_INTEGER;async function ht(e){return K?e.debug&&f("cached model:",K.modelUrl):(K=await o.loadGraphModel(S(e.modelBasePath,e.face.age.modelPath)),!K||!K.modelUrl?f("load model failed:",e.face.age.modelPath):e.debug&&f("load model:",K.modelUrl)),K}async function Se(e,t){return K?je<t.face.age.skipFrames&&t.videoOptimized&&Re.age&&Re.age>0?(je++,Re):(t.videoOptimized?je=0:je=Number.MAX_SAFE_INTEGER,new Promise(async n=>{let A=o.image.resizeBilinear(e,[K.inputs[0].shape[2],K.inputs[0].shape[1]],!1),_=o.mul(A,[255]);o.dispose(A);let c,r={age:0};if(!t.profile)t.face.age.enabled&&(c=await K.predict(_));else{let s=t.face.age.enabled?await o.profile(()=>K.predict(_)):{};c=s.result.clone(),s.result.dispose(),L("age",s)}if(_.dispose(),c){let s=c.dataSync();r.age=Math.trunc(10*s[0])/10}c.dispose(),Re=r,n(r)})):null}var it={};J(it,{load:()=>wt,predict:()=>ke});var Y,at={gender:""},We=Number.MAX_SAFE_INTEGER,xt=!1,yt=[.2989,.587,.114];async function wt(e){return Y?e.debug&&f("cached model:",Y.modelUrl):(Y=await o.loadGraphModel(S(e.modelBasePath,e.face.gender.modelPath)),xt=Y.inputs[0].shape[3]===1,!Y||!Y.modelUrl?f("load model failed:",e.face.gender.modelPath):e.debug&&f("load model:",Y.modelUrl)),Y}async function ke(e,t){return Y?We<t.face.gender.skipFrames&&t.videoOptimized&&at.gender!==""?(We++,at):(t.videoOptimized?We=0:We=Number.MAX_SAFE_INTEGER,new Promise(async n=>{let A=o.image.resizeBilinear(e,[Y.inputs[0].shape[2],Y.inputs[0].shape[1]],!1),_;xt?_=o.tidy(()=>{let[s,h,a]=o.split(A,3,3),x=o.mul(s,yt[0]),i=o.mul(h,yt[1]),w=o.mul(a,yt[2]);return o.addN([x,i,w]).sub(.5).mul(2)}):_=o.mul(A,[255]),o.dispose(A);let c,r={gender:"",confidence:0};if(!t.profile)t.face.gender.enabled&&(c=await Y.predict(_));else{let s=t.face.gender.enabled?await o.profile(()=>Y.predict(_)):{};c=s.result.clone(),s.result.dispose(),L("gender",s)}if(_.dispose(),c)if(Array.isArray(c)){let s=c[0].dataSync(),h=Math.trunc(200*Math.abs(s[0]-.5))/100;h>t.face.gender.minConfidence&&(r.gender=s[0]<=.5?"female":"male",r.confidence=Math.min(.99,h)),c.forEach(a=>o.dispose(a))}else{let s=c.dataSync();if(xt)(s[0]>t.face.gender.minConfidence||s[1]>t.face.gender.minConfidence)&&(r.gender=s[0]>s[1]?"female":"male",r.confidence=s[0]>s[1]?Math.trunc(100*s[0])/100:Math.trunc(100*s[1])/100);else{let h=Math.trunc(200*Math.abs(s[0]-.5))/100;h>t.face.gender.minConfidence&&(r.gender=s[0]<=.5?"female":"male",r.confidence=Math.min(.99,h))}c.dispose()}at=r,n(r)})):null}var lt={};J(lt,{load:()=>mt,predict:()=>Oe});var k0=["angry","disgust","fear","happy","sad","surprise","neutral"],D,dt=[],Ne=Number.MAX_SAFE_INTEGER,ft=[.2989,.587,.114];async function mt(e){return D?e.debug&&f("cached model:",D.modelUrl):(D=await o.loadGraphModel(S(e.modelBasePath,e.face.emotion.modelPath)),!D||!D.modelUrl?f("load model failed:",e.face.emotion.modelPath):e.debug&&f("load model:",D.modelUrl)),D}async function Oe(e,t){return D?Ne<t.face.emotion.skipFrames&&t.videoOptimized&&dt.length>0?(Ne++,dt):(t.videoOptimized?Ne=0:Ne=Number.MAX_SAFE_INTEGER,new Promise(async n=>{let A=o.image.resizeBilinear(e,[D.inputs[0].shape[2],D.inputs[0].shape[1]],!1),[_,c,r]=o.split(A,3,3);A.dispose();let s=o.mul(_,ft[0]),h=o.mul(c,ft[1]),a=o.mul(r,ft[2]);_.dispose(),c.dispose(),r.dispose();let x=o.addN([s,h,a]);s.dispose(),h.dispose(),a.dispose();let i=o.tidy(()=>x.sub(.5).mul(2));x.dispose();let w=[];if(t.face.emotion.enabled){let m;if(t.profile){let b=await o.profile(()=>D.predict(i));m=b.result.dataSync(),b.result.dispose(),L("emotion",b)}else{let b=await D.predict(i);m=b.dataSync(),o.dispose(b)}for(let b=0;b<m.length;b++)m[b]>t.face.emotion.minConfidence&&w.push({score:Math.min(.99,Math.trunc(100*m[b])/100),emotion:k0[b]});w.sort((b,y)=>y.score-b.score)}i.dispose(),dt=w,n(w)})):null}var q;async function pt(e){return q?e.debug&&f("cached model:",q.modelUrl):(q=await o.loadGraphModel(S(e.modelBasePath,e.face.embedding.modelPath)),!q||!q.modelUrl?f("load model failed:",e.face.embedding.modelPath):e.debug&&f("load model:",q.modelUrl)),q}function P1(e,t,n=2){if(!e||!t||(e==null?void 0:e.length)===0||(t==null?void 0:t.length)===0||(e==null?void 0:e.length)!==(t==null?void 0:t.length))return 0;let A=e.map((c,r)=>Math.abs(e[r]-t[r])**n).reduce((c,r)=>c+r,0)**(1/n);return Math.max(Math.trunc(1e3*(1-A))/1e3,0)}function N0(e){return o.tidy(()=>{let n=[[.05,.15,.85,.85]],A=e.image||e.tensor;if(!(A instanceof o.Tensor))return null;let _=A.shape.length===3?o.image.cropAndResize(o.expandDims(A,0),n,[0],[q.inputs[0].shape[2],q.inputs[0].shape[1]]):o.image.cropAndResize(A,n,[0],[q.inputs[0].shape[2],q.inputs[0].shape[1]]),c=[.2989,.587,.114],[r,s,h]=o.split(_,3,3),a=o.mul(r,c[0]),x=o.mul(s,c[1]),i=o.mul(h,c[2]),w=o.addN([a,x,i]),m=o.stack([w,w,w],3).squeeze(4),b=m.sub(m.min());return b.div(b.max())})}async function ut(e,t){return q?new Promise(async n=>{let A=[];if(t.face.embedding.enabled){let _=N0(e);if(!t.profile)A=o.tidy(()=>[...q.predict(_).reshape([128,2]).logSumExp(1).dataSync()]);else{let c=await o.profile(()=>q.predict({img_inputs:_}));A=[...c.result.dataSync()],c.result.dispose(),L("emotion",c)}o.dispose(_)}n(A)}):[]}var bt={};J(bt,{enhance:()=>Pt,load:()=>gt,match:()=>M1,predict:()=>Ze,similarity:()=>Tt});var B,Ie={age:0},Le=Number.MAX_SAFE_INTEGER;async function gt(e){return B?e.debug&&f("cached model:",B.modelUrl):(B=await o.loadGraphModel(S(e.modelBasePath,e.face.description.modelPath)),!B||!B.modelUrl?f("load model failed:",e.face.description.modelPath):e.debug&&f("load model:",B.modelUrl)),B}function Tt(e,t,n=2){if(!e||!t||(e==null?void 0:e.length)===0||(t==null?void 0:t.length)===0||(e==null?void 0:e.length)!==(t==null?void 0:t.length))return 0;let A=5*e.map((c,r)=>Math.abs(e[r]-t[r])**n).reduce((c,r)=>c+r,0)**(1/n);return Math.max(0,100-A)/100}function M1(e,t,n=0){let A={similarity:0,name:"",source:"",embedding:[]};if(!e||!t||!Array.isArray(e)||!Array.isArray(t))return A;for(let _ of t)if(_.embedding&&_.name){let c=Tt(e,_.embedding);c>n&&c>A.similarity&&(A={..._,similarity:c})}return A}function Pt(e){return o.tidy(()=>{let n=e.image||e.tensor||e;if(!(n instanceof o.Tensor))return null;let A=[[.05,.15,.85,.85]];return(n.shape.length===3?o.image.cropAndResize(o.expandDims(n,0),A,[0],[B.inputs[0].shape[2],B.inputs[0].shape[1]]):o.image.cropAndResize(n,A,[0],[B.inputs[0].shape[2],B.inputs[0].shape[1]])).mul(255)})}async function Ze(e,t){return B?Le<t.face.description.skipFrames&&t.videoOptimized&&Ie.age&&Ie.age>0?(Le++,Ie):(t.videoOptimized?Le=0:Le=Number.MAX_SAFE_INTEGER,new Promise(async n=>{let A=Pt(e),_,c={age:0,gender:"unknown",genderConfidence:0,descriptor:[]};if(!t.profile)t.face.description.enabled&&(_=await B.predict(A));else{let r=t.face.description.enabled?await o.profile(()=>B.predict(A)):{};_=r.result,L("faceres",r)}o.dispose(A),_&&(o.tidy(()=>{let r=_.find(i=>i.shape[1]===1).dataSync(),s=Math.trunc(200*Math.abs(r[0]-.5))/100;s>t.face.gender.minConfidence&&(c.gender=r[0]<=.5?"female":"male",c.genderConfidence=Math.min(.99,s));let h=_.find(i=>i.shape[1]===100).argMax(1).dataSync()[0],a=_.find(i=>i.shape[1]===100).dataSync();c.age=Math.round(a[h-1]>a[h+1]?10*h-100*a[h-1]:10*h+100*a[h+1])/10;let x=_.find(i=>i.shape[1]===1024);c.descriptor=[...x.dataSync()]}),_.forEach(r=>o.dispose(r))),Ie=c,n(c)})):null}var O0=(e,t)=>{let n=p=>p*180/Math.PI,A=p=>{let u=Math.sqrt(p[0]*p[0]+p[1]*p[1]+p[2]*p[2]);return p[0]/=u,p[1]/=u,p[2]/=u,p},_=(p,u)=>{let M=p[0]-u[0],E=p[1]-u[1],k=p[2]-u[2];return[M,E,k]},c=(p,u)=>{let M=p[1]*u[2]-p[2]*u[1],E=p[2]*u[0]-p[0]*u[2],k=p[0]*u[1]-p[1]*u[0];return[M,E,k]},r=p=>{let[u,M,E,k,g,d,T,v,R]=p,O,re,X;return k<1?k>-1?(X=Math.asin(k),re=Math.atan2(-T,u),O=Math.atan2(-d,g)):(X=-Math.PI/2,re=-Math.atan2(v,R),O=0):(X=Math.PI/2,re=Math.atan2(v,R),O=0),{pitch:2*-O,yaw:2*-re,roll:2*-X}},s=p=>{let u=(E,k,g,d)=>Math.atan2(d-k,g-E);return{pitch:u(p[10][1],p[10][2],p[152][1],p[152][2]),yaw:u(p[33][0],p[33][2],p[263][0],p[263][2]),roll:u(p[33][0],p[33][1],p[263][0],p[263][1])}},h=e.meshRaw;if(!h||h.length<300)return{angle:{pitch:0,yaw:0,roll:0},matrix:[1,0,0,0,1,0,0,0,1]};let a=Math.max(e.boxRaw[2]*t[0],e.boxRaw[3]*t[1])/1.5,x=[h[10],h[152],h[234],h[454]].map(p=>[p[0]*t[0]/a,p[1]*t[1]/a,p[2]]),i=A(_(x[1],x[0])),w=A(_(x[3],x[2])),m=A(c(w,i));w=c(i,m);let b=[w[0],w[1],w[2],i[0],i[1],i[2],m[0],m[1],m[2]];return{angle:r(b),matrix:b}},Mt=async(e,t)=>{var x,i,w,m,b,y,p;let n,A,_,c,r,s,h=[];e.state="run:face",n=z();let a=await((x=e.models.face)==null?void 0:x.estimateFaces(t,e.config));if(e.perf.face=Math.trunc(z()-n),!a)return[];for(let u of a){if(e.analyze("Get Face"),!u.image||u.image.isDisposedInternal){f("Face object is disposed:",u.image);continue}let M=O0(u,[t.shape[2],t.shape[1]]);e.analyze("Start Age:"),e.config.async?A=e.config.face.age.enabled?Se(u.image,e.config):{}:(e.state="run:age",n=z(),A=e.config.face.age.enabled?await Se(u.image,e.config):{},e.perf.age=Math.trunc(z()-n)),e.analyze("Start Gender:"),e.config.async?_=e.config.face.gender.enabled?ke(u.image,e.config):{}:(e.state="run:gender",n=z(),_=e.config.face.gender.enabled?await ke(u.image,e.config):{},e.perf.gender=Math.trunc(z()-n)),e.analyze("Start Emotion:"),e.config.async?c=e.config.face.emotion.enabled?Oe(u.image,e.config):{}:(e.state="run:emotion",n=z(),c=e.config.face.emotion.enabled?await Oe(u.image,e.config):{},e.perf.emotion=Math.trunc(z()-n)),e.analyze("End Emotion:"),e.analyze("Start Embedding:"),e.config.async?r=e.config.face.embedding.enabled?ut(u,e.config):[]:(e.state="run:embedding",n=z(),r=e.config.face.embedding.enabled?await ut(u,e.config):[],e.perf.embedding=Math.trunc(z()-n)),e.analyze("End Embedding:"),e.analyze("Start Description:"),e.config.async?s=e.config.face.description.enabled?Ze(u,e.config):[]:(e.state="run:description",n=z(),s=e.config.face.description.enabled?await Ze(u.image,e.config):[],e.perf.embedding=Math.trunc(z()-n)),e.analyze("End Description:"),e.config.async&&([A,_,c,r,s]=await Promise.all([A,_,c,r,s])),e.analyze("Finish Face:"),!e.config.face.iris.enabled&&((i=u==null?void 0:u.annotations)==null?void 0:i.leftEyeIris)&&((w=u==null?void 0:u.annotations)==null?void 0:w.rightEyeIris)&&(delete u.annotations.leftEyeIris,delete u.annotations.rightEyeIris);let E=((m=u.annotations)==null?void 0:m.leftEyeIris)&&((b=u.annotations)==null?void 0:b.rightEyeIris)?11.7*Math.max(Math.abs(u.annotations.leftEyeIris[3][0]-u.annotations.leftEyeIris[1][0]),Math.abs(u.annotations.rightEyeIris[4][1]-u.annotations.rightEyeIris[2][1])):0;h.push({...u,age:s.age||A.age,gender:s.gender||_.gender,genderConfidence:s.genderConfidence||_.confidence,embedding:s.descriptor||r,emotion:c,iris:E!==0?Math.trunc(E)/100:0,rotation:M,tensor:e.config.face.detector.return?(y=u.image)==null?void 0:y.squeeze():null}),(p=u.image)==null||p.dispose(),e.analyze("End Face")}return e.analyze("End FaceMesh:"),e.config.async&&(e.perf.face&&delete e.perf.face,e.perf.age&&delete e.perf.age,e.perf.gender&&delete e.perf.gender,e.perf.emotion&&delete e.perf.emotion),h};var St={};J(St,{MediaPipeFaceMesh:()=>Wt,load:()=>kt,triangulation:()=>O1,uvmap:()=>I1});var v1=6;function I0(e){let t={strides:[e/16,e/8],anchors:[2,6]},n=[];for(let A=0;A<t.strides.length;A++){let _=t.strides[A],c=Math.floor((e+_-1)/_),r=Math.floor((e+_-1)/_),s=t.anchors[A];for(let h=0;h<c;h++){let a=_*(h+.5);for(let x=0;x<r;x++){let i=_*(x+.5);for(let w=0;w<s;w++)n.push([i,a])}}}return n}var L0=e=>({startEndTensor:e,startPoint:o.slice(e,[0,0],[-1,2]),endPoint:o.slice(e,[0,2],[-1,2])});function Z0(e,t,n){let A=o.slice(e,[0,1],[-1,2]),_=o.add(A,t),c=o.slice(e,[0,3],[-1,2]),r=o.div(c,n),s=o.div(_,n),h=o.div(r,2),a=o.sub(s,h),x=o.add(s,h),i=o.mul(a,n),w=o.mul(x,n);return o.concat2d([i,w],1)}var z1=class{constructor(t,n){this.model=t,this.anchorsData=I0(t.inputs[0].shape[1]),this.anchors=o.tensor2d(this.anchorsData),this.inputSize=t.inputs[0].shape[2],this.config=n}async getBoundingBoxes(t){if(!t||t.isDisposedInternal||t.shape.length!==4||t.shape[1]<1||t.shape[2]<1)return null;let[n,A,_]=o.tidy(()=>{let w=t.resizeBilinear([this.inputSize,this.inputSize]).div(127.5).sub(.5),m=this.model.predict(w),b;if(Array.isArray(m)){let M=m.sort((d,T)=>d.size-T.size),E=o.concat([M[0],M[2]],2),k=o.concat([M[1],M[3]],2);b=o.concat([k,E],1).squeeze(0)}else b=m.squeeze();let y=Z0(b,this.anchors,[this.inputSize,this.inputSize]),p=o.slice(b,[0,0],[-1,1]),u=o.sigmoid(p).squeeze();return[b,y,u]}),c=await o.image.nonMaxSuppressionAsync(A,_,this.config.face.detector.maxFaces,this.config.face.detector.iouThreshold,this.config.face.detector.scoreThreshold),r=c.arraySync();c.dispose();let h=r.map(i=>o.slice(A,[i,0],[1,-1])).map(i=>{let w=i.arraySync();return i.dispose(),w}),a=_.dataSync(),x=[];for(let i=0;i<h.length;i++){let w=r[i],m=a[w];if(m>this.config.face.detector.minConfidence){let b=L0(h[i]),y=this.anchorsData[w],p=o.tidy(()=>o.slice(n,[w,v1-1],[1,-1]).squeeze().reshape([v1,-1]));x.push({box:b,landmarks:p,anchor:y,confidence:m})}}return n.dispose(),A.dispose(),_.dispose(),{boxes:x,scaleFactor:[t.shape[2]/this.inputSize,t.shape[1]/this.inputSize]}}};async function E1(e){let t=await o.loadGraphModel(S(e.modelBasePath,e.face.detector.modelPath),{fromTFHub:e.face.detector.modelPath.includes("tfhub.dev")}),n=new z1(t,e);return!t||!t.modelUrl?f("load model failed:",e.face.detector.modelPath):e.debug&&f("load model:",t.modelUrl),n}function R1(e,t){let n=[e.startPoint[0]*t[0],e.startPoint[1]*t[1]],A=[e.endPoint[0]*t[0],e.endPoint[1]*t[1]];return{startPoint:n,endPoint:A}}function me(e){return[Math.abs(e.endPoint[0]-e.startPoint[0]),Math.abs(e.endPoint[1]-e.startPoint[1])]}function ie(e){return[e.startPoint[0]+(e.endPoint[0]-e.startPoint[0])/2,e.startPoint[1]+(e.endPoint[1]-e.startPoint[1])/2]}function ae(e,t,n){let A=t.shape[1],_=t.shape[2],c=[[e.startPoint[1]/A,e.startPoint[0]/_,e.endPoint[1]/A,e.endPoint[0]/_]];return o.image.cropAndResize(t,c,[0],n)}function He(e,t=1.5){let n=ie(e),A=me(e),_=[t*A[0]/2,t*A[1]/2],c=[n[0]-_[0],n[1]-_[1]],r=[n[0]+_[0],n[1]+_[1]];return{startPoint:c,endPoint:r,landmarks:e.landmarks}}function Ve(e){let t=ie(e),n=me(e),_=Math.max(...n)/2,c=[t[0]-_,t[1]-_],r=[t[0]+_,t[1]+_];return{startPoint:c,endPoint:r,landmarks:e.landmarks}}var Xe=[[1,0,0],[0,1,0],[0,0,1]];function H0(e){return e-2*Math.PI*Math.floor((e+Math.PI)/(2*Math.PI))}function vt(e,t){let n=Math.PI/2-Math.atan2(-(t[1]-e[1]),t[0]-e[0]);return H0(n)}function j1(e,t){return[[1,0,e],[0,1,t],[0,0,1]]}function ee(e,t){let n=0;for(let A=0;A<e.length;A++)n+=e[A]*t[A];return n}function V0(e,t){let n=[];for(let A=0;A<e.length;A++)n.push(e[A][t]);return n}function S1(e,t){let n=[],A=e.length;for(let _=0;_<A;_++){n.push([]);for(let c=0;c<A;c++)n[_].push(ee(e[_],V0(t,c)))}return n}function Fe(e,t){let n=Math.cos(e),A=Math.sin(e),_=[[n,-A,0],[A,n,0],[0,0,1]],c=j1(t[0],t[1]),r=S1(c,_),s=j1(-t[0],-t[1]);return S1(r,s)}function W1(e){let t=[[e[0][0],e[1][0]],[e[0][1],e[1][1]]],n=[e[0][2],e[1][2]],A=[-ee(t[0],n),-ee(t[1],n)];return[t[0].concat(A[0]),t[1].concat(A[1]),[0,0,1]]}function k1(e,t){return[ee(e,t[0]),ee(e,t[1])]}var G={silhouette:[10,338,297,332,284,251,389,356,454,323,361,288,397,365,379,378,400,377,152,148,176,149,150,136,172,58,132,93,234,127,162,21,54,103,67,109],lipsUpperOuter:[61,185,40,39,37,0,267,269,270,409,291],lipsLowerOuter:[146,91,181,84,17,314,405,321,375,291],lipsUpperInner:[78,191,80,81,82,13,312,311,310,415,308],lipsLowerInner:[78,95,88,178,87,14,317,402,318,324,308],rightEyeUpper0:[246,161,160,159,158,157,173],rightEyeLower0:[33,7,163,144,145,153,154,155,133],rightEyeUpper1:[247,30,29,27,28,56,190],rightEyeLower1:[130,25,110,24,23,22,26,112,243],rightEyeUpper2:[113,225,224,223,222,221,189],rightEyeLower2:[226,31,228,229,230,231,232,233,244],rightEyeLower3:[143,111,117,118,119,120,121,128,245],rightEyebrowUpper:[156,70,63,105,66,107,55,193],rightEyebrowLower:[35,124,46,53,52,65],rightEyeIris:[473,474,475,476,477],leftEyeUpper0:[466,388,387,386,385,384,398],leftEyeLower0:[263,249,390,373,374,380,381,382,362],leftEyeUpper1:[467,260,259,257,258,286,414],leftEyeLower1:[359,255,339,254,253,252,256,341,463],leftEyeUpper2:[342,445,444,443,442,441,413],leftEyeLower2:[446,261,448,449,450,451,452,453,464],leftEyeLower3:[372,340,346,347,348,349,350,357,465],leftEyebrowUpper:[383,300,293,334,296,336,285,417],leftEyebrowLower:[265,353,276,283,282,295],leftEyeIris:[468,469,470,471,472],midwayBetweenEyes:[168],noseTip:[1],noseBottom:[2],noseRightCorner:[98],noseLeftCorner:[327],rightCheek:[205],leftCheek:[425]},zt=[{key:"EyeUpper0",indices:[9,10,11,12,13,14,15]},{key:"EyeUpper1",indices:[25,26,27,28,29,30,31]},{key:"EyeUpper2",indices:[41,42,43,44,45,46,47]},{key:"EyeLower0",indices:[0,1,2,3,4,5,6,7,8]},{key:"EyeLower1",indices:[16,17,18,19,20,21,22,23,24]},{key:"EyeLower2",indices:[32,33,34,35,36,37,38,39,40]},{key:"EyeLower3",indices:[54,55,56,57,58,59,60,61,62]}],pe=[[.499976992607117,.652534008026123],[.500025987625122,.547487020492554],[.499974012374878,.602371990680695],[.482113003730774,.471979022026062],[.500150978565216,.527155995368958],[.499909996986389,.498252987861633],[.499523013830185,.40106201171875],[.289712011814117,.380764007568359],[.499954998493195,.312398016452789],[.499987006187439,.269918978214264],[.500023007392883,.107050001621246],[.500023007392883,.666234016418457],[.5000159740448,.679224014282227],[.500023007392883,.692348003387451],[.499976992607117,.695277988910675],[.499976992607117,.70593398809433],[.499976992607117,.719385027885437],[.499976992607117,.737019002437592],[.499967992305756,.781370997428894],[.499816000461578,.562981009483337],[.473773002624512,.573909997940063],[.104906998574734,.254140973091125],[.365929991006851,.409575998783112],[.338757991790771,.41302502155304],[.311120003461838,.409460008144379],[.274657994508743,.389131009578705],[.393361985683441,.403706014156342],[.345234006643295,.344011008739471],[.370094001293182,.346076011657715],[.319321990013123,.347265005111694],[.297903001308441,.353591024875641],[.24779200553894,.410809993743896],[.396889001131058,.842755019664764],[.280097991228104,.375599980354309],[.106310002505779,.399955987930298],[.2099249958992,.391353011131287],[.355807989835739,.534406006336212],[.471751004457474,.65040397644043],[.474155008792877,.680191993713379],[.439785003662109,.657229006290436],[.414617002010345,.66654098033905],[.450374007225037,.680860996246338],[.428770989179611,.682690978050232],[.374971002340317,.727805018424988],[.486716985702515,.547628998756409],[.485300987958908,.527395009994507],[.257764995098114,.314490020275116],[.401223003864288,.455172002315521],[.429818987846375,.548614978790283],[.421351999044418,.533740997314453],[.276895999908447,.532056987285614],[.483370006084442,.499586999416351],[.33721199631691,.282882988452911],[.296391993761063,.293242990970612],[.169294998049736,.193813979625702],[.447580009698868,.302609980106354],[.392390012741089,.353887975215912],[.354490011930466,.696784019470215],[.067304998636246,.730105042457581],[.442739009857178,.572826027870178],[.457098007202148,.584792017936707],[.381974011659622,.694710969924927],[.392388999462128,.694203019142151],[.277076005935669,.271932005882263],[.422551989555359,.563233017921448],[.385919004678726,.281364023685455],[.383103013038635,.255840003490448],[.331431001424789,.119714021682739],[.229923993349075,.232002973556519],[.364500999450684,.189113974571228],[.229622006416321,.299540996551514],[.173287004232407,.278747975826263],[.472878992557526,.666198015213013],[.446828007698059,.668527007102966],[.422762006521225,.673889994621277],[.445307999849319,.580065965652466],[.388103008270264,.693961024284363],[.403039008378983,.706539988517761],[.403629004955292,.693953037261963],[.460041999816895,.557139039039612],[.431158006191254,.692366003990173],[.452181994915009,.692366003990173],[.475387006998062,.692366003990173],[.465828001499176,.779190003871918],[.472328990697861,.736225962638855],[.473087012767792,.717857003211975],[.473122000694275,.704625964164734],[.473033010959625,.695277988910675],[.427942007780075,.695277988910675],[.426479011774063,.703539967536926],[.423162013292313,.711845993995667],[.4183090031147,.720062971115112],[.390094995498657,.639572978019714],[.013953999616206,.560034036636353],[.499913990497589,.58014702796936],[.413199990987778,.69539999961853],[.409626007080078,.701822996139526],[.468080013990402,.601534962654114],[.422728985548019,.585985004901886],[.463079988956451,.593783974647522],[.37211999297142,.47341400384903],[.334562003612518,.496073007583618],[.411671012639999,.546965003013611],[.242175996303558,.14767599105835],[.290776997804642,.201445996761322],[.327338010072708,.256527006626129],[.399509996175766,.748921036720276],[.441727995872498,.261676013469696],[.429764986038208,.187834024429321],[.412198007106781,.108901023864746],[.288955003023148,.398952007293701],[.218936994671822,.435410976409912],[.41278201341629,.398970007896423],[.257135003805161,.355440020561218],[.427684992551804,.437960982322693],[.448339998722076,.536936044692993],[.178560003638268,.45755398273468],[.247308000922203,.457193970680237],[.286267012357712,.467674970626831],[.332827985286713,.460712015628815],[.368755996227264,.447206974029541],[.398963987827301,.432654976844788],[.476410001516342,.405806005001068],[.189241006970406,.523923993110657],[.228962004184723,.348950982093811],[.490725994110107,.562400996685028],[.404670000076294,.485132992267609],[.019469000399113,.401564002037048],[.426243007183075,.420431017875671],[.396993011236191,.548797011375427],[.266469985246658,.376977026462555],[.439121007919312,.51895797252655],[.032313998788595,.644356966018677],[.419054001569748,.387154996395111],[.462783008813858,.505746960639954],[.238978996872902,.779744982719421],[.198220998048782,.831938028335571],[.107550002634525,.540755033493042],[.183610007166862,.740257024765015],[.134409993886948,.333683013916016],[.385764002799988,.883153975009918],[.490967005491257,.579378008842468],[.382384985685349,.508572995662689],[.174399003386497,.397670984268188],[.318785011768341,.39623498916626],[.343364000320435,.400596976280212],[.396100014448166,.710216999053955],[.187885001301765,.588537991046906],[.430987000465393,.944064974784851],[.318993002176285,.898285031318665],[.266247987747192,.869701027870178],[.500023007392883,.190576016902924],[.499976992607117,.954452991485596],[.366169989109039,.398822009563446],[.393207013607025,.39553701877594],[.410373002290726,.391080021858215],[.194993004202843,.342101991176605],[.388664990663528,.362284004688263],[.365961998701096,.355970978736877],[.343364000320435,.355356991291046],[.318785011768341,.35834002494812],[.301414996385574,.363156020641327],[.058132998645306,.319076001644135],[.301414996385574,.387449026107788],[.499987989664078,.618434011936188],[.415838003158569,.624195992946625],[.445681989192963,.566076993942261],[.465844005346298,.620640993118286],[.49992299079895,.351523995399475],[.288718998432159,.819945991039276],[.335278987884521,.852819979190826],[.440512001514435,.902418971061707],[.128294005990028,.791940987110138],[.408771991729736,.373893976211548],[.455606997013092,.451801002025604],[.499877005815506,.908990025520325],[.375436991453171,.924192011356354],[.11421000212431,.615022003650665],[.448662012815475,.695277988910675],[.4480200111866,.704632043838501],[.447111994028091,.715808033943176],[.444831997156143,.730794012546539],[.430011987686157,.766808986663818],[.406787008047104,.685672998428345],[.400738000869751,.681069016456604],[.392399996519089,.677703022956848],[.367855995893478,.663918972015381],[.247923001646996,.601333022117615],[.452769994735718,.420849978923798],[.43639200925827,.359887003898621],[.416164010763168,.368713974952698],[.413385987281799,.692366003990173],[.228018000721931,.683571994304657],[.468268007040024,.352671027183533],[.411361992359161,.804327011108398],[.499989002943039,.469825029373169],[.479153990745544,.442654013633728],[.499974012374878,.439637005329132],[.432112008333206,.493588984012604],[.499886006116867,.866917014122009],[.49991300702095,.821729004383087],[.456548988819122,.819200992584229],[.344549000263214,.745438992977142],[.37890899181366,.574010014533997],[.374292999505997,.780184984207153],[.319687992334366,.570737957954407],[.357154995203018,.604269981384277],[.295284003019333,.621580958366394],[.447750002145767,.862477004528046],[.410986006259918,.508723020553589],[.31395098567009,.775308012962341],[.354128003120422,.812552988529205],[.324548006057739,.703992962837219],[.189096003770828,.646299958229065],[.279776990413666,.71465802192688],[.1338230073452,.682700991630554],[.336768001317978,.644733011722565],[.429883986711502,.466521978378296],[.455527991056442,.548622965812683],[.437114000320435,.558896005153656],[.467287987470627,.529924988746643],[.414712011814117,.335219979286194],[.37704598903656,.322777986526489],[.344107985496521,.320150971412659],[.312875986099243,.32233202457428],[.283526003360748,.333190023899078],[.241245999932289,.382785975933075],[.102986000478268,.468762993812561],[.267612010240555,.424560010433197],[.297879010438919,.433175981044769],[.333433985710144,.433878004550934],[.366427004337311,.426115989685059],[.396012008190155,.416696012020111],[.420121014118195,.41022801399231],[.007561000064015,.480777025222778],[.432949006557465,.569517970085144],[.458638995885849,.479089021682739],[.473466008901596,.545744001865387],[.476087987422943,.563830018043518],[.468472003936768,.555056989192963],[.433990985155106,.582361996173859],[.483518004417419,.562983989715576],[.482482999563217,.57784903049469],[.42645001411438,.389798998832703],[.438998997211456,.39649498462677],[.450067013502121,.400434017181396],[.289712011814117,.368252992630005],[.276670008897781,.363372981548309],[.517862021923065,.471948027610779],[.710287988185883,.380764007568359],[.526226997375488,.573909997940063],[.895093023777008,.254140973091125],[.634069979190826,.409575998783112],[.661242008209229,.41302502155304],[.688880026340485,.409460008144379],[.725341975688934,.389131009578705],[.606630027294159,.40370500087738],[.654766023159027,.344011008739471],[.629905998706818,.346076011657715],[.680678009986877,.347265005111694],[.702096998691559,.353591024875641],[.75221198797226,.410804986953735],[.602918028831482,.842862963676453],[.719901978969574,.375599980354309],[.893692970275879,.399959981441498],[.790081977844238,.391354024410248],[.643998026847839,.534487962722778],[.528249025344849,.65040397644043],[.525849997997284,.680191040039062],[.560214996337891,.657229006290436],[.585384011268616,.66654098033905],[.549625992774963,.680860996246338],[.57122802734375,.682691991329193],[.624852001667023,.72809898853302],[.513050019741058,.547281980514526],[.51509702205658,.527251958847046],[.742246985435486,.314507007598877],[.598631024360657,.454979002475739],[.570338010787964,.548575043678284],[.578631997108459,.533622980117798],[.723087012767792,.532054007053375],[.516445994377136,.499638974666595],[.662801027297974,.282917976379395],[.70362401008606,.293271005153656],[.830704987049103,.193813979625702],[.552385985851288,.302568018436432],[.607609987258911,.353887975215912],[.645429015159607,.696707010269165],[.932694971561432,.730105042457581],[.557260990142822,.572826027870178],[.542901992797852,.584792017936707],[.6180260181427,.694710969924927],[.607590973377228,.694203019142151],[.722943007946014,.271963000297546],[.577413976192474,.563166975975037],[.614082992076874,.281386971473694],[.616907000541687,.255886018276215],[.668509006500244,.119913995265961],[.770092010498047,.232020974159241],[.635536015033722,.189248979091644],[.77039098739624,.299556016921997],[.826722025871277,.278755009174347],[.527121007442474,.666198015213013],[.553171992301941,.668527007102966],[.577238023281097,.673889994621277],[.554691970348358,.580065965652466],[.611896991729736,.693961024284363],[.59696102142334,.706539988517761],[.596370995044708,.693953037261963],[.539958000183105,.557139039039612],[.568841993808746,.692366003990173],[.547818005084991,.692366003990173],[.52461302280426,.692366003990173],[.534089982509613,.779141008853912],[.527670979499817,.736225962638855],[.526912987232208,.717857003211975],[.526877999305725,.704625964164734],[.526966989040375,.695277988910675],[.572058022022247,.695277988910675],[.573521018028259,.703539967536926],[.57683801651001,.711845993995667],[.581691026687622,.720062971115112],[.609944999217987,.639909982681274],[.986046016216278,.560034036636353],[.5867999792099,.69539999961853],[.590372025966644,.701822996139526],[.531915009021759,.601536989212036],[.577268004417419,.585934996604919],[.536915004253387,.593786001205444],[.627542972564697,.473352015018463],[.665585994720459,.495950996875763],[.588353991508484,.546862006187439],[.757824003696442,.14767599105835],[.709249973297119,.201507985591888],[.672684013843536,.256581008434296],[.600408971309662,.74900496006012],[.55826598405838,.261672019958496],[.570303976535797,.187870979309082],[.588165998458862,.109044015407562],[.711045026779175,.398952007293701],[.781069993972778,.435405015945435],[.587247014045715,.398931980133057],[.742869973182678,.355445981025696],[.572156012058258,.437651991844177],[.55186802148819,.536570012569427],[.821442008018494,.457556009292603],[.752701997756958,.457181990146637],[.71375697851181,.467626988887787],[.66711300611496,.460672974586487],[.631101012229919,.447153985500336],[.6008620262146,.432473003864288],[.523481011390686,.405627012252808],[.810747981071472,.523926019668579],[.771045982837677,.348959028720856],[.509127020835876,.562718033790588],[.595292985439301,.485023975372314],[.980530977249146,.401564002037048],[.573499977588654,.420000016689301],[.602994978427887,.548687994480133],[.733529984951019,.376977026462555],[.560611009597778,.519016981124878],[.967685997486115,.644356966018677],[.580985009670258,.387160003185272],[.537728011608124,.505385041236877],[.760966002941132,.779752969741821],[.801778972148895,.831938028335571],[.892440974712372,.54076099395752],[.816350996494293,.740260004997253],[.865594983100891,.333687007427216],[.614073991775513,.883246004581451],[.508952975273132,.579437971115112],[.617941975593567,.508316040039062],[.825608015060425,.397674977779388],[.681214988231659,.39623498916626],[.656635999679565,.400596976280212],[.603900015354156,.710216999053955],[.81208598613739,.588539004325867],[.56801301240921,.944564998149872],[.681007981300354,.898285031318665],[.733752012252808,.869701027870178],[.633830010890961,.398822009563446],[.606792986392975,.39553701877594],[.589659988880157,.391062021255493],[.805015981197357,.342108011245728],[.611334979534149,.362284004688263],[.634037971496582,.355970978736877],[.656635999679565,.355356991291046],[.681214988231659,.35834002494812],[.698584973812103,.363156020641327],[.941866993904114,.319076001644135],[.698584973812103,.387449026107788],[.584177017211914,.624107003211975],[.554318010807037,.566076993942261],[.534153997898102,.62064003944397],[.711217999458313,.819975018501282],[.664629995822906,.852871000766754],[.559099972248077,.902631998062134],[.871706008911133,.791940987110138],[.591234028339386,.373893976211548],[.544341027736664,.451583981513977],[.624562978744507,.924192011356354],[.88577002286911,.615028977394104],[.551338016986847,.695277988910675],[.551980018615723,.704632043838501],[.552887976169586,.715808033943176],[.555167973041534,.730794012546539],[.569944024085999,.767035007476807],[.593203008174896,.685675978660583],[.599261999130249,.681069016456604],[.607599973678589,.677703022956848],[.631937980651855,.663500010967255],[.752032995223999,.601315021514893],[.547226011753082,.420395016670227],[.563543975353241,.359827995300293],[.583841025829315,.368713974952698],[.586614012718201,.692366003990173],[.771915018558502,.683578014373779],[.531597018241882,.352482974529266],[.588370978832245,.804440975189209],[.52079701423645,.442565023899078],[.567984998226166,.493479013442993],[.543282985687256,.819254994392395],[.655317008495331,.745514988899231],[.621008992195129,.574018001556396],[.625559985637665,.78031200170517],[.680198013782501,.570719003677368],[.64276397228241,.604337990283966],[.704662978649139,.621529996395111],[.552012026309967,.862591981887817],[.589071989059448,.508637011051178],[.685944974422455,.775357007980347],[.645735025405884,.812640011310577],[.675342977046967,.703978002071381],[.810858011245728,.646304965019226],[.72012197971344,.714666962623596],[.866151988506317,.682704985141754],[.663187026977539,.644596993923187],[.570082008838654,.466325998306274],[.544561982154846,.548375964164734],[.562758982181549,.558784961700439],[.531987011432648,.530140042304993],[.585271000862122,.335177004337311],[.622952997684479,.32277899980545],[.655896008014679,.320163011550903],[.687132000923157,.322345972061157],[.716481983661652,.333200991153717],[.758756995201111,.382786989212036],[.897013008594513,.468769013881683],[.732392013072968,.424547016620636],[.70211398601532,.433162987232208],[.66652500629425,.433866024017334],[.633504986763,.426087975502014],[.603875994682312,.416586995124817],[.579657971858978,.409945011138916],[.992439985275269,.480777025222778],[.567192018032074,.569419980049133],[.54136598110199,.478899002075195],[.526564002037048,.546118021011353],[.523913025856018,.563830018043518],[.531529009342194,.555056989192963],[.566035985946655,.582329034805298],[.51631098985672,.563053965568542],[.5174720287323,.577877044677734],[.573594987392426,.389806985855103],[.560697972774506,.395331978797913],[.549755990505219,.399751007556915],[.710287988185883,.368252992630005],[.723330020904541,.363372981548309]],_e=[127,34,139,11,0,37,232,231,120,72,37,39,128,121,47,232,121,128,104,69,67,175,171,148,157,154,155,118,50,101,73,39,40,9,151,108,48,115,131,194,204,211,74,40,185,80,42,183,40,92,186,230,229,118,202,212,214,83,18,17,76,61,146,160,29,30,56,157,173,106,204,194,135,214,192,203,165,98,21,71,68,51,45,4,144,24,23,77,146,91,205,50,187,201,200,18,91,106,182,90,91,181,85,84,17,206,203,36,148,171,140,92,40,39,193,189,244,159,158,28,247,246,161,236,3,196,54,68,104,193,168,8,117,228,31,189,193,55,98,97,99,126,47,100,166,79,218,155,154,26,209,49,131,135,136,150,47,126,217,223,52,53,45,51,134,211,170,140,67,69,108,43,106,91,230,119,120,226,130,247,63,53,52,238,20,242,46,70,156,78,62,96,46,53,63,143,34,227,173,155,133,123,117,111,44,125,19,236,134,51,216,206,205,154,153,22,39,37,167,200,201,208,36,142,100,57,212,202,20,60,99,28,158,157,35,226,113,160,159,27,204,202,210,113,225,46,43,202,204,62,76,77,137,123,116,41,38,72,203,129,142,64,98,240,49,102,64,41,73,74,212,216,207,42,74,184,169,170,211,170,149,176,105,66,69,122,6,168,123,147,187,96,77,90,65,55,107,89,90,180,101,100,120,63,105,104,93,137,227,15,86,85,129,102,49,14,87,86,55,8,9,100,47,121,145,23,22,88,89,179,6,122,196,88,95,96,138,172,136,215,58,172,115,48,219,42,80,81,195,3,51,43,146,61,171,175,199,81,82,38,53,46,225,144,163,110,246,33,7,52,65,66,229,228,117,34,127,234,107,108,69,109,108,151,48,64,235,62,78,191,129,209,126,111,35,143,163,161,246,117,123,50,222,65,52,19,125,141,221,55,65,3,195,197,25,7,33,220,237,44,70,71,139,122,193,245,247,130,33,71,21,162,153,158,159,170,169,150,188,174,196,216,186,92,144,160,161,2,97,167,141,125,241,164,167,37,72,38,12,145,159,160,38,82,13,63,68,71,226,35,111,158,153,154,101,50,205,206,92,165,209,198,217,165,167,97,220,115,218,133,112,243,239,238,241,214,135,169,190,173,133,171,208,32,125,44,237,86,87,178,85,86,179,84,85,180,83,84,181,201,83,182,137,93,132,76,62,183,61,76,184,57,61,185,212,57,186,214,207,187,34,143,156,79,239,237,123,137,177,44,1,4,201,194,32,64,102,129,213,215,138,59,166,219,242,99,97,2,94,141,75,59,235,24,110,228,25,130,226,23,24,229,22,23,230,26,22,231,112,26,232,189,190,243,221,56,190,28,56,221,27,28,222,29,27,223,30,29,224,247,30,225,238,79,20,166,59,75,60,75,240,147,177,215,20,79,166,187,147,213,112,233,244,233,128,245,128,114,188,114,217,174,131,115,220,217,198,236,198,131,134,177,132,58,143,35,124,110,163,7,228,110,25,356,389,368,11,302,267,452,350,349,302,303,269,357,343,277,452,453,357,333,332,297,175,152,377,384,398,382,347,348,330,303,304,270,9,336,337,278,279,360,418,262,431,304,408,409,310,415,407,270,409,410,450,348,347,422,430,434,313,314,17,306,307,375,387,388,260,286,414,398,335,406,418,364,367,416,423,358,327,251,284,298,281,5,4,373,374,253,307,320,321,425,427,411,421,313,18,321,405,406,320,404,405,315,16,17,426,425,266,377,400,369,322,391,269,417,465,464,386,257,258,466,260,388,456,399,419,284,332,333,417,285,8,346,340,261,413,441,285,327,460,328,355,371,329,392,439,438,382,341,256,429,420,360,364,394,379,277,343,437,443,444,283,275,440,363,431,262,369,297,338,337,273,375,321,450,451,349,446,342,467,293,334,282,458,461,462,276,353,383,308,324,325,276,300,293,372,345,447,382,398,362,352,345,340,274,1,19,456,248,281,436,427,425,381,256,252,269,391,393,200,199,428,266,330,329,287,273,422,250,462,328,258,286,384,265,353,342,387,259,257,424,431,430,342,353,276,273,335,424,292,325,307,366,447,345,271,303,302,423,266,371,294,455,460,279,278,294,271,272,304,432,434,427,272,407,408,394,430,431,395,369,400,334,333,299,351,417,168,352,280,411,325,319,320,295,296,336,319,403,404,330,348,349,293,298,333,323,454,447,15,16,315,358,429,279,14,15,316,285,336,9,329,349,350,374,380,252,318,402,403,6,197,419,318,319,325,367,364,365,435,367,397,344,438,439,272,271,311,195,5,281,273,287,291,396,428,199,311,271,268,283,444,445,373,254,339,263,466,249,282,334,296,449,347,346,264,447,454,336,296,299,338,10,151,278,439,455,292,407,415,358,371,355,340,345,372,390,249,466,346,347,280,442,443,282,19,94,370,441,442,295,248,419,197,263,255,359,440,275,274,300,383,368,351,412,465,263,467,466,301,368,389,380,374,386,395,378,379,412,351,419,436,426,322,373,390,388,2,164,393,370,462,461,164,0,267,302,11,12,374,373,387,268,12,13,293,300,301,446,261,340,385,384,381,330,266,425,426,423,391,429,355,437,391,327,326,440,457,438,341,382,362,459,457,461,434,430,394,414,463,362,396,369,262,354,461,457,316,403,402,315,404,403,314,405,404,313,406,405,421,418,406,366,401,361,306,408,407,291,409,408,287,410,409,432,436,410,434,416,411,264,368,383,309,438,457,352,376,401,274,275,4,421,428,262,294,327,358,433,416,367,289,455,439,462,370,326,2,326,370,305,460,455,254,449,448,255,261,446,253,450,449,252,451,450,256,452,451,341,453,452,413,464,463,441,413,414,258,442,441,257,443,442,259,444,443,260,445,444,467,342,445,459,458,250,289,392,290,290,328,460,376,433,435,250,290,392,411,416,433,341,463,464,453,464,465,357,465,412,343,412,399,360,363,440,437,399,456,420,456,363,401,435,288,372,383,353,339,255,249,448,261,255,133,243,190,133,155,112,33,246,247,33,130,25,398,384,286,362,398,414,362,463,341,263,359,467,263,249,255,466,467,260,75,60,166,238,239,79,162,127,139,72,11,37,121,232,120,73,72,39,114,128,47,233,232,128,103,104,67,152,175,148,173,157,155,119,118,101,74,73,40,107,9,108,49,48,131,32,194,211,184,74,185,191,80,183,185,40,186,119,230,118,210,202,214,84,83,17,77,76,146,161,160,30,190,56,173,182,106,194,138,135,192,129,203,98,54,21,68,5,51,4,145,144,23,90,77,91,207,205,187,83,201,18,181,91,182,180,90,181,16,85,17,205,206,36,176,148,140,165,92,39,245,193,244,27,159,28,30,247,161,174,236,196,103,54,104,55,193,8,111,117,31,221,189,55,240,98,99,142,126,100,219,166,218,112,155,26,198,209,131,169,135,150,114,47,217,224,223,53,220,45,134,32,211,140,109,67,108,146,43,91,231,230,120,113,226,247,105,63,52,241,238,242,124,46,156,95,78,96,70,46,63,116,143,227,116,123,111,1,44,19,3,236,51,207,216,205,26,154,22,165,39,167,199,200,208,101,36,100,43,57,202,242,20,99,56,28,157,124,35,113,29,160,27,211,204,210,124,113,46,106,43,204,96,62,77,227,137,116,73,41,72,36,203,142,235,64,240,48,49,64,42,41,74,214,212,207,183,42,184,210,169,211,140,170,176,104,105,69,193,122,168,50,123,187,89,96,90,66,65,107,179,89,180,119,101,120,68,63,104,234,93,227,16,15,85,209,129,49,15,14,86,107,55,9,120,100,121,153,145,22,178,88,179,197,6,196,89,88,96,135,138,136,138,215,172,218,115,219,41,42,81,5,195,51,57,43,61,208,171,199,41,81,38,224,53,225,24,144,110,105,52,66,118,229,117,227,34,234,66,107,69,10,109,151,219,48,235,183,62,191,142,129,126,116,111,143,7,163,246,118,117,50,223,222,52,94,19,141,222,221,65,196,3,197,45,220,44,156,70,139,188,122,245,139,71,162,145,153,159,149,170,150,122,188,196,206,216,92,163,144,161,164,2,167,242,141,241,0,164,37,11,72,12,144,145,160,12,38,13,70,63,71,31,226,111,157,158,154,36,101,205,203,206,165,126,209,217,98,165,97,237,220,218,237,239,241,210,214,169,140,171,32,241,125,237,179,86,178,180,85,179,181,84,180,182,83,181,194,201,182,177,137,132,184,76,183,185,61,184,186,57,185,216,212,186,192,214,187,139,34,156,218,79,237,147,123,177,45,44,4,208,201,32,98,64,129,192,213,138,235,59,219,141,242,97,97,2,141,240,75,235,229,24,228,31,25,226,230,23,229,231,22,230,232,26,231,233,112,232,244,189,243,189,221,190,222,28,221,223,27,222,224,29,223,225,30,224,113,247,225,99,60,240,213,147,215,60,20,166,192,187,213,243,112,244,244,233,245,245,128,188,188,114,174,134,131,220,174,217,236,236,198,134,215,177,58,156,143,124,25,110,7,31,228,25,264,356,368,0,11,267,451,452,349,267,302,269,350,357,277,350,452,357,299,333,297,396,175,377,381,384,382,280,347,330,269,303,270,151,9,337,344,278,360,424,418,431,270,304,409,272,310,407,322,270,410,449,450,347,432,422,434,18,313,17,291,306,375,259,387,260,424,335,418,434,364,416,391,423,327,301,251,298,275,281,4,254,373,253,375,307,321,280,425,411,200,421,18,335,321,406,321,320,405,314,315,17,423,426,266,396,377,369,270,322,269,413,417,464,385,386,258,248,456,419,298,284,333,168,417,8,448,346,261,417,413,285,326,327,328,277,355,329,309,392,438,381,382,256,279,429,360,365,364,379,355,277,437,282,443,283,281,275,363,395,431,369,299,297,337,335,273,321,348,450,349,359,446,467,283,293,282,250,458,462,300,276,383,292,308,325,283,276,293,264,372,447,346,352,340,354,274,19,363,456,281,426,436,425,380,381,252,267,269,393,421,200,428,371,266,329,432,287,422,290,250,328,385,258,384,446,265,342,386,387,257,422,424,430,445,342,276,422,273,424,306,292,307,352,366,345,268,271,302,358,423,371,327,294,460,331,279,294,303,271,304,436,432,427,304,272,408,395,394,431,378,395,400,296,334,299,6,351,168,376,352,411,307,325,320,285,295,336,320,319,404,329,330,349,334,293,333,366,323,447,316,15,315,331,358,279,317,14,316,8,285,9,277,329,350,253,374,252,319,318,403,351,6,419,324,318,325,397,367,365,288,435,397,278,344,439,310,272,311,248,195,281,375,273,291,175,396,199,312,311,268,276,283,445,390,373,339,295,282,296,448,449,346,356,264,454,337,336,299,337,338,151,294,278,455,308,292,415,429,358,355,265,340,372,388,390,466,352,346,280,295,442,282,354,19,370,285,441,295,195,248,197,457,440,274,301,300,368,417,351,465,251,301,389,385,380,386,394,395,379,399,412,419,410,436,322,387,373,388,326,2,393,354,370,461,393,164,267,268,302,12,386,374,387,312,268,13,298,293,301,265,446,340,380,385,381,280,330,425,322,426,391,420,429,437,393,391,326,344,440,438,458,459,461,364,434,394,428,396,262,274,354,457,317,316,402,316,315,403,315,314,404,314,313,405,313,421,406,323,366,361,292,306,407,306,291,408,291,287,409,287,432,410,427,434,411,372,264,383,459,309,457,366,352,401,1,274,4,418,421,262,331,294,358,435,433,367,392,289,439,328,462,326,94,2,370,289,305,455,339,254,448,359,255,446,254,253,449,253,252,450,252,256,451,256,341,452,414,413,463,286,441,414,286,258,441,258,257,442,257,259,443,259,260,444,260,467,445,309,459,250,305,289,290,305,290,460,401,376,435,309,250,392,376,411,433,453,341,464,357,453,465,343,357,412,437,343,399,344,360,440,420,437,456,360,420,363,361,401,288,265,372,353,390,339,249,339,448,255];var X0=[127,234,132,58,172,150,149,148,152,377,378,379,397,288,361,454,356,70,63,105,66,107,336,296,334,293,300,168,6,195,4,98,97,2,326,327,33,160,158,133,153,144,362,385,387,263,373,380,57,40,37,0,267,270,287,321,314,17,84,91,78,81,13,311,308,402,14,178],F0=[33,133,362,263,1,62,308,159,145,386,374,6,102,331,2,13,14,70,105,107,336,334,300,54,10,284,50,280,234,454,58,288,152],q0=[33,133,362,263,1,78,308],ir=X0.map(e=>pe[e]),ar=F0.map(e=>pe[e]),xr=q0.map(e=>pe[e]);var Et=G.leftEyeLower0,Rt=G.rightEyeLower0,xe={leftBounds:[Et[0],Et[Et.length-1]],rightBounds:[Rt[0],Rt[Rt.length-1]]},qe={count:468,mouth:13,symmetryLine:[13,G.midwayBetweenEyes[0]]},N1={leftEye:0,rightEye:1,nose:2,mouth:3,leftEar:4,rightEar:5,symmetryLine:[3,2]},ye={upperCenter:3,lowerCenter:4,index:71,numCoordinates:76};function Be(e,t,n,A){for(let _=0;_<zt.length;_++){let{key:c,indices:r}=zt[_],s=G[`${n}${c}`];if(!A||A.includes(c))for(let h=0;h<r.length;h++){let a=r[h];e[s[h]]=[t[a][0],t[a][1],(t[a][2]+e[s[h]][2])/2]}}}var jt=class{constructor(t,n,A){var _,c;this.storedBoxes=[],this.boundingBoxDetector=t,this.meshDetector=n,this.irisModel=A,this.boxSize=((_=t==null?void 0:t.model)==null?void 0:_.inputs[0].shape[2])||0,this.meshSize=(n==null?void 0:n.inputs[0].shape[2])||((c=t==null?void 0:t.model)==null?void 0:c.inputs[0].shape[2]),this.irisSize=(A==null?void 0:A.inputs[0].shape[1])||0,this.irisEnlarge=2.3,this.skipped=0,this.detectedFaces=0}transformRawCoords(t,n,A,_){let c=me({startPoint:n.startPoint,endPoint:n.endPoint}),r=t.map(i=>[c[0]/this.meshSize*(i[0]-this.meshSize/2),c[1]/this.meshSize*(i[1]-this.meshSize/2),i[2]]),s=A!==0?Fe(A,[0,0]):Xe,h=A!==0?r.map(i=>[...k1(i,s),i[2]]):r,a=A!==0?W1(_):Xe,x=[...ie({startPoint:n.startPoint,endPoint:n.endPoint}),1];return h.map(i=>[i[0]+ee(x,a[0]),i[1]+ee(x,a[1]),i[2]])}getLeftToRightEyeDepthDifference(t){let n=t[xe.leftBounds[0]][2],A=t[xe.rightBounds[0]][2];return n-A}getEyeBox(t,n,A,_,c=!1){let r=Ve(He(this.calculateLandmarksBoundingBox([t[A],t[_]]),this.irisEnlarge)),s=me(r),h=o.image.cropAndResize(n,[[r.startPoint[1]/this.meshSize,r.startPoint[0]/this.meshSize,r.endPoint[1]/this.meshSize,r.endPoint[0]/this.meshSize]],[0],[this.irisSize,this.irisSize]);return c&&o.ENV.flags.IS_BROWSER&&(h=o.image.flipLeftRight(h)),{box:r,boxSize:s,crop:h}}getEyeCoords(t,n,A,_=!1){let c=[];for(let r=0;r<ye.numCoordinates;r++){let s=t[r*3],h=t[r*3+1],a=t[r*3+2];c.push([(_?1-s/this.irisSize:s/this.irisSize)*A[0]+n.startPoint[0],h/this.irisSize*A[1]+n.startPoint[1],a])}return{rawCoords:c,iris:c.slice(ye.index)}}getAdjustedIrisCoords(t,n,A){let _=t[G[`${A}EyeUpper0`][ye.upperCenter]][2],c=t[G[`${A}EyeLower0`][ye.lowerCenter]][2],r=(_+c)/2;return n.map((s,h)=>{let a=r;return h===2?a=_:h===4&&(a=c),[s[0],s[1],a]})}async predict(t,n){let A=!1,_;if((this.skipped===0||this.skipped>n.face.detector.skipFrames||!n.face.mesh.enabled||!n.videoOptimized)&&(_=await this.boundingBoxDetector.getBoundingBoxes(t),this.skipped=0),n.videoOptimized&&this.skipped++,!n.videoOptimized||_&&_.boxes&&(!n.face.mesh.enabled||_.boxes.length!==this.detectedFaces&&this.detectedFaces!==n.face.detector.maxFaces)){this.storedBoxes=[],this.detectedFaces=0;for(let r of _.boxes)this.storedBoxes.push({startPoint:r.box.startPoint.dataSync(),endPoint:r.box.endPoint.dataSync(),landmarks:r.landmarks,confidence:r.confidence});this.storedBoxes.length>0&&(A=!0)}if(n.face.detector.skipInitial&&this.detectedFaces===0&&(this.skipped=0),A){if(!_||!_.boxes||_.boxes.length===0)return this.storedBoxes=[],this.detectedFaces=0,null;for(let r=0;r<this.storedBoxes.length;r++){let s=R1({startPoint:this.storedBoxes[r].startPoint,endPoint:this.storedBoxes[r].endPoint},_.scaleFactor),h=He(s),a=Ve(h),x=this.storedBoxes[r].landmarks.arraySync(),i=this.storedBoxes[r].confidence;this.storedBoxes[r]={...a,confidence:i,landmarks:x}}}_&&_.boxes&&_.boxes.forEach(r=>{r.box.startPoint.dispose(),r.box.endPoint.dispose(),r.landmarks.dispose()});let c=o.tidy(()=>this.storedBoxes.map((r,s)=>{let h=r.confidence,a,x=0,i;if(n.face.detector.rotation&&n.face.mesh.enabled&&o.ENV.flags.IS_BROWSER){let[g,d]=r.landmarks.length>=qe.count?qe.symmetryLine:N1.symmetryLine;x=vt(r.landmarks[g],r.landmarks[d]);let T=ie({startPoint:r.startPoint,endPoint:r.endPoint}),v=[T[0]/t.shape[2],T[1]/t.shape[1]],R=o.image.rotateWithOffset(t,x,0,v);i=Fe(-x,T),n.face.mesh.enabled?a=ae({startPoint:r.startPoint,endPoint:r.endPoint},R,[this.meshSize,this.meshSize]).div(255):a=ae({startPoint:r.startPoint,endPoint:r.endPoint},R,[this.boxSize,this.boxSize]).div(255)}else{i=Xe;let g=t.clone();n.face.mesh.enabled?a=ae({startPoint:r.startPoint,endPoint:r.endPoint},g,[this.meshSize,this.meshSize]).div(255):a=ae({startPoint:r.startPoint,endPoint:r.endPoint},g,[this.boxSize,this.boxSize]).div(255)}if(!n.face.mesh.enabled)return{coords:null,box:r,faceConfidence:null,boxConfidence:h,confidence:r.confidence,image:a};let[,w,m]=this.meshDetector.predict(a),b=w.dataSync()[0];if(b<n.face.detector.minConfidence)return null;let p=o.reshape(m,[-1,3]).arraySync();if(n.face.iris.enabled){let{box:g,boxSize:d,crop:T}=this.getEyeBox(p,a,xe.leftBounds[0],xe.leftBounds[1],!0),{box:v,boxSize:R,crop:O}=this.getEyeBox(p,a,xe.rightBounds[0],xe.rightBounds[1]),X=this.irisModel.predict(o.concat([T,O])).dataSync(),ot=X.slice(0,ye.numCoordinates*3),{rawCoords:ze,iris:ce}=this.getEyeCoords(ot,g,d,!0),b0=X.slice(ye.numCoordinates*3),{rawCoords:y1,iris:g0}=this.getEyeCoords(b0,v,R),w1=this.getLeftToRightEyeDepthDifference(p);Math.abs(w1)<30?(Be(p,ze,"left",null),Be(p,y1,"right",null)):w1<1?Be(p,ze,"left",["EyeUpper0","EyeLower0"]):Be(p,y1,"right",["EyeUpper0","EyeLower0"]);let T0=this.getAdjustedIrisCoords(p,ce,"left"),P0=this.getAdjustedIrisCoords(p,g0,"right");p=p.concat(T0).concat(P0)}let u=this.transformRawCoords(p,r,x,i);r=He(this.calculateLandmarksBoundingBox(u),1.5);let M=o.tensor2d(u);if(n.face.detector.rotation&&n.face.mesh.enabled&&(n.face.description.enabled||n.face.embedding.enabled)&&o.ENV.flags.IS_BROWSER){let[g,d]=r.landmarks.length>=qe.count?qe.symmetryLine:N1.symmetryLine;x=vt(r.landmarks[g],r.landmarks[d]);let T=ie({startPoint:r.startPoint,endPoint:r.endPoint}),v=[T[0]/t.shape[2],T[1]/t.shape[1]],R=o.image.rotateWithOffset(t.toFloat(),x,0,v);i=Fe(-x,T),a=ae({startPoint:r.startPoint,endPoint:r.endPoint},R,[this.meshSize,this.meshSize]).div(255)}let E={coords:M,box:r,faceConfidence:b,boxConfidence:h,image:a,rawCoords:p},k=Ve(r);return this.storedBoxes[s]={...k,landmarks:u,confidence:r.confidence,faceConfidence:b},E}));return c=c.filter(r=>r!==null),n.face.mesh.enabled&&(this.storedBoxes=this.storedBoxes.filter(r=>r.faceConfidence>n.face.detector.minConfidence)),this.detectedFaces=c.length,c}calculateLandmarksBoundingBox(t){let n=t.map(r=>r[0]),A=t.map(r=>r[1]),_=[Math.min(...n),Math.min(...A)],c=[Math.max(...n),Math.max(...A)];return{startPoint:_,endPoint:c,landmarks:t}}};var Wt=class{constructor(t,n,A,_){this.facePipeline=new jt(t,n,A),this.config=_}async estimateFaces(t,n){let A=await this.facePipeline.predict(t,n),_=[];for(let c of A||[]){if(c.isDisposedInternal)continue;let r=c.coords?c.coords.arraySync():[],s=r.map(i=>[i[0]/t.shape[2],i[1]/t.shape[1],i[2]/this.facePipeline.meshSize]),h={};if(r&&r.length>0)for(let i of Object.keys(G))h[i]=G[i].map(w=>r[w]);let a=c.box?[Math.max(0,c.box.startPoint[0]),Math.max(0,c.box.startPoint[1]),Math.min(t.shape[2],c.box.endPoint[0])-Math.max(0,c.box.startPoint[0]),Math.min(t.shape[1],c.box.endPoint[1])-Math.max(0,c.box.startPoint[1])]:0,x=c.box?[c.box.startPoint[0]/t.shape[2],c.box.startPoint[1]/t.shape[1],(c.box.endPoint[0]-c.box.startPoint[0])/t.shape[2],(c.box.endPoint[1]-c.box.startPoint[1])/t.shape[1]]:[];_.push({confidence:Math.round(100*c.faceConfidence||100*c.boxConfidence||0)/100,boxConfidence:Math.round(100*c.boxConfidence)/100,faceConfidence:Math.round(100*c.faceConfidence)/100,box:a,boxRaw:x,mesh:r,meshRaw:s,annotations:h,image:c.image?c.image.clone():null}),c.coords&&c.coords.dispose(),c.image&&c.image.dispose()}return _}},I=[null,null,null];async function kt(e){return!I[0]&&e.face.enabled||!I[1]&&e.face.mesh.enabled||!I[2]&&e.face.iris.enabled?(I=await Promise.all([!I[0]&&e.face.enabled?E1(e):null,!I[1]&&e.face.mesh.enabled?o.loadGraphModel(S(e.modelBasePath,e.face.mesh.modelPath),{fromTFHub:e.face.mesh.modelPath.includes("tfhub.dev")}):null,!I[2]&&e.face.iris.enabled?o.loadGraphModel(S(e.modelBasePath,e.face.iris.modelPath),{fromTFHub:e.face.iris.modelPath.includes("tfhub.dev")}):null]),e.face.mesh.enabled&&(!I[1]||!I[1].modelUrl?f("load model failed:",e.face.mesh.modelPath):e.debug&&f("load model:",I[1].modelUrl)),e.face.iris.enabled&&(!I[2]||!I[1].modelUrl?f("load model failed:",e.face.iris.modelPath):e.debug&&f("load model:",I[2].modelUrl))):e.debug&&(f("cached model:",I[0].model.modelUrl),f("cached model:",I[1].modelUrl),f("cached model:",I[2].modelUrl)),new Wt(I[0],I[1],I[2],e)}var O1=_e,I1=pe;var qt={};J(qt,{PoseNet:()=>Bt,load:()=>Ut});function B0(e){let[t,n,A,_]=e;return{offsets:t,heatmap:n,displacementFwd:A,displacementBwd:_}}var Nt=class{constructor(t){this.model=t}predict(t){return o.tidy(()=>{let A=t.toFloat().div(127.5).sub(1).expandDims(0),c=this.model.predict(A).map(s=>s.squeeze([0])),r=B0(c);return{heatmapScores:r.heatmap.sigmoid(),offsets:r.offsets,displacementFwd:r.displacementFwd,displacementBwd:r.displacementBwd}})}dispose(){this.model.dispose()}};function Ot(e){return Math.floor(e/2)}var It=class{constructor(t,n){this.priorityQueue=new Array(t),this.numberOfElements=-1,this.getElementValue=n}enqueue(t){this.priorityQueue[++this.numberOfElements]=t,this.swim(this.numberOfElements)}dequeue(){let t=this.priorityQueue[0];return this.exchange(0,this.numberOfElements--),this.sink(0),this.priorityQueue[this.numberOfElements+1]=null,t}empty(){return this.numberOfElements===-1}size(){return this.numberOfElements+1}all(){return this.priorityQueue.slice(0,this.numberOfElements+1)}max(){return this.priorityQueue[0]}swim(t){for(;t>0&&this.less(Ot(t),t);)this.exchange(t,Ot(t)),t=Ot(t)}sink(t){for(;2*t<=this.numberOfElements;){let n=2*t;if(n<this.numberOfElements&&this.less(n,n+1)&&n++,!this.less(t,n))break;this.exchange(t,n),t=n}}getValueAt(t){return this.getElementValue(this.priorityQueue[t])}less(t,n){return this.getValueAt(t)<this.getValueAt(n)}exchange(t,n){let A=this.priorityQueue[t];this.priorityQueue[t]=this.priorityQueue[n],this.priorityQueue[n]=A}};function U0(e,t,n,A,_,c){let[r,s]=c.shape,h=!0,a=Math.max(n-_,0),x=Math.min(n+_+1,r);for(let i=a;i<x;++i){let w=Math.max(A-_,0),m=Math.min(A+_+1,s);for(let b=w;b<m;++b)if(c.get(i,b,e)>t){h=!1;break}if(!h)break}return h}function L1(e,t,n){let[A,_,c]=n.shape,r=new It(A*_*c,({score:s})=>s);for(let s=0;s<A;++s)for(let h=0;h<_;++h)for(let a=0;a<c;++a){let x=n.get(s,h,a);x<e||U0(a,x,s,h,t,n)&&r.enqueue({score:x,part:{heatmapY:s,heatmapX:h,id:a}})}return r}var we=["nose","leftEye","rightEye","leftEar","rightEar","leftShoulder","rightShoulder","leftElbow","rightElbow","leftWrist","rightWrist","leftHip","rightHip","leftKnee","rightKnee","leftAnkle","rightAnkle"],le=we.length,ue=we.reduce((e,t,n)=>(e[t]=n,e),{}),Y0=[["leftHip","leftShoulder"],["leftElbow","leftShoulder"],["leftElbow","leftWrist"],["leftHip","leftKnee"],["leftKnee","leftAnkle"],["rightHip","rightShoulder"],["rightElbow","rightShoulder"],["rightElbow","rightWrist"],["rightHip","rightKnee"],["rightKnee","rightAnkle"],["leftShoulder","rightShoulder"],["leftHip","rightHip"]],Rr=Y0.map(([e,t])=>[ue[e],ue[t]]),Z1=[["nose","leftEye"],["leftEye","leftEar"],["nose","rightEye"],["rightEye","rightEar"],["nose","leftShoulder"],["leftShoulder","leftElbow"],["leftElbow","leftWrist"],["leftShoulder","leftHip"],["leftHip","leftKnee"],["leftKnee","leftAnkle"],["nose","rightShoulder"],["rightShoulder","rightElbow"],["rightElbow","rightWrist"],["rightShoulder","rightHip"],["rightHip","rightKnee"],["rightKnee","rightAnkle"]];function Lt(e,t,n,A){return{y:A.get(e,t,n),x:A.get(e,t,n+le)}}function Ue(e,t,n){let{heatmapY:A,heatmapX:_,id:c}=e,{y:r,x:s}=Lt(A,_,c,n);return{x:e.heatmapX*t+s,y:e.heatmapY*t+r}}function Zt(e,t,n){return e<t?t:e>n?n:e}function H1(e,t,n,A){let _=n-e,c=A-t;return _*_+c*c}function Ht(e,t){return{x:e.x+t.x,y:e.y+t.y}}function V1(e,t){let n=t.shape[0],A=new Float32Array(n);for(let _=0;_<n;_++){let c=t.get(_,0),r=t.get(_,1);A[_]=e.get(c,r,_)}return A}function J0(e,t,n,A){return{y:A.get(e,t,n),x:A.get(e,t,n+le)}}function C0(e,t){let n=[];for(let A=0;A<le;A++){let _=e.get(A,0).valueOf(),c=e.get(A,1).valueOf(),{x:r,y:s}=J0(_,c,A,t);n.push(s),n.push(r)}return o.tensor2d(n,[le,2])}function X1(e,t,n){return o.tidy(()=>e.toTensor().mul(o.scalar(t,"int32")).toFloat().add(C0(e,n)))}function K0(e,t){return o.tidy(()=>{let n=e.div(o.scalar(t,"int32"));return e.sub(n.mul(o.scalar(t,"int32")))})}function F1(e){let[t,n,A]=e.shape;return o.tidy(()=>{let c=e.reshape([t*n,A]).argMax(0),r=c.div(o.scalar(n,"int32")).expandDims(1),s=K0(c,n).expandDims(1);return o.concat([r,s],1)})}var q1=Z1.map(([e,t])=>[ue[e],ue[t]]),Vt=q1.map(([,e])=>e),B1=q1.map(([e])=>e),D0=16;function G0(e,t,n){let A=n.shape[2]/2;return{y:n.get(t.y,t.x,e),x:n.get(t.y,t.x,A+e)}}function Xt(e,t,n,A){return{y:Zt(Math.round(e.y/t),0,n-1),x:Zt(Math.round(e.x/t),0,A-1)}}function U1(e,t,n,A,_,c,r,s=2){let[h,a]=A.shape,x=Xt(t.position,c,h,a),i=G0(e,x,r),m=Ht(t.position,i);for(let p=0;p<s;p++){let u=Xt(m,c,h,a),M=Lt(u.y,u.x,n,_);m=Ht({x:u.x*c,y:u.y*c},{x:M.x,y:M.y})}let b=Xt(m,c,h,a),y=A.get(b.y,b.x,n);return{position:m,part:we[n],score:y}}function Y1(e,t,n,A,_,c){let r=t.shape[2],s=Vt.length,h=new Array(r),{part:a,score:x}=e,i=Ue(a,A,n);h[a.id]={score:x,part:we[a.id],position:i};for(let w=s-1;w>=0;--w){let m=Vt[w],b=B1[w];h[m]&&!h[b]&&(h[b]=U1(w,h[m],b,t,n,A,c))}for(let w=0;w<s;++w){let m=B1[w],b=Vt[w];h[m]&&!h[b]&&(h[b]=U1(w,h[m],b,t,n,A,_))}return h}async function J1(e,t,n){let A=0,_=F1(e),c=await Promise.all([e.buffer(),t.buffer(),_.buffer()]),r=c[0],s=c[1],h=c[2],a=X1(h,D0,s),x=await a.buffer(),w=Array.from(V1(r,h)).map((b,y)=>(A+=b,{position:{y:x.get(y,0),x:x.get(y,1)},part:we[y],score:b})),m=w.filter(b=>b.score>n);return _.dispose(),a.dispose(),{keypoints:m,score:A/w.length}}var Q0=1,C1=16;function K1(e,t,{x:n,y:A},_){return e.some(({keypoints:c})=>{let r=c[_].position;return H1(A,n,r.y,r.x)<=t})}function $0(e,t,n){return n.reduce((_,{position:c,score:r},s)=>(K1(e,t,c,s)||(_+=r),_),0)/n.length}function D1(e,t,n,A,_,c,r){let s=[],h=L1(r,Q0,e),a=_^2;for(;s.length<c&&!h.empty();){let x=h.dequeue(),i=Ue(x.part,C1,t);if(K1(s,a,i,x.part.id))continue;let w=Y1(x,e,t,C1,n,A),m=$0(s,a,w);m>r&&s.push({keypoints:w,score:Math.round(100*m)/100})}return s}async function G1(e){return Promise.all(e.map(t=>t.buffer()))}function en(e,t,n){return{score:e.score,keypoints:e.keypoints.map(({score:A,part:_,position:c})=>({score:A,part:_,position:{x:Math.trunc(c.x*n),y:Math.trunc(c.y*t)}}))}}function Q1(e,[t,n]){let A=e.squeeze(0),_=A.resizeBilinear([t,n]);return A.dispose(),_}function Ft(e,[t,n],[A,_]){return e.map(r=>en(r,t/A,n/_))}var oe;async function tn(e,t,n,A){return new Promise(async _=>{let c=await G1([t.heatmapScores,t.offsets,t.displacementFwd,t.displacementBwd]),r=c[0],s=c[1],h=c[2],a=c[3],x=await D1(r,s,h,a,n.body.nmsRadius,n.body.maxDetections,n.body.scoreThreshold),i=Ft(x,[e.shape[1],e.shape[2]],[A,A]);_(i)})}async function nn(e,t,n,A){return new Promise(async _=>{let c=await J1(t.heatmapScores,t.offsets,n.body.scoreThreshold),r=Ft([c],[e.shape[1],e.shape[2]],[A,A]);_(r)})}var Bt=class{constructor(t){this.baseModel=t,this.inputSize=t.model.inputs[0].shape[1],this.inputSize<128&&(this.inputSize=257)}async estimatePoses(t,n){let A=Q1(t,[this.inputSize,this.inputSize]),_=this.baseModel.predict(A,n),c=n.body.maxDetections<2?await nn(t,_,n,this.inputSize):await tn(t,_,n,this.inputSize);return _.heatmapScores.dispose(),_.offsets.dispose(),_.displacementFwd.dispose(),_.displacementBwd.dispose(),A.dispose(),c}dispose(){this.baseModel.dispose()}};async function Ut(e){oe?e.debug&&f("cached model:",oe.modelUrl):(oe=await o.loadGraphModel(S(e.modelBasePath,e.body.modelPath)),!oe||!oe.modelUrl?f("load model failed:",e.body.modelPath):e.debug&&f("load model:",oe.modelUrl));let t=new Nt(oe);return new Bt(t)}var Dt={};J(Dt,{HandPose:()=>Qt,load:()=>$t});function Ye(e){return[Math.abs(e.endPoint[0]-e.startPoint[0]),Math.abs(e.endPoint[1]-e.startPoint[1])]}function be(e){return[e.startPoint[0]+(e.endPoint[0]-e.startPoint[0])/2,e.startPoint[1]+(e.endPoint[1]-e.startPoint[1])/2]}function $1(e,t,n){let A=t.shape[1],_=t.shape[2],c=[[e.startPoint[1]/A,e.startPoint[0]/_,e.endPoint[1]/A,e.endPoint[0]/_]];return o.image.cropAndResize(t,c,[0],n)}function e0(e,t){let n=[e.startPoint[0]*t[0],e.startPoint[1]*t[1]],A=[e.endPoint[0]*t[0],e.endPoint[1]*t[1]],_=e.palmLandmarks.map(c=>[c[0]*t[0],c[1]*t[1]]);return{startPoint:n,endPoint:A,palmLandmarks:_,confidence:e.confidence}}function Je(e,t=1.5){let n=be(e),A=Ye(e),_=[t*A[0]/2,t*A[1]/2],c=[n[0]-_[0],n[1]-_[1]],r=[n[0]+_[0],n[1]+_[1]];return{startPoint:c,endPoint:r,palmLandmarks:e.palmLandmarks}}function Ce(e){let t=be(e),n=Ye(e),_=Math.max(...n)/2,c=[t[0]-_,t[1]-_],r=[t[0]+_,t[1]+_];return{startPoint:c,endPoint:r,palmLandmarks:e.palmLandmarks}}var Yt=class{constructor(t,n,A){this.model=t,this.anchors=A.map(_=>[_.x_center,_.y_center]),this.anchorsTensor=o.tensor2d(this.anchors),this.inputSize=n,this.inputSizeTensor=o.tensor1d([n,n]),this.doubleInputSizeTensor=o.tensor1d([n*2,n*2])}normalizeBoxes(t){return o.tidy(()=>{let n=o.slice(t,[0,0],[-1,2]),A=o.slice(t,[0,2],[-1,2]),_=o.add(o.div(n,this.inputSizeTensor),this.anchorsTensor),c=o.div(A,this.doubleInputSizeTensor),r=o.mul(o.sub(_,c),this.inputSizeTensor),s=o.mul(o.add(_,c),this.inputSizeTensor);return o.concat2d([r,s],1)})}normalizeLandmarks(t,n){return o.tidy(()=>{let A=o.add(o.div(t.reshape([-1,7,2]),this.inputSizeTensor),this.anchors[n]);return o.mul(A,this.inputSizeTensor)})}async getBoxes(t,n){let A=this.model.predict(t),_=A.squeeze();A.dispose();let c=o.tidy(()=>o.sigmoid(o.slice(_,[0,0],[-1,1])).squeeze()),r=c.dataSync(),s=o.slice(_,[0,1],[-1,4]),h=this.normalizeBoxes(s);s.dispose();let a=await o.image.nonMaxSuppressionAsync(h,r,n.hand.maxHands,n.hand.iouThreshold,n.hand.scoreThreshold),x=a.arraySync();c.dispose(),a.dispose();let i=[];for(let w of x)if(r[w]>=n.hand.minConfidence){let m=o.slice(h,[w,0],[1,-1]),b=o.slice(_,[w,5],[1,14]),y=o.tidy(()=>this.normalizeLandmarks(b,w).reshape([-1,2]));b.dispose(),i.push({box:m,palmLandmarks:y,confidence:r[w]})}return _.dispose(),h.dispose(),i}async estimateHandBounds(t,n){let A=t.shape[1],_=t.shape[2],c=o.tidy(()=>t.resizeBilinear([this.inputSize,this.inputSize]).div(127.5).sub(1)),r=await this.getBoxes(c,n);c.dispose();let s=[];if(!r||r.length===0)return s;for(let h of r){let a=h.box.dataSync(),x=a.slice(0,2),i=a.slice(2,4),w=h.palmLandmarks.arraySync();h.box.dispose(),h.palmLandmarks.dispose(),s.push(e0({startPoint:x,endPoint:i,palmLandmarks:w,confidence:h.confidence},[_/this.inputSize,A/this.inputSize]))}return s}};function rn(e){return e-2*Math.PI*Math.floor((e+Math.PI)/(2*Math.PI))}function t0(e,t){let n=Math.PI/2-Math.atan2(-(t[1]-e[1]),t[0]-e[0]);return rn(n)}var n0=(e,t)=>[[1,0,e],[0,1,t],[0,0,1]];function te(e,t){let n=0;for(let A=0;A<e.length;A++)n+=e[A]*t[A];return n}function cn(e,t){let n=[];for(let A=0;A<e.length;A++)n.push(e[A][t]);return n}function r0(e,t){let n=[],A=e.length;for(let _=0;_<A;_++){n.push([]);for(let c=0;c<A;c++)n[_].push(te(e[_],cn(t,c)))}return n}function Jt(e,t){let n=Math.cos(e),A=Math.sin(e),_=[[n,-A,0],[A,n,0],[0,0,1]],c=n0(t[0],t[1]),r=r0(c,_),s=n0(-t[0],-t[1]);return r0(r,s)}function c0(e){let t=[[e[0][0],e[1][0]],[e[0][1],e[1][1]]],n=[e[0][2],e[1][2]],A=[-te(t[0],n),-te(t[1],n)];return[t[0].concat(A[0]),t[1].concat(A[1]),[0,0,1]]}function Ct(e,t){return[te(e,t[0]),te(e,t[1])]}var An=5,A0=1.65,_0=[0,5,9,13,17,1,2],_n=0,on=2,Kt=class{constructor(t,n,A){this.handDetector=t,this.landmarkDetector=n,this.inputSize=A,this.storedBoxes=[],this.skipped=0,this.detectedHands=0}getBoxForPalmLandmarks(t,n){let A=t.map(c=>Ct([...c,1],n)),_=this.calculateLandmarksBoundingBox(A);return Je(Ce(_),An)}getBoxForHandLandmarks(t){let n=this.calculateLandmarksBoundingBox(t),A=Je(Ce(n),A0);A.palmLandmarks=[];for(let _=0;_<_0.length;_++)A.palmLandmarks.push(t[_0[_]].slice(0,2));return A}transformRawCoords(t,n,A,_){let c=Ye(n),r=[c[0]/this.inputSize,c[1]/this.inputSize,(c[0]+c[1])/this.inputSize/2],s=t.map(m=>[r[0]*(m[0]-this.inputSize/2),r[1]*(m[1]-this.inputSize/2),r[2]*m[2]]),h=Jt(A,[0,0]),a=s.map(m=>[...Ct(m,h),m[2]]),x=c0(_),i=[...be(n),1],w=[te(i,x[0]),te(i,x[1])];return a.map(m=>[m[0]+w[0],m[1]+w[1],m[2]])}async estimateHands(t,n){let A=!1,_;(this.skipped===0||this.skipped>n.hand.skipFrames||!n.hand.landmarks||!n.videoOptimized)&&(_=await this.handDetector.estimateHandBounds(t,n),this.skipped=0),n.videoOptimized&&this.skipped++,_&&_.length>0&&(_.length!==this.detectedHands&&this.detectedHands!==n.hand.maxHands||!n.hand.landmarks)&&(this.detectedHands=0,this.storedBoxes=[..._],this.storedBoxes.length>0&&(A=!0));let c=[];n.hand.skipInitial&&this.detectedHands===0&&(this.skipped=0);for(let r=0;r<this.storedBoxes.length;r++){let s=this.storedBoxes[r];if(!!s)if(n.hand.landmarks){let h=n.hand.rotation?t0(s.palmLandmarks[_n],s.palmLandmarks[on]):0,a=be(s),x=[a[0]/t.shape[2],a[1]/t.shape[1]],i=n.hand.rotation?o.image.rotateWithOffset(t,h,0,x):t.clone(),w=Jt(-h,a),m=A?this.getBoxForPalmLandmarks(s.palmLandmarks,w):s,b=$1(m,i,[this.inputSize,this.inputSize]),y=b.div(255);b.dispose(),i.dispose();let[p,u]=await this.landmarkDetector.predict(y);y.dispose();let M=p.dataSync()[0];if(p.dispose(),M>=n.hand.minConfidence){let E=o.reshape(u,[-1,3]),k=E.arraySync();u.dispose(),E.dispose();let g=this.transformRawCoords(k,m,h,w),d=this.getBoxForHandLandmarks(g);this.storedBoxes[r]=d;let T={landmarks:g,confidence:M,box:{topLeft:d.startPoint,bottomRight:d.endPoint}};c.push(T)}else this.storedBoxes[r]=null;u.dispose()}else{let h=Je(Ce(s),A0),a={confidence:s.confidence,box:{topLeft:h.startPoint,bottomRight:h.endPoint}};c.push(a)}}return this.storedBoxes=this.storedBoxes.filter(r=>r!==null),this.detectedHands=c.length,c}calculateLandmarksBoundingBox(t){let n=t.map(r=>r[0]),A=t.map(r=>r[1]),_=[Math.min(...n),Math.min(...A)],c=[Math.max(...n),Math.max(...A)];return{startPoint:_,endPoint:c}}};var o0=[{w:1,h:1,x_center:.015625,y_center:.015625},{w:1,h:1,x_center:.015625,y_center:.015625},{w:1,h:1,x_center:.046875,y_center:.015625},{w:1,h:1,x_center:.046875,y_center:.015625},{w:1,h:1,x_center:.078125,y_center:.015625},{w:1,h:1,x_center:.078125,y_center:.015625},{w:1,h:1,x_center:.109375,y_center:.015625},{w:1,h:1,x_center:.109375,y_center:.015625},{w:1,h:1,x_center:.140625,y_center:.015625},{w:1,h:1,x_center:.140625,y_center:.015625},{w:1,h:1,x_center:.171875,y_center:.015625},{w:1,h:1,x_center:.171875,y_center:.015625},{w:1,h:1,x_center:.203125,y_center:.015625},{w:1,h:1,x_center:.203125,y_center:.015625},{w:1,h:1,x_center:.234375,y_center:.015625},{w:1,h:1,x_center:.234375,y_center:.015625},{w:1,h:1,x_center:.265625,y_center:.015625},{w:1,h:1,x_center:.265625,y_center:.015625},{w:1,h:1,x_center:.296875,y_center:.015625},{w:1,h:1,x_center:.296875,y_center:.015625},{w:1,h:1,x_center:.328125,y_center:.015625},{w:1,h:1,x_center:.328125,y_center:.015625},{w:1,h:1,x_center:.359375,y_center:.015625},{w:1,h:1,x_center:.359375,y_center:.015625},{w:1,h:1,x_center:.390625,y_center:.015625},{w:1,h:1,x_center:.390625,y_center:.015625},{w:1,h:1,x_center:.421875,y_center:.015625},{w:1,h:1,x_center:.421875,y_center:.015625},{w:1,h:1,x_center:.453125,y_center:.015625},{w:1,h:1,x_center:.453125,y_center:.015625},{w:1,h:1,x_center:.484375,y_center:.015625},{w:1,h:1,x_center:.484375,y_center:.015625},{w:1,h:1,x_center:.515625,y_center:.015625},{w:1,h:1,x_center:.515625,y_center:.015625},{w:1,h:1,x_center:.546875,y_center:.015625},{w:1,h:1,x_center:.546875,y_center:.015625},{w:1,h:1,x_center:.578125,y_center:.015625},{w:1,h:1,x_center:.578125,y_center:.015625},{w:1,h:1,x_center:.609375,y_center:.015625},{w:1,h:1,x_center:.609375,y_center:.015625},{w:1,h:1,x_center:.640625,y_center:.015625},{w:1,h:1,x_center:.640625,y_center:.015625},{w:1,h:1,x_center:.671875,y_center:.015625},{w:1,h:1,x_center:.671875,y_center:.015625},{w:1,h:1,x_center:.703125,y_center:.015625},{w:1,h:1,x_center:.703125,y_center:.015625},{w:1,h:1,x_center:.734375,y_center:.015625},{w:1,h:1,x_center:.734375,y_center:.015625},{w:1,h:1,x_center:.765625,y_center:.015625},{w:1,h:1,x_center:.765625,y_center:.015625},{w:1,h:1,x_center:.796875,y_center:.015625},{w:1,h:1,x_center:.796875,y_center:.015625},{w:1,h:1,x_center:.828125,y_center:.015625},{w:1,h:1,x_center:.828125,y_center:.015625},{w:1,h:1,x_center:.859375,y_center:.015625},{w:1,h:1,x_center:.859375,y_center:.015625},{w:1,h:1,x_center:.890625,y_center:.015625},{w:1,h:1,x_center:.890625,y_center:.015625},{w:1,h:1,x_center:.921875,y_center:.015625},{w:1,h:1,x_center:.921875,y_center:.015625},{w:1,h:1,x_center:.953125,y_center:.015625},{w:1,h:1,x_center:.953125,y_center:.015625},{w:1,h:1,x_center:.984375,y_center:.015625},{w:1,h:1,x_center:.984375,y_center:.015625},{w:1,h:1,x_center:.015625,y_center:.046875},{w:1,h:1,x_center:.015625,y_center:.046875},{w:1,h:1,x_center:.046875,y_center:.046875},{w:1,h:1,x_center:.046875,y_center:.046875},{w:1,h:1,x_center:.078125,y_center:.046875},{w:1,h:1,x_center:.078125,y_center:.046875},{w:1,h:1,x_center:.109375,y_center:.046875},{w:1,h:1,x_center:.109375,y_center:.046875},{w:1,h:1,x_center:.140625,y_center:.046875},{w:1,h:1,x_center:.140625,y_center:.046875},{w:1,h:1,x_center:.171875,y_center:.046875},{w:1,h:1,x_center:.171875,y_center:.046875},{w:1,h:1,x_center:.203125,y_center:.046875},{w:1,h:1,x_center:.203125,y_center:.046875},{w:1,h:1,x_center:.234375,y_center:.046875},{w:1,h:1,x_center:.234375,y_center:.046875},{w:1,h:1,x_center:.265625,y_center:.046875},{w:1,h:1,x_center:.265625,y_center:.046875},{w:1,h:1,x_center:.296875,y_center:.046875},{w:1,h:1,x_center:.296875,y_center:.046875},{w:1,h:1,x_center:.328125,y_center:.046875},{w:1,h:1,x_center:.328125,y_center:.046875},{w:1,h:1,x_center:.359375,y_center:.046875},{w:1,h:1,x_center:.359375,y_center:.046875},{w:1,h:1,x_center:.390625,y_center:.046875},{w:1,h:1,x_center:.390625,y_center:.046875},{w:1,h:1,x_center:.421875,y_center:.046875},{w:1,h:1,x_center:.421875,y_center:.046875},{w:1,h:1,x_center:.453125,y_center:.046875},{w:1,h:1,x_center:.453125,y_center:.046875},{w:1,h:1,x_center:.484375,y_center:.046875},{w:1,h:1,x_center:.484375,y_center:.046875},{w:1,h:1,x_center:.515625,y_center:.046875},{w:1,h:1,x_center:.515625,y_center:.046875},{w:1,h:1,x_center:.546875,y_center:.046875},{w:1,h:1,x_center:.546875,y_center:.046875},{w:1,h:1,x_center:.578125,y_center:.046875},{w:1,h:1,x_center:.578125,y_center:.046875},{w:1,h:1,x_center:.609375,y_center:.046875},{w:1,h:1,x_center:.609375,y_center:.046875},{w:1,h:1,x_center:.640625,y_center:.046875},{w:1,h:1,x_center:.640625,y_center:.046875},{w:1,h:1,x_center:.671875,y_center:.046875},{w:1,h:1,x_center:.671875,y_center:.046875},{w:1,h:1,x_center:.703125,y_center:.046875},{w:1,h:1,x_center:.703125,y_center:.046875},{w:1,h:1,x_center:.734375,y_center:.046875},{w:1,h:1,x_center:.734375,y_center:.046875},{w:1,h:1,x_center:.765625,y_center:.046875},{w:1,h:1,x_center:.765625,y_center:.046875},{w:1,h:1,x_center:.796875,y_center:.046875},{w:1,h:1,x_center:.796875,y_center:.046875},{w:1,h:1,x_center:.828125,y_center:.046875},{w:1,h:1,x_center:.828125,y_center:.046875},{w:1,h:1,x_center:.859375,y_center:.046875},{w:1,h:1,x_center:.859375,y_center:.046875},{w:1,h:1,x_center:.890625,y_center:.046875},{w:1,h:1,x_center:.890625,y_center:.046875},{w:1,h:1,x_center:.921875,y_center:.046875},{w:1,h:1,x_center:.921875,y_center:.046875},{w:1,h:1,x_center:.953125,y_center:.046875},{w:1,h:1,x_center:.953125,y_center:.046875},{w:1,h:1,x_center:.984375,y_center:.046875},{w:1,h:1,x_center:.984375,y_center:.046875},{w:1,h:1,x_center:.015625,y_center:.078125},{w:1,h:1,x_center:.015625,y_center:.078125},{w:1,h:1,x_center:.046875,y_center:.078125},{w:1,h:1,x_center:.046875,y_center:.078125},{w:1,h:1,x_center:.078125,y_center:.078125},{w:1,h:1,x_center:.078125,y_center:.078125},{w:1,h:1,x_center:.109375,y_center:.078125},{w:1,h:1,x_center:.109375,y_center:.078125},{w:1,h:1,x_center:.140625,y_center:.078125},{w:1,h:1,x_center:.140625,y_center:.078125},{w:1,h:1,x_center:.171875,y_center:.078125},{w:1,h:1,x_center:.171875,y_center:.078125},{w:1,h:1,x_center:.203125,y_center:.078125},{w:1,h:1,x_center:.203125,y_center:.078125},{w:1,h:1,x_center:.234375,y_center:.078125},{w:1,h:1,x_center:.234375,y_center:.078125},{w:1,h:1,x_center:.265625,y_center:.078125},{w:1,h:1,x_center:.265625,y_center:.078125},{w:1,h:1,x_center:.296875,y_center:.078125},{w:1,h:1,x_center:.296875,y_center:.078125},{w:1,h:1,x_center:.328125,y_center:.078125},{w:1,h:1,x_center:.328125,y_center:.078125},{w:1,h:1,x_center:.359375,y_center:.078125},{w:1,h:1,x_center:.359375,y_center:.078125},{w:1,h:1,x_center:.390625,y_center:.078125},{w:1,h:1,x_center:.390625,y_center:.078125},{w:1,h:1,x_center:.421875,y_center:.078125},{w:1,h:1,x_center:.421875,y_center:.078125},{w:1,h:1,x_center:.453125,y_center:.078125},{w:1,h:1,x_center:.453125,y_center:.078125},{w:1,h:1,x_center:.484375,y_center:.078125},{w:1,h:1,x_center:.484375,y_center:.078125},{w:1,h:1,x_center:.515625,y_center:.078125},{w:1,h:1,x_center:.515625,y_center:.078125},{w:1,h:1,x_center:.546875,y_center:.078125},{w:1,h:1,x_center:.546875,y_center:.078125},{w:1,h:1,x_center:.578125,y_center:.078125},{w:1,h:1,x_center:.578125,y_center:.078125},{w:1,h:1,x_center:.609375,y_center:.078125},{w:1,h:1,x_center:.609375,y_center:.078125},{w:1,h:1,x_center:.640625,y_center:.078125},{w:1,h:1,x_center:.640625,y_center:.078125},{w:1,h:1,x_center:.671875,y_center:.078125},{w:1,h:1,x_center:.671875,y_center:.078125},{w:1,h:1,x_center:.703125,y_center:.078125},{w:1,h:1,x_center:.703125,y_center:.078125},{w:1,h:1,x_center:.734375,y_center:.078125},{w:1,h:1,x_center:.734375,y_center:.078125},{w:1,h:1,x_center:.765625,y_center:.078125},{w:1,h:1,x_center:.765625,y_center:.078125},{w:1,h:1,x_center:.796875,y_center:.078125},{w:1,h:1,x_center:.796875,y_center:.078125},{w:1,h:1,x_center:.828125,y_center:.078125},{w:1,h:1,x_center:.828125,y_center:.078125},{w:1,h:1,x_center:.859375,y_center:.078125},{w:1,h:1,x_center:.859375,y_center:.078125},{w:1,h:1,x_center:.890625,y_center:.078125},{w:1,h:1,x_center:.890625,y_center:.078125},{w:1,h:1,x_center:.921875,y_center:.078125},{w:1,h:1,x_center:.921875,y_center:.078125},{w:1,h:1,x_center:.953125,y_center:.078125},{w:1,h:1,x_center:.953125,y_center:.078125},{w:1,h:1,x_center:.984375,y_center:.078125},{w:1,h:1,x_center:.984375,y_center:.078125},{w:1,h:1,x_center:.015625,y_center:.109375},{w:1,h:1,x_center:.015625,y_center:.109375},{w:1,h:1,x_center:.046875,y_center:.109375},{w:1,h:1,x_center:.046875,y_center:.109375},{w:1,h:1,x_center:.078125,y_center:.109375},{w:1,h:1,x_center:.078125,y_center:.109375},{w:1,h:1,x_center:.109375,y_center:.109375},{w:1,h:1,x_center:.109375,y_center:.109375},{w:1,h:1,x_center:.140625,y_center:.109375},{w:1,h:1,x_center:.140625,y_center:.109375},{w:1,h:1,x_center:.171875,y_center:.109375},{w:1,h:1,x_center:.171875,y_center:.109375},{w:1,h:1,x_center:.203125,y_center:.109375},{w:1,h:1,x_center:.203125,y_center:.109375},{w:1,h:1,x_center:.234375,y_center:.109375},{w:1,h:1,x_center:.234375,y_center:.109375},{w:1,h:1,x_center:.265625,y_center:.109375},{w:1,h:1,x_center:.265625,y_center:.109375},{w:1,h:1,x_center:.296875,y_center:.109375},{w:1,h:1,x_center:.296875,y_center:.109375},{w:1,h:1,x_center:.328125,y_center:.109375},{w:1,h:1,x_center:.328125,y_center:.109375},{w:1,h:1,x_center:.359375,y_center:.109375},{w:1,h:1,x_center:.359375,y_center:.109375},{w:1,h:1,x_center:.390625,y_center:.109375},{w:1,h:1,x_center:.390625,y_center:.109375},{w:1,h:1,x_center:.421875,y_center:.109375},{w:1,h:1,x_center:.421875,y_center:.109375},{w:1,h:1,x_center:.453125,y_center:.109375},{w:1,h:1,x_center:.453125,y_center:.109375},{w:1,h:1,x_center:.484375,y_center:.109375},{w:1,h:1,x_center:.484375,y_center:.109375},{w:1,h:1,x_center:.515625,y_center:.109375},{w:1,h:1,x_center:.515625,y_center:.109375},{w:1,h:1,x_center:.546875,y_center:.109375},{w:1,h:1,x_center:.546875,y_center:.109375},{w:1,h:1,x_center:.578125,y_center:.109375},{w:1,h:1,x_center:.578125,y_center:.109375},{w:1,h:1,x_center:.609375,y_center:.109375},{w:1,h:1,x_center:.609375,y_center:.109375},{w:1,h:1,x_center:.640625,y_center:.109375},{w:1,h:1,x_center:.640625,y_center:.109375},{w:1,h:1,x_center:.671875,y_center:.109375},{w:1,h:1,x_center:.671875,y_center:.109375},{w:1,h:1,x_center:.703125,y_center:.109375},{w:1,h:1,x_center:.703125,y_center:.109375},{w:1,h:1,x_center:.734375,y_center:.109375},{w:1,h:1,x_center:.734375,y_center:.109375},{w:1,h:1,x_center:.765625,y_center:.109375},{w:1,h:1,x_center:.765625,y_center:.109375},{w:1,h:1,x_center:.796875,y_center:.109375},{w:1,h:1,x_center:.796875,y_center:.109375},{w:1,h:1,x_center:.828125,y_center:.109375},{w:1,h:1,x_center:.828125,y_center:.109375},{w:1,h:1,x_center:.859375,y_center:.109375},{w:1,h:1,x_center:.859375,y_center:.109375},{w:1,h:1,x_center:.890625,y_center:.109375},{w:1,h:1,x_center:.890625,y_center:.109375},{w:1,h:1,x_center:.921875,y_center:.109375},{w:1,h:1,x_center:.921875,y_center:.109375},{w:1,h:1,x_center:.953125,y_center:.109375},{w:1,h:1,x_center:.953125,y_center:.109375},{w:1,h:1,x_center:.984375,y_center:.109375},{w:1,h:1,x_center:.984375,y_center:.109375},{w:1,h:1,x_center:.015625,y_center:.140625},{w:1,h:1,x_center:.015625,y_center:.140625},{w:1,h:1,x_center:.046875,y_center:.140625},{w:1,h:1,x_center:.046875,y_center:.140625},{w:1,h:1,x_center:.078125,y_center:.140625},{w:1,h:1,x_center:.078125,y_center:.140625},{w:1,h:1,x_center:.109375,y_center:.140625},{w:1,h:1,x_center:.109375,y_center:.140625},{w:1,h:1,x_center:.140625,y_center:.140625},{w:1,h:1,x_center:.140625,y_center:.140625},{w:1,h:1,x_center:.171875,y_center:.140625},{w:1,h:1,x_center:.171875,y_center:.140625},{w:1,h:1,x_center:.203125,y_center:.140625},{w:1,h:1,x_center:.203125,y_center:.140625},{w:1,h:1,x_center:.234375,y_center:.140625},{w:1,h:1,x_center:.234375,y_center:.140625},{w:1,h:1,x_center:.265625,y_center:.140625},{w:1,h:1,x_center:.265625,y_center:.140625},{w:1,h:1,x_center:.296875,y_center:.140625},{w:1,h:1,x_center:.296875,y_center:.140625},{w:1,h:1,x_center:.328125,y_center:.140625},{w:1,h:1,x_center:.328125,y_center:.140625},{w:1,h:1,x_center:.359375,y_center:.140625},{w:1,h:1,x_center:.359375,y_center:.140625},{w:1,h:1,x_center:.390625,y_center:.140625},{w:1,h:1,x_center:.390625,y_center:.140625},{w:1,h:1,x_center:.421875,y_center:.140625},{w:1,h:1,x_center:.421875,y_center:.140625},{w:1,h:1,x_center:.453125,y_center:.140625},{w:1,h:1,x_center:.453125,y_center:.140625},{w:1,h:1,x_center:.484375,y_center:.140625},{w:1,h:1,x_center:.484375,y_center:.140625},{w:1,h:1,x_center:.515625,y_center:.140625},{w:1,h:1,x_center:.515625,y_center:.140625},{w:1,h:1,x_center:.546875,y_center:.140625},{w:1,h:1,x_center:.546875,y_center:.140625},{w:1,h:1,x_center:.578125,y_center:.140625},{w:1,h:1,x_center:.578125,y_center:.140625},{w:1,h:1,x_center:.609375,y_center:.140625},{w:1,h:1,x_center:.609375,y_center:.140625},{w:1,h:1,x_center:.640625,y_center:.140625},{w:1,h:1,x_center:.640625,y_center:.140625},{w:1,h:1,x_center:.671875,y_center:.140625},{w:1,h:1,x_center:.671875,y_center:.140625},{w:1,h:1,x_center:.703125,y_center:.140625},{w:1,h:1,x_center:.703125,y_center:.140625},{w:1,h:1,x_center:.734375,y_center:.140625},{w:1,h:1,x_center:.734375,y_center:.140625},{w:1,h:1,x_center:.765625,y_center:.140625},{w:1,h:1,x_center:.765625,y_center:.140625},{w:1,h:1,x_center:.796875,y_center:.140625},{w:1,h:1,x_center:.796875,y_center:.140625},{w:1,h:1,x_center:.828125,y_center:.140625},{w:1,h:1,x_center:.828125,y_center:.140625},{w:1,h:1,x_center:.859375,y_center:.140625},{w:1,h:1,x_center:.859375,y_center:.140625},{w:1,h:1,x_center:.890625,y_center:.140625},{w:1,h:1,x_center:.890625,y_center:.140625},{w:1,h:1,x_center:.921875,y_center:.140625},{w:1,h:1,x_center:.921875,y_center:.140625},{w:1,h:1,x_center:.953125,y_center:.140625},{w:1,h:1,x_center:.953125,y_center:.140625},{w:1,h:1,x_center:.984375,y_center:.140625},{w:1,h:1,x_center:.984375,y_center:.140625},{w:1,h:1,x_center:.015625,y_center:.171875},{w:1,h:1,x_center:.015625,y_center:.171875},{w:1,h:1,x_center:.046875,y_center:.171875},{w:1,h:1,x_center:.046875,y_center:.171875},{w:1,h:1,x_center:.078125,y_center:.171875},{w:1,h:1,x_center:.078125,y_center:.171875},{w:1,h:1,x_center:.109375,y_center:.171875},{w:1,h:1,x_center:.109375,y_center:.171875},{w:1,h:1,x_center:.140625,y_center:.171875},{w:1,h:1,x_center:.140625,y_center:.171875},{w:1,h:1,x_center:.171875,y_center:.171875},{w:1,h:1,x_center:.171875,y_center:.171875},{w:1,h:1,x_center:.203125,y_center:.171875},{w:1,h:1,x_center:.203125,y_center:.171875},{w:1,h:1,x_center:.234375,y_center:.171875},{w:1,h:1,x_center:.234375,y_center:.171875},{w:1,h:1,x_center:.265625,y_center:.171875},{w:1,h:1,x_center:.265625,y_center:.171875},{w:1,h:1,x_center:.296875,y_center:.171875},{w:1,h:1,x_center:.296875,y_center:.171875},{w:1,h:1,x_center:.328125,y_center:.171875},{w:1,h:1,x_center:.328125,y_center:.171875},{w:1,h:1,x_center:.359375,y_center:.171875},{w:1,h:1,x_center:.359375,y_center:.171875},{w:1,h:1,x_center:.390625,y_center:.171875},{w:1,h:1,x_center:.390625,y_center:.171875},{w:1,h:1,x_center:.421875,y_center:.171875},{w:1,h:1,x_center:.421875,y_center:.171875},{w:1,h:1,x_center:.453125,y_center:.171875},{w:1,h:1,x_center:.453125,y_center:.171875},{w:1,h:1,x_center:.484375,y_center:.171875},{w:1,h:1,x_center:.484375,y_center:.171875},{w:1,h:1,x_center:.515625,y_center:.171875},{w:1,h:1,x_center:.515625,y_center:.171875},{w:1,h:1,x_center:.546875,y_center:.171875},{w:1,h:1,x_center:.546875,y_center:.171875},{w:1,h:1,x_center:.578125,y_center:.171875},{w:1,h:1,x_center:.578125,y_center:.171875},{w:1,h:1,x_center:.609375,y_center:.171875},{w:1,h:1,x_center:.609375,y_center:.171875},{w:1,h:1,x_center:.640625,y_center:.171875},{w:1,h:1,x_center:.640625,y_center:.171875},{w:1,h:1,x_center:.671875,y_center:.171875},{w:1,h:1,x_center:.671875,y_center:.171875},{w:1,h:1,x_center:.703125,y_center:.171875},{w:1,h:1,x_center:.703125,y_center:.171875},{w:1,h:1,x_center:.734375,y_center:.171875},{w:1,h:1,x_center:.734375,y_center:.171875},{w:1,h:1,x_center:.765625,y_center:.171875},{w:1,h:1,x_center:.765625,y_center:.171875},{w:1,h:1,x_center:.796875,y_center:.171875},{w:1,h:1,x_center:.796875,y_center:.171875},{w:1,h:1,x_center:.828125,y_center:.171875},{w:1,h:1,x_center:.828125,y_center:.171875},{w:1,h:1,x_center:.859375,y_center:.171875},{w:1,h:1,x_center:.859375,y_center:.171875},{w:1,h:1,x_center:.890625,y_center:.171875},{w:1,h:1,x_center:.890625,y_center:.171875},{w:1,h:1,x_center:.921875,y_center:.171875},{w:1,h:1,x_center:.921875,y_center:.171875},{w:1,h:1,x_center:.953125,y_center:.171875},{w:1,h:1,x_center:.953125,y_center:.171875},{w:1,h:1,x_center:.984375,y_center:.171875},{w:1,h:1,x_center:.984375,y_center:.171875},{w:1,h:1,x_center:.015625,y_center:.203125},{w:1,h:1,x_center:.015625,y_center:.203125},{w:1,h:1,x_center:.046875,y_center:.203125},{w:1,h:1,x_center:.046875,y_center:.203125},{w:1,h:1,x_center:.078125,y_center:.203125},{w:1,h:1,x_center:.078125,y_center:.203125},{w:1,h:1,x_center:.109375,y_center:.203125},{w:1,h:1,x_center:.109375,y_center:.203125},{w:1,h:1,x_center:.140625,y_center:.203125},{w:1,h:1,x_center:.140625,y_center:.203125},{w:1,h:1,x_center:.171875,y_center:.203125},{w:1,h:1,x_center:.171875,y_center:.203125},{w:1,h:1,x_center:.203125,y_center:.203125},{w:1,h:1,x_center:.203125,y_center:.203125},{w:1,h:1,x_center:.234375,y_center:.203125},{w:1,h:1,x_center:.234375,y_center:.203125},{w:1,h:1,x_center:.265625,y_center:.203125},{w:1,h:1,x_center:.265625,y_center:.203125},{w:1,h:1,x_center:.296875,y_center:.203125},{w:1,h:1,x_center:.296875,y_center:.203125},{w:1,h:1,x_center:.328125,y_center:.203125},{w:1,h:1,x_center:.328125,y_center:.203125},{w:1,h:1,x_center:.359375,y_center:.203125},{w:1,h:1,x_center:.359375,y_center:.203125},{w:1,h:1,x_center:.390625,y_center:.203125},{w:1,h:1,x_center:.390625,y_center:.203125},{w:1,h:1,x_center:.421875,y_center:.203125},{w:1,h:1,x_center:.421875,y_center:.203125},{w:1,h:1,x_center:.453125,y_center:.203125},{w:1,h:1,x_center:.453125,y_center:.203125},{w:1,h:1,x_center:.484375,y_center:.203125},{w:1,h:1,x_center:.484375,y_center:.203125},{w:1,h:1,x_center:.515625,y_center:.203125},{w:1,h:1,x_center:.515625,y_center:.203125},{w:1,h:1,x_center:.546875,y_center:.203125},{w:1,h:1,x_center:.546875,y_center:.203125},{w:1,h:1,x_center:.578125,y_center:.203125},{w:1,h:1,x_center:.578125,y_center:.203125},{w:1,h:1,x_center:.609375,y_center:.203125},{w:1,h:1,x_center:.609375,y_center:.203125},{w:1,h:1,x_center:.640625,y_center:.203125},{w:1,h:1,x_center:.640625,y_center:.203125},{w:1,h:1,x_center:.671875,y_center:.203125},{w:1,h:1,x_center:.671875,y_center:.203125},{w:1,h:1,x_center:.703125,y_center:.203125},{w:1,h:1,x_center:.703125,y_center:.203125},{w:1,h:1,x_center:.734375,y_center:.203125},{w:1,h:1,x_center:.734375,y_center:.203125},{w:1,h:1,x_center:.765625,y_center:.203125},{w:1,h:1,x_center:.765625,y_center:.203125},{w:1,h:1,x_center:.796875,y_center:.203125},{w:1,h:1,x_center:.796875,y_center:.203125},{w:1,h:1,x_center:.828125,y_center:.203125},{w:1,h:1,x_center:.828125,y_center:.203125},{w:1,h:1,x_center:.859375,y_center:.203125},{w:1,h:1,x_center:.859375,y_center:.203125},{w:1,h:1,x_center:.890625,y_center:.203125},{w:1,h:1,x_center:.890625,y_center:.203125},{w:1,h:1,x_center:.921875,y_center:.203125},{w:1,h:1,x_center:.921875,y_center:.203125},{w:1,h:1,x_center:.953125,y_center:.203125},{w:1,h:1,x_center:.953125,y_center:.203125},{w:1,h:1,x_center:.984375,y_center:.203125},{w:1,h:1,x_center:.984375,y_center:.203125},{w:1,h:1,x_center:.015625,y_center:.234375},{w:1,h:1,x_center:.015625,y_center:.234375},{w:1,h:1,x_center:.046875,y_center:.234375},{w:1,h:1,x_center:.046875,y_center:.234375},{w:1,h:1,x_center:.078125,y_center:.234375},{w:1,h:1,x_center:.078125,y_center:.234375},{w:1,h:1,x_center:.109375,y_center:.234375},{w:1,h:1,x_center:.109375,y_center:.234375},{w:1,h:1,x_center:.140625,y_center:.234375},{w:1,h:1,x_center:.140625,y_center:.234375},{w:1,h:1,x_center:.171875,y_center:.234375},{w:1,h:1,x_center:.171875,y_center:.234375},{w:1,h:1,x_center:.203125,y_center:.234375},{w:1,h:1,x_center:.203125,y_center:.234375},{w:1,h:1,x_center:.234375,y_center:.234375},{w:1,h:1,x_center:.234375,y_center:.234375},{w:1,h:1,x_center:.265625,y_center:.234375},{w:1,h:1,x_center:.265625,y_center:.234375},{w:1,h:1,x_center:.296875,y_center:.234375},{w:1,h:1,x_center:.296875,y_center:.234375},{w:1,h:1,x_center:.328125,y_center:.234375},{w:1,h:1,x_center:.328125,y_center:.234375},{w:1,h:1,x_center:.359375,y_center:.234375},{w:1,h:1,x_center:.359375,y_center:.234375},{w:1,h:1,x_center:.390625,y_center:.234375},{w:1,h:1,x_center:.390625,y_center:.234375},{w:1,h:1,x_center:.421875,y_center:.234375},{w:1,h:1,x_center:.421875,y_center:.234375},{w:1,h:1,x_center:.453125,y_center:.234375},{w:1,h:1,x_center:.453125,y_center:.234375},{w:1,h:1,x_center:.484375,y_center:.234375},{w:1,h:1,x_center:.484375,y_center:.234375},{w:1,h:1,x_center:.515625,y_center:.234375},{w:1,h:1,x_center:.515625,y_center:.234375},{w:1,h:1,x_center:.546875,y_center:.234375},{w:1,h:1,x_center:.546875,y_center:.234375},{w:1,h:1,x_center:.578125,y_center:.234375},{w:1,h:1,x_center:.578125,y_center:.234375},{w:1,h:1,x_center:.609375,y_center:.234375},{w:1,h:1,x_center:.609375,y_center:.234375},{w:1,h:1,x_center:.640625,y_center:.234375},{w:1,h:1,x_center:.640625,y_center:.234375},{w:1,h:1,x_center:.671875,y_center:.234375},{w:1,h:1,x_center:.671875,y_center:.234375},{w:1,h:1,x_center:.703125,y_center:.234375},{w:1,h:1,x_center:.703125,y_center:.234375},{w:1,h:1,x_center:.734375,y_center:.234375},{w:1,h:1,x_center:.734375,y_center:.234375},{w:1,h:1,x_center:.765625,y_center:.234375},{w:1,h:1,x_center:.765625,y_center:.234375},{w:1,h:1,x_center:.796875,y_center:.234375},{w:1,h:1,x_center:.796875,y_center:.234375},{w:1,h:1,x_center:.828125,y_center:.234375},{w:1,h:1,x_center:.828125,y_center:.234375},{w:1,h:1,x_center:.859375,y_center:.234375},{w:1,h:1,x_center:.859375,y_center:.234375},{w:1,h:1,x_center:.890625,y_center:.234375},{w:1,h:1,x_center:.890625,y_center:.234375},{w:1,h:1,x_center:.921875,y_center:.234375},{w:1,h:1,x_center:.921875,y_center:.234375},{w:1,h:1,x_center:.953125,y_center:.234375},{w:1,h:1,x_center:.953125,y_center:.234375},{w:1,h:1,x_center:.984375,y_center:.234375},{w:1,h:1,x_center:.984375,y_center:.234375},{w:1,h:1,x_center:.015625,y_center:.265625},{w:1,h:1,x_center:.015625,y_center:.265625},{w:1,h:1,x_center:.046875,y_center:.265625},{w:1,h:1,x_center:.046875,y_center:.265625},{w:1,h:1,x_center:.078125,y_center:.265625},{w:1,h:1,x_center:.078125,y_center:.265625},{w:1,h:1,x_center:.109375,y_center:.265625},{w:1,h:1,x_center:.109375,y_center:.265625},{w:1,h:1,x_center:.140625,y_center:.265625},{w:1,h:1,x_center:.140625,y_center:.265625},{w:1,h:1,x_center:.171875,y_center:.265625},{w:1,h:1,x_center:.171875,y_center:.265625},{w:1,h:1,x_center:.203125,y_center:.265625},{w:1,h:1,x_center:.203125,y_center:.265625},{w:1,h:1,x_center:.234375,y_center:.265625},{w:1,h:1,x_center:.234375,y_center:.265625},{w:1,h:1,x_center:.265625,y_center:.265625},{w:1,h:1,x_center:.265625,y_center:.265625},{w:1,h:1,x_center:.296875,y_center:.265625},{w:1,h:1,x_center:.296875,y_center:.265625},{w:1,h:1,x_center:.328125,y_center:.265625},{w:1,h:1,x_center:.328125,y_center:.265625},{w:1,h:1,x_center:.359375,y_center:.265625},{w:1,h:1,x_center:.359375,y_center:.265625},{w:1,h:1,x_center:.390625,y_center:.265625},{w:1,h:1,x_center:.390625,y_center:.265625},{w:1,h:1,x_center:.421875,y_center:.265625},{w:1,h:1,x_center:.421875,y_center:.265625},{w:1,h:1,x_center:.453125,y_center:.265625},{w:1,h:1,x_center:.453125,y_center:.265625},{w:1,h:1,x_center:.484375,y_center:.265625},{w:1,h:1,x_center:.484375,y_center:.265625},{w:1,h:1,x_center:.515625,y_center:.265625},{w:1,h:1,x_center:.515625,y_center:.265625},{w:1,h:1,x_center:.546875,y_center:.265625},{w:1,h:1,x_center:.546875,y_center:.265625},{w:1,h:1,x_center:.578125,y_center:.265625},{w:1,h:1,x_center:.578125,y_center:.265625},{w:1,h:1,x_center:.609375,y_center:.265625},{w:1,h:1,x_center:.609375,y_center:.265625},{w:1,h:1,x_center:.640625,y_center:.265625},{w:1,h:1,x_center:.640625,y_center:.265625},{w:1,h:1,x_center:.671875,y_center:.265625},{w:1,h:1,x_center:.671875,y_center:.265625},{w:1,h:1,x_center:.703125,y_center:.265625},{w:1,h:1,x_center:.703125,y_center:.265625},{w:1,h:1,x_center:.734375,y_center:.265625},{w:1,h:1,x_center:.734375,y_center:.265625},{w:1,h:1,x_center:.765625,y_center:.265625},{w:1,h:1,x_center:.765625,y_center:.265625},{w:1,h:1,x_center:.796875,y_center:.265625},{w:1,h:1,x_center:.796875,y_center:.265625},{w:1,h:1,x_center:.828125,y_center:.265625},{w:1,h:1,x_center:.828125,y_center:.265625},{w:1,h:1,x_center:.859375,y_center:.265625},{w:1,h:1,x_center:.859375,y_center:.265625},{w:1,h:1,x_center:.890625,y_center:.265625},{w:1,h:1,x_center:.890625,y_center:.265625},{w:1,h:1,x_center:.921875,y_center:.265625},{w:1,h:1,x_center:.921875,y_center:.265625},{w:1,h:1,x_center:.953125,y_center:.265625},{w:1,h:1,x_center:.953125,y_center:.265625},{w:1,h:1,x_center:.984375,y_center:.265625},{w:1,h:1,x_center:.984375,y_center:.265625},{w:1,h:1,x_center:.015625,y_center:.296875},{w:1,h:1,x_center:.015625,y_center:.296875},{w:1,h:1,x_center:.046875,y_center:.296875},{w:1,h:1,x_center:.046875,y_center:.296875},{w:1,h:1,x_center:.078125,y_center:.296875},{w:1,h:1,x_center:.078125,y_center:.296875},{w:1,h:1,x_center:.109375,y_center:.296875},{w:1,h:1,x_center:.109375,y_center:.296875},{w:1,h:1,x_center:.140625,y_center:.296875},{w:1,h:1,x_center:.140625,y_center:.296875},{w:1,h:1,x_center:.171875,y_center:.296875},{w:1,h:1,x_center:.171875,y_center:.296875},{w:1,h:1,x_center:.203125,y_center:.296875},{w:1,h:1,x_center:.203125,y_center:.296875},{w:1,h:1,x_center:.234375,y_center:.296875},{w:1,h:1,x_center:.234375,y_center:.296875},{w:1,h:1,x_center:.265625,y_center:.296875},{w:1,h:1,x_center:.265625,y_center:.296875},{w:1,h:1,x_center:.296875,y_center:.296875},{w:1,h:1,x_center:.296875,y_center:.296875},{w:1,h:1,x_center:.328125,y_center:.296875},{w:1,h:1,x_center:.328125,y_center:.296875},{w:1,h:1,x_center:.359375,y_center:.296875},{w:1,h:1,x_center:.359375,y_center:.296875},{w:1,h:1,x_center:.390625,y_center:.296875},{w:1,h:1,x_center:.390625,y_center:.296875},{w:1,h:1,x_center:.421875,y_center:.296875},{w:1,h:1,x_center:.421875,y_center:.296875},{w:1,h:1,x_center:.453125,y_center:.296875},{w:1,h:1,x_center:.453125,y_center:.296875},{w:1,h:1,x_center:.484375,y_center:.296875},{w:1,h:1,x_center:.484375,y_center:.296875},{w:1,h:1,x_center:.515625,y_center:.296875},{w:1,h:1,x_center:.515625,y_center:.296875},{w:1,h:1,x_center:.546875,y_center:.296875},{w:1,h:1,x_center:.546875,y_center:.296875},{w:1,h:1,x_center:.578125,y_center:.296875},{w:1,h:1,x_center:.578125,y_center:.296875},{w:1,h:1,x_center:.609375,y_center:.296875},{w:1,h:1,x_center:.609375,y_center:.296875},{w:1,h:1,x_center:.640625,y_center:.296875},{w:1,h:1,x_center:.640625,y_center:.296875},{w:1,h:1,x_center:.671875,y_center:.296875},{w:1,h:1,x_center:.671875,y_center:.296875},{w:1,h:1,x_center:.703125,y_center:.296875},{w:1,h:1,x_center:.703125,y_center:.296875},{w:1,h:1,x_center:.734375,y_center:.296875},{w:1,h:1,x_center:.734375,y_center:.296875},{w:1,h:1,x_center:.765625,y_center:.296875},{w:1,h:1,x_center:.765625,y_center:.296875},{w:1,h:1,x_center:.796875,y_center:.296875},{w:1,h:1,x_center:.796875,y_center:.296875},{w:1,h:1,x_center:.828125,y_center:.296875},{w:1,h:1,x_center:.828125,y_center:.296875},{w:1,h:1,x_center:.859375,y_center:.296875},{w:1,h:1,x_center:.859375,y_center:.296875},{w:1,h:1,x_center:.890625,y_center:.296875},{w:1,h:1,x_center:.890625,y_center:.296875},{w:1,h:1,x_center:.921875,y_center:.296875},{w:1,h:1,x_center:.921875,y_center:.296875},{w:1,h:1,x_center:.953125,y_center:.296875},{w:1,h:1,x_center:.953125,y_center:.296875},{w:1,h:1,x_center:.984375,y_center:.296875},{w:1,h:1,x_center:.984375,y_center:.296875},{w:1,h:1,x_center:.015625,y_center:.328125},{w:1,h:1,x_center:.015625,y_center:.328125},{w:1,h:1,x_center:.046875,y_center:.328125},{w:1,h:1,x_center:.046875,y_center:.328125},{w:1,h:1,x_center:.078125,y_center:.328125},{w:1,h:1,x_center:.078125,y_center:.328125},{w:1,h:1,x_center:.109375,y_center:.328125},{w:1,h:1,x_center:.109375,y_center:.328125},{w:1,h:1,x_center:.140625,y_center:.328125},{w:1,h:1,x_center:.140625,y_center:.328125},{w:1,h:1,x_center:.171875,y_center:.328125},{w:1,h:1,x_center:.171875,y_center:.328125},{w:1,h:1,x_center:.203125,y_center:.328125},{w:1,h:1,x_center:.203125,y_center:.328125},{w:1,h:1,x_center:.234375,y_center:.328125},{w:1,h:1,x_center:.234375,y_center:.328125},{w:1,h:1,x_center:.265625,y_center:.328125},{w:1,h:1,x_center:.265625,y_center:.328125},{w:1,h:1,x_center:.296875,y_center:.328125},{w:1,h:1,x_center:.296875,y_center:.328125},{w:1,h:1,x_center:.328125,y_center:.328125},{w:1,h:1,x_center:.328125,y_center:.328125},{w:1,h:1,x_center:.359375,y_center:.328125},{w:1,h:1,x_center:.359375,y_center:.328125},{w:1,h:1,x_center:.390625,y_center:.328125},{w:1,h:1,x_center:.390625,y_center:.328125},{w:1,h:1,x_center:.421875,y_center:.328125},{w:1,h:1,x_center:.421875,y_center:.328125},{w:1,h:1,x_center:.453125,y_center:.328125},{w:1,h:1,x_center:.453125,y_center:.328125},{w:1,h:1,x_center:.484375,y_center:.328125},{w:1,h:1,x_center:.484375,y_center:.328125},{w:1,h:1,x_center:.515625,y_center:.328125},{w:1,h:1,x_center:.515625,y_center:.328125},{w:1,h:1,x_center:.546875,y_center:.328125},{w:1,h:1,x_center:.546875,y_center:.328125},{w:1,h:1,x_center:.578125,y_center:.328125},{w:1,h:1,x_center:.578125,y_center:.328125},{w:1,h:1,x_center:.609375,y_center:.328125},{w:1,h:1,x_center:.609375,y_center:.328125},{w:1,h:1,x_center:.640625,y_center:.328125},{w:1,h:1,x_center:.640625,y_center:.328125},{w:1,h:1,x_center:.671875,y_center:.328125},{w:1,h:1,x_center:.671875,y_center:.328125},{w:1,h:1,x_center:.703125,y_center:.328125},{w:1,h:1,x_center:.703125,y_center:.328125},{w:1,h:1,x_center:.734375,y_center:.328125},{w:1,h:1,x_center:.734375,y_center:.328125},{w:1,h:1,x_center:.765625,y_center:.328125},{w:1,h:1,x_center:.765625,y_center:.328125},{w:1,h:1,x_center:.796875,y_center:.328125},{w:1,h:1,x_center:.796875,y_center:.328125},{w:1,h:1,x_center:.828125,y_center:.328125},{w:1,h:1,x_center:.828125,y_center:.328125},{w:1,h:1,x_center:.859375,y_center:.328125},{w:1,h:1,x_center:.859375,y_center:.328125},{w:1,h:1,x_center:.890625,y_center:.328125},{w:1,h:1,x_center:.890625,y_center:.328125},{w:1,h:1,x_center:.921875,y_center:.328125},{w:1,h:1,x_center:.921875,y_center:.328125},{w:1,h:1,x_center:.953125,y_center:.328125},{w:1,h:1,x_center:.953125,y_center:.328125},{w:1,h:1,x_center:.984375,y_center:.328125},{w:1,h:1,x_center:.984375,y_center:.328125},{w:1,h:1,x_center:.015625,y_center:.359375},{w:1,h:1,x_center:.015625,y_center:.359375},{w:1,h:1,x_center:.046875,y_center:.359375},{w:1,h:1,x_center:.046875,y_center:.359375},{w:1,h:1,x_center:.078125,y_center:.359375},{w:1,h:1,x_center:.078125,y_center:.359375},{w:1,h:1,x_center:.109375,y_center:.359375},{w:1,h:1,x_center:.109375,y_center:.359375},{w:1,h:1,x_center:.140625,y_center:.359375},{w:1,h:1,x_center:.140625,y_center:.359375},{w:1,h:1,x_center:.171875,y_center:.359375},{w:1,h:1,x_center:.171875,y_center:.359375},{w:1,h:1,x_center:.203125,y_center:.359375},{w:1,h:1,x_center:.203125,y_center:.359375},{w:1,h:1,x_center:.234375,y_center:.359375},{w:1,h:1,x_center:.234375,y_center:.359375},{w:1,h:1,x_center:.265625,y_center:.359375},{w:1,h:1,x_center:.265625,y_center:.359375},{w:1,h:1,x_center:.296875,y_center:.359375},{w:1,h:1,x_center:.296875,y_center:.359375},{w:1,h:1,x_center:.328125,y_center:.359375},{w:1,h:1,x_center:.328125,y_center:.359375},{w:1,h:1,x_center:.359375,y_center:.359375},{w:1,h:1,x_center:.359375,y_center:.359375},{w:1,h:1,x_center:.390625,y_center:.359375},{w:1,h:1,x_center:.390625,y_center:.359375},{w:1,h:1,x_center:.421875,y_center:.359375},{w:1,h:1,x_center:.421875,y_center:.359375},{w:1,h:1,x_center:.453125,y_center:.359375},{w:1,h:1,x_center:.453125,y_center:.359375},{w:1,h:1,x_center:.484375,y_center:.359375},{w:1,h:1,x_center:.484375,y_center:.359375},{w:1,h:1,x_center:.515625,y_center:.359375},{w:1,h:1,x_center:.515625,y_center:.359375},{w:1,h:1,x_center:.546875,y_center:.359375},{w:1,h:1,x_center:.546875,y_center:.359375},{w:1,h:1,x_center:.578125,y_center:.359375},{w:1,h:1,x_center:.578125,y_center:.359375},{w:1,h:1,x_center:.609375,y_center:.359375},{w:1,h:1,x_center:.609375,y_center:.359375},{w:1,h:1,x_center:.640625,y_center:.359375},{w:1,h:1,x_center:.640625,y_center:.359375},{w:1,h:1,x_center:.671875,y_center:.359375},{w:1,h:1,x_center:.671875,y_center:.359375},{w:1,h:1,x_center:.703125,y_center:.359375},{w:1,h:1,x_center:.703125,y_center:.359375},{w:1,h:1,x_center:.734375,y_center:.359375},{w:1,h:1,x_center:.734375,y_center:.359375},{w:1,h:1,x_center:.765625,y_center:.359375},{w:1,h:1,x_center:.765625,y_center:.359375},{w:1,h:1,x_center:.796875,y_center:.359375},{w:1,h:1,x_center:.796875,y_center:.359375},{w:1,h:1,x_center:.828125,y_center:.359375},{w:1,h:1,x_center:.828125,y_center:.359375},{w:1,h:1,x_center:.859375,y_center:.359375},{w:1,h:1,x_center:.859375,y_center:.359375},{w:1,h:1,x_center:.890625,y_center:.359375},{w:1,h:1,x_center:.890625,y_center:.359375},{w:1,h:1,x_center:.921875,y_center:.359375},{w:1,h:1,x_center:.921875,y_center:.359375},{w:1,h:1,x_center:.953125,y_center:.359375},{w:1,h:1,x_center:.953125,y_center:.359375},{w:1,h:1,x_center:.984375,y_center:.359375},{w:1,h:1,x_center:.984375,y_center:.359375},{w:1,h:1,x_center:.015625,y_center:.390625},{w:1,h:1,x_center:.015625,y_center:.390625},{w:1,h:1,x_center:.046875,y_center:.390625},{w:1,h:1,x_center:.046875,y_center:.390625},{w:1,h:1,x_center:.078125,y_center:.390625},{w:1,h:1,x_center:.078125,y_center:.390625},{w:1,h:1,x_center:.109375,y_center:.390625},{w:1,h:1,x_center:.109375,y_center:.390625},{w:1,h:1,x_center:.140625,y_center:.390625},{w:1,h:1,x_center:.140625,y_center:.390625},{w:1,h:1,x_center:.171875,y_center:.390625},{w:1,h:1,x_center:.171875,y_center:.390625},{w:1,h:1,x_center:.203125,y_center:.390625},{w:1,h:1,x_center:.203125,y_center:.390625},{w:1,h:1,x_center:.234375,y_center:.390625},{w:1,h:1,x_center:.234375,y_center:.390625},{w:1,h:1,x_center:.265625,y_center:.390625},{w:1,h:1,x_center:.265625,y_center:.390625},{w:1,h:1,x_center:.296875,y_center:.390625},{w:1,h:1,x_center:.296875,y_center:.390625},{w:1,h:1,x_center:.328125,y_center:.390625},{w:1,h:1,x_center:.328125,y_center:.390625},{w:1,h:1,x_center:.359375,y_center:.390625},{w:1,h:1,x_center:.359375,y_center:.390625},{w:1,h:1,x_center:.390625,y_center:.390625},{w:1,h:1,x_center:.390625,y_center:.390625},{w:1,h:1,x_center:.421875,y_center:.390625},{w:1,h:1,x_center:.421875,y_center:.390625},{w:1,h:1,x_center:.453125,y_center:.390625},{w:1,h:1,x_center:.453125,y_center:.390625},{w:1,h:1,x_center:.484375,y_center:.390625},{w:1,h:1,x_center:.484375,y_center:.390625},{w:1,h:1,x_center:.515625,y_center:.390625},{w:1,h:1,x_center:.515625,y_center:.390625},{w:1,h:1,x_center:.546875,y_center:.390625},{w:1,h:1,x_center:.546875,y_center:.390625},{w:1,h:1,x_center:.578125,y_center:.390625},{w:1,h:1,x_center:.578125,y_center:.390625},{w:1,h:1,x_center:.609375,y_center:.390625},{w:1,h:1,x_center:.609375,y_center:.390625},{w:1,h:1,x_center:.640625,y_center:.390625},{w:1,h:1,x_center:.640625,y_center:.390625},{w:1,h:1,x_center:.671875,y_center:.390625},{w:1,h:1,x_center:.671875,y_center:.390625},{w:1,h:1,x_center:.703125,y_center:.390625},{w:1,h:1,x_center:.703125,y_center:.390625},{w:1,h:1,x_center:.734375,y_center:.390625},{w:1,h:1,x_center:.734375,y_center:.390625},{w:1,h:1,x_center:.765625,y_center:.390625},{w:1,h:1,x_center:.765625,y_center:.390625},{w:1,h:1,x_center:.796875,y_center:.390625},{w:1,h:1,x_center:.796875,y_center:.390625},{w:1,h:1,x_center:.828125,y_center:.390625},{w:1,h:1,x_center:.828125,y_center:.390625},{w:1,h:1,x_center:.859375,y_center:.390625},{w:1,h:1,x_center:.859375,y_center:.390625},{w:1,h:1,x_center:.890625,y_center:.390625},{w:1,h:1,x_center:.890625,y_center:.390625},{w:1,h:1,x_center:.921875,y_center:.390625},{w:1,h:1,x_center:.921875,y_center:.390625},{w:1,h:1,x_center:.953125,y_center:.390625},{w:1,h:1,x_center:.953125,y_center:.390625},{w:1,h:1,x_center:.984375,y_center:.390625},{w:1,h:1,x_center:.984375,y_center:.390625},{w:1,h:1,x_center:.015625,y_center:.421875},{w:1,h:1,x_center:.015625,y_center:.421875},{w:1,h:1,x_center:.046875,y_center:.421875},{w:1,h:1,x_center:.046875,y_center:.421875},{w:1,h:1,x_center:.078125,y_center:.421875},{w:1,h:1,x_center:.078125,y_center:.421875},{w:1,h:1,x_center:.109375,y_center:.421875},{w:1,h:1,x_center:.109375,y_center:.421875},{w:1,h:1,x_center:.140625,y_center:.421875},{w:1,h:1,x_center:.140625,y_center:.421875},{w:1,h:1,x_center:.171875,y_center:.421875},{w:1,h:1,x_center:.171875,y_center:.421875},{w:1,h:1,x_center:.203125,y_center:.421875},{w:1,h:1,x_center:.203125,y_center:.421875},{w:1,h:1,x_center:.234375,y_center:.421875},{w:1,h:1,x_center:.234375,y_center:.421875},{w:1,h:1,x_center:.265625,y_center:.421875},{w:1,h:1,x_center:.265625,y_center:.421875},{w:1,h:1,x_center:.296875,y_center:.421875},{w:1,h:1,x_center:.296875,y_center:.421875},{w:1,h:1,x_center:.328125,y_center:.421875},{w:1,h:1,x_center:.328125,y_center:.421875},{w:1,h:1,x_center:.359375,y_center:.421875},{w:1,h:1,x_center:.359375,y_center:.421875},{w:1,h:1,x_center:.390625,y_center:.421875},{w:1,h:1,x_center:.390625,y_center:.421875},{w:1,h:1,x_center:.421875,y_center:.421875},{w:1,h:1,x_center:.421875,y_center:.421875},{w:1,h:1,x_center:.453125,y_center:.421875},{w:1,h:1,x_center:.453125,y_center:.421875},{w:1,h:1,x_center:.484375,y_center:.421875},{w:1,h:1,x_center:.484375,y_center:.421875},{w:1,h:1,x_center:.515625,y_center:.421875},{w:1,h:1,x_center:.515625,y_center:.421875},{w:1,h:1,x_center:.546875,y_center:.421875},{w:1,h:1,x_center:.546875,y_center:.421875},{w:1,h:1,x_center:.578125,y_center:.421875},{w:1,h:1,x_center:.578125,y_center:.421875},{w:1,h:1,x_center:.609375,y_center:.421875},{w:1,h:1,x_center:.609375,y_center:.421875},{w:1,h:1,x_center:.640625,y_center:.421875},{w:1,h:1,x_center:.640625,y_center:.421875},{w:1,h:1,x_center:.671875,y_center:.421875},{w:1,h:1,x_center:.671875,y_center:.421875},{w:1,h:1,x_center:.703125,y_center:.421875},{w:1,h:1,x_center:.703125,y_center:.421875},{w:1,h:1,x_center:.734375,y_center:.421875},{w:1,h:1,x_center:.734375,y_center:.421875},{w:1,h:1,x_center:.765625,y_center:.421875},{w:1,h:1,x_center:.765625,y_center:.421875},{w:1,h:1,x_center:.796875,y_center:.421875},{w:1,h:1,x_center:.796875,y_center:.421875},{w:1,h:1,x_center:.828125,y_center:.421875},{w:1,h:1,x_center:.828125,y_center:.421875},{w:1,h:1,x_center:.859375,y_center:.421875},{w:1,h:1,x_center:.859375,y_center:.421875},{w:1,h:1,x_center:.890625,y_center:.421875},{w:1,h:1,x_center:.890625,y_center:.421875},{w:1,h:1,x_center:.921875,y_center:.421875},{w:1,h:1,x_center:.921875,y_center:.421875},{w:1,h:1,x_center:.953125,y_center:.421875},{w:1,h:1,x_center:.953125,y_center:.421875},{w:1,h:1,x_center:.984375,y_center:.421875},{w:1,h:1,x_center:.984375,y_center:.421875},{w:1,h:1,x_center:.015625,y_center:.453125},{w:1,h:1,x_center:.015625,y_center:.453125},{w:1,h:1,x_center:.046875,y_center:.453125},{w:1,h:1,x_center:.046875,y_center:.453125},{w:1,h:1,x_center:.078125,y_center:.453125},{w:1,h:1,x_center:.078125,y_center:.453125},{w:1,h:1,x_center:.109375,y_center:.453125},{w:1,h:1,x_center:.109375,y_center:.453125},{w:1,h:1,x_center:.140625,y_center:.453125},{w:1,h:1,x_center:.140625,y_center:.453125},{w:1,h:1,x_center:.171875,y_center:.453125},{w:1,h:1,x_center:.171875,y_center:.453125},{w:1,h:1,x_center:.203125,y_center:.453125},{w:1,h:1,x_center:.203125,y_center:.453125},{w:1,h:1,x_center:.234375,y_center:.453125},{w:1,h:1,x_center:.234375,y_center:.453125},{w:1,h:1,x_center:.265625,y_center:.453125},{w:1,h:1,x_center:.265625,y_center:.453125},{w:1,h:1,x_center:.296875,y_center:.453125},{w:1,h:1,x_center:.296875,y_center:.453125},{w:1,h:1,x_center:.328125,y_center:.453125},{w:1,h:1,x_center:.328125,y_center:.453125},{w:1,h:1,x_center:.359375,y_center:.453125},{w:1,h:1,x_center:.359375,y_center:.453125},{w:1,h:1,x_center:.390625,y_center:.453125},{w:1,h:1,x_center:.390625,y_center:.453125},{w:1,h:1,x_center:.421875,y_center:.453125},{w:1,h:1,x_center:.421875,y_center:.453125},{w:1,h:1,x_center:.453125,y_center:.453125},{w:1,h:1,x_center:.453125,y_center:.453125},{w:1,h:1,x_center:.484375,y_center:.453125},{w:1,h:1,x_center:.484375,y_center:.453125},{w:1,h:1,x_center:.515625,y_center:.453125},{w:1,h:1,x_center:.515625,y_center:.453125},{w:1,h:1,x_center:.546875,y_center:.453125},{w:1,h:1,x_center:.546875,y_center:.453125},{w:1,h:1,x_center:.578125,y_center:.453125},{w:1,h:1,x_center:.578125,y_center:.453125},{w:1,h:1,x_center:.609375,y_center:.453125},{w:1,h:1,x_center:.609375,y_center:.453125},{w:1,h:1,x_center:.640625,y_center:.453125},{w:1,h:1,x_center:.640625,y_center:.453125},{w:1,h:1,x_center:.671875,y_center:.453125},{w:1,h:1,x_center:.671875,y_center:.453125},{w:1,h:1,x_center:.703125,y_center:.453125},{w:1,h:1,x_center:.703125,y_center:.453125},{w:1,h:1,x_center:.734375,y_center:.453125},{w:1,h:1,x_center:.734375,y_center:.453125},{w:1,h:1,x_center:.765625,y_center:.453125},{w:1,h:1,x_center:.765625,y_center:.453125},{w:1,h:1,x_center:.796875,y_center:.453125},{w:1,h:1,x_center:.796875,y_center:.453125},{w:1,h:1,x_center:.828125,y_center:.453125},{w:1,h:1,x_center:.828125,y_center:.453125},{w:1,h:1,x_center:.859375,y_center:.453125},{w:1,h:1,x_center:.859375,y_center:.453125},{w:1,h:1,x_center:.890625,y_center:.453125},{w:1,h:1,x_center:.890625,y_center:.453125},{w:1,h:1,x_center:.921875,y_center:.453125},{w:1,h:1,x_center:.921875,y_center:.453125},{w:1,h:1,x_center:.953125,y_center:.453125},{w:1,h:1,x_center:.953125,y_center:.453125},{w:1,h:1,x_center:.984375,y_center:.453125},{w:1,h:1,x_center:.984375,y_center:.453125},{w:1,h:1,x_center:.015625,y_center:.484375},{w:1,h:1,x_center:.015625,y_center:.484375},{w:1,h:1,x_center:.046875,y_center:.484375},{w:1,h:1,x_center:.046875,y_center:.484375},{w:1,h:1,x_center:.078125,y_center:.484375},{w:1,h:1,x_center:.078125,y_center:.484375},{w:1,h:1,x_center:.109375,y_center:.484375},{w:1,h:1,x_center:.109375,y_center:.484375},{w:1,h:1,x_center:.140625,y_center:.484375},{w:1,h:1,x_center:.140625,y_center:.484375},{w:1,h:1,x_center:.171875,y_center:.484375},{w:1,h:1,x_center:.171875,y_center:.484375},{w:1,h:1,x_center:.203125,y_center:.484375},{w:1,h:1,x_center:.203125,y_center:.484375},{w:1,h:1,x_center:.234375,y_center:.484375},{w:1,h:1,x_center:.234375,y_center:.484375},{w:1,h:1,x_center:.265625,y_center:.484375},{w:1,h:1,x_center:.265625,y_center:.484375},{w:1,h:1,x_center:.296875,y_center:.484375},{w:1,h:1,x_center:.296875,y_center:.484375},{w:1,h:1,x_center:.328125,y_center:.484375},{w:1,h:1,x_center:.328125,y_center:.484375},{w:1,h:1,x_center:.359375,y_center:.484375},{w:1,h:1,x_center:.359375,y_center:.484375},{w:1,h:1,x_center:.390625,y_center:.484375},{w:1,h:1,x_center:.390625,y_center:.484375},{w:1,h:1,x_center:.421875,y_center:.484375},{w:1,h:1,x_center:.421875,y_center:.484375},{w:1,h:1,x_center:.453125,y_center:.484375},{w:1,h:1,x_center:.453125,y_center:.484375},{w:1,h:1,x_center:.484375,y_center:.484375},{w:1,h:1,x_center:.484375,y_center:.484375},{w:1,h:1,x_center:.515625,y_center:.484375},{w:1,h:1,x_center:.515625,y_center:.484375},{w:1,h:1,x_center:.546875,y_center:.484375},{w:1,h:1,x_center:.546875,y_center:.484375},{w:1,h:1,x_center:.578125,y_center:.484375},{w:1,h:1,x_center:.578125,y_center:.484375},{w:1,h:1,x_center:.609375,y_center:.484375},{w:1,h:1,x_center:.609375,y_center:.484375},{w:1,h:1,x_center:.640625,y_center:.484375},{w:1,h:1,x_center:.640625,y_center:.484375},{w:1,h:1,x_center:.671875,y_center:.484375},{w:1,h:1,x_center:.671875,y_center:.484375},{w:1,h:1,x_center:.703125,y_center:.484375},{w:1,h:1,x_center:.703125,y_center:.484375},{w:1,h:1,x_center:.734375,y_center:.484375},{w:1,h:1,x_center:.734375,y_center:.484375},{w:1,h:1,x_center:.765625,y_center:.484375},{w:1,h:1,x_center:.765625,y_center:.484375},{w:1,h:1,x_center:.796875,y_center:.484375},{w:1,h:1,x_center:.796875,y_center:.484375},{w:1,h:1,x_center:.828125,y_center:.484375},{w:1,h:1,x_center:.828125,y_center:.484375},{w:1,h:1,x_center:.859375,y_center:.484375},{w:1,h:1,x_center:.859375,y_center:.484375},{w:1,h:1,x_center:.890625,y_center:.484375},{w:1,h:1,x_center:.890625,y_center:.484375},{w:1,h:1,x_center:.921875,y_center:.484375},{w:1,h:1,x_center:.921875,y_center:.484375},{w:1,h:1,x_center:.953125,y_center:.484375},{w:1,h:1,x_center:.953125,y_center:.484375},{w:1,h:1,x_center:.984375,y_center:.484375},{w:1,h:1,x_center:.984375,y_center:.484375},{w:1,h:1,x_center:.015625,y_center:.515625},{w:1,h:1,x_center:.015625,y_center:.515625},{w:1,h:1,x_center:.046875,y_center:.515625},{w:1,h:1,x_center:.046875,y_center:.515625},{w:1,h:1,x_center:.078125,y_center:.515625},{w:1,h:1,x_center:.078125,y_center:.515625},{w:1,h:1,x_center:.109375,y_center:.515625},{w:1,h:1,x_center:.109375,y_center:.515625},{w:1,h:1,x_center:.140625,y_center:.515625},{w:1,h:1,x_center:.140625,y_center:.515625},{w:1,h:1,x_center:.171875,y_center:.515625},{w:1,h:1,x_center:.171875,y_center:.515625},{w:1,h:1,x_center:.203125,y_center:.515625},{w:1,h:1,x_center:.203125,y_center:.515625},{w:1,h:1,x_center:.234375,y_center:.515625},{w:1,h:1,x_center:.234375,y_center:.515625},{w:1,h:1,x_center:.265625,y_center:.515625},{w:1,h:1,x_center:.265625,y_center:.515625},{w:1,h:1,x_center:.296875,y_center:.515625},{w:1,h:1,x_center:.296875,y_center:.515625},{w:1,h:1,x_center:.328125,y_center:.515625},{w:1,h:1,x_center:.328125,y_center:.515625},{w:1,h:1,x_center:.359375,y_center:.515625},{w:1,h:1,x_center:.359375,y_center:.515625},{w:1,h:1,x_center:.390625,y_center:.515625},{w:1,h:1,x_center:.390625,y_center:.515625},{w:1,h:1,x_center:.421875,y_center:.515625},{w:1,h:1,x_center:.421875,y_center:.515625},{w:1,h:1,x_center:.453125,y_center:.515625},{w:1,h:1,x_center:.453125,y_center:.515625},{w:1,h:1,x_center:.484375,y_center:.515625},{w:1,h:1,x_center:.484375,y_center:.515625},{w:1,h:1,x_center:.515625,y_center:.515625},{w:1,h:1,x_center:.515625,y_center:.515625},{w:1,h:1,x_center:.546875,y_center:.515625},{w:1,h:1,x_center:.546875,y_center:.515625},{w:1,h:1,x_center:.578125,y_center:.515625},{w:1,h:1,x_center:.578125,y_center:.515625},{w:1,h:1,x_center:.609375,y_center:.515625},{w:1,h:1,x_center:.609375,y_center:.515625},{w:1,h:1,x_center:.640625,y_center:.515625},{w:1,h:1,x_center:.640625,y_center:.515625},{w:1,h:1,x_center:.671875,y_center:.515625},{w:1,h:1,x_center:.671875,y_center:.515625},{w:1,h:1,x_center:.703125,y_center:.515625},{w:1,h:1,x_center:.703125,y_center:.515625},{w:1,h:1,x_center:.734375,y_center:.515625},{w:1,h:1,x_center:.734375,y_center:.515625},{w:1,h:1,x_center:.765625,y_center:.515625},{w:1,h:1,x_center:.765625,y_center:.515625},{w:1,h:1,x_center:.796875,y_center:.515625},{w:1,h:1,x_center:.796875,y_center:.515625},{w:1,h:1,x_center:.828125,y_center:.515625},{w:1,h:1,x_center:.828125,y_center:.515625},{w:1,h:1,x_center:.859375,y_center:.515625},{w:1,h:1,x_center:.859375,y_center:.515625},{w:1,h:1,x_center:.890625,y_center:.515625},{w:1,h:1,x_center:.890625,y_center:.515625},{w:1,h:1,x_center:.921875,y_center:.515625},{w:1,h:1,x_center:.921875,y_center:.515625},{w:1,h:1,x_center:.953125,y_center:.515625},{w:1,h:1,x_center:.953125,y_center:.515625},{w:1,h:1,x_center:.984375,y_center:.515625},{w:1,h:1,x_center:.984375,y_center:.515625},{w:1,h:1,x_center:.015625,y_center:.546875},{w:1,h:1,x_center:.015625,y_center:.546875},{w:1,h:1,x_center:.046875,y_center:.546875},{w:1,h:1,x_center:.046875,y_center:.546875},{w:1,h:1,x_center:.078125,y_center:.546875},{w:1,h:1,x_center:.078125,y_center:.546875},{w:1,h:1,x_center:.109375,y_center:.546875},{w:1,h:1,x_center:.109375,y_center:.546875},{w:1,h:1,x_center:.140625,y_center:.546875},{w:1,h:1,x_center:.140625,y_center:.546875},{w:1,h:1,x_center:.171875,y_center:.546875},{w:1,h:1,x_center:.171875,y_center:.546875},{w:1,h:1,x_center:.203125,y_center:.546875},{w:1,h:1,x_center:.203125,y_center:.546875},{w:1,h:1,x_center:.234375,y_center:.546875},{w:1,h:1,x_center:.234375,y_center:.546875},{w:1,h:1,x_center:.265625,y_center:.546875},{w:1,h:1,x_center:.265625,y_center:.546875},{w:1,h:1,x_center:.296875,y_center:.546875},{w:1,h:1,x_center:.296875,y_center:.546875},{w:1,h:1,x_center:.328125,y_center:.546875},{w:1,h:1,x_center:.328125,y_center:.546875},{w:1,h:1,x_center:.359375,y_center:.546875},{w:1,h:1,x_center:.359375,y_center:.546875},{w:1,h:1,x_center:.390625,y_center:.546875},{w:1,h:1,x_center:.390625,y_center:.546875},{w:1,h:1,x_center:.421875,y_center:.546875},{w:1,h:1,x_center:.421875,y_center:.546875},{w:1,h:1,x_center:.453125,y_center:.546875},{w:1,h:1,x_center:.453125,y_center:.546875},{w:1,h:1,x_center:.484375,y_center:.546875},{w:1,h:1,x_center:.484375,y_center:.546875},{w:1,h:1,x_center:.515625,y_center:.546875},{w:1,h:1,x_center:.515625,y_center:.546875},{w:1,h:1,x_center:.546875,y_center:.546875},{w:1,h:1,x_center:.546875,y_center:.546875},{w:1,h:1,x_center:.578125,y_center:.546875},{w:1,h:1,x_center:.578125,y_center:.546875},{w:1,h:1,x_center:.609375,y_center:.546875},{w:1,h:1,x_center:.609375,y_center:.546875},{w:1,h:1,x_center:.640625,y_center:.546875},{w:1,h:1,x_center:.640625,y_center:.546875},{w:1,h:1,x_center:.671875,y_center:.546875},{w:1,h:1,x_center:.671875,y_center:.546875},{w:1,h:1,x_center:.703125,y_center:.546875},{w:1,h:1,x_center:.703125,y_center:.546875},{w:1,h:1,x_center:.734375,y_center:.546875},{w:1,h:1,x_center:.734375,y_center:.546875},{w:1,h:1,x_center:.765625,y_center:.546875},{w:1,h:1,x_center:.765625,y_center:.546875},{w:1,h:1,x_center:.796875,y_center:.546875},{w:1,h:1,x_center:.796875,y_center:.546875},{w:1,h:1,x_center:.828125,y_center:.546875},{w:1,h:1,x_center:.828125,y_center:.546875},{w:1,h:1,x_center:.859375,y_center:.546875},{w:1,h:1,x_center:.859375,y_center:.546875},{w:1,h:1,x_center:.890625,y_center:.546875},{w:1,h:1,x_center:.890625,y_center:.546875},{w:1,h:1,x_center:.921875,y_center:.546875},{w:1,h:1,x_center:.921875,y_center:.546875},{w:1,h:1,x_center:.953125,y_center:.546875},{w:1,h:1,x_center:.953125,y_center:.546875},{w:1,h:1,x_center:.984375,y_center:.546875},{w:1,h:1,x_center:.984375,y_center:.546875},{w:1,h:1,x_center:.015625,y_center:.578125},{w:1,h:1,x_center:.015625,y_center:.578125},{w:1,h:1,x_center:.046875,y_center:.578125},{w:1,h:1,x_center:.046875,y_center:.578125},{w:1,h:1,x_center:.078125,y_center:.578125},{w:1,h:1,x_center:.078125,y_center:.578125},{w:1,h:1,x_center:.109375,y_center:.578125},{w:1,h:1,x_center:.109375,y_center:.578125},{w:1,h:1,x_center:.140625,y_center:.578125},{w:1,h:1,x_center:.140625,y_center:.578125},{w:1,h:1,x_center:.171875,y_center:.578125},{w:1,h:1,x_center:.171875,y_center:.578125},{w:1,h:1,x_center:.203125,y_center:.578125},{w:1,h:1,x_center:.203125,y_center:.578125},{w:1,h:1,x_center:.234375,y_center:.578125},{w:1,h:1,x_center:.234375,y_center:.578125},{w:1,h:1,x_center:.265625,y_center:.578125},{w:1,h:1,x_center:.265625,y_center:.578125},{w:1,h:1,x_center:.296875,y_center:.578125},{w:1,h:1,x_center:.296875,y_center:.578125},{w:1,h:1,x_center:.328125,y_center:.578125},{w:1,h:1,x_center:.328125,y_center:.578125},{w:1,h:1,x_center:.359375,y_center:.578125},{w:1,h:1,x_center:.359375,y_center:.578125},{w:1,h:1,x_center:.390625,y_center:.578125},{w:1,h:1,x_center:.390625,y_center:.578125},{w:1,h:1,x_center:.421875,y_center:.578125},{w:1,h:1,x_center:.421875,y_center:.578125},{w:1,h:1,x_center:.453125,y_center:.578125},{w:1,h:1,x_center:.453125,y_center:.578125},{w:1,h:1,x_center:.484375,y_center:.578125},{w:1,h:1,x_center:.484375,y_center:.578125},{w:1,h:1,x_center:.515625,y_center:.578125},{w:1,h:1,x_center:.515625,y_center:.578125},{w:1,h:1,x_center:.546875,y_center:.578125},{w:1,h:1,x_center:.546875,y_center:.578125},{w:1,h:1,x_center:.578125,y_center:.578125},{w:1,h:1,x_center:.578125,y_center:.578125},{w:1,h:1,x_center:.609375,y_center:.578125},{w:1,h:1,x_center:.609375,y_center:.578125},{w:1,h:1,x_center:.640625,y_center:.578125},{w:1,h:1,x_center:.640625,y_center:.578125},{w:1,h:1,x_center:.671875,y_center:.578125},{w:1,h:1,x_center:.671875,y_center:.578125},{w:1,h:1,x_center:.703125,y_center:.578125},{w:1,h:1,x_center:.703125,y_center:.578125},{w:1,h:1,x_center:.734375,y_center:.578125},{w:1,h:1,x_center:.734375,y_center:.578125},{w:1,h:1,x_center:.765625,y_center:.578125},{w:1,h:1,x_center:.765625,y_center:.578125},{w:1,h:1,x_center:.796875,y_center:.578125},{w:1,h:1,x_center:.796875,y_center:.578125},{w:1,h:1,x_center:.828125,y_center:.578125},{w:1,h:1,x_center:.828125,y_center:.578125},{w:1,h:1,x_center:.859375,y_center:.578125},{w:1,h:1,x_center:.859375,y_center:.578125},{w:1,h:1,x_center:.890625,y_center:.578125},{w:1,h:1,x_center:.890625,y_center:.578125},{w:1,h:1,x_center:.921875,y_center:.578125},{w:1,h:1,x_center:.921875,y_center:.578125},{w:1,h:1,x_center:.953125,y_center:.578125},{w:1,h:1,x_center:.953125,y_center:.578125},{w:1,h:1,x_center:.984375,y_center:.578125},{w:1,h:1,x_center:.984375,y_center:.578125},{w:1,h:1,x_center:.015625,y_center:.609375},{w:1,h:1,x_center:.015625,y_center:.609375},{w:1,h:1,x_center:.046875,y_center:.609375},{w:1,h:1,x_center:.046875,y_center:.609375},{w:1,h:1,x_center:.078125,y_center:.609375},{w:1,h:1,x_center:.078125,y_center:.609375},{w:1,h:1,x_center:.109375,y_center:.609375},{w:1,h:1,x_center:.109375,y_center:.609375},{w:1,h:1,x_center:.140625,y_center:.609375},{w:1,h:1,x_center:.140625,y_center:.609375},{w:1,h:1,x_center:.171875,y_center:.609375},{w:1,h:1,x_center:.171875,y_center:.609375},{w:1,h:1,x_center:.203125,y_center:.609375},{w:1,h:1,x_center:.203125,y_center:.609375},{w:1,h:1,x_center:.234375,y_center:.609375},{w:1,h:1,x_center:.234375,y_center:.609375},{w:1,h:1,x_center:.265625,y_center:.609375},{w:1,h:1,x_center:.265625,y_center:.609375},{w:1,h:1,x_center:.296875,y_center:.609375},{w:1,h:1,x_center:.296875,y_center:.609375},{w:1,h:1,x_center:.328125,y_center:.609375},{w:1,h:1,x_center:.328125,y_center:.609375},{w:1,h:1,x_center:.359375,y_center:.609375},{w:1,h:1,x_center:.359375,y_center:.609375},{w:1,h:1,x_center:.390625,y_center:.609375},{w:1,h:1,x_center:.390625,y_center:.609375},{w:1,h:1,x_center:.421875,y_center:.609375},{w:1,h:1,x_center:.421875,y_center:.609375},{w:1,h:1,x_center:.453125,y_center:.609375},{w:1,h:1,x_center:.453125,y_center:.609375},{w:1,h:1,x_center:.484375,y_center:.609375},{w:1,h:1,x_center:.484375,y_center:.609375},{w:1,h:1,x_center:.515625,y_center:.609375},{w:1,h:1,x_center:.515625,y_center:.609375},{w:1,h:1,x_center:.546875,y_center:.609375},{w:1,h:1,x_center:.546875,y_center:.609375},{w:1,h:1,x_center:.578125,y_center:.609375},{w:1,h:1,x_center:.578125,y_center:.609375},{w:1,h:1,x_center:.609375,y_center:.609375},{w:1,h:1,x_center:.609375,y_center:.609375},{w:1,h:1,x_center:.640625,y_center:.609375},{w:1,h:1,x_center:.640625,y_center:.609375},{w:1,h:1,x_center:.671875,y_center:.609375},{w:1,h:1,x_center:.671875,y_center:.609375},{w:1,h:1,x_center:.703125,y_center:.609375},{w:1,h:1,x_center:.703125,y_center:.609375},{w:1,h:1,x_center:.734375,y_center:.609375},{w:1,h:1,x_center:.734375,y_center:.609375},{w:1,h:1,x_center:.765625,y_center:.609375},{w:1,h:1,x_center:.765625,y_center:.609375},{w:1,h:1,x_center:.796875,y_center:.609375},{w:1,h:1,x_center:.796875,y_center:.609375},{w:1,h:1,x_center:.828125,y_center:.609375},{w:1,h:1,x_center:.828125,y_center:.609375},{w:1,h:1,x_center:.859375,y_center:.609375},{w:1,h:1,x_center:.859375,y_center:.609375},{w:1,h:1,x_center:.890625,y_center:.609375},{w:1,h:1,x_center:.890625,y_center:.609375},{w:1,h:1,x_center:.921875,y_center:.609375},{w:1,h:1,x_center:.921875,y_center:.609375},{w:1,h:1,x_center:.953125,y_center:.609375},{w:1,h:1,x_center:.953125,y_center:.609375},{w:1,h:1,x_center:.984375,y_center:.609375},{w:1,h:1,x_center:.984375,y_center:.609375},{w:1,h:1,x_center:.015625,y_center:.640625},{w:1,h:1,x_center:.015625,y_center:.640625},{w:1,h:1,x_center:.046875,y_center:.640625},{w:1,h:1,x_center:.046875,y_center:.640625},{w:1,h:1,x_center:.078125,y_center:.640625},{w:1,h:1,x_center:.078125,y_center:.640625},{w:1,h:1,x_center:.109375,y_center:.640625},{w:1,h:1,x_center:.109375,y_center:.640625},{w:1,h:1,x_center:.140625,y_center:.640625},{w:1,h:1,x_center:.140625,y_center:.640625},{w:1,h:1,x_center:.171875,y_center:.640625},{w:1,h:1,x_center:.171875,y_center:.640625},{w:1,h:1,x_center:.203125,y_center:.640625},{w:1,h:1,x_center:.203125,y_center:.640625},{w:1,h:1,x_center:.234375,y_center:.640625},{w:1,h:1,x_center:.234375,y_center:.640625},{w:1,h:1,x_center:.265625,y_center:.640625},{w:1,h:1,x_center:.265625,y_center:.640625},{w:1,h:1,x_center:.296875,y_center:.640625},{w:1,h:1,x_center:.296875,y_center:.640625},{w:1,h:1,x_center:.328125,y_center:.640625},{w:1,h:1,x_center:.328125,y_center:.640625},{w:1,h:1,x_center:.359375,y_center:.640625},{w:1,h:1,x_center:.359375,y_center:.640625},{w:1,h:1,x_center:.390625,y_center:.640625},{w:1,h:1,x_center:.390625,y_center:.640625},{w:1,h:1,x_center:.421875,y_center:.640625},{w:1,h:1,x_center:.421875,y_center:.640625},{w:1,h:1,x_center:.453125,y_center:.640625},{w:1,h:1,x_center:.453125,y_center:.640625},{w:1,h:1,x_center:.484375,y_center:.640625},{w:1,h:1,x_center:.484375,y_center:.640625},{w:1,h:1,x_center:.515625,y_center:.640625},{w:1,h:1,x_center:.515625,y_center:.640625},{w:1,h:1,x_center:.546875,y_center:.640625},{w:1,h:1,x_center:.546875,y_center:.640625},{w:1,h:1,x_center:.578125,y_center:.640625},{w:1,h:1,x_center:.578125,y_center:.640625},{w:1,h:1,x_center:.609375,y_center:.640625},{w:1,h:1,x_center:.609375,y_center:.640625},{w:1,h:1,x_center:.640625,y_center:.640625},{w:1,h:1,x_center:.640625,y_center:.640625},{w:1,h:1,x_center:.671875,y_center:.640625},{w:1,h:1,x_center:.671875,y_center:.640625},{w:1,h:1,x_center:.703125,y_center:.640625},{w:1,h:1,x_center:.703125,y_center:.640625},{w:1,h:1,x_center:.734375,y_center:.640625},{w:1,h:1,x_center:.734375,y_center:.640625},{w:1,h:1,x_center:.765625,y_center:.640625},{w:1,h:1,x_center:.765625,y_center:.640625},{w:1,h:1,x_center:.796875,y_center:.640625},{w:1,h:1,x_center:.796875,y_center:.640625},{w:1,h:1,x_center:.828125,y_center:.640625},{w:1,h:1,x_center:.828125,y_center:.640625},{w:1,h:1,x_center:.859375,y_center:.640625},{w:1,h:1,x_center:.859375,y_center:.640625},{w:1,h:1,x_center:.890625,y_center:.640625},{w:1,h:1,x_center:.890625,y_center:.640625},{w:1,h:1,x_center:.921875,y_center:.640625},{w:1,h:1,x_center:.921875,y_center:.640625},{w:1,h:1,x_center:.953125,y_center:.640625},{w:1,h:1,x_center:.953125,y_center:.640625},{w:1,h:1,x_center:.984375,y_center:.640625},{w:1,h:1,x_center:.984375,y_center:.640625},{w:1,h:1,x_center:.015625,y_center:.671875},{w:1,h:1,x_center:.015625,y_center:.671875},{w:1,h:1,x_center:.046875,y_center:.671875},{w:1,h:1,x_center:.046875,y_center:.671875},{w:1,h:1,x_center:.078125,y_center:.671875},{w:1,h:1,x_center:.078125,y_center:.671875},{w:1,h:1,x_center:.109375,y_center:.671875},{w:1,h:1,x_center:.109375,y_center:.671875},{w:1,h:1,x_center:.140625,y_center:.671875},{w:1,h:1,x_center:.140625,y_center:.671875},{w:1,h:1,x_center:.171875,y_center:.671875},{w:1,h:1,x_center:.171875,y_center:.671875},{w:1,h:1,x_center:.203125,y_center:.671875},{w:1,h:1,x_center:.203125,y_center:.671875},{w:1,h:1,x_center:.234375,y_center:.671875},{w:1,h:1,x_center:.234375,y_center:.671875},{w:1,h:1,x_center:.265625,y_center:.671875},{w:1,h:1,x_center:.265625,y_center:.671875},{w:1,h:1,x_center:.296875,y_center:.671875},{w:1,h:1,x_center:.296875,y_center:.671875},{w:1,h:1,x_center:.328125,y_center:.671875},{w:1,h:1,x_center:.328125,y_center:.671875},{w:1,h:1,x_center:.359375,y_center:.671875},{w:1,h:1,x_center:.359375,y_center:.671875},{w:1,h:1,x_center:.390625,y_center:.671875},{w:1,h:1,x_center:.390625,y_center:.671875},{w:1,h:1,x_center:.421875,y_center:.671875},{w:1,h:1,x_center:.421875,y_center:.671875},{w:1,h:1,x_center:.453125,y_center:.671875},{w:1,h:1,x_center:.453125,y_center:.671875},{w:1,h:1,x_center:.484375,y_center:.671875},{w:1,h:1,x_center:.484375,y_center:.671875},{w:1,h:1,x_center:.515625,y_center:.671875},{w:1,h:1,x_center:.515625,y_center:.671875},{w:1,h:1,x_center:.546875,y_center:.671875},{w:1,h:1,x_center:.546875,y_center:.671875},{w:1,h:1,x_center:.578125,y_center:.671875},{w:1,h:1,x_center:.578125,y_center:.671875},{w:1,h:1,x_center:.609375,y_center:.671875},{w:1,h:1,x_center:.609375,y_center:.671875},{w:1,h:1,x_center:.640625,y_center:.671875},{w:1,h:1,x_center:.640625,y_center:.671875},{w:1,h:1,x_center:.671875,y_center:.671875},{w:1,h:1,x_center:.671875,y_center:.671875},{w:1,h:1,x_center:.703125,y_center:.671875},{w:1,h:1,x_center:.703125,y_center:.671875},{w:1,h:1,x_center:.734375,y_center:.671875},{w:1,h:1,x_center:.734375,y_center:.671875},{w:1,h:1,x_center:.765625,y_center:.671875},{w:1,h:1,x_center:.765625,y_center:.671875},{w:1,h:1,x_center:.796875,y_center:.671875},{w:1,h:1,x_center:.796875,y_center:.671875},{w:1,h:1,x_center:.828125,y_center:.671875},{w:1,h:1,x_center:.828125,y_center:.671875},{w:1,h:1,x_center:.859375,y_center:.671875},{w:1,h:1,x_center:.859375,y_center:.671875},{w:1,h:1,x_center:.890625,y_center:.671875},{w:1,h:1,x_center:.890625,y_center:.671875},{w:1,h:1,x_center:.921875,y_center:.671875},{w:1,h:1,x_center:.921875,y_center:.671875},{w:1,h:1,x_center:.953125,y_center:.671875},{w:1,h:1,x_center:.953125,y_center:.671875},{w:1,h:1,x_center:.984375,y_center:.671875},{w:1,h:1,x_center:.984375,y_center:.671875},{w:1,h:1,x_center:.015625,y_center:.703125},{w:1,h:1,x_center:.015625,y_center:.703125},{w:1,h:1,x_center:.046875,y_center:.703125},{w:1,h:1,x_center:.046875,y_center:.703125},{w:1,h:1,x_center:.078125,y_center:.703125},{w:1,h:1,x_center:.078125,y_center:.703125},{w:1,h:1,x_center:.109375,y_center:.703125},{w:1,h:1,x_center:.109375,y_center:.703125},{w:1,h:1,x_center:.140625,y_center:.703125},{w:1,h:1,x_center:.140625,y_center:.703125},{w:1,h:1,x_center:.171875,y_center:.703125},{w:1,h:1,x_center:.171875,y_center:.703125},{w:1,h:1,x_center:.203125,y_center:.703125},{w:1,h:1,x_center:.203125,y_center:.703125},{w:1,h:1,x_center:.234375,y_center:.703125},{w:1,h:1,x_center:.234375,y_center:.703125},{w:1,h:1,x_center:.265625,y_center:.703125},{w:1,h:1,x_center:.265625,y_center:.703125},{w:1,h:1,x_center:.296875,y_center:.703125},{w:1,h:1,x_center:.296875,y_center:.703125},{w:1,h:1,x_center:.328125,y_center:.703125},{w:1,h:1,x_center:.328125,y_center:.703125},{w:1,h:1,x_center:.359375,y_center:.703125},{w:1,h:1,x_center:.359375,y_center:.703125},{w:1,h:1,x_center:.390625,y_center:.703125},{w:1,h:1,x_center:.390625,y_center:.703125},{w:1,h:1,x_center:.421875,y_center:.703125},{w:1,h:1,x_center:.421875,y_center:.703125},{w:1,h:1,x_center:.453125,y_center:.703125},{w:1,h:1,x_center:.453125,y_center:.703125},{w:1,h:1,x_center:.484375,y_center:.703125},{w:1,h:1,x_center:.484375,y_center:.703125},{w:1,h:1,x_center:.515625,y_center:.703125},{w:1,h:1,x_center:.515625,y_center:.703125},{w:1,h:1,x_center:.546875,y_center:.703125},{w:1,h:1,x_center:.546875,y_center:.703125},{w:1,h:1,x_center:.578125,y_center:.703125},{w:1,h:1,x_center:.578125,y_center:.703125},{w:1,h:1,x_center:.609375,y_center:.703125},{w:1,h:1,x_center:.609375,y_center:.703125},{w:1,h:1,x_center:.640625,y_center:.703125},{w:1,h:1,x_center:.640625,y_center:.703125},{w:1,h:1,x_center:.671875,y_center:.703125},{w:1,h:1,x_center:.671875,y_center:.703125},{w:1,h:1,x_center:.703125,y_center:.703125},{w:1,h:1,x_center:.703125,y_center:.703125},{w:1,h:1,x_center:.734375,y_center:.703125},{w:1,h:1,x_center:.734375,y_center:.703125},{w:1,h:1,x_center:.765625,y_center:.703125},{w:1,h:1,x_center:.765625,y_center:.703125},{w:1,h:1,x_center:.796875,y_center:.703125},{w:1,h:1,x_center:.796875,y_center:.703125},{w:1,h:1,x_center:.828125,y_center:.703125},{w:1,h:1,x_center:.828125,y_center:.703125},{w:1,h:1,x_center:.859375,y_center:.703125},{w:1,h:1,x_center:.859375,y_center:.703125},{w:1,h:1,x_center:.890625,y_center:.703125},{w:1,h:1,x_center:.890625,y_center:.703125},{w:1,h:1,x_center:.921875,y_center:.703125},{w:1,h:1,x_center:.921875,y_center:.703125},{w:1,h:1,x_center:.953125,y_center:.703125},{w:1,h:1,x_center:.953125,y_center:.703125},{w:1,h:1,x_center:.984375,y_center:.703125},{w:1,h:1,x_center:.984375,y_center:.703125},{w:1,h:1,x_center:.015625,y_center:.734375},{w:1,h:1,x_center:.015625,y_center:.734375},{w:1,h:1,x_center:.046875,y_center:.734375},{w:1,h:1,x_center:.046875,y_center:.734375},{w:1,h:1,x_center:.078125,y_center:.734375},{w:1,h:1,x_center:.078125,y_center:.734375},{w:1,h:1,x_center:.109375,y_center:.734375},{w:1,h:1,x_center:.109375,y_center:.734375},{w:1,h:1,x_center:.140625,y_center:.734375},{w:1,h:1,x_center:.140625,y_center:.734375},{w:1,h:1,x_center:.171875,y_center:.734375},{w:1,h:1,x_center:.171875,y_center:.734375},{w:1,h:1,x_center:.203125,y_center:.734375},{w:1,h:1,x_center:.203125,y_center:.734375},{w:1,h:1,x_center:.234375,y_center:.734375},{w:1,h:1,x_center:.234375,y_center:.734375},{w:1,h:1,x_center:.265625,y_center:.734375},{w:1,h:1,x_center:.265625,y_center:.734375},{w:1,h:1,x_center:.296875,y_center:.734375},{w:1,h:1,x_center:.296875,y_center:.734375},{w:1,h:1,x_center:.328125,y_center:.734375},{w:1,h:1,x_center:.328125,y_center:.734375},{w:1,h:1,x_center:.359375,y_center:.734375},{w:1,h:1,x_center:.359375,y_center:.734375},{w:1,h:1,x_center:.390625,y_center:.734375},{w:1,h:1,x_center:.390625,y_center:.734375},{w:1,h:1,x_center:.421875,y_center:.734375},{w:1,h:1,x_center:.421875,y_center:.734375},{w:1,h:1,x_center:.453125,y_center:.734375},{w:1,h:1,x_center:.453125,y_center:.734375},{w:1,h:1,x_center:.484375,y_center:.734375},{w:1,h:1,x_center:.484375,y_center:.734375},{w:1,h:1,x_center:.515625,y_center:.734375},{w:1,h:1,x_center:.515625,y_center:.734375},{w:1,h:1,x_center:.546875,y_center:.734375},{w:1,h:1,x_center:.546875,y_center:.734375},{w:1,h:1,x_center:.578125,y_center:.734375},{w:1,h:1,x_center:.578125,y_center:.734375},{w:1,h:1,x_center:.609375,y_center:.734375},{w:1,h:1,x_center:.609375,y_center:.734375},{w:1,h:1,x_center:.640625,y_center:.734375},{w:1,h:1,x_center:.640625,y_center:.734375},{w:1,h:1,x_center:.671875,y_center:.734375},{w:1,h:1,x_center:.671875,y_center:.734375},{w:1,h:1,x_center:.703125,y_center:.734375},{w:1,h:1,x_center:.703125,y_center:.734375},{w:1,h:1,x_center:.734375,y_center:.734375},{w:1,h:1,x_center:.734375,y_center:.734375},{w:1,h:1,x_center:.765625,y_center:.734375},{w:1,h:1,x_center:.765625,y_center:.734375},{w:1,h:1,x_center:.796875,y_center:.734375},{w:1,h:1,x_center:.796875,y_center:.734375},{w:1,h:1,x_center:.828125,y_center:.734375},{w:1,h:1,x_center:.828125,y_center:.734375},{w:1,h:1,x_center:.859375,y_center:.734375},{w:1,h:1,x_center:.859375,y_center:.734375},{w:1,h:1,x_center:.890625,y_center:.734375},{w:1,h:1,x_center:.890625,y_center:.734375},{w:1,h:1,x_center:.921875,y_center:.734375},{w:1,h:1,x_center:.921875,y_center:.734375},{w:1,h:1,x_center:.953125,y_center:.734375},{w:1,h:1,x_center:.953125,y_center:.734375},{w:1,h:1,x_center:.984375,y_center:.734375},{w:1,h:1,x_center:.984375,y_center:.734375},{w:1,h:1,x_center:.015625,y_center:.765625},{w:1,h:1,x_center:.015625,y_center:.765625},{w:1,h:1,x_center:.046875,y_center:.765625},{w:1,h:1,x_center:.046875,y_center:.765625},{w:1,h:1,x_center:.078125,y_center:.765625},{w:1,h:1,x_center:.078125,y_center:.765625},{w:1,h:1,x_center:.109375,y_center:.765625},{w:1,h:1,x_center:.109375,y_center:.765625},{w:1,h:1,x_center:.140625,y_center:.765625},{w:1,h:1,x_center:.140625,y_center:.765625},{w:1,h:1,x_center:.171875,y_center:.765625},{w:1,h:1,x_center:.171875,y_center:.765625},{w:1,h:1,x_center:.203125,y_center:.765625},{w:1,h:1,x_center:.203125,y_center:.765625},{w:1,h:1,x_center:.234375,y_center:.765625},{w:1,h:1,x_center:.234375,y_center:.765625},{w:1,h:1,x_center:.265625,y_center:.765625},{w:1,h:1,x_center:.265625,y_center:.765625},{w:1,h:1,x_center:.296875,y_center:.765625},{w:1,h:1,x_center:.296875,y_center:.765625},{w:1,h:1,x_center:.328125,y_center:.765625},{w:1,h:1,x_center:.328125,y_center:.765625},{w:1,h:1,x_center:.359375,y_center:.765625},{w:1,h:1,x_center:.359375,y_center:.765625},{w:1,h:1,x_center:.390625,y_center:.765625},{w:1,h:1,x_center:.390625,y_center:.765625},{w:1,h:1,x_center:.421875,y_center:.765625},{w:1,h:1,x_center:.421875,y_center:.765625},{w:1,h:1,x_center:.453125,y_center:.765625},{w:1,h:1,x_center:.453125,y_center:.765625},{w:1,h:1,x_center:.484375,y_center:.765625},{w:1,h:1,x_center:.484375,y_center:.765625},{w:1,h:1,x_center:.515625,y_center:.765625},{w:1,h:1,x_center:.515625,y_center:.765625},{w:1,h:1,x_center:.546875,y_center:.765625},{w:1,h:1,x_center:.546875,y_center:.765625},{w:1,h:1,x_center:.578125,y_center:.765625},{w:1,h:1,x_center:.578125,y_center:.765625},{w:1,h:1,x_center:.609375,y_center:.765625},{w:1,h:1,x_center:.609375,y_center:.765625},{w:1,h:1,x_center:.640625,y_center:.765625},{w:1,h:1,x_center:.640625,y_center:.765625},{w:1,h:1,x_center:.671875,y_center:.765625},{w:1,h:1,x_center:.671875,y_center:.765625},{w:1,h:1,x_center:.703125,y_center:.765625},{w:1,h:1,x_center:.703125,y_center:.765625},{w:1,h:1,x_center:.734375,y_center:.765625},{w:1,h:1,x_center:.734375,y_center:.765625},{w:1,h:1,x_center:.765625,y_center:.765625},{w:1,h:1,x_center:.765625,y_center:.765625},{w:1,h:1,x_center:.796875,y_center:.765625},{w:1,h:1,x_center:.796875,y_center:.765625},{w:1,h:1,x_center:.828125,y_center:.765625},{w:1,h:1,x_center:.828125,y_center:.765625},{w:1,h:1,x_center:.859375,y_center:.765625},{w:1,h:1,x_center:.859375,y_center:.765625},{w:1,h:1,x_center:.890625,y_center:.765625},{w:1,h:1,x_center:.890625,y_center:.765625},{w:1,h:1,x_center:.921875,y_center:.765625},{w:1,h:1,x_center:.921875,y_center:.765625},{w:1,h:1,x_center:.953125,y_center:.765625},{w:1,h:1,x_center:.953125,y_center:.765625},{w:1,h:1,x_center:.984375,y_center:.765625},{w:1,h:1,x_center:.984375,y_center:.765625},{w:1,h:1,x_center:.015625,y_center:.796875},{w:1,h:1,x_center:.015625,y_center:.796875},{w:1,h:1,x_center:.046875,y_center:.796875},{w:1,h:1,x_center:.046875,y_center:.796875},{w:1,h:1,x_center:.078125,y_center:.796875},{w:1,h:1,x_center:.078125,y_center:.796875},{w:1,h:1,x_center:.109375,y_center:.796875},{w:1,h:1,x_center:.109375,y_center:.796875},{w:1,h:1,x_center:.140625,y_center:.796875},{w:1,h:1,x_center:.140625,y_center:.796875},{w:1,h:1,x_center:.171875,y_center:.796875},{w:1,h:1,x_center:.171875,y_center:.796875},{w:1,h:1,x_center:.203125,y_center:.796875},{w:1,h:1,x_center:.203125,y_center:.796875},{w:1,h:1,x_center:.234375,y_center:.796875},{w:1,h:1,x_center:.234375,y_center:.796875},{w:1,h:1,x_center:.265625,y_center:.796875},{w:1,h:1,x_center:.265625,y_center:.796875},{w:1,h:1,x_center:.296875,y_center:.796875},{w:1,h:1,x_center:.296875,y_center:.796875},{w:1,h:1,x_center:.328125,y_center:.796875},{w:1,h:1,x_center:.328125,y_center:.796875},{w:1,h:1,x_center:.359375,y_center:.796875},{w:1,h:1,x_center:.359375,y_center:.796875},{w:1,h:1,x_center:.390625,y_center:.796875},{w:1,h:1,x_center:.390625,y_center:.796875},{w:1,h:1,x_center:.421875,y_center:.796875},{w:1,h:1,x_center:.421875,y_center:.796875},{w:1,h:1,x_center:.453125,y_center:.796875},{w:1,h:1,x_center:.453125,y_center:.796875},{w:1,h:1,x_center:.484375,y_center:.796875},{w:1,h:1,x_center:.484375,y_center:.796875},{w:1,h:1,x_center:.515625,y_center:.796875},{w:1,h:1,x_center:.515625,y_center:.796875},{w:1,h:1,x_center:.546875,y_center:.796875},{w:1,h:1,x_center:.546875,y_center:.796875},{w:1,h:1,x_center:.578125,y_center:.796875},{w:1,h:1,x_center:.578125,y_center:.796875},{w:1,h:1,x_center:.609375,y_center:.796875},{w:1,h:1,x_center:.609375,y_center:.796875},{w:1,h:1,x_center:.640625,y_center:.796875},{w:1,h:1,x_center:.640625,y_center:.796875},{w:1,h:1,x_center:.671875,y_center:.796875},{w:1,h:1,x_center:.671875,y_center:.796875},{w:1,h:1,x_center:.703125,y_center:.796875},{w:1,h:1,x_center:.703125,y_center:.796875},{w:1,h:1,x_center:.734375,y_center:.796875},{w:1,h:1,x_center:.734375,y_center:.796875},{w:1,h:1,x_center:.765625,y_center:.796875},{w:1,h:1,x_center:.765625,y_center:.796875},{w:1,h:1,x_center:.796875,y_center:.796875},{w:1,h:1,x_center:.796875,y_center:.796875},{w:1,h:1,x_center:.828125,y_center:.796875},{w:1,h:1,x_center:.828125,y_center:.796875},{w:1,h:1,x_center:.859375,y_center:.796875},{w:1,h:1,x_center:.859375,y_center:.796875},{w:1,h:1,x_center:.890625,y_center:.796875},{w:1,h:1,x_center:.890625,y_center:.796875},{w:1,h:1,x_center:.921875,y_center:.796875},{w:1,h:1,x_center:.921875,y_center:.796875},{w:1,h:1,x_center:.953125,y_center:.796875},{w:1,h:1,x_center:.953125,y_center:.796875},{w:1,h:1,x_center:.984375,y_center:.796875},{w:1,h:1,x_center:.984375,y_center:.796875},{w:1,h:1,x_center:.015625,y_center:.828125},{w:1,h:1,x_center:.015625,y_center:.828125},{w:1,h:1,x_center:.046875,y_center:.828125},{w:1,h:1,x_center:.046875,y_center:.828125},{w:1,h:1,x_center:.078125,y_center:.828125},{w:1,h:1,x_center:.078125,y_center:.828125},{w:1,h:1,x_center:.109375,y_center:.828125},{w:1,h:1,x_center:.109375,y_center:.828125},{w:1,h:1,x_center:.140625,y_center:.828125},{w:1,h:1,x_center:.140625,y_center:.828125},{w:1,h:1,x_center:.171875,y_center:.828125},{w:1,h:1,x_center:.171875,y_center:.828125},{w:1,h:1,x_center:.203125,y_center:.828125},{w:1,h:1,x_center:.203125,y_center:.828125},{w:1,h:1,x_center:.234375,y_center:.828125},{w:1,h:1,x_center:.234375,y_center:.828125},{w:1,h:1,x_center:.265625,y_center:.828125},{w:1,h:1,x_center:.265625,y_center:.828125},{w:1,h:1,x_center:.296875,y_center:.828125},{w:1,h:1,x_center:.296875,y_center:.828125},{w:1,h:1,x_center:.328125,y_center:.828125},{w:1,h:1,x_center:.328125,y_center:.828125},{w:1,h:1,x_center:.359375,y_center:.828125},{w:1,h:1,x_center:.359375,y_center:.828125},{w:1,h:1,x_center:.390625,y_center:.828125},{w:1,h:1,x_center:.390625,y_center:.828125},{w:1,h:1,x_center:.421875,y_center:.828125},{w:1,h:1,x_center:.421875,y_center:.828125},{w:1,h:1,x_center:.453125,y_center:.828125},{w:1,h:1,x_center:.453125,y_center:.828125},{w:1,h:1,x_center:.484375,y_center:.828125},{w:1,h:1,x_center:.484375,y_center:.828125},{w:1,h:1,x_center:.515625,y_center:.828125},{w:1,h:1,x_center:.515625,y_center:.828125},{w:1,h:1,x_center:.546875,y_center:.828125},{w:1,h:1,x_center:.546875,y_center:.828125},{w:1,h:1,x_center:.578125,y_center:.828125},{w:1,h:1,x_center:.578125,y_center:.828125},{w:1,h:1,x_center:.609375,y_center:.828125},{w:1,h:1,x_center:.609375,y_center:.828125},{w:1,h:1,x_center:.640625,y_center:.828125},{w:1,h:1,x_center:.640625,y_center:.828125},{w:1,h:1,x_center:.671875,y_center:.828125},{w:1,h:1,x_center:.671875,y_center:.828125},{w:1,h:1,x_center:.703125,y_center:.828125},{w:1,h:1,x_center:.703125,y_center:.828125},{w:1,h:1,x_center:.734375,y_center:.828125},{w:1,h:1,x_center:.734375,y_center:.828125},{w:1,h:1,x_center:.765625,y_center:.828125},{w:1,h:1,x_center:.765625,y_center:.828125},{w:1,h:1,x_center:.796875,y_center:.828125},{w:1,h:1,x_center:.796875,y_center:.828125},{w:1,h:1,x_center:.828125,y_center:.828125},{w:1,h:1,x_center:.828125,y_center:.828125},{w:1,h:1,x_center:.859375,y_center:.828125},{w:1,h:1,x_center:.859375,y_center:.828125},{w:1,h:1,x_center:.890625,y_center:.828125},{w:1,h:1,x_center:.890625,y_center:.828125},{w:1,h:1,x_center:.921875,y_center:.828125},{w:1,h:1,x_center:.921875,y_center:.828125},{w:1,h:1,x_center:.953125,y_center:.828125},{w:1,h:1,x_center:.953125,y_center:.828125},{w:1,h:1,x_center:.984375,y_center:.828125},{w:1,h:1,x_center:.984375,y_center:.828125},{w:1,h:1,x_center:.015625,y_center:.859375},{w:1,h:1,x_center:.015625,y_center:.859375},{w:1,h:1,x_center:.046875,y_center:.859375},{w:1,h:1,x_center:.046875,y_center:.859375},{w:1,h:1,x_center:.078125,y_center:.859375},{w:1,h:1,x_center:.078125,y_center:.859375},{w:1,h:1,x_center:.109375,y_center:.859375},{w:1,h:1,x_center:.109375,y_center:.859375},{w:1,h:1,x_center:.140625,y_center:.859375},{w:1,h:1,x_center:.140625,y_center:.859375},{w:1,h:1,x_center:.171875,y_center:.859375},{w:1,h:1,x_center:.171875,y_center:.859375},{w:1,h:1,x_center:.203125,y_center:.859375},{w:1,h:1,x_center:.203125,y_center:.859375},{w:1,h:1,x_center:.234375,y_center:.859375},{w:1,h:1,x_center:.234375,y_center:.859375},{w:1,h:1,x_center:.265625,y_center:.859375},{w:1,h:1,x_center:.265625,y_center:.859375},{w:1,h:1,x_center:.296875,y_center:.859375},{w:1,h:1,x_center:.296875,y_center:.859375},{w:1,h:1,x_center:.328125,y_center:.859375},{w:1,h:1,x_center:.328125,y_center:.859375},{w:1,h:1,x_center:.359375,y_center:.859375},{w:1,h:1,x_center:.359375,y_center:.859375},{w:1,h:1,x_center:.390625,y_center:.859375},{w:1,h:1,x_center:.390625,y_center:.859375},{w:1,h:1,x_center:.421875,y_center:.859375},{w:1,h:1,x_center:.421875,y_center:.859375},{w:1,h:1,x_center:.453125,y_center:.859375},{w:1,h:1,x_center:.453125,y_center:.859375},{w:1,h:1,x_center:.484375,y_center:.859375},{w:1,h:1,x_center:.484375,y_center:.859375},{w:1,h:1,x_center:.515625,y_center:.859375},{w:1,h:1,x_center:.515625,y_center:.859375},{w:1,h:1,x_center:.546875,y_center:.859375},{w:1,h:1,x_center:.546875,y_center:.859375},{w:1,h:1,x_center:.578125,y_center:.859375},{w:1,h:1,x_center:.578125,y_center:.859375},{w:1,h:1,x_center:.609375,y_center:.859375},{w:1,h:1,x_center:.609375,y_center:.859375},{w:1,h:1,x_center:.640625,y_center:.859375},{w:1,h:1,x_center:.640625,y_center:.859375},{w:1,h:1,x_center:.671875,y_center:.859375},{w:1,h:1,x_center:.671875,y_center:.859375},{w:1,h:1,x_center:.703125,y_center:.859375},{w:1,h:1,x_center:.703125,y_center:.859375},{w:1,h:1,x_center:.734375,y_center:.859375},{w:1,h:1,x_center:.734375,y_center:.859375},{w:1,h:1,x_center:.765625,y_center:.859375},{w:1,h:1,x_center:.765625,y_center:.859375},{w:1,h:1,x_center:.796875,y_center:.859375},{w:1,h:1,x_center:.796875,y_center:.859375},{w:1,h:1,x_center:.828125,y_center:.859375},{w:1,h:1,x_center:.828125,y_center:.859375},{w:1,h:1,x_center:.859375,y_center:.859375},{w:1,h:1,x_center:.859375,y_center:.859375},{w:1,h:1,x_center:.890625,y_center:.859375},{w:1,h:1,x_center:.890625,y_center:.859375},{w:1,h:1,x_center:.921875,y_center:.859375},{w:1,h:1,x_center:.921875,y_center:.859375},{w:1,h:1,x_center:.953125,y_center:.859375},{w:1,h:1,x_center:.953125,y_center:.859375},{w:1,h:1,x_center:.984375,y_center:.859375},{w:1,h:1,x_center:.984375,y_center:.859375},{w:1,h:1,x_center:.015625,y_center:.890625},{w:1,h:1,x_center:.015625,y_center:.890625},{w:1,h:1,x_center:.046875,y_center:.890625},{w:1,h:1,x_center:.046875,y_center:.890625},{w:1,h:1,x_center:.078125,y_center:.890625},{w:1,h:1,x_center:.078125,y_center:.890625},{w:1,h:1,x_center:.109375,y_center:.890625},{w:1,h:1,x_center:.109375,y_center:.890625},{w:1,h:1,x_center:.140625,y_center:.890625},{w:1,h:1,x_center:.140625,y_center:.890625},{w:1,h:1,x_center:.171875,y_center:.890625},{w:1,h:1,x_center:.171875,y_center:.890625},{w:1,h:1,x_center:.203125,y_center:.890625},{w:1,h:1,x_center:.203125,y_center:.890625},{w:1,h:1,x_center:.234375,y_center:.890625},{w:1,h:1,x_center:.234375,y_center:.890625},{w:1,h:1,x_center:.265625,y_center:.890625},{w:1,h:1,x_center:.265625,y_center:.890625},{w:1,h:1,x_center:.296875,y_center:.890625},{w:1,h:1,x_center:.296875,y_center:.890625},{w:1,h:1,x_center:.328125,y_center:.890625},{w:1,h:1,x_center:.328125,y_center:.890625},{w:1,h:1,x_center:.359375,y_center:.890625},{w:1,h:1,x_center:.359375,y_center:.890625},{w:1,h:1,x_center:.390625,y_center:.890625},{w:1,h:1,x_center:.390625,y_center:.890625},{w:1,h:1,x_center:.421875,y_center:.890625},{w:1,h:1,x_center:.421875,y_center:.890625},{w:1,h:1,x_center:.453125,y_center:.890625},{w:1,h:1,x_center:.453125,y_center:.890625},{w:1,h:1,x_center:.484375,y_center:.890625},{w:1,h:1,x_center:.484375,y_center:.890625},{w:1,h:1,x_center:.515625,y_center:.890625},{w:1,h:1,x_center:.515625,y_center:.890625},{w:1,h:1,x_center:.546875,y_center:.890625},{w:1,h:1,x_center:.546875,y_center:.890625},{w:1,h:1,x_center:.578125,y_center:.890625},{w:1,h:1,x_center:.578125,y_center:.890625},{w:1,h:1,x_center:.609375,y_center:.890625},{w:1,h:1,x_center:.609375,y_center:.890625},{w:1,h:1,x_center:.640625,y_center:.890625},{w:1,h:1,x_center:.640625,y_center:.890625},{w:1,h:1,x_center:.671875,y_center:.890625},{w:1,h:1,x_center:.671875,y_center:.890625},{w:1,h:1,x_center:.703125,y_center:.890625},{w:1,h:1,x_center:.703125,y_center:.890625},{w:1,h:1,x_center:.734375,y_center:.890625},{w:1,h:1,x_center:.734375,y_center:.890625},{w:1,h:1,x_center:.765625,y_center:.890625},{w:1,h:1,x_center:.765625,y_center:.890625},{w:1,h:1,x_center:.796875,y_center:.890625},{w:1,h:1,x_center:.796875,y_center:.890625},{w:1,h:1,x_center:.828125,y_center:.890625},{w:1,h:1,x_center:.828125,y_center:.890625},{w:1,h:1,x_center:.859375,y_center:.890625},{w:1,h:1,x_center:.859375,y_center:.890625},{w:1,h:1,x_center:.890625,y_center:.890625},{w:1,h:1,x_center:.890625,y_center:.890625},{w:1,h:1,x_center:.921875,y_center:.890625},{w:1,h:1,x_center:.921875,y_center:.890625},{w:1,h:1,x_center:.953125,y_center:.890625},{w:1,h:1,x_center:.953125,y_center:.890625},{w:1,h:1,x_center:.984375,y_center:.890625},{w:1,h:1,x_center:.984375,y_center:.890625},{w:1,h:1,x_center:.015625,y_center:.921875},{w:1,h:1,x_center:.015625,y_center:.921875},{w:1,h:1,x_center:.046875,y_center:.921875},{w:1,h:1,x_center:.046875,y_center:.921875},{w:1,h:1,x_center:.078125,y_center:.921875},{w:1,h:1,x_center:.078125,y_center:.921875},{w:1,h:1,x_center:.109375,y_center:.921875},{w:1,h:1,x_center:.109375,y_center:.921875},{w:1,h:1,x_center:.140625,y_center:.921875},{w:1,h:1,x_center:.140625,y_center:.921875},{w:1,h:1,x_center:.171875,y_center:.921875},{w:1,h:1,x_center:.171875,y_center:.921875},{w:1,h:1,x_center:.203125,y_center:.921875},{w:1,h:1,x_center:.203125,y_center:.921875},{w:1,h:1,x_center:.234375,y_center:.921875},{w:1,h:1,x_center:.234375,y_center:.921875},{w:1,h:1,x_center:.265625,y_center:.921875},{w:1,h:1,x_center:.265625,y_center:.921875},{w:1,h:1,x_center:.296875,y_center:.921875},{w:1,h:1,x_center:.296875,y_center:.921875},{w:1,h:1,x_center:.328125,y_center:.921875},{w:1,h:1,x_center:.328125,y_center:.921875},{w:1,h:1,x_center:.359375,y_center:.921875},{w:1,h:1,x_center:.359375,y_center:.921875},{w:1,h:1,x_center:.390625,y_center:.921875},{w:1,h:1,x_center:.390625,y_center:.921875},{w:1,h:1,x_center:.421875,y_center:.921875},{w:1,h:1,x_center:.421875,y_center:.921875},{w:1,h:1,x_center:.453125,y_center:.921875},{w:1,h:1,x_center:.453125,y_center:.921875},{w:1,h:1,x_center:.484375,y_center:.921875},{w:1,h:1,x_center:.484375,y_center:.921875},{w:1,h:1,x_center:.515625,y_center:.921875},{w:1,h:1,x_center:.515625,y_center:.921875},{w:1,h:1,x_center:.546875,y_center:.921875},{w:1,h:1,x_center:.546875,y_center:.921875},{w:1,h:1,x_center:.578125,y_center:.921875},{w:1,h:1,x_center:.578125,y_center:.921875},{w:1,h:1,x_center:.609375,y_center:.921875},{w:1,h:1,x_center:.609375,y_center:.921875},{w:1,h:1,x_center:.640625,y_center:.921875},{w:1,h:1,x_center:.640625,y_center:.921875},{w:1,h:1,x_center:.671875,y_center:.921875},{w:1,h:1,x_center:.671875,y_center:.921875},{w:1,h:1,x_center:.703125,y_center:.921875},{w:1,h:1,x_center:.703125,y_center:.921875},{w:1,h:1,x_center:.734375,y_center:.921875},{w:1,h:1,x_center:.734375,y_center:.921875},{w:1,h:1,x_center:.765625,y_center:.921875},{w:1,h:1,x_center:.765625,y_center:.921875},{w:1,h:1,x_center:.796875,y_center:.921875},{w:1,h:1,x_center:.796875,y_center:.921875},{w:1,h:1,x_center:.828125,y_center:.921875},{w:1,h:1,x_center:.828125,y_center:.921875},{w:1,h:1,x_center:.859375,y_center:.921875},{w:1,h:1,x_center:.859375,y_center:.921875},{w:1,h:1,x_center:.890625,y_center:.921875},{w:1,h:1,x_center:.890625,y_center:.921875},{w:1,h:1,x_center:.921875,y_center:.921875},{w:1,h:1,x_center:.921875,y_center:.921875},{w:1,h:1,x_center:.953125,y_center:.921875},{w:1,h:1,x_center:.953125,y_center:.921875},{w:1,h:1,x_center:.984375,y_center:.921875},{w:1,h:1,x_center:.984375,y_center:.921875},{w:1,h:1,x_center:.015625,y_center:.953125},{w:1,h:1,x_center:.015625,y_center:.953125},{w:1,h:1,x_center:.046875,y_center:.953125},{w:1,h:1,x_center:.046875,y_center:.953125},{w:1,h:1,x_center:.078125,y_center:.953125},{w:1,h:1,x_center:.078125,y_center:.953125},{w:1,h:1,x_center:.109375,y_center:.953125},{w:1,h:1,x_center:.109375,y_center:.953125},{w:1,h:1,x_center:.140625,y_center:.953125},{w:1,h:1,x_center:.140625,y_center:.953125},{w:1,h:1,x_center:.171875,y_center:.953125},{w:1,h:1,x_center:.171875,y_center:.953125},{w:1,h:1,x_center:.203125,y_center:.953125},{w:1,h:1,x_center:.203125,y_center:.953125},{w:1,h:1,x_center:.234375,y_center:.953125},{w:1,h:1,x_center:.234375,y_center:.953125},{w:1,h:1,x_center:.265625,y_center:.953125},{w:1,h:1,x_center:.265625,y_center:.953125},{w:1,h:1,x_center:.296875,y_center:.953125},{w:1,h:1,x_center:.296875,y_center:.953125},{w:1,h:1,x_center:.328125,y_center:.953125},{w:1,h:1,x_center:.328125,y_center:.953125},{w:1,h:1,x_center:.359375,y_center:.953125},{w:1,h:1,x_center:.359375,y_center:.953125},{w:1,h:1,x_center:.390625,y_center:.953125},{w:1,h:1,x_center:.390625,y_center:.953125},{w:1,h:1,x_center:.421875,y_center:.953125},{w:1,h:1,x_center:.421875,y_center:.953125},{w:1,h:1,x_center:.453125,y_center:.953125},{w:1,h:1,x_center:.453125,y_center:.953125},{w:1,h:1,x_center:.484375,y_center:.953125},{w:1,h:1,x_center:.484375,y_center:.953125},{w:1,h:1,x_center:.515625,y_center:.953125},{w:1,h:1,x_center:.515625,y_center:.953125},{w:1,h:1,x_center:.546875,y_center:.953125},{w:1,h:1,x_center:.546875,y_center:.953125},{w:1,h:1,x_center:.578125,y_center:.953125},{w:1,h:1,x_center:.578125,y_center:.953125},{w:1,h:1,x_center:.609375,y_center:.953125},{w:1,h:1,x_center:.609375,y_center:.953125},{w:1,h:1,x_center:.640625,y_center:.953125},{w:1,h:1,x_center:.640625,y_center:.953125},{w:1,h:1,x_center:.671875,y_center:.953125},{w:1,h:1,x_center:.671875,y_center:.953125},{w:1,h:1,x_center:.703125,y_center:.953125},{w:1,h:1,x_center:.703125,y_center:.953125},{w:1,h:1,x_center:.734375,y_center:.953125},{w:1,h:1,x_center:.734375,y_center:.953125},{w:1,h:1,x_center:.765625,y_center:.953125},{w:1,h:1,x_center:.765625,y_center:.953125},{w:1,h:1,x_center:.796875,y_center:.953125},{w:1,h:1,x_center:.796875,y_center:.953125},{w:1,h:1,x_center:.828125,y_center:.953125},{w:1,h:1,x_center:.828125,y_center:.953125},{w:1,h:1,x_center:.859375,y_center:.953125},{w:1,h:1,x_center:.859375,y_center:.953125},{w:1,h:1,x_center:.890625,y_center:.953125},{w:1,h:1,x_center:.890625,y_center:.953125},{w:1,h:1,x_center:.921875,y_center:.953125},{w:1,h:1,x_center:.921875,y_center:.953125},{w:1,h:1,x_center:.953125,y_center:.953125},{w:1,h:1,x_center:.953125,y_center:.953125},{w:1,h:1,x_center:.984375,y_center:.953125},{w:1,h:1,x_center:.984375,y_center:.953125},{w:1,h:1,x_center:.015625,y_center:.984375},{w:1,h:1,x_center:.015625,y_center:.984375},{w:1,h:1,x_center:.046875,y_center:.984375},{w:1,h:1,x_center:.046875,y_center:.984375},{w:1,h:1,x_center:.078125,y_center:.984375},{w:1,h:1,x_center:.078125,y_center:.984375},{w:1,h:1,x_center:.109375,y_center:.984375},{w:1,h:1,x_center:.109375,y_center:.984375},{w:1,h:1,x_center:.140625,y_center:.984375},{w:1,h:1,x_center:.140625,y_center:.984375},{w:1,h:1,x_center:.171875,y_center:.984375},{w:1,h:1,x_center:.171875,y_center:.984375},{w:1,h:1,x_center:.203125,y_center:.984375},{w:1,h:1,x_center:.203125,y_center:.984375},{w:1,h:1,x_center:.234375,y_center:.984375},{w:1,h:1,x_center:.234375,y_center:.984375},{w:1,h:1,x_center:.265625,y_center:.984375},{w:1,h:1,x_center:.265625,y_center:.984375},{w:1,h:1,x_center:.296875,y_center:.984375},{w:1,h:1,x_center:.296875,y_center:.984375},{w:1,h:1,x_center:.328125,y_center:.984375},{w:1,h:1,x_center:.328125,y_center:.984375},{w:1,h:1,x_center:.359375,y_center:.984375},{w:1,h:1,x_center:.359375,y_center:.984375},{w:1,h:1,x_center:.390625,y_center:.984375},{w:1,h:1,x_center:.390625,y_center:.984375},{w:1,h:1,x_center:.421875,y_center:.984375},{w:1,h:1,x_center:.421875,y_center:.984375},{w:1,h:1,x_center:.453125,y_center:.984375},{w:1,h:1,x_center:.453125,y_center:.984375},{w:1,h:1,x_center:.484375,y_center:.984375},{w:1,h:1,x_center:.484375,y_center:.984375},{w:1,h:1,x_center:.515625,y_center:.984375},{w:1,h:1,x_center:.515625,y_center:.984375},{w:1,h:1,x_center:.546875,y_center:.984375},{w:1,h:1,x_center:.546875,y_center:.984375},{w:1,h:1,x_center:.578125,y_center:.984375},{w:1,h:1,x_center:.578125,y_center:.984375},{w:1,h:1,x_center:.609375,y_center:.984375},{w:1,h:1,x_center:.609375,y_center:.984375},{w:1,h:1,x_center:.640625,y_center:.984375},{w:1,h:1,x_center:.640625,y_center:.984375},{w:1,h:1,x_center:.671875,y_center:.984375},{w:1,h:1,x_center:.671875,y_center:.984375},{w:1,h:1,x_center:.703125,y_center:.984375},{w:1,h:1,x_center:.703125,y_center:.984375},{w:1,h:1,x_center:.734375,y_center:.984375},{w:1,h:1,x_center:.734375,y_center:.984375},{w:1,h:1,x_center:.765625,y_center:.984375},{w:1,h:1,x_center:.765625,y_center:.984375},{w:1,h:1,x_center:.796875,y_center:.984375},{w:1,h:1,x_center:.796875,y_center:.984375},{w:1,h:1,x_center:.828125,y_center:.984375},{w:1,h:1,x_center:.828125,y_center:.984375},{w:1,h:1,x_center:.859375,y_center:.984375},{w:1,h:1,x_center:.859375,y_center:.984375},{w:1,h:1,x_center:.890625,y_center:.984375},{w:1,h:1,x_center:.890625,y_center:.984375},{w:1,h:1,x_center:.921875,y_center:.984375},{w:1,h:1,x_center:.921875,y_center:.984375},{w:1,h:1,x_center:.953125,y_center:.984375},{w:1,h:1,x_center:.953125,y_center:.984375},{w:1,h:1,x_center:.984375,y_center:.984375},{w:1,h:1,x_center:.984375,y_center:.984375},{w:1,h:1,x_center:.03125,y_center:.03125},{w:1,h:1,x_center:.03125,y_center:.03125},{w:1,h:1,x_center:.09375,y_center:.03125},{w:1,h:1,x_center:.09375,y_center:.03125},{w:1,h:1,x_center:.15625,y_center:.03125},{w:1,h:1,x_center:.15625,y_center:.03125},{w:1,h:1,x_center:.21875,y_center:.03125},{w:1,h:1,x_center:.21875,y_center:.03125},{w:1,h:1,x_center:.28125,y_center:.03125},{w:1,h:1,x_center:.28125,y_center:.03125},{w:1,h:1,x_center:.34375,y_center:.03125},{w:1,h:1,x_center:.34375,y_center:.03125},{w:1,h:1,x_center:.40625,y_center:.03125},{w:1,h:1,x_center:.40625,y_center:.03125},{w:1,h:1,x_center:.46875,y_center:.03125},{w:1,h:1,x_center:.46875,y_center:.03125},{w:1,h:1,x_center:.53125,y_center:.03125},{w:1,h:1,x_center:.53125,y_center:.03125},{w:1,h:1,x_center:.59375,y_center:.03125},{w:1,h:1,x_center:.59375,y_center:.03125},{w:1,h:1,x_center:.65625,y_center:.03125},{w:1,h:1,x_center:.65625,y_center:.03125},{w:1,h:1,x_center:.71875,y_center:.03125},{w:1,h:1,x_center:.71875,y_center:.03125},{w:1,h:1,x_center:.78125,y_center:.03125},{w:1,h:1,x_center:.78125,y_center:.03125},{w:1,h:1,x_center:.84375,y_center:.03125},{w:1,h:1,x_center:.84375,y_center:.03125},{w:1,h:1,x_center:.90625,y_center:.03125},{w:1,h:1,x_center:.90625,y_center:.03125},{w:1,h:1,x_center:.96875,y_center:.03125},{w:1,h:1,x_center:.96875,y_center:.03125},{w:1,h:1,x_center:.03125,y_center:.09375},{w:1,h:1,x_center:.03125,y_center:.09375},{w:1,h:1,x_center:.09375,y_center:.09375},{w:1,h:1,x_center:.09375,y_center:.09375},{w:1,h:1,x_center:.15625,y_center:.09375},{w:1,h:1,x_center:.15625,y_center:.09375},{w:1,h:1,x_center:.21875,y_center:.09375},{w:1,h:1,x_center:.21875,y_center:.09375},{w:1,h:1,x_center:.28125,y_center:.09375},{w:1,h:1,x_center:.28125,y_center:.09375},{w:1,h:1,x_center:.34375,y_center:.09375},{w:1,h:1,x_center:.34375,y_center:.09375},{w:1,h:1,x_center:.40625,y_center:.09375},{w:1,h:1,x_center:.40625,y_center:.09375},{w:1,h:1,x_center:.46875,y_center:.09375},{w:1,h:1,x_center:.46875,y_center:.09375},{w:1,h:1,x_center:.53125,y_center:.09375},{w:1,h:1,x_center:.53125,y_center:.09375},{w:1,h:1,x_center:.59375,y_center:.09375},{w:1,h:1,x_center:.59375,y_center:.09375},{w:1,h:1,x_center:.65625,y_center:.09375},{w:1,h:1,x_center:.65625,y_center:.09375},{w:1,h:1,x_center:.71875,y_center:.09375},{w:1,h:1,x_center:.71875,y_center:.09375},{w:1,h:1,x_center:.78125,y_center:.09375},{w:1,h:1,x_center:.78125,y_center:.09375},{w:1,h:1,x_center:.84375,y_center:.09375},{w:1,h:1,x_center:.84375,y_center:.09375},{w:1,h:1,x_center:.90625,y_center:.09375},{w:1,h:1,x_center:.90625,y_center:.09375},{w:1,h:1,x_center:.96875,y_center:.09375},{w:1,h:1,x_center:.96875,y_center:.09375},{w:1,h:1,x_center:.03125,y_center:.15625},{w:1,h:1,x_center:.03125,y_center:.15625},{w:1,h:1,x_center:.09375,y_center:.15625},{w:1,h:1,x_center:.09375,y_center:.15625},{w:1,h:1,x_center:.15625,y_center:.15625},{w:1,h:1,x_center:.15625,y_center:.15625},{w:1,h:1,x_center:.21875,y_center:.15625},{w:1,h:1,x_center:.21875,y_center:.15625},{w:1,h:1,x_center:.28125,y_center:.15625},{w:1,h:1,x_center:.28125,y_center:.15625},{w:1,h:1,x_center:.34375,y_center:.15625},{w:1,h:1,x_center:.34375,y_center:.15625},{w:1,h:1,x_center:.40625,y_center:.15625},{w:1,h:1,x_center:.40625,y_center:.15625},{w:1,h:1,x_center:.46875,y_center:.15625},{w:1,h:1,x_center:.46875,y_center:.15625},{w:1,h:1,x_center:.53125,y_center:.15625},{w:1,h:1,x_center:.53125,y_center:.15625},{w:1,h:1,x_center:.59375,y_center:.15625},{w:1,h:1,x_center:.59375,y_center:.15625},{w:1,h:1,x_center:.65625,y_center:.15625},{w:1,h:1,x_center:.65625,y_center:.15625},{w:1,h:1,x_center:.71875,y_center:.15625},{w:1,h:1,x_center:.71875,y_center:.15625},{w:1,h:1,x_center:.78125,y_center:.15625},{w:1,h:1,x_center:.78125,y_center:.15625},{w:1,h:1,x_center:.84375,y_center:.15625},{w:1,h:1,x_center:.84375,y_center:.15625},{w:1,h:1,x_center:.90625,y_center:.15625},{w:1,h:1,x_center:.90625,y_center:.15625},{w:1,h:1,x_center:.96875,y_center:.15625},{w:1,h:1,x_center:.96875,y_center:.15625},{w:1,h:1,x_center:.03125,y_center:.21875},{w:1,h:1,x_center:.03125,y_center:.21875},{w:1,h:1,x_center:.09375,y_center:.21875},{w:1,h:1,x_center:.09375,y_center:.21875},{w:1,h:1,x_center:.15625,y_center:.21875},{w:1,h:1,x_center:.15625,y_center:.21875},{w:1,h:1,x_center:.21875,y_center:.21875},{w:1,h:1,x_center:.21875,y_center:.21875},{w:1,h:1,x_center:.28125,y_center:.21875},{w:1,h:1,x_center:.28125,y_center:.21875},{w:1,h:1,x_center:.34375,y_center:.21875},{w:1,h:1,x_center:.34375,y_center:.21875},{w:1,h:1,x_center:.40625,y_center:.21875},{w:1,h:1,x_center:.40625,y_center:.21875},{w:1,h:1,x_center:.46875,y_center:.21875},{w:1,h:1,x_center:.46875,y_center:.21875},{w:1,h:1,x_center:.53125,y_center:.21875},{w:1,h:1,x_center:.53125,y_center:.21875},{w:1,h:1,x_center:.59375,y_center:.21875},{w:1,h:1,x_center:.59375,y_center:.21875},{w:1,h:1,x_center:.65625,y_center:.21875},{w:1,h:1,x_center:.65625,y_center:.21875},{w:1,h:1,x_center:.71875,y_center:.21875},{w:1,h:1,x_center:.71875,y_center:.21875},{w:1,h:1,x_center:.78125,y_center:.21875},{w:1,h:1,x_center:.78125,y_center:.21875},{w:1,h:1,x_center:.84375,y_center:.21875},{w:1,h:1,x_center:.84375,y_center:.21875},{w:1,h:1,x_center:.90625,y_center:.21875},{w:1,h:1,x_center:.90625,y_center:.21875},{w:1,h:1,x_center:.96875,y_center:.21875},{w:1,h:1,x_center:.96875,y_center:.21875},{w:1,h:1,x_center:.03125,y_center:.28125},{w:1,h:1,x_center:.03125,y_center:.28125},{w:1,h:1,x_center:.09375,y_center:.28125},{w:1,h:1,x_center:.09375,y_center:.28125},{w:1,h:1,x_center:.15625,y_center:.28125},{w:1,h:1,x_center:.15625,y_center:.28125},{w:1,h:1,x_center:.21875,y_center:.28125},{w:1,h:1,x_center:.21875,y_center:.28125},{w:1,h:1,x_center:.28125,y_center:.28125},{w:1,h:1,x_center:.28125,y_center:.28125},{w:1,h:1,x_center:.34375,y_center:.28125},{w:1,h:1,x_center:.34375,y_center:.28125},{w:1,h:1,x_center:.40625,y_center:.28125},{w:1,h:1,x_center:.40625,y_center:.28125},{w:1,h:1,x_center:.46875,y_center:.28125},{w:1,h:1,x_center:.46875,y_center:.28125},{w:1,h:1,x_center:.53125,y_center:.28125},{w:1,h:1,x_center:.53125,y_center:.28125},{w:1,h:1,x_center:.59375,y_center:.28125},{w:1,h:1,x_center:.59375,y_center:.28125},{w:1,h:1,x_center:.65625,y_center:.28125},{w:1,h:1,x_center:.65625,y_center:.28125},{w:1,h:1,x_center:.71875,y_center:.28125},{w:1,h:1,x_center:.71875,y_center:.28125},{w:1,h:1,x_center:.78125,y_center:.28125},{w:1,h:1,x_center:.78125,y_center:.28125},{w:1,h:1,x_center:.84375,y_center:.28125},{w:1,h:1,x_center:.84375,y_center:.28125},{w:1,h:1,x_center:.90625,y_center:.28125},{w:1,h:1,x_center:.90625,y_center:.28125},{w:1,h:1,x_center:.96875,y_center:.28125},{w:1,h:1,x_center:.96875,y_center:.28125},{w:1,h:1,x_center:.03125,y_center:.34375},{w:1,h:1,x_center:.03125,y_center:.34375},{w:1,h:1,x_center:.09375,y_center:.34375},{w:1,h:1,x_center:.09375,y_center:.34375},{w:1,h:1,x_center:.15625,y_center:.34375},{w:1,h:1,x_center:.15625,y_center:.34375},{w:1,h:1,x_center:.21875,y_center:.34375},{w:1,h:1,x_center:.21875,y_center:.34375},{w:1,h:1,x_center:.28125,y_center:.34375},{w:1,h:1,x_center:.28125,y_center:.34375},{w:1,h:1,x_center:.34375,y_center:.34375},{w:1,h:1,x_center:.34375,y_center:.34375},{w:1,h:1,x_center:.40625,y_center:.34375},{w:1,h:1,x_center:.40625,y_center:.34375},{w:1,h:1,x_center:.46875,y_center:.34375},{w:1,h:1,x_center:.46875,y_center:.34375},{w:1,h:1,x_center:.53125,y_center:.34375},{w:1,h:1,x_center:.53125,y_center:.34375},{w:1,h:1,x_center:.59375,y_center:.34375},{w:1,h:1,x_center:.59375,y_center:.34375},{w:1,h:1,x_center:.65625,y_center:.34375},{w:1,h:1,x_center:.65625,y_center:.34375},{w:1,h:1,x_center:.71875,y_center:.34375},{w:1,h:1,x_center:.71875,y_center:.34375},{w:1,h:1,x_center:.78125,y_center:.34375},{w:1,h:1,x_center:.78125,y_center:.34375},{w:1,h:1,x_center:.84375,y_center:.34375},{w:1,h:1,x_center:.84375,y_center:.34375},{w:1,h:1,x_center:.90625,y_center:.34375},{w:1,h:1,x_center:.90625,y_center:.34375},{w:1,h:1,x_center:.96875,y_center:.34375},{w:1,h:1,x_center:.96875,y_center:.34375},{w:1,h:1,x_center:.03125,y_center:.40625},{w:1,h:1,x_center:.03125,y_center:.40625},{w:1,h:1,x_center:.09375,y_center:.40625},{w:1,h:1,x_center:.09375,y_center:.40625},{w:1,h:1,x_center:.15625,y_center:.40625},{w:1,h:1,x_center:.15625,y_center:.40625},{w:1,h:1,x_center:.21875,y_center:.40625},{w:1,h:1,x_center:.21875,y_center:.40625},{w:1,h:1,x_center:.28125,y_center:.40625},{w:1,h:1,x_center:.28125,y_center:.40625},{w:1,h:1,x_center:.34375,y_center:.40625},{w:1,h:1,x_center:.34375,y_center:.40625},{w:1,h:1,x_center:.40625,y_center:.40625},{w:1,h:1,x_center:.40625,y_center:.40625},{w:1,h:1,x_center:.46875,y_center:.40625},{w:1,h:1,x_center:.46875,y_center:.40625},{w:1,h:1,x_center:.53125,y_center:.40625},{w:1,h:1,x_center:.53125,y_center:.40625},{w:1,h:1,x_center:.59375,y_center:.40625},{w:1,h:1,x_center:.59375,y_center:.40625},{w:1,h:1,x_center:.65625,y_center:.40625},{w:1,h:1,x_center:.65625,y_center:.40625},{w:1,h:1,x_center:.71875,y_center:.40625},{w:1,h:1,x_center:.71875,y_center:.40625},{w:1,h:1,x_center:.78125,y_center:.40625},{w:1,h:1,x_center:.78125,y_center:.40625},{w:1,h:1,x_center:.84375,y_center:.40625},{w:1,h:1,x_center:.84375,y_center:.40625},{w:1,h:1,x_center:.90625,y_center:.40625},{w:1,h:1,x_center:.90625,y_center:.40625},{w:1,h:1,x_center:.96875,y_center:.40625},{w:1,h:1,x_center:.96875,y_center:.40625},{w:1,h:1,x_center:.03125,y_center:.46875},{w:1,h:1,x_center:.03125,y_center:.46875},{w:1,h:1,x_center:.09375,y_center:.46875},{w:1,h:1,x_center:.09375,y_center:.46875},{w:1,h:1,x_center:.15625,y_center:.46875},{w:1,h:1,x_center:.15625,y_center:.46875},{w:1,h:1,x_center:.21875,y_center:.46875},{w:1,h:1,x_center:.21875,y_center:.46875},{w:1,h:1,x_center:.28125,y_center:.46875},{w:1,h:1,x_center:.28125,y_center:.46875},{w:1,h:1,x_center:.34375,y_center:.46875},{w:1,h:1,x_center:.34375,y_center:.46875},{w:1,h:1,x_center:.40625,y_center:.46875},{w:1,h:1,x_center:.40625,y_center:.46875},{w:1,h:1,x_center:.46875,y_center:.46875},{w:1,h:1,x_center:.46875,y_center:.46875},{w:1,h:1,x_center:.53125,y_center:.46875},{w:1,h:1,x_center:.53125,y_center:.46875},{w:1,h:1,x_center:.59375,y_center:.46875},{w:1,h:1,x_center:.59375,y_center:.46875},{w:1,h:1,x_center:.65625,y_center:.46875},{w:1,h:1,x_center:.65625,y_center:.46875},{w:1,h:1,x_center:.71875,y_center:.46875},{w:1,h:1,x_center:.71875,y_center:.46875},{w:1,h:1,x_center:.78125,y_center:.46875},{w:1,h:1,x_center:.78125,y_center:.46875},{w:1,h:1,x_center:.84375,y_center:.46875},{w:1,h:1,x_center:.84375,y_center:.46875},{w:1,h:1,x_center:.90625,y_center:.46875},{w:1,h:1,x_center:.90625,y_center:.46875},{w:1,h:1,x_center:.96875,y_center:.46875},{w:1,h:1,x_center:.96875,y_center:.46875},{w:1,h:1,x_center:.03125,y_center:.53125},{w:1,h:1,x_center:.03125,y_center:.53125},{w:1,h:1,x_center:.09375,y_center:.53125},{w:1,h:1,x_center:.09375,y_center:.53125},{w:1,h:1,x_center:.15625,y_center:.53125},{w:1,h:1,x_center:.15625,y_center:.53125},{w:1,h:1,x_center:.21875,y_center:.53125},{w:1,h:1,x_center:.21875,y_center:.53125},{w:1,h:1,x_center:.28125,y_center:.53125},{w:1,h:1,x_center:.28125,y_center:.53125},{w:1,h:1,x_center:.34375,y_center:.53125},{w:1,h:1,x_center:.34375,y_center:.53125},{w:1,h:1,x_center:.40625,y_center:.53125},{w:1,h:1,x_center:.40625,y_center:.53125},{w:1,h:1,x_center:.46875,y_center:.53125},{w:1,h:1,x_center:.46875,y_center:.53125},{w:1,h:1,x_center:.53125,y_center:.53125},{w:1,h:1,x_center:.53125,y_center:.53125},{w:1,h:1,x_center:.59375,y_center:.53125},{w:1,h:1,x_center:.59375,y_center:.53125},{w:1,h:1,x_center:.65625,y_center:.53125},{w:1,h:1,x_center:.65625,y_center:.53125},{w:1,h:1,x_center:.71875,y_center:.53125},{w:1,h:1,x_center:.71875,y_center:.53125},{w:1,h:1,x_center:.78125,y_center:.53125},{w:1,h:1,x_center:.78125,y_center:.53125},{w:1,h:1,x_center:.84375,y_center:.53125},{w:1,h:1,x_center:.84375,y_center:.53125},{w:1,h:1,x_center:.90625,y_center:.53125},{w:1,h:1,x_center:.90625,y_center:.53125},{w:1,h:1,x_center:.96875,y_center:.53125},{w:1,h:1,x_center:.96875,y_center:.53125},{w:1,h:1,x_center:.03125,y_center:.59375},{w:1,h:1,x_center:.03125,y_center:.59375},{w:1,h:1,x_center:.09375,y_center:.59375},{w:1,h:1,x_center:.09375,y_center:.59375},{w:1,h:1,x_center:.15625,y_center:.59375},{w:1,h:1,x_center:.15625,y_center:.59375},{w:1,h:1,x_center:.21875,y_center:.59375},{w:1,h:1,x_center:.21875,y_center:.59375},{w:1,h:1,x_center:.28125,y_center:.59375},{w:1,h:1,x_center:.28125,y_center:.59375},{w:1,h:1,x_center:.34375,y_center:.59375},{w:1,h:1,x_center:.34375,y_center:.59375},{w:1,h:1,x_center:.40625,y_center:.59375},{w:1,h:1,x_center:.40625,y_center:.59375},{w:1,h:1,x_center:.46875,y_center:.59375},{w:1,h:1,x_center:.46875,y_center:.59375},{w:1,h:1,x_center:.53125,y_center:.59375},{w:1,h:1,x_center:.53125,y_center:.59375},{w:1,h:1,x_center:.59375,y_center:.59375},{w:1,h:1,x_center:.59375,y_center:.59375},{w:1,h:1,x_center:.65625,y_center:.59375},{w:1,h:1,x_center:.65625,y_center:.59375},{w:1,h:1,x_center:.71875,y_center:.59375},{w:1,h:1,x_center:.71875,y_center:.59375},{w:1,h:1,x_center:.78125,y_center:.59375},{w:1,h:1,x_center:.78125,y_center:.59375},{w:1,h:1,x_center:.84375,y_center:.59375},{w:1,h:1,x_center:.84375,y_center:.59375},{w:1,h:1,x_center:.90625,y_center:.59375},{w:1,h:1,x_center:.90625,y_center:.59375},{w:1,h:1,x_center:.96875,y_center:.59375},{w:1,h:1,x_center:.96875,y_center:.59375},{w:1,h:1,x_center:.03125,y_center:.65625},{w:1,h:1,x_center:.03125,y_center:.65625},{w:1,h:1,x_center:.09375,y_center:.65625},{w:1,h:1,x_center:.09375,y_center:.65625},{w:1,h:1,x_center:.15625,y_center:.65625},{w:1,h:1,x_center:.15625,y_center:.65625},{w:1,h:1,x_center:.21875,y_center:.65625},{w:1,h:1,x_center:.21875,y_center:.65625},{w:1,h:1,x_center:.28125,y_center:.65625},{w:1,h:1,x_center:.28125,y_center:.65625},{w:1,h:1,x_center:.34375,y_center:.65625},{w:1,h:1,x_center:.34375,y_center:.65625},{w:1,h:1,x_center:.40625,y_center:.65625},{w:1,h:1,x_center:.40625,y_center:.65625},{w:1,h:1,x_center:.46875,y_center:.65625},{w:1,h:1,x_center:.46875,y_center:.65625},{w:1,h:1,x_center:.53125,y_center:.65625},{w:1,h:1,x_center:.53125,y_center:.65625},{w:1,h:1,x_center:.59375,y_center:.65625},{w:1,h:1,x_center:.59375,y_center:.65625},{w:1,h:1,x_center:.65625,y_center:.65625},{w:1,h:1,x_center:.65625,y_center:.65625},{w:1,h:1,x_center:.71875,y_center:.65625},{w:1,h:1,x_center:.71875,y_center:.65625},{w:1,h:1,x_center:.78125,y_center:.65625},{w:1,h:1,x_center:.78125,y_center:.65625},{w:1,h:1,x_center:.84375,y_center:.65625},{w:1,h:1,x_center:.84375,y_center:.65625},{w:1,h:1,x_center:.90625,y_center:.65625},{w:1,h:1,x_center:.90625,y_center:.65625},{w:1,h:1,x_center:.96875,y_center:.65625},{w:1,h:1,x_center:.96875,y_center:.65625},{w:1,h:1,x_center:.03125,y_center:.71875},{w:1,h:1,x_center:.03125,y_center:.71875},{w:1,h:1,x_center:.09375,y_center:.71875},{w:1,h:1,x_center:.09375,y_center:.71875},{w:1,h:1,x_center:.15625,y_center:.71875},{w:1,h:1,x_center:.15625,y_center:.71875},{w:1,h:1,x_center:.21875,y_center:.71875},{w:1,h:1,x_center:.21875,y_center:.71875},{w:1,h:1,x_center:.28125,y_center:.71875},{w:1,h:1,x_center:.28125,y_center:.71875},{w:1,h:1,x_center:.34375,y_center:.71875},{w:1,h:1,x_center:.34375,y_center:.71875},{w:1,h:1,x_center:.40625,y_center:.71875},{w:1,h:1,x_center:.40625,y_center:.71875},{w:1,h:1,x_center:.46875,y_center:.71875},{w:1,h:1,x_center:.46875,y_center:.71875},{w:1,h:1,x_center:.53125,y_center:.71875},{w:1,h:1,x_center:.53125,y_center:.71875},{w:1,h:1,x_center:.59375,y_center:.71875},{w:1,h:1,x_center:.59375,y_center:.71875},{w:1,h:1,x_center:.65625,y_center:.71875},{w:1,h:1,x_center:.65625,y_center:.71875},{w:1,h:1,x_center:.71875,y_center:.71875},{w:1,h:1,x_center:.71875,y_center:.71875},{w:1,h:1,x_center:.78125,y_center:.71875},{w:1,h:1,x_center:.78125,y_center:.71875},{w:1,h:1,x_center:.84375,y_center:.71875},{w:1,h:1,x_center:.84375,y_center:.71875},{w:1,h:1,x_center:.90625,y_center:.71875},{w:1,h:1,x_center:.90625,y_center:.71875},{w:1,h:1,x_center:.96875,y_center:.71875},{w:1,h:1,x_center:.96875,y_center:.71875},{w:1,h:1,x_center:.03125,y_center:.78125},{w:1,h:1,x_center:.03125,y_center:.78125},{w:1,h:1,x_center:.09375,y_center:.78125},{w:1,h:1,x_center:.09375,y_center:.78125},{w:1,h:1,x_center:.15625,y_center:.78125},{w:1,h:1,x_center:.15625,y_center:.78125},{w:1,h:1,x_center:.21875,y_center:.78125},{w:1,h:1,x_center:.21875,y_center:.78125},{w:1,h:1,x_center:.28125,y_center:.78125},{w:1,h:1,x_center:.28125,y_center:.78125},{w:1,h:1,x_center:.34375,y_center:.78125},{w:1,h:1,x_center:.34375,y_center:.78125},{w:1,h:1,x_center:.40625,y_center:.78125},{w:1,h:1,x_center:.40625,y_center:.78125},{w:1,h:1,x_center:.46875,y_center:.78125},{w:1,h:1,x_center:.46875,y_center:.78125},{w:1,h:1,x_center:.53125,y_center:.78125},{w:1,h:1,x_center:.53125,y_center:.78125},{w:1,h:1,x_center:.59375,y_center:.78125},{w:1,h:1,x_center:.59375,y_center:.78125},{w:1,h:1,x_center:.65625,y_center:.78125},{w:1,h:1,x_center:.65625,y_center:.78125},{w:1,h:1,x_center:.71875,y_center:.78125},{w:1,h:1,x_center:.71875,y_center:.78125},{w:1,h:1,x_center:.78125,y_center:.78125},{w:1,h:1,x_center:.78125,y_center:.78125},{w:1,h:1,x_center:.84375,y_center:.78125},{w:1,h:1,x_center:.84375,y_center:.78125},{w:1,h:1,x_center:.90625,y_center:.78125},{w:1,h:1,x_center:.90625,y_center:.78125},{w:1,h:1,x_center:.96875,y_center:.78125},{w:1,h:1,x_center:.96875,y_center:.78125},{w:1,h:1,x_center:.03125,y_center:.84375},{w:1,h:1,x_center:.03125,y_center:.84375},{w:1,h:1,x_center:.09375,y_center:.84375},{w:1,h:1,x_center:.09375,y_center:.84375},{w:1,h:1,x_center:.15625,y_center:.84375},{w:1,h:1,x_center:.15625,y_center:.84375},{w:1,h:1,x_center:.21875,y_center:.84375},{w:1,h:1,x_center:.21875,y_center:.84375},{w:1,h:1,x_center:.28125,y_center:.84375},{w:1,h:1,x_center:.28125,y_center:.84375},{w:1,h:1,x_center:.34375,y_center:.84375},{w:1,h:1,x_center:.34375,y_center:.84375},{w:1,h:1,x_center:.40625,y_center:.84375},{w:1,h:1,x_center:.40625,y_center:.84375},{w:1,h:1,x_center:.46875,y_center:.84375},{w:1,h:1,x_center:.46875,y_center:.84375},{w:1,h:1,x_center:.53125,y_center:.84375},{w:1,h:1,x_center:.53125,y_center:.84375},{w:1,h:1,x_center:.59375,y_center:.84375},{w:1,h:1,x_center:.59375,y_center:.84375},{w:1,h:1,x_center:.65625,y_center:.84375},{w:1,h:1,x_center:.65625,y_center:.84375},{w:1,h:1,x_center:.71875,y_center:.84375},{w:1,h:1,x_center:.71875,y_center:.84375},{w:1,h:1,x_center:.78125,y_center:.84375},{w:1,h:1,x_center:.78125,y_center:.84375},{w:1,h:1,x_center:.84375,y_center:.84375},{w:1,h:1,x_center:.84375,y_center:.84375},{w:1,h:1,x_center:.90625,y_center:.84375},{w:1,h:1,x_center:.90625,y_center:.84375},{w:1,h:1,x_center:.96875,y_center:.84375},{w:1,h:1,x_center:.96875,y_center:.84375},{w:1,h:1,x_center:.03125,y_center:.90625},{w:1,h:1,x_center:.03125,y_center:.90625},{w:1,h:1,x_center:.09375,y_center:.90625},{w:1,h:1,x_center:.09375,y_center:.90625},{w:1,h:1,x_center:.15625,y_center:.90625},{w:1,h:1,x_center:.15625,y_center:.90625},{w:1,h:1,x_center:.21875,y_center:.90625},{w:1,h:1,x_center:.21875,y_center:.90625},{w:1,h:1,x_center:.28125,y_center:.90625},{w:1,h:1,x_center:.28125,y_center:.90625},{w:1,h:1,x_center:.34375,y_center:.90625},{w:1,h:1,x_center:.34375,y_center:.90625},{w:1,h:1,x_center:.40625,y_center:.90625},{w:1,h:1,x_center:.40625,y_center:.90625},{w:1,h:1,x_center:.46875,y_center:.90625},{w:1,h:1,x_center:.46875,y_center:.90625},{w:1,h:1,x_center:.53125,y_center:.90625},{w:1,h:1,x_center:.53125,y_center:.90625},{w:1,h:1,x_center:.59375,y_center:.90625},{w:1,h:1,x_center:.59375,y_center:.90625},{w:1,h:1,x_center:.65625,y_center:.90625},{w:1,h:1,x_center:.65625,y_center:.90625},{w:1,h:1,x_center:.71875,y_center:.90625},{w:1,h:1,x_center:.71875,y_center:.90625},{w:1,h:1,x_center:.78125,y_center:.90625},{w:1,h:1,x_center:.78125,y_center:.90625},{w:1,h:1,x_center:.84375,y_center:.90625},{w:1,h:1,x_center:.84375,y_center:.90625},{w:1,h:1,x_center:.90625,y_center:.90625},{w:1,h:1,x_center:.90625,y_center:.90625},{w:1,h:1,x_center:.96875,y_center:.90625},{w:1,h:1,x_center:.96875,y_center:.90625},{w:1,h:1,x_center:.03125,y_center:.96875},{w:1,h:1,x_center:.03125,y_center:.96875},{w:1,h:1,x_center:.09375,y_center:.96875},{w:1,h:1,x_center:.09375,y_center:.96875},{w:1,h:1,x_center:.15625,y_center:.96875},{w:1,h:1,x_center:.15625,y_center:.96875},{w:1,h:1,x_center:.21875,y_center:.96875},{w:1,h:1,x_center:.21875,y_center:.96875},{w:1,h:1,x_center:.28125,y_center:.96875},{w:1,h:1,x_center:.28125,y_center:.96875},{w:1,h:1,x_center:.34375,y_center:.96875},{w:1,h:1,x_center:.34375,y_center:.96875},{w:1,h:1,x_center:.40625,y_center:.96875},{w:1,h:1,x_center:.40625,y_center:.96875},{w:1,h:1,x_center:.46875,y_center:.96875},{w:1,h:1,x_center:.46875,y_center:.96875},{w:1,h:1,x_center:.53125,y_center:.96875},{w:1,h:1,x_center:.53125,y_center:.96875},{w:1,h:1,x_center:.59375,y_center:.96875},{w:1,h:1,x_center:.59375,y_center:.96875},{w:1,h:1,x_center:.65625,y_center:.96875},{w:1,h:1,x_center:.65625,y_center:.96875},{w:1,h:1,x_center:.71875,y_center:.96875},{w:1,h:1,x_center:.71875,y_center:.96875},{w:1,h:1,x_center:.78125,y_center:.96875},{w:1,h:1,x_center:.78125,y_center:.96875},{w:1,h:1,x_center:.84375,y_center:.96875},{w:1,h:1,x_center:.84375,y_center:.96875},{w:1,h:1,x_center:.90625,y_center:.96875},{w:1,h:1,x_center:.90625,y_center:.96875},{w:1,h:1,x_center:.96875,y_center:.96875},{w:1,h:1,x_center:.96875,y_center:.96875},{w:1,h:1,x_center:.0625,y_center:.0625},{w:1,h:1,x_center:.0625,y_center:.0625},{w:1,h:1,x_center:.0625,y_center:.0625},{w:1,h:1,x_center:.0625,y_center:.0625},{w:1,h:1,x_center:.0625,y_center:.0625},{w:1,h:1,x_center:.0625,y_center:.0625},{w:1,h:1,x_center:.1875,y_center:.0625},{w:1,h:1,x_center:.1875,y_center:.0625},{w:1,h:1,x_center:.1875,y_center:.0625},{w:1,h:1,x_center:.1875,y_center:.0625},{w:1,h:1,x_center:.1875,y_center:.0625},{w:1,h:1,x_center:.1875,y_center:.0625},{w:1,h:1,x_center:.3125,y_center:.0625},{w:1,h:1,x_center:.3125,y_center:.0625},{w:1,h:1,x_center:.3125,y_center:.0625},{w:1,h:1,x_center:.3125,y_center:.0625},{w:1,h:1,x_center:.3125,y_center:.0625},{w:1,h:1,x_center:.3125,y_center:.0625},{w:1,h:1,x_center:.4375,y_center:.0625},{w:1,h:1,x_center:.4375,y_center:.0625},{w:1,h:1,x_center:.4375,y_center:.0625},{w:1,h:1,x_center:.4375,y_center:.0625},{w:1,h:1,x_center:.4375,y_center:.0625},{w:1,h:1,x_center:.4375,y_center:.0625},{w:1,h:1,x_center:.5625,y_center:.0625},{w:1,h:1,x_center:.5625,y_center:.0625},{w:1,h:1,x_center:.5625,y_center:.0625},{w:1,h:1,x_center:.5625,y_center:.0625},{w:1,h:1,x_center:.5625,y_center:.0625},{w:1,h:1,x_center:.5625,y_center:.0625},{w:1,h:1,x_center:.6875,y_center:.0625},{w:1,h:1,x_center:.6875,y_center:.0625},{w:1,h:1,x_center:.6875,y_center:.0625},{w:1,h:1,x_center:.6875,y_center:.0625},{w:1,h:1,x_center:.6875,y_center:.0625},{w:1,h:1,x_center:.6875,y_center:.0625},{w:1,h:1,x_center:.8125,y_center:.0625},{w:1,h:1,x_center:.8125,y_center:.0625},{w:1,h:1,x_center:.8125,y_center:.0625},{w:1,h:1,x_center:.8125,y_center:.0625},{w:1,h:1,x_center:.8125,y_center:.0625},{w:1,h:1,x_center:.8125,y_center:.0625},{w:1,h:1,x_center:.9375,y_center:.0625},{w:1,h:1,x_center:.9375,y_center:.0625},{w:1,h:1,x_center:.9375,y_center:.0625},{w:1,h:1,x_center:.9375,y_center:.0625},{w:1,h:1,x_center:.9375,y_center:.0625},{w:1,h:1,x_center:.9375,y_center:.0625},{w:1,h:1,x_center:.0625,y_center:.1875},{w:1,h:1,x_center:.0625,y_center:.1875},{w:1,h:1,x_center:.0625,y_center:.1875},{w:1,h:1,x_center:.0625,y_center:.1875},{w:1,h:1,x_center:.0625,y_center:.1875},{w:1,h:1,x_center:.0625,y_center:.1875},{w:1,h:1,x_center:.1875,y_center:.1875},{w:1,h:1,x_center:.1875,y_center:.1875},{w:1,h:1,x_center:.1875,y_center:.1875},{w:1,h:1,x_center:.1875,y_center:.1875},{w:1,h:1,x_center:.1875,y_center:.1875},{w:1,h:1,x_center:.1875,y_center:.1875},{w:1,h:1,x_center:.3125,y_center:.1875},{w:1,h:1,x_center:.3125,y_center:.1875},{w:1,h:1,x_center:.3125,y_center:.1875},{w:1,h:1,x_center:.3125,y_center:.1875},{w:1,h:1,x_center:.3125,y_center:.1875},{w:1,h:1,x_center:.3125,y_center:.1875},{w:1,h:1,x_center:.4375,y_center:.1875},{w:1,h:1,x_center:.4375,y_center:.1875},{w:1,h:1,x_center:.4375,y_center:.1875},{w:1,h:1,x_center:.4375,y_center:.1875},{w:1,h:1,x_center:.4375,y_center:.1875},{w:1,h:1,x_center:.4375,y_center:.1875},{w:1,h:1,x_center:.5625,y_center:.1875},{w:1,h:1,x_center:.5625,y_center:.1875},{w:1,h:1,x_center:.5625,y_center:.1875},{w:1,h:1,x_center:.5625,y_center:.1875},{w:1,h:1,x_center:.5625,y_center:.1875},{w:1,h:1,x_center:.5625,y_center:.1875},{w:1,h:1,x_center:.6875,y_center:.1875},{w:1,h:1,x_center:.6875,y_center:.1875},{w:1,h:1,x_center:.6875,y_center:.1875},{w:1,h:1,x_center:.6875,y_center:.1875},{w:1,h:1,x_center:.6875,y_center:.1875},{w:1,h:1,x_center:.6875,y_center:.1875},{w:1,h:1,x_center:.8125,y_center:.1875},{w:1,h:1,x_center:.8125,y_center:.1875},{w:1,h:1,x_center:.8125,y_center:.1875},{w:1,h:1,x_center:.8125,y_center:.1875},{w:1,h:1,x_center:.8125,y_center:.1875},{w:1,h:1,x_center:.8125,y_center:.1875},{w:1,h:1,x_center:.9375,y_center:.1875},{w:1,h:1,x_center:.9375,y_center:.1875},{w:1,h:1,x_center:.9375,y_center:.1875},{w:1,h:1,x_center:.9375,y_center:.1875},{w:1,h:1,x_center:.9375,y_center:.1875},{w:1,h:1,x_center:.9375,y_center:.1875},{w:1,h:1,x_center:.0625,y_center:.3125},{w:1,h:1,x_center:.0625,y_center:.3125},{w:1,h:1,x_center:.0625,y_center:.3125},{w:1,h:1,x_center:.0625,y_center:.3125},{w:1,h:1,x_center:.0625,y_center:.3125},{w:1,h:1,x_center:.0625,y_center:.3125},{w:1,h:1,x_center:.1875,y_center:.3125},{w:1,h:1,x_center:.1875,y_center:.3125},{w:1,h:1,x_center:.1875,y_center:.3125},{w:1,h:1,x_center:.1875,y_center:.3125},{w:1,h:1,x_center:.1875,y_center:.3125},{w:1,h:1,x_center:.1875,y_center:.3125},{w:1,h:1,x_center:.3125,y_center:.3125},{w:1,h:1,x_center:.3125,y_center:.3125},{w:1,h:1,x_center:.3125,y_center:.3125},{w:1,h:1,x_center:.3125,y_center:.3125},{w:1,h:1,x_center:.3125,y_center:.3125},{w:1,h:1,x_center:.3125,y_center:.3125},{w:1,h:1,x_center:.4375,y_center:.3125},{w:1,h:1,x_center:.4375,y_center:.3125},{w:1,h:1,x_center:.4375,y_center:.3125},{w:1,h:1,x_center:.4375,y_center:.3125},{w:1,h:1,x_center:.4375,y_center:.3125},{w:1,h:1,x_center:.4375,y_center:.3125},{w:1,h:1,x_center:.5625,y_center:.3125},{w:1,h:1,x_center:.5625,y_center:.3125},{w:1,h:1,x_center:.5625,y_center:.3125},{w:1,h:1,x_center:.5625,y_center:.3125},{w:1,h:1,x_center:.5625,y_center:.3125},{w:1,h:1,x_center:.5625,y_center:.3125},{w:1,h:1,x_center:.6875,y_center:.3125},{w:1,h:1,x_center:.6875,y_center:.3125},{w:1,h:1,x_center:.6875,y_center:.3125},{w:1,h:1,x_center:.6875,y_center:.3125},{w:1,h:1,x_center:.6875,y_center:.3125},{w:1,h:1,x_center:.6875,y_center:.3125},{w:1,h:1,x_center:.8125,y_center:.3125},{w:1,h:1,x_center:.8125,y_center:.3125},{w:1,h:1,x_center:.8125,y_center:.3125},{w:1,h:1,x_center:.8125,y_center:.3125},{w:1,h:1,x_center:.8125,y_center:.3125},{w:1,h:1,x_center:.8125,y_center:.3125},{w:1,h:1,x_center:.9375,y_center:.3125},{w:1,h:1,x_center:.9375,y_center:.3125},{w:1,h:1,x_center:.9375,y_center:.3125},{w:1,h:1,x_center:.9375,y_center:.3125},{w:1,h:1,x_center:.9375,y_center:.3125},{w:1,h:1,x_center:.9375,y_center:.3125},{w:1,h:1,x_center:.0625,y_center:.4375},{w:1,h:1,x_center:.0625,y_center:.4375},{w:1,h:1,x_center:.0625,y_center:.4375},{w:1,h:1,x_center:.0625,y_center:.4375},{w:1,h:1,x_center:.0625,y_center:.4375},{w:1,h:1,x_center:.0625,y_center:.4375},{w:1,h:1,x_center:.1875,y_center:.4375},{w:1,h:1,x_center:.1875,y_center:.4375},{w:1,h:1,x_center:.1875,y_center:.4375},{w:1,h:1,x_center:.1875,y_center:.4375},{w:1,h:1,x_center:.1875,y_center:.4375},{w:1,h:1,x_center:.1875,y_center:.4375},{w:1,h:1,x_center:.3125,y_center:.4375},{w:1,h:1,x_center:.3125,y_center:.4375},{w:1,h:1,x_center:.3125,y_center:.4375},{w:1,h:1,x_center:.3125,y_center:.4375},{w:1,h:1,x_center:.3125,y_center:.4375},{w:1,h:1,x_center:.3125,y_center:.4375},{w:1,h:1,x_center:.4375,y_center:.4375},{w:1,h:1,x_center:.4375,y_center:.4375},{w:1,h:1,x_center:.4375,y_center:.4375},{w:1,h:1,x_center:.4375,y_center:.4375},{w:1,h:1,x_center:.4375,y_center:.4375},{w:1,h:1,x_center:.4375,y_center:.4375},{w:1,h:1,x_center:.5625,y_center:.4375},{w:1,h:1,x_center:.5625,y_center:.4375},{w:1,h:1,x_center:.5625,y_center:.4375},{w:1,h:1,x_center:.5625,y_center:.4375},{w:1,h:1,x_center:.5625,y_center:.4375},{w:1,h:1,x_center:.5625,y_center:.4375},{w:1,h:1,x_center:.6875,y_center:.4375},{w:1,h:1,x_center:.6875,y_center:.4375},{w:1,h:1,x_center:.6875,y_center:.4375},{w:1,h:1,x_center:.6875,y_center:.4375},{w:1,h:1,x_center:.6875,y_center:.4375},{w:1,h:1,x_center:.6875,y_center:.4375},{w:1,h:1,x_center:.8125,y_center:.4375},{w:1,h:1,x_center:.8125,y_center:.4375},{w:1,h:1,x_center:.8125,y_center:.4375},{w:1,h:1,x_center:.8125,y_center:.4375},{w:1,h:1,x_center:.8125,y_center:.4375},{w:1,h:1,x_center:.8125,y_center:.4375},{w:1,h:1,x_center:.9375,y_center:.4375},{w:1,h:1,x_center:.9375,y_center:.4375},{w:1,h:1,x_center:.9375,y_center:.4375},{w:1,h:1,x_center:.9375,y_center:.4375},{w:1,h:1,x_center:.9375,y_center:.4375},{w:1,h:1,x_center:.9375,y_center:.4375},{w:1,h:1,x_center:.0625,y_center:.5625},{w:1,h:1,x_center:.0625,y_center:.5625},{w:1,h:1,x_center:.0625,y_center:.5625},{w:1,h:1,x_center:.0625,y_center:.5625},{w:1,h:1,x_center:.0625,y_center:.5625},{w:1,h:1,x_center:.0625,y_center:.5625},{w:1,h:1,x_center:.1875,y_center:.5625},{w:1,h:1,x_center:.1875,y_center:.5625},{w:1,h:1,x_center:.1875,y_center:.5625},{w:1,h:1,x_center:.1875,y_center:.5625},{w:1,h:1,x_center:.1875,y_center:.5625},{w:1,h:1,x_center:.1875,y_center:.5625},{w:1,h:1,x_center:.3125,y_center:.5625},{w:1,h:1,x_center:.3125,y_center:.5625},{w:1,h:1,x_center:.3125,y_center:.5625},{w:1,h:1,x_center:.3125,y_center:.5625},{w:1,h:1,x_center:.3125,y_center:.5625},{w:1,h:1,x_center:.3125,y_center:.5625},{w:1,h:1,x_center:.4375,y_center:.5625},{w:1,h:1,x_center:.4375,y_center:.5625},{w:1,h:1,x_center:.4375,y_center:.5625},{w:1,h:1,x_center:.4375,y_center:.5625},{w:1,h:1,x_center:.4375,y_center:.5625},{w:1,h:1,x_center:.4375,y_center:.5625},{w:1,h:1,x_center:.5625,y_center:.5625},{w:1,h:1,x_center:.5625,y_center:.5625},{w:1,h:1,x_center:.5625,y_center:.5625},{w:1,h:1,x_center:.5625,y_center:.5625},{w:1,h:1,x_center:.5625,y_center:.5625},{w:1,h:1,x_center:.5625,y_center:.5625},{w:1,h:1,x_center:.6875,y_center:.5625},{w:1,h:1,x_center:.6875,y_center:.5625},{w:1,h:1,x_center:.6875,y_center:.5625},{w:1,h:1,x_center:.6875,y_center:.5625},{w:1,h:1,x_center:.6875,y_center:.5625},{w:1,h:1,x_center:.6875,y_center:.5625},{w:1,h:1,x_center:.8125,y_center:.5625},{w:1,h:1,x_center:.8125,y_center:.5625},{w:1,h:1,x_center:.8125,y_center:.5625},{w:1,h:1,x_center:.8125,y_center:.5625},{w:1,h:1,x_center:.8125,y_center:.5625},{w:1,h:1,x_center:.8125,y_center:.5625},{w:1,h:1,x_center:.9375,y_center:.5625},{w:1,h:1,x_center:.9375,y_center:.5625},{w:1,h:1,x_center:.9375,y_center:.5625},{w:1,h:1,x_center:.9375,y_center:.5625},{w:1,h:1,x_center:.9375,y_center:.5625},{w:1,h:1,x_center:.9375,y_center:.5625},{w:1,h:1,x_center:.0625,y_center:.6875},{w:1,h:1,x_center:.0625,y_center:.6875},{w:1,h:1,x_center:.0625,y_center:.6875},{w:1,h:1,x_center:.0625,y_center:.6875},{w:1,h:1,x_center:.0625,y_center:.6875},{w:1,h:1,x_center:.0625,y_center:.6875},{w:1,h:1,x_center:.1875,y_center:.6875},{w:1,h:1,x_center:.1875,y_center:.6875},{w:1,h:1,x_center:.1875,y_center:.6875},{w:1,h:1,x_center:.1875,y_center:.6875},{w:1,h:1,x_center:.1875,y_center:.6875},{w:1,h:1,x_center:.1875,y_center:.6875},{w:1,h:1,x_center:.3125,y_center:.6875},{w:1,h:1,x_center:.3125,y_center:.6875},{w:1,h:1,x_center:.3125,y_center:.6875},{w:1,h:1,x_center:.3125,y_center:.6875},{w:1,h:1,x_center:.3125,y_center:.6875},{w:1,h:1,x_center:.3125,y_center:.6875},{w:1,h:1,x_center:.4375,y_center:.6875},{w:1,h:1,x_center:.4375,y_center:.6875},{w:1,h:1,x_center:.4375,y_center:.6875},{w:1,h:1,x_center:.4375,y_center:.6875},{w:1,h:1,x_center:.4375,y_center:.6875},{w:1,h:1,x_center:.4375,y_center:.6875},{w:1,h:1,x_center:.5625,y_center:.6875},{w:1,h:1,x_center:.5625,y_center:.6875},{w:1,h:1,x_center:.5625,y_center:.6875},{w:1,h:1,x_center:.5625,y_center:.6875},{w:1,h:1,x_center:.5625,y_center:.6875},{w:1,h:1,x_center:.5625,y_center:.6875},{w:1,h:1,x_center:.6875,y_center:.6875},{w:1,h:1,x_center:.6875,y_center:.6875},{w:1,h:1,x_center:.6875,y_center:.6875},{w:1,h:1,x_center:.6875,y_center:.6875},{w:1,h:1,x_center:.6875,y_center:.6875},{w:1,h:1,x_center:.6875,y_center:.6875},{w:1,h:1,x_center:.8125,y_center:.6875},{w:1,h:1,x_center:.8125,y_center:.6875},{w:1,h:1,x_center:.8125,y_center:.6875},{w:1,h:1,x_center:.8125,y_center:.6875},{w:1,h:1,x_center:.8125,y_center:.6875},{w:1,h:1,x_center:.8125,y_center:.6875},{w:1,h:1,x_center:.9375,y_center:.6875},{w:1,h:1,x_center:.9375,y_center:.6875},{w:1,h:1,x_center:.9375,y_center:.6875},{w:1,h:1,x_center:.9375,y_center:.6875},{w:1,h:1,x_center:.9375,y_center:.6875},{w:1,h:1,x_center:.9375,y_center:.6875},{w:1,h:1,x_center:.0625,y_center:.8125},{w:1,h:1,x_center:.0625,y_center:.8125},{w:1,h:1,x_center:.0625,y_center:.8125},{w:1,h:1,x_center:.0625,y_center:.8125},{w:1,h:1,x_center:.0625,y_center:.8125},{w:1,h:1,x_center:.0625,y_center:.8125},{w:1,h:1,x_center:.1875,y_center:.8125},{w:1,h:1,x_center:.1875,y_center:.8125},{w:1,h:1,x_center:.1875,y_center:.8125},{w:1,h:1,x_center:.1875,y_center:.8125},{w:1,h:1,x_center:.1875,y_center:.8125},{w:1,h:1,x_center:.1875,y_center:.8125},{w:1,h:1,x_center:.3125,y_center:.8125},{w:1,h:1,x_center:.3125,y_center:.8125},{w:1,h:1,x_center:.3125,y_center:.8125},{w:1,h:1,x_center:.3125,y_center:.8125},{w:1,h:1,x_center:.3125,y_center:.8125},{w:1,h:1,x_center:.3125,y_center:.8125},{w:1,h:1,x_center:.4375,y_center:.8125},{w:1,h:1,x_center:.4375,y_center:.8125},{w:1,h:1,x_center:.4375,y_center:.8125},{w:1,h:1,x_center:.4375,y_center:.8125},{w:1,h:1,x_center:.4375,y_center:.8125},{w:1,h:1,x_center:.4375,y_center:.8125},{w:1,h:1,x_center:.5625,y_center:.8125},{w:1,h:1,x_center:.5625,y_center:.8125},{w:1,h:1,x_center:.5625,y_center:.8125},{w:1,h:1,x_center:.5625,y_center:.8125},{w:1,h:1,x_center:.5625,y_center:.8125},{w:1,h:1,x_center:.5625,y_center:.8125},{w:1,h:1,x_center:.6875,y_center:.8125},{w:1,h:1,x_center:.6875,y_center:.8125},{w:1,h:1,x_center:.6875,y_center:.8125},{w:1,h:1,x_center:.6875,y_center:.8125},{w:1,h:1,x_center:.6875,y_center:.8125},{w:1,h:1,x_center:.6875,y_center:.8125},{w:1,h:1,x_center:.8125,y_center:.8125},{w:1,h:1,x_center:.8125,y_center:.8125},{w:1,h:1,x_center:.8125,y_center:.8125},{w:1,h:1,x_center:.8125,y_center:.8125},{w:1,h:1,x_center:.8125,y_center:.8125},{w:1,h:1,x_center:.8125,y_center:.8125},{w:1,h:1,x_center:.9375,y_center:.8125},{w:1,h:1,x_center:.9375,y_center:.8125},{w:1,h:1,x_center:.9375,y_center:.8125},{w:1,h:1,x_center:.9375,y_center:.8125},{w:1,h:1,x_center:.9375,y_center:.8125},{w:1,h:1,x_center:.9375,y_center:.8125},{w:1,h:1,x_center:.0625,y_center:.9375},{w:1,h:1,x_center:.0625,y_center:.9375},{w:1,h:1,x_center:.0625,y_center:.9375},{w:1,h:1,x_center:.0625,y_center:.9375},{w:1,h:1,x_center:.0625,y_center:.9375},{w:1,h:1,x_center:.0625,y_center:.9375},{w:1,h:1,x_center:.1875,y_center:.9375},{w:1,h:1,x_center:.1875,y_center:.9375},{w:1,h:1,x_center:.1875,y_center:.9375},{w:1,h:1,x_center:.1875,y_center:.9375},{w:1,h:1,x_center:.1875,y_center:.9375},{w:1,h:1,x_center:.1875,y_center:.9375},{w:1,h:1,x_center:.3125,y_center:.9375},{w:1,h:1,x_center:.3125,y_center:.9375},{w:1,h:1,x_center:.3125,y_center:.9375},{w:1,h:1,x_center:.3125,y_center:.9375},{w:1,h:1,x_center:.3125,y_center:.9375},{w:1,h:1,x_center:.3125,y_center:.9375},{w:1,h:1,x_center:.4375,y_center:.9375},{w:1,h:1,x_center:.4375,y_center:.9375},{w:1,h:1,x_center:.4375,y_center:.9375},{w:1,h:1,x_center:.4375,y_center:.9375},{w:1,h:1,x_center:.4375,y_center:.9375},{w:1,h:1,x_center:.4375,y_center:.9375},{w:1,h:1,x_center:.5625,y_center:.9375},{w:1,h:1,x_center:.5625,y_center:.9375},{w:1,h:1,x_center:.5625,y_center:.9375},{w:1,h:1,x_center:.5625,y_center:.9375},{w:1,h:1,x_center:.5625,y_center:.9375},{w:1,h:1,x_center:.5625,y_center:.9375},{w:1,h:1,x_center:.6875,y_center:.9375},{w:1,h:1,x_center:.6875,y_center:.9375},{w:1,h:1,x_center:.6875,y_center:.9375},{w:1,h:1,x_center:.6875,y_center:.9375},{w:1,h:1,x_center:.6875,y_center:.9375},{w:1,h:1,x_center:.6875,y_center:.9375},{w:1,h:1,x_center:.8125,y_center:.9375},{w:1,h:1,x_center:.8125,y_center:.9375},{w:1,h:1,x_center:.8125,y_center:.9375},{w:1,h:1,x_center:.8125,y_center:.9375},{w:1,h:1,x_center:.8125,y_center:.9375},{w:1,h:1,x_center:.8125,y_center:.9375},{w:1,h:1,x_center:.9375,y_center:.9375},{w:1,h:1,x_center:.9375,y_center:.9375},{w:1,h:1,x_center:.9375,y_center:.9375},{w:1,h:1,x_center:.9375,y_center:.9375},{w:1,h:1,x_center:.9375,y_center:.9375},{w:1,h:1,x_center:.9375,y_center:.9375}];var Gt={thumb:[1,2,3,4],indexFinger:[5,6,7,8],middleFinger:[9,10,11,12],ringFinger:[13,14,15,16],pinky:[17,18,19,20],palmBase:[0]},Qt=class{constructor(t){this.handPipeline=t}static getAnnotations(){return Gt}async estimateHands(t,n){let A=await this.handPipeline.estimateHands(t,n);if(!A)return[];let _=[];for(let c of A){let r={};if(c.landmarks)for(let a of Object.keys(Gt))r[a]=Gt[a].map(x=>c.landmarks[x]);let s=c.box?[Math.max(0,c.box.topLeft[0]),Math.max(0,c.box.topLeft[1]),Math.min(t.shape[2],c.box.bottomRight[0])-Math.max(0,c.box.topLeft[0]),Math.min(t.shape[1],c.box.bottomRight[1])-Math.max(0,c.box.topLeft[1])]:[],h=[c.box.topLeft[0]/t.shape[2],c.box.topLeft[1]/t.shape[1],(c.box.bottomRight[0]-c.box.topLeft[0])/t.shape[2],(c.box.bottomRight[1]-c.box.topLeft[1])/t.shape[1]];_.push({confidence:Math.round(100*c.confidence)/100,box:s,boxRaw:h,landmarks:c.landmarks,annotations:r})}return _}},Q,$;async function $t(e){!Q||!$?([Q,$]=await Promise.all([e.hand.enabled?o.loadGraphModel(S(e.modelBasePath,e.hand.detector.modelPath),{fromTFHub:e.hand.detector.modelPath.includes("tfhub.dev")}):null,e.hand.landmarks?o.loadGraphModel(S(e.modelBasePath,e.hand.skeleton.modelPath),{fromTFHub:e.hand.skeleton.modelPath.includes("tfhub.dev")}):null]),e.hand.enabled&&(!Q||!Q.modelUrl?f("load model failed:",e.hand.detector.modelPath):e.debug&&f("load model:",Q.modelUrl),!$||!$.modelUrl?f("load model failed:",e.hand.skeleton.modelPath):e.debug&&f("load model:",$.modelUrl))):(e.debug&&f("cached model:",Q.modelUrl),e.debug&&f("cached model:",$.modelUrl));let t=new Yt(Q,Q==null?void 0:Q.inputs[0].shape[2],o0),n=new Kt(t,$,$==null?void 0:$.inputs[0].shape[2]);return new Qt(n)}var e1={};J(e1,{load:()=>t1,predict:()=>n1});var s0=["nose","leftEyeInside","leftEye","leftEyeOutside","rightEyeInside","rightEye","rightEyeOutside","leftEar","rightEar","leftMouth","rightMouth","leftShoulder","rightShoulder","leftElbow","rightElbow","leftWrist","rightWrist","leftPalm","rightPalm","leftIndex","rightIndex","leftPinky","rightPinky","leftHip","rightHip","leftKnee","rightKnee","leftAnkle","rightAnkle","leftHeel","rightHeel","leftFoot","rightFoot","midHip","forehead","leftThumb","leftHand","rightThumb","rightHand"],h0=["nose","leftEyeInside","leftEye","leftEyeOutside","rightEyeInside","rightEye","rightEyeOutside","leftEar","rightEar","leftMouth","rightMouth","leftShoulder","rightShoulder","leftElbow","rightElbow","left:15","right:16","left:17","right:18","left:19","right:20","left:21","right:22","leftChest","rightChest","neck","forehead","left:27","right:28","left:29","right:30"];var Z;async function t1(e){return Z?e.debug&&f("cached model:",Z.modelUrl):(Z=await o.loadGraphModel(S(e.modelBasePath,e.body.modelPath)),Z.width=parseInt(Z.signature.inputs["input_1:0"].tensorShape.dim[2].size),Z.height=parseInt(Z.signature.inputs["input_1:0"].tensorShape.dim[1].size),!Z||!Z.modelUrl?f("load model failed:",e.body.modelPath):e.debug&&f("load model:",Z.modelUrl)),Z}async function n1(e,t){if(!Z||!t.body.enabled)return null;let n={width:e.shape[2],height:e.shape[1]},A=o.image.resizeBilinear(e,[Z.width,Z.height],!1),_=o.div(A,[255]);A.dispose();let c;if(t.profile){let x=await o.profile(()=>Z.predict(_));c=x.result.find(i=>i.size===195||i.size===155).dataSync(),x.result.forEach(i=>i.dispose()),L("blazepose",x)}else{let x=await Z.predict(_);c=x.find(i=>i.size===195||i.size===155).dataSync(),x.forEach(i=>i.dispose())}_.dispose();let r=[],s=c.length===195?s0:h0,h=5;for(let x=0;x<c.length/h;x++)r.push({id:x,part:s[x],position:{x:Math.trunc(n.width*c[h*x+0]/255),y:Math.trunc(n.height*c[h*x+1]/255),z:Math.trunc(c[h*x+2])+0},score:(100-Math.trunc(100/(1+Math.exp(c[h*x+3]))))/100,presence:(100-Math.trunc(100/(1+Math.exp(c[h*x+4]))))/100});return[{score:r.reduce((x,i)=>i.score>x?i.score:x,0),keypoints:r}]}var H,ge=[],Ke=Number.MAX_SAFE_INTEGER,sn=["head","neck","rightShoulder","rightElbow","rightWrist","chest","leftShoulder","leftElbow","leftWrist","pelvis","rightHip","rightKnee","rightAnkle","leftHip","leftKnee","leftAnkle"];async function r1(e){return H?e.debug&&f("cached model:",H.modelUrl):(H=await o.loadGraphModel(S(e.modelBasePath,e.body.modelPath)),!H||!H.modelUrl?f("load model failed:",e.body.modelPath):e.debug&&f("load model:",H.modelUrl)),H}function hn(e,t){let[n,A]=e.shape;return o.tidy(()=>{let _=(s,h)=>o.sub(s,o.mul(o.div(s,o.scalar(h,"int32")),o.scalar(h,"int32"))),c=o.reshape(e,[A*n]),r=o.max(c,0).dataSync()[0];if(r>t){let s=o.argMax(c,0),h=_(s,n).dataSync()[0],a=o.div(s,o.scalar(n,"int32")).dataSync()[0];return[h,a,r]}return[0,0,r]})}async function c1(e,t){return H?Ke<t.body.skipFrames&&t.videoOptimized&&Object.keys(ge).length>0?(Ke++,ge):(t.videoOptimized?Ke=0:Ke=Number.MAX_SAFE_INTEGER,new Promise(async n=>{let A=o.tidy(()=>{let r=o.image.resizeBilinear(e,[H.inputs[0].shape[2],H.inputs[0].shape[1]],!1);return o.mul(r,2).sub(1)}),_;if(!t.profile)t.body.enabled&&(_=await H.predict(A));else{let r=t.body.enabled?await o.profile(()=>H.predict(A)):{};_=r.result.clone(),r.result.dispose(),L("body",r)}if(A.dispose(),_){let r=[],s=_.squeeze();o.dispose(_);let h=s.unstack(2);o.dispose(s);for(let a=0;a<h.length;a++){let[x,i,w]=hn(h[a],t.body.scoreThreshold);w>t.body.scoreThreshold&&r.push({id:a,score:Math.round(100*w)/100,part:sn[a],positionRaw:{xRaw:x/H.inputs[0].shape[2],yRaw:i/H.inputs[0].shape[1]},position:{x:Math.round(e.shape[2]*x/H.inputs[0].shape[2]),y:Math.round(e.shape[1]*i/H.inputs[0].shape[1])}})}h.forEach(a=>o.dispose(a)),ge=r}let c=ge.reduce((r,s)=>s.score>r?s.score:r,0);n([{score:c,keypoints:ge}])})):null}var A1={};J(A1,{load:()=>o1,predict:()=>s1});var De=[{class:1,label:"person"},{class:2,label:"bicycle"},{class:3,label:"car"},{class:4,label:"motorcycle"},{class:5,label:"airplane"},{class:6,label:"bus"},{class:7,label:"train"},{class:8,label:"truck"},{class:9,label:"boat"},{class:10,label:"traffic light"},{class:11,label:"fire hydrant"},{class:12,label:"stop sign"},{class:13,label:"parking meter"},{class:14,label:"bench"},{class:15,label:"bird"},{class:16,label:"cat"},{class:17,label:"dog"},{class:18,label:"horse"},{class:19,label:"sheep"},{class:20,label:"cow"},{class:21,label:"elephant"},{class:22,label:"bear"},{class:23,label:"zebra"},{class:24,label:"giraffe"},{class:25,label:"backpack"},{class:26,label:"umbrella"},{class:27,label:"handbag"},{class:28,label:"tie"},{class:29,label:"suitcase"},{class:30,label:"frisbee"},{class:31,label:"skis"},{class:32,label:"snowboard"},{class:33,label:"sports ball"},{class:34,label:"kite"},{class:35,label:"baseball bat"},{class:36,label:"baseball glove"},{class:37,label:"skateboard"},{class:38,label:"surfboard"},{class:39,label:"tennis racket"},{class:40,label:"bottle"},{class:41,label:"wine glass"},{class:42,label:"cup"},{class:43,label:"fork"},{class:44,label:"knife"},{class:45,label:"spoon"},{class:46,label:"bowl"},{class:47,label:"banana"},{class:48,label:"apple"},{class:49,label:"sandwich"},{class:50,label:"orange"},{class:51,label:"broccoli"},{class:52,label:"carrot"},{class:53,label:"hot dog"},{class:54,label:"pizza"},{class:55,label:"donut"},{class:56,label:"cake"},{class:57,label:"chair"},{class:58,label:"couch"},{class:59,label:"potted plant"},{class:60,label:"bed"},{class:61,label:"dining table"},{class:62,label:"toilet"},{class:63,label:"tv"},{class:64,label:"laptop"},{class:65,label:"mouse"},{class:66,label:"remote"},{class:67,label:"keyboard"},{class:68,label:"cell phone"},{class:69,label:"microwave"},{class:70,label:"oven"},{class:71,label:"toaster"},{class:72,label:"sink"},{class:73,label:"refrigerator"},{class:74,label:"book"},{class:75,label:"clock"},{class:76,label:"vase"},{class:77,label:"scissors"},{class:78,label:"teddy bear"},{class:79,label:"hair drier"},{class:80,label:"toothbrush"}];var V,_1=[],Ge=Number.MAX_SAFE_INTEGER,Qe=2.5;async function o1(e){if(V)e.debug&&f("cached model:",V.modelUrl);else{V=await o.loadGraphModel(S(e.modelBasePath,e.object.modelPath));let t=Object.values(V.modelSignature.inputs);if(V.inputSize=Array.isArray(t)?parseInt(t[0].tensorShape.dim[2].size):null,!V.inputSize)throw new Error(`Human: Cannot determine model inputSize: ${e.object.modelPath}`);!V||!V.modelUrl?f("load model failed:",e.object.modelPath):e.debug&&f("load model:",V.modelUrl)}return V}async function an(e,t,n,A){let _=0,c=[];for(let a of[1,2,4])o.tidy(()=>{var p,u;let x=a*13,i=(p=e.find(M=>M.shape[1]===x**2&&M.shape[2]===De.length))==null?void 0:p.squeeze(),w=(u=e.find(M=>M.shape[1]===x**2&&M.shape[2]<De.length))==null?void 0:u.squeeze(),b=w.reshape([-1,4,w.shape[1]/4]).argMax(2).arraySync(),y=i.arraySync();for(let M=0;M<i.shape[0];M++)for(let E=0;E<i.shape[1];E++){let k=y[M][E];if(k>A.object.minConfidence&&E!==61){let g=(.5+Math.trunc(M%x))/x,d=(.5+Math.trunc(M/x))/x,T=b[M].map(ce=>ce*(x/a/t)),[v,R]=[g-Qe/a*T[0],d-Qe/a*T[1]],[O,re]=[g+Qe/a*T[2]-v,d+Qe/a*T[3]-R],X=[v,R,O,re];X=X.map(ce=>Math.max(0,Math.min(ce,1)));let ot=[X[0]*n[0],X[1]*n[1],X[2]*n[0],X[3]*n[1]],ze={id:_++,strideSize:a,score:Math.round(100*k)/100,class:E+1,label:De[E].label,center:[Math.trunc(n[0]*g),Math.trunc(n[1]*d)],centerRaw:[g,d],box:ot.map(ce=>Math.trunc(ce)),boxRaw:X};c.push(ze)}}});e.forEach(a=>o.dispose(a));let r=c.map(a=>a.boxRaw),s=c.map(a=>a.score),h=[];if(r&&r.length>0){let a=await o.image.nonMaxSuppressionAsync(r,s,A.object.maxResults,A.object.iouThreshold,A.object.minConfidence);h=a.dataSync(),o.dispose(a)}return c=c.filter((a,x)=>h.includes(x)).sort((a,x)=>x.score-a.score),c}async function s1(e,t){return V?Ge<t.object.skipFrames&&t.videoOptimized&&_1.length>0?(Ge++,_1):(t.videoOptimized?Ge=0:Ge=Number.MAX_SAFE_INTEGER,new Promise(async n=>{let A=[e.shape[2],e.shape[1]],_=o.image.resizeBilinear(e,[V.inputSize,V.inputSize],!1),c=_.div(255),r=c.transpose([0,3,1,2]);c.dispose(),_.dispose();let s;if(!t.profile)t.object.enabled&&(s=await V.predict(r));else{let a=t.object.enabled?await o.profile(()=>V.predict(r)):{};s=a.result,L("object",a)}r.dispose();let h=await an(s,V.inputSize,A,t);_1=h,n(h)})):null}var i0=e=>{if(!e)return[];let t=[];for(let n=0;n<e.length;n++){let A=e[n].keypoints.find(h=>h.part==="leftWrist"),_=e[n].keypoints.find(h=>h.part==="rightWrist"),c=e[n].keypoints.find(h=>h.part==="nose");c&&A&&_&&A.position.y<c.position.y&&_.position.y<c.position.y?t.push({body:n,gesture:"i give up"}):c&&A&&A.position.y<c.position.y?t.push({body:n,gesture:"raise left hand"}):c&&_&&_.position.y<c.position.y&&t.push({body:n,gesture:"raise right hand"});let r=e[n].keypoints.find(h=>h.part==="leftShoulder"),s=e[n].keypoints.find(h=>h.part==="rightShoulder");r&&s&&t.push({body:n,gesture:`leaning ${r.position.y>s.position.y?"left":"right"}`})}return t},a0=e=>{if(!e)return[];let t=[];for(let n=0;n<e.length;n++)if(e[n].mesh&&e[n].mesh.length>0){let A=e[n].mesh[33][2]-e[n].mesh[263][2];Math.abs(A)<10?t.push({face:n,gesture:"facing camera"}):t.push({face:n,gesture:`facing ${A<0?"right":"left"}`}),Math.abs(e[n].mesh[374][1]-e[n].mesh[386][1])/Math.abs(e[n].mesh[443][1]-e[n].mesh[450][1])<.2&&t.push({face:n,gesture:"blink left eye"}),Math.abs(e[n].mesh[145][1]-e[n].mesh[159][1])/Math.abs(e[n].mesh[223][1]-e[n].mesh[230][1])<.2&&t.push({face:n,gesture:"blink right eye"});let r=Math.min(100,500*Math.abs(e[n].mesh[13][1]-e[n].mesh[14][1])/Math.abs(e[n].mesh[10][1]-e[n].mesh[152][1]));r>10&&t.push({face:n,gesture:`mouth ${Math.trunc(r)}% open`});let s=e[n].mesh[152][2];Math.abs(s)>10&&t.push({face:n,gesture:`head ${s<0?"up":"down"}`})}return t},x0=e=>{if(!e)return[];let t=[];for(let n=0;n<e.length;n++){if(!e[n].annotations||!e[n].annotations.leftEyeIris||!e[n].annotations.rightEyeIris)continue;let A=e[n].annotations.leftEyeIris[3][0]-e[n].annotations.leftEyeIris[1][0],_=e[n].annotations.leftEyeIris[4][1]-e[n].annotations.leftEyeIris[2][1],c=Math.abs(A*_),r=e[n].annotations.rightEyeIris[3][0]-e[n].annotations.rightEyeIris[1][0],s=e[n].annotations.rightEyeIris[4][1]-e[n].annotations.rightEyeIris[2][1],h=Math.abs(r*s);Math.abs(c-h)/Math.max(c,h)<.25&&t.push({iris:n,gesture:"looking at camera"})}return t},y0=e=>{if(!e)return[];let t=[];for(let n=0;n<e.length;n++){let A=[];for(let[_,c]of Object.entries(e[n].annotations))_!=="palmBase"&&Array.isArray(c)&&A.push({name:_.toLowerCase(),position:c[0]});if(A&&A.length>0){let _=A.reduce((r,s)=>r.position[2]<s.position[2]?r:s),c=A.reduce((r,s)=>r.position[1]<s.position[1]?r:s);t.push({hand:n,gesture:`${_.name} forward ${c.name} up`})}}return t};var h1={};J(h1,{process:()=>i1});function xn(e,t,n){let A=function(s,h,a){let x=new RegExp("\\b"+h+" \\w+ (\\w+)","ig");s.replace(x,(i,w)=>(a[w]=0,i))},_=function(s,h){let a=e.createShader(h);if(e.shaderSource(a,s),e.compileShader(a),!e.getShaderParameter(a,e.COMPILE_STATUS))throw new Error("Filter: GL compile failed",e.getShaderInfoLog(a));return a};this.uniform={},this.attribute={};let c=_(t,e.VERTEX_SHADER),r=_(n,e.FRAGMENT_SHADER);if(this.id=e.createProgram(),e.attachShader(this.id,c),e.attachShader(this.id,r),e.linkProgram(this.id),!e.getProgramParameter(this.id,e.LINK_STATUS))throw new Error("Filter: GL link failed",e.getProgramInfoLog(this.id));e.useProgram(this.id),A(t,"attribute",this.attribute);for(let s in this.attribute)this.attribute[s]=e.getAttribLocation(this.id,s);A(t,"uniform",this.uniform),A(n,"uniform",this.uniform);for(let s in this.uniform)this.uniform[s]=e.getUniformLocation(this.id,s)}function w0(e){e||(e={});let t=0,n=null,A=!1,_=-1,c=[null,null],r=[],s=-1,h=-1,a=null,x=null,i={},w=e.canvas||document.createElement("canvas"),m={},b={INTERMEDIATE:1},y=w.getContext("webgl");if(!y)throw new Error("Filter: getContext() failed");this.addFilter=function(g){let d=Array.prototype.slice.call(arguments,1),T=i[g];r.push({func:T,args:d})},this.reset=function(){r=[]};let p=function(g,d){if(!(g===s&&d===h)){if(w.width=g,s=g,w.height=d,h=d,!a){let T=new Float32Array([-1,-1,0,1,1,-1,1,1,-1,1,0,0,-1,1,0,0,1,-1,1,1,1,1,1,0]);a=y.createBuffer(),y.bindBuffer(y.ARRAY_BUFFER,a),y.bufferData(y.ARRAY_BUFFER,T,y.STATIC_DRAW),y.pixelStorei(y.UNPACK_PREMULTIPLY_ALPHA_WEBGL,!0)}y.viewport(0,0,s,h),c=[null,null]}},u=function(g,d){let T=y.createFramebuffer();y.bindFramebuffer(y.FRAMEBUFFER,T);let v=y.createRenderbuffer();y.bindRenderbuffer(y.RENDERBUFFER,v);let R=y.createTexture();return y.bindTexture(y.TEXTURE_2D,R),y.texImage2D(y.TEXTURE_2D,0,y.RGBA,g,d,0,y.RGBA,y.UNSIGNED_BYTE,null),y.texParameteri(y.TEXTURE_2D,y.TEXTURE_MAG_FILTER,y.LINEAR),y.texParameteri(y.TEXTURE_2D,y.TEXTURE_MIN_FILTER,y.LINEAR),y.texParameteri(y.TEXTURE_2D,y.TEXTURE_WRAP_S,y.CLAMP_TO_EDGE),y.texParameteri(y.TEXTURE_2D,y.TEXTURE_WRAP_T,y.CLAMP_TO_EDGE),y.framebufferTexture2D(y.FRAMEBUFFER,y.COLOR_ATTACHMENT0,y.TEXTURE_2D,R,0),y.bindTexture(y.TEXTURE_2D,null),y.bindFramebuffer(y.FRAMEBUFFER,null),{fbo:T,texture:R}},M=function(g){return c[g]=c[g]||u(s,h),c[g]},E=function(g=null){var R,O;let d=null,T=null,v=!1;t===0?d=n:d=(R=M(_))==null?void 0:R.texture,t++,A&&!(g&b.INTERMEDIATE)?(T=null,v=t%2==0):(_=(_+1)%2,T=(O=M(_))==null?void 0:O.fbo),y.bindTexture(y.TEXTURE_2D,d),y.bindFramebuffer(y.FRAMEBUFFER,T),y.uniform1f(x.uniform.flipY,v?-1:1),y.drawArrays(y.TRIANGLES,0,6)};this.apply=function(g){if(p(g.width,g.height),t=0,n||(n=y.createTexture()),y.bindTexture(y.TEXTURE_2D,n),y.texParameteri(y.TEXTURE_2D,y.TEXTURE_WRAP_S,y.CLAMP_TO_EDGE),y.texParameteri(y.TEXTURE_2D,y.TEXTURE_WRAP_T,y.CLAMP_TO_EDGE),y.texParameteri(y.TEXTURE_2D,y.TEXTURE_MIN_FILTER,y.NEAREST),y.texParameteri(y.TEXTURE_2D,y.TEXTURE_MAG_FILTER,y.NEAREST),y.texImage2D(y.TEXTURE_2D,0,y.RGBA,y.RGBA,y.UNSIGNED_BYTE,g),r.length===0)return E(),w;for(let d=0;d<r.length;d++){A=d===r.length-1;let T=r[d];T.func.apply(this,T.args||[])}return w};let k=function(g){if(m[g])return x=m[g],y.useProgram(x.id),x;let d={};d.VERTEX_IDENTITY=["precision highp float;","attribute vec2 pos;","attribute vec2 uv;","varying vec2 vUv;","uniform float flipY;","void main(void) {","vUv = uv;","gl_Position = vec4(pos.x, pos.y*flipY, 0.0, 1.);","}"].join(`
-`),d.FRAGMENT_IDENTITY=["precision highp float;","varying vec2 vUv;","uniform sampler2D texture;","void main(void) {","gl_FragColor = texture2D(texture, vUv);","}"].join(`
-`),x=new xn(y,d.VERTEX_IDENTITY,g);let T=Float32Array.BYTES_PER_ELEMENT,v=4*T;return y.enableVertexAttribArray(x.attribute.pos),y.vertexAttribPointer(x.attribute.pos,2,y.FLOAT,!1,v,0*T),y.enableVertexAttribArray(x.attribute.uv),y.vertexAttribPointer(x.attribute.uv,2,y.FLOAT,!1,v,2*T),m[g]=x,x};i.colorMatrix=function(g){let d=new Float32Array(g);d[4]/=255,d[9]/=255,d[14]/=255,d[19]/=255;let T=d[18]===1&&d[3]===0&&d[8]===0&&d[13]===0&&d[15]===0&&d[16]===0&&d[17]===0&&d[19]===0?i.colorMatrix.SHADER.WITHOUT_ALPHA:i.colorMatrix.SHADER.WITH_ALPHA,v=k(T);y.uniform1fv(v.uniform.m,d),E()},i.colorMatrix.SHADER={},i.colorMatrix.SHADER.WITH_ALPHA=["precision highp float;","varying vec2 vUv;","uniform sampler2D texture;","uniform float m[20];","void main(void) {","vec4 c = texture2D(texture, vUv);","gl_FragColor.r = m[0] * c.r + m[1] * c.g + m[2] * c.b + m[3] * c.a + m[4];","gl_FragColor.g = m[5] * c.r + m[6] * c.g + m[7] * c.b + m[8] * c.a + m[9];","gl_FragColor.b = m[10] * c.r + m[11] * c.g + m[12] * c.b + m[13] * c.a + m[14];","gl_FragColor.a = m[15] * c.r + m[16] * c.g + m[17] * c.b + m[18] * c.a + m[19];","}"].join(`
-`),i.colorMatrix.SHADER.WITHOUT_ALPHA=["precision highp float;","varying vec2 vUv;","uniform sampler2D texture;","uniform float m[20];","void main(void) {","vec4 c = texture2D(texture, vUv);","gl_FragColor.r = m[0] * c.r + m[1] * c.g + m[2] * c.b + m[4];","gl_FragColor.g = m[5] * c.r + m[6] * c.g + m[7] * c.b + m[9];","gl_FragColor.b = m[10] * c.r + m[11] * c.g + m[12] * c.b + m[14];","gl_FragColor.a = c.a;","}"].join(`
-`),i.brightness=function(g){let d=(g||0)+1;i.colorMatrix([d,0,0,0,0,0,d,0,0,0,0,0,d,0,0,0,0,0,1,0])},i.saturation=function(g){let d=(g||0)*2/3+1,T=(d-1)*-.5;i.colorMatrix([d,T,T,0,0,T,d,T,0,0,T,T,d,0,0,0,0,0,1,0])},i.desaturate=function(){i.saturation(-1)},i.contrast=function(g){let d=(g||0)+1,T=-128*(d-1);i.colorMatrix([d,0,0,0,T,0,d,0,0,T,0,0,d,0,T,0,0,0,1,0])},i.negative=function(){i.contrast(-2)},i.hue=function(g){g=(g||0)/180*Math.PI;let d=Math.cos(g),T=Math.sin(g),v=.213,R=.715,O=.072;i.colorMatrix([v+d*(1-v)+T*-v,R+d*-R+T*-R,O+d*-O+T*(1-O),0,0,v+d*-v+T*.143,R+d*(1-R)+T*.14,O+d*-O+T*-.283,0,0,v+d*-v+T*-(1-v),R+d*-R+T*R,O+d*(1-O)+T*O,0,0,0,0,0,1,0])},i.desaturateLuminance=function(){i.colorMatrix([.2764723,.929708,.0938197,0,-37.1,.2764723,.929708,.0938197,0,-37.1,.2764723,.929708,.0938197,0,-37.1,0,0,0,1,0])},i.sepia=function(){i.colorMatrix([.393,.7689999,.18899999,0,0,.349,.6859999,.16799999,0,0,.272,.5339999,.13099999,0,0,0,0,0,1,0])},i.brownie=function(){i.colorMatrix([.5997023498159715,.34553243048391263,-.2708298674538042,0,47.43192855600873,-.037703249837783157,.8609577587992641,.15059552388459913,0,-36.96841498319127,.24113635128153335,-.07441037908422492,.44972182064877153,0,-7.562075277591283,0,0,0,1,0])},i.vintagePinhole=function(){i.colorMatrix([.6279345635605994,.3202183420819367,-.03965408211312453,0,9.651285835294123,.02578397704808868,.6441188644374771,.03259127616149294,0,7.462829176470591,.0466055556782719,-.0851232987247891,.5241648018700465,0,5.159190588235296,0,0,0,1,0])},i.kodachrome=function(){i.colorMatrix([1.1285582396593525,-.3967382283601348,-.03992559172921793,0,63.72958762196502,-.16404339962244616,1.0835251566291304,-.05498805115633132,0,24.732407896706203,-.16786010706155763,-.5603416277695248,1.6014850761964943,0,35.62982807460946,0,0,0,1,0])},i.technicolor=function(){i.colorMatrix([1.9125277891456083,-.8545344976951645,-.09155508482755585,0,11.793603434377337,-.3087833385928097,1.7658908555458428,-.10601743074722245,0,-70.35205161461398,-.231103377548616,-.7501899197440212,1.847597816108189,0,30.950940869491138,0,0,0,1,0])},i.polaroid=function(){i.colorMatrix([1.438,-.062,-.062,0,0,-.122,1.378,-.122,0,0,-.016,-.016,1.483,0,0,0,0,0,1,0])},i.shiftToBGR=function(){i.colorMatrix([0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0])},i.convolution=function(g){let d=new Float32Array(g),T=1/s,v=1/h,R=k(i.convolution.SHADER);y.uniform1fv(R.uniform.m,d),y.uniform2f(R.uniform.px,T,v),E()},i.convolution.SHADER=["precision highp float;","varying vec2 vUv;","uniform sampler2D texture;","uniform vec2 px;","uniform float m[9];","void main(void) {","vec4 c11 = texture2D(texture, vUv - px);","vec4 c12 = texture2D(texture, vec2(vUv.x, vUv.y - px.y));","vec4 c13 = texture2D(texture, vec2(vUv.x + px.x, vUv.y - px.y));","vec4 c21 = texture2D(texture, vec2(vUv.x - px.x, vUv.y) );","vec4 c22 = texture2D(texture, vUv);","vec4 c23 = texture2D(texture, vec2(vUv.x + px.x, vUv.y) );","vec4 c31 = texture2D(texture, vec2(vUv.x - px.x, vUv.y + px.y) );","vec4 c32 = texture2D(texture, vec2(vUv.x, vUv.y + px.y) );","vec4 c33 = texture2D(texture, vUv + px );","gl_FragColor = ","c11 * m[0] + c12 * m[1] + c22 * m[2] +","c21 * m[3] + c22 * m[4] + c23 * m[5] +","c31 * m[6] + c32 * m[7] + c33 * m[8];","gl_FragColor.a = c22.a;","}"].join(`
-`),i.detectEdges=function(){i.convolution.call(this,[0,1,0,1,-4,1,0,1,0])},i.sobelX=function(){i.convolution.call(this,[-1,0,1,-2,0,2,-1,0,1])},i.sobelY=function(){i.convolution.call(this,[-1,-2,-1,0,0,0,1,2,1])},i.sharpen=function(g){let d=g||1;i.convolution.call(this,[0,-1*d,0,-1*d,1+4*d,-1*d,0,-1*d,0])},i.emboss=function(g){let d=g||1;i.convolution.call(this,[-2*d,-1*d,0,-1*d,1,1*d,0,1*d,2*d])},i.blur=function(g){let d=g/7/s,T=g/7/h,v=k(i.blur.SHADER);y.uniform2f(v.uniform.px,0,T),E(b.INTERMEDIATE),y.uniform2f(v.uniform.px,d,0),E()},i.blur.SHADER=["precision highp float;","varying vec2 vUv;","uniform sampler2D texture;","uniform vec2 px;","void main(void) {","gl_FragColor = vec4(0.0);","gl_FragColor += texture2D(texture, vUv + vec2(-7.0*px.x, -7.0*px.y))*0.0044299121055113265;","gl_FragColor += texture2D(texture, vUv + vec2(-6.0*px.x, -6.0*px.y))*0.00895781211794;","gl_FragColor += texture2D(texture, vUv + vec2(-5.0*px.x, -5.0*px.y))*0.0215963866053;","gl_FragColor += texture2D(texture, vUv + vec2(-4.0*px.x, -4.0*px.y))*0.0443683338718;","gl_FragColor += texture2D(texture, vUv + vec2(-3.0*px.x, -3.0*px.y))*0.0776744219933;","gl_FragColor += texture2D(texture, vUv + vec2(-2.0*px.x, -2.0*px.y))*0.115876621105;","gl_FragColor += texture2D(texture, vUv + vec2(-1.0*px.x, -1.0*px.y))*0.147308056121;","gl_FragColor += texture2D(texture, vUv                             )*0.159576912161;","gl_FragColor += texture2D(texture, vUv + vec2( 1.0*px.x,  1.0*px.y))*0.147308056121;","gl_FragColor += texture2D(texture, vUv + vec2( 2.0*px.x,  2.0*px.y))*0.115876621105;","gl_FragColor += texture2D(texture, vUv + vec2( 3.0*px.x,  3.0*px.y))*0.0776744219933;","gl_FragColor += texture2D(texture, vUv + vec2( 4.0*px.x,  4.0*px.y))*0.0443683338718;","gl_FragColor += texture2D(texture, vUv + vec2( 5.0*px.x,  5.0*px.y))*0.0215963866053;","gl_FragColor += texture2D(texture, vUv + vec2( 6.0*px.x,  6.0*px.y))*0.00895781211794;","gl_FragColor += texture2D(texture, vUv + vec2( 7.0*px.x,  7.0*px.y))*0.0044299121055113265;","}"].join(`
-`),i.pixelate=function(g){let d=g/s,T=g/h,v=k(i.pixelate.SHADER);y.uniform2f(v.uniform.size,d,T),E()},i.pixelate.SHADER=["precision highp float;","varying vec2 vUv;","uniform vec2 size;","uniform sampler2D texture;","vec2 pixelate(vec2 coord, vec2 size) {","return floor( coord / size ) * size;","}","void main(void) {","gl_FragColor = vec4(0.0);","vec2 coord = pixelate(vUv, size);","gl_FragColor += texture2D(texture, coord);","}"].join(`
-`)}var $e=2048,P,W,N;function i1(e,t){let n;if(!e)throw new Error("Human: Input is missing");if(!(e instanceof o.Tensor)&&!(typeof Image!="undefined"&&e instanceof Image)&&!(typeof ImageData!="undefined"&&e instanceof ImageData)&&!(typeof ImageBitmap!="undefined"&&e instanceof ImageBitmap)&&!(typeof HTMLImageElement!="undefined"&&e instanceof HTMLImageElement)&&!(typeof HTMLMediaElement!="undefined"&&e instanceof HTMLMediaElement)&&!(typeof HTMLVideoElement!="undefined"&&e instanceof HTMLVideoElement)&&!(typeof HTMLCanvasElement!="undefined"&&e instanceof HTMLCanvasElement)&&!(typeof OffscreenCanvas!="undefined"&&e instanceof OffscreenCanvas))throw new Error("Human: Input type is not recognized");if(e instanceof o.Tensor)if(e.shape&&e.shape.length===4&&e.shape[0]===1&&e.shape[3]===3)n=o.clone(e);else throw new Error(`Human: Input tensor shape must be [1, height, width, 3] and instead was ${e.shape}`);else{let _=e.naturalWidth||e.videoWidth||e.width||e.shape&&e.shape[1]>0,c=e.naturalHeight||e.videoHeight||e.height||e.shape&&e.shape[2]>0,r=_,s=c;if(r>$e&&(r=$e,s=r*c/_),s>$e&&(s=$e,r=s*_/c),t.filter.width>0?r=t.filter.width:t.filter.height>0&&(r=_*(t.filter.height/c)),t.filter.height>0?s=t.filter.height:t.filter.width>0&&(s=c*(t.filter.width/_)),!r||!s)throw new Error("Human: Input cannot determine dimension");(!P||(P==null?void 0:P.width)!==r||(P==null?void 0:P.height)!==s)&&(P=typeof OffscreenCanvas!="undefined"?new OffscreenCanvas(r,s):document.createElement("canvas"),(P==null?void 0:P.width)!==r&&(P.width=r),(P==null?void 0:P.height)!==s&&(P.height=s));let h=P.getContext("2d");if(e instanceof ImageData?h.putImageData(e,0,0):h.drawImage(e,0,0,_,c,0,0,P==null?void 0:P.width,P==null?void 0:P.height),t.filter.enabled){if((!N||!W||P.width!==W.width||(P==null?void 0:P.height)!==(W==null?void 0:W.height))&&(W=typeof OffscreenCanvas!="undefined"?new OffscreenCanvas(P==null?void 0:P.width,P==null?void 0:P.height):document.createElement("canvas"),(W==null?void 0:W.width)!==(P==null?void 0:P.width)&&(W.width=P==null?void 0:P.width),(W==null?void 0:W.height)!==(P==null?void 0:P.height)&&(W.height=P==null?void 0:P.height),N=o.ENV.flags.IS_BROWSER?new w0({canvas:W}):null),!N)return{tensor:null,canvas:P};N.reset(),N.addFilter("brightness",t.filter.brightness),t.filter.contrast!==0&&N.addFilter("contrast",t.filter.contrast),t.filter.sharpness!==0&&N.addFilter("sharpen",t.filter.sharpness),t.filter.blur!==0&&N.addFilter("blur",t.filter.blur),t.filter.saturation!==0&&N.addFilter("saturation",t.filter.saturation),t.filter.hue!==0&&N.addFilter("hue",t.filter.hue),t.filter.negative&&N.addFilter("negative"),t.filter.sepia&&N.addFilter("sepia"),t.filter.vintage&&N.addFilter("brownie"),t.filter.sepia&&N.addFilter("sepia"),t.filter.kodachrome&&N.addFilter("kodachrome"),t.filter.technicolor&&N.addFilter("technicolor"),t.filter.polaroid&&N.addFilter("polaroid"),t.filter.pixelate!==0&&N.addFilter("pixelate",t.filter.pixelate),N.apply(P)}else W=P,N&&(N=null);let a;if(W.data){let i=[W.height,W.width,3];a=o.tensor3d(W.data,i,"int32")}else if(W instanceof ImageData)a=o.browser.fromPixels(W);else if(t.backend==="webgl"||t.backend==="humangl"){let i=typeof OffscreenCanvas!="undefined"?new OffscreenCanvas(r,s):document.createElement("canvas");i.width=r,i.height=s;let w=i.getContext("2d");w==null||w.drawImage(W,0,0),a=o.browser.fromPixels(i)}else{let i=typeof OffscreenCanvas!="undefined"?new OffscreenCanvas(r,s):document.createElement("canvas");i.width=r,i.height=s;let w=i.getContext("2d");w==null||w.drawImage(W,0,0);let m=w==null?void 0:w.getImageData(0,0,r,s);a=o.browser.fromPixels(m)}let x=a.toFloat();n=x.expandDims(0),a.dispose(),x.dispose()}let A=t.filter.return?W:null;return{tensor:n,canvas:A}}var a1={};J(a1,{all:()=>wn,body:()=>f0,canvas:()=>yn,face:()=>d0,gesture:()=>l0,hand:()=>m0,object:()=>p0,options:()=>se});var j={backend:"webgl",modelBasePath:"../models/",wasmPath:"../assets/",debug:!0,async:!0,profile:!1,deallocate:!1,scoped:!1,videoOptimized:!0,warmup:"face",filter:{enabled:!0,width:0,height:0,return:!0,brightness:0,contrast:0,sharpness:0,blur:0,saturation:0,hue:0,negative:!1,sepia:!1,vintage:!1,kodachrome:!1,technicolor:!1,polaroid:!1,pixelate:0},gesture:{enabled:!0},face:{enabled:!0,detector:{modelPath:"blazeface-back.json",rotation:!1,maxFaces:10,skipFrames:21,skipInitial:!1,minConfidence:.2,iouThreshold:.1,scoreThreshold:.2,return:!1},mesh:{enabled:!0,modelPath:"facemesh.json"},iris:{enabled:!0,modelPath:"iris.json"},description:{enabled:!0,modelPath:"faceres.json",skipFrames:31},emotion:{enabled:!0,minConfidence:.1,skipFrames:32,modelPath:"emotion.json"},age:{enabled:!1,modelPath:"age.json",skipFrames:33},gender:{enabled:!1,minConfidence:.1,modelPath:"gender.json",skipFrames:34},embedding:{enabled:!1,modelPath:"mobileface.json"}},body:{enabled:!0,modelPath:"posenet.json",maxDetections:10,scoreThreshold:.3,nmsRadius:20},hand:{enabled:!0,rotation:!1,skipFrames:12,skipInitial:!1,minConfidence:.1,iouThreshold:.1,scoreThreshold:.5,maxHands:1,landmarks:!0,detector:{modelPath:"handdetect.json"},skeleton:{modelPath:"handskeleton.json"}},object:{enabled:!1,modelPath:"nanodet.json",minConfidence:.2,iouThreshold:.4,maxResults:10,skipFrames:41}};var se={color:"rgba(173, 216, 230, 0.3)",labelColor:"rgba(173, 216, 230, 1)",shadowColor:"black",font:'small-caps 16px "Segoe UI"',lineHeight:20,lineWidth:6,pointSize:2,roundRect:28,drawPoints:!1,drawLabels:!0,drawBoxes:!0,drawPolygons:!0,fillPolygons:!1,useDepth:!0,useCurves:!1,bufferedOutput:!1,useRawBoxes:!1};function et(e,t,n,A=0,_){e.fillStyle=_.useDepth&&A?`rgba(${127.5+2*A}, ${127.5-2*A}, 255, 0.3)`:_.color,e.beginPath(),e.arc(t,n,_.pointSize,0,2*Math.PI),e.fill()}function de(e,t,n,A,_,c){if(e.beginPath(),c.useCurves){let r=(t+t+A)/2,s=(n+n+_)/2;e.ellipse(r,s,A/2,_/2,0,0,2*Math.PI)}else e.lineWidth=c.lineWidth,e.moveTo(t+c.roundRect,n),e.lineTo(t+A-c.roundRect,n),e.quadraticCurveTo(t+A,n,t+A,n+c.roundRect),e.lineTo(t+A,n+_-c.roundRect),e.quadraticCurveTo(t+A,n+_,t+A-c.roundRect,n+_),e.lineTo(t+c.roundRect,n+_),e.quadraticCurveTo(t,n+_,t,n+_-c.roundRect),e.lineTo(t,n+c.roundRect),e.quadraticCurveTo(t,n,t+c.roundRect,n),e.closePath();e.stroke()}function x1(e,t=[],n){if(!(t===void 0||t.length===0)){e.beginPath(),e.moveTo(t[0][0],t[0][1]);for(let A of t)e.strokeStyle=n.useDepth&&A[2]?`rgba(${127.5+2*A[2]}, ${127.5-2*A[2]}, 255, 0.3)`:n.color,e.fillStyle=n.useDepth&&A[2]?`rgba(${127.5+2*A[2]}, ${127.5-2*A[2]}, 255, 0.3)`:n.color,e.lineTo(A[0],parseInt(A[1]));e.stroke(),n.fillPolygons&&(e.closePath(),e.fill())}}function Te(e,t=[],n){if(!(t===void 0||t.length===0)){if(!n.useCurves||t.length<=2){x1(e,t,n);return}e.moveTo(t[0][0],t[0][1]);for(let A=0;A<t.length-2;A++){let _=(t[A][0]+t[A+1][0])/2,c=(t[A][1]+t[A+1][1])/2;e.quadraticCurveTo(t[A][0],t[A][1],_,c)}e.quadraticCurveTo(t[t.length-2][0],t[t.length-2][1],t[t.length-1][0],t[t.length-1][1]),e.stroke(),n.fillPolygons&&(e.closePath(),e.fill())}}async function l0(e,t,n){let A=U(se,n);if(!t||!e||!(e instanceof HTMLCanvasElement))return;let _=e.getContext("2d");if(!_)return;_.font=A.font,_.fillStyle=A.color;let c=1;for(let r=0;r<t.length;r++){let s=[],h=[];if([s,h]=Object.entries(t[r]),h.length>1&&h[1].length>0){let a=s[1]>0?`#${s[1]}`:"",x=`${s[0]} ${a}: ${h[1]}`;A.shadowColor&&A.shadowColor!==""&&(_.fillStyle=A.shadowColor,_.fillText(x,8,2+c*A.lineHeight)),_.fillStyle=A.labelColor,_.fillText(x,6,0+c*A.lineHeight),c+=1}}}async function d0(e,t,n){let A=U(se,n);if(!t||!e||!(e instanceof HTMLCanvasElement))return;let _=e.getContext("2d");if(!!_)for(let c of t){_.font=A.font,_.strokeStyle=A.color,_.fillStyle=A.color,A.drawBoxes&&(A.useRawBoxes?de(_,e.width*c.boxRaw[0],e.height*c.boxRaw[1],e.width*c.boxRaw[2],e.height*c.boxRaw[3],A):de(_,c.box[0],c.box[1],c.box[2],c.box[3],A));let r=[];if(r.push(`face confidence: ${Math.trunc(100*c.confidence)}%`),c.genderConfidence&&r.push(`${c.gender||""} ${Math.trunc(100*c.genderConfidence)}% confident`),c.age&&r.push(`age: ${c.age||""}`),c.iris&&r.push(`iris distance: ${c.iris}`),c.emotion&&c.emotion.length>0){let s=c.emotion.map(h=>`${Math.trunc(100*h.score)}% ${h.emotion}`);r.push(s.join(" "))}c.rotation&&c.rotation.angle&&c.rotation.angle.roll&&r.push(`roll: ${Math.trunc(100*c.rotation.angle.roll)/100} yaw:${Math.trunc(100*c.rotation.angle.yaw)/100} pitch:${Math.trunc(100*c.rotation.angle.pitch)/100}`),r.length===0&&r.push("face"),_.fillStyle=A.color;for(let s=r.length-1;s>=0;s--){let h=Math.max(c.box[0],0),a=s*A.lineHeight+c.box[1];A.shadowColor&&A.shadowColor!==""&&(_.fillStyle=A.shadowColor,_.fillText(r[s],h+5,a+16)),_.fillStyle=A.labelColor,_.fillText(r[s],h+4,a+15)}if(_.lineWidth=1,c.mesh&&c.mesh.length>0){if(A.drawPoints)for(let s of c.mesh)et(_,s[0],s[1],s[2],A);if(A.drawPolygons){_.lineWidth=1;for(let s=0;s<_e.length/3;s++){let h=[_e[s*3+0],_e[s*3+1],_e[s*3+2]].map(a=>c.mesh[a]);x1(_,h,A)}if(c.annotations&&c.annotations.leftEyeIris){_.strokeStyle=A.useDepth?"rgba(255, 200, 255, 0.3)":A.color,_.beginPath();let s=Math.abs(c.annotations.leftEyeIris[3][0]-c.annotations.leftEyeIris[1][0])/2,h=Math.abs(c.annotations.leftEyeIris[4][1]-c.annotations.leftEyeIris[2][1])/2;_.ellipse(c.annotations.leftEyeIris[0][0],c.annotations.leftEyeIris[0][1],s,h,0,0,2*Math.PI),_.stroke(),A.fillPolygons&&(_.fillStyle=A.useDepth?"rgba(255, 255, 200, 0.3)":A.color,_.fill())}if(c.annotations&&c.annotations.rightEyeIris){_.strokeStyle=A.useDepth?"rgba(255, 200, 255, 0.3)":A.color,_.beginPath();let s=Math.abs(c.annotations.rightEyeIris[3][0]-c.annotations.rightEyeIris[1][0])/2,h=Math.abs(c.annotations.rightEyeIris[4][1]-c.annotations.rightEyeIris[2][1])/2;_.ellipse(c.annotations.rightEyeIris[0][0],c.annotations.rightEyeIris[0][1],s,h,0,0,2*Math.PI),_.stroke(),A.fillPolygons&&(_.fillStyle=A.useDepth?"rgba(255, 255, 200, 0.3)":A.color,_.fill())}}}}}var ne=[];async function f0(e,t,n){let A=U(se,n);if(!t||!e||!(e instanceof HTMLCanvasElement))return;let _=e.getContext("2d");if(!!_){_.lineJoin="round";for(let c=0;c<t.length;c++){if(!ne[c]&&A.bufferedOutput&&(ne[c]={...t[c]}),_.strokeStyle=A.color,_.lineWidth=A.lineWidth,A.drawPoints)for(let r=0;r<t[c].keypoints.length;r++)_.fillStyle=A.useDepth&&t[c].keypoints[r].position.z?`rgba(${127.5+2*t[c].keypoints[r].position.z}, ${127.5-2*t[c].keypoints[r].position.z}, 255, 0.5)`:A.color,A.bufferedOutput?(ne[c].keypoints[r][0]=(ne[c].keypoints[r][0]+t[c].keypoints[r].position.x)/2,ne[c].keypoints[r][1]=(ne[c].keypoints[r][1]+t[c].keypoints[r].position.y)/2,et(_,ne[c].keypoints[r][0],ne[c].keypoints[r][1],0,A)):et(_,t[c].keypoints[r].position.x,t[c].keypoints[r].position.y,0,A);if(A.drawLabels&&(_.font=A.font,t[c].keypoints))for(let r of t[c].keypoints)_.fillStyle=A.useDepth&&r.position.z?`rgba(${127.5+2*r.position.z}, ${127.5-2*r.position.z}, 255, 0.5)`:A.color,_.fillText(`${r.part}`,r.position.x+4,r.position.y+4);if(A.drawPolygons&&t[c].keypoints){let r,s=[];s.length=0,r=t[c].keypoints.find(h=>h.part==="leftShoulder"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="rightShoulder"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),Te(_,s,A),s.length=0,r=t[c].keypoints.find(h=>h.part==="rightShoulder"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="rightHip"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="leftHip"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="leftShoulder"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),s.length===4&&x1(_,s,A),s.length=0,r=t[c].keypoints.find(h=>h.part==="leftHip"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="leftKnee"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="leftAnkle"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="leftHeel"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="leftFoot"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),Te(_,s,A),s.length=0,r=t[c].keypoints.find(h=>h.part==="rightHip"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="rightKnee"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="rightAnkle"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="rightHeel"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="rightFoot"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),Te(_,s,A),s.length=0,r=t[c].keypoints.find(h=>h.part==="leftShoulder"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="leftElbow"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="leftWrist"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="leftPalm"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),Te(_,s,A),s.length=0,r=t[c].keypoints.find(h=>h.part==="rightShoulder"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="rightElbow"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="rightWrist"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),r=t[c].keypoints.find(h=>h.part==="rightPalm"),r&&r.score>j.body.scoreThreshold&&s.push([r.position.x,r.position.y]),Te(_,s,A)}}}}async function m0(e,t,n){let A=U(se,n);if(!t||!e||!(e instanceof HTMLCanvasElement))return;let _=e.getContext("2d");if(!!_){_.lineJoin="round",_.font=A.font;for(let c of t){if(A.drawBoxes&&(_.strokeStyle=A.color,_.fillStyle=A.color,A.useRawBoxes?de(_,e.width*c.boxRaw[0],e.height*c.boxRaw[1],e.width*c.boxRaw[2],e.height*c.boxRaw[3],A):de(_,c.box[0],c.box[1],c.box[2],c.box[3],A),A.drawLabels&&(A.shadowColor&&A.shadowColor!==""&&(_.fillStyle=A.shadowColor,_.fillText("hand",c.box[0]+3,1+c.box[1]+A.lineHeight,c.box[2])),_.fillStyle=A.labelColor,_.fillText("hand",c.box[0]+2,0+c.box[1]+A.lineHeight,c.box[2])),_.stroke()),A.drawPoints&&c.landmarks&&c.landmarks.length>0)for(let r of c.landmarks)_.fillStyle=A.useDepth?`rgba(${127.5+2*r[2]}, ${127.5-2*r[2]}, 255, 0.5)`:A.color,et(_,r[0],r[1],0,A);if(A.drawPolygons){let r=s=>{if(!!s)for(let h=0;h<s.length;h++)_.lineWidth=A.lineWidth,_.beginPath(),_.strokeStyle=A.useDepth?`rgba(${127.5+2*s[h][2]}, ${127.5-2*s[h][2]}, 255, 0.5)`:A.color,_.moveTo(s[h>0?h-1:0][0],s[h>0?h-1:0][1]),_.lineTo(s[h][0],s[h][1]),_.stroke()};r(c.annotations.indexFinger),r(c.annotations.middleFinger),r(c.annotations.ringFinger),r(c.annotations.pinky),r(c.annotations.thumb)}}}}async function p0(e,t,n){let A=U(se,n);if(!t||!e||!(e instanceof HTMLCanvasElement))return;let _=e.getContext("2d");if(!!_){_.lineJoin="round",_.font=A.font;for(let c of t)if(A.drawBoxes){if(_.strokeStyle=A.color,_.fillStyle=A.color,A.useRawBoxes?de(_,e.width*c.boxRaw[0],e.height*c.boxRaw[1],e.width*c.boxRaw[2],e.height*c.boxRaw[3],A):de(_,c.box[0],c.box[1],c.box[2],c.box[3],A),A.drawLabels){let r=`${Math.round(100*c.score)}% ${c.label}`;A.shadowColor&&A.shadowColor!==""&&(_.fillStyle=A.shadowColor,_.fillText(r,c.box[0]+3,1+c.box[1]+A.lineHeight,c.box[2])),_.fillStyle=A.labelColor,_.fillText(r,c.box[0]+2,0+c.box[1]+A.lineHeight,c.box[2])}_.stroke()}}}async function yn(e,t){if(!e||!t||!(e instanceof HTMLCanvasElement)||!(t instanceof HTMLCanvasElement))return;let n=e.getContext("2d");n==null||n.drawImage(e,0,0)}async function wn(e,t,n){let A=U(se,n);!t||!e||e instanceof HTMLCanvasElement&&(d0(e,t.face,A),f0(e,t.body,A),m0(e,t.hand,A),l0(e,t.gesture,A),p0(e,t.object,A))}var tt=`
+var __defProp = Object.defineProperty;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __export = (target, all2) => {
+  for (var name in all2)
+    __defProp(target, name, {get: all2[name], enumerable: true});
+};
+var __reExport = (target, module, desc) => {
+  if (module && typeof module === "object" || typeof module === "function") {
+    for (let key of __getOwnPropNames(module))
+      if (!__hasOwnProp.call(target, key) && key !== "default")
+        __defProp(target, key, {get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable});
+  }
+  return target;
+};
+var __accessCheck = (obj, member, msg) => {
+  if (!member.has(obj))
+    throw TypeError("Cannot " + msg);
+};
+var __privateGet = (obj, member, getter) => {
+  __accessCheck(obj, member, "read from private field");
+  return getter ? getter.call(obj) : member.get(obj);
+};
+var __privateSet = (obj, member, value, setter) => {
+  __accessCheck(obj, member, "write to private field");
+  setter ? setter.call(obj, value) : member.set(obj, value);
+  return value;
+};
+
+// src/helpers.ts
+function join(folder, file) {
+  const separator = folder.endsWith("/") ? "" : "/";
+  const skipJoin = file.startsWith(".") || file.startsWith("/") || file.startsWith("http:") || file.startsWith("https:") || file.startsWith("file:");
+  const path = skipJoin ? `${file}` : `${folder}${separator}${file}`;
+  if (!path.toLocaleLowerCase().includes(".json"))
+    throw new Error(`Human: ModelPath Error: ${path} Expecting JSON file`);
+  return path;
+}
+function log(...msg) {
+  const dt = new Date();
+  const ts = `${dt.getHours().toString().padStart(2, "0")}:${dt.getMinutes().toString().padStart(2, "0")}:${dt.getSeconds().toString().padStart(2, "0")}.${dt.getMilliseconds().toString().padStart(3, "0")}`;
+  if (msg)
+    console.log(ts, "Human:", ...msg);
+}
+var now = () => {
+  if (typeof performance !== "undefined")
+    return performance.now();
+  return parseInt((Number(process.hrtime.bigint()) / 1e3 / 1e3).toString());
+};
+function mergeDeep(...objects) {
+  const isObject = (obj) => obj && typeof obj === "object";
+  return objects.reduce((prev, obj) => {
+    Object.keys(obj || {}).forEach((key) => {
+      const pVal = prev[key];
+      const oVal = obj[key];
+      if (Array.isArray(pVal) && Array.isArray(oVal))
+        prev[key] = pVal.concat(...oVal);
+      else if (isObject(pVal) && isObject(oVal))
+        prev[key] = mergeDeep(pVal, oVal);
+      else
+        prev[key] = oVal;
+    });
+    return prev;
+  }, {});
+}
+
+// src/sysinfo.ts
+function info() {
+  let platform;
+  let agent;
+  if (typeof navigator !== "undefined") {
+    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
+    if (raw && raw[0]) {
+      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
+      platform = platformMatch ? platformMatch[0].replace(/\(|\)/g, "") : "";
+      agent = navigator.userAgent.replace(raw[0], "");
+      if (platform[1])
+        agent = agent.replace(raw[1], "");
+      agent = agent.replace(/  /g, " ");
+    }
+  } else if (typeof process !== "undefined") {
+    platform = `${process.platform} ${process.arch}`;
+    agent = `NodeJS ${process.version}`;
+  }
+  return {platform, agent};
+}
+
+// dist/tfjs.esm.js
+var tfjs_esm_exports = {};
+__export(tfjs_esm_exports, {
+  data: () => data,
+  version: () => version
+});
+__reExport(tfjs_esm_exports, dist_star);
+__reExport(tfjs_esm_exports, dist_star2);
+__reExport(tfjs_esm_exports, dist_star3);
+__reExport(tfjs_esm_exports, dist_star4);
+__reExport(tfjs_esm_exports, dist_star5);
+__reExport(tfjs_esm_exports, dist_star6);
+import * as packageBundle from "@tensorflow/tfjs/package.json";
+import * as packageCore from "@tensorflow/tfjs-core/package.json";
+import * as packageData from "@tensorflow/tfjs-data/package.json";
+import * as packageLayers from "@tensorflow/tfjs-layers/package.json";
+import * as packageConverter from "@tensorflow/tfjs-converter/package.json";
+import {version_cpu} from "@tensorflow/tfjs-backend-cpu/dist/index.js";
+import {version_webgl} from "@tensorflow/tfjs-backend-webgl/dist/index.js";
+import {version_wasm} from "@tensorflow/tfjs-backend-wasm/dist/index.js";
+import * as dist_star from "@tensorflow/tfjs-core/dist/index.js";
+import * as dist_star2 from "@tensorflow/tfjs-layers/dist/index.js";
+import * as dist_star3 from "@tensorflow/tfjs-converter/dist/index.js";
+import * as data from "@tensorflow/tfjs-data/dist/index.js";
+import * as dist_star4 from "@tensorflow/tfjs-backend-cpu/dist/index.js";
+import * as dist_star5 from "@tensorflow/tfjs-backend-webgl/dist/index.js";
+import * as dist_star6 from "@tensorflow/tfjs-backend-wasm/dist/index.js";
+var version = {
+  tfjs: (packageBundle == null ? void 0 : packageBundle.version) || void 0,
+  "tfjs-core": (packageCore == null ? void 0 : packageCore.version) || void 0,
+  "tfjs-data": (packageData == null ? void 0 : packageData.version) || void 0,
+  "tfjs-layers": (packageLayers == null ? void 0 : packageLayers.version) || void 0,
+  "tfjs-converter": (packageConverter == null ? void 0 : packageConverter.version) || void 0,
+  "tfjs-backend-cpu": version_cpu || void 0,
+  "tfjs-backend-webgl": version_webgl || void 0,
+  "tfjs-backend-wasm": version_wasm || void 0
+};
+
+// src/tfjs/backend.ts
+var config = {
+  name: "humangl",
+  priority: 99,
+  canvas: null,
+  gl: null,
+  width: 1024,
+  height: 1024,
+  webGLattr: {
+    alpha: false,
+    antialias: false,
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false,
+    depth: false,
+    stencil: false,
+    failIfMajorPerformanceCaveat: false,
+    desynchronized: true
+  }
+};
+function register() {
+  if (!tfjs_esm_exports.findBackend(config.name)) {
+    log("backend registration:", config.name);
+    try {
+      config.canvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(config.width, config.height) : document.createElement("canvas");
+    } catch (err) {
+      log("error: cannot create canvas:", err);
+      return;
+    }
+    try {
+      config.gl = config.canvas.getContext("webgl2", config.webGLattr);
+    } catch (err) {
+      log("error: cannot get WebGL2 context:", err);
+      return;
+    }
+    try {
+      tfjs_esm_exports.setWebGLContext(2, config.gl);
+    } catch (err) {
+      log("error: cannot set WebGL2 context:", err);
+      return;
+    }
+    try {
+      const ctx = new tfjs_esm_exports.GPGPUContext(config.gl);
+      tfjs_esm_exports.registerBackend(config.name, () => new tfjs_esm_exports.MathBackendWebGL(ctx), config.priority);
+    } catch (err) {
+      log("error: cannot register WebGL backend:", err);
+      return;
+    }
+    try {
+      const kernels = tfjs_esm_exports.getKernelsForBackend("webgl");
+      kernels.forEach((kernelConfig) => {
+        const newKernelConfig = {...kernelConfig, backendName: config.name};
+        tfjs_esm_exports.registerKernel(newKernelConfig);
+      });
+    } catch (err) {
+      log("error: cannot update WebGL backend registration:", err);
+      return;
+    }
+    try {
+      tfjs_esm_exports.ENV.set("WEBGL_VERSION", 2);
+    } catch (err) {
+      log("error: cannot set WebGL backend flags:", err);
+      return;
+    }
+    log("backend registered:", config.name);
+  }
+}
+
+// src/age/age.ts
+var age_exports = {};
+__export(age_exports, {
+  load: () => load,
+  predict: () => predict
+});
+
+// src/profile.ts
+var data2 = {};
+function run(modelName, profileData) {
+  if (!profileData || !profileData.kernels)
+    return;
+  const maxResults = 5;
+  const time = profileData.kernels.filter((a) => a.kernelTimeMs > 0).reduce((a, b) => a += b.kernelTimeMs, 0);
+  const slowest = profileData.kernels.map((a, i) => {
+    a.id = i;
+    return a;
+  }).filter((a) => a.kernelTimeMs > 0).sort((a, b) => b.kernelTimeMs - a.kernelTimeMs);
+  const largest = profileData.kernels.map((a, i) => {
+    a.id = i;
+    return a;
+  }).filter((a) => a.totalBytesSnapshot > 0).sort((a, b) => b.totalBytesSnapshot - a.totalBytesSnapshot);
+  if (slowest.length > maxResults)
+    slowest.length = maxResults;
+  if (largest.length > maxResults)
+    largest.length = maxResults;
+  data2[modelName] = {
+    model: modelName,
+    newBytes: profileData.newBytes,
+    newTensors: profileData.newTensors,
+    peakBytes: profileData.peakBytes,
+    numKernelOps: profileData.kernels.length,
+    timeKernelOps: time,
+    slowestKernelOps: slowest,
+    largestKernelOps: largest
+  };
+  log("profiler", modelName, data2[modelName]);
+}
+
+// src/age/age.ts
+var model;
+var last = {age: 0};
+var skipped = Number.MAX_SAFE_INTEGER;
+async function load(config3) {
+  if (!model) {
+    model = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.age.modelPath));
+    if (!model || !model.modelUrl)
+      log("load model failed:", config3.face.age.modelPath);
+    else if (config3.debug)
+      log("load model:", model.modelUrl);
+  } else if (config3.debug)
+    log("cached model:", model.modelUrl);
+  return model;
+}
+async function predict(image15, config3) {
+  if (!model)
+    return null;
+  if (skipped < config3.face.age.skipFrames && config3.videoOptimized && last.age && last.age > 0) {
+    skipped++;
+    return last;
+  }
+  if (config3.videoOptimized)
+    skipped = 0;
+  else
+    skipped = Number.MAX_SAFE_INTEGER;
+  return new Promise(async (resolve) => {
+    const resize = tfjs_esm_exports.image.resizeBilinear(image15, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+    const enhance3 = tfjs_esm_exports.mul(resize, [255]);
+    tfjs_esm_exports.dispose(resize);
+    let ageT;
+    const obj = {age: 0};
+    if (!config3.profile) {
+      if (config3.face.age.enabled)
+        ageT = await model.predict(enhance3);
+    } else {
+      const profileAge = config3.face.age.enabled ? await tfjs_esm_exports.profile(() => model.predict(enhance3)) : {};
+      ageT = profileAge.result.clone();
+      profileAge.result.dispose();
+      run("age", profileAge);
+    }
+    enhance3.dispose();
+    if (ageT) {
+      const data3 = ageT.dataSync();
+      obj.age = Math.trunc(10 * data3[0]) / 10;
+    }
+    ageT.dispose();
+    last = obj;
+    resolve(obj);
+  });
+}
+
+// src/gender/gender.ts
+var gender_exports = {};
+__export(gender_exports, {
+  load: () => load2,
+  predict: () => predict2
+});
+var model2;
+var last2 = {gender: ""};
+var skipped2 = Number.MAX_SAFE_INTEGER;
+var alternative = false;
+var rgb = [0.2989, 0.587, 0.114];
+async function load2(config3) {
+  if (!model2) {
+    model2 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.gender.modelPath));
+    alternative = model2.inputs[0].shape[3] === 1;
+    if (!model2 || !model2.modelUrl)
+      log("load model failed:", config3.face.gender.modelPath);
+    else if (config3.debug)
+      log("load model:", model2.modelUrl);
+  } else if (config3.debug)
+    log("cached model:", model2.modelUrl);
+  return model2;
+}
+async function predict2(image15, config3) {
+  if (!model2)
+    return null;
+  if (skipped2 < config3.face.gender.skipFrames && config3.videoOptimized && last2.gender !== "") {
+    skipped2++;
+    return last2;
+  }
+  if (config3.videoOptimized)
+    skipped2 = 0;
+  else
+    skipped2 = Number.MAX_SAFE_INTEGER;
+  return new Promise(async (resolve) => {
+    const resize = tfjs_esm_exports.image.resizeBilinear(image15, [model2.inputs[0].shape[2], model2.inputs[0].shape[1]], false);
+    let enhance3;
+    if (alternative) {
+      enhance3 = tfjs_esm_exports.tidy(() => {
+        const [red, green, blue] = tfjs_esm_exports.split(resize, 3, 3);
+        const redNorm = tfjs_esm_exports.mul(red, rgb[0]);
+        const greenNorm = tfjs_esm_exports.mul(green, rgb[1]);
+        const blueNorm = tfjs_esm_exports.mul(blue, rgb[2]);
+        const grayscale = tfjs_esm_exports.addN([redNorm, greenNorm, blueNorm]);
+        const normalize = grayscale.sub(0.5).mul(2);
+        return normalize;
+      });
+    } else {
+      enhance3 = tfjs_esm_exports.mul(resize, [255]);
+    }
+    tfjs_esm_exports.dispose(resize);
+    let genderT;
+    const obj = {gender: "", confidence: 0};
+    if (!config3.profile) {
+      if (config3.face.gender.enabled)
+        genderT = await model2.predict(enhance3);
+    } else {
+      const profileGender = config3.face.gender.enabled ? await tfjs_esm_exports.profile(() => model2.predict(enhance3)) : {};
+      genderT = profileGender.result.clone();
+      profileGender.result.dispose();
+      run("gender", profileGender);
+    }
+    enhance3.dispose();
+    if (genderT) {
+      if (!Array.isArray(genderT)) {
+        const data3 = genderT.dataSync();
+        if (alternative) {
+          if (data3[0] > config3.face.gender.minConfidence || data3[1] > config3.face.gender.minConfidence) {
+            obj.gender = data3[0] > data3[1] ? "female" : "male";
+            obj.confidence = data3[0] > data3[1] ? Math.trunc(100 * data3[0]) / 100 : Math.trunc(100 * data3[1]) / 100;
+          }
+        } else {
+          const confidence = Math.trunc(200 * Math.abs(data3[0] - 0.5)) / 100;
+          if (confidence > config3.face.gender.minConfidence) {
+            obj.gender = data3[0] <= 0.5 ? "female" : "male";
+            obj.confidence = Math.min(0.99, confidence);
+          }
+        }
+        genderT.dispose();
+      } else {
+        const gender2 = genderT[0].dataSync();
+        const confidence = Math.trunc(200 * Math.abs(gender2[0] - 0.5)) / 100;
+        if (confidence > config3.face.gender.minConfidence) {
+          obj.gender = gender2[0] <= 0.5 ? "female" : "male";
+          obj.confidence = Math.min(0.99, confidence);
+        }
+        genderT.forEach((t) => tfjs_esm_exports.dispose(t));
+      }
+    }
+    last2 = obj;
+    resolve(obj);
+  });
+}
+
+// src/emotion/emotion.ts
+var emotion_exports = {};
+__export(emotion_exports, {
+  load: () => load3,
+  predict: () => predict3
+});
+var annotations = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
+var model3;
+var last3 = [];
+var skipped3 = Number.MAX_SAFE_INTEGER;
+var rgb2 = [0.2989, 0.587, 0.114];
+async function load3(config3) {
+  if (!model3) {
+    model3 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.emotion.modelPath));
+    if (!model3 || !model3.modelUrl)
+      log("load model failed:", config3.face.emotion.modelPath);
+    else if (config3.debug)
+      log("load model:", model3.modelUrl);
+  } else if (config3.debug)
+    log("cached model:", model3.modelUrl);
+  return model3;
+}
+async function predict3(image15, config3) {
+  if (!model3)
+    return null;
+  if (skipped3 < config3.face.emotion.skipFrames && config3.videoOptimized && last3.length > 0) {
+    skipped3++;
+    return last3;
+  }
+  if (config3.videoOptimized)
+    skipped3 = 0;
+  else
+    skipped3 = Number.MAX_SAFE_INTEGER;
+  return new Promise(async (resolve) => {
+    const resize = tfjs_esm_exports.image.resizeBilinear(image15, [model3.inputs[0].shape[2], model3.inputs[0].shape[1]], false);
+    const [red, green, blue] = tfjs_esm_exports.split(resize, 3, 3);
+    resize.dispose();
+    const redNorm = tfjs_esm_exports.mul(red, rgb2[0]);
+    const greenNorm = tfjs_esm_exports.mul(green, rgb2[1]);
+    const blueNorm = tfjs_esm_exports.mul(blue, rgb2[2]);
+    red.dispose();
+    green.dispose();
+    blue.dispose();
+    const grayscale = tfjs_esm_exports.addN([redNorm, greenNorm, blueNorm]);
+    redNorm.dispose();
+    greenNorm.dispose();
+    blueNorm.dispose();
+    const normalize = tfjs_esm_exports.tidy(() => grayscale.sub(0.5).mul(2));
+    grayscale.dispose();
+    const obj = [];
+    if (config3.face.emotion.enabled) {
+      let data3;
+      if (!config3.profile) {
+        const emotionT = await model3.predict(normalize);
+        data3 = emotionT.dataSync();
+        tfjs_esm_exports.dispose(emotionT);
+      } else {
+        const profileData = await tfjs_esm_exports.profile(() => model3.predict(normalize));
+        data3 = profileData.result.dataSync();
+        profileData.result.dispose();
+        run("emotion", profileData);
+      }
+      for (let i = 0; i < data3.length; i++) {
+        if (data3[i] > config3.face.emotion.minConfidence)
+          obj.push({score: Math.min(0.99, Math.trunc(100 * data3[i]) / 100), emotion: annotations[i]});
+      }
+      obj.sort((a, b) => b.score - a.score);
+    }
+    normalize.dispose();
+    last3 = obj;
+    resolve(obj);
+  });
+}
+
+// src/embedding/embedding.ts
+var model4;
+async function load4(config3) {
+  if (!model4) {
+    model4 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.embedding.modelPath));
+    if (!model4 || !model4.modelUrl)
+      log("load model failed:", config3.face.embedding.modelPath);
+    else if (config3.debug)
+      log("load model:", model4.modelUrl);
+  } else if (config3.debug)
+    log("cached model:", model4.modelUrl);
+  return model4;
+}
+function similarity(embedding1, embedding22, order = 2) {
+  if (!embedding1 || !embedding22)
+    return 0;
+  if ((embedding1 == null ? void 0 : embedding1.length) === 0 || (embedding22 == null ? void 0 : embedding22.length) === 0)
+    return 0;
+  if ((embedding1 == null ? void 0 : embedding1.length) !== (embedding22 == null ? void 0 : embedding22.length))
+    return 0;
+  const distance = embedding1.map((val, i) => Math.abs(embedding1[i] - embedding22[i]) ** order).reduce((sum, now2) => sum + now2, 0) ** (1 / order);
+  const res = Math.max(Math.trunc(1e3 * (1 - distance)) / 1e3, 0);
+  return res;
+}
+function enhance(input) {
+  const image15 = tfjs_esm_exports.tidy(() => {
+    const box3 = [[0.05, 0.15, 0.85, 0.85]];
+    const tensor = input.image || input.tensor;
+    if (!(tensor instanceof tfjs_esm_exports.Tensor))
+      return null;
+    const crop = tensor.shape.length === 3 ? tfjs_esm_exports.image.cropAndResize(tfjs_esm_exports.expandDims(tensor, 0), box3, [0], [model4.inputs[0].shape[2], model4.inputs[0].shape[1]]) : tfjs_esm_exports.image.cropAndResize(tensor, box3, [0], [model4.inputs[0].shape[2], model4.inputs[0].shape[1]]);
+    const rgb3 = [0.2989, 0.587, 0.114];
+    const [red, green, blue] = tfjs_esm_exports.split(crop, 3, 3);
+    const redNorm = tfjs_esm_exports.mul(red, rgb3[0]);
+    const greenNorm = tfjs_esm_exports.mul(green, rgb3[1]);
+    const blueNorm = tfjs_esm_exports.mul(blue, rgb3[2]);
+    const grayscale = tfjs_esm_exports.addN([redNorm, greenNorm, blueNorm]);
+    const merge = tfjs_esm_exports.stack([grayscale, grayscale, grayscale], 3).squeeze(4);
+    const darken = merge.sub(merge.min());
+    const lighten = darken.div(darken.max());
+    return lighten;
+  });
+  return image15;
+}
+async function predict4(input, config3) {
+  if (!model4)
+    return [];
+  return new Promise(async (resolve) => {
+    let data3 = [];
+    if (config3.face.embedding.enabled) {
+      const image15 = enhance(input);
+      if (!config3.profile) {
+        data3 = tfjs_esm_exports.tidy(() => {
+          const res = model4.predict(image15);
+          const reshape4 = res.reshape([128, 2]);
+          const reduce = reshape4.logSumExp(1);
+          const output = reduce.dataSync();
+          return [...output];
+        });
+      } else {
+        const profileData = await tfjs_esm_exports.profile(() => model4.predict({img_inputs: image15}));
+        data3 = [...profileData.result.dataSync()];
+        profileData.result.dispose();
+        run("emotion", profileData);
+      }
+      tfjs_esm_exports.dispose(image15);
+    }
+    resolve(data3);
+  });
+}
+
+// src/faceres/faceres.ts
+var faceres_exports = {};
+__export(faceres_exports, {
+  enhance: () => enhance2,
+  load: () => load5,
+  match: () => match,
+  predict: () => predict5,
+  similarity: () => similarity2
+});
+var model5;
+var last4 = {age: 0};
+var skipped4 = Number.MAX_SAFE_INTEGER;
+async function load5(config3) {
+  if (!model5) {
+    model5 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.description.modelPath));
+    if (!model5 || !model5.modelUrl)
+      log("load model failed:", config3.face.description.modelPath);
+    else if (config3.debug)
+      log("load model:", model5.modelUrl);
+  } else if (config3.debug)
+    log("cached model:", model5.modelUrl);
+  return model5;
+}
+function similarity2(embedding1, embedding22, order = 2) {
+  if (!embedding1 || !embedding22)
+    return 0;
+  if ((embedding1 == null ? void 0 : embedding1.length) === 0 || (embedding22 == null ? void 0 : embedding22.length) === 0)
+    return 0;
+  if ((embedding1 == null ? void 0 : embedding1.length) !== (embedding22 == null ? void 0 : embedding22.length))
+    return 0;
+  const distance = 5 * embedding1.map((val, i) => Math.abs(embedding1[i] - embedding22[i]) ** order).reduce((sum, now2) => sum + now2, 0) ** (1 / order);
+  const res = Math.max(0, 100 - distance) / 100;
+  return res;
+}
+function match(embedding3, db, threshold = 0) {
+  let best = {similarity: 0, name: "", source: "", embedding: []};
+  if (!embedding3 || !db || !Array.isArray(embedding3) || !Array.isArray(db))
+    return best;
+  for (const f of db) {
+    if (f.embedding && f.name) {
+      const perc = similarity2(embedding3, f.embedding);
+      if (perc > threshold && perc > best.similarity)
+        best = {...f, similarity: perc};
+    }
+  }
+  return best;
+}
+function enhance2(input) {
+  const image15 = tfjs_esm_exports.tidy(() => {
+    const tensor = input.image || input.tensor || input;
+    if (!(tensor instanceof tfjs_esm_exports.Tensor))
+      return null;
+    const box3 = [[0.05, 0.15, 0.85, 0.85]];
+    const crop = tensor.shape.length === 3 ? tfjs_esm_exports.image.cropAndResize(tfjs_esm_exports.expandDims(tensor, 0), box3, [0], [model5.inputs[0].shape[2], model5.inputs[0].shape[1]]) : tfjs_esm_exports.image.cropAndResize(tensor, box3, [0], [model5.inputs[0].shape[2], model5.inputs[0].shape[1]]);
+    const norm = crop.mul(255);
+    return norm;
+  });
+  return image15;
+}
+async function predict5(image15, config3) {
+  if (!model5)
+    return null;
+  if (skipped4 < config3.face.description.skipFrames && config3.videoOptimized && last4.age && last4.age > 0) {
+    skipped4++;
+    return last4;
+  }
+  if (config3.videoOptimized)
+    skipped4 = 0;
+  else
+    skipped4 = Number.MAX_SAFE_INTEGER;
+  return new Promise(async (resolve) => {
+    const enhanced = enhance2(image15);
+    let resT;
+    const obj = {
+      age: 0,
+      gender: "unknown",
+      genderConfidence: 0,
+      descriptor: []
+    };
+    if (!config3.profile) {
+      if (config3.face.description.enabled)
+        resT = await model5.predict(enhanced);
+    } else {
+      const profileDesc = config3.face.description.enabled ? await tfjs_esm_exports.profile(() => model5.predict(enhanced)) : {};
+      resT = profileDesc.result;
+      run("faceres", profileDesc);
+    }
+    tfjs_esm_exports.dispose(enhanced);
+    if (resT) {
+      tfjs_esm_exports.tidy(() => {
+        const gender2 = resT.find((t) => t.shape[1] === 1).dataSync();
+        const confidence = Math.trunc(200 * Math.abs(gender2[0] - 0.5)) / 100;
+        if (confidence > config3.face.gender.minConfidence) {
+          obj.gender = gender2[0] <= 0.5 ? "female" : "male";
+          obj.genderConfidence = Math.min(0.99, confidence);
+        }
+        const age2 = resT.find((t) => t.shape[1] === 100).argMax(1).dataSync()[0];
+        const all2 = resT.find((t) => t.shape[1] === 100).dataSync();
+        obj.age = Math.round(all2[age2 - 1] > all2[age2 + 1] ? 10 * age2 - 100 * all2[age2 - 1] : 10 * age2 + 100 * all2[age2 + 1]) / 10;
+        const desc = resT.find((t) => t.shape[1] === 1024);
+        obj.descriptor = [...desc.dataSync()];
+      });
+      resT.forEach((t) => tfjs_esm_exports.dispose(t));
+    }
+    last4 = obj;
+    resolve(obj);
+  });
+}
+
+// src/faceall.ts
+var calculateFaceAngle = (face4, image_size) => {
+  const degrees = (theta) => theta * 180 / Math.PI;
+  const normalize = (v) => {
+    const length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    v[0] /= length;
+    v[1] /= length;
+    v[2] /= length;
+    return v;
+  };
+  const subVectors = (a, b) => {
+    const x = a[0] - b[0];
+    const y = a[1] - b[1];
+    const z = a[2] - b[2];
+    return [x, y, z];
+  };
+  const crossVectors = (a, b) => {
+    const x = a[1] * b[2] - a[2] * b[1];
+    const y = a[2] * b[0] - a[0] * b[2];
+    const z = a[0] * b[1] - a[1] * b[0];
+    return [x, y, z];
+  };
+  const rotationMatrixToEulerAngle = (r) => {
+    const [r00, r01, r02, r10, r11, r12, r20, r21, r22] = r;
+    let thetaX;
+    let thetaY;
+    let thetaZ;
+    if (r10 < 1) {
+      if (r10 > -1) {
+        thetaZ = Math.asin(r10);
+        thetaY = Math.atan2(-r20, r00);
+        thetaX = Math.atan2(-r12, r11);
+      } else {
+        thetaZ = -Math.PI / 2;
+        thetaY = -Math.atan2(r21, r22);
+        thetaX = 0;
+      }
+    } else {
+      thetaZ = Math.PI / 2;
+      thetaY = Math.atan2(r21, r22);
+      thetaX = 0;
+    }
+    return {pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ};
+  };
+  const meshToEulerAngle = (mesh2) => {
+    const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
+    const angle2 = {
+      pitch: radians(mesh2[10][1], mesh2[10][2], mesh2[152][1], mesh2[152][2]),
+      yaw: radians(mesh2[33][0], mesh2[33][2], mesh2[263][0], mesh2[263][2]),
+      roll: radians(mesh2[33][0], mesh2[33][1], mesh2[263][0], mesh2[263][1])
+    };
+    return angle2;
+  };
+  const mesh = face4.meshRaw;
+  if (!mesh || mesh.length < 300)
+    return {angle: {pitch: 0, yaw: 0, roll: 0}, matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1]};
+  const size = Math.max(face4.boxRaw[2] * image_size[0], face4.boxRaw[3] * image_size[1]) / 1.5;
+  const pts = [mesh[10], mesh[152], mesh[234], mesh[454]].map((pt) => [
+    pt[0] * image_size[0] / size,
+    pt[1] * image_size[1] / size,
+    pt[2]
+  ]);
+  const y_axis = normalize(subVectors(pts[1], pts[0]));
+  let x_axis = normalize(subVectors(pts[3], pts[2]));
+  const z_axis = normalize(crossVectors(x_axis, y_axis));
+  x_axis = crossVectors(y_axis, z_axis);
+  const matrix = [
+    x_axis[0],
+    x_axis[1],
+    x_axis[2],
+    y_axis[0],
+    y_axis[1],
+    y_axis[2],
+    z_axis[0],
+    z_axis[1],
+    z_axis[2]
+  ];
+  const angle = rotationMatrixToEulerAngle(matrix);
+  return {angle, matrix};
+};
+var detectFace = async (parent, input) => {
+  var _a, _b, _c, _d, _e, _f, _g;
+  let timeStamp;
+  let ageRes;
+  let genderRes;
+  let emotionRes;
+  let embeddingRes;
+  let descRes;
+  const faceRes = [];
+  parent.state = "run:face";
+  timeStamp = now();
+  const faces = await ((_a = parent.models.face) == null ? void 0 : _a.estimateFaces(input, parent.config));
+  parent.perf.face = Math.trunc(now() - timeStamp);
+  if (!faces)
+    return [];
+  for (const face4 of faces) {
+    parent.analyze("Get Face");
+    if (!face4.image || face4.image.isDisposedInternal) {
+      log("Face object is disposed:", face4.image);
+      continue;
+    }
+    const rotation = calculateFaceAngle(face4, [input.shape[2], input.shape[1]]);
+    parent.analyze("Start Age:");
+    if (parent.config.async) {
+      ageRes = parent.config.face.age.enabled ? predict(face4.image, parent.config) : {};
+    } else {
+      parent.state = "run:age";
+      timeStamp = now();
+      ageRes = parent.config.face.age.enabled ? await predict(face4.image, parent.config) : {};
+      parent.perf.age = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze("Start Gender:");
+    if (parent.config.async) {
+      genderRes = parent.config.face.gender.enabled ? predict2(face4.image, parent.config) : {};
+    } else {
+      parent.state = "run:gender";
+      timeStamp = now();
+      genderRes = parent.config.face.gender.enabled ? await predict2(face4.image, parent.config) : {};
+      parent.perf.gender = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze("Start Emotion:");
+    if (parent.config.async) {
+      emotionRes = parent.config.face.emotion.enabled ? predict3(face4.image, parent.config) : {};
+    } else {
+      parent.state = "run:emotion";
+      timeStamp = now();
+      emotionRes = parent.config.face.emotion.enabled ? await predict3(face4.image, parent.config) : {};
+      parent.perf.emotion = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze("End Emotion:");
+    parent.analyze("Start Embedding:");
+    if (parent.config.async) {
+      embeddingRes = parent.config.face.embedding.enabled ? predict4(face4, parent.config) : [];
+    } else {
+      parent.state = "run:embedding";
+      timeStamp = now();
+      embeddingRes = parent.config.face.embedding.enabled ? await predict4(face4, parent.config) : [];
+      parent.perf.embedding = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze("End Embedding:");
+    parent.analyze("Start Description:");
+    if (parent.config.async) {
+      descRes = parent.config.face.description.enabled ? predict5(face4, parent.config) : [];
+    } else {
+      parent.state = "run:description";
+      timeStamp = now();
+      descRes = parent.config.face.description.enabled ? await predict5(face4.image, parent.config) : [];
+      parent.perf.embedding = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze("End Description:");
+    if (parent.config.async) {
+      [ageRes, genderRes, emotionRes, embeddingRes, descRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes]);
+    }
+    parent.analyze("Finish Face:");
+    if (!parent.config.face.iris.enabled && ((_b = face4 == null ? void 0 : face4.annotations) == null ? void 0 : _b.leftEyeIris) && ((_c = face4 == null ? void 0 : face4.annotations) == null ? void 0 : _c.rightEyeIris)) {
+      delete face4.annotations.leftEyeIris;
+      delete face4.annotations.rightEyeIris;
+    }
+    const irisSize = ((_d = face4.annotations) == null ? void 0 : _d.leftEyeIris) && ((_e = face4.annotations) == null ? void 0 : _e.rightEyeIris) ? 11.7 * Math.max(Math.abs(face4.annotations.leftEyeIris[3][0] - face4.annotations.leftEyeIris[1][0]), Math.abs(face4.annotations.rightEyeIris[4][1] - face4.annotations.rightEyeIris[2][1])) : 0;
+    faceRes.push({
+      ...face4,
+      age: descRes.age || ageRes.age,
+      gender: descRes.gender || genderRes.gender,
+      genderConfidence: descRes.genderConfidence || genderRes.confidence,
+      embedding: descRes.descriptor || embeddingRes,
+      emotion: emotionRes,
+      iris: irisSize !== 0 ? Math.trunc(irisSize) / 100 : 0,
+      rotation,
+      tensor: parent.config.face.detector.return ? (_f = face4.image) == null ? void 0 : _f.squeeze() : null
+    });
+    (_g = face4.image) == null ? void 0 : _g.dispose();
+    parent.analyze("End Face");
+  }
+  parent.analyze("End FaceMesh:");
+  if (parent.config.async) {
+    if (parent.perf.face)
+      delete parent.perf.face;
+    if (parent.perf.age)
+      delete parent.perf.age;
+    if (parent.perf.gender)
+      delete parent.perf.gender;
+    if (parent.perf.emotion)
+      delete parent.perf.emotion;
+  }
+  return faceRes;
+};
+
+// src/blazeface/facemesh.ts
+var facemesh_exports = {};
+__export(facemesh_exports, {
+  MediaPipeFaceMesh: () => MediaPipeFaceMesh,
+  load: () => load7,
+  triangulation: () => triangulation,
+  uvmap: () => uvmap
+});
+
+// src/blazeface/blazeface.ts
+var NUM_LANDMARKS = 6;
+function generateAnchors(inputSize) {
+  const spec = {strides: [inputSize / 16, inputSize / 8], anchors: [2, 6]};
+  const anchors3 = [];
+  for (let i = 0; i < spec.strides.length; i++) {
+    const stride = spec.strides[i];
+    const gridRows = Math.floor((inputSize + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize + stride - 1) / stride);
+    const anchorsNum = spec.anchors[i];
+    for (let gridY = 0; gridY < gridRows; gridY++) {
+      const anchorY = stride * (gridY + 0.5);
+      for (let gridX = 0; gridX < gridCols; gridX++) {
+        const anchorX = stride * (gridX + 0.5);
+        for (let n = 0; n < anchorsNum; n++) {
+          anchors3.push([anchorX, anchorY]);
+        }
+      }
+    }
+  }
+  return anchors3;
+}
+var createBox = (startEndTensor) => ({
+  startEndTensor,
+  startPoint: tfjs_esm_exports.slice(startEndTensor, [0, 0], [-1, 2]),
+  endPoint: tfjs_esm_exports.slice(startEndTensor, [0, 2], [-1, 2])
+});
+function decodeBounds(boxOutputs, anchors3, inputSize) {
+  const boxStarts = tfjs_esm_exports.slice(boxOutputs, [0, 1], [-1, 2]);
+  const centers = tfjs_esm_exports.add(boxStarts, anchors3);
+  const boxSizes = tfjs_esm_exports.slice(boxOutputs, [0, 3], [-1, 2]);
+  const boxSizesNormalized = tfjs_esm_exports.div(boxSizes, inputSize);
+  const centersNormalized = tfjs_esm_exports.div(centers, inputSize);
+  const halfBoxSize = tfjs_esm_exports.div(boxSizesNormalized, 2);
+  const starts = tfjs_esm_exports.sub(centersNormalized, halfBoxSize);
+  const ends = tfjs_esm_exports.add(centersNormalized, halfBoxSize);
+  const startNormalized = tfjs_esm_exports.mul(starts, inputSize);
+  const endNormalized = tfjs_esm_exports.mul(ends, inputSize);
+  const concatAxis = 1;
+  return tfjs_esm_exports.concat2d([startNormalized, endNormalized], concatAxis);
+}
+var BlazeFaceModel = class {
+  constructor(model10, config3) {
+    this.model = model10;
+    this.anchorsData = generateAnchors(model10.inputs[0].shape[1]);
+    this.anchors = tfjs_esm_exports.tensor2d(this.anchorsData);
+    this.inputSize = model10.inputs[0].shape[2];
+    this.config = config3;
+  }
+  async getBoundingBoxes(inputImage) {
+    if (!inputImage || inputImage.isDisposedInternal || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
+      return null;
+    const [batch, boxes, scores] = tfjs_esm_exports.tidy(() => {
+      const resizedImage = inputImage.resizeBilinear([this.inputSize, this.inputSize]);
+      const normalizedImage = resizedImage.div(127.5).sub(0.5);
+      const batchedPrediction = this.model.predict(normalizedImage);
+      let batchOut;
+      if (Array.isArray(batchedPrediction)) {
+        const sorted = batchedPrediction.sort((a, b) => a.size - b.size);
+        const concat384 = tfjs_esm_exports.concat([sorted[0], sorted[2]], 2);
+        const concat512 = tfjs_esm_exports.concat([sorted[1], sorted[3]], 2);
+        const concat4 = tfjs_esm_exports.concat([concat512, concat384], 1);
+        batchOut = concat4.squeeze(0);
+      } else {
+        batchOut = batchedPrediction.squeeze();
+      }
+      const boxesOut = decodeBounds(batchOut, this.anchors, [this.inputSize, this.inputSize]);
+      const logits = tfjs_esm_exports.slice(batchOut, [0, 0], [-1, 1]);
+      const scoresOut = tfjs_esm_exports.sigmoid(logits).squeeze();
+      return [batchOut, boxesOut, scoresOut];
+    });
+    const boxIndicesTensor = await tfjs_esm_exports.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxFaces, this.config.face.detector.iouThreshold, this.config.face.detector.scoreThreshold);
+    const boxIndices = boxIndicesTensor.arraySync();
+    boxIndicesTensor.dispose();
+    const boundingBoxesMap = boxIndices.map((boxIndex) => tfjs_esm_exports.slice(boxes, [boxIndex, 0], [1, -1]));
+    const boundingBoxes = boundingBoxesMap.map((boundingBox) => {
+      const vals = boundingBox.arraySync();
+      boundingBox.dispose();
+      return vals;
+    });
+    const scoresVal = scores.dataSync();
+    const annotatedBoxes = [];
+    for (let i = 0; i < boundingBoxes.length; i++) {
+      const boxIndex = boxIndices[i];
+      const confidence = scoresVal[boxIndex];
+      if (confidence > this.config.face.detector.minConfidence) {
+        const box3 = createBox(boundingBoxes[i]);
+        const anchor = this.anchorsData[boxIndex];
+        const landmarks = tfjs_esm_exports.tidy(() => tfjs_esm_exports.slice(batch, [boxIndex, NUM_LANDMARKS - 1], [1, -1]).squeeze().reshape([NUM_LANDMARKS, -1]));
+        annotatedBoxes.push({box: box3, landmarks, anchor, confidence});
+      }
+    }
+    batch.dispose();
+    boxes.dispose();
+    scores.dispose();
+    return {
+      boxes: annotatedBoxes,
+      scaleFactor: [inputImage.shape[2] / this.inputSize, inputImage.shape[1] / this.inputSize]
+    };
+  }
+};
+async function load6(config3) {
+  const model10 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.detector.modelPath), {fromTFHub: config3.face.detector.modelPath.includes("tfhub.dev")});
+  const blazeFace = new BlazeFaceModel(model10, config3);
+  if (!model10 || !model10.modelUrl)
+    log("load model failed:", config3.face.detector.modelPath);
+  else if (config3.debug)
+    log("load model:", model10.modelUrl);
+  return blazeFace;
+}
+
+// src/blazeface/box.ts
+function scaleBoxCoordinates(box3, factor) {
+  const startPoint = [box3.startPoint[0] * factor[0], box3.startPoint[1] * factor[1]];
+  const endPoint = [box3.endPoint[0] * factor[0], box3.endPoint[1] * factor[1]];
+  return {startPoint, endPoint};
+}
+function getBoxSize(box3) {
+  return [
+    Math.abs(box3.endPoint[0] - box3.startPoint[0]),
+    Math.abs(box3.endPoint[1] - box3.startPoint[1])
+  ];
+}
+function getBoxCenter(box3) {
+  return [
+    box3.startPoint[0] + (box3.endPoint[0] - box3.startPoint[0]) / 2,
+    box3.startPoint[1] + (box3.endPoint[1] - box3.startPoint[1]) / 2
+  ];
+}
+function cutBoxFromImageAndResize(box3, image15, cropSize) {
+  const h = image15.shape[1];
+  const w = image15.shape[2];
+  const boxes = [[
+    box3.startPoint[1] / h,
+    box3.startPoint[0] / w,
+    box3.endPoint[1] / h,
+    box3.endPoint[0] / w
+  ]];
+  return tfjs_esm_exports.image.cropAndResize(image15, boxes, [0], cropSize);
+}
+function enlargeBox(box3, factor = 1.5) {
+  const center = getBoxCenter(box3);
+  const size = getBoxSize(box3);
+  const newHalfSize = [factor * size[0] / 2, factor * size[1] / 2];
+  const startPoint = [center[0] - newHalfSize[0], center[1] - newHalfSize[1]];
+  const endPoint = [center[0] + newHalfSize[0], center[1] + newHalfSize[1]];
+  return {startPoint, endPoint, landmarks: box3.landmarks};
+}
+function squarifyBox(box3) {
+  const centers = getBoxCenter(box3);
+  const size = getBoxSize(box3);
+  const maxEdge = Math.max(...size);
+  const halfSize = maxEdge / 2;
+  const startPoint = [centers[0] - halfSize, centers[1] - halfSize];
+  const endPoint = [centers[0] + halfSize, centers[1] + halfSize];
+  return {startPoint, endPoint, landmarks: box3.landmarks};
+}
+
+// src/blazeface/util.ts
+var IDENTITY_MATRIX = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+function normalizeRadians(angle) {
+  return angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
+}
+function computeRotation(point1, point2) {
+  const radians = Math.PI / 2 - Math.atan2(-(point2[1] - point1[1]), point2[0] - point1[0]);
+  return normalizeRadians(radians);
+}
+function buildTranslationMatrix(x, y) {
+  return [[1, 0, x], [0, 1, y], [0, 0, 1]];
+}
+function dot(v1, v2) {
+  let product = 0;
+  for (let i = 0; i < v1.length; i++) {
+    product += v1[i] * v2[i];
+  }
+  return product;
+}
+function getColumnFrom2DArr(arr, columnIndex) {
+  const column = [];
+  for (let i = 0; i < arr.length; i++) {
+    column.push(arr[i][columnIndex]);
+  }
+  return column;
+}
+function multiplyTransformMatrices(mat1, mat2) {
+  const product = [];
+  const size = mat1.length;
+  for (let row = 0; row < size; row++) {
+    product.push([]);
+    for (let col = 0; col < size; col++) {
+      product[row].push(dot(mat1[row], getColumnFrom2DArr(mat2, col)));
+    }
+  }
+  return product;
+}
+function buildRotationMatrix(rotation, center) {
+  const cosA = Math.cos(rotation);
+  const sinA = Math.sin(rotation);
+  const rotationMatrix = [[cosA, -sinA, 0], [sinA, cosA, 0], [0, 0, 1]];
+  const translationMatrix = buildTranslationMatrix(center[0], center[1]);
+  const translationTimesRotation = multiplyTransformMatrices(translationMatrix, rotationMatrix);
+  const negativeTranslationMatrix = buildTranslationMatrix(-center[0], -center[1]);
+  return multiplyTransformMatrices(translationTimesRotation, negativeTranslationMatrix);
+}
+function invertTransformMatrix(matrix) {
+  const rotationComponent = [[matrix[0][0], matrix[1][0]], [matrix[0][1], matrix[1][1]]];
+  const translationComponent = [matrix[0][2], matrix[1][2]];
+  const invertedTranslation = [
+    -dot(rotationComponent[0], translationComponent),
+    -dot(rotationComponent[1], translationComponent)
+  ];
+  return [
+    rotationComponent[0].concat(invertedTranslation[0]),
+    rotationComponent[1].concat(invertedTranslation[1]),
+    [0, 0, 1]
+  ];
+}
+function rotatePoint(homogeneousCoordinate, rotationMatrix) {
+  return [
+    dot(homogeneousCoordinate, rotationMatrix[0]),
+    dot(homogeneousCoordinate, rotationMatrix[1])
+  ];
+}
+
+// src/blazeface/coords.ts
+var MESH_ANNOTATIONS = {
+  silhouette: [
+    10,
+    338,
+    297,
+    332,
+    284,
+    251,
+    389,
+    356,
+    454,
+    323,
+    361,
+    288,
+    397,
+    365,
+    379,
+    378,
+    400,
+    377,
+    152,
+    148,
+    176,
+    149,
+    150,
+    136,
+    172,
+    58,
+    132,
+    93,
+    234,
+    127,
+    162,
+    21,
+    54,
+    103,
+    67,
+    109
+  ],
+  lipsUpperOuter: [61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291],
+  lipsLowerOuter: [146, 91, 181, 84, 17, 314, 405, 321, 375, 291],
+  lipsUpperInner: [78, 191, 80, 81, 82, 13, 312, 311, 310, 415, 308],
+  lipsLowerInner: [78, 95, 88, 178, 87, 14, 317, 402, 318, 324, 308],
+  rightEyeUpper0: [246, 161, 160, 159, 158, 157, 173],
+  rightEyeLower0: [33, 7, 163, 144, 145, 153, 154, 155, 133],
+  rightEyeUpper1: [247, 30, 29, 27, 28, 56, 190],
+  rightEyeLower1: [130, 25, 110, 24, 23, 22, 26, 112, 243],
+  rightEyeUpper2: [113, 225, 224, 223, 222, 221, 189],
+  rightEyeLower2: [226, 31, 228, 229, 230, 231, 232, 233, 244],
+  rightEyeLower3: [143, 111, 117, 118, 119, 120, 121, 128, 245],
+  rightEyebrowUpper: [156, 70, 63, 105, 66, 107, 55, 193],
+  rightEyebrowLower: [35, 124, 46, 53, 52, 65],
+  rightEyeIris: [473, 474, 475, 476, 477],
+  leftEyeUpper0: [466, 388, 387, 386, 385, 384, 398],
+  leftEyeLower0: [263, 249, 390, 373, 374, 380, 381, 382, 362],
+  leftEyeUpper1: [467, 260, 259, 257, 258, 286, 414],
+  leftEyeLower1: [359, 255, 339, 254, 253, 252, 256, 341, 463],
+  leftEyeUpper2: [342, 445, 444, 443, 442, 441, 413],
+  leftEyeLower2: [446, 261, 448, 449, 450, 451, 452, 453, 464],
+  leftEyeLower3: [372, 340, 346, 347, 348, 349, 350, 357, 465],
+  leftEyebrowUpper: [383, 300, 293, 334, 296, 336, 285, 417],
+  leftEyebrowLower: [265, 353, 276, 283, 282, 295],
+  leftEyeIris: [468, 469, 470, 471, 472],
+  midwayBetweenEyes: [168],
+  noseTip: [1],
+  noseBottom: [2],
+  noseRightCorner: [98],
+  noseLeftCorner: [327],
+  rightCheek: [205],
+  leftCheek: [425]
+};
+var MESH_TO_IRIS_INDICES_MAP = [
+  {key: "EyeUpper0", indices: [9, 10, 11, 12, 13, 14, 15]},
+  {key: "EyeUpper1", indices: [25, 26, 27, 28, 29, 30, 31]},
+  {key: "EyeUpper2", indices: [41, 42, 43, 44, 45, 46, 47]},
+  {key: "EyeLower0", indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]},
+  {key: "EyeLower1", indices: [16, 17, 18, 19, 20, 21, 22, 23, 24]},
+  {key: "EyeLower2", indices: [32, 33, 34, 35, 36, 37, 38, 39, 40]},
+  {key: "EyeLower3", indices: [54, 55, 56, 57, 58, 59, 60, 61, 62]}
+];
+var UV468 = [
+  [0.499976992607117, 0.652534008026123],
+  [0.500025987625122, 0.547487020492554],
+  [0.499974012374878, 0.602371990680695],
+  [0.482113003730774, 0.471979022026062],
+  [0.500150978565216, 0.527155995368958],
+  [0.499909996986389, 0.498252987861633],
+  [0.499523013830185, 0.40106201171875],
+  [0.289712011814117, 0.380764007568359],
+  [0.499954998493195, 0.312398016452789],
+  [0.499987006187439, 0.269918978214264],
+  [0.500023007392883, 0.107050001621246],
+  [0.500023007392883, 0.666234016418457],
+  [0.5000159740448, 0.679224014282227],
+  [0.500023007392883, 0.692348003387451],
+  [0.499976992607117, 0.695277988910675],
+  [0.499976992607117, 0.70593398809433],
+  [0.499976992607117, 0.719385027885437],
+  [0.499976992607117, 0.737019002437592],
+  [0.499967992305756, 0.781370997428894],
+  [0.499816000461578, 0.562981009483337],
+  [0.473773002624512, 0.573909997940063],
+  [0.104906998574734, 0.254140973091125],
+  [0.365929991006851, 0.409575998783112],
+  [0.338757991790771, 0.41302502155304],
+  [0.311120003461838, 0.409460008144379],
+  [0.274657994508743, 0.389131009578705],
+  [0.393361985683441, 0.403706014156342],
+  [0.345234006643295, 0.344011008739471],
+  [0.370094001293182, 0.346076011657715],
+  [0.319321990013123, 0.347265005111694],
+  [0.297903001308441, 0.353591024875641],
+  [0.24779200553894, 0.410809993743896],
+  [0.396889001131058, 0.842755019664764],
+  [0.280097991228104, 0.375599980354309],
+  [0.106310002505779, 0.399955987930298],
+  [0.2099249958992, 0.391353011131287],
+  [0.355807989835739, 0.534406006336212],
+  [0.471751004457474, 0.65040397644043],
+  [0.474155008792877, 0.680191993713379],
+  [0.439785003662109, 0.657229006290436],
+  [0.414617002010345, 0.66654098033905],
+  [0.450374007225037, 0.680860996246338],
+  [0.428770989179611, 0.682690978050232],
+  [0.374971002340317, 0.727805018424988],
+  [0.486716985702515, 0.547628998756409],
+  [0.485300987958908, 0.527395009994507],
+  [0.257764995098114, 0.314490020275116],
+  [0.401223003864288, 0.455172002315521],
+  [0.429818987846375, 0.548614978790283],
+  [0.421351999044418, 0.533740997314453],
+  [0.276895999908447, 0.532056987285614],
+  [0.483370006084442, 0.499586999416351],
+  [0.33721199631691, 0.282882988452911],
+  [0.296391993761063, 0.293242990970612],
+  [0.169294998049736, 0.193813979625702],
+  [0.447580009698868, 0.302609980106354],
+  [0.392390012741089, 0.353887975215912],
+  [0.354490011930466, 0.696784019470215],
+  [0.067304998636246, 0.730105042457581],
+  [0.442739009857178, 0.572826027870178],
+  [0.457098007202148, 0.584792017936707],
+  [0.381974011659622, 0.694710969924927],
+  [0.392388999462128, 0.694203019142151],
+  [0.277076005935669, 0.271932005882263],
+  [0.422551989555359, 0.563233017921448],
+  [0.385919004678726, 0.281364023685455],
+  [0.383103013038635, 0.255840003490448],
+  [0.331431001424789, 0.119714021682739],
+  [0.229923993349075, 0.232002973556519],
+  [0.364500999450684, 0.189113974571228],
+  [0.229622006416321, 0.299540996551514],
+  [0.173287004232407, 0.278747975826263],
+  [0.472878992557526, 0.666198015213013],
+  [0.446828007698059, 0.668527007102966],
+  [0.422762006521225, 0.673889994621277],
+  [0.445307999849319, 0.580065965652466],
+  [0.388103008270264, 0.693961024284363],
+  [0.403039008378983, 0.706539988517761],
+  [0.403629004955292, 0.693953037261963],
+  [0.460041999816895, 0.557139039039612],
+  [0.431158006191254, 0.692366003990173],
+  [0.452181994915009, 0.692366003990173],
+  [0.475387006998062, 0.692366003990173],
+  [0.465828001499176, 0.779190003871918],
+  [0.472328990697861, 0.736225962638855],
+  [0.473087012767792, 0.717857003211975],
+  [0.473122000694275, 0.704625964164734],
+  [0.473033010959625, 0.695277988910675],
+  [0.427942007780075, 0.695277988910675],
+  [0.426479011774063, 0.703539967536926],
+  [0.423162013292313, 0.711845993995667],
+  [0.4183090031147, 0.720062971115112],
+  [0.390094995498657, 0.639572978019714],
+  [0.013953999616206, 0.560034036636353],
+  [0.499913990497589, 0.58014702796936],
+  [0.413199990987778, 0.69539999961853],
+  [0.409626007080078, 0.701822996139526],
+  [0.468080013990402, 0.601534962654114],
+  [0.422728985548019, 0.585985004901886],
+  [0.463079988956451, 0.593783974647522],
+  [0.37211999297142, 0.47341400384903],
+  [0.334562003612518, 0.496073007583618],
+  [0.411671012639999, 0.546965003013611],
+  [0.242175996303558, 0.14767599105835],
+  [0.290776997804642, 0.201445996761322],
+  [0.327338010072708, 0.256527006626129],
+  [0.399509996175766, 0.748921036720276],
+  [0.441727995872498, 0.261676013469696],
+  [0.429764986038208, 0.187834024429321],
+  [0.412198007106781, 0.108901023864746],
+  [0.288955003023148, 0.398952007293701],
+  [0.218936994671822, 0.435410976409912],
+  [0.41278201341629, 0.398970007896423],
+  [0.257135003805161, 0.355440020561218],
+  [0.427684992551804, 0.437960982322693],
+  [0.448339998722076, 0.536936044692993],
+  [0.178560003638268, 0.45755398273468],
+  [0.247308000922203, 0.457193970680237],
+  [0.286267012357712, 0.467674970626831],
+  [0.332827985286713, 0.460712015628815],
+  [0.368755996227264, 0.447206974029541],
+  [0.398963987827301, 0.432654976844788],
+  [0.476410001516342, 0.405806005001068],
+  [0.189241006970406, 0.523923993110657],
+  [0.228962004184723, 0.348950982093811],
+  [0.490725994110107, 0.562400996685028],
+  [0.404670000076294, 0.485132992267609],
+  [0.019469000399113, 0.401564002037048],
+  [0.426243007183075, 0.420431017875671],
+  [0.396993011236191, 0.548797011375427],
+  [0.266469985246658, 0.376977026462555],
+  [0.439121007919312, 0.51895797252655],
+  [0.032313998788595, 0.644356966018677],
+  [0.419054001569748, 0.387154996395111],
+  [0.462783008813858, 0.505746960639954],
+  [0.238978996872902, 0.779744982719421],
+  [0.198220998048782, 0.831938028335571],
+  [0.107550002634525, 0.540755033493042],
+  [0.183610007166862, 0.740257024765015],
+  [0.134409993886948, 0.333683013916016],
+  [0.385764002799988, 0.883153975009918],
+  [0.490967005491257, 0.579378008842468],
+  [0.382384985685349, 0.508572995662689],
+  [0.174399003386497, 0.397670984268188],
+  [0.318785011768341, 0.39623498916626],
+  [0.343364000320435, 0.400596976280212],
+  [0.396100014448166, 0.710216999053955],
+  [0.187885001301765, 0.588537991046906],
+  [0.430987000465393, 0.944064974784851],
+  [0.318993002176285, 0.898285031318665],
+  [0.266247987747192, 0.869701027870178],
+  [0.500023007392883, 0.190576016902924],
+  [0.499976992607117, 0.954452991485596],
+  [0.366169989109039, 0.398822009563446],
+  [0.393207013607025, 0.39553701877594],
+  [0.410373002290726, 0.391080021858215],
+  [0.194993004202843, 0.342101991176605],
+  [0.388664990663528, 0.362284004688263],
+  [0.365961998701096, 0.355970978736877],
+  [0.343364000320435, 0.355356991291046],
+  [0.318785011768341, 0.35834002494812],
+  [0.301414996385574, 0.363156020641327],
+  [0.058132998645306, 0.319076001644135],
+  [0.301414996385574, 0.387449026107788],
+  [0.499987989664078, 0.618434011936188],
+  [0.415838003158569, 0.624195992946625],
+  [0.445681989192963, 0.566076993942261],
+  [0.465844005346298, 0.620640993118286],
+  [0.49992299079895, 0.351523995399475],
+  [0.288718998432159, 0.819945991039276],
+  [0.335278987884521, 0.852819979190826],
+  [0.440512001514435, 0.902418971061707],
+  [0.128294005990028, 0.791940987110138],
+  [0.408771991729736, 0.373893976211548],
+  [0.455606997013092, 0.451801002025604],
+  [0.499877005815506, 0.908990025520325],
+  [0.375436991453171, 0.924192011356354],
+  [0.11421000212431, 0.615022003650665],
+  [0.448662012815475, 0.695277988910675],
+  [0.4480200111866, 0.704632043838501],
+  [0.447111994028091, 0.715808033943176],
+  [0.444831997156143, 0.730794012546539],
+  [0.430011987686157, 0.766808986663818],
+  [0.406787008047104, 0.685672998428345],
+  [0.400738000869751, 0.681069016456604],
+  [0.392399996519089, 0.677703022956848],
+  [0.367855995893478, 0.663918972015381],
+  [0.247923001646996, 0.601333022117615],
+  [0.452769994735718, 0.420849978923798],
+  [0.43639200925827, 0.359887003898621],
+  [0.416164010763168, 0.368713974952698],
+  [0.413385987281799, 0.692366003990173],
+  [0.228018000721931, 0.683571994304657],
+  [0.468268007040024, 0.352671027183533],
+  [0.411361992359161, 0.804327011108398],
+  [0.499989002943039, 0.469825029373169],
+  [0.479153990745544, 0.442654013633728],
+  [0.499974012374878, 0.439637005329132],
+  [0.432112008333206, 0.493588984012604],
+  [0.499886006116867, 0.866917014122009],
+  [0.49991300702095, 0.821729004383087],
+  [0.456548988819122, 0.819200992584229],
+  [0.344549000263214, 0.745438992977142],
+  [0.37890899181366, 0.574010014533997],
+  [0.374292999505997, 0.780184984207153],
+  [0.319687992334366, 0.570737957954407],
+  [0.357154995203018, 0.604269981384277],
+  [0.295284003019333, 0.621580958366394],
+  [0.447750002145767, 0.862477004528046],
+  [0.410986006259918, 0.508723020553589],
+  [0.31395098567009, 0.775308012962341],
+  [0.354128003120422, 0.812552988529205],
+  [0.324548006057739, 0.703992962837219],
+  [0.189096003770828, 0.646299958229065],
+  [0.279776990413666, 0.71465802192688],
+  [0.1338230073452, 0.682700991630554],
+  [0.336768001317978, 0.644733011722565],
+  [0.429883986711502, 0.466521978378296],
+  [0.455527991056442, 0.548622965812683],
+  [0.437114000320435, 0.558896005153656],
+  [0.467287987470627, 0.529924988746643],
+  [0.414712011814117, 0.335219979286194],
+  [0.37704598903656, 0.322777986526489],
+  [0.344107985496521, 0.320150971412659],
+  [0.312875986099243, 0.32233202457428],
+  [0.283526003360748, 0.333190023899078],
+  [0.241245999932289, 0.382785975933075],
+  [0.102986000478268, 0.468762993812561],
+  [0.267612010240555, 0.424560010433197],
+  [0.297879010438919, 0.433175981044769],
+  [0.333433985710144, 0.433878004550934],
+  [0.366427004337311, 0.426115989685059],
+  [0.396012008190155, 0.416696012020111],
+  [0.420121014118195, 0.41022801399231],
+  [0.007561000064015, 0.480777025222778],
+  [0.432949006557465, 0.569517970085144],
+  [0.458638995885849, 0.479089021682739],
+  [0.473466008901596, 0.545744001865387],
+  [0.476087987422943, 0.563830018043518],
+  [0.468472003936768, 0.555056989192963],
+  [0.433990985155106, 0.582361996173859],
+  [0.483518004417419, 0.562983989715576],
+  [0.482482999563217, 0.57784903049469],
+  [0.42645001411438, 0.389798998832703],
+  [0.438998997211456, 0.39649498462677],
+  [0.450067013502121, 0.400434017181396],
+  [0.289712011814117, 0.368252992630005],
+  [0.276670008897781, 0.363372981548309],
+  [0.517862021923065, 0.471948027610779],
+  [0.710287988185883, 0.380764007568359],
+  [0.526226997375488, 0.573909997940063],
+  [0.895093023777008, 0.254140973091125],
+  [0.634069979190826, 0.409575998783112],
+  [0.661242008209229, 0.41302502155304],
+  [0.688880026340485, 0.409460008144379],
+  [0.725341975688934, 0.389131009578705],
+  [0.606630027294159, 0.40370500087738],
+  [0.654766023159027, 0.344011008739471],
+  [0.629905998706818, 0.346076011657715],
+  [0.680678009986877, 0.347265005111694],
+  [0.702096998691559, 0.353591024875641],
+  [0.75221198797226, 0.410804986953735],
+  [0.602918028831482, 0.842862963676453],
+  [0.719901978969574, 0.375599980354309],
+  [0.893692970275879, 0.399959981441498],
+  [0.790081977844238, 0.391354024410248],
+  [0.643998026847839, 0.534487962722778],
+  [0.528249025344849, 0.65040397644043],
+  [0.525849997997284, 0.680191040039062],
+  [0.560214996337891, 0.657229006290436],
+  [0.585384011268616, 0.66654098033905],
+  [0.549625992774963, 0.680860996246338],
+  [0.57122802734375, 0.682691991329193],
+  [0.624852001667023, 0.72809898853302],
+  [0.513050019741058, 0.547281980514526],
+  [0.51509702205658, 0.527251958847046],
+  [0.742246985435486, 0.314507007598877],
+  [0.598631024360657, 0.454979002475739],
+  [0.570338010787964, 0.548575043678284],
+  [0.578631997108459, 0.533622980117798],
+  [0.723087012767792, 0.532054007053375],
+  [0.516445994377136, 0.499638974666595],
+  [0.662801027297974, 0.282917976379395],
+  [0.70362401008606, 0.293271005153656],
+  [0.830704987049103, 0.193813979625702],
+  [0.552385985851288, 0.302568018436432],
+  [0.607609987258911, 0.353887975215912],
+  [0.645429015159607, 0.696707010269165],
+  [0.932694971561432, 0.730105042457581],
+  [0.557260990142822, 0.572826027870178],
+  [0.542901992797852, 0.584792017936707],
+  [0.6180260181427, 0.694710969924927],
+  [0.607590973377228, 0.694203019142151],
+  [0.722943007946014, 0.271963000297546],
+  [0.577413976192474, 0.563166975975037],
+  [0.614082992076874, 0.281386971473694],
+  [0.616907000541687, 0.255886018276215],
+  [0.668509006500244, 0.119913995265961],
+  [0.770092010498047, 0.232020974159241],
+  [0.635536015033722, 0.189248979091644],
+  [0.77039098739624, 0.299556016921997],
+  [0.826722025871277, 0.278755009174347],
+  [0.527121007442474, 0.666198015213013],
+  [0.553171992301941, 0.668527007102966],
+  [0.577238023281097, 0.673889994621277],
+  [0.554691970348358, 0.580065965652466],
+  [0.611896991729736, 0.693961024284363],
+  [0.59696102142334, 0.706539988517761],
+  [0.596370995044708, 0.693953037261963],
+  [0.539958000183105, 0.557139039039612],
+  [0.568841993808746, 0.692366003990173],
+  [0.547818005084991, 0.692366003990173],
+  [0.52461302280426, 0.692366003990173],
+  [0.534089982509613, 0.779141008853912],
+  [0.527670979499817, 0.736225962638855],
+  [0.526912987232208, 0.717857003211975],
+  [0.526877999305725, 0.704625964164734],
+  [0.526966989040375, 0.695277988910675],
+  [0.572058022022247, 0.695277988910675],
+  [0.573521018028259, 0.703539967536926],
+  [0.57683801651001, 0.711845993995667],
+  [0.581691026687622, 0.720062971115112],
+  [0.609944999217987, 0.639909982681274],
+  [0.986046016216278, 0.560034036636353],
+  [0.5867999792099, 0.69539999961853],
+  [0.590372025966644, 0.701822996139526],
+  [0.531915009021759, 0.601536989212036],
+  [0.577268004417419, 0.585934996604919],
+  [0.536915004253387, 0.593786001205444],
+  [0.627542972564697, 0.473352015018463],
+  [0.665585994720459, 0.495950996875763],
+  [0.588353991508484, 0.546862006187439],
+  [0.757824003696442, 0.14767599105835],
+  [0.709249973297119, 0.201507985591888],
+  [0.672684013843536, 0.256581008434296],
+  [0.600408971309662, 0.74900496006012],
+  [0.55826598405838, 0.261672019958496],
+  [0.570303976535797, 0.187870979309082],
+  [0.588165998458862, 0.109044015407562],
+  [0.711045026779175, 0.398952007293701],
+  [0.781069993972778, 0.435405015945435],
+  [0.587247014045715, 0.398931980133057],
+  [0.742869973182678, 0.355445981025696],
+  [0.572156012058258, 0.437651991844177],
+  [0.55186802148819, 0.536570012569427],
+  [0.821442008018494, 0.457556009292603],
+  [0.752701997756958, 0.457181990146637],
+  [0.71375697851181, 0.467626988887787],
+  [0.66711300611496, 0.460672974586487],
+  [0.631101012229919, 0.447153985500336],
+  [0.6008620262146, 0.432473003864288],
+  [0.523481011390686, 0.405627012252808],
+  [0.810747981071472, 0.523926019668579],
+  [0.771045982837677, 0.348959028720856],
+  [0.509127020835876, 0.562718033790588],
+  [0.595292985439301, 0.485023975372314],
+  [0.980530977249146, 0.401564002037048],
+  [0.573499977588654, 0.420000016689301],
+  [0.602994978427887, 0.548687994480133],
+  [0.733529984951019, 0.376977026462555],
+  [0.560611009597778, 0.519016981124878],
+  [0.967685997486115, 0.644356966018677],
+  [0.580985009670258, 0.387160003185272],
+  [0.537728011608124, 0.505385041236877],
+  [0.760966002941132, 0.779752969741821],
+  [0.801778972148895, 0.831938028335571],
+  [0.892440974712372, 0.54076099395752],
+  [0.816350996494293, 0.740260004997253],
+  [0.865594983100891, 0.333687007427216],
+  [0.614073991775513, 0.883246004581451],
+  [0.508952975273132, 0.579437971115112],
+  [0.617941975593567, 0.508316040039062],
+  [0.825608015060425, 0.397674977779388],
+  [0.681214988231659, 0.39623498916626],
+  [0.656635999679565, 0.400596976280212],
+  [0.603900015354156, 0.710216999053955],
+  [0.81208598613739, 0.588539004325867],
+  [0.56801301240921, 0.944564998149872],
+  [0.681007981300354, 0.898285031318665],
+  [0.733752012252808, 0.869701027870178],
+  [0.633830010890961, 0.398822009563446],
+  [0.606792986392975, 0.39553701877594],
+  [0.589659988880157, 0.391062021255493],
+  [0.805015981197357, 0.342108011245728],
+  [0.611334979534149, 0.362284004688263],
+  [0.634037971496582, 0.355970978736877],
+  [0.656635999679565, 0.355356991291046],
+  [0.681214988231659, 0.35834002494812],
+  [0.698584973812103, 0.363156020641327],
+  [0.941866993904114, 0.319076001644135],
+  [0.698584973812103, 0.387449026107788],
+  [0.584177017211914, 0.624107003211975],
+  [0.554318010807037, 0.566076993942261],
+  [0.534153997898102, 0.62064003944397],
+  [0.711217999458313, 0.819975018501282],
+  [0.664629995822906, 0.852871000766754],
+  [0.559099972248077, 0.902631998062134],
+  [0.871706008911133, 0.791940987110138],
+  [0.591234028339386, 0.373893976211548],
+  [0.544341027736664, 0.451583981513977],
+  [0.624562978744507, 0.924192011356354],
+  [0.88577002286911, 0.615028977394104],
+  [0.551338016986847, 0.695277988910675],
+  [0.551980018615723, 0.704632043838501],
+  [0.552887976169586, 0.715808033943176],
+  [0.555167973041534, 0.730794012546539],
+  [0.569944024085999, 0.767035007476807],
+  [0.593203008174896, 0.685675978660583],
+  [0.599261999130249, 0.681069016456604],
+  [0.607599973678589, 0.677703022956848],
+  [0.631937980651855, 0.663500010967255],
+  [0.752032995223999, 0.601315021514893],
+  [0.547226011753082, 0.420395016670227],
+  [0.563543975353241, 0.359827995300293],
+  [0.583841025829315, 0.368713974952698],
+  [0.586614012718201, 0.692366003990173],
+  [0.771915018558502, 0.683578014373779],
+  [0.531597018241882, 0.352482974529266],
+  [0.588370978832245, 0.804440975189209],
+  [0.52079701423645, 0.442565023899078],
+  [0.567984998226166, 0.493479013442993],
+  [0.543282985687256, 0.819254994392395],
+  [0.655317008495331, 0.745514988899231],
+  [0.621008992195129, 0.574018001556396],
+  [0.625559985637665, 0.78031200170517],
+  [0.680198013782501, 0.570719003677368],
+  [0.64276397228241, 0.604337990283966],
+  [0.704662978649139, 0.621529996395111],
+  [0.552012026309967, 0.862591981887817],
+  [0.589071989059448, 0.508637011051178],
+  [0.685944974422455, 0.775357007980347],
+  [0.645735025405884, 0.812640011310577],
+  [0.675342977046967, 0.703978002071381],
+  [0.810858011245728, 0.646304965019226],
+  [0.72012197971344, 0.714666962623596],
+  [0.866151988506317, 0.682704985141754],
+  [0.663187026977539, 0.644596993923187],
+  [0.570082008838654, 0.466325998306274],
+  [0.544561982154846, 0.548375964164734],
+  [0.562758982181549, 0.558784961700439],
+  [0.531987011432648, 0.530140042304993],
+  [0.585271000862122, 0.335177004337311],
+  [0.622952997684479, 0.32277899980545],
+  [0.655896008014679, 0.320163011550903],
+  [0.687132000923157, 0.322345972061157],
+  [0.716481983661652, 0.333200991153717],
+  [0.758756995201111, 0.382786989212036],
+  [0.897013008594513, 0.468769013881683],
+  [0.732392013072968, 0.424547016620636],
+  [0.70211398601532, 0.433162987232208],
+  [0.66652500629425, 0.433866024017334],
+  [0.633504986763, 0.426087975502014],
+  [0.603875994682312, 0.416586995124817],
+  [0.579657971858978, 0.409945011138916],
+  [0.992439985275269, 0.480777025222778],
+  [0.567192018032074, 0.569419980049133],
+  [0.54136598110199, 0.478899002075195],
+  [0.526564002037048, 0.546118021011353],
+  [0.523913025856018, 0.563830018043518],
+  [0.531529009342194, 0.555056989192963],
+  [0.566035985946655, 0.582329034805298],
+  [0.51631098985672, 0.563053965568542],
+  [0.5174720287323, 0.577877044677734],
+  [0.573594987392426, 0.389806985855103],
+  [0.560697972774506, 0.395331978797913],
+  [0.549755990505219, 0.399751007556915],
+  [0.710287988185883, 0.368252992630005],
+  [0.723330020904541, 0.363372981548309]
+];
+var TRI468 = [
+  127,
+  34,
+  139,
+  11,
+  0,
+  37,
+  232,
+  231,
+  120,
+  72,
+  37,
+  39,
+  128,
+  121,
+  47,
+  232,
+  121,
+  128,
+  104,
+  69,
+  67,
+  175,
+  171,
+  148,
+  157,
+  154,
+  155,
+  118,
+  50,
+  101,
+  73,
+  39,
+  40,
+  9,
+  151,
+  108,
+  48,
+  115,
+  131,
+  194,
+  204,
+  211,
+  74,
+  40,
+  185,
+  80,
+  42,
+  183,
+  40,
+  92,
+  186,
+  230,
+  229,
+  118,
+  202,
+  212,
+  214,
+  83,
+  18,
+  17,
+  76,
+  61,
+  146,
+  160,
+  29,
+  30,
+  56,
+  157,
+  173,
+  106,
+  204,
+  194,
+  135,
+  214,
+  192,
+  203,
+  165,
+  98,
+  21,
+  71,
+  68,
+  51,
+  45,
+  4,
+  144,
+  24,
+  23,
+  77,
+  146,
+  91,
+  205,
+  50,
+  187,
+  201,
+  200,
+  18,
+  91,
+  106,
+  182,
+  90,
+  91,
+  181,
+  85,
+  84,
+  17,
+  206,
+  203,
+  36,
+  148,
+  171,
+  140,
+  92,
+  40,
+  39,
+  193,
+  189,
+  244,
+  159,
+  158,
+  28,
+  247,
+  246,
+  161,
+  236,
+  3,
+  196,
+  54,
+  68,
+  104,
+  193,
+  168,
+  8,
+  117,
+  228,
+  31,
+  189,
+  193,
+  55,
+  98,
+  97,
+  99,
+  126,
+  47,
+  100,
+  166,
+  79,
+  218,
+  155,
+  154,
+  26,
+  209,
+  49,
+  131,
+  135,
+  136,
+  150,
+  47,
+  126,
+  217,
+  223,
+  52,
+  53,
+  45,
+  51,
+  134,
+  211,
+  170,
+  140,
+  67,
+  69,
+  108,
+  43,
+  106,
+  91,
+  230,
+  119,
+  120,
+  226,
+  130,
+  247,
+  63,
+  53,
+  52,
+  238,
+  20,
+  242,
+  46,
+  70,
+  156,
+  78,
+  62,
+  96,
+  46,
+  53,
+  63,
+  143,
+  34,
+  227,
+  173,
+  155,
+  133,
+  123,
+  117,
+  111,
+  44,
+  125,
+  19,
+  236,
+  134,
+  51,
+  216,
+  206,
+  205,
+  154,
+  153,
+  22,
+  39,
+  37,
+  167,
+  200,
+  201,
+  208,
+  36,
+  142,
+  100,
+  57,
+  212,
+  202,
+  20,
+  60,
+  99,
+  28,
+  158,
+  157,
+  35,
+  226,
+  113,
+  160,
+  159,
+  27,
+  204,
+  202,
+  210,
+  113,
+  225,
+  46,
+  43,
+  202,
+  204,
+  62,
+  76,
+  77,
+  137,
+  123,
+  116,
+  41,
+  38,
+  72,
+  203,
+  129,
+  142,
+  64,
+  98,
+  240,
+  49,
+  102,
+  64,
+  41,
+  73,
+  74,
+  212,
+  216,
+  207,
+  42,
+  74,
+  184,
+  169,
+  170,
+  211,
+  170,
+  149,
+  176,
+  105,
+  66,
+  69,
+  122,
+  6,
+  168,
+  123,
+  147,
+  187,
+  96,
+  77,
+  90,
+  65,
+  55,
+  107,
+  89,
+  90,
+  180,
+  101,
+  100,
+  120,
+  63,
+  105,
+  104,
+  93,
+  137,
+  227,
+  15,
+  86,
+  85,
+  129,
+  102,
+  49,
+  14,
+  87,
+  86,
+  55,
+  8,
+  9,
+  100,
+  47,
+  121,
+  145,
+  23,
+  22,
+  88,
+  89,
+  179,
+  6,
+  122,
+  196,
+  88,
+  95,
+  96,
+  138,
+  172,
+  136,
+  215,
+  58,
+  172,
+  115,
+  48,
+  219,
+  42,
+  80,
+  81,
+  195,
+  3,
+  51,
+  43,
+  146,
+  61,
+  171,
+  175,
+  199,
+  81,
+  82,
+  38,
+  53,
+  46,
+  225,
+  144,
+  163,
+  110,
+  246,
+  33,
+  7,
+  52,
+  65,
+  66,
+  229,
+  228,
+  117,
+  34,
+  127,
+  234,
+  107,
+  108,
+  69,
+  109,
+  108,
+  151,
+  48,
+  64,
+  235,
+  62,
+  78,
+  191,
+  129,
+  209,
+  126,
+  111,
+  35,
+  143,
+  163,
+  161,
+  246,
+  117,
+  123,
+  50,
+  222,
+  65,
+  52,
+  19,
+  125,
+  141,
+  221,
+  55,
+  65,
+  3,
+  195,
+  197,
+  25,
+  7,
+  33,
+  220,
+  237,
+  44,
+  70,
+  71,
+  139,
+  122,
+  193,
+  245,
+  247,
+  130,
+  33,
+  71,
+  21,
+  162,
+  153,
+  158,
+  159,
+  170,
+  169,
+  150,
+  188,
+  174,
+  196,
+  216,
+  186,
+  92,
+  144,
+  160,
+  161,
+  2,
+  97,
+  167,
+  141,
+  125,
+  241,
+  164,
+  167,
+  37,
+  72,
+  38,
+  12,
+  145,
+  159,
+  160,
+  38,
+  82,
+  13,
+  63,
+  68,
+  71,
+  226,
+  35,
+  111,
+  158,
+  153,
+  154,
+  101,
+  50,
+  205,
+  206,
+  92,
+  165,
+  209,
+  198,
+  217,
+  165,
+  167,
+  97,
+  220,
+  115,
+  218,
+  133,
+  112,
+  243,
+  239,
+  238,
+  241,
+  214,
+  135,
+  169,
+  190,
+  173,
+  133,
+  171,
+  208,
+  32,
+  125,
+  44,
+  237,
+  86,
+  87,
+  178,
+  85,
+  86,
+  179,
+  84,
+  85,
+  180,
+  83,
+  84,
+  181,
+  201,
+  83,
+  182,
+  137,
+  93,
+  132,
+  76,
+  62,
+  183,
+  61,
+  76,
+  184,
+  57,
+  61,
+  185,
+  212,
+  57,
+  186,
+  214,
+  207,
+  187,
+  34,
+  143,
+  156,
+  79,
+  239,
+  237,
+  123,
+  137,
+  177,
+  44,
+  1,
+  4,
+  201,
+  194,
+  32,
+  64,
+  102,
+  129,
+  213,
+  215,
+  138,
+  59,
+  166,
+  219,
+  242,
+  99,
+  97,
+  2,
+  94,
+  141,
+  75,
+  59,
+  235,
+  24,
+  110,
+  228,
+  25,
+  130,
+  226,
+  23,
+  24,
+  229,
+  22,
+  23,
+  230,
+  26,
+  22,
+  231,
+  112,
+  26,
+  232,
+  189,
+  190,
+  243,
+  221,
+  56,
+  190,
+  28,
+  56,
+  221,
+  27,
+  28,
+  222,
+  29,
+  27,
+  223,
+  30,
+  29,
+  224,
+  247,
+  30,
+  225,
+  238,
+  79,
+  20,
+  166,
+  59,
+  75,
+  60,
+  75,
+  240,
+  147,
+  177,
+  215,
+  20,
+  79,
+  166,
+  187,
+  147,
+  213,
+  112,
+  233,
+  244,
+  233,
+  128,
+  245,
+  128,
+  114,
+  188,
+  114,
+  217,
+  174,
+  131,
+  115,
+  220,
+  217,
+  198,
+  236,
+  198,
+  131,
+  134,
+  177,
+  132,
+  58,
+  143,
+  35,
+  124,
+  110,
+  163,
+  7,
+  228,
+  110,
+  25,
+  356,
+  389,
+  368,
+  11,
+  302,
+  267,
+  452,
+  350,
+  349,
+  302,
+  303,
+  269,
+  357,
+  343,
+  277,
+  452,
+  453,
+  357,
+  333,
+  332,
+  297,
+  175,
+  152,
+  377,
+  384,
+  398,
+  382,
+  347,
+  348,
+  330,
+  303,
+  304,
+  270,
+  9,
+  336,
+  337,
+  278,
+  279,
+  360,
+  418,
+  262,
+  431,
+  304,
+  408,
+  409,
+  310,
+  415,
+  407,
+  270,
+  409,
+  410,
+  450,
+  348,
+  347,
+  422,
+  430,
+  434,
+  313,
+  314,
+  17,
+  306,
+  307,
+  375,
+  387,
+  388,
+  260,
+  286,
+  414,
+  398,
+  335,
+  406,
+  418,
+  364,
+  367,
+  416,
+  423,
+  358,
+  327,
+  251,
+  284,
+  298,
+  281,
+  5,
+  4,
+  373,
+  374,
+  253,
+  307,
+  320,
+  321,
+  425,
+  427,
+  411,
+  421,
+  313,
+  18,
+  321,
+  405,
+  406,
+  320,
+  404,
+  405,
+  315,
+  16,
+  17,
+  426,
+  425,
+  266,
+  377,
+  400,
+  369,
+  322,
+  391,
+  269,
+  417,
+  465,
+  464,
+  386,
+  257,
+  258,
+  466,
+  260,
+  388,
+  456,
+  399,
+  419,
+  284,
+  332,
+  333,
+  417,
+  285,
+  8,
+  346,
+  340,
+  261,
+  413,
+  441,
+  285,
+  327,
+  460,
+  328,
+  355,
+  371,
+  329,
+  392,
+  439,
+  438,
+  382,
+  341,
+  256,
+  429,
+  420,
+  360,
+  364,
+  394,
+  379,
+  277,
+  343,
+  437,
+  443,
+  444,
+  283,
+  275,
+  440,
+  363,
+  431,
+  262,
+  369,
+  297,
+  338,
+  337,
+  273,
+  375,
+  321,
+  450,
+  451,
+  349,
+  446,
+  342,
+  467,
+  293,
+  334,
+  282,
+  458,
+  461,
+  462,
+  276,
+  353,
+  383,
+  308,
+  324,
+  325,
+  276,
+  300,
+  293,
+  372,
+  345,
+  447,
+  382,
+  398,
+  362,
+  352,
+  345,
+  340,
+  274,
+  1,
+  19,
+  456,
+  248,
+  281,
+  436,
+  427,
+  425,
+  381,
+  256,
+  252,
+  269,
+  391,
+  393,
+  200,
+  199,
+  428,
+  266,
+  330,
+  329,
+  287,
+  273,
+  422,
+  250,
+  462,
+  328,
+  258,
+  286,
+  384,
+  265,
+  353,
+  342,
+  387,
+  259,
+  257,
+  424,
+  431,
+  430,
+  342,
+  353,
+  276,
+  273,
+  335,
+  424,
+  292,
+  325,
+  307,
+  366,
+  447,
+  345,
+  271,
+  303,
+  302,
+  423,
+  266,
+  371,
+  294,
+  455,
+  460,
+  279,
+  278,
+  294,
+  271,
+  272,
+  304,
+  432,
+  434,
+  427,
+  272,
+  407,
+  408,
+  394,
+  430,
+  431,
+  395,
+  369,
+  400,
+  334,
+  333,
+  299,
+  351,
+  417,
+  168,
+  352,
+  280,
+  411,
+  325,
+  319,
+  320,
+  295,
+  296,
+  336,
+  319,
+  403,
+  404,
+  330,
+  348,
+  349,
+  293,
+  298,
+  333,
+  323,
+  454,
+  447,
+  15,
+  16,
+  315,
+  358,
+  429,
+  279,
+  14,
+  15,
+  316,
+  285,
+  336,
+  9,
+  329,
+  349,
+  350,
+  374,
+  380,
+  252,
+  318,
+  402,
+  403,
+  6,
+  197,
+  419,
+  318,
+  319,
+  325,
+  367,
+  364,
+  365,
+  435,
+  367,
+  397,
+  344,
+  438,
+  439,
+  272,
+  271,
+  311,
+  195,
+  5,
+  281,
+  273,
+  287,
+  291,
+  396,
+  428,
+  199,
+  311,
+  271,
+  268,
+  283,
+  444,
+  445,
+  373,
+  254,
+  339,
+  263,
+  466,
+  249,
+  282,
+  334,
+  296,
+  449,
+  347,
+  346,
+  264,
+  447,
+  454,
+  336,
+  296,
+  299,
+  338,
+  10,
+  151,
+  278,
+  439,
+  455,
+  292,
+  407,
+  415,
+  358,
+  371,
+  355,
+  340,
+  345,
+  372,
+  390,
+  249,
+  466,
+  346,
+  347,
+  280,
+  442,
+  443,
+  282,
+  19,
+  94,
+  370,
+  441,
+  442,
+  295,
+  248,
+  419,
+  197,
+  263,
+  255,
+  359,
+  440,
+  275,
+  274,
+  300,
+  383,
+  368,
+  351,
+  412,
+  465,
+  263,
+  467,
+  466,
+  301,
+  368,
+  389,
+  380,
+  374,
+  386,
+  395,
+  378,
+  379,
+  412,
+  351,
+  419,
+  436,
+  426,
+  322,
+  373,
+  390,
+  388,
+  2,
+  164,
+  393,
+  370,
+  462,
+  461,
+  164,
+  0,
+  267,
+  302,
+  11,
+  12,
+  374,
+  373,
+  387,
+  268,
+  12,
+  13,
+  293,
+  300,
+  301,
+  446,
+  261,
+  340,
+  385,
+  384,
+  381,
+  330,
+  266,
+  425,
+  426,
+  423,
+  391,
+  429,
+  355,
+  437,
+  391,
+  327,
+  326,
+  440,
+  457,
+  438,
+  341,
+  382,
+  362,
+  459,
+  457,
+  461,
+  434,
+  430,
+  394,
+  414,
+  463,
+  362,
+  396,
+  369,
+  262,
+  354,
+  461,
+  457,
+  316,
+  403,
+  402,
+  315,
+  404,
+  403,
+  314,
+  405,
+  404,
+  313,
+  406,
+  405,
+  421,
+  418,
+  406,
+  366,
+  401,
+  361,
+  306,
+  408,
+  407,
+  291,
+  409,
+  408,
+  287,
+  410,
+  409,
+  432,
+  436,
+  410,
+  434,
+  416,
+  411,
+  264,
+  368,
+  383,
+  309,
+  438,
+  457,
+  352,
+  376,
+  401,
+  274,
+  275,
+  4,
+  421,
+  428,
+  262,
+  294,
+  327,
+  358,
+  433,
+  416,
+  367,
+  289,
+  455,
+  439,
+  462,
+  370,
+  326,
+  2,
+  326,
+  370,
+  305,
+  460,
+  455,
+  254,
+  449,
+  448,
+  255,
+  261,
+  446,
+  253,
+  450,
+  449,
+  252,
+  451,
+  450,
+  256,
+  452,
+  451,
+  341,
+  453,
+  452,
+  413,
+  464,
+  463,
+  441,
+  413,
+  414,
+  258,
+  442,
+  441,
+  257,
+  443,
+  442,
+  259,
+  444,
+  443,
+  260,
+  445,
+  444,
+  467,
+  342,
+  445,
+  459,
+  458,
+  250,
+  289,
+  392,
+  290,
+  290,
+  328,
+  460,
+  376,
+  433,
+  435,
+  250,
+  290,
+  392,
+  411,
+  416,
+  433,
+  341,
+  463,
+  464,
+  453,
+  464,
+  465,
+  357,
+  465,
+  412,
+  343,
+  412,
+  399,
+  360,
+  363,
+  440,
+  437,
+  399,
+  456,
+  420,
+  456,
+  363,
+  401,
+  435,
+  288,
+  372,
+  383,
+  353,
+  339,
+  255,
+  249,
+  448,
+  261,
+  255,
+  133,
+  243,
+  190,
+  133,
+  155,
+  112,
+  33,
+  246,
+  247,
+  33,
+  130,
+  25,
+  398,
+  384,
+  286,
+  362,
+  398,
+  414,
+  362,
+  463,
+  341,
+  263,
+  359,
+  467,
+  263,
+  249,
+  255,
+  466,
+  467,
+  260,
+  75,
+  60,
+  166,
+  238,
+  239,
+  79,
+  162,
+  127,
+  139,
+  72,
+  11,
+  37,
+  121,
+  232,
+  120,
+  73,
+  72,
+  39,
+  114,
+  128,
+  47,
+  233,
+  232,
+  128,
+  103,
+  104,
+  67,
+  152,
+  175,
+  148,
+  173,
+  157,
+  155,
+  119,
+  118,
+  101,
+  74,
+  73,
+  40,
+  107,
+  9,
+  108,
+  49,
+  48,
+  131,
+  32,
+  194,
+  211,
+  184,
+  74,
+  185,
+  191,
+  80,
+  183,
+  185,
+  40,
+  186,
+  119,
+  230,
+  118,
+  210,
+  202,
+  214,
+  84,
+  83,
+  17,
+  77,
+  76,
+  146,
+  161,
+  160,
+  30,
+  190,
+  56,
+  173,
+  182,
+  106,
+  194,
+  138,
+  135,
+  192,
+  129,
+  203,
+  98,
+  54,
+  21,
+  68,
+  5,
+  51,
+  4,
+  145,
+  144,
+  23,
+  90,
+  77,
+  91,
+  207,
+  205,
+  187,
+  83,
+  201,
+  18,
+  181,
+  91,
+  182,
+  180,
+  90,
+  181,
+  16,
+  85,
+  17,
+  205,
+  206,
+  36,
+  176,
+  148,
+  140,
+  165,
+  92,
+  39,
+  245,
+  193,
+  244,
+  27,
+  159,
+  28,
+  30,
+  247,
+  161,
+  174,
+  236,
+  196,
+  103,
+  54,
+  104,
+  55,
+  193,
+  8,
+  111,
+  117,
+  31,
+  221,
+  189,
+  55,
+  240,
+  98,
+  99,
+  142,
+  126,
+  100,
+  219,
+  166,
+  218,
+  112,
+  155,
+  26,
+  198,
+  209,
+  131,
+  169,
+  135,
+  150,
+  114,
+  47,
+  217,
+  224,
+  223,
+  53,
+  220,
+  45,
+  134,
+  32,
+  211,
+  140,
+  109,
+  67,
+  108,
+  146,
+  43,
+  91,
+  231,
+  230,
+  120,
+  113,
+  226,
+  247,
+  105,
+  63,
+  52,
+  241,
+  238,
+  242,
+  124,
+  46,
+  156,
+  95,
+  78,
+  96,
+  70,
+  46,
+  63,
+  116,
+  143,
+  227,
+  116,
+  123,
+  111,
+  1,
+  44,
+  19,
+  3,
+  236,
+  51,
+  207,
+  216,
+  205,
+  26,
+  154,
+  22,
+  165,
+  39,
+  167,
+  199,
+  200,
+  208,
+  101,
+  36,
+  100,
+  43,
+  57,
+  202,
+  242,
+  20,
+  99,
+  56,
+  28,
+  157,
+  124,
+  35,
+  113,
+  29,
+  160,
+  27,
+  211,
+  204,
+  210,
+  124,
+  113,
+  46,
+  106,
+  43,
+  204,
+  96,
+  62,
+  77,
+  227,
+  137,
+  116,
+  73,
+  41,
+  72,
+  36,
+  203,
+  142,
+  235,
+  64,
+  240,
+  48,
+  49,
+  64,
+  42,
+  41,
+  74,
+  214,
+  212,
+  207,
+  183,
+  42,
+  184,
+  210,
+  169,
+  211,
+  140,
+  170,
+  176,
+  104,
+  105,
+  69,
+  193,
+  122,
+  168,
+  50,
+  123,
+  187,
+  89,
+  96,
+  90,
+  66,
+  65,
+  107,
+  179,
+  89,
+  180,
+  119,
+  101,
+  120,
+  68,
+  63,
+  104,
+  234,
+  93,
+  227,
+  16,
+  15,
+  85,
+  209,
+  129,
+  49,
+  15,
+  14,
+  86,
+  107,
+  55,
+  9,
+  120,
+  100,
+  121,
+  153,
+  145,
+  22,
+  178,
+  88,
+  179,
+  197,
+  6,
+  196,
+  89,
+  88,
+  96,
+  135,
+  138,
+  136,
+  138,
+  215,
+  172,
+  218,
+  115,
+  219,
+  41,
+  42,
+  81,
+  5,
+  195,
+  51,
+  57,
+  43,
+  61,
+  208,
+  171,
+  199,
+  41,
+  81,
+  38,
+  224,
+  53,
+  225,
+  24,
+  144,
+  110,
+  105,
+  52,
+  66,
+  118,
+  229,
+  117,
+  227,
+  34,
+  234,
+  66,
+  107,
+  69,
+  10,
+  109,
+  151,
+  219,
+  48,
+  235,
+  183,
+  62,
+  191,
+  142,
+  129,
+  126,
+  116,
+  111,
+  143,
+  7,
+  163,
+  246,
+  118,
+  117,
+  50,
+  223,
+  222,
+  52,
+  94,
+  19,
+  141,
+  222,
+  221,
+  65,
+  196,
+  3,
+  197,
+  45,
+  220,
+  44,
+  156,
+  70,
+  139,
+  188,
+  122,
+  245,
+  139,
+  71,
+  162,
+  145,
+  153,
+  159,
+  149,
+  170,
+  150,
+  122,
+  188,
+  196,
+  206,
+  216,
+  92,
+  163,
+  144,
+  161,
+  164,
+  2,
+  167,
+  242,
+  141,
+  241,
+  0,
+  164,
+  37,
+  11,
+  72,
+  12,
+  144,
+  145,
+  160,
+  12,
+  38,
+  13,
+  70,
+  63,
+  71,
+  31,
+  226,
+  111,
+  157,
+  158,
+  154,
+  36,
+  101,
+  205,
+  203,
+  206,
+  165,
+  126,
+  209,
+  217,
+  98,
+  165,
+  97,
+  237,
+  220,
+  218,
+  237,
+  239,
+  241,
+  210,
+  214,
+  169,
+  140,
+  171,
+  32,
+  241,
+  125,
+  237,
+  179,
+  86,
+  178,
+  180,
+  85,
+  179,
+  181,
+  84,
+  180,
+  182,
+  83,
+  181,
+  194,
+  201,
+  182,
+  177,
+  137,
+  132,
+  184,
+  76,
+  183,
+  185,
+  61,
+  184,
+  186,
+  57,
+  185,
+  216,
+  212,
+  186,
+  192,
+  214,
+  187,
+  139,
+  34,
+  156,
+  218,
+  79,
+  237,
+  147,
+  123,
+  177,
+  45,
+  44,
+  4,
+  208,
+  201,
+  32,
+  98,
+  64,
+  129,
+  192,
+  213,
+  138,
+  235,
+  59,
+  219,
+  141,
+  242,
+  97,
+  97,
+  2,
+  141,
+  240,
+  75,
+  235,
+  229,
+  24,
+  228,
+  31,
+  25,
+  226,
+  230,
+  23,
+  229,
+  231,
+  22,
+  230,
+  232,
+  26,
+  231,
+  233,
+  112,
+  232,
+  244,
+  189,
+  243,
+  189,
+  221,
+  190,
+  222,
+  28,
+  221,
+  223,
+  27,
+  222,
+  224,
+  29,
+  223,
+  225,
+  30,
+  224,
+  113,
+  247,
+  225,
+  99,
+  60,
+  240,
+  213,
+  147,
+  215,
+  60,
+  20,
+  166,
+  192,
+  187,
+  213,
+  243,
+  112,
+  244,
+  244,
+  233,
+  245,
+  245,
+  128,
+  188,
+  188,
+  114,
+  174,
+  134,
+  131,
+  220,
+  174,
+  217,
+  236,
+  236,
+  198,
+  134,
+  215,
+  177,
+  58,
+  156,
+  143,
+  124,
+  25,
+  110,
+  7,
+  31,
+  228,
+  25,
+  264,
+  356,
+  368,
+  0,
+  11,
+  267,
+  451,
+  452,
+  349,
+  267,
+  302,
+  269,
+  350,
+  357,
+  277,
+  350,
+  452,
+  357,
+  299,
+  333,
+  297,
+  396,
+  175,
+  377,
+  381,
+  384,
+  382,
+  280,
+  347,
+  330,
+  269,
+  303,
+  270,
+  151,
+  9,
+  337,
+  344,
+  278,
+  360,
+  424,
+  418,
+  431,
+  270,
+  304,
+  409,
+  272,
+  310,
+  407,
+  322,
+  270,
+  410,
+  449,
+  450,
+  347,
+  432,
+  422,
+  434,
+  18,
+  313,
+  17,
+  291,
+  306,
+  375,
+  259,
+  387,
+  260,
+  424,
+  335,
+  418,
+  434,
+  364,
+  416,
+  391,
+  423,
+  327,
+  301,
+  251,
+  298,
+  275,
+  281,
+  4,
+  254,
+  373,
+  253,
+  375,
+  307,
+  321,
+  280,
+  425,
+  411,
+  200,
+  421,
+  18,
+  335,
+  321,
+  406,
+  321,
+  320,
+  405,
+  314,
+  315,
+  17,
+  423,
+  426,
+  266,
+  396,
+  377,
+  369,
+  270,
+  322,
+  269,
+  413,
+  417,
+  464,
+  385,
+  386,
+  258,
+  248,
+  456,
+  419,
+  298,
+  284,
+  333,
+  168,
+  417,
+  8,
+  448,
+  346,
+  261,
+  417,
+  413,
+  285,
+  326,
+  327,
+  328,
+  277,
+  355,
+  329,
+  309,
+  392,
+  438,
+  381,
+  382,
+  256,
+  279,
+  429,
+  360,
+  365,
+  364,
+  379,
+  355,
+  277,
+  437,
+  282,
+  443,
+  283,
+  281,
+  275,
+  363,
+  395,
+  431,
+  369,
+  299,
+  297,
+  337,
+  335,
+  273,
+  321,
+  348,
+  450,
+  349,
+  359,
+  446,
+  467,
+  283,
+  293,
+  282,
+  250,
+  458,
+  462,
+  300,
+  276,
+  383,
+  292,
+  308,
+  325,
+  283,
+  276,
+  293,
+  264,
+  372,
+  447,
+  346,
+  352,
+  340,
+  354,
+  274,
+  19,
+  363,
+  456,
+  281,
+  426,
+  436,
+  425,
+  380,
+  381,
+  252,
+  267,
+  269,
+  393,
+  421,
+  200,
+  428,
+  371,
+  266,
+  329,
+  432,
+  287,
+  422,
+  290,
+  250,
+  328,
+  385,
+  258,
+  384,
+  446,
+  265,
+  342,
+  386,
+  387,
+  257,
+  422,
+  424,
+  430,
+  445,
+  342,
+  276,
+  422,
+  273,
+  424,
+  306,
+  292,
+  307,
+  352,
+  366,
+  345,
+  268,
+  271,
+  302,
+  358,
+  423,
+  371,
+  327,
+  294,
+  460,
+  331,
+  279,
+  294,
+  303,
+  271,
+  304,
+  436,
+  432,
+  427,
+  304,
+  272,
+  408,
+  395,
+  394,
+  431,
+  378,
+  395,
+  400,
+  296,
+  334,
+  299,
+  6,
+  351,
+  168,
+  376,
+  352,
+  411,
+  307,
+  325,
+  320,
+  285,
+  295,
+  336,
+  320,
+  319,
+  404,
+  329,
+  330,
+  349,
+  334,
+  293,
+  333,
+  366,
+  323,
+  447,
+  316,
+  15,
+  315,
+  331,
+  358,
+  279,
+  317,
+  14,
+  316,
+  8,
+  285,
+  9,
+  277,
+  329,
+  350,
+  253,
+  374,
+  252,
+  319,
+  318,
+  403,
+  351,
+  6,
+  419,
+  324,
+  318,
+  325,
+  397,
+  367,
+  365,
+  288,
+  435,
+  397,
+  278,
+  344,
+  439,
+  310,
+  272,
+  311,
+  248,
+  195,
+  281,
+  375,
+  273,
+  291,
+  175,
+  396,
+  199,
+  312,
+  311,
+  268,
+  276,
+  283,
+  445,
+  390,
+  373,
+  339,
+  295,
+  282,
+  296,
+  448,
+  449,
+  346,
+  356,
+  264,
+  454,
+  337,
+  336,
+  299,
+  337,
+  338,
+  151,
+  294,
+  278,
+  455,
+  308,
+  292,
+  415,
+  429,
+  358,
+  355,
+  265,
+  340,
+  372,
+  388,
+  390,
+  466,
+  352,
+  346,
+  280,
+  295,
+  442,
+  282,
+  354,
+  19,
+  370,
+  285,
+  441,
+  295,
+  195,
+  248,
+  197,
+  457,
+  440,
+  274,
+  301,
+  300,
+  368,
+  417,
+  351,
+  465,
+  251,
+  301,
+  389,
+  385,
+  380,
+  386,
+  394,
+  395,
+  379,
+  399,
+  412,
+  419,
+  410,
+  436,
+  322,
+  387,
+  373,
+  388,
+  326,
+  2,
+  393,
+  354,
+  370,
+  461,
+  393,
+  164,
+  267,
+  268,
+  302,
+  12,
+  386,
+  374,
+  387,
+  312,
+  268,
+  13,
+  298,
+  293,
+  301,
+  265,
+  446,
+  340,
+  380,
+  385,
+  381,
+  280,
+  330,
+  425,
+  322,
+  426,
+  391,
+  420,
+  429,
+  437,
+  393,
+  391,
+  326,
+  344,
+  440,
+  438,
+  458,
+  459,
+  461,
+  364,
+  434,
+  394,
+  428,
+  396,
+  262,
+  274,
+  354,
+  457,
+  317,
+  316,
+  402,
+  316,
+  315,
+  403,
+  315,
+  314,
+  404,
+  314,
+  313,
+  405,
+  313,
+  421,
+  406,
+  323,
+  366,
+  361,
+  292,
+  306,
+  407,
+  306,
+  291,
+  408,
+  291,
+  287,
+  409,
+  287,
+  432,
+  410,
+  427,
+  434,
+  411,
+  372,
+  264,
+  383,
+  459,
+  309,
+  457,
+  366,
+  352,
+  401,
+  1,
+  274,
+  4,
+  418,
+  421,
+  262,
+  331,
+  294,
+  358,
+  435,
+  433,
+  367,
+  392,
+  289,
+  439,
+  328,
+  462,
+  326,
+  94,
+  2,
+  370,
+  289,
+  305,
+  455,
+  339,
+  254,
+  448,
+  359,
+  255,
+  446,
+  254,
+  253,
+  449,
+  253,
+  252,
+  450,
+  252,
+  256,
+  451,
+  256,
+  341,
+  452,
+  414,
+  413,
+  463,
+  286,
+  441,
+  414,
+  286,
+  258,
+  441,
+  258,
+  257,
+  442,
+  257,
+  259,
+  443,
+  259,
+  260,
+  444,
+  260,
+  467,
+  445,
+  309,
+  459,
+  250,
+  305,
+  289,
+  290,
+  305,
+  290,
+  460,
+  401,
+  376,
+  435,
+  309,
+  250,
+  392,
+  376,
+  411,
+  433,
+  453,
+  341,
+  464,
+  357,
+  453,
+  465,
+  343,
+  357,
+  412,
+  437,
+  343,
+  399,
+  344,
+  360,
+  440,
+  420,
+  437,
+  456,
+  360,
+  420,
+  363,
+  361,
+  401,
+  288,
+  265,
+  372,
+  353,
+  390,
+  339,
+  249,
+  339,
+  448,
+  255
+];
+var VTX68 = [
+  127,
+  234,
+  132,
+  58,
+  172,
+  150,
+  149,
+  148,
+  152,
+  377,
+  378,
+  379,
+  397,
+  288,
+  361,
+  454,
+  356,
+  70,
+  63,
+  105,
+  66,
+  107,
+  336,
+  296,
+  334,
+  293,
+  300,
+  168,
+  6,
+  195,
+  4,
+  98,
+  97,
+  2,
+  326,
+  327,
+  33,
+  160,
+  158,
+  133,
+  153,
+  144,
+  362,
+  385,
+  387,
+  263,
+  373,
+  380,
+  57,
+  40,
+  37,
+  0,
+  267,
+  270,
+  287,
+  321,
+  314,
+  17,
+  84,
+  91,
+  78,
+  81,
+  13,
+  311,
+  308,
+  402,
+  14,
+  178
+];
+var VTX33 = [33, 133, 362, 263, 1, 62, 308, 159, 145, 386, 374, 6, 102, 331, 2, 13, 14, 70, 105, 107, 336, 334, 300, 54, 10, 284, 50, 280, 234, 454, 58, 288, 152];
+var VTX7 = [33, 133, 362, 263, 1, 78, 308];
+var UV68 = VTX68.map((x) => UV468[x]);
+var UV33 = VTX33.map((x) => UV468[x]);
+var UV7 = VTX7.map((x) => UV468[x]);
+
+// src/blazeface/facepipeline.ts
+var leftOutline = MESH_ANNOTATIONS["leftEyeLower0"];
+var rightOutline = MESH_ANNOTATIONS["rightEyeLower0"];
+var eyeLandmarks = {
+  leftBounds: [leftOutline[0], leftOutline[leftOutline.length - 1]],
+  rightBounds: [rightOutline[0], rightOutline[rightOutline.length - 1]]
+};
+var meshLandmarks = {
+  count: 468,
+  mouth: 13,
+  symmetryLine: [13, MESH_ANNOTATIONS["midwayBetweenEyes"][0]]
+};
+var blazeFaceLandmarks = {
+  leftEye: 0,
+  rightEye: 1,
+  nose: 2,
+  mouth: 3,
+  leftEar: 4,
+  rightEar: 5,
+  symmetryLine: [3, 2]
+};
+var irisLandmarks = {
+  upperCenter: 3,
+  lowerCenter: 4,
+  index: 71,
+  numCoordinates: 76
+};
+function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
+  for (let i = 0; i < MESH_TO_IRIS_INDICES_MAP.length; i++) {
+    const {key, indices} = MESH_TO_IRIS_INDICES_MAP[i];
+    const originalIndices = MESH_ANNOTATIONS[`${prefix}${key}`];
+    if (!keys || keys.includes(key)) {
+      for (let j = 0; j < indices.length; j++) {
+        const index = indices[j];
+        rawCoords[originalIndices[j]] = [
+          newCoords[index][0],
+          newCoords[index][1],
+          (newCoords[index][2] + rawCoords[originalIndices[j]][2]) / 2
+        ];
+      }
+    }
+  }
+}
+var Pipeline = class {
+  constructor(boundingBoxDetector, meshDetector, irisModel) {
+    var _a, _b;
+    this.storedBoxes = [];
+    this.boundingBoxDetector = boundingBoxDetector;
+    this.meshDetector = meshDetector;
+    this.irisModel = irisModel;
+    this.boxSize = ((_a = boundingBoxDetector == null ? void 0 : boundingBoxDetector.model) == null ? void 0 : _a.inputs[0].shape[2]) || 0;
+    this.meshSize = (meshDetector == null ? void 0 : meshDetector.inputs[0].shape[2]) || ((_b = boundingBoxDetector == null ? void 0 : boundingBoxDetector.model) == null ? void 0 : _b.inputs[0].shape[2]);
+    this.irisSize = (irisModel == null ? void 0 : irisModel.inputs[0].shape[1]) || 0;
+    this.irisEnlarge = 2.3;
+    this.skipped = 0;
+    this.detectedFaces = 0;
+  }
+  transformRawCoords(rawCoords, box3, angle, rotationMatrix) {
+    const boxSize = getBoxSize({startPoint: box3.startPoint, endPoint: box3.endPoint});
+    const coordsScaled = rawCoords.map((coord) => [
+      boxSize[0] / this.meshSize * (coord[0] - this.meshSize / 2),
+      boxSize[1] / this.meshSize * (coord[1] - this.meshSize / 2),
+      coord[2]
+    ]);
+    const coordsRotationMatrix = angle !== 0 ? buildRotationMatrix(angle, [0, 0]) : IDENTITY_MATRIX;
+    const coordsRotated = angle !== 0 ? coordsScaled.map((coord) => [...rotatePoint(coord, coordsRotationMatrix), coord[2]]) : coordsScaled;
+    const inverseRotationMatrix = angle !== 0 ? invertTransformMatrix(rotationMatrix) : IDENTITY_MATRIX;
+    const boxCenter = [...getBoxCenter({startPoint: box3.startPoint, endPoint: box3.endPoint}), 1];
+    return coordsRotated.map((coord) => [
+      coord[0] + dot(boxCenter, inverseRotationMatrix[0]),
+      coord[1] + dot(boxCenter, inverseRotationMatrix[1]),
+      coord[2]
+    ]);
+  }
+  getLeftToRightEyeDepthDifference(rawCoords) {
+    const leftEyeZ = rawCoords[eyeLandmarks.leftBounds[0]][2];
+    const rightEyeZ = rawCoords[eyeLandmarks.rightBounds[0]][2];
+    return leftEyeZ - rightEyeZ;
+  }
+  getEyeBox(rawCoords, face4, eyeInnerCornerIndex, eyeOuterCornerIndex, flip = false) {
+    const box3 = squarifyBox(enlargeBox(this.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), this.irisEnlarge));
+    const boxSize = getBoxSize(box3);
+    let crop = tfjs_esm_exports.image.cropAndResize(face4, [[
+      box3.startPoint[1] / this.meshSize,
+      box3.startPoint[0] / this.meshSize,
+      box3.endPoint[1] / this.meshSize,
+      box3.endPoint[0] / this.meshSize
+    ]], [0], [this.irisSize, this.irisSize]);
+    if (flip && tfjs_esm_exports.ENV.flags.IS_BROWSER) {
+      crop = tfjs_esm_exports.image.flipLeftRight(crop);
+    }
+    return {box: box3, boxSize, crop};
+  }
+  getEyeCoords(eyeData, eyeBox, eyeBoxSize, flip = false) {
+    const eyeRawCoords = [];
+    for (let i = 0; i < irisLandmarks.numCoordinates; i++) {
+      const x = eyeData[i * 3];
+      const y = eyeData[i * 3 + 1];
+      const z = eyeData[i * 3 + 2];
+      eyeRawCoords.push([
+        (flip ? 1 - x / this.irisSize : x / this.irisSize) * eyeBoxSize[0] + eyeBox.startPoint[0],
+        y / this.irisSize * eyeBoxSize[1] + eyeBox.startPoint[1],
+        z
+      ]);
+    }
+    return {rawCoords: eyeRawCoords, iris: eyeRawCoords.slice(irisLandmarks.index)};
+  }
+  getAdjustedIrisCoords(rawCoords, irisCoords, direction) {
+    const upperCenterZ = rawCoords[MESH_ANNOTATIONS[`${direction}EyeUpper0`][irisLandmarks.upperCenter]][2];
+    const lowerCenterZ = rawCoords[MESH_ANNOTATIONS[`${direction}EyeLower0`][irisLandmarks.lowerCenter]][2];
+    const averageZ = (upperCenterZ + lowerCenterZ) / 2;
+    return irisCoords.map((coord, i) => {
+      let z = averageZ;
+      if (i === 2) {
+        z = upperCenterZ;
+      } else if (i === 4) {
+        z = lowerCenterZ;
+      }
+      return [coord[0], coord[1], z];
+    });
+  }
+  async predict(input, config3) {
+    let useFreshBox = false;
+    let detector;
+    if (this.skipped === 0 || this.skipped > config3.face.detector.skipFrames || !config3.face.mesh.enabled || !config3.videoOptimized) {
+      detector = await this.boundingBoxDetector.getBoundingBoxes(input);
+      this.skipped = 0;
+    }
+    if (config3.videoOptimized)
+      this.skipped++;
+    if (!config3.videoOptimized || detector && detector.boxes && (!config3.face.mesh.enabled || detector.boxes.length !== this.detectedFaces && this.detectedFaces !== config3.face.detector.maxFaces)) {
+      this.storedBoxes = [];
+      this.detectedFaces = 0;
+      for (const possible of detector.boxes) {
+        this.storedBoxes.push({startPoint: possible.box.startPoint.dataSync(), endPoint: possible.box.endPoint.dataSync(), landmarks: possible.landmarks, confidence: possible.confidence});
+      }
+      if (this.storedBoxes.length > 0)
+        useFreshBox = true;
+    }
+    if (config3.face.detector.skipInitial && this.detectedFaces === 0)
+      this.skipped = 0;
+    if (useFreshBox) {
+      if (!detector || !detector.boxes || detector.boxes.length === 0) {
+        this.storedBoxes = [];
+        this.detectedFaces = 0;
+        return null;
+      }
+      for (let i = 0; i < this.storedBoxes.length; i++) {
+        const scaledBox = scaleBoxCoordinates({startPoint: this.storedBoxes[i].startPoint, endPoint: this.storedBoxes[i].endPoint}, detector.scaleFactor);
+        const enlargedBox = enlargeBox(scaledBox);
+        const squarifiedBox = squarifyBox(enlargedBox);
+        const landmarks = this.storedBoxes[i].landmarks.arraySync();
+        const confidence = this.storedBoxes[i].confidence;
+        this.storedBoxes[i] = {...squarifiedBox, confidence, landmarks};
+      }
+    }
+    if (detector && detector.boxes) {
+      detector.boxes.forEach((prediction) => {
+        prediction.box.startPoint.dispose();
+        prediction.box.endPoint.dispose();
+        prediction.landmarks.dispose();
+      });
+    }
+    let results = tfjs_esm_exports.tidy(() => this.storedBoxes.map((box3, i) => {
+      const boxConfidence = box3.confidence;
+      let face4;
+      let angle = 0;
+      let rotationMatrix;
+      if (config3.face.detector.rotation && config3.face.mesh.enabled && tfjs_esm_exports.ENV.flags.IS_BROWSER) {
+        const [indexOfMouth, indexOfForehead] = box3.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
+        angle = computeRotation(box3.landmarks[indexOfMouth], box3.landmarks[indexOfForehead]);
+        const faceCenter = getBoxCenter({startPoint: box3.startPoint, endPoint: box3.endPoint});
+        const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
+        const rotatedImage = tfjs_esm_exports.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
+        rotationMatrix = buildRotationMatrix(-angle, faceCenter);
+        if (config3.face.mesh.enabled)
+          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, rotatedImage, [this.meshSize, this.meshSize]).div(255);
+        else
+          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, rotatedImage, [this.boxSize, this.boxSize]).div(255);
+      } else {
+        rotationMatrix = IDENTITY_MATRIX;
+        const clonedImage = input.clone();
+        if (config3.face.mesh.enabled)
+          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, clonedImage, [this.meshSize, this.meshSize]).div(255);
+        else
+          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, clonedImage, [this.boxSize, this.boxSize]).div(255);
+      }
+      if (!config3.face.mesh.enabled) {
+        const prediction2 = {
+          coords: null,
+          box: box3,
+          faceConfidence: null,
+          boxConfidence,
+          confidence: box3.confidence,
+          image: face4
+        };
+        return prediction2;
+      }
+      const [, confidence, contourCoords] = this.meshDetector.predict(face4);
+      const faceConfidence = confidence.dataSync()[0];
+      if (faceConfidence < config3.face.detector.minConfidence)
+        return null;
+      const coordsReshaped = tfjs_esm_exports.reshape(contourCoords, [-1, 3]);
+      let rawCoords = coordsReshaped.arraySync();
+      if (config3.face.iris.enabled) {
+        const {box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop} = this.getEyeBox(rawCoords, face4, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true);
+        const {box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop} = this.getEyeBox(rawCoords, face4, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1]);
+        const eyePredictions = this.irisModel.predict(tfjs_esm_exports.concat([leftEyeCrop, rightEyeCrop]));
+        const eyePredictionsData = eyePredictions.dataSync();
+        const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
+        const {rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords} = this.getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
+        const rightEyeData = eyePredictionsData.slice(irisLandmarks.numCoordinates * 3);
+        const {rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords} = this.getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize);
+        const leftToRightEyeDepthDifference = this.getLeftToRightEyeDepthDifference(rawCoords);
+        if (Math.abs(leftToRightEyeDepthDifference) < 30) {
+          replaceRawCoordinates(rawCoords, leftEyeRawCoords, "left", null);
+          replaceRawCoordinates(rawCoords, rightEyeRawCoords, "right", null);
+        } else if (leftToRightEyeDepthDifference < 1) {
+          replaceRawCoordinates(rawCoords, leftEyeRawCoords, "left", ["EyeUpper0", "EyeLower0"]);
+        } else {
+          replaceRawCoordinates(rawCoords, rightEyeRawCoords, "right", ["EyeUpper0", "EyeLower0"]);
+        }
+        const adjustedLeftIrisCoords = this.getAdjustedIrisCoords(rawCoords, leftIrisRawCoords, "left");
+        const adjustedRightIrisCoords = this.getAdjustedIrisCoords(rawCoords, rightIrisRawCoords, "right");
+        rawCoords = rawCoords.concat(adjustedLeftIrisCoords).concat(adjustedRightIrisCoords);
+      }
+      const transformedCoordsData = this.transformRawCoords(rawCoords, box3, angle, rotationMatrix);
+      box3 = enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData), 1.5);
+      const transformedCoords = tfjs_esm_exports.tensor2d(transformedCoordsData);
+      if (config3.face.detector.rotation && config3.face.mesh.enabled && (config3.face.description.enabled || config3.face.embedding.enabled) && tfjs_esm_exports.ENV.flags.IS_BROWSER) {
+        const [indexOfMouth, indexOfForehead] = box3.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
+        angle = computeRotation(box3.landmarks[indexOfMouth], box3.landmarks[indexOfForehead]);
+        const faceCenter = getBoxCenter({startPoint: box3.startPoint, endPoint: box3.endPoint});
+        const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
+        const rotatedImage = tfjs_esm_exports.image.rotateWithOffset(input.toFloat(), angle, 0, faceCenterNormalized);
+        rotationMatrix = buildRotationMatrix(-angle, faceCenter);
+        face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, rotatedImage, [this.meshSize, this.meshSize]).div(255);
+      }
+      const prediction = {
+        coords: transformedCoords,
+        box: box3,
+        faceConfidence,
+        boxConfidence,
+        image: face4,
+        rawCoords
+      };
+      const squarifiedLandmarksBox = squarifyBox(box3);
+      this.storedBoxes[i] = {...squarifiedLandmarksBox, landmarks: transformedCoordsData, confidence: box3.confidence, faceConfidence};
+      return prediction;
+    }));
+    results = results.filter((a) => a !== null);
+    if (config3.face.mesh.enabled)
+      this.storedBoxes = this.storedBoxes.filter((a) => a.faceConfidence > config3.face.detector.minConfidence);
+    this.detectedFaces = results.length;
+    return results;
+  }
+  calculateLandmarksBoundingBox(landmarks) {
+    const xs = landmarks.map((d) => d[0]);
+    const ys = landmarks.map((d) => d[1]);
+    const startPoint = [Math.min(...xs), Math.min(...ys)];
+    const endPoint = [Math.max(...xs), Math.max(...ys)];
+    return {startPoint, endPoint, landmarks};
+  }
+};
+
+// src/blazeface/facemesh.ts
+var MediaPipeFaceMesh = class {
+  constructor(blazeFace, blazeMeshModel, irisModel, config3) {
+    this.facePipeline = new Pipeline(blazeFace, blazeMeshModel, irisModel);
+    this.config = config3;
+  }
+  async estimateFaces(input, config3) {
+    const predictions = await this.facePipeline.predict(input, config3);
+    const results = [];
+    for (const prediction of predictions || []) {
+      if (prediction.isDisposedInternal)
+        continue;
+      const mesh = prediction.coords ? prediction.coords.arraySync() : [];
+      const meshRaw = mesh.map((pt) => [
+        pt[0] / input.shape[2],
+        pt[1] / input.shape[1],
+        pt[2] / this.facePipeline.meshSize
+      ]);
+      const annotations3 = {};
+      if (mesh && mesh.length > 0) {
+        for (const key of Object.keys(MESH_ANNOTATIONS))
+          annotations3[key] = MESH_ANNOTATIONS[key].map((index) => mesh[index]);
+      }
+      const box3 = prediction.box ? [
+        Math.max(0, prediction.box.startPoint[0]),
+        Math.max(0, prediction.box.startPoint[1]),
+        Math.min(input.shape[2], prediction.box.endPoint[0]) - Math.max(0, prediction.box.startPoint[0]),
+        Math.min(input.shape[1], prediction.box.endPoint[1]) - Math.max(0, prediction.box.startPoint[1])
+      ] : 0;
+      const boxRaw = prediction.box ? [
+        prediction.box.startPoint[0] / input.shape[2],
+        prediction.box.startPoint[1] / input.shape[1],
+        (prediction.box.endPoint[0] - prediction.box.startPoint[0]) / input.shape[2],
+        (prediction.box.endPoint[1] - prediction.box.startPoint[1]) / input.shape[1]
+      ] : [];
+      results.push({
+        confidence: Math.round(100 * prediction.faceConfidence || 100 * prediction.boxConfidence || 0) / 100,
+        boxConfidence: Math.round(100 * prediction.boxConfidence) / 100,
+        faceConfidence: Math.round(100 * prediction.faceConfidence) / 100,
+        box: box3,
+        boxRaw,
+        mesh,
+        meshRaw,
+        annotations: annotations3,
+        image: prediction.image ? prediction.image.clone() : null
+      });
+      if (prediction.coords)
+        prediction.coords.dispose();
+      if (prediction.image)
+        prediction.image.dispose();
+    }
+    return results;
+  }
+};
+var faceModels = [null, null, null];
+async function load7(config3) {
+  if (!faceModels[0] && config3.face.enabled || !faceModels[1] && config3.face.mesh.enabled || !faceModels[2] && config3.face.iris.enabled) {
+    faceModels = await Promise.all([
+      !faceModels[0] && config3.face.enabled ? load6(config3) : null,
+      !faceModels[1] && config3.face.mesh.enabled ? tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.mesh.modelPath), {fromTFHub: config3.face.mesh.modelPath.includes("tfhub.dev")}) : null,
+      !faceModels[2] && config3.face.iris.enabled ? tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.iris.modelPath), {fromTFHub: config3.face.iris.modelPath.includes("tfhub.dev")}) : null
+    ]);
+    if (config3.face.mesh.enabled) {
+      if (!faceModels[1] || !faceModels[1].modelUrl)
+        log("load model failed:", config3.face.mesh.modelPath);
+      else if (config3.debug)
+        log("load model:", faceModels[1].modelUrl);
+    }
+    if (config3.face.iris.enabled) {
+      if (!faceModels[2] || !faceModels[1].modelUrl)
+        log("load model failed:", config3.face.iris.modelPath);
+      else if (config3.debug)
+        log("load model:", faceModels[2].modelUrl);
+    }
+  } else if (config3.debug) {
+    log("cached model:", faceModels[0].model.modelUrl);
+    log("cached model:", faceModels[1].modelUrl);
+    log("cached model:", faceModels[2].modelUrl);
+  }
+  const faceMesh = new MediaPipeFaceMesh(faceModels[0], faceModels[1], faceModels[2], config3);
+  return faceMesh;
+}
+var triangulation = TRI468;
+var uvmap = UV468;
+
+// src/posenet/posenet.ts
+var posenet_exports = {};
+__export(posenet_exports, {
+  PoseNet: () => PoseNet,
+  load: () => load8
+});
+
+// src/posenet/modelBase.ts
+function nameOutputResultsMobileNet(results) {
+  const [offsets, heatmap, displacementFwd, displacementBwd] = results;
+  return {offsets, heatmap, displacementFwd, displacementBwd};
+}
+var BaseModel = class {
+  constructor(model10) {
+    this.model = model10;
+  }
+  predict(input) {
+    return tfjs_esm_exports.tidy(() => {
+      const asFloat = input.toFloat().div(127.5).sub(1);
+      const asBatch = asFloat.expandDims(0);
+      const results = this.model.predict(asBatch);
+      const results3d = results.map((y) => y.squeeze([0]));
+      const namedResults = nameOutputResultsMobileNet(results3d);
+      return {
+        heatmapScores: namedResults.heatmap.sigmoid(),
+        offsets: namedResults.offsets,
+        displacementFwd: namedResults.displacementFwd,
+        displacementBwd: namedResults.displacementBwd
+      };
+    });
+  }
+  dispose() {
+    this.model.dispose();
+  }
+};
+
+// src/posenet/heapSort.ts
+function half(k) {
+  return Math.floor(k / 2);
+}
+var MaxHeap = class {
+  constructor(maxSize2, getElementValue) {
+    this.priorityQueue = new Array(maxSize2);
+    this.numberOfElements = -1;
+    this.getElementValue = getElementValue;
+  }
+  enqueue(x) {
+    this.priorityQueue[++this.numberOfElements] = x;
+    this.swim(this.numberOfElements);
+  }
+  dequeue() {
+    const max2 = this.priorityQueue[0];
+    this.exchange(0, this.numberOfElements--);
+    this.sink(0);
+    this.priorityQueue[this.numberOfElements + 1] = null;
+    return max2;
+  }
+  empty() {
+    return this.numberOfElements === -1;
+  }
+  size() {
+    return this.numberOfElements + 1;
+  }
+  all() {
+    return this.priorityQueue.slice(0, this.numberOfElements + 1);
+  }
+  max() {
+    return this.priorityQueue[0];
+  }
+  swim(k) {
+    while (k > 0 && this.less(half(k), k)) {
+      this.exchange(k, half(k));
+      k = half(k);
+    }
+  }
+  sink(k) {
+    while (2 * k <= this.numberOfElements) {
+      let j = 2 * k;
+      if (j < this.numberOfElements && this.less(j, j + 1))
+        j++;
+      if (!this.less(k, j))
+        break;
+      this.exchange(k, j);
+      k = j;
+    }
+  }
+  getValueAt(i) {
+    return this.getElementValue(this.priorityQueue[i]);
+  }
+  less(i, j) {
+    return this.getValueAt(i) < this.getValueAt(j);
+  }
+  exchange(i, j) {
+    const t = this.priorityQueue[i];
+    this.priorityQueue[i] = this.priorityQueue[j];
+    this.priorityQueue[j] = t;
+  }
+};
+
+// src/posenet/buildParts.ts
+function scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, localMaximumRadius, scores) {
+  const [height, width] = scores.shape;
+  let localMaximum = true;
+  const yStart = Math.max(heatmapY - localMaximumRadius, 0);
+  const yEnd = Math.min(heatmapY + localMaximumRadius + 1, height);
+  for (let yCurrent = yStart; yCurrent < yEnd; ++yCurrent) {
+    const xStart = Math.max(heatmapX - localMaximumRadius, 0);
+    const xEnd = Math.min(heatmapX + localMaximumRadius + 1, width);
+    for (let xCurrent = xStart; xCurrent < xEnd; ++xCurrent) {
+      if (scores.get(yCurrent, xCurrent, keypointId) > score) {
+        localMaximum = false;
+        break;
+      }
+    }
+    if (!localMaximum)
+      break;
+  }
+  return localMaximum;
+}
+function buildPartWithScoreQueue(scoreThreshold, localMaximumRadius, scores) {
+  const [height, width, numKeypoints] = scores.shape;
+  const queue = new MaxHeap(height * width * numKeypoints, ({score}) => score);
+  for (let heatmapY = 0; heatmapY < height; ++heatmapY) {
+    for (let heatmapX = 0; heatmapX < width; ++heatmapX) {
+      for (let keypointId = 0; keypointId < numKeypoints; ++keypointId) {
+        const score = scores.get(heatmapY, heatmapX, keypointId);
+        if (score < scoreThreshold)
+          continue;
+        if (scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, localMaximumRadius, scores)) {
+          queue.enqueue({score, part: {heatmapY, heatmapX, id: keypointId}});
+        }
+      }
+    }
+  }
+  return queue;
+}
+
+// src/posenet/keypoints.ts
+var partNames = [
+  "nose",
+  "leftEye",
+  "rightEye",
+  "leftEar",
+  "rightEar",
+  "leftShoulder",
+  "rightShoulder",
+  "leftElbow",
+  "rightElbow",
+  "leftWrist",
+  "rightWrist",
+  "leftHip",
+  "rightHip",
+  "leftKnee",
+  "rightKnee",
+  "leftAnkle",
+  "rightAnkle"
+];
+var NUM_KEYPOINTS = partNames.length;
+var partIds = partNames.reduce((result, jointName, i) => {
+  result[jointName] = i;
+  return result;
+}, {});
+var connectedPartNames = [
+  ["leftHip", "leftShoulder"],
+  ["leftElbow", "leftShoulder"],
+  ["leftElbow", "leftWrist"],
+  ["leftHip", "leftKnee"],
+  ["leftKnee", "leftAnkle"],
+  ["rightHip", "rightShoulder"],
+  ["rightElbow", "rightShoulder"],
+  ["rightElbow", "rightWrist"],
+  ["rightHip", "rightKnee"],
+  ["rightKnee", "rightAnkle"],
+  ["leftShoulder", "rightShoulder"],
+  ["leftHip", "rightHip"]
+];
+var connectedPartIndices = connectedPartNames.map(([jointNameA, jointNameB]) => [partIds[jointNameA], partIds[jointNameB]]);
+var poseChain = [
+  ["nose", "leftEye"],
+  ["leftEye", "leftEar"],
+  ["nose", "rightEye"],
+  ["rightEye", "rightEar"],
+  ["nose", "leftShoulder"],
+  ["leftShoulder", "leftElbow"],
+  ["leftElbow", "leftWrist"],
+  ["leftShoulder", "leftHip"],
+  ["leftHip", "leftKnee"],
+  ["leftKnee", "leftAnkle"],
+  ["nose", "rightShoulder"],
+  ["rightShoulder", "rightElbow"],
+  ["rightElbow", "rightWrist"],
+  ["rightShoulder", "rightHip"],
+  ["rightHip", "rightKnee"],
+  ["rightKnee", "rightAnkle"]
+];
+
+// src/posenet/vectors.ts
+function getOffsetPoint(y, x, keypoint, offsets) {
+  return {
+    y: offsets.get(y, x, keypoint),
+    x: offsets.get(y, x, keypoint + NUM_KEYPOINTS)
+  };
+}
+function getImageCoords(part, outputStride, offsets) {
+  const {heatmapY, heatmapX, id: keypoint} = part;
+  const {y, x} = getOffsetPoint(heatmapY, heatmapX, keypoint, offsets);
+  return {
+    x: part.heatmapX * outputStride + x,
+    y: part.heatmapY * outputStride + y
+  };
+}
+function clamp(a, min, max2) {
+  if (a < min)
+    return min;
+  if (a > max2)
+    return max2;
+  return a;
+}
+function squaredDistance(y1, x1, y2, x2) {
+  const dy = y2 - y1;
+  const dx = x2 - x1;
+  return dy * dy + dx * dx;
+}
+function addVectors(a, b) {
+  return {x: a.x + b.x, y: a.y + b.y};
+}
+
+// src/posenet/decoders.ts
+function getPointsConfidence(heatmapScores, heatMapCoords) {
+  const numKeypoints = heatMapCoords.shape[0];
+  const result = new Float32Array(numKeypoints);
+  for (let keypoint = 0; keypoint < numKeypoints; keypoint++) {
+    const y = heatMapCoords.get(keypoint, 0);
+    const x = heatMapCoords.get(keypoint, 1);
+    result[keypoint] = heatmapScores.get(y, x, keypoint);
+  }
+  return result;
+}
+function getOffsetPoint2(y, x, keypoint, offsetsBuffer) {
+  return {
+    y: offsetsBuffer.get(y, x, keypoint),
+    x: offsetsBuffer.get(y, x, keypoint + NUM_KEYPOINTS)
+  };
+}
+function getOffsetVectors(heatMapCoordsBuffer, offsetsBuffer) {
+  const result = [];
+  for (let keypoint = 0; keypoint < NUM_KEYPOINTS; keypoint++) {
+    const heatmapY = heatMapCoordsBuffer.get(keypoint, 0).valueOf();
+    const heatmapX = heatMapCoordsBuffer.get(keypoint, 1).valueOf();
+    const {x, y} = getOffsetPoint2(heatmapY, heatmapX, keypoint, offsetsBuffer);
+    result.push(y);
+    result.push(x);
+  }
+  return tfjs_esm_exports.tensor2d(result, [NUM_KEYPOINTS, 2]);
+}
+function getOffsetPoints(heatMapCoordsBuffer, outputStride, offsetsBuffer) {
+  return tfjs_esm_exports.tidy(() => heatMapCoordsBuffer.toTensor().mul(tfjs_esm_exports.scalar(outputStride, "int32")).toFloat().add(getOffsetVectors(heatMapCoordsBuffer, offsetsBuffer)));
+}
+function mod(a, b) {
+  return tfjs_esm_exports.tidy(() => {
+    const floored = a.div(tfjs_esm_exports.scalar(b, "int32"));
+    return a.sub(floored.mul(tfjs_esm_exports.scalar(b, "int32")));
+  });
+}
+function argmax2d(inputs) {
+  const [height, width, depth] = inputs.shape;
+  return tfjs_esm_exports.tidy(() => {
+    const reshaped = inputs.reshape([height * width, depth]);
+    const coords3 = reshaped.argMax(0);
+    const yCoords = coords3.div(tfjs_esm_exports.scalar(width, "int32")).expandDims(1);
+    const xCoords = mod(coords3, width).expandDims(1);
+    return tfjs_esm_exports.concat([yCoords, xCoords], 1);
+  });
+}
+
+// src/posenet/decodePose.ts
+var parentChildrenTuples = poseChain.map(([parentJoinName, childJoinName]) => [partIds[parentJoinName], partIds[childJoinName]]);
+var parentToChildEdges = parentChildrenTuples.map(([, childJointId]) => childJointId);
+var childToParentEdges = parentChildrenTuples.map(([parentJointId]) => parentJointId);
+var defaultOutputStride = 16;
+function getDisplacement(edgeId, point2, displacements) {
+  const numEdges = displacements.shape[2] / 2;
+  return {
+    y: displacements.get(point2.y, point2.x, edgeId),
+    x: displacements.get(point2.y, point2.x, numEdges + edgeId)
+  };
+}
+function getStridedIndexNearPoint(point2, outputStride, height, width) {
+  return {
+    y: clamp(Math.round(point2.y / outputStride), 0, height - 1),
+    x: clamp(Math.round(point2.x / outputStride), 0, width - 1)
+  };
+}
+function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scoresBuffer, offsets, outputStride, displacements, offsetRefineStep = 2) {
+  const [height, width] = scoresBuffer.shape;
+  const sourceKeypointIndices = getStridedIndexNearPoint(sourceKeypoint.position, outputStride, height, width);
+  const displacement = getDisplacement(edgeId, sourceKeypointIndices, displacements);
+  const displacedPoint = addVectors(sourceKeypoint.position, displacement);
+  let targetKeypoint = displacedPoint;
+  for (let i = 0; i < offsetRefineStep; i++) {
+    const targetKeypointIndices = getStridedIndexNearPoint(targetKeypoint, outputStride, height, width);
+    const offsetPoint = getOffsetPoint(targetKeypointIndices.y, targetKeypointIndices.x, targetKeypointId, offsets);
+    targetKeypoint = addVectors({
+      x: targetKeypointIndices.x * outputStride,
+      y: targetKeypointIndices.y * outputStride
+    }, {x: offsetPoint.x, y: offsetPoint.y});
+  }
+  const targetKeyPointIndices = getStridedIndexNearPoint(targetKeypoint, outputStride, height, width);
+  const score = scoresBuffer.get(targetKeyPointIndices.y, targetKeyPointIndices.x, targetKeypointId);
+  return {position: targetKeypoint, part: partNames[targetKeypointId], score};
+}
+function decodePose(root, scores, offsets, outputStride, displacementsFwd, displacementsBwd) {
+  const numParts = scores.shape[2];
+  const numEdges = parentToChildEdges.length;
+  const instanceKeypoints = new Array(numParts);
+  const {part: rootPart, score: rootScore} = root;
+  const rootPoint = getImageCoords(rootPart, outputStride, offsets);
+  instanceKeypoints[rootPart.id] = {
+    score: rootScore,
+    part: partNames[rootPart.id],
+    position: rootPoint
+  };
+  for (let edge = numEdges - 1; edge >= 0; --edge) {
+    const sourceKeypointId = parentToChildEdges[edge];
+    const targetKeypointId = childToParentEdges[edge];
+    if (instanceKeypoints[sourceKeypointId] && !instanceKeypoints[targetKeypointId]) {
+      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, outputStride, displacementsBwd);
+    }
+  }
+  for (let edge = 0; edge < numEdges; ++edge) {
+    const sourceKeypointId = childToParentEdges[edge];
+    const targetKeypointId = parentToChildEdges[edge];
+    if (instanceKeypoints[sourceKeypointId] && !instanceKeypoints[targetKeypointId]) {
+      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, outputStride, displacementsFwd);
+    }
+  }
+  return instanceKeypoints;
+}
+async function decodeSinglePose(heatmapScores, offsets, minScore) {
+  let totalScore = 0;
+  const heatmapValues = argmax2d(heatmapScores);
+  const allTensorBuffers = await Promise.all([heatmapScores.buffer(), offsets.buffer(), heatmapValues.buffer()]);
+  const scoresBuffer = allTensorBuffers[0];
+  const offsetsBuffer = allTensorBuffers[1];
+  const heatmapValuesBuffer = allTensorBuffers[2];
+  const offsetPoints = getOffsetPoints(heatmapValuesBuffer, defaultOutputStride, offsetsBuffer);
+  const offsetPointsBuffer = await offsetPoints.buffer();
+  const keypointConfidence = Array.from(getPointsConfidence(scoresBuffer, heatmapValuesBuffer));
+  const instanceKeypoints = keypointConfidence.map((score, i) => {
+    totalScore += score;
+    return {
+      position: {
+        y: offsetPointsBuffer.get(i, 0),
+        x: offsetPointsBuffer.get(i, 1)
+      },
+      part: partNames[i],
+      score
+    };
+  });
+  const filteredKeypoints = instanceKeypoints.filter((kpt3) => kpt3.score > minScore);
+  heatmapValues.dispose();
+  offsetPoints.dispose();
+  return {keypoints: filteredKeypoints, score: totalScore / instanceKeypoints.length};
+}
+
+// src/posenet/decodeMultiple.ts
+var kLocalMaximumRadius = 1;
+var defaultOutputStride2 = 16;
+function withinNmsRadiusOfCorrespondingPoint(poses, squaredNmsRadius, {x, y}, keypointId) {
+  return poses.some(({keypoints: keypoints3}) => {
+    const correspondingKeypoint = keypoints3[keypointId].position;
+    return squaredDistance(y, x, correspondingKeypoint.y, correspondingKeypoint.x) <= squaredNmsRadius;
+  });
+}
+function getInstanceScore(existingPoses, squaredNmsRadius, instanceKeypoints) {
+  const notOverlappedKeypointScores = instanceKeypoints.reduce((result, {position, score}, keypointId) => {
+    if (!withinNmsRadiusOfCorrespondingPoint(existingPoses, squaredNmsRadius, position, keypointId))
+      result += score;
+    return result;
+  }, 0);
+  return notOverlappedKeypointScores / instanceKeypoints.length;
+}
+function decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, nmsRadius, maxDetections, scoreThreshold) {
+  const poses = [];
+  const queue = buildPartWithScoreQueue(scoreThreshold, kLocalMaximumRadius, scoresBuffer);
+  const squaredNmsRadius = nmsRadius ^ 2;
+  while (poses.length < maxDetections && !queue.empty()) {
+    const root = queue.dequeue();
+    const rootImageCoords = getImageCoords(root.part, defaultOutputStride2, offsetsBuffer);
+    if (withinNmsRadiusOfCorrespondingPoint(poses, squaredNmsRadius, rootImageCoords, root.part.id))
+      continue;
+    const keypoints3 = decodePose(root, scoresBuffer, offsetsBuffer, defaultOutputStride2, displacementsFwdBuffer, displacementsBwdBuffer);
+    const score = getInstanceScore(poses, squaredNmsRadius, keypoints3);
+    if (score > scoreThreshold)
+      poses.push({keypoints: keypoints3, score: Math.round(100 * score) / 100});
+  }
+  return poses;
+}
+
+// src/posenet/util.ts
+async function toTensorBuffers3D(tensors) {
+  return Promise.all(tensors.map((tensor) => tensor.buffer()));
+}
+function scalePose(pose, scaleY, scaleX) {
+  return {
+    score: pose.score,
+    keypoints: pose.keypoints.map(({score, part, position}) => ({
+      score,
+      part,
+      position: {x: Math.trunc(position.x * scaleX), y: Math.trunc(position.y * scaleY)}
+    }))
+  };
+}
+function resizeTo(image15, [targetH, targetW]) {
+  const input = image15.squeeze(0);
+  const resized = input.resizeBilinear([targetH, targetW]);
+  input.dispose();
+  return resized;
+}
+function scaleAndFlipPoses(poses, [height, width], [inputResolutionHeight, inputResolutionWidth]) {
+  const scaledPoses = poses.map((pose) => scalePose(pose, height / inputResolutionHeight, width / inputResolutionWidth));
+  return scaledPoses;
+}
+
+// src/posenet/posenet.ts
+var model6;
+async function estimateMultiple(input, res, config3, inputSize) {
+  return new Promise(async (resolve) => {
+    const allTensorBuffers = await toTensorBuffers3D([res.heatmapScores, res.offsets, res.displacementFwd, res.displacementBwd]);
+    const scoresBuffer = allTensorBuffers[0];
+    const offsetsBuffer = allTensorBuffers[1];
+    const displacementsFwdBuffer = allTensorBuffers[2];
+    const displacementsBwdBuffer = allTensorBuffers[3];
+    const poses = await decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, config3.body.nmsRadius, config3.body.maxDetections, config3.body.scoreThreshold);
+    const scaled = scaleAndFlipPoses(poses, [input.shape[1], input.shape[2]], [inputSize, inputSize]);
+    resolve(scaled);
+  });
+}
+async function estimateSingle(input, res, config3, inputSize) {
+  return new Promise(async (resolve) => {
+    const pose = await decodeSinglePose(res.heatmapScores, res.offsets, config3.body.scoreThreshold);
+    const scaled = scaleAndFlipPoses([pose], [input.shape[1], input.shape[2]], [inputSize, inputSize]);
+    resolve(scaled);
+  });
+}
+var PoseNet = class {
+  constructor(mobilenet) {
+    this.baseModel = mobilenet;
+    this.inputSize = mobilenet.model.inputs[0].shape[1];
+    if (this.inputSize < 128)
+      this.inputSize = 257;
+  }
+  async estimatePoses(input, config3) {
+    const resized = resizeTo(input, [this.inputSize, this.inputSize]);
+    const res = this.baseModel.predict(resized, config3);
+    const poses = config3.body.maxDetections < 2 ? await estimateSingle(input, res, config3, this.inputSize) : await estimateMultiple(input, res, config3, this.inputSize);
+    res.heatmapScores.dispose();
+    res.offsets.dispose();
+    res.displacementFwd.dispose();
+    res.displacementBwd.dispose();
+    resized.dispose();
+    return poses;
+  }
+  dispose() {
+    this.baseModel.dispose();
+  }
+};
+async function load8(config3) {
+  if (!model6) {
+    model6 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath));
+    if (!model6 || !model6.modelUrl)
+      log("load model failed:", config3.body.modelPath);
+    else if (config3.debug)
+      log("load model:", model6.modelUrl);
+  } else if (config3.debug)
+    log("cached model:", model6.modelUrl);
+  const mobilenet = new BaseModel(model6);
+  const poseNet = new PoseNet(mobilenet);
+  return poseNet;
+}
+
+// src/handpose/handpose.ts
+var handpose_exports = {};
+__export(handpose_exports, {
+  HandPose: () => HandPose,
+  load: () => load9
+});
+
+// src/handpose/box.ts
+function getBoxSize2(box3) {
+  return [
+    Math.abs(box3.endPoint[0] - box3.startPoint[0]),
+    Math.abs(box3.endPoint[1] - box3.startPoint[1])
+  ];
+}
+function getBoxCenter2(box3) {
+  return [
+    box3.startPoint[0] + (box3.endPoint[0] - box3.startPoint[0]) / 2,
+    box3.startPoint[1] + (box3.endPoint[1] - box3.startPoint[1]) / 2
+  ];
+}
+function cutBoxFromImageAndResize2(box3, image15, cropSize) {
+  const h = image15.shape[1];
+  const w = image15.shape[2];
+  const boxes = [[
+    box3.startPoint[1] / h,
+    box3.startPoint[0] / w,
+    box3.endPoint[1] / h,
+    box3.endPoint[0] / w
+  ]];
+  return tfjs_esm_exports.image.cropAndResize(image15, boxes, [0], cropSize);
+}
+function scaleBoxCoordinates2(box3, factor) {
+  const startPoint = [box3.startPoint[0] * factor[0], box3.startPoint[1] * factor[1]];
+  const endPoint = [box3.endPoint[0] * factor[0], box3.endPoint[1] * factor[1]];
+  const palmLandmarks = box3.palmLandmarks.map((coord) => {
+    const scaledCoord = [coord[0] * factor[0], coord[1] * factor[1]];
+    return scaledCoord;
+  });
+  return {startPoint, endPoint, palmLandmarks, confidence: box3.confidence};
+}
+function enlargeBox2(box3, factor = 1.5) {
+  const center = getBoxCenter2(box3);
+  const size = getBoxSize2(box3);
+  const newHalfSize = [factor * size[0] / 2, factor * size[1] / 2];
+  const startPoint = [center[0] - newHalfSize[0], center[1] - newHalfSize[1]];
+  const endPoint = [center[0] + newHalfSize[0], center[1] + newHalfSize[1]];
+  return {startPoint, endPoint, palmLandmarks: box3.palmLandmarks};
+}
+function squarifyBox2(box3) {
+  const centers = getBoxCenter2(box3);
+  const size = getBoxSize2(box3);
+  const maxEdge = Math.max(...size);
+  const halfSize = maxEdge / 2;
+  const startPoint = [centers[0] - halfSize, centers[1] - halfSize];
+  const endPoint = [centers[0] + halfSize, centers[1] + halfSize];
+  return {startPoint, endPoint, palmLandmarks: box3.palmLandmarks};
+}
+
+// src/handpose/handdetector.ts
+var HandDetector = class {
+  constructor(model10, inputSize, anchorsAnnotated) {
+    this.model = model10;
+    this.anchors = anchorsAnnotated.map((anchor) => [anchor.x_center, anchor.y_center]);
+    this.anchorsTensor = tfjs_esm_exports.tensor2d(this.anchors);
+    this.inputSize = inputSize;
+    this.inputSizeTensor = tfjs_esm_exports.tensor1d([inputSize, inputSize]);
+    this.doubleInputSizeTensor = tfjs_esm_exports.tensor1d([inputSize * 2, inputSize * 2]);
+  }
+  normalizeBoxes(boxes) {
+    return tfjs_esm_exports.tidy(() => {
+      const boxOffsets = tfjs_esm_exports.slice(boxes, [0, 0], [-1, 2]);
+      const boxSizes = tfjs_esm_exports.slice(boxes, [0, 2], [-1, 2]);
+      const boxCenterPoints = tfjs_esm_exports.add(tfjs_esm_exports.div(boxOffsets, this.inputSizeTensor), this.anchorsTensor);
+      const halfBoxSizes = tfjs_esm_exports.div(boxSizes, this.doubleInputSizeTensor);
+      const startPoints = tfjs_esm_exports.mul(tfjs_esm_exports.sub(boxCenterPoints, halfBoxSizes), this.inputSizeTensor);
+      const endPoints = tfjs_esm_exports.mul(tfjs_esm_exports.add(boxCenterPoints, halfBoxSizes), this.inputSizeTensor);
+      return tfjs_esm_exports.concat2d([startPoints, endPoints], 1);
+    });
+  }
+  normalizeLandmarks(rawPalmLandmarks, index) {
+    return tfjs_esm_exports.tidy(() => {
+      const landmarks = tfjs_esm_exports.add(tfjs_esm_exports.div(rawPalmLandmarks.reshape([-1, 7, 2]), this.inputSizeTensor), this.anchors[index]);
+      return tfjs_esm_exports.mul(landmarks, this.inputSizeTensor);
+    });
+  }
+  async getBoxes(input, config3) {
+    const batched = this.model.predict(input);
+    const predictions = batched.squeeze();
+    batched.dispose();
+    const scoresT = tfjs_esm_exports.tidy(() => tfjs_esm_exports.sigmoid(tfjs_esm_exports.slice(predictions, [0, 0], [-1, 1])).squeeze());
+    const scores = scoresT.dataSync();
+    const rawBoxes = tfjs_esm_exports.slice(predictions, [0, 1], [-1, 4]);
+    const boxes = this.normalizeBoxes(rawBoxes);
+    rawBoxes.dispose();
+    const filteredT = await tfjs_esm_exports.image.nonMaxSuppressionAsync(boxes, scores, config3.hand.maxHands, config3.hand.iouThreshold, config3.hand.scoreThreshold);
+    const filtered = filteredT.arraySync();
+    scoresT.dispose();
+    filteredT.dispose();
+    const hands = [];
+    for (const index of filtered) {
+      if (scores[index] >= config3.hand.minConfidence) {
+        const matchingBox = tfjs_esm_exports.slice(boxes, [index, 0], [1, -1]);
+        const rawPalmLandmarks = tfjs_esm_exports.slice(predictions, [index, 5], [1, 14]);
+        const palmLandmarks = tfjs_esm_exports.tidy(() => this.normalizeLandmarks(rawPalmLandmarks, index).reshape([-1, 2]));
+        rawPalmLandmarks.dispose();
+        hands.push({box: matchingBox, palmLandmarks, confidence: scores[index]});
+      }
+    }
+    predictions.dispose();
+    boxes.dispose();
+    return hands;
+  }
+  async estimateHandBounds(input, config3) {
+    const inputHeight = input.shape[1];
+    const inputWidth = input.shape[2];
+    const image15 = tfjs_esm_exports.tidy(() => input.resizeBilinear([this.inputSize, this.inputSize]).div(127.5).sub(1));
+    const predictions = await this.getBoxes(image15, config3);
+    image15.dispose();
+    const hands = [];
+    if (!predictions || predictions.length === 0)
+      return hands;
+    for (const prediction of predictions) {
+      const boxes = prediction.box.dataSync();
+      const startPoint = boxes.slice(0, 2);
+      const endPoint = boxes.slice(2, 4);
+      const palmLandmarks = prediction.palmLandmarks.arraySync();
+      prediction.box.dispose();
+      prediction.palmLandmarks.dispose();
+      hands.push(scaleBoxCoordinates2({startPoint, endPoint, palmLandmarks, confidence: prediction.confidence}, [inputWidth / this.inputSize, inputHeight / this.inputSize]));
+    }
+    return hands;
+  }
+};
+
+// src/handpose/util.ts
+function normalizeRadians2(angle) {
+  return angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
+}
+function computeRotation2(point1, point2) {
+  const radians = Math.PI / 2 - Math.atan2(-(point2[1] - point1[1]), point2[0] - point1[0]);
+  return normalizeRadians2(radians);
+}
+var buildTranslationMatrix2 = (x, y) => [[1, 0, x], [0, 1, y], [0, 0, 1]];
+function dot2(v1, v2) {
+  let product = 0;
+  for (let i = 0; i < v1.length; i++) {
+    product += v1[i] * v2[i];
+  }
+  return product;
+}
+function getColumnFrom2DArr2(arr, columnIndex) {
+  const column = [];
+  for (let i = 0; i < arr.length; i++) {
+    column.push(arr[i][columnIndex]);
+  }
+  return column;
+}
+function multiplyTransformMatrices2(mat1, mat2) {
+  const product = [];
+  const size = mat1.length;
+  for (let row = 0; row < size; row++) {
+    product.push([]);
+    for (let col = 0; col < size; col++) {
+      product[row].push(dot2(mat1[row], getColumnFrom2DArr2(mat2, col)));
+    }
+  }
+  return product;
+}
+function buildRotationMatrix2(rotation, center) {
+  const cosA = Math.cos(rotation);
+  const sinA = Math.sin(rotation);
+  const rotationMatrix = [[cosA, -sinA, 0], [sinA, cosA, 0], [0, 0, 1]];
+  const translationMatrix = buildTranslationMatrix2(center[0], center[1]);
+  const translationTimesRotation = multiplyTransformMatrices2(translationMatrix, rotationMatrix);
+  const negativeTranslationMatrix = buildTranslationMatrix2(-center[0], -center[1]);
+  return multiplyTransformMatrices2(translationTimesRotation, negativeTranslationMatrix);
+}
+function invertTransformMatrix2(matrix) {
+  const rotationComponent = [[matrix[0][0], matrix[1][0]], [matrix[0][1], matrix[1][1]]];
+  const translationComponent = [matrix[0][2], matrix[1][2]];
+  const invertedTranslation = [
+    -dot2(rotationComponent[0], translationComponent),
+    -dot2(rotationComponent[1], translationComponent)
+  ];
+  return [
+    rotationComponent[0].concat(invertedTranslation[0]),
+    rotationComponent[1].concat(invertedTranslation[1]),
+    [0, 0, 1]
+  ];
+}
+function rotatePoint2(homogeneousCoordinate, rotationMatrix) {
+  return [
+    dot2(homogeneousCoordinate, rotationMatrix[0]),
+    dot2(homogeneousCoordinate, rotationMatrix[1])
+  ];
+}
+
+// src/handpose/handpipeline.ts
+var PALM_BOX_ENLARGE_FACTOR = 5;
+var HAND_BOX_ENLARGE_FACTOR = 1.65;
+var PALM_LANDMARK_IDS = [0, 5, 9, 13, 17, 1, 2];
+var PALM_LANDMARKS_INDEX_OF_PALM_BASE = 0;
+var PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
+var HandPipeline = class {
+  constructor(handDetector, landmarkDetector, inputSize) {
+    this.handDetector = handDetector;
+    this.landmarkDetector = landmarkDetector;
+    this.inputSize = inputSize;
+    this.storedBoxes = [];
+    this.skipped = 0;
+    this.detectedHands = 0;
+  }
+  getBoxForPalmLandmarks(palmLandmarks, rotationMatrix) {
+    const rotatedPalmLandmarks = palmLandmarks.map((coord) => rotatePoint2([...coord, 1], rotationMatrix));
+    const boxAroundPalm = this.calculateLandmarksBoundingBox(rotatedPalmLandmarks);
+    return enlargeBox2(squarifyBox2(boxAroundPalm), PALM_BOX_ENLARGE_FACTOR);
+  }
+  getBoxForHandLandmarks(landmarks) {
+    const boundingBox = this.calculateLandmarksBoundingBox(landmarks);
+    const boxAroundHand = enlargeBox2(squarifyBox2(boundingBox), HAND_BOX_ENLARGE_FACTOR);
+    boxAroundHand.palmLandmarks = [];
+    for (let i = 0; i < PALM_LANDMARK_IDS.length; i++) {
+      boxAroundHand.palmLandmarks.push(landmarks[PALM_LANDMARK_IDS[i]].slice(0, 2));
+    }
+    return boxAroundHand;
+  }
+  transformRawCoords(rawCoords, box22, angle, rotationMatrix) {
+    const boxSize = getBoxSize2(box22);
+    const scaleFactor = [boxSize[0] / this.inputSize, boxSize[1] / this.inputSize, (boxSize[0] + boxSize[1]) / this.inputSize / 2];
+    const coordsScaled = rawCoords.map((coord) => [
+      scaleFactor[0] * (coord[0] - this.inputSize / 2),
+      scaleFactor[1] * (coord[1] - this.inputSize / 2),
+      scaleFactor[2] * coord[2]
+    ]);
+    const coordsRotationMatrix = buildRotationMatrix2(angle, [0, 0]);
+    const coordsRotated = coordsScaled.map((coord) => {
+      const rotated = rotatePoint2(coord, coordsRotationMatrix);
+      return [...rotated, coord[2]];
+    });
+    const inverseRotationMatrix = invertTransformMatrix2(rotationMatrix);
+    const boxCenter = [...getBoxCenter2(box22), 1];
+    const originalBoxCenter = [
+      dot2(boxCenter, inverseRotationMatrix[0]),
+      dot2(boxCenter, inverseRotationMatrix[1])
+    ];
+    return coordsRotated.map((coord) => [
+      coord[0] + originalBoxCenter[0],
+      coord[1] + originalBoxCenter[1],
+      coord[2]
+    ]);
+  }
+  async estimateHands(image15, config3) {
+    let useFreshBox = false;
+    let boxes;
+    if (this.skipped === 0 || this.skipped > config3.hand.skipFrames || !config3.hand.landmarks || !config3.videoOptimized) {
+      boxes = await this.handDetector.estimateHandBounds(image15, config3);
+      this.skipped = 0;
+    }
+    if (config3.videoOptimized)
+      this.skipped++;
+    if (boxes && boxes.length > 0 && (boxes.length !== this.detectedHands && this.detectedHands !== config3.hand.maxHands || !config3.hand.landmarks)) {
+      this.detectedHands = 0;
+      this.storedBoxes = [...boxes];
+      if (this.storedBoxes.length > 0)
+        useFreshBox = true;
+    }
+    const hands = [];
+    if (config3.hand.skipInitial && this.detectedHands === 0)
+      this.skipped = 0;
+    for (let i = 0; i < this.storedBoxes.length; i++) {
+      const currentBox = this.storedBoxes[i];
+      if (!currentBox)
+        continue;
+      if (config3.hand.landmarks) {
+        const angle = config3.hand.rotation ? computeRotation2(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]) : 0;
+        const palmCenter = getBoxCenter2(currentBox);
+        const palmCenterNormalized = [palmCenter[0] / image15.shape[2], palmCenter[1] / image15.shape[1]];
+        const rotatedImage = config3.hand.rotation ? tfjs_esm_exports.image.rotateWithOffset(image15, angle, 0, palmCenterNormalized) : image15.clone();
+        const rotationMatrix = buildRotationMatrix2(-angle, palmCenter);
+        const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
+        const croppedInput = cutBoxFromImageAndResize2(newBox, rotatedImage, [this.inputSize, this.inputSize]);
+        const handImage = croppedInput.div(255);
+        croppedInput.dispose();
+        rotatedImage.dispose();
+        const [confidenceT, keypoints3] = await this.landmarkDetector.predict(handImage);
+        handImage.dispose();
+        const confidence = confidenceT.dataSync()[0];
+        confidenceT.dispose();
+        if (confidence >= config3.hand.minConfidence) {
+          const keypointsReshaped = tfjs_esm_exports.reshape(keypoints3, [-1, 3]);
+          const rawCoords = keypointsReshaped.arraySync();
+          keypoints3.dispose();
+          keypointsReshaped.dispose();
+          const coords3 = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
+          const nextBoundingBox = this.getBoxForHandLandmarks(coords3);
+          this.storedBoxes[i] = nextBoundingBox;
+          const result = {
+            landmarks: coords3,
+            confidence,
+            box: {topLeft: nextBoundingBox.startPoint, bottomRight: nextBoundingBox.endPoint}
+          };
+          hands.push(result);
+        } else {
+          this.storedBoxes[i] = null;
+        }
+        keypoints3.dispose();
+      } else {
+        const enlarged = enlargeBox2(squarifyBox2(currentBox), HAND_BOX_ENLARGE_FACTOR);
+        const result = {
+          confidence: currentBox.confidence,
+          box: {topLeft: enlarged.startPoint, bottomRight: enlarged.endPoint}
+        };
+        hands.push(result);
+      }
+    }
+    this.storedBoxes = this.storedBoxes.filter((a) => a !== null);
+    this.detectedHands = hands.length;
+    return hands;
+  }
+  calculateLandmarksBoundingBox(landmarks) {
+    const xs = landmarks.map((d) => d[0]);
+    const ys = landmarks.map((d) => d[1]);
+    const startPoint = [Math.min(...xs), Math.min(...ys)];
+    const endPoint = [Math.max(...xs), Math.max(...ys)];
+    return {startPoint, endPoint};
+  }
+};
+
+// src/handpose/anchors.ts
+var anchors = [
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.015625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.046875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.078125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.109375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.140625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.171875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.203125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.234375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.265625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.296875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.328125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.359375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.390625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.421875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.453125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.484375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.515625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.546875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.578125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.609375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.640625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.671875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.703125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.734375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.765625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.796875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.828125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.859375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.890625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.921875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.953125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.015625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.046875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.078125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.109375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.140625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.171875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.203125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.234375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.265625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.296875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.328125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.359375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.390625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.421875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.453125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.484375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.515625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.546875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.578125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.609375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.640625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.671875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.703125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.734375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.765625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.796875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.828125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.859375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.890625,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.921875,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.953125,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.984375,
+    y_center: 0.984375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.03125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.09375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.15625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.21875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.28125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.34375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.40625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.46875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.53125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.59375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.65625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.71875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.78125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.84375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.90625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.03125,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.09375,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.15625,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.21875,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.28125,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.34375,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.40625,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.46875,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.53125,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.59375,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.65625,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.71875,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.78125,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.84375,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.90625,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.96875,
+    y_center: 0.96875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.0625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.1875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.3125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.4375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.5625
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.6875
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.8125
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.0625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.1875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.3125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.4375,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.5625,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.6875,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.8125,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.9375
+  },
+  {
+    w: 1,
+    h: 1,
+    x_center: 0.9375,
+    y_center: 0.9375
+  }
+];
+
+// src/handpose/handpose.ts
+var MESH_ANNOTATIONS2 = {
+  thumb: [1, 2, 3, 4],
+  indexFinger: [5, 6, 7, 8],
+  middleFinger: [9, 10, 11, 12],
+  ringFinger: [13, 14, 15, 16],
+  pinky: [17, 18, 19, 20],
+  palmBase: [0]
+};
+var HandPose = class {
+  constructor(handPipeline) {
+    this.handPipeline = handPipeline;
+  }
+  static getAnnotations() {
+    return MESH_ANNOTATIONS2;
+  }
+  async estimateHands(input, config3) {
+    const predictions = await this.handPipeline.estimateHands(input, config3);
+    if (!predictions)
+      return [];
+    const hands = [];
+    for (const prediction of predictions) {
+      const annotations3 = {};
+      if (prediction.landmarks) {
+        for (const key of Object.keys(MESH_ANNOTATIONS2)) {
+          annotations3[key] = MESH_ANNOTATIONS2[key].map((index) => prediction.landmarks[index]);
+        }
+      }
+      const box3 = prediction.box ? [
+        Math.max(0, prediction.box.topLeft[0]),
+        Math.max(0, prediction.box.topLeft[1]),
+        Math.min(input.shape[2], prediction.box.bottomRight[0]) - Math.max(0, prediction.box.topLeft[0]),
+        Math.min(input.shape[1], prediction.box.bottomRight[1]) - Math.max(0, prediction.box.topLeft[1])
+      ] : [];
+      const boxRaw = [
+        prediction.box.topLeft[0] / input.shape[2],
+        prediction.box.topLeft[1] / input.shape[1],
+        (prediction.box.bottomRight[0] - prediction.box.topLeft[0]) / input.shape[2],
+        (prediction.box.bottomRight[1] - prediction.box.topLeft[1]) / input.shape[1]
+      ];
+      hands.push({confidence: Math.round(100 * prediction.confidence) / 100, box: box3, boxRaw, landmarks: prediction.landmarks, annotations: annotations3});
+    }
+    return hands;
+  }
+};
+var handDetectorModel;
+var handPoseModel;
+async function load9(config3) {
+  if (!handDetectorModel || !handPoseModel) {
+    [handDetectorModel, handPoseModel] = await Promise.all([
+      config3.hand.enabled ? tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.hand.detector.modelPath), {fromTFHub: config3.hand.detector.modelPath.includes("tfhub.dev")}) : null,
+      config3.hand.landmarks ? tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.hand.skeleton.modelPath), {fromTFHub: config3.hand.skeleton.modelPath.includes("tfhub.dev")}) : null
+    ]);
+    if (config3.hand.enabled) {
+      if (!handDetectorModel || !handDetectorModel.modelUrl)
+        log("load model failed:", config3.hand.detector.modelPath);
+      else if (config3.debug)
+        log("load model:", handDetectorModel.modelUrl);
+      if (!handPoseModel || !handPoseModel.modelUrl)
+        log("load model failed:", config3.hand.skeleton.modelPath);
+      else if (config3.debug)
+        log("load model:", handPoseModel.modelUrl);
+    }
+  } else {
+    if (config3.debug)
+      log("cached model:", handDetectorModel.modelUrl);
+    if (config3.debug)
+      log("cached model:", handPoseModel.modelUrl);
+  }
+  const handDetector = new HandDetector(handDetectorModel, handDetectorModel == null ? void 0 : handDetectorModel.inputs[0].shape[2], anchors);
+  const handPipeline = new HandPipeline(handDetector, handPoseModel, handPoseModel == null ? void 0 : handPoseModel.inputs[0].shape[2]);
+  const handPose = new HandPose(handPipeline);
+  return handPose;
+}
+
+// src/blazepose/blazepose.ts
+var blazepose_exports = {};
+__export(blazepose_exports, {
+  load: () => load10,
+  predict: () => predict6
+});
+
+// src/blazepose/annotations.ts
+var full = [
+  "nose",
+  "leftEyeInside",
+  "leftEye",
+  "leftEyeOutside",
+  "rightEyeInside",
+  "rightEye",
+  "rightEyeOutside",
+  "leftEar",
+  "rightEar",
+  "leftMouth",
+  "rightMouth",
+  "leftShoulder",
+  "rightShoulder",
+  "leftElbow",
+  "rightElbow",
+  "leftWrist",
+  "rightWrist",
+  "leftPalm",
+  "rightPalm",
+  "leftIndex",
+  "rightIndex",
+  "leftPinky",
+  "rightPinky",
+  "leftHip",
+  "rightHip",
+  "leftKnee",
+  "rightKnee",
+  "leftAnkle",
+  "rightAnkle",
+  "leftHeel",
+  "rightHeel",
+  "leftFoot",
+  "rightFoot",
+  "midHip",
+  "forehead",
+  "leftThumb",
+  "leftHand",
+  "rightThumb",
+  "rightHand"
+];
+var upper = [
+  "nose",
+  "leftEyeInside",
+  "leftEye",
+  "leftEyeOutside",
+  "rightEyeInside",
+  "rightEye",
+  "rightEyeOutside",
+  "leftEar",
+  "rightEar",
+  "leftMouth",
+  "rightMouth",
+  "leftShoulder",
+  "rightShoulder",
+  "leftElbow",
+  "rightElbow",
+  "left:15",
+  "right:16",
+  "left:17",
+  "right:18",
+  "left:19",
+  "right:20",
+  "left:21",
+  "right:22",
+  "leftChest",
+  "rightChest",
+  "neck",
+  "forehead",
+  "left:27",
+  "right:28",
+  "left:29",
+  "right:30"
+];
+
+// src/blazepose/blazepose.ts
+var model7;
+async function load10(config3) {
+  if (!model7) {
+    model7 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath));
+    model7.width = parseInt(model7.signature.inputs["input_1:0"].tensorShape.dim[2].size);
+    model7.height = parseInt(model7.signature.inputs["input_1:0"].tensorShape.dim[1].size);
+    if (!model7 || !model7.modelUrl)
+      log("load model failed:", config3.body.modelPath);
+    else if (config3.debug)
+      log("load model:", model7.modelUrl);
+  } else if (config3.debug)
+    log("cached model:", model7.modelUrl);
+  return model7;
+}
+async function predict6(image15, config3) {
+  if (!model7)
+    return null;
+  if (!config3.body.enabled)
+    return null;
+  const imgSize = {width: image15.shape[2], height: image15.shape[1]};
+  const resize = tfjs_esm_exports.image.resizeBilinear(image15, [model7.width, model7.height], false);
+  const normalize = tfjs_esm_exports.div(resize, [255]);
+  resize.dispose();
+  let points;
+  if (!config3.profile) {
+    const resT = await model7.predict(normalize);
+    points = resT.find((t) => t.size === 195 || t.size === 155).dataSync();
+    resT.forEach((t) => t.dispose());
+  } else {
+    const profileData = await tfjs_esm_exports.profile(() => model7.predict(normalize));
+    points = profileData.result.find((t) => t.size === 195 || t.size === 155).dataSync();
+    profileData.result.forEach((t) => t.dispose());
+    run("blazepose", profileData);
+  }
+  normalize.dispose();
+  const keypoints3 = [];
+  const labels2 = points.length === 195 ? full : upper;
+  const depth = 5;
+  for (let i = 0; i < points.length / depth; i++) {
+    keypoints3.push({
+      id: i,
+      part: labels2[i],
+      position: {
+        x: Math.trunc(imgSize.width * points[depth * i + 0] / 255),
+        y: Math.trunc(imgSize.height * points[depth * i + 1] / 255),
+        z: Math.trunc(points[depth * i + 2]) + 0
+      },
+      score: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100,
+      presence: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 4])))) / 100
+    });
+  }
+  const score = keypoints3.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
+  return [{score, keypoints: keypoints3}];
+}
+
+// src/efficientpose/efficientpose.ts
+var model8;
+var keypoints2 = [];
+var skipped5 = Number.MAX_SAFE_INTEGER;
+var bodyParts = ["head", "neck", "rightShoulder", "rightElbow", "rightWrist", "chest", "leftShoulder", "leftElbow", "leftWrist", "pelvis", "rightHip", "rightKnee", "rightAnkle", "leftHip", "leftKnee", "leftAnkle"];
+async function load11(config3) {
+  if (!model8) {
+    model8 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath));
+    if (!model8 || !model8.modelUrl)
+      log("load model failed:", config3.body.modelPath);
+    else if (config3.debug)
+      log("load model:", model8.modelUrl);
+  } else if (config3.debug)
+    log("cached model:", model8.modelUrl);
+  return model8;
+}
+function max2d(inputs, minScore) {
+  const [width, height] = inputs.shape;
+  return tfjs_esm_exports.tidy(() => {
+    const mod2 = (a, b) => tfjs_esm_exports.sub(a, tfjs_esm_exports.mul(tfjs_esm_exports.div(a, tfjs_esm_exports.scalar(b, "int32")), tfjs_esm_exports.scalar(b, "int32")));
+    const reshaped = tfjs_esm_exports.reshape(inputs, [height * width]);
+    const score = tfjs_esm_exports.max(reshaped, 0).dataSync()[0];
+    if (score > minScore) {
+      const coords3 = tfjs_esm_exports.argMax(reshaped, 0);
+      const x = mod2(coords3, width).dataSync()[0];
+      const y = tfjs_esm_exports.div(coords3, tfjs_esm_exports.scalar(width, "int32")).dataSync()[0];
+      return [x, y, score];
+    }
+    return [0, 0, score];
+  });
+}
+async function predict7(image15, config3) {
+  if (!model8)
+    return null;
+  if (skipped5 < config3.body.skipFrames && config3.videoOptimized && Object.keys(keypoints2).length > 0) {
+    skipped5++;
+    return keypoints2;
+  }
+  if (config3.videoOptimized)
+    skipped5 = 0;
+  else
+    skipped5 = Number.MAX_SAFE_INTEGER;
+  return new Promise(async (resolve) => {
+    const tensor = tfjs_esm_exports.tidy(() => {
+      const resize = tfjs_esm_exports.image.resizeBilinear(image15, [model8.inputs[0].shape[2], model8.inputs[0].shape[1]], false);
+      const enhance3 = tfjs_esm_exports.mul(resize, 2);
+      const norm = enhance3.sub(1);
+      return norm;
+    });
+    let resT;
+    if (!config3.profile) {
+      if (config3.body.enabled)
+        resT = await model8.predict(tensor);
+    } else {
+      const profileT = config3.body.enabled ? await tfjs_esm_exports.profile(() => model8.predict(tensor)) : {};
+      resT = profileT.result.clone();
+      profileT.result.dispose();
+      run("body", profileT);
+    }
+    tensor.dispose();
+    if (resT) {
+      const parts = [];
+      const squeeze = resT.squeeze();
+      tfjs_esm_exports.dispose(resT);
+      const stack2 = squeeze.unstack(2);
+      tfjs_esm_exports.dispose(squeeze);
+      for (let id = 0; id < stack2.length; id++) {
+        const [x, y, score2] = max2d(stack2[id], config3.body.scoreThreshold);
+        if (score2 > config3.body.scoreThreshold) {
+          parts.push({
+            id,
+            score: Math.round(100 * score2) / 100,
+            part: bodyParts[id],
+            positionRaw: {
+              xRaw: x / model8.inputs[0].shape[2],
+              yRaw: y / model8.inputs[0].shape[1]
+            },
+            position: {
+              x: Math.round(image15.shape[2] * x / model8.inputs[0].shape[2]),
+              y: Math.round(image15.shape[1] * y / model8.inputs[0].shape[1])
+            }
+          });
+        }
+      }
+      stack2.forEach((s) => tfjs_esm_exports.dispose(s));
+      keypoints2 = parts;
+    }
+    const score = keypoints2.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
+    resolve([{score, keypoints: keypoints2}]);
+  });
+}
+
+// src/nanodet/nanodet.ts
+var nanodet_exports = {};
+__export(nanodet_exports, {
+  load: () => load12,
+  predict: () => predict8
+});
+
+// src/nanodet/labels.ts
+var labels = [
+  {class: 1, label: "person"},
+  {class: 2, label: "bicycle"},
+  {class: 3, label: "car"},
+  {class: 4, label: "motorcycle"},
+  {class: 5, label: "airplane"},
+  {class: 6, label: "bus"},
+  {class: 7, label: "train"},
+  {class: 8, label: "truck"},
+  {class: 9, label: "boat"},
+  {class: 10, label: "traffic light"},
+  {class: 11, label: "fire hydrant"},
+  {class: 12, label: "stop sign"},
+  {class: 13, label: "parking meter"},
+  {class: 14, label: "bench"},
+  {class: 15, label: "bird"},
+  {class: 16, label: "cat"},
+  {class: 17, label: "dog"},
+  {class: 18, label: "horse"},
+  {class: 19, label: "sheep"},
+  {class: 20, label: "cow"},
+  {class: 21, label: "elephant"},
+  {class: 22, label: "bear"},
+  {class: 23, label: "zebra"},
+  {class: 24, label: "giraffe"},
+  {class: 25, label: "backpack"},
+  {class: 26, label: "umbrella"},
+  {class: 27, label: "handbag"},
+  {class: 28, label: "tie"},
+  {class: 29, label: "suitcase"},
+  {class: 30, label: "frisbee"},
+  {class: 31, label: "skis"},
+  {class: 32, label: "snowboard"},
+  {class: 33, label: "sports ball"},
+  {class: 34, label: "kite"},
+  {class: 35, label: "baseball bat"},
+  {class: 36, label: "baseball glove"},
+  {class: 37, label: "skateboard"},
+  {class: 38, label: "surfboard"},
+  {class: 39, label: "tennis racket"},
+  {class: 40, label: "bottle"},
+  {class: 41, label: "wine glass"},
+  {class: 42, label: "cup"},
+  {class: 43, label: "fork"},
+  {class: 44, label: "knife"},
+  {class: 45, label: "spoon"},
+  {class: 46, label: "bowl"},
+  {class: 47, label: "banana"},
+  {class: 48, label: "apple"},
+  {class: 49, label: "sandwich"},
+  {class: 50, label: "orange"},
+  {class: 51, label: "broccoli"},
+  {class: 52, label: "carrot"},
+  {class: 53, label: "hot dog"},
+  {class: 54, label: "pizza"},
+  {class: 55, label: "donut"},
+  {class: 56, label: "cake"},
+  {class: 57, label: "chair"},
+  {class: 58, label: "couch"},
+  {class: 59, label: "potted plant"},
+  {class: 60, label: "bed"},
+  {class: 61, label: "dining table"},
+  {class: 62, label: "toilet"},
+  {class: 63, label: "tv"},
+  {class: 64, label: "laptop"},
+  {class: 65, label: "mouse"},
+  {class: 66, label: "remote"},
+  {class: 67, label: "keyboard"},
+  {class: 68, label: "cell phone"},
+  {class: 69, label: "microwave"},
+  {class: 70, label: "oven"},
+  {class: 71, label: "toaster"},
+  {class: 72, label: "sink"},
+  {class: 73, label: "refrigerator"},
+  {class: 74, label: "book"},
+  {class: 75, label: "clock"},
+  {class: 76, label: "vase"},
+  {class: 77, label: "scissors"},
+  {class: 78, label: "teddy bear"},
+  {class: 79, label: "hair drier"},
+  {class: 80, label: "toothbrush"}
+];
+
+// src/nanodet/nanodet.ts
+var model9;
+var last5 = [];
+var skipped6 = Number.MAX_SAFE_INTEGER;
+var scaleBox = 2.5;
+async function load12(config3) {
+  if (!model9) {
+    model9 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath));
+    const inputs = Object.values(model9.modelSignature["inputs"]);
+    model9.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
+    if (!model9.inputSize)
+      throw new Error(`Human: Cannot determine model inputSize: ${config3.object.modelPath}`);
+    if (!model9 || !model9.modelUrl)
+      log("load model failed:", config3.object.modelPath);
+    else if (config3.debug)
+      log("load model:", model9.modelUrl);
+  } else if (config3.debug)
+    log("cached model:", model9.modelUrl);
+  return model9;
+}
+async function process2(res, inputSize, outputShape, config3) {
+  let id = 0;
+  let results = [];
+  for (const strideSize of [1, 2, 4]) {
+    tfjs_esm_exports.tidy(() => {
+      var _a, _b;
+      const baseSize = strideSize * 13;
+      const scoresT = (_a = res.find((a) => a.shape[1] === baseSize ** 2 && a.shape[2] === labels.length)) == null ? void 0 : _a.squeeze();
+      const featuresT = (_b = res.find((a) => a.shape[1] === baseSize ** 2 && a.shape[2] < labels.length)) == null ? void 0 : _b.squeeze();
+      const boxesMax = featuresT.reshape([-1, 4, featuresT.shape[1] / 4]);
+      const boxIdx = boxesMax.argMax(2).arraySync();
+      const scores = scoresT.arraySync();
+      for (let i = 0; i < scoresT.shape[0]; i++) {
+        for (let j = 0; j < scoresT.shape[1]; j++) {
+          const score = scores[i][j];
+          if (score > config3.object.minConfidence && j !== 61) {
+            const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize;
+            const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize;
+            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize));
+            const [x, y] = [
+              cx - scaleBox / strideSize * boxOffset[0],
+              cy - scaleBox / strideSize * boxOffset[1]
+            ];
+            const [w, h] = [
+              cx + scaleBox / strideSize * boxOffset[2] - x,
+              cy + scaleBox / strideSize * boxOffset[3] - y
+            ];
+            let boxRaw = [x, y, w, h];
+            boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1)));
+            const box3 = [
+              boxRaw[0] * outputShape[0],
+              boxRaw[1] * outputShape[1],
+              boxRaw[2] * outputShape[0],
+              boxRaw[3] * outputShape[1]
+            ];
+            const result = {
+              id: id++,
+              strideSize,
+              score: Math.round(100 * score) / 100,
+              class: j + 1,
+              label: labels[j].label,
+              center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
+              centerRaw: [cx, cy],
+              box: box3.map((a) => Math.trunc(a)),
+              boxRaw
+            };
+            results.push(result);
+          }
+        }
+      }
+    });
+  }
+  res.forEach((t) => tfjs_esm_exports.dispose(t));
+  const nmsBoxes = results.map((a) => a.boxRaw);
+  const nmsScores = results.map((a) => a.score);
+  let nmsIdx = [];
+  if (nmsBoxes && nmsBoxes.length > 0) {
+    const nms = await tfjs_esm_exports.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config3.object.maxResults, config3.object.iouThreshold, config3.object.minConfidence);
+    nmsIdx = nms.dataSync();
+    tfjs_esm_exports.dispose(nms);
+  }
+  results = results.filter((a, idx) => nmsIdx.includes(idx)).sort((a, b) => b.score - a.score);
+  return results;
+}
+async function predict8(image15, config3) {
+  if (!model9)
+    return null;
+  if (skipped6 < config3.object.skipFrames && config3.videoOptimized && last5.length > 0) {
+    skipped6++;
+    return last5;
+  }
+  if (config3.videoOptimized)
+    skipped6 = 0;
+  else
+    skipped6 = Number.MAX_SAFE_INTEGER;
+  return new Promise(async (resolve) => {
+    const outputSize = [image15.shape[2], image15.shape[1]];
+    const resize = tfjs_esm_exports.image.resizeBilinear(image15, [model9.inputSize, model9.inputSize], false);
+    const norm = resize.div(255);
+    const transpose = norm.transpose([0, 3, 1, 2]);
+    norm.dispose();
+    resize.dispose();
+    let objectT;
+    if (!config3.profile) {
+      if (config3.object.enabled)
+        objectT = await model9.predict(transpose);
+    } else {
+      const profileObject = config3.object.enabled ? await tfjs_esm_exports.profile(() => model9.predict(transpose)) : {};
+      objectT = profileObject.result;
+      run("object", profileObject);
+    }
+    transpose.dispose();
+    const obj = await process2(objectT, model9.inputSize, outputSize, config3);
+    last5 = obj;
+    resolve(obj);
+  });
+}
+
+// src/gesture/gesture.ts
+var body = (res) => {
+  if (!res)
+    return [];
+  const gestures = [];
+  for (let i = 0; i < res.length; i++) {
+    const leftWrist = res[i].keypoints.find((a) => a.part === "leftWrist");
+    const rightWrist = res[i].keypoints.find((a) => a.part === "rightWrist");
+    const nose = res[i].keypoints.find((a) => a.part === "nose");
+    if (nose && leftWrist && rightWrist && leftWrist.position.y < nose.position.y && rightWrist.position.y < nose.position.y)
+      gestures.push({body: i, gesture: "i give up"});
+    else if (nose && leftWrist && leftWrist.position.y < nose.position.y)
+      gestures.push({body: i, gesture: "raise left hand"});
+    else if (nose && rightWrist && rightWrist.position.y < nose.position.y)
+      gestures.push({body: i, gesture: "raise right hand"});
+    const leftShoulder = res[i].keypoints.find((a) => a.part === "leftShoulder");
+    const rightShoulder = res[i].keypoints.find((a) => a.part === "rightShoulder");
+    if (leftShoulder && rightShoulder)
+      gestures.push({body: i, gesture: `leaning ${leftShoulder.position.y > rightShoulder.position.y ? "left" : "right"}`});
+  }
+  return gestures;
+};
+var face = (res) => {
+  if (!res)
+    return [];
+  const gestures = [];
+  for (let i = 0; i < res.length; i++) {
+    if (res[i].mesh && res[i].mesh.length > 0) {
+      const eyeFacing = res[i].mesh[33][2] - res[i].mesh[263][2];
+      if (Math.abs(eyeFacing) < 10)
+        gestures.push({face: i, gesture: "facing camera"});
+      else
+        gestures.push({face: i, gesture: `facing ${eyeFacing < 0 ? "right" : "left"}`});
+      const openLeft = Math.abs(res[i].mesh[374][1] - res[i].mesh[386][1]) / Math.abs(res[i].mesh[443][1] - res[i].mesh[450][1]);
+      if (openLeft < 0.2)
+        gestures.push({face: i, gesture: "blink left eye"});
+      const openRight = Math.abs(res[i].mesh[145][1] - res[i].mesh[159][1]) / Math.abs(res[i].mesh[223][1] - res[i].mesh[230][1]);
+      if (openRight < 0.2)
+        gestures.push({face: i, gesture: "blink right eye"});
+      const mouthOpen = Math.min(100, 500 * Math.abs(res[i].mesh[13][1] - res[i].mesh[14][1]) / Math.abs(res[i].mesh[10][1] - res[i].mesh[152][1]));
+      if (mouthOpen > 10)
+        gestures.push({face: i, gesture: `mouth ${Math.trunc(mouthOpen)}% open`});
+      const chinDepth = res[i].mesh[152][2];
+      if (Math.abs(chinDepth) > 10)
+        gestures.push({face: i, gesture: `head ${chinDepth < 0 ? "up" : "down"}`});
+    }
+  }
+  return gestures;
+};
+var iris = (res) => {
+  if (!res)
+    return [];
+  const gestures = [];
+  for (let i = 0; i < res.length; i++) {
+    if (!res[i].annotations || !res[i].annotations.leftEyeIris || !res[i].annotations.rightEyeIris)
+      continue;
+    const sizeXLeft = res[i].annotations.leftEyeIris[3][0] - res[i].annotations.leftEyeIris[1][0];
+    const sizeYLeft = res[i].annotations.leftEyeIris[4][1] - res[i].annotations.leftEyeIris[2][1];
+    const areaLeft = Math.abs(sizeXLeft * sizeYLeft);
+    const sizeXRight = res[i].annotations.rightEyeIris[3][0] - res[i].annotations.rightEyeIris[1][0];
+    const sizeYRight = res[i].annotations.rightEyeIris[4][1] - res[i].annotations.rightEyeIris[2][1];
+    const areaRight = Math.abs(sizeXRight * sizeYRight);
+    const difference = Math.abs(areaLeft - areaRight) / Math.max(areaLeft, areaRight);
+    if (difference < 0.25)
+      gestures.push({iris: i, gesture: "looking at camera"});
+  }
+  return gestures;
+};
+var hand = (res) => {
+  if (!res)
+    return [];
+  const gestures = [];
+  for (let i = 0; i < res.length; i++) {
+    const fingers = [];
+    for (const [finger, pos] of Object.entries(res[i]["annotations"])) {
+      if (finger !== "palmBase" && Array.isArray(pos))
+        fingers.push({name: finger.toLowerCase(), position: pos[0]});
+    }
+    if (fingers && fingers.length > 0) {
+      const closest = fingers.reduce((best, a) => best.position[2] < a.position[2] ? best : a);
+      const highest = fingers.reduce((best, a) => best.position[1] < a.position[1] ? best : a);
+      gestures.push({hand: i, gesture: `${closest.name} forward ${highest.name} up`});
+    }
+  }
+  return gestures;
+};
+
+// src/image/image.ts
+var image_exports = {};
+__export(image_exports, {
+  process: () => process3
+});
+
+// src/image/imagefx.js
+function GLProgram(gl, vertexSource, fragmentSource) {
+  const _collect = function(source, prefix, collection) {
+    const r = new RegExp("\\b" + prefix + " \\w+ (\\w+)", "ig");
+    source.replace(r, (match2, name) => {
+      collection[name] = 0;
+      return match2;
+    });
+  };
+  const _compile = function(source, type) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+      throw new Error("Filter: GL compile failed", gl.getShaderInfoLog(shader));
+    return shader;
+  };
+  this.uniform = {};
+  this.attribute = {};
+  const _vsh = _compile(vertexSource, gl.VERTEX_SHADER);
+  const _fsh = _compile(fragmentSource, gl.FRAGMENT_SHADER);
+  this.id = gl.createProgram();
+  gl.attachShader(this.id, _vsh);
+  gl.attachShader(this.id, _fsh);
+  gl.linkProgram(this.id);
+  if (!gl.getProgramParameter(this.id, gl.LINK_STATUS))
+    throw new Error("Filter: GL link failed", gl.getProgramInfoLog(this.id));
+  gl.useProgram(this.id);
+  _collect(vertexSource, "attribute", this.attribute);
+  for (const a in this.attribute)
+    this.attribute[a] = gl.getAttribLocation(this.id, a);
+  _collect(vertexSource, "uniform", this.uniform);
+  _collect(fragmentSource, "uniform", this.uniform);
+  for (const u in this.uniform)
+    this.uniform[u] = gl.getUniformLocation(this.id, u);
+}
+function GLImageFilter(params) {
+  if (!params)
+    params = {};
+  let _drawCount = 0;
+  let _sourceTexture = null;
+  let _lastInChain = false;
+  let _currentFramebufferIndex = -1;
+  let _tempFramebuffers = [null, null];
+  let _filterChain = [];
+  let _width = -1;
+  let _height = -1;
+  let _vertexBuffer = null;
+  let _currentProgram = null;
+  const _filter = {};
+  const _canvas = params.canvas || document.createElement("canvas");
+  const _shaderProgramCache = {};
+  const DRAW = {INTERMEDIATE: 1};
+  const gl = _canvas.getContext("webgl");
+  if (!gl)
+    throw new Error("Filter: getContext() failed");
+  this.addFilter = function(name) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    const filter = _filter[name];
+    _filterChain.push({func: filter, args});
+  };
+  this.reset = function() {
+    _filterChain = [];
+  };
+  const _resize = function(width, height) {
+    if (width === _width && height === _height) {
+      return;
+    }
+    _canvas.width = width;
+    _width = width;
+    _canvas.height = height;
+    _height = height;
+    if (!_vertexBuffer) {
+      const vertices = new Float32Array([
+        -1,
+        -1,
+        0,
+        1,
+        1,
+        -1,
+        1,
+        1,
+        -1,
+        1,
+        0,
+        0,
+        -1,
+        1,
+        0,
+        0,
+        1,
+        -1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ]);
+      _vertexBuffer = gl.createBuffer(), gl.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    }
+    gl.viewport(0, 0, _width, _height);
+    _tempFramebuffers = [null, null];
+  };
+  const _createFramebufferTexture = function(width, height) {
+    const fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    const renderbuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    return {fbo, texture};
+  };
+  const _getTempFramebuffer = function(index) {
+    _tempFramebuffers[index] = _tempFramebuffers[index] || _createFramebufferTexture(_width, _height);
+    return _tempFramebuffers[index];
+  };
+  const _draw = function(flags = null) {
+    var _a, _b;
+    let source = null;
+    let target = null;
+    let flipY = false;
+    if (_drawCount === 0) {
+      source = _sourceTexture;
+    } else {
+      source = (_a = _getTempFramebuffer(_currentFramebufferIndex)) == null ? void 0 : _a.texture;
+    }
+    _drawCount++;
+    if (_lastInChain && !(flags & DRAW.INTERMEDIATE)) {
+      target = null;
+      flipY = _drawCount % 2 === 0;
+    } else {
+      _currentFramebufferIndex = (_currentFramebufferIndex + 1) % 2;
+      target = (_b = _getTempFramebuffer(_currentFramebufferIndex)) == null ? void 0 : _b.fbo;
+    }
+    gl.bindTexture(gl.TEXTURE_2D, source);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, target);
+    gl.uniform1f(_currentProgram.uniform.flipY, flipY ? -1 : 1);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  };
+  this.apply = function(image15) {
+    _resize(image15.width, image15.height);
+    _drawCount = 0;
+    if (!_sourceTexture)
+      _sourceTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, _sourceTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image15);
+    if (_filterChain.length === 0) {
+      _draw();
+      return _canvas;
+    }
+    for (let i = 0; i < _filterChain.length; i++) {
+      _lastInChain = i === _filterChain.length - 1;
+      const f = _filterChain[i];
+      f.func.apply(this, f.args || []);
+    }
+    return _canvas;
+  };
+  const _compileShader = function(fragmentSource) {
+    if (_shaderProgramCache[fragmentSource]) {
+      _currentProgram = _shaderProgramCache[fragmentSource];
+      gl.useProgram(_currentProgram.id);
+      return _currentProgram;
+    }
+    const SHADER = {};
+    SHADER.VERTEX_IDENTITY = [
+      "precision highp float;",
+      "attribute vec2 pos;",
+      "attribute vec2 uv;",
+      "varying vec2 vUv;",
+      "uniform float flipY;",
+      "void main(void) {",
+      "vUv = uv;",
+      "gl_Position = vec4(pos.x, pos.y*flipY, 0.0, 1.);",
+      "}"
+    ].join("\n");
+    SHADER.FRAGMENT_IDENTITY = [
+      "precision highp float;",
+      "varying vec2 vUv;",
+      "uniform sampler2D texture;",
+      "void main(void) {",
+      "gl_FragColor = texture2D(texture, vUv);",
+      "}"
+    ].join("\n");
+    _currentProgram = new GLProgram(gl, SHADER.VERTEX_IDENTITY, fragmentSource);
+    const floatSize = Float32Array.BYTES_PER_ELEMENT;
+    const vertSize = 4 * floatSize;
+    gl.enableVertexAttribArray(_currentProgram.attribute.pos);
+    gl.vertexAttribPointer(_currentProgram.attribute.pos, 2, gl.FLOAT, false, vertSize, 0 * floatSize);
+    gl.enableVertexAttribArray(_currentProgram.attribute.uv);
+    gl.vertexAttribPointer(_currentProgram.attribute.uv, 2, gl.FLOAT, false, vertSize, 2 * floatSize);
+    _shaderProgramCache[fragmentSource] = _currentProgram;
+    return _currentProgram;
+  };
+  _filter.colorMatrix = function(matrix) {
+    const m = new Float32Array(matrix);
+    m[4] /= 255;
+    m[9] /= 255;
+    m[14] /= 255;
+    m[19] /= 255;
+    const shader = m[18] === 1 && m[3] === 0 && m[8] === 0 && m[13] === 0 && m[15] === 0 && m[16] === 0 && m[17] === 0 && m[19] === 0 ? _filter.colorMatrix.SHADER.WITHOUT_ALPHA : _filter.colorMatrix.SHADER.WITH_ALPHA;
+    const program = _compileShader(shader);
+    gl.uniform1fv(program.uniform.m, m);
+    _draw();
+  };
+  _filter.colorMatrix.SHADER = {};
+  _filter.colorMatrix.SHADER.WITH_ALPHA = [
+    "precision highp float;",
+    "varying vec2 vUv;",
+    "uniform sampler2D texture;",
+    "uniform float m[20];",
+    "void main(void) {",
+    "vec4 c = texture2D(texture, vUv);",
+    "gl_FragColor.r = m[0] * c.r + m[1] * c.g + m[2] * c.b + m[3] * c.a + m[4];",
+    "gl_FragColor.g = m[5] * c.r + m[6] * c.g + m[7] * c.b + m[8] * c.a + m[9];",
+    "gl_FragColor.b = m[10] * c.r + m[11] * c.g + m[12] * c.b + m[13] * c.a + m[14];",
+    "gl_FragColor.a = m[15] * c.r + m[16] * c.g + m[17] * c.b + m[18] * c.a + m[19];",
+    "}"
+  ].join("\n");
+  _filter.colorMatrix.SHADER.WITHOUT_ALPHA = [
+    "precision highp float;",
+    "varying vec2 vUv;",
+    "uniform sampler2D texture;",
+    "uniform float m[20];",
+    "void main(void) {",
+    "vec4 c = texture2D(texture, vUv);",
+    "gl_FragColor.r = m[0] * c.r + m[1] * c.g + m[2] * c.b + m[4];",
+    "gl_FragColor.g = m[5] * c.r + m[6] * c.g + m[7] * c.b + m[9];",
+    "gl_FragColor.b = m[10] * c.r + m[11] * c.g + m[12] * c.b + m[14];",
+    "gl_FragColor.a = c.a;",
+    "}"
+  ].join("\n");
+  _filter.brightness = function(brightness) {
+    const b = (brightness || 0) + 1;
+    _filter.colorMatrix([
+      b,
+      0,
+      0,
+      0,
+      0,
+      0,
+      b,
+      0,
+      0,
+      0,
+      0,
+      0,
+      b,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.saturation = function(amount) {
+    const x = (amount || 0) * 2 / 3 + 1;
+    const y = (x - 1) * -0.5;
+    _filter.colorMatrix([
+      x,
+      y,
+      y,
+      0,
+      0,
+      y,
+      x,
+      y,
+      0,
+      0,
+      y,
+      y,
+      x,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.desaturate = function() {
+    _filter.saturation(-1);
+  };
+  _filter.contrast = function(amount) {
+    const v = (amount || 0) + 1;
+    const o = -128 * (v - 1);
+    _filter.colorMatrix([
+      v,
+      0,
+      0,
+      0,
+      o,
+      0,
+      v,
+      0,
+      0,
+      o,
+      0,
+      0,
+      v,
+      0,
+      o,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.negative = function() {
+    _filter.contrast(-2);
+  };
+  _filter.hue = function(rotation) {
+    rotation = (rotation || 0) / 180 * Math.PI;
+    const cos = Math.cos(rotation);
+    const sin = Math.sin(rotation);
+    const lumR = 0.213;
+    const lumG = 0.715;
+    const lumB = 0.072;
+    _filter.colorMatrix([
+      lumR + cos * (1 - lumR) + sin * -lumR,
+      lumG + cos * -lumG + sin * -lumG,
+      lumB + cos * -lumB + sin * (1 - lumB),
+      0,
+      0,
+      lumR + cos * -lumR + sin * 0.143,
+      lumG + cos * (1 - lumG) + sin * 0.14,
+      lumB + cos * -lumB + sin * -0.283,
+      0,
+      0,
+      lumR + cos * -lumR + sin * -(1 - lumR),
+      lumG + cos * -lumG + sin * lumG,
+      lumB + cos * (1 - lumB) + sin * lumB,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.desaturateLuminance = function() {
+    _filter.colorMatrix([
+      0.2764723,
+      0.929708,
+      0.0938197,
+      0,
+      -37.1,
+      0.2764723,
+      0.929708,
+      0.0938197,
+      0,
+      -37.1,
+      0.2764723,
+      0.929708,
+      0.0938197,
+      0,
+      -37.1,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.sepia = function() {
+    _filter.colorMatrix([
+      0.393,
+      0.7689999,
+      0.18899999,
+      0,
+      0,
+      0.349,
+      0.6859999,
+      0.16799999,
+      0,
+      0,
+      0.272,
+      0.5339999,
+      0.13099999,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.brownie = function() {
+    _filter.colorMatrix([
+      0.5997023498159715,
+      0.34553243048391263,
+      -0.2708298674538042,
+      0,
+      47.43192855600873,
+      -0.037703249837783157,
+      0.8609577587992641,
+      0.15059552388459913,
+      0,
+      -36.96841498319127,
+      0.24113635128153335,
+      -0.07441037908422492,
+      0.44972182064877153,
+      0,
+      -7.562075277591283,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.vintagePinhole = function() {
+    _filter.colorMatrix([
+      0.6279345635605994,
+      0.3202183420819367,
+      -0.03965408211312453,
+      0,
+      9.651285835294123,
+      0.02578397704808868,
+      0.6441188644374771,
+      0.03259127616149294,
+      0,
+      7.462829176470591,
+      0.0466055556782719,
+      -0.0851232987247891,
+      0.5241648018700465,
+      0,
+      5.159190588235296,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.kodachrome = function() {
+    _filter.colorMatrix([
+      1.1285582396593525,
+      -0.3967382283601348,
+      -0.03992559172921793,
+      0,
+      63.72958762196502,
+      -0.16404339962244616,
+      1.0835251566291304,
+      -0.05498805115633132,
+      0,
+      24.732407896706203,
+      -0.16786010706155763,
+      -0.5603416277695248,
+      1.6014850761964943,
+      0,
+      35.62982807460946,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.technicolor = function() {
+    _filter.colorMatrix([
+      1.9125277891456083,
+      -0.8545344976951645,
+      -0.09155508482755585,
+      0,
+      11.793603434377337,
+      -0.3087833385928097,
+      1.7658908555458428,
+      -0.10601743074722245,
+      0,
+      -70.35205161461398,
+      -0.231103377548616,
+      -0.7501899197440212,
+      1.847597816108189,
+      0,
+      30.950940869491138,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.polaroid = function() {
+    _filter.colorMatrix([
+      1.438,
+      -0.062,
+      -0.062,
+      0,
+      0,
+      -0.122,
+      1.378,
+      -0.122,
+      0,
+      0,
+      -0.016,
+      -0.016,
+      1.483,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.shiftToBGR = function() {
+    _filter.colorMatrix([
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.convolution = function(matrix) {
+    const m = new Float32Array(matrix);
+    const pixelSizeX = 1 / _width;
+    const pixelSizeY = 1 / _height;
+    const program = _compileShader(_filter.convolution.SHADER);
+    gl.uniform1fv(program.uniform.m, m);
+    gl.uniform2f(program.uniform.px, pixelSizeX, pixelSizeY);
+    _draw();
+  };
+  _filter.convolution.SHADER = [
+    "precision highp float;",
+    "varying vec2 vUv;",
+    "uniform sampler2D texture;",
+    "uniform vec2 px;",
+    "uniform float m[9];",
+    "void main(void) {",
+    "vec4 c11 = texture2D(texture, vUv - px);",
+    "vec4 c12 = texture2D(texture, vec2(vUv.x, vUv.y - px.y));",
+    "vec4 c13 = texture2D(texture, vec2(vUv.x + px.x, vUv.y - px.y));",
+    "vec4 c21 = texture2D(texture, vec2(vUv.x - px.x, vUv.y) );",
+    "vec4 c22 = texture2D(texture, vUv);",
+    "vec4 c23 = texture2D(texture, vec2(vUv.x + px.x, vUv.y) );",
+    "vec4 c31 = texture2D(texture, vec2(vUv.x - px.x, vUv.y + px.y) );",
+    "vec4 c32 = texture2D(texture, vec2(vUv.x, vUv.y + px.y) );",
+    "vec4 c33 = texture2D(texture, vUv + px );",
+    "gl_FragColor = ",
+    "c11 * m[0] + c12 * m[1] + c22 * m[2] +",
+    "c21 * m[3] + c22 * m[4] + c23 * m[5] +",
+    "c31 * m[6] + c32 * m[7] + c33 * m[8];",
+    "gl_FragColor.a = c22.a;",
+    "}"
+  ].join("\n");
+  _filter.detectEdges = function() {
+    _filter.convolution.call(this, [
+      0,
+      1,
+      0,
+      1,
+      -4,
+      1,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.sobelX = function() {
+    _filter.convolution.call(this, [
+      -1,
+      0,
+      1,
+      -2,
+      0,
+      2,
+      -1,
+      0,
+      1
+    ]);
+  };
+  _filter.sobelY = function() {
+    _filter.convolution.call(this, [
+      -1,
+      -2,
+      -1,
+      0,
+      0,
+      0,
+      1,
+      2,
+      1
+    ]);
+  };
+  _filter.sharpen = function(amount) {
+    const a = amount || 1;
+    _filter.convolution.call(this, [
+      0,
+      -1 * a,
+      0,
+      -1 * a,
+      1 + 4 * a,
+      -1 * a,
+      0,
+      -1 * a,
+      0
+    ]);
+  };
+  _filter.emboss = function(size) {
+    const s = size || 1;
+    _filter.convolution.call(this, [
+      -2 * s,
+      -1 * s,
+      0,
+      -1 * s,
+      1,
+      1 * s,
+      0,
+      1 * s,
+      2 * s
+    ]);
+  };
+  _filter.blur = function(size) {
+    const blurSizeX = size / 7 / _width;
+    const blurSizeY = size / 7 / _height;
+    const program = _compileShader(_filter.blur.SHADER);
+    gl.uniform2f(program.uniform.px, 0, blurSizeY);
+    _draw(DRAW.INTERMEDIATE);
+    gl.uniform2f(program.uniform.px, blurSizeX, 0);
+    _draw();
+  };
+  _filter.blur.SHADER = [
+    "precision highp float;",
+    "varying vec2 vUv;",
+    "uniform sampler2D texture;",
+    "uniform vec2 px;",
+    "void main(void) {",
+    "gl_FragColor = vec4(0.0);",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-7.0*px.x, -7.0*px.y))*0.0044299121055113265;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-6.0*px.x, -6.0*px.y))*0.00895781211794;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-5.0*px.x, -5.0*px.y))*0.0215963866053;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-4.0*px.x, -4.0*px.y))*0.0443683338718;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-3.0*px.x, -3.0*px.y))*0.0776744219933;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-2.0*px.x, -2.0*px.y))*0.115876621105;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-1.0*px.x, -1.0*px.y))*0.147308056121;",
+    "gl_FragColor += texture2D(texture, vUv                             )*0.159576912161;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 1.0*px.x,  1.0*px.y))*0.147308056121;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 2.0*px.x,  2.0*px.y))*0.115876621105;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 3.0*px.x,  3.0*px.y))*0.0776744219933;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 4.0*px.x,  4.0*px.y))*0.0443683338718;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 5.0*px.x,  5.0*px.y))*0.0215963866053;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 6.0*px.x,  6.0*px.y))*0.00895781211794;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 7.0*px.x,  7.0*px.y))*0.0044299121055113265;",
+    "}"
+  ].join("\n");
+  _filter.pixelate = function(size) {
+    const blurSizeX = size / _width;
+    const blurSizeY = size / _height;
+    const program = _compileShader(_filter.pixelate.SHADER);
+    gl.uniform2f(program.uniform.size, blurSizeX, blurSizeY);
+    _draw();
+  };
+  _filter.pixelate.SHADER = [
+    "precision highp float;",
+    "varying vec2 vUv;",
+    "uniform vec2 size;",
+    "uniform sampler2D texture;",
+    "vec2 pixelate(vec2 coord, vec2 size) {",
+    "return floor( coord / size ) * size;",
+    "}",
+    "void main(void) {",
+    "gl_FragColor = vec4(0.0);",
+    "vec2 coord = pixelate(vUv, size);",
+    "gl_FragColor += texture2D(texture, coord);",
+    "}"
+  ].join("\n");
+}
+
+// src/image/image.ts
+var maxSize = 2048;
+var inCanvas;
+var outCanvas;
+var fx;
+function process3(input, config3) {
+  let tensor;
+  if (!input)
+    throw new Error("Human: Input is missing");
+  if (!(input instanceof tfjs_esm_exports.Tensor) && !(typeof Image !== "undefined" && input instanceof Image) && !(typeof ImageData !== "undefined" && input instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input instanceof OffscreenCanvas)) {
+    throw new Error("Human: Input type is not recognized");
+  }
+  if (input instanceof tfjs_esm_exports.Tensor) {
+    if (input.shape && input.shape.length === 4 && input.shape[0] === 1 && input.shape[3] === 3)
+      tensor = tfjs_esm_exports.clone(input);
+    else
+      throw new Error(`Human: Input tensor shape must be [1, height, width, 3] and instead was ${input.shape}`);
+  } else {
+    const originalWidth = input["naturalWidth"] || input["videoWidth"] || input["width"] || input["shape"] && input["shape"][1] > 0;
+    const originalHeight = input["naturalHeight"] || input["videoHeight"] || input["height"] || input["shape"] && input["shape"][2] > 0;
+    let targetWidth = originalWidth;
+    let targetHeight = originalHeight;
+    if (targetWidth > maxSize) {
+      targetWidth = maxSize;
+      targetHeight = targetWidth * originalHeight / originalWidth;
+    }
+    if (targetHeight > maxSize) {
+      targetHeight = maxSize;
+      targetWidth = targetHeight * originalWidth / originalHeight;
+    }
+    if (config3.filter.width > 0)
+      targetWidth = config3.filter.width;
+    else if (config3.filter.height > 0)
+      targetWidth = originalWidth * (config3.filter.height / originalHeight);
+    if (config3.filter.height > 0)
+      targetHeight = config3.filter.height;
+    else if (config3.filter.width > 0)
+      targetHeight = originalHeight * (config3.filter.width / originalWidth);
+    if (!targetWidth || !targetHeight)
+      throw new Error("Human: Input cannot determine dimension");
+    if (!inCanvas || (inCanvas == null ? void 0 : inCanvas.width) !== targetWidth || (inCanvas == null ? void 0 : inCanvas.height) !== targetHeight) {
+      inCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
+      if ((inCanvas == null ? void 0 : inCanvas.width) !== targetWidth)
+        inCanvas.width = targetWidth;
+      if ((inCanvas == null ? void 0 : inCanvas.height) !== targetHeight)
+        inCanvas.height = targetHeight;
+    }
+    const ctx = inCanvas.getContext("2d");
+    if (input instanceof ImageData)
+      ctx.putImageData(input, 0, 0);
+    else
+      ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
+    if (config3.filter.enabled) {
+      if (!fx || !outCanvas || inCanvas.width !== outCanvas.width || (inCanvas == null ? void 0 : inCanvas.height) !== (outCanvas == null ? void 0 : outCanvas.height)) {
+        outCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height) : document.createElement("canvas");
+        if ((outCanvas == null ? void 0 : outCanvas.width) !== (inCanvas == null ? void 0 : inCanvas.width))
+          outCanvas.width = inCanvas == null ? void 0 : inCanvas.width;
+        if ((outCanvas == null ? void 0 : outCanvas.height) !== (inCanvas == null ? void 0 : inCanvas.height))
+          outCanvas.height = inCanvas == null ? void 0 : inCanvas.height;
+        fx = tfjs_esm_exports.ENV.flags.IS_BROWSER ? new GLImageFilter({canvas: outCanvas}) : null;
+      }
+      if (!fx)
+        return {tensor: null, canvas: inCanvas};
+      fx.reset();
+      fx.addFilter("brightness", config3.filter.brightness);
+      if (config3.filter.contrast !== 0)
+        fx.addFilter("contrast", config3.filter.contrast);
+      if (config3.filter.sharpness !== 0)
+        fx.addFilter("sharpen", config3.filter.sharpness);
+      if (config3.filter.blur !== 0)
+        fx.addFilter("blur", config3.filter.blur);
+      if (config3.filter.saturation !== 0)
+        fx.addFilter("saturation", config3.filter.saturation);
+      if (config3.filter.hue !== 0)
+        fx.addFilter("hue", config3.filter.hue);
+      if (config3.filter.negative)
+        fx.addFilter("negative");
+      if (config3.filter.sepia)
+        fx.addFilter("sepia");
+      if (config3.filter.vintage)
+        fx.addFilter("brownie");
+      if (config3.filter.sepia)
+        fx.addFilter("sepia");
+      if (config3.filter.kodachrome)
+        fx.addFilter("kodachrome");
+      if (config3.filter.technicolor)
+        fx.addFilter("technicolor");
+      if (config3.filter.polaroid)
+        fx.addFilter("polaroid");
+      if (config3.filter.pixelate !== 0)
+        fx.addFilter("pixelate", config3.filter.pixelate);
+      fx.apply(inCanvas);
+    } else {
+      outCanvas = inCanvas;
+      if (fx)
+        fx = null;
+    }
+    let pixels;
+    if (outCanvas.data) {
+      const shape = [outCanvas.height, outCanvas.width, 3];
+      pixels = tfjs_esm_exports.tensor3d(outCanvas.data, shape, "int32");
+    } else if (outCanvas instanceof ImageData) {
+      pixels = tfjs_esm_exports.browser.fromPixels(outCanvas);
+    } else if (config3.backend === "webgl" || config3.backend === "humangl") {
+      const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
+      tempCanvas.width = targetWidth;
+      tempCanvas.height = targetHeight;
+      const tempCtx = tempCanvas.getContext("2d");
+      tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
+      pixels = tfjs_esm_exports.browser.fromPixels(tempCanvas);
+    } else {
+      const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
+      tempCanvas.width = targetWidth;
+      tempCanvas.height = targetHeight;
+      const tempCtx = tempCanvas.getContext("2d");
+      tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
+      const data3 = tempCtx == null ? void 0 : tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+      pixels = tfjs_esm_exports.browser.fromPixels(data3);
+    }
+    const casted = pixels.toFloat();
+    tensor = casted.expandDims(0);
+    pixels.dispose();
+    casted.dispose();
+  }
+  const canvas2 = config3.filter.return ? outCanvas : null;
+  return {tensor, canvas: canvas2};
+}
+
+// src/draw/draw.ts
+var draw_exports = {};
+__export(draw_exports, {
+  all: () => all,
+  body: () => body2,
+  canvas: () => canvas,
+  face: () => face2,
+  gesture: () => gesture,
+  hand: () => hand2,
+  object: () => object,
+  options: () => options
+});
+
+// src/config.ts
+var config2 = {
+  backend: "webgl",
+  modelBasePath: "../models/",
+  wasmPath: "../assets/",
+  debug: true,
+  async: true,
+  profile: false,
+  deallocate: false,
+  scoped: false,
+  videoOptimized: true,
+  warmup: "face",
+  filter: {
+    enabled: true,
+    width: 0,
+    height: 0,
+    return: true,
+    brightness: 0,
+    contrast: 0,
+    sharpness: 0,
+    blur: 0,
+    saturation: 0,
+    hue: 0,
+    negative: false,
+    sepia: false,
+    vintage: false,
+    kodachrome: false,
+    technicolor: false,
+    polaroid: false,
+    pixelate: 0
+  },
+  gesture: {
+    enabled: true
+  },
+  face: {
+    enabled: true,
+    detector: {
+      modelPath: "blazeface-back.json",
+      rotation: false,
+      maxFaces: 10,
+      skipFrames: 21,
+      skipInitial: false,
+      minConfidence: 0.2,
+      iouThreshold: 0.1,
+      scoreThreshold: 0.2,
+      return: false
+    },
+    mesh: {
+      enabled: true,
+      modelPath: "facemesh.json"
+    },
+    iris: {
+      enabled: true,
+      modelPath: "iris.json"
+    },
+    description: {
+      enabled: true,
+      modelPath: "faceres.json",
+      skipFrames: 31
+    },
+    emotion: {
+      enabled: true,
+      minConfidence: 0.1,
+      skipFrames: 32,
+      modelPath: "emotion.json"
+    },
+    age: {
+      enabled: false,
+      modelPath: "age.json",
+      skipFrames: 33
+    },
+    gender: {
+      enabled: false,
+      minConfidence: 0.1,
+      modelPath: "gender.json",
+      skipFrames: 34
+    },
+    embedding: {
+      enabled: false,
+      modelPath: "mobileface.json"
+    }
+  },
+  body: {
+    enabled: true,
+    modelPath: "posenet.json",
+    maxDetections: 10,
+    scoreThreshold: 0.3,
+    nmsRadius: 20
+  },
+  hand: {
+    enabled: true,
+    rotation: false,
+    skipFrames: 12,
+    skipInitial: false,
+    minConfidence: 0.1,
+    iouThreshold: 0.1,
+    scoreThreshold: 0.5,
+    maxHands: 1,
+    landmarks: true,
+    detector: {
+      modelPath: "handdetect.json"
+    },
+    skeleton: {
+      modelPath: "handskeleton.json"
+    }
+  },
+  object: {
+    enabled: false,
+    modelPath: "nanodet.json",
+    minConfidence: 0.2,
+    iouThreshold: 0.4,
+    maxResults: 10,
+    skipFrames: 41
+  }
+};
+
+// src/draw/draw.ts
+var options = {
+  color: "rgba(173, 216, 230, 0.3)",
+  labelColor: "rgba(173, 216, 230, 1)",
+  shadowColor: "black",
+  font: 'small-caps 16px "Segoe UI"',
+  lineHeight: 20,
+  lineWidth: 6,
+  pointSize: 2,
+  roundRect: 28,
+  drawPoints: false,
+  drawLabels: true,
+  drawBoxes: true,
+  drawPolygons: true,
+  fillPolygons: false,
+  useDepth: true,
+  useCurves: false,
+  bufferedOutput: false,
+  useRawBoxes: false
+};
+function point(ctx, x, y, z = 0, localOptions) {
+  ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
+  ctx.beginPath();
+  ctx.arc(x, y, localOptions.pointSize, 0, 2 * Math.PI);
+  ctx.fill();
+}
+function rect(ctx, x, y, width, height, localOptions) {
+  ctx.beginPath();
+  if (localOptions.useCurves) {
+    const cx = (x + x + width) / 2;
+    const cy = (y + y + height) / 2;
+    ctx.ellipse(cx, cy, width / 2, height / 2, 0, 0, 2 * Math.PI);
+  } else {
+    ctx.lineWidth = localOptions.lineWidth;
+    ctx.moveTo(x + localOptions.roundRect, y);
+    ctx.lineTo(x + width - localOptions.roundRect, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + localOptions.roundRect);
+    ctx.lineTo(x + width, y + height - localOptions.roundRect);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - localOptions.roundRect, y + height);
+    ctx.lineTo(x + localOptions.roundRect, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - localOptions.roundRect);
+    ctx.lineTo(x, y + localOptions.roundRect);
+    ctx.quadraticCurveTo(x, y, x + localOptions.roundRect, y);
+    ctx.closePath();
+  }
+  ctx.stroke();
+}
+function lines(ctx, points = [], localOptions) {
+  if (points === void 0 || points.length === 0)
+    return;
+  ctx.beginPath();
+  ctx.moveTo(points[0][0], points[0][1]);
+  for (const pt of points) {
+    ctx.strokeStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + 2 * pt[2]}, ${127.5 - 2 * pt[2]}, 255, 0.3)` : localOptions.color;
+    ctx.fillStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + 2 * pt[2]}, ${127.5 - 2 * pt[2]}, 255, 0.3)` : localOptions.color;
+    ctx.lineTo(pt[0], parseInt(pt[1]));
+  }
+  ctx.stroke();
+  if (localOptions.fillPolygons) {
+    ctx.closePath();
+    ctx.fill();
+  }
+}
+function curves(ctx, points = [], localOptions) {
+  if (points === void 0 || points.length === 0)
+    return;
+  if (!localOptions.useCurves || points.length <= 2) {
+    lines(ctx, points, localOptions);
+    return;
+  }
+  ctx.moveTo(points[0][0], points[0][1]);
+  for (let i = 0; i < points.length - 2; i++) {
+    const xc = (points[i][0] + points[i + 1][0]) / 2;
+    const yc = (points[i][1] + points[i + 1][1]) / 2;
+    ctx.quadraticCurveTo(points[i][0], points[i][1], xc, yc);
+  }
+  ctx.quadraticCurveTo(points[points.length - 2][0], points[points.length - 2][1], points[points.length - 1][0], points[points.length - 1][1]);
+  ctx.stroke();
+  if (localOptions.fillPolygons) {
+    ctx.closePath();
+    ctx.fill();
+  }
+}
+async function gesture(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  if (!(inCanvas2 instanceof HTMLCanvasElement))
+    return;
+  const ctx = inCanvas2.getContext("2d");
+  if (!ctx)
+    return;
+  ctx.font = localOptions.font;
+  ctx.fillStyle = localOptions.color;
+  let i = 1;
+  for (let j = 0; j < result.length; j++) {
+    let where = [];
+    let what = [];
+    [where, what] = Object.entries(result[j]);
+    if (what.length > 1 && what[1].length > 0) {
+      const person = where[1] > 0 ? `#${where[1]}` : "";
+      const label = `${where[0]} ${person}: ${what[1]}`;
+      if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+        ctx.fillStyle = localOptions.shadowColor;
+        ctx.fillText(label, 8, 2 + i * localOptions.lineHeight);
+      }
+      ctx.fillStyle = localOptions.labelColor;
+      ctx.fillText(label, 6, 0 + i * localOptions.lineHeight);
+      i += 1;
+    }
+  }
+}
+async function face2(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  if (!(inCanvas2 instanceof HTMLCanvasElement))
+    return;
+  const ctx = inCanvas2.getContext("2d");
+  if (!ctx)
+    return;
+  for (const f of result) {
+    ctx.font = localOptions.font;
+    ctx.strokeStyle = localOptions.color;
+    ctx.fillStyle = localOptions.color;
+    if (localOptions.drawBoxes) {
+      if (localOptions.useRawBoxes)
+        rect(ctx, inCanvas2.width * f.boxRaw[0], inCanvas2.height * f.boxRaw[1], inCanvas2.width * f.boxRaw[2], inCanvas2.height * f.boxRaw[3], localOptions);
+      else
+        rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
+    }
+    const labels2 = [];
+    labels2.push(`face confidence: ${Math.trunc(100 * f.confidence)}%`);
+    if (f.genderConfidence)
+      labels2.push(`${f.gender || ""} ${Math.trunc(100 * f.genderConfidence)}% confident`);
+    if (f.age)
+      labels2.push(`age: ${f.age || ""}`);
+    if (f.iris)
+      labels2.push(`iris distance: ${f.iris}`);
+    if (f.emotion && f.emotion.length > 0) {
+      const emotion2 = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
+      labels2.push(emotion2.join(" "));
+    }
+    if (f.rotation && f.rotation.angle && f.rotation.angle.roll)
+      labels2.push(`roll: ${Math.trunc(100 * f.rotation.angle.roll) / 100} yaw:${Math.trunc(100 * f.rotation.angle.yaw) / 100} pitch:${Math.trunc(100 * f.rotation.angle.pitch) / 100}`);
+    if (labels2.length === 0)
+      labels2.push("face");
+    ctx.fillStyle = localOptions.color;
+    for (let i = labels2.length - 1; i >= 0; i--) {
+      const x = Math.max(f.box[0], 0);
+      const y = i * localOptions.lineHeight + f.box[1];
+      if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+        ctx.fillStyle = localOptions.shadowColor;
+        ctx.fillText(labels2[i], x + 5, y + 16);
+      }
+      ctx.fillStyle = localOptions.labelColor;
+      ctx.fillText(labels2[i], x + 4, y + 15);
+    }
+    ctx.lineWidth = 1;
+    if (f.mesh && f.mesh.length > 0) {
+      if (localOptions.drawPoints) {
+        for (const pt of f.mesh)
+          point(ctx, pt[0], pt[1], pt[2], localOptions);
+      }
+      if (localOptions.drawPolygons) {
+        ctx.lineWidth = 1;
+        for (let i = 0; i < TRI468.length / 3; i++) {
+          const points = [
+            TRI468[i * 3 + 0],
+            TRI468[i * 3 + 1],
+            TRI468[i * 3 + 2]
+          ].map((index) => f.mesh[index]);
+          lines(ctx, points, localOptions);
+        }
+        if (f.annotations && f.annotations.leftEyeIris) {
+          ctx.strokeStyle = localOptions.useDepth ? "rgba(255, 200, 255, 0.3)" : localOptions.color;
+          ctx.beginPath();
+          const sizeX = Math.abs(f.annotations.leftEyeIris[3][0] - f.annotations.leftEyeIris[1][0]) / 2;
+          const sizeY = Math.abs(f.annotations.leftEyeIris[4][1] - f.annotations.leftEyeIris[2][1]) / 2;
+          ctx.ellipse(f.annotations.leftEyeIris[0][0], f.annotations.leftEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+          if (localOptions.fillPolygons) {
+            ctx.fillStyle = localOptions.useDepth ? "rgba(255, 255, 200, 0.3)" : localOptions.color;
+            ctx.fill();
+          }
+        }
+        if (f.annotations && f.annotations.rightEyeIris) {
+          ctx.strokeStyle = localOptions.useDepth ? "rgba(255, 200, 255, 0.3)" : localOptions.color;
+          ctx.beginPath();
+          const sizeX = Math.abs(f.annotations.rightEyeIris[3][0] - f.annotations.rightEyeIris[1][0]) / 2;
+          const sizeY = Math.abs(f.annotations.rightEyeIris[4][1] - f.annotations.rightEyeIris[2][1]) / 2;
+          ctx.ellipse(f.annotations.rightEyeIris[0][0], f.annotations.rightEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+          if (localOptions.fillPolygons) {
+            ctx.fillStyle = localOptions.useDepth ? "rgba(255, 255, 200, 0.3)" : localOptions.color;
+            ctx.fill();
+          }
+        }
+      }
+    }
+  }
+}
+var lastDrawnPose = [];
+async function body2(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  if (!(inCanvas2 instanceof HTMLCanvasElement))
+    return;
+  const ctx = inCanvas2.getContext("2d");
+  if (!ctx)
+    return;
+  ctx.lineJoin = "round";
+  for (let i = 0; i < result.length; i++) {
+    if (!lastDrawnPose[i] && localOptions.bufferedOutput)
+      lastDrawnPose[i] = {...result[i]};
+    ctx.strokeStyle = localOptions.color;
+    ctx.lineWidth = localOptions.lineWidth;
+    if (localOptions.drawPoints) {
+      for (let pt = 0; pt < result[i].keypoints.length; pt++) {
+        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + 2 * result[i].keypoints[pt].position.z}, ${127.5 - 2 * result[i].keypoints[pt].position.z}, 255, 0.5)` : localOptions.color;
+        if (localOptions.bufferedOutput) {
+          lastDrawnPose[i].keypoints[pt][0] = (lastDrawnPose[i].keypoints[pt][0] + result[i].keypoints[pt].position.x) / 2;
+          lastDrawnPose[i].keypoints[pt][1] = (lastDrawnPose[i].keypoints[pt][1] + result[i].keypoints[pt].position.y) / 2;
+          point(ctx, lastDrawnPose[i].keypoints[pt][0], lastDrawnPose[i].keypoints[pt][1], 0, localOptions);
+        } else {
+          point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 0, localOptions);
+        }
+      }
+    }
+    if (localOptions.drawLabels) {
+      ctx.font = localOptions.font;
+      if (result[i].keypoints) {
+        for (const pt of result[i].keypoints) {
+          ctx.fillStyle = localOptions.useDepth && pt.position.z ? `rgba(${127.5 + 2 * pt.position.z}, ${127.5 - 2 * pt.position.z}, 255, 0.5)` : localOptions.color;
+          ctx.fillText(`${pt.part}`, pt.position.x + 4, pt.position.y + 4);
+        }
+      }
+    }
+    if (localOptions.drawPolygons && result[i].keypoints) {
+      let part;
+      const points = [];
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      curves(ctx, points, localOptions);
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "rightHip");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "leftHip");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      if (points.length === 4)
+        lines(ctx, points, localOptions);
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "leftHip");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "leftKnee");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "leftAnkle");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "leftHeel");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "leftFoot");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      curves(ctx, points, localOptions);
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "rightHip");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "rightKnee");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "rightAnkle");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "rightHeel");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "rightFoot");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      curves(ctx, points, localOptions);
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "leftElbow");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "leftWrist");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "leftPalm");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      curves(ctx, points, localOptions);
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "rightElbow");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "rightWrist");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      part = result[i].keypoints.find((a) => a.part === "rightPalm");
+      if (part && part.score > config2.body.scoreThreshold)
+        points.push([part.position.x, part.position.y]);
+      curves(ctx, points, localOptions);
+    }
+  }
+}
+async function hand2(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  if (!(inCanvas2 instanceof HTMLCanvasElement))
+    return;
+  const ctx = inCanvas2.getContext("2d");
+  if (!ctx)
+    return;
+  ctx.lineJoin = "round";
+  ctx.font = localOptions.font;
+  for (const h of result) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      if (localOptions.useRawBoxes)
+        rect(ctx, inCanvas2.width * h.boxRaw[0], inCanvas2.height * h.boxRaw[1], inCanvas2.width * h.boxRaw[2], inCanvas2.height * h.boxRaw[3], localOptions);
+      else
+        rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
+      if (localOptions.drawLabels) {
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText("hand", h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText("hand", h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+      }
+      ctx.stroke();
+    }
+    if (localOptions.drawPoints) {
+      if (h.landmarks && h.landmarks.length > 0) {
+        for (const pt of h.landmarks) {
+          ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * pt[2]}, ${127.5 - 2 * pt[2]}, 255, 0.5)` : localOptions.color;
+          point(ctx, pt[0], pt[1], 0, localOptions);
+        }
+      }
+    }
+    if (localOptions.drawPolygons) {
+      const addPart = (part) => {
+        if (!part)
+          return;
+        for (let i = 0; i < part.length; i++) {
+          ctx.lineWidth = localOptions.lineWidth;
+          ctx.beginPath();
+          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * part[i][2]}, ${127.5 - 2 * part[i][2]}, 255, 0.5)` : localOptions.color;
+          ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
+          ctx.lineTo(part[i][0], part[i][1]);
+          ctx.stroke();
+        }
+      };
+      addPart(h.annotations.indexFinger);
+      addPart(h.annotations.middleFinger);
+      addPart(h.annotations.ringFinger);
+      addPart(h.annotations.pinky);
+      addPart(h.annotations.thumb);
+    }
+  }
+}
+async function object(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  if (!(inCanvas2 instanceof HTMLCanvasElement))
+    return;
+  const ctx = inCanvas2.getContext("2d");
+  if (!ctx)
+    return;
+  ctx.lineJoin = "round";
+  ctx.font = localOptions.font;
+  for (const h of result) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      if (localOptions.useRawBoxes)
+        rect(ctx, inCanvas2.width * h.boxRaw[0], inCanvas2.height * h.boxRaw[1], inCanvas2.width * h.boxRaw[2], inCanvas2.height * h.boxRaw[3], localOptions);
+      else
+        rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
+      if (localOptions.drawLabels) {
+        const label = `${Math.round(100 * h.score)}% ${h.label}`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+      }
+      ctx.stroke();
+    }
+  }
+}
+async function canvas(inCanvas2, outCanvas2) {
+  if (!inCanvas2 || !outCanvas2)
+    return;
+  if (!(inCanvas2 instanceof HTMLCanvasElement) || !(outCanvas2 instanceof HTMLCanvasElement))
+    return;
+  const outCtx = inCanvas2.getContext("2d");
+  outCtx == null ? void 0 : outCtx.drawImage(inCanvas2, 0, 0);
+}
+async function all(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  if (!(inCanvas2 instanceof HTMLCanvasElement))
+    return;
+  face2(inCanvas2, result.face, localOptions);
+  body2(inCanvas2, result.body, localOptions);
+  hand2(inCanvas2, result.hand, localOptions);
+  gesture(inCanvas2, result.gesture, localOptions);
+  object(inCanvas2, result.object, localOptions);
+}
+
+// src/sample.ts
+var face3 = `
 /9j/4AAQSkZJRgABAQEAYABgAAD/4QBoRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUA
 AAABAAAARgEoAAMAAAABAAIAAAExAAIAAAARAAAATgAAAAAAAABgAAAAAQAAAGAAAAABcGFpbnQu
 bmV0IDQuMi4xMwAA/9sAQwAGBAUGBQQGBgUGBwcGCAoQCgoJCQoUDg8MEBcUGBgXFBYWGh0lHxob
@@ -163,7 +25317,8 @@ PQ4GJ+ashuK0MhWaoWcA0AaOmASMK7jRNPWYBmHyiuepO2x10qfcv6vYxCzYqoGK4HVYVTJrmb5l
 c6oaM5TUJ8EgGsG4kLNUHT0M64OaqMMikSRsuKbnFMRLG3zVehOaGNE445NNlnVFpDMu6uie9Vo1
 8z5mOAOST2pDK91cNN+5tsrH3PrW54a06KxT7fdrlh/q1Pc+tJ6IUdZGvHPLezMcnBOWbsPap5r3
 ylFtbdT1xUWNWzU0/Zbwlgfmx8zGsHWtRHmMqE59aAMyNifvHPc1f0gtPdqkY5JosJHeNci2tktY
-euPnNY+oXWZEVJNrZ9aun8SIq/CzodHuriIokhDIR1ronbKZr0o6o8ipoz//2Q==`,nt=`
+euPnNY+oXWZEVJNrZ9aun8SIq/CzodHuriIokhDIR1ronbKZr0o6o8ipoz//2Q==`;
+var body3 = `
 /9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigk
 JyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVF
 RUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCASwBLADASIA
@@ -731,5 +25886,472 @@ AAAAAAJAAAAAAAAAAAAAABAJEAAAAAAAAAAAAAAAIEoBKAAAAAAAAAAAAAAABAlAAAAAAAIAAAAA
 BAkBAkBAkBAlACEgMZjdjbFW8bWrEx8YWANb6Fp+bfwab+vLDKMFK9qxH5L0bAr8OPRPKz2AY7J2
 SbAjYZAI2E7AIEgIEgIEgMdkSy2NgY7MdlmyNoBXsxmFuyNgVTVjNV3KjlBRNTlXTVHKCrlIqt5T
 lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
-2Q==`;var u0="1.5.2";var fe,Pe,Me,he,rt,ve,ct,At,_t,dn=class{constructor(t={}){fe.set(this,void 0);Pe.set(this,void 0);Me.set(this,void 0);he.set(this,void 0);this.analyze=(...t)=>{if(!C(this,Pe))return;let n=this.tf.engine().state.numTensors,A=C(this,fe);Ae(this,fe,n);let _=n-A;_!==0&&f(...t,_)};rt.set(this,t=>{if(!C(this,Me))return null;if(!t)return"input is not defined";if(this.tf.ENV.flags.IS_NODE&&!(t instanceof o.Tensor))return"input must be a tensor";try{this.tf.getBackend()}catch(n){return"backend not loaded"}return null});ve.set(this,async(t=!1)=>{var n;if(this.config.backend&&this.config.backend.length>0&&t||this.tf.getBackend()!==this.config.backend){let A=z();if(this.state="backend",this.config.backend&&this.config.backend.length>0){if(this.tf.ENV.flags.IS_BROWSER&&this.config.backend==="tensorflow"&&(this.config.backend="webgl"),this.tf.ENV.flags.IS_NODE&&(this.config.backend==="webgl"||this.config.backend==="humangl")&&(this.config.backend="tensorflow"),this.config.debug&&f("setting backend:",this.config.backend),this.config.backend==="wasm"){if(this.config.debug&&f("wasm path:",this.config.wasmPath),typeof((n=this.tf)==null?void 0:n.setWasmPaths)!="undefined")this.tf.setWasmPaths(this.config.wasmPath);else throw new Error("Human: WASM backend is not loaded");let _=await this.tf.env().getAsync("WASM_HAS_SIMD_SUPPORT"),c=await this.tf.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");this.config.debug&&f(`wasm execution: ${_?"SIMD":"no SIMD"} ${c?"multithreaded":"singlethreaded"}`),this.config.debug&&!_&&f("warning: wasm simd support is not enabled")}this.config.backend==="humangl"&&T1();try{await this.tf.setBackend(this.config.backend)}catch(_){f("error: cannot set backend:",this.config.backend,_)}}if(this.tf.enableProdMode(),this.tf.getBackend()==="webgl"||this.tf.getBackend()==="humangl"){this.tf.ENV.set("CHECK_COMPUTATION_FOR_ERRORS",!1),this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV",!0),this.config.deallocate&&(f("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:",this.config.deallocate),this.tf.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD",this.config.deallocate?0:-1));let _=await this.tf.backend().getGPGPUContext().gl;this.config.debug&&f(`gl version:${_.getParameter(_.VERSION)} renderer:${_.getParameter(_.RENDERER)}`)}await this.tf.ready(),this.perf.backend=Math.trunc(z()-A)}});ct.set(this,async()=>{let t=(_,c="application/octet-stream")=>fetch(`data:${c};base64,${_}`).then(r=>r.blob()),n,A;switch(this.config.warmup){case"face":n=await t(tt);break;case"full":n=await t(nt);break;default:n=null}if(n){let _=await createImageBitmap(n);A=await this.detect(_,this.config),_.close()}return A});At.set(this,async()=>new Promise(t=>{let n,A=0;switch(this.config.warmup){case"face":A=256,n="data:image/jpeg;base64,"+tt;break;case"full":case"body":A=1200,n="data:image/jpeg;base64,"+nt;break;default:n=null}let _=new Image;_.onload=async()=>{let c=typeof OffscreenCanvas!="undefined"?new OffscreenCanvas(A,A):document.createElement("canvas");c.width=_.naturalWidth,c.height=_.naturalHeight;let r=c.getContext("2d");r==null||r.drawImage(_,0,0);let s=await this.detect(c,this.config);t(s)},n?_.src=n:t(null)}));_t.set(this,async()=>{let t=_=>Buffer.from(_,"base64"),n;if(this.config.warmup==="face"&&(n=t(tt)),(this.config.warmup==="body"||this.config.warmup==="full")&&(n=t(nt)),!n)return null;let A;if(typeof o.node!="undefined"){let _=o.node.decodeJpeg(n),c=_.expandDims(0);this.tf.dispose(_),A=await this.detect(c,this.config),this.tf.dispose(c)}else this.config.debug&&f("Warmup tfjs-node not loaded");return A});this.tf=o,this.draw=a1,this.version=u0,this.config=U(j,t),this.state="idle",Ae(this,fe,0),Ae(this,Pe,!1),Ae(this,Me,!1),Ae(this,he,!0),this.perf={},this.models={face:null,posenet:null,blazepose:null,efficientpose:null,handpose:null,iris:null,age:null,gender:null,emotion:null,embedding:null,nanodet:null,faceres:null},this.image=n=>i1(n,this.config),this.classes={facemesh:St,age:st,gender:it,emotion:lt,faceres:bt,body:this.config.body.modelPath.includes("posenet")?qt:e1,hand:Dt,nanodet:A1},this.faceTriangulation=O1,this.faceUVMap=I1,this.sysinfo=f1()}profileData(){return this.config.profile?Ee:{}}similarity(t,n){return this.config.face.description.enabled?Tt(t,n):this.config.face.embedding.enabled?P1(t,n):0}enhance(t){return Pt(t)}match(t,n,A=0){return M1(t,n,A)}async load(t={}){this.state="load";let n=z();t&&(this.config=U(this.config,t)),C(this,he)&&(this.config.debug&&f(`version: ${this.version}`),this.config.debug&&f(`tfjs version: ${this.tf.version_core}`),this.config.debug&&f("platform:",this.sysinfo.platform),this.config.debug&&f("agent:",this.sysinfo.agent),await C(this,ve).call(this,!0),this.tf.ENV.flags.IS_BROWSER&&(this.config.debug&&f("configuration:",this.config),this.config.debug&&f("tf flags:",this.tf.ENV.flags))),this.config.async?[this.models.face,this.models.age,this.models.gender,this.models.emotion,this.models.embedding,this.models.handpose,this.models.posenet,this.models.blazepose,this.models.efficientpose,this.models.nanodet,this.models.faceres]=await Promise.all([this.models.face||(this.config.face.enabled?kt(this.config):null),this.models.age||(this.config.face.enabled&&this.config.face.age.enabled?ht(this.config):null),this.models.gender||(this.config.face.enabled&&this.config.face.gender.enabled?wt(this.config):null),this.models.emotion||(this.config.face.enabled&&this.config.face.emotion.enabled?mt(this.config):null),this.models.embedding||(this.config.face.enabled&&this.config.face.embedding.enabled?pt(this.config):null),this.models.handpose||(this.config.hand.enabled?$t(this.config):null),this.models.posenet||(this.config.body.enabled&&this.config.body.modelPath.includes("posenet")?Ut(this.config):null),this.models.blazepose||(this.config.body.enabled&&this.config.body.modelPath.includes("blazepose")?t1(this.config):null),this.models.efficientpose||(this.config.body.enabled&&this.config.body.modelPath.includes("efficientpose")?r1(this.config):null),this.models.nanodet||(this.config.object.enabled?o1(this.config):null),this.models.faceres||(this.config.face.enabled&&this.config.face.description.enabled?gt(this.config):null)]):(this.config.face.enabled&&!this.models.face&&(this.models.face=await kt(this.config)),this.config.face.enabled&&this.config.face.age.enabled&&!this.models.age&&(this.models.age=await ht(this.config)),this.config.face.enabled&&this.config.face.gender.enabled&&!this.models.gender&&(this.models.gender=await wt(this.config)),this.config.face.enabled&&this.config.face.emotion.enabled&&!this.models.emotion&&(this.models.emotion=await mt(this.config)),this.config.face.enabled&&this.config.face.embedding.enabled&&!this.models.embedding&&(this.models.embedding=await pt(this.config)),this.config.hand.enabled&&!this.models.handpose&&(this.models.handpose=await $t(this.config)),this.config.body.enabled&&!this.models.posenet&&this.config.body.modelPath.includes("posenet")&&(this.models.posenet=await Ut(this.config)),this.config.body.enabled&&!this.models.blazepose&&this.config.body.modelPath.includes("blazepose")&&(this.models.blazepose=await t1(this.config)),this.config.body.enabled&&!this.models.efficientpose&&this.config.body.modelPath.includes("efficientpose")&&(this.models.efficientpose=await r1(this.config)),this.config.object.enabled&&!this.models.nanodet&&(this.models.nanodet=await o1(this.config)),this.config.face.enabled&&this.config.face.description.enabled&&!this.models.faceres&&(this.models.faceres=await gt(this.config))),C(this,he)&&(this.config.debug&&f("tf engine state:",this.tf.engine().state.numBytes,"bytes",this.tf.engine().state.numTensors,"tensors"),Ae(this,he,!1));let A=Math.trunc(z()-n);A>(this.perf.load||0)&&(this.perf.load=A)}async detect(t,n={}){return new Promise(async A=>{var p,u,M,E;this.state="config";let _;this.config=U(this.config,n),this.state="check";let c=C(this,rt).call(this,t);c&&(f(c,t),A({error:c}));let r=z();await C(this,ve).call(this),await this.load(),this.config.scoped&&this.tf.engine().startScope(),this.analyze("Start Scope:");let s;t&&this.config.videoOptimized&&(t instanceof HTMLImageElement||t instanceof Image||t instanceof ImageData||typeof ImageBitmap!="undefined"&&h1 instanceof ImageBitmap||t instanceof o.Tensor)&&(f("disabling video optimization"),s=this.config.videoOptimized,this.config.videoOptimized=!1),_=z();let h=i1(t,this.config);if(!h||!h.tensor){f("could not convert input to tensor"),A({error:"could not convert input to tensor"});return}this.perf.image=Math.trunc(z()-_),this.analyze("Get Image:");let a,x,i,w,m;this.config.async?(i=this.config.face.enabled?Mt(this,h.tensor):[],this.perf.face&&delete this.perf.face):(this.state="run:face",_=z(),i=this.config.face.enabled?await Mt(this,h.tensor):[],m=Math.trunc(z()-_),m>0&&(this.perf.face=m)),this.analyze("Start Body:"),this.config.async?(this.config.body.modelPath.includes("posenet")?a=this.config.body.enabled?(p=this.models.posenet)==null?void 0:p.estimatePoses(h.tensor,this.config):[]:this.config.body.modelPath.includes("blazepose")?a=this.config.body.enabled?n1(h.tensor,this.config):[]:this.config.body.modelPath.includes("efficientpose")&&(a=this.config.body.enabled?c1(h.tensor,this.config):[]),this.perf.body&&delete this.perf.body):(this.state="run:body",_=z(),this.config.body.modelPath.includes("posenet")?a=this.config.body.enabled?await((u=this.models.posenet)==null?void 0:u.estimatePoses(h.tensor,this.config)):[]:this.config.body.modelPath.includes("blazepose")?a=this.config.body.enabled?await n1(h.tensor,this.config):[]:this.config.body.modelPath.includes("efficientpose")&&(a=this.config.body.enabled?await c1(h.tensor,this.config):[]),m=Math.trunc(z()-_),m>0&&(this.perf.body=m)),this.analyze("End Body:"),this.analyze("Start Hand:"),this.config.async?(x=this.config.hand.enabled?(M=this.models.handpose)==null?void 0:M.estimateHands(h.tensor,this.config):[],this.perf.hand&&delete this.perf.hand):(this.state="run:hand",_=z(),x=this.config.hand.enabled?await((E=this.models.handpose)==null?void 0:E.estimateHands(h.tensor,this.config)):[],m=Math.trunc(z()-_),m>0&&(this.perf.hand=m)),this.analyze("End Hand:"),this.analyze("Start Object:"),this.config.async?(w=this.config.object.enabled?s1(h.tensor,this.config):[],this.perf.object&&delete this.perf.object):(this.state="run:object",_=z(),w=this.config.object.enabled?await s1(h.tensor,this.config):[],m=Math.trunc(z()-_),m>0&&(this.perf.object=m)),this.analyze("End Object:"),this.config.async&&([i,a,x,w]=await Promise.all([i,a,x,w])),o.dispose(h.tensor),this.config.scoped&&this.tf.engine().endScope(),this.analyze("End Scope:");let b=[];this.config.gesture.enabled&&(_=z(),b=[...a0(i),...i0(a),...y0(x),...x0(i)],this.config.async?this.perf.gesture&&delete this.perf.gesture:this.perf.gesture=Math.trunc(z()-_)),s&&(this.config.videoOptimized=s),this.perf.total=Math.trunc(z()-r),this.state="idle";let y={face:i,body:a,hand:x,gesture:b,object:w,performance:this.perf,canvas:h.canvas};A(y)})}async warmup(t={}){let n=z();if(t&&(this.config=U(this.config,t)),!this.config.warmup||this.config.warmup==="none")return{error:"null"};let A=this.config.videoOptimized;this.config.videoOptimized=!1;let _;typeof createImageBitmap=="function"?_=await C(this,ct).call(this):typeof Image!="undefined"?_=await C(this,At).call(this):_=await C(this,_t).call(this),this.config.videoOptimized=A;let c=z();return this.config.debug&&f("Warmup",this.config.warmup,Math.round(c-n),"ms",_),_}};fe=new WeakMap,Pe=new WeakMap,Me=new WeakMap,he=new WeakMap,rt=new WeakMap,ve=new WeakMap,ct=new WeakMap,At=new WeakMap,_t=new WeakMap;export{dn as Human,dn as default};
+2Q==`;
+
+// package.json
+var version2 = "1.5.2";
+
+// src/human.ts
+var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _sanity, _checkBackend, _warmupBitmap, _warmupCanvas, _warmupNode;
+var Human = class {
+  constructor(userConfig = {}) {
+    _numTensors.set(this, void 0);
+    _analyzeMemoryLeaks.set(this, void 0);
+    _checkSanity.set(this, void 0);
+    _firstRun.set(this, void 0);
+    this.analyze = (...msg) => {
+      if (!__privateGet(this, _analyzeMemoryLeaks))
+        return;
+      const current = this.tf.engine().state.numTensors;
+      const previous = __privateGet(this, _numTensors);
+      __privateSet(this, _numTensors, current);
+      const leaked = current - previous;
+      if (leaked !== 0)
+        log(...msg, leaked);
+    };
+    _sanity.set(this, (input) => {
+      if (!__privateGet(this, _checkSanity))
+        return null;
+      if (!input)
+        return "input is not defined";
+      if (this.tf.ENV.flags.IS_NODE && !(input instanceof tfjs_esm_exports.Tensor))
+        return "input must be a tensor";
+      try {
+        this.tf.getBackend();
+      } catch (e) {
+        return "backend not loaded";
+      }
+      return null;
+    });
+    _checkBackend.set(this, async (force = false) => {
+      var _a;
+      if (this.config.backend && this.config.backend.length > 0 && force || this.tf.getBackend() !== this.config.backend) {
+        const timeStamp = now();
+        this.state = "backend";
+        if (this.config.backend && this.config.backend.length > 0) {
+          if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === "tensorflow")
+            this.config.backend = "webgl";
+          if (this.tf.ENV.flags.IS_NODE && (this.config.backend === "webgl" || this.config.backend === "humangl"))
+            this.config.backend = "tensorflow";
+          if (this.config.debug)
+            log("setting backend:", this.config.backend);
+          if (this.config.backend === "wasm") {
+            if (this.config.debug)
+              log("wasm path:", this.config.wasmPath);
+            if (typeof ((_a = this.tf) == null ? void 0 : _a.setWasmPaths) !== "undefined")
+              this.tf.setWasmPaths(this.config.wasmPath);
+            else
+              throw new Error("Human: WASM backend is not loaded");
+            const simd = await this.tf.env().getAsync("WASM_HAS_SIMD_SUPPORT");
+            const mt = await this.tf.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+            if (this.config.debug)
+              log(`wasm execution: ${simd ? "SIMD" : "no SIMD"} ${mt ? "multithreaded" : "singlethreaded"}`);
+            if (this.config.debug && !simd)
+              log("warning: wasm simd support is not enabled");
+          }
+          if (this.config.backend === "humangl")
+            register();
+          try {
+            await this.tf.setBackend(this.config.backend);
+          } catch (err) {
+            log("error: cannot set backend:", this.config.backend, err);
+          }
+        }
+        this.tf.enableProdMode();
+        if (this.tf.getBackend() === "webgl" || this.tf.getBackend() === "humangl") {
+          this.tf.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
+          this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", true);
+          if (this.config.deallocate) {
+            log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", this.config.deallocate);
+            this.tf.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", this.config.deallocate ? 0 : -1);
+          }
+          const gl = await this.tf.backend().getGPGPUContext().gl;
+          if (this.config.debug)
+            log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+        }
+        await this.tf.ready();
+        this.perf.backend = Math.trunc(now() - timeStamp);
+      }
+    });
+    _warmupBitmap.set(this, async () => {
+      const b64toBlob = (base64, type = "application/octet-stream") => fetch(`data:${type};base64,${base64}`).then((res2) => res2.blob());
+      let blob;
+      let res;
+      switch (this.config.warmup) {
+        case "face":
+          blob = await b64toBlob(face3);
+          break;
+        case "full":
+          blob = await b64toBlob(body3);
+          break;
+        default:
+          blob = null;
+      }
+      if (blob) {
+        const bitmap = await createImageBitmap(blob);
+        res = await this.detect(bitmap, this.config);
+        bitmap.close();
+      }
+      return res;
+    });
+    _warmupCanvas.set(this, async () => new Promise((resolve) => {
+      let src;
+      let size = 0;
+      switch (this.config.warmup) {
+        case "face":
+          size = 256;
+          src = "data:image/jpeg;base64," + face3;
+          break;
+        case "full":
+        case "body":
+          size = 1200;
+          src = "data:image/jpeg;base64," + body3;
+          break;
+        default:
+          src = null;
+      }
+      const img = new Image();
+      img.onload = async () => {
+        const canvas2 = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(size, size) : document.createElement("canvas");
+        canvas2.width = img.naturalWidth;
+        canvas2.height = img.naturalHeight;
+        const ctx = canvas2.getContext("2d");
+        ctx == null ? void 0 : ctx.drawImage(img, 0, 0);
+        const res = await this.detect(canvas2, this.config);
+        resolve(res);
+      };
+      if (src)
+        img.src = src;
+      else
+        resolve(null);
+    }));
+    _warmupNode.set(this, async () => {
+      const atob = (str) => Buffer.from(str, "base64");
+      let img;
+      if (this.config.warmup === "face")
+        img = atob(face3);
+      if (this.config.warmup === "body" || this.config.warmup === "full")
+        img = atob(body3);
+      if (!img)
+        return null;
+      let res;
+      if (typeof tfjs_esm_exports.node !== "undefined") {
+        const data3 = tfjs_esm_exports.node.decodeJpeg(img);
+        const expanded = data3.expandDims(0);
+        this.tf.dispose(data3);
+        res = await this.detect(expanded, this.config);
+        this.tf.dispose(expanded);
+      } else {
+        if (this.config.debug)
+          log("Warmup tfjs-node not loaded");
+      }
+      return res;
+    });
+    this.tf = tfjs_esm_exports;
+    this.draw = draw_exports;
+    this.version = version2;
+    this.config = mergeDeep(config2, userConfig);
+    this.state = "idle";
+    __privateSet(this, _numTensors, 0);
+    __privateSet(this, _analyzeMemoryLeaks, false);
+    __privateSet(this, _checkSanity, false);
+    __privateSet(this, _firstRun, true);
+    this.perf = {};
+    this.models = {
+      face: null,
+      posenet: null,
+      blazepose: null,
+      efficientpose: null,
+      handpose: null,
+      iris: null,
+      age: null,
+      gender: null,
+      emotion: null,
+      embedding: null,
+      nanodet: null,
+      faceres: null
+    };
+    this.image = (input) => process3(input, this.config);
+    this.classes = {
+      facemesh: facemesh_exports,
+      age: age_exports,
+      gender: gender_exports,
+      emotion: emotion_exports,
+      faceres: faceres_exports,
+      body: this.config.body.modelPath.includes("posenet") ? posenet_exports : blazepose_exports,
+      hand: handpose_exports,
+      nanodet: nanodet_exports
+    };
+    this.faceTriangulation = triangulation;
+    this.faceUVMap = uvmap;
+    this.sysinfo = info();
+  }
+  profileData() {
+    if (this.config.profile)
+      return data2;
+    return {};
+  }
+  similarity(embedding1, embedding22) {
+    if (this.config.face.description.enabled)
+      return similarity2(embedding1, embedding22);
+    if (this.config.face.embedding.enabled)
+      return similarity(embedding1, embedding22);
+    return 0;
+  }
+  enhance(input) {
+    return enhance2(input);
+  }
+  match(faceEmbedding, db, threshold = 0) {
+    return match(faceEmbedding, db, threshold);
+  }
+  async load(userConfig = {}) {
+    this.state = "load";
+    const timeStamp = now();
+    if (userConfig)
+      this.config = mergeDeep(this.config, userConfig);
+    if (__privateGet(this, _firstRun)) {
+      if (this.config.debug)
+        log(`version: ${this.version}`);
+      if (this.config.debug)
+        log(`tfjs version: ${this.tf.version_core}`);
+      if (this.config.debug)
+        log("platform:", this.sysinfo.platform);
+      if (this.config.debug)
+        log("agent:", this.sysinfo.agent);
+      await __privateGet(this, _checkBackend).call(this, true);
+      if (this.tf.ENV.flags.IS_BROWSER) {
+        if (this.config.debug)
+          log("configuration:", this.config);
+        if (this.config.debug)
+          log("tf flags:", this.tf.ENV.flags);
+      }
+    }
+    if (this.config.async) {
+      [
+        this.models.face,
+        this.models.age,
+        this.models.gender,
+        this.models.emotion,
+        this.models.embedding,
+        this.models.handpose,
+        this.models.posenet,
+        this.models.blazepose,
+        this.models.efficientpose,
+        this.models.nanodet,
+        this.models.faceres
+      ] = await Promise.all([
+        this.models.face || (this.config.face.enabled ? load7(this.config) : null),
+        this.models.age || (this.config.face.enabled && this.config.face.age.enabled ? load(this.config) : null),
+        this.models.gender || (this.config.face.enabled && this.config.face.gender.enabled ? load2(this.config) : null),
+        this.models.emotion || (this.config.face.enabled && this.config.face.emotion.enabled ? load3(this.config) : null),
+        this.models.embedding || (this.config.face.enabled && this.config.face.embedding.enabled ? load4(this.config) : null),
+        this.models.handpose || (this.config.hand.enabled ? load9(this.config) : null),
+        this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes("posenet") ? load8(this.config) : null),
+        this.models.blazepose || (this.config.body.enabled && this.config.body.modelPath.includes("blazepose") ? load10(this.config) : null),
+        this.models.efficientpose || (this.config.body.enabled && this.config.body.modelPath.includes("efficientpose") ? load11(this.config) : null),
+        this.models.nanodet || (this.config.object.enabled ? load12(this.config) : null),
+        this.models.faceres || (this.config.face.enabled && this.config.face.description.enabled ? load5(this.config) : null)
+      ]);
+    } else {
+      if (this.config.face.enabled && !this.models.face)
+        this.models.face = await load7(this.config);
+      if (this.config.face.enabled && this.config.face.age.enabled && !this.models.age)
+        this.models.age = await load(this.config);
+      if (this.config.face.enabled && this.config.face.gender.enabled && !this.models.gender)
+        this.models.gender = await load2(this.config);
+      if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion)
+        this.models.emotion = await load3(this.config);
+      if (this.config.face.enabled && this.config.face.embedding.enabled && !this.models.embedding)
+        this.models.embedding = await load4(this.config);
+      if (this.config.hand.enabled && !this.models.handpose)
+        this.models.handpose = await load9(this.config);
+      if (this.config.body.enabled && !this.models.posenet && this.config.body.modelPath.includes("posenet"))
+        this.models.posenet = await load8(this.config);
+      if (this.config.body.enabled && !this.models.blazepose && this.config.body.modelPath.includes("blazepose"))
+        this.models.blazepose = await load10(this.config);
+      if (this.config.body.enabled && !this.models.efficientpose && this.config.body.modelPath.includes("efficientpose"))
+        this.models.efficientpose = await load11(this.config);
+      if (this.config.object.enabled && !this.models.nanodet)
+        this.models.nanodet = await load12(this.config);
+      if (this.config.face.enabled && this.config.face.description.enabled && !this.models.faceres)
+        this.models.faceres = await load5(this.config);
+    }
+    if (__privateGet(this, _firstRun)) {
+      if (this.config.debug)
+        log("tf engine state:", this.tf.engine().state.numBytes, "bytes", this.tf.engine().state.numTensors, "tensors");
+      __privateSet(this, _firstRun, false);
+    }
+    const current = Math.trunc(now() - timeStamp);
+    if (current > (this.perf.load || 0))
+      this.perf.load = current;
+  }
+  async detect(input, userConfig = {}) {
+    return new Promise(async (resolve) => {
+      var _a, _b, _c, _d;
+      this.state = "config";
+      let timeStamp;
+      this.config = mergeDeep(this.config, userConfig);
+      this.state = "check";
+      const error = __privateGet(this, _sanity).call(this, input);
+      if (error) {
+        log(error, input);
+        resolve({error});
+      }
+      const timeStart = now();
+      await __privateGet(this, _checkBackend).call(this);
+      await this.load();
+      if (this.config.scoped)
+        this.tf.engine().startScope();
+      this.analyze("Start Scope:");
+      let previousVideoOptimized;
+      if (input && this.config.videoOptimized && (input instanceof HTMLImageElement || input instanceof Image || input instanceof ImageData || typeof ImageBitmap !== "undefined" && image_exports instanceof ImageBitmap || input instanceof tfjs_esm_exports.Tensor)) {
+        log("disabling video optimization");
+        previousVideoOptimized = this.config.videoOptimized;
+        this.config.videoOptimized = false;
+      }
+      timeStamp = now();
+      const process4 = process3(input, this.config);
+      if (!process4 || !process4.tensor) {
+        log("could not convert input to tensor");
+        resolve({error: "could not convert input to tensor"});
+        return;
+      }
+      this.perf.image = Math.trunc(now() - timeStamp);
+      this.analyze("Get Image:");
+      let bodyRes;
+      let handRes;
+      let faceRes;
+      let objectRes;
+      let current;
+      if (this.config.async) {
+        faceRes = this.config.face.enabled ? detectFace(this, process4.tensor) : [];
+        if (this.perf.face)
+          delete this.perf.face;
+      } else {
+        this.state = "run:face";
+        timeStamp = now();
+        faceRes = this.config.face.enabled ? await detectFace(this, process4.tensor) : [];
+        current = Math.trunc(now() - timeStamp);
+        if (current > 0)
+          this.perf.face = current;
+      }
+      this.analyze("Start Body:");
+      if (this.config.async) {
+        if (this.config.body.modelPath.includes("posenet"))
+          bodyRes = this.config.body.enabled ? (_a = this.models.posenet) == null ? void 0 : _a.estimatePoses(process4.tensor, this.config) : [];
+        else if (this.config.body.modelPath.includes("blazepose"))
+          bodyRes = this.config.body.enabled ? predict6(process4.tensor, this.config) : [];
+        else if (this.config.body.modelPath.includes("efficientpose"))
+          bodyRes = this.config.body.enabled ? predict7(process4.tensor, this.config) : [];
+        if (this.perf.body)
+          delete this.perf.body;
+      } else {
+        this.state = "run:body";
+        timeStamp = now();
+        if (this.config.body.modelPath.includes("posenet"))
+          bodyRes = this.config.body.enabled ? await ((_b = this.models.posenet) == null ? void 0 : _b.estimatePoses(process4.tensor, this.config)) : [];
+        else if (this.config.body.modelPath.includes("blazepose"))
+          bodyRes = this.config.body.enabled ? await predict6(process4.tensor, this.config) : [];
+        else if (this.config.body.modelPath.includes("efficientpose"))
+          bodyRes = this.config.body.enabled ? await predict7(process4.tensor, this.config) : [];
+        current = Math.trunc(now() - timeStamp);
+        if (current > 0)
+          this.perf.body = current;
+      }
+      this.analyze("End Body:");
+      this.analyze("Start Hand:");
+      if (this.config.async) {
+        handRes = this.config.hand.enabled ? (_c = this.models.handpose) == null ? void 0 : _c.estimateHands(process4.tensor, this.config) : [];
+        if (this.perf.hand)
+          delete this.perf.hand;
+      } else {
+        this.state = "run:hand";
+        timeStamp = now();
+        handRes = this.config.hand.enabled ? await ((_d = this.models.handpose) == null ? void 0 : _d.estimateHands(process4.tensor, this.config)) : [];
+        current = Math.trunc(now() - timeStamp);
+        if (current > 0)
+          this.perf.hand = current;
+      }
+      this.analyze("End Hand:");
+      this.analyze("Start Object:");
+      if (this.config.async) {
+        objectRes = this.config.object.enabled ? predict8(process4.tensor, this.config) : [];
+        if (this.perf.object)
+          delete this.perf.object;
+      } else {
+        this.state = "run:object";
+        timeStamp = now();
+        objectRes = this.config.object.enabled ? await predict8(process4.tensor, this.config) : [];
+        current = Math.trunc(now() - timeStamp);
+        if (current > 0)
+          this.perf.object = current;
+      }
+      this.analyze("End Object:");
+      if (this.config.async) {
+        [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
+      }
+      tfjs_esm_exports.dispose(process4.tensor);
+      if (this.config.scoped)
+        this.tf.engine().endScope();
+      this.analyze("End Scope:");
+      let gestureRes = [];
+      if (this.config.gesture.enabled) {
+        timeStamp = now();
+        gestureRes = [...face(faceRes), ...body(bodyRes), ...hand(handRes), ...iris(faceRes)];
+        if (!this.config.async)
+          this.perf.gesture = Math.trunc(now() - timeStamp);
+        else if (this.perf.gesture)
+          delete this.perf.gesture;
+      }
+      if (previousVideoOptimized)
+        this.config.videoOptimized = previousVideoOptimized;
+      this.perf.total = Math.trunc(now() - timeStart);
+      this.state = "idle";
+      const result = {
+        face: faceRes,
+        body: bodyRes,
+        hand: handRes,
+        gesture: gestureRes,
+        object: objectRes,
+        performance: this.perf,
+        canvas: process4.canvas
+      };
+      resolve(result);
+    });
+  }
+  async warmup(userConfig = {}) {
+    const t0 = now();
+    if (userConfig)
+      this.config = mergeDeep(this.config, userConfig);
+    if (!this.config.warmup || this.config.warmup === "none")
+      return {error: "null"};
+    const save = this.config.videoOptimized;
+    this.config.videoOptimized = false;
+    let res;
+    if (typeof createImageBitmap === "function")
+      res = await __privateGet(this, _warmupBitmap).call(this);
+    else if (typeof Image !== "undefined")
+      res = await __privateGet(this, _warmupCanvas).call(this);
+    else
+      res = await __privateGet(this, _warmupNode).call(this);
+    this.config.videoOptimized = save;
+    const t1 = now();
+    if (this.config.debug)
+      log("Warmup", this.config.warmup, Math.round(t1 - t0), "ms", res);
+    return res;
+  }
+};
+_numTensors = new WeakMap();
+_analyzeMemoryLeaks = new WeakMap();
+_checkSanity = new WeakMap();
+_firstRun = new WeakMap();
+_sanity = new WeakMap();
+_checkBackend = new WeakMap();
+_warmupBitmap = new WeakMap();
+_warmupCanvas = new WeakMap();
+_warmupNode = new WeakMap();
+export {
+  Human,
+  Human as default
+};
 //# sourceMappingURL=human.esm-nobundle.js.map

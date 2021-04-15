@@ -41,7 +41,7 @@ async function getImage(human, input) {
     const tensor = human.tf.tensor(Array.from(imageData.data), [canvas.height, canvas.width, 4], 'int32'); // create rgba image tensor from flat array
     const channels = human.tf.split(tensor, 4, 2); // split rgba to channels
     const rgb = human.tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb
-    const reshape = human.tf.reshape(rgb, [1, canvas.width, canvas.height, 3]); // move extra dim from the end of tensor and use it as batch number instead
+    const reshape = human.tf.reshape(rgb, [1, canvas.height, canvas.width, 3]); // move extra dim from the end of tensor and use it as batch number instead
     return reshape;
   });
   if (res && res.shape[0] === 1 && res.shape[3] === 3) log('state', 'passed: load image:', input, res.shape);

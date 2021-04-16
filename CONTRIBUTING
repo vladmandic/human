@@ -14,7 +14,7 @@ Procedure for contributing:
   `npm run lint`
 - Test your changes in Browser and NodeJS  
   `npm run dev` and naviate to https://localhost:10031  
-  `node demo/node.js`  
+  `node test/test-node.js`  
 - Push changes to your fork  
   Exclude files in `/dist', '/types', '/typedoc' from the commit as they are dynamically generated during build
 - Submit a PR (pull request)

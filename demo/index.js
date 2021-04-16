@@ -196,9 +196,6 @@ async function drawResults(input) {
 async function setupCamera() {
   if (ui.busy) return null;
   ui.busy = true;
-  const viewportScale = Math.min(1, Math.round(100 * window.outerWidth / 700) / 100);
-  // log('demo viewport scale:', viewportScale);
-  document.querySelector('meta[name=viewport]').setAttribute('content', `width=device-width, shrink-to-fit=no, initial-scale=${viewportScale}`);
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const output = document.getElementById('log');
@@ -411,8 +408,7 @@ async function detectVideo() {
   const canvas = document.getElementById('canvas');
   if ((video.srcObject !== null) && !video.paused) {
     document.getElementById('play').style.display = 'block';
-    document.getElementById('btnStart').className = 'button button-start';
-    document.getElementById('btnStart').innerHTML = 'start<br>video';
+    document.getElementById('btnStartText').innerHTML = 'start video';
     status('paused');
     video.pause();
   } else {
@@ -421,8 +417,7 @@ async function detectVideo() {
       document.getElementById('play').style.display = 'none';
       for (const m of Object.values(menu)) m.hide();
       status('');
-      document.getElementById('btnStart').className = 'button button-stop';
-      document.getElementById('btnStart').innerHTML = 'pause<br>video';
+      document.getElementById('btnStartText').innerHTML = 'pause video';
       await video.play();
       if (!ui.detectThread) runHumanDetect(video, canvas);
     } else {
@@ -446,16 +441,10 @@ async function detectSampleImages() {
 }
 
 function setupMenu() {
-  let x = [];
-  if (window.innerWidth > 800) {
-    // initial position of menu items, later it's calculated based on mouse coordinates
-    x = [`${document.getElementById('btnDisplay').offsetLeft - 50}px`, `${document.getElementById('btnImage').offsetLeft - 50}px`, `${document.getElementById('btnProcess').offsetLeft - 50}px`, `${document.getElementById('btnModel').offsetLeft - 50}px`];
-  } else {
-    // absolute minimum spacing for menus
-    x = ['0rem', '11rem', '21.1rem', '33rem'];
-  }
+  const x = [`${document.getElementById('btnDisplay').offsetLeft}px`, `${document.getElementById('btnImage').offsetLeft}px`, `${document.getElementById('btnProcess').offsetLeft}px`, `${document.getElementById('btnModel').offsetLeft}px`];
+  const top = `${document.getElementById('menubar').offsetHeight - 3}px`;
 
-  menu.display = new Menu(document.body, '', { top: `${document.getElementById('menubar').offsetHeight}px`, left: x[0] });
+  menu.display = new Menu(document.body, '', { top, left: x[0] });
   menu.display.addBool('perf monitor', ui, 'bench', (val) => ui.bench = val);
   menu.display.addBool('buffered output', ui, 'buffered', (val) => ui.buffered = val);
   menu.display.addBool('crop & scale', ui, 'crop', (val) => {
@@ -475,7 +464,7 @@ function setupMenu() {
   menu.display.addBool('draw polygons', human.draw.options, 'drawPolygons');
   menu.display.addBool('fill polygons', human.draw.options, 'fillPolygons');
 
-  menu.image = new Menu(document.body, '', { top: `${document.getElementById('menubar').offsetHeight}px`, left: x[1] });
+  menu.image = new Menu(document.body, '', { top, left: x[1] });
   menu.image.addBool('enabled', human.config.filter, 'enabled', (val) => human.config.filter.enabled = val);
   ui.menuWidth = menu.image.addRange('image width', human.config.filter, 'width', 0, 3840, 10, (val) => human.config.filter.width = parseInt(val));
   ui.menuHeight = menu.image.addRange('image height', human.config.filter, 'height', 0, 2160, 10, (val) => human.config.filter.height = parseInt(val));
@@ -495,7 +484,7 @@ function setupMenu() {
   menu.image.addBool('technicolor', human.config.filter, 'technicolor', (val) => human.config.filter.technicolor = val);
   menu.image.addBool('polaroid', human.config.filter, 'polaroid', (val) => human.config.filter.polaroid = val);
 
-  menu.process = new Menu(document.body, '', { top: `${document.getElementById('menubar').offsetHeight}px`, left: x[2] });
+  menu.process = new Menu(document.body, '', { top, left: x[2] });
   menu.process.addList('backend', ['cpu', 'webgl', 'wasm', 'humangl'], human.config.backend, (val) => human.config.backend = val);
   menu.process.addBool('async operations', human.config, 'async', (val) => human.config.async = val);
   // menu.process.addBool('enable profiler', human.config, 'profile', (val) => human.config.profile = val);
@@ -538,7 +527,7 @@ function setupMenu() {
   menu.process.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.process.addChart('FPS', 'FPS');
 
-  menu.models = new Menu(document.body, '', { top: `${document.getElementById('menubar').offsetHeight}px`, left: x[3] });
+  menu.models = new Menu(document.body, '', { top, left: x[3] });
   menu.models.addBool('face detect', human.config.face, 'enabled', (val) => human.config.face.enabled = val);
   menu.models.addBool('face mesh', human.config.face.mesh, 'enabled', (val) => human.config.face.mesh.enabled = val);
   menu.models.addBool('face iris', human.config.face.iris, 'enabled', (val) => human.config.face.iris.enabled = val);
@@ -565,6 +554,21 @@ function setupMenu() {
   document.getElementById('btnModel').addEventListener('click', (evt) => menu.models.toggle(evt));
   document.getElementById('btnStart').addEventListener('click', () => detectVideo());
   document.getElementById('play').addEventListener('click', () => detectVideo());
+}
+
+async function resize() {
+  const x = [`${document.getElementById('btnDisplay').offsetLeft}px`, `${document.getElementById('btnImage').offsetLeft}px`, `${document.getElementById('btnProcess').offsetLeft}px`, `${document.getElementById('btnModel').offsetLeft}px`];
+  menu.display.menu.style.left = x[0];
+  menu.image.menu.style.left = x[1];
+  menu.process.menu.style.left = x[2];
+  menu.models.menu.style.left = x[3];
+  const viewportScale = Math.min(1, Math.round(100 * window.innerWidth / 960) / 100);
+  const viewport = document.querySelector('meta[name=viewport]');
+  viewport.setAttribute('content', `width=device-width, shrink-to-fit=yes, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes, initial-scale=${viewportScale}`);
+  // console.log('view', viewportScale, window.innerWidth, viewport);
+  // document.body.style.MozTransform = `scale(${viewportScale})`;
+  // document.body.style.zoom = `scale(${viewportScale})`;
+  setupCamera();
 }
 
 async function drawWarmup(res) {
@@ -607,7 +611,8 @@ async function main() {
   }
 
   // setup main menu
-  setupMenu();
+  await setupMenu();
+  await resize();
   document.getElementById('log').innerText = `Human: version ${human.version}`;
 
   // preload models
@@ -636,4 +641,4 @@ async function main() {
 }
 
 window.onload = main;
-window.onresize = setupCamera;
+window.onresize = resize;

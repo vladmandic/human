@@ -16,7 +16,7 @@ const myConfig = {
   modelBasePath: 'file://models/',
   debug: false,
   videoOptimized: false,
-  async: false,
+  async: true,
   face: {
     enabled: true,
     detector: { enabled: true, rotation: false },

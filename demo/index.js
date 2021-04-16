@@ -518,7 +518,7 @@ function setupMenu() {
     human.config.face.detector.iouThreshold = parseFloat(val);
     human.config.hand.iouThreshold = parseFloat(val);
   });
-  menu.process.addBool('detection rotation', human.config.face.detector, 'rotation', (val) => {
+  menu.process.addBool('rotation detection', human.config.face.detector, 'rotation', (val) => {
     human.config.face.detector.rotation = val;
     human.config.hand.rotation = val;
   });

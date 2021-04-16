@@ -53,6 +53,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**Face Recognition & Face Description**](https://github.com/vladmandic/human/wiki/Embedding)
 - [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)
 - [**Common Issues**](https://github.com/vladmandic/human/wiki/Issues)
+- [**Background and Benchmarks**](https://github.com/vladmandic/human/wiki/Background)
 
 ## Additional notes
 

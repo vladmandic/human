@@ -22,11 +22,11 @@ function createCSS() {
   .menu { position: absolute; top: 0rem; right: 0; min-width: 180px; width: max-content; padding: 0.2rem 0.2rem 0 0.2rem; line-height: 1.8rem; z-index: 10; background: ${theme.background}; border: none }
   .button { text-shadow: none; }
 
-  .menu:hover { background: ${theme.hover}; }
   .menu-container { display: block; max-height: 100vh; }
   .menu-container-fadeout { max-height: 0; overflow: hidden; transition: max-height, 0.5s ease; }
   .menu-container-fadein { max-height: 100vh; overflow: hidden; transition: max-height, 0.5s ease; }
   .menu-item { display: flex; white-space: nowrap; padding: 0.2rem; cursor: default; width: 100%; }
+  .menu-item:hover { background: ${theme.hover} }
   .menu-title { cursor: pointer; }
   .menu-hr { margin: 0.2rem; border: 1px solid rgba(0, 0, 0, 0.5) }
   .menu-label { padding: 0; font-weight: 800; }
@@ -112,7 +112,7 @@ class Menu {
       if (this.container && this.menu) {
         this.container.classList.toggle('menu-container-fadeout');
         this.container.classList.toggle('menu-container-fadein');
-        this.menu.style.borderStyle = this.container.classList.contains('menu-container-fadeout') ? 'none' : 'solid';
+        // this.menu.style.borderStyle = this.container.classList.contains('menu-container-fadeout') ? 'none' : 'solid';
       }
     });
 
@@ -153,6 +153,7 @@ class Menu {
     if (this.container && this.menu) {
       this.container.classList.toggle('menu-container-fadeout');
       this.container.classList.toggle('menu-container-fadein');
+      /*
       if (this.container.classList.contains('menu-container-fadein') && evt) {
         const x = evt.x || (evt.touches && evt.touches[0] ? evt.touches[0].pageX : null);
         // const y = evt.y || (evt.touches && evt.touches[0] ? evt.touches[0].pageY : null);
@@ -163,10 +164,11 @@ class Menu {
           this.menu.style.left = '';
           this.menu.style.right = '0';
         }
-        this.menu.style.borderStyle = 'solid';
+        // this.menu.style.borderStyle = 'solid';
       } else {
-        this.menu.style.borderStyle = 'none';
+        // this.menu.style.borderStyle = 'none';
       }
+      */
     }
   }
 

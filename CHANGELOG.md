@@ -9,6 +9,16 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/04/16 mandic00@live.com
+
+
+### **origin/main** 2021/04/16 mandic00@live.com
+
+- added node-multiprocess demo
+- fix image orientation
+- flat app style
+- add full nodejs test coverage
+
 ### **1.5.2** 2021/04/14 mandic00@live.com
 
 - experimental node-wasm support

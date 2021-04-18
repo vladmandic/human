@@ -37,6 +37,7 @@ export interface DrawOptions {
     useCurves: Boolean;
     bufferedOutput: Boolean;
     useRawBoxes: Boolean;
+    calculateHandBox: Boolean;
 }
 export declare const options: DrawOptions;
 export declare function gesture(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions): Promise<void>;

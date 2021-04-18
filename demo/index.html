@@ -16,7 +16,7 @@
     <style>
       @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../assets/lato-light.woff2') }
       html { font-family: 'Lato', 'Segoe UI'; font-size: 16px; font-variant: small-caps; }
-      body { margin: 0; background: black; color: white; overflow-x: hidden }
+      body { margin: 0; background: black; color: white; overflow-x: hidden; width: 100vw; height: 100vh; }
       body::-webkit-scrollbar { display: none; }
       hr { width: 100%; }
       .play { position: absolute; width: 256px; height: 256px; z-index: 9; bottom: 15%; left: 50%; margin-left: -125px; display: none; filter: grayscale(1); }
@@ -28,7 +28,7 @@
       .status { position: absolute; width: 100vw; bottom: 10%; text-align: center; font-size: 4rem; font-weight: 100; text-shadow: 2px 2px #303030; }
       .thumbnail { margin: 8px; box-shadow: 0 0 4px 4px dimgrey; }
       .thumbnail:hover { box-shadow: 0 0 8px 8px dimgrey; filter: grayscale(1); }
-      .log { position: absolute; bottom: 0; margin: 0.4rem; font-size: 0.9rem; }
+      .log { position: absolute; bottom: 0; margin: 0.4rem 0.4rem 0 0.4rem; font-size: 0.9rem; }
       .menubar { width: 100vw; background: #303030; display: flex; justify-content: space-evenly; text-align: center; padding: 8px; cursor: pointer; }
       .samples-container { display: flex; flex-wrap: wrap; }
       .video { display: none; }

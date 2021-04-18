@@ -41,6 +41,7 @@ export interface DrawOptions {
   useCurves: Boolean,
   bufferedOutput: Boolean,
   useRawBoxes: Boolean,
+  calculateHandBox: Boolean,
 }
 
 export const options: DrawOptions = {
@@ -61,6 +62,7 @@ export const options: DrawOptions = {
   useCurves: <Boolean>false,
   bufferedOutput: <Boolean>false,
   useRawBoxes: <Boolean>false,
+  calculateHandBox: <Boolean>true,
 };
 
 function point(ctx, x, y, z = 0, localOptions) {
@@ -359,15 +361,31 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<any>, draw
     if (localOptions.drawBoxes) {
       ctx.strokeStyle = localOptions.color;
       ctx.fillStyle = localOptions.color;
-      if (localOptions.useRawBoxes) rect(ctx, inCanvas.width * h.boxRaw[0], inCanvas.height * h.boxRaw[1], inCanvas.width * h.boxRaw[2], inCanvas.height * h.boxRaw[3], localOptions);
-      else rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
+      let box;
+      if (!localOptions.calculateHandBox) {
+        box = localOptions.useRawBoxes ? h.boxRaw : h.box;
+      } else {
+        box = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0];
+        if (h.landmarks && h.landmarks.length > 0) {
+          for (const pt of h.landmarks) {
+            if (pt[0] < box[0]) box[0] = pt[0];
+            if (pt[1] < box[1]) box[1] = pt[1];
+            if (pt[0] > box[2]) box[2] = pt[0];
+            if (pt[1] > box[3]) box[3] = pt[1];
+          }
+          box[2] -= box[0];
+          box[3] -= box[1];
+        }
+      }
+      if (localOptions.useRawBoxes) rect(ctx, inCanvas.width * box[0], inCanvas.height * box[1], inCanvas.width * box[2], inCanvas.height * box[3], localOptions);
+      else rect(ctx, box[0], box[1], box[2], box[3], localOptions);
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== '') {
           ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText('hand', h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
+          ctx.fillText('hand', box[0] + 3, 1 + box[1] + localOptions.lineHeight, box[2]);
         }
         ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText('hand', h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+        ctx.fillText('hand', box[0] + 2, 0 + box[1] + localOptions.lineHeight, box[2]);
       }
       ctx.stroke();
     }

@@ -101,7 +101,8 @@ const compare = { enabled: false, original: null };
 async function calcSimmilariry(result) {
   document.getElementById('compare-container').style.display = compare.enabled ? 'block' : 'none';
   if (!compare.enabled) return;
-  if (!(result?.face?.length > 0) || (result?.face[0]?.embedding?.length <= 64)) return;
+  if (!result || !result.face || result.face[0].embedding) return;
+  if (!(result.face.length > 0) || (result.face[0].embedding.length <= 64)) return;
   if (!compare.original) {
     compare.original = result;
     log('setting face compare baseline:', result.face[0]);
@@ -120,7 +121,7 @@ async function calcSimmilariry(result) {
       document.getElementById('compare-canvas').getContext('2d').drawImage(compare.original.canvas, 0, 0, 200, 200);
     }
   }
-  const similarity = human.similarity(compare.original?.face[0]?.embedding, result?.face[0]?.embedding);
+  const similarity = human.similarity(compare.original.face[0].embedding, result.face[0].embedding);
   document.getElementById('similarity').innerText = `similarity: ${Math.trunc(1000 * similarity) / 10}%`;
 }
 
@@ -250,7 +251,7 @@ async function setupCamera() {
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
   // log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight }, 'settings:', settings, 'track:', track);
-  ui.camera = { name: track.label?.toLowerCase(), width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
+  ui.camera = { name: track.label.toLowerCase(), width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   return new Promise((resolve) => {
     video.onloadeddata = async () => {
       video.width = video.videoWidth;
@@ -327,7 +328,7 @@ function runHumanDetect(input, canvas, timestamp) {
     // if we want to continue and camera not ready, retry in 0.5sec, else just give up
     if (input.paused) log('camera paused');
     else if ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
-    else log(`camera not ready: track state: ${input.srcObject?.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
+    else log(`camera not ready: track state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
     clearTimeout(ui.drawThread);
     ui.drawThread = null;
     log('frame statistics: process:', ui.framesDetect, 'refresh:', ui.framesDraw);
@@ -442,11 +443,12 @@ async function detectSampleImages() {
 
 function setupMenu() {
   const x = [`${document.getElementById('btnDisplay').offsetLeft}px`, `${document.getElementById('btnImage').offsetLeft}px`, `${document.getElementById('btnProcess').offsetLeft}px`, `${document.getElementById('btnModel').offsetLeft}px`];
-  const top = `${document.getElementById('menubar').offsetHeight - 3}px`;
+
+  const top = `${document.getElementById('menubar').clientHeight}px`;
 
   menu.display = new Menu(document.body, '', { top, left: x[0] });
   menu.display.addBool('perf monitor', ui, 'bench', (val) => ui.bench = val);
-  menu.display.addBool('buffered output', ui, 'buffered', (val) => ui.buffered = val);
+  menu.display.addBool('buffer output', ui, 'buffered', (val) => ui.buffered = val);
   menu.display.addBool('crop & scale', ui, 'crop', (val) => {
     ui.crop = val;
     setupCamera();
@@ -456,8 +458,8 @@ function setupMenu() {
     setupCamera();
   });
   menu.display.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.display.addBool('use 3D depth', human.draw.options, 'useDepth');
-  menu.display.addBool('draw with curves', human.draw.options, 'useCurves');
+  menu.display.addBool('use depth', human.draw.options, 'useDepth');
+  menu.display.addBool('use curves', human.draw.options, 'useCurves');
   menu.display.addBool('print labels', human.draw.options, 'drawLabels');
   menu.display.addBool('draw points', human.draw.options, 'drawPoints');
   menu.display.addBool('draw boxes', human.draw.options, 'drawBoxes');
@@ -557,17 +559,28 @@ function setupMenu() {
 }
 
 async function resize() {
+  window.onresize = null;
+  const viewportScale = Math.min(1, Math.round(100 * window.innerWidth / 960) / 100);
+  const viewport = document.querySelector('meta[name=viewport]');
+  viewport.setAttribute('content', `width=device-width, shrink-to-fit=yes, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes, initial-scale=${viewportScale}`);
   const x = [`${document.getElementById('btnDisplay').offsetLeft}px`, `${document.getElementById('btnImage').offsetLeft}px`, `${document.getElementById('btnProcess').offsetLeft}px`, `${document.getElementById('btnModel').offsetLeft}px`];
+
+  const top = `${document.getElementById('menubar').clientHeight - 3}px`;
+
+  menu.display.menu.style.top = top;
+  menu.image.menu.style.top = top;
+  menu.process.menu.style.top = top;
+  menu.models.menu.style.top = top;
   menu.display.menu.style.left = x[0];
   menu.image.menu.style.left = x[1];
   menu.process.menu.style.left = x[2];
   menu.models.menu.style.left = x[3];
-  const viewportScale = Math.min(1, Math.round(100 * window.innerWidth / 960) / 100);
-  const viewport = document.querySelector('meta[name=viewport]');
-  viewport.setAttribute('content', `width=device-width, shrink-to-fit=yes, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes, initial-scale=${viewportScale}`);
-  // console.log('view', viewportScale, window.innerWidth, viewport);
-  // document.body.style.MozTransform = `scale(${viewportScale})`;
-  // document.body.style.zoom = `scale(${viewportScale})`;
+
+  const fontSize = Math.trunc(10 * (1 - viewportScale)) + 16;
+  document.documentElement.style.fontSize = `${fontSize}px`;
+
+  human.draw.options.font = `small-caps ${fontSize + 4}px "Segoe UI"`;
+
   setupCamera();
 }
 
@@ -638,6 +651,7 @@ async function main() {
   document.getElementById('loader').style.display = 'none';
   document.getElementById('play').style.display = 'block';
   log('demo ready...');
+  for (const m of Object.values(menu)) m.hide();
 }
 
 window.onload = main;

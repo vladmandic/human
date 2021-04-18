@@ -24,7 +24,7 @@ export const face = (res) => {
   for (let i = 0; i < res.length; i++) {
     if (res[i].mesh && res[i].mesh.length > 0) {
       const eyeFacing = res[i].mesh[33][2] - res[i].mesh[263][2];
-      if (Math.abs(eyeFacing) < 10) gestures.push({ face: i, gesture: 'facing camera' });
+      if (Math.abs(eyeFacing) < 10) gestures.push({ face: i, gesture: 'facing center' });
       else gestures.push({ face: i, gesture: `facing ${eyeFacing < 0 ? 'right' : 'left'}` });
       const openLeft = Math.abs(res[i].mesh[374][1] - res[i].mesh[386][1]) / Math.abs(res[i].mesh[443][1] - res[i].mesh[450][1]); // center of eye inner lid y coord div center of wider eye border y coord
       if (openLeft < 0.2) gestures.push({ face: i, gesture: 'blink left eye' });
@@ -53,7 +53,13 @@ export const iris = (res) => {
     const areaRight = Math.abs(sizeXRight * sizeYRight);
 
     const difference = Math.abs(areaLeft - areaRight) / Math.max(areaLeft, areaRight);
-    if (difference < 0.25) gestures.push({ iris: i, gesture: 'looking at camera' });
+    if (difference < 0.25) gestures.push({ iris: i, gesture: 'facing center' });
+
+    const rightIrisCenterX = Math.abs(res[i].mesh[33][0] - res[i].annotations.rightEyeIris[0][0]) / res[i].annotations.rightEyeIris[0][0];
+    const leftIrisCenterX = Math.abs(res[i].mesh[263][0] - res[i].annotations.leftEyeIris[0][0]) / res[i].annotations.leftEyeIris[0][0];
+    if (leftIrisCenterX > 0.025 && rightIrisCenterX > 0.025) gestures.push({ iris: i, gesture: 'looking center' });
+    else if (leftIrisCenterX > 0.025) gestures.push({ iris: i, gesture: 'looking right' });
+    else if (rightIrisCenterX > 0.025) gestures.push({ iris: i, gesture: 'looking left' });
   }
   return gestures;
 };

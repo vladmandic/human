@@ -118,7 +118,7 @@ class Menu {
 
     this.menu.appendChild(this.container);
     if (typeof parent === 'object') parent.appendChild(this.menu);
-    else document.getElementById(parent)?.appendChild(this.menu);
+    else document.getElementById(parent).appendChild(this.menu);
   }
 
   get newID() {
@@ -131,11 +131,11 @@ class Menu {
   }
 
   get width() {
-    return this.menu?.offsetWidth || 0;
+    return this.menu.offsetWidth || 0;
   }
 
   get height() {
-    return this.menu?.offsetHeight || 0;
+    return this.menu.offsetHeight || 0;
   }
 
   hide() {
@@ -203,8 +203,8 @@ class Menu {
     el.innerHTML = `<div class="menu-checkbox"><input class="menu-checkbox" type="checkbox" id="${this.newID}" ${object[variable] ? 'checked' : ''}/><label class="menu-checkbox-label" for="${this.ID}"></label></div>${title}`;
     if (this.container) this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
-      object[variable] = evt.target?.checked;
-      if (callback) callback(evt.target?.checked);
+      object[variable] = evt.target.checked;
+      if (callback) callback(evt.target.checked);
     });
     return el;
   }
@@ -223,7 +223,7 @@ class Menu {
     el.style.fontVariant = document.body.style.fontVariant;
     if (this.container) this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
-      if (callback) callback(items[evt.target?.selectedIndex]);
+      if (callback) callback(items[evt.target.selectedIndex]);
     });
     return el;
   }
@@ -235,9 +235,9 @@ class Menu {
     if (this.container) this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
       if (evt.target) {
-        object[variable] = parseInt(evt.target?.value) === parseFloat(evt.target?.value) ? parseInt(evt.target?.value) : parseFloat(evt.target?.value);
+        object[variable] = parseInt(evt.target.value) === parseFloat(evt.target.value) ? parseInt(evt.target.value) : parseFloat(evt.target.value);
         evt.target.setAttribute('value', evt.target.value);
-        if (callback) callback(evt.target?.value);
+        if (callback) callback(evt.target.value);
       }
     });
     el.input = el.children[0];

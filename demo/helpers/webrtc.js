@@ -17,18 +17,21 @@ async function webRTC(server, streamName, elementName) {
   const connection = new RTCPeerConnection();
   connection.oniceconnectionstatechange = () => log('connection', connection.iceConnectionState);
   connection.onnegotiationneeded = async () => {
-    const offer = await connection.createOffer();
-    await connection.setLocalDescription(offer);
-    const res = await fetch(`${server}/stream/receiver/${suuid}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-      body: new URLSearchParams({
-        suuid: `${suuid}`,
-        data: `${btoa(connection.localDescription?.sdp || '')}`,
-      }),
-    });
+    let offer;
+    if (connection.localDescription) {
+      offer = await connection.createOffer();
+      await connection.setLocalDescription(offer);
+      const res = await fetch(`${server}/stream/receiver/${suuid}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+        body: new URLSearchParams({
+          suuid: `${suuid}`,
+          data: `${btoa(connection.localDescription.sdp || '')}`,
+        }),
+      });
+    }
     const data = res && res.ok ? await res.text() : '';
-    if (data.length === 0) {
+    if (data.length === 0 || !offer) {
       log('cannot connect:', server);
     } else {
       connection.setRemoteDescription(new RTCSessionDescription({

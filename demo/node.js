@@ -60,18 +60,24 @@ async function detect(input) {
   } else {
     buffer = fs.readFileSync(input);
   }
+
+  // decode image using tfjs-node so we don't need external depenencies
   const decoded = human.tf.node.decodeImage(buffer);
   const casted = decoded.toFloat();
   const image = casted.expandDims(0);
   decoded.dispose();
   casted.dispose();
+
   // image shape contains image dimensions and depth
   log.state('Processing:', image.shape);
+
   // run actual detection
   const result = await human.detect(image, myConfig);
+
   // no need to print results as they are printed to console during detection from within the library due to human.config.debug set
   // dispose image tensor as we no longer need it
   image.dispose();
+
   // print data to console
   log.data('Results:');
   for (let i = 0; i < result.face.length; i++) {

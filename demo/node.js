@@ -61,46 +61,63 @@ async function detect(input) {
   }
 
   // decode image using tfjs-node so we don't need external depenencies
+  // can also be done using canvas.js or some other 3rd party image library
   const decoded = human.tf.node.decodeImage(buffer);
   const casted = decoded.toFloat();
-  const image = casted.expandDims(0);
+  const tensor = casted.expandDims(0);
   decoded.dispose();
   casted.dispose();
 
   // image shape contains image dimensions and depth
-  log.state('Processing:', image.shape);
+  log.state('Processing:', tensor.shape);
 
   // run actual detection
-  const result = await human.detect(image, myConfig);
+  const result = await human.detect(tensor, myConfig);
 
-  // no need to print results as they are printed to console during detection from within the library due to human.config.debug set
   // dispose image tensor as we no longer need it
-  image.dispose();
+  tensor.dispose();
 
   // print data to console
   log.data('Results:');
-  for (let i = 0; i < result.face.length; i++) {
-    const face = result.face[i];
-    const emotion = face.emotion.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
-    log.data(`  Face: #${i} boxConfidence:${face.boxConfidence} faceConfidence:${face.boxConfidence} age:${face.age} genderConfidence:${face.genderConfidence} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
+  if (result && result.face && result.face.length > 0) {
+    for (let i = 0; i < result.face.length; i++) {
+      const face = result.face[i];
+      const emotion = face.emotion.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
+      log.data(`  Face: #${i} boxConfidence:${face.boxConfidence} faceConfidence:${face.boxConfidence} age:${face.age} genderConfidence:${face.genderConfidence} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
+    }
   }
-  for (let i = 0; i < result.body.length; i++) {
-    const body = result.body[i];
-    log.data(`  Body: #${i} score:${body.score}`);
+  if (result && result.body && result.body.length > 0) {
+    for (let i = 0; i < result.body.length; i++) {
+      const body = result.body[i];
+      log.data(`  Body: #${i} score:${body.score}`);
+    }
+  } else {
+    log.data('  Body: N/A');
   }
-  for (let i = 0; i < result.hand.length; i++) {
-    const hand = result.hand[i];
-    log.data(`  Hand: #${i} confidence:${hand.confidence}`);
+  if (result && result.hand && result.hand.length > 0) {
+    for (let i = 0; i < result.hand.length; i++) {
+      const hand = result.hand[i];
+      log.data(`  Hand: #${i} confidence:${hand.confidence}`);
+    }
+  } else {
+    log.data('  Hand: N/A');
   }
-  for (let i = 0; i < result.gesture.length; i++) {
-    const [key, val] = Object.entries(result.gesture[i]);
-    log.data(`  Gesture: ${key[0]}#${key[1]} gesture:${val[1]}`);
+  if (result && result.gesture && result.gesture.length > 0) {
+    for (let i = 0; i < result.gesture.length; i++) {
+      const [key, val] = Object.entries(result.gesture[i]);
+      log.data(`  Gesture: ${key[0]}#${key[1]} gesture:${val[1]}`);
+    }
+  } else {
+    log.data('  Gesture: N/A');
   }
-  for (let i = 0; i < result.object.length; i++) {
-    const object = result.object[i];
-    log.data(`  Object: #${i} score:${object.score} label:${object.label}`);
+  if (result && result.object && result.object.length > 0) {
+    for (let i = 0; i < result.object.length; i++) {
+      const object = result.object[i];
+      log.data(`  Object: #${i} score:${object.score} label:${object.label}`);
+    }
+  } else {
+    log.data('  Object: N/A');
   }
-  result.face.length = 0;
   return result;
 }
 

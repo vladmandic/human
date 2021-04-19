@@ -49,7 +49,7 @@ export const options: DrawOptions = {
   labelColor: <string>'rgba(173, 216, 230, 1)', // 'lightblue' with dark alpha channel
   shadowColor: <string>'black',
   font: <string>'small-caps 16px "Segoe UI"',
-  lineHeight: <number>20,
+  lineHeight: <number>24,
   lineWidth: <number>6,
   pointSize: <number>2,
   roundRect: <number>28,

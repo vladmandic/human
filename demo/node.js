@@ -1,6 +1,7 @@
 const log = require('@vladmandic/pilogger');
 const fs = require('fs');
 const process = require('process');
+const fetch = require('node-fetch').default;
 
 // for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
 const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
@@ -49,7 +50,16 @@ async function init() {
 
 async function detect(input) {
   // read input image file and create tensor to be used for processing
-  const buffer = fs.readFileSync(input);
+  let buffer;
+  log.info('Loading image:', input);
+  if (input.startsWith('http')) {
+    const res = await fetch(input);
+    const mime = res.headers.get('content-type');
+    if (res && res.ok) buffer = await res.buffer();
+    else log.error('Invalid image URL:', input, res.status, res.statusText, mime);
+  } else {
+    buffer = fs.readFileSync(input);
+  }
   const decoded = human.tf.node.decodeImage(buffer);
   const casted = decoded.toFloat();
   const image = casted.expandDims(0);
@@ -111,7 +121,7 @@ async function main() {
   if (process.argv.length !== 3) {
     log.warn('Parameters: <input image> missing');
     await test();
-  } else if (!fs.existsSync(process.argv[2])) {
+  } else if (!fs.existsSync(process.argv[2]) && !process.argv[2].startsWith('http')) {
     log.error(`File not found: ${process.argv[2]}`);
   } else {
     await detect(process.argv[2]);

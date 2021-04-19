@@ -9,8 +9,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/04/18 mandic00@live.com
+### **HEAD -> main** 2021/04/19 mandic00@live.com
 
+- added demo load image from http
+- mobile demo optimization and iris gestures
 - full test run
 - full rebuild
 - new look

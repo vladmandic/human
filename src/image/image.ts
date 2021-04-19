@@ -14,6 +14,7 @@ let fx;
 export function process(input, config): { tensor: typeof tf.Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement } {
   let tensor;
   if (!input) throw new Error('Human: Input is missing');
+  // sanity checks since different browsers do not implement all dom elements
   if (
     !(input instanceof tf.Tensor)
     && !(typeof Image !== 'undefined' && input instanceof Image)
@@ -28,9 +29,11 @@ export function process(input, config): { tensor: typeof tf.Tensor | null, canva
     throw new Error('Human: Input type is not recognized');
   }
   if (input instanceof tf.Tensor) {
+    // if input is tensor, use as-is
     if (input.shape && input.shape.length === 4 && input.shape[0] === 1 && input.shape[3] === 3) tensor = tf.clone(input);
     else throw new Error(`Human: Input tensor shape must be [1, height, width, 3] and instead was ${input.shape}`);
   } else {
+    // check if resizing will be needed
     const originalWidth = input['naturalWidth'] || input['videoWidth'] || input['width'] || (input['shape'] && (input['shape'][1] > 0));
     const originalHeight = input['naturalHeight'] || input['videoHeight'] || input['height'] || (input['shape'] && (input['shape'][2] > 0));
     let targetWidth = originalWidth;
@@ -43,6 +46,8 @@ export function process(input, config): { tensor: typeof tf.Tensor | null, canva
       targetHeight = maxSize;
       targetWidth = targetHeight * originalWidth / originalHeight;
     }
+
+    // create our canvas and resize it if needed
     if (config.filter.width > 0) targetWidth = config.filter.width;
     else if (config.filter.height > 0) targetWidth = originalWidth * (config.filter.height / originalHeight);
     if (config.filter.height > 0) targetHeight = config.filter.height;
@@ -54,20 +59,22 @@ export function process(input, config): { tensor: typeof tf.Tensor | null, canva
       if (inCanvas?.height !== targetHeight) inCanvas.height = targetHeight;
     }
 
+    // draw input to our canvas
     const ctx = inCanvas.getContext('2d');
     if (input instanceof ImageData) {
       ctx.putImageData(input, 0, 0);
     } else {
-      if (!config.filter.flip) {
-        ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
-      } else {
+      if (config.filter.flip && typeof ctx.translate !== 'undefined') {
         ctx.translate(originalWidth, 0);
         ctx.scale(-1, 1);
         ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // resets transforms to defaults
+      } else {
+        ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
       }
     }
 
+    // imagefx transforms using gl
     if (config.filter.enabled) {
       if (!fx || !outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas?.height !== outCanvas?.height)) {
         outCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(inCanvas?.width, inCanvas?.height) : document.createElement('canvas');
@@ -118,6 +125,8 @@ export function process(input, config): { tensor: typeof tf.Tensor | null, canva
       outCanvas = inCanvas;
       if (fx) fx = null;
     }
+
+    // create tensor from image
     let pixels;
     if (outCanvas.data) { // if we have data, just convert to tensor
       const shape = [outCanvas.height, outCanvas.width, 3];

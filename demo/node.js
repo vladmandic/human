@@ -94,7 +94,7 @@ async function detect(input) {
   if (result && result.body && result.body.length > 0) {
     for (let i = 0; i < result.body.length; i++) {
       const body = result.body[i];
-      log.data(`  Body: #${i} score:${body.score}`);
+      log.data(`  Body: #${i} score:${body.score} landmarks:${body.keypoints?.length || body.landmarks?.length}`);
     }
   } else {
     log.data('  Body: N/A');

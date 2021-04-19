@@ -53,9 +53,21 @@ export function process(input, config): { tensor: typeof tf.Tensor | null, canva
       if (inCanvas?.width !== targetWidth) inCanvas.width = targetWidth;
       if (inCanvas?.height !== targetHeight) inCanvas.height = targetHeight;
     }
+
     const ctx = inCanvas.getContext('2d');
-    if (input instanceof ImageData) ctx.putImageData(input, 0, 0);
-    else ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
+    if (input instanceof ImageData) {
+      ctx.putImageData(input, 0, 0);
+    } else {
+      if (!config.filter.flip) {
+        ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
+      } else {
+        ctx.translate(originalWidth, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+      }
+    }
+
     if (config.filter.enabled) {
       if (!fx || !outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas?.height !== outCanvas?.height)) {
         outCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(inCanvas?.width, inCanvas?.height) : document.createElement('canvas');

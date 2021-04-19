@@ -2,15 +2,24 @@
 
 ## Big Ticket Items
 
-- N/A
+N/A
+
+## Exploring Features
+
+- Detect input from uri
+- Canvas.js for WASM on NodeJS
 
 ## Explore Models
 
 - InsightFace  
-  RetinaFace detector and ArcFace recognition
+  RetinaFace detector and ArcFace recognition  
   <https://github.com/deepinsight/insightface>  
+- Blazepose  
+  Needs detector before running pose to center the image
+- Efficientpose  
+  Needs detector before running pose to center the image
 
-## Issues
+## Soon to be Removed
 
-- box sizing on mobile
-- canvas.js for wasm on node
+- MobileFace based embedding
+- SSR-Net based age&gender

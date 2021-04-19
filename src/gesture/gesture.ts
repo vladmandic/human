@@ -25,7 +25,7 @@ export const face = (res) => {
     if (res[i].mesh && res[i].mesh.length > 0) {
       const eyeFacing = res[i].mesh[33][2] - res[i].mesh[263][2];
       if (Math.abs(eyeFacing) < 10) gestures.push({ face: i, gesture: 'facing center' });
-      else gestures.push({ face: i, gesture: `facing ${eyeFacing < 0 ? 'right' : 'left'}` });
+      else gestures.push({ face: i, gesture: `facing ${eyeFacing < 0 ? 'left' : 'right'}` });
       const openLeft = Math.abs(res[i].mesh[374][1] - res[i].mesh[386][1]) / Math.abs(res[i].mesh[443][1] - res[i].mesh[450][1]); // center of eye inner lid y coord div center of wider eye border y coord
       if (openLeft < 0.2) gestures.push({ face: i, gesture: 'blink left eye' });
       const openRight = Math.abs(res[i].mesh[145][1] - res[i].mesh[159][1]) / Math.abs(res[i].mesh[223][1] - res[i].mesh[230][1]); // center of eye inner lid y coord div center of wider eye border y coord

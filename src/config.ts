@@ -55,6 +55,8 @@ export interface Config {
     height: number,
     /** Return processed canvas imagedata in result */
     return: boolean,
+    /** Flip input as mirror image */
+    flip: boolean,
     /** Range: -1 (darken) to 1 (lighten) */
     brightness: number,
     /** Range: -1 (reduce contrast) to 1 (increase contrast) */
@@ -82,6 +84,8 @@ export interface Config {
     /** Range: 0 (no pixelate) to N (number of pixels to pixelate) */
     pixelate: number,
   },
+  // type definition end
+
   /** Controlls gesture detection */
   gesture: {
     enabled: boolean,
@@ -250,6 +254,7 @@ const config: Config = {
                              // if both width and height are set to 0, there is no resizing
                              // if just one is set, second one is scaled automatically
                              // if both are set, values are used as-is
+    flip: false,             // flip input as mirror image
     return: true,            // return processed canvas imagedata in result
     brightness: 0,           // range: -1 (darken) to 1 (lighten)
     contrast: 0,             // range: -1 (reduce contrast) to 1 (increase contrast)

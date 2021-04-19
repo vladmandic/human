@@ -17,6 +17,10 @@ const myConfig = {
   debug: true,
   videoOptimized: false,
   async: false,
+  filter: {
+    enabled: true,
+    flip: true,
+  },
   face: {
     enabled: true,
     detector: { enabled: true, rotation: false },
@@ -52,7 +56,7 @@ async function detect(input) {
   // read input image file and create tensor to be used for processing
   let buffer;
   log.info('Loading image:', input);
-  if (input.startsWith('http')) {
+  if (input.startsWith('http:') || input.startsWith('https:')) {
     const res = await fetch(input);
     if (res && res.ok) buffer = await res.buffer();
     else log.error('Invalid image URL:', input, res.status, res.statusText, res.headers.get('content-type'));
@@ -62,6 +66,7 @@ async function detect(input) {
 
   // decode image using tfjs-node so we don't need external depenencies
   // can also be done using canvas.js or some other 3rd party image library
+  if (!buffer) return {};
   const decoded = human.tf.node.decodeImage(buffer);
   const casted = decoded.toFloat();
   const tensor = casted.expandDims(0);

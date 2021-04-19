@@ -7,31 +7,32 @@ import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
 import webRTC from './helpers/webrtc.js';
 
-const userConfig = { backend: 'webgl' }; // add any user configuration overrides
+// const userConfig = { backend: 'webgl' }; // add any user configuration overrides
 let human;
 
-/*
 const userConfig = {
   backend: 'humangl',
   async: false,
   profile: false,
   warmup: 'full',
   videoOptimized: false,
-  filter: { enabled: false },
-  face: { enabled: false,
+  filter: {
+    enabled: true,
+    flip: true,
+  },
+  face: { enabled: true,
     mesh: { enabled: true },
     iris: { enabled: true },
-    description: { enabled: true },
-    emotion: { enabled: true },
+    description: { enabled: false },
+    emotion: { enabled: false },
   },
   hand: { enabled: false },
-  gesture: { enabled: false },
+  gesture: { enabled: true },
   body: { enabled: false },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   // body: { enabled: true, modelPath: 'efficientpose.json' },
-  object: { enabled: true },
+  // object: { enabled: true },
 };
-*/
 
 // ui options
 const ui = {

@@ -54,9 +54,8 @@ async function detect(input) {
   log.info('Loading image:', input);
   if (input.startsWith('http')) {
     const res = await fetch(input);
-    const mime = res.headers.get('content-type');
     if (res && res.ok) buffer = await res.buffer();
-    else log.error('Invalid image URL:', input, res.status, res.statusText, mime);
+    else log.error('Invalid image URL:', input, res.status, res.statusText, res.headers.get('content-type'));
   } else {
     buffer = fs.readFileSync(input);
   }

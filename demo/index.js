@@ -64,6 +64,7 @@ const ui = {
   framesDetect: 0, // internal, statistics on frames detected
   bench: true, // show gl fps benchmark window
   lastFrame: 0, // time of last frame processing
+  viewportSet: false, // internal, has custom viewport been set
 };
 
 // global variables
@@ -559,10 +560,12 @@ function setupMenu() {
 }
 
 async function resize() {
-  window.onresize = null;
   const viewportScale = Math.min(1, Math.round(100 * window.innerWidth / 960) / 100);
-  const viewport = document.querySelector('meta[name=viewport]');
-  viewport.setAttribute('content', `width=device-width, shrink-to-fit=yes, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes, initial-scale=${viewportScale}`);
+  if (!ui.viewportSet) {
+    const viewport = document.querySelector('meta[name=viewport]');
+    viewport.setAttribute('content', `width=device-width, shrink-to-fit=yes, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes, initial-scale=${viewportScale}`);
+    ui.viewportSet = true;
+  }
   const x = [`${document.getElementById('btnDisplay').offsetLeft}px`, `${document.getElementById('btnImage').offsetLeft}px`, `${document.getElementById('btnProcess').offsetLeft}px`, `${document.getElementById('btnModel').offsetLeft}px`];
 
   const top = `${document.getElementById('menubar').clientHeight - 3}px`;

@@ -52,14 +52,27 @@ export const iris = (res) => {
     const sizeYRight = res[i].annotations.rightEyeIris[4][1] - res[i].annotations.rightEyeIris[2][1];
     const areaRight = Math.abs(sizeXRight * sizeYRight);
 
+    let center = false;
     const difference = Math.abs(areaLeft - areaRight) / Math.max(areaLeft, areaRight);
-    if (difference < 0.25) gestures.push({ iris: i, gesture: 'facing center' });
+    if (difference < 0.25) {
+      center = true;
+      gestures.push({ iris: i, gesture: 'facing center' });
+    }
 
     const rightIrisCenterX = Math.abs(res[i].mesh[33][0] - res[i].annotations.rightEyeIris[0][0]) / res[i].annotations.rightEyeIris[0][0];
     const leftIrisCenterX = Math.abs(res[i].mesh[263][0] - res[i].annotations.leftEyeIris[0][0]) / res[i].annotations.leftEyeIris[0][0];
-    if (leftIrisCenterX > 0.025 && rightIrisCenterX > 0.025) gestures.push({ iris: i, gesture: 'looking center' });
-    else if (leftIrisCenterX > 0.025) gestures.push({ iris: i, gesture: 'looking right' });
-    else if (rightIrisCenterX > 0.025) gestures.push({ iris: i, gesture: 'looking left' });
+    if (leftIrisCenterX > 0.033 || rightIrisCenterX > 0.033) center = false;
+    if (leftIrisCenterX > 0.033) gestures.push({ iris: i, gesture: 'looking right' });
+    if (rightIrisCenterX > 0.033) gestures.push({ iris: i, gesture: 'looking left' });
+
+    const rightIrisCenterY = Math.abs(res[i].mesh[145][1] - res[i].annotations.rightEyeIris[0][1]) / res[i].annotations.rightEyeIris[0][1];
+    const leftIrisCenterY = Math.abs(res[i].mesh[374][1] - res[i].annotations.leftEyeIris[0][1]) / res[i].annotations.leftEyeIris[0][1];
+    if (leftIrisCenterY < 0.015 || rightIrisCenterY < 0.015 || leftIrisCenterY > 0.030 || rightIrisCenterY > 0.030) center = false;
+    if (leftIrisCenterY < 0.015 || rightIrisCenterY < 0.015) gestures.push({ iris: i, gesture: 'looking down' });
+    if (leftIrisCenterY > 0.030 || rightIrisCenterY > 0.030) gestures.push({ iris: i, gesture: 'looking up' });
+
+    // still center;
+    if (center) gestures.push({ iris: i, gesture: 'looking center' });
   }
   return gestures;
 };

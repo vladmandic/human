@@ -7,9 +7,10 @@ import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
 import webRTC from './helpers/webrtc.js';
 
-// const userConfig = { backend: 'webgl' }; // add any user configuration overrides
+const userConfig = {};
 let human;
 
+/*
 const userConfig = {
   backend: 'humangl',
   async: false,
@@ -18,7 +19,7 @@ const userConfig = {
   videoOptimized: false,
   filter: {
     enabled: true,
-    flip: true,
+    flip: false,
   },
   face: { enabled: true,
     mesh: { enabled: true },
@@ -33,6 +34,7 @@ const userConfig = {
   // body: { enabled: true, modelPath: 'efficientpose.json' },
   // object: { enabled: true },
 };
+*/
 
 // ui options
 const ui = {

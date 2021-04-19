@@ -52,6 +52,8 @@ export interface Config {
         height: number;
         /** Return processed canvas imagedata in result */
         return: boolean;
+        /** Flip input as mirror image */
+        flip: boolean;
         /** Range: -1 (darken) to 1 (lighten) */
         brightness: number;
         /** Range: -1 (reduce contrast) to 1 (increase contrast) */

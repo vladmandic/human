@@ -6,7 +6,7 @@ N/A
 
 ## Exploring Features
 
-- Detect input from uri
+- Implement built-in input handler for `http:`, `https:`, `file:`
 - Canvas.js for WASM on NodeJS
 
 ## Explore Models

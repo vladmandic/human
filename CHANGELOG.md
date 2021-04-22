@@ -9,8 +9,12 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/04/19 mandic00@live.com
+### **HEAD -> main** 2021/04/22 mandic00@live.com
 
+
+### **origin/main** 2021/04/20 mandic00@live.com
+
+- added filter.flip feature
 - added demo load image from http
 - mobile demo optimization and iris gestures
 - full test run

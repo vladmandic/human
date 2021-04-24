@@ -129,26 +129,12 @@ export interface Config {
       enabled: boolean,
       modelPath: string,
       skipFrames: number,
-    },
-    age: {
-      enabled: boolean,
-      modelPath: string,
-      skipFrames: number,
-    },
-    gender: {
-      enabled: boolean,
       minConfidence: number,
-      modelPath: string,
-      skipFrames: number,
     },
     emotion: {
       enabled: boolean,
       minConfidence: number,
       skipFrames: number,
-      modelPath: string,
-    },
-    embedding: {
-      enabled: boolean,
       modelPath: string,
     },
   },
@@ -323,6 +309,7 @@ const config: Config = {
                              // can be either absolute path or relative to modelBasePath
       skipFrames: 31,        // how many frames to go without re-running the detector
                              // only used for video inputs
+      minConfidence: 0.1,    // threshold for discarding a prediction
     },
 
     emotion: {
@@ -332,29 +319,6 @@ const config: Config = {
       modelPath: 'emotion.json',  // face emotion model
                              // can be either absolute path or relative to modelBasePath
     },
-
-    age: {
-      enabled: false,        // obsolete, replaced by description module
-      modelPath: 'age.json',  // age model
-                             // can be either absolute path or relative to modelBasePath
-      skipFrames: 33,        // how many frames to go without re-running the detector
-                             // only used for video inputs
-    },
-
-    gender: {
-      enabled: false,        // obsolete, replaced by description module
-      minConfidence: 0.1,    // threshold for discarding a prediction
-      modelPath: 'gender.json',  // gender model
-                             // can be either absolute path or relative to modelBasePath
-      skipFrames: 34,        // how many frames to go without re-running the detector
-                             // only used for video inputs
-    },
-
-    embedding: {
-      enabled: false,        // obsolete, replaced by description module
-      modelPath: 'mobileface.json',  // face descriptor model
-                             // can be either absolute path or relative to modelBasePath
-                            },
   },
 
   body: {

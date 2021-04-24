@@ -121,7 +121,7 @@ export async function predict(image, config) {
       tf.tidy(() => {
         const gender = resT.find((t) => t.shape[1] === 1).dataSync();
         const confidence = Math.trunc(200 * Math.abs((gender[0] - 0.5))) / 100;
-        if (confidence > config.face.gender.minConfidence) {
+        if (confidence > config.face.description.minConfidence) {
           obj.gender = gender[0] <= 0.5 ? 'female' : 'male';
           obj.genderConfidence = Math.min(0.99, confidence);
         }

@@ -31,7 +31,6 @@ const userConfig = {
   gesture: { enabled: true },
   body: { enabled: false },
   // body: { enabled: true, modelPath: 'blazepose.json' },
-  // body: { enabled: true, modelPath: 'efficientpose.json' },
   // object: { enabled: true },
 };
 */

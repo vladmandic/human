@@ -29,7 +29,7 @@ const userConfig = {
   },
   hand: { enabled: false },
   gesture: { enabled: true },
-  body: { enabled: false },
+  body: { enabled: true, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   // object: { enabled: true },
 };

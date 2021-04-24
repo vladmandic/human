@@ -55,7 +55,7 @@ export const options: DrawOptions = {
   roundRect: <number>28,
   drawPoints: <Boolean>false,
   drawLabels: <Boolean>true,
-  drawBoxes: <Boolean>true,
+  drawBoxes: <Boolean>false,
   drawPolygons: <Boolean>true,
   fillPolygons: <Boolean>false,
   useDepth: <Boolean>true,
@@ -253,7 +253,20 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>, draw
     // result[i].keypoints = result[i].keypoints.filter((a) => a.score > 0.5);
     if (!lastDrawnPose[i] && localOptions.bufferedOutput) lastDrawnPose[i] = { ...result[i] };
     ctx.strokeStyle = localOptions.color;
+    ctx.fillStyle = localOptions.color;
     ctx.lineWidth = localOptions.lineWidth;
+    ctx.font = localOptions.font;
+    if (localOptions.drawBoxes) {
+      rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
+      if (localOptions.drawLabels) {
+        if (localOptions.shadowColor && localOptions.shadowColor !== '') {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+      }
+    }
     if (localOptions.drawPoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
         ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + (2 * result[i].keypoints[pt].position.z)}, ${127.5 - (2 * result[i].keypoints[pt].position.z)}, 255, 0.5)` : localOptions.color;
@@ -271,7 +284,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>, draw
       if (result[i].keypoints) {
         for (const pt of result[i].keypoints) {
           ctx.fillStyle = localOptions.useDepth && pt.position.z ? `rgba(${127.5 + (2 * pt.position.z)}, ${127.5 - (2 * pt.position.z)}, 255, 0.5)` : localOptions.color;
-          ctx.fillText(`${pt.part}`, pt.position.x + 4, pt.position.y + 4);
+          ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position.x + 4, pt.position.y + 4);
         }
       }
     }

@@ -1,8 +1,2 @@
-export declare class PoseNet {
-    baseModel: any;
-    inputSize: number;
-    constructor(baseModel: any);
-    estimatePoses(input: any, config: any): Promise<unknown>;
-    dispose(): void;
-}
-export declare function load(config: any): Promise<PoseNet>;
+export declare function predict(input: any, config: any): Promise<any>;
+export declare function load(config: any): Promise<any>;

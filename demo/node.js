@@ -66,20 +66,28 @@ async function detect(input) {
   // decode image using tfjs-node so we don't need external depenencies
   // can also be done using canvas.js or some other 3rd party image library
   if (!buffer) return {};
-  const decoded = human.tf.node.decodeImage(buffer);
-  const casted = decoded.toFloat();
-  const tensor = casted.expandDims(0);
-  decoded.dispose();
-  casted.dispose();
+  const tensor = tf.tidy(() => {
+    const decode = human.tf.node.decodeImage(buffer, 3);
+    let expand;
+    if (decode.shape[2] === 4) { // input is in rgba format, need to convert to rgb
+      const channels = human.tf.split(decode, 4, 2); // tf.split(tensor, 4, 2); // split rgba to channels
+      const rgb = human.tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb and ignore alpha
+      expand = human.tf.reshape(rgb, [1, decode.shape[0], decode.shape[1], 3]); // move extra dim from the end of tensor and use it as batch number instead
+    } else {
+      expand = human.tf.expandDims(decode, 0);
+    }
+    const cast = human.tf.cast(expand, 'float32');
+    return cast;
+  });
 
   // image shape contains image dimensions and depth
-  log.state('Processing:', tensor.shape);
+  log.state('Processing:', tensor['shape']);
 
   // run actual detection
   const result = await human.detect(tensor, myConfig);
 
   // dispose image tensor as we no longer need it
-  tensor.dispose();
+  tf.dispose(tensor);
 
   // print data to console
   log.data('Results:');

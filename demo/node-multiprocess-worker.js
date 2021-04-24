@@ -28,7 +28,6 @@ const myConfig = {
   hand: {
     enabled: false,
   },
-  // body: { modelPath: 'efficientpose.json', enabled: true },
   // body: { modelPath: 'blazepose.json', enabled: true },
   body: { enabled: false },
   object: { enabled: false },

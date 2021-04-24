@@ -9,11 +9,15 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/04/24 mandic00@live.com
+
+
+### **origin/main** 2021/04/22 mandic00@live.com
+
+
 ### **1.6.1** 2021/04/22 mandic00@live.com
 
-
-### **origin/main** 2021/04/20 mandic00@live.com
-
+- add npmrc
 - added filter.flip feature
 - added demo load image from http
 - mobile demo optimization and iris gestures

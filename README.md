@@ -208,7 +208,7 @@ Default models in Human library are:
 - **Face Description**: HSE FaceRes
 - **Face Iris Analysis**: MediaPipe Iris
 - **Emotion Detection**: Oarriaga Emotion
-- **Body Analysis**: PoseNet
+- **Body Analysis**: PoseNet (AtomicBits version)
 
 Note that alternative models are provided and can be enabled via configuration  
 For example, `PoseNet` model can be switched for `BlazePose` model depending on the use case  

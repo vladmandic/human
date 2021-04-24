@@ -88,7 +88,7 @@ export class Human {
   /** Internal: Currently loaded models */
   models: {
     face: facemesh.MediaPipeFaceMesh | Model | null,
-    posenet: posenet.PoseNet | null,
+    posenet: Model | null,
     blazepose: Model | null,
     efficientpose: Model | null,
     handpose: handpose.HandPose | null,
@@ -444,14 +444,14 @@ export class Human {
       // run body: can be posenet or blazepose
       this.analyze('Start Body:');
       if (this.config.async) {
-        if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
+        if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? posenet.predict(process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes('blazepose')) bodyRes = this.config.body.enabled ? blazepose.predict(process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes('efficientpose')) bodyRes = this.config.body.enabled ? efficientpose.predict(process.tensor, this.config) : [];
         if (this.perf.body) delete this.perf.body;
       } else {
         this.state = 'run:body';
         timeStamp = now();
-        if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? await this.models.posenet?.estimatePoses(process.tensor, this.config) : [];
+        if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? await posenet.predict(process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes('blazepose')) bodyRes = this.config.body.enabled ? await blazepose.predict(process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes('efficientpose')) bodyRes = this.config.body.enabled ? await efficientpose.predict(process.tensor, this.config) : [];
         current = Math.trunc(now() - timeStamp);

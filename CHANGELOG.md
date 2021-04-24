@@ -12,8 +12,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 ### **HEAD -> main** 2021/04/24 mandic00@live.com
 
 
-### **origin/main** 2021/04/22 mandic00@live.com
+### **origin/main** 2021/04/24 mandic00@live.com
 
+- remove efficientpose
+- major version rebuild
 
 ### **1.6.1** 2021/04/22 mandic00@live.com
 

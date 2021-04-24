@@ -363,7 +363,7 @@ const config: Config = {
                              // can be either absolute path or relative to modelBasePath
                              // can be 'posenet', 'blazepose' or 'efficientpose'
                              // 'blazepose' and 'efficientpose' are experimental
-    maxDetections: 10,       // maximum number of people detected in the input
+    maxDetections: 1,        // maximum number of people detected in the input
                              // should be set to the minimum number for performance
                              // only valid for posenet as blazepose only detects single pose
     scoreThreshold: 0.3,     // threshold for deciding when to remove boxes based on score

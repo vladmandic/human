@@ -1,29 +1,31 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import * as modelBase from './modelBase';
+import * as posenetModel from './posenetModel';
 import * as decodeMultiple from './decodeMultiple';
-import * as decodePose from './decodePose';
-import * as util from './util';
+import * as decodeSingle from './decodeSingle';
+import * as util from './utils';
 
 let model;
 
 async function estimateMultiple(input, res, config, inputSize) {
+  const toTensorBuffers3D = (tensors) => Promise.all(tensors.map((tensor) => tensor.buffer()));
+
   return new Promise(async (resolve) => {
-    const allTensorBuffers = await util.toTensorBuffers3D([res.heatmapScores, res.offsets, res.displacementFwd, res.displacementBwd]);
+    const allTensorBuffers = await toTensorBuffers3D([res.heatmapScores, res.offsets, res.displacementFwd, res.displacementBwd]);
     const scoresBuffer = allTensorBuffers[0];
     const offsetsBuffer = allTensorBuffers[1];
     const displacementsFwdBuffer = allTensorBuffers[2];
     const displacementsBwdBuffer = allTensorBuffers[3];
     const poses = await decodeMultiple.decodeMultiplePoses(scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer, config.body.nmsRadius, config.body.maxDetections, config.body.scoreThreshold);
-    const scaled = util.scaleAndFlipPoses(poses, [input.shape[1], input.shape[2]], [inputSize, inputSize]);
+    const scaled = util.scalePoses(poses, [input.shape[1], input.shape[2]], [inputSize, inputSize]);
     resolve(scaled);
   });
 }
 
 async function estimateSingle(input, res, config, inputSize) {
   return new Promise(async (resolve) => {
-    const pose = await decodePose.decodeSinglePose(res.heatmapScores, res.offsets, config.body.scoreThreshold);
-    const scaled = util.scaleAndFlipPoses([pose], [input.shape[1], input.shape[2]], [inputSize, inputSize]);
+    const pose = await decodeSingle.decodeSinglePose(res.heatmapScores, res.offsets, config.body.scoreThreshold);
+    const scaled = util.scalePoses([pose], [input.shape[1], input.shape[2]], [inputSize, inputSize]);
     resolve(scaled);
   });
 }
@@ -31,15 +33,13 @@ async function estimateSingle(input, res, config, inputSize) {
 export class PoseNet {
   baseModel: any;
   inputSize: number
-  constructor(mobilenet) {
-    this.baseModel = mobilenet;
-    this.inputSize = mobilenet.model.inputs[0].shape[1];
-    if (this.inputSize < 128) this.inputSize = 257;
+  constructor(baseModel) {
+    this.baseModel = baseModel;
+    this.inputSize = baseModel.model.inputs[0].shape[1];
   }
 
   async estimatePoses(input, config) {
-    const resized = util.resizeTo(input, [this.inputSize, this.inputSize]);
-    const res = this.baseModel.predict(resized, config);
+    const res = this.baseModel.predict(input, config);
 
     const poses = (config.body.maxDetections < 2)
       ? await estimateSingle(input, res, config, this.inputSize)
@@ -49,7 +49,6 @@ export class PoseNet {
     res.offsets.dispose();
     res.displacementFwd.dispose();
     res.displacementBwd.dispose();
-    resized.dispose();
 
     return poses;
   }
@@ -65,7 +64,7 @@ export async function load(config) {
     if (!model || !model.modelUrl) log('load model failed:', config.body.modelPath);
     else if (config.debug) log('load model:', model.modelUrl);
   } else if (config.debug) log('cached model:', model.modelUrl);
-  const mobilenet = new modelBase.BaseModel(model);
+  const mobilenet = new posenetModel.BaseModel(model);
   const poseNet = new PoseNet(mobilenet);
   return poseNet;
 }

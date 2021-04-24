@@ -18,6 +18,3 @@ N/A
   Needs detector before running pose to center the image
 
 ## Soon to be Removed
-
-- MobileFace based embedding
-- SSR-Net based age&gender

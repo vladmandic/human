@@ -124,26 +124,12 @@ export interface Config {
             enabled: boolean;
             modelPath: string;
             skipFrames: number;
-        };
-        age: {
-            enabled: boolean;
-            modelPath: string;
-            skipFrames: number;
-        };
-        gender: {
-            enabled: boolean;
             minConfidence: number;
-            modelPath: string;
-            skipFrames: number;
         };
         emotion: {
             enabled: boolean;
             minConfidence: number;
             skipFrames: number;
-            modelPath: string;
-        };
-        embedding: {
-            enabled: boolean;
             modelPath: string;
         };
     };

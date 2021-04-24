@@ -81,31 +81,6 @@ async function watch() {
     .on('ready', () => log.state('Monitoring:', options.monitor));
 }
 
-// get file content for a valid url request
-/*
-function handle(url) {
-  return new Promise(async (resolve) => {
-    let obj = { ok: false, file: decodeURI(url) };
-    if (!fs.existsSync(obj.file)) {
-      resolve(obj);
-    } else {
-      obj.stat = fs.statSync(obj.file);
-      if (obj.stat.isFile()) obj.ok = true;
-      if (!obj.ok && obj.stat.isDirectory()) {
-        if (fs.existsSync(path.join(obj.file, options.defaultFile))) {
-          obj = await handle(path.join(obj.file, options.defaultFile));
-        } else if (fs.existsSync(path.join(obj.file, options.defaultFolder, options.defaultFile))) {
-          obj = await handle(path.join(obj.file, options.defaultFolder, options.defaultFile));
-        } else {
-        obj.ok = obj.stat.isDirectory();
-        }
-      }
-      resolve(obj);
-    }
-  });
-}
-*/
-
 function handle(url) {
   url = url.split(/[?#]/)[0];
   const result = { ok: false, stat: {}, file: '' };
@@ -159,20 +134,26 @@ async function httpRequest(req, res) {
         const accept = req.headers['accept-encoding'] ? req.headers['accept-encoding'].includes('br') : false; // does target accept brotli compressed data
         res.writeHead(200, {
           // 'Content-Length': result.stat.size, // not using as it's misleading for compressed streams
-          'Content-Language': 'en', 'Content-Type': contentType, 'Content-Encoding': accept ? 'br' : '', 'Last-Modified': result.stat.mtime, 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff',
+          'Content-Language': 'en',
+          'Content-Type': contentType,
+          'Content-Encoding': accept ? 'br' : '',
+          'Last-Modified': result.stat.mtime,
+          'Cache-Control': 'no-cache',
+          'X-Content-Type-Options': 'nosniff',
+          'Cross-Origin-Embedder-Policy': 'require-corp',
+          'Cross-Origin-Opener-Policy': 'same-origin',
         });
         const compress = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 5 } }); // instance of brotli compression with level 5
         const stream = fs.createReadStream(result.file);
         if (!accept) stream.pipe(res); // don't compress data
         else stream.pipe(compress).pipe(res); // compress data
 
-        // alternative methods of sending data
-        /// 2. read stream and send by chunk
+        /// alternative #2 read stream and send by chunk
         // const stream = fs.createReadStream(result.file);
         // stream.on('data', (chunk) => res.write(chunk));
         // stream.on('end', () => res.end());
 
-        // 3. read entire file and send it as blob
+        // alternative #3 read entire file and send it as blob
         // const data = fs.readFileSync(result.file);
         // res.write(data);
         log.data(`${req.method}/${req.httpVersion}`, res.statusCode, contentType, result.stat.size, req.url, ip);

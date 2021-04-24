@@ -1,9 +1,6 @@
 import { log, now } from './helpers';
 import * as tf from '../dist/tfjs.esm.js';
-import * as age from './age/age';
-import * as gender from './gender/gender';
 import * as emotion from './emotion/emotion';
-import * as embedding from './embedding/embedding';
 import * as faceres from './faceres/faceres';
 
 type Tensor = typeof tf.Tensor;
@@ -147,28 +144,6 @@ export const detectFace = async (parent, input): Promise<any> => {
 
     const rotation = calculateFaceAngle(face, [input.shape[2], input.shape[1]]);
 
-    // run age, inherits face from blazeface
-    parent.analyze('Start Age:');
-    if (parent.config.async) {
-      ageRes = parent.config.face.age.enabled ? age.predict(face.image, parent.config) : {};
-    } else {
-      parent.state = 'run:age';
-      timeStamp = now();
-      ageRes = parent.config.face.age.enabled ? await age.predict(face.image, parent.config) : {};
-      parent.perf.age = Math.trunc(now() - timeStamp);
-    }
-
-    // run gender, inherits face from blazeface
-    parent.analyze('Start Gender:');
-    if (parent.config.async) {
-      genderRes = parent.config.face.gender.enabled ? gender.predict(face.image, parent.config) : {};
-    } else {
-      parent.state = 'run:gender';
-      timeStamp = now();
-      genderRes = parent.config.face.gender.enabled ? await gender.predict(face.image, parent.config) : {};
-      parent.perf.gender = Math.trunc(now() - timeStamp);
-    }
-
     // run emotion, inherits face from blazeface
     parent.analyze('Start Emotion:');
     if (parent.config.async) {
@@ -180,18 +155,6 @@ export const detectFace = async (parent, input): Promise<any> => {
       parent.perf.emotion = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Emotion:');
-
-    // run emotion, inherits face from blazeface
-    parent.analyze('Start Embedding:');
-    if (parent.config.async) {
-      embeddingRes = parent.config.face.embedding.enabled ? embedding.predict(face, parent.config) : [];
-    } else {
-      parent.state = 'run:embedding';
-      timeStamp = now();
-      embeddingRes = parent.config.face.embedding.enabled ? await embedding.predict(face, parent.config) : [];
-      parent.perf.embedding = Math.trunc(now() - timeStamp);
-    }
-    parent.analyze('End Embedding:');
 
     // run emotion, inherits face from blazeface
     parent.analyze('Start Description:');
@@ -226,10 +189,10 @@ export const detectFace = async (parent, input): Promise<any> => {
     // combine results
     faceRes.push({
       ...face,
-      age: descRes.age || ageRes.age,
-      gender: descRes.gender || genderRes.gender,
-      genderConfidence: descRes.genderConfidence || genderRes.confidence,
-      embedding: descRes.descriptor || embeddingRes,
+      age: descRes.age,
+      gender: descRes.gender,
+      genderConfidence: descRes.genderConfidence,
+      embedding: descRes.descriptor,
       emotion: emotionRes,
       iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
       rotation,

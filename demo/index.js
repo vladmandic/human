@@ -505,12 +505,10 @@ function setupMenu() {
   menu.process.addRange('skip frames', human.config.face.detector, 'skipFrames', 0, 50, 1, (val) => {
     human.config.face.detector.skipFrames = parseInt(val);
     human.config.face.emotion.skipFrames = parseInt(val);
-    human.config.face.age.skipFrames = parseInt(val);
     human.config.hand.skipFrames = parseInt(val);
   });
   menu.process.addRange('min confidence', human.config.face.detector, 'minConfidence', 0.0, 1.0, 0.05, (val) => {
     human.config.face.detector.minConfidence = parseFloat(val);
-    human.config.face.gender.minConfidence = parseFloat(val);
     human.config.face.emotion.minConfidence = parseFloat(val);
     human.config.hand.minConfidence = parseFloat(val);
   });
@@ -536,9 +534,7 @@ function setupMenu() {
   menu.models.addBool('face detect', human.config.face, 'enabled', (val) => human.config.face.enabled = val);
   menu.models.addBool('face mesh', human.config.face.mesh, 'enabled', (val) => human.config.face.mesh.enabled = val);
   menu.models.addBool('face iris', human.config.face.iris, 'enabled', (val) => human.config.face.iris.enabled = val);
-  menu.models.addBool('face description', human.config.face.description, 'enabled', (val) => human.config.face.age.description = val);
-  // menu.models.addBool('face age', human.config.face.age, 'enabled', (val) => human.config.face.age.enabled = val);
-  // menu.models.addBool('face gender', human.config.face.gender, 'enabled', (val) => human.config.face.gender.enabled = val);
+  menu.models.addBool('face description', human.config.face.description, 'enabled', (val) => human.config.face.description.enabled = val);
   menu.models.addBool('face emotion', human.config.face.emotion, 'enabled', (val) => human.config.face.emotion.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.models.addBool('body pose', human.config.body, 'enabled', (val) => human.config.body.enabled = val);

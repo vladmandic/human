@@ -1,7 +1,5 @@
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
-import * as age from './age/age';
-import * as gender from './gender/gender';
 import * as faceres from './faceres/faceres';
 import * as emotion from './emotion/emotion';
 import * as posenet from './posenet/posenet';
@@ -91,8 +89,6 @@ export declare class Human {
     /** Internal: Currently loaded classes */
     classes: {
         facemesh: typeof facemesh;
-        age: typeof age;
-        gender: typeof gender;
         emotion: typeof emotion;
         body: typeof posenet | typeof blazepose;
         hand: typeof handpose;

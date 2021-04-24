@@ -16,8 +16,6 @@ N/A
   <https://github.com/deepinsight/insightface>  
 - Blazepose  
   Needs detector before running pose to center the image
-- Efficientpose  
-  Needs detector before running pose to center the image
 
 ## Soon to be Removed
 

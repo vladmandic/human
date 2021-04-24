@@ -140,8 +140,6 @@ async function test(Human, inputConfig) {
   log('info', 'test body variants');
   config.body = { modelPath: 'posenet.json', enabled: true };
   await testDetect(human, 'assets/human-sample-body.jpg', 'posenet');
-  config.body = { modelPath: 'efficientpose.json', enabled: true };
-  await testDetect(human, 'assets/human-sample-body.jpg', 'efficientpose');
   config.body = { modelPath: 'blazepose.json', enabled: true };
   await testDetect(human, 'assets/human-sample-body.jpg', 'blazepose');
 

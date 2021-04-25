@@ -73,11 +73,11 @@ export declare class Human {
     };
     /** Internal: Currently loaded models */
     models: {
-        face: facemesh.MediaPipeFaceMesh | Model | null;
+        face: [Model, Model, Model] | null;
         posenet: Model | null;
         blazepose: Model | null;
         efficientpose: Model | null;
-        handpose: handpose.HandPose | null;
+        handpose: [Model, Model] | null;
         iris: Model | null;
         age: Model | null;
         gender: Model | null;

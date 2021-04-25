@@ -19,3 +19,4 @@ export declare function buildRotationMatrix(rotation: any, center: any): number[
 export declare function invertTransformMatrix(matrix: any): any[][];
 export declare function rotatePoint(homogeneousCoordinate: any, rotationMatrix: any): number[];
 export declare function xyDistanceBetweenPoints(a: any, b: any): number;
+export declare function generateAnchors(inputSize: any): [number, number][];

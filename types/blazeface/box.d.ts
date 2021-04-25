@@ -15,3 +15,14 @@ export declare function squarifyBox(box: any): {
     endPoint: any[];
     landmarks: any;
 };
+export declare function calculateLandmarksBoundingBox(landmarks: any): {
+    startPoint: number[];
+    endPoint: number[];
+    landmarks: any;
+};
+export declare const disposeBox: (t: any) => void;
+export declare const createBox: (startEndTensor: any) => {
+    startEndTensor: any;
+    startPoint: any;
+    endPoint: any;
+};

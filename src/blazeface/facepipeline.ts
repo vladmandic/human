@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import * as tf from '../../dist/tfjs.esm.js';
 import * as bounding from './box';
 import * as util from './util';
@@ -97,6 +96,7 @@ export class Pipeline {
     ]));
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getLeftToRightEyeDepthDifference(rawCoords) {
     const leftEyeZ = rawCoords[eyeLandmarks.leftBounds[0]][2];
     const rightEyeZ = rawCoords[eyeLandmarks.rightBounds[0]][2];
@@ -105,7 +105,7 @@ export class Pipeline {
 
   // Returns a box describing a cropped region around the eye fit for passing to the iris model.
   getEyeBox(rawCoords, face, eyeInnerCornerIndex, eyeOuterCornerIndex, flip = false) {
-    const box = bounding.squarifyBox(bounding.enlargeBox(this.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), this.irisEnlarge));
+    const box = bounding.squarifyBox(bounding.enlargeBox(bounding.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), this.irisEnlarge));
     const boxSize = bounding.getBoxSize(box);
     let crop = tf.image.cropAndResize(face, [[
       box.startPoint[1] / this.meshSize,
@@ -134,6 +134,7 @@ export class Pipeline {
   }
 
   // The z-coordinates returned for the iris are unreliable, so we take the z values from the surrounding keypoints.
+  // eslint-disable-next-line class-methods-use-this
   getAdjustedIrisCoords(rawCoords, irisCoords, direction) {
     const upperCenterZ = rawCoords[coords.MESH_ANNOTATIONS[`${direction}EyeUpper0`][irisLandmarks.upperCenter]][2];
     const lowerCenterZ = rawCoords[coords.MESH_ANNOTATIONS[`${direction}EyeLower0`][irisLandmarks.lowerCenter]][2];
@@ -265,7 +266,7 @@ export class Pipeline {
 
       // override box from detection with one calculated from mesh
       const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
-      box = bounding.enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData), 1.5); // redefine box with mesh calculated one
+      box = bounding.enlargeBox(bounding.calculateLandmarksBoundingBox(transformedCoordsData), 1.5); // redefine box with mesh calculated one
       const transformedCoords = tf.tensor2d(transformedCoordsData);
 
       // do rotation one more time with mesh keypoints if we want to return perfect image
@@ -301,13 +302,5 @@ export class Pipeline {
     this.detectedFaces = results.length;
 
     return results;
-  }
-
-  calculateLandmarksBoundingBox(landmarks) {
-    const xs = landmarks.map((d) => d[0]);
-    const ys = landmarks.map((d) => d[1]);
-    const startPoint = [Math.min(...xs), Math.min(...ys)];
-    const endPoint = [Math.max(...xs), Math.max(...ys)];
-    return { startPoint, endPoint, landmarks };
   }
 }

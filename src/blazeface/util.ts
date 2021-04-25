@@ -87,3 +87,24 @@ export function rotatePoint(homogeneousCoordinate, rotationMatrix) {
 export function xyDistanceBetweenPoints(a, b) {
   return Math.sqrt(((a[0] - b[0]) ** 2) + ((a[1] - b[1]) ** 2));
 }
+
+export function generateAnchors(inputSize) {
+  const spec = { strides: [inputSize / 16, inputSize / 8], anchors: [2, 6] };
+  const anchors: Array<[number, number]> = [];
+  for (let i = 0; i < spec.strides.length; i++) {
+    const stride = spec.strides[i];
+    const gridRows = Math.floor((inputSize + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize + stride - 1) / stride);
+    const anchorsNum = spec.anchors[i];
+    for (let gridY = 0; gridY < gridRows; gridY++) {
+      const anchorY = stride * (gridY + 0.5);
+      for (let gridX = 0; gridX < gridCols; gridX++) {
+        const anchorX = stride * (gridX + 0.5);
+        for (let n = 0; n < anchorsNum; n++) {
+          anchors.push([anchorX, anchorY]);
+        }
+      }
+    }
+  }
+  return anchors;
+}

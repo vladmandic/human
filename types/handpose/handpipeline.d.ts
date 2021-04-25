@@ -5,7 +5,7 @@ export declare class HandPipeline {
     storedBoxes: any;
     skipped: number;
     detectedHands: number;
-    constructor(handDetector: any, landmarkDetector: any, inputSize: any);
+    constructor(handDetector: any, landmarkDetector: any);
     getBoxForPalmLandmarks(palmLandmarks: any, rotationMatrix: any): {
         startPoint: number[];
         endPoint: any[];

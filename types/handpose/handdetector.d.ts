@@ -5,7 +5,7 @@ export declare class HandDetector {
     inputSize: number;
     inputSizeTensor: any;
     doubleInputSizeTensor: any;
-    constructor(model: any, inputSize: any, anchorsAnnotated: any);
+    constructor(model: any);
     normalizeBoxes(boxes: any): any;
     normalizeLandmarks(rawPalmLandmarks: any, index: any): any;
     getBoxes(input: any, config: any): Promise<{

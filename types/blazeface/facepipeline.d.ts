@@ -27,9 +27,4 @@ export declare class Pipeline {
     };
     getAdjustedIrisCoords(rawCoords: any, irisCoords: any, direction: any): any;
     predict(input: any, config: any): Promise<any>;
-    calculateLandmarksBoundingBox(landmarks: any): {
-        startPoint: number[];
-        endPoint: number[];
-        landmarks: any;
-    };
 }

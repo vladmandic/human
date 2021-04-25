@@ -199,508 +199,78 @@ function register() {
   }
 }
 
-// src/emotion/emotion.ts
-var emotion_exports = {};
-__export(emotion_exports, {
-  load: () => load,
-  predict: () => predict
-});
-var tf2 = __toModule(require_tfjs_esm());
-var annotations = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
-var model;
-var last = [];
-var skipped = Number.MAX_SAFE_INTEGER;
-var rgb = [0.2989, 0.587, 0.114];
-async function load(config3) {
-  if (!model) {
-    model = await tf2.loadGraphModel(join(config3.modelBasePath, config3.face.emotion.modelPath));
-    if (!model || !model.modelUrl)
-      log("load model failed:", config3.face.emotion.modelPath);
-    else if (config3.debug)
-      log("load model:", model.modelUrl);
-  } else if (config3.debug)
-    log("cached model:", model.modelUrl);
-  return model;
-}
-async function predict(image11, config3) {
-  if (!model)
-    return null;
-  if (skipped < config3.face.emotion.skipFrames && config3.videoOptimized && last.length > 0) {
-    skipped++;
-    return last;
-  }
-  if (config3.videoOptimized)
-    skipped = 0;
-  else
-    skipped = Number.MAX_SAFE_INTEGER;
-  return new Promise(async (resolve) => {
-    const resize = tf2.image.resizeBilinear(image11, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
-    const [red, green, blue] = tf2.split(resize, 3, 3);
-    resize.dispose();
-    const redNorm = tf2.mul(red, rgb[0]);
-    const greenNorm = tf2.mul(green, rgb[1]);
-    const blueNorm = tf2.mul(blue, rgb[2]);
-    red.dispose();
-    green.dispose();
-    blue.dispose();
-    const grayscale = tf2.addN([redNorm, greenNorm, blueNorm]);
-    redNorm.dispose();
-    greenNorm.dispose();
-    blueNorm.dispose();
-    const normalize = tf2.tidy(() => grayscale.sub(0.5).mul(2));
-    grayscale.dispose();
-    const obj = [];
-    if (config3.face.emotion.enabled) {
-      const emotionT = await model.predict(normalize);
-      const data = emotionT.dataSync();
-      tf2.dispose(emotionT);
-      for (let i = 0; i < data.length; i++) {
-        if (data[i] > config3.face.emotion.minConfidence)
-          obj.push({score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i]});
-      }
-      obj.sort((a, b) => b.score - a.score);
-    }
-    normalize.dispose();
-    last = obj;
-    resolve(obj);
-  });
-}
-
-// src/faceres/faceres.ts
-var faceres_exports = {};
-__export(faceres_exports, {
-  enhance: () => enhance,
-  load: () => load2,
-  match: () => match,
-  predict: () => predict2,
-  similarity: () => similarity
-});
-var tf3 = __toModule(require_tfjs_esm());
-var model2;
-var last2 = {age: 0};
-var skipped2 = Number.MAX_SAFE_INTEGER;
-async function load2(config3) {
-  if (!model2) {
-    model2 = await tf3.loadGraphModel(join(config3.modelBasePath, config3.face.description.modelPath));
-    if (!model2 || !model2.modelUrl)
-      log("load model failed:", config3.face.description.modelPath);
-    else if (config3.debug)
-      log("load model:", model2.modelUrl);
-  } else if (config3.debug)
-    log("cached model:", model2.modelUrl);
-  return model2;
-}
-function similarity(embedding1, embedding2, order = 2) {
-  if (!embedding1 || !embedding2)
-    return 0;
-  if ((embedding1 == null ? void 0 : embedding1.length) === 0 || (embedding2 == null ? void 0 : embedding2.length) === 0)
-    return 0;
-  if ((embedding1 == null ? void 0 : embedding1.length) !== (embedding2 == null ? void 0 : embedding2.length))
-    return 0;
-  const distance = 5 * embedding1.map((val, i) => Math.abs(embedding1[i] - embedding2[i]) ** order).reduce((sum, now2) => sum + now2, 0) ** (1 / order);
-  const res = Math.max(0, 100 - distance) / 100;
-  return res;
-}
-function match(embedding, db, threshold = 0) {
-  let best = {similarity: 0, name: "", source: "", embedding: []};
-  if (!embedding || !db || !Array.isArray(embedding) || !Array.isArray(db))
-    return best;
-  for (const f of db) {
-    if (f.embedding && f.name) {
-      const perc = similarity(embedding, f.embedding);
-      if (perc > threshold && perc > best.similarity)
-        best = {...f, similarity: perc};
-    }
-  }
-  return best;
-}
-function enhance(input) {
-  const image11 = tf3.tidy(() => {
-    const tensor = input.image || input.tensor || input;
-    if (!(tensor instanceof tf3.Tensor))
-      return null;
-    const box3 = [[0.05, 0.15, 0.85, 0.85]];
-    const crop = tensor.shape.length === 3 ? tf3.image.cropAndResize(tf3.expandDims(tensor, 0), box3, [0], [model2.inputs[0].shape[2], model2.inputs[0].shape[1]]) : tf3.image.cropAndResize(tensor, box3, [0], [model2.inputs[0].shape[2], model2.inputs[0].shape[1]]);
-    const norm = crop.mul(255);
-    return norm;
-  });
-  return image11;
-}
-async function predict2(image11, config3) {
-  if (!model2)
-    return null;
-  if (skipped2 < config3.face.description.skipFrames && config3.videoOptimized && last2.age && last2.age > 0) {
-    skipped2++;
-    return last2;
-  }
-  if (config3.videoOptimized)
-    skipped2 = 0;
-  else
-    skipped2 = Number.MAX_SAFE_INTEGER;
-  return new Promise(async (resolve) => {
-    const enhanced = enhance(image11);
-    let resT;
-    const obj = {
-      age: 0,
-      gender: "unknown",
-      genderConfidence: 0,
-      descriptor: []
-    };
-    if (config3.face.description.enabled)
-      resT = await model2.predict(enhanced);
-    tf3.dispose(enhanced);
-    if (resT) {
-      tf3.tidy(() => {
-        const gender = resT.find((t) => t.shape[1] === 1).dataSync();
-        const confidence = Math.trunc(200 * Math.abs(gender[0] - 0.5)) / 100;
-        if (confidence > config3.face.description.minConfidence) {
-          obj.gender = gender[0] <= 0.5 ? "female" : "male";
-          obj.genderConfidence = Math.min(0.99, confidence);
-        }
-        const age = resT.find((t) => t.shape[1] === 100).argMax(1).dataSync()[0];
-        const all2 = resT.find((t) => t.shape[1] === 100).dataSync();
-        obj.age = Math.round(all2[age - 1] > all2[age + 1] ? 10 * age - 100 * all2[age - 1] : 10 * age + 100 * all2[age + 1]) / 10;
-        const desc = resT.find((t) => t.shape[1] === 1024);
-        obj.descriptor = [...desc.dataSync()];
-      });
-      resT.forEach((t) => tf3.dispose(t));
-    }
-    last2 = obj;
-    resolve(obj);
-  });
-}
-
-// src/faceall.ts
-var calculateFaceAngle = (face4, image_size) => {
-  const degrees = (theta) => theta * 180 / Math.PI;
-  const normalize = (v) => {
-    const length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-    v[0] /= length;
-    v[1] /= length;
-    v[2] /= length;
-    return v;
-  };
-  const subVectors = (a, b) => {
-    const x = a[0] - b[0];
-    const y = a[1] - b[1];
-    const z = a[2] - b[2];
-    return [x, y, z];
-  };
-  const crossVectors = (a, b) => {
-    const x = a[1] * b[2] - a[2] * b[1];
-    const y = a[2] * b[0] - a[0] * b[2];
-    const z = a[0] * b[1] - a[1] * b[0];
-    return [x, y, z];
-  };
-  const rotationMatrixToEulerAngle = (r) => {
-    const [r00, r01, r02, r10, r11, r12, r20, r21, r22] = r;
-    let thetaX;
-    let thetaY;
-    let thetaZ;
-    if (r10 < 1) {
-      if (r10 > -1) {
-        thetaZ = Math.asin(r10);
-        thetaY = Math.atan2(-r20, r00);
-        thetaX = Math.atan2(-r12, r11);
-      } else {
-        thetaZ = -Math.PI / 2;
-        thetaY = -Math.atan2(r21, r22);
-        thetaX = 0;
-      }
-    } else {
-      thetaZ = Math.PI / 2;
-      thetaY = Math.atan2(r21, r22);
-      thetaX = 0;
-    }
-    return {pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ};
-  };
-  const meshToEulerAngle = (mesh2) => {
-    const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
-    const angle2 = {
-      pitch: radians(mesh2[10][1], mesh2[10][2], mesh2[152][1], mesh2[152][2]),
-      yaw: radians(mesh2[33][0], mesh2[33][2], mesh2[263][0], mesh2[263][2]),
-      roll: radians(mesh2[33][0], mesh2[33][1], mesh2[263][0], mesh2[263][1])
-    };
-    return angle2;
-  };
-  const mesh = face4.meshRaw;
-  if (!mesh || mesh.length < 300)
-    return {angle: {pitch: 0, yaw: 0, roll: 0}, matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1]};
-  const size = Math.max(face4.boxRaw[2] * image_size[0], face4.boxRaw[3] * image_size[1]) / 1.5;
-  const pts = [mesh[10], mesh[152], mesh[234], mesh[454]].map((pt) => [
-    pt[0] * image_size[0] / size,
-    pt[1] * image_size[1] / size,
-    pt[2]
-  ]);
-  const y_axis = normalize(subVectors(pts[1], pts[0]));
-  let x_axis = normalize(subVectors(pts[3], pts[2]));
-  const z_axis = normalize(crossVectors(x_axis, y_axis));
-  x_axis = crossVectors(y_axis, z_axis);
-  const matrix = [
-    x_axis[0],
-    x_axis[1],
-    x_axis[2],
-    y_axis[0],
-    y_axis[1],
-    y_axis[2],
-    z_axis[0],
-    z_axis[1],
-    z_axis[2]
-  ];
-  const angle = rotationMatrixToEulerAngle(matrix);
-  return {angle, matrix};
-};
-var detectFace = async (parent, input) => {
-  var _a, _b, _c, _d, _e, _f, _g;
-  let timeStamp;
-  let ageRes;
-  let genderRes;
-  let emotionRes;
-  let embeddingRes;
-  let descRes;
-  const faceRes = [];
-  parent.state = "run:face";
-  timeStamp = now();
-  const faces = await ((_a = parent.models.face) == null ? void 0 : _a.estimateFaces(input, parent.config));
-  parent.perf.face = Math.trunc(now() - timeStamp);
-  if (!faces)
-    return [];
-  for (const face4 of faces) {
-    parent.analyze("Get Face");
-    if (!face4.image || face4.image.isDisposedInternal) {
-      log("Face object is disposed:", face4.image);
-      continue;
-    }
-    const rotation = calculateFaceAngle(face4, [input.shape[2], input.shape[1]]);
-    parent.analyze("Start Emotion:");
-    if (parent.config.async) {
-      emotionRes = parent.config.face.emotion.enabled ? predict(face4.image, parent.config) : {};
-    } else {
-      parent.state = "run:emotion";
-      timeStamp = now();
-      emotionRes = parent.config.face.emotion.enabled ? await predict(face4.image, parent.config) : {};
-      parent.perf.emotion = Math.trunc(now() - timeStamp);
-    }
-    parent.analyze("End Emotion:");
-    parent.analyze("Start Description:");
-    if (parent.config.async) {
-      descRes = parent.config.face.description.enabled ? predict2(face4, parent.config) : [];
-    } else {
-      parent.state = "run:description";
-      timeStamp = now();
-      descRes = parent.config.face.description.enabled ? await predict2(face4.image, parent.config) : [];
-      parent.perf.embedding = Math.trunc(now() - timeStamp);
-    }
-    parent.analyze("End Description:");
-    if (parent.config.async) {
-      [ageRes, genderRes, emotionRes, embeddingRes, descRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes]);
-    }
-    parent.analyze("Finish Face:");
-    if (!parent.config.face.iris.enabled && ((_b = face4 == null ? void 0 : face4.annotations) == null ? void 0 : _b.leftEyeIris) && ((_c = face4 == null ? void 0 : face4.annotations) == null ? void 0 : _c.rightEyeIris)) {
-      delete face4.annotations.leftEyeIris;
-      delete face4.annotations.rightEyeIris;
-    }
-    const irisSize = ((_d = face4.annotations) == null ? void 0 : _d.leftEyeIris) && ((_e = face4.annotations) == null ? void 0 : _e.rightEyeIris) ? 11.7 * Math.max(Math.abs(face4.annotations.leftEyeIris[3][0] - face4.annotations.leftEyeIris[1][0]), Math.abs(face4.annotations.rightEyeIris[4][1] - face4.annotations.rightEyeIris[2][1])) : 0;
-    faceRes.push({
-      ...face4,
-      age: descRes.age,
-      gender: descRes.gender,
-      genderConfidence: descRes.genderConfidence,
-      embedding: descRes.descriptor,
-      emotion: emotionRes,
-      iris: irisSize !== 0 ? Math.trunc(irisSize) / 100 : 0,
-      rotation,
-      tensor: parent.config.face.detector.return ? (_f = face4.image) == null ? void 0 : _f.squeeze() : null
-    });
-    (_g = face4.image) == null ? void 0 : _g.dispose();
-    parent.analyze("End Face");
-  }
-  parent.analyze("End FaceMesh:");
-  if (parent.config.async) {
-    if (parent.perf.face)
-      delete parent.perf.face;
-    if (parent.perf.age)
-      delete parent.perf.age;
-    if (parent.perf.gender)
-      delete parent.perf.gender;
-    if (parent.perf.emotion)
-      delete parent.perf.emotion;
-  }
-  return faceRes;
-};
-
 // src/blazeface/facemesh.ts
 var facemesh_exports = {};
 __export(facemesh_exports, {
-  MediaPipeFaceMesh: () => MediaPipeFaceMesh,
-  load: () => load4,
+  load: () => load2,
+  predict: () => predict,
   triangulation: () => triangulation,
   uvmap: () => uvmap
 });
-var tf7 = __toModule(require_tfjs_esm());
+var tf5 = __toModule(require_tfjs_esm());
 
 // src/blazeface/blazeface.ts
-var tf4 = __toModule(require_tfjs_esm());
-var NUM_LANDMARKS = 6;
-function generateAnchors(inputSize) {
-  const spec = {strides: [inputSize / 16, inputSize / 8], anchors: [2, 6]};
-  const anchors3 = [];
-  for (let i = 0; i < spec.strides.length; i++) {
-    const stride = spec.strides[i];
-    const gridRows = Math.floor((inputSize + stride - 1) / stride);
-    const gridCols = Math.floor((inputSize + stride - 1) / stride);
-    const anchorsNum = spec.anchors[i];
-    for (let gridY = 0; gridY < gridRows; gridY++) {
-      const anchorY = stride * (gridY + 0.5);
-      for (let gridX = 0; gridX < gridCols; gridX++) {
-        const anchorX = stride * (gridX + 0.5);
-        for (let n = 0; n < anchorsNum; n++) {
-          anchors3.push([anchorX, anchorY]);
-        }
-      }
-    }
-  }
-  return anchors3;
-}
-var createBox = (startEndTensor) => ({
-  startEndTensor,
-  startPoint: tf4.slice(startEndTensor, [0, 0], [-1, 2]),
-  endPoint: tf4.slice(startEndTensor, [0, 2], [-1, 2])
-});
-function decodeBounds(boxOutputs, anchors3, inputSize) {
-  const boxStarts = tf4.slice(boxOutputs, [0, 1], [-1, 2]);
-  const centers = tf4.add(boxStarts, anchors3);
-  const boxSizes = tf4.slice(boxOutputs, [0, 3], [-1, 2]);
-  const boxSizesNormalized = tf4.div(boxSizes, inputSize);
-  const centersNormalized = tf4.div(centers, inputSize);
-  const halfBoxSize = tf4.div(boxSizesNormalized, 2);
-  const starts = tf4.sub(centersNormalized, halfBoxSize);
-  const ends = tf4.add(centersNormalized, halfBoxSize);
-  const startNormalized = tf4.mul(starts, inputSize);
-  const endNormalized = tf4.mul(ends, inputSize);
-  const concatAxis = 1;
-  return tf4.concat2d([startNormalized, endNormalized], concatAxis);
-}
-var BlazeFaceModel = class {
-  constructor(model6, config3) {
-    this.model = model6;
-    this.anchorsData = generateAnchors(model6.inputs[0].shape[1]);
-    this.anchors = tf4.tensor2d(this.anchorsData);
-    this.inputSize = model6.inputs[0].shape[2];
-    this.config = config3;
-  }
-  async getBoundingBoxes(inputImage) {
-    if (!inputImage || inputImage.isDisposedInternal || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
-      return null;
-    const [batch, boxes, scores] = tf4.tidy(() => {
-      const resizedImage = inputImage.resizeBilinear([this.inputSize, this.inputSize]);
-      const normalizedImage = resizedImage.div(127.5).sub(0.5);
-      const batchedPrediction = this.model.predict(normalizedImage);
-      let batchOut;
-      if (Array.isArray(batchedPrediction)) {
-        const sorted = batchedPrediction.sort((a, b) => a.size - b.size);
-        const concat384 = tf4.concat([sorted[0], sorted[2]], 2);
-        const concat512 = tf4.concat([sorted[1], sorted[3]], 2);
-        const concat3 = tf4.concat([concat512, concat384], 1);
-        batchOut = concat3.squeeze(0);
-      } else {
-        batchOut = batchedPrediction.squeeze();
-      }
-      const boxesOut = decodeBounds(batchOut, this.anchors, [this.inputSize, this.inputSize]);
-      const logits = tf4.slice(batchOut, [0, 0], [-1, 1]);
-      const scoresOut = tf4.sigmoid(logits).squeeze();
-      return [batchOut, boxesOut, scoresOut];
-    });
-    const boxIndicesTensor = await tf4.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
-    const boxIndices = boxIndicesTensor.arraySync();
-    boxIndicesTensor.dispose();
-    const boundingBoxesMap = boxIndices.map((boxIndex) => tf4.slice(boxes, [boxIndex, 0], [1, -1]));
-    const boundingBoxes = boundingBoxesMap.map((boundingBox) => {
-      const vals = boundingBox.arraySync();
-      boundingBox.dispose();
-      return vals;
-    });
-    const scoresVal = scores.dataSync();
-    const annotatedBoxes = [];
-    for (let i = 0; i < boundingBoxes.length; i++) {
-      const boxIndex = boxIndices[i];
-      const confidence = scoresVal[boxIndex];
-      if (confidence > this.config.face.detector.minConfidence) {
-        const box3 = createBox(boundingBoxes[i]);
-        const anchor = this.anchorsData[boxIndex];
-        const landmarks = tf4.tidy(() => tf4.slice(batch, [boxIndex, NUM_LANDMARKS - 1], [1, -1]).squeeze().reshape([NUM_LANDMARKS, -1]));
-        annotatedBoxes.push({box: box3, landmarks, anchor, confidence});
-      }
-    }
-    batch.dispose();
-    boxes.dispose();
-    scores.dispose();
-    return {
-      boxes: annotatedBoxes,
-      scaleFactor: [inputImage.shape[2] / this.inputSize, inputImage.shape[1] / this.inputSize]
-    };
-  }
-};
-async function load3(config3) {
-  const model6 = await tf4.loadGraphModel(join(config3.modelBasePath, config3.face.detector.modelPath), {fromTFHub: config3.face.detector.modelPath.includes("tfhub.dev")});
-  const blazeFace = new BlazeFaceModel(model6, config3);
-  if (!model6 || !model6.modelUrl)
-    log("load model failed:", config3.face.detector.modelPath);
-  else if (config3.debug)
-    log("load model:", model6.modelUrl);
-  return blazeFace;
-}
-
-// src/blazeface/facepipeline.ts
-var tf6 = __toModule(require_tfjs_esm());
+var tf3 = __toModule(require_tfjs_esm());
 
 // src/blazeface/box.ts
-var tf5 = __toModule(require_tfjs_esm());
-function scaleBoxCoordinates(box3, factor) {
-  const startPoint = [box3.startPoint[0] * factor[0], box3.startPoint[1] * factor[1]];
-  const endPoint = [box3.endPoint[0] * factor[0], box3.endPoint[1] * factor[1]];
+var tf2 = __toModule(require_tfjs_esm());
+function scaleBoxCoordinates(box4, factor) {
+  const startPoint = [box4.startPoint[0] * factor[0], box4.startPoint[1] * factor[1]];
+  const endPoint = [box4.endPoint[0] * factor[0], box4.endPoint[1] * factor[1]];
   return {startPoint, endPoint};
 }
-function getBoxSize(box3) {
+function getBoxSize(box4) {
   return [
-    Math.abs(box3.endPoint[0] - box3.startPoint[0]),
-    Math.abs(box3.endPoint[1] - box3.startPoint[1])
+    Math.abs(box4.endPoint[0] - box4.startPoint[0]),
+    Math.abs(box4.endPoint[1] - box4.startPoint[1])
   ];
 }
-function getBoxCenter(box3) {
+function getBoxCenter(box4) {
   return [
-    box3.startPoint[0] + (box3.endPoint[0] - box3.startPoint[0]) / 2,
-    box3.startPoint[1] + (box3.endPoint[1] - box3.startPoint[1]) / 2
+    box4.startPoint[0] + (box4.endPoint[0] - box4.startPoint[0]) / 2,
+    box4.startPoint[1] + (box4.endPoint[1] - box4.startPoint[1]) / 2
   ];
 }
-function cutBoxFromImageAndResize(box3, image11, cropSize) {
+function cutBoxFromImageAndResize(box4, image11, cropSize) {
   const h = image11.shape[1];
   const w = image11.shape[2];
   const boxes = [[
-    box3.startPoint[1] / h,
-    box3.startPoint[0] / w,
-    box3.endPoint[1] / h,
-    box3.endPoint[0] / w
+    box4.startPoint[1] / h,
+    box4.startPoint[0] / w,
+    box4.endPoint[1] / h,
+    box4.endPoint[0] / w
   ]];
-  return tf5.image.cropAndResize(image11, boxes, [0], cropSize);
+  return tf2.image.cropAndResize(image11, boxes, [0], cropSize);
 }
-function enlargeBox(box3, factor = 1.5) {
-  const center = getBoxCenter(box3);
-  const size = getBoxSize(box3);
+function enlargeBox(box4, factor = 1.5) {
+  const center = getBoxCenter(box4);
+  const size = getBoxSize(box4);
   const newHalfSize = [factor * size[0] / 2, factor * size[1] / 2];
   const startPoint = [center[0] - newHalfSize[0], center[1] - newHalfSize[1]];
   const endPoint = [center[0] + newHalfSize[0], center[1] + newHalfSize[1]];
-  return {startPoint, endPoint, landmarks: box3.landmarks};
+  return {startPoint, endPoint, landmarks: box4.landmarks};
 }
-function squarifyBox(box3) {
-  const centers = getBoxCenter(box3);
-  const size = getBoxSize(box3);
+function squarifyBox(box4) {
+  const centers = getBoxCenter(box4);
+  const size = getBoxSize(box4);
   const maxEdge = Math.max(...size);
   const halfSize = maxEdge / 2;
   const startPoint = [centers[0] - halfSize, centers[1] - halfSize];
   const endPoint = [centers[0] + halfSize, centers[1] + halfSize];
-  return {startPoint, endPoint, landmarks: box3.landmarks};
+  return {startPoint, endPoint, landmarks: box4.landmarks};
 }
+function calculateLandmarksBoundingBox(landmarks) {
+  const xs = landmarks.map((d) => d[0]);
+  const ys = landmarks.map((d) => d[1]);
+  const startPoint = [Math.min(...xs), Math.min(...ys)];
+  const endPoint = [Math.max(...xs), Math.max(...ys)];
+  return {startPoint, endPoint, landmarks};
+}
+var createBox = (startEndTensor) => ({
+  startEndTensor,
+  startPoint: tf2.slice(startEndTensor, [0, 0], [-1, 2]),
+  endPoint: tf2.slice(startEndTensor, [0, 2], [-1, 2])
+});
 
 // src/blazeface/util.ts
 var IDENTITY_MATRIX = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
@@ -767,6 +337,115 @@ function rotatePoint(homogeneousCoordinate, rotationMatrix) {
     dot(homogeneousCoordinate, rotationMatrix[1])
   ];
 }
+function generateAnchors(inputSize) {
+  const spec = {strides: [inputSize / 16, inputSize / 8], anchors: [2, 6]};
+  const anchors3 = [];
+  for (let i = 0; i < spec.strides.length; i++) {
+    const stride = spec.strides[i];
+    const gridRows = Math.floor((inputSize + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize + stride - 1) / stride);
+    const anchorsNum = spec.anchors[i];
+    for (let gridY = 0; gridY < gridRows; gridY++) {
+      const anchorY = stride * (gridY + 0.5);
+      for (let gridX = 0; gridX < gridCols; gridX++) {
+        const anchorX = stride * (gridX + 0.5);
+        for (let n = 0; n < anchorsNum; n++) {
+          anchors3.push([anchorX, anchorY]);
+        }
+      }
+    }
+  }
+  return anchors3;
+}
+
+// src/blazeface/blazeface.ts
+var keypointsCount = 6;
+function decodeBounds(boxOutputs, anchors3, inputSize) {
+  const boxStarts = tf3.slice(boxOutputs, [0, 1], [-1, 2]);
+  const centers = tf3.add(boxStarts, anchors3);
+  const boxSizes = tf3.slice(boxOutputs, [0, 3], [-1, 2]);
+  const boxSizesNormalized = tf3.div(boxSizes, inputSize);
+  const centersNormalized = tf3.div(centers, inputSize);
+  const halfBoxSize = tf3.div(boxSizesNormalized, 2);
+  const starts = tf3.sub(centersNormalized, halfBoxSize);
+  const ends = tf3.add(centersNormalized, halfBoxSize);
+  const startNormalized = tf3.mul(starts, inputSize);
+  const endNormalized = tf3.mul(ends, inputSize);
+  const concatAxis = 1;
+  return tf3.concat2d([startNormalized, endNormalized], concatAxis);
+}
+var BlazeFaceModel = class {
+  constructor(model6, config3) {
+    this.model = model6;
+    this.anchorsData = generateAnchors(model6.inputs[0].shape[1]);
+    this.anchors = tf3.tensor2d(this.anchorsData);
+    this.inputSize = model6.inputs[0].shape[2];
+    this.config = config3;
+  }
+  async getBoundingBoxes(inputImage) {
+    if (!inputImage || inputImage.isDisposedInternal || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
+      return null;
+    const [batch, boxes, scores] = tf3.tidy(() => {
+      const resizedImage = inputImage.resizeBilinear([this.inputSize, this.inputSize]);
+      const normalizedImage = resizedImage.div(127.5).sub(0.5);
+      const batchedPrediction = this.model.predict(normalizedImage);
+      let batchOut;
+      if (Array.isArray(batchedPrediction)) {
+        const sorted = batchedPrediction.sort((a, b) => a.size - b.size);
+        const concat384 = tf3.concat([sorted[0], sorted[2]], 2);
+        const concat512 = tf3.concat([sorted[1], sorted[3]], 2);
+        const concat3 = tf3.concat([concat512, concat384], 1);
+        batchOut = concat3.squeeze(0);
+      } else {
+        batchOut = batchedPrediction.squeeze();
+      }
+      const boxesOut = decodeBounds(batchOut, this.anchors, [this.inputSize, this.inputSize]);
+      const logits = tf3.slice(batchOut, [0, 0], [-1, 1]);
+      const scoresOut = tf3.sigmoid(logits).squeeze();
+      return [batchOut, boxesOut, scoresOut];
+    });
+    const boxIndicesTensor = await tf3.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
+    const boxIndices = boxIndicesTensor.arraySync();
+    boxIndicesTensor.dispose();
+    const boundingBoxesMap = boxIndices.map((boxIndex) => tf3.slice(boxes, [boxIndex, 0], [1, -1]));
+    const boundingBoxes = boundingBoxesMap.map((boundingBox) => {
+      const vals = boundingBox.arraySync();
+      boundingBox.dispose();
+      return vals;
+    });
+    const scoresVal = scores.dataSync();
+    const annotatedBoxes = [];
+    for (let i = 0; i < boundingBoxes.length; i++) {
+      const boxIndex = boxIndices[i];
+      const confidence = scoresVal[boxIndex];
+      if (confidence > this.config.face.detector.minConfidence) {
+        const localBox = createBox(boundingBoxes[i]);
+        const anchor = this.anchorsData[boxIndex];
+        const landmarks = tf3.tidy(() => tf3.slice(batch, [boxIndex, keypointsCount - 1], [1, -1]).squeeze().reshape([keypointsCount, -1]));
+        annotatedBoxes.push({box: localBox, landmarks, anchor, confidence});
+      }
+    }
+    batch.dispose();
+    boxes.dispose();
+    scores.dispose();
+    return {
+      boxes: annotatedBoxes,
+      scaleFactor: [inputImage.shape[2] / this.inputSize, inputImage.shape[1] / this.inputSize]
+    };
+  }
+};
+async function load(config3) {
+  const model6 = await tf3.loadGraphModel(join(config3.modelBasePath, config3.face.detector.modelPath), {fromTFHub: config3.face.detector.modelPath.includes("tfhub.dev")});
+  const blazeFace = new BlazeFaceModel(model6, config3);
+  if (!model6 || !model6.modelUrl)
+    log("load model failed:", config3.face.detector.modelPath);
+  else if (config3.debug)
+    log("load model:", model6.modelUrl);
+  return blazeFace;
+}
+
+// src/blazeface/facepipeline.ts
+var tf4 = __toModule(require_tfjs_esm());
 
 // src/blazeface/coords.ts
 var MESH_ANNOTATIONS = {
@@ -4094,8 +3773,8 @@ var Pipeline = class {
     this.skipped = 0;
     this.detectedFaces = 0;
   }
-  transformRawCoords(rawCoords, box3, angle, rotationMatrix) {
-    const boxSize = getBoxSize({startPoint: box3.startPoint, endPoint: box3.endPoint});
+  transformRawCoords(rawCoords, box4, angle, rotationMatrix) {
+    const boxSize = getBoxSize({startPoint: box4.startPoint, endPoint: box4.endPoint});
     const coordsScaled = rawCoords.map((coord) => [
       boxSize[0] / this.meshSize * (coord[0] - this.meshSize / 2),
       boxSize[1] / this.meshSize * (coord[1] - this.meshSize / 2),
@@ -4104,7 +3783,7 @@ var Pipeline = class {
     const coordsRotationMatrix = angle !== 0 ? buildRotationMatrix(angle, [0, 0]) : IDENTITY_MATRIX;
     const coordsRotated = angle !== 0 ? coordsScaled.map((coord) => [...rotatePoint(coord, coordsRotationMatrix), coord[2]]) : coordsScaled;
     const inverseRotationMatrix = angle !== 0 ? invertTransformMatrix(rotationMatrix) : IDENTITY_MATRIX;
-    const boxCenter = [...getBoxCenter({startPoint: box3.startPoint, endPoint: box3.endPoint}), 1];
+    const boxCenter = [...getBoxCenter({startPoint: box4.startPoint, endPoint: box4.endPoint}), 1];
     return coordsRotated.map((coord) => [
       coord[0] + dot(boxCenter, inverseRotationMatrix[0]),
       coord[1] + dot(boxCenter, inverseRotationMatrix[1]),
@@ -4117,18 +3796,18 @@ var Pipeline = class {
     return leftEyeZ - rightEyeZ;
   }
   getEyeBox(rawCoords, face4, eyeInnerCornerIndex, eyeOuterCornerIndex, flip = false) {
-    const box3 = squarifyBox(enlargeBox(this.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), this.irisEnlarge));
-    const boxSize = getBoxSize(box3);
-    let crop = tf6.image.cropAndResize(face4, [[
-      box3.startPoint[1] / this.meshSize,
-      box3.startPoint[0] / this.meshSize,
-      box3.endPoint[1] / this.meshSize,
-      box3.endPoint[0] / this.meshSize
+    const box4 = squarifyBox(enlargeBox(calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), this.irisEnlarge));
+    const boxSize = getBoxSize(box4);
+    let crop = tf4.image.cropAndResize(face4, [[
+      box4.startPoint[1] / this.meshSize,
+      box4.startPoint[0] / this.meshSize,
+      box4.endPoint[1] / this.meshSize,
+      box4.endPoint[0] / this.meshSize
     ]], [0], [this.irisSize, this.irisSize]);
-    if (flip && tf6.ENV.flags.IS_BROWSER) {
-      crop = tf6.image.flipLeftRight(crop);
+    if (flip && tf4.ENV.flags.IS_BROWSER) {
+      crop = tf4.image.flipLeftRight(crop);
     }
-    return {box: box3, boxSize, crop};
+    return {box: box4, boxSize, crop};
   }
   getEyeCoords(eyeData, eyeBox, eyeBoxSize, flip = false) {
     const eyeRawCoords = [];
@@ -4200,37 +3879,37 @@ var Pipeline = class {
         prediction.landmarks.dispose();
       });
     }
-    let results = tf6.tidy(() => this.storedBoxes.map((box3, i) => {
-      const boxConfidence = box3.confidence;
+    let results = tf4.tidy(() => this.storedBoxes.map((box4, i) => {
+      const boxConfidence = box4.confidence;
       let face4;
       let angle = 0;
       let rotationMatrix;
-      if (config3.face.detector.rotation && config3.face.mesh.enabled && tf6.ENV.flags.IS_BROWSER) {
-        const [indexOfMouth, indexOfForehead] = box3.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
-        angle = computeRotation(box3.landmarks[indexOfMouth], box3.landmarks[indexOfForehead]);
-        const faceCenter = getBoxCenter({startPoint: box3.startPoint, endPoint: box3.endPoint});
+      if (config3.face.detector.rotation && config3.face.mesh.enabled && tf4.ENV.flags.IS_BROWSER) {
+        const [indexOfMouth, indexOfForehead] = box4.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
+        angle = computeRotation(box4.landmarks[indexOfMouth], box4.landmarks[indexOfForehead]);
+        const faceCenter = getBoxCenter({startPoint: box4.startPoint, endPoint: box4.endPoint});
         const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-        const rotatedImage = tf6.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
+        const rotatedImage = tf4.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
         rotationMatrix = buildRotationMatrix(-angle, faceCenter);
         if (config3.face.mesh.enabled)
-          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, rotatedImage, [this.meshSize, this.meshSize]).div(255);
+          face4 = cutBoxFromImageAndResize({startPoint: box4.startPoint, endPoint: box4.endPoint}, rotatedImage, [this.meshSize, this.meshSize]).div(255);
         else
-          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, rotatedImage, [this.boxSize, this.boxSize]).div(255);
+          face4 = cutBoxFromImageAndResize({startPoint: box4.startPoint, endPoint: box4.endPoint}, rotatedImage, [this.boxSize, this.boxSize]).div(255);
       } else {
         rotationMatrix = IDENTITY_MATRIX;
         const clonedImage = input.clone();
         if (config3.face.mesh.enabled)
-          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, clonedImage, [this.meshSize, this.meshSize]).div(255);
+          face4 = cutBoxFromImageAndResize({startPoint: box4.startPoint, endPoint: box4.endPoint}, clonedImage, [this.meshSize, this.meshSize]).div(255);
         else
-          face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, clonedImage, [this.boxSize, this.boxSize]).div(255);
+          face4 = cutBoxFromImageAndResize({startPoint: box4.startPoint, endPoint: box4.endPoint}, clonedImage, [this.boxSize, this.boxSize]).div(255);
       }
       if (!config3.face.mesh.enabled) {
         const prediction2 = {
           coords: null,
-          box: box3,
+          box: box4,
           faceConfidence: null,
           boxConfidence,
-          confidence: box3.confidence,
+          confidence: box4.confidence,
           image: face4
         };
         return prediction2;
@@ -4239,12 +3918,12 @@ var Pipeline = class {
       const faceConfidence = confidence.dataSync()[0];
       if (faceConfidence < config3.face.detector.minConfidence)
         return null;
-      const coordsReshaped = tf6.reshape(contourCoords, [-1, 3]);
+      const coordsReshaped = tf4.reshape(contourCoords, [-1, 3]);
       let rawCoords = coordsReshaped.arraySync();
       if (config3.face.iris.enabled) {
         const {box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop} = this.getEyeBox(rawCoords, face4, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true);
         const {box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop} = this.getEyeBox(rawCoords, face4, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1]);
-        const eyePredictions = this.irisModel.predict(tf6.concat([leftEyeCrop, rightEyeCrop]));
+        const eyePredictions = this.irisModel.predict(tf4.concat([leftEyeCrop, rightEyeCrop]));
         const eyePredictionsData = eyePredictions.dataSync();
         const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
         const {rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords} = this.getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
@@ -4263,28 +3942,28 @@ var Pipeline = class {
         const adjustedRightIrisCoords = this.getAdjustedIrisCoords(rawCoords, rightIrisRawCoords, "right");
         rawCoords = rawCoords.concat(adjustedLeftIrisCoords).concat(adjustedRightIrisCoords);
       }
-      const transformedCoordsData = this.transformRawCoords(rawCoords, box3, angle, rotationMatrix);
-      box3 = enlargeBox(this.calculateLandmarksBoundingBox(transformedCoordsData), 1.5);
-      const transformedCoords = tf6.tensor2d(transformedCoordsData);
-      if (config3.face.detector.rotation && config3.face.mesh.enabled && config3.face.description.enabled && tf6.ENV.flags.IS_BROWSER) {
-        const [indexOfMouth, indexOfForehead] = box3.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
-        angle = computeRotation(box3.landmarks[indexOfMouth], box3.landmarks[indexOfForehead]);
-        const faceCenter = getBoxCenter({startPoint: box3.startPoint, endPoint: box3.endPoint});
+      const transformedCoordsData = this.transformRawCoords(rawCoords, box4, angle, rotationMatrix);
+      box4 = enlargeBox(calculateLandmarksBoundingBox(transformedCoordsData), 1.5);
+      const transformedCoords = tf4.tensor2d(transformedCoordsData);
+      if (config3.face.detector.rotation && config3.face.mesh.enabled && config3.face.description.enabled && tf4.ENV.flags.IS_BROWSER) {
+        const [indexOfMouth, indexOfForehead] = box4.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
+        angle = computeRotation(box4.landmarks[indexOfMouth], box4.landmarks[indexOfForehead]);
+        const faceCenter = getBoxCenter({startPoint: box4.startPoint, endPoint: box4.endPoint});
         const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-        const rotatedImage = tf6.image.rotateWithOffset(input.toFloat(), angle, 0, faceCenterNormalized);
+        const rotatedImage = tf4.image.rotateWithOffset(input.toFloat(), angle, 0, faceCenterNormalized);
         rotationMatrix = buildRotationMatrix(-angle, faceCenter);
-        face4 = cutBoxFromImageAndResize({startPoint: box3.startPoint, endPoint: box3.endPoint}, rotatedImage, [this.meshSize, this.meshSize]).div(255);
+        face4 = cutBoxFromImageAndResize({startPoint: box4.startPoint, endPoint: box4.endPoint}, rotatedImage, [this.meshSize, this.meshSize]).div(255);
       }
       const prediction = {
         coords: transformedCoords,
-        box: box3,
+        box: box4,
         faceConfidence,
         boxConfidence,
         image: face4,
         rawCoords
       };
-      const squarifiedLandmarksBox = squarifyBox(box3);
-      this.storedBoxes[i] = {...squarifiedLandmarksBox, landmarks: transformedCoordsData, confidence: box3.confidence, faceConfidence};
+      const squarifiedLandmarksBox = squarifyBox(box4);
+      this.storedBoxes[i] = {...squarifiedLandmarksBox, landmarks: transformedCoordsData, confidence: box4.confidence, faceConfidence};
       return prediction;
     }));
     results = results.filter((a) => a !== null);
@@ -4293,76 +3972,64 @@ var Pipeline = class {
     this.detectedFaces = results.length;
     return results;
   }
-  calculateLandmarksBoundingBox(landmarks) {
-    const xs = landmarks.map((d) => d[0]);
-    const ys = landmarks.map((d) => d[1]);
-    const startPoint = [Math.min(...xs), Math.min(...ys)];
-    const endPoint = [Math.max(...xs), Math.max(...ys)];
-    return {startPoint, endPoint, landmarks};
-  }
 };
 
 // src/blazeface/facemesh.ts
-var MediaPipeFaceMesh = class {
-  constructor(blazeFace, blazeMeshModel, irisModel, config3) {
-    this.facePipeline = new Pipeline(blazeFace, blazeMeshModel, irisModel);
-    this.config = config3;
-  }
-  async estimateFaces(input, config3) {
-    const predictions = await this.facePipeline.predict(input, config3);
-    const results = [];
-    for (const prediction of predictions || []) {
-      if (prediction.isDisposedInternal)
-        continue;
-      const mesh = prediction.coords ? prediction.coords.arraySync() : [];
-      const meshRaw = mesh.map((pt) => [
-        pt[0] / input.shape[2],
-        pt[1] / input.shape[1],
-        pt[2] / this.facePipeline.meshSize
-      ]);
-      const annotations3 = {};
-      if (mesh && mesh.length > 0) {
-        for (const key of Object.keys(MESH_ANNOTATIONS))
-          annotations3[key] = MESH_ANNOTATIONS[key].map((index) => mesh[index]);
-      }
-      const box3 = prediction.box ? [
-        Math.max(0, prediction.box.startPoint[0]),
-        Math.max(0, prediction.box.startPoint[1]),
-        Math.min(input.shape[2], prediction.box.endPoint[0]) - Math.max(0, prediction.box.startPoint[0]),
-        Math.min(input.shape[1], prediction.box.endPoint[1]) - Math.max(0, prediction.box.startPoint[1])
-      ] : 0;
-      const boxRaw = prediction.box ? [
-        prediction.box.startPoint[0] / input.shape[2],
-        prediction.box.startPoint[1] / input.shape[1],
-        (prediction.box.endPoint[0] - prediction.box.startPoint[0]) / input.shape[2],
-        (prediction.box.endPoint[1] - prediction.box.startPoint[1]) / input.shape[1]
-      ] : [];
-      results.push({
-        confidence: Math.round(100 * prediction.faceConfidence || 100 * prediction.boxConfidence || 0) / 100,
-        boxConfidence: Math.round(100 * prediction.boxConfidence) / 100,
-        faceConfidence: Math.round(100 * prediction.faceConfidence) / 100,
-        box: box3,
-        boxRaw,
-        mesh,
-        meshRaw,
-        annotations: annotations3,
-        image: prediction.image ? prediction.image.clone() : null
-      });
-      if (prediction.coords)
-        prediction.coords.dispose();
-      if (prediction.image)
-        prediction.image.dispose();
-    }
-    return results;
-  }
-};
 var faceModels = [null, null, null];
-async function load4(config3) {
+var facePipeline;
+async function predict(input, config3) {
+  const predictions = await facePipeline.predict(input, config3);
+  const results = [];
+  for (const prediction of predictions || []) {
+    if (prediction.isDisposedInternal)
+      continue;
+    const mesh = prediction.coords ? prediction.coords.arraySync() : [];
+    const meshRaw = mesh.map((pt) => [
+      pt[0] / input.shape[2],
+      pt[1] / input.shape[1],
+      pt[2] / facePipeline.meshSize
+    ]);
+    const annotations3 = {};
+    if (mesh && mesh.length > 0) {
+      for (const key of Object.keys(MESH_ANNOTATIONS))
+        annotations3[key] = MESH_ANNOTATIONS[key].map((index) => mesh[index]);
+    }
+    const box4 = prediction.box ? [
+      Math.max(0, prediction.box.startPoint[0]),
+      Math.max(0, prediction.box.startPoint[1]),
+      Math.min(input.shape[2], prediction.box.endPoint[0]) - Math.max(0, prediction.box.startPoint[0]),
+      Math.min(input.shape[1], prediction.box.endPoint[1]) - Math.max(0, prediction.box.startPoint[1])
+    ] : 0;
+    const boxRaw = prediction.box ? [
+      prediction.box.startPoint[0] / input.shape[2],
+      prediction.box.startPoint[1] / input.shape[1],
+      (prediction.box.endPoint[0] - prediction.box.startPoint[0]) / input.shape[2],
+      (prediction.box.endPoint[1] - prediction.box.startPoint[1]) / input.shape[1]
+    ] : [];
+    results.push({
+      confidence: Math.round(100 * prediction.faceConfidence || 100 * prediction.boxConfidence || 0) / 100,
+      boxConfidence: Math.round(100 * prediction.boxConfidence) / 100,
+      faceConfidence: Math.round(100 * prediction.faceConfidence) / 100,
+      box: box4,
+      boxRaw,
+      mesh,
+      meshRaw,
+      annotations: annotations3,
+      image: prediction.image ? prediction.image.clone() : null
+    });
+    if (prediction.coords)
+      prediction.coords.dispose();
+    if (prediction.image)
+      prediction.image.dispose();
+  }
+  return results;
+}
+async function load2(config3) {
   if (!faceModels[0] && config3.face.enabled || !faceModels[1] && config3.face.mesh.enabled || !faceModels[2] && config3.face.iris.enabled) {
     faceModels = await Promise.all([
-      !faceModels[0] && config3.face.enabled ? load3(config3) : null,
-      !faceModels[1] && config3.face.mesh.enabled ? tf7.loadGraphModel(join(config3.modelBasePath, config3.face.mesh.modelPath), {fromTFHub: config3.face.mesh.modelPath.includes("tfhub.dev")}) : null,
-      !faceModels[2] && config3.face.iris.enabled ? tf7.loadGraphModel(join(config3.modelBasePath, config3.face.iris.modelPath), {fromTFHub: config3.face.iris.modelPath.includes("tfhub.dev")}) : null
+      !faceModels[0] && config3.face.enabled ? load(config3) : null,
+      !faceModels[1] && config3.face.mesh.enabled ? tf5.loadGraphModel(join(config3.modelBasePath, config3.face.mesh.modelPath), {fromTFHub: config3.face.mesh.modelPath.includes("tfhub.dev")}) : null,
+      !faceModels[2] && config3.face.iris.enabled ? tf5.loadGraphModel(join(config3.modelBasePath, config3.face.iris.modelPath), {fromTFHub: config3.face.iris.modelPath.includes("tfhub.dev")}) : null
     ]);
     if (config3.face.mesh.enabled) {
       if (!faceModels[1] || !faceModels[1].modelUrl)
@@ -4381,17 +4048,347 @@ async function load4(config3) {
     log("cached model:", faceModels[1].modelUrl);
     log("cached model:", faceModels[2].modelUrl);
   }
-  const faceMesh = new MediaPipeFaceMesh(faceModels[0], faceModels[1], faceModels[2], config3);
-  return faceMesh;
+  facePipeline = new Pipeline(faceModels[0], faceModels[1], faceModels[2]);
+  return faceModels;
 }
 var triangulation = TRI468;
 var uvmap = UV468;
+
+// src/emotion/emotion.ts
+var emotion_exports = {};
+__export(emotion_exports, {
+  load: () => load3,
+  predict: () => predict2
+});
+var tf6 = __toModule(require_tfjs_esm());
+var annotations = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
+var model;
+var last = [];
+var skipped = Number.MAX_SAFE_INTEGER;
+var rgb = [0.2989, 0.587, 0.114];
+async function load3(config3) {
+  if (!model) {
+    model = await tf6.loadGraphModel(join(config3.modelBasePath, config3.face.emotion.modelPath));
+    if (!model || !model.modelUrl)
+      log("load model failed:", config3.face.emotion.modelPath);
+    else if (config3.debug)
+      log("load model:", model.modelUrl);
+  } else if (config3.debug)
+    log("cached model:", model.modelUrl);
+  return model;
+}
+async function predict2(image11, config3) {
+  if (!model)
+    return null;
+  if (skipped < config3.face.emotion.skipFrames && config3.videoOptimized && last.length > 0) {
+    skipped++;
+    return last;
+  }
+  if (config3.videoOptimized)
+    skipped = 0;
+  else
+    skipped = Number.MAX_SAFE_INTEGER;
+  return new Promise(async (resolve) => {
+    const resize = tf6.image.resizeBilinear(image11, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+    const [red, green, blue] = tf6.split(resize, 3, 3);
+    resize.dispose();
+    const redNorm = tf6.mul(red, rgb[0]);
+    const greenNorm = tf6.mul(green, rgb[1]);
+    const blueNorm = tf6.mul(blue, rgb[2]);
+    red.dispose();
+    green.dispose();
+    blue.dispose();
+    const grayscale = tf6.addN([redNorm, greenNorm, blueNorm]);
+    redNorm.dispose();
+    greenNorm.dispose();
+    blueNorm.dispose();
+    const normalize = tf6.tidy(() => grayscale.sub(0.5).mul(2));
+    grayscale.dispose();
+    const obj = [];
+    if (config3.face.emotion.enabled) {
+      const emotionT = await model.predict(normalize);
+      const data = emotionT.dataSync();
+      tf6.dispose(emotionT);
+      for (let i = 0; i < data.length; i++) {
+        if (data[i] > config3.face.emotion.minConfidence)
+          obj.push({score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i]});
+      }
+      obj.sort((a, b) => b.score - a.score);
+    }
+    normalize.dispose();
+    last = obj;
+    resolve(obj);
+  });
+}
+
+// src/faceres/faceres.ts
+var faceres_exports = {};
+__export(faceres_exports, {
+  enhance: () => enhance,
+  load: () => load4,
+  match: () => match,
+  predict: () => predict3,
+  similarity: () => similarity
+});
+var tf7 = __toModule(require_tfjs_esm());
+var model2;
+var last2 = {age: 0};
+var skipped2 = Number.MAX_SAFE_INTEGER;
+async function load4(config3) {
+  if (!model2) {
+    model2 = await tf7.loadGraphModel(join(config3.modelBasePath, config3.face.description.modelPath));
+    if (!model2 || !model2.modelUrl)
+      log("load model failed:", config3.face.description.modelPath);
+    else if (config3.debug)
+      log("load model:", model2.modelUrl);
+  } else if (config3.debug)
+    log("cached model:", model2.modelUrl);
+  return model2;
+}
+function similarity(embedding1, embedding2, order = 2) {
+  if (!embedding1 || !embedding2)
+    return 0;
+  if ((embedding1 == null ? void 0 : embedding1.length) === 0 || (embedding2 == null ? void 0 : embedding2.length) === 0)
+    return 0;
+  if ((embedding1 == null ? void 0 : embedding1.length) !== (embedding2 == null ? void 0 : embedding2.length))
+    return 0;
+  const distance = 5 * embedding1.map((val, i) => Math.abs(embedding1[i] - embedding2[i]) ** order).reduce((sum, now2) => sum + now2, 0) ** (1 / order);
+  const res = Math.max(0, 100 - distance) / 100;
+  return res;
+}
+function match(embedding, db, threshold = 0) {
+  let best = {similarity: 0, name: "", source: "", embedding: []};
+  if (!embedding || !db || !Array.isArray(embedding) || !Array.isArray(db))
+    return best;
+  for (const f of db) {
+    if (f.embedding && f.name) {
+      const perc = similarity(embedding, f.embedding);
+      if (perc > threshold && perc > best.similarity)
+        best = {...f, similarity: perc};
+    }
+  }
+  return best;
+}
+function enhance(input) {
+  const image11 = tf7.tidy(() => {
+    const tensor = input.image || input.tensor || input;
+    if (!(tensor instanceof tf7.Tensor))
+      return null;
+    const box4 = [[0.05, 0.15, 0.85, 0.85]];
+    const crop = tensor.shape.length === 3 ? tf7.image.cropAndResize(tf7.expandDims(tensor, 0), box4, [0], [model2.inputs[0].shape[2], model2.inputs[0].shape[1]]) : tf7.image.cropAndResize(tensor, box4, [0], [model2.inputs[0].shape[2], model2.inputs[0].shape[1]]);
+    const norm = crop.mul(255);
+    return norm;
+  });
+  return image11;
+}
+async function predict3(image11, config3) {
+  if (!model2)
+    return null;
+  if (skipped2 < config3.face.description.skipFrames && config3.videoOptimized && last2.age && last2.age > 0) {
+    skipped2++;
+    return last2;
+  }
+  if (config3.videoOptimized)
+    skipped2 = 0;
+  else
+    skipped2 = Number.MAX_SAFE_INTEGER;
+  return new Promise(async (resolve) => {
+    const enhanced = enhance(image11);
+    let resT;
+    const obj = {
+      age: 0,
+      gender: "unknown",
+      genderConfidence: 0,
+      descriptor: []
+    };
+    if (config3.face.description.enabled)
+      resT = await model2.predict(enhanced);
+    tf7.dispose(enhanced);
+    if (resT) {
+      tf7.tidy(() => {
+        const gender = resT.find((t) => t.shape[1] === 1).dataSync();
+        const confidence = Math.trunc(200 * Math.abs(gender[0] - 0.5)) / 100;
+        if (confidence > config3.face.description.minConfidence) {
+          obj.gender = gender[0] <= 0.5 ? "female" : "male";
+          obj.genderConfidence = Math.min(0.99, confidence);
+        }
+        const age = resT.find((t) => t.shape[1] === 100).argMax(1).dataSync()[0];
+        const all2 = resT.find((t) => t.shape[1] === 100).dataSync();
+        obj.age = Math.round(all2[age - 1] > all2[age + 1] ? 10 * age - 100 * all2[age - 1] : 10 * age + 100 * all2[age + 1]) / 10;
+        const desc = resT.find((t) => t.shape[1] === 1024);
+        obj.descriptor = [...desc.dataSync()];
+      });
+      resT.forEach((t) => tf7.dispose(t));
+    }
+    last2 = obj;
+    resolve(obj);
+  });
+}
+
+// src/faceall.ts
+var calculateFaceAngle = (face4, image_size) => {
+  const degrees = (theta) => theta * 180 / Math.PI;
+  const normalize = (v) => {
+    const length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    v[0] /= length;
+    v[1] /= length;
+    v[2] /= length;
+    return v;
+  };
+  const subVectors = (a, b) => {
+    const x = a[0] - b[0];
+    const y = a[1] - b[1];
+    const z = a[2] - b[2];
+    return [x, y, z];
+  };
+  const crossVectors = (a, b) => {
+    const x = a[1] * b[2] - a[2] * b[1];
+    const y = a[2] * b[0] - a[0] * b[2];
+    const z = a[0] * b[1] - a[1] * b[0];
+    return [x, y, z];
+  };
+  const rotationMatrixToEulerAngle = (r) => {
+    const [r00, r01, r02, r10, r11, r12, r20, r21, r22] = r;
+    let thetaX;
+    let thetaY;
+    let thetaZ;
+    if (r10 < 1) {
+      if (r10 > -1) {
+        thetaZ = Math.asin(r10);
+        thetaY = Math.atan2(-r20, r00);
+        thetaX = Math.atan2(-r12, r11);
+      } else {
+        thetaZ = -Math.PI / 2;
+        thetaY = -Math.atan2(r21, r22);
+        thetaX = 0;
+      }
+    } else {
+      thetaZ = Math.PI / 2;
+      thetaY = Math.atan2(r21, r22);
+      thetaX = 0;
+    }
+    return {pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ};
+  };
+  const meshToEulerAngle = (mesh2) => {
+    const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
+    const angle2 = {
+      pitch: radians(mesh2[10][1], mesh2[10][2], mesh2[152][1], mesh2[152][2]),
+      yaw: radians(mesh2[33][0], mesh2[33][2], mesh2[263][0], mesh2[263][2]),
+      roll: radians(mesh2[33][0], mesh2[33][1], mesh2[263][0], mesh2[263][1])
+    };
+    return angle2;
+  };
+  const mesh = face4.meshRaw;
+  if (!mesh || mesh.length < 300)
+    return {angle: {pitch: 0, yaw: 0, roll: 0}, matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1]};
+  const size = Math.max(face4.boxRaw[2] * image_size[0], face4.boxRaw[3] * image_size[1]) / 1.5;
+  const pts = [mesh[10], mesh[152], mesh[234], mesh[454]].map((pt) => [
+    pt[0] * image_size[0] / size,
+    pt[1] * image_size[1] / size,
+    pt[2]
+  ]);
+  const y_axis = normalize(subVectors(pts[1], pts[0]));
+  let x_axis = normalize(subVectors(pts[3], pts[2]));
+  const z_axis = normalize(crossVectors(x_axis, y_axis));
+  x_axis = crossVectors(y_axis, z_axis);
+  const matrix = [
+    x_axis[0],
+    x_axis[1],
+    x_axis[2],
+    y_axis[0],
+    y_axis[1],
+    y_axis[2],
+    z_axis[0],
+    z_axis[1],
+    z_axis[2]
+  ];
+  const angle = rotationMatrixToEulerAngle(matrix);
+  return {angle, matrix};
+};
+var detectFace = async (parent, input) => {
+  var _a, _b, _c, _d, _e, _f;
+  let timeStamp;
+  let ageRes;
+  let genderRes;
+  let emotionRes;
+  let embeddingRes;
+  let descRes;
+  const faceRes = [];
+  parent.state = "run:face";
+  timeStamp = now();
+  const faces = await predict(input, parent.config);
+  parent.perf.face = Math.trunc(now() - timeStamp);
+  if (!faces)
+    return [];
+  for (const face4 of faces) {
+    parent.analyze("Get Face");
+    if (!face4.image || face4.image.isDisposedInternal) {
+      log("Face object is disposed:", face4.image);
+      continue;
+    }
+    const rotation = calculateFaceAngle(face4, [input.shape[2], input.shape[1]]);
+    parent.analyze("Start Emotion:");
+    if (parent.config.async) {
+      emotionRes = parent.config.face.emotion.enabled ? predict2(face4.image, parent.config) : {};
+    } else {
+      parent.state = "run:emotion";
+      timeStamp = now();
+      emotionRes = parent.config.face.emotion.enabled ? await predict2(face4.image, parent.config) : {};
+      parent.perf.emotion = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze("End Emotion:");
+    parent.analyze("Start Description:");
+    if (parent.config.async) {
+      descRes = parent.config.face.description.enabled ? predict3(face4, parent.config) : [];
+    } else {
+      parent.state = "run:description";
+      timeStamp = now();
+      descRes = parent.config.face.description.enabled ? await predict3(face4.image, parent.config) : [];
+      parent.perf.embedding = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze("End Description:");
+    if (parent.config.async) {
+      [ageRes, genderRes, emotionRes, embeddingRes, descRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes]);
+    }
+    parent.analyze("Finish Face:");
+    if (!parent.config.face.iris.enabled && ((_a = face4 == null ? void 0 : face4.annotations) == null ? void 0 : _a.leftEyeIris) && ((_b = face4 == null ? void 0 : face4.annotations) == null ? void 0 : _b.rightEyeIris)) {
+      delete face4.annotations.leftEyeIris;
+      delete face4.annotations.rightEyeIris;
+    }
+    const irisSize = ((_c = face4.annotations) == null ? void 0 : _c.leftEyeIris) && ((_d = face4.annotations) == null ? void 0 : _d.rightEyeIris) ? 11.7 * Math.max(Math.abs(face4.annotations.leftEyeIris[3][0] - face4.annotations.leftEyeIris[1][0]), Math.abs(face4.annotations.rightEyeIris[4][1] - face4.annotations.rightEyeIris[2][1])) : 0;
+    faceRes.push({
+      ...face4,
+      age: descRes.age,
+      gender: descRes.gender,
+      genderConfidence: descRes.genderConfidence,
+      embedding: descRes.descriptor,
+      emotion: emotionRes,
+      iris: irisSize !== 0 ? Math.trunc(irisSize) / 100 : 0,
+      rotation,
+      tensor: parent.config.face.detector.return ? (_e = face4.image) == null ? void 0 : _e.squeeze() : null
+    });
+    (_f = face4.image) == null ? void 0 : _f.dispose();
+    parent.analyze("End Face");
+  }
+  parent.analyze("End FaceMesh:");
+  if (parent.config.async) {
+    if (parent.perf.face)
+      delete parent.perf.face;
+    if (parent.perf.age)
+      delete parent.perf.age;
+    if (parent.perf.gender)
+      delete parent.perf.gender;
+    if (parent.perf.emotion)
+      delete parent.perf.emotion;
+  }
+  return faceRes;
+};
 
 // src/posenet/posenet.ts
 var posenet_exports = {};
 __export(posenet_exports, {
   load: () => load5,
-  predict: () => predict3
+  predict: () => predict4
 });
 var tf8 = __toModule(require_tfjs_esm());
 
@@ -4690,9 +4687,9 @@ function decode(offsetsBuffer, scoresBuffer, displacementsFwdBuffer, displacemen
     const allKeypoints = decodePose(root, scoresBuffer, offsetsBuffer, defaultOutputStride, displacementsFwdBuffer, displacementsBwdBuffer);
     const keypoints = allKeypoints.filter((a) => a.score > minConfidence);
     const score = getInstanceScore(poses2, keypoints);
-    const box3 = getBoundingBox(keypoints);
+    const box4 = getBoundingBox(keypoints);
     if (score > minConfidence)
-      poses2.push({keypoints, box: box3, score: Math.round(100 * score) / 100});
+      poses2.push({keypoints, box: box4, score: Math.round(100 * score) / 100});
   }
   return poses2;
 }
@@ -4700,7 +4697,7 @@ function decode(offsetsBuffer, scoresBuffer, displacementsFwdBuffer, displacemen
 // src/posenet/posenet.ts
 var model3;
 var poseNetOutputs = ["MobilenetV1/offset_2/BiasAdd", "MobilenetV1/heatmap_2/BiasAdd", "MobilenetV1/displacement_fwd_2/BiasAdd", "MobilenetV1/displacement_bwd_2/BiasAdd"];
-async function predict3(input, config3) {
+async function predict4(input, config3) {
   const res = tf8.tidy(() => {
     const resized = input.resizeBilinear([model3.inputs[0].shape[2], model3.inputs[0].shape[1]]);
     const normalized = resized.toFloat().div(127.5).sub(1);
@@ -4731,8 +4728,8 @@ async function load5(config3) {
 // src/handpose/handpose.ts
 var handpose_exports = {};
 __export(handpose_exports, {
-  HandPose: () => HandPose,
-  load: () => load6
+  load: () => load6,
+  predict: () => predict5
 });
 var tf12 = __toModule(require_tfjs_esm());
 
@@ -4741,65 +4738,11846 @@ var tf10 = __toModule(require_tfjs_esm());
 
 // src/handpose/box.ts
 var tf9 = __toModule(require_tfjs_esm());
-function getBoxSize2(box3) {
+function getBoxSize2(box4) {
   return [
-    Math.abs(box3.endPoint[0] - box3.startPoint[0]),
-    Math.abs(box3.endPoint[1] - box3.startPoint[1])
+    Math.abs(box4.endPoint[0] - box4.startPoint[0]),
+    Math.abs(box4.endPoint[1] - box4.startPoint[1])
   ];
 }
-function getBoxCenter2(box3) {
+function getBoxCenter2(box4) {
   return [
-    box3.startPoint[0] + (box3.endPoint[0] - box3.startPoint[0]) / 2,
-    box3.startPoint[1] + (box3.endPoint[1] - box3.startPoint[1]) / 2
+    box4.startPoint[0] + (box4.endPoint[0] - box4.startPoint[0]) / 2,
+    box4.startPoint[1] + (box4.endPoint[1] - box4.startPoint[1]) / 2
   ];
 }
-function cutBoxFromImageAndResize2(box3, image11, cropSize) {
+function cutBoxFromImageAndResize2(box4, image11, cropSize) {
   const h = image11.shape[1];
   const w = image11.shape[2];
   const boxes = [[
-    box3.startPoint[1] / h,
-    box3.startPoint[0] / w,
-    box3.endPoint[1] / h,
-    box3.endPoint[0] / w
+    box4.startPoint[1] / h,
+    box4.startPoint[0] / w,
+    box4.endPoint[1] / h,
+    box4.endPoint[0] / w
   ]];
   return tf9.image.cropAndResize(image11, boxes, [0], cropSize);
 }
-function scaleBoxCoordinates2(box3, factor) {
-  const startPoint = [box3.startPoint[0] * factor[0], box3.startPoint[1] * factor[1]];
-  const endPoint = [box3.endPoint[0] * factor[0], box3.endPoint[1] * factor[1]];
-  const palmLandmarks = box3.palmLandmarks.map((coord) => {
+function scaleBoxCoordinates2(box4, factor) {
+  const startPoint = [box4.startPoint[0] * factor[0], box4.startPoint[1] * factor[1]];
+  const endPoint = [box4.endPoint[0] * factor[0], box4.endPoint[1] * factor[1]];
+  const palmLandmarks = box4.palmLandmarks.map((coord) => {
     const scaledCoord = [coord[0] * factor[0], coord[1] * factor[1]];
     return scaledCoord;
   });
-  return {startPoint, endPoint, palmLandmarks, confidence: box3.confidence};
+  return {startPoint, endPoint, palmLandmarks, confidence: box4.confidence};
 }
-function enlargeBox2(box3, factor = 1.5) {
-  const center = getBoxCenter2(box3);
-  const size = getBoxSize2(box3);
+function enlargeBox2(box4, factor = 1.5) {
+  const center = getBoxCenter2(box4);
+  const size = getBoxSize2(box4);
   const newHalfSize = [factor * size[0] / 2, factor * size[1] / 2];
   const startPoint = [center[0] - newHalfSize[0], center[1] - newHalfSize[1]];
   const endPoint = [center[0] + newHalfSize[0], center[1] + newHalfSize[1]];
-  return {startPoint, endPoint, palmLandmarks: box3.palmLandmarks};
+  return {startPoint, endPoint, palmLandmarks: box4.palmLandmarks};
 }
-function squarifyBox2(box3) {
-  const centers = getBoxCenter2(box3);
-  const size = getBoxSize2(box3);
+function squarifyBox2(box4) {
+  const centers = getBoxCenter2(box4);
+  const size = getBoxSize2(box4);
   const maxEdge = Math.max(...size);
   const halfSize = maxEdge / 2;
   const startPoint = [centers[0] - halfSize, centers[1] - halfSize];
   const endPoint = [centers[0] + halfSize, centers[1] + halfSize];
-  return {startPoint, endPoint, palmLandmarks: box3.palmLandmarks};
+  return {startPoint, endPoint, palmLandmarks: box4.palmLandmarks};
 }
+
+// src/handpose/anchors.ts
+var anchors = [
+  {
+    x: 0.015625,
+    y: 0.015625
+  },
+  {
+    x: 0.015625,
+    y: 0.015625
+  },
+  {
+    x: 0.046875,
+    y: 0.015625
+  },
+  {
+    x: 0.046875,
+    y: 0.015625
+  },
+  {
+    x: 0.078125,
+    y: 0.015625
+  },
+  {
+    x: 0.078125,
+    y: 0.015625
+  },
+  {
+    x: 0.109375,
+    y: 0.015625
+  },
+  {
+    x: 0.109375,
+    y: 0.015625
+  },
+  {
+    x: 0.140625,
+    y: 0.015625
+  },
+  {
+    x: 0.140625,
+    y: 0.015625
+  },
+  {
+    x: 0.171875,
+    y: 0.015625
+  },
+  {
+    x: 0.171875,
+    y: 0.015625
+  },
+  {
+    x: 0.203125,
+    y: 0.015625
+  },
+  {
+    x: 0.203125,
+    y: 0.015625
+  },
+  {
+    x: 0.234375,
+    y: 0.015625
+  },
+  {
+    x: 0.234375,
+    y: 0.015625
+  },
+  {
+    x: 0.265625,
+    y: 0.015625
+  },
+  {
+    x: 0.265625,
+    y: 0.015625
+  },
+  {
+    x: 0.296875,
+    y: 0.015625
+  },
+  {
+    x: 0.296875,
+    y: 0.015625
+  },
+  {
+    x: 0.328125,
+    y: 0.015625
+  },
+  {
+    x: 0.328125,
+    y: 0.015625
+  },
+  {
+    x: 0.359375,
+    y: 0.015625
+  },
+  {
+    x: 0.359375,
+    y: 0.015625
+  },
+  {
+    x: 0.390625,
+    y: 0.015625
+  },
+  {
+    x: 0.390625,
+    y: 0.015625
+  },
+  {
+    x: 0.421875,
+    y: 0.015625
+  },
+  {
+    x: 0.421875,
+    y: 0.015625
+  },
+  {
+    x: 0.453125,
+    y: 0.015625
+  },
+  {
+    x: 0.453125,
+    y: 0.015625
+  },
+  {
+    x: 0.484375,
+    y: 0.015625
+  },
+  {
+    x: 0.484375,
+    y: 0.015625
+  },
+  {
+    x: 0.515625,
+    y: 0.015625
+  },
+  {
+    x: 0.515625,
+    y: 0.015625
+  },
+  {
+    x: 0.546875,
+    y: 0.015625
+  },
+  {
+    x: 0.546875,
+    y: 0.015625
+  },
+  {
+    x: 0.578125,
+    y: 0.015625
+  },
+  {
+    x: 0.578125,
+    y: 0.015625
+  },
+  {
+    x: 0.609375,
+    y: 0.015625
+  },
+  {
+    x: 0.609375,
+    y: 0.015625
+  },
+  {
+    x: 0.640625,
+    y: 0.015625
+  },
+  {
+    x: 0.640625,
+    y: 0.015625
+  },
+  {
+    x: 0.671875,
+    y: 0.015625
+  },
+  {
+    x: 0.671875,
+    y: 0.015625
+  },
+  {
+    x: 0.703125,
+    y: 0.015625
+  },
+  {
+    x: 0.703125,
+    y: 0.015625
+  },
+  {
+    x: 0.734375,
+    y: 0.015625
+  },
+  {
+    x: 0.734375,
+    y: 0.015625
+  },
+  {
+    x: 0.765625,
+    y: 0.015625
+  },
+  {
+    x: 0.765625,
+    y: 0.015625
+  },
+  {
+    x: 0.796875,
+    y: 0.015625
+  },
+  {
+    x: 0.796875,
+    y: 0.015625
+  },
+  {
+    x: 0.828125,
+    y: 0.015625
+  },
+  {
+    x: 0.828125,
+    y: 0.015625
+  },
+  {
+    x: 0.859375,
+    y: 0.015625
+  },
+  {
+    x: 0.859375,
+    y: 0.015625
+  },
+  {
+    x: 0.890625,
+    y: 0.015625
+  },
+  {
+    x: 0.890625,
+    y: 0.015625
+  },
+  {
+    x: 0.921875,
+    y: 0.015625
+  },
+  {
+    x: 0.921875,
+    y: 0.015625
+  },
+  {
+    x: 0.953125,
+    y: 0.015625
+  },
+  {
+    x: 0.953125,
+    y: 0.015625
+  },
+  {
+    x: 0.984375,
+    y: 0.015625
+  },
+  {
+    x: 0.984375,
+    y: 0.015625
+  },
+  {
+    x: 0.015625,
+    y: 0.046875
+  },
+  {
+    x: 0.015625,
+    y: 0.046875
+  },
+  {
+    x: 0.046875,
+    y: 0.046875
+  },
+  {
+    x: 0.046875,
+    y: 0.046875
+  },
+  {
+    x: 0.078125,
+    y: 0.046875
+  },
+  {
+    x: 0.078125,
+    y: 0.046875
+  },
+  {
+    x: 0.109375,
+    y: 0.046875
+  },
+  {
+    x: 0.109375,
+    y: 0.046875
+  },
+  {
+    x: 0.140625,
+    y: 0.046875
+  },
+  {
+    x: 0.140625,
+    y: 0.046875
+  },
+  {
+    x: 0.171875,
+    y: 0.046875
+  },
+  {
+    x: 0.171875,
+    y: 0.046875
+  },
+  {
+    x: 0.203125,
+    y: 0.046875
+  },
+  {
+    x: 0.203125,
+    y: 0.046875
+  },
+  {
+    x: 0.234375,
+    y: 0.046875
+  },
+  {
+    x: 0.234375,
+    y: 0.046875
+  },
+  {
+    x: 0.265625,
+    y: 0.046875
+  },
+  {
+    x: 0.265625,
+    y: 0.046875
+  },
+  {
+    x: 0.296875,
+    y: 0.046875
+  },
+  {
+    x: 0.296875,
+    y: 0.046875
+  },
+  {
+    x: 0.328125,
+    y: 0.046875
+  },
+  {
+    x: 0.328125,
+    y: 0.046875
+  },
+  {
+    x: 0.359375,
+    y: 0.046875
+  },
+  {
+    x: 0.359375,
+    y: 0.046875
+  },
+  {
+    x: 0.390625,
+    y: 0.046875
+  },
+  {
+    x: 0.390625,
+    y: 0.046875
+  },
+  {
+    x: 0.421875,
+    y: 0.046875
+  },
+  {
+    x: 0.421875,
+    y: 0.046875
+  },
+  {
+    x: 0.453125,
+    y: 0.046875
+  },
+  {
+    x: 0.453125,
+    y: 0.046875
+  },
+  {
+    x: 0.484375,
+    y: 0.046875
+  },
+  {
+    x: 0.484375,
+    y: 0.046875
+  },
+  {
+    x: 0.515625,
+    y: 0.046875
+  },
+  {
+    x: 0.515625,
+    y: 0.046875
+  },
+  {
+    x: 0.546875,
+    y: 0.046875
+  },
+  {
+    x: 0.546875,
+    y: 0.046875
+  },
+  {
+    x: 0.578125,
+    y: 0.046875
+  },
+  {
+    x: 0.578125,
+    y: 0.046875
+  },
+  {
+    x: 0.609375,
+    y: 0.046875
+  },
+  {
+    x: 0.609375,
+    y: 0.046875
+  },
+  {
+    x: 0.640625,
+    y: 0.046875
+  },
+  {
+    x: 0.640625,
+    y: 0.046875
+  },
+  {
+    x: 0.671875,
+    y: 0.046875
+  },
+  {
+    x: 0.671875,
+    y: 0.046875
+  },
+  {
+    x: 0.703125,
+    y: 0.046875
+  },
+  {
+    x: 0.703125,
+    y: 0.046875
+  },
+  {
+    x: 0.734375,
+    y: 0.046875
+  },
+  {
+    x: 0.734375,
+    y: 0.046875
+  },
+  {
+    x: 0.765625,
+    y: 0.046875
+  },
+  {
+    x: 0.765625,
+    y: 0.046875
+  },
+  {
+    x: 0.796875,
+    y: 0.046875
+  },
+  {
+    x: 0.796875,
+    y: 0.046875
+  },
+  {
+    x: 0.828125,
+    y: 0.046875
+  },
+  {
+    x: 0.828125,
+    y: 0.046875
+  },
+  {
+    x: 0.859375,
+    y: 0.046875
+  },
+  {
+    x: 0.859375,
+    y: 0.046875
+  },
+  {
+    x: 0.890625,
+    y: 0.046875
+  },
+  {
+    x: 0.890625,
+    y: 0.046875
+  },
+  {
+    x: 0.921875,
+    y: 0.046875
+  },
+  {
+    x: 0.921875,
+    y: 0.046875
+  },
+  {
+    x: 0.953125,
+    y: 0.046875
+  },
+  {
+    x: 0.953125,
+    y: 0.046875
+  },
+  {
+    x: 0.984375,
+    y: 0.046875
+  },
+  {
+    x: 0.984375,
+    y: 0.046875
+  },
+  {
+    x: 0.015625,
+    y: 0.078125
+  },
+  {
+    x: 0.015625,
+    y: 0.078125
+  },
+  {
+    x: 0.046875,
+    y: 0.078125
+  },
+  {
+    x: 0.046875,
+    y: 0.078125
+  },
+  {
+    x: 0.078125,
+    y: 0.078125
+  },
+  {
+    x: 0.078125,
+    y: 0.078125
+  },
+  {
+    x: 0.109375,
+    y: 0.078125
+  },
+  {
+    x: 0.109375,
+    y: 0.078125
+  },
+  {
+    x: 0.140625,
+    y: 0.078125
+  },
+  {
+    x: 0.140625,
+    y: 0.078125
+  },
+  {
+    x: 0.171875,
+    y: 0.078125
+  },
+  {
+    x: 0.171875,
+    y: 0.078125
+  },
+  {
+    x: 0.203125,
+    y: 0.078125
+  },
+  {
+    x: 0.203125,
+    y: 0.078125
+  },
+  {
+    x: 0.234375,
+    y: 0.078125
+  },
+  {
+    x: 0.234375,
+    y: 0.078125
+  },
+  {
+    x: 0.265625,
+    y: 0.078125
+  },
+  {
+    x: 0.265625,
+    y: 0.078125
+  },
+  {
+    x: 0.296875,
+    y: 0.078125
+  },
+  {
+    x: 0.296875,
+    y: 0.078125
+  },
+  {
+    x: 0.328125,
+    y: 0.078125
+  },
+  {
+    x: 0.328125,
+    y: 0.078125
+  },
+  {
+    x: 0.359375,
+    y: 0.078125
+  },
+  {
+    x: 0.359375,
+    y: 0.078125
+  },
+  {
+    x: 0.390625,
+    y: 0.078125
+  },
+  {
+    x: 0.390625,
+    y: 0.078125
+  },
+  {
+    x: 0.421875,
+    y: 0.078125
+  },
+  {
+    x: 0.421875,
+    y: 0.078125
+  },
+  {
+    x: 0.453125,
+    y: 0.078125
+  },
+  {
+    x: 0.453125,
+    y: 0.078125
+  },
+  {
+    x: 0.484375,
+    y: 0.078125
+  },
+  {
+    x: 0.484375,
+    y: 0.078125
+  },
+  {
+    x: 0.515625,
+    y: 0.078125
+  },
+  {
+    x: 0.515625,
+    y: 0.078125
+  },
+  {
+    x: 0.546875,
+    y: 0.078125
+  },
+  {
+    x: 0.546875,
+    y: 0.078125
+  },
+  {
+    x: 0.578125,
+    y: 0.078125
+  },
+  {
+    x: 0.578125,
+    y: 0.078125
+  },
+  {
+    x: 0.609375,
+    y: 0.078125
+  },
+  {
+    x: 0.609375,
+    y: 0.078125
+  },
+  {
+    x: 0.640625,
+    y: 0.078125
+  },
+  {
+    x: 0.640625,
+    y: 0.078125
+  },
+  {
+    x: 0.671875,
+    y: 0.078125
+  },
+  {
+    x: 0.671875,
+    y: 0.078125
+  },
+  {
+    x: 0.703125,
+    y: 0.078125
+  },
+  {
+    x: 0.703125,
+    y: 0.078125
+  },
+  {
+    x: 0.734375,
+    y: 0.078125
+  },
+  {
+    x: 0.734375,
+    y: 0.078125
+  },
+  {
+    x: 0.765625,
+    y: 0.078125
+  },
+  {
+    x: 0.765625,
+    y: 0.078125
+  },
+  {
+    x: 0.796875,
+    y: 0.078125
+  },
+  {
+    x: 0.796875,
+    y: 0.078125
+  },
+  {
+    x: 0.828125,
+    y: 0.078125
+  },
+  {
+    x: 0.828125,
+    y: 0.078125
+  },
+  {
+    x: 0.859375,
+    y: 0.078125
+  },
+  {
+    x: 0.859375,
+    y: 0.078125
+  },
+  {
+    x: 0.890625,
+    y: 0.078125
+  },
+  {
+    x: 0.890625,
+    y: 0.078125
+  },
+  {
+    x: 0.921875,
+    y: 0.078125
+  },
+  {
+    x: 0.921875,
+    y: 0.078125
+  },
+  {
+    x: 0.953125,
+    y: 0.078125
+  },
+  {
+    x: 0.953125,
+    y: 0.078125
+  },
+  {
+    x: 0.984375,
+    y: 0.078125
+  },
+  {
+    x: 0.984375,
+    y: 0.078125
+  },
+  {
+    x: 0.015625,
+    y: 0.109375
+  },
+  {
+    x: 0.015625,
+    y: 0.109375
+  },
+  {
+    x: 0.046875,
+    y: 0.109375
+  },
+  {
+    x: 0.046875,
+    y: 0.109375
+  },
+  {
+    x: 0.078125,
+    y: 0.109375
+  },
+  {
+    x: 0.078125,
+    y: 0.109375
+  },
+  {
+    x: 0.109375,
+    y: 0.109375
+  },
+  {
+    x: 0.109375,
+    y: 0.109375
+  },
+  {
+    x: 0.140625,
+    y: 0.109375
+  },
+  {
+    x: 0.140625,
+    y: 0.109375
+  },
+  {
+    x: 0.171875,
+    y: 0.109375
+  },
+  {
+    x: 0.171875,
+    y: 0.109375
+  },
+  {
+    x: 0.203125,
+    y: 0.109375
+  },
+  {
+    x: 0.203125,
+    y: 0.109375
+  },
+  {
+    x: 0.234375,
+    y: 0.109375
+  },
+  {
+    x: 0.234375,
+    y: 0.109375
+  },
+  {
+    x: 0.265625,
+    y: 0.109375
+  },
+  {
+    x: 0.265625,
+    y: 0.109375
+  },
+  {
+    x: 0.296875,
+    y: 0.109375
+  },
+  {
+    x: 0.296875,
+    y: 0.109375
+  },
+  {
+    x: 0.328125,
+    y: 0.109375
+  },
+  {
+    x: 0.328125,
+    y: 0.109375
+  },
+  {
+    x: 0.359375,
+    y: 0.109375
+  },
+  {
+    x: 0.359375,
+    y: 0.109375
+  },
+  {
+    x: 0.390625,
+    y: 0.109375
+  },
+  {
+    x: 0.390625,
+    y: 0.109375
+  },
+  {
+    x: 0.421875,
+    y: 0.109375
+  },
+  {
+    x: 0.421875,
+    y: 0.109375
+  },
+  {
+    x: 0.453125,
+    y: 0.109375
+  },
+  {
+    x: 0.453125,
+    y: 0.109375
+  },
+  {
+    x: 0.484375,
+    y: 0.109375
+  },
+  {
+    x: 0.484375,
+    y: 0.109375
+  },
+  {
+    x: 0.515625,
+    y: 0.109375
+  },
+  {
+    x: 0.515625,
+    y: 0.109375
+  },
+  {
+    x: 0.546875,
+    y: 0.109375
+  },
+  {
+    x: 0.546875,
+    y: 0.109375
+  },
+  {
+    x: 0.578125,
+    y: 0.109375
+  },
+  {
+    x: 0.578125,
+    y: 0.109375
+  },
+  {
+    x: 0.609375,
+    y: 0.109375
+  },
+  {
+    x: 0.609375,
+    y: 0.109375
+  },
+  {
+    x: 0.640625,
+    y: 0.109375
+  },
+  {
+    x: 0.640625,
+    y: 0.109375
+  },
+  {
+    x: 0.671875,
+    y: 0.109375
+  },
+  {
+    x: 0.671875,
+    y: 0.109375
+  },
+  {
+    x: 0.703125,
+    y: 0.109375
+  },
+  {
+    x: 0.703125,
+    y: 0.109375
+  },
+  {
+    x: 0.734375,
+    y: 0.109375
+  },
+  {
+    x: 0.734375,
+    y: 0.109375
+  },
+  {
+    x: 0.765625,
+    y: 0.109375
+  },
+  {
+    x: 0.765625,
+    y: 0.109375
+  },
+  {
+    x: 0.796875,
+    y: 0.109375
+  },
+  {
+    x: 0.796875,
+    y: 0.109375
+  },
+  {
+    x: 0.828125,
+    y: 0.109375
+  },
+  {
+    x: 0.828125,
+    y: 0.109375
+  },
+  {
+    x: 0.859375,
+    y: 0.109375
+  },
+  {
+    x: 0.859375,
+    y: 0.109375
+  },
+  {
+    x: 0.890625,
+    y: 0.109375
+  },
+  {
+    x: 0.890625,
+    y: 0.109375
+  },
+  {
+    x: 0.921875,
+    y: 0.109375
+  },
+  {
+    x: 0.921875,
+    y: 0.109375
+  },
+  {
+    x: 0.953125,
+    y: 0.109375
+  },
+  {
+    x: 0.953125,
+    y: 0.109375
+  },
+  {
+    x: 0.984375,
+    y: 0.109375
+  },
+  {
+    x: 0.984375,
+    y: 0.109375
+  },
+  {
+    x: 0.015625,
+    y: 0.140625
+  },
+  {
+    x: 0.015625,
+    y: 0.140625
+  },
+  {
+    x: 0.046875,
+    y: 0.140625
+  },
+  {
+    x: 0.046875,
+    y: 0.140625
+  },
+  {
+    x: 0.078125,
+    y: 0.140625
+  },
+  {
+    x: 0.078125,
+    y: 0.140625
+  },
+  {
+    x: 0.109375,
+    y: 0.140625
+  },
+  {
+    x: 0.109375,
+    y: 0.140625
+  },
+  {
+    x: 0.140625,
+    y: 0.140625
+  },
+  {
+    x: 0.140625,
+    y: 0.140625
+  },
+  {
+    x: 0.171875,
+    y: 0.140625
+  },
+  {
+    x: 0.171875,
+    y: 0.140625
+  },
+  {
+    x: 0.203125,
+    y: 0.140625
+  },
+  {
+    x: 0.203125,
+    y: 0.140625
+  },
+  {
+    x: 0.234375,
+    y: 0.140625
+  },
+  {
+    x: 0.234375,
+    y: 0.140625
+  },
+  {
+    x: 0.265625,
+    y: 0.140625
+  },
+  {
+    x: 0.265625,
+    y: 0.140625
+  },
+  {
+    x: 0.296875,
+    y: 0.140625
+  },
+  {
+    x: 0.296875,
+    y: 0.140625
+  },
+  {
+    x: 0.328125,
+    y: 0.140625
+  },
+  {
+    x: 0.328125,
+    y: 0.140625
+  },
+  {
+    x: 0.359375,
+    y: 0.140625
+  },
+  {
+    x: 0.359375,
+    y: 0.140625
+  },
+  {
+    x: 0.390625,
+    y: 0.140625
+  },
+  {
+    x: 0.390625,
+    y: 0.140625
+  },
+  {
+    x: 0.421875,
+    y: 0.140625
+  },
+  {
+    x: 0.421875,
+    y: 0.140625
+  },
+  {
+    x: 0.453125,
+    y: 0.140625
+  },
+  {
+    x: 0.453125,
+    y: 0.140625
+  },
+  {
+    x: 0.484375,
+    y: 0.140625
+  },
+  {
+    x: 0.484375,
+    y: 0.140625
+  },
+  {
+    x: 0.515625,
+    y: 0.140625
+  },
+  {
+    x: 0.515625,
+    y: 0.140625
+  },
+  {
+    x: 0.546875,
+    y: 0.140625
+  },
+  {
+    x: 0.546875,
+    y: 0.140625
+  },
+  {
+    x: 0.578125,
+    y: 0.140625
+  },
+  {
+    x: 0.578125,
+    y: 0.140625
+  },
+  {
+    x: 0.609375,
+    y: 0.140625
+  },
+  {
+    x: 0.609375,
+    y: 0.140625
+  },
+  {
+    x: 0.640625,
+    y: 0.140625
+  },
+  {
+    x: 0.640625,
+    y: 0.140625
+  },
+  {
+    x: 0.671875,
+    y: 0.140625
+  },
+  {
+    x: 0.671875,
+    y: 0.140625
+  },
+  {
+    x: 0.703125,
+    y: 0.140625
+  },
+  {
+    x: 0.703125,
+    y: 0.140625
+  },
+  {
+    x: 0.734375,
+    y: 0.140625
+  },
+  {
+    x: 0.734375,
+    y: 0.140625
+  },
+  {
+    x: 0.765625,
+    y: 0.140625
+  },
+  {
+    x: 0.765625,
+    y: 0.140625
+  },
+  {
+    x: 0.796875,
+    y: 0.140625
+  },
+  {
+    x: 0.796875,
+    y: 0.140625
+  },
+  {
+    x: 0.828125,
+    y: 0.140625
+  },
+  {
+    x: 0.828125,
+    y: 0.140625
+  },
+  {
+    x: 0.859375,
+    y: 0.140625
+  },
+  {
+    x: 0.859375,
+    y: 0.140625
+  },
+  {
+    x: 0.890625,
+    y: 0.140625
+  },
+  {
+    x: 0.890625,
+    y: 0.140625
+  },
+  {
+    x: 0.921875,
+    y: 0.140625
+  },
+  {
+    x: 0.921875,
+    y: 0.140625
+  },
+  {
+    x: 0.953125,
+    y: 0.140625
+  },
+  {
+    x: 0.953125,
+    y: 0.140625
+  },
+  {
+    x: 0.984375,
+    y: 0.140625
+  },
+  {
+    x: 0.984375,
+    y: 0.140625
+  },
+  {
+    x: 0.015625,
+    y: 0.171875
+  },
+  {
+    x: 0.015625,
+    y: 0.171875
+  },
+  {
+    x: 0.046875,
+    y: 0.171875
+  },
+  {
+    x: 0.046875,
+    y: 0.171875
+  },
+  {
+    x: 0.078125,
+    y: 0.171875
+  },
+  {
+    x: 0.078125,
+    y: 0.171875
+  },
+  {
+    x: 0.109375,
+    y: 0.171875
+  },
+  {
+    x: 0.109375,
+    y: 0.171875
+  },
+  {
+    x: 0.140625,
+    y: 0.171875
+  },
+  {
+    x: 0.140625,
+    y: 0.171875
+  },
+  {
+    x: 0.171875,
+    y: 0.171875
+  },
+  {
+    x: 0.171875,
+    y: 0.171875
+  },
+  {
+    x: 0.203125,
+    y: 0.171875
+  },
+  {
+    x: 0.203125,
+    y: 0.171875
+  },
+  {
+    x: 0.234375,
+    y: 0.171875
+  },
+  {
+    x: 0.234375,
+    y: 0.171875
+  },
+  {
+    x: 0.265625,
+    y: 0.171875
+  },
+  {
+    x: 0.265625,
+    y: 0.171875
+  },
+  {
+    x: 0.296875,
+    y: 0.171875
+  },
+  {
+    x: 0.296875,
+    y: 0.171875
+  },
+  {
+    x: 0.328125,
+    y: 0.171875
+  },
+  {
+    x: 0.328125,
+    y: 0.171875
+  },
+  {
+    x: 0.359375,
+    y: 0.171875
+  },
+  {
+    x: 0.359375,
+    y: 0.171875
+  },
+  {
+    x: 0.390625,
+    y: 0.171875
+  },
+  {
+    x: 0.390625,
+    y: 0.171875
+  },
+  {
+    x: 0.421875,
+    y: 0.171875
+  },
+  {
+    x: 0.421875,
+    y: 0.171875
+  },
+  {
+    x: 0.453125,
+    y: 0.171875
+  },
+  {
+    x: 0.453125,
+    y: 0.171875
+  },
+  {
+    x: 0.484375,
+    y: 0.171875
+  },
+  {
+    x: 0.484375,
+    y: 0.171875
+  },
+  {
+    x: 0.515625,
+    y: 0.171875
+  },
+  {
+    x: 0.515625,
+    y: 0.171875
+  },
+  {
+    x: 0.546875,
+    y: 0.171875
+  },
+  {
+    x: 0.546875,
+    y: 0.171875
+  },
+  {
+    x: 0.578125,
+    y: 0.171875
+  },
+  {
+    x: 0.578125,
+    y: 0.171875
+  },
+  {
+    x: 0.609375,
+    y: 0.171875
+  },
+  {
+    x: 0.609375,
+    y: 0.171875
+  },
+  {
+    x: 0.640625,
+    y: 0.171875
+  },
+  {
+    x: 0.640625,
+    y: 0.171875
+  },
+  {
+    x: 0.671875,
+    y: 0.171875
+  },
+  {
+    x: 0.671875,
+    y: 0.171875
+  },
+  {
+    x: 0.703125,
+    y: 0.171875
+  },
+  {
+    x: 0.703125,
+    y: 0.171875
+  },
+  {
+    x: 0.734375,
+    y: 0.171875
+  },
+  {
+    x: 0.734375,
+    y: 0.171875
+  },
+  {
+    x: 0.765625,
+    y: 0.171875
+  },
+  {
+    x: 0.765625,
+    y: 0.171875
+  },
+  {
+    x: 0.796875,
+    y: 0.171875
+  },
+  {
+    x: 0.796875,
+    y: 0.171875
+  },
+  {
+    x: 0.828125,
+    y: 0.171875
+  },
+  {
+    x: 0.828125,
+    y: 0.171875
+  },
+  {
+    x: 0.859375,
+    y: 0.171875
+  },
+  {
+    x: 0.859375,
+    y: 0.171875
+  },
+  {
+    x: 0.890625,
+    y: 0.171875
+  },
+  {
+    x: 0.890625,
+    y: 0.171875
+  },
+  {
+    x: 0.921875,
+    y: 0.171875
+  },
+  {
+    x: 0.921875,
+    y: 0.171875
+  },
+  {
+    x: 0.953125,
+    y: 0.171875
+  },
+  {
+    x: 0.953125,
+    y: 0.171875
+  },
+  {
+    x: 0.984375,
+    y: 0.171875
+  },
+  {
+    x: 0.984375,
+    y: 0.171875
+  },
+  {
+    x: 0.015625,
+    y: 0.203125
+  },
+  {
+    x: 0.015625,
+    y: 0.203125
+  },
+  {
+    x: 0.046875,
+    y: 0.203125
+  },
+  {
+    x: 0.046875,
+    y: 0.203125
+  },
+  {
+    x: 0.078125,
+    y: 0.203125
+  },
+  {
+    x: 0.078125,
+    y: 0.203125
+  },
+  {
+    x: 0.109375,
+    y: 0.203125
+  },
+  {
+    x: 0.109375,
+    y: 0.203125
+  },
+  {
+    x: 0.140625,
+    y: 0.203125
+  },
+  {
+    x: 0.140625,
+    y: 0.203125
+  },
+  {
+    x: 0.171875,
+    y: 0.203125
+  },
+  {
+    x: 0.171875,
+    y: 0.203125
+  },
+  {
+    x: 0.203125,
+    y: 0.203125
+  },
+  {
+    x: 0.203125,
+    y: 0.203125
+  },
+  {
+    x: 0.234375,
+    y: 0.203125
+  },
+  {
+    x: 0.234375,
+    y: 0.203125
+  },
+  {
+    x: 0.265625,
+    y: 0.203125
+  },
+  {
+    x: 0.265625,
+    y: 0.203125
+  },
+  {
+    x: 0.296875,
+    y: 0.203125
+  },
+  {
+    x: 0.296875,
+    y: 0.203125
+  },
+  {
+    x: 0.328125,
+    y: 0.203125
+  },
+  {
+    x: 0.328125,
+    y: 0.203125
+  },
+  {
+    x: 0.359375,
+    y: 0.203125
+  },
+  {
+    x: 0.359375,
+    y: 0.203125
+  },
+  {
+    x: 0.390625,
+    y: 0.203125
+  },
+  {
+    x: 0.390625,
+    y: 0.203125
+  },
+  {
+    x: 0.421875,
+    y: 0.203125
+  },
+  {
+    x: 0.421875,
+    y: 0.203125
+  },
+  {
+    x: 0.453125,
+    y: 0.203125
+  },
+  {
+    x: 0.453125,
+    y: 0.203125
+  },
+  {
+    x: 0.484375,
+    y: 0.203125
+  },
+  {
+    x: 0.484375,
+    y: 0.203125
+  },
+  {
+    x: 0.515625,
+    y: 0.203125
+  },
+  {
+    x: 0.515625,
+    y: 0.203125
+  },
+  {
+    x: 0.546875,
+    y: 0.203125
+  },
+  {
+    x: 0.546875,
+    y: 0.203125
+  },
+  {
+    x: 0.578125,
+    y: 0.203125
+  },
+  {
+    x: 0.578125,
+    y: 0.203125
+  },
+  {
+    x: 0.609375,
+    y: 0.203125
+  },
+  {
+    x: 0.609375,
+    y: 0.203125
+  },
+  {
+    x: 0.640625,
+    y: 0.203125
+  },
+  {
+    x: 0.640625,
+    y: 0.203125
+  },
+  {
+    x: 0.671875,
+    y: 0.203125
+  },
+  {
+    x: 0.671875,
+    y: 0.203125
+  },
+  {
+    x: 0.703125,
+    y: 0.203125
+  },
+  {
+    x: 0.703125,
+    y: 0.203125
+  },
+  {
+    x: 0.734375,
+    y: 0.203125
+  },
+  {
+    x: 0.734375,
+    y: 0.203125
+  },
+  {
+    x: 0.765625,
+    y: 0.203125
+  },
+  {
+    x: 0.765625,
+    y: 0.203125
+  },
+  {
+    x: 0.796875,
+    y: 0.203125
+  },
+  {
+    x: 0.796875,
+    y: 0.203125
+  },
+  {
+    x: 0.828125,
+    y: 0.203125
+  },
+  {
+    x: 0.828125,
+    y: 0.203125
+  },
+  {
+    x: 0.859375,
+    y: 0.203125
+  },
+  {
+    x: 0.859375,
+    y: 0.203125
+  },
+  {
+    x: 0.890625,
+    y: 0.203125
+  },
+  {
+    x: 0.890625,
+    y: 0.203125
+  },
+  {
+    x: 0.921875,
+    y: 0.203125
+  },
+  {
+    x: 0.921875,
+    y: 0.203125
+  },
+  {
+    x: 0.953125,
+    y: 0.203125
+  },
+  {
+    x: 0.953125,
+    y: 0.203125
+  },
+  {
+    x: 0.984375,
+    y: 0.203125
+  },
+  {
+    x: 0.984375,
+    y: 0.203125
+  },
+  {
+    x: 0.015625,
+    y: 0.234375
+  },
+  {
+    x: 0.015625,
+    y: 0.234375
+  },
+  {
+    x: 0.046875,
+    y: 0.234375
+  },
+  {
+    x: 0.046875,
+    y: 0.234375
+  },
+  {
+    x: 0.078125,
+    y: 0.234375
+  },
+  {
+    x: 0.078125,
+    y: 0.234375
+  },
+  {
+    x: 0.109375,
+    y: 0.234375
+  },
+  {
+    x: 0.109375,
+    y: 0.234375
+  },
+  {
+    x: 0.140625,
+    y: 0.234375
+  },
+  {
+    x: 0.140625,
+    y: 0.234375
+  },
+  {
+    x: 0.171875,
+    y: 0.234375
+  },
+  {
+    x: 0.171875,
+    y: 0.234375
+  },
+  {
+    x: 0.203125,
+    y: 0.234375
+  },
+  {
+    x: 0.203125,
+    y: 0.234375
+  },
+  {
+    x: 0.234375,
+    y: 0.234375
+  },
+  {
+    x: 0.234375,
+    y: 0.234375
+  },
+  {
+    x: 0.265625,
+    y: 0.234375
+  },
+  {
+    x: 0.265625,
+    y: 0.234375
+  },
+  {
+    x: 0.296875,
+    y: 0.234375
+  },
+  {
+    x: 0.296875,
+    y: 0.234375
+  },
+  {
+    x: 0.328125,
+    y: 0.234375
+  },
+  {
+    x: 0.328125,
+    y: 0.234375
+  },
+  {
+    x: 0.359375,
+    y: 0.234375
+  },
+  {
+    x: 0.359375,
+    y: 0.234375
+  },
+  {
+    x: 0.390625,
+    y: 0.234375
+  },
+  {
+    x: 0.390625,
+    y: 0.234375
+  },
+  {
+    x: 0.421875,
+    y: 0.234375
+  },
+  {
+    x: 0.421875,
+    y: 0.234375
+  },
+  {
+    x: 0.453125,
+    y: 0.234375
+  },
+  {
+    x: 0.453125,
+    y: 0.234375
+  },
+  {
+    x: 0.484375,
+    y: 0.234375
+  },
+  {
+    x: 0.484375,
+    y: 0.234375
+  },
+  {
+    x: 0.515625,
+    y: 0.234375
+  },
+  {
+    x: 0.515625,
+    y: 0.234375
+  },
+  {
+    x: 0.546875,
+    y: 0.234375
+  },
+  {
+    x: 0.546875,
+    y: 0.234375
+  },
+  {
+    x: 0.578125,
+    y: 0.234375
+  },
+  {
+    x: 0.578125,
+    y: 0.234375
+  },
+  {
+    x: 0.609375,
+    y: 0.234375
+  },
+  {
+    x: 0.609375,
+    y: 0.234375
+  },
+  {
+    x: 0.640625,
+    y: 0.234375
+  },
+  {
+    x: 0.640625,
+    y: 0.234375
+  },
+  {
+    x: 0.671875,
+    y: 0.234375
+  },
+  {
+    x: 0.671875,
+    y: 0.234375
+  },
+  {
+    x: 0.703125,
+    y: 0.234375
+  },
+  {
+    x: 0.703125,
+    y: 0.234375
+  },
+  {
+    x: 0.734375,
+    y: 0.234375
+  },
+  {
+    x: 0.734375,
+    y: 0.234375
+  },
+  {
+    x: 0.765625,
+    y: 0.234375
+  },
+  {
+    x: 0.765625,
+    y: 0.234375
+  },
+  {
+    x: 0.796875,
+    y: 0.234375
+  },
+  {
+    x: 0.796875,
+    y: 0.234375
+  },
+  {
+    x: 0.828125,
+    y: 0.234375
+  },
+  {
+    x: 0.828125,
+    y: 0.234375
+  },
+  {
+    x: 0.859375,
+    y: 0.234375
+  },
+  {
+    x: 0.859375,
+    y: 0.234375
+  },
+  {
+    x: 0.890625,
+    y: 0.234375
+  },
+  {
+    x: 0.890625,
+    y: 0.234375
+  },
+  {
+    x: 0.921875,
+    y: 0.234375
+  },
+  {
+    x: 0.921875,
+    y: 0.234375
+  },
+  {
+    x: 0.953125,
+    y: 0.234375
+  },
+  {
+    x: 0.953125,
+    y: 0.234375
+  },
+  {
+    x: 0.984375,
+    y: 0.234375
+  },
+  {
+    x: 0.984375,
+    y: 0.234375
+  },
+  {
+    x: 0.015625,
+    y: 0.265625
+  },
+  {
+    x: 0.015625,
+    y: 0.265625
+  },
+  {
+    x: 0.046875,
+    y: 0.265625
+  },
+  {
+    x: 0.046875,
+    y: 0.265625
+  },
+  {
+    x: 0.078125,
+    y: 0.265625
+  },
+  {
+    x: 0.078125,
+    y: 0.265625
+  },
+  {
+    x: 0.109375,
+    y: 0.265625
+  },
+  {
+    x: 0.109375,
+    y: 0.265625
+  },
+  {
+    x: 0.140625,
+    y: 0.265625
+  },
+  {
+    x: 0.140625,
+    y: 0.265625
+  },
+  {
+    x: 0.171875,
+    y: 0.265625
+  },
+  {
+    x: 0.171875,
+    y: 0.265625
+  },
+  {
+    x: 0.203125,
+    y: 0.265625
+  },
+  {
+    x: 0.203125,
+    y: 0.265625
+  },
+  {
+    x: 0.234375,
+    y: 0.265625
+  },
+  {
+    x: 0.234375,
+    y: 0.265625
+  },
+  {
+    x: 0.265625,
+    y: 0.265625
+  },
+  {
+    x: 0.265625,
+    y: 0.265625
+  },
+  {
+    x: 0.296875,
+    y: 0.265625
+  },
+  {
+    x: 0.296875,
+    y: 0.265625
+  },
+  {
+    x: 0.328125,
+    y: 0.265625
+  },
+  {
+    x: 0.328125,
+    y: 0.265625
+  },
+  {
+    x: 0.359375,
+    y: 0.265625
+  },
+  {
+    x: 0.359375,
+    y: 0.265625
+  },
+  {
+    x: 0.390625,
+    y: 0.265625
+  },
+  {
+    x: 0.390625,
+    y: 0.265625
+  },
+  {
+    x: 0.421875,
+    y: 0.265625
+  },
+  {
+    x: 0.421875,
+    y: 0.265625
+  },
+  {
+    x: 0.453125,
+    y: 0.265625
+  },
+  {
+    x: 0.453125,
+    y: 0.265625
+  },
+  {
+    x: 0.484375,
+    y: 0.265625
+  },
+  {
+    x: 0.484375,
+    y: 0.265625
+  },
+  {
+    x: 0.515625,
+    y: 0.265625
+  },
+  {
+    x: 0.515625,
+    y: 0.265625
+  },
+  {
+    x: 0.546875,
+    y: 0.265625
+  },
+  {
+    x: 0.546875,
+    y: 0.265625
+  },
+  {
+    x: 0.578125,
+    y: 0.265625
+  },
+  {
+    x: 0.578125,
+    y: 0.265625
+  },
+  {
+    x: 0.609375,
+    y: 0.265625
+  },
+  {
+    x: 0.609375,
+    y: 0.265625
+  },
+  {
+    x: 0.640625,
+    y: 0.265625
+  },
+  {
+    x: 0.640625,
+    y: 0.265625
+  },
+  {
+    x: 0.671875,
+    y: 0.265625
+  },
+  {
+    x: 0.671875,
+    y: 0.265625
+  },
+  {
+    x: 0.703125,
+    y: 0.265625
+  },
+  {
+    x: 0.703125,
+    y: 0.265625
+  },
+  {
+    x: 0.734375,
+    y: 0.265625
+  },
+  {
+    x: 0.734375,
+    y: 0.265625
+  },
+  {
+    x: 0.765625,
+    y: 0.265625
+  },
+  {
+    x: 0.765625,
+    y: 0.265625
+  },
+  {
+    x: 0.796875,
+    y: 0.265625
+  },
+  {
+    x: 0.796875,
+    y: 0.265625
+  },
+  {
+    x: 0.828125,
+    y: 0.265625
+  },
+  {
+    x: 0.828125,
+    y: 0.265625
+  },
+  {
+    x: 0.859375,
+    y: 0.265625
+  },
+  {
+    x: 0.859375,
+    y: 0.265625
+  },
+  {
+    x: 0.890625,
+    y: 0.265625
+  },
+  {
+    x: 0.890625,
+    y: 0.265625
+  },
+  {
+    x: 0.921875,
+    y: 0.265625
+  },
+  {
+    x: 0.921875,
+    y: 0.265625
+  },
+  {
+    x: 0.953125,
+    y: 0.265625
+  },
+  {
+    x: 0.953125,
+    y: 0.265625
+  },
+  {
+    x: 0.984375,
+    y: 0.265625
+  },
+  {
+    x: 0.984375,
+    y: 0.265625
+  },
+  {
+    x: 0.015625,
+    y: 0.296875
+  },
+  {
+    x: 0.015625,
+    y: 0.296875
+  },
+  {
+    x: 0.046875,
+    y: 0.296875
+  },
+  {
+    x: 0.046875,
+    y: 0.296875
+  },
+  {
+    x: 0.078125,
+    y: 0.296875
+  },
+  {
+    x: 0.078125,
+    y: 0.296875
+  },
+  {
+    x: 0.109375,
+    y: 0.296875
+  },
+  {
+    x: 0.109375,
+    y: 0.296875
+  },
+  {
+    x: 0.140625,
+    y: 0.296875
+  },
+  {
+    x: 0.140625,
+    y: 0.296875
+  },
+  {
+    x: 0.171875,
+    y: 0.296875
+  },
+  {
+    x: 0.171875,
+    y: 0.296875
+  },
+  {
+    x: 0.203125,
+    y: 0.296875
+  },
+  {
+    x: 0.203125,
+    y: 0.296875
+  },
+  {
+    x: 0.234375,
+    y: 0.296875
+  },
+  {
+    x: 0.234375,
+    y: 0.296875
+  },
+  {
+    x: 0.265625,
+    y: 0.296875
+  },
+  {
+    x: 0.265625,
+    y: 0.296875
+  },
+  {
+    x: 0.296875,
+    y: 0.296875
+  },
+  {
+    x: 0.296875,
+    y: 0.296875
+  },
+  {
+    x: 0.328125,
+    y: 0.296875
+  },
+  {
+    x: 0.328125,
+    y: 0.296875
+  },
+  {
+    x: 0.359375,
+    y: 0.296875
+  },
+  {
+    x: 0.359375,
+    y: 0.296875
+  },
+  {
+    x: 0.390625,
+    y: 0.296875
+  },
+  {
+    x: 0.390625,
+    y: 0.296875
+  },
+  {
+    x: 0.421875,
+    y: 0.296875
+  },
+  {
+    x: 0.421875,
+    y: 0.296875
+  },
+  {
+    x: 0.453125,
+    y: 0.296875
+  },
+  {
+    x: 0.453125,
+    y: 0.296875
+  },
+  {
+    x: 0.484375,
+    y: 0.296875
+  },
+  {
+    x: 0.484375,
+    y: 0.296875
+  },
+  {
+    x: 0.515625,
+    y: 0.296875
+  },
+  {
+    x: 0.515625,
+    y: 0.296875
+  },
+  {
+    x: 0.546875,
+    y: 0.296875
+  },
+  {
+    x: 0.546875,
+    y: 0.296875
+  },
+  {
+    x: 0.578125,
+    y: 0.296875
+  },
+  {
+    x: 0.578125,
+    y: 0.296875
+  },
+  {
+    x: 0.609375,
+    y: 0.296875
+  },
+  {
+    x: 0.609375,
+    y: 0.296875
+  },
+  {
+    x: 0.640625,
+    y: 0.296875
+  },
+  {
+    x: 0.640625,
+    y: 0.296875
+  },
+  {
+    x: 0.671875,
+    y: 0.296875
+  },
+  {
+    x: 0.671875,
+    y: 0.296875
+  },
+  {
+    x: 0.703125,
+    y: 0.296875
+  },
+  {
+    x: 0.703125,
+    y: 0.296875
+  },
+  {
+    x: 0.734375,
+    y: 0.296875
+  },
+  {
+    x: 0.734375,
+    y: 0.296875
+  },
+  {
+    x: 0.765625,
+    y: 0.296875
+  },
+  {
+    x: 0.765625,
+    y: 0.296875
+  },
+  {
+    x: 0.796875,
+    y: 0.296875
+  },
+  {
+    x: 0.796875,
+    y: 0.296875
+  },
+  {
+    x: 0.828125,
+    y: 0.296875
+  },
+  {
+    x: 0.828125,
+    y: 0.296875
+  },
+  {
+    x: 0.859375,
+    y: 0.296875
+  },
+  {
+    x: 0.859375,
+    y: 0.296875
+  },
+  {
+    x: 0.890625,
+    y: 0.296875
+  },
+  {
+    x: 0.890625,
+    y: 0.296875
+  },
+  {
+    x: 0.921875,
+    y: 0.296875
+  },
+  {
+    x: 0.921875,
+    y: 0.296875
+  },
+  {
+    x: 0.953125,
+    y: 0.296875
+  },
+  {
+    x: 0.953125,
+    y: 0.296875
+  },
+  {
+    x: 0.984375,
+    y: 0.296875
+  },
+  {
+    x: 0.984375,
+    y: 0.296875
+  },
+  {
+    x: 0.015625,
+    y: 0.328125
+  },
+  {
+    x: 0.015625,
+    y: 0.328125
+  },
+  {
+    x: 0.046875,
+    y: 0.328125
+  },
+  {
+    x: 0.046875,
+    y: 0.328125
+  },
+  {
+    x: 0.078125,
+    y: 0.328125
+  },
+  {
+    x: 0.078125,
+    y: 0.328125
+  },
+  {
+    x: 0.109375,
+    y: 0.328125
+  },
+  {
+    x: 0.109375,
+    y: 0.328125
+  },
+  {
+    x: 0.140625,
+    y: 0.328125
+  },
+  {
+    x: 0.140625,
+    y: 0.328125
+  },
+  {
+    x: 0.171875,
+    y: 0.328125
+  },
+  {
+    x: 0.171875,
+    y: 0.328125
+  },
+  {
+    x: 0.203125,
+    y: 0.328125
+  },
+  {
+    x: 0.203125,
+    y: 0.328125
+  },
+  {
+    x: 0.234375,
+    y: 0.328125
+  },
+  {
+    x: 0.234375,
+    y: 0.328125
+  },
+  {
+    x: 0.265625,
+    y: 0.328125
+  },
+  {
+    x: 0.265625,
+    y: 0.328125
+  },
+  {
+    x: 0.296875,
+    y: 0.328125
+  },
+  {
+    x: 0.296875,
+    y: 0.328125
+  },
+  {
+    x: 0.328125,
+    y: 0.328125
+  },
+  {
+    x: 0.328125,
+    y: 0.328125
+  },
+  {
+    x: 0.359375,
+    y: 0.328125
+  },
+  {
+    x: 0.359375,
+    y: 0.328125
+  },
+  {
+    x: 0.390625,
+    y: 0.328125
+  },
+  {
+    x: 0.390625,
+    y: 0.328125
+  },
+  {
+    x: 0.421875,
+    y: 0.328125
+  },
+  {
+    x: 0.421875,
+    y: 0.328125
+  },
+  {
+    x: 0.453125,
+    y: 0.328125
+  },
+  {
+    x: 0.453125,
+    y: 0.328125
+  },
+  {
+    x: 0.484375,
+    y: 0.328125
+  },
+  {
+    x: 0.484375,
+    y: 0.328125
+  },
+  {
+    x: 0.515625,
+    y: 0.328125
+  },
+  {
+    x: 0.515625,
+    y: 0.328125
+  },
+  {
+    x: 0.546875,
+    y: 0.328125
+  },
+  {
+    x: 0.546875,
+    y: 0.328125
+  },
+  {
+    x: 0.578125,
+    y: 0.328125
+  },
+  {
+    x: 0.578125,
+    y: 0.328125
+  },
+  {
+    x: 0.609375,
+    y: 0.328125
+  },
+  {
+    x: 0.609375,
+    y: 0.328125
+  },
+  {
+    x: 0.640625,
+    y: 0.328125
+  },
+  {
+    x: 0.640625,
+    y: 0.328125
+  },
+  {
+    x: 0.671875,
+    y: 0.328125
+  },
+  {
+    x: 0.671875,
+    y: 0.328125
+  },
+  {
+    x: 0.703125,
+    y: 0.328125
+  },
+  {
+    x: 0.703125,
+    y: 0.328125
+  },
+  {
+    x: 0.734375,
+    y: 0.328125
+  },
+  {
+    x: 0.734375,
+    y: 0.328125
+  },
+  {
+    x: 0.765625,
+    y: 0.328125
+  },
+  {
+    x: 0.765625,
+    y: 0.328125
+  },
+  {
+    x: 0.796875,
+    y: 0.328125
+  },
+  {
+    x: 0.796875,
+    y: 0.328125
+  },
+  {
+    x: 0.828125,
+    y: 0.328125
+  },
+  {
+    x: 0.828125,
+    y: 0.328125
+  },
+  {
+    x: 0.859375,
+    y: 0.328125
+  },
+  {
+    x: 0.859375,
+    y: 0.328125
+  },
+  {
+    x: 0.890625,
+    y: 0.328125
+  },
+  {
+    x: 0.890625,
+    y: 0.328125
+  },
+  {
+    x: 0.921875,
+    y: 0.328125
+  },
+  {
+    x: 0.921875,
+    y: 0.328125
+  },
+  {
+    x: 0.953125,
+    y: 0.328125
+  },
+  {
+    x: 0.953125,
+    y: 0.328125
+  },
+  {
+    x: 0.984375,
+    y: 0.328125
+  },
+  {
+    x: 0.984375,
+    y: 0.328125
+  },
+  {
+    x: 0.015625,
+    y: 0.359375
+  },
+  {
+    x: 0.015625,
+    y: 0.359375
+  },
+  {
+    x: 0.046875,
+    y: 0.359375
+  },
+  {
+    x: 0.046875,
+    y: 0.359375
+  },
+  {
+    x: 0.078125,
+    y: 0.359375
+  },
+  {
+    x: 0.078125,
+    y: 0.359375
+  },
+  {
+    x: 0.109375,
+    y: 0.359375
+  },
+  {
+    x: 0.109375,
+    y: 0.359375
+  },
+  {
+    x: 0.140625,
+    y: 0.359375
+  },
+  {
+    x: 0.140625,
+    y: 0.359375
+  },
+  {
+    x: 0.171875,
+    y: 0.359375
+  },
+  {
+    x: 0.171875,
+    y: 0.359375
+  },
+  {
+    x: 0.203125,
+    y: 0.359375
+  },
+  {
+    x: 0.203125,
+    y: 0.359375
+  },
+  {
+    x: 0.234375,
+    y: 0.359375
+  },
+  {
+    x: 0.234375,
+    y: 0.359375
+  },
+  {
+    x: 0.265625,
+    y: 0.359375
+  },
+  {
+    x: 0.265625,
+    y: 0.359375
+  },
+  {
+    x: 0.296875,
+    y: 0.359375
+  },
+  {
+    x: 0.296875,
+    y: 0.359375
+  },
+  {
+    x: 0.328125,
+    y: 0.359375
+  },
+  {
+    x: 0.328125,
+    y: 0.359375
+  },
+  {
+    x: 0.359375,
+    y: 0.359375
+  },
+  {
+    x: 0.359375,
+    y: 0.359375
+  },
+  {
+    x: 0.390625,
+    y: 0.359375
+  },
+  {
+    x: 0.390625,
+    y: 0.359375
+  },
+  {
+    x: 0.421875,
+    y: 0.359375
+  },
+  {
+    x: 0.421875,
+    y: 0.359375
+  },
+  {
+    x: 0.453125,
+    y: 0.359375
+  },
+  {
+    x: 0.453125,
+    y: 0.359375
+  },
+  {
+    x: 0.484375,
+    y: 0.359375
+  },
+  {
+    x: 0.484375,
+    y: 0.359375
+  },
+  {
+    x: 0.515625,
+    y: 0.359375
+  },
+  {
+    x: 0.515625,
+    y: 0.359375
+  },
+  {
+    x: 0.546875,
+    y: 0.359375
+  },
+  {
+    x: 0.546875,
+    y: 0.359375
+  },
+  {
+    x: 0.578125,
+    y: 0.359375
+  },
+  {
+    x: 0.578125,
+    y: 0.359375
+  },
+  {
+    x: 0.609375,
+    y: 0.359375
+  },
+  {
+    x: 0.609375,
+    y: 0.359375
+  },
+  {
+    x: 0.640625,
+    y: 0.359375
+  },
+  {
+    x: 0.640625,
+    y: 0.359375
+  },
+  {
+    x: 0.671875,
+    y: 0.359375
+  },
+  {
+    x: 0.671875,
+    y: 0.359375
+  },
+  {
+    x: 0.703125,
+    y: 0.359375
+  },
+  {
+    x: 0.703125,
+    y: 0.359375
+  },
+  {
+    x: 0.734375,
+    y: 0.359375
+  },
+  {
+    x: 0.734375,
+    y: 0.359375
+  },
+  {
+    x: 0.765625,
+    y: 0.359375
+  },
+  {
+    x: 0.765625,
+    y: 0.359375
+  },
+  {
+    x: 0.796875,
+    y: 0.359375
+  },
+  {
+    x: 0.796875,
+    y: 0.359375
+  },
+  {
+    x: 0.828125,
+    y: 0.359375
+  },
+  {
+    x: 0.828125,
+    y: 0.359375
+  },
+  {
+    x: 0.859375,
+    y: 0.359375
+  },
+  {
+    x: 0.859375,
+    y: 0.359375
+  },
+  {
+    x: 0.890625,
+    y: 0.359375
+  },
+  {
+    x: 0.890625,
+    y: 0.359375
+  },
+  {
+    x: 0.921875,
+    y: 0.359375
+  },
+  {
+    x: 0.921875,
+    y: 0.359375
+  },
+  {
+    x: 0.953125,
+    y: 0.359375
+  },
+  {
+    x: 0.953125,
+    y: 0.359375
+  },
+  {
+    x: 0.984375,
+    y: 0.359375
+  },
+  {
+    x: 0.984375,
+    y: 0.359375
+  },
+  {
+    x: 0.015625,
+    y: 0.390625
+  },
+  {
+    x: 0.015625,
+    y: 0.390625
+  },
+  {
+    x: 0.046875,
+    y: 0.390625
+  },
+  {
+    x: 0.046875,
+    y: 0.390625
+  },
+  {
+    x: 0.078125,
+    y: 0.390625
+  },
+  {
+    x: 0.078125,
+    y: 0.390625
+  },
+  {
+    x: 0.109375,
+    y: 0.390625
+  },
+  {
+    x: 0.109375,
+    y: 0.390625
+  },
+  {
+    x: 0.140625,
+    y: 0.390625
+  },
+  {
+    x: 0.140625,
+    y: 0.390625
+  },
+  {
+    x: 0.171875,
+    y: 0.390625
+  },
+  {
+    x: 0.171875,
+    y: 0.390625
+  },
+  {
+    x: 0.203125,
+    y: 0.390625
+  },
+  {
+    x: 0.203125,
+    y: 0.390625
+  },
+  {
+    x: 0.234375,
+    y: 0.390625
+  },
+  {
+    x: 0.234375,
+    y: 0.390625
+  },
+  {
+    x: 0.265625,
+    y: 0.390625
+  },
+  {
+    x: 0.265625,
+    y: 0.390625
+  },
+  {
+    x: 0.296875,
+    y: 0.390625
+  },
+  {
+    x: 0.296875,
+    y: 0.390625
+  },
+  {
+    x: 0.328125,
+    y: 0.390625
+  },
+  {
+    x: 0.328125,
+    y: 0.390625
+  },
+  {
+    x: 0.359375,
+    y: 0.390625
+  },
+  {
+    x: 0.359375,
+    y: 0.390625
+  },
+  {
+    x: 0.390625,
+    y: 0.390625
+  },
+  {
+    x: 0.390625,
+    y: 0.390625
+  },
+  {
+    x: 0.421875,
+    y: 0.390625
+  },
+  {
+    x: 0.421875,
+    y: 0.390625
+  },
+  {
+    x: 0.453125,
+    y: 0.390625
+  },
+  {
+    x: 0.453125,
+    y: 0.390625
+  },
+  {
+    x: 0.484375,
+    y: 0.390625
+  },
+  {
+    x: 0.484375,
+    y: 0.390625
+  },
+  {
+    x: 0.515625,
+    y: 0.390625
+  },
+  {
+    x: 0.515625,
+    y: 0.390625
+  },
+  {
+    x: 0.546875,
+    y: 0.390625
+  },
+  {
+    x: 0.546875,
+    y: 0.390625
+  },
+  {
+    x: 0.578125,
+    y: 0.390625
+  },
+  {
+    x: 0.578125,
+    y: 0.390625
+  },
+  {
+    x: 0.609375,
+    y: 0.390625
+  },
+  {
+    x: 0.609375,
+    y: 0.390625
+  },
+  {
+    x: 0.640625,
+    y: 0.390625
+  },
+  {
+    x: 0.640625,
+    y: 0.390625
+  },
+  {
+    x: 0.671875,
+    y: 0.390625
+  },
+  {
+    x: 0.671875,
+    y: 0.390625
+  },
+  {
+    x: 0.703125,
+    y: 0.390625
+  },
+  {
+    x: 0.703125,
+    y: 0.390625
+  },
+  {
+    x: 0.734375,
+    y: 0.390625
+  },
+  {
+    x: 0.734375,
+    y: 0.390625
+  },
+  {
+    x: 0.765625,
+    y: 0.390625
+  },
+  {
+    x: 0.765625,
+    y: 0.390625
+  },
+  {
+    x: 0.796875,
+    y: 0.390625
+  },
+  {
+    x: 0.796875,
+    y: 0.390625
+  },
+  {
+    x: 0.828125,
+    y: 0.390625
+  },
+  {
+    x: 0.828125,
+    y: 0.390625
+  },
+  {
+    x: 0.859375,
+    y: 0.390625
+  },
+  {
+    x: 0.859375,
+    y: 0.390625
+  },
+  {
+    x: 0.890625,
+    y: 0.390625
+  },
+  {
+    x: 0.890625,
+    y: 0.390625
+  },
+  {
+    x: 0.921875,
+    y: 0.390625
+  },
+  {
+    x: 0.921875,
+    y: 0.390625
+  },
+  {
+    x: 0.953125,
+    y: 0.390625
+  },
+  {
+    x: 0.953125,
+    y: 0.390625
+  },
+  {
+    x: 0.984375,
+    y: 0.390625
+  },
+  {
+    x: 0.984375,
+    y: 0.390625
+  },
+  {
+    x: 0.015625,
+    y: 0.421875
+  },
+  {
+    x: 0.015625,
+    y: 0.421875
+  },
+  {
+    x: 0.046875,
+    y: 0.421875
+  },
+  {
+    x: 0.046875,
+    y: 0.421875
+  },
+  {
+    x: 0.078125,
+    y: 0.421875
+  },
+  {
+    x: 0.078125,
+    y: 0.421875
+  },
+  {
+    x: 0.109375,
+    y: 0.421875
+  },
+  {
+    x: 0.109375,
+    y: 0.421875
+  },
+  {
+    x: 0.140625,
+    y: 0.421875
+  },
+  {
+    x: 0.140625,
+    y: 0.421875
+  },
+  {
+    x: 0.171875,
+    y: 0.421875
+  },
+  {
+    x: 0.171875,
+    y: 0.421875
+  },
+  {
+    x: 0.203125,
+    y: 0.421875
+  },
+  {
+    x: 0.203125,
+    y: 0.421875
+  },
+  {
+    x: 0.234375,
+    y: 0.421875
+  },
+  {
+    x: 0.234375,
+    y: 0.421875
+  },
+  {
+    x: 0.265625,
+    y: 0.421875
+  },
+  {
+    x: 0.265625,
+    y: 0.421875
+  },
+  {
+    x: 0.296875,
+    y: 0.421875
+  },
+  {
+    x: 0.296875,
+    y: 0.421875
+  },
+  {
+    x: 0.328125,
+    y: 0.421875
+  },
+  {
+    x: 0.328125,
+    y: 0.421875
+  },
+  {
+    x: 0.359375,
+    y: 0.421875
+  },
+  {
+    x: 0.359375,
+    y: 0.421875
+  },
+  {
+    x: 0.390625,
+    y: 0.421875
+  },
+  {
+    x: 0.390625,
+    y: 0.421875
+  },
+  {
+    x: 0.421875,
+    y: 0.421875
+  },
+  {
+    x: 0.421875,
+    y: 0.421875
+  },
+  {
+    x: 0.453125,
+    y: 0.421875
+  },
+  {
+    x: 0.453125,
+    y: 0.421875
+  },
+  {
+    x: 0.484375,
+    y: 0.421875
+  },
+  {
+    x: 0.484375,
+    y: 0.421875
+  },
+  {
+    x: 0.515625,
+    y: 0.421875
+  },
+  {
+    x: 0.515625,
+    y: 0.421875
+  },
+  {
+    x: 0.546875,
+    y: 0.421875
+  },
+  {
+    x: 0.546875,
+    y: 0.421875
+  },
+  {
+    x: 0.578125,
+    y: 0.421875
+  },
+  {
+    x: 0.578125,
+    y: 0.421875
+  },
+  {
+    x: 0.609375,
+    y: 0.421875
+  },
+  {
+    x: 0.609375,
+    y: 0.421875
+  },
+  {
+    x: 0.640625,
+    y: 0.421875
+  },
+  {
+    x: 0.640625,
+    y: 0.421875
+  },
+  {
+    x: 0.671875,
+    y: 0.421875
+  },
+  {
+    x: 0.671875,
+    y: 0.421875
+  },
+  {
+    x: 0.703125,
+    y: 0.421875
+  },
+  {
+    x: 0.703125,
+    y: 0.421875
+  },
+  {
+    x: 0.734375,
+    y: 0.421875
+  },
+  {
+    x: 0.734375,
+    y: 0.421875
+  },
+  {
+    x: 0.765625,
+    y: 0.421875
+  },
+  {
+    x: 0.765625,
+    y: 0.421875
+  },
+  {
+    x: 0.796875,
+    y: 0.421875
+  },
+  {
+    x: 0.796875,
+    y: 0.421875
+  },
+  {
+    x: 0.828125,
+    y: 0.421875
+  },
+  {
+    x: 0.828125,
+    y: 0.421875
+  },
+  {
+    x: 0.859375,
+    y: 0.421875
+  },
+  {
+    x: 0.859375,
+    y: 0.421875
+  },
+  {
+    x: 0.890625,
+    y: 0.421875
+  },
+  {
+    x: 0.890625,
+    y: 0.421875
+  },
+  {
+    x: 0.921875,
+    y: 0.421875
+  },
+  {
+    x: 0.921875,
+    y: 0.421875
+  },
+  {
+    x: 0.953125,
+    y: 0.421875
+  },
+  {
+    x: 0.953125,
+    y: 0.421875
+  },
+  {
+    x: 0.984375,
+    y: 0.421875
+  },
+  {
+    x: 0.984375,
+    y: 0.421875
+  },
+  {
+    x: 0.015625,
+    y: 0.453125
+  },
+  {
+    x: 0.015625,
+    y: 0.453125
+  },
+  {
+    x: 0.046875,
+    y: 0.453125
+  },
+  {
+    x: 0.046875,
+    y: 0.453125
+  },
+  {
+    x: 0.078125,
+    y: 0.453125
+  },
+  {
+    x: 0.078125,
+    y: 0.453125
+  },
+  {
+    x: 0.109375,
+    y: 0.453125
+  },
+  {
+    x: 0.109375,
+    y: 0.453125
+  },
+  {
+    x: 0.140625,
+    y: 0.453125
+  },
+  {
+    x: 0.140625,
+    y: 0.453125
+  },
+  {
+    x: 0.171875,
+    y: 0.453125
+  },
+  {
+    x: 0.171875,
+    y: 0.453125
+  },
+  {
+    x: 0.203125,
+    y: 0.453125
+  },
+  {
+    x: 0.203125,
+    y: 0.453125
+  },
+  {
+    x: 0.234375,
+    y: 0.453125
+  },
+  {
+    x: 0.234375,
+    y: 0.453125
+  },
+  {
+    x: 0.265625,
+    y: 0.453125
+  },
+  {
+    x: 0.265625,
+    y: 0.453125
+  },
+  {
+    x: 0.296875,
+    y: 0.453125
+  },
+  {
+    x: 0.296875,
+    y: 0.453125
+  },
+  {
+    x: 0.328125,
+    y: 0.453125
+  },
+  {
+    x: 0.328125,
+    y: 0.453125
+  },
+  {
+    x: 0.359375,
+    y: 0.453125
+  },
+  {
+    x: 0.359375,
+    y: 0.453125
+  },
+  {
+    x: 0.390625,
+    y: 0.453125
+  },
+  {
+    x: 0.390625,
+    y: 0.453125
+  },
+  {
+    x: 0.421875,
+    y: 0.453125
+  },
+  {
+    x: 0.421875,
+    y: 0.453125
+  },
+  {
+    x: 0.453125,
+    y: 0.453125
+  },
+  {
+    x: 0.453125,
+    y: 0.453125
+  },
+  {
+    x: 0.484375,
+    y: 0.453125
+  },
+  {
+    x: 0.484375,
+    y: 0.453125
+  },
+  {
+    x: 0.515625,
+    y: 0.453125
+  },
+  {
+    x: 0.515625,
+    y: 0.453125
+  },
+  {
+    x: 0.546875,
+    y: 0.453125
+  },
+  {
+    x: 0.546875,
+    y: 0.453125
+  },
+  {
+    x: 0.578125,
+    y: 0.453125
+  },
+  {
+    x: 0.578125,
+    y: 0.453125
+  },
+  {
+    x: 0.609375,
+    y: 0.453125
+  },
+  {
+    x: 0.609375,
+    y: 0.453125
+  },
+  {
+    x: 0.640625,
+    y: 0.453125
+  },
+  {
+    x: 0.640625,
+    y: 0.453125
+  },
+  {
+    x: 0.671875,
+    y: 0.453125
+  },
+  {
+    x: 0.671875,
+    y: 0.453125
+  },
+  {
+    x: 0.703125,
+    y: 0.453125
+  },
+  {
+    x: 0.703125,
+    y: 0.453125
+  },
+  {
+    x: 0.734375,
+    y: 0.453125
+  },
+  {
+    x: 0.734375,
+    y: 0.453125
+  },
+  {
+    x: 0.765625,
+    y: 0.453125
+  },
+  {
+    x: 0.765625,
+    y: 0.453125
+  },
+  {
+    x: 0.796875,
+    y: 0.453125
+  },
+  {
+    x: 0.796875,
+    y: 0.453125
+  },
+  {
+    x: 0.828125,
+    y: 0.453125
+  },
+  {
+    x: 0.828125,
+    y: 0.453125
+  },
+  {
+    x: 0.859375,
+    y: 0.453125
+  },
+  {
+    x: 0.859375,
+    y: 0.453125
+  },
+  {
+    x: 0.890625,
+    y: 0.453125
+  },
+  {
+    x: 0.890625,
+    y: 0.453125
+  },
+  {
+    x: 0.921875,
+    y: 0.453125
+  },
+  {
+    x: 0.921875,
+    y: 0.453125
+  },
+  {
+    x: 0.953125,
+    y: 0.453125
+  },
+  {
+    x: 0.953125,
+    y: 0.453125
+  },
+  {
+    x: 0.984375,
+    y: 0.453125
+  },
+  {
+    x: 0.984375,
+    y: 0.453125
+  },
+  {
+    x: 0.015625,
+    y: 0.484375
+  },
+  {
+    x: 0.015625,
+    y: 0.484375
+  },
+  {
+    x: 0.046875,
+    y: 0.484375
+  },
+  {
+    x: 0.046875,
+    y: 0.484375
+  },
+  {
+    x: 0.078125,
+    y: 0.484375
+  },
+  {
+    x: 0.078125,
+    y: 0.484375
+  },
+  {
+    x: 0.109375,
+    y: 0.484375
+  },
+  {
+    x: 0.109375,
+    y: 0.484375
+  },
+  {
+    x: 0.140625,
+    y: 0.484375
+  },
+  {
+    x: 0.140625,
+    y: 0.484375
+  },
+  {
+    x: 0.171875,
+    y: 0.484375
+  },
+  {
+    x: 0.171875,
+    y: 0.484375
+  },
+  {
+    x: 0.203125,
+    y: 0.484375
+  },
+  {
+    x: 0.203125,
+    y: 0.484375
+  },
+  {
+    x: 0.234375,
+    y: 0.484375
+  },
+  {
+    x: 0.234375,
+    y: 0.484375
+  },
+  {
+    x: 0.265625,
+    y: 0.484375
+  },
+  {
+    x: 0.265625,
+    y: 0.484375
+  },
+  {
+    x: 0.296875,
+    y: 0.484375
+  },
+  {
+    x: 0.296875,
+    y: 0.484375
+  },
+  {
+    x: 0.328125,
+    y: 0.484375
+  },
+  {
+    x: 0.328125,
+    y: 0.484375
+  },
+  {
+    x: 0.359375,
+    y: 0.484375
+  },
+  {
+    x: 0.359375,
+    y: 0.484375
+  },
+  {
+    x: 0.390625,
+    y: 0.484375
+  },
+  {
+    x: 0.390625,
+    y: 0.484375
+  },
+  {
+    x: 0.421875,
+    y: 0.484375
+  },
+  {
+    x: 0.421875,
+    y: 0.484375
+  },
+  {
+    x: 0.453125,
+    y: 0.484375
+  },
+  {
+    x: 0.453125,
+    y: 0.484375
+  },
+  {
+    x: 0.484375,
+    y: 0.484375
+  },
+  {
+    x: 0.484375,
+    y: 0.484375
+  },
+  {
+    x: 0.515625,
+    y: 0.484375
+  },
+  {
+    x: 0.515625,
+    y: 0.484375
+  },
+  {
+    x: 0.546875,
+    y: 0.484375
+  },
+  {
+    x: 0.546875,
+    y: 0.484375
+  },
+  {
+    x: 0.578125,
+    y: 0.484375
+  },
+  {
+    x: 0.578125,
+    y: 0.484375
+  },
+  {
+    x: 0.609375,
+    y: 0.484375
+  },
+  {
+    x: 0.609375,
+    y: 0.484375
+  },
+  {
+    x: 0.640625,
+    y: 0.484375
+  },
+  {
+    x: 0.640625,
+    y: 0.484375
+  },
+  {
+    x: 0.671875,
+    y: 0.484375
+  },
+  {
+    x: 0.671875,
+    y: 0.484375
+  },
+  {
+    x: 0.703125,
+    y: 0.484375
+  },
+  {
+    x: 0.703125,
+    y: 0.484375
+  },
+  {
+    x: 0.734375,
+    y: 0.484375
+  },
+  {
+    x: 0.734375,
+    y: 0.484375
+  },
+  {
+    x: 0.765625,
+    y: 0.484375
+  },
+  {
+    x: 0.765625,
+    y: 0.484375
+  },
+  {
+    x: 0.796875,
+    y: 0.484375
+  },
+  {
+    x: 0.796875,
+    y: 0.484375
+  },
+  {
+    x: 0.828125,
+    y: 0.484375
+  },
+  {
+    x: 0.828125,
+    y: 0.484375
+  },
+  {
+    x: 0.859375,
+    y: 0.484375
+  },
+  {
+    x: 0.859375,
+    y: 0.484375
+  },
+  {
+    x: 0.890625,
+    y: 0.484375
+  },
+  {
+    x: 0.890625,
+    y: 0.484375
+  },
+  {
+    x: 0.921875,
+    y: 0.484375
+  },
+  {
+    x: 0.921875,
+    y: 0.484375
+  },
+  {
+    x: 0.953125,
+    y: 0.484375
+  },
+  {
+    x: 0.953125,
+    y: 0.484375
+  },
+  {
+    x: 0.984375,
+    y: 0.484375
+  },
+  {
+    x: 0.984375,
+    y: 0.484375
+  },
+  {
+    x: 0.015625,
+    y: 0.515625
+  },
+  {
+    x: 0.015625,
+    y: 0.515625
+  },
+  {
+    x: 0.046875,
+    y: 0.515625
+  },
+  {
+    x: 0.046875,
+    y: 0.515625
+  },
+  {
+    x: 0.078125,
+    y: 0.515625
+  },
+  {
+    x: 0.078125,
+    y: 0.515625
+  },
+  {
+    x: 0.109375,
+    y: 0.515625
+  },
+  {
+    x: 0.109375,
+    y: 0.515625
+  },
+  {
+    x: 0.140625,
+    y: 0.515625
+  },
+  {
+    x: 0.140625,
+    y: 0.515625
+  },
+  {
+    x: 0.171875,
+    y: 0.515625
+  },
+  {
+    x: 0.171875,
+    y: 0.515625
+  },
+  {
+    x: 0.203125,
+    y: 0.515625
+  },
+  {
+    x: 0.203125,
+    y: 0.515625
+  },
+  {
+    x: 0.234375,
+    y: 0.515625
+  },
+  {
+    x: 0.234375,
+    y: 0.515625
+  },
+  {
+    x: 0.265625,
+    y: 0.515625
+  },
+  {
+    x: 0.265625,
+    y: 0.515625
+  },
+  {
+    x: 0.296875,
+    y: 0.515625
+  },
+  {
+    x: 0.296875,
+    y: 0.515625
+  },
+  {
+    x: 0.328125,
+    y: 0.515625
+  },
+  {
+    x: 0.328125,
+    y: 0.515625
+  },
+  {
+    x: 0.359375,
+    y: 0.515625
+  },
+  {
+    x: 0.359375,
+    y: 0.515625
+  },
+  {
+    x: 0.390625,
+    y: 0.515625
+  },
+  {
+    x: 0.390625,
+    y: 0.515625
+  },
+  {
+    x: 0.421875,
+    y: 0.515625
+  },
+  {
+    x: 0.421875,
+    y: 0.515625
+  },
+  {
+    x: 0.453125,
+    y: 0.515625
+  },
+  {
+    x: 0.453125,
+    y: 0.515625
+  },
+  {
+    x: 0.484375,
+    y: 0.515625
+  },
+  {
+    x: 0.484375,
+    y: 0.515625
+  },
+  {
+    x: 0.515625,
+    y: 0.515625
+  },
+  {
+    x: 0.515625,
+    y: 0.515625
+  },
+  {
+    x: 0.546875,
+    y: 0.515625
+  },
+  {
+    x: 0.546875,
+    y: 0.515625
+  },
+  {
+    x: 0.578125,
+    y: 0.515625
+  },
+  {
+    x: 0.578125,
+    y: 0.515625
+  },
+  {
+    x: 0.609375,
+    y: 0.515625
+  },
+  {
+    x: 0.609375,
+    y: 0.515625
+  },
+  {
+    x: 0.640625,
+    y: 0.515625
+  },
+  {
+    x: 0.640625,
+    y: 0.515625
+  },
+  {
+    x: 0.671875,
+    y: 0.515625
+  },
+  {
+    x: 0.671875,
+    y: 0.515625
+  },
+  {
+    x: 0.703125,
+    y: 0.515625
+  },
+  {
+    x: 0.703125,
+    y: 0.515625
+  },
+  {
+    x: 0.734375,
+    y: 0.515625
+  },
+  {
+    x: 0.734375,
+    y: 0.515625
+  },
+  {
+    x: 0.765625,
+    y: 0.515625
+  },
+  {
+    x: 0.765625,
+    y: 0.515625
+  },
+  {
+    x: 0.796875,
+    y: 0.515625
+  },
+  {
+    x: 0.796875,
+    y: 0.515625
+  },
+  {
+    x: 0.828125,
+    y: 0.515625
+  },
+  {
+    x: 0.828125,
+    y: 0.515625
+  },
+  {
+    x: 0.859375,
+    y: 0.515625
+  },
+  {
+    x: 0.859375,
+    y: 0.515625
+  },
+  {
+    x: 0.890625,
+    y: 0.515625
+  },
+  {
+    x: 0.890625,
+    y: 0.515625
+  },
+  {
+    x: 0.921875,
+    y: 0.515625
+  },
+  {
+    x: 0.921875,
+    y: 0.515625
+  },
+  {
+    x: 0.953125,
+    y: 0.515625
+  },
+  {
+    x: 0.953125,
+    y: 0.515625
+  },
+  {
+    x: 0.984375,
+    y: 0.515625
+  },
+  {
+    x: 0.984375,
+    y: 0.515625
+  },
+  {
+    x: 0.015625,
+    y: 0.546875
+  },
+  {
+    x: 0.015625,
+    y: 0.546875
+  },
+  {
+    x: 0.046875,
+    y: 0.546875
+  },
+  {
+    x: 0.046875,
+    y: 0.546875
+  },
+  {
+    x: 0.078125,
+    y: 0.546875
+  },
+  {
+    x: 0.078125,
+    y: 0.546875
+  },
+  {
+    x: 0.109375,
+    y: 0.546875
+  },
+  {
+    x: 0.109375,
+    y: 0.546875
+  },
+  {
+    x: 0.140625,
+    y: 0.546875
+  },
+  {
+    x: 0.140625,
+    y: 0.546875
+  },
+  {
+    x: 0.171875,
+    y: 0.546875
+  },
+  {
+    x: 0.171875,
+    y: 0.546875
+  },
+  {
+    x: 0.203125,
+    y: 0.546875
+  },
+  {
+    x: 0.203125,
+    y: 0.546875
+  },
+  {
+    x: 0.234375,
+    y: 0.546875
+  },
+  {
+    x: 0.234375,
+    y: 0.546875
+  },
+  {
+    x: 0.265625,
+    y: 0.546875
+  },
+  {
+    x: 0.265625,
+    y: 0.546875
+  },
+  {
+    x: 0.296875,
+    y: 0.546875
+  },
+  {
+    x: 0.296875,
+    y: 0.546875
+  },
+  {
+    x: 0.328125,
+    y: 0.546875
+  },
+  {
+    x: 0.328125,
+    y: 0.546875
+  },
+  {
+    x: 0.359375,
+    y: 0.546875
+  },
+  {
+    x: 0.359375,
+    y: 0.546875
+  },
+  {
+    x: 0.390625,
+    y: 0.546875
+  },
+  {
+    x: 0.390625,
+    y: 0.546875
+  },
+  {
+    x: 0.421875,
+    y: 0.546875
+  },
+  {
+    x: 0.421875,
+    y: 0.546875
+  },
+  {
+    x: 0.453125,
+    y: 0.546875
+  },
+  {
+    x: 0.453125,
+    y: 0.546875
+  },
+  {
+    x: 0.484375,
+    y: 0.546875
+  },
+  {
+    x: 0.484375,
+    y: 0.546875
+  },
+  {
+    x: 0.515625,
+    y: 0.546875
+  },
+  {
+    x: 0.515625,
+    y: 0.546875
+  },
+  {
+    x: 0.546875,
+    y: 0.546875
+  },
+  {
+    x: 0.546875,
+    y: 0.546875
+  },
+  {
+    x: 0.578125,
+    y: 0.546875
+  },
+  {
+    x: 0.578125,
+    y: 0.546875
+  },
+  {
+    x: 0.609375,
+    y: 0.546875
+  },
+  {
+    x: 0.609375,
+    y: 0.546875
+  },
+  {
+    x: 0.640625,
+    y: 0.546875
+  },
+  {
+    x: 0.640625,
+    y: 0.546875
+  },
+  {
+    x: 0.671875,
+    y: 0.546875
+  },
+  {
+    x: 0.671875,
+    y: 0.546875
+  },
+  {
+    x: 0.703125,
+    y: 0.546875
+  },
+  {
+    x: 0.703125,
+    y: 0.546875
+  },
+  {
+    x: 0.734375,
+    y: 0.546875
+  },
+  {
+    x: 0.734375,
+    y: 0.546875
+  },
+  {
+    x: 0.765625,
+    y: 0.546875
+  },
+  {
+    x: 0.765625,
+    y: 0.546875
+  },
+  {
+    x: 0.796875,
+    y: 0.546875
+  },
+  {
+    x: 0.796875,
+    y: 0.546875
+  },
+  {
+    x: 0.828125,
+    y: 0.546875
+  },
+  {
+    x: 0.828125,
+    y: 0.546875
+  },
+  {
+    x: 0.859375,
+    y: 0.546875
+  },
+  {
+    x: 0.859375,
+    y: 0.546875
+  },
+  {
+    x: 0.890625,
+    y: 0.546875
+  },
+  {
+    x: 0.890625,
+    y: 0.546875
+  },
+  {
+    x: 0.921875,
+    y: 0.546875
+  },
+  {
+    x: 0.921875,
+    y: 0.546875
+  },
+  {
+    x: 0.953125,
+    y: 0.546875
+  },
+  {
+    x: 0.953125,
+    y: 0.546875
+  },
+  {
+    x: 0.984375,
+    y: 0.546875
+  },
+  {
+    x: 0.984375,
+    y: 0.546875
+  },
+  {
+    x: 0.015625,
+    y: 0.578125
+  },
+  {
+    x: 0.015625,
+    y: 0.578125
+  },
+  {
+    x: 0.046875,
+    y: 0.578125
+  },
+  {
+    x: 0.046875,
+    y: 0.578125
+  },
+  {
+    x: 0.078125,
+    y: 0.578125
+  },
+  {
+    x: 0.078125,
+    y: 0.578125
+  },
+  {
+    x: 0.109375,
+    y: 0.578125
+  },
+  {
+    x: 0.109375,
+    y: 0.578125
+  },
+  {
+    x: 0.140625,
+    y: 0.578125
+  },
+  {
+    x: 0.140625,
+    y: 0.578125
+  },
+  {
+    x: 0.171875,
+    y: 0.578125
+  },
+  {
+    x: 0.171875,
+    y: 0.578125
+  },
+  {
+    x: 0.203125,
+    y: 0.578125
+  },
+  {
+    x: 0.203125,
+    y: 0.578125
+  },
+  {
+    x: 0.234375,
+    y: 0.578125
+  },
+  {
+    x: 0.234375,
+    y: 0.578125
+  },
+  {
+    x: 0.265625,
+    y: 0.578125
+  },
+  {
+    x: 0.265625,
+    y: 0.578125
+  },
+  {
+    x: 0.296875,
+    y: 0.578125
+  },
+  {
+    x: 0.296875,
+    y: 0.578125
+  },
+  {
+    x: 0.328125,
+    y: 0.578125
+  },
+  {
+    x: 0.328125,
+    y: 0.578125
+  },
+  {
+    x: 0.359375,
+    y: 0.578125
+  },
+  {
+    x: 0.359375,
+    y: 0.578125
+  },
+  {
+    x: 0.390625,
+    y: 0.578125
+  },
+  {
+    x: 0.390625,
+    y: 0.578125
+  },
+  {
+    x: 0.421875,
+    y: 0.578125
+  },
+  {
+    x: 0.421875,
+    y: 0.578125
+  },
+  {
+    x: 0.453125,
+    y: 0.578125
+  },
+  {
+    x: 0.453125,
+    y: 0.578125
+  },
+  {
+    x: 0.484375,
+    y: 0.578125
+  },
+  {
+    x: 0.484375,
+    y: 0.578125
+  },
+  {
+    x: 0.515625,
+    y: 0.578125
+  },
+  {
+    x: 0.515625,
+    y: 0.578125
+  },
+  {
+    x: 0.546875,
+    y: 0.578125
+  },
+  {
+    x: 0.546875,
+    y: 0.578125
+  },
+  {
+    x: 0.578125,
+    y: 0.578125
+  },
+  {
+    x: 0.578125,
+    y: 0.578125
+  },
+  {
+    x: 0.609375,
+    y: 0.578125
+  },
+  {
+    x: 0.609375,
+    y: 0.578125
+  },
+  {
+    x: 0.640625,
+    y: 0.578125
+  },
+  {
+    x: 0.640625,
+    y: 0.578125
+  },
+  {
+    x: 0.671875,
+    y: 0.578125
+  },
+  {
+    x: 0.671875,
+    y: 0.578125
+  },
+  {
+    x: 0.703125,
+    y: 0.578125
+  },
+  {
+    x: 0.703125,
+    y: 0.578125
+  },
+  {
+    x: 0.734375,
+    y: 0.578125
+  },
+  {
+    x: 0.734375,
+    y: 0.578125
+  },
+  {
+    x: 0.765625,
+    y: 0.578125
+  },
+  {
+    x: 0.765625,
+    y: 0.578125
+  },
+  {
+    x: 0.796875,
+    y: 0.578125
+  },
+  {
+    x: 0.796875,
+    y: 0.578125
+  },
+  {
+    x: 0.828125,
+    y: 0.578125
+  },
+  {
+    x: 0.828125,
+    y: 0.578125
+  },
+  {
+    x: 0.859375,
+    y: 0.578125
+  },
+  {
+    x: 0.859375,
+    y: 0.578125
+  },
+  {
+    x: 0.890625,
+    y: 0.578125
+  },
+  {
+    x: 0.890625,
+    y: 0.578125
+  },
+  {
+    x: 0.921875,
+    y: 0.578125
+  },
+  {
+    x: 0.921875,
+    y: 0.578125
+  },
+  {
+    x: 0.953125,
+    y: 0.578125
+  },
+  {
+    x: 0.953125,
+    y: 0.578125
+  },
+  {
+    x: 0.984375,
+    y: 0.578125
+  },
+  {
+    x: 0.984375,
+    y: 0.578125
+  },
+  {
+    x: 0.015625,
+    y: 0.609375
+  },
+  {
+    x: 0.015625,
+    y: 0.609375
+  },
+  {
+    x: 0.046875,
+    y: 0.609375
+  },
+  {
+    x: 0.046875,
+    y: 0.609375
+  },
+  {
+    x: 0.078125,
+    y: 0.609375
+  },
+  {
+    x: 0.078125,
+    y: 0.609375
+  },
+  {
+    x: 0.109375,
+    y: 0.609375
+  },
+  {
+    x: 0.109375,
+    y: 0.609375
+  },
+  {
+    x: 0.140625,
+    y: 0.609375
+  },
+  {
+    x: 0.140625,
+    y: 0.609375
+  },
+  {
+    x: 0.171875,
+    y: 0.609375
+  },
+  {
+    x: 0.171875,
+    y: 0.609375
+  },
+  {
+    x: 0.203125,
+    y: 0.609375
+  },
+  {
+    x: 0.203125,
+    y: 0.609375
+  },
+  {
+    x: 0.234375,
+    y: 0.609375
+  },
+  {
+    x: 0.234375,
+    y: 0.609375
+  },
+  {
+    x: 0.265625,
+    y: 0.609375
+  },
+  {
+    x: 0.265625,
+    y: 0.609375
+  },
+  {
+    x: 0.296875,
+    y: 0.609375
+  },
+  {
+    x: 0.296875,
+    y: 0.609375
+  },
+  {
+    x: 0.328125,
+    y: 0.609375
+  },
+  {
+    x: 0.328125,
+    y: 0.609375
+  },
+  {
+    x: 0.359375,
+    y: 0.609375
+  },
+  {
+    x: 0.359375,
+    y: 0.609375
+  },
+  {
+    x: 0.390625,
+    y: 0.609375
+  },
+  {
+    x: 0.390625,
+    y: 0.609375
+  },
+  {
+    x: 0.421875,
+    y: 0.609375
+  },
+  {
+    x: 0.421875,
+    y: 0.609375
+  },
+  {
+    x: 0.453125,
+    y: 0.609375
+  },
+  {
+    x: 0.453125,
+    y: 0.609375
+  },
+  {
+    x: 0.484375,
+    y: 0.609375
+  },
+  {
+    x: 0.484375,
+    y: 0.609375
+  },
+  {
+    x: 0.515625,
+    y: 0.609375
+  },
+  {
+    x: 0.515625,
+    y: 0.609375
+  },
+  {
+    x: 0.546875,
+    y: 0.609375
+  },
+  {
+    x: 0.546875,
+    y: 0.609375
+  },
+  {
+    x: 0.578125,
+    y: 0.609375
+  },
+  {
+    x: 0.578125,
+    y: 0.609375
+  },
+  {
+    x: 0.609375,
+    y: 0.609375
+  },
+  {
+    x: 0.609375,
+    y: 0.609375
+  },
+  {
+    x: 0.640625,
+    y: 0.609375
+  },
+  {
+    x: 0.640625,
+    y: 0.609375
+  },
+  {
+    x: 0.671875,
+    y: 0.609375
+  },
+  {
+    x: 0.671875,
+    y: 0.609375
+  },
+  {
+    x: 0.703125,
+    y: 0.609375
+  },
+  {
+    x: 0.703125,
+    y: 0.609375
+  },
+  {
+    x: 0.734375,
+    y: 0.609375
+  },
+  {
+    x: 0.734375,
+    y: 0.609375
+  },
+  {
+    x: 0.765625,
+    y: 0.609375
+  },
+  {
+    x: 0.765625,
+    y: 0.609375
+  },
+  {
+    x: 0.796875,
+    y: 0.609375
+  },
+  {
+    x: 0.796875,
+    y: 0.609375
+  },
+  {
+    x: 0.828125,
+    y: 0.609375
+  },
+  {
+    x: 0.828125,
+    y: 0.609375
+  },
+  {
+    x: 0.859375,
+    y: 0.609375
+  },
+  {
+    x: 0.859375,
+    y: 0.609375
+  },
+  {
+    x: 0.890625,
+    y: 0.609375
+  },
+  {
+    x: 0.890625,
+    y: 0.609375
+  },
+  {
+    x: 0.921875,
+    y: 0.609375
+  },
+  {
+    x: 0.921875,
+    y: 0.609375
+  },
+  {
+    x: 0.953125,
+    y: 0.609375
+  },
+  {
+    x: 0.953125,
+    y: 0.609375
+  },
+  {
+    x: 0.984375,
+    y: 0.609375
+  },
+  {
+    x: 0.984375,
+    y: 0.609375
+  },
+  {
+    x: 0.015625,
+    y: 0.640625
+  },
+  {
+    x: 0.015625,
+    y: 0.640625
+  },
+  {
+    x: 0.046875,
+    y: 0.640625
+  },
+  {
+    x: 0.046875,
+    y: 0.640625
+  },
+  {
+    x: 0.078125,
+    y: 0.640625
+  },
+  {
+    x: 0.078125,
+    y: 0.640625
+  },
+  {
+    x: 0.109375,
+    y: 0.640625
+  },
+  {
+    x: 0.109375,
+    y: 0.640625
+  },
+  {
+    x: 0.140625,
+    y: 0.640625
+  },
+  {
+    x: 0.140625,
+    y: 0.640625
+  },
+  {
+    x: 0.171875,
+    y: 0.640625
+  },
+  {
+    x: 0.171875,
+    y: 0.640625
+  },
+  {
+    x: 0.203125,
+    y: 0.640625
+  },
+  {
+    x: 0.203125,
+    y: 0.640625
+  },
+  {
+    x: 0.234375,
+    y: 0.640625
+  },
+  {
+    x: 0.234375,
+    y: 0.640625
+  },
+  {
+    x: 0.265625,
+    y: 0.640625
+  },
+  {
+    x: 0.265625,
+    y: 0.640625
+  },
+  {
+    x: 0.296875,
+    y: 0.640625
+  },
+  {
+    x: 0.296875,
+    y: 0.640625
+  },
+  {
+    x: 0.328125,
+    y: 0.640625
+  },
+  {
+    x: 0.328125,
+    y: 0.640625
+  },
+  {
+    x: 0.359375,
+    y: 0.640625
+  },
+  {
+    x: 0.359375,
+    y: 0.640625
+  },
+  {
+    x: 0.390625,
+    y: 0.640625
+  },
+  {
+    x: 0.390625,
+    y: 0.640625
+  },
+  {
+    x: 0.421875,
+    y: 0.640625
+  },
+  {
+    x: 0.421875,
+    y: 0.640625
+  },
+  {
+    x: 0.453125,
+    y: 0.640625
+  },
+  {
+    x: 0.453125,
+    y: 0.640625
+  },
+  {
+    x: 0.484375,
+    y: 0.640625
+  },
+  {
+    x: 0.484375,
+    y: 0.640625
+  },
+  {
+    x: 0.515625,
+    y: 0.640625
+  },
+  {
+    x: 0.515625,
+    y: 0.640625
+  },
+  {
+    x: 0.546875,
+    y: 0.640625
+  },
+  {
+    x: 0.546875,
+    y: 0.640625
+  },
+  {
+    x: 0.578125,
+    y: 0.640625
+  },
+  {
+    x: 0.578125,
+    y: 0.640625
+  },
+  {
+    x: 0.609375,
+    y: 0.640625
+  },
+  {
+    x: 0.609375,
+    y: 0.640625
+  },
+  {
+    x: 0.640625,
+    y: 0.640625
+  },
+  {
+    x: 0.640625,
+    y: 0.640625
+  },
+  {
+    x: 0.671875,
+    y: 0.640625
+  },
+  {
+    x: 0.671875,
+    y: 0.640625
+  },
+  {
+    x: 0.703125,
+    y: 0.640625
+  },
+  {
+    x: 0.703125,
+    y: 0.640625
+  },
+  {
+    x: 0.734375,
+    y: 0.640625
+  },
+  {
+    x: 0.734375,
+    y: 0.640625
+  },
+  {
+    x: 0.765625,
+    y: 0.640625
+  },
+  {
+    x: 0.765625,
+    y: 0.640625
+  },
+  {
+    x: 0.796875,
+    y: 0.640625
+  },
+  {
+    x: 0.796875,
+    y: 0.640625
+  },
+  {
+    x: 0.828125,
+    y: 0.640625
+  },
+  {
+    x: 0.828125,
+    y: 0.640625
+  },
+  {
+    x: 0.859375,
+    y: 0.640625
+  },
+  {
+    x: 0.859375,
+    y: 0.640625
+  },
+  {
+    x: 0.890625,
+    y: 0.640625
+  },
+  {
+    x: 0.890625,
+    y: 0.640625
+  },
+  {
+    x: 0.921875,
+    y: 0.640625
+  },
+  {
+    x: 0.921875,
+    y: 0.640625
+  },
+  {
+    x: 0.953125,
+    y: 0.640625
+  },
+  {
+    x: 0.953125,
+    y: 0.640625
+  },
+  {
+    x: 0.984375,
+    y: 0.640625
+  },
+  {
+    x: 0.984375,
+    y: 0.640625
+  },
+  {
+    x: 0.015625,
+    y: 0.671875
+  },
+  {
+    x: 0.015625,
+    y: 0.671875
+  },
+  {
+    x: 0.046875,
+    y: 0.671875
+  },
+  {
+    x: 0.046875,
+    y: 0.671875
+  },
+  {
+    x: 0.078125,
+    y: 0.671875
+  },
+  {
+    x: 0.078125,
+    y: 0.671875
+  },
+  {
+    x: 0.109375,
+    y: 0.671875
+  },
+  {
+    x: 0.109375,
+    y: 0.671875
+  },
+  {
+    x: 0.140625,
+    y: 0.671875
+  },
+  {
+    x: 0.140625,
+    y: 0.671875
+  },
+  {
+    x: 0.171875,
+    y: 0.671875
+  },
+  {
+    x: 0.171875,
+    y: 0.671875
+  },
+  {
+    x: 0.203125,
+    y: 0.671875
+  },
+  {
+    x: 0.203125,
+    y: 0.671875
+  },
+  {
+    x: 0.234375,
+    y: 0.671875
+  },
+  {
+    x: 0.234375,
+    y: 0.671875
+  },
+  {
+    x: 0.265625,
+    y: 0.671875
+  },
+  {
+    x: 0.265625,
+    y: 0.671875
+  },
+  {
+    x: 0.296875,
+    y: 0.671875
+  },
+  {
+    x: 0.296875,
+    y: 0.671875
+  },
+  {
+    x: 0.328125,
+    y: 0.671875
+  },
+  {
+    x: 0.328125,
+    y: 0.671875
+  },
+  {
+    x: 0.359375,
+    y: 0.671875
+  },
+  {
+    x: 0.359375,
+    y: 0.671875
+  },
+  {
+    x: 0.390625,
+    y: 0.671875
+  },
+  {
+    x: 0.390625,
+    y: 0.671875
+  },
+  {
+    x: 0.421875,
+    y: 0.671875
+  },
+  {
+    x: 0.421875,
+    y: 0.671875
+  },
+  {
+    x: 0.453125,
+    y: 0.671875
+  },
+  {
+    x: 0.453125,
+    y: 0.671875
+  },
+  {
+    x: 0.484375,
+    y: 0.671875
+  },
+  {
+    x: 0.484375,
+    y: 0.671875
+  },
+  {
+    x: 0.515625,
+    y: 0.671875
+  },
+  {
+    x: 0.515625,
+    y: 0.671875
+  },
+  {
+    x: 0.546875,
+    y: 0.671875
+  },
+  {
+    x: 0.546875,
+    y: 0.671875
+  },
+  {
+    x: 0.578125,
+    y: 0.671875
+  },
+  {
+    x: 0.578125,
+    y: 0.671875
+  },
+  {
+    x: 0.609375,
+    y: 0.671875
+  },
+  {
+    x: 0.609375,
+    y: 0.671875
+  },
+  {
+    x: 0.640625,
+    y: 0.671875
+  },
+  {
+    x: 0.640625,
+    y: 0.671875
+  },
+  {
+    x: 0.671875,
+    y: 0.671875
+  },
+  {
+    x: 0.671875,
+    y: 0.671875
+  },
+  {
+    x: 0.703125,
+    y: 0.671875
+  },
+  {
+    x: 0.703125,
+    y: 0.671875
+  },
+  {
+    x: 0.734375,
+    y: 0.671875
+  },
+  {
+    x: 0.734375,
+    y: 0.671875
+  },
+  {
+    x: 0.765625,
+    y: 0.671875
+  },
+  {
+    x: 0.765625,
+    y: 0.671875
+  },
+  {
+    x: 0.796875,
+    y: 0.671875
+  },
+  {
+    x: 0.796875,
+    y: 0.671875
+  },
+  {
+    x: 0.828125,
+    y: 0.671875
+  },
+  {
+    x: 0.828125,
+    y: 0.671875
+  },
+  {
+    x: 0.859375,
+    y: 0.671875
+  },
+  {
+    x: 0.859375,
+    y: 0.671875
+  },
+  {
+    x: 0.890625,
+    y: 0.671875
+  },
+  {
+    x: 0.890625,
+    y: 0.671875
+  },
+  {
+    x: 0.921875,
+    y: 0.671875
+  },
+  {
+    x: 0.921875,
+    y: 0.671875
+  },
+  {
+    x: 0.953125,
+    y: 0.671875
+  },
+  {
+    x: 0.953125,
+    y: 0.671875
+  },
+  {
+    x: 0.984375,
+    y: 0.671875
+  },
+  {
+    x: 0.984375,
+    y: 0.671875
+  },
+  {
+    x: 0.015625,
+    y: 0.703125
+  },
+  {
+    x: 0.015625,
+    y: 0.703125
+  },
+  {
+    x: 0.046875,
+    y: 0.703125
+  },
+  {
+    x: 0.046875,
+    y: 0.703125
+  },
+  {
+    x: 0.078125,
+    y: 0.703125
+  },
+  {
+    x: 0.078125,
+    y: 0.703125
+  },
+  {
+    x: 0.109375,
+    y: 0.703125
+  },
+  {
+    x: 0.109375,
+    y: 0.703125
+  },
+  {
+    x: 0.140625,
+    y: 0.703125
+  },
+  {
+    x: 0.140625,
+    y: 0.703125
+  },
+  {
+    x: 0.171875,
+    y: 0.703125
+  },
+  {
+    x: 0.171875,
+    y: 0.703125
+  },
+  {
+    x: 0.203125,
+    y: 0.703125
+  },
+  {
+    x: 0.203125,
+    y: 0.703125
+  },
+  {
+    x: 0.234375,
+    y: 0.703125
+  },
+  {
+    x: 0.234375,
+    y: 0.703125
+  },
+  {
+    x: 0.265625,
+    y: 0.703125
+  },
+  {
+    x: 0.265625,
+    y: 0.703125
+  },
+  {
+    x: 0.296875,
+    y: 0.703125
+  },
+  {
+    x: 0.296875,
+    y: 0.703125
+  },
+  {
+    x: 0.328125,
+    y: 0.703125
+  },
+  {
+    x: 0.328125,
+    y: 0.703125
+  },
+  {
+    x: 0.359375,
+    y: 0.703125
+  },
+  {
+    x: 0.359375,
+    y: 0.703125
+  },
+  {
+    x: 0.390625,
+    y: 0.703125
+  },
+  {
+    x: 0.390625,
+    y: 0.703125
+  },
+  {
+    x: 0.421875,
+    y: 0.703125
+  },
+  {
+    x: 0.421875,
+    y: 0.703125
+  },
+  {
+    x: 0.453125,
+    y: 0.703125
+  },
+  {
+    x: 0.453125,
+    y: 0.703125
+  },
+  {
+    x: 0.484375,
+    y: 0.703125
+  },
+  {
+    x: 0.484375,
+    y: 0.703125
+  },
+  {
+    x: 0.515625,
+    y: 0.703125
+  },
+  {
+    x: 0.515625,
+    y: 0.703125
+  },
+  {
+    x: 0.546875,
+    y: 0.703125
+  },
+  {
+    x: 0.546875,
+    y: 0.703125
+  },
+  {
+    x: 0.578125,
+    y: 0.703125
+  },
+  {
+    x: 0.578125,
+    y: 0.703125
+  },
+  {
+    x: 0.609375,
+    y: 0.703125
+  },
+  {
+    x: 0.609375,
+    y: 0.703125
+  },
+  {
+    x: 0.640625,
+    y: 0.703125
+  },
+  {
+    x: 0.640625,
+    y: 0.703125
+  },
+  {
+    x: 0.671875,
+    y: 0.703125
+  },
+  {
+    x: 0.671875,
+    y: 0.703125
+  },
+  {
+    x: 0.703125,
+    y: 0.703125
+  },
+  {
+    x: 0.703125,
+    y: 0.703125
+  },
+  {
+    x: 0.734375,
+    y: 0.703125
+  },
+  {
+    x: 0.734375,
+    y: 0.703125
+  },
+  {
+    x: 0.765625,
+    y: 0.703125
+  },
+  {
+    x: 0.765625,
+    y: 0.703125
+  },
+  {
+    x: 0.796875,
+    y: 0.703125
+  },
+  {
+    x: 0.796875,
+    y: 0.703125
+  },
+  {
+    x: 0.828125,
+    y: 0.703125
+  },
+  {
+    x: 0.828125,
+    y: 0.703125
+  },
+  {
+    x: 0.859375,
+    y: 0.703125
+  },
+  {
+    x: 0.859375,
+    y: 0.703125
+  },
+  {
+    x: 0.890625,
+    y: 0.703125
+  },
+  {
+    x: 0.890625,
+    y: 0.703125
+  },
+  {
+    x: 0.921875,
+    y: 0.703125
+  },
+  {
+    x: 0.921875,
+    y: 0.703125
+  },
+  {
+    x: 0.953125,
+    y: 0.703125
+  },
+  {
+    x: 0.953125,
+    y: 0.703125
+  },
+  {
+    x: 0.984375,
+    y: 0.703125
+  },
+  {
+    x: 0.984375,
+    y: 0.703125
+  },
+  {
+    x: 0.015625,
+    y: 0.734375
+  },
+  {
+    x: 0.015625,
+    y: 0.734375
+  },
+  {
+    x: 0.046875,
+    y: 0.734375
+  },
+  {
+    x: 0.046875,
+    y: 0.734375
+  },
+  {
+    x: 0.078125,
+    y: 0.734375
+  },
+  {
+    x: 0.078125,
+    y: 0.734375
+  },
+  {
+    x: 0.109375,
+    y: 0.734375
+  },
+  {
+    x: 0.109375,
+    y: 0.734375
+  },
+  {
+    x: 0.140625,
+    y: 0.734375
+  },
+  {
+    x: 0.140625,
+    y: 0.734375
+  },
+  {
+    x: 0.171875,
+    y: 0.734375
+  },
+  {
+    x: 0.171875,
+    y: 0.734375
+  },
+  {
+    x: 0.203125,
+    y: 0.734375
+  },
+  {
+    x: 0.203125,
+    y: 0.734375
+  },
+  {
+    x: 0.234375,
+    y: 0.734375
+  },
+  {
+    x: 0.234375,
+    y: 0.734375
+  },
+  {
+    x: 0.265625,
+    y: 0.734375
+  },
+  {
+    x: 0.265625,
+    y: 0.734375
+  },
+  {
+    x: 0.296875,
+    y: 0.734375
+  },
+  {
+    x: 0.296875,
+    y: 0.734375
+  },
+  {
+    x: 0.328125,
+    y: 0.734375
+  },
+  {
+    x: 0.328125,
+    y: 0.734375
+  },
+  {
+    x: 0.359375,
+    y: 0.734375
+  },
+  {
+    x: 0.359375,
+    y: 0.734375
+  },
+  {
+    x: 0.390625,
+    y: 0.734375
+  },
+  {
+    x: 0.390625,
+    y: 0.734375
+  },
+  {
+    x: 0.421875,
+    y: 0.734375
+  },
+  {
+    x: 0.421875,
+    y: 0.734375
+  },
+  {
+    x: 0.453125,
+    y: 0.734375
+  },
+  {
+    x: 0.453125,
+    y: 0.734375
+  },
+  {
+    x: 0.484375,
+    y: 0.734375
+  },
+  {
+    x: 0.484375,
+    y: 0.734375
+  },
+  {
+    x: 0.515625,
+    y: 0.734375
+  },
+  {
+    x: 0.515625,
+    y: 0.734375
+  },
+  {
+    x: 0.546875,
+    y: 0.734375
+  },
+  {
+    x: 0.546875,
+    y: 0.734375
+  },
+  {
+    x: 0.578125,
+    y: 0.734375
+  },
+  {
+    x: 0.578125,
+    y: 0.734375
+  },
+  {
+    x: 0.609375,
+    y: 0.734375
+  },
+  {
+    x: 0.609375,
+    y: 0.734375
+  },
+  {
+    x: 0.640625,
+    y: 0.734375
+  },
+  {
+    x: 0.640625,
+    y: 0.734375
+  },
+  {
+    x: 0.671875,
+    y: 0.734375
+  },
+  {
+    x: 0.671875,
+    y: 0.734375
+  },
+  {
+    x: 0.703125,
+    y: 0.734375
+  },
+  {
+    x: 0.703125,
+    y: 0.734375
+  },
+  {
+    x: 0.734375,
+    y: 0.734375
+  },
+  {
+    x: 0.734375,
+    y: 0.734375
+  },
+  {
+    x: 0.765625,
+    y: 0.734375
+  },
+  {
+    x: 0.765625,
+    y: 0.734375
+  },
+  {
+    x: 0.796875,
+    y: 0.734375
+  },
+  {
+    x: 0.796875,
+    y: 0.734375
+  },
+  {
+    x: 0.828125,
+    y: 0.734375
+  },
+  {
+    x: 0.828125,
+    y: 0.734375
+  },
+  {
+    x: 0.859375,
+    y: 0.734375
+  },
+  {
+    x: 0.859375,
+    y: 0.734375
+  },
+  {
+    x: 0.890625,
+    y: 0.734375
+  },
+  {
+    x: 0.890625,
+    y: 0.734375
+  },
+  {
+    x: 0.921875,
+    y: 0.734375
+  },
+  {
+    x: 0.921875,
+    y: 0.734375
+  },
+  {
+    x: 0.953125,
+    y: 0.734375
+  },
+  {
+    x: 0.953125,
+    y: 0.734375
+  },
+  {
+    x: 0.984375,
+    y: 0.734375
+  },
+  {
+    x: 0.984375,
+    y: 0.734375
+  },
+  {
+    x: 0.015625,
+    y: 0.765625
+  },
+  {
+    x: 0.015625,
+    y: 0.765625
+  },
+  {
+    x: 0.046875,
+    y: 0.765625
+  },
+  {
+    x: 0.046875,
+    y: 0.765625
+  },
+  {
+    x: 0.078125,
+    y: 0.765625
+  },
+  {
+    x: 0.078125,
+    y: 0.765625
+  },
+  {
+    x: 0.109375,
+    y: 0.765625
+  },
+  {
+    x: 0.109375,
+    y: 0.765625
+  },
+  {
+    x: 0.140625,
+    y: 0.765625
+  },
+  {
+    x: 0.140625,
+    y: 0.765625
+  },
+  {
+    x: 0.171875,
+    y: 0.765625
+  },
+  {
+    x: 0.171875,
+    y: 0.765625
+  },
+  {
+    x: 0.203125,
+    y: 0.765625
+  },
+  {
+    x: 0.203125,
+    y: 0.765625
+  },
+  {
+    x: 0.234375,
+    y: 0.765625
+  },
+  {
+    x: 0.234375,
+    y: 0.765625
+  },
+  {
+    x: 0.265625,
+    y: 0.765625
+  },
+  {
+    x: 0.265625,
+    y: 0.765625
+  },
+  {
+    x: 0.296875,
+    y: 0.765625
+  },
+  {
+    x: 0.296875,
+    y: 0.765625
+  },
+  {
+    x: 0.328125,
+    y: 0.765625
+  },
+  {
+    x: 0.328125,
+    y: 0.765625
+  },
+  {
+    x: 0.359375,
+    y: 0.765625
+  },
+  {
+    x: 0.359375,
+    y: 0.765625
+  },
+  {
+    x: 0.390625,
+    y: 0.765625
+  },
+  {
+    x: 0.390625,
+    y: 0.765625
+  },
+  {
+    x: 0.421875,
+    y: 0.765625
+  },
+  {
+    x: 0.421875,
+    y: 0.765625
+  },
+  {
+    x: 0.453125,
+    y: 0.765625
+  },
+  {
+    x: 0.453125,
+    y: 0.765625
+  },
+  {
+    x: 0.484375,
+    y: 0.765625
+  },
+  {
+    x: 0.484375,
+    y: 0.765625
+  },
+  {
+    x: 0.515625,
+    y: 0.765625
+  },
+  {
+    x: 0.515625,
+    y: 0.765625
+  },
+  {
+    x: 0.546875,
+    y: 0.765625
+  },
+  {
+    x: 0.546875,
+    y: 0.765625
+  },
+  {
+    x: 0.578125,
+    y: 0.765625
+  },
+  {
+    x: 0.578125,
+    y: 0.765625
+  },
+  {
+    x: 0.609375,
+    y: 0.765625
+  },
+  {
+    x: 0.609375,
+    y: 0.765625
+  },
+  {
+    x: 0.640625,
+    y: 0.765625
+  },
+  {
+    x: 0.640625,
+    y: 0.765625
+  },
+  {
+    x: 0.671875,
+    y: 0.765625
+  },
+  {
+    x: 0.671875,
+    y: 0.765625
+  },
+  {
+    x: 0.703125,
+    y: 0.765625
+  },
+  {
+    x: 0.703125,
+    y: 0.765625
+  },
+  {
+    x: 0.734375,
+    y: 0.765625
+  },
+  {
+    x: 0.734375,
+    y: 0.765625
+  },
+  {
+    x: 0.765625,
+    y: 0.765625
+  },
+  {
+    x: 0.765625,
+    y: 0.765625
+  },
+  {
+    x: 0.796875,
+    y: 0.765625
+  },
+  {
+    x: 0.796875,
+    y: 0.765625
+  },
+  {
+    x: 0.828125,
+    y: 0.765625
+  },
+  {
+    x: 0.828125,
+    y: 0.765625
+  },
+  {
+    x: 0.859375,
+    y: 0.765625
+  },
+  {
+    x: 0.859375,
+    y: 0.765625
+  },
+  {
+    x: 0.890625,
+    y: 0.765625
+  },
+  {
+    x: 0.890625,
+    y: 0.765625
+  },
+  {
+    x: 0.921875,
+    y: 0.765625
+  },
+  {
+    x: 0.921875,
+    y: 0.765625
+  },
+  {
+    x: 0.953125,
+    y: 0.765625
+  },
+  {
+    x: 0.953125,
+    y: 0.765625
+  },
+  {
+    x: 0.984375,
+    y: 0.765625
+  },
+  {
+    x: 0.984375,
+    y: 0.765625
+  },
+  {
+    x: 0.015625,
+    y: 0.796875
+  },
+  {
+    x: 0.015625,
+    y: 0.796875
+  },
+  {
+    x: 0.046875,
+    y: 0.796875
+  },
+  {
+    x: 0.046875,
+    y: 0.796875
+  },
+  {
+    x: 0.078125,
+    y: 0.796875
+  },
+  {
+    x: 0.078125,
+    y: 0.796875
+  },
+  {
+    x: 0.109375,
+    y: 0.796875
+  },
+  {
+    x: 0.109375,
+    y: 0.796875
+  },
+  {
+    x: 0.140625,
+    y: 0.796875
+  },
+  {
+    x: 0.140625,
+    y: 0.796875
+  },
+  {
+    x: 0.171875,
+    y: 0.796875
+  },
+  {
+    x: 0.171875,
+    y: 0.796875
+  },
+  {
+    x: 0.203125,
+    y: 0.796875
+  },
+  {
+    x: 0.203125,
+    y: 0.796875
+  },
+  {
+    x: 0.234375,
+    y: 0.796875
+  },
+  {
+    x: 0.234375,
+    y: 0.796875
+  },
+  {
+    x: 0.265625,
+    y: 0.796875
+  },
+  {
+    x: 0.265625,
+    y: 0.796875
+  },
+  {
+    x: 0.296875,
+    y: 0.796875
+  },
+  {
+    x: 0.296875,
+    y: 0.796875
+  },
+  {
+    x: 0.328125,
+    y: 0.796875
+  },
+  {
+    x: 0.328125,
+    y: 0.796875
+  },
+  {
+    x: 0.359375,
+    y: 0.796875
+  },
+  {
+    x: 0.359375,
+    y: 0.796875
+  },
+  {
+    x: 0.390625,
+    y: 0.796875
+  },
+  {
+    x: 0.390625,
+    y: 0.796875
+  },
+  {
+    x: 0.421875,
+    y: 0.796875
+  },
+  {
+    x: 0.421875,
+    y: 0.796875
+  },
+  {
+    x: 0.453125,
+    y: 0.796875
+  },
+  {
+    x: 0.453125,
+    y: 0.796875
+  },
+  {
+    x: 0.484375,
+    y: 0.796875
+  },
+  {
+    x: 0.484375,
+    y: 0.796875
+  },
+  {
+    x: 0.515625,
+    y: 0.796875
+  },
+  {
+    x: 0.515625,
+    y: 0.796875
+  },
+  {
+    x: 0.546875,
+    y: 0.796875
+  },
+  {
+    x: 0.546875,
+    y: 0.796875
+  },
+  {
+    x: 0.578125,
+    y: 0.796875
+  },
+  {
+    x: 0.578125,
+    y: 0.796875
+  },
+  {
+    x: 0.609375,
+    y: 0.796875
+  },
+  {
+    x: 0.609375,
+    y: 0.796875
+  },
+  {
+    x: 0.640625,
+    y: 0.796875
+  },
+  {
+    x: 0.640625,
+    y: 0.796875
+  },
+  {
+    x: 0.671875,
+    y: 0.796875
+  },
+  {
+    x: 0.671875,
+    y: 0.796875
+  },
+  {
+    x: 0.703125,
+    y: 0.796875
+  },
+  {
+    x: 0.703125,
+    y: 0.796875
+  },
+  {
+    x: 0.734375,
+    y: 0.796875
+  },
+  {
+    x: 0.734375,
+    y: 0.796875
+  },
+  {
+    x: 0.765625,
+    y: 0.796875
+  },
+  {
+    x: 0.765625,
+    y: 0.796875
+  },
+  {
+    x: 0.796875,
+    y: 0.796875
+  },
+  {
+    x: 0.796875,
+    y: 0.796875
+  },
+  {
+    x: 0.828125,
+    y: 0.796875
+  },
+  {
+    x: 0.828125,
+    y: 0.796875
+  },
+  {
+    x: 0.859375,
+    y: 0.796875
+  },
+  {
+    x: 0.859375,
+    y: 0.796875
+  },
+  {
+    x: 0.890625,
+    y: 0.796875
+  },
+  {
+    x: 0.890625,
+    y: 0.796875
+  },
+  {
+    x: 0.921875,
+    y: 0.796875
+  },
+  {
+    x: 0.921875,
+    y: 0.796875
+  },
+  {
+    x: 0.953125,
+    y: 0.796875
+  },
+  {
+    x: 0.953125,
+    y: 0.796875
+  },
+  {
+    x: 0.984375,
+    y: 0.796875
+  },
+  {
+    x: 0.984375,
+    y: 0.796875
+  },
+  {
+    x: 0.015625,
+    y: 0.828125
+  },
+  {
+    x: 0.015625,
+    y: 0.828125
+  },
+  {
+    x: 0.046875,
+    y: 0.828125
+  },
+  {
+    x: 0.046875,
+    y: 0.828125
+  },
+  {
+    x: 0.078125,
+    y: 0.828125
+  },
+  {
+    x: 0.078125,
+    y: 0.828125
+  },
+  {
+    x: 0.109375,
+    y: 0.828125
+  },
+  {
+    x: 0.109375,
+    y: 0.828125
+  },
+  {
+    x: 0.140625,
+    y: 0.828125
+  },
+  {
+    x: 0.140625,
+    y: 0.828125
+  },
+  {
+    x: 0.171875,
+    y: 0.828125
+  },
+  {
+    x: 0.171875,
+    y: 0.828125
+  },
+  {
+    x: 0.203125,
+    y: 0.828125
+  },
+  {
+    x: 0.203125,
+    y: 0.828125
+  },
+  {
+    x: 0.234375,
+    y: 0.828125
+  },
+  {
+    x: 0.234375,
+    y: 0.828125
+  },
+  {
+    x: 0.265625,
+    y: 0.828125
+  },
+  {
+    x: 0.265625,
+    y: 0.828125
+  },
+  {
+    x: 0.296875,
+    y: 0.828125
+  },
+  {
+    x: 0.296875,
+    y: 0.828125
+  },
+  {
+    x: 0.328125,
+    y: 0.828125
+  },
+  {
+    x: 0.328125,
+    y: 0.828125
+  },
+  {
+    x: 0.359375,
+    y: 0.828125
+  },
+  {
+    x: 0.359375,
+    y: 0.828125
+  },
+  {
+    x: 0.390625,
+    y: 0.828125
+  },
+  {
+    x: 0.390625,
+    y: 0.828125
+  },
+  {
+    x: 0.421875,
+    y: 0.828125
+  },
+  {
+    x: 0.421875,
+    y: 0.828125
+  },
+  {
+    x: 0.453125,
+    y: 0.828125
+  },
+  {
+    x: 0.453125,
+    y: 0.828125
+  },
+  {
+    x: 0.484375,
+    y: 0.828125
+  },
+  {
+    x: 0.484375,
+    y: 0.828125
+  },
+  {
+    x: 0.515625,
+    y: 0.828125
+  },
+  {
+    x: 0.515625,
+    y: 0.828125
+  },
+  {
+    x: 0.546875,
+    y: 0.828125
+  },
+  {
+    x: 0.546875,
+    y: 0.828125
+  },
+  {
+    x: 0.578125,
+    y: 0.828125
+  },
+  {
+    x: 0.578125,
+    y: 0.828125
+  },
+  {
+    x: 0.609375,
+    y: 0.828125
+  },
+  {
+    x: 0.609375,
+    y: 0.828125
+  },
+  {
+    x: 0.640625,
+    y: 0.828125
+  },
+  {
+    x: 0.640625,
+    y: 0.828125
+  },
+  {
+    x: 0.671875,
+    y: 0.828125
+  },
+  {
+    x: 0.671875,
+    y: 0.828125
+  },
+  {
+    x: 0.703125,
+    y: 0.828125
+  },
+  {
+    x: 0.703125,
+    y: 0.828125
+  },
+  {
+    x: 0.734375,
+    y: 0.828125
+  },
+  {
+    x: 0.734375,
+    y: 0.828125
+  },
+  {
+    x: 0.765625,
+    y: 0.828125
+  },
+  {
+    x: 0.765625,
+    y: 0.828125
+  },
+  {
+    x: 0.796875,
+    y: 0.828125
+  },
+  {
+    x: 0.796875,
+    y: 0.828125
+  },
+  {
+    x: 0.828125,
+    y: 0.828125
+  },
+  {
+    x: 0.828125,
+    y: 0.828125
+  },
+  {
+    x: 0.859375,
+    y: 0.828125
+  },
+  {
+    x: 0.859375,
+    y: 0.828125
+  },
+  {
+    x: 0.890625,
+    y: 0.828125
+  },
+  {
+    x: 0.890625,
+    y: 0.828125
+  },
+  {
+    x: 0.921875,
+    y: 0.828125
+  },
+  {
+    x: 0.921875,
+    y: 0.828125
+  },
+  {
+    x: 0.953125,
+    y: 0.828125
+  },
+  {
+    x: 0.953125,
+    y: 0.828125
+  },
+  {
+    x: 0.984375,
+    y: 0.828125
+  },
+  {
+    x: 0.984375,
+    y: 0.828125
+  },
+  {
+    x: 0.015625,
+    y: 0.859375
+  },
+  {
+    x: 0.015625,
+    y: 0.859375
+  },
+  {
+    x: 0.046875,
+    y: 0.859375
+  },
+  {
+    x: 0.046875,
+    y: 0.859375
+  },
+  {
+    x: 0.078125,
+    y: 0.859375
+  },
+  {
+    x: 0.078125,
+    y: 0.859375
+  },
+  {
+    x: 0.109375,
+    y: 0.859375
+  },
+  {
+    x: 0.109375,
+    y: 0.859375
+  },
+  {
+    x: 0.140625,
+    y: 0.859375
+  },
+  {
+    x: 0.140625,
+    y: 0.859375
+  },
+  {
+    x: 0.171875,
+    y: 0.859375
+  },
+  {
+    x: 0.171875,
+    y: 0.859375
+  },
+  {
+    x: 0.203125,
+    y: 0.859375
+  },
+  {
+    x: 0.203125,
+    y: 0.859375
+  },
+  {
+    x: 0.234375,
+    y: 0.859375
+  },
+  {
+    x: 0.234375,
+    y: 0.859375
+  },
+  {
+    x: 0.265625,
+    y: 0.859375
+  },
+  {
+    x: 0.265625,
+    y: 0.859375
+  },
+  {
+    x: 0.296875,
+    y: 0.859375
+  },
+  {
+    x: 0.296875,
+    y: 0.859375
+  },
+  {
+    x: 0.328125,
+    y: 0.859375
+  },
+  {
+    x: 0.328125,
+    y: 0.859375
+  },
+  {
+    x: 0.359375,
+    y: 0.859375
+  },
+  {
+    x: 0.359375,
+    y: 0.859375
+  },
+  {
+    x: 0.390625,
+    y: 0.859375
+  },
+  {
+    x: 0.390625,
+    y: 0.859375
+  },
+  {
+    x: 0.421875,
+    y: 0.859375
+  },
+  {
+    x: 0.421875,
+    y: 0.859375
+  },
+  {
+    x: 0.453125,
+    y: 0.859375
+  },
+  {
+    x: 0.453125,
+    y: 0.859375
+  },
+  {
+    x: 0.484375,
+    y: 0.859375
+  },
+  {
+    x: 0.484375,
+    y: 0.859375
+  },
+  {
+    x: 0.515625,
+    y: 0.859375
+  },
+  {
+    x: 0.515625,
+    y: 0.859375
+  },
+  {
+    x: 0.546875,
+    y: 0.859375
+  },
+  {
+    x: 0.546875,
+    y: 0.859375
+  },
+  {
+    x: 0.578125,
+    y: 0.859375
+  },
+  {
+    x: 0.578125,
+    y: 0.859375
+  },
+  {
+    x: 0.609375,
+    y: 0.859375
+  },
+  {
+    x: 0.609375,
+    y: 0.859375
+  },
+  {
+    x: 0.640625,
+    y: 0.859375
+  },
+  {
+    x: 0.640625,
+    y: 0.859375
+  },
+  {
+    x: 0.671875,
+    y: 0.859375
+  },
+  {
+    x: 0.671875,
+    y: 0.859375
+  },
+  {
+    x: 0.703125,
+    y: 0.859375
+  },
+  {
+    x: 0.703125,
+    y: 0.859375
+  },
+  {
+    x: 0.734375,
+    y: 0.859375
+  },
+  {
+    x: 0.734375,
+    y: 0.859375
+  },
+  {
+    x: 0.765625,
+    y: 0.859375
+  },
+  {
+    x: 0.765625,
+    y: 0.859375
+  },
+  {
+    x: 0.796875,
+    y: 0.859375
+  },
+  {
+    x: 0.796875,
+    y: 0.859375
+  },
+  {
+    x: 0.828125,
+    y: 0.859375
+  },
+  {
+    x: 0.828125,
+    y: 0.859375
+  },
+  {
+    x: 0.859375,
+    y: 0.859375
+  },
+  {
+    x: 0.859375,
+    y: 0.859375
+  },
+  {
+    x: 0.890625,
+    y: 0.859375
+  },
+  {
+    x: 0.890625,
+    y: 0.859375
+  },
+  {
+    x: 0.921875,
+    y: 0.859375
+  },
+  {
+    x: 0.921875,
+    y: 0.859375
+  },
+  {
+    x: 0.953125,
+    y: 0.859375
+  },
+  {
+    x: 0.953125,
+    y: 0.859375
+  },
+  {
+    x: 0.984375,
+    y: 0.859375
+  },
+  {
+    x: 0.984375,
+    y: 0.859375
+  },
+  {
+    x: 0.015625,
+    y: 0.890625
+  },
+  {
+    x: 0.015625,
+    y: 0.890625
+  },
+  {
+    x: 0.046875,
+    y: 0.890625
+  },
+  {
+    x: 0.046875,
+    y: 0.890625
+  },
+  {
+    x: 0.078125,
+    y: 0.890625
+  },
+  {
+    x: 0.078125,
+    y: 0.890625
+  },
+  {
+    x: 0.109375,
+    y: 0.890625
+  },
+  {
+    x: 0.109375,
+    y: 0.890625
+  },
+  {
+    x: 0.140625,
+    y: 0.890625
+  },
+  {
+    x: 0.140625,
+    y: 0.890625
+  },
+  {
+    x: 0.171875,
+    y: 0.890625
+  },
+  {
+    x: 0.171875,
+    y: 0.890625
+  },
+  {
+    x: 0.203125,
+    y: 0.890625
+  },
+  {
+    x: 0.203125,
+    y: 0.890625
+  },
+  {
+    x: 0.234375,
+    y: 0.890625
+  },
+  {
+    x: 0.234375,
+    y: 0.890625
+  },
+  {
+    x: 0.265625,
+    y: 0.890625
+  },
+  {
+    x: 0.265625,
+    y: 0.890625
+  },
+  {
+    x: 0.296875,
+    y: 0.890625
+  },
+  {
+    x: 0.296875,
+    y: 0.890625
+  },
+  {
+    x: 0.328125,
+    y: 0.890625
+  },
+  {
+    x: 0.328125,
+    y: 0.890625
+  },
+  {
+    x: 0.359375,
+    y: 0.890625
+  },
+  {
+    x: 0.359375,
+    y: 0.890625
+  },
+  {
+    x: 0.390625,
+    y: 0.890625
+  },
+  {
+    x: 0.390625,
+    y: 0.890625
+  },
+  {
+    x: 0.421875,
+    y: 0.890625
+  },
+  {
+    x: 0.421875,
+    y: 0.890625
+  },
+  {
+    x: 0.453125,
+    y: 0.890625
+  },
+  {
+    x: 0.453125,
+    y: 0.890625
+  },
+  {
+    x: 0.484375,
+    y: 0.890625
+  },
+  {
+    x: 0.484375,
+    y: 0.890625
+  },
+  {
+    x: 0.515625,
+    y: 0.890625
+  },
+  {
+    x: 0.515625,
+    y: 0.890625
+  },
+  {
+    x: 0.546875,
+    y: 0.890625
+  },
+  {
+    x: 0.546875,
+    y: 0.890625
+  },
+  {
+    x: 0.578125,
+    y: 0.890625
+  },
+  {
+    x: 0.578125,
+    y: 0.890625
+  },
+  {
+    x: 0.609375,
+    y: 0.890625
+  },
+  {
+    x: 0.609375,
+    y: 0.890625
+  },
+  {
+    x: 0.640625,
+    y: 0.890625
+  },
+  {
+    x: 0.640625,
+    y: 0.890625
+  },
+  {
+    x: 0.671875,
+    y: 0.890625
+  },
+  {
+    x: 0.671875,
+    y: 0.890625
+  },
+  {
+    x: 0.703125,
+    y: 0.890625
+  },
+  {
+    x: 0.703125,
+    y: 0.890625
+  },
+  {
+    x: 0.734375,
+    y: 0.890625
+  },
+  {
+    x: 0.734375,
+    y: 0.890625
+  },
+  {
+    x: 0.765625,
+    y: 0.890625
+  },
+  {
+    x: 0.765625,
+    y: 0.890625
+  },
+  {
+    x: 0.796875,
+    y: 0.890625
+  },
+  {
+    x: 0.796875,
+    y: 0.890625
+  },
+  {
+    x: 0.828125,
+    y: 0.890625
+  },
+  {
+    x: 0.828125,
+    y: 0.890625
+  },
+  {
+    x: 0.859375,
+    y: 0.890625
+  },
+  {
+    x: 0.859375,
+    y: 0.890625
+  },
+  {
+    x: 0.890625,
+    y: 0.890625
+  },
+  {
+    x: 0.890625,
+    y: 0.890625
+  },
+  {
+    x: 0.921875,
+    y: 0.890625
+  },
+  {
+    x: 0.921875,
+    y: 0.890625
+  },
+  {
+    x: 0.953125,
+    y: 0.890625
+  },
+  {
+    x: 0.953125,
+    y: 0.890625
+  },
+  {
+    x: 0.984375,
+    y: 0.890625
+  },
+  {
+    x: 0.984375,
+    y: 0.890625
+  },
+  {
+    x: 0.015625,
+    y: 0.921875
+  },
+  {
+    x: 0.015625,
+    y: 0.921875
+  },
+  {
+    x: 0.046875,
+    y: 0.921875
+  },
+  {
+    x: 0.046875,
+    y: 0.921875
+  },
+  {
+    x: 0.078125,
+    y: 0.921875
+  },
+  {
+    x: 0.078125,
+    y: 0.921875
+  },
+  {
+    x: 0.109375,
+    y: 0.921875
+  },
+  {
+    x: 0.109375,
+    y: 0.921875
+  },
+  {
+    x: 0.140625,
+    y: 0.921875
+  },
+  {
+    x: 0.140625,
+    y: 0.921875
+  },
+  {
+    x: 0.171875,
+    y: 0.921875
+  },
+  {
+    x: 0.171875,
+    y: 0.921875
+  },
+  {
+    x: 0.203125,
+    y: 0.921875
+  },
+  {
+    x: 0.203125,
+    y: 0.921875
+  },
+  {
+    x: 0.234375,
+    y: 0.921875
+  },
+  {
+    x: 0.234375,
+    y: 0.921875
+  },
+  {
+    x: 0.265625,
+    y: 0.921875
+  },
+  {
+    x: 0.265625,
+    y: 0.921875
+  },
+  {
+    x: 0.296875,
+    y: 0.921875
+  },
+  {
+    x: 0.296875,
+    y: 0.921875
+  },
+  {
+    x: 0.328125,
+    y: 0.921875
+  },
+  {
+    x: 0.328125,
+    y: 0.921875
+  },
+  {
+    x: 0.359375,
+    y: 0.921875
+  },
+  {
+    x: 0.359375,
+    y: 0.921875
+  },
+  {
+    x: 0.390625,
+    y: 0.921875
+  },
+  {
+    x: 0.390625,
+    y: 0.921875
+  },
+  {
+    x: 0.421875,
+    y: 0.921875
+  },
+  {
+    x: 0.421875,
+    y: 0.921875
+  },
+  {
+    x: 0.453125,
+    y: 0.921875
+  },
+  {
+    x: 0.453125,
+    y: 0.921875
+  },
+  {
+    x: 0.484375,
+    y: 0.921875
+  },
+  {
+    x: 0.484375,
+    y: 0.921875
+  },
+  {
+    x: 0.515625,
+    y: 0.921875
+  },
+  {
+    x: 0.515625,
+    y: 0.921875
+  },
+  {
+    x: 0.546875,
+    y: 0.921875
+  },
+  {
+    x: 0.546875,
+    y: 0.921875
+  },
+  {
+    x: 0.578125,
+    y: 0.921875
+  },
+  {
+    x: 0.578125,
+    y: 0.921875
+  },
+  {
+    x: 0.609375,
+    y: 0.921875
+  },
+  {
+    x: 0.609375,
+    y: 0.921875
+  },
+  {
+    x: 0.640625,
+    y: 0.921875
+  },
+  {
+    x: 0.640625,
+    y: 0.921875
+  },
+  {
+    x: 0.671875,
+    y: 0.921875
+  },
+  {
+    x: 0.671875,
+    y: 0.921875
+  },
+  {
+    x: 0.703125,
+    y: 0.921875
+  },
+  {
+    x: 0.703125,
+    y: 0.921875
+  },
+  {
+    x: 0.734375,
+    y: 0.921875
+  },
+  {
+    x: 0.734375,
+    y: 0.921875
+  },
+  {
+    x: 0.765625,
+    y: 0.921875
+  },
+  {
+    x: 0.765625,
+    y: 0.921875
+  },
+  {
+    x: 0.796875,
+    y: 0.921875
+  },
+  {
+    x: 0.796875,
+    y: 0.921875
+  },
+  {
+    x: 0.828125,
+    y: 0.921875
+  },
+  {
+    x: 0.828125,
+    y: 0.921875
+  },
+  {
+    x: 0.859375,
+    y: 0.921875
+  },
+  {
+    x: 0.859375,
+    y: 0.921875
+  },
+  {
+    x: 0.890625,
+    y: 0.921875
+  },
+  {
+    x: 0.890625,
+    y: 0.921875
+  },
+  {
+    x: 0.921875,
+    y: 0.921875
+  },
+  {
+    x: 0.921875,
+    y: 0.921875
+  },
+  {
+    x: 0.953125,
+    y: 0.921875
+  },
+  {
+    x: 0.953125,
+    y: 0.921875
+  },
+  {
+    x: 0.984375,
+    y: 0.921875
+  },
+  {
+    x: 0.984375,
+    y: 0.921875
+  },
+  {
+    x: 0.015625,
+    y: 0.953125
+  },
+  {
+    x: 0.015625,
+    y: 0.953125
+  },
+  {
+    x: 0.046875,
+    y: 0.953125
+  },
+  {
+    x: 0.046875,
+    y: 0.953125
+  },
+  {
+    x: 0.078125,
+    y: 0.953125
+  },
+  {
+    x: 0.078125,
+    y: 0.953125
+  },
+  {
+    x: 0.109375,
+    y: 0.953125
+  },
+  {
+    x: 0.109375,
+    y: 0.953125
+  },
+  {
+    x: 0.140625,
+    y: 0.953125
+  },
+  {
+    x: 0.140625,
+    y: 0.953125
+  },
+  {
+    x: 0.171875,
+    y: 0.953125
+  },
+  {
+    x: 0.171875,
+    y: 0.953125
+  },
+  {
+    x: 0.203125,
+    y: 0.953125
+  },
+  {
+    x: 0.203125,
+    y: 0.953125
+  },
+  {
+    x: 0.234375,
+    y: 0.953125
+  },
+  {
+    x: 0.234375,
+    y: 0.953125
+  },
+  {
+    x: 0.265625,
+    y: 0.953125
+  },
+  {
+    x: 0.265625,
+    y: 0.953125
+  },
+  {
+    x: 0.296875,
+    y: 0.953125
+  },
+  {
+    x: 0.296875,
+    y: 0.953125
+  },
+  {
+    x: 0.328125,
+    y: 0.953125
+  },
+  {
+    x: 0.328125,
+    y: 0.953125
+  },
+  {
+    x: 0.359375,
+    y: 0.953125
+  },
+  {
+    x: 0.359375,
+    y: 0.953125
+  },
+  {
+    x: 0.390625,
+    y: 0.953125
+  },
+  {
+    x: 0.390625,
+    y: 0.953125
+  },
+  {
+    x: 0.421875,
+    y: 0.953125
+  },
+  {
+    x: 0.421875,
+    y: 0.953125
+  },
+  {
+    x: 0.453125,
+    y: 0.953125
+  },
+  {
+    x: 0.453125,
+    y: 0.953125
+  },
+  {
+    x: 0.484375,
+    y: 0.953125
+  },
+  {
+    x: 0.484375,
+    y: 0.953125
+  },
+  {
+    x: 0.515625,
+    y: 0.953125
+  },
+  {
+    x: 0.515625,
+    y: 0.953125
+  },
+  {
+    x: 0.546875,
+    y: 0.953125
+  },
+  {
+    x: 0.546875,
+    y: 0.953125
+  },
+  {
+    x: 0.578125,
+    y: 0.953125
+  },
+  {
+    x: 0.578125,
+    y: 0.953125
+  },
+  {
+    x: 0.609375,
+    y: 0.953125
+  },
+  {
+    x: 0.609375,
+    y: 0.953125
+  },
+  {
+    x: 0.640625,
+    y: 0.953125
+  },
+  {
+    x: 0.640625,
+    y: 0.953125
+  },
+  {
+    x: 0.671875,
+    y: 0.953125
+  },
+  {
+    x: 0.671875,
+    y: 0.953125
+  },
+  {
+    x: 0.703125,
+    y: 0.953125
+  },
+  {
+    x: 0.703125,
+    y: 0.953125
+  },
+  {
+    x: 0.734375,
+    y: 0.953125
+  },
+  {
+    x: 0.734375,
+    y: 0.953125
+  },
+  {
+    x: 0.765625,
+    y: 0.953125
+  },
+  {
+    x: 0.765625,
+    y: 0.953125
+  },
+  {
+    x: 0.796875,
+    y: 0.953125
+  },
+  {
+    x: 0.796875,
+    y: 0.953125
+  },
+  {
+    x: 0.828125,
+    y: 0.953125
+  },
+  {
+    x: 0.828125,
+    y: 0.953125
+  },
+  {
+    x: 0.859375,
+    y: 0.953125
+  },
+  {
+    x: 0.859375,
+    y: 0.953125
+  },
+  {
+    x: 0.890625,
+    y: 0.953125
+  },
+  {
+    x: 0.890625,
+    y: 0.953125
+  },
+  {
+    x: 0.921875,
+    y: 0.953125
+  },
+  {
+    x: 0.921875,
+    y: 0.953125
+  },
+  {
+    x: 0.953125,
+    y: 0.953125
+  },
+  {
+    x: 0.953125,
+    y: 0.953125
+  },
+  {
+    x: 0.984375,
+    y: 0.953125
+  },
+  {
+    x: 0.984375,
+    y: 0.953125
+  },
+  {
+    x: 0.015625,
+    y: 0.984375
+  },
+  {
+    x: 0.015625,
+    y: 0.984375
+  },
+  {
+    x: 0.046875,
+    y: 0.984375
+  },
+  {
+    x: 0.046875,
+    y: 0.984375
+  },
+  {
+    x: 0.078125,
+    y: 0.984375
+  },
+  {
+    x: 0.078125,
+    y: 0.984375
+  },
+  {
+    x: 0.109375,
+    y: 0.984375
+  },
+  {
+    x: 0.109375,
+    y: 0.984375
+  },
+  {
+    x: 0.140625,
+    y: 0.984375
+  },
+  {
+    x: 0.140625,
+    y: 0.984375
+  },
+  {
+    x: 0.171875,
+    y: 0.984375
+  },
+  {
+    x: 0.171875,
+    y: 0.984375
+  },
+  {
+    x: 0.203125,
+    y: 0.984375
+  },
+  {
+    x: 0.203125,
+    y: 0.984375
+  },
+  {
+    x: 0.234375,
+    y: 0.984375
+  },
+  {
+    x: 0.234375,
+    y: 0.984375
+  },
+  {
+    x: 0.265625,
+    y: 0.984375
+  },
+  {
+    x: 0.265625,
+    y: 0.984375
+  },
+  {
+    x: 0.296875,
+    y: 0.984375
+  },
+  {
+    x: 0.296875,
+    y: 0.984375
+  },
+  {
+    x: 0.328125,
+    y: 0.984375
+  },
+  {
+    x: 0.328125,
+    y: 0.984375
+  },
+  {
+    x: 0.359375,
+    y: 0.984375
+  },
+  {
+    x: 0.359375,
+    y: 0.984375
+  },
+  {
+    x: 0.390625,
+    y: 0.984375
+  },
+  {
+    x: 0.390625,
+    y: 0.984375
+  },
+  {
+    x: 0.421875,
+    y: 0.984375
+  },
+  {
+    x: 0.421875,
+    y: 0.984375
+  },
+  {
+    x: 0.453125,
+    y: 0.984375
+  },
+  {
+    x: 0.453125,
+    y: 0.984375
+  },
+  {
+    x: 0.484375,
+    y: 0.984375
+  },
+  {
+    x: 0.484375,
+    y: 0.984375
+  },
+  {
+    x: 0.515625,
+    y: 0.984375
+  },
+  {
+    x: 0.515625,
+    y: 0.984375
+  },
+  {
+    x: 0.546875,
+    y: 0.984375
+  },
+  {
+    x: 0.546875,
+    y: 0.984375
+  },
+  {
+    x: 0.578125,
+    y: 0.984375
+  },
+  {
+    x: 0.578125,
+    y: 0.984375
+  },
+  {
+    x: 0.609375,
+    y: 0.984375
+  },
+  {
+    x: 0.609375,
+    y: 0.984375
+  },
+  {
+    x: 0.640625,
+    y: 0.984375
+  },
+  {
+    x: 0.640625,
+    y: 0.984375
+  },
+  {
+    x: 0.671875,
+    y: 0.984375
+  },
+  {
+    x: 0.671875,
+    y: 0.984375
+  },
+  {
+    x: 0.703125,
+    y: 0.984375
+  },
+  {
+    x: 0.703125,
+    y: 0.984375
+  },
+  {
+    x: 0.734375,
+    y: 0.984375
+  },
+  {
+    x: 0.734375,
+    y: 0.984375
+  },
+  {
+    x: 0.765625,
+    y: 0.984375
+  },
+  {
+    x: 0.765625,
+    y: 0.984375
+  },
+  {
+    x: 0.796875,
+    y: 0.984375
+  },
+  {
+    x: 0.796875,
+    y: 0.984375
+  },
+  {
+    x: 0.828125,
+    y: 0.984375
+  },
+  {
+    x: 0.828125,
+    y: 0.984375
+  },
+  {
+    x: 0.859375,
+    y: 0.984375
+  },
+  {
+    x: 0.859375,
+    y: 0.984375
+  },
+  {
+    x: 0.890625,
+    y: 0.984375
+  },
+  {
+    x: 0.890625,
+    y: 0.984375
+  },
+  {
+    x: 0.921875,
+    y: 0.984375
+  },
+  {
+    x: 0.921875,
+    y: 0.984375
+  },
+  {
+    x: 0.953125,
+    y: 0.984375
+  },
+  {
+    x: 0.953125,
+    y: 0.984375
+  },
+  {
+    x: 0.984375,
+    y: 0.984375
+  },
+  {
+    x: 0.984375,
+    y: 0.984375
+  },
+  {
+    x: 0.03125,
+    y: 0.03125
+  },
+  {
+    x: 0.03125,
+    y: 0.03125
+  },
+  {
+    x: 0.09375,
+    y: 0.03125
+  },
+  {
+    x: 0.09375,
+    y: 0.03125
+  },
+  {
+    x: 0.15625,
+    y: 0.03125
+  },
+  {
+    x: 0.15625,
+    y: 0.03125
+  },
+  {
+    x: 0.21875,
+    y: 0.03125
+  },
+  {
+    x: 0.21875,
+    y: 0.03125
+  },
+  {
+    x: 0.28125,
+    y: 0.03125
+  },
+  {
+    x: 0.28125,
+    y: 0.03125
+  },
+  {
+    x: 0.34375,
+    y: 0.03125
+  },
+  {
+    x: 0.34375,
+    y: 0.03125
+  },
+  {
+    x: 0.40625,
+    y: 0.03125
+  },
+  {
+    x: 0.40625,
+    y: 0.03125
+  },
+  {
+    x: 0.46875,
+    y: 0.03125
+  },
+  {
+    x: 0.46875,
+    y: 0.03125
+  },
+  {
+    x: 0.53125,
+    y: 0.03125
+  },
+  {
+    x: 0.53125,
+    y: 0.03125
+  },
+  {
+    x: 0.59375,
+    y: 0.03125
+  },
+  {
+    x: 0.59375,
+    y: 0.03125
+  },
+  {
+    x: 0.65625,
+    y: 0.03125
+  },
+  {
+    x: 0.65625,
+    y: 0.03125
+  },
+  {
+    x: 0.71875,
+    y: 0.03125
+  },
+  {
+    x: 0.71875,
+    y: 0.03125
+  },
+  {
+    x: 0.78125,
+    y: 0.03125
+  },
+  {
+    x: 0.78125,
+    y: 0.03125
+  },
+  {
+    x: 0.84375,
+    y: 0.03125
+  },
+  {
+    x: 0.84375,
+    y: 0.03125
+  },
+  {
+    x: 0.90625,
+    y: 0.03125
+  },
+  {
+    x: 0.90625,
+    y: 0.03125
+  },
+  {
+    x: 0.96875,
+    y: 0.03125
+  },
+  {
+    x: 0.96875,
+    y: 0.03125
+  },
+  {
+    x: 0.03125,
+    y: 0.09375
+  },
+  {
+    x: 0.03125,
+    y: 0.09375
+  },
+  {
+    x: 0.09375,
+    y: 0.09375
+  },
+  {
+    x: 0.09375,
+    y: 0.09375
+  },
+  {
+    x: 0.15625,
+    y: 0.09375
+  },
+  {
+    x: 0.15625,
+    y: 0.09375
+  },
+  {
+    x: 0.21875,
+    y: 0.09375
+  },
+  {
+    x: 0.21875,
+    y: 0.09375
+  },
+  {
+    x: 0.28125,
+    y: 0.09375
+  },
+  {
+    x: 0.28125,
+    y: 0.09375
+  },
+  {
+    x: 0.34375,
+    y: 0.09375
+  },
+  {
+    x: 0.34375,
+    y: 0.09375
+  },
+  {
+    x: 0.40625,
+    y: 0.09375
+  },
+  {
+    x: 0.40625,
+    y: 0.09375
+  },
+  {
+    x: 0.46875,
+    y: 0.09375
+  },
+  {
+    x: 0.46875,
+    y: 0.09375
+  },
+  {
+    x: 0.53125,
+    y: 0.09375
+  },
+  {
+    x: 0.53125,
+    y: 0.09375
+  },
+  {
+    x: 0.59375,
+    y: 0.09375
+  },
+  {
+    x: 0.59375,
+    y: 0.09375
+  },
+  {
+    x: 0.65625,
+    y: 0.09375
+  },
+  {
+    x: 0.65625,
+    y: 0.09375
+  },
+  {
+    x: 0.71875,
+    y: 0.09375
+  },
+  {
+    x: 0.71875,
+    y: 0.09375
+  },
+  {
+    x: 0.78125,
+    y: 0.09375
+  },
+  {
+    x: 0.78125,
+    y: 0.09375
+  },
+  {
+    x: 0.84375,
+    y: 0.09375
+  },
+  {
+    x: 0.84375,
+    y: 0.09375
+  },
+  {
+    x: 0.90625,
+    y: 0.09375
+  },
+  {
+    x: 0.90625,
+    y: 0.09375
+  },
+  {
+    x: 0.96875,
+    y: 0.09375
+  },
+  {
+    x: 0.96875,
+    y: 0.09375
+  },
+  {
+    x: 0.03125,
+    y: 0.15625
+  },
+  {
+    x: 0.03125,
+    y: 0.15625
+  },
+  {
+    x: 0.09375,
+    y: 0.15625
+  },
+  {
+    x: 0.09375,
+    y: 0.15625
+  },
+  {
+    x: 0.15625,
+    y: 0.15625
+  },
+  {
+    x: 0.15625,
+    y: 0.15625
+  },
+  {
+    x: 0.21875,
+    y: 0.15625
+  },
+  {
+    x: 0.21875,
+    y: 0.15625
+  },
+  {
+    x: 0.28125,
+    y: 0.15625
+  },
+  {
+    x: 0.28125,
+    y: 0.15625
+  },
+  {
+    x: 0.34375,
+    y: 0.15625
+  },
+  {
+    x: 0.34375,
+    y: 0.15625
+  },
+  {
+    x: 0.40625,
+    y: 0.15625
+  },
+  {
+    x: 0.40625,
+    y: 0.15625
+  },
+  {
+    x: 0.46875,
+    y: 0.15625
+  },
+  {
+    x: 0.46875,
+    y: 0.15625
+  },
+  {
+    x: 0.53125,
+    y: 0.15625
+  },
+  {
+    x: 0.53125,
+    y: 0.15625
+  },
+  {
+    x: 0.59375,
+    y: 0.15625
+  },
+  {
+    x: 0.59375,
+    y: 0.15625
+  },
+  {
+    x: 0.65625,
+    y: 0.15625
+  },
+  {
+    x: 0.65625,
+    y: 0.15625
+  },
+  {
+    x: 0.71875,
+    y: 0.15625
+  },
+  {
+    x: 0.71875,
+    y: 0.15625
+  },
+  {
+    x: 0.78125,
+    y: 0.15625
+  },
+  {
+    x: 0.78125,
+    y: 0.15625
+  },
+  {
+    x: 0.84375,
+    y: 0.15625
+  },
+  {
+    x: 0.84375,
+    y: 0.15625
+  },
+  {
+    x: 0.90625,
+    y: 0.15625
+  },
+  {
+    x: 0.90625,
+    y: 0.15625
+  },
+  {
+    x: 0.96875,
+    y: 0.15625
+  },
+  {
+    x: 0.96875,
+    y: 0.15625
+  },
+  {
+    x: 0.03125,
+    y: 0.21875
+  },
+  {
+    x: 0.03125,
+    y: 0.21875
+  },
+  {
+    x: 0.09375,
+    y: 0.21875
+  },
+  {
+    x: 0.09375,
+    y: 0.21875
+  },
+  {
+    x: 0.15625,
+    y: 0.21875
+  },
+  {
+    x: 0.15625,
+    y: 0.21875
+  },
+  {
+    x: 0.21875,
+    y: 0.21875
+  },
+  {
+    x: 0.21875,
+    y: 0.21875
+  },
+  {
+    x: 0.28125,
+    y: 0.21875
+  },
+  {
+    x: 0.28125,
+    y: 0.21875
+  },
+  {
+    x: 0.34375,
+    y: 0.21875
+  },
+  {
+    x: 0.34375,
+    y: 0.21875
+  },
+  {
+    x: 0.40625,
+    y: 0.21875
+  },
+  {
+    x: 0.40625,
+    y: 0.21875
+  },
+  {
+    x: 0.46875,
+    y: 0.21875
+  },
+  {
+    x: 0.46875,
+    y: 0.21875
+  },
+  {
+    x: 0.53125,
+    y: 0.21875
+  },
+  {
+    x: 0.53125,
+    y: 0.21875
+  },
+  {
+    x: 0.59375,
+    y: 0.21875
+  },
+  {
+    x: 0.59375,
+    y: 0.21875
+  },
+  {
+    x: 0.65625,
+    y: 0.21875
+  },
+  {
+    x: 0.65625,
+    y: 0.21875
+  },
+  {
+    x: 0.71875,
+    y: 0.21875
+  },
+  {
+    x: 0.71875,
+    y: 0.21875
+  },
+  {
+    x: 0.78125,
+    y: 0.21875
+  },
+  {
+    x: 0.78125,
+    y: 0.21875
+  },
+  {
+    x: 0.84375,
+    y: 0.21875
+  },
+  {
+    x: 0.84375,
+    y: 0.21875
+  },
+  {
+    x: 0.90625,
+    y: 0.21875
+  },
+  {
+    x: 0.90625,
+    y: 0.21875
+  },
+  {
+    x: 0.96875,
+    y: 0.21875
+  },
+  {
+    x: 0.96875,
+    y: 0.21875
+  },
+  {
+    x: 0.03125,
+    y: 0.28125
+  },
+  {
+    x: 0.03125,
+    y: 0.28125
+  },
+  {
+    x: 0.09375,
+    y: 0.28125
+  },
+  {
+    x: 0.09375,
+    y: 0.28125
+  },
+  {
+    x: 0.15625,
+    y: 0.28125
+  },
+  {
+    x: 0.15625,
+    y: 0.28125
+  },
+  {
+    x: 0.21875,
+    y: 0.28125
+  },
+  {
+    x: 0.21875,
+    y: 0.28125
+  },
+  {
+    x: 0.28125,
+    y: 0.28125
+  },
+  {
+    x: 0.28125,
+    y: 0.28125
+  },
+  {
+    x: 0.34375,
+    y: 0.28125
+  },
+  {
+    x: 0.34375,
+    y: 0.28125
+  },
+  {
+    x: 0.40625,
+    y: 0.28125
+  },
+  {
+    x: 0.40625,
+    y: 0.28125
+  },
+  {
+    x: 0.46875,
+    y: 0.28125
+  },
+  {
+    x: 0.46875,
+    y: 0.28125
+  },
+  {
+    x: 0.53125,
+    y: 0.28125
+  },
+  {
+    x: 0.53125,
+    y: 0.28125
+  },
+  {
+    x: 0.59375,
+    y: 0.28125
+  },
+  {
+    x: 0.59375,
+    y: 0.28125
+  },
+  {
+    x: 0.65625,
+    y: 0.28125
+  },
+  {
+    x: 0.65625,
+    y: 0.28125
+  },
+  {
+    x: 0.71875,
+    y: 0.28125
+  },
+  {
+    x: 0.71875,
+    y: 0.28125
+  },
+  {
+    x: 0.78125,
+    y: 0.28125
+  },
+  {
+    x: 0.78125,
+    y: 0.28125
+  },
+  {
+    x: 0.84375,
+    y: 0.28125
+  },
+  {
+    x: 0.84375,
+    y: 0.28125
+  },
+  {
+    x: 0.90625,
+    y: 0.28125
+  },
+  {
+    x: 0.90625,
+    y: 0.28125
+  },
+  {
+    x: 0.96875,
+    y: 0.28125
+  },
+  {
+    x: 0.96875,
+    y: 0.28125
+  },
+  {
+    x: 0.03125,
+    y: 0.34375
+  },
+  {
+    x: 0.03125,
+    y: 0.34375
+  },
+  {
+    x: 0.09375,
+    y: 0.34375
+  },
+  {
+    x: 0.09375,
+    y: 0.34375
+  },
+  {
+    x: 0.15625,
+    y: 0.34375
+  },
+  {
+    x: 0.15625,
+    y: 0.34375
+  },
+  {
+    x: 0.21875,
+    y: 0.34375
+  },
+  {
+    x: 0.21875,
+    y: 0.34375
+  },
+  {
+    x: 0.28125,
+    y: 0.34375
+  },
+  {
+    x: 0.28125,
+    y: 0.34375
+  },
+  {
+    x: 0.34375,
+    y: 0.34375
+  },
+  {
+    x: 0.34375,
+    y: 0.34375
+  },
+  {
+    x: 0.40625,
+    y: 0.34375
+  },
+  {
+    x: 0.40625,
+    y: 0.34375
+  },
+  {
+    x: 0.46875,
+    y: 0.34375
+  },
+  {
+    x: 0.46875,
+    y: 0.34375
+  },
+  {
+    x: 0.53125,
+    y: 0.34375
+  },
+  {
+    x: 0.53125,
+    y: 0.34375
+  },
+  {
+    x: 0.59375,
+    y: 0.34375
+  },
+  {
+    x: 0.59375,
+    y: 0.34375
+  },
+  {
+    x: 0.65625,
+    y: 0.34375
+  },
+  {
+    x: 0.65625,
+    y: 0.34375
+  },
+  {
+    x: 0.71875,
+    y: 0.34375
+  },
+  {
+    x: 0.71875,
+    y: 0.34375
+  },
+  {
+    x: 0.78125,
+    y: 0.34375
+  },
+  {
+    x: 0.78125,
+    y: 0.34375
+  },
+  {
+    x: 0.84375,
+    y: 0.34375
+  },
+  {
+    x: 0.84375,
+    y: 0.34375
+  },
+  {
+    x: 0.90625,
+    y: 0.34375
+  },
+  {
+    x: 0.90625,
+    y: 0.34375
+  },
+  {
+    x: 0.96875,
+    y: 0.34375
+  },
+  {
+    x: 0.96875,
+    y: 0.34375
+  },
+  {
+    x: 0.03125,
+    y: 0.40625
+  },
+  {
+    x: 0.03125,
+    y: 0.40625
+  },
+  {
+    x: 0.09375,
+    y: 0.40625
+  },
+  {
+    x: 0.09375,
+    y: 0.40625
+  },
+  {
+    x: 0.15625,
+    y: 0.40625
+  },
+  {
+    x: 0.15625,
+    y: 0.40625
+  },
+  {
+    x: 0.21875,
+    y: 0.40625
+  },
+  {
+    x: 0.21875,
+    y: 0.40625
+  },
+  {
+    x: 0.28125,
+    y: 0.40625
+  },
+  {
+    x: 0.28125,
+    y: 0.40625
+  },
+  {
+    x: 0.34375,
+    y: 0.40625
+  },
+  {
+    x: 0.34375,
+    y: 0.40625
+  },
+  {
+    x: 0.40625,
+    y: 0.40625
+  },
+  {
+    x: 0.40625,
+    y: 0.40625
+  },
+  {
+    x: 0.46875,
+    y: 0.40625
+  },
+  {
+    x: 0.46875,
+    y: 0.40625
+  },
+  {
+    x: 0.53125,
+    y: 0.40625
+  },
+  {
+    x: 0.53125,
+    y: 0.40625
+  },
+  {
+    x: 0.59375,
+    y: 0.40625
+  },
+  {
+    x: 0.59375,
+    y: 0.40625
+  },
+  {
+    x: 0.65625,
+    y: 0.40625
+  },
+  {
+    x: 0.65625,
+    y: 0.40625
+  },
+  {
+    x: 0.71875,
+    y: 0.40625
+  },
+  {
+    x: 0.71875,
+    y: 0.40625
+  },
+  {
+    x: 0.78125,
+    y: 0.40625
+  },
+  {
+    x: 0.78125,
+    y: 0.40625
+  },
+  {
+    x: 0.84375,
+    y: 0.40625
+  },
+  {
+    x: 0.84375,
+    y: 0.40625
+  },
+  {
+    x: 0.90625,
+    y: 0.40625
+  },
+  {
+    x: 0.90625,
+    y: 0.40625
+  },
+  {
+    x: 0.96875,
+    y: 0.40625
+  },
+  {
+    x: 0.96875,
+    y: 0.40625
+  },
+  {
+    x: 0.03125,
+    y: 0.46875
+  },
+  {
+    x: 0.03125,
+    y: 0.46875
+  },
+  {
+    x: 0.09375,
+    y: 0.46875
+  },
+  {
+    x: 0.09375,
+    y: 0.46875
+  },
+  {
+    x: 0.15625,
+    y: 0.46875
+  },
+  {
+    x: 0.15625,
+    y: 0.46875
+  },
+  {
+    x: 0.21875,
+    y: 0.46875
+  },
+  {
+    x: 0.21875,
+    y: 0.46875
+  },
+  {
+    x: 0.28125,
+    y: 0.46875
+  },
+  {
+    x: 0.28125,
+    y: 0.46875
+  },
+  {
+    x: 0.34375,
+    y: 0.46875
+  },
+  {
+    x: 0.34375,
+    y: 0.46875
+  },
+  {
+    x: 0.40625,
+    y: 0.46875
+  },
+  {
+    x: 0.40625,
+    y: 0.46875
+  },
+  {
+    x: 0.46875,
+    y: 0.46875
+  },
+  {
+    x: 0.46875,
+    y: 0.46875
+  },
+  {
+    x: 0.53125,
+    y: 0.46875
+  },
+  {
+    x: 0.53125,
+    y: 0.46875
+  },
+  {
+    x: 0.59375,
+    y: 0.46875
+  },
+  {
+    x: 0.59375,
+    y: 0.46875
+  },
+  {
+    x: 0.65625,
+    y: 0.46875
+  },
+  {
+    x: 0.65625,
+    y: 0.46875
+  },
+  {
+    x: 0.71875,
+    y: 0.46875
+  },
+  {
+    x: 0.71875,
+    y: 0.46875
+  },
+  {
+    x: 0.78125,
+    y: 0.46875
+  },
+  {
+    x: 0.78125,
+    y: 0.46875
+  },
+  {
+    x: 0.84375,
+    y: 0.46875
+  },
+  {
+    x: 0.84375,
+    y: 0.46875
+  },
+  {
+    x: 0.90625,
+    y: 0.46875
+  },
+  {
+    x: 0.90625,
+    y: 0.46875
+  },
+  {
+    x: 0.96875,
+    y: 0.46875
+  },
+  {
+    x: 0.96875,
+    y: 0.46875
+  },
+  {
+    x: 0.03125,
+    y: 0.53125
+  },
+  {
+    x: 0.03125,
+    y: 0.53125
+  },
+  {
+    x: 0.09375,
+    y: 0.53125
+  },
+  {
+    x: 0.09375,
+    y: 0.53125
+  },
+  {
+    x: 0.15625,
+    y: 0.53125
+  },
+  {
+    x: 0.15625,
+    y: 0.53125
+  },
+  {
+    x: 0.21875,
+    y: 0.53125
+  },
+  {
+    x: 0.21875,
+    y: 0.53125
+  },
+  {
+    x: 0.28125,
+    y: 0.53125
+  },
+  {
+    x: 0.28125,
+    y: 0.53125
+  },
+  {
+    x: 0.34375,
+    y: 0.53125
+  },
+  {
+    x: 0.34375,
+    y: 0.53125
+  },
+  {
+    x: 0.40625,
+    y: 0.53125
+  },
+  {
+    x: 0.40625,
+    y: 0.53125
+  },
+  {
+    x: 0.46875,
+    y: 0.53125
+  },
+  {
+    x: 0.46875,
+    y: 0.53125
+  },
+  {
+    x: 0.53125,
+    y: 0.53125
+  },
+  {
+    x: 0.53125,
+    y: 0.53125
+  },
+  {
+    x: 0.59375,
+    y: 0.53125
+  },
+  {
+    x: 0.59375,
+    y: 0.53125
+  },
+  {
+    x: 0.65625,
+    y: 0.53125
+  },
+  {
+    x: 0.65625,
+    y: 0.53125
+  },
+  {
+    x: 0.71875,
+    y: 0.53125
+  },
+  {
+    x: 0.71875,
+    y: 0.53125
+  },
+  {
+    x: 0.78125,
+    y: 0.53125
+  },
+  {
+    x: 0.78125,
+    y: 0.53125
+  },
+  {
+    x: 0.84375,
+    y: 0.53125
+  },
+  {
+    x: 0.84375,
+    y: 0.53125
+  },
+  {
+    x: 0.90625,
+    y: 0.53125
+  },
+  {
+    x: 0.90625,
+    y: 0.53125
+  },
+  {
+    x: 0.96875,
+    y: 0.53125
+  },
+  {
+    x: 0.96875,
+    y: 0.53125
+  },
+  {
+    x: 0.03125,
+    y: 0.59375
+  },
+  {
+    x: 0.03125,
+    y: 0.59375
+  },
+  {
+    x: 0.09375,
+    y: 0.59375
+  },
+  {
+    x: 0.09375,
+    y: 0.59375
+  },
+  {
+    x: 0.15625,
+    y: 0.59375
+  },
+  {
+    x: 0.15625,
+    y: 0.59375
+  },
+  {
+    x: 0.21875,
+    y: 0.59375
+  },
+  {
+    x: 0.21875,
+    y: 0.59375
+  },
+  {
+    x: 0.28125,
+    y: 0.59375
+  },
+  {
+    x: 0.28125,
+    y: 0.59375
+  },
+  {
+    x: 0.34375,
+    y: 0.59375
+  },
+  {
+    x: 0.34375,
+    y: 0.59375
+  },
+  {
+    x: 0.40625,
+    y: 0.59375
+  },
+  {
+    x: 0.40625,
+    y: 0.59375
+  },
+  {
+    x: 0.46875,
+    y: 0.59375
+  },
+  {
+    x: 0.46875,
+    y: 0.59375
+  },
+  {
+    x: 0.53125,
+    y: 0.59375
+  },
+  {
+    x: 0.53125,
+    y: 0.59375
+  },
+  {
+    x: 0.59375,
+    y: 0.59375
+  },
+  {
+    x: 0.59375,
+    y: 0.59375
+  },
+  {
+    x: 0.65625,
+    y: 0.59375
+  },
+  {
+    x: 0.65625,
+    y: 0.59375
+  },
+  {
+    x: 0.71875,
+    y: 0.59375
+  },
+  {
+    x: 0.71875,
+    y: 0.59375
+  },
+  {
+    x: 0.78125,
+    y: 0.59375
+  },
+  {
+    x: 0.78125,
+    y: 0.59375
+  },
+  {
+    x: 0.84375,
+    y: 0.59375
+  },
+  {
+    x: 0.84375,
+    y: 0.59375
+  },
+  {
+    x: 0.90625,
+    y: 0.59375
+  },
+  {
+    x: 0.90625,
+    y: 0.59375
+  },
+  {
+    x: 0.96875,
+    y: 0.59375
+  },
+  {
+    x: 0.96875,
+    y: 0.59375
+  },
+  {
+    x: 0.03125,
+    y: 0.65625
+  },
+  {
+    x: 0.03125,
+    y: 0.65625
+  },
+  {
+    x: 0.09375,
+    y: 0.65625
+  },
+  {
+    x: 0.09375,
+    y: 0.65625
+  },
+  {
+    x: 0.15625,
+    y: 0.65625
+  },
+  {
+    x: 0.15625,
+    y: 0.65625
+  },
+  {
+    x: 0.21875,
+    y: 0.65625
+  },
+  {
+    x: 0.21875,
+    y: 0.65625
+  },
+  {
+    x: 0.28125,
+    y: 0.65625
+  },
+  {
+    x: 0.28125,
+    y: 0.65625
+  },
+  {
+    x: 0.34375,
+    y: 0.65625
+  },
+  {
+    x: 0.34375,
+    y: 0.65625
+  },
+  {
+    x: 0.40625,
+    y: 0.65625
+  },
+  {
+    x: 0.40625,
+    y: 0.65625
+  },
+  {
+    x: 0.46875,
+    y: 0.65625
+  },
+  {
+    x: 0.46875,
+    y: 0.65625
+  },
+  {
+    x: 0.53125,
+    y: 0.65625
+  },
+  {
+    x: 0.53125,
+    y: 0.65625
+  },
+  {
+    x: 0.59375,
+    y: 0.65625
+  },
+  {
+    x: 0.59375,
+    y: 0.65625
+  },
+  {
+    x: 0.65625,
+    y: 0.65625
+  },
+  {
+    x: 0.65625,
+    y: 0.65625
+  },
+  {
+    x: 0.71875,
+    y: 0.65625
+  },
+  {
+    x: 0.71875,
+    y: 0.65625
+  },
+  {
+    x: 0.78125,
+    y: 0.65625
+  },
+  {
+    x: 0.78125,
+    y: 0.65625
+  },
+  {
+    x: 0.84375,
+    y: 0.65625
+  },
+  {
+    x: 0.84375,
+    y: 0.65625
+  },
+  {
+    x: 0.90625,
+    y: 0.65625
+  },
+  {
+    x: 0.90625,
+    y: 0.65625
+  },
+  {
+    x: 0.96875,
+    y: 0.65625
+  },
+  {
+    x: 0.96875,
+    y: 0.65625
+  },
+  {
+    x: 0.03125,
+    y: 0.71875
+  },
+  {
+    x: 0.03125,
+    y: 0.71875
+  },
+  {
+    x: 0.09375,
+    y: 0.71875
+  },
+  {
+    x: 0.09375,
+    y: 0.71875
+  },
+  {
+    x: 0.15625,
+    y: 0.71875
+  },
+  {
+    x: 0.15625,
+    y: 0.71875
+  },
+  {
+    x: 0.21875,
+    y: 0.71875
+  },
+  {
+    x: 0.21875,
+    y: 0.71875
+  },
+  {
+    x: 0.28125,
+    y: 0.71875
+  },
+  {
+    x: 0.28125,
+    y: 0.71875
+  },
+  {
+    x: 0.34375,
+    y: 0.71875
+  },
+  {
+    x: 0.34375,
+    y: 0.71875
+  },
+  {
+    x: 0.40625,
+    y: 0.71875
+  },
+  {
+    x: 0.40625,
+    y: 0.71875
+  },
+  {
+    x: 0.46875,
+    y: 0.71875
+  },
+  {
+    x: 0.46875,
+    y: 0.71875
+  },
+  {
+    x: 0.53125,
+    y: 0.71875
+  },
+  {
+    x: 0.53125,
+    y: 0.71875
+  },
+  {
+    x: 0.59375,
+    y: 0.71875
+  },
+  {
+    x: 0.59375,
+    y: 0.71875
+  },
+  {
+    x: 0.65625,
+    y: 0.71875
+  },
+  {
+    x: 0.65625,
+    y: 0.71875
+  },
+  {
+    x: 0.71875,
+    y: 0.71875
+  },
+  {
+    x: 0.71875,
+    y: 0.71875
+  },
+  {
+    x: 0.78125,
+    y: 0.71875
+  },
+  {
+    x: 0.78125,
+    y: 0.71875
+  },
+  {
+    x: 0.84375,
+    y: 0.71875
+  },
+  {
+    x: 0.84375,
+    y: 0.71875
+  },
+  {
+    x: 0.90625,
+    y: 0.71875
+  },
+  {
+    x: 0.90625,
+    y: 0.71875
+  },
+  {
+    x: 0.96875,
+    y: 0.71875
+  },
+  {
+    x: 0.96875,
+    y: 0.71875
+  },
+  {
+    x: 0.03125,
+    y: 0.78125
+  },
+  {
+    x: 0.03125,
+    y: 0.78125
+  },
+  {
+    x: 0.09375,
+    y: 0.78125
+  },
+  {
+    x: 0.09375,
+    y: 0.78125
+  },
+  {
+    x: 0.15625,
+    y: 0.78125
+  },
+  {
+    x: 0.15625,
+    y: 0.78125
+  },
+  {
+    x: 0.21875,
+    y: 0.78125
+  },
+  {
+    x: 0.21875,
+    y: 0.78125
+  },
+  {
+    x: 0.28125,
+    y: 0.78125
+  },
+  {
+    x: 0.28125,
+    y: 0.78125
+  },
+  {
+    x: 0.34375,
+    y: 0.78125
+  },
+  {
+    x: 0.34375,
+    y: 0.78125
+  },
+  {
+    x: 0.40625,
+    y: 0.78125
+  },
+  {
+    x: 0.40625,
+    y: 0.78125
+  },
+  {
+    x: 0.46875,
+    y: 0.78125
+  },
+  {
+    x: 0.46875,
+    y: 0.78125
+  },
+  {
+    x: 0.53125,
+    y: 0.78125
+  },
+  {
+    x: 0.53125,
+    y: 0.78125
+  },
+  {
+    x: 0.59375,
+    y: 0.78125
+  },
+  {
+    x: 0.59375,
+    y: 0.78125
+  },
+  {
+    x: 0.65625,
+    y: 0.78125
+  },
+  {
+    x: 0.65625,
+    y: 0.78125
+  },
+  {
+    x: 0.71875,
+    y: 0.78125
+  },
+  {
+    x: 0.71875,
+    y: 0.78125
+  },
+  {
+    x: 0.78125,
+    y: 0.78125
+  },
+  {
+    x: 0.78125,
+    y: 0.78125
+  },
+  {
+    x: 0.84375,
+    y: 0.78125
+  },
+  {
+    x: 0.84375,
+    y: 0.78125
+  },
+  {
+    x: 0.90625,
+    y: 0.78125
+  },
+  {
+    x: 0.90625,
+    y: 0.78125
+  },
+  {
+    x: 0.96875,
+    y: 0.78125
+  },
+  {
+    x: 0.96875,
+    y: 0.78125
+  },
+  {
+    x: 0.03125,
+    y: 0.84375
+  },
+  {
+    x: 0.03125,
+    y: 0.84375
+  },
+  {
+    x: 0.09375,
+    y: 0.84375
+  },
+  {
+    x: 0.09375,
+    y: 0.84375
+  },
+  {
+    x: 0.15625,
+    y: 0.84375
+  },
+  {
+    x: 0.15625,
+    y: 0.84375
+  },
+  {
+    x: 0.21875,
+    y: 0.84375
+  },
+  {
+    x: 0.21875,
+    y: 0.84375
+  },
+  {
+    x: 0.28125,
+    y: 0.84375
+  },
+  {
+    x: 0.28125,
+    y: 0.84375
+  },
+  {
+    x: 0.34375,
+    y: 0.84375
+  },
+  {
+    x: 0.34375,
+    y: 0.84375
+  },
+  {
+    x: 0.40625,
+    y: 0.84375
+  },
+  {
+    x: 0.40625,
+    y: 0.84375
+  },
+  {
+    x: 0.46875,
+    y: 0.84375
+  },
+  {
+    x: 0.46875,
+    y: 0.84375
+  },
+  {
+    x: 0.53125,
+    y: 0.84375
+  },
+  {
+    x: 0.53125,
+    y: 0.84375
+  },
+  {
+    x: 0.59375,
+    y: 0.84375
+  },
+  {
+    x: 0.59375,
+    y: 0.84375
+  },
+  {
+    x: 0.65625,
+    y: 0.84375
+  },
+  {
+    x: 0.65625,
+    y: 0.84375
+  },
+  {
+    x: 0.71875,
+    y: 0.84375
+  },
+  {
+    x: 0.71875,
+    y: 0.84375
+  },
+  {
+    x: 0.78125,
+    y: 0.84375
+  },
+  {
+    x: 0.78125,
+    y: 0.84375
+  },
+  {
+    x: 0.84375,
+    y: 0.84375
+  },
+  {
+    x: 0.84375,
+    y: 0.84375
+  },
+  {
+    x: 0.90625,
+    y: 0.84375
+  },
+  {
+    x: 0.90625,
+    y: 0.84375
+  },
+  {
+    x: 0.96875,
+    y: 0.84375
+  },
+  {
+    x: 0.96875,
+    y: 0.84375
+  },
+  {
+    x: 0.03125,
+    y: 0.90625
+  },
+  {
+    x: 0.03125,
+    y: 0.90625
+  },
+  {
+    x: 0.09375,
+    y: 0.90625
+  },
+  {
+    x: 0.09375,
+    y: 0.90625
+  },
+  {
+    x: 0.15625,
+    y: 0.90625
+  },
+  {
+    x: 0.15625,
+    y: 0.90625
+  },
+  {
+    x: 0.21875,
+    y: 0.90625
+  },
+  {
+    x: 0.21875,
+    y: 0.90625
+  },
+  {
+    x: 0.28125,
+    y: 0.90625
+  },
+  {
+    x: 0.28125,
+    y: 0.90625
+  },
+  {
+    x: 0.34375,
+    y: 0.90625
+  },
+  {
+    x: 0.34375,
+    y: 0.90625
+  },
+  {
+    x: 0.40625,
+    y: 0.90625
+  },
+  {
+    x: 0.40625,
+    y: 0.90625
+  },
+  {
+    x: 0.46875,
+    y: 0.90625
+  },
+  {
+    x: 0.46875,
+    y: 0.90625
+  },
+  {
+    x: 0.53125,
+    y: 0.90625
+  },
+  {
+    x: 0.53125,
+    y: 0.90625
+  },
+  {
+    x: 0.59375,
+    y: 0.90625
+  },
+  {
+    x: 0.59375,
+    y: 0.90625
+  },
+  {
+    x: 0.65625,
+    y: 0.90625
+  },
+  {
+    x: 0.65625,
+    y: 0.90625
+  },
+  {
+    x: 0.71875,
+    y: 0.90625
+  },
+  {
+    x: 0.71875,
+    y: 0.90625
+  },
+  {
+    x: 0.78125,
+    y: 0.90625
+  },
+  {
+    x: 0.78125,
+    y: 0.90625
+  },
+  {
+    x: 0.84375,
+    y: 0.90625
+  },
+  {
+    x: 0.84375,
+    y: 0.90625
+  },
+  {
+    x: 0.90625,
+    y: 0.90625
+  },
+  {
+    x: 0.90625,
+    y: 0.90625
+  },
+  {
+    x: 0.96875,
+    y: 0.90625
+  },
+  {
+    x: 0.96875,
+    y: 0.90625
+  },
+  {
+    x: 0.03125,
+    y: 0.96875
+  },
+  {
+    x: 0.03125,
+    y: 0.96875
+  },
+  {
+    x: 0.09375,
+    y: 0.96875
+  },
+  {
+    x: 0.09375,
+    y: 0.96875
+  },
+  {
+    x: 0.15625,
+    y: 0.96875
+  },
+  {
+    x: 0.15625,
+    y: 0.96875
+  },
+  {
+    x: 0.21875,
+    y: 0.96875
+  },
+  {
+    x: 0.21875,
+    y: 0.96875
+  },
+  {
+    x: 0.28125,
+    y: 0.96875
+  },
+  {
+    x: 0.28125,
+    y: 0.96875
+  },
+  {
+    x: 0.34375,
+    y: 0.96875
+  },
+  {
+    x: 0.34375,
+    y: 0.96875
+  },
+  {
+    x: 0.40625,
+    y: 0.96875
+  },
+  {
+    x: 0.40625,
+    y: 0.96875
+  },
+  {
+    x: 0.46875,
+    y: 0.96875
+  },
+  {
+    x: 0.46875,
+    y: 0.96875
+  },
+  {
+    x: 0.53125,
+    y: 0.96875
+  },
+  {
+    x: 0.53125,
+    y: 0.96875
+  },
+  {
+    x: 0.59375,
+    y: 0.96875
+  },
+  {
+    x: 0.59375,
+    y: 0.96875
+  },
+  {
+    x: 0.65625,
+    y: 0.96875
+  },
+  {
+    x: 0.65625,
+    y: 0.96875
+  },
+  {
+    x: 0.71875,
+    y: 0.96875
+  },
+  {
+    x: 0.71875,
+    y: 0.96875
+  },
+  {
+    x: 0.78125,
+    y: 0.96875
+  },
+  {
+    x: 0.78125,
+    y: 0.96875
+  },
+  {
+    x: 0.84375,
+    y: 0.96875
+  },
+  {
+    x: 0.84375,
+    y: 0.96875
+  },
+  {
+    x: 0.90625,
+    y: 0.96875
+  },
+  {
+    x: 0.90625,
+    y: 0.96875
+  },
+  {
+    x: 0.96875,
+    y: 0.96875
+  },
+  {
+    x: 0.96875,
+    y: 0.96875
+  },
+  {
+    x: 0.0625,
+    y: 0.0625
+  },
+  {
+    x: 0.0625,
+    y: 0.0625
+  },
+  {
+    x: 0.0625,
+    y: 0.0625
+  },
+  {
+    x: 0.0625,
+    y: 0.0625
+  },
+  {
+    x: 0.0625,
+    y: 0.0625
+  },
+  {
+    x: 0.0625,
+    y: 0.0625
+  },
+  {
+    x: 0.1875,
+    y: 0.0625
+  },
+  {
+    x: 0.1875,
+    y: 0.0625
+  },
+  {
+    x: 0.1875,
+    y: 0.0625
+  },
+  {
+    x: 0.1875,
+    y: 0.0625
+  },
+  {
+    x: 0.1875,
+    y: 0.0625
+  },
+  {
+    x: 0.1875,
+    y: 0.0625
+  },
+  {
+    x: 0.3125,
+    y: 0.0625
+  },
+  {
+    x: 0.3125,
+    y: 0.0625
+  },
+  {
+    x: 0.3125,
+    y: 0.0625
+  },
+  {
+    x: 0.3125,
+    y: 0.0625
+  },
+  {
+    x: 0.3125,
+    y: 0.0625
+  },
+  {
+    x: 0.3125,
+    y: 0.0625
+  },
+  {
+    x: 0.4375,
+    y: 0.0625
+  },
+  {
+    x: 0.4375,
+    y: 0.0625
+  },
+  {
+    x: 0.4375,
+    y: 0.0625
+  },
+  {
+    x: 0.4375,
+    y: 0.0625
+  },
+  {
+    x: 0.4375,
+    y: 0.0625
+  },
+  {
+    x: 0.4375,
+    y: 0.0625
+  },
+  {
+    x: 0.5625,
+    y: 0.0625
+  },
+  {
+    x: 0.5625,
+    y: 0.0625
+  },
+  {
+    x: 0.5625,
+    y: 0.0625
+  },
+  {
+    x: 0.5625,
+    y: 0.0625
+  },
+  {
+    x: 0.5625,
+    y: 0.0625
+  },
+  {
+    x: 0.5625,
+    y: 0.0625
+  },
+  {
+    x: 0.6875,
+    y: 0.0625
+  },
+  {
+    x: 0.6875,
+    y: 0.0625
+  },
+  {
+    x: 0.6875,
+    y: 0.0625
+  },
+  {
+    x: 0.6875,
+    y: 0.0625
+  },
+  {
+    x: 0.6875,
+    y: 0.0625
+  },
+  {
+    x: 0.6875,
+    y: 0.0625
+  },
+  {
+    x: 0.8125,
+    y: 0.0625
+  },
+  {
+    x: 0.8125,
+    y: 0.0625
+  },
+  {
+    x: 0.8125,
+    y: 0.0625
+  },
+  {
+    x: 0.8125,
+    y: 0.0625
+  },
+  {
+    x: 0.8125,
+    y: 0.0625
+  },
+  {
+    x: 0.8125,
+    y: 0.0625
+  },
+  {
+    x: 0.9375,
+    y: 0.0625
+  },
+  {
+    x: 0.9375,
+    y: 0.0625
+  },
+  {
+    x: 0.9375,
+    y: 0.0625
+  },
+  {
+    x: 0.9375,
+    y: 0.0625
+  },
+  {
+    x: 0.9375,
+    y: 0.0625
+  },
+  {
+    x: 0.9375,
+    y: 0.0625
+  },
+  {
+    x: 0.0625,
+    y: 0.1875
+  },
+  {
+    x: 0.0625,
+    y: 0.1875
+  },
+  {
+    x: 0.0625,
+    y: 0.1875
+  },
+  {
+    x: 0.0625,
+    y: 0.1875
+  },
+  {
+    x: 0.0625,
+    y: 0.1875
+  },
+  {
+    x: 0.0625,
+    y: 0.1875
+  },
+  {
+    x: 0.1875,
+    y: 0.1875
+  },
+  {
+    x: 0.1875,
+    y: 0.1875
+  },
+  {
+    x: 0.1875,
+    y: 0.1875
+  },
+  {
+    x: 0.1875,
+    y: 0.1875
+  },
+  {
+    x: 0.1875,
+    y: 0.1875
+  },
+  {
+    x: 0.1875,
+    y: 0.1875
+  },
+  {
+    x: 0.3125,
+    y: 0.1875
+  },
+  {
+    x: 0.3125,
+    y: 0.1875
+  },
+  {
+    x: 0.3125,
+    y: 0.1875
+  },
+  {
+    x: 0.3125,
+    y: 0.1875
+  },
+  {
+    x: 0.3125,
+    y: 0.1875
+  },
+  {
+    x: 0.3125,
+    y: 0.1875
+  },
+  {
+    x: 0.4375,
+    y: 0.1875
+  },
+  {
+    x: 0.4375,
+    y: 0.1875
+  },
+  {
+    x: 0.4375,
+    y: 0.1875
+  },
+  {
+    x: 0.4375,
+    y: 0.1875
+  },
+  {
+    x: 0.4375,
+    y: 0.1875
+  },
+  {
+    x: 0.4375,
+    y: 0.1875
+  },
+  {
+    x: 0.5625,
+    y: 0.1875
+  },
+  {
+    x: 0.5625,
+    y: 0.1875
+  },
+  {
+    x: 0.5625,
+    y: 0.1875
+  },
+  {
+    x: 0.5625,
+    y: 0.1875
+  },
+  {
+    x: 0.5625,
+    y: 0.1875
+  },
+  {
+    x: 0.5625,
+    y: 0.1875
+  },
+  {
+    x: 0.6875,
+    y: 0.1875
+  },
+  {
+    x: 0.6875,
+    y: 0.1875
+  },
+  {
+    x: 0.6875,
+    y: 0.1875
+  },
+  {
+    x: 0.6875,
+    y: 0.1875
+  },
+  {
+    x: 0.6875,
+    y: 0.1875
+  },
+  {
+    x: 0.6875,
+    y: 0.1875
+  },
+  {
+    x: 0.8125,
+    y: 0.1875
+  },
+  {
+    x: 0.8125,
+    y: 0.1875
+  },
+  {
+    x: 0.8125,
+    y: 0.1875
+  },
+  {
+    x: 0.8125,
+    y: 0.1875
+  },
+  {
+    x: 0.8125,
+    y: 0.1875
+  },
+  {
+    x: 0.8125,
+    y: 0.1875
+  },
+  {
+    x: 0.9375,
+    y: 0.1875
+  },
+  {
+    x: 0.9375,
+    y: 0.1875
+  },
+  {
+    x: 0.9375,
+    y: 0.1875
+  },
+  {
+    x: 0.9375,
+    y: 0.1875
+  },
+  {
+    x: 0.9375,
+    y: 0.1875
+  },
+  {
+    x: 0.9375,
+    y: 0.1875
+  },
+  {
+    x: 0.0625,
+    y: 0.3125
+  },
+  {
+    x: 0.0625,
+    y: 0.3125
+  },
+  {
+    x: 0.0625,
+    y: 0.3125
+  },
+  {
+    x: 0.0625,
+    y: 0.3125
+  },
+  {
+    x: 0.0625,
+    y: 0.3125
+  },
+  {
+    x: 0.0625,
+    y: 0.3125
+  },
+  {
+    x: 0.1875,
+    y: 0.3125
+  },
+  {
+    x: 0.1875,
+    y: 0.3125
+  },
+  {
+    x: 0.1875,
+    y: 0.3125
+  },
+  {
+    x: 0.1875,
+    y: 0.3125
+  },
+  {
+    x: 0.1875,
+    y: 0.3125
+  },
+  {
+    x: 0.1875,
+    y: 0.3125
+  },
+  {
+    x: 0.3125,
+    y: 0.3125
+  },
+  {
+    x: 0.3125,
+    y: 0.3125
+  },
+  {
+    x: 0.3125,
+    y: 0.3125
+  },
+  {
+    x: 0.3125,
+    y: 0.3125
+  },
+  {
+    x: 0.3125,
+    y: 0.3125
+  },
+  {
+    x: 0.3125,
+    y: 0.3125
+  },
+  {
+    x: 0.4375,
+    y: 0.3125
+  },
+  {
+    x: 0.4375,
+    y: 0.3125
+  },
+  {
+    x: 0.4375,
+    y: 0.3125
+  },
+  {
+    x: 0.4375,
+    y: 0.3125
+  },
+  {
+    x: 0.4375,
+    y: 0.3125
+  },
+  {
+    x: 0.4375,
+    y: 0.3125
+  },
+  {
+    x: 0.5625,
+    y: 0.3125
+  },
+  {
+    x: 0.5625,
+    y: 0.3125
+  },
+  {
+    x: 0.5625,
+    y: 0.3125
+  },
+  {
+    x: 0.5625,
+    y: 0.3125
+  },
+  {
+    x: 0.5625,
+    y: 0.3125
+  },
+  {
+    x: 0.5625,
+    y: 0.3125
+  },
+  {
+    x: 0.6875,
+    y: 0.3125
+  },
+  {
+    x: 0.6875,
+    y: 0.3125
+  },
+  {
+    x: 0.6875,
+    y: 0.3125
+  },
+  {
+    x: 0.6875,
+    y: 0.3125
+  },
+  {
+    x: 0.6875,
+    y: 0.3125
+  },
+  {
+    x: 0.6875,
+    y: 0.3125
+  },
+  {
+    x: 0.8125,
+    y: 0.3125
+  },
+  {
+    x: 0.8125,
+    y: 0.3125
+  },
+  {
+    x: 0.8125,
+    y: 0.3125
+  },
+  {
+    x: 0.8125,
+    y: 0.3125
+  },
+  {
+    x: 0.8125,
+    y: 0.3125
+  },
+  {
+    x: 0.8125,
+    y: 0.3125
+  },
+  {
+    x: 0.9375,
+    y: 0.3125
+  },
+  {
+    x: 0.9375,
+    y: 0.3125
+  },
+  {
+    x: 0.9375,
+    y: 0.3125
+  },
+  {
+    x: 0.9375,
+    y: 0.3125
+  },
+  {
+    x: 0.9375,
+    y: 0.3125
+  },
+  {
+    x: 0.9375,
+    y: 0.3125
+  },
+  {
+    x: 0.0625,
+    y: 0.4375
+  },
+  {
+    x: 0.0625,
+    y: 0.4375
+  },
+  {
+    x: 0.0625,
+    y: 0.4375
+  },
+  {
+    x: 0.0625,
+    y: 0.4375
+  },
+  {
+    x: 0.0625,
+    y: 0.4375
+  },
+  {
+    x: 0.0625,
+    y: 0.4375
+  },
+  {
+    x: 0.1875,
+    y: 0.4375
+  },
+  {
+    x: 0.1875,
+    y: 0.4375
+  },
+  {
+    x: 0.1875,
+    y: 0.4375
+  },
+  {
+    x: 0.1875,
+    y: 0.4375
+  },
+  {
+    x: 0.1875,
+    y: 0.4375
+  },
+  {
+    x: 0.1875,
+    y: 0.4375
+  },
+  {
+    x: 0.3125,
+    y: 0.4375
+  },
+  {
+    x: 0.3125,
+    y: 0.4375
+  },
+  {
+    x: 0.3125,
+    y: 0.4375
+  },
+  {
+    x: 0.3125,
+    y: 0.4375
+  },
+  {
+    x: 0.3125,
+    y: 0.4375
+  },
+  {
+    x: 0.3125,
+    y: 0.4375
+  },
+  {
+    x: 0.4375,
+    y: 0.4375
+  },
+  {
+    x: 0.4375,
+    y: 0.4375
+  },
+  {
+    x: 0.4375,
+    y: 0.4375
+  },
+  {
+    x: 0.4375,
+    y: 0.4375
+  },
+  {
+    x: 0.4375,
+    y: 0.4375
+  },
+  {
+    x: 0.4375,
+    y: 0.4375
+  },
+  {
+    x: 0.5625,
+    y: 0.4375
+  },
+  {
+    x: 0.5625,
+    y: 0.4375
+  },
+  {
+    x: 0.5625,
+    y: 0.4375
+  },
+  {
+    x: 0.5625,
+    y: 0.4375
+  },
+  {
+    x: 0.5625,
+    y: 0.4375
+  },
+  {
+    x: 0.5625,
+    y: 0.4375
+  },
+  {
+    x: 0.6875,
+    y: 0.4375
+  },
+  {
+    x: 0.6875,
+    y: 0.4375
+  },
+  {
+    x: 0.6875,
+    y: 0.4375
+  },
+  {
+    x: 0.6875,
+    y: 0.4375
+  },
+  {
+    x: 0.6875,
+    y: 0.4375
+  },
+  {
+    x: 0.6875,
+    y: 0.4375
+  },
+  {
+    x: 0.8125,
+    y: 0.4375
+  },
+  {
+    x: 0.8125,
+    y: 0.4375
+  },
+  {
+    x: 0.8125,
+    y: 0.4375
+  },
+  {
+    x: 0.8125,
+    y: 0.4375
+  },
+  {
+    x: 0.8125,
+    y: 0.4375
+  },
+  {
+    x: 0.8125,
+    y: 0.4375
+  },
+  {
+    x: 0.9375,
+    y: 0.4375
+  },
+  {
+    x: 0.9375,
+    y: 0.4375
+  },
+  {
+    x: 0.9375,
+    y: 0.4375
+  },
+  {
+    x: 0.9375,
+    y: 0.4375
+  },
+  {
+    x: 0.9375,
+    y: 0.4375
+  },
+  {
+    x: 0.9375,
+    y: 0.4375
+  },
+  {
+    x: 0.0625,
+    y: 0.5625
+  },
+  {
+    x: 0.0625,
+    y: 0.5625
+  },
+  {
+    x: 0.0625,
+    y: 0.5625
+  },
+  {
+    x: 0.0625,
+    y: 0.5625
+  },
+  {
+    x: 0.0625,
+    y: 0.5625
+  },
+  {
+    x: 0.0625,
+    y: 0.5625
+  },
+  {
+    x: 0.1875,
+    y: 0.5625
+  },
+  {
+    x: 0.1875,
+    y: 0.5625
+  },
+  {
+    x: 0.1875,
+    y: 0.5625
+  },
+  {
+    x: 0.1875,
+    y: 0.5625
+  },
+  {
+    x: 0.1875,
+    y: 0.5625
+  },
+  {
+    x: 0.1875,
+    y: 0.5625
+  },
+  {
+    x: 0.3125,
+    y: 0.5625
+  },
+  {
+    x: 0.3125,
+    y: 0.5625
+  },
+  {
+    x: 0.3125,
+    y: 0.5625
+  },
+  {
+    x: 0.3125,
+    y: 0.5625
+  },
+  {
+    x: 0.3125,
+    y: 0.5625
+  },
+  {
+    x: 0.3125,
+    y: 0.5625
+  },
+  {
+    x: 0.4375,
+    y: 0.5625
+  },
+  {
+    x: 0.4375,
+    y: 0.5625
+  },
+  {
+    x: 0.4375,
+    y: 0.5625
+  },
+  {
+    x: 0.4375,
+    y: 0.5625
+  },
+  {
+    x: 0.4375,
+    y: 0.5625
+  },
+  {
+    x: 0.4375,
+    y: 0.5625
+  },
+  {
+    x: 0.5625,
+    y: 0.5625
+  },
+  {
+    x: 0.5625,
+    y: 0.5625
+  },
+  {
+    x: 0.5625,
+    y: 0.5625
+  },
+  {
+    x: 0.5625,
+    y: 0.5625
+  },
+  {
+    x: 0.5625,
+    y: 0.5625
+  },
+  {
+    x: 0.5625,
+    y: 0.5625
+  },
+  {
+    x: 0.6875,
+    y: 0.5625
+  },
+  {
+    x: 0.6875,
+    y: 0.5625
+  },
+  {
+    x: 0.6875,
+    y: 0.5625
+  },
+  {
+    x: 0.6875,
+    y: 0.5625
+  },
+  {
+    x: 0.6875,
+    y: 0.5625
+  },
+  {
+    x: 0.6875,
+    y: 0.5625
+  },
+  {
+    x: 0.8125,
+    y: 0.5625
+  },
+  {
+    x: 0.8125,
+    y: 0.5625
+  },
+  {
+    x: 0.8125,
+    y: 0.5625
+  },
+  {
+    x: 0.8125,
+    y: 0.5625
+  },
+  {
+    x: 0.8125,
+    y: 0.5625
+  },
+  {
+    x: 0.8125,
+    y: 0.5625
+  },
+  {
+    x: 0.9375,
+    y: 0.5625
+  },
+  {
+    x: 0.9375,
+    y: 0.5625
+  },
+  {
+    x: 0.9375,
+    y: 0.5625
+  },
+  {
+    x: 0.9375,
+    y: 0.5625
+  },
+  {
+    x: 0.9375,
+    y: 0.5625
+  },
+  {
+    x: 0.9375,
+    y: 0.5625
+  },
+  {
+    x: 0.0625,
+    y: 0.6875
+  },
+  {
+    x: 0.0625,
+    y: 0.6875
+  },
+  {
+    x: 0.0625,
+    y: 0.6875
+  },
+  {
+    x: 0.0625,
+    y: 0.6875
+  },
+  {
+    x: 0.0625,
+    y: 0.6875
+  },
+  {
+    x: 0.0625,
+    y: 0.6875
+  },
+  {
+    x: 0.1875,
+    y: 0.6875
+  },
+  {
+    x: 0.1875,
+    y: 0.6875
+  },
+  {
+    x: 0.1875,
+    y: 0.6875
+  },
+  {
+    x: 0.1875,
+    y: 0.6875
+  },
+  {
+    x: 0.1875,
+    y: 0.6875
+  },
+  {
+    x: 0.1875,
+    y: 0.6875
+  },
+  {
+    x: 0.3125,
+    y: 0.6875
+  },
+  {
+    x: 0.3125,
+    y: 0.6875
+  },
+  {
+    x: 0.3125,
+    y: 0.6875
+  },
+  {
+    x: 0.3125,
+    y: 0.6875
+  },
+  {
+    x: 0.3125,
+    y: 0.6875
+  },
+  {
+    x: 0.3125,
+    y: 0.6875
+  },
+  {
+    x: 0.4375,
+    y: 0.6875
+  },
+  {
+    x: 0.4375,
+    y: 0.6875
+  },
+  {
+    x: 0.4375,
+    y: 0.6875
+  },
+  {
+    x: 0.4375,
+    y: 0.6875
+  },
+  {
+    x: 0.4375,
+    y: 0.6875
+  },
+  {
+    x: 0.4375,
+    y: 0.6875
+  },
+  {
+    x: 0.5625,
+    y: 0.6875
+  },
+  {
+    x: 0.5625,
+    y: 0.6875
+  },
+  {
+    x: 0.5625,
+    y: 0.6875
+  },
+  {
+    x: 0.5625,
+    y: 0.6875
+  },
+  {
+    x: 0.5625,
+    y: 0.6875
+  },
+  {
+    x: 0.5625,
+    y: 0.6875
+  },
+  {
+    x: 0.6875,
+    y: 0.6875
+  },
+  {
+    x: 0.6875,
+    y: 0.6875
+  },
+  {
+    x: 0.6875,
+    y: 0.6875
+  },
+  {
+    x: 0.6875,
+    y: 0.6875
+  },
+  {
+    x: 0.6875,
+    y: 0.6875
+  },
+  {
+    x: 0.6875,
+    y: 0.6875
+  },
+  {
+    x: 0.8125,
+    y: 0.6875
+  },
+  {
+    x: 0.8125,
+    y: 0.6875
+  },
+  {
+    x: 0.8125,
+    y: 0.6875
+  },
+  {
+    x: 0.8125,
+    y: 0.6875
+  },
+  {
+    x: 0.8125,
+    y: 0.6875
+  },
+  {
+    x: 0.8125,
+    y: 0.6875
+  },
+  {
+    x: 0.9375,
+    y: 0.6875
+  },
+  {
+    x: 0.9375,
+    y: 0.6875
+  },
+  {
+    x: 0.9375,
+    y: 0.6875
+  },
+  {
+    x: 0.9375,
+    y: 0.6875
+  },
+  {
+    x: 0.9375,
+    y: 0.6875
+  },
+  {
+    x: 0.9375,
+    y: 0.6875
+  },
+  {
+    x: 0.0625,
+    y: 0.8125
+  },
+  {
+    x: 0.0625,
+    y: 0.8125
+  },
+  {
+    x: 0.0625,
+    y: 0.8125
+  },
+  {
+    x: 0.0625,
+    y: 0.8125
+  },
+  {
+    x: 0.0625,
+    y: 0.8125
+  },
+  {
+    x: 0.0625,
+    y: 0.8125
+  },
+  {
+    x: 0.1875,
+    y: 0.8125
+  },
+  {
+    x: 0.1875,
+    y: 0.8125
+  },
+  {
+    x: 0.1875,
+    y: 0.8125
+  },
+  {
+    x: 0.1875,
+    y: 0.8125
+  },
+  {
+    x: 0.1875,
+    y: 0.8125
+  },
+  {
+    x: 0.1875,
+    y: 0.8125
+  },
+  {
+    x: 0.3125,
+    y: 0.8125
+  },
+  {
+    x: 0.3125,
+    y: 0.8125
+  },
+  {
+    x: 0.3125,
+    y: 0.8125
+  },
+  {
+    x: 0.3125,
+    y: 0.8125
+  },
+  {
+    x: 0.3125,
+    y: 0.8125
+  },
+  {
+    x: 0.3125,
+    y: 0.8125
+  },
+  {
+    x: 0.4375,
+    y: 0.8125
+  },
+  {
+    x: 0.4375,
+    y: 0.8125
+  },
+  {
+    x: 0.4375,
+    y: 0.8125
+  },
+  {
+    x: 0.4375,
+    y: 0.8125
+  },
+  {
+    x: 0.4375,
+    y: 0.8125
+  },
+  {
+    x: 0.4375,
+    y: 0.8125
+  },
+  {
+    x: 0.5625,
+    y: 0.8125
+  },
+  {
+    x: 0.5625,
+    y: 0.8125
+  },
+  {
+    x: 0.5625,
+    y: 0.8125
+  },
+  {
+    x: 0.5625,
+    y: 0.8125
+  },
+  {
+    x: 0.5625,
+    y: 0.8125
+  },
+  {
+    x: 0.5625,
+    y: 0.8125
+  },
+  {
+    x: 0.6875,
+    y: 0.8125
+  },
+  {
+    x: 0.6875,
+    y: 0.8125
+  },
+  {
+    x: 0.6875,
+    y: 0.8125
+  },
+  {
+    x: 0.6875,
+    y: 0.8125
+  },
+  {
+    x: 0.6875,
+    y: 0.8125
+  },
+  {
+    x: 0.6875,
+    y: 0.8125
+  },
+  {
+    x: 0.8125,
+    y: 0.8125
+  },
+  {
+    x: 0.8125,
+    y: 0.8125
+  },
+  {
+    x: 0.8125,
+    y: 0.8125
+  },
+  {
+    x: 0.8125,
+    y: 0.8125
+  },
+  {
+    x: 0.8125,
+    y: 0.8125
+  },
+  {
+    x: 0.8125,
+    y: 0.8125
+  },
+  {
+    x: 0.9375,
+    y: 0.8125
+  },
+  {
+    x: 0.9375,
+    y: 0.8125
+  },
+  {
+    x: 0.9375,
+    y: 0.8125
+  },
+  {
+    x: 0.9375,
+    y: 0.8125
+  },
+  {
+    x: 0.9375,
+    y: 0.8125
+  },
+  {
+    x: 0.9375,
+    y: 0.8125
+  },
+  {
+    x: 0.0625,
+    y: 0.9375
+  },
+  {
+    x: 0.0625,
+    y: 0.9375
+  },
+  {
+    x: 0.0625,
+    y: 0.9375
+  },
+  {
+    x: 0.0625,
+    y: 0.9375
+  },
+  {
+    x: 0.0625,
+    y: 0.9375
+  },
+  {
+    x: 0.0625,
+    y: 0.9375
+  },
+  {
+    x: 0.1875,
+    y: 0.9375
+  },
+  {
+    x: 0.1875,
+    y: 0.9375
+  },
+  {
+    x: 0.1875,
+    y: 0.9375
+  },
+  {
+    x: 0.1875,
+    y: 0.9375
+  },
+  {
+    x: 0.1875,
+    y: 0.9375
+  },
+  {
+    x: 0.1875,
+    y: 0.9375
+  },
+  {
+    x: 0.3125,
+    y: 0.9375
+  },
+  {
+    x: 0.3125,
+    y: 0.9375
+  },
+  {
+    x: 0.3125,
+    y: 0.9375
+  },
+  {
+    x: 0.3125,
+    y: 0.9375
+  },
+  {
+    x: 0.3125,
+    y: 0.9375
+  },
+  {
+    x: 0.3125,
+    y: 0.9375
+  },
+  {
+    x: 0.4375,
+    y: 0.9375
+  },
+  {
+    x: 0.4375,
+    y: 0.9375
+  },
+  {
+    x: 0.4375,
+    y: 0.9375
+  },
+  {
+    x: 0.4375,
+    y: 0.9375
+  },
+  {
+    x: 0.4375,
+    y: 0.9375
+  },
+  {
+    x: 0.4375,
+    y: 0.9375
+  },
+  {
+    x: 0.5625,
+    y: 0.9375
+  },
+  {
+    x: 0.5625,
+    y: 0.9375
+  },
+  {
+    x: 0.5625,
+    y: 0.9375
+  },
+  {
+    x: 0.5625,
+    y: 0.9375
+  },
+  {
+    x: 0.5625,
+    y: 0.9375
+  },
+  {
+    x: 0.5625,
+    y: 0.9375
+  },
+  {
+    x: 0.6875,
+    y: 0.9375
+  },
+  {
+    x: 0.6875,
+    y: 0.9375
+  },
+  {
+    x: 0.6875,
+    y: 0.9375
+  },
+  {
+    x: 0.6875,
+    y: 0.9375
+  },
+  {
+    x: 0.6875,
+    y: 0.9375
+  },
+  {
+    x: 0.6875,
+    y: 0.9375
+  },
+  {
+    x: 0.8125,
+    y: 0.9375
+  },
+  {
+    x: 0.8125,
+    y: 0.9375
+  },
+  {
+    x: 0.8125,
+    y: 0.9375
+  },
+  {
+    x: 0.8125,
+    y: 0.9375
+  },
+  {
+    x: 0.8125,
+    y: 0.9375
+  },
+  {
+    x: 0.8125,
+    y: 0.9375
+  },
+  {
+    x: 0.9375,
+    y: 0.9375
+  },
+  {
+    x: 0.9375,
+    y: 0.9375
+  },
+  {
+    x: 0.9375,
+    y: 0.9375
+  },
+  {
+    x: 0.9375,
+    y: 0.9375
+  },
+  {
+    x: 0.9375,
+    y: 0.9375
+  },
+  {
+    x: 0.9375,
+    y: 0.9375
+  }
+];
 
 // src/handpose/handdetector.ts
 var HandDetector = class {
-  constructor(model6, inputSize, anchorsAnnotated) {
+  constructor(model6) {
+    var _a;
     this.model = model6;
-    this.anchors = anchorsAnnotated.map((anchor) => [anchor.x_center, anchor.y_center]);
+    this.anchors = anchors.map((anchor) => [anchor.x, anchor.y]);
     this.anchorsTensor = tf10.tensor2d(this.anchors);
-    this.inputSize = inputSize;
-    this.inputSizeTensor = tf10.tensor1d([inputSize, inputSize]);
-    this.doubleInputSizeTensor = tf10.tensor1d([inputSize * 2, inputSize * 2]);
+    this.inputSize = (_a = this.model) == null ? void 0 : _a.inputs[0].shape[2];
+    this.inputSizeTensor = tf10.tensor1d([this.inputSize, this.inputSize]);
+    this.doubleInputSizeTensor = tf10.tensor1d([this.inputSize * 2, this.inputSize * 2]);
   }
   normalizeBoxes(boxes) {
     return tf10.tidy(() => {
@@ -4940,10 +16718,11 @@ var PALM_LANDMARK_IDS = [0, 5, 9, 13, 17, 1, 2];
 var PALM_LANDMARKS_INDEX_OF_PALM_BASE = 0;
 var PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
 var HandPipeline = class {
-  constructor(handDetector, landmarkDetector, inputSize) {
+  constructor(handDetector, landmarkDetector) {
+    var _a;
     this.handDetector = handDetector;
     this.landmarkDetector = landmarkDetector;
-    this.inputSize = inputSize;
+    this.inputSize = (_a = this.landmarkDetector) == null ? void 0 : _a.inputs[0].shape[2];
     this.storedBoxes = [];
     this.skipped = 0;
     this.detectedHands = 0;
@@ -5064,17676 +16843,8 @@ var HandPipeline = class {
   }
 };
 
-// src/handpose/anchors.ts
-var anchors = [
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.015625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.046875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.078125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.109375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.140625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.171875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.203125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.234375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.265625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.296875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.328125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.359375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.390625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.421875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.453125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.484375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.515625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.546875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.578125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.609375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.640625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.671875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.703125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.734375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.765625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.796875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.828125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.859375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.890625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.921875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.953125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.015625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.046875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.078125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.109375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.140625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.171875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.203125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.234375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.265625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.296875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.328125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.359375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.390625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.421875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.453125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.484375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.515625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.546875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.578125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.609375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.640625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.671875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.703125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.734375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.765625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.796875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.828125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.859375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.890625,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.921875,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.953125,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.984375,
-    y_center: 0.984375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.03125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.09375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.15625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.21875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.28125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.34375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.40625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.46875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.53125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.59375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.65625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.71875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.78125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.84375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.90625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.03125,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.09375,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.15625,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.21875,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.28125,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.34375,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.40625,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.46875,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.53125,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.59375,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.65625,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.71875,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.78125,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.84375,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.90625,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.96875,
-    y_center: 0.96875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.0625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.1875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.3125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.4375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.5625
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.6875
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.8125
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.0625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.1875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.3125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.4375,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.5625,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.6875,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.8125,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.9375
-  },
-  {
-    w: 1,
-    h: 1,
-    x_center: 0.9375,
-    y_center: 0.9375
-  }
-];
-
 // src/handpose/handpose.ts
-var MESH_ANNOTATIONS2 = {
+var meshAnnotations = {
   thumb: [1, 2, 3, 4],
   indexFinger: [5, 6, 7, 8],
   middleFinger: [9, 10, 11, 12],
@@ -22741,44 +16852,37 @@ var MESH_ANNOTATIONS2 = {
   pinky: [17, 18, 19, 20],
   palmBase: [0]
 };
-var HandPose = class {
-  constructor(handPipeline) {
-    this.handPipeline = handPipeline;
-  }
-  static getAnnotations() {
-    return MESH_ANNOTATIONS2;
-  }
-  async estimateHands(input, config3) {
-    const predictions = await this.handPipeline.estimateHands(input, config3);
-    if (!predictions)
-      return [];
-    const hands = [];
-    for (const prediction of predictions) {
-      const annotations3 = {};
-      if (prediction.landmarks) {
-        for (const key of Object.keys(MESH_ANNOTATIONS2)) {
-          annotations3[key] = MESH_ANNOTATIONS2[key].map((index) => prediction.landmarks[index]);
-        }
-      }
-      const box3 = prediction.box ? [
-        Math.max(0, prediction.box.topLeft[0]),
-        Math.max(0, prediction.box.topLeft[1]),
-        Math.min(input.shape[2], prediction.box.bottomRight[0]) - Math.max(0, prediction.box.topLeft[0]),
-        Math.min(input.shape[1], prediction.box.bottomRight[1]) - Math.max(0, prediction.box.topLeft[1])
-      ] : [];
-      const boxRaw = [
-        prediction.box.topLeft[0] / input.shape[2],
-        prediction.box.topLeft[1] / input.shape[1],
-        (prediction.box.bottomRight[0] - prediction.box.topLeft[0]) / input.shape[2],
-        (prediction.box.bottomRight[1] - prediction.box.topLeft[1]) / input.shape[1]
-      ];
-      hands.push({confidence: Math.round(100 * prediction.confidence) / 100, box: box3, boxRaw, landmarks: prediction.landmarks, annotations: annotations3});
-    }
-    return hands;
-  }
-};
 var handDetectorModel;
 var handPoseModel;
+var handPipeline;
+async function predict5(input, config3) {
+  const predictions = await handPipeline.estimateHands(input, config3);
+  if (!predictions)
+    return [];
+  const hands = [];
+  for (const prediction of predictions) {
+    const annotations3 = {};
+    if (prediction.landmarks) {
+      for (const key of Object.keys(meshAnnotations)) {
+        annotations3[key] = meshAnnotations[key].map((index) => prediction.landmarks[index]);
+      }
+    }
+    const box4 = prediction.box ? [
+      Math.max(0, prediction.box.topLeft[0]),
+      Math.max(0, prediction.box.topLeft[1]),
+      Math.min(input.shape[2], prediction.box.bottomRight[0]) - Math.max(0, prediction.box.topLeft[0]),
+      Math.min(input.shape[1], prediction.box.bottomRight[1]) - Math.max(0, prediction.box.topLeft[1])
+    ] : [];
+    const boxRaw = [
+      prediction.box.topLeft[0] / input.shape[2],
+      prediction.box.topLeft[1] / input.shape[1],
+      (prediction.box.bottomRight[0] - prediction.box.topLeft[0]) / input.shape[2],
+      (prediction.box.bottomRight[1] - prediction.box.topLeft[1]) / input.shape[1]
+    ];
+    hands.push({confidence: Math.round(100 * prediction.confidence) / 100, box: box4, boxRaw, landmarks: prediction.landmarks, annotations: annotations3});
+  }
+  return hands;
+}
 async function load6(config3) {
   if (!handDetectorModel || !handPoseModel) {
     [handDetectorModel, handPoseModel] = await Promise.all([
@@ -22801,17 +16905,16 @@ async function load6(config3) {
     if (config3.debug)
       log("cached model:", handPoseModel.modelUrl);
   }
-  const handDetector = new HandDetector(handDetectorModel, handDetectorModel == null ? void 0 : handDetectorModel.inputs[0].shape[2], anchors);
-  const handPipeline = new HandPipeline(handDetector, handPoseModel, handPoseModel == null ? void 0 : handPoseModel.inputs[0].shape[2]);
-  const handPose = new HandPose(handPipeline);
-  return handPose;
+  const handDetector = new HandDetector(handDetectorModel);
+  handPipeline = new HandPipeline(handDetector, handPoseModel);
+  return [handDetectorModel, handPoseModel];
 }
 
 // src/blazepose/blazepose.ts
 var blazepose_exports = {};
 __export(blazepose_exports, {
   load: () => load7,
-  predict: () => predict4
+  predict: () => predict6
 });
 var tf13 = __toModule(require_tfjs_esm());
 
@@ -22906,7 +17009,7 @@ async function load7(config3) {
     log("cached model:", model4.modelUrl);
   return model4;
 }
-async function predict4(image11, config3) {
+async function predict6(image11, config3) {
   if (!model4)
     return null;
   if (!config3.body.enabled)
@@ -22943,7 +17046,7 @@ async function predict4(image11, config3) {
 var nanodet_exports = {};
 __export(nanodet_exports, {
   load: () => load8,
-  predict: () => predict5
+  predict: () => predict7
 });
 var tf14 = __toModule(require_tfjs_esm());
 
@@ -23080,7 +17183,7 @@ async function process2(res, inputSize, outputShape, config3) {
             ];
             let boxRaw = [x, y, w, h];
             boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1)));
-            const box3 = [
+            const box4 = [
               boxRaw[0] * outputShape[0],
               boxRaw[1] * outputShape[1],
               boxRaw[2] * outputShape[0],
@@ -23094,7 +17197,7 @@ async function process2(res, inputSize, outputShape, config3) {
               label: labels[j].label,
               center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
               centerRaw: [cx, cy],
-              box: box3.map((a) => Math.trunc(a)),
+              box: box4.map((a) => Math.trunc(a)),
               boxRaw
             };
             results.push(result);
@@ -23115,7 +17218,7 @@ async function process2(res, inputSize, outputShape, config3) {
   results = results.filter((a, idx) => nmsIdx.includes(idx)).sort((a, b) => b.score - a.score);
   return results;
 }
-async function predict5(image11, config3) {
+async function predict7(image11, config3) {
   if (!model5)
     return null;
   if (skipped3 < config3.object.skipFrames && config3.videoOptimized && last3.length > 0) {
@@ -24569,37 +18672,37 @@ async function hand2(inCanvas2, result, drawOptions) {
     if (localOptions.drawBoxes) {
       ctx.strokeStyle = localOptions.color;
       ctx.fillStyle = localOptions.color;
-      let box3;
+      let box4;
       if (!localOptions.calculateHandBox) {
-        box3 = localOptions.useRawBoxes ? h.boxRaw : h.box;
+        box4 = localOptions.useRawBoxes ? h.boxRaw : h.box;
       } else {
-        box3 = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0];
+        box4 = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0];
         if (h.landmarks && h.landmarks.length > 0) {
           for (const pt of h.landmarks) {
-            if (pt[0] < box3[0])
-              box3[0] = pt[0];
-            if (pt[1] < box3[1])
-              box3[1] = pt[1];
-            if (pt[0] > box3[2])
-              box3[2] = pt[0];
-            if (pt[1] > box3[3])
-              box3[3] = pt[1];
+            if (pt[0] < box4[0])
+              box4[0] = pt[0];
+            if (pt[1] < box4[1])
+              box4[1] = pt[1];
+            if (pt[0] > box4[2])
+              box4[2] = pt[0];
+            if (pt[1] > box4[3])
+              box4[3] = pt[1];
           }
-          box3[2] -= box3[0];
-          box3[3] -= box3[1];
+          box4[2] -= box4[0];
+          box4[3] -= box4[1];
         }
       }
       if (localOptions.useRawBoxes)
-        rect(ctx, inCanvas2.width * box3[0], inCanvas2.height * box3[1], inCanvas2.width * box3[2], inCanvas2.height * box3[3], localOptions);
+        rect(ctx, inCanvas2.width * box4[0], inCanvas2.height * box4[1], inCanvas2.width * box4[2], inCanvas2.height * box4[3], localOptions);
       else
-        rect(ctx, box3[0], box3[1], box3[2], box3[3], localOptions);
+        rect(ctx, box4[0], box4[1], box4[2], box4[3], localOptions);
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== "") {
           ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText("hand", box3[0] + 3, 1 + box3[1] + localOptions.lineHeight, box3[2]);
+          ctx.fillText("hand", box4[0] + 3, 1 + box4[1] + localOptions.lineHeight, box4[2]);
         }
         ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText("hand", box3[0] + 2, 0 + box3[1] + localOptions.lineHeight, box3[2]);
+        ctx.fillText("hand", box4[0] + 2, 0 + box4[1] + localOptions.lineHeight, box4[2]);
       }
       ctx.stroke();
     }
@@ -25647,19 +19750,19 @@ var Human = class {
         this.models.nanodet,
         this.models.faceres
       ] = await Promise.all([
-        this.models.face || (this.config.face.enabled ? load4(this.config) : null),
-        this.models.emotion || (this.config.face.enabled && this.config.face.emotion.enabled ? load(this.config) : null),
+        this.models.face || (this.config.face.enabled ? load2(this.config) : null),
+        this.models.emotion || (this.config.face.enabled && this.config.face.emotion.enabled ? load3(this.config) : null),
         this.models.handpose || (this.config.hand.enabled ? load6(this.config) : null),
         this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes("posenet") ? load5(this.config) : null),
         this.models.blazepose || (this.config.body.enabled && this.config.body.modelPath.includes("blazepose") ? load7(this.config) : null),
         this.models.nanodet || (this.config.object.enabled ? load8(this.config) : null),
-        this.models.faceres || (this.config.face.enabled && this.config.face.description.enabled ? load2(this.config) : null)
+        this.models.faceres || (this.config.face.enabled && this.config.face.description.enabled ? load4(this.config) : null)
       ]);
     } else {
       if (this.config.face.enabled && !this.models.face)
-        this.models.face = await load4(this.config);
+        this.models.face = await load2(this.config);
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion)
-        this.models.emotion = await load(this.config);
+        this.models.emotion = await load3(this.config);
       if (this.config.hand.enabled && !this.models.handpose)
         this.models.handpose = await load6(this.config);
       if (this.config.body.enabled && !this.models.posenet && this.config.body.modelPath.includes("posenet"))
@@ -25669,7 +19772,7 @@ var Human = class {
       if (this.config.object.enabled && !this.models.nanodet)
         this.models.nanodet = await load8(this.config);
       if (this.config.face.enabled && this.config.face.description.enabled && !this.models.faceres)
-        this.models.faceres = await load2(this.config);
+        this.models.faceres = await load4(this.config);
     }
     if (__privateGet(this, _firstRun)) {
       if (this.config.debug)
@@ -25682,7 +19785,6 @@ var Human = class {
   }
   async detect(input, userConfig = {}) {
     return new Promise(async (resolve) => {
-      var _a, _b;
       this.state = "config";
       let timeStamp;
       this.config = mergeDeep(this.config, userConfig);
@@ -25730,18 +19832,18 @@ var Human = class {
       this.analyze("Start Body:");
       if (this.config.async) {
         if (this.config.body.modelPath.includes("posenet"))
-          bodyRes = this.config.body.enabled ? predict3(process4.tensor, this.config) : [];
-        else if (this.config.body.modelPath.includes("blazepose"))
           bodyRes = this.config.body.enabled ? predict4(process4.tensor, this.config) : [];
+        else if (this.config.body.modelPath.includes("blazepose"))
+          bodyRes = this.config.body.enabled ? predict6(process4.tensor, this.config) : [];
         if (this.perf.body)
           delete this.perf.body;
       } else {
         this.state = "run:body";
         timeStamp = now();
         if (this.config.body.modelPath.includes("posenet"))
-          bodyRes = this.config.body.enabled ? await predict3(process4.tensor, this.config) : [];
-        else if (this.config.body.modelPath.includes("blazepose"))
           bodyRes = this.config.body.enabled ? await predict4(process4.tensor, this.config) : [];
+        else if (this.config.body.modelPath.includes("blazepose"))
+          bodyRes = this.config.body.enabled ? await predict6(process4.tensor, this.config) : [];
         current = Math.trunc(now() - timeStamp);
         if (current > 0)
           this.perf.body = current;
@@ -25749,13 +19851,13 @@ var Human = class {
       this.analyze("End Body:");
       this.analyze("Start Hand:");
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? (_a = this.models.handpose) == null ? void 0 : _a.estimateHands(process4.tensor, this.config) : [];
+        handRes = this.config.hand.enabled ? predict5(process4.tensor, this.config) : [];
         if (this.perf.hand)
           delete this.perf.hand;
       } else {
         this.state = "run:hand";
         timeStamp = now();
-        handRes = this.config.hand.enabled ? await ((_b = this.models.handpose) == null ? void 0 : _b.estimateHands(process4.tensor, this.config)) : [];
+        handRes = this.config.hand.enabled ? await predict5(process4.tensor, this.config) : [];
         current = Math.trunc(now() - timeStamp);
         if (current > 0)
           this.perf.hand = current;
@@ -25763,13 +19865,13 @@ var Human = class {
       this.analyze("End Hand:");
       this.analyze("Start Object:");
       if (this.config.async) {
-        objectRes = this.config.object.enabled ? predict5(process4.tensor, this.config) : [];
+        objectRes = this.config.object.enabled ? predict7(process4.tensor, this.config) : [];
         if (this.perf.object)
           delete this.perf.object;
       } else {
         this.state = "run:object";
         timeStamp = now();
-        objectRes = this.config.object.enabled ? await predict5(process4.tensor, this.config) : [];
+        objectRes = this.config.object.enabled ? await predict7(process4.tensor, this.config) : [];
         current = Math.trunc(now() - timeStamp);
         if (current > 0)
           this.perf.object = current;

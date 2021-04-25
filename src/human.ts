@@ -82,11 +82,11 @@ export class Human {
   };
   /** Internal: Currently loaded models */
   models: {
-    face: facemesh.MediaPipeFaceMesh | Model | null,
+    face: [Model, Model, Model] | null,
     posenet: Model | null,
     blazepose: Model | null,
     efficientpose: Model | null,
-    handpose: handpose.HandPose | null,
+    handpose: [Model, Model] | null,
     iris: Model | null,
     age: Model | null,
     gender: Model | null,
@@ -431,12 +431,12 @@ export class Human {
       // run handpose
       this.analyze('Start Hand:');
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? this.models.handpose?.estimateHands(process.tensor, this.config) : [];
+        handRes = this.config.hand.enabled ? handpose.predict(process.tensor, this.config) : [];
         if (this.perf.hand) delete this.perf.hand;
       } else {
         this.state = 'run:hand';
         timeStamp = now();
-        handRes = this.config.hand.enabled ? await this.models.handpose?.estimateHands(process.tensor, this.config) : [];
+        handRes = this.config.hand.enabled ? await handpose.predict(process.tensor, this.config) : [];
         current = Math.trunc(now() - timeStamp);
         if (current > 0) this.perf.hand = current;
       }

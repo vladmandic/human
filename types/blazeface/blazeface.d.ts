@@ -1,4 +1,3 @@
-export declare const disposeBox: (box: any) => void;
 export declare class BlazeFaceModel {
     model: any;
     anchorsData: any;

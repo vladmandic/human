@@ -1,40 +1,9 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
+import * as box from './box';
+import * as util from './util';
 
-const NUM_LANDMARKS = 6;
-
-function generateAnchors(inputSize) {
-  const spec = { strides: [inputSize / 16, inputSize / 8], anchors: [2, 6] };
-  const anchors: Array<[number, number]> = [];
-  for (let i = 0; i < spec.strides.length; i++) {
-    const stride = spec.strides[i];
-    const gridRows = Math.floor((inputSize + stride - 1) / stride);
-    const gridCols = Math.floor((inputSize + stride - 1) / stride);
-    const anchorsNum = spec.anchors[i];
-    for (let gridY = 0; gridY < gridRows; gridY++) {
-      const anchorY = stride * (gridY + 0.5);
-      for (let gridX = 0; gridX < gridCols; gridX++) {
-        const anchorX = stride * (gridX + 0.5);
-        for (let n = 0; n < anchorsNum; n++) {
-          anchors.push([anchorX, anchorY]);
-        }
-      }
-    }
-  }
-  return anchors;
-}
-
-export const disposeBox = (box) => {
-  box.startEndTensor.dispose();
-  box.startPoint.dispose();
-  box.endPoint.dispose();
-};
-
-const createBox = (startEndTensor) => ({
-  startEndTensor,
-  startPoint: tf.slice(startEndTensor, [0, 0], [-1, 2]),
-  endPoint: tf.slice(startEndTensor, [0, 2], [-1, 2]),
-});
+const keypointsCount = 6;
 
 function decodeBounds(boxOutputs, anchors, inputSize) {
   const boxStarts = tf.slice(boxOutputs, [0, 1], [-1, 2]);
@@ -60,7 +29,7 @@ export class BlazeFaceModel {
 
   constructor(model, config) {
     this.model = model;
-    this.anchorsData = generateAnchors(model.inputs[0].shape[1]);
+    this.anchorsData = util.generateAnchors(model.inputs[0].shape[1]);
     this.anchors = tf.tensor2d(this.anchorsData);
     this.inputSize = model.inputs[0].shape[2];
     this.config = config;
@@ -106,10 +75,10 @@ export class BlazeFaceModel {
       const boxIndex = boxIndices[i];
       const confidence = scoresVal[boxIndex];
       if (confidence > this.config.face.detector.minConfidence) {
-        const box = createBox(boundingBoxes[i]);
+        const localBox = box.createBox(boundingBoxes[i]);
         const anchor = this.anchorsData[boxIndex];
-        const landmarks = tf.tidy(() => tf.slice(batch, [boxIndex, NUM_LANDMARKS - 1], [1, -1]).squeeze().reshape([NUM_LANDMARKS, -1]));
-        annotatedBoxes.push({ box, landmarks, anchor, confidence });
+        const landmarks = tf.tidy(() => tf.slice(batch, [boxIndex, keypointsCount - 1], [1, -1]).squeeze().reshape([keypointsCount, -1]));
+        annotatedBoxes.push({ box: localBox, landmarks, anchor, confidence });
       }
     }
     batch.dispose();

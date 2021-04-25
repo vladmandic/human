@@ -1,6 +1,5 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import * as profile from '../profile';
 
 let model;
 let last = { age: 0 };
@@ -31,14 +30,7 @@ export async function predict(image, config) {
     let ageT;
     const obj = { age: 0 };
 
-    if (!config.profile) {
-      if (config.face.age.enabled) ageT = await model.predict(enhance);
-    } else {
-      const profileAge = config.face.age.enabled ? await tf.profile(() => model.predict(enhance)) : {};
-      ageT = profileAge.result.clone();
-      profileAge.result.dispose();
-      profile.run('age', profileAge);
-    }
+    if (config.face.age.enabled) ageT = await model.predict(enhance);
     enhance.dispose();
 
     if (ageT) {

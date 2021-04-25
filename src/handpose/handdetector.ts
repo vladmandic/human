@@ -46,7 +46,7 @@ export class HandDetector {
     const rawBoxes = tf.slice(predictions, [0, 1], [-1, 4]);
     const boxes = this.normalizeBoxes(rawBoxes);
     rawBoxes.dispose();
-    const filteredT = await tf.image.nonMaxSuppressionAsync(boxes, scores, config.hand.maxHands, config.hand.iouThreshold, config.hand.scoreThreshold);
+    const filteredT = await tf.image.nonMaxSuppressionAsync(boxes, scores, config.hand.maxDetected, config.hand.iouThreshold, config.hand.minConfidence);
     const filtered = filteredT.arraySync();
 
     scoresT.dispose();

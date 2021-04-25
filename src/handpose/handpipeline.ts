@@ -83,7 +83,7 @@ export class HandPipeline {
     if (config.videoOptimized) this.skipped++;
 
     // if detector result count doesn't match current working set, use it to reset current working set
-    if (boxes && (boxes.length > 0) && ((boxes.length !== this.detectedHands) && (this.detectedHands !== config.hand.maxHands) || !config.hand.landmarks)) {
+    if (boxes && (boxes.length > 0) && ((boxes.length !== this.detectedHands) && (this.detectedHands !== config.hand.maxDetected) || !config.hand.landmarks)) {
       this.detectedHands = 0;
       this.storedBoxes = [...boxes];
       // for (const possible of boxes) this.storedBoxes.push(possible);

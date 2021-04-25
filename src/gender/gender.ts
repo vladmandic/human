@@ -1,6 +1,5 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import * as profile from '../profile';
 
 let model;
 let last = { gender: '' };
@@ -49,14 +48,7 @@ export async function predict(image, config) {
     let genderT;
     const obj = { gender: '', confidence: 0 };
 
-    if (!config.profile) {
-      if (config.face.gender.enabled) genderT = await model.predict(enhance);
-    } else {
-      const profileGender = config.face.gender.enabled ? await tf.profile(() => model.predict(enhance)) : {};
-      genderT = profileGender.result.clone();
-      profileGender.result.dispose();
-      profile.run('gender', profileGender);
-    }
+    if (config.face.gender.enabled) genderT = await model.predict(enhance);
     enhance.dispose();
 
     if (genderT) {

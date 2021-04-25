@@ -11,10 +11,16 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/04/25 mandic00@live.com
 
+- build nodejs deliverables in non-minified form
+- stop building sourcemaps for nodejs deliverables
+- remove deallocate, profile, scoped
+- replaced maxfaces, maxdetections, maxhands, maxresults with maxdetected
+- replaced nmsradius with built-in default
+- unified minconfidence and scorethresdold as minconfidence
+- add exception handlers to all demos
+- remove blazeface-front and add unhandledrejection handler
 - major update for 1.8 release candidate
-
-### **origin/main** 2021/04/25 mandic00@live.com
-
+- enable webworker detection
 
 ### **1.7.1** 2021/04/25 mandic00@live.com
 

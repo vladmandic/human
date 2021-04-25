@@ -7,10 +7,9 @@ import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
 import webRTC from './helpers/webrtc.js';
 
-const userConfig = {};
+// const userConfig = {};
 let human;
 
-/*
 const userConfig = {
   backend: 'humangl',
   async: false,
@@ -21,7 +20,7 @@ const userConfig = {
     enabled: false,
     flip: false,
   },
-  face: { enabled: false,
+  face: { enabled: true,
     mesh: { enabled: true },
     iris: { enabled: true },
     description: { enabled: false },
@@ -29,11 +28,10 @@ const userConfig = {
   },
   hand: { enabled: false },
   gesture: { enabled: false },
-  body: { enabled: true, modelPath: 'posenet.json' },
+  body: { enabled: false, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   // object: { enabled: true },
 };
-*/
 
 // ui options
 const ui = {

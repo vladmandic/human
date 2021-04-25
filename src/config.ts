@@ -9,33 +9,34 @@
 export interface Config {
   /** Backend used for TFJS operations */
   backend: null | '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow',
+
   /** Path to *.wasm files if backend is set to `wasm` */
   wasmPath: string,
+
   /** Print debug statements to console */
   debug: boolean,
+
   /** Perform model loading and inference concurrently or sequentially */
   async: boolean,
-  /** Collect and print profiling data during inference operations */
-  profile: boolean,
-  /** Internal: Use aggressive GPU memory deallocator when backend is set to `webgl` or `humangl` */
-  deallocate: boolean,
-  /** Internal: Run all inference operations in an explicit local scope run to avoid memory leaks */
-  scoped: boolean,
+
   /** Perform additional optimizations when input is video,
    * - must be disabled for images
    * - automatically disabled for Image, ImageData, ImageBitmap and Tensor inputs
    * - skips boundary detection for every `skipFrames` frames specified for each model
    * - while maintaining in-box detection since objects don't change definition as fast */
   videoOptimized: boolean,
+
   /** What to use for `human.warmup()`
    * - warmup pre-initializes all models for faster inference but can take significant time on startup
    * - only used for `webgl` and `humangl` backends
   */
   warmup: 'none' | 'face' | 'full' | 'body',
+
   /** Base model path (typically starting with file://, http:// or https://) for all models
-   * - individual modelPath values are joined to this path
+   * - individual modelPath values are relative to this path
   */
   modelBasePath: string,
+
   /** Run input through image filters before inference
    * - image filters run with near-zero latency as they are executed on the GPU
   */
@@ -90,31 +91,30 @@ export interface Config {
   gesture: {
     enabled: boolean,
   },
+
   /** Controlls and configures all face-specific options:
    * - face detection, face mesh detection, age, gender, emotion detection and face description
    * Parameters:
    * - enabled: true/false
-   * - modelPath: path for individual face model
+   * - modelPath: path for each of face models
+   * - minConfidence: threshold for discarding a prediction
+   * - iouThreshold: ammount of overlap between two detected objects before one object is removed
+   * - maxDetected: maximum number of faces detected in the input, should be set to the minimum number for performance
    * - rotation: use calculated rotated face image or just box with rotation as-is, false means higher performance, but incorrect mesh mapping on higher face angles
-   * - maxFaces: maximum number of faces detected in the input, should be set to the minimum number for performance
    * - skipFrames: how many frames to go without re-running the face detector and just run modified face mesh analysis, only valid if videoOptimized is set to true
    * - skipInitial: if previous detection resulted in no faces detected, should skipFrames be reset immediately to force new detection cycle
-   * - minConfidence: threshold for discarding a prediction
-   * - iouThreshold: threshold for deciding whether boxes overlap too much in non-maximum suppression
-   * - scoreThreshold: threshold for deciding when to remove boxes based on score in non-maximum suppression
-   * - return extracted face as tensor for futher user processing
+   * - return: return extracted face as tensor for futher user processing
   */
   face: {
     enabled: boolean,
     detector: {
       modelPath: string,
       rotation: boolean,
-      maxFaces: number,
+      maxDetected: number,
       skipFrames: number,
       skipInitial: boolean,
       minConfidence: number,
       iouThreshold: number,
-      scoreThreshold: number,
       return: boolean,
     },
     mesh: {
@@ -138,31 +138,30 @@ export interface Config {
       modelPath: string,
     },
   },
+
   /** Controlls and configures all body detection specific options
    * - enabled: true/false
-   * - modelPath: paths for both hand detector model and hand skeleton model
-   * - maxDetections: maximum number of people detected in the input, should be set to the minimum number for performance
-   * - scoreThreshold: threshold for deciding when to remove people based on score in non-maximum suppression
-   * - nmsRadius: threshold for deciding whether body parts overlap too much in non-maximum suppression
+   * - modelPath: body pose model, can be absolute path or relative to modelBasePath
+   * - minConfidence: threshold for discarding a prediction
+   * - maxDetected: maximum number of people detected in the input, should be set to the minimum number for performance
   */
   body: {
     enabled: boolean,
     modelPath: string,
-    maxDetections: number,
-    scoreThreshold: number,
-    nmsRadius: number,
+    maxDetected: number,
+    minConfidence: number,
   },
+
   /** Controlls and configures all hand detection specific options
    * - enabled: true/false
-   * - modelPath: paths for both hand detector model and hand skeleton model
+   * - landmarks: detect hand landmarks or just hand boundary box
+   * - modelPath: paths for hand detector and hand skeleton models, can be absolute path or relative to modelBasePath
+   * - minConfidence: threshold for discarding a prediction
+   * - iouThreshold: ammount of overlap between two detected objects before one object is removed
+   * - maxDetected: maximum number of hands detected in the input, should be set to the minimum number for performance
    * - rotation: use best-guess rotated hand image or just box with rotation as-is, false means higher performance, but incorrect finger mapping if hand is inverted
    * - skipFrames: how many frames to go without re-running the hand bounding box detector and just run modified hand skeleton detector, only valid if videoOptimized is set to true
    * - skipInitial: if previous detection resulted in no hands detected, should skipFrames be reset immediately to force new detection cycle
-   * - minConfidence: threshold for discarding a prediction
-   * - iouThreshold: threshold for deciding whether boxes overlap too much in non-maximum suppression
-   * - scoreThreshold: threshold for deciding when to remove boxes based on score in non-maximum suppression
-   * - maxHands: maximum number of hands detected in the input, should be set to the minimum number for performance
-   * - landmarks: detect hand landmarks or just hand boundary box
   */
   hand: {
     enabled: boolean,
@@ -171,8 +170,7 @@ export interface Config {
     skipInitial: boolean,
     minConfidence: number,
     iouThreshold: number,
-    scoreThreshold: number,
-    maxHands: number,
+    maxDetected: number,
     landmarks: boolean,
     detector: {
       modelPath: string,
@@ -181,10 +179,13 @@ export interface Config {
       modelPath: string,
     },
   },
+
   /** Controlls and configures all object detection specific options
+   * - enabled: true/false
+   * - modelPath: object detection model, can be absolute path or relative to modelBasePath
    * - minConfidence: minimum score that detection must have to return as valid object
    * - iouThreshold: ammount of overlap between two detected objects before one object is removed
-   * - maxResults: maximum number of detections to return
+   * - maxDetected: maximum number of detections to return
    * - skipFrames: run object detection every n input frames, only valid if videoOptimized is set to true
   */
   object: {
@@ -192,40 +193,20 @@ export interface Config {
     modelPath: string,
     minConfidence: number,
     iouThreshold: number,
-    maxResults: number,
+    maxDetected: number,
     skipFrames: number,
   },
 }
 
 const config: Config = {
-  backend: 'webgl',          // select tfjs backend to use
+  backend: 'webgl',          // select tfjs backend to use, leave empty to use default backend
                              // can be 'webgl', 'wasm', 'cpu', or 'humangl' which is a custom version of webgl
-                             // leave as empty string to continue using default backend
-                             // when backend is set outside of Human library
   modelBasePath: '../models/', // base path for all models
-  wasmPath: '../assets/',    // path for wasm binaries
-                             // only used for backend: wasm
+  wasmPath: '../assets/',    // path for wasm binariesm, only used for backend: wasm
   debug: true,               // print additional status messages to console
   async: true,               // execute enabled models in parallel
-                             // this disables per-model performance data but
-                             // slightly increases performance
-                             // cannot be used if profiling is enabled
-  profile: false,            // internal: enable tfjs profiling
-                             // this has significant performance impact
-                             // only enable for debugging purposes
-                             // currently only implemented for age,gender,emotion models
-  deallocate: false,         // internal: aggresively deallocate gpu memory after each usage
-                             // only valid for webgl and humangl backend and only during first call
-                             // cannot be changed unless library is reloaded
-                             // this has significant performance impact
-                             // only enable on low-memory devices
-  scoped: false,             // internal: enable scoped runs
-                             // some models *may* have memory leaks,
-                             // this wrapps everything in a local scope at a cost of performance
-                             // typically not needed
   videoOptimized: true,      // perform additional optimizations when input is video,
-                             // must be disabled for images
-                             // automatically disabled for Image, ImageData, ImageBitmap and Tensor inputs
+                             // automatically disabled for Image, ImageData, ImageBitmap
                              // skips boundary detection for every n frames
                              // while maintaining in-box detection since objects cannot move that fast
   warmup: 'face',            // what to use for human.warmup(), can be 'none', 'face', 'full'
@@ -258,7 +239,7 @@ const config: Config = {
   },
 
   gesture: {
-    enabled: true,           // enable simple gesture recognition
+    enabled: true,           // enable gesture recognition based on model results
   },
 
   face: {
@@ -267,12 +248,11 @@ const config: Config = {
                              // detector, mesh, iris, age, gender, emotion
                              // (note: module is not loaded until it is required)
     detector: {
-      modelPath: 'blazeface-back.json', // detector model
-                             // can be either absolute path or relative to modelBasePath
+      modelPath: 'blazeface-back.json', // detector model, can be absolute path or relative to modelBasePath
       rotation: false,       // use best-guess rotated face image or just box with rotation as-is
                              // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees
                              // this parameter is not valid in nodejs
-      maxFaces: 10,          // maximum number of faces detected in the input
+      maxDetected: 10,          // maximum number of faces detected in the input
                              // should be set to the minimum number for performance
       skipFrames: 21,        // how many frames to go without re-running the face bounding box detector
                              // only used for video inputs
@@ -282,18 +262,13 @@ const config: Config = {
       skipInitial: false,    // if previous detection resulted in no faces detected,
                              // should skipFrames be reset immediately to force new detection cycle
       minConfidence: 0.2,    // threshold for discarding a prediction
-      iouThreshold: 0.1,     // threshold for deciding whether boxes overlap too much in
-                             // non-maximum suppression (0.1 means drop if overlap 10%)
-      scoreThreshold: 0.2,   // threshold for deciding when to remove boxes based on score
-                             // in non-maximum suppression,
-                             // this is applied on detection objects only and before minConfidence
+      iouThreshold: 0.1,     // ammount of overlap between two detected objects before one object is removed
       return: false,         // return extracted face as tensor
     },
 
     mesh: {
       enabled: true,
-      modelPath: 'facemesh.json',  // facemesh model
-                             // can be either absolute path or relative to modelBasePath
+      modelPath: 'facemesh.json',  // facemesh model, can be absolute path or relative to modelBasePath
     },
 
     iris: {
@@ -316,25 +291,18 @@ const config: Config = {
       enabled: true,
       minConfidence: 0.1,    // threshold for discarding a prediction
       skipFrames: 32,        // how many frames to go without re-running the detector
-      modelPath: 'emotion.json',  // face emotion model
-                             // can be either absolute path or relative to modelBasePath
+      modelPath: 'emotion.json',  // face emotion model, can be absolute path or relative to modelBasePath
     },
   },
 
   body: {
     enabled: true,
-    modelPath: 'posenet.json',  // body model
-                             // can be either absolute path or relative to modelBasePath
-                             // can be 'posenet', 'blazepose' or 'efficientpose'
-                             // 'blazepose' and 'efficientpose' are experimental
-    maxDetections: 1,        // maximum number of people detected in the input
+    modelPath: 'posenet.json',  // body model, can be absolute path or relative to modelBasePath
+                             // can be 'posenet' or 'blazepose'
+    maxDetected: 1,          // maximum number of people detected in the input
                              // should be set to the minimum number for performance
                              // only valid for posenet as blazepose only detects single pose
-    scoreThreshold: 0.2,     // threshold for deciding when to remove boxes based on score
-                             // in non-maximum suppression
-                             // only valid for posenet as blazepose only detects single pose
-    nmsRadius: 20,           // radius for deciding points are too close in non-maximum suppression
-                             // only valid for posenet as blazepose only detects single pose
+    minConfidence: 0.2,      // threshold for discarding a prediction
   },
 
   hand: {
@@ -349,32 +317,24 @@ const config: Config = {
     skipInitial: false,      // if previous detection resulted in no hands detected,
                              // should skipFrames be reset immediately to force new detection cycle
     minConfidence: 0.1,      // threshold for discarding a prediction
-    iouThreshold: 0.1,       // threshold for deciding whether boxes overlap too much
-                             // in non-maximum suppression
-    scoreThreshold: 0.5,     // threshold for deciding when to remove boxes based on
-                             // score in non-maximum suppression
-    maxHands: 1,             // maximum number of hands detected in the input
+    iouThreshold: 0.1,       // ammount of overlap between two detected objects before one object is removed
+    maxDetected: 1,          // maximum number of hands detected in the input
                              // should be set to the minimum number for performance
     landmarks: true,         // detect hand landmarks or just hand boundary box
     detector: {
-      modelPath: 'handdetect.json',  // hand detector model
-                             // can be either absolute path or relative to modelBasePath
+      modelPath: 'handdetect.json',  // hand detector model, can be absolute path or relative to modelBasePath
     },
     skeleton: {
-      modelPath: 'handskeleton.json',  // hand skeleton model
-                             // can be either absolute path or relative to modelBasePath
+      modelPath: 'handskeleton.json',  // hand skeleton model, can be absolute path or relative to modelBasePath
     },
   },
 
   object: {
     enabled: false,
-    modelPath: 'nanodet.json',  // object detection model
-                             // can be either absolute path or relative to modelBasePath
-                             // 'nanodet' is experimental
-    minConfidence: 0.20,     // threshold for discarding a prediction
-    iouThreshold: 0.40,      // threshold for deciding whether boxes overlap too much
-                             // in non-maximum suppression
-    maxResults: 10,          // maximum number of objects detected in the input
+    modelPath: 'nanodet.json',  // experimental: object detection model, can be absolute path or relative to modelBasePath
+    minConfidence: 0.2,      // threshold for discarding a prediction
+    iouThreshold: 0.4,       // ammount of overlap between two detected objects before one object is removed
+    maxDetected: 10,         // maximum number of objects detected in the input
     skipFrames: 41,          // how many frames to go without re-running the detector
   },
 };

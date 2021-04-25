@@ -19,7 +19,7 @@ export async function predict(input, config) {
   const buffers = await Promise.all(res.map((tensor) => tensor.buffer()));
   for (const t of res) t.dispose();
 
-  const decoded = await poses.decode(buffers[0], buffers[1], buffers[2], buffers[3], config.body.nmsRadius, config.body.maxDetections, config.body.scoreThreshold);
+  const decoded = await poses.decode(buffers[0], buffers[1], buffers[2], buffers[3], config.body.maxDetected, config.body.minConfidence);
   const scaled = util.scalePoses(decoded, [input.shape[1], input.shape[2]], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
 
   return scaled;

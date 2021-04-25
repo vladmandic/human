@@ -90,7 +90,7 @@ export class BlazeFaceModel {
       const scoresOut = tf.sigmoid(logits).squeeze();
       return [batchOut, boxesOut, scoresOut];
     });
-    const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxFaces, this.config.face.detector.iouThreshold, this.config.face.detector.scoreThreshold);
+    const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
     const boxIndices = boxIndicesTensor.arraySync();
     boxIndicesTensor.dispose();
     const boundingBoxesMap = boxIndices.map((boxIndex) => tf.slice(boxes, [boxIndex, 0], [1, -1]));

@@ -12,7 +12,7 @@ const userConfig = {
   videoOptimized: true,
   filter: { enabled: false },
   face: { enabled: true,
-    detector: { rotation: false, maxFaces: 1 },
+    detector: { rotation: false, maxDetected: 1 },
     mesh: { enabled: true },
     iris: { enabled: true },
     description: { enabled: false },

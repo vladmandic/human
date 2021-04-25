@@ -49,7 +49,6 @@ const config = {
     minifyWhitespace: false,
     minifyIdentifiers: false,
     minifySyntax: false,
-    sourcemap: true,
     bundle: true,
     metafile: true,
     target: 'es2018',
@@ -58,7 +57,6 @@ const config = {
     minifyWhitespace: true,
     minifyIdentifiers: true,
     minifySyntax: true,
-    sourcemap: true,
     bundle: true,
     metafile: true,
     target: 'es2018',
@@ -73,6 +71,7 @@ const targets = {
       entryPoints: ['src/tfjs/tf-node.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['@tensorflow'],
+      sourcemap: false,
     },
     node: {
       platform: 'node',
@@ -80,6 +79,7 @@ const targets = {
       entryPoints: ['src/human.ts'],
       outfile: 'dist/human.node.js',
       external: ['@tensorflow'],
+      sourcemap: false,
     },
   },
   nodeGPU: {
@@ -89,6 +89,7 @@ const targets = {
       entryPoints: ['src/tfjs/tf-node-gpu.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['@tensorflow'],
+      sourcemap: false,
     },
     node: {
       platform: 'node',
@@ -96,6 +97,7 @@ const targets = {
       entryPoints: ['src/human.ts'],
       outfile: 'dist/human.node-gpu.js',
       external: ['@tensorflow'],
+      sourcemap: false,
     },
   },
   nodeWASM: {
@@ -105,6 +107,7 @@ const targets = {
       entryPoints: ['src/tfjs/tf-node-wasm.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['@tensorflow'],
+      sourcemap: false,
     },
     node: {
       platform: 'node',
@@ -112,6 +115,7 @@ const targets = {
       entryPoints: ['src/human.ts'],
       outfile: 'dist/human.node-wasm.js',
       external: ['@tensorflow'],
+      sourcemap: false,
     },
   },
 
@@ -122,6 +126,7 @@ const targets = {
       entryPoints: ['src/tfjs/tf-browser.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['fs', 'buffer', 'util', 'os', '@tensorflow'],
+      sourcemap: true,
     },
     esm: {
       platform: 'browser',
@@ -129,6 +134,7 @@ const targets = {
       entryPoints: ['src/human.ts'],
       outfile: 'dist/human.esm-nobundle.js',
       external: ['fs', 'buffer', 'util', 'os', '@tensorflow'],
+      sourcemap: true,
     },
   },
   browserBundle: {
@@ -138,6 +144,7 @@ const targets = {
       entryPoints: ['src/tfjs/tf-browser.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['fs', 'buffer', 'util', 'os'],
+      sourcemap: true,
     },
     iife: {
       platform: 'browser',
@@ -146,6 +153,7 @@ const targets = {
       entryPoints: ['src/human.ts'],
       outfile: 'dist/human.js',
       external: ['fs', 'buffer', 'util', 'os'],
+      sourcemap: true,
     },
     esm: {
       platform: 'browser',
@@ -153,6 +161,7 @@ const targets = {
       entryPoints: ['src/human.ts'],
       outfile: 'dist/human.esm.js',
       external: ['fs', 'buffer', 'util', 'os'],
+      sourcemap: true,
     },
     /*
     demo: {

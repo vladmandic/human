@@ -1,6 +1,5 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import * as profile from '../profile';
 
 let model;
 let keypoints: Array<any> = [];
@@ -55,15 +54,7 @@ export async function predict(image, config) {
     });
 
     let resT;
-
-    if (!config.profile) {
-      if (config.body.enabled) resT = await model.predict(tensor);
-    } else {
-      const profileT = config.body.enabled ? await tf.profile(() => model.predict(tensor)) : {};
-      resT = profileT.result.clone();
-      profileT.result.dispose();
-      profile.run('body', profileT);
-    }
+    if (config.body.enabled) resT = await model.predict(tensor);
     tensor.dispose();
 
     if (resT) {
@@ -76,8 +67,8 @@ export async function predict(image, config) {
       // process each unstacked tensor as a separate body part
       for (let id = 0; id < stack.length; id++) {
         // actual processing to get coordinates and score
-        const [x, y, score] = max2d(stack[id], config.body.scoreThreshold);
-        if (score > config.body.scoreThreshold) {
+        const [x, y, score] = max2d(stack[id], config.body.minConfidence);
+        if (score > config.body.minConfidence) {
           parts.push({
             id,
             score: Math.round(100 * score) / 100,

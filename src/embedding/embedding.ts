@@ -1,6 +1,5 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import * as profile from '../profile';
 
 type Tensor = typeof tf.Tensor;
 type DB = Array<{ name: string, source: string, embedding: number[] }>;
@@ -87,46 +86,39 @@ export async function predict(input, config): Promise<number[]> {
     let data: Array<number> = [];
     if (config.face.embedding.enabled) {
       const image = enhance(input);
-      if (!config.profile) {
-        data = tf.tidy(() => {
-          /*
-          // if needed convert from NHWC to NCHW
-          const nchw = image.transpose([3, 0, 1, 2]);
-          */
+      data = tf.tidy(() => {
+        /*
+        // if needed convert from NHWC to NCHW
+        const nchw = image.transpose([3, 0, 1, 2]);
+        */
 
-          const res = model.predict(image);
+        const res = model.predict(image);
 
-          /*
-          // optionally do it twice with flipped image and average results
-          const res1 = model.predict(image);
-          const flipped = tf.image.flipLeftRight(image);
-          const res2 = model.predict(flipped);
-          const merge = tf.stack([res1, res2], 2).squeeze();
-          const res = reshape.logSumExp(1);
-          */
+        /*
+        // optionally do it twice with flipped image and average results
+        const res1 = model.predict(image);
+        const flipped = tf.image.flipLeftRight(image);
+        const res2 = model.predict(flipped);
+        const merge = tf.stack([res1, res2], 2).squeeze();
+        const res = reshape.logSumExp(1);
+        */
 
-          /*
-          // optional normalize outputs with l2 normalization
-          const scaled = tf.tidy(() => {
-            const l2 = res.norm('euclidean');
-            const scale = res.div(l2);
-            return scale;
-          });
-          */
-
-          // optional reduce feature vector complexity
-          const reshape = res.reshape([128, 2]); // split 256 vectors into 128 x 2
-          const reduce = reshape.logSumExp(1); // reduce 2nd dimension by calculating logSumExp on it
-
-          const output: Array<number> = reduce.dataSync();
-          return [...output]; // convert typed array to simple array
+        /*
+        // optional normalize outputs with l2 normalization
+        const scaled = tf.tidy(() => {
+          const l2 = res.norm('euclidean');
+          const scale = res.div(l2);
+          return scale;
         });
-      } else {
-        const profileData = await tf.profile(() => model.predict({ img_inputs: image }));
-        data = [...profileData.result.dataSync()];
-        profileData.result.dispose();
-        profile.run('emotion', profileData);
-      }
+        */
+
+        // optional reduce feature vector complexity
+        const reshape = res.reshape([128, 2]); // split 256 vectors into 128 x 2
+        const reduce = reshape.logSumExp(1); // reduce 2nd dimension by calculating logSumExp on it
+
+        const output: Array<number> = reduce.dataSync();
+        return [...output]; // convert typed array to simple array
+      });
       tf.dispose(image);
     }
     resolve(data);

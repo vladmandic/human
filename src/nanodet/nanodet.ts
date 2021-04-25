@@ -1,6 +1,5 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import * as profile from '../profile';
 import { labels } from './labels';
 
 let model;
@@ -83,7 +82,7 @@ async function process(res, inputSize, outputShape, config) {
   const nmsScores = results.map((a) => a.score);
   let nmsIdx: any[] = [];
   if (nmsBoxes && nmsBoxes.length > 0) {
-    const nms = await tf.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config.object.maxResults, config.object.iouThreshold, config.object.minConfidence);
+    const nms = await tf.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
     nmsIdx = nms.dataSync();
     tf.dispose(nms);
   }
@@ -114,13 +113,7 @@ export async function predict(image, config) {
     resize.dispose();
 
     let objectT;
-    if (!config.profile) {
-      if (config.object.enabled) objectT = await model.predict(transpose);
-    } else {
-      const profileObject = config.object.enabled ? await tf.profile(() => model.predict(transpose)) : {};
-      objectT = profileObject.result;
-      profile.run('object', profileObject);
-    }
+    if (config.object.enabled) objectT = await model.predict(transpose);
     transpose.dispose();
 
     const obj = await process(objectT, model.inputSize, outputSize, config);

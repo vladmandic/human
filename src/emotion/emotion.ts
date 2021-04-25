@@ -1,6 +1,5 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import * as profile from '../profile';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
 let model;
@@ -46,17 +45,9 @@ export async function predict(image, config) {
     grayscale.dispose();
     const obj: Array<{ score: number, emotion: string }> = [];
     if (config.face.emotion.enabled) {
-      let data;
-      if (!config.profile) {
-        const emotionT = await model.predict(normalize); // result is already in range 0..1, no need for additional activation
-        data = emotionT.dataSync();
-        tf.dispose(emotionT);
-      } else {
-        const profileData = await tf.profile(() => model.predict(normalize));
-        data = profileData.result.dataSync();
-        profileData.result.dispose();
-        profile.run('emotion', profileData);
-      }
+      const emotionT = await model.predict(normalize); // result is already in range 0..1, no need for additional activation
+      const data = emotionT.dataSync();
+      tf.dispose(emotionT);
       for (let i = 0; i < data.length; i++) {
         if (data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] });
       }

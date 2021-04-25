@@ -294,68 +294,68 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>, draw
       // shoulder line
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       curves(ctx, points, localOptions);
       // torso main
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightHip');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftHip');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       if (points.length === 4) lines(ctx, points, localOptions); // only draw if we have complete torso
       // leg left
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'leftHip');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftKnee');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftAnkle');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftHeel');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftFoot');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       curves(ctx, points, localOptions);
       // leg right
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'rightHip');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightKnee');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightAnkle');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightHeel');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightFoot');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       curves(ctx, points, localOptions);
       // arm left
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftElbow');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftWrist');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'leftPalm');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       curves(ctx, points, localOptions);
       // arm right
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightElbow');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightWrist');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === 'rightPalm');
-      if (part && part.score > defaults.body.scoreThreshold) points.push([part.position.x, part.position.y]);
+      if (part && part.score > defaults.body.minConfidence) points.push([part.position.x, part.position.y]);
       curves(ctx, points, localOptions);
       // draw all
     }

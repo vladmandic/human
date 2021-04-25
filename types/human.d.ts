@@ -111,18 +111,6 @@ export declare class Human {
      * - @param userConfig: {@link Config}
      */
     constructor(userConfig?: Config | Object);
-    /** Internal: ProfileData method returns last known profiling information
-     * - Requires human.config.profile set to true
-     */
-    profileData(): {
-        newBytes: any;
-        newTensors: any;
-        peakBytes: any;
-        numKernelOps: any;
-        timeKernelOps: any;
-        slowestKernelOps: any;
-        largestKernelOps: any;
-    } | {};
     /** @hidden */
     analyze: (...msg: any[]) => void;
     /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)

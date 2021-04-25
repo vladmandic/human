@@ -12,12 +12,6 @@ export interface Config {
     debug: boolean;
     /** Perform model loading and inference concurrently or sequentially */
     async: boolean;
-    /** Collect and print profiling data during inference operations */
-    profile: boolean;
-    /** Internal: Use aggressive GPU memory deallocator when backend is set to `webgl` or `humangl` */
-    deallocate: boolean;
-    /** Internal: Run all inference operations in an explicit local scope run to avoid memory leaks */
-    scoped: boolean;
     /** Perform additional optimizations when input is video,
      * - must be disabled for images
      * - automatically disabled for Image, ImageData, ImageBitmap and Tensor inputs
@@ -30,7 +24,7 @@ export interface Config {
     */
     warmup: 'none' | 'face' | 'full' | 'body';
     /** Base model path (typically starting with file://, http:// or https://) for all models
-     * - individual modelPath values are joined to this path
+     * - individual modelPath values are relative to this path
     */
     modelBasePath: string;
     /** Run input through image filters before inference
@@ -89,27 +83,25 @@ export interface Config {
      * - face detection, face mesh detection, age, gender, emotion detection and face description
      * Parameters:
      * - enabled: true/false
-     * - modelPath: path for individual face model
+     * - modelPath: path for each of face models
+     * - minConfidence: threshold for discarding a prediction
+     * - iouThreshold: ammount of overlap between two detected objects before one object is removed
+     * - maxDetected: maximum number of faces detected in the input, should be set to the minimum number for performance
      * - rotation: use calculated rotated face image or just box with rotation as-is, false means higher performance, but incorrect mesh mapping on higher face angles
-     * - maxFaces: maximum number of faces detected in the input, should be set to the minimum number for performance
      * - skipFrames: how many frames to go without re-running the face detector and just run modified face mesh analysis, only valid if videoOptimized is set to true
      * - skipInitial: if previous detection resulted in no faces detected, should skipFrames be reset immediately to force new detection cycle
-     * - minConfidence: threshold for discarding a prediction
-     * - iouThreshold: threshold for deciding whether boxes overlap too much in non-maximum suppression
-     * - scoreThreshold: threshold for deciding when to remove boxes based on score in non-maximum suppression
-     * - return extracted face as tensor for futher user processing
+     * - return: return extracted face as tensor for futher user processing
     */
     face: {
         enabled: boolean;
         detector: {
             modelPath: string;
             rotation: boolean;
-            maxFaces: number;
+            maxDetected: number;
             skipFrames: number;
             skipInitial: boolean;
             minConfidence: number;
             iouThreshold: number;
-            scoreThreshold: number;
             return: boolean;
         };
         mesh: {
@@ -135,29 +127,26 @@ export interface Config {
     };
     /** Controlls and configures all body detection specific options
      * - enabled: true/false
-     * - modelPath: paths for both hand detector model and hand skeleton model
-     * - maxDetections: maximum number of people detected in the input, should be set to the minimum number for performance
-     * - scoreThreshold: threshold for deciding when to remove people based on score in non-maximum suppression
-     * - nmsRadius: threshold for deciding whether body parts overlap too much in non-maximum suppression
+     * - modelPath: body pose model, can be absolute path or relative to modelBasePath
+     * - minConfidence: threshold for discarding a prediction
+     * - maxDetected: maximum number of people detected in the input, should be set to the minimum number for performance
     */
     body: {
         enabled: boolean;
         modelPath: string;
-        maxDetections: number;
-        scoreThreshold: number;
-        nmsRadius: number;
+        maxDetected: number;
+        minConfidence: number;
     };
     /** Controlls and configures all hand detection specific options
      * - enabled: true/false
-     * - modelPath: paths for both hand detector model and hand skeleton model
+     * - landmarks: detect hand landmarks or just hand boundary box
+     * - modelPath: paths for hand detector and hand skeleton models, can be absolute path or relative to modelBasePath
+     * - minConfidence: threshold for discarding a prediction
+     * - iouThreshold: ammount of overlap between two detected objects before one object is removed
+     * - maxDetected: maximum number of hands detected in the input, should be set to the minimum number for performance
      * - rotation: use best-guess rotated hand image or just box with rotation as-is, false means higher performance, but incorrect finger mapping if hand is inverted
      * - skipFrames: how many frames to go without re-running the hand bounding box detector and just run modified hand skeleton detector, only valid if videoOptimized is set to true
      * - skipInitial: if previous detection resulted in no hands detected, should skipFrames be reset immediately to force new detection cycle
-     * - minConfidence: threshold for discarding a prediction
-     * - iouThreshold: threshold for deciding whether boxes overlap too much in non-maximum suppression
-     * - scoreThreshold: threshold for deciding when to remove boxes based on score in non-maximum suppression
-     * - maxHands: maximum number of hands detected in the input, should be set to the minimum number for performance
-     * - landmarks: detect hand landmarks or just hand boundary box
     */
     hand: {
         enabled: boolean;
@@ -166,8 +155,7 @@ export interface Config {
         skipInitial: boolean;
         minConfidence: number;
         iouThreshold: number;
-        scoreThreshold: number;
-        maxHands: number;
+        maxDetected: number;
         landmarks: boolean;
         detector: {
             modelPath: string;
@@ -177,9 +165,11 @@ export interface Config {
         };
     };
     /** Controlls and configures all object detection specific options
+     * - enabled: true/false
+     * - modelPath: object detection model, can be absolute path or relative to modelBasePath
      * - minConfidence: minimum score that detection must have to return as valid object
      * - iouThreshold: ammount of overlap between two detected objects before one object is removed
-     * - maxResults: maximum number of detections to return
+     * - maxDetected: maximum number of detections to return
      * - skipFrames: run object detection every n input frames, only valid if videoOptimized is set to true
     */
     object: {
@@ -187,7 +177,7 @@ export interface Config {
         modelPath: string;
         minConfidence: number;
         iouThreshold: number;
-        maxResults: number;
+        maxDetected: number;
         skipFrames: number;
     };
 }

@@ -23,8 +23,7 @@ N/A
 
 Configuration simplification:
 
-replaced nmsRadius with built-in default
-- Replaced maxFaces, maxDetections, maxHands, maxResults with maxDetected
+replaced maxFaces, maxDetections, maxHands, maxResults with maxDetected
 - Remove deallocate, profile, scoped
 
 Build:

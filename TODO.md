@@ -27,7 +27,7 @@ remove deallocate, profile, scoped
 
 Build:
 
-- Stop building sourcemaps for NodeJS deliverables
+- stop building sourcemaps for NodeJS deliverables
 - Build NodeJS deliverables in non-minified form
 
 ### TBD

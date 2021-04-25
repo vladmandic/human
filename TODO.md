@@ -6,8 +6,7 @@ N/A
 
 ## Exploring Features
 
-- Implement built-in input handler for `http:`, `https:`, `file:`
-- Canvas.js for WASM on NodeJS
+N/A
 
 ## Explore Models
 

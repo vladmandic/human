@@ -1,5 +1,6 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
+import * as anchors from './anchors';
 
 export class HandDetector {
   model: any;
@@ -9,13 +10,13 @@ export class HandDetector {
   inputSizeTensor: any;
   doubleInputSizeTensor: any;
 
-  constructor(model, inputSize, anchorsAnnotated) {
+  constructor(model) {
     this.model = model;
-    this.anchors = anchorsAnnotated.map((anchor) => [anchor.x_center, anchor.y_center]);
+    this.anchors = anchors.anchors.map((anchor) => [anchor.x, anchor.y]);
     this.anchorsTensor = tf.tensor2d(this.anchors);
-    this.inputSize = inputSize;
-    this.inputSizeTensor = tf.tensor1d([inputSize, inputSize]);
-    this.doubleInputSizeTensor = tf.tensor1d([inputSize * 2, inputSize * 2]);
+    this.inputSize = this.model?.inputs[0].shape[2];
+    this.inputSizeTensor = tf.tensor1d([this.inputSize, this.inputSize]);
+    this.doubleInputSizeTensor = tf.tensor1d([this.inputSize * 2, this.inputSize * 2]);
   }
 
   normalizeBoxes(boxes) {

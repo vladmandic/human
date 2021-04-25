@@ -18,10 +18,10 @@ export class HandPipeline {
   skipped: number;
   detectedHands: number;
 
-  constructor(handDetector, landmarkDetector, inputSize) {
+  constructor(handDetector, landmarkDetector) {
     this.handDetector = handDetector;
     this.landmarkDetector = landmarkDetector;
-    this.inputSize = inputSize;
+    this.inputSize = this.landmarkDetector?.inputs[0].shape[2];
     this.storedBoxes = [];
     this.skipped = 0;
     this.detectedHands = 0;

@@ -1,5 +1,6 @@
 import { log, now } from './helpers';
 import * as tf from '../dist/tfjs.esm.js';
+import * as facemesh from './blazeface/facemesh';
 import * as emotion from './emotion/emotion';
 import * as faceres from './faceres/faceres';
 
@@ -130,7 +131,7 @@ export const detectFace = async (parent, input): Promise<any> => {
     }> = [];
   parent.state = 'run:face';
   timeStamp = now();
-  const faces = await parent.models.face?.estimateFaces(input, parent.config);
+  const faces = await facemesh.predict(input, parent.config);
   parent.perf.face = Math.trunc(now() - timeStamp);
   if (!faces) return [];
   for (const face of faces) {

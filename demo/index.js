@@ -1,15 +1,15 @@
 // @ts-nocheck
 
-/* global tf */
 import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
 // import Human from '../dist/human.esm-nobundle.js'; // this requires that tf is loaded manually and bundled before human can be used
 import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
 import webRTC from './helpers/webrtc.js';
 
-// const userConfig = {};
+const userConfig = {};
 let human;
 
+/*
 const userConfig = {
   backend: 'humangl',
   async: false,
@@ -32,6 +32,7 @@ const userConfig = {
   // body: { enabled: true, modelPath: 'blazepose.json' },
   // object: { enabled: true },
 };
+*/
 
 // ui options
 const ui = {
@@ -619,7 +620,9 @@ async function main() {
   // create instance of human
   human = new Human(userConfig);
   if (typeof tf !== 'undefined') {
+    // eslint-disable-next-line no-undef
     log('TensorFlow external version:', tf.version);
+    // eslint-disable-next-line no-undef
     human.tf = tf; // use externally loaded version of tfjs
   }
 

@@ -13,7 +13,6 @@ import * as nanodet from './nanodet/nanodet';
 import * as gesture from './gesture/gesture';
 import * as image from './image/image';
 import * as draw from './draw/draw';
-import * as profile from './profile';
 import { Config, defaults } from './config';
 import { Result } from './result';
 import * as sample from './sample';
@@ -166,14 +165,6 @@ export class Human {
     this.faceUVMap = facemesh.uvmap;
     // include platform info
     this.sysinfo = sysinfo.info();
-  }
-
-  /** Internal: ProfileData method returns last known profiling information
-   * - Requires human.config.profile set to true
-   */
-  profileData(): { newBytes, newTensors, peakBytes, numKernelOps, timeKernelOps, slowestKernelOps, largestKernelOps } | {} {
-    if (this.config.profile) return profile.data;
-    return {};
   }
 
   // helper function: measure tensor leak
@@ -335,9 +326,9 @@ export class Human {
       if (this.tf.getBackend() === 'webgl' || this.tf.getBackend() === 'humangl') {
         this.tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
         this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
-        if (this.config.deallocate) {
-          log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', this.config.deallocate);
-          this.tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', this.config.deallocate ? 0 : -1);
+        if (typeof this.config['deallocate'] !== 'undefined') {
+          log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
+          this.tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
         }
         const gl = await this.tf.backend().getGPGPUContext().gl;
         if (this.config.debug) log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
@@ -377,9 +368,6 @@ export class Human {
 
       // load models if enabled
       await this.load();
-
-      if (this.config.scoped) this.tf.engine().startScope();
-      this.analyze('Start Scope:');
 
       // disable video optimization for inputs of type image, but skip if inside worker thread
       let previousVideoOptimized;
@@ -473,9 +461,6 @@ export class Human {
         [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
       }
       tf.dispose(process.tensor);
-
-      if (this.config.scoped) this.tf.engine().endScope();
-      this.analyze('End Scope:');
 
       // run gesture analysis last
       let gestureRes: any[] = [];

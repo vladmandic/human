@@ -3,6 +3,7 @@ import * as kpt from './keypoints';
 
 const localMaximumRadius = 1;
 const defaultOutputStride = 16;
+const squaredNmsRadius = 20 ** 2;
 
 function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scoresBuffer, offsets, outputStride, displacements, offsetRefineStep = 2) {
   const getDisplacement = (point) => ({
@@ -86,7 +87,7 @@ function scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, scor
   return localMaximum;
 }
 
-export function buildPartWithScoreQueue(scoreThreshold, scores) {
+export function buildPartWithScoreQueue(minConfidence, scores) {
   const [height, width, numKeypoints] = scores.shape;
   const queue = new utils.MaxHeap(height * width * numKeypoints, ({ score }) => score);
   for (let heatmapY = 0; heatmapY < height; ++heatmapY) {
@@ -94,7 +95,7 @@ export function buildPartWithScoreQueue(scoreThreshold, scores) {
       for (let keypointId = 0; keypointId < numKeypoints; ++keypointId) {
         const score = scores.get(heatmapY, heatmapX, keypointId);
         // Only consider parts with score greater or equal to threshold as root candidates.
-        if (score < scoreThreshold) continue;
+        if (score < minConfidence) continue;
         // Only consider keypoints whose score is maximum in a local window.
         if (scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, scores)) queue.enqueue({ score, part: { heatmapY, heatmapX, id: keypointId } });
       }
@@ -103,38 +104,37 @@ export function buildPartWithScoreQueue(scoreThreshold, scores) {
   return queue;
 }
 
-function withinRadius(poses, squaredNmsRadius, { x, y }, keypointId) {
+function withinRadius(poses, { x, y }, keypointId) {
   return poses.some(({ keypoints }) => {
     const correspondingKeypoint = keypoints[keypointId].position;
     return utils.squaredDistance(y, x, correspondingKeypoint.y, correspondingKeypoint.x) <= squaredNmsRadius;
   });
 }
 
-function getInstanceScore(existingPoses, squaredNmsRadius, instanceKeypoints) {
+function getInstanceScore(existingPoses, instanceKeypoints) {
   const notOverlappedKeypointScores = instanceKeypoints.reduce((result, { position, score }, keypointId) => {
-    if (!withinRadius(existingPoses, squaredNmsRadius, position, keypointId)) result += score;
+    if (!withinRadius(existingPoses, position, keypointId)) result += score;
     return result;
   }, 0.0);
   return notOverlappedKeypointScores / instanceKeypoints.length;
 }
 
-export function decode(offsetsBuffer, scoresBuffer, displacementsFwdBuffer, displacementsBwdBuffer, nmsRadius, maxDetections, scoreThreshold) {
+export function decode(offsetsBuffer, scoresBuffer, displacementsFwdBuffer, displacementsBwdBuffer, maxDetected, minConfidence) {
   const poses: Array<{ keypoints: any, box: any, score: number }> = [];
-  const queue = buildPartWithScoreQueue(scoreThreshold, scoresBuffer);
-  const squaredNmsRadius = nmsRadius ** 2;
-  // Generate at most maxDetections object instances per image in decreasing root part score order.
-  while (poses.length < maxDetections && !queue.empty()) {
+  const queue = buildPartWithScoreQueue(minConfidence, scoresBuffer);
+  // Generate at most maxDetected object instances per image in decreasing root part score order.
+  while (poses.length < maxDetected && !queue.empty()) {
     // The top element in the queue is the next root candidate.
     const root = queue.dequeue();
     // Part-based non-maximum suppression: We reject a root candidate if it is within a disk of `nmsRadius` pixels from the corresponding part of a previously detected instance.
     const rootImageCoords = utils.getImageCoords(root.part, defaultOutputStride, offsetsBuffer);
-    if (withinRadius(poses, squaredNmsRadius, rootImageCoords, root.part.id)) continue;
+    if (withinRadius(poses, rootImageCoords, root.part.id)) continue;
     // Else start a new detection instance at the position of the root.
     const allKeypoints = decodePose(root, scoresBuffer, offsetsBuffer, defaultOutputStride, displacementsFwdBuffer, displacementsBwdBuffer);
-    const keypoints = allKeypoints.filter((a) => a.score > scoreThreshold);
-    const score = getInstanceScore(poses, squaredNmsRadius, keypoints);
+    const keypoints = allKeypoints.filter((a) => a.score > minConfidence);
+    const score = getInstanceScore(poses, keypoints);
     const box = utils.getBoundingBox(keypoints);
-    if (score > scoreThreshold) poses.push({ keypoints, box, score: Math.round(100 * score) / 100 });
+    if (score > minConfidence) poses.push({ keypoints, box, score: Math.round(100 * score) / 100 });
   }
   return poses;
 }

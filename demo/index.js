@@ -492,15 +492,13 @@ function setupMenu() {
   menu.process = new Menu(document.body, '', { top, left: x[2] });
   menu.process.addList('backend', ['cpu', 'webgl', 'wasm', 'humangl'], human.config.backend, (val) => human.config.backend = val);
   menu.process.addBool('async operations', human.config, 'async', (val) => human.config.async = val);
-  // menu.process.addBool('enable profiler', human.config, 'profile', (val) => human.config.profile = val);
-  // menu.process.addBool('memory shield', human.config, 'deallocate', (val) => human.config.deallocate = val);
   menu.process.addBool('use web worker', ui, 'useWorker');
   menu.process.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.process.addLabel('model parameters');
-  menu.process.addRange('max objects', human.config.face.detector, 'maxFaces', 1, 50, 1, (val) => {
-    human.config.face.detector.maxFaces = parseInt(val);
-    human.config.body.maxDetections = parseInt(val);
-    human.config.hand.maxHands = parseInt(val);
+  menu.process.addRange('max objects', human.config.face.detector, 'maxDetected', 1, 50, 1, (val) => {
+    human.config.face.detector.maxDetected = parseInt(val);
+    human.config.body.maxDetected = parseInt(val);
+    human.config.hand.maxDetected = parseInt(val);
   });
   menu.process.addRange('skip frames', human.config.face.detector, 'skipFrames', 0, 50, 1, (val) => {
     human.config.face.detector.skipFrames = parseInt(val);
@@ -511,11 +509,6 @@ function setupMenu() {
     human.config.face.detector.minConfidence = parseFloat(val);
     human.config.face.emotion.minConfidence = parseFloat(val);
     human.config.hand.minConfidence = parseFloat(val);
-  });
-  menu.process.addRange('score threshold', human.config.face.detector, 'scoreThreshold', 0.1, 1.0, 0.05, (val) => {
-    human.config.face.detector.scoreThreshold = parseFloat(val);
-    human.config.hand.scoreThreshold = parseFloat(val);
-    human.config.body.scoreThreshold = parseFloat(val);
   });
   menu.process.addRange('overlap', human.config.face.detector, 'iouThreshold', 0.1, 1.0, 0.05, (val) => {
     human.config.face.detector.iouThreshold = parseFloat(val);

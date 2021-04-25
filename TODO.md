@@ -17,17 +17,6 @@ N/A
 - Blazepose  
   Needs detector before running pose to center the image
 
-## RC: 1.8
+## In Progress
 
-### Done
-
-Configuration simplification:
-
-remove deallocate, profile, scoped
-
-Build:
-
-- stop building sourcemaps for NodeJS deliverables
-- build NodeJS deliverables in non-minified form
-
-### TBD
+N/A

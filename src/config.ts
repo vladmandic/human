@@ -248,7 +248,7 @@ const config: Config = {
                              // detector, mesh, iris, age, gender, emotion
                              // (note: module is not loaded until it is required)
     detector: {
-      modelPath: 'blazeface-back.json', // detector model, can be absolute path or relative to modelBasePath
+      modelPath: 'blazeface.json', // detector model, can be absolute path or relative to modelBasePath
       rotation: false,       // use best-guess rotated face image or just box with rotation as-is
                              // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees
                              // this parameter is not valid in nodejs

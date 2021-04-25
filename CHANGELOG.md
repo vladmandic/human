@@ -12,6 +12,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 ### **HEAD -> main** 2021/04/25 mandic00@live.com
 
 
+### **origin/main** 2021/04/25 mandic00@live.com
+
+
 ### **1.7.1** 2021/04/25 mandic00@live.com
 
 - remove obsolete binary models

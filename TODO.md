@@ -21,17 +21,19 @@ N/A
 
 ### Done
 
-Major configuration simplification:
+Configuration simplification:
 
 - Unified minConfidence and scoreThresdold as minConfidence
 - Replaced nmsRadius with built-in default
 - Replaced maxFaces, maxDetections, maxHands, maxResults with maxDetected
 - Remove deallocate, profile, scoped
 
-Stop building sourcemaps for NodeJS deliverables
+Build:
+
+- Stop building sourcemaps for NodeJS deliverables
+- Build NodeJS deliverables in non-minified form
 
 ### TBD
 
 - Remove modelPaths
-- Remove blazeface-front, replace blazeface-back with blazeface
 - NodeJS Exception handling

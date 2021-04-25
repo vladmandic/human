@@ -52,6 +52,11 @@ async function detect(img) {
 }
 
 async function main() {
+  process.on('unhandledRejection', (err) => {
+    // @ts-ignore // no idea if exception message is compelte
+    log.error(err?.message || err || 'no error message');
+  });
+
   // on worker start first initialize message handler so we don't miss any messages
   process.on('message', (msg) => {
     if (msg.exit) process.exit(); // if main told worker to exit

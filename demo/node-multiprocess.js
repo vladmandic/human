@@ -45,6 +45,11 @@ function measureLatency() {
 }
 
 async function main() {
+  process.on('unhandledRejection', (err) => {
+    // @ts-ignore // no idea if exception message is compelte
+    log.error(err?.message || err || 'no error message');
+  });
+
   log.header();
   log.info('FaceAPI multi-process test');
 

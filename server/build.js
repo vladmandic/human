@@ -44,22 +44,19 @@ const config = {
     banner,
     tsconfig: 'server/tfjs-tsconfig.json',
     logLevel: 'error',
+    bundle: true,
+    metafile: true,
+    target: 'es2018',
   },
   debug: {
     minifyWhitespace: false,
     minifyIdentifiers: false,
     minifySyntax: false,
-    bundle: true,
-    metafile: true,
-    target: 'es2018',
   },
   production: {
     minifyWhitespace: true,
     minifyIdentifiers: true,
     minifySyntax: true,
-    bundle: true,
-    metafile: true,
-    target: 'es2018',
   },
 };
 
@@ -80,6 +77,9 @@ const targets = {
       outfile: 'dist/human.node.js',
       external: ['@tensorflow'],
       sourcemap: false,
+      minifyWhitespace: false,
+      minifyIdentifiers: false,
+      minifySyntax: false,
     },
   },
   nodeGPU: {
@@ -98,6 +98,9 @@ const targets = {
       outfile: 'dist/human.node-gpu.js',
       external: ['@tensorflow'],
       sourcemap: false,
+      minifyWhitespace: false,
+      minifyIdentifiers: false,
+      minifySyntax: false,
     },
   },
   nodeWASM: {
@@ -116,6 +119,9 @@ const targets = {
       outfile: 'dist/human.node-wasm.js',
       external: ['@tensorflow'],
       sourcemap: false,
+      minifyWhitespace: false,
+      minifyIdentifiers: false,
+      minifySyntax: false,
     },
   },
 

@@ -203,7 +203,7 @@ detectVideo();
 
 Default models in Human library are:
 
-- **Face Detection**: MediaPipe BlazeFace-Back
+- **Face Detection**: MediaPipe BlazeFace (Back version)
 - **Face Mesh**: MediaPipe FaceMesh
 - **Face Description**: HSE FaceRes
 - **Face Iris Analysis**: MediaPipe Iris

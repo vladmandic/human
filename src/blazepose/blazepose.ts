@@ -1,3 +1,5 @@
+// paper: https://ai.googleblog.com/2020/08/on-device-real-time-body-pose-tracking.html
+
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as profile from '../profile';
@@ -26,9 +28,6 @@ export async function predict(image, config) {
   let points;
   if (!config.profile) { // run through profiler or just execute
     const resT = await model.predict(normalize);
-    // const segmentationT = resT.find((t) => (t.size === 16384))?.squeeze();
-    // const segmentation = segmentationT.arraySync(); // array 128 x 128
-    // segmentationT.dispose();
     points = resT.find((t) => (t.size === 195 || t.size === 155)).dataSync(); // order of output tensors may change between models, full has 195 and upper has 155 items
     resT.forEach((t) => t.dispose());
   } else {

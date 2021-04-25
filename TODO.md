@@ -23,8 +23,7 @@ N/A
 
 Configuration simplification:
 
-unified minConfidence and scoreThresdold as minConfidence
-- Replaced nmsRadius with built-in default
+replaced nmsRadius with built-in default
 - Replaced maxFaces, maxDetections, maxHands, maxResults with maxDetected
 - Remove deallocate, profile, scoped
 

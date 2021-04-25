@@ -84,7 +84,12 @@ async function detect(input) {
   log.state('Processing:', tensor['shape']);
 
   // run actual detection
-  const result = await human.detect(tensor, myConfig);
+  let result;
+  try {
+    result = await human.detect(tensor, myConfig);
+  } catch (err) {
+    log.error('caught');
+  }
 
   // dispose image tensor as we no longer need it
   tf.dispose(tensor);
@@ -97,6 +102,8 @@ async function detect(input) {
       const emotion = face.emotion.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
       log.data(`  Face: #${i} boxConfidence:${face.boxConfidence} faceConfidence:${face.boxConfidence} age:${face.age} genderConfidence:${face.genderConfidence} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
     }
+  } else {
+    log.data('  Face: N/A');
   }
   if (result && result.body && result.body.length > 0) {
     for (let i = 0; i < result.body.length; i++) {
@@ -134,6 +141,11 @@ async function detect(input) {
 }
 
 async function test() {
+  process.on('unhandledRejection', (err) => {
+    // @ts-ignore // no idea if exception message is compelte
+    log.error(err?.message || err || 'no error message');
+  });
+
   // test with embedded full body image
   let result;
 

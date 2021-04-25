@@ -304,6 +304,9 @@ export class Human {
       */
 
       if (this.config.backend && this.config.backend.length > 0) {
+        // @ts-ignore ignore missing type for WorkerGlobalScope as that is the point
+        if (typeof window === 'undefined' && typeof WorkerGlobalScope !== 'undefined' && this.config.debug) log('running inside web worker');
+
         // force browser vs node backend
         if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === 'tensorflow') this.config.backend = 'webgl';
         if (this.tf.ENV.flags.IS_NODE && (this.config.backend === 'webgl' || this.config.backend === 'humangl')) this.config.backend = 'tensorflow';
@@ -378,9 +381,10 @@ export class Human {
       if (this.config.scoped) this.tf.engine().startScope();
       this.analyze('Start Scope:');
 
-      // disable video optimization for inputs of type image
+      // disable video optimization for inputs of type image, but skip if inside worker thread
       let previousVideoOptimized;
-      if (input && this.config.videoOptimized && (
+      // @ts-ignore ignore missing type for WorkerGlobalScope as that is the point
+      if (input && this.config.videoOptimized && (typeof window !== 'undefined') && (typeof WorkerGlobalScope !== 'undefined') && (
         (typeof HTMLImageElement !== 'undefined' && input instanceof HTMLImageElement)
         || (typeof Image !== 'undefined' && input instanceof Image)
         || (typeof ImageData !== 'undefined' && input instanceof ImageData)

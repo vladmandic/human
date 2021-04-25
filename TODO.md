@@ -23,8 +23,7 @@ N/A
 
 Configuration simplification:
 
-replaced maxFaces, maxDetections, maxHands, maxResults with maxDetected
-- Remove deallocate, profile, scoped
+remove deallocate, profile, scoped
 
 Build:
 

@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/04/25 mandic00@live.com
 
+- major update for 1.8 release candidate
 
 ### **origin/main** 2021/04/25 mandic00@live.com
 

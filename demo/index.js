@@ -588,6 +588,14 @@ async function drawWarmup(res) {
 }
 
 async function main() {
+  window.addEventListener('unhandledrejection', (evt) => {
+    // eslint-disable-next-line no-console
+    console.error(evt.reason || evt);
+    document.getElementById('log').innerHTML = evt?.reason?.message || evt?.reason || evt;
+    status('exception error');
+    evt.preventDefault();
+  });
+
   log('demo starting ...');
 
   // parse url search params

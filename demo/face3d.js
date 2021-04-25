@@ -162,6 +162,13 @@ async function setupCamera() {
 }
 
 async function main() {
+  window.addEventListener('unhandledrejection', (evt) => {
+    // eslint-disable-next-line no-console
+    console.error(evt.reason || evt);
+    document.getElementById('log').innerHTML = evt?.reason?.message || evt?.reason || evt;
+    evt.preventDefault();
+  });
+
   await human.load();
   const video = await setupCamera();
   if (video) {

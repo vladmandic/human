@@ -34,6 +34,3 @@ Build:
 - Build NodeJS deliverables in non-minified form
 
 ### TBD
-
-- Remove modelPaths
-- NodeJS Exception handling

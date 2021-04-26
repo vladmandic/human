@@ -18714,12 +18714,24 @@ async function hand2(inCanvas2, result, drawOptions) {
         }
       }
     }
+    if (localOptions.drawLabels) {
+      const addHandLabel = (part, title) => {
+        ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * part[part.length - 1][2]}, ${127.5 - 2 * part[part.length - 1][2]}, 255, 0.5)` : localOptions.color;
+        ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
+      };
+      ctx.font = localOptions.font;
+      addHandLabel(h.annotations.indexFinger, "index");
+      addHandLabel(h.annotations.middleFinger, "middle");
+      addHandLabel(h.annotations.ringFinger, "ring");
+      addHandLabel(h.annotations.pinky, "pinky");
+      addHandLabel(h.annotations.thumb, "thumb");
+      addHandLabel(h.annotations.palmBase, "palm");
+    }
     if (localOptions.drawPolygons) {
-      const addPart = (part) => {
+      const addHandLine = (part) => {
         if (!part)
           return;
         for (let i = 0; i < part.length; i++) {
-          ctx.lineWidth = localOptions.lineWidth;
           ctx.beginPath();
           ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * part[i][2]}, ${127.5 - 2 * part[i][2]}, 255, 0.5)` : localOptions.color;
           ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
@@ -18727,11 +18739,12 @@ async function hand2(inCanvas2, result, drawOptions) {
           ctx.stroke();
         }
       };
-      addPart(h.annotations.indexFinger);
-      addPart(h.annotations.middleFinger);
-      addPart(h.annotations.ringFinger);
-      addPart(h.annotations.pinky);
-      addPart(h.annotations.thumb);
+      ctx.lineWidth = localOptions.lineWidth;
+      addHandLine(h.annotations.indexFinger);
+      addHandLine(h.annotations.middleFinger);
+      addHandLine(h.annotations.ringFinger);
+      addHandLine(h.annotations.pinky);
+      addHandLine(h.annotations.thumb);
     }
   }
 }

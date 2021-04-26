@@ -9,7 +9,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/04/25 mandic00@live.com
+### **HEAD -> main** 2021/04/26 mandic00@live.com
 
 - convert blazeface to module
 - version 1.8 release candidate

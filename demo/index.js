@@ -6,7 +6,7 @@ import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
 import webRTC from './helpers/webrtc.js';
 
-const userConfig = {};
+const userConfig = { warmup: 'none' };
 let human;
 
 /*
@@ -94,9 +94,18 @@ function log(...msg) {
 }
 
 function status(msg) {
-  // eslint-disable-next-line no-console
   const div = document.getElementById('status');
-  if (div) div.innerText = msg;
+  if (div && msg && msg.length > 0) {
+    log('status', msg);
+    document.getElementById('play').style.display = 'none';
+    document.getElementById('loader').style.display = 'block';
+    div.innerText = msg;
+  } else {
+    const video = document.getElementById('video');
+    document.getElementById('play').style.display = (video.srcObject !== null) && !video.paused ? 'none' : 'block';
+    document.getElementById('loader').style.display = 'none';
+    div.innerText = '';
+  }
 }
 
 const compare = { enabled: false, original: null };
@@ -210,7 +219,7 @@ async function setupCamera() {
     } catch (err) {
       log(err);
     } finally {
-      status('');
+      status();
     }
     return '';
   }
@@ -264,14 +273,10 @@ async function setupCamera() {
       canvas.style.height = canvas.width > canvas.height ? '' : '100vh';
       ui.menuWidth.input.setAttribute('value', video.width);
       ui.menuHeight.input.setAttribute('value', video.height);
-      // silly font resizing for paint-on-canvas since viewport can be zoomed
       if (live) video.play();
       // eslint-disable-next-line no-use-before-define
       if (live && !ui.detectThread) runHumanDetect(video, canvas);
       ui.busy = false;
-      // do once more because onresize events can be delayed or skipped
-      // if (video.width > window.innerWidth) await setupCamera();
-      status('');
       resolve();
     };
   });
@@ -337,7 +342,6 @@ function runHumanDetect(input, canvas, timestamp) {
     log('memory', human.tf.engine().memory());
     return;
   }
-  status('');
   if (ui.useWorker) {
     // get image data from video as we cannot send html objects to webworker
     const offscreen = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(canvas.width, canvas.height) : document.createElement('canvas');
@@ -348,8 +352,10 @@ function runHumanDetect(input, canvas, timestamp) {
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     // perform detection in worker
     webWorker(input, data, canvas, userConfig, timestamp);
+    status();
   } else {
     human.detect(input, userConfig).then((result) => {
+      status();
       if (result.performance && result.performance.total) ui.detectFPS.push(1000 / result.performance.total);
       if (ui.detectFPS.length > ui.maxFPSframes) ui.detectFPS.shift();
       if (ui.bench) {
@@ -410,16 +416,14 @@ async function detectVideo() {
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   if ((video.srcObject !== null) && !video.paused) {
-    document.getElementById('play').style.display = 'block';
     document.getElementById('btnStartText').innerHTML = 'start video';
     status('paused');
     video.pause();
   } else {
     const cameraError = await setupCamera();
     if (!cameraError) {
-      document.getElementById('play').style.display = 'none';
+      status('starting detection');
       for (const m of Object.values(menu)) m.hide();
-      status('');
       document.getElementById('btnStartText').innerHTML = 'pause video';
       await video.play();
       if (!ui.detectThread) runHumanDetect(video, canvas);
@@ -432,7 +436,6 @@ async function detectVideo() {
 // just initialize everything and call main function
 async function detectSampleImages() {
   userConfig.videoOptimized = false; // force disable video optimizations
-  document.getElementById('play').style.display = 'none';
   document.getElementById('canvas').style.display = 'none';
   document.getElementById('samples-container').style.display = 'block';
   log('running detection of sample images');
@@ -440,7 +443,7 @@ async function detectSampleImages() {
   document.getElementById('samples-container').innerHTML = '';
   for (const m of Object.values(menu)) m.hide();
   for (const image of ui.samples) await processImage(image);
-  status('');
+  status();
 }
 
 function setupMenu() {
@@ -550,7 +553,8 @@ function setupMenu() {
 }
 
 async function resize() {
-  const viewportScale = Math.min(1, Math.round(100 * window.innerWidth / 960) / 100);
+  window.onresize = null;
+  const viewportScale = 1; // Math.min(1, Math.round(100 * window.innerWidth / 960) / 100);
   if (!ui.viewportSet) {
     const viewport = document.querySelector('meta[name=viewport]');
     viewport.setAttribute('content', `width=device-width, shrink-to-fit=yes, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes, initial-scale=${viewportScale}`);
@@ -574,7 +578,8 @@ async function resize() {
 
   human.draw.options.font = `small-caps ${fontSize + 4}px "Segoe UI"`;
 
-  setupCamera();
+  await setupCamera();
+  window.onresize = resize;
 }
 
 async function drawWarmup(res) {
@@ -646,16 +651,11 @@ async function main() {
     if (res && res.canvas && ui.drawWarmup) await drawWarmup(res);
   }
 
-  // setup camera
-  await setupCamera();
-
   // ready
   status('human: ready');
   document.getElementById('loader').style.display = 'none';
   document.getElementById('play').style.display = 'block';
-  log('demo ready...');
   for (const m of Object.values(menu)) m.hide();
 }
 
 window.onload = main;
-window.onresize = resize;

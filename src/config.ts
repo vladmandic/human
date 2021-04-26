@@ -209,7 +209,7 @@ const config: Config = {
                              // automatically disabled for Image, ImageData, ImageBitmap
                              // skips boundary detection for every n frames
                              // while maintaining in-box detection since objects cannot move that fast
-  warmup: 'face',            // what to use for human.warmup(), can be 'none', 'face', 'full'
+  warmup: 'full',            // what to use for human.warmup(), can be 'none', 'face', 'full'
                              // warmup pre-initializes all models for faster inference but can take
                              // significant time on startup
                              // only used for `webgl` and `humangl` backends

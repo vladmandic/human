@@ -11,6 +11,8 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/04/25 mandic00@live.com
 
+- convert blazeface to module
+- version 1.8 release candidate
 - build nodejs deliverables in non-minified form
 - stop building sourcemaps for nodejs deliverables
 - remove deallocate, profile, scoped

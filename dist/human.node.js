@@ -18223,7 +18223,7 @@ var config2 = {
   debug: true,
   async: true,
   videoOptimized: true,
-  warmup: "face",
+  warmup: "full",
   filter: {
     enabled: true,
     width: 0,

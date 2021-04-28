@@ -9,7 +9,7 @@ export declare class BlazeFaceModel {
         boxes: {
             box: any;
             landmarks: any;
-            anchor: any;
+            anchor: number[];
             confidence: number;
         }[];
         scaleFactor: number[];

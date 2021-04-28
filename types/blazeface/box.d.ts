@@ -12,7 +12,7 @@ export declare function enlargeBox(box: any, factor?: number): {
 };
 export declare function squarifyBox(box: any): {
     startPoint: number[];
-    endPoint: any[];
+    endPoint: number[];
     landmarks: any;
 };
 export declare function calculateLandmarksBoundingBox(landmarks: any): {
@@ -22,7 +22,6 @@ export declare function calculateLandmarksBoundingBox(landmarks: any): {
 };
 export declare const disposeBox: (t: any) => void;
 export declare const createBox: (startEndTensor: any) => {
-    startEndTensor: any;
     startPoint: any;
     endPoint: any;
 };

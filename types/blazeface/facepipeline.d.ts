@@ -15,7 +15,7 @@ export declare class Pipeline {
     getEyeBox(rawCoords: any, face: any, eyeInnerCornerIndex: any, eyeOuterCornerIndex: any, flip?: boolean): {
         box: {
             startPoint: number[];
-            endPoint: any[];
+            endPoint: number[];
             landmarks: any;
         };
         boxSize: number[];

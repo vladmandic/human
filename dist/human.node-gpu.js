@@ -44,26 +44,22 @@ var __privateSet = (obj, member, value, setter) => {
 
 // dist/tfjs.esm.js
 var require_tfjs_esm = __commonJS((exports) => {
-  var __create2 = Object.create;
-  var __defProp2 = Object.defineProperty;
-  var __getProtoOf2 = Object.getPrototypeOf;
-  var __hasOwnProp2 = Object.prototype.hasOwnProperty;
-  var __getOwnPropNames2 = Object.getOwnPropertyNames;
-  var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
-  var __markAsModule2 = (target) => __defProp2(target, "__esModule", {value: true});
-  var __reExport2 = (target, module22, desc) => {
-    if (module22 && typeof module22 === "object" || typeof module22 === "function") {
-      for (let key of __getOwnPropNames2(module22))
-        if (!__hasOwnProp2.call(target, key) && key !== "default")
-          __defProp2(target, key, {get: () => module22[key], enumerable: !(desc = __getOwnPropDesc2(module22, key)) || desc.enumerable});
-    }
-    return target;
+  var s = Object.create;
+  var t = Object.defineProperty;
+  var d = Object.getPrototypeOf;
+  var g = Object.prototype.hasOwnProperty;
+  var j = Object.getOwnPropertyNames;
+  var l = Object.getOwnPropertyDescriptor;
+  var p = (o) => t(o, "__esModule", {value: true});
+  var r = (o, e, n) => {
+    if (e && typeof e == "object" || typeof e == "function")
+      for (let f of j(e))
+        !g.call(o, f) && f !== "default" && t(o, f, {get: () => e[f], enumerable: !(n = l(e, f)) || n.enumerable});
+    return o;
   };
-  var __toModule2 = (module22) => {
-    return __reExport2(__markAsModule2(__defProp2(module22 != null ? __create2(__getProtoOf2(module22)) : {}, "default", module22 && module22.__esModule && "default" in module22 ? {get: () => module22.default, enumerable: true} : {value: module22, enumerable: true})), module22);
-  };
-  __markAsModule2(exports);
-  __reExport2(exports, __toModule2(require("@tensorflow/tfjs-node-gpu")));
+  var m = (o) => r(p(t(o != null ? s(d(o)) : {}, "default", o && o.__esModule && "default" in o ? {get: () => o.default, enumerable: true} : {value: o, enumerable: true})), o);
+  p(exports);
+  r(exports, m(require("@tensorflow/tfjs-node-gpu")));
 });
 
 // src/human.ts

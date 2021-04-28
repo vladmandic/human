@@ -18,4 +18,4 @@ N/A
 
 ## In Progress
 
-N/A
+- Refactor BlazeFace to avoid data and array access and use buffers where needed

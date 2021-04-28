@@ -6,21 +6,21 @@ import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
 import webRTC from './helpers/webrtc.js';
 
-const userConfig = { warmup: 'none' };
 let human;
 
-/*
 const userConfig = {
+  warmup: 'none',
+  /*
   backend: 'humangl',
   async: false,
   profile: false,
-  warmup: 'full',
-  videoOptimized: false,
+  videoOptimized: true,
   filter: {
     enabled: false,
     flip: false,
   },
   face: { enabled: true,
+    detector: { return: false },
     mesh: { enabled: true },
     iris: { enabled: true },
     description: { enabled: false },
@@ -31,8 +31,8 @@ const userConfig = {
   body: { enabled: false, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   // object: { enabled: true },
+  */
 };
-*/
 
 // ui options
 const ui = {

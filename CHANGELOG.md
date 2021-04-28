@@ -9,8 +9,12 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/04/26 mandic00@live.com
+### **HEAD -> main** 2021/04/28 mandic00@live.com
 
+
+### **origin/main** 2021/04/26 mandic00@live.com
+
+- cleanup demo workflow
 - convert blazeface to module
 - version 1.8 release candidate
 - build nodejs deliverables in non-minified form

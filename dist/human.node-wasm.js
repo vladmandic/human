@@ -44,23 +44,27 @@ var __privateSet = (obj, member, value, setter) => {
 
 // dist/tfjs.esm.js
 var require_tfjs_esm = __commonJS((exports) => {
-  var w = Object.create;
-  var e = Object.defineProperty;
-  var a = Object.getPrototypeOf;
-  var j = Object.prototype.hasOwnProperty;
-  var l = Object.getOwnPropertyNames;
-  var p = Object.getOwnPropertyDescriptor;
-  var m = (o) => e(o, "__esModule", {value: true});
-  var f = (o, r, s) => {
-    if (r && typeof r == "object" || typeof r == "function")
-      for (let t of l(r))
-        !j.call(o, t) && t !== "default" && e(o, t, {get: () => r[t], enumerable: !(s = p(r, t)) || s.enumerable});
-    return o;
+  var __create2 = Object.create;
+  var __defProp2 = Object.defineProperty;
+  var __getProtoOf2 = Object.getPrototypeOf;
+  var __hasOwnProp2 = Object.prototype.hasOwnProperty;
+  var __getOwnPropNames2 = Object.getOwnPropertyNames;
+  var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
+  var __markAsModule2 = (target) => __defProp2(target, "__esModule", {value: true});
+  var __reExport2 = (target, module22, desc) => {
+    if (module22 && typeof module22 === "object" || typeof module22 === "function") {
+      for (let key of __getOwnPropNames2(module22))
+        if (!__hasOwnProp2.call(target, key) && key !== "default")
+          __defProp2(target, key, {get: () => module22[key], enumerable: !(desc = __getOwnPropDesc2(module22, key)) || desc.enumerable});
+    }
+    return target;
   };
-  var n = (o) => f(m(e(o != null ? w(a(o)) : {}, "default", o && o.__esModule && "default" in o ? {get: () => o.default, enumerable: true} : {value: o, enumerable: true})), o);
-  m(exports);
-  f(exports, n(require("@tensorflow/tfjs")));
-  f(exports, n(require("@tensorflow/tfjs-backend-wasm")));
+  var __toModule2 = (module22) => {
+    return __reExport2(__markAsModule2(__defProp2(module22 != null ? __create2(__getProtoOf2(module22)) : {}, "default", module22 && module22.__esModule && "default" in module22 ? {get: () => module22.default, enumerable: true} : {value: module22, enumerable: true})), module22);
+  };
+  __markAsModule2(exports);
+  __reExport2(exports, __toModule2(require("@tensorflow/tfjs")));
+  __reExport2(exports, __toModule2(require("@tensorflow/tfjs-backend-wasm")));
 });
 
 // src/human.ts
@@ -255,8 +259,8 @@ function squarifyBox(box4) {
   const size = getBoxSize(box4);
   const maxEdge = Math.max(...size);
   const halfSize = maxEdge / 2;
-  const startPoint = [centers[0] - halfSize, centers[1] - halfSize];
-  const endPoint = [centers[0] + halfSize, centers[1] + halfSize];
+  const startPoint = [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)];
+  const endPoint = [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)];
   return {startPoint, endPoint, landmarks: box4.landmarks};
 }
 function calculateLandmarksBoundingBox(landmarks) {
@@ -267,7 +271,6 @@ function calculateLandmarksBoundingBox(landmarks) {
   return {startPoint, endPoint, landmarks};
 }
 var createBox = (startEndTensor) => ({
-  startEndTensor,
   startPoint: tf2.slice(startEndTensor, [0, 0], [-1, 2]),
   endPoint: tf2.slice(startEndTensor, [0, 2], [-1, 2])
 });
@@ -388,46 +391,39 @@ var BlazeFaceModel = class {
     const [batch, boxes, scores] = tf3.tidy(() => {
       const resizedImage = inputImage.resizeBilinear([this.inputSize, this.inputSize]);
       const normalizedImage = resizedImage.div(127.5).sub(0.5);
-      const batchedPrediction = this.model.predict(normalizedImage);
+      const res = this.model.execute(normalizedImage);
       let batchOut;
-      if (Array.isArray(batchedPrediction)) {
-        const sorted = batchedPrediction.sort((a, b) => a.size - b.size);
+      if (Array.isArray(res)) {
+        const sorted = res.sort((a, b) => a.size - b.size);
         const concat384 = tf3.concat([sorted[0], sorted[2]], 2);
         const concat512 = tf3.concat([sorted[1], sorted[3]], 2);
         const concat3 = tf3.concat([concat512, concat384], 1);
         batchOut = concat3.squeeze(0);
       } else {
-        batchOut = batchedPrediction.squeeze();
+        batchOut = res.squeeze();
       }
       const boxesOut = decodeBounds(batchOut, this.anchors, [this.inputSize, this.inputSize]);
       const logits = tf3.slice(batchOut, [0, 0], [-1, 1]);
-      const scoresOut = tf3.sigmoid(logits).squeeze();
+      const scoresOut = tf3.sigmoid(logits).squeeze().dataSync();
       return [batchOut, boxesOut, scoresOut];
     });
-    const boxIndicesTensor = await tf3.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
-    const boxIndices = boxIndicesTensor.arraySync();
-    boxIndicesTensor.dispose();
-    const boundingBoxesMap = boxIndices.map((boxIndex) => tf3.slice(boxes, [boxIndex, 0], [1, -1]));
-    const boundingBoxes = boundingBoxesMap.map((boundingBox) => {
-      const vals = boundingBox.arraySync();
-      boundingBox.dispose();
-      return vals;
-    });
-    const scoresVal = scores.dataSync();
+    const nmsTensor = await tf3.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
+    const nms = nmsTensor.arraySync();
+    nmsTensor.dispose();
     const annotatedBoxes = [];
-    for (let i = 0; i < boundingBoxes.length; i++) {
-      const boxIndex = boxIndices[i];
-      const confidence = scoresVal[boxIndex];
+    for (let i = 0; i < nms.length; i++) {
+      const confidence = scores[nms[i]];
       if (confidence > this.config.face.detector.minConfidence) {
-        const localBox = createBox(boundingBoxes[i]);
-        const anchor = this.anchorsData[boxIndex];
-        const landmarks = tf3.tidy(() => tf3.slice(batch, [boxIndex, keypointsCount - 1], [1, -1]).squeeze().reshape([keypointsCount, -1]));
+        const boundingBox = tf3.slice(boxes, [nms[i], 0], [1, -1]);
+        const localBox = createBox(boundingBox);
+        boundingBox.dispose();
+        const anchor = this.anchorsData[nms[i]];
+        const landmarks = tf3.tidy(() => tf3.slice(batch, [nms[i], keypointsCount - 1], [1, -1]).squeeze().reshape([keypointsCount, -1]));
         annotatedBoxes.push({box: localBox, landmarks, anchor, confidence});
       }
     }
     batch.dispose();
     boxes.dispose();
-    scores.dispose();
     return {
       boxes: annotatedBoxes,
       scaleFactor: [inputImage.shape[2] / this.inputSize, inputImage.shape[1] / this.inputSize]
@@ -3785,9 +3781,9 @@ var Pipeline = class {
     const inverseRotationMatrix = angle !== 0 ? invertTransformMatrix(rotationMatrix) : IDENTITY_MATRIX;
     const boxCenter = [...getBoxCenter({startPoint: box4.startPoint, endPoint: box4.endPoint}), 1];
     return coordsRotated.map((coord) => [
-      coord[0] + dot(boxCenter, inverseRotationMatrix[0]),
-      coord[1] + dot(boxCenter, inverseRotationMatrix[1]),
-      coord[2]
+      Math.round(coord[0] + dot(boxCenter, inverseRotationMatrix[0])),
+      Math.round(coord[1] + dot(boxCenter, inverseRotationMatrix[1])),
+      Math.round(coord[2])
     ]);
   }
   getLeftToRightEyeDepthDifference(rawCoords) {
@@ -3879,8 +3875,7 @@ var Pipeline = class {
         prediction.landmarks.dispose();
       });
     }
-    let results = tf4.tidy(() => this.storedBoxes.map((box4, i) => {
-      const boxConfidence = box4.confidence;
+    const results = tf4.tidy(() => this.storedBoxes.map((box4, i) => {
       let face4;
       let angle = 0;
       let rotationMatrix;
@@ -3905,19 +3900,21 @@ var Pipeline = class {
       }
       if (!config3.face.mesh.enabled) {
         const prediction2 = {
-          coords: null,
+          mesh: [],
           box: box4,
           faceConfidence: null,
-          boxConfidence,
+          boxConfidence: box4.confidence,
           confidence: box4.confidence,
           image: face4
         };
         return prediction2;
       }
-      const [, confidence, contourCoords] = this.meshDetector.predict(face4);
+      const [, confidence, contourCoords] = this.meshDetector.execute(face4);
       const faceConfidence = confidence.dataSync()[0];
-      if (faceConfidence < config3.face.detector.minConfidence)
+      if (faceConfidence < config3.face.detector.minConfidence) {
+        this.storedBoxes[i].confidence = faceConfidence;
         return null;
+      }
       const coordsReshaped = tf4.reshape(contourCoords, [-1, 3]);
       let rawCoords = coordsReshaped.arraySync();
       if (config3.face.iris.enabled) {
@@ -3942,9 +3939,10 @@ var Pipeline = class {
         const adjustedRightIrisCoords = this.getAdjustedIrisCoords(rawCoords, rightIrisRawCoords, "right");
         rawCoords = rawCoords.concat(adjustedLeftIrisCoords).concat(adjustedRightIrisCoords);
       }
-      const transformedCoordsData = this.transformRawCoords(rawCoords, box4, angle, rotationMatrix);
-      box4 = enlargeBox(calculateLandmarksBoundingBox(transformedCoordsData), 1.5);
-      const transformedCoords = tf4.tensor2d(transformedCoordsData);
+      const mesh = this.transformRawCoords(rawCoords, box4, angle, rotationMatrix);
+      const storeConfidence = box4.confidence;
+      box4 = enlargeBox(calculateLandmarksBoundingBox(mesh), 1.5);
+      box4.confidence = storeConfidence;
       if (config3.face.detector.rotation && config3.face.mesh.enabled && config3.face.description.enabled && tf4.ENV.flags.IS_BROWSER) {
         const [indexOfMouth, indexOfForehead] = box4.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
         angle = computeRotation(box4.landmarks[indexOfMouth], box4.landmarks[indexOfForehead]);
@@ -3955,20 +3953,20 @@ var Pipeline = class {
         face4 = cutBoxFromImageAndResize({startPoint: box4.startPoint, endPoint: box4.endPoint}, rotatedImage, [this.meshSize, this.meshSize]).div(255);
       }
       const prediction = {
-        coords: transformedCoords,
+        mesh,
         box: box4,
         faceConfidence,
-        boxConfidence,
-        image: face4,
-        rawCoords
+        boxConfidence: box4.confidence,
+        image: face4
       };
-      const squarifiedLandmarksBox = squarifyBox(box4);
-      this.storedBoxes[i] = {...squarifiedLandmarksBox, landmarks: transformedCoordsData, confidence: box4.confidence, faceConfidence};
+      const storedBox = squarifyBox(box4);
+      storedBox.confidence = box4.confidence;
+      storedBox.faceConfidence = faceConfidence;
+      this.storedBoxes[i] = storedBox;
       return prediction;
     }));
-    results = results.filter((a) => a !== null);
     if (config3.face.mesh.enabled)
-      this.storedBoxes = this.storedBoxes.filter((a) => a.faceConfidence > config3.face.detector.minConfidence);
+      this.storedBoxes = this.storedBoxes.filter((a) => a.confidence > config3.face.detector.minConfidence);
     this.detectedFaces = results.length;
     return results;
   }
@@ -3981,20 +3979,19 @@ async function predict(input, config3) {
   const predictions = await facePipeline.predict(input, config3);
   const results = [];
   for (const prediction of predictions || []) {
-    if (prediction.isDisposedInternal)
+    if (!prediction || prediction.isDisposedInternal)
       continue;
-    const mesh = prediction.coords ? prediction.coords.arraySync() : [];
-    const meshRaw = mesh.map((pt) => [
+    const meshRaw = prediction.mesh.map((pt) => [
       pt[0] / input.shape[2],
       pt[1] / input.shape[1],
       pt[2] / facePipeline.meshSize
     ]);
     const annotations3 = {};
-    if (mesh && mesh.length > 0) {
+    if (prediction.mesh && prediction.mesh.length > 0) {
       for (const key of Object.keys(MESH_ANNOTATIONS))
-        annotations3[key] = MESH_ANNOTATIONS[key].map((index) => mesh[index]);
+        annotations3[key] = MESH_ANNOTATIONS[key].map((index) => prediction.mesh[index]);
     }
-    const box4 = prediction.box ? [
+    const clampedBox = prediction.box ? [
       Math.max(0, prediction.box.startPoint[0]),
       Math.max(0, prediction.box.startPoint[1]),
       Math.min(input.shape[2], prediction.box.endPoint[0]) - Math.max(0, prediction.box.startPoint[0]),
@@ -4010,17 +4007,15 @@ async function predict(input, config3) {
       confidence: Math.round(100 * prediction.faceConfidence || 100 * prediction.boxConfidence || 0) / 100,
       boxConfidence: Math.round(100 * prediction.boxConfidence) / 100,
       faceConfidence: Math.round(100 * prediction.faceConfidence) / 100,
-      box: box4,
+      box: clampedBox,
       boxRaw,
-      mesh,
+      mesh: prediction.mesh,
       meshRaw,
       annotations: annotations3,
-      image: prediction.image ? prediction.image.clone() : null
+      image: prediction.image
     });
     if (prediction.coords)
       prediction.coords.dispose();
-    if (prediction.image)
-      prediction.image.dispose();
   }
   return results;
 }

@@ -90,9 +90,9 @@ export class Pipeline {
     const inverseRotationMatrix = (angle !== 0) ? util.invertTransformMatrix(rotationMatrix) : util.IDENTITY_MATRIX;
     const boxCenter = [...bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint }), 1];
     return coordsRotated.map((coord) => ([
-      coord[0] + util.dot(boxCenter, inverseRotationMatrix[0]),
-      coord[1] + util.dot(boxCenter, inverseRotationMatrix[1]),
-      coord[2],
+      Math.round(coord[0] + util.dot(boxCenter, inverseRotationMatrix[0])),
+      Math.round(coord[1] + util.dot(boxCenter, inverseRotationMatrix[1])),
+      Math.round(coord[2]),
     ]));
   }
 
@@ -195,10 +195,7 @@ export class Pipeline {
         prediction.landmarks.dispose();
       });
     }
-
-    let results = tf.tidy(() => this.storedBoxes.map((box, i) => {
-      const boxConfidence = box.confidence;
-
+    const results = tf.tidy(() => this.storedBoxes.map((box, i) => {
       // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
       let face;
       let angle = 0;
@@ -223,19 +220,22 @@ export class Pipeline {
       // if we're not going to produce mesh, don't spend time with further processing
       if (!config.face.mesh.enabled) {
         const prediction = {
-          coords: null,
+          mesh: [],
           box,
           faceConfidence: null,
-          boxConfidence,
+          boxConfidence: box.confidence,
           confidence: box.confidence,
           image: face,
         };
         return prediction;
       }
 
-      const [, confidence, contourCoords] = this.meshDetector.predict(face); // The first returned tensor represents facial contours which are already included in the coordinates.
+      const [, confidence, contourCoords] = this.meshDetector.execute(face); // The first returned tensor represents facial contours which are already included in the coordinates.
       const faceConfidence = confidence.dataSync()[0];
-      if (faceConfidence < config.face.detector.minConfidence) return null; // if below confidence just exit
+      if (faceConfidence < config.face.detector.minConfidence) {
+        this.storedBoxes[i].confidence = faceConfidence; // reset confidence of cached box
+        return null; // if below confidence just exit
+      }
       const coordsReshaped = tf.reshape(contourCoords, [-1, 3]);
       let rawCoords = coordsReshaped.arraySync();
 
@@ -265,9 +265,10 @@ export class Pipeline {
       }
 
       // override box from detection with one calculated from mesh
-      const transformedCoordsData = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
-      box = bounding.enlargeBox(bounding.calculateLandmarksBoundingBox(transformedCoordsData), 1.5); // redefine box with mesh calculated one
-      const transformedCoords = tf.tensor2d(transformedCoordsData);
+      const mesh = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
+      const storeConfidence = box.confidence;
+      box = bounding.enlargeBox(bounding.calculateLandmarksBoundingBox(mesh), 1.5); // redefine box with mesh calculated one
+      box.confidence = storeConfidence;
 
       // do rotation one more time with mesh keypoints if we want to return perfect image
       if (config.face.detector.rotation && config.face.mesh.enabled && config.face.description.enabled && tf.ENV.flags.IS_BROWSER) {
@@ -281,24 +282,28 @@ export class Pipeline {
       }
 
       const prediction = {
-        coords: transformedCoords,
+        mesh,
         box,
         faceConfidence,
-        boxConfidence,
+        boxConfidence: box.confidence,
         image: face,
-        rawCoords,
       };
 
       // updated stored cache values
-      const squarifiedLandmarksBox = bounding.squarifyBox(box);
-      this.storedBoxes[i] = { ...squarifiedLandmarksBox, landmarks: transformedCoordsData, confidence: box.confidence, faceConfidence };
+      const storedBox = bounding.squarifyBox(box);
+      // @ts-ignore box itself doesn't have those properties, but we stored them for future use
+      storedBox.confidence = box.confidence;
+      // @ts-ignore box itself doesn't have those properties, but we stored them for future use
+      storedBox.faceConfidence = faceConfidence;
+      // this.storedBoxes[i] = { ...squarifiedLandmarksBox, confidence: box.confidence, faceConfidence };
+      this.storedBoxes[i] = storedBox;
 
       return prediction;
     }));
 
-    results = results.filter((a) => a !== null);
+    // results = results.filter((a) => a !== null);
     // remove cache entries for detected boxes on low confidence
-    if (config.face.mesh.enabled) this.storedBoxes = this.storedBoxes.filter((a) => a.faceConfidence > config.face.detector.minConfidence);
+    if (config.face.mesh.enabled) this.storedBoxes = this.storedBoxes.filter((a) => a.confidence > config.face.detector.minConfidence);
     this.detectedFaces = results.length;
 
     return results;

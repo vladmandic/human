@@ -46,8 +46,8 @@ export function squarifyBox(box) {
   const size = getBoxSize(box);
   const maxEdge = Math.max(...size);
   const halfSize = maxEdge / 2;
-  const startPoint = [centers[0] - halfSize, centers[1] - halfSize];
-  const endPoint = [centers[0] + halfSize, centers[1] + halfSize];
+  const startPoint = [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)];
+  const endPoint = [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)];
   return { startPoint, endPoint, landmarks: box.landmarks };
 }
 
@@ -60,13 +60,11 @@ export function calculateLandmarksBoundingBox(landmarks) {
 }
 
 export const disposeBox = (t) => {
-  t.startEndTensor.dispose();
   t.startPoint.dispose();
   t.endPoint.dispose();
 };
 
 export const createBox = (startEndTensor) => ({
-  startEndTensor,
   startPoint: tf.slice(startEndTensor, [0, 0], [-1, 2]),
   endPoint: tf.slice(startEndTensor, [0, 2], [-1, 2]),
 });

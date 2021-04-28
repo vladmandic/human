@@ -40,50 +40,42 @@ export class BlazeFaceModel {
     if ((!inputImage) || (inputImage.isDisposedInternal) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return null;
     const [batch, boxes, scores] = tf.tidy(() => {
       const resizedImage = inputImage.resizeBilinear([this.inputSize, this.inputSize]);
-      // const normalizedImage = tf.mul(tf.sub(resizedImage.div(255), 0.5), 2);
       const normalizedImage = resizedImage.div(127.5).sub(0.5);
-      const batchedPrediction = this.model.predict(normalizedImage);
+      const res = this.model.execute(normalizedImage);
       let batchOut;
-      // are we using tfhub or pinto converted model?
-      if (Array.isArray(batchedPrediction)) {
-        const sorted = batchedPrediction.sort((a, b) => a.size - b.size);
+      if (Array.isArray(res)) { // are we using tfhub or pinto converted model?
+        const sorted = res.sort((a, b) => a.size - b.size);
         const concat384 = tf.concat([sorted[0], sorted[2]], 2); // dim: 384, 1 + 16
         const concat512 = tf.concat([sorted[1], sorted[3]], 2); // dim: 512, 1 + 16
         const concat = tf.concat([concat512, concat384], 1);
         batchOut = concat.squeeze(0);
       } else {
-        batchOut = batchedPrediction.squeeze(); // when using tfhub model
+        batchOut = res.squeeze(); // when using tfhub model
       }
       const boxesOut = decodeBounds(batchOut, this.anchors, [this.inputSize, this.inputSize]);
       const logits = tf.slice(batchOut, [0, 0], [-1, 1]);
-      const scoresOut = tf.sigmoid(logits).squeeze();
+      const scoresOut = tf.sigmoid(logits).squeeze().dataSync();
       return [batchOut, boxesOut, scoresOut];
     });
-    const boxIndicesTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
-    const boxIndices = boxIndicesTensor.arraySync();
-    boxIndicesTensor.dispose();
-    const boundingBoxesMap = boxIndices.map((boxIndex) => tf.slice(boxes, [boxIndex, 0], [1, -1]));
-    const boundingBoxes = boundingBoxesMap.map((boundingBox) => {
-      const vals = boundingBox.arraySync();
-      boundingBox.dispose();
-      return vals;
-    });
-
-    const scoresVal = scores.dataSync();
-    const annotatedBoxes: Array<{ box: any, landmarks: any, anchor: any, confidence: number }> = [];
-    for (let i = 0; i < boundingBoxes.length; i++) {
-      const boxIndex = boxIndices[i];
-      const confidence = scoresVal[boxIndex];
+    const nmsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
+    const nms = nmsTensor.arraySync();
+    nmsTensor.dispose();
+    const annotatedBoxes: Array<{ box: any, landmarks: any, anchor: number[], confidence: number }> = [];
+    for (let i = 0; i < nms.length; i++) {
+      const confidence = scores[nms[i]];
       if (confidence > this.config.face.detector.minConfidence) {
-        const localBox = box.createBox(boundingBoxes[i]);
-        const anchor = this.anchorsData[boxIndex];
-        const landmarks = tf.tidy(() => tf.slice(batch, [boxIndex, keypointsCount - 1], [1, -1]).squeeze().reshape([keypointsCount, -1]));
+        const boundingBox = tf.slice(boxes, [nms[i], 0], [1, -1]);
+        const localBox = box.createBox(boundingBox);
+        boundingBox.dispose();
+        const anchor = this.anchorsData[nms[i]];
+        const landmarks = tf.tidy(() => tf.slice(batch, [nms[i], keypointsCount - 1], [1, -1]).squeeze().reshape([keypointsCount, -1]));
         annotatedBoxes.push({ box: localBox, landmarks, anchor, confidence });
       }
     }
+    // boundingBoxes.forEach((t) => t.dispose());
     batch.dispose();
     boxes.dispose();
-    scores.dispose();
+    // scores.dispose();
     return {
       boxes: annotatedBoxes,
       scaleFactor: [inputImage.shape[2] / this.inputSize, inputImage.shape[1] / this.inputSize],

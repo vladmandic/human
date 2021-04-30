@@ -19515,7 +19515,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // package.json
-var version = "1.8.0";
+var version = "1.8.1";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _sanity, _checkBackend, _warmupBitmap, _warmupCanvas, _warmupNode;

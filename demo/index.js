@@ -9,11 +9,10 @@ import webRTC from './helpers/webrtc.js';
 let human;
 
 const userConfig = {
-  warmup: 'full',
+  warmup: 'none',
   /*
   backend: 'webgl',
   async: true,
-
   videoOptimized: false,
   filter: {
     enabled: false,
@@ -36,10 +35,12 @@ const userConfig = {
 
 // ui options
 const ui = {
-  baseBackground: 'rgba(50, 50, 50, 1)', // 'grey'
+  // configurable items
+  console: true, // log messages to browser console
   crop: true, // video mode crop to size or leave full frame
-  columns: 2, // when processing sample images create this many columns
   facing: true, // camera facing front or back
+  baseBackground: 'rgba(50, 50, 50, 1)', // 'grey'
+  columns: 2, // when processing sample images create this many columns
   useWorker: false, // use web workers for processing
   worker: 'index-worker.js',
   samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'],
@@ -47,10 +48,10 @@ const ui = {
   useWebRTC: false, // use webrtc as camera source instead of local webcam
   webRTCServer: 'http://localhost:8002',
   webRTCStream: 'reowhite',
-  console: true, // log messages to browser console
   maxFPSframes: 10, // keep fps history for how many frames
   modelsPreload: true, // preload human models on startup
   modelsWarmup: true, // warmup human models on startup
+  // internal variables
   busy: false, // internal camera busy flag
   menuWidth: 0, // internal
   menuHeight: 0, // internal
@@ -58,7 +59,7 @@ const ui = {
   detectFPS: [], // internal, holds fps values for detection performance
   drawFPS: [], // internal, holds fps values for draw performance
   buffered: true, // should output be buffered between frames
-  drawWarmup: true, // debug only, should warmup image processing be displayed on startup
+  drawWarmup: false, // debug only, should warmup image processing be displayed on startup
   drawThread: null, // internl, perform draw operations in a separate thread
   detectThread: null, // internl, perform detect operations in a separate thread
   framesDraw: 0, // internal, statistics on frames drawn

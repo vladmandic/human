@@ -1,4 +1,6 @@
 import { log, now, mergeDeep } from './helpers';
+import { Config, defaults } from './config';
+import { Result } from './result';
 import * as sysinfo from './sysinfo';
 import * as tf from '../dist/tfjs.esm.js';
 import * as backend from './tfjs/backend';
@@ -13,8 +15,6 @@ import * as nanodet from './nanodet/nanodet';
 import * as gesture from './gesture/gesture';
 import * as image from './image/image';
 import * as draw from './draw/draw';
-import { Config, defaults } from './config';
-import { Result } from './result';
 import * as sample from './sample';
 import * as app from '../package.json';
 

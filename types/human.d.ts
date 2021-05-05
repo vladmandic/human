@@ -1,3 +1,5 @@
+import { Config } from './config';
+import { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as faceres from './faceres/faceres';
@@ -7,8 +9,6 @@ import * as handpose from './handpose/handpose';
 import * as blazepose from './blazepose/blazepose';
 import * as nanodet from './nanodet/nanodet';
 import * as draw from './draw/draw';
-import { Config } from './config';
-import { Result } from './result';
 /** Generic Tensor object type */
 export declare type Tensor = typeof tf.Tensor;
 export type { Config } from './config';

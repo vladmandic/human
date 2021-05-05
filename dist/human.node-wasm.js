@@ -107,6 +107,103 @@ function mergeDeep(...objects) {
   }, {});
 }
 
+// src/config.ts
+var config = {
+  backend: "webgl",
+  modelBasePath: "../models/",
+  wasmPath: "../assets/",
+  debug: true,
+  async: true,
+  videoOptimized: true,
+  warmup: "full",
+  filter: {
+    enabled: true,
+    width: 0,
+    height: 0,
+    flip: false,
+    return: true,
+    brightness: 0,
+    contrast: 0,
+    sharpness: 0,
+    blur: 0,
+    saturation: 0,
+    hue: 0,
+    negative: false,
+    sepia: false,
+    vintage: false,
+    kodachrome: false,
+    technicolor: false,
+    polaroid: false,
+    pixelate: 0
+  },
+  gesture: {
+    enabled: true
+  },
+  face: {
+    enabled: true,
+    detector: {
+      modelPath: "blazeface.json",
+      rotation: false,
+      maxDetected: 10,
+      skipFrames: 21,
+      skipInitial: false,
+      minConfidence: 0.2,
+      iouThreshold: 0.1,
+      return: false
+    },
+    mesh: {
+      enabled: true,
+      modelPath: "facemesh.json"
+    },
+    iris: {
+      enabled: true,
+      modelPath: "iris.json"
+    },
+    description: {
+      enabled: true,
+      modelPath: "faceres.json",
+      skipFrames: 31,
+      minConfidence: 0.1
+    },
+    emotion: {
+      enabled: true,
+      minConfidence: 0.1,
+      skipFrames: 32,
+      modelPath: "emotion.json"
+    }
+  },
+  body: {
+    enabled: true,
+    modelPath: "posenet.json",
+    maxDetected: 1,
+    minConfidence: 0.1
+  },
+  hand: {
+    enabled: true,
+    rotation: false,
+    skipFrames: 12,
+    skipInitial: false,
+    minConfidence: 0.1,
+    iouThreshold: 0.1,
+    maxDetected: 2,
+    landmarks: true,
+    detector: {
+      modelPath: "handdetect.json"
+    },
+    skeleton: {
+      modelPath: "handskeleton.json"
+    }
+  },
+  object: {
+    enabled: false,
+    modelPath: "nanodet.json",
+    minConfidence: 0.2,
+    iouThreshold: 0.4,
+    maxDetected: 10,
+    skipFrames: 41
+  }
+};
+
 // src/sysinfo.ts
 function info() {
   let platform;
@@ -133,7 +230,7 @@ var tf16 = __toModule(require_tfjs_esm());
 
 // src/tfjs/backend.ts
 var tf = __toModule(require_tfjs_esm());
-var config = {
+var config2 = {
   name: "humangl",
   priority: 99,
   canvas: null,
@@ -152,29 +249,29 @@ var config = {
   }
 };
 function register() {
-  if (!tf.findBackend(config.name)) {
-    log("backend registration:", config.name);
+  if (!tf.findBackend(config2.name)) {
+    log("backend registration:", config2.name);
     try {
-      config.canvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(config.width, config.height) : document.createElement("canvas");
+      config2.canvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(config2.width, config2.height) : document.createElement("canvas");
     } catch (err) {
       log("error: cannot create canvas:", err);
       return;
     }
     try {
-      config.gl = config.canvas.getContext("webgl2", config.webGLattr);
+      config2.gl = config2.canvas.getContext("webgl2", config2.webGLattr);
     } catch (err) {
       log("error: cannot get WebGL2 context:", err);
       return;
     }
     try {
-      tf.setWebGLContext(2, config.gl);
+      tf.setWebGLContext(2, config2.gl);
     } catch (err) {
       log("error: cannot set WebGL2 context:", err);
       return;
     }
     try {
-      const ctx = new tf.GPGPUContext(config.gl);
-      tf.registerBackend(config.name, () => new tf.MathBackendWebGL(ctx), config.priority);
+      const ctx = new tf.GPGPUContext(config2.gl);
+      tf.registerBackend(config2.name, () => new tf.MathBackendWebGL(ctx), config2.priority);
     } catch (err) {
       log("error: cannot register WebGL backend:", err);
       return;
@@ -182,7 +279,7 @@ function register() {
     try {
       const kernels = tf.getKernelsForBackend("webgl");
       kernels.forEach((kernelConfig) => {
-        const newKernelConfig = {...kernelConfig, backendName: config.name};
+        const newKernelConfig = {...kernelConfig, backendName: config2.name};
         tf.registerKernel(newKernelConfig);
       });
     } catch (err) {
@@ -195,7 +292,7 @@ function register() {
       log("error: cannot set WebGL backend flags:", err);
       return;
     }
-    log("backend registered:", config.name);
+    log("backend registered:", config2.name);
   }
 }
 
@@ -4562,7 +4659,7 @@ function addVectors(a, b) {
 var localMaximumRadius = 1;
 var outputStride = 16;
 var squaredNmsRadius = 50 ** 2;
-function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scoresBuffer, offsets, displacements, offsetRefineStep = 2) {
+function traverse(edgeId, sourceKeypoint, targetId, scores, offsets, displacements, offsetRefineStep = 2) {
   const getDisplacement = (point2) => ({
     y: displacements.get(point2.y, point2.x, edgeId),
     x: displacements.get(point2.y, point2.x, displacements.shape[2] / 2 + edgeId)
@@ -4571,51 +4668,48 @@ function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scor
     y: clamp(Math.round(point2.y / outputStride), 0, height2 - 1),
     x: clamp(Math.round(point2.x / outputStride), 0, width2 - 1)
   });
-  const [height, width] = scoresBuffer.shape;
+  const [height, width] = scores.shape;
   const sourceKeypointIndices = getStridedIndexNearPoint(sourceKeypoint.position, height, width);
   const displacement = getDisplacement(sourceKeypointIndices);
   const displacedPoint = addVectors(sourceKeypoint.position, displacement);
   let targetKeypoint = displacedPoint;
   for (let i = 0; i < offsetRefineStep; i++) {
     const targetKeypointIndices = getStridedIndexNearPoint(targetKeypoint, height, width);
-    const offsetPoint = getOffsetPoint(targetKeypointIndices.y, targetKeypointIndices.x, targetKeypointId, offsets);
-    targetKeypoint = addVectors({
-      x: targetKeypointIndices.x * outputStride,
-      y: targetKeypointIndices.y * outputStride
-    }, {x: offsetPoint.x, y: offsetPoint.y});
+    const offsetPoint = getOffsetPoint(targetKeypointIndices.y, targetKeypointIndices.x, targetId, offsets);
+    targetKeypoint = addVectors({x: targetKeypointIndices.x * outputStride, y: targetKeypointIndices.y * outputStride}, {x: offsetPoint.x, y: offsetPoint.y});
   }
   const targetKeyPointIndices = getStridedIndexNearPoint(targetKeypoint, height, width);
-  const score = scoresBuffer.get(targetKeyPointIndices.y, targetKeyPointIndices.x, targetKeypointId);
-  return {position: targetKeypoint, part: partNames[targetKeypointId], score};
+  const score = scores.get(targetKeyPointIndices.y, targetKeyPointIndices.x, targetId);
+  return {position: targetKeypoint, part: partNames[targetId], score};
 }
 function decodePose(root, scores, offsets, displacementsFwd, displacementsBwd) {
-  const parentChildrenTuples = poseChain.map(([parentJoinName, childJoinName]) => [partIds[parentJoinName], partIds[childJoinName]]);
-  const parentToChildEdges = parentChildrenTuples.map(([, childJointId]) => childJointId);
-  const childToParentEdges = parentChildrenTuples.map(([parentJointId]) => parentJointId);
+  const tuples = poseChain.map(([parentJoinName, childJoinName]) => [partIds[parentJoinName], partIds[childJoinName]]);
+  const edgesFwd = tuples.map(([, childJointId]) => childJointId);
+  const edgesBwd = tuples.map(([parentJointId]) => parentJointId);
   const numParts = scores.shape[2];
-  const numEdges = parentToChildEdges.length;
-  const instanceKeypoints = new Array(numParts);
+  const numEdges = edgesFwd.length;
+  const keypoints = new Array(numParts);
   const rootPoint = getImageCoords(root.part, outputStride, offsets);
-  instanceKeypoints[root.part.id] = {
+  keypoints[root.part.id] = {
     score: root.score,
     part: partNames[root.part.id],
     position: rootPoint
   };
   for (let edge = numEdges - 1; edge >= 0; --edge) {
-    const sourceKeypointId = parentToChildEdges[edge];
-    const targetKeypointId = childToParentEdges[edge];
-    if (instanceKeypoints[sourceKeypointId] && !instanceKeypoints[targetKeypointId]) {
-      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, displacementsBwd);
+    const sourceId = edgesFwd[edge];
+    const targetId = edgesBwd[edge];
+    if (keypoints[sourceId] && !keypoints[targetId]) {
+      keypoints[targetId] = traverse(edge, keypoints[sourceId], targetId, scores, offsets, displacementsBwd);
     }
   }
   for (let edge = 0; edge < numEdges; ++edge) {
-    const sourceKeypointId = childToParentEdges[edge];
-    const targetKeypointId = parentToChildEdges[edge];
-    if (instanceKeypoints[sourceKeypointId] && !instanceKeypoints[targetKeypointId]) {
-      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, displacementsFwd);
+    const sourceId = edgesBwd[edge];
+    const targetId = edgesFwd[edge];
+    if (keypoints[sourceId] && !keypoints[targetId]) {
+      keypoints[targetId] = traverse(edge, keypoints[sourceId], targetId, scores, offsets, displacementsFwd);
     }
   }
-  return instanceKeypoints;
+  return keypoints;
 }
 function scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, scores) {
   const [height, width] = scores.shape;
@@ -4654,27 +4748,30 @@ function buildPartWithScoreQueue(minConfidence, scores) {
 }
 function withinRadius(poses2, {x, y}, keypointId) {
   return poses2.some(({keypoints}) => {
-    const correspondingKeypoint = keypoints[keypointId].position;
+    var _a;
+    const correspondingKeypoint = (_a = keypoints[keypointId]) == null ? void 0 : _a.position;
+    if (!correspondingKeypoint)
+      return false;
     return squaredDistance(y, x, correspondingKeypoint.y, correspondingKeypoint.x) <= squaredNmsRadius;
   });
 }
-function getInstanceScore(existingPoses, instanceKeypoints) {
-  const notOverlappedKeypointScores = instanceKeypoints.reduce((result, {position, score}, keypointId) => {
+function getInstanceScore(existingPoses, keypoints) {
+  const notOverlappedKeypointScores = keypoints.reduce((result, {position, score}, keypointId) => {
     if (!withinRadius(existingPoses, position, keypointId))
       result += score;
     return result;
   }, 0);
-  return notOverlappedKeypointScores / instanceKeypoints.length;
+  return notOverlappedKeypointScores / keypoints.length;
 }
-function decode(offsetsBuffer, scoresBuffer, displacementsFwdBuffer, displacementsBwdBuffer, maxDetected, minConfidence) {
+function decode(offsets, scores, displacementsFwd, displacementsBwd, maxDetected, minConfidence) {
   const poses2 = [];
-  const queue = buildPartWithScoreQueue(minConfidence, scoresBuffer);
+  const queue = buildPartWithScoreQueue(minConfidence, scores);
   while (poses2.length < maxDetected && !queue.empty()) {
     const root = queue.dequeue();
-    const rootImageCoords = getImageCoords(root.part, outputStride, offsetsBuffer);
+    const rootImageCoords = getImageCoords(root.part, outputStride, offsets);
     if (withinRadius(poses2, rootImageCoords, root.part.id))
       continue;
-    let keypoints = decodePose(root, scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer);
+    let keypoints = decodePose(root, scores, offsets, displacementsFwd, displacementsBwd);
     keypoints = keypoints.filter((a) => a.score > minConfidence);
     const score = getInstanceScore(poses2, keypoints);
     const box4 = getBoundingBox(keypoints);
@@ -16702,11 +16799,11 @@ function rotatePoint2(homogeneousCoordinate, rotationMatrix) {
 }
 
 // src/handpose/handpipeline.ts
-var PALM_BOX_ENLARGE_FACTOR = 5;
-var HAND_BOX_ENLARGE_FACTOR = 1.65;
-var PALM_LANDMARK_IDS = [0, 5, 9, 13, 17, 1, 2];
-var PALM_LANDMARKS_INDEX_OF_PALM_BASE = 0;
-var PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE = 2;
+var palmBoxEnlargeFactor = 5;
+var handBoxEnlargeFactor = 1.65;
+var palmLandmarkIds = [0, 5, 9, 13, 17, 1, 2];
+var palmLandmarksPalmBase = 0;
+var palmLandmarksMiddleFingerBase = 2;
 var HandPipeline = class {
   constructor(handDetector, landmarkDetector) {
     var _a;
@@ -16717,17 +16814,24 @@ var HandPipeline = class {
     this.skipped = 0;
     this.detectedHands = 0;
   }
+  calculateLandmarksBoundingBox(landmarks) {
+    const xs = landmarks.map((d) => d[0]);
+    const ys = landmarks.map((d) => d[1]);
+    const startPoint = [Math.min(...xs), Math.min(...ys)];
+    const endPoint = [Math.max(...xs), Math.max(...ys)];
+    return {startPoint, endPoint};
+  }
   getBoxForPalmLandmarks(palmLandmarks, rotationMatrix) {
     const rotatedPalmLandmarks = palmLandmarks.map((coord) => rotatePoint2([...coord, 1], rotationMatrix));
     const boxAroundPalm = this.calculateLandmarksBoundingBox(rotatedPalmLandmarks);
-    return enlargeBox2(squarifyBox2(boxAroundPalm), PALM_BOX_ENLARGE_FACTOR);
+    return enlargeBox2(squarifyBox2(boxAroundPalm), palmBoxEnlargeFactor);
   }
   getBoxForHandLandmarks(landmarks) {
     const boundingBox = this.calculateLandmarksBoundingBox(landmarks);
-    const boxAroundHand = enlargeBox2(squarifyBox2(boundingBox), HAND_BOX_ENLARGE_FACTOR);
+    const boxAroundHand = enlargeBox2(squarifyBox2(boundingBox), handBoxEnlargeFactor);
     boxAroundHand.palmLandmarks = [];
-    for (let i = 0; i < PALM_LANDMARK_IDS.length; i++) {
-      boxAroundHand.palmLandmarks.push(landmarks[PALM_LANDMARK_IDS[i]].slice(0, 2));
+    for (let i = 0; i < palmLandmarkIds.length; i++) {
+      boxAroundHand.palmLandmarks.push(landmarks[palmLandmarkIds[i]].slice(0, 2));
     }
     return boxAroundHand;
   }
@@ -16779,7 +16883,7 @@ var HandPipeline = class {
       if (!currentBox)
         continue;
       if (config3.hand.landmarks) {
-        const angle = config3.hand.rotation ? computeRotation2(currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_PALM_BASE], currentBox.palmLandmarks[PALM_LANDMARKS_INDEX_OF_MIDDLE_FINGER_BASE]) : 0;
+        const angle = config3.hand.rotation ? computeRotation2(currentBox.palmLandmarks[palmLandmarksPalmBase], currentBox.palmLandmarks[palmLandmarksMiddleFingerBase]) : 0;
         const palmCenter = getBoxCenter2(currentBox);
         const palmCenterNormalized = [palmCenter[0] / image11.shape[2], palmCenter[1] / image11.shape[1]];
         const rotatedImage = config3.hand.rotation ? tf11.image.rotateWithOffset(image11, angle, 0, palmCenterNormalized) : image11.clone();
@@ -16812,7 +16916,7 @@ var HandPipeline = class {
         }
         keypoints.dispose();
       } else {
-        const enlarged = enlargeBox2(squarifyBox2(currentBox), HAND_BOX_ENLARGE_FACTOR);
+        const enlarged = enlargeBox2(squarifyBox2(currentBox), handBoxEnlargeFactor);
         const result = {
           confidence: currentBox.confidence,
           box: {topLeft: enlarged.startPoint, bottomRight: enlarged.endPoint}
@@ -16823,13 +16927,6 @@ var HandPipeline = class {
     this.storedBoxes = this.storedBoxes.filter((a) => a !== null);
     this.detectedHands = hands.length;
     return hands;
-  }
-  calculateLandmarksBoundingBox(landmarks) {
-    const xs = landmarks.map((d) => d[0]);
-    const ys = landmarks.map((d) => d[1]);
-    const startPoint = [Math.min(...xs), Math.min(...ys)];
-    const endPoint = [Math.max(...xs), Math.max(...ys)];
-    return {startPoint, endPoint};
   }
 };
 
@@ -18692,103 +18789,6 @@ async function all(inCanvas2, result, drawOptions) {
   object(inCanvas2, result.object, localOptions);
 }
 
-// src/config.ts
-var config2 = {
-  backend: "webgl",
-  modelBasePath: "../models/",
-  wasmPath: "../assets/",
-  debug: true,
-  async: true,
-  videoOptimized: true,
-  warmup: "full",
-  filter: {
-    enabled: true,
-    width: 0,
-    height: 0,
-    flip: false,
-    return: true,
-    brightness: 0,
-    contrast: 0,
-    sharpness: 0,
-    blur: 0,
-    saturation: 0,
-    hue: 0,
-    negative: false,
-    sepia: false,
-    vintage: false,
-    kodachrome: false,
-    technicolor: false,
-    polaroid: false,
-    pixelate: 0
-  },
-  gesture: {
-    enabled: true
-  },
-  face: {
-    enabled: true,
-    detector: {
-      modelPath: "blazeface.json",
-      rotation: false,
-      maxDetected: 10,
-      skipFrames: 21,
-      skipInitial: false,
-      minConfidence: 0.2,
-      iouThreshold: 0.1,
-      return: false
-    },
-    mesh: {
-      enabled: true,
-      modelPath: "facemesh.json"
-    },
-    iris: {
-      enabled: true,
-      modelPath: "iris.json"
-    },
-    description: {
-      enabled: true,
-      modelPath: "faceres.json",
-      skipFrames: 31,
-      minConfidence: 0.1
-    },
-    emotion: {
-      enabled: true,
-      minConfidence: 0.1,
-      skipFrames: 32,
-      modelPath: "emotion.json"
-    }
-  },
-  body: {
-    enabled: true,
-    modelPath: "posenet.json",
-    maxDetected: 1,
-    minConfidence: 0.1
-  },
-  hand: {
-    enabled: true,
-    rotation: false,
-    skipFrames: 12,
-    skipInitial: false,
-    minConfidence: 0.1,
-    iouThreshold: 0.1,
-    maxDetected: 1,
-    landmarks: true,
-    detector: {
-      modelPath: "handdetect.json"
-    },
-    skeleton: {
-      modelPath: "handskeleton.json"
-    }
-  },
-  object: {
-    enabled: false,
-    modelPath: "nanodet.json",
-    minConfidence: 0.2,
-    iouThreshold: 0.4,
-    maxDetected: 10,
-    skipFrames: 41
-  }
-};
-
 // src/sample.ts
 var face3 = `
 /9j/4AAQSkZJRgABAQEAYABgAAD/4QBoRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUA
@@ -19513,7 +19513,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // package.json
-var version = "1.8.2";
+var version = "1.8.3";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _sanity, _checkBackend, _warmupBitmap, _warmupCanvas, _warmupNode;
@@ -19676,7 +19676,7 @@ var Human = class {
     this.tf = tf16;
     this.draw = draw_exports;
     this.version = version;
-    this.config = mergeDeep(config2, userConfig);
+    this.config = mergeDeep(config, userConfig);
     this.state = "idle";
     __privateSet(this, _numTensors, 0);
     __privateSet(this, _analyzeMemoryLeaks, false);

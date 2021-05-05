@@ -6,6 +6,10 @@ export declare class HandPipeline {
     skipped: number;
     detectedHands: number;
     constructor(handDetector: any, landmarkDetector: any);
+    calculateLandmarksBoundingBox(landmarks: any): {
+        startPoint: number[];
+        endPoint: number[];
+    };
     getBoxForPalmLandmarks(palmLandmarks: any, rotationMatrix: any): {
         startPoint: number[];
         endPoint: any[];
@@ -18,8 +22,4 @@ export declare class HandPipeline {
     };
     transformRawCoords(rawCoords: any, box2: any, angle: any, rotationMatrix: any): any;
     estimateHands(image: any, config: any): Promise<{}[]>;
-    calculateLandmarksBoundingBox(landmarks: any): {
-        startPoint: number[];
-        endPoint: number[];
-    };
 }

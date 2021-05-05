@@ -2,10 +2,10 @@ import * as utils from './utils';
 import * as kpt from './keypoints';
 
 const localMaximumRadius = 1;
-const defaultOutputStride = 16;
-const squaredNmsRadius = 20 ** 2;
+const outputStride = 16;
+const squaredNmsRadius = 50 ** 2;
 
-function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scoresBuffer, offsets, outputStride, displacements, offsetRefineStep = 2) {
+function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scoresBuffer, offsets, displacements, offsetRefineStep = 2) {
   const getDisplacement = (point) => ({
     y: displacements.get(point.y, point.x, edgeId),
     x: displacements.get(point.y, point.x, (displacements.shape[2] / 2) + edgeId),
@@ -34,19 +34,19 @@ function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scor
   return { position: targetKeypoint, part: kpt.partNames[targetKeypointId], score };
 }
 
-export function decodePose(root, scores, offsets, outputStride, displacementsFwd, displacementsBwd) {
+export function decodePose(root, scores, offsets, displacementsFwd, displacementsBwd) {
   const parentChildrenTuples = kpt.poseChain.map(([parentJoinName, childJoinName]) => ([kpt.partIds[parentJoinName], kpt.partIds[childJoinName]]));
   const parentToChildEdges = parentChildrenTuples.map(([, childJointId]) => childJointId);
   const childToParentEdges = parentChildrenTuples.map(([parentJointId]) => parentJointId);
-  const numParts = scores.shape[2];
+  const numParts = scores.shape[2]; // [21,21,17]
   const numEdges = parentToChildEdges.length;
   const instanceKeypoints = new Array(numParts);
   // Start a new detection instance at the position of the root.
-  const { part: rootPart, score: rootScore } = root;
-  const rootPoint = utils.getImageCoords(rootPart, outputStride, offsets);
-  instanceKeypoints[rootPart.id] = {
-    score: rootScore,
-    part: kpt.partNames[rootPart.id],
+  // const { part: rootPart, score: rootScore } = root;
+  const rootPoint = utils.getImageCoords(root.part, outputStride, offsets);
+  instanceKeypoints[root.part.id] = {
+    score: root.score,
+    part: kpt.partNames[root.part.id],
     position: rootPoint,
   };
   // Decode the part positions upwards in the tree, following the backward displacements.
@@ -54,7 +54,7 @@ export function decodePose(root, scores, offsets, outputStride, displacementsFwd
     const sourceKeypointId = parentToChildEdges[edge];
     const targetKeypointId = childToParentEdges[edge];
     if (instanceKeypoints[sourceKeypointId] && !instanceKeypoints[targetKeypointId]) {
-      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, outputStride, displacementsBwd);
+      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, displacementsBwd);
     }
   }
   // Decode the part positions downwards in the tree, following the forward displacements.
@@ -62,7 +62,7 @@ export function decodePose(root, scores, offsets, outputStride, displacementsFwd
     const sourceKeypointId = childToParentEdges[edge];
     const targetKeypointId = parentToChildEdges[edge];
     if (instanceKeypoints[sourceKeypointId] && !instanceKeypoints[targetKeypointId]) {
-      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, outputStride, displacementsFwd);
+      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, displacementsFwd);
     }
   }
   return instanceKeypoints;
@@ -127,11 +127,11 @@ export function decode(offsetsBuffer, scoresBuffer, displacementsFwdBuffer, disp
     // The top element in the queue is the next root candidate.
     const root = queue.dequeue();
     // Part-based non-maximum suppression: We reject a root candidate if it is within a disk of `nmsRadius` pixels from the corresponding part of a previously detected instance.
-    const rootImageCoords = utils.getImageCoords(root.part, defaultOutputStride, offsetsBuffer);
+    const rootImageCoords = utils.getImageCoords(root.part, outputStride, offsetsBuffer);
     if (withinRadius(poses, rootImageCoords, root.part.id)) continue;
     // Else start a new detection instance at the position of the root.
-    const allKeypoints = decodePose(root, scoresBuffer, offsetsBuffer, defaultOutputStride, displacementsFwdBuffer, displacementsBwdBuffer);
-    const keypoints = allKeypoints.filter((a) => a.score > minConfidence);
+    let keypoints = decodePose(root, scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer);
+    keypoints = keypoints.filter((a) => a.score > minConfidence);
     const score = getInstanceScore(poses, keypoints);
     const box = utils.getBoundingBox(keypoints);
     if (score > minConfidence) poses.push({ keypoints, box, score: Math.round(100 * score) / 100 });

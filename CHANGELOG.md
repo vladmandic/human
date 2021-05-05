@@ -9,6 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/05/04 mandic00@live.com
+
+
 ### **1.8.2** 2021/05/04 mandic00@live.com
 
 

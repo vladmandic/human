@@ -9,17 +9,17 @@ import webRTC from './helpers/webrtc.js';
 let human;
 
 const userConfig = {
-  warmup: 'none',
+  warmup: 'full',
   /*
-  backend: 'humangl',
-  async: false,
-  profile: false,
-  videoOptimized: true,
+  backend: 'webgl',
+  async: true,
+
+  videoOptimized: false,
   filter: {
     enabled: false,
     flip: false,
   },
-  face: { enabled: true,
+  face: { enabled: false,
     detector: { return: false },
     mesh: { enabled: true },
     iris: { enabled: true },
@@ -28,7 +28,7 @@ const userConfig = {
   },
   hand: { enabled: false },
   gesture: { enabled: false },
-  body: { enabled: false, modelPath: 'posenet.json' },
+  body: { enabled: true, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   // object: { enabled: true },
   */
@@ -58,7 +58,7 @@ const ui = {
   detectFPS: [], // internal, holds fps values for detection performance
   drawFPS: [], // internal, holds fps values for draw performance
   buffered: true, // should output be buffered between frames
-  drawWarmup: false, // debug only, should warmup image processing be displayed on startup
+  drawWarmup: true, // debug only, should warmup image processing be displayed on startup
   drawThread: null, // internl, perform draw operations in a separate thread
   detectThread: null, // internl, perform detect operations in a separate thread
   framesDraw: 0, // internal, statistics on frames drawn

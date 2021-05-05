@@ -318,7 +318,7 @@ const config: Config = {
                              // should skipFrames be reset immediately to force new detection cycle
     minConfidence: 0.1,      // threshold for discarding a prediction
     iouThreshold: 0.1,       // ammount of overlap between two detected objects before one object is removed
-    maxDetected: 1,          // maximum number of hands detected in the input
+    maxDetected: 2,          // maximum number of hands detected in the input
                              // should be set to the minimum number for performance
     landmarks: true,         // detect hand landmarks or just hand boundary box
     detector: {

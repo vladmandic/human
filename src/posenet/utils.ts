@@ -39,7 +39,6 @@ export function scalePoses(poses, [height, width], [inputResolutionHeight, input
       position: { x: Math.trunc(position.x * scaleX), y: Math.trunc(position.y * scaleY) },
     })),
   });
-
   const scaledPoses = poses.map((pose) => scalePose(pose, height / inputResolutionHeight, width / inputResolutionWidth));
   return scaledPoses;
 }

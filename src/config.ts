@@ -302,7 +302,7 @@ const config: Config = {
     maxDetected: 1,          // maximum number of people detected in the input
                              // should be set to the minimum number for performance
                              // only valid for posenet as blazepose only detects single pose
-    minConfidence: 0.2,      // threshold for discarding a prediction
+    minConfidence: 0.1,      // threshold for discarding a prediction
   },
 
   hand: {

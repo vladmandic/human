@@ -4533,12 +4533,12 @@ function getOffsetPoint(y, x, keypoint, offsets) {
     x: offsets.get(y, x, keypoint + count)
   };
 }
-function getImageCoords(part, outputStride, offsets) {
+function getImageCoords(part, outputStride2, offsets) {
   const {heatmapY, heatmapX, id: keypoint} = part;
   const {y, x} = getOffsetPoint(heatmapY, heatmapX, keypoint, offsets);
   return {
-    x: part.heatmapX * outputStride + x,
-    y: part.heatmapY * outputStride + y
+    x: part.heatmapX * outputStride2 + x,
+    y: part.heatmapY * outputStride2 + y
   };
 }
 function clamp(a, min, max) {
@@ -4559,9 +4559,9 @@ function addVectors(a, b) {
 
 // src/posenet/poses.ts
 var localMaximumRadius = 1;
-var defaultOutputStride = 16;
-var squaredNmsRadius = 20 ** 2;
-function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scoresBuffer, offsets, outputStride, displacements, offsetRefineStep = 2) {
+var outputStride = 16;
+var squaredNmsRadius = 50 ** 2;
+function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scoresBuffer, offsets, displacements, offsetRefineStep = 2) {
   const getDisplacement = (point2) => ({
     y: displacements.get(point2.y, point2.x, edgeId),
     x: displacements.get(point2.y, point2.x, displacements.shape[2] / 2 + edgeId)
@@ -4587,32 +4587,31 @@ function traverseToTargetKeypoint(edgeId, sourceKeypoint, targetKeypointId, scor
   const score = scoresBuffer.get(targetKeyPointIndices.y, targetKeyPointIndices.x, targetKeypointId);
   return {position: targetKeypoint, part: partNames[targetKeypointId], score};
 }
-function decodePose(root, scores, offsets, outputStride, displacementsFwd, displacementsBwd) {
+function decodePose(root, scores, offsets, displacementsFwd, displacementsBwd) {
   const parentChildrenTuples = poseChain.map(([parentJoinName, childJoinName]) => [partIds[parentJoinName], partIds[childJoinName]]);
   const parentToChildEdges = parentChildrenTuples.map(([, childJointId]) => childJointId);
   const childToParentEdges = parentChildrenTuples.map(([parentJointId]) => parentJointId);
   const numParts = scores.shape[2];
   const numEdges = parentToChildEdges.length;
   const instanceKeypoints = new Array(numParts);
-  const {part: rootPart, score: rootScore} = root;
-  const rootPoint = getImageCoords(rootPart, outputStride, offsets);
-  instanceKeypoints[rootPart.id] = {
-    score: rootScore,
-    part: partNames[rootPart.id],
+  const rootPoint = getImageCoords(root.part, outputStride, offsets);
+  instanceKeypoints[root.part.id] = {
+    score: root.score,
+    part: partNames[root.part.id],
     position: rootPoint
   };
   for (let edge = numEdges - 1; edge >= 0; --edge) {
     const sourceKeypointId = parentToChildEdges[edge];
     const targetKeypointId = childToParentEdges[edge];
     if (instanceKeypoints[sourceKeypointId] && !instanceKeypoints[targetKeypointId]) {
-      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, outputStride, displacementsBwd);
+      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, displacementsBwd);
     }
   }
   for (let edge = 0; edge < numEdges; ++edge) {
     const sourceKeypointId = childToParentEdges[edge];
     const targetKeypointId = parentToChildEdges[edge];
     if (instanceKeypoints[sourceKeypointId] && !instanceKeypoints[targetKeypointId]) {
-      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, outputStride, displacementsFwd);
+      instanceKeypoints[targetKeypointId] = traverseToTargetKeypoint(edge, instanceKeypoints[sourceKeypointId], targetKeypointId, scores, offsets, displacementsFwd);
     }
   }
   return instanceKeypoints;
@@ -4671,11 +4670,11 @@ function decode(offsetsBuffer, scoresBuffer, displacementsFwdBuffer, displacemen
   const queue = buildPartWithScoreQueue(minConfidence, scoresBuffer);
   while (poses2.length < maxDetected && !queue.empty()) {
     const root = queue.dequeue();
-    const rootImageCoords = getImageCoords(root.part, defaultOutputStride, offsetsBuffer);
+    const rootImageCoords = getImageCoords(root.part, outputStride, offsetsBuffer);
     if (withinRadius(poses2, rootImageCoords, root.part.id))
       continue;
-    const allKeypoints = decodePose(root, scoresBuffer, offsetsBuffer, defaultOutputStride, displacementsFwdBuffer, displacementsBwdBuffer);
-    const keypoints = allKeypoints.filter((a) => a.score > minConfidence);
+    let keypoints = decodePose(root, scoresBuffer, offsetsBuffer, displacementsFwdBuffer, displacementsBwdBuffer);
+    keypoints = keypoints.filter((a) => a.score > minConfidence);
     const score = getInstanceScore(poses2, keypoints);
     const box4 = getBoundingBox(keypoints);
     if (score > minConfidence)
@@ -18205,105 +18204,6 @@ __export(draw_exports, {
   object: () => object,
   options: () => options
 });
-
-// src/config.ts
-var config2 = {
-  backend: "webgl",
-  modelBasePath: "../models/",
-  wasmPath: "../assets/",
-  debug: true,
-  async: true,
-  videoOptimized: true,
-  warmup: "full",
-  filter: {
-    enabled: true,
-    width: 0,
-    height: 0,
-    flip: false,
-    return: true,
-    brightness: 0,
-    contrast: 0,
-    sharpness: 0,
-    blur: 0,
-    saturation: 0,
-    hue: 0,
-    negative: false,
-    sepia: false,
-    vintage: false,
-    kodachrome: false,
-    technicolor: false,
-    polaroid: false,
-    pixelate: 0
-  },
-  gesture: {
-    enabled: true
-  },
-  face: {
-    enabled: true,
-    detector: {
-      modelPath: "blazeface.json",
-      rotation: false,
-      maxDetected: 10,
-      skipFrames: 21,
-      skipInitial: false,
-      minConfidence: 0.2,
-      iouThreshold: 0.1,
-      return: false
-    },
-    mesh: {
-      enabled: true,
-      modelPath: "facemesh.json"
-    },
-    iris: {
-      enabled: true,
-      modelPath: "iris.json"
-    },
-    description: {
-      enabled: true,
-      modelPath: "faceres.json",
-      skipFrames: 31,
-      minConfidence: 0.1
-    },
-    emotion: {
-      enabled: true,
-      minConfidence: 0.1,
-      skipFrames: 32,
-      modelPath: "emotion.json"
-    }
-  },
-  body: {
-    enabled: true,
-    modelPath: "posenet.json",
-    maxDetected: 1,
-    minConfidence: 0.2
-  },
-  hand: {
-    enabled: true,
-    rotation: false,
-    skipFrames: 12,
-    skipInitial: false,
-    minConfidence: 0.1,
-    iouThreshold: 0.1,
-    maxDetected: 1,
-    landmarks: true,
-    detector: {
-      modelPath: "handdetect.json"
-    },
-    skeleton: {
-      modelPath: "handskeleton.json"
-    }
-  },
-  object: {
-    enabled: false,
-    modelPath: "nanodet.json",
-    minConfidence: 0.2,
-    iouThreshold: 0.4,
-    maxDetected: 10,
-    skipFrames: 41
-  }
-};
-
-// src/draw/draw.ts
 var options = {
   color: "rgba(173, 216, 230, 0.3)",
   labelColor: "rgba(173, 216, 230, 1)",
@@ -18561,87 +18461,87 @@ async function body2(inCanvas2, result, drawOptions) {
       const points = [];
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "leftShoulder");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "rightShoulder");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       curves(ctx, points, localOptions);
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "rightShoulder");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "rightHip");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "leftHip");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "leftShoulder");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       if (points.length === 4)
         lines(ctx, points, localOptions);
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "leftHip");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "leftKnee");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "leftAnkle");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "leftHeel");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "leftFoot");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       curves(ctx, points, localOptions);
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "rightHip");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "rightKnee");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "rightAnkle");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "rightHeel");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "rightFoot");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       curves(ctx, points, localOptions);
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "leftShoulder");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "leftElbow");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "leftWrist");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "leftPalm");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       curves(ctx, points, localOptions);
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "rightShoulder");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "rightElbow");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "rightWrist");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       part = result[i].keypoints.find((a) => a.part === "rightPalm");
-      if (part && part.score > config2.body.minConfidence)
+      if (part)
         points.push([part.position.x, part.position.y]);
       curves(ctx, points, localOptions);
     }
@@ -18790,6 +18690,103 @@ async function all(inCanvas2, result, drawOptions) {
   gesture(inCanvas2, result.gesture, localOptions);
   object(inCanvas2, result.object, localOptions);
 }
+
+// src/config.ts
+var config2 = {
+  backend: "webgl",
+  modelBasePath: "../models/",
+  wasmPath: "../assets/",
+  debug: true,
+  async: true,
+  videoOptimized: true,
+  warmup: "full",
+  filter: {
+    enabled: true,
+    width: 0,
+    height: 0,
+    flip: false,
+    return: true,
+    brightness: 0,
+    contrast: 0,
+    sharpness: 0,
+    blur: 0,
+    saturation: 0,
+    hue: 0,
+    negative: false,
+    sepia: false,
+    vintage: false,
+    kodachrome: false,
+    technicolor: false,
+    polaroid: false,
+    pixelate: 0
+  },
+  gesture: {
+    enabled: true
+  },
+  face: {
+    enabled: true,
+    detector: {
+      modelPath: "blazeface.json",
+      rotation: false,
+      maxDetected: 10,
+      skipFrames: 21,
+      skipInitial: false,
+      minConfidence: 0.2,
+      iouThreshold: 0.1,
+      return: false
+    },
+    mesh: {
+      enabled: true,
+      modelPath: "facemesh.json"
+    },
+    iris: {
+      enabled: true,
+      modelPath: "iris.json"
+    },
+    description: {
+      enabled: true,
+      modelPath: "faceres.json",
+      skipFrames: 31,
+      minConfidence: 0.1
+    },
+    emotion: {
+      enabled: true,
+      minConfidence: 0.1,
+      skipFrames: 32,
+      modelPath: "emotion.json"
+    }
+  },
+  body: {
+    enabled: true,
+    modelPath: "posenet.json",
+    maxDetected: 1,
+    minConfidence: 0.1
+  },
+  hand: {
+    enabled: true,
+    rotation: false,
+    skipFrames: 12,
+    skipInitial: false,
+    minConfidence: 0.1,
+    iouThreshold: 0.1,
+    maxDetected: 1,
+    landmarks: true,
+    detector: {
+      modelPath: "handdetect.json"
+    },
+    skeleton: {
+      modelPath: "handskeleton.json"
+    }
+  },
+  object: {
+    enabled: false,
+    modelPath: "nanodet.json",
+    minConfidence: 0.2,
+    iouThreshold: 0.4,
+    maxDetected: 10,
+    skipFrames: 41
+  }
+};
 
 // src/sample.ts
 var face3 = `

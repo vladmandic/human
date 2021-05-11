@@ -14,3 +14,4 @@
 2021-05-11 15:08:10 [35mSTATE:[39m Build for: browserBundle type: esm: {"imports":35,"importBytes":1523416,"outputBytes":1337362,"outputFiles":"dist/human.esm.js"} 
 2021-05-11 15:08:10 [36mINFO: [39m Generate types: ["src/human.ts"] 
 2021-05-11 15:08:14 [36mINFO: [39m Update Change log: ["/home/vlado/dev/human/CHANGELOG.md"] 
+2021-05-11 15:08:14 [36mINFO: [39m Generate TypeDocs: ["src/human.ts"] 

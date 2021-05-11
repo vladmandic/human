@@ -202,7 +202,7 @@ const config: Config = {
   backend: 'webgl',          // select tfjs backend to use, leave empty to use default backend
                              // can be 'webgl', 'wasm', 'cpu', or 'humangl' which is a custom version of webgl
   modelBasePath: '../models/', // base path for all models
-  wasmPath: '../assets/',    // path for wasm binariesm, only used for backend: wasm
+  wasmPath: '../node_modules/@tensorflow/tfjs-backend-wasm/dist//', // path for wasm binaries, only used for backend: wasm
   debug: true,               // print additional status messages to console
   async: true,               // execute enabled models in parallel
   videoOptimized: true,      // perform additional optimizations when input is video,

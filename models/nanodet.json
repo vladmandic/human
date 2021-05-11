@@ -4,19 +4,19 @@
   "convertedBy": "https://github.com/vladmandic",
   "signature":
   {
-      "inputs":
-      {
-          "input_1:0": {"name":"input_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"3"},{"size":"416"},{"size":"416"}]}}
-      },
-      "outputs":
-      {
-          "Identity_2:0": {"name":"Identity_2:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"169"},{"size":"80"}]}},
-          "Identity_5:0": {"name":"Identity_5:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"169"},{"size":"44"}]}},
-          "Identity_1:0": {"name":"Identity_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"676"},{"size":"80"}]}},
-          "Identity:0": {"name":"Identity:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"2704"},{"size":"80"}]}},
-          "Identity_4:0": {"name":"Identity_4:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"676"},{"size":"44"}]}},
-          "Identity_3:0": {"name":"Identity_3:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"2704"},{"size":"44"}]}}
-      }
+    "inputs":
+    {
+      "input_1:0": {"name":"input_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"3"},{"size":"416"},{"size":"416"}]}}
+    },
+    "outputs":
+    {
+      "Identity_2:0": {"name":"Identity_2:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"169"},{"size":"80"}]}},
+      "Identity_5:0": {"name":"Identity_5:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"169"},{"size":"44"}]}},
+      "Identity_1:0": {"name":"Identity_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"676"},{"size":"80"}]}},
+      "Identity:0": {"name":"Identity:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"2704"},{"size":"80"}]}},
+      "Identity_4:0": {"name":"Identity_4:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"676"},{"size":"44"}]}},
+      "Identity_3:0": {"name":"Identity_3:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"2704"},{"size":"44"}]}}
+    }
   },
   "modelTopology":
   {
@@ -513,10 +513,7 @@
           {"name":"Identity_2","op":"Identity","input":["PartitionedCall/onnx_tf_prefix_Transpose_179"],"attr":{"T":{"type":"DT_FLOAT"}}}
       ],
       "library": {},
-      "versions":
-      {
-          "producer": 561
-      }
+      "versions": {}
   },
   "weightsManifest":
   [

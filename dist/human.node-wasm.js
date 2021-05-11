@@ -7,12 +7,14 @@
 
 var __create = Object.create;
 var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __markAsModule = (target) => __defProp(target, "__esModule", {value: true});
-var __commonJS = (cb, mod) => () => (mod || cb((mod = {exports: {}}).exports, mod), mod.exports);
+var __commonJS = (cb, mod) => function __require() {
+  return mod || (0, cb[Object.keys(cb)[0]])((mod = {exports: {}}).exports, mod), mod.exports;
+};
 var __export = (target, all2) => {
   for (var name in all2)
     __defProp(target, name, {get: all2[name], enumerable: true});
@@ -36,6 +38,11 @@ var __privateGet = (obj, member, getter) => {
   __accessCheck(obj, member, "read from private field");
   return getter ? getter.call(obj) : member.get(obj);
 };
+var __privateAdd = (obj, member, value) => {
+  if (member.has(obj))
+    throw TypeError("Cannot add the same private member more than once");
+  member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
+};
 var __privateSet = (obj, member, value, setter) => {
   __accessCheck(obj, member, "write to private field");
   setter ? setter.call(obj, value) : member.set(obj, value);
@@ -43,24 +50,30 @@ var __privateSet = (obj, member, value, setter) => {
 };
 
 // dist/tfjs.esm.js
-var require_tfjs_esm = __commonJS((exports) => {
-  var w = Object.create;
-  var e = Object.defineProperty;
-  var a = Object.getPrototypeOf;
-  var j = Object.prototype.hasOwnProperty;
-  var l = Object.getOwnPropertyNames;
-  var p = Object.getOwnPropertyDescriptor;
-  var m = (o) => e(o, "__esModule", {value: true});
-  var f = (o, r, s) => {
-    if (r && typeof r == "object" || typeof r == "function")
-      for (let t of l(r))
-        !j.call(o, t) && t !== "default" && e(o, t, {get: () => r[t], enumerable: !(s = p(r, t)) || s.enumerable});
-    return o;
-  };
-  var n = (o) => f(m(e(o != null ? w(a(o)) : {}, "default", o && o.__esModule && "default" in o ? {get: () => o.default, enumerable: true} : {value: o, enumerable: true})), o);
-  m(exports);
-  f(exports, n(require("@tensorflow/tfjs")));
-  f(exports, n(require("@tensorflow/tfjs-backend-wasm")));
+var require_tfjs_esm = __commonJS({
+  "dist/tfjs.esm.js"(exports) {
+    var __create2 = Object.create;
+    var __defProp2 = Object.defineProperty;
+    var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
+    var __getOwnPropNames2 = Object.getOwnPropertyNames;
+    var __getProtoOf2 = Object.getPrototypeOf;
+    var __hasOwnProp2 = Object.prototype.hasOwnProperty;
+    var __markAsModule2 = (target) => __defProp2(target, "__esModule", {value: true});
+    var __reExport2 = (target, module22, desc) => {
+      if (module22 && typeof module22 === "object" || typeof module22 === "function") {
+        for (let key of __getOwnPropNames2(module22))
+          if (!__hasOwnProp2.call(target, key) && key !== "default")
+            __defProp2(target, key, {get: () => module22[key], enumerable: !(desc = __getOwnPropDesc2(module22, key)) || desc.enumerable});
+      }
+      return target;
+    };
+    var __toModule2 = (module22) => {
+      return __reExport2(__markAsModule2(__defProp2(module22 != null ? __create2(__getProtoOf2(module22)) : {}, "default", module22 && module22.__esModule && "default" in module22 ? {get: () => module22.default, enumerable: true} : {value: module22, enumerable: true})), module22);
+    };
+    __markAsModule2(exports);
+    __reExport2(exports, __toModule2(require("@tensorflow/tfjs")));
+    __reExport2(exports, __toModule2(require("@tensorflow/tfjs-backend-wasm")));
+  }
 });
 
 // src/human.ts
@@ -111,7 +124,7 @@ function mergeDeep(...objects) {
 var config = {
   backend: "webgl",
   modelBasePath: "../models/",
-  wasmPath: "../assets/",
+  wasmPath: "../node_modules/@tensorflow/tfjs-backend-wasm/dist//",
   debug: true,
   async: true,
   videoOptimized: true,
@@ -19513,16 +19526,16 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // package.json
-var version = "1.8.3";
+var version = "1.8.4";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _sanity, _checkBackend, _warmupBitmap, _warmupCanvas, _warmupNode;
 var Human = class {
   constructor(userConfig = {}) {
-    _numTensors.set(this, void 0);
-    _analyzeMemoryLeaks.set(this, void 0);
-    _checkSanity.set(this, void 0);
-    _firstRun.set(this, void 0);
+    __privateAdd(this, _numTensors, void 0);
+    __privateAdd(this, _analyzeMemoryLeaks, void 0);
+    __privateAdd(this, _checkSanity, void 0);
+    __privateAdd(this, _firstRun, void 0);
     this.analyze = (...msg) => {
       if (!__privateGet(this, _analyzeMemoryLeaks))
         return;
@@ -19533,7 +19546,7 @@ var Human = class {
       if (leaked !== 0)
         log(...msg, leaked);
     };
-    _sanity.set(this, (input) => {
+    __privateAdd(this, _sanity, (input) => {
       if (!__privateGet(this, _checkSanity))
         return null;
       if (!input)
@@ -19547,7 +19560,7 @@ var Human = class {
       }
       return null;
     });
-    _checkBackend.set(this, async (force = false) => {
+    __privateAdd(this, _checkBackend, async (force = false) => {
       var _a;
       if (this.config.backend && this.config.backend.length > 0 && force || this.tf.getBackend() !== this.config.backend) {
         const timeStamp = now();
@@ -19599,7 +19612,7 @@ var Human = class {
         this.perf.backend = Math.trunc(now() - timeStamp);
       }
     });
-    _warmupBitmap.set(this, async () => {
+    __privateAdd(this, _warmupBitmap, async () => {
       const b64toBlob = (base64, type = "application/octet-stream") => fetch(`data:${type};base64,${base64}`).then((res2) => res2.blob());
       let blob;
       let res;
@@ -19620,7 +19633,7 @@ var Human = class {
       }
       return res;
     });
-    _warmupCanvas.set(this, async () => new Promise((resolve) => {
+    __privateAdd(this, _warmupCanvas, async () => new Promise((resolve) => {
       let src;
       let size = 0;
       switch (this.config.warmup) {
@@ -19651,7 +19664,7 @@ var Human = class {
       else
         resolve(null);
     }));
-    _warmupNode.set(this, async () => {
+    __privateAdd(this, _warmupNode, async () => {
       const atob = (str) => Buffer.from(str, "base64");
       let img;
       if (this.config.warmup === "face")
@@ -19661,8 +19674,8 @@ var Human = class {
       if (!img)
         return null;
       let res;
-      if (typeof tf16.node !== "undefined") {
-        const data = tf16.node.decodeJpeg(img);
+      if (typeof tf16["node"] !== "undefined") {
+        const data = tf16["node"].decodeJpeg(img);
         const expanded = data.expandDims(0);
         this.tf.dispose(data);
         res = await this.detect(expanded, this.config);

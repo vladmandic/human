@@ -4,17 +4,17 @@
   "convertedBy": "https://github.com/vladmandic",
   "signature":
   {
-      "inputs":
-      {
-          "image:0": {"name":"image:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"385"},{"size":"385"},{"size":"3"}]}}
-      },
-      "outputs":
-      {
-          "MobilenetV1/displacement_fwd_2/BiasAdd:0": {"name":"MobilenetV1/displacement_fwd_2/BiasAdd:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"25"},{"size":"25"},{"size":"32"}]}},
-          "MobilenetV1/heatmap_2/BiasAdd:0": {"name":"MobilenetV1/heatmap_2/BiasAdd:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"25"},{"size":"25"},{"size":"17"}]}},
-          "MobilenetV1/displacement_bwd_2/BiasAdd:0": {"name":"MobilenetV1/displacement_bwd_2/BiasAdd:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"25"},{"size":"25"},{"size":"32"}]}},
-          "MobilenetV1/offset_2/BiasAdd:0": {"name":"MobilenetV1/offset_2/BiasAdd:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"25"},{"size":"25"},{"size":"34"}]}}
-      }
+    "inputs":
+    {
+      "image:0": {"name":"image:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"385"},{"size":"385"},{"size":"3"}]}}
+    },
+    "outputs":
+    {
+      "MobilenetV1/displacement_fwd_2/BiasAdd:0": {"name":"MobilenetV1/displacement_fwd_2/BiasAdd:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"25"},{"size":"25"},{"size":"32"}]}},
+      "MobilenetV1/heatmap_2/BiasAdd:0": {"name":"MobilenetV1/heatmap_2/BiasAdd:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"25"},{"size":"25"},{"size":"17"}]}},
+      "MobilenetV1/displacement_bwd_2/BiasAdd:0": {"name":"MobilenetV1/displacement_bwd_2/BiasAdd:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"25"},{"size":"25"},{"size":"32"}]}},
+      "MobilenetV1/offset_2/BiasAdd:0": {"name":"MobilenetV1/offset_2/BiasAdd:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"25"},{"size":"25"},{"size":"34"}]}}
+    }
   },
   "modelTopology":
   {
@@ -116,10 +116,7 @@
           {"name":"MobilenetV1/displacement_bwd_2/BiasAdd","op":"_FusedConv2D","input":["MobilenetV1/MobilenetV1/Conv2d_13_pointwise/Relu6","Const_61","Const_60"],"device":"/device:CPU:0","attr":{"padding":{"s":"U0FNRQ=="},"dilations":{"list":{"i":["1","1","1","1"]}},"use_cudnn_on_gpu":{"b":true},"fused_ops":{"list":{"s":["Qmlhc0FkZA=="]}},"epsilon":{"f":0},"explicit_paddings":{"list":{}},"data_format":{"s":"TkhXQw=="},"T":{"type":"DT_FLOAT"},"strides":{"list":{"i":["1","1","1","1"]}},"num_args":{"i":"1"}}}
       ],
       "library": {},
-      "versions":
-      {
-          "producer": 561
-      }
+      "versions": {}
   },
   "weightsManifest":
   [

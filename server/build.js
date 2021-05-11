@@ -69,6 +69,9 @@ const targets = {
       outfile: 'dist/tfjs.esm.js',
       external: ['@tensorflow'],
       sourcemap: false,
+      minifyWhitespace: false,
+      minifyIdentifiers: false,
+      minifySyntax: false,
     },
     node: {
       platform: 'node',
@@ -90,6 +93,9 @@ const targets = {
       outfile: 'dist/tfjs.esm.js',
       external: ['@tensorflow'],
       sourcemap: false,
+      minifyWhitespace: false,
+      minifyIdentifiers: false,
+      minifySyntax: false,
     },
     node: {
       platform: 'node',
@@ -111,6 +117,9 @@ const targets = {
       outfile: 'dist/tfjs.esm.js',
       external: ['@tensorflow'],
       sourcemap: false,
+      minifyWhitespace: false,
+      minifyIdentifiers: false,
+      minifySyntax: false,
     },
     node: {
       platform: 'node',
@@ -159,7 +168,7 @@ const targets = {
       entryPoints: ['src/human.ts'],
       outfile: 'dist/human.js',
       external: ['fs', 'buffer', 'util', 'os'],
-      sourcemap: true,
+      sourcemap: false,
     },
     esm: {
       platform: 'browser',

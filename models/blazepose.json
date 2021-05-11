@@ -2,18 +2,21 @@
   "format": "graph-model",
   "generatedBy": "https://github.com/google/mediapipe",
   "convertedBy": "https://github.com/vladmandic",
-  "signature":
+  "userDefinedMetadata":
   {
+    "signature":
+    {
       "inputs":
       {
-          "input_1:0": {"name":"input_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"256"},{"size":"256"},{"size":"3"}]}}
+        "input_1:0": {"name":"input_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"256"},{"size":"256"},{"size":"3"}]}}
       },
       "outputs":
       {
-          "ld_3d:0": {"name":"ld_3d:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"195"}]}},
-          "output_segmentation:0": {"name":"output_segmentation:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"128"},{"size":"128"},{"size":"1"}]}},
-          "output_poseflag:0": {"name":"output_poseflag:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"1"}]}}
+        "ld_3d:0": {"name":"ld_3d:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"195"}]}},
+        "output_segmentation:0": {"name":"output_segmentation:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"128"},{"size":"128"},{"size":"1"}]}},
+        "output_poseflag:0": {"name":"output_poseflag:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"1"}]}}
       }
+    }
   },
   "modelTopology":
   {
@@ -616,10 +619,7 @@
           {"name":"output_poseflag","op":"Reshape","input":["activation_poseflag","output_poseflag/shape"],"attr":{"Tshape":{"type":"DT_INT32"},"T":{"type":"DT_FLOAT"}}}
       ],
       "library": {},
-      "versions":
-      {
-          "producer": 561
-      }
+      "versions": {}
   },
   "weightsManifest":
   [

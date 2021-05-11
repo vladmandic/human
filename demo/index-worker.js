@@ -24,6 +24,7 @@ onmessage = async (msg) => {
   }
   // must strip canvas from return value as it cannot be transfered from worker thread
   if (result.canvas) result.canvas = null;
+  // @ts-ignore tslint wrong type matching for worker
   postMessage({ result });
   busy = false;
 };

@@ -4,11 +4,19 @@
   "convertedBy": "https://github.com/vladmandic",
   "userDefinedMetadata":
   {
-      "signature":
+    "signature":
+    {
+      "inputs":
       {
-          "inputs": {"input_1:0":{"name":"input_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"192"},{"size":"192"},{"size":"3"}]}}},
-          "outputs": {"Identity_1:0":{"name":"Identity_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"266"}]}},"Identity_2:0":{"name":"Identity_2:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"1"}]}},"Identity:0":{"name":"Identity:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"1404"}]}}}
+        "input_1:0":{"name":"input_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"192"},{"size":"192"},{"size":"3"}]}}
+      },
+      "outputs":
+      {
+        "Identity_1:0":{"name":"Identity_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"266"}]}},
+        "Identity_2:0":{"name":"Identity_2:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"1"}]}},
+        "Identity:0":{"name":"Identity:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"1404"}]}}
       }
+    }
   },
   "modelTopology":
   {
@@ -253,10 +261,8 @@
           {"name":"Identity","op":"Identity","input":["StatefulPartitionedCall/model/output_mesh/Reshape","^Func/StatefulPartitionedCall/output_control_node/_204"],"attr":{"T":{"type":"DT_FLOAT"}}},
           {"name":"Identity_1","op":"Identity","input":["StatefulPartitionedCall/model/output_contours/Reshape","^Func/StatefulPartitionedCall/output_control_node/_204"],"attr":{"T":{"type":"DT_FLOAT"}}}
       ],
-      "versions":
-      {
-          "producer": 134
-      }
+      "library": {},
+      "versions": {}
   },
   "weightsManifest":
   [

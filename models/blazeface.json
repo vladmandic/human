@@ -4,11 +4,18 @@
   "convertedBy": "https://github.com/vladmandic",
   "userDefinedMetadata":
   {
-      "signature":
+    "signature":
+    {
+      "inputs":
       {
-          "inputs": {"input:0":{"name":"input:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"256"},{"size":"256"},{"size":"3"}]}}},
-          "outputs": {"Identity_3:0":{"name":"Identity_3:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"384"},{"size":"16"}]}},"Identity:0":{"name":"Identity:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"512"},{"size":"1"}]}},"Identity_1:0":{"name":"Identity_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"384"},{"size":"1"}]}},"Identity_2:0":{"name":"Identity_2:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"512"},{"size":"16"}]}}}
+        "input:0":{"name":"input:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"256"},{"size":"256"},{"size":"3"}]}}
+      },
+      "outputs":
+      {
+        "Identity_3:0":{"name":"Identity_3:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"384"},{"size":"16"}]}},"Identity:0":{"name":"Identity:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"512"},{"size":"1"}]}},
+        "Identity_1:0":{"name":"Identity_1:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"384"},{"size":"1"}]}},"Identity_2:0":{"name":"Identity_2:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"512"},{"size":"16"}]}}
       }
+    }
   },
   "modelTopology":
   {
@@ -273,10 +280,7 @@
           {"name":"Identity_1","op":"Identity","input":["StatefulPartitionedCall/functional_1/tf_op_layer_classificators_2/classificators_2"],"attr":{"T":{"type":"DT_FLOAT"}}}
       ],
       "library": {},
-      "versions":
-      {
-          "producer": 440
-      }
+      "versions": {}
   },
   "weightsManifest":
   [

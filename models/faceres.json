@@ -4,15 +4,16 @@
   "convertedBy": "https://github.com/vladmandic",
   "signature":
   {
-      "inputs": {
-        "input_1": { "name": "input_1", "dtype": "DT_FLOAT", "tensorShape":{"dim":[{"size":"-1"},{"size":"224"},{"size":"224"},{"size":"3"}]} }
-      },
-      "outputs":
-      {
-          "gender_pred/Sigmoid:0": {"name":"gender_pred/Sigmoid:0", "dtype":"DT_FLOAT", "tensorShape":{"dim":[{"size":"1"},{"size":"1"}]} },
-          "global_pooling/Mean": {"name":"global_pooling/Mean", "dtype":"DT_FLOAT", "tensorShape":{"dim":[{"size":"1"},{"size":"1024"}]} },
-          "age_pred/Softmax:0": {"name":"age_pred/Softmax:0", "dtype":"DT_FLOAT", "tensorShape":{"dim":[{"size":"1"},{"size":"100"}]} }
-      }
+    "inputs":
+    {
+      "input_1": { "name": "input_1", "dtype": "DT_FLOAT", "tensorShape":{"dim":[{"size":"-1"},{"size":"224"},{"size":"224"},{"size":"3"}]} }
+    },
+    "outputs":
+    {
+      "gender_pred/Sigmoid:0": {"name":"gender_pred/Sigmoid:0", "dtype":"DT_FLOAT", "tensorShape":{"dim":[{"size":"1"},{"size":"1"}]} },
+      "global_pooling/Mean": {"name":"global_pooling/Mean", "dtype":"DT_FLOAT", "tensorShape":{"dim":[{"size":"1"},{"size":"1024"}]} },
+      "age_pred/Softmax:0": {"name":"age_pred/Softmax:0", "dtype":"DT_FLOAT", "tensorShape":{"dim":[{"size":"1"},{"size":"100"}]} }
+    }
   },
   "modelTopology":
   {

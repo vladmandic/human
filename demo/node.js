@@ -4,6 +4,7 @@ const process = require('process');
 const fetch = require('node-fetch').default;
 
 // for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
 
 // load specific version of Human library that matches TensorFlow mode
@@ -38,10 +39,10 @@ const myConfig = {
 };
 
 async function init() {
-  // wait until tf is ready
-  await tf.ready();
   // create instance of human
   human = new Human(myConfig);
+  // wait until tf is ready
+  await human.tf.ready();
   // pre-load models
   log.info('Human:', human.version);
   log.info('Active Configuration', human.config);
@@ -66,7 +67,7 @@ async function detect(input) {
   // decode image using tfjs-node so we don't need external depenencies
   // can also be done using canvas.js or some other 3rd party image library
   if (!buffer) return {};
-  const tensor = tf.tidy(() => {
+  const tensor = human.tf.tidy(() => {
     const decode = human.tf.node.decodeImage(buffer, 3);
     let expand;
     if (decode.shape[2] === 4) { // input is in rgba format, need to convert to rgb
@@ -92,7 +93,7 @@ async function detect(input) {
   }
 
   // dispose image tensor as we no longer need it
-  tf.dispose(tensor);
+  human.tf.dispose(tensor);
 
   // print data to console
   log.data('Results:');

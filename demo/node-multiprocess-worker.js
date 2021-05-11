@@ -1,11 +1,10 @@
 // @ts-nocheck
 
 const fs = require('fs');
-// eslint-disable-next-line import/no-extraneous-dependencies, node/no-unpublished-require
 const log = require('@vladmandic/pilogger');
 
 // workers actual import tfjs and faceapi modules
-// eslint-disable-next-line import/no-extraneous-dependencies, node/no-unpublished-require
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node');
 const Human = require('../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
 
@@ -38,7 +37,7 @@ const myConfig = {
 // you can add any pre-proocessing here such as resizing, etc.
 async function image(img) {
   const buffer = fs.readFileSync(img);
-  const tensor = tf.tidy(() => tf.node.decodeImage(buffer).toFloat().expandDims());
+  const tensor = human.tf.tidy(() => human.tf.node.decodeImage(buffer).toFloat().expandDims());
   return tensor;
 }
 
@@ -65,10 +64,10 @@ async function main() {
     log.data('Worker received message:', process.pid, msg); // generic log
   });
 
-  // wait until tf is ready
-  await tf.ready();
   // create instance of human
   human = new Human(myConfig);
+  // wait until tf is ready
+  await human.tf.ready();
   // pre-load models
   log.state('Worker: PID:', process.pid, `TensorFlow/JS ${human.tf.version_core} Human ${human.version} Backend: ${human.tf.getBackend()}`);
   await human.load();

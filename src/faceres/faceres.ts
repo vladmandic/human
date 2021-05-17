@@ -54,7 +54,11 @@ export function enhance(input): Tensor {
     const crop = (tensor.shape.length === 3)
       ? tf.image.cropAndResize(tf.expandDims(tensor, 0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch dimension if missing
       : tf.image.cropAndResize(tensor, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
-    // const crop = tf.image.resizeBilinear(tensor, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false); // just resize to fit the embedding model
+
+    /*
+    // just resize to fit the embedding model instead of cropping
+    const crop = tf.image.resizeBilinear(tensor, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+    */
 
     /*
     // convert to black&white to avoid colorization impact
@@ -68,16 +72,17 @@ export function enhance(input): Tensor {
     */
 
     /*
-    // optional increase image contrast
-    // or do it per-channel so mean is done on each channel
-    // or do it based on histogram
+    // increase image pseudo-contrast 100%
+    // (or do it per-channel so mean is done on each channel)
+    // (or calculate histogram and do it based on histogram)
     const mean = merge.mean();
-    const factor = 5;
+    const factor = 2;
     const contrast = merge.sub(mean).mul(factor).add(mean);
     */
 
     /*
     // normalize brightness from 0..1
+    // silly way of creating pseudo-hdr of image
     const darken = crop.sub(crop.min());
     const lighten = darken.div(darken.max());
     */
@@ -123,8 +128,8 @@ export async function predict(image, config) {
         obj.age = Math.round(all[age - 1] > all[age + 1] ? 10 * age - 100 * all[age - 1] : 10 * age + 100 * all[age + 1]) / 10;
 
         const desc = resT.find((t) => t.shape[1] === 1024);
-        // const reshape = desc.reshape([128, 8]);
-        // const reduce = reshape.logSumExp(1); // reduce 2nd dimension by calculating logSumExp on it
+        // const reshape = desc.reshape([128, 8]); // reshape large 1024-element descriptor to 128 x 8
+        // const reduce = reshape.logSumExp(1); // reduce 2nd dimension by calculating logSumExp on it which leaves us with 128-element descriptor
 
         obj.descriptor = [...desc.dataSync()];
       });

@@ -43,14 +43,10 @@ const ui = {
   columns: 2, // when processing sample images create this many columns
   useWorker: false, // use web workers for processing
   worker: 'index-worker.js',
-  samples: ['../assets/sample6.jpg', '../assets/sample1.jpg', '../assets/sample4.jpg', '../assets/sample5.jpg', '../assets/sample3.jpg', '../assets/sample2.jpg'],
-  compare: '../assets/sample-me.jpg',
-  useWebRTC: false, // use webrtc as camera source instead of local webcam
-  webRTCServer: 'http://localhost:8002',
-  webRTCStream: 'reowhite',
   maxFPSframes: 10, // keep fps history for how many frames
   modelsPreload: true, // preload human models on startup
   modelsWarmup: true, // warmup human models on startup
+
   // internal variables
   busy: false, // internal camera busy flag
   menuWidth: 0, // internal
@@ -67,6 +63,61 @@ const ui = {
   bench: true, // show gl fps benchmark window
   lastFrame: 0, // time of last frame processing
   viewportSet: false, // internal, has custom viewport been set
+
+  // webrtc
+  useWebRTC: false, // use webrtc as camera source instead of local webcam
+  webRTCServer: 'http://localhost:8002',
+  webRTCStream: 'reowhite',
+
+  // sample images
+  compare: '../assets/sample-me.jpg', // base image for face compare
+  samples: [
+    '../assets/sample6.jpg',
+    '../assets/sample1.jpg',
+    '../assets/sample4.jpg',
+    '../assets/sample5.jpg',
+    '../assets/sample3.jpg',
+    '../assets/sample2.jpg',
+  ],
+  /*
+  ui.samples = [
+    '../private/daz3d/daz3d-brianna.jpg',
+    '../private/daz3d/daz3d-chiyo.jpg',
+    '../private/daz3d/daz3d-cody.jpg',
+    '../private/daz3d/daz3d-drew-01.jpg',
+    '../private/daz3d/daz3d-drew-02.jpg',
+    '../private/daz3d/daz3d-ella-01.jpg',
+    '../private/daz3d/daz3d-ella-02.jpg',
+    '../private/daz3d/daz3d-_emotions01.jpg',
+    '../private/daz3d/daz3d-_emotions02.jpg',
+    '../private/daz3d/daz3d-_emotions03.jpg',
+    '../private/daz3d/daz3d-_emotions04.jpg',
+    '../private/daz3d/daz3d-_emotions05.jpg',
+    '../private/daz3d/daz3d-gillian.jpg',
+    '../private/daz3d/daz3d-ginnifer.jpg',
+    '../private/daz3d/daz3d-hye-01.jpg',
+    '../private/daz3d/daz3d-hye-02.jpg',
+    '../private/daz3d/daz3d-kaia.jpg',
+    '../private/daz3d/daz3d-karen.jpg',
+    '../private/daz3d/daz3d-kiaria-01.jpg',
+    '../private/daz3d/daz3d-kiaria-02.jpg',
+    '../private/daz3d/daz3d-lilah-01.jpg',
+    '../private/daz3d/daz3d-lilah-02.jpg',
+    '../private/daz3d/daz3d-lilah-03.jpg',
+    '../private/daz3d/daz3d-lila.jpg',
+    '../private/daz3d/daz3d-lindsey.jpg',
+    '../private/daz3d/daz3d-megah.jpg',
+    '../private/daz3d/daz3d-selina-01.jpg',
+    '../private/daz3d/daz3d-selina-02.jpg',
+    '../private/daz3d/daz3d-snow.jpg',
+    '../private/daz3d/daz3d-sunshine.jpg',
+    '../private/daz3d/daz3d-taia.jpg',
+    '../private/daz3d/daz3d-tuesday-01.jpg',
+    '../private/daz3d/daz3d-tuesday-02.jpg',
+    '../private/daz3d/daz3d-tuesday-03.jpg',
+    '../private/daz3d/daz3d-zoe.jpg',
+  ];
+  */
 };
 
 // global variables
@@ -657,6 +708,18 @@ async function main() {
   document.getElementById('loader').style.display = 'none';
   document.getElementById('play').style.display = 'block';
   for (const m of Object.values(menu)) m.hide();
+
+  if (params.has('image')) {
+    const image = JSON.parse(params.get('image'));
+    log('overriding image:', image);
+    ui.samples = [image];
+    await detectSampleImages();
+  }
+
+  if (params.has('images')) {
+    log('overriding images list:', JSON.parse(params.get('images')));
+    await detectSampleImages();
+  }
 }
 
 window.onload = main;

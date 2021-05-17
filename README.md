@@ -75,7 +75,8 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 
 ## Options
 
-As presented in the demo application...
+As presented in the demo application...  
+> [demo/index.html](demo/index.html)
 
 ![Options visible in demo](assets/screenshot-menu.png)
 
@@ -86,26 +87,32 @@ As presented in the demo application...
 <br>
 
 **Training image:**  
+> [demo/index.html](demo/index.html?image=%22../assets/human-sample-upper.jpg%22)
 
 ![Example Training Image](assets/screenshot-sample.png)
 
 **Using static images:**  
+> [demo/index.html](demo/index.html?images=true)
 
 ![Example Using Image](assets/screenshot-images.jpg)
 
 **Live WebCam view:**  
+> [demo/index.html](demo/index.html)
 
 ![Example Using WebCam](assets/screenshot-webcam.jpg)
 
-**Face Similarity Matching:**
+**Face Similarity Matching:**  
+> [demo/facematch.html](demo/facematch.html)
 
 ![Face Matching](assets/screenshot-facematch.jpg)
 
-**Face3D OpenGL Rendering:**
+**Face3D OpenGL Rendering:**  
+> [demo/face3d.html](demo/face3d.html)
 
 ![Face Matching](assets/screenshot-face3d.jpg)
 
 **468-Point Face Mesh Defails:**  
+(view in full resolution to see keypoints)  
 
 ![FaceMesh](assets/facemesh.png)
 

@@ -9,7 +9,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/05/16 mandic00@live.com
+### **HEAD -> main** 2021/05/17 mandic00@live.com
+
+
+### **origin/main** 2021/05/16 mandic00@live.com
 
 - add node-webcam demo
 - fix node build and update model signatures

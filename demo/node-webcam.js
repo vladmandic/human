@@ -1,8 +1,13 @@
+/*
+  Unsupported sample of using external utility fswebcam to capture screenshot from attached webcam in regular intervals and process it using Human
+*/
+
 const util = require('util');
 const log = require('@vladmandic/pilogger');
 const nodeWebCam = require('node-webcam');
+// for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const tf = require('@tensorflow/tfjs-node');
+const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
 // load specific version of Human library that matches TensorFlow mode
 const Human = require('../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
 

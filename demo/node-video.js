@@ -1,4 +1,6 @@
 /*
+  Unsupported sample of using external utility ffmpeg to capture to decode video input and process it using Human
+
   uses ffmpeg to process video input and output stream of motion jpeg images which are then parsed for frame start/end markers by pipe2jpeg
   each frame triggers an event with jpeg buffer that then can be decoded and passed to human for processing
   if you want process at specific intervals, set output fps to some value
@@ -7,9 +9,12 @@
 
 const spawn = require('child_process').spawn;
 const log = require('@vladmandic/pilogger');
-const tf = require('@tensorflow/tfjs-node');
 const Pipe2Jpeg = require('pipe2jpeg');
-const Human = require('@vladmandic/human').default;
+// for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
+// load specific version of Human library that matches TensorFlow mode
+const Human = require('../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
 
 let count = 0; // counter
 let busy = false; // busy flag

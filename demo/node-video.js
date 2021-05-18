@@ -9,6 +9,7 @@
 
 const spawn = require('child_process').spawn;
 const log = require('@vladmandic/pilogger');
+// eslint-disable-next-line node/no-missing-require
 const Pipe2Jpeg = require('pipe2jpeg');
 // for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars

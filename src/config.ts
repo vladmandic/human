@@ -19,13 +19,6 @@ export interface Config {
   /** Perform model loading and inference concurrently or sequentially */
   async: boolean,
 
-  /** Perform additional optimizations when input is video,
-   * - must be disabled for images
-   * - automatically disabled for Image, ImageData, ImageBitmap and Tensor inputs
-   * - skips boundary detection for every `skipFrames` frames specified for each model
-   * - while maintaining in-box detection since objects don't change definition as fast */
-  videoOptimized: boolean,
-
   /** What to use for `human.warmup()`
    * - warmup pre-initializes all models for faster inference but can take significant time on startup
    * - only used for `webgl` and `humangl` backends
@@ -36,6 +29,12 @@ export interface Config {
    * - individual modelPath values are relative to this path
   */
   modelBasePath: string,
+
+  /** Cache sensitivity
+   * - values 0..1 where 0.01 means reset cache if input changed more than 1%
+   * - set to 0 to disable caching
+  */
+  cacheSensitivity: number;
 
   /** Run input through image filters before inference
    * - image filters run with near-zero latency as they are executed on the GPU
@@ -101,8 +100,6 @@ export interface Config {
    * - iouThreshold: ammount of overlap between two detected objects before one object is removed
    * - maxDetected: maximum number of faces detected in the input, should be set to the minimum number for performance
    * - rotation: use calculated rotated face image or just box with rotation as-is, false means higher performance, but incorrect mesh mapping on higher face angles
-   * - skipFrames: how many frames to go without re-running the face detector and just run modified face mesh analysis, only valid if videoOptimized is set to true
-   * - skipInitial: if previous detection resulted in no faces detected, should skipFrames be reset immediately to force new detection cycle
    * - return: return extracted face as tensor for futher user processing
   */
   face: {
@@ -112,7 +109,6 @@ export interface Config {
       rotation: boolean,
       maxDetected: number,
       skipFrames: number,
-      skipInitial: boolean,
       minConfidence: number,
       iouThreshold: number,
       return: boolean,
@@ -160,14 +156,11 @@ export interface Config {
    * - iouThreshold: ammount of overlap between two detected objects before one object is removed
    * - maxDetected: maximum number of hands detected in the input, should be set to the minimum number for performance
    * - rotation: use best-guess rotated hand image or just box with rotation as-is, false means higher performance, but incorrect finger mapping if hand is inverted
-   * - skipFrames: how many frames to go without re-running the hand bounding box detector and just run modified hand skeleton detector, only valid if videoOptimized is set to true
-   * - skipInitial: if previous detection resulted in no hands detected, should skipFrames be reset immediately to force new detection cycle
   */
   hand: {
     enabled: boolean,
     rotation: boolean,
     skipFrames: number,
-    skipInitial: boolean,
     minConfidence: number,
     iouThreshold: number,
     maxDetected: number,
@@ -186,7 +179,6 @@ export interface Config {
    * - minConfidence: minimum score that detection must have to return as valid object
    * - iouThreshold: ammount of overlap between two detected objects before one object is removed
    * - maxDetected: maximum number of detections to return
-   * - skipFrames: run object detection every n input frames, only valid if videoOptimized is set to true
   */
   object: {
     enabled: boolean,
@@ -205,14 +197,13 @@ const config: Config = {
   wasmPath: '../node_modules/@tensorflow/tfjs-backend-wasm/dist//', // path for wasm binaries, only used for backend: wasm
   debug: true,               // print additional status messages to console
   async: true,               // execute enabled models in parallel
-  videoOptimized: true,      // perform additional optimizations when input is video,
-                             // automatically disabled for Image, ImageData, ImageBitmap
-                             // skips boundary detection for every n frames
-                             // while maintaining in-box detection since objects cannot move that fast
   warmup: 'full',            // what to use for human.warmup(), can be 'none', 'face', 'full'
                              // warmup pre-initializes all models for faster inference but can take
                              // significant time on startup
                              // only used for `webgl` and `humangl` backends
+  cacheSensitivity: 0.005,   // cache sensitivity
+                             // values 0..1 where 0.01 means reset cache if input changed more than 1%
+                             // set to 0 to disable caching
   filter: {                  // run input through image filters before inference
                              // image filters run with near-zero latency as they are executed on the GPU
     enabled: true,           // enable image pre-processing filters
@@ -254,13 +245,11 @@ const config: Config = {
                              // this parameter is not valid in nodejs
       maxDetected: 10,          // maximum number of faces detected in the input
                              // should be set to the minimum number for performance
-      skipFrames: 21,        // how many frames to go without re-running the face bounding box detector
-                             // only used for video inputs
+      skipFrames: 21,        // how many max frames to go without re-running the face bounding box detector
+                             // only used when cacheSensitivity is not zero
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated face analysis as the head probably hasn't moved much
                              // in short time (10 * 1/25 = 0.25 sec)
-      skipInitial: false,    // if previous detection resulted in no faces detected,
-                             // should skipFrames be reset immediately to force new detection cycle
       minConfidence: 0.2,    // threshold for discarding a prediction
       iouThreshold: 0.1,     // ammount of overlap between two detected objects before one object is removed
       return: false,         // return extracted face as tensor
@@ -282,15 +271,16 @@ const config: Config = {
                              // recommended to enable detector.rotation and mesh.enabled
       modelPath: 'faceres.json',  // face description model
                              // can be either absolute path or relative to modelBasePath
-      skipFrames: 31,        // how many frames to go without re-running the detector
-                             // only used for video inputs
+      skipFrames: 31,        // how many max frames to go without re-running the detector
+                             // only used when cacheSensitivity is not zero
       minConfidence: 0.1,    // threshold for discarding a prediction
     },
 
     emotion: {
       enabled: true,
       minConfidence: 0.1,    // threshold for discarding a prediction
-      skipFrames: 32,        // how many frames to go without re-running the detector
+      skipFrames: 32,        // how max many frames to go without re-running the detector
+                             // only used when cacheSensitivity is not zero
       modelPath: 'emotion.json',  // face emotion model, can be absolute path or relative to modelBasePath
     },
   },
@@ -309,13 +299,11 @@ const config: Config = {
     enabled: true,
     rotation: false,         // use best-guess rotated hand image or just box with rotation as-is
                              // false means higher performance, but incorrect finger mapping if hand is inverted
-    skipFrames: 12,          // how many frames to go without re-running the hand bounding box detector
-                             // only used for video inputs
+    skipFrames: 12,          // how many max frames to go without re-running the hand bounding box detector
+                             // only used when cacheSensitivity is not zero
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated hand skeleton analysis as the hand probably
                              // hasn't moved much in short time (10 * 1/25 = 0.25 sec)
-    skipInitial: false,      // if previous detection resulted in no hands detected,
-                             // should skipFrames be reset immediately to force new detection cycle
     minConfidence: 0.1,      // threshold for discarding a prediction
     iouThreshold: 0.1,       // ammount of overlap between two detected objects before one object is removed
     maxDetected: 2,          // maximum number of hands detected in the input
@@ -335,7 +323,8 @@ const config: Config = {
     minConfidence: 0.2,      // threshold for discarding a prediction
     iouThreshold: 0.4,       // ammount of overlap between two detected objects before one object is removed
     maxDetected: 10,         // maximum number of objects detected in the input
-    skipFrames: 41,          // how many frames to go without re-running the detector
+    skipFrames: 41,          // how many max frames to go without re-running the detector
+                             // only used when cacheSensitivity is not zero
   },
 };
 export { config as defaults };

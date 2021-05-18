@@ -16,12 +16,11 @@ export async function load(config) {
 
 export async function predict(image, config) {
   if (!model) return null;
-  if ((skipped < config.face.age.skipFrames) && config.videoOptimized && last.age && (last.age > 0)) {
+  if ((skipped < config.face.age.skipFrames) && config.skipFrame && last.age && (last.age > 0)) {
     skipped++;
     return last;
   }
-  if (config.videoOptimized) skipped = 0;
-  else skipped = Number.MAX_SAFE_INTEGER;
+  skipped = 0;
   return new Promise(async (resolve) => {
     const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
     const enhance = tf.mul(resize, [255.0]);

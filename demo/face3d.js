@@ -9,7 +9,6 @@ const userConfig = {
   async: false,
   profile: false,
   warmup: 'full',
-  videoOptimized: true,
   filter: { enabled: false },
   face: { enabled: true,
     detector: { rotation: false, maxDetected: 1 },

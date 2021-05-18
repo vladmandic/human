@@ -16,7 +16,6 @@ const myConfig = {
   backend: 'tensorflow',
   modelBasePath: 'file://models/',
   debug: true,
-  videoOptimized: false,
   async: false,
   filter: {
     enabled: true,

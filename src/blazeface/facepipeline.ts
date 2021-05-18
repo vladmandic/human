@@ -155,14 +155,14 @@ export class Pipeline {
     let useFreshBox = false;
     // run new detector every skipFrames unless we only want box to start with
     let detector;
-    if ((this.skipped === 0) || (this.skipped > config.face.detector.skipFrames) || !config.face.mesh.enabled || !config.videoOptimized) {
+    if ((this.skipped === 0) || (this.skipped > config.face.detector.skipFrames) || !config.face.mesh.enabled || !config.skipFrame) {
       detector = await this.boundingBoxDetector.getBoundingBoxes(input);
       this.skipped = 0;
     }
-    if (config.videoOptimized) this.skipped++;
+    if (config.skipFrame) this.skipped++;
 
     // if detector result count doesn't match current working set, use it to reset current working set
-    if (!config.videoOptimized || (detector && detector.boxes && (!config.face.mesh.enabled || (detector.boxes.length !== this.detectedFaces) && (this.detectedFaces !== config.face.detector.maxDetected)))) {
+    if (!config.skipFrame || (detector && detector.boxes && (!config.face.mesh.enabled || (detector.boxes.length !== this.detectedFaces) && (this.detectedFaces !== config.face.detector.maxDetected)))) {
       this.storedBoxes = [];
       this.detectedFaces = 0;
       for (const possible of detector.boxes) {
@@ -170,8 +170,6 @@ export class Pipeline {
       }
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }
-
-    if (config.face.detector.skipInitial && this.detectedFaces === 0) this.skipped = 0;
 
     if (useFreshBox) {
       if (!detector || !detector.boxes || (detector.boxes.length === 0)) {

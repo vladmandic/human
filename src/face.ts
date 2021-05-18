@@ -57,8 +57,7 @@ const calculateFaceAngle = (face, image_size): { angle: { pitch: number, yaw: nu
     const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const angle = {
-      // values are in radians in range of -pi/2 to pi/2 which is -90 to +90 degrees
-      // value of 0 means center
+      // values are in radians in range of -pi/2 to pi/2 which is -90 to +90 degrees, value of 0 means center
       // pitch is face move up/down
       pitch: radians(mesh[10][1], mesh[10][2], mesh[152][1], mesh[152][2]), // looking at y,z of top and bottom points of the face
       // yaw is face turn left/right
@@ -134,25 +133,26 @@ export const detectFace = async (parent, input): Promise<any> => {
   const faces = await facemesh.predict(input, parent.config);
   parent.perf.face = Math.trunc(now() - timeStamp);
   if (!faces) return [];
-  for (const face of faces) {
+  // for (const face of faces) {
+  for (let i = 0; i < faces.length; i++) {
     parent.analyze('Get Face');
 
     // is something went wrong, skip the face
-    if (!face.image || face.image.isDisposedInternal) {
-      log('Face object is disposed:', face.image);
+    if (!faces[i].image || faces[i].image.isDisposedInternal) {
+      log('Face object is disposed:', faces[i].image);
       continue;
     }
 
-    const rotation = calculateFaceAngle(face, [input.shape[2], input.shape[1]]);
+    const rotation = calculateFaceAngle(faces[i], [input.shape[2], input.shape[1]]);
 
     // run emotion, inherits face from blazeface
     parent.analyze('Start Emotion:');
     if (parent.config.async) {
-      emotionRes = parent.config.face.emotion.enabled ? emotion.predict(face.image, parent.config) : {};
+      emotionRes = parent.config.face.emotion.enabled ? emotion.predict(faces[i].image, parent.config, i, faces.length) : {};
     } else {
       parent.state = 'run:emotion';
       timeStamp = now();
-      emotionRes = parent.config.face.emotion.enabled ? await emotion.predict(face.image, parent.config) : {};
+      emotionRes = parent.config.face.emotion.enabled ? await emotion.predict(faces[i].image, parent.config, i, faces.length) : {};
       parent.perf.emotion = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Emotion:');
@@ -160,11 +160,11 @@ export const detectFace = async (parent, input): Promise<any> => {
     // run emotion, inherits face from blazeface
     parent.analyze('Start Description:');
     if (parent.config.async) {
-      descRes = parent.config.face.description.enabled ? faceres.predict(face, parent.config) : [];
+      descRes = parent.config.face.description.enabled ? faceres.predict(faces[i], parent.config, i, faces.length) : [];
     } else {
       parent.state = 'run:description';
       timeStamp = now();
-      descRes = parent.config.face.description.enabled ? await faceres.predict(face.image, parent.config) : [];
+      descRes = parent.config.face.description.enabled ? await faceres.predict(faces[i].image, parent.config, i, faces.length) : [];
       parent.perf.embedding = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Description:');
@@ -178,18 +178,18 @@ export const detectFace = async (parent, input): Promise<any> => {
 
     // calculate iris distance
     // iris: array[ center, left, top, right, bottom]
-    if (!parent.config.face.iris.enabled && face?.annotations?.leftEyeIris && face?.annotations?.rightEyeIris) {
-      delete face.annotations.leftEyeIris;
-      delete face.annotations.rightEyeIris;
+    if (!parent.config.face.iris.enabled && faces[i]?.annotations?.leftEyeIris && faces[i]?.annotations?.rightEyeIris) {
+      delete faces[i].annotations.leftEyeIris;
+      delete faces[i].annotations.rightEyeIris;
     }
-    const irisSize = (face.annotations?.leftEyeIris && face.annotations?.rightEyeIris)
+    const irisSize = (faces[i].annotations?.leftEyeIris && faces[i].annotations?.rightEyeIris)
     /* average human iris size is 11.7mm */
-      ? 11.7 * Math.max(Math.abs(face.annotations.leftEyeIris[3][0] - face.annotations.leftEyeIris[1][0]), Math.abs(face.annotations.rightEyeIris[4][1] - face.annotations.rightEyeIris[2][1]))
+      ? 11.7 * Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1]))
       : 0;
 
     // combine results
     faceRes.push({
-      ...face,
+      ...faces[i],
       age: descRes.age,
       gender: descRes.gender,
       genderConfidence: descRes.genderConfidence,
@@ -197,10 +197,10 @@ export const detectFace = async (parent, input): Promise<any> => {
       emotion: emotionRes,
       iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
       rotation,
-      tensor: parent.config.face.detector.return ? face.image?.squeeze() : null,
+      tensor: parent.config.face.detector.return ? faces[i].image?.squeeze() : null,
     });
     // dispose original face tensor
-    face.image?.dispose();
+    faces[i].image?.dispose();
 
     parent.analyze('End Face');
   }

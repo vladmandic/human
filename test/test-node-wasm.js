@@ -6,7 +6,6 @@ const config = {
   backend: 'wasm',
   wasmPath: 'node_modules/@tensorflow/tfjs-backend-wasm/dist/',
   debug: false,
-  videoOptimized: false,
   async: false,
   filter: {
     enabled: true,

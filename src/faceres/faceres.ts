@@ -2,7 +2,8 @@ import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 
 let model;
-let last = { age: 0 };
+const last: Array<{ age: number}> = [];
+let lastCount = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
 type Tensor = typeof tf.Tensor;
@@ -94,14 +95,13 @@ export function enhance(input): Tensor {
   return image;
 }
 
-export async function predict(image, config) {
+export async function predict(image, config, idx, count) {
   if (!model) return null;
-  if ((skipped < config.face.description.skipFrames) && config.videoOptimized && last.age && (last.age > 0)) {
+  if ((skipped < config.face.description.skipFrames) && config.skipFrame && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
     skipped++;
     return last;
   }
-  if (config.videoOptimized) skipped = 0;
-  else skipped = Number.MAX_SAFE_INTEGER;
+  skipped = 0;
   return new Promise(async (resolve) => {
     const enhanced = enhance(image);
 
@@ -136,7 +136,8 @@ export async function predict(image, config) {
       resT.forEach((t) => tf.dispose(t));
     }
 
-    last = obj;
+    last[idx] = obj;
+    lastCount = count;
     resolve(obj);
   });
 }

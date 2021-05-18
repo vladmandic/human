@@ -81,11 +81,12 @@ export class HandPipeline {
 
     // run new detector every skipFrames unless we only want box to start with
     let boxes;
-    if ((this.skipped === 0) || (this.skipped > config.hand.skipFrames) || !config.hand.landmarks || !config.videoOptimized) {
+
+    if ((this.skipped === 0) || (this.skipped > config.hand.skipFrames) || !config.hand.landmarks || !config.skipFrame) {
       boxes = await this.handDetector.estimateHandBounds(image, config);
       this.skipped = 0;
     }
-    if (config.videoOptimized) this.skipped++;
+    if (config.skipFrame) this.skipped++;
 
     // if detector result count doesn't match current working set, use it to reset current working set
     if (boxes && (boxes.length > 0) && ((boxes.length !== this.detectedHands) && (this.detectedHands !== config.hand.maxDetected) || !config.hand.landmarks)) {
@@ -95,8 +96,6 @@ export class HandPipeline {
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }
     const hands: Array<{}> = [];
-
-    if (config.hand.skipInitial && this.detectedHands === 0) this.skipped = 0;
 
     // go through working set of boxes
     for (let i = 0; i < this.storedBoxes.length; i++) {

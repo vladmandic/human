@@ -128,7 +128,7 @@ var config = {
   debug: true,
   async: true,
   warmup: "full",
-  cacheSensitivity: 5e-3,
+  cacheSensitivity: 4e-3,
   filter: {
     enabled: true,
     width: 0,
@@ -19602,7 +19602,7 @@ var Human = class {
     __privateAdd(this, _skipFrame, async (input) => {
       if (this.config.cacheSensitivity === 0)
         return true;
-      const resizeFact = 32;
+      const resizeFact = 50;
       const reduced = input.resizeBilinear([Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
       const sumT = this.tf.sum(reduced);
       reduced.dispose();

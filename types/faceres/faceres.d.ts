@@ -14,5 +14,5 @@ export declare function match(embedding: Array<number>, db: DB, threshold?: numb
     embedding: number[];
 };
 export declare function enhance(input: any): Tensor;
-export declare function predict(image: any, config: any): Promise<unknown>;
+export declare function predict(image: any, config: any, idx: any, count: any): Promise<unknown>;
 export {};

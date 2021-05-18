@@ -12,12 +12,6 @@ export interface Config {
     debug: boolean;
     /** Perform model loading and inference concurrently or sequentially */
     async: boolean;
-    /** Perform additional optimizations when input is video,
-     * - must be disabled for images
-     * - automatically disabled for Image, ImageData, ImageBitmap and Tensor inputs
-     * - skips boundary detection for every `skipFrames` frames specified for each model
-     * - while maintaining in-box detection since objects don't change definition as fast */
-    videoOptimized: boolean;
     /** What to use for `human.warmup()`
      * - warmup pre-initializes all models for faster inference but can take significant time on startup
      * - only used for `webgl` and `humangl` backends
@@ -27,6 +21,11 @@ export interface Config {
      * - individual modelPath values are relative to this path
     */
     modelBasePath: string;
+    /** Cache sensitivity
+     * - values 0..1 where 0.01 means reset cache if input changed more than 1%
+     * - set to 0 to disable caching
+    */
+    cacheSensitivity: number;
     /** Run input through image filters before inference
      * - image filters run with near-zero latency as they are executed on the GPU
     */
@@ -88,8 +87,6 @@ export interface Config {
      * - iouThreshold: ammount of overlap between two detected objects before one object is removed
      * - maxDetected: maximum number of faces detected in the input, should be set to the minimum number for performance
      * - rotation: use calculated rotated face image or just box with rotation as-is, false means higher performance, but incorrect mesh mapping on higher face angles
-     * - skipFrames: how many frames to go without re-running the face detector and just run modified face mesh analysis, only valid if videoOptimized is set to true
-     * - skipInitial: if previous detection resulted in no faces detected, should skipFrames be reset immediately to force new detection cycle
      * - return: return extracted face as tensor for futher user processing
     */
     face: {
@@ -99,7 +96,6 @@ export interface Config {
             rotation: boolean;
             maxDetected: number;
             skipFrames: number;
-            skipInitial: boolean;
             minConfidence: number;
             iouThreshold: number;
             return: boolean;
@@ -145,14 +141,11 @@ export interface Config {
      * - iouThreshold: ammount of overlap between two detected objects before one object is removed
      * - maxDetected: maximum number of hands detected in the input, should be set to the minimum number for performance
      * - rotation: use best-guess rotated hand image or just box with rotation as-is, false means higher performance, but incorrect finger mapping if hand is inverted
-     * - skipFrames: how many frames to go without re-running the hand bounding box detector and just run modified hand skeleton detector, only valid if videoOptimized is set to true
-     * - skipInitial: if previous detection resulted in no hands detected, should skipFrames be reset immediately to force new detection cycle
     */
     hand: {
         enabled: boolean;
         rotation: boolean;
         skipFrames: number;
-        skipInitial: boolean;
         minConfidence: number;
         iouThreshold: number;
         maxDetected: number;
@@ -170,7 +163,6 @@ export interface Config {
      * - minConfidence: minimum score that detection must have to return as valid object
      * - iouThreshold: ammount of overlap between two detected objects before one object is removed
      * - maxDetected: maximum number of detections to return
-     * - skipFrames: run object detection every n input frames, only valid if videoOptimized is set to true
     */
     object: {
         enabled: boolean;

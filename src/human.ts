@@ -4,7 +4,7 @@ import { Result } from './result';
 import * as sysinfo from './sysinfo';
 import * as tf from '../dist/tfjs.esm.js';
 import * as backend from './tfjs/backend';
-import * as faceall from './faceall';
+import * as face from './face';
 import * as facemesh from './blazeface/facemesh';
 import * as faceres from './faceres/faceres';
 import * as emotion from './emotion/emotion';
@@ -116,6 +116,7 @@ export class Human {
   #analyzeMemoryLeaks: boolean;
   #checkSanity: boolean;
   #firstRun: boolean;
+  #lastInputSum: number
 
   // definition end
 
@@ -165,6 +166,7 @@ export class Human {
     this.faceUVMap = facemesh.uvmap;
     // include platform info
     this.sysinfo = sysinfo.info();
+    this.#lastInputSum = 1;
   }
 
   // helper function: measure tensor leak
@@ -338,6 +340,21 @@ export class Human {
     }
   }
 
+  // check if input changed sufficiently to trigger new detections
+  /** @hidden */
+  #skipFrame = async (input) => {
+    if (this.config.cacheSensitivity === 0) return true;
+    const resizeFact = 32;
+    const reduced = input.resizeBilinear([Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
+    const sumT = this.tf.sum(reduced);
+    reduced.dispose();
+    const sum = sumT.dataSync()[0] as number;
+    sumT.dispose();
+    const diff = Math.max(sum, this.#lastInputSum) / Math.min(sum, this.#lastInputSum) - 1;
+    this.#lastInputSum = sum;
+    return diff < this.config.cacheSensitivity;
+  }
+
   /** Main detection method
    * - Analyze configuration: {@link Config}
    * - Pre-process input: {@link Input}
@@ -369,6 +386,8 @@ export class Human {
       // load models if enabled
       await this.load();
 
+      /*
+      // function disabled in favor of inputChanged
       // disable video optimization for inputs of type image, but skip if inside worker thread
       let previousVideoOptimized;
       // @ts-ignore ignore missing type for WorkerGlobalScope as that is the point
@@ -382,6 +401,7 @@ export class Human {
         previousVideoOptimized = this.config.videoOptimized;
         this.config.videoOptimized = false;
       }
+      */
 
       timeStamp = now();
       const process = image.process(input, this.config);
@@ -393,6 +413,17 @@ export class Human {
       this.perf.image = Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
 
+      timeStamp = now();
+      // @ts-ignore hidden dynamic property that is not part of definitions
+      this.config.skipFrame = await this.#skipFrame(process.tensor);
+      if (!this.perf.frames) this.perf.frames = 0;
+      if (!this.perf.cached) this.perf.cached = 0;
+      this.perf.frames++;
+      // @ts-ignore hidden dynamic property that is not part of definitions
+      if (this.config.skipFrame) this.perf.cached++;
+      this.perf.changed = Math.trunc(now() - timeStamp);
+      this.analyze('Check Changed:');
+
       // prepare where to store model results
       let bodyRes;
       let handRes;
@@ -402,12 +433,12 @@ export class Human {
 
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       if (this.config.async) {
-        faceRes = this.config.face.enabled ? faceall.detectFace(this, process.tensor) : [];
+        faceRes = this.config.face.enabled ? face.detectFace(this, process.tensor) : [];
         if (this.perf.face) delete this.perf.face;
       } else {
         this.state = 'run:face';
         timeStamp = now();
-        faceRes = this.config.face.enabled ? await faceall.detectFace(this, process.tensor) : [];
+        faceRes = this.config.face.enabled ? await face.detectFace(this, process.tensor) : [];
         current = Math.trunc(now() - timeStamp);
         if (current > 0) this.perf.face = current;
       }
@@ -470,9 +501,6 @@ export class Human {
         if (!this.config.async) this.perf.gesture = Math.trunc(now() - timeStamp);
         else if (this.perf.gesture) delete this.perf.gesture;
       }
-
-      // restore video optimizations if previously disabled
-      if (previousVideoOptimized) this.config.videoOptimized = previousVideoOptimized;
 
       this.perf.total = Math.trunc(now() - timeStart);
       this.state = 'idle';
@@ -577,13 +605,10 @@ export class Human {
     const t0 = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
     if (!this.config.warmup || this.config.warmup === 'none') return { error: 'null' };
-    const save = this.config.videoOptimized;
-    this.config.videoOptimized = false;
     let res;
     if (typeof createImageBitmap === 'function') res = await this.#warmupBitmap();
     else if (typeof Image !== 'undefined') res = await this.#warmupCanvas();
     else res = await this.#warmupNode();
-    this.config.videoOptimized = save;
     const t1 = now();
     if (this.config.debug) log('Warmup', this.config.warmup, Math.round(t1 - t0), 'ms', res);
     return res;

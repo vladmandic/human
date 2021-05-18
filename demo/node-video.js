@@ -25,7 +25,6 @@ const humanConfig = {
   backend: 'tensorflow',
   modelBasePath: 'file://node_modules/@vladmandic/human/models/',
   debug: false,
-  videoOptimized: true,
   async: true,
   filter: { enabled: false },
   face: {

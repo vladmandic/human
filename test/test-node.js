@@ -5,7 +5,6 @@ const config = {
   modelBasePath: 'file://models/',
   backend: 'tensorflow',
   debug: false,
-  videoOptimized: false,
   async: false,
   filter: {
     enabled: true,

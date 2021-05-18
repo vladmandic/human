@@ -4,7 +4,7 @@ const test = require('./test-main.js').test;
 const config = {
   modelBasePath: 'http://localhost:10030/models/',
   backend: 'wasm',
-  wasmPath: 'assets/',
+  wasmPath: 'node_modules/@tensorflow/tfjs-backend-wasm/dist/',
   debug: false,
   videoOptimized: false,
   async: false,

@@ -344,7 +344,7 @@ export class Human {
   /** @hidden */
   #skipFrame = async (input) => {
     if (this.config.cacheSensitivity === 0) return true;
-    const resizeFact = 32;
+    const resizeFact = 50;
     const reduced = input.resizeBilinear([Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
     const sumT = this.tf.sum(reduced);
     reduced.dispose();

@@ -299,7 +299,7 @@ const config: Config = {
     enabled: true,
     rotation: false,         // use best-guess rotated hand image or just box with rotation as-is
                              // false means higher performance, but incorrect finger mapping if hand is inverted
-    skipFrames: 12,          // how many max frames to go without re-running the hand bounding box detector
+    skipFrames: 32,          // how many max frames to go without re-running the hand bounding box detector
                              // only used when cacheSensitivity is not zero
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated hand skeleton analysis as the hand probably

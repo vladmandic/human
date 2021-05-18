@@ -201,7 +201,7 @@ const config: Config = {
                              // warmup pre-initializes all models for faster inference but can take
                              // significant time on startup
                              // only used for `webgl` and `humangl` backends
-  cacheSensitivity: 0.004,   // cache sensitivity
+  cacheSensitivity: 0.005,   // cache sensitivity
                              // values 0..1 where 0.01 means reset cache if input changed more than 1%
                              // set to 0 to disable caching
   filter: {                  // run input through image filters before inference

@@ -13,7 +13,6 @@ const userConfig = {
   /*
   backend: 'webgl',
   async: true,
-  videoOptimized: false,
   filter: {
     enabled: false,
     flip: false,
@@ -487,7 +486,6 @@ async function detectVideo() {
 
 // just initialize everything and call main function
 async function detectSampleImages() {
-  userConfig.videoOptimized = false; // force disable video optimizations
   document.getElementById('canvas').style.display = 'none';
   document.getElementById('samples-container').style.display = 'block';
   log('running detection of sample images');

@@ -21,12 +21,11 @@ export async function load(config) {
 
 export async function predict(image, config) {
   if (!model) return null;
-  if ((skipped < config.face.gender.skipFrames) && config.videoOptimized && last.gender !== '') {
+  if ((skipped < config.face.gender.skipFrames) && config.skipFrame && last.gender !== '') {
     skipped++;
     return last;
   }
-  if (config.videoOptimized) skipped = 0;
-  else skipped = Number.MAX_SAFE_INTEGER;
+  skipped = 0;
   return new Promise(async (resolve) => {
     const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
     let enhance;

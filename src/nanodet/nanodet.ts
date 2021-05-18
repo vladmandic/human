@@ -97,13 +97,11 @@ async function process(res, inputSize, outputShape, config) {
 
 export async function predict(image, config) {
   if (!model) return null;
-  // console.log(skipped, config.object.skipFrames, config.videoOptimized, ((skipped < config.object.skipFrames) && config.videoOptimized && (last.length > 0)));
-  if ((skipped < config.object.skipFrames) && config.videoOptimized && (last.length > 0)) {
+  if ((skipped < config.object.skipFrames) && config.skipFrame && (last.length > 0)) {
     skipped++;
     return last;
   }
-  if (config.videoOptimized) skipped = 0;
-  else skipped = Number.MAX_SAFE_INTEGER;
+  skipped = 0;
   return new Promise(async (resolve) => {
     const outputSize = [image.shape[2], image.shape[1]];
     const resize = tf.image.resizeBilinear(image, [model.inputSize, model.inputSize], false);

@@ -7,7 +7,6 @@ const userConfig = {
   async: false,
   warmup: 'none',
   debug: true,
-  videoOptimized: false,
   face: {
     enabled: true,
     detector: { rotation: true, return: true },
@@ -16,7 +15,7 @@ const userConfig = {
     iris: { enabled: false },
     age: { enabled: false },
     gender: { enabled: false },
-    emotion: { enabled: false },
+    emotion: { enabled: true },
     description: { enabled: true },
   },
   hand: { enabled: false },

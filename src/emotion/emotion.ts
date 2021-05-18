@@ -3,7 +3,9 @@ import * as tf from '../../dist/tfjs.esm.js';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
 let model;
-let last: Array<{ score: number, emotion: string }> = [];
+// let last: Array<{ score: number, emotion: string }> = [];
+const last: Array<Array<{ score: number, emotion: string }>> = [];
+let lastCount = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
 // tuning values
@@ -18,14 +20,13 @@ export async function load(config) {
   return model;
 }
 
-export async function predict(image, config) {
+export async function predict(image, config, idx, count) {
   if (!model) return null;
-  if ((skipped < config.face.emotion.skipFrames) && config.videoOptimized && (last.length > 0)) {
+  if ((skipped < config.face.emotion.skipFrames) && config.skipFrame && (lastCount === count) && last[idx] && (last[idx].length > 0)) {
     skipped++;
-    return last;
+    return last[idx];
   }
-  if (config.videoOptimized) skipped = 0;
-  else skipped = Number.MAX_SAFE_INTEGER;
+  skipped = 0;
   return new Promise(async (resolve) => {
     const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
     const [red, green, blue] = tf.split(resize, 3, 3);
@@ -54,7 +55,8 @@ export async function predict(image, config) {
       obj.sort((a, b) => b.score - a.score);
     }
     normalize.dispose();
-    last = obj;
+    last[idx] = obj;
+    lastCount = count;
     resolve(obj);
   });
 }

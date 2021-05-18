@@ -39,12 +39,11 @@ function max2d(inputs, minScore) {
 
 export async function predict(image, config) {
   if (!model) return null;
-  if ((skipped < config.body.skipFrames) && config.videoOptimized && Object.keys(keypoints).length > 0) {
+  if ((skipped < config.body.skipFrames) && config.skipFrame && Object.keys(keypoints).length > 0) {
     skipped++;
     return keypoints;
   }
-  if (config.videoOptimized) skipped = 0;
-  else skipped = Number.MAX_SAFE_INTEGER;
+  skipped = 0;
   return new Promise(async (resolve) => {
     const tensor = tf.tidy(() => {
       const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);

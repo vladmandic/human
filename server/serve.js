@@ -128,8 +128,9 @@ async function httpRequest(req, res) {
       res.end('Error 404: Not Found\n', 'utf-8');
       log.warn(`${req.method}/${req.httpVersion}`, res.statusCode, decodeURI(req.url), ip);
     } else {
+      const input = encodeURIComponent(result.file).replace(/\*/g, '').replace(/\?/g, '').replace(/%2F/g, '/').replace(/%40/g, '@').replace(/%20/g, ' ');
       if (result?.stat?.isFile()) {
-        const ext = String(path.extname(result.file)).toLowerCase();
+        const ext = String(path.extname(input)).toLowerCase();
         const contentType = mime[ext] || 'application/octet-stream';
         const accept = req.headers['accept-encoding'] ? req.headers['accept-encoding'].includes('br') : false; // does target accept brotli compressed data
         res.writeHead(200, {
@@ -144,7 +145,7 @@ async function httpRequest(req, res) {
           'Cross-Origin-Opener-Policy': 'same-origin',
         });
         const compress = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 5 } }); // instance of brotli compression with level 5
-        const stream = fs.createReadStream(result.file);
+        const stream = fs.createReadStream(input);
         if (!accept) stream.pipe(res); // don't compress data
         else stream.pipe(compress).pipe(res); // compress data
 
@@ -160,7 +161,7 @@ async function httpRequest(req, res) {
       }
       if (result?.stat?.isDirectory()) {
         res.writeHead(200, { 'Content-Language': 'en', 'Content-Type': 'application/json; charset=utf-8', 'Last-Modified': result.stat.mtime, 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff' });
-        let dir = fs.readdirSync(result.file);
+        let dir = fs.readdirSync(input);
         dir = dir.map((f) => path.join(decodeURI(req.url), f));
         res.end(JSON.stringify(dir), 'utf-8');
         log.data(`${req.method}/${req.httpVersion}`, res.statusCode, 'directory/json', result.stat.size, req.url, ip);

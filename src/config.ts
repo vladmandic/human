@@ -319,7 +319,8 @@ const config: Config = {
 
   object: {
     enabled: false,
-    modelPath: 'nanodet.json',  // experimental: object detection model, can be absolute path or relative to modelBasePath
+    modelPath: 'mb3-centernet.json',  // experimental: object detection model, can be absolute path or relative to modelBasePath
+                             // can be 'mb3-centernet' or 'nanodet'
     minConfidence: 0.2,      // threshold for discarding a prediction
     iouThreshold: 0.4,       // ammount of overlap between two detected objects before one object is removed
     maxDetected: 10,         // maximum number of objects detected in the input

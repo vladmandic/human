@@ -11,7 +11,8 @@ import * as emotion from './emotion/emotion';
 import * as posenet from './posenet/posenet';
 import * as handpose from './handpose/handpose';
 import * as blazepose from './blazepose/blazepose';
-import * as nanodet from './nanodet/nanodet';
+import * as nanodet from './object/nanodet';
+import * as centernet from './object/centernet';
 import * as gesture from './gesture/gesture';
 import * as image from './image/image';
 import * as draw from './draw/draw';
@@ -93,6 +94,7 @@ export class Human {
     emotion: Model | null,
     embedding: Model | null,
     nanodet: Model | null,
+    centernet: Model | null,
     faceres: Model | null,
   };
   /** Internal: Currently loaded classes */
@@ -102,6 +104,7 @@ export class Human {
     body: typeof posenet | typeof blazepose;
     hand: typeof handpose;
     nanodet: typeof nanodet;
+    centernet: typeof centernet;
     faceres: typeof faceres;
   };
   /** Face triangualtion array of 468 points, used for triangle references between points */
@@ -148,6 +151,7 @@ export class Human {
       emotion: null,
       embedding: null,
       nanodet: null,
+      centernet: null,
       faceres: null,
     };
     // export access to image processing
@@ -161,6 +165,7 @@ export class Human {
       body: this.config.body.modelPath.includes('posenet') ? posenet : blazepose,
       hand: handpose,
       nanodet,
+      centernet,
     };
     this.faceTriangulation = facemesh.triangulation;
     this.faceUVMap = facemesh.uvmap;
@@ -231,7 +236,7 @@ export class Human {
     const timeStamp = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
 
-    if (this.#firstRun) {
+    if (this.#firstRun) { // print version info on first run and check for correct backend setup
       if (this.config.debug) log(`version: ${this.version}`);
       if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
       if (this.config.debug) log('platform:', this.sysinfo.platform);
@@ -243,7 +248,7 @@ export class Human {
         if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
       }
     }
-    if (this.config.async) {
+    if (this.config.async) { // load models concurrently
       [
         this.models.face,
         this.models.emotion,
@@ -251,6 +256,7 @@ export class Human {
         this.models.posenet,
         this.models.blazepose,
         this.models.nanodet,
+        this.models.centernet,
         this.models.faceres,
       ] = await Promise.all([
         this.models.face || (this.config.face.enabled ? facemesh.load(this.config) : null),
@@ -258,20 +264,22 @@ export class Human {
         this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config) : null),
         this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('posenet') ? posenet.load(this.config) : null),
         this.models.blazepose || (this.config.body.enabled && this.config.body.modelPath.includes('blazepose') ? blazepose.load(this.config) : null),
-        this.models.nanodet || (this.config.object.enabled ? nanodet.load(this.config) : null),
+        this.models.nanodet || (this.config.object.enabled && this.config.object.modelPath.includes('nanodet') ? nanodet.load(this.config) : null),
+        this.models.centernet || (this.config.object.enabled && this.config.object.modelPath.includes('centernet') ? centernet.load(this.config) : null),
         this.models.faceres || ((this.config.face.enabled && this.config.face.description.enabled) ? faceres.load(this.config) : null),
       ]);
-    } else {
+    } else { // load models sequentially
       if (this.config.face.enabled && !this.models.face) this.models.face = await facemesh.load(this.config);
       if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) this.models.emotion = await emotion.load(this.config);
       if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config);
       if (this.config.body.enabled && !this.models.posenet && this.config.body.modelPath.includes('posenet')) this.models.posenet = await posenet.load(this.config);
       if (this.config.body.enabled && !this.models.blazepose && this.config.body.modelPath.includes('blazepose')) this.models.blazepose = await blazepose.load(this.config);
-      if (this.config.object.enabled && !this.models.nanodet) this.models.nanodet = await nanodet.load(this.config);
+      if (this.config.object.enabled && !this.models.nanodet && this.config.object.modelPath.includes('nanodet')) this.models.nanodet = await nanodet.load(this.config);
+      if (this.config.object.enabled && !this.models.centernet && this.config.object.modelPath.includes('centernet')) this.models.centernet = await centernet.load(this.config);
       if (this.config.face.enabled && this.config.face.description.enabled && !this.models.faceres) this.models.faceres = await faceres.load(this.config);
     }
 
-    if (this.#firstRun) {
+    if (this.#firstRun) { // print memory stats on first run
       if (this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors');
       this.#firstRun = false;
     }
@@ -343,7 +351,7 @@ export class Human {
   // check if input changed sufficiently to trigger new detections
   /** @hidden */
   #skipFrame = async (input) => {
-    if (this.config.cacheSensitivity === 0) return true;
+    if (this.config.cacheSensitivity === 0) return false;
     const resizeFact = 50;
     const reduced = input.resizeBilinear([Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
     const sumT = this.tf.sum(reduced);
@@ -476,12 +484,14 @@ export class Human {
       // run nanodet
       this.analyze('Start Object:');
       if (this.config.async) {
-        objectRes = this.config.object.enabled ? nanodet.predict(process.tensor, this.config) : [];
+        if (this.config.object.modelPath.includes('nanodet')) objectRes = this.config.object.enabled ? nanodet.predict(process.tensor, this.config) : [];
+        else if (this.config.object.modelPath.includes('centernet')) objectRes = this.config.object.enabled ? centernet.predict(process.tensor, this.config) : [];
         if (this.perf.object) delete this.perf.object;
       } else {
         this.state = 'run:object';
         timeStamp = now();
-        objectRes = this.config.object.enabled ? await nanodet.predict(process.tensor, this.config) : [];
+        if (this.config.object.modelPath.includes('nanodet')) objectRes = this.config.object.enabled ? await nanodet.predict(process.tensor, this.config) : [];
+        else if (this.config.object.modelPath.includes('centernet')) objectRes = this.config.object.enabled ? await centernet.predict(process.tensor, this.config) : [];
         current = Math.trunc(now() - timeStamp);
         if (current > 0) this.perf.object = current;
       }

@@ -54,7 +54,7 @@ export const options: DrawOptions = {
   roundRect: <number>28,
   drawPoints: <Boolean>false,
   drawLabels: <Boolean>true,
-  drawBoxes: <Boolean>false,
+  drawBoxes: <Boolean>true,
   drawPolygons: <Boolean>true,
   fillPolygons: <Boolean>false,
   useDepth: <Boolean>true,

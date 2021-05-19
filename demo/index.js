@@ -9,10 +9,11 @@ import webRTC from './helpers/webrtc.js';
 let human;
 
 const userConfig = {
-  warmup: 'none',
+  warmup: 'full',
   /*
   backend: 'webgl',
-  async: true,
+  async: false,
+  cacheSensitivity: 0,
   filter: {
     enabled: false,
     flip: false,
@@ -26,9 +27,9 @@ const userConfig = {
   },
   hand: { enabled: false },
   gesture: { enabled: false },
-  body: { enabled: true, modelPath: 'posenet.json' },
+  body: { enabled: false, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
-  // object: { enabled: true },
+  object: { enabled: false },
   */
 };
 

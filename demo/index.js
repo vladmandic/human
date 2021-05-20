@@ -9,7 +9,7 @@ import webRTC from './helpers/webrtc.js';
 let human;
 
 const userConfig = {
-  warmup: 'full',
+  warmup: 'none',
   /*
   backend: 'webgl',
   async: false,
@@ -54,7 +54,7 @@ const ui = {
   camera: {}, // internal, holds details of webcam details
   detectFPS: [], // internal, holds fps values for detection performance
   drawFPS: [], // internal, holds fps values for draw performance
-  buffered: true, // should output be buffered between frames
+  buffered: false, // should output be buffered between frames
   drawWarmup: false, // debug only, should warmup image processing be displayed on startup
   drawThread: null, // internl, perform draw operations in a separate thread
   detectThread: null, // internl, perform detect operations in a separate thread

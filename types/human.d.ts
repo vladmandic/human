@@ -7,7 +7,8 @@ import * as emotion from './emotion/emotion';
 import * as posenet from './posenet/posenet';
 import * as handpose from './handpose/handpose';
 import * as blazepose from './blazepose/blazepose';
-import * as nanodet from './nanodet/nanodet';
+import * as nanodet from './object/nanodet';
+import * as centernet from './object/centernet';
 import * as draw from './draw/draw';
 /** Generic Tensor object type */
 export declare type Tensor = typeof tf.Tensor;
@@ -84,6 +85,7 @@ export declare class Human {
         emotion: Model | null;
         embedding: Model | null;
         nanodet: Model | null;
+        centernet: Model | null;
         faceres: Model | null;
     };
     /** Internal: Currently loaded classes */
@@ -93,6 +95,7 @@ export declare class Human {
         body: typeof posenet | typeof blazepose;
         hand: typeof handpose;
         nanodet: typeof nanodet;
+        centernet: typeof centernet;
         faceres: typeof faceres;
     };
     /** Face triangualtion array of 468 points, used for triangle references between points */

@@ -127,7 +127,7 @@ var config = {
   debug: true,
   async: true,
   warmup: "full",
-  cacheSensitivity: 5e-3,
+  cacheSensitivity: 0.01,
   filter: {
     enabled: true,
     width: 0,
@@ -19598,7 +19598,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 var version = "1.9.0";
 
 // src/human.ts
-var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;
+var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;
 var Human = class {
   constructor(userConfig = {}) {
     __privateAdd(this, _numTensors, void 0);
@@ -19606,6 +19606,7 @@ var Human = class {
     __privateAdd(this, _checkSanity, void 0);
     __privateAdd(this, _firstRun, void 0);
     __privateAdd(this, _lastInputSum, void 0);
+    __privateAdd(this, _lastCacheDiff, void 0);
     this.analyze = (...msg) => {
       if (!__privateGet(this, _analyzeMemoryLeaks))
         return;
@@ -19669,6 +19670,8 @@ var Human = class {
         this.tf.enableProdMode();
         if (this.tf.getBackend() === "webgl" || this.tf.getBackend() === "humangl") {
           this.tf.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
+          this.tf.ENV.set("WEBGL_CPU_FORWARD", true);
+          tf17.ENV.set("WEBGL_FORCE_F16_TEXTURES", true);
           this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", true);
           if (typeof this.config["deallocate"] !== "undefined") {
             log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
@@ -19685,15 +19688,17 @@ var Human = class {
     __privateAdd(this, _skipFrame, async (input) => {
       if (this.config.cacheSensitivity === 0)
         return false;
-      const resizeFact = 50;
+      const resizeFact = 40;
       const reduced = input.resizeBilinear([Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
       const sumT = this.tf.sum(reduced);
-      reduced.dispose();
       const sum = sumT.dataSync()[0];
       sumT.dispose();
+      reduced.dispose();
       const diff = Math.max(sum, __privateGet(this, _lastInputSum)) / Math.min(sum, __privateGet(this, _lastInputSum)) - 1;
       __privateSet(this, _lastInputSum, sum);
-      return diff < this.config.cacheSensitivity;
+      const skipFrame = diff < Math.max(this.config.cacheSensitivity, __privateGet(this, _lastCacheDiff));
+      __privateSet(this, _lastCacheDiff, diff > 4 * this.config.cacheSensitivity ? 0 : diff);
+      return skipFrame;
     });
     __privateAdd(this, _warmupBitmap, async () => {
       const b64toBlob = (base64, type = "application/octet-stream") => fetch(`data:${type};base64,${base64}`).then((res2) => res2.blob());
@@ -19778,6 +19783,7 @@ var Human = class {
     __privateSet(this, _analyzeMemoryLeaks, false);
     __privateSet(this, _checkSanity, false);
     __privateSet(this, _firstRun, true);
+    __privateSet(this, _lastCacheDiff, 0);
     this.perf = {};
     this.models = {
       face: null,
@@ -20043,6 +20049,7 @@ _analyzeMemoryLeaks = new WeakMap();
 _checkSanity = new WeakMap();
 _firstRun = new WeakMap();
 _lastInputSum = new WeakMap();
+_lastCacheDiff = new WeakMap();
 _sanity = new WeakMap();
 _checkBackend = new WeakMap();
 _skipFrame = new WeakMap();

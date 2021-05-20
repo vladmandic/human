@@ -9,11 +9,15 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **human 1.9.0 beta with breaking changes regarding caching** 2021/05/18 mandic00@live.com
+### **HEAD -> main** 2021/05/19 mandic00@live.com
 
-
-### **origin/main** 2021/05/18 mandic00@live.com
-
+- sanitize server input
+- remove nanodet weights from default distribution
+- add experimental mb3-centernet object detection
+- individual model skipframes values still max high threshold for caching
+- config.videooptimized has been removed and config.cachesensitivity has been added instead
+- caching determination is now dynamic based on detection of input change and not based on input types
+- human 1.9.0 beta with breaking changes regarding caching
 
 ### **1.8.5** 2021/05/18 mandic00@live.com
 

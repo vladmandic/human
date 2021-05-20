@@ -6,7 +6,7 @@ N/A
 
 ## Exploring Features
 
-N/A
+- Output interpolation for draw
 
 ## Explore Models
 

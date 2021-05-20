@@ -119,7 +119,8 @@ export class Human {
   #analyzeMemoryLeaks: boolean;
   #checkSanity: boolean;
   #firstRun: boolean;
-  #lastInputSum: number
+  #lastInputSum: number;
+  #lastCacheDiff: number;
 
   // definition end
 
@@ -137,6 +138,7 @@ export class Human {
     this.#analyzeMemoryLeaks = false;
     this.#checkSanity = false;
     this.#firstRun = true;
+    this.#lastCacheDiff = 0;
     this.perf = {};
     // object that contains all initialized models
     this.models = {
@@ -335,6 +337,8 @@ export class Human {
       // this.tf.enableDebugMode();
       if (this.tf.getBackend() === 'webgl' || this.tf.getBackend() === 'humangl') {
         this.tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
+        this.tf.ENV.set('WEBGL_CPU_FORWARD', true);
+        tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
         this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
         if (typeof this.config['deallocate'] !== 'undefined') {
           log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
@@ -352,15 +356,27 @@ export class Human {
   /** @hidden */
   #skipFrame = async (input) => {
     if (this.config.cacheSensitivity === 0) return false;
-    const resizeFact = 50;
+    const resizeFact = 40;
     const reduced = input.resizeBilinear([Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
+    // use tensor sum
     const sumT = this.tf.sum(reduced);
-    reduced.dispose();
     const sum = sumT.dataSync()[0] as number;
     sumT.dispose();
+    // use js loop sum
+    /*
+    const reducedData = reduced.dataSync();
+    let sum = 0;
+    for (let i = 0; i < reducedData.length; i++) sum += reducedData[i];
+    */
+    reduced.dispose();
     const diff = Math.max(sum, this.#lastInputSum) / Math.min(sum, this.#lastInputSum) - 1;
     this.#lastInputSum = sum;
-    return diff < this.config.cacheSensitivity;
+    // if previous frame was skipped, skip this frame if changed more than cacheSensitivity
+    // if previous frame was not skipped, then look for cacheSensitivity or difference larger than one in previous frame to avoid resetting cache in subsequent frames unnecessarily
+    const skipFrame = diff < Math.max(this.config.cacheSensitivity, this.#lastCacheDiff);
+    // if difference is above 4x threshold, don't use last value to force reset cache for significant change of scenes or images
+    this.#lastCacheDiff = diff > 4 * this.config.cacheSensitivity ? 0 : diff;
+    return skipFrame;
   }
 
   /** Main detection method

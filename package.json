@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/human",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition",
   "sideEffects": false,
   "main": "dist/human.node.js",
@@ -61,7 +61,7 @@
     "@tensorflow/tfjs-layers": "^3.6.0",
     "@tensorflow/tfjs-node": "^3.6.1",
     "@tensorflow/tfjs-node-gpu": "^3.6.1",
-    "@types/node": "^15.3.0",
+    "@types/node": "^15.6.0",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
     "@vladmandic/pilogger": "^0.2.17",

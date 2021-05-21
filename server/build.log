@@ -1,68 +1,17 @@
-2021-05-18 08:16:58 [36mINFO: [39m @vladmandic/human version 1.8.5 
-2021-05-18 08:16:58 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.0.0 
-2021-05-18 08:16:58 [36mINFO: [39m Build: file startup all type: production config: {"minifyWhitespace":true,"minifyIdentifiers":true,"minifySyntax":true} 
-2021-05-18 08:16:58 [35mSTATE:[39m Build for: node type: tfjs: {"imports":1,"importBytes":39,"outputBytes":1284,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 08:16:58 [35mSTATE:[39m Build for: node type: node: {"imports":35,"importBytes":413593,"outputBytes":372832,"outputFiles":"dist/human.node.js"} 
-2021-05-18 08:16:58 [35mSTATE:[39m Build for: nodeGPU type: tfjs: {"imports":1,"importBytes":43,"outputBytes":1292,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 08:16:58 [35mSTATE:[39m Build for: nodeGPU type: node: {"imports":35,"importBytes":413601,"outputBytes":372836,"outputFiles":"dist/human.node-gpu.js"} 
-2021-05-18 08:16:58 [35mSTATE:[39m Build for: nodeWASM type: tfjs: {"imports":1,"importBytes":81,"outputBytes":1359,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 08:16:58 [35mSTATE:[39m Build for: nodeWASM type: node: {"imports":35,"importBytes":413668,"outputBytes":372908,"outputFiles":"dist/human.node-wasm.js"} 
-2021-05-18 08:16:58 [35mSTATE:[39m Build for: browserNoBundle type: tfjs: {"imports":1,"importBytes":2488,"outputBytes":1394,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 08:16:58 [35mSTATE:[39m Build for: browserNoBundle type: esm: {"imports":35,"importBytes":413703,"outputBytes":229716,"outputFiles":"dist/human.esm-nobundle.js"} 
-2021-05-18 08:16:59 [35mSTATE:[39m Build for: browserBundle type: tfjs: {"modules":1274,"moduleBytes":4114813,"imports":7,"importBytes":2488,"outputBytes":1111414,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 08:16:59 [35mSTATE:[39m Build for: browserBundle type: iife: {"imports":35,"importBytes":1523723,"outputBytes":1337578,"outputFiles":"dist/human.js"} 
-2021-05-18 08:17:00 [35mSTATE:[39m Build for: browserBundle type: esm: {"imports":35,"importBytes":1523723,"outputBytes":1337570,"outputFiles":"dist/human.esm.js"} 
-2021-05-18 08:17:00 [36mINFO: [39m Generate types: ["src/human.ts"] 
-2021-05-18 08:17:05 [36mINFO: [39m Update Change log: ["/home/vlado/dev/human/CHANGELOG.md"] 
-2021-05-18 08:17:05 [36mINFO: [39m Generate TypeDocs: ["src/human.ts"] 
-2021-05-18 11:33:54 [36mINFO: [39m @vladmandic/human version 1.9.0 
-2021-05-18 11:33:54 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.0.0 
-2021-05-18 11:33:54 [36mINFO: [39m Build: file startup all type: production config: {"minifyWhitespace":true,"minifyIdentifiers":true,"minifySyntax":true} 
-2021-05-18 11:33:54 [35mSTATE:[39m Build for: node type: tfjs: {"imports":1,"importBytes":39,"outputBytes":1284,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 11:33:54 [35mSTATE:[39m Build for: node type: node: {"imports":35,"importBytes":413201,"outputBytes":373086,"outputFiles":"dist/human.node.js"} 
-2021-05-18 11:33:54 [35mSTATE:[39m Build for: nodeGPU type: tfjs: {"imports":1,"importBytes":43,"outputBytes":1292,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 11:33:54 [35mSTATE:[39m Build for: nodeGPU type: node: {"imports":35,"importBytes":413209,"outputBytes":373090,"outputFiles":"dist/human.node-gpu.js"} 
-2021-05-18 11:33:54 [35mSTATE:[39m Build for: nodeWASM type: tfjs: {"imports":1,"importBytes":81,"outputBytes":1359,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 11:33:54 [35mSTATE:[39m Build for: nodeWASM type: node: {"imports":35,"importBytes":413276,"outputBytes":373162,"outputFiles":"dist/human.node-wasm.js"} 
-2021-05-18 11:33:54 [35mSTATE:[39m Build for: browserNoBundle type: tfjs: {"imports":1,"importBytes":2488,"outputBytes":1394,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 11:33:54 [35mSTATE:[39m Build for: browserNoBundle type: esm: {"imports":35,"importBytes":413311,"outputBytes":229697,"outputFiles":"dist/human.esm-nobundle.js"} 
-2021-05-18 11:33:55 [35mSTATE:[39m Build for: browserBundle type: tfjs: {"modules":1274,"moduleBytes":4114813,"imports":7,"importBytes":2488,"outputBytes":1111414,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 11:33:55 [35mSTATE:[39m Build for: browserBundle type: iife: {"imports":35,"importBytes":1523331,"outputBytes":1337570,"outputFiles":"dist/human.js"} 
-2021-05-18 11:33:56 [35mSTATE:[39m Build for: browserBundle type: esm: {"imports":35,"importBytes":1523331,"outputBytes":1337562,"outputFiles":"dist/human.esm.js"} 
-2021-05-18 11:33:56 [36mINFO: [39m Generate types: ["src/human.ts"] 
-2021-05-18 11:34:00 [36mINFO: [39m Update Change log: ["/home/vlado/dev/human/CHANGELOG.md"] 
-2021-05-18 11:34:00 [36mINFO: [39m Generate TypeDocs: ["src/human.ts"] 
-2021-05-18 11:35:32 [36mINFO: [39m @vladmandic/human version 1.9.0 
-2021-05-18 11:35:32 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.0.0 
-2021-05-18 11:35:32 [36mINFO: [39m Build: file startup all type: production config: {"minifyWhitespace":true,"minifyIdentifiers":true,"minifySyntax":true} 
-2021-05-18 11:35:32 [35mSTATE:[39m Build for: node type: tfjs: {"imports":1,"importBytes":39,"outputBytes":1284,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 11:35:32 [35mSTATE:[39m Build for: node type: node: {"imports":35,"importBytes":413201,"outputBytes":373086,"outputFiles":"dist/human.node.js"} 
-2021-05-18 11:35:32 [35mSTATE:[39m Build for: nodeGPU type: tfjs: {"imports":1,"importBytes":43,"outputBytes":1292,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 11:35:32 [35mSTATE:[39m Build for: nodeGPU type: node: {"imports":35,"importBytes":413209,"outputBytes":373090,"outputFiles":"dist/human.node-gpu.js"} 
-2021-05-18 11:35:32 [35mSTATE:[39m Build for: nodeWASM type: tfjs: {"imports":1,"importBytes":81,"outputBytes":1359,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 11:35:32 [35mSTATE:[39m Build for: nodeWASM type: node: {"imports":35,"importBytes":413276,"outputBytes":373162,"outputFiles":"dist/human.node-wasm.js"} 
-2021-05-18 11:35:32 [35mSTATE:[39m Build for: browserNoBundle type: tfjs: {"imports":1,"importBytes":2488,"outputBytes":1394,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 11:35:32 [35mSTATE:[39m Build for: browserNoBundle type: esm: {"imports":35,"importBytes":413311,"outputBytes":229697,"outputFiles":"dist/human.esm-nobundle.js"} 
-2021-05-18 11:35:32 [35mSTATE:[39m Build for: browserBundle type: tfjs: {"modules":1274,"moduleBytes":4114813,"imports":7,"importBytes":2488,"outputBytes":1111414,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-18 11:35:33 [35mSTATE:[39m Build for: browserBundle type: iife: {"imports":35,"importBytes":1523331,"outputBytes":1337570,"outputFiles":"dist/human.js"} 
-2021-05-18 11:35:33 [35mSTATE:[39m Build for: browserBundle type: esm: {"imports":35,"importBytes":1523331,"outputBytes":1337562,"outputFiles":"dist/human.esm.js"} 
-2021-05-18 11:35:33 [36mINFO: [39m Generate types: ["src/human.ts"] 
-2021-05-18 11:35:37 [36mINFO: [39m Update Change log: ["/home/vlado/dev/human/CHANGELOG.md"] 
-2021-05-18 11:35:37 [36mINFO: [39m Generate TypeDocs: ["src/human.ts"] 
-2021-05-20 19:13:20 [36mINFO: [39m @vladmandic/human version 1.9.0 
-2021-05-20 19:13:20 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.0.0 
-2021-05-20 19:13:20 [36mINFO: [39m Build: file startup all type: production config: {"minifyWhitespace":true,"minifyIdentifiers":true,"minifySyntax":true} 
-2021-05-20 19:13:21 [35mSTATE:[39m Build for: node type: tfjs: {"imports":1,"importBytes":39,"outputBytes":1292,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-20 19:13:21 [35mSTATE:[39m Build for: node type: node: {"imports":36,"importBytes":418558,"outputBytes":377904,"outputFiles":"dist/human.node.js"} 
-2021-05-20 19:13:21 [35mSTATE:[39m Build for: nodeGPU type: tfjs: {"imports":1,"importBytes":43,"outputBytes":1300,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-20 19:13:21 [35mSTATE:[39m Build for: nodeGPU type: node: {"imports":36,"importBytes":418566,"outputBytes":377908,"outputFiles":"dist/human.node-gpu.js"} 
-2021-05-20 19:13:21 [35mSTATE:[39m Build for: nodeWASM type: tfjs: {"imports":1,"importBytes":81,"outputBytes":1367,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-20 19:13:21 [35mSTATE:[39m Build for: nodeWASM type: node: {"imports":36,"importBytes":418633,"outputBytes":377980,"outputFiles":"dist/human.node-wasm.js"} 
-2021-05-20 19:13:21 [35mSTATE:[39m Build for: browserNoBundle type: tfjs: {"imports":1,"importBytes":2488,"outputBytes":1394,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-20 19:13:21 [35mSTATE:[39m Build for: browserNoBundle type: esm: {"imports":36,"importBytes":418660,"outputBytes":232241,"outputFiles":"dist/human.esm-nobundle.js"} 
-2021-05-20 19:13:22 [35mSTATE:[39m Build for: browserBundle type: tfjs: {"modules":1274,"moduleBytes":4114813,"imports":7,"importBytes":2488,"outputBytes":1111414,"outputFiles":"dist/tfjs.esm.js"} 
-2021-05-20 19:13:22 [35mSTATE:[39m Build for: browserBundle type: iife: {"imports":36,"importBytes":1528680,"outputBytes":1340102,"outputFiles":"dist/human.js"} 
-2021-05-20 19:13:23 [35mSTATE:[39m Build for: browserBundle type: esm: {"imports":36,"importBytes":1528680,"outputBytes":1340094,"outputFiles":"dist/human.esm.js"} 
-2021-05-20 19:13:23 [36mINFO: [39m Generate types: ["src/human.ts"] 
-2021-05-20 19:13:28 [36mINFO: [39m Update Change log: ["/home/vlado/dev/human/CHANGELOG.md"] 
-2021-05-20 19:13:28 [36mINFO: [39m Generate TypeDocs: ["src/human.ts"] 
+2021-05-21 06:52:07 [36mINFO: [39m @vladmandic/human version 1.9.1 
+2021-05-21 06:52:07 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.0.0 
+2021-05-21 06:52:07 [36mINFO: [39m Build: file startup all type: production config: {"minifyWhitespace":true,"minifyIdentifiers":true,"minifySyntax":true} 
+2021-05-21 06:52:07 [35mSTATE:[39m Build for: node type: tfjs: {"imports":1,"importBytes":39,"outputBytes":1292,"outputFiles":"dist/tfjs.esm.js"} 
+2021-05-21 06:52:07 [35mSTATE:[39m Build for: node type: node: {"imports":36,"importBytes":418558,"outputBytes":377904,"outputFiles":"dist/human.node.js"} 
+2021-05-21 06:52:07 [35mSTATE:[39m Build for: nodeGPU type: tfjs: {"imports":1,"importBytes":43,"outputBytes":1300,"outputFiles":"dist/tfjs.esm.js"} 
+2021-05-21 06:52:07 [35mSTATE:[39m Build for: nodeGPU type: node: {"imports":36,"importBytes":418566,"outputBytes":377908,"outputFiles":"dist/human.node-gpu.js"} 
+2021-05-21 06:52:07 [35mSTATE:[39m Build for: nodeWASM type: tfjs: {"imports":1,"importBytes":81,"outputBytes":1367,"outputFiles":"dist/tfjs.esm.js"} 
+2021-05-21 06:52:07 [35mSTATE:[39m Build for: nodeWASM type: node: {"imports":36,"importBytes":418633,"outputBytes":377980,"outputFiles":"dist/human.node-wasm.js"} 
+2021-05-21 06:52:07 [35mSTATE:[39m Build for: browserNoBundle type: tfjs: {"imports":1,"importBytes":2488,"outputBytes":1394,"outputFiles":"dist/tfjs.esm.js"} 
+2021-05-21 06:52:07 [35mSTATE:[39m Build for: browserNoBundle type: esm: {"imports":36,"importBytes":418660,"outputBytes":232241,"outputFiles":"dist/human.esm-nobundle.js"} 
+2021-05-21 06:52:08 [35mSTATE:[39m Build for: browserBundle type: tfjs: {"modules":1274,"moduleBytes":4114813,"imports":7,"importBytes":2488,"outputBytes":1111414,"outputFiles":"dist/tfjs.esm.js"} 
+2021-05-21 06:52:08 [35mSTATE:[39m Build for: browserBundle type: iife: {"imports":36,"importBytes":1528680,"outputBytes":1340102,"outputFiles":"dist/human.js"} 
+2021-05-21 06:52:08 [35mSTATE:[39m Build for: browserBundle type: esm: {"imports":36,"importBytes":1528680,"outputBytes":1340094,"outputFiles":"dist/human.esm.js"} 
+2021-05-21 06:52:08 [36mINFO: [39m Generate types: ["src/human.ts"] 
+2021-05-21 06:52:13 [36mINFO: [39m Update Change log: ["/home/vlado/dev/human/CHANGELOG.md"] 
+2021-05-21 06:52:13 [36mINFO: [39m Generate TypeDocs: ["src/human.ts"] 

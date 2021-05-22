@@ -60,10 +60,12 @@ export const options: DrawOptions = {
   fillPolygons: <Boolean>false,
   useDepth: <Boolean>true,
   useCurves: <Boolean>false,
-  bufferedOutput: <Boolean>true,
+  bufferedOutput: <Boolean>false, // not yet implemented
   useRawBoxes: <Boolean>false,
   calculateHandBox: <Boolean>true,
 };
+
+let bufferedResult: Result;
 
 function point(ctx, x, y, z = 0, localOptions) {
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
@@ -241,7 +243,6 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, dra
   }
 }
 
-const lastDrawnPose:any[] = [];
 export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
@@ -250,7 +251,6 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, dra
   if (!ctx) return;
   ctx.lineJoin = 'round';
   for (let i = 0; i < result.length; i++) {
-    if (!lastDrawnPose[i] && localOptions.bufferedOutput) lastDrawnPose[i] = { ...result[i] };
     ctx.strokeStyle = localOptions.color;
     ctx.fillStyle = localOptions.color;
     ctx.lineWidth = localOptions.lineWidth;
@@ -272,13 +272,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, dra
     if (localOptions.drawPoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
         ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + (2 * result[i].keypoints[pt].position.z)}, ${127.5 - (2 * result[i].keypoints[pt].position.z)}, 255, 0.5)` : localOptions.color;
-        if (localOptions.bufferedOutput) {
-          lastDrawnPose[i].keypoints[pt][0] = (lastDrawnPose[i].keypoints[pt][0] + result[i].keypoints[pt].position.x) / 2;
-          lastDrawnPose[i].keypoints[pt][1] = (lastDrawnPose[i].keypoints[pt][1] + result[i].keypoints[pt].position.y) / 2;
-          point(ctx, lastDrawnPose[i].keypoints[pt][0], lastDrawnPose[i].keypoints[pt][1], 0, localOptions);
-        } else {
-          point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 0, localOptions);
-        }
+        point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 0, localOptions);
       }
     }
     if (localOptions.drawLabels) {
@@ -486,9 +480,14 @@ export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptio
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
-  face(inCanvas, result.face, localOptions);
-  body(inCanvas, result.body, localOptions);
-  hand(inCanvas, result.hand, localOptions);
-  gesture(inCanvas, result.gesture, localOptions);
-  object(inCanvas, result.object, localOptions);
+  if (localOptions.bufferedOutput) {
+    if (result.timestamp !== bufferedResult?.timestamp) bufferedResult = result;
+  } else {
+    bufferedResult = result;
+  }
+  face(inCanvas, bufferedResult.face, localOptions);
+  body(inCanvas, bufferedResult.body, localOptions);
+  hand(inCanvas, bufferedResult.hand, localOptions);
+  gesture(inCanvas, bufferedResult.gesture, localOptions);
+  object(inCanvas, bufferedResult.object, localOptions);
 }

@@ -77,7 +77,7 @@ export interface Body {
     part: string,
     position: { x: number, y: number, z: number },
     score: number,
-    presence: number,
+    presence?: number,
   }>
 }
 

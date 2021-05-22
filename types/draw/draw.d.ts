@@ -1,4 +1,4 @@
-import type { Result, Face, Body, Hand, Object, Gesture } from '../result';
+import type { Result, Face, Body, Hand, Item, Gesture } from '../result';
 /**
  * Draw Options
  * Accessed via `human.draw.options` or provided per each draw method as the drawOptions optional parameter
@@ -45,6 +45,6 @@ export declare function gesture(inCanvas: HTMLCanvasElement, result: Array<Gestu
 export declare function face(inCanvas: HTMLCanvasElement, result: Array<Face>, drawOptions?: DrawOptions): Promise<void>;
 export declare function body(inCanvas: HTMLCanvasElement, result: Array<Body>, drawOptions?: DrawOptions): Promise<void>;
 export declare function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, drawOptions?: DrawOptions): Promise<void>;
-export declare function object(inCanvas: HTMLCanvasElement, result: Array<Object>, drawOptions?: DrawOptions): Promise<void>;
+export declare function object(inCanvas: HTMLCanvasElement, result: Array<Item>, drawOptions?: DrawOptions): Promise<void>;
 export declare function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasElement): Promise<void>;
 export declare function all(inCanvas: HTMLCanvasElement, result: Result, drawOptions?: DrawOptions): Promise<void>;

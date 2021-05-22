@@ -18401,10 +18401,11 @@ var options = {
   fillPolygons: false,
   useDepth: true,
   useCurves: false,
-  bufferedOutput: true,
+  bufferedOutput: false,
   useRawBoxes: false,
   calculateHandBox: true
 };
+var bufferedResult;
 function point(ctx, x, y, z = 0, localOptions) {
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
   ctx.beginPath();
@@ -18587,7 +18588,6 @@ async function face2(inCanvas2, result, drawOptions) {
     }
   }
 }
-var lastDrawnPose = [];
 async function body2(inCanvas2, result, drawOptions) {
   var _a;
   const localOptions = mergeDeep(options, drawOptions);
@@ -18600,8 +18600,6 @@ async function body2(inCanvas2, result, drawOptions) {
     return;
   ctx.lineJoin = "round";
   for (let i = 0; i < result.length; i++) {
-    if (!lastDrawnPose[i] && localOptions.bufferedOutput)
-      lastDrawnPose[i] = { ...result[i] };
     ctx.strokeStyle = localOptions.color;
     ctx.fillStyle = localOptions.color;
     ctx.lineWidth = localOptions.lineWidth;
@@ -18620,13 +18618,7 @@ async function body2(inCanvas2, result, drawOptions) {
     if (localOptions.drawPoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
         ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + 2 * result[i].keypoints[pt].position.z}, ${127.5 - 2 * result[i].keypoints[pt].position.z}, 255, 0.5)` : localOptions.color;
-        if (localOptions.bufferedOutput) {
-          lastDrawnPose[i].keypoints[pt][0] = (lastDrawnPose[i].keypoints[pt][0] + result[i].keypoints[pt].position.x) / 2;
-          lastDrawnPose[i].keypoints[pt][1] = (lastDrawnPose[i].keypoints[pt][1] + result[i].keypoints[pt].position.y) / 2;
-          point(ctx, lastDrawnPose[i].keypoints[pt][0], lastDrawnPose[i].keypoints[pt][1], 0, localOptions);
-        } else {
-          point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 0, localOptions);
-        }
+        point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 0, localOptions);
       }
     }
     if (localOptions.drawLabels) {
@@ -18866,11 +18858,17 @@ async function all(inCanvas2, result, drawOptions) {
     return;
   if (!(inCanvas2 instanceof HTMLCanvasElement))
     return;
-  face2(inCanvas2, result.face, localOptions);
-  body2(inCanvas2, result.body, localOptions);
-  hand2(inCanvas2, result.hand, localOptions);
-  gesture(inCanvas2, result.gesture, localOptions);
-  object(inCanvas2, result.object, localOptions);
+  if (localOptions.bufferedOutput) {
+    if (result.timestamp !== (bufferedResult == null ? void 0 : bufferedResult.timestamp))
+      bufferedResult = result;
+  } else {
+    bufferedResult = result;
+  }
+  face2(inCanvas2, bufferedResult.face, localOptions);
+  body2(inCanvas2, bufferedResult.body, localOptions);
+  hand2(inCanvas2, bufferedResult.hand, localOptions);
+  gesture(inCanvas2, bufferedResult.gesture, localOptions);
+  object(inCanvas2, bufferedResult.object, localOptions);
 }
 
 // src/sample.ts
@@ -19597,7 +19595,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // package.json
-var version = "1.9.1";
+var version = "1.9.2";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;

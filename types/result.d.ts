@@ -9,23 +9,28 @@
  *
  * Array of individual results with one object per detected face
  * Each result has:
- * - overal detection confidence value
- * - box detection confidence value
- * - mesh detection confidence value
- * - box as array of [x, y, width, height], normalized to image resolution
- * - boxRaw as array of [x, y, width, height], normalized to range 0..1
- * - mesh as array of [x, y, z] points of face mesh, normalized to image resolution
- * - meshRaw as array of [x, y, z] points of face mesh, normalized to range 0..1
- * - annotations as array of annotated face mesh points
- * - age as value
- * - gender as value
- * - genderConfidence as value
- * - emotion as array of possible emotions with their individual scores
- * - iris as distance value
- * - angle as object with values for roll, yaw and pitch angles
- * - tensor as Tensor object which contains detected face
+ * - id: face number
+ * - confidence: overal detection confidence value
+ * - boxConfidence: face box detection confidence value
+ * - faceConfidence: face keypoints detection confidence value
+ * - box: face bounding box as array of [x, y, width, height], normalized to image resolution
+ * - boxRaw: face bounding box as array of [x, y, width, height], normalized to range 0..1
+ * - mesh: face keypoints as array of [x, y, z] points of face mesh, normalized to image resolution
+ * - meshRaw: face keypoints as array of [x, y, z] points of face mesh, normalized to range 0..1
+ * - annotations: annotated face keypoints as array of annotated face mesh points
+ * - age: age as value
+ * - gender: gender as value
+ * - genderConfidence: gender detection confidence as value
+ * - emotion: emotions as array of possible emotions with their individual scores
+ * - embedding: facial descriptor as array of numerical elements
+ * - iris: iris distance from current viewpoint as distance value
+ * - rotation: face rotiation that contains both angles and matrix used for 3d transformations
+ *  - angle: face angle as object with values for roll, yaw and pitch angles
+ *  - matrix: 3d transofrmation matrix as array of numeric values
+ * - tensor: face tensor as Tensor object which contains detected face
  */
 export interface Face {
+    id: number;
     confidence: number;
     boxConfidence: number;
     faceConfidence: number;
@@ -52,7 +57,7 @@ export interface Face {
             yaw: number;
             pitch: number;
         };
-        matrix: Array<[number, number, number, number, number, number, number, number, number]>;
+        matrix: [number, number, number, number, number, number, number, number, number];
     };
     tensor: any;
 }
@@ -60,9 +65,10 @@ export interface Face {
  *
  * Array of individual results with one object per detected body
  * Each results has:
- * - body id number
+ * - id:body id number
  * - score: overall detection score
- * - box bounding box: x, y, width, height
+ * - box: bounding box: x, y, width, height normalized to input image resolution
+ * - boxRaw: bounding box: x, y, width, height normalized to 0..1
  * - keypoints: array of keypoints
  *  - part: body part name
  *  - position: body part position with x,y,z coordinates
@@ -71,8 +77,9 @@ export interface Face {
  */
 export interface Body {
     id: number;
-    box: [x: number, y: number, width: number, height: number];
     score: number;
+    box?: [x: number, y: number, width: number, height: number];
+    boxRaw?: [x: number, y: number, width: number, height: number];
     keypoints: Array<{
         part: string;
         position: {
@@ -81,7 +88,7 @@ export interface Body {
             z: number;
         };
         score: number;
-        presence: number;
+        presence?: number;
     }>;
 }
 /** Hand results
@@ -95,14 +102,15 @@ export interface Body {
  * - annotations as array of annotated face landmark points
  */
 export interface Hand {
+    id: number;
     confidence: number;
     box: [number, number, number, number];
     boxRaw: [number, number, number, number];
     landmarks: Array<[number, number, number]>;
-    annotations: Array<{
+    annotations: Record<string, Array<{
         part: string;
-        points: Array<[number, number, number]>[];
-    }>;
+        points: Array<[number, number, number]>;
+    }>>;
 }
 /** Object results
 *
@@ -115,13 +123,13 @@ export interface Hand {
 * - box as array of [x, y, width, height], normalized to image resolution
 * - boxRaw as array of [x, y, width, height], normalized to range 0..1
 */
-export interface Object {
+export interface Item {
     score: number;
-    strideSize: number;
+    strideSize?: number;
     class: number;
     label: string;
-    center: number[];
-    centerRaw: number[];
+    center?: number[];
+    centerRaw?: number[];
     box: number[];
     boxRaw: number[];
 }
@@ -155,9 +163,10 @@ export interface Result {
     /** {@link Gesture}: detection & analysis results */
     gesture: Array<Gesture>;
     /** {@link Object}: detection & analysis results */
-    object: Array<Object>;
+    object: Array<Item>;
     performance: {
         any: any;
     };
     canvas: OffscreenCanvas | HTMLCanvasElement;
+    timestamp: number;
 }

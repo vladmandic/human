@@ -96,7 +96,7 @@ const calculateFaceAngle = (face, image_size): { angle: { pitch: number, yaw: nu
   return { angle, matrix };
 };
 
-export const detectFace = async (parent, input): Promise<any> => {
+export const detectFace = async (parent, input): Promise<Face[]> => {
   // run facemesh, includes blazeface and iris
   // eslint-disable-next-line no-async-promise-executor
   let timeStamp;

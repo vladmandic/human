@@ -9,13 +9,13 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/05/22 mandic00@live.com
+
+
 ### **1.9.2** 2021/05/22 mandic00@live.com
 
 - add id and boxraw on missing objects
 - restructure results strong typing
-
-### **origin/main** 2021/05/21 mandic00@live.com
-
 
 ### **1.9.1** 2021/05/21 mandic00@live.com
 

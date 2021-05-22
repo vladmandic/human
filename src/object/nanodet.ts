@@ -81,7 +81,7 @@ async function process(res, inputSize, outputShape, config) {
   // unnecessary boxes and run nms only on good candidates (basically it just does IOU analysis as scores are already filtered)
   const nmsBoxes = results.map((a) => [a.boxRaw[1], a.boxRaw[0], a.boxRaw[3], a.boxRaw[2]]); // switches coordinates from x,y to y,x as expected by tf.nms
   const nmsScores = results.map((a) => a.score);
-  let nmsIdx: any[] = [];
+  let nmsIdx: Array<number> = [];
   if (nmsBoxes && nmsBoxes.length > 0) {
     const nms = await tf.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
     nmsIdx = nms.dataSync();

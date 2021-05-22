@@ -6,7 +6,7 @@ N/A
 
 ## Exploring Features
 
-- Output interpolation for draw
+- drawOptions.bufferedOutput: Output interpolation for draw
 
 ## Explore Models
 

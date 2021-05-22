@@ -2,11 +2,12 @@ import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as poses from './poses';
 import * as util from './utils';
+import { Body } from '../result';
 
 let model;
 const poseNetOutputs = ['MobilenetV1/offset_2/BiasAdd'/* offsets */, 'MobilenetV1/heatmap_2/BiasAdd'/* heatmapScores */, 'MobilenetV1/displacement_fwd_2/BiasAdd'/* displacementFwd */, 'MobilenetV1/displacement_bwd_2/BiasAdd'/* displacementBwd */];
 
-export async function predict(input, config) {
+export async function predict(input, config): Promise<Body[]> {
   const res = tf.tidy(() => {
     const resized = input.resizeBilinear([model.inputs[0].shape[2], model.inputs[0].shape[1]]);
     const normalized = resized.toFloat().div(127.5).sub(1.0);
@@ -20,7 +21,7 @@ export async function predict(input, config) {
   for (const t of res) t.dispose();
 
   const decoded = await poses.decode(buffers[0], buffers[1], buffers[2], buffers[3], config.body.maxDetected, config.body.minConfidence);
-  const scaled = util.scalePoses(decoded, [input.shape[1], input.shape[2]], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
+  const scaled = util.scalePoses(decoded, [input.shape[1], input.shape[2]], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) as Body[];
   return scaled;
 }
 

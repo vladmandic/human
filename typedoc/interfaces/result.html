@@ -63,14 +63,6 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Result interface definition for <strong>Human</strong> library</p>
-					</div>
-					<p>Contains all possible detection results</p>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -103,22 +95,13 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="body" class="tsd-anchor"></a>
 					<h3>body</h3>
-					<div class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>part<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>z<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>presence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>score<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span></div>
+					<div class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">:</span> <a href="body.html" class="tsd-signature-type" data-tsd-kind="Interface">Body</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Body results</p>
+							<p><a href="body.html">Body</a>: detection &amp; analysis results</p>
 						</div>
-						<p>Array of individual results with one object per detected body
-						Each results has:</p>
-						<ul>
-							<li>body id number</li>
-							<li>body part name</li>
-							<li>part position with x,y,z coordinates</li>
-							<li>body part score value</li>
-							<li>body part presence value</li>
-						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
@@ -131,95 +114,49 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="face" class="tsd-anchor"></a>
 					<h3>face</h3>
-					<div class="tsd-signature tsd-kind-icon">face<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>age<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>annotations<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>part<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>points<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>box<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">; </span>boxConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>boxRaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">; </span>confidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>embedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>emotion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>emotion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>score<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>faceConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>gender<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>genderConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>iris<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>mesh<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>meshRaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>rotation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>angle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>pitch<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>roll<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>yaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>matrix<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>tensor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span></div>
+					<div class="tsd-signature tsd-kind-icon">face<span class="tsd-signature-symbol">:</span> <a href="face.html" class="tsd-signature-type" data-tsd-kind="Interface">Face</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Face results
-								Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
-							Some values may be null if specific model is not enabled</p>
+							<p><a href="face.html">Face</a>: detection &amp; analysis results</p>
 						</div>
-						<p>Array of individual results with one object per detected face
-						Each result has:</p>
-						<ul>
-							<li>overal detection confidence value</li>
-							<li>box detection confidence value</li>
-							<li>mesh detection confidence value</li>
-							<li>box as array of [x, y, width, height], normalized to image resolution</li>
-							<li>boxRaw as array of [x, y, width, height], normalized to range 0..1</li>
-							<li>mesh as array of [x, y, z] points of face mesh, normalized to image resolution</li>
-							<li>meshRaw as array of [x, y, z] points of face mesh, normalized to range 0..1</li>
-							<li>annotations as array of annotated face mesh points</li>
-							<li>age as value</li>
-							<li>gender as value</li>
-							<li>genderConfidence as value</li>
-							<li>emotion as array of possible emotions with their individual scores</li>
-							<li>iris as distance value</li>
-							<li>angle as object with values for roll, yaw and pitch angles</li>
-							<li>tensor as Tensor object which contains detected face</li>
-						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="gesture" class="tsd-anchor"></a>
 					<h3>gesture</h3>
-					<div class="tsd-signature tsd-kind-icon">gesture<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">{ </span>face<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>iris<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>hand<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></div>
+					<div class="tsd-signature tsd-kind-icon">gesture<span class="tsd-signature-symbol">:</span> <a href="../index.html#gesture" class="tsd-signature-type" data-tsd-kind="Type alias">Gesture</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Gesture results</p>
+							<p><a href="../index.html#gesture">Gesture</a>: detection &amp; analysis results</p>
 						</div>
-						<p>Array of individual results with one object per detected gesture
-						Each result has:</p>
-						<ul>
-							<li>part: part name and number where gesture was detected: face, iris, body, hand</li>
-							<li>gesture: gesture detected</li>
-						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="hand" class="tsd-anchor"></a>
 					<h3>hand</h3>
-					<div class="tsd-signature tsd-kind-icon">hand<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>annotations<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>part<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>points<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>box<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">; </span>boxRaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">; </span>confidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>landmarks<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span></div>
+					<div class="tsd-signature tsd-kind-icon">hand<span class="tsd-signature-symbol">:</span> <a href="hand.html" class="tsd-signature-type" data-tsd-kind="Interface">Hand</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Hand results</p>
+							<p><a href="hand.html">Hand</a>: detection &amp; analysis results</p>
 						</div>
-						<p>Array of individual results with one object per detected hand
-						Each result has:</p>
-						<ul>
-							<li>confidence as value</li>
-							<li>box as array of [x, y, width, height], normalized to image resolution</li>
-							<li>boxRaw as array of [x, y, width, height], normalized to range 0..1</li>
-							<li>landmarks as array of [x, y, z] points of hand, normalized to image resolution</li>
-							<li>annotations as array of annotated face landmark points</li>
-						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="object" class="tsd-anchor"></a>
 					<h3>object</h3>
-					<div class="tsd-signature tsd-kind-icon">object<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>box<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>boxRaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>center<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>centerRaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>class<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>score<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>strideSize<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span></div>
+					<div class="tsd-signature tsd-kind-icon">object<span class="tsd-signature-symbol">:</span> <a href="object.html" class="tsd-signature-type" data-tsd-kind="Interface">Object</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Object results</p>
+							<p><a href="object.html">Object</a>: detection &amp; analysis results</p>
 						</div>
-						<p>Array of individual results with one object per detected gesture
-						Each result has:</p>
-						<ul>
-							<li>score as value</li>
-							<li>label as detected class name</li>
-							<li>center as array of [x, y], normalized to image resolution</li>
-							<li>centerRaw as array of [x, y], normalized to range 0..1</li>
-							<li>box as array of [x, y, width, height], normalized to image resolution</li>
-							<li>boxRaw as array of [x, y, width, height], normalized to range 0..1</li>
-						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
@@ -256,10 +193,22 @@
 						<a href="../classes/human.html" class="tsd-kind-icon">Human</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="body.html" class="tsd-kind-icon">Body</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="config.html" class="tsd-kind-icon">Config</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="drawoptions.html" class="tsd-kind-icon">Draw<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="face.html" class="tsd-kind-icon">Face</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="hand.html" class="tsd-kind-icon">Hand</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="object.html" class="tsd-kind-icon">Object</a>
 					</li>
 				</ul>
 				<ul class="current">
@@ -293,6 +242,9 @@
 				<ul class="after-current">
 					<li class=" tsd-kind-type-alias">
 						<a href="../index.html#error" class="tsd-kind-icon">Error</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../index.html#gesture" class="tsd-kind-icon">Gesture</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../index.html#input" class="tsd-kind-icon">Input</a>

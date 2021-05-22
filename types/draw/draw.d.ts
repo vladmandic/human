@@ -1,3 +1,4 @@
+import type { Result, Face, Body, Hand, Object, Gesture } from '../result';
 /**
  * Draw Options
  * Accessed via `human.draw.options` or provided per each draw method as the drawOptions optional parameter
@@ -40,10 +41,10 @@ export interface DrawOptions {
     calculateHandBox: Boolean;
 }
 export declare const options: DrawOptions;
-export declare function gesture(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions): Promise<void>;
-export declare function face(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions): Promise<void>;
-export declare function body(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions): Promise<void>;
-export declare function hand(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions): Promise<void>;
-export declare function object(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions): Promise<void>;
+export declare function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture>, drawOptions?: DrawOptions): Promise<void>;
+export declare function face(inCanvas: HTMLCanvasElement, result: Array<Face>, drawOptions?: DrawOptions): Promise<void>;
+export declare function body(inCanvas: HTMLCanvasElement, result: Array<Body>, drawOptions?: DrawOptions): Promise<void>;
+export declare function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, drawOptions?: DrawOptions): Promise<void>;
+export declare function object(inCanvas: HTMLCanvasElement, result: Array<Object>, drawOptions?: DrawOptions): Promise<void>;
 export declare function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasElement): Promise<void>;
-export declare function all(inCanvas: HTMLCanvasElement, result: any, drawOptions?: DrawOptions): Promise<void>;
+export declare function all(inCanvas: HTMLCanvasElement, result: Result, drawOptions?: DrawOptions): Promise<void>;

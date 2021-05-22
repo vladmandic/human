@@ -4452,6 +4452,7 @@ var detectFace = async (parent, input) => {
     }
     const irisSize = ((_e = faces[i].annotations) == null ? void 0 : _e.leftEyeIris) && ((_f = faces[i].annotations) == null ? void 0 : _f.rightEyeIris) ? 11.7 * Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) : 0;
     faceRes.push({
+      id: i,
       ...faces[i],
       age: descRes.age,
       gender: descRes.gender,
@@ -4562,8 +4563,11 @@ function getBoundingBox(keypoints) {
   return [coord.minX, coord.minY, coord.maxX - coord.minX, coord.maxY - coord.minY];
 }
 function scalePoses(poses2, [height, width], [inputResolutionHeight, inputResolutionWidth]) {
-  const scalePose = (pose, scaleY, scaleX) => ({
+  const scaleY = height / inputResolutionHeight;
+  const scaleX = width / inputResolutionWidth;
+  const scalePose = (pose) => ({
     score: pose.score,
+    bowRaw: [pose.box[0] / inputResolutionWidth, pose.box[1] / inputResolutionHeight, pose.box[2] / inputResolutionWidth, pose.box[3] / inputResolutionHeight],
     box: [Math.trunc(pose.box[0] * scaleX), Math.trunc(pose.box[1] * scaleY), Math.trunc(pose.box[2] * scaleX), Math.trunc(pose.box[3] * scaleY)],
     keypoints: pose.keypoints.map(({ score, part, position }) => ({
       score,
@@ -4571,7 +4575,7 @@ function scalePoses(poses2, [height, width], [inputResolutionHeight, inputResolu
       position: { x: Math.trunc(position.x * scaleX), y: Math.trunc(position.y * scaleY) }
     }))
   });
-  const scaledPoses = poses2.map((pose) => scalePose(pose, height / inputResolutionHeight, width / inputResolutionWidth));
+  const scaledPoses = poses2.map((pose) => scalePose(pose));
   return scaledPoses;
 }
 var MaxHeap = class {
@@ -16952,26 +16956,26 @@ async function predict5(input, config3) {
   if (!predictions)
     return [];
   const hands = [];
-  for (const prediction of predictions) {
+  for (let i = 0; i < predictions.length; i++) {
     const annotations3 = {};
-    if (prediction.landmarks) {
+    if (predictions[i].landmarks) {
       for (const key of Object.keys(meshAnnotations)) {
-        annotations3[key] = meshAnnotations[key].map((index) => prediction.landmarks[index]);
+        annotations3[key] = meshAnnotations[key].map((index) => predictions[i].landmarks[index]);
       }
     }
-    const box4 = prediction.box ? [
-      Math.max(0, prediction.box.topLeft[0]),
-      Math.max(0, prediction.box.topLeft[1]),
-      Math.min(input.shape[2], prediction.box.bottomRight[0]) - Math.max(0, prediction.box.topLeft[0]),
-      Math.min(input.shape[1], prediction.box.bottomRight[1]) - Math.max(0, prediction.box.topLeft[1])
-    ] : [];
+    const box4 = predictions[i].box ? [
+      Math.max(0, predictions[i].box.topLeft[0]),
+      Math.max(0, predictions[i].box.topLeft[1]),
+      Math.min(input.shape[2], predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0]),
+      Math.min(input.shape[1], predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1])
+    ] : [0, 0, 0, 0];
     const boxRaw = [
-      prediction.box.topLeft[0] / input.shape[2],
-      prediction.box.topLeft[1] / input.shape[1],
-      (prediction.box.bottomRight[0] - prediction.box.topLeft[0]) / input.shape[2],
-      (prediction.box.bottomRight[1] - prediction.box.topLeft[1]) / input.shape[1]
+      predictions[i].box.topLeft[0] / input.shape[2],
+      predictions[i].box.topLeft[1] / input.shape[1],
+      (predictions[i].box.bottomRight[0] - predictions[i].box.topLeft[0]) / input.shape[2],
+      (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1]
     ];
-    hands.push({ confidence: Math.round(100 * prediction.confidence) / 100, box: box4, boxRaw, landmarks: prediction.landmarks, annotations: annotations3 });
+    hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box: box4, boxRaw, landmarks: predictions[i].landmarks, annotations: annotations3 });
   }
   return hands;
 }
@@ -17311,8 +17315,6 @@ async function process2(res, inputSize, outputShape, config3) {
   return results;
 }
 async function predict7(image13, config3) {
-  if (!model5)
-    return null;
   if (skipped3 < config3.object.skipFrames && config3.skipFrame && last3.length > 0) {
     skipped3++;
     return last3;
@@ -17399,8 +17401,6 @@ async function process3(res, inputSize, outputShape, config3) {
   return results;
 }
 async function predict8(image13, config3) {
-  if (!model6)
-    return null;
   if (skipped4 < config3.object.skipFrames && config3.skipFrame && last4.length > 0) {
     skipped4++;
     return last4;
@@ -18400,7 +18400,7 @@ var options = {
   fillPolygons: false,
   useDepth: true,
   useCurves: false,
-  bufferedOutput: false,
+  bufferedOutput: true,
   useRawBoxes: false,
   calculateHandBox: true
 };
@@ -18439,7 +18439,7 @@ function lines(ctx, points = [], localOptions) {
   for (const pt of points) {
     ctx.strokeStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + 2 * pt[2]}, ${127.5 - 2 * pt[2]}, 255, 0.3)` : localOptions.color;
     ctx.fillStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + 2 * pt[2]}, ${127.5 - 2 * pt[2]}, 255, 0.3)` : localOptions.color;
-    ctx.lineTo(pt[0], parseInt(pt[1]));
+    ctx.lineTo(pt[0], Math.round(pt[1]));
   }
   ctx.stroke();
   if (localOptions.fillPolygons) {
@@ -18558,24 +18558,24 @@ async function face2(inCanvas2, result, drawOptions) {
           ].map((index) => f.mesh[index]);
           lines(ctx, points, localOptions);
         }
-        if (f.annotations && f.annotations.leftEyeIris) {
+        if (f.annotations && f.annotations["leftEyeIris"]) {
           ctx.strokeStyle = localOptions.useDepth ? "rgba(255, 200, 255, 0.3)" : localOptions.color;
           ctx.beginPath();
-          const sizeX = Math.abs(f.annotations.leftEyeIris[3][0] - f.annotations.leftEyeIris[1][0]) / 2;
-          const sizeY = Math.abs(f.annotations.leftEyeIris[4][1] - f.annotations.leftEyeIris[2][1]) / 2;
-          ctx.ellipse(f.annotations.leftEyeIris[0][0], f.annotations.leftEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          const sizeX = Math.abs(f.annotations["leftEyeIris"][3][0] - f.annotations["leftEyeIris"][1][0]) / 2;
+          const sizeY = Math.abs(f.annotations["leftEyeIris"][4][1] - f.annotations["leftEyeIris"][2][1]) / 2;
+          ctx.ellipse(f.annotations["leftEyeIris"][0][0], f.annotations["leftEyeIris"][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
           ctx.stroke();
           if (localOptions.fillPolygons) {
             ctx.fillStyle = localOptions.useDepth ? "rgba(255, 255, 200, 0.3)" : localOptions.color;
             ctx.fill();
           }
         }
-        if (f.annotations && f.annotations.rightEyeIris) {
+        if (f.annotations && f.annotations["rightEyeIris"]) {
           ctx.strokeStyle = localOptions.useDepth ? "rgba(255, 200, 255, 0.3)" : localOptions.color;
           ctx.beginPath();
-          const sizeX = Math.abs(f.annotations.rightEyeIris[3][0] - f.annotations.rightEyeIris[1][0]) / 2;
-          const sizeY = Math.abs(f.annotations.rightEyeIris[4][1] - f.annotations.rightEyeIris[2][1]) / 2;
-          ctx.ellipse(f.annotations.rightEyeIris[0][0], f.annotations.rightEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          const sizeX = Math.abs(f.annotations["rightEyeIris"][3][0] - f.annotations["rightEyeIris"][1][0]) / 2;
+          const sizeY = Math.abs(f.annotations["rightEyeIris"][4][1] - f.annotations["rightEyeIris"][2][1]) / 2;
+          ctx.ellipse(f.annotations["rightEyeIris"][0][0], f.annotations["rightEyeIris"][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
           ctx.stroke();
           if (localOptions.fillPolygons) {
             ctx.fillStyle = localOptions.useDepth ? "rgba(255, 255, 200, 0.3)" : localOptions.color;
@@ -18588,6 +18588,7 @@ async function face2(inCanvas2, result, drawOptions) {
 }
 var lastDrawnPose = [];
 async function body2(inCanvas2, result, drawOptions) {
+  var _a;
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas2)
     return;
@@ -18604,7 +18605,7 @@ async function body2(inCanvas2, result, drawOptions) {
     ctx.fillStyle = localOptions.color;
     ctx.lineWidth = localOptions.lineWidth;
     ctx.font = localOptions.font;
-    if (localOptions.drawBoxes) {
+    if (localOptions.drawBoxes && result[i].box && ((_a = result[i].box) == null ? void 0 : _a.length) === 4) {
       rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== "") {
@@ -18790,12 +18791,12 @@ async function hand2(inCanvas2, result, drawOptions) {
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
       };
       ctx.font = localOptions.font;
-      addHandLabel(h.annotations.indexFinger, "index");
-      addHandLabel(h.annotations.middleFinger, "middle");
-      addHandLabel(h.annotations.ringFinger, "ring");
-      addHandLabel(h.annotations.pinky, "pinky");
-      addHandLabel(h.annotations.thumb, "thumb");
-      addHandLabel(h.annotations.palmBase, "palm");
+      addHandLabel(h.annotations["indexFinger"], "index");
+      addHandLabel(h.annotations["middleFinger"], "middle");
+      addHandLabel(h.annotations["ringFinger"], "ring");
+      addHandLabel(h.annotations["pinky"], "pinky");
+      addHandLabel(h.annotations["thumb"], "thumb");
+      addHandLabel(h.annotations["palmBase"], "palm");
     }
     if (localOptions.drawPolygons) {
       const addHandLine = (part) => {
@@ -18810,11 +18811,11 @@ async function hand2(inCanvas2, result, drawOptions) {
         }
       };
       ctx.lineWidth = localOptions.lineWidth;
-      addHandLine(h.annotations.indexFinger);
-      addHandLine(h.annotations.middleFinger);
-      addHandLine(h.annotations.ringFinger);
-      addHandLine(h.annotations.pinky);
-      addHandLine(h.annotations.thumb);
+      addHandLine(h.annotations["indexFinger"]);
+      addHandLine(h.annotations["middleFinger"]);
+      addHandLine(h.annotations["ringFinger"]);
+      addHandLine(h.annotations["pinky"]);
+      addHandLine(h.annotations["thumb"]);
     }
   }
 }
@@ -20013,7 +20014,7 @@ var Human = class {
       }
       this.perf.total = Math.trunc(now() - timeStart);
       this.state = "idle";
-      const result = {
+      const res = {
         face: faceRes,
         body: bodyRes,
         hand: handRes,
@@ -20022,7 +20023,7 @@ var Human = class {
         performance: this.perf,
         canvas: process5.canvas
       };
-      resolve(result);
+      resolve(res);
     });
   }
   async warmup(userConfig = {}) {

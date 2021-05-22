@@ -13,7 +13,7 @@ import * as draw from './draw/draw';
 /** Generic Tensor object type */
 export declare type Tensor = typeof tf.Tensor;
 export type { Config } from './config';
-export type { Result } from './result';
+export type { Result, Face, Hand, Body, Object, Gesture } from './result';
 export type { DrawOptions } from './draw/draw';
 /** Defines all possible input types for **Human** detection */
 export declare type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;

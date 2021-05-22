@@ -74,8 +74,12 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface"><a href="interfaces/body.html" class="tsd-kind-icon">Body</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/config.html" class="tsd-kind-icon">Config</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/drawoptions.html" class="tsd-kind-icon">Draw<wbr>Options</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/face.html" class="tsd-kind-icon">Face</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/hand.html" class="tsd-kind-icon">Hand</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/object.html" class="tsd-kind-icon">Object</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/result.html" class="tsd-kind-icon">Result</a></li>
 							</ul>
 						</section>
@@ -83,6 +87,7 @@
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-type-alias"><a href="index.html#error" class="tsd-kind-icon">Error</a></li>
+								<li class="tsd-kind-type-alias"><a href="index.html#gesture" class="tsd-kind-icon">Gesture</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#input" class="tsd-kind-icon">Input</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#tensor" class="tsd-kind-icon">Tensor</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#tensorflow" class="tsd-kind-icon">Tensor<wbr>Flow</a></li>
@@ -118,6 +123,24 @@
 							<li class="tsd-parameter">
 								<h5>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
 							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="gesture" class="tsd-anchor"></a>
+					<h3>Gesture</h3>
+					<div class="tsd-signature tsd-kind-icon">Gesture<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>face<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>iris<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>hand<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Gesture results</p>
+						</div>
+						<p>Array of individual results with one object per detected gesture
+						Each result has:</p>
+						<ul>
+							<li>part: part name and number where gesture was detected: face, iris, body, hand</li>
+							<li>gesture: gesture detected</li>
 						</ul>
 					</div>
 				</section>
@@ -176,16 +199,31 @@
 						<a href="classes/human.html" class="tsd-kind-icon">Human</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/body.html" class="tsd-kind-icon">Body</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/config.html" class="tsd-kind-icon">Config</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/drawoptions.html" class="tsd-kind-icon">Draw<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/face.html" class="tsd-kind-icon">Face</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/hand.html" class="tsd-kind-icon">Hand</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/object.html" class="tsd-kind-icon">Object</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/result.html" class="tsd-kind-icon">Result</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="index.html#error" class="tsd-kind-icon">Error</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="index.html#gesture" class="tsd-kind-icon">Gesture</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="index.html#input" class="tsd-kind-icon">Input</a>

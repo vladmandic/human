@@ -14,7 +14,7 @@ export function getAdjacentKeyPoints(keypoints, minConfidence) {
   }, []);
 }
 
-export function getBoundingBox(keypoints) {
+export function getBoundingBox(keypoints): [number, number, number, number] {
   const coord = keypoints.reduce(({ maxX, maxY, minX, minY }, { position: { x, y } }) => ({
     maxX: Math.max(maxX, x),
     maxY: Math.max(maxY, y),
@@ -49,9 +49,9 @@ export function scalePoses(poses, [height, width], [inputResolutionHeight, input
 
 // algorithm based on Coursera Lecture from Algorithms, Part 1: https://www.coursera.org/learn/algorithms-part1/lecture/ZjoSM/heapsort
 export class MaxHeap {
-  priorityQueue: any;
+  priorityQueue: Array<any>; // don't touch
   numberOfElements: number;
-  getElementValue: any;
+  getElementValue: any; // function call
 
   constructor(maxSize, getElementValue) {
     this.priorityQueue = new Array(maxSize);

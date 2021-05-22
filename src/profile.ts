@@ -2,7 +2,7 @@ import { log } from './helpers';
 
 export const data = {};
 
-export function run(modelName: string, profileData: any): void {
+export function run(modelName: string, profileData: any): void { // profileData is tfjs internal type
   if (!profileData || !profileData.kernels) return;
   const maxDetected = 5;
   const time = profileData.kernels

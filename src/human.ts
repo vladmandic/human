@@ -1,6 +1,6 @@
 import { log, now, mergeDeep } from './helpers';
 import { Config, defaults } from './config';
-import { Result } from './result';
+import { Result, Gesture } from './result';
 import * as sysinfo from './sysinfo';
 import * as tf from '../dist/tfjs.esm.js';
 import * as backend from './tfjs/backend';
@@ -114,7 +114,7 @@ export class Human {
   /** Platform and agent information detected by Human */
   sysinfo: { platform: string, agent: string };
   /** Performance object that contains values for all recently performed operations */
-  perf: any;
+  perf: any; // perf members are dynamically defined as needed
   #numTensors: number;
   #analyzeMemoryLeaks: boolean;
   #checkSanity: boolean;
@@ -449,9 +449,10 @@ export class Human {
       this.analyze('Check Changed:');
 
       // prepare where to store model results
+      // keep them with weak typing as it can be promise or not
+      let faceRes;
       let bodyRes;
       let handRes;
-      let faceRes;
       let objectRes;
       let current;
 
@@ -520,7 +521,7 @@ export class Human {
       tf.dispose(process.tensor);
 
       // run gesture analysis last
-      let gestureRes: any[] = [];
+      let gestureRes: Gesture[] = [];
       if (this.config.gesture.enabled) {
         timeStamp = now();
         gestureRes = [...gesture.face(faceRes), ...gesture.body(bodyRes), ...gesture.hand(handRes), ...gesture.iris(faceRes)];

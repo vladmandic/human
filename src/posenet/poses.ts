@@ -120,7 +120,7 @@ function getInstanceScore(existingPoses, keypoints) {
 }
 
 export function decode(offsets, scores, displacementsFwd, displacementsBwd, maxDetected, minConfidence) {
-  const poses: Array<{ keypoints: any, box: any, score: number }> = [];
+  const poses: Array<{ keypoints, box: [number, number, number, number], score: number }> = [];
   const queue = buildPartWithScoreQueue(minConfidence, scores);
   // Generate at most maxDetected object instances per image in decreasing root part score order.
   while (poses.length < maxDetected && !queue.empty()) {

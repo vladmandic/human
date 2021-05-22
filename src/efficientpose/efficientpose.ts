@@ -3,7 +3,10 @@ import * as tf from '../../dist/tfjs.esm.js';
 import { Body } from '../result';
 
 let model;
-let keypoints: Array<any> = [];
+
+type Keypoints = { score: number, part: string, position: { x: number, y: number }, positionRaw: { x: number, y: number } };
+
+let keypoints: Array<Keypoints> = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 
 const bodyParts = ['head', 'neck', 'rightShoulder', 'rightElbow', 'rightWrist', 'chest', 'leftShoulder', 'leftElbow', 'leftWrist', 'pelvis', 'rightHip', 'rightKnee', 'rightAnkle', 'leftHip', 'leftKnee', 'leftAnkle'];
@@ -41,7 +44,8 @@ function max2d(inputs, minScore) {
 export async function predict(image, config): Promise<Body[]> {
   if ((skipped < config.body.skipFrames) && config.skipFrame && Object.keys(keypoints).length > 0) {
     skipped++;
-    return keypoints;
+    const score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
+    return [{ id: 0, score, keypoints }];
   }
   skipped = 0;
   return new Promise(async (resolve) => {
@@ -57,7 +61,7 @@ export async function predict(image, config): Promise<Body[]> {
     tensor.dispose();
 
     if (resT) {
-      const parts: Array<{ id, score, part, position: { x, y }, positionRaw: { xRaw, yRaw} }> = [];
+      const parts: Array<Keypoints> = [];
       const squeeze = resT.squeeze();
       tf.dispose(resT);
       // body parts are basically just a stack of 2d tensors
@@ -69,12 +73,11 @@ export async function predict(image, config): Promise<Body[]> {
         const [x, y, score] = max2d(stack[id], config.body.minConfidence);
         if (score > config.body.minConfidence) {
           parts.push({
-            id,
             score: Math.round(100 * score) / 100,
             part: bodyParts[id],
             positionRaw: {
-              xRaw: x / model.inputs[0].shape[2], // x normalized to 0..1
-              yRaw: y / model.inputs[0].shape[1], // y normalized to 0..1
+              x: x / model.inputs[0].shape[2], // x normalized to 0..1
+              y: y / model.inputs[0].shape[1], // y normalized to 0..1
             },
             position: {
               x: Math.round(image.shape[2] * x / model.inputs[0].shape[2]), // x normalized to input image size

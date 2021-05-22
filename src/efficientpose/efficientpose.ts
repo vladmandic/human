@@ -1,5 +1,6 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
+import { Body } from '../result';
 
 let model;
 let keypoints: Array<any> = [];
@@ -37,8 +38,7 @@ function max2d(inputs, minScore) {
   });
 }
 
-export async function predict(image, config) {
-  if (!model) return null;
+export async function predict(image, config): Promise<Body[]> {
   if ((skipped < config.body.skipFrames) && config.skipFrame && Object.keys(keypoints).length > 0) {
     skipped++;
     return keypoints;
@@ -87,6 +87,6 @@ export async function predict(image, config) {
       keypoints = parts;
     }
     const score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
-    resolve([{ score, keypoints }]);
+    resolve([{ id: 0, score, keypoints }]);
   });
 }

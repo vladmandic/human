@@ -1,10 +1,8 @@
 import { log, now } from './helpers';
-import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as emotion from './emotion/emotion';
 import * as faceres from './faceres/faceres';
-
-type Tensor = typeof tf.Tensor;
+import { Face } from './result';
 
 const calculateFaceAngle = (face, image_size): { angle: { pitch: number, yaw: number, roll: number }, matrix: [number, number, number, number, number, number, number, number, number] } => {
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -107,27 +105,7 @@ export const detectFace = async (parent, input): Promise<any> => {
   let emotionRes;
   let embeddingRes;
   let descRes;
-  const faceRes: Array<{
-      confidence: number,
-      boxConfidence: number,
-      faceConfidence: number,
-      box: [number, number, number, number],
-      mesh: Array<[number, number, number]>
-      meshRaw: Array<[number, number, number]>
-      boxRaw: [number, number, number, number],
-      annotations: Array<{ part: string, points: Array<[number, number, number]>[] }>,
-      age: number,
-      gender: string,
-      genderConfidence: number,
-      emotion: string,
-      embedding: number[],
-      iris: number,
-      rotation: {
-        angle: { pitch: number, yaw: number, roll: number },
-        matrix: [number, number, number, number, number, number, number, number, number]
-      },
-      tensor: Tensor,
-    }> = [];
+  const faceRes: Array<Face> = [];
   parent.state = 'run:face';
   timeStamp = now();
   const faces = await facemesh.predict(input, parent.config);
@@ -189,6 +167,7 @@ export const detectFace = async (parent, input): Promise<any> => {
 
     // combine results
     faceRes.push({
+      id: i,
       ...faces[i],
       age: descRes.age,
       gender: descRes.gender,

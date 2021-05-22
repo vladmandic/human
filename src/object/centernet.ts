@@ -1,9 +1,10 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
+import { Item } from '../result';
 
 let model;
-let last: Array<{}> = [];
+let last: Item[] = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 
 export async function load(config) {
@@ -58,8 +59,7 @@ async function process(res, inputSize, outputShape, config) {
   return results;
 }
 
-export async function predict(image, config) {
-  if (!model) return null;
+export async function predict(image, config): Promise<Item[]> {
   if ((skipped < config.object.skipFrames) && config.skipFrame && (last.length > 0)) {
     skipped++;
     return last;

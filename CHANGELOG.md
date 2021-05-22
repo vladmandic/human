@@ -9,11 +9,12 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/05/21 mandic00@live.com
+
+
 ### **1.9.1** 2021/05/21 mandic00@live.com
 
-
-### **origin/main** 2021/05/20 mandic00@live.com
-
+- caching improvements
 - sanitize server input
 - remove nanodet weights from default distribution
 - add experimental mb3-centernet object detection

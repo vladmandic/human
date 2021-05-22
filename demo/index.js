@@ -9,7 +9,8 @@ import webRTC from './helpers/webrtc.js';
 let human;
 
 const userConfig = {
-  warmup: 'none',
+  warmup: 'full',
+  /*
   backend: 'webgl',
   async: false,
   cacheSensitivity: 0,
@@ -29,6 +30,7 @@ const userConfig = {
   body: { enabled: true, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   object: { enabled: false },
+  */
 };
 
 // ui options

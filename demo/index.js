@@ -10,7 +10,6 @@ let human;
 
 const userConfig = {
   warmup: 'none',
-  /*
   backend: 'webgl',
   async: false,
   cacheSensitivity: 0,
@@ -27,10 +26,9 @@ const userConfig = {
   },
   hand: { enabled: false },
   gesture: { enabled: false },
-  body: { enabled: false, modelPath: 'posenet.json' },
+  body: { enabled: true, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   object: { enabled: false },
-  */
 };
 
 // ui options
@@ -46,6 +44,7 @@ const ui = {
   maxFPSframes: 10, // keep fps history for how many frames
   modelsPreload: true, // preload human models on startup
   modelsWarmup: true, // warmup human models on startup
+  buffered: true, // should output be buffered between frames
 
   // internal variables
   busy: false, // internal camera busy flag
@@ -54,7 +53,6 @@ const ui = {
   camera: {}, // internal, holds details of webcam details
   detectFPS: [], // internal, holds fps values for detection performance
   drawFPS: [], // internal, holds fps values for draw performance
-  buffered: false, // should output be buffered between frames
   drawWarmup: false, // debug only, should warmup image processing be displayed on startup
   drawThread: null, // internl, perform draw operations in a separate thread
   detectThread: null, // internl, perform detect operations in a separate thread

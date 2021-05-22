@@ -2,6 +2,7 @@ import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
 import * as handpipeline from './handpipeline';
+import { Hand } from '../result';
 
 const meshAnnotations = {
   thumb: [1, 2, 3, 4],
@@ -16,30 +17,30 @@ let handDetectorModel;
 let handPoseModel;
 let handPipeline;
 
-export async function predict(input, config) {
+export async function predict(input, config): Promise<Hand[]> {
   const predictions = await handPipeline.estimateHands(input, config);
   if (!predictions) return [];
-  const hands: Array<{ confidence: number, box: any, boxRaw: any, landmarks: any, annotations: any }> = [];
-  for (const prediction of predictions) {
+  const hands: Array<Hand> = [];
+  for (let i = 0; i < predictions.length; i++) {
     const annotations = {};
-    if (prediction.landmarks) {
+    if (predictions[i].landmarks) {
       for (const key of Object.keys(meshAnnotations)) {
-        annotations[key] = meshAnnotations[key].map((index) => prediction.landmarks[index]);
+        annotations[key] = meshAnnotations[key].map((index) => predictions[i].landmarks[index]);
       }
     }
-    const box = prediction.box ? [
-      Math.max(0, prediction.box.topLeft[0]),
-      Math.max(0, prediction.box.topLeft[1]),
-      Math.min(input.shape[2], prediction.box.bottomRight[0]) - Math.max(0, prediction.box.topLeft[0]),
-      Math.min(input.shape[1], prediction.box.bottomRight[1]) - Math.max(0, prediction.box.topLeft[1]),
-    ] : [];
-    const boxRaw = [
-      (prediction.box.topLeft[0]) / input.shape[2],
-      (prediction.box.topLeft[1]) / input.shape[1],
-      (prediction.box.bottomRight[0] - prediction.box.topLeft[0]) / input.shape[2],
-      (prediction.box.bottomRight[1] - prediction.box.topLeft[1]) / input.shape[1],
+    const box: [number, number, number, number] = predictions[i].box ? [
+      Math.max(0, predictions[i].box.topLeft[0]),
+      Math.max(0, predictions[i].box.topLeft[1]),
+      Math.min(input.shape[2], predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0]),
+      Math.min(input.shape[1], predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1]),
+    ] : [0, 0, 0, 0];
+    const boxRaw: [number, number, number, number] = [
+      (predictions[i].box.topLeft[0]) / input.shape[2],
+      (predictions[i].box.topLeft[1]) / input.shape[1],
+      (predictions[i].box.bottomRight[0] - predictions[i].box.topLeft[0]) / input.shape[2],
+      (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1],
     ];
-    hands.push({ confidence: Math.round(100 * prediction.confidence) / 100, box, boxRaw, landmarks: prediction.landmarks, annotations });
+    hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box, boxRaw, landmarks: predictions[i].landmarks, annotations });
   }
   return hands;
 }

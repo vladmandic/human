@@ -1,4 +1,6 @@
-export const body = (res) => {
+import { Gesture } from '../result';
+
+export const body = (res): Gesture[] => {
   if (!res) return [];
   const gestures: Array<{ body: number, gesture: string }> = [];
   for (let i = 0; i < res.length; i++) {
@@ -18,7 +20,7 @@ export const body = (res) => {
   return gestures;
 };
 
-export const face = (res) => {
+export const face = (res): Gesture[] => {
   if (!res) return [];
   const gestures: Array<{ face: number, gesture: string }> = [];
   for (let i = 0; i < res.length; i++) {
@@ -39,7 +41,7 @@ export const face = (res) => {
   return gestures;
 };
 
-export const iris = (res) => {
+export const iris = (res): Gesture[] => {
   if (!res) return [];
   const gestures: Array<{ iris: number, gesture: string }> = [];
   for (let i = 0; i < res.length; i++) {
@@ -77,7 +79,7 @@ export const iris = (res) => {
   return gestures;
 };
 
-export const hand = (res) => {
+export const hand = (res): Gesture[] => {
   if (!res) return [];
   const gestures: Array<{ hand: number, gesture: string }> = [];
   for (let i = 0; i < res.length; i++) {

@@ -9,7 +9,7 @@ import webRTC from './helpers/webrtc.js';
 let human;
 
 const userConfig = {
-  warmup: 'full',
+  warmup: 'none',
   /*
   backend: 'webgl',
   async: false,
@@ -47,6 +47,7 @@ const ui = {
   modelsPreload: true, // preload human models on startup
   modelsWarmup: true, // warmup human models on startup
   buffered: true, // should output be buffered between frames
+  iconSize: '48px', // ui icon sizes
 
   // internal variables
   busy: false, // internal camera busy flag
@@ -222,11 +223,14 @@ async function drawResults(input) {
   }
 
   // draw all results
+  human.draw.all(canvas, result);
+  /* use individual functions
   human.draw.face(canvas, result.face);
   human.draw.body(canvas, result.body);
   human.draw.hand(canvas, result.hand);
   human.draw.object(canvas, result.object);
   human.draw.gesture(canvas, result.gesture);
+  */
   await calcSimmilariry(result);
 
   // update log
@@ -652,6 +656,8 @@ async function main() {
   });
 
   log('demo starting ...');
+
+  document.documentElement.style.setProperty('--icon-size', ui.iconSize);
 
   // parse url search params
   const params = new URLSearchParams(location.search);

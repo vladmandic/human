@@ -1,5 +1,6 @@
 import { TRI468 as triangulation } from '../blazeface/coords';
 import { mergeDeep } from '../helpers';
+import type { Result, Face, Body, Hand, Item, Gesture } from '../result';
 
 /**
  * Draw Options
@@ -59,7 +60,7 @@ export const options: DrawOptions = {
   fillPolygons: <Boolean>false,
   useDepth: <Boolean>true,
   useCurves: <Boolean>false,
-  bufferedOutput: <Boolean>false,
+  bufferedOutput: <Boolean>true,
   useRawBoxes: <Boolean>false,
   calculateHandBox: <Boolean>true,
 };
@@ -93,14 +94,14 @@ function rect(ctx, x, y, width, height, localOptions) {
   ctx.stroke();
 }
 
-function lines(ctx, points: number[] = [], localOptions) {
+function lines(ctx, points: [number, number, number][] = [], localOptions) {
   if (points === undefined || points.length === 0) return;
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
   for (const pt of points) {
     ctx.strokeStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.3)` : localOptions.color;
     ctx.fillStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.3)` : localOptions.color;
-    ctx.lineTo(pt[0], parseInt(pt[1]));
+    ctx.lineTo(pt[0], Math.round(pt[1]));
   }
   ctx.stroke();
   if (localOptions.fillPolygons) {
@@ -109,7 +110,7 @@ function lines(ctx, points: number[] = [], localOptions) {
   }
 }
 
-function curves(ctx, points: number[] = [], localOptions) {
+function curves(ctx, points: [number, number, number][] = [], localOptions) {
   if (points === undefined || points.length === 0) return;
   if (!localOptions.useCurves || points.length <= 2) {
     lines(ctx, points, localOptions);
@@ -129,7 +130,7 @@ function curves(ctx, points: number[] = [], localOptions) {
   }
 }
 
-export async function gesture(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions) {
+export async function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
@@ -156,7 +157,7 @@ export async function gesture(inCanvas: HTMLCanvasElement, result: Array<any>, d
   }
 }
 
-export async function face(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions) {
+export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
@@ -211,24 +212,24 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<any>, draw
           lines(ctx, points, localOptions);
         }
         // iris: array[center, left, top, right, bottom]
-        if (f.annotations && f.annotations.leftEyeIris) {
+        if (f.annotations && f.annotations['leftEyeIris']) {
           ctx.strokeStyle = localOptions.useDepth ? 'rgba(255, 200, 255, 0.3)' : localOptions.color;
           ctx.beginPath();
-          const sizeX = Math.abs(f.annotations.leftEyeIris[3][0] - f.annotations.leftEyeIris[1][0]) / 2;
-          const sizeY = Math.abs(f.annotations.leftEyeIris[4][1] - f.annotations.leftEyeIris[2][1]) / 2;
-          ctx.ellipse(f.annotations.leftEyeIris[0][0], f.annotations.leftEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          const sizeX = Math.abs(f.annotations['leftEyeIris'][3][0] - f.annotations['leftEyeIris'][1][0]) / 2;
+          const sizeY = Math.abs(f.annotations['leftEyeIris'][4][1] - f.annotations['leftEyeIris'][2][1]) / 2;
+          ctx.ellipse(f.annotations['leftEyeIris'][0][0], f.annotations['leftEyeIris'][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
           ctx.stroke();
           if (localOptions.fillPolygons) {
             ctx.fillStyle = localOptions.useDepth ? 'rgba(255, 255, 200, 0.3)' : localOptions.color;
             ctx.fill();
           }
         }
-        if (f.annotations && f.annotations.rightEyeIris) {
+        if (f.annotations && f.annotations['rightEyeIris']) {
           ctx.strokeStyle = localOptions.useDepth ? 'rgba(255, 200, 255, 0.3)' : localOptions.color;
           ctx.beginPath();
-          const sizeX = Math.abs(f.annotations.rightEyeIris[3][0] - f.annotations.rightEyeIris[1][0]) / 2;
-          const sizeY = Math.abs(f.annotations.rightEyeIris[4][1] - f.annotations.rightEyeIris[2][1]) / 2;
-          ctx.ellipse(f.annotations.rightEyeIris[0][0], f.annotations.rightEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          const sizeX = Math.abs(f.annotations['rightEyeIris'][3][0] - f.annotations['rightEyeIris'][1][0]) / 2;
+          const sizeY = Math.abs(f.annotations['rightEyeIris'][4][1] - f.annotations['rightEyeIris'][2][1]) / 2;
+          ctx.ellipse(f.annotations['rightEyeIris'][0][0], f.annotations['rightEyeIris'][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
           ctx.stroke();
           if (localOptions.fillPolygons) {
             ctx.fillStyle = localOptions.useDepth ? 'rgba(255, 255, 200, 0.3)' : localOptions.color;
@@ -241,7 +242,7 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<any>, draw
 }
 
 const lastDrawnPose:any[] = [];
-export async function body(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions) {
+export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
@@ -249,20 +250,22 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>, draw
   if (!ctx) return;
   ctx.lineJoin = 'round';
   for (let i = 0; i < result.length; i++) {
-    // result[i].keypoints = result[i].keypoints.filter((a) => a.score > 0.5);
     if (!lastDrawnPose[i] && localOptions.bufferedOutput) lastDrawnPose[i] = { ...result[i] };
     ctx.strokeStyle = localOptions.color;
     ctx.fillStyle = localOptions.color;
     ctx.lineWidth = localOptions.lineWidth;
     ctx.font = localOptions.font;
-    if (localOptions.drawBoxes) {
+    if (localOptions.drawBoxes && result[i].box && result[i].box?.length === 4) {
+      // @ts-ignore box may not exist
       rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== '') {
           ctx.fillStyle = localOptions.shadowColor;
+          // @ts-ignore box may not exist
           ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
         }
         ctx.fillStyle = localOptions.labelColor;
+        // @ts-ignore box may not exist
         ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
       }
     }
@@ -361,7 +364,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<any>, draw
   }
 }
 
-export async function hand(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions) {
+export async function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
@@ -415,12 +418,12 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<any>, draw
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
       };
       ctx.font = localOptions.font;
-      addHandLabel(h.annotations.indexFinger, 'index');
-      addHandLabel(h.annotations.middleFinger, 'middle');
-      addHandLabel(h.annotations.ringFinger, 'ring');
-      addHandLabel(h.annotations.pinky, 'pinky');
-      addHandLabel(h.annotations.thumb, 'thumb');
-      addHandLabel(h.annotations.palmBase, 'palm');
+      addHandLabel(h.annotations['indexFinger'], 'index');
+      addHandLabel(h.annotations['middleFinger'], 'middle');
+      addHandLabel(h.annotations['ringFinger'], 'ring');
+      addHandLabel(h.annotations['pinky'], 'pinky');
+      addHandLabel(h.annotations['thumb'], 'thumb');
+      addHandLabel(h.annotations['palmBase'], 'palm');
     }
     if (localOptions.drawPolygons) {
       const addHandLine = (part) => {
@@ -434,17 +437,17 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<any>, draw
         }
       };
       ctx.lineWidth = localOptions.lineWidth;
-      addHandLine(h.annotations.indexFinger);
-      addHandLine(h.annotations.middleFinger);
-      addHandLine(h.annotations.ringFinger);
-      addHandLine(h.annotations.pinky);
-      addHandLine(h.annotations.thumb);
+      addHandLine(h.annotations['indexFinger']);
+      addHandLine(h.annotations['middleFinger']);
+      addHandLine(h.annotations['ringFinger']);
+      addHandLine(h.annotations['pinky']);
+      addHandLine(h.annotations['thumb']);
       // addPart(h.annotations.palmBase);
     }
   }
 }
 
-export async function object(inCanvas: HTMLCanvasElement, result: Array<any>, drawOptions?: DrawOptions) {
+export async function object(inCanvas: HTMLCanvasElement, result: Array<Item>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
@@ -479,7 +482,7 @@ export async function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasE
   outCtx?.drawImage(inCanvas, 0, 0);
 }
 
-export async function all(inCanvas: HTMLCanvasElement, result:any, drawOptions?: DrawOptions) {
+export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;

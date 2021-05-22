@@ -23,7 +23,7 @@ import * as app from '../package.json';
 export type Tensor = typeof tf.Tensor;
 
 export type { Config } from './config';
-export type { Result } from './result';
+export type { Result, Face, Hand, Body, Item, Gesture } from './result';
 export type { DrawOptions } from './draw/draw';
 
 /** Defines all possible input types for **Human** detection */
@@ -530,7 +530,7 @@ export class Human {
 
       this.perf.total = Math.trunc(now() - timeStart);
       this.state = 'idle';
-      const result = {
+      const res = {
         face: faceRes,
         body: bodyRes,
         hand: handRes,
@@ -540,7 +540,7 @@ export class Human {
         canvas: process.canvas,
       };
       // log('Result:', result);
-      resolve(result);
+      resolve(res);
     });
   }
 

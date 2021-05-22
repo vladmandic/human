@@ -30,8 +30,11 @@ export function getBoundingBox(keypoints) {
 }
 
 export function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolutionWidth]) {
-  const scalePose = (pose, scaleY, scaleX) => ({
+  const scaleY = height / inputResolutionHeight;
+  const scaleX = width / inputResolutionWidth;
+  const scalePose = (pose) => ({
     score: pose.score,
+    bowRaw: [pose.box[0] / inputResolutionWidth, pose.box[1] / inputResolutionHeight, pose.box[2] / inputResolutionWidth, pose.box[3] / inputResolutionHeight],
     box: [Math.trunc(pose.box[0] * scaleX), Math.trunc(pose.box[1] * scaleY), Math.trunc(pose.box[2] * scaleX), Math.trunc(pose.box[3] * scaleY)],
     keypoints: pose.keypoints.map(({ score, part, position }) => ({
       score,
@@ -39,7 +42,7 @@ export function scalePoses(poses, [height, width], [inputResolutionHeight, input
       position: { x: Math.trunc(position.x * scaleX), y: Math.trunc(position.y * scaleY) },
     })),
   });
-  const scaledPoses = poses.map((pose) => scalePose(pose, height / inputResolutionHeight, width / inputResolutionWidth));
+  const scaledPoses = poses.map((pose) => scalePose(pose));
   return scaledPoses;
 }
 

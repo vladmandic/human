@@ -62482,7 +62482,8 @@ function getBoundingBox(keypoints) {
 function scalePoses(poses2, [height, width], [inputResolutionHeight, inputResolutionWidth]) {
   const scaleY = height / inputResolutionHeight;
   const scaleX = width / inputResolutionWidth;
-  const scalePose = (pose) => ({
+  const scalePose = (pose, i) => ({
+    id: i,
     score: pose.score,
     bowRaw: [pose.box[0] / inputResolutionWidth, pose.box[1] / inputResolutionHeight, pose.box[2] / inputResolutionWidth, pose.box[3] / inputResolutionHeight],
     box: [Math.trunc(pose.box[0] * scaleX), Math.trunc(pose.box[1] * scaleY), Math.trunc(pose.box[2] * scaleX), Math.trunc(pose.box[3] * scaleY)],
@@ -62492,7 +62493,7 @@ function scalePoses(poses2, [height, width], [inputResolutionHeight, inputResolu
       position: { x: Math.trunc(position.x * scaleX), y: Math.trunc(position.y * scaleY) }
     }))
   });
-  const scaledPoses = poses2.map((pose) => scalePose(pose));
+  const scaledPoses = poses2.map((pose, i) => scalePose(pose, i));
   return scaledPoses;
 }
 var MaxHeap = class {
@@ -77924,7 +77925,8 @@ var Human = class {
         gesture: gestureRes,
         object: objectRes,
         performance: this.perf,
-        canvas: process5.canvas
+        canvas: process5.canvas,
+        timestamp: Date.now()
       };
       resolve(res);
     });

@@ -1,9 +1,9 @@
 export declare function eitherPointDoesntMeetConfidence(a: any, b: any, minConfidence: any): boolean;
 export declare function getAdjacentKeyPoints(keypoints: any, minConfidence: any): any[];
-export declare function getBoundingBox(keypoints: any): any[];
+export declare function getBoundingBox(keypoints: any): [number, number, number, number];
 export declare function scalePoses(poses: any, [height, width]: [any, any], [inputResolutionHeight, inputResolutionWidth]: [any, any]): any;
 export declare class MaxHeap {
-    priorityQueue: any;
+    priorityQueue: Array<any>;
     numberOfElements: number;
     getElementValue: any;
     constructor(maxSize: any, getElementValue: any);
@@ -11,7 +11,7 @@ export declare class MaxHeap {
     dequeue(): any;
     empty(): boolean;
     size(): number;
-    all(): any;
+    all(): any[];
     max(): any;
     swim(k: any): void;
     sink(k: any): void;

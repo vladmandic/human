@@ -1,6 +1,7 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as util from './util';
+import * as detector from './handdetector';
 
 const palmBoxEnlargeFactor = 5; // default 3
 const handBoxEnlargeFactor = 1.65; // default 1.65
@@ -9,17 +10,17 @@ const palmLandmarksPalmBase = 0;
 const palmLandmarksMiddleFingerBase = 2;
 
 export class HandPipeline {
-  handDetector: any;
-  landmarkDetector: any;
+  handDetector: detector.HandDetector;
+  handPoseModel: any; // tf.GraphModel
   inputSize: number;
-  storedBoxes: any;
+  storedBoxes: Array<{ startPoint: number[]; endPoint: number[]; palmLandmarks: number[]; confidence: number } | null>;
   skipped: number;
   detectedHands: number;
 
-  constructor(handDetector, landmarkDetector) {
+  constructor(handDetector, handPoseModel) {
     this.handDetector = handDetector;
-    this.landmarkDetector = landmarkDetector;
-    this.inputSize = this.landmarkDetector?.inputs[0].shape[2];
+    this.handPoseModel = handPoseModel;
+    this.inputSize = this.handPoseModel?.inputs[0].shape[2];
     this.storedBoxes = [];
     this.skipped = 0;
     this.detectedHands = 0;
@@ -112,7 +113,7 @@ export class HandPipeline {
         const handImage = croppedInput.div(255);
         croppedInput.dispose();
         rotatedImage.dispose();
-        const [confidenceT, keypoints] = await this.landmarkDetector.predict(handImage);
+        const [confidenceT, keypoints] = await this.handPoseModel.predict(handImage);
         handImage.dispose();
         const confidence = confidenceT.dataSync()[0];
         confidenceT.dispose();
@@ -123,7 +124,7 @@ export class HandPipeline {
           keypointsReshaped.dispose();
           const coords = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
           const nextBoundingBox = this.getBoxForHandLandmarks(coords);
-          this.storedBoxes[i] = nextBoundingBox;
+          this.storedBoxes[i] = { ...nextBoundingBox, confidence };
           const result = {
             landmarks: coords,
             confidence,

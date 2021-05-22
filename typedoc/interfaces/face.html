@@ -63,38 +63,6 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Face results
-							Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
-						Some values may be null if specific model is not enabled</p>
-					</div>
-					<p>Array of individual results with one object per detected face
-					Each result has:</p>
-					<ul>
-						<li>id: face number</li>
-						<li>confidence: overal detection confidence value</li>
-						<li>boxConfidence: face box detection confidence value</li>
-						<li>faceConfidence: face keypoints detection confidence value</li>
-						<li>box: face bounding box as array of [x, y, width, height], normalized to image resolution</li>
-						<li>boxRaw: face bounding box as array of [x, y, width, height], normalized to range 0..1</li>
-						<li>mesh: face keypoints as array of [x, y, z] points of face mesh, normalized to image resolution</li>
-						<li>meshRaw: face keypoints as array of [x, y, z] points of face mesh, normalized to range 0..1</li>
-						<li>annotations: annotated face keypoints as array of annotated face mesh points</li>
-						<li>age: age as value</li>
-						<li>gender: gender as value</li>
-						<li>genderConfidence: gender detection confidence as value</li>
-						<li>emotion: emotions as array of possible emotions with their individual scores</li>
-						<li>embedding: facial descriptor as array of numerical elements</li>
-						<li>iris: iris distance from current viewpoint as distance value</li>
-						<li>rotation: face rotiation that contains both angles and matrix used for 3d transformations</li>
-						<li>angle: face angle as object with values for roll, yaw and pitch angles</li>
-						<li>matrix: 3d transofrmation matrix as array of numeric values</li>
-						<li>tensor: face tensor as Tensor object which contains detected face</li>
-					</ul>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -271,7 +239,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="tensor" class="tsd-anchor"></a>
 					<h3>tensor</h3>
-					<div class="tsd-signature tsd-kind-icon">tensor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<div class="tsd-signature tsd-kind-icon">tensor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">__class</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>

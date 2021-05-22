@@ -29,6 +29,7 @@
  *  - matrix: 3d transofrmation matrix as array of numeric values
  * - tensor: face tensor as Tensor object which contains detected face
  */
+import { Tensor } from '../dist/tfjs.esm.js';
 export interface Face {
     id: number;
     confidence: number;
@@ -59,7 +60,7 @@ export interface Face {
         };
         matrix: [number, number, number, number, number, number, number, number, number];
     };
-    tensor: any;
+    tensor: typeof Tensor;
 }
 /** Body results
  *
@@ -85,7 +86,12 @@ export interface Body {
         position: {
             x: number;
             y: number;
-            z: number;
+            z?: number;
+        };
+        positionRaw?: {
+            x: number;
+            y: number;
+            z?: number;
         };
         score: number;
         presence?: number;

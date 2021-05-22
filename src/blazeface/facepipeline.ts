@@ -53,10 +53,10 @@ function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
 }
 // The Pipeline coordinates between the bounding box and skeleton models.
 export class Pipeline {
-  storedBoxes: any;
-  boundingBoxDetector: any;
-  meshDetector: any;
-  irisModel: any;
+  storedBoxes: Array<{ startPoint: number[], endPoint: number[], landmarks: any, confidence: number, faceConfidence?: number }>; // landmarks is tensor
+  boundingBoxDetector: any; // tf.GraphModel
+  meshDetector: any; // tf.GraphModel
+  irisModel: any; // tf.GraphModel
   boxSize: number;
   meshSize: number;
   irisSize: number;
@@ -120,7 +120,7 @@ export class Pipeline {
 
   // Given a cropped image of an eye, returns the coordinates of the contours surrounding the eye and the iris.
   getEyeCoords(eyeData, eyeBox, eyeBoxSize, flip = false) {
-    const eyeRawCoords: Array<any[]> = [];
+    const eyeRawCoords: Array<[number, number, number]> = [];
     for (let i = 0; i < irisLandmarks.numCoordinates; i++) {
       const x = eyeData[i * 3];
       const y = eyeData[i * 3 + 1];
@@ -229,7 +229,7 @@ export class Pipeline {
       }
 
       const [, confidence, contourCoords] = this.meshDetector.execute(face); // The first returned tensor represents facial contours which are already included in the coordinates.
-      const faceConfidence = confidence.dataSync()[0];
+      const faceConfidence = confidence.dataSync()[0] as number;
       if (faceConfidence < config.face.detector.minConfidence) {
         this.storedBoxes[i].confidence = faceConfidence; // reset confidence of cached box
         return null; // if below confidence just exit
@@ -265,6 +265,7 @@ export class Pipeline {
       // override box from detection with one calculated from mesh
       const mesh = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
       const storeConfidence = box.confidence;
+      // @ts-ignore enlargeBox does not include confidence so we append it manually
       box = bounding.enlargeBox(bounding.calculateLandmarksBoundingBox(mesh), 1.5); // redefine box with mesh calculated one
       box.confidence = storeConfidence;
 
@@ -288,13 +289,7 @@ export class Pipeline {
       };
 
       // updated stored cache values
-      const storedBox = bounding.squarifyBox(box);
-      // @ts-ignore box itself doesn't have those properties, but we stored them for future use
-      storedBox.confidence = box.confidence;
-      // @ts-ignore box itself doesn't have those properties, but we stored them for future use
-      storedBox.faceConfidence = faceConfidence;
-      // this.storedBoxes[i] = { ...squarifiedLandmarksBox, confidence: box.confidence, faceConfidence };
-      this.storedBoxes[i] = storedBox;
+      this.storedBoxes[i] = { ...bounding.squarifyBox(box), confidence: box.confidence, faceConfidence };
 
       return prediction;
     }));

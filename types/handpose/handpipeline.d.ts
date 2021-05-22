@@ -1,11 +1,17 @@
+import * as detector from './handdetector';
 export declare class HandPipeline {
-    handDetector: any;
-    landmarkDetector: any;
+    handDetector: detector.HandDetector;
+    handPoseModel: any;
     inputSize: number;
-    storedBoxes: any;
+    storedBoxes: Array<{
+        startPoint: number[];
+        endPoint: number[];
+        palmLandmarks: number[];
+        confidence: number;
+    } | null>;
     skipped: number;
     detectedHands: number;
-    constructor(handDetector: any, landmarkDetector: any);
+    constructor(handDetector: any, handPoseModel: any);
     calculateLandmarksBoundingBox(landmarks: any): {
         startPoint: number[];
         endPoint: number[];

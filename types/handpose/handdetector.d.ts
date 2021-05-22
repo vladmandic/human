@@ -1,10 +1,11 @@
+import * as tf from '../../dist/tfjs.esm.js';
 export declare class HandDetector {
     model: any;
-    anchors: any;
-    anchorsTensor: any;
+    anchors: number[][];
+    anchorsTensor: typeof tf.Tensor;
     inputSize: number;
-    inputSizeTensor: any;
-    doubleInputSizeTensor: any;
+    inputSizeTensor: typeof tf.Tensor;
+    doubleInputSizeTensor: typeof tf.Tensor;
     constructor(model: any);
     normalizeBoxes(boxes: any): any;
     normalizeLandmarks(rawPalmLandmarks: any, index: any): any;
@@ -13,5 +14,10 @@ export declare class HandDetector {
         palmLandmarks: any;
         confidence: number;
     }[]>;
-    estimateHandBounds(input: any, config: any): Promise<{}[]>;
+    estimateHandBounds(input: any, config: any): Promise<{
+        startPoint: number[];
+        endPoint: number[];
+        palmLandmarks: number[];
+        confidence: number;
+    }[]>;
 }

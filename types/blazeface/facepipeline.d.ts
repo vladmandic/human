@@ -1,5 +1,11 @@
 export declare class Pipeline {
-    storedBoxes: any;
+    storedBoxes: Array<{
+        startPoint: number[];
+        endPoint: number[];
+        landmarks: any;
+        confidence: number;
+        faceConfidence?: number;
+    }>;
     boundingBoxDetector: any;
     meshDetector: any;
     irisModel: any;
@@ -22,8 +28,8 @@ export declare class Pipeline {
         crop: any;
     };
     getEyeCoords(eyeData: any, eyeBox: any, eyeBoxSize: any, flip?: boolean): {
-        rawCoords: any[][];
-        iris: any[][];
+        rawCoords: [number, number, number][];
+        iris: [number, number, number][];
     };
     getAdjustedIrisCoords(rawCoords: any, irisCoords: any, direction: any): any;
     predict(input: any, config: any): Promise<any>;

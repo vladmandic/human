@@ -4061,10 +4061,7 @@ var Pipeline = class {
         boxConfidence: box4.confidence,
         image: face5
       };
-      const storedBox = squarifyBox(box4);
-      storedBox.confidence = box4.confidence;
-      storedBox.faceConfidence = faceConfidence;
-      this.storedBoxes[i] = storedBox;
+      this.storedBoxes[i] = { ...squarifyBox(box4), confidence: box4.confidence, faceConfidence };
       return prediction;
     }));
     if (config3.face.mesh.enabled)
@@ -16818,11 +16815,11 @@ var palmLandmarkIds = [0, 5, 9, 13, 17, 1, 2];
 var palmLandmarksPalmBase = 0;
 var palmLandmarksMiddleFingerBase = 2;
 var HandPipeline = class {
-  constructor(handDetector, landmarkDetector) {
+  constructor(handDetector, handPoseModel2) {
     var _a;
     this.handDetector = handDetector;
-    this.landmarkDetector = landmarkDetector;
-    this.inputSize = (_a = this.landmarkDetector) == null ? void 0 : _a.inputs[0].shape[2];
+    this.handPoseModel = handPoseModel2;
+    this.inputSize = (_a = this.handPoseModel) == null ? void 0 : _a.inputs[0].shape[2];
     this.storedBoxes = [];
     this.skipped = 0;
     this.detectedHands = 0;
@@ -16904,7 +16901,7 @@ var HandPipeline = class {
         const handImage = croppedInput.div(255);
         croppedInput.dispose();
         rotatedImage.dispose();
-        const [confidenceT, keypoints] = await this.landmarkDetector.predict(handImage);
+        const [confidenceT, keypoints] = await this.handPoseModel.predict(handImage);
         handImage.dispose();
         const confidence = confidenceT.dataSync()[0];
         confidenceT.dispose();
@@ -16915,7 +16912,7 @@ var HandPipeline = class {
           keypointsReshaped.dispose();
           const coords3 = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
           const nextBoundingBox = this.getBoxForHandLandmarks(coords3);
-          this.storedBoxes[i] = nextBoundingBox;
+          this.storedBoxes[i] = { ...nextBoundingBox, confidence };
           const result = {
             landmarks: coords3,
             confidence,
@@ -18440,8 +18437,9 @@ function lines(ctx, points = [], localOptions) {
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
   for (const pt of points) {
-    ctx.strokeStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + 2 * pt[2]}, ${127.5 - 2 * pt[2]}, 255, 0.3)` : localOptions.color;
-    ctx.fillStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + 2 * pt[2]}, ${127.5 - 2 * pt[2]}, 255, 0.3)` : localOptions.color;
+    const z = pt[2] || 0;
+    ctx.strokeStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
+    ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
     ctx.lineTo(pt[0], Math.round(pt[1]));
   }
   ctx.stroke();
@@ -18618,7 +18616,7 @@ async function body2(inCanvas2, result, drawOptions) {
     }
     if (localOptions.drawPoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
-        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + 2 * result[i].keypoints[pt].position.z}, ${127.5 - 2 * result[i].keypoints[pt].position.z}, 255, 0.5)` : localOptions.color;
+        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + 2 * (result[i].keypoints[pt].position.z || 0)}, ${127.5 - 2 * (result[i].keypoints[pt].position.z || 0)}, 255, 0.5)` : localOptions.color;
         point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 0, localOptions);
       }
     }
@@ -19928,9 +19926,9 @@ var Human = class {
         this.perf.cached++;
       this.perf.changed = Math.trunc(now() - timeStamp);
       this.analyze("Check Changed:");
+      let faceRes;
       let bodyRes;
       let handRes;
-      let faceRes;
       let objectRes;
       let current;
       if (this.config.async) {

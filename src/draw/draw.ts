@@ -96,13 +96,14 @@ function rect(ctx, x, y, width, height, localOptions) {
   ctx.stroke();
 }
 
-function lines(ctx, points: [number, number, number][] = [], localOptions) {
+function lines(ctx, points: [number, number, number?][] = [], localOptions) {
   if (points === undefined || points.length === 0) return;
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
   for (const pt of points) {
-    ctx.strokeStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.3)` : localOptions.color;
-    ctx.fillStyle = localOptions.useDepth && pt[2] ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.3)` : localOptions.color;
+    const z = pt[2] || 0;
+    ctx.strokeStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
+    ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
     ctx.lineTo(pt[0], Math.round(pt[1]));
   }
   ctx.stroke();
@@ -112,7 +113,7 @@ function lines(ctx, points: [number, number, number][] = [], localOptions) {
   }
 }
 
-function curves(ctx, points: [number, number, number][] = [], localOptions) {
+function curves(ctx, points: [number, number, number?][] = [], localOptions) {
   if (points === undefined || points.length === 0) return;
   if (!localOptions.useCurves || points.length <= 2) {
     lines(ctx, points, localOptions);
@@ -142,8 +143,8 @@ export async function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture
   ctx.fillStyle = localOptions.color;
   let i = 1;
   for (let j = 0; j < result.length; j++) {
-    let where:any[] = [];
-    let what:any[] = [];
+    let where: any[] = []; // what&where is a record
+    let what: any[] = []; // what&where is a record
     [where, what] = Object.entries(result[j]);
     if ((what.length > 1) && (what[1].length > 0)) {
       const person = where[1] > 0 ? `#${where[1]}` : '';
@@ -271,7 +272,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, dra
     }
     if (localOptions.drawPoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
-        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + (2 * result[i].keypoints[pt].position.z)}, ${127.5 - (2 * result[i].keypoints[pt].position.z)}, 255, 0.5)` : localOptions.color;
+        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + (2 * (result[i].keypoints[pt].position.z || 0))}, ${127.5 - (2 * (result[i].keypoints[pt].position.z || 0))}, 255, 0.5)` : localOptions.color;
         point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 0, localOptions);
       }
     }
@@ -286,7 +287,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, dra
     }
     if (localOptions.drawPolygons && result[i].keypoints) {
       let part;
-      const points: any[] = [];
+      const points: [number, number, number?][] = [];
       // shoulder line
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'leftShoulder');

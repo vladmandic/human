@@ -3,12 +3,12 @@ import * as box from './box';
 import * as anchors from './anchors';
 
 export class HandDetector {
-  model: any;
-  anchors: any;
-  anchorsTensor: any;
+  model: any; // tf.GraphModel
+  anchors: number[][];
+  anchorsTensor: typeof tf.Tensor;
   inputSize: number;
-  inputSizeTensor: any;
-  doubleInputSizeTensor: any;
+  inputSizeTensor: typeof tf.Tensor;
+  doubleInputSizeTensor: typeof tf.Tensor;
 
   constructor(model) {
     this.model = model;
@@ -52,7 +52,7 @@ export class HandDetector {
 
     scoresT.dispose();
     filteredT.dispose();
-    const hands: Array<{ box: any, palmLandmarks: any, confidence: number }> = [];
+    const hands: Array<{ box: any, palmLandmarks: any, confidence: number }> = []; // box and lardmarks are tensors here
     for (const index of filtered) {
       if (scores[index] >= config.hand.minConfidence) {
         const matchingBox = tf.slice(boxes, [index, 0], [1, -1]);
@@ -67,13 +67,13 @@ export class HandDetector {
     return hands;
   }
 
-  async estimateHandBounds(input, config) {
+  async estimateHandBounds(input, config): Promise<{ startPoint: number[]; endPoint: number[]; palmLandmarks: number[]; confidence: number }[]> {
     const inputHeight = input.shape[1];
     const inputWidth = input.shape[2];
     const image = tf.tidy(() => input.resizeBilinear([this.inputSize, this.inputSize]).div(127.5).sub(1));
     const predictions = await this.getBoxes(image, config);
     image.dispose();
-    const hands: Array<{}> = [];
+    const hands: Array<{ startPoint: number[]; endPoint: number[]; palmLandmarks: number[]; confidence: number }> = [];
     if (!predictions || predictions.length === 0) return hands;
     for (const prediction of predictions) {
       const boxes = prediction.box.dataSync();

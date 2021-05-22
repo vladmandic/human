@@ -150,4 +150,5 @@ export interface Result {
   object: Array<Item>
   performance: { any },
   canvas: OffscreenCanvas | HTMLCanvasElement,
+  timestamp: number,
 }

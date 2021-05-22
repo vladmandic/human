@@ -538,6 +538,7 @@ export class Human {
         object: objectRes,
         performance: this.perf,
         canvas: process.canvas,
+        timestamp: Date.now(),
       };
       // log('Result:', result);
       resolve(res);

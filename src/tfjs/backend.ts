@@ -5,7 +5,7 @@ export const config = {
   name: 'humangl',
   priority: 99,
   canvas: <null | OffscreenCanvas | HTMLCanvasElement>null,
-  gl: <any>null,
+  gl: <unknown>null,
   width: 1024,
   height: 1024,
   webGLattr: { // https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2

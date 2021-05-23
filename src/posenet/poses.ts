@@ -127,7 +127,9 @@ export function decode(offsets, scores, displacementsFwd, displacementsBwd, maxD
     // The top element in the queue is the next root candidate.
     const root = queue.dequeue();
     // Part-based non-maximum suppression: We reject a root candidate if it is within a disk of `nmsRadius` pixels from the corresponding part of a previously detected instance.
+    // @ts-ignore this one is tree walk
     const rootImageCoords = utils.getImageCoords(root.part, outputStride, offsets);
+    // @ts-ignore this one is tree walk
     if (withinRadius(poses, rootImageCoords, root.part.id)) continue;
     // Else start a new detection instance at the position of the root.
     let keypoints = decodePose(root, scores, offsets, displacementsFwd, displacementsBwd);

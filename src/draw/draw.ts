@@ -32,16 +32,16 @@ export interface DrawOptions {
   lineWidth: number,
   pointSize: number,
   roundRect: number,
-  drawPoints: Boolean,
-  drawLabels: Boolean,
-  drawBoxes: Boolean,
-  drawPolygons: Boolean,
-  fillPolygons: Boolean,
-  useDepth: Boolean,
-  useCurves: Boolean,
-  bufferedOutput: Boolean,
-  useRawBoxes: Boolean,
-  calculateHandBox: Boolean,
+  drawPoints: boolean,
+  drawLabels: boolean,
+  drawBoxes: boolean,
+  drawPolygons: boolean,
+  fillPolygons: boolean,
+  useDepth: boolean,
+  useCurves: boolean,
+  bufferedOutput: boolean,
+  useRawBoxes: boolean,
+  calculateHandBox: boolean,
 }
 
 export const options: DrawOptions = {
@@ -53,16 +53,16 @@ export const options: DrawOptions = {
   lineWidth: <number>6,
   pointSize: <number>2,
   roundRect: <number>28,
-  drawPoints: <Boolean>false,
-  drawLabels: <Boolean>true,
-  drawBoxes: <Boolean>true,
-  drawPolygons: <Boolean>true,
-  fillPolygons: <Boolean>false,
-  useDepth: <Boolean>true,
-  useCurves: <Boolean>false,
-  bufferedOutput: <Boolean>false, // not yet implemented
-  useRawBoxes: <Boolean>false,
-  calculateHandBox: <Boolean>true,
+  drawPoints: <boolean>false,
+  drawLabels: <boolean>true,
+  drawBoxes: <boolean>true,
+  drawPolygons: <boolean>true,
+  fillPolygons: <boolean>false,
+  useDepth: <boolean>true,
+  useCurves: <boolean>false,
+  bufferedOutput: <boolean>false, // not yet implemented
+  useRawBoxes: <boolean>false,
+  calculateHandBox: <boolean>true,
 };
 
 let bufferedResult: Result;
@@ -143,11 +143,11 @@ export async function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture
   ctx.fillStyle = localOptions.color;
   let i = 1;
   for (let j = 0; j < result.length; j++) {
-    let where: any[] = []; // what&where is a record
-    let what: any[] = []; // what&where is a record
+    let where: unknown[] = []; // what&where is a record
+    let what: unknown[] = []; // what&where is a record
     [where, what] = Object.entries(result[j]);
-    if ((what.length > 1) && (what[1].length > 0)) {
-      const person = where[1] > 0 ? `#${where[1]}` : '';
+    if ((what.length > 1) && ((what[1] as string).length > 0)) {
+      const person = where[1] as number > 0 ? `#${where[1]}` : '';
       const label = `${where[0]} ${person}: ${what[1]}`;
       if (localOptions.shadowColor && localOptions.shadowColor !== '') {
         ctx.fillStyle = localOptions.shadowColor;

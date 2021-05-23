@@ -1,9 +1,10 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as anchors from './anchors';
+import { Tensor, GraphModel } from '../tfjs/types';
 
 export class HandDetector {
-  model: any; // tf.GraphModel
+  model: GraphModel;
   anchors: number[][];
   anchorsTensor: typeof tf.Tensor;
   inputSize: number;
@@ -14,6 +15,7 @@ export class HandDetector {
     this.model = model;
     this.anchors = anchors.anchors.map((anchor) => [anchor.x, anchor.y]);
     this.anchorsTensor = tf.tensor2d(this.anchors);
+    // @ts-ignore model is not undefined here
     this.inputSize = this.model?.inputs[0].shape[2];
     this.inputSizeTensor = tf.tensor1d([this.inputSize, this.inputSize]);
     this.doubleInputSizeTensor = tf.tensor1d([this.inputSize * 2, this.inputSize * 2]);
@@ -39,7 +41,7 @@ export class HandDetector {
   }
 
   async getBoxes(input, config) {
-    const batched = this.model.predict(input);
+    const batched = this.model.predict(input) as Tensor;
     const predictions = batched.squeeze();
     batched.dispose();
     const scoresT = tf.tidy(() => tf.sigmoid(tf.slice(predictions, [0, 0], [-1, 1])).squeeze());
@@ -52,7 +54,7 @@ export class HandDetector {
 
     scoresT.dispose();
     filteredT.dispose();
-    const hands: Array<{ box: any, palmLandmarks: any, confidence: number }> = []; // box and lardmarks are tensors here
+    const hands: Array<{ box: Tensor, palmLandmarks: Tensor, confidence: number }> = [];
     for (const index of filtered) {
       if (scores[index] >= config.hand.minConfidence) {
         const matchingBox = tf.slice(boxes, [index, 0], [1, -1]);

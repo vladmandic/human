@@ -1,6 +1,6 @@
 # @vladmandic/human  
 
-Version: **1.9.2**  
+Version: **1.9.3**  
 Description: **Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition**  
 
 Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -9,8 +9,14 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/05/22 mandic00@live.com
+### **1.9.3** 2021/05/23 mandic00@live.com
 
+- use green weighted for input diff calculation
+- implement experimental drawoptions.bufferedoutput and bufferedfactor
+
+### **origin/main** 2021/05/22 mandic00@live.com
+
+- add tfjs types and remove all instances of any
 - enhance strong typing
 - rebuild all for release
 

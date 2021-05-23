@@ -365,9 +365,9 @@ export class Human {
     sumT.dispose();
     */
     // use js loop sum, faster than uploading tensor to gpu calculating and downloading back
-    const reducedData = reduced.dataSync();
+    const reducedData = reduced.dataSync(); // raw image rgb array
     let sum = 0;
-    for (let i = 0; i < reducedData.length / 3; i++) sum += reducedData[3 * i + 2]; // look only at green value as each pixel is rgb number triplet
+    for (let i = 0; i < reducedData.length / 3; i++) sum += reducedData[3 * i + 2]; // look only at green value of each pixel
 
     reduced.dispose();
     const diff = 100 * (Math.max(sum, this.#lastInputSum) / Math.min(sum, this.#lastInputSum) - 1);

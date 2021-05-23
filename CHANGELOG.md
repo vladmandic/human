@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/05/22 mandic00@live.com
 
+- enhance strong typing
 - rebuild all for release
 
 ### **1.9.2** 2021/05/22 mandic00@live.com

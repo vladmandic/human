@@ -25,12 +25,17 @@ const userConfig = {
     description: { enabled: false },
     emotion: { enabled: false },
   },
-  hand: { enabled: false },
-  gesture: { enabled: false },
+  hand: { enabled: true },
+  gesture: { enabled: true },
   body: { enabled: true, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   object: { enabled: false },
   */
+};
+
+const drawOptions = {
+  bufferedOutput: true, // experimental feature that makes draw functions interpolate results between each detection for smoother movement
+  bufferedFactor: 3, // speed of interpolation convergence where 1 means 100% immediately, 2 means 50% at each interpolation, etc.
 };
 
 // ui options
@@ -223,7 +228,7 @@ async function drawResults(input) {
   }
 
   // draw all results
-  human.draw.all(canvas, result);
+  human.draw.all(canvas, result, drawOptions);
   /* use individual functions
   human.draw.face(canvas, result.face);
   human.draw.body(canvas, result.body);
@@ -643,7 +648,7 @@ async function drawWarmup(res) {
   canvas.height = res.canvas.height;
   const ctx = canvas.getContext('2d');
   ctx.drawImage(res.canvas, 0, 0, res.canvas.width, res.canvas.height, 0, 0, canvas.width, canvas.height);
-  await human.draw.all(canvas, res);
+  await human.draw.all(canvas, res, drawOptions);
 }
 
 async function main() {

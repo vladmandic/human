@@ -20,6 +20,7 @@ import * as sample from './sample';
 import * as app from '../package.json';
 import { Tensor } from './tfjs/types';
 
+// export types
 export type { Config } from './config';
 export type { Result, Face, Hand, Body, Item, Gesture } from './result';
 export type { DrawOptions } from './draw/draw';
@@ -355,26 +356,27 @@ export class Human {
   /** @hidden */
   #skipFrame = async (input) => {
     if (this.config.cacheSensitivity === 0) return false;
-    const resizeFact = 40;
-    const reduced = input.resizeBilinear([Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
+    const resizeFact = 32;
+    const reduced: Tensor = input.resizeBilinear([Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
     // use tensor sum
+    /*
     const sumT = this.tf.sum(reduced);
     const sum = sumT.dataSync()[0] as number;
     sumT.dispose();
-    // use js loop sum
-    /*
+    */
+    // use js loop sum, faster than uploading tensor to gpu calculating and downloading back
     const reducedData = reduced.dataSync();
     let sum = 0;
-    for (let i = 0; i < reducedData.length; i++) sum += reducedData[i];
-    */
+    for (let i = 0; i < reducedData.length / 3; i++) sum += reducedData[3 * i + 2]; // look only at green value as each pixel is rgb number triplet
+
     reduced.dispose();
-    const diff = Math.max(sum, this.#lastInputSum) / Math.min(sum, this.#lastInputSum) - 1;
+    const diff = 100 * (Math.max(sum, this.#lastInputSum) / Math.min(sum, this.#lastInputSum) - 1);
     this.#lastInputSum = sum;
     // if previous frame was skipped, skip this frame if changed more than cacheSensitivity
     // if previous frame was not skipped, then look for cacheSensitivity or difference larger than one in previous frame to avoid resetting cache in subsequent frames unnecessarily
     const skipFrame = diff < Math.max(this.config.cacheSensitivity, this.#lastCacheDiff);
-    // if difference is above 4x threshold, don't use last value to force reset cache for significant change of scenes or images
-    this.#lastCacheDiff = diff > 4 * this.config.cacheSensitivity ? 0 : diff;
+    // if difference is above 10x threshold, don't use last value to force reset cache for significant change of scenes or images
+    this.#lastCacheDiff = diff > 10 * this.config.cacheSensitivity ? 0 : diff;
     return skipFrame;
   }
 

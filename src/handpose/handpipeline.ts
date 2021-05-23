@@ -85,6 +85,7 @@ export class HandPipeline {
     // run new detector every skipFrames unless we only want box to start with
     let boxes;
 
+    // console.log(this.skipped, config.hand.skipFrames, !config.hand.landmarks, !config.skipFrame);
     if ((this.skipped === 0) || (this.skipped > config.hand.skipFrames) || !config.hand.landmarks || !config.skipFrame) {
       boxes = await this.handDetector.estimateHandBounds(image, config);
       this.skipped = 0;

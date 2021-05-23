@@ -1,20 +1,22 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
+import { Tensor, GraphModel } from '../tfjs/types';
 
-let model;
+let model: GraphModel;
 const last: Array<{ age: number}> = [];
 let lastCount = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
-type Tensor = typeof tf.Tensor;
 type DB = Array<{ name: string, source: string, embedding: number[] }>;
 
 export async function load(config) {
+  const modelUrl = join(config.modelBasePath, config.face.description.modelPath);
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.face.description.modelPath));
-    if (!model || !model.modelUrl) log('load model failed:', config.face.description.modelPath);
-    else if (config.debug) log('load model:', model.modelUrl);
-  } else if (config.debug) log('cached model:', model.modelUrl);
+    // @ts-ignore type mismatch for GraphModel
+    model = await tf.loadGraphModel(modelUrl);
+    if (!model) log('load model failed:', config.face.description.modelPath);
+    else if (config.debug) log('load model:', modelUrl);
+  } else if (config.debug) log('cached model:', modelUrl);
   return model;
 }
 
@@ -52,6 +54,7 @@ export function enhance(input): Tensor {
     // do a tight crop of image and resize it to fit the model
     const box = [[0.05, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
     // const box = [[0.0, 0.0, 1.0, 1.0]]; // basically no crop for test
+    if (!model.inputs[0].shape) return null; // model has no shape so no point continuing
     const crop = (tensor.shape.length === 3)
       ? tf.image.cropAndResize(tf.expandDims(tensor, 0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch dimension if missing
       : tf.image.cropAndResize(tensor, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);

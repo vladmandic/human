@@ -99,9 +99,7 @@ export interface Hand {
   confidence: number,
   box: [number, number, number, number],
   boxRaw: [number, number, number, number],
-  landmarks: Array<[number, number, number]>,
-  // annotations: Array<{ part: string, points: Array<[number, number, number]> }>,
-  // annotations: Annotations,
+  landmarks: number[],
   annotations: Record<string, Array<{ part: string, points: Array<[number, number, number]> }>>,
 }
 
@@ -151,7 +149,7 @@ export interface Result {
   gesture: Array<Gesture>,
   /** {@link Object}: detection & analysis results */
   object: Array<Item>
-  performance: { any },
+  performance: Record<string, unknown>,
   canvas: OffscreenCanvas | HTMLCanvasElement,
   timestamp: number,
 }

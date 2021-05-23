@@ -2,6 +2,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as util from './util';
 import * as detector from './handdetector';
+import { Tensor, GraphModel } from '../tfjs/types';
 
 const palmBoxEnlargeFactor = 5; // default 3
 const handBoxEnlargeFactor = 1.65; // default 1.65
@@ -11,7 +12,7 @@ const palmLandmarksMiddleFingerBase = 2;
 
 export class HandPipeline {
   handDetector: detector.HandDetector;
-  handPoseModel: any; // tf.GraphModel
+  handPoseModel: GraphModel;
   inputSize: number;
   storedBoxes: Array<{ startPoint: number[]; endPoint: number[]; palmLandmarks: number[]; confidence: number } | null>;
   skipped: number;
@@ -20,6 +21,7 @@ export class HandPipeline {
   constructor(handDetector, handPoseModel) {
     this.handDetector = handDetector;
     this.handPoseModel = handPoseModel;
+    // @ts-ignore model is not undefined here
     this.inputSize = this.handPoseModel?.inputs[0].shape[2];
     this.storedBoxes = [];
     this.skipped = 0;
@@ -96,7 +98,7 @@ export class HandPipeline {
       // for (const possible of boxes) this.storedBoxes.push(possible);
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }
-    const hands: Array<{}> = [];
+    const hands: Array<{ landmarks?: number[], confidence: number, box: { topLeft: number[], bottomRight: number[] } }> = [];
 
     // go through working set of boxes
     for (let i = 0; i < this.storedBoxes.length; i++) {
@@ -113,7 +115,7 @@ export class HandPipeline {
         const handImage = croppedInput.div(255);
         croppedInput.dispose();
         rotatedImage.dispose();
-        const [confidenceT, keypoints] = await this.handPoseModel.predict(handImage);
+        const [confidenceT, keypoints] = await this.handPoseModel.predict(handImage) as Array<Tensor>;
         handImage.dispose();
         const confidence = confidenceT.dataSync()[0];
         confidenceT.dispose();

@@ -35,7 +35,7 @@ export function scalePoses(poses, [height, width], [inputResolutionHeight, input
   const scalePose = (pose, i) => ({
     id: i,
     score: pose.score,
-    bowRaw: [pose.box[0] / inputResolutionWidth, pose.box[1] / inputResolutionHeight, pose.box[2] / inputResolutionWidth, pose.box[3] / inputResolutionHeight],
+    boxRaw: [pose.box[0] / inputResolutionWidth, pose.box[1] / inputResolutionHeight, pose.box[2] / inputResolutionWidth, pose.box[3] / inputResolutionHeight],
     box: [Math.trunc(pose.box[0] * scaleX), Math.trunc(pose.box[1] * scaleY), Math.trunc(pose.box[2] * scaleX), Math.trunc(pose.box[3] * scaleY)],
     keypoints: pose.keypoints.map(({ score, part, position }) => ({
       score,

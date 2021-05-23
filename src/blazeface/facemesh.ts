@@ -3,8 +3,9 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as blazeface from './blazeface';
 import * as facepipeline from './facepipeline';
 import * as coords from './coords';
+import { GraphModel } from '../tfjs/types';
 
-let faceModels:[any, any, any] = [null, null, null];
+let faceModels: [blazeface.BlazeFaceModel | null, GraphModel | null, GraphModel | null] = [null, null, null];
 let facePipeline;
 
 export async function predict(input, config): Promise<{ confidence, boxConfidence, faceConfidence, box, mesh, boxRaw, meshRaw, annotations, image }[]> {
@@ -49,25 +50,26 @@ export async function predict(input, config): Promise<{ confidence, boxConfidenc
   return results;
 }
 
-export async function load(config): Promise<[Object, Object, Object]> {
+export async function load(config): Promise<[unknown, unknown, unknown]> {
   if ((!faceModels[0] && config.face.enabled) || (!faceModels[1] && config.face.mesh.enabled) || (!faceModels[2] && config.face.iris.enabled)) {
+    // @ts-ignore type mismatch for GraphModel
     faceModels = await Promise.all([
       (!faceModels[0] && config.face.enabled) ? blazeface.load(config) : null,
       (!faceModels[1] && config.face.mesh.enabled) ? tf.loadGraphModel(join(config.modelBasePath, config.face.mesh.modelPath), { fromTFHub: config.face.mesh.modelPath.includes('tfhub.dev') }) : null,
       (!faceModels[2] && config.face.iris.enabled) ? tf.loadGraphModel(join(config.modelBasePath, config.face.iris.modelPath), { fromTFHub: config.face.iris.modelPath.includes('tfhub.dev') }) : null,
     ]);
     if (config.face.mesh.enabled) {
-      if (!faceModels[1] || !faceModels[1].modelUrl) log('load model failed:', config.face.mesh.modelPath);
-      else if (config.debug) log('load model:', faceModels[1].modelUrl);
+      if (!faceModels[1] || !faceModels[1]['modelUrl']) log('load model failed:', config.face.mesh.modelPath);
+      else if (config.debug) log('load model:', faceModels[1]['modelUrl']);
     }
     if (config.face.iris.enabled) {
-      if (!faceModels[2] || !faceModels[1].modelUrl) log('load model failed:', config.face.iris.modelPath);
-      else if (config.debug) log('load model:', faceModels[2].modelUrl);
+      if (!faceModels[2] || !faceModels[2]['modelUrl']) log('load model failed:', config.face.iris.modelPath);
+      else if (config.debug) log('load model:', faceModels[2]['modelUrl']);
     }
   } else if (config.debug) {
-    log('cached model:', faceModels[0].model.modelUrl);
-    log('cached model:', faceModels[1].modelUrl);
-    log('cached model:', faceModels[2].modelUrl);
+    if (faceModels[0]) log('cached model:', faceModels[0].model['modelUrl']);
+    if (faceModels[1]) log('cached model:', faceModels[1]['modelUrl']);
+    if (faceModels[2]) log('cached model:', faceModels[2]['modelUrl']);
   }
   facePipeline = new facepipeline.Pipeline(faceModels[0], faceModels[1], faceModels[2]);
   return faceModels;

@@ -3,16 +3,16 @@ export declare function getAdjacentKeyPoints(keypoints: any, minConfidence: any)
 export declare function getBoundingBox(keypoints: any): [number, number, number, number];
 export declare function scalePoses(poses: any, [height, width]: [any, any], [inputResolutionHeight, inputResolutionWidth]: [any, any]): any;
 export declare class MaxHeap {
-    priorityQueue: Array<any>;
+    priorityQueue: Array<unknown>;
     numberOfElements: number;
-    getElementValue: any;
+    getElementValue: unknown;
     constructor(maxSize: any, getElementValue: any);
     enqueue(x: any): void;
-    dequeue(): any;
+    dequeue(): unknown;
     empty(): boolean;
     size(): number;
-    all(): any[];
-    max(): any;
+    all(): unknown[];
+    max(): unknown;
     swim(k: any): void;
     sink(k: any): void;
     getValueAt(i: any): any;

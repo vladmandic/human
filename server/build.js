@@ -35,6 +35,8 @@ const tsconfig = {
   paths: {
     tslib: ['node_modules/tslib/tslib.d.ts'],
     '@tensorflow/tfjs-node/dist/io/file_system': ['node_modules/@tensorflow/tfjs-node/dist/io/file_system.js'],
+    '@tensorflow/tfjs-core/dist/index': ['node_modules/@tensorflow/tfjs-core/dist/index.js'],
+    '@tensorflow/tfjs-converter/dist/index': ['node_modules/@tensorflow/tfjs-converter/dist/index.js'],
   },
 };
 

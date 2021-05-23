@@ -29,16 +29,16 @@ export interface DrawOptions {
     lineWidth: number;
     pointSize: number;
     roundRect: number;
-    drawPoints: Boolean;
-    drawLabels: Boolean;
-    drawBoxes: Boolean;
-    drawPolygons: Boolean;
-    fillPolygons: Boolean;
-    useDepth: Boolean;
-    useCurves: Boolean;
-    bufferedOutput: Boolean;
-    useRawBoxes: Boolean;
-    calculateHandBox: Boolean;
+    drawPoints: boolean;
+    drawLabels: boolean;
+    drawBoxes: boolean;
+    drawPolygons: boolean;
+    fillPolygons: boolean;
+    useDepth: boolean;
+    useCurves: boolean;
+    bufferedOutput: boolean;
+    useRawBoxes: boolean;
+    calculateHandBox: boolean;
 }
 export declare const options: DrawOptions;
 export declare function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture>, drawOptions?: DrawOptions): Promise<void>;

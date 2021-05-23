@@ -3,6 +3,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as util from './util';
 import { Config } from '../config';
+import { Tensor, GraphModel } from '../tfjs/types';
 
 const keypointsCount = 6;
 
@@ -22,9 +23,9 @@ function decodeBounds(boxOutputs, anchors, inputSize) {
 }
 
 export class BlazeFaceModel {
-  model: any; // tf.GraphModel
+  model: GraphModel;
   anchorsData: [number, number][];
-  anchors: typeof tf.Tensor;
+  anchors: Tensor;
   inputSize: number;
   config: Config;
 
@@ -61,7 +62,7 @@ export class BlazeFaceModel {
     const nmsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
     const nms = nmsTensor.arraySync();
     nmsTensor.dispose();
-    const annotatedBoxes: Array<{ box: { startPoint: typeof tf.Tensor, endPoint: typeof tf.Tensor }, landmarks: typeof tf.Tensor, anchor: number[], confidence: number }> = [];
+    const annotatedBoxes: Array<{ box: { startPoint: Tensor, endPoint: Tensor }, landmarks: Tensor, anchor: number[], confidence: number }> = [];
     for (let i = 0; i < nms.length; i++) {
       const confidence = scores[nms[i]];
       if (confidence > this.config.face.detector.minConfidence) {

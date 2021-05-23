@@ -10,8 +10,7 @@ import * as blazepose from './blazepose/blazepose';
 import * as nanodet from './object/nanodet';
 import * as centernet from './object/centernet';
 import * as draw from './draw/draw';
-/** Generic Tensor object type */
-export declare type Tensor = typeof tf.Tensor;
+import { Tensor } from './tfjs/types';
 export type { Config } from './config';
 export type { Result, Face, Hand, Body, Item, Gesture } from './result';
 export type { DrawOptions } from './draw/draw';
@@ -24,7 +23,7 @@ export declare type Error = {
 /** Instance of TensorFlow/JS */
 export declare type TensorFlow = typeof tf;
 /** Generic Model object type, holds instance of individual models */
-declare type Model = Object;
+declare type Model = unknown;
 /**
  * **Human** library main class
  *
@@ -108,12 +107,12 @@ export declare class Human {
         agent: string;
     };
     /** Performance object that contains values for all recently performed operations */
-    perf: any;
+    perf: Record<string, unknown>;
     /**
      * Creates instance of Human library that is futher used for all operations
      * - @param userConfig: {@link Config}
      */
-    constructor(userConfig?: Config | Object);
+    constructor(userConfig?: Config | Record<string, unknown>);
     /** @hidden */
     analyze: (...msg: any[]) => void;
     /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
@@ -145,19 +144,19 @@ export declare class Human {
     /** Load method preloads all configured models on-demand
      * - Not explicitly required as any required model is load implicitly on it's first run
     */
-    load(userConfig?: Config | Object): Promise<void>;
+    load(userConfig?: Config | Record<string, unknown>): Promise<void>;
     /** Main detection method
      * - Analyze configuration: {@link Config}
      * - Pre-process input: {@link Input}
      * - Run inference for all configured models
      * - Process and return result: {@link Result}
     */
-    detect(input: Input, userConfig?: Config | Object): Promise<Result | Error>;
+    detect(input: Input, userConfig?: Config | Record<string, unknown>): Promise<Result | Error>;
     /** Warmup metho pre-initializes all models for faster inference
      * - can take significant time on startup
      * - only used for `webgl` and `humangl` backends
     */
-    warmup(userConfig?: Config | Object): Promise<Result | {
+    warmup(userConfig?: Config | Record<string, unknown>): Promise<Result | {
         error: any;
     }>;
 }

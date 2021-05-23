@@ -2,6 +2,8 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as bounding from './box';
 import * as util from './util';
 import * as coords from './coords';
+import { Tensor, GraphModel } from '../tfjs/types';
+import { BlazeFaceModel } from './blazeface';
 
 const leftOutline = coords.MESH_ANNOTATIONS['leftEyeLower0'];
 const rightOutline = coords.MESH_ANNOTATIONS['rightEyeLower0'];
@@ -53,10 +55,10 @@ function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
 }
 // The Pipeline coordinates between the bounding box and skeleton models.
 export class Pipeline {
-  storedBoxes: Array<{ startPoint: number[], endPoint: number[], landmarks: any, confidence: number, faceConfidence?: number }>; // landmarks is tensor
-  boundingBoxDetector: any; // tf.GraphModel
-  meshDetector: any; // tf.GraphModel
-  irisModel: any; // tf.GraphModel
+  storedBoxes: Array<{ startPoint: number[], endPoint: number[], landmarks: Array<number>, confidence: number, faceConfidence?: number }>;
+  boundingBoxDetector: BlazeFaceModel; // tf.GraphModel
+  meshDetector: GraphModel; // tf.GraphModel
+  irisModel: GraphModel; // tf.GraphModel
   boxSize: number;
   meshSize: number;
   irisSize: number;
@@ -166,7 +168,7 @@ export class Pipeline {
       this.storedBoxes = [];
       this.detectedFaces = 0;
       for (const possible of detector.boxes) {
-        this.storedBoxes.push({ startPoint: possible.box.startPoint.dataSync(), endPoint: possible.box.endPoint.dataSync(), landmarks: possible.landmarks, confidence: possible.confidence });
+        this.storedBoxes.push({ startPoint: possible.box.startPoint.dataSync(), endPoint: possible.box.endPoint.dataSync(), landmarks: possible.landmarks.arraySync(), confidence: possible.confidence });
       }
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }
@@ -181,7 +183,7 @@ export class Pipeline {
         const scaledBox = bounding.scaleBoxCoordinates({ startPoint: this.storedBoxes[i].startPoint, endPoint: this.storedBoxes[i].endPoint }, detector.scaleFactor);
         const enlargedBox = bounding.enlargeBox(scaledBox);
         const squarifiedBox = bounding.squarifyBox(enlargedBox);
-        const landmarks = this.storedBoxes[i].landmarks.arraySync();
+        const landmarks = this.storedBoxes[i].landmarks;
         const confidence = this.storedBoxes[i].confidence;
         this.storedBoxes[i] = { ...squarifiedBox, confidence, landmarks };
       }
@@ -228,7 +230,7 @@ export class Pipeline {
         return prediction;
       }
 
-      const [, confidence, contourCoords] = this.meshDetector.execute(face); // The first returned tensor represents facial contours which are already included in the coordinates.
+      const [, confidence, contourCoords] = this.meshDetector.execute(face) as Array<Tensor>; // The first returned tensor represents facial contours which are already included in the coordinates.
       const faceConfidence = confidence.dataSync()[0] as number;
       if (faceConfidence < config.face.detector.minConfidence) {
         this.storedBoxes[i].confidence = faceConfidence; // reset confidence of cached box
@@ -240,7 +242,7 @@ export class Pipeline {
       if (config.face.iris.enabled) {
         const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true);
         const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1]);
-        const eyePredictions = this.irisModel.predict(tf.concat([leftEyeCrop, rightEyeCrop]));
+        const eyePredictions = this.irisModel.predict(tf.concat([leftEyeCrop, rightEyeCrop])) as Tensor;
         const eyePredictionsData = eyePredictions.dataSync();
         const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
         const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = this.getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);

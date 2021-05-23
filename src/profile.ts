@@ -2,16 +2,19 @@ import { log } from './helpers';
 
 export const data = {};
 
-export function run(modelName: string, profileData: any): void { // profileData is tfjs internal type
+export function run(modelName: string, profileData: Record<string, unknown>): void { // profileData is tfjs internal type
   if (!profileData || !profileData.kernels) return;
   const maxDetected = 5;
+  // @ts-ignore profileData.kernels is tfjs internal type
   const time = profileData.kernels
     .filter((a) => a.kernelTimeMs > 0)
     .reduce((a, b) => a += b.kernelTimeMs, 0);
+  // @ts-ignore profileData.kernels is tfjs internal type
   const slowest = profileData.kernels
     .map((a, i) => { a.id = i; return a; })
     .filter((a) => a.kernelTimeMs > 0)
     .sort((a, b) => b.kernelTimeMs - a.kernelTimeMs);
+  // @ts-ignore profileData.kernels is tfjs internal type
   const largest = profileData.kernels
     .map((a, i) => { a.id = i; return a; })
     .filter((a) => a.totalBytesSnapshot > 0)
@@ -23,7 +26,7 @@ export function run(modelName: string, profileData: any): void { // profileData 
     newBytes: profileData.newBytes,
     newTensors: profileData.newTensors,
     peakBytes: profileData.peakBytes,
-    numKernelOps: profileData.kernels.length,
+    numKernelOps: (profileData['kernels'] as Array<unknown>).length,
     timeKernelOps: time,
     slowestKernelOps: slowest,
     largestKernelOps: largest,

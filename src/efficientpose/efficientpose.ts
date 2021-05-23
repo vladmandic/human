@@ -1,8 +1,9 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { Body } from '../result';
+import { GraphModel } from '../tfjs/types';
 
-let model;
+let model: GraphModel;
 
 type Keypoints = { score: number, part: string, position: { x: number, y: number }, positionRaw: { x: number, y: number } };
 
@@ -13,10 +14,11 @@ const bodyParts = ['head', 'neck', 'rightShoulder', 'rightElbow', 'rightWrist', 
 
 export async function load(config) {
   if (!model) {
+    // @ts-ignore type mismatch on GraphModel
     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));
-    if (!model || !model.modelUrl) log('load model failed:', config.body.modelPath);
-    else if (config.debug) log('load model:', model.modelUrl);
-  } else if (config.debug) log('cached model:', model.modelUrl);
+    if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
+    else if (config.debug) log('load model:', model['modelUrl']);
+  } else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 
@@ -50,6 +52,7 @@ export async function predict(image, config): Promise<Body[]> {
   skipped = 0;
   return new Promise(async (resolve) => {
     const tensor = tf.tidy(() => {
+      if (!model.inputs[0].shape) return null;
       const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
       const enhance = tf.mul(resize, 2);
       const norm = enhance.sub(1);
@@ -75,13 +78,13 @@ export async function predict(image, config): Promise<Body[]> {
           parts.push({
             score: Math.round(100 * score) / 100,
             part: bodyParts[id],
-            positionRaw: {
-              x: x / model.inputs[0].shape[2], // x normalized to 0..1
-              y: y / model.inputs[0].shape[1], // y normalized to 0..1
+            positionRaw: { // normalized to 0..1
+              // @ts-ignore model is not undefined here
+              x: x / model.inputs[0].shape[2], y: y / model.inputs[0].shape[1],
             },
-            position: {
-              x: Math.round(image.shape[2] * x / model.inputs[0].shape[2]), // x normalized to input image size
-              y: Math.round(image.shape[1] * y / model.inputs[0].shape[1]), // y normalized to input image size
+            position: { // normalized to input image size
+              // @ts-ignore model is not undefined here
+              x: Math.round(image.shape[2] * x / model.inputs[0].shape[2]), y: Math.round(image.shape[1] * y / model.inputs[0].shape[1]),
             },
           });
         }

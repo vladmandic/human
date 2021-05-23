@@ -3949,7 +3949,7 @@ var Pipeline = class {
       this.storedBoxes = [];
       this.detectedFaces = 0;
       for (const possible of detector.boxes) {
-        this.storedBoxes.push({ startPoint: possible.box.startPoint.dataSync(), endPoint: possible.box.endPoint.dataSync(), landmarks: possible.landmarks, confidence: possible.confidence });
+        this.storedBoxes.push({ startPoint: possible.box.startPoint.dataSync(), endPoint: possible.box.endPoint.dataSync(), landmarks: possible.landmarks.arraySync(), confidence: possible.confidence });
       }
       if (this.storedBoxes.length > 0)
         useFreshBox = true;
@@ -3964,7 +3964,7 @@ var Pipeline = class {
         const scaledBox = scaleBoxCoordinates({ startPoint: this.storedBoxes[i].startPoint, endPoint: this.storedBoxes[i].endPoint }, detector.scaleFactor);
         const enlargedBox = enlargeBox(scaledBox);
         const squarifiedBox = squarifyBox(enlargedBox);
-        const landmarks = this.storedBoxes[i].landmarks.arraySync();
+        const landmarks = this.storedBoxes[i].landmarks;
         const confidence = this.storedBoxes[i].confidence;
         this.storedBoxes[i] = { ...squarifiedBox, confidence, landmarks };
       }
@@ -4125,21 +4125,24 @@ async function load2(config3) {
       !faceModels[2] && config3.face.iris.enabled ? tf5.loadGraphModel(join(config3.modelBasePath, config3.face.iris.modelPath), { fromTFHub: config3.face.iris.modelPath.includes("tfhub.dev") }) : null
     ]);
     if (config3.face.mesh.enabled) {
-      if (!faceModels[1] || !faceModels[1].modelUrl)
+      if (!faceModels[1] || !faceModels[1]["modelUrl"])
         log("load model failed:", config3.face.mesh.modelPath);
       else if (config3.debug)
-        log("load model:", faceModels[1].modelUrl);
+        log("load model:", faceModels[1]["modelUrl"]);
     }
     if (config3.face.iris.enabled) {
-      if (!faceModels[2] || !faceModels[1].modelUrl)
+      if (!faceModels[2] || !faceModels[2]["modelUrl"])
         log("load model failed:", config3.face.iris.modelPath);
       else if (config3.debug)
-        log("load model:", faceModels[2].modelUrl);
+        log("load model:", faceModels[2]["modelUrl"]);
     }
   } else if (config3.debug) {
-    log("cached model:", faceModels[0].model.modelUrl);
-    log("cached model:", faceModels[1].modelUrl);
-    log("cached model:", faceModels[2].modelUrl);
+    if (faceModels[0])
+      log("cached model:", faceModels[0].model["modelUrl"]);
+    if (faceModels[1])
+      log("cached model:", faceModels[1]["modelUrl"]);
+    if (faceModels[2])
+      log("cached model:", faceModels[2]["modelUrl"]);
   }
   facePipeline = new Pipeline(faceModels[0], faceModels[1], faceModels[2]);
   return faceModels;
@@ -4228,14 +4231,15 @@ var last2 = [];
 var lastCount2 = 0;
 var skipped2 = Number.MAX_SAFE_INTEGER;
 async function load4(config3) {
+  const modelUrl = join(config3.modelBasePath, config3.face.description.modelPath);
   if (!model2) {
-    model2 = await tf7.loadGraphModel(join(config3.modelBasePath, config3.face.description.modelPath));
-    if (!model2 || !model2.modelUrl)
+    model2 = await tf7.loadGraphModel(modelUrl);
+    if (!model2)
       log("load model failed:", config3.face.description.modelPath);
     else if (config3.debug)
-      log("load model:", model2.modelUrl);
+      log("load model:", modelUrl);
   } else if (config3.debug)
-    log("cached model:", model2.modelUrl);
+    log("cached model:", modelUrl);
   return model2;
 }
 function similarity(embedding1, embedding2, order = 2) {
@@ -4268,6 +4272,8 @@ function enhance(input) {
     if (!(tensor instanceof tf7.Tensor))
       return null;
     const box4 = [[0.05, 0.15, 0.85, 0.85]];
+    if (!model2.inputs[0].shape)
+      return null;
     const crop = tensor.shape.length === 3 ? tf7.image.cropAndResize(tf7.expandDims(tensor, 0), box4, [0], [model2.inputs[0].shape[2], model2.inputs[0].shape[1]]) : tf7.image.cropAndResize(tensor, box4, [0], [model2.inputs[0].shape[2], model2.inputs[0].shape[1]]);
     const norm = crop.mul(255);
     return norm;
@@ -4795,6 +4801,8 @@ var model3;
 var poseNetOutputs = ["MobilenetV1/offset_2/BiasAdd", "MobilenetV1/heatmap_2/BiasAdd", "MobilenetV1/displacement_fwd_2/BiasAdd", "MobilenetV1/displacement_bwd_2/BiasAdd"];
 async function predict4(input, config3) {
   const res = tf8.tidy(() => {
+    if (!model3.inputs[0].shape)
+      return [];
     const resized = input.resizeBilinear([model3.inputs[0].shape[2], model3.inputs[0].shape[1]]);
     const normalized = resized.toFloat().div(127.5).sub(1);
     const results = model3.execute(normalized, poseNetOutputs);
@@ -4806,18 +4814,20 @@ async function predict4(input, config3) {
   for (const t of res)
     t.dispose();
   const decoded = await decode(buffers[0], buffers[1], buffers[2], buffers[3], config3.body.maxDetected, config3.body.minConfidence);
+  if (!model3.inputs[0].shape)
+    return [];
   const scaled = scalePoses(decoded, [input.shape[1], input.shape[2]], [model3.inputs[0].shape[2], model3.inputs[0].shape[1]]);
   return scaled;
 }
 async function load5(config3) {
   if (!model3) {
     model3 = await tf8.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath));
-    if (!model3 || !model3.modelUrl)
+    if (!model3 || !model3["modelUrl"])
       log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
-      log("load model:", model3.modelUrl);
+      log("load model:", model3["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model3.modelUrl);
+    log("cached model:", model3["modelUrl"]);
   return model3;
 }
 
@@ -16973,7 +16983,8 @@ async function predict5(input, config3) {
       (predictions[i].box.bottomRight[0] - predictions[i].box.topLeft[0]) / input.shape[2],
       (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1]
     ];
-    hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box: box4, boxRaw, landmarks: predictions[i].landmarks, annotations: annotations3 });
+    const landmarks = predictions[i].landmarks;
+    hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box: box4, boxRaw, landmarks, annotations: annotations3 });
   }
   return hands;
 }
@@ -16984,20 +16995,20 @@ async function load6(config3) {
       config3.hand.landmarks ? tf12.loadGraphModel(join(config3.modelBasePath, config3.hand.skeleton.modelPath), { fromTFHub: config3.hand.skeleton.modelPath.includes("tfhub.dev") }) : null
     ]);
     if (config3.hand.enabled) {
-      if (!handDetectorModel || !handDetectorModel.modelUrl)
+      if (!handDetectorModel || !handDetectorModel["modelUrl"])
         log("load model failed:", config3.hand.detector.modelPath);
       else if (config3.debug)
-        log("load model:", handDetectorModel.modelUrl);
-      if (!handPoseModel || !handPoseModel.modelUrl)
+        log("load model:", handDetectorModel["modelUrl"]);
+      if (!handPoseModel || !handPoseModel["modelUrl"])
         log("load model failed:", config3.hand.skeleton.modelPath);
       else if (config3.debug)
-        log("load model:", handPoseModel.modelUrl);
+        log("load model:", handPoseModel["modelUrl"]);
     }
   } else {
     if (config3.debug)
-      log("cached model:", handDetectorModel.modelUrl);
+      log("cached model:", handDetectorModel["modelUrl"]);
     if (config3.debug)
-      log("cached model:", handPoseModel.modelUrl);
+      log("cached model:", handPoseModel["modelUrl"]);
   }
   const handDetector = new HandDetector(handDetectorModel);
   handPipeline = new HandPipeline(handDetector, handPoseModel);

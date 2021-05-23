@@ -1,17 +1,17 @@
-import * as tf from '../../dist/tfjs.esm.js';
 import { Config } from '../config';
+import { Tensor, GraphModel } from '../tfjs/types';
 export declare class BlazeFaceModel {
-    model: any;
+    model: GraphModel;
     anchorsData: [number, number][];
-    anchors: typeof tf.Tensor;
+    anchors: Tensor;
     inputSize: number;
     config: Config;
     constructor(model: any, config: any);
     getBoundingBoxes(inputImage: any): Promise<{
         boxes: {
             box: {
-                startPoint: typeof tf.Tensor;
-                endPoint: typeof tf.Tensor;
+                startPoint: Tensor;
+                endPoint: Tensor;
             };
             landmarks: any;
             anchor: number[];

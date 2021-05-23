@@ -1,14 +1,16 @@
+import { GraphModel } from '../tfjs/types';
+import { BlazeFaceModel } from './blazeface';
 export declare class Pipeline {
     storedBoxes: Array<{
         startPoint: number[];
         endPoint: number[];
-        landmarks: any;
+        landmarks: Array<number>;
         confidence: number;
         faceConfidence?: number;
     }>;
-    boundingBoxDetector: any;
-    meshDetector: any;
-    irisModel: any;
+    boundingBoxDetector: BlazeFaceModel;
+    meshDetector: GraphModel;
+    irisModel: GraphModel;
     boxSize: number;
     meshSize: number;
     irisSize: number;

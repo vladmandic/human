@@ -9,6 +9,6 @@ export declare function predict(input: any, config: any): Promise<{
     annotations: any;
     image: any;
 }[]>;
-export declare function load(config: any): Promise<[Object, Object, Object]>;
+export declare function load(config: any): Promise<[unknown, unknown, unknown]>;
 export declare const triangulation: number[];
 export declare const uvmap: number[][];

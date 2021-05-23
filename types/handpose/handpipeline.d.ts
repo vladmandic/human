@@ -1,7 +1,8 @@
 import * as detector from './handdetector';
+import { GraphModel } from '../tfjs/types';
 export declare class HandPipeline {
     handDetector: detector.HandDetector;
-    handPoseModel: any;
+    handPoseModel: GraphModel;
     inputSize: number;
     storedBoxes: Array<{
         startPoint: number[];
@@ -27,5 +28,12 @@ export declare class HandPipeline {
         palmLandmarks: any;
     };
     transformRawCoords(rawCoords: any, box2: any, angle: any, rotationMatrix: any): any;
-    estimateHands(image: any, config: any): Promise<{}[]>;
+    estimateHands(image: any, config: any): Promise<{
+        landmarks?: number[] | undefined;
+        confidence: number;
+        box: {
+            topLeft: number[];
+            bottomRight: number[];
+        };
+    }[]>;
 }

@@ -128,7 +128,7 @@ var config = {
   debug: true,
   async: true,
   warmup: "full",
-  cacheSensitivity: 0.01,
+  cacheSensitivity: 0.75,
   filter: {
     enabled: true,
     width: 0,
@@ -4572,7 +4572,7 @@ function scalePoses(poses2, [height, width], [inputResolutionHeight, inputResolu
   const scalePose = (pose, i) => ({
     id: i,
     score: pose.score,
-    bowRaw: [pose.box[0] / inputResolutionWidth, pose.box[1] / inputResolutionHeight, pose.box[2] / inputResolutionWidth, pose.box[3] / inputResolutionHeight],
+    boxRaw: [pose.box[0] / inputResolutionWidth, pose.box[1] / inputResolutionHeight, pose.box[2] / inputResolutionWidth, pose.box[3] / inputResolutionHeight],
     box: [Math.trunc(pose.box[0] * scaleX), Math.trunc(pose.box[1] * scaleY), Math.trunc(pose.box[2] * scaleX), Math.trunc(pose.box[3] * scaleY)],
     keypoints: pose.keypoints.map(({ score, part, position }) => ({
       score,
@@ -17105,31 +17105,32 @@ var model4;
 async function load7(config3) {
   if (!model4) {
     model4 = await tf13.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath));
-    model4.width = parseInt(model4.signature.inputs["input_1:0"].tensorShape.dim[2].size);
-    model4.height = parseInt(model4.signature.inputs["input_1:0"].tensorShape.dim[1].size);
-    if (!model4 || !model4.modelUrl)
+    model4["width"] = parseInt(model4["signature"].inputs["input_1:0"].tensorShape.dim[2].size);
+    model4["height"] = parseInt(model4["signature"].inputs["input_1:0"].tensorShape.dim[1].size);
+    if (!model4 || !model4["modelUrl"])
       log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
-      log("load model:", model4.modelUrl);
+      log("load model:", model4["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model4.modelUrl);
+    log("cached model:", model4["modelUrl"]);
   return model4;
 }
 async function predict6(image13, config3) {
+  var _a;
   if (!model4)
-    return null;
+    return [];
   if (!config3.body.enabled)
-    return null;
+    return [];
   const imgSize = { width: image13.shape[2], height: image13.shape[1] };
-  const resize = tf13.image.resizeBilinear(image13, [model4.width, model4.height], false);
+  const resize = tf13.image.resizeBilinear(image13, [model4["width"], model4["height"]], false);
   const normalize = tf13.div(resize, [255]);
   resize.dispose();
   const resT = await model4.predict(normalize);
-  const points = resT.find((t) => t.size === 195 || t.size === 155).dataSync();
+  const points = ((_a = resT.find((t) => t.size === 195 || t.size === 155)) == null ? void 0 : _a.dataSync()) || [];
   resT.forEach((t) => t.dispose());
   normalize.dispose();
   const keypoints = [];
-  const labels2 = points.length === 195 ? full : upper;
+  const labels2 = (points == null ? void 0 : points.length) === 195 ? full : upper;
   const depth = 5;
   for (let i = 0; i < points.length / depth; i++) {
     keypoints.push({
@@ -17144,8 +17145,17 @@ async function predict6(image13, config3) {
       presence: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 4])))) / 100
     });
   }
+  const x = keypoints.map((a) => a.position.x);
+  const y = keypoints.map((a) => a.position.x);
+  const box4 = [
+    Math.min(...x),
+    Math.min(...y),
+    Math.max(...x) - Math.min(...x),
+    Math.max(...y) - Math.min(...x)
+  ];
+  const boxRaw = [0, 0, 0, 0];
   const score = keypoints.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
-  return [{ score, keypoints }];
+  return [{ id: 0, score, box: box4, boxRaw, keypoints }];
 }
 
 // src/object/nanodet.ts
@@ -18410,11 +18420,12 @@ var options = {
   fillPolygons: false,
   useDepth: true,
   useCurves: false,
+  bufferedFactor: 2,
   bufferedOutput: false,
   useRawBoxes: false,
   calculateHandBox: true
 };
-var bufferedResult;
+var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0 };
 function point(ctx, x, y, z = 0, localOptions) {
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
   ctx.beginPath();
@@ -18854,6 +18865,36 @@ async function object(inCanvas2, result, drawOptions) {
     }
   }
 }
+function calcBuffered(newResult, localOptions) {
+  if (!bufferedResult.body || newResult.body.length !== bufferedResult.body.length)
+    bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
+  for (let i = 0; i < newResult.body.length; i++) {
+    bufferedResult.body[i].box = newResult.body[i].box.map((box4, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].box[j] + box4) / localOptions.bufferedFactor);
+    bufferedResult.body[i].boxRaw = newResult.body[i].boxRaw.map((box4, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + box4) / localOptions.bufferedFactor);
+    bufferedResult.body[i].keypoints = newResult.body[i].keypoints.map((keypoint, j) => ({
+      score: keypoint.score,
+      part: keypoint.part,
+      position: {
+        x: bufferedResult.body[i].keypoints[j] ? ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.x + keypoint.position.x) / localOptions.bufferedFactor : keypoint.position.x,
+        y: bufferedResult.body[i].keypoints[j] ? ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.y + keypoint.position.y) / localOptions.bufferedFactor : keypoint.position.y
+      }
+    }));
+  }
+  if (!bufferedResult.hand || newResult.hand.length !== bufferedResult.hand.length)
+    bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand));
+  for (let i = 0; i < newResult.hand.length; i++) {
+    bufferedResult.hand[i].box = newResult.hand[i].box.map((box4, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].box[j] + box4) / localOptions.bufferedFactor);
+    bufferedResult.hand[i].boxRaw = newResult.hand[i].boxRaw.map((box4, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + box4) / localOptions.bufferedFactor);
+    bufferedResult.hand[i].landmarks = newResult.hand[i].landmarks.map((landmark, j) => landmark.map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].landmarks[j][k] + coord) / localOptions.bufferedFactor));
+    const keys = Object.keys(newResult.hand[i].annotations);
+    for (const key of keys) {
+      bufferedResult.hand[i].annotations[key] = newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / localOptions.bufferedFactor));
+    }
+  }
+  bufferedResult.face = JSON.parse(JSON.stringify(newResult.face));
+  bufferedResult.object = JSON.parse(JSON.stringify(newResult.object));
+  bufferedResult.gesture = JSON.parse(JSON.stringify(newResult.gesture));
+}
 async function canvas(inCanvas2, outCanvas2) {
   if (!inCanvas2 || !outCanvas2)
     return;
@@ -18869,8 +18910,7 @@ async function all(inCanvas2, result, drawOptions) {
   if (!(inCanvas2 instanceof HTMLCanvasElement))
     return;
   if (localOptions.bufferedOutput) {
-    if (result.timestamp !== (bufferedResult == null ? void 0 : bufferedResult.timestamp))
-      bufferedResult = result;
+    calcBuffered(result, localOptions);
   } else {
     bufferedResult = result;
   }
@@ -19698,16 +19738,17 @@ var Human = class {
     __privateAdd(this, _skipFrame, async (input) => {
       if (this.config.cacheSensitivity === 0)
         return false;
-      const resizeFact = 40;
+      const resizeFact = 32;
       const reduced = input.resizeBilinear([Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
-      const sumT = this.tf.sum(reduced);
-      const sum = sumT.dataSync()[0];
-      sumT.dispose();
+      const reducedData = reduced.dataSync();
+      let sum = 0;
+      for (let i = 0; i < reducedData.length / 3; i++)
+        sum += reducedData[3 * i + 2];
       reduced.dispose();
-      const diff = Math.max(sum, __privateGet(this, _lastInputSum)) / Math.min(sum, __privateGet(this, _lastInputSum)) - 1;
+      const diff = 100 * (Math.max(sum, __privateGet(this, _lastInputSum)) / Math.min(sum, __privateGet(this, _lastInputSum)) - 1);
       __privateSet(this, _lastInputSum, sum);
       const skipFrame = diff < Math.max(this.config.cacheSensitivity, __privateGet(this, _lastCacheDiff));
-      __privateSet(this, _lastCacheDiff, diff > 4 * this.config.cacheSensitivity ? 0 : diff);
+      __privateSet(this, _lastCacheDiff, diff > 10 * this.config.cacheSensitivity ? 0 : diff);
       return skipFrame;
     });
     __privateAdd(this, _warmupBitmap, async () => {

@@ -21,6 +21,7 @@ import type { Result, Face, Body, Hand, Item, Gesture } from '../result';
  * -useDepth: use z-axis coordinate as color shade,
  * -useCurves: draw polygons as cures or as lines,
  * -bufferedOutput: experimental: allows to call draw methods multiple times for each detection and interpolate results between results thus achieving smoother animations
+ * -bufferedFactor: speed of interpolation convergence where 1 means 100% immediately, 2 means 50% at each interpolation, etc.
  * -useRawBoxes: Boolean: internal: use non-normalized coordinates when performing draw methods,
  */
 export interface DrawOptions {
@@ -40,6 +41,7 @@ export interface DrawOptions {
   useDepth: boolean,
   useCurves: boolean,
   bufferedOutput: boolean,
+  bufferedFactor: number,
   useRawBoxes: boolean,
   calculateHandBox: boolean,
 }
@@ -60,12 +62,13 @@ export const options: DrawOptions = {
   fillPolygons: <boolean>false,
   useDepth: <boolean>true,
   useCurves: <boolean>false,
-  bufferedOutput: <boolean>false, // not yet implemented
+  bufferedFactor: <number>2,
+  bufferedOutput: <boolean>false,
   useRawBoxes: <boolean>false,
   calculateHandBox: <boolean>true,
 };
 
-let bufferedResult: Result;
+let bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0 };
 
 function point(ctx, x, y, z = 0, localOptions) {
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
@@ -470,6 +473,50 @@ export async function object(inCanvas: HTMLCanvasElement, result: Array<Item>, d
   }
 }
 
+function calcBuffered(newResult, localOptions) {
+  // if (newResult.timestamp !== bufferedResult?.timestamp) bufferedResult = JSON.parse(JSON.stringify(newResult)); // no need to force update
+  // each record is only updated using deep copy when number of detected record changes, otherwise it will converge by itself
+
+  if (!bufferedResult.body || (newResult.body.length !== bufferedResult.body.length)) bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
+  for (let i = 0; i < newResult.body.length; i++) { // update body: box, boxRaw, keypoints
+    bufferedResult.body[i].box = newResult.body[i].box
+      .map((box, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].box[j] + box) / localOptions.bufferedFactor) as [number, number, number, number];
+    bufferedResult.body[i].boxRaw = newResult.body[i].boxRaw
+      .map((box, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + box) / localOptions.bufferedFactor) as [number, number, number, number];
+    bufferedResult.body[i].keypoints = newResult.body[i].keypoints
+      .map((keypoint, j) => ({
+        score: keypoint.score,
+        part: keypoint.part,
+        position: {
+          x: bufferedResult.body[i].keypoints[j] ? ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.x + keypoint.position.x) / localOptions.bufferedFactor : keypoint.position.x,
+          y: bufferedResult.body[i].keypoints[j] ? ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.y + keypoint.position.y) / localOptions.bufferedFactor : keypoint.position.y,
+        },
+      }));
+  }
+
+  if (!bufferedResult.hand || (newResult.hand.length !== bufferedResult.hand.length)) bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand));
+  for (let i = 0; i < newResult.hand.length; i++) { // update body: box, boxRaw, landmarks, annotations
+    bufferedResult.hand[i].box = newResult.hand[i].box
+      .map((box, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].box[j] + box) / localOptions.bufferedFactor);
+    bufferedResult.hand[i].boxRaw = newResult.hand[i].boxRaw
+      .map((box, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + box) / localOptions.bufferedFactor);
+    bufferedResult.hand[i].landmarks = newResult.hand[i].landmarks
+      .map((landmark, j) => landmark
+        .map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].landmarks[j][k] + coord) / localOptions.bufferedFactor));
+    const keys = Object.keys(newResult.hand[i].annotations);
+    for (const key of keys) {
+      bufferedResult.hand[i].annotations[key] = newResult.hand[i].annotations[key]
+        .map((val, j) => val
+          .map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / localOptions.bufferedFactor));
+    }
+  }
+
+  // no buffering implemented for face, object, gesture
+  bufferedResult.face = JSON.parse(JSON.stringify(newResult.face));
+  bufferedResult.object = JSON.parse(JSON.stringify(newResult.object));
+  bufferedResult.gesture = JSON.parse(JSON.stringify(newResult.gesture));
+}
+
 export async function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasElement) {
   if (!inCanvas || !outCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement) || !(outCanvas instanceof HTMLCanvasElement)) return;
@@ -482,7 +529,7 @@ export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptio
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
   if (localOptions.bufferedOutput) {
-    if (result.timestamp !== bufferedResult?.timestamp) bufferedResult = result;
+    calcBuffered(result, localOptions);
   } else {
     bufferedResult = result;
   }

@@ -6,10 +6,10 @@ import { Tensor, GraphModel } from '../tfjs/types';
 export class HandDetector {
   model: GraphModel;
   anchors: number[][];
-  anchorsTensor: typeof tf.Tensor;
+  anchorsTensor: Tensor;
   inputSize: number;
-  inputSizeTensor: typeof tf.Tensor;
-  doubleInputSizeTensor: typeof tf.Tensor;
+  inputSizeTensor: Tensor;
+  doubleInputSizeTensor: Tensor;
 
   constructor(model) {
     this.model = model;

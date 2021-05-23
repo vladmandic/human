@@ -1,12 +1,11 @@
-import * as tf from '../../dist/tfjs.esm.js';
-import { GraphModel } from '../tfjs/types';
+import { Tensor, GraphModel } from '../tfjs/types';
 export declare class HandDetector {
     model: GraphModel;
     anchors: number[][];
-    anchorsTensor: typeof tf.Tensor;
+    anchorsTensor: Tensor;
     inputSize: number;
-    inputSizeTensor: typeof tf.Tensor;
-    doubleInputSizeTensor: typeof tf.Tensor;
+    inputSizeTensor: Tensor;
+    doubleInputSizeTensor: Tensor;
     constructor(model: any);
     normalizeBoxes(boxes: any): any;
     normalizeLandmarks(rawPalmLandmarks: any, index: any): any;

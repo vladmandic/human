@@ -1,5 +1,5 @@
-import * as tf from '../../dist/tfjs.esm.js';
+import { Tensor } from '../tfjs/types';
 export declare function process(input: any, config: any): {
-    tensor: typeof tf.Tensor | null;
+    tensor: Tensor | null;
     canvas: OffscreenCanvas | HTMLCanvasElement;
 };

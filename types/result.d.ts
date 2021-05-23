@@ -79,8 +79,8 @@ export interface Face {
 export interface Body {
     id: number;
     score: number;
-    box?: [x: number, y: number, width: number, height: number];
-    boxRaw?: [x: number, y: number, width: number, height: number];
+    box: [x: number, y: number, width: number, height: number];
+    boxRaw: [x: number, y: number, width: number, height: number];
     keypoints: Array<{
         part: string;
         position: {
@@ -171,6 +171,6 @@ export interface Result {
     /** {@link Object}: detection & analysis results */
     object: Array<Item>;
     performance: Record<string, unknown>;
-    canvas: OffscreenCanvas | HTMLCanvasElement;
+    canvas?: OffscreenCanvas | HTMLCanvasElement;
     timestamp: number;
 }

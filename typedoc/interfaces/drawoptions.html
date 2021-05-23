@@ -84,6 +84,7 @@
 							-useDepth: use z-axis coordinate as color shade,
 							-useCurves: draw polygons as cures or as lines,
 							-bufferedOutput: experimental: allows to call draw methods multiple times for each detection and interpolate results between results thus achieving smoother animations
+							-bufferedFactor: speed of interpolation convergence where 1 means 100% immediately, 2 means 50% at each interpolation, etc.
 						-useRawBoxes: Boolean: internal: use non-normalized coordinates when performing draw methods,</p>
 					</div>
 				</div>
@@ -103,6 +104,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="drawoptions.html#bufferedfactor" class="tsd-kind-icon">buffered<wbr>Factor</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="drawoptions.html#bufferedoutput" class="tsd-kind-icon">buffered<wbr>Output</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="drawoptions.html#calculatehandbox" class="tsd-kind-icon">calculate<wbr>Hand<wbr>Box</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="drawoptions.html#color" class="tsd-kind-icon">color</a></li>
@@ -128,6 +130,13 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="bufferedfactor" class="tsd-anchor"></a>
+					<h3>buffered<wbr>Factor</h3>
+					<div class="tsd-signature tsd-kind-icon">buffered<wbr>Factor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="bufferedoutput" class="tsd-anchor"></a>
 					<h3>buffered<wbr>Output</h3>
@@ -283,6 +292,9 @@
 					<li class="current tsd-kind-interface">
 						<a href="drawoptions.html" class="tsd-kind-icon">Draw<wbr>Options</a>
 						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="drawoptions.html#bufferedfactor" class="tsd-kind-icon">buffered<wbr>Factor</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="drawoptions.html#bufferedoutput" class="tsd-kind-icon">buffered<wbr>Output</a>
 							</li>

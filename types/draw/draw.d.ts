@@ -18,6 +18,7 @@ import type { Result, Face, Body, Hand, Item, Gesture } from '../result';
  * -useDepth: use z-axis coordinate as color shade,
  * -useCurves: draw polygons as cures or as lines,
  * -bufferedOutput: experimental: allows to call draw methods multiple times for each detection and interpolate results between results thus achieving smoother animations
+ * -bufferedFactor: speed of interpolation convergence where 1 means 100% immediately, 2 means 50% at each interpolation, etc.
  * -useRawBoxes: Boolean: internal: use non-normalized coordinates when performing draw methods,
  */
 export interface DrawOptions {
@@ -37,6 +38,7 @@ export interface DrawOptions {
     useDepth: boolean;
     useCurves: boolean;
     bufferedOutput: boolean;
+    bufferedFactor: number;
     useRawBoxes: boolean;
     calculateHandBox: boolean;
 }

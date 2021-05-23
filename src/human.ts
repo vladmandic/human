@@ -18,9 +18,7 @@ import * as image from './image/image';
 import * as draw from './draw/draw';
 import * as sample from './sample';
 import * as app from '../package.json';
-
-/** Generic Tensor object type */
-export type Tensor = typeof tf.Tensor;
+import { Tensor } from './tfjs/types';
 
 export type { Config } from './config';
 export type { Result, Face, Hand, Body, Item, Gesture } from './result';
@@ -36,7 +34,7 @@ export type Error = { error: string };
 export type TensorFlow = typeof tf;
 
 /** Generic Model object type, holds instance of individual models */
-type Model = Object;
+type Model = unknown;
 
 /**
  * **Human** library main class
@@ -114,7 +112,7 @@ export class Human {
   /** Platform and agent information detected by Human */
   sysinfo: { platform: string, agent: string };
   /** Performance object that contains values for all recently performed operations */
-  perf: any; // perf members are dynamically defined as needed
+  perf: Record<string, unknown>; // perf members are dynamically defined as needed
   #numTensors: number;
   #analyzeMemoryLeaks: boolean;
   #checkSanity: boolean;
@@ -128,7 +126,7 @@ export class Human {
    * Creates instance of Human library that is futher used for all operations
    * - @param userConfig: {@link Config}
    */
-  constructor(userConfig: Config | Object = {}) {
+  constructor(userConfig: Config | Record<string, unknown> = {}) {
     this.tf = tf;
     this.draw = draw;
     this.version = app.version;
@@ -215,6 +213,7 @@ export class Human {
    */
   // eslint-disable-next-line class-methods-use-this
   enhance(input: Tensor): Tensor | null {
+    // @ts-ignore type mismach for Tensor
     return faceres.enhance(input);
   }
 
@@ -233,7 +232,7 @@ export class Human {
   /** Load method preloads all configured models on-demand
    * - Not explicitly required as any required model is load implicitly on it's first run
   */
-  async load(userConfig: Config | Object = {}) {
+  async load(userConfig: Config | Record<string, unknown> = {}) {
     this.state = 'load';
     const timeStamp = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
@@ -287,7 +286,7 @@ export class Human {
     }
 
     const current = Math.trunc(now() - timeStamp);
-    if (current > (this.perf.load || 0)) this.perf.load = current;
+    if (current > (this.perf.load as number || 0)) this.perf.load = current;
   }
 
   // check if backend needs initialization if it changed
@@ -385,7 +384,7 @@ export class Human {
    * - Run inference for all configured models
    * - Process and return result: {@link Result}
   */
-  async detect(input: Input, userConfig: Config | Object = {}): Promise<Result | Error> {
+  async detect(input: Input, userConfig: Config | Record<string, unknown> = {}): Promise<Result | Error> {
     // detection happens inside a promise
     return new Promise(async (resolve) => {
       this.state = 'config';
@@ -442,7 +441,7 @@ export class Human {
       this.config.skipFrame = await this.#skipFrame(process.tensor);
       if (!this.perf.frames) this.perf.frames = 0;
       if (!this.perf.cached) this.perf.cached = 0;
-      this.perf.frames++;
+      (this.perf.frames as number)++;
       // @ts-ignore hidden dynamic property that is not part of definitions
       if (this.config.skipFrame) this.perf.cached++;
       this.perf.changed = Math.trunc(now() - timeStamp);
@@ -629,7 +628,7 @@ export class Human {
    * - can take significant time on startup
    * - only used for `webgl` and `humangl` backends
   */
-  async warmup(userConfig: Config | Object = {}): Promise<Result | { error }> {
+  async warmup(userConfig: Config | Record<string, unknown> = {}): Promise<Result | { error }> {
     const t0 = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
     if (!this.config.warmup || this.config.warmup === 'none') return { error: 'null' };

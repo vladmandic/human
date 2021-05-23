@@ -49,9 +49,9 @@ export function scalePoses(poses, [height, width], [inputResolutionHeight, input
 
 // algorithm based on Coursera Lecture from Algorithms, Part 1: https://www.coursera.org/learn/algorithms-part1/lecture/ZjoSM/heapsort
 export class MaxHeap {
-  priorityQueue: Array<any>; // don't touch
+  priorityQueue: Array<unknown>; // don't touch
   numberOfElements: number;
-  getElementValue: any; // function call
+  getElementValue: unknown; // function call
 
   constructor(maxSize, getElementValue) {
     this.priorityQueue = new Array(maxSize);
@@ -98,6 +98,7 @@ export class MaxHeap {
   }
 
   getValueAt(i) {
+    // @ts-ignore getter is of unknown type
     return this.getElementValue(this.priorityQueue[i]);
   }
 

@@ -1,8 +1,4 @@
-/**
- * Result interface definition for **Human** library
- *
- * Contains all possible detection results
- */
+import { Tensor } from '../dist/tfjs.esm.js';
 /** Face results
  * Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
  * Some values may be null if specific model is not enabled
@@ -29,7 +25,6 @@
  *  - matrix: 3d transofrmation matrix as array of numeric values
  * - tensor: face tensor as Tensor object which contains detected face
  */
-import { Tensor } from '../dist/tfjs.esm.js';
 export interface Face {
     id: number;
     confidence: number;
@@ -130,6 +125,7 @@ export interface Hand {
 * - boxRaw as array of [x, y, width, height], normalized to range 0..1
 */
 export interface Item {
+    id: number;
     score: number;
     strideSize?: number;
     class: number;
@@ -159,6 +155,11 @@ export declare type Gesture = {
     'hand': number;
     gesture: string;
 };
+/**
+ * Result interface definition for **Human** library
+ *
+ * Contains all possible detection results
+ */
 export interface Result {
     /** {@link Face}: detection & analysis results */
     face: Array<Face>;

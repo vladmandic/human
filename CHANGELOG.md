@@ -9,13 +9,14 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/05/23 mandic00@live.com
+
+
 ### **1.9.3** 2021/05/23 mandic00@live.com
 
 - use green weighted for input diff calculation
 - implement experimental drawoptions.bufferedoutput and bufferedfactor
-
-### **origin/main** 2021/05/22 mandic00@live.com
-
+- use explicit tensor interface
 - add tfjs types and remove all instances of any
 - enhance strong typing
 - rebuild all for release

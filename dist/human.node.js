@@ -4453,7 +4453,7 @@ var detectFace = async (parent, input) => {
       delete faces[i].annotations.leftEyeIris;
       delete faces[i].annotations.rightEyeIris;
     }
-    const irisSize = ((_e = faces[i].annotations) == null ? void 0 : _e.leftEyeIris) && ((_f = faces[i].annotations) == null ? void 0 : _f.rightEyeIris) ? 11.7 * Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) : 0;
+    const irisSize = ((_e = faces[i].annotations) == null ? void 0 : _e.leftEyeIris) && ((_f = faces[i].annotations) == null ? void 0 : _f.rightEyeIris) ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2] : 0;
     faceRes.push({
       id: i,
       ...faces[i],
@@ -4462,7 +4462,7 @@ var detectFace = async (parent, input) => {
       genderConfidence: descRes.genderConfidence,
       embedding: descRes.descriptor,
       emotion: emotionRes,
-      iris: irisSize !== 0 ? Math.trunc(irisSize) / 100 : 0,
+      iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,
       rotation,
       tensor: parent.config.face.detector.return ? (_g = faces[i].image) == null ? void 0 : _g.squeeze() : null
     });
@@ -17399,6 +17399,7 @@ async function process3(res, inputSize, outputShape, config3) {
   classesT.dispose();
   const nms = nmsT.dataSync();
   nmsT.dispose();
+  let i = 0;
   for (const id of nms) {
     const score = detections[0][id][4];
     const classVal = detections[0][id][5];
@@ -17415,7 +17416,7 @@ async function process3(res, inputSize, outputShape, config3) {
       Math.trunc(boxRaw[2] * outputShape[0]),
       Math.trunc(boxRaw[3] * outputShape[1])
     ];
-    results.push({ score, class: classVal, label, box: box4, boxRaw });
+    results.push({ id: i++, score, class: classVal, label, box: box4, boxRaw });
   }
   return results;
 }

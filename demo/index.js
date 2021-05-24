@@ -18,18 +18,18 @@ const userConfig = {
     enabled: false,
     flip: false,
   },
-  face: { enabled: false,
-    detector: { return: false },
+  face: { enabled: true,
+    detector: { return: true },
     mesh: { enabled: true },
     iris: { enabled: true },
     description: { enabled: false },
     emotion: { enabled: false },
   },
-  hand: { enabled: true },
-  gesture: { enabled: true },
-  body: { enabled: true, modelPath: 'posenet.json' },
+  hand: { enabled: false },
+  body: { enabled: false, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   object: { enabled: false },
+  gesture: { enabled: true },
   */
 };
 

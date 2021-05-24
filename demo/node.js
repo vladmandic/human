@@ -100,7 +100,7 @@ async function detect(input) {
     for (let i = 0; i < result.face.length; i++) {
       const face = result.face[i];
       const emotion = face.emotion.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
-      log.data(`  Face: #${i} boxConfidence:${face.boxConfidence} faceConfidence:${face.boxConfidence} age:${face.age} genderConfidence:${face.genderConfidence} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
+      log.data(`  Face: #${i} boxConfidence:${face.boxConfidence} faceConfidence:${face.faceConfidence} age:${face.age} genderConfidence:${face.genderConfidence} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
     }
   } else {
     log.data('  Face: N/A');
@@ -137,6 +137,20 @@ async function detect(input) {
   } else {
     log.data('  Object: N/A');
   }
+
+  // print data to console
+  if (result) {
+    log.data('Persons:');
+    const persons = result.persons;
+    for (let i = 0; i < persons.length; i++) {
+      const face = persons[i].face;
+      const faceTxt = face ? `confidence:${face.confidence} age:${face.age} gender:${face.gender} iris:${face.iris}` : null;
+      const body = persons[i].body;
+      const bodyTxt = body ? `confidence:${body.score} landmarks:${body.keypoints?.length}` : null;
+      log.data(`  #${i}: Face:${faceTxt} Body:${bodyTxt} LeftHand:${persons[i].hands.left ? 'yes' : 'no'} RightHand:${persons[i].hands.right ? 'yes' : 'no'} Gestures:${persons[i].gestures.length}`);
+    }
+  }
+
   return result;
 }
 

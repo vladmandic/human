@@ -1,7 +1,10 @@
+const fs = require('fs');
 const path = require('path');
 const process = require('process');
 const { fork } = require('child_process');
 const log = require('@vladmandic/pilogger');
+
+let logFile = 'test.log';
 
 const tests = [
   'test-node.js',
@@ -57,7 +60,9 @@ async function runTest(test) {
 }
 
 async function testAll() {
-  log.logFile(path.join(__dirname, 'test.log'));
+  logFile = path.join(__dirname, logFile);
+  if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
+  log.logFile(logFile);
   log.header();
   process.on('unhandledRejection', (data) => log.error('nodejs unhandled rejection', data));
   process.on('uncaughtException', (data) => log.error('nodejs unhandled exception', data));

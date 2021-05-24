@@ -93,6 +93,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="result.html#hand" class="tsd-kind-icon">hand</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="result.html#object" class="tsd-kind-icon">object</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="result.html#performance" class="tsd-kind-icon">performance</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="result.html#persons" class="tsd-kind-icon">persons</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="result.html#timestamp" class="tsd-kind-icon">timestamp</a></li>
 							</ul>
 						</section>
@@ -115,10 +116,15 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="canvas" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> canvas</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> canvas</h3>
 					<div class="tsd-signature tsd-kind-icon">canvas<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>optional processed canvas that can be used to draw input on screen</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="face" class="tsd-anchor"></a>
@@ -170,17 +176,39 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="performance" class="tsd-anchor"></a>
-					<h3>performance</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> performance</h3>
 					<div class="tsd-signature tsd-kind-icon">performance<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>global performance object with timing values for each operation</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="persons" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> persons</h3>
+					<div class="tsd-signature tsd-kind-icon">persons<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Person</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>getter property that returns unified persons object</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="timestamp" class="tsd-anchor"></a>
-					<h3>timestamp</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> timestamp</h3>
 					<div class="tsd-signature tsd-kind-icon">timestamp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>timestamp of detection representing the milliseconds elapsed since the UNIX epoch</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -243,6 +271,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="result.html#performance" class="tsd-kind-icon">performance</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="result.html#persons" class="tsd-kind-icon">persons</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="result.html#timestamp" class="tsd-kind-icon">timestamp</a>

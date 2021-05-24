@@ -3,9 +3,8 @@ import { Tensor } from '../dist/tfjs.esm.js';
  * Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
  * Some values may be null if specific model is not enabled
  *
- * Array of individual results with one object per detected face
  * Each result has:
- * - id: face number
+ * - id: face id number
  * - confidence: overal detection confidence value
  * - boxConfidence: face box detection confidence value
  * - faceConfidence: face keypoints detection confidence value
@@ -19,7 +18,8 @@ import { Tensor } from '../dist/tfjs.esm.js';
  * - genderConfidence: gender detection confidence as value
  * - emotion: emotions as array of possible emotions with their individual scores
  * - embedding: facial descriptor as array of numerical elements
- * - iris: iris distance from current viewpoint as distance value
+ * - iris: iris distance from current viewpoint as distance value in centimeters for a typical camera
+ *   field of view of 88 degrees. value should be adjusted manually as needed
  * - rotation: face rotiation that contains both angles and matrix used for 3d transformations
  *  - angle: face angle as object with values for roll, yaw and pitch angles
  *  - matrix: 3d transofrmation matrix as array of numeric values
@@ -59,9 +59,8 @@ export interface Face {
 }
 /** Body results
  *
- * Array of individual results with one object per detected body
  * Each results has:
- * - id:body id number
+ * - id: body id number
  * - score: overall detection score
  * - box: bounding box: x, y, width, height normalized to input image resolution
  * - boxRaw: bounding box: x, y, width, height normalized to 0..1
@@ -94,13 +93,13 @@ export interface Body {
 }
 /** Hand results
  *
- * Array of individual results with one object per detected hand
  * Each result has:
- * - confidence as value
- * - box as array of [x, y, width, height], normalized to image resolution
- * - boxRaw as array of [x, y, width, height], normalized to range 0..1
- * - landmarks as array of [x, y, z] points of hand, normalized to image resolution
- * - annotations as array of annotated face landmark points
+ * - id: hand id number
+ * - confidence: detection confidence score as value
+ * - box: bounding box: x, y, width, height normalized to input image resolution
+ * - boxRaw: bounding box: x, y, width, height normalized to 0..1
+ * - landmarks: landmarks as array of [x, y, z] points of hand, normalized to image resolution
+ * - annotations: annotated landmarks for each hand part
  */
 export interface Hand {
     id: number;
@@ -117,12 +116,13 @@ export interface Hand {
 *
 * Array of individual results with one object per detected gesture
 * Each result has:
+* - id: object id number
 * - score as value
 * - label as detected class name
-* - center as array of [x, y], normalized to image resolution
-* - centerRaw as array of [x, y], normalized to range 0..1
-* - box as array of [x, y, width, height], normalized to image resolution
-* - boxRaw as array of [x, y, width, height], normalized to range 0..1
+* - box: bounding box: x, y, width, height normalized to input image resolution
+* - boxRaw: bounding box: x, y, width, height normalized to 0..1
+* - center: optional center point as array of [x, y], normalized to image resolution
+* - centerRaw: optional center point as array of [x, y], normalized to range 0..1
 */
 export interface Item {
     id: number;
@@ -155,6 +155,29 @@ export declare type Gesture = {
     'hand': number;
     gesture: string;
 };
+/** Person getter
+*
+* Each result has:
+* - id: person id
+* - face: face object
+* - body: body object
+* - hands: array of hand objects
+* - gestures: array of gestures
+* - box: bounding box: x, y, width, height normalized to input image resolution
+* - boxRaw: bounding box: x, y, width, height normalized to 0..1
+*/
+export interface Person {
+    id: number;
+    face: Face;
+    body: Body | null;
+    hands: {
+        left: Hand | null;
+        right: Hand | null;
+    };
+    gestures: Array<Gesture>;
+    box: [number, number, number, number];
+    boxRaw?: [number, number, number, number];
+}
 /**
  * Result interface definition for **Human** library
  *
@@ -171,7 +194,12 @@ export interface Result {
     gesture: Array<Gesture>;
     /** {@link Object}: detection & analysis results */
     object: Array<Item>;
-    performance: Record<string, unknown>;
-    canvas?: OffscreenCanvas | HTMLCanvasElement;
-    timestamp: number;
+    /** global performance object with timing values for each operation */
+    readonly performance: Record<string, unknown>;
+    /** optional processed canvas that can be used to draw input on screen */
+    readonly canvas?: OffscreenCanvas | HTMLCanvasElement;
+    /** timestamp of detection representing the milliseconds elapsed since the UNIX epoch */
+    readonly timestamp: number;
+    /** getter property that returns unified persons object  */
+    readonly persons: Array<Person>;
 }

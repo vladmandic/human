@@ -70,10 +70,9 @@
 							Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
 						Some values may be null if specific model is not enabled</p>
 					</div>
-					<p>Array of individual results with one object per detected face
-					Each result has:</p>
+					<p>Each result has:</p>
 					<ul>
-						<li>id: face number</li>
+						<li>id: face id number</li>
 						<li>confidence: overal detection confidence value</li>
 						<li>boxConfidence: face box detection confidence value</li>
 						<li>faceConfidence: face keypoints detection confidence value</li>
@@ -87,7 +86,8 @@
 						<li>genderConfidence: gender detection confidence as value</li>
 						<li>emotion: emotions as array of possible emotions with their individual scores</li>
 						<li>embedding: facial descriptor as array of numerical elements</li>
-						<li>iris: iris distance from current viewpoint as distance value</li>
+						<li>iris: iris distance from current viewpoint as distance value in centimeters for a typical camera
+						field of view of 88 degrees. value should be adjusted manually as needed</li>
 						<li>rotation: face rotiation that contains both angles and matrix used for 3d transformations</li>
 						<li>angle: face angle as object with values for roll, yaw and pitch angles</li>
 						<li>matrix: 3d transofrmation matrix as array of numeric values</li>

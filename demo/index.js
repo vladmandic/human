@@ -10,7 +10,6 @@ let human;
 
 const userConfig = {
   warmup: 'none',
-  /*
   backend: 'webgl',
   async: false,
   cacheSensitivity: 0,
@@ -25,12 +24,11 @@ const userConfig = {
     description: { enabled: false },
     emotion: { enabled: false },
   },
-  hand: { enabled: false },
-  body: { enabled: false, modelPath: 'posenet.json' },
+  hand: { enabled: true },
+  body: { enabled: true, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   object: { enabled: false },
   gesture: { enabled: true },
-  */
 };
 
 const drawOptions = {
@@ -229,6 +227,8 @@ async function drawResults(input) {
 
   // draw all results
   human.draw.all(canvas, result, drawOptions);
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  const person = result.persons; // invoke person getter
   /* use individual functions
   human.draw.face(canvas, result.face);
   human.draw.body(canvas, result.body);

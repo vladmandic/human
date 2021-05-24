@@ -71,12 +71,13 @@
 					<p>Array of individual results with one object per detected gesture
 					Each result has:</p>
 					<ul>
+						<li>id: object id number</li>
 						<li>score as value</li>
 						<li>label as detected class name</li>
-						<li>center as array of [x, y], normalized to image resolution</li>
-						<li>centerRaw as array of [x, y], normalized to range 0..1</li>
-						<li>box as array of [x, y, width, height], normalized to image resolution</li>
-						<li>boxRaw as array of [x, y, width, height], normalized to range 0..1</li>
+						<li>box: bounding box: x, y, width, height normalized to input image resolution</li>
+						<li>boxRaw: bounding box: x, y, width, height normalized to 0..1</li>
+						<li>center: optional center point as array of [x, y], normalized to image resolution</li>
+						<li>centerRaw: optional center point as array of [x, y], normalized to range 0..1</li>
 					</ul>
 				</div>
 			</section>

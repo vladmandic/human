@@ -18402,7 +18402,8 @@ __export(draw_exports, {
   gesture: () => gesture,
   hand: () => hand2,
   object: () => object,
-  options: () => options
+  options: () => options,
+  person: () => person
 });
 var options = {
   color: "rgba(173, 216, 230, 0.3)",
@@ -18425,7 +18426,7 @@ var options = {
   useRawBoxes: false,
   calculateHandBox: true
 };
-var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0 };
+var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 function point(ctx, x, y, z = 0, localOptions) {
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
   ctx.beginPath();
@@ -18507,8 +18508,8 @@ async function gesture(inCanvas2, result, drawOptions) {
     let what = [];
     [where, what] = Object.entries(result[j]);
     if (what.length > 1 && what[1].length > 0) {
-      const person = where[1] > 0 ? `#${where[1]}` : "";
-      const label = `${where[0]} ${person}: ${what[1]}`;
+      const who = where[1] > 0 ? `#${where[1]}` : "";
+      const label = `${where[0]} ${who}: ${what[1]}`;
       if (localOptions.shadowColor && localOptions.shadowColor !== "") {
         ctx.fillStyle = localOptions.shadowColor;
         ctx.fillText(label, 8, 2 + i * localOptions.lineHeight);
@@ -18865,6 +18866,35 @@ async function object(inCanvas2, result, drawOptions) {
     }
   }
 }
+async function person(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  if (!(inCanvas2 instanceof HTMLCanvasElement))
+    return;
+  const ctx = inCanvas2.getContext("2d");
+  if (!ctx)
+    return;
+  ctx.lineJoin = "round";
+  ctx.font = localOptions.font;
+  for (let i = 0; i < result.length; i++) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
+      if (localOptions.drawLabels) {
+        const label = `person #${i}`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+      }
+      ctx.stroke();
+    }
+  }
+}
 function calcBuffered(newResult, localOptions) {
   if (!bufferedResult.body || newResult.body.length !== bufferedResult.body.length)
     bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
@@ -18891,9 +18921,6 @@ function calcBuffered(newResult, localOptions) {
       bufferedResult.hand[i].annotations[key] = newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / localOptions.bufferedFactor));
     }
   }
-  bufferedResult.face = JSON.parse(JSON.stringify(newResult.face));
-  bufferedResult.object = JSON.parse(JSON.stringify(newResult.object));
-  bufferedResult.gesture = JSON.parse(JSON.stringify(newResult.gesture));
 }
 async function canvas(inCanvas2, outCanvas2) {
   if (!inCanvas2 || !outCanvas2)
@@ -18914,11 +18941,58 @@ async function all(inCanvas2, result, drawOptions) {
   } else {
     bufferedResult = result;
   }
-  face2(inCanvas2, bufferedResult.face, localOptions);
+  face2(inCanvas2, result.face, localOptions);
   body2(inCanvas2, bufferedResult.body, localOptions);
   hand2(inCanvas2, bufferedResult.hand, localOptions);
-  gesture(inCanvas2, bufferedResult.gesture, localOptions);
-  object(inCanvas2, bufferedResult.object, localOptions);
+  gesture(inCanvas2, result.gesture, localOptions);
+  object(inCanvas2, result.object, localOptions);
+}
+
+// src/persons.ts
+function join2(faces, bodies, hands, gestures) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H;
+  let id = 0;
+  const persons2 = [];
+  for (const face5 of faces) {
+    const person2 = { id: id++, face: face5, body: null, hands: { left: null, right: null }, gestures: [], box: [0, 0, 0, 0] };
+    for (const body4 of bodies) {
+      if (face5.box[0] > body4.box[0] && face5.box[0] < body4.box[0] + body4.box[2] && face5.box[1] + face5.box[3] > body4.box[1] && face5.box[1] + face5.box[3] < body4.box[1] + body4.box[3]) {
+        person2.body = body4;
+      }
+    }
+    if (person2.body) {
+      for (const hand3 of hands) {
+        if (hand3.box[0] + hand3.box[2] > person2.body.box[0] && hand3.box[0] + hand3.box[2] < person2.body.box[0] + person2.body.box[2] && hand3.box[1] + hand3.box[3] > person2.body.box[1] && hand3.box[1] + hand3.box[3] < person2.body.box[1] + person2.body.box[3]) {
+          if (person2.hands)
+            person2.hands.left = hand3;
+        }
+        if (hand3.box[0] < person2.body.box[0] + person2.body.box[2] && hand3.box[0] > person2.body.box[0] && hand3.box[1] + hand3.box[3] > person2.body.box[1] && hand3.box[1] + hand3.box[3] < person2.body.box[1] + person2.body.box[3]) {
+          if (person2.hands)
+            person2.hands.right = hand3;
+        }
+      }
+    }
+    for (const gesture3 of gestures) {
+      if (gesture3["face"] !== void 0 && gesture3["face"] === face5.id)
+        (_a = person2.gestures) == null ? void 0 : _a.push(gesture3);
+      else if (gesture3["iris"] !== void 0 && gesture3["iris"] === face5.id)
+        (_b = person2.gestures) == null ? void 0 : _b.push(gesture3);
+      else if (gesture3["body"] !== void 0 && gesture3["body"] === ((_c = person2.body) == null ? void 0 : _c.id))
+        (_d = person2.gestures) == null ? void 0 : _d.push(gesture3);
+      else if (gesture3["hand"] !== void 0 && gesture3["hand"] === ((_f = (_e = person2.hands) == null ? void 0 : _e.left) == null ? void 0 : _f.id))
+        (_g = person2.gestures) == null ? void 0 : _g.push(gesture3);
+      else if (gesture3["hand"] !== void 0 && gesture3["hand"] === ((_i = (_h = person2.hands) == null ? void 0 : _h.right) == null ? void 0 : _i.id))
+        (_j = person2.gestures) == null ? void 0 : _j.push(gesture3);
+    }
+    person2.box = [
+      Math.min(((_k = person2.face) == null ? void 0 : _k.box[0]) || Number.MAX_SAFE_INTEGER, ((_l = person2.body) == null ? void 0 : _l.box[0]) || Number.MAX_SAFE_INTEGER, ((_n = (_m = person2.hands) == null ? void 0 : _m.left) == null ? void 0 : _n.box[0]) || Number.MAX_SAFE_INTEGER, ((_p = (_o = person2.hands) == null ? void 0 : _o.right) == null ? void 0 : _p.box[0]) || Number.MAX_SAFE_INTEGER),
+      Math.min(((_q = person2.face) == null ? void 0 : _q.box[1]) || Number.MAX_SAFE_INTEGER, ((_r = person2.body) == null ? void 0 : _r.box[1]) || Number.MAX_SAFE_INTEGER, ((_t = (_s = person2.hands) == null ? void 0 : _s.left) == null ? void 0 : _t.box[1]) || Number.MAX_SAFE_INTEGER, ((_v = (_u = person2.hands) == null ? void 0 : _u.right) == null ? void 0 : _v.box[1]) || Number.MAX_SAFE_INTEGER),
+      Math.max(((_w = person2.face) == null ? void 0 : _w.box[2]) || 0, ((_x = person2.body) == null ? void 0 : _x.box[2]) || 0, ((_z = (_y = person2.hands) == null ? void 0 : _y.left) == null ? void 0 : _z.box[2]) || 0, ((_B = (_A = person2.hands) == null ? void 0 : _A.right) == null ? void 0 : _B.box[2]) || 0),
+      Math.max(((_C = person2.face) == null ? void 0 : _C.box[3]) || 0, ((_D = person2.body) == null ? void 0 : _D.box[3]) || 0, ((_F = (_E = person2.hands) == null ? void 0 : _E.left) == null ? void 0 : _F.box[3]) || 0, ((_H = (_G = person2.hands) == null ? void 0 : _G.right) == null ? void 0 : _H.box[3]) || 0)
+    ];
+    persons2.push(person2);
+  }
+  return persons2;
 }
 
 // src/sample.ts
@@ -19660,10 +19734,10 @@ var Human = class {
     this.analyze = (...msg) => {
       if (!__privateGet(this, _analyzeMemoryLeaks))
         return;
-      const current = this.tf.engine().state.numTensors;
-      const previous = __privateGet(this, _numTensors);
-      __privateSet(this, _numTensors, current);
-      const leaked = current - previous;
+      const currentTensors = this.tf.engine().state.numTensors;
+      const previousTensors = __privateGet(this, _numTensors);
+      __privateSet(this, _numTensors, currentTensors);
+      const leaked = currentTensors - previousTensors;
       if (leaked !== 0)
         log(...msg, leaked);
     };
@@ -19982,7 +20056,7 @@ var Human = class {
       let bodyRes;
       let handRes;
       let objectRes;
-      let current;
+      let elapsedTime;
       if (this.config.async) {
         faceRes = this.config.face.enabled ? detectFace(this, process5.tensor) : [];
         if (this.perf.face)
@@ -19991,9 +20065,9 @@ var Human = class {
         this.state = "run:face";
         timeStamp = now();
         faceRes = this.config.face.enabled ? await detectFace(this, process5.tensor) : [];
-        current = Math.trunc(now() - timeStamp);
-        if (current > 0)
-          this.perf.face = current;
+        elapsedTime = Math.trunc(now() - timeStamp);
+        if (elapsedTime > 0)
+          this.perf.face = elapsedTime;
       }
       this.analyze("Start Body:");
       if (this.config.async) {
@@ -20010,9 +20084,9 @@ var Human = class {
           bodyRes = this.config.body.enabled ? await predict4(process5.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes("blazepose"))
           bodyRes = this.config.body.enabled ? await predict6(process5.tensor, this.config) : [];
-        current = Math.trunc(now() - timeStamp);
-        if (current > 0)
-          this.perf.body = current;
+        elapsedTime = Math.trunc(now() - timeStamp);
+        if (elapsedTime > 0)
+          this.perf.body = elapsedTime;
       }
       this.analyze("End Body:");
       this.analyze("Start Hand:");
@@ -20024,9 +20098,9 @@ var Human = class {
         this.state = "run:hand";
         timeStamp = now();
         handRes = this.config.hand.enabled ? await predict5(process5.tensor, this.config) : [];
-        current = Math.trunc(now() - timeStamp);
-        if (current > 0)
-          this.perf.hand = current;
+        elapsedTime = Math.trunc(now() - timeStamp);
+        if (elapsedTime > 0)
+          this.perf.hand = elapsedTime;
       }
       this.analyze("End Hand:");
       this.analyze("Start Object:");
@@ -20044,9 +20118,9 @@ var Human = class {
           objectRes = this.config.object.enabled ? await predict7(process5.tensor, this.config) : [];
         else if (this.config.object.modelPath.includes("centernet"))
           objectRes = this.config.object.enabled ? await predict8(process5.tensor, this.config) : [];
-        current = Math.trunc(now() - timeStamp);
-        if (current > 0)
-          this.perf.object = current;
+        elapsedTime = Math.trunc(now() - timeStamp);
+        if (elapsedTime > 0)
+          this.perf.object = elapsedTime;
       }
       this.analyze("End Object:");
       if (this.config.async) {
@@ -20072,7 +20146,10 @@ var Human = class {
         object: objectRes,
         performance: this.perf,
         canvas: process5.canvas,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        get persons() {
+          return join2(faceRes, bodyRes, handRes, gestureRes);
+        }
       };
       resolve(res);
     });

@@ -9,8 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/05/23 mandic00@live.com
+### **HEAD -> main** 2021/05/24 mandic00@live.com
 
+- added experimental results interpolation for smooth draw operations
 
 ### **1.9.3** 2021/05/23 mandic00@live.com
 

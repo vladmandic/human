@@ -1,9 +1,12 @@
 const ts = require('typescript');
+const fs = require('fs');
 const path = require('path');
 const log = require('@vladmandic/pilogger');
 const esbuild = require('esbuild');
 const TypeDoc = require('typedoc');
 const changelog = require('./changelog');
+
+let logFile = 'build.log';
 
 let busy = false;
 let td = null;
@@ -290,7 +293,9 @@ async function build(f, msg, dev = false) {
 }
 
 if (require.main === module) {
-  log.logFile(path.join(__dirname, 'build.log'));
+  logFile = path.join(__dirname, logFile);
+  if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
+  log.logFile(logFile);
   log.header();
   build('all', 'startup');
 } else {

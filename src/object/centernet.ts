@@ -20,7 +20,7 @@ export async function load(config) {
 }
 
 async function process(res, inputSize, outputShape, config) {
-  const results: Array<{ score: number, class: number, label: string, box: number[], boxRaw: number[] }> = [];
+  const results: Array<Item> = [];
   const detections = res.arraySync();
   const squeezeT = tf.squeeze(res);
   res.dispose();
@@ -38,6 +38,7 @@ async function process(res, inputSize, outputShape, config) {
   classesT.dispose();
   const nms = nmsT.dataSync();
   nmsT.dispose();
+  let i = 0;
   for (const id of nms) {
     const score = detections[0][id][4];
     const classVal = detections[0][id][5];
@@ -54,7 +55,7 @@ async function process(res, inputSize, outputShape, config) {
       Math.trunc(boxRaw[2] * outputShape[0]),
       Math.trunc(boxRaw[3] * outputShape[1]),
     ];
-    results.push({ score, class: classVal, label, box, boxRaw });
+    results.push({ id: i++, score, class: classVal, label, box, boxRaw });
   }
   return results;
 }

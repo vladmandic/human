@@ -16,6 +16,7 @@ import * as centernet from './object/centernet';
 import * as gesture from './gesture/gesture';
 import * as image from './image/image';
 import * as draw from './draw/draw';
+import * as persons from './persons';
 import * as sample from './sample';
 import * as app from '../package.json';
 import { Tensor } from './tfjs/types';
@@ -179,10 +180,10 @@ export class Human {
   /** @hidden */
   analyze = (...msg) => {
     if (!this.#analyzeMemoryLeaks) return;
-    const current = this.tf.engine().state.numTensors;
-    const previous = this.#numTensors;
-    this.#numTensors = current;
-    const leaked = current - previous;
+    const currentTensors = this.tf.engine().state.numTensors;
+    const previousTensors = this.#numTensors;
+    this.#numTensors = currentTensors;
+    const leaked = currentTensors - previousTensors;
     if (leaked !== 0) log(...msg, leaked);
   }
 
@@ -455,7 +456,7 @@ export class Human {
       let bodyRes;
       let handRes;
       let objectRes;
-      let current;
+      let elapsedTime;
 
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       if (this.config.async) {
@@ -465,8 +466,8 @@ export class Human {
         this.state = 'run:face';
         timeStamp = now();
         faceRes = this.config.face.enabled ? await face.detectFace(this, process.tensor) : [];
-        current = Math.trunc(now() - timeStamp);
-        if (current > 0) this.perf.face = current;
+        elapsedTime = Math.trunc(now() - timeStamp);
+        if (elapsedTime > 0) this.perf.face = elapsedTime;
       }
 
       // run body: can be posenet or blazepose
@@ -480,8 +481,8 @@ export class Human {
         timeStamp = now();
         if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? await posenet.predict(process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes('blazepose')) bodyRes = this.config.body.enabled ? await blazepose.predict(process.tensor, this.config) : [];
-        current = Math.trunc(now() - timeStamp);
-        if (current > 0) this.perf.body = current;
+        elapsedTime = Math.trunc(now() - timeStamp);
+        if (elapsedTime > 0) this.perf.body = elapsedTime;
       }
       this.analyze('End Body:');
 
@@ -494,8 +495,8 @@ export class Human {
         this.state = 'run:hand';
         timeStamp = now();
         handRes = this.config.hand.enabled ? await handpose.predict(process.tensor, this.config) : [];
-        current = Math.trunc(now() - timeStamp);
-        if (current > 0) this.perf.hand = current;
+        elapsedTime = Math.trunc(now() - timeStamp);
+        if (elapsedTime > 0) this.perf.hand = elapsedTime;
       }
       this.analyze('End Hand:');
 
@@ -510,8 +511,8 @@ export class Human {
         timeStamp = now();
         if (this.config.object.modelPath.includes('nanodet')) objectRes = this.config.object.enabled ? await nanodet.predict(process.tensor, this.config) : [];
         else if (this.config.object.modelPath.includes('centernet')) objectRes = this.config.object.enabled ? await centernet.predict(process.tensor, this.config) : [];
-        current = Math.trunc(now() - timeStamp);
-        if (current > 0) this.perf.object = current;
+        elapsedTime = Math.trunc(now() - timeStamp);
+        if (elapsedTime > 0) this.perf.object = elapsedTime;
       }
       this.analyze('End Object:');
 
@@ -541,6 +542,7 @@ export class Human {
         performance: this.perf,
         canvas: process.canvas,
         timestamp: Date.now(),
+        get persons() { return persons.join(faceRes, bodyRes, handRes, gestureRes); },
       };
       // log('Result:', result);
       resolve(res);

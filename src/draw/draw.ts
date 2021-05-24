@@ -1,6 +1,6 @@
 import { TRI468 as triangulation } from '../blazeface/coords';
 import { mergeDeep } from '../helpers';
-import type { Result, Face, Body, Hand, Item, Gesture } from '../result';
+import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
 
 /**
  * Draw Options
@@ -68,7 +68,7 @@ export const options: DrawOptions = {
   calculateHandBox: <boolean>true,
 };
 
-let bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0 };
+let bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 
 function point(ctx, x, y, z = 0, localOptions) {
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
@@ -150,8 +150,8 @@ export async function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture
     let what: unknown[] = []; // what&where is a record
     [where, what] = Object.entries(result[j]);
     if ((what.length > 1) && ((what[1] as string).length > 0)) {
-      const person = where[1] as number > 0 ? `#${where[1]}` : '';
-      const label = `${where[0]} ${person}: ${what[1]}`;
+      const who = where[1] as number > 0 ? `#${where[1]}` : '';
+      const label = `${where[0]} ${who}: ${what[1]}`;
       if (localOptions.shadowColor && localOptions.shadowColor !== '') {
         ctx.fillStyle = localOptions.shadowColor;
         ctx.fillText(label, 8, 2 + (i * localOptions.lineHeight));
@@ -473,6 +473,33 @@ export async function object(inCanvas: HTMLCanvasElement, result: Array<Item>, d
   }
 }
 
+export async function person(inCanvas: HTMLCanvasElement, result: Array<Person>, drawOptions?: DrawOptions) {
+  const localOptions = mergeDeep(options, drawOptions);
+  if (!result || !inCanvas) return;
+  if (!(inCanvas instanceof HTMLCanvasElement)) return;
+  const ctx = inCanvas.getContext('2d');
+  if (!ctx) return;
+  ctx.lineJoin = 'round';
+  ctx.font = localOptions.font;
+  for (let i = 0; i < result.length; i++) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
+      if (localOptions.drawLabels) {
+        const label = `person #${i}`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== '') {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+      }
+      ctx.stroke();
+    }
+  }
+}
+
 function calcBuffered(newResult, localOptions) {
   // if (newResult.timestamp !== bufferedResult?.timestamp) bufferedResult = JSON.parse(JSON.stringify(newResult)); // no need to force update
   // each record is only updated using deep copy when number of detected record changes, otherwise it will converge by itself
@@ -512,9 +539,9 @@ function calcBuffered(newResult, localOptions) {
   }
 
   // no buffering implemented for face, object, gesture
-  bufferedResult.face = JSON.parse(JSON.stringify(newResult.face));
-  bufferedResult.object = JSON.parse(JSON.stringify(newResult.object));
-  bufferedResult.gesture = JSON.parse(JSON.stringify(newResult.gesture));
+  // bufferedResult.face = JSON.parse(JSON.stringify(newResult.face));
+  // bufferedResult.object = JSON.parse(JSON.stringify(newResult.object));
+  // bufferedResult.gesture = JSON.parse(JSON.stringify(newResult.gesture));
 }
 
 export async function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasElement) {
@@ -533,9 +560,10 @@ export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptio
   } else {
     bufferedResult = result;
   }
-  face(inCanvas, bufferedResult.face, localOptions);
-  body(inCanvas, bufferedResult.body, localOptions);
-  hand(inCanvas, bufferedResult.hand, localOptions);
-  gesture(inCanvas, bufferedResult.gesture, localOptions);
-  object(inCanvas, bufferedResult.object, localOptions);
+  face(inCanvas, result.face, localOptions); // face does have buffering
+  body(inCanvas, bufferedResult.body, localOptions); // use interpolated results if available
+  hand(inCanvas, bufferedResult.hand, localOptions); // use interpolated results if available
+  gesture(inCanvas, result.gesture, localOptions); // gestures do not have buffering
+  // person(inCanvas, result.persons, localOptions); // use interpolated results if available
+  object(inCanvas, result.object, localOptions); // object detection does not have buffering
 }

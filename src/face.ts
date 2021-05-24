@@ -161,8 +161,8 @@ export const detectFace = async (parent, input): Promise<Face[]> => {
       delete faces[i].annotations.rightEyeIris;
     }
     const irisSize = (faces[i].annotations?.leftEyeIris && faces[i].annotations?.rightEyeIris)
-    /* average human iris size is 11.7mm */
-      ? 11.7 * Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1]))
+    /* note: average human iris size is 11.7mm */
+      ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2]
       : 0;
 
     // combine results
@@ -174,7 +174,7 @@ export const detectFace = async (parent, input): Promise<Face[]> => {
       genderConfidence: descRes.genderConfidence,
       embedding: descRes.descriptor,
       emotion: emotionRes,
-      iris: (irisSize !== 0) ? Math.trunc(irisSize) / 100 : 0,
+      iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,
       rotation,
       tensor: parent.config.face.detector.return ? faces[i].image?.squeeze() : null,
     });

@@ -1,3 +1,8 @@
+/**
+ * Custom TFJS backend for Human based on WebGL
+ * Not used by default
+ */
+
 import { log } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 

@@ -1,3 +1,7 @@
+/**
+ * Simple helper functions used accross codebase
+ */
+
 // helper function: join two paths
 export function join(folder: string, file: string): string {
   const separator = folder.endsWith('/') ? '' : '/';

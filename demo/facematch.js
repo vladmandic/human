@@ -1,4 +1,10 @@
-// @ts-nocheck
+// @ts-nocheck // typescript checks disabled as this is pure javascript
+
+/**
+ * Human demo for browsers
+ *
+ * Demo for face descriptor analysis and face simmilarity analysis
+ */
 
 import Human from '../dist/human.esm.js';
 

@@ -1,3 +1,7 @@
+/**
+ * Image Processing module used by Human
+ */
+
 import * as tf from '../../dist/tfjs.esm.js';
 import * as fxImage from './imagefx';
 import { Tensor } from '../tfjs/types';

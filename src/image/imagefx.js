@@ -1,7 +1,5 @@
 /*
-WebGLImageFilter - MIT Licensed
-2013, Dominic Szablewski - phoboslab.org
-<https://github.com/phoboslab/WebGLImageFilter>
+WebGLImageFilter by Dominic Szablewski: <https://github.com/phoboslab/WebGLImageFilter>
 */
 
 function GLProgram(gl, vertexSource, fragmentSource) {

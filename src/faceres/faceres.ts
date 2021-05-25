@@ -1,3 +1,9 @@
+/**
+ * HSE-FaceRes Module
+ * Returns Age, Gender, Descriptor
+ * Implements Face simmilarity function
+ */
+
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { Tensor, GraphModel } from '../tfjs/types';

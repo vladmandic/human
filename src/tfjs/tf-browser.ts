@@ -1,4 +1,6 @@
-// wrapper to load tfjs in a single place so version can be changed quickly
+/**
+ * Creates tfjs bundle used by Human browser build target
+ */
 
 // simplified
 // { modules: 1250, moduleBytes: 4013323, imports: 7, importBytes: 2255, outputBytes: 2991826, outputFiles: 'dist/tfjs.esm.js' }

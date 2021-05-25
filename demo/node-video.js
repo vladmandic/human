@@ -1,10 +1,14 @@
-/*
-  Unsupported sample of using external utility ffmpeg to capture to decode video input and process it using Human
-
-  uses ffmpeg to process video input and output stream of motion jpeg images which are then parsed for frame start/end markers by pipe2jpeg
-  each frame triggers an event with jpeg buffer that then can be decoded and passed to human for processing
-  if you want process at specific intervals, set output fps to some value
-  if you want to process an input stream, set real-time flag and set input as required
+/**
+ * Human demo for NodeJS
+ * Unsupported sample of using external utility ffmpeg to capture to decode video input and process it using Human
+ *
+ * Uses ffmpeg to process video input and output stream of motion jpeg images which are then parsed for frame start/end markers by pipe2jpeg
+ * Each frame triggers an event with jpeg buffer that then can be decoded and passed to human for processing
+ * If you want process at specific intervals, set output fps to some value
+ * If you want to process an input stream, set real-time flag and set input as required
+ *
+ * Note that pipe2jpeg is not part of Human dependencies and should be installed manually
+ * Working version of ffmpeg must be present on the system
 */
 
 const spawn = require('child_process').spawn;

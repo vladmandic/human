@@ -1,3 +1,7 @@
+/**
+ * Module that implements helper draw functions, exposed as human.draw
+ */
+
 import { TRI468 as triangulation } from '../blazeface/coords';
 import { mergeDeep } from '../helpers';
 import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
@@ -22,7 +26,6 @@ import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result'
  * -useCurves: draw polygons as cures or as lines,
  * -bufferedOutput: experimental: allows to call draw methods multiple times for each detection and interpolate results between results thus achieving smoother animations
  * -bufferedFactor: speed of interpolation convergence where 1 means 100% immediately, 2 means 50% at each interpolation, etc.
- * -useRawBoxes: Boolean: internal: use non-normalized coordinates when performing draw methods,
  */
 export interface DrawOptions {
   color: string,
@@ -42,8 +45,6 @@ export interface DrawOptions {
   useCurves: boolean,
   bufferedOutput: boolean,
   bufferedFactor: number,
-  useRawBoxes: boolean,
-  calculateHandBox: boolean,
 }
 
 export const options: DrawOptions = {
@@ -64,8 +65,6 @@ export const options: DrawOptions = {
   useCurves: <boolean>false,
   bufferedFactor: <number>2,
   bufferedOutput: <boolean>false,
-  useRawBoxes: <boolean>false,
-  calculateHandBox: <boolean>true,
 };
 
 let bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
@@ -173,10 +172,7 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, dra
     ctx.font = localOptions.font;
     ctx.strokeStyle = localOptions.color;
     ctx.fillStyle = localOptions.color;
-    if (localOptions.drawBoxes) {
-      if (localOptions.useRawBoxes) rect(ctx, inCanvas.width * f.boxRaw[0], inCanvas.height * f.boxRaw[1], inCanvas.width * f.boxRaw[2], inCanvas.height * f.boxRaw[3], localOptions);
-      else rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
-    }
+    if (localOptions.drawBoxes) rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
     // silly hack since fillText does not suport new line
     const labels:string[] = [];
     labels.push(`face confidence: ${Math.trunc(100 * f.confidence)}%`);
@@ -374,31 +370,14 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, dra
     if (localOptions.drawBoxes) {
       ctx.strokeStyle = localOptions.color;
       ctx.fillStyle = localOptions.color;
-      let box;
-      if (!localOptions.calculateHandBox) {
-        box = localOptions.useRawBoxes ? h.boxRaw : h.box;
-      } else {
-        box = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0];
-        if (h.landmarks && h.landmarks.length > 0) {
-          for (const pt of h.landmarks) {
-            if (pt[0] < box[0]) box[0] = pt[0];
-            if (pt[1] < box[1]) box[1] = pt[1];
-            if (pt[0] > box[2]) box[2] = pt[0];
-            if (pt[1] > box[3]) box[3] = pt[1];
-          }
-          box[2] -= box[0];
-          box[3] -= box[1];
-        }
-      }
-      if (localOptions.useRawBoxes) rect(ctx, inCanvas.width * box[0], inCanvas.height * box[1], inCanvas.width * box[2], inCanvas.height * box[3], localOptions);
-      else rect(ctx, box[0], box[1], box[2], box[3], localOptions);
+      rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== '') {
           ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText('hand', box[0] + 3, 1 + box[1] + localOptions.lineHeight, box[2]);
+          ctx.fillText('hand', h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
         }
         ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText('hand', box[0] + 2, 0 + box[1] + localOptions.lineHeight, box[2]);
+        ctx.fillText('hand', h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
       }
       ctx.stroke();
     }
@@ -457,8 +436,7 @@ export async function object(inCanvas: HTMLCanvasElement, result: Array<Item>, d
     if (localOptions.drawBoxes) {
       ctx.strokeStyle = localOptions.color;
       ctx.fillStyle = localOptions.color;
-      if (localOptions.useRawBoxes) rect(ctx, inCanvas.width * h.boxRaw[0], inCanvas.height * h.boxRaw[1], inCanvas.width * h.boxRaw[2], inCanvas.height * h.boxRaw[3], localOptions);
-      else rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
+      rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
       if (localOptions.drawLabels) {
         const label = `${Math.round(100 * h.score)}% ${h.label}`;
         if (localOptions.shadowColor && localOptions.shadowColor !== '') {
@@ -481,6 +459,7 @@ export async function person(inCanvas: HTMLCanvasElement, result: Array<Person>,
   if (!ctx) return;
   ctx.lineJoin = 'round';
   ctx.font = localOptions.font;
+
   for (let i = 0; i < result.length; i++) {
     if (localOptions.drawBoxes) {
       ctx.strokeStyle = localOptions.color;
@@ -504,6 +483,7 @@ function calcBuffered(newResult, localOptions) {
   // if (newResult.timestamp !== bufferedResult?.timestamp) bufferedResult = JSON.parse(JSON.stringify(newResult)); // no need to force update
   // each record is only updated using deep copy when number of detected record changes, otherwise it will converge by itself
 
+  // interpolate body results
   if (!bufferedResult.body || (newResult.body.length !== bufferedResult.body.length)) bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
   for (let i = 0; i < newResult.body.length; i++) { // update body: box, boxRaw, keypoints
     bufferedResult.body[i].box = newResult.body[i].box
@@ -521,6 +501,7 @@ function calcBuffered(newResult, localOptions) {
       }));
   }
 
+  // interpolate hand results
   if (!bufferedResult.hand || (newResult.hand.length !== bufferedResult.hand.length)) bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand));
   for (let i = 0; i < newResult.hand.length; i++) { // update body: box, boxRaw, landmarks, annotations
     bufferedResult.hand[i].box = newResult.hand[i].box
@@ -536,6 +517,14 @@ function calcBuffered(newResult, localOptions) {
         .map((val, j) => val
           .map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / localOptions.bufferedFactor));
     }
+  }
+
+  // interpolate person results
+  const newPersons = newResult.persons; // trigger getter function
+  if (!bufferedResult.persons || (newPersons.length !== bufferedResult.persons.length)) bufferedResult.persons = JSON.parse(JSON.stringify(newPersons));
+  for (let i = 0; i < newPersons.length; i++) { // update person box, we don't update the rest as it's updated as reference anyhow
+    bufferedResult.persons[i].box = newPersons[i].box
+      .map((box, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box) / localOptions.bufferedFactor);
   }
 
   // no buffering implemented for face, object, gesture
@@ -555,15 +544,12 @@ export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptio
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
-  if (localOptions.bufferedOutput) {
-    calcBuffered(result, localOptions);
-  } else {
-    bufferedResult = result;
-  }
+  if (localOptions.bufferedOutput) calcBuffered(result, localOptions); // do results interpolation
+  else bufferedResult = result; // just use results as-is
   face(inCanvas, result.face, localOptions); // face does have buffering
   body(inCanvas, bufferedResult.body, localOptions); // use interpolated results if available
   hand(inCanvas, bufferedResult.hand, localOptions); // use interpolated results if available
+  // person(inCanvas, bufferedResult.persons, localOptions); // use interpolated results if available
   gesture(inCanvas, result.gesture, localOptions); // gestures do not have buffering
-  // person(inCanvas, result.persons, localOptions); // use interpolated results if available
   object(inCanvas, result.object, localOptions); // object detection does not have buffering
 }

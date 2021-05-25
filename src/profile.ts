@@ -1,3 +1,7 @@
+/**
+ * Profiling calculations
+ */
+
 import { log } from './helpers';
 
 export const data = {};

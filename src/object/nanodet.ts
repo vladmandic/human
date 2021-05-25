@@ -1,3 +1,7 @@
+/**
+ * NanoDet object detection module
+ */
+
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';

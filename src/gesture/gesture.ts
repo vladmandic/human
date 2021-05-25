@@ -1,3 +1,7 @@
+/**
+ * Gesture detection module
+ */
+
 import { Gesture } from '../result';
 
 export const body = (res): Gesture[] => {

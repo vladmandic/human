@@ -1,3 +1,7 @@
+/**
+ * HandPose module entry point
+ */
+
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
@@ -30,19 +34,35 @@ export async function predict(input, config): Promise<Hand[]> {
         annotations[key] = meshAnnotations[key].map((index) => predictions[i].landmarks[index]);
       }
     }
-    const box: [number, number, number, number] = predictions[i].box ? [
-      Math.max(0, predictions[i].box.topLeft[0]),
-      Math.max(0, predictions[i].box.topLeft[1]),
-      Math.min(input.shape[2], predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0]),
-      Math.min(input.shape[1], predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1]),
-    ] : [0, 0, 0, 0];
-    const boxRaw: [number, number, number, number] = [
-      (predictions[i].box.topLeft[0]) / input.shape[2],
-      (predictions[i].box.topLeft[1]) / input.shape[1],
-      (predictions[i].box.bottomRight[0] - predictions[i].box.topLeft[0]) / input.shape[2],
-      (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1],
-    ];
+
     const landmarks = predictions[i].landmarks as number[];
+
+    let box: [number, number, number, number] = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0]; // maximums so conditionals work
+    let boxRaw: [number, number, number, number] = [0, 0, 0, 0];
+    if (landmarks && landmarks.length > 0) { // if we have landmarks, calculate box based on landmarks
+      for (const pt of landmarks) {
+        if (pt[0] < box[0]) box[0] = pt[0];
+        if (pt[1] < box[1]) box[1] = pt[1];
+        if (pt[0] > box[2]) box[2] = pt[0];
+        if (pt[1] > box[3]) box[3] = pt[1];
+      }
+      box[2] -= box[0];
+      box[3] -= box[1];
+      boxRaw = [box[0] / input.shape[2], box[1] / input.shape[1], box[2] / input.shape[2], box[3] / input.shape[1]];
+    } else { // otherwise use box from prediction
+      box = predictions[i].box ? [
+        Math.max(0, predictions[i].box.topLeft[0]),
+        Math.max(0, predictions[i].box.topLeft[1]),
+        Math.min(input.shape[2], predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0]),
+        Math.min(input.shape[1], predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1]),
+      ] : [0, 0, 0, 0];
+      boxRaw = [
+        (predictions[i].box.topLeft[0]) / input.shape[2],
+        (predictions[i].box.topLeft[1]) / input.shape[1],
+        (predictions[i].box.bottomRight[0] - predictions[i].box.topLeft[0]) / input.shape[2],
+        (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1],
+      ];
+    }
     hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box, boxRaw, landmarks, annotations });
   }
   return hands;

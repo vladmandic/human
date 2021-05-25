@@ -158,7 +158,7 @@ async function test(Human, inputConfig) {
     testDetect(second, 'assets/human-sample-body.jpg', 'default'),
   ]);
   const t1 = process.hrtime.bigint();
-  log('info', 'test complete:', Math.trunc(parseInt((t1 - t0).toString()) / 1000 / 1000), 'ms');
+  log('info', 'test complete:', Math.trunc(Number(t1 - t0) / 1000 / 1000), 'ms');
 }
 
 exports.test = test;

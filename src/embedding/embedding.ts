@@ -1,3 +1,8 @@
+/**
+ * Module that analyzes face descriptors/embedding
+ * Obsolete
+ */
+
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { Tensor, GraphModel } from '../tfjs/types';

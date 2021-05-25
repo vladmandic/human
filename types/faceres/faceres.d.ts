@@ -1,3 +1,8 @@
+/**
+ * HSE-FaceRes Module
+ * Returns Age, Gender, Descriptor
+ * Implements Face simmilarity function
+ */
 import { Tensor } from '../tfjs/types';
 declare type DB = Array<{
     name: string;

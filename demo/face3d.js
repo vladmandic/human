@@ -1,4 +1,10 @@
-// @ts-nocheck
+// @ts-nocheck // typescript checks disabled as this is pure javascript
+
+/**
+ * Human demo for browsers
+ *
+ * Demo for face mesh detection and projection as 3D object using Three.js
+ */
 
 import { DoubleSide, Mesh, MeshBasicMaterial, OrthographicCamera, Scene, sRGBEncoding, VideoTexture, WebGLRenderer, BufferGeometry, BufferAttribute } from './helpers/three.js';
 import { OrbitControls } from './helpers/three-orbitControls.js';

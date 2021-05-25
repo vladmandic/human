@@ -1,3 +1,7 @@
+/**
+ * FaceMesh & BlazeFace Module entry point
+ */
+
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as blazeface from './blazeface';

@@ -16972,19 +16972,37 @@ async function predict5(input, config3) {
         annotations3[key] = meshAnnotations[key].map((index) => predictions[i].landmarks[index]);
       }
     }
-    const box4 = predictions[i].box ? [
-      Math.max(0, predictions[i].box.topLeft[0]),
-      Math.max(0, predictions[i].box.topLeft[1]),
-      Math.min(input.shape[2], predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0]),
-      Math.min(input.shape[1], predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1])
-    ] : [0, 0, 0, 0];
-    const boxRaw = [
-      predictions[i].box.topLeft[0] / input.shape[2],
-      predictions[i].box.topLeft[1] / input.shape[1],
-      (predictions[i].box.bottomRight[0] - predictions[i].box.topLeft[0]) / input.shape[2],
-      (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1]
-    ];
     const landmarks = predictions[i].landmarks;
+    let box4 = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0];
+    let boxRaw = [0, 0, 0, 0];
+    if (landmarks && landmarks.length > 0) {
+      for (const pt of landmarks) {
+        if (pt[0] < box4[0])
+          box4[0] = pt[0];
+        if (pt[1] < box4[1])
+          box4[1] = pt[1];
+        if (pt[0] > box4[2])
+          box4[2] = pt[0];
+        if (pt[1] > box4[3])
+          box4[3] = pt[1];
+      }
+      box4[2] -= box4[0];
+      box4[3] -= box4[1];
+      boxRaw = [box4[0] / input.shape[2], box4[1] / input.shape[1], box4[2] / input.shape[2], box4[3] / input.shape[1]];
+    } else {
+      box4 = predictions[i].box ? [
+        Math.max(0, predictions[i].box.topLeft[0]),
+        Math.max(0, predictions[i].box.topLeft[1]),
+        Math.min(input.shape[2], predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0]),
+        Math.min(input.shape[1], predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1])
+      ] : [0, 0, 0, 0];
+      boxRaw = [
+        predictions[i].box.topLeft[0] / input.shape[2],
+        predictions[i].box.topLeft[1] / input.shape[1],
+        (predictions[i].box.bottomRight[0] - predictions[i].box.topLeft[0]) / input.shape[2],
+        (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1]
+      ];
+    }
     hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box: box4, boxRaw, landmarks, annotations: annotations3 });
   }
   return hands;
@@ -18423,9 +18441,7 @@ var options = {
   useDepth: true,
   useCurves: false,
   bufferedFactor: 2,
-  bufferedOutput: false,
-  useRawBoxes: false,
-  calculateHandBox: true
+  bufferedOutput: false
 };
 var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 function point(ctx, x, y, z = 0, localOptions) {
@@ -18534,12 +18550,8 @@ async function face2(inCanvas2, result, drawOptions) {
     ctx.font = localOptions.font;
     ctx.strokeStyle = localOptions.color;
     ctx.fillStyle = localOptions.color;
-    if (localOptions.drawBoxes) {
-      if (localOptions.useRawBoxes)
-        rect(ctx, inCanvas2.width * f.boxRaw[0], inCanvas2.height * f.boxRaw[1], inCanvas2.width * f.boxRaw[2], inCanvas2.height * f.boxRaw[3], localOptions);
-      else
-        rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
-    }
+    if (localOptions.drawBoxes)
+      rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
     const labels2 = [];
     labels2.push(`face confidence: ${Math.trunc(100 * f.confidence)}%`);
     if (f.genderConfidence)
@@ -18759,37 +18771,14 @@ async function hand2(inCanvas2, result, drawOptions) {
     if (localOptions.drawBoxes) {
       ctx.strokeStyle = localOptions.color;
       ctx.fillStyle = localOptions.color;
-      let box4;
-      if (!localOptions.calculateHandBox) {
-        box4 = localOptions.useRawBoxes ? h.boxRaw : h.box;
-      } else {
-        box4 = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0];
-        if (h.landmarks && h.landmarks.length > 0) {
-          for (const pt of h.landmarks) {
-            if (pt[0] < box4[0])
-              box4[0] = pt[0];
-            if (pt[1] < box4[1])
-              box4[1] = pt[1];
-            if (pt[0] > box4[2])
-              box4[2] = pt[0];
-            if (pt[1] > box4[3])
-              box4[3] = pt[1];
-          }
-          box4[2] -= box4[0];
-          box4[3] -= box4[1];
-        }
-      }
-      if (localOptions.useRawBoxes)
-        rect(ctx, inCanvas2.width * box4[0], inCanvas2.height * box4[1], inCanvas2.width * box4[2], inCanvas2.height * box4[3], localOptions);
-      else
-        rect(ctx, box4[0], box4[1], box4[2], box4[3], localOptions);
+      rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== "") {
           ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText("hand", box4[0] + 3, 1 + box4[1] + localOptions.lineHeight, box4[2]);
+          ctx.fillText("hand", h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
         }
         ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText("hand", box4[0] + 2, 0 + box4[1] + localOptions.lineHeight, box4[2]);
+        ctx.fillText("hand", h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
       }
       ctx.stroke();
     }
@@ -18850,10 +18839,7 @@ async function object(inCanvas2, result, drawOptions) {
     if (localOptions.drawBoxes) {
       ctx.strokeStyle = localOptions.color;
       ctx.fillStyle = localOptions.color;
-      if (localOptions.useRawBoxes)
-        rect(ctx, inCanvas2.width * h.boxRaw[0], inCanvas2.height * h.boxRaw[1], inCanvas2.width * h.boxRaw[2], inCanvas2.height * h.boxRaw[3], localOptions);
-      else
-        rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
+      rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
       if (localOptions.drawLabels) {
         const label = `${Math.round(100 * h.score)}% ${h.label}`;
         if (localOptions.shadowColor && localOptions.shadowColor !== "") {
@@ -18922,6 +18908,12 @@ function calcBuffered(newResult, localOptions) {
       bufferedResult.hand[i].annotations[key] = newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / localOptions.bufferedFactor));
     }
   }
+  const newPersons = newResult.persons;
+  if (!bufferedResult.persons || newPersons.length !== bufferedResult.persons.length)
+    bufferedResult.persons = JSON.parse(JSON.stringify(newPersons));
+  for (let i = 0; i < newPersons.length; i++) {
+    bufferedResult.persons[i].box = newPersons[i].box.map((box4, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box4) / localOptions.bufferedFactor);
+  }
 }
 async function canvas(inCanvas2, outCanvas2) {
   if (!inCanvas2 || !outCanvas2)
@@ -18937,11 +18929,10 @@ async function all(inCanvas2, result, drawOptions) {
     return;
   if (!(inCanvas2 instanceof HTMLCanvasElement))
     return;
-  if (localOptions.bufferedOutput) {
+  if (localOptions.bufferedOutput)
     calcBuffered(result, localOptions);
-  } else {
+  else
     bufferedResult = result;
-  }
   face2(inCanvas2, result.face, localOptions);
   body2(inCanvas2, bufferedResult.body, localOptions);
   hand2(inCanvas2, bufferedResult.hand, localOptions);
@@ -18950,8 +18941,8 @@ async function all(inCanvas2, result, drawOptions) {
 }
 
 // src/persons.ts
-function join2(faces, bodies, hands, gestures) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H;
+function join2(faces, bodies, hands, gestures, shape) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
   let id = 0;
   const persons2 = [];
   for (const face5 of faces) {
@@ -18985,12 +18976,23 @@ function join2(faces, bodies, hands, gestures) {
       else if (gesture3["hand"] !== void 0 && gesture3["hand"] === ((_i = (_h = person2.hands) == null ? void 0 : _h.right) == null ? void 0 : _i.id))
         (_j = person2.gestures) == null ? void 0 : _j.push(gesture3);
     }
-    person2.box = [
-      Math.min(((_k = person2.face) == null ? void 0 : _k.box[0]) || Number.MAX_SAFE_INTEGER, ((_l = person2.body) == null ? void 0 : _l.box[0]) || Number.MAX_SAFE_INTEGER, ((_n = (_m = person2.hands) == null ? void 0 : _m.left) == null ? void 0 : _n.box[0]) || Number.MAX_SAFE_INTEGER, ((_p = (_o = person2.hands) == null ? void 0 : _o.right) == null ? void 0 : _p.box[0]) || Number.MAX_SAFE_INTEGER),
-      Math.min(((_q = person2.face) == null ? void 0 : _q.box[1]) || Number.MAX_SAFE_INTEGER, ((_r = person2.body) == null ? void 0 : _r.box[1]) || Number.MAX_SAFE_INTEGER, ((_t = (_s = person2.hands) == null ? void 0 : _s.left) == null ? void 0 : _t.box[1]) || Number.MAX_SAFE_INTEGER, ((_v = (_u = person2.hands) == null ? void 0 : _u.right) == null ? void 0 : _v.box[1]) || Number.MAX_SAFE_INTEGER),
-      Math.max(((_w = person2.face) == null ? void 0 : _w.box[2]) || 0, ((_x = person2.body) == null ? void 0 : _x.box[2]) || 0, ((_z = (_y = person2.hands) == null ? void 0 : _y.left) == null ? void 0 : _z.box[2]) || 0, ((_B = (_A = person2.hands) == null ? void 0 : _A.right) == null ? void 0 : _B.box[2]) || 0),
-      Math.max(((_C = person2.face) == null ? void 0 : _C.box[3]) || 0, ((_D = person2.body) == null ? void 0 : _D.box[3]) || 0, ((_F = (_E = person2.hands) == null ? void 0 : _E.left) == null ? void 0 : _F.box[3]) || 0, ((_H = (_G = person2.hands) == null ? void 0 : _G.right) == null ? void 0 : _H.box[3]) || 0)
-    ];
+    const x = [];
+    const y = [];
+    const extractXY = (box4) => {
+      if (box4 && box4.length === 4) {
+        x.push(box4[0], box4[0] + box4[2]);
+        y.push(box4[1], box4[1] + box4[3]);
+      }
+    };
+    extractXY((_k = person2.face) == null ? void 0 : _k.box);
+    extractXY((_l = person2.body) == null ? void 0 : _l.box);
+    extractXY((_n = (_m = person2.hands) == null ? void 0 : _m.left) == null ? void 0 : _n.box);
+    extractXY((_p = (_o = person2.hands) == null ? void 0 : _o.right) == null ? void 0 : _p.box);
+    const minX = Math.min(...x);
+    const minY = Math.min(...y);
+    person2.box = [minX, minY, Math.max(...x) - minX, Math.max(...y) - minY];
+    if (shape && shape.length === 4)
+      person2.boxRaw = [person2.box[0] / shape[2], person2.box[1] / shape[1], person2.box[2] / shape[2], person2.box[3] / shape[1]];
     persons2.push(person2);
   }
   return persons2;
@@ -20124,10 +20126,8 @@ var Human = class {
           this.perf.object = elapsedTime;
       }
       this.analyze("End Object:");
-      if (this.config.async) {
+      if (this.config.async)
         [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
-      }
-      tf17.dispose(process5.tensor);
       let gestureRes = [];
       if (this.config.gesture.enabled) {
         timeStamp = now();
@@ -20149,9 +20149,11 @@ var Human = class {
         canvas: process5.canvas,
         timestamp: Date.now(),
         get persons() {
-          return join2(faceRes, bodyRes, handRes, gestureRes);
+          var _a;
+          return join2(faceRes, bodyRes, handRes, gestureRes, (_a = process5 == null ? void 0 : process5.tensor) == null ? void 0 : _a.shape);
         }
       };
+      tf17.dispose(process5.tensor);
       resolve(res);
     });
   }

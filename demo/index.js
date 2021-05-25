@@ -1,4 +1,10 @@
-// @ts-nocheck
+// @ts-nocheck // typescript checks disabled as this is pure javascript
+
+/**
+ * Human demo for browsers
+ *
+ * Main demo app that exposes all Human functionality
+ */
 
 import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
 // import Human from '../dist/human.esm-nobundle.js'; // this requires that tf is loaded manually and bundled before human can be used
@@ -10,6 +16,7 @@ let human;
 
 const userConfig = {
   warmup: 'none',
+  /*
   backend: 'webgl',
   async: false,
   cacheSensitivity: 0,
@@ -29,6 +36,7 @@ const userConfig = {
   // body: { enabled: true, modelPath: 'blazepose.json' },
   object: { enabled: false },
   gesture: { enabled: true },
+  */
 };
 
 const drawOptions = {

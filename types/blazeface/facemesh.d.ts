@@ -1,3 +1,6 @@
+/**
+ * FaceMesh & BlazeFace Module entry point
+ */
 export declare function predict(input: any, config: any): Promise<{
     confidence: any;
     boxConfidence: any;

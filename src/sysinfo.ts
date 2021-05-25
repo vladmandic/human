@@ -1,3 +1,6 @@
+/**
+ * Helper function that returns basic system info
+ */
 export function info(): { platform: string, agent: string } {
   let platform;
   let agent;

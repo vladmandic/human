@@ -1,3 +1,6 @@
+/**
+ * Type definitions for Human results
+ */
 import { Tensor } from '../dist/tfjs.esm.js';
 /** Face results
  * Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
@@ -201,5 +204,5 @@ export interface Result {
     /** timestamp of detection representing the milliseconds elapsed since the UNIX epoch */
     readonly timestamp: number;
     /** getter property that returns unified persons object  */
-    readonly persons: Array<Person>;
+    persons: Array<Person>;
 }

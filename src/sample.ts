@@ -1,3 +1,7 @@
+/**
+ * Embedded sample images used during warmup in dataURL format
+ */
+
 // data:image/jpeg;base64,
 export const face = `
 /9j/4AAQSkZJRgABAQEAYABgAAD/4QBoRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUA

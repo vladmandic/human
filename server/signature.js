@@ -1,5 +1,9 @@
 #!/usr/bin/env -S node --no-deprecation --trace-warnings
 
+/**
+ * Helper app that analyzes any TensorFlow SavedModel or GraphModel for inputs and outputs
+ */
+
 const fs = require('fs');
 const path = require('path');
 const log = require('@vladmandic/pilogger');

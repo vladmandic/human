@@ -1,3 +1,6 @@
+/**
+ * Human main module
+ */
 import { Config } from './config';
 import { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';

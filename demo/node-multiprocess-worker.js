@@ -1,4 +1,9 @@
-// @ts-nocheck
+/**
+ * Human demo for NodeJS
+ *
+ * Used by node-multiprocess.js as an on-demand started worker process
+ * Receives messages from parent process and sends results
+ */
 
 const fs = require('fs');
 const log = require('@vladmandic/pilogger');
@@ -19,16 +24,16 @@ const myConfig = {
     enabled: true,
     detector: { enabled: true, rotation: false },
     mesh: { enabled: true },
-    iris: { enabled: false },
+    iris: { enabled: true },
     description: { enabled: true },
     emotion: { enabled: true },
   },
   hand: {
-    enabled: false,
+    enabled: true,
   },
   // body: { modelPath: 'blazepose.json', enabled: true },
-  body: { enabled: false },
-  object: { enabled: false },
+  body: { enabled: true },
+  object: { enabled: true },
 };
 
 // read image from a file and create tensor to be used by faceapi
@@ -44,8 +49,10 @@ async function image(img) {
 async function detect(img) {
   const tensor = await image(img);
   const result = await human.detect(tensor);
-  process.send({ image: img, detected: result }); // send results back to main
-  process.send({ ready: true }); // send signal back to main that this worker is now idle and ready for next image
+  if (process.send) { // check if ipc exists
+    process.send({ image: img, detected: result }); // send results back to main
+    process.send({ ready: true }); // send signal back to main that this worker is now idle and ready for next image
+  }
   tensor.dispose();
 }
 
@@ -57,8 +64,8 @@ async function main() {
 
   // on worker start first initialize message handler so we don't miss any messages
   process.on('message', (msg) => {
-    if (msg.exit) process.exit(); // if main told worker to exit
-    if (msg.test) process.send({ test: true });
+    if (msg.exit && process.exit) process.exit(); // if main told worker to exit
+    if (msg.test && process.send) process.send({ test: true });
     if (msg.image) detect(msg.image); // if main told worker to process image
     log.data('Worker received message:', process.pid, msg); // generic log
   });
@@ -72,7 +79,7 @@ async function main() {
   await human.load();
 
   // now we're ready, so send message back to main that it knows it can use this worker
-  process.send({ ready: true });
+  if (process.send) process.send({ ready: true });
 }
 
 main();

@@ -1,5 +1,9 @@
-/*
-  Unsupported sample of using external utility fswebcam to capture screenshot from attached webcam in regular intervals and process it using Human
+/**
+ * Human demo for NodeJS
+ * Unsupported sample of using external utility fswebcam to capture screenshot from attached webcam in regular intervals and process it using Human
+ *
+ * Note that node-webcam is not part of Human dependencies and should be installed manually
+ * Working version of fswebcam must be present on the system
 */
 
 const util = require('util');

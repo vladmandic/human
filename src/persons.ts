@@ -1,6 +1,10 @@
+/**
+ * Module that analyzes existing results and recombines them into a unified person object
+ */
+
 import { Face, Body, Hand, Gesture, Person } from './result';
 
-export function join(faces: Array<Face>, bodies: Array<Body>, hands: Array<Hand>, gestures: Array<Gesture>): Array<Person> {
+export function join(faces: Array<Face>, bodies: Array<Body>, hands: Array<Hand>, gestures: Array<Gesture>, shape: Array<number> | undefined): Array<Person> {
   let id = 0;
   const persons: Array<Person> = [];
   for (const face of faces) { // person is defined primarily by face and then we append other objects as found
@@ -36,12 +40,27 @@ export function join(faces: Array<Face>, bodies: Array<Body>, hands: Array<Hand>
       else if (gesture['hand'] !== undefined && gesture['hand'] === person.hands?.left?.id) person.gestures?.push(gesture);
       else if (gesture['hand'] !== undefined && gesture['hand'] === person.hands?.right?.id) person.gestures?.push(gesture);
     }
-    person.box = [ // this is incorrect as should be a caclulated value
-      Math.min(person.face?.box[0] || Number.MAX_SAFE_INTEGER, person.body?.box[0] || Number.MAX_SAFE_INTEGER, person.hands?.left?.box[0] || Number.MAX_SAFE_INTEGER, person.hands?.right?.box[0] || Number.MAX_SAFE_INTEGER),
-      Math.min(person.face?.box[1] || Number.MAX_SAFE_INTEGER, person.body?.box[1] || Number.MAX_SAFE_INTEGER, person.hands?.left?.box[1] || Number.MAX_SAFE_INTEGER, person.hands?.right?.box[1] || Number.MAX_SAFE_INTEGER),
-      Math.max(person.face?.box[2] || 0, person.body?.box[2] || 0, person.hands?.left?.box[2] || 0, person.hands?.right?.box[2] || 0),
-      Math.max(person.face?.box[3] || 0, person.body?.box[3] || 0, person.hands?.left?.box[3] || 0, person.hands?.right?.box[3] || 0),
-    ];
+
+    // create new overarching box from all boxes beloning to person
+    const x: number[] = [];
+    const y: number[] = [];
+    const extractXY = (box) => { // extract all [x, y] coordinates from boxes [x, y, width, height]
+      if (box && box.length === 4) {
+        x.push(box[0], box[0] + box[2]);
+        y.push(box[1], box[1] + box[3]);
+      }
+    };
+    extractXY(person.face?.box);
+    extractXY(person.body?.box);
+    extractXY(person.hands?.left?.box);
+    extractXY(person.hands?.right?.box);
+    const minX = Math.min(...x);
+    const minY = Math.min(...y);
+    person.box = [minX, minY, Math.max(...x) - minX, Math.max(...y) - minY]; // create new overarching box
+
+    // shape is known so we calculate boxRaw as well
+    if (shape && shape.length === 4) person.boxRaw = [person.box[0] / shape[2], person.box[1] / shape[1], person.box[2] / shape[2], person.box[3] / shape[1]];
+
     persons.push(person);
   }
   return persons;

@@ -1,3 +1,8 @@
+/**
+ * Implements Human build process
+ * Used to generate prod builds for releases or by dev server to generate on-the-fly debug builds
+ */
+
 const ts = require('typescript');
 const fs = require('fs');
 const path = require('path');

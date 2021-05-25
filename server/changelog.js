@@ -1,3 +1,7 @@
+/**
+ * Creates changelog in markdown format from git log as part of the build process
+ */
+
 const fs = require('fs');
 const path = require('path');
 const dayjs = require('dayjs');

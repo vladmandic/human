@@ -1,3 +1,7 @@
+/**
+ * Human main module
+ */
+
 import { log, now, mergeDeep } from './helpers';
 import { Config, defaults } from './config';
 import { Result, Gesture } from './result';
@@ -517,10 +521,7 @@ export class Human {
       this.analyze('End Object:');
 
       // if async wait for results
-      if (this.config.async) {
-        [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
-      }
-      tf.dispose(process.tensor);
+      if (this.config.async) [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
 
       // run gesture analysis last
       let gestureRes: Gesture[] = [];
@@ -542,8 +543,12 @@ export class Human {
         performance: this.perf,
         canvas: process.canvas,
         timestamp: Date.now(),
-        get persons() { return persons.join(faceRes, bodyRes, handRes, gestureRes); },
+        get persons() { return persons.join(faceRes, bodyRes, handRes, gestureRes, process?.tensor?.shape); },
       };
+
+      // finally dispose input tensor
+      tf.dispose(process.tensor);
+
       // log('Result:', result);
       resolve(res);
     });

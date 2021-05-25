@@ -1,3 +1,7 @@
+/**
+ * Emotion Module
+ */
+
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 

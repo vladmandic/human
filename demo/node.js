@@ -1,3 +1,7 @@
+/**
+ * Human demo for NodeJS
+ */
+
 const log = require('@vladmandic/pilogger');
 const fs = require('fs');
 const process = require('process');

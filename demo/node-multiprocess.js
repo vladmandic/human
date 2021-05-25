@@ -1,4 +1,10 @@
-// @ts-nocheck
+/**
+ * Human demo for NodeJS
+ *
+ * Uses NodeJS fork functionality with inter-processing-messaging
+ * Starts a pool of worker processes and dispatch work items to each worker when they are available
+ * Uses node-multiprocess-worker.js for actual processing
+ */
 
 const fs = require('fs');
 const path = require('path');
@@ -7,7 +13,7 @@ const log = require('@vladmandic/pilogger'); // this is my simple logger with fe
 const child_process = require('child_process');
 // note that main process import faceapi or tfjs at all
 
-const imgPathRoot = './demo'; // modify to include your sample images
+const imgPathRoot = './assets'; // modify to include your sample images
 const numWorkers = 4; // how many workers will be started
 const workers = []; // this holds worker processes
 const images = []; // this holds queue of enumerated images
@@ -33,14 +39,14 @@ function waitCompletion() {
   if (activeWorkers > 0) setImmediate(() => waitCompletion());
   else {
     t[1] = process.hrtime.bigint();
-    log.info('Processed:', numImages, 'images in', 'total:', Math.trunc(parseInt(t[1] - t[0]) / 1000000), 'ms', 'working:', Math.trunc(parseInt(t[1] - t[2]) / 1000000), 'ms', 'average:', Math.trunc(parseInt(t[1] - t[2]) / numImages / 1000000), 'ms');
+    log.info('Processed:', numImages, 'images in', 'total:', Math.trunc(Number(t[1] - t[0]) / 1000000), 'ms', 'working:', Math.trunc(Number(t[1] - t[2]) / 1000000), 'ms', 'average:', Math.trunc(Number(t[1] - t[2]) / numImages / 1000000), 'ms');
   }
 }
 
 function measureLatency() {
   t[3] = process.hrtime.bigint();
-  const latencyInitialization = Math.trunc(parseInt(t[2] - t[0]) / 1000 / 1000);
-  const latencyRoundTrip = Math.trunc(parseInt(t[3] - t[2]) / 1000 / 1000);
+  const latencyInitialization = Math.trunc(Number(t[2] - t[0]) / 1000 / 1000);
+  const latencyRoundTrip = Math.trunc(Number(t[3] - t[2]) / 1000 / 1000);
   log.info('Latency: worker initializtion: ', latencyInitialization, 'message round trip:', latencyRoundTrip);
 }
 
@@ -59,6 +65,7 @@ async function main() {
     if (imgFile.toLocaleLowerCase().endsWith('.jpg')) images.push(path.join(imgPathRoot, imgFile));
   }
   numImages = images.length;
+  log.state('Enumerated images:', imgPathRoot, numImages);
 
   t[0] = process.hrtime.bigint();
   // manage worker processes
@@ -71,7 +78,7 @@ async function main() {
     // otherwise it's an unknown message
     workers[i].on('message', (msg) => {
       if (msg.ready) detect(workers[i]);
-      else if (msg.image) log.data('Main: worker finished:', workers[i].pid, 'detected faces:', msg.detected.face?.length);
+      else if (msg.image) log.data('Main: worker finished:', workers[i].pid, 'detected faces:', msg.detected.face?.length, 'bodies:', msg.detected.body?.length, 'hands:', msg.detected.hand?.length, 'objects:', msg.detected.object?.length);
       else if (msg.test) measureLatency();
       else log.data('Main: worker message:', workers[i].pid, msg);
     });

@@ -1,3 +1,8 @@
+/**
+ * Module that analyzes person age
+ * Obsolete
+ */
+
 import { log, now } from './helpers';
 import * as facemesh from './blazeface/facemesh';
 import * as emotion from './emotion/emotion';

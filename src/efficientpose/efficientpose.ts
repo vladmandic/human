@@ -1,3 +1,7 @@
+/**
+ * EfficientPose Module
+ */
+
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { Body } from '../result';

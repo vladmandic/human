@@ -1,3 +1,8 @@
+/**
+ * Module that analyzes person age
+ * Obsolete
+ */
+
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 

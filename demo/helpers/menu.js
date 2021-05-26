@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 let instance = 0;
 let CSScreated = false;
 
@@ -217,7 +219,7 @@ class Menu {
       const def = item === selected ? 'selected' : '';
       options += `<option value="${item}" ${def}>${item}</option>`;
     }
-    el.innerHTML = `<div class="menu-list"><select name="${this.ID}" class="menu-list-item">${options}</select><label for="${this.ID}"></label></div>${title}`;
+    el.innerHTML = `<div class="menu-list"><select name="${this.ID}" title="${title}" class="menu-list-item">${options}</select><label for="${this.ID}"></label></div>${title}`;
     el.style.fontFamily = document.body.style.fontFamily;
     el.style.fontSize = document.body.style.fontSize;
     el.style.fontVariant = document.body.style.fontVariant;
@@ -231,7 +233,7 @@ class Menu {
   addRange(title, object, variable, min, max, step, callback) {
     const el = document.createElement('div');
     el.className = 'menu-item';
-    el.innerHTML = `<input class="menu-range" type="range" id="${this.newID}" min="${min}" max="${max}" step="${step}" value="${object[variable]}">${title}`;
+    el.innerHTML = `<input class="menu-range" type="range" title="${title}" id="${this.newID}" min="${min}" max="${max}" step="${step}" value="${object[variable]}">${title}`;
     if (this.container) this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
       if (evt.target) {

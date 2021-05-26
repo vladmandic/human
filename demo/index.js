@@ -339,7 +339,7 @@ async function setupCamera() {
   }
   const tracks = stream.getVideoTracks();
   if (tracks && tracks.length >= 1) {
-    if (tracks.length >= 1) {
+    if (tracks.length > 1) {
       log('enumerated viable tracks:', tracks.length);
       for (const t of tracks) log(`  ${t.kind}: ${t.label}`);
     }

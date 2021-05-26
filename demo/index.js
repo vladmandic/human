@@ -176,7 +176,7 @@ const compare = { enabled: false, original: null };
 async function calcSimmilariry(result) {
   document.getElementById('compare-container').style.display = compare.enabled ? 'block' : 'none';
   if (!compare.enabled) return;
-  if (!result || !result.face || result.face[0].embedding) return;
+  if (!result || !result.face || !result.face[0].embedding) return;
   if (!(result.face.length > 0) || (result.face[0].embedding.length <= 64)) return;
   if (!compare.original) {
     compare.original = result;
@@ -274,6 +274,7 @@ async function drawResults(input) {
 }
 
 // setup webcam
+let initialCameraAccess = true;
 async function setupCamera() {
   if (ui.busy) return null;
   ui.busy = true;
@@ -305,10 +306,11 @@ async function setupCamera() {
     return msg;
   }
   // enumerate devices for diag purposes
-  const devices = await navigator.mediaDevices.enumerateDevices();
-  log('enumerated devices:');
-  for (const device of devices) log(`  kind:${device.kind} label:${device.label} id:${device.deviceId}`);
-
+  if (initialCameraAccess) {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    log('enumerated devices:');
+    for (const device of devices) log(`  kind:${device.kind} label:${device.label} id:${device.deviceId}`);
+  }
   let stream;
   const constraints = {
     audio: false,
@@ -349,9 +351,10 @@ async function setupCamera() {
   }
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
-  log('selected camera:', track.label, 'id:', settings.deviceId);
+  if (initialCameraAccess) log('selected camera:', track.label, 'id:', settings.deviceId);
   // log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight }, 'settings:', settings, 'track:', track);
   ui.camera = { name: track.label.toLowerCase(), width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
+  initialCameraAccess = false;
   return new Promise((resolve) => {
     video.onloadeddata = async () => {
       video.width = video.videoWidth;

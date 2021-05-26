@@ -9,8 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/05/25 mandic00@live.com
+### **HEAD -> main** 2021/05/26 mandic00@live.com
 
+- add camera startup diag messages
 - implemented unified result.persons that combines face, body and hands for each person
 - added experimental results interpolation for smooth draw operations
 

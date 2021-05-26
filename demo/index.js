@@ -304,10 +304,19 @@ async function setupCamera() {
     ui.busy = false;
     return msg;
   }
+  // enumerate devices for diag purposes
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  log('enumerated devices:');
+  for (const device of devices) log(`  kind:${device.kind} label:${device.label} id:${device.deviceId}`);
+
   let stream;
   const constraints = {
     audio: false,
-    video: { facingMode: ui.facing ? 'user' : 'environment', resizeMode: ui.crop ? 'crop-and-scale' : 'none' },
+    video: {
+      facingMode: ui.facing ? 'user' : 'environment',
+      resizeMode: ui.crop ? 'crop-and-scale' : 'none',
+      // deviceId: 'xxxx' // if you have multiple webcams, specify one to use explicitly
+    },
   };
   if (window.innerWidth > window.innerHeight) constraints.video.width = { ideal: window.innerWidth };
   else constraints.video.height = { ideal: (window.innerHeight - document.getElementById('menubar').offsetHeight) };
@@ -328,8 +337,19 @@ async function setupCamera() {
     ui.busy = false;
     return 'camera stream empty';
   }
+  const tracks = stream.getVideoTracks();
+  if (tracks && tracks.length >= 1) {
+    if (tracks.length >= 1) {
+      log('enumerated viable tracks:', tracks.length);
+      for (const t of tracks) log(`  ${t.kind}: ${t.label}`);
+    }
+  } else {
+    ui.busy = false;
+    return 'no camera track';
+  }
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
+  log('selected camera:', track.label, 'id:', settings.deviceId);
   // log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight }, 'settings:', settings, 'track:', track);
   ui.camera = { name: track.label.toLowerCase(), width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   return new Promise((resolve) => {

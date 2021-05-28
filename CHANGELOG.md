@@ -9,7 +9,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/05/27 mandic00@live.com
+### **HEAD -> main** 2021/05/28 mandic00@live.com
+
+
+### **origin/main** 2021/05/27 mandic00@live.com
 
 
 ### **1.9.4** 2021/05/27 mandic00@live.com

@@ -4324,8 +4324,23 @@ async function predict3(image13, config3, idx, count2) {
 }
 
 // src/face.ts
-var calculateFaceAngle = (face5, image_size) => {
-  const degrees = (theta) => theta * 180 / Math.PI;
+var calculateGaze = (mesh) => {
+  const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]);
+  const offsetIris = [0, 0];
+  const eyeRatio = 5;
+  const left = mesh[33][2] > mesh[263][2];
+  const irisCenter = left ? mesh[473] : mesh[468];
+  const eyeCenter = left ? [(mesh[133][0] + mesh[33][0]) / 2, (mesh[133][1] + mesh[33][1]) / 2] : [(mesh[263][0] + mesh[362][0]) / 2, (mesh[263][1] + mesh[362][1]) / 2];
+  const eyeSize = left ? [mesh[133][0] - mesh[33][0], mesh[23][1] - mesh[27][1]] : [mesh[263][0] - mesh[362][0], mesh[253][1] - mesh[257][1]];
+  const eyeDiff = [
+    (eyeCenter[0] - irisCenter[0]) / eyeSize[0] - offsetIris[0],
+    eyeRatio * (irisCenter[1] - eyeCenter[1]) / eyeSize[1] - offsetIris[1]
+  ];
+  const vectorLength = Math.sqrt(eyeDiff[0] ** 2 + eyeDiff[1] ** 2);
+  const vectorAngle = radians([0, 0], eyeDiff);
+  return { angle: vectorAngle, strength: vectorLength };
+};
+var calculateFaceAngle = (face5, imageSize) => {
   const normalize = (v) => {
     const length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     v[0] /= length;
@@ -4378,11 +4393,11 @@ var calculateFaceAngle = (face5, image_size) => {
   };
   const mesh = face5.meshRaw;
   if (!mesh || mesh.length < 300)
-    return { angle: { pitch: 0, yaw: 0, roll: 0 }, matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1] };
-  const size = Math.max(face5.boxRaw[2] * image_size[0], face5.boxRaw[3] * image_size[1]) / 1.5;
+    return { angle: { pitch: 0, yaw: 0, roll: 0 }, matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1], gaze: { angle: 0, strength: 0 } };
+  const size = Math.max(face5.boxRaw[2] * imageSize[0], face5.boxRaw[3] * imageSize[1]) / 1.5;
   const pts = [mesh[10], mesh[152], mesh[234], mesh[454]].map((pt) => [
-    pt[0] * image_size[0] / size,
-    pt[1] * image_size[1] / size,
+    pt[0] * imageSize[0] / size,
+    pt[1] * imageSize[1] / size,
     pt[2]
   ]);
   const y_axis = normalize(subVectors(pts[1], pts[0]));
@@ -4401,7 +4416,8 @@ var calculateFaceAngle = (face5, image_size) => {
     z_axis[2]
   ];
   const angle = rotationMatrixToEulerAngle(matrix);
-  return { angle, matrix };
+  const gaze = mesh.length === 478 ? calculateGaze(mesh) : { angle: 0, strength: 0 };
+  return { angle, matrix, gaze };
 };
 var detectFace = async (parent, input) => {
   var _a, _b, _c, _d, _e, _f, _g, _h;
@@ -17535,15 +17551,14 @@ var iris = (res) => {
       gestures.push({ iris: i, gesture: "looking left" });
     const rightIrisCenterY = Math.abs(res[i].mesh[145][1] - res[i].annotations.rightEyeIris[0][1]) / res[i].box[3];
     const leftIrisCenterY = Math.abs(res[i].mesh[374][1] - res[i].annotations.leftEyeIris[0][1]) / res[i].box[3];
-    if (leftIrisCenterY < 0.01 || rightIrisCenterY < 0.01 || leftIrisCenterY > 0.025 || rightIrisCenterY > 0.025)
+    if (leftIrisCenterY < 0.01 || rightIrisCenterY < 0.01 || leftIrisCenterY > 0.022 || rightIrisCenterY > 0.022)
       center = false;
     if (leftIrisCenterY < 0.01 || rightIrisCenterY < 0.01)
       gestures.push({ iris: i, gesture: "looking down" });
-    if (leftIrisCenterY > 0.025 || rightIrisCenterY > 0.025)
+    if (leftIrisCenterY > 0.022 || rightIrisCenterY > 0.022)
       gestures.push({ iris: i, gesture: "looking up" });
     if (center)
       gestures.push({ iris: i, gesture: "looking center" });
-    console.log(leftIrisCenterX, rightIrisCenterX, leftIrisCenterY, rightIrisCenterY, gestures);
   }
   return gestures;
 };
@@ -18538,6 +18553,7 @@ async function gesture(inCanvas2, result, drawOptions) {
   }
 }
 async function face2(inCanvas2, result, drawOptions) {
+  var _a, _b, _c, _d;
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas2)
     return;
@@ -18618,6 +18634,26 @@ async function face2(inCanvas2, result, drawOptions) {
             ctx.fillStyle = localOptions.useDepth ? "rgba(255, 255, 200, 0.3)" : localOptions.color;
             ctx.fill();
           }
+        }
+        if (((_b = (_a = f.rotation) == null ? void 0 : _a.gaze) == null ? void 0 : _b.strength) && ((_d = (_c = f.rotation) == null ? void 0 : _c.gaze) == null ? void 0 : _d.angle)) {
+          const leftGaze = [
+            f.annotations["leftEyeIris"][0][0] + Math.cos(f.rotation.gaze.angle) * f.rotation.gaze.strength * f.box[2],
+            f.annotations["leftEyeIris"][0][1] - Math.sin(f.rotation.gaze.angle) * f.rotation.gaze.strength * f.box[3]
+          ];
+          ctx.beginPath();
+          ctx.moveTo(f.annotations["leftEyeIris"][0][0], f.annotations["leftEyeIris"][0][1]);
+          ctx.strokeStyle = "pink";
+          ctx.lineTo(leftGaze[0], leftGaze[1]);
+          ctx.stroke();
+          const rightGaze = [
+            f.annotations["rightEyeIris"][0][0] + Math.cos(f.rotation.gaze.angle) * f.rotation.gaze.strength * f.box[2],
+            f.annotations["rightEyeIris"][0][1] - Math.sin(f.rotation.gaze.angle) * f.rotation.gaze.strength * f.box[3]
+          ];
+          ctx.beginPath();
+          ctx.moveTo(f.annotations["rightEyeIris"][0][0], f.annotations["rightEyeIris"][0][1]);
+          ctx.strokeStyle = "pink";
+          ctx.lineTo(rightGaze[0], rightGaze[1]);
+          ctx.stroke();
         }
       }
     }

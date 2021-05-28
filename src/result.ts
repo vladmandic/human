@@ -28,6 +28,7 @@ import { Tensor } from '../dist/tfjs.esm.js';
  * - rotation: face rotiation that contains both angles and matrix used for 3d transformations
  *  - angle: face angle as object with values for roll, yaw and pitch angles
  *  - matrix: 3d transofrmation matrix as array of numeric values
+ *  - gaze: gaze direction as object with values for agngle in radians and strengthss
  * - tensor: face tensor as Tensor object which contains detected face
  */
 export interface Face {
@@ -49,6 +50,7 @@ export interface Face {
   rotation: {
     angle: { roll: number, yaw: number, pitch: number },
     matrix: [number, number, number, number, number, number, number, number, number],
+    gaze: { angle: number, strength: number },
   }
   tensor: typeof Tensor,
 }

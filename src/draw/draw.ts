@@ -238,6 +238,27 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, dra
             ctx.fill();
           }
         }
+        if (f.rotation?.gaze?.strength && f.rotation?.gaze?.angle) {
+          const leftGaze = [
+            f.annotations['leftEyeIris'][0][0] + (Math.cos(f.rotation.gaze.angle) * f.rotation.gaze.strength * f.box[2]),
+            f.annotations['leftEyeIris'][0][1] - (Math.sin(f.rotation.gaze.angle) * f.rotation.gaze.strength * f.box[3]),
+          ];
+          ctx.beginPath();
+          ctx.moveTo(f.annotations['leftEyeIris'][0][0], f.annotations['leftEyeIris'][0][1]);
+          ctx.strokeStyle = 'pink';
+          ctx.lineTo(leftGaze[0], leftGaze[1]);
+          ctx.stroke();
+
+          const rightGaze = [
+            f.annotations['rightEyeIris'][0][0] + (Math.cos(f.rotation.gaze.angle) * f.rotation.gaze.strength * f.box[2]),
+            f.annotations['rightEyeIris'][0][1] - (Math.sin(f.rotation.gaze.angle) * f.rotation.gaze.strength * f.box[3]),
+          ];
+          ctx.beginPath();
+          ctx.moveTo(f.annotations['rightEyeIris'][0][0], f.annotations['rightEyeIris'][0][1]);
+          ctx.strokeStyle = 'pink';
+          ctx.lineTo(rightGaze[0], rightGaze[1]);
+          ctx.stroke();
+        }
       }
     }
   }

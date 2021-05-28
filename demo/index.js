@@ -17,8 +17,8 @@ let human;
 const userConfig = {
   warmup: 'none',
   backend: 'webgl',
-  async: false,
-  cacheSensitivity: 0,
+  // async: false,
+  // cacheSensitivity: 0,
   filter: {
     enabled: false,
     flip: false,

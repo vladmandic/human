@@ -9,11 +9,12 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/05/27 mandic00@live.com
+
+
 ### **1.9.4** 2021/05/27 mandic00@live.com
 
-
-### **origin/main** 2021/05/26 mandic00@live.com
-
+- fix demo facecompare
 - webhint and lighthouse optimizations
 - add camera startup diag messages
 - implemented unified result.persons that combines face, body and hands for each person

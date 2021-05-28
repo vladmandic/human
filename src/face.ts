@@ -9,9 +9,40 @@ import * as emotion from './emotion/emotion';
 import * as faceres from './faceres/faceres';
 import { Face } from './result';
 
-const calculateFaceAngle = (face, image_size): { angle: { pitch: number, yaw: number, roll: number }, matrix: [number, number, number, number, number, number, number, number, number] } => {
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  const degrees = (theta) => (theta * 180) / Math.PI;
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+const rad2deg = (theta) => (theta * 180) / Math.PI;
+
+const calculateGaze = (mesh): { angle: number, strength: number } => {
+  const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]); // function to calculate angle between any two points
+
+  const offsetIris = [0, 0]; // tbd: iris center may not align with average of eye extremes
+  const eyeRatio = 5; // factor to normalize changes x vs y
+
+  const left = mesh[33][2] > mesh[263][2]; // pick left or right eye depending which one is closer bazed on outsize point z axis
+  const irisCenter = left ? mesh[473] : mesh[468];
+  const eyeCenter = left // eye center is average of extreme points on x axis for both x and y, ignoring y extreme points as eyelids naturally open/close more when gazing up/down so relative point is less precise
+    ? [(mesh[133][0] + mesh[33][0]) / 2, (mesh[133][1] + mesh[33][1]) / 2]
+    : [(mesh[263][0] + mesh[362][0]) / 2, (mesh[263][1] + mesh[362][1]) / 2];
+  const eyeSize = left // eye size is difference between extreme points for both x and y, used to normalize & squarify eye dimensions
+    ? [mesh[133][0] - mesh[33][0], mesh[23][1] - mesh[27][1]]
+    : [mesh[263][0] - mesh[362][0], mesh[253][1] - mesh[257][1]];
+
+  const eyeDiff = [ // x distance between extreme point and center point normalized with eye size
+    (eyeCenter[0] - irisCenter[0]) / eyeSize[0] - offsetIris[0],
+    eyeRatio * (irisCenter[1] - eyeCenter[1]) / eyeSize[1] - offsetIris[1],
+  ];
+  const vectorLength = Math.sqrt((eyeDiff[0] ** 2) + (eyeDiff[1] ** 2)); // vector length is a diagonal between two differences
+  const vectorAngle = radians([0, 0], eyeDiff); // using eyeDiff instead eyeCenter/irisCenter combo due to manual adjustments
+
+  // vectorAngle right=0*pi, up=1*pi/2, left=1*pi, down=3*pi/2
+  return { angle: vectorAngle, strength: vectorLength };
+};
+
+const calculateFaceAngle = (face, imageSize): {
+  angle: { pitch: number, yaw: number, roll: number },
+  matrix: [number, number, number, number, number, number, number, number, number],
+  gaze: { angle: number, strength: number },
+} => {
   // const degrees = (theta) => Math.abs(((theta * 180) / Math.PI) % 360);
   const normalize = (v) => { // normalize vector
     const length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
@@ -71,15 +102,16 @@ const calculateFaceAngle = (face, image_size): { angle: { pitch: number, yaw: nu
     return angle;
   };
 
+  // initialize gaze and mesh
   const mesh = face.meshRaw;
-  if (!mesh || mesh.length < 300) return { angle: { pitch: 0, yaw: 0, roll: 0 }, matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1] };
+  if (!mesh || mesh.length < 300) return { angle: { pitch: 0, yaw: 0, roll: 0 }, matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1], gaze: { angle: 0, strength: 0 } };
 
-  const size = Math.max(face.boxRaw[2] * image_size[0], face.boxRaw[3] * image_size[1]) / 1.5;
+  const size = Math.max(face.boxRaw[2] * imageSize[0], face.boxRaw[3] * imageSize[1]) / 1.5;
   // top, bottom, left, right
   const pts = [mesh[10], mesh[152], mesh[234], mesh[454]].map((pt) => [
     // make the xyz coordinates proportional, independent of the image/box size
-    pt[0] * image_size[0] / size,
-    pt[1] * image_size[1] / size,
+    pt[0] * imageSize[0] / size,
+    pt[1] * imageSize[1] / size,
     pt[2],
   ]);
 
@@ -98,7 +130,11 @@ const calculateFaceAngle = (face, image_size): { angle: { pitch: number, yaw: nu
   ];
   const angle = rotationMatrixToEulerAngle(matrix);
   // const angle = meshToEulerAngle(mesh);
-  return { angle, matrix };
+
+  // we have iris keypoints so we can calculate gaze direction
+  const gaze = mesh.length === 478 ? calculateGaze(mesh) : { angle: 0, strength: 0 };
+
+  return { angle, matrix, gaze };
 };
 
 export const detectFace = async (parent, input): Promise<Face[]> => {

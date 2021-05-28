@@ -73,14 +73,12 @@ export const iris = (res): Gesture[] => {
 
     const rightIrisCenterY = Math.abs(res[i].mesh[145][1] - res[i].annotations.rightEyeIris[0][1]) / res[i].box[3];
     const leftIrisCenterY = Math.abs(res[i].mesh[374][1] - res[i].annotations.leftEyeIris[0][1]) / res[i].box[3];
-    if (leftIrisCenterY < 0.01 || rightIrisCenterY < 0.01 || leftIrisCenterY > 0.025 || rightIrisCenterY > 0.025) center = false;
+    if (leftIrisCenterY < 0.01 || rightIrisCenterY < 0.01 || leftIrisCenterY > 0.022 || rightIrisCenterY > 0.022) center = false;
     if (leftIrisCenterY < 0.01 || rightIrisCenterY < 0.01) gestures.push({ iris: i, gesture: 'looking down' });
-    if (leftIrisCenterY > 0.025 || rightIrisCenterY > 0.025) gestures.push({ iris: i, gesture: 'looking up' });
+    if (leftIrisCenterY > 0.022 || rightIrisCenterY > 0.022) gestures.push({ iris: i, gesture: 'looking up' });
 
     // still center;
     if (center) gestures.push({ iris: i, gesture: 'looking center' });
-
-    console.log(leftIrisCenterX, rightIrisCenterX, leftIrisCenterY, rightIrisCenterY, gestures);
   }
   return gestures;
 };

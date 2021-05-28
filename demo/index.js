@@ -16,7 +16,6 @@ let human;
 
 const userConfig = {
   warmup: 'none',
-  /*
   backend: 'webgl',
   async: false,
   cacheSensitivity: 0,
@@ -31,12 +30,11 @@ const userConfig = {
     description: { enabled: false },
     emotion: { enabled: false },
   },
-  hand: { enabled: true },
-  body: { enabled: true, modelPath: 'posenet.json' },
+  hand: { enabled: false },
+  body: { enabled: false, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   object: { enabled: false },
   gesture: { enabled: true },
-  */
 };
 
 const drawOptions = {
@@ -48,7 +46,7 @@ const drawOptions = {
 const ui = {
   // configurable items
   console: true, // log messages to browser console
-  crop: true, // video mode crop to size or leave full frame
+  crop: false, // video mode crop to size or leave full frame
   facing: true, // camera facing front or back
   baseBackground: 'rgba(50, 50, 50, 1)', // 'grey'
   columns: 2, // when processing sample images create this many columns
@@ -305,23 +303,23 @@ async function setupCamera() {
     ui.busy = false;
     return msg;
   }
-  // enumerate devices for diag purposes
-  if (initialCameraAccess) {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    log('enumerated devices:');
-    for (const device of devices) log(`  kind:${device.kind} label:${device.label} id:${device.deviceId}`);
-  }
   let stream;
   const constraints = {
     audio: false,
     video: {
       facingMode: ui.facing ? 'user' : 'environment',
       resizeMode: ui.crop ? 'crop-and-scale' : 'none',
+      width: { ideal: document.body.clientWidth },
+      // height: { ideal: document.body.clientHeight }, // not set as we're using aspectRation to get height instead
+      aspectRatio: document.body.clientWidth / document.body.clientHeight,
       // deviceId: 'xxxx' // if you have multiple webcams, specify one to use explicitly
     },
   };
-  if (window.innerWidth > window.innerHeight) constraints.video.width = { ideal: window.innerWidth };
-  else constraints.video.height = { ideal: (window.innerHeight - document.getElementById('menubar').offsetHeight) };
+  // enumerate devices for diag purposes
+  if (initialCameraAccess) {
+    navigator.mediaDevices.enumerateDevices().then((devices) => log('enumerated devices:', devices));
+    log('camera constraints', constraints);
+  }
   try {
     stream = await navigator.mediaDevices.getUserMedia(constraints);
   } catch (err) {
@@ -334,37 +332,24 @@ async function setupCamera() {
     ui.busy = false;
     return msg;
   }
-  if (stream) video.srcObject = stream;
-  else {
-    ui.busy = false;
-    return 'camera stream empty';
-  }
   const tracks = stream.getVideoTracks();
   if (tracks && tracks.length >= 1) {
-    if (tracks.length > 1) {
-      log('enumerated viable tracks:', tracks.length);
-      for (const t of tracks) log(`  ${t.kind}: ${t.label}`);
-    }
+    if (initialCameraAccess) log('enumerated viable tracks:', tracks);
   } else {
     ui.busy = false;
     return 'no camera track';
   }
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
-  if (initialCameraAccess) log('selected camera:', track.label, 'id:', settings.deviceId);
-  // log('camera constraints:', constraints, 'window:', { width: window.innerWidth, height: window.innerHeight }, 'settings:', settings, 'track:', track);
-  ui.camera = { name: track.label.toLowerCase(), width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
+  if (initialCameraAccess) log('selected video source:', track, settings); // log('selected camera:', track.label, 'id:', settings.deviceId);
+  ui.camera = { name: track.label.toLowerCase(), width: video.videoWidth, height: video.videoHeight, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   initialCameraAccess = false;
-  return new Promise((resolve) => {
-    video.onloadeddata = async () => {
-      video.width = video.videoWidth;
-      video.height = video.videoHeight;
-      canvas.width = video.width;
-      canvas.height = video.height;
-      canvas.style.width = canvas.width > canvas.height ? '100vw' : '';
-      canvas.style.height = canvas.width > canvas.height ? '' : '100vh';
-      ui.menuWidth.input.setAttribute('value', video.width);
-      ui.menuHeight.input.setAttribute('value', video.height);
+  const promise = !stream || new Promise((resolve) => {
+    video.onloadeddata = () => {
+      if (settings.width > settings.height) canvas.style.width = '100vw';
+      else canvas.style.height = '100vh';
+      ui.menuWidth.input.setAttribute('value', video.videoWidth);
+      ui.menuHeight.input.setAttribute('value', video.videoHeight);
       if (live) video.play();
       // eslint-disable-next-line no-use-before-define
       if (live && !ui.detectThread) runHumanDetect(video, canvas);
@@ -372,6 +357,13 @@ async function setupCamera() {
       resolve();
     };
   });
+  // attach input to video element
+  if (stream) {
+    video.srcObject = stream;
+    return promise;
+  }
+  ui.busy = false;
+  return 'camera stream empty';
 }
 
 function initPerfMonitor() {
@@ -645,7 +637,9 @@ function setupMenu() {
 
 async function resize() {
   window.onresize = null;
-  const viewportScale = 1; // Math.min(1, Math.round(100 * window.innerWidth / 960) / 100);
+  // best setting for mobile, ignored for desktop
+  // can set dynamic value such as Math.min(1, Math.round(100 * window.innerWidth / 960) / 100);
+  const viewportScale = 0.7;
   if (!ui.viewportSet) {
     const viewport = document.querySelector('meta[name=viewport]');
     viewport.setAttribute('content', `width=device-width, shrink-to-fit=yes, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes, initial-scale=${viewportScale}`);
@@ -664,10 +658,10 @@ async function resize() {
   menu.process.menu.style.left = x[2];
   menu.models.menu.style.left = x[3];
 
-  const fontSize = Math.trunc(10 * (1 - viewportScale)) + 16;
+  const fontSize = Math.trunc(10 * (1 - viewportScale)) + 14;
   document.documentElement.style.fontSize = `${fontSize}px`;
-
-  human.draw.options.font = `small-caps ${fontSize + 4}px "Segoe UI"`;
+  human.draw.options.font = `small-caps ${fontSize}px "Segoe UI"`;
+  human.draw.options.lineHeight = fontSize + 2;
 
   await setupCamera();
   window.onresize = resize;
@@ -686,7 +680,7 @@ async function main() {
   window.addEventListener('unhandledrejection', (evt) => {
     // eslint-disable-next-line no-console
     console.error(evt.reason || evt);
-    document.getElementById('log').innerHTML = evt?.reason?.message || evt?.reason || evt;
+    document.getElementById('log').innerHTML = evt.reason.message || evt.reason || evt;
     status('exception error');
     evt.preventDefault();
   });

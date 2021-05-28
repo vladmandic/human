@@ -17526,24 +17526,25 @@ var iris = (res) => {
       center = true;
       gestures.push({ iris: i, gesture: "facing center" });
     }
-    const rightIrisCenterX = Math.abs(res[i].mesh[33][0] - res[i].annotations.rightEyeIris[0][0]) / res[i].annotations.rightEyeIris[0][0];
-    const leftIrisCenterX = Math.abs(res[i].mesh[263][0] - res[i].annotations.leftEyeIris[0][0]) / res[i].annotations.leftEyeIris[0][0];
-    if (leftIrisCenterX > 0.033 || rightIrisCenterX > 0.033)
+    const rightIrisCenterX = Math.abs(res[i].mesh[33][0] - res[i].annotations.rightEyeIris[0][0]) / res[i].box[2];
+    const leftIrisCenterX = Math.abs(res[i].mesh[263][0] - res[i].annotations.leftEyeIris[0][0]) / res[i].box[2];
+    if (leftIrisCenterX > 0.06 || rightIrisCenterX > 0.06)
       center = false;
-    if (leftIrisCenterX > 0.033)
+    if (leftIrisCenterX > 0.06)
       gestures.push({ iris: i, gesture: "looking right" });
-    if (rightIrisCenterX > 0.033)
+    if (rightIrisCenterX > 0.06)
       gestures.push({ iris: i, gesture: "looking left" });
-    const rightIrisCenterY = Math.abs(res[i].mesh[145][1] - res[i].annotations.rightEyeIris[0][1]) / res[i].annotations.rightEyeIris[0][1];
-    const leftIrisCenterY = Math.abs(res[i].mesh[374][1] - res[i].annotations.leftEyeIris[0][1]) / res[i].annotations.leftEyeIris[0][1];
-    if (leftIrisCenterY < 0.015 || rightIrisCenterY < 0.015 || leftIrisCenterY > 0.03 || rightIrisCenterY > 0.03)
+    const rightIrisCenterY = Math.abs(res[i].mesh[145][1] - res[i].annotations.rightEyeIris[0][1]) / res[i].box[3];
+    const leftIrisCenterY = Math.abs(res[i].mesh[374][1] - res[i].annotations.leftEyeIris[0][1]) / res[i].box[3];
+    if (leftIrisCenterY < 0.01 || rightIrisCenterY < 0.01 || leftIrisCenterY > 0.025 || rightIrisCenterY > 0.025)
       center = false;
-    if (leftIrisCenterY < 0.015 || rightIrisCenterY < 0.015)
+    if (leftIrisCenterY < 0.01 || rightIrisCenterY < 0.01)
       gestures.push({ iris: i, gesture: "looking down" });
-    if (leftIrisCenterY > 0.03 || rightIrisCenterY > 0.03)
+    if (leftIrisCenterY > 0.025 || rightIrisCenterY > 0.025)
       gestures.push({ iris: i, gesture: "looking up" });
     if (center)
       gestures.push({ iris: i, gesture: "looking center" });
+    console.log(leftIrisCenterX, rightIrisCenterX, leftIrisCenterY, rightIrisCenterY, gestures);
   }
   return gestures;
 };
@@ -18428,7 +18429,7 @@ var options = {
   color: "rgba(173, 216, 230, 0.3)",
   labelColor: "rgba(173, 216, 230, 1)",
   shadowColor: "black",
-  font: 'small-caps 16px "Segoe UI"',
+  font: 'small-caps 14px "Segoe UI"',
   lineHeight: 24,
   lineWidth: 6,
   pointSize: 2,

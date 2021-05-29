@@ -141,8 +141,8 @@ async function test(Human, inputConfig) {
   log('info', 'test body variants');
   config.body = { modelPath: 'posenet.json', enabled: true };
   await testDetect(human, 'assets/human-sample-body.jpg', 'posenet');
-  config.body = { modelPath: 'blazepose.json', enabled: true };
-  await testDetect(human, 'assets/human-sample-body.jpg', 'blazepose');
+  config.body = { modelPath: 'movenet-lightning.json', enabled: true };
+  await testDetect(human, 'assets/human-sample-body.jpg', 'movenet');
 
   await testDetect(human, null, 'default');
   log('info', 'test: first instance');

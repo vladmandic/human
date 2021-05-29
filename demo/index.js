@@ -16,14 +16,15 @@ let human;
 
 const userConfig = {
   warmup: 'none',
+  /*
   backend: 'webgl',
-  // async: false,
-  // cacheSensitivity: 0,
+  async: false,
+  cacheSensitivity: 0,
   filter: {
     enabled: false,
     flip: false,
   },
-  face: { enabled: true,
+  face: { enabled: false,
     detector: { return: true },
     mesh: { enabled: true },
     iris: { enabled: true },
@@ -31,10 +32,12 @@ const userConfig = {
     emotion: { enabled: false },
   },
   hand: { enabled: false },
-  body: { enabled: false, modelPath: 'posenet.json' },
+  // body: { enabled: true, modelPath: 'posenet.json' },
+  body: { enabled: true, modelPath: 'movenet-lightning.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   object: { enabled: false },
   gesture: { enabled: true },
+  */
 };
 
 const drawOptions = {

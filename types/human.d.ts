@@ -10,6 +10,7 @@ import * as emotion from './emotion/emotion';
 import * as posenet from './posenet/posenet';
 import * as handpose from './handpose/handpose';
 import * as blazepose from './blazepose/blazepose';
+import * as movenet from './movenet/movenet';
 import * as nanodet from './object/nanodet';
 import * as centernet from './object/centernet';
 import * as draw from './draw/draw';
@@ -80,6 +81,7 @@ export declare class Human {
         posenet: Model | null;
         blazepose: Model | null;
         efficientpose: Model | null;
+        movenet: Model | null;
         handpose: [Model, Model] | null;
         iris: Model | null;
         age: Model | null;
@@ -94,7 +96,7 @@ export declare class Human {
     classes: {
         facemesh: typeof facemesh;
         emotion: typeof emotion;
-        body: typeof posenet | typeof blazepose;
+        body: typeof posenet | typeof blazepose | typeof movenet;
         hand: typeof handpose;
         nanodet: typeof nanodet;
         centernet: typeof centernet;

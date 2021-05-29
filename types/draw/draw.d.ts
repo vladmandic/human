@@ -36,6 +36,7 @@ export interface DrawOptions {
     drawLabels: boolean;
     drawBoxes: boolean;
     drawPolygons: boolean;
+    drawGaze: boolean;
     fillPolygons: boolean;
     useDepth: boolean;
     useCurves: boolean;

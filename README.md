@@ -218,7 +218,7 @@ Default models in Human library are:
 - **Body Analysis**: PoseNet (AtomicBits version)
 
 Note that alternative models are provided and can be enabled via configuration  
-For example, `PoseNet` model can be switched for `BlazePose` model depending on the use case  
+For example, `PoseNet` model can be switched for `BlazePose`, `EfficientPose` or `MoveNet` model depending on the use case  
 
 For more info, see [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration) and [**List of Models**](https://github.com/vladmandic/human/wiki/Models)
 

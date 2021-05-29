@@ -52,7 +52,7 @@ export async function predict(image, config): Promise<Body[]> {
     });
   }
   const x = keypoints.map((a) => a.position.x);
-  const y = keypoints.map((a) => a.position.x);
+  const y = keypoints.map((a) => a.position.y);
   const box: [number, number, number, number] = [
     Math.min(...x),
     Math.min(...y),

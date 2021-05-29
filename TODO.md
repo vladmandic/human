@@ -13,8 +13,6 @@ N/A
 - InsightFace  
   RetinaFace detector and ArcFace recognition  
   <https://github.com/deepinsight/insightface>  
-- Blazepose  
-  Needs detector before running pose to center the image
 
 ## In Progress
 

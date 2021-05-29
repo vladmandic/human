@@ -288,11 +288,11 @@ const config: Config = {
   body: {
     enabled: true,
     modelPath: 'posenet.json',  // body model, can be absolute path or relative to modelBasePath
-                             // can be 'posenet' or 'blazepose'
+                             // can be 'posenet', 'blazepose', 'efficientpose', 'movenet'
     maxDetected: 1,          // maximum number of people detected in the input
                              // should be set to the minimum number for performance
-                             // only valid for posenet as blazepose only detects single pose
-    minConfidence: 0.1,      // threshold for discarding a prediction
+                             // only valid for posenet as other models detects single pose
+    minConfidence: 0.2,      // threshold for discarding a prediction
   },
 
   hand: {

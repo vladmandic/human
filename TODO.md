@@ -6,7 +6,8 @@ N/A
 
 ## Exploring Features
 
-- drawOptions.bufferedOutput: Output interpolation for draw
+- Switch from PoseNet to MoveNet
+- Optimize HandPose
 
 ## Explore Models
 

@@ -287,8 +287,8 @@ const config: Config = {
 
   body: {
     enabled: true,
-    modelPath: 'posenet.json',  // body model, can be absolute path or relative to modelBasePath
-                             // can be 'posenet', 'blazepose', 'efficientpose', 'movenet'
+    modelPath: 'movenet-lightning.json',  // body model, can be absolute path or relative to modelBasePath
+                             // can be 'posenet', 'blazepose', 'efficientpose', 'movenet-lightning', 'movenet-thunder'
     maxDetected: 1,          // maximum number of people detected in the input
                              // should be set to the minimum number for performance
                              // only valid for posenet as other models detects single pose

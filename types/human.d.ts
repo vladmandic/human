@@ -45,6 +45,10 @@ export declare class Human {
      * - Details: {@link Config}
      */
     config: Config;
+    /** Last known result of detect run
+     * - Can be accessed anytime after initial detection
+     */
+    result: Result;
     /** Current state of Human library
      * - Can be polled to determine operations that are currently executed
      */

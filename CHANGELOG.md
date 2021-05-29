@@ -9,8 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/05/28 mandic00@live.com
+### **HEAD -> main** 2021/05/29 mandic00@live.com
 
+- added experimental movenet-lightning and removed blazepose from default dist
 - added experimental face.rotation.gaze
 - fix and optimize for mobile platform
 - lock typescript to 4.2 due to typedoc incompatibility with 4.3

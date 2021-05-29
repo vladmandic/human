@@ -185,7 +185,7 @@ var config = {
   },
   body: {
     enabled: true,
-    modelPath: "posenet.json",
+    modelPath: "movenet-lightning.json",
     maxDetected: 1,
     minConfidence: 0.2
   },
@@ -20375,7 +20375,7 @@ var Human = class {
       }
       this.perf.total = Math.trunc(now() - timeStart);
       this.state = "idle";
-      const res = {
+      this.result = {
         face: faceRes,
         body: bodyRes,
         hand: handRes,
@@ -20390,7 +20390,7 @@ var Human = class {
         }
       };
       tf19.dispose(process5.tensor);
-      resolve(res);
+      resolve(this.result);
     });
   }
   async warmup(userConfig = {}) {

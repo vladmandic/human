@@ -99,20 +99,20 @@ export async function predict(image, config): Promise<Body[]> {
     }
     score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
     const x = keypoints.map((a) => a.position.x);
-    const y = keypoints.map((a) => a.position.x);
+    const y = keypoints.map((a) => a.position.y);
     box = [
       Math.min(...x),
       Math.min(...y),
       Math.max(...x) - Math.min(...x),
-      Math.max(...y) - Math.min(...x),
+      Math.max(...y) - Math.min(...y),
     ];
     const xRaw = keypoints.map((a) => a.positionRaw.x);
-    const yRaw = keypoints.map((a) => a.positionRaw.x);
+    const yRaw = keypoints.map((a) => a.positionRaw.y);
     boxRaw = [
       Math.min(...xRaw),
       Math.min(...yRaw),
       Math.max(...xRaw) - Math.min(...xRaw),
-      Math.max(...yRaw) - Math.min(...xRaw),
+      Math.max(...yRaw) - Math.min(...yRaw),
     ];
     resolve([{ id: 0, score, box, boxRaw, keypoints }]);
   });

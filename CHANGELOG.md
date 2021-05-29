@@ -11,9 +11,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/05/28 mandic00@live.com
 
-
-### **origin/main** 2021/05/27 mandic00@live.com
-
+- added experimental face.rotation.gaze
+- fix and optimize for mobile platform
+- lock typescript to 4.2 due to typedoc incompatibility with 4.3
 
 ### **1.9.4** 2021/05/27 mandic00@live.com
 

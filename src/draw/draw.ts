@@ -40,6 +40,7 @@ export interface DrawOptions {
   drawLabels: boolean,
   drawBoxes: boolean,
   drawPolygons: boolean,
+  drawGaze: boolean,
   fillPolygons: boolean,
   useDepth: boolean,
   useCurves: boolean,
@@ -60,6 +61,7 @@ export const options: DrawOptions = {
   drawLabels: <boolean>true,
   drawBoxes: <boolean>true,
   drawPolygons: <boolean>true,
+  drawGaze: <boolean>false,
   fillPolygons: <boolean>false,
   useDepth: <boolean>true,
   useCurves: <boolean>false,
@@ -238,7 +240,7 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, dra
             ctx.fill();
           }
         }
-        if (f.rotation?.gaze?.strength && f.rotation?.gaze?.angle) {
+        if (localOptions.drawGaze && f.rotation?.gaze?.strength && f.rotation?.gaze?.angle) {
           const leftGaze = [
             f.annotations['leftEyeIris'][0][0] + (Math.cos(f.rotation.gaze.angle) * f.rotation.gaze.strength * f.box[2]),
             f.annotations['leftEyeIris'][0][1] - (Math.sin(f.rotation.gaze.angle) * f.rotation.gaze.strength * f.box[3]),

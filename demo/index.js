@@ -15,7 +15,7 @@ import webRTC from './helpers/webrtc.js';
 let human;
 
 const userConfig = {
-  warmup: 'none',
+  warmup: 'full',
   /*
   backend: 'webgl',
   async: false,
@@ -33,8 +33,8 @@ const userConfig = {
   },
   hand: { enabled: false },
   // body: { enabled: true, modelPath: 'posenet.json' },
-  body: { enabled: true, modelPath: 'movenet-lightning.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
+  body: { enabled: true, modelPath: 'movenet-lightning.json' },
   object: { enabled: false },
   gesture: { enabled: true },
   */

@@ -60,6 +60,10 @@ export class Human {
    * - Details: {@link Config}
    */
   config: Config;
+  /** Last known result of detect run
+   * - Can be accessed anytime after initial detection
+   */
+  result: Result;
   /** Current state of Human library
    * - Can be polled to determine operations that are currently executed
    */
@@ -548,7 +552,7 @@ export class Human {
 
       this.perf.total = Math.trunc(now() - timeStart);
       this.state = 'idle';
-      const res = {
+      this.result = {
         face: faceRes,
         body: bodyRes,
         hand: handRes,
@@ -564,7 +568,7 @@ export class Human {
       tf.dispose(process.tensor);
 
       // log('Result:', result);
-      resolve(res);
+      resolve(this.result);
     });
   }
 

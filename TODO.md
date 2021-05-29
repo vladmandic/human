@@ -7,13 +7,12 @@ N/A
 ## Exploring Features
 
 - Switch from PoseNet to MoveNet
-- Optimize HandPose
+- Implement demo as installable PWA with model caching
+- Implement results interpolation on library level
 
 ## Explore Models
 
-- InsightFace  
-  RetinaFace detector and ArcFace recognition  
-  <https://github.com/deepinsight/insightface>  
+- InsightFace: RetinaFace detector and ArcFace recognition: <https://github.com/deepinsight/insightface>  
 
 ## In Progress
 

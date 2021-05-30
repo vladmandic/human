@@ -4327,8 +4327,8 @@ async function predict3(image15, config3, idx, count2) {
 // src/face.ts
 var calculateGaze = (mesh) => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]);
-  const offsetIris = [0, 0];
-  const eyeRatio = 5;
+  const offsetIris = [0, -0.1];
+  const eyeRatio = 1;
   const left = mesh[33][2] > mesh[263][2];
   const irisCenter = left ? mesh[473] : mesh[468];
   const eyeCenter = left ? [(mesh[133][0] + mesh[33][0]) / 2, (mesh[133][1] + mesh[33][1]) / 2] : [(mesh[263][0] + mesh[362][0]) / 2, (mesh[263][1] + mesh[362][1]) / 2];
@@ -18493,6 +18493,8 @@ function process4(input, config3) {
   } else {
     const originalWidth = input["naturalWidth"] || input["videoWidth"] || input["width"] || input["shape"] && input["shape"][1] > 0;
     const originalHeight = input["naturalHeight"] || input["videoHeight"] || input["height"] || input["shape"] && input["shape"][2] > 0;
+    if (!originalWidth || !originalHeight)
+      return { tensor: null, canvas: inCanvas };
     let targetWidth = originalWidth;
     let targetHeight = originalHeight;
     if (targetWidth > maxSize) {
@@ -18643,6 +18645,7 @@ var options = {
   bufferedOutput: false
 };
 var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
+var rad2deg = (theta) => Math.round(theta * 180 / Math.PI);
 function point(ctx, x, y, z = 0, localOptions) {
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
   ctx.beginPath();
@@ -18764,8 +18767,12 @@ async function face2(inCanvas2, result, drawOptions) {
       const emotion2 = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
       labels2.push(emotion2.join(" "));
     }
-    if (f.rotation && f.rotation.angle && f.rotation.angle.roll)
-      labels2.push(`roll: ${Math.trunc(100 * f.rotation.angle.roll) / 100} yaw:${Math.trunc(100 * f.rotation.angle.yaw) / 100} pitch:${Math.trunc(100 * f.rotation.angle.pitch) / 100}`);
+    if (f.rotation && f.rotation.angle && f.rotation.gaze) {
+      if (f.rotation.angle.roll)
+        labels2.push(`roll: ${rad2deg(f.rotation.angle.roll)}\xB0 yaw:${rad2deg(f.rotation.angle.yaw)}\xB0 pitch:${rad2deg(f.rotation.angle.pitch)}\xB0`);
+      if (f.rotation.gaze.angle)
+        labels2.push(`gaze: ${rad2deg(f.rotation.gaze.angle)}\xB0`);
+    }
     if (labels2.length === 0)
       labels2.push("face");
     ctx.fillStyle = localOptions.color;
@@ -19136,7 +19143,18 @@ function calcBuffered(newResult, localOptions) {
   for (let i = 0; i < newResult.face.length; i++) {
     const box6 = newResult.face[i].box.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / localOptions.bufferedFactor);
     const boxRaw3 = newResult.face[i].boxRaw.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / localOptions.bufferedFactor);
-    bufferedResult.face[i] = { ...newResult.face[i], box: box6, boxRaw: boxRaw3 };
+    const matrix = newResult.face[i].rotation.matrix;
+    const angle = {
+      roll: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.roll + newResult.face[i].rotation.angle.roll) / localOptions.bufferedFactor,
+      yaw: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.yaw + newResult.face[i].rotation.angle.yaw) / localOptions.bufferedFactor,
+      pitch: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.pitch + newResult.face[i].rotation.angle.pitch) / localOptions.bufferedFactor
+    };
+    const gaze = {
+      angle: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.angle + newResult.face[i].rotation.gaze.angle) / localOptions.bufferedFactor,
+      strength: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.strength + newResult.face[i].rotation.gaze.strength) / localOptions.bufferedFactor
+    };
+    const rotation = { angle, matrix, gaze };
+    bufferedResult.face[i] = { ...newResult.face[i], rotation, box: box6, boxRaw: boxRaw3 };
   }
   const newPersons = newResult.persons;
   if (!bufferedResult.persons || newPersons.length !== bufferedResult.persons.length)

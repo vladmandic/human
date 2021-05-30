@@ -41,6 +41,7 @@ export function process(input, config): { tensor: Tensor | null, canvas: Offscre
     // check if resizing will be needed
     const originalWidth = input['naturalWidth'] || input['videoWidth'] || input['width'] || (input['shape'] && (input['shape'][1] > 0));
     const originalHeight = input['naturalHeight'] || input['videoHeight'] || input['height'] || (input['shape'] && (input['shape'][2] > 0));
+    if (!originalWidth || !originalHeight) return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
     let targetWidth = originalWidth;
     let targetHeight = originalHeight;
     if (targetWidth > maxSize) {

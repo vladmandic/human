@@ -11,6 +11,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/05/30 mandic00@live.com
 
+- quantized centernet
+- release candidate
+- added usage restrictions
 - quantize handdetect model
 - added experimental movenet-lightning and removed blazepose from default dist
 - added experimental face.rotation.gaze

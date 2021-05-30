@@ -17,7 +17,6 @@ N/A
 
 ## In Progress
 
-- Face rotation interpolation
 - Object detection interpolation
 
 ## Issues

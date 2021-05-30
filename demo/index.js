@@ -30,6 +30,8 @@ let human;
 const userConfig = {
   warmup: 'none',
   backend: 'webgl',
+  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.6.0/dist/',
+  /*
   async: false,
   cacheSensitivity: 0,
   filter: {
@@ -49,6 +51,7 @@ const userConfig = {
   body: { enabled: false, modelPath: 'movenet-lightning.json' },
   object: { enabled: false },
   gesture: { enabled: true },
+  */
 };
 
 const drawOptions = {

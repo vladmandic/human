@@ -1,5 +1,4 @@
-/* eslint-disable max-len */
-
+// @ts-nocheck
 // based on: https://github.com/munrocket/gl-bench
 
 const UICSS = `

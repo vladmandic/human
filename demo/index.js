@@ -681,7 +681,7 @@ async function pwaRegister() {
         if (reg.scope.startsWith(location.origin)) found = reg;
       }
       if (!found) {
-        const reg = await navigator.serviceWorker.register(pwa.scriptFile, { scope: '/' });
+        const reg = await navigator.serviceWorker.register(pwa.scriptFile, { scope: location.pathname });
         found = reg;
         log('pwa registered:', reg.scope);
       }

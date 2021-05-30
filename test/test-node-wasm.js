@@ -5,6 +5,7 @@ const config = {
   modelBasePath: 'http://localhost:10030/models/',
   backend: 'wasm',
   wasmPath: 'node_modules/@tensorflow/tfjs-backend-wasm/dist/',
+  // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.6.0/dist/',
   debug: false,
   async: false,
   filter: {

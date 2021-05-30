@@ -2,6 +2,7 @@
  * Configuration interface definition for **Human** library
  *
  * Contains all configurable parameters
+ * @typedef Config
  */
 export interface Config {
     /** Backend used for TFJS operations */

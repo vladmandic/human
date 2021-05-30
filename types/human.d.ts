@@ -18,9 +18,13 @@ import { Tensor } from './tfjs/types';
 export type { Config } from './config';
 export type { Result, Face, Hand, Body, Item, Gesture } from './result';
 export type { DrawOptions } from './draw/draw';
-/** Defines all possible input types for **Human** detection */
+/** Defines all possible input types for **Human** detection
+ * @typedef Input
+ */
 export declare type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
-/** Error message */
+/** Error message
+ * @typedef Error
+ */
 export declare type Error = {
     error: string;
 };
@@ -36,6 +40,8 @@ declare type Model = unknown;
  * - Configuration object definition: {@link Config}
  * - Results object definition: {@link Result}
  * - Possible inputs: {@link Input}
+ *
+ * @param userConfig: {@link Config}
  */
 export declare class Human {
     #private;
@@ -53,12 +59,12 @@ export declare class Human {
      * - Can be polled to determine operations that are currently executed
      */
     state: string;
-    /** Internal: Instance of current image being processed */
+    /** @internal: Instance of current image being processed */
     image: {
         tensor: Tensor | null;
         canvas: OffscreenCanvas | HTMLCanvasElement | null;
     };
-    /** Internal: Instance of TensorFlow/JS used by Human
+    /** @internal: Instance of TensorFlow/JS used by Human
      * - Can be embedded or externally provided
      */
     tf: TensorFlow;
@@ -79,7 +85,7 @@ export declare class Human {
         canvas: typeof draw.canvas;
         all: typeof draw.all;
     };
-    /** Internal: Currently loaded models */
+    /** @internal: Currently loaded models */
     models: {
         face: [Model, Model, Model] | null;
         posenet: Model | null;
@@ -96,7 +102,7 @@ export declare class Human {
         centernet: Model | null;
         faceres: Model | null;
     };
-    /** Internal: Currently loaded classes */
+    /** @internal: Currently loaded classes */
     classes: {
         facemesh: typeof facemesh;
         emotion: typeof emotion;
@@ -119,22 +125,24 @@ export declare class Human {
     perf: Record<string, unknown>;
     /**
      * Creates instance of Human library that is futher used for all operations
-     * - @param userConfig: {@link Config}
+     * @param userConfig: {@link Config}
      */
     constructor(userConfig?: Config | Record<string, unknown>);
     /** @hidden */
     analyze: (...msg: any[]) => void;
     /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
      * - Calculation is based on normalized Minkowski distance between
+     * @param embedding1: face descriptor as array of numbers
+     * @param embedding2: face descriptor as array of numbers
+     * @returns similarity: number
     */
     similarity(embedding1: Array<number>, embedding2: Array<number>): number;
     /** Enhance method performs additional enhacements to face image previously detected for futher processing
-     * @param input Tensor as provided in human.result.face[n].tensor
+     * @param input: Tensor as provided in human.result.face[n].tensor
      * @returns Tensor
      */
     enhance(input: Tensor): Tensor | null;
-    /**
-     * Math method find best match between provided face descriptor and predefined database of known descriptors
+    /** Math method find best match between provided face descriptor and predefined database of known descriptors
      * @param faceEmbedding: face descriptor previsouly calculated on any face
      * @param db: array of mapping of face descriptors to known values
      * @param threshold: minimum score for matching to be considered in the result
@@ -152,6 +160,7 @@ export declare class Human {
     };
     /** Load method preloads all configured models on-demand
      * - Not explicitly required as any required model is load implicitly on it's first run
+     * @param userConfig: {@link Config}
     */
     load(userConfig?: Config | Record<string, unknown>): Promise<void>;
     /** Main detection method
@@ -159,11 +168,15 @@ export declare class Human {
      * - Pre-process input: {@link Input}
      * - Run inference for all configured models
      * - Process and return result: {@link Result}
+     * @param input: Input
+     * @param userConfig: Config
+     * @returns result: Result
     */
     detect(input: Input, userConfig?: Config | Record<string, unknown>): Promise<Result | Error>;
     /** Warmup metho pre-initializes all models for faster inference
      * - can take significant time on startup
      * - only used for `webgl` and `humangl` backends
+     * @param userConfig: Config
     */
     warmup(userConfig?: Config | Record<string, unknown>): Promise<Result | {
         error: any;

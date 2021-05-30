@@ -124,7 +124,7 @@ function mergeDeep(...objects) {
 var config = {
   backend: "webgl",
   modelBasePath: "../models/",
-  wasmPath: "../node_modules/@tensorflow/tfjs-backend-wasm/dist//",
+  wasmPath: "../node_modules/@tensorflow/tfjs-backend-wasm/dist/",
   debug: true,
   async: true,
   warmup: "full",

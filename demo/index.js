@@ -1,13 +1,26 @@
-// @ts-nocheck // typescript checks disabled as this is pure javascript
-
 /**
  * Human demo for browsers
  *
- * Main demo app that exposes all Human functionality
+ * @description Main demo app that exposes all Human functionality
+ *
+ * @params Optional URL parameters:
+ * image=<imagePath:string>: perform detection on specific image and finish
+ * worker=<true|false>: use WebWorkers
+ * backend=<webgl|wasm|cpu>: use specific TF backend for operations
+ * preload=<true|false>: pre-load all configured models
+ * warmup=<true|false>: warmup all configured models
+ *
+ * @example <https://wyse:10031/?backend=wasm&worker=true&image="/assets/sample-me.jpg">
+ *
+ * @configuration
+ * userConfig={}: contains all model configuration used by human
+ * drawOptions={}: contains all draw variables used by human.draw
+ * ui={}: contains all variables exposed in the UI
  */
 
+// @ts-nocheck // typescript checks disabled as this is pure javascript
+
 import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
-// import Human from '../dist/human.esm-nobundle.js'; // this requires that tf is loaded manually and bundled before human can be used
 import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
 import webRTC from './helpers/webrtc.js';
@@ -15,8 +28,7 @@ import webRTC from './helpers/webrtc.js';
 let human;
 
 const userConfig = {
-  warmup: 'full',
-  /*
+  warmup: 'none',
   backend: 'webgl',
   async: false,
   cacheSensitivity: 0,
@@ -34,10 +46,9 @@ const userConfig = {
   hand: { enabled: false },
   // body: { enabled: true, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
-  body: { enabled: true, modelPath: 'movenet-lightning.json' },
-  object: { enabled: false },
+  body: { enabled: false, modelPath: 'movenet-lightning.json' },
+  object: { enabled: true },
   gesture: { enabled: true },
-  */
 };
 
 const drawOptions = {
@@ -53,7 +64,7 @@ const ui = {
   facing: true, // camera facing front or back
   baseBackground: 'rgba(50, 50, 50, 1)', // 'grey'
   columns: 2, // when processing sample images create this many columns
-  useWorker: false, // use web workers for processing
+  useWorker: true, // use web workers for processing
   worker: 'index-worker.js',
   maxFPSframes: 10, // keep fps history for how many frames
   modelsPreload: true, // preload human models on startup
@@ -84,6 +95,7 @@ const ui = {
 
   // sample images
   compare: '../assets/sample-me.jpg', // base image for face compare
+  /*
   samples: [
     '../assets/sample6.jpg',
     '../assets/sample1.jpg',
@@ -92,45 +104,10 @@ const ui = {
     '../assets/sample3.jpg',
     '../assets/sample2.jpg',
   ],
-  /*
-  ui.samples = [
-    '../private/daz3d/daz3d-brianna.jpg',
-    '../private/daz3d/daz3d-chiyo.jpg',
-    '../private/daz3d/daz3d-cody.jpg',
-    '../private/daz3d/daz3d-drew-01.jpg',
-    '../private/daz3d/daz3d-drew-02.jpg',
-    '../private/daz3d/daz3d-ella-01.jpg',
-    '../private/daz3d/daz3d-ella-02.jpg',
-    '../private/daz3d/daz3d-_emotions01.jpg',
-    '../private/daz3d/daz3d-_emotions02.jpg',
-    '../private/daz3d/daz3d-_emotions03.jpg',
-    '../private/daz3d/daz3d-_emotions04.jpg',
-    '../private/daz3d/daz3d-_emotions05.jpg',
-    '../private/daz3d/daz3d-gillian.jpg',
-    '../private/daz3d/daz3d-ginnifer.jpg',
-    '../private/daz3d/daz3d-hye-01.jpg',
-    '../private/daz3d/daz3d-hye-02.jpg',
-    '../private/daz3d/daz3d-kaia.jpg',
-    '../private/daz3d/daz3d-karen.jpg',
-    '../private/daz3d/daz3d-kiaria-01.jpg',
-    '../private/daz3d/daz3d-kiaria-02.jpg',
-    '../private/daz3d/daz3d-lilah-01.jpg',
-    '../private/daz3d/daz3d-lilah-02.jpg',
-    '../private/daz3d/daz3d-lilah-03.jpg',
-    '../private/daz3d/daz3d-lila.jpg',
-    '../private/daz3d/daz3d-lindsey.jpg',
-    '../private/daz3d/daz3d-megah.jpg',
-    '../private/daz3d/daz3d-selina-01.jpg',
-    '../private/daz3d/daz3d-selina-02.jpg',
-    '../private/daz3d/daz3d-snow.jpg',
-    '../private/daz3d/daz3d-sunshine.jpg',
-    '../private/daz3d/daz3d-taia.jpg',
-    '../private/daz3d/daz3d-tuesday-01.jpg',
-    '../private/daz3d/daz3d-tuesday-02.jpg',
-    '../private/daz3d/daz3d-tuesday-03.jpg',
-    '../private/daz3d/daz3d-zoe.jpg',
-  ];
   */
+  samples: [
+    '../private/daz3d/daz3d-kiaria-02.jpg',
+  ],
 };
 
 // global variables
@@ -267,9 +244,9 @@ async function drawResults(input) {
   // if buffered, immediate loop but limit frame rate although it's going to run slower as JS is singlethreaded
   if (ui.buffered) {
     ui.drawThread = requestAnimationFrame(() => drawResults(input, canvas));
-  } else if (!ui.buffered && ui.drawThread) {
+  } else {
     log('stopping buffered refresh');
-    cancelAnimationFrame(ui.drawThread);
+    if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
     ui.drawThread = null;
   }
 }
@@ -435,7 +412,7 @@ function runHumanDetect(input, canvas, timestamp) {
     offscreen.width = canvas.width;
     offscreen.height = canvas.height;
     const ctx = offscreen.getContext('2d');
-    ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(input, 0, 0, canvas.width, canvas.height);
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     // perform detection in worker
     webWorker(input, data, canvas, userConfig, timestamp);
@@ -522,6 +499,7 @@ async function detectVideo() {
 
 // just initialize everything and call main function
 async function detectSampleImages() {
+  document.getElementById('play').style.display = 'none';
   document.getElementById('canvas').style.display = 'none';
   document.getElementById('samples-container').style.display = 'block';
   log('running detection of sample images');
@@ -530,6 +508,9 @@ async function detectSampleImages() {
   for (const m of Object.values(menu)) m.hide();
   for (const image of ui.samples) await processImage(image);
   status();
+  document.getElementById('play').style.display = 'none';
+  document.getElementById('loader').style.display = 'none';
+  if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
 }
 
 function setupMenu() {
@@ -691,6 +672,12 @@ async function main() {
   log('demo starting ...');
 
   document.documentElement.style.setProperty('--icon-size', ui.iconSize);
+
+  // sanity check for webworker compatibility
+  if (typeof Worker === 'undefined' || typeof OffscreenCanvas === 'undefined') {
+    ui.useWorker = false;
+    log('workers are disabled due to missing browser functionality');
+  }
 
   // parse url search params
   const params = new URLSearchParams(location.search);

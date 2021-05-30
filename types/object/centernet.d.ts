@@ -3,4 +3,4 @@
  */
 import { Item } from '../result';
 export declare function load(config: any): Promise<any>;
-export declare function predict(image: any, config: any): Promise<Item[]>;
+export declare function predict(input: any, config: any): Promise<Item[]>;

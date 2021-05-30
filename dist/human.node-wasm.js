@@ -17599,6 +17599,8 @@ async function load11(config3) {
   return model8;
 }
 async function process3(res, inputSize, outputShape, config3) {
+  if (!res)
+    return [];
   const results = [];
   const detections = res.arraySync();
   const squeezeT = tf17.squeeze(res);
@@ -17618,7 +17620,7 @@ async function process3(res, inputSize, outputShape, config3) {
   nmsT.dispose();
   let i = 0;
   for (const id of nms) {
-    const score3 = detections[0][id][4];
+    const score3 = Math.trunc(100 * detections[0][id][4]) / 100;
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
     const boxRaw3 = [
@@ -17637,18 +17639,16 @@ async function process3(res, inputSize, outputShape, config3) {
   }
   return results;
 }
-async function predict10(image15, config3) {
+async function predict10(input, config3) {
   if (skipped6 < config3.object.skipFrames && config3.skipFrame && last4.length > 0) {
     skipped6++;
     return last4;
   }
   skipped6 = 0;
   return new Promise(async (resolve) => {
-    const outputSize = [image15.shape[2], image15.shape[1]];
-    const resize = tf17.image.resizeBilinear(image15, [model8.inputSize, model8.inputSize], false);
-    let objectT;
-    if (config3.object.enabled)
-      objectT = model8.execute(resize, "tower_0/detections");
+    const outputSize = [input.shape[2], input.shape[1]];
+    const resize = tf17.image.resizeBilinear(input, [model8.inputSize, model8.inputSize]);
+    const objectT = config3.object.enabled ? model8.execute(resize, ["tower_0/detections"]) : null;
     resize.dispose();
     const obj = await process3(objectT, model8.inputSize, outputSize, config3);
     last4 = obj;
@@ -19106,9 +19106,9 @@ function calcBuffered(newResult, localOptions) {
   if (!bufferedResult.body || newResult.body.length !== bufferedResult.body.length)
     bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
   for (let i = 0; i < newResult.body.length; i++) {
-    bufferedResult.body[i].box = newResult.body[i].box.map((box6, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].box[j] + box6) / localOptions.bufferedFactor);
-    bufferedResult.body[i].boxRaw = newResult.body[i].boxRaw.map((box6, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + box6) / localOptions.bufferedFactor);
-    bufferedResult.body[i].keypoints = newResult.body[i].keypoints.map((keypoint, j) => ({
+    const box6 = newResult.body[i].box.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].box[j] + b) / localOptions.bufferedFactor);
+    const boxRaw3 = newResult.body[i].boxRaw.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + b) / localOptions.bufferedFactor);
+    const keypoints3 = newResult.body[i].keypoints.map((keypoint, j) => ({
       score: keypoint.score,
       part: keypoint.part,
       position: {
@@ -19116,17 +19116,27 @@ function calcBuffered(newResult, localOptions) {
         y: bufferedResult.body[i].keypoints[j] ? ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.y + keypoint.position.y) / localOptions.bufferedFactor : keypoint.position.y
       }
     }));
+    bufferedResult.body[i] = { ...newResult.body[i], box: box6, boxRaw: boxRaw3, keypoints: keypoints3 };
   }
   if (!bufferedResult.hand || newResult.hand.length !== bufferedResult.hand.length)
     bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand));
   for (let i = 0; i < newResult.hand.length; i++) {
-    bufferedResult.hand[i].box = newResult.hand[i].box.map((box6, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].box[j] + box6) / localOptions.bufferedFactor);
-    bufferedResult.hand[i].boxRaw = newResult.hand[i].boxRaw.map((box6, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + box6) / localOptions.bufferedFactor);
-    bufferedResult.hand[i].landmarks = newResult.hand[i].landmarks.map((landmark, j) => landmark.map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].landmarks[j][k] + coord) / localOptions.bufferedFactor));
+    const box6 = newResult.hand[i].box.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / localOptions.bufferedFactor);
+    const boxRaw3 = newResult.hand[i].boxRaw.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / localOptions.bufferedFactor);
+    const landmarks = newResult.hand[i].landmarks.map((landmark, j) => landmark.map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].landmarks[j][k] + coord) / localOptions.bufferedFactor));
     const keys = Object.keys(newResult.hand[i].annotations);
+    const annotations3 = [];
     for (const key of keys) {
-      bufferedResult.hand[i].annotations[key] = newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / localOptions.bufferedFactor));
+      annotations3[key] = newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / localOptions.bufferedFactor));
     }
+    bufferedResult.hand[i] = { ...newResult.hand[i], box: box6, boxRaw: boxRaw3, landmarks, annotations: annotations3 };
+  }
+  if (!bufferedResult.face || newResult.face.length !== bufferedResult.face.length)
+    bufferedResult.face = JSON.parse(JSON.stringify(newResult.face));
+  for (let i = 0; i < newResult.face.length; i++) {
+    const box6 = newResult.face[i].box.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / localOptions.bufferedFactor);
+    const boxRaw3 = newResult.face[i].boxRaw.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / localOptions.bufferedFactor);
+    bufferedResult.face[i] = { ...newResult.face[i], box: box6, boxRaw: boxRaw3 };
   }
   const newPersons = newResult.persons;
   if (!bufferedResult.persons || newPersons.length !== bufferedResult.persons.length)
@@ -19153,7 +19163,7 @@ async function all(inCanvas2, result, drawOptions) {
     calcBuffered(result, localOptions);
   else
     bufferedResult = result;
-  face2(inCanvas2, result.face, localOptions);
+  face2(inCanvas2, bufferedResult.face, localOptions);
   body2(inCanvas2, bufferedResult.body, localOptions);
   hand2(inCanvas2, bufferedResult.hand, localOptions);
   gesture(inCanvas2, result.gesture, localOptions);
@@ -19942,7 +19952,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // package.json
-var version = "1.9.4";
+var version = "2.0.0";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;

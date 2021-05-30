@@ -503,17 +503,18 @@ export async function person(inCanvas: HTMLCanvasElement, result: Array<Person>,
 }
 
 function calcBuffered(newResult, localOptions) {
-  // if (newResult.timestamp !== bufferedResult?.timestamp) bufferedResult = JSON.parse(JSON.stringify(newResult)); // no need to force update
-  // each record is only updated using deep copy when number of detected record changes, otherwise it will converge by itself
+  // each record is only updated using deep clone when number of detected record changes, otherwise it will converge by itself
+  // otherwise bufferedResult is a shallow clone of result plus updated local calculated values
+  // thus mixing by-reference and by-value assignments to minimize memory operations
 
   // interpolate body results
-  if (!bufferedResult.body || (newResult.body.length !== bufferedResult.body.length)) bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
-  for (let i = 0; i < newResult.body.length; i++) { // update body: box, boxRaw, keypoints
-    bufferedResult.body[i].box = newResult.body[i].box
-      .map((box, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].box[j] + box) / localOptions.bufferedFactor) as [number, number, number, number];
-    bufferedResult.body[i].boxRaw = newResult.body[i].boxRaw
-      .map((box, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + box) / localOptions.bufferedFactor) as [number, number, number, number];
-    bufferedResult.body[i].keypoints = newResult.body[i].keypoints
+  if (!bufferedResult.body || (newResult.body.length !== bufferedResult.body.length)) bufferedResult.body = JSON.parse(JSON.stringify(newResult.body)); // deep clone once
+  for (let i = 0; i < newResult.body.length; i++) {
+    const box = newResult.body[i].box // update box
+      .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].box[j] + b) / localOptions.bufferedFactor) as [number, number, number, number];
+    const boxRaw = newResult.body[i].boxRaw // update boxRaw
+      .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + b) / localOptions.bufferedFactor) as [number, number, number, number];
+    const keypoints = newResult.body[i].keypoints // update keypoints
       .map((keypoint, j) => ({
         score: keypoint.score,
         part: keypoint.part,
@@ -522,24 +523,37 @@ function calcBuffered(newResult, localOptions) {
           y: bufferedResult.body[i].keypoints[j] ? ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.y + keypoint.position.y) / localOptions.bufferedFactor : keypoint.position.y,
         },
       }));
+    bufferedResult.body[i] = { ...newResult.body[i], box, boxRaw, keypoints }; // shallow clone plus updated values
   }
 
   // interpolate hand results
-  if (!bufferedResult.hand || (newResult.hand.length !== bufferedResult.hand.length)) bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand));
-  for (let i = 0; i < newResult.hand.length; i++) { // update body: box, boxRaw, landmarks, annotations
-    bufferedResult.hand[i].box = newResult.hand[i].box
-      .map((box, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].box[j] + box) / localOptions.bufferedFactor);
-    bufferedResult.hand[i].boxRaw = newResult.hand[i].boxRaw
-      .map((box, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + box) / localOptions.bufferedFactor);
-    bufferedResult.hand[i].landmarks = newResult.hand[i].landmarks
+  if (!bufferedResult.hand || (newResult.hand.length !== bufferedResult.hand.length)) bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand)); // deep clone once
+  for (let i = 0; i < newResult.hand.length; i++) {
+    const box = newResult.hand[i].box // update box
+      .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / localOptions.bufferedFactor);
+    const boxRaw = newResult.hand[i].boxRaw // update boxRaw
+      .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / localOptions.bufferedFactor);
+    const landmarks = newResult.hand[i].landmarks // update landmarks
       .map((landmark, j) => landmark
         .map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].landmarks[j][k] + coord) / localOptions.bufferedFactor));
-    const keys = Object.keys(newResult.hand[i].annotations);
+    const keys = Object.keys(newResult.hand[i].annotations); // update annotations
+    const annotations = [];
     for (const key of keys) {
-      bufferedResult.hand[i].annotations[key] = newResult.hand[i].annotations[key]
+      annotations[key] = newResult.hand[i].annotations[key]
         .map((val, j) => val
           .map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / localOptions.bufferedFactor));
     }
+    bufferedResult.hand[i] = { ...newResult.hand[i], box, boxRaw, landmarks, annotations }; // shallow clone plus updated values
+  }
+
+  // interpolate face results
+  if (!bufferedResult.face || (newResult.face.length !== bufferedResult.face.length)) bufferedResult.face = JSON.parse(JSON.stringify(newResult.face)); // deep clone once
+  for (let i = 0; i < newResult.face.length; i++) {
+    const box = newResult.face[i].box // update box
+      .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / localOptions.bufferedFactor);
+    const boxRaw = newResult.face[i].boxRaw // update boxRaw
+      .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / localOptions.bufferedFactor);
+    bufferedResult.face[i] = { ...newResult.face[i], box, boxRaw }; // shallow clone plus updated values
   }
 
   // interpolate person results
@@ -569,7 +583,7 @@ export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptio
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
   if (localOptions.bufferedOutput) calcBuffered(result, localOptions); // do results interpolation
   else bufferedResult = result; // just use results as-is
-  face(inCanvas, result.face, localOptions); // face does have buffering
+  face(inCanvas, bufferedResult.face, localOptions); // face does have buffering
   body(inCanvas, bufferedResult.body, localOptions); // use interpolated results if available
   hand(inCanvas, bufferedResult.hand, localOptions); // use interpolated results if available
   // person(inCanvas, bufferedResult.persons, localOptions); // use interpolated results if available

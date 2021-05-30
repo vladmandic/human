@@ -42,6 +42,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**TypeDoc API Specification: Human**](https://vladmandic.github.io/human/typedoc/classes/human.html)
 - [**TypeDoc API Specification: Root**](https://vladmandic.github.io/human/typedoc/)
 - [**Change Log**](https://github.com/vladmandic/human/blob/main/CHANGELOG.md)
+- [**Current To-do List**](https://github.com/vladmandic/human/blob/main/TODO.md)
 
 ## Wiki pages
 
@@ -64,6 +65,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**Performance Profiling**](https://github.com/vladmandic/human/wiki/Profiling)
 - [**Platform Support**](https://github.com/vladmandic/human/wiki/Platforms)
 - [**List of Models & Credits**](https://github.com/vladmandic/human/wiki/Models)
+- [**Security & Privacy Policy**](https://github.com/vladmandic/human/blob/main/SECURITY.md)
 
 <br>
 

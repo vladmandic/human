@@ -4,6 +4,7 @@
 
 const log = require('@vladmandic/pilogger');
 const fs = require('fs');
+const path = require('path');
 const process = require('process');
 const fetch = require('node-fetch').default;
 
@@ -142,6 +143,7 @@ async function detect(input) {
     log.data('  Object: N/A');
   }
 
+  fs.writeFileSync('result.json', JSON.stringify(result, null, 2));
   // print data to console
   if (result) {
     log.data('Persons:');
@@ -182,13 +184,26 @@ async function main() {
   log.header();
   log.info('Current folder:', process.env.PWD);
   await init();
+  const f = process.argv[2];
   if (process.argv.length !== 3) {
-    log.warn('Parameters: <input image> missing');
+    log.warn('Parameters: <input image | folder> missing');
     await test();
-  } else if (!fs.existsSync(process.argv[2]) && !process.argv[2].startsWith('http')) {
+  } else if (!fs.existsSync(f) && !f.startsWith('http')) {
     log.error(`File not found: ${process.argv[2]}`);
   } else {
-    await detect(process.argv[2]);
+    if (fs.existsSync(f)) {
+      const stat = fs.statSync(f);
+      if (stat.isDirectory()) {
+        const dir = fs.readdirSync(f);
+        for (const file of dir) {
+          await detect(path.join(f, file));
+        }
+      } else {
+        await detect(f);
+      }
+    } else {
+      await detect(f);
+    }
   }
 }
 

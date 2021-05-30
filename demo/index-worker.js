@@ -13,6 +13,7 @@ function log(...msg) {
 onmessage = async (msg) => {
   if (busy) return;
   busy = true;
+  // received from index.js using:
   // worker.postMessage({ image: image.data.buffer, width: canvas.width, height: canvas.height, config }, [image.data.buffer]);
   const image = new ImageData(new Uint8ClampedArray(msg.data.image), msg.data.width, msg.data.height);
   let result = {};

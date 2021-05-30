@@ -42,6 +42,7 @@
     "emotion-detection",
     "gender-prediction",
     "gesture-recognition",
+    "gaze-tracking",
     "age-gender",
     "faceapi",
     "face",

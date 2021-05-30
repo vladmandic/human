@@ -1,5 +1,5 @@
 /**
- * Type definitions for Human results
+ * Type definitions for Human result object
  */
 
 import { Tensor } from '../dist/tfjs.esm.js';

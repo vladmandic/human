@@ -6,9 +6,9 @@ N/A
 
 ## Exploring Features
 
-- Switch from PoseNet to MoveNet
 - Implement demo as installable PWA with model caching
 - Implement results interpolation on library level
+- Switch to TypeScript 4.3
 
 ## Explore Models
 
@@ -16,4 +16,6 @@ N/A
 
 ## In Progress
 
-N/A
+- Face interpolation
+- Gaze interpolation
+- Unify score/confidence variables

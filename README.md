@@ -66,6 +66,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 - [**Platform Support**](https://github.com/vladmandic/human/wiki/Platforms)
 - [**List of Models & Credits**](https://github.com/vladmandic/human/wiki/Models)
 - [**Security & Privacy Policy**](https://github.com/vladmandic/human/blob/main/SECURITY.md)
+- [**License & Usage Restrictions**](https://github.com/vladmandic/human/blob/main/LICENSE)
 
 <br>
 
@@ -77,8 +78,8 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) fo
 
 ## Options
 
-As presented in the demo application...  
-> [demo/index.html](demo/index.html)
+All options as presented in the demo application...  
+> [demo/index.html](demo/index.html)  
 
 ![Options visible in demo](assets/screenshot-menu.png)
 
@@ -88,7 +89,7 @@ As presented in the demo application...
 
 <br>
 
-**Training image:**  
+**Validation image:**  
 > [demo/index.html](demo/index.html?image=%22../assets/human-sample-upper.jpg%22)
 
 ![Example Training Image](assets/screenshot-sample.png)
@@ -104,7 +105,10 @@ As presented in the demo application...
 ![Example Using WebCam](assets/screenshot-webcam.jpg)
 
 **Face Similarity Matching:**  
-> [demo/facematch.html](demo/facematch.html)
+Extracts all faces from provided input images,  
+sorts them by similarity to selected face  
+and optionally matches detected face with database of known people to guess their names
+> [demo/facematch.html](demo/facematch.html)  
 
 ![Face Matching](assets/screenshot-facematch.jpg)
 

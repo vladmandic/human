@@ -24,18 +24,18 @@ export async function load(config) {
 }
 
 async function process(res, inputSize, outputShape, config) {
+  if (!res) return [];
   const results: Array<Item> = [];
   const detections = res.arraySync();
   const squeezeT = tf.squeeze(res);
   res.dispose();
   const arr = tf.split(squeezeT, 6, 1); // x1, y1, x2, y2, score, class
   squeezeT.dispose();
-  const stackT = tf.stack([arr[1], arr[0], arr[3], arr[2]], 1); // tf.nms expects y, x
+  const stackT = tf.stack([arr[1], arr[0], arr[3], arr[2]], 1); // reorder dims as tf.nms expects y, x
   const boxesT = stackT.squeeze();
   const scoresT = arr[4].squeeze();
   const classesT = arr[5].squeeze();
   arr.forEach((t) => t.dispose());
-  // @ts-ignore boxesT type is not correctly inferred
   const nmsT = await tf.image.nonMaxSuppressionAsync(boxesT, scoresT, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
   boxesT.dispose();
   scoresT.dispose();
@@ -44,7 +44,7 @@ async function process(res, inputSize, outputShape, config) {
   nmsT.dispose();
   let i = 0;
   for (const id of nms) {
-    const score = detections[0][id][4];
+    const score = Math.trunc(100 * detections[0][id][4]) / 100;
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
     const boxRaw = [
@@ -64,18 +64,16 @@ async function process(res, inputSize, outputShape, config) {
   return results;
 }
 
-export async function predict(image, config): Promise<Item[]> {
+export async function predict(input, config): Promise<Item[]> {
   if ((skipped < config.object.skipFrames) && config.skipFrame && (last.length > 0)) {
     skipped++;
     return last;
   }
   skipped = 0;
   return new Promise(async (resolve) => {
-    const outputSize = [image.shape[2], image.shape[1]];
-    const resize = tf.image.resizeBilinear(image, [model.inputSize, model.inputSize], false);
-
-    let objectT;
-    if (config.object.enabled) objectT = model.execute(resize, 'tower_0/detections');
+    const outputSize = [input.shape[2], input.shape[1]];
+    const resize = tf.image.resizeBilinear(input, [model.inputSize, model.inputSize]);
+    const objectT = config.object.enabled ? model.execute(resize, ['tower_0/detections']) : null;
     resize.dispose();
 
     const obj = await process(objectT, model.inputSize, outputSize, config);

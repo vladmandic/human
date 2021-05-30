@@ -15,8 +15,8 @@ const rad2deg = (theta) => (theta * 180) / Math.PI;
 const calculateGaze = (mesh): { angle: number, strength: number } => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]); // function to calculate angle between any two points
 
-  const offsetIris = [0, 0]; // tbd: iris center may not align with average of eye extremes
-  const eyeRatio = 5; // factor to normalize changes x vs y
+  const offsetIris = [0, -0.1]; // iris center may not align with average of eye extremes
+  const eyeRatio = 1; // factor to normalize changes x vs y
 
   const left = mesh[33][2] > mesh[263][2]; // pick left or right eye depending which one is closer bazed on outsize point z axis
   const irisCenter = left ? mesh[473] : mesh[468];

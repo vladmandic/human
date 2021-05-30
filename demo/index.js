@@ -36,24 +36,25 @@ const userConfig = {
     enabled: false,
     flip: false,
   },
-  face: { enabled: false,
+  face: { enabled: true,
     detector: { return: true },
     mesh: { enabled: true },
     iris: { enabled: true },
-    description: { enabled: false },
-    emotion: { enabled: false },
+    description: { enabled: true },
+    emotion: { enabled: true },
   },
   hand: { enabled: false },
   // body: { enabled: true, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   body: { enabled: false, modelPath: 'movenet-lightning.json' },
-  object: { enabled: true },
+  object: { enabled: false },
   gesture: { enabled: true },
 };
 
 const drawOptions = {
   bufferedOutput: true, // experimental feature that makes draw functions interpolate results between each detection for smoother movement
-  bufferedFactor: 3, // speed of interpolation convergence where 1 means 100% immediately, 2 means 50% at each interpolation, etc.
+  bufferedFactor: 4, // speed of interpolation convergence where 1 means 100% immediately, 2 means 50% at each interpolation, etc.
+  drawGaze: true,
 };
 
 // ui options
@@ -108,6 +109,15 @@ const ui = {
   samples: [
     '../private/daz3d/daz3d-kiaria-02.jpg',
   ],
+};
+
+const pwa = {
+  enabled: true,
+  cacheName: 'Human',
+  scriptFile: 'index-pwa.js',
+  cacheModels: true,
+  cacheWASM: true,
+  cacheOther: false,
 };
 
 // global variables
@@ -660,6 +670,43 @@ async function drawWarmup(res) {
   await human.draw.all(canvas, res, drawOptions);
 }
 
+async function pwaRegister() {
+  if (!pwa.enabled) return;
+  if ('serviceWorker' in navigator) {
+    try {
+      let found;
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for (const reg of regs) {
+        log('pwa found:', reg.scope);
+        if (reg.scope.startsWith(location.origin)) found = reg;
+      }
+      if (!found) {
+        const reg = await navigator.serviceWorker.register(pwa.scriptFile, { scope: '/' });
+        found = reg;
+        log('pwa registered:', reg.scope);
+      }
+    } catch (err) {
+      if (err.name === 'SecurityError') log('pwa: ssl certificate is untrusted');
+      else log('pwa error:', err);
+    }
+    if (navigator.serviceWorker.controller) {
+      // update pwa configuration as it doesn't have access to it
+      navigator.serviceWorker.controller.postMessage({ key: 'cacheModels', val: pwa.cacheModels });
+      navigator.serviceWorker.controller.postMessage({ key: 'cacheWASM', val: pwa.cacheWASM });
+      navigator.serviceWorker.controller.postMessage({ key: 'cacheOther', val: pwa.cacheOther });
+
+      log('pwa ctive:', navigator.serviceWorker.controller.scriptURL);
+      const cache = await caches.open(pwa.cacheName);
+      if (cache) {
+        const content = await cache.matchAll();
+        log('pwa cache:', content.length, 'files');
+      }
+    }
+  } else {
+    log('pwa inactive');
+  }
+}
+
 async function main() {
   window.addEventListener('unhandledrejection', (evt) => {
     // eslint-disable-next-line no-console
@@ -678,6 +725,9 @@ async function main() {
     ui.useWorker = false;
     log('workers are disabled due to missing browser functionality');
   }
+
+  // register PWA ServiceWorker
+  await pwaRegister();
 
   // parse url search params
   const params = new URLSearchParams(location.search);
@@ -735,10 +785,16 @@ async function main() {
   for (const m of Object.values(menu)) m.hide();
 
   if (params.has('image')) {
-    const image = JSON.parse(params.get('image'));
-    log('overriding image:', image);
-    ui.samples = [image];
-    await detectSampleImages();
+    try {
+      const image = JSON.parse(params.get('image'));
+      log('overriding image:', image);
+      ui.samples = [image];
+    } catch {
+      status('cannot parse input image');
+      log('cannot parse input image', params.get('image'));
+      ui.samples = [];
+    }
+    if (ui.samples.length > 0) await detectSampleImages();
   }
 
   if (params.has('images')) {

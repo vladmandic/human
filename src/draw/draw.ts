@@ -71,6 +71,8 @@ export const options: DrawOptions = {
 
 let bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 
+const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
+
 function point(ctx, x, y, z = 0, localOptions) {
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
   ctx.beginPath();
@@ -186,7 +188,10 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, dra
       const emotion = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
       labels.push(emotion.join(' '));
     }
-    if (f.rotation && f.rotation.angle && f.rotation.angle.roll) labels.push(`roll: ${Math.trunc(100 * f.rotation.angle.roll) / 100} yaw:${Math.trunc(100 * f.rotation.angle.yaw) / 100} pitch:${Math.trunc(100 * f.rotation.angle.pitch) / 100}`);
+    if (f.rotation && f.rotation.angle && f.rotation.gaze) {
+      if (f.rotation.angle.roll) labels.push(`roll: ${rad2deg(f.rotation.angle.roll)}° yaw:${rad2deg(f.rotation.angle.yaw)}° pitch:${rad2deg(f.rotation.angle.pitch)}°`);
+      if (f.rotation.gaze.angle) labels.push(`gaze: ${rad2deg(f.rotation.gaze.angle)}°`);
+    }
     if (labels.length === 0) labels.push('face');
     ctx.fillStyle = localOptions.color;
     for (let i = labels.length - 1; i >= 0; i--) {
@@ -553,7 +558,18 @@ function calcBuffered(newResult, localOptions) {
       .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / localOptions.bufferedFactor);
     const boxRaw = newResult.face[i].boxRaw // update boxRaw
       .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / localOptions.bufferedFactor);
-    bufferedResult.face[i] = { ...newResult.face[i], box, boxRaw }; // shallow clone plus updated values
+    const matrix = newResult.face[i].rotation.matrix;
+    const angle = {
+      roll: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.roll + newResult.face[i].rotation.angle.roll) / localOptions.bufferedFactor,
+      yaw: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.yaw + newResult.face[i].rotation.angle.yaw) / localOptions.bufferedFactor,
+      pitch: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.pitch + newResult.face[i].rotation.angle.pitch) / localOptions.bufferedFactor,
+    };
+    const gaze = {
+      angle: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.angle + newResult.face[i].rotation.gaze.angle) / localOptions.bufferedFactor,
+      strength: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.strength + newResult.face[i].rotation.gaze.strength) / localOptions.bufferedFactor,
+    };
+    const rotation = { angle, matrix, gaze };
+    bufferedResult.face[i] = { ...newResult.face[i], rotation, box, boxRaw }; // shallow clone plus updated values
   }
 
   // interpolate person results

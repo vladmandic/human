@@ -9,6 +9,7 @@ N/A
 - Implement demo as installable PWA with model caching
 - Implement results interpolation on library level instead inside draw functions
 - Switch to TypeScript 4.3
+- Unify score/confidence variables
 
 ## Explore Models
 
@@ -18,12 +19,11 @@ N/A
 
 - Face rotation interpolation
 - Object detection interpolation
-- Unify score/confidence variables
 
 ## Issues
 
-- CenterNet WebGL: <https://github.com/tensorflow/tfjs/issues/5145>
-- CenterNet WASM: <https://github.com/tensorflow/tfjs/issues/5110>
-- NanoDet WASM: <https://github.com/tensorflow/tfjs/issues/4824>
+- CenterNet with WebGL: <https://github.com/tensorflow/tfjs/issues/5145>
+- CenterNet with WASM: <https://github.com/tensorflow/tfjs/issues/5110>
+- NanoDet with WASM: <https://github.com/tensorflow/tfjs/issues/4824>
 - BlazeFace and HandPose rotation in NodeJS: <https://github.com/tensorflow/tfjs/issues/4066>
-- TypeDoc with TS 4.3: <https://github.com/TypeStrong/typedoc/issues/1589>
+- TypeDoc with TypeScript 4.3: <https://github.com/TypeStrong/typedoc/issues/1589>

@@ -6,7 +6,6 @@ N/A
 
 ## Exploring Features
 
-- Implement demo as installable PWA with model caching
 - Implement results interpolation on library level instead inside draw functions
 - Switch to TypeScript 4.3
 - Unify score/confidence variables
@@ -16,8 +15,6 @@ N/A
 - InsightFace: RetinaFace detector and ArcFace recognition: <https://github.com/deepinsight/insightface>  
 
 ## In Progress
-
-- Object detection interpolation
 
 ## Issues
 

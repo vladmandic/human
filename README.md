@@ -155,7 +155,7 @@ Additionally, `HTMLVideoElement`, `HTMLMediaElement` can be a standard `<video>`
   Live streaming examples:
   - **HLS** (*HTTP Live Streaming*) using `hls.js`
   - **DASH** (Dynamic Adaptive Streaming over HTTP) using `dash.js`
-- **WebRTC** media track  
+- **WebRTC** media track using built-in support  
 
 <br>
 
@@ -197,18 +197,45 @@ or using `async/await`:
 ```js
 // create instance of human with simple configuration using default values
 const config = { backend: 'webgl' };
-const human = new Human(config);
+const human = new Human(config); // create instance of Human
 
 async function detectVideo() {
   const inputVideo = document.getElementById('video-id');
   const outputCanvas = document.getElementById('canvas-id');
-  const result = await human.detect(inputVideo);
-  human.draw.all(outputCanvas, result);
-  requestAnimationFrame(detectVideo);
+  const result = await human.detect(inputVideo); // run detection
+  human.draw.all(outputCanvas, result); // draw all results
+  requestAnimationFrame(detectVideo); // run loop
 }
 
-detectVideo();
+detectVideo(); // start loop
 ```
+
+or using interpolated results for smooth video processing by separating detection and drawing loops:
+
+```js
+const human = new Human(); // create instance of Human
+const inputVideo = document.getElementById('video-id');
+const outputCanvas = document.getElementById('canvas-id');
+let result;
+
+async function detectVideo() {
+  result = await human.detect(inputVideo); // run detection
+  requestAnimationFrame(detectVideo); // run detect loop
+}
+
+async function drawVideo() {
+  if (result) { // check if result is available
+    const interpolated = human.next(result); // calculate next interpolated frame
+    human.draw.all(outputCanvas, interpolated); // draw the frame
+  }
+  requestAnimationFrame(drawVideo); // run draw loop
+}
+
+detectVideo(); // start detection loop
+drawVideo(); // start draw loop
+```
+
+And for even better results, you can run detection in a separate web worker thread
 
 <br><hr><br>
 
@@ -216,12 +243,12 @@ detectVideo();
 
 Default models in Human library are:
 
-- **Face Detection**: MediaPipe BlazeFace (Back version)
+- **Face Detection**: MediaPipe BlazeFace - Back variation
 - **Face Mesh**: MediaPipe FaceMesh
-- **Face Description**: HSE FaceRes
 - **Face Iris Analysis**: MediaPipe Iris
+- **Face Description**: HSE FaceRes
 - **Emotion Detection**: Oarriaga Emotion
-- **Body Analysis**: PoseNet (AtomicBits version)
+- **Body Analysis**: MoveNet - Lightning variation
 
 Note that alternative models are provided and can be enabled via configuration  
 For example, `PoseNet` model can be switched for `BlazePose`, `EfficientPose` or `MoveNet` model depending on the use case  

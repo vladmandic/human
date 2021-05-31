@@ -8,9 +8,10 @@ import * as facemesh from './blazeface/facemesh';
 import * as emotion from './emotion/emotion';
 import * as faceres from './faceres/faceres';
 import { Face } from './result';
+import { Tensor } from './tfjs/types';
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const rad2deg = (theta) => (theta * 180) / Math.PI;
+const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
 
 const calculateGaze = (mesh, box): { bearing: number, strength: number } => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]); // function to calculate angle between any two points
@@ -31,11 +32,11 @@ const calculateGaze = (mesh, box): { bearing: number, strength: number } => {
     (eyeCenter[0] - irisCenter[0]) / eyeSize[0] - offsetIris[0],
     eyeRatio * (irisCenter[1] - eyeCenter[1]) / eyeSize[1] - offsetIris[1],
   ];
-  let vectorLength = Math.sqrt((eyeDiff[0] ** 2) + (eyeDiff[1] ** 2)); // vector length is a diagonal between two differences
-  vectorLength = Math.min(vectorLength, box[2] / 2, box[3] / 2); // limit strength to half of box size
-  const vectorAngle = radians([0, 0], eyeDiff); // using eyeDiff instead eyeCenter/irisCenter combo due to manual adjustments
+  let strength = Math.sqrt((eyeDiff[0] ** 2) + (eyeDiff[1] ** 2)); // vector length is a diagonal between two differences
+  strength = Math.min(strength, box[2] / 2, box[3] / 2); // limit strength to half of box size to avoid clipping due to low precision
+  const bearing = (radians([0, 0], eyeDiff) + (Math.PI / 2)) % Math.PI; // using eyeDiff instead eyeCenter/irisCenter combo due to manual adjustments and rotate clockwise 90degrees
 
-  return { bearing: vectorAngle, strength: vectorLength };
+  return { bearing, strength };
 };
 
 const calculateFaceAngle = (face, imageSize): {
@@ -137,7 +138,7 @@ const calculateFaceAngle = (face, imageSize): {
   return { angle, matrix, gaze };
 };
 
-export const detectFace = async (parent, input): Promise<Face[]> => {
+export const detectFace = async (parent /* instance of human */, input: Tensor): Promise<Face[]> => {
   // run facemesh, includes blazeface and iris
   // eslint-disable-next-line no-async-promise-executor
   let timeStamp;
@@ -150,7 +151,8 @@ export const detectFace = async (parent, input): Promise<Face[]> => {
   parent.state = 'run:face';
   timeStamp = now();
   const faces = await facemesh.predict(input, parent.config);
-  parent.perf.face = Math.trunc(now() - timeStamp);
+  parent.performance.face = Math.trunc(now() - timeStamp);
+  if (!input.shape || input.shape.length !== 4) return [];
   if (!faces) return [];
   // for (const face of faces) {
   for (let i = 0; i < faces.length; i++) {
@@ -172,7 +174,7 @@ export const detectFace = async (parent, input): Promise<Face[]> => {
       parent.state = 'run:emotion';
       timeStamp = now();
       emotionRes = parent.config.face.emotion.enabled ? await emotion.predict(faces[i].image, parent.config, i, faces.length) : {};
-      parent.perf.emotion = Math.trunc(now() - timeStamp);
+      parent.performance.emotion = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Emotion:');
 
@@ -184,7 +186,7 @@ export const detectFace = async (parent, input): Promise<Face[]> => {
       parent.state = 'run:description';
       timeStamp = now();
       descRes = parent.config.face.description.enabled ? await faceres.predict(faces[i].image, parent.config, i, faces.length) : [];
-      parent.perf.embedding = Math.trunc(now() - timeStamp);
+      parent.performance.embedding = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Description:');
 
@@ -226,10 +228,10 @@ export const detectFace = async (parent, input): Promise<Face[]> => {
   }
   parent.analyze('End FaceMesh:');
   if (parent.config.async) {
-    if (parent.perf.face) delete parent.perf.face;
-    if (parent.perf.age) delete parent.perf.age;
-    if (parent.perf.gender) delete parent.perf.gender;
-    if (parent.perf.emotion) delete parent.perf.emotion;
+    if (parent.performance.face) delete parent.performance.face;
+    if (parent.performance.age) delete parent.performance.age;
+    if (parent.performance.gender) delete parent.performance.gender;
+    if (parent.performance.emotion) delete parent.performance.emotion;
   }
   return faceRes;
 };

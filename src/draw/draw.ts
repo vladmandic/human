@@ -3,7 +3,7 @@
  */
 
 import { TRI468 as triangulation } from '../blazeface/coords';
-import { mergeDeep } from '../helpers';
+import { mergeDeep, now } from '../helpers';
 import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
 
 /**
@@ -25,7 +25,6 @@ import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result'
  * -useDepth: use z-axis coordinate as color shade,
  * -useCurves: draw polygons as cures or as lines,
  * -bufferedOutput: experimental: allows to call draw methods multiple times for each detection and interpolate results between results thus achieving smoother animations
- * -bufferedFactor: speed of interpolation convergence where 1 means 100% immediately, 2 means 50% at each interpolation, etc.
  */
 export interface DrawOptions {
   color: string,
@@ -45,7 +44,6 @@ export interface DrawOptions {
   useDepth: boolean,
   useCurves: boolean,
   bufferedOutput: boolean,
-  bufferedFactor: number,
 }
 
 export const options: DrawOptions = {
@@ -65,11 +63,8 @@ export const options: DrawOptions = {
   fillPolygons: <boolean>false,
   useDepth: <boolean>true,
   useCurves: <boolean>false,
-  bufferedFactor: <number>3,
   bufferedOutput: <boolean>true,
 };
-
-let bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 
 const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
 
@@ -246,24 +241,23 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, dra
           }
         }
         if (localOptions.drawGaze && f.rotation?.gaze?.strength && f.rotation?.gaze?.bearing) {
-          const leftGaze = [
-            f.annotations['leftEyeIris'][0][0] + (Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]),
-            f.annotations['leftEyeIris'][0][1] - (Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]),
-          ];
-          ctx.beginPath();
-          ctx.moveTo(f.annotations['leftEyeIris'][0][0], f.annotations['leftEyeIris'][0][1]);
           ctx.strokeStyle = 'pink';
+          ctx.beginPath();
+
+          const leftGaze = [
+            f.annotations['leftEyeIris'][0][0] + (Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]),
+            f.annotations['leftEyeIris'][0][1] + (Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]),
+          ];
+          ctx.moveTo(f.annotations['leftEyeIris'][0][0], f.annotations['leftEyeIris'][0][1]);
           ctx.lineTo(leftGaze[0], leftGaze[1]);
-          ctx.stroke();
 
           const rightGaze = [
-            f.annotations['rightEyeIris'][0][0] + (Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]),
-            f.annotations['rightEyeIris'][0][1] - (Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]),
+            f.annotations['rightEyeIris'][0][0] + (Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]),
+            f.annotations['rightEyeIris'][0][1] + (Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]),
           ];
-          ctx.beginPath();
           ctx.moveTo(f.annotations['rightEyeIris'][0][0], f.annotations['rightEyeIris'][0][1]);
-          ctx.strokeStyle = 'pink';
           ctx.lineTo(rightGaze[0], rightGaze[1]);
+
           ctx.stroke();
         }
       }
@@ -507,110 +501,6 @@ export async function person(inCanvas: HTMLCanvasElement, result: Array<Person>,
   }
 }
 
-function calcBuffered(newResult: Result, localOptions) {
-  // each record is only updated using deep clone when number of detected record changes, otherwise it will converge by itself
-  // otherwise bufferedResult is a shallow clone of result plus updated local calculated values
-  // thus mixing by-reference and by-value assignments to minimize memory operations
-
-  // interpolate body results
-  if (!bufferedResult.body || (newResult.body.length !== bufferedResult.body.length)) {
-    bufferedResult.body = JSON.parse(JSON.stringify(newResult.body)); // deep clone once
-  } else {
-    for (let i = 0; i < newResult.body.length; i++) {
-      const box = newResult.body[i].box // update box
-        .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].box[j] + b) / localOptions.bufferedFactor) as [number, number, number, number];
-      const boxRaw = newResult.body[i].boxRaw // update boxRaw
-        .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + b) / localOptions.bufferedFactor) as [number, number, number, number];
-      const keypoints = newResult.body[i].keypoints // update keypoints
-        .map((keypoint, j) => ({
-          score: keypoint.score,
-          part: keypoint.part,
-          position: {
-            x: bufferedResult.body[i].keypoints[j] ? ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.x + keypoint.position.x) / localOptions.bufferedFactor : keypoint.position.x,
-            y: bufferedResult.body[i].keypoints[j] ? ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.y + keypoint.position.y) / localOptions.bufferedFactor : keypoint.position.y,
-          },
-        }));
-      bufferedResult.body[i] = { ...newResult.body[i], box, boxRaw, keypoints }; // shallow clone plus updated values
-    }
-  }
-
-  // interpolate hand results
-  if (!bufferedResult.hand || (newResult.hand.length !== bufferedResult.hand.length)) {
-    bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand)); // deep clone once
-  } else {
-    for (let i = 0; i < newResult.hand.length; i++) {
-      const box = (newResult.hand[i].box// update box
-        .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / localOptions.bufferedFactor)) as [number, number, number, number];
-      const boxRaw = (newResult.hand[i].boxRaw // update boxRaw
-        .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / localOptions.bufferedFactor)) as [number, number, number, number];
-      const landmarks = newResult.hand[i].landmarks // update landmarks
-        .map((landmark, j) => landmark
-          .map((coord, k) => (((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].landmarks[j][k] + coord) / localOptions.bufferedFactor)) as [number, number, number]);
-      const keys = Object.keys(newResult.hand[i].annotations); // update annotations
-      const annotations = {};
-      for (const key of keys) {
-        annotations[key] = newResult.hand[i].annotations[key]
-          .map((val, j) => val.map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / localOptions.bufferedFactor));
-      }
-      bufferedResult.hand[i] = { ...newResult.hand[i], box, boxRaw, landmarks, annotations }; // shallow clone plus updated values
-    }
-  }
-
-  // interpolate face results
-  if (!bufferedResult.face || (newResult.face.length !== bufferedResult.face.length)) {
-    bufferedResult.face = JSON.parse(JSON.stringify(newResult.face)); // deep clone once
-  } else {
-    for (let i = 0; i < newResult.face.length; i++) {
-      const box = (newResult.face[i].box // update box
-        .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / localOptions.bufferedFactor)) as [number, number, number, number];
-      const boxRaw = (newResult.face[i].boxRaw // update boxRaw
-        .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / localOptions.bufferedFactor)) as [number, number, number, number];
-      const matrix = newResult.face[i].rotation.matrix;
-      const angle = {
-        roll: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.roll + newResult.face[i].rotation.angle.roll) / localOptions.bufferedFactor,
-        yaw: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.yaw + newResult.face[i].rotation.angle.yaw) / localOptions.bufferedFactor,
-        pitch: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.pitch + newResult.face[i].rotation.angle.pitch) / localOptions.bufferedFactor,
-      };
-      const gaze = {
-        bearing: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.bearing + newResult.face[i].rotation.gaze.bearing) / localOptions.bufferedFactor, // not correct due to wrap-around
-        /*
-        angle: Math.atan2( // average angle is calculated differently
-          Math.sin(bufferedResult.face[i].rotation.gaze.angle) + Math.sin(newResult.face[i].rotation.gaze.angle),
-          Math.cos(bufferedResult.face[i].rotation.gaze.angle) + Math.sin(newResult.face[i].rotation.gaze.angle),
-        ),
-        */
-        strength: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.strength + newResult.face[i].rotation.gaze.strength) / localOptions.bufferedFactor,
-      };
-      const rotation = { angle, matrix, gaze };
-      bufferedResult.face[i] = { ...newResult.face[i], rotation, box, boxRaw }; // shallow clone plus updated values
-    }
-  }
-
-  // interpolate object detection results
-  if (!bufferedResult.object || (newResult.object.length !== bufferedResult.object.length)) {
-    bufferedResult.object = JSON.parse(JSON.stringify(newResult.object)); // deep clone once
-  } else {
-    for (let i = 0; i < newResult.object.length; i++) {
-      const box = newResult.object[i].box // update box
-        .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.object[i].box[j] + b) / localOptions.bufferedFactor);
-      const boxRaw = newResult.object[i].boxRaw // update boxRaw
-        .map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.object[i].boxRaw[j] + b) / localOptions.bufferedFactor);
-      bufferedResult.object[i] = { ...newResult.object[i], box, boxRaw }; // shallow clone plus updated values
-    }
-  }
-
-  // interpolate person results
-  const newPersons = newResult.persons; // trigger getter function
-  if (!bufferedResult.persons || (newPersons.length !== bufferedResult.persons.length)) {
-    bufferedResult.persons = JSON.parse(JSON.stringify(newPersons));
-  } else {
-    for (let i = 0; i < newPersons.length; i++) { // update person box, we don't update the rest as it's updated as reference anyhow
-      bufferedResult.persons[i].box = (newPersons[i].box
-        .map((box, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box) / localOptions.bufferedFactor)) as [number, number, number, number];
-    }
-  }
-}
-
 export async function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasElement) {
   if (!inCanvas || !outCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement) || !(outCanvas instanceof HTMLCanvasElement)) return;
@@ -619,17 +509,30 @@ export async function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasE
 }
 
 export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptions?: DrawOptions) {
+  const timestamp = now();
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (!(inCanvas instanceof HTMLCanvasElement)) return;
 
-  if (!bufferedResult) bufferedResult = result; // first pass
-  else if (localOptions.bufferedOutput) calcBuffered(result, localOptions); // do results interpolation
-  else bufferedResult = result; // or just use results as-is
-  face(inCanvas, bufferedResult.face, localOptions);
-  body(inCanvas, bufferedResult.body, localOptions);
-  hand(inCanvas, bufferedResult.hand, localOptions);
-  object(inCanvas, bufferedResult.object, localOptions);
-  // person(inCanvas, bufferedResult.persons, localOptions);
+  face(inCanvas, result.face, localOptions);
+  body(inCanvas, result.body, localOptions);
+  hand(inCanvas, result.hand, localOptions);
+  object(inCanvas, result.object, localOptions);
+  // person(inCanvas, result.persons, localOptions);
   gesture(inCanvas, result.gesture, localOptions); // gestures do not have buffering
+
+  /*
+  if (!bufferedResult) bufferedResult = result; // first pass
+  else if (localOptions.bufferedOutput) calcBuffered(result); // do results interpolation
+  else bufferedResult = result; // or just use results as-is
+  const promises: Promise<void>[] = [];
+  promises.push(face(inCanvas, bufferedResult.face, localOptions));
+  promises.push(body(inCanvas, bufferedResult.body, localOptions));
+  promises.push(hand(inCanvas, bufferedResult.hand, localOptions));
+  promises.push(object(inCanvas, bufferedResult.object, localOptions));
+  // promises.push(person(inCanvas, bufferedResult.persons, localOptions));
+  promises.push(gesture(inCanvas, result.gesture, localOptions)); // gestures do not have buffering
+  // await Promise.all(promises);
+  */
+  result.performance.draw = Math.trunc(now() - timestamp);
 }

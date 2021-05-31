@@ -38,25 +38,29 @@ const userConfig = {
     enabled: false,
     flip: false,
   },
-  face: { enabled: false,
+  face: { enabled: true,
     detector: { return: true },
     mesh: { enabled: true },
-    iris: { enabled: true },
-    description: { enabled: true },
-    emotion: { enabled: true },
+    iris: { enabled: false },
+    description: { enabled: false },
+    emotion: { enabled: false },
   },
   hand: { enabled: false },
   // body: { enabled: true, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
-  body: { enabled: false, modelPath: 'movenet-lightning.json' },
-  object: { enabled: true },
+  body: { enabled: false },
+  object: { enabled: false },
   gesture: { enabled: true },
   */
 };
 
 const drawOptions = {
   bufferedOutput: true, // makes draw functions interpolate results between each detection for smoother movement
-  bufferedFactor: 4, // speed of interpolation convergence where 1 means 100% immediately, 2 means 50% at each interpolation, etc.
+  drawBoxes: true,
+  drawGaze: true,
+  drawLabels: true,
+  drawPolygons: true,
+  drawPoints: false,
 };
 
 // ui options
@@ -223,17 +227,18 @@ async function drawResults(input) {
     ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, canvas.width, canvas.height);
   }
 
-  // draw all results
-  human.draw.all(canvas, result, drawOptions);
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  const person = result.persons; // invoke person getter
-  /* use individual functions
+  // draw all results using interpolated results
+  const interpolated = human.next(result);
+  human.draw.all(canvas, interpolated, drawOptions);
+  /* alternatively use individual functions
   human.draw.face(canvas, result.face);
   human.draw.body(canvas, result.body);
   human.draw.hand(canvas, result.hand);
   human.draw.object(canvas, result.object);
   human.draw.gesture(canvas, result.gesture);
   */
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  const person = result.persons; // explicitly invoke person getter
   await calcSimmilariry(result);
 
   // update log
@@ -247,10 +252,9 @@ async function drawResults(input) {
   document.getElementById('log').innerHTML = `
     video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
     backend: ${human.tf.getBackend()} | ${memory}<br>
-    performance: ${str(result.performance)}ms FPS process:${avgDetect} refresh:${avgDraw}<br>
+    performance: ${str(lastDetectedResult.performance)}ms FPS process:${avgDetect} refresh:${avgDraw}<br>
     ${warning}<br>
   `;
-
   ui.framesDraw++;
   ui.lastFrame = performance.now();
   // if buffered, immediate loop but limit frame rate although it's going to run slower as JS is singlethreaded

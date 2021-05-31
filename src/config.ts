@@ -246,7 +246,7 @@ const config: Config = {
                              // this parameter is not valid in nodejs
       maxDetected: 10,          // maximum number of faces detected in the input
                              // should be set to the minimum number for performance
-      skipFrames: 21,        // how many max frames to go without re-running the face bounding box detector
+      skipFrames: 15,        // how many max frames to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated face analysis as the head probably hasn't moved much
@@ -272,7 +272,7 @@ const config: Config = {
                              // recommended to enable detector.rotation and mesh.enabled
       modelPath: 'faceres.json',  // face description model
                              // can be either absolute path or relative to modelBasePath
-      skipFrames: 31,        // how many max frames to go without re-running the detector
+      skipFrames: 16,        // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
       minConfidence: 0.1,    // threshold for discarding a prediction
     },
@@ -280,7 +280,7 @@ const config: Config = {
     emotion: {
       enabled: true,
       minConfidence: 0.1,    // threshold for discarding a prediction
-      skipFrames: 32,        // how max many frames to go without re-running the detector
+      skipFrames: 17,        // how max many frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
       modelPath: 'emotion.json',  // face emotion model, can be absolute path or relative to modelBasePath
     },
@@ -298,9 +298,9 @@ const config: Config = {
 
   hand: {
     enabled: true,
-    rotation: false,         // use best-guess rotated hand image or just box with rotation as-is
+    rotation: true,          // use best-guess rotated hand image or just box with rotation as-is
                              // false means higher performance, but incorrect finger mapping if hand is inverted
-    skipFrames: 32,          // how many max frames to go without re-running the hand bounding box detector
+    skipFrames: 18,          // how many max frames to go without re-running the hand bounding box detector
                              // only used when cacheSensitivity is not zero
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated hand skeleton analysis as the hand probably
@@ -325,7 +325,7 @@ const config: Config = {
     minConfidence: 0.2,      // threshold for discarding a prediction
     iouThreshold: 0.4,       // ammount of overlap between two detected objects before one object is removed
     maxDetected: 10,         // maximum number of objects detected in the input
-    skipFrames: 41,          // how many max frames to go without re-running the detector
+    skipFrames: 19,          // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
   },
 };

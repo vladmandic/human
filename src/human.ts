@@ -23,6 +23,7 @@ import * as gesture from './gesture/gesture';
 import * as image from './image/image';
 import * as draw from './draw/draw';
 import * as persons from './persons';
+import * as interpolate from './interpolate';
 import * as sample from './sample';
 import * as app from '../package.json';
 import { Tensor } from './tfjs/types';
@@ -60,7 +61,7 @@ type Model = unknown;
  * @param userConfig: {@link Config}
  */
 export class Human {
-  /** Current version of Human library in semver format */
+  /** Current version of Human library in *semver* format */
   version: string;
   /** Current configuration
    * - Details: {@link Config}
@@ -72,6 +73,7 @@ export class Human {
   result: Result;
   /** Current state of Human library
    * - Can be polled to determine operations that are currently executed
+   * - Progresses through: 'config', 'check', 'backend', 'load', 'run:<model>', 'idle'
    */
   state: string;
   /** @internal: Instance of current image being processed */
@@ -105,7 +107,6 @@ export class Human {
     efficientpose: Model | null,
     movenet: Model | null,
     handpose: [Model, Model] | null,
-    iris: Model | null,
     age: Model | null,
     gender: Model | null,
     emotion: Model | null,
@@ -124,14 +125,14 @@ export class Human {
     centernet: typeof centernet;
     faceres: typeof faceres;
   };
-  /** Face triangualtion array of 468 points, used for triangle references between points */
+  /** Reference face triangualtion array of 468 points, used for triangle references between points */
   faceTriangulation: typeof facemesh.triangulation;
-  /** UV map of 468 values, used for 3D mapping of the face mesh */
+  /** Refernce UV map of 468 values, used for 3D mapping of the face mesh */
   faceUVMap: typeof facemesh.uvmap;
   /** Platform and agent information detected by Human */
   sysinfo: { platform: string, agent: string };
   /** Performance object that contains values for all recently performed operations */
-  perf: Record<string, unknown>; // perf members are dynamically defined as needed
+  performance: Record<string, unknown>; // perf members are dynamically defined as needed
   #numTensors: number;
   #analyzeMemoryLeaks: boolean;
   #checkSanity: boolean;
@@ -145,18 +146,18 @@ export class Human {
    * Creates instance of Human library that is futher used for all operations
    * @param userConfig: {@link Config}
    */
-  constructor(userConfig: Config | Record<string, unknown> = {}) {
+  constructor(userConfig?: Config | Record<string, unknown>) {
+    this.config = mergeDeep(defaults, userConfig || {});
     this.tf = tf;
     this.draw = draw;
     this.version = app.version;
-    this.config = mergeDeep(defaults, userConfig);
     this.state = 'idle';
     this.#numTensors = 0;
     this.#analyzeMemoryLeaks = false;
     this.#checkSanity = false;
     this.#firstRun = true;
     this.#lastCacheDiff = 0;
-    this.perf = {};
+    this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
     // object that contains all initialized models
     this.models = {
       face: null,
@@ -165,7 +166,6 @@ export class Human {
       efficientpose: null,
       movenet: null,
       handpose: null,
-      iris: null,
       age: null,
       gender: null,
       emotion: null,
@@ -253,9 +253,9 @@ export class Human {
 
   /** Load method preloads all configured models on-demand
    * - Not explicitly required as any required model is load implicitly on it's first run
-   * @param userConfig: {@link Config}
+   * @param userConfig?: {@link Config}
   */
-  async load(userConfig: Config | Record<string, unknown> = {}) {
+  async load(userConfig?: Config | Record<string, unknown>) {
     this.state = 'load';
     const timeStamp = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
@@ -315,7 +315,7 @@ export class Human {
     }
 
     const current = Math.trunc(now() - timeStamp);
-    if (current > (this.perf.load as number || 0)) this.perf.load = current;
+    if (current > (this.performance.load as number || 0)) this.performance.load = current;
   }
 
   // check if backend needs initialization if it changed
@@ -366,9 +366,9 @@ export class Human {
       if (this.tf.getBackend() === 'webgl' || this.tf.getBackend() === 'humangl') {
         this.tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
         this.tf.ENV.set('WEBGL_CPU_FORWARD', true);
-        tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
         this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
-        if (typeof this.config['deallocate'] !== 'undefined') {
+        if (!this.config.object.enabled) this.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
+        if (typeof this.config['deallocate'] !== 'undefined' && this.config['deallocate']) { // hidden param
           log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
           this.tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
         }
@@ -376,9 +376,17 @@ export class Human {
         if (this.config.debug) log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }
       await this.tf.ready();
-      this.perf.backend = Math.trunc(now() - timeStamp);
+      this.performance.backend = Math.trunc(now() - timeStamp);
     }
   }
+
+  /**
+   * Runs interpolation using last known result and returns smoothened result
+   * Interpolation is based on time since last known result so can be called independently
+   * @param result?: use specific result set to run interpolation on
+   * @returns result: {@link Result}
+   */
+  next = (result?: Result) => interpolate.calc(result || this.result) as Result;
 
   // check if input changed sufficiently to trigger new detections
   /** @hidden */
@@ -414,10 +422,10 @@ export class Human {
    * - Run inference for all configured models
    * - Process and return result: {@link Result}
    * @param input: Input
-   * @param userConfig: Config
+   * @param userConfig?: Config
    * @returns result: Result
   */
-  async detect(input: Input, userConfig: Config | Record<string, unknown> = {}): Promise<Result | Error> {
+  async detect(input: Input, userConfig?: Config | Record<string, unknown>): Promise<Result | Error> {
     // detection happens inside a promise
     return new Promise(async (resolve) => {
       this.state = 'config';
@@ -466,18 +474,18 @@ export class Human {
         resolve({ error: 'could not convert input to tensor' });
         return;
       }
-      this.perf.image = Math.trunc(now() - timeStamp);
+      this.performance.image = Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
 
       timeStamp = now();
       // @ts-ignore hidden dynamic property that is not part of definitions
       this.config.skipFrame = await this.#skipFrame(process.tensor);
-      if (!this.perf.frames) this.perf.frames = 0;
-      if (!this.perf.cached) this.perf.cached = 0;
-      (this.perf.frames as number)++;
+      if (!this.performance.frames) this.performance.frames = 0;
+      if (!this.performance.cached) this.performance.cached = 0;
+      (this.performance.frames as number)++;
       // @ts-ignore hidden dynamic property that is not part of definitions
-      if (this.config.skipFrame) this.perf.cached++;
-      this.perf.changed = Math.trunc(now() - timeStamp);
+      if (this.config.skipFrame) this.performance.cached++;
+      this.performance.changed = Math.trunc(now() - timeStamp);
       this.analyze('Check Changed:');
 
       // prepare where to store model results
@@ -491,13 +499,13 @@ export class Human {
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       if (this.config.async) {
         faceRes = this.config.face.enabled ? face.detectFace(this, process.tensor) : [];
-        if (this.perf.face) delete this.perf.face;
+        if (this.performance.face) delete this.performance.face;
       } else {
         this.state = 'run:face';
         timeStamp = now();
         faceRes = this.config.face.enabled ? await face.detectFace(this, process.tensor) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
-        if (elapsedTime > 0) this.perf.face = elapsedTime;
+        if (elapsedTime > 0) this.performance.face = elapsedTime;
       }
 
       // run body: can be posenet, blazepose, efficientpose, movenet
@@ -507,7 +515,7 @@ export class Human {
         else if (this.config.body.modelPath.includes('blazepose')) bodyRes = this.config.body.enabled ? blazepose.predict(process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes('efficientpose')) bodyRes = this.config.body.enabled ? efficientpose.predict(process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes('movenet')) bodyRes = this.config.body.enabled ? movenet.predict(process.tensor, this.config) : [];
-        if (this.perf.body) delete this.perf.body;
+        if (this.performance.body) delete this.performance.body;
       } else {
         this.state = 'run:body';
         timeStamp = now();
@@ -516,7 +524,7 @@ export class Human {
         else if (this.config.body.modelPath.includes('efficientpose')) bodyRes = this.config.body.enabled ? await efficientpose.predict(process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes('movenet')) bodyRes = this.config.body.enabled ? await movenet.predict(process.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
-        if (elapsedTime > 0) this.perf.body = elapsedTime;
+        if (elapsedTime > 0) this.performance.body = elapsedTime;
       }
       this.analyze('End Body:');
 
@@ -524,13 +532,13 @@ export class Human {
       this.analyze('Start Hand:');
       if (this.config.async) {
         handRes = this.config.hand.enabled ? handpose.predict(process.tensor, this.config) : [];
-        if (this.perf.hand) delete this.perf.hand;
+        if (this.performance.hand) delete this.performance.hand;
       } else {
         this.state = 'run:hand';
         timeStamp = now();
         handRes = this.config.hand.enabled ? await handpose.predict(process.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
-        if (elapsedTime > 0) this.perf.hand = elapsedTime;
+        if (elapsedTime > 0) this.performance.hand = elapsedTime;
       }
       this.analyze('End Hand:');
 
@@ -539,14 +547,14 @@ export class Human {
       if (this.config.async) {
         if (this.config.object.modelPath.includes('nanodet')) objectRes = this.config.object.enabled ? nanodet.predict(process.tensor, this.config) : [];
         else if (this.config.object.modelPath.includes('centernet')) objectRes = this.config.object.enabled ? centernet.predict(process.tensor, this.config) : [];
-        if (this.perf.object) delete this.perf.object;
+        if (this.performance.object) delete this.performance.object;
       } else {
         this.state = 'run:object';
         timeStamp = now();
         if (this.config.object.modelPath.includes('nanodet')) objectRes = this.config.object.enabled ? await nanodet.predict(process.tensor, this.config) : [];
         else if (this.config.object.modelPath.includes('centernet')) objectRes = this.config.object.enabled ? await centernet.predict(process.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
-        if (elapsedTime > 0) this.perf.object = elapsedTime;
+        if (elapsedTime > 0) this.performance.object = elapsedTime;
       }
       this.analyze('End Object:');
 
@@ -558,11 +566,11 @@ export class Human {
       if (this.config.gesture.enabled) {
         timeStamp = now();
         gestureRes = [...gesture.face(faceRes), ...gesture.body(bodyRes), ...gesture.hand(handRes), ...gesture.iris(faceRes)];
-        if (!this.config.async) this.perf.gesture = Math.trunc(now() - timeStamp);
-        else if (this.perf.gesture) delete this.perf.gesture;
+        if (!this.config.async) this.performance.gesture = Math.trunc(now() - timeStamp);
+        else if (this.performance.gesture) delete this.performance.gesture;
       }
 
-      this.perf.total = Math.trunc(now() - timeStart);
+      this.performance.total = Math.trunc(now() - timeStart);
       this.state = 'idle';
       this.result = {
         face: faceRes,
@@ -570,7 +578,7 @@ export class Human {
         hand: handRes,
         gesture: gestureRes,
         object: objectRes,
-        performance: this.perf,
+        performance: this.performance,
         canvas: process.canvas,
         timestamp: Date.now(),
         get persons() { return persons.join(faceRes, bodyRes, handRes, gestureRes, process?.tensor?.shape); },
@@ -666,9 +674,9 @@ export class Human {
   /** Warmup metho pre-initializes all models for faster inference
    * - can take significant time on startup
    * - only used for `webgl` and `humangl` backends
-   * @param userConfig: Config
+   * @param userConfig?: Config
   */
-  async warmup(userConfig: Config | Record<string, unknown> = {}): Promise<Result | { error }> {
+  async warmup(userConfig?: Config | Record<string, unknown>): Promise<Result | { error }> {
     const t0 = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
     if (!this.config.warmup || this.config.warmup === 'none') return { error: 'null' };

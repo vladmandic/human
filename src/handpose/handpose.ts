@@ -35,7 +35,7 @@ export async function predict(input, config): Promise<Hand[]> {
       }
     }
 
-    const landmarks = predictions[i].landmarks as number[];
+    const landmarks = predictions[i].landmarks as unknown as Array<[number, number, number]>;
 
     let box: [number, number, number, number] = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0]; // maximums so conditionals work
     let boxRaw: [number, number, number, number] = [0, 0, 0, 0];

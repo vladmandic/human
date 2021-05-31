@@ -29,7 +29,7 @@ let human;
 
 const userConfig = {
   warmup: 'none',
-  backend: 'webgl',
+  backend: 'humangl',
   wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.6.0/dist/',
   /*
   async: false,
@@ -38,7 +38,7 @@ const userConfig = {
     enabled: false,
     flip: false,
   },
-  face: { enabled: true,
+  face: { enabled: false,
     detector: { return: true },
     mesh: { enabled: true },
     iris: { enabled: true },
@@ -49,15 +49,14 @@ const userConfig = {
   // body: { enabled: true, modelPath: 'posenet.json' },
   // body: { enabled: true, modelPath: 'blazepose.json' },
   body: { enabled: false, modelPath: 'movenet-lightning.json' },
-  object: { enabled: false },
+  object: { enabled: true },
   gesture: { enabled: true },
   */
 };
 
 const drawOptions = {
-  bufferedOutput: true, // experimental feature that makes draw functions interpolate results between each detection for smoother movement
+  bufferedOutput: true, // makes draw functions interpolate results between each detection for smoother movement
   bufferedFactor: 4, // speed of interpolation convergence where 1 means 100% immediately, 2 means 50% at each interpolation, etc.
-  drawGaze: true,
 };
 
 // ui options

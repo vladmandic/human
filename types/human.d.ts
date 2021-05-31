@@ -45,7 +45,7 @@ declare type Model = unknown;
  */
 export declare class Human {
     #private;
-    /** Current version of Human library in semver format */
+    /** Current version of Human library in *semver* format */
     version: string;
     /** Current configuration
      * - Details: {@link Config}
@@ -57,6 +57,7 @@ export declare class Human {
     result: Result;
     /** Current state of Human library
      * - Can be polled to determine operations that are currently executed
+     * - Progresses through: 'config', 'check', 'backend', 'load', 'run:<model>', 'idle'
      */
     state: string;
     /** @internal: Instance of current image being processed */
@@ -93,7 +94,6 @@ export declare class Human {
         efficientpose: Model | null;
         movenet: Model | null;
         handpose: [Model, Model] | null;
-        iris: Model | null;
         age: Model | null;
         gender: Model | null;
         emotion: Model | null;
@@ -112,9 +112,9 @@ export declare class Human {
         centernet: typeof centernet;
         faceres: typeof faceres;
     };
-    /** Face triangualtion array of 468 points, used for triangle references between points */
+    /** Reference face triangualtion array of 468 points, used for triangle references between points */
     faceTriangulation: typeof facemesh.triangulation;
-    /** UV map of 468 values, used for 3D mapping of the face mesh */
+    /** Refernce UV map of 468 values, used for 3D mapping of the face mesh */
     faceUVMap: typeof facemesh.uvmap;
     /** Platform and agent information detected by Human */
     sysinfo: {
@@ -122,7 +122,7 @@ export declare class Human {
         agent: string;
     };
     /** Performance object that contains values for all recently performed operations */
-    perf: Record<string, unknown>;
+    performance: Record<string, unknown>;
     /**
      * Creates instance of Human library that is futher used for all operations
      * @param userConfig: {@link Config}
@@ -160,23 +160,30 @@ export declare class Human {
     };
     /** Load method preloads all configured models on-demand
      * - Not explicitly required as any required model is load implicitly on it's first run
-     * @param userConfig: {@link Config}
+     * @param userConfig?: {@link Config}
     */
     load(userConfig?: Config | Record<string, unknown>): Promise<void>;
+    /**
+     * Runs interpolation using last known result and returns smoothened result
+     * Interpolation is based on time since last known result so can be called independently
+     * @param result?: use specific result set to run interpolation on
+     * @returns result: {@link Result}
+     */
+    next: (result?: Result | undefined) => Result;
     /** Main detection method
      * - Analyze configuration: {@link Config}
      * - Pre-process input: {@link Input}
      * - Run inference for all configured models
      * - Process and return result: {@link Result}
      * @param input: Input
-     * @param userConfig: Config
+     * @param userConfig?: Config
      * @returns result: Result
     */
     detect(input: Input, userConfig?: Config | Record<string, unknown>): Promise<Result | Error>;
     /** Warmup metho pre-initializes all models for faster inference
      * - can take significant time on startup
      * - only used for `webgl` and `humangl` backends
-     * @param userConfig: Config
+     * @param userConfig?: Config
     */
     warmup(userConfig?: Config | Record<string, unknown>): Promise<Result | {
         error: any;

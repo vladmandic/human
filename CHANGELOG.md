@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/05/30 mandic00@live.com
 
+- finished draw buffering and smoothing and enabled by default
 - implemented service worker
 - quantized centernet
 - release candidate

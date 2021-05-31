@@ -157,7 +157,7 @@ var config = {
       modelPath: "blazeface.json",
       rotation: false,
       maxDetected: 10,
-      skipFrames: 21,
+      skipFrames: 15,
       minConfidence: 0.2,
       iouThreshold: 0.1,
       return: false
@@ -173,13 +173,13 @@ var config = {
     description: {
       enabled: true,
       modelPath: "faceres.json",
-      skipFrames: 31,
+      skipFrames: 16,
       minConfidence: 0.1
     },
     emotion: {
       enabled: true,
       minConfidence: 0.1,
-      skipFrames: 32,
+      skipFrames: 17,
       modelPath: "emotion.json"
     }
   },
@@ -191,8 +191,8 @@ var config = {
   },
   hand: {
     enabled: true,
-    rotation: false,
-    skipFrames: 32,
+    rotation: true,
+    skipFrames: 18,
     minConfidence: 0.1,
     iouThreshold: 0.1,
     maxDetected: 2,
@@ -210,7 +210,7 @@ var config = {
     minConfidence: 0.2,
     iouThreshold: 0.4,
     maxDetected: 10,
-    skipFrames: 41
+    skipFrames: 19
   }
 };
 
@@ -4336,10 +4336,10 @@ var calculateGaze = (mesh, box6) => {
     (eyeCenter[0] - irisCenter[0]) / eyeSize[0] - offsetIris[0],
     eyeRatio * (irisCenter[1] - eyeCenter[1]) / eyeSize[1] - offsetIris[1]
   ];
-  let vectorLength = Math.sqrt(eyeDiff[0] ** 2 + eyeDiff[1] ** 2);
-  vectorLength = Math.min(vectorLength, box6[2] / 2, box6[3] / 2);
-  const vectorAngle = radians([0, 0], eyeDiff);
-  return { bearing: vectorAngle, strength: vectorLength };
+  let strength = Math.sqrt(eyeDiff[0] ** 2 + eyeDiff[1] ** 2);
+  strength = Math.min(strength, box6[2] / 2, box6[3] / 2);
+  const bearing = (radians([0, 0], eyeDiff) + Math.PI / 2) % Math.PI;
+  return { bearing, strength };
 };
 var calculateFaceAngle = (face5, imageSize) => {
   const normalize = (v) => {
@@ -4432,7 +4432,9 @@ var detectFace = async (parent, input) => {
   parent.state = "run:face";
   timeStamp = now();
   const faces = await predict(input, parent.config);
-  parent.perf.face = Math.trunc(now() - timeStamp);
+  parent.performance.face = Math.trunc(now() - timeStamp);
+  if (!input.shape || input.shape.length !== 4)
+    return [];
   if (!faces)
     return [];
   for (let i = 0; i < faces.length; i++) {
@@ -4449,7 +4451,7 @@ var detectFace = async (parent, input) => {
       parent.state = "run:emotion";
       timeStamp = now();
       emotionRes = parent.config.face.emotion.enabled ? await predict2(faces[i].image, parent.config, i, faces.length) : {};
-      parent.perf.emotion = Math.trunc(now() - timeStamp);
+      parent.performance.emotion = Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Emotion:");
     parent.analyze("Start Description:");
@@ -4459,7 +4461,7 @@ var detectFace = async (parent, input) => {
       parent.state = "run:description";
       timeStamp = now();
       descRes = parent.config.face.description.enabled ? await predict3(faces[i].image, parent.config, i, faces.length) : [];
-      parent.perf.embedding = Math.trunc(now() - timeStamp);
+      parent.performance.embedding = Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Description:");
     if (parent.config.async) {
@@ -4488,14 +4490,14 @@ var detectFace = async (parent, input) => {
   }
   parent.analyze("End FaceMesh:");
   if (parent.config.async) {
-    if (parent.perf.face)
-      delete parent.perf.face;
-    if (parent.perf.age)
-      delete parent.perf.age;
-    if (parent.perf.gender)
-      delete parent.perf.gender;
-    if (parent.perf.emotion)
-      delete parent.perf.emotion;
+    if (parent.performance.face)
+      delete parent.performance.face;
+    if (parent.performance.age)
+      delete parent.performance.age;
+    if (parent.performance.gender)
+      delete parent.performance.gender;
+    if (parent.performance.emotion)
+      delete parent.performance.emotion;
   }
   return faceRes;
 };
@@ -8088,7 +8090,7 @@ var HandPipeline = class {
         const angle = config3.hand.rotation ? computeRotation2(currentBox.palmLandmarks[palmLandmarksPalmBase], currentBox.palmLandmarks[palmLandmarksMiddleFingerBase]) : 0;
         const palmCenter = getBoxCenter2(currentBox);
         const palmCenterNormalized = [palmCenter[0] / image15.shape[2], palmCenter[1] / image15.shape[1]];
-        const rotatedImage = config3.hand.rotation ? tf11.image.rotateWithOffset(image15, angle, 0, palmCenterNormalized) : image15.clone();
+        const rotatedImage = config3.hand.rotation && tf11.ENV.flags.IS_BROWSER ? tf11.image.rotateWithOffset(image15, angle, 0, palmCenterNormalized) : image15.clone();
         const rotationMatrix = buildRotationMatrix2(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
         const croppedInput = cutBoxFromImageAndResize2(newBox, rotatedImage, [this.inputSize, this.inputSize]);
@@ -9809,10 +9811,8 @@ var options = {
   fillPolygons: false,
   useDepth: true,
   useCurves: false,
-  bufferedFactor: 3,
   bufferedOutput: true
 };
-var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 var rad2deg = (theta) => Math.round(theta * 180 / Math.PI);
 function point(ctx, x, y, z = 0, localOptions) {
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
@@ -9995,22 +9995,19 @@ async function face2(inCanvas2, result, drawOptions) {
           }
         }
         if (localOptions.drawGaze && ((_b = (_a = f.rotation) == null ? void 0 : _a.gaze) == null ? void 0 : _b.strength) && ((_d = (_c = f.rotation) == null ? void 0 : _c.gaze) == null ? void 0 : _d.bearing)) {
+          ctx.strokeStyle = "pink";
+          ctx.beginPath();
           const leftGaze = [
-            f.annotations["leftEyeIris"][0][0] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2],
-            f.annotations["leftEyeIris"][0][1] - Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]
+            f.annotations["leftEyeIris"][0][0] + Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3],
+            f.annotations["leftEyeIris"][0][1] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]
           ];
-          ctx.beginPath();
           ctx.moveTo(f.annotations["leftEyeIris"][0][0], f.annotations["leftEyeIris"][0][1]);
-          ctx.strokeStyle = "pink";
           ctx.lineTo(leftGaze[0], leftGaze[1]);
-          ctx.stroke();
           const rightGaze = [
-            f.annotations["rightEyeIris"][0][0] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2],
-            f.annotations["rightEyeIris"][0][1] - Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]
+            f.annotations["rightEyeIris"][0][0] + Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3],
+            f.annotations["rightEyeIris"][0][1] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]
           ];
-          ctx.beginPath();
           ctx.moveTo(f.annotations["rightEyeIris"][0][0], f.annotations["rightEyeIris"][0][1]);
-          ctx.strokeStyle = "pink";
           ctx.lineTo(rightGaze[0], rightGaze[1]);
           ctx.stroke();
         }
@@ -10277,77 +10274,6 @@ async function person(inCanvas2, result, drawOptions) {
     }
   }
 }
-function calcBuffered(newResult, localOptions) {
-  if (!bufferedResult.body || newResult.body.length !== bufferedResult.body.length) {
-    bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
-  } else {
-    for (let i = 0; i < newResult.body.length; i++) {
-      const box6 = newResult.body[i].box.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].box[j] + b) / localOptions.bufferedFactor);
-      const boxRaw3 = newResult.body[i].boxRaw.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + b) / localOptions.bufferedFactor);
-      const keypoints3 = newResult.body[i].keypoints.map((keypoint, j) => ({
-        score: keypoint.score,
-        part: keypoint.part,
-        position: {
-          x: bufferedResult.body[i].keypoints[j] ? ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.x + keypoint.position.x) / localOptions.bufferedFactor : keypoint.position.x,
-          y: bufferedResult.body[i].keypoints[j] ? ((localOptions.bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.y + keypoint.position.y) / localOptions.bufferedFactor : keypoint.position.y
-        }
-      }));
-      bufferedResult.body[i] = { ...newResult.body[i], box: box6, boxRaw: boxRaw3, keypoints: keypoints3 };
-    }
-  }
-  if (!bufferedResult.hand || newResult.hand.length !== bufferedResult.hand.length) {
-    bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand));
-  } else {
-    for (let i = 0; i < newResult.hand.length; i++) {
-      const box6 = newResult.hand[i].box.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / localOptions.bufferedFactor);
-      const boxRaw3 = newResult.hand[i].boxRaw.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / localOptions.bufferedFactor);
-      const landmarks = newResult.hand[i].landmarks.map((landmark, j) => landmark.map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].landmarks[j][k] + coord) / localOptions.bufferedFactor));
-      const keys = Object.keys(newResult.hand[i].annotations);
-      const annotations3 = {};
-      for (const key of keys) {
-        annotations3[key] = newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((localOptions.bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / localOptions.bufferedFactor));
-      }
-      bufferedResult.hand[i] = { ...newResult.hand[i], box: box6, boxRaw: boxRaw3, landmarks, annotations: annotations3 };
-    }
-  }
-  if (!bufferedResult.face || newResult.face.length !== bufferedResult.face.length) {
-    bufferedResult.face = JSON.parse(JSON.stringify(newResult.face));
-  } else {
-    for (let i = 0; i < newResult.face.length; i++) {
-      const box6 = newResult.face[i].box.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / localOptions.bufferedFactor);
-      const boxRaw3 = newResult.face[i].boxRaw.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / localOptions.bufferedFactor);
-      const matrix = newResult.face[i].rotation.matrix;
-      const angle = {
-        roll: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.roll + newResult.face[i].rotation.angle.roll) / localOptions.bufferedFactor,
-        yaw: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.yaw + newResult.face[i].rotation.angle.yaw) / localOptions.bufferedFactor,
-        pitch: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.pitch + newResult.face[i].rotation.angle.pitch) / localOptions.bufferedFactor
-      };
-      const gaze = {
-        bearing: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.bearing + newResult.face[i].rotation.gaze.bearing) / localOptions.bufferedFactor,
-        strength: ((localOptions.bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.strength + newResult.face[i].rotation.gaze.strength) / localOptions.bufferedFactor
-      };
-      const rotation = { angle, matrix, gaze };
-      bufferedResult.face[i] = { ...newResult.face[i], rotation, box: box6, boxRaw: boxRaw3 };
-    }
-  }
-  if (!bufferedResult.object || newResult.object.length !== bufferedResult.object.length) {
-    bufferedResult.object = JSON.parse(JSON.stringify(newResult.object));
-  } else {
-    for (let i = 0; i < newResult.object.length; i++) {
-      const box6 = newResult.object[i].box.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.object[i].box[j] + b) / localOptions.bufferedFactor);
-      const boxRaw3 = newResult.object[i].boxRaw.map((b, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.object[i].boxRaw[j] + b) / localOptions.bufferedFactor);
-      bufferedResult.object[i] = { ...newResult.object[i], box: box6, boxRaw: boxRaw3 };
-    }
-  }
-  const newPersons = newResult.persons;
-  if (!bufferedResult.persons || newPersons.length !== bufferedResult.persons.length) {
-    bufferedResult.persons = JSON.parse(JSON.stringify(newPersons));
-  } else {
-    for (let i = 0; i < newPersons.length; i++) {
-      bufferedResult.persons[i].box = newPersons[i].box.map((box6, j) => ((localOptions.bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box6) / localOptions.bufferedFactor);
-    }
-  }
-}
 async function canvas(inCanvas2, outCanvas2) {
   if (!inCanvas2 || !outCanvas2)
     return;
@@ -10357,22 +10283,18 @@ async function canvas(inCanvas2, outCanvas2) {
   outCtx == null ? void 0 : outCtx.drawImage(inCanvas2, 0, 0);
 }
 async function all(inCanvas2, result, drawOptions) {
+  const timestamp = now();
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas2)
     return;
   if (!(inCanvas2 instanceof HTMLCanvasElement))
     return;
-  if (!bufferedResult)
-    bufferedResult = result;
-  else if (localOptions.bufferedOutput)
-    calcBuffered(result, localOptions);
-  else
-    bufferedResult = result;
-  face2(inCanvas2, bufferedResult.face, localOptions);
-  body2(inCanvas2, bufferedResult.body, localOptions);
-  hand2(inCanvas2, bufferedResult.hand, localOptions);
-  object(inCanvas2, bufferedResult.object, localOptions);
+  face2(inCanvas2, result.face, localOptions);
+  body2(inCanvas2, result.body, localOptions);
+  hand2(inCanvas2, result.hand, localOptions);
+  object(inCanvas2, result.object, localOptions);
   gesture(inCanvas2, result.gesture, localOptions);
+  result.performance.draw = Math.trunc(now() - timestamp);
 }
 
 // src/persons.ts
@@ -10431,6 +10353,84 @@ function join2(faces, bodies, hands, gestures, shape) {
     persons2.push(person2);
   }
   return persons2;
+}
+
+// src/interpolate.ts
+var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
+function calc(newResult) {
+  const bufferedFactor = 1e3 / (Date.now() - newResult.timestamp) / 4;
+  if (!bufferedResult.body || newResult.body.length !== bufferedResult.body.length) {
+    bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
+  } else {
+    for (let i = 0; i < newResult.body.length; i++) {
+      const box6 = newResult.body[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].box[j] + b) / bufferedFactor);
+      const boxRaw3 = newResult.body[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + b) / bufferedFactor);
+      const keypoints3 = newResult.body[i].keypoints.map((keypoint, j) => ({
+        score: keypoint.score,
+        part: keypoint.part,
+        position: {
+          x: bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.x + keypoint.position.x) / bufferedFactor : keypoint.position.x,
+          y: bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.y + keypoint.position.y) / bufferedFactor : keypoint.position.y
+        }
+      }));
+      bufferedResult.body[i] = { ...newResult.body[i], box: box6, boxRaw: boxRaw3, keypoints: keypoints3 };
+    }
+  }
+  if (!bufferedResult.hand || newResult.hand.length !== bufferedResult.hand.length) {
+    bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand));
+  } else {
+    for (let i = 0; i < newResult.hand.length; i++) {
+      const box6 = newResult.hand[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor);
+      const boxRaw3 = newResult.hand[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor);
+      const landmarks = newResult.hand[i].landmarks.map((landmark, j) => landmark.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].landmarks[j][k] + coord) / bufferedFactor));
+      const keys = Object.keys(newResult.hand[i].annotations);
+      const annotations3 = {};
+      for (const key of keys) {
+        annotations3[key] = newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor));
+      }
+      bufferedResult.hand[i] = { ...newResult.hand[i], box: box6, boxRaw: boxRaw3, landmarks, annotations: annotations3 };
+    }
+  }
+  if (!bufferedResult.face || newResult.face.length !== bufferedResult.face.length) {
+    bufferedResult.face = JSON.parse(JSON.stringify(newResult.face));
+  } else {
+    for (let i = 0; i < newResult.face.length; i++) {
+      const box6 = newResult.face[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor);
+      const boxRaw3 = newResult.face[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor);
+      const matrix = newResult.face[i].rotation.matrix;
+      const angle = {
+        roll: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.roll + newResult.face[i].rotation.angle.roll) / bufferedFactor,
+        yaw: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.yaw + newResult.face[i].rotation.angle.yaw) / bufferedFactor,
+        pitch: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.pitch + newResult.face[i].rotation.angle.pitch) / bufferedFactor
+      };
+      const gaze = {
+        bearing: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.bearing + newResult.face[i].rotation.gaze.bearing) / bufferedFactor,
+        strength: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.strength + newResult.face[i].rotation.gaze.strength) / bufferedFactor
+      };
+      const rotation = { angle, matrix, gaze };
+      bufferedResult.face[i] = { ...newResult.face[i], rotation, box: box6, boxRaw: boxRaw3 };
+    }
+  }
+  if (!bufferedResult.object || newResult.object.length !== bufferedResult.object.length) {
+    bufferedResult.object = JSON.parse(JSON.stringify(newResult.object));
+  } else {
+    for (let i = 0; i < newResult.object.length; i++) {
+      const box6 = newResult.object[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].box[j] + b) / bufferedFactor);
+      const boxRaw3 = newResult.object[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].boxRaw[j] + b) / bufferedFactor);
+      bufferedResult.object[i] = { ...newResult.object[i], box: box6, boxRaw: boxRaw3 };
+    }
+  }
+  const newPersons = newResult.persons;
+  if (!bufferedResult.persons || newPersons.length !== bufferedResult.persons.length) {
+    bufferedResult.persons = JSON.parse(JSON.stringify(newPersons));
+  } else {
+    for (let i = 0; i < newPersons.length; i++) {
+      bufferedResult.persons[i].box = newPersons[i].box.map((box6, j) => ((bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box6) / bufferedFactor);
+    }
+  }
+  bufferedResult.gesture = newResult.gesture;
+  bufferedResult.performance = newResult.performance;
+  return bufferedResult;
 }
 
 // src/sample.ts
@@ -11162,7 +11162,7 @@ var version = "2.0.0";
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;
 var Human = class {
-  constructor(userConfig = {}) {
+  constructor(userConfig) {
     __privateAdd(this, _numTensors, void 0);
     __privateAdd(this, _analyzeMemoryLeaks, void 0);
     __privateAdd(this, _checkSanity, void 0);
@@ -11233,9 +11233,10 @@ var Human = class {
         if (this.tf.getBackend() === "webgl" || this.tf.getBackend() === "humangl") {
           this.tf.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
           this.tf.ENV.set("WEBGL_CPU_FORWARD", true);
-          tf19.ENV.set("WEBGL_FORCE_F16_TEXTURES", true);
           this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", true);
-          if (typeof this.config["deallocate"] !== "undefined") {
+          if (!this.config.object.enabled)
+            this.tf.ENV.set("WEBGL_FORCE_F16_TEXTURES", true);
+          if (typeof this.config["deallocate"] !== "undefined" && this.config["deallocate"]) {
             log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
             this.tf.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
           }
@@ -11244,9 +11245,10 @@ var Human = class {
             log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
         }
         await this.tf.ready();
-        this.perf.backend = Math.trunc(now() - timeStamp);
+        this.performance.backend = Math.trunc(now() - timeStamp);
       }
     });
+    this.next = (result) => calc(result || this.result);
     __privateAdd(this, _skipFrame, async (input) => {
       if (this.config.cacheSensitivity === 0)
         return false;
@@ -11337,17 +11339,17 @@ var Human = class {
       }
       return res;
     });
+    this.config = mergeDeep(config, userConfig || {});
     this.tf = tf19;
     this.draw = draw_exports;
     this.version = version;
-    this.config = mergeDeep(config, userConfig);
     this.state = "idle";
     __privateSet(this, _numTensors, 0);
     __privateSet(this, _analyzeMemoryLeaks, false);
     __privateSet(this, _checkSanity, false);
     __privateSet(this, _firstRun, true);
     __privateSet(this, _lastCacheDiff, 0);
-    this.perf = {};
+    this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
     this.models = {
       face: null,
       posenet: null,
@@ -11355,7 +11357,6 @@ var Human = class {
       efficientpose: null,
       movenet: null,
       handpose: null,
-      iris: null,
       age: null,
       gender: null,
       emotion: null,
@@ -11388,7 +11389,7 @@ var Human = class {
   match(faceEmbedding, db, threshold = 0) {
     return match(faceEmbedding, db, threshold);
   }
-  async load(userConfig = {}) {
+  async load(userConfig) {
     this.state = "load";
     const timeStamp = now();
     if (userConfig)
@@ -11462,10 +11463,10 @@ var Human = class {
       __privateSet(this, _firstRun, false);
     }
     const current = Math.trunc(now() - timeStamp);
-    if (current > (this.perf.load || 0))
-      this.perf.load = current;
+    if (current > (this.performance.load || 0))
+      this.performance.load = current;
   }
-  async detect(input, userConfig = {}) {
+  async detect(input, userConfig) {
     return new Promise(async (resolve) => {
       this.state = "config";
       let timeStamp;
@@ -11486,18 +11487,18 @@ var Human = class {
         resolve({ error: "could not convert input to tensor" });
         return;
       }
-      this.perf.image = Math.trunc(now() - timeStamp);
+      this.performance.image = Math.trunc(now() - timeStamp);
       this.analyze("Get Image:");
       timeStamp = now();
       this.config.skipFrame = await __privateGet(this, _skipFrame).call(this, process5.tensor);
-      if (!this.perf.frames)
-        this.perf.frames = 0;
-      if (!this.perf.cached)
-        this.perf.cached = 0;
-      this.perf.frames++;
+      if (!this.performance.frames)
+        this.performance.frames = 0;
+      if (!this.performance.cached)
+        this.performance.cached = 0;
+      this.performance.frames++;
       if (this.config.skipFrame)
-        this.perf.cached++;
-      this.perf.changed = Math.trunc(now() - timeStamp);
+        this.performance.cached++;
+      this.performance.changed = Math.trunc(now() - timeStamp);
       this.analyze("Check Changed:");
       let faceRes;
       let bodyRes;
@@ -11506,15 +11507,15 @@ var Human = class {
       let elapsedTime;
       if (this.config.async) {
         faceRes = this.config.face.enabled ? detectFace(this, process5.tensor) : [];
-        if (this.perf.face)
-          delete this.perf.face;
+        if (this.performance.face)
+          delete this.performance.face;
       } else {
         this.state = "run:face";
         timeStamp = now();
         faceRes = this.config.face.enabled ? await detectFace(this, process5.tensor) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
-          this.perf.face = elapsedTime;
+          this.performance.face = elapsedTime;
       }
       this.analyze("Start Body:");
       if (this.config.async) {
@@ -11526,8 +11527,8 @@ var Human = class {
           bodyRes = this.config.body.enabled ? predict7(process5.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes("movenet"))
           bodyRes = this.config.body.enabled ? predict8(process5.tensor, this.config) : [];
-        if (this.perf.body)
-          delete this.perf.body;
+        if (this.performance.body)
+          delete this.performance.body;
       } else {
         this.state = "run:body";
         timeStamp = now();
@@ -11541,21 +11542,21 @@ var Human = class {
           bodyRes = this.config.body.enabled ? await predict8(process5.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
-          this.perf.body = elapsedTime;
+          this.performance.body = elapsedTime;
       }
       this.analyze("End Body:");
       this.analyze("Start Hand:");
       if (this.config.async) {
         handRes = this.config.hand.enabled ? predict5(process5.tensor, this.config) : [];
-        if (this.perf.hand)
-          delete this.perf.hand;
+        if (this.performance.hand)
+          delete this.performance.hand;
       } else {
         this.state = "run:hand";
         timeStamp = now();
         handRes = this.config.hand.enabled ? await predict5(process5.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
-          this.perf.hand = elapsedTime;
+          this.performance.hand = elapsedTime;
       }
       this.analyze("End Hand:");
       this.analyze("Start Object:");
@@ -11564,8 +11565,8 @@ var Human = class {
           objectRes = this.config.object.enabled ? predict9(process5.tensor, this.config) : [];
         else if (this.config.object.modelPath.includes("centernet"))
           objectRes = this.config.object.enabled ? predict10(process5.tensor, this.config) : [];
-        if (this.perf.object)
-          delete this.perf.object;
+        if (this.performance.object)
+          delete this.performance.object;
       } else {
         this.state = "run:object";
         timeStamp = now();
@@ -11575,7 +11576,7 @@ var Human = class {
           objectRes = this.config.object.enabled ? await predict10(process5.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
-          this.perf.object = elapsedTime;
+          this.performance.object = elapsedTime;
       }
       this.analyze("End Object:");
       if (this.config.async)
@@ -11585,11 +11586,11 @@ var Human = class {
         timeStamp = now();
         gestureRes = [...face(faceRes), ...body(bodyRes), ...hand(handRes), ...iris(faceRes)];
         if (!this.config.async)
-          this.perf.gesture = Math.trunc(now() - timeStamp);
-        else if (this.perf.gesture)
-          delete this.perf.gesture;
+          this.performance.gesture = Math.trunc(now() - timeStamp);
+        else if (this.performance.gesture)
+          delete this.performance.gesture;
       }
-      this.perf.total = Math.trunc(now() - timeStart);
+      this.performance.total = Math.trunc(now() - timeStart);
       this.state = "idle";
       this.result = {
         face: faceRes,
@@ -11597,7 +11598,7 @@ var Human = class {
         hand: handRes,
         gesture: gestureRes,
         object: objectRes,
-        performance: this.perf,
+        performance: this.performance,
         canvas: process5.canvas,
         timestamp: Date.now(),
         get persons() {
@@ -11609,7 +11610,7 @@ var Human = class {
       resolve(this.result);
     });
   }
-  async warmup(userConfig = {}) {
+  async warmup(userConfig) {
     const t0 = now();
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);

@@ -200,7 +200,7 @@ export interface Result {
     /** {@link Object}: detection & analysis results */
     object: Array<Item>;
     /** global performance object with timing values for each operation */
-    readonly performance: Record<string, unknown>;
+    performance: Record<string, unknown>;
     /** optional processed canvas that can be used to draw input on screen */
     readonly canvas?: OffscreenCanvas | HTMLCanvasElement;
     /** timestamp of detection representing the milliseconds elapsed since the UNIX epoch */

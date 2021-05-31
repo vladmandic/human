@@ -21,7 +21,6 @@ import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result'
  * -useDepth: use z-axis coordinate as color shade,
  * -useCurves: draw polygons as cures or as lines,
  * -bufferedOutput: experimental: allows to call draw methods multiple times for each detection and interpolate results between results thus achieving smoother animations
- * -bufferedFactor: speed of interpolation convergence where 1 means 100% immediately, 2 means 50% at each interpolation, etc.
  */
 export interface DrawOptions {
     color: string;
@@ -41,7 +40,6 @@ export interface DrawOptions {
     useDepth: boolean;
     useCurves: boolean;
     bufferedOutput: boolean;
-    bufferedFactor: number;
 }
 export declare const options: DrawOptions;
 export declare function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture>, drawOptions?: DrawOptions): Promise<void>;

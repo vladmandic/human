@@ -6,7 +6,6 @@ N/A
 
 ## Exploring Features
 
-- Implement results interpolation on library level instead inside draw functions
 - Switch to TypeScript 4.3
 - Unify score/confidence variables
 
@@ -16,9 +15,10 @@ N/A
 
 ## In Progress
 
-## Issues
+N/A
 
-- CenterNet with WebGL: <https://github.com/tensorflow/tfjs/issues/5145>
+## Known Issues
+
 - CenterNet with WASM: <https://github.com/tensorflow/tfjs/issues/5110>
 - NanoDet with WASM: <https://github.com/tensorflow/tfjs/issues/4824>
 - BlazeFace and HandPose rotation in NodeJS: <https://github.com/tensorflow/tfjs/issues/4066>

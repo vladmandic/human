@@ -1,4 +1,5 @@
 import * as kpt from './keypoints';
+import { Body } from '../result';
 
 export function eitherPointDoesntMeetConfidence(a, b, minConfidence) {
   return (a < minConfidence || b < minConfidence);
@@ -29,7 +30,7 @@ export function getBoundingBox(keypoints): [number, number, number, number] {
   return [coord.minX, coord.minY, coord.maxX - coord.minX, coord.maxY - coord.minY];
 }
 
-export function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolutionWidth]) {
+export function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolutionWidth]): Array<Body> {
   const scaleY = height / inputResolutionHeight;
   const scaleX = width / inputResolutionWidth;
   const scalePose = (pose, i) => ({
@@ -40,7 +41,8 @@ export function scalePoses(poses, [height, width], [inputResolutionHeight, input
     keypoints: pose.keypoints.map(({ score, part, position }) => ({
       score,
       part,
-      position: { x: Math.trunc(position.x * scaleX), y: Math.trunc(position.y * scaleY) },
+      position: [Math.trunc(position.x * scaleX), Math.trunc(position.y * scaleY)],
+      positionRaw: [position.x / inputResolutionHeight, position.y / inputResolutionHeight],
     })),
   });
   const scaledPoses = poses.map((pose, i) => scalePose(pose, i));

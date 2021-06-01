@@ -71,12 +71,12 @@ export interface Face {
 export interface Body {
   id: number,
   score: number,
-  box: [x: number, y: number, width: number, height: number],
-  boxRaw: [x: number, y: number, width: number, height: number],
+  box: [number, number, number, number],
+  boxRaw: [number, number, number, number],
   keypoints: Array<{
     part: string,
-    position: { x: number, y: number, z?: number },
-    positionRaw?: { x: number, y: number, z?: number },
+    position: [number, number, number?],
+    positionRaw: [number, number, number?],
     score: number,
     presence?: number,
   }>

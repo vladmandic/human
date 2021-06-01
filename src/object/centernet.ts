@@ -52,13 +52,13 @@ async function process(res, inputSize, outputShape, config) {
       detections[0][id][1] / inputSize,
       detections[0][id][2] / inputSize,
       detections[0][id][3] / inputSize,
-    ];
+    ] as [number, number, number, number];
     const box = [
       Math.trunc(boxRaw[0] * outputShape[0]),
       Math.trunc(boxRaw[1] * outputShape[1]),
       Math.trunc(boxRaw[2] * outputShape[0]),
       Math.trunc(boxRaw[3] * outputShape[1]),
-    ];
+    ] as [number, number, number, number];
     results.push({ id: i++, score, class: classVal, label, box, boxRaw });
   }
   return results;

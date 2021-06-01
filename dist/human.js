@@ -66612,12 +66612,9 @@ return a / b;`;
               ];
               const result = {
                 id: id++,
-                strideSize,
                 score: Math.round(100 * score3) / 100,
                 class: j + 1,
                 label: labels[j].label,
-                center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
-                centerRaw: [cx, cy],
                 box: box6.map((a) => Math.trunc(a)),
                 boxRaw: boxRaw3
               };

@@ -91,10 +91,10 @@ export function calc(newResult: Result): Result {
     bufferedResult.object = JSON.parse(JSON.stringify(newResult.object as Item[])); // deep clone once
   } else {
     for (let i = 0; i < newResult.object.length; i++) {
-      const box = newResult.object[i].box // update box
-        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].box[j] + b) / bufferedFactor);
-      const boxRaw = newResult.object[i].boxRaw // update boxRaw
-        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].boxRaw[j] + b) / bufferedFactor);
+      const box = (newResult.object[i].box // update box
+        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].box[j] + b) / bufferedFactor)) as [number, number, number, number];
+      const boxRaw = (newResult.object[i].boxRaw // update boxRaw
+        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].boxRaw[j] + b) / bufferedFactor)) as [number, number, number, number];
       bufferedResult.object[i] = { ...newResult.object[i], box, boxRaw }; // shallow clone plus updated values
     }
   }

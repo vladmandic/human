@@ -116,13 +116,10 @@ export interface Hand {
 export interface Item {
   id: number,
   score: number,
-  strideSize?: number,
   class: number,
   label: string,
-  center?: number[],
-  centerRaw?: number[],
-  box: number[],
-  boxRaw: number[],
+  box: [number, number, number, number],
+  boxRaw: [number, number, number, number],
 }
 
 /** Gesture results

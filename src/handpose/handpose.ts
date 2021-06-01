@@ -51,10 +51,10 @@ export async function predict(input, config): Promise<Hand[]> {
       boxRaw = [box[0] / input.shape[2], box[1] / input.shape[1], box[2] / input.shape[2], box[3] / input.shape[1]];
     } else { // otherwise use box from prediction
       box = predictions[i].box ? [
-        Math.max(0, predictions[i].box.topLeft[0]),
-        Math.max(0, predictions[i].box.topLeft[1]),
-        Math.min(input.shape[2], predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0]),
-        Math.min(input.shape[1], predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1]),
+        Math.trunc(Math.max(0, predictions[i].box.topLeft[0])),
+        Math.trunc(Math.max(0, predictions[i].box.topLeft[1])),
+        Math.trunc(Math.min(input.shape[2], predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0])),
+        Math.trunc(Math.min(input.shape[1], predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1])),
       ] : [0, 0, 0, 0];
       boxRaw = [
         (predictions[i].box.topLeft[0]) / input.shape[2],

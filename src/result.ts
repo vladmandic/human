@@ -52,7 +52,7 @@ export interface Face {
     matrix: [number, number, number, number, number, number, number, number, number],
     gaze: { bearing: number, strength: number },
   }
-  image: typeof Tensor;
+  image?: typeof Tensor;
   tensor: typeof Tensor,
 }
 

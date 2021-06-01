@@ -101,7 +101,7 @@ async function analyze(face) {
     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
     ctx.fillText(`${(100 * similarity).toFixed(1)}%`, 4, 24);
     ctx.font = 'small-caps 0.8rem "Lato"';
-    ctx.fillText(`${current.age}y ${(100 * (current.genderConfidence || 0)).toFixed(1)}% ${current.gender}`, 4, canvas.height - 6);
+    ctx.fillText(`${current.age}y ${(100 * (current.genderScore || 0)).toFixed(1)}% ${current.gender}`, 4, canvas.height - 6);
     // identify person
     ctx.font = 'small-caps 1rem "Lato"';
     const person = await human.match(current.embedding, db);
@@ -136,7 +136,7 @@ async function faces(index, res, fileName) {
       const ctx = canvas.getContext('2d');
       ctx.font = 'small-caps 0.8rem "Lato"';
       ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-      ctx.fillText(`${res.face[i].age}y ${(100 * (res.face[i].genderConfidence || 0)).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
+      ctx.fillText(`${res.face[i].age}y ${(100 * (res.face[i].genderScore || 0)).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
       const person = await human.match(res.face[i].embedding, db);
       ctx.font = 'small-caps 1rem "Lato"';
       if (person.similarity && person.similarity > minScore && res.face[i].confidence > minConfidence) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);

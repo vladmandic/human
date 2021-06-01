@@ -9,8 +9,15 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/05/30 mandic00@live.com
+### **HEAD -> main** 2021/06/01 mandic00@live.com
 
+- breaking changes to results.object output properties
+- breaking changes to results.hand output properties
+- breaking changes to results.body output properties
+
+### **origin/main** 2021/05/31 mandic00@live.com
+
+- implemented human.next global interpolation method
 - finished draw buffering and smoothing and enabled by default
 - implemented service worker
 - quantized centernet

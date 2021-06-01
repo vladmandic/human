@@ -9,7 +9,7 @@ import { GraphModel } from '../tfjs/types';
 
 let model: GraphModel;
 
-type Keypoints = { score: number, part: string, position: { x: number, y: number }, positionRaw: { x: number, y: number } };
+type Keypoints = { score: number, part: string, position: [number, number], positionRaw: [number, number] };
 
 const keypoints: Array<Keypoints> = [];
 let box: [number, number, number, number] = [0, 0, 0, 0];
@@ -84,30 +84,30 @@ export async function predict(image, config): Promise<Body[]> {
           keypoints.push({
             score: Math.round(100 * partScore) / 100,
             part: bodyParts[id],
-            positionRaw: { // normalized to 0..1
+            positionRaw: [ // normalized to 0..1
               // @ts-ignore model is not undefined here
-              x: x / model.inputs[0].shape[2], y: y / model.inputs[0].shape[1],
-            },
-            position: { // normalized to input image size
+              x / model.inputs[0].shape[2], y / model.inputs[0].shape[1],
+            ],
+            position: [ // normalized to input image size
               // @ts-ignore model is not undefined here
-              x: Math.round(image.shape[2] * x / model.inputs[0].shape[2]), y: Math.round(image.shape[1] * y / model.inputs[0].shape[1]),
-            },
+              Math.round(image.shape[2] * x / model.inputs[0].shape[2]), Math.round(image.shape[1] * y / model.inputs[0].shape[1]),
+            ],
           });
         }
       }
       stack.forEach((s) => tf.dispose(s));
     }
     score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
-    const x = keypoints.map((a) => a.position.x);
-    const y = keypoints.map((a) => a.position.y);
+    const x = keypoints.map((a) => a.position[0]);
+    const y = keypoints.map((a) => a.position[1]);
     box = [
       Math.min(...x),
       Math.min(...y),
       Math.max(...x) - Math.min(...x),
       Math.max(...y) - Math.min(...y),
     ];
-    const xRaw = keypoints.map((a) => a.positionRaw.x);
-    const yRaw = keypoints.map((a) => a.positionRaw.y);
+    const xRaw = keypoints.map((a) => a.positionRaw[0]);
+    const yRaw = keypoints.map((a) => a.positionRaw[1]);
     boxRaw = [
       Math.min(...xRaw),
       Math.min(...yRaw),

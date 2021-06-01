@@ -73,9 +73,9 @@ export class HandPipeline {
       util.dot(boxCenter, inverseRotationMatrix[1]),
     ];
     return coordsRotated.map((coord) => [
-      coord[0] + originalBoxCenter[0],
-      coord[1] + originalBoxCenter[1],
-      coord[2],
+      Math.trunc(coord[0] + originalBoxCenter[0]),
+      Math.trunc(coord[1] + originalBoxCenter[1]),
+      Math.trunc(coord[2]),
     ]);
   }
 

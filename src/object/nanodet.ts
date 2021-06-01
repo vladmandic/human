@@ -63,14 +63,14 @@ async function process(res, inputSize, outputShape, config) {
             ];
             const result = {
               id: id++,
-              strideSize,
+              // strideSize,
               score: Math.round(100 * score) / 100,
               class: j + 1,
               label: labels[j].label,
-              center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
-              centerRaw: [cx, cy],
-              box: box.map((a) => Math.trunc(a)),
-              boxRaw,
+              // center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
+              // centerRaw: [cx, cy],
+              box: (box.map((a) => Math.trunc(a))) as [number, number, number, number],
+              boxRaw: boxRaw as [number, number, number, number],
             };
             results.push(result);
           }

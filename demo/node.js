@@ -105,7 +105,7 @@ async function detect(input) {
     for (let i = 0; i < result.face.length; i++) {
       const face = result.face[i];
       const emotion = face.emotion.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
-      log.data(`  Face: #${i} boxConfidence:${face.boxConfidence} faceConfidence:${face.faceConfidence} age:${face.age} genderConfidence:${face.genderConfidence} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
+      log.data(`  Face: #${i} boxScore:${face.boxScore} faceScore:${face.faceScore} age:${face.age} genderScore:${face.genderScore} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
     }
   } else {
     log.data('  Face: N/A');
@@ -113,7 +113,7 @@ async function detect(input) {
   if (result && result.body && result.body.length > 0) {
     for (let i = 0; i < result.body.length; i++) {
       const body = result.body[i];
-      log.data(`  Body: #${i} score:${body.score} landmarks:${body.keypoints?.length || body.landmarks?.length}`);
+      log.data(`  Body: #${i} score:${body.score} keypoints:${body.keypoints?.length}`);
     }
   } else {
     log.data('  Body: N/A');
@@ -121,7 +121,7 @@ async function detect(input) {
   if (result && result.hand && result.hand.length > 0) {
     for (let i = 0; i < result.hand.length; i++) {
       const hand = result.hand[i];
-      log.data(`  Hand: #${i} confidence:${hand.confidence}`);
+      log.data(`  Hand: #${i} score:${hand.score}`);
     }
   } else {
     log.data('  Hand: N/A');
@@ -143,16 +143,20 @@ async function detect(input) {
     log.data('  Object: N/A');
   }
 
-  fs.writeFileSync('result.json', JSON.stringify(result, null, 2));
   // print data to console
   if (result) {
-    log.data('Persons:');
+    // invoke persons getter
     const persons = result.persons;
+
+    // write result objects to file
+    // fs.writeFileSync('result.json', JSON.stringify(result, null, 2));
+
+    log.data('Persons:');
     for (let i = 0; i < persons.length; i++) {
       const face = persons[i].face;
-      const faceTxt = face ? `confidence:${face.confidence} age:${face.age} gender:${face.gender} iris:${face.iris}` : null;
+      const faceTxt = face ? `score:${face.score} age:${face.age} gender:${face.gender} iris:${face.iris}` : null;
       const body = persons[i].body;
-      const bodyTxt = body ? `confidence:${body.score} landmarks:${body.keypoints?.length}` : null;
+      const bodyTxt = body ? `score:${body.score} keypoints:${body.keypoints?.length}` : null;
       log.data(`  #${i}: Face:${faceTxt} Body:${bodyTxt} LeftHand:${persons[i].hands.left ? 'yes' : 'no'} RightHand:${persons[i].hands.right ? 'yes' : 'no'} Gestures:${persons[i].gestures.length}`);
     }
   }

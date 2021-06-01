@@ -160,6 +160,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     parent.analyze('Get Face');
 
     // is something went wrong, skip the face
+    // @ts-ignore possibly undefined
     if (!faces[i].image || faces[i].image['isDisposedInternal']) {
       log('Face object is disposed:', faces[i].image);
       continue;
@@ -210,12 +211,13 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       : 0;
 
     // combine results
+    if (faces[i].image) delete faces[i].image;
     faceRes.push({
       ...faces[i],
       id: i,
       age: descRes.age,
       gender: descRes.gender,
-      genderScore: descRes.genderConfidence,
+      genderScore: descRes.genderScore,
       embedding: descRes.descriptor,
       emotion: emotionRes,
       iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,

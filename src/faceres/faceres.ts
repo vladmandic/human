@@ -9,7 +9,13 @@ import * as tf from '../../dist/tfjs.esm.js';
 import { Tensor, GraphModel } from '../tfjs/types';
 
 let model: GraphModel;
-const last: Array<{ age: number}> = [];
+const last: Array<{
+  age: number,
+  gender: string,
+  genderScore: number,
+  descriptor: number[],
+}> = [];
+
 let lastCount = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
@@ -108,7 +114,7 @@ export async function predict(image, config, idx, count) {
   if (!model) return null;
   if ((skipped < config.face.description.skipFrames) && config.skipFrame && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
     skipped++;
-    return last;
+    return last[idx];
   }
   skipped = 0;
   return new Promise(async (resolve) => {
@@ -118,8 +124,9 @@ export async function predict(image, config, idx, count) {
     const obj = {
       age: <number>0,
       gender: <string>'unknown',
-      genderConfidence: <number>0,
-      descriptor: <number[]>[] };
+      genderScore: <number>0,
+      descriptor: <number[]>[],
+    };
 
     if (config.face.description.enabled) resT = await model.predict(enhanced);
     tf.dispose(enhanced);
@@ -130,7 +137,7 @@ export async function predict(image, config, idx, count) {
         const confidence = Math.trunc(200 * Math.abs((gender[0] - 0.5))) / 100;
         if (confidence > config.face.description.minConfidence) {
           obj.gender = gender[0] <= 0.5 ? 'female' : 'male';
-          obj.genderConfidence = Math.min(0.99, confidence);
+          obj.genderScore = Math.min(0.99, confidence);
         }
         const age = resT.find((t) => t.shape[1] === 100).argMax(1).dataSync()[0];
         const all = resT.find((t) => t.shape[1] === 100).dataSync();

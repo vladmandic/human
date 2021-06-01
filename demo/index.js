@@ -475,7 +475,7 @@ async function processImage(input) {
       thumb.width = window.innerWidth / (ui.columns + 0.1);
       thumb.height = thumb.width * canvas.height / canvas.width;
       if (result.face && result.face.length > 0) {
-        thumb.title = result.face.map((a, i) => `#${i} face: ${Math.trunc(100 * a.faceConfidence)}% box: ${Math.trunc(100 * a.boxConfidence)}% age: ${Math.trunc(a.age)} gender: ${Math.trunc(100 * a.genderConfidence)}% ${a.gender}`).join(' | ');
+        thumb.title = result.face.map((a, i) => `#${i} face: ${Math.trunc(100 * a.faceScore)}% box: ${Math.trunc(100 * a.boxScore)}% age: ${Math.trunc(a.age)} gender: ${Math.trunc(100 * a.genderScore)}% ${a.gender}`).join(' | ');
       } else {
         thumb.title = 'no face detected';
       }

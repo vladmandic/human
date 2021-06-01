@@ -4094,10 +4094,10 @@ async function predict(input, config3) {
         annotations3[key] = MESH_ANNOTATIONS[key].map((index) => prediction.mesh[index]);
     }
     const clampedBox = prediction.box ? [
-      Math.max(0, prediction.box.startPoint[0]),
-      Math.max(0, prediction.box.startPoint[1]),
-      Math.min(input.shape[2], prediction.box.endPoint[0]) - Math.max(0, prediction.box.startPoint[0]),
-      Math.min(input.shape[1], prediction.box.endPoint[1]) - Math.max(0, prediction.box.startPoint[1])
+      Math.trunc(Math.max(0, prediction.box.startPoint[0])),
+      Math.trunc(Math.max(0, prediction.box.startPoint[1])),
+      Math.trunc(Math.min(input.shape[2], prediction.box.endPoint[0]) - Math.max(0, prediction.box.startPoint[0])),
+      Math.trunc(Math.min(input.shape[1], prediction.box.endPoint[1]) - Math.max(0, prediction.box.startPoint[1]))
     ] : [0, 0, 0, 0];
     const boxRaw3 = prediction.box ? [
       prediction.box.startPoint[0] / input.shape[2],
@@ -4292,7 +4292,7 @@ async function predict3(image15, config3, idx, count2) {
     return null;
   if (skipped2 < config3.face.description.skipFrames && config3.skipFrame && lastCount2 === count2 && ((_a = last2[idx]) == null ? void 0 : _a.age) && ((_b = last2[idx]) == null ? void 0 : _b.age) > 0) {
     skipped2++;
-    return last2;
+    return last2[idx];
   }
   skipped2 = 0;
   return new Promise(async (resolve) => {
@@ -4301,7 +4301,7 @@ async function predict3(image15, config3, idx, count2) {
     const obj = {
       age: 0,
       gender: "unknown",
-      genderConfidence: 0,
+      genderScore: 0,
       descriptor: []
     };
     if (config3.face.description.enabled)
@@ -4313,7 +4313,7 @@ async function predict3(image15, config3, idx, count2) {
         const confidence = Math.trunc(200 * Math.abs(gender[0] - 0.5)) / 100;
         if (confidence > config3.face.description.minConfidence) {
           obj.gender = gender[0] <= 0.5 ? "female" : "male";
-          obj.genderConfidence = Math.min(0.99, confidence);
+          obj.genderScore = Math.min(0.99, confidence);
         }
         const age = resT.find((t) => t.shape[1] === 100).argMax(1).dataSync()[0];
         const all2 = resT.find((t) => t.shape[1] === 100).dataSync();
@@ -4479,12 +4479,14 @@ var detectFace = async (parent, input) => {
       delete faces[i].annotations.rightEyeIris;
     }
     const irisSize = ((_e = faces[i].annotations) == null ? void 0 : _e.leftEyeIris) && ((_f = faces[i].annotations) == null ? void 0 : _f.rightEyeIris) ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2] : 0;
+    if (faces[i].image)
+      delete faces[i].image;
     faceRes.push({
       ...faces[i],
       id: i,
       age: descRes.age,
       gender: descRes.gender,
-      genderScore: descRes.genderConfidence,
+      genderScore: descRes.genderScore,
       embedding: descRes.descriptor,
       emotion: emotionRes,
       iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,
@@ -8068,9 +8070,9 @@ var HandPipeline = class {
       dot2(boxCenter, inverseRotationMatrix[1])
     ];
     return coordsRotated.map((coord) => [
-      coord[0] + originalBoxCenter[0],
-      coord[1] + originalBoxCenter[1],
-      coord[2]
+      Math.trunc(coord[0] + originalBoxCenter[0]),
+      Math.trunc(coord[1] + originalBoxCenter[1]),
+      Math.trunc(coord[2])
     ]);
   }
   async estimateHands(image15, config3) {
@@ -8184,10 +8186,10 @@ async function predict5(input, config3) {
       boxRaw3 = [box6[0] / input.shape[2], box6[1] / input.shape[1], box6[2] / input.shape[2], box6[3] / input.shape[1]];
     } else {
       box6 = predictions[i].box ? [
-        Math.max(0, predictions[i].box.topLeft[0]),
-        Math.max(0, predictions[i].box.topLeft[1]),
-        Math.min(input.shape[2], predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0]),
-        Math.min(input.shape[1], predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1])
+        Math.trunc(Math.max(0, predictions[i].box.topLeft[0])),
+        Math.trunc(Math.max(0, predictions[i].box.topLeft[1])),
+        Math.trunc(Math.min(input.shape[2], predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0])),
+        Math.trunc(Math.min(input.shape[1], predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1]))
       ] : [0, 0, 0, 0];
       boxRaw3 = [
         predictions[i].box.topLeft[0] / input.shape[2],
@@ -8440,30 +8442,30 @@ async function predict7(image15, config3) {
           keypoints.push({
             score: Math.round(100 * partScore) / 100,
             part: bodyParts[id],
-            positionRaw: {
-              x: x2 / model5.inputs[0].shape[2],
-              y: y2 / model5.inputs[0].shape[1]
-            },
-            position: {
-              x: Math.round(image15.shape[2] * x2 / model5.inputs[0].shape[2]),
-              y: Math.round(image15.shape[1] * y2 / model5.inputs[0].shape[1])
-            }
+            positionRaw: [
+              x2 / model5.inputs[0].shape[2],
+              y2 / model5.inputs[0].shape[1]
+            ],
+            position: [
+              Math.round(image15.shape[2] * x2 / model5.inputs[0].shape[2]),
+              Math.round(image15.shape[1] * y2 / model5.inputs[0].shape[1])
+            ]
           });
         }
       }
       stack2.forEach((s) => tf15.dispose(s));
     }
     score = keypoints.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
-    const x = keypoints.map((a) => a.position.x);
-    const y = keypoints.map((a) => a.position.y);
+    const x = keypoints.map((a) => a.position[0]);
+    const y = keypoints.map((a) => a.position[1]);
     box4 = [
       Math.min(...x),
       Math.min(...y),
       Math.max(...x) - Math.min(...x),
       Math.max(...y) - Math.min(...y)
     ];
-    const xRaw = keypoints.map((a) => a.positionRaw.x);
-    const yRaw = keypoints.map((a) => a.positionRaw.y);
+    const xRaw = keypoints.map((a) => a.positionRaw[0]);
+    const yRaw = keypoints.map((a) => a.positionRaw[1]);
     boxRaw = [
       Math.min(...xRaw),
       Math.min(...yRaw),
@@ -9933,15 +9935,17 @@ async function face2(inCanvas2, result, drawOptions) {
     if (localOptions.drawBoxes)
       rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
     const labels2 = [];
-    labels2.push(`face confidence: ${Math.trunc(100 * f.score)}%`);
+    labels2.push(`face: ${Math.trunc(100 * f.score)}%`);
     if (f.genderScore)
-      labels2.push(`${f.gender || ""} ${Math.trunc(100 * f.genderScore)}% confident`);
+      labels2.push(`${f.gender || ""} ${Math.trunc(100 * f.genderScore)}%`);
     if (f.age)
       labels2.push(`age: ${f.age || ""}`);
     if (f.iris)
       labels2.push(`distance: ${f.iris}`);
     if (f.emotion && f.emotion.length > 0) {
       const emotion2 = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
+      if (emotion2.length > 3)
+        emotion2.length = 3;
       labels2.push(emotion2.join(" "));
     }
     if (f.rotation && f.rotation.angle && f.rotation.gaze) {

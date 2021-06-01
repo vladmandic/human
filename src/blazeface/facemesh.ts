@@ -13,7 +13,6 @@ import { Face } from '../result';
 let faceModels: [blazeface.BlazeFaceModel | null, GraphModel | null, GraphModel | null] = [null, null, null];
 let facePipeline;
 
-// export async function predict(input, config): Promise<{ confidence, boxConfidence, faceConfidence, box, mesh, boxRaw, meshRaw, annotations, image }[]> {
 export async function predict(input, config): Promise<Face[]> {
   const predictions = await facePipeline.predict(input, config);
   const results: Array<Face> = [];
@@ -30,10 +29,10 @@ export async function predict(input, config): Promise<Face[]> {
       for (const key of Object.keys(coords.MESH_ANNOTATIONS)) annotations[key] = coords.MESH_ANNOTATIONS[key].map((index) => prediction.mesh[index]);
     }
     const clampedBox: [number, number, number, number] = prediction.box ? [
-      Math.max(0, prediction.box.startPoint[0]),
-      Math.max(0, prediction.box.startPoint[1]),
-      Math.min(input.shape[2], prediction.box.endPoint[0]) - Math.max(0, prediction.box.startPoint[0]),
-      Math.min(input.shape[1], prediction.box.endPoint[1]) - Math.max(0, prediction.box.startPoint[1]),
+      Math.trunc(Math.max(0, prediction.box.startPoint[0])),
+      Math.trunc(Math.max(0, prediction.box.startPoint[1])),
+      Math.trunc(Math.min(input.shape[2], prediction.box.endPoint[0]) - Math.max(0, prediction.box.startPoint[0])),
+      Math.trunc(Math.min(input.shape[1], prediction.box.endPoint[1]) - Math.max(0, prediction.box.startPoint[1])),
     ] : [0, 0, 0, 0];
     const boxRaw: [number, number, number, number] = prediction.box ? [
       prediction.box.startPoint[0] / input.shape[2],

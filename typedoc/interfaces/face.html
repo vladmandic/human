@@ -73,9 +73,9 @@
 					<p>Each result has:</p>
 					<ul>
 						<li>id: face id number</li>
-						<li>confidence: overal detection confidence value</li>
-						<li>boxConfidence: face box detection confidence value</li>
-						<li>faceConfidence: face keypoints detection confidence value</li>
+						<li>score: overal detection confidence score value</li>
+						<li>boxScore: face box detection confidence score value</li>
+						<li>faceScore: face keypoints detection confidence score value</li>
 						<li>box: face bounding box as array of [x, y, width, height], normalized to image resolution</li>
 						<li>boxRaw: face bounding box as array of [x, y, width, height], normalized to range 0..1</li>
 						<li>mesh: face keypoints as array of [x, y, z] points of face mesh, normalized to image resolution</li>
@@ -83,7 +83,7 @@
 						<li>annotations: annotated face keypoints as array of annotated face mesh points</li>
 						<li>age: age as value</li>
 						<li>gender: gender as value</li>
-						<li>genderConfidence: gender detection confidence as value</li>
+						<li>genderScore: gender detection confidence score as value</li>
 						<li>emotion: emotions as array of possible emotions with their individual scores</li>
 						<li>embedding: facial descriptor as array of numerical elements</li>
 						<li>iris: iris distance from current viewpoint as distance value in centimeters for a typical camera
@@ -114,19 +114,20 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#age" class="tsd-kind-icon">age</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#annotations" class="tsd-kind-icon">annotations</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#box" class="tsd-kind-icon">box</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#boxconfidence" class="tsd-kind-icon">box<wbr>Confidence</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#boxraw" class="tsd-kind-icon">box<wbr>Raw</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#confidence" class="tsd-kind-icon">confidence</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#boxscore" class="tsd-kind-icon">box<wbr>Score</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#embedding" class="tsd-kind-icon">embedding</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#emotion" class="tsd-kind-icon">emotion</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#faceconfidence" class="tsd-kind-icon">face<wbr>Confidence</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#facescore" class="tsd-kind-icon">face<wbr>Score</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#gender" class="tsd-kind-icon">gender</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#genderconfidence" class="tsd-kind-icon">gender<wbr>Confidence</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#genderscore" class="tsd-kind-icon">gender<wbr>Score</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#image" class="tsd-kind-icon">image</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#iris" class="tsd-kind-icon">iris</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#mesh" class="tsd-kind-icon">mesh</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#meshraw" class="tsd-kind-icon">mesh<wbr>Raw</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#rotation" class="tsd-kind-icon">rotation</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#score" class="tsd-kind-icon">score</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="face.html#tensor" class="tsd-kind-icon">tensor</a></li>
 							</ul>
 						</section>
@@ -137,7 +138,7 @@
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="age" class="tsd-anchor"></a>
-					<h3>age</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> age</h3>
 					<div class="tsd-signature tsd-kind-icon">age<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
@@ -145,7 +146,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="annotations" class="tsd-anchor"></a>
 					<h3>annotations</h3>
-					<div class="tsd-signature tsd-kind-icon">annotations<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>part<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>points<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span></div>
+					<div class="tsd-signature tsd-kind-icon">annotations<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
@@ -157,13 +158,6 @@
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="boxconfidence" class="tsd-anchor"></a>
-					<h3>box<wbr>Confidence</h3>
-					<div class="tsd-signature tsd-kind-icon">box<wbr>Confidence<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="boxraw" class="tsd-anchor"></a>
 					<h3>box<wbr>Raw</h3>
 					<div class="tsd-signature tsd-kind-icon">box<wbr>Raw<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></div>
@@ -171,44 +165,44 @@
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="confidence" class="tsd-anchor"></a>
-					<h3>confidence</h3>
-					<div class="tsd-signature tsd-kind-icon">confidence<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="boxscore" class="tsd-anchor"></a>
+					<h3>box<wbr>Score</h3>
+					<div class="tsd-signature tsd-kind-icon">box<wbr>Score<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="embedding" class="tsd-anchor"></a>
-					<h3>embedding</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> embedding</h3>
 					<div class="tsd-signature tsd-kind-icon">embedding<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="emotion" class="tsd-anchor"></a>
-					<h3>emotion</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> emotion</h3>
 					<div class="tsd-signature tsd-kind-icon">emotion<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>emotion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>score<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="faceconfidence" class="tsd-anchor"></a>
-					<h3>face<wbr>Confidence</h3>
-					<div class="tsd-signature tsd-kind-icon">face<wbr>Confidence<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="facescore" class="tsd-anchor"></a>
+					<h3>face<wbr>Score</h3>
+					<div class="tsd-signature tsd-kind-icon">face<wbr>Score<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="gender" class="tsd-anchor"></a>
-					<h3>gender</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> gender</h3>
 					<div class="tsd-signature tsd-kind-icon">gender<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="genderconfidence" class="tsd-anchor"></a>
-					<h3>gender<wbr>Confidence</h3>
-					<div class="tsd-signature tsd-kind-icon">gender<wbr>Confidence<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="genderscore" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> gender<wbr>Score</h3>
+					<div class="tsd-signature tsd-kind-icon">gender<wbr>Score<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
@@ -220,8 +214,15 @@
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="image" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> image</h3>
+					<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">__class</span></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="iris" class="tsd-anchor"></a>
-					<h3>iris</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> iris</h3>
 					<div class="tsd-signature tsd-kind-icon">iris<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
@@ -242,7 +243,7 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="rotation" class="tsd-anchor"></a>
-					<h3>rotation</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> rotation</h3>
 					<div class="tsd-signature tsd-kind-icon">rotation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>angle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>pitch<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>roll<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>yaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>gaze<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>bearing<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>strength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>matrix<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
@@ -279,6 +280,13 @@
 							</li>
 						</ul>
 					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="score" class="tsd-anchor"></a>
+					<h3>score</h3>
+					<div class="tsd-signature tsd-kind-icon">score<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="tensor" class="tsd-anchor"></a>
@@ -329,13 +337,10 @@
 								<a href="face.html#box" class="tsd-kind-icon">box</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="face.html#boxconfidence" class="tsd-kind-icon">box<wbr>Confidence</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="face.html#boxraw" class="tsd-kind-icon">box<wbr>Raw</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="face.html#confidence" class="tsd-kind-icon">confidence</a>
+								<a href="face.html#boxscore" class="tsd-kind-icon">box<wbr>Score</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="face.html#embedding" class="tsd-kind-icon">embedding</a>
@@ -344,16 +349,19 @@
 								<a href="face.html#emotion" class="tsd-kind-icon">emotion</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="face.html#faceconfidence" class="tsd-kind-icon">face<wbr>Confidence</a>
+								<a href="face.html#facescore" class="tsd-kind-icon">face<wbr>Score</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="face.html#gender" class="tsd-kind-icon">gender</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="face.html#genderconfidence" class="tsd-kind-icon">gender<wbr>Confidence</a>
+								<a href="face.html#genderscore" class="tsd-kind-icon">gender<wbr>Score</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="face.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="face.html#image" class="tsd-kind-icon">image</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="face.html#iris" class="tsd-kind-icon">iris</a>
@@ -366,6 +374,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="face.html#rotation" class="tsd-kind-icon">rotation</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="face.html#score" class="tsd-kind-icon">score</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="face.html#tensor" class="tsd-kind-icon">tensor</a>

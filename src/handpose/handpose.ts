@@ -63,7 +63,7 @@ export async function predict(input, config): Promise<Hand[]> {
         (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1],
       ];
     }
-    hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box, boxRaw, keypoints, annotations });
+    hands.push({ id: i, score: Math.round(100 * predictions[i].confidence) / 100, box, boxRaw, keypoints, annotations });
   }
   return hands;
 }

@@ -70,18 +70,22 @@ export function calc(newResult: Result): Result {
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor)) as [number, number, number, number];
       const boxRaw = (newResult.face[i].boxRaw // update boxRaw
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor)) as [number, number, number, number];
-      const matrix = newResult.face[i].rotation.matrix;
-      const angle = {
-        roll: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.roll + newResult.face[i].rotation.angle.roll) / bufferedFactor,
-        yaw: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.yaw + newResult.face[i].rotation.angle.yaw) / bufferedFactor,
-        pitch: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.pitch + newResult.face[i].rotation.angle.pitch) / bufferedFactor,
+      const rotation: {
+        matrix: [number, number, number, number, number, number, number, number, number],
+        angle: { roll: number, yaw: number, pitch: number },
+        gaze: { bearing: number, strength: number }
+      } = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
+      rotation.matrix = newResult.face[i].rotation?.matrix as [number, number, number, number, number, number, number, number, number];
+      rotation.angle = {
+        roll: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.roll || 0) + (newResult.face[i].rotation?.angle?.roll || 0)) / bufferedFactor,
+        yaw: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.yaw || 0) + (newResult.face[i].rotation?.angle?.yaw || 0)) / bufferedFactor,
+        pitch: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.pitch || 0) + (newResult.face[i].rotation?.angle?.pitch || 0)) / bufferedFactor,
       };
-      const gaze = {
+      rotation.gaze = {
         // not fully correct due projection on circle, also causes wrap-around draw on jump from negative to positive
-        bearing: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.bearing + newResult.face[i].rotation.gaze.bearing) / bufferedFactor,
-        strength: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.strength + newResult.face[i].rotation.gaze.strength) / bufferedFactor,
+        bearing: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.gaze?.bearing || 0) + (newResult.face[i].rotation?.gaze?.bearing || 0)) / bufferedFactor,
+        strength: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.gaze?.strength || 0) + (newResult.face[i].rotation?.gaze?.strength || 0)) / bufferedFactor,
       };
-      const rotation = { angle, matrix, gaze };
       bufferedResult.face[i] = { ...newResult.face[i], rotation, box, boxRaw }; // shallow clone plus updated values
     }
   }

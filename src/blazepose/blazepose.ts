@@ -35,24 +35,29 @@ export async function predict(image, config): Promise<Body[]> {
   const points = resT.find((t) => (t.size === 195 || t.size === 155))?.dataSync() || []; // order of output tensors may change between models, full has 195 and upper has 155 items
   resT.forEach((t) => t.dispose());
   normalize.dispose();
-  const keypoints: Array<{ id, part, position: { x, y, z }, score, presence }> = [];
+  const keypoints: Array<{ id, part, position: [number, number, number], positionRaw: [number, number, number], score, presence }> = [];
   const labels = points?.length === 195 ? annotations.full : annotations.upper; // full model has 39 keypoints, upper has 31 keypoints
   const depth = 5; // each points has x,y,z,visibility,presence
   for (let i = 0; i < points.length / depth; i++) {
     keypoints.push({
       id: i,
       part: labels[i],
-      position: {
-        x: Math.trunc(imgSize.width * points[depth * i + 0] / 255), // return normalized x value istead of 0..255
-        y: Math.trunc(imgSize.height * points[depth * i + 1] / 255), // return normalized y value istead of 0..255
-        z: Math.trunc(points[depth * i + 2]) + 0, // fix negative zero
-      },
+      position: [
+        Math.trunc(imgSize.width * points[depth * i + 0] / 255), // return normalized x value istead of 0..255
+        Math.trunc(imgSize.height * points[depth * i + 1] / 255), // return normalized y value istead of 0..255
+        Math.trunc(points[depth * i + 2]) + 0, // fix negative zero
+      ],
+      positionRaw: [
+        points[depth * i + 0] / 255, // return x value normalized to 0..1
+        points[depth * i + 1] / 255, // return y value normalized to 0..1
+        points[depth * i + 2] + 0, // fix negative zero
+      ],
       score: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100, // reverse sigmoid value
       presence: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 4])))) / 100, // reverse sigmoid value
     });
   }
-  const x = keypoints.map((a) => a.position.x);
-  const y = keypoints.map((a) => a.position.y);
+  const x = keypoints.map((a) => a.position[0]);
+  const y = keypoints.map((a) => a.position[1]);
   const box: [number, number, number, number] = [
     Math.min(...x),
     Math.min(...y),

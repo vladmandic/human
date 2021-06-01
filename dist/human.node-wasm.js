@@ -4596,7 +4596,8 @@ function scalePoses(poses2, [height, width], [inputResolutionHeight, inputResolu
     keypoints: pose.keypoints.map(({ score: score3, part, position }) => ({
       score: score3,
       part,
-      position: { x: Math.trunc(position.x * scaleX), y: Math.trunc(position.y * scaleY) }
+      position: [Math.trunc(position.x * scaleX), Math.trunc(position.y * scaleY)],
+      positionRaw: [position.x / inputResolutionHeight, position.y / inputResolutionHeight]
     }))
   });
   const scaledPoses = poses2.map((pose, i) => scalePose(pose, i));
@@ -8341,17 +8342,22 @@ async function predict6(image15, config3) {
     keypoints3.push({
       id: i,
       part: labels2[i],
-      position: {
-        x: Math.trunc(imgSize.width * points[depth * i + 0] / 255),
-        y: Math.trunc(imgSize.height * points[depth * i + 1] / 255),
-        z: Math.trunc(points[depth * i + 2]) + 0
-      },
+      position: [
+        Math.trunc(imgSize.width * points[depth * i + 0] / 255),
+        Math.trunc(imgSize.height * points[depth * i + 1] / 255),
+        Math.trunc(points[depth * i + 2]) + 0
+      ],
+      positionRaw: [
+        points[depth * i + 0] / 255,
+        points[depth * i + 1] / 255,
+        points[depth * i + 2] + 0
+      ],
       score: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100,
       presence: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 4])))) / 100
     });
   }
-  const x = keypoints3.map((a) => a.position.x);
-  const y = keypoints3.map((a) => a.position.y);
+  const x = keypoints3.map((a) => a.position[0]);
+  const y = keypoints3.map((a) => a.position[1]);
   const box6 = [
     Math.min(...x),
     Math.min(...y),
@@ -8512,29 +8518,29 @@ async function predict8(image15, config3) {
           keypoints2.push({
             score: Math.round(100 * score2) / 100,
             part: bodyParts2[id],
-            positionRaw: {
-              x: kpt3[id][1],
-              y: kpt3[id][0]
-            },
-            position: {
-              x: Math.round(image15.shape[2] * kpt3[id][1]),
-              y: Math.round(image15.shape[1] * kpt3[id][0])
-            }
+            positionRaw: [
+              kpt3[id][1],
+              kpt3[id][0]
+            ],
+            position: [
+              Math.round(image15.shape[2] * kpt3[id][1]),
+              Math.round(image15.shape[1] * kpt3[id][0])
+            ]
           });
         }
       }
     }
     score2 = keypoints2.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
-    const x = keypoints2.map((a) => a.position.x);
-    const y = keypoints2.map((a) => a.position.y);
+    const x = keypoints2.map((a) => a.position[0]);
+    const y = keypoints2.map((a) => a.position[1]);
     box5 = [
       Math.min(...x),
       Math.min(...y),
       Math.max(...x) - Math.min(...x),
       Math.max(...y) - Math.min(...y)
     ];
-    const xRaw = keypoints2.map((a) => a.positionRaw.x);
-    const yRaw = keypoints2.map((a) => a.positionRaw.y);
+    const xRaw = keypoints2.map((a) => a.positionRaw[0]);
+    const yRaw = keypoints2.map((a) => a.positionRaw[1]);
     boxRaw2 = [
       Math.min(...xRaw),
       Math.min(...yRaw),
@@ -10045,16 +10051,16 @@ async function body2(inCanvas2, result, drawOptions) {
     }
     if (localOptions.drawPoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
-        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + 2 * (result[i].keypoints[pt].position.z || 0)}, ${127.5 - 2 * (result[i].keypoints[pt].position.z || 0)}, 255, 0.5)` : localOptions.color;
-        point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 0, localOptions);
+        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position[2] ? `rgba(${127.5 + 2 * (result[i].keypoints[pt].position[2] || 0)}, ${127.5 - 2 * (result[i].keypoints[pt].position[2] || 0)}, 255, 0.5)` : localOptions.color;
+        point(ctx, result[i].keypoints[pt].position[0], result[i].keypoints[pt].position[1], 0, localOptions);
       }
     }
     if (localOptions.drawLabels) {
       ctx.font = localOptions.font;
       if (result[i].keypoints) {
         for (const pt of result[i].keypoints) {
-          ctx.fillStyle = localOptions.useDepth && pt.position.z ? `rgba(${127.5 + 2 * pt.position.z}, ${127.5 - 2 * pt.position.z}, 255, 0.5)` : localOptions.color;
-          ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position.x + 4, pt.position.y + 4);
+          ctx.fillStyle = localOptions.useDepth && pt.position[2] ? `rgba(${127.5 + 2 * pt.position[2]}, ${127.5 - 2 * pt.position[2]}, 255, 0.5)` : localOptions.color;
+          ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position[0] + 4, pt.position[1] + 4);
         }
       }
     }
@@ -10064,87 +10070,87 @@ async function body2(inCanvas2, result, drawOptions) {
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "leftShoulder");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "rightShoulder");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       curves(ctx, points, localOptions);
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "rightShoulder");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "rightHip");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "leftHip");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "leftShoulder");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       if (points.length === 4)
         lines(ctx, points, localOptions);
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "leftHip");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "leftKnee");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "leftAnkle");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "leftHeel");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "leftFoot");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       curves(ctx, points, localOptions);
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "rightHip");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "rightKnee");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "rightAnkle");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "rightHeel");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "rightFoot");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       curves(ctx, points, localOptions);
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "leftShoulder");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "leftElbow");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "leftWrist");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "leftPalm");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       curves(ctx, points, localOptions);
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === "rightShoulder");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "rightElbow");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "rightWrist");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === "rightPalm");
       if (part)
-        points.push([part.position.x, part.position.y]);
+        points.push([part.position[0], part.position[1]]);
       curves(ctx, points, localOptions);
     }
   }
@@ -10369,10 +10375,14 @@ function calc(newResult) {
       const keypoints3 = newResult.body[i].keypoints.map((keypoint, j) => ({
         score: keypoint.score,
         part: keypoint.part,
-        position: {
-          x: bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.x + keypoint.position.x) / bufferedFactor : keypoint.position.x,
-          y: bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.y + keypoint.position.y) / bufferedFactor : keypoint.position.y
-        }
+        position: [
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position[0] + keypoint.position[0]) / bufferedFactor : keypoint.position[0],
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position[1] + keypoint.position[1]) / bufferedFactor : keypoint.position[1]
+        ],
+        positionRaw: [
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].positionRaw[0] + keypoint.positionRaw[0]) / bufferedFactor : keypoint.position[0],
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].positionRaw[1] + keypoint.positionRaw[1]) / bufferedFactor : keypoint.position[1]
+        ]
       }));
       bufferedResult.body[i] = { ...newResult.body[i], box: box6, boxRaw: boxRaw3, keypoints: keypoints3 };
     }

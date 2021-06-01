@@ -9,7 +9,7 @@ import { GraphModel } from '../tfjs/types';
 
 let model: GraphModel;
 
-type Keypoints = { score: number, part: string, position: { x: number, y: number }, positionRaw: { x: number, y: number } };
+type Keypoints = { score: number, part: string, position: [number, number], positionRaw: [number, number] };
 
 const keypoints: Array<Keypoints> = [];
 let box: [number, number, number, number] = [0, 0, 0, 0];
@@ -58,29 +58,29 @@ export async function predict(image, config): Promise<Body[]> {
           keypoints.push({
             score: Math.round(100 * score) / 100,
             part: bodyParts[id],
-            positionRaw: { // normalized to 0..1
-              x: kpt[id][1],
-              y: kpt[id][0],
-            },
-            position: { // normalized to input image size
-              x: Math.round(image.shape[2] * kpt[id][1]),
-              y: Math.round(image.shape[1] * kpt[id][0]),
-            },
+            positionRaw: [ // normalized to 0..1
+              kpt[id][1],
+              kpt[id][0],
+            ],
+            position: [ // normalized to input image size
+              Math.round(image.shape[2] * kpt[id][1]),
+              Math.round(image.shape[1] * kpt[id][0]),
+            ],
           });
         }
       }
     }
     score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
-    const x = keypoints.map((a) => a.position.x);
-    const y = keypoints.map((a) => a.position.y);
+    const x = keypoints.map((a) => a.position[0]);
+    const y = keypoints.map((a) => a.position[1]);
     box = [
       Math.min(...x),
       Math.min(...y),
       Math.max(...x) - Math.min(...x),
       Math.max(...y) - Math.min(...y),
     ];
-    const xRaw = keypoints.map((a) => a.positionRaw.x);
-    const yRaw = keypoints.map((a) => a.positionRaw.y);
+    const xRaw = keypoints.map((a) => a.positionRaw[0]);
+    const yRaw = keypoints.map((a) => a.positionRaw[1]);
     boxRaw = [
       Math.min(...xRaw),
       Math.min(...yRaw),

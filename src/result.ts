@@ -97,7 +97,7 @@ export interface Hand {
   confidence: number,
   box: [number, number, number, number],
   boxRaw: [number, number, number, number],
-  landmarks: Array<[number, number, number]>,
+  keypoints: Array<[number, number, number]>,
   annotations: Record<string, Array<[number, number, number]>>,
 }
 

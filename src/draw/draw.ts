@@ -404,8 +404,8 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, dra
       ctx.stroke();
     }
     if (localOptions.drawPoints) {
-      if (h.landmarks && h.landmarks.length > 0) {
-        for (const pt of h.landmarks) {
+      if (h.keypoints && h.keypoints.length > 0) {
+        for (const pt of h.keypoints) {
           ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.5)` : localOptions.color;
           point(ctx, pt[0], pt[1], 0, localOptions);
         }

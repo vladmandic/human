@@ -35,12 +35,12 @@ export async function predict(input, config): Promise<Hand[]> {
       }
     }
 
-    const landmarks = predictions[i].landmarks as unknown as Array<[number, number, number]>;
+    const keypoints = predictions[i].landmarks as unknown as Array<[number, number, number]>;
 
     let box: [number, number, number, number] = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0]; // maximums so conditionals work
     let boxRaw: [number, number, number, number] = [0, 0, 0, 0];
-    if (landmarks && landmarks.length > 0) { // if we have landmarks, calculate box based on landmarks
-      for (const pt of landmarks) {
+    if (keypoints && keypoints.length > 0) { // if we have landmarks, calculate box based on landmarks
+      for (const pt of keypoints) {
         if (pt[0] < box[0]) box[0] = pt[0];
         if (pt[1] < box[1]) box[1] = pt[1];
         if (pt[0] > box[2]) box[2] = pt[0];
@@ -63,7 +63,7 @@ export async function predict(input, config): Promise<Hand[]> {
         (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1],
       ];
     }
-    hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box, boxRaw, landmarks, annotations });
+    hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box, boxRaw, keypoints, annotations });
   }
   return hands;
 }

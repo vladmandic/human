@@ -48,16 +48,16 @@ export function calc(newResult: Result): Result {
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor)) as [number, number, number, number];
       const boxRaw = (newResult.hand[i].boxRaw // update boxRaw
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor)) as [number, number, number, number];
-      const landmarks = newResult.hand[i].landmarks // update landmarks
+      const keypoints = newResult.hand[i].keypoints // update landmarks
         .map((landmark, j) => landmark
-          .map((coord, k) => (((bufferedFactor - 1) * bufferedResult.hand[i].landmarks[j][k] + coord) / bufferedFactor)) as [number, number, number]);
+          .map((coord, k) => (((bufferedFactor - 1) * bufferedResult.hand[i].keypoints[j][k] + coord) / bufferedFactor)) as [number, number, number]);
       const keys = Object.keys(newResult.hand[i].annotations); // update annotations
       const annotations = {};
       for (const key of keys) {
         annotations[key] = newResult.hand[i].annotations[key]
           .map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor));
       }
-      bufferedResult.hand[i] = { ...newResult.hand[i], box, boxRaw, landmarks, annotations }; // shallow clone plus updated values
+      bufferedResult.hand[i] = { ...newResult.hand[i], box, boxRaw, keypoints, annotations }; // shallow clone plus updated values
     }
   }
 

@@ -293,16 +293,16 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, dra
     }
     if (localOptions.drawPoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
-        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position.z ? `rgba(${127.5 + (2 * (result[i].keypoints[pt].position.z || 0))}, ${127.5 - (2 * (result[i].keypoints[pt].position.z || 0))}, 255, 0.5)` : localOptions.color;
-        point(ctx, result[i].keypoints[pt].position.x, result[i].keypoints[pt].position.y, 0, localOptions);
+        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position[2] ? `rgba(${127.5 + (2 * (result[i].keypoints[pt].position[2] || 0))}, ${127.5 - (2 * (result[i].keypoints[pt].position[2] || 0))}, 255, 0.5)` : localOptions.color;
+        point(ctx, result[i].keypoints[pt].position[0], result[i].keypoints[pt].position[1], 0, localOptions);
       }
     }
     if (localOptions.drawLabels) {
       ctx.font = localOptions.font;
       if (result[i].keypoints) {
         for (const pt of result[i].keypoints) {
-          ctx.fillStyle = localOptions.useDepth && pt.position.z ? `rgba(${127.5 + (2 * pt.position.z)}, ${127.5 - (2 * pt.position.z)}, 255, 0.5)` : localOptions.color;
-          ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position.x + 4, pt.position.y + 4);
+          ctx.fillStyle = localOptions.useDepth && pt.position[2] ? `rgba(${127.5 + (2 * pt.position[2])}, ${127.5 - (2 * pt.position[2])}, 255, 0.5)` : localOptions.color;
+          ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position[0] + 4, pt.position[1] + 4);
         }
       }
     }
@@ -312,68 +312,68 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, dra
       // shoulder line
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       curves(ctx, points, localOptions);
       // torso main
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'rightHip');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'leftHip');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       if (points.length === 4) lines(ctx, points, localOptions); // only draw if we have complete torso
       // leg left
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'leftHip');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'leftKnee');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'leftAnkle');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'leftHeel');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'leftFoot');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       curves(ctx, points, localOptions);
       // leg right
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'rightHip');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'rightKnee');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'rightAnkle');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'rightHeel');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'rightFoot');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       curves(ctx, points, localOptions);
       // arm left
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'leftShoulder');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'leftElbow');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'leftWrist');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'leftPalm');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       curves(ctx, points, localOptions);
       // arm right
       points.length = 0;
       part = result[i].keypoints.find((a) => a.part === 'rightShoulder');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'rightElbow');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'rightWrist');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       part = result[i].keypoints.find((a) => a.part === 'rightPalm');
-      if (part) points.push([part.position.x, part.position.y]);
+      if (part) points.push([part.position[0], part.position[1]]);
       curves(ctx, points, localOptions);
       // draw all
     }

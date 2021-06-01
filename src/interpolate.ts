@@ -22,15 +22,19 @@ export function calc(newResult: Result): Result {
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].box[j] + b) / bufferedFactor) as [number, number, number, number];
       const boxRaw = newResult.body[i].boxRaw // update boxRaw
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + b) / bufferedFactor) as [number, number, number, number];
-      const keypoints = newResult.body[i].keypoints // update keypoints
+      const keypoints = (newResult.body[i].keypoints // update keypoints
         .map((keypoint, j) => ({
           score: keypoint.score,
           part: keypoint.part,
-          position: {
-            x: bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.x + keypoint.position.x) / bufferedFactor : keypoint.position.x,
-            y: bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position.y + keypoint.position.y) / bufferedFactor : keypoint.position.y,
-          },
-        }));
+          position: [
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position[0] + keypoint.position[0]) / bufferedFactor : keypoint.position[0],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position[1] + keypoint.position[1]) / bufferedFactor : keypoint.position[1],
+          ],
+          positionRaw: [
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].positionRaw[0] + keypoint.positionRaw[0]) / bufferedFactor : keypoint.position[0],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].positionRaw[1] + keypoint.positionRaw[1]) / bufferedFactor : keypoint.position[1],
+          ],
+        }))) as Array<{ score: number, part: string, position: [number, number, number?], positionRaw: [number, number, number?] }>;
       bufferedResult.body[i] = { ...newResult.body[i], box, boxRaw, keypoints }; // shallow clone plus updated values
     }
   }

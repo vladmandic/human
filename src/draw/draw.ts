@@ -174,8 +174,8 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, dra
     if (localOptions.drawBoxes) rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
     // silly hack since fillText does not suport new line
     const labels:string[] = [];
-    labels.push(`face confidence: ${Math.trunc(100 * f.confidence)}%`);
-    if (f.genderConfidence) labels.push(`${f.gender || ''} ${Math.trunc(100 * f.genderConfidence)}% confident`);
+    labels.push(`face confidence: ${Math.trunc(100 * f.score)}%`);
+    if (f.genderScore) labels.push(`${f.gender || ''} ${Math.trunc(100 * f.genderScore)}% confident`);
     // if (f.genderConfidence) labels.push(f.gender);
     if (f.age) labels.push(`age: ${f.age || ''}`);
     if (f.iris) labels.push(`distance: ${f.iris}`);

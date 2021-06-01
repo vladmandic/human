@@ -10,9 +10,9 @@ import { Tensor } from '../dist/tfjs.esm.js';
  *
  * Each result has:
  * - id: face id number
- * - confidence: overal detection confidence value
- * - boxConfidence: face box detection confidence value
- * - faceConfidence: face keypoints detection confidence value
+ * - score: overal detection confidence score value
+ * - boxScore: face box detection confidence score value
+ * - faceScore: face keypoints detection confidence score value
  * - box: face bounding box as array of [x, y, width, height], normalized to image resolution
  * - boxRaw: face bounding box as array of [x, y, width, height], normalized to range 0..1
  * - mesh: face keypoints as array of [x, y, z] points of face mesh, normalized to image resolution
@@ -20,7 +20,7 @@ import { Tensor } from '../dist/tfjs.esm.js';
  * - annotations: annotated face keypoints as array of annotated face mesh points
  * - age: age as value
  * - gender: gender as value
- * - genderConfidence: gender detection confidence as value
+ * - genderScore: gender detection confidence score as value
  * - emotion: emotions as array of possible emotions with their individual scores
  * - embedding: facial descriptor as array of numerical elements
  * - iris: iris distance from current viewpoint as distance value in centimeters for a typical camera
@@ -33,25 +33,26 @@ import { Tensor } from '../dist/tfjs.esm.js';
  */
 export interface Face {
   id: number
-  confidence: number,
-  boxConfidence: number,
-  faceConfidence: number,
+  score: number,
+  boxScore: number,
+  faceScore: number,
   box: [number, number, number, number],
   boxRaw: [number, number, number, number],
   mesh: Array<[number, number, number]>
   meshRaw: Array<[number, number, number]>
-  annotations: Array<{ part: string, points: Array<[number, number, number]>[] }>,
-  age: number,
-  gender: string,
-  genderConfidence: number,
-  emotion: Array<{ score: number, emotion: string }>,
-  embedding: Array<number>,
-  iris: number,
-  rotation: {
+  annotations: Record<string, Array<[number, number, number]>>,
+  age?: number,
+  gender?: string,
+  genderScore?: number,
+  emotion?: Array<{ score: number, emotion: string }>,
+  embedding?: Array<number>,
+  iris?: number,
+  rotation?: {
     angle: { roll: number, yaw: number, pitch: number },
     matrix: [number, number, number, number, number, number, number, number, number],
     gaze: { bearing: number, strength: number },
   }
+  image: typeof Tensor;
   tensor: typeof Tensor,
 }
 
@@ -86,7 +87,7 @@ export interface Body {
  *
  * Each result has:
  * - id: hand id number
- * - confidence: detection confidence score as value
+ * - score: detection confidence score as value
  * - box: bounding box: x, y, width, height normalized to input image resolution
  * - boxRaw: bounding box: x, y, width, height normalized to 0..1
  * - landmarks: landmarks as array of [x, y, z] points of hand, normalized to image resolution
@@ -94,7 +95,7 @@ export interface Body {
  */
 export interface Hand {
   id: number,
-  confidence: number,
+  score: number,
   box: [number, number, number, number],
   boxRaw: [number, number, number, number],
   keypoints: Array<[number, number, number]>,

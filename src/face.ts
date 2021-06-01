@@ -4,6 +4,7 @@
  */
 
 import { log, now } from './helpers';
+import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as emotion from './emotion/emotion';
 import * as faceres from './faceres/faceres';
@@ -159,7 +160,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     parent.analyze('Get Face');
 
     // is something went wrong, skip the face
-    if (!faces[i].image || faces[i].image.isDisposedInternal) {
+    if (!faces[i].image || faces[i].image['isDisposedInternal']) {
       log('Face object is disposed:', faces[i].image);
       continue;
     }
@@ -210,19 +211,19 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
 
     // combine results
     faceRes.push({
-      id: i,
       ...faces[i],
+      id: i,
       age: descRes.age,
       gender: descRes.gender,
-      genderConfidence: descRes.genderConfidence,
+      genderScore: descRes.genderConfidence,
       embedding: descRes.descriptor,
       emotion: emotionRes,
       iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,
       rotation,
-      tensor: parent.config.face.detector.return ? faces[i].image?.squeeze() : null,
+      tensor: parent.config.face.detector.return ? tf.squeeze(faces[i].image) : null,
     });
     // dispose original face tensor
-    faces[i].image?.dispose();
+    tf.dispose(faces[i].image);
 
     parent.analyze('End Face');
   }

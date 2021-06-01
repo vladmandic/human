@@ -4060,6 +4060,7 @@ var facePipeline;
 async function predict(input, config3) {
   const predictions = await facePipeline.predict(input, config3);
   const results = [];
+  let id = 0;
   for (const prediction of predictions || []) {
     if (!prediction || prediction.isDisposedInternal)
       continue;
@@ -4078,23 +4079,25 @@ async function predict(input, config3) {
       Math.max(0, prediction.box.startPoint[1]),
       Math.min(input.shape[2], prediction.box.endPoint[0]) - Math.max(0, prediction.box.startPoint[0]),
       Math.min(input.shape[1], prediction.box.endPoint[1]) - Math.max(0, prediction.box.startPoint[1])
-    ] : 0;
+    ] : [0, 0, 0, 0];
     const boxRaw3 = prediction.box ? [
       prediction.box.startPoint[0] / input.shape[2],
       prediction.box.startPoint[1] / input.shape[1],
       (prediction.box.endPoint[0] - prediction.box.startPoint[0]) / input.shape[2],
       (prediction.box.endPoint[1] - prediction.box.startPoint[1]) / input.shape[1]
-    ] : [];
+    ] : [0, 0, 0, 0];
     results.push({
-      confidence: Math.round(100 * prediction.faceConfidence || 100 * prediction.boxConfidence || 0) / 100,
-      boxConfidence: Math.round(100 * prediction.boxConfidence) / 100,
-      faceConfidence: Math.round(100 * prediction.faceConfidence) / 100,
+      id: id++,
+      score: Math.round(100 * prediction.faceConfidence || 100 * prediction.boxConfidence || 0) / 100,
+      boxScore: Math.round(100 * prediction.boxConfidence) / 100,
+      faceScore: Math.round(100 * prediction.faceConfidence) / 100,
       box: clampedBox,
       boxRaw: boxRaw3,
       mesh: prediction.mesh,
       meshRaw,
       annotations: annotations3,
-      image: prediction.image
+      image: prediction.image,
+      tensor: prediction.image
     });
     if (prediction.coords)
       prediction.coords.dispose();
@@ -4403,7 +4406,7 @@ var calculateFaceAngle = (face5, imageSize) => {
   return { angle, matrix, gaze };
 };
 var detectFace = async (parent, input) => {
-  var _a, _b, _c, _d, _e, _f, _g, _h;
+  var _a, _b, _c, _d, _e, _f;
   let timeStamp;
   let ageRes;
   let genderRes;
@@ -4421,7 +4424,7 @@ var detectFace = async (parent, input) => {
     return [];
   for (let i = 0; i < faces.length; i++) {
     parent.analyze("Get Face");
-    if (!faces[i].image || faces[i].image.isDisposedInternal) {
+    if (!faces[i].image || faces[i].image["isDisposedInternal"]) {
       log("Face object is disposed:", faces[i].image);
       continue;
     }
@@ -4456,18 +4459,18 @@ var detectFace = async (parent, input) => {
     }
     const irisSize = ((_e = faces[i].annotations) == null ? void 0 : _e.leftEyeIris) && ((_f = faces[i].annotations) == null ? void 0 : _f.rightEyeIris) ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2] : 0;
     faceRes.push({
-      id: i,
       ...faces[i],
+      id: i,
       age: descRes.age,
       gender: descRes.gender,
-      genderConfidence: descRes.genderConfidence,
+      genderScore: descRes.genderConfidence,
       embedding: descRes.descriptor,
       emotion: emotionRes,
       iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,
       rotation,
-      tensor: parent.config.face.detector.return ? (_g = faces[i].image) == null ? void 0 : _g.squeeze() : null
+      tensor: parent.config.face.detector.return ? tfjs_esm_exports.squeeze(faces[i].image) : null
     });
-    (_h = faces[i].image) == null ? void 0 : _h.dispose();
+    tfjs_esm_exports.dispose(faces[i].image);
     parent.analyze("End Face");
   }
   parent.analyze("End FaceMesh:");
@@ -8163,7 +8166,7 @@ async function predict5(input, config3) {
         (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1]
       ];
     }
-    hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box: box6, boxRaw: boxRaw3, keypoints: keypoints3, annotations: annotations3 });
+    hands.push({ id: i, score: Math.round(100 * predictions[i].confidence) / 100, box: box6, boxRaw: boxRaw3, keypoints: keypoints3, annotations: annotations3 });
   }
   return hands;
 }
@@ -8395,10 +8398,10 @@ async function predict7(image15, config3) {
     tensor.dispose();
     if (resT) {
       keypoints.length = 0;
-      const squeeze2 = resT.squeeze();
+      const squeeze3 = resT.squeeze();
       tfjs_esm_exports.dispose(resT);
-      const stack2 = squeeze2.unstack(2);
-      tfjs_esm_exports.dispose(squeeze2);
+      const stack2 = squeeze3.unstack(2);
+      tfjs_esm_exports.dispose(squeeze3);
       for (let id = 0; id < stack2.length; id++) {
         const [x2, y2, partScore] = max2d(stack2[id], config3.body.minConfidence);
         if (score > config3.body.minConfidence) {
@@ -9892,9 +9895,9 @@ async function face2(inCanvas2, result, drawOptions) {
     if (localOptions.drawBoxes)
       rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
     const labels2 = [];
-    labels2.push(`face confidence: ${Math.trunc(100 * f.confidence)}%`);
-    if (f.genderConfidence)
-      labels2.push(`${f.gender || ""} ${Math.trunc(100 * f.genderConfidence)}% confident`);
+    labels2.push(`face confidence: ${Math.trunc(100 * f.score)}%`);
+    if (f.genderScore)
+      labels2.push(`${f.gender || ""} ${Math.trunc(100 * f.genderScore)}% confident`);
     if (f.age)
       labels2.push(`age: ${f.age || ""}`);
     if (f.iris)
@@ -10326,6 +10329,7 @@ function join2(faces, bodies, hands, gestures, shape) {
 // src/interpolate.ts
 var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 function calc(newResult) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u;
   const bufferedFactor = 1e3 / (Date.now() - newResult.timestamp) / 4;
   if (!bufferedResult.body || newResult.body.length !== bufferedResult.body.length) {
     bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
@@ -10369,17 +10373,17 @@ function calc(newResult) {
     for (let i = 0; i < newResult.face.length; i++) {
       const box6 = newResult.face[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor);
       const boxRaw3 = newResult.face[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor);
-      const matrix = newResult.face[i].rotation.matrix;
-      const angle = {
-        roll: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.roll + newResult.face[i].rotation.angle.roll) / bufferedFactor,
-        yaw: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.yaw + newResult.face[i].rotation.angle.yaw) / bufferedFactor,
-        pitch: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.angle.pitch + newResult.face[i].rotation.angle.pitch) / bufferedFactor
+      const rotation = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
+      rotation.matrix = (_a = newResult.face[i].rotation) == null ? void 0 : _a.matrix;
+      rotation.angle = {
+        roll: ((bufferedFactor - 1) * (((_c = (_b = bufferedResult.face[i].rotation) == null ? void 0 : _b.angle) == null ? void 0 : _c.roll) || 0) + (((_e = (_d = newResult.face[i].rotation) == null ? void 0 : _d.angle) == null ? void 0 : _e.roll) || 0)) / bufferedFactor,
+        yaw: ((bufferedFactor - 1) * (((_g = (_f = bufferedResult.face[i].rotation) == null ? void 0 : _f.angle) == null ? void 0 : _g.yaw) || 0) + (((_i = (_h = newResult.face[i].rotation) == null ? void 0 : _h.angle) == null ? void 0 : _i.yaw) || 0)) / bufferedFactor,
+        pitch: ((bufferedFactor - 1) * (((_k = (_j = bufferedResult.face[i].rotation) == null ? void 0 : _j.angle) == null ? void 0 : _k.pitch) || 0) + (((_m = (_l = newResult.face[i].rotation) == null ? void 0 : _l.angle) == null ? void 0 : _m.pitch) || 0)) / bufferedFactor
       };
-      const gaze = {
-        bearing: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.bearing + newResult.face[i].rotation.gaze.bearing) / bufferedFactor,
-        strength: ((bufferedFactor - 1) * bufferedResult.face[i].rotation.gaze.strength + newResult.face[i].rotation.gaze.strength) / bufferedFactor
+      rotation.gaze = {
+        bearing: ((bufferedFactor - 1) * (((_o = (_n = bufferedResult.face[i].rotation) == null ? void 0 : _n.gaze) == null ? void 0 : _o.bearing) || 0) + (((_q = (_p = newResult.face[i].rotation) == null ? void 0 : _p.gaze) == null ? void 0 : _q.bearing) || 0)) / bufferedFactor,
+        strength: ((bufferedFactor - 1) * (((_s = (_r = bufferedResult.face[i].rotation) == null ? void 0 : _r.gaze) == null ? void 0 : _s.strength) || 0) + (((_u = (_t = newResult.face[i].rotation) == null ? void 0 : _t.gaze) == null ? void 0 : _u.strength) || 0)) / bufferedFactor
       };
-      const rotation = { angle, matrix, gaze };
       bufferedResult.face[i] = { ...newResult.face[i], rotation, box: box6, boxRaw: boxRaw3 };
     }
   }

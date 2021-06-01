@@ -8,13 +8,16 @@ import * as blazeface from './blazeface';
 import * as facepipeline from './facepipeline';
 import * as coords from './coords';
 import { GraphModel } from '../tfjs/types';
+import { Face } from '../result';
 
 let faceModels: [blazeface.BlazeFaceModel | null, GraphModel | null, GraphModel | null] = [null, null, null];
 let facePipeline;
 
-export async function predict(input, config): Promise<{ confidence, boxConfidence, faceConfidence, box, mesh, boxRaw, meshRaw, annotations, image }[]> {
+// export async function predict(input, config): Promise<{ confidence, boxConfidence, faceConfidence, box, mesh, boxRaw, meshRaw, annotations, image }[]> {
+export async function predict(input, config): Promise<Face[]> {
   const predictions = await facePipeline.predict(input, config);
-  const results: Array<{ confidence, boxConfidence, faceConfidence, box, mesh, boxRaw, meshRaw, annotations, image }> = [];
+  const results: Array<Face> = [];
+  let id = 0;
   for (const prediction of (predictions || [])) {
     if (!prediction || prediction.isDisposedInternal) continue; // guard against disposed tensors on long running operations such as pause in middle of processing
     const meshRaw = prediction.mesh.map((pt) => [
@@ -26,28 +29,30 @@ export async function predict(input, config): Promise<{ confidence, boxConfidenc
     if (prediction.mesh && prediction.mesh.length > 0) {
       for (const key of Object.keys(coords.MESH_ANNOTATIONS)) annotations[key] = coords.MESH_ANNOTATIONS[key].map((index) => prediction.mesh[index]);
     }
-    const clampedBox = prediction.box ? [
+    const clampedBox: [number, number, number, number] = prediction.box ? [
       Math.max(0, prediction.box.startPoint[0]),
       Math.max(0, prediction.box.startPoint[1]),
       Math.min(input.shape[2], prediction.box.endPoint[0]) - Math.max(0, prediction.box.startPoint[0]),
       Math.min(input.shape[1], prediction.box.endPoint[1]) - Math.max(0, prediction.box.startPoint[1]),
-    ] : 0;
-    const boxRaw = prediction.box ? [
+    ] : [0, 0, 0, 0];
+    const boxRaw: [number, number, number, number] = prediction.box ? [
       prediction.box.startPoint[0] / input.shape[2],
       prediction.box.startPoint[1] / input.shape[1],
       (prediction.box.endPoint[0] - prediction.box.startPoint[0]) / input.shape[2],
       (prediction.box.endPoint[1] - prediction.box.startPoint[1]) / input.shape[1],
-    ] : [];
+    ] : [0, 0, 0, 0];
     results.push({
-      confidence: Math.round(100 * prediction.faceConfidence || 100 * prediction.boxConfidence || 0) / 100,
-      boxConfidence: Math.round(100 * prediction.boxConfidence) / 100,
-      faceConfidence: Math.round(100 * prediction.faceConfidence) / 100,
+      id: id++,
+      score: Math.round(100 * prediction.faceConfidence || 100 * prediction.boxConfidence || 0) / 100,
+      boxScore: Math.round(100 * prediction.boxConfidence) / 100,
+      faceScore: Math.round(100 * prediction.faceConfidence) / 100,
       box: clampedBox,
       boxRaw,
       mesh: prediction.mesh,
       meshRaw,
       annotations,
       image: prediction.image,
+      tensor: prediction.image,
     });
     if (prediction.coords) prediction.coords.dispose();
   }

@@ -8160,11 +8160,11 @@ async function predict5(input, config3) {
         annotations3[key] = meshAnnotations[key].map((index) => predictions[i].landmarks[index]);
       }
     }
-    const landmarks = predictions[i].landmarks;
+    const keypoints3 = predictions[i].landmarks;
     let box6 = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0];
     let boxRaw3 = [0, 0, 0, 0];
-    if (landmarks && landmarks.length > 0) {
-      for (const pt of landmarks) {
+    if (keypoints3 && keypoints3.length > 0) {
+      for (const pt of keypoints3) {
         if (pt[0] < box6[0])
           box6[0] = pt[0];
         if (pt[1] < box6[1])
@@ -8191,7 +8191,7 @@ async function predict5(input, config3) {
         (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1]
       ];
     }
-    hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box: box6, boxRaw: boxRaw3, landmarks, annotations: annotations3 });
+    hands.push({ id: i, confidence: Math.round(100 * predictions[i].confidence) / 100, box: box6, boxRaw: boxRaw3, keypoints: keypoints3, annotations: annotations3 });
   }
   return hands;
 }
@@ -10182,8 +10182,8 @@ async function hand2(inCanvas2, result, drawOptions) {
       ctx.stroke();
     }
     if (localOptions.drawPoints) {
-      if (h.landmarks && h.landmarks.length > 0) {
-        for (const pt of h.landmarks) {
+      if (h.keypoints && h.keypoints.length > 0) {
+        for (const pt of h.keypoints) {
           ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * pt[2]}, ${127.5 - 2 * pt[2]}, 255, 0.5)` : localOptions.color;
           point(ctx, pt[0], pt[1], 0, localOptions);
         }
@@ -10393,13 +10393,13 @@ function calc(newResult) {
     for (let i = 0; i < newResult.hand.length; i++) {
       const box6 = newResult.hand[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor);
       const boxRaw3 = newResult.hand[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor);
-      const landmarks = newResult.hand[i].landmarks.map((landmark, j) => landmark.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].landmarks[j][k] + coord) / bufferedFactor));
+      const keypoints3 = newResult.hand[i].keypoints.map((landmark, j) => landmark.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].keypoints[j][k] + coord) / bufferedFactor));
       const keys = Object.keys(newResult.hand[i].annotations);
       const annotations3 = {};
       for (const key of keys) {
         annotations3[key] = newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor));
       }
-      bufferedResult.hand[i] = { ...newResult.hand[i], box: box6, boxRaw: boxRaw3, landmarks, annotations: annotations3 };
+      bufferedResult.hand[i] = { ...newResult.hand[i], box: box6, boxRaw: boxRaw3, keypoints: keypoints3, annotations: annotations3 };
     }
   }
   if (!bufferedResult.face || newResult.face.length !== bufferedResult.face.length) {

@@ -90,6 +90,7 @@ const ui = {
   drawWarmup: false, // debug only, should warmup image processing be displayed on startup
   drawThread: null, // internl, perform draw operations in a separate thread
   detectThread: null, // internl, perform detect operations in a separate thread
+  hintsThread: null, // internal, draw random hints
   framesDraw: 0, // internal, statistics on frames drawn
   framesDetect: 0, // internal, statistics on frames detected
   bench: true, // show gl fps benchmark window
@@ -102,20 +103,8 @@ const ui = {
   webRTCStream: 'reowhite',
 
   // sample images
-  compare: '../assets/sample-me.jpg', // base image for face compare
-  /*
-  samples: [
-    '../assets/sample6.jpg',
-    '../assets/sample1.jpg',
-    '../assets/sample4.jpg',
-    '../assets/sample5.jpg',
-    '../assets/sample3.jpg',
-    '../assets/sample2.jpg',
-  ],
-  */
-  samples: [
-    '../private/daz3d/daz3d-kiaria-02.jpg',
-  ],
+  compare: '../samples/ai-face.jpg', // base image for face compare
+  samples: [],
 };
 
 const pwa = {
@@ -126,6 +115,17 @@ const pwa = {
   cacheWASM: true,
   cacheOther: false,
 };
+
+// hints
+const hints = [
+  'for optimal performance disable unused modules',
+  'with modern gpu best backend is webgl otherwise select wasm backend',
+  'you can process images by dragging and dropping them in browser window',
+  'video input can be webcam or any other video source',
+  'check out other demos such as face-matching and face-3d',
+  'you can edit input image or video on-the-fly using filters',
+  'library status messages are logged in browser console',
+];
 
 // global variables
 const menu = {};
@@ -430,6 +430,7 @@ function runHumanDetect(input, canvas, timestamp) {
     log('memory', human.tf.engine().memory());
     return;
   }
+  if (ui.hintsThread) clearInterval(ui.hintsThread);
   if (ui.useWorker) {
     // get image data from video as we cannot send html objects to webworker
     const offscreen = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(canvas.width, canvas.height) : document.createElement('canvas');
@@ -470,6 +471,7 @@ async function processImage(input, title) {
     const image = new Image();
     image.onerror = async () => status('image loading error');
     image.onload = async () => {
+      if (ui.hintsThread) clearInterval(ui.hintsThread);
       ui.interpolated = false; // stop interpolating results if input is image
       status(`processing image: ${title}`);
       const canvas = document.getElementById('canvas');
@@ -739,6 +741,18 @@ async function dragAndDrop() {
   });
 }
 
+async function drawHints() {
+  const hint = document.getElementById('hint');
+  ui.hintsThread = setInterval(() => {
+    const rnd = Math.trunc(Math.random() * hints.length);
+    hint.innerText = 'hint: ' + hints[rnd];
+    hint.style.opacity = 1;
+    setTimeout(() => {
+      hint.style.opacity = 0;
+    }, 4500);
+  }, 5000);
+}
+
 async function pwaRegister() {
   if (!pwa.enabled) return;
   if ('serviceWorker' in navigator) {
@@ -788,6 +802,8 @@ async function main() {
   log('demo starting ...');
 
   document.documentElement.style.setProperty('--icon-size', ui.iconSize);
+
+  drawHints();
 
   // sanity check for webworker compatibility
   if (typeof Worker === 'undefined' || typeof OffscreenCanvas === 'undefined') {

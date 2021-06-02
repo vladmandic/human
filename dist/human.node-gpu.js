@@ -10372,7 +10372,8 @@ function join2(faces, bodies, hands, gestures, shape) {
 var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 function calc(newResult) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u;
-  const bufferedFactor = 1e3 / (Date.now() - newResult.timestamp) / 4;
+  const elapsed = Date.now() - newResult.timestamp;
+  const bufferedFactor = elapsed < 1e3 ? 8 - Math.log(elapsed) : 1;
   if (!bufferedResult.body || newResult.body.length !== bufferedResult.body.length) {
     bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
   } else {

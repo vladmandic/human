@@ -156,8 +156,8 @@ var config = {
     enabled: true,
     detector: {
       modelPath: "blazeface.json",
-      rotation: false,
-      maxDetected: 10,
+      rotation: true,
+      maxDetected: 5,
       skipFrames: 15,
       minConfidence: 0.2,
       iouThreshold: 0.1,
@@ -9807,7 +9807,7 @@ __export(draw_exports, {
   person: () => person
 });
 var options = {
-  color: "rgba(173, 216, 230, 0.3)",
+  color: "rgba(173, 216, 230, 0.6)",
   labelColor: "rgba(173, 216, 230, 1)",
   shadowColor: "black",
   font: 'small-caps 14px "Segoe UI"',

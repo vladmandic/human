@@ -11,6 +11,7 @@ N/A
 ## In Progress
 
 - Switch to TypeScript 4.3
+- Add hints to Demo app
 
 ## Known Issues
 

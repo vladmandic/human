@@ -183,44 +183,36 @@ async function main() {
   // pre-load human models
   await human.load();
 
-  let res;
   let images = [];
   let dir = [];
   // load face descriptor database
   await getFaceDB();
 
   // enumerate all sample images in /assets
-  res = await fetch('/assets');
+  const res = await fetch('/samples/groups');
   dir = (res && res.ok) ? await res.json() : [];
   images = images.concat(dir.filter((img) => (img.endsWith('.jpg') && img.includes('sample'))));
-  // enumerate additional private test images in /private, not includded in git repository
-  res = await fetch('/private/me');
-  dir = (res && res.ok) ? await res.json() : [];
-  images = images.concat(dir.filter((img) => (img.endsWith('.jpg'))));
-
-  // enumerate additional error images, not includded in git repository
-  res = await fetch('/private/err');
-  dir = (res && res.ok) ? await res.json() : [];
-  images = images.concat(dir.filter((img) => (img.endsWith('.jpg'))));
-  log('Enumerated:', images.length, 'images');
 
   // could not dynamically enumerate images so using static list
   if (images.length === 0) {
     images = [
-      'sample1.jpg',
-      'sample2.jpg',
-      'sample3.jpg',
-      'sample4.jpg',
-      'sample5.jpg',
-      'sample6.jpg',
-      'sample6.jpg',
-      'sample-me.jpg',
-      'human-sample-face.jpg',
-      'human-sample-upper.jpg',
-      'human-sample-body.jpg',
+      'groups/group1.jpg',
+      'groups/group2.jpg',
+      'groups/group3.jpg',
+      'groups/group4.jpg',
+      'groups/group5.jpg',
+      'groups/group6.jpg',
+      'groups/group7.jpg',
+      'groups/group8.jpg',
+      'groups/group9.jpg',
+      'groups/group10.jpg',
+      'groups/group11.jpg',
+      'groups/group12.jpg',
+      'groups/group13.jpg',
+      'groups/group14.jpg',
     ];
     // add prefix for gitpages
-    images = images.map((a) => `/human/assets/${a}`);
+    images = images.map((a) => `/samples/${a}`);
     log('Adding static image list:', images.length, 'images');
   }
 

@@ -77,6 +77,7 @@ const ui = {
   modelsPreload: true, // preload human models on startup
   modelsWarmup: true, // warmup human models on startup
   buffered: true, // should output be buffered between frames
+  interpolated: true, // should output be interpolated for smoothness between frames
   iconSize: '48px', // ui icon sizes
 
   // internal variables
@@ -228,8 +229,12 @@ async function drawResults(input) {
   }
 
   // draw all results using interpolated results
-  const interpolated = human.next(result);
-  human.draw.all(canvas, interpolated, drawOptions);
+  if (ui.interpolated) {
+    const interpolated = human.next(result);
+    human.draw.all(canvas, interpolated, drawOptions);
+  } else {
+    human.draw.all(canvas, result, drawOptions);
+  }
   /* alternatively use individual functions
   human.draw.face(canvas, result.face);
   human.draw.body(canvas, result.body);
@@ -246,20 +251,21 @@ async function drawResults(input) {
   const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
   const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : '';
-  const avgDetect = Math.trunc(10 * ui.detectFPS.reduce((a, b) => a + b, 0) / ui.detectFPS.length) / 10;
-  const avgDraw = Math.trunc(10 * ui.drawFPS.reduce((a, b) => a + b, 0) / ui.drawFPS.length) / 10;
+  const avgDetect = ui.detectFPS.length > 0 ? Math.trunc(10 * ui.detectFPS.reduce((a, b) => a + b, 0) / ui.detectFPS.length) / 10 : 0;
+  const avgDraw = ui.drawFPS.length > 0 ? Math.trunc(10 * ui.drawFPS.reduce((a, b) => a + b, 0) / ui.drawFPS.length) / 10 : 0;
   const warning = (ui.detectFPS.length > 5) && (avgDetect < 5) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
+  const fps = avgDetect > 0 ? `FPS process:${avgDetect} refresh:${avgDraw}` : '';
   document.getElementById('log').innerHTML = `
     video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
     backend: ${human.tf.getBackend()} | ${memory}<br>
-    performance: ${str(lastDetectedResult.performance)}ms FPS process:${avgDetect} refresh:${avgDraw}<br>
+    performance: ${str(lastDetectedResult.performance)}ms ${fps}<br>
     ${warning}<br>
   `;
   ui.framesDraw++;
   ui.lastFrame = performance.now();
   // if buffered, immediate loop but limit frame rate although it's going to run slower as JS is singlethreaded
   if (ui.buffered) {
-    ui.drawThread = requestAnimationFrame(() => drawResults(input, canvas));
+    ui.drawThread = requestAnimationFrame(() => drawResults(input));
   } else {
     log('stopping buffered refresh');
     if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
@@ -431,7 +437,7 @@ function runHumanDetect(input, canvas, timestamp) {
     ctx.drawImage(input, 0, 0, canvas.width, canvas.height);
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     // perform detection in worker
-    webWorker(input, data, canvas, userConfig, timestamp);
+    webWorker(input, data, canvas, timestamp);
     status();
   } else {
     human.detect(input, userConfig).then((result) => {
@@ -457,32 +463,66 @@ function runHumanDetect(input, canvas, timestamp) {
 }
 
 // main processing function when input is image, can use direct invocation or web worker
-async function processImage(input) {
+async function processImage(input, title) {
   return new Promise((resolve) => {
     const image = new Image();
+    image.onerror = async () => status('image loading error');
     image.onload = async () => {
-      log('processing image:', encodeURI(image.src));
+      ui.interpolated = false; // stop interpolating results if input is image
+      status(`processing image: ${title}`);
       const canvas = document.getElementById('canvas');
       image.width = image.naturalWidth;
       image.height = image.naturalHeight;
       canvas.width = human.config.filter.width && human.config.filter.width > 0 ? human.config.filter.width : image.naturalWidth;
       canvas.height = human.config.filter.height && human.config.filter.height > 0 ? human.config.filter.height : image.naturalHeight;
+      const origCacheSensitiry = userConfig.cacheSensitivity;
+      userConfig.cacheSensitivity = 0;
       const result = await human.detect(image, userConfig);
+      userConfig.cacheSensitivity = origCacheSensitiry;
       lastDetectedResult = result;
       await drawResults(image);
       const thumb = document.createElement('canvas');
       thumb.className = 'thumbnail';
-      thumb.width = window.innerWidth / (ui.columns + 0.1);
+      thumb.width = ui.columns > 1 ? window.innerWidth / (ui.columns + 0.1) : window.innerWidth - 14;
       thumb.height = thumb.width * canvas.height / canvas.width;
       if (result.face && result.face.length > 0) {
         thumb.title = result.face.map((a, i) => `#${i} face: ${Math.trunc(100 * a.faceScore)}% box: ${Math.trunc(100 * a.boxScore)}% age: ${Math.trunc(a.age)} gender: ${Math.trunc(100 * a.genderScore)}% ${a.gender}`).join(' | ');
       } else {
         thumb.title = 'no face detected';
       }
+      thumb.addEventListener('click', (evt) => {
+        const stdWidth = ui.columns > 1 ? window.innerWidth / (ui.columns + 0.1) : window.innerWidth - 14;
+        // zoom in/out on click
+        if (evt.target.style.width === `${stdWidth}px`) {
+          evt.target.style.width = '';
+          evt.target.style.height = `${document.getElementById('log').offsetTop - document.getElementById('media').offsetTop}px`;
+        } else {
+          evt.target.style.width = `${stdWidth}px`;
+          evt.target.style.height = '';
+        }
+        // copy to clipboard on click
+        if (typeof ClipboardItem !== 'undefined' && navigator.clipboard) {
+          evt.target.toBlob((blob) => {
+            // eslint-disable-next-line no-undef
+            const item = new ClipboardItem({ 'image/png': blob });
+            navigator.clipboard.write([item]);
+            log('copied image to clipboard');
+          });
+        }
+      });
       const ctx = thumb.getContext('2d');
       ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, thumb.width, thumb.height);
-      document.getElementById('samples-container').appendChild(thumb);
-      image.src = '';
+      const prev = document.getElementsByClassName('thumbnail');
+      if (prev && prev.length > 0) document.getElementById('samples-container').insertBefore(thumb, prev[0]);
+      else document.getElementById('samples-container').appendChild(thumb);
+
+      // finish up
+      status();
+      document.getElementById('play').style.display = 'none';
+      document.getElementById('loader').style.display = 'none';
+      if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
+      if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
+
       resolve(true);
     };
     image.src = input;
@@ -522,11 +562,7 @@ async function detectSampleImages() {
   status('processing images');
   document.getElementById('samples-container').innerHTML = '';
   for (const m of Object.values(menu)) m.hide();
-  for (const image of ui.samples) await processImage(image);
-  status();
-  document.getElementById('play').style.display = 'none';
-  document.getElementById('loader').style.display = 'none';
-  if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
+  for (const image of ui.samples) await processImage(image, image);
 }
 
 function setupMenu() {
@@ -604,8 +640,8 @@ function setupMenu() {
     human.config.hand.rotation = val;
   });
   menu.process.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.process.addButton('process sample images', 'process images', () => detectSampleImages());
-  menu.process.addHTML('<hr style="border-style: inset; border-color: dimgray">');
+  // menu.process.addButton('process sample images', 'process images', () => detectSampleImages());
+  // menu.process.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.process.addChart('FPS', 'FPS');
 
   menu.models = new Menu(document.body, '', { top, left: x[3] });
@@ -674,6 +710,31 @@ async function drawWarmup(res) {
   const ctx = canvas.getContext('2d');
   ctx.drawImage(res.canvas, 0, 0, res.canvas.width, res.canvas.height, 0, 0, canvas.width, canvas.height);
   await human.draw.all(canvas, res, drawOptions);
+}
+
+async function processDataURL(f) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const dataURL = e.target.result;
+      await processImage(dataURL, f.name);
+      document.getElementById('canvas').style.display = 'none';
+      resolve(true);
+    };
+    reader.readAsDataURL(f);
+  });
+}
+
+async function dragAndDrop() {
+  document.body.addEventListener('dragenter', (evt) => evt.preventDefault());
+  document.body.addEventListener('dragleave', (evt) => evt.preventDefault());
+  document.body.addEventListener('dragover', (evt) => evt.preventDefault());
+  document.body.addEventListener('drop', async (evt) => {
+    evt.preventDefault();
+    evt.dataTransfer.dropEffect = 'copy';
+    if (evt.dataTransfer.files.length < 2) ui.columns = 1;
+    for (const f of evt.dataTransfer.files) await processDataURL(f);
+  });
 }
 
 async function pwaRegister() {
@@ -790,11 +851,16 @@ async function main() {
   document.getElementById('play').style.display = 'block';
   for (const m of Object.values(menu)) m.hide();
 
+  // init drag & drop
+
+  await dragAndDrop();
+
   if (params.has('image')) {
     try {
       const image = JSON.parse(params.get('image'));
       log('overriding image:', image);
       ui.samples = [image];
+      ui.columns = 1;
     } catch {
       status('cannot parse input image');
       log('cannot parse input image', params.get('image'));

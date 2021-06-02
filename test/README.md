@@ -2,6 +2,8 @@
 
 ## Automatic Tests
 
+Not required for normal funcioning of library
+
 ### NodeJS using TensorFlow library
 
 - Image filters are disabled due to lack of Canvas and WeBGL access

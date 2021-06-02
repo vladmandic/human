@@ -116,7 +116,7 @@ var Human = (() => {
       detector: {
         modelPath: "blazeface.json",
         rotation: true,
-        maxDetected: 5,
+        maxDetected: 15,
         skipFrames: 15,
         minConfidence: 0.2,
         iouThreshold: 0.1,
@@ -62402,8 +62402,6 @@ return a / b;`;
         delete faces[i].annotations.rightEyeIris;
       }
       const irisSize = ((_e = faces[i].annotations) == null ? void 0 : _e.leftEyeIris) && ((_f = faces[i].annotations) == null ? void 0 : _f.rightEyeIris) ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input2.shape[2] : 0;
-      if (faces[i].image)
-        delete faces[i].image;
       faceRes.push({
         ...faces[i],
         id: i,
@@ -62417,6 +62415,8 @@ return a / b;`;
         tensor: parent.config.face.detector.return ? squeeze(faces[i].image) : null
       });
       dispose(faces[i].image);
+      if (faces[i].image)
+        delete faces[i].image;
       parent.analyze("End Face");
     }
     parent.analyze("End FaceMesh:");

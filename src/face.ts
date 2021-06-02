@@ -211,7 +211,6 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       : 0;
 
     // combine results
-    if (faces[i].image) delete faces[i].image;
     faceRes.push({
       ...faces[i],
       id: i,
@@ -226,6 +225,8 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     });
     // dispose original face tensor
     tf.dispose(faces[i].image);
+    // delete temp face image
+    if (faces[i].image) delete faces[i].image;
 
     parent.analyze('End Face');
   }

@@ -30,6 +30,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 - To start video detection, simply press *Play*  
 - To process images, simply drag & drop in your Browser window  
 - Note: For optimal performance, select only models you'd like to use
+- Note: If you have modern GPU, WebGL (default) backend is preferred, otherwise select WASM backend
 
 <br>
 

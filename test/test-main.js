@@ -140,22 +140,22 @@ async function test(Human, inputConfig) {
 
   log('info', 'test body variants');
   config.body = { modelPath: 'posenet.json', enabled: true };
-  await testDetect(human, 'assets/human-sample-body.jpg', 'posenet');
+  await testDetect(human, 'samples/ai-body.jpg', 'posenet');
   config.body = { modelPath: 'movenet-lightning.json', enabled: true };
-  await testDetect(human, 'assets/human-sample-body.jpg', 'movenet');
+  await testDetect(human, 'samples/ai-body.jpg', 'movenet');
 
   await testDetect(human, null, 'default');
   log('info', 'test: first instance');
-  await testDetect(human, 'assets/sample-me.jpg', 'default');
+  await testDetect(human, 'samples/ai-upper.jpg', 'default');
   log('info', 'test: second instance');
   const second = new Human(config);
-  await testDetect(second, 'assets/sample-me.jpg', 'default');
+  await testDetect(second, 'samples/ai-upper.jpg', 'default');
   log('info', 'test: concurrent');
   await Promise.all([
-    testDetect(human, 'assets/human-sample-face.jpg', 'default'),
-    testDetect(second, 'assets/human-sample-face.jpg', 'default'),
-    testDetect(human, 'assets/human-sample-body.jpg', 'default'),
-    testDetect(second, 'assets/human-sample-body.jpg', 'default'),
+    testDetect(human, 'samples/ai-face.jpg', 'default'),
+    testDetect(second, 'samples/ai-face.jpg', 'default'),
+    testDetect(human, 'samples/ai-body.jpg', 'default'),
+    testDetect(second, 'samples/ai-body.jpg', 'default'),
   ]);
   const t1 = process.hrtime.bigint();
   log('info', 'test complete:', Math.trunc(Number(t1 - t0) / 1000 / 1000), 'ms');

@@ -387,7 +387,9 @@ function webWorker(input, image, canvas, timestamp) {
   if (!worker) {
     // create new webworker and add event handler only once
     log('creating worker thread');
-    worker = new Worker(ui.worker, { type: 'module' });
+    // load Human using IIFE script as Chome Mobile does not support Modules as Workers
+    // worker = new Worker(ui.worker, { type: 'module' });
+    worker = new Worker(ui.worker);
     // after receiving message from webworker, parse&draw results and send new frame for processing
     worker.addEventListener('message', (msg) => {
       if (msg.data.result.performance && msg.data.result.performance.total) ui.detectFPS.push(1000 / msg.data.result.performance.total);

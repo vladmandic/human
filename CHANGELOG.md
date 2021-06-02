@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/06/02 mandic00@live.com
 
+- added samples to git
 - implemented drag & drop for image processing
 
 ### **origin/main** 2021/06/01 mandic00@live.com

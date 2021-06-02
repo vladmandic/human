@@ -23,7 +23,13 @@ JavaScript module using TensorFlow/JS Machine Learning library
   Compatible with both software *tfjs-node* and  
   GPU accelerated backends *tfjs-node-gpu* using CUDA libraries  
 
-Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) for processing of live WebCam video or static images  
+<br>
+
+Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) app for processing of live WebCam video or static images  
+
+- To start video detection, simply press *Play*  
+- To process images, simply drag & drop in your Browser window  
+- Note: For optimal performance, select only models you'd like to use
 
 <br>
 
@@ -89,20 +95,30 @@ All options as presented in the demo application...
 
 <br>
 
-**Validation image:**  
-> [demo/index.html](demo/index.html?image=%22../assets/human-sample-upper.jpg%22)
+**Face Close-up:**  
+![Face](assets/screenshot-face.jpg)
 
-![Example Training Image](assets/screenshot-sample.png)
+<br>
 
-**Using static images:**  
-> [demo/index.html](demo/index.html?images=true)
+**Face under a high angle:**  
+![Angle](assets/screenshot-angle.jpg)
 
-![Example Using Image](assets/screenshot-images.jpg)
+<br>
 
-**Live WebCam view:**  
-> [demo/index.html](demo/index.html)
+**Full Person Details:**  
+![Pose](assets/screenshot-person.jpg)
 
-![Example Using WebCam](assets/screenshot-webcam.jpg)
+<br>
+
+**Pose Detection:**  
+![Pose](assets/screenshot-pose.jpg)
+
+<br>
+
+**Large Group:**  
+![Group](assets/screenshot-group.jpg)
+
+<br>
 
 **Face Similarity Matching:**  
 Extracts all faces from provided input images,  
@@ -112,10 +128,14 @@ and optionally matches detected face with database of known people to guess thei
 
 ![Face Matching](assets/screenshot-facematch.jpg)
 
+<br>
+
 **Face3D OpenGL Rendering:**  
 > [demo/face3d.html](demo/face3d.html)
 
 ![Face Matching](assets/screenshot-face3d.jpg)
+
+<br>
 
 **468-Point Face Mesh Defails:**  
 (view in full resolution to see keypoints)  

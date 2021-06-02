@@ -241,10 +241,10 @@ const config: Config = {
                              // (note: module is not loaded until it is required)
     detector: {
       modelPath: 'blazeface.json', // detector model, can be absolute path or relative to modelBasePath
-      rotation: false,       // use best-guess rotated face image or just box with rotation as-is
+      rotation: true,        // use best-guess rotated face image or just box with rotation as-is
                              // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees
                              // this parameter is not valid in nodejs
-      maxDetected: 10,          // maximum number of faces detected in the input
+      maxDetected: 5,        // maximum number of faces detected in the input
                              // should be set to the minimum number for performance
       skipFrames: 15,        // how many max frames to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero

@@ -1,7 +1,11 @@
-import Human from '../dist/human.esm.js';
+// load Human using IIFE script as Chome Mobile does not support Modules as Workers
+// import Human from '../dist/human.esm.js';
+self.importScripts('../dist/human.js');
 
 let busy = false;
-const human = new Human();
+// @ts-ignore // Human is registered as global namespace using IIFE script
+// eslint-disable-next-line no-undef, new-cap
+const human = new Human.default();
 
 function log(...msg) {
   const dt = new Date();

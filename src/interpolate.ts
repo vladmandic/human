@@ -11,7 +11,15 @@ export function calc(newResult: Result): Result {
   // otherwise bufferedResult is a shallow clone of result plus updated local calculated values
   // thus mixing by-reference and by-value assignments to minimize memory operations
 
-  const bufferedFactor = 1000 / (Date.now() - newResult.timestamp) / 4;
+  const elapsed = Date.now() - newResult.timestamp;
+  // curve fitted: buffer = 8 - ln(delay)
+  // interpolation formula: current = ((buffer - 1) * previous + live) / buffer
+  // - at  50ms delay buffer = ~4.1 => 28% towards live data
+  // - at 250ms delay buffer = ~2.5 => 40% towards live data
+  // - at 500ms delay buffer = ~1.8 => 55% towards live data
+  // - at 750ms delay buffer = ~1.4 => 71% towards live data
+  // - at  1sec delay buffer = 1 which means live data is used
+  const bufferedFactor = elapsed < 1000 ? 8 - Math.log(elapsed) : 1;
 
   // interpolate body results
   if (!bufferedResult.body || (newResult.body.length !== bufferedResult.body.length)) {

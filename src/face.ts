@@ -14,27 +14,27 @@ import { Tensor } from './tfjs/types';
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
 
-const calculateGaze = (mesh, box): { bearing: number, strength: number } => {
+const calculateGaze = (face): { bearing: number, strength: number } => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]); // function to calculate angle between any two points
 
   const offsetIris = [0, -0.1]; // iris center may not align with average of eye extremes
   const eyeRatio = 1; // factor to normalize changes x vs y
 
-  const left = mesh[33][2] > mesh[263][2]; // pick left or right eye depending which one is closer bazed on outsize point z axis
-  const irisCenter = left ? mesh[473] : mesh[468];
+  const left = face.mesh[33][2] > face.mesh[263][2]; // pick left or right eye depending which one is closer bazed on outsize point z axis
+  const irisCenter = left ? face.mesh[473] : face.mesh[468];
   const eyeCenter = left // eye center is average of extreme points on x axis for both x and y, ignoring y extreme points as eyelids naturally open/close more when gazing up/down so relative point is less precise
-    ? [(mesh[133][0] + mesh[33][0]) / 2, (mesh[133][1] + mesh[33][1]) / 2]
-    : [(mesh[263][0] + mesh[362][0]) / 2, (mesh[263][1] + mesh[362][1]) / 2];
+    ? [(face.mesh[133][0] + face.mesh[33][0]) / 2, (face.mesh[133][1] + face.mesh[33][1]) / 2]
+    : [(face.mesh[263][0] + face.mesh[362][0]) / 2, (face.mesh[263][1] + face.mesh[362][1]) / 2];
   const eyeSize = left // eye size is difference between extreme points for both x and y, used to normalize & squarify eye dimensions
-    ? [mesh[133][0] - mesh[33][0], mesh[23][1] - mesh[27][1]]
-    : [mesh[263][0] - mesh[362][0], mesh[253][1] - mesh[257][1]];
+    ? [face.mesh[133][0] - face.mesh[33][0], face.mesh[23][1] - face.mesh[27][1]]
+    : [face.mesh[263][0] - face.mesh[362][0], face.mesh[253][1] - face.mesh[257][1]];
 
   const eyeDiff = [ // x distance between extreme point and center point normalized with eye size
     (eyeCenter[0] - irisCenter[0]) / eyeSize[0] - offsetIris[0],
     eyeRatio * (irisCenter[1] - eyeCenter[1]) / eyeSize[1] - offsetIris[1],
   ];
   let strength = Math.sqrt((eyeDiff[0] ** 2) + (eyeDiff[1] ** 2)); // vector length is a diagonal between two differences
-  strength = Math.min(strength, box[2] / 2, box[3] / 2); // limit strength to half of box size to avoid clipping due to low precision
+  strength = Math.min(strength, face.boxRaw[2] / 2, face.boxRaw[3] / 2); // limit strength to half of box size to avoid clipping due to low precision
   const bearing = (radians([0, 0], eyeDiff) + (Math.PI / 2)) % Math.PI; // using eyeDiff instead eyeCenter/irisCenter combo due to manual adjustments and rotate clockwise 90degrees
 
   return { bearing, strength };
@@ -134,7 +134,7 @@ const calculateFaceAngle = (face, imageSize): {
   // const angle = meshToEulerAngle(mesh);
 
   // we have iris keypoints so we can calculate gaze direction
-  const gaze = mesh.length === 478 ? calculateGaze(mesh, face.box) : { bearing: 0, strength: 0 };
+  const gaze = mesh.length === 478 ? calculateGaze(face) : { bearing: 0, strength: 0 };
 
   return { angle, matrix, gaze };
 };

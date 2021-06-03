@@ -25,7 +25,8 @@
     "dev": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/serve.js",
     "build": "rimraf dist/* typedoc/* types/* && node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/build.js",
     "lint": "eslint src server demo test",
-    "test": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught test/test.js"
+    "test": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught test/test.js",
+    "scan": "npx auditjs@latest ossi --dev --quiet"
   },
   "keywords": [
     "human",
@@ -62,7 +63,7 @@
     "@tensorflow/tfjs-layers": "^3.6.0",
     "@tensorflow/tfjs-node": "^3.6.1",
     "@tensorflow/tfjs-node-gpu": "^3.6.1",
-    "@types/node": "^15.6.1",
+    "@types/node": "^15.9.0",
     "@typescript-eslint/eslint-plugin": "^4.26.0",
     "@typescript-eslint/parser": "^4.26.0",
     "@vladmandic/pilogger": "^0.2.17",

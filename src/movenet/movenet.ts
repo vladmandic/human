@@ -5,7 +5,8 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { Body } from '../result';
-import { GraphModel } from '../tfjs/types';
+import { GraphModel, Tensor } from '../tfjs/types';
+import { Config } from '../config';
 
 let model: GraphModel;
 
@@ -19,7 +20,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 
 const bodyParts = ['nose', 'leftEye', 'rightEye', 'leftEar', 'rightEar', 'leftShoulder', 'rightShoulder', 'leftElbow', 'rightElbow', 'leftWrist', 'rightWrist', 'leftHip', 'rightHip', 'leftKnee', 'rightKnee', 'leftAnkle', 'rightAnkle'];
 
-export async function load(config) {
+export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
     // @ts-ignore type mismatch on GraphModel
     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));
@@ -29,7 +30,7 @@ export async function load(config) {
   return model;
 }
 
-export async function predict(image, config): Promise<Body[]> {
+export async function predict(image: Tensor, config: Config): Promise<Body[]> {
   if ((skipped < config.body.skipFrames) && config.skipFrame && Object.keys(keypoints).length > 0) {
     skipped++;
     return [{ id: 0, score, box, boxRaw, keypoints }];
@@ -63,8 +64,8 @@ export async function predict(image, config): Promise<Body[]> {
               kpt[id][0],
             ],
             position: [ // normalized to input image size
-              Math.round(image.shape[2] * kpt[id][1]),
-              Math.round(image.shape[1] * kpt[id][0]),
+              Math.round((image.shape[2] || 0) * kpt[id][1]),
+              Math.round((image.shape[1] || 0) * kpt[id][0]),
             ],
           });
         }

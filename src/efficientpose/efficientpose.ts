@@ -5,7 +5,8 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { Body } from '../result';
-import { GraphModel } from '../tfjs/types';
+import { GraphModel, Tensor } from '../tfjs/types';
+import { Config } from '../config';
 
 let model: GraphModel;
 
@@ -19,7 +20,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 
 const bodyParts = ['head', 'neck', 'rightShoulder', 'rightElbow', 'rightWrist', 'chest', 'leftShoulder', 'leftElbow', 'leftWrist', 'pelvis', 'rightHip', 'rightKnee', 'rightAnkle', 'leftHip', 'leftKnee', 'leftAnkle'];
 
-export async function load(config) {
+export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
     // @ts-ignore type mismatch on GraphModel
     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));
@@ -50,7 +51,7 @@ function max2d(inputs, minScore) {
   });
 }
 
-export async function predict(image, config): Promise<Body[]> {
+export async function predict(image: Tensor, config: Config): Promise<Body[]> {
   if ((skipped < config.body.skipFrames) && config.skipFrame && Object.keys(keypoints).length > 0) {
     skipped++;
     return [{ id: 0, score, box, boxRaw, keypoints }];

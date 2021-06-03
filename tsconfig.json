@@ -35,6 +35,6 @@
     "entryPoints": "src/human.ts",
     "logLevel": "Info",
     "logger": "none",
-    "theme": "wiki/theme/"
+    "theme": "wiki/theme/",
   }
 }

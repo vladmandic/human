@@ -6,12 +6,14 @@ import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
 import { Item } from '../result';
+import { GraphModel, Tensor } from '../tfjs/types';
+import { Config } from '../config';
 
 let model;
 let last: Item[] = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 
-export async function load(config) {
+export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath));
     const inputs = Object.values(model.modelSignature['inputs']);
@@ -23,7 +25,7 @@ export async function load(config) {
   return model;
 }
 
-async function process(res, inputSize, outputShape, config) {
+async function process(res: Tensor, inputSize, outputShape, config: Config) {
   if (!res) return [];
   const results: Array<Item> = [];
   const detections = res.arraySync();
@@ -64,7 +66,7 @@ async function process(res, inputSize, outputShape, config) {
   return results;
 }
 
-export async function predict(input, config): Promise<Item[]> {
+export async function predict(input: Tensor, config: Config): Promise<Item[]> {
   if ((skipped < config.object.skipFrames) && config.skipFrame && (last.length > 0)) {
     skipped++;
     return last;

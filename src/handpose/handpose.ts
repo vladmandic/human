@@ -7,7 +7,8 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
 import * as handpipeline from './handpipeline';
 import { Hand } from '../result';
-import { GraphModel } from '../tfjs/types';
+import { Tensor, GraphModel } from '../tfjs/types';
+import { Config } from '../config';
 
 const meshAnnotations = {
   thumb: [1, 2, 3, 4],
@@ -22,7 +23,7 @@ let handDetectorModel: GraphModel | null;
 let handPoseModel: GraphModel | null;
 let handPipeline: handpipeline.HandPipeline;
 
-export async function predict(input, config): Promise<Hand[]> {
+export async function predict(input: Tensor, config: Config): Promise<Hand[]> {
   const predictions = await handPipeline.estimateHands(input, config);
   if (!predictions) return [];
   const hands: Array<Hand> = [];
@@ -48,19 +49,19 @@ export async function predict(input, config): Promise<Hand[]> {
       }
       box[2] -= box[0];
       box[3] -= box[1];
-      boxRaw = [box[0] / input.shape[2], box[1] / input.shape[1], box[2] / input.shape[2], box[3] / input.shape[1]];
+      boxRaw = [box[0] / (input.shape[2] || 0), box[1] / (input.shape[1] || 0), box[2] / (input.shape[2] || 0), box[3] / (input.shape[1] || 0)];
     } else { // otherwise use box from prediction
       box = predictions[i].box ? [
         Math.trunc(Math.max(0, predictions[i].box.topLeft[0])),
         Math.trunc(Math.max(0, predictions[i].box.topLeft[1])),
-        Math.trunc(Math.min(input.shape[2], predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0])),
-        Math.trunc(Math.min(input.shape[1], predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1])),
+        Math.trunc(Math.min((input.shape[2] || 0), predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0])),
+        Math.trunc(Math.min((input.shape[1] || 0), predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1])),
       ] : [0, 0, 0, 0];
       boxRaw = [
-        (predictions[i].box.topLeft[0]) / input.shape[2],
-        (predictions[i].box.topLeft[1]) / input.shape[1],
-        (predictions[i].box.bottomRight[0] - predictions[i].box.topLeft[0]) / input.shape[2],
-        (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / input.shape[1],
+        (predictions[i].box.topLeft[0]) / (input.shape[2] || 0),
+        (predictions[i].box.topLeft[1]) / (input.shape[1] || 0),
+        (predictions[i].box.bottomRight[0] - predictions[i].box.topLeft[0]) / (input.shape[2] || 0),
+        (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / (input.shape[1] || 0),
       ];
     }
     hands.push({ id: i, score: Math.round(100 * predictions[i].confidence) / 100, box, boxRaw, keypoints, annotations });
@@ -68,7 +69,7 @@ export async function predict(input, config): Promise<Hand[]> {
   return hands;
 }
 
-export async function load(config): Promise<[unknown, unknown]> {
+export async function load(config: Config): Promise<[unknown, unknown]> {
   if (!handDetectorModel || !handPoseModel) {
     // @ts-ignore type mismatch on GraphModel
     [handDetectorModel, handPoseModel] = await Promise.all([

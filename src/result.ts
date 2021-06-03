@@ -2,7 +2,7 @@
  * Type definitions for Human result object
  */
 
-import { Tensor } from '../dist/tfjs.esm.js';
+import { Tensor } from './tfjs/types';
 
 /** Face results
  * Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
@@ -52,8 +52,8 @@ export interface Face {
     matrix: [number, number, number, number, number, number, number, number, number],
     gaze: { bearing: number, strength: number },
   }
-  image?: typeof Tensor;
-  tensor: typeof Tensor,
+  image?: Tensor;
+  tensor: Tensor,
 }
 
 /** Body results

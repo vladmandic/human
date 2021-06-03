@@ -175,7 +175,7 @@ var config = {
     description: {
       enabled: true,
       modelPath: "faceres.json",
-      skipFrames: 16,
+      skipFrames: 11,
       minConfidence: 0.1
     },
     emotion: {
@@ -190,12 +190,12 @@ var config = {
     modelPath: "movenet-lightning.json",
     maxDetected: 1,
     minConfidence: 0.2,
-    skipFrames: 16
+    skipFrames: 1
   },
   hand: {
     enabled: true,
     rotation: true,
-    skipFrames: 19,
+    skipFrames: 18,
     minConfidence: 0.1,
     iouThreshold: 0.1,
     maxDetected: 2,
@@ -213,7 +213,7 @@ var config = {
     minConfidence: 0.2,
     iouThreshold: 0.4,
     maxDetected: 10,
-    skipFrames: 20
+    skipFrames: 19
   }
 };
 
@@ -4333,20 +4333,20 @@ async function predict3(image15, config3, idx, count2) {
 }
 
 // src/face.ts
-var calculateGaze = (mesh, box6) => {
+var calculateGaze = (face5) => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]);
   const offsetIris = [0, -0.1];
   const eyeRatio = 1;
-  const left = mesh[33][2] > mesh[263][2];
-  const irisCenter = left ? mesh[473] : mesh[468];
-  const eyeCenter = left ? [(mesh[133][0] + mesh[33][0]) / 2, (mesh[133][1] + mesh[33][1]) / 2] : [(mesh[263][0] + mesh[362][0]) / 2, (mesh[263][1] + mesh[362][1]) / 2];
-  const eyeSize = left ? [mesh[133][0] - mesh[33][0], mesh[23][1] - mesh[27][1]] : [mesh[263][0] - mesh[362][0], mesh[253][1] - mesh[257][1]];
+  const left = face5.mesh[33][2] > face5.mesh[263][2];
+  const irisCenter = left ? face5.mesh[473] : face5.mesh[468];
+  const eyeCenter = left ? [(face5.mesh[133][0] + face5.mesh[33][0]) / 2, (face5.mesh[133][1] + face5.mesh[33][1]) / 2] : [(face5.mesh[263][0] + face5.mesh[362][0]) / 2, (face5.mesh[263][1] + face5.mesh[362][1]) / 2];
+  const eyeSize = left ? [face5.mesh[133][0] - face5.mesh[33][0], face5.mesh[23][1] - face5.mesh[27][1]] : [face5.mesh[263][0] - face5.mesh[362][0], face5.mesh[253][1] - face5.mesh[257][1]];
   const eyeDiff = [
     (eyeCenter[0] - irisCenter[0]) / eyeSize[0] - offsetIris[0],
     eyeRatio * (irisCenter[1] - eyeCenter[1]) / eyeSize[1] - offsetIris[1]
   ];
   let strength = Math.sqrt(eyeDiff[0] ** 2 + eyeDiff[1] ** 2);
-  strength = Math.min(strength, box6[2] / 2, box6[3] / 2);
+  strength = Math.min(strength, face5.boxRaw[2] / 2, face5.boxRaw[3] / 2);
   const bearing = (radians([0, 0], eyeDiff) + Math.PI / 2) % Math.PI;
   return { bearing, strength };
 };
@@ -4426,7 +4426,7 @@ var calculateFaceAngle = (face5, imageSize) => {
     z_axis[2]
   ];
   const angle = rotationMatrixToEulerAngle(matrix);
-  const gaze = mesh.length === 478 ? calculateGaze(mesh, face5.box) : { bearing: 0, strength: 0 };
+  const gaze = mesh.length === 478 ? calculateGaze(face5) : { bearing: 0, strength: 0 };
   return { angle, matrix, gaze };
 };
 var detectFace = async (parent, input) => {

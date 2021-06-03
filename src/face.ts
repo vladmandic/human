@@ -171,11 +171,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     // run emotion, inherits face from blazeface
     parent.analyze('Start Emotion:');
     if (parent.config.async) {
-      emotionRes = parent.config.face.emotion.enabled ? emotion.predict(faces[i].image, parent.config, i, faces.length) : {};
+      emotionRes = parent.config.face.emotion.enabled ? emotion.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : {};
     } else {
       parent.state = 'run:emotion';
       timeStamp = now();
-      emotionRes = parent.config.face.emotion.enabled ? await emotion.predict(faces[i].image, parent.config, i, faces.length) : {};
+      emotionRes = parent.config.face.emotion.enabled ? await emotion.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : {};
       parent.performance.emotion = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Emotion:');
@@ -183,11 +183,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     // run emotion, inherits face from blazeface
     parent.analyze('Start Description:');
     if (parent.config.async) {
-      descRes = parent.config.face.description.enabled ? faceres.predict(faces[i], parent.config, i, faces.length) : [];
+      descRes = parent.config.face.description.enabled ? faceres.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : [];
     } else {
       parent.state = 'run:description';
       timeStamp = now();
-      descRes = parent.config.face.description.enabled ? await faceres.predict(faces[i].image, parent.config, i, faces.length) : [];
+      descRes = parent.config.face.description.enabled ? await faceres.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : [];
       parent.performance.embedding = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Description:');

@@ -3,6 +3,8 @@
  */
 
 import { log, join } from '../helpers';
+import { Config } from '../config';
+import { Tensor, GraphModel } from '../tfjs/types';
 import * as tf from '../../dist/tfjs.esm.js';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
@@ -15,7 +17,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 // tuning values
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
 
-export async function load(config) {
+export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.face.emotion.modelPath));
     if (!model || !model.modelUrl) log('load model failed:', config.face.emotion.modelPath);
@@ -24,7 +26,7 @@ export async function load(config) {
   return model;
 }
 
-export async function predict(image, config, idx, count) {
+export async function predict(image: Tensor, config: Config, idx, count) {
   if (!model) return null;
   if ((skipped < config.face.emotion.skipFrames) && config.skipFrame && (lastCount === count) && last[idx] && (last[idx].length > 0)) {
     skipped++;

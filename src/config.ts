@@ -37,6 +37,12 @@ export interface Config {
   */
   cacheSensitivity: number;
 
+  /** Cache sensitivity
+   * - values 0..1 where 0.01 means reset cache if input changed more than 1%
+   * - set to 0 to disable caching
+  */
+  skipFrame: boolean;
+
   /** Run input through image filters before inference
    * - image filters run with near-zero latency as they are executed on the GPU
   */
@@ -147,6 +153,7 @@ export interface Config {
     modelPath: string,
     maxDetected: number,
     minConfidence: number,
+    skipFrames: number,
   },
 
   /** Controlls and configures all hand detection specific options
@@ -205,6 +212,7 @@ const config: Config = {
   cacheSensitivity: 0.75,    // cache sensitivity
                              // values 0..1 where 0.01 means reset cache if input changed more than 1%
                              // set to 0 to disable caching
+  skipFrame: false,          // internal & dynamic
   filter: {                  // run input through image filters before inference
                              // image filters run with near-zero latency as they are executed on the GPU
     enabled: true,           // enable image pre-processing filters
@@ -294,13 +302,15 @@ const config: Config = {
                              // should be set to the minimum number for performance
                              // only valid for posenet as other models detects single pose
     minConfidence: 0.2,      // threshold for discarding a prediction
-  },
+    skipFrames: 16,          // how many max frames to go without re-running the detector
+                             // only used when cacheSensitivity is not zero
+},
 
   hand: {
     enabled: true,
     rotation: true,          // use best-guess rotated hand image or just box with rotation as-is
                              // false means higher performance, but incorrect finger mapping if hand is inverted
-    skipFrames: 18,          // how many max frames to go without re-running the hand bounding box detector
+    skipFrames: 19,          // how many max frames to go without re-running the hand bounding box detector
                              // only used when cacheSensitivity is not zero
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated hand skeleton analysis as the hand probably
@@ -325,7 +335,7 @@ const config: Config = {
     minConfidence: 0.2,      // threshold for discarding a prediction
     iouThreshold: 0.4,       // ammount of overlap between two detected objects before one object is removed
     maxDetected: 10,         // maximum number of objects detected in the input
-    skipFrames: 19,          // how many max frames to go without re-running the detector
+    skipFrames: 20,          // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
   },
 };

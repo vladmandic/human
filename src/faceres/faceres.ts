@@ -7,6 +7,7 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { Tensor, GraphModel } from '../tfjs/types';
+import { Config } from '../config';
 
 let model: GraphModel;
 const last: Array<{
@@ -21,7 +22,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 
 type DB = Array<{ name: string, source: string, embedding: number[] }>;
 
-export async function load(config) {
+export async function load(config: Config): Promise<GraphModel> {
   const modelUrl = join(config.modelBasePath, config.face.description.modelPath);
   if (!model) {
     // @ts-ignore type mismatch for GraphModel
@@ -32,7 +33,7 @@ export async function load(config) {
   return model;
 }
 
-export function similarity(embedding1, embedding2, order = 2): number {
+export function similarity(embedding1: Array<number>, embedding2: Array<number>, order = 2): number {
   if (!embedding1 || !embedding2) return 0;
   if (embedding1?.length === 0 || embedding2?.length === 0) return 0;
   if (embedding1?.length !== embedding2?.length) return 0;
@@ -110,7 +111,7 @@ export function enhance(input): Tensor {
   return image;
 }
 
-export async function predict(image, config, idx, count) {
+export async function predict(image: Tensor, config: Config, idx, count) {
   if (!model) return null;
   if ((skipped < config.face.description.skipFrames) && config.skipFrame && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
     skipped++;

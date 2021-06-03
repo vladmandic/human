@@ -2,5 +2,7 @@
  * EfficientPose Module
  */
 import { Body } from '../result';
-export declare function load(config: any): Promise<any>;
-export declare function predict(image: any, config: any): Promise<Body[]>;
+import { GraphModel, Tensor } from '../tfjs/types';
+import { Config } from '../config';
+export declare function load(config: Config): Promise<GraphModel>;
+export declare function predict(image: Tensor, config: Config): Promise<Body[]>;

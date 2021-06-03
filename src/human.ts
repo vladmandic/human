@@ -132,7 +132,7 @@ export class Human {
   /** Platform and agent information detected by Human */
   sysinfo: { platform: string, agent: string };
   /** Performance object that contains values for all recently performed operations */
-  performance: Record<string, unknown>; // perf members are dynamically defined as needed
+  performance: Record<string, number>; // perf members are dynamically defined as needed
   #numTensors: number;
   #analyzeMemoryLeaks: boolean;
   #checkSanity: boolean;
@@ -258,7 +258,7 @@ export class Human {
   async load(userConfig?: Config | Record<string, unknown>) {
     this.state = 'load';
     const timeStamp = now();
-    if (userConfig) this.config = mergeDeep(this.config, userConfig);
+    if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
 
     if (this.#firstRun) { // print version info on first run and check for correct backend setup
       if (this.config.debug) log(`version: ${this.version}`);
@@ -432,7 +432,7 @@ export class Human {
       let timeStamp;
 
       // update configuration
-      this.config = mergeDeep(this.config, userConfig);
+      this.config = mergeDeep(this.config, userConfig) as Config;
 
       // sanity checks
       this.state = 'check';
@@ -478,12 +478,10 @@ export class Human {
       this.analyze('Get Image:');
 
       timeStamp = now();
-      // @ts-ignore hidden dynamic property that is not part of definitions
       this.config.skipFrame = await this.#skipFrame(process.tensor);
       if (!this.performance.frames) this.performance.frames = 0;
       if (!this.performance.cached) this.performance.cached = 0;
       (this.performance.frames as number)++;
-      // @ts-ignore hidden dynamic property that is not part of definitions
       if (this.config.skipFrame) this.performance.cached++;
       this.performance.changed = Math.trunc(now() - timeStamp);
       this.analyze('Check Changed:');
@@ -678,7 +676,7 @@ export class Human {
   */
   async warmup(userConfig?: Config | Record<string, unknown>): Promise<Result | { error }> {
     const t0 = now();
-    if (userConfig) this.config = mergeDeep(this.config, userConfig);
+    if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
     if (!this.config.warmup || this.config.warmup === 'none') return { error: 'null' };
     let res;
     if (typeof createImageBitmap === 'function') res = await this.#warmupBitmap();

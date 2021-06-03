@@ -2,5 +2,7 @@
  * PoseNet module entry point
  */
 import { Body } from '../result';
-export declare function predict(input: any, config: any): Promise<Body[]>;
-export declare function load(config: any): Promise<any>;
+import { Tensor, GraphModel } from '../tfjs/types';
+import { Config } from '../config';
+export declare function predict(input: Tensor, config: Config): Promise<Body[]>;
+export declare function load(config: Config): Promise<GraphModel>;

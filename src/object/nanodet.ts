@@ -6,6 +6,8 @@ import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
 import { Item } from '../result';
+import { GraphModel, Tensor } from '../tfjs/types';
+import { Config } from '../config';
 
 let model;
 let last: Array<Item> = [];
@@ -13,7 +15,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 
 const scaleBox = 2.5; // increase box size
 
-export async function load(config) {
+export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath));
     const inputs = Object.values(model.modelSignature['inputs']);
@@ -100,7 +102,7 @@ async function process(res, inputSize, outputShape, config) {
   return results;
 }
 
-export async function predict(image, config): Promise<Item[]> {
+export async function predict(image: Tensor, config: Config): Promise<Item[]> {
   if ((skipped < config.object.skipFrames) && config.skipFrame && (last.length > 0)) {
     skipped++;
     return last;

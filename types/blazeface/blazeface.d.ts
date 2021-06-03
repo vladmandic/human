@@ -6,8 +6,8 @@ export declare class BlazeFaceModel {
     anchors: Tensor;
     inputSize: number;
     config: Config;
-    constructor(model: any, config: any);
-    getBoundingBoxes(inputImage: any): Promise<{
+    constructor(model: any, config: Config);
+    getBoundingBoxes(inputImage: Tensor): Promise<{
         boxes: {
             box: {
                 startPoint: Tensor;
@@ -20,4 +20,4 @@ export declare class BlazeFaceModel {
         scaleFactor: number[];
     } | null>;
 }
-export declare function load(config: any): Promise<BlazeFaceModel>;
+export declare function load(config: Config): Promise<BlazeFaceModel>;

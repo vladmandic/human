@@ -27,6 +27,11 @@ export interface Config {
      * - set to 0 to disable caching
     */
     cacheSensitivity: number;
+    /** Cache sensitivity
+     * - values 0..1 where 0.01 means reset cache if input changed more than 1%
+     * - set to 0 to disable caching
+    */
+    skipFrame: boolean;
     /** Run input through image filters before inference
      * - image filters run with near-zero latency as they are executed on the GPU
     */
@@ -133,6 +138,7 @@ export interface Config {
         modelPath: string;
         maxDetected: number;
         minConfidence: number;
+        skipFrames: number;
     };
     /** Controlls and configures all hand detection specific options
      * - enabled: true/false

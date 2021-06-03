@@ -122,7 +122,7 @@ export declare class Human {
         agent: string;
     };
     /** Performance object that contains values for all recently performed operations */
-    performance: Record<string, unknown>;
+    performance: Record<string, number>;
     /**
      * Creates instance of Human library that is futher used for all operations
      * @param userConfig: {@link Config}

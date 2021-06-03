@@ -2,5 +2,7 @@
  * CenterNet object detection module
  */
 import { Item } from '../result';
-export declare function load(config: any): Promise<any>;
-export declare function predict(input: any, config: any): Promise<Item[]>;
+import { GraphModel, Tensor } from '../tfjs/types';
+import { Config } from '../config';
+export declare function load(config: Config): Promise<GraphModel>;
+export declare function predict(input: Tensor, config: Config): Promise<Item[]>;

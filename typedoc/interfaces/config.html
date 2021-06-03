@@ -97,6 +97,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#hand" class="tsd-kind-icon">hand</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#modelbasepath" class="tsd-kind-icon">model<wbr>Base<wbr>Path</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#object" class="tsd-kind-icon">object</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#skipframe" class="tsd-kind-icon">skip<wbr>Frame</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#warmup" class="tsd-kind-icon">warmup</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#wasmpath" class="tsd-kind-icon">wasm<wbr>Path</a></li>
 							</ul>
@@ -133,7 +134,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="body" class="tsd-anchor"></a>
 					<h3>body</h3>
-					<div class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>maxDetected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>maxDetected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -161,6 +162,9 @@
 							</li>
 							<li class="tsd-parameter">
 								<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>skip<wbr>Frames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
 							</li>
 						</ul>
 					</div>
@@ -616,6 +620,22 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="skipframe" class="tsd-anchor"></a>
+					<h3>skip<wbr>Frame</h3>
+					<div class="tsd-signature tsd-kind-icon">skip<wbr>Frame<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Cache sensitivity</p>
+							<ul>
+								<li>values 0..1 where 0.01 means reset cache if input changed more than 1%</li>
+								<li>set to 0 to disable caching</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="warmup" class="tsd-anchor"></a>
 					<h3>warmup</h3>
 					<div class="tsd-signature tsd-kind-icon">warmup<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;none&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;face&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;full&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;body&quot;</span></div>
@@ -701,6 +721,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="config.html#object" class="tsd-kind-icon">object</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="config.html#skipframe" class="tsd-kind-icon">skip<wbr>Frame</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="config.html#warmup" class="tsd-kind-icon">warmup</a>

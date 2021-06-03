@@ -1,7 +1,7 @@
 /**
  * Type definitions for Human result object
  */
-import { Tensor } from '../dist/tfjs.esm.js';
+import { Tensor } from './tfjs/types';
 /** Face results
  * Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
  * Some values may be null if specific model is not enabled
@@ -60,8 +60,8 @@ export interface Face {
             strength: number;
         };
     };
-    image?: typeof Tensor;
-    tensor: typeof Tensor;
+    image?: Tensor;
+    tensor: Tensor;
 }
 /** Body results
  *

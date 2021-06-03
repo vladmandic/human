@@ -29,7 +29,7 @@ export class BlazeFaceModel {
   inputSize: number;
   config: Config;
 
-  constructor(model, config) {
+  constructor(model, config: Config) {
     this.model = model;
     this.anchorsData = util.generateAnchors(model.inputs[0].shape[1]);
     this.anchors = tf.tensor2d(this.anchorsData);
@@ -37,8 +37,9 @@ export class BlazeFaceModel {
     this.config = config;
   }
 
-  async getBoundingBoxes(inputImage) {
+  async getBoundingBoxes(inputImage: Tensor) {
     // sanity check on input
+    // @ts-ignore isDisposed is internal property
     if ((!inputImage) || (inputImage.isDisposedInternal) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return null;
     const [batch, boxes, scores] = tf.tidy(() => {
       const resizedImage = inputImage.resizeBilinear([this.inputSize, this.inputSize]);
@@ -85,7 +86,7 @@ export class BlazeFaceModel {
   }
 }
 
-export async function load(config) {
+export async function load(config: Config) {
   const model = await tf.loadGraphModel(join(config.modelBasePath, config.face.detector.modelPath), { fromTFHub: config.face.detector.modelPath.includes('tfhub.dev') });
   const blazeFace = new BlazeFaceModel(model, config);
   if (!model || !model.modelUrl) log('load model failed:', config.face.detector.modelPath);

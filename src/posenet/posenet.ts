@@ -8,11 +8,12 @@ import * as poses from './poses';
 import * as util from './utils';
 import { Body } from '../result';
 import { Tensor, GraphModel } from '../tfjs/types';
+import { Config } from '../config';
 
 let model: GraphModel;
 const poseNetOutputs = ['MobilenetV1/offset_2/BiasAdd'/* offsets */, 'MobilenetV1/heatmap_2/BiasAdd'/* heatmapScores */, 'MobilenetV1/displacement_fwd_2/BiasAdd'/* displacementFwd */, 'MobilenetV1/displacement_bwd_2/BiasAdd'/* displacementBwd */];
 
-export async function predict(input, config): Promise<Body[]> {
+export async function predict(input: Tensor, config: Config): Promise<Body[]> {
   const res = tf.tidy(() => {
     if (!model.inputs[0].shape) return [];
     const resized = input.resizeBilinear([model.inputs[0].shape[2], model.inputs[0].shape[1]]);
@@ -32,7 +33,7 @@ export async function predict(input, config): Promise<Body[]> {
   return scaled;
 }
 
-export async function load(config) {
+export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
     // @ts-ignore type mismatch for GraphModel
     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));

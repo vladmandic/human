@@ -9,10 +9,11 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as annotations from './annotations';
 import { Tensor, GraphModel } from '../tfjs/types';
 import { Body } from '../result';
+import { Config } from '../config';
 
 let model: GraphModel;
 
-export async function load(config) {
+export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
     // @ts-ignore type mismatch for Graphmodel
     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));
@@ -24,10 +25,10 @@ export async function load(config) {
   return model;
 }
 
-export async function predict(image, config): Promise<Body[]> {
+export async function predict(image: Tensor, config: Config): Promise<Body[]> {
   if (!model) return [];
   if (!config.body.enabled) return [];
-  const imgSize = { width: image.shape[2], height: image.shape[1] };
+  const imgSize = { width: (image.shape[2] || 0), height: (image.shape[1] || 0) };
   const resize = tf.image.resizeBilinear(image, [model['width'], model['height']], false);
   const normalize = tf.div(resize, [255.0]);
   resize.dispose();

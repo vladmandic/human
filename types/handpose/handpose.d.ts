@@ -2,5 +2,7 @@
  * HandPose module entry point
  */
 import { Hand } from '../result';
-export declare function predict(input: any, config: any): Promise<Hand[]>;
-export declare function load(config: any): Promise<[unknown, unknown]>;
+import { Tensor } from '../tfjs/types';
+import { Config } from '../config';
+export declare function predict(input: Tensor, config: Config): Promise<Hand[]>;
+export declare function load(config: Config): Promise<[unknown, unknown]>;

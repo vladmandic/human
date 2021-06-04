@@ -138,7 +138,7 @@ export function process(input, config): { tensor: Tensor | null, canvas: Offscre
       const shape = [outCanvas.height, outCanvas.width, 3];
       pixels = tf.tensor3d(outCanvas.data, shape, 'int32');
     } else if (outCanvas instanceof ImageData) { // if input is imagedata, just use it
-      pixels = tf.browser.fromPixels(outCanvas);
+      pixels = tf.browser ? tf.browser.fromPixels(outCanvas) : null;
     } else if (config.backend === 'webgl' || config.backend === 'humangl') { // tf kernel-optimized method to get imagedata
       // we can use canvas as-is as it already has a context, so we do a silly one more canvas
       const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
@@ -146,7 +146,7 @@ export function process(input, config): { tensor: Tensor | null, canvas: Offscre
       tempCanvas.height = targetHeight;
       const tempCtx = tempCanvas.getContext('2d');
       tempCtx?.drawImage(outCanvas, 0, 0);
-      pixels = tf.browser.fromPixels(tempCanvas);
+      pixels = tf.browser ? tf.browser.fromPixels(tempCanvas) : null;
     } else { // cpu and wasm kernel does not implement efficient fromPixels method
       // we can use canvas as-is as it already has a context, so we do a silly one more canvas
       const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
@@ -155,12 +155,14 @@ export function process(input, config): { tensor: Tensor | null, canvas: Offscre
       const tempCtx = tempCanvas.getContext('2d');
       tempCtx?.drawImage(outCanvas, 0, 0);
       const data = tempCtx?.getImageData(0, 0, targetWidth, targetHeight);
-      pixels = tf.browser.fromPixels(data);
+      pixels = tf.browser ? tf.browser.fromPixels(data) : null;
     }
-    const casted = pixels.toFloat();
-    tensor = casted.expandDims(0);
-    pixels.dispose();
-    casted.dispose();
+    if (pixels) {
+      const casted = pixels.toFloat();
+      tensor = casted.expandDims(0);
+      pixels.dispose();
+      casted.dispose();
+    }
   }
   const canvas = config.filter.return ? outCanvas : null;
   return { tensor, canvas };

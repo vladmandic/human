@@ -196,6 +196,15 @@ export interface Config {
     maxDetected: number,
     skipFrames: number,
   },
+
+  /** Controlls and configures all body segmentation module
+   * - enabled: true/false
+   * - modelPath: object detection model, can be absolute path or relative to modelBasePath
+  */
+  segmentation: {
+    enabled: boolean,
+    modelPath: string,
+  },
 }
 
 const config: Config = {
@@ -337,6 +346,12 @@ const config: Config = {
     maxDetected: 10,         // maximum number of objects detected in the input
     skipFrames: 19,          // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
+  },
+
+  segmentation: {
+    enabled: false,
+    modelPath: 'selfie.json',  // experimental: object detection model, can be absolute path or relative to modelBasePath
+                             // can be 'selfie' or 'meet'
   },
 };
 export { config as defaults };

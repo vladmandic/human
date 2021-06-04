@@ -38,19 +38,21 @@ const userConfig = {
     enabled: false,
     flip: false,
   },
-  face: { enabled: true,
+  face: { enabled: false,
     detector: { return: true },
     mesh: { enabled: true },
     iris: { enabled: false },
     description: { enabled: false },
     emotion: { enabled: false },
   },
-  hand: { enabled: false },
-  // body: { enabled: true, modelPath: 'posenet.json' },
-  // body: { enabled: true, modelPath: 'blazepose.json' },
-  body: { enabled: false },
   object: { enabled: false },
   gesture: { enabled: true },
+  hand: { enabled: false },
+  body: { enabled: false },
+  // body: { enabled: true, modelPath: 'posenet.json' },
+  // body: { enabled: true, modelPath: 'blazepose.json' },
+  // segmentation: { enabled: true, modelPath: 'meet.json' },
+  // segmentation: { enabled: true, modelPath: 'selfie.json' },
   */
 };
 
@@ -267,9 +269,11 @@ async function drawResults(input) {
   if (ui.buffered) {
     ui.drawThread = requestAnimationFrame(() => drawResults(input));
   } else {
-    log('stopping buffered refresh');
-    if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
-    ui.drawThread = null;
+    if (ui.drawThread) {
+      log('stopping buffered refresh');
+      cancelAnimationFrame(ui.drawThread);
+      ui.drawThread = null;
+    }
   }
 }
 
@@ -350,6 +354,8 @@ async function setupCamera() {
     video.onloadeddata = () => {
       if (settings.width > settings.height) canvas.style.width = '100vw';
       else canvas.style.height = '100vh';
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
       ui.menuWidth.input.setAttribute('value', video.videoWidth);
       ui.menuHeight.input.setAttribute('value', video.videoHeight);
       if (live) video.play();
@@ -400,6 +406,16 @@ function webWorker(input, image, canvas, timestamp) {
       }
       if (document.getElementById('gl-bench')) document.getElementById('gl-bench').style.display = ui.bench ? 'block' : 'none';
       lastDetectedResult = msg.data.result;
+
+      if (msg.data.image) {
+        lastDetectedResult.canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(msg.data.width, msg.data.height) : document.createElement('canvas');
+        lastDetectedResult.canvas.width = msg.data.width;
+        lastDetectedResult.canvas.height = msg.data.height;
+        const ctx = lastDetectedResult.canvas.getContext('2d');
+        const imageData = new ImageData(new Uint8ClampedArray(msg.data.image), msg.data.width, msg.data.height);
+        ctx.putImageData(imageData, 0, 0);
+      }
+
       ui.framesDetect++;
       if (!ui.drawThread) drawResults(input);
       // eslint-disable-next-line no-use-before-define

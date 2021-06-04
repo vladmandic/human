@@ -22,3 +22,12 @@ Any of the following behavior is unacceptable:
 If you believe someone is violating the code of conduct, we ask that you report it
 
 Participants asked to stop any harassing behavior are expected to comply immediately  
+
+<br>
+
+## Usage Restrictions
+
+`Human` library does not alow for usage in following scenarios:
+
+- Any life-critical decisions
+- Any form of surveillance without consent of the user is explicitly out of scope

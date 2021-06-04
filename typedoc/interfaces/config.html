@@ -97,6 +97,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#hand" class="tsd-kind-icon">hand</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#modelbasepath" class="tsd-kind-icon">model<wbr>Base<wbr>Path</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#object" class="tsd-kind-icon">object</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#segmentation" class="tsd-kind-icon">segmentation</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#skipframe" class="tsd-kind-icon">skip<wbr>Frame</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#warmup" class="tsd-kind-icon">warmup</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="config.html#wasmpath" class="tsd-kind-icon">wasm<wbr>Path</a></li>
@@ -620,6 +621,33 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="segmentation" class="tsd-anchor"></a>
+					<h3>segmentation</h3>
+					<div class="tsd-signature tsd-kind-icon">segmentation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Controlls and configures all body segmentation module</p>
+							<ul>
+								<li>enabled: true/false</li>
+								<li>modelPath: object detection model, can be absolute path or relative to modelBasePath</li>
+							</ul>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="skipframe" class="tsd-anchor"></a>
 					<h3>skip<wbr>Frame</h3>
 					<div class="tsd-signature tsd-kind-icon">skip<wbr>Frame<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
@@ -721,6 +749,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="config.html#object" class="tsd-kind-icon">object</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="config.html#segmentation" class="tsd-kind-icon">segmentation</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="config.html#skipframe" class="tsd-kind-icon">skip<wbr>Frame</a>

@@ -11,6 +11,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/06/04 mandic00@live.com
 
+
+### **update for tfjs 3.7.0** 2021/06/04 mandic00@live.com
+
 - add live hints to demo
 - switch worker from module to iife importscripts
 - release candidate

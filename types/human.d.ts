@@ -5,14 +5,6 @@ import { Config } from './config';
 import { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
-import * as faceres from './faceres/faceres';
-import * as emotion from './emotion/emotion';
-import * as posenet from './posenet/posenet';
-import * as handpose from './handpose/handpose';
-import * as blazepose from './blazepose/blazepose';
-import * as movenet from './movenet/movenet';
-import * as nanodet from './object/nanodet';
-import * as centernet from './object/centernet';
 import * as draw from './draw/draw';
 import { Tensor } from './tfjs/types';
 export type { Config } from './config';
@@ -101,16 +93,7 @@ export declare class Human {
         nanodet: Model | null;
         centernet: Model | null;
         faceres: Model | null;
-    };
-    /** @internal: Currently loaded classes */
-    classes: {
-        facemesh: typeof facemesh;
-        emotion: typeof emotion;
-        body: typeof posenet | typeof blazepose | typeof movenet;
-        hand: typeof handpose;
-        nanodet: typeof nanodet;
-        centernet: typeof centernet;
-        faceres: typeof faceres;
+        segmentation: Model | null;
     };
     /** Reference face triangualtion array of 468 points, used for triangle references between points */
     faceTriangulation: typeof facemesh.triangulation;

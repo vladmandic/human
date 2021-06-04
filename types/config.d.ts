@@ -179,6 +179,14 @@ export interface Config {
         maxDetected: number;
         skipFrames: number;
     };
+    /** Controlls and configures all body segmentation module
+     * - enabled: true/false
+     * - modelPath: object detection model, can be absolute path or relative to modelBasePath
+    */
+    segmentation: {
+        enabled: boolean;
+        modelPath: string;
+    };
 }
 declare const config: Config;
 export { config as defaults };

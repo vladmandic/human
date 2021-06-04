@@ -24,6 +24,7 @@ import * as image from './image/image';
 import * as draw from './draw/draw';
 import * as persons from './persons';
 import * as interpolate from './interpolate';
+import * as segmentation from './segmentation/segmentation';
 import * as sample from './sample';
 import * as app from '../package.json';
 import { Tensor } from './tfjs/types';
@@ -114,16 +115,7 @@ export class Human {
     nanodet: Model | null,
     centernet: Model | null,
     faceres: Model | null,
-  };
-  /** @internal: Currently loaded classes */
-  classes: {
-    facemesh: typeof facemesh;
-    emotion: typeof emotion;
-    body: typeof posenet | typeof blazepose | typeof movenet;
-    hand: typeof handpose;
-    nanodet: typeof nanodet;
-    centernet: typeof centernet;
-    faceres: typeof faceres;
+    segmentation: Model | null,
   };
   /** Reference face triangualtion array of 468 points, used for triangle references between points */
   faceTriangulation: typeof facemesh.triangulation;
@@ -173,20 +165,12 @@ export class Human {
       nanodet: null,
       centernet: null,
       faceres: null,
+      segmentation: null,
     };
     // export access to image processing
     // @ts-ignore eslint-typescript cannot correctly infer type in anonymous function
     this.image = (input: Input) => image.process(input, this.config);
     // export raw access to underlying models
-    this.classes = {
-      facemesh,
-      emotion,
-      faceres,
-      body: this.config.body.modelPath.includes('posenet') ? posenet : blazepose,
-      hand: handpose,
-      nanodet,
-      centernet,
-    };
     this.faceTriangulation = facemesh.triangulation;
     this.faceUVMap = facemesh.uvmap;
     // include platform info
@@ -274,8 +258,10 @@ export class Human {
     }
     if (this.config.async) { // load models concurrently
       [
+        // @ts-ignore async model loading is not correctly inferred
         this.models.face,
         this.models.emotion,
+        // @ts-ignore async model loading is not correctly inferred
         this.models.handpose,
         this.models.posenet,
         this.models.blazepose,
@@ -284,6 +270,7 @@ export class Human {
         this.models.nanodet,
         this.models.centernet,
         this.models.faceres,
+        this.models.segmentation,
       ] = await Promise.all([
         this.models.face || (this.config.face.enabled ? facemesh.load(this.config) : null),
         this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
@@ -295,6 +282,7 @@ export class Human {
         this.models.nanodet || (this.config.object.enabled && this.config.object.modelPath.includes('nanodet') ? nanodet.load(this.config) : null),
         this.models.centernet || (this.config.object.enabled && this.config.object.modelPath.includes('centernet') ? centernet.load(this.config) : null),
         this.models.faceres || ((this.config.face.enabled && this.config.face.description.enabled) ? faceres.load(this.config) : null),
+        this.models.segmentation || (this.config.segmentation.enabled ? segmentation.load(this.config) : null),
       ]);
     } else { // load models sequentially
       if (this.config.face.enabled && !this.models.face) this.models.face = await facemesh.load(this.config);
@@ -307,6 +295,7 @@ export class Human {
       if (this.config.object.enabled && !this.models.nanodet && this.config.object.modelPath.includes('nanodet')) this.models.nanodet = await nanodet.load(this.config);
       if (this.config.object.enabled && !this.models.centernet && this.config.object.modelPath.includes('centernet')) this.models.centernet = await centernet.load(this.config);
       if (this.config.face.enabled && this.config.face.description.enabled && !this.models.faceres) this.models.faceres = await faceres.load(this.config);
+      if (this.config.segmentation.enabled && !this.models.segmentation) this.models.segmentation = await segmentation.load(this.config);
     }
 
     if (this.#firstRun) { // print memory stats on first run
@@ -566,6 +555,17 @@ export class Human {
         gestureRes = [...gesture.face(faceRes), ...gesture.body(bodyRes), ...gesture.hand(handRes), ...gesture.iris(faceRes)];
         if (!this.config.async) this.performance.gesture = Math.trunc(now() - timeStamp);
         else if (this.performance.gesture) delete this.performance.gesture;
+      }
+
+      // run segmentation
+      if (this.config.segmentation.enabled) {
+        this.analyze('Start Segmentation:');
+        this.state = 'run:segmentation';
+        timeStamp = now();
+        await segmentation.predict(process, this.config);
+        elapsedTime = Math.trunc(now() - timeStamp);
+        if (elapsedTime > 0) this.performance.segmentation = elapsedTime;
+        this.analyze('End Segmentation:');
       }
 
       this.performance.total = Math.trunc(now() - timeStart);

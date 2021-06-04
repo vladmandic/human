@@ -11,7 +11,7 @@ N/A
 ## In Progress
 
 - Switch to TypeScript 4.3
-- Add hints to Demo app
+- Implement segmentation model
 
 ## Known Issues
 

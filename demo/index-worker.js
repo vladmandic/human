@@ -27,9 +27,18 @@ onmessage = async (msg) => {
     result.error = err.message;
     log('worker thread error:', err.message);
   }
-  // must strip canvas from return value as it cannot be transfered from worker thread
-  if (result.canvas) result.canvas = null;
-  // @ts-ignore tslint wrong type matching for worker
-  postMessage({ result });
+
+  if (result.canvas) { // convert canvas to imageData and send it by reference
+    const ctx = result.canvas.getContext('2d');
+    const img = ctx?.getImageData(0, 0, result.canvas.width, result.canvas.height);
+    result.canvas = null; // must strip original canvas from return value as it cannot be transfered from worker thread
+    // @ts-ignore tslint wrong type matching for worker
+    if (img) postMessage({ result, image: img.data.buffer, width: msg.data.width, height: msg.data.height }, [img?.data.buffer]);
+    // @ts-ignore tslint wrong type matching for worker
+    else postMessage({ result });
+  } else {
+    // @ts-ignore tslint wrong type matching for worker
+    postMessage({ result });
+  }
   busy = false;
 };

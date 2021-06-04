@@ -21,6 +21,8 @@ export function calc(newResult: Result): Result {
   // - at  1sec delay buffer = 1 which means live data is used
   const bufferedFactor = elapsed < 1000 ? 8 - Math.log(elapsed) : 1;
 
+  bufferedResult.canvas = newResult.canvas;
+
   // interpolate body results
   if (!bufferedResult.body || (newResult.body.length !== bufferedResult.body.length)) {
     bufferedResult.body = JSON.parse(JSON.stringify(newResult.body as Body[])); // deep clone once

@@ -9,8 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/06/02 mandic00@live.com
+### **HEAD -> main** 2021/06/04 mandic00@live.com
 
+- add live hints to demo
 - switch worker from module to iife importscripts
 - release candidate
 - added samples to git

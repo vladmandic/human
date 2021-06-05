@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/06/05 mandic00@live.com
 
+- enable body segmentation and background replacement
 
 ### **origin/main** 2021/06/04 mandic00@live.com
 

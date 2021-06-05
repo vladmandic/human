@@ -198,7 +198,10 @@ export interface Config {
   },
 
   /** Controlls and configures all body segmentation module
-   * if segmentation is enabled, output result.canvas will be augmented with masked image containing only person output
+   * removes background from input containing person
+   * if segmentation is enabled it will run as preprocessing task before any other model
+   * alternatively leave it disabled and use it on-demand using human.segmentation method which can
+   * remove background or replace it with user-provided background
    *
    * - enabled: true/false
    * - modelPath: object detection model, can be absolute path or relative to modelBasePath
@@ -351,9 +354,11 @@ const config: Config = {
   },
 
   segmentation: {
-    enabled: false,          // if segmentation is enabled, output result.canvas will be augmented
-                             // with masked image containing only person output
-                             // segmentation is not triggered as part of detection and requires separate call to human.segmentation
+    enabled: false,          // controlls and configures all body segmentation module
+                             // removes background from input containing person
+                             // if segmentation is enabled it will run as preprocessing task before any other model
+                             // alternatively leave it disabled and use it on-demand using human.segmentation method which can
+                             // remove background or replace it with user-provided background
     modelPath: 'selfie.json',  // experimental: object detection model, can be absolute path or relative to modelBasePath
                              // can be 'selfie' or 'meet'
   },

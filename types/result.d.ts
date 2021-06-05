@@ -128,6 +128,7 @@ export interface Item {
     boxRaw: [number, number, number, number];
 }
 /** Gesture results
+ * @typedef Gesture Type
  *
  * Array of individual results with one object per detected gesture
  * Each result has:
@@ -148,6 +149,7 @@ export declare type Gesture = {
     gesture: string;
 };
 /** Person getter
+* @interface Person Interface
 *
 * Each result has:
 * - id: person id

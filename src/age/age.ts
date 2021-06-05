@@ -5,12 +5,16 @@
 
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
+import { Config } from '../config';
+import { GraphModel, Tensor } from '../tfjs/types';
 
-let model;
+let model: GraphModel;
+
 let last = { age: 0 };
 let skipped = Number.MAX_SAFE_INTEGER;
 
-export async function load(config) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function load(config: Config | any) {
   if (!model) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.face.age.modelPath));
     if (!model || !model.modelUrl) log('load model failed:', config.face.age.modelPath);
@@ -19,7 +23,8 @@ export async function load(config) {
   return model;
 }
 
-export async function predict(image, config) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function predict(image: Tensor, config: Config | any) {
   if (!model) return null;
   if ((skipped < config.face.age.skipFrames) && config.skipFrame && last.age && (last.age > 0)) {
     skipped++;

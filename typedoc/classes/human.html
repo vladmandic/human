@@ -124,6 +124,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#load" class="tsd-kind-icon">load</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#match" class="tsd-kind-icon">match</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#next" class="tsd-kind-icon">next</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#segmentation-1" class="tsd-kind-icon">segmentation</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#similarity" class="tsd-kind-icon">similarity</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="human.html#warmup" class="tsd-kind-icon">warmup</a></li>
 							</ul>
@@ -390,7 +391,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="image" class="tsd-anchor"></a>
 					<h3>image</h3>
-					<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span><span class="tsd-signature-symbol">; </span>tensor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Tensor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Rank</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span><span class="tsd-signature-symbol">; </span>tensor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -407,7 +408,7 @@
 								<h5>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span></h5>
 							</li>
 							<li class="tsd-parameter">
-								<h5>tensor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Tensor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Rank</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								<h5>tensor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h5>
 							</li>
 						</ul>
 					</div>
@@ -575,7 +576,7 @@
 					<a name="detect" class="tsd-anchor"></a>
 					<h3>detect</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">detect<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><a href="../index.html#input" class="tsd-signature-type" data-tsd-kind="Type alias">Input</a>, userConfig<span class="tsd-signature-symbol">?: </span><a href="../interfaces/config.html" class="tsd-signature-type" data-tsd-kind="Interface">Config</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#error" class="tsd-signature-type" data-tsd-kind="Type alias">Error</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/result.html" class="tsd-signature-type" data-tsd-kind="Interface">Result</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">detect<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, userConfig<span class="tsd-signature-symbol">?: </span><a href="../interfaces/config.html" class="tsd-signature-type" data-tsd-kind="Interface">Config</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#error" class="tsd-signature-type" data-tsd-kind="Type alias">Error</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/result.html" class="tsd-signature-type" data-tsd-kind="Interface">Result</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -595,14 +596,14 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>input: <a href="../index.html#input" class="tsd-signature-type" data-tsd-kind="Type alias">Input</a></h5>
+									<h5>input: <span class="tsd-signature-type">any</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> userConfig: <a href="../interfaces/config.html" class="tsd-signature-type" data-tsd-kind="Interface">Config</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#error" class="tsd-signature-type" data-tsd-kind="Type alias">Error</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/result.html" class="tsd-signature-type" data-tsd-kind="Interface">Result</a><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>result: Result</p>
+							<p>result: <a href="../interfaces/result.html">Result</a></p>
 						</li>
 					</ul>
 				</section>
@@ -610,7 +611,7 @@
 					<a name="enhance" class="tsd-anchor"></a>
 					<h3>enhance</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">enhance<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Tensor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Rank</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Tensor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Rank</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">enhance<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -624,10 +625,10 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>input: <span class="tsd-signature-type">Tensor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Rank</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>input: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Tensor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Rank</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 							<p>Tensor</p>
 						</li>
 					</ul>
@@ -730,6 +731,37 @@
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/result.html" class="tsd-signature-type" data-tsd-kind="Interface">Result</a></h4>
 							<p>result: <a href="../interfaces/result.html">Result</a></p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="segmentation-1" class="tsd-anchor"></a>
+					<h3>segmentation</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">segmentation<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, background<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Segmentation method takes any input and returns processed canvas with body segmentation
+										Optional parameter background is used to fill the background with specific input
+									Segmentation is not triggered as part of detect process</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>input: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> background: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Canvas</p>
 						</li>
 					</ul>
 				</section>
@@ -869,6 +901,9 @@
 								<a href="human.html#next" class="tsd-kind-icon">next</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="human.html#segmentation-1" class="tsd-kind-icon">segmentation</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="human.html#similarity" class="tsd-kind-icon">similarity</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -895,6 +930,9 @@
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/item.html" class="tsd-kind-icon">Item</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/person.html" class="tsd-kind-icon">Person</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/result.html" class="tsd-kind-icon">Result</a>

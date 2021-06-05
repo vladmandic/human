@@ -210,7 +210,9 @@ async function drawResults(input) {
   await menu.process.updateChart('FPS', ui.detectFPS);
 
   // get updated canvas if missing or if we want buffering, but skip if segmentation is enabled
-  if (!result.canvas || (ui.buffered && !human.config.segmentation.enabled)) {
+  if (human.config.segmentation.enabled) {
+    result.canvas = await human.segmentation(input);
+  } else if (!result.canvas || ui.buffered) {
     const image = await human.image(input);
     result.canvas = image.canvas;
     human.tf.dispose(image.tensor);
@@ -630,6 +632,8 @@ function setupMenu() {
   menu.image.addBool('kodachrome', human.config.filter, 'kodachrome', (val) => human.config.filter.kodachrome = val);
   menu.image.addBool('technicolor', human.config.filter, 'technicolor', (val) => human.config.filter.technicolor = val);
   menu.image.addBool('polaroid', human.config.filter, 'polaroid', (val) => human.config.filter.polaroid = val);
+  menu.image.addHTML('<input type="file" id="file-input" class="input-file"></input> &nbsp input');
+  menu.image.addHTML('<input type="file" id="file-background" class="input-file"></input> &nbsp background');
 
   menu.process = new Menu(document.body, '', { top, left: x[2] });
   menu.process.addList('backend', ['cpu', 'webgl', 'wasm', 'humangl'], human.config.backend, (val) => human.config.backend = val);
@@ -735,13 +739,15 @@ async function drawWarmup(res) {
   await human.draw.all(canvas, res, drawOptions);
 }
 
-async function processDataURL(f) {
+async function processDataURL(f, action) {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = async (e) => {
       const dataURL = e.target.result;
-      await processImage(dataURL, f.name);
-      document.getElementById('canvas').style.display = 'none';
+      if (action === 'process') {
+        await processImage(dataURL, f.name);
+        document.getElementById('canvas').style.display = 'none';
+      }
       resolve(true);
     };
     reader.readAsDataURL(f);
@@ -756,7 +762,7 @@ async function dragAndDrop() {
     evt.preventDefault();
     evt.dataTransfer.dropEffect = 'copy';
     if (evt.dataTransfer.files.length < 2) ui.columns = 1;
-    for (const f of evt.dataTransfer.files) await processDataURL(f);
+    for (const f of evt.dataTransfer.files) await processDataURL(f, 'process');
   });
 }
 

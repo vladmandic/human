@@ -198,6 +198,8 @@ export interface Config {
   },
 
   /** Controlls and configures all body segmentation module
+   * if segmentation is enabled, output result.canvas will be augmented with masked image containing only person output
+   *
    * - enabled: true/false
    * - modelPath: object detection model, can be absolute path or relative to modelBasePath
   */
@@ -349,7 +351,8 @@ const config: Config = {
   },
 
   segmentation: {
-    enabled: false,
+    enabled: false,          // if segmentation is enabled, output result.canvas will be augmented
+                             // with masked image containing only person output
     modelPath: 'selfie.json',  // experimental: object detection model, can be absolute path or relative to modelBasePath
                              // can be 'selfie' or 'meet'
   },

@@ -130,7 +130,7 @@ export declare class Human {
      * @param background?: {@link Input}
      * @returns Canvas
      */
-    segmentation(input: Input, background?: Input): Promise<OffscreenCanvas | HTMLCanvasElement>;
+    segmentation(input: Input, background?: Input): Promise<OffscreenCanvas | HTMLCanvasElement | null>;
     /** Enhance method performs additional enhacements to face image previously detected for futher processing
      * @param input: Tensor as provided in human.result.face[n].tensor
      * @returns Tensor

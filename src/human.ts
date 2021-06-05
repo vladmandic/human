@@ -370,7 +370,7 @@ export class Human {
         this.tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
         this.tf.ENV.set('WEBGL_CPU_FORWARD', true);
         this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
-        if (!this.config.object.enabled) this.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
+        // if (!this.config.object.enabled) this.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
         if (typeof this.config['deallocate'] !== 'undefined' && this.config['deallocate']) { // hidden param
           log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
           this.tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);

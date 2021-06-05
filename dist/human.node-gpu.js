@@ -1,10 +1,10 @@
 
-  /*
-  Human library
-  homepage: <https://github.com/vladmandic/human>
-  author: <https://github.com/vladmandic>'
-  */
-
+   /*
+   Human library
+   homepage: <https://github.com/vladmandic/human>
+   author: <https://github.com/vladmandic>'
+   */
+ 
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -4318,6 +4318,8 @@ async function predict3(image18, config3, idx, count2) {
 // src/face.ts
 var calculateGaze = (face5) => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]);
+  if (!face5.annotations["rightEyeIris"] || !face5.annotations["leftEyeIris"])
+    return { bearing: 0, strength: 0 };
   const offsetIris = [0, -0.1];
   const eyeRatio = 1;
   const left = face5.mesh[33][2] > face5.mesh[263][2];
@@ -9970,7 +9972,7 @@ async function face2(inCanvas2, result, drawOptions) {
             ctx.fill();
           }
         }
-        if (localOptions.drawGaze && ((_b = (_a = f.rotation) == null ? void 0 : _a.gaze) == null ? void 0 : _b.strength) && ((_d = (_c = f.rotation) == null ? void 0 : _c.gaze) == null ? void 0 : _d.bearing)) {
+        if (localOptions.drawGaze && ((_b = (_a = f.rotation) == null ? void 0 : _a.gaze) == null ? void 0 : _b.strength) && ((_d = (_c = f.rotation) == null ? void 0 : _c.gaze) == null ? void 0 : _d.bearing) && f.annotations["leftEyeIris"] && f.annotations["rightEyeIris"] && f.annotations["leftEyeIris"][0] && f.annotations["rightEyeIris"][0]) {
           ctx.strokeStyle = "pink";
           ctx.beginPath();
           const leftGaze = [
@@ -10419,6 +10421,7 @@ function calc(newResult) {
 // src/segmentation/segmentation.ts
 var tf20 = __toModule(require_tfjs_esm());
 var model9;
+var busy = false;
 async function load12(config3) {
   if (!model9) {
     model9 = await tf20.loadGraphModel(join(config3.modelBasePath, config3.segmentation.modelPath));
@@ -10489,6 +10492,9 @@ async function predict11(input, config3) {
 }
 async function process5(input, background, config3) {
   var _a;
+  if (busy)
+    return null;
+  busy = true;
   if (!config3.segmentation.enabled)
     config3.segmentation.enabled = true;
   if (!model9)
@@ -10516,8 +10522,9 @@ async function process5(input, background, config3) {
       cData.data[4 * i + 3] = (255 - alpha[4 * i + 3]) / 255 * cData.data[4 * i + 3] + alpha[4 * i + 3] / 255 * fgData[4 * i + 3];
     }
     ctx.putImageData(cData, 0, 0);
-    return c;
+    img.canvas = c;
   }
+  busy = false;
   return img.canvas;
 }
 
@@ -11322,8 +11329,6 @@ var Human = class {
           this.tf.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
           this.tf.ENV.set("WEBGL_CPU_FORWARD", true);
           this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", true);
-          if (!this.config.object.enabled)
-            this.tf.ENV.set("WEBGL_FORCE_F16_TEXTURES", true);
           if (typeof this.config["deallocate"] !== "undefined" && this.config["deallocate"]) {
             log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
             this.tf.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);

@@ -27,7 +27,7 @@ import webRTC from './helpers/webrtc.js';
 
 let human;
 
-const userConfig = {
+let userConfig = {
   warmup: 'none',
   backend: 'humangl',
   wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.6.0/dist/',
@@ -96,6 +96,7 @@ const ui = {
   bench: true, // show gl fps benchmark window
   lastFrame: 0, // time of last frame processing
   viewportSet: false, // internal, has custom viewport been set
+  background: null, // holds instance of segmentation background image
 
   // webrtc
   useWebRTC: false, // use webrtc as camera source instead of local webcam
@@ -210,8 +211,8 @@ async function drawResults(input) {
   await menu.process.updateChart('FPS', ui.detectFPS);
 
   // get updated canvas if missing or if we want buffering, but skip if segmentation is enabled
-  if (human.config.segmentation.enabled) {
-    result.canvas = await human.segmentation(input);
+  if (userConfig.segmentation.enabled) {
+    result.canvas = await human.segmentation(input, ui.background, userConfig);
   } else if (!result.canvas || ui.buffered) {
     const image = await human.image(input);
     result.canvas = image.canvas;
@@ -496,8 +497,8 @@ async function processImage(input, title) {
       const canvas = document.getElementById('canvas');
       image.width = image.naturalWidth;
       image.height = image.naturalHeight;
-      canvas.width = human.config.filter.width && human.config.filter.width > 0 ? human.config.filter.width : image.naturalWidth;
-      canvas.height = human.config.filter.height && human.config.filter.height > 0 ? human.config.filter.height : image.naturalHeight;
+      canvas.width = userConfig.filter.width && userConfig.filter.width > 0 ? userConfig.filter.width : image.naturalWidth;
+      canvas.height = userConfig.filter.height && userConfig.filter.height > 0 ? userConfig.filter.height : image.naturalHeight;
       const origCacheSensitiry = userConfig.cacheSensitivity;
       userConfig.cacheSensitivity = 0;
       const result = await human.detect(image, userConfig);
@@ -614,55 +615,55 @@ function setupMenu() {
   menu.display.addBool('fill polygons', human.draw.options, 'fillPolygons');
 
   menu.image = new Menu(document.body, '', { top, left: x[1] });
-  menu.image.addBool('enabled', human.config.filter, 'enabled', (val) => human.config.filter.enabled = val);
-  ui.menuWidth = menu.image.addRange('image width', human.config.filter, 'width', 0, 3840, 10, (val) => human.config.filter.width = parseInt(val));
-  ui.menuHeight = menu.image.addRange('image height', human.config.filter, 'height', 0, 2160, 10, (val) => human.config.filter.height = parseInt(val));
+  menu.image.addBool('enabled', userConfig.filter, 'enabled', (val) => userConfig.filter.enabled = val);
+  ui.menuWidth = menu.image.addRange('image width', userConfig.filter, 'width', 0, 3840, 10, (val) => userConfig.filter.width = parseInt(val));
+  ui.menuHeight = menu.image.addRange('image height', userConfig.filter, 'height', 0, 2160, 10, (val) => userConfig.filter.height = parseInt(val));
   menu.image.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.image.addRange('brightness', human.config.filter, 'brightness', -1.0, 1.0, 0.05, (val) => human.config.filter.brightness = parseFloat(val));
-  menu.image.addRange('contrast', human.config.filter, 'contrast', -1.0, 1.0, 0.05, (val) => human.config.filter.contrast = parseFloat(val));
-  menu.image.addRange('sharpness', human.config.filter, 'sharpness', 0, 1.0, 0.05, (val) => human.config.filter.sharpness = parseFloat(val));
-  menu.image.addRange('blur', human.config.filter, 'blur', 0, 20, 1, (val) => human.config.filter.blur = parseInt(val));
-  menu.image.addRange('saturation', human.config.filter, 'saturation', -1.0, 1.0, 0.05, (val) => human.config.filter.saturation = parseFloat(val));
-  menu.image.addRange('hue', human.config.filter, 'hue', 0, 360, 5, (val) => human.config.filter.hue = parseInt(val));
-  menu.image.addRange('pixelate', human.config.filter, 'pixelate', 0, 32, 1, (val) => human.config.filter.pixelate = parseInt(val));
+  menu.image.addRange('brightness', userConfig.filter, 'brightness', -1.0, 1.0, 0.05, (val) => userConfig.filter.brightness = parseFloat(val));
+  menu.image.addRange('contrast', userConfig.filter, 'contrast', -1.0, 1.0, 0.05, (val) => userConfig.filter.contrast = parseFloat(val));
+  menu.image.addRange('sharpness', userConfig.filter, 'sharpness', 0, 1.0, 0.05, (val) => userConfig.filter.sharpness = parseFloat(val));
+  menu.image.addRange('blur', userConfig.filter, 'blur', 0, 20, 1, (val) => userConfig.filter.blur = parseInt(val));
+  menu.image.addRange('saturation', userConfig.filter, 'saturation', -1.0, 1.0, 0.05, (val) => userConfig.filter.saturation = parseFloat(val));
+  menu.image.addRange('hue', userConfig.filter, 'hue', 0, 360, 5, (val) => userConfig.filter.hue = parseInt(val));
+  menu.image.addRange('pixelate', userConfig.filter, 'pixelate', 0, 32, 1, (val) => userConfig.filter.pixelate = parseInt(val));
   menu.image.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.image.addBool('negative', human.config.filter, 'negative', (val) => human.config.filter.negative = val);
-  menu.image.addBool('sepia', human.config.filter, 'sepia', (val) => human.config.filter.sepia = val);
-  menu.image.addBool('vintage', human.config.filter, 'vintage', (val) => human.config.filter.vintage = val);
-  menu.image.addBool('kodachrome', human.config.filter, 'kodachrome', (val) => human.config.filter.kodachrome = val);
-  menu.image.addBool('technicolor', human.config.filter, 'technicolor', (val) => human.config.filter.technicolor = val);
-  menu.image.addBool('polaroid', human.config.filter, 'polaroid', (val) => human.config.filter.polaroid = val);
+  menu.image.addBool('negative', userConfig.filter, 'negative', (val) => userConfig.filter.negative = val);
+  menu.image.addBool('sepia', userConfig.filter, 'sepia', (val) => userConfig.filter.sepia = val);
+  menu.image.addBool('vintage', userConfig.filter, 'vintage', (val) => userConfig.filter.vintage = val);
+  menu.image.addBool('kodachrome', userConfig.filter, 'kodachrome', (val) => userConfig.filter.kodachrome = val);
+  menu.image.addBool('technicolor', userConfig.filter, 'technicolor', (val) => userConfig.filter.technicolor = val);
+  menu.image.addBool('polaroid', userConfig.filter, 'polaroid', (val) => userConfig.filter.polaroid = val);
   menu.image.addHTML('<input type="file" id="file-input" class="input-file"></input> &nbsp input');
   menu.image.addHTML('<input type="file" id="file-background" class="input-file"></input> &nbsp background');
 
   menu.process = new Menu(document.body, '', { top, left: x[2] });
-  menu.process.addList('backend', ['cpu', 'webgl', 'wasm', 'humangl'], human.config.backend, (val) => human.config.backend = val);
-  menu.process.addBool('async operations', human.config, 'async', (val) => human.config.async = val);
+  menu.process.addList('backend', ['cpu', 'webgl', 'wasm', 'humangl'], userConfig.backend, (val) => userConfig.backend = val);
+  menu.process.addBool('async operations', userConfig, 'async', (val) => userConfig.async = val);
   menu.process.addBool('use web worker', ui, 'useWorker');
   menu.process.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.process.addLabel('model parameters');
-  menu.process.addRange('max objects', human.config.face.detector, 'maxDetected', 1, 50, 1, (val) => {
-    human.config.face.detector.maxDetected = parseInt(val);
-    human.config.body.maxDetected = parseInt(val);
-    human.config.hand.maxDetected = parseInt(val);
+  menu.process.addRange('max objects', userConfig.face.detector, 'maxDetected', 1, 50, 1, (val) => {
+    userConfig.face.detector.maxDetected = parseInt(val);
+    userConfig.body.maxDetected = parseInt(val);
+    userConfig.hand.maxDetected = parseInt(val);
   });
-  menu.process.addRange('skip frames', human.config.face.detector, 'skipFrames', 0, 50, 1, (val) => {
-    human.config.face.detector.skipFrames = parseInt(val);
-    human.config.face.emotion.skipFrames = parseInt(val);
-    human.config.hand.skipFrames = parseInt(val);
+  menu.process.addRange('skip frames', userConfig.face.detector, 'skipFrames', 0, 50, 1, (val) => {
+    userConfig.face.detector.skipFrames = parseInt(val);
+    userConfig.face.emotion.skipFrames = parseInt(val);
+    userConfig.hand.skipFrames = parseInt(val);
   });
-  menu.process.addRange('min confidence', human.config.face.detector, 'minConfidence', 0.0, 1.0, 0.05, (val) => {
-    human.config.face.detector.minConfidence = parseFloat(val);
-    human.config.face.emotion.minConfidence = parseFloat(val);
-    human.config.hand.minConfidence = parseFloat(val);
+  menu.process.addRange('min confidence', userConfig.face.detector, 'minConfidence', 0.0, 1.0, 0.05, (val) => {
+    userConfig.face.detector.minConfidence = parseFloat(val);
+    userConfig.face.emotion.minConfidence = parseFloat(val);
+    userConfig.hand.minConfidence = parseFloat(val);
   });
-  menu.process.addRange('overlap', human.config.face.detector, 'iouThreshold', 0.1, 1.0, 0.05, (val) => {
-    human.config.face.detector.iouThreshold = parseFloat(val);
-    human.config.hand.iouThreshold = parseFloat(val);
+  menu.process.addRange('overlap', userConfig.face.detector, 'iouThreshold', 0.1, 1.0, 0.05, (val) => {
+    userConfig.face.detector.iouThreshold = parseFloat(val);
+    userConfig.hand.iouThreshold = parseFloat(val);
   });
-  menu.process.addBool('rotation detection', human.config.face.detector, 'rotation', (val) => {
-    human.config.face.detector.rotation = val;
-    human.config.hand.rotation = val;
+  menu.process.addBool('rotation detection', userConfig.face.detector, 'rotation', (val) => {
+    userConfig.face.detector.rotation = val;
+    userConfig.hand.rotation = val;
   });
   menu.process.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   // menu.process.addButton('process sample images', 'process images', () => detectSampleImages());
@@ -670,20 +671,20 @@ function setupMenu() {
   menu.process.addChart('FPS', 'FPS');
 
   menu.models = new Menu(document.body, '', { top, left: x[3] });
-  menu.models.addBool('face detect', human.config.face, 'enabled', (val) => human.config.face.enabled = val);
-  menu.models.addBool('face mesh', human.config.face.mesh, 'enabled', (val) => human.config.face.mesh.enabled = val);
-  menu.models.addBool('face iris', human.config.face.iris, 'enabled', (val) => human.config.face.iris.enabled = val);
-  menu.models.addBool('face description', human.config.face.description, 'enabled', (val) => human.config.face.description.enabled = val);
-  menu.models.addBool('face emotion', human.config.face.emotion, 'enabled', (val) => human.config.face.emotion.enabled = val);
+  menu.models.addBool('face detect', userConfig.face, 'enabled', (val) => userConfig.face.enabled = val);
+  menu.models.addBool('face mesh', userConfig.face.mesh, 'enabled', (val) => userConfig.face.mesh.enabled = val);
+  menu.models.addBool('face iris', userConfig.face.iris, 'enabled', (val) => userConfig.face.iris.enabled = val);
+  menu.models.addBool('face description', userConfig.face.description, 'enabled', (val) => userConfig.face.description.enabled = val);
+  menu.models.addBool('face emotion', userConfig.face.emotion, 'enabled', (val) => userConfig.face.emotion.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.models.addBool('body pose', human.config.body, 'enabled', (val) => human.config.body.enabled = val);
-  menu.models.addBool('hand pose', human.config.hand, 'enabled', (val) => human.config.hand.enabled = val);
+  menu.models.addBool('body pose', userConfig.body, 'enabled', (val) => userConfig.body.enabled = val);
+  menu.models.addBool('hand pose', userConfig.hand, 'enabled', (val) => userConfig.hand.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.models.addBool('gestures', human.config.gesture, 'enabled', (val) => human.config.gesture.enabled = val);
+  menu.models.addBool('gestures', userConfig.gesture, 'enabled', (val) => userConfig.gesture.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.models.addBool('body segmentation', human.config.segmentation, 'enabled', (val) => human.config.segmentation.enabled = val);
+  menu.models.addBool('body segmentation', userConfig.segmentation, 'enabled', (val) => userConfig.segmentation.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.models.addBool('object detection', human.config.object, 'enabled', (val) => human.config.object.enabled = val);
+  menu.models.addBool('object detection', userConfig.object, 'enabled', (val) => userConfig.object.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.models.addBool('face compare', compare, 'enabled', (val) => {
     compare.enabled = val;
@@ -748,10 +749,32 @@ async function processDataURL(f, action) {
         await processImage(dataURL, f.name);
         document.getElementById('canvas').style.display = 'none';
       }
+      if (action === 'background') {
+        const image = new Image();
+        image.onerror = async () => status('image loading error');
+        image.onload = async () => {
+          ui.background = image;
+          document.getElementById('canvas').style.display = 'block';
+          const canvas = document.getElementById('canvas');
+          const ctx = canvas.getContext('2d');
+          const overlaid = await human.segmentation(canvas, ui.background, userConfig);
+          if (overlaid) ctx.drawImage(overlaid, 0, 0);
+        };
+        image.src = dataURL;
+      }
       resolve(true);
     };
     reader.readAsDataURL(f);
   });
+}
+
+async function runSegmentation() {
+  document.getElementById('file-background').onchange = async (evt) => {
+    userConfig.segmentation.enabled = true;
+    evt.preventDefault();
+    if (evt.target.files.length < 2) ui.columns = 1;
+    for (const f of evt.target.files) await processDataURL(f, 'background');
+  };
 }
 
 async function dragAndDrop() {
@@ -764,6 +787,11 @@ async function dragAndDrop() {
     if (evt.dataTransfer.files.length < 2) ui.columns = 1;
     for (const f of evt.dataTransfer.files) await processDataURL(f, 'process');
   });
+  document.getElementById('file-input').onchange = async (evt) => {
+    evt.preventDefault();
+    if (evt.target.files.length < 2) ui.columns = 1;
+    for (const f of evt.target.files) await processDataURL(f, 'process');
+  };
 }
 
 async function drawHints() {
@@ -861,6 +889,7 @@ async function main() {
 
   // create instance of human
   human = new Human(userConfig);
+  userConfig = { ...human.config, ...userConfig };
   if (typeof tf !== 'undefined') {
     // eslint-disable-next-line no-undef
     log('TensorFlow external version:', tf.version);
@@ -895,8 +924,10 @@ async function main() {
   for (const m of Object.values(menu)) m.hide();
 
   // init drag & drop
-
   await dragAndDrop();
+
+  // init segmentation
+  await runSegmentation();
 
   if (params.has('image')) {
     try {

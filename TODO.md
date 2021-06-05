@@ -4,14 +4,9 @@
 
 N/A
 
-## Explore Models
-
-- InsightFace: RetinaFace detector and ArcFace recognition: <https://github.com/deepinsight/insightface>  
-
-## In Progress
+## Work in Progress
 
 - Switch to TypeScript 4.3
-- Add backgrounds to segmentation
 
 ## Known Issues
 
@@ -19,4 +14,3 @@ N/A
 - NanoDet with WASM: <https://github.com/tensorflow/tfjs/issues/4824>
 - BlazeFace and HandPose rotation in NodeJS: <https://github.com/tensorflow/tfjs/issues/4066>
 - TypeDoc with TypeScript 4.3: <https://github.com/TypeStrong/typedoc/issues/1589>
-- HandPose lower precision with WASM

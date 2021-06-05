@@ -5,6 +5,9 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as fxImage from './imagefx';
 import { Tensor } from '../tfjs/types';
+import { Config } from '../config';
+
+type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 
 const maxSize = 2048;
 // internal temp canvases
@@ -16,7 +19,7 @@ let fx;
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
 // input is resized and run through imagefx filter
-export function process(input, config): { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement } {
+export function process(input: Input, config: Config): { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement } {
   let tensor;
   if (!input) throw new Error('Human: Input is missing');
   // sanity checks since different browsers do not implement all dom elements

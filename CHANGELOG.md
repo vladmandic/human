@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/06/04 mandic00@live.com
 
+- added experimental body segmentation module
 - add meet and selfie models
 - add live hints to demo
 - switch worker from module to iife importscripts

@@ -16,10 +16,10 @@ const poseNetOutputs = ['MobilenetV1/offset_2/BiasAdd'/* offsets */, 'MobilenetV
 export async function predict(input: Tensor, config: Config): Promise<Body[]> {
   const res = tf.tidy(() => {
     if (!model.inputs[0].shape) return [];
-    const resized = input.resizeBilinear([model.inputs[0].shape[2], model.inputs[0].shape[1]]);
+    const resized = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
     const normalized = resized.toFloat().div(127.5).sub(1.0);
     const results: Array<Tensor> = model.execute(normalized, poseNetOutputs) as Array<Tensor>;
-    const results3d = results.map((y) => y.squeeze([0]));
+    const results3d = results.map((y) => tf.squeeze(y, [0]));
     results3d[1] = results3d[1].sigmoid(); // apply sigmoid on scores
     return results3d;
   });

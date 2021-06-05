@@ -9,7 +9,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/06/04 mandic00@live.com
+### **HEAD -> main** 2021/06/05 mandic00@live.com
+
+
+### **origin/main** 2021/06/04 mandic00@live.com
 
 - added experimental body segmentation module
 - add meet and selfie models

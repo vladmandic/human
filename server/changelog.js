@@ -49,7 +49,7 @@ async function update(f) {
 
   const name = path.join(__dirname, f);
   fs.writeFileSync(name, text);
-  logger.info('Update Change log:', [name]);
+  logger.info('Generate ChangeLog:', [name]);
 }
 
 if (require.main === module) {

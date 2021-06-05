@@ -42,7 +42,7 @@ export class BlazeFaceModel {
     // @ts-ignore isDisposed is internal property
     if ((!inputImage) || (inputImage.isDisposedInternal) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return null;
     const [batch, boxes, scores] = tf.tidy(() => {
-      const resizedImage = inputImage.resizeBilinear([this.inputSize, this.inputSize]);
+      const resizedImage = tf.image.resizeBilinear(inputImage, [this.inputSize, this.inputSize]);
       const normalizedImage = resizedImage.div(127.5).sub(0.5);
       const res = this.model.execute(normalizedImage);
       let batchOut;
@@ -53,7 +53,7 @@ export class BlazeFaceModel {
         const concat = tf.concat([concat512, concat384], 1);
         batchOut = concat.squeeze(0);
       } else {
-        batchOut = res.squeeze(); // when using tfhub model
+        batchOut = tf.squeeze(res); // when using tfhub model
       }
       const boxesOut = decodeBounds(batchOut, this.anchors, [this.inputSize, this.inputSize]);
       const logits = tf.slice(batchOut, [0, 0], [-1, 1]);

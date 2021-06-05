@@ -11,7 +11,8 @@ const esbuild = require('esbuild');
 const TypeDoc = require('typedoc');
 const { ESLint } = require('eslint');
 const tfjs = require('@tensorflow/tfjs/package.json');
-const changelog = require('./changelog');
+const changelog = require('./changelog.js');
+const tsconfig = require('../tsconfig.json');
 
 let logFile = 'build.log';
 
@@ -19,43 +20,18 @@ let busy = false;
 let td = null;
 let eslint = null;
 const banner = { js: `
-  /*
-  Human library
-  homepage: <https://github.com/vladmandic/human>
-  author: <https://github.com/vladmandic>'
-  */
-` };
-
-// tsc configuration for building types only
-const tsconfig = {
-  noEmitOnError: false,
-  target: ts.ScriptTarget.ES2018,
-  module: ts.ModuleKind.ES2020,
-  outDir: 'types',
-  declaration: true,
-  emitDeclarationOnly: true,
-  emitDecoratorMetadata: true,
-  experimentalDecorators: true,
-  skipLibCheck: true,
-  importHelpers: true,
-  noImplicitAny: false,
-  preserveConstEnums: true,
-  strictNullChecks: true,
-  baseUrl: './',
-  typeRoots: ['node_modules/@types'],
-  paths: {
-    tslib: ['node_modules/tslib/tslib.d.ts'],
-    '@tensorflow/tfjs-node/dist/io/file_system': ['node_modules/@tensorflow/tfjs-node/dist/io/file_system.js'],
-    '@tensorflow/tfjs-core/dist/index': ['node_modules/@tensorflow/tfjs-core/dist/index.js'],
-    '@tensorflow/tfjs-converter/dist/index': ['node_modules/@tensorflow/tfjs-converter/dist/index.js'],
-  },
-};
+   /*
+   Human library
+   homepage: <https://github.com/vladmandic/human>
+   author: <https://github.com/vladmandic>'
+   */
+ ` };
 
 // common configuration
 const lintLocations = ['server/', 'demo/', 'src/', 'test/'];
 
 const config = {
-  common: {
+  build: {
     banner,
     tsconfig: 'server/tfjs-tsconfig.json',
     logLevel: 'error',
@@ -73,6 +49,7 @@ const config = {
     minifyIdentifiers: true,
     minifySyntax: true,
   },
+  changelog: '../CHANGELOG.md',
 };
 
 const targets = {
@@ -194,14 +171,14 @@ const targets = {
       sourcemap: true,
     },
     /*
-    demo: {
-      platform: 'browser',
-      format: 'esm',
-      entryPoints: ['demo/browser.js'],
-      outfile: 'dist/demo-browser-index.js',
-      external: ['fs', 'buffer', 'util', 'os'],
-    },
-    */
+     demo: {
+       platform: 'browser',
+       format: 'esm',
+       entryPoints: ['demo/browser.js'],
+       outfile: 'dist/demo-browser-index.js',
+       external: ['fs', 'buffer', 'util', 'os'],
+     },
+     */
   },
 };
 
@@ -230,9 +207,15 @@ async function getStats(json) {
 }
 
 // rebuild typings
-async function typings(entryPoint, options) {
-  log.info('Generate types:', entryPoint);
-  const program = ts.createProgram(entryPoint, options);
+async function typings(entryPoint) {
+  log.info('Generate Typings:', entryPoint, 'outDir:', [tsconfig.compilerOptions.outDir]);
+  const tsoptions = { ...tsconfig.compilerOptions,
+    target: ts.ScriptTarget.ES2018,
+    module: ts.ModuleKind.ES2020,
+    moduleResolution: ts.ModuleResolutionKind.NodeJs,
+  };
+  const compilerHost = ts.createCompilerHost(tsoptions);
+  const program = ts.createProgram(entryPoint, tsoptions, compilerHost);
   const emit = program.emit();
   const diag = ts
     .getPreEmitDiagnostics(program)
@@ -250,7 +233,6 @@ async function typings(entryPoint, options) {
 }
 
 async function typedoc(entryPoint) {
-  log.info('Generate TypeDocs:', entryPoint);
   if (!td) {
     td = new TypeDoc.Application();
     td.options.addReader(new TypeDoc.TSConfigReader());
@@ -260,6 +242,7 @@ async function typedoc(entryPoint) {
     td.logger.verbose = () => { /***/ };
     td.logger.log = log.info;
   }
+  log.info('Generate TypeDocs:', entryPoint, 'outDir:', [tsconfig.typedocOptions.out]);
   const project = td.convert();
   if (!project) log.warn('TypeDoc: convert returned empty project');
   if (td.logger.hasErrors() || td.logger.hasWarnings()) log.warn('TypeDoc:', 'errors:', td.logger.errorCount, 'warnings:', td.logger.warningCount);
@@ -299,19 +282,17 @@ async function build(f, msg, dev = false) {
       for (const [targetName, targetOptions] of Object.entries(targetGroup)) {
         // if triggered from watch mode, rebuild only browser bundle
         // if ((require.main !== module) && ((targetGroupName === 'browserNoBundle') || (targetGroupName === 'nodeGPU'))) continue;
-        const meta = dev
-          // @ts-ignore // eslint-typescript complains about string enums used in js code
-          ? await esbuild.build({ ...config.common, ...config.debug, ...targetOptions })
-          // @ts-ignore // eslint-typescript complains about string enums used in js code
-          : await esbuild.build({ ...config.common, ...config.production, ...targetOptions });
+        const opt = dev ? config.debug : config.production;
+        // @ts-ignore // eslint-typescript complains about string enums used in js code
+        const meta = await esbuild.build({ ...config.build, ...opt, ...targetOptions });
         const stats = await getStats(meta);
-        log.state(`Build for: ${targetGroupName} type: ${targetName}:`, stats);
+        log.state(` target: ${targetGroupName} type: ${targetName}:`, stats);
       }
     }
     if (!dev) { // only for prod builds, skipped for dev build
       await lint(); // run linter
-      await typings(targets.browserBundle.esm.entryPoints, tsconfig); // generate typings
-      await changelog.update('../CHANGELOG.md'); // generate changelog
+      await typings(targets.browserBundle.esm.entryPoints); // generate typings
+      await changelog.update(config.changelog); // generate changelog
       await typedoc(targets.browserBundle.esm.entryPoints); // generate typedoc
     }
     if (require.main === module) process.exit(0);

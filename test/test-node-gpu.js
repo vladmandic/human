@@ -6,9 +6,6 @@ const config = {
   backend: 'tensorflow',
   debug: false,
   async: false,
-  filter: {
-    enabled: true,
-  },
   face: {
     enabled: true,
     detector: { enabled: true, rotation: true },
@@ -20,6 +17,8 @@ const config = {
   hand: { enabled: true },
   body: { enabled: true },
   object: { enabled: true },
+  segmentation: { enabled: true },
+  filter: { enabled: false },
 };
 
 test(Human, config);

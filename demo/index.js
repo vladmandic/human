@@ -31,6 +31,7 @@ let userConfig = {
   warmup: 'none',
   backend: 'humangl',
   wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.6.0/dist/',
+  segmentation: { enabled: true },
   /*
   async: false,
   cacheSensitivity: 0,
@@ -210,10 +211,9 @@ async function drawResults(input) {
   // draw fps chart
   await menu.process.updateChart('FPS', ui.detectFPS);
 
-  // get updated canvas if missing or if we want buffering, but skip if segmentation is enabled
-  if (userConfig.segmentation.enabled) {
+  if (userConfig.segmentation.enabled && ui.buffered) { // refresh segmentation if using buffered output
     result.canvas = await human.segmentation(input, ui.background, userConfig);
-  } else if (!result.canvas || ui.buffered) {
+  } else if (!result.canvas || ui.buffered) { // refresh with input if using buffered output or if missing canvas
     const image = await human.image(input);
     result.canvas = image.canvas;
     human.tf.dispose(image.tensor);

@@ -27,9 +27,8 @@ const userConfig = {
   hand: { enabled: false },
   gesture: { enabled: false },
   body: { enabled: false },
-  filter: {
-    enabled: false,
-  },
+  filter: { enabled: true },
+  segmentation: { enabled: false },
 };
 
 const human = new Human(userConfig); // new instance of human

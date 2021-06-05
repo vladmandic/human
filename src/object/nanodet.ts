@@ -96,7 +96,7 @@ async function process(res, inputSize, outputShape, config) {
 
   // filter & sort results
   results = results
-    .filter((a, idx) => nmsIdx.includes(idx))
+    .filter((_val, idx) => nmsIdx.includes(idx))
     .sort((a, b) => (b.score - a.score));
 
   return results;

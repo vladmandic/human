@@ -435,6 +435,7 @@ export class Human {
     return new Promise(async (resolve) => {
       this.state = 'config';
       let timeStamp;
+      let elapsedTime;
 
       // update configuration
       this.config = mergeDeep(this.config, userConfig) as Config;
@@ -473,14 +474,31 @@ export class Human {
       */
 
       timeStamp = now();
-      const process = image.process(input, this.config);
+      let process = image.process(input, this.config);
+      this.performance.image = Math.trunc(now() - timeStamp);
+      this.analyze('Get Image:');
+
+      // run segmentation preprocessing
+      if (this.config.segmentation.enabled && process && process.tensor) {
+        this.analyze('Start Segmentation:');
+        this.state = 'run:segmentation';
+        timeStamp = now();
+        await segmentation.predict(process);
+        elapsedTime = Math.trunc(now() - timeStamp);
+        if (elapsedTime > 0) this.performance.segmentation = elapsedTime;
+        if (process.canvas) {
+          // replace input
+          process.tensor.dispose();
+          process = image.process(process.canvas, this.config);
+        }
+        this.analyze('End Segmentation:');
+      }
+
       if (!process || !process.tensor) {
         log('could not convert input to tensor');
         resolve({ error: 'could not convert input to tensor' });
         return;
       }
-      this.performance.image = Math.trunc(now() - timeStamp);
-      this.analyze('Get Image:');
 
       timeStamp = now();
       this.config.skipFrame = await this.#skipFrame(process.tensor);
@@ -497,7 +515,6 @@ export class Human {
       let bodyRes;
       let handRes;
       let objectRes;
-      let elapsedTime;
 
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       if (this.config.async) {
@@ -572,19 +589,6 @@ export class Human {
         if (!this.config.async) this.performance.gesture = Math.trunc(now() - timeStamp);
         else if (this.performance.gesture) delete this.performance.gesture;
       }
-
-      // run segmentation
-      /* not triggered as part of detect
-      if (this.config.segmentation.enabled) {
-        this.analyze('Start Segmentation:');
-        this.state = 'run:segmentation';
-        timeStamp = now();
-        await segmentation.predict(process, this.config);
-        elapsedTime = Math.trunc(now() - timeStamp);
-        if (elapsedTime > 0) this.performance.segmentation = elapsedTime;
-        this.analyze('End Segmentation:');
-      }
-      */
 
       this.performance.total = Math.trunc(now() - timeStart);
       this.state = 'idle';

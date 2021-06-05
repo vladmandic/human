@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "noEmitOnError": false,
     "module": "es2020",
     "target": "es2018",
     "moduleResolution": "node",
@@ -18,7 +19,14 @@
     "skipLibCheck": true,
     "sourceMap": false,
     "strictNullChecks": true,
-    "allowJs": true
+    "allowJs": true,
+    "baseUrl": "./",
+    "paths": {
+      "tslib": ["node_modules/tslib/tslib.d.ts"],
+      "@tensorflow/tfjs-node/dist/io/file_system": ["node_modules/@tensorflow/tfjs-node/dist/io/file_system.js"],
+      "@tensorflow/tfjs-core/dist/index": ["node_modules/@tensorflow/tfjs-core/dist/index.js"],
+      "@tensorflow/tfjs-converter/dist/index": ["node_modules/@tensorflow/tfjs-converter/dist/index.js"]
+    }
   },
   "formatCodeOptions": { "indentSize": 2, "tabSize": 2 },
   "include": ["src/*", "src/***/*"],
@@ -35,6 +43,6 @@
     "entryPoints": "src/human.ts",
     "logLevel": "Info",
     "logger": "none",
-    "theme": "wiki/theme/",
+    "theme": "wiki/theme/"
   }
 }

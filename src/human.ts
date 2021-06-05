@@ -31,16 +31,16 @@ import { Tensor } from './tfjs/types';
 
 // export types
 export type { Config } from './config';
-export type { Result, Face, Hand, Body, Item, Gesture } from './result';
+export type { Result, Face, Hand, Body, Item, Gesture, Person } from './result';
 export type { DrawOptions } from './draw/draw';
 
 /** Defines all possible input types for **Human** detection
- * @typedef Input
+ * @typedef Input Type
  */
 export type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 
 /** Error message
- * @typedef Error
+ * @typedef Error Type
  */
 export type Error = { error: string };
 
@@ -205,6 +205,7 @@ export class Human {
 
   /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
    * - Calculation is based on normalized Minkowski distance between
+   *
    * @param embedding1: face descriptor as array of numbers
    * @param embedding2: face descriptor as array of numbers
    * @returns similarity: number
@@ -212,6 +213,19 @@ export class Human {
   // eslint-disable-next-line class-methods-use-this
   similarity(embedding1: Array<number>, embedding2: Array<number>): number {
     return faceres.similarity(embedding1, embedding2);
+  }
+
+  /**
+   * Segmentation method takes any input and returns processed canvas with body segmentation
+   * Optional parameter background is used to fill the background with specific input
+   * Segmentation is not triggered as part of detect process
+   *
+   * @param input: {@link Input}
+   * @param background?: {@link Input}
+   * @returns Canvas
+   */
+  segmentation(input: Input, background?: Input) {
+    return segmentation.process(input, background, this.config);
   }
 
   /** Enhance method performs additional enhacements to face image previously detected for futher processing
@@ -372,7 +386,8 @@ export class Human {
   /**
    * Runs interpolation using last known result and returns smoothened result
    * Interpolation is based on time since last known result so can be called independently
-   * @param result?: use specific result set to run interpolation on
+   *
+   * @param result?: {@link Result} optional use specific result set to run interpolation on
    * @returns result: {@link Result}
    */
   next = (result?: Result) => interpolate.calc(result || this.result) as Result;
@@ -410,9 +425,10 @@ export class Human {
    * - Pre-process input: {@link Input}
    * - Run inference for all configured models
    * - Process and return result: {@link Result}
+   *
    * @param input: Input
-   * @param userConfig?: Config
-   * @returns result: Result
+   * @param userConfig?: {@link Config}
+   * @returns result: {@link Result}
   */
   async detect(input: Input, userConfig?: Config | Record<string, unknown>): Promise<Result | Error> {
     // detection happens inside a promise
@@ -558,6 +574,7 @@ export class Human {
       }
 
       // run segmentation
+      /* not triggered as part of detect
       if (this.config.segmentation.enabled) {
         this.analyze('Start Segmentation:');
         this.state = 'run:segmentation';
@@ -567,6 +584,7 @@ export class Human {
         if (elapsedTime > 0) this.performance.segmentation = elapsedTime;
         this.analyze('End Segmentation:');
       }
+      */
 
       this.performance.total = Math.trunc(now() - timeStart);
       this.state = 'idle';

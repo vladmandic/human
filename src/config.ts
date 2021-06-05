@@ -353,6 +353,7 @@ const config: Config = {
   segmentation: {
     enabled: false,          // if segmentation is enabled, output result.canvas will be augmented
                              // with masked image containing only person output
+                             // segmentation is not triggered as part of detection and requires separate call to human.segmentation
     modelPath: 'selfie.json',  // experimental: object detection model, can be absolute path or relative to modelBasePath
                              // can be 'selfie' or 'meet'
   },

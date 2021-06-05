@@ -8,9 +8,6 @@ const config = {
   // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.6.0/dist/',
   debug: false,
   async: false,
-  filter: {
-    enabled: true,
-  },
   face: {
     enabled: true,
     detector: { enabled: true, rotation: true },
@@ -22,6 +19,8 @@ const config = {
   hand: { enabled: true },
   body: { enabled: true },
   object: { enabled: false },
+  segmentation: { enabled: true },
+  filter: { enabled: false },
 };
 
 test(Human, config);

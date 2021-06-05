@@ -7,13 +7,11 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
 import { GraphModel, Tensor } from '../tfjs/types';
 import { Config } from '../config';
-// import * as blur from './blur';
 
 type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 
 let model: GraphModel;
 let busy = false;
-// let blurKernel;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
@@ -22,12 +20,13 @@ export async function load(config: Config): Promise<GraphModel> {
     if (!model || !model['modelUrl']) log('load model failed:', config.segmentation.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
-  // if (!blurKernel) blurKernel = blur.getGaussianKernel(5, 1, 1);
   return model;
 }
 
-export async function predict(input: { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement }, config: Config): Promise<Uint8ClampedArray | null> {
-  if (!config.segmentation.enabled || !input.tensor || !input.canvas) return null;
+export async function predict(input: { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement }): Promise<Uint8ClampedArray | null> {
+  const width = input.tensor?.shape[1] || 0;
+  const height = input.tensor?.shape[2] || 0;
+  if (!input.tensor) return null;
   if (!model || !model.inputs[0].shape) return null;
   const resizeInput = tf.image.resizeBilinear(input.tensor, [model.inputs[0].shape[1], model.inputs[0].shape[2]], false);
   const norm = resizeInput.div(255);
@@ -36,10 +35,6 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
   // selfie output: 1,144,256,2
   tf.dispose(resizeInput);
   tf.dispose(norm);
-
-  const overlay = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(input.canvas.width, input.canvas.height) : document.createElement('canvas');
-  overlay.width = input.canvas.width;
-  overlay.height = input.canvas.height;
 
   const squeeze = tf.squeeze(res, 0);
   let resizeOutput;
@@ -53,7 +48,7 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
     tf.dispose(bg);
     tf.dispose(fg);
     // running sofmax before unstack creates 2x2 matrix so we only take upper-left quadrant
-    const crop = tf.image.cropAndResize(pad, [[0, 0, 0.5, 0.5]], [0], [input.tensor?.shape[1], input.tensor?.shape[2]]);
+    const crop = tf.image.cropAndResize(pad, [[0, 0, 0.5, 0.5]], [0], [width, height]);
     // otherwise run softmax after unstack and use standard resize
     // resizeOutput = tf.image.resizeBilinear(expand, [input.tensor?.shape[1], input.tensor?.shape[2]]);
     resizeOutput = crop.squeeze(0);
@@ -61,29 +56,34 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
     tf.dispose(expand);
     tf.dispose(pad);
   } else { // model selfie has a single channel that we can use directly
-    resizeOutput = tf.image.resizeBilinear(squeeze, [input.tensor?.shape[1], input.tensor?.shape[2]]);
+    resizeOutput = tf.image.resizeBilinear(squeeze, [width, height]);
   }
 
+  if (typeof document === 'undefined') return resizeOutput.dataSync(); // we're running in nodejs so return alpha array as-is
+
+  const overlay = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(width, height) : document.createElement('canvas');
+  overlay.width = width;
+  overlay.height = height;
   if (tf.browser) await tf.browser.toPixels(resizeOutput, overlay);
   tf.dispose(resizeOutput);
   tf.dispose(squeeze);
   tf.dispose(res);
 
   // get alpha channel data
-  const alphaCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(input.canvas.width, input.canvas.height) : document.createElement('canvas'); // need one more copy since input may already have gl context so 2d context fails
-  alphaCanvas.width = input.canvas.width;
-  alphaCanvas.height = input.canvas.height;
+  const alphaCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(width, height) : document.createElement('canvas'); // need one more copy since input may already have gl context so 2d context fails
+  alphaCanvas.width = width;
+  alphaCanvas.height = height;
   const ctxAlpha = alphaCanvas.getContext('2d') as CanvasRenderingContext2D;
   ctxAlpha.filter = 'blur(8px';
   await ctxAlpha.drawImage(overlay, 0, 0);
-  const alpha = ctxAlpha.getImageData(0, 0, input.canvas.width, input.canvas.height).data;
+  const alpha = ctxAlpha.getImageData(0, 0, width, height).data;
 
   // get original canvas merged with overlay
-  const original = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(input.canvas.width, input.canvas.height) : document.createElement('canvas'); // need one more copy since input may already have gl context so 2d context fails
-  original.width = input.canvas.width;
-  original.height = input.canvas.height;
+  const original = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(width, height) : document.createElement('canvas'); // need one more copy since input may already have gl context so 2d context fails
+  original.width = width;
+  original.height = height;
   const ctx = original.getContext('2d') as CanvasRenderingContext2D;
-  await ctx.drawImage(input.canvas, 0, 0);
+  if (input.canvas) await ctx.drawImage(input.canvas, 0, 0);
   // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation // best options are: darken, color-burn, multiply
   ctx.globalCompositeOperation = 'darken';
   ctx.filter = 'blur(8px)'; // use css filter for bluring, can be done with gaussian blur manually instead
@@ -99,10 +99,9 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
 export async function process(input: Input, background: Input | undefined, config: Config): Promise<HTMLCanvasElement | OffscreenCanvas | null> {
   if (busy) return null;
   busy = true;
-  if (!config.segmentation.enabled) config.segmentation.enabled = true; // override config
   if (!model) await load(config);
   const img = image.process(input, config);
-  const alpha = await predict(img, config);
+  const alpha = await predict(img);
   tf.dispose(img.tensor);
 
   if (background && alpha) {

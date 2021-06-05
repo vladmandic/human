@@ -11,9 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/06/05 mandic00@live.com
 
-
-### **origin/main** 2021/06/05 mandic00@live.com
-
+- minor git corruption
 - unified build
 - enable body segmentation and background replacement
 - work on body segmentation

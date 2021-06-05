@@ -39,7 +39,7 @@ export function similarity(embedding1: Array<number>, embedding2: Array<number>,
   if (embedding1?.length !== embedding2?.length) return 0;
   // general minkowski distance, euclidean distance is limited case where order is 2
   const distance = 5.0 * embedding1
-    .map((val, i) => (Math.abs(embedding1[i] - embedding2[i]) ** order)) // distance squared
+    .map((_val, i) => (Math.abs(embedding1[i] - embedding2[i]) ** order)) // distance squared
     .reduce((sum, now) => (sum + now), 0) // sum all distances
     ** (1 / order); // get root of
   const res = Math.max(0, 100 - distance) / 100.0;

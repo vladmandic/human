@@ -10449,12 +10449,16 @@ async function predict11(input, config3) {
   if (squeeze4.shape[2] === 2) {
     const softmax = squeeze4.softmax();
     const [bg, fg] = tf20.unstack(softmax, 2);
-    tf20.dispose(softmax);
     const expand = fg.expandDims(2);
+    const pad = expand.expandDims(0);
+    tf20.dispose(softmax);
     tf20.dispose(bg);
     tf20.dispose(fg);
-    resizeOutput = tf20.image.resizeBilinear(expand, [(_a = input.tensor) == null ? void 0 : _a.shape[1], (_b = input.tensor) == null ? void 0 : _b.shape[2]]);
+    const crop = tf20.image.cropAndResize(pad, [[0, 0, 0.5, 0.5]], [0], [(_a = input.tensor) == null ? void 0 : _a.shape[1], (_b = input.tensor) == null ? void 0 : _b.shape[2]]);
+    resizeOutput = crop.squeeze(0);
+    tf20.dispose(crop);
     tf20.dispose(expand);
+    tf20.dispose(pad);
   } else {
     resizeOutput = tf20.image.resizeBilinear(squeeze4, [(_c = input.tensor) == null ? void 0 : _c.shape[1], (_d = input.tensor) == null ? void 0 : _d.shape[2]]);
   }
@@ -10463,10 +10467,17 @@ async function predict11(input, config3) {
   tf20.dispose(resizeOutput);
   tf20.dispose(squeeze4);
   tf20.dispose(res);
-  const ctx = input.canvas.getContext("2d");
+  const original = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(input.canvas.width, input.canvas.height) : document.createElement("canvas");
+  original.width = input.canvas.width;
+  original.height = input.canvas.height;
+  const ctx = original.getContext("2d");
+  await ctx.drawImage(input.canvas, 0, 0);
   ctx.globalCompositeOperation = "darken";
-  await (ctx == null ? void 0 : ctx.drawImage(overlay, 0, 0));
+  ctx.filter = "blur(8px)";
+  await ctx.drawImage(overlay, 0, 0);
   ctx.globalCompositeOperation = "source-in";
+  ctx.filter = "none";
+  input.canvas = original;
   return true;
 }
 

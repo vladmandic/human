@@ -11,7 +11,7 @@ N/A
 ## In Progress
 
 - Switch to TypeScript 4.3
-- Implement segmentation model
+- Add backgrounds to segmentation
 
 ## Known Issues
 

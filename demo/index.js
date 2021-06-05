@@ -415,7 +415,10 @@ function webWorker(input, image, canvas, timestamp) {
       }
 
       ui.framesDetect++;
-      if (!ui.drawThread) drawResults(input);
+      if (!ui.drawThread) {
+        status();
+        drawResults(input);
+      }
       // eslint-disable-next-line no-use-before-define
       ui.detectThread = requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
     });
@@ -455,7 +458,6 @@ function runHumanDetect(input, canvas, timestamp) {
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     // perform detection in worker
     webWorker(input, data, canvas, timestamp);
-    status();
   } else {
     human.detect(input, userConfig).then((result) => {
       status();

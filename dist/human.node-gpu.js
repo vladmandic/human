@@ -1,10 +1,10 @@
 
-  /*
-  Human library
-  homepage: <https://github.com/vladmandic/human>
-  author: <https://github.com/vladmandic>'
-  */
-
+   /*
+   Human library
+   homepage: <https://github.com/vladmandic/human>
+   author: <https://github.com/vladmandic>'
+   */
+ 
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -71,8 +71,7 @@ var require_tfjs_esm = __commonJS({
       return __reExport2(__markAsModule2(__defProp2(module22 != null ? __create2(__getProtoOf2(module22)) : {}, "default", module22 && module22.__esModule && "default" in module22 ? { get: () => module22.default, enumerable: true } : { value: module22, enumerable: true })), module22);
     };
     __markAsModule2(exports);
-    __reExport2(exports, __toModule2(require("@tensorflow/tfjs")));
-    __reExport2(exports, __toModule2(require("@tensorflow/tfjs-backend-wasm")));
+    __reExport2(exports, __toModule2(require("@tensorflow/tfjs-node-gpu")));
   }
 });
 

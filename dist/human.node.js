@@ -1,10 +1,10 @@
 
-  /*
-  Human library
-  homepage: <https://github.com/vladmandic/human>
-  author: <https://github.com/vladmandic>'
-  */
-
+   /*
+   Human library
+   homepage: <https://github.com/vladmandic/human>
+   author: <https://github.com/vladmandic>'
+   */
+ 
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;

@@ -5,8 +5,10 @@
 
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
+import { Config } from '../config';
+import { GraphModel, Tensor } from '../tfjs/types';
 
-let model;
+let model: GraphModel;
 let last = { gender: '' };
 let skipped = Number.MAX_SAFE_INTEGER;
 let alternative = false;
@@ -14,7 +16,8 @@ let alternative = false;
 // tuning values
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
 
-export async function load(config) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function load(config: Config | any) {
   if (!model) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.face.gender.modelPath));
     alternative = model.inputs[0].shape[3] === 1;
@@ -24,7 +27,8 @@ export async function load(config) {
   return model;
 }
 
-export async function predict(image, config) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function predict(image: Tensor, config: Config | any) {
   if (!model) return null;
   if ((skipped < config.face.gender.skipFrames) && config.skipFrame && last.gender !== '') {
     skipped++;

@@ -50,9 +50,7 @@ const userConfig = {
   hand: { enabled: false },
   body: { enabled: false },
   // body: { enabled: true, modelPath: 'posenet.json' },
-  // body: { enabled: true, modelPath: 'blazepose.json' },
-  // segmentation: { enabled: true, modelPath: 'meet.json' },
-  // segmentation: { enabled: true, modelPath: 'selfie.json' },
+  segmentation: { enabled: true },
   */
 };
 
@@ -211,8 +209,8 @@ async function drawResults(input) {
   // draw fps chart
   await menu.process.updateChart('FPS', ui.detectFPS);
 
-  // get updated canvas
-  if (ui.buffered || !result.canvas) {
+  // get updated canvas if missing or if we want buffering, but skip if segmentation is enabled
+  if (!result.canvas || (ui.buffered && !human.config.segmentation.enabled)) {
     const image = await human.image(input);
     result.canvas = image.canvas;
     human.tf.dispose(image.tensor);
@@ -489,6 +487,7 @@ async function processImage(input, title) {
     image.onload = async () => {
       if (ui.hintsThread) clearInterval(ui.hintsThread);
       ui.interpolated = false; // stop interpolating results if input is image
+      ui.buffered = false; // stop buffering result if input is image
       status(`processing image: ${title}`);
       const canvas = document.getElementById('canvas');
       image.width = image.naturalWidth;
@@ -675,6 +674,8 @@ function setupMenu() {
   menu.models.addBool('hand pose', human.config.hand, 'enabled', (val) => human.config.hand.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.models.addBool('gestures', human.config.gesture, 'enabled', (val) => human.config.gesture.enabled = val);
+  menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
+  menu.models.addBool('body segmentation', human.config.segmentation, 'enabled', (val) => human.config.segmentation.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.models.addBool('object detection', human.config.object, 'enabled', (val) => human.config.object.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');

@@ -240,7 +240,7 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, dra
             ctx.fill();
           }
         }
-        if (localOptions.drawGaze && f.rotation?.gaze?.strength && f.rotation?.gaze?.bearing) {
+        if (localOptions.drawGaze && f.rotation?.gaze?.strength && f.rotation?.gaze?.bearing && f.annotations['leftEyeIris'] && f.annotations['rightEyeIris'] && f.annotations['leftEyeIris'][0] && f.annotations['rightEyeIris'][0]) {
           ctx.strokeStyle = 'pink';
           ctx.beginPath();
 

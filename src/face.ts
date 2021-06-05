@@ -16,6 +16,7 @@ const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
 
 const calculateGaze = (face): { bearing: number, strength: number } => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]); // function to calculate angle between any two points
+  if (!face.annotations['rightEyeIris'] || !face.annotations['leftEyeIris']) return { bearing: 0, strength: 0 };
 
   const offsetIris = [0, -0.1]; // iris center may not align with average of eye extremes
   const eyeRatio = 1; // factor to normalize changes x vs y

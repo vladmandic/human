@@ -12,6 +12,7 @@ import { Config } from '../config';
 type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 
 let model: GraphModel;
+let busy = false;
 // let blurKernel;
 
 export async function load(config: Config): Promise<GraphModel> {
@@ -95,7 +96,9 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
   return alpha;
 }
 
-export async function process(input: Input, background: Input | undefined, config: Config): Promise<HTMLCanvasElement | OffscreenCanvas> {
+export async function process(input: Input, background: Input | undefined, config: Config): Promise<HTMLCanvasElement | OffscreenCanvas | null> {
+  if (busy) return null;
+  busy = true;
   if (!config.segmentation.enabled) config.segmentation.enabled = true; // override config
   if (!model) await load(config);
   const img = image.process(input, config);
@@ -124,8 +127,8 @@ export async function process(input: Input, background: Input | undefined, confi
       cData.data[4 * i + 3] = ((255 - alpha[4 * i + 3]) / 255.0 * cData.data[4 * i + 3]) + (alpha[4 * i + 3] / 255.0 * fgData[4 * i + 3]);
     }
     ctx.putImageData(cData, 0, 0);
-
-    return c;
+    img.canvas = c;
   }
+  busy = false;
   return img.canvas;
 }

@@ -27,7 +27,7 @@ export function similarity(embedding1, embedding2, order = 2): number {
   if (embedding1?.length !== embedding2?.length) return 0;
   // general minkowski distance, euclidean distance is limited case where order is 2
   const distance = embedding1
-    .map((val, i) => (Math.abs(embedding1[i] - embedding2[i]) ** order)) // distance squared
+    .map((_val, i) => (Math.abs(embedding1[i] - embedding2[i]) ** order)) // distance squared
     .reduce((sum, now) => (sum + now), 0) // sum all distances into total
     ** (1 / order); // get root of total distances
   const res = Math.max(Math.trunc(1000 * (1 - distance)) / 1000, 0);

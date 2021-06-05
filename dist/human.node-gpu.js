@@ -1,10 +1,9 @@
 
-   /*
-   Human library
-   homepage: <https://github.com/vladmandic/human>
-   author: <https://github.com/vladmandic>'
-   */
- 
+    /*
+      Human library
+      homepage: <https://github.com/vladmandic/human>
+      author: <https://github.com/vladmandic>'
+    */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -4241,7 +4240,7 @@ function similarity(embedding1, embedding2, order = 2) {
     return 0;
   if ((embedding1 == null ? void 0 : embedding1.length) !== (embedding2 == null ? void 0 : embedding2.length))
     return 0;
-  const distance = 5 * embedding1.map((val, i) => Math.abs(embedding1[i] - embedding2[i]) ** order).reduce((sum, now2) => sum + now2, 0) ** (1 / order);
+  const distance = 5 * embedding1.map((_val, i) => Math.abs(embedding1[i] - embedding2[i]) ** order).reduce((sum, now2) => sum + now2, 0) ** (1 / order);
   const res = Math.max(0, 100 - distance) / 100;
   return res;
 }
@@ -8696,7 +8695,7 @@ async function process2(res, inputSize, outputShape, config3) {
     nmsIdx = nms.dataSync();
     tf17.dispose(nms);
   }
-  results = results.filter((a, idx) => nmsIdx.includes(idx)).sort((a, b) => b.score - a.score);
+  results = results.filter((_val, idx) => nmsIdx.includes(idx)).sort((a, b) => b.score - a.score);
   return results;
 }
 async function predict9(image18, config3) {
@@ -10433,9 +10432,11 @@ async function load12(config3) {
     log("cached model:", model9["modelUrl"]);
   return model9;
 }
-async function predict11(input, config3) {
-  var _a, _b, _c, _d;
-  if (!config3.segmentation.enabled || !input.tensor || !input.canvas)
+async function predict11(input) {
+  var _a, _b;
+  const width = ((_a = input.tensor) == null ? void 0 : _a.shape[1]) || 0;
+  const height = ((_b = input.tensor) == null ? void 0 : _b.shape[2]) || 0;
+  if (!input.tensor)
     return null;
   if (!model9 || !model9.inputs[0].shape)
     return null;
@@ -10444,9 +10445,6 @@ async function predict11(input, config3) {
   const res = model9.predict(norm);
   tf20.dispose(resizeInput);
   tf20.dispose(norm);
-  const overlay = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(input.canvas.width, input.canvas.height) : document.createElement("canvas");
-  overlay.width = input.canvas.width;
-  overlay.height = input.canvas.height;
   const squeeze7 = tf20.squeeze(res, 0);
   let resizeOutput;
   if (squeeze7.shape[2] === 2) {
@@ -10457,31 +10455,37 @@ async function predict11(input, config3) {
     tf20.dispose(softmax);
     tf20.dispose(bg);
     tf20.dispose(fg);
-    const crop = tf20.image.cropAndResize(pad, [[0, 0, 0.5, 0.5]], [0], [(_a = input.tensor) == null ? void 0 : _a.shape[1], (_b = input.tensor) == null ? void 0 : _b.shape[2]]);
+    const crop = tf20.image.cropAndResize(pad, [[0, 0, 0.5, 0.5]], [0], [width, height]);
     resizeOutput = crop.squeeze(0);
     tf20.dispose(crop);
     tf20.dispose(expand);
     tf20.dispose(pad);
   } else {
-    resizeOutput = tf20.image.resizeBilinear(squeeze7, [(_c = input.tensor) == null ? void 0 : _c.shape[1], (_d = input.tensor) == null ? void 0 : _d.shape[2]]);
+    resizeOutput = tf20.image.resizeBilinear(squeeze7, [width, height]);
   }
+  if (typeof document === "undefined")
+    return resizeOutput.dataSync();
+  const overlay = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(width, height) : document.createElement("canvas");
+  overlay.width = width;
+  overlay.height = height;
   if (tf20.browser)
     await tf20.browser.toPixels(resizeOutput, overlay);
   tf20.dispose(resizeOutput);
   tf20.dispose(squeeze7);
   tf20.dispose(res);
-  const alphaCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(input.canvas.width, input.canvas.height) : document.createElement("canvas");
-  alphaCanvas.width = input.canvas.width;
-  alphaCanvas.height = input.canvas.height;
+  const alphaCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(width, height) : document.createElement("canvas");
+  alphaCanvas.width = width;
+  alphaCanvas.height = height;
   const ctxAlpha = alphaCanvas.getContext("2d");
   ctxAlpha.filter = "blur(8px";
   await ctxAlpha.drawImage(overlay, 0, 0);
-  const alpha = ctxAlpha.getImageData(0, 0, input.canvas.width, input.canvas.height).data;
-  const original = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(input.canvas.width, input.canvas.height) : document.createElement("canvas");
-  original.width = input.canvas.width;
-  original.height = input.canvas.height;
+  const alpha = ctxAlpha.getImageData(0, 0, width, height).data;
+  const original = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(width, height) : document.createElement("canvas");
+  original.width = width;
+  original.height = height;
   const ctx = original.getContext("2d");
-  await ctx.drawImage(input.canvas, 0, 0);
+  if (input.canvas)
+    await ctx.drawImage(input.canvas, 0, 0);
   ctx.globalCompositeOperation = "darken";
   ctx.filter = "blur(8px)";
   await ctx.drawImage(overlay, 0, 0);
@@ -10495,12 +10499,10 @@ async function process5(input, background, config3) {
   if (busy)
     return null;
   busy = true;
-  if (!config3.segmentation.enabled)
-    config3.segmentation.enabled = true;
   if (!model9)
     await load12(config3);
   const img = process4(input, config3);
-  const alpha = await predict11(img, config3);
+  const alpha = await predict11(img);
   tf20.dispose(img.tensor);
   if (background && alpha) {
     const tmp = process4(background, config3);
@@ -11562,6 +11564,7 @@ var Human = class {
     return new Promise(async (resolve) => {
       this.state = "config";
       let timeStamp;
+      let elapsedTime;
       this.config = mergeDeep(this.config, userConfig);
       this.state = "check";
       const error = __privateGet(this, _sanity).call(this, input);
@@ -11573,14 +11576,28 @@ var Human = class {
       await __privateGet(this, _checkBackend).call(this);
       await this.load();
       timeStamp = now();
-      const process6 = process4(input, this.config);
+      let process6 = process4(input, this.config);
+      this.performance.image = Math.trunc(now() - timeStamp);
+      this.analyze("Get Image:");
+      if (this.config.segmentation.enabled && process6 && process6.tensor) {
+        this.analyze("Start Segmentation:");
+        this.state = "run:segmentation";
+        timeStamp = now();
+        await predict11(process6);
+        elapsedTime = Math.trunc(now() - timeStamp);
+        if (elapsedTime > 0)
+          this.performance.segmentation = elapsedTime;
+        if (process6.canvas) {
+          process6.tensor.dispose();
+          process6 = process4(process6.canvas, this.config);
+        }
+        this.analyze("End Segmentation:");
+      }
       if (!process6 || !process6.tensor) {
         log("could not convert input to tensor");
         resolve({ error: "could not convert input to tensor" });
         return;
       }
-      this.performance.image = Math.trunc(now() - timeStamp);
-      this.analyze("Get Image:");
       timeStamp = now();
       this.config.skipFrame = await __privateGet(this, _skipFrame).call(this, process6.tensor);
       if (!this.performance.frames)
@@ -11596,7 +11613,6 @@ var Human = class {
       let bodyRes;
       let handRes;
       let objectRes;
-      let elapsedTime;
       if (this.config.async) {
         faceRes = this.config.face.enabled ? detectFace(this, process6.tensor) : [];
         if (this.performance.face)

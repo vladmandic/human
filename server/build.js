@@ -3,37 +3,27 @@
  * Used to generate prod builds for releases or by dev server to generate on-the-fly debug builds
  */
 
-const ts = require('typescript');
 const fs = require('fs');
 const path = require('path');
 const log = require('@vladmandic/pilogger');
 const esbuild = require('esbuild');
-const TypeDoc = require('typedoc');
-const { ESLint } = require('eslint');
 const tfjs = require('@tensorflow/tfjs/package.json');
 const changelog = require('./changelog.js');
-const tsconfig = require('../tsconfig.json');
-
-let logFile = 'build.log';
+const lint = require('./lint.js');
+const typedoc = require('./typedoc.js');
+const typings = require('./typings.js');
 
 let busy = false;
-let td = null;
-let eslint = null;
-const banner = { js: `
-   /*
-   Human library
-   homepage: <https://github.com/vladmandic/human>
-   author: <https://github.com/vladmandic>'
-   */
- ` };
-
-// common configuration
-const lintLocations = ['server/', 'demo/', 'src/', 'test/'];
 
 const config = {
   build: {
-    banner,
-    tsconfig: 'server/tfjs-tsconfig.json',
+    banner: { js: `
+    /*
+      Human library
+      homepage: <https://github.com/vladmandic/human>
+      author: <https://github.com/vladmandic>'
+    */` },
+    tsconfig: './tsconfig.json',
     logLevel: 'error',
     bundle: true,
     metafile: true,
@@ -49,7 +39,9 @@ const config = {
     minifyIdentifiers: true,
     minifySyntax: true,
   },
+  buildLog: 'build.log',
   changelog: '../CHANGELOG.md',
+  lintLocations: ['server/', 'demo/', 'src/', 'test/'],
 };
 
 const targets = {
@@ -207,64 +199,6 @@ async function getStats(json) {
 }
 
 // rebuild typings
-async function typings(entryPoint) {
-  log.info('Generate Typings:', entryPoint, 'outDir:', [tsconfig.compilerOptions.outDir]);
-  const tsoptions = { ...tsconfig.compilerOptions,
-    target: ts.ScriptTarget.ES2018,
-    module: ts.ModuleKind.ES2020,
-    moduleResolution: ts.ModuleResolutionKind.NodeJs,
-  };
-  const compilerHost = ts.createCompilerHost(tsoptions);
-  const program = ts.createProgram(entryPoint, tsoptions, compilerHost);
-  const emit = program.emit();
-  const diag = ts
-    .getPreEmitDiagnostics(program)
-    .concat(emit.diagnostics);
-  for (const info of diag) {
-    const msg = info.messageText['messageText'] || info.messageText;
-    if (msg.includes('package.json')) continue;
-    if (info.file) {
-      const pos = info.file.getLineAndCharacterOfPosition(info.start || 0);
-      log.error(`TSC: ${info.file.fileName} [${pos.line + 1},${pos.character + 1}]:`, msg);
-    } else {
-      log.error('TSC:', msg);
-    }
-  }
-}
-
-async function typedoc(entryPoint) {
-  if (!td) {
-    td = new TypeDoc.Application();
-    td.options.addReader(new TypeDoc.TSConfigReader());
-    td.bootstrap({ entryPoints: [entryPoint], theme: 'wiki/theme/' });
-    td.logger.warn = log.warn;
-    td.logger.error = log.error;
-    td.logger.verbose = () => { /***/ };
-    td.logger.log = log.info;
-  }
-  log.info('Generate TypeDocs:', entryPoint, 'outDir:', [tsconfig.typedocOptions.out]);
-  const project = td.convert();
-  if (!project) log.warn('TypeDoc: convert returned empty project');
-  if (td.logger.hasErrors() || td.logger.hasWarnings()) log.warn('TypeDoc:', 'errors:', td.logger.errorCount, 'warnings:', td.logger.warningCount);
-  const result = project ? await td.generateDocs(project, 'typedoc') : null;
-  if (result) log.warn('TypeDoc:', result);
-}
-
-async function lint() {
-  log.info('Running Linter:', lintLocations);
-  if (!eslint) {
-    eslint = new ESLint();
-  }
-  const results = await eslint.lintFiles(lintLocations);
-  const errors = results.reduce((prev, curr) => prev += curr.errorCount, 0);
-  const warnings = results.reduce((prev, curr) => prev += curr.warningCount, 0);
-  log.info('Linter complete: files:', results.length, 'errors:', errors, 'warnings:', warnings);
-  if (errors > 0 || warnings > 0) {
-    const formatter = await eslint.loadFormatter('stylish');
-    const text = formatter.format(results);
-    log.warn(text);
-  }
-}
 
 // rebuild on file change
 async function build(f, msg, dev = false) {
@@ -290,10 +224,10 @@ async function build(f, msg, dev = false) {
       }
     }
     if (!dev) { // only for prod builds, skipped for dev build
-      await lint(); // run linter
-      await typings(targets.browserBundle.esm.entryPoints); // generate typings
+      await lint.run(config.lintLocations); // run linter
+      await typings.run(targets.browserBundle.esm.entryPoints); // generate typings
       await changelog.update(config.changelog); // generate changelog
-      await typedoc(targets.browserBundle.esm.entryPoints); // generate typedoc
+      await typedoc.run(targets.browserBundle.esm.entryPoints); // generate typedoc
     }
     if (require.main === module) process.exit(0);
   } catch (err) {
@@ -305,11 +239,11 @@ async function build(f, msg, dev = false) {
 }
 
 if (require.main === module) {
-  logFile = path.join(__dirname, logFile);
-  if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
-  log.logFile(logFile);
+  config.buildLog = path.join(__dirname, config.buildLog);
+  if (fs.existsSync(config.buildLog)) fs.unlinkSync(config.buildLog);
+  log.logFile(config.buildLog);
   log.header();
-  log.info(`Toolchain: tfjs: ${tfjs.version} esbuild ${esbuild.version}; typescript ${ts.version}; typedoc: ${TypeDoc.Application.VERSION} eslint: ${ESLint.version}`);
+  log.info(`Toolchain: tfjs: ${tfjs.version} esbuild ${esbuild.version}; typescript ${typings.version}; typedoc: ${typedoc.version} eslint: ${lint.version}`);
   build('all', 'startup');
 } else {
   exports.build = build;

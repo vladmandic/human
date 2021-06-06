@@ -50,6 +50,8 @@
     "readme": "none",
     "out": "typedoc",
     "entryPoints": "src/human.ts",
+    "exclude": ["**/node_modules/**"],
+    "externalPattern": ["**/node_modules/**"],
     "logLevel": "Info",
     "logger": "none",
     "theme": "wiki/theme/"

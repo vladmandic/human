@@ -20,9 +20,13 @@ export declare type Input = Tensor | typeof Image | ImageData | ImageBitmap | HT
 export declare type Error = {
     error: string;
 };
-/** Instance of TensorFlow/JS */
+/** Instance of TensorFlow/JS
+ * @external
+ */
 export declare type TensorFlow = typeof tf;
-/** Generic Model object type, holds instance of individual models */
+/** Generic Model object type
+ * holds instance of individual models
+ */
 declare type Model = unknown;
 /**
  * **Human** library main class

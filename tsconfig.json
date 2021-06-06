@@ -37,8 +37,8 @@
     "allowUnreachableCode": false
   },
   "formatCodeOptions": { "indentSize": 2, "tabSize": 2 },
-  "include": ["src/*", "src/***/*"],
-  "exclude": ["node_modules/"],
+  "exclude": ["node_modules/", "types/"],
+  "include": ["src/"],
   "typedocOptions": {
     "excludePrivate": true,
     "excludeExternals": true,
@@ -49,10 +49,10 @@
     "hideGenerator": "true",
     "readme": "none",
     "out": "typedoc",
-    "entryPoints": "src/human.ts",
-    "exclude": ["**/node_modules/**"],
-    "externalPattern": ["**/node_modules/**"],
-    "logLevel": "Info",
+    "entryPoints": ["src/human.ts"],
+    "exclude": [],
+    "externalPattern": ["node_modules/", "tfjs/"],
+    "logLevel": "Verbose",
     "logger": "none",
     "theme": "wiki/theme/"
   }

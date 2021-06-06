@@ -41,7 +41,7 @@ const config = {
   },
   buildLog: 'build.log',
   changelog: '../CHANGELOG.md',
-  lintLocations: ['server/', 'demo/', 'src/', 'test/'],
+  lintLocations: ['server/', 'src/', 'tfjs/', 'test/', 'demo/'],
 };
 
 const targets = {
@@ -49,7 +49,7 @@ const targets = {
     tfjs: {
       platform: 'node',
       format: 'cjs',
-      entryPoints: ['src/tfjs/tf-node.ts'],
+      entryPoints: ['tfjs/tf-node.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['@tensorflow'],
       sourcemap: false,
@@ -73,7 +73,7 @@ const targets = {
     tfjs: {
       platform: 'node',
       format: 'cjs',
-      entryPoints: ['src/tfjs/tf-node-gpu.ts'],
+      entryPoints: ['tfjs/tf-node-gpu.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['@tensorflow'],
       sourcemap: false,
@@ -97,7 +97,7 @@ const targets = {
     tfjs: {
       platform: 'node',
       format: 'cjs',
-      entryPoints: ['src/tfjs/tf-node-wasm.ts'],
+      entryPoints: ['tfjs/tf-node-wasm.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['@tensorflow'],
       sourcemap: false,
@@ -122,7 +122,7 @@ const targets = {
     tfjs: {
       platform: 'browser',
       format: 'esm',
-      entryPoints: ['src/tfjs/tf-browser.ts'],
+      entryPoints: ['tfjs/tf-browser.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['fs', 'buffer', 'util', 'os', '@tensorflow'],
       sourcemap: true,
@@ -140,7 +140,7 @@ const targets = {
     tfjs: {
       platform: 'browser',
       format: 'esm',
-      entryPoints: ['src/tfjs/tf-browser.ts'],
+      entryPoints: ['tfjs/tf-browser.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['fs', 'buffer', 'util', 'os'],
       treeShaking: 'ignore-annotations',

@@ -30,7 +30,7 @@ let human;
 let userConfig = {
   warmup: 'none',
   backend: 'humangl',
-  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.6.0/dist/',
+  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.7.0/dist/',
   /*
   async: false,
   cacheSensitivity: 0,
@@ -255,7 +255,7 @@ async function drawResults(input) {
   const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : '';
   const avgDetect = ui.detectFPS.length > 0 ? Math.trunc(10 * ui.detectFPS.reduce((a, b) => a + b, 0) / ui.detectFPS.length) / 10 : 0;
   const avgDraw = ui.drawFPS.length > 0 ? Math.trunc(10 * ui.drawFPS.reduce((a, b) => a + b, 0) / ui.drawFPS.length) / 10 : 0;
-  const warning = (ui.detectFPS.length > 5) && (avgDetect < 5) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
+  const warning = (ui.detectFPS.length > 5) && (avgDetect < 2) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
   const fps = avgDetect > 0 ? `FPS process:${avgDetect} refresh:${avgDraw}` : '';
   document.getElementById('log').innerHTML = `
     video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>

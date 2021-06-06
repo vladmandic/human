@@ -143,6 +143,7 @@ const targets = {
       entryPoints: ['src/tfjs/tf-browser.ts'],
       outfile: 'dist/tfjs.esm.js',
       external: ['fs', 'buffer', 'util', 'os'],
+      treeShaking: 'ignore-annotations',
       sourcemap: true,
     },
     iife: {

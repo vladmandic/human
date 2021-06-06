@@ -1,7 +1,7 @@
 declare var Js: string;
 declare var Ri: string;
 declare var Fi: string;
-declare var Mp: {
+declare var qu: {
     new (e: any, t: any, n?: any): {
         learningRate: any;
         rho: any;
@@ -38,7 +38,7 @@ declare var Mp: {
     fromConfig(e: any, t: any): any;
     className: string;
 };
-declare var Lp: {
+declare var Hu: {
     new (e: any, t?: number): {
         learningRate: any;
         initialAccumulatorValue: number;
@@ -72,7 +72,7 @@ declare var Lp: {
     fromConfig(e: any, t: any): any;
     className: string;
 };
-declare var zp: {
+declare var Ku: {
     new (e: any, t: any, n: any, o?: any): {
         learningRate: any;
         beta1: any;
@@ -113,7 +113,7 @@ declare var zp: {
     fromConfig(e: any, t: any): any;
     className: string;
 };
-declare var Bp: {
+declare var Xu: {
     new (e: any, t: any, n: any, o?: any, s?: number): {
         learningRate: any;
         beta1: any;
@@ -158,17 +158,17 @@ declare var $o: string;
 declare var Oi: string;
 declare var Pi: string;
 declare var Ro: string;
-declare var al: string;
+declare var ll: string;
 declare var Mi: string;
 declare var Li: string;
 declare var zi: string;
 declare var Vi: string;
 declare var Bi: string;
 declare var Fo: string;
-declare var ll: string;
-declare var Lc: string;
-declare var Mc: string;
-declare var my: {
+declare var ul: string;
+declare var jc: string;
+declare var Wc: string;
+declare var fy: {
     new (e: any): {
         wasm: any;
         dataIdNextNumber: number;
@@ -219,8 +219,8 @@ declare var my: {
     };
 };
 declare var Oo: string;
-declare var ul: string;
-declare var zc: string;
+declare var cl: string;
+declare var Uc: string;
 declare var x1: string;
 declare var DI: {
     new (...args: any[]): {
@@ -316,15 +316,15 @@ declare var WC: {
 declare var to: string;
 declare var Po: string;
 declare var ro: string;
-declare var Bc: string;
-declare var cl: string;
+declare var qc: string;
+declare var pl: string;
 declare var Qs: string;
 declare var Mo: string;
-declare var Vc: string;
+declare var Hc: string;
 declare var Lo: string;
-declare var pl: string;
-declare var Gc: string;
-declare var Wc: string;
+declare var ml: string;
+declare var Kc: string;
+declare var Xc: string;
 declare var zo: string;
 declare var Gi: string;
 declare var Wi: string;
@@ -353,7 +353,7 @@ declare var UC: {
         setModel(e: any): void;
     };
 };
-declare var il: {
+declare var al: {
     new (e: any, t: any): {
         backend: any;
         dataMover: any;
@@ -366,16 +366,16 @@ declare var il: {
         numDataIds(): number;
     };
 };
-declare var jc: string;
+declare var Yc: string;
 declare var ji: string;
 declare var Vo: string;
-declare var Uc: string;
-declare var qc: string;
-declare var Hc: string;
-declare var ml: string;
+declare var Zc: string;
+declare var Jc: string;
+declare var Qc: string;
+declare var fl: string;
 declare var nf: string;
 declare var rf: string;
-declare var Vw: any;
+declare var Gw: any;
 declare var $I: {
     new (e: any): {
         monitor: any;
@@ -384,7 +384,7 @@ declare var $I: {
         verbose: any;
         mode: any;
         baseline: any;
-        monitorFunc: typeof Wy;
+        monitorFunc: typeof jy;
         onTrainBegin(e: any): Promise<void>;
         wait: number | undefined;
         stoppedEpoch: any;
@@ -463,16 +463,16 @@ declare var $I: {
         onBatchEnd(e: any, t: any): Promise<void>;
     };
 };
-declare var Kc: string;
+declare var ep: string;
 declare var Ui: string;
-declare var Xc: string;
+declare var tp: string;
 declare var Ng: {
     new (e: any): {
         global: any;
         flags: {};
         flagRegistry: {};
         urlFlags: {};
-        getQueryParams: typeof Cj;
+        getQueryParams: typeof Ij;
         setPlatform(e: any, t: any): void;
         platformName: any;
         platform: any;
@@ -495,8 +495,8 @@ declare var qi: string;
 declare var Wo: string;
 declare var ei: string;
 declare var Ki: string;
-declare var Yc: string;
-declare var fl: string;
+declare var rp: string;
+declare var dl: string;
 declare var Xi: string;
 declare var jo: string;
 declare var Uo: string;
@@ -504,7 +504,7 @@ declare var of: string;
 declare var qo: string;
 declare var mi: string;
 declare var fi: string;
-declare var Ux: {
+declare var qx: {
     new (e: any): {
         outputTexture: any;
         program: any;
@@ -728,9 +728,9 @@ declare var jC: {
         setModel(e: any): void;
     };
 };
-declare var Zc: string;
+declare var np: string;
 declare var no: string;
-declare var Jc: string;
+declare var op: string;
 declare var St: {
     new (e: any): {
         dtype: any;
@@ -762,9 +762,9 @@ declare var Xs: {
         dispose(): void;
     };
 };
-declare var dl: string;
-declare var ep: string;
-declare var Sy: {
+declare var hl: string;
+declare var ip: string;
+declare var Ny: {
     new (e: any, t?: string, n?: string, o?: boolean, s?: any): {
         dtype: string;
         shape: any;
@@ -850,14 +850,14 @@ declare var Jn: {
 declare var Ko: string;
 declare var ta: string;
 declare var ra: string;
-declare var Qc: string;
+declare var sp: string;
 declare var Xo: string;
 declare var na: string;
 declare var y1: string;
 declare var oa: string;
 declare var iu: string;
 declare var au: string;
-declare var Hu: {
+declare var Qu: {
     new (): {
         blockSize: number;
         firstUse: boolean;
@@ -921,7 +921,7 @@ declare var Hu: {
     };
     nextDataId: number;
 };
-declare var rc: {
+declare var lc: {
     new (e: any): {
         pendingRead: WeakMap<object, any>;
         pendingDisposal: WeakSet<object>;
@@ -1075,17 +1075,17 @@ declare var rc: {
 };
 declare var Yo: string;
 declare var Jo: string;
-declare var hl: string;
-declare var rp: string;
-declare var tp: string;
-declare var np: string;
+declare var gl: string;
+declare var lp: string;
+declare var ap: string;
+declare var up: string;
 declare var Zo: string;
 declare var Qo: string;
 declare var es: string;
 declare var ts: string;
 declare var rs: string;
 declare var sa: string;
-declare var Vp: {
+declare var Yu: {
     new (e: any, t: any, n?: boolean): {
         learningRate: any;
         momentum: any;
@@ -1125,7 +1125,7 @@ declare var Vp: {
     fromConfig(e: any, t: any): any;
     className: string;
 };
-declare var op: string;
+declare var cp: string;
 declare var ns: string;
 declare var ri: string;
 declare var aa: string;
@@ -1163,7 +1163,7 @@ declare var Xse: string;
 declare var is: string;
 declare var as: string;
 declare var ca: string;
-declare var Gp: {
+declare var Zu: {
     new (e: any, t?: number, n?: number, o?: any, s?: boolean): {
         learningRate: any;
         decay: number;
@@ -1206,9 +1206,9 @@ declare var Gp: {
     className: string;
 };
 declare var Bn: any;
-declare var gl: string;
-declare var Zw: any;
-declare var sp: string;
+declare var xl: string;
+declare var Jw: any;
+declare var pp: string;
 declare var Go: string;
 declare var pa: string;
 declare var Kt: any;
@@ -1216,14 +1216,14 @@ declare var ls: string;
 declare var cs: string;
 declare var si: string;
 declare var us: string;
-declare var ap: string;
-declare var xl: string;
-declare var ip: string;
+declare var fp: string;
+declare var yl: string;
+declare var mp: string;
 declare var ps: string;
 declare var wa: string;
 declare var ms: string;
 declare var fs: string;
-declare var Al: {
+declare var za: {
     new (e: any): {
         learningRate: any;
         applyGradients(e: any): void;
@@ -1259,7 +1259,7 @@ declare var Al: {
 declare var ma: string;
 declare var ii: string;
 declare var fa: string;
-declare var Za: any;
+declare var Ja: any;
 declare var hs: string;
 declare var ha: string;
 declare var ds: string;
@@ -1267,21 +1267,21 @@ declare var da: string;
 declare var ai: string;
 declare var ys: string;
 declare var ga: string;
-declare var yl: string;
-declare var lp: string;
-declare var up: string;
-declare var cp: string;
-declare var pp: string;
-declare var mp: string;
+declare var bl: string;
+declare var dp: string;
+declare var hp: string;
+declare var gp: string;
+declare var xp: string;
+declare var yp: string;
 declare var li: string;
 declare var gs: string;
-declare var bl: string;
+declare var wl: string;
 declare var bs: string;
 declare var oo: string;
 declare var xa: string;
-declare var fp: string;
-declare var dp: string;
-declare var hp: string;
+declare var bp: string;
+declare var wp: string;
+declare var _p: string;
 declare var ws: string;
 declare var xs: string;
 declare var mn: {
@@ -1348,10 +1348,10 @@ declare var Un: string;
 declare var ya: string;
 declare var ba: string;
 declare var vs: string;
-declare var gp: string;
+declare var kp: string;
 declare var ui: string;
-declare var wl: string;
-declare var vl: {
+declare var _l: string;
+declare var Cl: {
     new (e: any, t: any, n: any, o: any): {
         trainable: any;
         name: any;
@@ -1399,10 +1399,10 @@ declare function S_(...s: any[]): any;
 declare namespace S_ { }
 declare function bu(...s: any[]): any;
 declare namespace bu { }
-declare function Sl(...s: any[]): any;
-declare namespace Sl { }
 declare function Nl(...s: any[]): any;
 declare namespace Nl { }
+declare function Tl(...s: any[]): any;
+declare namespace Tl { }
 declare function xf(...s: any[]): any;
 declare namespace xf { }
 declare function yf(...s: any[]): any;
@@ -1419,7 +1419,7 @@ declare function Sa(...s: any[]): any;
 declare namespace Sa { }
 declare function vf(...s: any[]): any;
 declare namespace vf { }
-declare function GT(): any;
+declare function WT(): any;
 declare var I: {};
 declare function _U(...s: any[]): any;
 declare namespace _U { }
@@ -1435,7 +1435,7 @@ declare function Na(...s: any[]): any;
 declare namespace Na { }
 declare function Cf(...s: any[]): any;
 declare namespace Cf { }
-declare function kNe(r: any, e: any, t: any): Promise<any>;
+declare function vNe(r: any, e: any, t: any): Promise<any>;
 declare function Ta(...s: any[]): any;
 declare namespace Ta { }
 declare var zg: {};
@@ -1475,7 +1475,7 @@ declare function O_(...s: any[]): any;
 declare namespace O_ { }
 declare function P_(...s: any[]): any;
 declare namespace P_ { }
-declare var SB: {};
+declare var NB: {};
 declare function ku(...s: any[]): any;
 declare namespace ku { }
 declare function on(...s: any[]): any;
@@ -1491,7 +1491,7 @@ declare function Ea(...s: any[]): any;
 declare namespace Ea { }
 declare function Cu(...s: any[]): any;
 declare namespace Cu { }
-declare function tx(r: any, e: any, t: any): any;
+declare function rx(r: any, e: any, t: any): any;
 declare function Iu(...s: any[]): any;
 declare namespace Iu { }
 declare function sn(r: any): any;
@@ -1518,15 +1518,15 @@ declare function Ef(...s: any[]): any;
 declare namespace Ef { }
 declare function z_(...s: any[]): any;
 declare namespace z_ { }
-declare function mE(...s: any[]): any;
-declare namespace mE { }
+declare function fE(...s: any[]): any;
+declare namespace fE { }
 declare function B_(...s: any[]): any;
 declare namespace B_ { }
 declare function As(...s: any[]): any;
 declare namespace As { }
 declare function Fue(): void;
 declare function Rue(): void;
-declare function fE(r: any): number;
+declare function dE(r: any): number;
 declare function Ns(): any;
 declare function W(): any;
 declare function On(...s: any[]): any;
@@ -1539,8 +1539,8 @@ declare function dr(...s: any[]): any;
 declare namespace dr { }
 declare function Df(...s: any[]): any;
 declare namespace Df { }
-declare function Ap(...s: any[]): any;
-declare namespace Ap { }
+declare function Pp(...s: any[]): any;
+declare namespace Pp { }
 declare function Ma(...s: any[]): any;
 declare namespace Ma { }
 declare function Ds(r: any, e: any, t: any): any;
@@ -1550,18 +1550,18 @@ declare function $s(...s: any[]): any;
 declare namespace $s { }
 declare function yu(...s: any[]): any;
 declare namespace yu { }
-declare function xR(): void;
+declare function yR(): void;
 declare var ho: {};
 declare function co(...s: any[]): any;
 declare namespace co { }
-declare function cE(...s: any[]): any;
-declare namespace cE { }
+declare function pE(...s: any[]): any;
+declare namespace pE { }
 declare var Bg: {};
 declare function Bue(): any;
-declare function jw(r: any): any;
+declare function Uw(r: any): any;
 declare function af(r: any, e: any): any;
 declare function Tg(r: any): any[];
-declare var m$: {};
+declare var f$: {};
 declare function Iq(r: any): (e: any, t: any) => any;
 declare function Sq(r: any): (e: any, t: any) => any;
 declare function qt(...s: any[]): any;
@@ -1573,22 +1573,22 @@ declare namespace gi { }
 declare function Su(...s: any[]): any;
 declare namespace Su { }
 declare namespace yi {
-    export { wE as flipLeftRight };
-    export { cx as resizeNearestNeighbor };
-    export { ux as resizeBilinear };
-    export { _E as rotateWithOffset };
-    export { bE as cropAndResize };
-    export { kE as nonMaxSuppression };
-    export { IE as nonMaxSuppressionAsync };
-    export { SE as nonMaxSuppressionWithScore };
-    export { NE as nonMaxSuppressionWithScoreAsync };
-    export { TE as nonMaxSuppressionPadded };
-    export { EE as nonMaxSuppressionPaddedAsync };
-    export { AE as threshold };
-    export { DE as transform };
+    export { _E as flipLeftRight };
+    export { px as resizeNearestNeighbor };
+    export { cx as resizeBilinear };
+    export { kE as rotateWithOffset };
+    export { wE as cropAndResize };
+    export { vE as nonMaxSuppression };
+    export { SE as nonMaxSuppressionAsync };
+    export { NE as nonMaxSuppressionWithScore };
+    export { TE as nonMaxSuppressionWithScoreAsync };
+    export { EE as nonMaxSuppressionPadded };
+    export { AE as nonMaxSuppressionPaddedAsync };
+    export { DE as threshold };
+    export { $E as transform };
 }
-declare function $1e(r: any, e: any, t?: number): Promise<any>;
-declare var qB: {};
+declare function R1e(r: any, e: any, t?: number): Promise<any>;
+declare var HB: {};
 declare function eI(r: any): any;
 declare var Or: {};
 declare function zu(...s: any[]): any;
@@ -1601,17 +1601,17 @@ declare function $f(...s: any[]): any;
 declare namespace $f { }
 declare function Rt(r: any): any;
 declare var zr: {};
-declare var NV: {};
+declare var TV: {};
 declare function Aa(...s: any[]): any;
 declare namespace Aa { }
 declare function Nu(...s: any[]): any;
 declare namespace Nu { }
 declare function kn(...s: any[]): any;
 declare namespace kn { }
-declare namespace ZE {
-    export { $E as bandPart };
-    export { RE as gramSchmidt };
-    export { OE as qr };
+declare namespace JE {
+    export { RE as bandPart };
+    export { FE as gramSchmidt };
+    export { PE as qr };
 }
 declare function W_(r: any, e: any, t: any): any;
 declare function Ase(r: any, e?: {}): Promise<{
@@ -1752,16 +1752,16 @@ declare function Au(...s: any[]): any;
 declare namespace Au { }
 declare function K_(...s: any[]): any;
 declare namespace K_ { }
-declare namespace kFe {
-    export { PE as absoluteDifference };
+declare namespace vFe {
+    export { ME as absoluteDifference };
     export { Lr as computeWeightedLoss };
-    export { ME as cosineDistance };
-    export { LE as hingeLoss };
-    export { zE as huberLoss };
-    export { BE as logLoss };
-    export { VE as meanSquaredError };
-    export { GE as sigmoidCrossEntropy };
-    export { WE as softmaxCrossEntropy };
+    export { LE as cosineDistance };
+    export { zE as hingeLoss };
+    export { BE as huberLoss };
+    export { VE as logLoss };
+    export { GE as meanSquaredError };
+    export { WE as sigmoidCrossEntropy };
+    export { jE as softmaxCrossEntropy };
 }
 declare function Be(...s: any[]): any;
 declare namespace Be { }
@@ -1782,9 +1782,9 @@ declare function df(): any;
 declare function Kq(r: any, e: any, { indexing: t }?: {
     indexing?: string | undefined;
 }): any[];
-declare var TV: {};
-declare function Tl(...s: any[]): any;
-declare namespace Tl { }
+declare var EV: {};
+declare function El(...s: any[]): any;
+declare namespace El { }
 declare function Rs(...s: any[]): any;
 declare namespace Rs { }
 declare function Mf(...s: any[]): any;
@@ -1853,11 +1853,11 @@ declare function cne(r: any): {
     userDefinedMetadata: any;
     getUserDefinedMetadata(): any;
 };
-declare var EV: {};
-declare function Dp(...s: any[]): any;
-declare namespace Dp { }
-declare function KNe(...s: any[]): any;
-declare namespace KNe { }
+declare var AV: {};
+declare function Mp(...s: any[]): any;
+declare namespace Mp { }
+declare function XNe(...s: any[]): any;
+declare namespace XNe { }
 declare function P(...s: any[]): any;
 declare namespace P { }
 declare function rH(...s: any[]): any;
@@ -1867,8 +1867,8 @@ declare namespace Y_ { }
 declare function Ke(...s: any[]): any;
 declare namespace Ke { }
 declare function Yf(): Promise<any>;
-declare function Op(...s: any[]): any;
-declare namespace Op { }
+declare function Vp(...s: any[]): any;
+declare namespace Vp { }
 declare function fo(...s: any[]): any;
 declare namespace fo { }
 declare function Ss(...s: any[]): any;
@@ -1898,7 +1898,7 @@ declare function jr(...s: any[]): any;
 declare namespace jr { }
 declare function Fa(...s: any[]): any;
 declare namespace Fa { }
-declare function h_(r: any, e?: boolean): void;
+declare function g_(r: any, e?: boolean): void;
 declare function Du(...s: any[]): any;
 declare namespace Du { }
 declare function Mue(r: any): any;
@@ -1906,22 +1906,22 @@ declare function IH(...s: any[]): any;
 declare namespace IH { }
 declare function RH(...s: any[]): any;
 declare namespace RH { }
-declare function Zg(...s: any[]): any;
-declare namespace Zg { }
+declare function Jg(...s: any[]): any;
+declare namespace Jg { }
 declare function Fs(...s: any[]): any;
 declare namespace Fs { }
 declare function Oa(r: any, e: any, t?: number, n?: string): any;
 declare function zue(): any;
-declare function El(...s: any[]): any;
-declare namespace El { }
+declare function Al(...s: any[]): any;
+declare namespace Al { }
 declare function zf(...s: any[]): any;
 declare namespace zf { }
-declare function Np(r: any, e: any, t?: number): any;
+declare function Rp(r: any, e: any, t?: number): any;
 declare function fne(r: any, e: any): void;
 declare function b1(r: any): void;
 declare function lu(r: any): void;
 declare function tse(r: any, e: any): void;
-declare var AV: {};
+declare var DV: {};
 declare function Mr(...s: any[]): any;
 declare namespace Mr { }
 declare function Ru(...s: any[]): any;
@@ -1946,8 +1946,8 @@ declare namespace Fu { }
 declare function Ou(...s: any[]): any;
 declare namespace Ou { }
 declare function pe(r: any, e: any): any;
-declare function lE(...s: any[]): any;
-declare namespace lE { }
+declare function uE(...s: any[]): any;
+declare namespace uE { }
 declare var Gg: {};
 declare function Pu(...s: any[]): any;
 declare namespace Pu { }
@@ -1961,16 +1961,16 @@ declare function Mte(r: any, e?: boolean): void;
 declare function Lte(r: any, e?: boolean): void;
 declare function Jk(r: any, e: any): void;
 declare function lk(r: any, e: any): Promise<any[]>;
-declare var Nx: {};
+declare var Tx: {};
 declare function Pr(...s: any[]): any;
 declare namespace Pr { }
 declare function Vf(...s: any[]): any;
 declare namespace Vf { }
-declare namespace YRe {
-    export { xE as hammingWindow };
-    export { ox as hannWindow };
-    export { sx as frame };
-    export { yE as stft };
+declare namespace ZRe {
+    export { yE as hammingWindow };
+    export { sx as hannWindow };
+    export { ix as frame };
+    export { bE as stft };
 }
 declare function Mu(...s: any[]): any;
 declare namespace Mu { }
@@ -1980,12 +1980,12 @@ declare function Fe(...s: any[]): any;
 declare namespace Fe { }
 declare function Gf(...s: any[]): any;
 declare namespace Gf { }
-declare function Jg(...s: any[]): any;
-declare namespace Jg { }
+declare function Qg(...s: any[]): any;
+declare namespace Qg { }
 declare function Wf(...s: any[]): any;
 declare namespace Wf { }
-declare function Rp(...s: any[]): any;
-declare namespace Rp { }
+declare function zp(...s: any[]): any;
+declare namespace zp { }
 declare var lr: {};
 declare function Pa(...s: any[]): any;
 declare namespace Pa { }
@@ -1994,14 +1994,14 @@ declare namespace po { }
 declare function Ra(...s: any[]): any;
 declare namespace Ra { }
 declare namespace Xf {
-    export { jE as sparseFillEmptyRows };
-    export { UE as sparseReshape };
-    export { qE as sparseSegmentMean };
-    export { HE as sparseSegmentSum };
+    export { UE as sparseFillEmptyRows };
+    export { qE as sparseReshape };
+    export { HE as sparseSegmentMean };
+    export { KE as sparseSegmentSum };
 }
-declare function ex(...s: any[]): any;
-declare namespace ex { }
-declare namespace URe {
+declare function tx(...s: any[]): any;
+declare namespace tx { }
+declare namespace qRe {
     export { Ma as fft };
     export { gi as ifft };
     export { La as rfft };
@@ -2023,10 +2023,10 @@ declare function Os(...s: any[]): any;
 declare namespace Os { }
 declare function jf(...s: any[]): any;
 declare namespace jf { }
-declare namespace px {
-    export { KE as stringNGrams };
-    export { XE as stringSplit };
-    export { YE as stringToHashBucketFast };
+declare namespace mx {
+    export { XE as stringNGrams };
+    export { YE as stringSplit };
+    export { ZE as stringToHashBucketFast };
 }
 declare function ce(...s: any[]): any;
 declare namespace ce { }
@@ -2040,40 +2040,40 @@ declare namespace Ts { }
 declare function Nr(r: any, e: any, t: any): any;
 declare function Dt(r: any, e: any): any;
 declare function xi(r: any, e: any, t: any): any;
-declare function b_(r: any, e: any, t: any): any;
+declare function w_(r: any, e: any, t: any): any;
 declare function wK(r: any, e: any, t: any): any;
 declare function _K(r: any, e: any, t: any): any;
 declare function kK(r: any, e: any, t: any): any;
 declare var lo: {};
-declare var VT: {};
+declare var GT: {};
 declare function B(r: any, e: any): any;
 declare function Kn(...s: any[]): any;
 declare namespace Kn { }
 declare function Lue(r: any): any;
 declare function qf(...s: any[]): any;
 declare namespace qf { }
-declare namespace qu {
-    import sgd = za.sgd;
+declare namespace Ju {
+    import sgd = Ba.sgd;
     export { sgd };
-    import momentum = za.momentum;
+    import momentum = Ba.momentum;
     export { momentum };
-    import adadelta = za.adadelta;
+    import adadelta = Ba.adadelta;
     export { adadelta };
-    import adagrad = za.adagrad;
+    import adagrad = Ba.adagrad;
     export { adagrad };
-    import rmsprop = za.rmsprop;
+    import rmsprop = Ba.rmsprop;
     export { rmsprop };
-    import adamax = za.adamax;
+    import adamax = Ba.adamax;
     export { adamax };
-    import adam = za.adam;
+    import adam = Ba.adam;
     export { adam };
 }
 declare function qe(...s: any[]): any;
 declare namespace qe { }
 declare function Vu(...s: any[]): any;
 declare namespace Vu { }
-declare function Fp(...s: any[]): any;
-declare namespace Fp { }
+declare function Bp(...s: any[]): any;
+declare namespace Bp { }
 declare function eie(r: any): void;
 declare function Qse(r: any, e: any): void;
 declare function Hf(...s: any[]): any;
@@ -2088,11 +2088,11 @@ declare function Nq(r: any): (e: any, t: any) => {
 };
 declare function Tq(r: any): (e: any, t: any) => any;
 declare function uk(r: any, e: boolean | undefined, t: any, n: any): any;
-declare function Hg(r: any, e: any): {
+declare function Kg(r: any, e: any): {
     value: any;
     grads: {};
 };
-declare var IKt: {
+declare var OKt: {
     tfjs: any;
     "tfjs-core": any;
     "tfjs-data": any;
@@ -2108,18 +2108,18 @@ declare var Mk: string;
 declare var Ud: string;
 declare var EC: string;
 declare var Hv: string;
-declare namespace pJe {
-    export { xR as forceHalfFloat };
+declare namespace bJe {
+    export { yR as forceHalfFloat };
 }
-declare var p$: {};
+declare var m$: {};
 declare function Ct(...s: any[]): any;
 declare namespace Ct { }
 declare function Kf(r: any): Promise<any>;
 declare function gt(r: any, e?: string): any;
 declare function Se(...s: any[]): any;
 declare namespace Se { }
-declare function Wy(r: any, e: any): boolean;
-declare function Cj(r: any): {};
+declare function jy(r: any, e: any): boolean;
+declare function Ij(r: any): {};
 declare function Qoe(r: any): {
     monitor: any;
     minDelta: number;
@@ -2127,7 +2127,7 @@ declare function Qoe(r: any): {
     verbose: any;
     mode: any;
     baseline: any;
-    monitorFunc: typeof Wy;
+    monitorFunc: typeof jy;
     onTrainBegin(e: any): Promise<void>;
     wait: number | undefined;
     stoppedEpoch: any;
@@ -2205,47 +2205,45 @@ declare function Qoe(r: any): {
     onBatchBegin(e: any, t: any): Promise<void>;
     onBatchEnd(e: any, t: any): Promise<void>;
 };
-declare function wE(...s: any[]): any;
-declare namespace wE { }
-declare function cx(...s: any[]): any;
-declare namespace cx { }
-declare function ux(...s: any[]): any;
-declare namespace ux { }
 declare function _E(...s: any[]): any;
 declare namespace _E { }
-declare function bE(...s: any[]): any;
-declare namespace bE { }
+declare function px(...s: any[]): any;
+declare namespace px { }
+declare function cx(...s: any[]): any;
+declare namespace cx { }
 declare function kE(...s: any[]): any;
 declare namespace kE { }
-declare function IE(r: any, e: any, t: any, n?: number, o?: number): Promise<any>;
-declare function SE(...s: any[]): any;
-declare namespace SE { }
-declare function NE(r: any, e: any, t: any, n?: number, o?: number, s?: number): Promise<{
+declare function wE(...s: any[]): any;
+declare namespace wE { }
+declare function vE(...s: any[]): any;
+declare namespace vE { }
+declare function SE(r: any, e: any, t: any, n?: number, o?: number): Promise<any>;
+declare function NE(...s: any[]): any;
+declare namespace NE { }
+declare function TE(r: any, e: any, t: any, n?: number, o?: number, s?: number): Promise<{
     selectedIndices: any;
     selectedScores: any;
 }>;
-declare function TE(...s: any[]): any;
-declare namespace TE { }
-declare function EE(r: any, e: any, t: any, n?: number, o?: number, s?: boolean): Promise<{
+declare function EE(...s: any[]): any;
+declare namespace EE { }
+declare function AE(r: any, e: any, t: any, n?: number, o?: number, s?: boolean): Promise<{
     selectedIndices: any;
     validOutputs: any;
 }>;
-declare function AE(...s: any[]): any;
-declare namespace AE { }
 declare function DE(...s: any[]): any;
 declare namespace DE { }
 declare function $E(...s: any[]): any;
 declare namespace $E { }
 declare function RE(...s: any[]): any;
 declare namespace RE { }
-declare function OE(...s: any[]): any;
-declare namespace OE { }
+declare function FE(...s: any[]): any;
+declare namespace FE { }
 declare function PE(...s: any[]): any;
 declare namespace PE { }
-declare function Lr(...s: any[]): any;
-declare namespace Lr { }
 declare function ME(...s: any[]): any;
 declare namespace ME { }
+declare function Lr(...s: any[]): any;
+declare namespace Lr { }
 declare function LE(...s: any[]): any;
 declare namespace LE { }
 declare function zE(...s: any[]): any;
@@ -2258,16 +2256,16 @@ declare function GE(...s: any[]): any;
 declare namespace GE { }
 declare function WE(...s: any[]): any;
 declare namespace WE { }
-declare function xE(...s: any[]): any;
-declare namespace xE { }
-declare function ox(...s: any[]): any;
-declare namespace ox { }
-declare function sx(...s: any[]): any;
-declare namespace sx { }
-declare function yE(...s: any[]): any;
-declare namespace yE { }
 declare function jE(...s: any[]): any;
 declare namespace jE { }
+declare function yE(...s: any[]): any;
+declare namespace yE { }
+declare function sx(...s: any[]): any;
+declare namespace sx { }
+declare function ix(...s: any[]): any;
+declare namespace ix { }
+declare function bE(...s: any[]): any;
+declare namespace bE { }
 declare function UE(...s: any[]): any;
 declare namespace UE { }
 declare function qE(...s: any[]): any;
@@ -2280,7 +2278,9 @@ declare function XE(...s: any[]): any;
 declare namespace XE { }
 declare function YE(...s: any[]): any;
 declare namespace YE { }
-declare var za: {
+declare function ZE(...s: any[]): any;
+declare namespace ZE { }
+declare var Ba: {
     new (): {};
     sgd(e: any): {
         learningRate: any;
@@ -2522,4 +2522,4 @@ declare var za: {
         getClassName(): any;
     };
 };
-export { Js as Abs, Ri as Acos, Fi as Acosh, Mp as AdadeltaOptimizer, Lp as AdagradOptimizer, zp as AdamOptimizer, Bp as AdamaxOptimizer, jn as Add, $o as AddN, Oi as All, Pi as Any, Ro as ArgMax, al as ArgMin, Mi as Asin, Li as Asinh, zi as Atan, Vi as Atan2, Bi as Atanh, Fo as AvgPool, ll as AvgPool3D, Lc as AvgPool3DGrad, Mc as AvgPoolGrad, my as BackendWasm, Oo as BatchMatMul, ul as BatchToSpaceND, zc as Bincount, x1 as BroadcastTo, DI as Callback, WC as CallbackList, to as Cast, Po as Ceil, ro as ClipByValue, Bc as Complex, cl as ComplexAbs, Qs as Concat, Mo as Conv2D, Vc as Conv2DBackpropFilter, Lo as Conv2DBackpropInput, pl as Conv3D, Gc as Conv3DBackpropFilterV2, Wc as Conv3DBackpropInputV2, zo as Cos, Gi as Cosh, Wi as CropAndResize, Bo as Cumsum, UC as CustomCallback, il as DataStorage, jc as DenseBincount, ji as DepthToSpace, Vo as DepthwiseConv2dNative, Uc as DepthwiseConv2dNativeBackpropFilter, qc as DepthwiseConv2dNativeBackpropInput, Hc as Diag, ml as Dilation2D, nf as Dilation2DBackpropFilter, rf as Dilation2DBackpropInput, Vw as ENV, $I as EarlyStopping, Kc as Einsum, Ui as Elu, Xc as EluGrad, Ng as Environment, Hi as Equal, qi as Erf, Wo as Exp, ei as ExpandDims, Ki as Expm1, Yc as FFT, fl as Fill, Xi as FlipLeftRight, jo as Floor, Uo as FloorDiv, of as FromPixels, qo as FusedBatchNorm, mi as FusedConv2D, fi as FusedDepthwiseConv2D, Ux as GPGPUContext, Yi as GatherNd, ti as GatherV2, lS as GraphModel, Zi as Greater, Ho as GreaterEqual, jC as History, Zc as IFFT, no as Identity, Jc as Imag, St as InputSpec, Ji as IsFinite, Qi as IsInf, ea as IsNan, Xs as KernelBackend, dl as LRN, ep as LRNGrad, Sy as LayerVariable, Jn as LayersModel, Ko as LeakyRelu, ta as Less, ra as LessEqual, Qc as LinSpace, Xo as Log, na as Log1p, y1 as LogSoftmax, oa as LogicalAnd, iu as LogicalNot, au as LogicalOr, Hu as MathBackendCPU, rc as MathBackendWebGL, Yo as Max, Jo as MaxPool, hl as MaxPool3D, rp as MaxPool3DGrad, tp as MaxPoolGrad, np as MaxPoolWithArgmax, Zo as Maximum, Qo as Mean, es as Min, ts as Minimum, rs as MirrorPad, sa as Mod, Vp as MomentumOptimizer, op as Multinomial, ns as Multiply, ri as Neg, aa as NonMaxSuppressionV3, la as NonMaxSuppressionV4, ua as NonMaxSuppressionV5, ia as NotEqual, H1 as OP_SCOPE_SUFFIX, os as OneHot, ni as OnesLike, Ur as Optimizer, oi as Pack, ss as PadV2, Xse as Pool, is as Pow, as as Prelu, ca as Prod, Gp as RMSPropOptimizer, Bn as RNN, gl as Range, Zw as Rank, sp as Real, Go as RealDiv, pa as Reciprocal, Kt as Reduction, ls as Relu, cs as Relu6, si as Reshape, us as ResizeBilinear, ap as ResizeBilinearGrad, xl as ResizeNearestNeighbor, ip as ResizeNearestNeighborGrad, ps as Reverse, wa as RotateWithOffset, ms as Round, fs as Rsqrt, Al as SGDOptimizer, ma as ScatterNd, ii as Select, fa as Selu, Za as Sequential, hs as Sigmoid, ha as Sign, ds as Sin, da as Sinh, ai as Slice, ys as Softmax, ga as Softplus, yl as SpaceToBatchND, lp as SparseFillEmptyRows, up as SparseReshape, cp as SparseSegmentMean, pp as SparseSegmentSum, mp as SparseToDense, li as SplitV, gs as Sqrt, bl as Square, bs as SquaredDifference, oo as Step, xa as StridedSlice, fp as StringNGrams, dp as StringSplit, hp as StringToHashBucketFast, ws as Sub, xs as Sum, mn as SymbolicTensor, _s as Tan, ks as Tanh, Me as Tensor, ct as TensorBuffer, Un as Tile, ya as TopK, ba as Transform, vs as Transpose, gp as Unique, ui as Unpack, wl as UnsortedSegmentSum, vl as Variable, ci as ZerosLike, pi as _FusedMatMul, Tt as abs, hf as acos, gf as acosh, J as add, S_ as addN, bu as all, Sl as any, Nl as argMax, xf as argMin, yf as asin, bf as asinh, wf as atan, _f as atan2, kf as atanh, Sa as avgPool, vf as avgPool3d, GT as backend, I as backend_util, _U as basicLSTMCell, uo as batchNorm, A_ as batchNorm2d, D_ as batchNorm3d, $_ as batchNorm4d, Na as batchToSpaceND, Cf as bincount, kNe as booleanMaskAsync, Ta as broadcastTo, zg as browser, Ie as buffer, ese as callbacks, oe as cast, If as ceil, fr as clipByValue, qn as clone, Fn as complex, et as concat, R_ as concat1d, F_ as concat2d, O_ as concat3d, P_ as concat4d, SB as constraints, ku as conv1d, on as conv2d, vu as conv2dTranspose, Sf as conv3d, M_ as conv3dTranspose, tie as copyRegisteredKernels, Ea as cos, Cu as cosh, tx as cosineWindow, Iu as cumsum, sn as customGrad, vS as data, L_ as denseBincount, I_ as deprecationWarn, Nf as depthToSpace, Es as depthwiseConv2d, rse as deregisterOp, gu as device_util, XU as diag, Tf as dilation2d, Oue as disableDeprecationWarnings, De as dispose, Pue as disposeVariables, ue as div, Ef as divNoNan, z_ as dot, mE as dropout, B_ as einsum, As as elu, Fue as enableDebugMode, Rue as enableProdMode, fE as enclosingPowerOfTwo, Ns as engine, W as env, On as equal, Af as erf, nr as exp, dr as expandDims, Df as expm1, Ap as eye, Ma as fft, Ds as fill, Gue as findBackend, Wue as findBackendFactory, $s as floor, yu as floorDiv, xR as forceHalfFloat, ho as fused, co as gather, cE as gatherND, Bg as gather_util, Bue as getBackend, jw as getGradient, af as getKernel, Tg as getKernelsForBackend, m$ as gpgpu_util, Iq as grad, Sq as grads, qt as greater, _n as greaterEqual, gi as ifft, Su as imag, yi as image, $1e as inTopKAsync, qB as initializers, eI as input, Or as io, zu as irfft, V_ as isFinite, G_ as isInf, $f as isNaN, Rt as keep, zr as kernel_impls, NV as layers, Aa as leakyRelu, Nu as less, kn as lessEqual, ZE as linalg, W_ as linspace, Ase as loadGraphModel, mne as loadLayersModel, Rf as localResponseNormalization, hr as log, Tu as log1p, j_ as logSigmoid, Eu as logSoftmax, Of as logSumExp, _r as logicalAnd, Da as logicalNot, Au as logicalOr, K_ as logicalXor, kFe as losses, Be as matMul, IT as math, Er as max, $a as maxPool, Pf as maxPool3d, X_ as maxPoolWithArgmax, an as maximum, ht as mean, df as memory, Kq as meshgrid, TV as metrics, Tl as min, Rs as minimum, Mf as mirrorPad, Lf as mod, cne as model, EV as models, Dp as moments, KNe as movingAverage, P as mul, rH as multiRNNCell, Y_ as multinomial, Ke as neg, Yf as nextFrame, Op as norm, fo as notEqual, Ss as oneHot, or as ones, ur as onesLike, S as op, aH as outerProduct, Wr as pad, cH as pad1d, mH as pad2d, dH as pad3d, gH as pad4d, Z_ as pool, jr as pow, Fa as prelu, h_ as print, Du as prod, Mue as profile, IH as rand, RH as randomGamma, Zg as randomNormal, Fs as randomUniform, Oa as range, zue as ready, El as real, zf as reciprocal, Np as registerBackend, fne as registerCallbackConstructor, b1 as registerGradient, lu as registerKernel, tse as registerOp, AV as regularizers, Mr as relu, Ru as relu6, Vue as removeBackend, L as reshape, Jt as reverse, GH as reverse1d, jH as reverse2d, qH as reverse3d, KH as reverse4d, La as rfft, Fu as round, Ou as rsqrt, pe as scalar, lE as scatterND, Gg as scatter_util, Pu as selu, Bf as separableConv2d, pne as sequential, Q as serialization, W4 as setBackend, jue as setPlatform, Mte as setWasmPath, Lte as setWasmPaths, Jk as setWebGLContext, lk as setdiff1dAsync, Nx as shared, Pr as sigmoid, Vf as sign, YRe as signal, Mu as sin, Lu as sinh, Fe as slice, Gf as slice1d, Jg as slice2d, Wf as slice3d, Rp as slice4d, lr as slice_util, Pa as softmax, po as softplus, Ra as spaceToBatchND, Xf as sparse, ex as sparseToDense, URe as spectral, sr as split, xt as sqrt, Le as square, Bu as squaredDifference, Pn as squeeze, Ht as stack, Os as step, jf as stridedSlice, px as string, ce as sub, de as sum, du as sumOutType, Uf as tan, Ts as tanh, Nr as tensor, Dt as tensor1d, xi as tensor2d, b_ as tensor3d, wK as tensor4d, _K as tensor5d, kK as tensor6d, lo as tensor_util, VT as test_util, B as tidy, Kn as tile, Lue as time, qf as topk, qu as train, qe as transpose, Vu as truncatedNormal, Fp as unique, eie as unregisterGradient, Qse as unregisterKernel, Hf as unsortedSegmentSum, gr as unstack, mr as upcastType, y as util, Nq as valueAndGrad, Tq as valueAndGrads, uk as variable, Hg as variableGrads, IKt as version, Dse as version_converter, G4 as version_core, Mk as version_cpu, Ud as version_layers, EC as version_wasm, Hv as version_webgl, pJe as webgl, p$ as webgl_util, Ct as where, Kf as whereAsync, gt as zeros, Se as zerosLike };
+export { Js as Abs, Ri as Acos, Fi as Acosh, qu as AdadeltaOptimizer, Hu as AdagradOptimizer, Ku as AdamOptimizer, Xu as AdamaxOptimizer, jn as Add, $o as AddN, Oi as All, Pi as Any, Ro as ArgMax, ll as ArgMin, Mi as Asin, Li as Asinh, zi as Atan, Vi as Atan2, Bi as Atanh, Fo as AvgPool, ul as AvgPool3D, jc as AvgPool3DGrad, Wc as AvgPoolGrad, fy as BackendWasm, Oo as BatchMatMul, cl as BatchToSpaceND, Uc as Bincount, x1 as BroadcastTo, DI as Callback, WC as CallbackList, to as Cast, Po as Ceil, ro as ClipByValue, qc as Complex, pl as ComplexAbs, Qs as Concat, Mo as Conv2D, Hc as Conv2DBackpropFilter, Lo as Conv2DBackpropInput, ml as Conv3D, Kc as Conv3DBackpropFilterV2, Xc as Conv3DBackpropInputV2, zo as Cos, Gi as Cosh, Wi as CropAndResize, Bo as Cumsum, UC as CustomCallback, al as DataStorage, Yc as DenseBincount, ji as DepthToSpace, Vo as DepthwiseConv2dNative, Zc as DepthwiseConv2dNativeBackpropFilter, Jc as DepthwiseConv2dNativeBackpropInput, Qc as Diag, fl as Dilation2D, nf as Dilation2DBackpropFilter, rf as Dilation2DBackpropInput, Gw as ENV, $I as EarlyStopping, ep as Einsum, Ui as Elu, tp as EluGrad, Ng as Environment, Hi as Equal, qi as Erf, Wo as Exp, ei as ExpandDims, Ki as Expm1, rp as FFT, dl as Fill, Xi as FlipLeftRight, jo as Floor, Uo as FloorDiv, of as FromPixels, qo as FusedBatchNorm, mi as FusedConv2D, fi as FusedDepthwiseConv2D, qx as GPGPUContext, Yi as GatherNd, ti as GatherV2, lS as GraphModel, Zi as Greater, Ho as GreaterEqual, jC as History, np as IFFT, no as Identity, op as Imag, St as InputSpec, Ji as IsFinite, Qi as IsInf, ea as IsNan, Xs as KernelBackend, hl as LRN, ip as LRNGrad, Ny as LayerVariable, Jn as LayersModel, Ko as LeakyRelu, ta as Less, ra as LessEqual, sp as LinSpace, Xo as Log, na as Log1p, y1 as LogSoftmax, oa as LogicalAnd, iu as LogicalNot, au as LogicalOr, Qu as MathBackendCPU, lc as MathBackendWebGL, Yo as Max, Jo as MaxPool, gl as MaxPool3D, lp as MaxPool3DGrad, ap as MaxPoolGrad, up as MaxPoolWithArgmax, Zo as Maximum, Qo as Mean, es as Min, ts as Minimum, rs as MirrorPad, sa as Mod, Yu as MomentumOptimizer, cp as Multinomial, ns as Multiply, ri as Neg, aa as NonMaxSuppressionV3, la as NonMaxSuppressionV4, ua as NonMaxSuppressionV5, ia as NotEqual, H1 as OP_SCOPE_SUFFIX, os as OneHot, ni as OnesLike, Ur as Optimizer, oi as Pack, ss as PadV2, Xse as Pool, is as Pow, as as Prelu, ca as Prod, Zu as RMSPropOptimizer, Bn as RNN, xl as Range, Jw as Rank, pp as Real, Go as RealDiv, pa as Reciprocal, Kt as Reduction, ls as Relu, cs as Relu6, si as Reshape, us as ResizeBilinear, fp as ResizeBilinearGrad, yl as ResizeNearestNeighbor, mp as ResizeNearestNeighborGrad, ps as Reverse, wa as RotateWithOffset, ms as Round, fs as Rsqrt, za as SGDOptimizer, ma as ScatterNd, ii as Select, fa as Selu, Ja as Sequential, hs as Sigmoid, ha as Sign, ds as Sin, da as Sinh, ai as Slice, ys as Softmax, ga as Softplus, bl as SpaceToBatchND, dp as SparseFillEmptyRows, hp as SparseReshape, gp as SparseSegmentMean, xp as SparseSegmentSum, yp as SparseToDense, li as SplitV, gs as Sqrt, wl as Square, bs as SquaredDifference, oo as Step, xa as StridedSlice, bp as StringNGrams, wp as StringSplit, _p as StringToHashBucketFast, ws as Sub, xs as Sum, mn as SymbolicTensor, _s as Tan, ks as Tanh, Me as Tensor, ct as TensorBuffer, Un as Tile, ya as TopK, ba as Transform, vs as Transpose, kp as Unique, ui as Unpack, _l as UnsortedSegmentSum, Cl as Variable, ci as ZerosLike, pi as _FusedMatMul, Tt as abs, hf as acos, gf as acosh, J as add, S_ as addN, bu as all, Nl as any, Tl as argMax, xf as argMin, yf as asin, bf as asinh, wf as atan, _f as atan2, kf as atanh, Sa as avgPool, vf as avgPool3d, WT as backend, I as backend_util, _U as basicLSTMCell, uo as batchNorm, A_ as batchNorm2d, D_ as batchNorm3d, $_ as batchNorm4d, Na as batchToSpaceND, Cf as bincount, vNe as booleanMaskAsync, Ta as broadcastTo, zg as browser, Ie as buffer, ese as callbacks, oe as cast, If as ceil, fr as clipByValue, qn as clone, Fn as complex, et as concat, R_ as concat1d, F_ as concat2d, O_ as concat3d, P_ as concat4d, NB as constraints, ku as conv1d, on as conv2d, vu as conv2dTranspose, Sf as conv3d, M_ as conv3dTranspose, tie as copyRegisteredKernels, Ea as cos, Cu as cosh, rx as cosineWindow, Iu as cumsum, sn as customGrad, vS as data, L_ as denseBincount, I_ as deprecationWarn, Nf as depthToSpace, Es as depthwiseConv2d, rse as deregisterOp, gu as device_util, XU as diag, Tf as dilation2d, Oue as disableDeprecationWarnings, De as dispose, Pue as disposeVariables, ue as div, Ef as divNoNan, z_ as dot, fE as dropout, B_ as einsum, As as elu, Fue as enableDebugMode, Rue as enableProdMode, dE as enclosingPowerOfTwo, Ns as engine, W as env, On as equal, Af as erf, nr as exp, dr as expandDims, Df as expm1, Pp as eye, Ma as fft, Ds as fill, Gue as findBackend, Wue as findBackendFactory, $s as floor, yu as floorDiv, yR as forceHalfFloat, ho as fused, co as gather, pE as gatherND, Bg as gather_util, Bue as getBackend, Uw as getGradient, af as getKernel, Tg as getKernelsForBackend, f$ as gpgpu_util, Iq as grad, Sq as grads, qt as greater, _n as greaterEqual, gi as ifft, Su as imag, yi as image, R1e as inTopKAsync, HB as initializers, eI as input, Or as io, zu as irfft, V_ as isFinite, G_ as isInf, $f as isNaN, Rt as keep, zr as kernel_impls, TV as layers, Aa as leakyRelu, Nu as less, kn as lessEqual, JE as linalg, W_ as linspace, Ase as loadGraphModel, mne as loadLayersModel, Rf as localResponseNormalization, hr as log, Tu as log1p, j_ as logSigmoid, Eu as logSoftmax, Of as logSumExp, _r as logicalAnd, Da as logicalNot, Au as logicalOr, K_ as logicalXor, vFe as losses, Be as matMul, IT as math, Er as max, $a as maxPool, Pf as maxPool3d, X_ as maxPoolWithArgmax, an as maximum, ht as mean, df as memory, Kq as meshgrid, EV as metrics, El as min, Rs as minimum, Mf as mirrorPad, Lf as mod, cne as model, AV as models, Mp as moments, XNe as movingAverage, P as mul, rH as multiRNNCell, Y_ as multinomial, Ke as neg, Yf as nextFrame, Vp as norm, fo as notEqual, Ss as oneHot, or as ones, ur as onesLike, S as op, aH as outerProduct, Wr as pad, cH as pad1d, mH as pad2d, dH as pad3d, gH as pad4d, Z_ as pool, jr as pow, Fa as prelu, g_ as print, Du as prod, Mue as profile, IH as rand, RH as randomGamma, Jg as randomNormal, Fs as randomUniform, Oa as range, zue as ready, Al as real, zf as reciprocal, Rp as registerBackend, fne as registerCallbackConstructor, b1 as registerGradient, lu as registerKernel, tse as registerOp, DV as regularizers, Mr as relu, Ru as relu6, Vue as removeBackend, L as reshape, Jt as reverse, GH as reverse1d, jH as reverse2d, qH as reverse3d, KH as reverse4d, La as rfft, Fu as round, Ou as rsqrt, pe as scalar, uE as scatterND, Gg as scatter_util, Pu as selu, Bf as separableConv2d, pne as sequential, Q as serialization, W4 as setBackend, jue as setPlatform, Mte as setWasmPath, Lte as setWasmPaths, Jk as setWebGLContext, lk as setdiff1dAsync, Tx as shared, Pr as sigmoid, Vf as sign, ZRe as signal, Mu as sin, Lu as sinh, Fe as slice, Gf as slice1d, Qg as slice2d, Wf as slice3d, zp as slice4d, lr as slice_util, Pa as softmax, po as softplus, Ra as spaceToBatchND, Xf as sparse, tx as sparseToDense, qRe as spectral, sr as split, xt as sqrt, Le as square, Bu as squaredDifference, Pn as squeeze, Ht as stack, Os as step, jf as stridedSlice, mx as string, ce as sub, de as sum, du as sumOutType, Uf as tan, Ts as tanh, Nr as tensor, Dt as tensor1d, xi as tensor2d, w_ as tensor3d, wK as tensor4d, _K as tensor5d, kK as tensor6d, lo as tensor_util, GT as test_util, B as tidy, Kn as tile, Lue as time, qf as topk, Ju as train, qe as transpose, Vu as truncatedNormal, Bp as unique, eie as unregisterGradient, Qse as unregisterKernel, Hf as unsortedSegmentSum, gr as unstack, mr as upcastType, y as util, Nq as valueAndGrad, Tq as valueAndGrads, uk as variable, Kg as variableGrads, OKt as version, Dse as version_converter, G4 as version_core, Mk as version_cpu, Ud as version_layers, EC as version_wasm, Hv as version_webgl, bJe as webgl, m$ as webgl_util, Ct as where, Kf as whereAsync, gt as zeros, Se as zerosLike };

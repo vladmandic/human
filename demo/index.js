@@ -31,7 +31,6 @@ let userConfig = {
   warmup: 'none',
   backend: 'humangl',
   wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.6.0/dist/',
-  segmentation: { enabled: true },
   /*
   async: false,
   cacheSensitivity: 0,

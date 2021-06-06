@@ -44,10 +44,14 @@ export type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageE
  */
 export type Error = { error: string };
 
-/** Instance of TensorFlow/JS */
+/** Instance of TensorFlow/JS
+ * @external
+ */
 export type TensorFlow = typeof tf;
 
-/** Generic Model object type, holds instance of individual models */
+/** Generic Model object type
+ * holds instance of individual models
+ */
 type Model = unknown;
 
 /**

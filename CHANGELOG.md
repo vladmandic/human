@@ -11,6 +11,8 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/06/05 mandic00@live.com
 
+- modularize build platform
+- enable body segmentation and background replacement in demo
 - minor git corruption
 - unified build
 - enable body segmentation and background replacement

@@ -2,15 +2,9 @@
  * Creates tfjs bundle used by Human browser build target
  */
 
-// simplified
-// { modules: 1250, moduleBytes: 4013323, imports: 7, importBytes: 2255, outputBytes: 2991826, outputFiles: 'dist/tfjs.esm.js' }
-// export * from '@tensorflow/tfjs/dist/index.js';
-// export * from '@tensorflow/tfjs-backend-wasm';
-
-// modular
-// { modules: 1253, moduleBytes: 4029357, imports: 7, importBytes: 2285, outputBytes: 2998298, outputFiles: 'dist/tfjs.esm.js' }
-
-// get versions of all packages.
+// import from dist
+// modules: 1299, moduleBytes: 4230827, imports: 7, importBytes: 2478, outputBytes: 2357435
+// get versions of all packages
 import * as packageBundle from '@tensorflow/tfjs/package.json';
 import * as packageCore from '@tensorflow/tfjs-core/package.json';
 import * as packageData from '@tensorflow/tfjs-data/package.json';
@@ -21,7 +15,7 @@ import { version_cpu } from '@tensorflow/tfjs-backend-cpu/dist/index.js';
 import { version_webgl } from '@tensorflow/tfjs-backend-webgl/dist/index.js';
 import { version_wasm } from '@tensorflow/tfjs-backend-wasm/dist/index.js';
 
-// export all - compiled
+// export all
 export * from '@tensorflow/tfjs-core/dist/index.js';
 export * from '@tensorflow/tfjs-layers/dist/index.js';
 export * from '@tensorflow/tfjs-converter/dist/index.js';
@@ -30,8 +24,20 @@ export * from '@tensorflow/tfjs-backend-cpu/dist/index.js';
 export * from '@tensorflow/tfjs-backend-webgl/dist/index.js';
 export * from '@tensorflow/tfjs-backend-wasm/dist/index.js';
 
-// export all - sources
+// import from src
+// modules: 1681, moduleBytes: 5711239, imports: 7, importBytes: 2701, outputBytes: 2107830
+// get versions of all packages
 /*
+import * as packageBundle from '@tensorflow/tfjs/package.json';
+import * as packageCore from '@tensorflow/tfjs-core/package.json';
+import * as packageData from '@tensorflow/tfjs-data/package.json';
+import * as packageLayers from '@tensorflow/tfjs-layers/package.json';
+import * as packageConverter from '@tensorflow/tfjs-converter/package.json';
+import { version_cpu } from '@tensorflow/tfjs-backend-cpu/src/index';
+import { version_webgl } from '@tensorflow/tfjs-backend-webgl/src/index';
+import { version_wasm } from '@tensorflow/tfjs-backend-wasm/src/index';
+
+// export all
 export * from '@tensorflow/tfjs-core/src/index';
 export * from '@tensorflow/tfjs-layers/src/index';
 export * from '@tensorflow/tfjs-converter/src/index';

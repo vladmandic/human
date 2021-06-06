@@ -9,7 +9,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/06/05 mandic00@live.com
+### **update wasm to tfjs 3.7.0** 2021/06/06 mandic00@live.com
 
 - modularize build platform
 - enable body segmentation and background replacement in demo

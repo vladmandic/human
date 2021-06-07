@@ -1,18 +1,15 @@
 const ts = require('typescript');
 const log = require('@vladmandic/pilogger');
-const tsconfig = require('../tsconfig.json');
 
 const version = ts.version;
 
 async function typings(entryPoint) {
-  log.info('Generate Typings:', entryPoint, 'outDir:', [tsconfig.compilerOptions.outDir]);
-  const tsoptions = { ...tsconfig.compilerOptions,
-    target: ts.ScriptTarget.ES2018,
-    module: ts.ModuleKind.ES2020,
-    moduleResolution: ts.ModuleResolutionKind.NodeJs,
-  };
-  const compilerHost = ts.createCompilerHost(tsoptions);
-  const program = ts.createProgram(entryPoint, tsoptions, compilerHost);
+  const configFileName = ts.findConfigFile('./', ts.sys.fileExists, 'tsconfig.json') || '';
+  const configFile = ts.readConfigFile(configFileName, ts.sys.readFile);
+  const compilerOptions = ts.parseJsonConfigFileContent(configFile.config, ts.sys, './');
+  log.info('Generate Typings:', entryPoint, 'outDir:', [compilerOptions.options.outDir]);
+  const compilerHost = ts.createCompilerHost(compilerOptions.options);
+  const program = ts.createProgram(entryPoint, compilerOptions.options, compilerHost);
   const emit = program.emit();
   const diag = ts
     .getPreEmitDiagnostics(program)
@@ -29,5 +26,10 @@ async function typings(entryPoint) {
   }
 }
 
-exports.run = typings;
-exports.version = version;
+if (require.main === module) {
+  log.header();
+  typings(['src/human.ts']); // generate typedoc
+} else {
+  exports.run = typings;
+  exports.version = version;
+}

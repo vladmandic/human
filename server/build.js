@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const log = require('@vladmandic/pilogger');
 const esbuild = require('esbuild');
+const rimraf = require('rimraf');
 const tfjs = require('@tensorflow/tfjs/package.json');
 const changelog = require('./changelog.js');
 const lint = require('./lint.js');
@@ -42,6 +43,7 @@ const config = {
   buildLog: 'build.log',
   changelog: '../CHANGELOG.md',
   lintLocations: ['server/', 'src/', 'tfjs/', 'test/', 'demo/'],
+  cleanLocations: ['dist/*', 'types/*', 'typedoc/*'],
 };
 
 const targets = {
@@ -226,8 +228,8 @@ async function build(f, msg, dev = false) {
     }
     if (!dev) { // only for prod builds, skipped for dev build
       await lint.run(config.lintLocations); // run linter
-      await typings.run(targets.browserBundle.esm.entryPoints); // generate typings
       await changelog.update(config.changelog); // generate changelog
+      await typings.run(targets.browserBundle.esm.entryPoints); // generate typings
       await typedoc.run(targets.browserBundle.esm.entryPoints); // generate typedoc
     }
     if (require.main === module) process.exit(0);
@@ -239,12 +241,18 @@ async function build(f, msg, dev = false) {
   busy = false;
 }
 
+function clean() {
+  log.info('Clean:', config.cleanLocations);
+  for (const loc of config.cleanLocations) rimraf.sync(loc);
+}
+
 if (require.main === module) {
   config.buildLog = path.join(__dirname, config.buildLog);
   if (fs.existsSync(config.buildLog)) fs.unlinkSync(config.buildLog);
   log.logFile(config.buildLog);
   log.header();
   log.info(`Toolchain: tfjs: ${tfjs.version} esbuild ${esbuild.version}; typescript ${typings.version}; typedoc: ${typedoc.version} eslint: ${lint.version}`);
+  clean();
   build('all', 'startup');
 } else {
   exports.build = build;

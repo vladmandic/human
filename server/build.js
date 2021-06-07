@@ -140,6 +140,7 @@ const targets = {
   },
   browserBundle: {
     tfjs: {
+      banner: { js: '/* TFJS custom ESM bundle in ES2018 */' },
       platform: 'browser',
       format: 'esm',
       entryPoints: ['tfjs/tf-browser.ts'],
@@ -147,6 +148,9 @@ const targets = {
       external: ['fs', 'buffer', 'util', 'os'],
       treeShaking: 'ignore-annotations',
       sourcemap: true,
+      minifyWhitespace: false,
+      minifyIdentifiers: false,
+      minifySyntax: false,
     },
     iife: {
       platform: 'browser',

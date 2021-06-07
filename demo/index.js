@@ -432,17 +432,19 @@ function webWorker(input, image, canvas, timestamp) {
 // main processing function when input is webcam, can use direct invocation or web worker
 function runHumanDetect(input, canvas, timestamp) {
   // if live video
-  const live = input.srcObject && (input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState > 2) && (!input.paused);
-  if (!live && input.srcObject) {
+  const videoLive = (input.readyState > 2) && (!input.paused);
+  const cameraLive = input.srcObject && (input.srcObject.getVideoTracks()[0].readyState === 'live');
+  const live = videoLive || cameraLive;
+  if (!live) {
     // stop ui refresh
     if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
     if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
     ui.drawThread = null;
     ui.detectThread = null;
     // if we want to continue and camera not ready, retry in 0.5sec, else just give up
-    if (input.paused) log('camera paused');
-    else if ((input.srcObject.getVideoTracks()[0].readyState === 'live') && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
-    else log(`camera not ready: track state: ${input.srcObject.getVideoTracks()[0].readyState} stream state: ${input.readyState}`);
+    if (input.paused) log('video paused');
+    else if (cameraLive && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
+    else log(`video not ready: track state: ${input.srcObject ? input.srcObject.getVideoTracks()[0].readyState : 'unknown'} stream state: ${input.readyState}`);
     clearTimeout(ui.drawThread);
     ui.drawThread = null;
     log('frame statistics: process:', ui.framesDetect, 'refresh:', ui.framesDraw);
@@ -552,12 +554,33 @@ async function processImage(input, title) {
   });
 }
 
+async function processVideo(input, title) {
+  status(`processing video: ${title}`);
+  const video = document.createElement('video');
+  const canvas = document.getElementById('canvas');
+  video.id = 'video-file';
+  video.controls = true;
+  video.loop = true;
+  // video.onerror = async () => status(`video loading error: ${video.error.message}`);
+  video.addEventListener('error', () => status(`video loading error: ${video.error.message}`));
+  video.addEventListener('canplay', async () => {
+    for (const m of Object.values(menu)) m.hide();
+    document.getElementById('samples-container').style.display = 'none';
+    document.getElementById('play').style.display = 'none';
+    canvas.style.display = 'block';
+    document.getElementById('btnStartText').innerHTML = 'pause video';
+    await video.play();
+    if (!ui.detectThread) runHumanDetect(video, canvas);
+  });
+  video.src = input;
+}
+
 // just initialize everything and call main function
 async function detectVideo() {
   document.getElementById('samples-container').style.display = 'none';
-  document.getElementById('canvas').style.display = 'block';
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
+  canvas.style.display = 'block';
   if ((video.srcObject !== null) && !video.paused) {
     document.getElementById('btnStartText').innerHTML = 'start video';
     status('paused');
@@ -743,9 +766,9 @@ async function processDataURL(f, action) {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = async (e) => {
-      const dataURL = e.target.result;
       if (action === 'process') {
-        await processImage(dataURL, f.name);
+        if (e.target.result.startsWith('data:image')) await processImage(e.target.result, f.name);
+        if (e.target.result.startsWith('data:video')) await processVideo(e.target.result, f.name);
         document.getElementById('canvas').style.display = 'none';
       }
       if (action === 'background') {
@@ -767,7 +790,7 @@ async function processDataURL(f, action) {
             }
           }
         };
-        image.src = dataURL;
+        image.src = e.target.result;
       }
       resolve(true);
     };

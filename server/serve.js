@@ -143,6 +143,7 @@ async function httpRequest(req, res) {
           'X-Content-Type-Options': 'nosniff',
           'Cross-Origin-Embedder-Policy': 'require-corp',
           'Cross-Origin-Opener-Policy': 'same-origin',
+          'Content-Security-Policy': "media-src 'self' http: https: data:",
         });
         const compress = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 5 } }); // instance of brotli compression with level 5
         const stream = fs.createReadStream(input);

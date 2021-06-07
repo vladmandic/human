@@ -16,10 +16,11 @@ let skipped = Number.MAX_SAFE_INTEGER;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function load(config: Config | any) {
   if (!model) {
+    // @ts-ignore type mismatch on GraphModel
     model = await tf.loadGraphModel(join(config.modelBasePath, config.face.age.modelPath));
-    if (!model || !model.modelUrl) log('load model failed:', config.face.age.modelPath);
-    else if (config.debug) log('load model:', model.modelUrl);
-  } else if (config.debug) log('cached model:', model.modelUrl);
+    if (!model || !model['modelUrl']) log('load model failed:', config.face.age.modelPath);
+    else if (config.debug) log('load model:', model['modelUrl']);
+  } else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 
@@ -32,6 +33,7 @@ export async function predict(image: Tensor, config: Config | any) {
   }
   skipped = 0;
   return new Promise(async (resolve) => {
+    if (!model.inputs[0].shape) return;
     const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
     const enhance = tf.mul(resize, [255.0]);
     tf.dispose(resize);

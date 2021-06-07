@@ -753,11 +753,19 @@ async function processDataURL(f, action) {
         image.onerror = async () => status('image loading error');
         image.onload = async () => {
           ui.background = image;
-          document.getElementById('canvas').style.display = 'block';
-          const canvas = document.getElementById('canvas');
-          const ctx = canvas.getContext('2d');
-          const overlaid = await human.segmentation(canvas, ui.background, userConfig);
-          if (overlaid) ctx.drawImage(overlaid, 0, 0);
+          if (document.getElementById('canvas').style.display === 'block') { // replace canvas used for video
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const overlaid = await human.segmentation(canvas, ui.background, userConfig);
+            if (overlaid) ctx.drawImage(overlaid, 0, 0);
+          } else {
+            const canvases = document.getElementById('samples-container').children; // replace loaded images
+            for (const canvas of canvases) {
+              const ctx = canvas.getContext('2d');
+              const overlaid = await human.segmentation(canvas, ui.background, userConfig);
+              if (overlaid) ctx.drawImage(overlaid, 0, 0);
+            }
+          }
         };
         image.src = dataURL;
       }

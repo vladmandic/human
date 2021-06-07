@@ -23,7 +23,7 @@
   "scripts": {
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught demo/node.js",
     "dev": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/serve.js",
-    "build": "rimraf dist/* typedoc/* types/* && node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/build.js",
+    "build": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/build.js",
     "lint": "eslint src server demo test",
     "test": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught test/test.js",
     "scan": "npx auditjs@latest ossi --dev --quiet"

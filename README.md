@@ -287,9 +287,9 @@ For more info, see [**Configuration Details**](https://github.com/vladmandic/hum
 
 <br><hr><br>
 
-`Human` library is written in `TypeScript` [4.2](https://www.typescriptlang.org/docs/handbook/intro.html)  
+`Human` library is written in `TypeScript` [4.3](https://www.typescriptlang.org/docs/handbook/intro.html)  
 Conforming to `JavaScript` [ECMAScript version 2020](https://www.ecma-international.org/ecma-262/11.0/index.html) standard  
-Build target is `JavaScript` **EMCAScript version 2018**  
+Build target is `JavaScript` [EMCAScript version 2018](https://262.ecma-international.org/9.0/)  
 
 <br>
 

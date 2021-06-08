@@ -120,6 +120,11 @@ All options as presented in the demo application...
 
 <br>
 
+**Body Segmentation and Background Replacement:**  
+![Pose](assets/screenshot-segmentation.jpg)
+
+<br>
+
 **Large Group:**  
 ![Group](assets/screenshot-group.jpg)
 

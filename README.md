@@ -34,6 +34,10 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 
 <br>
 
+*Note: `Human` Release 2.0 contains large list of changes, see [Change log](https://github.com/vladmandic/human/blob/main/CHANGELOG.md) for details*
+
+<br>
+
 ## Demos
 
 - [**Main Application**](https://vladmandic.github.io/human/demo/index.html)

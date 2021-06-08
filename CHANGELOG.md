@@ -9,11 +9,12 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/06/08 mandic00@live.com
+
+
 ### **2.0.1** 2021/06/08 mandic00@live.com
 
-
-### **origin/main** 2021/06/07 mandic00@live.com
-
+- add video drag&drop capability
 - modularize build platform
 - custom build tfjs from sources
 - modularize build platform

@@ -15,6 +15,7 @@ var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[Object.keys(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
 var __export = (target, all2) => {
+  __markAsModule(target);
   for (var name in all2)
     __defProp(target, name, { get: all2[name], enumerable: true });
 };
@@ -75,7 +76,6 @@ var require_tfjs_esm = __commonJS({
 });
 
 // src/human.ts
-__markAsModule(exports);
 __export(exports, {
   Human: () => Human,
   default: () => Human
@@ -11254,7 +11254,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // package.json
-var version = "2.0.0";
+var version = "2.0.1";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;

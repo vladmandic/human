@@ -92,7 +92,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 All options as presented in the demo application...  
 > [demo/index.html](demo/index.html)  
 
-![Options visible in demo](assets/screenshot-menu.png)
+![Options visible in demo](assets/screenshot-menu.jpg)
 
 <br>
 

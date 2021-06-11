@@ -253,6 +253,7 @@ var config2 = {
   gl: null,
   width: 1024,
   height: 1024,
+  extensions: [],
   webGLattr: {
     alpha: false,
     antialias: false,
@@ -264,9 +265,14 @@ var config2 = {
     desynchronized: true
   }
 };
+function extensions() {
+  const gl = config2.gl;
+  if (!gl)
+    return;
+  config2.extensions = gl.getSupportedExtensions();
+}
 function register() {
   if (!tf.findBackend(config2.name)) {
-    log("backend registration:", config2.name);
     try {
       config2.canvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(config2.width, config2.height) : document.createElement("canvas");
     } catch (err) {
@@ -308,6 +314,7 @@ function register() {
       log("error: cannot set WebGL backend flags:", err);
       return;
     }
+    extensions();
     log("backend registered:", config2.name);
   }
 }
@@ -8767,11 +8774,15 @@ async function process3(res, inputSize, outputShape, config3) {
     const score3 = Math.trunc(100 * detections[0][id][4]) / 100;
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
-    const boxRaw3 = [
+    const [x, y] = [
       detections[0][id][0] / inputSize,
-      detections[0][id][1] / inputSize,
-      detections[0][id][2] / inputSize,
-      detections[0][id][3] / inputSize
+      detections[0][id][1] / inputSize
+    ];
+    const boxRaw3 = [
+      x,
+      y,
+      detections[0][id][2] / inputSize - x,
+      detections[0][id][3] / inputSize - y
     ];
     const box6 = [
       Math.trunc(boxRaw3[0] * outputShape[0]),

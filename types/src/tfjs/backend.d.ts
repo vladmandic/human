@@ -6,9 +6,10 @@ export declare const config: {
     name: string;
     priority: number;
     canvas: OffscreenCanvas | HTMLCanvasElement | null;
-    gl: unknown;
+    gl: WebGL2RenderingContext | null;
     width: number;
     height: number;
+    extensions: string[];
     webGLattr: {
         alpha: boolean;
         antialias: boolean;
@@ -20,4 +21,9 @@ export declare const config: {
         desynchronized: boolean;
     };
 };
+/**
+ * Registers custom WebGL2 backend to be used by Human library
+ *
+ * @returns void
+ */
 export declare function register(): void;

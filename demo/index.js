@@ -50,7 +50,7 @@ let userConfig = {
   hand: { enabled: false },
   body: { enabled: false },
   // body: { enabled: true, modelPath: 'posenet.json' },
-  segmentation: { enabled: true },
+  segmentation: { enabled: false },
   */
 };
 
@@ -547,7 +547,7 @@ async function processImage(input, title) {
       document.getElementById('loader').style.display = 'none';
       if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
       if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
-
+      log('processed image:', title);
       resolve(true);
     };
     image.src = input;

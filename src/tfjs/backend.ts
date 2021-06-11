@@ -10,9 +10,10 @@ export const config = {
   name: 'humangl',
   priority: 99,
   canvas: <null | OffscreenCanvas | HTMLCanvasElement>null,
-  gl: <unknown>null,
+  gl: <null | WebGL2RenderingContext>null,
   width: 1024,
   height: 1024,
+  extensions: <string[]> [],
   webGLattr: { // https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2
     alpha: false,
     antialias: false,
@@ -25,9 +26,25 @@ export const config = {
   },
 };
 
+function extensions(): void {
+  /*
+  https://www.khronos.org/registry/webgl/extensions/
+  https://webglreport.com/?v=2
+  */
+  const gl = config.gl;
+  if (!gl) return;
+  config.extensions = gl.getSupportedExtensions() as string[];
+  // gl.getExtension('KHR_parallel_shader_compile');
+}
+
+/**
+ * Registers custom WebGL2 backend to be used by Human library
+ *
+ * @returns void
+ */
 export function register(): void {
   if (!tf.findBackend(config.name)) {
-    log('backend registration:', config.name);
+    // log('backend registration:', config.name);
     try {
       config.canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(config.width, config.height) : document.createElement('canvas');
     } catch (err) {
@@ -35,7 +52,7 @@ export function register(): void {
       return;
     }
     try {
-      config.gl = config.canvas.getContext('webgl2', config.webGLattr);
+      config.gl = config.canvas.getContext('webgl2', config.webGLattr) as WebGL2RenderingContext;
     } catch (err) {
       log('error: cannot get WebGL2 context:', err);
       return;
@@ -65,13 +82,11 @@ export function register(): void {
     }
     try {
       tf.ENV.set('WEBGL_VERSION', 2);
-      // tf.ENV.set('WEBGL_MAX_TEXTURE_SIZE', config.gl.getParameter(config.gl.MAX_TEXTURE_SIZE));
-      // tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true);
-      // tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
     } catch (err) {
       log('error: cannot set WebGL backend flags:', err);
       return;
     }
+    extensions();
     log('backend registered:', config.name);
   }
 }

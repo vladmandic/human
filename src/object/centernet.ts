@@ -49,11 +49,15 @@ async function process(res: Tensor, inputSize, outputShape, config: Config) {
     const score = Math.trunc(100 * detections[0][id][4]) / 100;
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
-    const boxRaw = [
+    const [x, y] = [
       detections[0][id][0] / inputSize,
       detections[0][id][1] / inputSize,
-      detections[0][id][2] / inputSize,
-      detections[0][id][3] / inputSize,
+    ];
+    const boxRaw = [
+      x,
+      y,
+      detections[0][id][2] / inputSize - x,
+      detections[0][id][3] / inputSize - y,
     ] as [number, number, number, number];
     const box = [
       Math.trunc(boxRaw[0] * outputShape[0]),

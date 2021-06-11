@@ -9,7 +9,11 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/06/08 mandic00@live.com
+### **HEAD -> main** 2021/06/09 mandic00@live.com
+
+- add body segmentation sample
+
+### **release: 2.0.1** 2021/06/08 mandic00@live.com
 
 - release 2.0
 

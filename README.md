@@ -43,6 +43,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 - [**Main Application**](https://vladmandic.github.io/human/demo/index.html)
 - [**Face Extraction, Description, Identification and Matching**](https://vladmandic.github.io/human/demo/facematch/index.html)
 - [**Face Extraction and 3D Rendering**](https://vladmandic.github.io/human/demo/face3d/index.html)
+- [**Multithreaded Detection Showcasing Maximum Performance**](https://vladmandic.github.io/human/demo/multithread/index.html)
 - [**Details on Demo Applications**](https://github.com/vladmandic/human/wiki/Demos)
 
 ## Project pages

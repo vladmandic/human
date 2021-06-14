@@ -114,19 +114,21 @@ export function calc(newResult: Result): Result {
   }
 
   // interpolate person results
-  const newPersons = newResult.persons; // trigger getter function
-  if (!bufferedResult.persons || (newPersons.length !== bufferedResult.persons.length)) {
-    bufferedResult.persons = JSON.parse(JSON.stringify(newPersons as Person[]));
-  } else {
-    for (let i = 0; i < newPersons.length; i++) { // update person box, we don't update the rest as it's updated as reference anyhow
-      bufferedResult.persons[i].box = (newPersons[i].box
-        .map((box, j) => ((bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box) / bufferedFactor)) as [number, number, number, number];
+  if (newResult.persons) {
+    const newPersons = newResult.persons; // trigger getter function
+    if (!bufferedResult.persons || (newPersons.length !== bufferedResult.persons.length)) {
+      bufferedResult.persons = JSON.parse(JSON.stringify(newPersons as Person[]));
+    } else {
+      for (let i = 0; i < newPersons.length; i++) { // update person box, we don't update the rest as it's updated as reference anyhow
+        bufferedResult.persons[i].box = (newPersons[i].box
+          .map((box, j) => ((bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box) / bufferedFactor)) as [number, number, number, number];
+      }
     }
   }
 
   // just copy latest gestures without interpolation
-  bufferedResult.gesture = newResult.gesture as Gesture[];
-  bufferedResult.performance = newResult.performance;
+  if (newResult.gesture) bufferedResult.gesture = newResult.gesture as Gesture[];
+  if (newResult.performance) bufferedResult.performance = newResult.performance;
 
   return bufferedResult;
 }

@@ -51,10 +51,10 @@ export const options: DrawOptions = {
   labelColor: <string>'rgba(173, 216, 230, 1)', // 'lightblue' with dark alpha channel
   shadowColor: <string>'black',
   font: <string>'small-caps 14px "Segoe UI"',
-  lineHeight: <number>24,
-  lineWidth: <number>6,
+  lineHeight: <number>18,
+  lineWidth: <number>4,
   pointSize: <number>2,
-  roundRect: <number>28,
+  roundRect: <number>8,
   drawPoints: <boolean>false,
   drawLabels: <boolean>true,
   drawBoxes: <boolean>true,
@@ -460,7 +460,7 @@ export async function object(inCanvas: HTMLCanvasElement, result: Array<Item>, d
       ctx.fillStyle = localOptions.color;
       rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
       if (localOptions.drawLabels) {
-        const label = `${Math.round(100 * h.score)}% ${h.label}`;
+        const label = `${h.label} ${Math.round(100 * h.score)}%`;
         if (localOptions.shadowColor && localOptions.shadowColor !== '') {
           ctx.fillStyle = localOptions.shadowColor;
           ctx.fillText(label, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);

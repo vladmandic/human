@@ -9785,10 +9785,10 @@ var options = {
   labelColor: "rgba(173, 216, 230, 1)",
   shadowColor: "black",
   font: 'small-caps 14px "Segoe UI"',
-  lineHeight: 24,
-  lineWidth: 6,
+  lineHeight: 18,
+  lineWidth: 4,
   pointSize: 2,
-  roundRect: 28,
+  roundRect: 8,
   drawPoints: false,
   drawLabels: true,
   drawBoxes: true,
@@ -10221,7 +10221,7 @@ async function object(inCanvas2, result, drawOptions) {
       ctx.fillStyle = localOptions.color;
       rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
       if (localOptions.drawLabels) {
-        const label = `${Math.round(100 * h.score)}% ${h.label}`;
+        const label = `${h.label} ${Math.round(100 * h.score)}%`;
         if (localOptions.shadowColor && localOptions.shadowColor !== "") {
           ctx.fillStyle = localOptions.shadowColor;
           ctx.fillText(label, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
@@ -10415,16 +10415,20 @@ function calc(newResult) {
       bufferedResult.object[i] = { ...newResult.object[i], box: box6, boxRaw: boxRaw3 };
     }
   }
-  const newPersons = newResult.persons;
-  if (!bufferedResult.persons || newPersons.length !== bufferedResult.persons.length) {
-    bufferedResult.persons = JSON.parse(JSON.stringify(newPersons));
-  } else {
-    for (let i = 0; i < newPersons.length; i++) {
-      bufferedResult.persons[i].box = newPersons[i].box.map((box6, j) => ((bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box6) / bufferedFactor);
+  if (newResult.persons) {
+    const newPersons = newResult.persons;
+    if (!bufferedResult.persons || newPersons.length !== bufferedResult.persons.length) {
+      bufferedResult.persons = JSON.parse(JSON.stringify(newPersons));
+    } else {
+      for (let i = 0; i < newPersons.length; i++) {
+        bufferedResult.persons[i].box = newPersons[i].box.map((box6, j) => ((bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box6) / bufferedFactor);
+      }
     }
   }
-  bufferedResult.gesture = newResult.gesture;
-  bufferedResult.performance = newResult.performance;
+  if (newResult.gesture)
+    bufferedResult.gesture = newResult.gesture;
+  if (newResult.performance)
+    bufferedResult.performance = newResult.performance;
   return bufferedResult;
 }
 
@@ -11265,7 +11269,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // package.json
-var version = "2.0.1";
+var version = "2.0.2";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;

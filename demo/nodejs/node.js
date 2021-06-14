@@ -13,7 +13,7 @@ const fetch = require('node-fetch').default;
 const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
 
 // load specific version of Human library that matches TensorFlow mode
-const Human = require('../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
+const Human = require('../../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
 
 let human = null;
 

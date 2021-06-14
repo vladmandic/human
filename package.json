@@ -21,7 +21,7 @@
     "url": "git+https://github.com/vladmandic/human.git"
   },
   "scripts": {
-    "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught demo/node.js",
+    "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught demo/nodejs/node.js",
     "dev": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/serve.js",
     "build": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/build.js",
     "lint": "eslint src server demo test",
@@ -82,8 +82,8 @@
     "node-fetch": "^2.6.1",
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
-    "simple-git": "^2.39.1",
-    "tslib": "^2.2.0",
+    "simple-git": "^2.40.0",
+    "tslib": "^2.3.0",
     "typedoc": "^0.21.0-beta.2",
     "typescript": "4.3.2"
   }

@@ -41,8 +41,8 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 ## Demos
 
 - [**Main Application**](https://vladmandic.github.io/human/demo/index.html)
-- [**Face Extraction, Description, Identification and Matching**](https://vladmandic.github.io/human/demo/facematch.html)
-- [**Face Extraction and 3D Rendering**](https://vladmandic.github.io/human/demo/face3d.html)
+- [**Face Extraction, Description, Identification and Matching**](https://vladmandic.github.io/human/demo/facematch/index.html)
+- [**Face Extraction and 3D Rendering**](https://vladmandic.github.io/human/demo/face3d/index.html)
 - [**Details on Demo Applications**](https://github.com/vladmandic/human/wiki/Demos)
 
 ## Project pages
@@ -134,14 +134,14 @@ All options as presented in the demo application...
 Extracts all faces from provided input images,  
 sorts them by similarity to selected face  
 and optionally matches detected face with database of known people to guess their names
-> [demo/facematch.html](demo/facematch.html)  
+> [demo/facematch](demo/facematch/index.html)  
 
 ![Face Matching](assets/screenshot-facematch.jpg)
 
 <br>
 
 **Face3D OpenGL Rendering:**  
-> [demo/face3d.html](demo/face3d.html)
+> [demo/face3d](demo/face3d/index.html)
 
 ![Face Matching](assets/screenshot-face3d.jpg)
 

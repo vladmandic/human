@@ -14,7 +14,7 @@ const nodeWebCam = require('node-webcam');
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
 // load specific version of Human library that matches TensorFlow mode
-const Human = require('../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
+const Human = require('../../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
 
 // options for node-webcam
 const optionsCamera = {
@@ -25,7 +25,7 @@ const optionsCamera = {
 // options for human
 const optionsHuman = {
   backend: 'tensorflow',
-  modelBasePath: 'file://node_modules/@vladmandic/human/models/',
+  modelBasePath: 'file://models/',
 };
 
 const camera = nodeWebCam.create(optionsCamera);

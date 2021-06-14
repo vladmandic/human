@@ -13,6 +13,7 @@ const log = require('@vladmandic/pilogger'); // this is my simple logger with fe
 const child_process = require('child_process');
 // note that main process import faceapi or tfjs at all
 
+const workerFile = 'demo/nodejs/node-multiprocess-worker.js';
 const imgPathRoot = './assets'; // modify to include your sample images
 const numWorkers = 4; // how many workers will be started
 const workers = []; // this holds worker processes
@@ -68,10 +69,12 @@ async function main() {
   log.state('Enumerated images:', imgPathRoot, numImages);
 
   t[0] = process.hrtime.bigint();
+  t[1] = process.hrtime.bigint();
+  t[2] = process.hrtime.bigint();
   // manage worker processes
   for (let i = 0; i < numWorkers; i++) {
     // create worker process
-    workers[i] = await child_process.fork('demo/node-multiprocess-worker.js', ['special']);
+    workers[i] = await child_process.fork(workerFile, ['special']);
     // parse message that worker process sends back to main
     // if message is ready, dispatch next image in queue
     // if message is processing result, just print how many faces were detected

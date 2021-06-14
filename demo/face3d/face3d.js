@@ -6,15 +6,17 @@
  * Demo for face mesh detection and projection as 3D object using Three.js
  */
 
-import { DoubleSide, Mesh, MeshBasicMaterial, OrthographicCamera, Scene, sRGBEncoding, VideoTexture, WebGLRenderer, BufferGeometry, BufferAttribute } from './helpers/three.js';
-import { OrbitControls } from './helpers/three-orbitControls.js';
-import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
+import { DoubleSide, Mesh, MeshBasicMaterial, OrthographicCamera, Scene, sRGBEncoding, VideoTexture, WebGLRenderer, BufferGeometry, BufferAttribute } from '../helpers/three.js';
+import { OrbitControls } from '../helpers/three-orbitControls.js';
+import Human from '../../dist/human.esm.js'; // equivalent of @vladmandic/human
 
 const userConfig = {
   backend: 'wasm',
   async: false,
   profile: false,
   warmup: 'full',
+  modelBasePath: '../../models/',
+  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.7.0/dist/',
   filter: { enabled: false },
   face: { enabled: true,
     detector: { rotation: false, maxDetected: 1 },

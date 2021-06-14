@@ -6,13 +6,15 @@
  * Demo for face descriptor analysis and face simmilarity analysis
  */
 
-import Human from '../dist/human.esm.js';
+import Human from '../../dist/human.esm.js';
 
 const userConfig = {
   backend: 'wasm',
   async: false,
   warmup: 'none',
   debug: true,
+  modelBasePath: '../../models/',
+  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.7.0/dist/',
   face: {
     enabled: true,
     detector: { rotation: true, return: true },
@@ -49,8 +51,8 @@ function log(...msg) {
 async function getFaceDB() {
   // download db with known faces
   try {
-    let res = await fetch('/demo/facematch-faces.json');
-    if (!res || !res.ok) res = await fetch('/human/demo/facematch-faces.json');
+    let res = await fetch('/demo/facematch/faces.json');
+    if (!res || !res.ok) res = await fetch('/human/demo/facematch/faces.json');
     db = (res && res.ok) ? await res.json() : [];
     for (const rec of db) {
       rec.embedding = rec.embedding.map((a) => parseFloat(a.toFixed(4)));
@@ -147,7 +149,7 @@ async function process(index, image) {
   return new Promise((resolve) => {
     const img = new Image(128, 128);
     img.onload = () => { // must wait until image is loaded
-      human.detect(img).then(async (res) => {
+      human.detect(img, userConfig).then(async (res) => {
         await faces(index, res, image); // then wait until image is analyzed
         log('Add image:', index + 1, image, 'faces:', res.face.length);
         document.getElementById('images').appendChild(img); // and finally we can add it

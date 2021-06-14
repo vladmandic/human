@@ -11,7 +11,7 @@ const log = require('@vladmandic/pilogger');
 // workers actual import tfjs and faceapi modules
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node');
-const Human = require('../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
+const Human = require('../../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
 
 let human = null;
 

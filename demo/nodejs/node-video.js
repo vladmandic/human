@@ -19,7 +19,7 @@ const Pipe2Jpeg = require('pipe2jpeg');
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
 // load specific version of Human library that matches TensorFlow mode
-const Human = require('../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
+const Human = require('../../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
 
 let count = 0; // counter
 let busy = false; // busy flag
@@ -27,7 +27,7 @@ const inputFile = './test.mp4';
 
 const humanConfig = {
   backend: 'tensorflow',
-  modelBasePath: 'file://node_modules/@vladmandic/human/models/',
+  modelBasePath: 'file://models/',
   debug: false,
   async: true,
   filter: { enabled: false },

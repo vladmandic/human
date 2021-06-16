@@ -213,7 +213,7 @@ async function main() {
       'groups/group14.jpg',
     ];
     // add prefix for gitpages
-    images = images.map((a) => `/samples/${a}`);
+    images = images.map((a) => `/human/samples/${a}`);
     log('Adding static image list:', images.length, 'images');
   }
 

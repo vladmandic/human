@@ -8,10 +8,10 @@ import { Result, Gesture } from './result';
 import * as sysinfo from './sysinfo';
 import * as tf from '../dist/tfjs.esm.js';
 import * as backend from './tfjs/backend';
+import * as models from './models';
 import * as face from './face';
 import * as facemesh from './blazeface/facemesh';
 import * as faceres from './faceres/faceres';
-import * as emotion from './emotion/emotion';
 import * as posenet from './posenet/posenet';
 import * as handpose from './handpose/handpose';
 import * as blazepose from './blazepose/blazepose';
@@ -19,15 +19,15 @@ import * as efficientpose from './efficientpose/efficientpose';
 import * as movenet from './movenet/movenet';
 import * as nanodet from './object/nanodet';
 import * as centernet from './object/centernet';
+import * as segmentation from './segmentation/segmentation';
 import * as gesture from './gesture/gesture';
 import * as image from './image/image';
 import * as draw from './draw/draw';
 import * as persons from './persons';
 import * as interpolate from './interpolate';
-import * as segmentation from './segmentation/segmentation';
 import * as sample from './sample';
 import * as app from '../package.json';
-import { Tensor } from './tfjs/types';
+import { Tensor, GraphModel } from './tfjs/types';
 
 // export types
 export type { Config } from './config';
@@ -48,11 +48,6 @@ export type Error = { error: string };
  * @external
  */
 export type TensorFlow = typeof tf;
-
-/** Generic Model object type
- * holds instance of individual models
- */
-type Model = unknown;
 
 /**
  * **Human** library main class
@@ -87,8 +82,8 @@ export class Human {
    * - Can be embedded or externally provided
    */
   tf: TensorFlow;
-  /** Draw helper classes that can draw detected objects on canvas using specified draw styles
-   * - options: global settings for all draw operations, can be overriden for each draw method, for details see {@link DrawOptions}
+  /** Draw helper classes that can draw detected objects on canvas using specified draw
+   * - options: {@link DrawOptions} global settings for all draw operations, can be overriden for each draw method
    * - face: draw detected faces
    * - body: draw detected people and body parts
    * - hand: draw detected hands and hand parts
@@ -106,20 +101,20 @@ export class Human {
   };
   /** @internal: Currently loaded models */
   models: {
-    face: [Model, Model, Model] | null,
-    posenet: Model | null,
-    blazepose: Model | null,
-    efficientpose: Model | null,
-    movenet: Model | null,
-    handpose: [Model, Model] | null,
-    age: Model | null,
-    gender: Model | null,
-    emotion: Model | null,
-    embedding: Model | null,
-    nanodet: Model | null,
-    centernet: Model | null,
-    faceres: Model | null,
-    segmentation: Model | null,
+    face: [unknown, GraphModel | null, GraphModel | null] | null,
+    posenet: GraphModel | null,
+    blazepose: GraphModel | null,
+    efficientpose: GraphModel | null,
+    movenet: GraphModel | null,
+    handpose: [GraphModel | null, GraphModel | null] | null,
+    age: GraphModel | null,
+    gender: GraphModel | null,
+    emotion: GraphModel | null,
+    embedding: GraphModel | null,
+    nanodet: GraphModel | null,
+    centernet: GraphModel | null,
+    faceres: GraphModel | null,
+    segmentation: GraphModel | null,
   };
   /** Reference face triangualtion array of 468 points, used for triangle references between points */
   faceTriangulation: typeof facemesh.triangulation;
@@ -274,47 +269,8 @@ export class Human {
         if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
       }
     }
-    if (this.config.async) { // load models concurrently
-      [
-        // @ts-ignore async model loading is not correctly inferred
-        this.models.face,
-        this.models.emotion,
-        // @ts-ignore async model loading is not correctly inferred
-        this.models.handpose,
-        this.models.posenet,
-        this.models.blazepose,
-        this.models.efficientpose,
-        this.models.movenet,
-        this.models.nanodet,
-        this.models.centernet,
-        this.models.faceres,
-        this.models.segmentation,
-      ] = await Promise.all([
-        this.models.face || (this.config.face.enabled ? facemesh.load(this.config) : null),
-        this.models.emotion || ((this.config.face.enabled && this.config.face.emotion.enabled) ? emotion.load(this.config) : null),
-        this.models.handpose || (this.config.hand.enabled ? handpose.load(this.config) : null),
-        this.models.posenet || (this.config.body.enabled && this.config.body.modelPath.includes('posenet') ? posenet.load(this.config) : null),
-        this.models.blazepose || (this.config.body.enabled && this.config.body.modelPath.includes('blazepose') ? blazepose.load(this.config) : null),
-        this.models.efficientpose || (this.config.body.enabled && this.config.body.modelPath.includes('efficientpose') ? efficientpose.load(this.config) : null),
-        this.models.movenet || (this.config.body.enabled && this.config.body.modelPath.includes('movenet') ? movenet.load(this.config) : null),
-        this.models.nanodet || (this.config.object.enabled && this.config.object.modelPath.includes('nanodet') ? nanodet.load(this.config) : null),
-        this.models.centernet || (this.config.object.enabled && this.config.object.modelPath.includes('centernet') ? centernet.load(this.config) : null),
-        this.models.faceres || ((this.config.face.enabled && this.config.face.description.enabled) ? faceres.load(this.config) : null),
-        this.models.segmentation || (this.config.segmentation.enabled ? segmentation.load(this.config) : null),
-      ]);
-    } else { // load models sequentially
-      if (this.config.face.enabled && !this.models.face) this.models.face = await facemesh.load(this.config);
-      if (this.config.face.enabled && this.config.face.emotion.enabled && !this.models.emotion) this.models.emotion = await emotion.load(this.config);
-      if (this.config.hand.enabled && !this.models.handpose) this.models.handpose = await handpose.load(this.config);
-      if (this.config.body.enabled && !this.models.posenet && this.config.body.modelPath.includes('posenet')) this.models.posenet = await posenet.load(this.config);
-      if (this.config.body.enabled && !this.models.blazepose && this.config.body.modelPath.includes('blazepose')) this.models.blazepose = await blazepose.load(this.config);
-      if (this.config.body.enabled && !this.models.efficientpose && this.config.body.modelPath.includes('efficientpose')) this.models.efficientpose = await blazepose.load(this.config);
-      if (this.config.body.enabled && !this.models.movenet && this.config.body.modelPath.includes('movenet')) this.models.movenet = await movenet.load(this.config);
-      if (this.config.object.enabled && !this.models.nanodet && this.config.object.modelPath.includes('nanodet')) this.models.nanodet = await nanodet.load(this.config);
-      if (this.config.object.enabled && !this.models.centernet && this.config.object.modelPath.includes('centernet')) this.models.centernet = await centernet.load(this.config);
-      if (this.config.face.enabled && this.config.face.description.enabled && !this.models.faceres) this.models.faceres = await faceres.load(this.config);
-      if (this.config.segmentation.enabled && !this.models.segmentation) this.models.segmentation = await segmentation.load(this.config);
-    }
+
+    await models.load(this); // actually loads models
 
     if (this.#firstRun) { // print memory stats on first run
       if (this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors');
@@ -695,7 +651,7 @@ export class Human {
     return res;
   }
 
-  /** Warmup metho pre-initializes all models for faster inference
+  /** Warmup method pre-initializes all configured models for faster inference
    * - can take significant time on startup
    * - only used for `webgl` and `humangl` backends
    * @param userConfig?: Config

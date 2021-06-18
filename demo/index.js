@@ -75,7 +75,7 @@ const ui = {
   worker: 'index-worker.js',
   maxFPSframes: 10, // keep fps history for how many frames
   modelsPreload: true, // preload human models on startup
-  modelsWarmup: true, // warmup human models on startup
+  modelsWarmup: false, // warmup human models on startup
   buffered: true, // should output be buffered between frames
   interpolated: true, // should output be interpolated for smoothness between frames
   iconSize: '48px', // ui icon sizes
@@ -272,7 +272,6 @@ async function drawResults(input) {
     if (ui.drawThread) {
       log('stopping buffered refresh');
       cancelAnimationFrame(ui.drawThread);
-      ui.drawThread = null;
     }
   }
 }
@@ -421,8 +420,13 @@ function webWorker(input, image, canvas, timestamp) {
         status();
         drawResults(input);
       }
-      // eslint-disable-next-line no-use-before-define
-      ui.detectThread = requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
+      const videoLive = (input.readyState > 2) && (!input.paused);
+      const cameraLive = input.srcObject && (input.srcObject.getVideoTracks()[0].readyState === 'live') && !input.paused;
+      const live = videoLive || cameraLive;
+      if (live) {
+        // eslint-disable-next-line no-use-before-define
+        ui.detectThread = requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
+      }
     });
   }
   // pass image data as arraybuffer to worker by reference to avoid copy
@@ -437,16 +441,12 @@ function runHumanDetect(input, canvas, timestamp) {
   const live = videoLive || cameraLive;
   if (!live) {
     // stop ui refresh
-    if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
+    // if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
     if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
-    ui.drawThread = null;
-    ui.detectThread = null;
     // if we want to continue and camera not ready, retry in 0.5sec, else just give up
     if (input.paused) log('video paused');
     else if (cameraLive && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
     else log(`video not ready: track state: ${input.srcObject ? input.srcObject.getVideoTracks()[0].readyState : 'unknown'} stream state: ${input.readyState}`);
-    clearTimeout(ui.drawThread);
-    ui.drawThread = null;
     log('frame statistics: process:', ui.framesDetect, 'refresh:', ui.framesDraw);
     log('memory', human.tf.engine().memory());
     return;
@@ -581,10 +581,12 @@ async function detectVideo() {
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   canvas.style.display = 'block';
+  cancelAnimationFrame(ui.detectThread);
   if ((video.srcObject !== null) && !video.paused) {
     document.getElementById('btnStartText').innerHTML = 'start video';
     status('paused');
-    video.pause();
+    await video.pause();
+    // if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
   } else {
     const cameraError = await setupCamera();
     if (!cameraError) {
@@ -592,7 +594,7 @@ async function detectVideo() {
       for (const m of Object.values(menu)) m.hide();
       document.getElementById('btnStartText').innerHTML = 'pause video';
       await video.play();
-      if (!ui.detectThread) runHumanDetect(video, canvas);
+      runHumanDetect(video, canvas);
     } else {
       status(cameraError);
     }
@@ -943,6 +945,7 @@ async function main() {
   // warmup models
   if (ui.modelsWarmup && !ui.useWorker) {
     status('initializing');
+    if (!userConfig.warmup || userConfig.warmup === 'none') userConfig.warmup = 'full';
     const res = await human.warmup(userConfig); // this is not required, just pre-warms all models for faster initial inference
     if (res && res.canvas && ui.drawWarmup) await drawWarmup(res);
   }

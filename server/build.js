@@ -255,7 +255,14 @@ if (require.main === module) {
   if (fs.existsSync(config.buildLog)) fs.unlinkSync(config.buildLog);
   log.logFile(config.buildLog);
   log.header();
-  log.info(`Toolchain: tfjs: ${tfjs.version} esbuild ${esbuild.version}; typescript ${typings.version}; typedoc: ${typedoc.version} eslint: ${lint.version}`);
+  const toolchain = {
+    tfjs: tfjs.version,
+    esbuild: esbuild.version,
+    typescript: typings.version,
+    typedoc: typedoc.version,
+    eslint: lint.version,
+  };
+  log.info('Toolchain: ', toolchain);
   clean();
   build('all', 'startup');
 } else {

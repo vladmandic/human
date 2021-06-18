@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/06/18 mandic00@live.com
 
+- modularize model loading
 
 ### **2.0.3** 2021/06/18 mandic00@live.com
 

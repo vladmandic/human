@@ -93,7 +93,7 @@ export interface Config {
      * - iouThreshold: ammount of overlap between two detected objects before one object is removed
      * - maxDetected: maximum number of faces detected in the input, should be set to the minimum number for performance
      * - rotation: use calculated rotated face image or just box with rotation as-is, false means higher performance, but incorrect mesh mapping on higher face angles
-     * - return: return extracted face as tensor for futher user processing
+     * - return: return extracted face as tensor for futher user processing, in which case user is reponsible for manually disposing the tensor
     */
     face: {
         enabled: boolean;

@@ -59,7 +59,7 @@ export async function predict(input: Tensor, config: Config): Promise<Face[]> {
   return results;
 }
 
-export async function load(config): Promise<[unknown, unknown, unknown]> {
+export async function load(config): Promise<[unknown, GraphModel | null, GraphModel | null]> {
   if ((!faceModels[0] && config.face.enabled) || (!faceModels[1] && config.face.mesh.enabled) || (!faceModels[2] && config.face.iris.enabled)) {
     // @ts-ignore type mismatch for GraphModel
     faceModels = await Promise.all([

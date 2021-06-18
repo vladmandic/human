@@ -69,7 +69,7 @@ export async function predict(input: Tensor, config: Config): Promise<Hand[]> {
   return hands;
 }
 
-export async function load(config: Config): Promise<[unknown, unknown]> {
+export async function load(config: Config): Promise<[GraphModel | null, GraphModel | null]> {
   if (!handDetectorModel || !handPoseModel) {
     // @ts-ignore type mismatch on GraphModel
     [handDetectorModel, handPoseModel] = await Promise.all([

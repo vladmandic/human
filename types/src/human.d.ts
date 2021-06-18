@@ -6,7 +6,7 @@ import { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as draw from './draw/draw';
-import { Tensor } from './tfjs/types';
+import { Tensor, GraphModel } from './tfjs/types';
 export type { Config } from './config';
 export type { Result, Face, Hand, Body, Item, Gesture, Person } from './result';
 export type { DrawOptions } from './draw/draw';
@@ -24,10 +24,6 @@ export declare type Error = {
  * @external
  */
 export declare type TensorFlow = typeof tf;
-/** Generic Model object type
- * holds instance of individual models
- */
-declare type Model = unknown;
 /**
  * **Human** library main class
  *
@@ -65,8 +61,8 @@ export declare class Human {
      * - Can be embedded or externally provided
      */
     tf: TensorFlow;
-    /** Draw helper classes that can draw detected objects on canvas using specified draw styles
-     * - options: global settings for all draw operations, can be overriden for each draw method, for details see {@link DrawOptions}
+    /** Draw helper classes that can draw detected objects on canvas using specified draw
+     * - options: {@link DrawOptions} global settings for all draw operations, can be overriden for each draw method
      * - face: draw detected faces
      * - body: draw detected people and body parts
      * - hand: draw detected hands and hand parts
@@ -84,20 +80,20 @@ export declare class Human {
     };
     /** @internal: Currently loaded models */
     models: {
-        face: [Model, Model, Model] | null;
-        posenet: Model | null;
-        blazepose: Model | null;
-        efficientpose: Model | null;
-        movenet: Model | null;
-        handpose: [Model, Model] | null;
-        age: Model | null;
-        gender: Model | null;
-        emotion: Model | null;
-        embedding: Model | null;
-        nanodet: Model | null;
-        centernet: Model | null;
-        faceres: Model | null;
-        segmentation: Model | null;
+        face: [unknown, GraphModel | null, GraphModel | null] | null;
+        posenet: GraphModel | null;
+        blazepose: GraphModel | null;
+        efficientpose: GraphModel | null;
+        movenet: GraphModel | null;
+        handpose: [GraphModel | null, GraphModel | null] | null;
+        age: GraphModel | null;
+        gender: GraphModel | null;
+        emotion: GraphModel | null;
+        embedding: GraphModel | null;
+        nanodet: GraphModel | null;
+        centernet: GraphModel | null;
+        faceres: GraphModel | null;
+        segmentation: GraphModel | null;
     };
     /** Reference face triangualtion array of 468 points, used for triangle references between points */
     faceTriangulation: typeof facemesh.triangulation;
@@ -180,7 +176,7 @@ export declare class Human {
      * @returns result: {@link Result}
     */
     detect(input: Input, userConfig?: Config | Record<string, unknown>): Promise<Result | Error>;
-    /** Warmup metho pre-initializes all models for faster inference
+    /** Warmup method pre-initializes all configured models for faster inference
      * - can take significant time on startup
      * - only used for `webgl` and `humangl` backends
      * @param userConfig?: Config

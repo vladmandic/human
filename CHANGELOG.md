@@ -9,10 +9,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/06/18 mandic00@live.com
+
+
 ### **2.0.3** 2021/06/18 mandic00@live.com
-
-
-### **origin/main** 2021/06/16 mandic00@live.com
 
 - fix demo paths
 - added multithreaded demo

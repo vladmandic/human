@@ -1,14 +1,25 @@
 /**
  * Module that analyzes existing results and recombines them into a unified person object
  */
-
-import { Face, Body, Hand, Gesture, Person } from './result';
+import { Face, Body, Hand, Gesture, Person, IrisGesture, BodyGesture, HandGesture, FaceGesture } from './result';
 
 export function join(faces: Array<Face>, bodies: Array<Body>, hands: Array<Hand>, gestures: Array<Gesture>, shape: Array<number> | undefined): Array<Person> {
   let id = 0;
   const persons: Array<Person> = [];
   for (const face of faces) { // person is defined primarily by face and then we append other objects as found
-    const person: Person = { id: id++, face, body: null, hands: { left: null, right: null }, gestures: [], box: [0, 0, 0, 0] };
+    const person: Person = {
+      id: id++,
+      face,
+      body: null,
+      hands: { left: null, right: null },
+      gestures: {
+        face: [],
+        iris: [],
+        body: [],
+        hand: [],
+      },
+      box: [0, 0, 0, 0],
+    };
     for (const body of bodies) {
       if (face.box[0] > body.box[0] // x within body
         && face.box[0] < body.box[0] + body.box[2]
@@ -34,11 +45,11 @@ export function join(faces: Array<Face>, bodies: Array<Body>, hands: Array<Hand>
       }
     }
     for (const gesture of gestures) { // append all gestures according to ids
-      if (gesture['face'] !== undefined && gesture['face'] === face.id) person.gestures?.push(gesture);
-      else if (gesture['iris'] !== undefined && gesture['iris'] === face.id) person.gestures?.push(gesture);
-      else if (gesture['body'] !== undefined && gesture['body'] === person.body?.id) person.gestures?.push(gesture);
-      else if (gesture['hand'] !== undefined && gesture['hand'] === person.hands?.left?.id) person.gestures?.push(gesture);
-      else if (gesture['hand'] !== undefined && gesture['hand'] === person.hands?.right?.id) person.gestures?.push(gesture);
+      if (gesture['face'] !== undefined && gesture['face'] === face.id) person.gestures.face.push(gesture.gesture as FaceGesture);
+      else if (gesture['iris'] !== undefined && gesture['iris'] === face.id) person.gestures.iris.push(gesture.gesture as IrisGesture);
+      else if (gesture['body'] !== undefined && gesture['body'] === person.body?.id) person.gestures.body.push(gesture.gesture as BodyGesture);
+      else if (gesture['hand'] !== undefined && gesture['hand'] === person.hands?.left?.id) person.gestures.hand.push(gesture.gesture as HandGesture);
+      else if (gesture['hand'] !== undefined && gesture['hand'] === person.hands?.right?.id) person.gestures.hand.push(gesture.gesture as HandGesture);
     }
 
     // create new overarching box from all boxes beloning to person

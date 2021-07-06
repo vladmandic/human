@@ -4,6 +4,16 @@
 
 import { Tensor } from './tfjs/types';
 
+/**
+ * @typedef Gender
+ */
+export type Gender = 'male' | 'female';
+
+/**
+ * @typedef Emotion
+ */
+export type Emotion = 'angry' | 'disgust' | 'fear' | 'happy' | 'sad' | 'surprise' | 'neutral';
+
 /** Face results
  * Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
  * Some values may be null if specific model is not enabled
@@ -32,28 +42,28 @@ import { Tensor } from './tfjs/types';
  * - tensor: face tensor as Tensor object which contains detected face
  */
 export interface Face {
-  id: number
-  score: number,
-  boxScore: number,
-  faceScore: number,
-  box: [number, number, number, number],
-  boxRaw: [number, number, number, number],
-  mesh: Array<[number, number, number]>
-  meshRaw: Array<[number, number, number]>
-  annotations: Record<string, Array<[number, number, number]>>,
-  age?: number,
-  gender?: string,
-  genderScore?: number,
-  emotion?: Array<{ score: number, emotion: string }>,
-  embedding?: Array<number>,
-  iris?: number,
+  id: number;
+  score: number;
+  boxScore: number;
+  faceScore: number;
+  box: [number, number, number, number];
+  boxRaw: [number, number, number, number];
+  mesh: Array<[number, number, number]>;
+  meshRaw: Array<[number, number, number]>;
+  annotations: Record<string, Array<[number, number, number]>>;
+  age?: number;
+  gender?: Gender;
+  genderScore?: number;
+  emotion?: Array<{ score: number; emotion: Emotion }>;
+  embedding?: Array<number>;
+  iris?: number;
   rotation?: {
-    angle: { roll: number, yaw: number, pitch: number },
-    matrix: [number, number, number, number, number, number, number, number, number],
-    gaze: { bearing: number, strength: number },
-  }
+    angle: { roll: number; yaw: number; pitch: number };
+    matrix: [number, number, number, number, number, number, number, number, number];
+    gaze: { bearing: number; strength: number };
+  };
   image?: Tensor;
-  tensor: Tensor,
+  tensor: Tensor;
 }
 
 /** Body results
@@ -70,17 +80,17 @@ export interface Face {
  *  - presence: body part presence value
  */
 export interface Body {
-  id: number,
-  score: number,
-  box: [number, number, number, number],
-  boxRaw: [number, number, number, number],
+  id: number;
+  score: number;
+  box: [number, number, number, number];
+  boxRaw: [number, number, number, number];
   keypoints: Array<{
-    part: string,
-    position: [number, number, number?],
-    positionRaw: [number, number, number?],
-    score: number,
-    presence?: number,
-  }>
+    part: string;
+    position: [number, number, number?];
+    positionRaw: [number, number, number?];
+    score: number;
+    presence?: number;
+  }>;
 }
 
 /** Hand results
@@ -94,69 +104,144 @@ export interface Body {
  * - annotations: annotated landmarks for each hand part
  */
 export interface Hand {
-  id: number,
-  score: number,
-  box: [number, number, number, number],
-  boxRaw: [number, number, number, number],
-  keypoints: Array<[number, number, number]>,
-  annotations: Record<string, Array<[number, number, number]>>,
+  id: number;
+  score: number;
+  box: [number, number, number, number];
+  boxRaw: [number, number, number, number];
+  keypoints: Array<[number, number, number]>;
+  annotations: Record<string, Array<[number, number, number]>>;
 }
 
 /** Object results
-*
-* Array of individual results with one object per detected gesture
-* Each result has:
-* - id: object id number
-* - score as value
-* - label as detected class name
-* - box: bounding box: x, y, width, height normalized to input image resolution
-* - boxRaw: bounding box: x, y, width, height normalized to 0..1
-* - center: optional center point as array of [x, y], normalized to image resolution
-* - centerRaw: optional center point as array of [x, y], normalized to range 0..1
-*/
-export interface Item {
-  id: number,
-  score: number,
-  class: number,
-  label: string,
-  box: [number, number, number, number],
-  boxRaw: [number, number, number, number],
-}
-
-/** Gesture results
- * @typedef Gesture Type
  *
  * Array of individual results with one object per detected gesture
  * Each result has:
- * - part: part name and number where gesture was detected: face, iris, body, hand
- * - gesture: gesture detected
+ * - id: object id number
+ * - score as value
+ * - label as detected class name
+ * - box: bounding box: x, y, width, height normalized to input image resolution
+ * - boxRaw: bounding box: x, y, width, height normalized to 0..1
+ * - center: optional center point as array of [x, y], normalized to image resolution
+ * - centerRaw: optional center point as array of [x, y], normalized to range 0..1
  */
+export interface Item {
+  id: number;
+  score: number;
+  class: number;
+  label: string;
+  box: [number, number, number, number];
+  boxRaw: [number, number, number, number];
+}
+
+/**
+ * @typedef FaceGesture
+ */
+export type FaceGesture =
+  | `facing ${'left' | 'center' | 'right'}`
+  | `blink ${'left' | 'right'} eye`
+  | `mouth ${number}% open`
+  | `head ${'up' | 'down'}`;
+
+/**
+ * @typedef IrisGesture
+ */
+export type IrisGesture =
+  | 'facing center'
+  | `looking ${'left' | 'right' | 'up' | 'down'}`
+  | 'looking center';
+
+/**
+ * @typedef BodyGesture
+ */
+export type BodyGesture =
+  | `leaning ${'left' | 'right'}`
+  | `raise ${'left' | 'right'} hand`
+  | 'i give up';
+
+/**
+* @typedef FingerThumb
+*/
+export type FingerThumb = 'thumb';
+
+/**
+* @typedef FingerIndex
+*/
+export type FingerIndex = 'indexfinger';
+
+/**
+* @typedef FingerMiddle
+*/
+export type FingerMiddle = 'middlefinger';
+
+/**
+* @typedef FingerRing
+*/
+export type FingerRing = 'ringfinger';
+
+/**
+* @typedef FingerPinky
+*/
+export type FingerPinky = 'pinky';
+
+/**
+* @typedef FingerGesture
+*/
+export type FingerGesture = FingerThumb | FingerIndex | FingerMiddle | FingerRing | FingerPinky;
+
+/**
+* @typedef HandGestureType
+*/
+export type HandGestureType<T extends FingerGesture> = `${T} forward ${Exclude<FingerGesture, T>} up`
+
+/**
+ * @typedef HandGesture
+ */
+export type HandGesture =
+  | HandGestureType<FingerThumb>
+  | HandGestureType<FingerIndex>
+  | HandGestureType<FingerMiddle>
+  | HandGestureType<FingerRing>
+  | HandGestureType<FingerPinky>
+
+/** Gesture results
+* @typedef Gesture Type
+*
+* Array of individual results with one object per detected gesture
+* Each result has:
+* - part: part name and number where gesture was detected: face, iris, body, hand
+* - gesture: gesture detected
+*/
 export type Gesture =
-  { 'face': number, gesture: string }
-  | { 'iris': number, gesture: string }
-  | { 'body': number, gesture: string }
-  | { 'hand': number, gesture: string }
+  | { face: number; gesture: FaceGesture }
+  | { iris: number; gesture: IrisGesture }
+  | { body: number; gesture: BodyGesture }
+  | { hand: number; gesture: HandGesture };
 
 /** Person getter
-* @interface Person Interface
-*
-* Each result has:
-* - id: person id
-* - face: face object
-* - body: body object
-* - hands: array of hand objects
-* - gestures: array of gestures
-* - box: bounding box: x, y, width, height normalized to input image resolution
-* - boxRaw: bounding box: x, y, width, height normalized to 0..1
-*/
+ * @interface Person Interface
+ *
+ * Each result has:
+ * - id: person id
+ * - face: face object
+ * - body: body object
+ * - hands: hands object
+ * - gestures: gestures object
+ * - box: bounding box: x, y, width, height normalized to input image resolution
+ * - boxRaw: bounding box: x, y, width, height normalized to 0..1
+ */
 export interface Person {
-  id: number,
-  face: Face,
-  body: Body | null,
-  hands: { left: Hand | null, right: Hand | null },
-  gestures: Array<Gesture>,
-  box: [number, number, number, number],
-  boxRaw?: [number, number, number, number],
+  id: number;
+  face: Face;
+  body: Body | null;
+  hands: { left: Hand | null; right: Hand | null };
+  gestures: {
+    face: FaceGesture[];
+    iris: IrisGesture[];
+    body: BodyGesture[];
+    hand: HandGesture[];
+  };
+  box: [number, number, number, number];
+  boxRaw?: [number, number, number, number];
 }
 
 /**
@@ -166,21 +251,21 @@ export interface Person {
  */
 export interface Result {
   /** {@link Face}: detection & analysis results */
-  face: Array<Face>,
+  face: Array<Face>;
   /** {@link Body}: detection & analysis results */
-  body: Array<Body>,
+  body: Array<Body>;
   /** {@link Hand}: detection & analysis results */
-  hand: Array<Hand>,
+  hand: Array<Hand>;
   /** {@link Gesture}: detection & analysis results */
-  gesture: Array<Gesture>,
+  gesture: Array<Gesture>;
   /** {@link Object}: detection & analysis results */
-  object: Array<Item>
+  object: Array<Item>;
   /** global performance object with timing values for each operation */
-  performance: Record<string, unknown>,
+  performance: Record<string, unknown>;
   /** optional processed canvas that can be used to draw input on screen */
-  canvas?: OffscreenCanvas | HTMLCanvasElement,
+  canvas?: OffscreenCanvas | HTMLCanvasElement;
   /** timestamp of detection representing the milliseconds elapsed since the UNIX epoch */
-  readonly timestamp: number,
+  readonly timestamp: number;
   /** getter property that returns unified persons object  */
-  persons: Array<Person>,
+  persons: Array<Person>;
 }

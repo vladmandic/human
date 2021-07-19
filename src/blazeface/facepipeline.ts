@@ -158,7 +158,7 @@ export class Pipeline {
     // run new detector every skipFrames unless we only want box to start with
     let detector;
     if ((this.skipped === 0) || (this.skipped > config.face.detector.skipFrames) || !config.face.mesh.enabled || !config.skipFrame) {
-      detector = await this.boundingBoxDetector.getBoundingBoxes(input);
+      detector = await this.boundingBoxDetector.getBoundingBoxes(input, config);
       this.skipped = 0;
     }
     if (config.skipFrame) this.skipped++;

@@ -1,4 +1,4 @@
-import { log, join } from '../helpers';
+import { log, join, mergeDeep } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as util from './util';
@@ -37,7 +37,7 @@ export class BlazeFaceModel {
     this.config = config;
   }
 
-  async getBoundingBoxes(inputImage: Tensor) {
+  async getBoundingBoxes(inputImage: Tensor, userConfig: Config) {
     // sanity check on input
     // @ts-ignore isDisposed is internal property
     if ((!inputImage) || (inputImage.isDisposedInternal) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return null;
@@ -60,6 +60,9 @@ export class BlazeFaceModel {
       const scoresOut = tf.sigmoid(logits).squeeze().dataSync();
       return [batchOut, boxesOut, scoresOut];
     });
+
+    this.config = mergeDeep(this.config, userConfig) as Config;
+
     const nmsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
     const nms = nmsTensor.arraySync();
     nmsTensor.dispose();

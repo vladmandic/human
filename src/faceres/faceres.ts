@@ -104,7 +104,7 @@ export function enhance(input): Tensor {
     const lighten = darken.div(darken.max());
     */
 
-    const norm = crop.mul(255);
+    const norm = tf.mul(crop, 255);
 
     return norm;
   });
@@ -140,7 +140,7 @@ export async function predict(image: Tensor, config: Config, idx, count) {
           obj.gender = gender[0] <= 0.5 ? 'female' : 'male';
           obj.genderScore = Math.min(0.99, confidence);
         }
-        const age = resT.find((t) => t.shape[1] === 100).argMax(1).dataSync()[0];
+        const age = tf.argMax(resT.find((t) => t.shape[1] === 100), 1).dataSync()[0];
         const all = resT.find((t) => t.shape[1] === 100).dataSync();
         obj.age = Math.round(all[age - 1] > all[age + 1] ? 10 * age - 100 * all[age - 1] : 10 * age + 100 * all[age + 1]) / 10;
 

@@ -46,7 +46,7 @@ export async function predict(image: Tensor, config: Config): Promise<Body[]> {
 
     let resT;
     if (config.body.enabled) resT = await model.predict(tensor);
-    tensor.dispose();
+    tf.dispose(tensor);
 
     if (resT) {
       keypoints.length = 0;

@@ -14,7 +14,7 @@ const userConfig = {
   warmup: 'none',
   debug: true,
   modelBasePath: '../../models/',
-  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.7.0/dist/',
+  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.8.0/dist/',
   face: {
     enabled: true,
     detector: { rotation: true, return: true },
@@ -75,10 +75,10 @@ async function analyze(face) {
     navigator.clipboard.writeText(`{"name":"unknown", "source":"${face.fileName}", "embedding":[${embedding}]},`);
     if (enhanced) {
       const c = document.getElementById('orig');
-      const squeeze = enhanced.squeeze().div(255);
+      const squeeze = human.tf.div(human.tf.squeeze(enhanced), 255);
       await human.tf.browser.toPixels(squeeze, c);
-      enhanced.dispose();
-      squeeze.dispose();
+      human.tf.dispose(enhanced);
+      human.tf.dispose(squeeze);
       const ctx = c.getContext('2d');
       ctx.font = 'small-caps 0.4rem "Lato"';
       ctx.fillStyle = 'rgba(255, 255, 255, 1)';

@@ -30,7 +30,7 @@ let human;
 let userConfig = {
   warmup: 'none',
   backend: 'humangl',
-  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.7.0/dist/',
+  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.8.0/dist/',
   /*
   async: false,
   cacheSensitivity: 0,
@@ -169,10 +169,10 @@ function status(msg) {
 }
 
 const compare = { enabled: false, original: null };
-async function calcSimmilariry(result) {
+async function calcSimmilarity(result) {
   document.getElementById('compare-container').style.display = compare.enabled ? 'block' : 'none';
   if (!compare.enabled) return;
-  if (!result || !result.face || !result.face[0].embedding) return;
+  if (!result || !result.face || !result.face[0] || !result.face[0].embedding) return;
   if (!(result.face.length > 0) || (result.face[0].embedding.length <= 64)) return;
   if (!compare.original) {
     compare.original = result;
@@ -181,12 +181,12 @@ async function calcSimmilariry(result) {
       const enhanced = human.enhance(result.face[0]);
       if (enhanced) {
         const c = document.getElementById('orig');
-        const squeeze = enhanced.squeeze();
-        const norm = squeeze.div(255);
+        const squeeze = human.tf.squeeze(enhanced);
+        const norm = human.tf.div(squeeze, 255);
         human.tf.browser.toPixels(norm, c);
-        enhanced.dispose();
-        squeeze.dispose();
-        norm.dispose();
+        human.tf.dispose(enhanced);
+        human.tf.dispose(squeeze);
+        human.tf.dispose(norm);
       }
     } else {
       document.getElementById('compare-canvas').getContext('2d').drawImage(compare.original.canvas, 0, 0, 200, 200);
@@ -246,7 +246,7 @@ async function drawResults(input) {
   */
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   const person = result.persons; // explicitly invoke person getter
-  await calcSimmilariry(result);
+  await calcSimmilarity(result);
 
   // update log
   const engine = human.tf.engine();

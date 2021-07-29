@@ -30,20 +30,20 @@ async function process(res: Tensor, inputSize, outputShape, config: Config) {
   const results: Array<Item> = [];
   const detections = res.arraySync();
   const squeezeT = tf.squeeze(res);
-  res.dispose();
+  tf.dispose(res);
   const arr = tf.split(squeezeT, 6, 1); // x1, y1, x2, y2, score, class
-  squeezeT.dispose();
+  tf.dispose(squeezeT);
   const stackT = tf.stack([arr[1], arr[0], arr[3], arr[2]], 1); // reorder dims as tf.nms expects y, x
   const boxesT = stackT.squeeze();
   const scoresT = arr[4].squeeze();
   const classesT = arr[5].squeeze();
-  arr.forEach((t) => t.dispose());
+  arr.forEach((t) => tf.dispose(t));
   const nmsT = await tf.image.nonMaxSuppressionAsync(boxesT, scoresT, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
-  boxesT.dispose();
-  scoresT.dispose();
-  classesT.dispose();
+  tf.dispose(boxesT);
+  tf.dispose(scoresT);
+  tf.dispose(classesT);
   const nms = nmsT.dataSync();
-  nmsT.dispose();
+  tf.dispose(nmsT);
   let i = 0;
   for (const id of nms) {
     const score = Math.trunc(100 * detections[0][id][4]) / 100;
@@ -80,7 +80,7 @@ export async function predict(input: Tensor, config: Config): Promise<Item[]> {
     const outputSize = [input.shape[2], input.shape[1]];
     const resize = tf.image.resizeBilinear(input, [model.inputSize, model.inputSize]);
     const objectT = config.object.enabled ? model.execute(resize, ['tower_0/detections']) : null;
-    resize.dispose();
+    tf.dispose(resize);
 
     const obj = await process(objectT, model.inputSize, outputSize, config);
     last = obj;

@@ -29,7 +29,7 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
   if (!input.tensor) return null;
   if (!model || !model.inputs[0].shape) return null;
   const resizeInput = tf.image.resizeBilinear(input.tensor, [model.inputs[0].shape[1], model.inputs[0].shape[2]], false);
-  const norm = resizeInput.div(255);
+  const norm = tf.div(resizeInput, 255);
   const res = model.predict(norm) as Tensor;
   // meet output:   1,256,256,1
   // selfie output: 1,144,256,2
@@ -42,8 +42,8 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
     // model meet has two channels for fg and bg
     const softmax = squeeze.softmax();
     const [bg, fg] = tf.unstack(softmax, 2);
-    const expand = fg.expandDims(2);
-    const pad = expand.expandDims(0);
+    const expand = tf.expandDims(fg, 2);
+    const pad = tf.expandDims(expand, 0);
     tf.dispose(softmax);
     tf.dispose(bg);
     tf.dispose(fg);
@@ -51,7 +51,7 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
     const crop = tf.image.cropAndResize(pad, [[0, 0, 0.5, 0.5]], [0], [width, height]);
     // otherwise run softmax after unstack and use standard resize
     // resizeOutput = tf.image.resizeBilinear(expand, [input.tensor?.shape[1], input.tensor?.shape[2]]);
-    resizeOutput = crop.squeeze(0);
+    resizeOutput = tf.squeeze(crop, 0);
     tf.dispose(crop);
     tf.dispose(expand);
     tf.dispose(pad);

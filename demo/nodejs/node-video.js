@@ -66,13 +66,13 @@ async function process(jpegBuffer) {
   busy = true;
   const decoded = tf.node.decodeJpeg(jpegBuffer, 3); // decode jpeg buffer to raw tensor
   const tensor = tf.expandDims(decoded, 0); // almost all tf models use first dimension as batch number so we add it
-  decoded.dispose();
+  tf.dispose(decoded);
 
   log.state('input frame:', ++count, 'size:', jpegBuffer.length, 'decoded shape:', tensor.shape);
   const res = await human.detect(tensor);
   log.data('gesture', JSON.stringify(res.gesture));
   // do processing here
-  tensor.dispose(); // must dispose tensor
+  tf.dispose(tensor); // must dispose tensor
   busy = false;
 }
 

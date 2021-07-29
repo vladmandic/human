@@ -113,18 +113,18 @@ export class HandPipeline {
         const rotationMatrix = util.buildRotationMatrix(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
         const croppedInput = box.cutBoxFromImageAndResize(newBox, rotatedImage, [this.inputSize, this.inputSize]);
-        const handImage = croppedInput.div(255);
-        croppedInput.dispose();
-        rotatedImage.dispose();
+        const handImage = tf.div(croppedInput, 255);
+        tf.dispose(croppedInput);
+        tf.dispose(rotatedImage);
         const [confidenceT, keypoints] = await this.handPoseModel.predict(handImage) as Array<Tensor>;
-        handImage.dispose();
+        tf.dispose(handImage);
         const confidence = confidenceT.dataSync()[0];
-        confidenceT.dispose();
+        tf.dispose(confidenceT);
         if (confidence >= config.hand.minConfidence) {
           const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
           const rawCoords = keypointsReshaped.arraySync();
-          keypoints.dispose();
-          keypointsReshaped.dispose();
+          tf.dispose(keypoints);
+          tf.dispose(keypointsReshaped);
           const coords = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
           const nextBoundingBox = this.getBoxForHandLandmarks(coords);
           this.storedBoxes[i] = { ...nextBoundingBox, confidence };
@@ -137,7 +137,7 @@ export class HandPipeline {
         } else {
           this.storedBoxes[i] = null;
         }
-        keypoints.dispose();
+        tf.dispose(keypoints);
       } else {
         // const enlarged = box.enlargeBox(box.squarifyBox(box.shiftBox(currentBox, HAND_BOX_SHIFT_VECTOR)), handBoxEnlargeFactor);
         const enlarged = box.enlargeBox(box.squarifyBox(currentBox), handBoxEnlargeFactor);

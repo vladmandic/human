@@ -53,7 +53,7 @@ async function detect(img) {
     process.send({ image: img, detected: result }); // send results back to main
     process.send({ ready: true }); // send signal back to main that this worker is now idle and ready for next image
   }
-  tensor.dispose();
+  tf.dispose(tensor);
 }
 
 async function main() {

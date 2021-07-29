@@ -9,8 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/06/18 mandic00@live.com
+### **HEAD -> main** 2021/07/19 marcogodoy@untitled.cl
 
+- add note on manually disping tensor
 - modularize model loading
 
 ### **2.0.3** 2021/06/18 mandic00@live.com

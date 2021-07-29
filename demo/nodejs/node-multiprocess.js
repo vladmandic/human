@@ -11,7 +11,7 @@ const path = require('path');
 // eslint-disable-next-line import/no-extraneous-dependencies, node/no-unpublished-require
 const log = require('@vladmandic/pilogger'); // this is my simple logger with few extra features
 const child_process = require('child_process');
-// note that main process import faceapi or tfjs at all
+// note that main process does not import human or tfjs at all, it's all done from worker process
 
 const workerFile = 'demo/nodejs/node-multiprocess-worker.js';
 const imgPathRoot = './assets'; // modify to include your sample images

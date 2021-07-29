@@ -17,7 +17,7 @@ export async function predict(input: Tensor, config: Config): Promise<Body[]> {
   const res = tf.tidy(() => {
     if (!model.inputs[0].shape) return [];
     const resized = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
-    const normalized = resized.toFloat().div(127.5).sub(1.0);
+    const normalized = tf.sub(tf.div(tf.cast(resized, 'float32'), 127.5), 1.0);
     const results: Array<Tensor> = model.execute(normalized, poseNetOutputs) as Array<Tensor>;
     const results3d = results.map((y) => tf.squeeze(y, [0]));
     results3d[1] = results3d[1].sigmoid(); // apply sigmoid on scores
@@ -25,7 +25,7 @@ export async function predict(input: Tensor, config: Config): Promise<Body[]> {
   });
 
   const buffers = await Promise.all(res.map((tensor) => tensor.buffer()));
-  for (const t of res) t.dispose();
+  for (const t of res) tf.dispose(t);
 
   const decoded = await poses.decode(buffers[0], buffers[1], buffers[2], buffers[3], config.body.maxDetected, config.body.minConfidence);
   if (!model.inputs[0].shape) return [];

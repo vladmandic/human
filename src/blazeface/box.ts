@@ -60,8 +60,8 @@ export function calculateLandmarksBoundingBox(landmarks) {
 }
 
 export const disposeBox = (t) => {
-  t.startPoint.dispose();
-  t.endPoint.dispose();
+  tf.dispose(t.startPoint);
+  tf.dispose(t.endPoint);
 };
 
 export const createBox = (startEndTensor) => ({

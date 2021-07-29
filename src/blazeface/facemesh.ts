@@ -54,7 +54,7 @@ export async function predict(input: Tensor, config: Config): Promise<Face[]> {
       image: prediction.image,
       tensor: prediction.image,
     });
-    if (prediction.coords) prediction.coords.dispose();
+    if (prediction.coords) tf.dispose(prediction.coords);
   }
   return results;
 }

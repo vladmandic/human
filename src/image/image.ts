@@ -161,10 +161,10 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
       pixels = tf.browser ? tf.browser.fromPixels(data) : null;
     }
     if (pixels) {
-      const casted = pixels.toFloat();
-      tensor = casted.expandDims(0);
-      pixels.dispose();
-      casted.dispose();
+      const casted = tf.cast(pixels, 'float32');
+      tensor = tf.expandDims(casted, 0);
+      tf.dispose(pixels);
+      tf.dispose(casted);
     }
   }
   const canvas = config.filter.return ? outCanvas : null;

@@ -190,9 +190,9 @@ export class Pipeline {
     }
     if (detector && detector.boxes) {
       detector.boxes.forEach((prediction) => {
-        prediction.box.startPoint.dispose();
-        prediction.box.endPoint.dispose();
-        prediction.landmarks.dispose();
+        tf.dispose(prediction.box.startPoint);
+        tf.dispose(prediction.box.endPoint);
+        tf.dispose(prediction.landmarks);
       });
     }
     const results = tf.tidy(() => this.storedBoxes.map((box, i) => {
@@ -208,13 +208,13 @@ export class Pipeline {
         const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
         const rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
         rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
-        if (config.face.mesh.enabled) face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize]).div(255);
-        else face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.boxSize, this.boxSize]).div(255);
+        if (config.face.mesh.enabled) face = tf.div(bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize]), 255);
+        else face = tf.div(bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.boxSize, this.boxSize]), 255);
       } else {
         rotationMatrix = util.IDENTITY_MATRIX;
         const clonedImage = input.clone();
-        if (config.face.mesh.enabled) face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.meshSize, this.meshSize]).div(255);
-        else face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.boxSize, this.boxSize]).div(255);
+        if (config.face.mesh.enabled) face = tf.div(bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.meshSize, this.meshSize]), 255);
+        else face = tf.div(bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.boxSize, this.boxSize]), 255);
       }
 
       // if we're not going to produce mesh, don't spend time with further processing
@@ -277,9 +277,9 @@ export class Pipeline {
         angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
         const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
         const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-        const rotatedImage = tf.image.rotateWithOffset(input.toFloat(), angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
+        const rotatedImage = tf.image.rotateWithOffset(tf.cast(input, 'float32'), angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
         rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
-        face = bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize]).div(255);
+        face = tf.div(bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize]), 255);
       }
 
       const prediction = {

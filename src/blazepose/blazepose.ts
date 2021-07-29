@@ -31,11 +31,11 @@ export async function predict(image: Tensor, config: Config): Promise<Body[]> {
   const imgSize = { width: (image.shape[2] || 0), height: (image.shape[1] || 0) };
   const resize = tf.image.resizeBilinear(image, [model['width'], model['height']], false);
   const normalize = tf.div(resize, [255.0]);
-  resize.dispose();
+  tf.dispose(resize);
   const resT = await model.predict(normalize) as Array<Tensor>;
   const points = resT.find((t) => (t.size === 195 || t.size === 155))?.dataSync() || []; // order of output tensors may change between models, full has 195 and upper has 155 items
-  resT.forEach((t) => t.dispose());
-  normalize.dispose();
+  resT.forEach((t) => tf.dispose(t));
+  tf.dispose(normalize);
   const keypoints: Array<{ id, part, position: [number, number, number], positionRaw: [number, number, number], score, presence }> = [];
   const labels = points?.length === 195 ? annotations.full : annotations.upper; // full model has 39 keypoints, upper has 31 keypoints
   const depth = 5; // each points has x,y,z,visibility,presence

@@ -80,8 +80,8 @@ export function enhance(input): Tensor {
     */
 
     // normalize brightness from 0..1
-    const darken = merge.sub(merge.min());
-    const lighten = darken.div(darken.max());
+    const darken = tf.sub(merge, merge.min());
+    const lighten = tf.div(darken, darken.max());
 
     return lighten;
   });

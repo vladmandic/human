@@ -111,14 +111,14 @@ export async function predict(image: Tensor, config: Config): Promise<Item[]> {
   return new Promise(async (resolve) => {
     const outputSize = [image.shape[2], image.shape[1]];
     const resize = tf.image.resizeBilinear(image, [model.inputSize, model.inputSize], false);
-    const norm = resize.div(255);
+    const norm = tf.div(resize, 255);
     const transpose = norm.transpose([0, 3, 1, 2]);
-    norm.dispose();
-    resize.dispose();
+    tf.dispose(norm);
+    tf.dispose(resize);
 
     let objectT;
     if (config.object.enabled) objectT = await model.predict(transpose);
-    transpose.dispose();
+    tf.dispose(transpose);
 
     const obj = await process(objectT, model.inputSize, outputSize, config);
     last = obj;

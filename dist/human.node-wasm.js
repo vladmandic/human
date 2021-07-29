@@ -494,7 +494,7 @@ var BlazeFaceModel = class {
     this.inputSize = model10.inputs[0].shape[2];
     this.config = config3;
   }
-  async getBoundingBoxes(inputImage) {
+  async getBoundingBoxes(inputImage, userConfig) {
     if (!inputImage || inputImage.isDisposedInternal || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
       return null;
     const [batch, boxes, scores] = tf3.tidy(() => {
@@ -516,6 +516,7 @@ var BlazeFaceModel = class {
       const scoresOut = tf3.sigmoid(logits).squeeze().dataSync();
       return [batchOut, boxesOut, scoresOut];
     });
+    this.config = mergeDeep(this.config, userConfig);
     const nmsTensor = await tf3.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
     const nms = nmsTensor.arraySync();
     nmsTensor.dispose();
@@ -3946,7 +3947,7 @@ var Pipeline = class {
     let useFreshBox = false;
     let detector;
     if (this.skipped === 0 || this.skipped > config3.face.detector.skipFrames || !config3.face.mesh.enabled || !config3.skipFrame) {
-      detector = await this.boundingBoxDetector.getBoundingBoxes(input);
+      detector = await this.boundingBoxDetector.getBoundingBoxes(input, config3);
       this.skipped = 0;
     }
     if (config3.skipFrame)

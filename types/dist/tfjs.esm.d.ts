@@ -1040,8 +1040,8 @@ export var MathBackendWebGL: {
             shape: any;
             dataId: any;
         };
-        runWebGLProgram(program: any, inputs: any, outputDtype: any, customSetup: any, preventEagerUnpackingOfOutput?: boolean): any;
-        compileAndRun(program: any, inputs: any, outputDtype: any, customSetup: any, preventEagerUnpackingOfOutput?: boolean): any;
+        runWebGLProgram(program: any, inputs: any, outputDtype: any, customUniformValues: any, preventEagerUnpackingOfOutput?: boolean): any;
+        compileAndRun(program: any, inputs: any, outputDtype: any, customUniformValues: any, preventEagerUnpackingOfOutput?: boolean): any;
         getAndSaveBinary(key: any, getBinary: any): any;
         getTextureManager(): {
             gpgpu: any;

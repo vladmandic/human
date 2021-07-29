@@ -7,7 +7,7 @@ export declare class BlazeFaceModel {
     inputSize: number;
     config: Config;
     constructor(model: any, config: Config);
-    getBoundingBoxes(inputImage: Tensor): Promise<{
+    getBoundingBoxes(inputImage: Tensor, userConfig: Config): Promise<{
         boxes: {
             box: {
                 startPoint: Tensor;

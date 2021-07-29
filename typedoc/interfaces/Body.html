@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Item | @vladmandic/human</title>
+	<title>Body | @vladmandic/human</title>
 	<meta name="description" content="Documentation for @vladmandic/human">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -50,13 +50,13 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../modules.html">@vladmandic/human</a>
+					<a href="../index.html">@vladmandic/human</a>
 				</li>
 				<li>
-					<a href="item.html">Item</a>
+					<a href="Body.html">Body</a>
 				</li>
 			</ul>
-			<h1>Interface Item</h1>
+			<h1>Interface Body</h1>
 		</div>
 	</div>
 </header>
@@ -66,18 +66,19 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Object results</p>
+						<p>Body results</p>
 					</div>
-					<p>Array of individual results with one object per detected gesture
-					Each result has:</p>
+					<p>Each results has:</p>
 					<ul>
-						<li>id: object id number</li>
-						<li>score as value</li>
-						<li>label as detected class name</li>
+						<li>id: body id number</li>
+						<li>score: overall detection score</li>
 						<li>box: bounding box: x, y, width, height normalized to input image resolution</li>
 						<li>boxRaw: bounding box: x, y, width, height normalized to 0..1</li>
-						<li>center: optional center point as array of [x, y], normalized to image resolution</li>
-						<li>centerRaw: optional center point as array of [x, y], normalized to range 0..1</li>
+						<li>keypoints: array of keypoints</li>
+						<li>part: body part name</li>
+						<li>position: body part position with x,y,z coordinates</li>
+						<li>score: body part score value</li>
+						<li>presence: body part presence value</li>
 					</ul>
 				</div>
 			</section>
@@ -85,7 +86,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Item</span>
+						<span class="target">Body</span>
 					</li>
 				</ul>
 			</section>
@@ -96,12 +97,11 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="item.html#box" class="tsd-kind-icon">box</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="item.html#boxraw" class="tsd-kind-icon">box<wbr>Raw</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="item.html#class" class="tsd-kind-icon">class</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="item.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="item.html#label" class="tsd-kind-icon">label</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="item.html#score" class="tsd-kind-icon">score</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Body.html#box" class="tsd-kind-icon">box</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Body.html#boxRaw" class="tsd-kind-icon">box<wbr>Raw</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Body.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Body.html#keypoints" class="tsd-kind-icon">keypoints</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Body.html#score" class="tsd-kind-icon">score</a></li>
 							</ul>
 						</section>
 					</div>
@@ -117,16 +117,9 @@
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="boxraw" class="tsd-anchor"></a>
+					<a name="boxRaw" class="tsd-anchor"></a>
 					<h3>box<wbr>Raw</h3>
 					<div class="tsd-signature tsd-kind-icon">box<wbr>Raw<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="class" class="tsd-anchor"></a>
-					<h3>class</h3>
-					<div class="tsd-signature tsd-kind-icon">class<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
@@ -138,9 +131,9 @@
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="label" class="tsd-anchor"></a>
-					<h3>label</h3>
-					<div class="tsd-signature tsd-kind-icon">label<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="keypoints" class="tsd-anchor"></a>
+					<h3>keypoints</h3>
+					<div class="tsd-signature tsd-kind-icon">keypoints<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>part<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">; </span>positionRaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">; </span>presence<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>score<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
@@ -157,77 +150,74 @@
 			<nav class="tsd-navigation primary">
 				<ul>
 					<li class=" ">
-						<a href="../modules.html">Exports</a>
+						<a href="../index.html">Exports</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-reference">
-						<a href="../modules.html#default" class="tsd-kind-icon">default</a>
+						<a href="../index.html#default" class="tsd-kind-icon">default</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/human.html" class="tsd-kind-icon">Human</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="body.html" class="tsd-kind-icon">Body</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="config.html" class="tsd-kind-icon">Config</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="drawoptions.html" class="tsd-kind-icon">Draw<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="face.html" class="tsd-kind-icon">Face</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="hand.html" class="tsd-kind-icon">Hand</a>
+						<a href="../classes/Human.html" class="tsd-kind-icon">Human</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="item.html" class="tsd-kind-icon">Item</a>
+						<a href="Body.html" class="tsd-kind-icon">Body</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="item.html#box" class="tsd-kind-icon">box</a>
+								<a href="Body.html#box" class="tsd-kind-icon">box</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="item.html#boxraw" class="tsd-kind-icon">box<wbr>Raw</a>
+								<a href="Body.html#boxRaw" class="tsd-kind-icon">box<wbr>Raw</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="item.html#class" class="tsd-kind-icon">class</a>
+								<a href="Body.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="item.html#id" class="tsd-kind-icon">id</a>
+								<a href="Body.html#keypoints" class="tsd-kind-icon">keypoints</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="item.html#label" class="tsd-kind-icon">label</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="item.html#score" class="tsd-kind-icon">score</a>
+								<a href="Body.html#score" class="tsd-kind-icon">score</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface">
-						<a href="person.html" class="tsd-kind-icon">Person</a>
+						<a href="Config.html" class="tsd-kind-icon">Config</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="result.html" class="tsd-kind-icon">Result</a>
+						<a href="DrawOptions.html" class="tsd-kind-icon">Draw<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="Face.html" class="tsd-kind-icon">Face</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="Hand.html" class="tsd-kind-icon">Hand</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="Item.html" class="tsd-kind-icon">Item</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="Person.html" class="tsd-kind-icon">Person</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="Result.html" class="tsd-kind-icon">Result</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#error" class="tsd-kind-icon">Error</a>
+						<a href="../index.html#Error" class="tsd-kind-icon">Error</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#gesture" class="tsd-kind-icon">Gesture</a>
+						<a href="../index.html#Gesture" class="tsd-kind-icon">Gesture</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#input" class="tsd-kind-icon">Input</a>
+						<a href="../index.html#Input" class="tsd-kind-icon">Input</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#tensorflow" class="tsd-kind-icon">Tensor<wbr>Flow</a>
+						<a href="../index.html#TensorFlow" class="tsd-kind-icon">Tensor<wbr>Flow</a>
 					</li>
 				</ul>
 			</nav>

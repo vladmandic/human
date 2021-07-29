@@ -11325,7 +11325,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // package.json
-var version = "2.0.3";
+var version = "2.1.1";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;

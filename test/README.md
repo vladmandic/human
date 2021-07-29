@@ -10,13 +10,7 @@ Not required for normal funcioning of library
 - Face rotation is disabled for `NodeJS` platform:  
   `Kernel 'RotateWithOffset' not registered for backend 'tensorflow'`  
   <https://github.com/tensorflow/tfjs/issues/4606>
-
-### NodeJS with GPU acceleation using CUDA
-
-- Image filters are disabled due to lack of Canvas and WeBGL access
-- Face rotation is disabled for `NodeJS` platform:  
-  `Kernel 'RotateWithOffset' not registered for backend 'tensorflow'`  
-  <https://github.com/tensorflow/tfjs/issues/4606>
+  Work has recently been completed and will likely be included in TFJS 3.9.0
 
 ### NodeJS using WASM
 

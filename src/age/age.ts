@@ -42,13 +42,13 @@ export async function predict(image: Tensor, config: Config | any) {
     const obj = { age: 0 };
 
     if (config.face.age.enabled) ageT = await model.predict(enhance);
-    enhance.dispose();
+    tf.dispose(enhance);
 
     if (ageT) {
       const data = ageT.dataSync();
       obj.age = Math.trunc(10 * data[0]) / 10;
     }
-    ageT.dispose();
+    tf.dispose(ageT);
 
     last = obj;
     resolve(obj);

@@ -357,7 +357,7 @@ export class Human {
   #skipFrame = async (input) => {
     if (this.config.cacheSensitivity === 0) return false;
     const resizeFact = 32;
-    const reduced: Tensor = input.resizeBilinear([Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
+    const reduced: Tensor = tf.image.resizeBilinear(input, [Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
     // use tensor sum
     /*
     const sumT = this.tf.sum(reduced);
@@ -448,7 +448,7 @@ export class Human {
         if (elapsedTime > 0) this.performance.segmentation = elapsedTime;
         if (process.canvas) {
           // replace input
-          process.tensor.dispose();
+          tf.dispose(process.tensor);
           process = image.process(process.canvas, this.config);
         }
         this.analyze('End Segmentation:');

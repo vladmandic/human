@@ -36,20 +36,20 @@ export async function predict(image: Tensor, config: Config, idx, count) {
   return new Promise(async (resolve) => {
     const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
     const [red, green, blue] = tf.split(resize, 3, 3);
-    resize.dispose();
+    tf.dispose(resize);
     // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html
     const redNorm = tf.mul(red, rgb[0]);
     const greenNorm = tf.mul(green, rgb[1]);
     const blueNorm = tf.mul(blue, rgb[2]);
-    red.dispose();
-    green.dispose();
-    blue.dispose();
+    tf.dispose(red);
+    tf.dispose(green);
+    tf.dispose(blue);
     const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
-    redNorm.dispose();
-    greenNorm.dispose();
-    blueNorm.dispose();
-    const normalize = tf.tidy(() => grayscale.sub(0.5).mul(2));
-    grayscale.dispose();
+    tf.dispose(redNorm);
+    tf.dispose(greenNorm);
+    tf.dispose(blueNorm);
+    const normalize = tf.tidy(() => tf.mul(tf.sub(grayscale, 0.5), 2));
+    tf.dispose(grayscale);
     const obj: Array<{ score: number, emotion: string }> = [];
     if (config.face.emotion.enabled) {
       const emotionT = await model.predict(normalize); // result is already in range 0..1, no need for additional activation
@@ -60,7 +60,7 @@ export async function predict(image: Tensor, config: Config, idx, count) {
       }
       obj.sort((a, b) => b.score - a.score);
     }
-    normalize.dispose();
+    tf.dispose(normalize);
     last[idx] = obj;
     lastCount = count;
     resolve(obj);

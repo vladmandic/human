@@ -47,7 +47,7 @@ export async function predict(image: Tensor, config: Config | any) {
         const greenNorm = tf.mul(green, rgb[1]);
         const blueNorm = tf.mul(blue, rgb[2]);
         const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
-        const normalize = grayscale.sub(0.5).mul(2); // range grayscale:-1..1
+        const normalize = tf.mul(tf.sub(grayscale, 0.5), 2); // range grayscale:-1..1
         return normalize;
       });
     } else {
@@ -59,7 +59,7 @@ export async function predict(image: Tensor, config: Config | any) {
     const obj = { gender: '', confidence: 0 };
 
     if (config.face.gender.enabled) genderT = await model.predict(enhance);
-    enhance.dispose();
+    tf.dispose(enhance);
 
     if (genderT) {
       if (!Array.isArray(genderT)) {
@@ -78,7 +78,7 @@ export async function predict(image: Tensor, config: Config | any) {
             obj.confidence = Math.min(0.99, confidence);
           }
         }
-        genderT.dispose();
+        tf.dispose(genderT);
       } else {
         const gender = genderT[0].dataSync();
         const confidence = Math.trunc(200 * Math.abs((gender[0] - 0.5))) / 100;

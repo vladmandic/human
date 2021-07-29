@@ -4,9 +4,41 @@
 
 import { Gesture } from '../result';
 
+/**
+ * @typedef FaceGesture
+ */
+export type FaceGesture =
+  `facing ${'left' | 'center' | 'right'}`
+  | `blink ${'left' | 'right'} eye`
+  | `mouth ${number}% open`
+  | `head ${'up' | 'down'}`;
+
+/**
+ * @typedef IrisGesture
+ */
+export type IrisGesture =
+  'facing center'
+  | `looking ${'left' | 'right' | 'up' | 'down'}`
+  | 'looking center';
+
+/**
+ * @typedef BodyGesture
+ */
+export type BodyGesture =
+  `leaning ${'left' | 'right'}`
+  | `raise ${'left' | 'right'} hand`
+  | 'i give up';
+
+/**
+ * @typedef BodyGesture
+ */
+export type HandGesture =
+  `${'thumb' | 'index finger' | 'middle finger' | 'ring finger' | 'pinky'} forward`
+  | `${'thumb' | 'index finger' | 'middle finger' | 'ring finger' | 'pinky'} up`;
+
 export const body = (res): Gesture[] => {
   if (!res) return [];
-  const gestures: Array<{ body: number, gesture: string }> = [];
+  const gestures: Array<{ body: number, gesture: BodyGesture }> = [];
   for (let i = 0; i < res.length; i++) {
     // raising hands
     const leftWrist = res[i].keypoints.find((a) => (a.part === 'leftWrist'));
@@ -26,7 +58,7 @@ export const body = (res): Gesture[] => {
 
 export const face = (res): Gesture[] => {
   if (!res) return [];
-  const gestures: Array<{ face: number, gesture: string }> = [];
+  const gestures: Array<{ face: number, gesture: FaceGesture }> = [];
   for (let i = 0; i < res.length; i++) {
     if (res[i].mesh && res[i].mesh.length > 0) {
       const eyeFacing = res[i].mesh[33][2] - res[i].mesh[263][2];
@@ -47,7 +79,7 @@ export const face = (res): Gesture[] => {
 
 export const iris = (res): Gesture[] => {
   if (!res) return [];
-  const gestures: Array<{ iris: number, gesture: string }> = [];
+  const gestures: Array<{ iris: number, gesture: IrisGesture }> = [];
   for (let i = 0; i < res.length; i++) {
     if (!res[i].annotations || !res[i].annotations.leftEyeIris || !res[i].annotations.rightEyeIris) continue;
     const sizeXLeft = res[i].annotations.leftEyeIris[3][0] - res[i].annotations.leftEyeIris[1][0];
@@ -85,7 +117,7 @@ export const iris = (res): Gesture[] => {
 
 export const hand = (res): Gesture[] => {
   if (!res) return [];
-  const gestures: Array<{ hand: number, gesture: string }> = [];
+  const gestures: Array<{ hand: number, gesture: HandGesture }> = [];
   for (let i = 0; i < res.length; i++) {
     const fingers: Array<{ name: string, position: number }> = [];
     for (const [finger, pos] of Object.entries(res[i]['annotations'])) {
@@ -93,8 +125,9 @@ export const hand = (res): Gesture[] => {
     }
     if (fingers && fingers.length > 0) {
       const closest = fingers.reduce((best, a) => (best.position[2] < a.position[2] ? best : a));
+      gestures.push({ hand: i, gesture: `${closest.name} forward` as HandGesture });
       const highest = fingers.reduce((best, a) => (best.position[1] < a.position[1] ? best : a));
-      gestures.push({ hand: i, gesture: `${closest.name} forward ${highest.name} up` });
+      gestures.push({ hand: i, gesture: `${highest.name} up` as HandGesture });
     }
   }
   return gestures;

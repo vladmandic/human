@@ -3,6 +3,7 @@
  */
 
 import { Tensor } from './tfjs/types';
+import { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
 
 /** Face results
  * Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
@@ -132,10 +133,10 @@ export interface Item {
  * - gesture: gesture detected
  */
 export type Gesture =
-  { 'face': number, gesture: string }
-  | { 'iris': number, gesture: string }
-  | { 'body': number, gesture: string }
-  | { 'hand': number, gesture: string }
+  { 'face': number, gesture: FaceGesture }
+  | { 'iris': number, gesture: IrisGesture }
+  | { 'body': number, gesture: BodyGesture }
+  | { 'hand': number, gesture: HandGesture }
 
 /** Person getter
 * @interface Person Interface

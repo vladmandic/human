@@ -230,18 +230,18 @@ async function build(f, msg, dev = false) {
         log.state(` target: ${targetGroupName} type: ${targetName}:`, stats);
       }
     }
-    if (!dev) { // only for prod builds, skipped for dev build
-      await lint.run(config.lintLocations); // run linter
-      await changelog.update(config.changelog); // generate changelog
-      await typings.run(targets.browserBundle.esm.entryPoints); // generate typings
-      await typedoc.run(targets.browserBundle.esm.entryPoints); // generate typedoc
-    }
-    if (require.main === module) process.exit(0);
   } catch (err) {
     // catch errors and print where it occured
     log.error('Build error', JSON.stringify(err.errors || err, null, 2));
     if (require.main === module) process.exit(1);
   }
+  if (!dev) { // only for prod builds, skipped for dev build
+    await lint.run(config.lintLocations); // run linter
+    await changelog.update(config.changelog); // generate changelog
+    await typings.run(targets.browserBundle.esm.entryPoints); // generate typings
+    await typedoc.run(targets.browserBundle.esm.entryPoints); // generate typedoc
+  }
+  if (require.main === module) process.exit(0);
   busy = false;
 }
 

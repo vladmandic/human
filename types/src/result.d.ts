@@ -2,6 +2,7 @@
  * Type definitions for Human result object
  */
 import { Tensor } from './tfjs/types';
+import { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
 /** Face results
  * Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
  * Some values may be null if specific model is not enabled
@@ -137,16 +138,16 @@ export interface Item {
  */
 export declare type Gesture = {
     'face': number;
-    gesture: string;
+    gesture: FaceGesture;
 } | {
     'iris': number;
-    gesture: string;
+    gesture: IrisGesture;
 } | {
     'body': number;
-    gesture: string;
+    gesture: BodyGesture;
 } | {
     'hand': number;
-    gesture: string;
+    gesture: HandGesture;
 };
 /** Person getter
 * @interface Person Interface

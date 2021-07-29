@@ -9928,8 +9928,9 @@ var hand = (res) => {
     }
     if (fingers && fingers.length > 0) {
       const closest = fingers.reduce((best, a) => best.position[2] < a.position[2] ? best : a);
+      gestures.push({ hand: i, gesture: `${closest.name} forward` });
       const highest = fingers.reduce((best, a) => best.position[1] < a.position[1] ? best : a);
-      gestures.push({ hand: i, gesture: `${closest.name} forward ${highest.name} up` });
+      gestures.push({ hand: i, gesture: `${highest.name} up` });
     }
   }
   return gestures;

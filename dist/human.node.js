@@ -11325,7 +11325,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // package.json
-var version = "2.1.1";
+var version = "2.1.2";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;
@@ -11401,7 +11401,8 @@ var Human = class {
         if (this.tf.getBackend() === "webgl" || this.tf.getBackend() === "humangl") {
           this.tf.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
           this.tf.ENV.set("WEBGL_CPU_FORWARD", true);
-          this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", true);
+          this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
+          this.tf.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
           if (typeof this.config["deallocate"] !== "undefined" && this.config["deallocate"]) {
             log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
             this.tf.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);

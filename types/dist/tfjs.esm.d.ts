@@ -354,7 +354,7 @@ export var CustomCallback: {
     };
 };
 export var DataStorage: {
-    new (backend3: any, dataMover: any): {
+    new (backend2: any, dataMover: any): {
         backend: any;
         dataMover: any;
         data: WeakMap<object, any>;
@@ -384,7 +384,7 @@ export var EarlyStopping: {
         verbose: any;
         mode: any;
         baseline: any;
-        monitorFunc: typeof less3;
+        monitorFunc: typeof less2;
         onTrainBegin(logs: any): Promise<void>;
         wait: number | undefined;
         stoppedEpoch: any;
@@ -542,8 +542,8 @@ export var GPGPUContext: {
         createPackedMatrixTexture(rows: any, columns: any): any;
         deleteMatrixTexture(texture: any): void;
         downloadByteEncodedFloatMatrixFromOutputTexture(texture: any, rows: any, columns: any): any;
-        downloadPackedMatrixFromBuffer(buffer3: any, batch: any, rows: any, columns: any, physicalRows: any, physicalCols: any): Float32Array;
-        downloadFloat32MatrixFromBuffer(buffer3: any, size: any): Float32Array;
+        downloadPackedMatrixFromBuffer(buffer2: any, batch: any, rows: any, columns: any, physicalRows: any, physicalCols: any): Float32Array;
+        downloadFloat32MatrixFromBuffer(buffer2: any, size: any): Float32Array;
         createBufferFromTexture(texture: any, rows: any, columns: any): any;
         createAndWaitForFence(): Promise<any>;
         createFence(gl: any): {
@@ -649,8 +649,8 @@ export var GraphModel: {
             _executeAsync(inputs: any, outputs: any, isFunctionExecution?: boolean, tensorArrayMap?: {}, tensorListMap?: {}): Promise<any>;
             executeFunctionAsync(inputs: any, tensorArrayMap: any, tensorListMap: any): Promise<any>;
             executeWithControlFlow(inputs: any, context: any, outputNames: any, isFunctionExecution: any): Promise<any>;
-            processStack(inputNodes: any, stack3: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
-            processChildNodes(node: any, stack3: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
+            processStack(inputNodes: any, stack2: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
+            processChildNodes(node: any, stack2: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
             dispose(): void;
             checkInputShapeAndType(inputs: any): void;
             mapInputs(inputs: any): {};
@@ -690,8 +690,8 @@ export var GraphModel: {
             _executeAsync(inputs: any, outputs: any, isFunctionExecution?: boolean, tensorArrayMap?: {}, tensorListMap?: {}): Promise<any>;
             executeFunctionAsync(inputs: any, tensorArrayMap: any, tensorListMap: any): Promise<any>;
             executeWithControlFlow(inputs: any, context: any, outputNames: any, isFunctionExecution: any): Promise<any>;
-            processStack(inputNodes: any, stack3: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
-            processChildNodes(node: any, stack3: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
+            processStack(inputNodes: any, stack2: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
+            processChildNodes(node: any, stack2: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
             dispose(): void;
             checkInputShapeAndType(inputs: any): void;
             mapInputs(inputs: any): {};
@@ -919,6 +919,7 @@ export var MathBackendCPU: {
         epsilon(): number;
         timerAvailable(): boolean;
     };
+    nextDataId: number;
 };
 export var MathBackendWebGL: {
     new (gpgpu: any): {
@@ -1018,7 +1019,7 @@ export var MathBackendWebGL: {
         shouldExecuteOnCPU(inputs: any, sizeThreshold?: any): any;
         getGPGPUContext(): any;
         where(condition: any): any;
-        packedUnaryOp(x: any, op3: any, dtype: any): any;
+        packedUnaryOp(x: any, op2: any, dtype: any): any;
         abs(x: any): any;
         makeTensorInfo(shape: any, dtype: any, values: any): {
             dataId: {
@@ -1070,6 +1071,7 @@ export var MathBackendWebGL: {
         acquireTexture(texShape: any, texType: any, dtype: any, isPacked: any): any;
         computeBytes(shape: any, dtype: any): number;
     };
+    nextDataId: number;
 };
 export var Max: string;
 export var MaxPool: string;
@@ -1303,6 +1305,7 @@ export var RNN: {
         };
     };
     fromConfig(cls: any, config: any, customObjects?: {}): any;
+    className: string;
     nodeKey(layer: any, nodeIndex: any): string;
 };
 export var Range: string;
@@ -1534,7 +1537,7 @@ export function batchToSpaceND(...args: any[]): any;
 export namespace batchToSpaceND { }
 export function bincount(...args: any[]): any;
 export namespace bincount { }
-export function booleanMaskAsync(tensor3: any, mask: any, axis: any): Promise<any>;
+export function booleanMaskAsync(tensor2: any, mask: any, axis: any): Promise<any>;
 export function broadcastTo(...args: any[]): any;
 export namespace broadcastTo { }
 declare var browser_exports: {};
@@ -1594,7 +1597,7 @@ export function cosineWindow(windowLength: any, a: any, b: any): any;
 export function cumsum(...args: any[]): any;
 export namespace cumsum { }
 export function customGrad(f: any): any;
-declare var src_exports: {};
+declare var dist_exports: {};
 export function denseBincount(...args: any[]): any;
 export namespace denseBincount { }
 export function deprecationWarn(msg: any): void;
@@ -1771,8 +1774,8 @@ export function loadGraphModel(modelUrl: any, options?: {}): Promise<{
         _executeAsync(inputs: any, outputs: any, isFunctionExecution?: boolean, tensorArrayMap?: {}, tensorListMap?: {}): Promise<any>;
         executeFunctionAsync(inputs: any, tensorArrayMap: any, tensorListMap: any): Promise<any>;
         executeWithControlFlow(inputs: any, context: any, outputNames: any, isFunctionExecution: any): Promise<any>;
-        processStack(inputNodes: any, stack3: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
-        processChildNodes(node: any, stack3: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
+        processStack(inputNodes: any, stack2: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
+        processChildNodes(node: any, stack2: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
         dispose(): void;
         checkInputShapeAndType(inputs: any): void;
         mapInputs(inputs: any): {};
@@ -1812,8 +1815,8 @@ export function loadGraphModel(modelUrl: any, options?: {}): Promise<{
         _executeAsync(inputs: any, outputs: any, isFunctionExecution?: boolean, tensorArrayMap?: {}, tensorListMap?: {}): Promise<any>;
         executeFunctionAsync(inputs: any, tensorArrayMap: any, tensorListMap: any): Promise<any>;
         executeWithControlFlow(inputs: any, context: any, outputNames: any, isFunctionExecution: any): Promise<any>;
-        processStack(inputNodes: any, stack3: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
-        processChildNodes(node: any, stack3: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
+        processStack(inputNodes: any, stack2: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
+        processChildNodes(node: any, stack2: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
         dispose(): void;
         checkInputShapeAndType(inputs: any): void;
         mapInputs(inputs: any): {};
@@ -2009,7 +2012,7 @@ export function randomNormal(...args: any[]): any;
 export namespace randomNormal { }
 export function randomUniform(...args: any[]): any;
 export namespace randomUniform { }
-export function range(start: any, stop: any, step6?: number, dtype?: string): any;
+export function range(start: any, stop: any, step5?: number, dtype?: string): any;
 export function ready(): any;
 export function real(...args: any[]): any;
 export namespace real { }
@@ -2191,7 +2194,7 @@ export function variableGrads(f: any, varList: any): {
     value: any;
     grads: {};
 };
-declare var version17: {
+declare var version16: {
     tfjs: string;
     "tfjs-core": string;
     "tfjs-data": string;
@@ -2201,12 +2204,12 @@ declare var version17: {
     "tfjs-backend-webgl": string;
     "tfjs-backend-wasm": string;
 };
-declare var version12: string;
-declare var version9: string;
-declare var version14: string;
 declare var version11: string;
-declare var version16: string;
+declare var version9: string;
+declare var version13: string;
+declare var version10: string;
 declare var version15: string;
+declare var version14: string;
 export namespace webgl {
     export { forceHalfFloat };
 }
@@ -2217,7 +2220,7 @@ export function whereAsync(condition: any): Promise<any>;
 export function zeros(shape: any, dtype?: string): any;
 export function zerosLike(...args: any[]): any;
 export namespace zerosLike { }
-declare function less3(currVal: any, prevVal: any): boolean;
+declare function less2(currVal: any, prevVal: any): boolean;
 declare function getQueryParams(queryString: any): {};
 declare function earlyStopping(args: any): {
     monitor: any;
@@ -2226,7 +2229,7 @@ declare function earlyStopping(args: any): {
     verbose: any;
     mode: any;
     baseline: any;
-    monitorFunc: typeof less3;
+    monitorFunc: typeof less2;
     onTrainBegin(logs: any): Promise<void>;
     wait: number | undefined;
     stoppedEpoch: any;
@@ -2621,4 +2624,4 @@ declare var OptimizerConstructors: {
         getClassName(): any;
     };
 };
-export { add2 as add, backend_util_exports as backend_util, browser_exports as browser, exports_constraints_exports as constraints, src_exports as data, device_util_exports as device_util, fused_ops_exports as fused, gather_nd_util_exports as gather_util, gpgpu_util_exports as gpgpu_util, exports_initializers_exports as initializers, io_exports as io, isFinite2 as isFinite, isNaN2 as isNaN, kernel_impls_exports as kernel_impls, exports_layers_exports as layers, math_exports as math, exports_metrics_exports as metrics, exports_models_exports as models, ones2 as ones, print2 as print, exports_regularizers_exports as regularizers, round2 as round, scatter_nd_util_exports as scatter_util, serialization_exports as serialization, shared_exports as shared, slice_util_exports as slice_util, sum2 as sum, tanh2 as tanh, tensor_util_exports as tensor_util, test_util_exports as test_util, util_exports as util, version17 as version, version12 as version_converter, version9 as version_core, version14 as version_cpu, version11 as version_layers, version16 as version_wasm, version15 as version_webgl, webgl_util_exports as webgl_util };
+export { add2 as add, backend_util_exports as backend_util, browser_exports as browser, exports_constraints_exports as constraints, dist_exports as data, device_util_exports as device_util, fused_ops_exports as fused, gather_nd_util_exports as gather_util, gpgpu_util_exports as gpgpu_util, exports_initializers_exports as initializers, io_exports as io, isFinite2 as isFinite, isNaN2 as isNaN, kernel_impls_exports as kernel_impls, exports_layers_exports as layers, math_exports as math, exports_metrics_exports as metrics, exports_models_exports as models, ones2 as ones, print2 as print, exports_regularizers_exports as regularizers, round2 as round, scatter_nd_util_exports as scatter_util, serialization_exports as serialization, shared_exports as shared, slice_util_exports as slice_util, sum2 as sum, tanh2 as tanh, tensor_util_exports as tensor_util, test_util_exports as test_util, util_exports as util, version16 as version, version11 as version_converter, version9 as version_core, version13 as version_cpu, version10 as version_layers, version15 as version_wasm, version14 as version_webgl, webgl_util_exports as webgl_util };

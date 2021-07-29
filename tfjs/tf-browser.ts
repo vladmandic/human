@@ -3,29 +3,6 @@
  * @external
  */
 
-// import from dist
-// get versions of all packages
-/*
-import * as packageBundle from '@tensorflow/tfjs/package.json';
-import * as packageCore from '@tensorflow/tfjs-core/package.json';
-import * as packageData from '@tensorflow/tfjs-data/package.json';
-import * as packageLayers from '@tensorflow/tfjs-layers/package.json';
-import * as packageConverter from '@tensorflow/tfjs-converter/package.json';
-// for backends, get version from source to avoid incorrect tree shaking
-import { version_cpu } from '@tensorflow/tfjs-backend-cpu/dist/index.js';
-import { version_webgl } from '@tensorflow/tfjs-backend-webgl/dist/index.js';
-import { version_wasm } from '@tensorflow/tfjs-backend-wasm/dist/index.js';
-
-// export all
-export * from '@tensorflow/tfjs-core/dist/index.js';
-export * from '@tensorflow/tfjs-layers/dist/index.js';
-export * from '@tensorflow/tfjs-converter/dist/index.js';
-export * as data from '@tensorflow/tfjs-data/dist/index.js';
-export * from '@tensorflow/tfjs-backend-cpu/dist/index.js';
-export * from '@tensorflow/tfjs-backend-webgl/dist/index.js';
-export * from '@tensorflow/tfjs-backend-wasm/dist/index.js';
-*/
-
 // import from src
 // get versions of all packages
 import { version as tfjsVersion } from '@tensorflow/tfjs/package.json';
@@ -39,6 +16,7 @@ import { version as tfjsBackendWASMVersion } from '@tensorflow/tfjs-backend-wasm
 
 // export all
 // requires treeShaking:ignore-annotations due to tfjs misconfiguration
+/*
 export * from '@tensorflow/tfjs-core/src/index';
 export * from '@tensorflow/tfjs-layers/src/index';
 export * from '@tensorflow/tfjs-converter/src/index';
@@ -46,8 +24,16 @@ export * as data from '@tensorflow/tfjs-data/src/index';
 export * from '@tensorflow/tfjs-backend-cpu/src/index';
 export * from '@tensorflow/tfjs-backend-webgl/src/index';
 export * from '@tensorflow/tfjs-backend-wasm/src/index';
-/*
 */
+
+// export all
+export * from '@tensorflow/tfjs-core/dist/index.js';
+export * from '@tensorflow/tfjs-layers/dist/index.js';
+export * from '@tensorflow/tfjs-converter/dist/index.js';
+export * as data from '@tensorflow/tfjs-data/dist/index.js';
+export * from '@tensorflow/tfjs-backend-cpu/dist/index.js';
+export * from '@tensorflow/tfjs-backend-webgl/dist/index.js';
+export * from '@tensorflow/tfjs-backend-wasm/dist/index.js';
 
 // export versions
 export const version = {

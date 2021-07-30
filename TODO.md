@@ -6,9 +6,7 @@ N/A
 
 ## Work in Progress
 
-- Modularize `detect` with class inheritance
-- Modularize `warmup` with class inheritance
-- Refactor `checkBackend` into `backend.check`
+N/A
 
 ## Known Issues
 

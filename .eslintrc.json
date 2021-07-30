@@ -7,22 +7,31 @@
       "es2020": true
   },
   "parser": "@typescript-eslint/parser",
-  "parserOptions": { "ecmaVersion": 2020 },
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
   "plugins": [
     "@typescript-eslint"
   ],
   "extends": [
+    "airbnb-base",
     "eslint:recommended",
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:node/recommended",
-    "plugin:promise/recommended",
-    "plugin:json/recommended-with-comments",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "airbnb-base"
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:json/recommended-with-comments",
+    "plugin:node/recommended",
+    "plugin:promise/recommended"
   ],
-  "ignorePatterns": [ "dist", "assets", "media", "models", "node_modules", "demo/helpers" ],
+  "ignorePatterns": [
+    "assets",
+    "demo/helpers",
+    "dist",
+    "media",
+    "models",
+    "node_modules"
+  ],
   "rules": {
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
@@ -50,6 +59,7 @@
     "no-mixed-operators": "off",
     "no-param-reassign":"off",
     "no-plusplus": "off",
+    "no-process-exit": "off",
     "no-regex-spaces": "off",
     "no-restricted-globals": "off",
     "no-restricted-syntax": "off",

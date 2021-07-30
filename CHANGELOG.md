@@ -9,11 +9,13 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/07/30 mandic00@live.com
+
+- enable webgl uniform support for faster warmup
+
 ### **2.1.2** 2021/07/29 mandic00@live.com
 
-
-### **origin/main** 2021/07/29 mandic00@live.com
-
+- fix unregistered ops in tfjs
 - fix typo
 - rebuild new release
 

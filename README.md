@@ -51,7 +51,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 - [**Code Repository**](https://github.com/vladmandic/human)
 - [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
-- [**TypeDoc API Specification: Human**](https://vladmandic.github.io/human/typedoc/classes/human.html)
+- [**TypeDoc API Specification: Human**](https://vladmandic.github.io/human/typedoc/classes/Human.html)
 - [**Change Log**](https://github.com/vladmandic/human/blob/main/CHANGELOG.md)
 - [**Current To-do List**](https://github.com/vladmandic/human/blob/main/TODO.md)
 
@@ -294,7 +294,7 @@ Build target is `JavaScript` [EMCAScript version 2018](https://262.ecma-internat
 <br>
 
 For details see [**Wiki Pages**](https://github.com/vladmandic/human/wiki)  
-and [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/human.html)
+and [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/Human.html)
 
 <br>
 

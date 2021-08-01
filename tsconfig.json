@@ -8,7 +8,6 @@
     "outDir": "types",
     "declaration": true,
     "allowSyntheticDefaultImports": true,
-    "emitDeclarationOnly": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,

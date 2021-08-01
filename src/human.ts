@@ -336,6 +336,7 @@ export class Human {
           log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
           this.tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
         }
+        // @ts-ignore getGPGPUContext only exists on WebGL backend
         const gl = await this.tf.backend().getGPGPUContext().gl;
         if (this.config.debug) log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }

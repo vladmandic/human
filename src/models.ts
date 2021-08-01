@@ -9,6 +9,7 @@ import * as movenet from './movenet/movenet';
 import * as nanodet from './object/nanodet';
 import * as centernet from './object/centernet';
 import * as segmentation from './segmentation/segmentation';
+// import * as agegenderrace from './gear/agegenderrace';
 
 /** Load method preloads all instance.configured models on-demand
  * - Not explicitly required as any required model is load implicitly on it's first run
@@ -39,6 +40,8 @@ export async function load(instance) {
       instance.models.faceres,
       // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.segmentation,
+      // @ts-ignore models loaded via promise array cannot be correctly inferred
+      // instance.models.agegenderrace,
     ] = await Promise.all([
       instance.models.face || (instance.config.face.enabled ? facemesh.load(instance.config) : null),
       instance.models.emotion || ((instance.config.face.enabled && instance.config.face.emotion.enabled) ? emotion.load(instance.config) : null),
@@ -51,6 +54,7 @@ export async function load(instance) {
       instance.models.centernet || (instance.config.object.enabled && instance.config.object.modelPath.includes('centernet') ? centernet.load(instance.config) : null),
       instance.models.faceres || ((instance.config.face.enabled && instance.config.face.description.enabled) ? faceres.load(instance.config) : null),
       instance.models.segmentation || (instance.config.segmentation.enabled ? segmentation.load(instance.config) : null),
+      // instance.models.agegenderrace || ((instance.config.face.enabled && instance.config.face.agegenderrace.enabled) ? agegenderrace.load(instance.config) : null),
     ]);
   } else { // load models sequentially
     if (instance.config.face.enabled && !instance.models.face) instance.models.face = await facemesh.load(instance.config);
@@ -64,5 +68,6 @@ export async function load(instance) {
     if (instance.config.object.enabled && !instance.models.centernet && instance.config.object.modelPath.includes('centernet')) instance.models.centernet = await centernet.load(instance.config);
     if (instance.config.face.enabled && instance.config.face.description.enabled && !instance.models.faceres) instance.models.faceres = await faceres.load(instance.config);
     if (instance.config.segmentation.enabled && !instance.models.segmentation) instance.models.segmentation = await segmentation.load(instance.config);
+    // if (instance.config.face.enabled && instance.config.face.agegenderrace.enabled && !instance.models.agegenderrace) instance.models.agegenderrace = await agegenderrace.load(instance.config);
   }
 }

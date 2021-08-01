@@ -9,8 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/07/30 mandic00@live.com
+### **HEAD -> main** 2021/07/31 mandic00@live.com
 
+- replace movenet with lightning-v4
 - enable webgl uniform support for faster warmup
 
 ### **2.1.2** 2021/07/29 mandic00@live.com

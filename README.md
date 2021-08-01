@@ -34,10 +34,6 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 
 <br>
 
-*Note: `Human` Release 2.0 contains large list of changes, see [Change log](https://github.com/vladmandic/human/blob/main/CHANGELOG.md) for details*
-
-<br>
-
 ## Demos
 
 - [**Main Application**](https://vladmandic.github.io/human/demo/index.html)
@@ -72,6 +68,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 - [**Notes on Backends**](https://github.com/vladmandic/human/wiki/Backends)
 - [**Development Server**](https://github.com/vladmandic/human/wiki/Development-Server)
 - [**Build Process**](https://github.com/vladmandic/human/wiki/Build-Process)
+- [**Adding Custom Modules**](https://github.com/vladmandic/human/wiki/Module)
 - [**Performance Notes**](https://github.com/vladmandic/human/wiki/Performance)
 - [**Performance Profiling**](https://github.com/vladmandic/human/wiki/Profiling)
 - [**Platform Support**](https://github.com/vladmandic/human/wiki/Platforms)
@@ -279,6 +276,7 @@ Default models in Human library are:
 - **Face Description**: HSE FaceRes
 - **Emotion Detection**: Oarriaga Emotion
 - **Body Analysis**: MoveNet - Lightning variation
+- **Object Detection**: CenterNet
 
 Note that alternative models are provided and can be enabled via configuration  
 For example, `PoseNet` model can be switched for `BlazePose`, `EfficientPose` or `MoveNet` model depending on the use case  

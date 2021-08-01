@@ -21,8 +21,6 @@ const userConfig = {
     mesh: { enabled: true },
     embedding: { enabled: false },
     iris: { enabled: false },
-    age: { enabled: false },
-    gender: { enabled: false },
     emotion: { enabled: true },
     description: { enabled: true },
   },
@@ -174,12 +172,14 @@ async function createDB() {
 }
 
 async function main() {
+  /*
   window.addEventListener('unhandledrejection', (evt) => {
     // eslint-disable-next-line no-console
     console.error(evt.reason || evt);
     document.getElementById('list').innerHTML = evt?.reason?.message || evt?.reason || evt;
     evt.preventDefault();
   });
+  */
 
   // pre-load human models
   await human.load();

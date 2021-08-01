@@ -7,6 +7,8 @@ async function typings(entryPoint) {
   const configFileName = ts.findConfigFile('./', ts.sys.fileExists, 'tsconfig.json') || '';
   const configFile = ts.readConfigFile(configFileName, ts.sys.readFile);
   const compilerOptions = ts.parseJsonConfigFileContent(configFile.config, ts.sys, './');
+  // add explicitly to avoid generating compiled js files
+  compilerOptions.options.emitDeclarationOnly = true;
   log.info('Generate Typings:', entryPoint, 'outDir:', [compilerOptions.options.outDir]);
   const compilerHost = ts.createCompilerHost(compilerOptions.options);
   const program = ts.createProgram(entryPoint, compilerOptions.options, compilerHost);

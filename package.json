@@ -23,7 +23,7 @@
   "scripts": {
     "start": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught demo/nodejs/node.js",
     "dev": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/serve.js",
-    "build": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/build.js",
+    "build": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation server/build.js",
     "lint": "eslint src server demo test",
     "test": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught test/test.js",
     "scan": "npx auditjs@latest ossi --dev --quiet"
@@ -65,7 +65,7 @@
     "@tensorflow/tfjs-layers": "^3.8.0",
     "@tensorflow/tfjs-node": "^3.8.0",
     "@tensorflow/tfjs-node-gpu": "^3.8.0",
-    "@types/node": "^16.4.7",
+    "@types/node": "^16.4.9",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
     "@vladmandic/pilogger": "^0.2.18",
@@ -73,7 +73,7 @@
     "chokidar": "^3.5.2",
     "dayjs": "^1.10.6",
     "esbuild": "^0.12.17",
-    "eslint": "^7.31.0",
+    "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-json": "^3.0.0",
@@ -82,9 +82,9 @@
     "node-fetch": "^2.6.1",
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
-    "simple-git": "^2.41.2",
+    "simple-git": "^2.42.0",
     "tslib": "^2.3.0",
-    "typedoc": "0.21.4",
+    "typedoc": "0.21.5",
     "typescript": "4.3.5"
   }
 }

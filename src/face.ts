@@ -145,6 +145,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
   // eslint-disable-next-line no-async-promise-executor
   let timeStamp;
   let ageRes;
+  let gearRes;
   let genderRes;
   let emotionRes;
   let embeddingRes;
@@ -181,6 +182,20 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     }
     parent.analyze('End Emotion:');
 
+    // run gear, inherits face from blazeface
+    /*
+    parent.analyze('Start GEAR:');
+    if (parent.config.async) {
+      gearRes = parent.config.face.agegenderrace.enabled ? agegenderrace.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : {};
+    } else {
+      parent.state = 'run:gear';
+      timeStamp = now();
+      gearRes = parent.config.face.agegenderrace.enabled ? await agegenderrace.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : {};
+      parent.performance.emotion = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze('End GEAR:');
+    */
+
     // run emotion, inherits face from blazeface
     parent.analyze('Start Description:');
     if (parent.config.async) {
@@ -195,7 +210,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
 
     // if async wait for results
     if (parent.config.async) {
-      [ageRes, genderRes, emotionRes, embeddingRes, descRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes]);
+      [ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes]);
     }
 
     parent.analyze('Finish Face:');

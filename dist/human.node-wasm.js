@@ -9748,6 +9748,7 @@ var detectFace = async (parent, input) => {
   var _a, _b, _c, _d, _e, _f;
   let timeStamp;
   let ageRes;
+  let gearRes;
   let genderRes;
   let emotionRes;
   let embeddingRes;
@@ -9789,7 +9790,7 @@ var detectFace = async (parent, input) => {
     }
     parent.analyze("End Description:");
     if (parent.config.async) {
-      [ageRes, genderRes, emotionRes, embeddingRes, descRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes]);
+      [ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes]);
     }
     parent.analyze("Finish Face:");
     if (!parent.config.face.iris.enabled && ((_b = (_a = faces[i]) == null ? void 0 : _a.annotations) == null ? void 0 : _b.leftEyeIris) && ((_d = (_c = faces[i]) == null ? void 0 : _c.annotations) == null ? void 0 : _d.rightEyeIris)) {

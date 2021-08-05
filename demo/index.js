@@ -18,6 +18,8 @@
  * ui={}: contains all variables exposed in the UI
  */
 
+// test url <https://human.local/?worker=false&async=false&bench=false&draw=true&warmup=full&backend=humangl>
+
 // @ts-nocheck // typescript checks disabled as this is pure javascript
 
 import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
@@ -907,7 +909,7 @@ async function main() {
     log('overriding worker:', ui.useWorker);
   }
   if (params.has('backend')) {
-    userConfig.backend = params.get('backend');
+    userConfig.backend = params.get('backend'); // string
     log('overriding backend:', userConfig.backend);
   }
   if (params.has('preload')) {
@@ -915,8 +917,20 @@ async function main() {
     log('overriding preload:', ui.modelsPreload);
   }
   if (params.has('warmup')) {
-    ui.modelsWarmup = JSON.parse(params.get('warmup'));
+    ui.modelsWarmup = params.get('warmup'); // string
     log('overriding warmup:', ui.modelsWarmup);
+  }
+  if (params.has('bench')) {
+    ui.bench = JSON.parse(params.get('bench'));
+    log('overriding bench:', ui.bench);
+  }
+  if (params.has('draw')) {
+    ui.drawWarmup = JSON.parse(params.get('draw'));
+    log('overriding drawWarmup:', ui.drawWarmup);
+  }
+  if (params.has('async')) {
+    userConfig.async = JSON.parse(params.get('async'));
+    log('overriding async:', userConfig.async);
   }
 
   // create instance of human

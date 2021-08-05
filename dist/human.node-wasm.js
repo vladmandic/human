@@ -9445,33 +9445,35 @@ function process4(input, config3) {
       if (fx)
         fx = null;
     }
-    let pixels;
-    if (outCanvas.data) {
-      const shape = [outCanvas.height, outCanvas.width, 3];
-      pixels = tf18.tensor3d(outCanvas.data, shape, "int32");
-    } else if (outCanvas instanceof ImageData) {
-      pixels = tf18.browser ? tf18.browser.fromPixels(outCanvas) : null;
-    } else if (config3.backend === "webgl" || config3.backend === "humangl") {
-      const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
-      tempCanvas.width = targetWidth;
-      tempCanvas.height = targetHeight;
-      const tempCtx = tempCanvas.getContext("2d");
-      tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
-      pixels = tf18.browser ? tf18.browser.fromPixels(tempCanvas) : null;
-    } else {
-      const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
-      tempCanvas.width = targetWidth;
-      tempCanvas.height = targetHeight;
-      const tempCtx = tempCanvas.getContext("2d");
-      tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
-      const data = tempCtx == null ? void 0 : tempCtx.getImageData(0, 0, targetWidth, targetHeight);
-      pixels = tf18.browser ? tf18.browser.fromPixels(data) : null;
-    }
-    if (pixels) {
-      const casted = tf18.cast(pixels, "float32");
-      tensor2 = tf18.expandDims(casted, 0);
-      tf18.dispose(pixels);
-      tf18.dispose(casted);
+    if (!tensor2) {
+      let pixels;
+      if (outCanvas.data) {
+        const shape = [outCanvas.height, outCanvas.width, 3];
+        pixels = tf18.tensor3d(outCanvas.data, shape, "int32");
+      } else if (outCanvas instanceof ImageData) {
+        pixels = tf18.browser ? tf18.browser.fromPixels(outCanvas) : null;
+      } else if (config3.backend === "webgl" || config3.backend === "humangl") {
+        const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
+        tempCanvas.width = targetWidth;
+        tempCanvas.height = targetHeight;
+        const tempCtx = tempCanvas.getContext("2d");
+        tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
+        pixels = tf18.browser ? tf18.browser.fromPixels(tempCanvas) : null;
+      } else {
+        const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
+        tempCanvas.width = targetWidth;
+        tempCanvas.height = targetHeight;
+        const tempCtx = tempCanvas.getContext("2d");
+        tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
+        const data = tempCtx == null ? void 0 : tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+        pixels = tf18.browser ? tf18.browser.fromPixels(data) : null;
+      }
+      if (pixels) {
+        const casted = tf18.cast(pixels, "float32");
+        tensor2 = tf18.expandDims(casted, 0);
+        tf18.dispose(pixels);
+        tf18.dispose(casted);
+      }
     }
   }
   const canvas2 = config3.filter.return ? outCanvas : null;

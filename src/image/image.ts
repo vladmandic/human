@@ -128,6 +128,10 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
           }
         }
         outCanvas.data = pixBuffer;
+        const shape = [outCanvas.height, outCanvas.width, 3];
+        const pixels = tf.tensor3d(outCanvas.data, shape, 'float32');
+        tensor = tf.expandDims(pixels, 0);
+        tf.dispose(pixels);
       }
       */
     } else {
@@ -135,36 +139,38 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
       if (fx) fx = null;
     }
 
-    // create tensor from image
-    let pixels;
-    if (outCanvas.data) { // if we have data, just convert to tensor
-      const shape = [outCanvas.height, outCanvas.width, 3];
-      pixels = tf.tensor3d(outCanvas.data, shape, 'int32');
-    } else if (outCanvas instanceof ImageData) { // if input is imagedata, just use it
-      pixels = tf.browser ? tf.browser.fromPixels(outCanvas) : null;
-    } else if (config.backend === 'webgl' || config.backend === 'humangl') { // tf kernel-optimized method to get imagedata
-      // we can use canvas as-is as it already has a context, so we do a silly one more canvas
-      const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
-      tempCanvas.width = targetWidth;
-      tempCanvas.height = targetHeight;
-      const tempCtx = tempCanvas.getContext('2d');
-      tempCtx?.drawImage(outCanvas, 0, 0);
-      pixels = tf.browser ? tf.browser.fromPixels(tempCanvas) : null;
-    } else { // cpu and wasm kernel does not implement efficient fromPixels method
-      // we can use canvas as-is as it already has a context, so we do a silly one more canvas
-      const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
-      tempCanvas.width = targetWidth;
-      tempCanvas.height = targetHeight;
-      const tempCtx = tempCanvas.getContext('2d');
-      tempCtx?.drawImage(outCanvas, 0, 0);
-      const data = tempCtx?.getImageData(0, 0, targetWidth, targetHeight);
-      pixels = tf.browser ? tf.browser.fromPixels(data) : null;
-    }
-    if (pixels) {
-      const casted = tf.cast(pixels, 'float32');
-      tensor = tf.expandDims(casted, 0);
-      tf.dispose(pixels);
-      tf.dispose(casted);
+    // create tensor from image if tensor is not already defined
+    if (!tensor) {
+      let pixels;
+      if (outCanvas.data) { // if we have data, just convert to tensor
+        const shape = [outCanvas.height, outCanvas.width, 3];
+        pixels = tf.tensor3d(outCanvas.data, shape, 'int32');
+      } else if (outCanvas instanceof ImageData) { // if input is imagedata, just use it
+        pixels = tf.browser ? tf.browser.fromPixels(outCanvas) : null;
+      } else if (config.backend === 'webgl' || config.backend === 'humangl') { // tf kernel-optimized method to get imagedata
+        // we cant use canvas as-is as it already has a context, so we do a silly one more canvas
+        const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
+        tempCanvas.width = targetWidth;
+        tempCanvas.height = targetHeight;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx?.drawImage(outCanvas, 0, 0);
+        pixels = tf.browser ? tf.browser.fromPixels(tempCanvas) : null;
+      } else { // cpu and wasm kernel does not implement efficient fromPixels method
+        // we cant use canvas as-is as it already has a context, so we do a silly one more canvas and do fromPixels on ImageData instead
+        const tempCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');
+        tempCanvas.width = targetWidth;
+        tempCanvas.height = targetHeight;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx?.drawImage(outCanvas, 0, 0);
+        const data = tempCtx?.getImageData(0, 0, targetWidth, targetHeight);
+        pixels = tf.browser ? tf.browser.fromPixels(data) : null;
+      }
+      if (pixels) {
+        const casted = tf.cast(pixels, 'float32');
+        tensor = tf.expandDims(casted, 0);
+        tf.dispose(pixels);
+        tf.dispose(casted);
+      }
     }
   }
   const canvas = config.filter.return ? outCanvas : null;

@@ -163,8 +163,8 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
 
     // is something went wrong, skip the face
     // @ts-ignore possibly undefined
-    if (!faces[i].image || faces[i].image['isDisposedInternal']) {
-      log('Face object is disposed:', faces[i].image);
+    if (!faces[i].tensor || faces[i].tensor['isDisposedInternal']) {
+      log('Face object is disposed:', faces[i].tensor);
       continue;
     }
 
@@ -173,11 +173,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     // run emotion, inherits face from blazeface
     parent.analyze('Start Emotion:');
     if (parent.config.async) {
-      emotionRes = parent.config.face.emotion.enabled ? emotion.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : {};
+      emotionRes = parent.config.face.emotion.enabled ? emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
     } else {
       parent.state = 'run:emotion';
       timeStamp = now();
-      emotionRes = parent.config.face.emotion.enabled ? await emotion.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : {};
+      emotionRes = parent.config.face.emotion.enabled ? await emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
       parent.performance.emotion = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Emotion:');
@@ -186,11 +186,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     /*
     parent.analyze('Start GEAR:');
     if (parent.config.async) {
-      gearRes = parent.config.face.agegenderrace.enabled ? agegenderrace.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : {};
+      gearRes = parent.config.face.agegenderrace.enabled ? agegenderrace.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
     } else {
       parent.state = 'run:gear';
       timeStamp = now();
-      gearRes = parent.config.face.agegenderrace.enabled ? await agegenderrace.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : {};
+      gearRes = parent.config.face.agegenderrace.enabled ? await agegenderrace.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
       parent.performance.emotion = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End GEAR:');
@@ -199,11 +199,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     // run emotion, inherits face from blazeface
     parent.analyze('Start Description:');
     if (parent.config.async) {
-      descRes = parent.config.face.description.enabled ? faceres.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : [];
+      descRes = parent.config.face.description.enabled ? faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : [];
     } else {
       parent.state = 'run:description';
       timeStamp = now();
-      descRes = parent.config.face.description.enabled ? await faceres.predict(faces[i].image || tf.tensor([]), parent.config, i, faces.length) : [];
+      descRes = parent.config.face.description.enabled ? await faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : [];
       parent.performance.embedding = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Description:');
@@ -226,6 +226,12 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2]
       : 0;
 
+    // optionally return tensor
+    const tensor = parent.config.face.detector.return ? tf.squeeze(faces[i].tensor) : null;
+    // dispose original face tensor
+    tf.dispose(faces[i].tensor);
+    // delete temp face image
+    if (faces[i].tensor) delete faces[i].tensor;
     // combine results
     faceRes.push({
       ...faces[i],
@@ -237,12 +243,8 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       emotion: emotionRes,
       iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,
       rotation,
-      tensor: parent.config.face.detector.return ? tf.squeeze(faces[i].image) : null,
+      tensor,
     });
-    // dispose original face tensor
-    tf.dispose(faces[i].image);
-    // delete temp face image
-    if (faces[i].image) delete faces[i].image;
 
     parent.analyze('End Face');
   }

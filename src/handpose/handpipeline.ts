@@ -122,7 +122,7 @@ export class HandPipeline {
         tf.dispose(confidenceT);
         if (confidence >= config.hand.minConfidence) {
           const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
-          const rawCoords = keypointsReshaped.arraySync();
+          const rawCoords = await keypointsReshaped.array();
           tf.dispose(keypoints);
           tf.dispose(keypointsReshaped);
           const coords = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);

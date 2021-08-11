@@ -40,15 +40,15 @@ let userConfig = {
     enabled: false,
     flip: false,
   },
-  face: { enabled: false,
-    detector: { return: true },
+  face: { enabled: true,
+    detector: { return: false },
     mesh: { enabled: true },
     iris: { enabled: false },
     description: { enabled: false },
     emotion: { enabled: false },
   },
   object: { enabled: false },
-  gesture: { enabled: true },
+  gesture: { enabled: false },
   hand: { enabled: false },
   body: { enabled: false },
   // body: { enabled: true, modelPath: 'posenet.json' },
@@ -164,7 +164,8 @@ function status(msg) {
     div.innerText = msg;
   } else {
     const video = document.getElementById('video');
-    document.getElementById('play').style.display = (video.srcObject !== null) && !video.paused ? 'none' : 'block';
+    const playing = (video.srcObject !== null) && !video.paused;
+    document.getElementById('play').style.display = playing ? 'none' : 'block';
     document.getElementById('loader').style.display = 'none';
     div.innerText = '';
   }
@@ -259,9 +260,10 @@ async function drawResults(input) {
   const avgDraw = ui.drawFPS.length > 0 ? Math.trunc(10 * ui.drawFPS.reduce((a, b) => a + b, 0) / ui.drawFPS.length) / 10 : 0;
   const warning = (ui.detectFPS.length > 5) && (avgDetect < 2) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
   const fps = avgDetect > 0 ? `FPS process:${avgDetect} refresh:${avgDraw}` : '';
+  const backend = engine.state.numTensors > 0 ? `backend: ${human.tf.getBackend()} | ${memory}` : 'running in web worker';
   document.getElementById('log').innerHTML = `
     video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
-    backend: ${human.tf.getBackend()} | ${memory}<br>
+    backend: ${backend}<br>
     performance: ${str(lastDetectedResult.performance)}ms ${fps}<br>
     ${warning}<br>
   `;
@@ -363,6 +365,7 @@ async function setupCamera() {
       // eslint-disable-next-line no-use-before-define
       if (live && !ui.detectThread) runHumanDetect(video, canvas);
       ui.busy = false;
+      status();
       resolve();
     };
   });
@@ -597,6 +600,7 @@ async function detectVideo() {
       document.getElementById('btnStartText').innerHTML = 'pause video';
       await video.play();
       runHumanDetect(video, canvas);
+      status();
     } else {
       status(cameraError);
     }
@@ -878,6 +882,7 @@ async function pwaRegister() {
 }
 
 async function main() {
+  /*
   window.addEventListener('unhandledrejection', (evt) => {
     // eslint-disable-next-line no-console
     console.error(evt.reason || evt);
@@ -885,6 +890,7 @@ async function main() {
     status('exception error');
     evt.preventDefault();
   });
+  */
 
   log('demo starting ...');
 

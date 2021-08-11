@@ -53,8 +53,7 @@ export interface Face {
     matrix: [number, number, number, number, number, number, number, number, number],
     gaze: { bearing: number, strength: number },
   }
-  image?: Tensor;
-  tensor: Tensor,
+  tensor?: Tensor,
 }
 
 /** Body results

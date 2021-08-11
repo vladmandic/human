@@ -50,7 +50,7 @@ export async function predict(image: Tensor, config: Config): Promise<Body[]> {
 
     if (resT) {
       keypoints.length = 0;
-      const res = resT.arraySync();
+      const res = await resT.array();
       tf.dispose(resT);
       const kpt = res[0][0];
       for (let id = 0; id < kpt.length; id++) {

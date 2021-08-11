@@ -168,7 +168,10 @@ export class Pipeline {
       this.storedBoxes = [];
       this.detectedFaces = 0;
       for (const possible of detector.boxes) {
-        this.storedBoxes.push({ startPoint: possible.box.startPoint.dataSync(), endPoint: possible.box.endPoint.dataSync(), landmarks: possible.landmarks.arraySync(), confidence: possible.confidence });
+        const startPoint = await possible.box.startPoint.data();
+        const endPoint = await possible.box.endPoint.data();
+        const landmarks = await possible.landmarks.array();
+        this.storedBoxes.push({ startPoint, endPoint, landmarks, confidence: possible.confidence });
       }
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }

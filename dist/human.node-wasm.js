@@ -518,7 +518,7 @@ var BlazeFaceModel = class {
     });
     this.config = mergeDeep(this.config, userConfig);
     const nmsTensor = await tf3.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
-    const nms = nmsTensor.arraySync();
+    const nms = await nmsTensor.array();
     tf3.dispose(nmsTensor);
     const annotatedBoxes = [];
     for (let i = 0; i < nms.length; i++) {
@@ -3956,7 +3956,10 @@ var Pipeline = class {
       this.storedBoxes = [];
       this.detectedFaces = 0;
       for (const possible of detector.boxes) {
-        this.storedBoxes.push({ startPoint: possible.box.startPoint.dataSync(), endPoint: possible.box.endPoint.dataSync(), landmarks: possible.landmarks.arraySync(), confidence: possible.confidence });
+        const startPoint = await possible.box.startPoint.data();
+        const endPoint = await possible.box.endPoint.data();
+        const landmarks = await possible.landmarks.array();
+        this.storedBoxes.push({ startPoint, endPoint, landmarks, confidence: possible.confidence });
       }
       if (this.storedBoxes.length > 0)
         useFreshBox = true;
@@ -4119,7 +4122,6 @@ async function predict(input, config3) {
       mesh: prediction.mesh,
       meshRaw,
       annotations: annotations3,
-      image: prediction.image,
       tensor: prediction.image
     });
     if (prediction.coords)
@@ -7708,7 +7710,7 @@ var HandDetector = class {
     const boxes = this.normalizeBoxes(rawBoxes);
     tf10.dispose(rawBoxes);
     const filteredT = await tf10.image.nonMaxSuppressionAsync(boxes, scores, config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
-    const filtered = filteredT.arraySync();
+    const filtered = await filteredT.array();
     tf10.dispose(scoresT);
     tf10.dispose(filteredT);
     const hands = [];
@@ -7738,7 +7740,7 @@ var HandDetector = class {
       const boxes = prediction.box.dataSync();
       const startPoint = boxes.slice(0, 2);
       const endPoint = boxes.slice(2, 4);
-      const palmLandmarks = prediction.palmLandmarks.arraySync();
+      const palmLandmarks = await prediction.palmLandmarks.array();
       tf10.dispose(prediction.box);
       tf10.dispose(prediction.palmLandmarks);
       hands.push(scaleBoxCoordinates2({ startPoint, endPoint, palmLandmarks, confidence: prediction.confidence }, [inputWidth / this.inputSize, inputHeight / this.inputSize]));
@@ -7912,7 +7914,7 @@ var HandPipeline = class {
         tf11.dispose(confidenceT);
         if (confidence >= config3.hand.minConfidence) {
           const keypointsReshaped = tf11.reshape(keypoints3, [-1, 3]);
-          const rawCoords = keypointsReshaped.arraySync();
+          const rawCoords = await keypointsReshaped.array();
           tf11.dispose(keypoints3);
           tf11.dispose(keypointsReshaped);
           const coords3 = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
@@ -8311,7 +8313,7 @@ async function predict8(image18, config3) {
     tf15.dispose(tensor2);
     if (resT) {
       keypoints2.length = 0;
-      const res = resT.arraySync();
+      const res = await resT.array();
       tf15.dispose(resT);
       const kpt3 = res[0][0];
       for (let id = 0; id < kpt3.length; id++) {
@@ -8464,14 +8466,14 @@ async function process2(res, inputSize, outputShape, config3) {
   let id = 0;
   let results = [];
   for (const strideSize of [1, 2, 4]) {
-    tf16.tidy(() => {
+    tf16.tidy(async () => {
       var _a, _b;
       const baseSize = strideSize * 13;
       const scoresT = (_a = res.find((a) => a.shape[1] === baseSize ** 2 && a.shape[2] === labels.length)) == null ? void 0 : _a.squeeze();
       const featuresT = (_b = res.find((a) => a.shape[1] === baseSize ** 2 && a.shape[2] < labels.length)) == null ? void 0 : _b.squeeze();
       const boxesMax = featuresT.reshape([-1, 4, featuresT.shape[1] / 4]);
-      const boxIdx = boxesMax.argMax(2).arraySync();
-      const scores = scoresT.arraySync();
+      const boxIdx = await boxesMax.argMax(2).array();
+      const scores = await scoresT.array();
       for (let i = 0; i < scoresT.shape[0]; i++) {
         for (let j = 0; j < scoresT.shape[1]; j++) {
           const score3 = scores[i][j];
@@ -8568,15 +8570,15 @@ async function process3(res, inputSize, outputShape, config3) {
   if (!res)
     return [];
   const results = [];
-  const detections = res.arraySync();
+  const detections = await res.array();
   const squeezeT = tf17.squeeze(res);
   tf17.dispose(res);
   const arr = tf17.split(squeezeT, 6, 1);
   tf17.dispose(squeezeT);
   const stackT = tf17.stack([arr[1], arr[0], arr[3], arr[2]], 1);
-  const boxesT = stackT.squeeze();
-  const scoresT = arr[4].squeeze();
-  const classesT = arr[5].squeeze();
+  const boxesT = tf17.squeeze(stackT);
+  const scoresT = tf17.squeeze(arr[4]);
+  const classesT = tf17.squeeze(arr[5]);
   arr.forEach((t) => tf17.dispose(t));
   const nmsT = await tf17.image.nonMaxSuppressionAsync(boxesT, scoresT, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence);
   tf17.dispose(boxesT);
@@ -9766,28 +9768,28 @@ var detectFace = async (parent, input) => {
     return [];
   for (let i = 0; i < faces.length; i++) {
     parent.analyze("Get Face");
-    if (!faces[i].image || faces[i].image["isDisposedInternal"]) {
-      log("Face object is disposed:", faces[i].image);
+    if (!faces[i].tensor || faces[i].tensor["isDisposedInternal"]) {
+      log("Face object is disposed:", faces[i].tensor);
       continue;
     }
     const rotation = calculateFaceAngle(faces[i], [input.shape[2], input.shape[1]]);
     parent.analyze("Start Emotion:");
     if (parent.config.async) {
-      emotionRes = parent.config.face.emotion.enabled ? predict3(faces[i].image || tf20.tensor([]), parent.config, i, faces.length) : {};
+      emotionRes = parent.config.face.emotion.enabled ? predict3(faces[i].tensor || tf20.tensor([]), parent.config, i, faces.length) : {};
     } else {
       parent.state = "run:emotion";
       timeStamp = now();
-      emotionRes = parent.config.face.emotion.enabled ? await predict3(faces[i].image || tf20.tensor([]), parent.config, i, faces.length) : {};
+      emotionRes = parent.config.face.emotion.enabled ? await predict3(faces[i].tensor || tf20.tensor([]), parent.config, i, faces.length) : {};
       parent.performance.emotion = Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Emotion:");
     parent.analyze("Start Description:");
     if (parent.config.async) {
-      descRes = parent.config.face.description.enabled ? predict2(faces[i].image || tf20.tensor([]), parent.config, i, faces.length) : [];
+      descRes = parent.config.face.description.enabled ? predict2(faces[i].tensor || tf20.tensor([]), parent.config, i, faces.length) : [];
     } else {
       parent.state = "run:description";
       timeStamp = now();
-      descRes = parent.config.face.description.enabled ? await predict2(faces[i].image || tf20.tensor([]), parent.config, i, faces.length) : [];
+      descRes = parent.config.face.description.enabled ? await predict2(faces[i].tensor || tf20.tensor([]), parent.config, i, faces.length) : [];
       parent.performance.embedding = Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Description:");
@@ -9800,6 +9802,10 @@ var detectFace = async (parent, input) => {
       delete faces[i].annotations.rightEyeIris;
     }
     const irisSize = ((_e = faces[i].annotations) == null ? void 0 : _e.leftEyeIris) && ((_f = faces[i].annotations) == null ? void 0 : _f.rightEyeIris) ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2] : 0;
+    const tensor2 = parent.config.face.detector.return ? tf20.squeeze(faces[i].tensor) : null;
+    tf20.dispose(faces[i].tensor);
+    if (faces[i].tensor)
+      delete faces[i].tensor;
     faceRes.push({
       ...faces[i],
       id: i,
@@ -9810,11 +9816,8 @@ var detectFace = async (parent, input) => {
       emotion: emotionRes,
       iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,
       rotation,
-      tensor: parent.config.face.detector.return ? tf20.squeeze(faces[i].image) : null
+      tensor: tensor2
     });
-    tf20.dispose(faces[i].image);
-    if (faces[i].image)
-      delete faces[i].image;
     parent.analyze("End Face");
   }
   parent.analyze("End FaceMesh:");

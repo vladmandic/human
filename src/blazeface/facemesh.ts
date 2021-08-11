@@ -51,7 +51,6 @@ export async function predict(input: Tensor, config: Config): Promise<Face[]> {
       mesh: prediction.mesh,
       meshRaw,
       annotations,
-      image: prediction.image,
       tensor: prediction.image,
     });
     if (prediction.coords) tf.dispose(prediction.coords);

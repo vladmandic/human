@@ -32,14 +32,14 @@ async function process(res, inputSize, outputShape, config) {
   let results: Array<Item> = [];
   for (const strideSize of [1, 2, 4]) { // try each stride size as it detects large/medium/small objects
     // find scores, boxes, classes
-    tf.tidy(() => { // wrap in tidy to automatically deallocate temp tensors
+    tf.tidy(async () => { // wrap in tidy to automatically deallocate temp tensors
       const baseSize = strideSize * 13; // 13x13=169, 26x26=676, 52x52=2704
       // find boxes and scores output depending on stride
       const scoresT = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] === labels.length))?.squeeze();
       const featuresT = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] < labels.length))?.squeeze();
       const boxesMax = featuresT.reshape([-1, 4, featuresT.shape[1] / 4]); // reshape [output] to [4, output / 4] where number is number of different features inside each stride
-      const boxIdx = boxesMax.argMax(2).arraySync(); // what we need is indexes of features with highest scores, not values itself
-      const scores = scoresT.arraySync(); // optionally use exponential scores or just as-is
+      const boxIdx = await boxesMax.argMax(2).array(); // what we need is indexes of features with highest scores, not values itself
+      const scores = await scoresT.array(); // optionally use exponential scores or just as-is
       for (let i = 0; i < scoresT.shape[0]; i++) { // total strides (x * y matrix)
         for (let j = 0; j < scoresT.shape[1]; j++) { // one score for each class
           const score = scores[i][j]; // get score for current position

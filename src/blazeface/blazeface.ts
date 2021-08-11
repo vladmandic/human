@@ -64,7 +64,7 @@ export class BlazeFaceModel {
     this.config = mergeDeep(this.config, userConfig) as Config;
 
     const nmsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
-    const nms = nmsTensor.arraySync();
+    const nms = await nmsTensor.array();
     tf.dispose(nmsTensor);
     const annotatedBoxes: Array<{ box: { startPoint: Tensor, endPoint: Tensor }, landmarks: Tensor, anchor: number[], confidence: number }> = [];
     for (let i = 0; i < nms.length; i++) {

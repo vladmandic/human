@@ -50,7 +50,7 @@ export class HandDetector {
     const boxes = this.normalizeBoxes(rawBoxes);
     tf.dispose(rawBoxes);
     const filteredT = await tf.image.nonMaxSuppressionAsync(boxes, scores, config.hand.maxDetected, config.hand.iouThreshold, config.hand.minConfidence);
-    const filtered = filteredT.arraySync();
+    const filtered = await filteredT.array();
 
     tf.dispose(scoresT);
     tf.dispose(filteredT);
@@ -81,7 +81,7 @@ export class HandDetector {
       const boxes = prediction.box.dataSync();
       const startPoint = boxes.slice(0, 2);
       const endPoint = boxes.slice(2, 4);
-      const palmLandmarks = prediction.palmLandmarks.arraySync();
+      const palmLandmarks = await prediction.palmLandmarks.array();
       tf.dispose(prediction.box);
       tf.dispose(prediction.palmLandmarks);
       hands.push(box.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks, confidence: prediction.confidence }, [inputWidth / this.inputSize, inputHeight / this.inputSize]));

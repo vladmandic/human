@@ -61,8 +61,7 @@ export interface Face {
             strength: number;
         };
     };
-    image?: Tensor;
-    tensor: Tensor;
+    tensor?: Tensor;
 }
 /** Body results
  *

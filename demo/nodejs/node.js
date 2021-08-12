@@ -121,7 +121,7 @@ async function detect(input) {
   if (result && result.hand && result.hand.length > 0) {
     for (let i = 0; i < result.hand.length; i++) {
       const hand = result.hand[i];
-      log.data(`  Hand: #${i} score:${hand.score}`);
+      log.data(`  Hand: #${i} score:${hand.score} keypoints:${hand.keypoints?.length}`);
     }
   } else {
     log.data('  Hand: N/A');

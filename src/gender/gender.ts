@@ -63,7 +63,7 @@ export async function predict(image: Tensor, config: Config | any) {
 
     if (genderT) {
       if (!Array.isArray(genderT)) {
-        const data = genderT.dataSync();
+        const data = await genderT.data();
         if (alternative) {
           // returns two values 0..1, bigger one is prediction
           if (data[0] > config.face.gender.minConfidence || data[1] > config.face.gender.minConfidence) {
@@ -80,7 +80,7 @@ export async function predict(image: Tensor, config: Config | any) {
         }
         tf.dispose(genderT);
       } else {
-        const gender = genderT[0].dataSync();
+        const gender = await genderT[0].data();
         const confidence = Math.trunc(200 * Math.abs((gender[0] - 0.5))) / 100;
         if (confidence > config.face.gender.minConfidence) {
           obj.gender = gender[0] <= 0.5 ? 'female' : 'male';

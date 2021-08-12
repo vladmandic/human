@@ -367,7 +367,7 @@ export class Human {
     sumT.dispose();
     */
     // use js loop sum, faster than uploading tensor to gpu calculating and downloading back
-    const reducedData = reduced.dataSync(); // raw image rgb array
+    const reducedData = await reduced.data(); // raw image rgb array
     let sum = 0;
     for (let i = 0; i < reducedData.length / 3; i++) sum += reducedData[3 * i + 2]; // look only at green value of each pixel
 

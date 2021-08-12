@@ -90,7 +90,7 @@ async function process(res, inputSize, outputShape, config) {
   let nmsIdx: Array<number> = [];
   if (nmsBoxes && nmsBoxes.length > 0) {
     const nms = await tf.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
-    nmsIdx = nms.dataSync();
+    nmsIdx = await nms.data();
     tf.dispose(nms);
   }
 

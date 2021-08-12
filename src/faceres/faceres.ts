@@ -134,21 +134,21 @@ export async function predict(image: Tensor, config: Config, idx, count) {
 
     if (resT) {
       tf.tidy(() => {
-        const gender = resT.find((t) => t.shape[1] === 1).dataSync();
+        const gender = resT.find((t) => t.shape[1] === 1).dataSync(); // inside tf.tidy
         const confidence = Math.trunc(200 * Math.abs((gender[0] - 0.5))) / 100;
         if (confidence > config.face.description.minConfidence) {
           obj.gender = gender[0] <= 0.5 ? 'female' : 'male';
           obj.genderScore = Math.min(0.99, confidence);
         }
-        const age = tf.argMax(resT.find((t) => t.shape[1] === 100), 1).dataSync()[0];
-        const all = resT.find((t) => t.shape[1] === 100).dataSync();
+        const age = tf.argMax(resT.find((t) => t.shape[1] === 100), 1).dataSync()[0]; // inside tf.tidy
+        const all = resT.find((t) => t.shape[1] === 100).dataSync(); // inside tf.tidy
         obj.age = Math.round(all[age - 1] > all[age + 1] ? 10 * age - 100 * all[age - 1] : 10 * age + 100 * all[age + 1]) / 10;
 
         const desc = resT.find((t) => t.shape[1] === 1024);
         // const reshape = desc.reshape([128, 8]); // reshape large 1024-element descriptor to 128 x 8
         // const reduce = reshape.logSumExp(1); // reduce 2nd dimension by calculating logSumExp on it which leaves us with 128-element descriptor
 
-        obj.descriptor = [...desc.dataSync()];
+        obj.descriptor = [...desc.dataSync()]; // inside tf.tidy
       });
       resT.forEach((t) => tf.dispose(t));
     }

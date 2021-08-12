@@ -39,12 +39,12 @@ function max2d(inputs, minScore) {
     // combine all data
     const reshaped = tf.reshape(inputs, [height * width]);
     // get highest score
-    const newScore = tf.max(reshaped, 0).dataSync()[0];
+    const newScore = tf.max(reshaped, 0).dataSync()[0]; // inside tf.tidy
     if (newScore > minScore) {
       // skip coordinate calculation is score is too low
       const coords = tf.argMax(reshaped, 0);
-      const x = mod(coords, width).dataSync()[0];
-      const y = tf.div(coords, tf.scalar(width, 'int32')).dataSync()[0];
+      const x = mod(coords, width).dataSync()[0]; // inside tf.tidy
+      const y = tf.div(coords, tf.scalar(width, 'int32')).dataSync()[0]; // inside tf.tidy
       return [x, y, newScore];
     }
     return [0, 0, newScore];

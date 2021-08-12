@@ -42,7 +42,7 @@ async function process(res: Tensor, inputSize, outputShape, config: Config) {
   tf.dispose(boxesT);
   tf.dispose(scoresT);
   tf.dispose(classesT);
-  const nms = nmsT.dataSync();
+  const nms = await nmsT.data();
   tf.dispose(nmsT);
   let i = 0;
   for (const id of nms) {

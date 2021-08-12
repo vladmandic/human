@@ -125,7 +125,7 @@ export async function predict(input, config): Promise<number[]> {
         const reshape = tf.reshape(res, [128, 2]); // split 256 vectors into 128 x 2
         const reduce = reshape.logSumExp(1); // reduce 2nd dimension by calculating logSumExp on it
 
-        const output: Array<number> = reduce.dataSync();
+        const output: Array<number> = reduce.dataSync(); // inside tf.tidy
         return [...output]; // convert typed array to simple array
       });
       tf.dispose(image);

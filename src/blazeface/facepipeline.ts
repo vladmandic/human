@@ -234,7 +234,7 @@ export class Pipeline {
       }
 
       const [, confidence, contourCoords] = this.meshDetector.execute(face) as Array<Tensor>; // The first returned tensor represents facial contours which are already included in the coordinates.
-      const faceConfidence = confidence.dataSync()[0] as number;
+      const faceConfidence = confidence.dataSync()[0] as number; // inside tf.tidy
       if (faceConfidence < config.face.detector.minConfidence) {
         this.storedBoxes[i].confidence = faceConfidence; // reset confidence of cached box
         return null; // if below confidence just exit
@@ -246,7 +246,7 @@ export class Pipeline {
         const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true);
         const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1]);
         const eyePredictions = this.irisModel.predict(tf.concat([leftEyeCrop, rightEyeCrop])) as Tensor;
-        const eyePredictionsData = eyePredictions.dataSync();
+        const eyePredictionsData = eyePredictions.dataSync(); // inside tf.tidy
         const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
         const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = this.getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
         const rightEyeData = eyePredictionsData.slice(irisLandmarks.numCoordinates * 3);

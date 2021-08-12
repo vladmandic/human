@@ -33,7 +33,8 @@ export async function predict(image: Tensor, config: Config): Promise<Body[]> {
   const normalize = tf.div(resize, [255.0]);
   tf.dispose(resize);
   const resT = await model.predict(normalize) as Array<Tensor>;
-  const points = resT.find((t) => (t.size === 195 || t.size === 155))?.dataSync() || []; // order of output tensors may change between models, full has 195 and upper has 155 items
+  const findT = resT.find((t) => (t.size === 195 || t.size === 155));
+  const points = await findT?.data() || []; // order of output tensors may change between models, full has 195 and upper has 155 items
   resT.forEach((t) => tf.dispose(t));
   tf.dispose(normalize);
   const keypoints: Array<{ id, part, position: [number, number, number], positionRaw: [number, number, number], score, presence }> = [];

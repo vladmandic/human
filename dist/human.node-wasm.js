@@ -4307,7 +4307,7 @@ async function predict3(image18, config3, idx, count2) {
     const obj = [];
     if (config3.face.emotion.enabled) {
       const emotionT = await model2.predict(normalize);
-      const data = emotionT.dataSync();
+      const data = await emotionT.data();
       tf7.dispose(emotionT);
       for (let i = 0; i < data.length; i++) {
         if (data[i] > config3.face.emotion.minConfidence)
@@ -7705,7 +7705,7 @@ var HandDetector = class {
     const predictions = tf10.squeeze(batched);
     tf10.dispose(batched);
     const scoresT = tf10.tidy(() => tf10.squeeze(tf10.sigmoid(tf10.slice(predictions, [0, 0], [-1, 1]))));
-    const scores = scoresT.dataSync();
+    const scores = await scoresT.data();
     const rawBoxes = tf10.slice(predictions, [0, 1], [-1, 4]);
     const boxes = this.normalizeBoxes(rawBoxes);
     tf10.dispose(rawBoxes);
@@ -7737,7 +7737,7 @@ var HandDetector = class {
     if (!predictions || predictions.length === 0)
       return hands;
     for (const prediction of predictions) {
-      const boxes = prediction.box.dataSync();
+      const boxes = await prediction.box.data();
       const startPoint = boxes.slice(0, 2);
       const endPoint = boxes.slice(2, 4);
       const palmLandmarks = await prediction.palmLandmarks.array();
@@ -8126,7 +8126,6 @@ async function load7(config3) {
   return model4;
 }
 async function predict6(image18, config3) {
-  var _a;
   if (!model4)
     return [];
   if (!config3.body.enabled)
@@ -8136,7 +8135,8 @@ async function predict6(image18, config3) {
   const normalize = tf13.div(resize, [255]);
   tf13.dispose(resize);
   const resT = await model4.predict(normalize);
-  const points = ((_a = resT.find((t) => t.size === 195 || t.size === 155)) == null ? void 0 : _a.dataSync()) || [];
+  const findT = resT.find((t) => t.size === 195 || t.size === 155);
+  const points = await (findT == null ? void 0 : findT.data()) || [];
   resT.forEach((t) => tf13.dispose(t));
   tf13.dispose(normalize);
   const keypoints3 = [];
@@ -8517,7 +8517,7 @@ async function process2(res, inputSize, outputShape, config3) {
   let nmsIdx = [];
   if (nmsBoxes && nmsBoxes.length > 0) {
     const nms = await tf16.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence);
-    nmsIdx = nms.dataSync();
+    nmsIdx = await nms.data();
     tf16.dispose(nms);
   }
   results = results.filter((_val, idx) => nmsIdx.includes(idx)).sort((a, b) => b.score - a.score);
@@ -8584,7 +8584,7 @@ async function process3(res, inputSize, outputShape, config3) {
   tf17.dispose(boxesT);
   tf17.dispose(scoresT);
   tf17.dispose(classesT);
-  const nms = nmsT.dataSync();
+  const nms = await nmsT.data();
   tf17.dispose(nmsT);
   let i = 0;
   for (const id of nms) {
@@ -9528,7 +9528,7 @@ async function predict11(input) {
     resizeOutput = tf19.image.resizeBilinear(squeeze7, [width, height]);
   }
   if (typeof document === "undefined")
-    return resizeOutput.dataSync();
+    return resizeOutput.data();
   const overlay = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(width, height) : document.createElement("canvas");
   overlay.width = width;
   overlay.height = height;
@@ -11332,7 +11332,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // package.json
-var version = "2.1.2";
+var version = "2.1.3";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;
@@ -11428,7 +11428,7 @@ var Human = class {
         return false;
       const resizeFact = 32;
       const reduced = tf21.image.resizeBilinear(input, [Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
-      const reducedData = reduced.dataSync();
+      const reducedData = await reduced.data();
       let sum = 0;
       for (let i = 0; i < reducedData.length / 3; i++)
         sum += reducedData[3 * i + 2];

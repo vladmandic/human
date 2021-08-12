@@ -57,7 +57,7 @@ export class BlazeFaceModel {
       }
       const boxesOut = decodeBounds(batchOut, this.anchors, [this.inputSize, this.inputSize]);
       const logits = tf.slice(batchOut, [0, 0], [-1, 1]);
-      const scoresOut = tf.squeeze(tf.sigmoid(logits)).dataSync();
+      const scoresOut = tf.squeeze(tf.sigmoid(logits)).dataSync(); // inside tf.tidy
       return [batchOut, boxesOut, scoresOut];
     });
 

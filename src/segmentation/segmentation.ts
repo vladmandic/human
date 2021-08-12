@@ -59,7 +59,7 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
     resizeOutput = tf.image.resizeBilinear(squeeze, [width, height]);
   }
 
-  if (typeof document === 'undefined') return resizeOutput.dataSync(); // we're running in nodejs so return alpha array as-is
+  if (typeof document === 'undefined') return resizeOutput.data(); // we're running in nodejs so return alpha array as-is
 
   const overlay = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(width, height) : document.createElement('canvas');
   overlay.width = width;

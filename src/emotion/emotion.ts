@@ -53,7 +53,7 @@ export async function predict(image: Tensor, config: Config, idx, count) {
     const obj: Array<{ score: number, emotion: string }> = [];
     if (config.face.emotion.enabled) {
       const emotionT = await model.predict(normalize); // result is already in range 0..1, no need for additional activation
-      const data = emotionT.dataSync();
+      const data = await emotionT.data();
       tf.dispose(emotionT);
       for (let i = 0; i < data.length; i++) {
         if (data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] });

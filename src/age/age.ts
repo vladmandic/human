@@ -45,7 +45,7 @@ export async function predict(image: Tensor, config: Config | any) {
     tf.dispose(enhance);
 
     if (ageT) {
-      const data = ageT.dataSync();
+      const data = await ageT.data();
       obj.age = Math.trunc(10 * data[0]) / 10;
     }
     tf.dispose(ageT);

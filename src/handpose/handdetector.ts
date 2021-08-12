@@ -45,7 +45,7 @@ export class HandDetector {
     const predictions = tf.squeeze(batched);
     tf.dispose(batched);
     const scoresT = tf.tidy(() => tf.squeeze(tf.sigmoid(tf.slice(predictions, [0, 0], [-1, 1]))));
-    const scores = scoresT.dataSync();
+    const scores = await scoresT.data();
     const rawBoxes = tf.slice(predictions, [0, 1], [-1, 4]);
     const boxes = this.normalizeBoxes(rawBoxes);
     tf.dispose(rawBoxes);
@@ -78,7 +78,7 @@ export class HandDetector {
     const hands: Array<{ startPoint: number[]; endPoint: number[]; palmLandmarks: number[]; confidence: number }> = [];
     if (!predictions || predictions.length === 0) return hands;
     for (const prediction of predictions) {
-      const boxes = prediction.box.dataSync();
+      const boxes = await prediction.box.data();
       const startPoint = boxes.slice(0, 2);
       const endPoint = boxes.slice(2, 4);
       const palmLandmarks = await prediction.palmLandmarks.array();

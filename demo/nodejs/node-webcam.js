@@ -7,6 +7,7 @@
 */
 
 const util = require('util');
+const process = require('process');
 const log = require('@vladmandic/pilogger');
 // eslint-disable-next-line node/no-missing-require
 const nodeWebCam = require('node-webcam');
@@ -21,19 +22,31 @@ const optionsCamera = {
   callbackReturn: 'buffer', // this means whatever `fswebcam` writes to disk, no additional processing so it's fastest
   saveShots: false, // don't save processed frame to disk, note that temp file is still created by fswebcam thus recommendation for tmpfs
 };
+const camera = nodeWebCam.create(optionsCamera);
 
 // options for human
 const optionsHuman = {
   backend: 'tensorflow',
   modelBasePath: 'file://models/',
 };
-
-const camera = nodeWebCam.create(optionsCamera);
-const capture = util.promisify(camera.capture);
 const human = new Human(optionsHuman);
+
 const results = [];
+const list = util.promisify(camera.list);
+const capture = util.promisify(camera.capture);
+
+async function init() {
+  try {
+    const found = await list();
+    log.data('Camera data:', found);
+  } catch {
+    log.error('Could not access camera');
+    process.exit(1);
+  }
+}
 
 const buffer2tensor = human.tf.tidy((buffer) => {
+  if (!buffer) return null;
   const decode = human.tf.node.decodeImage(buffer, 3);
   let expand;
   if (decode.shape[2] === 4) { // input is in rgba format, need to convert to rgb
@@ -47,24 +60,30 @@ const buffer2tensor = human.tf.tidy((buffer) => {
   return cast;
 });
 
-async function process() {
+async function detect() {
   // trigger next frame every 5 sec
   // triggered here before actual capture and detection since we assume it will complete in less than 5sec
   // so it's as close as possible to real 5sec and not 5sec + detection time
   // if there is a chance of race scenario where detection takes longer than loop trigger, then trigger should be at the end of the function instead
-  setTimeout(() => process(), 5000);
+  setTimeout(() => detect(), 5000);
 
   const buffer = await capture(); // gets the (default) jpeg data from from webcam
   const tensor = buffer2tensor(buffer); // create tensor from image buffer
-  const res = await human.detect(tensor); // run detection
+  if (tensor) {
+    const res = await human.detect(tensor); // run detection
 
-  // do whatever here with the res
-  // or just append it to results array that will contain all processed results over time
-  results.push(res);
-
+    // do whatever here with the res
+    // or just append it to results array that will contain all processed results over time
+    results.push(res);
+  }
   // alternatively to triggering every 5sec sec, simply trigger next frame as fast as possible
   // setImmediate(() => process());
 }
 
+async function main() {
+  await init();
+  detect();
+}
+
 log.header();
-process();
+main();

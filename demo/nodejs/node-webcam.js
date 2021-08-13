@@ -6,8 +6,7 @@
  * Working version of fswebcam must be present on the system
 */
 
-const util = require('util');
-const process = require('process');
+let initial = true; // remember if this is the first run to print additional details
 const log = require('@vladmandic/pilogger');
 // eslint-disable-next-line node/no-missing-require
 const nodeWebCam = require('node-webcam');
@@ -18,6 +17,7 @@ const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorfl
 const Human = require('../../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
 
 // options for node-webcam
+const tempFile = 'webcam-snap'; // node-webcam requires writting snapshot to a file, recommended to use tmpfs to avoid excessive disk writes
 const optionsCamera = {
   callbackReturn: 'buffer', // this means whatever `fswebcam` writes to disk, no additional processing so it's fastest
   saveShots: false, // don't save processed frame to disk, note that temp file is still created by fswebcam thus recommendation for tmpfs
@@ -31,34 +31,22 @@ const optionsHuman = {
 };
 const human = new Human(optionsHuman);
 
-const results = [];
-const list = util.promisify(camera.list);
-const capture = util.promisify(camera.capture);
-
-async function init() {
-  try {
-    const found = await list();
-    log.data('Camera data:', found);
-  } catch {
-    log.error('Could not access camera');
-    process.exit(1);
-  }
+function buffer2tensor(buffer) {
+  return human.tf.tidy(() => {
+    if (!buffer) return null;
+    const decode = human.tf.node.decodeImage(buffer, 3);
+    let expand;
+    if (decode.shape[2] === 4) { // input is in rgba format, need to convert to rgb
+      const channels = human.tf.split(decode, 4, 2); // tf.split(tensor, 4, 2); // split rgba to channels
+      const rgb = human.tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb and ignore alpha
+      expand = human.tf.reshape(rgb, [1, decode.shape[0], decode.shape[1], 3]); // move extra dim from the end of tensor and use it as batch number instead
+    } else {
+      expand = human.tf.expandDims(decode, 0); // inpur ia rgb so use as-is
+    }
+    const cast = human.tf.cast(expand, 'float32');
+    return cast;
+  });
 }
-
-const buffer2tensor = human.tf.tidy((buffer) => {
-  if (!buffer) return null;
-  const decode = human.tf.node.decodeImage(buffer, 3);
-  let expand;
-  if (decode.shape[2] === 4) { // input is in rgba format, need to convert to rgb
-    const channels = human.tf.split(decode, 4, 2); // tf.split(tensor, 4, 2); // split rgba to channels
-    const rgb = human.tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb and ignore alpha
-    expand = human.tf.reshape(rgb, [1, decode.shape[0], decode.shape[1], 3]); // move extra dim from the end of tensor and use it as batch number instead
-  } else {
-    expand = human.tf.expandDims(decode, 0); // inpur ia rgb so use as-is
-  }
-  const cast = human.tf.cast(expand, 'float32');
-  return cast;
-});
 
 async function detect() {
   // trigger next frame every 5 sec
@@ -67,21 +55,36 @@ async function detect() {
   // if there is a chance of race scenario where detection takes longer than loop trigger, then trigger should be at the end of the function instead
   setTimeout(() => detect(), 5000);
 
-  const buffer = await capture(); // gets the (default) jpeg data from from webcam
-  const tensor = buffer2tensor(buffer); // create tensor from image buffer
-  if (tensor) {
-    const res = await human.detect(tensor); // run detection
-
-    // do whatever here with the res
-    // or just append it to results array that will contain all processed results over time
-    results.push(res);
-  }
+  camera.capture(tempFile, (err, data) => { // gets the (default) jpeg data from from webcam
+    if (err) {
+      log.error('error capturing webcam:', err);
+    } else {
+      const tensor = buffer2tensor(data); // create tensor from image buffer
+      if (initial) log.data('input tensor:', tensor.shape);
+      // eslint-disable-next-line promise/no-promise-in-callback
+      human.detect(tensor).then((result) => {
+        if (result && result.face && result.face.length > 0) {
+          for (let i = 0; i < result.face.length; i++) {
+            const face = result.face[i];
+            const emotion = face.emotion.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
+            log.data(`detected face: #${i} boxScore:${face.boxScore} faceScore:${face.faceScore} age:${face.age} genderScore:${face.genderScore} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
+          }
+        } else {
+          log.data('  Face: N/A');
+        }
+      });
+    }
+    initial = false;
+  });
   // alternatively to triggering every 5sec sec, simply trigger next frame as fast as possible
   // setImmediate(() => process());
 }
 
 async function main() {
-  await init();
+  camera.list((list) => {
+    log.data('detected camera:', list);
+  });
+  await human.load();
   detect();
 }
 

@@ -9,11 +9,12 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/08/12 mandic00@live.com
+
+
 ### **2.1.3** 2021/08/12 mandic00@live.com
 
-
-### **origin/main** 2021/08/11 mandic00@live.com
-
+- fix centernet & update blazeface
 - minor update
 - replace movenet with lightning-v4
 - enable webgl uniform support for faster warmup

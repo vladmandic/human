@@ -21,7 +21,7 @@ function createCSS() {
   if (CSScreated) return;
   const css = `
   :root { --rounded: 0.1rem; }
-  .menu { position: absolute; top: 0rem; right: 0; min-width: 180px; width: max-content; padding: 0.2rem 0.2rem 0 0.2rem; line-height: 1.8rem; z-index: 10; background: ${theme.background}; border: none }
+  .menu { position: absolute; top: 0rem; right: 0; min-width: 180px; width: max-content; padding: 0.2rem 0.8rem 0 0.8rem; line-height: 1.8rem; z-index: 10; background: ${theme.background}; border: none }
   .button { text-shadow: none; }
 
   .menu-container { display: block; max-height: 100vh; }
@@ -46,7 +46,7 @@ function createCSS() {
   .menu-button:hover { background: ${theme.buttonHover}; box-shadow: 4px 4px 4px 0 black; }
   .menu-button:focus { outline: none; }
 
-  .menu-checkbox { width: 2.6rem; height: 1rem; background: ${theme.itemBackground}; margin: 0.5rem 0.5rem 0 0; position: relative; border-radius: var(--rounded); }
+  .menu-checkbox { width: 2.6rem; height: 1rem; background: ${theme.itemBackground}; margin: 0.5rem 1.0rem 0 0; position: relative; border-radius: var(--rounded); }
   .menu-checkbox:after { content: 'OFF'; color: ${theme.checkboxOff}; position: absolute; right: 0.2rem; top: -0.4rem; font-weight: 800; font-size: 0.5rem; }
   .menu-checkbox:before { content: 'ON'; color: ${theme.checkboxOn}; position: absolute; left: 0.3rem; top: -0.4rem; font-weight: 800; font-size: 0.5rem; }
   .menu-checkbox-label { width: 1.3rem; height: 1rem; cursor: pointer; position: absolute; top: 0; left: 0rem; z-index: 1; background: ${theme.checkboxOff};
@@ -55,7 +55,7 @@ function createCSS() {
   input[type=checkbox] { visibility: hidden; }
   input[type=checkbox]:checked + label { left: 1.4rem; background: ${theme.checkboxOn}; }
 
-  .menu-range { margin: 0.2rem 0.5rem 0 0; width: 3.5rem; background: transparent; color: ${theme.rangeBackground}; }
+  .menu-range { margin: 0.2rem 1.0rem 0 0; width: 5rem; background: transparent; color: ${theme.rangeBackground}; }
   .menu-range:before { color: ${theme.rangeLabel}; margin: 0 0.4rem 0 0; font-weight: 800; font-size: 0.6rem; position: relative; top: 0.3rem; content: attr(value); }
 
   input[type=range] { -webkit-appearance: none; }

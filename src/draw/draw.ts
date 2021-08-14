@@ -511,16 +511,17 @@ export async function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasE
 export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptions?: DrawOptions) {
   const timestamp = now();
   const localOptions = mergeDeep(options, drawOptions);
-  if (!result || !inCanvas) return;
-  if (!(inCanvas instanceof HTMLCanvasElement)) return;
+  if (!result || !inCanvas) return null;
+  if (!(inCanvas instanceof HTMLCanvasElement)) return null;
 
-  face(inCanvas, result.face, localOptions);
-  body(inCanvas, result.body, localOptions);
-  hand(inCanvas, result.hand, localOptions);
-  object(inCanvas, result.object, localOptions);
-  // person(inCanvas, result.persons, localOptions);
-  gesture(inCanvas, result.gesture, localOptions); // gestures do not have buffering
-
+  const promise = Promise.all([
+    face(inCanvas, result.face, localOptions),
+    body(inCanvas, result.body, localOptions),
+    hand(inCanvas, result.hand, localOptions),
+    object(inCanvas, result.object, localOptions),
+    // person(inCanvas, result.persons, localOptions);
+    gesture(inCanvas, result.gesture, localOptions), // gestures do not have buffering
+  ]);
   /*
   if (!bufferedResult) bufferedResult = result; // first pass
   else if (localOptions.bufferedOutput) calcBuffered(result); // do results interpolation
@@ -535,4 +536,5 @@ export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptio
   // await Promise.all(promises);
   */
   result.performance.draw = Math.trunc(now() - timestamp);
+  return promise;
 }

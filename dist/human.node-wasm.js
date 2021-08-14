@@ -10540,6 +10540,8 @@ function join2(faces, bodies, hands, gestures, shape) {
 var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 function calc(newResult) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u;
+  if (!newResult)
+    return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
   const elapsed = Date.now() - newResult.timestamp;
   const bufferedFactor = elapsed < 1e3 ? 8 - Math.log(elapsed) : 1;
   bufferedResult.canvas = newResult.canvas;

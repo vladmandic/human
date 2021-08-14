@@ -7,6 +7,7 @@ import type { Result, Face, Body, Hand, Item, Gesture, Person } from './result';
 const bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 
 export function calc(newResult: Result): Result {
+  if (!newResult) return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
   // each record is only updated using deep clone when number of detected record changes, otherwise it will converge by itself
   // otherwise bufferedResult is a shallow clone of result plus updated local calculated values
   // thus mixing by-reference and by-value assignments to minimize memory operations

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Human</title>
+    <meta name="viewport" content="width=device-width" id="viewport">
+    <meta name="keywords" content="Human">
+    <meta name="application-name" content="Human">
+    <meta name="description" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
+    <meta name="msapplication-tooltip" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="../../assets/icon.png">
+    <script src="./index.js" type="module"></script>
+    <style>
+      @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../../assets/lato-light.woff2') }
+      html { font-family: 'Lato', 'Segoe UI'; font-size: 16px; font-variant: small-caps; }
+      body { margin: 0; background: black; color: white; overflow-x: hidden; width: 100vw; height: 100vh; }
+      body::-webkit-scrollbar { display: none; }
+      .status { position: absolute; width: 100vw; bottom: 10%; text-align: center; font-size: 3rem; font-weight: 100; text-shadow: 2px 2px #303030; }
+      .log { position: absolute; bottom: 0; margin: 0.4rem 0.4rem 0 0.4rem; font-size: 0.9rem; }
+      .video { display: none; }
+      .canvas { margin: 0 auto; }
+    </style>
+  </head>
+  <body>
+    <div id="status" class="status"></div>
+    <canvas id="canvas" class="canvas"></canvas>
+    <video id="video" playsinline class="video"></video>
+    <div id="log" class="log"></div>
+  </body>
+</html>

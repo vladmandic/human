@@ -41,9 +41,9 @@ let userConfig = {
     flip: false,
   },
   face: { enabled: true,
-    detector: { return: false },
+    detector: { return: false, rotation: true },
     mesh: { enabled: true },
-    iris: { enabled: false },
+    iris: { enabled: true },
     description: { enabled: false },
     emotion: { enabled: false },
   },
@@ -441,9 +441,9 @@ function webWorker(input, image, canvas, timestamp) {
 // main processing function when input is webcam, can use direct invocation or web worker
 function runHumanDetect(input, canvas, timestamp) {
   // if live video
-  const videoLive = (input.readyState > 2) && (!input.paused);
-  const cameraLive = input.srcObject && (input.srcObject.getVideoTracks()[0].readyState === 'live');
-  const live = videoLive || cameraLive;
+  const videoLive = input.readyState > 2;
+  const cameraLive = input.srcObject?.getVideoTracks()[0].readyState === 'live';
+  const live = (videoLive || cameraLive) && (!input.paused);
   if (!live) {
     // stop ui refresh
     // if (ui.drawThread) cancelAnimationFrame(ui.drawThread);

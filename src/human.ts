@@ -302,8 +302,23 @@ export class Human {
         if (typeof window === 'undefined' && typeof WorkerGlobalScope !== 'undefined' && this.config.debug) log('running inside web worker');
 
         // force browser vs node backend
-        if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === 'tensorflow') this.config.backend = 'webgl';
-        if (this.tf.ENV.flags.IS_NODE && (this.config.backend === 'webgl' || this.config.backend === 'humangl')) this.config.backend = 'tensorflow';
+        if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === 'tensorflow') {
+          if (this.config.debug) log('override: backend set to tensorflow while running in browser');
+          this.config.backend = 'humangl';
+        }
+        if (this.tf.ENV.flags.IS_NODE && (this.config.backend === 'webgl' || this.config.backend === 'humangl')) {
+          if (this.config.debug) log('override: backend set to webgl while running in nodejs');
+          this.config.backend = 'tensorflow';
+        }
+
+        const available = Object.keys(this.tf.engine().registryFactory);
+        if (this.config.debug) log('available backends:', available);
+
+        if (!available.includes(this.config.backend)) {
+          log(`error: backend ${this.config.backend} not found in registry`);
+          this.config.backend = this.tf.ENV.flags.IS_NODE ? 'tensorflow' : 'humangl';
+          log(`override: using backend ${this.config.backend} instead`);
+        }
 
         if (this.config.debug) log('setting backend:', this.config.backend);
 
@@ -363,7 +378,7 @@ export class Human {
     // use tensor sum
     /*
     const sumT = this.tf.sum(reduced);
-    const sum = sumT.dataSync()[0] as number;
+    const sum = await sumT.data()[0] as number;
     sumT.dispose();
     */
     // use js loop sum, faster than uploading tensor to gpu calculating and downloading back

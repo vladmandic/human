@@ -9,8 +9,13 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/08/12 mandic00@live.com
+### **HEAD -> main** 2021/08/14 mandic00@live.com
 
+
+### **origin/main** 2021/08/13 mandic00@live.com
+
+- list detect cameras
+- switch to async data reads
 
 ### **2.1.3** 2021/08/12 mandic00@live.com
 

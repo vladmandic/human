@@ -49,4 +49,4 @@ export declare function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, d
 export declare function object(inCanvas: HTMLCanvasElement, result: Array<Item>, drawOptions?: DrawOptions): Promise<void>;
 export declare function person(inCanvas: HTMLCanvasElement, result: Array<Person>, drawOptions?: DrawOptions): Promise<void>;
 export declare function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasElement): Promise<void>;
-export declare function all(inCanvas: HTMLCanvasElement, result: Result, drawOptions?: DrawOptions): Promise<void>;
+export declare function all(inCanvas: HTMLCanvasElement, result: Result, drawOptions?: DrawOptions): Promise<[void, void, void, void, void] | null>;

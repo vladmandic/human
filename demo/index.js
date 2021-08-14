@@ -199,6 +199,13 @@ async function calcSimmilarity(result) {
   document.getElementById('similarity').innerText = `similarity: ${Math.trunc(1000 * similarity) / 10}%`;
 }
 
+const isLive = (input) => {
+  const videoLive = input.readyState > 2;
+  const cameraLive = input.srcObject?.getVideoTracks()[0].readyState === 'live';
+  const live = (videoLive || cameraLive) && (!input.paused);
+  return live;
+};
+
 // draws processed results and starts processing of a next frame
 let lastDraw = performance.now();
 async function drawResults(input) {
@@ -271,11 +278,17 @@ async function drawResults(input) {
   ui.lastFrame = performance.now();
   // if buffered, immediate loop but limit frame rate although it's going to run slower as JS is singlethreaded
   if (ui.buffered) {
-    ui.drawThread = requestAnimationFrame(() => drawResults(input));
+    if (isLive(input)) {
+      ui.drawThread = requestAnimationFrame(() => drawResults(input));
+    } else {
+      cancelAnimationFrame(ui.drawThread);
+      ui.drawThread = null;
+    }
   } else {
     if (ui.drawThread) {
       log('stopping buffered refresh');
       cancelAnimationFrame(ui.drawThread);
+      ui.drawThread = null;
     }
   }
 }
@@ -326,7 +339,7 @@ async function setupCamera() {
   };
   // enumerate devices for diag purposes
   if (initialCameraAccess) {
-    navigator.mediaDevices.enumerateDevices().then((devices) => log('enumerated devices:', devices));
+    navigator.mediaDevices.enumerateDevices().then((devices) => log('enumerated input devices:', devices));
     log('camera constraints', constraints);
   }
   try {
@@ -365,7 +378,6 @@ async function setupCamera() {
       // eslint-disable-next-line no-use-before-define
       if (live && !ui.detectThread) runHumanDetect(video, canvas);
       ui.busy = false;
-      status();
       resolve();
     };
   });
@@ -402,6 +414,7 @@ function webWorker(input, image, canvas, timestamp) {
     worker = new Worker(ui.worker);
     // after receiving message from webworker, parse&draw results and send new frame for processing
     worker.addEventListener('message', (msg) => {
+      status();
       if (msg.data.result.performance && msg.data.result.performance.total) ui.detectFPS.push(1000 / msg.data.result.performance.total);
       if (ui.detectFPS.length > ui.maxFPSframes) ui.detectFPS.shift();
       if (ui.bench) {
@@ -421,14 +434,8 @@ function webWorker(input, image, canvas, timestamp) {
       }
 
       ui.framesDetect++;
-      if (!ui.drawThread) {
-        status();
-        drawResults(input);
-      }
-      const videoLive = (input.readyState > 2) && (!input.paused);
-      const cameraLive = input.srcObject && (input.srcObject.getVideoTracks()[0].readyState === 'live') && !input.paused;
-      const live = videoLive || cameraLive;
-      if (live) {
+      if (!ui.drawThread) drawResults(input);
+      if (isLive(input)) {
         // eslint-disable-next-line no-use-before-define
         ui.detectThread = requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
       }
@@ -441,16 +448,13 @@ function webWorker(input, image, canvas, timestamp) {
 // main processing function when input is webcam, can use direct invocation or web worker
 function runHumanDetect(input, canvas, timestamp) {
   // if live video
-  const videoLive = input.readyState > 2;
-  const cameraLive = input.srcObject?.getVideoTracks()[0].readyState === 'live';
-  const live = (videoLive || cameraLive) && (!input.paused);
-  if (!live) {
+  if (!isLive(input)) {
     // stop ui refresh
     // if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
     if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
-    // if we want to continue and camera not ready, retry in 0.5sec, else just give up
     if (input.paused) log('video paused');
-    else if (cameraLive && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
+    // if we want to continue and camera not ready, retry in 0.5sec, else just give up
+    // else if (cameraLive && (input.readyState <= 2)) setTimeout(() => runHumanDetect(input, canvas), 500);
     else log(`video not ready: track state: ${input.srcObject ? input.srcObject.getVideoTracks()[0].readyState : 'unknown'} stream state: ${input.readyState}`);
     log('frame statistics: process:', ui.framesDetect, 'refresh:', ui.framesDraw);
     log('memory', human.tf.engine().memory());
@@ -600,7 +604,6 @@ async function detectVideo() {
       document.getElementById('btnStartText').innerHTML = 'pause video';
       await video.play();
       runHumanDetect(video, canvas);
-      status();
     } else {
       status(cameraError);
     }
@@ -720,6 +723,8 @@ function setupMenu() {
     compare.enabled = val;
     compare.original = null;
   });
+
+  for (const m of Object.values(menu)) m.hide();
 
   document.getElementById('btnDisplay').addEventListener('click', (evt) => menu.display.toggle(evt));
   document.getElementById('btnImage').addEventListener('click', (evt) => menu.image.toggle(evt));
@@ -974,7 +979,6 @@ async function main() {
   status('human: ready');
   document.getElementById('loader').style.display = 'none';
   document.getElementById('play').style.display = 'block';
-  for (const m of Object.values(menu)) m.hide();
 
   // init drag & drop
   await dragAndDrop();

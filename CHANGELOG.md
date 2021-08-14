@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/08/14 mandic00@live.com
 
+- add backend initialization checks
 - complete async work
 - list detect cameras
 - switch to async data reads

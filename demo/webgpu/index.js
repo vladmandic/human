@@ -7,7 +7,7 @@
 // @ts-nocheck // typescript checks disabled as this is pure javascript
 
 import '../../node_modules/@tensorflow/tfjs-core/dist/tf-core.es2017.js';
-import '../../node_modules/@tensorflow/tfjs-backend-webgpu/dist/tf-backend-webgpu.es2017.js';
+import '../../assets/tf-backend-webgpu.es2017.js';
 import Human from '../../dist/human.esm.js';
 
 let human;
@@ -16,33 +16,30 @@ let video;
 let result;
 
 const myConfig = {
-  backend: 'webgpu',
-  async: false,
+  backend: 'webgl',
+  async: true,
   warmup: 'none',
   modelBasePath: '../../models',
   cacheSensitivity: 0,
   filter: {
-    enabled: false,
+    enabled: true,
     flip: false,
   },
-  face: { enabled: false,
+  face: { enabled: true,
     detector: { return: false, rotation: false },
-    mesh: { enabled: false },
+    mesh: { enabled: true },
     iris: { enabled: false },
-    description: { enabled: false },
+    description: { enabled: true },
     emotion: { enabled: false },
   },
   object: { enabled: false },
-  gesture: { enabled: false },
-  hand: { enabled: false },
+  gesture: { enabled: true },
+  hand: { enabled: true, rotation: false },
   body: { enabled: true },
   segmentation: { enabled: false },
 };
 
-const time = {
-  detect: 0,
-  draw: 0,
-};
+let time = 0;
 
 function log(...msg) {
   const dt = new Date();
@@ -53,13 +50,17 @@ function log(...msg) {
 
 async function drawResults() {
   const interpolated = human.next(result);
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   await human.draw.all(canvas, interpolated);
-  document.getElementById('log').innerText = `Human: version ${human.version} | FPS: ${1000 / time.detect} / ${1000 / time.draw}`;
+  document.getElementById('log').innerText = `Human: version ${human.version} | ${Math.trunc(time)} ms | FPS: ${Math.trunc(10000 / time) / 10}`;
   requestAnimationFrame(drawResults);
 }
 
 async function runDetection() {
+  const t0 = performance.now();
   result = await human.detect(video);
+  time = performance.now() - t0;
   requestAnimationFrame(runDetection);
 }
 
@@ -79,7 +80,7 @@ async function setupCamera() {
     },
   };
   // enumerate devices for diag purposes
-  navigator.mediaDevices.enumerateDevices().then((devices) => log('enumerated devices:', devices));
+  navigator.mediaDevices.enumerateDevices().then((devices) => log('enumerated input devices:', devices));
   log('camera constraints', constraints);
   try {
     stream = await navigator.mediaDevices.getUserMedia(constraints);

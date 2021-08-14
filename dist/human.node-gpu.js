@@ -10466,15 +10466,18 @@ async function all(inCanvas2, result, drawOptions) {
   const timestamp = now();
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas2)
-    return;
+    return null;
   if (!(inCanvas2 instanceof HTMLCanvasElement))
-    return;
-  face2(inCanvas2, result.face, localOptions);
-  body2(inCanvas2, result.body, localOptions);
-  hand2(inCanvas2, result.hand, localOptions);
-  object(inCanvas2, result.object, localOptions);
-  gesture(inCanvas2, result.gesture, localOptions);
+    return null;
+  const promise = Promise.all([
+    face2(inCanvas2, result.face, localOptions),
+    body2(inCanvas2, result.body, localOptions),
+    hand2(inCanvas2, result.hand, localOptions),
+    object(inCanvas2, result.object, localOptions),
+    gesture(inCanvas2, result.gesture, localOptions)
+  ]);
   result.performance.draw = Math.trunc(now() - timestamp);
+  return promise;
 }
 
 // src/persons.ts

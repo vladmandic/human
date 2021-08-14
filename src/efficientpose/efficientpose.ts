@@ -34,14 +34,10 @@ export async function load(config: Config): Promise<GraphModel> {
 function max2d(inputs, minScore) {
   const [width, height] = inputs.shape;
   return tf.tidy(() => {
-    // modulus op implemented in tf
-    const mod = (a, b) => tf.sub(a, tf.mul(tf.div(a, tf.scalar(b, 'int32')), tf.scalar(b, 'int32')));
-    // combine all data
-    const reshaped = tf.reshape(inputs, [height * width]);
-    // get highest score
-    const newScore = tf.max(reshaped, 0).dataSync()[0]; // inside tf.tidy
-    if (newScore > minScore) {
-      // skip coordinate calculation is score is too low
+    const mod = (a, b) => tf.sub(a, tf.mul(tf.div(a, tf.scalar(b, 'int32')), tf.scalar(b, 'int32'))); // modulus op implemented in tf
+    const reshaped = tf.reshape(inputs, [height * width]); // combine all data
+    const newScore = tf.max(reshaped, 0).dataSync()[0]; // get highest score // inside tf.tidy
+    if (newScore > minScore) { // skip coordinate calculation is score is too low
       const coords = tf.argMax(reshaped, 0);
       const x = mod(coords, width).dataSync()[0]; // inside tf.tidy
       const y = tf.div(coords, tf.scalar(width, 'int32')).dataSync()[0]; // inside tf.tidy

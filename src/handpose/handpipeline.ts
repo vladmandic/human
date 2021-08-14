@@ -118,7 +118,7 @@ export class HandPipeline {
         tf.dispose(rotatedImage);
         const [confidenceT, keypoints] = await this.handPoseModel.predict(handImage) as Array<Tensor>;
         tf.dispose(handImage);
-        const confidence = confidenceT.dataSync()[0];
+        const confidence = (await confidenceT.data())[0];
         tf.dispose(confidenceT);
         if (confidence >= config.hand.minConfidence) {
           const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);

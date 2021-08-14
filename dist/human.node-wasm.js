@@ -513,7 +513,7 @@ var BlazeFaceModel = class {
       }
       const boxesOut = decodeBounds(batchOut, this.anchors, [this.inputSize, this.inputSize]);
       const logits = tf3.slice(batchOut, [0, 0], [-1, 1]);
-      const scoresOut = tf3.squeeze(tf3.sigmoid(logits)).dataSync();
+      const scoresOut = tf3.squeeze(tf3.sigmoid(logits));
       return [batchOut, boxesOut, scoresOut];
     });
     this.config = mergeDeep(this.config, userConfig);
@@ -521,8 +521,9 @@ var BlazeFaceModel = class {
     const nms = await nmsTensor.array();
     tf3.dispose(nmsTensor);
     const annotatedBoxes = [];
+    const scoresData = await scores.data();
     for (let i = 0; i < nms.length; i++) {
-      const confidence = scores[nms[i]];
+      const confidence = scoresData[nms[i]];
       if (confidence > this.config.face.detector.minConfidence) {
         const boundingBox = tf3.slice(boxes, [nms[i], 0], [1, -1]);
         const localBox = createBox(boundingBox);
@@ -534,6 +535,7 @@ var BlazeFaceModel = class {
     }
     tf3.dispose(batch);
     tf3.dispose(boxes);
+    tf3.dispose(scores);
     return {
       boxes: annotatedBoxes,
       scaleFactor: [inputImage.shape[2] / this.inputSize, inputImage.shape[1] / this.inputSize]
@@ -3911,7 +3913,9 @@ var Pipeline = class {
       box6.endPoint[0] / this.meshSize
     ]], [0], [this.irisSize, this.irisSize]);
     if (flip && tf4.ENV.flags.IS_BROWSER) {
-      crop = tf4.image.flipLeftRight(crop);
+      const flipped = tf4.image.flipLeftRight(crop);
+      tf4.dispose(crop);
+      crop = flipped;
     }
     return { box: box6, boxSize, crop };
   }
@@ -3942,6 +3946,47 @@ var Pipeline = class {
       }
       return [coord[0], coord[1], z];
     });
+  }
+  correctFaceRotation(config3, box6, input) {
+    const [indexOfMouth, indexOfForehead] = box6.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
+    const angle = computeRotation(box6.landmarks[indexOfMouth], box6.landmarks[indexOfForehead]);
+    const faceCenter = getBoxCenter({ startPoint: box6.startPoint, endPoint: box6.endPoint });
+    const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
+    const rotatedImage = tf4.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
+    const rotationMatrix = buildRotationMatrix(-angle, faceCenter);
+    const cut = config3.face.mesh.enabled ? cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, rotatedImage, [this.meshSize, this.meshSize]) : cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, rotatedImage, [this.boxSize, this.boxSize]);
+    const face5 = tf4.div(cut, 255);
+    tf4.dispose(cut);
+    tf4.dispose(rotatedImage);
+    return [angle, rotationMatrix, face5];
+  }
+  async augmentIris(rawCoords, face5) {
+    const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face5, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true);
+    const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face5, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1]);
+    const combined = tf4.concat([leftEyeCrop, rightEyeCrop]);
+    tf4.dispose(leftEyeCrop);
+    tf4.dispose(rightEyeCrop);
+    const eyePredictions = this.irisModel.predict(combined);
+    tf4.dispose(combined);
+    const eyePredictionsData = await eyePredictions.data();
+    tf4.dispose(eyePredictions);
+    const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
+    const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = this.getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
+    const rightEyeData = eyePredictionsData.slice(irisLandmarks.numCoordinates * 3);
+    const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = this.getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize);
+    const leftToRightEyeDepthDifference = this.getLeftToRightEyeDepthDifference(rawCoords);
+    if (Math.abs(leftToRightEyeDepthDifference) < 30) {
+      replaceRawCoordinates(rawCoords, leftEyeRawCoords, "left", null);
+      replaceRawCoordinates(rawCoords, rightEyeRawCoords, "right", null);
+    } else if (leftToRightEyeDepthDifference < 1) {
+      replaceRawCoordinates(rawCoords, leftEyeRawCoords, "left", ["EyeUpper0", "EyeLower0"]);
+    } else {
+      replaceRawCoordinates(rawCoords, rightEyeRawCoords, "right", ["EyeUpper0", "EyeLower0"]);
+    }
+    const adjustedLeftIrisCoords = this.getAdjustedIrisCoords(rawCoords, leftIrisRawCoords, "left");
+    const adjustedRightIrisCoords = this.getAdjustedIrisCoords(rawCoords, rightIrisRawCoords, "right");
+    const newCoords = rawCoords.concat(adjustedLeftIrisCoords).concat(adjustedRightIrisCoords);
+    return newCoords;
   }
   async predict(input, config3) {
     let useFreshBox = false;
@@ -3986,93 +4031,65 @@ var Pipeline = class {
         tf4.dispose(prediction.landmarks);
       });
     }
-    const results = tf4.tidy(() => this.storedBoxes.map((box6, i) => {
+    const results = [];
+    for (let i = 0; i < this.storedBoxes.length; i++) {
+      let box6 = this.storedBoxes[i];
       let face5;
       let angle = 0;
       let rotationMatrix;
       if (config3.face.detector.rotation && config3.face.mesh.enabled && tf4.ENV.flags.IS_BROWSER) {
-        const [indexOfMouth, indexOfForehead] = box6.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
-        angle = computeRotation(box6.landmarks[indexOfMouth], box6.landmarks[indexOfForehead]);
-        const faceCenter = getBoxCenter({ startPoint: box6.startPoint, endPoint: box6.endPoint });
-        const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-        const rotatedImage = tf4.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
-        rotationMatrix = buildRotationMatrix(-angle, faceCenter);
-        if (config3.face.mesh.enabled)
-          face5 = tf4.div(cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, rotatedImage, [this.meshSize, this.meshSize]), 255);
-        else
-          face5 = tf4.div(cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, rotatedImage, [this.boxSize, this.boxSize]), 255);
+        [angle, rotationMatrix, face5] = this.correctFaceRotation(config3, box6, input);
       } else {
         rotationMatrix = IDENTITY_MATRIX;
         const clonedImage = input.clone();
-        if (config3.face.mesh.enabled)
-          face5 = tf4.div(cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, clonedImage, [this.meshSize, this.meshSize]), 255);
-        else
-          face5 = tf4.div(cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, clonedImage, [this.boxSize, this.boxSize]), 255);
+        const cut = config3.face.mesh.enabled ? cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, clonedImage, [this.meshSize, this.meshSize]) : cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, clonedImage, [this.boxSize, this.boxSize]);
+        face5 = tf4.div(cut, 255);
+        tf4.dispose(cut);
+        tf4.dispose(clonedImage);
       }
       if (!config3.face.mesh.enabled) {
-        const prediction2 = {
+        results.push({
           mesh: [],
           box: box6,
           faceConfidence: null,
           boxConfidence: box6.confidence,
           confidence: box6.confidence,
           image: face5
-        };
-        return prediction2;
-      }
-      const [, confidence, contourCoords] = this.meshDetector.execute(face5);
-      const faceConfidence = confidence.dataSync()[0];
-      if (faceConfidence < config3.face.detector.minConfidence) {
-        this.storedBoxes[i].confidence = faceConfidence;
-        return null;
-      }
-      const coordsReshaped = tf4.reshape(contourCoords, [-1, 3]);
-      let rawCoords = coordsReshaped.arraySync();
-      if (config3.face.iris.enabled) {
-        const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face5, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true);
-        const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face5, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1]);
-        const eyePredictions = this.irisModel.predict(tf4.concat([leftEyeCrop, rightEyeCrop]));
-        const eyePredictionsData = eyePredictions.dataSync();
-        const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
-        const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = this.getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
-        const rightEyeData = eyePredictionsData.slice(irisLandmarks.numCoordinates * 3);
-        const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = this.getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize);
-        const leftToRightEyeDepthDifference = this.getLeftToRightEyeDepthDifference(rawCoords);
-        if (Math.abs(leftToRightEyeDepthDifference) < 30) {
-          replaceRawCoordinates(rawCoords, leftEyeRawCoords, "left", null);
-          replaceRawCoordinates(rawCoords, rightEyeRawCoords, "right", null);
-        } else if (leftToRightEyeDepthDifference < 1) {
-          replaceRawCoordinates(rawCoords, leftEyeRawCoords, "left", ["EyeUpper0", "EyeLower0"]);
+        });
+      } else {
+        const [contours, confidence, contourCoords] = this.meshDetector.execute(face5);
+        tf4.dispose(contours);
+        const faceConfidence = (await confidence.data())[0];
+        tf4.dispose(confidence);
+        const coordsReshaped = tf4.reshape(contourCoords, [-1, 3]);
+        let rawCoords = await coordsReshaped.array();
+        tf4.dispose(contourCoords);
+        tf4.dispose(coordsReshaped);
+        if (faceConfidence < config3.face.detector.minConfidence) {
+          this.storedBoxes[i].confidence = faceConfidence;
+          tf4.dispose(face5);
         } else {
-          replaceRawCoordinates(rawCoords, rightEyeRawCoords, "right", ["EyeUpper0", "EyeLower0"]);
+          if (config3.face.iris.enabled)
+            rawCoords = await this.augmentIris(rawCoords, face5);
+          const mesh = this.transformRawCoords(rawCoords, box6, angle, rotationMatrix);
+          const storeConfidence = box6.confidence;
+          box6 = enlargeBox(calculateLandmarksBoundingBox(mesh), 1.5);
+          box6.confidence = storeConfidence;
+          if (config3.face.detector.rotation && config3.face.mesh.enabled && config3.face.description.enabled && tf4.ENV.flags.IS_BROWSER) {
+            [angle, rotationMatrix, face5] = this.correctFaceRotation(config3, box6, input);
+          }
+          results.push({
+            mesh,
+            box: box6,
+            faceConfidence,
+            boxConfidence: box6.confidence,
+            confidence: faceConfidence,
+            image: face5
+          });
+          this.storedBoxes[i] = { ...squarifyBox(box6), confidence: box6.confidence, faceConfidence };
         }
-        const adjustedLeftIrisCoords = this.getAdjustedIrisCoords(rawCoords, leftIrisRawCoords, "left");
-        const adjustedRightIrisCoords = this.getAdjustedIrisCoords(rawCoords, rightIrisRawCoords, "right");
-        rawCoords = rawCoords.concat(adjustedLeftIrisCoords).concat(adjustedRightIrisCoords);
       }
-      const mesh = this.transformRawCoords(rawCoords, box6, angle, rotationMatrix);
-      const storeConfidence = box6.confidence;
-      box6 = enlargeBox(calculateLandmarksBoundingBox(mesh), 1.5);
-      box6.confidence = storeConfidence;
-      if (config3.face.detector.rotation && config3.face.mesh.enabled && config3.face.description.enabled && tf4.ENV.flags.IS_BROWSER) {
-        const [indexOfMouth, indexOfForehead] = box6.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
-        angle = computeRotation(box6.landmarks[indexOfMouth], box6.landmarks[indexOfForehead]);
-        const faceCenter = getBoxCenter({ startPoint: box6.startPoint, endPoint: box6.endPoint });
-        const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-        const rotatedImage = tf4.image.rotateWithOffset(tf4.cast(input, "float32"), angle, 0, faceCenterNormalized);
-        rotationMatrix = buildRotationMatrix(-angle, faceCenter);
-        face5 = tf4.div(cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, rotatedImage, [this.meshSize, this.meshSize]), 255);
-      }
-      const prediction = {
-        mesh,
-        box: box6,
-        faceConfidence,
-        boxConfidence: box6.confidence,
-        image: face5
-      };
-      this.storedBoxes[i] = { ...squarifyBox(box6), confidence: box6.confidence, faceConfidence };
-      return prediction;
-    }));
+    }
     if (config3.face.mesh.enabled)
       this.storedBoxes = this.storedBoxes.filter((a) => a.confidence > config3.face.detector.minConfidence);
     this.detectedFaces = results.length;
@@ -4240,19 +4257,19 @@ async function predict2(image18, config3, idx, count2) {
       resT = await model.predict(enhanced);
     tf6.dispose(enhanced);
     if (resT) {
-      tf6.tidy(() => {
-        const gender = resT.find((t) => t.shape[1] === 1).dataSync();
-        const confidence = Math.trunc(200 * Math.abs(gender[0] - 0.5)) / 100;
-        if (confidence > config3.face.description.minConfidence) {
-          obj.gender = gender[0] <= 0.5 ? "female" : "male";
-          obj.genderScore = Math.min(0.99, confidence);
-        }
-        const age = tf6.argMax(resT.find((t) => t.shape[1] === 100), 1).dataSync()[0];
-        const all2 = resT.find((t) => t.shape[1] === 100).dataSync();
-        obj.age = Math.round(all2[age - 1] > all2[age + 1] ? 10 * age - 100 * all2[age - 1] : 10 * age + 100 * all2[age + 1]) / 10;
-        const desc = resT.find((t) => t.shape[1] === 1024);
-        obj.descriptor = [...desc.dataSync()];
-      });
+      const gender = await resT.find((t) => t.shape[1] === 1).data();
+      const confidence = Math.trunc(200 * Math.abs(gender[0] - 0.5)) / 100;
+      if (confidence > config3.face.description.minConfidence) {
+        obj.gender = gender[0] <= 0.5 ? "female" : "male";
+        obj.genderScore = Math.min(0.99, confidence);
+      }
+      const argmax = tf6.argMax(resT.find((t) => t.shape[1] === 100), 1);
+      const age = (await argmax.data())[0];
+      const all2 = await resT.find((t) => t.shape[1] === 100).data();
+      obj.age = Math.round(all2[age - 1] > all2[age + 1] ? 10 * age - 100 * all2[age - 1] : 10 * age + 100 * all2[age + 1]) / 10;
+      const desc = resT.find((t) => t.shape[1] === 1024);
+      const descriptor = await desc.data();
+      obj.descriptor = [...descriptor];
       resT.forEach((t) => tf6.dispose(t));
     }
     last[idx] = obj;
@@ -7910,7 +7927,7 @@ var HandPipeline = class {
         tf11.dispose(rotatedImage);
         const [confidenceT, keypoints3] = await this.handPoseModel.predict(handImage);
         tf11.dispose(handImage);
-        const confidence = confidenceT.dataSync()[0];
+        const confidence = (await confidenceT.data())[0];
         tf11.dispose(confidenceT);
         if (confidence >= config3.hand.minConfidence) {
           const keypointsReshaped = tf11.reshape(keypoints3, [-1, 3]);
@@ -8304,8 +8321,8 @@ async function predict8(image18, config3) {
       if (!model6.inputs[0].shape)
         return null;
       const resize = tf15.image.resizeBilinear(image18, [model6.inputs[0].shape[2], model6.inputs[0].shape[1]], false);
-      const cast5 = tf15.cast(resize, "int32");
-      return cast5;
+      const cast4 = tf15.cast(resize, "int32");
+      return cast4;
     });
     let resT;
     if (config3.body.enabled)
@@ -11376,10 +11393,24 @@ var Human = class {
         if (this.config.backend && this.config.backend.length > 0) {
           if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && this.config.debug)
             log("running inside web worker");
-          if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === "tensorflow")
-            this.config.backend = "webgl";
-          if (this.tf.ENV.flags.IS_NODE && (this.config.backend === "webgl" || this.config.backend === "humangl"))
+          if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === "tensorflow") {
+            if (this.config.debug)
+              log("override: backend set to tensorflow while running in browser");
+            this.config.backend = "humangl";
+          }
+          if (this.tf.ENV.flags.IS_NODE && (this.config.backend === "webgl" || this.config.backend === "humangl")) {
+            if (this.config.debug)
+              log("override: backend set to webgl while running in nodejs");
             this.config.backend = "tensorflow";
+          }
+          const available = Object.keys(this.tf.engine().registryFactory);
+          if (this.config.debug)
+            log("available backends:", available);
+          if (!available.includes(this.config.backend)) {
+            log(`error: backend ${this.config.backend} not found in registry`);
+            this.config.backend = this.tf.ENV.flags.IS_NODE ? "tensorflow" : "humangl";
+            log(`override: using backend ${this.config.backend} instead`);
+          }
           if (this.config.debug)
             log("setting backend:", this.config.backend);
           if (this.config.backend === "wasm") {

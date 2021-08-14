@@ -67,14 +67,14 @@ export async function predict(image: Tensor, config: Config) {
     // tf.dispose(enhance);
 
     if (ageT) {
-      // const data = ageT.dataSync();
+      // const data = await ageT.data();
       // {0: 'below_20', 1: '21-25', 2: '26-30', 3: '31-40',4: '41-50', 5: '51-60', 6: 'Above60'}
     }
     if (genderT) {
-      // const data = genderT.dataSync();
+      // const data = await genderT.data();
     }
     if (raceT) {
-      // const data = raceT.dataSync();
+      // const data = await raceT.data();
       // {0: 'white', 1: 'black', 2: 'asian', 3: 'indian', 4: 'others'}
     }
 

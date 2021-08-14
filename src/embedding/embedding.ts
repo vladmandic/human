@@ -95,7 +95,7 @@ export async function predict(input, config): Promise<number[]> {
     let data: Array<number> = [];
     if (config.face.embedding.enabled) {
       const image = enhance(input);
-      data = tf.tidy(() => {
+      const dataT = tf.tidy(() => {
         /*
         // if needed convert from NHWC to NCHW
         const nchw = image.transpose([3, 0, 1, 2]);
@@ -125,9 +125,11 @@ export async function predict(input, config): Promise<number[]> {
         const reshape = tf.reshape(res, [128, 2]); // split 256 vectors into 128 x 2
         const reduce = reshape.logSumExp(1); // reduce 2nd dimension by calculating logSumExp on it
 
-        const output: Array<number> = reduce.dataSync(); // inside tf.tidy
-        return [...output]; // convert typed array to simple array
+        return reduce;
       });
+      const output: Array<number> = await dataT.data();
+      data = [...output]; // convert typed array to simple array
+      tf.dispose(dataT);
       tf.dispose(image);
     }
     resolve(data);

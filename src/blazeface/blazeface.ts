@@ -57,7 +57,7 @@ export class BlazeFaceModel {
       }
       const boxesOut = decodeBounds(batchOut, this.anchors, [this.inputSize, this.inputSize]);
       const logits = tf.slice(batchOut, [0, 0], [-1, 1]);
-      const scoresOut = tf.squeeze(tf.sigmoid(logits)).dataSync(); // inside tf.tidy
+      const scoresOut = tf.squeeze(tf.sigmoid(logits)); // inside tf.tidy
       return [batchOut, boxesOut, scoresOut];
     });
 
@@ -67,8 +67,9 @@ export class BlazeFaceModel {
     const nms = await nmsTensor.array();
     tf.dispose(nmsTensor);
     const annotatedBoxes: Array<{ box: { startPoint: Tensor, endPoint: Tensor }, landmarks: Tensor, anchor: number[], confidence: number }> = [];
+    const scoresData = await scores.data();
     for (let i = 0; i < nms.length; i++) {
-      const confidence = scores[nms[i]];
+      const confidence = scoresData[nms[i]];
       if (confidence > this.config.face.detector.minConfidence) {
         const boundingBox = tf.slice(boxes, [nms[i], 0], [1, -1]);
         const localBox = box.createBox(boundingBox);
@@ -80,6 +81,7 @@ export class BlazeFaceModel {
     }
     tf.dispose(batch);
     tf.dispose(boxes);
+    tf.dispose(scores);
     return {
       boxes: annotatedBoxes,
       scaleFactor: [inputImage.shape[2] / this.inputSize, inputImage.shape[1] / this.inputSize],

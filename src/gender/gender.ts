@@ -87,10 +87,10 @@ export async function predict(image: Tensor, config: Config | any) {
           obj.confidence = Math.min(0.99, confidence);
         }
         /*
-        let age = genderT[1].argMax(1).dataSync()[0];
-        const all = genderT[1].dataSync();
+        let age = (await genderT[1].argMax(1).data())[0];
+        const all = await genderT[1].data();
         age = Math.round(all[age - 1] > all[age + 1] ? 10 * age - 100 * all[age - 1] : 10 * age + 100 * all[age + 1]) / 10;
-        const descriptor = genderT[1].dataSync();
+        const descriptor = await genderT[1].data();
         */
         genderT.forEach((t) => tf.dispose(t));
       }

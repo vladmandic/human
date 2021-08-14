@@ -115,7 +115,9 @@ export class Pipeline {
       box.endPoint[0] / this.meshSize,
     ]], [0], [this.irisSize, this.irisSize]);
     if (flip && tf.ENV.flags.IS_BROWSER) {
-      crop = tf.image.flipLeftRight(crop); // flipLeftRight is not defined for tfjs-node
+      const flipped = tf.image.flipLeftRight(crop); // flipLeftRight is not defined for tfjs-node
+      tf.dispose(crop);
+      crop = flipped;
     }
     return { box, boxSize, crop };
   }
@@ -151,6 +153,53 @@ export class Pipeline {
       }
       return [coord[0], coord[1], z];
     });
+  }
+
+  correctFaceRotation(config, box, input) {
+    const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= meshLandmarks.count) ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
+    const angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
+    const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
+    const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
+    const rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
+    const rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
+    const cut = config.face.mesh.enabled
+      ? bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize])
+      : bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.boxSize, this.boxSize]);
+    const face = tf.div(cut, 255);
+    tf.dispose(cut);
+    tf.dispose(rotatedImage);
+    return [angle, rotationMatrix, face];
+  }
+
+  async augmentIris(rawCoords, face) {
+    const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true);
+    const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1]);
+    const combined = tf.concat([leftEyeCrop, rightEyeCrop]);
+    tf.dispose(leftEyeCrop);
+    tf.dispose(rightEyeCrop);
+    const eyePredictions = this.irisModel.predict(combined) as Tensor;
+    tf.dispose(combined);
+    const eyePredictionsData = await eyePredictions.data(); // inside tf.tidy
+    tf.dispose(eyePredictions);
+    const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
+    const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = this.getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
+    const rightEyeData = eyePredictionsData.slice(irisLandmarks.numCoordinates * 3);
+    const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = this.getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize);
+    const leftToRightEyeDepthDifference = this.getLeftToRightEyeDepthDifference(rawCoords);
+    if (Math.abs(leftToRightEyeDepthDifference) < 30) { // User is looking straight ahead.
+      replaceRawCoordinates(rawCoords, leftEyeRawCoords, 'left', null);
+      replaceRawCoordinates(rawCoords, rightEyeRawCoords, 'right', null);
+      // If the user is looking to the left or to the right, the iris coordinates tend to diverge too much from the mesh coordinates for them to be merged
+      // So we only update a single contour line above and below the eye.
+    } else if (leftToRightEyeDepthDifference < 1) { // User is looking towards the right.
+      replaceRawCoordinates(rawCoords, leftEyeRawCoords, 'left', ['EyeUpper0', 'EyeLower0']);
+    } else { // User is looking towards the left.
+      replaceRawCoordinates(rawCoords, rightEyeRawCoords, 'right', ['EyeUpper0', 'EyeLower0']);
+    }
+    const adjustedLeftIrisCoords = this.getAdjustedIrisCoords(rawCoords, leftIrisRawCoords, 'left');
+    const adjustedRightIrisCoords = this.getAdjustedIrisCoords(rawCoords, rightIrisRawCoords, 'right');
+    const newCoords = rawCoords.concat(adjustedLeftIrisCoords).concat(adjustedRightIrisCoords);
+    return newCoords;
   }
 
   async predict(input, config) {
@@ -198,106 +247,78 @@ export class Pipeline {
         tf.dispose(prediction.landmarks);
       });
     }
-    const results = tf.tidy(() => this.storedBoxes.map((box, i) => {
-      // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
+
+    const results: Array<{ mesh, box, faceConfidence, boxConfidence, confidence, image }> = [];
+    for (let i = 0; i < this.storedBoxes.length; i++) {
+      let box = this.storedBoxes[i]; // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
       let face;
       let angle = 0;
       let rotationMatrix;
 
       if (config.face.detector.rotation && config.face.mesh.enabled && tf.ENV.flags.IS_BROWSER) {
-        const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= meshLandmarks.count) ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
-        angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
-        const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
-        const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-        const rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
-        rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
-        if (config.face.mesh.enabled) face = tf.div(bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize]), 255);
-        else face = tf.div(bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.boxSize, this.boxSize]), 255);
+        [angle, rotationMatrix, face] = this.correctFaceRotation(config, box, input);
       } else {
         rotationMatrix = util.IDENTITY_MATRIX;
         const clonedImage = input.clone();
-        if (config.face.mesh.enabled) face = tf.div(bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.meshSize, this.meshSize]), 255);
-        else face = tf.div(bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.boxSize, this.boxSize]), 255);
+        const cut = config.face.mesh.enabled
+          ? bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.meshSize, this.meshSize])
+          : bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.boxSize, this.boxSize]);
+        face = tf.div(cut, 255);
+        tf.dispose(cut);
+        tf.dispose(clonedImage);
       }
 
       // if we're not going to produce mesh, don't spend time with further processing
       if (!config.face.mesh.enabled) {
-        const prediction = {
+        results.push({
           mesh: [],
           box,
           faceConfidence: null,
           boxConfidence: box.confidence,
           confidence: box.confidence,
           image: face,
-        };
-        return prediction;
-      }
+        });
+      } else {
+        const [contours, confidence, contourCoords] = this.meshDetector.execute(face) as Array<Tensor>; // The first returned tensor represents facial contours which are already included in the coordinates.
+        tf.dispose(contours);
+        const faceConfidence = (await confidence.data())[0] as number; // inside tf.tidy
+        tf.dispose(confidence);
+        const coordsReshaped = tf.reshape(contourCoords, [-1, 3]);
+        let rawCoords = await coordsReshaped.array();
+        tf.dispose(contourCoords);
+        tf.dispose(coordsReshaped);
+        if (faceConfidence < config.face.detector.minConfidence) {
+          this.storedBoxes[i].confidence = faceConfidence; // reset confidence of cached box
+          tf.dispose(face);
+        } else {
+          if (config.face.iris.enabled) rawCoords = await this.augmentIris(rawCoords, face);
 
-      const [, confidence, contourCoords] = this.meshDetector.execute(face) as Array<Tensor>; // The first returned tensor represents facial contours which are already included in the coordinates.
-      const faceConfidence = confidence.dataSync()[0] as number; // inside tf.tidy
-      if (faceConfidence < config.face.detector.minConfidence) {
-        this.storedBoxes[i].confidence = faceConfidence; // reset confidence of cached box
-        return null; // if below confidence just exit
-      }
-      const coordsReshaped = tf.reshape(contourCoords, [-1, 3]);
-      let rawCoords = coordsReshaped.arraySync();
+          // override box from detection with one calculated from mesh
+          const mesh = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
+          const storeConfidence = box.confidence;
+          // @ts-ignore enlargeBox does not include confidence so we append it manually
+          box = bounding.enlargeBox(bounding.calculateLandmarksBoundingBox(mesh), 1.5); // redefine box with mesh calculated one
+          box.confidence = storeConfidence;
 
-      if (config.face.iris.enabled) {
-        const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true);
-        const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1]);
-        const eyePredictions = this.irisModel.predict(tf.concat([leftEyeCrop, rightEyeCrop])) as Tensor;
-        const eyePredictionsData = eyePredictions.dataSync(); // inside tf.tidy
-        const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
-        const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = this.getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
-        const rightEyeData = eyePredictionsData.slice(irisLandmarks.numCoordinates * 3);
-        const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = this.getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize);
-        const leftToRightEyeDepthDifference = this.getLeftToRightEyeDepthDifference(rawCoords);
-        if (Math.abs(leftToRightEyeDepthDifference) < 30) { // User is looking straight ahead.
-          replaceRawCoordinates(rawCoords, leftEyeRawCoords, 'left', null);
-          replaceRawCoordinates(rawCoords, rightEyeRawCoords, 'right', null);
-          // If the user is looking to the left or to the right, the iris coordinates tend to diverge too much from the mesh coordinates for them to be merged
-          // So we only update a single contour line above and below the eye.
-        } else if (leftToRightEyeDepthDifference < 1) { // User is looking towards the right.
-          replaceRawCoordinates(rawCoords, leftEyeRawCoords, 'left', ['EyeUpper0', 'EyeLower0']);
-        } else { // User is looking towards the left.
-          replaceRawCoordinates(rawCoords, rightEyeRawCoords, 'right', ['EyeUpper0', 'EyeLower0']);
+          // do rotation one more time with mesh keypoints if we want to return perfect image
+          if (config.face.detector.rotation && config.face.mesh.enabled && config.face.description.enabled && tf.ENV.flags.IS_BROWSER) {
+            [angle, rotationMatrix, face] = this.correctFaceRotation(config, box, input);
+          }
+
+          results.push({
+            mesh,
+            box,
+            faceConfidence,
+            boxConfidence: box.confidence,
+            confidence: faceConfidence,
+            image: face,
+          });
+
+          // updated stored cache values
+          this.storedBoxes[i] = { ...bounding.squarifyBox(box), confidence: box.confidence, faceConfidence };
         }
-        const adjustedLeftIrisCoords = this.getAdjustedIrisCoords(rawCoords, leftIrisRawCoords, 'left');
-        const adjustedRightIrisCoords = this.getAdjustedIrisCoords(rawCoords, rightIrisRawCoords, 'right');
-        rawCoords = rawCoords.concat(adjustedLeftIrisCoords).concat(adjustedRightIrisCoords);
       }
-
-      // override box from detection with one calculated from mesh
-      const mesh = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
-      const storeConfidence = box.confidence;
-      // @ts-ignore enlargeBox does not include confidence so we append it manually
-      box = bounding.enlargeBox(bounding.calculateLandmarksBoundingBox(mesh), 1.5); // redefine box with mesh calculated one
-      box.confidence = storeConfidence;
-
-      // do rotation one more time with mesh keypoints if we want to return perfect image
-      if (config.face.detector.rotation && config.face.mesh.enabled && config.face.description.enabled && tf.ENV.flags.IS_BROWSER) {
-        const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= meshLandmarks.count) ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
-        angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
-        const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
-        const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-        const rotatedImage = tf.image.rotateWithOffset(tf.cast(input, 'float32'), angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
-        rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
-        face = tf.div(bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize]), 255);
-      }
-
-      const prediction = {
-        mesh,
-        box,
-        faceConfidence,
-        boxConfidence: box.confidence,
-        image: face,
-      };
-
-      // updated stored cache values
-      this.storedBoxes[i] = { ...bounding.squarifyBox(box), confidence: box.confidence, faceConfidence };
-
-      return prediction;
-    }));
+    }
 
     // results = results.filter((a) => a !== null);
     // remove cache entries for detected boxes on low confidence

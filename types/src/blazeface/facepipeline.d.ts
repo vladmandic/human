@@ -34,5 +34,14 @@ export declare class Pipeline {
         iris: [number, number, number][];
     };
     getAdjustedIrisCoords(rawCoords: any, irisCoords: any, direction: any): any;
-    predict(input: any, config: any): Promise<any>;
+    correctFaceRotation(config: any, box: any, input: any): any[];
+    augmentIris(rawCoords: any, face: any): Promise<any>;
+    predict(input: any, config: any): Promise<{
+        mesh: any;
+        box: any;
+        faceConfidence: any;
+        boxConfidence: any;
+        confidence: any;
+        image: any;
+    }[] | null>;
 }

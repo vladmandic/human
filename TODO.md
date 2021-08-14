@@ -68,3 +68,14 @@ Object detection using CenterNet or NanoDet models is not working when using WAS
 - Backend WASM missing kernel op `SparseToDense`  
   <https://github.com/tensorflow/tfjs/issues/4824>  
   *Target: `Human` v2.2 with `TFJS` v3.9*
+
+### WebGPU
+
+Experimental support only
+
+- Backend WebGPU missing kernel ops
+  <https://github.com/tensorflow/tfjs/issues/5496>
+- Backend WebGPU incompatible with web workers
+  <https://github.com/tensorflow/tfjs/issues/5467>
+- Backend WebGPU incompatible with sync read calls
+  <https://github.com/tensorflow/tfjs/issues/5468>

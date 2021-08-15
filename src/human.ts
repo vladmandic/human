@@ -298,19 +298,35 @@ export class Human {
       */
 
       if (this.config.backend && this.config.backend.length > 0) {
+        // detect web worker
         // @ts-ignore ignore missing type for WorkerGlobalScope as that is the point
-        if (typeof window === 'undefined' && typeof WorkerGlobalScope !== 'undefined' && this.config.debug) log('running inside web worker');
+        if (typeof window === 'undefined' && typeof WorkerGlobalScope !== 'undefined' && this.config.debug) {
+          log('running inside web worker');
+        }
 
         // force browser vs node backend
         if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === 'tensorflow') {
-          if (this.config.debug) log('override: backend set to tensorflow while running in browser');
+          log('override: backend set to tensorflow while running in browser');
           this.config.backend = 'humangl';
         }
         if (this.tf.ENV.flags.IS_NODE && (this.config.backend === 'webgl' || this.config.backend === 'humangl')) {
-          if (this.config.debug) log('override: backend set to webgl while running in nodejs');
+          log('override: backend set to webgl while running in nodejs');
           this.config.backend = 'tensorflow';
         }
 
+        // handle webgpu
+        if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === 'webgpu') {
+          if (typeof navigator === 'undefined' || typeof navigator['gpu'] === 'undefined') {
+            log('override: backend set to webgpu but browser does not support webgpu');
+            this.config.backend = 'humangl';
+          } else {
+            const adapter = await navigator['gpu'].requestAdapter();
+            if (this.config.debug) log('enumerated webgpu adapter:', adapter);
+          }
+        }
+
+        // check available backends
+        if (this.config.backend === 'humangl') backend.register();
         const available = Object.keys(this.tf.engine().registryFactory);
         if (this.config.debug) log('available backends:', available);
 
@@ -322,6 +338,7 @@ export class Human {
 
         if (this.config.debug) log('setting backend:', this.config.backend);
 
+        // handle wasm
         if (this.config.backend === 'wasm') {
           if (this.config.debug) log('wasm path:', this.config.wasmPath);
           if (typeof this.tf?.setWasmPaths !== 'undefined') this.tf.setWasmPaths(this.config.wasmPath);
@@ -332,15 +349,15 @@ export class Human {
           if (this.config.debug && !simd) log('warning: wasm simd support is not enabled');
         }
 
-        if (this.config.backend === 'humangl') backend.register();
+        // handle humangl
         try {
           await this.tf.setBackend(this.config.backend);
         } catch (err) {
           log('error: cannot set backend:', this.config.backend, err);
         }
       }
-      this.tf.enableProdMode();
-      // this.tf.enableDebugMode();
+
+      // handle webgl & humangl
       if (this.tf.getBackend() === 'webgl' || this.tf.getBackend() === 'humangl') {
         this.tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
         this.tf.ENV.set('WEBGL_CPU_FORWARD', true);
@@ -355,6 +372,9 @@ export class Human {
         const gl = await this.tf.backend().getGPGPUContext().gl;
         if (this.config.debug) log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }
+
+      // wait for ready
+      this.tf.enableProdMode();
       await this.tf.ready();
       this.performance.backend = Math.trunc(now() - timeStamp);
     }

@@ -6,7 +6,7 @@
  */
 export interface Config {
     /** Backend used for TFJS operations */
-    backend: null | '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow';
+    backend: null | '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu';
     /** Path to *.wasm files if backend is set to `wasm` */
     wasmPath: string;
     /** Print debug statements to console */

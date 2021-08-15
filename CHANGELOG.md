@@ -11,6 +11,8 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/08/14 mandic00@live.com
 
+- experimental webgpu support
+- add experimental webgu demo
 - add backend initialization checks
 - complete async work
 - list detect cameras

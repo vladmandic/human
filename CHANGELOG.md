@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/08/17 mandic00@live.com
 
+- improve face box caching
 - strict type checks
 - add webgu checks
 - experimental webgpu support

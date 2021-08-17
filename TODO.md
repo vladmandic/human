@@ -1,12 +1,5 @@
 # To-Do list for Human library
 
-## Big Ticket Items
-
-Implementation of WebGPU backend  
-*Target: `Human` v2.3 with `Chrome` v94 and `TFJS` v4.0*
-
-<br>
-
 ## Work in Progress
 
 WebGL shader optimizations for faster load and initial detection
@@ -69,9 +62,14 @@ Object detection using CenterNet or NanoDet models is not working when using WAS
   <https://github.com/tensorflow/tfjs/issues/4824>  
   *Target: `Human` v2.2 with `TFJS` v3.9*
 
-### WebGPU
+### WebGPU Backend
 
+Implementation of WebGPU backend  
 Experimental support only
+
+*Target: `Human` v2.3 with `Chrome` v94 and `TFJS` v4.0*
+
+<br>
 
 - Backend WebGPU missing kernel ops
   <https://github.com/tensorflow/tfjs/issues/5496>

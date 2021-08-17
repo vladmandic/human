@@ -25,8 +25,7 @@ type DB = Array<{ name: string, source: string, embedding: number[] }>;
 export async function load(config: Config): Promise<GraphModel> {
   const modelUrl = join(config.modelBasePath, config.face.description.modelPath);
   if (!model) {
-    // @ts-ignore type mismatch for GraphModel
-    model = await tf.loadGraphModel(modelUrl);
+    model = await tf.loadGraphModel(modelUrl) as unknown as GraphModel;
     if (!model) log('load model failed:', config.face.description.modelPath);
     else if (config.debug) log('load model:', modelUrl);
   } else if (config.debug) log('cached model:', modelUrl);

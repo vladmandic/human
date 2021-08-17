@@ -162,7 +162,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     parent.analyze('Get Face');
 
     // is something went wrong, skip the face
-    // @ts-ignore possibly undefined
+    // @ts-ignore possibly undefied
     if (!faces[i].tensor || faces[i].tensor['isDisposedInternal']) {
       log('Face object is disposed:', faces[i].tensor);
       continue;

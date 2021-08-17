@@ -9723,6 +9723,12 @@ var calculateFaceAngle = (face5, imageSize) => {
       thetaY = Math.atan2(r21, r22);
       thetaX = 0;
     }
+    if (!isNaN(thetaX))
+      thetaX = 0;
+    if (!isNaN(thetaY))
+      thetaY = 0;
+    if (!isNaN(thetaZ))
+      thetaZ = 0;
     return { pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ };
   };
   const meshToEulerAngle = (mesh2) => {

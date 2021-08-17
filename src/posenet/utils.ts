@@ -1,11 +1,11 @@
 import * as kpt from './keypoints';
 import { Body } from '../result';
 
-export function eitherPointDoesntMeetConfidence(a, b, minConfidence) {
+export function eitherPointDoesntMeetConfidence(a: number, b: number, minConfidence: number) {
   return (a < minConfidence || b < minConfidence);
 }
 
-export function getAdjacentKeyPoints(keypoints, minConfidence) {
+export function getAdjacentKeyPoints(keypoints, minConfidence: number) {
   return kpt.connectedPartIndices.reduce((result, [leftJoint, rightJoint]) => {
     if (eitherPointDoesntMeetConfidence(keypoints[leftJoint].score, keypoints[rightJoint].score, minConfidence)) {
       return result;

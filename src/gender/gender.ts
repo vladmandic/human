@@ -19,8 +19,7 @@ const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function load(config: Config | any) {
   if (!model) {
-    // @ts-ignore type mismatch on GraphModel
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.face.gender.modelPath));
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.face.gender.modelPath)) as unknown as GraphModel;
     alternative = model.inputs[0].shape ? model.inputs[0]?.shape[3] === 1 : false;
     if (!model || !model['modelUrl']) log('load model failed:', config.face.gender.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);

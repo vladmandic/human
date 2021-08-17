@@ -278,16 +278,13 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, dra
     ctx.lineWidth = localOptions.lineWidth;
     ctx.font = localOptions.font;
     if (localOptions.drawBoxes && result[i].box && result[i].box?.length === 4) {
-      // @ts-ignore box may not exist
       rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== '') {
           ctx.fillStyle = localOptions.shadowColor;
-          // @ts-ignore box may not exist
           ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
         }
         ctx.fillStyle = localOptions.labelColor;
-        // @ts-ignore box may not exist
         ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
       }
     }

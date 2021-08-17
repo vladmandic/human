@@ -1,3 +1,5 @@
+/// <reference lib="webworker" />
+
 // load Human using IIFE script as Chome Mobile does not support Modules as Workers
 // import Human from '../dist/human.esm.js';
 self.importScripts('../dist/human.js');
@@ -34,12 +36,9 @@ onmessage = async (msg) => {
     if (ctx) ctx.drawImage(result.canvas, 0, 0);
     const img = ctx ? ctx.getImageData(0, 0, result.canvas.width, result.canvas.height) : null;
     result.canvas = null; // must strip original canvas from return value as it cannot be transfered from worker thread
-    // @ts-ignore tslint wrong type matching for worker
     if (img) postMessage({ result, image: img.data.buffer, width: msg.data.width, height: msg.data.height }, [img.data.buffer]);
-    // @ts-ignore tslint wrong type matching for worker
     else postMessage({ result });
   } else {
-    // @ts-ignore tslint wrong type matching for worker
     postMessage({ result });
   }
   busy = false;

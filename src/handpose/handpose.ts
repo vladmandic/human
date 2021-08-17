@@ -71,10 +71,9 @@ export async function predict(input: Tensor, config: Config): Promise<Hand[]> {
 
 export async function load(config: Config): Promise<[GraphModel | null, GraphModel | null]> {
   if (!handDetectorModel || !handPoseModel) {
-    // @ts-ignore type mismatch on GraphModel
     [handDetectorModel, handPoseModel] = await Promise.all([
-      config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector.modelPath), { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) : null,
-      config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton.modelPath), { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) : null,
+      config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector.modelPath), { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
+      config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton.modelPath), { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
     ]);
     if (config.hand.enabled) {
       if (!handDetectorModel || !handDetectorModel['modelUrl']) log('load model failed:', config.hand.detector.modelPath);

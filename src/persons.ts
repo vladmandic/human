@@ -44,7 +44,7 @@ export function join(faces: Array<Face>, bodies: Array<Body>, hands: Array<Hand>
     // create new overarching box from all boxes beloning to person
     const x: number[] = [];
     const y: number[] = [];
-    const extractXY = (box) => { // extract all [x, y] coordinates from boxes [x, y, width, height]
+    const extractXY = (box: [number, number, number, number] | undefined) => { // extract all [x, y] coordinates from boxes [x, y, width, height]
       if (box && box.length === 4) {
         x.push(box[0], box[0] + box[2]);
         y.push(box[1], box[1] + box[3]);
@@ -59,7 +59,7 @@ export function join(faces: Array<Face>, bodies: Array<Body>, hands: Array<Hand>
     person.box = [minX, minY, Math.max(...x) - minX, Math.max(...y) - minY]; // create new overarching box
 
     // shape is known so we calculate boxRaw as well
-    if (shape && shape.length === 4) person.boxRaw = [person.box[0] / shape[2], person.box[1] / shape[1], person.box[2] / shape[2], person.box[3] / shape[1]];
+    if (shape && shape[1] && shape[2]) person.boxRaw = [person.box[0] / shape[2], person.box[1] / shape[1], person.box[2] / shape[2], person.box[3] / shape[1]];
 
     persons.push(person);
   }

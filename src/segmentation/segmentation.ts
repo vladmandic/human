@@ -15,8 +15,7 @@ let busy = false;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
-    // @ts-ignore type mismatch on GraphModel
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.segmentation.modelPath));
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.segmentation.modelPath)) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.segmentation.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);

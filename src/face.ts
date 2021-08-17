@@ -70,7 +70,9 @@ const calculateFaceAngle = (face, imageSize): {
   const rotationMatrixToEulerAngle = (r) => {
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const [r00, r01, r02, r10, r11, r12, r20, r21, r22] = r;
-    let thetaX; let thetaY; let thetaZ;
+    let thetaX: number;
+    let thetaY: number;
+    let thetaZ: number;
     if (r10 < 1) { // YZX calculation
       if (r10 > -1) {
         thetaZ = Math.asin(r10);
@@ -86,9 +88,9 @@ const calculateFaceAngle = (face, imageSize): {
       thetaY = Math.atan2(r21, r22);
       thetaX = 0;
     }
-    if (!isNaN(thetaX)) thetaX = 0;
-    if (!isNaN(thetaY)) thetaY = 0;
-    if (!isNaN(thetaZ)) thetaZ = 0;
+    if (isNaN(thetaX)) thetaX = 0;
+    if (isNaN(thetaY)) thetaY = 0;
+    if (isNaN(thetaZ)) thetaZ = 0;
     return { pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ };
   };
   // simple Euler angle calculation based existing 3D mesh

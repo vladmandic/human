@@ -4031,8 +4031,8 @@ var Pipeline = class {
       });
     }
     const results = [];
-    for (let i = 0; i < this.storedBoxes.length; i++) {
-      let box6 = this.storedBoxes[i];
+    const newBoxes = [];
+    for (let box6 of this.storedBoxes) {
       let face5;
       let angle = 0;
       let rotationMatrix;
@@ -4065,16 +4065,13 @@ var Pipeline = class {
         tf4.dispose(contourCoords);
         tf4.dispose(coordsReshaped);
         if (faceConfidence < config3.face.detector.minConfidence) {
-          this.storedBoxes[i].confidence = faceConfidence;
+          box6.confidence = faceConfidence;
           tf4.dispose(face5);
         } else {
           if (config3.face.iris.enabled)
             rawCoords = await this.augmentIris(rawCoords, face5);
           const mesh = this.transformRawCoords(rawCoords, box6, angle, rotationMatrix);
-          box6 = {
-            confidence: box6.confidence,
-            ...enlargeBox(calculateLandmarksBoundingBox(mesh), 1.5)
-          };
+          box6 = { ...enlargeBox(calculateLandmarksBoundingBox(mesh), 1.5), confidence: box6.confidence };
           if (config3.face.detector.rotation && config3.face.mesh.enabled && config3.face.description.enabled && tf4.ENV.flags.IS_BROWSER) {
             [angle, rotationMatrix, face5] = this.correctFaceRotation(config3, box6, input);
           }
@@ -4086,12 +4083,13 @@ var Pipeline = class {
             confidence: faceConfidence,
             image: face5
           });
-          this.storedBoxes[i] = { ...squarifyBox(box6), confidence: box6.confidence, faceConfidence };
+          box6 = { ...squarifyBox(box6), confidence: box6.confidence, faceConfidence };
         }
       }
+      newBoxes.push(box6);
     }
     if (config3.face.mesh.enabled)
-      this.storedBoxes = this.storedBoxes.filter((a) => a.confidence > config3.face.detector.minConfidence);
+      this.storedBoxes = newBoxes.filter((a) => a.confidence > config3.face.detector.minConfidence);
     this.detectedFaces = results.length;
     return results;
   }

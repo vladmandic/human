@@ -249,8 +249,10 @@ export class Pipeline {
     }
 
     const results: Array<{ mesh, box, faceConfidence, boxConfidence, confidence, image }> = [];
-    for (let i = 0; i < this.storedBoxes.length; i++) {
-      let box = this.storedBoxes[i]; // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
+    // for (let i = 0; i < this.storedBoxes.length; i++) {
+    const newBoxes: Array<{ startPoint: number[]; endPoint: number[]; landmarks: number[]; confidence: number; faceConfidence?: number | undefined; }> = [];
+    for (let box of this.storedBoxes) {
+      // let box = this.storedBoxes[i]; // The facial bounding box landmarks could come either from blazeface (if we are using a fresh box), or from the mesh model (if we are reusing an old box).
       let face;
       let angle = 0;
       let rotationMatrix;
@@ -288,17 +290,16 @@ export class Pipeline {
         tf.dispose(contourCoords);
         tf.dispose(coordsReshaped);
         if (faceConfidence < config.face.detector.minConfidence) {
-          this.storedBoxes[i].confidence = faceConfidence; // reset confidence of cached box
+          // if (!this.storedBoxes[i]) console.log('2', i, this.storedBoxes.length, this.storedBoxes[i], box, this.storedBoxes);
+          // this.storedBoxes[i].confidence = faceConfidence; // reset confidence of cached box
+          box.confidence = faceConfidence; // reset confidence of cached box
           tf.dispose(face);
         } else {
           if (config.face.iris.enabled) rawCoords = await this.augmentIris(rawCoords, face);
 
           // override box from detection with one calculated from mesh
           const mesh = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
-          box = {
-            confidence: box.confidence, // keep confidence
-            ...bounding.enlargeBox(bounding.calculateLandmarksBoundingBox(mesh), 1.5), // redefine box with mesh calculated one
-          };
+          box = { ...bounding.enlargeBox(bounding.calculateLandmarksBoundingBox(mesh), 1.5), confidence: box.confidence }; // redefine box with mesh calculated one
 
           // do rotation one more time with mesh keypoints if we want to return perfect image
           if (config.face.detector.rotation && config.face.mesh.enabled && config.face.description.enabled && tf.ENV.flags.IS_BROWSER) {
@@ -315,14 +316,16 @@ export class Pipeline {
           });
 
           // updated stored cache values
-          this.storedBoxes[i] = { ...bounding.squarifyBox(box), confidence: box.confidence, faceConfidence };
+          // this.storedBoxes[i] = { ...bounding.squarifyBox(box), confidence: box.confidence, faceConfidence };
+          box = { ...bounding.squarifyBox(box), confidence: box.confidence, faceConfidence };
         }
       }
+      newBoxes.push(box);
     }
 
     // results = results.filter((a) => a !== null);
     // remove cache entries for detected boxes on low confidence
-    if (config.face.mesh.enabled) this.storedBoxes = this.storedBoxes.filter((a) => a.confidence > config.face.detector.minConfidence);
+    if (config.face.mesh.enabled) this.storedBoxes = newBoxes.filter((a) => a.confidence > config.face.detector.minConfidence);
     this.detectedFaces = results.length;
 
     return results;

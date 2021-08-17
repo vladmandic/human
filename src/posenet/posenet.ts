@@ -24,7 +24,7 @@ export async function predict(input: Tensor, config: Config): Promise<Body[]> {
     return results3d;
   });
 
-  const buffers = await Promise.all(res.map((tensor) => tensor.buffer()));
+  const buffers = await Promise.all(res.map((tensor: Tensor) => tensor.buffer()));
   for (const t of res) tf.dispose(t);
 
   const decoded = await poses.decode(buffers[0], buffers[1], buffers[2], buffers[3], config.body.maxDetected, config.body.minConfidence);
@@ -35,8 +35,7 @@ export async function predict(input: Tensor, config: Config): Promise<Body[]> {
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
-    // @ts-ignore type mismatch for GraphModel
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);

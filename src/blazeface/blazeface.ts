@@ -39,8 +39,7 @@ export class BlazeFaceModel {
 
   async getBoundingBoxes(inputImage: Tensor, userConfig: Config) {
     // sanity check on input
-    // @ts-ignore isDisposed is internal property
-    if ((!inputImage) || (inputImage.isDisposedInternal) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return null;
+    if ((!inputImage) || (inputImage['isDisposedInternal']) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return null;
     const [batch, boxes, scores] = tf.tidy(() => {
       const resizedImage = tf.image.resizeBilinear(inputImage, [this.inputSize, this.inputSize]);
       const normalizedImage = tf.sub(tf.div(resizedImage, 127.5), 0.5);

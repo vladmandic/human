@@ -15,8 +15,7 @@ let model: GraphModel;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
-    // @ts-ignore type mismatch for Graphmodel
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath));
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
     model['width'] = parseInt(model['signature'].inputs['input_1:0'].tensorShape.dim[2].size);
     model['height'] = parseInt(model['signature'].inputs['input_1:0'].tensorShape.dim[1].size);
     if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);

@@ -60,11 +60,10 @@ export async function predict(input: Tensor, config: Config): Promise<Face[]> {
 
 export async function load(config): Promise<[unknown, GraphModel | null, GraphModel | null]> {
   if ((!faceModels[0] && config.face.enabled) || (!faceModels[1] && config.face.mesh.enabled) || (!faceModels[2] && config.face.iris.enabled)) {
-    // @ts-ignore type mismatch for GraphModel
     faceModels = await Promise.all([
       (!faceModels[0] && config.face.enabled) ? blazeface.load(config) : null,
-      (!faceModels[1] && config.face.mesh.enabled) ? tf.loadGraphModel(join(config.modelBasePath, config.face.mesh.modelPath), { fromTFHub: config.face.mesh.modelPath.includes('tfhub.dev') }) : null,
-      (!faceModels[2] && config.face.iris.enabled) ? tf.loadGraphModel(join(config.modelBasePath, config.face.iris.modelPath), { fromTFHub: config.face.iris.modelPath.includes('tfhub.dev') }) : null,
+      (!faceModels[1] && config.face.mesh.enabled) ? tf.loadGraphModel(join(config.modelBasePath, config.face.mesh.modelPath), { fromTFHub: config.face.mesh.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
+      (!faceModels[2] && config.face.iris.enabled) ? tf.loadGraphModel(join(config.modelBasePath, config.face.iris.modelPath), { fromTFHub: config.face.iris.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
     ]);
     if (config.face.mesh.enabled) {
       if (!faceModels[1] || !faceModels[1]['modelUrl']) log('load model failed:', config.face.mesh.modelPath);

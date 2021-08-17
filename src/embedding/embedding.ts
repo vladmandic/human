@@ -13,8 +13,7 @@ let model: GraphModel;
 export async function load(config) {
   const modelUrl = join(config.modelBasePath, config.face.embedding.modelPath);
   if (!model) {
-    // @ts-ignore type mismatch for GraphModel
-    model = await tf.loadGraphModel(modelUrl);
+    model = await tf.loadGraphModel(modelUrl) as unknown as GraphModel;
     if (!model) log('load model failed:', config.face.embedding.modelPath);
     else if (config.debug) log('load model:', modelUrl);
   } else if (config.debug) log('cached model:', modelUrl);
@@ -55,10 +54,9 @@ export function enhance(input): Tensor {
     const box = [[0.05, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
     const tensor = input.image || input.tensor;
     if (!(tensor instanceof tf.Tensor)) return null;
+    if (!model || !model.inputs || !model.inputs[0].shape) return null;
     const crop = (tensor.shape.length === 3)
-      // @ts-ignore model possibly undefined
       ? tf.image.cropAndResize(tf.expandDims(tensor, 0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch dimension if missing
-      // @ts-ignore model possibly undefined
       : tf.image.cropAndResize(tensor, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
 
     // convert to black&white to avoid colorization impact

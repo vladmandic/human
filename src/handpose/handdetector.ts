@@ -15,8 +15,7 @@ export class HandDetector {
     this.model = model;
     this.anchors = anchors.anchors.map((anchor) => [anchor.x, anchor.y]);
     this.anchorsTensor = tf.tensor2d(this.anchors);
-    // @ts-ignore model is not undefined here
-    this.inputSize = this.model?.inputs[0].shape[2];
+    this.inputSize = (this.model && this.model.inputs && this.model.inputs[0].shape) ? this.model.inputs[0].shape[2] : 0;
     this.inputSizeTensor = tf.tensor1d([this.inputSize, this.inputSize]);
     this.doubleInputSizeTensor = tf.tensor1d([this.inputSize * 2, this.inputSize * 2]);
   }

@@ -112,7 +112,7 @@ export declare class Human {
      */
     constructor(userConfig?: Config | Record<string, unknown>);
     /** @hidden */
-    analyze: (...msg: any[]) => void;
+    analyze: (...msg: string[]) => void;
     /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
      * - Calculation is based on normalized Minkowski distance between
      *

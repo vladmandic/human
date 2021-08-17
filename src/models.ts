@@ -18,29 +18,17 @@ import * as segmentation from './segmentation/segmentation';
 export async function load(instance) {
   if (instance.config.async) { // load models concurrently
     [
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.face,
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.emotion,
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.handpose,
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.posenet,
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.blazepose,
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.efficientpose,
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.movenet,
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.nanodet,
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.centernet,
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.faceres,
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       instance.models.segmentation,
-      // @ts-ignore models loaded via promise array cannot be correctly inferred
       // instance.models.agegenderrace,
     ] = await Promise.all([
       instance.models.face || (instance.config.face.enabled ? facemesh.load(instance.config) : null),

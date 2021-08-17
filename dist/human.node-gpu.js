@@ -221,13 +221,13 @@ var config = {
 
 // src/sysinfo.ts
 function info() {
-  let platform;
-  let agent;
+  let platform = "";
+  let agent = "";
   if (typeof navigator !== "undefined") {
     const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
     if (raw && raw[0]) {
       const platformMatch = raw[0].match(/\(([^()]+)\)/g);
-      platform = platformMatch ? platformMatch[0].replace(/\(|\)/g, "") : "";
+      platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
       agent = navigator.userAgent.replace(raw[0], "");
       if (platform[1])
         agent = agent.replace(raw[1], "");
@@ -494,7 +494,7 @@ var BlazeFaceModel = class {
     this.config = config3;
   }
   async getBoundingBoxes(inputImage, userConfig) {
-    if (!inputImage || inputImage.isDisposedInternal || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
+    if (!inputImage || inputImage["isDisposedInternal"] || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
       return null;
     const [batch, boxes, scores] = tf3.tidy(() => {
       const resizedImage = tf3.image.resizeBilinear(inputImage, [this.inputSize, this.inputSize]);
@@ -4071,9 +4071,10 @@ var Pipeline = class {
           if (config3.face.iris.enabled)
             rawCoords = await this.augmentIris(rawCoords, face5);
           const mesh = this.transformRawCoords(rawCoords, box6, angle, rotationMatrix);
-          const storeConfidence = box6.confidence;
-          box6 = enlargeBox(calculateLandmarksBoundingBox(mesh), 1.5);
-          box6.confidence = storeConfidence;
+          box6 = {
+            confidence: box6.confidence,
+            ...enlargeBox(calculateLandmarksBoundingBox(mesh), 1.5)
+          };
           if (config3.face.detector.rotation && config3.face.mesh.enabled && config3.face.description.enabled && tf4.ENV.flags.IS_BROWSER) {
             [angle, rotationMatrix, face5] = this.correctFaceRotation(config3, box6, input);
           }
@@ -7691,11 +7692,10 @@ var anchors = [
 // src/handpose/handdetector.ts
 var HandDetector = class {
   constructor(model10) {
-    var _a;
     this.model = model10;
     this.anchors = anchors.map((anchor) => [anchor.x, anchor.y]);
     this.anchorsTensor = tf10.tensor2d(this.anchors);
-    this.inputSize = (_a = this.model) == null ? void 0 : _a.inputs[0].shape[2];
+    this.inputSize = this.model && this.model.inputs && this.model.inputs[0].shape ? this.model.inputs[0].shape[2] : 0;
     this.inputSizeTensor = tf10.tensor1d([this.inputSize, this.inputSize]);
     this.doubleInputSizeTensor = tf10.tensor1d([this.inputSize * 2, this.inputSize * 2]);
   }
@@ -10531,7 +10531,7 @@ function join2(faces, bodies, hands, gestures, shape) {
     const minX = Math.min(...x);
     const minY = Math.min(...y);
     person2.box = [minX, minY, Math.max(...x) - minX, Math.max(...y) - minY];
-    if (shape && shape.length === 4)
+    if (shape && shape[1] && shape[2])
       person2.boxRaw = [person2.box[0] / shape[2], person2.box[1] / shape[1], person2.box[2] / shape[2], person2.box[3] / shape[1]];
     persons2.push(person2);
   }
@@ -11471,6 +11471,8 @@ var Human = class {
       if (this.config.cacheSensitivity === 0)
         return false;
       const resizeFact = 32;
+      if (!input.shape[1] || !input.shape[2])
+        return false;
       const reduced = tf21.image.resizeBilinear(input, [Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
       const reducedData = await reduced.data();
       let sum = 0;
@@ -11584,6 +11586,7 @@ var Human = class {
       faceres: null,
       segmentation: null
     };
+    this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [] };
     this.image = (input) => process4(input, this.config);
     this.faceTriangulation = triangulation;
     this.faceUVMap = uvmap;
@@ -11683,10 +11686,10 @@ var Human = class {
         this.performance.cached++;
       this.performance.changed = Math.trunc(now() - timeStamp);
       this.analyze("Check Changed:");
-      let faceRes;
-      let bodyRes;
-      let handRes;
-      let objectRes;
+      let faceRes = [];
+      let bodyRes = [];
+      let handRes = [];
+      let objectRes = [];
       if (this.config.async) {
         faceRes = this.config.face.enabled ? detectFace(this, process6.tensor) : [];
         if (this.performance.face)

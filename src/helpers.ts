@@ -41,7 +41,7 @@ export function mergeDeep(...objects) {
 }
 
 // helper function: return min and max from input array
-export const minmax = (data) => data.reduce((acc, val) => {
+export const minmax = (data: Array<number>) => data.reduce((acc: Array<number>, val) => {
   acc[0] = (acc[0] === undefined || val < acc[0]) ? val : acc[0];
   acc[1] = (acc[1] === undefined || val > acc[1]) ? val : acc[1];
   return acc;

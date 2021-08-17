@@ -295,10 +295,10 @@ export class Pipeline {
 
           // override box from detection with one calculated from mesh
           const mesh = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);
-          const storeConfidence = box.confidence;
-          // @ts-ignore enlargeBox does not include confidence so we append it manually
-          box = bounding.enlargeBox(bounding.calculateLandmarksBoundingBox(mesh), 1.5); // redefine box with mesh calculated one
-          box.confidence = storeConfidence;
+          box = {
+            confidence: box.confidence, // keep confidence
+            ...bounding.enlargeBox(bounding.calculateLandmarksBoundingBox(mesh), 1.5), // redefine box with mesh calculated one
+          };
 
           // do rotation one more time with mesh keypoints if we want to return perfect image
           if (config.face.detector.rotation && config.face.mesh.enabled && config.face.description.enabled && tf.ENV.flags.IS_BROWSER) {

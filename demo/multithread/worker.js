@@ -1,5 +1,7 @@
 // load Human using IIFE script as Chome Mobile does not support Modules as Workers
 
+/// <reference lib="webworker" />
+
 // import Human from '../dist/human.esm.js';
 self.importScripts('../../dist/human.js');
 
@@ -15,6 +17,5 @@ onmessage = async (msg) => {
   const image = new ImageData(new Uint8ClampedArray(msg.data.image), msg.data.width, msg.data.height);
   let result = {};
   result = await human.detect(image, msg.data.config);
-  // @ts-ignore tslint wrong type matching for worker
   postMessage({ result: result[msg.data.type], type: msg.data.type });
 };

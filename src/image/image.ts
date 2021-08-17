@@ -14,7 +14,7 @@ const maxSize = 2048;
 let inCanvas;
 let outCanvas;
 // instance of fximage
-let fx;
+let fx: fxImage.GLImageFilter | null;
 
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement

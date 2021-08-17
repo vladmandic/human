@@ -4,7 +4,7 @@
 
 import { log, now, mergeDeep } from './helpers';
 import { Config, defaults } from './config';
-import { Result, Gesture } from './result';
+import { Result, Face, Hand, Body, Item, Gesture } from './result';
 import * as sysinfo from './sysinfo';
 import * as tf from '../dist/tfjs.esm.js';
 import * as backend from './tfjs/backend';
@@ -166,6 +166,7 @@ export class Human {
       faceres: null,
       segmentation: null,
     };
+    this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [] };
     // export access to image processing
     // @ts-ignore eslint-typescript cannot correctly infer type in anonymous function
     this.image = (input: Input) => image.process(input, this.config);
@@ -179,7 +180,7 @@ export class Human {
 
   // helper function: measure tensor leak
   /** @hidden */
-  analyze = (...msg) => {
+  analyze = (...msg: string[]) => {
     if (!this.#analyzeMemoryLeaks) return;
     const currentTensors = this.tf.engine().state.numTensors;
     const previousTensors = this.#numTensors;
@@ -190,7 +191,7 @@ export class Human {
 
   // quick sanity check on inputs
   /** @hidden */
-  #sanity = (input): null | string => {
+  #sanity = (input: Input): null | string => {
     if (!this.#checkSanity) return null;
     if (!input) return 'input is not defined';
     if (this.tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) return 'input must be a tensor';
@@ -233,7 +234,6 @@ export class Human {
    */
   // eslint-disable-next-line class-methods-use-this
   enhance(input: Tensor): Tensor | null {
-    // @ts-ignore type mismach for Tensor
     return faceres.enhance(input);
   }
 
@@ -391,9 +391,10 @@ export class Human {
 
   // check if input changed sufficiently to trigger new detections
   /** @hidden */
-  #skipFrame = async (input) => {
+  #skipFrame = async (input: Tensor) => {
     if (this.config.cacheSensitivity === 0) return false;
     const resizeFact = 32;
+    if (!input.shape[1] || !input.shape[2]) return false;
     const reduced: Tensor = tf.image.resizeBilinear(input, [Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
     // use tensor sum
     /*
@@ -453,23 +454,6 @@ export class Human {
       // load models if enabled
       await this.load();
 
-      /*
-      // function disabled in favor of inputChanged
-      // disable video optimization for inputs of type image, but skip if inside worker thread
-      let previousVideoOptimized;
-      // @ts-ignore ignore missing type for WorkerGlobalScope as that is the point
-      if (input && this.config.videoOptimized && (typeof window !== 'undefined') && (typeof WorkerGlobalScope !== 'undefined') && (
-        (typeof HTMLImageElement !== 'undefined' && input instanceof HTMLImageElement)
-        || (typeof Image !== 'undefined' && input instanceof Image)
-        || (typeof ImageData !== 'undefined' && input instanceof ImageData)
-        || (typeof ImageBitmap !== 'undefined' && image instanceof ImageBitmap))
-      ) {
-        log('disabling video optimization');
-        previousVideoOptimized = this.config.videoOptimized;
-        this.config.videoOptimized = false;
-      }
-      */
-
       timeStamp = now();
       let process = image.process(input, this.config);
       this.performance.image = Math.trunc(now() - timeStamp);
@@ -508,10 +492,10 @@ export class Human {
 
       // prepare where to store model results
       // keep them with weak typing as it can be promise or not
-      let faceRes;
-      let bodyRes;
-      let handRes;
-      let objectRes;
+      let faceRes: Face[] | Promise<Face[]> | never[] = [];
+      let bodyRes: Body[] | Promise<Body[]> | never[] = [];
+      let handRes: Hand[] | Promise<Hand[]> | never[] = [];
+      let objectRes: Item[] | Promise<Item[]> | never[] = [];
 
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       if (this.config.async) {
@@ -590,15 +574,15 @@ export class Human {
       this.performance.total = Math.trunc(now() - timeStart);
       this.state = 'idle';
       this.result = {
-        face: faceRes,
-        body: bodyRes,
-        hand: handRes,
+        face: faceRes as Face[],
+        body: bodyRes as Body[],
+        hand: handRes as Hand[],
         gesture: gestureRes,
-        object: objectRes,
+        object: objectRes as Item[],
         performance: this.performance,
         canvas: process.canvas,
         timestamp: Date.now(),
-        get persons() { return persons.join(faceRes, bodyRes, handRes, gestureRes, process?.tensor?.shape); },
+        get persons() { return persons.join(faceRes as Face[], bodyRes as Body[], handRes as Hand[], gestureRes, process?.tensor?.shape); },
       };
 
       // finally dispose input tensor
@@ -611,7 +595,7 @@ export class Human {
 
   /** @hidden */
   #warmupBitmap = async () => {
-    const b64toBlob = (base64, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
+    const b64toBlob = (base64: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
     let blob;
     let res;
     switch (this.config.warmup) {
@@ -662,7 +646,7 @@ export class Human {
 
   /** @hidden */
   #warmupNode = async () => {
-    const atob = (str) => Buffer.from(str, 'base64');
+    const atob = (str: string) => Buffer.from(str, 'base64');
     let img;
     if (this.config.warmup === 'face') img = atob(sample.face);
     if (this.config.warmup === 'body' || this.config.warmup === 'full') img = atob(sample.body);

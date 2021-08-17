@@ -4,8 +4,6 @@
 
 /// <reference lib="webworker" />
 
-// // @ts-nocheck Linting of ServiceWorker is not supported for JS files
-
 const skipCaching = false;
 
 const cacheName = 'Human';

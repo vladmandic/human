@@ -10550,7 +10550,7 @@ function calc(newResult) {
   if (!newResult)
     return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
   const elapsed = Date.now() - newResult.timestamp;
-  const bufferedFactor = elapsed < 1e3 ? 8 - Math.log(elapsed) : 1;
+  const bufferedFactor = elapsed < 1e3 ? 8 - Math.log(elapsed + 1) : 1;
   bufferedResult.canvas = newResult.canvas;
   if (!bufferedResult.body || newResult.body.length !== bufferedResult.body.length) {
     bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));

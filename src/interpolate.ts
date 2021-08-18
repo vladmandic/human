@@ -20,7 +20,7 @@ export function calc(newResult: Result): Result {
   // - at 500ms delay buffer = ~1.8 => 55% towards live data
   // - at 750ms delay buffer = ~1.4 => 71% towards live data
   // - at  1sec delay buffer = 1 which means live data is used
-  const bufferedFactor = elapsed < 1000 ? 8 - Math.log(elapsed) : 1;
+  const bufferedFactor = elapsed < 1000 ? 8 - Math.log(elapsed + 1) : 1;
 
   bufferedResult.canvas = newResult.canvas;
 

@@ -2,7 +2,7 @@
  * Human main module
  */
 import { Config } from './config';
-import { Result } from './result';
+import { Result, Face, Hand, Body, Item, Gesture } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as draw from './draw/draw';
@@ -78,6 +78,16 @@ export declare class Human {
         canvas: typeof draw.canvas;
         all: typeof draw.all;
     };
+    /** Types used by Human */
+    static Config: Config;
+    static Result: Result;
+    static Face: Face;
+    static Hand: Hand;
+    static Body: Body;
+    static Item: Item;
+    static Gesture: Gesture;
+    static Person: Gesture;
+    static DrawOptions: draw.DrawOptions;
     /** @internal: Currently loaded models */
     models: {
         face: [unknown, GraphModel | null, GraphModel | null] | null;

@@ -7,6 +7,10 @@ WebGL shader optimizations for faster load and initial detection
 - Implement WebGL uniforms for shaders: <https://github.com/tensorflow/tfjs/issues/5205>
 - Fix shader packing: <https://github.com/tensorflow/tfjs/issues/5343>
 
+MoveNet MultiPose Model: <https://github.com/vladmandic/movenet>
+
+- Implementation is ready, but model is 2x size and 0.5x performance
+
 <br>
 
 ## Exploring

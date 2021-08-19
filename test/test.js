@@ -12,7 +12,7 @@ const tests = [
   'test-node-wasm.js',
 ];
 
-const ignore = [
+const ignoreMessages = [
   'cpu_feature_guard.cc',
   'rebuild TensorFlow',
   'xla_gpu_device.cc',
@@ -35,7 +35,7 @@ function logMessage(test, data) {
 function logStdIO(ok, test, buffer) {
   const lines = buffer.toString().split(/\r\n|\n\r|\n|\r/);
   const filtered = lines.filter((line) => {
-    for (const ignoreString of ignore) {
+    for (const ignoreString of ignoreMessages) {
       if (line.includes(ignoreString)) return false;
     }
     return true;

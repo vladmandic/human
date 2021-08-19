@@ -9,8 +9,9 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/08/17 mandic00@live.com
+### **HEAD -> main** 2021/08/18 mandic00@live.com
 
+- rebuild full
 - improve face box caching
 - strict type checks
 - add webgu checks

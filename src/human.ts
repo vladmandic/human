@@ -99,6 +99,16 @@ export class Human {
     canvas: typeof draw.canvas,
     all: typeof draw.all,
   };
+  /** Types used by Human */
+  static Config: Config;
+  static Result: Result;
+  static Face: Face;
+  static Hand: Hand;
+  static Body: Body;
+  static Item: Item;
+  static Gesture: Gesture;
+  static Person: Gesture
+  static DrawOptions: draw.DrawOptions;
   /** @internal: Currently loaded models */
   models: {
     face: [unknown, GraphModel | null, GraphModel | null] | null,

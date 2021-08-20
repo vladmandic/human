@@ -8308,6 +8308,88 @@ async function load9(config3) {
     log("cached model:", model6["modelUrl"]);
   return model6;
 }
+async function parseSinglePose(res, config3, image18) {
+  keypoints2.length = 0;
+  const kpt3 = res[0][0];
+  for (let id = 0; id < kpt3.length; id++) {
+    score2 = kpt3[id][2];
+    if (score2 > config3.body.minConfidence) {
+      keypoints2.push({
+        score: Math.round(100 * score2) / 100,
+        part: bodyParts2[id],
+        positionRaw: [
+          kpt3[id][1],
+          kpt3[id][0]
+        ],
+        position: [
+          Math.round((image18.shape[2] || 0) * kpt3[id][1]),
+          Math.round((image18.shape[1] || 0) * kpt3[id][0])
+        ]
+      });
+    }
+  }
+  score2 = keypoints2.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
+  const x = keypoints2.map((a) => a.position[0]);
+  const y = keypoints2.map((a) => a.position[1]);
+  box5 = [
+    Math.min(...x),
+    Math.min(...y),
+    Math.max(...x) - Math.min(...x),
+    Math.max(...y) - Math.min(...y)
+  ];
+  const xRaw = keypoints2.map((a) => a.positionRaw[0]);
+  const yRaw = keypoints2.map((a) => a.positionRaw[1]);
+  boxRaw2 = [
+    Math.min(...xRaw),
+    Math.min(...yRaw),
+    Math.max(...xRaw) - Math.min(...xRaw),
+    Math.max(...yRaw) - Math.min(...yRaw)
+  ];
+  const persons2 = [];
+  persons2.push({ id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints2 });
+  return persons2;
+}
+async function parseMultiPose(res, config3, image18) {
+  const persons2 = [];
+  for (let p = 0; p < res[0].length; p++) {
+    const kpt3 = res[0][p];
+    score2 = Math.round(100 * kpt3[51 + 4]) / 100;
+    if (score2 < config3.body.minConfidence)
+      continue;
+    keypoints2.length = 0;
+    for (let i = 0; i < 17; i++) {
+      const partScore = Math.round(100 * kpt3[3 * i + 2]) / 100;
+      if (partScore > config3.body.minConfidence) {
+        keypoints2.push({
+          part: bodyParts2[i],
+          score: partScore,
+          positionRaw: [
+            kpt3[3 * i + 1],
+            kpt3[3 * i + 0]
+          ],
+          position: [
+            Math.trunc(kpt3[3 * i + 1] * (image18.shape[2] || 0)),
+            Math.trunc(kpt3[3 * i + 0] * (image18.shape[1] || 0))
+          ]
+        });
+      }
+    }
+    boxRaw2 = [kpt3[51 + 1], kpt3[51 + 0], kpt3[51 + 3] - kpt3[51 + 1], kpt3[51 + 2] - kpt3[51 + 0]];
+    persons2.push({
+      id: p,
+      score: score2,
+      boxRaw: boxRaw2,
+      box: [
+        Math.trunc(boxRaw2[0] * (image18.shape[2] || 0)),
+        Math.trunc(boxRaw2[1] * (image18.shape[1] || 0)),
+        Math.trunc(boxRaw2[2] * (image18.shape[2] || 0)),
+        Math.trunc(boxRaw2[3] * (image18.shape[1] || 0))
+      ],
+      keypoints: keypoints2
+    });
+  }
+  return persons2;
+}
 async function predict8(image18, config3) {
   if (skipped4 < config3.body.skipFrames && config3.skipFrame && Object.keys(keypoints2).length > 0) {
     skipped4++;
@@ -8318,7 +8400,10 @@ async function predict8(image18, config3) {
     const tensor2 = tf15.tidy(() => {
       if (!model6.inputs[0].shape)
         return null;
-      const resize = tf15.image.resizeBilinear(image18, [model6.inputs[0].shape[2], model6.inputs[0].shape[1]], false);
+      let inputSize = model6.inputs[0].shape[2];
+      if (inputSize === -1)
+        inputSize = 256;
+      const resize = tf15.image.resizeBilinear(image18, [inputSize, inputSize], false);
       const cast4 = tf15.cast(resize, "int32");
       return cast4;
     });
@@ -8326,47 +8411,16 @@ async function predict8(image18, config3) {
     if (config3.body.enabled)
       resT = await model6.predict(tensor2);
     tf15.dispose(tensor2);
-    if (resT) {
-      keypoints2.length = 0;
-      const res = await resT.array();
-      tf15.dispose(resT);
-      const kpt3 = res[0][0];
-      for (let id = 0; id < kpt3.length; id++) {
-        score2 = kpt3[id][2];
-        if (score2 > config3.body.minConfidence) {
-          keypoints2.push({
-            score: Math.round(100 * score2) / 100,
-            part: bodyParts2[id],
-            positionRaw: [
-              kpt3[id][1],
-              kpt3[id][0]
-            ],
-            position: [
-              Math.round((image18.shape[2] || 0) * kpt3[id][1]),
-              Math.round((image18.shape[1] || 0) * kpt3[id][0])
-            ]
-          });
-        }
-      }
-    }
-    score2 = keypoints2.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
-    const x = keypoints2.map((a) => a.position[0]);
-    const y = keypoints2.map((a) => a.position[1]);
-    box5 = [
-      Math.min(...x),
-      Math.min(...y),
-      Math.max(...x) - Math.min(...x),
-      Math.max(...y) - Math.min(...y)
-    ];
-    const xRaw = keypoints2.map((a) => a.positionRaw[0]);
-    const yRaw = keypoints2.map((a) => a.positionRaw[1]);
-    boxRaw2 = [
-      Math.min(...xRaw),
-      Math.min(...yRaw),
-      Math.max(...xRaw) - Math.min(...xRaw),
-      Math.max(...yRaw) - Math.min(...yRaw)
-    ];
-    resolve([{ id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints2 }]);
+    if (!resT)
+      resolve([]);
+    const res = await resT.array();
+    let persons2;
+    if (resT.shape[2] === 17)
+      persons2 = await parseSinglePose(res, config3, image18);
+    else if (resT.shape[2] === 56)
+      persons2 = await parseMultiPose(res, config3, image18);
+    tf15.dispose(resT);
+    resolve(persons2);
   });
 }
 

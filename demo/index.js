@@ -51,6 +51,7 @@ let userConfig = {
   gesture: { enabled: false },
   hand: { enabled: false },
   body: { enabled: false },
+  // body: { enabled: true, modelPath: 'movenet-multipose.json' },
   // body: { enabled: true, modelPath: 'posenet.json' },
   segmentation: { enabled: false },
   */

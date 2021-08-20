@@ -7,10 +7,6 @@ WebGL shader optimizations for faster load and initial detection
 - Implement WebGL uniforms for shaders: <https://github.com/tensorflow/tfjs/issues/5205>
 - Fix shader packing: <https://github.com/tensorflow/tfjs/issues/5343>
 
-MoveNet MultiPose Model: <https://github.com/vladmandic/movenet>
-
-- Implementation is ready, but model is 2x size and 0.5x performance
-
 <br>
 
 ## Exploring
@@ -45,15 +41,23 @@ Feature is automatically disabled in NodeJS without user impact
 
 - Backend NodeJS missing kernel op `FlipLeftRight`  
   <https://github.com/tensorflow/tfjs/issues/4066>  
-  *Target: `Human` v2.2 with `TFJS` v3.9*
+  *Target: `Human` v2.2 with `TFJS` v3.9*  
 - Backend NodeJS missing kernel op `RotateWithOffset`  
   <https://github.com/tensorflow/tfjs/issues/5473>  
-  *Target: N/A*
+  *Target: N/A*  
 
 Hand detection using WASM backend has reduced precision due to math rounding errors in backend  
 *Target: N/A*
 
 <br>
+
+### Body Detection
+
+MoveNet MultiPose model does not work with WASM backend due to missing F32 implementation
+
+- Backend WASM missing F32 implementation  
+  <https://github.com/tensorflow/tfjs/issues/5516>  
+  *Target: N/A*  
 
 ### Object Detection
 

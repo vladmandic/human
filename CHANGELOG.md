@@ -9,12 +9,13 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
+### **HEAD -> main** 2021/08/19 mandic00@live.com
+
+
 ### **2.1.4** 2021/08/19 mandic00@live.com
 
 - add static type definitions to main class
-
-### **origin/main** 2021/08/18 mandic00@live.com
-
+- fix interpolation overflow
 - rebuild full
 - improve face box caching
 - strict type checks

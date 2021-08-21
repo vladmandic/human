@@ -6,17 +6,18 @@ import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
 import * as handpipeline from './handpipeline';
+import * as fingerPose from '../fingerpose/fingerpose';
 import { Hand } from '../result';
 import { Tensor, GraphModel } from '../tfjs/types';
 import { Config } from '../config';
 
 const meshAnnotations = {
   thumb: [1, 2, 3, 4],
-  indexFinger: [5, 6, 7, 8],
-  middleFinger: [9, 10, 11, 12],
-  ringFinger: [13, 14, 15, 16],
+  index: [5, 6, 7, 8],
+  middle: [9, 10, 11, 12],
+  ring: [13, 14, 15, 16],
   pinky: [17, 18, 19, 20],
-  palmBase: [0],
+  palm: [0],
 };
 
 let handDetectorModel: GraphModel | null;
@@ -64,7 +65,16 @@ export async function predict(input: Tensor, config: Config): Promise<Hand[]> {
         (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / (input.shape[1] || 0),
       ];
     }
-    hands.push({ id: i, score: Math.round(100 * predictions[i].confidence) / 100, box, boxRaw, keypoints, annotations });
+    const landmarks = fingerPose.analyze(keypoints);
+    hands.push({
+      id: i,
+      score: Math.round(100 * predictions[i].confidence) / 100,
+      box,
+      boxRaw,
+      keypoints,
+      annotations: annotations as Hand['annotations'],
+      landmarks: landmarks as Hand['landmarks'],
+    });
   }
   return hands;
 }

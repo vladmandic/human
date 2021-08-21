@@ -68,7 +68,7 @@ export function calc(newResult: Result): Result {
         annotations[key] = newResult.hand[i].annotations[key]
           .map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor));
       }
-      bufferedResult.hand[i] = { ...newResult.hand[i], box, boxRaw, keypoints, annotations }; // shallow clone plus updated values
+      bufferedResult.hand[i] = { ...newResult.hand[i], box, boxRaw, keypoints, annotations: annotations as Hand['annotations'] }; // shallow clone plus updated values
     }
   }
 

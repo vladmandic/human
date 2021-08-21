@@ -4595,14 +4595,14 @@ function scoreIsMaximumInLocalWindow(keypointId, score3, heatmapY, heatmapX, sco
   }
   return localMaximum;
 }
-function buildPartWithScoreQueue(minConfidence, scores) {
+function buildPartWithScoreQueue(minConfidence2, scores) {
   const [height, width, numKeypoints] = scores.shape;
   const queue = new MaxHeap(height * width * numKeypoints, ({ score: score3 }) => score3);
   for (let heatmapY = 0; heatmapY < height; ++heatmapY) {
     for (let heatmapX = 0; heatmapX < width; ++heatmapX) {
       for (let keypointId = 0; keypointId < numKeypoints; ++keypointId) {
         const score3 = scores.get(heatmapY, heatmapX, keypointId);
-        if (score3 < minConfidence)
+        if (score3 < minConfidence2)
           continue;
         if (scoreIsMaximumInLocalWindow(keypointId, score3, heatmapY, heatmapX, scores))
           queue.enqueue({ score: score3, part: { heatmapY, heatmapX, id: keypointId } });
@@ -4628,19 +4628,19 @@ function getInstanceScore(existingPoses, keypoints3) {
   }, 0);
   return notOverlappedKeypointScores / keypoints3.length;
 }
-function decode(offsets, scores, displacementsFwd, displacementsBwd, maxDetected, minConfidence) {
+function decode(offsets, scores, displacementsFwd, displacementsBwd, maxDetected, minConfidence2) {
   const poses2 = [];
-  const queue = buildPartWithScoreQueue(minConfidence, scores);
+  const queue = buildPartWithScoreQueue(minConfidence2, scores);
   while (poses2.length < maxDetected && !queue.empty()) {
     const root = queue.dequeue();
     const rootImageCoords = getImageCoords(root.part, outputStride, offsets);
     if (withinRadius(poses2, rootImageCoords, root.part.id))
       continue;
     let keypoints3 = decodePose(root, scores, offsets, displacementsFwd, displacementsBwd);
-    keypoints3 = keypoints3.filter((a) => a.score > minConfidence);
+    keypoints3 = keypoints3.filter((a) => a.score > minConfidence2);
     const score3 = getInstanceScore(poses2, keypoints3);
     const box6 = getBoundingBox(keypoints3);
-    if (score3 > minConfidence)
+    if (score3 > minConfidence2)
       poses2.push({ keypoints: keypoints3, box: box6, score: Math.round(100 * score3) / 100 });
   }
   return poses2;
@@ -7959,14 +7959,383 @@ var HandPipeline = class {
   }
 };
 
+// src/fingerpose/description.ts
+var Finger = {
+  thumb: 0,
+  index: 1,
+  middle: 2,
+  ring: 3,
+  pinky: 4,
+  all: [0, 1, 2, 3, 4],
+  nameMapping: { 0: "thumb", 1: "index", 2: "middle", 3: "ring", 4: "pinky" },
+  pointsMapping: {
+    0: [[0, 1], [1, 2], [2, 3], [3, 4]],
+    1: [[0, 5], [5, 6], [6, 7], [7, 8]],
+    2: [[0, 9], [9, 10], [10, 11], [11, 12]],
+    3: [[0, 13], [13, 14], [14, 15], [15, 16]],
+    4: [[0, 17], [17, 18], [18, 19], [19, 20]]
+  },
+  getName: (value) => Finger.nameMapping[value],
+  getPoints: (value) => Finger.pointsMapping[value]
+};
+var FingerCurl = {
+  none: 0,
+  half: 1,
+  full: 2,
+  nameMapping: { 0: "none", 1: "half", 2: "full" },
+  getName: (value) => FingerCurl.nameMapping[value]
+};
+var FingerDirection = {
+  verticalUp: 0,
+  verticalDown: 1,
+  horizontalLeft: 2,
+  horizontalRight: 3,
+  diagonalUpRight: 4,
+  diagonalUpLeft: 5,
+  diagonalDownRight: 6,
+  diagonalDownLeft: 7,
+  nameMapping: { 0: "verticalUp", 1: "verticalDown", 2: "horizontalLeft", 3: "horizontalRight", 4: "diagonalUpRight", 5: "diagonalUpLeft", 6: "diagonalDownRight", 7: "diagonalDownLeft" },
+  getName: (value) => FingerDirection.nameMapping[value]
+};
+
+// src/fingerpose/estimator.ts
+var options = {
+  HALF_CURL_START_LIMIT: 60,
+  NO_CURL_START_LIMIT: 130,
+  DISTANCE_VOTE_POWER: 1.1,
+  SINGLE_ANGLE_VOTE_POWER: 0.9,
+  TOTAL_ANGLE_VOTE_POWER: 1.6
+};
+function calculateSlope(point1x, point1y, point2x, point2y) {
+  const value = (point1y - point2y) / (point1x - point2x);
+  let slope = Math.atan(value) * 180 / Math.PI;
+  if (slope <= 0)
+    slope = -slope;
+  else if (slope > 0)
+    slope = 180 - slope;
+  return slope;
+}
+function getSlopes(point1, point2) {
+  const slopeXY = calculateSlope(point1[0], point1[1], point2[0], point2[1]);
+  if (point1.length === 2)
+    return slopeXY;
+  const slopeYZ = calculateSlope(point1[1], point1[2], point2[1], point2[2]);
+  return [slopeXY, slopeYZ];
+}
+function angleOrientationAt(angle, weightageAt = 1) {
+  let isVertical = 0;
+  let isDiagonal = 0;
+  let isHorizontal = 0;
+  if (angle >= 75 && angle <= 105)
+    isVertical = 1 * weightageAt;
+  else if (angle >= 25 && angle <= 155)
+    isDiagonal = 1 * weightageAt;
+  else
+    isHorizontal = 1 * weightageAt;
+  return [isVertical, isDiagonal, isHorizontal];
+}
+function estimateFingerCurl(startPoint, midPoint, endPoint) {
+  const start_mid_x_dist = startPoint[0] - midPoint[0];
+  const start_end_x_dist = startPoint[0] - endPoint[0];
+  const mid_end_x_dist = midPoint[0] - endPoint[0];
+  const start_mid_y_dist = startPoint[1] - midPoint[1];
+  const start_end_y_dist = startPoint[1] - endPoint[1];
+  const mid_end_y_dist = midPoint[1] - endPoint[1];
+  const start_mid_z_dist = startPoint[2] - midPoint[2];
+  const start_end_z_dist = startPoint[2] - endPoint[2];
+  const mid_end_z_dist = midPoint[2] - endPoint[2];
+  const start_mid_dist = Math.sqrt(start_mid_x_dist * start_mid_x_dist + start_mid_y_dist * start_mid_y_dist + start_mid_z_dist * start_mid_z_dist);
+  const start_end_dist = Math.sqrt(start_end_x_dist * start_end_x_dist + start_end_y_dist * start_end_y_dist + start_end_z_dist * start_end_z_dist);
+  const mid_end_dist = Math.sqrt(mid_end_x_dist * mid_end_x_dist + mid_end_y_dist * mid_end_y_dist + mid_end_z_dist * mid_end_z_dist);
+  let cos_in = (mid_end_dist * mid_end_dist + start_mid_dist * start_mid_dist - start_end_dist * start_end_dist) / (2 * mid_end_dist * start_mid_dist);
+  if (cos_in > 1)
+    cos_in = 1;
+  else if (cos_in < -1)
+    cos_in = -1;
+  let angleOfCurve = Math.acos(cos_in);
+  angleOfCurve = 57.2958 * angleOfCurve % 180;
+  let fingerCurl;
+  if (angleOfCurve > options.NO_CURL_START_LIMIT)
+    fingerCurl = FingerCurl.none;
+  else if (angleOfCurve > options.HALF_CURL_START_LIMIT)
+    fingerCurl = FingerCurl.half;
+  else
+    fingerCurl = FingerCurl.full;
+  return fingerCurl;
+}
+function estimateHorizontalDirection(start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x) {
+  let estimatedDirection;
+  if (max_dist_x === Math.abs(start_end_x_dist)) {
+    if (start_end_x_dist > 0)
+      estimatedDirection = FingerDirection.horizontalLeft;
+    else
+      estimatedDirection = FingerDirection.horizontalRight;
+  } else if (max_dist_x === Math.abs(start_mid_x_dist)) {
+    if (start_mid_x_dist > 0)
+      estimatedDirection = FingerDirection.horizontalLeft;
+    else
+      estimatedDirection = FingerDirection.horizontalRight;
+  } else {
+    if (mid_end_x_dist > 0)
+      estimatedDirection = FingerDirection.horizontalLeft;
+    else
+      estimatedDirection = FingerDirection.horizontalRight;
+  }
+  return estimatedDirection;
+}
+function estimateVerticalDirection(start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y) {
+  let estimatedDirection;
+  if (max_dist_y === Math.abs(start_end_y_dist)) {
+    if (start_end_y_dist < 0)
+      estimatedDirection = FingerDirection.verticalDown;
+    else
+      estimatedDirection = FingerDirection.verticalUp;
+  } else if (max_dist_y === Math.abs(start_mid_y_dist)) {
+    if (start_mid_y_dist < 0)
+      estimatedDirection = FingerDirection.verticalDown;
+    else
+      estimatedDirection = FingerDirection.verticalUp;
+  } else {
+    if (mid_end_y_dist < 0)
+      estimatedDirection = FingerDirection.verticalDown;
+    else
+      estimatedDirection = FingerDirection.verticalUp;
+  }
+  return estimatedDirection;
+}
+function estimateDiagonalDirection(start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y, start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x) {
+  let estimatedDirection;
+  const reqd_vertical_direction = estimateVerticalDirection(start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y);
+  const reqd_horizontal_direction = estimateHorizontalDirection(start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x);
+  if (reqd_vertical_direction === FingerDirection.verticalUp) {
+    if (reqd_horizontal_direction === FingerDirection.horizontalLeft)
+      estimatedDirection = FingerDirection.diagonalUpLeft;
+    else
+      estimatedDirection = FingerDirection.diagonalUpRight;
+  } else {
+    if (reqd_horizontal_direction === FingerDirection.horizontalLeft)
+      estimatedDirection = FingerDirection.diagonalDownLeft;
+    else
+      estimatedDirection = FingerDirection.diagonalDownRight;
+  }
+  return estimatedDirection;
+}
+function calculateFingerDirection(startPoint, midPoint, endPoint, fingerSlopes) {
+  const start_mid_x_dist = startPoint[0] - midPoint[0];
+  const start_end_x_dist = startPoint[0] - endPoint[0];
+  const mid_end_x_dist = midPoint[0] - endPoint[0];
+  const start_mid_y_dist = startPoint[1] - midPoint[1];
+  const start_end_y_dist = startPoint[1] - endPoint[1];
+  const mid_end_y_dist = midPoint[1] - endPoint[1];
+  const max_dist_x = Math.max(Math.abs(start_mid_x_dist), Math.abs(start_end_x_dist), Math.abs(mid_end_x_dist));
+  const max_dist_y = Math.max(Math.abs(start_mid_y_dist), Math.abs(start_end_y_dist), Math.abs(mid_end_y_dist));
+  let voteVertical = 0;
+  let voteDiagonal = 0;
+  let voteHorizontal = 0;
+  const start_end_x_y_dist_ratio = max_dist_y / (max_dist_x + 1e-5);
+  if (start_end_x_y_dist_ratio > 1.5)
+    voteVertical += options.DISTANCE_VOTE_POWER;
+  else if (start_end_x_y_dist_ratio > 0.66)
+    voteDiagonal += options.DISTANCE_VOTE_POWER;
+  else
+    voteHorizontal += options.DISTANCE_VOTE_POWER;
+  const start_mid_dist = Math.sqrt(start_mid_x_dist * start_mid_x_dist + start_mid_y_dist * start_mid_y_dist);
+  const start_end_dist = Math.sqrt(start_end_x_dist * start_end_x_dist + start_end_y_dist * start_end_y_dist);
+  const mid_end_dist = Math.sqrt(mid_end_x_dist * mid_end_x_dist + mid_end_y_dist * mid_end_y_dist);
+  const max_dist = Math.max(start_mid_dist, start_end_dist, mid_end_dist);
+  let calc_start_point_x = startPoint[0];
+  let calc_start_point_y = startPoint[1];
+  let calc_end_point_x = endPoint[0];
+  let calc_end_point_y = endPoint[1];
+  if (max_dist === start_mid_dist) {
+    calc_end_point_x = endPoint[0];
+    calc_end_point_y = endPoint[1];
+  } else if (max_dist === mid_end_dist) {
+    calc_start_point_x = midPoint[0];
+    calc_start_point_y = midPoint[1];
+  }
+  const calcStartPoint = [calc_start_point_x, calc_start_point_y];
+  const calcEndPoint = [calc_end_point_x, calc_end_point_y];
+  const totalAngle = getSlopes(calcStartPoint, calcEndPoint);
+  const votes = angleOrientationAt(totalAngle, options.TOTAL_ANGLE_VOTE_POWER);
+  voteVertical += votes[0];
+  voteDiagonal += votes[1];
+  voteHorizontal += votes[2];
+  for (const fingerSlope of fingerSlopes) {
+    const fingerVotes = angleOrientationAt(fingerSlope, options.SINGLE_ANGLE_VOTE_POWER);
+    voteVertical += fingerVotes[0];
+    voteDiagonal += fingerVotes[1];
+    voteHorizontal += fingerVotes[2];
+  }
+  let estimatedDirection;
+  if (voteVertical === Math.max(voteVertical, voteDiagonal, voteHorizontal)) {
+    estimatedDirection = estimateVerticalDirection(start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y);
+  } else if (voteHorizontal === Math.max(voteDiagonal, voteHorizontal)) {
+    estimatedDirection = estimateHorizontalDirection(start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x);
+  } else {
+    estimatedDirection = estimateDiagonalDirection(start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y, start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x);
+  }
+  return estimatedDirection;
+}
+function estimate(landmarks) {
+  const slopesXY = [];
+  const slopesYZ = [];
+  for (const finger of Finger.all) {
+    const points = Finger.getPoints(finger);
+    const slopeAtXY = [];
+    const slopeAtYZ = [];
+    for (const point2 of points) {
+      const point1 = landmarks[point2[0]];
+      const point22 = landmarks[point2[1]];
+      const slopes = getSlopes(point1, point22);
+      const slopeXY = slopes[0];
+      const slopeYZ = slopes[1];
+      slopeAtXY.push(slopeXY);
+      slopeAtYZ.push(slopeYZ);
+    }
+    slopesXY.push(slopeAtXY);
+    slopesYZ.push(slopeAtYZ);
+  }
+  const fingerCurls = [];
+  const fingerDirections = [];
+  for (const finger of Finger.all) {
+    const pointIndexAt = finger === Finger.thumb ? 1 : 0;
+    const fingerPointsAt = Finger.getPoints(finger);
+    const startPoint = landmarks[fingerPointsAt[pointIndexAt][0]];
+    const midPoint = landmarks[fingerPointsAt[pointIndexAt + 1][1]];
+    const endPoint = landmarks[fingerPointsAt[3][1]];
+    const fingerCurled = estimateFingerCurl(startPoint, midPoint, endPoint);
+    const fingerPosition = calculateFingerDirection(startPoint, midPoint, endPoint, slopesXY[finger].slice(pointIndexAt));
+    fingerCurls[finger] = fingerCurled;
+    fingerDirections[finger] = fingerPosition;
+  }
+  return { curls: fingerCurls, directions: fingerDirections };
+}
+
+// src/fingerpose/gesture.ts
+var Gesture = class {
+  constructor(name) {
+    this.name = name;
+    this.curls = {};
+    this.directions = {};
+    this.weights = [1, 1, 1, 1, 1];
+    this.weightsRelative = [1, 1, 1, 1, 1];
+  }
+  addCurl(finger, curl, confidence) {
+    if (typeof this.curls[finger] === "undefined")
+      this.curls[finger] = [];
+    this.curls[finger].push([curl, confidence]);
+  }
+  addDirection(finger, position, confidence) {
+    if (!this.directions[finger])
+      this.directions[finger] = [];
+    this.directions[finger].push([position, confidence]);
+  }
+  setWeight(finger, weight) {
+    this.weights[finger] = weight;
+    const total = this.weights.reduce((a, b) => a + b, 0);
+    this.weightsRelative = this.weights.map((el) => el * 5 / total);
+  }
+  matchAgainst(detectedCurls, detectedDirections) {
+    let confidence = 0;
+    for (const fingerIdx in detectedCurls) {
+      const detectedCurl = detectedCurls[fingerIdx];
+      const expectedCurls = this.curls[fingerIdx];
+      if (typeof expectedCurls === "undefined") {
+        confidence += this.weightsRelative[fingerIdx];
+        continue;
+      }
+      for (const [expectedCurl, score3] of expectedCurls) {
+        if (detectedCurl === expectedCurl) {
+          confidence += score3 * this.weightsRelative[fingerIdx];
+          break;
+        }
+      }
+    }
+    for (const fingerIdx in detectedDirections) {
+      const detectedDirection = detectedDirections[fingerIdx];
+      const expectedDirections = this.directions[fingerIdx];
+      if (typeof expectedDirections === "undefined") {
+        confidence += this.weightsRelative[fingerIdx];
+        continue;
+      }
+      for (const [expectedDirection, score3] of expectedDirections) {
+        if (detectedDirection === expectedDirection) {
+          confidence += score3 * this.weightsRelative[fingerIdx];
+          break;
+        }
+      }
+    }
+    return confidence / 10;
+  }
+};
+
+// src/fingerpose/gestures.ts
+var ThumbsUp = new Gesture("thumbs up");
+ThumbsUp.addCurl(Finger.thumb, FingerCurl.none, 1);
+ThumbsUp.addDirection(Finger.thumb, FingerDirection.verticalUp, 1);
+ThumbsUp.addDirection(Finger.thumb, FingerDirection.diagonalUpLeft, 0.25);
+ThumbsUp.addDirection(Finger.thumb, FingerDirection.diagonalUpRight, 0.25);
+for (const finger of [Finger.index, Finger.middle, Finger.ring, Finger.pinky]) {
+  ThumbsUp.addCurl(finger, FingerCurl.full, 1);
+  ThumbsUp.addDirection(finger, FingerDirection.horizontalLeft, 1);
+  ThumbsUp.addDirection(finger, FingerDirection.horizontalRight, 1);
+}
+var Victory = new Gesture("victory");
+Victory.addCurl(Finger.thumb, FingerCurl.half, 0.5);
+Victory.addCurl(Finger.thumb, FingerCurl.none, 0.5);
+Victory.addDirection(Finger.thumb, FingerDirection.verticalUp, 1);
+Victory.addDirection(Finger.thumb, FingerDirection.diagonalUpLeft, 1);
+Victory.addCurl(Finger.index, FingerCurl.none, 1);
+Victory.addDirection(Finger.index, FingerDirection.verticalUp, 0.75);
+Victory.addDirection(Finger.index, FingerDirection.diagonalUpLeft, 1);
+Victory.addCurl(Finger.middle, FingerCurl.none, 1);
+Victory.addDirection(Finger.middle, FingerDirection.verticalUp, 1);
+Victory.addDirection(Finger.middle, FingerDirection.diagonalUpLeft, 0.75);
+Victory.addCurl(Finger.ring, FingerCurl.full, 1);
+Victory.addDirection(Finger.ring, FingerDirection.verticalUp, 0.2);
+Victory.addDirection(Finger.ring, FingerDirection.diagonalUpLeft, 1);
+Victory.addDirection(Finger.ring, FingerDirection.horizontalLeft, 0.2);
+Victory.addCurl(Finger.pinky, FingerCurl.full, 1);
+Victory.addDirection(Finger.pinky, FingerDirection.verticalUp, 0.2);
+Victory.addDirection(Finger.pinky, FingerDirection.diagonalUpLeft, 1);
+Victory.addDirection(Finger.pinky, FingerDirection.horizontalLeft, 0.2);
+Victory.setWeight(Finger.index, 2);
+Victory.setWeight(Finger.middle, 2);
+var gestures_default = [ThumbsUp, Victory];
+
+// src/fingerpose/fingerpose.ts
+var minConfidence = 0.7;
+function analyze(keypoints3) {
+  const estimatorRes = estimate(keypoints3);
+  const landmarks = {};
+  for (const fingerIdx of Finger.all) {
+    landmarks[Finger.getName(fingerIdx)] = {
+      curl: FingerCurl.getName(estimatorRes.curls[fingerIdx]),
+      direction: FingerDirection.getName(estimatorRes.directions[fingerIdx])
+    };
+  }
+  return landmarks;
+}
+function match2(keypoints3) {
+  const estimatorRes = estimate(keypoints3);
+  const poses2 = [];
+  for (const gesture3 of gestures_default) {
+    const confidence = gesture3.matchAgainst(estimatorRes.curls, estimatorRes.directions);
+    if (confidence >= minConfidence)
+      poses2.push({ name: gesture3.name, confidence });
+  }
+  return poses2;
+}
+
 // src/handpose/handpose.ts
 var meshAnnotations = {
   thumb: [1, 2, 3, 4],
-  indexFinger: [5, 6, 7, 8],
-  middleFinger: [9, 10, 11, 12],
-  ringFinger: [13, 14, 15, 16],
+  index: [5, 6, 7, 8],
+  middle: [9, 10, 11, 12],
+  ring: [13, 14, 15, 16],
   pinky: [17, 18, 19, 20],
-  palmBase: [0]
+  palm: [0]
 };
 var handDetectorModel;
 var handPoseModel;
@@ -8014,7 +8383,16 @@ async function predict5(input, config3) {
         (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / (input.shape[1] || 0)
       ];
     }
-    hands.push({ id: i, score: Math.round(100 * predictions[i].confidence) / 100, box: box6, boxRaw: boxRaw3, keypoints: keypoints3, annotations: annotations3 });
+    const landmarks = analyze(keypoints3);
+    hands.push({
+      id: i,
+      score: Math.round(100 * predictions[i].confidence) / 100,
+      box: box6,
+      boxRaw: boxRaw3,
+      keypoints: keypoints3,
+      annotations: annotations3,
+      landmarks
+    });
   }
   return hands;
 }
@@ -8706,9 +9084,9 @@ var tf18 = __toModule(require_tfjs_esm());
 function GLProgram(gl, vertexSource, fragmentSource) {
   const _collect = function(source, prefix, collection) {
     const r = new RegExp("\\b" + prefix + " \\w+ (\\w+)", "ig");
-    source.replace(r, (match2, name) => {
+    source.replace(r, (match3, name) => {
       collection[name] = 0;
-      return match2;
+      return match3;
     });
   };
   const _compile = function(source, type) {
@@ -10013,6 +10391,9 @@ var hand = (res) => {
       const highest = fingers.reduce((best, a) => best.position[1] < a.position[1] ? best : a);
       gestures.push({ hand: i, gesture: `${highest.name} up` });
     }
+    const poses2 = match2(res[i]["keypoints"]);
+    for (const pose of poses2)
+      gestures.push({ hand: i, gesture: pose.name });
   }
   return gestures;
 };
@@ -10027,10 +10408,10 @@ __export(draw_exports, {
   gesture: () => gesture,
   hand: () => hand2,
   object: () => object,
-  options: () => options,
+  options: () => options2,
   person: () => person
 });
-var options = {
+var options2 = {
   color: "rgba(173, 216, 230, 0.6)",
   labelColor: "rgba(173, 216, 230, 1)",
   shadowColor: "black",
@@ -10115,7 +10496,7 @@ function curves(ctx, points = [], localOptions) {
   }
 }
 async function gesture(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options, drawOptions);
+  const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
   if (!(inCanvas2 instanceof HTMLCanvasElement))
@@ -10145,7 +10526,7 @@ async function gesture(inCanvas2, result, drawOptions) {
 }
 async function face2(inCanvas2, result, drawOptions) {
   var _a, _b, _c, _d;
-  const localOptions = mergeDeep(options, drawOptions);
+  const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
   if (!(inCanvas2 instanceof HTMLCanvasElement))
@@ -10255,7 +10636,7 @@ async function face2(inCanvas2, result, drawOptions) {
 }
 async function body2(inCanvas2, result, drawOptions) {
   var _a;
-  const localOptions = mergeDeep(options, drawOptions);
+  const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
   if (!(inCanvas2 instanceof HTMLCanvasElement))
@@ -10387,7 +10768,7 @@ async function body2(inCanvas2, result, drawOptions) {
   }
 }
 async function hand2(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options, drawOptions);
+  const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
   if (!(inCanvas2 instanceof HTMLCanvasElement))
@@ -10426,12 +10807,12 @@ async function hand2(inCanvas2, result, drawOptions) {
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
       };
       ctx.font = localOptions.font;
-      addHandLabel(h.annotations["indexFinger"], "index");
-      addHandLabel(h.annotations["middleFinger"], "middle");
-      addHandLabel(h.annotations["ringFinger"], "ring");
+      addHandLabel(h.annotations["index"], "index");
+      addHandLabel(h.annotations["middle"], "middle");
+      addHandLabel(h.annotations["ring"], "ring");
       addHandLabel(h.annotations["pinky"], "pinky");
       addHandLabel(h.annotations["thumb"], "thumb");
-      addHandLabel(h.annotations["palmBase"], "palm");
+      addHandLabel(h.annotations["palm"], "palm");
     }
     if (localOptions.drawPolygons) {
       const addHandLine = (part) => {
@@ -10446,16 +10827,16 @@ async function hand2(inCanvas2, result, drawOptions) {
         }
       };
       ctx.lineWidth = localOptions.lineWidth;
-      addHandLine(h.annotations["indexFinger"]);
-      addHandLine(h.annotations["middleFinger"]);
-      addHandLine(h.annotations["ringFinger"]);
+      addHandLine(h.annotations["index"]);
+      addHandLine(h.annotations["middle"]);
+      addHandLine(h.annotations["ring"]);
       addHandLine(h.annotations["pinky"]);
       addHandLine(h.annotations["thumb"]);
     }
   }
 }
 async function object(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options, drawOptions);
+  const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
   if (!(inCanvas2 instanceof HTMLCanvasElement))
@@ -10484,7 +10865,7 @@ async function object(inCanvas2, result, drawOptions) {
   }
 }
 async function person(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options, drawOptions);
+  const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
   if (!(inCanvas2 instanceof HTMLCanvasElement))
@@ -10522,7 +10903,7 @@ async function canvas(inCanvas2, outCanvas2) {
 }
 async function all(inCanvas2, result, drawOptions) {
   const timestamp = now();
-  const localOptions = mergeDeep(options, drawOptions);
+  const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return null;
   if (!(inCanvas2 instanceof HTMLCanvasElement))

@@ -17,7 +17,7 @@ export declare type BodyGesture = `leaning ${'left' | 'right'}` | `raise ${'left
 /**
  * @typedef BodyGesture
  */
-export declare type HandGesture = `${'thumb' | 'index finger' | 'middle finger' | 'ring finger' | 'pinky'} forward` | `${'thumb' | 'index finger' | 'middle finger' | 'ring finger' | 'pinky'} up`;
+export declare type HandGesture = `${'thumb' | 'index' | 'middle' | 'ring' | 'pinky'} forward` | `${'thumb' | 'index' | 'middle' | 'ring' | 'pinky'} up` | 'victory' | 'thumbs up';
 export declare const body: (res: any) => Gesture[];
 export declare const face: (res: any) => Gesture[];
 export declare const iris: (res: any) => Gesture[];

@@ -74,8 +74,9 @@
 						<li>score: detection confidence score as value</li>
 						<li>box: bounding box: x, y, width, height normalized to input image resolution</li>
 						<li>boxRaw: bounding box: x, y, width, height normalized to 0..1</li>
-						<li>landmarks: landmarks as array of [x, y, z] points of hand, normalized to image resolution</li>
-						<li>annotations: annotated landmarks for each hand part</li>
+						<li>keypoints: keypoints as array of [x, y, z] points of hand, normalized to image resolution</li>
+						<li>annotations: annotated landmarks for each hand part with keypoints</li>
+						<li>landmarks: annotated landmarks for eachb hand part with logical curl and direction strings</li>
 					</ul>
 				</div>
 			</section>
@@ -99,6 +100,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Hand.html#boxRaw" class="tsd-kind-icon">box<wbr>Raw</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Hand.html#id" class="tsd-kind-icon">id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Hand.html#keypoints" class="tsd-kind-icon">keypoints</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Hand.html#landmarks" class="tsd-kind-icon">landmarks</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Hand.html#score" class="tsd-kind-icon">score</a></li>
 							</ul>
 						</section>
@@ -110,7 +112,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="annotations" class="tsd-anchor"></a>
 					<h3>annotations</h3>
-					<div class="tsd-signature tsd-kind-icon">annotations<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">annotations<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;index&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;middle&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;pinky&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;ring&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;thumb&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;palm&quot;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
@@ -139,6 +141,13 @@
 					<a name="keypoints" class="tsd-anchor"></a>
 					<h3>keypoints</h3>
 					<div class="tsd-signature tsd-kind-icon">keypoints<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="landmarks" class="tsd-anchor"></a>
+					<h3>landmarks</h3>
+					<div class="tsd-signature tsd-kind-icon">landmarks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;index&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;middle&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;pinky&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;ring&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;thumb&quot;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">{ </span>curl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;none&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;full&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;half&quot;</span><span class="tsd-signature-symbol">; </span>direction<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;verticalUp&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;verticalDown&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;horizontalLeft&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;horizontalRight&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;diagonalUpRight&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;diagonalUpLeft&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;diagonalDownRight&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;diagonalDownLeft&quot;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
@@ -198,6 +207,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="Hand.html#keypoints" class="tsd-kind-icon">keypoints</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="Hand.html#landmarks" class="tsd-kind-icon">landmarks</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="Hand.html#score" class="tsd-kind-icon">score</a>

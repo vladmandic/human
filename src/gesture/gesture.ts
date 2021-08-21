@@ -3,6 +3,7 @@
  */
 
 import { Gesture } from '../result';
+import * as fingerPose from '../fingerpose/fingerpose';
 
 /**
  * @typedef FaceGesture
@@ -33,8 +34,10 @@ export type BodyGesture =
  * @typedef BodyGesture
  */
 export type HandGesture =
-  `${'thumb' | 'index finger' | 'middle finger' | 'ring finger' | 'pinky'} forward`
-  | `${'thumb' | 'index finger' | 'middle finger' | 'ring finger' | 'pinky'} up`;
+  `${'thumb' | 'index' | 'middle' | 'ring' | 'pinky'} forward`
+  | `${'thumb' | 'index' | 'middle' | 'ring' | 'pinky'} up`
+  | 'victory'
+  | 'thumbs up';
 
 export const body = (res): Gesture[] => {
   if (!res) return [];
@@ -129,6 +132,8 @@ export const hand = (res): Gesture[] => {
       const highest = fingers.reduce((best, a) => (best.position[1] < a.position[1] ? best : a));
       gestures.push({ hand: i, gesture: `${highest.name} up` as HandGesture });
     }
+    const poses = fingerPose.match(res[i]['keypoints']);
+    for (const pose of poses) gestures.push({ hand: i, gesture: pose.name as HandGesture });
   }
   return gestures;
 };

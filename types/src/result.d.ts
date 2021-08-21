@@ -96,8 +96,9 @@ export interface Body {
  * - score: detection confidence score as value
  * - box: bounding box: x, y, width, height normalized to input image resolution
  * - boxRaw: bounding box: x, y, width, height normalized to 0..1
- * - landmarks: landmarks as array of [x, y, z] points of hand, normalized to image resolution
- * - annotations: annotated landmarks for each hand part
+ * - keypoints: keypoints as array of [x, y, z] points of hand, normalized to image resolution
+ * - annotations: annotated landmarks for each hand part with keypoints
+ * - landmarks: annotated landmarks for eachb hand part with logical curl and direction strings
  */
 export interface Hand {
     id: number;
@@ -105,7 +106,11 @@ export interface Hand {
     box: [number, number, number, number];
     boxRaw: [number, number, number, number];
     keypoints: Array<[number, number, number]>;
-    annotations: Record<string, Array<[number, number, number]>>;
+    annotations: Record<'index' | 'middle' | 'pinky' | 'ring' | 'thumb' | 'palm', Array<[number, number, number]>>;
+    landmarks: Record<'index' | 'middle' | 'pinky' | 'ring' | 'thumb', {
+        curl: 'none' | 'half' | 'full';
+        direction: 'verticalUp' | 'verticalDown' | 'horizontalLeft' | 'horizontalRight' | 'diagonalUpRight' | 'diagonalUpLeft' | 'diagonalDownRight' | 'diagonalDownLeft';
+    }>;
 }
 /** Object results
 *

@@ -414,12 +414,12 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, dra
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
       };
       ctx.font = localOptions.font;
-      addHandLabel(h.annotations['indexFinger'], 'index');
-      addHandLabel(h.annotations['middleFinger'], 'middle');
-      addHandLabel(h.annotations['ringFinger'], 'ring');
+      addHandLabel(h.annotations['index'], 'index');
+      addHandLabel(h.annotations['middle'], 'middle');
+      addHandLabel(h.annotations['ring'], 'ring');
       addHandLabel(h.annotations['pinky'], 'pinky');
       addHandLabel(h.annotations['thumb'], 'thumb');
-      addHandLabel(h.annotations['palmBase'], 'palm');
+      addHandLabel(h.annotations['palm'], 'palm');
     }
     if (localOptions.drawPolygons) {
       const addHandLine = (part) => {
@@ -433,12 +433,12 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, dra
         }
       };
       ctx.lineWidth = localOptions.lineWidth;
-      addHandLine(h.annotations['indexFinger']);
-      addHandLine(h.annotations['middleFinger']);
-      addHandLine(h.annotations['ringFinger']);
+      addHandLine(h.annotations['index']);
+      addHandLine(h.annotations['middle']);
+      addHandLine(h.annotations['ring']);
       addHandLine(h.annotations['pinky']);
       addHandLine(h.annotations['thumb']);
-      // addPart(h.annotations.palmBase);
+      // addPart(h.annotations.palm);
     }
   }
 }

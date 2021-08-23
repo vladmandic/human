@@ -11891,7 +11891,7 @@ var Human = class {
         if (this.tf.getBackend() === "webgl" || this.tf.getBackend() === "humangl") {
           this.tf.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
           this.tf.ENV.set("WEBGL_CPU_FORWARD", true);
-          this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
+          this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", true);
           this.tf.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
           if (typeof this.config["deallocate"] !== "undefined" && this.config["deallocate"]) {
             log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);

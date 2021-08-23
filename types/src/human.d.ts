@@ -7,7 +7,7 @@ import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as draw from './draw/draw';
 import { Tensor, GraphModel } from './tfjs/types';
-export type { Config } from './config';
+export { Config } from './config';
 export type { Result, Face, Hand, Body, Item, Gesture, Person } from './result';
 export type { DrawOptions } from './draw/draw';
 /** Defines all possible input types for **Human** detection

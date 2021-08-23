@@ -11,6 +11,7 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/08/20 mandic00@live.com
 
+- implemented movenet-multipose model
 
 ### **2.1.4** 2021/08/19 mandic00@live.com
 

@@ -30,7 +30,7 @@ import * as app from '../package.json';
 import { Tensor, GraphModel } from './tfjs/types';
 
 // export types
-export type { Config } from './config';
+export { Config } from './config';
 export type { Result, Face, Hand, Body, Item, Gesture, Person } from './result';
 export type { DrawOptions } from './draw/draw';
 
@@ -371,7 +371,7 @@ export class Human {
       if (this.tf.getBackend() === 'webgl' || this.tf.getBackend() === 'humangl') {
         this.tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
         this.tf.ENV.set('WEBGL_CPU_FORWARD', true);
-        this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', false);
+        this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', true);
         this.tf.ENV.set('WEBGL_USE_SHAPES_UNIFORMS', true);
         // if (!this.config.object.enabled) this.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
         if (typeof this.config['deallocate'] !== 'undefined' && this.config['deallocate']) { // hidden param

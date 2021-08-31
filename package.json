@@ -25,7 +25,7 @@
     "dev": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught server/serve.js",
     "build": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught --no-deprecation server/build.js",
     "lint": "eslint src server demo test",
-    "test": "node --trace-warnings --unhandled-rejections=strict --trace-uncaught test/test.js",
+    "test": "node --no-warnings --unhandled-rejections=strict --trace-uncaught test/test.js",
     "scan": "npx auditjs@latest ossi --dev --quiet"
   },
   "keywords": [

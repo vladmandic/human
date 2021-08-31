@@ -114,7 +114,7 @@ async function detect(input, output) {
   ctx.drawImage(original, 0, 0, outputCanvas.width, outputCanvas.height); // draw original to new canvas
 
   // draw human results on canvas
-  human.setCanvas(outputCanvas); // tell human to use this canvas
+  // human.setCanvas(outputCanvas); // tell human to use this canvas
   human.draw.all(outputCanvas, result); // human will draw results as overlays on canvas
 
   // write canvas to new image file

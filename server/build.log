@@ -1,22 +1,22 @@
-2021-08-31 14:49:10 [36mINFO: [39m @vladmandic/human version 2.1.5 
-2021-08-31 14:49:10 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
-2021-08-31 14:49:10 [36mINFO: [39m Toolchain:  {"tfjs":"3.9.0","esbuild":"0.12.24","typescript":"4.4.2","typedoc":"0.21.9","eslint":"7.32.0"} 
-2021-08-31 14:49:10 [36mINFO: [39m Clean: ["dist/*","types/*","typedoc/*"] 
-2021-08-31 14:49:10 [36mINFO: [39m Build: file startup all type: production config: {"minifyWhitespace":true,"minifyIdentifiers":true,"minifySyntax":true} 
-2021-08-31 14:49:10 [35mSTATE:[39m  target: node type: tfjs: {"imports":1,"importBytes":102,"outputBytes":1303,"outputFiles":"dist/tfjs.esm.js"} 
-2021-08-31 14:49:10 [35mSTATE:[39m  target: node type: node: {"imports":47,"importBytes":457046,"outputBytes":397286,"outputFiles":"dist/human.node.js"} 
-2021-08-31 14:49:10 [35mSTATE:[39m  target: nodeGPU type: tfjs: {"imports":1,"importBytes":110,"outputBytes":1311,"outputFiles":"dist/tfjs.esm.js"} 
-2021-08-31 14:49:11 [35mSTATE:[39m  target: nodeGPU type: node: {"imports":47,"importBytes":457054,"outputBytes":397290,"outputFiles":"dist/human.node-gpu.js"} 
-2021-08-31 14:49:11 [35mSTATE:[39m  target: nodeWASM type: tfjs: {"imports":1,"importBytes":149,"outputBytes":1378,"outputFiles":"dist/tfjs.esm.js"} 
-2021-08-31 14:49:11 [35mSTATE:[39m  target: nodeWASM type: node: {"imports":47,"importBytes":457121,"outputBytes":397362,"outputFiles":"dist/human.node-wasm.js"} 
-2021-08-31 14:49:11 [35mSTATE:[39m  target: browserNoBundle type: tfjs: {"imports":1,"importBytes":2168,"outputBytes":1242,"outputFiles":"dist/tfjs.esm.js"} 
-2021-08-31 14:49:11 [35mSTATE:[39m  target: browserNoBundle type: esm: {"imports":47,"importBytes":456985,"outputBytes":255646,"outputFiles":"dist/human.esm-nobundle.js"} 
-2021-08-31 14:49:11 [35mSTATE:[39m  target: browserBundle type: tfjs: {"modules":1174,"moduleBytes":8150347,"imports":7,"importBytes":2168,"outputBytes":2343932,"outputFiles":"dist/tfjs.esm.js"} 
-2021-08-31 14:49:12 [35mSTATE:[39m  target: browserBundle type: iife: {"imports":47,"importBytes":2799675,"outputBytes":1391880,"outputFiles":"dist/human.js"} 
-2021-08-31 14:49:12 [35mSTATE:[39m  target: browserBundle type: esm: {"imports":47,"importBytes":2799675,"outputBytes":1391872,"outputFiles":"dist/human.esm.js"} 
-2021-08-31 14:49:12 [36mINFO: [39m Running Linter: ["server/","src/","tfjs/","test/","demo/"] 
-2021-08-31 14:49:35 [36mINFO: [39m Linter complete: files: 84 errors: 0 warnings: 0 
-2021-08-31 14:49:35 [36mINFO: [39m Generate ChangeLog: ["/home/vlado/dev/human/CHANGELOG.md"] 
-2021-08-31 14:49:35 [36mINFO: [39m Generate Typings: ["src/human.ts"] outDir: ["types"] 
-2021-08-31 14:49:50 [36mINFO: [39m Generate TypeDocs: ["src/human.ts"] outDir: ["typedoc"] 
-2021-08-31 14:50:03 [36mINFO: [39m Documentation generated at /home/vlado/dev/human/typedoc 1 
+2021-08-31 18:22:47 [36mINFO: [39m @vladmandic/human version 2.1.5 
+2021-08-31 18:22:47 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-08-31 18:22:47 [36mINFO: [39m Toolchain:  {"tfjs":"3.9.0","esbuild":"0.12.24","typescript":"4.4.2","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-08-31 18:22:47 [36mINFO: [39m Clean: ["dist/*","types/*","typedoc/*"] 
+2021-08-31 18:22:47 [36mINFO: [39m Build: file startup all type: production config: {"minifyWhitespace":true,"minifyIdentifiers":true,"minifySyntax":true} 
+2021-08-31 18:22:47 [35mSTATE:[39m  target: node type: tfjs: {"imports":1,"importBytes":102,"outputBytes":1303,"outputFiles":"dist/tfjs.esm.js"} 
+2021-08-31 18:22:47 [35mSTATE:[39m  target: node type: node: {"imports":47,"importBytes":456300,"outputBytes":396489,"outputFiles":"dist/human.node.js"} 
+2021-08-31 18:22:47 [35mSTATE:[39m  target: nodeGPU type: tfjs: {"imports":1,"importBytes":110,"outputBytes":1311,"outputFiles":"dist/tfjs.esm.js"} 
+2021-08-31 18:22:47 [35mSTATE:[39m  target: nodeGPU type: node: {"imports":47,"importBytes":456308,"outputBytes":396493,"outputFiles":"dist/human.node-gpu.js"} 
+2021-08-31 18:22:47 [35mSTATE:[39m  target: nodeWASM type: tfjs: {"imports":1,"importBytes":149,"outputBytes":1378,"outputFiles":"dist/tfjs.esm.js"} 
+2021-08-31 18:22:47 [35mSTATE:[39m  target: nodeWASM type: node: {"imports":47,"importBytes":456375,"outputBytes":396565,"outputFiles":"dist/human.node-wasm.js"} 
+2021-08-31 18:22:47 [35mSTATE:[39m  target: browserNoBundle type: tfjs: {"imports":1,"importBytes":2168,"outputBytes":1242,"outputFiles":"dist/tfjs.esm.js"} 
+2021-08-31 18:22:47 [35mSTATE:[39m  target: browserNoBundle type: esm: {"imports":47,"importBytes":456239,"outputBytes":255270,"outputFiles":"dist/human.esm-nobundle.js"} 
+2021-08-31 18:22:48 [35mSTATE:[39m  target: browserBundle type: tfjs: {"modules":1174,"moduleBytes":8150347,"imports":7,"importBytes":2168,"outputBytes":2343932,"outputFiles":"dist/tfjs.esm.js"} 
+2021-08-31 18:22:48 [35mSTATE:[39m  target: browserBundle type: iife: {"imports":47,"importBytes":2798929,"outputBytes":1391500,"outputFiles":"dist/human.js"} 
+2021-08-31 18:22:49 [35mSTATE:[39m  target: browserBundle type: esm: {"imports":47,"importBytes":2798929,"outputBytes":1391492,"outputFiles":"dist/human.esm.js"} 
+2021-08-31 18:22:49 [36mINFO: [39m Running Linter: ["server/","src/","tfjs/","test/","demo/"] 
+2021-08-31 18:23:12 [36mINFO: [39m Linter complete: files: 84 errors: 0 warnings: 0 
+2021-08-31 18:23:12 [36mINFO: [39m Generate ChangeLog: ["/home/vlado/dev/human/CHANGELOG.md"] 
+2021-08-31 18:23:12 [36mINFO: [39m Generate Typings: ["src/human.ts"] outDir: ["types"] 
+2021-08-31 18:23:26 [36mINFO: [39m Generate TypeDocs: ["src/human.ts"] outDir: ["typedoc"] 
+2021-08-31 18:23:40 [36mINFO: [39m Documentation generated at /home/vlado/dev/human/typedoc 1 

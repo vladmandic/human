@@ -122,12 +122,6 @@ export declare class Human {
      * @param userConfig: {@link Config}
      */
     constructor(userConfig?: Config | Record<string, unknown>);
-    /**
-     * Sets internal canvas methods
-     *
-     * @param canvas
-     */
-    setCanvas: (canvas: any) => void;
     /** @hidden */
     analyze: (...msg: string[]) => void;
     /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)

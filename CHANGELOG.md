@@ -9,7 +9,10 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **HEAD -> main** 2021/08/23 mandic00@live.com
+### **HEAD -> main** 2021/08/31 mandic00@live.com
+
+
+### **origin/main** 2021/08/31 mandic00@live.com
 
 - implement finger poses in hand detection and gestures
 - implemented movenet-multipose model

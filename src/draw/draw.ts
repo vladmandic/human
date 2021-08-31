@@ -66,6 +66,19 @@ export const options: DrawOptions = {
   bufferedOutput: <boolean>true,
 };
 
+let Canvas;
+
+export function setCanvas(obj) {
+  if (obj.getContext) Canvas = obj;
+  else throw new Error('Human: Canvas is not functional');
+}
+
+const checkCanvas = (input) => {
+  if ((typeof HTMLCanvasElement !== 'undefined') && (input instanceof HTMLCanvasElement)) return true;
+  if (typeof Canvas !== 'undefined') return true;
+  return false;
+};
+
 const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
 
 function point(ctx, x, y, z = 0, localOptions) {
@@ -137,7 +150,7 @@ function curves(ctx, points: [number, number, number?][] = [], localOptions) {
 export async function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
-  if (!(inCanvas instanceof HTMLCanvasElement)) return;
+  if (!checkCanvas(inCanvas)) return;
   const ctx = inCanvas.getContext('2d');
   if (!ctx) return;
   ctx.font = localOptions.font;
@@ -164,7 +177,7 @@ export async function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture
 export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
-  if (!(inCanvas instanceof HTMLCanvasElement)) return;
+  if (!checkCanvas(inCanvas)) return;
   const ctx = inCanvas.getContext('2d');
   if (!ctx) return;
   for (const f of result) {
@@ -268,7 +281,7 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, dra
 export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
-  if (!(inCanvas instanceof HTMLCanvasElement)) return;
+  if (!checkCanvas(inCanvas)) return;
   const ctx = inCanvas.getContext('2d');
   if (!ctx) return;
   ctx.lineJoin = 'round';
@@ -380,7 +393,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, dra
 export async function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
-  if (!(inCanvas instanceof HTMLCanvasElement)) return;
+  if (!checkCanvas(inCanvas)) return;
   const ctx = inCanvas.getContext('2d');
   if (!ctx) return;
   ctx.lineJoin = 'round';
@@ -446,7 +459,7 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, dra
 export async function object(inCanvas: HTMLCanvasElement, result: Array<Item>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
-  if (!(inCanvas instanceof HTMLCanvasElement)) return;
+  if (!checkCanvas(inCanvas)) return;
   const ctx = inCanvas.getContext('2d');
   if (!ctx) return;
   ctx.lineJoin = 'round';
@@ -473,7 +486,7 @@ export async function object(inCanvas: HTMLCanvasElement, result: Array<Item>, d
 export async function person(inCanvas: HTMLCanvasElement, result: Array<Person>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
-  if (!(inCanvas instanceof HTMLCanvasElement)) return;
+  if (!checkCanvas(inCanvas)) return;
   const ctx = inCanvas.getContext('2d');
   if (!ctx) return;
   ctx.lineJoin = 'round';
@@ -500,7 +513,7 @@ export async function person(inCanvas: HTMLCanvasElement, result: Array<Person>,
 
 export async function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasElement) {
   if (!inCanvas || !outCanvas) return;
-  if (!(inCanvas instanceof HTMLCanvasElement) || !(outCanvas instanceof HTMLCanvasElement)) return;
+  if (!checkCanvas(inCanvas) || !checkCanvas(outCanvas)) return;
   const outCtx = inCanvas.getContext('2d');
   outCtx?.drawImage(inCanvas, 0, 0);
 }
@@ -509,7 +522,7 @@ export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptio
   const timestamp = now();
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return null;
-  if (!(inCanvas instanceof HTMLCanvasElement)) return null;
+  if (!checkCanvas(inCanvas)) return null;
 
   const promise = Promise.all([
     face(inCanvas, result.face, localOptions),

@@ -10409,7 +10409,8 @@ __export(draw_exports, {
   hand: () => hand2,
   object: () => object,
   options: () => options2,
-  person: () => person
+  person: () => person,
+  setCanvas: () => setCanvas
 });
 var options2 = {
   color: "rgba(173, 216, 230, 0.6)",
@@ -10429,6 +10430,20 @@ var options2 = {
   useDepth: true,
   useCurves: false,
   bufferedOutput: true
+};
+var Canvas;
+function setCanvas(obj) {
+  if (obj.getContext)
+    Canvas = obj;
+  else
+    throw new Error("Human: Canvas is not functional");
+}
+var checkCanvas = (input) => {
+  if (typeof HTMLCanvasElement !== "undefined" && input instanceof HTMLCanvasElement)
+    return true;
+  if (typeof Canvas !== "undefined")
+    return true;
+  return false;
 };
 var rad2deg = (theta) => Math.round(theta * 180 / Math.PI);
 function point(ctx, x, y, z = 0, localOptions) {
@@ -10499,7 +10514,7 @@ async function gesture(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
-  if (!(inCanvas2 instanceof HTMLCanvasElement))
+  if (!checkCanvas(inCanvas2))
     return;
   const ctx = inCanvas2.getContext("2d");
   if (!ctx)
@@ -10529,7 +10544,7 @@ async function face2(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
-  if (!(inCanvas2 instanceof HTMLCanvasElement))
+  if (!checkCanvas(inCanvas2))
     return;
   const ctx = inCanvas2.getContext("2d");
   if (!ctx)
@@ -10639,7 +10654,7 @@ async function body2(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
-  if (!(inCanvas2 instanceof HTMLCanvasElement))
+  if (!checkCanvas(inCanvas2))
     return;
   const ctx = inCanvas2.getContext("2d");
   if (!ctx)
@@ -10771,7 +10786,7 @@ async function hand2(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
-  if (!(inCanvas2 instanceof HTMLCanvasElement))
+  if (!checkCanvas(inCanvas2))
     return;
   const ctx = inCanvas2.getContext("2d");
   if (!ctx)
@@ -10839,7 +10854,7 @@ async function object(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
-  if (!(inCanvas2 instanceof HTMLCanvasElement))
+  if (!checkCanvas(inCanvas2))
     return;
   const ctx = inCanvas2.getContext("2d");
   if (!ctx)
@@ -10868,7 +10883,7 @@ async function person(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
-  if (!(inCanvas2 instanceof HTMLCanvasElement))
+  if (!checkCanvas(inCanvas2))
     return;
   const ctx = inCanvas2.getContext("2d");
   if (!ctx)
@@ -10896,7 +10911,7 @@ async function person(inCanvas2, result, drawOptions) {
 async function canvas(inCanvas2, outCanvas2) {
   if (!inCanvas2 || !outCanvas2)
     return;
-  if (!(inCanvas2 instanceof HTMLCanvasElement) || !(outCanvas2 instanceof HTMLCanvasElement))
+  if (!checkCanvas(inCanvas2) || !checkCanvas(outCanvas2))
     return;
   const outCtx = inCanvas2.getContext("2d");
   outCtx == null ? void 0 : outCtx.drawImage(inCanvas2, 0, 0);
@@ -10906,7 +10921,7 @@ async function all(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return null;
-  if (!(inCanvas2 instanceof HTMLCanvasElement))
+  if (!checkCanvas(inCanvas2))
     return null;
   const promise = Promise.all([
     face2(inCanvas2, result.face, localOptions),
@@ -11804,6 +11819,7 @@ var _Human = class {
     __privateAdd(this, _firstRun, void 0);
     __privateAdd(this, _lastInputSum, void 0);
     __privateAdd(this, _lastCacheDiff, void 0);
+    this.setCanvas = (canvas2) => setCanvas(canvas2);
     this.analyze = (...msg) => {
       if (!__privateGet(this, _analyzeMemoryLeaks))
         return;

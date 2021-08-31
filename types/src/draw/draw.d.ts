@@ -42,6 +42,7 @@ export interface DrawOptions {
     bufferedOutput: boolean;
 }
 export declare const options: DrawOptions;
+export declare function setCanvas(obj: any): void;
 export declare function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture>, drawOptions?: DrawOptions): Promise<void>;
 export declare function face(inCanvas: HTMLCanvasElement, result: Array<Face>, drawOptions?: DrawOptions): Promise<void>;
 export declare function body(inCanvas: HTMLCanvasElement, result: Array<Body>, drawOptions?: DrawOptions): Promise<void>;

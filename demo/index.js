@@ -32,8 +32,8 @@ let human;
 let userConfig = {
   warmup: 'none',
   backend: 'humangl',
-  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.8.0/dist/',
   /*
+  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
   async: false,
   cacheSensitivity: 0,
   filter: {
@@ -947,6 +947,8 @@ async function main() {
 
   // create instance of human
   human = new Human(userConfig);
+  log('human version:', Human.version);
+  log('tfjs version:', human.tf.version.tfjs);
   userConfig = { ...human.config, ...userConfig };
   if (typeof tf !== 'undefined') {
     // eslint-disable-next-line no-undef

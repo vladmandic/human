@@ -159,7 +159,7 @@ Simply load `Human` (*IIFE version*) directly from a cloud CDN in your HTML file
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@vladmandic/human/dist/human.js"></script>
 <script src="https://unpkg.dev/@vladmandic/human/dist/human.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/human/1.4.1/human.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/human/2.1.4/human.js"></script>
 ```
 
 For details, including how to use `Browser ESM` version or `NodeJS` version of `Human`, see [**Installation**](https://github.com/vladmandic/human/wiki/Install)

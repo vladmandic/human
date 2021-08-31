@@ -1,6 +1,7 @@
 const process = require('process');
 const canvasJS = require('canvas');
-const fetch = require('node-fetch').default;
+
+let fetch; // fetch is dynamically imported later
 
 let config;
 
@@ -123,6 +124,7 @@ async function testDetect(human, input, title) {
 
 async function test(Human, inputConfig) {
   config = inputConfig;
+  fetch = (await import('node-fetch')).default;
   const ok = await testHTTP();
   if (!ok) {
     log('error', 'aborting test');

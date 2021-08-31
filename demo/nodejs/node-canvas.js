@@ -4,12 +4,10 @@
 
 const log = require('@vladmandic/pilogger');
 const fs = require('fs');
-const path = require('path');
 const process = require('process');
+const canvas = require('canvas');
 
 let fetch; // fetch is dynamically imported later
-
-// const canvas = require('canvas');
 
 // for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -23,24 +21,18 @@ let human = null;
 const myConfig = {
   backend: 'tensorflow',
   modelBasePath: 'file://models/',
-  debug: true,
-  async: false,
-  filter: {
-    enabled: true,
-    flip: true,
-  },
+  debug: false,
+  async: true,
+  filter: { enabled: false },
   face: {
     enabled: true,
-    detector: { enabled: true, rotation: false },
+    detector: { enabled: true },
     mesh: { enabled: true },
     iris: { enabled: true },
     description: { enabled: true },
     emotion: { enabled: true },
   },
-  hand: {
-    enabled: true,
-  },
-  // body: { modelPath: 'blazepose.json', enabled: true },
+  hand: { enabled: true },
   body: { enabled: true },
   object: { enabled: true },
 };
@@ -52,14 +44,13 @@ async function init() {
   await human.tf.ready();
   // pre-load models
   log.info('Human:', human.version);
-  log.info('Active Configuration', human.config);
   await human.load();
   const loaded = Object.keys(human.models).filter((a) => human.models[a]);
   log.info('Loaded:', loaded);
   log.info('Memory state:', human.tf.engine().memory());
 }
 
-async function detect(input) {
+async function detect(input, output) {
   // read input image file and create tensor to be used for processing
   let buffer;
   log.info('Loading image:', input);
@@ -103,58 +94,10 @@ async function detect(input) {
   human.tf.dispose(tensor);
 
   // print data to console
-  log.data('Results:');
-  if (result && result.face && result.face.length > 0) {
-    for (let i = 0; i < result.face.length; i++) {
-      const face = result.face[i];
-      const emotion = face.emotion.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
-      log.data(`  Face: #${i} boxScore:${face.boxScore} faceScore:${face.faceScore} age:${face.age} genderScore:${face.genderScore} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
-    }
-  } else {
-    log.data('  Face: N/A');
-  }
-  if (result && result.body && result.body.length > 0) {
-    for (let i = 0; i < result.body.length; i++) {
-      const body = result.body[i];
-      log.data(`  Body: #${i} score:${body.score} keypoints:${body.keypoints?.length}`);
-    }
-  } else {
-    log.data('  Body: N/A');
-  }
-  if (result && result.hand && result.hand.length > 0) {
-    for (let i = 0; i < result.hand.length; i++) {
-      const hand = result.hand[i];
-      log.data(`  Hand: #${i} score:${hand.score} keypoints:${hand.keypoints?.length}`);
-    }
-  } else {
-    log.data('  Hand: N/A');
-  }
-  if (result && result.gesture && result.gesture.length > 0) {
-    for (let i = 0; i < result.gesture.length; i++) {
-      const [key, val] = Object.entries(result.gesture[i]);
-      log.data(`  Gesture: ${key[0]}#${key[1]} gesture:${val[1]}`);
-    }
-  } else {
-    log.data('  Gesture: N/A');
-  }
-  if (result && result.object && result.object.length > 0) {
-    for (let i = 0; i < result.object.length; i++) {
-      const object = result.object[i];
-      log.data(`  Object: #${i} score:${object.score} label:${object.label}`);
-    }
-  } else {
-    log.data('  Object: N/A');
-  }
-
-  // print data to console
   if (result) {
     // invoke persons getter
     const persons = result.persons;
-
-    // write result objects to file
-    // fs.writeFileSync('result.json', JSON.stringify(result, null, 2));
-
-    log.data('Persons:');
+    log.data('Detected:');
     for (let i = 0; i < persons.length; i++) {
       const face = persons[i].face;
       const faceTxt = face ? `score:${face.score} age:${face.age} gender:${face.gender} iris:${face.iris}` : null;
@@ -164,26 +107,23 @@ async function detect(input) {
     }
   }
 
-  return result;
-}
+  // load and draw original image
+  const outputCanvas = new canvas.Canvas(tensor.shape[2], tensor.shape[1], 'image'); // decoded tensor shape tells us width and height
+  const ctx = outputCanvas.getContext('2d');
+  const original = await canvas.loadImage(buffer); // we already have input as buffer, so lets reuse it
+  ctx.drawImage(original, 0, 0, outputCanvas.width, outputCanvas.height); // draw original to new canvas
 
-async function test() {
-  process.on('unhandledRejection', (err) => {
-    // @ts-ignore // no idea if exception message is compelte
-    log.error(err?.message || err || 'no error message');
-  });
+  // draw human results on canvas
+  human.setCanvas(outputCanvas); // tell human to use this canvas
+  human.draw.all(outputCanvas, result); // human will draw results as overlays on canvas
 
-  // test with embedded full body image
-  let result;
+  // write canvas to new image file
+  const out = fs.createWriteStream(output);
+  out.on('finish', () => log.state('Created output image:', output));
+  out.on('error', (err) => log.error('Error creating image:', output, err));
+  const stream = outputCanvas.createJPEGStream({ quality: 0.5, progressive: true, chromaSubsampling: true });
+  stream.pipe(out);
 
-  log.state('Processing embedded warmup image: face');
-  myConfig.warmup = 'face';
-  result = await human.warmup(myConfig);
-
-  log.state('Processing embedded warmup image: full');
-  myConfig.warmup = 'full';
-  result = await human.warmup(myConfig);
-  // no need to print results as they are printed to console during detection from within the library due to human.config.debug set
   return result;
 }
 
@@ -192,26 +132,14 @@ async function main() {
   log.info('Current folder:', process.env.PWD);
   fetch = (await import('node-fetch')).default;
   await init();
-  const f = process.argv[2];
-  if (process.argv.length !== 3) {
-    log.warn('Parameters: <input image | folder> missing');
-    await test();
-  } else if (!fs.existsSync(f) && !f.startsWith('http')) {
+  const input = process.argv[2];
+  const output = process.argv[3];
+  if (process.argv.length !== 4) {
+    log.error('Parameters: <input-image> <output-image> missing');
+  } else if (!fs.existsSync(input) && !input.startsWith('http')) {
     log.error(`File not found: ${process.argv[2]}`);
   } else {
-    if (fs.existsSync(f)) {
-      const stat = fs.statSync(f);
-      if (stat.isDirectory()) {
-        const dir = fs.readdirSync(f);
-        for (const file of dir) {
-          await detect(path.join(f, file));
-        }
-      } else {
-        await detect(f);
-      }
-    } else {
-      await detect(f);
-    }
+    await detect(input, output);
   }
 }
 

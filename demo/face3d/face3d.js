@@ -16,7 +16,7 @@ const userConfig = {
   profile: false,
   warmup: 'full',
   modelBasePath: '../../models/',
-  wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.8.0/dist/',
+  // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
   filter: { enabled: false },
   face: { enabled: true,
     detector: { rotation: false, maxDetected: 1 },

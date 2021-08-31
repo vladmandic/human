@@ -123,7 +123,7 @@ function mergeDeep(...objects) {
 var config = {
   backend: "webgl",
   modelBasePath: "../models/",
-  wasmPath: "../node_modules/@tensorflow/tfjs-backend-wasm/dist/",
+  wasmPath: "",
   debug: true,
   async: true,
   warmup: "full",
@@ -11797,7 +11797,7 @@ var version = "2.1.4";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;
-var Human = class {
+var _Human = class {
   constructor(userConfig) {
     __privateAdd(this, _numTensors, void 0);
     __privateAdd(this, _analyzeMemoryLeaks, void 0);
@@ -11999,10 +11999,12 @@ var Human = class {
       }
       return res;
     });
+    _Human.version = version;
+    Object.defineProperty(this, "version", { value: version });
+    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf21.version_core}/dist/`;
     this.config = mergeDeep(config, userConfig || {});
     this.tf = tf21;
     this.draw = draw_exports;
-    this.version = version;
     this.state = "idle";
     __privateSet(this, _numTensors, 0);
     __privateSet(this, _analyzeMemoryLeaks, false);
@@ -12052,7 +12054,7 @@ var Human = class {
       this.config = mergeDeep(this.config, userConfig);
     if (__privateGet(this, _firstRun)) {
       if (this.config.debug)
-        log(`version: ${this.version}`);
+        log(`version: ${_Human.version}`);
       if (this.config.debug)
         log(`tfjs version: ${this.tf.version_core}`);
       if (this.config.debug)
@@ -12254,6 +12256,7 @@ var Human = class {
     return res;
   }
 };
+var Human = _Human;
 _numTensors = new WeakMap();
 _analyzeMemoryLeaks = new WeakMap();
 _checkSanity = new WeakMap();

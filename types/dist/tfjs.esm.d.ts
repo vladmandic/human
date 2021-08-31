@@ -2,7 +2,7 @@ export var Abs: string;
 export var Acos: string;
 export var Acosh: string;
 export var AdadeltaOptimizer: {
-    new (learningRate: any, rho: any, epsilon3?: any): {
+    new (learningRate: any, rho: any, epsilon3?: null): {
         learningRate: any;
         rho: any;
         epsilon: any;
@@ -73,7 +73,7 @@ export var AdagradOptimizer: {
     className: string;
 };
 export var AdamOptimizer: {
-    new (learningRate: any, beta1: any, beta2: any, epsilon3?: any): {
+    new (learningRate: any, beta1: any, beta2: any, epsilon3?: null): {
         learningRate: any;
         beta1: any;
         beta2: any;
@@ -114,7 +114,7 @@ export var AdamOptimizer: {
     className: string;
 };
 export var AdamaxOptimizer: {
-    new (learningRate: any, beta1: any, beta2: any, epsilon3?: any, decay?: number): {
+    new (learningRate: any, beta1: any, beta2: any, epsilon3?: null, decay?: number): {
         learningRate: any;
         beta1: any;
         beta2: any;
@@ -221,6 +221,7 @@ export var BackendWasm: {
 export var BatchMatMul: string;
 export var BatchToSpaceND: string;
 export var Bincount: string;
+export var BroadcastArgs: string;
 export var BroadcastTo: string;
 export var Callback: {
     new (...args: any[]): {
@@ -765,7 +766,7 @@ export var KernelBackend: {
 export var LRN: string;
 export var LRNGrad: string;
 export var LayerVariable: {
-    new (val: any, dtype?: string, name?: string, trainable?: boolean, constraint?: any): {
+    new (val: any, dtype?: string, name?: string, trainable?: boolean, constraint?: null): {
         dtype: string;
         shape: any;
         id: number;
@@ -1164,7 +1165,7 @@ export var Pow: string;
 export var Prelu: string;
 export var Prod: string;
 export var RMSPropOptimizer: {
-    new (learningRate: any, decay?: number, momentum?: number, epsilon3?: any, centered?: boolean): {
+    new (learningRate: any, decay?: number, momentum?: number, epsilon3?: null, centered?: boolean): {
         learningRate: any;
         decay: number;
         momentum: number;
@@ -1207,7 +1208,6 @@ export var RMSPropOptimizer: {
 };
 export var RNN: {
     new (args: any): {
-        [x: string]: any;
         cell: any;
         returnSequences: any;
         returnState: any;
@@ -1296,7 +1296,7 @@ export var RNN: {
             trainable: boolean;
         };
         addLoss(losses4: any): void;
-        addInboundNode(inputTensors: any, outputTensors: any, inputMasks: any, outputMasks: any, inputShapes: any, outputShapes: any, kwargs?: any): void;
+        addInboundNode(inputTensors: any, outputTensors: any, inputMasks: any, outputMasks: any, inputShapes: any, outputShapes: any, kwargs?: null): void;
         disposeWeights(): number;
         assertNotDisposed(): void;
         dispose(): {
@@ -1538,6 +1538,8 @@ export namespace batchToSpaceND { }
 export function bincount(...args: any[]): any;
 export namespace bincount { }
 export function booleanMaskAsync(tensor2: any, mask: any, axis: any): Promise<any>;
+export function broadcastArgs(...args: any[]): any;
+export namespace broadcastArgs { }
 export function broadcastTo(...args: any[]): any;
 export namespace broadcastTo { }
 declare var browser_exports: {};
@@ -1676,6 +1678,7 @@ export function imag(...args: any[]): any;
 export namespace imag { }
 export namespace image {
     export { flipLeftRight };
+    export { grayscaleToRGB };
     export { resizeNearestNeighbor };
     export { resizeBilinear };
     export { rotateWithOffset };
@@ -1836,8 +1839,8 @@ export function loadGraphModel(modelUrl: any, options?: {}): Promise<{
 export function loadLayersModel(pathOrIOHandler: any, options: any): Promise<any>;
 export function localResponseNormalization(...args: any[]): any;
 export namespace localResponseNormalization { }
-export function log(...args: any[]): any;
-export namespace log { }
+declare function log5(...args: any[]): any;
+declare namespace log5 { }
 export function log1p(...args: any[]): any;
 export namespace log1p { }
 export function logSigmoid(...args: any[]): any;
@@ -2309,6 +2312,8 @@ declare function earlyStopping(args: any): {
 };
 declare function flipLeftRight(...args: any[]): any;
 declare namespace flipLeftRight { }
+declare function grayscaleToRGB(...args: any[]): any;
+declare namespace grayscaleToRGB { }
 declare function resizeNearestNeighbor(...args: any[]): any;
 declare namespace resizeNearestNeighbor { }
 declare function resizeBilinear(...args: any[]): any;
@@ -2449,7 +2454,7 @@ declare var OptimizerConstructors: {
         extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    rmsprop(learningRate: any, decay?: number, momentum?: number, epsilon3?: any, centered?: boolean): {
+    rmsprop(learningRate: any, decay?: number, momentum?: number, epsilon3?: null, centered?: boolean): {
         learningRate: any;
         decay: number;
         momentum: number;
@@ -2487,7 +2492,7 @@ declare var OptimizerConstructors: {
         extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    adam(learningRate?: number, beta1?: number, beta2?: number, epsilon3?: any): {
+    adam(learningRate?: number, beta1?: number, beta2?: number, epsilon3?: null): {
         learningRate: any;
         beta1: any;
         beta2: any;
@@ -2524,7 +2529,7 @@ declare var OptimizerConstructors: {
         extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    adadelta(learningRate?: number, rho?: number, epsilon3?: any): {
+    adadelta(learningRate?: number, rho?: number, epsilon3?: null): {
         learningRate: any;
         rho: any;
         epsilon: any;
@@ -2557,7 +2562,7 @@ declare var OptimizerConstructors: {
         extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    adamax(learningRate?: number, beta1?: number, beta2?: number, epsilon3?: any, decay?: number): {
+    adamax(learningRate?: number, beta1?: number, beta2?: number, epsilon3?: null, decay?: number): {
         learningRate: any;
         beta1: any;
         beta2: any;
@@ -2624,4 +2629,4 @@ declare var OptimizerConstructors: {
         getClassName(): any;
     };
 };
-export { add2 as add, backend_util_exports as backend_util, browser_exports as browser, exports_constraints_exports as constraints, dist_exports as data, device_util_exports as device_util, fused_ops_exports as fused, gather_nd_util_exports as gather_util, gpgpu_util_exports as gpgpu_util, exports_initializers_exports as initializers, io_exports as io, isFinite2 as isFinite, isNaN2 as isNaN, kernel_impls_exports as kernel_impls, exports_layers_exports as layers, math_exports as math, exports_metrics_exports as metrics, exports_models_exports as models, ones2 as ones, print2 as print, exports_regularizers_exports as regularizers, round2 as round, scatter_nd_util_exports as scatter_util, serialization_exports as serialization, shared_exports as shared, slice_util_exports as slice_util, sum2 as sum, tanh2 as tanh, tensor_util_exports as tensor_util, test_util_exports as test_util, util_exports as util, version16 as version, version11 as version_converter, version9 as version_core, version13 as version_cpu, version10 as version_layers, version15 as version_wasm, version14 as version_webgl, webgl_util_exports as webgl_util };
+export { add2 as add, backend_util_exports as backend_util, browser_exports as browser, exports_constraints_exports as constraints, dist_exports as data, device_util_exports as device_util, fused_ops_exports as fused, gather_nd_util_exports as gather_util, gpgpu_util_exports as gpgpu_util, exports_initializers_exports as initializers, io_exports as io, isFinite2 as isFinite, isNaN2 as isNaN, kernel_impls_exports as kernel_impls, exports_layers_exports as layers, log5 as log, math_exports as math, exports_metrics_exports as metrics, exports_models_exports as models, ones2 as ones, print2 as print, exports_regularizers_exports as regularizers, round2 as round, scatter_nd_util_exports as scatter_util, serialization_exports as serialization, shared_exports as shared, slice_util_exports as slice_util, sum2 as sum, tanh2 as tanh, tensor_util_exports as tensor_util, test_util_exports as test_util, util_exports as util, version16 as version, version11 as version_converter, version9 as version_core, version13 as version_cpu, version10 as version_layers, version15 as version_wasm, version14 as version_webgl, webgl_util_exports as webgl_util };

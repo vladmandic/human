@@ -1,6 +1,7 @@
 /**
  * Image Processing module used by Human
  */
+/// <reference types="offscreencanvas" />
 import { Tensor } from '../tfjs/types';
 import { Config } from '../config';
 declare type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;

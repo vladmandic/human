@@ -2,6 +2,7 @@
  * Custom TFJS backend for Human based on WebGL
  * Not used by default
  */
+/// <reference types="offscreencanvas" />
 export declare const config: {
     name: string;
     priority: number;

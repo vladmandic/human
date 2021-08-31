@@ -62,7 +62,7 @@ export type TensorFlow = typeof tf;
  */
 export class Human {
   /** Current version of Human library in *semver* format */
-  version: string;
+  static version: string;
   /** Current configuration
    * - Details: {@link Config}
    */
@@ -148,10 +148,12 @@ export class Human {
    * @param userConfig: {@link Config}
    */
   constructor(userConfig?: Config | Record<string, unknown>) {
+    Human.version = app.version;
+    Object.defineProperty(this, 'version', { value: app.version });
+    defaults.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`;
     this.config = mergeDeep(defaults, userConfig || {});
     this.tf = tf;
     this.draw = draw;
-    this.version = app.version;
     this.state = 'idle';
     this.#numTensors = 0;
     this.#analyzeMemoryLeaks = false;
@@ -187,6 +189,8 @@ export class Human {
     this.sysinfo = sysinfo.info();
     this.#lastInputSum = 1;
   }
+
+  // version = () => Human.version;
 
   // helper function: measure tensor leak
   /** @hidden */
@@ -268,7 +272,7 @@ export class Human {
     if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
 
     if (this.#firstRun) { // print version info on first run and check for correct backend setup
-      if (this.config.debug) log(`version: ${this.version}`);
+      if (this.config.debug) log(`version: ${Human.version}`);
       if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
       if (this.config.debug) log('platform:', this.sysinfo.platform);
       if (this.config.debug) log('agent:', this.sysinfo.agent);

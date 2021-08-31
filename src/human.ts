@@ -190,7 +190,12 @@ export class Human {
     this.#lastInputSum = 1;
   }
 
-  // version = () => Human.version;
+  /**
+   * Sets internal canvas methods
+   *
+   * @param canvas
+   */
+  setCanvas = (canvas) => draw.setCanvas(canvas);
 
   // helper function: measure tensor leak
   /** @hidden */

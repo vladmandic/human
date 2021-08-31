@@ -25,12 +25,8 @@ WebGL shader optimizations for faster load and initial detection
 Enhanced rotation correction for face detection is not working in NodeJS due to missing kernel op in TFJS  
 Feature is automatically disabled in NodeJS without user impact  
 
-- Backend NodeJS missing kernel op `FlipLeftRight`  
-  <https://github.com/tensorflow/tfjs/issues/4066>  
-  *Target: `Human` v2.2 with `TFJS` v3.9*
 - Backend NodeJS missing kernel op `RotateWithOffset`  
   <https://github.com/tensorflow/tfjs/issues/5473>  
-  *Target: N/A*
 
 <br>
 
@@ -39,15 +35,10 @@ Feature is automatically disabled in NodeJS without user impact
 Enhanced rotation correction for hand detection is not working in NodeJS due to missing kernel op in TFJS  
 Feature is automatically disabled in NodeJS without user impact  
 
-- Backend NodeJS missing kernel op `FlipLeftRight`  
-  <https://github.com/tensorflow/tfjs/issues/4066>  
-  *Target: `Human` v2.2 with `TFJS` v3.9*  
 - Backend NodeJS missing kernel op `RotateWithOffset`  
   <https://github.com/tensorflow/tfjs/issues/5473>  
-  *Target: N/A*  
 
 Hand detection using WASM backend has reduced precision due to math rounding errors in backend  
-*Target: N/A*
 
 <br>
 
@@ -57,7 +48,6 @@ MoveNet MultiPose model does not work with WASM backend due to missing F32 imple
 
 - Backend WASM missing F32 implementation  
   <https://github.com/tensorflow/tfjs/issues/5516>  
-  *Target: N/A*  
 
 ### Object Detection
 
@@ -65,10 +55,8 @@ Object detection using CenterNet or NanoDet models is not working when using WAS
 
 - Backend WASM missing kernel op `Mod`  
   <https://github.com/tensorflow/tfjs/issues/5110>  
-  *Target: `Human` v2.2 with `TFJS` v3.9*
 - Backend WASM missing kernel op `SparseToDense`  
   <https://github.com/tensorflow/tfjs/issues/4824>  
-  *Target: `Human` v2.2 with `TFJS` v3.9*
 
 ### WebGPU Backend
 

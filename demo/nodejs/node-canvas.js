@@ -9,6 +9,8 @@ const process = require('process');
 
 let fetch; // fetch is dynamically imported later
 
+// const canvas = require('canvas');
+
 // for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');

@@ -9,11 +9,15 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ## Changelog
 
-### **2.1.5** 2021/08/31 mandic00@live.com
+### **HEAD -> main** 2021/08/31 mandic00@live.com
 
 
 ### **origin/main** 2021/08/31 mandic00@live.com
 
+
+### **2.1.5** 2021/08/31 mandic00@live.com
+
+- added demo node-canvas
 - dynamically generate default wasm path
 - implement finger poses in hand detection and gestures
 - implemented movenet-multipose model

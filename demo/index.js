@@ -35,7 +35,7 @@ let userConfig = {
   /*
   wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
   async: false,
-  cacheSensitivity: 0,
+  cacheSensitivity: 0.75,
   filter: {
     enabled: false,
     flip: false,
@@ -49,11 +49,12 @@ let userConfig = {
   },
   object: { enabled: false },
   gesture: { enabled: true },
-  hand: { enabled: false },
+  hand: { enabled: true },
   body: { enabled: false },
   // body: { enabled: true, modelPath: 'movenet-multipose.json' },
   // body: { enabled: true, modelPath: 'posenet.json' },
   segmentation: { enabled: false },
+  /*
   */
 };
 
@@ -82,6 +83,7 @@ const ui = {
   buffered: true, // should output be buffered between frames
   interpolated: true, // should output be interpolated for smoothness between frames
   iconSize: '48px', // ui icon sizes
+  autoPlay: false, // start webcam & detection on load
 
   // internal variables
   busy: false, // internal camera busy flag
@@ -375,9 +377,9 @@ async function setupCamera() {
       canvas.height = video.videoHeight;
       ui.menuWidth.input.setAttribute('value', video.videoWidth);
       ui.menuHeight.input.setAttribute('value', video.videoHeight);
-      if (live) video.play();
+      if (live || ui.autoPlay) video.play();
       // eslint-disable-next-line no-use-before-define
-      if (live && !ui.detectThread) runHumanDetect(video, canvas);
+      if ((live || ui.autoPlay) && !ui.detectThread) runHumanDetect(video, canvas);
       ui.busy = false;
       resolve();
     };
@@ -935,6 +937,10 @@ async function main() {
   if (params.has('bench')) {
     ui.bench = JSON.parse(params.get('bench'));
     log('overriding bench:', ui.bench);
+  }
+  if (params.has('play')) {
+    ui.autoPlay = true;
+    log('overriding autoplay:', true);
   }
   if (params.has('draw')) {
     ui.drawWarmup = JSON.parse(params.get('draw'));

@@ -40,31 +40,23 @@ export class HandDetector {
   }
 
   async getBoxes(input, config) {
-    const batched = this.model.predict(input) as Tensor;
-    const predictions = tf.squeeze(batched);
-    tf.dispose(batched);
-    const scoresT = tf.tidy(() => tf.squeeze(tf.sigmoid(tf.slice(predictions, [0, 0], [-1, 1]))));
-    const scores = await scoresT.data();
-    const rawBoxes = tf.slice(predictions, [0, 1], [-1, 4]);
-    const boxes = this.normalizeBoxes(rawBoxes);
-    tf.dispose(rawBoxes);
-    const filteredT = await tf.image.nonMaxSuppressionAsync(boxes, scores, config.hand.maxDetected, config.hand.iouThreshold, config.hand.minConfidence);
-    const filtered = await filteredT.array();
-
-    tf.dispose(scoresT);
-    tf.dispose(filteredT);
+    const t: Record<string, Tensor> = {};
+    t.batched = this.model.predict(input) as Tensor;
+    t.predictions = tf.squeeze(t.batched);
+    t.scores = tf.tidy(() => tf.squeeze(tf.sigmoid(tf.slice(t.predictions, [0, 0], [-1, 1]))));
+    const scores = await t.scores.data();
+    t.boxes = tf.slice(t.predictions, [0, 1], [-1, 4]);
+    t.norm = this.normalizeBoxes(t.boxes);
+    t.nms = await tf.image.nonMaxSuppressionAsync(t.norm, t.scores, 10 * config.hand.maxDetected, config.hand.iouThreshold, config.hand.minConfidence);
+    const nms = await t.nms.array() as Array<number>;
     const hands: Array<{ box: Tensor, palmLandmarks: Tensor, confidence: number }> = [];
-    for (const index of filtered) {
-      if (scores[index] >= config.hand.minConfidence) {
-        const matchingBox = tf.slice(boxes, [index, 0], [1, -1]);
-        const rawPalmLandmarks = tf.slice(predictions, [index, 5], [1, 14]);
-        const palmLandmarks = tf.tidy(() => tf.reshape(this.normalizeLandmarks(rawPalmLandmarks, index), [-1, 2]));
-        tf.dispose(rawPalmLandmarks);
-        hands.push({ box: matchingBox, palmLandmarks, confidence: scores[index] });
-      }
+    for (const index of nms) {
+      const palmBox = tf.slice(t.norm, [index, 0], [1, -1]);
+      const palmLandmarks = tf.tidy(() => tf.reshape(this.normalizeLandmarks(tf.slice(t.predictions, [index, 5], [1, 14]), index), [-1, 2]));
+      hands.push({ box: palmBox, palmLandmarks, confidence: scores[index] });
+      // console.log('handdetector:getBoxes', nms.length, index, scores[index], config.hand.maxDetected, config.hand.iouThreshold, config.hand.minConfidence, palmBox.dataSync());
     }
-    tf.dispose(predictions);
-    tf.dispose(boxes);
+    for (const tensor of Object.keys(t)) tf.dispose(t[tensor]); // dispose all
     return hands;
   }
 

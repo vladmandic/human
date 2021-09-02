@@ -59,9 +59,10 @@ export function calc(newResult: Result): Result {
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor)) as [number, number, number, number];
       const boxRaw = (newResult.hand[i].boxRaw // update boxRaw
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor)) as [number, number, number, number];
-      const keypoints = newResult.hand[i].keypoints // update landmarks
+      const keypoints = newResult.hand[i].keypoints ? newResult.hand[i].keypoints // update landmarks
         .map((landmark, j) => landmark
-          .map((coord, k) => (((bufferedFactor - 1) * bufferedResult.hand[i].keypoints[j][k] + coord) / bufferedFactor)) as [number, number, number]);
+          .map((coord, k) => (((bufferedFactor - 1) * bufferedResult.hand[i].keypoints[j][k] + coord) / bufferedFactor)) as [number, number, number])
+        : [];
       const keys = Object.keys(newResult.hand[i].annotations); // update annotations
       const annotations = {};
       for (const key of keys) {

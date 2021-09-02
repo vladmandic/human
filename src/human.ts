@@ -148,8 +148,8 @@ export class Human {
    * @param userConfig: {@link Config}
    */
   constructor(userConfig?: Config | Record<string, unknown>) {
-    Human.version = app.version;
-    Object.defineProperty(this, 'version', { value: app.version });
+    Human.version = app.version; // expose version property on instance of class
+    Object.defineProperty(this, 'version', { value: app.version }); // expose version property directly on class itself
     defaults.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`;
     this.config = mergeDeep(defaults, userConfig || {});
     this.tf = tf;
@@ -427,6 +427,7 @@ export class Human {
     const skipFrame = diff < Math.max(this.config.cacheSensitivity, this.#lastCacheDiff);
     // if difference is above 10x threshold, don't use last value to force reset cache for significant change of scenes or images
     this.#lastCacheDiff = diff > 10 * this.config.cacheSensitivity ? 0 : diff;
+    // console.log('skipFrame', skipFrame, this.config.cacheSensitivity, diff);
     return skipFrame;
   }
 

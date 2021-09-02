@@ -407,6 +407,7 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, dra
     }
     if (localOptions.drawLabels) {
       const addHandLabel = (part, title) => {
+        if (!part) return;
         ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + (2 * part[part.length - 1][2])}, ${127.5 - (2 * part[part.length - 1][2])}, 255, 0.5)` : localOptions.color;
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
       };

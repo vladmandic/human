@@ -11,9 +11,8 @@ Repository: **<git+https://github.com/vladmandic/human.git>**
 
 ### **HEAD -> main** 2021/08/31 mandic00@live.com
 
-
-### **origin/main** 2021/08/31 mandic00@live.com
-
+- simplify canvas handling in nodejs
+- full rebuild
 
 ### **2.1.5** 2021/08/31 mandic00@live.com
 

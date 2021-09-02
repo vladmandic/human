@@ -167,6 +167,11 @@ export function estimate(landmarks) {
   // step 1: calculate slopes
   const slopesXY: Array<number[]> = [];
   const slopesYZ: Array<number[]> = [];
+  const fingerCurls: Array<number> = [];
+  const fingerDirections: Array<number> = [];
+  if (!landmarks) return { curls: fingerCurls, directions: fingerDirections };
+
+  // step 1: calculate slopes
   for (const finger of Finger.all) {
     const points = Finger.getPoints(finger);
     const slopeAtXY: Array<number> = [];
@@ -186,8 +191,6 @@ export function estimate(landmarks) {
   }
 
   // step 2: calculate orientations
-  const fingerCurls: Array<number> = [];
-  const fingerDirections: Array<number> = [];
   for (const finger of Finger.all) {
     // start finger predictions from palm - except for thumb
     const pointIndexAt = (finger === Finger.thumb) ? 1 : 0;

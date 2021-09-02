@@ -195,9 +195,9 @@ var config = {
     enabled: true,
     rotation: true,
     skipFrames: 18,
-    minConfidence: 0.1,
-    iouThreshold: 0.1,
-    maxDetected: 2,
+    minConfidence: 0.8,
+    iouThreshold: 0.2,
+    maxDetected: 1,
     landmarks: true,
     detector: {
       modelPath: "handdetect.json"
@@ -7716,30 +7716,23 @@ var HandDetector = class {
     });
   }
   async getBoxes(input, config3) {
-    const batched = this.model.predict(input);
-    const predictions = tf10.squeeze(batched);
-    tf10.dispose(batched);
-    const scoresT = tf10.tidy(() => tf10.squeeze(tf10.sigmoid(tf10.slice(predictions, [0, 0], [-1, 1]))));
-    const scores = await scoresT.data();
-    const rawBoxes = tf10.slice(predictions, [0, 1], [-1, 4]);
-    const boxes = this.normalizeBoxes(rawBoxes);
-    tf10.dispose(rawBoxes);
-    const filteredT = await tf10.image.nonMaxSuppressionAsync(boxes, scores, config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
-    const filtered = await filteredT.array();
-    tf10.dispose(scoresT);
-    tf10.dispose(filteredT);
+    const t = {};
+    t.batched = this.model.predict(input);
+    t.predictions = tf10.squeeze(t.batched);
+    t.scores = tf10.tidy(() => tf10.squeeze(tf10.sigmoid(tf10.slice(t.predictions, [0, 0], [-1, 1]))));
+    const scores = await t.scores.data();
+    t.boxes = tf10.slice(t.predictions, [0, 1], [-1, 4]);
+    t.norm = this.normalizeBoxes(t.boxes);
+    t.nms = await tf10.image.nonMaxSuppressionAsync(t.norm, t.scores, 10 * config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
+    const nms = await t.nms.array();
     const hands = [];
-    for (const index of filtered) {
-      if (scores[index] >= config3.hand.minConfidence) {
-        const matchingBox = tf10.slice(boxes, [index, 0], [1, -1]);
-        const rawPalmLandmarks = tf10.slice(predictions, [index, 5], [1, 14]);
-        const palmLandmarks = tf10.tidy(() => tf10.reshape(this.normalizeLandmarks(rawPalmLandmarks, index), [-1, 2]));
-        tf10.dispose(rawPalmLandmarks);
-        hands.push({ box: matchingBox, palmLandmarks, confidence: scores[index] });
-      }
+    for (const index of nms) {
+      const palmBox = tf10.slice(t.norm, [index, 0], [1, -1]);
+      const palmLandmarks = tf10.tidy(() => tf10.reshape(this.normalizeLandmarks(tf10.slice(t.predictions, [index, 5], [1, 14]), index), [-1, 2]));
+      hands.push({ box: palmBox, palmLandmarks, confidence: scores[index] });
     }
-    tf10.dispose(predictions);
-    tf10.dispose(boxes);
+    for (const tensor2 of Object.keys(t))
+      tf10.dispose(t[tensor2]);
     return hands;
   }
   async estimateHandBounds(input, config3) {
@@ -7927,7 +7920,7 @@ var HandPipeline = class {
         tf11.dispose(handImage);
         const confidence = (await confidenceT.data())[0];
         tf11.dispose(confidenceT);
-        if (confidence >= config3.hand.minConfidence) {
+        if (confidence >= config3.hand.minConfidence / 4) {
           const keypointsReshaped = tf11.reshape(keypoints3, [-1, 3]);
           const rawCoords = await keypointsReshaped.array();
           tf11.dispose(keypoints3);
@@ -8181,6 +8174,10 @@ function calculateFingerDirection(startPoint, midPoint, endPoint, fingerSlopes) 
 function estimate(landmarks) {
   const slopesXY = [];
   const slopesYZ = [];
+  const fingerCurls = [];
+  const fingerDirections = [];
+  if (!landmarks)
+    return { curls: fingerCurls, directions: fingerDirections };
   for (const finger of Finger.all) {
     const points = Finger.getPoints(finger);
     const slopeAtXY = [];
@@ -8197,8 +8194,6 @@ function estimate(landmarks) {
     slopesXY.push(slopeAtXY);
     slopesYZ.push(slopeAtYZ);
   }
-  const fingerCurls = [];
-  const fingerDirections = [];
   for (const finger of Finger.all) {
     const pointIndexAt = finger === Finger.thumb ? 1 : 0;
     const fingerPointsAt = Finger.getPoints(finger);
@@ -10793,6 +10788,8 @@ async function hand2(inCanvas2, result, drawOptions) {
     }
     if (localOptions.drawLabels) {
       const addHandLabel = (part, title) => {
+        if (!part)
+          return;
         ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * part[part.length - 1][2]}, ${127.5 - 2 * part[part.length - 1][2]}, 255, 0.5)` : localOptions.color;
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
       };
@@ -10992,7 +10989,7 @@ function calc(newResult) {
     for (let i = 0; i < newResult.hand.length; i++) {
       const box6 = newResult.hand[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor);
       const boxRaw3 = newResult.hand[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor);
-      const keypoints3 = newResult.hand[i].keypoints.map((landmark, j) => landmark.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].keypoints[j][k] + coord) / bufferedFactor));
+      const keypoints3 = newResult.hand[i].keypoints ? newResult.hand[i].keypoints.map((landmark, j) => landmark.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].keypoints[j][k] + coord) / bufferedFactor)) : [];
       const keys = Object.keys(newResult.hand[i].annotations);
       const annotations3 = {};
       for (const key of keys) {

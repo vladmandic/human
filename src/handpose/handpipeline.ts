@@ -85,7 +85,7 @@ export class HandPipeline {
     // run new detector every skipFrames unless we only want box to start with
     let boxes;
 
-    // console.log(this.skipped, config.hand.skipFrames, !config.hand.landmarks, !config.skipFrame);
+    // console.log('handpipeline:estimateHands:skip criteria', this.skipped, config.hand.skipFrames, !config.hand.landmarks, !config.skipFrame); // should skip hand detector?
     if ((this.skipped === 0) || (this.skipped > config.hand.skipFrames) || !config.hand.landmarks || !config.skipFrame) {
       boxes = await this.handDetector.estimateHandBounds(image, config);
       this.skipped = 0;
@@ -120,7 +120,7 @@ export class HandPipeline {
         tf.dispose(handImage);
         const confidence = (await confidenceT.data())[0];
         tf.dispose(confidenceT);
-        if (confidence >= config.hand.minConfidence) {
+        if (confidence >= config.hand.minConfidence / 4) {
           const keypointsReshaped = tf.reshape(keypoints, [-1, 3]);
           const rawCoords = await keypointsReshaped.array();
           tf.dispose(keypoints);
@@ -135,6 +135,7 @@ export class HandPipeline {
           };
           hands.push(result);
         } else {
+          // console.log('handpipeline:estimateHands low', confidence);
           this.storedBoxes[i] = null;
         }
         tf.dispose(keypoints);

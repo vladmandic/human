@@ -331,9 +331,9 @@ const config: Config = {
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated hand skeleton analysis as the hand probably
                              // hasn't moved much in short time (10 * 1/25 = 0.25 sec)
-    minConfidence: 0.1,      // threshold for discarding a prediction
-    iouThreshold: 0.1,       // ammount of overlap between two detected objects before one object is removed
-    maxDetected: 2,          // maximum number of hands detected in the input
+    minConfidence: 0.8,      // threshold for discarding a prediction
+    iouThreshold: 0.2,       // ammount of overlap between two detected objects before one object is removed
+    maxDetected: 1,          // maximum number of hands detected in the input
                              // should be set to the minimum number for performance
     landmarks: true,         // detect hand landmarks or just hand boundary box
     detector: {

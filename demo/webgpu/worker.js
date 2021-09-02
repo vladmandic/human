@@ -5,7 +5,7 @@
 // import Human from '../dist/human.esm.js';
 self.importScripts('../../dist/human.js');
 self.importScripts('../../node_modules/@tensorflow/tfjs-core/dist/tf-core.es2017.js');
-self.importScripts('../../assets/tf-backend-webgpu.es2017.js');
+// self.importScripts('../../assets/tf-backend-webgpu.fesm.js');
 
 let human;
 

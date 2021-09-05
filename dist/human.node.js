@@ -11771,7 +11771,7 @@ var version = "2.1.5";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;
-var _Human = class {
+var Human = class {
   constructor(userConfig) {
     __privateAdd(this, _numTensors, void 0);
     __privateAdd(this, _analyzeMemoryLeaks, void 0);
@@ -11973,7 +11973,7 @@ var _Human = class {
       }
       return res;
     });
-    _Human.version = version;
+    this.version = version;
     Object.defineProperty(this, "version", { value: version });
     config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf21.version_core}/dist/`;
     this.config = mergeDeep(config, userConfig || {});
@@ -12028,7 +12028,7 @@ var _Human = class {
       this.config = mergeDeep(this.config, userConfig);
     if (__privateGet(this, _firstRun)) {
       if (this.config.debug)
-        log(`version: ${_Human.version}`);
+        log(`version: ${this.version}`);
       if (this.config.debug)
         log(`tfjs version: ${this.tf.version_core}`);
       if (this.config.debug)
@@ -12230,7 +12230,6 @@ var _Human = class {
     return res;
   }
 };
-var Human = _Human;
 _numTensors = new WeakMap();
 _analyzeMemoryLeaks = new WeakMap();
 _checkSanity = new WeakMap();

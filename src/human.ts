@@ -62,7 +62,7 @@ export type TensorFlow = typeof tf;
  */
 export class Human {
   /** Current version of Human library in *semver* format */
-  static version: string;
+  version: string;
   /** Current configuration
    * - Details: {@link Config}
    */
@@ -148,7 +148,7 @@ export class Human {
    * @param userConfig: {@link Config}
    */
   constructor(userConfig?: Config | Record<string, unknown>) {
-    Human.version = app.version; // expose version property on instance of class
+    this.version = app.version; // expose version property on instance of class
     Object.defineProperty(this, 'version', { value: app.version }); // expose version property directly on class itself
     defaults.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`;
     this.config = mergeDeep(defaults, userConfig || {});
@@ -270,7 +270,7 @@ export class Human {
     if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
 
     if (this.#firstRun) { // print version info on first run and check for correct backend setup
-      if (this.config.debug) log(`version: ${Human.version}`);
+      if (this.config.debug) log(`version: ${this.version}`);
       if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
       if (this.config.debug) log('platform:', this.sysinfo.platform);
       if (this.config.debug) log('agent:', this.sysinfo.agent);

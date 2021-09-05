@@ -13,6 +13,7 @@
 
 const spawn = require('child_process').spawn;
 const log = require('@vladmandic/pilogger');
+// @ts-ignore pipe2jpeg is not installed by default
 // eslint-disable-next-line node/no-missing-require
 const Pipe2Jpeg = require('pipe2jpeg');
 // for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human

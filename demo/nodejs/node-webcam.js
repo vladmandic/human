@@ -8,6 +8,7 @@
 
 let initial = true; // remember if this is the first run to print additional details
 const log = require('@vladmandic/pilogger');
+// @ts-ignore node-webcam is not installed by default
 // eslint-disable-next-line node/no-missing-require
 const nodeWebCam = require('node-webcam');
 // for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human

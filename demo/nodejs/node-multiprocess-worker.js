@@ -64,8 +64,11 @@ async function main() {
 
   // on worker start first initialize message handler so we don't miss any messages
   process.on('message', (msg) => {
+    // @ts-ignore
     if (msg.exit && process.exit) process.exit(); // if main told worker to exit
+    // @ts-ignore
     if (msg.test && process.send) process.send({ test: true });
+    // @ts-ignore
     if (msg.image) detect(msg.image); // if main told worker to process image
     log.data('Worker received message:', process.pid, msg); // generic log
   });

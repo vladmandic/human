@@ -6,6 +6,7 @@ WebGL shader optimizations for faster load and initial detection
 
 - Implement WebGL uniforms for shaders: <https://github.com/tensorflow/tfjs/issues/5205>
 - Fix shader packing: <https://github.com/tensorflow/tfjs/issues/5343>
+- Event emitters
 
 <br>
 

@@ -5,21 +5,21 @@
     "console": true,
     "output": "test/build.log"
   },
+  "profiles": {
+    "production": ["clean", "compile", "typings", "typedoc", "lint", "changelog"],
+    "development": ["serve", "watch", "compile"]
+  },
   "clean": {
-    "enabled": true,
     "locations": ["dist/*", "types/*", "typedoc/*"]
   },
   "lint": {
-    "enabled": true,
     "locations": [ "src/**/*.ts", "test/*.js", "demo/**/*.js" ],
     "rules": { }
   },
   "changelog": {
-    "enabled": true,
     "log": "CHANGELOG.md"
   },
   "serve": {
-    "enabled": true,
     "sslKey": "node_modules/@vladmandic/build/cert/https.key",
     "sslCrt": "node_modules/@vladmandic/build/cert/https.crt",
     "httpPort": 10030,
@@ -29,21 +29,14 @@
     "defaultFile": "index.html"
     },
   "build": {
-    "enabled": true,
     "global": {
       "target": "es2018",
       "sourcemap": true,
       "banner": { "js": "/*\n  Human\n  homepage: <https://github.com/vladmandic/human>\n  author: <https://github.com/vladmandic>'\n*/\n" }
     },
-    "production": {
-      "minify": false
-    },
-    "development": {
-      "minify": false
-    },
     "targets": [
       {
-        "name": "tfjs for nodejs with cpu",
+        "name": "tfjs/nodejs/cpu",
         "platform": "node",
         "format": "cjs",
         "input": "tfjs/tf-node.ts",
@@ -52,7 +45,7 @@
         "external": ["@tensorflow"]
       },
       {
-        "name": "human for nodejs with cpu",
+        "name": "human/nodejs/cpu",
         "platform": "node",
         "format": "cjs",
         "input": "src/human.ts",
@@ -61,7 +54,7 @@
         "external": ["@tensorflow"]
       },
       {
-        "name": "tfjs for nodejs with gpu",
+        "name": "tfjs/nodejs/gpu",
         "platform": "node",
         "format": "cjs",
         "input": "tfjs/tf-node-gpu.ts",
@@ -70,7 +63,7 @@
         "external": ["@tensorflow"]
       },
       {
-        "name": "human for nodejs with gpu",
+        "name": "human/nodejs/gpu",
         "platform": "node",
         "format": "cjs",
         "input": "src/human.ts",
@@ -79,7 +72,7 @@
         "external": ["@tensorflow"]
       },
       {
-        "name": "tfjs for nodejs with wasm",
+        "name": "tfjs/nodejs/wasm",
         "platform": "node",
         "format": "cjs",
         "input": "tfjs/tf-node-wasm.ts",
@@ -88,7 +81,7 @@
         "external": ["@tensorflow"]
       },
       {
-        "name": "human for nodejs with wasm",
+        "name": "human/nodejs/wasm",
         "platform": "node",
         "format": "cjs",
         "input": "src/human.ts",
@@ -97,7 +90,7 @@
         "external": ["@tensorflow"]
       },
       {
-        "name": "tfjs for browser esm nobundle",
+        "name": "tfjs/browser/esm/nobundle",
         "platform": "browser",
         "format": "esm",
         "input": "tfjs/tf-browser.ts",
@@ -106,7 +99,7 @@
         "external": ["@tensorflow", "fs", "os", "buffer", "util"]
       },
       {
-        "name": "human for browser esm nobundle",
+        "name": "human/browser/esm/nobundle",
         "platform": "browser",
         "format": "esm",
         "input": "src/human.ts",
@@ -115,25 +108,27 @@
         "external": ["@tensorflow", "fs", "os", "buffer", "util"]
       },
       {
-        "name": "tfjs for browser esm bundle",
+        "name": "tfjs/browser/esm/bundle",
         "platform": "browser",
         "format": "esm",
         "input": "tfjs/tf-browser.ts",
         "output": "dist/tfjs.esm.js",
         "sourcemap": false,
+        "minify": true,
         "external": ["fs", "os", "buffer", "util"]
       },
       {
-        "name": "human for browser iife bundle",
+        "name": "human/browser/iife/bundle",
         "platform": "browser",
         "format": "iife",
         "input": "src/human.ts",
         "output": "dist/human.js",
         "sourcemap": false,
+        "minify": true,
         "external": ["fs", "os", "buffer", "util"]
       },
       {
-        "name": "human for browser esm bundle",
+        "name": "human/browser/esm/bundle",
         "platform": "browser",
         "format": "esm",
         "input": "src/human.ts",
@@ -146,7 +141,6 @@
     ]
   },
   "watch": {
-    "enabled": true,
     "locations": [ "src/**", "tfjs/*" ]
   },
   "typescript": {

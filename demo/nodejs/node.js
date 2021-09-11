@@ -50,7 +50,7 @@ async function init() {
   await human.tf.ready();
   // pre-load models
   log.info('Human:', human.version);
-  log.info('Active Configuration', human.config);
+  // log.info('Active Configuration', human.config);
   await human.load();
   const loaded = Object.keys(human.models).filter((a) => human.models[a]);
   log.info('Loaded:', loaded);
@@ -186,6 +186,7 @@ async function test() {
 }
 
 async function main() {
+  log.configure({ inspect: { breakLength: 265 } });
   log.header();
   log.info('Current folder:', process.env.PWD);
   fetch = (await import('node-fetch')).default;

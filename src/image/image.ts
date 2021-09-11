@@ -13,8 +13,8 @@ const maxSize = 2048;
 // internal temp canvases
 let inCanvas;
 let outCanvas;
-// instance of fximage
-let fx: fxImage.GLImageFilter | null;
+// @ts-ignore // imagefx is js module that should be converted to a class
+let fx: fxImage.GLImageFilter | null; // instance of imagefx
 
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
@@ -38,8 +38,8 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
   }
   if (input instanceof tf.Tensor) {
     // if input is tensor, use as-is
-    if (input.shape && input.shape.length === 4 && input.shape[0] === 1 && input.shape[3] === 3) tensor = tf.clone(input);
-    else throw new Error(`Human: Input tensor shape must be [1, height, width, 3] and instead was ${input.shape}`);
+    if ((input as Tensor).shape && (input as Tensor).shape.length === 4 && (input as Tensor).shape[0] === 1 && (input as Tensor).shape[3] === 3) tensor = tf.clone(input);
+    else throw new Error(`Human: Input tensor shape must be [1, height, width, 3] and instead was ${(input as Tensor).shape}`);
   } else {
     // check if resizing will be needed
     const originalWidth = input['naturalWidth'] || input['videoWidth'] || input['width'] || (input['shape'] && (input['shape'][1] > 0));

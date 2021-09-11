@@ -116,6 +116,7 @@
         "input": "src/human.ts",
         "output": "dist/human.js",
         "minify": true,
+        "globalName": "Human",
         "external": ["fs", "os", "buffer", "util"]
       },
       {

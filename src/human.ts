@@ -160,7 +160,7 @@ export class Human {
    * Creates instance of Human library that is futher used for all operations
    * @param userConfig: {@link Config}
    */
-  constructor(userConfig?: Config | Record<string, unknown>) {
+  constructor(userConfig?: Partial<Config>) {
     this.version = app.version; // expose version property on instance of class
     Object.defineProperty(this, 'version', { value: app.version }); // expose version property directly on class itself
     defaults.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`;
@@ -280,7 +280,7 @@ export class Human {
    * - Not explicitly required as any required model is load implicitly on it's first run
    * @param userConfig?: {@link Config}
   */
-  async load(userConfig?: Config | Record<string, unknown>) {
+  async load(userConfig?: Partial<Config>) {
     this.state = 'load';
     const timeStamp = now();
     const count = Object.values(this.models).filter((model) => model).length;
@@ -464,7 +464,7 @@ export class Human {
    * @param userConfig?: {@link Config}
    * @returns result: {@link Result}
   */
-  async detect(input: Input, userConfig?: Config | Record<string, unknown>): Promise<Result | Error> {
+  async detect(input: Input, userConfig?: Partial<Config>): Promise<Result | Error> {
     // detection happens inside a promise
     return new Promise(async (resolve) => {
       this.state = 'config';
@@ -716,7 +716,7 @@ export class Human {
    * - only used for `webgl` and `humangl` backends
    * @param userConfig?: Config
   */
-  async warmup(userConfig?: Config | Record<string, unknown>): Promise<Result | { error }> {
+  async warmup(userConfig?: Partial<Config>): Promise<Result | { error }> {
     const t0 = now();
     if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
     if (!this.config.warmup || this.config.warmup === 'none') return { error: 'null' };

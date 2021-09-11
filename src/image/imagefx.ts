@@ -2,6 +2,8 @@
 WebGLImageFilter by Dominic Szablewski: <https://github.com/phoboslab/WebGLImageFilter>
 */
 
+// @ts-nocheck
+
 function GLProgram(gl, vertexSource, fragmentSource) {
   const _collect = function (source, prefix, collection) {
     const r = new RegExp('\\b' + prefix + ' \\w+ (\\w+)', 'ig');

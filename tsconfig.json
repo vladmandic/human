@@ -44,20 +44,6 @@
   "exclude": ["node_modules/", "types/", "tfjs/", "dist/"],
   "include": ["src"],
   "typedocOptions": {
-    "excludePrivate": true,
-    "excludeExternals": true,
-    "excludeProtected": true,
-    "excludeInternal": true,
-    "disableSources": true,
-    "gitRevision": "main",
-    "hideGenerator": "true",
-    "readme": "none",
-    "out": "typedoc",
-    "entryPoints": ["src/human.ts"],
-    "exclude": [],
     "externalPattern": ["node_modules/", "tfjs/"],
-    "logLevel": "Verbose",
-    "logger": "none",
-    "theme": "wiki/theme/"
   }
 }

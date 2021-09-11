@@ -195,11 +195,11 @@ draw output on screen using internal draw helper functions
 // create instance of human with simple configuration using default values
 const config = { backend: 'webgl' };
 const human = new Human(config);
+// select input HTMLVideoElement and output HTMLCanvasElement from page
+const inputVideo = document.getElementById('video-id');
+const outputCanvas = document.getElementById('canvas-id');
 
 function detectVideo() {
-  // select input HTMLVideoElement and output HTMLCanvasElement from page
-  const inputVideo = document.getElementById('video-id');
-  const outputCanvas = document.getElementById('canvas-id');
   // perform processing using default configuration
   human.detect(inputVideo).then((result) => {
     // result object will contain detected details
@@ -225,13 +225,34 @@ or using `async/await`:
 // create instance of human with simple configuration using default values
 const config = { backend: 'webgl' };
 const human = new Human(config); // create instance of Human
+const inputVideo = document.getElementById('video-id');
+const outputCanvas = document.getElementById('canvas-id');
 
 async function detectVideo() {
-  const inputVideo = document.getElementById('video-id');
-  const outputCanvas = document.getElementById('canvas-id');
   const result = await human.detect(inputVideo); // run detection
   human.draw.all(outputCanvas, result); // draw all results
   requestAnimationFrame(detectVideo); // run loop
+}
+
+detectVideo(); // start loop
+```
+
+or using `Events`:
+
+```js
+// create instance of human with simple configuration using default values
+const config = { backend: 'webgl' };
+const human = new Human(config); // create instance of Human
+const inputVideo = document.getElementById('video-id');
+const outputCanvas = document.getElementById('canvas-id');
+
+human.events.addEventListener('detect', () => { // event gets triggered when detect is complete
+  human.draw.all(outputCanvas, human.result); // draw all results
+});
+
+function detectVideo() {
+  human.detect(inputVideo) // run detection
+  .then(() => requestAnimationFrame(detectVideo)); // upon detect complete start processing of the next frame
 }
 
 detectVideo(); // start loop

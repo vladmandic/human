@@ -265,6 +265,7 @@ async function main() {
   }
 
   human = new Human(config.main);
+  // human.tf.env().set('WEBGPU_USE_GLSL', false);
   document.getElementById('log').innerText = `Human: version ${human.version}`;
 
   await startWorkers();

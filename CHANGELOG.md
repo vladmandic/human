@@ -1,16 +1,17 @@
 # @vladmandic/human  
 
-Version: **2.1.5**  
-Description: **Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition**  
-
-Author: **Vladimir Mandic <mandic00@live.com>**  
-License: **MIT** </LICENSE>  
-Repository: **<git+https://github.com/vladmandic/human.git>**  
-
+  Version: **2.1.5**  
+  Description: **Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition**  
+  
+  Author: **Vladimir Mandic <mandic00@live.com>**  
+  License: **MIT**  
+  Repository: **<https://github.com/vladmandic/human>**  
+  
 ## Changelog
+  
+### **HEAD -> main** 2021/09/06 mandic00@live.com
 
-### **HEAD -> main** 2021/08/31 mandic00@live.com
-
+- add benchmark info
 - simplify canvas handling in nodejs
 - full rebuild
 

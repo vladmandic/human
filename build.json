@@ -1,0 +1,155 @@
+{
+  "log": {
+    "enabled": true,
+    "debug": false,
+    "console": true,
+    "output": "test/build.log"
+  },
+  "clean": {
+    "enabled": true,
+    "locations": ["dist/*", "types/*", "typedoc/*"]
+  },
+  "lint": {
+    "enabled": true,
+    "locations": [ "src/**/*.ts", "test/*.js", "demo/**/*.js" ],
+    "rules": { }
+  },
+  "changelog": {
+    "enabled": true,
+    "log": "CHANGELOG.md"
+  },
+  "serve": {
+    "enabled": true,
+    "sslKey": "node_modules/@vladmandic/build/cert/https.key",
+    "sslCrt": "node_modules/@vladmandic/build/cert/https.crt",
+    "httpPort": 10030,
+    "httpsPort": 10031,
+    "documentRoot": ".",
+    "defaultFolder": "demo",
+    "defaultFile": "index.html"
+    },
+  "build": {
+    "enabled": true,
+    "global": {
+      "target": "es2018",
+      "sourcemap": true,
+      "banner": { "js": "/*\n  Human\n  homepage: <https://github.com/vladmandic/human>\n  author: <https://github.com/vladmandic>'\n*/\n" }
+    },
+    "production": {
+      "minify": false
+    },
+    "development": {
+      "minify": false
+    },
+    "targets": [
+      {
+        "name": "tfjs for nodejs with cpu",
+        "platform": "node",
+        "format": "cjs",
+        "input": "tfjs/tf-node.ts",
+        "output": "dist/tfjs.esm.js",
+        "sourcemap": false,
+        "external": ["@tensorflow"]
+      },
+      {
+        "name": "human for nodejs with cpu",
+        "platform": "node",
+        "format": "cjs",
+        "input": "src/human.ts",
+        "output": "dist/human.node.js",
+        "sourcemap": false,
+        "external": ["@tensorflow"]
+      },
+      {
+        "name": "tfjs for nodejs with gpu",
+        "platform": "node",
+        "format": "cjs",
+        "input": "tfjs/tf-node-gpu.ts",
+        "output": "dist/tfjs.esm.js",
+        "sourcemap": false,
+        "external": ["@tensorflow"]
+      },
+      {
+        "name": "human for nodejs with gpu",
+        "platform": "node",
+        "format": "cjs",
+        "input": "src/human.ts",
+        "output": "dist/human.node-gpu.js",
+        "sourcemap": false,
+        "external": ["@tensorflow"]
+      },
+      {
+        "name": "tfjs for nodejs with wasm",
+        "platform": "node",
+        "format": "cjs",
+        "input": "tfjs/tf-node-wasm.ts",
+        "output": "dist/tfjs.esm.js",
+        "sourcemap": false,
+        "external": ["@tensorflow"]
+      },
+      {
+        "name": "human for nodejs with wasm",
+        "platform": "node",
+        "format": "cjs",
+        "input": "src/human.ts",
+        "output": "dist/human.node-wasm.js",
+        "sourcemap": false,
+        "external": ["@tensorflow"]
+      },
+      {
+        "name": "tfjs for browser esm nobundle",
+        "platform": "browser",
+        "format": "esm",
+        "input": "tfjs/tf-browser.ts",
+        "output": "dist/tfjs.esm.js",
+        "sourcemap": false,
+        "external": ["@tensorflow", "fs", "os", "buffer", "util"]
+      },
+      {
+        "name": "human for browser esm nobundle",
+        "platform": "browser",
+        "format": "esm",
+        "input": "src/human.ts",
+        "output": "dist/human.esm-nobundle.js",
+        "sourcemap": true,
+        "external": ["@tensorflow", "fs", "os", "buffer", "util"]
+      },
+      {
+        "name": "tfjs for browser esm bundle",
+        "platform": "browser",
+        "format": "esm",
+        "input": "tfjs/tf-browser.ts",
+        "output": "dist/tfjs.esm.js",
+        "sourcemap": false,
+        "external": ["fs", "os", "buffer", "util"]
+      },
+      {
+        "name": "human for browser iife bundle",
+        "platform": "browser",
+        "format": "iife",
+        "input": "src/human.ts",
+        "output": "dist/human.js",
+        "sourcemap": false,
+        "external": ["fs", "os", "buffer", "util"]
+      },
+      {
+        "name": "human for browser esm bundle",
+        "platform": "browser",
+        "format": "esm",
+        "input": "src/human.ts",
+        "output": "dist/human.esm.js",
+        "sourcemap": true,
+        "external": ["fs", "os", "buffer", "util"],
+        "typings": "types",
+        "typedoc": "typedoc"
+      }
+    ]
+  },
+  "watch": {
+    "enabled": true,
+    "locations": [ "src/**", "tfjs/*" ]
+  },
+  "typescript": {
+    "allowJs": false
+  }
+}

@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/10 mandic00@live.com
+### **HEAD -> main** 2021/09/11 mandic00@live.com
 
+- fix file permissions
 - remove old build server
 - change build process
 - add benchmark info

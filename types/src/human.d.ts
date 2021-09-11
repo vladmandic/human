@@ -1,7 +1,6 @@
 /**
  * Human main module
  */
-/// <reference types="offscreencanvas" />
 import { Config } from './config';
 import { Result, Face, Hand, Body, Item, Gesture } from './result';
 import * as tf from '../dist/tfjs.esm.js';
@@ -39,7 +38,7 @@ export declare type TensorFlow = typeof tf;
 export declare class Human {
     #private;
     /** Current version of Human library in *semver* format */
-    static version: string;
+    version: string;
     /** Current configuration
      * - Details: {@link Config}
      */

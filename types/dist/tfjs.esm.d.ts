@@ -230,6 +230,7 @@ export var Callback: {
             isTraining: boolean;
             summary(lineLength: any, positions: any, printFn?: {
                 (...data: any[]): void;
+                (...data: any[]): void;
                 (message?: any, ...optionalParams: any[]): void;
             }): void;
             compile(args: any): void;
@@ -397,6 +398,7 @@ export var EarlyStopping: {
             [x: string]: any;
             isTraining: boolean;
             summary(lineLength: any, positions: any, printFn?: {
+                (...data: any[]): void;
                 (...data: any[]): void;
                 (message?: any, ...optionalParams: any[]): void;
             }): void;
@@ -787,6 +789,7 @@ export var LayersModel: {
         [x: string]: any;
         isTraining: boolean;
         summary(lineLength: any, positions: any, printFn?: {
+            (...data: any[]): void;
             (...data: any[]): void;
             (message?: any, ...optionalParams: any[]): void;
         }): void;
@@ -1901,6 +1904,7 @@ export function model(args: any): {
     isTraining: boolean;
     summary(lineLength: any, positions: any, printFn?: {
         (...data: any[]): void;
+        (...data: any[]): void;
         (message?: any, ...optionalParams: any[]): void;
     }): void;
     compile(args: any): void;
@@ -2244,6 +2248,7 @@ declare function earlyStopping(args: any): {
         [x: string]: any;
         isTraining: boolean;
         summary(lineLength: any, positions: any, printFn?: {
+            (...data: any[]): void;
             (...data: any[]): void;
             (message?: any, ...optionalParams: any[]): void;
         }): void;

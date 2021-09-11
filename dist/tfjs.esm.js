@@ -1,4 +1,9 @@
-/* TFJS custom ESM bundle in ES2018 */
+/*
+  Human
+  homepage: <https://github.com/vladmandic/human>
+  author: <https://github.com/vladmandic>'
+*/
+
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -6,9 +11,7 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
-var __require = (x) => {
-  if (typeof require !== "undefined")
-    return require(x);
+var __require = typeof require !== "undefined" ? require : (x) => {
   throw new Error('Dynamic require of "' + x + '" is not supported');
 };
 var __commonJS = (cb, mod4) => function __require2() {
@@ -856,9 +859,9 @@ var require_long = __commonJS({
   }
 });
 
-// (disabled):node_modules/.pnpm/node-fetch@2.6.1/node_modules/node-fetch/browser.js
+// (disabled):node_modules/.pnpm/node-fetch@2.6.2/node_modules/node-fetch/browser.js
 var require_browser = __commonJS({
-  "(disabled):node_modules/.pnpm/node-fetch@2.6.1/node_modules/node-fetch/browser.js"() {
+  "(disabled):node_modules/.pnpm/node-fetch@2.6.2/node_modules/node-fetch/browser.js"() {
   }
 });
 
@@ -62129,4 +62132,3 @@ export {
 * =============================================================================
 */
 /** @license See the LICENSE file. */
-//# sourceMappingURL=tfjs.esm.js.map

@@ -1,7 +1,6 @@
 /**
  * EfficientPose Module
  */
-/// <reference types="offscreencanvas" />
 import { GraphModel, Tensor } from '../tfjs/types';
 import { Config } from '../config';
 declare type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;

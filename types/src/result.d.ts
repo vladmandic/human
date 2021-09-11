@@ -1,7 +1,6 @@
 /**
  * Type definitions for Human result object
  */
-/// <reference types="offscreencanvas" />
 import { Tensor } from './tfjs/types';
 import { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
 /** Face results

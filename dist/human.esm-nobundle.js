@@ -1,14 +1,17 @@
+/*
+  Human
+  homepage: <https://github.com/vladmandic/human>
+  author: <https://github.com/vladmandic>'
+*/
 
-    /*
-      Human library
-      homepage: <https://github.com/vladmandic/human>
-      author: <https://github.com/vladmandic>'
-    */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
+var __require = typeof require !== "undefined" ? require : (x) => {
+  throw new Error('Dynamic require of "' + x + '" is not supported');
+};
 var __export = (target, all2) => {
   __markAsModule(target);
   for (var name in all2)
@@ -9029,7 +9032,7 @@ async function predict10(input, config3) {
   });
 }
 
-// src/image/imagefx.js
+// src/image/imagefx.ts
 function GLProgram(gl, vertexSource, fragmentSource) {
   const _collect = function(source, prefix, collection) {
     const r = new RegExp("\\b" + prefix + " \\w+ (\\w+)", "ig");
@@ -11815,10 +11818,10 @@ var Human = class {
             log("error: cannot set backend:", this.config.backend, err);
           }
         }
-        if (this.tf.getBackend() === "webgl" || this.tf.getBackend() === "humangl") {
+        if (this.tf.getBackend() === "humangl") {
           this.tf.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
           this.tf.ENV.set("WEBGL_CPU_FORWARD", true);
-          this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", true);
+          this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
           this.tf.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
           if (typeof this.config["deallocate"] !== "undefined" && this.config["deallocate"]) {
             log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);

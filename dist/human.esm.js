@@ -1,14 +1,12 @@
+/*
+  Human
+  homepage: <https://github.com/vladmandic/human>
+  author: <https://github.com/vladmandic>'
+*/
 
-    /*
-      Human library
-      homepage: <https://github.com/vladmandic/human>
-      author: <https://github.com/vladmandic>'
-    */
 var __defProp = Object.defineProperty;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
-var __require = (x) => {
-  if (typeof require !== "undefined")
-    return require(x);
+var __require = typeof require !== "undefined" ? require : (x) => {
   throw new Error('Dynamic require of "' + x + '" is not supported');
 };
 var __export = (target, all6) => {
@@ -693,9 +691,7 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule2 = (target) => __defProp2(target, "__esModule", { value: true });
-var __require2 = (x) => {
-  if (typeof __require !== "undefined")
-    return __require(x);
+var __require2 = typeof __require !== "undefined" ? __require : (x) => {
   throw new Error('Dynamic require of "' + x + '" is not supported');
 };
 var __commonJS = (cb, mod4) => function __require22() {
@@ -1541,7 +1537,7 @@ var require_long = __commonJS({
   }
 });
 var require_browser = __commonJS({
-  "(disabled):node_modules/.pnpm/node-fetch@2.6.1/node_modules/node-fetch/browser.js"() {
+  "(disabled):node_modules/.pnpm/node-fetch@2.6.2/node_modules/node-fetch/browser.js"() {
   }
 });
 var require_alea = __commonJS({
@@ -68544,7 +68540,7 @@ async function predict10(input2, config3) {
   });
 }
 
-// src/image/imagefx.js
+// src/image/imagefx.ts
 function GLProgram(gl, vertexSource, fragmentSource) {
   const _collect = function(source, prefix, collection) {
     const r = new RegExp("\\b" + prefix + " \\w+ (\\w+)", "ig");
@@ -71330,10 +71326,10 @@ var Human = class {
             log("error: cannot set backend:", this.config.backend, err);
           }
         }
-        if (this.tf.getBackend() === "webgl" || this.tf.getBackend() === "humangl") {
+        if (this.tf.getBackend() === "humangl") {
           this.tf.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
           this.tf.ENV.set("WEBGL_CPU_FORWARD", true);
-          this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", true);
+          this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
           this.tf.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
           if (typeof this.config["deallocate"] !== "undefined" && this.config["deallocate"]) {
             log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);

@@ -5,6 +5,7 @@ import { Config } from './config';
 import { Result, Face, Hand, Body, Item, Gesture } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
+import * as image from './image/image';
 import * as draw from './draw/draw';
 import { Tensor, GraphModel } from './tfjs/types';
 export { Config } from './config';
@@ -52,8 +53,10 @@ export declare class Human {
      * - Progresses through: 'config', 'check', 'backend', 'load', 'run:<model>', 'idle'
      */
     state: string;
-    /** @internal: Instance of current image being processed */
-    image: {
+    /** process input and return tensor and canvas */
+    image: typeof image.process;
+    /** currenty processed image tensor and canvas */
+    process: {
         tensor: Tensor | null;
         canvas: OffscreenCanvas | HTMLCanvasElement | null;
     };
@@ -66,7 +69,7 @@ export declare class Human {
      * - face: draw detected faces
      * - body: draw detected people and body parts
      * - hand: draw detected hands and hand parts
-     * - canvas: draw processed canvas which is a processed copy of the input
+     * - canvas: draw this.processed canvas which is a this.processed copy of the input
      * - all: meta-function that performs: canvas, face, body, hand
      */
     draw: {
@@ -105,6 +108,16 @@ export declare class Human {
         faceres: GraphModel | null;
         segmentation: GraphModel | null;
     };
+    /** Container for events dispatched by Human
+     *
+     * Possible events:
+     * - `create`: triggered when Human object is instantiated
+     * - `load`: triggered when models are loaded (explicitly or on-demand)
+     * - `image`: triggered when input image is this.processed
+     * - `result`: triggered when detection is complete
+     * - `warmup`: triggered when warmup is complete
+     */
+    events: EventTarget;
     /** Reference face triangualtion array of 468 points, used for triangle references between points */
     faceTriangulation: typeof facemesh.triangulation;
     /** Refernce UV map of 468 values, used for 3D mapping of the face mesh */
@@ -120,7 +133,7 @@ export declare class Human {
      * Creates instance of Human library that is futher used for all operations
      * @param userConfig: {@link Config}
      */
-    constructor(userConfig?: Config | Record<string, unknown>);
+    constructor(userConfig?: Partial<Config>);
     /** @hidden */
     analyze: (...msg: string[]) => void;
     /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
@@ -132,16 +145,16 @@ export declare class Human {
     */
     similarity(embedding1: Array<number>, embedding2: Array<number>): number;
     /**
-     * Segmentation method takes any input and returns processed canvas with body segmentation
+     * Segmentation method takes any input and returns this.processed canvas with body segmentation
      * Optional parameter background is used to fill the background with specific input
-     * Segmentation is not triggered as part of detect process
+     * Segmentation is not triggered as part of detect this.process
      *
      * @param input: {@link Input}
      * @param background?: {@link Input}
      * @returns Canvas
      */
     segmentation(input: Input, background?: Input): Promise<OffscreenCanvas | HTMLCanvasElement | null>;
-    /** Enhance method performs additional enhacements to face image previously detected for futher processing
+    /** Enhance method performs additional enhacements to face image previously detected for futher this.processing
      * @param input: Tensor as provided in human.result.face[n].tensor
      * @returns Tensor
      */
@@ -166,7 +179,7 @@ export declare class Human {
      * - Not explicitly required as any required model is load implicitly on it's first run
      * @param userConfig?: {@link Config}
     */
-    load(userConfig?: Config | Record<string, unknown>): Promise<void>;
+    load(userConfig?: Partial<Config>): Promise<void>;
     /**
      * Runs interpolation using last known result and returns smoothened result
      * Interpolation is based on time since last known result so can be called independently
@@ -177,21 +190,21 @@ export declare class Human {
     next: (result?: Result | undefined) => Result;
     /** Main detection method
      * - Analyze configuration: {@link Config}
-     * - Pre-process input: {@link Input}
+     * - Pre-this.process input: {@link Input}
      * - Run inference for all configured models
-     * - Process and return result: {@link Result}
+     * - this.process and return result: {@link Result}
      *
      * @param input: Input
      * @param userConfig?: {@link Config}
      * @returns result: {@link Result}
     */
-    detect(input: Input, userConfig?: Config | Record<string, unknown>): Promise<Result | Error>;
+    detect(input: Input, userConfig?: Partial<Config>): Promise<Result | Error>;
     /** Warmup method pre-initializes all configured models for faster inference
      * - can take significant time on startup
      * - only used for `webgl` and `humangl` backends
      * @param userConfig?: Config
     */
-    warmup(userConfig?: Config | Record<string, unknown>): Promise<Result | {
+    warmup(userConfig?: Partial<Config>): Promise<Result | {
         error: any;
     }>;
 }

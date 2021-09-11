@@ -6,4 +6,3 @@ test
 wiki
 dist/tfjs.esm.js
 dist/tfjs.esm.js.map
-types/dist/tfjs.esm.d.ts

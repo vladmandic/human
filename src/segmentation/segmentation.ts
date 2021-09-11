@@ -22,7 +22,7 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-export async function predict(input: { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement }): Promise<Uint8ClampedArray | null> {
+export async function predict(input: { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null }): Promise<Uint8ClampedArray | null> {
   const width = input.tensor?.shape[1] || 0;
   const height = input.tensor?.shape[2] || 0;
   if (!input.tensor) return null;

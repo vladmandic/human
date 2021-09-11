@@ -7,8 +7,6 @@ const fs = require('fs');
 const process = require('process');
 const canvas = require('canvas');
 
-let fetch; // fetch is dynamically imported later
-
 // for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
@@ -51,30 +49,47 @@ async function init() {
 }
 
 async function detect(input, output) {
-  // read input image file and create tensor to be used for processing
+  // read input image from file or url into buffer
   let buffer;
   log.info('Loading image:', input);
   if (input.startsWith('http:') || input.startsWith('https:')) {
+    const fetch = (await import('node-fetch')).default;
     const res = await fetch(input);
     if (res && res.ok) buffer = await res.buffer();
     else log.error('Invalid image URL:', input, res.status, res.statusText, res.headers.get('content-type'));
   } else {
     buffer = fs.readFileSync(input);
   }
+  if (!buffer) return {};
 
   // decode image using tfjs-node so we don't need external depenencies
-  // can also be done using canvas.js or some other 3rd party image library
-  if (!buffer) return {};
+  /*
   const tensor = human.tf.tidy(() => {
     const decode = human.tf.node.decodeImage(buffer, 3);
     let expand;
     if (decode.shape[2] === 4) { // input is in rgba format, need to convert to rgb
-      const channels = human.tf.split(decode, 4, 2); // tf.split(tensor, 4, 2); // split rgba to channels
+      const channels = human.tf.split(decode, 4, 2); // split rgba to channels
       const rgb = human.tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb and ignore alpha
       expand = human.tf.reshape(rgb, [1, decode.shape[0], decode.shape[1], 3]); // move extra dim from the end of tensor and use it as batch number instead
     } else {
       expand = human.tf.expandDims(decode, 0);
     }
+    const cast = human.tf.cast(expand, 'float32');
+    return cast;
+  });
+  */
+
+  // decode image using canvas library
+  const inputImage = await canvas.loadImage(input);
+  const inputCanvas = new canvas.Canvas(inputImage.width, inputImage.height, 'image');
+  const inputCtx = inputCanvas.getContext('2d');
+  inputCtx.drawImage(inputImage, 0, 0);
+  const inputData = inputCtx.getImageData(0, 0, inputImage.width, inputImage.height);
+  const tensor = human.tf.tidy(() => {
+    const data = tf.tensor(Array.from(inputData.data), [inputImage.width, inputImage.height, 4]);
+    const channels = human.tf.split(data, 4, 2); // split rgba to channels
+    const rgb = human.tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb and ignore alpha
+    const expand = human.tf.reshape(rgb, [1, data.shape[0], data.shape[1], 3]); // move extra dim from the end of tensor and use it as batch number instead
     const cast = human.tf.cast(expand, 'float32');
     return cast;
   });
@@ -130,7 +145,6 @@ async function detect(input, output) {
 async function main() {
   log.header();
   log.info('Current folder:', process.env.PWD);
-  fetch = (await import('node-fetch')).default;
   await init();
   const input = process.argv[2];
   const output = process.argv[3];

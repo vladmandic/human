@@ -11726,7 +11726,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 var version2 = "2.1.5";
 
 // src/human.ts
-var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;
+var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _emit, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;
 var Human = class {
   constructor(userConfig) {
     __privateAdd(this, _numTensors, void 0);
@@ -11758,6 +11758,10 @@ var Human = class {
         return "backend not loaded";
       }
       return null;
+    });
+    __privateAdd(this, _emit, (event) => {
+      var _a;
+      return (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
     __privateAdd(this, _checkBackend, async (force = false) => {
       var _a;
@@ -11942,6 +11946,7 @@ var Human = class {
     __privateSet(this, _firstRun, true);
     __privateSet(this, _lastCacheDiff, 0);
     this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
+    this.events = new EventTarget();
     this.models = {
       face: null,
       posenet: null,
@@ -11960,10 +11965,12 @@ var Human = class {
     };
     this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [] };
     this.image = (input) => process4(input, this.config);
+    this.process = { tensor: null, canvas: null };
     this.faceTriangulation = triangulation;
     this.faceUVMap = uvmap;
     this.sysinfo = info();
     __privateSet(this, _lastInputSum, 1);
+    __privateGet(this, _emit).call(this, "create");
   }
   similarity(embedding1, embedding2) {
     return similarity(embedding1, embedding2);
@@ -11980,6 +11987,7 @@ var Human = class {
   async load(userConfig) {
     this.state = "load";
     const timeStamp = now();
+    const count2 = Object.values(this.models).filter((model10) => model10).length;
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);
     if (__privateGet(this, _firstRun)) {
@@ -12005,12 +12013,16 @@ var Human = class {
         log("tf engine state:", this.tf.engine().state.numBytes, "bytes", this.tf.engine().state.numTensors, "tensors");
       __privateSet(this, _firstRun, false);
     }
+    const loaded = Object.values(this.models).filter((model10) => model10).length;
+    if (loaded !== count2)
+      __privateGet(this, _emit).call(this, "load");
     const current = Math.trunc(now() - timeStamp);
     if (current > (this.performance.load || 0))
       this.performance.load = current;
   }
   async detect(input, userConfig) {
     return new Promise(async (resolve) => {
+      var _a, _b;
       this.state = "config";
       let timeStamp;
       let elapsedTime;
@@ -12025,30 +12037,31 @@ var Human = class {
       await __privateGet(this, _checkBackend).call(this);
       await this.load();
       timeStamp = now();
-      let process6 = process4(input, this.config);
+      this.process = process4(input, this.config);
       this.performance.image = Math.trunc(now() - timeStamp);
       this.analyze("Get Image:");
-      if (this.config.segmentation.enabled && process6 && process6.tensor) {
+      if (this.config.segmentation.enabled && this.process && this.process.tensor) {
         this.analyze("Start Segmentation:");
         this.state = "run:segmentation";
         timeStamp = now();
-        await predict11(process6);
+        await predict11(this.process);
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.segmentation = elapsedTime;
-        if (process6.canvas) {
-          tfjs_esm_exports.dispose(process6.tensor);
-          process6 = process4(process6.canvas, this.config);
+        if (this.process.canvas) {
+          tfjs_esm_exports.dispose(this.process.tensor);
+          this.process = process4(this.process.canvas, this.config);
         }
         this.analyze("End Segmentation:");
       }
-      if (!process6 || !process6.tensor) {
+      if (!this.process || !this.process.tensor) {
         log("could not convert input to tensor");
         resolve({ error: "could not convert input to tensor" });
         return;
       }
+      __privateGet(this, _emit).call(this, "image");
       timeStamp = now();
-      this.config.skipFrame = await __privateGet(this, _skipFrame).call(this, process6.tensor);
+      this.config.skipFrame = await __privateGet(this, _skipFrame).call(this, this.process.tensor);
       if (!this.performance.frames)
         this.performance.frames = 0;
       if (!this.performance.cached)
@@ -12063,13 +12076,13 @@ var Human = class {
       let handRes = [];
       let objectRes = [];
       if (this.config.async) {
-        faceRes = this.config.face.enabled ? detectFace(this, process6.tensor) : [];
+        faceRes = this.config.face.enabled ? detectFace(this, this.process.tensor) : [];
         if (this.performance.face)
           delete this.performance.face;
       } else {
         this.state = "run:face";
         timeStamp = now();
-        faceRes = this.config.face.enabled ? await detectFace(this, process6.tensor) : [];
+        faceRes = this.config.face.enabled ? await detectFace(this, this.process.tensor) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.face = elapsedTime;
@@ -12077,26 +12090,26 @@ var Human = class {
       this.analyze("Start Body:");
       if (this.config.async) {
         if (this.config.body.modelPath.includes("posenet"))
-          bodyRes = this.config.body.enabled ? predict4(process6.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict4(this.process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes("blazepose"))
-          bodyRes = this.config.body.enabled ? predict6(process6.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict6(this.process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes("efficientpose"))
-          bodyRes = this.config.body.enabled ? predict7(process6.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict7(this.process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes("movenet"))
-          bodyRes = this.config.body.enabled ? predict8(process6.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict8(this.process.tensor, this.config) : [];
         if (this.performance.body)
           delete this.performance.body;
       } else {
         this.state = "run:body";
         timeStamp = now();
         if (this.config.body.modelPath.includes("posenet"))
-          bodyRes = this.config.body.enabled ? await predict4(process6.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict4(this.process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes("blazepose"))
-          bodyRes = this.config.body.enabled ? await predict6(process6.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict6(this.process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes("efficientpose"))
-          bodyRes = this.config.body.enabled ? await predict7(process6.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict7(this.process.tensor, this.config) : [];
         else if (this.config.body.modelPath.includes("movenet"))
-          bodyRes = this.config.body.enabled ? await predict8(process6.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict8(this.process.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.body = elapsedTime;
@@ -12104,13 +12117,13 @@ var Human = class {
       this.analyze("End Body:");
       this.analyze("Start Hand:");
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? predict5(process6.tensor, this.config) : [];
+        handRes = this.config.hand.enabled ? predict5(this.process.tensor, this.config) : [];
         if (this.performance.hand)
           delete this.performance.hand;
       } else {
         this.state = "run:hand";
         timeStamp = now();
-        handRes = this.config.hand.enabled ? await predict5(process6.tensor, this.config) : [];
+        handRes = this.config.hand.enabled ? await predict5(this.process.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.hand = elapsedTime;
@@ -12119,18 +12132,18 @@ var Human = class {
       this.analyze("Start Object:");
       if (this.config.async) {
         if (this.config.object.modelPath.includes("nanodet"))
-          objectRes = this.config.object.enabled ? predict9(process6.tensor, this.config) : [];
+          objectRes = this.config.object.enabled ? predict9(this.process.tensor, this.config) : [];
         else if (this.config.object.modelPath.includes("centernet"))
-          objectRes = this.config.object.enabled ? predict10(process6.tensor, this.config) : [];
+          objectRes = this.config.object.enabled ? predict10(this.process.tensor, this.config) : [];
         if (this.performance.object)
           delete this.performance.object;
       } else {
         this.state = "run:object";
         timeStamp = now();
         if (this.config.object.modelPath.includes("nanodet"))
-          objectRes = this.config.object.enabled ? await predict9(process6.tensor, this.config) : [];
+          objectRes = this.config.object.enabled ? await predict9(this.process.tensor, this.config) : [];
         else if (this.config.object.modelPath.includes("centernet"))
-          objectRes = this.config.object.enabled ? await predict10(process6.tensor, this.config) : [];
+          objectRes = this.config.object.enabled ? await predict10(this.process.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.object = elapsedTime;
@@ -12149,6 +12162,7 @@ var Human = class {
       }
       this.performance.total = Math.trunc(now() - timeStart);
       this.state = "idle";
+      const shape = ((_b = (_a = this.process) == null ? void 0 : _a.tensor) == null ? void 0 : _b.shape) || [];
       this.result = {
         face: faceRes,
         body: bodyRes,
@@ -12156,14 +12170,14 @@ var Human = class {
         gesture: gestureRes,
         object: objectRes,
         performance: this.performance,
-        canvas: process6.canvas,
+        canvas: this.process.canvas,
         timestamp: Date.now(),
         get persons() {
-          var _a;
-          return join2(faceRes, bodyRes, handRes, gestureRes, (_a = process6 == null ? void 0 : process6.tensor) == null ? void 0 : _a.shape);
+          return join2(faceRes, bodyRes, handRes, gestureRes, shape);
         }
       };
-      tfjs_esm_exports.dispose(process6.tensor);
+      tfjs_esm_exports.dispose(this.process.tensor);
+      __privateGet(this, _emit).call(this, "detect");
       resolve(this.result);
     });
   }
@@ -12183,6 +12197,7 @@ var Human = class {
     const t1 = now();
     if (this.config.debug)
       log("Warmup", this.config.warmup, Math.round(t1 - t0), "ms", res);
+    __privateGet(this, _emit).call(this, "warmup");
     return res;
   }
 };
@@ -12193,6 +12208,7 @@ _firstRun = new WeakMap();
 _lastInputSum = new WeakMap();
 _lastCacheDiff = new WeakMap();
 _sanity = new WeakMap();
+_emit = new WeakMap();
 _checkBackend = new WeakMap();
 _skipFrame = new WeakMap();
 _warmupBitmap = new WeakMap();

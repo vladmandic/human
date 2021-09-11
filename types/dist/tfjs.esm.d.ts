@@ -1,30 +1,30 @@
-declare var Vs: string;
-declare var Ni: string;
-declare var Ti: string;
-declare var xp: {
-    new (e: any, t: any, n?: null): {
+export var Abs: string;
+export var Acos: string;
+export var Acosh: string;
+export var AdadeltaOptimizer: {
+    new (learningRate: any, rho: any, epsilon3?: null): {
         learningRate: any;
         rho: any;
         epsilon: any;
         accumulatedGrads: any[];
         accumulatedUpdates: any[];
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             rho: any;
             epsilon: any;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -32,33 +32,33 @@ declare var xp: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    fromConfig(e: any, t: any): any;
+    fromConfig(cls: any, config: any): any;
     className: string;
 };
-declare var yp: {
-    new (e: any, t?: number): {
+export var AdagradOptimizer: {
+    new (learningRate: any, initialAccumulatorValue?: number): {
         learningRate: any;
         initialAccumulatorValue: number;
         accumulatedGrads: any[];
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             initialAccumulatorValue: number;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -66,14 +66,14 @@ declare var yp: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    fromConfig(e: any, t: any): any;
+    fromConfig(cls: any, config: any): any;
     className: string;
 };
-declare var bp: {
-    new (e: any, t: any, n: any, o?: null): {
+export var AdamOptimizer: {
+    new (learningRate: any, beta1: any, beta2: any, epsilon3?: null): {
         learningRate: any;
         beta1: any;
         beta2: any;
@@ -82,24 +82,24 @@ declare var bp: {
         accumulatedSecondMoment: any[];
         accBeta1: any;
         accBeta2: any;
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             beta1: any;
             beta2: any;
             epsilon: any;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -107,14 +107,14 @@ declare var bp: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    fromConfig(e: any, t: any): any;
+    fromConfig(cls: any, config: any): any;
     className: string;
 };
-declare var wp: {
-    new (e: any, t: any, n: any, o?: null, s?: number): {
+export var AdamaxOptimizer: {
+    new (learningRate: any, beta1: any, beta2: any, epsilon3?: null, decay?: number): {
         learningRate: any;
         beta1: any;
         beta2: any;
@@ -124,10 +124,10 @@ declare var wp: {
         accumulatedWeightedInfNorm: any[];
         iteration: any;
         accBeta1: any;
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
         getWeights(): Promise<void>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             beta1: any;
@@ -135,11 +135,11 @@ declare var wp: {
             epsilon: any;
             decay: number;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -147,29 +147,29 @@ declare var wp: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    fromConfig(e: any, t: any): any;
+    fromConfig(cls: any, config: any): any;
     className: string;
 };
-declare var Wn: string;
-declare var So: string;
-declare var Ei: string;
-declare var Ai: string;
-declare var Io: string;
-declare var Xa: string;
-declare var $i: string;
-declare var Di: string;
-declare var Ri: string;
-declare var Oi: string;
-declare var Fi: string;
-declare var No: string;
-declare var Ya: string;
-declare var xc: string;
-declare var gc: string;
-declare var My: {
-    new (e: any): {
+export var Add: string;
+export var AddN: string;
+export var All: string;
+export var Any: string;
+export var ArgMax: string;
+export var ArgMin: string;
+export var Asin: string;
+export var Asinh: string;
+export var Atan: string;
+export var Atan2: string;
+export var Atanh: string;
+export var AvgPool: string;
+export var AvgPool3D: string;
+export var AvgPool3DGrad: string;
+export var AvgPoolGrad: string;
+export var BackendWasm: {
+    new (wasm: any): {
         wasm: any;
         dataIdNextNumber: number;
         dataIdMap: {
@@ -177,39 +177,39 @@ declare var My: {
             dataMover: any;
             data: WeakMap<object, any>;
             dataIdsCount: number;
-            get(e: any): any;
-            set(e: any, t: any): void;
-            has(e: any): boolean;
-            delete(e: any): boolean;
+            get(dataId: any): any;
+            set(dataId: any, value: any): void;
+            has(dataId: any): boolean;
+            delete(dataId: any): boolean;
             numDataIds(): number;
         };
-        write(e: any, t: any, n: any): {
+        write(values: any, shape: any, dtype: any): {
             id: number;
         };
         numDataIds(): number;
-        time(e: any): Promise<{
+        time(f: any): Promise<{
             kernelMs: number;
         }>;
-        move(e: any, t: any, n: any, o: any, s: any): void;
-        read(e: any): Promise<any>;
-        readSync(e: any): any;
-        disposeData(e: any, t?: boolean): boolean;
-        refCount(e: any): any;
-        incRef(e: any): void;
+        move(dataId: any, values: any, shape: any, dtype: any, refCount: any): void;
+        read(dataId: any): Promise<any>;
+        readSync(dataId: any): any;
+        disposeData(dataId: any, force?: boolean): boolean;
+        refCount(dataId: any): any;
+        incRef(dataId: any): void;
         floatPrecision(): number;
-        getMemoryOffset(e: any): any;
+        getMemoryOffset(dataId: any): any;
         dispose(): void;
         memory(): {
             unreliable: boolean;
         };
-        makeOutput(e: any, t: any, n: any): {
+        makeOutput(shape: any, dtype: any, memoryOffset: any): {
             dataId: {
                 id: number;
             };
             shape: any;
             dtype: any;
         };
-        typedArrayFromHeap({ shape: e, dtype: t, dataId: n }: {
+        typedArrayFromHeap({ shape, dtype, dataId }: {
             shape: any;
             dtype: any;
             dataId: any;
@@ -218,22 +218,22 @@ declare var My: {
         epsilon(): number;
     };
 };
-declare var To: string;
-declare var Ws: string;
-declare var yc: string;
-declare var Zh: string;
-declare var XI: string;
-declare var mv: {
+export var BatchMatMul: string;
+export var BatchToSpaceND: string;
+export var Bincount: string;
+export var BroadcastArgs: string;
+export var BroadcastTo: string;
+export var Callback: {
     new (...args: any[]): {
         model: {
             [x: string]: any;
             isTraining: boolean;
-            summary(e: any, t: any, n?: {
+            summary(lineLength: any, positions: any, printFn?: {
                 (...data: any[]): void;
                 (...data: any[]): void;
                 (message?: any, ...optionalParams: any[]): void;
             }): void;
-            compile(e: any): void;
+            compile(args: any): void;
             loss: any;
             optimizer_: any;
             isOptimizerOwned: boolean | undefined;
@@ -246,25 +246,25 @@ declare var mv: {
             metricsTensors: any[] | undefined;
             collectedTrainableWeights: any;
             checkTrainableWeightsConsistency(): void;
-            evaluate(e: any, t: any, n?: {}): any;
-            evaluateDataset(e: any, t: any): Promise<any>;
-            checkNumSamples(e: any, t: any, n: any, o?: string): any;
-            execute(e: any, t: any): any;
-            retrieveSymbolicTensors(e: any): any[];
-            predictLoop(e: any, t?: number, n?: boolean): any;
-            predict(e: any, t?: {}): any;
-            predictOnBatch(e: any): any;
-            standardizeUserDataXY(e: any, t: any, n: boolean | undefined, o: any): any[];
-            standardizeUserData(e: any, t: any, n: any, o: any, s: boolean | undefined, a: any): Promise<any[]>;
-            testLoop(e: any, t: any, n: any, o: number | undefined, s: any): any;
+            evaluate(x: any, y: any, args?: {}): any;
+            evaluateDataset(dataset: any, args: any): Promise<any>;
+            checkNumSamples(ins: any, batchSize: any, steps: any, stepsName?: string): any;
+            execute(inputs: any, outputs: any): any;
+            retrieveSymbolicTensors(symbolicTensorNames: any): any[];
+            predictLoop(ins: any, batchSize?: number, verbose?: boolean): any;
+            predict(x: any, args?: {}): any;
+            predictOnBatch(x: any): any;
+            standardizeUserDataXY(x: any, y: any, checkBatchAxis: boolean | undefined, batchSize: any): any[];
+            standardizeUserData(x: any, y: any, sampleWeight: any, classWeight: any, checkBatchAxis: boolean | undefined, batchSize: any): Promise<any[]>;
+            testLoop(f: any, ins: any, batchSize: any, verbose: number | undefined, steps: any): any;
             getDedupedMetricsNames(): string[];
-            makeTrainFunction(): (e: any) => any[];
+            makeTrainFunction(): (data: any) => any[];
             makeTestFunction(): void;
-            testFunction: ((e: any) => any) | undefined;
-            fit(e: any, t: any, n?: {}): Promise<any>;
-            fitDataset(e: any, t: any): Promise<any>;
-            trainOnBatch(e: any, t: any): Promise<any>;
-            getNamedWeights(e: any): {
+            testFunction: ((data: any) => any) | undefined;
+            fit(x: any, y: any, args?: {}): Promise<any>;
+            fitDataset(dataset: any, args: any): Promise<any>;
+            trainOnBatch(x: any, y: any): Promise<any>;
+            getNamedWeights(config: any): {
                 name: any;
                 tensor: any;
             }[];
@@ -282,60 +282,60 @@ declare var mv: {
                     config: any;
                 };
             };
-            loadTrainingConfig(e: any): void;
-            save(e: any, t: any): Promise<any>;
-            setUserDefinedMetadata(e: any): void;
+            loadTrainingConfig(trainingConfig: any): void;
+            save(handlerOrURL: any, config: any): Promise<any>;
+            setUserDefinedMetadata(userDefinedMetadata: any): void;
             userDefinedMetadata: any;
             getUserDefinedMetadata(): any;
         } | null;
-        setModel(e: any): void;
+        setModel(model2: any): void;
         validationData: any;
-        setParams(e: any): void;
+        setParams(params: any): void;
         params: any;
-        onEpochBegin(e: any, t: any): Promise<void>;
-        onEpochEnd(e: any, t: any): Promise<void>;
-        onBatchBegin(e: any, t: any): Promise<void>;
-        onBatchEnd(e: any, t: any): Promise<void>;
-        onTrainBegin(e: any): Promise<void>;
-        onTrainEnd(e: any): Promise<void>;
+        onEpochBegin(epoch: any, logs: any): Promise<void>;
+        onEpochEnd(epoch: any, logs: any): Promise<void>;
+        onBatchBegin(batch: any, logs: any): Promise<void>;
+        onBatchEnd(batch: any, logs: any): Promise<void>;
+        onTrainBegin(logs: any): Promise<void>;
+        onTrainEnd(logs: any): Promise<void>;
     };
 };
-declare var C_: {
-    new (e: any, t?: number): {
+export var CallbackList: {
+    new (callbacks2: any, queueLength?: number): {
         callbacks: any;
         queueLength: number;
-        append(e: any): void;
-        setParams(e: any): void;
-        setModel(e: any): void;
-        onEpochBegin(e: any, t: any): Promise<void>;
-        onEpochEnd(e: any, t: any): Promise<void>;
-        onBatchBegin(e: any, t: any): Promise<void>;
-        onBatchEnd(e: any, t: any): Promise<void>;
-        onTrainBegin(e: any): Promise<void>;
-        onTrainEnd(e: any): Promise<void>;
+        append(callback: any): void;
+        setParams(params: any): void;
+        setModel(model2: any): void;
+        onEpochBegin(epoch: any, logs: any): Promise<void>;
+        onEpochEnd(epoch: any, logs: any): Promise<void>;
+        onBatchBegin(batch: any, logs: any): Promise<void>;
+        onBatchEnd(batch: any, logs: any): Promise<void>;
+        onTrainBegin(logs: any): Promise<void>;
+        onTrainEnd(logs: any): Promise<void>;
     };
 };
-declare var Qn: string;
-declare var Eo: string;
-declare var eo: string;
-declare var bc: string;
-declare var Za: string;
-declare var js: string;
-declare var Ao: string;
-declare var wc: string;
-declare var $o: string;
-declare var Ja: string;
-declare var kc: string;
-declare var _c: string;
-declare var Do: string;
-declare var Ro: string;
-declare var Pi: string;
-declare var Fo: string;
-declare var I_: {
-    new (e: any, t: any): {
+export var Cast: string;
+export var Ceil: string;
+export var ClipByValue: string;
+export var Complex: string;
+export var ComplexAbs: string;
+export var Concat: string;
+export var Conv2D: string;
+export var Conv2DBackpropFilter: string;
+export var Conv2DBackpropInput: string;
+export var Conv3D: string;
+export var Conv3DBackpropFilterV2: string;
+export var Conv3DBackpropInputV2: string;
+export var Cos: string;
+export var Cosh: string;
+export var CropAndResize: string;
+export var Cumsum: string;
+export var CustomCallback: {
+    new (args: any, yieldEvery: any): {
         currentEpoch: number;
         yieldEvery: any;
-        maybeWait(e: any, t: any, n: any): Promise<void>;
+        maybeWait(epoch: any, batch: any, logs: any): Promise<void>;
         trainBegin: any;
         trainEnd: any;
         epochBegin: any;
@@ -343,66 +343,66 @@ declare var I_: {
         batchBegin: any;
         batchEnd: any;
         yield: any;
-        onEpochBegin(e: any, t: any): Promise<void>;
-        onEpochEnd(e: any, t: any): Promise<void>;
-        onBatchBegin(e: any, t: any): Promise<void>;
-        onBatchEnd(e: any, t: any): Promise<void>;
-        onTrainBegin(e: any): Promise<void>;
-        onTrainEnd(e: any): Promise<void>;
+        onEpochBegin(epoch: any, logs: any): Promise<void>;
+        onEpochEnd(epoch: any, logs: any): Promise<void>;
+        onBatchBegin(batch: any, logs: any): Promise<void>;
+        onBatchEnd(batch: any, logs: any): Promise<void>;
+        onTrainBegin(logs: any): Promise<void>;
+        onTrainEnd(logs: any): Promise<void>;
         validationData: any;
-        setParams(e: any): void;
+        setParams(params: any): void;
         params: any;
-        setModel(e: any): void;
+        setModel(model2: any): void;
     };
 };
-declare var Ka: {
-    new (e: any, t: any): {
+export var DataStorage: {
+    new (backend2: any, dataMover: any): {
         backend: any;
         dataMover: any;
         data: WeakMap<object, any>;
         dataIdsCount: number;
-        get(e: any): any;
-        set(e: any, t: any): void;
-        has(e: any): boolean;
-        delete(e: any): boolean;
+        get(dataId: any): any;
+        set(dataId: any, value: any): void;
+        has(dataId: any): boolean;
+        delete(dataId: any): boolean;
         numDataIds(): number;
     };
 };
-declare var vc: string;
-declare var Mi: string;
-declare var Oo: string;
-declare var Cc: string;
-declare var Sc: string;
-declare var Ic: string;
-declare var Qa: string;
-declare var Dm: string;
-declare var $m: string;
-declare var gw: any;
-declare var fv: {
-    new (e: any): {
+export var DenseBincount: string;
+export var DepthToSpace: string;
+export var DepthwiseConv2dNative: string;
+export var DepthwiseConv2dNativeBackpropFilter: string;
+export var DepthwiseConv2dNativeBackpropInput: string;
+export var Diag: string;
+export var Dilation2D: string;
+export var Dilation2DBackpropFilter: string;
+export var Dilation2DBackpropInput: string;
+export var ENV: any;
+export var EarlyStopping: {
+    new (args: any): {
         monitor: any;
         minDelta: number;
         patience: any;
         verbose: any;
         mode: any;
         baseline: any;
-        monitorFunc: typeof fx;
-        onTrainBegin(e: any): Promise<void>;
+        monitorFunc: typeof less2;
+        onTrainBegin(logs: any): Promise<void>;
         wait: number | undefined;
         stoppedEpoch: any;
         best: any;
-        onEpochEnd(e: any, t: any): Promise<void>;
-        onTrainEnd(e: any): Promise<void>;
-        getMonitorValue(e: any): any;
+        onEpochEnd(epoch: any, logs: any): Promise<void>;
+        onTrainEnd(logs: any): Promise<void>;
+        getMonitorValue(logs: any): any;
         model: {
             [x: string]: any;
             isTraining: boolean;
-            summary(e: any, t: any, n?: {
+            summary(lineLength: any, positions: any, printFn?: {
                 (...data: any[]): void;
                 (...data: any[]): void;
                 (message?: any, ...optionalParams: any[]): void;
             }): void;
-            compile(e: any): void;
+            compile(args: any): void;
             loss: any;
             optimizer_: any;
             isOptimizerOwned: boolean | undefined;
@@ -415,25 +415,25 @@ declare var fv: {
             metricsTensors: any[] | undefined;
             collectedTrainableWeights: any;
             checkTrainableWeightsConsistency(): void;
-            evaluate(e: any, t: any, n?: {}): any;
-            evaluateDataset(e: any, t: any): Promise<any>;
-            checkNumSamples(e: any, t: any, n: any, o?: string): any;
-            execute(e: any, t: any): any;
-            retrieveSymbolicTensors(e: any): any[];
-            predictLoop(e: any, t?: number, n?: boolean): any;
-            predict(e: any, t?: {}): any;
-            predictOnBatch(e: any): any;
-            standardizeUserDataXY(e: any, t: any, n: boolean | undefined, o: any): any[];
-            standardizeUserData(e: any, t: any, n: any, o: any, s: boolean | undefined, a: any): Promise<any[]>;
-            testLoop(e: any, t: any, n: any, o: number | undefined, s: any): any;
+            evaluate(x: any, y: any, args?: {}): any;
+            evaluateDataset(dataset: any, args: any): Promise<any>;
+            checkNumSamples(ins: any, batchSize: any, steps: any, stepsName?: string): any;
+            execute(inputs: any, outputs: any): any;
+            retrieveSymbolicTensors(symbolicTensorNames: any): any[];
+            predictLoop(ins: any, batchSize?: number, verbose?: boolean): any;
+            predict(x: any, args?: {}): any;
+            predictOnBatch(x: any): any;
+            standardizeUserDataXY(x: any, y: any, checkBatchAxis: boolean | undefined, batchSize: any): any[];
+            standardizeUserData(x: any, y: any, sampleWeight: any, classWeight: any, checkBatchAxis: boolean | undefined, batchSize: any): Promise<any[]>;
+            testLoop(f: any, ins: any, batchSize: any, verbose: number | undefined, steps: any): any;
             getDedupedMetricsNames(): string[];
-            makeTrainFunction(): (e: any) => any[];
+            makeTrainFunction(): (data: any) => any[];
             makeTestFunction(): void;
-            testFunction: ((e: any) => any) | undefined;
-            fit(e: any, t: any, n?: {}): Promise<any>;
-            fitDataset(e: any, t: any): Promise<any>;
-            trainOnBatch(e: any, t: any): Promise<any>;
-            getNamedWeights(e: any): {
+            testFunction: ((data: any) => any) | undefined;
+            fit(x: any, y: any, args?: {}): Promise<any>;
+            fitDataset(dataset: any, args: any): Promise<any>;
+            trainOnBatch(x: any, y: any): Promise<any>;
+            getNamedWeights(config: any): {
                 name: any;
                 tensor: any;
             }[];
@@ -451,64 +451,64 @@ declare var fv: {
                     config: any;
                 };
             };
-            loadTrainingConfig(e: any): void;
-            save(e: any, t: any): Promise<any>;
-            setUserDefinedMetadata(e: any): void;
+            loadTrainingConfig(trainingConfig: any): void;
+            save(handlerOrURL: any, config: any): Promise<any>;
+            setUserDefinedMetadata(userDefinedMetadata: any): void;
             userDefinedMetadata: any;
             getUserDefinedMetadata(): any;
         } | null;
-        setModel(e: any): void;
+        setModel(model2: any): void;
         validationData: any;
-        setParams(e: any): void;
+        setParams(params: any): void;
         params: any;
-        onEpochBegin(e: any, t: any): Promise<void>;
-        onBatchBegin(e: any, t: any): Promise<void>;
-        onBatchEnd(e: any, t: any): Promise<void>;
+        onEpochBegin(epoch: any, logs: any): Promise<void>;
+        onBatchBegin(batch: any, logs: any): Promise<void>;
+        onBatchEnd(batch: any, logs: any): Promise<void>;
     };
 };
-declare var Nc: string;
-declare var Mo: string;
-declare var Tc: string;
-declare var Yh: {
-    new (e: any): {
+export var Einsum: string;
+export var Elu: string;
+export var EluGrad: string;
+export var Environment: {
+    new (global2: any): {
         global: any;
         flags: {};
         flagRegistry: {};
         urlFlags: {};
-        getQueryParams: typeof kj;
-        setPlatform(e: any, t: any): void;
+        getQueryParams: typeof getQueryParams;
+        setPlatform(platformName: any, platform: any): void;
         platformName: any;
         platform: any;
-        registerFlag(e: any, t: any, n: any): void;
-        getAsync(e: any): Promise<any>;
-        get(e: any): any;
-        getNumber(e: any): any;
-        getBool(e: any): any;
+        registerFlag(flagName: any, evaluationFn: any, setHook: any): void;
+        getAsync(flagName: any): Promise<any>;
+        get(flagName: any): any;
+        getNumber(flagName: any): any;
+        getBool(flagName: any): any;
         getFlags(): {};
         readonly features: {};
-        set(e: any, t: any): void;
-        evaluateFlag(e: any): any;
-        setFlags(e: any): void;
+        set(flagName: any, value: any): void;
+        evaluateFlag(flagName: any): any;
+        setFlags(flags: any): void;
         reset(): void;
         populateURLFlags(): void;
     };
 };
-declare var zi: string;
-declare var Li: string;
-declare var Lo: string;
-declare var Gs: string;
-declare var Bi: string;
-declare var Ec: string;
-declare var el: string;
-declare var Vi: string;
-declare var zo: string;
-declare var Bo: string;
-declare var Rm: string;
-declare var Vo: string;
-declare var ni: string;
-declare var oi: string;
-declare var hy: {
-    new (e: any): {
+export var Equal: string;
+export var Erf: string;
+export var Exp: string;
+export var ExpandDims: string;
+export var Expm1: string;
+export var FFT: string;
+export var Fill: string;
+export var FlipLeftRight: string;
+export var Floor: string;
+export var FloorDiv: string;
+export var FromPixels: string;
+export var FusedBatchNorm: string;
+export var FusedConv2D: string;
+export var FusedDepthwiseConv2D: string;
+export var GPGPUContext: {
+    new (gl: any): {
         outputTexture: any;
         program: any;
         disposed: boolean;
@@ -536,36 +536,36 @@ declare var hy: {
         };
         readonly debug: any;
         dispose(): void;
-        createFloat32MatrixTexture(e: any, t: any): any;
-        createFloat16MatrixTexture(e: any, t: any): any;
-        createUnsignedBytesMatrixTexture(e: any, t: any): any;
-        uploadPixelDataToTexture(e: any, t: any): void;
-        uploadDenseMatrixToTexture(e: any, t: any, n: any, o: any): void;
-        createFloat16PackedMatrixTexture(e: any, t: any): any;
-        createPackedMatrixTexture(e: any, t: any): any;
-        deleteMatrixTexture(e: any): void;
-        downloadByteEncodedFloatMatrixFromOutputTexture(e: any, t: any, n: any): any;
-        downloadPackedMatrixFromBuffer(e: any, t: any, n: any, o: any, s: any, a: any): Float32Array;
-        downloadFloat32MatrixFromBuffer(e: any, t: any): Float32Array;
-        createBufferFromTexture(e: any, t: any, n: any): any;
+        createFloat32MatrixTexture(rows: any, columns: any): any;
+        createFloat16MatrixTexture(rows: any, columns: any): any;
+        createUnsignedBytesMatrixTexture(rows: any, columns: any): any;
+        uploadPixelDataToTexture(texture: any, pixels: any): void;
+        uploadDenseMatrixToTexture(texture: any, width: any, height: any, data: any): void;
+        createFloat16PackedMatrixTexture(rows: any, columns: any): any;
+        createPackedMatrixTexture(rows: any, columns: any): any;
+        deleteMatrixTexture(texture: any): void;
+        downloadByteEncodedFloatMatrixFromOutputTexture(texture: any, rows: any, columns: any): any;
+        downloadPackedMatrixFromBuffer(buffer2: any, batch: any, rows: any, columns: any, physicalRows: any, physicalCols: any): Float32Array;
+        downloadFloat32MatrixFromBuffer(buffer2: any, size: any): Float32Array;
+        createBufferFromTexture(texture: any, rows: any, columns: any): any;
         createAndWaitForFence(): Promise<any>;
-        createFence(e: any): {
+        createFence(gl: any): {
             query: any;
             isFencePassed: () => any;
         };
-        downloadMatrixFromPackedTexture(e: any, t: any, n: any): any;
-        createProgram(e: any): any;
+        downloadMatrixFromPackedTexture(texture: any, physicalRows: any, physicalCols: any): any;
+        createProgram(fragmentShaderSource: any): any;
         vertexShader: any;
-        deleteProgram(e: any): void;
-        setProgram(e: any): void;
-        getUniformLocation(e: any, t: any, n?: boolean): any;
-        getAttributeLocation(e: any, t: any): any;
-        getUniformLocationNoThrow(e: any, t: any): any;
-        setInputMatrixTexture(e: any, t: any, n: any): void;
-        setOutputMatrixTexture(e: any, t: any, n: any): void;
-        setOutputPackedMatrixTexture(e: any, t: any, n: any): void;
-        setOutputMatrixWriteRegion(e: any, t: any, n: any, o: any): void;
-        setOutputPackedMatrixWriteRegion(e: any, t: any, n: any, o: any): void;
+        deleteProgram(program: any): void;
+        setProgram(program: any): void;
+        getUniformLocation(program: any, uniformName: any, shouldThrow?: boolean): any;
+        getAttributeLocation(program: any, attribute: any): any;
+        getUniformLocationNoThrow(program: any, uniformName: any): any;
+        setInputMatrixTexture(inputMatrixTexture: any, uniformLocation: any, textureUnit: any): void;
+        setOutputMatrixTexture(outputMatrixTexture: any, rows: any, columns: any): void;
+        setOutputPackedMatrixTexture(outputPackedMatrixTexture: any, rows: any, columns: any): void;
+        setOutputMatrixWriteRegion(startRow: any, numRows: any, startColumn: any, numColumns: any): void;
+        setOutputPackedMatrixWriteRegion(startRow: any, numRows: any, startColumn: any, numColumns: any): void;
         debugValidate(): void;
         executeProgram(): void;
         blockUntilAllProgramsCompleted(): void;
@@ -575,35 +575,35 @@ declare var hy: {
         getQueryTimerExtensionWebGL1(): any;
         beginQuery(): any;
         endQuery(): void;
-        waitForQueryAndGetTime(e: any): Promise<number | null>;
-        getQueryTime(e: any, t: any): number | null;
-        isQueryAvailable(e: any, t: any): any;
+        waitForQueryAndGetTime(query: any): Promise<number | null>;
+        getQueryTime(query: any, queryTimerVersion: any): number | null;
+        isQueryAvailable(query: any, queryTimerVersion: any): any;
         disjoint: any;
-        pollFence(e: any): Promise<any>;
+        pollFence(fenceContext: any): Promise<any>;
         pollItems(): void;
-        addItemToPoll(e: any, t: any): void;
-        bindTextureToFrameBuffer(e: any): void;
+        addItemToPoll(isDoneFn: any, resolveFn: any): void;
+        bindTextureToFrameBuffer(texture: any): void;
         unbindTextureToFrameBuffer(): void;
-        downloadMatrixDriver(e: any, t: any): any;
-        setOutputMatrixTextureDriver(e: any, t: any, n: any): void;
-        setOutputMatrixWriteRegionDriver(e: any, t: any, n: any, o: any): void;
+        downloadMatrixDriver(texture: any, downloadAndDecode: any): any;
+        setOutputMatrixTextureDriver(outputMatrixTextureMaybePacked: any, width: any, height: any): void;
+        setOutputMatrixWriteRegionDriver(x: any, y: any, width: any, height: any): void;
         throwIfDisposed(): void;
         throwIfNoProgram(): void;
     };
 };
-declare var Wi: string;
-declare var Us: string;
-declare var jv: {
-    new (e: any, t?: {}): {
+export var GatherNd: string;
+export var GatherV2: string;
+export var GraphModel: {
+    new (modelUrl: any, loadOptions?: {}): {
         modelUrl: any;
         loadOptions: {};
         version: string;
         resourceManager: {
             hashTableNameToHandle: {};
             hashTableMap: {};
-            addHashTable(e: any, t: any): void;
-            getHashTableHandleByName(e: any): any;
-            getHashTableById(e: any): any;
+            addHashTable(name: any, hashTable2: any): void;
+            getHashTableHandleByName(name: any): any;
+            getHashTableById(id: any): any;
             dispose(): void;
         };
         readonly modelVersion: string;
@@ -617,7 +617,7 @@ declare var jv: {
         findIOHandler(): void;
         handler: any;
         load(): Promise<boolean>;
-        loadSync(e: any): boolean;
+        loadSync(artifacts: any): boolean;
         artifacts: any;
         signature: any;
         executor: {
@@ -643,23 +643,23 @@ declare var jv: {
             readonly inputNodes: any;
             readonly outputNodes: any;
             readonly functions: {};
-            getCompilationKey(e: any, t: any): string;
-            compile(e: any, t: any): any[];
-            execute(e: any, t: any): any;
-            getFrozenTensorIds(e: any): Set<any>;
-            checkTensorForDisposal(e: any, t: any, n: any, o: any, s: any, a: any, i: any): void;
-            executeAsync(e: any, t: any): Promise<any>;
-            _executeAsync(e: any, t: any, n?: boolean, o?: {}, s?: {}): Promise<any>;
-            executeFunctionAsync(e: any, t: any, n: any): Promise<any>;
-            executeWithControlFlow(e: any, t: any, n: any, o: any): Promise<any>;
-            processStack(e: any, t: any, n: any, o: any, s: any, a: any, i: any, l: any, u: any): any[];
-            processChildNodes(e: any, t: any, n: any, o: any, s: any, a: any): void;
+            getCompilationKey(inputs: any, outputs: any): string;
+            compile(inputs: any, outputs: any): any[];
+            execute(inputs: any, outputs: any): any;
+            getFrozenTensorIds(tensorMap: any): Set<any>;
+            checkTensorForDisposal(nodeName: any, node: any, tensorMap: any, context: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any): void;
+            executeAsync(inputs: any, outputs: any): Promise<any>;
+            _executeAsync(inputs: any, outputs: any, isFunctionExecution?: boolean, tensorArrayMap?: {}, tensorListMap?: {}): Promise<any>;
+            executeFunctionAsync(inputs: any, tensorArrayMap: any, tensorListMap: any): Promise<any>;
+            executeWithControlFlow(inputs: any, context: any, outputNames: any, isFunctionExecution: any): Promise<any>;
+            processStack(inputNodes: any, stack2: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
+            processChildNodes(node: any, stack2: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
             dispose(): void;
-            checkInputShapeAndType(e: any): void;
-            mapInputs(e: any): {};
-            checkInputs(e: any): void;
-            mapOutputs(e: any): any;
-            checkOutputs(e: any): void;
+            checkInputShapeAndType(inputs: any): void;
+            mapInputs(inputs: any): {};
+            checkInputs(inputs: any): void;
+            mapOutputs(outputs: any): any;
+            checkOutputs(outputs: any): void;
         } | undefined;
         initializer: {
             graph: any;
@@ -684,58 +684,58 @@ declare var jv: {
             readonly inputNodes: any;
             readonly outputNodes: any;
             readonly functions: {};
-            getCompilationKey(e: any, t: any): string;
-            compile(e: any, t: any): any[];
-            execute(e: any, t: any): any;
-            getFrozenTensorIds(e: any): Set<any>;
-            checkTensorForDisposal(e: any, t: any, n: any, o: any, s: any, a: any, i: any): void;
-            executeAsync(e: any, t: any): Promise<any>;
-            _executeAsync(e: any, t: any, n?: boolean, o?: {}, s?: {}): Promise<any>;
-            executeFunctionAsync(e: any, t: any, n: any): Promise<any>;
-            executeWithControlFlow(e: any, t: any, n: any, o: any): Promise<any>;
-            processStack(e: any, t: any, n: any, o: any, s: any, a: any, i: any, l: any, u: any): any[];
-            processChildNodes(e: any, t: any, n: any, o: any, s: any, a: any): void;
+            getCompilationKey(inputs: any, outputs: any): string;
+            compile(inputs: any, outputs: any): any[];
+            execute(inputs: any, outputs: any): any;
+            getFrozenTensorIds(tensorMap: any): Set<any>;
+            checkTensorForDisposal(nodeName: any, node: any, tensorMap: any, context: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any): void;
+            executeAsync(inputs: any, outputs: any): Promise<any>;
+            _executeAsync(inputs: any, outputs: any, isFunctionExecution?: boolean, tensorArrayMap?: {}, tensorListMap?: {}): Promise<any>;
+            executeFunctionAsync(inputs: any, tensorArrayMap: any, tensorListMap: any): Promise<any>;
+            executeWithControlFlow(inputs: any, context: any, outputNames: any, isFunctionExecution: any): Promise<any>;
+            processStack(inputNodes: any, stack2: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
+            processChildNodes(node: any, stack2: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
             dispose(): void;
-            checkInputShapeAndType(e: any): void;
-            mapInputs(e: any): {};
-            checkInputs(e: any): void;
-            mapOutputs(e: any): any;
-            checkOutputs(e: any): void;
+            checkInputShapeAndType(inputs: any): void;
+            mapInputs(inputs: any): {};
+            checkInputs(inputs: any): void;
+            mapOutputs(outputs: any): any;
+            checkOutputs(outputs: any): void;
         } | undefined;
-        save(e: any, t: any): Promise<any>;
-        predict(e: any, t: any): any;
-        normalizeInputs(e: any): any;
-        normalizeOutputs(e: any): any[];
-        execute(e: any, t: any): any;
-        executeAsync(e: any, t: any): Promise<any>;
-        convertTensorMapToTensorsMap(e: any): {};
+        save(handlerOrURL: any, config: any): Promise<any>;
+        predict(inputs: any, config: any): any;
+        normalizeInputs(inputs: any): any;
+        normalizeOutputs(outputs: any): any[];
+        execute(inputs: any, outputs: any): any;
+        executeAsync(inputs: any, outputs: any): Promise<any>;
+        convertTensorMapToTensorsMap(map: any): {};
         dispose(): void;
     };
 };
-declare var ji: string;
-declare var Wo: string;
-declare var S_: {
+export var Greater: string;
+export var GreaterEqual: string;
+export var History: {
     new (): {
-        onTrainBegin(e: any): Promise<void>;
+        onTrainBegin(logs: any): Promise<void>;
         epoch: any[] | undefined;
         history: {} | undefined;
-        onEpochEnd(e: any, t: any): Promise<void>;
+        onEpochEnd(epoch: any, logs: any): Promise<void>;
         syncData(): Promise<void>;
         validationData: any;
-        setParams(e: any): void;
+        setParams(params: any): void;
         params: any;
-        onEpochBegin(e: any, t: any): Promise<void>;
-        onBatchBegin(e: any, t: any): Promise<void>;
-        onBatchEnd(e: any, t: any): Promise<void>;
-        onTrainEnd(e: any): Promise<void>;
-        setModel(e: any): void;
+        onEpochBegin(epoch: any, logs: any): Promise<void>;
+        onBatchBegin(batch: any, logs: any): Promise<void>;
+        onBatchEnd(batch: any, logs: any): Promise<void>;
+        onTrainEnd(logs: any): Promise<void>;
+        setModel(model2: any): void;
     };
 };
-declare var Ac: string;
-declare var to: string;
-declare var $c: string;
-declare var _t: {
-    new (e: any): {
+export var IFFT: string;
+export var Identity: string;
+export var Imag: string;
+export var InputSpec: {
+    new (args: any): {
         dtype: any;
         shape: any;
         ndim: any;
@@ -744,31 +744,31 @@ declare var _t: {
         axes: any;
     };
 };
-declare var Gi: string;
-declare var Ui: string;
-declare var Hi: string;
-declare var Ls: {
+export var IsFinite: string;
+export var IsInf: string;
+export var IsNan: string;
+export var KernelBackend: {
     new (): {
-        refCount(e: any): void;
-        incRef(e: any): void;
+        refCount(dataId: any): void;
+        incRef(dataId: any): void;
         timerAvailable(): boolean;
-        time(e: any): void;
-        read(e: any): void;
-        readSync(e: any): void;
+        time(f: any): void;
+        read(dataId: any): void;
+        readSync(dataId: any): void;
         numDataIds(): void;
-        disposeData(e: any, t: any): void;
-        write(e: any, t: any, n: any): void;
-        move(e: any, t: any, n: any, o: any, s: any): void;
+        disposeData(dataId: any, force: any): void;
+        write(values: any, shape: any, dtype: any): void;
+        move(dataId: any, values: any, shape: any, dtype: any, refCount: any): void;
         memory(): void;
         floatPrecision(): void;
         epsilon(): number;
         dispose(): void;
     };
 };
-declare var tl: string;
-declare var Rc: string;
-declare var Yg: {
-    new (e: any, t?: string, n?: string, o?: boolean, s?: null): {
+export var LRN: string;
+export var LRNGrad: string;
+export var LayerVariable: {
+    new (val: any, dtype?: string, name?: string, trainable?: boolean, constraint?: null): {
         dtype: string;
         shape: any;
         id: number;
@@ -778,22 +778,22 @@ declare var Yg: {
         constraint: any;
         val: any;
         read(): any;
-        write(e: any): any;
+        write(newVal: any): any;
         dispose(): void;
         assertNotDisposed(): void;
         trainable: boolean;
     };
 };
-declare var Xn: {
-    new (e: any): {
+export var LayersModel: {
+    new (args: any): {
         [x: string]: any;
         isTraining: boolean;
-        summary(e: any, t: any, n?: {
+        summary(lineLength: any, positions: any, printFn?: {
             (...data: any[]): void;
             (...data: any[]): void;
             (message?: any, ...optionalParams: any[]): void;
         }): void;
-        compile(e: any): void;
+        compile(args: any): void;
         loss: any;
         optimizer_: any;
         isOptimizerOwned: boolean | undefined;
@@ -806,25 +806,25 @@ declare var Xn: {
         metricsTensors: any[] | undefined;
         collectedTrainableWeights: any;
         checkTrainableWeightsConsistency(): void;
-        evaluate(e: any, t: any, n?: {}): any;
-        evaluateDataset(e: any, t: any): Promise<any>;
-        checkNumSamples(e: any, t: any, n: any, o?: string): any;
-        execute(e: any, t: any): any;
-        retrieveSymbolicTensors(e: any): any[];
-        predictLoop(e: any, t?: number, n?: boolean): any;
-        predict(e: any, t?: {}): any;
-        predictOnBatch(e: any): any;
-        standardizeUserDataXY(e: any, t: any, n: boolean | undefined, o: any): any[];
-        standardizeUserData(e: any, t: any, n: any, o: any, s: boolean | undefined, a: any): Promise<any[]>;
-        testLoop(e: any, t: any, n: any, o: number | undefined, s: any): any;
+        evaluate(x: any, y: any, args?: {}): any;
+        evaluateDataset(dataset: any, args: any): Promise<any>;
+        checkNumSamples(ins: any, batchSize: any, steps: any, stepsName?: string): any;
+        execute(inputs: any, outputs: any): any;
+        retrieveSymbolicTensors(symbolicTensorNames: any): any[];
+        predictLoop(ins: any, batchSize?: number, verbose?: boolean): any;
+        predict(x: any, args?: {}): any;
+        predictOnBatch(x: any): any;
+        standardizeUserDataXY(x: any, y: any, checkBatchAxis: boolean | undefined, batchSize: any): any[];
+        standardizeUserData(x: any, y: any, sampleWeight: any, classWeight: any, checkBatchAxis: boolean | undefined, batchSize: any): Promise<any[]>;
+        testLoop(f: any, ins: any, batchSize: any, verbose: number | undefined, steps: any): any;
         getDedupedMetricsNames(): string[];
-        makeTrainFunction(): (e: any) => any[];
+        makeTrainFunction(): (data: any) => any[];
         makeTestFunction(): void;
-        testFunction: ((e: any) => any) | undefined;
-        fit(e: any, t: any, n?: {}): Promise<any>;
-        fitDataset(e: any, t: any): Promise<any>;
-        trainOnBatch(e: any, t: any): Promise<any>;
-        getNamedWeights(e: any): {
+        testFunction: ((data: any) => any) | undefined;
+        fit(x: any, y: any, args?: {}): Promise<any>;
+        fitDataset(dataset: any, args: any): Promise<any>;
+        trainOnBatch(x: any, y: any): Promise<any>;
+        getNamedWeights(config: any): {
             name: any;
             tensor: any;
         }[];
@@ -842,26 +842,26 @@ declare var Xn: {
                 config: any;
             };
         };
-        loadTrainingConfig(e: any): void;
-        save(e: any, t: any): Promise<any>;
-        setUserDefinedMetadata(e: any): void;
+        loadTrainingConfig(trainingConfig: any): void;
+        save(handlerOrURL: any, config: any): Promise<any>;
+        setUserDefinedMetadata(userDefinedMetadata: any): void;
         userDefinedMetadata: any;
         getUserDefinedMetadata(): any;
     };
     [x: string]: any;
     className: string;
 };
-declare var jo: string;
-declare var qi: string;
-declare var Ki: string;
-declare var Dc: string;
-declare var Go: string;
-declare var Xi: string;
-declare var YI: string;
-declare var Yi: string;
-declare var jl: string;
-declare var Gl: string;
-declare var Pu: {
+export var LeakyRelu: string;
+export var Less: string;
+export var LessEqual: string;
+export var LinSpace: string;
+export var Log: string;
+export var Log1p: string;
+export var LogSoftmax: string;
+export var LogicalAnd: string;
+export var LogicalNot: string;
+export var LogicalOr: string;
+export var MathBackendCPU: {
     new (): {
         blockSize: number;
         firstUse: boolean;
@@ -870,54 +870,54 @@ declare var Pu: {
             dataMover: any;
             data: WeakMap<object, any>;
             dataIdsCount: number;
-            get(e: any): any;
-            set(e: any, t: any): void;
-            has(e: any): boolean;
-            delete(e: any): boolean;
+            get(dataId: any): any;
+            set(dataId: any, value: any): void;
+            has(dataId: any): boolean;
+            delete(dataId: any): boolean;
             numDataIds(): number;
         };
         nextDataId(): number;
-        write(e: any, t: any, n: any): {
+        write(values: any, shape: any, dtype: any): {
             id: number;
         };
-        makeTensorInfo(e: any, t: any, n: any): {
+        makeTensorInfo(shape: any, dtype: any, values: any): {
             dataId: {
                 id: number;
             };
             shape: any;
             dtype: any;
         };
-        refCount(e: any): any;
-        incRef(e: any): void;
-        decRef(e: any): void;
-        move(e: any, t: any, n: any, o: any, s: any): void;
+        refCount(dataId: any): any;
+        incRef(dataId: any): void;
+        decRef(dataId: any): void;
+        move(dataId: any, values: any, shape: any, dtype: any, refCount: any): void;
         numDataIds(): number;
-        read(e: any): Promise<any>;
-        readSync(e: any): any;
-        bufferSync(e: any): {
+        read(dataId: any): Promise<any>;
+        readSync(dataId: any): any;
+        bufferSync(t: any): {
             dtype: any;
             shape: any;
             size: any;
             values: any;
             strides: any[];
-            set(e: any, ...t: any[]): void;
-            get(...e: any[]): any;
-            locToIndex(e: any): any;
-            indexToLoc(e: any): any[];
+            set(value: any, ...locs: any[]): void;
+            get(...locs: any[]): any;
+            locToIndex(locs: any): any;
+            indexToLoc(index: any): any[];
             readonly rank: any;
             toTensor(): any;
         };
-        makeOutput(e: any, t: any, n: any): any;
-        disposeData(e: any, t?: boolean): boolean;
-        disposeIntermediateTensorInfo(e: any): void;
-        time(e: any): Promise<{
+        makeOutput(values: any, shape: any, dtype: any): any;
+        disposeData(dataId: any, force?: boolean): boolean;
+        disposeIntermediateTensorInfo(tensorInfo: any): void;
+        time(f: any): Promise<{
             kernelMs: number;
         }>;
         memory(): {
             unreliable: boolean;
             reasons: string[];
         };
-        where(e: any): any;
+        where(condition: any): any;
         dispose(): void;
         floatPrecision(): number;
         epsilon(): number;
@@ -925,8 +925,8 @@ declare var Pu: {
     };
     nextDataId: number;
 };
-declare var Hu: {
-    new (e: any): {
+export var MathBackendWebGL: {
+    new (gpgpu: any): {
         pendingRead: WeakMap<object, any>;
         pendingDisposal: WeakSet<object>;
         dataRefCount: WeakMap<object, any>;
@@ -950,8 +950,8 @@ declare var Hu: {
             freeTextures: {};
             logEnabled: boolean;
             usedTextures: {};
-            acquireTexture(e: any, t: any, n: any): any;
-            releaseTexture(e: any, t: any, n: any, o: any): void;
+            acquireTexture(shapeRC: any, usage: any, isPacked: any): any;
+            releaseTexture(texture: any, shape: any, logicalTexType: any, isPacked: any): void;
             log(): void;
             readonly numBytesAllocated: number;
             readonly numBytesFree: number;
@@ -965,41 +965,41 @@ declare var Hu: {
             dataMover: any;
             data: WeakMap<object, any>;
             dataIdsCount: number;
-            get(e: any): any;
-            set(e: any, t: any): void;
-            has(e: any): boolean;
-            delete(e: any): boolean;
+            get(dataId: any): any;
+            set(dataId: any, value: any): void;
+            has(dataId: any): boolean;
+            delete(dataId: any): boolean;
             numDataIds(): number;
         };
         nextDataId(): number;
         numDataIds(): number;
-        write(e: any, t: any, n: any): {
+        write(values: any, shape: any, dtype: any): {
             id: number;
         };
-        refCount(e: any): any;
-        incRef(e: any): void;
-        decRef(e: any): void;
-        move(e: any, t: any, n: any, o: any, s: any): void;
-        disposeIntermediateTensorInfo(e: any): void;
-        readSync(e: any): any;
-        read(e: any): any;
-        bufferSync(e: any): {
+        refCount(dataId: any): any;
+        incRef(dataId: any): void;
+        decRef(dataId: any): void;
+        move(dataId: any, values: any, shape: any, dtype: any, refCount: any): void;
+        disposeIntermediateTensorInfo(tensorInfo: any): void;
+        readSync(dataId: any): any;
+        read(dataId: any): any;
+        bufferSync(t: any): {
             dtype: any;
             shape: any;
             size: any;
             values: any;
             strides: any[];
-            set(e: any, ...t: any[]): void;
-            get(...e: any[]): any;
-            locToIndex(e: any): any;
-            indexToLoc(e: any): any[];
+            set(value: any, ...locs: any[]): void;
+            get(...locs: any[]): any;
+            locToIndex(locs: any): any;
+            indexToLoc(index: any): any[];
             readonly rank: any;
             toTensor(): any;
         };
-        checkNumericalProblems(e: any): void;
-        getValuesFromTexture(e: any): any;
+        checkNumericalProblems(values: any): void;
+        getValuesFromTexture(dataId: any): any;
         timerAvailable(): boolean;
-        time(e: any): Promise<{
+        time(f: any): Promise<{
             uploadWaitMs: number;
             downloadWaitMs: number;
             kernelMs: null;
@@ -1014,40 +1014,40 @@ declare var Hu: {
             numBytesInGPUFree: number;
         };
         startTimer(): any;
-        endTimer(e: any): any;
-        getQueryTime(e: any): Promise<any>;
-        disposeData(e: any, t?: boolean): any;
-        releaseGPUData(e: any): void;
-        getTexture(e: any): any;
-        getDataInfo(e: any): any;
-        shouldExecuteOnCPU(e: any, t?: any): any;
+        endTimer(query: any): any;
+        getQueryTime(query: any): Promise<any>;
+        disposeData(dataId: any, force?: boolean): boolean;
+        releaseGPUData(dataId: any): void;
+        getTexture(dataId: any): any;
+        getDataInfo(dataId: any): any;
+        shouldExecuteOnCPU(inputs: any, sizeThreshold?: any): any;
         getGPGPUContext(): any;
-        where(e: any): any;
-        packedUnaryOp(e: any, t: any, n: any): any;
-        abs(e: any): any;
-        makeTensorInfo(e: any, t: any, n: any): {
+        where(condition: any): any;
+        packedUnaryOp(x: any, op2: any, dtype: any): any;
+        abs(x: any): any;
+        makeTensorInfo(shape: any, dtype: any, values: any): {
             dataId: {
                 id: number;
             };
             shape: any;
             dtype: any;
         };
-        makeOutput(e: any, t: any, n: any): any;
-        unpackTensor(e: any): any;
-        packTensor(e: any): any;
-        packedReshape(e: any, t: any): {
+        makeOutput(shape: any, dtype: any, values: any): any;
+        unpackTensor(input2: any): any;
+        packTensor(input2: any): any;
+        packedReshape(input2: any, afterShape: any): {
             dataId: any;
             shape: any;
             dtype: any;
         };
-        decode(e: any): {
+        decode(dataId: any): {
             dtype: any;
             shape: any;
             dataId: any;
         };
-        runWebGLProgram(e: any, t: any, n: any, o: any, s?: boolean): any;
-        compileAndRun(e: any, t: any, n: any, o: any, s?: boolean): any;
-        getAndSaveBinary(e: any, t: any): any;
+        runWebGLProgram(program: any, inputs: any, outputDtype: any, customUniformValues: any, preventEagerUnpackingOfOutput?: boolean): any;
+        compileAndRun(program: any, inputs: any, outputDtype: any, customUniformValues: any, preventEagerUnpackingOfOutput?: boolean): any;
+        getAndSaveBinary(key: any, getBinary: any): any;
         getTextureManager(): {
             gpgpu: any;
             numUsedTextures: number;
@@ -1057,8 +1057,8 @@ declare var Hu: {
             freeTextures: {};
             logEnabled: boolean;
             usedTextures: {};
-            acquireTexture(e: any, t: any, n: any): any;
-            releaseTexture(e: any, t: any, n: any, o: any): void;
+            acquireTexture(shapeRC: any, usage: any, isPacked: any): any;
+            releaseTexture(texture: any, shape: any, logicalTexType: any, isPacked: any): void;
             log(): void;
             readonly numBytesAllocated: number;
             readonly numBytesFree: number;
@@ -1070,52 +1070,52 @@ declare var Hu: {
         floatPrecision(): any;
         floatPrecisionValue: any;
         epsilon(): number;
-        uploadToGPU(e: any): void;
-        convertAndCacheOnCPU(e: any, t: any): any;
-        acquireTexture(e: any, t: any, n: any, o: any): any;
-        computeBytes(e: any, t: any): number;
+        uploadToGPU(dataId: any): void;
+        convertAndCacheOnCPU(dataId: any, float32Values: any): any;
+        acquireTexture(texShape: any, texType: any, dtype: any, isPacked: any): any;
+        computeBytes(shape: any, dtype: any): number;
     };
     nextDataId: number;
 };
-declare var Uo: string;
-declare var qo: string;
-declare var rl: string;
-declare var Oc: string;
-declare var Fc: string;
-declare var Pc: string;
-declare var Ho: string;
-declare var Ko: string;
-declare var Xo: string;
-declare var Yo: string;
-declare var Zo: string;
-declare var Zi: string;
-declare var kp: {
-    new (e: any, t: any, n?: boolean): {
+export var Max: string;
+export var MaxPool: string;
+export var MaxPool3D: string;
+export var MaxPool3DGrad: string;
+export var MaxPoolGrad: string;
+export var MaxPoolWithArgmax: string;
+export var Maximum: string;
+export var Mean: string;
+export var Min: string;
+export var Minimum: string;
+export var MirrorPad: string;
+export var Mod: string;
+export var MomentumOptimizer: {
+    new (learningRate: any, momentum: any, useNesterov?: boolean): {
         learningRate: any;
         momentum: any;
         useNesterov: boolean;
         accumulations: any[];
         m: any;
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
-        setMomentum(e: any): void;
+        setMomentum(momentum: any): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             momentum: any;
             useNesterov: boolean;
         };
-        setLearningRate(e: any): void;
+        setLearningRate(learningRate: any): void;
         c: any;
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -1123,29 +1123,29 @@ declare var kp: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    fromConfig(e: any, t: any): any;
+    fromConfig(cls: any, config: any): any;
     className: string;
 };
-declare var Mc: string;
-declare var Jo: string;
-declare var Hs: string;
-declare var Qi: string;
-declare var ea: string;
-declare var ta: string;
-declare var Ji: string;
-declare var S1: string;
-declare var Qo: string;
-declare var qs: string;
-declare var Wr: {
+export var Multinomial: string;
+export var Multiply: string;
+export var Neg: string;
+export var NonMaxSuppressionV3: string;
+export var NonMaxSuppressionV4: string;
+export var NonMaxSuppressionV5: string;
+export var NotEqual: string;
+export var OP_SCOPE_SUFFIX: string;
+export var OneHot: string;
+export var OnesLike: string;
+export var Optimizer: {
     new (): {
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -1155,20 +1155,20 @@ declare var Wr: {
             tensor: any;
         }>;
         getWeights(): Promise<void>;
-        setWeights(e: any): Promise<void>;
-        extractIterations(e: any): Promise<any>;
+        setWeights(weightValues: any): Promise<void>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    fromConfig(e: any, t: any): any;
+    fromConfig(cls: any, config: any): any;
 };
-declare var Ks: string;
-declare var es: string;
-declare var fse: string;
-declare var ts: string;
-declare var rs: string;
-declare var ra: string;
-declare var _p: {
-    new (e: any, t?: number, n?: number, o?: null, s?: boolean): {
+export var Pack: string;
+export var PadV2: string;
+export var Pool: string;
+export var Pow: string;
+export var Prelu: string;
+export var Prod: string;
+export var RMSPropOptimizer: {
+    new (learningRate: any, decay?: number, momentum?: number, epsilon3?: null, centered?: boolean): {
         learningRate: any;
         decay: number;
         momentum: number;
@@ -1177,13 +1177,13 @@ declare var _p: {
         accumulatedMoments: any[];
         accumulatedMeanGrads: any[];
         centered: boolean;
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             decay: number;
@@ -1191,11 +1191,11 @@ declare var _p: {
             epsilon: any;
             centered: boolean;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -1203,50 +1203,151 @@ declare var _p: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    fromConfig(e: any, t: any): any;
+    fromConfig(cls: any, config: any): any;
     className: string;
 };
-declare var On: any;
-declare var nl: string;
-declare var Iw: any;
-declare var Lc: string;
-declare var Po: string;
-declare var na: string;
-declare var qt: any;
-declare var ns: string;
-declare var ss: string;
-declare var Xs: string;
-declare var os: string;
-declare var Bc: string;
-declare var ol: string;
-declare var zc: string;
-declare var is: string;
-declare var ma: string;
-declare var as: string;
-declare var ls: string;
-declare var dl: {
-    new (e: any): {
+export var RNN: {
+    new (args: any): {
+        cell: any;
+        returnSequences: any;
+        returnState: any;
+        goBackwards: any;
+        _stateful: any;
+        unroll: any;
+        supportsMasking: boolean;
+        inputSpec: {
+            dtype: any;
+            shape: any;
+            ndim: any;
+            maxNDim: any;
+            minNDim: any;
+            axes: any;
+        }[];
+        stateSpec: any;
+        states_: any;
+        numConstants: any;
+        keptStates: any[];
+        getStates(): any;
+        setStates(states: any): void;
+        computeOutputShape(inputShape: any): any[];
+        computeMask(inputs: any, mask: any): any;
+        states: any;
+        build(inputShape: any): void;
+        resetStates(states: any, training?: boolean): void;
+        apply(inputs: any, kwargs: any): any;
+        call(inputs: any, kwargs: any): any;
+        getInitialState(inputs: any): any;
+        readonly trainableWeights: any;
+        readonly nonTrainableWeights: any;
+        setFastWeightInitDuringBuild(value: any): void;
+        getConfig(): any;
+        _callHook: any;
+        _addedWeightNames: any[];
+        id: number;
+        activityRegularizer: any;
+        _trainableWeights: any[];
+        _nonTrainableWeights: any[];
+        _losses: any[];
+        _updates: any[];
+        _built: boolean;
+        inboundNodes: any[];
+        outboundNodes: any[];
+        name: any;
+        trainable_: any;
+        batchInputShape: any;
+        dtype: any;
+        initialWeights: any;
+        _refCount: number | null;
+        fastWeightInitDuringBuild: boolean;
+        getNodeAtIndex(nodeIndex: any, attrName: any): any;
+        getInputAt(nodeIndex: any): any;
+        getOutputAt(nodeIndex: any): any;
+        readonly input: any;
+        readonly output: any;
+        readonly losses: any[];
+        calculateLosses(): any[];
+        readonly updates: any[];
+        built: boolean;
+        trainable: any;
+        readonly weights: any[];
+        readonly stateful: boolean;
+        assertInputCompatibility(inputs: any): void;
+        invokeCallHook(inputs: any, kwargs: any): void;
+        setCallHook(callHook: any): void;
+        clearCallHook(): void;
+        warnOnIncompatibleInputShape(inputShape: any): void;
+        readonly outputShape: any;
+        countParams(): number;
+        getWeights(trainableOnly?: boolean): any;
+        setWeights(weights: any): void;
+        addWeight(name: any, shape: any, dtype: any, initializer: any, regularizer: any, trainable: any, constraint: any): {
+            dtype: string;
+            shape: any;
+            id: number;
+            originalName: string;
+            name: any;
+            trainable_: boolean;
+            constraint: any;
+            val: any;
+            read(): any;
+            write(newVal: any): any;
+            dispose(): void;
+            assertNotDisposed(): void;
+            trainable: boolean;
+        };
+        addLoss(losses4: any): void;
+        addInboundNode(inputTensors: any, outputTensors: any, inputMasks: any, outputMasks: any, inputShapes: any, outputShapes: any, kwargs?: null): void;
+        disposeWeights(): number;
+        assertNotDisposed(): void;
+        dispose(): {
+            refCountAfterDispose: number;
+            numDisposedVariables: number;
+        };
+    };
+    fromConfig(cls: any, config: any, customObjects?: {}): any;
+    className: string;
+    nodeKey(layer: any, nodeIndex: any): string;
+};
+export var Range: string;
+export var Rank: any;
+export var Real: string;
+export var RealDiv: string;
+export var Reciprocal: string;
+export var Reduction: any;
+export var Relu: string;
+export var Relu6: string;
+export var Reshape: string;
+export var ResizeBilinear: string;
+export var ResizeBilinearGrad: string;
+export var ResizeNearestNeighbor: string;
+export var ResizeNearestNeighborGrad: string;
+export var Reverse: string;
+export var RotateWithOffset: string;
+export var Round: string;
+export var Rsqrt: string;
+export var SGDOptimizer: {
+    new (learningRate: any): {
         learningRate: any;
-        applyGradients(e: any): void;
-        setLearningRate(e: any): void;
+        applyGradients(variableGradients: any): void;
+        setLearningRate(learningRate: any): void;
         c: any;
         dispose(): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -1254,42 +1355,42 @@ declare var dl: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    fromConfig(e: any, t: any): any;
+    fromConfig(cls: any, config: any): any;
     className: string;
 };
-declare var oa: string;
-declare var Ys: string;
-declare var sa: string;
-declare var $a: any;
-declare var cs: string;
-declare var aa: string;
-declare var us: string;
-declare var ia: string;
-declare var Zs: string;
-declare var fs: string;
-declare var la: string;
-declare var Js: string;
-declare var Vc: string;
-declare var Wc: string;
-declare var jc: string;
-declare var Gc: string;
-declare var Uc: string;
-declare var Qs: string;
-declare var ps: string;
-declare var sl: string;
-declare var ds: string;
-declare var ro: string;
-declare var ua: string;
-declare var Hc: string;
-declare var qc: string;
-declare var Kc: string;
-declare var hs: string;
-declare var ms: string;
-declare var on: {
-    new (e: any, t: any, n: any, o: any, s: any, a: any, i: any): {
+export var ScatterNd: string;
+export var Select: string;
+export var Selu: string;
+export var Sequential: any;
+export var Sigmoid: string;
+export var Sign: string;
+export var Sin: string;
+export var Sinh: string;
+export var Slice: string;
+export var Softmax: string;
+export var Softplus: string;
+export var SpaceToBatchND: string;
+export var SparseFillEmptyRows: string;
+export var SparseReshape: string;
+export var SparseSegmentMean: string;
+export var SparseSegmentSum: string;
+export var SparseToDense: string;
+export var SplitV: string;
+export var Sqrt: string;
+export var Square: string;
+export var SquaredDifference: string;
+export var Step: string;
+export var StridedSlice: string;
+export var StringNGrams: string;
+export var StringSplit: string;
+export var StringToHashBucketFast: string;
+export var Sub: string;
+export var Sum: string;
+export var SymbolicTensor: {
+    new (dtype: any, shape: any, sourceLayer: any, inputs: any, callArgs: any, name: any, outputTensorIndex: any): {
         dtype: any;
         shape: any;
         sourceLayer: any;
@@ -1302,10 +1403,10 @@ declare var on: {
         rank: any;
     };
 };
-declare var gs: string;
-declare var xs: string;
-declare var je: {
-    new (e: any, t: any, n: any, o: any): {
+export var Tan: string;
+export var Tanh: string;
+export var Tensor: {
+    new (shape: any, dtype: any, dataId: any, id: any): {
         kept: boolean;
         isDisposedInternal: boolean;
         shape: any;
@@ -1326,40 +1427,40 @@ declare var je: {
         dispose(): void;
         readonly isDisposed: boolean;
         throwIfDisposed(): void;
-        print(e?: boolean): any;
+        print(verbose?: boolean): any;
         clone(): any;
-        toString(e?: boolean): string;
-        cast(e: any): any;
-        variable(e: boolean | undefined, t: any, n: any): any;
+        toString(verbose?: boolean): string;
+        cast(dtype: any): any;
+        variable(trainable: boolean | undefined, name: any, dtype: any): any;
     };
 };
-declare var ct: {
-    new (e: any, t: any, n: any): {
+export var TensorBuffer: {
+    new (shape: any, dtype: any, values: any): {
         dtype: any;
         shape: any;
         size: any;
         values: any;
         strides: any[];
-        set(e: any, ...t: any[]): void;
-        get(...e: any[]): any;
-        locToIndex(e: any): any;
-        indexToLoc(e: any): any[];
+        set(value: any, ...locs: any[]): void;
+        get(...locs: any[]): any;
+        locToIndex(locs: any): any;
+        indexToLoc(index: any): any[];
         readonly rank: any;
         toTensor(): any;
     };
 };
-declare var jn: string;
-declare var ca: string;
-declare var pa: string;
-declare var ys: string;
-declare var Xc: string;
-declare var ei: string;
-declare var il: string;
-declare var ul: {
-    new (e: any, t: any, n: any, o: any): {
+export var Tile: string;
+export var TopK: string;
+export var Transform: string;
+export var Transpose: string;
+export var Unique: string;
+export var Unpack: string;
+export var UnsortedSegmentSum: string;
+export var Variable: {
+    new (initialValue: any, trainable: any, name: any, tensorId: any): {
         trainable: any;
         name: any;
-        assign(e: any): void;
+        assign(newValue: any): void;
         dataId: any;
         dispose(): void;
         isDisposedInternal: boolean;
@@ -1380,257 +1481,257 @@ declare var ul: {
         bytes(): Promise<any>;
         readonly isDisposed: boolean;
         throwIfDisposed(): void;
-        print(e?: boolean): any;
+        print(verbose?: boolean): any;
         clone(): any;
-        toString(e?: boolean): string;
-        cast(e: any): any;
-        variable(e: boolean | undefined, t: any, n: any): any;
+        toString(verbose?: boolean): string;
+        cast(dtype: any): any;
+        variable(trainable: boolean | undefined, name: any, dtype: any): any;
     };
 };
-declare var ti: string;
-declare var ri: string;
-declare function Tt(...s: any[]): any;
-declare namespace Tt {
+export var ZerosLike: string;
+export var _FusedMatMul: string;
+export function abs(...args: any[]): any;
+export namespace abs {
     const name: string;
 }
-declare function tk(...s: any[]): any;
-declare namespace tk { }
-declare function rk(...s: any[]): any;
-declare namespace rk { }
-declare function Y(...s: any[]): any;
-declare namespace Y { }
-declare function nk(...s: any[]): any;
-declare namespace nk { }
-declare function Gm(...s: any[]): any;
-declare namespace Gm { }
-declare function lp(...s: any[]): any;
-declare namespace lp { }
-declare function ba(...s: any[]): any;
-declare namespace ba { }
-declare function ok(...s: any[]): any;
-declare namespace ok { }
-declare function sk(...s: any[]): any;
-declare namespace sk { }
-declare function ik(...s: any[]): any;
-declare namespace ik { }
-declare function ak(...s: any[]): any;
-declare namespace ak { }
-declare function lk(...s: any[]): any;
-declare namespace lk { }
-declare function uk(...s: any[]): any;
-declare namespace uk { }
-declare function nu(...s: any[]): any;
-declare namespace nu { }
-declare function Um(...s: any[]): any;
-declare namespace Um { }
-declare function kN(): any;
-declare var S: {};
-declare function b4(...s: any[]): any;
-declare namespace b4 { }
-declare function ai(...s: any[]): any;
-declare namespace ai { }
-declare function fk(...s: any[]): any;
-declare namespace fk { }
-declare function dk(...s: any[]): any;
-declare namespace dk { }
-declare function hk(...s: any[]): any;
-declare namespace hk { }
-declare function ou(...s: any[]): any;
-declare namespace ou { }
-declare function Hm(...s: any[]): any;
-declare namespace Hm { }
-declare function XIe(r: any, e: any, t: any): Promise<any>;
-declare function gk(...s: any[]): any;
-declare namespace gk { }
-declare function su(...s: any[]): any;
-declare namespace su { }
-declare var cg: {};
-declare function Se(r: any, e: string | undefined, t: any): {
+export function acos(...args: any[]): any;
+export namespace acos { }
+export function acosh(...args: any[]): any;
+export namespace acosh { }
+declare function add2(...args: any[]): any;
+declare namespace add2 { }
+export function addN(...args: any[]): any;
+export namespace addN { }
+export function all(...args: any[]): any;
+export namespace all { }
+export function any(...args: any[]): any;
+export namespace any { }
+export function argMax(...args: any[]): any;
+export namespace argMax { }
+export function argMin(...args: any[]): any;
+export namespace argMin { }
+export function asin(...args: any[]): any;
+export namespace asin { }
+export function asinh(...args: any[]): any;
+export namespace asinh { }
+export function atan(...args: any[]): any;
+export namespace atan { }
+export function atan2(...args: any[]): any;
+export namespace atan2 { }
+export function atanh(...args: any[]): any;
+export namespace atanh { }
+export function avgPool(...args: any[]): any;
+export namespace avgPool { }
+export function avgPool3d(...args: any[]): any;
+export namespace avgPool3d { }
+export function backend(): any;
+declare var backend_util_exports: {};
+export function basicLSTMCell(...args: any[]): any;
+export namespace basicLSTMCell { }
+export function batchNorm(...args: any[]): any;
+export namespace batchNorm { }
+export function batchNorm2d(...args: any[]): any;
+export namespace batchNorm2d { }
+export function batchNorm3d(...args: any[]): any;
+export namespace batchNorm3d { }
+export function batchNorm4d(...args: any[]): any;
+export namespace batchNorm4d { }
+export function batchToSpaceND(...args: any[]): any;
+export namespace batchToSpaceND { }
+export function bincount(...args: any[]): any;
+export namespace bincount { }
+export function booleanMaskAsync(tensor2: any, mask: any, axis: any): Promise<any>;
+export function broadcastArgs(...args: any[]): any;
+export namespace broadcastArgs { }
+export function broadcastTo(...args: any[]): any;
+export namespace broadcastTo { }
+declare var browser_exports: {};
+export function buffer(shape: any, dtype: string | undefined, values: any): {
     dtype: any;
     shape: any;
     size: any;
     values: any;
     strides: any[];
-    set(e: any, ...t: any[]): void;
-    get(...e: any[]): any;
-    locToIndex(e: any): any;
-    indexToLoc(e: any): any[];
+    set(value: any, ...locs: any[]): void;
+    get(...locs: any[]): any;
+    locToIndex(locs: any): any;
+    indexToLoc(index: any): any[];
     readonly rank: any;
     toTensor(): any;
 };
-declare namespace PX {
-    export { OX as earlyStopping };
+export namespace callbacks {
+    export { earlyStopping };
 }
-declare function J(...s: any[]): any;
-declare namespace J { }
-declare function xk(...s: any[]): any;
-declare namespace xk { }
-declare function Sr(...s: any[]): any;
-declare namespace Sr { }
-declare function hn(...s: any[]): any;
-declare namespace hn { }
-declare function $n(...s: any[]): any;
-declare namespace $n { }
-declare function tt(...s: any[]): any;
-declare namespace tt { }
-declare function yk(...s: any[]): any;
-declare namespace yk { }
-declare function bk(...s: any[]): any;
-declare namespace bk { }
-declare function wk(...s: any[]): any;
-declare namespace wk { }
-declare function kk(...s: any[]): any;
-declare namespace kk { }
-declare var PE: {};
-declare function qm(...s: any[]): any;
-declare namespace qm { }
-declare function Dn(...s: any[]): any;
-declare namespace Dn { }
-declare function Km(...s: any[]): any;
-declare namespace Km { }
-declare function Xm(...s: any[]): any;
-declare namespace Xm { }
-declare function _k(...s: any[]): any;
-declare namespace _k { }
-declare function wse(r: any, e: any): void;
-declare function iu(...s: any[]): any;
-declare namespace iu { }
-declare function Ym(...s: any[]): any;
-declare namespace Ym { }
-declare function Tg(r: any, e: any, t: any): any;
-declare function Zm(...s: any[]): any;
-declare namespace Zm { }
-declare function Qr(r: any): any;
-declare var s0: {};
-declare function vk(...s: any[]): any;
-declare namespace vk { }
-declare function ek(r: any): void;
-declare function Ck(...s: any[]): any;
-declare namespace Ck { }
-declare function ka(...s: any[]): any;
-declare namespace ka { }
-declare function LX(r: any): void;
-declare var Ql: {};
-declare function K4(...s: any[]): any;
-declare namespace K4 { }
-declare function Sk(...s: any[]): any;
-declare namespace Sk { }
-declare function nue(): void;
-declare function Ae(r: any): void;
-declare function oue(): void;
-declare function ue(...s: any[]): any;
-declare namespace ue { }
-declare function Ik(...s: any[]): any;
-declare namespace Ik { }
-declare function rU(...s: any[]): any;
-declare namespace rU { }
-declare function UN(...s: any[]): any;
-declare namespace UN { }
-declare function Nk(...s: any[]): any;
-declare namespace Nk { }
-declare function _a(...s: any[]): any;
-declare namespace _a { }
-declare function rue(): void;
-declare function tue(): void;
-declare function HN(r: any): number;
-declare function ks(): any;
-declare function j(): any;
-declare function Dr(...s: any[]): any;
-declare namespace Dr { }
-declare function Tk(...s: any[]): any;
-declare namespace Tk { }
-declare function tr(...s: any[]): any;
-declare namespace tr { }
-declare function gr(...s: any[]): any;
-declare namespace gr { }
-declare function Ek(...s: any[]): any;
-declare namespace Ek { }
-declare function pp(...s: any[]): any;
-declare namespace pp { }
-declare function gu(...s: any[]): any;
-declare namespace gu { }
-declare function _s(r: any, e: any, t: any): any;
-declare function cue(r: any): any;
-declare function pue(r: any): any;
-declare function va(...s: any[]): any;
-declare namespace va { }
-declare function jm(...s: any[]): any;
-declare namespace jm { }
-declare function BP(): void;
-declare var lo: {};
-declare function li(...s: any[]): any;
-declare namespace li { }
-declare function jN(...s: any[]): any;
-declare namespace jN { }
-declare var pg: {};
-declare function lue(): any;
-declare function bw(r: any): any;
-declare function Om(r: any, e: any): any;
-declare function Jh(r: any): any[];
-declare var VO: {};
-declare function NU(r: any): (e: any, t: any) => any;
-declare function TU(r: any): (e: any, t: any) => any;
-declare function Ht(...s: any[]): any;
-declare namespace Ht { }
-declare function Un(...s: any[]): any;
-declare namespace Un { }
-declare function fl(...s: any[]): any;
-declare namespace fl { }
-declare function au(...s: any[]): any;
-declare namespace au { }
-declare namespace bn {
-    export { QN as flipLeftRight };
-    export { eT as grayscaleToRGB };
-    export { pT as resizeNearestNeighbor };
-    export { cT as resizeBilinear };
-    export { tT as rotateWithOffset };
-    export { JN as cropAndResize };
-    export { rT as nonMaxSuppression };
-    export { sT as nonMaxSuppressionAsync };
-    export { iT as nonMaxSuppressionWithScore };
-    export { aT as nonMaxSuppressionWithScoreAsync };
-    export { lT as nonMaxSuppressionPadded };
-    export { uT as nonMaxSuppressionPaddedAsync };
-    export { mT as threshold };
-    export { fT as transform };
+export function cast(...args: any[]): any;
+export namespace cast { }
+export function ceil(...args: any[]): any;
+export namespace ceil { }
+export function clipByValue(...args: any[]): any;
+export namespace clipByValue { }
+export function clone(...args: any[]): any;
+export namespace clone { }
+export function complex(...args: any[]): any;
+export namespace complex { }
+export function concat(...args: any[]): any;
+export namespace concat { }
+export function concat1d(...args: any[]): any;
+export namespace concat1d { }
+export function concat2d(...args: any[]): any;
+export namespace concat2d { }
+export function concat3d(...args: any[]): any;
+export namespace concat3d { }
+export function concat4d(...args: any[]): any;
+export namespace concat4d { }
+declare var exports_constraints_exports: {};
+export function conv1d(...args: any[]): any;
+export namespace conv1d { }
+export function conv2d(...args: any[]): any;
+export namespace conv2d { }
+export function conv2dTranspose(...args: any[]): any;
+export namespace conv2dTranspose { }
+export function conv3d(...args: any[]): any;
+export namespace conv3d { }
+export function conv3dTranspose(...args: any[]): any;
+export namespace conv3dTranspose { }
+export function copyRegisteredKernels(registeredBackendName: any, newBackendName: any): void;
+export function cos(...args: any[]): any;
+export namespace cos { }
+export function cosh(...args: any[]): any;
+export namespace cosh { }
+export function cosineWindow(windowLength: any, a: any, b: any): any;
+export function cumsum(...args: any[]): any;
+export namespace cumsum { }
+export function customGrad(f: any): any;
+declare var dist_exports: {};
+export function denseBincount(...args: any[]): any;
+export namespace denseBincount { }
+export function deprecationWarn(msg: any): void;
+export function depthToSpace(...args: any[]): any;
+export namespace depthToSpace { }
+export function depthwiseConv2d(...args: any[]): any;
+export namespace depthwiseConv2d { }
+export function deregisterOp(name: any): void;
+declare var device_util_exports: {};
+export function diag(...args: any[]): any;
+export namespace diag { }
+export function dilation2d(...args: any[]): any;
+export namespace dilation2d { }
+export function disableDeprecationWarnings(): void;
+export function dispose(container: any): void;
+export function disposeVariables(): void;
+export function div(...args: any[]): any;
+export namespace div { }
+export function divNoNan(...args: any[]): any;
+export namespace divNoNan { }
+export function dot(...args: any[]): any;
+export namespace dot { }
+export function dropout(...args: any[]): any;
+export namespace dropout { }
+export function einsum(...args: any[]): any;
+export namespace einsum { }
+export function elu(...args: any[]): any;
+export namespace elu { }
+export function enableDebugMode(): void;
+export function enableProdMode(): void;
+export function enclosingPowerOfTwo(value: any): number;
+export function engine(): any;
+export function env(): any;
+export function equal(...args: any[]): any;
+export namespace equal { }
+export function erf(...args: any[]): any;
+export namespace erf { }
+export function exp(...args: any[]): any;
+export namespace exp { }
+export function expandDims(...args: any[]): any;
+export namespace expandDims { }
+export function expm1(...args: any[]): any;
+export namespace expm1 { }
+export function eye(...args: any[]): any;
+export namespace eye { }
+export function fft(...args: any[]): any;
+export namespace fft { }
+export function fill(shape: any, value: any, dtype: any): any;
+export function findBackend(name: any): any;
+export function findBackendFactory(name: any): any;
+export function floor(...args: any[]): any;
+export namespace floor { }
+export function floorDiv(...args: any[]): any;
+export namespace floorDiv { }
+export function forceHalfFloat(): void;
+declare var fused_ops_exports: {};
+export function gather(...args: any[]): any;
+export namespace gather { }
+export function gatherND(...args: any[]): any;
+export namespace gatherND { }
+declare var gather_nd_util_exports: {};
+export function getBackend(): any;
+export function getGradient(kernelName: any): any;
+export function getKernel(kernelName: any, backendName: any): any;
+export function getKernelsForBackend(backendName: any): any[];
+declare var gpgpu_util_exports: {};
+export function grad(f: any): (x: any, dy: any) => any;
+export function grads(f: any): (args: any, dy: any) => any;
+export function greater(...args: any[]): any;
+export namespace greater { }
+export function greaterEqual(...args: any[]): any;
+export namespace greaterEqual { }
+export function ifft(...args: any[]): any;
+export namespace ifft { }
+export function imag(...args: any[]): any;
+export namespace imag { }
+export namespace image {
+    export { flipLeftRight };
+    export { grayscaleToRGB };
+    export { resizeNearestNeighbor };
+    export { resizeBilinear };
+    export { rotateWithOffset };
+    export { cropAndResize };
+    export { nonMaxSuppression };
+    export { nonMaxSuppressionAsync };
+    export { nonMaxSuppressionWithScore };
+    export { nonMaxSuppressionWithScoreAsync };
+    export { nonMaxSuppressionPadded };
+    export { nonMaxSuppressionPaddedAsync };
+    export { threshold };
+    export { transform };
 }
-declare function sNe(r: any, e: any, t?: number): Promise<any>;
-declare var rA: {};
-declare function O_(r: any): any;
-declare var $r: {};
-declare function ff(...s: any[]): any;
-declare namespace ff { }
-declare function xU(...s: any[]): any;
-declare namespace xU { }
-declare function bU(...s: any[]): any;
-declare namespace bU { }
-declare function Ak(...s: any[]): any;
-declare namespace Ak { }
-declare function Dt(r: any): any;
-declare var Mr: {};
-declare var MA: {};
-declare function lu(...s: any[]): any;
-declare namespace lu { }
-declare function Jm(...s: any[]): any;
-declare namespace Jm { }
-declare function Hn(...s: any[]): any;
-declare namespace Hn { }
-declare namespace RT {
-    export { dT as bandPart };
-    export { hT as gramSchmidt };
-    export { xT as qr };
+export function inTopKAsync(predictions: any, targets: any, k?: number): Promise<any>;
+declare var exports_initializers_exports: {};
+export function input(config: any): any;
+declare var io_exports: {};
+export function irfft(...args: any[]): any;
+export namespace irfft { }
+declare function isFinite2(...args: any[]): any;
+declare namespace isFinite2 { }
+export function isInf(...args: any[]): any;
+export namespace isInf { }
+declare function isNaN2(...args: any[]): any;
+declare namespace isNaN2 { }
+export function keep(result: any): any;
+declare var kernel_impls_exports: {};
+declare var exports_layers_exports: {};
+export function leakyRelu(...args: any[]): any;
+export namespace leakyRelu { }
+export function less(...args: any[]): any;
+export namespace less { }
+export function lessEqual(...args: any[]): any;
+export namespace lessEqual { }
+export namespace linalg {
+    export { bandPart };
+    export { gramSchmidt };
+    export { qr };
 }
-declare function $k(r: any, e: any, t: any): any;
-declare function m7(r: any, e?: {}): Promise<{
+export function linspace(start: any, stop: any, num: any): any;
+export function loadGraphModel(modelUrl: any, options?: {}): Promise<{
     modelUrl: any;
     loadOptions: {};
     version: string;
     resourceManager: {
         hashTableNameToHandle: {};
         hashTableMap: {};
-        addHashTable(e: any, t: any): void;
-        getHashTableHandleByName(e: any): any;
-        getHashTableById(e: any): any;
+        addHashTable(name: any, hashTable2: any): void;
+        getHashTableHandleByName(name: any): any;
+        getHashTableById(id: any): any;
         dispose(): void;
     };
     readonly modelVersion: string;
@@ -1644,7 +1745,7 @@ declare function m7(r: any, e?: {}): Promise<{
     findIOHandler(): void;
     handler: any;
     load(): Promise<boolean>;
-    loadSync(e: any): boolean;
+    loadSync(artifacts: any): boolean;
     artifacts: any;
     signature: any;
     executor: {
@@ -1670,23 +1771,23 @@ declare function m7(r: any, e?: {}): Promise<{
         readonly inputNodes: any;
         readonly outputNodes: any;
         readonly functions: {};
-        getCompilationKey(e: any, t: any): string;
-        compile(e: any, t: any): any[];
-        execute(e: any, t: any): any;
-        getFrozenTensorIds(e: any): Set<any>;
-        checkTensorForDisposal(e: any, t: any, n: any, o: any, s: any, a: any, i: any): void;
-        executeAsync(e: any, t: any): Promise<any>;
-        _executeAsync(e: any, t: any, n?: boolean, o?: {}, s?: {}): Promise<any>;
-        executeFunctionAsync(e: any, t: any, n: any): Promise<any>;
-        executeWithControlFlow(e: any, t: any, n: any, o: any): Promise<any>;
-        processStack(e: any, t: any, n: any, o: any, s: any, a: any, i: any, l: any, u: any): any[];
-        processChildNodes(e: any, t: any, n: any, o: any, s: any, a: any): void;
+        getCompilationKey(inputs: any, outputs: any): string;
+        compile(inputs: any, outputs: any): any[];
+        execute(inputs: any, outputs: any): any;
+        getFrozenTensorIds(tensorMap: any): Set<any>;
+        checkTensorForDisposal(nodeName: any, node: any, tensorMap: any, context: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any): void;
+        executeAsync(inputs: any, outputs: any): Promise<any>;
+        _executeAsync(inputs: any, outputs: any, isFunctionExecution?: boolean, tensorArrayMap?: {}, tensorListMap?: {}): Promise<any>;
+        executeFunctionAsync(inputs: any, tensorArrayMap: any, tensorListMap: any): Promise<any>;
+        executeWithControlFlow(inputs: any, context: any, outputNames: any, isFunctionExecution: any): Promise<any>;
+        processStack(inputNodes: any, stack2: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
+        processChildNodes(node: any, stack2: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
         dispose(): void;
-        checkInputShapeAndType(e: any): void;
-        mapInputs(e: any): {};
-        checkInputs(e: any): void;
-        mapOutputs(e: any): any;
-        checkOutputs(e: any): void;
+        checkInputShapeAndType(inputs: any): void;
+        mapInputs(inputs: any): {};
+        checkInputs(inputs: any): void;
+        mapOutputs(outputs: any): any;
+        checkOutputs(outputs: any): void;
     } | undefined;
     initializer: {
         graph: any;
@@ -1711,102 +1812,102 @@ declare function m7(r: any, e?: {}): Promise<{
         readonly inputNodes: any;
         readonly outputNodes: any;
         readonly functions: {};
-        getCompilationKey(e: any, t: any): string;
-        compile(e: any, t: any): any[];
-        execute(e: any, t: any): any;
-        getFrozenTensorIds(e: any): Set<any>;
-        checkTensorForDisposal(e: any, t: any, n: any, o: any, s: any, a: any, i: any): void;
-        executeAsync(e: any, t: any): Promise<any>;
-        _executeAsync(e: any, t: any, n?: boolean, o?: {}, s?: {}): Promise<any>;
-        executeFunctionAsync(e: any, t: any, n: any): Promise<any>;
-        executeWithControlFlow(e: any, t: any, n: any, o: any): Promise<any>;
-        processStack(e: any, t: any, n: any, o: any, s: any, a: any, i: any, l: any, u: any): any[];
-        processChildNodes(e: any, t: any, n: any, o: any, s: any, a: any): void;
+        getCompilationKey(inputs: any, outputs: any): string;
+        compile(inputs: any, outputs: any): any[];
+        execute(inputs: any, outputs: any): any;
+        getFrozenTensorIds(tensorMap: any): Set<any>;
+        checkTensorForDisposal(nodeName: any, node: any, tensorMap: any, context: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any): void;
+        executeAsync(inputs: any, outputs: any): Promise<any>;
+        _executeAsync(inputs: any, outputs: any, isFunctionExecution?: boolean, tensorArrayMap?: {}, tensorListMap?: {}): Promise<any>;
+        executeFunctionAsync(inputs: any, tensorArrayMap: any, tensorListMap: any): Promise<any>;
+        executeWithControlFlow(inputs: any, context: any, outputNames: any, isFunctionExecution: any): Promise<any>;
+        processStack(inputNodes: any, stack2: any, context: any, tensorMap: any, added: any, tensorsToKeep: any, outputNames: any, intermediateTensorConsumerCount: any, usedNodes: any): any[];
+        processChildNodes(node: any, stack2: any, context: any, tensorMap: any, added: any, usedNodes: any): void;
         dispose(): void;
-        checkInputShapeAndType(e: any): void;
-        mapInputs(e: any): {};
-        checkInputs(e: any): void;
-        mapOutputs(e: any): any;
-        checkOutputs(e: any): void;
+        checkInputShapeAndType(inputs: any): void;
+        mapInputs(inputs: any): {};
+        checkInputs(inputs: any): void;
+        mapOutputs(outputs: any): any;
+        checkOutputs(outputs: any): void;
     } | undefined;
-    save(e: any, t: any): Promise<any>;
-    predict(e: any, t: any): any;
-    normalizeInputs(e: any): any;
-    normalizeOutputs(e: any): any[];
-    execute(e: any, t: any): any;
-    executeAsync(e: any, t: any): Promise<any>;
-    convertTensorMapToTensorsMap(e: any): {};
+    save(handlerOrURL: any, config: any): Promise<any>;
+    predict(inputs: any, config: any): any;
+    normalizeInputs(inputs: any): any;
+    normalizeOutputs(outputs: any): any[];
+    execute(inputs: any, outputs: any): any;
+    executeAsync(inputs: any, outputs: any): Promise<any>;
+    convertTensorMapToTensorsMap(map: any): {};
     dispose(): void;
 }>;
-declare function K5(r: any, e: any): Promise<any>;
-declare function Dk(...s: any[]): any;
-declare namespace Dk { }
-declare function Ir(...s: any[]): any;
-declare namespace Ir { }
-declare function uu(...s: any[]): any;
-declare namespace uu { }
-declare function FU(...s: any[]): any;
-declare namespace FU { }
-declare function Qm(...s: any[]): any;
-declare namespace Qm { }
-declare function Pk(...s: any[]): any;
-declare namespace Pk { }
-declare function Fr(...s: any[]): any;
-declare namespace Fr { }
-declare function cu(...s: any[]): any;
-declare namespace cu { }
-declare function tf(...s: any[]): any;
-declare namespace tf { }
-declare function HU(...s: any[]): any;
-declare namespace HU { }
-declare namespace tFe {
-    export { yT as absoluteDifference };
-    export { Pr as computeWeightedLoss };
-    export { bT as cosineDistance };
-    export { wT as hingeLoss };
-    export { kT as huberLoss };
-    export { _T as logLoss };
-    export { vT as meanSquaredError };
-    export { CT as sigmoidCrossEntropy };
-    export { ST as softmaxCrossEntropy };
+export function loadLayersModel(pathOrIOHandler: any, options: any): Promise<any>;
+export function localResponseNormalization(...args: any[]): any;
+export namespace localResponseNormalization { }
+declare function log5(...args: any[]): any;
+declare namespace log5 { }
+export function log1p(...args: any[]): any;
+export namespace log1p { }
+export function logSigmoid(...args: any[]): any;
+export namespace logSigmoid { }
+export function logSoftmax(...args: any[]): any;
+export namespace logSoftmax { }
+export function logSumExp(...args: any[]): any;
+export namespace logSumExp { }
+export function logicalAnd(...args: any[]): any;
+export namespace logicalAnd { }
+export function logicalNot(...args: any[]): any;
+export namespace logicalNot { }
+export function logicalOr(...args: any[]): any;
+export namespace logicalOr { }
+export function logicalXor(...args: any[]): any;
+export namespace logicalXor { }
+export namespace losses {
+    export { absoluteDifference };
+    export { computeWeightedLoss };
+    export { cosineDistance };
+    export { hingeLoss };
+    export { huberLoss };
+    export { logLoss };
+    export { meanSquaredError };
+    export { sigmoidCrossEntropy };
+    export { softmaxCrossEntropy };
 }
-declare function Me(...s: any[]): any;
-declare namespace Me { }
-declare var oN: {};
-declare function Vr(...s: any[]): any;
-declare namespace Vr { }
-declare function pu(...s: any[]): any;
-declare namespace pu { }
-declare function rf(...s: any[]): any;
-declare namespace rf { }
-declare function Mk(...s: any[]): any;
-declare namespace Mk { }
-declare function Rn(...s: any[]): any;
-declare namespace Rn { }
-declare function Ct(...s: any[]): any;
-declare namespace Ct { }
-declare function Wm(): any;
-declare function JU(r: any, e: any, { indexing: t }?: {
+export function matMul(...args: any[]): any;
+export namespace matMul { }
+declare var math_exports: {};
+export function max(...args: any[]): any;
+export namespace max { }
+export function maxPool(...args: any[]): any;
+export namespace maxPool { }
+export function maxPool3d(...args: any[]): any;
+export namespace maxPool3d { }
+export function maxPoolWithArgmax(...args: any[]): any;
+export namespace maxPoolWithArgmax { }
+export function maximum(...args: any[]): any;
+export namespace maximum { }
+export function mean(...args: any[]): any;
+export namespace mean { }
+export function memory(): any;
+export function meshgrid(x: any, y: any, { indexing }?: {
     indexing?: string | undefined;
 }): any[];
-declare var LA: {};
-declare function mp(...s: any[]): any;
-declare namespace mp { }
-declare function Ca(...s: any[]): any;
-declare namespace Ca { }
-declare function Lk(...s: any[]): any;
-declare namespace Lk { }
-declare function zk(...s: any[]): any;
-declare namespace zk { }
-declare function H5(r: any): {
+declare var exports_metrics_exports: {};
+export function min(...args: any[]): any;
+export namespace min { }
+export function minimum(...args: any[]): any;
+export namespace minimum { }
+export function mirrorPad(...args: any[]): any;
+export namespace mirrorPad { }
+export function mod(...args: any[]): any;
+export namespace mod { }
+export function model(args: any): {
     [x: string]: any;
     isTraining: boolean;
-    summary(e: any, t: any, n?: {
+    summary(lineLength: any, positions: any, printFn?: {
         (...data: any[]): void;
         (...data: any[]): void;
         (message?: any, ...optionalParams: any[]): void;
     }): void;
-    compile(e: any): void;
+    compile(args: any): void;
     loss: any;
     optimizer_: any;
     isOptimizerOwned: boolean | undefined;
@@ -1819,25 +1920,25 @@ declare function H5(r: any): {
     metricsTensors: any[] | undefined;
     collectedTrainableWeights: any;
     checkTrainableWeightsConsistency(): void;
-    evaluate(e: any, t: any, n?: {}): any;
-    evaluateDataset(e: any, t: any): Promise<any>;
-    checkNumSamples(e: any, t: any, n: any, o?: string): any;
-    execute(e: any, t: any): any;
-    retrieveSymbolicTensors(e: any): any[];
-    predictLoop(e: any, t?: number, n?: boolean): any;
-    predict(e: any, t?: {}): any;
-    predictOnBatch(e: any): any;
-    standardizeUserDataXY(e: any, t: any, n: boolean | undefined, o: any): any[];
-    standardizeUserData(e: any, t: any, n: any, o: any, s: boolean | undefined, a: any): Promise<any[]>;
-    testLoop(e: any, t: any, n: any, o: number | undefined, s: any): any;
+    evaluate(x: any, y: any, args?: {}): any;
+    evaluateDataset(dataset: any, args: any): Promise<any>;
+    checkNumSamples(ins: any, batchSize: any, steps: any, stepsName?: string): any;
+    execute(inputs: any, outputs: any): any;
+    retrieveSymbolicTensors(symbolicTensorNames: any): any[];
+    predictLoop(ins: any, batchSize?: number, verbose?: boolean): any;
+    predict(x: any, args?: {}): any;
+    predictOnBatch(x: any): any;
+    standardizeUserDataXY(x: any, y: any, checkBatchAxis: boolean | undefined, batchSize: any): any[];
+    standardizeUserData(x: any, y: any, sampleWeight: any, classWeight: any, checkBatchAxis: boolean | undefined, batchSize: any): Promise<any[]>;
+    testLoop(f: any, ins: any, batchSize: any, verbose: number | undefined, steps: any): any;
     getDedupedMetricsNames(): string[];
-    makeTrainFunction(): (e: any) => any[];
+    makeTrainFunction(): (data: any) => any[];
     makeTestFunction(): void;
-    testFunction: ((e: any) => any) | undefined;
-    fit(e: any, t: any, n?: {}): Promise<any>;
-    fitDataset(e: any, t: any): Promise<any>;
-    trainOnBatch(e: any, t: any): Promise<any>;
-    getNamedWeights(e: any): {
+    testFunction: ((data: any) => any) | undefined;
+    fit(x: any, y: any, args?: {}): Promise<any>;
+    fitDataset(dataset: any, args: any): Promise<any>;
+    trainOnBatch(x: any, y: any): Promise<any>;
+    getNamedWeights(config: any): {
         name: any;
         tensor: any;
     }[];
@@ -1855,252 +1956,252 @@ declare function H5(r: any): {
             config: any;
         };
     };
-    loadTrainingConfig(e: any): void;
-    save(e: any, t: any): Promise<any>;
-    setUserDefinedMetadata(e: any): void;
+    loadTrainingConfig(trainingConfig: any): void;
+    save(handlerOrURL: any, config: any): Promise<any>;
+    setUserDefinedMetadata(userDefinedMetadata: any): void;
     userDefinedMetadata: any;
     getUserDefinedMetadata(): any;
 };
-declare var zA: {};
-declare function fp(...s: any[]): any;
-declare namespace fp { }
-declare function k1e(...s: any[]): any;
-declare namespace k1e { }
-declare function F(...s: any[]): any;
-declare namespace F { }
-declare function iH(...s: any[]): any;
-declare namespace iH { }
-declare function Bk(...s: any[]): any;
-declare namespace Bk { }
-declare function Ke(...s: any[]): any;
-declare namespace Ke { }
-declare function xf(): Promise<any>;
-declare function Ig(...s: any[]): any;
-declare namespace Ig { }
-declare function ci(...s: any[]): any;
-declare namespace ci { }
-declare function xa(...s: any[]): any;
-declare namespace xa { }
-declare function rr(r: any, e?: string): any;
-declare function xr(...s: any[]): any;
-declare namespace xr { }
-declare function I(r: any): {
-    (...s: any[]): any;
+declare var exports_models_exports: {};
+export function moments(...args: any[]): any;
+export namespace moments { }
+export function movingAverage(...args: any[]): any;
+export namespace movingAverage { }
+export function mul(...args: any[]): any;
+export namespace mul { }
+export function multiRNNCell(...args: any[]): any;
+export namespace multiRNNCell { }
+export function multinomial(...args: any[]): any;
+export namespace multinomial { }
+export function neg(...args: any[]): any;
+export namespace neg { }
+export function nextFrame(): Promise<any>;
+export function norm(...args: any[]): any;
+export namespace norm { }
+export function notEqual(...args: any[]): any;
+export namespace notEqual { }
+export function oneHot(...args: any[]): any;
+export namespace oneHot { }
+declare function ones2(shape: any, dtype?: string): any;
+export function onesLike(...args: any[]): any;
+export namespace onesLike { }
+export function op(f: any): {
+    (...args: any[]): any;
     readonly name: string;
 };
-declare function pH(...s: any[]): any;
-declare namespace pH { }
-declare function xn(...s: any[]): any;
-declare namespace xn { }
-declare function dH(...s: any[]): any;
-declare namespace dH { }
-declare function gH(...s: any[]): any;
-declare namespace gH { }
-declare function yH(...s: any[]): any;
-declare namespace yH { }
-declare function wH(...s: any[]): any;
-declare namespace wH { }
-declare function SH(...s: any[]): any;
-declare namespace SH { }
-declare function yn(...s: any[]): any;
-declare namespace yn { }
-declare function fu(...s: any[]): any;
-declare namespace fu { }
-declare function Gw(r: any, e?: boolean): void;
-declare function nf(...s: any[]): any;
-declare namespace nf { }
-declare function sue(r: any): any;
-declare function AH(...s: any[]): any;
-declare namespace AH { }
-declare function LH(...s: any[]): any;
-declare namespace LH { }
-declare function _g(...s: any[]): any;
-declare namespace _g { }
-declare function vs(...s: any[]): any;
-declare namespace vs { }
-declare function Sa(r: any, e: any, t?: number, n?: string): any;
-declare function aue(): any;
-declare function ml(...s: any[]): any;
-declare namespace ml { }
-declare function Zk(...s: any[]): any;
-declare namespace Zk { }
-declare function ap(r: any, e: any, t?: number): any;
-declare function X5(r: any, e: any): void;
-declare function ZI(r: any): void;
-declare function Ul(r: any): void;
-declare function MX(r: any, e: any): void;
-declare var BA: {};
-declare function Or(...s: any[]): any;
-declare namespace Or { }
-declare function of(...s: any[]): any;
-declare namespace of { }
-declare function uue(r: any): void;
-declare function O(...s: any[]): any;
-declare namespace O { }
-declare function lr(...s: any[]): any;
-declare namespace lr { }
-declare function qH(...s: any[]): any;
-declare namespace qH { }
-declare function XH(...s: any[]): any;
-declare namespace XH { }
-declare function ZH(...s: any[]): any;
-declare namespace ZH { }
-declare function QH(...s: any[]): any;
-declare namespace QH { }
-declare function xu(...s: any[]): any;
-declare namespace xu { }
-declare function sf(...s: any[]): any;
-declare namespace sf { }
-declare function af(...s: any[]): any;
-declare namespace af { }
-declare function ce(r: any, e: any): any;
-declare function VN(...s: any[]): any;
-declare namespace VN { }
-declare var fg: {};
-declare function lf(...s: any[]): any;
-declare namespace lf { }
-declare function Jk(...s: any[]): any;
-declare namespace Jk { }
-declare function q5(r: any): any;
-declare var ee: {};
-declare function VG(r: any): any;
-declare function mue(r: any, e: any): void;
-declare function Hoe(r: any, e?: boolean): void;
-declare function qoe(r: any, e?: boolean): void;
-declare function W0(r: any, e: any): void;
-declare function Qk(r: any, e: any): Promise<any[]>;
-declare var Yx: {};
-declare function Jr(...s: any[]): any;
-declare namespace Jr { }
-declare function e_(...s: any[]): any;
-declare namespace e_ { }
-declare namespace TRe {
-    export { YN as hammingWindow };
-    export { $g as hannWindow };
-    export { Dg as frame };
-    export { ZN as stft };
+export function outerProduct(...args: any[]): any;
+export namespace outerProduct { }
+export function pad(...args: any[]): any;
+export namespace pad { }
+export function pad1d(...args: any[]): any;
+export namespace pad1d { }
+export function pad2d(...args: any[]): any;
+export namespace pad2d { }
+export function pad3d(...args: any[]): any;
+export namespace pad3d { }
+export function pad4d(...args: any[]): any;
+export namespace pad4d { }
+export function pool(...args: any[]): any;
+export namespace pool { }
+export function pow(...args: any[]): any;
+export namespace pow { }
+export function prelu(...args: any[]): any;
+export namespace prelu { }
+declare function print2(x: any, verbose?: boolean): void;
+export function prod(...args: any[]): any;
+export namespace prod { }
+export function profile(f: any): any;
+export function rand(...args: any[]): any;
+export namespace rand { }
+export function randomGamma(...args: any[]): any;
+export namespace randomGamma { }
+export function randomNormal(...args: any[]): any;
+export namespace randomNormal { }
+export function randomUniform(...args: any[]): any;
+export namespace randomUniform { }
+export function range(start: any, stop: any, step5?: number, dtype?: string): any;
+export function ready(): any;
+export function real(...args: any[]): any;
+export namespace real { }
+export function reciprocal(...args: any[]): any;
+export namespace reciprocal { }
+export function registerBackend(name: any, factory: any, priority?: number): any;
+export function registerCallbackConstructor(verbosityLevel: any, callbackConstructor: any): void;
+export function registerGradient(config: any): void;
+export function registerKernel(config: any): void;
+export function registerOp(name: any, opFunc: any): void;
+declare var exports_regularizers_exports: {};
+export function relu(...args: any[]): any;
+export namespace relu { }
+export function relu6(...args: any[]): any;
+export namespace relu6 { }
+export function removeBackend(name: any): void;
+export function reshape(...args: any[]): any;
+export namespace reshape { }
+export function reverse(...args: any[]): any;
+export namespace reverse { }
+export function reverse1d(...args: any[]): any;
+export namespace reverse1d { }
+export function reverse2d(...args: any[]): any;
+export namespace reverse2d { }
+export function reverse3d(...args: any[]): any;
+export namespace reverse3d { }
+export function reverse4d(...args: any[]): any;
+export namespace reverse4d { }
+export function rfft(...args: any[]): any;
+export namespace rfft { }
+declare function round2(...args: any[]): any;
+declare namespace round2 { }
+export function rsqrt(...args: any[]): any;
+export namespace rsqrt { }
+export function scalar(value: any, dtype: any): any;
+export function scatterND(...args: any[]): any;
+export namespace scatterND { }
+declare var scatter_nd_util_exports: {};
+export function selu(...args: any[]): any;
+export namespace selu { }
+export function separableConv2d(...args: any[]): any;
+export namespace separableConv2d { }
+export function sequential(config: any): any;
+declare var serialization_exports: {};
+export function setBackend(backendName: any): any;
+export function setPlatform(platformName: any, platform: any): void;
+export function setWasmPath(path: any, usePlatformFetch?: boolean): void;
+export function setWasmPaths(prefixOrFileMap: any, usePlatformFetch?: boolean): void;
+export function setWebGLContext(webGLVersion: any, gl: any): void;
+export function setdiff1dAsync(x: any, y: any): Promise<any[]>;
+declare var shared_exports: {};
+export function sigmoid(...args: any[]): any;
+export namespace sigmoid { }
+export function sign(...args: any[]): any;
+export namespace sign { }
+export namespace signal {
+    export { hammingWindow };
+    export { hannWindow };
+    export { frame };
+    export { stft };
 }
-declare function uf(...s: any[]): any;
-declare namespace uf { }
-declare function cf(...s: any[]): any;
-declare namespace cf { }
-declare function Oe(...s: any[]): any;
-declare namespace Oe { }
-declare function pf(...s: any[]): any;
-declare namespace pf { }
-declare function vg(...s: any[]): any;
-declare namespace vg { }
-declare function mf(...s: any[]): any;
-declare namespace mf { }
-declare function hp(...s: any[]): any;
-declare namespace hp { }
-declare var ar: {};
-declare function hu(...s: any[]): any;
-declare namespace hu { }
-declare function ui(...s: any[]): any;
-declare namespace ui { }
-declare function mu(...s: any[]): any;
-declare namespace mu { }
-declare namespace gf {
-    export { IT as sparseFillEmptyRows };
-    export { NT as sparseReshape };
-    export { TT as sparseSegmentMean };
-    export { ET as sparseSegmentSum };
+export function sin(...args: any[]): any;
+export namespace sin { }
+export function sinh(...args: any[]): any;
+export namespace sinh { }
+export function slice(...args: any[]): any;
+export namespace slice { }
+export function slice1d(...args: any[]): any;
+export namespace slice1d { }
+export function slice2d(...args: any[]): any;
+export namespace slice2d { }
+export function slice3d(...args: any[]): any;
+export namespace slice3d { }
+export function slice4d(...args: any[]): any;
+export namespace slice4d { }
+declare var slice_util_exports: {};
+export function softmax(...args: any[]): any;
+export namespace softmax { }
+export function softplus(...args: any[]): any;
+export namespace softplus { }
+export function spaceToBatchND(...args: any[]): any;
+export namespace spaceToBatchND { }
+export namespace sparse {
+    export { sparseFillEmptyRows };
+    export { sparseReshape };
+    export { sparseSegmentMean };
+    export { sparseSegmentSum };
 }
-declare function Ng(...s: any[]): any;
-declare namespace Ng { }
-declare namespace vRe {
-    export { gu as fft };
-    export { fl as ifft };
-    export { xu as rfft };
-    export { ff as irfft };
+export function sparseToDense(...args: any[]): any;
+export namespace sparseToDense { }
+export namespace spectral {
+    export { fft };
+    export { ifft };
+    export { rfft };
+    export { irfft };
 }
-declare function mr(...s: any[]): any;
-declare namespace mr { }
-declare function St(...s: any[]): any;
-declare namespace St { }
-declare function We(...s: any[]): any;
-declare namespace We { }
-declare function df(...s: any[]): any;
-declare namespace df { }
-declare function en(...s: any[]): any;
-declare namespace en { }
-declare function nr(...s: any[]): any;
-declare namespace nr { }
-declare function Ia(...s: any[]): any;
-declare namespace Ia { }
-declare function t_(...s: any[]): any;
-declare namespace t_ { }
-declare namespace Pg {
-    export { AT as stringNGrams };
-    export { $T as stringSplit };
-    export { DT as stringToHashBucketFast };
+export function split(...args: any[]): any;
+export namespace split { }
+export function sqrt(...args: any[]): any;
+export namespace sqrt { }
+export function square(...args: any[]): any;
+export namespace square { }
+export function squaredDifference(...args: any[]): any;
+export namespace squaredDifference { }
+export function squeeze(...args: any[]): any;
+export namespace squeeze { }
+export function stack(...args: any[]): any;
+export namespace stack { }
+export function step(...args: any[]): any;
+export namespace step { }
+export function stridedSlice(...args: any[]): any;
+export namespace stridedSlice { }
+export namespace string {
+    export { stringNGrams };
+    export { stringSplit };
+    export { stringToHashBucketFast };
 }
-declare function le(...s: any[]): any;
-declare namespace le { }
-declare function me(...s: any[]): any;
-declare namespace me { }
-declare function Zl(r: any): any;
-declare function r_(...s: any[]): any;
-declare namespace r_ { }
-declare function wa(...s: any[]): any;
-declare namespace wa { }
-declare function vr(r: any, e: any, t: any): any;
-declare function At(r: any, e: any): any;
-declare function pi(r: any, e: any, t: any): any;
-declare function Kw(r: any, e: any, t: any): any;
-declare function Sq(r: any, e: any, t: any): any;
-declare function Iq(r: any, e: any, t: any): any;
-declare function Nq(r: any, e: any, t: any): any;
-declare var io: {};
-declare var wN: {};
-declare function z(r: any, e: any): any;
-declare function Rr(...s: any[]): any;
-declare namespace Rr { }
-declare function iue(r: any): any;
-declare function n_(...s: any[]): any;
-declare namespace n_ { }
-declare namespace vu {
-    import sgd = Na.sgd;
+export function sub(...args: any[]): any;
+export namespace sub { }
+declare function sum2(...args: any[]): any;
+declare namespace sum2 { }
+export function sumOutType(type: any): any;
+export function tan(...args: any[]): any;
+export namespace tan { }
+declare function tanh2(...args: any[]): any;
+declare namespace tanh2 { }
+export function tensor(values: any, shape: any, dtype: any): any;
+export function tensor1d(values: any, dtype: any): any;
+export function tensor2d(values: any, shape: any, dtype: any): any;
+export function tensor3d(values: any, shape: any, dtype: any): any;
+export function tensor4d(values: any, shape: any, dtype: any): any;
+export function tensor5d(values: any, shape: any, dtype: any): any;
+export function tensor6d(values: any, shape: any, dtype: any): any;
+declare var tensor_util_exports: {};
+declare var test_util_exports: {};
+export function tidy(nameOrFn: any, fn: any): any;
+export function tile(...args: any[]): any;
+export namespace tile { }
+export function time(f: any): any;
+export function topk(...args: any[]): any;
+export namespace topk { }
+export namespace train {
+    import sgd = OptimizerConstructors.sgd;
     export { sgd };
-    import momentum = Na.momentum;
+    import momentum = OptimizerConstructors.momentum;
     export { momentum };
-    import adadelta = Na.adadelta;
+    import adadelta = OptimizerConstructors.adadelta;
     export { adadelta };
-    import adagrad = Na.adagrad;
+    import adagrad = OptimizerConstructors.adagrad;
     export { adagrad };
-    import rmsprop = Na.rmsprop;
+    import rmsprop = OptimizerConstructors.rmsprop;
     export { rmsprop };
-    import adamax = Na.adamax;
+    import adamax = OptimizerConstructors.adamax;
     export { adamax };
-    import adam = Na.adam;
+    import adam = OptimizerConstructors.adam;
     export { adam };
 }
-declare function Ve(...s: any[]): any;
-declare namespace Ve { }
-declare function yu(...s: any[]): any;
-declare namespace yu { }
-declare function Cg(...s: any[]): any;
-declare namespace Cg { }
-declare function bse(r: any): void;
-declare function yse(r: any, e: any): void;
-declare function o_(...s: any[]): any;
-declare namespace o_ { }
-declare function Nr(...s: any[]): any;
-declare namespace Nr { }
-declare function pr(r: any, e: any): any;
-declare var b: {};
-declare function EU(r: any): (e: any, t: any) => {
+export function transpose(...args: any[]): any;
+export namespace transpose { }
+export function truncatedNormal(...args: any[]): any;
+export namespace truncatedNormal { }
+export function unique(...args: any[]): any;
+export namespace unique { }
+export function unregisterGradient(kernelName: any): void;
+export function unregisterKernel(kernelName: any, backendName: any): void;
+export function unsortedSegmentSum(...args: any[]): any;
+export namespace unsortedSegmentSum { }
+export function unstack(...args: any[]): any;
+export namespace unstack { }
+export function upcastType(typeA: any, typeB: any): any;
+declare var util_exports: {};
+export function valueAndGrad(f: any): (x: any, dy: any) => {
     grad: any;
     value: any;
 };
-declare function AU(r: any): (e: any, t: any) => any;
-declare function s_(r: any, e: boolean | undefined, t: any, n: any): any;
-declare function yg(r: any, e: any): {
+export function valueAndGrads(f: any): (args: any, dy: any) => any;
+export function variable(initialValue: any, trainable: boolean | undefined, name: any, dtype: any): any;
+export function variableGrads(f: any, varList: any): {
     value: any;
     grads: {};
 };
-declare var FWt: {
+declare var version16: {
     tfjs: string;
     "tfjs-core": string;
     "tfjs-data": string;
@@ -2110,48 +2211,48 @@ declare var FWt: {
     "tfjs-backend-webgl": string;
     "tfjs-backend-wasm": string;
 };
-declare var f7: string;
-declare var BG: string;
-declare var q7: string;
-declare var Vf: string;
-declare var Koe: string;
-declare var PJ: string;
-declare namespace Cwt {
-    export { BP as forceHalfFloat };
+declare var version11: string;
+declare var version9: string;
+declare var version13: string;
+declare var version10: string;
+declare var version15: string;
+declare var version14: string;
+export namespace webgl {
+    export { forceHalfFloat };
 }
-declare var $O: {};
-declare function Et(...s: any[]): any;
-declare namespace Et { }
-declare function hf(r: any): Promise<any>;
-declare function ht(r: any, e?: string): any;
-declare function Ie(...s: any[]): any;
-declare namespace Ie { }
-declare function fx(r: any, e: any): boolean;
-declare function kj(r: any): {};
-declare function OX(r: any): {
+declare var webgl_util_exports: {};
+export function where(...args: any[]): any;
+export namespace where { }
+export function whereAsync(condition: any): Promise<any>;
+export function zeros(shape: any, dtype?: string): any;
+export function zerosLike(...args: any[]): any;
+export namespace zerosLike { }
+declare function less2(currVal: any, prevVal: any): boolean;
+declare function getQueryParams(queryString: any): {};
+declare function earlyStopping(args: any): {
     monitor: any;
     minDelta: number;
     patience: any;
     verbose: any;
     mode: any;
     baseline: any;
-    monitorFunc: typeof fx;
-    onTrainBegin(e: any): Promise<void>;
+    monitorFunc: typeof less2;
+    onTrainBegin(logs: any): Promise<void>;
     wait: number | undefined;
     stoppedEpoch: any;
     best: any;
-    onEpochEnd(e: any, t: any): Promise<void>;
-    onTrainEnd(e: any): Promise<void>;
-    getMonitorValue(e: any): any;
+    onEpochEnd(epoch: any, logs: any): Promise<void>;
+    onTrainEnd(logs: any): Promise<void>;
+    getMonitorValue(logs: any): any;
     model: {
         [x: string]: any;
         isTraining: boolean;
-        summary(e: any, t: any, n?: {
+        summary(lineLength: any, positions: any, printFn?: {
             (...data: any[]): void;
             (...data: any[]): void;
             (message?: any, ...optionalParams: any[]): void;
         }): void;
-        compile(e: any): void;
+        compile(args: any): void;
         loss: any;
         optimizer_: any;
         isOptimizerOwned: boolean | undefined;
@@ -2164,25 +2265,25 @@ declare function OX(r: any): {
         metricsTensors: any[] | undefined;
         collectedTrainableWeights: any;
         checkTrainableWeightsConsistency(): void;
-        evaluate(e: any, t: any, n?: {}): any;
-        evaluateDataset(e: any, t: any): Promise<any>;
-        checkNumSamples(e: any, t: any, n: any, o?: string): any;
-        execute(e: any, t: any): any;
-        retrieveSymbolicTensors(e: any): any[];
-        predictLoop(e: any, t?: number, n?: boolean): any;
-        predict(e: any, t?: {}): any;
-        predictOnBatch(e: any): any;
-        standardizeUserDataXY(e: any, t: any, n: boolean | undefined, o: any): any[];
-        standardizeUserData(e: any, t: any, n: any, o: any, s: boolean | undefined, a: any): Promise<any[]>;
-        testLoop(e: any, t: any, n: any, o: number | undefined, s: any): any;
+        evaluate(x: any, y: any, args?: {}): any;
+        evaluateDataset(dataset: any, args: any): Promise<any>;
+        checkNumSamples(ins: any, batchSize: any, steps: any, stepsName?: string): any;
+        execute(inputs: any, outputs: any): any;
+        retrieveSymbolicTensors(symbolicTensorNames: any): any[];
+        predictLoop(ins: any, batchSize?: number, verbose?: boolean): any;
+        predict(x: any, args?: {}): any;
+        predictOnBatch(x: any): any;
+        standardizeUserDataXY(x: any, y: any, checkBatchAxis: boolean | undefined, batchSize: any): any[];
+        standardizeUserData(x: any, y: any, sampleWeight: any, classWeight: any, checkBatchAxis: boolean | undefined, batchSize: any): Promise<any[]>;
+        testLoop(f: any, ins: any, batchSize: any, verbose: number | undefined, steps: any): any;
         getDedupedMetricsNames(): string[];
-        makeTrainFunction(): (e: any) => any[];
+        makeTrainFunction(): (data: any) => any[];
         makeTestFunction(): void;
-        testFunction: ((e: any) => any) | undefined;
-        fit(e: any, t: any, n?: {}): Promise<any>;
-        fitDataset(e: any, t: any): Promise<any>;
-        trainOnBatch(e: any, t: any): Promise<any>;
-        getNamedWeights(e: any): {
+        testFunction: ((data: any) => any) | undefined;
+        fit(x: any, y: any, args?: {}): Promise<any>;
+        fitDataset(dataset: any, args: any): Promise<any>;
+        trainOnBatch(x: any, y: any): Promise<any>;
+        getNamedWeights(config: any): {
             name: any;
             tensor: any;
         }[];
@@ -2200,118 +2301,118 @@ declare function OX(r: any): {
                 config: any;
             };
         };
-        loadTrainingConfig(e: any): void;
-        save(e: any, t: any): Promise<any>;
-        setUserDefinedMetadata(e: any): void;
+        loadTrainingConfig(trainingConfig: any): void;
+        save(handlerOrURL: any, config: any): Promise<any>;
+        setUserDefinedMetadata(userDefinedMetadata: any): void;
         userDefinedMetadata: any;
         getUserDefinedMetadata(): any;
     } | null;
-    setModel(e: any): void;
+    setModel(model2: any): void;
     validationData: any;
-    setParams(e: any): void;
+    setParams(params: any): void;
     params: any;
-    onEpochBegin(e: any, t: any): Promise<void>;
-    onBatchBegin(e: any, t: any): Promise<void>;
-    onBatchEnd(e: any, t: any): Promise<void>;
+    onEpochBegin(epoch: any, logs: any): Promise<void>;
+    onBatchBegin(batch: any, logs: any): Promise<void>;
+    onBatchEnd(batch: any, logs: any): Promise<void>;
 };
-declare function QN(...s: any[]): any;
-declare namespace QN { }
-declare function eT(...s: any[]): any;
-declare namespace eT { }
-declare function pT(...s: any[]): any;
-declare namespace pT { }
-declare function cT(...s: any[]): any;
-declare namespace cT { }
-declare function tT(...s: any[]): any;
-declare namespace tT { }
-declare function JN(...s: any[]): any;
-declare namespace JN { }
-declare function rT(...s: any[]): any;
-declare namespace rT { }
-declare function sT(r: any, e: any, t: any, n?: number, o?: number): Promise<any>;
-declare function iT(...s: any[]): any;
-declare namespace iT { }
-declare function aT(r: any, e: any, t: any, n?: number, o?: number, s?: number): Promise<{
+declare function flipLeftRight(...args: any[]): any;
+declare namespace flipLeftRight { }
+declare function grayscaleToRGB(...args: any[]): any;
+declare namespace grayscaleToRGB { }
+declare function resizeNearestNeighbor(...args: any[]): any;
+declare namespace resizeNearestNeighbor { }
+declare function resizeBilinear(...args: any[]): any;
+declare namespace resizeBilinear { }
+declare function rotateWithOffset(...args: any[]): any;
+declare namespace rotateWithOffset { }
+declare function cropAndResize(...args: any[]): any;
+declare namespace cropAndResize { }
+declare function nonMaxSuppression(...args: any[]): any;
+declare namespace nonMaxSuppression { }
+declare function nonMaxSuppressionAsync(boxes: any, scores: any, maxOutputSize: any, iouThreshold?: number, scoreThreshold?: number): Promise<any>;
+declare function nonMaxSuppressionWithScore(...args: any[]): any;
+declare namespace nonMaxSuppressionWithScore { }
+declare function nonMaxSuppressionWithScoreAsync(boxes: any, scores: any, maxOutputSize: any, iouThreshold?: number, scoreThreshold?: number, softNmsSigma?: number): Promise<{
     selectedIndices: any;
     selectedScores: any;
 }>;
-declare function lT(...s: any[]): any;
-declare namespace lT { }
-declare function uT(r: any, e: any, t: any, n?: number, o?: number, s?: boolean): Promise<{
+declare function nonMaxSuppressionPadded(...args: any[]): any;
+declare namespace nonMaxSuppressionPadded { }
+declare function nonMaxSuppressionPaddedAsync(boxes: any, scores: any, maxOutputSize: any, iouThreshold?: number, scoreThreshold?: number, padToMaxOutputSize?: boolean): Promise<{
     selectedIndices: any;
     validOutputs: any;
 }>;
-declare function mT(...s: any[]): any;
-declare namespace mT { }
-declare function fT(...s: any[]): any;
-declare namespace fT { }
-declare function dT(...s: any[]): any;
-declare namespace dT { }
-declare function hT(...s: any[]): any;
-declare namespace hT { }
-declare function xT(...s: any[]): any;
-declare namespace xT { }
-declare function yT(...s: any[]): any;
-declare namespace yT { }
-declare function Pr(...s: any[]): any;
-declare namespace Pr { }
-declare function bT(...s: any[]): any;
-declare namespace bT { }
-declare function wT(...s: any[]): any;
-declare namespace wT { }
-declare function kT(...s: any[]): any;
-declare namespace kT { }
-declare function _T(...s: any[]): any;
-declare namespace _T { }
-declare function vT(...s: any[]): any;
-declare namespace vT { }
-declare function CT(...s: any[]): any;
-declare namespace CT { }
-declare function ST(...s: any[]): any;
-declare namespace ST { }
-declare function YN(...s: any[]): any;
-declare namespace YN { }
-declare function $g(...s: any[]): any;
-declare namespace $g { }
-declare function Dg(...s: any[]): any;
-declare namespace Dg { }
-declare function ZN(...s: any[]): any;
-declare namespace ZN { }
-declare function IT(...s: any[]): any;
-declare namespace IT { }
-declare function NT(...s: any[]): any;
-declare namespace NT { }
-declare function TT(...s: any[]): any;
-declare namespace TT { }
-declare function ET(...s: any[]): any;
-declare namespace ET { }
-declare function AT(...s: any[]): any;
-declare namespace AT { }
-declare function $T(...s: any[]): any;
-declare namespace $T { }
-declare function DT(...s: any[]): any;
-declare namespace DT { }
-declare var Na: {
+declare function threshold(...args: any[]): any;
+declare namespace threshold { }
+declare function transform(...args: any[]): any;
+declare namespace transform { }
+declare function bandPart(...args: any[]): any;
+declare namespace bandPart { }
+declare function gramSchmidt(...args: any[]): any;
+declare namespace gramSchmidt { }
+declare function qr(...args: any[]): any;
+declare namespace qr { }
+declare function absoluteDifference(...args: any[]): any;
+declare namespace absoluteDifference { }
+declare function computeWeightedLoss(...args: any[]): any;
+declare namespace computeWeightedLoss { }
+declare function cosineDistance(...args: any[]): any;
+declare namespace cosineDistance { }
+declare function hingeLoss(...args: any[]): any;
+declare namespace hingeLoss { }
+declare function huberLoss(...args: any[]): any;
+declare namespace huberLoss { }
+declare function logLoss(...args: any[]): any;
+declare namespace logLoss { }
+declare function meanSquaredError(...args: any[]): any;
+declare namespace meanSquaredError { }
+declare function sigmoidCrossEntropy(...args: any[]): any;
+declare namespace sigmoidCrossEntropy { }
+declare function softmaxCrossEntropy(...args: any[]): any;
+declare namespace softmaxCrossEntropy { }
+declare function hammingWindow(...args: any[]): any;
+declare namespace hammingWindow { }
+declare function hannWindow(...args: any[]): any;
+declare namespace hannWindow { }
+declare function frame(...args: any[]): any;
+declare namespace frame { }
+declare function stft(...args: any[]): any;
+declare namespace stft { }
+declare function sparseFillEmptyRows(...args: any[]): any;
+declare namespace sparseFillEmptyRows { }
+declare function sparseReshape(...args: any[]): any;
+declare namespace sparseReshape { }
+declare function sparseSegmentMean(...args: any[]): any;
+declare namespace sparseSegmentMean { }
+declare function sparseSegmentSum(...args: any[]): any;
+declare namespace sparseSegmentSum { }
+declare function stringNGrams(...args: any[]): any;
+declare namespace stringNGrams { }
+declare function stringSplit(...args: any[]): any;
+declare namespace stringSplit { }
+declare function stringToHashBucketFast(...args: any[]): any;
+declare namespace stringToHashBucketFast { }
+declare var OptimizerConstructors: {
     new (): {};
-    sgd(e: any): {
+    sgd(learningRate: any): {
         learningRate: any;
-        applyGradients(e: any): void;
-        setLearningRate(e: any): void;
+        applyGradients(variableGradients: any): void;
+        setLearningRate(learningRate: any): void;
         c: any;
         dispose(): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -2319,35 +2420,35 @@ declare var Na: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    momentum(e: any, t: any, n?: boolean): {
+    momentum(learningRate: any, momentum: any, useNesterov?: boolean): {
         learningRate: any;
         momentum: any;
         useNesterov: boolean;
         accumulations: any[];
         m: any;
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
-        setMomentum(e: any): void;
+        setMomentum(momentum: any): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             momentum: any;
             useNesterov: boolean;
         };
-        setLearningRate(e: any): void;
+        setLearningRate(learningRate: any): void;
         c: any;
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -2355,10 +2456,10 @@ declare var Na: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    rmsprop(e: any, t?: number, n?: number, o?: null, s?: boolean): {
+    rmsprop(learningRate: any, decay?: number, momentum?: number, epsilon3?: null, centered?: boolean): {
         learningRate: any;
         decay: number;
         momentum: number;
@@ -2367,13 +2468,13 @@ declare var Na: {
         accumulatedMoments: any[];
         accumulatedMeanGrads: any[];
         centered: boolean;
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             decay: number;
@@ -2381,11 +2482,11 @@ declare var Na: {
             epsilon: any;
             centered: boolean;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -2393,10 +2494,10 @@ declare var Na: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    adam(e?: number, t?: number, n?: number, o?: null): {
+    adam(learningRate?: number, beta1?: number, beta2?: number, epsilon3?: null): {
         learningRate: any;
         beta1: any;
         beta2: any;
@@ -2405,24 +2506,24 @@ declare var Na: {
         accumulatedSecondMoment: any[];
         accBeta1: any;
         accBeta2: any;
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             beta1: any;
             beta2: any;
             epsilon: any;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -2430,32 +2531,32 @@ declare var Na: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    adadelta(e?: number, t?: number, n?: null): {
+    adadelta(learningRate?: number, rho?: number, epsilon3?: null): {
         learningRate: any;
         rho: any;
         epsilon: any;
         accumulatedGrads: any[];
         accumulatedUpdates: any[];
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             rho: any;
             epsilon: any;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -2463,10 +2564,10 @@ declare var Na: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    adamax(e?: number, t?: number, n?: number, o?: null, s?: number): {
+    adamax(learningRate?: number, beta1?: number, beta2?: number, epsilon3?: null, decay?: number): {
         learningRate: any;
         beta1: any;
         beta2: any;
@@ -2476,10 +2577,10 @@ declare var Na: {
         accumulatedWeightedInfNorm: any[];
         iteration: any;
         accBeta1: any;
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
         getWeights(): Promise<void>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             beta1: any;
@@ -2487,11 +2588,11 @@ declare var Na: {
             epsilon: any;
             decay: number;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -2499,29 +2600,29 @@ declare var Na: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
-    adagrad(e: any, t?: number): {
+    adagrad(learningRate: any, initialAccumulatorValue?: number): {
         learningRate: any;
         initialAccumulatorValue: number;
         accumulatedGrads: any[];
-        applyGradients(e: any): void;
+        applyGradients(variableGradients: any): void;
         dispose(): void;
         getWeights(): Promise<{
             name: string;
             tensor: any;
         }[]>;
-        setWeights(e: any): Promise<void>;
+        setWeights(weightValues: any): Promise<void>;
         getConfig(): {
             learningRate: any;
             initialAccumulatorValue: number;
         };
-        minimize(e: any, t: boolean | undefined, n: any): any;
+        minimize(f: any, returnCost: boolean | undefined, varList: any): any;
         readonly iterations: any;
         iterations_: any;
         incrementIterations(): void;
-        computeGradients(e: any, t: any): {
+        computeGradients(f: any, varList: any): {
             value: any;
             grads: {};
         };
@@ -2529,8 +2630,8 @@ declare var Na: {
             name: string;
             tensor: any;
         }>;
-        extractIterations(e: any): Promise<any>;
+        extractIterations(weightValues: any): Promise<any>;
         getClassName(): any;
     };
 };
-export { Vs as Abs, Ni as Acos, Ti as Acosh, xp as AdadeltaOptimizer, yp as AdagradOptimizer, bp as AdamOptimizer, wp as AdamaxOptimizer, Wn as Add, So as AddN, Ei as All, Ai as Any, Io as ArgMax, Xa as ArgMin, $i as Asin, Di as Asinh, Ri as Atan, Oi as Atan2, Fi as Atanh, No as AvgPool, Ya as AvgPool3D, xc as AvgPool3DGrad, gc as AvgPoolGrad, My as BackendWasm, To as BatchMatMul, Ws as BatchToSpaceND, yc as Bincount, Zh as BroadcastArgs, XI as BroadcastTo, mv as Callback, C_ as CallbackList, Qn as Cast, Eo as Ceil, eo as ClipByValue, bc as Complex, Za as ComplexAbs, js as Concat, Ao as Conv2D, wc as Conv2DBackpropFilter, $o as Conv2DBackpropInput, Ja as Conv3D, kc as Conv3DBackpropFilterV2, _c as Conv3DBackpropInputV2, Do as Cos, Ro as Cosh, Pi as CropAndResize, Fo as Cumsum, I_ as CustomCallback, Ka as DataStorage, vc as DenseBincount, Mi as DepthToSpace, Oo as DepthwiseConv2dNative, Cc as DepthwiseConv2dNativeBackpropFilter, Sc as DepthwiseConv2dNativeBackpropInput, Ic as Diag, Qa as Dilation2D, Dm as Dilation2DBackpropFilter, $m as Dilation2DBackpropInput, gw as ENV, fv as EarlyStopping, Nc as Einsum, Mo as Elu, Tc as EluGrad, Yh as Environment, zi as Equal, Li as Erf, Lo as Exp, Gs as ExpandDims, Bi as Expm1, Ec as FFT, el as Fill, Vi as FlipLeftRight, zo as Floor, Bo as FloorDiv, Rm as FromPixels, Vo as FusedBatchNorm, ni as FusedConv2D, oi as FusedDepthwiseConv2D, hy as GPGPUContext, Wi as GatherNd, Us as GatherV2, jv as GraphModel, ji as Greater, Wo as GreaterEqual, S_ as History, Ac as IFFT, to as Identity, $c as Imag, _t as InputSpec, Gi as IsFinite, Ui as IsInf, Hi as IsNan, Ls as KernelBackend, tl as LRN, Rc as LRNGrad, Yg as LayerVariable, Xn as LayersModel, jo as LeakyRelu, qi as Less, Ki as LessEqual, Dc as LinSpace, Go as Log, Xi as Log1p, YI as LogSoftmax, Yi as LogicalAnd, jl as LogicalNot, Gl as LogicalOr, Pu as MathBackendCPU, Hu as MathBackendWebGL, Uo as Max, qo as MaxPool, rl as MaxPool3D, Oc as MaxPool3DGrad, Fc as MaxPoolGrad, Pc as MaxPoolWithArgmax, Ho as Maximum, Ko as Mean, Xo as Min, Yo as Minimum, Zo as MirrorPad, Zi as Mod, kp as MomentumOptimizer, Mc as Multinomial, Jo as Multiply, Hs as Neg, Qi as NonMaxSuppressionV3, ea as NonMaxSuppressionV4, ta as NonMaxSuppressionV5, Ji as NotEqual, S1 as OP_SCOPE_SUFFIX, Qo as OneHot, qs as OnesLike, Wr as Optimizer, Ks as Pack, es as PadV2, fse as Pool, ts as Pow, rs as Prelu, ra as Prod, _p as RMSPropOptimizer, On as RNN, nl as Range, Iw as Rank, Lc as Real, Po as RealDiv, na as Reciprocal, qt as Reduction, ns as Relu, ss as Relu6, Xs as Reshape, os as ResizeBilinear, Bc as ResizeBilinearGrad, ol as ResizeNearestNeighbor, zc as ResizeNearestNeighborGrad, is as Reverse, ma as RotateWithOffset, as as Round, ls as Rsqrt, dl as SGDOptimizer, oa as ScatterNd, Ys as Select, sa as Selu, $a as Sequential, cs as Sigmoid, aa as Sign, us as Sin, ia as Sinh, Zs as Slice, fs as Softmax, la as Softplus, Js as SpaceToBatchND, Vc as SparseFillEmptyRows, Wc as SparseReshape, jc as SparseSegmentMean, Gc as SparseSegmentSum, Uc as SparseToDense, Qs as SplitV, ps as Sqrt, sl as Square, ds as SquaredDifference, ro as Step, ua as StridedSlice, Hc as StringNGrams, qc as StringSplit, Kc as StringToHashBucketFast, hs as Sub, ms as Sum, on as SymbolicTensor, gs as Tan, xs as Tanh, je as Tensor, ct as TensorBuffer, jn as Tile, ca as TopK, pa as Transform, ys as Transpose, Xc as Unique, ei as Unpack, il as UnsortedSegmentSum, ul as Variable, ti as ZerosLike, ri as _FusedMatMul, Tt as abs, tk as acos, rk as acosh, Y as add, nk as addN, Gm as all, lp as any, ba as argMax, ok as argMin, sk as asin, ik as asinh, ak as atan, lk as atan2, uk as atanh, nu as avgPool, Um as avgPool3d, kN as backend, S as backend_util, b4 as basicLSTMCell, ai as batchNorm, fk as batchNorm2d, dk as batchNorm3d, hk as batchNorm4d, ou as batchToSpaceND, Hm as bincount, XIe as booleanMaskAsync, gk as broadcastArgs, su as broadcastTo, cg as browser, Se as buffer, PX as callbacks, J as cast, xk as ceil, Sr as clipByValue, hn as clone, $n as complex, tt as concat, yk as concat1d, bk as concat2d, wk as concat3d, kk as concat4d, PE as constraints, qm as conv1d, Dn as conv2d, Km as conv2dTranspose, Xm as conv3d, _k as conv3dTranspose, wse as copyRegisteredKernels, iu as cos, Ym as cosh, Tg as cosineWindow, Zm as cumsum, Qr as customGrad, s0 as data, vk as denseBincount, ek as deprecationWarn, Ck as depthToSpace, ka as depthwiseConv2d, LX as deregisterOp, Ql as device_util, K4 as diag, Sk as dilation2d, nue as disableDeprecationWarnings, Ae as dispose, oue as disposeVariables, ue as div, Ik as divNoNan, rU as dot, UN as dropout, Nk as einsum, _a as elu, rue as enableDebugMode, tue as enableProdMode, HN as enclosingPowerOfTwo, ks as engine, j as env, Dr as equal, Tk as erf, tr as exp, gr as expandDims, Ek as expm1, pp as eye, gu as fft, _s as fill, cue as findBackend, pue as findBackendFactory, va as floor, jm as floorDiv, BP as forceHalfFloat, lo as fused, li as gather, jN as gatherND, pg as gather_util, lue as getBackend, bw as getGradient, Om as getKernel, Jh as getKernelsForBackend, VO as gpgpu_util, NU as grad, TU as grads, Ht as greater, Un as greaterEqual, fl as ifft, au as imag, bn as image, sNe as inTopKAsync, rA as initializers, O_ as input, $r as io, ff as irfft, xU as isFinite, bU as isInf, Ak as isNaN, Dt as keep, Mr as kernel_impls, MA as layers, lu as leakyRelu, Jm as less, Hn as lessEqual, RT as linalg, $k as linspace, m7 as loadGraphModel, K5 as loadLayersModel, Dk as localResponseNormalization, Ir as log, uu as log1p, FU as logSigmoid, Qm as logSoftmax, Pk as logSumExp, Fr as logicalAnd, cu as logicalNot, tf as logicalOr, HU as logicalXor, tFe as losses, Me as matMul, oN as math, Vr as max, pu as maxPool, rf as maxPool3d, Mk as maxPoolWithArgmax, Rn as maximum, Ct as mean, Wm as memory, JU as meshgrid, LA as metrics, mp as min, Ca as minimum, Lk as mirrorPad, zk as mod, H5 as model, zA as models, fp as moments, k1e as movingAverage, F as mul, iH as multiRNNCell, Bk as multinomial, Ke as neg, xf as nextFrame, Ig as norm, ci as notEqual, xa as oneHot, rr as ones, xr as onesLike, I as op, pH as outerProduct, xn as pad, dH as pad1d, gH as pad2d, yH as pad3d, wH as pad4d, SH as pool, yn as pow, fu as prelu, Gw as print, nf as prod, sue as profile, AH as rand, LH as randomGamma, _g as randomNormal, vs as randomUniform, Sa as range, aue as ready, ml as real, Zk as reciprocal, ap as registerBackend, X5 as registerCallbackConstructor, ZI as registerGradient, Ul as registerKernel, MX as registerOp, BA as regularizers, Or as relu, of as relu6, uue as removeBackend, O as reshape, lr as reverse, qH as reverse1d, XH as reverse2d, ZH as reverse3d, QH as reverse4d, xu as rfft, sf as round, af as rsqrt, ce as scalar, VN as scatterND, fg as scatter_util, lf as selu, Jk as separableConv2d, q5 as sequential, ee as serialization, VG as setBackend, mue as setPlatform, Hoe as setWasmPath, qoe as setWasmPaths, W0 as setWebGLContext, Qk as setdiff1dAsync, Yx as shared, Jr as sigmoid, e_ as sign, TRe as signal, uf as sin, cf as sinh, Oe as slice, pf as slice1d, vg as slice2d, mf as slice3d, hp as slice4d, ar as slice_util, hu as softmax, ui as softplus, mu as spaceToBatchND, gf as sparse, Ng as sparseToDense, vRe as spectral, mr as split, St as sqrt, We as square, df as squaredDifference, en as squeeze, nr as stack, Ia as step, t_ as stridedSlice, Pg as string, le as sub, me as sum, Zl as sumOutType, r_ as tan, wa as tanh, vr as tensor, At as tensor1d, pi as tensor2d, Kw as tensor3d, Sq as tensor4d, Iq as tensor5d, Nq as tensor6d, io as tensor_util, wN as test_util, z as tidy, Rr as tile, iue as time, n_ as topk, vu as train, Ve as transpose, yu as truncatedNormal, Cg as unique, bse as unregisterGradient, yse as unregisterKernel, o_ as unsortedSegmentSum, Nr as unstack, pr as upcastType, b as util, EU as valueAndGrad, AU as valueAndGrads, s_ as variable, yg as variableGrads, FWt as version, f7 as version_converter, BG as version_core, q7 as version_cpu, Vf as version_layers, Koe as version_wasm, PJ as version_webgl, Cwt as webgl, $O as webgl_util, Et as where, hf as whereAsync, ht as zeros, Ie as zerosLike };
+export { add2 as add, backend_util_exports as backend_util, browser_exports as browser, exports_constraints_exports as constraints, dist_exports as data, device_util_exports as device_util, fused_ops_exports as fused, gather_nd_util_exports as gather_util, gpgpu_util_exports as gpgpu_util, exports_initializers_exports as initializers, io_exports as io, isFinite2 as isFinite, isNaN2 as isNaN, kernel_impls_exports as kernel_impls, exports_layers_exports as layers, log5 as log, math_exports as math, exports_metrics_exports as metrics, exports_models_exports as models, ones2 as ones, print2 as print, exports_regularizers_exports as regularizers, round2 as round, scatter_nd_util_exports as scatter_util, serialization_exports as serialization, shared_exports as shared, slice_util_exports as slice_util, sum2 as sum, tanh2 as tanh, tensor_util_exports as tensor_util, test_util_exports as test_util, util_exports as util, version16 as version, version11 as version_converter, version9 as version_core, version13 as version_cpu, version10 as version_layers, version15 as version_wasm, version14 as version_webgl, webgl_util_exports as webgl_util };

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>GestureConfig | @vladmandic/human - v2.1.5</title>
+	<title>FaceEmotionConfig | @vladmandic/human - v2.1.5</title>
 	<meta name="description" content="Documentation for @vladmandic/human - v2.1.5">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -53,28 +53,21 @@
 					<a href="../index.html">@vladmandic/human - v2.1.5</a>
 				</li>
 				<li>
-					<a href="GestureConfig.html">GestureConfig</a>
+					<a href="FaceEmotionConfig.html">FaceEmotionConfig</a>
 				</li>
 			</ul>
-			<h1>Interface GestureConfig</h1>
+			<h1>Interface FaceEmotionConfig</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Controlls gesture detection</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">GestureConfig</span>
+						<span class="target">FaceEmotionConfig</span>
 					</li>
 				</ul>
 			</section>
@@ -85,7 +78,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="GestureConfig.html#enabled" class="tsd-kind-icon">enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceEmotionConfig.html#enabled" class="tsd-kind-icon">enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceEmotionConfig.html#minConfidence" class="tsd-kind-icon">min<wbr>Confidence</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceEmotionConfig.html#modelPath" class="tsd-kind-icon">model<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceEmotionConfig.html#skipFrames" class="tsd-kind-icon">skip<wbr>Frames</a></li>
 							</ul>
 						</section>
 					</div>
@@ -99,7 +95,37 @@
 					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L185">config.ts:185</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L39">config.ts:39</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="minConfidence" class="tsd-anchor"></a>
+					<h3>min<wbr>Confidence</h3>
+					<div class="tsd-signature tsd-kind-icon">min<wbr>Confidence<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L40">config.ts:40</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="modelPath" class="tsd-anchor"></a>
+					<h3>model<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">model<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L42">config.ts:42</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="skipFrames" class="tsd-anchor"></a>
+					<h3>skip<wbr>Frames</h3>
+					<div class="tsd-signature tsd-kind-icon">skip<wbr>Frames<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L41">config.ts:41</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -142,9 +168,27 @@
 					<li class=" tsd-kind-interface">
 						<a href="FaceDetectorConfig.html" class="tsd-kind-icon">Face<wbr>Detector<wbr>Config</a>
 					</li>
-					<li class=" tsd-kind-interface">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
 						<a href="FaceEmotionConfig.html" class="tsd-kind-icon">Face<wbr>Emotion<wbr>Config</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceEmotionConfig.html#enabled" class="tsd-kind-icon">enabled</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceEmotionConfig.html#minConfidence" class="tsd-kind-icon">min<wbr>Confidence</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceEmotionConfig.html#modelPath" class="tsd-kind-icon">model<wbr>Path</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceEmotionConfig.html#skipFrames" class="tsd-kind-icon">skip<wbr>Frames</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="FaceIrisConfig.html" class="tsd-kind-icon">Face<wbr>Iris<wbr>Config</a>
 					</li>
@@ -157,18 +201,9 @@
 					<li class=" tsd-kind-interface">
 						<a href="FilterConfig.html" class="tsd-kind-icon">Filter<wbr>Config</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
+					<li class=" tsd-kind-interface">
 						<a href="GestureConfig.html" class="tsd-kind-icon">Gesture<wbr>Config</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="GestureConfig.html#enabled" class="tsd-kind-icon">enabled</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="HandConfig.html" class="tsd-kind-icon">Hand<wbr>Config</a>
 					</li>

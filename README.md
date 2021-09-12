@@ -72,6 +72,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 - [**Performance Notes**](https://github.com/vladmandic/human/wiki/Performance)
 - [**Performance Profiling**](https://github.com/vladmandic/human/wiki/Profiling)
 - [**Platform Support**](https://github.com/vladmandic/human/wiki/Platforms)
+- [**Diagnostic and Performance trace information**](https://github.com/vladmandic/human/wiki/Diag)
 - [**List of Models & Credits**](https://github.com/vladmandic/human/wiki/Models)
 - [**Security & Privacy Policy**](https://github.com/vladmandic/human/blob/main/SECURITY.md)
 - [**License & Usage Restrictions**](https://github.com/vladmandic/human/blob/main/LICENSE)
@@ -306,6 +307,12 @@ Note that alternative models are provided and can be enabled via configuration
 For example, `PoseNet` model can be switched for `BlazePose`, `EfficientPose` or `MoveNet` model depending on the use case  
 
 For more info, see [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration) and [**List of Models**](https://github.com/vladmandic/human/wiki/Models)
+
+<br><hr><br>
+
+## Diagnostics
+
+- [How to get diagnostic information or performance trace information](https://github.com/vladmandic/human/wiki/Diag)
 
 <br><hr><br>
 

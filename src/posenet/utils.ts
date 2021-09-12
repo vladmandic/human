@@ -1,5 +1,5 @@
 import * as kpt from './keypoints';
-import { Body } from '../result';
+import { BodyResult } from '../result';
 
 export function eitherPointDoesntMeetConfidence(a: number, b: number, minConfidence: number) {
   return (a < minConfidence || b < minConfidence);
@@ -30,7 +30,7 @@ export function getBoundingBox(keypoints): [number, number, number, number] {
   return [coord.minX, coord.minY, coord.maxX - coord.minX, coord.maxY - coord.minY];
 }
 
-export function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolutionWidth]): Array<Body> {
+export function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolutionWidth]): Array<BodyResult> {
   const scaleY = height / inputResolutionHeight;
   const scaleX = width / inputResolutionWidth;
   const scalePose = (pose, i) => ({

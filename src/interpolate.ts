@@ -2,7 +2,7 @@
  * Module that interpolates results for smoother animations
  */
 
-import type { Result, Face, Body, Hand, Item, Gesture, Person } from './result';
+import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult } from './result';
 
 const bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 
@@ -26,7 +26,7 @@ export function calc(newResult: Result): Result {
 
   // interpolate body results
   if (!bufferedResult.body || (newResult.body.length !== bufferedResult.body.length)) {
-    bufferedResult.body = JSON.parse(JSON.stringify(newResult.body as Body[])); // deep clone once
+    bufferedResult.body = JSON.parse(JSON.stringify(newResult.body as BodyResult[])); // deep clone once
   } else {
     for (let i = 0; i < newResult.body.length; i++) {
       const box = newResult.body[i].box // update box
@@ -52,7 +52,7 @@ export function calc(newResult: Result): Result {
 
   // interpolate hand results
   if (!bufferedResult.hand || (newResult.hand.length !== bufferedResult.hand.length)) {
-    bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand as Hand[])); // deep clone once
+    bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand as HandResult[])); // deep clone once
   } else {
     for (let i = 0; i < newResult.hand.length; i++) {
       const box = (newResult.hand[i].box// update box
@@ -69,13 +69,13 @@ export function calc(newResult: Result): Result {
         annotations[key] = newResult.hand[i].annotations[key]
           .map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor));
       }
-      bufferedResult.hand[i] = { ...newResult.hand[i], box, boxRaw, keypoints, annotations: annotations as Hand['annotations'] }; // shallow clone plus updated values
+      bufferedResult.hand[i] = { ...newResult.hand[i], box, boxRaw, keypoints, annotations: annotations as HandResult['annotations'] }; // shallow clone plus updated values
     }
   }
 
   // interpolate face results
   if (!bufferedResult.face || (newResult.face.length !== bufferedResult.face.length)) {
-    bufferedResult.face = JSON.parse(JSON.stringify(newResult.face as Face[])); // deep clone once
+    bufferedResult.face = JSON.parse(JSON.stringify(newResult.face as FaceResult[])); // deep clone once
   } else {
     for (let i = 0; i < newResult.face.length; i++) {
       const box = (newResult.face[i].box // update box
@@ -104,7 +104,7 @@ export function calc(newResult: Result): Result {
 
   // interpolate object detection results
   if (!bufferedResult.object || (newResult.object.length !== bufferedResult.object.length)) {
-    bufferedResult.object = JSON.parse(JSON.stringify(newResult.object as Item[])); // deep clone once
+    bufferedResult.object = JSON.parse(JSON.stringify(newResult.object as ObjectResult[])); // deep clone once
   } else {
     for (let i = 0; i < newResult.object.length; i++) {
       const box = (newResult.object[i].box // update box
@@ -119,7 +119,7 @@ export function calc(newResult: Result): Result {
   if (newResult.persons) {
     const newPersons = newResult.persons; // trigger getter function
     if (!bufferedResult.persons || (newPersons.length !== bufferedResult.persons.length)) {
-      bufferedResult.persons = JSON.parse(JSON.stringify(newPersons as Person[]));
+      bufferedResult.persons = JSON.parse(JSON.stringify(newPersons as PersonResult[]));
     } else {
       for (let i = 0; i < newPersons.length; i++) { // update person box, we don't update the rest as it's updated as reference anyhow
         bufferedResult.persons[i].box = (newPersons[i].box
@@ -129,7 +129,7 @@ export function calc(newResult: Result): Result {
   }
 
   // just copy latest gestures without interpolation
-  if (newResult.gesture) bufferedResult.gesture = newResult.gesture as Gesture[];
+  if (newResult.gesture) bufferedResult.gesture = newResult.gesture as GestureResult[];
   if (newResult.performance) bufferedResult.performance = newResult.performance;
 
   return bufferedResult;

@@ -8,7 +8,7 @@ import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as emotion from './emotion/emotion';
 import * as faceres from './faceres/faceres';
-import { Face } from './result';
+import { FaceResult } from './result';
 import { Tensor } from './tfjs/types';
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -145,7 +145,7 @@ const calculateFaceAngle = (face, imageSize): {
   return { angle, matrix, gaze };
 };
 
-export const detectFace = async (parent /* instance of human */, input: Tensor): Promise<Face[]> => {
+export const detectFace = async (parent /* instance of human */, input: Tensor): Promise<FaceResult[]> => {
   // run facemesh, includes blazeface and iris
   // eslint-disable-next-line no-async-promise-executor
   let timeStamp;
@@ -155,7 +155,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
   let emotionRes;
   let embeddingRes;
   let descRes;
-  const faceRes: Array<Face> = [];
+  const faceRes: Array<FaceResult> = [];
   parent.state = 'run:face';
   timeStamp = now();
   const faces = await facemesh.predict(input, parent.config);

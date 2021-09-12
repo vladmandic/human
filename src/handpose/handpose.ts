@@ -7,7 +7,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
 import * as handpipeline from './handpipeline';
 import * as fingerPose from '../fingerpose/fingerpose';
-import { Hand } from '../result';
+import { HandResult } from '../result';
 import { Tensor, GraphModel } from '../tfjs/types';
 import { Config } from '../config';
 
@@ -24,10 +24,10 @@ let handDetectorModel: GraphModel | null;
 let handPoseModel: GraphModel | null;
 let handPipeline: handpipeline.HandPipeline;
 
-export async function predict(input: Tensor, config: Config): Promise<Hand[]> {
+export async function predict(input: Tensor, config: Config): Promise<HandResult[]> {
   const predictions = await handPipeline.estimateHands(input, config);
   if (!predictions) return [];
-  const hands: Array<Hand> = [];
+  const hands: Array<HandResult> = [];
   for (let i = 0; i < predictions.length; i++) {
     const annotations = {};
     if (predictions[i].landmarks) {
@@ -72,8 +72,8 @@ export async function predict(input: Tensor, config: Config): Promise<Hand[]> {
       box,
       boxRaw,
       keypoints,
-      annotations: annotations as Hand['annotations'],
-      landmarks: landmarks as Hand['landmarks'],
+      annotations: annotations as HandResult['annotations'],
+      landmarks: landmarks as HandResult['landmarks'],
     });
   }
   return hands;
@@ -82,13 +82,13 @@ export async function predict(input: Tensor, config: Config): Promise<Hand[]> {
 export async function load(config: Config): Promise<[GraphModel | null, GraphModel | null]> {
   if (!handDetectorModel || !handPoseModel) {
     [handDetectorModel, handPoseModel] = await Promise.all([
-      config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector.modelPath), { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
-      config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton.modelPath), { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
+      config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector?.modelPath || ''), { fromTFHub: (config.hand.detector?.modelPath || '').includes('tfhub.dev') }) as unknown as GraphModel : null,
+      config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton?.modelPath || ''), { fromTFHub: (config.hand.skeleton?.modelPath || '').includes('tfhub.dev') }) as unknown as GraphModel : null,
     ]);
     if (config.hand.enabled) {
-      if (!handDetectorModel || !handDetectorModel['modelUrl']) log('load model failed:', config.hand.detector.modelPath);
+      if (!handDetectorModel || !handDetectorModel['modelUrl']) log('load model failed:', config.hand.detector?.modelPath || '');
       else if (config.debug) log('load model:', handDetectorModel['modelUrl']);
-      if (!handPoseModel || !handPoseModel['modelUrl']) log('load model failed:', config.hand.skeleton.modelPath);
+      if (!handPoseModel || !handPoseModel['modelUrl']) log('load model failed:', config.hand.skeleton?.modelPath || '');
       else if (config.debug) log('load model:', handPoseModel['modelUrl']);
     }
   } else {

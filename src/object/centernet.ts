@@ -5,17 +5,17 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
-import { Item } from '../result';
+import { ObjectResult } from '../result';
 import { GraphModel, Tensor } from '../tfjs/types';
 import { Config } from '../config';
 
 let model;
-let last: Item[] = [];
+let last: ObjectResult[] = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath));
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath || ''));
     const inputs = Object.values(model.modelSignature['inputs']);
     model.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
     if (!model.inputSize) throw new Error(`Human: Cannot determine model inputSize: ${config.object.modelPath}`);
@@ -27,7 +27,7 @@ export async function load(config: Config): Promise<GraphModel> {
 
 async function process(res: Tensor, inputSize, outputShape, config: Config) {
   if (!res) return [];
-  const results: Array<Item> = [];
+  const results: Array<ObjectResult> = [];
   const detections = await res.array();
   const squeezeT = tf.squeeze(res);
   tf.dispose(res);
@@ -70,8 +70,8 @@ async function process(res: Tensor, inputSize, outputShape, config: Config) {
   return results;
 }
 
-export async function predict(input: Tensor, config: Config): Promise<Item[]> {
-  if ((skipped < config.object.skipFrames) && config.skipFrame && (last.length > 0)) {
+export async function predict(input: Tensor, config: Config): Promise<ObjectResult[]> {
+  if ((skipped < (config.object.skipFrames || 0)) && config.skipFrame && (last.length > 0)) {
     skipped++;
     return last;
   }

@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/11 mandic00@live.com
+### **HEAD -> main** 2021/09/12 mandic00@live.com
 
+- mark all config items as optional
 - redefine config and result interfaces
 - fix usge of string enums
 - start using partial definitions

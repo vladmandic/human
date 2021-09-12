@@ -246,9 +246,11 @@ export interface Config {
  *
  */
 const config: Config = {
-  backend: 'humangl',        // select tfjs backend to use, leave empty to use default backend
+  backend: '',               // select tfjs backend to use, leave empty to use default backend
                              // can be 'webgl', 'wasm', 'cpu', or 'humangl' which is a custom version of webgl
-  modelBasePath: '../models/', // base path for all models
+                             // default set to `humangl` for browsers and `tensorflow` for nodejs
+  modelBasePath: '',         // base path for all models
+                             // default set to `../models/` for browsers and `file://models/` for nodejs
   wasmPath: '',              // path for wasm binaries, only used for backend: wasm
                              // default set to download from jsdeliv during Human class instantiation
   debug: true,               // print additional status messages to console

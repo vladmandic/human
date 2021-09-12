@@ -11,6 +11,8 @@
   
 ### **HEAD -> main** 2021/09/12 mandic00@live.com
 
+- release candidate
+- parametrize face config
 - mark all config items as optional
 - redefine config and result interfaces
 - fix usge of string enums

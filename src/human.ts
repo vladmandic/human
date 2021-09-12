@@ -5,7 +5,6 @@
 import { log, now, mergeDeep } from './helpers';
 import { Config, defaults } from './config';
 import { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult } from './result';
-import * as sysinfo from './sysinfo';
 import * as tf from '../dist/tfjs.esm.js';
 import * as backend from './tfjs/backend';
 import * as models from './models';
@@ -26,6 +25,7 @@ import * as draw from './draw/draw';
 import * as persons from './persons';
 import * as interpolate from './interpolate';
 import * as sample from './sample';
+import * as env from './env';
 import * as app from '../package.json';
 import { Tensor, GraphModel } from './tfjs/types';
 
@@ -33,6 +33,7 @@ import { Tensor, GraphModel } from './tfjs/types';
 export * from './config';
 export * from './result';
 export type { DrawOptions } from './draw/draw';
+export { env } from './env';
 
 /** Defines all possible input types for **Human** detection
  * @typedef Input Type
@@ -93,6 +94,10 @@ export class Human {
    * - Can be embedded or externally provided
    */
   tf: TensorFlow;
+  /**
+   * Object containing environment information used for diagnostics
+   */
+  env: env.Env;
   /** Draw helper classes that can draw detected objects on canvas using specified draw
    * - options: {@link DrawOptions} global settings for all draw operations, can be overriden for each draw method
    * - face: draw detected faces
@@ -141,8 +146,6 @@ export class Human {
   faceTriangulation: typeof facemesh.triangulation;
   /** Refernce UV map of 468 values, used for 3D mapping of the face mesh */
   faceUVMap: typeof facemesh.uvmap;
-  /** Platform and agent information detected by Human */
-  sysinfo: { platform: string, agent: string };
   /** Performance object that contains values for all recently performed operations */
   performance: Record<string, number>; // perf members are dynamically defined as needed
   #numTensors: number;
@@ -159,9 +162,13 @@ export class Human {
    * @param userConfig: {@link Config}
    */
   constructor(userConfig?: Partial<Config>) {
+    env.get();
+    this.env = env.env;
+    defaults.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`;
+    defaults.modelBasePath = this.env.browser ? '../models/' : 'file://models/';
+    defaults.backend = this.env.browser ? 'humangl' : 'tensorflow';
     this.version = app.version; // expose version property on instance of class
     Object.defineProperty(this, 'version', { value: app.version }); // expose version property directly on class itself
-    defaults.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`;
     this.config = mergeDeep(defaults, userConfig || {});
     this.tf = tf;
     this.draw = draw;
@@ -199,7 +206,6 @@ export class Human {
     this.faceTriangulation = facemesh.triangulation;
     this.faceUVMap = facemesh.uvmap;
     // include platform info
-    this.sysinfo = sysinfo.info();
     this.#lastInputSum = 1;
     this.#emit('create');
   }
@@ -287,10 +293,9 @@ export class Human {
     if (this.#firstRun) { // print version info on first run and check for correct backend setup
       if (this.config.debug) log(`version: ${this.version}`);
       if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
-      if (this.config.debug) log('platform:', this.sysinfo.platform);
-      if (this.config.debug) log('agent:', this.sysinfo.agent);
+      if (this.config.debug) log('environment:', env.env);
 
-      await this.#checkBackend(true);
+      await this.#checkBackend();
       if (this.tf.ENV.flags.IS_BROWSER) {
         if (this.config.debug) log('configuration:', this.config);
         if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
@@ -316,8 +321,8 @@ export class Human {
 
   // check if backend needs initialization if it changed
   /** @hidden */
-  #checkBackend = async (force = false) => {
-    if (this.config.backend && (this.config.backend.length > 0) && force || (this.tf.getBackend() !== this.config.backend)) {
+  #checkBackend = async () => {
+    if (this.#firstRun || (this.config.backend && (this.config.backend.length > 0) || (this.tf.getBackend() !== this.config.backend))) {
       const timeStamp = now();
       this.state = 'backend';
       /* force backend reload
@@ -343,7 +348,7 @@ export class Human {
           this.config.backend = 'humangl';
         }
         if (this.tf.ENV.flags.IS_NODE && (this.config.backend === 'webgl' || this.config.backend === 'humangl')) {
-          log('override: backend set to webgl while running in nodejs');
+          log(`override: backend set to ${this.config.backend} while running in nodejs`);
           this.config.backend = 'tensorflow';
         }
 
@@ -410,6 +415,9 @@ export class Human {
       this.tf.enableProdMode();
       await this.tf.ready();
       this.performance.backend = Math.trunc(now() - timeStamp);
+
+      env.get(); // update env on backend init
+      this.env = env.env;
     }
   }
 

@@ -953,8 +953,7 @@ async function main() {
 
   // create instance of human
   human = new Human(userConfig);
-  log('human version:', Human.version);
-  log('tfjs version:', human.tf.version.tfjs);
+  log('human version:', human.version);
   userConfig = { ...human.config, ...userConfig };
   if (typeof tf !== 'undefined') {
     // eslint-disable-next-line no-undef
@@ -962,6 +961,7 @@ async function main() {
     // eslint-disable-next-line no-undef
     human.tf = tf; // use externally loaded version of tfjs
   }
+  log('tfjs version:', human.tf.version.tfjs);
 
   // setup main menu
   await setupMenu();
@@ -1013,6 +1013,8 @@ async function main() {
     log('overriding images list:', JSON.parse(params.get('images')));
     await detectSampleImages();
   }
+
+  if (human.config.debug) log('environment:', human.env);
 }
 
 window.onload = main;

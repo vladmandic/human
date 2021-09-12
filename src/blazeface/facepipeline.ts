@@ -4,6 +4,7 @@ import * as util from './util';
 import * as coords from './coords';
 import { Tensor, GraphModel } from '../tfjs/types';
 import { BlazeFaceModel } from './blazeface';
+import { env } from '../env';
 
 const leftOutline = coords.MESH_ANNOTATIONS['leftEyeLower0'];
 const rightOutline = coords.MESH_ANNOTATIONS['rightEyeLower0'];
@@ -114,7 +115,7 @@ export class Pipeline {
       box.startPoint[0] / this.meshSize, box.endPoint[1] / this.meshSize,
       box.endPoint[0] / this.meshSize,
     ]], [0], [this.irisSize, this.irisSize]);
-    if (flip && tf.ENV.flags.IS_BROWSER) {
+    if (flip && env.kernels.includes('flipleftright')) {
       const flipped = tf.image.flipLeftRight(crop); // flipLeftRight is not defined for tfjs-node
       tf.dispose(crop);
       crop = flipped;
@@ -257,7 +258,7 @@ export class Pipeline {
       let angle = 0;
       let rotationMatrix;
 
-      if (config.face.detector.rotation && config.face.mesh.enabled && tf.ENV.flags.IS_BROWSER) {
+      if (config.face.detector.rotation && config.face.mesh.enabled && env.kernels.includes('rotatewithoffset')) {
         [angle, rotationMatrix, face] = this.correctFaceRotation(config, box, input);
       } else {
         rotationMatrix = util.IDENTITY_MATRIX;
@@ -302,7 +303,7 @@ export class Pipeline {
           box = { ...bounding.enlargeBox(bounding.calculateLandmarksBoundingBox(mesh), 1.5), confidence: box.confidence }; // redefine box with mesh calculated one
 
           // do rotation one more time with mesh keypoints if we want to return perfect image
-          if (config.face.detector.rotation && config.face.mesh.enabled && config.face.description.enabled && tf.ENV.flags.IS_BROWSER) {
+          if (config.face.detector.rotation && config.face.mesh.enabled && config.face.description.enabled && env.kernels.includes('rotatewithoffset')) {
             [angle, rotationMatrix, face] = this.correctFaceRotation(config, box, input);
           }
 

@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/09/12 mandic00@live.com
 
+- minor typos
 - release candidate
 - parametrize face config
 - mark all config items as optional

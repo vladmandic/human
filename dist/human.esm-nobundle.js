@@ -3791,6 +3791,74 @@ var UV68 = VTX68.map((x) => UV468[x]);
 var UV33 = VTX33.map((x) => UV468[x]);
 var UV7 = VTX7.map((x) => UV468[x]);
 
+// src/env.ts
+var env2 = {
+  browser: void 0,
+  node: void 0,
+  worker: void 0,
+  platform: void 0,
+  agent: void 0,
+  backends: [],
+  tfjs: {
+    version: void 0,
+    external: void 0
+  },
+  wasm: {
+    supported: void 0,
+    simd: void 0,
+    multithread: void 0
+  },
+  webgl: {
+    supported: void 0,
+    version: void 0,
+    renderer: void 0
+  },
+  webgpu: {
+    supported: void 0,
+    adapter: void 0
+  },
+  kernels: []
+};
+async function get() {
+  var _a;
+  env2.browser = typeof navigator !== "undefined";
+  env2.node = typeof process !== "undefined";
+  env2.worker = env2.browser ? typeof WorkerGlobalScope !== "undefined" : void 0;
+  env2.tfjs.version = tfjs_esm_exports.version_core;
+  if (typeof navigator !== "undefined") {
+    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
+    if (raw && raw[0]) {
+      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
+      env2.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
+      env2.agent = navigator.userAgent.replace(raw[0], "");
+      if (env2.platform[1])
+        env2.agent = env2.agent.replace(raw[1], "");
+      env2.agent = env2.agent.replace(/  /g, " ");
+    }
+  } else if (typeof process !== "undefined") {
+    env2.platform = `${process.platform} ${process.arch}`;
+    env2.agent = `NodeJS ${process.version}`;
+  }
+  env2.backends = Object.keys(tfjs_esm_exports.engine().registryFactory);
+  env2.wasm.supported = env2.backends.includes("wasm");
+  if (env2.wasm.supported) {
+    env2.wasm.simd = await tfjs_esm_exports.env().getAsync("WASM_HAS_SIMD_SUPPORT");
+    env2.wasm.multithread = await tfjs_esm_exports.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+  }
+  env2.webgl.supported = typeof tfjs_esm_exports.backend().gpgpu !== "undefined";
+  if (env2.webgl.supported) {
+    const gl = await tfjs_esm_exports.backend().getGPGPUContext().gl;
+    if (gl) {
+      env2.webgl.version = gl.getParameter(gl.VERSION);
+      env2.webgl.renderer = gl.getParameter(gl.RENDERER);
+    }
+  }
+  env2.webgpu.supported = env2.browser && typeof navigator["gpu"] !== "undefined";
+  if (env2.webgpu.supported)
+    env2.webgpu.adapter = (_a = await navigator["gpu"].requestAdapter()) == null ? void 0 : _a.name;
+  env2.kernels = tfjs_esm_exports.getKernelsForBackend(tfjs_esm_exports.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+}
+
 // src/blazeface/facepipeline.ts
 var leftOutline = MESH_ANNOTATIONS["leftEyeLower0"];
 var rightOutline = MESH_ANNOTATIONS["rightEyeLower0"];
@@ -3879,7 +3947,7 @@ var Pipeline = class {
       box6.endPoint[1] / this.meshSize,
       box6.endPoint[0] / this.meshSize
     ]], [0], [this.irisSize, this.irisSize]);
-    if (flip && tfjs_esm_exports.ENV.flags.IS_BROWSER) {
+    if (flip && env2.kernels.includes("flipleftright")) {
       const flipped = tfjs_esm_exports.image.flipLeftRight(crop);
       tfjs_esm_exports.dispose(crop);
       crop = flipped;
@@ -4004,7 +4072,7 @@ var Pipeline = class {
       let face5;
       let angle = 0;
       let rotationMatrix;
-      if (config3.face.detector.rotation && config3.face.mesh.enabled && tfjs_esm_exports.ENV.flags.IS_BROWSER) {
+      if (config3.face.detector.rotation && config3.face.mesh.enabled && env2.kernels.includes("rotatewithoffset")) {
         [angle, rotationMatrix, face5] = this.correctFaceRotation(config3, box6, input);
       } else {
         rotationMatrix = IDENTITY_MATRIX;
@@ -4040,7 +4108,7 @@ var Pipeline = class {
             rawCoords = await this.augmentIris(rawCoords, face5);
           const mesh = this.transformRawCoords(rawCoords, box6, angle, rotationMatrix);
           box6 = { ...enlargeBox(calculateLandmarksBoundingBox(mesh), 1.5), confidence: box6.confidence };
-          if (config3.face.detector.rotation && config3.face.mesh.enabled && config3.face.description.enabled && tfjs_esm_exports.ENV.flags.IS_BROWSER) {
+          if (config3.face.detector.rotation && config3.face.mesh.enabled && config3.face.description.enabled && env2.kernels.includes("rotatewithoffset")) {
             [angle, rotationMatrix, face5] = this.correctFaceRotation(config3, box6, input);
           }
           results.push({
@@ -7866,7 +7934,7 @@ var HandPipeline = class {
         const angle = config3.hand.rotation ? computeRotation2(currentBox.palmLandmarks[palmLandmarksPalmBase], currentBox.palmLandmarks[palmLandmarksMiddleFingerBase]) : 0;
         const palmCenter = getBoxCenter2(currentBox);
         const palmCenterNormalized = [palmCenter[0] / image18.shape[2], palmCenter[1] / image18.shape[1]];
-        const rotatedImage = config3.hand.rotation && tfjs_esm_exports.ENV.flags.IS_BROWSER ? tfjs_esm_exports.image.rotateWithOffset(image18, angle, 0, palmCenterNormalized) : image18.clone();
+        const rotatedImage = config3.hand.rotation && env2.kernels.includes("rotatewithoffset") ? tfjs_esm_exports.image.rotateWithOffset(image18, angle, 0, palmCenterNormalized) : image18.clone();
         const rotationMatrix = buildRotationMatrix2(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
         const croppedInput = cutBoxFromImageAndResize2(newBox, rotatedImage, [this.inputSize, this.inputSize]);
@@ -8923,6 +8991,8 @@ async function predict9(image18, config3) {
     return last3;
   }
   skipped5 = 0;
+  if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
+    return last3;
   return new Promise(async (resolve) => {
     const outputSize = [image18.shape[2], image18.shape[1]];
     const resize = tfjs_esm_exports.image.resizeBilinear(image18, [model7.inputSize, model7.inputSize], false);
@@ -9010,6 +9080,8 @@ async function predict10(input, config3) {
     return last4;
   }
   skipped6 = 0;
+  if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
+    return last4;
   return new Promise(async (resolve) => {
     const outputSize = [input.shape[2], input.shape[1]];
     const resize = tfjs_esm_exports.image.resizeBilinear(input, [model8.inputSize, model8.inputSize]);
@@ -9796,7 +9868,7 @@ function process4(input, config3) {
           outCanvas.width = inCanvas == null ? void 0 : inCanvas.width;
         if ((outCanvas == null ? void 0 : outCanvas.height) !== (inCanvas == null ? void 0 : inCanvas.height))
           outCanvas.height = inCanvas == null ? void 0 : inCanvas.height;
-        fx = tfjs_esm_exports.ENV.flags.IS_BROWSER ? new GLImageFilter({ canvas: outCanvas }) : null;
+        fx = env2.browser ? new GLImageFilter({ canvas: outCanvas }) : null;
       }
       if (!fx)
         return { tensor: null, canvas: inCanvas };
@@ -11711,74 +11783,6 @@ SbAjYZAI2E7AIEgIEgIEgMdkSy2NgY7MdlmyNoBXsxmFuyNgVTVjNV3KjlBRNTlXTVHKCrlIqt5T
 lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
-// src/env.ts
-var env2 = {
-  browser: void 0,
-  node: void 0,
-  worker: void 0,
-  platform: void 0,
-  agent: void 0,
-  backends: [],
-  tfjs: {
-    version: void 0,
-    external: void 0
-  },
-  wasm: {
-    supported: void 0,
-    simd: void 0,
-    multithread: void 0
-  },
-  webgl: {
-    supported: void 0,
-    version: void 0,
-    renderer: void 0
-  },
-  webgpu: {
-    supported: void 0,
-    adapter: void 0
-  },
-  kernels: []
-};
-async function get() {
-  var _a;
-  env2.browser = typeof navigator !== "undefined";
-  env2.node = typeof process !== "undefined";
-  env2.worker = env2.browser ? typeof WorkerGlobalScope !== "undefined" : void 0;
-  env2.tfjs.version = tfjs_esm_exports.version_core;
-  if (typeof navigator !== "undefined") {
-    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
-    if (raw && raw[0]) {
-      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
-      env2.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
-      env2.agent = navigator.userAgent.replace(raw[0], "");
-      if (env2.platform[1])
-        env2.agent = env2.agent.replace(raw[1], "");
-      env2.agent = env2.agent.replace(/  /g, " ");
-    }
-  } else if (typeof process !== "undefined") {
-    env2.platform = `${process.platform} ${process.arch}`;
-    env2.agent = `NodeJS ${process.version}`;
-  }
-  env2.backends = Object.keys(tfjs_esm_exports.engine().registryFactory);
-  env2.wasm.supported = env2.backends.includes("wasm");
-  if (env2.wasm.supported) {
-    env2.wasm.simd = await tfjs_esm_exports.env().getAsync("WASM_HAS_SIMD_SUPPORT");
-    env2.wasm.multithread = await tfjs_esm_exports.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
-  }
-  env2.webgl.supported = typeof tfjs_esm_exports.backend().gpgpu !== "undefined";
-  if (env2.webgl.supported) {
-    const gl = await tfjs_esm_exports.backend().getGPGPUContext().gl;
-    if (gl) {
-      env2.webgl.version = gl.getParameter(gl.VERSION);
-      env2.webgl.renderer = gl.getParameter(gl.RENDERER);
-    }
-  }
-  env2.webgpu.supported = env2.browser && typeof navigator["gpu"] !== "undefined";
-  if (env2.webgpu.supported)
-    env2.webgpu.adapter = (_a = await navigator["gpu"].requestAdapter()) == null ? void 0 : _a.name;
-  env2.kernels = tfjs_esm_exports.getKernelsForBackend(tfjs_esm_exports.getBackend()).map((kernel) => kernel.kernelName);
-}
-
 // package.json
 var version2 = "2.2.0";
 
@@ -11807,7 +11811,7 @@ var Human = class {
         return null;
       if (!input)
         return "input is not defined";
-      if (this.tf.ENV.flags.IS_NODE && !(input instanceof tfjs_esm_exports.Tensor))
+      if (this.env.node && !(input instanceof tfjs_esm_exports.Tensor))
         return "input must be a tensor";
       try {
         this.tf.getBackend();
@@ -11822,22 +11826,22 @@ var Human = class {
     });
     __privateAdd(this, _checkBackend, async () => {
       var _a;
-      if (__privateGet(this, _firstRun) || (this.config.backend && this.config.backend.length > 0 || this.tf.getBackend() !== this.config.backend)) {
+      if (__privateGet(this, _firstRun) || this.config.backend && this.config.backend.length > 0 && this.tf.getBackend() !== this.config.backend) {
         const timeStamp = now();
         this.state = "backend";
         if (this.config.backend && this.config.backend.length > 0) {
           if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && this.config.debug) {
             log("running inside web worker");
           }
-          if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === "tensorflow") {
+          if (this.env.browser && this.config.backend === "tensorflow") {
             log("override: backend set to tensorflow while running in browser");
             this.config.backend = "humangl";
           }
-          if (this.tf.ENV.flags.IS_NODE && (this.config.backend === "webgl" || this.config.backend === "humangl")) {
+          if (this.env.node && (this.config.backend === "webgl" || this.config.backend === "humangl")) {
             log(`override: backend set to ${this.config.backend} while running in nodejs`);
             this.config.backend = "tensorflow";
           }
-          if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === "webgpu") {
+          if (this.env.browser && this.config.backend === "webgpu") {
             if (typeof navigator === "undefined" || typeof navigator["gpu"] === "undefined") {
               log("override: backend set to webgpu but browser does not support webgpu");
               this.config.backend = "humangl";
@@ -11854,8 +11858,8 @@ var Human = class {
             log("available backends:", available);
           if (!available.includes(this.config.backend)) {
             log(`error: backend ${this.config.backend} not found in registry`);
-            this.config.backend = this.tf.ENV.flags.IS_NODE ? "tensorflow" : "humangl";
-            log(`override: using backend ${this.config.backend} instead`);
+            this.config.backend = this.env.node ? "tensorflow" : "humangl";
+            log(`override: setting backend ${this.config.backend}`);
           }
           if (this.config.debug)
             log("setting backend:", this.config.backend);
@@ -11895,6 +11899,7 @@ var Human = class {
         this.tf.enableProdMode();
         await this.tf.ready();
         this.performance.backend = Math.trunc(now() - timeStamp);
+        this.config.backend = this.tf.getBackend();
         get();
         this.env = env2;
       }
@@ -12057,10 +12062,8 @@ var Human = class {
         log(`version: ${this.version}`);
       if (this.config.debug)
         log(`tfjs version: ${this.tf.version_core}`);
-      if (this.config.debug)
-        log("environment:", env2);
       await __privateGet(this, _checkBackend).call(this);
-      if (this.tf.ENV.flags.IS_BROWSER) {
+      if (this.env.browser) {
         if (this.config.debug)
           log("configuration:", this.config);
         if (this.config.debug)

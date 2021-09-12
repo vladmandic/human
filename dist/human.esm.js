@@ -72,7 +72,7 @@ function mergeDeep(...objects) {
 
 // src/config.ts
 var config = {
-  backend: "webgl",
+  backend: "humangl",
   modelBasePath: "../models/",
   wasmPath: "",
   debug: true,
@@ -71241,7 +71241,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // package.json
-var version17 = "2.1.5";
+var version17 = "2.2.0";
 
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _emit, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;

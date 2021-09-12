@@ -1,9 +1,3 @@
-/**
- * Configuration interface definition for **Human** library
- *
- * Contains all configurable parameters
- * @typedef Config
- */
 export interface FaceDetectorConfig {
     modelPath: string;
     rotation: boolean;
@@ -169,6 +163,12 @@ export interface FilterConfig {
 export interface GestureConfig {
     enabled: boolean;
 }
+/**
+ * Configuration interface definition for **Human** library
+ *
+ * Contains all configurable parameters
+ * @typedef Config
+ */
 export interface Config {
     /** Backend used for TFJS operations */
     backend: string;
@@ -208,5 +208,9 @@ export interface Config {
     object: Partial<ObjectConfig>;
     segmentation: Partial<SegmentationConfig>;
 }
+/**
+ * [Default values](https://github.com/vladmandic/human/blob/main/src/config.ts#L244) for {@Config}
+ *
+ */
 declare const config: Config;
 export { config as defaults };

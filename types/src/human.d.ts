@@ -15,6 +15,14 @@ export type { DrawOptions } from './draw/draw';
  * @typedef Input Type
  */
 export declare type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
+/** Events dispatched by `human.events`
+ * - `create`: triggered when Human object is instantiated
+ * - `load`: triggered when models are loaded (explicitly or on-demand)
+ * - `image`: triggered when input image is this.processed
+ * - `result`: triggered when detection is complete
+ * - `warmup`: triggered when warmup is complete
+ */
+export declare type Events = 'create' | 'load' | 'image' | 'result' | 'warmup';
 /** Error message
  * @typedef Error Type
  */

@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@vladmandic/human - v2.1.5</title>
-	<meta name="description" content="Documentation for @vladmandic/human - v2.1.5">
+	<title>@vladmandic/human - v2.2.0</title>
+	<meta name="description" content="Documentation for @vladmandic/human - v2.2.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 	<script async src="assets/js/search.js" id="search-script"></script>
@@ -23,7 +23,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">@vladmandic/human - v2.1.5</a>
+					<a href="index.html" class="title">@vladmandic/human - v2.2.0</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -48,7 +48,7 @@
 	</div>
 	<div class="tsd-page-title">
 		<div class="container">
-			<h1>@vladmandic/human - v2.1.5</h1>
+			<h1>@vladmandic/human - v2.2.0</h1>
 		</div>
 	</div>
 </header>
@@ -100,6 +100,7 @@
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-type-alias"><a href="index.html#Error" class="tsd-kind-icon">Error</a></li>
+								<li class="tsd-kind-type-alias"><a href="index.html#Events" class="tsd-kind-icon">Events</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#GestureResult" class="tsd-kind-icon">Gesture<wbr>Result</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#Input" class="tsd-kind-icon">Input</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#TensorFlow" class="tsd-kind-icon">Tensor<wbr>Flow</a></li>
@@ -130,7 +131,7 @@
 					<div class="tsd-signature tsd-kind-icon">Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L46">human.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L54">human.ts:54</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -145,6 +146,28 @@
 								<h5>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
 							</li>
 						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="Events" class="tsd-anchor"></a>
+					<h3>Events</h3>
+					<div class="tsd-signature tsd-kind-icon">Events<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;create&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;load&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;image&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;result&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;warmup&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L49">human.ts:49</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Events dispatched by <code>human.events</code></p>
+							<ul>
+								<li><code>create</code>: triggered when Human object is instantiated</li>
+								<li><code>load</code>: triggered when models are loaded (explicitly or on-demand)</li>
+								<li><code>image</code>: triggered when input image is this.processed</li>
+								<li><code>result</code>: triggered when detection is complete</li>
+								<li><code>warmup</code>: triggered when warmup is complete</li>
+							</ul>
+						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
@@ -168,7 +191,7 @@
 					<div class="tsd-signature tsd-kind-icon">Input<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Tensor</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">Image</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImageData</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImageBitmap</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HTMLImageElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HTMLMediaElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HTMLVideoElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L41">human.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L40">human.ts:40</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -183,7 +206,7 @@
 					<div class="tsd-signature tsd-kind-icon">Tensor<wbr>Flow<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">tf</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L51">human.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L59">human.ts:59</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -205,9 +228,14 @@
 					<div class="tsd-signature tsd-kind-icon">defaults<span class="tsd-signature-symbol">:</span> <a href="interfaces/Config.html" class="tsd-signature-type" data-tsd-kind="Interface">Config</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L245">config.ts:245</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L248">config.ts:248</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p><a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L244">Default values</a> for {@Config}</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -289,6 +317,9 @@
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="index.html#Error" class="tsd-kind-icon">Error</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="index.html#Events" class="tsd-kind-icon">Events</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="index.html#GestureResult" class="tsd-kind-icon">Gesture<wbr>Result</a>

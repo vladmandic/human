@@ -32,13 +32,21 @@ import { Tensor, GraphModel } from './tfjs/types';
 // export types
 export * from './config';
 export * from './result';
-
 export type { DrawOptions } from './draw/draw';
 
 /** Defines all possible input types for **Human** detection
  * @typedef Input Type
  */
 export type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
+
+/** Events dispatched by `human.events`
+ * - `create`: triggered when Human object is instantiated
+ * - `load`: triggered when models are loaded (explicitly or on-demand)
+ * - `image`: triggered when input image is this.processed
+ * - `result`: triggered when detection is complete
+ * - `warmup`: triggered when warmup is complete
+ */
+export type Events = 'create' | 'load' | 'image' | 'result' | 'warmup';
 
 /** Error message
  * @typedef Error Type
@@ -128,7 +136,6 @@ export class Human {
    * - `result`: triggered when detection is complete
    * - `warmup`: triggered when warmup is complete
    */
-
   events: EventTarget;
   /** Reference face triangualtion array of 468 points, used for triangle references between points */
   faceTriangulation: typeof facemesh.triangulation;

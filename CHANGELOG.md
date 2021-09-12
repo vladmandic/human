@@ -11,9 +11,8 @@
   
 ### **HEAD -> main** 2021/09/11 mandic00@live.com
 
-
-### **origin/main** 2021/09/11 mandic00@live.com
-
+- implement event emitters
+- fix iife loader
 - simplify dependencies
 - fix file permissions
 - remove old build server

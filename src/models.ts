@@ -1,3 +1,5 @@
+import { log } from './helpers';
+import { GraphModel } from './tfjs/types';
 import * as facemesh from './blazeface/facemesh';
 import * as faceres from './faceres/faceres';
 import * as emotion from './emotion/emotion';
@@ -58,4 +60,40 @@ export async function load(instance) {
     if (instance.config.segmentation.enabled && !instance.models.segmentation) instance.models.segmentation = await segmentation.load(instance.config);
     // if (instance.config.face.enabled && instance.config.face.agegenderrace.enabled && !instance.models.agegenderrace) instance.models.agegenderrace = await agegenderrace.load(instance.config);
   }
+}
+
+export async function validate(instance) {
+  interface Op { name: string, category: string, op: string }
+  const simpleOps = ['const', 'placeholder', 'noop', 'pad', 'squeeze', 'add', 'sub', 'mul', 'div'];
+  for (const defined of Object.keys(instance.models)) {
+    if (instance.models[defined]) { // check if model is loaded
+      let models: GraphModel[] = [];
+      if (Array.isArray(instance.models[defined])) models = instance.models[defined].map((model) => (model.executor ? model : model.model));
+      else models = [instance.models[defined]];
+      for (const model of models) {
+        const ops: string[] = [];
+        // @ts-ignore // executor is a private method
+        const executor = model?.executor;
+        if (executor) {
+          for (const kernel of Object.values(executor.graph.nodes)) {
+            const op = (kernel as Op).op.toLowerCase();
+            if (!ops.includes(op)) ops.push(op);
+          }
+        }
+        const missing: string[] = [];
+        for (const op of ops) {
+          if (!simpleOps.includes(op) // exclude simple ops
+            && !instance.env.kernels.includes(op) // check actual kernel ops
+            && !instance.env.kernels.includes(op.replace('_', '')) // check variation without _
+            && !instance.env.kernels.includes(op.replace('native', '')) // check standard variation
+            && !instance.env.kernels.includes(op.replace('v2', ''))) { // check non-versioned variation
+            missing.push(op);
+          }
+        }
+        if (!executor && instance.config.debug) log('model executor not found:', defined);
+        if (missing.length > 0 && instance.config.debug) log('model validation:', defined, missing);
+      }
+    }
+  }
+  // log.data('ops used by model:', ops);
 }

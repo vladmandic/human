@@ -11,6 +11,8 @@
   
 ### **HEAD -> main** 2021/09/11 mandic00@live.com
 
+- redefine config and result interfaces
+- fix usge of string enums
 - start using partial definitions
 - implement event emitters
 - fix iife loader

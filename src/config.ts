@@ -242,7 +242,7 @@ export interface Config {
 }
 
 /**
- * [Default values](https://github.com/vladmandic/human/blob/main/src/config.ts#L244) for {@Config}
+ * [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L244)
  *
  */
 const config: Config = {

@@ -1,13 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable no-multi-spaces */
 
-/**
- * Configuration interface definition for **Human** library
- *
- * Contains all configurable parameters
- * @typedef Config
- */
-
 export interface FaceDetectorConfig {
   modelPath: string,
   rotation: boolean,
@@ -185,6 +178,12 @@ export interface GestureConfig {
   enabled: boolean,
 }
 
+/**
+ * Configuration interface definition for **Human** library
+ *
+ * Contains all configurable parameters
+ * @typedef Config
+ */
 export interface Config {
   /** Backend used for TFJS operations */
   // backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu' | null,
@@ -242,8 +241,12 @@ export interface Config {
   segmentation: Partial<SegmentationConfig>,
 }
 
+/**
+ * [Default values](https://github.com/vladmandic/human/blob/main/src/config.ts#L244) for {@Config}
+ *
+ */
 const config: Config = {
-  backend: 'webgl',          // select tfjs backend to use, leave empty to use default backend
+  backend: 'humangl',        // select tfjs backend to use, leave empty to use default backend
                              // can be 'webgl', 'wasm', 'cpu', or 'humangl' which is a custom version of webgl
   modelBasePath: '../models/', // base path for all models
   wasmPath: '',              // path for wasm binaries, only used for backend: wasm

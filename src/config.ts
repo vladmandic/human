@@ -22,33 +22,33 @@
 export interface FaceConfig {
   enabled: boolean,
   detector: {
-    modelPath: string,
-    rotation: boolean,
-    maxDetected: number,
-    skipFrames: number,
-    minConfidence: number,
-    iouThreshold: number,
-    return: boolean,
+    modelPath?: string,
+    rotation?: boolean,
+    maxDetected?: number,
+    skipFrames?: number,
+    minConfidence?: number,
+    iouThreshold?: number,
+    return?: boolean,
   },
   mesh: {
-    enabled: boolean,
-    modelPath: string,
+    enabled?: boolean,
+    modelPath?: string,
   },
   iris: {
-    enabled: boolean,
-    modelPath: string,
+    enabled?: boolean,
+    modelPath?: string,
   },
   description: {
-    enabled: boolean,
-    modelPath: string,
-    skipFrames: number,
-    minConfidence: number,
+    enabled?: boolean,
+    modelPath?: string,
+    skipFrames?: number,
+    minConfidence?: number,
   },
   emotion: {
-    enabled: boolean,
-    minConfidence: number,
-    skipFrames: number,
-    modelPath: string,
+    enabled?: boolean,
+    minConfidence?: number,
+    skipFrames?: number,
+    modelPath?: string,
   },
 }
 
@@ -84,10 +84,10 @@ export interface HandConfig {
   maxDetected: number,
   landmarks: boolean,
   detector: {
-    modelPath: string,
+    modelPath?: string,
   },
   skeleton: {
-    modelPath: string,
+    modelPath?: string,
   },
 }
 

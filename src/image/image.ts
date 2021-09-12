@@ -6,6 +6,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as fxImage from './imagefx';
 import { Tensor } from '../tfjs/types';
 import { Config } from '../config';
+import { env } from '../env';
 
 type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 
@@ -90,7 +91,7 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
         if (outCanvas?.width !== inCanvas?.width) outCanvas.width = inCanvas?.width;
         if (outCanvas?.height !== inCanvas?.height) outCanvas.height = inCanvas?.height;
         // log('created FX filter');
-        fx = tf.ENV.flags.IS_BROWSER ? new fxImage.GLImageFilter({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
+        fx = env.browser ? new fxImage.GLImageFilter({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
       }
       if (!fx) return { tensor: null, canvas: inCanvas };
       fx.reset();

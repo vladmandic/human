@@ -3,6 +3,7 @@ import * as box from './box';
 import * as util from './util';
 import * as detector from './handdetector';
 import { Tensor, GraphModel } from '../tfjs/types';
+import { env } from '../env';
 
 const palmBoxEnlargeFactor = 5; // default 3
 const handBoxEnlargeFactor = 1.65; // default 1.65
@@ -109,7 +110,7 @@ export class HandPipeline {
         const angle = config.hand.rotation ? util.computeRotation(currentBox.palmLandmarks[palmLandmarksPalmBase], currentBox.palmLandmarks[palmLandmarksMiddleFingerBase]) : 0;
         const palmCenter = box.getBoxCenter(currentBox);
         const palmCenterNormalized = [palmCenter[0] / image.shape[2], palmCenter[1] / image.shape[1]];
-        const rotatedImage = config.hand.rotation && tf.ENV.flags.IS_BROWSER ? tf.image.rotateWithOffset(image, angle, 0, palmCenterNormalized) : image.clone();
+        const rotatedImage = config.hand.rotation && env.kernels.includes('rotatewithoffset') ? tf.image.rotateWithOffset(image, angle, 0, palmCenterNormalized) : image.clone();
         const rotationMatrix = util.buildRotationMatrix(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
         const croppedInput = box.cutBoxFromImageAndResize(newBox, rotatedImage, [this.inputSize, this.inputSize]);

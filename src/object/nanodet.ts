@@ -8,6 +8,7 @@ import { labels } from './labels';
 import { ObjectResult } from '../result';
 import { GraphModel, Tensor } from '../tfjs/types';
 import { Config } from '../config';
+import { env } from '../env';
 
 let model;
 let last: Array<ObjectResult> = [];
@@ -108,6 +109,7 @@ export async function predict(image: Tensor, config: Config): Promise<ObjectResu
     return last;
   }
   skipped = 0;
+  if (!env.kernels.includes('mod') || !env.kernels.includes('sparsetodense')) return last;
   return new Promise(async (resolve) => {
     const outputSize = [image.shape[2], image.shape[1]];
     const resize = tf.image.resizeBilinear(image, [model.inputSize, model.inputSize], false);

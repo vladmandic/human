@@ -37,6 +37,7 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-shadow": "error",
     "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/triple-slash-reference": "off",
     "camelcase": "off",
     "dot-notation": "off",
     "func-names": "off",

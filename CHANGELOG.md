@@ -11,6 +11,8 @@
   
 ### **HEAD -> main** 2021/09/12 mandic00@live.com
 
+- add dynamic kernel op detection
+- added human.env diagnostic class
 - minor typos
 - release candidate
 - parametrize face config

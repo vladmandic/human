@@ -83,8 +83,8 @@ function mergeDeep(...objects) {
 
 // src/config.ts
 var config = {
-  backend: "humangl",
-  modelBasePath: "../models/",
+  backend: "",
+  modelBasePath: "",
   wasmPath: "",
   debug: true,
   async: true,
@@ -181,27 +181,6 @@ var config = {
     modelPath: "selfie.json"
   }
 };
-
-// src/sysinfo.ts
-function info() {
-  let platform = "";
-  let agent = "";
-  if (typeof navigator !== "undefined") {
-    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
-    if (raw && raw[0]) {
-      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
-      platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
-      agent = navigator.userAgent.replace(raw[0], "");
-      if (platform[1])
-        agent = agent.replace(raw[1], "");
-      agent = agent.replace(/  /g, " ");
-    }
-  } else if (typeof process !== "undefined") {
-    platform = `${process.platform} ${process.arch}`;
-    agent = `NodeJS ${process.version}`;
-  }
-  return { platform, agent };
-}
 
 // dist/tfjs.esm.js
 var tfjs_esm_exports = {};
@@ -11732,6 +11711,74 @@ SbAjYZAI2E7AIEgIEgIEgMdkSy2NgY7MdlmyNoBXsxmFuyNgVTVjNV3KjlBRNTlXTVHKCrlIqt5T
 lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
+// src/env.ts
+var env2 = {
+  browser: void 0,
+  node: void 0,
+  worker: void 0,
+  platform: void 0,
+  agent: void 0,
+  backends: [],
+  tfjs: {
+    version: void 0,
+    external: void 0
+  },
+  wasm: {
+    supported: void 0,
+    simd: void 0,
+    multithread: void 0
+  },
+  webgl: {
+    supported: void 0,
+    version: void 0,
+    renderer: void 0
+  },
+  webgpu: {
+    supported: void 0,
+    adapter: void 0
+  },
+  kernels: []
+};
+async function get() {
+  var _a;
+  env2.browser = typeof navigator !== "undefined";
+  env2.node = typeof process !== "undefined";
+  env2.worker = env2.browser ? typeof WorkerGlobalScope !== "undefined" : void 0;
+  env2.tfjs.version = tfjs_esm_exports.version_core;
+  if (typeof navigator !== "undefined") {
+    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
+    if (raw && raw[0]) {
+      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
+      env2.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
+      env2.agent = navigator.userAgent.replace(raw[0], "");
+      if (env2.platform[1])
+        env2.agent = env2.agent.replace(raw[1], "");
+      env2.agent = env2.agent.replace(/  /g, " ");
+    }
+  } else if (typeof process !== "undefined") {
+    env2.platform = `${process.platform} ${process.arch}`;
+    env2.agent = `NodeJS ${process.version}`;
+  }
+  env2.backends = Object.keys(tfjs_esm_exports.engine().registryFactory);
+  env2.wasm.supported = env2.backends.includes("wasm");
+  if (env2.wasm.supported) {
+    env2.wasm.simd = await tfjs_esm_exports.env().getAsync("WASM_HAS_SIMD_SUPPORT");
+    env2.wasm.multithread = await tfjs_esm_exports.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+  }
+  env2.webgl.supported = typeof tfjs_esm_exports.backend().gpgpu !== "undefined";
+  if (env2.webgl.supported) {
+    const gl = await tfjs_esm_exports.backend().getGPGPUContext().gl;
+    if (gl) {
+      env2.webgl.version = gl.getParameter(gl.VERSION);
+      env2.webgl.renderer = gl.getParameter(gl.RENDERER);
+    }
+  }
+  env2.webgpu.supported = env2.browser && typeof navigator["gpu"] !== "undefined";
+  if (env2.webgpu.supported)
+    env2.webgpu.adapter = (_a = await navigator["gpu"].requestAdapter()) == null ? void 0 : _a.name;
+  env2.kernels = tfjs_esm_exports.getKernelsForBackend(tfjs_esm_exports.getBackend()).map((kernel) => kernel.kernelName);
+}
+
 // package.json
 var version2 = "2.2.0";
 
@@ -11773,9 +11820,9 @@ var Human = class {
       var _a;
       return (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
-    __privateAdd(this, _checkBackend, async (force = false) => {
+    __privateAdd(this, _checkBackend, async () => {
       var _a;
-      if (this.config.backend && this.config.backend.length > 0 && force || this.tf.getBackend() !== this.config.backend) {
+      if (__privateGet(this, _firstRun) || (this.config.backend && this.config.backend.length > 0 || this.tf.getBackend() !== this.config.backend)) {
         const timeStamp = now();
         this.state = "backend";
         if (this.config.backend && this.config.backend.length > 0) {
@@ -11787,7 +11834,7 @@ var Human = class {
             this.config.backend = "humangl";
           }
           if (this.tf.ENV.flags.IS_NODE && (this.config.backend === "webgl" || this.config.backend === "humangl")) {
-            log("override: backend set to webgl while running in nodejs");
+            log(`override: backend set to ${this.config.backend} while running in nodejs`);
             this.config.backend = "tensorflow";
           }
           if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === "webgpu") {
@@ -11848,6 +11895,8 @@ var Human = class {
         this.tf.enableProdMode();
         await this.tf.ready();
         this.performance.backend = Math.trunc(now() - timeStamp);
+        get();
+        this.env = env2;
       }
     });
     this.next = (result) => calc(result || this.result);
@@ -11943,9 +11992,13 @@ var Human = class {
       }
       return res;
     });
+    get();
+    this.env = env2;
+    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfjs_esm_exports.version_core}/dist/`;
+    config.modelBasePath = this.env.browser ? "../models/" : "file://models/";
+    config.backend = this.env.browser ? "humangl" : "tensorflow";
     this.version = version2;
     Object.defineProperty(this, "version", { value: version2 });
-    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfjs_esm_exports.version_core}/dist/`;
     this.config = mergeDeep(config, userConfig || {});
     this.tf = tfjs_esm_exports;
     this.draw = draw_exports;
@@ -11978,7 +12031,6 @@ var Human = class {
     this.process = { tensor: null, canvas: null };
     this.faceTriangulation = triangulation;
     this.faceUVMap = uvmap;
-    this.sysinfo = info();
     __privateSet(this, _lastInputSum, 1);
     __privateGet(this, _emit).call(this, "create");
   }
@@ -12006,10 +12058,8 @@ var Human = class {
       if (this.config.debug)
         log(`tfjs version: ${this.tf.version_core}`);
       if (this.config.debug)
-        log("platform:", this.sysinfo.platform);
-      if (this.config.debug)
-        log("agent:", this.sysinfo.agent);
-      await __privateGet(this, _checkBackend).call(this, true);
+        log("environment:", env2);
+      await __privateGet(this, _checkBackend).call(this);
       if (this.tf.ENV.flags.IS_BROWSER) {
         if (this.config.debug)
           log("configuration:", this.config);
@@ -12227,6 +12277,7 @@ _warmupNode = new WeakMap();
 export {
   Human,
   Human as default,
-  config as defaults
+  config as defaults,
+  env2 as env
 };
 //# sourceMappingURL=human.esm-nobundle.js.map

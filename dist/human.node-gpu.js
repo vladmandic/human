@@ -85,7 +85,8 @@ var require_tfjs_esm = __commonJS({
 __export(exports, {
   Human: () => Human,
   default: () => Human,
-  defaults: () => config
+  defaults: () => config,
+  env: () => env2
 });
 
 // src/helpers.ts
@@ -127,8 +128,8 @@ function mergeDeep(...objects) {
 
 // src/config.ts
 var config = {
-  backend: "humangl",
-  modelBasePath: "../models/",
+  backend: "",
+  modelBasePath: "",
   wasmPath: "",
   debug: true,
   async: true,
@@ -226,29 +227,8 @@ var config = {
   }
 };
 
-// src/sysinfo.ts
-function info() {
-  let platform = "";
-  let agent = "";
-  if (typeof navigator !== "undefined") {
-    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
-    if (raw && raw[0]) {
-      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
-      platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
-      agent = navigator.userAgent.replace(raw[0], "");
-      if (platform[1])
-        agent = agent.replace(raw[1], "");
-      agent = agent.replace(/  /g, " ");
-    }
-  } else if (typeof process !== "undefined") {
-    platform = `${process.platform} ${process.arch}`;
-    agent = `NodeJS ${process.version}`;
-  }
-  return { platform, agent };
-}
-
 // src/human.ts
-var tf21 = __toModule(require_tfjs_esm());
+var tf22 = __toModule(require_tfjs_esm());
 
 // src/tfjs/backend.ts
 var tf = __toModule(require_tfjs_esm());
@@ -11783,6 +11763,75 @@ SbAjYZAI2E7AIEgIEgIEgMdkSy2NgY7MdlmyNoBXsxmFuyNgVTVjNV3KjlBRNTlXTVHKCrlIqt5T
 lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
+// src/env.ts
+var tf21 = __toModule(require_tfjs_esm());
+var env2 = {
+  browser: void 0,
+  node: void 0,
+  worker: void 0,
+  platform: void 0,
+  agent: void 0,
+  backends: [],
+  tfjs: {
+    version: void 0,
+    external: void 0
+  },
+  wasm: {
+    supported: void 0,
+    simd: void 0,
+    multithread: void 0
+  },
+  webgl: {
+    supported: void 0,
+    version: void 0,
+    renderer: void 0
+  },
+  webgpu: {
+    supported: void 0,
+    adapter: void 0
+  },
+  kernels: []
+};
+async function get() {
+  var _a;
+  env2.browser = typeof navigator !== "undefined";
+  env2.node = typeof process !== "undefined";
+  env2.worker = env2.browser ? typeof WorkerGlobalScope !== "undefined" : void 0;
+  env2.tfjs.version = tf21.version_core;
+  if (typeof navigator !== "undefined") {
+    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
+    if (raw && raw[0]) {
+      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
+      env2.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
+      env2.agent = navigator.userAgent.replace(raw[0], "");
+      if (env2.platform[1])
+        env2.agent = env2.agent.replace(raw[1], "");
+      env2.agent = env2.agent.replace(/  /g, " ");
+    }
+  } else if (typeof process !== "undefined") {
+    env2.platform = `${process.platform} ${process.arch}`;
+    env2.agent = `NodeJS ${process.version}`;
+  }
+  env2.backends = Object.keys(tf21.engine().registryFactory);
+  env2.wasm.supported = env2.backends.includes("wasm");
+  if (env2.wasm.supported) {
+    env2.wasm.simd = await tf21.env().getAsync("WASM_HAS_SIMD_SUPPORT");
+    env2.wasm.multithread = await tf21.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+  }
+  env2.webgl.supported = typeof tf21.backend().gpgpu !== "undefined";
+  if (env2.webgl.supported) {
+    const gl = await tf21.backend().getGPGPUContext().gl;
+    if (gl) {
+      env2.webgl.version = gl.getParameter(gl.VERSION);
+      env2.webgl.renderer = gl.getParameter(gl.RENDERER);
+    }
+  }
+  env2.webgpu.supported = env2.browser && typeof navigator["gpu"] !== "undefined";
+  if (env2.webgpu.supported)
+    env2.webgpu.adapter = (_a = await navigator["gpu"].requestAdapter()) == null ? void 0 : _a.name;
+  env2.kernels = tf21.getKernelsForBackend(tf21.getBackend()).map((kernel) => kernel.kernelName);
+}
+
 // package.json
 var version = "2.2.0";
 
@@ -11811,7 +11860,7 @@ var Human = class {
         return null;
       if (!input)
         return "input is not defined";
-      if (this.tf.ENV.flags.IS_NODE && !(input instanceof tf21.Tensor))
+      if (this.tf.ENV.flags.IS_NODE && !(input instanceof tf22.Tensor))
         return "input must be a tensor";
       try {
         this.tf.getBackend();
@@ -11824,9 +11873,9 @@ var Human = class {
       var _a;
       return (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
-    __privateAdd(this, _checkBackend, async (force = false) => {
+    __privateAdd(this, _checkBackend, async () => {
       var _a;
-      if (this.config.backend && this.config.backend.length > 0 && force || this.tf.getBackend() !== this.config.backend) {
+      if (__privateGet(this, _firstRun) || (this.config.backend && this.config.backend.length > 0 || this.tf.getBackend() !== this.config.backend)) {
         const timeStamp = now();
         this.state = "backend";
         if (this.config.backend && this.config.backend.length > 0) {
@@ -11838,7 +11887,7 @@ var Human = class {
             this.config.backend = "humangl";
           }
           if (this.tf.ENV.flags.IS_NODE && (this.config.backend === "webgl" || this.config.backend === "humangl")) {
-            log("override: backend set to webgl while running in nodejs");
+            log(`override: backend set to ${this.config.backend} while running in nodejs`);
             this.config.backend = "tensorflow";
           }
           if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === "webgpu") {
@@ -11899,6 +11948,8 @@ var Human = class {
         this.tf.enableProdMode();
         await this.tf.ready();
         this.performance.backend = Math.trunc(now() - timeStamp);
+        get();
+        this.env = env2;
       }
     });
     this.next = (result) => calc(result || this.result);
@@ -11908,7 +11959,7 @@ var Human = class {
       const resizeFact = 32;
       if (!input.shape[1] || !input.shape[2])
         return false;
-      const reduced = tf21.image.resizeBilinear(input, [Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
+      const reduced = tf22.image.resizeBilinear(input, [Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
       const reducedData = await reduced.data();
       let sum = 0;
       for (let i = 0; i < reducedData.length / 3; i++)
@@ -11982,8 +12033,8 @@ var Human = class {
       if (!img)
         return null;
       let res;
-      if (typeof tf21["node"] !== "undefined") {
-        const data = tf21["node"].decodeJpeg(img);
+      if (typeof tf22["node"] !== "undefined") {
+        const data = tf22["node"].decodeJpeg(img);
         const expanded = data.expandDims(0);
         this.tf.dispose(data);
         res = await this.detect(expanded, this.config);
@@ -11994,11 +12045,15 @@ var Human = class {
       }
       return res;
     });
+    get();
+    this.env = env2;
+    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf22.version_core}/dist/`;
+    config.modelBasePath = this.env.browser ? "../models/" : "file://models/";
+    config.backend = this.env.browser ? "humangl" : "tensorflow";
     this.version = version;
     Object.defineProperty(this, "version", { value: version });
-    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf21.version_core}/dist/`;
     this.config = mergeDeep(config, userConfig || {});
-    this.tf = tf21;
+    this.tf = tf22;
     this.draw = draw_exports;
     this.state = "idle";
     __privateSet(this, _numTensors, 0);
@@ -12029,7 +12084,6 @@ var Human = class {
     this.process = { tensor: null, canvas: null };
     this.faceTriangulation = triangulation;
     this.faceUVMap = uvmap;
-    this.sysinfo = info();
     __privateSet(this, _lastInputSum, 1);
     __privateGet(this, _emit).call(this, "create");
   }
@@ -12057,10 +12111,8 @@ var Human = class {
       if (this.config.debug)
         log(`tfjs version: ${this.tf.version_core}`);
       if (this.config.debug)
-        log("platform:", this.sysinfo.platform);
-      if (this.config.debug)
-        log("agent:", this.sysinfo.agent);
-      await __privateGet(this, _checkBackend).call(this, true);
+        log("environment:", env2);
+      await __privateGet(this, _checkBackend).call(this);
       if (this.tf.ENV.flags.IS_BROWSER) {
         if (this.config.debug)
           log("configuration:", this.config);
@@ -12110,7 +12162,7 @@ var Human = class {
         if (elapsedTime > 0)
           this.performance.segmentation = elapsedTime;
         if (this.process.canvas) {
-          tf21.dispose(this.process.tensor);
+          tf22.dispose(this.process.tensor);
           this.process = process4(this.process.canvas, this.config);
         }
         this.analyze("End Segmentation:");
@@ -12237,7 +12289,7 @@ var Human = class {
           return join2(faceRes, bodyRes, handRes, gestureRes, shape);
         }
       };
-      tf21.dispose(this.process.tensor);
+      tf22.dispose(this.process.tensor);
       __privateGet(this, _emit).call(this, "detect");
       resolve(this.result);
     });
@@ -12278,5 +12330,6 @@ _warmupNode = new WeakMap();
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   Human,
-  defaults
+  defaults,
+  env
 });

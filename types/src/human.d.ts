@@ -7,10 +7,12 @@ import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as image from './image/image';
 import * as draw from './draw/draw';
+import * as env from './env';
 import { Tensor, GraphModel } from './tfjs/types';
 export * from './config';
 export * from './result';
 export type { DrawOptions } from './draw/draw';
+export { env } from './env';
 /** Defines all possible input types for **Human** detection
  * @typedef Input Type
  */
@@ -72,6 +74,10 @@ export declare class Human {
      * - Can be embedded or externally provided
      */
     tf: TensorFlow;
+    /**
+     * Object containing environment information used for diagnostics
+     */
+    env: env.Env;
     /** Draw helper classes that can draw detected objects on canvas using specified draw
      * - options: {@link DrawOptions} global settings for all draw operations, can be overriden for each draw method
      * - face: draw detected faces
@@ -120,11 +126,6 @@ export declare class Human {
     faceTriangulation: typeof facemesh.triangulation;
     /** Refernce UV map of 468 values, used for 3D mapping of the face mesh */
     faceUVMap: typeof facemesh.uvmap;
-    /** Platform and agent information detected by Human */
-    sysinfo: {
-        platform: string;
-        agent: string;
-    };
     /** Performance object that contains values for all recently performed operations */
     performance: Record<string, number>;
     /**

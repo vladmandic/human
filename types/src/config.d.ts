@@ -209,7 +209,7 @@ export interface Config {
     segmentation: Partial<SegmentationConfig>;
 }
 /**
- * [Default values](https://github.com/vladmandic/human/blob/main/src/config.ts#L244) for {@Config}
+ * [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L244)
  *
  */
 declare const config: Config;

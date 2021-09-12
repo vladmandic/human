@@ -72,8 +72,8 @@ function mergeDeep(...objects) {
 
 // src/config.ts
 var config = {
-  backend: "humangl",
-  modelBasePath: "../models/",
+  backend: "",
+  modelBasePath: "",
   wasmPath: "",
   debug: true,
   async: true,
@@ -170,27 +170,6 @@ var config = {
     modelPath: "selfie.json"
   }
 };
-
-// src/sysinfo.ts
-function info() {
-  let platform = "";
-  let agent = "";
-  if (typeof navigator !== "undefined") {
-    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
-    if (raw && raw[0]) {
-      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
-      platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
-      agent = navigator.userAgent.replace(raw[0], "");
-      if (platform[1])
-        agent = agent.replace(raw[1], "");
-      agent = agent.replace(/  /g, " ");
-    }
-  } else if (typeof process !== "undefined") {
-    platform = `${process.platform} ${process.arch}`;
-    agent = `NodeJS ${process.version}`;
-  }
-  return { platform, agent };
-}
 
 // dist/tfjs.esm.js
 var tfjs_esm_exports = {};
@@ -3446,7 +3425,7 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           });
         }
         function createWasm() {
-          var info2 = { "a": asmLibraryArg };
+          var info = { "a": asmLibraryArg };
           function receiveInstance(instance, module2) {
             var exports3 = instance.exports;
             Module["asm"] = exports3;
@@ -3470,7 +3449,7 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           }
           function instantiateArrayBuffer(receiver) {
             return getBinaryPromise().then(function(binary) {
-              return WebAssembly.instantiate(binary, info2);
+              return WebAssembly.instantiate(binary, info);
             }).then(receiver, function(reason) {
               err("failed to asynchronously prepare wasm: " + reason);
               abort(reason);
@@ -3479,7 +3458,7 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           function instantiateAsync() {
             if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && !isDataURI(wasmBinaryFile) && !isFileURI(wasmBinaryFile) && typeof fetch === "function") {
               return fetch(wasmBinaryFile, { credentials: "same-origin" }).then(function(response) {
-                var result = WebAssembly.instantiateStreaming(response, info2);
+                var result = WebAssembly.instantiateStreaming(response, info);
                 return result.then(receiveInstantiatedSource, function(reason) {
                   err("wasm streaming compile failed: " + reason);
                   err("falling back to ArrayBuffer instantiation");
@@ -3492,7 +3471,7 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           }
           if (Module["instantiateWasm"]) {
             try {
-              var exports2 = Module["instantiateWasm"](info2, receiveInstance);
+              var exports2 = Module["instantiateWasm"](info, receiveInstance);
               return exports2;
             } catch (e) {
               err("Module.instantiateWasm callback failed with error: " + e);
@@ -5536,7 +5515,7 @@ var require_tfjs_backend_wasm = __commonJS({
           });
         }
         function createWasm() {
-          var info2 = { "a": asmLibraryArg };
+          var info = { "a": asmLibraryArg };
           function receiveInstance(instance, module2) {
             var exports3 = instance.exports;
             Module["asm"] = exports3;
@@ -5551,7 +5530,7 @@ var require_tfjs_backend_wasm = __commonJS({
           }
           function instantiateArrayBuffer(receiver) {
             return getBinaryPromise().then(function(binary) {
-              return WebAssembly.instantiate(binary, info2);
+              return WebAssembly.instantiate(binary, info);
             }).then(receiver, function(reason) {
               err("failed to asynchronously prepare wasm: " + reason);
               abort(reason);
@@ -5560,7 +5539,7 @@ var require_tfjs_backend_wasm = __commonJS({
           function instantiateAsync() {
             if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && !isDataURI(wasmBinaryFile) && !isFileURI(wasmBinaryFile) && typeof fetch === "function") {
               return fetch(wasmBinaryFile, { credentials: "same-origin" }).then(function(response) {
-                var result = WebAssembly.instantiateStreaming(response, info2);
+                var result = WebAssembly.instantiateStreaming(response, info);
                 return result.then(receiveInstantiatedSource, function(reason) {
                   err("wasm streaming compile failed: " + reason);
                   err("falling back to ArrayBuffer instantiation");
@@ -5573,7 +5552,7 @@ var require_tfjs_backend_wasm = __commonJS({
           }
           if (Module["instantiateWasm"]) {
             try {
-              var exports2 = Module["instantiateWasm"](info2, receiveInstance);
+              var exports2 = Module["instantiateWasm"](info, receiveInstance);
               return exports2;
             } catch (e) {
               err("Module.instantiateWasm callback failed with error: " + e);
@@ -8203,13 +8182,13 @@ var Engine = class {
     throw new Error(`Could not initialize any backends, all backend initializations failed.`);
   }
   moveData(backend22, dataId) {
-    const info2 = this.state.tensorInfo.get(dataId);
-    const srcBackend = info2.backend;
+    const info = this.state.tensorInfo.get(dataId);
+    const srcBackend = info.backend;
     const values = this.readSync(dataId);
     const refCount = srcBackend.refCount(dataId);
     srcBackend.disposeData(dataId, true);
-    info2.backend = backend22;
-    backend22.move(dataId, values, info2.shape, info2.dtype, refCount);
+    info.backend = backend22;
+    backend22.move(dataId, values, info.shape, info.dtype, refCount);
     if (this.shouldCheckForMemLeaks()) {
       this.state.numDataMovesStack[this.state.numDataMovesStack.length - 1]++;
     }
@@ -8287,8 +8266,8 @@ var Engine = class {
   checkKernelForMemLeak(kernelName, numDataIdsBefore, outInfos) {
     const numDataIdsAfter = this.backend.numDataIds();
     let numOutputDataIds = 0;
-    outInfos.forEach((info2) => {
-      numOutputDataIds += info2.dtype === "complex64" ? 3 : 1;
+    outInfos.forEach((info) => {
+      numOutputDataIds += info.dtype === "complex64" ? 3 : 1;
     });
     const numMoves = this.state.numDataMovesStack[this.state.numDataMovesStack.length - 1];
     const dataIdsLeaked = numDataIdsAfter - numDataIdsBefore - numOutputDataIds - numMoves;
@@ -8423,10 +8402,10 @@ var Engine = class {
     const t = new Tensor(shape, dtype, dataId, this.nextTensorId());
     this.trackTensor(t, backend22);
     if (dtype === "string") {
-      const info2 = this.state.tensorInfo.get(dataId);
+      const info = this.state.tensorInfo.get(dataId);
       const newBytes = bytesFromStringArray(backendVals);
-      this.state.numBytes += newBytes - info2.bytes;
-      info2.bytes = newBytes;
+      this.state.numBytes += newBytes - info.bytes;
+      info.bytes = newBytes;
     }
     return t;
   }
@@ -8486,18 +8465,18 @@ var Engine = class {
     if (!this.state.tensorInfo.has(a.dataId)) {
       return;
     }
-    const info2 = this.state.tensorInfo.get(a.dataId);
+    const info = this.state.tensorInfo.get(a.dataId);
     this.state.numTensors--;
     if (a.dtype === "string") {
       this.state.numStringTensors--;
-      this.state.numBytes -= info2.bytes;
+      this.state.numBytes -= info.bytes;
     }
     if (a.dtype !== "complex64" && a.dtype !== "string") {
       const bytes = a.size * bytesPerElement(a.dtype);
       this.state.numBytes -= bytes;
     }
-    if (info2.backend.disposeData(a.dataId)) {
-      this.removeDataId(a.dataId, info2.backend);
+    if (info.backend.disposeData(a.dataId)) {
+      this.removeDataId(a.dataId, info.backend);
     }
   }
   disposeVariables() {
@@ -8513,18 +8492,18 @@ var Engine = class {
     }
   }
   memory() {
-    const info2 = this.backend.memory();
-    info2.numTensors = this.state.numTensors;
-    info2.numDataBuffers = this.state.numDataBuffers;
-    info2.numBytes = this.state.numBytes;
+    const info = this.backend.memory();
+    info.numTensors = this.state.numTensors;
+    info.numDataBuffers = this.state.numDataBuffers;
+    info.numBytes = this.state.numBytes;
     if (this.state.numStringTensors > 0) {
-      info2.unreliable = true;
-      if (info2.reasons == null) {
-        info2.reasons = [];
+      info.unreliable = true;
+      if (info.reasons == null) {
+        info.reasons = [];
       }
-      info2.reasons.push("Memory usage by string tensors is approximate (2 bytes per character)");
+      info.reasons.push("Memory usage by string tensors is approximate (2 bytes per character)");
     }
-    return info2;
+    return info;
   }
   async profile(query) {
     this.state.profiling = true;
@@ -8669,12 +8648,12 @@ var Engine = class {
     };
   }
   readSync(dataId) {
-    const info2 = this.state.tensorInfo.get(dataId);
-    return info2.backend.readSync(dataId);
+    const info = this.state.tensorInfo.get(dataId);
+    return info.backend.readSync(dataId);
   }
   read(dataId) {
-    const info2 = this.state.tensorInfo.get(dataId);
-    return info2.backend.read(dataId);
+    const info = this.state.tensorInfo.get(dataId);
+    return info.backend.read(dataId);
   }
   async time(query) {
     const start = now2();
@@ -9566,11 +9545,11 @@ var BrowserLocalStorage = class {
     }
   }
   async load() {
-    const info2 = JSON.parse(this.LS.getItem(this.keys.info));
-    if (info2 == null) {
+    const info = JSON.parse(this.LS.getItem(this.keys.info));
+    if (info == null) {
       throw new Error(`In local storage, there is no model with name '${this.modelPath}'`);
     }
-    if (info2.modelTopologyType !== "JSON") {
+    if (info.modelTopologyType !== "JSON") {
       throw new Error("BrowserLocalStorage does not support loading non-JSON model topology yet.");
     }
     const out = {};
@@ -9653,9 +9632,9 @@ var BrowserLocalStorageManager = class {
     if (this.LS.getItem(keys.info) == null) {
       throw new Error(`Cannot find model at path '${path}'`);
     }
-    const info2 = JSON.parse(this.LS.getItem(keys.info));
+    const info = JSON.parse(this.LS.getItem(keys.info));
     removeItems(keys);
-    return info2;
+    return info;
   }
 };
 var URL_SCHEME_SUFFIX = "://";
@@ -47529,7 +47508,7 @@ var MathBackendWebGL = class extends KernelBackend {
       query = this.startTimer();
     }
     runProgram(this.gpgpu, binary, inputsData, outputData, customUniformValues);
-    dataToDispose.forEach((info2) => this.disposeIntermediateTensorInfo(info2));
+    dataToDispose.forEach((info) => this.disposeIntermediateTensorInfo(info));
     if (shouldTimeProgram) {
       query = this.endTimer(query);
       this.activeTimers.push({ name: program.constructor.name, query: this.getQueryTime(query) });
@@ -71240,6 +71219,74 @@ SbAjYZAI2E7AIEgIEgIEgMdkSy2NgY7MdlmyNoBXsxmFuyNgVTVjNV3KjlBRNTlXTVHKCrlIqt5T
 lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
+// src/env.ts
+var env2 = {
+  browser: void 0,
+  node: void 0,
+  worker: void 0,
+  platform: void 0,
+  agent: void 0,
+  backends: [],
+  tfjs: {
+    version: void 0,
+    external: void 0
+  },
+  wasm: {
+    supported: void 0,
+    simd: void 0,
+    multithread: void 0
+  },
+  webgl: {
+    supported: void 0,
+    version: void 0,
+    renderer: void 0
+  },
+  webgpu: {
+    supported: void 0,
+    adapter: void 0
+  },
+  kernels: []
+};
+async function get3() {
+  var _a;
+  env2.browser = typeof navigator !== "undefined";
+  env2.node = typeof process !== "undefined";
+  env2.worker = env2.browser ? typeof WorkerGlobalScope !== "undefined" : void 0;
+  env2.tfjs.version = version9;
+  if (typeof navigator !== "undefined") {
+    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
+    if (raw && raw[0]) {
+      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
+      env2.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
+      env2.agent = navigator.userAgent.replace(raw[0], "");
+      if (env2.platform[1])
+        env2.agent = env2.agent.replace(raw[1], "");
+      env2.agent = env2.agent.replace(/  /g, " ");
+    }
+  } else if (typeof process !== "undefined") {
+    env2.platform = `${process.platform} ${process.arch}`;
+    env2.agent = `NodeJS ${process.version}`;
+  }
+  env2.backends = Object.keys(engine().registryFactory);
+  env2.wasm.supported = env2.backends.includes("wasm");
+  if (env2.wasm.supported) {
+    env2.wasm.simd = await env().getAsync("WASM_HAS_SIMD_SUPPORT");
+    env2.wasm.multithread = await env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+  }
+  env2.webgl.supported = typeof backend().gpgpu !== "undefined";
+  if (env2.webgl.supported) {
+    const gl = await backend().getGPGPUContext().gl;
+    if (gl) {
+      env2.webgl.version = gl.getParameter(gl.VERSION);
+      env2.webgl.renderer = gl.getParameter(gl.RENDERER);
+    }
+  }
+  env2.webgpu.supported = env2.browser && typeof navigator["gpu"] !== "undefined";
+  if (env2.webgpu.supported)
+    env2.webgpu.adapter = (_a = await navigator["gpu"].requestAdapter()) == null ? void 0 : _a.name;
+  env2.kernels = getKernelsForBackend(getBackend()).map((kernel) => kernel.kernelName);
+}
+
 // package.json
 var version17 = "2.2.0";
 
@@ -71281,9 +71328,9 @@ var Human = class {
       var _a;
       return (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
-    __privateAdd(this, _checkBackend, async (force = false) => {
+    __privateAdd(this, _checkBackend, async () => {
       var _a;
-      if (this.config.backend && this.config.backend.length > 0 && force || this.tf.getBackend() !== this.config.backend) {
+      if (__privateGet(this, _firstRun) || (this.config.backend && this.config.backend.length > 0 || this.tf.getBackend() !== this.config.backend)) {
         const timeStamp = now();
         this.state = "backend";
         if (this.config.backend && this.config.backend.length > 0) {
@@ -71295,7 +71342,7 @@ var Human = class {
             this.config.backend = "humangl";
           }
           if (this.tf.ENV.flags.IS_NODE && (this.config.backend === "webgl" || this.config.backend === "humangl")) {
-            log("override: backend set to webgl while running in nodejs");
+            log(`override: backend set to ${this.config.backend} while running in nodejs`);
             this.config.backend = "tensorflow";
           }
           if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === "webgpu") {
@@ -71356,6 +71403,8 @@ var Human = class {
         this.tf.enableProdMode();
         await this.tf.ready();
         this.performance.backend = Math.trunc(now() - timeStamp);
+        get3();
+        this.env = env2;
       }
     });
     this.next = (result) => calc(result || this.result);
@@ -71451,9 +71500,13 @@ var Human = class {
       }
       return res;
     });
+    get3();
+    this.env = env2;
+    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${version9}/dist/`;
+    config.modelBasePath = this.env.browser ? "../models/" : "file://models/";
+    config.backend = this.env.browser ? "humangl" : "tensorflow";
     this.version = version17;
     Object.defineProperty(this, "version", { value: version17 });
-    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${version9}/dist/`;
     this.config = mergeDeep(config, userConfig || {});
     this.tf = tfjs_esm_exports;
     this.draw = draw_exports;
@@ -71486,7 +71539,6 @@ var Human = class {
     this.process = { tensor: null, canvas: null };
     this.faceTriangulation = triangulation;
     this.faceUVMap = uvmap;
-    this.sysinfo = info();
     __privateSet(this, _lastInputSum, 1);
     __privateGet(this, _emit).call(this, "create");
   }
@@ -71514,10 +71566,8 @@ var Human = class {
       if (this.config.debug)
         log(`tfjs version: ${this.tf.version_core}`);
       if (this.config.debug)
-        log("platform:", this.sysinfo.platform);
-      if (this.config.debug)
-        log("agent:", this.sysinfo.agent);
-      await __privateGet(this, _checkBackend).call(this, true);
+        log("environment:", env2);
+      await __privateGet(this, _checkBackend).call(this);
       if (this.tf.ENV.flags.IS_BROWSER) {
         if (this.config.debug)
           log("configuration:", this.config);
@@ -71735,7 +71785,8 @@ _warmupNode = new WeakMap();
 export {
   Human,
   Human as default,
-  config as defaults
+  config as defaults,
+  env2 as env
 };
 /**
  * @license

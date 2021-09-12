@@ -104,6 +104,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#config" class="tsd-kind-icon">config</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#draw" class="tsd-kind-icon">draw</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#env" class="tsd-kind-icon">env</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#events" class="tsd-kind-icon">events</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#faceTriangulation" class="tsd-kind-icon">face<wbr>Triangulation</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#faceUVMap" class="tsd-kind-icon">faceUVMap</a></li>
@@ -113,7 +114,6 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#process" class="tsd-kind-icon">process</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#result" class="tsd-kind-icon">result</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#state" class="tsd-kind-icon">state</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#sysinfo" class="tsd-kind-icon">sysinfo</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#tf" class="tsd-kind-icon">tf</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Human.html#version" class="tsd-kind-icon">version</a></li>
 							</ul>
@@ -146,7 +146,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L161">human.ts:161</a></li>
+									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L164">human.ts:164</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -173,7 +173,7 @@
 					<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Config.html" class="tsd-signature-type" data-tsd-kind="Interface">Config</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L78">human.ts:78</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L79">human.ts:79</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -191,7 +191,7 @@
 					<div class="tsd-signature tsd-kind-icon">draw<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>all<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><a href="../interfaces/Result.html" class="tsd-signature-type" data-tsd-kind="Interface">Result</a>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/DrawOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><a href="../interfaces/BodyResult.html" class="tsd-signature-type" data-tsd-kind="Interface">BodyResult</a><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/DrawOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, outCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>face<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><a href="../interfaces/FaceResult.html" class="tsd-signature-type" data-tsd-kind="Interface">FaceResult</a><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/DrawOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>gesture<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><a href="../index.html#GestureResult" class="tsd-signature-type" data-tsd-kind="Type alias">GestureResult</a><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/DrawOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>hand<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>inCanvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLCanvasElement</span>, result<span class="tsd-signature-symbol">: </span><a href="../interfaces/HandResult.html" class="tsd-signature-type" data-tsd-kind="Interface">HandResult</a><span class="tsd-signature-symbol">[]</span>, drawOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/DrawOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/DrawOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DrawOptions</a><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L104">human.ts:104</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L109">human.ts:109</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -376,12 +376,27 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="env" class="tsd-anchor"></a>
+					<h3>env</h3>
+					<div class="tsd-signature tsd-kind-icon">env<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Env</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L100">human.ts:100</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Object containing environment information used for diagnostics</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="events" class="tsd-anchor"></a>
 					<h3>events</h3>
 					<div class="tsd-signature tsd-kind-icon">events<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">EventTarget</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L139">human.ts:139</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L144">human.ts:144</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -404,7 +419,7 @@
 					<div class="tsd-signature tsd-kind-icon">face<wbr>Triangulation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L141">human.ts:141</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L146">human.ts:146</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -419,7 +434,7 @@
 					<div class="tsd-signature tsd-kind-icon">faceUVMap<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L143">human.ts:143</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L148">human.ts:148</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -434,7 +449,7 @@
 					<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Input</span>, config<span class="tsd-signature-symbol">: </span><a href="../interfaces/Config.html" class="tsd-signature-type" data-tsd-kind="Interface">Config</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-symbol">{ </span>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">OffscreenCanvas</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol">; </span>tensor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Tensor</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L89">human.ts:89</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L90">human.ts:90</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -481,7 +496,7 @@
 					<div class="tsd-signature tsd-kind-icon">models<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>age<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">; </span>blazepose<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">; </span>centernet<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">; </span>efficientpose<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">; </span>embedding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">; </span>emotion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">; </span>face<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">; </span>faceres<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">; </span>gender<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">; </span>handpose<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">; </span>movenet<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">; </span>nanodet<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">; </span>posenet<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol">; </span>segmentation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphModel</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L114">human.ts:114</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L119">human.ts:119</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -545,7 +560,7 @@
 					<div class="tsd-signature tsd-kind-icon">performance<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L147">human.ts:147</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L150">human.ts:150</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -560,7 +575,7 @@
 					<div class="tsd-signature tsd-kind-icon">process<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>canvas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">OffscreenCanvas</span><span class="tsd-signature-symbol">; </span>tensor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Tensor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Rank</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L91">human.ts:91</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L92">human.ts:92</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -586,7 +601,7 @@
 					<div class="tsd-signature tsd-kind-icon">result<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Result.html" class="tsd-signature-type" data-tsd-kind="Interface">Result</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L82">human.ts:82</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L83">human.ts:83</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -604,7 +619,7 @@
 					<div class="tsd-signature tsd-kind-icon">state<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L87">human.ts:87</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L88">human.ts:88</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -618,38 +633,12 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="sysinfo" class="tsd-anchor"></a>
-					<h3>sysinfo</h3>
-					<div class="tsd-signature tsd-kind-icon">sysinfo<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>agent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>platform<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L145">human.ts:145</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Platform and agent information detected by Human</p>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>agent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>platform<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="tf" class="tsd-anchor"></a>
 					<h3>tf</h3>
 					<div class="tsd-signature tsd-kind-icon">tf<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L95">human.ts:95</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L96">human.ts:96</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -669,7 +658,7 @@
 					<div class="tsd-signature tsd-kind-icon">version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L74">human.ts:74</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L75">human.ts:75</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -691,7 +680,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L465">human.ts:465</a></li>
+									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L473">human.ts:473</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -729,7 +718,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L262">human.ts:262</a></li>
+									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L268">human.ts:268</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -758,7 +747,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L281">human.ts:281</a></li>
+									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L287">human.ts:287</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -789,7 +778,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L273">human.ts:273</a></li>
+									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L279">human.ts:279</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -838,7 +827,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L423">human.ts:423</a></li>
+									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L431">human.ts:431</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -868,7 +857,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L253">human.ts:253</a></li>
+									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L259">human.ts:259</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -902,7 +891,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L240">human.ts:240</a></li>
+									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L246">human.ts:246</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -937,7 +926,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L717">human.ts:717</a></li>
+									<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/human.ts#L725">human.ts:725</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -989,6 +978,9 @@
 								<a href="Human.html#draw" class="tsd-kind-icon">draw</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Human.html#env" class="tsd-kind-icon">env</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Human.html#events" class="tsd-kind-icon">events</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
@@ -1014,9 +1006,6 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Human.html#state" class="tsd-kind-icon">state</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Human.html#sysinfo" class="tsd-kind-icon">sysinfo</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Human.html#tf" class="tsd-kind-icon">tf</a>
@@ -1129,6 +1118,9 @@
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="../index.html#defaults" class="tsd-kind-icon">defaults</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="../index.html#env" class="tsd-kind-icon">env</a>
 					</li>
 				</ul>
 			</nav>

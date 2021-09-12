@@ -4,7 +4,7 @@
 
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import { Body } from '../result';
+import { BodyResult } from '../result';
 import { GraphModel, Tensor } from '../tfjs/types';
 import { Config } from '../config';
 
@@ -23,7 +23,7 @@ const bodyParts = ['nose', 'leftEye', 'rightEye', 'leftEar', 'rightEar', 'leftSh
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
@@ -114,8 +114,8 @@ async function parseMultiPose(res, config, image) {
   return persons;
 }
 
-export async function predict(image: Tensor, config: Config): Promise<Body[]> {
-  if ((skipped < config.body.skipFrames) && config.skipFrame && Object.keys(keypoints).length > 0) {
+export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
+  if ((skipped < (config.body.skipFrames || 0)) && config.skipFrame && Object.keys(keypoints).length > 0) {
     skipped++;
     return [{ id: 0, score, box, boxRaw, keypoints }];
   }

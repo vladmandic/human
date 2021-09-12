@@ -23,10 +23,10 @@ let skipped = Number.MAX_SAFE_INTEGER;
 type DB = Array<{ name: string, source: string, embedding: number[] }>;
 
 export async function load(config: Config): Promise<GraphModel> {
-  const modelUrl = join(config.modelBasePath, config.face.description.modelPath);
+  const modelUrl = join(config.modelBasePath, config.face.description?.modelPath || '');
   if (!model) {
     model = await tf.loadGraphModel(modelUrl) as unknown as GraphModel;
-    if (!model) log('load model failed:', config.face.description.modelPath);
+    if (!model) log('load model failed:', config.face.description?.modelPath || '');
     else if (config.debug) log('load model:', modelUrl);
   } else if (config.debug) log('cached model:', modelUrl);
   return model;
@@ -112,7 +112,7 @@ export function enhance(input): Tensor {
 
 export async function predict(image: Tensor, config: Config, idx, count) {
   if (!model) return null;
-  if ((skipped < config.face.description.skipFrames) && config.skipFrame && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
+  if ((skipped < (config.face.description?.skipFrames || 0)) && config.skipFrame && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
     skipped++;
     return last[idx];
   }
@@ -128,13 +128,13 @@ export async function predict(image: Tensor, config: Config, idx, count) {
       descriptor: <number[]>[],
     };
 
-    if (config.face.description.enabled) resT = await model.predict(enhanced);
+    if (config.face.description?.enabled) resT = await model.predict(enhanced);
     tf.dispose(enhanced);
 
     if (resT) {
       const gender = await resT.find((t) => t.shape[1] === 1).data();
       const confidence = Math.trunc(200 * Math.abs((gender[0] - 0.5))) / 100;
-      if (confidence > config.face.description.minConfidence) {
+      if (confidence > (config.face.description?.minConfidence || 0)) {
         obj.gender = gender[0] <= 0.5 ? 'female' : 'male';
         obj.genderScore = Math.min(0.99, confidence);
       }

@@ -5,19 +5,19 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
-import { Item } from '../result';
+import { ObjectResult } from '../result';
 import { GraphModel, Tensor } from '../tfjs/types';
 import { Config } from '../config';
 
 let model;
-let last: Array<Item> = [];
+let last: Array<ObjectResult> = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 
 const scaleBox = 2.5; // increase box size
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath));
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath || ''));
     const inputs = Object.values(model.modelSignature['inputs']);
     model.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
     if (!model.inputSize) throw new Error(`Human: Cannot determine model inputSize: ${config.object.modelPath}`);
@@ -29,7 +29,7 @@ export async function load(config: Config): Promise<GraphModel> {
 
 async function process(res, inputSize, outputShape, config) {
   let id = 0;
-  let results: Array<Item> = [];
+  let results: Array<ObjectResult> = [];
   for (const strideSize of [1, 2, 4]) { // try each stride size as it detects large/medium/small objects
     // find scores, boxes, classes
     tf.tidy(async () => { // wrap in tidy to automatically deallocate temp tensors
@@ -102,8 +102,8 @@ async function process(res, inputSize, outputShape, config) {
   return results;
 }
 
-export async function predict(image: Tensor, config: Config): Promise<Item[]> {
-  if ((skipped < config.object.skipFrames) && config.skipFrame && (last.length > 0)) {
+export async function predict(image: Tensor, config: Config): Promise<ObjectResult[]> {
+  if ((skipped < (config.object.skipFrames || 0)) && config.skipFrame && (last.length > 0)) {
     skipped++;
     return last;
   }

@@ -4,7 +4,7 @@
 
 import { TRI468 as triangulation } from '../blazeface/coords';
 import { mergeDeep, now } from '../helpers';
-import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult } from '../result';
 
 /**
  * Draw Options
@@ -139,7 +139,7 @@ function curves(ctx, points: [number, number, number?][] = [], localOptions) {
   }
 }
 
-export async function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture>, drawOptions?: DrawOptions) {
+export async function gesture(inCanvas: HTMLCanvasElement, result: Array<GestureResult>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -164,7 +164,7 @@ export async function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture
   }
 }
 
-export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, drawOptions?: DrawOptions) {
+export async function face(inCanvas: HTMLCanvasElement, result: Array<FaceResult>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -266,7 +266,7 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<Face>, dra
   }
 }
 
-export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, drawOptions?: DrawOptions) {
+export async function body(inCanvas: HTMLCanvasElement, result: Array<BodyResult>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -376,7 +376,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<Body>, dra
   }
 }
 
-export async function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, drawOptions?: DrawOptions) {
+export async function hand(inCanvas: HTMLCanvasElement, result: Array<HandResult>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -441,7 +441,7 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<Hand>, dra
   }
 }
 
-export async function object(inCanvas: HTMLCanvasElement, result: Array<Item>, drawOptions?: DrawOptions) {
+export async function object(inCanvas: HTMLCanvasElement, result: Array<ObjectResult>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -466,7 +466,7 @@ export async function object(inCanvas: HTMLCanvasElement, result: Array<Item>, d
   }
 }
 
-export async function person(inCanvas: HTMLCanvasElement, result: Array<Person>, drawOptions?: DrawOptions) {
+export async function person(inCanvas: HTMLCanvasElement, result: Array<PersonResult>, drawOptions?: DrawOptions) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);

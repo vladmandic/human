@@ -1,0 +1,499 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>FaceResult | @vladmandic/human - v2.1.5</title>
+	<meta name="description" content="Documentation for @vladmandic/human - v2.1.5">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@vladmandic/human - v2.1.5</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../index.html">@vladmandic/human - v2.1.5</a>
+				</li>
+				<li>
+					<a href="FaceResult.html">FaceResult</a>
+				</li>
+			</ul>
+			<h1>Interface FaceResult</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Face results
+							Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
+						Some values may be null if specific model is not enabled</p>
+					</div>
+					<p>Each result has:</p>
+					<ul>
+						<li>id: face id number</li>
+						<li>score: overal detection confidence score value</li>
+						<li>boxScore: face box detection confidence score value</li>
+						<li>faceScore: face keypoints detection confidence score value</li>
+						<li>box: face bounding box as array of [x, y, width, height], normalized to image resolution</li>
+						<li>boxRaw: face bounding box as array of [x, y, width, height], normalized to range 0..1</li>
+						<li>mesh: face keypoints as array of [x, y, z] points of face mesh, normalized to image resolution</li>
+						<li>meshRaw: face keypoints as array of [x, y, z] points of face mesh, normalized to range 0..1</li>
+						<li>annotations: annotated face keypoints as array of annotated face mesh points</li>
+						<li>age: age as value</li>
+						<li>gender: gender as value</li>
+						<li>genderScore: gender detection confidence score as value</li>
+						<li>emotion: emotions as array of possible emotions with their individual scores</li>
+						<li>embedding: facial descriptor as array of numerical elements</li>
+						<li>iris: iris distance from current viewpoint as distance value in centimeters for a typical camera
+						field of view of 88 degrees. value should be adjusted manually as needed</li>
+						<li>rotation: face rotiation that contains both angles and matrix used for 3d transformations</li>
+						<li>angle: face angle as object with values for roll, yaw and pitch angles</li>
+						<li>matrix: 3d transofrmation matrix as array of numeric values</li>
+						<li>gaze: gaze direction as object with values for bearing in radians and relative strength</li>
+						<li>tensor: face tensor as Tensor object which contains detected face</li>
+					</ul>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">FaceResult</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#age" class="tsd-kind-icon">age</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#annotations" class="tsd-kind-icon">annotations</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#box" class="tsd-kind-icon">box</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#boxRaw" class="tsd-kind-icon">box<wbr>Raw</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#boxScore" class="tsd-kind-icon">box<wbr>Score</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#embedding" class="tsd-kind-icon">embedding</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#emotion" class="tsd-kind-icon">emotion</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#faceScore" class="tsd-kind-icon">face<wbr>Score</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#gender" class="tsd-kind-icon">gender</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#genderScore" class="tsd-kind-icon">gender<wbr>Score</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#iris" class="tsd-kind-icon">iris</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#mesh" class="tsd-kind-icon">mesh</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#meshRaw" class="tsd-kind-icon">mesh<wbr>Raw</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#rotation" class="tsd-kind-icon">rotation</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#score" class="tsd-kind-icon">score</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FaceResult.html#tensor" class="tsd-kind-icon">tensor</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="age" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> age</h3>
+					<div class="tsd-signature tsd-kind-icon">age<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L45">result.ts:45</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="annotations" class="tsd-anchor"></a>
+					<h3>annotations</h3>
+					<div class="tsd-signature tsd-kind-icon">annotations<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L44">result.ts:44</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="box" class="tsd-anchor"></a>
+					<h3>box</h3>
+					<div class="tsd-signature tsd-kind-icon">box<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L40">result.ts:40</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="boxRaw" class="tsd-anchor"></a>
+					<h3>box<wbr>Raw</h3>
+					<div class="tsd-signature tsd-kind-icon">box<wbr>Raw<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L41">result.ts:41</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="boxScore" class="tsd-anchor"></a>
+					<h3>box<wbr>Score</h3>
+					<div class="tsd-signature tsd-kind-icon">box<wbr>Score<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L38">result.ts:38</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="embedding" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> embedding</h3>
+					<div class="tsd-signature tsd-kind-icon">embedding<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L49">result.ts:49</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="emotion" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> emotion</h3>
+					<div class="tsd-signature tsd-kind-icon">emotion<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>emotion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>score<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L48">result.ts:48</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="faceScore" class="tsd-anchor"></a>
+					<h3>face<wbr>Score</h3>
+					<div class="tsd-signature tsd-kind-icon">face<wbr>Score<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L39">result.ts:39</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="gender" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> gender</h3>
+					<div class="tsd-signature tsd-kind-icon">gender<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L46">result.ts:46</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="genderScore" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> gender<wbr>Score</h3>
+					<div class="tsd-signature tsd-kind-icon">gender<wbr>Score<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L47">result.ts:47</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="id" class="tsd-anchor"></a>
+					<h3>id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L36">result.ts:36</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="iris" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> iris</h3>
+					<div class="tsd-signature tsd-kind-icon">iris<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L50">result.ts:50</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="mesh" class="tsd-anchor"></a>
+					<h3>mesh</h3>
+					<div class="tsd-signature tsd-kind-icon">mesh<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L42">result.ts:42</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="meshRaw" class="tsd-anchor"></a>
+					<h3>mesh<wbr>Raw</h3>
+					<div class="tsd-signature tsd-kind-icon">mesh<wbr>Raw<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L43">result.ts:43</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="rotation" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> rotation</h3>
+					<div class="tsd-signature tsd-kind-icon">rotation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>angle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>pitch<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>roll<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>yaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>gaze<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>bearing<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>strength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>matrix<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L51">result.ts:51</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>angle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>pitch<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>roll<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>yaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>pitch<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>roll<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>yaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>gaze<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>bearing<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>strength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>bearing<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>strength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>matrix<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="score" class="tsd-anchor"></a>
+					<h3>score</h3>
+					<div class="tsd-signature tsd-kind-icon">score<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L37">result.ts:37</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="tensor" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> tensor</h3>
+					<div class="tsd-signature tsd-kind-icon">tensor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Tensor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Rank</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/result.ts#L56">result.ts:56</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../index.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-reference">
+						<a href="../index.html#default" class="tsd-kind-icon">default</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/Human.html" class="tsd-kind-icon">Human</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="BodyConfig.html" class="tsd-kind-icon">Body<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="BodyResult.html" class="tsd-kind-icon">Body<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="Config.html" class="tsd-kind-icon">Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="DrawOptions.html" class="tsd-kind-icon">Draw<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="FaceConfig.html" class="tsd-kind-icon">Face<wbr>Config</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
+						<a href="FaceResult.html" class="tsd-kind-icon">Face<wbr>Result</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#age" class="tsd-kind-icon">age</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#annotations" class="tsd-kind-icon">annotations</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#box" class="tsd-kind-icon">box</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#boxRaw" class="tsd-kind-icon">box<wbr>Raw</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#boxScore" class="tsd-kind-icon">box<wbr>Score</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#embedding" class="tsd-kind-icon">embedding</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#emotion" class="tsd-kind-icon">emotion</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#faceScore" class="tsd-kind-icon">face<wbr>Score</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#gender" class="tsd-kind-icon">gender</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#genderScore" class="tsd-kind-icon">gender<wbr>Score</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#iris" class="tsd-kind-icon">iris</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#mesh" class="tsd-kind-icon">mesh</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#meshRaw" class="tsd-kind-icon">mesh<wbr>Raw</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#rotation" class="tsd-kind-icon">rotation</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#score" class="tsd-kind-icon">score</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="FaceResult.html#tensor" class="tsd-kind-icon">tensor</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface">
+						<a href="FilterConfig.html" class="tsd-kind-icon">Filter<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="GestureConfig.html" class="tsd-kind-icon">Gesture<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="HandConfig.html" class="tsd-kind-icon">Hand<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="HandResult.html" class="tsd-kind-icon">Hand<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="ObjectConfig.html" class="tsd-kind-icon">Object<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="ObjectResult.html" class="tsd-kind-icon">Object<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="PersonResult.html" class="tsd-kind-icon">Person<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="Result.html" class="tsd-kind-icon">Result</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="SegmentationConfig.html" class="tsd-kind-icon">Segmentation<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../index.html#Error" class="tsd-kind-icon">Error</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../index.html#GestureResult" class="tsd-kind-icon">Gesture<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../index.html#Input" class="tsd-kind-icon">Input</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../index.html#TensorFlow" class="tsd-kind-icon">Tensor<wbr>Flow</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="../index.html#defaults" class="tsd-kind-icon">defaults</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

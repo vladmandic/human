@@ -4,7 +4,7 @@
 
 import { log, now, mergeDeep } from './helpers';
 import { Config, defaults } from './config';
-import { Result, Face, Hand, Body, Item, Gesture } from './result';
+import { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult } from './result';
 import * as sysinfo from './sysinfo';
 import * as tf from '../dist/tfjs.esm.js';
 import * as backend from './tfjs/backend';
@@ -30,8 +30,9 @@ import * as app from '../package.json';
 import { Tensor, GraphModel } from './tfjs/types';
 
 // export types
-export { Config } from './config';
-export type { Result, Face, Hand, Body, Item, Gesture, Person } from './result';
+export * from './config';
+export * from './result';
+
 export type { DrawOptions } from './draw/draw';
 
 /** Defines all possible input types for **Human** detection
@@ -101,16 +102,6 @@ export class Human {
     canvas: typeof draw.canvas,
     all: typeof draw.all,
   };
-  /** Types used by Human */
-  static Config: Config;
-  static Result: Result;
-  static Face: Face;
-  static Hand: Hand;
-  static Body: Body;
-  static Item: Item;
-  static Gesture: Gesture;
-  static Person: Gesture
-  static DrawOptions: draw.DrawOptions;
   /** @internal: Currently loaded models */
   models: {
     face: [unknown, GraphModel | null, GraphModel | null] | null,
@@ -529,10 +520,10 @@ export class Human {
 
       // prepare where to store model results
       // keep them with weak typing as it can be promise or not
-      let faceRes: Face[] | Promise<Face[]> | never[] = [];
-      let bodyRes: Body[] | Promise<Body[]> | never[] = [];
-      let handRes: Hand[] | Promise<Hand[]> | never[] = [];
-      let objectRes: Item[] | Promise<Item[]> | never[] = [];
+      let faceRes: FaceResult[] | Promise<FaceResult[]> | never[] = [];
+      let bodyRes: BodyResult[] | Promise<BodyResult[]> | never[] = [];
+      let handRes: HandResult[] | Promise<HandResult[]> | never[] = [];
+      let objectRes: ObjectResult[] | Promise<ObjectResult[]> | never[] = [];
 
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       if (this.config.async) {
@@ -549,18 +540,18 @@ export class Human {
       // run body: can be posenet, blazepose, efficientpose, movenet
       this.analyze('Start Body:');
       if (this.config.async) {
-        if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? posenet.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath.includes('blazepose')) bodyRes = this.config.body.enabled ? blazepose.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath.includes('efficientpose')) bodyRes = this.config.body.enabled ? efficientpose.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath.includes('movenet')) bodyRes = this.config.body.enabled ? movenet.predict(this.process.tensor, this.config) : [];
+        if (this.config.body.modelPath?.includes('posenet')) bodyRes = this.config.body.enabled ? posenet.predict(this.process.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? blazepose.predict(this.process.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('efficientpose')) bodyRes = this.config.body.enabled ? efficientpose.predict(this.process.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('movenet')) bodyRes = this.config.body.enabled ? movenet.predict(this.process.tensor, this.config) : [];
         if (this.performance.body) delete this.performance.body;
       } else {
         this.state = 'run:body';
         timeStamp = now();
-        if (this.config.body.modelPath.includes('posenet')) bodyRes = this.config.body.enabled ? await posenet.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath.includes('blazepose')) bodyRes = this.config.body.enabled ? await blazepose.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath.includes('efficientpose')) bodyRes = this.config.body.enabled ? await efficientpose.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath.includes('movenet')) bodyRes = this.config.body.enabled ? await movenet.predict(this.process.tensor, this.config) : [];
+        if (this.config.body.modelPath?.includes('posenet')) bodyRes = this.config.body.enabled ? await posenet.predict(this.process.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? await blazepose.predict(this.process.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('efficientpose')) bodyRes = this.config.body.enabled ? await efficientpose.predict(this.process.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('movenet')) bodyRes = this.config.body.enabled ? await movenet.predict(this.process.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.body = elapsedTime;
       }
@@ -583,14 +574,14 @@ export class Human {
       // run nanodet
       this.analyze('Start Object:');
       if (this.config.async) {
-        if (this.config.object.modelPath.includes('nanodet')) objectRes = this.config.object.enabled ? nanodet.predict(this.process.tensor, this.config) : [];
-        else if (this.config.object.modelPath.includes('centernet')) objectRes = this.config.object.enabled ? centernet.predict(this.process.tensor, this.config) : [];
+        if (this.config.object.modelPath?.includes('nanodet')) objectRes = this.config.object.enabled ? nanodet.predict(this.process.tensor, this.config) : [];
+        else if (this.config.object.modelPath?.includes('centernet')) objectRes = this.config.object.enabled ? centernet.predict(this.process.tensor, this.config) : [];
         if (this.performance.object) delete this.performance.object;
       } else {
         this.state = 'run:object';
         timeStamp = now();
-        if (this.config.object.modelPath.includes('nanodet')) objectRes = this.config.object.enabled ? await nanodet.predict(this.process.tensor, this.config) : [];
-        else if (this.config.object.modelPath.includes('centernet')) objectRes = this.config.object.enabled ? await centernet.predict(this.process.tensor, this.config) : [];
+        if (this.config.object.modelPath?.includes('nanodet')) objectRes = this.config.object.enabled ? await nanodet.predict(this.process.tensor, this.config) : [];
+        else if (this.config.object.modelPath?.includes('centernet')) objectRes = this.config.object.enabled ? await centernet.predict(this.process.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.object = elapsedTime;
       }
@@ -600,7 +591,7 @@ export class Human {
       if (this.config.async) [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
 
       // run gesture analysis last
-      let gestureRes: Gesture[] = [];
+      let gestureRes: GestureResult[] = [];
       if (this.config.gesture.enabled) {
         timeStamp = now();
         gestureRes = [...gesture.face(faceRes), ...gesture.body(bodyRes), ...gesture.hand(handRes), ...gesture.iris(faceRes)];
@@ -612,15 +603,15 @@ export class Human {
       this.state = 'idle';
       const shape = this.process?.tensor?.shape || [];
       this.result = {
-        face: faceRes as Face[],
-        body: bodyRes as Body[],
-        hand: handRes as Hand[],
+        face: faceRes as FaceResult[],
+        body: bodyRes as BodyResult[],
+        hand: handRes as HandResult[],
         gesture: gestureRes,
-        object: objectRes as Item[],
+        object: objectRes as ObjectResult[],
         performance: this.performance,
         canvas: this.process.canvas,
         timestamp: Date.now(),
-        get persons() { return persons.join(faceRes as Face[], bodyRes as Body[], handRes as Hand[], gestureRes, shape); },
+        get persons() { return persons.join(faceRes as FaceResult[], bodyRes as BodyResult[], handRes as HandResult[], gestureRes, shape); },
       };
 
       // finally dispose input tensor

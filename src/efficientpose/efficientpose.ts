@@ -4,7 +4,7 @@
 
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import { Body } from '../result';
+import { BodyResult } from '../result';
 import { GraphModel, Tensor } from '../tfjs/types';
 import { Config } from '../config';
 
@@ -22,7 +22,7 @@ const bodyParts = ['head', 'neck', 'rightShoulder', 'rightElbow', 'rightWrist', 
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
@@ -46,8 +46,8 @@ function max2d(inputs, minScore) {
   });
 }
 
-export async function predict(image: Tensor, config: Config): Promise<Body[]> {
-  if ((skipped < config.body.skipFrames) && config.skipFrame && Object.keys(keypoints).length > 0) {
+export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
+  if ((skipped < (config.body?.skipFrames || 0)) && config.skipFrame && Object.keys(keypoints).length > 0) {
     skipped++;
     return [{ id: 0, score, box, boxRaw, keypoints }];
   }
@@ -76,7 +76,7 @@ export async function predict(image: Tensor, config: Config): Promise<Body[]> {
       for (let id = 0; id < stack.length; id++) {
         // actual processing to get coordinates and score
         const [x, y, partScore] = max2d(stack[id], config.body.minConfidence);
-        if (score > config.body.minConfidence) {
+        if (score > (config.body?.minConfidence || 0)) {
           keypoints.push({
             score: Math.round(100 * partScore) / 100,
             part: bodyParts[id],

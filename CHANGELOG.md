@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/09/11 mandic00@live.com
 
+- start using partial definitions
 - implement event emitters
 - fix iife loader
 - simplify dependencies

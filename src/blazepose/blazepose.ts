@@ -8,14 +8,14 @@ import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as annotations from './annotations';
 import { Tensor, GraphModel } from '../tfjs/types';
-import { Body } from '../result';
+import { BodyResult } from '../result';
 import { Config } from '../config';
 
 let model: GraphModel;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
     model['width'] = parseInt(model['signature'].inputs['input_1:0'].tensorShape.dim[2].size);
     model['height'] = parseInt(model['signature'].inputs['input_1:0'].tensorShape.dim[1].size);
     if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
@@ -24,7 +24,7 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-export async function predict(image: Tensor, config: Config): Promise<Body[]> {
+export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
   if (!model) return [];
   if (!config.body.enabled) return [];
   const imgSize = { width: (image.shape[2] || 0), height: (image.shape[1] || 0) };

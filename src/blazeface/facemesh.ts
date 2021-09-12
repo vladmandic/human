@@ -8,15 +8,15 @@ import * as blazeface from './blazeface';
 import * as facepipeline from './facepipeline';
 import * as coords from './coords';
 import { GraphModel, Tensor } from '../tfjs/types';
-import { Face } from '../result';
+import { FaceResult } from '../result';
 import { Config } from '../config';
 
 let faceModels: [blazeface.BlazeFaceModel | null, GraphModel | null, GraphModel | null] = [null, null, null];
 let facePipeline;
 
-export async function predict(input: Tensor, config: Config): Promise<Face[]> {
+export async function predict(input: Tensor, config: Config): Promise<FaceResult[]> {
   const predictions = await facePipeline.predict(input, config);
-  const results: Array<Face> = [];
+  const results: Array<FaceResult> = [];
   let id = 0;
   for (const prediction of (predictions || [])) {
     if (!prediction || prediction.isDisposedInternal) continue; // guard against disposed tensors on long running operations such as pause in middle of processing

@@ -1,8 +1,8 @@
-import { Body } from '../result';
+import { BodyResult } from '../result';
 export declare function eitherPointDoesntMeetConfidence(a: number, b: number, minConfidence: number): boolean;
 export declare function getAdjacentKeyPoints(keypoints: any, minConfidence: number): any[];
 export declare function getBoundingBox(keypoints: any): [number, number, number, number];
-export declare function scalePoses(poses: any, [height, width]: [any, any], [inputResolutionHeight, inputResolutionWidth]: [any, any]): Array<Body>;
+export declare function scalePoses(poses: any, [height, width]: [any, any], [inputResolutionHeight, inputResolutionWidth]: [any, any]): Array<BodyResult>;
 export declare class MaxHeap {
     priorityQueue: Array<unknown>;
     numberOfElements: number;

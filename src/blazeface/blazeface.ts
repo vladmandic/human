@@ -62,14 +62,14 @@ export class BlazeFaceModel {
 
     this.config = mergeDeep(this.config, userConfig) as Config;
 
-    const nmsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
+    const nmsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, (this.config.face.detector?.maxDetected || 0), (this.config.face.detector?.iouThreshold || 0), (this.config.face.detector?.minConfidence || 0));
     const nms = await nmsTensor.array();
     tf.dispose(nmsTensor);
     const annotatedBoxes: Array<{ box: { startPoint: Tensor, endPoint: Tensor }, landmarks: Tensor, anchor: number[], confidence: number }> = [];
     const scoresData = await scores.data();
     for (let i = 0; i < nms.length; i++) {
       const confidence = scoresData[nms[i]];
-      if (confidence > this.config.face.detector.minConfidence) {
+      if (confidence > (this.config.face.detector?.minConfidence || 0)) {
         const boundingBox = tf.slice(boxes, [nms[i], 0], [1, -1]);
         const localBox = box.createBox(boundingBox);
         tf.dispose(boundingBox);
@@ -89,9 +89,9 @@ export class BlazeFaceModel {
 }
 
 export async function load(config: Config) {
-  const model = await tf.loadGraphModel(join(config.modelBasePath, config.face.detector.modelPath), { fromTFHub: config.face.detector.modelPath.includes('tfhub.dev') });
+  const model = await tf.loadGraphModel(join(config.modelBasePath, config.face.detector?.modelPath || ''), { fromTFHub: (config.face.detector?.modelPath || '').includes('tfhub.dev') });
   const blazeFace = new BlazeFaceModel(model, config);
-  if (!model || !model.modelUrl) log('load model failed:', config.face.detector.modelPath);
+  if (!model || !model.modelUrl) log('load model failed:', config.face.detector?.modelPath || '');
   else if (config.debug) log('load model:', model.modelUrl);
   return blazeFace;
 }

@@ -2,14 +2,14 @@
  * Human main module
  */
 import { Config } from './config';
-import { Result, Face, Hand, Body, Item, Gesture } from './result';
+import { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as image from './image/image';
 import * as draw from './draw/draw';
 import { Tensor, GraphModel } from './tfjs/types';
-export { Config } from './config';
-export type { Result, Face, Hand, Body, Item, Gesture, Person } from './result';
+export * from './config';
+export * from './result';
 export type { DrawOptions } from './draw/draw';
 /** Defines all possible input types for **Human** detection
  * @typedef Input Type
@@ -81,16 +81,6 @@ export declare class Human {
         canvas: typeof draw.canvas;
         all: typeof draw.all;
     };
-    /** Types used by Human */
-    static Config: Config;
-    static Result: Result;
-    static Face: Face;
-    static Hand: Hand;
-    static Body: Body;
-    static Item: Item;
-    static Gesture: Gesture;
-    static Person: Gesture;
-    static DrawOptions: draw.DrawOptions;
     /** @internal: Currently loaded models */
     models: {
         face: [unknown, GraphModel | null, GraphModel | null] | null;

@@ -57,10 +57,10 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
     }
 
     // create our canvas and resize it if needed
-    if (config.filter.width > 0) targetWidth = config.filter.width;
-    else if (config.filter.height > 0) targetWidth = originalWidth * (config.filter.height / originalHeight);
-    if (config.filter.height > 0) targetHeight = config.filter.height;
-    else if (config.filter.width > 0) targetHeight = originalHeight * (config.filter.width / originalWidth);
+    if ((config.filter.width || 0) > 0) targetWidth = config.filter.width;
+    else if ((config.filter.height || 0) > 0) targetWidth = originalWidth * ((config.filter.height || 0) / originalHeight);
+    if ((config.filter.height || 0) > 0) targetHeight = config.filter.height;
+    else if ((config.filter.width || 0) > 0) targetHeight = originalHeight * ((config.filter.width || 0) / originalWidth);
     if (!targetWidth || !targetHeight) throw new Error('Human: Input cannot determine dimension');
     if (!inCanvas || (inCanvas?.width !== targetWidth) || (inCanvas?.height !== targetHeight)) {
       inCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement('canvas');

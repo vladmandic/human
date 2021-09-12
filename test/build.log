@@ -1197,3 +1197,963 @@
 2021-09-11 22:47:32 [35mSTATE:[39m Lint: {"locations":["src/**/*.ts","test/*.js","demo/**/*.js"],"files":75,"errors":0,"warnings":0} 
 2021-09-11 22:47:32 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
 2021-09-11 22:47:32 [36mINFO: [39m Done... 
+2021-09-11 23:31:33 [36mINFO: [39m @vladmandic/human version 2.1.5 
+2021-09-11 23:31:33 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-09-11 23:31:33 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.1.5"} 
+2021-09-11 23:31:33 [36mINFO: [39m Environment: {"profile":"production","config":"build.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-09-11 23:31:33 [36mINFO: [39m Toolchain: {"build":"0.4.1","esbuild":"0.12.26","typescript":"4.4.3","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-09-11 23:31:33 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
+2021-09-11 23:31:33 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
+2021-09-11 23:31:34 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-11 23:31:34 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":48,"inputBytes":465210,"outputBytes":397891} 
+2021-09-11 23:31:34 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-11 23:31:34 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":48,"inputBytes":465218,"outputBytes":397895} 
+2021-09-11 23:31:34 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-11 23:31:34 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":48,"inputBytes":465285,"outputBytes":397967} 
+2021-09-11 23:31:34 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-11 23:31:34 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":48,"inputBytes":465384,"outputBytes":399855} 
+2021-09-11 23:31:34 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":7,"inputBytes":2168,"outputBytes":2343983} 
+2021-09-11 23:31:34 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":48,"inputBytes":2807777,"outputBytes":1392634} 
+2021-09-11 23:31:35 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":48,"inputBytes":2807777,"outputBytes":2584793} 
+2021-09-11 23:31:50 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types","files":47} 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazeface/facemesh.ts [11,10]: Module '"../result"' has no exported member 'Face'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazepose/blazepose.ts [11,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,23]: Module '"../result"' has no exported member 'Face'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,29]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,35]: Module '"../result"' has no exported member 'Hand'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,41]: Module '"../result"' has no exported member 'Item'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,47]: Module '"../result"' has no exported member 'Gesture'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,56]: Module '"../result"' has no exported member 'Person'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [7,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/face.ts [11,10]: Module '"./result"' has no exported member 'Face'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/gesture/gesture.ts [5,10]: Module '"../result"' has no exported member 'Gesture'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [10,10]: Module '"../result"' has no exported member 'Hand'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/interpolate.ts [5,23]: Module '"./result"' has no exported member 'Face'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/interpolate.ts [5,29]: Module '"./result"' has no exported member 'Body'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/interpolate.ts [5,35]: Module '"./result"' has no exported member 'Hand'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/interpolate.ts [5,41]: Module '"./result"' has no exported member 'Item'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/interpolate.ts [5,47]: Module '"./result"' has no exported member 'Gesture'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/interpolate.ts [5,56]: Module '"./result"' has no exported member 'Person'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/movenet/movenet.ts [7,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/object/centernet.ts [8,10]: Module '"../result"' has no exported member 'Item'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/object/nanodet.ts [8,10]: Module '"../result"' has no exported member 'Item'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/persons.ts [5,10]: Module '"./result"' has no exported member 'Face'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/persons.ts [5,16]: Module '"./result"' has no exported member 'Body'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/persons.ts [5,22]: Module '"./result"' has no exported member 'Hand'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/persons.ts [5,28]: Module '"./result"' has no exported member 'Gesture'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/persons.ts [5,37]: Module '"./result"' has no exported member 'Person'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/posenet/posenet.ts [9,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:31:50 [31mERROR:[39m TSC: /home/vlado/dev/human/src/posenet/utils.ts [2,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/blazeface/facemesh.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Face'.
+
+[7m11[0m import { Face } from '../result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/blazepose/blazepose.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m11[0m import { Body } from '../result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m23[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Face'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                      ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m29[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                            ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m35[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Hand'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                  ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m41[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Item'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                        ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m47[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Gesture'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                              ~~~~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m56[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Person'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                                       ~~~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m7[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m7[0m import { Body } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/face.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Face'.
+
+[7m11[0m import { Face } from './result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/gesture/gesture.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Gesture'.
+
+[7m5[0m import { Gesture } from '../result';
+[7m [0m [91m         ~~~~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m10[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Hand'.
+
+[7m10[0m import { Hand } from '../result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/interpolate.ts[0m:[93m5[0m:[93m23[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Face'.
+
+[7m5[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from './result';
+[7m [0m [91m                      ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/interpolate.ts[0m:[93m5[0m:[93m29[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Body'.
+
+[7m5[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from './result';
+[7m [0m [91m                            ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/interpolate.ts[0m:[93m5[0m:[93m35[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Hand'.
+
+[7m5[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from './result';
+[7m [0m [91m                                  ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/interpolate.ts[0m:[93m5[0m:[93m41[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Item'.
+
+[7m5[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from './result';
+[7m [0m [91m                                        ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/interpolate.ts[0m:[93m5[0m:[93m47[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Gesture'.
+
+[7m5[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from './result';
+[7m [0m [91m                                              ~~~~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/interpolate.ts[0m:[93m5[0m:[93m56[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Person'.
+
+[7m5[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from './result';
+[7m [0m [91m                                                       ~~~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/movenet/movenet.ts[0m:[93m7[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m7[0m import { Body } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/object/centernet.ts[0m:[93m8[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Item'.
+
+[7m8[0m import { Item } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/object/nanodet.ts[0m:[93m8[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Item'.
+
+[7m8[0m import { Item } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/persons.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Face'.
+
+[7m5[0m import { Face, Body, Hand, Gesture, Person } from './result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/persons.ts[0m:[93m5[0m:[93m16[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Body'.
+
+[7m5[0m import { Face, Body, Hand, Gesture, Person } from './result';
+[7m [0m [91m               ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/persons.ts[0m:[93m5[0m:[93m22[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Hand'.
+
+[7m5[0m import { Face, Body, Hand, Gesture, Person } from './result';
+[7m [0m [91m                     ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/persons.ts[0m:[93m5[0m:[93m28[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Gesture'.
+
+[7m5[0m import { Face, Body, Hand, Gesture, Person } from './result';
+[7m [0m [91m                           ~~~~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/persons.ts[0m:[93m5[0m:[93m37[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Person'.
+
+[7m5[0m import { Face, Body, Hand, Gesture, Person } from './result';
+[7m [0m [91m                                    ~~~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/posenet/posenet.ts[0m:[93m9[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m9[0m import { Body } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m [96msrc/posenet/utils.ts[0m:[93m2[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m2[0m import { Body } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:31:53 [31mERROR:[39m TypeDoc: convert returned empty project 
+2021-09-11 23:32:20 [35mSTATE:[39m Lint: {"locations":["src/**/*.ts","test/*.js","demo/**/*.js"],"files":75,"errors":0,"warnings":0} 
+2021-09-11 23:32:20 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
+2021-09-11 23:32:20 [36mINFO: [39m Done... 
+2021-09-11 23:34:49 [36mINFO: [39m @vladmandic/human version 2.1.5 
+2021-09-11 23:34:49 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-09-11 23:34:49 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.1.5"} 
+2021-09-11 23:34:49 [36mINFO: [39m Environment: {"profile":"production","config":"build.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-09-11 23:34:49 [36mINFO: [39m Toolchain: {"build":"0.4.1","esbuild":"0.12.26","typescript":"4.4.3","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-09-11 23:34:49 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
+2021-09-11 23:34:49 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
+2021-09-11 23:34:49 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-11 23:34:49 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":48,"inputBytes":465475,"outputBytes":397891} 
+2021-09-11 23:34:49 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-11 23:34:49 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":48,"inputBytes":465483,"outputBytes":397895} 
+2021-09-11 23:34:49 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-11 23:34:49 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":48,"inputBytes":465550,"outputBytes":397967} 
+2021-09-11 23:34:49 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-11 23:34:49 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":48,"inputBytes":465649,"outputBytes":399855} 
+2021-09-11 23:34:50 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":7,"inputBytes":2168,"outputBytes":2343983} 
+2021-09-11 23:34:50 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":48,"inputBytes":2808042,"outputBytes":1392634} 
+2021-09-11 23:34:50 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":48,"inputBytes":2808042,"outputBytes":2584793} 
+2021-09-11 23:35:05 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types","files":47} 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazeface/blazeface.ts [65,76]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazeface/blazeface.ts [65,115]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazeface/blazeface.ts [65,155]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazeface/blazeface.ts [72,24]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazeface/blazeface.ts [92,68]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazeface/blazeface.ts [92,114]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazeface/blazeface.ts [94,60]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazeface/facemesh.ts [11,10]: Module '"../result"' has no exported member 'Face'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazepose/blazepose.ts [11,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazepose/blazepose.ts [18,64]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,23]: Module '"../result"' has no exported member 'Face'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,29]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,35]: Module '"../result"' has no exported member 'Hand'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,41]: Module '"../result"' has no exported member 'Item'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,47]: Module '"../result"' has no exported member 'Gesture'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,56]: Module '"../result"' has no exported member 'Person'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [7,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [25,64]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [50,18]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [79,21]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [22,64]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [23,62]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [31,18]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [54,9]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [59,23]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/face.ts [11,10]: Module '"./result"' has no exported member 'Face'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/faceres/faceres.ts [26,47]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/faceres/faceres.ts [29,43]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/faceres/faceres.ts [115,18]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/faceres/faceres.ts [131,9]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/faceres/faceres.ts [137,24]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/gesture/gesture.ts [5,10]: Module '"../result"' has no exported member 'Gesture'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [10,10]: Module '"../result"' has no exported member 'Hand'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [85,74]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [85,120]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [86,76]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [86,122]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [89,91]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [91,83]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/image/image.ts [60,9]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/image/image.ts [61,14]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/image/image.ts [61,71]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/image/image.ts [62,9]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/image/image.ts [63,14]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/image/image.ts [63,72]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/interpolate.ts [5,59]: Module '"./result"' has no exported member 'ItemResult'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/movenet/movenet.ts [7,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/movenet/movenet.ts [26,64]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/movenet/movenet.ts [118,18]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/object/centernet.ts [8,10]: Module '"../result"' has no exported member 'Item'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/object/centernet.ts [18,64]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/object/centernet.ts [74,18]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/object/nanodet.ts [8,10]: Module '"../result"' has no exported member 'Item'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/object/nanodet.ts [20,64]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/object/nanodet.ts [106,18]: Object is possibly 'undefined'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/posenet/posenet.ts [9,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/posenet/posenet.ts [38,64]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/posenet/utils.ts [2,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:35:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/segmentation/segmentation.ts [18,64]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/blazeface/blazeface.ts[0m:[93m65[0m:[93m76[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m65[0m     const nmsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
+[7m  [0m [91m                                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/blazeface/blazeface.ts[0m:[93m65[0m:[93m115[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m65[0m     const nmsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
+[7m  [0m [91m                                                                                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/blazeface/blazeface.ts[0m:[93m65[0m:[93m155[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m65[0m     const nmsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, this.config.face.detector.maxDetected, this.config.face.detector.iouThreshold, this.config.face.detector.minConfidence);
+[7m  [0m [91m                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/blazeface/blazeface.ts[0m:[93m72[0m:[93m24[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m72[0m       if (confidence > this.config.face.detector.minConfidence) {
+[7m  [0m [91m                       ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/blazeface/blazeface.ts[0m:[93m92[0m:[93m68[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m92[0m   const model = await tf.loadGraphModel(join(config.modelBasePath, config.face.detector.modelPath), { fromTFHub: config.face.detector.modelPath.includes('tfhub.dev') });
+[7m  [0m [91m                                                                   ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/blazeface/blazeface.ts[0m:[93m92[0m:[93m114[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m92[0m   const model = await tf.loadGraphModel(join(config.modelBasePath, config.face.detector.modelPath), { fromTFHub: config.face.detector.modelPath.includes('tfhub.dev') });
+[7m  [0m [91m                                                                                                                 ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/blazeface/blazeface.ts[0m:[93m94[0m:[93m60[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m94[0m   if (!model || !model.modelUrl) log('load model failed:', config.face.detector.modelPath);
+[7m  [0m [91m                                                           ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/blazeface/facemesh.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Face'.
+
+[7m11[0m import { Face } from '../result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/blazepose/blazepose.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m11[0m import { Body } from '../result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/blazepose/blazepose.ts[0m:[93m18[0m:[93m64[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m18[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m23[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Face'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                      ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m29[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                            ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m35[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Hand'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                  ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m41[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Item'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                        ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m47[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Gesture'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                              ~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m56[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Person'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                                       ~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m7[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m7[0m import { Body } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m25[0m:[93m64[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m25[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m50[0m:[93m18[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m50[0m   if ((skipped < config.body.skipFrames) && config.skipFrame && Object.keys(keypoints).length > 0) {
+[7m  [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m79[0m:[93m21[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m79[0m         if (score > config.body.minConfidence) {
+[7m  [0m [91m                    ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m22[0m:[93m64[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m22[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.face.emotion.modelPath));
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m23[0m:[93m62[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m23[0m     if (!model || !model.modelUrl) log('load model failed:', config.face.emotion.modelPath);
+[7m  [0m [91m                                                             ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m31[0m:[93m18[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m31[0m   if ((skipped < config.face.emotion.skipFrames) && config.skipFrame && (lastCount === count) && last[idx] && (last[idx].length > 0)) {
+[7m  [0m [91m                 ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m54[0m:[93m9[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m54[0m     if (config.face.emotion.enabled) {
+[7m  [0m [91m        ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m59[0m:[93m23[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m59[0m         if (data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] });
+[7m  [0m [91m                      ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/face.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Face'.
+
+[7m11[0m import { Face } from './result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/faceres/faceres.ts[0m:[93m26[0m:[93m47[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m26[0m   const modelUrl = join(config.modelBasePath, config.face.description.modelPath);
+[7m  [0m [91m                                              ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/faceres/faceres.ts[0m:[93m29[0m:[93m43[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m29[0m     if (!model) log('load model failed:', config.face.description.modelPath);
+[7m  [0m [91m                                          ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/faceres/faceres.ts[0m:[93m115[0m:[93m18[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m115[0m   if ((skipped < config.face.description.skipFrames) && config.skipFrame && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/faceres/faceres.ts[0m:[93m131[0m:[93m9[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m131[0m     if (config.face.description.enabled) resT = await model.predict(enhanced);
+[7m   [0m [91m        ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/faceres/faceres.ts[0m:[93m137[0m:[93m24[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m137[0m       if (confidence > config.face.description.minConfidence) {
+[7m   [0m [91m                       ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/gesture/gesture.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Gesture'.
+
+[7m5[0m import { Gesture } from '../result';
+[7m [0m [91m         ~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m10[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Hand'.
+
+[7m10[0m import { Hand } from '../result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m85[0m:[93m74[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m85[0m       config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector.modelPath), { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
+[7m  [0m [91m                                                                         ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m85[0m:[93m120[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m85[0m       config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector.modelPath), { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
+[7m  [0m [91m                                                                                                                       ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m86[0m:[93m76[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m86[0m       config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton.modelPath), { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
+[7m  [0m [91m                                                                           ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m86[0m:[93m122[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m86[0m       config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton.modelPath), { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
+[7m  [0m [91m                                                                                                                         ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m89[0m:[93m91[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m89[0m       if (!handDetectorModel || !handDetectorModel['modelUrl']) log('load model failed:', config.hand.detector.modelPath);
+[7m  [0m [91m                                                                                          ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m91[0m:[93m83[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m91[0m       if (!handPoseModel || !handPoseModel['modelUrl']) log('load model failed:', config.hand.skeleton.modelPath);
+[7m  [0m [91m                                                                                  ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/image/image.ts[0m:[93m60[0m:[93m9[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m60[0m     if (config.filter.width > 0) targetWidth = config.filter.width;
+[7m  [0m [91m        ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/image/image.ts[0m:[93m61[0m:[93m14[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m61[0m     else if (config.filter.height > 0) targetWidth = originalWidth * (config.filter.height / originalHeight);
+[7m  [0m [91m             ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/image/image.ts[0m:[93m61[0m:[93m71[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m61[0m     else if (config.filter.height > 0) targetWidth = originalWidth * (config.filter.height / originalHeight);
+[7m  [0m [91m                                                                      ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/image/image.ts[0m:[93m62[0m:[93m9[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m62[0m     if (config.filter.height > 0) targetHeight = config.filter.height;
+[7m  [0m [91m        ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/image/image.ts[0m:[93m63[0m:[93m14[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m63[0m     else if (config.filter.width > 0) targetHeight = originalHeight * (config.filter.width / originalWidth);
+[7m  [0m [91m             ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/image/image.ts[0m:[93m63[0m:[93m72[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m63[0m     else if (config.filter.width > 0) targetHeight = originalHeight * (config.filter.width / originalWidth);
+[7m  [0m [91m                                                                       ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/interpolate.ts[0m:[93m5[0m:[93m59[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'ItemResult'.
+
+[7m5[0m import type { Result, FaceResult, BodyResult, HandResult, ItemResult, GestureResult, PersonResult } from './result';
+[7m [0m [91m                                                          ~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/movenet/movenet.ts[0m:[93m7[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m7[0m import { Body } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/movenet/movenet.ts[0m:[93m26[0m:[93m64[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m26[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/movenet/movenet.ts[0m:[93m118[0m:[93m18[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m118[0m   if ((skipped < config.body.skipFrames) && config.skipFrame && Object.keys(keypoints).length > 0) {
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/object/centernet.ts[0m:[93m8[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Item'.
+
+[7m8[0m import { Item } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/object/centernet.ts[0m:[93m18[0m:[93m64[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m18[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath));
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/object/centernet.ts[0m:[93m74[0m:[93m18[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m74[0m   if ((skipped < config.object.skipFrames) && config.skipFrame && (last.length > 0)) {
+[7m  [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/object/nanodet.ts[0m:[93m8[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Item'.
+
+[7m8[0m import { Item } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/object/nanodet.ts[0m:[93m20[0m:[93m64[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m20[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath));
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/object/nanodet.ts[0m:[93m106[0m:[93m18[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m106[0m   if ((skipped < config.object.skipFrames) && config.skipFrame && (last.length > 0)) {
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/posenet/posenet.ts[0m:[93m9[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m9[0m import { Body } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/posenet/posenet.ts[0m:[93m38[0m:[93m64[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m38[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/posenet/utils.ts[0m:[93m2[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m2[0m import { Body } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m [96msrc/segmentation/segmentation.ts[0m:[93m18[0m:[93m64[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m18[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.segmentation.modelPath)) as unknown as GraphModel;
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:35:08 [31mERROR:[39m TypeDoc: convert returned empty project 
+2021-09-11 23:35:33 [35mSTATE:[39m Lint: {"locations":["src/**/*.ts","test/*.js","demo/**/*.js"],"files":75,"errors":0,"warnings":0} 
+2021-09-11 23:35:33 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
+2021-09-11 23:35:33 [36mINFO: [39m Done... 
+2021-09-11 23:43:43 [36mINFO: [39m @vladmandic/human version 2.1.5 
+2021-09-11 23:43:43 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-09-11 23:43:43 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.1.5"} 
+2021-09-11 23:43:43 [36mINFO: [39m Environment: {"profile":"production","config":"build.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-09-11 23:43:43 [36mINFO: [39m Toolchain: {"build":"0.4.1","esbuild":"0.12.26","typescript":"4.4.3","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-09-11 23:43:43 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
+2021-09-11 23:43:43 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
+2021-09-11 23:43:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-11 23:43:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":48,"inputBytes":465733,"outputBytes":398285} 
+2021-09-11 23:43:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-11 23:43:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":48,"inputBytes":465741,"outputBytes":398289} 
+2021-09-11 23:43:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-11 23:43:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":48,"inputBytes":465808,"outputBytes":398361} 
+2021-09-11 23:43:43 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-11 23:43:43 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":48,"inputBytes":465907,"outputBytes":400249} 
+2021-09-11 23:43:44 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":7,"inputBytes":2168,"outputBytes":2343983} 
+2021-09-11 23:43:44 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":48,"inputBytes":2808300,"outputBytes":1392896} 
+2021-09-11 23:43:45 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":48,"inputBytes":2808300,"outputBytes":2585187} 
+2021-09-11 23:44:00 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types","files":47} 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazeface/facemesh.ts [11,10]: Module '"../result"' has no exported member 'Face'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazepose/blazepose.ts [11,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazepose/blazepose.ts [18,64]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,23]: Module '"../result"' has no exported member 'Face'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,29]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,35]: Module '"../result"' has no exported member 'Hand'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,41]: Module '"../result"' has no exported member 'Item'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,47]: Module '"../result"' has no exported member 'Gesture'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,56]: Module '"../result"' has no exported member 'Person'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [7,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [25,64]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [50,18]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [79,21]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [22,64]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [23,62]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [31,18]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [54,9]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [59,23]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/face.ts [11,10]: Module '"./result"' has no exported member 'Face'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/faceres/faceres.ts [26,47]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/faceres/faceres.ts [29,43]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/faceres/faceres.ts [115,18]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/faceres/faceres.ts [131,9]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/faceres/faceres.ts [137,24]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/gesture/gesture.ts [5,10]: Module '"../result"' has no exported member 'Gesture'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [10,10]: Module '"../result"' has no exported member 'Hand'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [85,74]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [85,120]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [86,76]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [86,122]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [89,91]: Object is possibly 'undefined'. 
+2021-09-11 23:44:00 [31mERROR:[39m TSC: /home/vlado/dev/human/src/handpose/handpose.ts [91,83]: Object is possibly 'undefined'. 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/blazeface/facemesh.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Face'.
+
+[7m11[0m import { Face } from '../result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/blazepose/blazepose.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m11[0m import { Body } from '../result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/blazepose/blazepose.ts[0m:[93m18[0m:[93m64[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m18[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m23[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Face'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                      ~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m29[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                            ~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m35[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Hand'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                  ~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m41[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Item'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                        ~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m47[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Gesture'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                              ~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m56[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Person'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                                       ~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m7[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m7[0m import { Body } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m25[0m:[93m64[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m25[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m50[0m:[93m18[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m50[0m   if ((skipped < config.body.skipFrames) && config.skipFrame && Object.keys(keypoints).length > 0) {
+[7m  [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m79[0m:[93m21[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m79[0m         if (score > config.body.minConfidence) {
+[7m  [0m [91m                    ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m22[0m:[93m64[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m22[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.face.emotion.modelPath));
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m23[0m:[93m62[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m23[0m     if (!model || !model.modelUrl) log('load model failed:', config.face.emotion.modelPath);
+[7m  [0m [91m                                                             ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m31[0m:[93m18[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m31[0m   if ((skipped < config.face.emotion.skipFrames) && config.skipFrame && (lastCount === count) && last[idx] && (last[idx].length > 0)) {
+[7m  [0m [91m                 ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m54[0m:[93m9[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m54[0m     if (config.face.emotion.enabled) {
+[7m  [0m [91m        ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m59[0m:[93m23[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m59[0m         if (data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] });
+[7m  [0m [91m                      ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/face.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Face'.
+
+[7m11[0m import { Face } from './result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/faceres/faceres.ts[0m:[93m26[0m:[93m47[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m26[0m   const modelUrl = join(config.modelBasePath, config.face.description.modelPath);
+[7m  [0m [91m                                              ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/faceres/faceres.ts[0m:[93m29[0m:[93m43[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m29[0m     if (!model) log('load model failed:', config.face.description.modelPath);
+[7m  [0m [91m                                          ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/faceres/faceres.ts[0m:[93m115[0m:[93m18[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m115[0m   if ((skipped < config.face.description.skipFrames) && config.skipFrame && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/faceres/faceres.ts[0m:[93m131[0m:[93m9[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m131[0m     if (config.face.description.enabled) resT = await model.predict(enhanced);
+[7m   [0m [91m        ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/faceres/faceres.ts[0m:[93m137[0m:[93m24[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m137[0m       if (confidence > config.face.description.minConfidence) {
+[7m   [0m [91m                       ~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/gesture/gesture.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Gesture'.
+
+[7m5[0m import { Gesture } from '../result';
+[7m [0m [91m         ~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m10[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Hand'.
+
+[7m10[0m import { Hand } from '../result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m85[0m:[93m74[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m85[0m       config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector.modelPath), { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
+[7m  [0m [91m                                                                         ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m85[0m:[93m120[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m85[0m       config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector.modelPath), { fromTFHub: config.hand.detector.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
+[7m  [0m [91m                                                                                                                       ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m86[0m:[93m76[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m86[0m       config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton.modelPath), { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
+[7m  [0m [91m                                                                           ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m86[0m:[93m122[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m86[0m       config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton.modelPath), { fromTFHub: config.hand.skeleton.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,
+[7m  [0m [91m                                                                                                                         ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m89[0m:[93m91[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m89[0m       if (!handDetectorModel || !handDetectorModel['modelUrl']) log('load model failed:', config.hand.detector.modelPath);
+[7m  [0m [91m                                                                                          ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m [96msrc/handpose/handpose.ts[0m:[93m91[0m:[93m83[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m91[0m       if (!handPoseModel || !handPoseModel['modelUrl']) log('load model failed:', config.hand.skeleton.modelPath);
+[7m  [0m [91m                                                                                  ~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:44:04 [31mERROR:[39m TypeDoc: convert returned empty project 
+2021-09-11 23:44:29 [35mSTATE:[39m Lint: {"locations":["src/**/*.ts","test/*.js","demo/**/*.js"],"files":75,"errors":0,"warnings":0} 
+2021-09-11 23:44:29 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
+2021-09-11 23:44:29 [36mINFO: [39m Done... 
+2021-09-11 23:46:48 [36mINFO: [39m @vladmandic/human version 2.1.5 
+2021-09-11 23:46:48 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-09-11 23:46:48 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.1.5"} 
+2021-09-11 23:46:48 [36mINFO: [39m Environment: {"profile":"production","config":"build.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-09-11 23:46:48 [36mINFO: [39m Toolchain: {"build":"0.4.1","esbuild":"0.12.26","typescript":"4.4.3","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-09-11 23:46:48 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
+2021-09-11 23:46:48 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
+2021-09-11 23:46:48 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-11 23:46:48 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":48,"inputBytes":465840,"outputBytes":398760} 
+2021-09-11 23:46:48 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-11 23:46:48 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":48,"inputBytes":465848,"outputBytes":398764} 
+2021-09-11 23:46:48 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-11 23:46:48 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":48,"inputBytes":465915,"outputBytes":398836} 
+2021-09-11 23:46:48 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-11 23:46:48 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":48,"inputBytes":466014,"outputBytes":400724} 
+2021-09-11 23:46:48 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":7,"inputBytes":2168,"outputBytes":2343983} 
+2021-09-11 23:46:49 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":48,"inputBytes":2808407,"outputBytes":1393207} 
+2021-09-11 23:46:49 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":48,"inputBytes":2808407,"outputBytes":2585662} 
+2021-09-11 23:47:05 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types","files":47} 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazeface/facemesh.ts [11,10]: Module '"../result"' has no exported member 'Face'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazepose/blazepose.ts [11,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/blazepose/blazepose.ts [18,64]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,23]: Module '"../result"' has no exported member 'Face'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,29]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,35]: Module '"../result"' has no exported member 'Hand'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,41]: Module '"../result"' has no exported member 'Item'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,47]: Module '"../result"' has no exported member 'Gesture'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/draw/draw.ts [7,56]: Module '"../result"' has no exported member 'Person'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [7,10]: Module '"../result"' has no exported member 'Body'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [25,64]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [50,18]: Object is possibly 'undefined'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/efficientpose/efficientpose.ts [79,21]: Object is possibly 'undefined'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [22,64]: Object is possibly 'undefined'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [23,62]: Object is possibly 'undefined'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [31,18]: Object is possibly 'undefined'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [54,9]: Object is possibly 'undefined'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/emotion/emotion.ts [59,23]: Object is possibly 'undefined'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/face.ts [11,10]: Module '"./result"' has no exported member 'Face'. 
+2021-09-11 23:47:05 [31mERROR:[39m TSC: /home/vlado/dev/human/src/gesture/gesture.ts [5,10]: Module '"../result"' has no exported member 'Gesture'. 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/blazeface/facemesh.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Face'.
+
+[7m11[0m import { Face } from '../result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/blazepose/blazepose.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m11[0m import { Body } from '../result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/blazepose/blazepose.ts[0m:[93m18[0m:[93m64[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m18[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m23[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Face'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                      ~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m29[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                            ~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m35[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Hand'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                  ~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m41[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Item'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                        ~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m47[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Gesture'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                              ~~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/draw/draw.ts[0m:[93m7[0m:[93m56[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Person'.
+
+[7m7[0m import type { Result, Face, Body, Hand, Item, Gesture, Person } from '../result';
+[7m [0m [91m                                                       ~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m7[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Body'.
+
+[7m7[0m import { Body } from '../result';
+[7m [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m25[0m:[93m64[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m25[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath)) as unknown as GraphModel;
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m50[0m:[93m18[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m50[0m   if ((skipped < config.body.skipFrames) && config.skipFrame && Object.keys(keypoints).length > 0) {
+[7m  [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/efficientpose/efficientpose.ts[0m:[93m79[0m:[93m21[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m79[0m         if (score > config.body.minConfidence) {
+[7m  [0m [91m                    ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m22[0m:[93m64[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m22[0m     model = await tf.loadGraphModel(join(config.modelBasePath, config.face.emotion.modelPath));
+[7m  [0m [91m                                                               ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m23[0m:[93m62[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m23[0m     if (!model || !model.modelUrl) log('load model failed:', config.face.emotion.modelPath);
+[7m  [0m [91m                                                             ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m31[0m:[93m18[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m31[0m   if ((skipped < config.face.emotion.skipFrames) && config.skipFrame && (lastCount === count) && last[idx] && (last[idx].length > 0)) {
+[7m  [0m [91m                 ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m54[0m:[93m9[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m54[0m     if (config.face.emotion.enabled) {
+[7m  [0m [91m        ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/emotion/emotion.ts[0m:[93m59[0m:[93m23[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m59[0m         if (data[i] > config.face.emotion.minConfidence) obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] });
+[7m  [0m [91m                      ~~~~~~~~~~~~~~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/face.ts[0m:[93m11[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"./result"' has no exported member 'Face'.
+
+[7m11[0m import { Face } from './result';
+[7m  [0m [91m         ~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m [96msrc/gesture/gesture.ts[0m:[93m5[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"../result"' has no exported member 'Gesture'.
+
+[7m5[0m import { Gesture } from '../result';
+[7m [0m [91m         ~~~~~~~[0m
+ 3 
+2021-09-11 23:47:08 [31mERROR:[39m TypeDoc: convert returned empty project 
+2021-09-11 23:47:32 [35mSTATE:[39m Lint: {"locations":["src/**/*.ts","test/*.js","demo/**/*.js"],"files":75,"errors":0,"warnings":0} 
+2021-09-11 23:47:33 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
+2021-09-11 23:47:33 [36mINFO: [39m Done... 
+2021-09-11 23:53:16 [36mINFO: [39m @vladmandic/human version 2.1.5 
+2021-09-11 23:53:16 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-09-11 23:53:16 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.1.5"} 
+2021-09-11 23:53:16 [36mINFO: [39m Environment: {"profile":"production","config":"build.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-09-11 23:53:16 [36mINFO: [39m Toolchain: {"build":"0.4.1","esbuild":"0.12.26","typescript":"4.4.3","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-09-11 23:53:16 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
+2021-09-11 23:53:16 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
+2021-09-11 23:53:16 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-11 23:53:16 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":48,"inputBytes":466065,"outputBytes":399095} 
+2021-09-11 23:53:16 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-11 23:53:16 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":48,"inputBytes":466073,"outputBytes":399099} 
+2021-09-11 23:53:16 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-11 23:53:16 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":48,"inputBytes":466140,"outputBytes":399171} 
+2021-09-11 23:53:16 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-11 23:53:16 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":48,"inputBytes":466239,"outputBytes":401059} 
+2021-09-11 23:53:16 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":7,"inputBytes":2168,"outputBytes":2343983} 
+2021-09-11 23:53:17 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":48,"inputBytes":2808632,"outputBytes":1393422} 
+2021-09-11 23:53:17 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":48,"inputBytes":2808632,"outputBytes":2585997} 
+2021-09-11 23:53:34 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types","files":47} 
+2021-09-11 23:53:40 [35mSTATE:[39m TypeDoc: {"input":"src/human.ts","output":"typedoc","objects":22,"index":true} 
+2021-09-11 23:54:05 [35mSTATE:[39m Lint: {"locations":["src/**/*.ts","test/*.js","demo/**/*.js"],"files":75,"errors":0,"warnings":0} 
+2021-09-11 23:54:05 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
+2021-09-11 23:54:05 [36mINFO: [39m Done... 

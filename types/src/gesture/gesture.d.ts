@@ -1,7 +1,7 @@
 /**
  * Gesture detection module
  */
-import { Gesture } from '../result';
+import { GestureResult } from '../result';
 /**
  * @typedef FaceGesture
  */
@@ -18,7 +18,7 @@ export declare type BodyGesture = `leaning ${'left' | 'right'}` | `raise ${'left
  * @typedef BodyGesture
  */
 export declare type HandGesture = `${'thumb' | 'index' | 'middle' | 'ring' | 'pinky'} forward` | `${'thumb' | 'index' | 'middle' | 'ring' | 'pinky'} up` | 'victory' | 'thumbs up';
-export declare const body: (res: any) => Gesture[];
-export declare const face: (res: any) => Gesture[];
-export declare const iris: (res: any) => Gesture[];
-export declare const hand: (res: any) => Gesture[];
+export declare const body: (res: any) => GestureResult[];
+export declare const face: (res: any) => GestureResult[];
+export declare const iris: (res: any) => GestureResult[];
+export declare const hand: (res: any) => GestureResult[];

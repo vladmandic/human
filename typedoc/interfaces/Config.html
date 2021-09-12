@@ -63,14 +63,6 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Configuration interface definition for <strong>Human</strong> library</p>
-					</div>
-					<p>Contains all configurable parameters</p>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -114,7 +106,7 @@
 					<div class="tsd-signature tsd-kind-icon">async<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L22">config.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L190">config.ts:190</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -126,10 +118,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="backend" class="tsd-anchor"></a>
 					<h3>backend</h3>
-					<div class="tsd-signature tsd-kind-icon">backend<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<div class="tsd-signature tsd-kind-icon">backend<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L13">config.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L181">config.ts:181</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -141,43 +133,12 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="body" class="tsd-anchor"></a>
 					<h3>body</h3>
-					<div class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>maxDetected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="BodyConfig.html" class="tsd-signature-type" data-tsd-kind="Interface">BodyConfig</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L152">config.ts:152</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L226">config.ts:226</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Controlls and configures all body detection specific options</p>
-							<ul>
-								<li>enabled: true/false</li>
-								<li>modelPath: body pose model, can be absolute path or relative to modelBasePath</li>
-								<li>minConfidence: threshold for discarding a prediction</li>
-								<li>maxDetected: maximum number of people detected in the input, should be set to the minimum number for performance</li>
-							</ul>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>max<wbr>Detected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>min<wbr>Confidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>skip<wbr>Frames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-						</ul>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="cacheSensitivity" class="tsd-anchor"></a>
@@ -185,7 +146,7 @@
 					<div class="tsd-signature tsd-kind-icon">cache<wbr>Sensitivity<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L39">config.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L208">config.ts:208</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -204,7 +165,7 @@
 					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L19">config.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L187">config.ts:187</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -216,126 +177,20 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="face" class="tsd-anchor"></a>
 					<h3>face</h3>
-					<div class="tsd-signature tsd-kind-icon">face<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>description<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>detector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>iouThreshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>maxDetected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>return<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>rotation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>emotion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>iris<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>mesh<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">face<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="FaceConfig.html" class="tsd-signature-type" data-tsd-kind="Interface">FaceConfig</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L113">config.ts:113</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L224">config.ts:224</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Controlls and configures all face-specific options:</p>
-							<ul>
-								<li>face detection, face mesh detection, age, gender, emotion detection and face description
-								Parameters:</li>
-								<li>enabled: true/false</li>
-								<li>modelPath: path for each of face models</li>
-								<li>minConfidence: threshold for discarding a prediction</li>
-								<li>iouThreshold: ammount of overlap between two detected objects before one object is removed</li>
-								<li>maxDetected: maximum number of faces detected in the input, should be set to the minimum number for performance</li>
-								<li>rotation: use calculated rotated face image or just box with rotation as-is, false means higher performance, but incorrect mesh mapping on higher face angles</li>
-								<li>return: return extracted face as tensor for futher user processing, in which case user is reponsible for manually disposing the tensor</li>
-							</ul>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>description<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter">
-										<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>min<wbr>Confidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>skip<wbr>Frames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-								</ul>
-							</li>
-							<li class="tsd-parameter">
-								<h5>detector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>iouThreshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>maxDetected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>return<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>rotation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter">
-										<h5>iou<wbr>Threshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>max<wbr>Detected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>min<wbr>Confidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>return<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>rotation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>skip<wbr>Frames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-								</ul>
-							</li>
-							<li class="tsd-parameter">
-								<h5>emotion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter">
-										<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>min<wbr>Confidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>skip<wbr>Frames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-								</ul>
-							</li>
-							<li class="tsd-parameter">
-								<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>iris<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter">
-										<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-								</ul>
-							</li>
-							<li class="tsd-parameter">
-								<h5>mesh<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter">
-										<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="filter" class="tsd-anchor"></a>
 					<h3>filter</h3>
-					<div class="tsd-signature tsd-kind-icon">filter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>blur<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>brightness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>contrast<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>flip<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>hue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>kodachrome<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>pixelate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>polaroid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>return<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>saturation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>sepia<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>sharpness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>technicolor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>vintage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">filter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="FilterConfig.html" class="tsd-signature-type" data-tsd-kind="Interface">FilterConfig</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L50">config.ts:50</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L219">config.ts:219</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -346,249 +201,26 @@
 							</ul>
 						</div>
 					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>blur<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Range: 0 (no blur) to N (blur radius in pixels)</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>brightness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Range: -1 (darken) to 1 (lighten)</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>contrast<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Range: -1 (reduce contrast) to 1 (increase contrast)</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>flip<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Flip input as mirror image</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Resize input height</p>
-										<ul>
-											<li>if both width and height are set to 0, there is no resizing</li>
-											<li>if just one is set, second one is scaled automatically</li>
-											<li>if both are set, values are used as-is</li>
-										</ul>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>hue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Range: 0 (no change) to 360 (hue rotation in degrees)</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>kodachrome<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Image kodachrome colors</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Image negative</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>pixelate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Range: 0 (no pixelate) to N (number of pixels to pixelate)</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>polaroid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Image polaroid camera effect</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>return<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Return processed canvas imagedata in result</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>saturation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Range: -1 (reduce saturation) to 1 (increase saturation)</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>sepia<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Image sepia colors</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>sharpness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Range: 0 (no sharpening) to 1 (maximum sharpening)</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>technicolor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Image technicolor colors</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>vintage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Image vintage colors</p>
-									</div>
-								</div>
-							</li>
-							<li class="tsd-parameter">
-								<h5>width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Resize input width</p>
-										<ul>
-											<li>if both width and height are set to 0, there is no resizing</li>
-											<li>if just one is set, second one is scaled automatically</li>
-											<li>if both are set, values are used as-is</li>
-										</ul>
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="gesture" class="tsd-anchor"></a>
 					<h3>gesture</h3>
-					<div class="tsd-signature tsd-kind-icon">gesture<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">gesture<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="GestureConfig.html" class="tsd-signature-type" data-tsd-kind="Interface">GestureConfig</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L98">config.ts:98</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L222">config.ts:222</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Controlls gesture detection</p>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-							</li>
-						</ul>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="hand" class="tsd-anchor"></a>
 					<h3>hand</h3>
-					<div class="tsd-signature tsd-kind-icon">hand<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>detector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>iouThreshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>landmarks<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>maxDetected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>rotation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>skeleton<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">hand<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="HandConfig.html" class="tsd-signature-type" data-tsd-kind="Interface">HandConfig</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L169">config.ts:169</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L228">config.ts:228</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Controlls and configures all hand detection specific options</p>
-							<ul>
-								<li>enabled: true/false</li>
-								<li>landmarks: detect hand landmarks or just hand boundary box</li>
-								<li>modelPath: paths for hand detector and hand skeleton models, can be absolute path or relative to modelBasePath</li>
-								<li>minConfidence: threshold for discarding a prediction</li>
-								<li>iouThreshold: ammount of overlap between two detected objects before one object is removed</li>
-								<li>maxDetected: maximum number of hands detected in the input, should be set to the minimum number for performance</li>
-								<li>rotation: use best-guess rotated hand image or just box with rotation as-is, false means higher performance, but incorrect finger mapping if hand is inverted</li>
-							</ul>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>detector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter">
-										<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-								</ul>
-							</li>
-							<li class="tsd-parameter">
-								<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>iou<wbr>Threshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>landmarks<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>max<wbr>Detected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>min<wbr>Confidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>rotation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>skeleton<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter">
-										<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-									</li>
-								</ul>
-							</li>
-							<li class="tsd-parameter">
-								<h5>skip<wbr>Frames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-						</ul>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="modelBasePath" class="tsd-anchor"></a>
@@ -596,7 +228,7 @@
 					<div class="tsd-signature tsd-kind-icon">model<wbr>Base<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L33">config.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L202">config.ts:202</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -611,81 +243,22 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="object" class="tsd-anchor"></a>
 					<h3>object</h3>
-					<div class="tsd-signature tsd-kind-icon">object<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>iouThreshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>maxDetected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minConfidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>skipFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">object<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="ObjectConfig.html" class="tsd-signature-type" data-tsd-kind="Interface">ObjectConfig</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L192">config.ts:192</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L230">config.ts:230</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Controlls and configures all object detection specific options</p>
-							<ul>
-								<li>enabled: true/false</li>
-								<li>modelPath: object detection model, can be absolute path or relative to modelBasePath</li>
-								<li>minConfidence: minimum score that detection must have to return as valid object</li>
-								<li>iouThreshold: ammount of overlap between two detected objects before one object is removed</li>
-								<li>maxDetected: maximum number of detections to return</li>
-							</ul>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>iou<wbr>Threshold<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>max<wbr>Detected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>min<wbr>Confidence<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>skip<wbr>Frames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-						</ul>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="segmentation" class="tsd-anchor"></a>
 					<h3>segmentation</h3>
-					<div class="tsd-signature tsd-kind-icon">segmentation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>modelPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">segmentation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="SegmentationConfig.html" class="tsd-signature-type" data-tsd-kind="Interface">SegmentationConfig</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L210">config.ts:210</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L232">config.ts:232</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Controlls and configures all body segmentation module
-								removes background from input containing person
-								if segmentation is enabled it will run as preprocessing task before any other model
-								alternatively leave it disabled and use it on-demand using human.segmentation method which can
-							remove background or replace it with user-provided background</p>
-						</div>
-						<ul>
-							<li>enabled: true/false</li>
-							<li>modelPath: object detection model, can be absolute path or relative to modelBasePath</li>
-						</ul>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>model<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-							</li>
-						</ul>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="skipFrame" class="tsd-anchor"></a>
@@ -693,7 +266,7 @@
 					<div class="tsd-signature tsd-kind-icon">skip<wbr>Frame<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L45">config.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L214">config.ts:214</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -712,7 +285,7 @@
 					<div class="tsd-signature tsd-kind-icon">warmup<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L28">config.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L197">config.ts:197</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -731,7 +304,7 @@
 					<div class="tsd-signature tsd-kind-icon">wasm<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L16">config.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/vladmandic/human/blob/main/src/config.ts#L184">config.ts:184</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -759,7 +332,10 @@
 						<a href="../classes/Human.html" class="tsd-kind-icon">Human</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="Body.html" class="tsd-kind-icon">Body</a>
+						<a href="BodyConfig.html" class="tsd-kind-icon">Body<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="BodyResult.html" class="tsd-kind-icon">Body<wbr>Result</a>
 					</li>
 				</ul>
 				<ul class="current">
@@ -819,31 +395,52 @@
 						<a href="DrawOptions.html" class="tsd-kind-icon">Draw<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="Face.html" class="tsd-kind-icon">Face</a>
+						<a href="FaceConfig.html" class="tsd-kind-icon">Face<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="Hand.html" class="tsd-kind-icon">Hand</a>
+						<a href="FaceResult.html" class="tsd-kind-icon">Face<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="Item.html" class="tsd-kind-icon">Item</a>
+						<a href="FilterConfig.html" class="tsd-kind-icon">Filter<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="Person.html" class="tsd-kind-icon">Person</a>
+						<a href="GestureConfig.html" class="tsd-kind-icon">Gesture<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="HandConfig.html" class="tsd-kind-icon">Hand<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="HandResult.html" class="tsd-kind-icon">Hand<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="ObjectConfig.html" class="tsd-kind-icon">Object<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="ObjectResult.html" class="tsd-kind-icon">Object<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="PersonResult.html" class="tsd-kind-icon">Person<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="Result.html" class="tsd-kind-icon">Result</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="SegmentationConfig.html" class="tsd-kind-icon">Segmentation<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../index.html#Error" class="tsd-kind-icon">Error</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="../index.html#Gesture" class="tsd-kind-icon">Gesture</a>
+						<a href="../index.html#GestureResult" class="tsd-kind-icon">Gesture<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../index.html#Input" class="tsd-kind-icon">Input</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../index.html#TensorFlow" class="tsd-kind-icon">Tensor<wbr>Flow</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="../index.html#defaults" class="tsd-kind-icon">defaults</a>
 					</li>
 				</ul>
 			</nav>
@@ -861,9 +458,6 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
 			</ul>
 		</div>
 	</div>

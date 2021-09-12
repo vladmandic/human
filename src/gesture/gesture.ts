@@ -2,7 +2,7 @@
  * Gesture detection module
  */
 
-import { Gesture } from '../result';
+import { GestureResult } from '../result';
 import * as fingerPose from '../fingerpose/fingerpose';
 
 /**
@@ -39,7 +39,7 @@ export type HandGesture =
   | 'victory'
   | 'thumbs up';
 
-export const body = (res): Gesture[] => {
+export const body = (res): GestureResult[] => {
   if (!res) return [];
   const gestures: Array<{ body: number, gesture: BodyGesture }> = [];
   for (let i = 0; i < res.length; i++) {
@@ -59,7 +59,7 @@ export const body = (res): Gesture[] => {
   return gestures;
 };
 
-export const face = (res): Gesture[] => {
+export const face = (res): GestureResult[] => {
   if (!res) return [];
   const gestures: Array<{ face: number, gesture: FaceGesture }> = [];
   for (let i = 0; i < res.length; i++) {
@@ -80,7 +80,7 @@ export const face = (res): Gesture[] => {
   return gestures;
 };
 
-export const iris = (res): Gesture[] => {
+export const iris = (res): GestureResult[] => {
   if (!res) return [];
   const gestures: Array<{ iris: number, gesture: IrisGesture }> = [];
   for (let i = 0; i < res.length; i++) {
@@ -118,7 +118,7 @@ export const iris = (res): Gesture[] => {
   return gestures;
 };
 
-export const hand = (res): Gesture[] => {
+export const hand = (res): GestureResult[] => {
   if (!res) return [];
   const gestures: Array<{ hand: number, gesture: HandGesture }> = [];
   for (let i = 0; i < res.length; i++) {

@@ -14,7 +14,7 @@ const config = {
     description: { enabled: true },
     emotion: { enabled: true },
   },
-  hand: { enabled: true },
+  hand: { enabled: true, rotation: true },
   body: { enabled: true },
   object: { enabled: true },
   segmentation: { enabled: true },

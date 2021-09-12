@@ -66,7 +66,7 @@ async function testInstance(human) {
 
   // if (!human.tf) human.tf = tf;
   log('info', 'human version:', human.version);
-  log('info', 'platform:', human.sysinfo.platform, 'agent:', human.sysinfo.agent);
+  log('info', 'platform:', human.env.platform, 'agent:', human.env.agent);
   log('info', 'tfjs version:', human.tf.version.tfjs);
 
   await human.load();
@@ -132,6 +132,7 @@ async function test(Human, inputConfig) {
   }
   const t0 = process.hrtime.bigint();
   const human = new Human(config);
+  // await human.tf.ready();
   await testInstance(human);
   config.warmup = 'none';
   await testWarmup(human, 'default');
@@ -158,6 +159,8 @@ async function test(Human, inputConfig) {
     testDetect(second, 'samples/ai-face.jpg', 'default'),
     testDetect(human, 'samples/ai-body.jpg', 'default'),
     testDetect(second, 'samples/ai-body.jpg', 'default'),
+    testDetect(human, 'samples/ai-upper.jpg', 'default'),
+    testDetect(second, 'samples/ai-upper.jpg', 'default'),
   ]);
   const t1 = process.hrtime.bigint();
   log('info', 'test complete:', Math.trunc(Number(t1 - t0) / 1000 / 1000), 'ms');

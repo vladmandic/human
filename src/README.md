@@ -6,6 +6,5 @@ Source code of the `Human` library
 - Compiled typings are present in `/types`
 - Extracted API specification is present in `/typedoc`
 
-For details how to build the `Human` library see Wiki
-
-- [**Build Process**](https://github.com/vladmandic/human/wiki/Build-Process)
+[**Build Process**](https://github.com/vladmandic/human/wiki/Build-Process)  
+[**TypeDoc API Specification**](https://vladmandic.github.io/human/typedoc/classes/Human.html)  

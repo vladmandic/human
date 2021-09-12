@@ -1,92 +1,107 @@
-/**
- * Custom TFJS backend for Human based on WebGL
- * Not used by default
- */
-
-import { log } from '../helpers';
+import { log, now } from '../helpers';
+import * as humangl from './humangl';
+import * as env from '../env';
 import * as tf from '../../dist/tfjs.esm.js';
 
-export const config = {
-  name: 'humangl',
-  priority: 99,
-  canvas: <null | OffscreenCanvas | HTMLCanvasElement>null,
-  gl: <null | WebGL2RenderingContext>null,
-  width: 1024,
-  height: 1024,
-  extensions: <string[]> [],
-  webGLattr: { // https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2
-    alpha: false,
-    antialias: false,
-    premultipliedAlpha: false,
-    preserveDrawingBuffer: false,
-    depth: false,
-    stencil: false,
-    failIfMajorPerformanceCaveat: false,
-    desynchronized: true,
-  },
-};
+export async function check(instance) {
+  if (instance.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
+    const timeStamp = now();
+    instance.state = 'backend';
+    /* force backend reload
+    if (instance.config.backend in tf.engine().registry) {
+      const backendFactory = tf.findBackendFactory(instance.config.backend);
+      tf.removeBackend(instance.config.backend);
+      tf.registerBackend(instance.config.backend, backendFactory);
+    } else {
+      log('Backend not registred:', instance.config.backend);
+    }
+    */
 
-function extensions(): void {
-  /*
-  https://www.khronos.org/registry/webgl/extensions/
-  https://webglreport.com/?v=2
-  */
-  const gl = config.gl;
-  if (!gl) return;
-  config.extensions = gl.getSupportedExtensions() as string[];
-  // gl.getExtension('KHR_parallel_shader_compile');
-}
+    if (instance.config.backend && instance.config.backend.length > 0) {
+      // detect web worker
+      // @ts-ignore ignore missing type for WorkerGlobalScope as that is the point
+      if (typeof window === 'undefined' && typeof WorkerGlobalScope !== 'undefined' && instance.config.debug) {
+        log('running inside web worker');
+      }
 
-/**
- * Registers custom WebGL2 backend to be used by Human library
- *
- * @returns void
- */
-export function register(): void {
-  if (!tf.findBackend(config.name)) {
-    // log('backend registration:', config.name);
-    try {
-      config.canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(config.width, config.height) : document.createElement('canvas');
-    } catch (err) {
-      log('error: cannot create canvas:', err);
-      return;
+      // force browser vs node backend
+      if (env.env.browser && instance.config.backend === 'tensorflow') {
+        log('override: backend set to tensorflow while running in browser');
+        instance.config.backend = 'humangl';
+      }
+      if (env.env.node && (instance.config.backend === 'webgl' || instance.config.backend === 'humangl')) {
+        log(`override: backend set to ${instance.config.backend} while running in nodejs`);
+        instance.config.backend = 'tensorflow';
+      }
+
+      // handle webgpu
+      if (env.env.browser && instance.config.backend === 'webgpu') {
+        if (typeof navigator === 'undefined' || typeof navigator['gpu'] === 'undefined') {
+          log('override: backend set to webgpu but browser does not support webgpu');
+          instance.config.backend = 'humangl';
+        } else {
+          const adapter = await navigator['gpu'].requestAdapter();
+          if (instance.config.debug) log('enumerated webgpu adapter:', adapter);
+        }
+      }
+
+      // check available backends
+      if (instance.config.backend === 'humangl') humangl.register();
+      const available = Object.keys(tf.engine().registryFactory);
+      if (instance.config.debug) log('available backends:', available);
+
+      if (!available.includes(instance.config.backend)) {
+        log(`error: backend ${instance.config.backend} not found in registry`);
+        instance.config.backend = env.env.node ? 'tensorflow' : 'humangl';
+        log(`override: setting backend ${instance.config.backend}`);
+      }
+
+      if (instance.config.debug) log('setting backend:', instance.config.backend);
+
+      // handle wasm
+      if (instance.config.backend === 'wasm') {
+        if (instance.config.debug) log('wasm path:', instance.config.wasmPath);
+        if (typeof tf?.setWasmPaths !== 'undefined') await tf.setWasmPaths(instance.config.wasmPath);
+        else throw new Error('Human: WASM backend is not loaded');
+        const simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
+        const mt = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT');
+        if (instance.config.debug) log(`wasm execution: ${simd ? 'SIMD' : 'no SIMD'} ${mt ? 'multithreaded' : 'singlethreaded'}`);
+        if (instance.config.debug && !simd) log('warning: wasm simd support is not enabled');
+      }
+
+      await tf.setBackend(instance.config.backend);
+
+      try {
+        await tf.setBackend(instance.config.backend);
+        await tf.ready();
+      } catch (err) {
+        log('error: cannot set backend:', instance.config.backend, err);
+      }
     }
-    try {
-      config.gl = config.canvas.getContext('webgl2', config.webGLattr) as WebGL2RenderingContext;
-    } catch (err) {
-      log('error: cannot get WebGL2 context:', err);
-      return;
+
+    // handle webgl & humangl
+    if (tf.getBackend() === 'humangl') {
+      tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
+      tf.ENV.set('WEBGL_CPU_FORWARD', true);
+      tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', false);
+      tf.ENV.set('WEBGL_USE_SHAPES_UNIFORMS', true);
+      // if (!instance.config.object.enabled) tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
+      if (typeof instance.config['deallocate'] !== 'undefined' && instance.config['deallocate']) { // hidden param
+        log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
+        tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
+      }
+      // @ts-ignore getGPGPUContext only exists on WebGL backend
+      const gl = await tf.backend().getGPGPUContext().gl;
+      if (instance.config.debug) log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
     }
-    try {
-      tf.setWebGLContext(2, config.gl);
-    } catch (err) {
-      log('error: cannot set WebGL2 context:', err);
-      return;
-    }
-    try {
-      const ctx = new tf.GPGPUContext(config.gl);
-      tf.registerBackend(config.name, () => new tf.MathBackendWebGL(ctx), config.priority);
-    } catch (err) {
-      log('error: cannot register WebGL backend:', err);
-      return;
-    }
-    try {
-      const kernels = tf.getKernelsForBackend('webgl');
-      kernels.forEach((kernelConfig) => {
-        const newKernelConfig = { ...kernelConfig, backendName: config.name };
-        tf.registerKernel(newKernelConfig);
-      });
-    } catch (err) {
-      log('error: cannot update WebGL backend registration:', err);
-      return;
-    }
-    try {
-      tf.ENV.set('WEBGL_VERSION', 2);
-    } catch (err) {
-      log('error: cannot set WebGL backend flags:', err);
-      return;
-    }
-    extensions();
-    log('backend registered:', config.name);
+
+    // wait for ready
+    tf.enableProdMode();
+    await tf.ready();
+    instance.performance.backend = Math.trunc(now() - timeStamp);
+    instance.config.backend = tf.getBackend();
+
+    env.get(); // update env on backend init
+    instance.env = env.env;
   }
 }

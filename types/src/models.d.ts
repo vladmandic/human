@@ -3,3 +3,4 @@
  * @param userinstance.config?: {@link instance.config}
 */
 export declare function load(instance: any): Promise<void>;
+export declare function validate(instance: any): Promise<void>;

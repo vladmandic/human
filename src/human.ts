@@ -6,7 +6,6 @@ import { log, now, mergeDeep } from './helpers';
 import { Config, defaults } from './config';
 import { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult } from './result';
 import * as tf from '../dist/tfjs.esm.js';
-import * as backend from './tfjs/backend';
 import * as models from './models';
 import * as face from './face';
 import * as facemesh from './blazeface/facemesh';
@@ -24,9 +23,10 @@ import * as image from './image/image';
 import * as draw from './draw/draw';
 import * as persons from './persons';
 import * as interpolate from './interpolate';
-import * as sample from './sample';
 import * as env from './env';
+import * as backend from './tfjs/backend';
 import * as app from '../package.json';
+import * as warmups from './warmup';
 import { Tensor, GraphModel } from './tfjs/types';
 
 // export types
@@ -86,8 +86,6 @@ export class Human {
    * - Progresses through: 'config', 'check', 'backend', 'load', 'run:<model>', 'idle'
    */
   state: string;
-  /** process input and return tensor and canvas */
-  image: typeof image.process;
   /** currenty processed image tensor and canvas */
   process: { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null };
   /** @internal: Instance of TensorFlow/JS used by Human
@@ -151,9 +149,7 @@ export class Human {
   #numTensors: number;
   #analyzeMemoryLeaks: boolean;
   #checkSanity: boolean;
-  #firstRun: boolean;
-  #lastInputSum: number;
-  #lastCacheDiff: number;
+  initial: boolean;
 
   // definition end
 
@@ -176,18 +172,17 @@ export class Human {
     this.#numTensors = 0;
     this.#analyzeMemoryLeaks = false;
     this.#checkSanity = false;
-    this.#firstRun = true;
-    this.#lastCacheDiff = 0;
+    this.initial = true;
     this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
     this.events = new EventTarget();
     // object that contains all initialized models
     this.models = {
-      face: null,
+      face: null, // array of models
       posenet: null,
       blazepose: null,
       efficientpose: null,
       movenet: null,
-      handpose: null,
+      handpose: null, // array of models
       age: null,
       gender: null,
       emotion: null,
@@ -200,14 +195,12 @@ export class Human {
     this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [] };
     // export access to image this.processing
     // @ts-ignore eslint-typescript cannot correctly infer type in anonymous function
-    this.image = (input: Input) => image.process(input, this.config);
     this.process = { tensor: null, canvas: null };
     // export raw access to underlying models
     this.faceTriangulation = facemesh.triangulation;
     this.faceUVMap = facemesh.uvmap;
     // include platform info
-    this.#lastInputSum = 1;
-    this.#emit('create');
+    this.emit('create');
   }
 
   // helper function: measure tensor leak
@@ -234,6 +227,13 @@ export class Human {
     }
     return null;
   }
+
+  /** Process input as return canvas and tensor
+   *
+   * @param input: {@link Input}
+   * @returns { tensor, canvas }
+   */
+  image = (input: Input) => image.process(input, this.config);
 
   /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
    * - Calculation is based on normalized Minkowski distance between
@@ -290,12 +290,11 @@ export class Human {
     const count = Object.values(this.models).filter((model) => model).length;
     if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
 
-    if (this.#firstRun) { // print version info on first run and check for correct backend setup
+    if (this.initial) { // print version info on first run and check for correct backend setup
       if (this.config.debug) log(`version: ${this.version}`);
       if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
-      // if (this.config.debug) log('environment:', this.env);
-
-      await this.#checkBackend();
+      await backend.check(this);
+      await tf.ready();
       if (this.env.browser) {
         if (this.config.debug) log('configuration:', this.config);
         if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
@@ -304,123 +303,22 @@ export class Human {
 
     await models.load(this); // actually loads models
 
-    if (this.#firstRun) { // print memory stats on first run
-      if (this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors');
-      this.#firstRun = false;
-    }
+    if (this.initial && this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors'); // print memory stats on first run
+    this.initial = false;
 
     const loaded = Object.values(this.models).filter((model) => model).length;
-    if (loaded !== count) this.#emit('load');
+    if (loaded !== count) { // number of loaded models changed
+      await models.validate(this); // validate kernel ops used by model against current backend
+      this.emit('load');
+    }
+
     const current = Math.trunc(now() - timeStamp);
     if (current > (this.performance.load as number || 0)) this.performance.load = current;
   }
 
   // emit event
   /** @hidden */
-  #emit = (event: string) => this.events?.dispatchEvent(new Event(event));
-
-  // check if backend needs initialization if it changed
-  /** @hidden */
-  #checkBackend = async () => {
-    if (this.#firstRun || (this.config.backend && (this.config.backend.length > 0) && (this.tf.getBackend() !== this.config.backend))) {
-      const timeStamp = now();
-      this.state = 'backend';
-      /* force backend reload
-      if (this.config.backend in tf.engine().registry) {
-        const backendFactory = tf.findBackendFactory(this.config.backend);
-        tf.removeBackend(this.config.backend);
-        tf.registerBackend(this.config.backend, backendFactory);
-      } else {
-        log('Backend not registred:', this.config.backend);
-      }
-      */
-
-      if (this.config.backend && this.config.backend.length > 0) {
-        // detect web worker
-        // @ts-ignore ignore missing type for WorkerGlobalScope as that is the point
-        if (typeof window === 'undefined' && typeof WorkerGlobalScope !== 'undefined' && this.config.debug) {
-          log('running inside web worker');
-        }
-
-        // force browser vs node backend
-        if (this.env.browser && this.config.backend === 'tensorflow') {
-          log('override: backend set to tensorflow while running in browser');
-          this.config.backend = 'humangl';
-        }
-        if (this.env.node && (this.config.backend === 'webgl' || this.config.backend === 'humangl')) {
-          log(`override: backend set to ${this.config.backend} while running in nodejs`);
-          this.config.backend = 'tensorflow';
-        }
-
-        // handle webgpu
-        if (this.env.browser && this.config.backend === 'webgpu') {
-          if (typeof navigator === 'undefined' || typeof navigator['gpu'] === 'undefined') {
-            log('override: backend set to webgpu but browser does not support webgpu');
-            this.config.backend = 'humangl';
-          } else {
-            const adapter = await navigator['gpu'].requestAdapter();
-            if (this.config.debug) log('enumerated webgpu adapter:', adapter);
-          }
-        }
-
-        // check available backends
-        if (this.config.backend === 'humangl') backend.register();
-        const available = Object.keys(this.tf.engine().registryFactory);
-        if (this.config.debug) log('available backends:', available);
-
-        if (!available.includes(this.config.backend)) {
-          log(`error: backend ${this.config.backend} not found in registry`);
-          this.config.backend = this.env.node ? 'tensorflow' : 'humangl';
-          log(`override: setting backend ${this.config.backend}`);
-        }
-
-        if (this.config.debug) log('setting backend:', this.config.backend);
-
-        // handle wasm
-        if (this.config.backend === 'wasm') {
-          if (this.config.debug) log('wasm path:', this.config.wasmPath);
-          if (typeof this.tf?.setWasmPaths !== 'undefined') this.tf.setWasmPaths(this.config.wasmPath);
-          else throw new Error('Human: WASM backend is not loaded');
-          const simd = await this.tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
-          const mt = await this.tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT');
-          if (this.config.debug) log(`wasm execution: ${simd ? 'SIMD' : 'no SIMD'} ${mt ? 'multithreaded' : 'singlethreaded'}`);
-          if (this.config.debug && !simd) log('warning: wasm simd support is not enabled');
-        }
-
-        // handle humangl
-        try {
-          await this.tf.setBackend(this.config.backend);
-        } catch (err) {
-          log('error: cannot set backend:', this.config.backend, err);
-        }
-      }
-
-      // handle webgl & humangl
-      if (this.tf.getBackend() === 'humangl') {
-        this.tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
-        this.tf.ENV.set('WEBGL_CPU_FORWARD', true);
-        this.tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', false);
-        this.tf.ENV.set('WEBGL_USE_SHAPES_UNIFORMS', true);
-        // if (!this.config.object.enabled) this.tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
-        if (typeof this.config['deallocate'] !== 'undefined' && this.config['deallocate']) { // hidden param
-          log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
-          this.tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
-        }
-        // @ts-ignore getGPGPUContext only exists on WebGL backend
-        const gl = await this.tf.backend().getGPGPUContext().gl;
-        if (this.config.debug) log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
-      }
-
-      // wait for ready
-      this.tf.enableProdMode();
-      await this.tf.ready();
-      this.performance.backend = Math.trunc(now() - timeStamp);
-      this.config.backend = this.tf.getBackend();
-
-      env.get(); // update env on backend init
-      this.env = env.env;
-    }
-  }
+  emit = (event: string) => this.events?.dispatchEvent(new Event(event));
 
   /**
    * Runs interpolation using last known result and returns smoothened result
@@ -431,43 +329,20 @@ export class Human {
    */
   next = (result?: Result) => interpolate.calc(result || this.result) as Result;
 
-  // check if input changed sufficiently to trigger new detections
-  /** @hidden */
-  #skipFrame = async (input: Tensor) => {
-    if (this.config.cacheSensitivity === 0) return false;
-    const resizeFact = 32;
-    if (!input.shape[1] || !input.shape[2]) return false;
-    const reduced: Tensor = tf.image.resizeBilinear(input, [Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
-    // use tensor sum
-    /*
-    const sumT = this.tf.sum(reduced);
-    const sum = await sumT.data()[0] as number;
-    sumT.dispose();
-    */
-    // use js loop sum, faster than uploading tensor to gpu calculating and downloading back
-    const reducedData = await reduced.data(); // raw image rgb array
-    let sum = 0;
-    for (let i = 0; i < reducedData.length / 3; i++) sum += reducedData[3 * i + 2]; // look only at green value of each pixel
-
-    reduced.dispose();
-    const diff = 100 * (Math.max(sum, this.#lastInputSum) / Math.min(sum, this.#lastInputSum) - 1);
-    this.#lastInputSum = sum;
-    // if previous frame was skipped, skip this frame if changed more than cacheSensitivity
-    // if previous frame was not skipped, then look for cacheSensitivity or difference larger than one in previous frame to avoid resetting cache in subsequent frames unnecessarily
-    const skipFrame = diff < Math.max(this.config.cacheSensitivity, this.#lastCacheDiff);
-    // if difference is above 10x threshold, don't use last value to force reset cache for significant change of scenes or images
-    this.#lastCacheDiff = diff > 10 * this.config.cacheSensitivity ? 0 : diff;
-    // console.log('skipFrame', skipFrame, this.config.cacheSensitivity, diff);
-    return skipFrame;
-  }
+  /** Warmup method pre-initializes all configured models for faster inference
+   * - can take significant time on startup
+   * - only used for `webgl` and `humangl` backends
+   * @param userConfig?: {@link Config}
+  */
+  warmup = (userConfig?: Partial<Config>) => warmups.warmup(this, userConfig) as Promise<Result | { error }>
 
   /** Main detection method
    * - Analyze configuration: {@link Config}
    * - Pre-this.process input: {@link Input}
    * - Run inference for all configured models
-   * - this.process and return result: {@link Result}
+   * - Process and return result: {@link Result}
    *
-   * @param input: Input
+   * @param input: {@link Input}
    * @param userConfig?: {@link Config}
    * @returns result: {@link Result}
   */
@@ -491,19 +366,20 @@ export class Human {
 
       const timeStart = now();
 
-      // configure backend
-      await this.#checkBackend();
+      // configure backend if needed
+      await backend.check(this);
 
       // load models if enabled
       await this.load();
 
       timeStamp = now();
       this.process = image.process(input, this.config);
+      const inputTensor = this.process.tensor;
       this.performance.image = Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
 
       // run segmentation prethis.processing
-      if (this.config.segmentation.enabled && this.process && this.process.tensor) {
+      if (this.config.segmentation.enabled && this.process && inputTensor) {
         this.analyze('Start Segmentation:');
         this.state = 'run:segmentation';
         timeStamp = now();
@@ -512,21 +388,21 @@ export class Human {
         if (elapsedTime > 0) this.performance.segmentation = elapsedTime;
         if (this.process.canvas) {
           // replace input
-          tf.dispose(this.process.tensor);
+          tf.dispose(inputTensor);
           this.process = image.process(this.process.canvas, this.config);
         }
         this.analyze('End Segmentation:');
       }
 
-      if (!this.process || !this.process.tensor) {
+      if (!this.process || !inputTensor) {
         log('could not convert input to tensor');
         resolve({ error: 'could not convert input to tensor' });
         return;
       }
-      this.#emit('image');
+      this.emit('image');
 
       timeStamp = now();
-      this.config.skipFrame = await this.#skipFrame(this.process.tensor);
+      this.config.skipFrame = await image.skip(this, inputTensor);
       if (!this.performance.frames) this.performance.frames = 0;
       if (!this.performance.cached) this.performance.cached = 0;
       (this.performance.frames as number)++;
@@ -543,12 +419,12 @@ export class Human {
 
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       if (this.config.async) {
-        faceRes = this.config.face.enabled ? face.detectFace(this, this.process.tensor) : [];
+        faceRes = this.config.face.enabled ? face.detectFace(this, inputTensor) : [];
         if (this.performance.face) delete this.performance.face;
       } else {
         this.state = 'run:face';
         timeStamp = now();
-        faceRes = this.config.face.enabled ? await face.detectFace(this, this.process.tensor) : [];
+        faceRes = this.config.face.enabled ? await face.detectFace(this, inputTensor) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.face = elapsedTime;
       }
@@ -556,18 +432,18 @@ export class Human {
       // run body: can be posenet, blazepose, efficientpose, movenet
       this.analyze('Start Body:');
       if (this.config.async) {
-        if (this.config.body.modelPath?.includes('posenet')) bodyRes = this.config.body.enabled ? posenet.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? blazepose.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('efficientpose')) bodyRes = this.config.body.enabled ? efficientpose.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('movenet')) bodyRes = this.config.body.enabled ? movenet.predict(this.process.tensor, this.config) : [];
+        if (this.config.body.modelPath?.includes('posenet')) bodyRes = this.config.body.enabled ? posenet.predict(inputTensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? blazepose.predict(inputTensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('efficientpose')) bodyRes = this.config.body.enabled ? efficientpose.predict(inputTensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('movenet')) bodyRes = this.config.body.enabled ? movenet.predict(inputTensor, this.config) : [];
         if (this.performance.body) delete this.performance.body;
       } else {
         this.state = 'run:body';
         timeStamp = now();
-        if (this.config.body.modelPath?.includes('posenet')) bodyRes = this.config.body.enabled ? await posenet.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? await blazepose.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('efficientpose')) bodyRes = this.config.body.enabled ? await efficientpose.predict(this.process.tensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('movenet')) bodyRes = this.config.body.enabled ? await movenet.predict(this.process.tensor, this.config) : [];
+        if (this.config.body.modelPath?.includes('posenet')) bodyRes = this.config.body.enabled ? await posenet.predict(inputTensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? await blazepose.predict(inputTensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('efficientpose')) bodyRes = this.config.body.enabled ? await efficientpose.predict(inputTensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('movenet')) bodyRes = this.config.body.enabled ? await movenet.predict(inputTensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.body = elapsedTime;
       }
@@ -576,12 +452,12 @@ export class Human {
       // run handpose
       this.analyze('Start Hand:');
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? handpose.predict(this.process.tensor, this.config) : [];
+        handRes = this.config.hand.enabled ? handpose.predict(inputTensor, this.config) : [];
         if (this.performance.hand) delete this.performance.hand;
       } else {
         this.state = 'run:hand';
         timeStamp = now();
-        handRes = this.config.hand.enabled ? await handpose.predict(this.process.tensor, this.config) : [];
+        handRes = this.config.hand.enabled ? await handpose.predict(inputTensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.hand = elapsedTime;
       }
@@ -590,14 +466,14 @@ export class Human {
       // run nanodet
       this.analyze('Start Object:');
       if (this.config.async) {
-        if (this.config.object.modelPath?.includes('nanodet')) objectRes = this.config.object.enabled ? nanodet.predict(this.process.tensor, this.config) : [];
-        else if (this.config.object.modelPath?.includes('centernet')) objectRes = this.config.object.enabled ? centernet.predict(this.process.tensor, this.config) : [];
+        if (this.config.object.modelPath?.includes('nanodet')) objectRes = this.config.object.enabled ? nanodet.predict(inputTensor, this.config) : [];
+        else if (this.config.object.modelPath?.includes('centernet')) objectRes = this.config.object.enabled ? centernet.predict(inputTensor, this.config) : [];
         if (this.performance.object) delete this.performance.object;
       } else {
         this.state = 'run:object';
         timeStamp = now();
-        if (this.config.object.modelPath?.includes('nanodet')) objectRes = this.config.object.enabled ? await nanodet.predict(this.process.tensor, this.config) : [];
-        else if (this.config.object.modelPath?.includes('centernet')) objectRes = this.config.object.enabled ? await centernet.predict(this.process.tensor, this.config) : [];
+        if (this.config.object.modelPath?.includes('nanodet')) objectRes = this.config.object.enabled ? await nanodet.predict(inputTensor, this.config) : [];
+        else if (this.config.object.modelPath?.includes('centernet')) objectRes = this.config.object.enabled ? await centernet.predict(inputTensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.object = elapsedTime;
       }
@@ -631,110 +507,12 @@ export class Human {
       };
 
       // finally dispose input tensor
-      tf.dispose(this.process.tensor);
+      tf.dispose(inputTensor);
 
       // log('Result:', result);
-      this.#emit('detect');
+      this.emit('detect');
       resolve(this.result);
     });
-  }
-
-  /** @hidden */
-  #warmupBitmap = async () => {
-    const b64toBlob = (base64: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
-    let blob;
-    let res;
-    switch (this.config.warmup) {
-      case 'face': blob = await b64toBlob(sample.face); break;
-      case 'full': blob = await b64toBlob(sample.body); break;
-      default: blob = null;
-    }
-    if (blob) {
-      const bitmap = await createImageBitmap(blob);
-      res = await this.detect(bitmap, this.config);
-      bitmap.close();
-    }
-    return res;
-  }
-
-  /** @hidden */
-  #warmupCanvas = async () => new Promise((resolve) => {
-    let src;
-    let size = 0;
-    switch (this.config.warmup) {
-      case 'face':
-        size = 256;
-        src = 'data:image/jpeg;base64,' + sample.face;
-        break;
-      case 'full':
-      case 'body':
-        size = 1200;
-        src = 'data:image/jpeg;base64,' + sample.body;
-        break;
-      default:
-        src = null;
-    }
-    // src = encodeURI('../assets/human-sample-upper.jpg');
-    const img = new Image();
-    img.onload = async () => {
-      const canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(size, size) : document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      ctx?.drawImage(img, 0, 0);
-      // const data = ctx?.getImageData(0, 0, canvas.height, canvas.width);
-      const res = await this.detect(canvas, this.config);
-      resolve(res);
-    };
-    if (src) img.src = src;
-    else resolve(null);
-  });
-
-  /** @hidden */
-  #warmupNode = async () => {
-    const atob = (str: string) => Buffer.from(str, 'base64');
-    let img;
-    if (this.config.warmup === 'face') img = atob(sample.face);
-    if (this.config.warmup === 'body' || this.config.warmup === 'full') img = atob(sample.body);
-    if (!img) return null;
-    let res;
-    if (typeof tf['node'] !== 'undefined') {
-      const data = tf['node'].decodeJpeg(img);
-      const expanded = data.expandDims(0);
-      this.tf.dispose(data);
-      // log('Input:', expanded);
-      res = await this.detect(expanded, this.config);
-      this.tf.dispose(expanded);
-    } else {
-      if (this.config.debug) log('Warmup tfjs-node not loaded');
-      /*
-      const input = await canvasJS.loadImage(img);
-      const canvas = canvasJS.createCanvas(input.width, input.height);
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, input.width, input.height);
-      res = await this.detect(input, this.config);
-      */
-    }
-    return res;
-  }
-
-  /** Warmup method pre-initializes all configured models for faster inference
-   * - can take significant time on startup
-   * - only used for `webgl` and `humangl` backends
-   * @param userConfig?: Config
-  */
-  async warmup(userConfig?: Partial<Config>): Promise<Result | { error }> {
-    const t0 = now();
-    if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
-    if (!this.config.warmup || this.config.warmup === 'none') return { error: 'null' };
-    let res;
-    if (typeof createImageBitmap === 'function') res = await this.#warmupBitmap();
-    else if (typeof Image !== 'undefined') res = await this.#warmupCanvas();
-    else res = await this.#warmupNode();
-    const t1 = now();
-    if (this.config.debug) log('Warmup', this.config.warmup, Math.round(t1 - t0), 'ms', res);
-    this.#emit('warmup');
-    return res;
   }
 }
 

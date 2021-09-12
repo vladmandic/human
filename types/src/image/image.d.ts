@@ -8,4 +8,5 @@ export declare function process(input: Input, config: Config): {
     tensor: Tensor | null;
     canvas: OffscreenCanvas | HTMLCanvasElement;
 };
+export declare function skip(instance: any, input: Tensor): Promise<boolean>;
 export {};

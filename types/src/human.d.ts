@@ -5,7 +5,6 @@ import { Config } from './config';
 import { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
-import * as image from './image/image';
 import * as draw from './draw/draw';
 import * as env from './env';
 import { Tensor, GraphModel } from './tfjs/types';
@@ -63,8 +62,6 @@ export declare class Human {
      * - Progresses through: 'config', 'check', 'backend', 'load', 'run:<model>', 'idle'
      */
     state: string;
-    /** process input and return tensor and canvas */
-    image: typeof image.process;
     /** currenty processed image tensor and canvas */
     process: {
         tensor: Tensor | null;
@@ -128,6 +125,7 @@ export declare class Human {
     faceUVMap: typeof facemesh.uvmap;
     /** Performance object that contains values for all recently performed operations */
     performance: Record<string, number>;
+    initial: boolean;
     /**
      * Creates instance of Human library that is futher used for all operations
      * @param userConfig: {@link Config}
@@ -135,6 +133,15 @@ export declare class Human {
     constructor(userConfig?: Partial<Config>);
     /** @hidden */
     analyze: (...msg: string[]) => void;
+    /** Process input as return canvas and tensor
+     *
+     * @param input: {@link Input}
+     * @returns { tensor, canvas }
+     */
+    image: (input: Input) => {
+        tensor: Tensor<import("@tensorflow/tfjs-core").Rank> | null;
+        canvas: OffscreenCanvas | HTMLCanvasElement;
+    };
     /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
      * - Calculation is based on normalized Minkowski distance between
      *
@@ -179,6 +186,8 @@ export declare class Human {
      * @param userConfig?: {@link Config}
     */
     load(userConfig?: Partial<Config>): Promise<void>;
+    /** @hidden */
+    emit: (event: string) => boolean;
     /**
      * Runs interpolation using last known result and returns smoothened result
      * Interpolation is based on time since last known result so can be called independently
@@ -187,25 +196,25 @@ export declare class Human {
      * @returns result: {@link Result}
      */
     next: (result?: Result | undefined) => Result;
+    /** Warmup method pre-initializes all configured models for faster inference
+     * - can take significant time on startup
+     * - only used for `webgl` and `humangl` backends
+     * @param userConfig?: {@link Config}
+    */
+    warmup: (userConfig?: Partial<Config> | undefined) => Promise<Result | {
+        error: any;
+    }>;
     /** Main detection method
      * - Analyze configuration: {@link Config}
      * - Pre-this.process input: {@link Input}
      * - Run inference for all configured models
-     * - this.process and return result: {@link Result}
+     * - Process and return result: {@link Result}
      *
-     * @param input: Input
+     * @param input: {@link Input}
      * @param userConfig?: {@link Config}
      * @returns result: {@link Result}
     */
     detect(input: Input, userConfig?: Partial<Config>): Promise<Result | Error>;
-    /** Warmup method pre-initializes all configured models for faster inference
-     * - can take significant time on startup
-     * - only used for `webgl` and `humangl` backends
-     * @param userConfig?: Config
-    */
-    warmup(userConfig?: Partial<Config>): Promise<Result | {
-        error: any;
-    }>;
 }
 /**
  * Class Human is also available as default export

@@ -177,3 +177,33 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
   const canvas = config.filter.return ? outCanvas : null;
   return { tensor, canvas };
 }
+
+let lastInputSum = 0;
+let lastCacheDiff = 1;
+export async function skip(instance, input: Tensor) {
+  if (instance.config.cacheSensitivity === 0) return false;
+  const resizeFact = 32;
+  if (!input.shape[1] || !input.shape[2]) return false;
+  const reduced: Tensor = tf.image.resizeBilinear(input, [Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
+  // use tensor sum
+  /*
+  const sumT = this.tf.sum(reduced);
+  const sum = await sumT.data()[0] as number;
+  sumT.dispose();
+  */
+  // use js loop sum, faster than uploading tensor to gpu calculating and downloading back
+  const reducedData = await reduced.data(); // raw image rgb array
+  let sum = 0;
+  for (let i = 0; i < reducedData.length / 3; i++) sum += reducedData[3 * i + 2]; // look only at green value of each pixel
+
+  reduced.dispose();
+  const diff = 100 * (Math.max(sum, lastInputSum) / Math.min(sum, lastInputSum) - 1);
+  lastInputSum = sum;
+  // if previous frame was skipped, skip this frame if changed more than cacheSensitivity
+  // if previous frame was not skipped, then look for cacheSensitivity or difference larger than one in previous frame to avoid resetting cache in subsequent frames unnecessarily
+  const skipFrame = diff < Math.max(instance.config.cacheSensitivity, lastCacheDiff);
+  // if difference is above 10x threshold, don't use last value to force reset cache for significant change of scenes or images
+  lastCacheDiff = diff > 10 * instance.config.cacheSensitivity ? 0 : diff;
+  // console.log('skipFrame', skipFrame, this.config.cacheSensitivity, diff);
+  return skipFrame;
+}

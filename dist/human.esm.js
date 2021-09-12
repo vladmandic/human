@@ -7425,16 +7425,16 @@ function getFilteredNodesXToY(tape, xs, y) {
     tensorsFromX[xs[i].id] = true;
   }
   for (let i = 0; i < tape.length; i++) {
-    const node = tape[i];
-    const nodeInputs = node.inputs;
+    const node2 = tape[i];
+    const nodeInputs = node2.inputs;
     for (const inputName in nodeInputs) {
       const input2 = nodeInputs[inputName];
       let anyInputFromX = false;
       for (let j = 0; j < xs.length; j++) {
         if (tensorsFromX[input2.id]) {
-          node.outputs.forEach((output) => tensorsFromX[output.id] = true);
+          node2.outputs.forEach((output) => tensorsFromX[output.id] = true);
           anyInputFromX = true;
-          nodesFromX[node.id] = true;
+          nodesFromX[node2.id] = true;
           break;
         }
       }
@@ -7447,13 +7447,13 @@ function getFilteredNodesXToY(tape, xs, y) {
   tensorsLeadToY[y.id] = true;
   const nodesToY = {};
   for (let i = tape.length - 1; i >= 0; i--) {
-    const node = tape[i];
-    const nodeInputs = node.inputs;
-    for (let j = 0; j < node.outputs.length; j++) {
-      if (tensorsLeadToY[node.outputs[j].id]) {
+    const node2 = tape[i];
+    const nodeInputs = node2.inputs;
+    for (let j = 0; j < node2.outputs.length; j++) {
+      if (tensorsLeadToY[node2.outputs[j].id]) {
         for (const inputName in nodeInputs) {
           tensorsLeadToY[nodeInputs[inputName].id] = true;
-          nodesToY[node.id] = true;
+          nodesToY[node2.id] = true;
         }
         break;
       }
@@ -7461,18 +7461,18 @@ function getFilteredNodesXToY(tape, xs, y) {
   }
   const filteredTape = [];
   for (let i = 0; i < tape.length; i++) {
-    const node = tape[i];
-    if (nodesFromX[node.id] && nodesToY[node.id]) {
+    const node2 = tape[i];
+    if (nodesFromX[node2.id] && nodesToY[node2.id]) {
       const prunedInputs = {};
-      for (const inputName in node.inputs) {
-        const nodeInput = node.inputs[inputName];
+      for (const inputName in node2.inputs) {
+        const nodeInput = node2.inputs[inputName];
         if (tensorsFromX[nodeInput.id]) {
           prunedInputs[inputName] = nodeInput;
         }
       }
-      const prunedNode = Object.assign({}, node);
+      const prunedNode = Object.assign({}, node2);
       prunedNode.inputs = prunedInputs;
-      prunedNode.outputs = node.outputs;
+      prunedNode.outputs = node2.outputs;
       filteredTape.push(prunedNode);
     }
   }
@@ -7480,9 +7480,9 @@ function getFilteredNodesXToY(tape, xs, y) {
 }
 function backpropagateGradients(tensorAccumulatedGradientMap, filteredTape, tidy2, add5) {
   for (let i = filteredTape.length - 1; i >= 0; i--) {
-    const node = filteredTape[i];
+    const node2 = filteredTape[i];
     const dys = [];
-    node.outputs.forEach((o) => {
+    node2.outputs.forEach((o) => {
       const gradTensor = tensorAccumulatedGradientMap[o.id];
       if (gradTensor != null) {
         dys.push(gradTensor);
@@ -7490,21 +7490,21 @@ function backpropagateGradients(tensorAccumulatedGradientMap, filteredTape, tidy
         dys.push(null);
       }
     });
-    if (node.gradient == null) {
-      throw new Error(`Cannot compute gradient: gradient function not found for ${node.kernelName}.`);
+    if (node2.gradient == null) {
+      throw new Error(`Cannot compute gradient: gradient function not found for ${node2.kernelName}.`);
     }
-    const inputGradients = node.gradient(dys);
-    for (const inputName in node.inputs) {
+    const inputGradients = node2.gradient(dys);
+    for (const inputName in node2.inputs) {
       if (!(inputName in inputGradients)) {
         throw new Error(`Cannot backprop through input ${inputName}. Available gradients found: ${Object.keys(inputGradients)}.`);
       }
       const dx = tidy2(() => inputGradients[inputName]());
       if (dx.dtype !== "float32") {
-        throw new Error(`Error in gradient for op ${node.kernelName}. The gradient of input ${inputName} must have 'float32' dtype, but has '${dx.dtype}'`);
+        throw new Error(`Error in gradient for op ${node2.kernelName}. The gradient of input ${inputName} must have 'float32' dtype, but has '${dx.dtype}'`);
       }
-      const x = node.inputs[inputName];
+      const x = node2.inputs[inputName];
       if (!arraysEqual(dx.shape, x.shape)) {
-        throw new Error(`Error in gradient for op ${node.kernelName}. The gradient of input '${inputName}' has shape '${dx.shape}', which does not match the shape of the input '${x.shape}'`);
+        throw new Error(`Error in gradient for op ${node2.kernelName}. The gradient of input '${inputName}' has shape '${dx.shape}', which does not match the shape of the input '${x.shape}'`);
       }
       if (tensorAccumulatedGradientMap[x.id] == null) {
         tensorAccumulatedGradientMap[x.id] = dx;
@@ -8604,8 +8604,8 @@ var Engine = class {
       backpropagateGradients(accumulatedGradientMap, filteredTape, (f2) => this.tidy(f2), add);
       const grads2 = xs.map((x) => accumulatedGradientMap[x.id]);
       if (this.state.gradientDepth === 0) {
-        this.state.activeTape.forEach((node) => {
-          for (const tensor2 of node.saved) {
+        this.state.activeTape.forEach((node2) => {
+          for (const tensor2 of node2.saved) {
             tensor2.dispose();
           }
         });
@@ -19956,8 +19956,8 @@ var Layer = class extends serialization_exports.Serializable {
       throw new AttributeError(`The layer ${this.name} has never been called and thus has no defined output shape.`);
     }
     const allOutputShapes = [];
-    for (const node of this.inboundNodes) {
-      const shapeString = JSON.stringify(node.outputShapes);
+    for (const node2 of this.inboundNodes) {
+      const shapeString = JSON.stringify(node2.outputShapes);
       if (allOutputShapes.indexOf(shapeString) === -1) {
         allOutputShapes.push(shapeString);
       }
@@ -20153,15 +20153,15 @@ function getSourceInputs(tensor2, layer, nodeIndex) {
   if (layer.inboundNodes.length === 0) {
     return [tensor2];
   } else {
-    const node = layer.inboundNodes[nodeIndex];
-    if (node.inboundLayers.length === 0) {
-      return node.inputTensors;
+    const node2 = layer.inboundNodes[nodeIndex];
+    if (node2.inboundLayers.length === 0) {
+      return node2.inputTensors;
     } else {
       const sourceTensors = [];
-      for (let i = 0; i < node.inboundLayers.length; i++) {
-        const x = node.inputTensors[i];
-        const layer2 = node.inboundLayers[i];
-        const nodeIndex2 = node.nodeIndices[i];
+      for (let i = 0; i < node2.inboundLayers.length; i++) {
+        const x = node2.inputTensors[i];
+        const layer2 = node2.inboundLayers[i];
+        const nodeIndex2 = node2.nodeIndices[i];
         const previousSources = getSourceInputs(x, layer2, nodeIndex2);
         for (const x2 of previousSources) {
           if (sourceTensors.indexOf(x2) === -1) {
@@ -21044,8 +21044,8 @@ function isModelSequentialLike(model22) {
   if (sequentialLike) {
     for (const layer of model22.layers) {
       let flag = false;
-      for (const node of layer.inboundNodes) {
-        if (nodes.indexOf(node) !== -1) {
+      for (const node2 of layer.inboundNodes) {
+        if (nodes.indexOf(node2) !== -1) {
           if (flag) {
             sequentialLike = false;
             break;
@@ -21093,14 +21093,14 @@ function printLayerSummaryWithConnections(layer, positions, relevantNodes, print
     outputShape = "multiple";
   }
   const connections = [];
-  for (const node of layer.inboundNodes) {
-    if (relevantNodes != null && relevantNodes.length > 0 && relevantNodes.indexOf(node) === -1) {
+  for (const node2 of layer.inboundNodes) {
+    if (relevantNodes != null && relevantNodes.length > 0 && relevantNodes.indexOf(node2) === -1) {
       continue;
     }
-    for (let i = 0; i < node.inboundLayers.length; ++i) {
-      const inboundLayer = node.inboundLayers[i].name;
-      const inboundLayerIndex = node.nodeIndices[i];
-      const inboundTensorIndex = node.tensorIndices[i];
+    for (let i = 0; i < node2.inboundLayers.length; ++i) {
+      const inboundLayer = node2.inboundLayers[i].name;
+      const inboundLayerIndex = node2.nodeIndices[i];
+      const inboundTensorIndex = node2.tensorIndices[i];
       connections.push(`${inboundLayer}[${inboundLayerIndex}][${inboundTensorIndex}]`);
     }
   }
@@ -21553,33 +21553,33 @@ var Container = class extends Layer {
         nodeIndex = tensor2.nodeIndex;
         tensorIndex = tensor2.tensorIndex;
       }
-      const node = layer.inboundNodes[nodeIndex];
-      if (nodesInProgress2.indexOf(node) !== -1) {
+      const node2 = layer.inboundNodes[nodeIndex];
+      if (nodesInProgress2.indexOf(node2) !== -1) {
         throw new RuntimeError(`The tensor ${tensor2.name} at layer "${layer.name}" is part of a cycle.`);
       }
-      if (finishedNodes2.indexOf(node) !== -1) {
+      if (finishedNodes2.indexOf(node2) !== -1) {
         return;
       }
       this.containerNodes.add(Container.nodeKey(layer, nodeIndex));
       if (!(layer.id in layerIndices)) {
         layerIndices[layer.id] = Object.keys(layerIndices).length;
       }
-      if (nodesInProgress2.indexOf(node) === -1) {
-        nodesInProgress2.push(node);
+      if (nodesInProgress2.indexOf(node2) === -1) {
+        nodesInProgress2.push(node2);
       }
-      const numInboundLayers = node.inboundLayers.length;
+      const numInboundLayers = node2.inboundLayers.length;
       for (let i = 0; i < numInboundLayers; i++) {
-        const x = node.inputTensors[i];
-        const layer2 = node.inboundLayers[i];
-        const nodeIndex2 = node.nodeIndices[i];
-        const tensorIndex2 = node.tensorIndices[i];
+        const x = node2.inputTensors[i];
+        const layer2 = node2.inboundLayers[i];
+        const nodeIndex2 = node2.nodeIndices[i];
+        const tensorIndex2 = node2.tensorIndices[i];
         buildMapOfGraph(x, finishedNodes2, nodesInProgress2, layer2, nodeIndex2, tensorIndex2);
       }
-      finishedNodes2.push(node);
-      while (nodesInProgress2.indexOf(node) >= 0) {
-        nodesInProgress2.splice(nodesInProgress2.indexOf(node), 1);
+      finishedNodes2.push(node2);
+      while (nodesInProgress2.indexOf(node2) >= 0) {
+        nodesInProgress2.splice(nodesInProgress2.indexOf(node2), 1);
       }
-      nodesInDecreasingDepth.push(node);
+      nodesInDecreasingDepth.push(node2);
     };
     const finishedNodes = [];
     const nodesInProgress = [];
@@ -21587,20 +21587,20 @@ var Container = class extends Layer {
       buildMapOfGraph(x, finishedNodes, nodesInProgress);
     }
     const reversedNodesInDecreasingDepth = nodesInDecreasingDepth.slice().reverse();
-    for (const node of reversedNodesInDecreasingDepth) {
-      nodeIDToNode[node.id] = node;
-      if (!(node.id in nodesDepths)) {
-        nodesDepths[node.id] = 0;
+    for (const node2 of reversedNodesInDecreasingDepth) {
+      nodeIDToNode[node2.id] = node2;
+      if (!(node2.id in nodesDepths)) {
+        nodesDepths[node2.id] = 0;
       }
-      let depth = nodesDepths[node.id];
-      const previousDepth = layersDepths[node.outboundLayer.id] == null ? 0 : layersDepths[node.outboundLayer.id];
+      let depth = nodesDepths[node2.id];
+      const previousDepth = layersDepths[node2.outboundLayer.id] == null ? 0 : layersDepths[node2.outboundLayer.id];
       depth = Math.max(depth, previousDepth);
-      layersDepths[node.outboundLayer.id] = depth;
-      layerIDToLayer[node.outboundLayer.id] = node.outboundLayer;
-      nodesDepths[node.id] = depth;
-      for (let i = 0; i < node.inboundLayers.length; i++) {
-        const inboundLayer = node.inboundLayers[i];
-        const nodeIndex = node.nodeIndices[i];
+      layersDepths[node2.outboundLayer.id] = depth;
+      layerIDToLayer[node2.outboundLayer.id] = node2.outboundLayer;
+      nodesDepths[node2.id] = depth;
+      for (let i = 0; i < node2.inboundLayers.length; i++) {
+        const inboundLayer = node2.inboundLayers[i];
+        const nodeIndex = node2.nodeIndices[i];
         const inboundNode = inboundLayer.inboundNodes[nodeIndex];
         const previousDepth2 = nodesDepths[inboundNode.id] == null ? 0 : nodesDepths[inboundNode.id];
         nodesDepths[inboundNode.id] = Math.max(depth + 1, previousDepth2);
@@ -21650,15 +21650,15 @@ var Container = class extends Layer {
     const computableTensors = this.inputs.slice();
     const layersWithCompleteInput = [];
     for (const depth of depthKeys) {
-      for (const node of nodesByDepth[depth]) {
-        const layer = node.outboundLayer;
+      for (const node2 of nodesByDepth[depth]) {
+        const layer = node2.outboundLayer;
         if (layer != null) {
-          for (const x of node.inputTensors) {
+          for (const x of node2.inputTensors) {
             if (computableTensors.indexOf(x) === -1) {
               throw new RuntimeError(`Graph disconnected: cannot obtain value for tensor ${x} at layer "${layer.name}". The following previous layers were accessed without issue: ${layersWithCompleteInput}`);
             }
           }
-          for (const x of node.outputTensors) {
+          for (const x of node2.outputTensors) {
             computableTensors.push(x);
           }
           layersWithCompleteInput.push(layer.name);
@@ -21837,23 +21837,23 @@ var Container = class extends Layer {
     if (depthKeys.length > 1) {
       for (const depth of depthKeys) {
         const nodes = this.nodesByDepth[depth];
-        for (const node of nodes) {
-          const layer = node.outboundLayer;
+        for (const node2 of nodes) {
+          const layer = node2.outboundLayer;
           if (this.inputLayers.map((x) => x.id).indexOf(layer.id) !== -1) {
             continue;
           }
           const inputShapes2 = [];
-          for (let j = 0; j < node.inboundLayers.length; j++) {
-            const inboundLayer = node.inboundLayers[j];
-            const nodeIndex2 = node.nodeIndices[j];
-            const tensorIndex = node.tensorIndices[j];
+          for (let j = 0; j < node2.inboundLayers.length; j++) {
+            const inboundLayer = node2.inboundLayers[j];
+            const nodeIndex2 = node2.nodeIndices[j];
+            const tensorIndex = node2.tensorIndices[j];
             const shapeKey = `${inboundLayer.name}_${nodeIndex2}_${tensorIndex}`;
             const inputShape2 = layersToOutputShapes[shapeKey];
             inputShapes2.push(inputShape2);
           }
           const outputShape = layer.computeOutputShape(singletonOrArray(inputShapes2));
           const outputShapes2 = normalizeShapeList(outputShape);
-          const nodeIndex = layer.inboundNodes.indexOf(node);
+          const nodeIndex = layer.inboundNodes.indexOf(node2);
           for (let j = 0; j < outputShapes2.length; j++) {
             const shapeKey = `${layer.name}_${nodeIndex}_${j}`;
             layersToOutputShapes[shapeKey] = outputShapes2[j];
@@ -21891,10 +21891,10 @@ var Container = class extends Layer {
     const depthKeys = Object.keys(this.nodesByDepth).map((x) => parseInt(x, 10)).sort(reverseNumberCompare);
     for (const depth of depthKeys) {
       const nodes = this.nodesByDepth[depth];
-      for (const node of nodes) {
-        const layer = node.outboundLayer;
-        const referenceInputTensors = node.inputTensors;
-        const referenceOutputTensors = node.outputTensors;
+      for (const node2 of nodes) {
+        const layer = node2.outboundLayer;
+        const referenceInputTensors = node2.inputTensors;
+        const referenceOutputTensors = node2.outputTensors;
         const computedData = new Array();
         for (const x of referenceInputTensors) {
           if (x.id in tensorMap) {
@@ -21907,8 +21907,8 @@ var Container = class extends Layer {
           let computedMasks;
           let outputTensors2;
           let outputMasks2;
-          if (node.callArgs != null) {
-            kwargs = node.callArgs;
+          if (node2.callArgs != null) {
+            kwargs = node2.callArgs;
           }
           if (computedData.length === 1) {
             const [computedTensor, computedMask] = computedData[0];
@@ -22009,25 +22009,25 @@ var Container = class extends Layer {
       const layerConfig = layer.getConfig();
       const filteredInboundNodes = [];
       for (let originalNodeIndex = 0; originalNodeIndex < layer.inboundNodes.length; originalNodeIndex++) {
-        const node = layer.inboundNodes[originalNodeIndex];
+        const node2 = layer.inboundNodes[originalNodeIndex];
         const nodeKey = Container.nodeKey(layer, originalNodeIndex);
         let kwargs = {};
         if (this.containerNodes.has(nodeKey)) {
-          if (node.callArgs) {
+          if (node2.callArgs) {
             try {
-              JSON.stringify(node.callArgs);
-              kwargs = node.callArgs;
+              JSON.stringify(node2.callArgs);
+              kwargs = node2.callArgs;
             } catch (err) {
-              console.warn(`Layer ${layer.name} was passed non-serializable keyword arguments: ${node.callArgs}. They will not be included in the serialized model (and thus will be missing at deserialization time).`);
+              console.warn(`Layer ${layer.name} was passed non-serializable keyword arguments: ${node2.callArgs}. They will not be included in the serialized model (and thus will be missing at deserialization time).`);
               kwargs = {};
             }
           }
-          if (node.inboundLayers.length > 0) {
+          if (node2.inboundLayers.length > 0) {
             const nodeData = [];
-            for (let i = 0; i < node.inboundLayers.length; i++) {
-              const inboundLayer = node.inboundLayers[i];
-              const nodeIndex = node.nodeIndices[i];
-              const tensorIndex = node.tensorIndices[i];
+            for (let i = 0; i < node2.inboundLayers.length; i++) {
+              const inboundLayer = node2.inboundLayers[i];
+              const nodeIndex = node2.nodeIndices[i];
+              const tensorIndex = node2.tensorIndices[i];
               const nodeKey2 = Container.nodeKey(inboundLayer, nodeIndex);
               let newNodeIndex = nodeConversionMap[nodeKey2];
               if (newNodeIndex == null) {
@@ -29231,23 +29231,23 @@ function getRegisteredOp(name) {
 function deregisterOp(name) {
   delete CUSTOM_OPS[name];
 }
-function getParamValue(paramName, node, tensorMap, context, resourceManager) {
-  const inputParam = node.inputParams[paramName];
+function getParamValue(paramName, node2, tensorMap, context, resourceManager) {
+  const inputParam = node2.inputParams[paramName];
   if (inputParam && inputParam.inputIndexStart !== void 0) {
     const start = inputParam.inputIndexStart;
     const end = inputParam.inputIndexEnd === 0 ? void 0 : inputParam.inputIndexEnd === void 0 ? start + 1 : inputParam.inputIndexEnd;
     if (inputParam.type === "tensor") {
-      return getTensor(node.inputNames[inputParam.inputIndexStart], tensorMap, context, resourceManager);
+      return getTensor(node2.inputNames[inputParam.inputIndexStart], tensorMap, context, resourceManager);
     }
     if (inputParam.type === "tensors") {
-      const inputs = node.inputNames.slice(start, end);
+      const inputs = node2.inputNames.slice(start, end);
       return inputs.map((name) => getTensor(name, tensorMap, context, resourceManager));
     }
-    const tensor2 = getTensor(node.inputNames.slice(start)[0], tensorMap, context, resourceManager);
+    const tensor2 = getTensor(node2.inputNames.slice(start)[0], tensorMap, context, resourceManager);
     const data = tensor2.dataSync();
     return inputParam.type === "number" ? data[0] : util_exports.toNestedArray(tensor2.shape, data);
   }
-  const attrParam = node.attrParams[paramName];
+  const attrParam = node2.attrParams[paramName];
   return attrParam && attrParam.value;
 }
 function getTensor(name, tensorsMap, context, resourceManager) {
@@ -29287,10 +29287,10 @@ function parseNodeName(name) {
   const index = Number(parts[parts.length - 1]);
   return [nodeName, index, outputName];
 }
-function getPadding(node, tensorMap, context) {
-  let pad3 = getParamValue("pad", node, tensorMap, context);
+function getPadding(node2, tensorMap, context) {
+  let pad3 = getParamValue("pad", node2, tensorMap, context);
   if (pad3 === "explicit") {
-    pad3 = getParamValue("explicitPaddings", node, tensorMap, context);
+    pad3 = getParamValue("explicitPaddings", node2, tensorMap, context);
     const explicitPadding = [[0, 0], [0, 0], [0, 0], [0, 0]];
     for (let i = 0; i < 4; i++) {
       explicitPadding[i][0] = pad3[i * 2];
@@ -32265,14 +32265,14 @@ var OperationMapper = class {
     const placeholders = [];
     const weights = [];
     const initNodes = [];
-    const nodes = tfNodes.reduce((map, node) => {
-      map[node.name] = this.mapNode(node);
-      if (node.op.startsWith("Placeholder")) {
-        placeholders.push(map[node.name]);
-      } else if (node.op === "Const") {
-        weights.push(map[node.name]);
-      } else if (node.input == null || node.input.length === 0) {
-        initNodes.push(map[node.name]);
+    const nodes = tfNodes.reduce((map, node2) => {
+      map[node2.name] = this.mapNode(node2);
+      if (node2.op.startsWith("Placeholder")) {
+        placeholders.push(map[node2.name]);
+      } else if (node2.op === "Const") {
+        weights.push(map[node2.name]);
+      } else if (node2.input == null || node2.input.length === 0) {
+        initNodes.push(map[node2.name]);
       }
       return map;
     }, {});
@@ -32286,45 +32286,45 @@ var OperationMapper = class {
     }
     const allNodes = Object.keys(nodes);
     allNodes.forEach((key) => {
-      const node = nodes[key];
-      node.inputNames.forEach((name, index) => {
+      const node2 = nodes[key];
+      node2.inputNames.forEach((name, index) => {
         const [nodeName, , outputName] = getNodeNameAndIndex(name);
         const inputNode = nodes[nodeName];
         if (inputNode.outputs != null) {
           const outputIndex = inputNode.outputs.indexOf(outputName);
           if (outputIndex !== -1) {
             const inputName = `${nodeName}:${outputIndex}`;
-            node.inputNames[index] = inputName;
+            node2.inputNames[index] = inputName;
           }
         }
-        node.inputs.push(inputNode);
-        inputNode.children.push(node);
+        node2.inputs.push(inputNode);
+        inputNode.children.push(node2);
       });
     });
     if (Object.keys(outputNodeNameToKey).length === 0) {
       allNodes.forEach((key) => {
-        const node = nodes[key];
-        if (node.children.length === 0) {
-          outputs.push(node);
+        const node2 = nodes[key];
+        if (node2.children.length === 0) {
+          outputs.push(node2);
         }
       });
     } else {
       Object.keys(outputNodeNameToKey).forEach((name) => {
         const [nodeName] = getNodeNameAndIndex(name);
-        const node = nodes[nodeName];
-        if (node != null) {
-          node.signatureKey = outputNodeNameToKey[name];
-          outputs.push(node);
+        const node2 = nodes[nodeName];
+        if (node2 != null) {
+          node2.signatureKey = outputNodeNameToKey[name];
+          outputs.push(node2);
         }
       });
     }
     if (Object.keys(inputNodeNameToKey).length > 0) {
       Object.keys(inputNodeNameToKey).forEach((name) => {
         const [nodeName] = getNodeNameAndIndex(name);
-        const node = nodes[nodeName];
-        if (node) {
-          node.signatureKey = inputNodeNameToKey[name];
-          inputs.push(node);
+        const node2 = nodes[nodeName];
+        if (node2) {
+          node2.signatureKey = inputNodeNameToKey[name];
+          inputs.push(node2);
         }
       });
     } else {
@@ -32349,21 +32349,21 @@ var OperationMapper = class {
       return prev;
     }, {});
   }
-  mapNode(node) {
-    const mapper = getRegisteredOp(node.op) || this.opMappers[node.op] || {};
-    if (node.attr == null) {
-      node.attr = {};
+  mapNode(node2) {
+    const mapper = getRegisteredOp(node2.op) || this.opMappers[node2.op] || {};
+    if (node2.attr == null) {
+      node2.attr = {};
     }
     const newNode = {
-      name: node.name,
-      op: node.op,
+      name: node2.name,
+      op: node2.op,
       category: mapper.category,
-      inputNames: (node.input || []).map((input2) => input2.startsWith("^") ? input2.substr(1) : input2),
+      inputNames: (node2.input || []).map((input2) => input2.startsWith("^") ? input2.substr(1) : input2),
       inputs: [],
       children: [],
       inputParams: {},
       attrParams: {},
-      rawAttrs: node.attr,
+      rawAttrs: node2.attr,
       outputs: mapper.outputs
     };
     if (mapper.inputs != null) {
@@ -32382,76 +32382,76 @@ var OperationMapper = class {
         let value = void 0;
         switch (param.type) {
           case "string":
-            value = getStringParam(node.attr, param.tfName, param.defaultValue);
+            value = getStringParam(node2.attr, param.tfName, param.defaultValue);
             if (value === void 0 && !!param.tfDeprecatedName) {
-              value = getStringParam(node.attr, param.tfDeprecatedName, param.defaultValue);
+              value = getStringParam(node2.attr, param.tfDeprecatedName, param.defaultValue);
             }
             break;
           case "string[]":
-            value = getStringArrayParam(node.attr, param.tfName, param.defaultValue);
+            value = getStringArrayParam(node2.attr, param.tfName, param.defaultValue);
             if (value === void 0 && !!param.tfDeprecatedName) {
-              value = getStringArrayParam(node.attr, param.tfDeprecatedName, param.defaultValue);
+              value = getStringArrayParam(node2.attr, param.tfDeprecatedName, param.defaultValue);
             }
             break;
           case "number":
-            value = getNumberParam(node.attr, param.tfName, param.defaultValue || 0);
+            value = getNumberParam(node2.attr, param.tfName, param.defaultValue || 0);
             if (value === void 0 && !!param.tfDeprecatedName) {
-              value = getNumberParam(node.attr, param.tfDeprecatedName, param.defaultValue);
+              value = getNumberParam(node2.attr, param.tfDeprecatedName, param.defaultValue);
             }
             break;
           case "number[]":
-            value = getNumericArrayParam(node.attr, param.tfName, param.defaultValue);
+            value = getNumericArrayParam(node2.attr, param.tfName, param.defaultValue);
             if (value === void 0 && !!param.tfDeprecatedName) {
-              value = getNumericArrayParam(node.attr, param.tfDeprecatedName, param.defaultValue);
+              value = getNumericArrayParam(node2.attr, param.tfDeprecatedName, param.defaultValue);
             }
             break;
           case "bool":
-            value = getBoolParam(node.attr, param.tfName, param.defaultValue);
+            value = getBoolParam(node2.attr, param.tfName, param.defaultValue);
             if (value === void 0 && !!param.tfDeprecatedName) {
-              value = getBoolParam(node.attr, param.tfDeprecatedName, param.defaultValue);
+              value = getBoolParam(node2.attr, param.tfDeprecatedName, param.defaultValue);
             }
             break;
           case "bool[]":
-            value = getBoolArrayParam(node.attr, param.tfName, param.defaultValue);
+            value = getBoolArrayParam(node2.attr, param.tfName, param.defaultValue);
             if (value === void 0 && !!param.tfDeprecatedName) {
-              value = getBoolArrayParam(node.attr, param.tfDeprecatedName, param.defaultValue);
+              value = getBoolArrayParam(node2.attr, param.tfDeprecatedName, param.defaultValue);
             }
             break;
           case "shape":
-            value = getTensorShapeParam(node.attr, param.tfName, param.defaultValue);
+            value = getTensorShapeParam(node2.attr, param.tfName, param.defaultValue);
             if (value === void 0 && !!param.tfDeprecatedName) {
-              value = getTensorShapeParam(node.attr, param.tfDeprecatedName, param.defaultValue);
+              value = getTensorShapeParam(node2.attr, param.tfDeprecatedName, param.defaultValue);
             }
             break;
           case "shape[]":
-            value = getTensorShapeArrayParam(node.attr, param.tfName, param.defaultValue);
+            value = getTensorShapeArrayParam(node2.attr, param.tfName, param.defaultValue);
             if (value === void 0 && !!param.tfDeprecatedName) {
-              value = getTensorShapeArrayParam(node.attr, param.tfDeprecatedName, param.defaultValue);
+              value = getTensorShapeArrayParam(node2.attr, param.tfDeprecatedName, param.defaultValue);
             }
             break;
           case "dtype":
-            value = getDtypeParam(node.attr, param.tfName, param.defaultValue);
+            value = getDtypeParam(node2.attr, param.tfName, param.defaultValue);
             if (value === void 0 && !!param.tfDeprecatedName) {
-              value = getDtypeParam(node.attr, param.tfDeprecatedName, param.defaultValue);
+              value = getDtypeParam(node2.attr, param.tfDeprecatedName, param.defaultValue);
             }
             break;
           case "dtype[]":
-            value = getDtypeArrayParam(node.attr, param.tfName, param.defaultValue);
+            value = getDtypeArrayParam(node2.attr, param.tfName, param.defaultValue);
             if (value === void 0 && !!param.tfDeprecatedName) {
-              value = getDtypeArrayParam(node.attr, param.tfDeprecatedName, param.defaultValue);
+              value = getDtypeArrayParam(node2.attr, param.tfDeprecatedName, param.defaultValue);
             }
             break;
           case "func":
-            value = getFuncParam(node.attr, param.tfName, param.defaultValue);
+            value = getFuncParam(node2.attr, param.tfName, param.defaultValue);
             if (value === void 0 && !!param.tfDeprecatedName) {
-              value = getFuncParam(node.attr, param.tfDeprecatedName, param.defaultValue);
+              value = getFuncParam(node2.attr, param.tfDeprecatedName, param.defaultValue);
             }
             break;
           case "tensor":
           case "tensors":
             break;
           default:
-            throw new Error(`Unsupported param type: ${param.type} for op: ${node.op}`);
+            throw new Error(`Unsupported param type: ${param.type} for op: ${node2.op}`);
         }
         map[param.name] = { value, type };
         return map;
@@ -32465,10 +32465,10 @@ var OperationMapper = class {
     const weights = [];
     let nodes = {};
     if (tfNodes != null) {
-      nodes = tfNodes.reduce((map, node) => {
-        map[node.name] = this.mapNode(node);
-        if (node.op === "Const") {
-          weights.push(map[node.name]);
+      nodes = tfNodes.reduce((map, node2) => {
+        map[node2.name] = this.mapNode(node2);
+        if (node2.op === "Const") {
+          weights.push(map[node2.name]);
         }
         return map;
       }, {});
@@ -32477,7 +32477,7 @@ var OperationMapper = class {
     const outputs = [];
     functionDef.signature.inputArg.forEach((arg) => {
       const [nodeName] = getNodeNameAndIndex(arg.name);
-      const node = {
+      const node2 = {
         name: nodeName,
         op: "Placeholder",
         inputs: [],
@@ -32487,34 +32487,34 @@ var OperationMapper = class {
         attrParams: { dtype: { value: parseDtypeParam(arg.type), type: "dtype" } },
         children: []
       };
-      node.signatureKey = arg.name;
-      inputs.push(node);
-      nodes[nodeName] = node;
+      node2.signatureKey = arg.name;
+      inputs.push(node2);
+      nodes[nodeName] = node2;
     });
     const allNodes = Object.keys(nodes);
     allNodes.forEach((key) => {
-      const node = nodes[key];
-      node.inputNames.forEach((name, index) => {
+      const node2 = nodes[key];
+      node2.inputNames.forEach((name, index) => {
         const [nodeName, , outputName] = getNodeNameAndIndex(name);
         const inputNode = nodes[nodeName];
         if (inputNode.outputs != null) {
           const outputIndex = inputNode.outputs.indexOf(outputName);
           if (outputIndex !== -1) {
             const inputName = `${nodeName}:${outputIndex}`;
-            node.inputNames[index] = inputName;
+            node2.inputNames[index] = inputName;
           }
         }
-        node.inputs.push(inputNode);
-        inputNode.children.push(node);
+        node2.inputs.push(inputNode);
+        inputNode.children.push(node2);
       });
     });
     const returnNodeMap = functionDef.ret;
     functionDef.signature.outputArg.forEach((output) => {
       const [nodeName, index] = getNodeNameAndIndex(returnNodeMap[output.name]);
-      const node = nodes[nodeName];
-      if (node != null) {
-        node.defaultOutput = index;
-        outputs.push(node);
+      const node2 = nodes[nodeName];
+      if (node2 != null) {
+        node2.defaultOutput = index;
+        outputs.push(node2);
       }
     });
     const signature = this.mapArgsToSignature(functionDef);
@@ -32663,15 +32663,15 @@ function getBoolArrayParam(attrs, name, def) {
   return def;
 }
 var NodeValueImpl = class {
-  constructor(node, tensorMap, context) {
-    this.node = node;
+  constructor(node2, tensorMap, context) {
+    this.node = node2;
     this.tensorMap = tensorMap;
     this.context = context;
     this.inputs = [];
     this.attrs = {};
-    this.inputs = node.inputNames.map((name) => this.getInput(name));
-    if (node.rawAttrs != null) {
-      this.attrs = Object.keys(node.rawAttrs).reduce((attrs, key) => {
+    this.inputs = node2.inputNames.map((name) => this.getInput(name));
+    if (node2.rawAttrs != null) {
+      this.attrs = Object.keys(node2.rawAttrs).reduce((attrs, key) => {
         attrs[key] = this.getAttr(key);
         return attrs;
       }, {});
@@ -32720,149 +32720,149 @@ var NodeValueImpl = class {
     return defaultValue;
   }
 };
-var executeOp = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "BiasAdd":
     case "AddV2":
     case "Add": {
-      return [add2(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [add2(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "AddN": {
-      return [addN(getParamValue("tensors", node, tensorMap, context))];
+      return [addN(getParamValue("tensors", node2, tensorMap, context))];
     }
     case "FloorMod":
     case "Mod":
-      return [mod(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [mod(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     case "Mul":
-      return [mul(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [mul(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     case "RealDiv":
     case "Div": {
-      return [div(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [div(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "DivNoNan": {
-      return [divNoNan(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [divNoNan(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "FloorDiv": {
-      return [floorDiv(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [floorDiv(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "Sub": {
-      return [sub(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [sub(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "Minimum": {
-      return [minimum(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [minimum(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "Maximum": {
-      return [maximum(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [maximum(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "Pow": {
-      return [pow(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [pow(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "SquaredDifference": {
-      return [squaredDifference(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [squaredDifference(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp2 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp2 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "Abs":
     case "ComplexAbs":
-      return [abs(getParamValue("x", node, tensorMap, context))];
+      return [abs(getParamValue("x", node2, tensorMap, context))];
     case "Acos":
-      return [acos(getParamValue("x", node, tensorMap, context))];
+      return [acos(getParamValue("x", node2, tensorMap, context))];
     case "Acosh":
-      return [acosh(getParamValue("x", node, tensorMap, context))];
+      return [acosh(getParamValue("x", node2, tensorMap, context))];
     case "Asin":
-      return [asin(getParamValue("x", node, tensorMap, context))];
+      return [asin(getParamValue("x", node2, tensorMap, context))];
     case "Asinh":
-      return [asinh(getParamValue("x", node, tensorMap, context))];
+      return [asinh(getParamValue("x", node2, tensorMap, context))];
     case "Atan":
-      return [atan(getParamValue("x", node, tensorMap, context))];
+      return [atan(getParamValue("x", node2, tensorMap, context))];
     case "Atan2":
-      return [atan2(getParamValue("x", node, tensorMap, context), getParamValue("y", node, tensorMap, context))];
+      return [atan2(getParamValue("x", node2, tensorMap, context), getParamValue("y", node2, tensorMap, context))];
     case "Atanh":
-      return [atanh(getParamValue("x", node, tensorMap, context))];
+      return [atanh(getParamValue("x", node2, tensorMap, context))];
     case "Ceil":
-      return [ceil(getParamValue("x", node, tensorMap, context))];
+      return [ceil(getParamValue("x", node2, tensorMap, context))];
     case "Complex":
-      return [complex(getParamValue("real", node, tensorMap, context), getParamValue("imag", node, tensorMap, context))];
+      return [complex(getParamValue("real", node2, tensorMap, context), getParamValue("imag", node2, tensorMap, context))];
     case "Cos":
-      return [cos(getParamValue("x", node, tensorMap, context))];
+      return [cos(getParamValue("x", node2, tensorMap, context))];
     case "Cosh":
-      return [cosh(getParamValue("x", node, tensorMap, context))];
+      return [cosh(getParamValue("x", node2, tensorMap, context))];
     case "Elu":
-      return [elu(getParamValue("x", node, tensorMap, context))];
+      return [elu(getParamValue("x", node2, tensorMap, context))];
     case "Erf":
-      return [erf(getParamValue("x", node, tensorMap, context))];
+      return [erf(getParamValue("x", node2, tensorMap, context))];
     case "Exp":
-      return [exp(getParamValue("x", node, tensorMap, context))];
+      return [exp(getParamValue("x", node2, tensorMap, context))];
     case "Expm1": {
-      return [expm1(getParamValue("x", node, tensorMap, context))];
+      return [expm1(getParamValue("x", node2, tensorMap, context))];
     }
     case "Floor":
-      return [floor(getParamValue("x", node, tensorMap, context))];
+      return [floor(getParamValue("x", node2, tensorMap, context))];
     case "Log":
-      return [log5(getParamValue("x", node, tensorMap, context))];
+      return [log5(getParamValue("x", node2, tensorMap, context))];
     case "Log1p": {
-      return [log1p(getParamValue("x", node, tensorMap, context))];
+      return [log1p(getParamValue("x", node2, tensorMap, context))];
     }
     case "Imag":
-      return [imag(getParamValue("x", node, tensorMap, context))];
+      return [imag(getParamValue("x", node2, tensorMap, context))];
     case "Neg":
-      return [neg(getParamValue("x", node, tensorMap, context))];
+      return [neg(getParamValue("x", node2, tensorMap, context))];
     case "Reciprocal": {
-      return [reciprocal(getParamValue("x", node, tensorMap, context))];
+      return [reciprocal(getParamValue("x", node2, tensorMap, context))];
     }
     case "Real":
-      return [real(getParamValue("x", node, tensorMap, context))];
+      return [real(getParamValue("x", node2, tensorMap, context))];
     case "Relu":
-      return [relu(getParamValue("x", node, tensorMap, context))];
+      return [relu(getParamValue("x", node2, tensorMap, context))];
     case "Round": {
-      return [round2(getParamValue("x", node, tensorMap, context))];
+      return [round2(getParamValue("x", node2, tensorMap, context))];
     }
     case "Selu":
-      return [selu(getParamValue("x", node, tensorMap, context))];
+      return [selu(getParamValue("x", node2, tensorMap, context))];
     case "Sigmoid":
-      return [sigmoid(getParamValue("x", node, tensorMap, context))];
+      return [sigmoid(getParamValue("x", node2, tensorMap, context))];
     case "Sin":
-      return [sin(getParamValue("x", node, tensorMap, context))];
+      return [sin(getParamValue("x", node2, tensorMap, context))];
     case "Sign": {
-      return [sign(getParamValue("x", node, tensorMap, context))];
+      return [sign(getParamValue("x", node2, tensorMap, context))];
     }
     case "Sinh": {
-      return [sinh(getParamValue("x", node, tensorMap, context))];
+      return [sinh(getParamValue("x", node2, tensorMap, context))];
     }
     case "Softplus": {
-      return [softplus(getParamValue("x", node, tensorMap, context))];
+      return [softplus(getParamValue("x", node2, tensorMap, context))];
     }
     case "Sqrt": {
-      return [sqrt(getParamValue("x", node, tensorMap, context))];
+      return [sqrt(getParamValue("x", node2, tensorMap, context))];
     }
     case "Square": {
-      return [square(getParamValue("x", node, tensorMap, context))];
+      return [square(getParamValue("x", node2, tensorMap, context))];
     }
     case "Tanh": {
-      return [tanh2(getParamValue("x", node, tensorMap, context))];
+      return [tanh2(getParamValue("x", node2, tensorMap, context))];
     }
     case "Tan":
-      return [tan(getParamValue("x", node, tensorMap, context))];
+      return [tan(getParamValue("x", node2, tensorMap, context))];
     case "ClipByValue":
-      return [clipByValue(getParamValue("x", node, tensorMap, context), getParamValue("clipValueMin", node, tensorMap, context), getParamValue("clipValueMax", node, tensorMap, context))];
+      return [clipByValue(getParamValue("x", node2, tensorMap, context), getParamValue("clipValueMin", node2, tensorMap, context), getParamValue("clipValueMax", node2, tensorMap, context))];
     case "Relu6":
-      return [relu6(getParamValue("x", node, tensorMap, context))];
+      return [relu6(getParamValue("x", node2, tensorMap, context))];
     case "Rsqrt":
-      return [rsqrt(getTensor(node.inputNames[0], tensorMap, context))];
+      return [rsqrt(getTensor(node2.inputNames[0], tensorMap, context))];
     case "Prod":
-      return [prod(getParamValue("x", node, tensorMap, context), getParamValue("axes", node, tensorMap, context))];
+      return [prod(getParamValue("x", node2, tensorMap, context), getParamValue("axes", node2, tensorMap, context))];
     case "LeakyRelu":
-      return [leakyRelu(getParamValue("x", node, tensorMap, context), getParamValue("alpha", node, tensorMap, context))];
+      return [leakyRelu(getParamValue("x", node2, tensorMap, context), getParamValue("alpha", node2, tensorMap, context))];
     case "Prelu":
-      return [prelu(getParamValue("x", node, tensorMap, context), getParamValue("alpha", node, tensorMap, context))];
+      return [prelu(getParamValue("x", node2, tensorMap, context), getParamValue("alpha", node2, tensorMap, context))];
     case "IsNan":
-      return [isNaN2(getTensor(node.inputNames[0], tensorMap, context))];
+      return [isNaN2(getTensor(node2.inputNames[0], tensorMap, context))];
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
 function assertShapesMatchAllowUndefinedSize(shapeA, shapeB, errorMessagePrefix = "") {
@@ -33288,14 +33288,14 @@ function split2(tensor2, length, elementShape) {
   }
   return list;
 }
-var executeOp3 = async (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp3 = async (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "If":
     case "StatelessIf": {
-      const thenFunc = getParamValue("thenBranch", node, tensorMap, context);
-      const elseFunc = getParamValue("elseBranch", node, tensorMap, context);
-      const cond = getParamValue("cond", node, tensorMap, context);
-      const args = getParamValue("args", node, tensorMap, context);
+      const thenFunc = getParamValue("thenBranch", node2, tensorMap, context);
+      const elseFunc = getParamValue("elseBranch", node2, tensorMap, context);
+      const cond = getParamValue("cond", node2, tensorMap, context);
+      const args = getParamValue("args", node2, tensorMap, context);
       const condValue = await cond.data();
       if (condValue[0]) {
         return context.functionMap[thenFunc].executeFunctionAsync(args, context.tensorArrayMap, context.tensorListMap);
@@ -33305,9 +33305,9 @@ var executeOp3 = async (node, tensorMap, context) => {
     }
     case "While":
     case "StatelessWhile": {
-      const bodyFunc = getParamValue("body", node, tensorMap, context);
-      const condFunc = getParamValue("cond", node, tensorMap, context);
-      const args = getParamValue("args", node, tensorMap, context);
+      const bodyFunc = getParamValue("body", node2, tensorMap, context);
+      const condFunc = getParamValue("cond", node2, tensorMap, context);
+      const args = getParamValue("args", node2, tensorMap, context);
       const condResult = await context.functionMap[condFunc].executeFunctionAsync(args, context.tensorArrayMap, context.tensorListMap);
       const argIds = args.map((tensor2) => tensor2.id);
       let condValue = await condResult[0].data();
@@ -33337,19 +33337,19 @@ var executeOp3 = async (node, tensorMap, context) => {
       return result;
     }
     case "LoopCond": {
-      const pred = getParamValue("pred", node, tensorMap, context);
+      const pred = getParamValue("pred", node2, tensorMap, context);
       return [cloneTensor(pred)];
     }
     case "Switch": {
-      const pred = getParamValue("pred", node, tensorMap, context);
-      let data = getParamValue("data", node, tensorMap, context);
+      const pred = getParamValue("pred", node2, tensorMap, context);
+      let data = getParamValue("data", node2, tensorMap, context);
       if (!data.kept) {
         data = cloneTensor(data);
       }
       return (await pred.data())[0] ? [void 0, data] : [data, void 0];
     }
     case "Merge": {
-      const inputName = node.inputNames.find((name) => getTensor(name, tensorMap, context) !== void 0);
+      const inputName = node2.inputNames.find((name) => getTensor(name, tensorMap, context) !== void 0);
       if (inputName) {
         const data = getTensor(inputName, tensorMap, context);
         return [cloneTensor(data)];
@@ -33357,192 +33357,192 @@ var executeOp3 = async (node, tensorMap, context) => {
       return void 0;
     }
     case "Enter": {
-      const frameId = getParamValue("frameName", node, tensorMap, context);
-      const data = getParamValue("tensor", node, tensorMap, context);
+      const frameId = getParamValue("frameName", node2, tensorMap, context);
+      const data = getParamValue("tensor", node2, tensorMap, context);
       context.enterFrame(frameId);
       return [cloneTensor(data)];
     }
     case "Exit": {
-      const data = getParamValue("tensor", node, tensorMap, context);
+      const data = getParamValue("tensor", node2, tensorMap, context);
       context.exitFrame();
       return [cloneTensor(data)];
     }
     case "NextIteration": {
-      const data = getParamValue("tensor", node, tensorMap, context);
+      const data = getParamValue("tensor", node2, tensorMap, context);
       context.nextIteration();
       return [cloneTensor(data)];
     }
     case "TensorArrayV3": {
-      const size = getParamValue("size", node, tensorMap, context);
-      const dtype = getParamValue("dtype", node, tensorMap, context);
-      const elementShape = getParamValue("elementShape", node, tensorMap, context);
-      const dynamicSize = getParamValue("dynamicSize", node, tensorMap, context);
-      const clearAfterRead = getParamValue("clearAfterRead", node, tensorMap, context);
-      const identicalElementShapes = getParamValue("identicalElementShapes", node, tensorMap, context);
-      const name = getParamValue("name", node, tensorMap, context);
+      const size = getParamValue("size", node2, tensorMap, context);
+      const dtype = getParamValue("dtype", node2, tensorMap, context);
+      const elementShape = getParamValue("elementShape", node2, tensorMap, context);
+      const dynamicSize = getParamValue("dynamicSize", node2, tensorMap, context);
+      const clearAfterRead = getParamValue("clearAfterRead", node2, tensorMap, context);
+      const identicalElementShapes = getParamValue("identicalElementShapes", node2, tensorMap, context);
+      const name = getParamValue("name", node2, tensorMap, context);
       const tensorArray = new TensorArray(name, dtype, size, elementShape, identicalElementShapes, dynamicSize, clearAfterRead);
       context.addTensorArray(tensorArray);
       return [tensorArray.idTensor, scalar(1)];
     }
     case "TensorArrayWriteV3": {
-      const id = getParamValue("tensorArrayId", node, tensorMap, context);
-      const index = getParamValue("index", node, tensorMap, context);
-      const writeTensor = getParamValue("tensor", node, tensorMap, context);
+      const id = getParamValue("tensorArrayId", node2, tensorMap, context);
+      const index = getParamValue("index", node2, tensorMap, context);
+      const writeTensor = getParamValue("tensor", node2, tensorMap, context);
       const writeTensorArray = context.getTensorArray(id.id);
       writeTensorArray.write(index, writeTensor);
       return [writeTensorArray.idTensor];
     }
     case "TensorArrayReadV3": {
-      const readId = getParamValue("tensorArrayId", node, tensorMap, context);
-      const readIndex = getParamValue("index", node, tensorMap, context);
+      const readId = getParamValue("tensorArrayId", node2, tensorMap, context);
+      const readIndex = getParamValue("index", node2, tensorMap, context);
       const readTensorArray = context.getTensorArray(readId.id);
       return [readTensorArray.read(readIndex)];
     }
     case "TensorArrayGatherV3": {
-      const gatherId = getParamValue("tensorArrayId", node, tensorMap, context);
-      const gatherIndices = getParamValue("indices", node, tensorMap, context);
-      const gatherDtype = getParamValue("dtype", node, tensorMap, context);
+      const gatherId = getParamValue("tensorArrayId", node2, tensorMap, context);
+      const gatherIndices = getParamValue("indices", node2, tensorMap, context);
+      const gatherDtype = getParamValue("dtype", node2, tensorMap, context);
       const gatherTensorArray = context.getTensorArray(gatherId.id);
       return [gatherTensorArray.gather(gatherIndices, gatherDtype)];
     }
     case "TensorArrayScatterV3": {
-      const scatterId = getParamValue("tensorArrayId", node, tensorMap, context);
-      const scatterIndices = getParamValue("indices", node, tensorMap, context);
-      const scatterTensor = getParamValue("tensor", node, tensorMap, context);
+      const scatterId = getParamValue("tensorArrayId", node2, tensorMap, context);
+      const scatterIndices = getParamValue("indices", node2, tensorMap, context);
+      const scatterTensor = getParamValue("tensor", node2, tensorMap, context);
       const scatterTensorArray = context.getTensorArray(scatterId.id);
       scatterTensorArray.scatter(scatterIndices, scatterTensor);
       return [scatterTensorArray.idTensor];
     }
     case "TensorArrayConcatV3": {
-      const concatId = getParamValue("tensorArrayId", node, tensorMap, context);
+      const concatId = getParamValue("tensorArrayId", node2, tensorMap, context);
       const concatTensorArray = context.getTensorArray(concatId.id);
-      const concatDtype = getParamValue("dtype", node, tensorMap, context);
+      const concatDtype = getParamValue("dtype", node2, tensorMap, context);
       return [concatTensorArray.concat(concatDtype)];
     }
     case "TensorArraySplitV3": {
-      const splitId = getParamValue("tensorArrayId", node, tensorMap, context);
-      const splitTensor = getParamValue("tensor", node, tensorMap, context);
-      const lengths = getParamValue("lengths", node, tensorMap, context);
+      const splitId = getParamValue("tensorArrayId", node2, tensorMap, context);
+      const splitTensor = getParamValue("tensor", node2, tensorMap, context);
+      const lengths = getParamValue("lengths", node2, tensorMap, context);
       const splitTensorArray = context.getTensorArray(splitId.id);
       splitTensorArray.split(lengths, splitTensor);
       return [splitTensorArray.idTensor];
     }
     case "TensorArraySizeV3": {
-      const sizeId = getParamValue("tensorArrayId", node, tensorMap, context);
+      const sizeId = getParamValue("tensorArrayId", node2, tensorMap, context);
       const sizeTensorArray = context.getTensorArray(sizeId.id);
       return [scalar(sizeTensorArray.size(), "int32")];
     }
     case "TensorArrayCloseV3": {
-      const closeId = getParamValue("tensorArrayId", node, tensorMap, context);
+      const closeId = getParamValue("tensorArrayId", node2, tensorMap, context);
       const closeTensorArray = context.getTensorArray(closeId.id);
       closeTensorArray.clearAndClose();
       return [closeTensorArray.idTensor];
     }
     case "TensorListSetItem": {
-      const idTensor = getParamValue("tensorListId", node, tensorMap, context);
-      const index = getParamValue("index", node, tensorMap, context);
-      const writeTensor = getParamValue("tensor", node, tensorMap, context);
+      const idTensor = getParamValue("tensorListId", node2, tensorMap, context);
+      const index = getParamValue("index", node2, tensorMap, context);
+      const writeTensor = getParamValue("tensor", node2, tensorMap, context);
       const tensorList = context.getTensorList(idTensor.id);
       tensorList.setItem(index, writeTensor);
       return [tensorList.idTensor];
     }
     case "TensorListGetItem": {
-      const idTensor = getParamValue("tensorListId", node, tensorMap, context);
-      const readIndex = getParamValue("index", node, tensorMap, context);
-      const elementShape = getParamValue("elementShape", node, tensorMap, context);
-      const elementDType = getParamValue("elementDType", node, tensorMap, context);
+      const idTensor = getParamValue("tensorListId", node2, tensorMap, context);
+      const readIndex = getParamValue("index", node2, tensorMap, context);
+      const elementShape = getParamValue("elementShape", node2, tensorMap, context);
+      const elementDType = getParamValue("elementDType", node2, tensorMap, context);
       const tensorList = context.getTensorList(idTensor.id);
       return [tensorList.getItem(readIndex, elementShape, elementDType)];
     }
     case "TensorListScatterV2":
     case "TensorListScatter": {
-      const scatterIndices = getParamValue("indices", node, tensorMap, context);
-      const scatterTensor = getParamValue("tensor", node, tensorMap, context);
-      const elementShape = getParamValue("elementShape", node, tensorMap, context);
-      const numElements = getParamValue("numElements", node, tensorMap, context);
+      const scatterIndices = getParamValue("indices", node2, tensorMap, context);
+      const scatterTensor = getParamValue("tensor", node2, tensorMap, context);
+      const elementShape = getParamValue("elementShape", node2, tensorMap, context);
+      const numElements = getParamValue("numElements", node2, tensorMap, context);
       const tensorList = scatter(scatterTensor, scatterIndices, elementShape, numElements);
       context.addTensorList(tensorList);
       return [tensorList.idTensor];
     }
     case "TensorListReserve":
     case "EmptyTensorList": {
-      const elementShape = getParamValue("elementShape", node, tensorMap, context);
-      const elementDtype = getParamValue("elementDType", node, tensorMap, context);
+      const elementShape = getParamValue("elementShape", node2, tensorMap, context);
+      const elementDtype = getParamValue("elementDType", node2, tensorMap, context);
       let numElementsParam;
-      if (node.op === "TensorListReserve") {
+      if (node2.op === "TensorListReserve") {
         numElementsParam = "numElements";
       } else {
         numElementsParam = "maxNumElements";
       }
-      const numElements = getParamValue(numElementsParam, node, tensorMap, context);
+      const numElements = getParamValue(numElementsParam, node2, tensorMap, context);
       const tensorList = reserve(elementShape, elementDtype, numElements);
       context.addTensorList(tensorList);
       return [tensorList.idTensor];
     }
     case "TensorListGather": {
-      const gatherId = getParamValue("tensorListId", node, tensorMap, context);
-      const gatherIndices = getParamValue("indices", node, tensorMap, context);
-      const elementShape = getParamValue("elementShape", node, tensorMap, context);
-      const elementDtype = getParamValue("elementDType", node, tensorMap, context);
+      const gatherId = getParamValue("tensorListId", node2, tensorMap, context);
+      const gatherIndices = getParamValue("indices", node2, tensorMap, context);
+      const elementShape = getParamValue("elementShape", node2, tensorMap, context);
+      const elementDtype = getParamValue("elementDType", node2, tensorMap, context);
       const tensorList = context.getTensorList(gatherId.id);
       return [tensorList.gather(gatherIndices, elementDtype, elementShape)];
     }
     case "TensorListStack": {
-      const idTensor = getParamValue("tensorListId", node, tensorMap, context);
-      const elementShape = getParamValue("elementShape", node, tensorMap, context);
-      const elementDtype = getParamValue("elementDType", node, tensorMap, context);
-      const numElements = getParamValue("numElements", node, tensorMap, context);
+      const idTensor = getParamValue("tensorListId", node2, tensorMap, context);
+      const elementShape = getParamValue("elementShape", node2, tensorMap, context);
+      const elementDtype = getParamValue("elementDType", node2, tensorMap, context);
+      const numElements = getParamValue("numElements", node2, tensorMap, context);
       const tensorList = context.getTensorList(idTensor.id);
       return [tensorList.stack(elementShape, elementDtype, numElements)];
     }
     case "TensorListFromTensor": {
-      const tensor2 = getParamValue("tensor", node, tensorMap, context);
-      const elementShape = getParamValue("elementShape", node, tensorMap, context);
-      const elementDtype = getParamValue("elementDType", node, tensorMap, context);
+      const tensor2 = getParamValue("tensor", node2, tensorMap, context);
+      const elementShape = getParamValue("elementShape", node2, tensorMap, context);
+      const elementDtype = getParamValue("elementDType", node2, tensorMap, context);
       const tensorList = fromTensor(tensor2, elementShape, elementDtype);
       context.addTensorList(tensorList);
       return [tensorList.idTensor];
     }
     case "TensorListConcat": {
-      const concatId = getParamValue("tensorListId", node, tensorMap, context);
+      const concatId = getParamValue("tensorListId", node2, tensorMap, context);
       const tensorList = context.getTensorList(concatId.id);
-      const concatDtype = getParamValue("dtype", node, tensorMap, context);
-      const elementShape = getParamValue("elementShape", node, tensorMap, context);
+      const concatDtype = getParamValue("dtype", node2, tensorMap, context);
+      const elementShape = getParamValue("elementShape", node2, tensorMap, context);
       return [tensorList.concat(concatDtype, elementShape)];
     }
     case "TensorListPushBack": {
-      const idTensor = getParamValue("tensorListId", node, tensorMap, context);
-      const writeTensor = getParamValue("tensor", node, tensorMap, context);
+      const idTensor = getParamValue("tensorListId", node2, tensorMap, context);
+      const writeTensor = getParamValue("tensor", node2, tensorMap, context);
       const tensorList = context.getTensorList(idTensor.id);
       tensorList.pushBack(writeTensor);
       return [tensorList.idTensor];
     }
     case "TensorListPopBack": {
-      const idTensor = getParamValue("tensorListId", node, tensorMap, context);
-      const elementShape = getParamValue("elementShape", node, tensorMap, context);
-      const elementDType = getParamValue("elementDType", node, tensorMap, context);
+      const idTensor = getParamValue("tensorListId", node2, tensorMap, context);
+      const elementShape = getParamValue("elementShape", node2, tensorMap, context);
+      const elementDType = getParamValue("elementDType", node2, tensorMap, context);
       const tensorList = context.getTensorList(idTensor.id);
       return [tensorList.popBack(elementShape, elementDType)];
     }
     case "TensorListSplit": {
-      const splitTensor = getParamValue("tensor", node, tensorMap, context);
-      const elementShape = getParamValue("elementShape", node, tensorMap, context);
-      const lengths = getParamValue("lengths", node, tensorMap, context);
+      const splitTensor = getParamValue("tensor", node2, tensorMap, context);
+      const elementShape = getParamValue("elementShape", node2, tensorMap, context);
+      const lengths = getParamValue("lengths", node2, tensorMap, context);
       const tensorList = split2(splitTensor, lengths, elementShape);
       context.addTensorList(tensorList);
       return [tensorList.idTensor];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-function fusedConvAndDepthWiseParams(node, tensorMap, context) {
-  const [extraOp, activationFunc] = getParamValue("fusedOps", node, tensorMap, context);
+function fusedConvAndDepthWiseParams(node2, tensorMap, context) {
+  const [extraOp, activationFunc] = getParamValue("fusedOps", node2, tensorMap, context);
   const isBiasAdd = extraOp === "biasadd";
   const noBiasAdd = !isBiasAdd;
   const isPrelu = activationFunc === "prelu";
   const isBatchNorm = extraOp === "fusedbatchnorm";
-  const numArgs = getParamValue("numArgs", node, tensorMap, context);
+  const numArgs = getParamValue("numArgs", node2, tensorMap, context);
   if (isBiasAdd) {
     if (isPrelu && numArgs !== 2) {
       throw new Error("FusedConv2d and DepthwiseConv2d with BiasAdd and Prelu must have two extra arguments: bias and alpha.");
@@ -33554,16 +33554,16 @@ function fusedConvAndDepthWiseParams(node, tensorMap, context) {
   if (isBatchNorm) {
     throw new Error("FusedConv2d and DepthwiseConv2d with FusedBatchNorm is not supported");
   }
-  const stride = getParamValue("strides", node, tensorMap, context);
-  const pad3 = getPadding(node, tensorMap, context);
-  const dataFormat = getParamValue("dataFormat", node, tensorMap, context).toUpperCase();
-  const dilations = getParamValue("dilations", node, tensorMap, context);
-  let [biasArg, preluArg] = getParamValue("args", node, tensorMap, context);
+  const stride = getParamValue("strides", node2, tensorMap, context);
+  const pad3 = getPadding(node2, tensorMap, context);
+  const dataFormat = getParamValue("dataFormat", node2, tensorMap, context).toUpperCase();
+  const dilations = getParamValue("dilations", node2, tensorMap, context);
+  let [biasArg, preluArg] = getParamValue("args", node2, tensorMap, context);
   if (noBiasAdd) {
     preluArg = biasArg;
     biasArg = void 0;
   }
-  const leakyreluAlpha = getParamValue("leakyreluAlpha", node, tensorMap, context);
+  const leakyreluAlpha = getParamValue("leakyreluAlpha", node2, tensorMap, context);
   return {
     stride,
     pad: pad3,
@@ -33575,27 +33575,27 @@ function fusedConvAndDepthWiseParams(node, tensorMap, context) {
     leakyreluAlpha
   };
 }
-var executeOp4 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp4 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "Conv1D": {
-      const stride = getParamValue("stride", node, tensorMap, context);
-      const pad3 = getParamValue("pad", node, tensorMap, context);
-      const dataFormat = getParamValue("dataFormat", node, tensorMap, context).toUpperCase();
-      const dilation = getParamValue("dilation", node, tensorMap, context);
-      return [conv1d(getParamValue("x", node, tensorMap, context), getParamValue("filter", node, tensorMap, context), stride, pad3, dataFormat, dilation)];
+      const stride = getParamValue("stride", node2, tensorMap, context);
+      const pad3 = getParamValue("pad", node2, tensorMap, context);
+      const dataFormat = getParamValue("dataFormat", node2, tensorMap, context).toUpperCase();
+      const dilation = getParamValue("dilation", node2, tensorMap, context);
+      return [conv1d(getParamValue("x", node2, tensorMap, context), getParamValue("filter", node2, tensorMap, context), stride, pad3, dataFormat, dilation)];
     }
     case "Conv2D": {
-      const stride = getParamValue("strides", node, tensorMap, context);
-      const pad3 = getPadding(node, tensorMap, context);
-      const dataFormat = getParamValue("dataFormat", node, tensorMap, context).toUpperCase();
-      const dilations = getParamValue("dilations", node, tensorMap, context);
-      return [conv2d(getParamValue("x", node, tensorMap, context), getParamValue("filter", node, tensorMap, context), [stride[1], stride[2]], pad3, dataFormat, [dilations[1], dilations[2]])];
+      const stride = getParamValue("strides", node2, tensorMap, context);
+      const pad3 = getPadding(node2, tensorMap, context);
+      const dataFormat = getParamValue("dataFormat", node2, tensorMap, context).toUpperCase();
+      const dilations = getParamValue("dilations", node2, tensorMap, context);
+      return [conv2d(getParamValue("x", node2, tensorMap, context), getParamValue("filter", node2, tensorMap, context), [stride[1], stride[2]], pad3, dataFormat, [dilations[1], dilations[2]])];
     }
     case "_FusedConv2D": {
-      const { stride, pad: pad3, dataFormat, dilations, biasArg, preluArg, activationFunc, leakyreluAlpha } = fusedConvAndDepthWiseParams(node, tensorMap, context);
+      const { stride, pad: pad3, dataFormat, dilations, biasArg, preluArg, activationFunc, leakyreluAlpha } = fusedConvAndDepthWiseParams(node2, tensorMap, context);
       return [fused_ops_exports.conv2d({
-        x: getParamValue("x", node, tensorMap, context),
-        filter: getParamValue("filter", node, tensorMap, context),
+        x: getParamValue("x", node2, tensorMap, context),
+        filter: getParamValue("filter", node2, tensorMap, context),
         strides: [stride[1], stride[2]],
         pad: pad3,
         dataFormat,
@@ -33607,10 +33607,10 @@ var executeOp4 = (node, tensorMap, context) => {
       })];
     }
     case "FusedDepthwiseConv2dNative": {
-      const { stride, pad: pad3, dataFormat, dilations, biasArg, preluArg, activationFunc, leakyreluAlpha } = fusedConvAndDepthWiseParams(node, tensorMap, context);
+      const { stride, pad: pad3, dataFormat, dilations, biasArg, preluArg, activationFunc, leakyreluAlpha } = fusedConvAndDepthWiseParams(node2, tensorMap, context);
       return [fused_ops_exports.depthwiseConv2d({
-        x: getParamValue("x", node, tensorMap, context),
-        filter: getParamValue("filter", node, tensorMap, context),
+        x: getParamValue("x", node2, tensorMap, context),
+        filter: getParamValue("filter", node2, tensorMap, context),
         strides: [stride[1], stride[2]],
         pad: pad3,
         dataFormat,
@@ -33623,138 +33623,138 @@ var executeOp4 = (node, tensorMap, context) => {
     }
     case "Conv2DBackpropInput":
     case "Conv2dTranspose": {
-      const shape = getParamValue("outputShape", node, tensorMap, context);
-      const stride = getParamValue("strides", node, tensorMap, context);
-      const pad3 = getPadding(node, tensorMap, context);
-      return [conv2dTranspose(getParamValue("x", node, tensorMap, context), getParamValue("filter", node, tensorMap, context), shape, [stride[1], stride[2]], pad3)];
+      const shape = getParamValue("outputShape", node2, tensorMap, context);
+      const stride = getParamValue("strides", node2, tensorMap, context);
+      const pad3 = getPadding(node2, tensorMap, context);
+      return [conv2dTranspose(getParamValue("x", node2, tensorMap, context), getParamValue("filter", node2, tensorMap, context), shape, [stride[1], stride[2]], pad3)];
     }
     case "DepthwiseConv2dNative":
     case "DepthwiseConv2d": {
-      const stride = getParamValue("strides", node, tensorMap, context);
-      const pad3 = getPadding(node, tensorMap, context);
-      const dilations = getParamValue("dilations", node, tensorMap, context);
-      const dataFormat = getParamValue("dataFormat", node, tensorMap, context).toUpperCase();
-      return [depthwiseConv2d(getParamValue("input", node, tensorMap, context), getParamValue("filter", node, tensorMap, context), [stride[1], stride[2]], pad3, dataFormat, [dilations[1], dilations[2]])];
+      const stride = getParamValue("strides", node2, tensorMap, context);
+      const pad3 = getPadding(node2, tensorMap, context);
+      const dilations = getParamValue("dilations", node2, tensorMap, context);
+      const dataFormat = getParamValue("dataFormat", node2, tensorMap, context).toUpperCase();
+      return [depthwiseConv2d(getParamValue("input", node2, tensorMap, context), getParamValue("filter", node2, tensorMap, context), [stride[1], stride[2]], pad3, dataFormat, [dilations[1], dilations[2]])];
     }
     case "Conv3D": {
-      const stride = getParamValue("strides", node, tensorMap, context);
-      const pad3 = getParamValue("pad", node, tensorMap, context);
-      const dataFormat = getParamValue("dataFormat", node, tensorMap, context).toUpperCase();
-      const dilations = getParamValue("dilations", node, tensorMap, context);
-      return [conv3d(getParamValue("x", node, tensorMap, context), getParamValue("filter", node, tensorMap, context), [stride[1], stride[2], stride[3]], pad3, dataFormat, [dilations[1], dilations[2], dilations[3]])];
+      const stride = getParamValue("strides", node2, tensorMap, context);
+      const pad3 = getParamValue("pad", node2, tensorMap, context);
+      const dataFormat = getParamValue("dataFormat", node2, tensorMap, context).toUpperCase();
+      const dilations = getParamValue("dilations", node2, tensorMap, context);
+      return [conv3d(getParamValue("x", node2, tensorMap, context), getParamValue("filter", node2, tensorMap, context), [stride[1], stride[2], stride[3]], pad3, dataFormat, [dilations[1], dilations[2], dilations[3]])];
     }
     case "AvgPool": {
-      const stride = getParamValue("strides", node, tensorMap, context);
-      const pad3 = getParamValue("pad", node, tensorMap, context);
-      const kernelSize = getParamValue("kernelSize", node, tensorMap, context);
-      return [avgPool(getParamValue("x", node, tensorMap, context), [kernelSize[1], kernelSize[2]], [stride[1], stride[2]], pad3)];
+      const stride = getParamValue("strides", node2, tensorMap, context);
+      const pad3 = getParamValue("pad", node2, tensorMap, context);
+      const kernelSize = getParamValue("kernelSize", node2, tensorMap, context);
+      return [avgPool(getParamValue("x", node2, tensorMap, context), [kernelSize[1], kernelSize[2]], [stride[1], stride[2]], pad3)];
     }
     case "MaxPool": {
-      const stride = getParamValue("strides", node, tensorMap, context);
-      const pad3 = getParamValue("pad", node, tensorMap, context);
-      const kernelSize = getParamValue("kernelSize", node, tensorMap, context);
-      return [maxPool(getParamValue("x", node, tensorMap, context), [kernelSize[1], kernelSize[2]], [stride[1], stride[2]], pad3)];
+      const stride = getParamValue("strides", node2, tensorMap, context);
+      const pad3 = getParamValue("pad", node2, tensorMap, context);
+      const kernelSize = getParamValue("kernelSize", node2, tensorMap, context);
+      return [maxPool(getParamValue("x", node2, tensorMap, context), [kernelSize[1], kernelSize[2]], [stride[1], stride[2]], pad3)];
     }
     case "MaxPoolWithArgmax": {
-      const stride = getParamValue("strides", node, tensorMap, context);
-      const pad3 = getParamValue("pad", node, tensorMap, context);
-      const kernelSize = getParamValue("kernelSize", node, tensorMap, context);
-      const includeBatchInIndex = getParamValue("includeBatchInIndex", node, tensorMap, context);
-      const { result, indexes } = maxPoolWithArgmax(getParamValue("x", node, tensorMap, context), [kernelSize[1], kernelSize[2]], [stride[1], stride[2]], pad3, includeBatchInIndex);
+      const stride = getParamValue("strides", node2, tensorMap, context);
+      const pad3 = getParamValue("pad", node2, tensorMap, context);
+      const kernelSize = getParamValue("kernelSize", node2, tensorMap, context);
+      const includeBatchInIndex = getParamValue("includeBatchInIndex", node2, tensorMap, context);
+      const { result, indexes } = maxPoolWithArgmax(getParamValue("x", node2, tensorMap, context), [kernelSize[1], kernelSize[2]], [stride[1], stride[2]], pad3, includeBatchInIndex);
       return [result, indexes];
     }
     case "AvgPool3D": {
-      const stride = getParamValue("strides", node, tensorMap, context);
-      const pad3 = getParamValue("pad", node, tensorMap, context);
-      const kernelSize = getParamValue("kernelSize", node, tensorMap, context);
-      return [avgPool3d(getParamValue("x", node, tensorMap, context), [kernelSize[1], kernelSize[2], kernelSize[3]], [stride[1], stride[2], stride[3]], pad3)];
+      const stride = getParamValue("strides", node2, tensorMap, context);
+      const pad3 = getParamValue("pad", node2, tensorMap, context);
+      const kernelSize = getParamValue("kernelSize", node2, tensorMap, context);
+      return [avgPool3d(getParamValue("x", node2, tensorMap, context), [kernelSize[1], kernelSize[2], kernelSize[3]], [stride[1], stride[2], stride[3]], pad3)];
     }
     case "MaxPool3D": {
-      const stride = getParamValue("strides", node, tensorMap, context);
-      const pad3 = getParamValue("pad", node, tensorMap, context);
-      const kernelSize = getParamValue("kernelSize", node, tensorMap, context);
-      return [maxPool3d(getParamValue("x", node, tensorMap, context), [kernelSize[1], kernelSize[2], kernelSize[3]], [stride[1], stride[2], stride[3]], pad3)];
+      const stride = getParamValue("strides", node2, tensorMap, context);
+      const pad3 = getParamValue("pad", node2, tensorMap, context);
+      const kernelSize = getParamValue("kernelSize", node2, tensorMap, context);
+      return [maxPool3d(getParamValue("x", node2, tensorMap, context), [kernelSize[1], kernelSize[2], kernelSize[3]], [stride[1], stride[2], stride[3]], pad3)];
     }
     case "Dilation2D": {
-      const strides = getParamValue("strides", node, tensorMap, context);
-      const pad3 = getParamValue("pad", node, tensorMap, context);
-      const dilations = getParamValue("dilations", node, tensorMap, context);
+      const strides = getParamValue("strides", node2, tensorMap, context);
+      const pad3 = getParamValue("pad", node2, tensorMap, context);
+      const dilations = getParamValue("dilations", node2, tensorMap, context);
       const strideHeight = strides[1];
       const strideWidth = strides[2];
       const dilationHeight = dilations[1];
       const dilationWidth = dilations[2];
-      return [dilation2d(getParamValue("x", node, tensorMap, context), getParamValue("filter", node, tensorMap, context), [strideHeight, strideWidth], pad3, [dilationHeight, dilationWidth], "NHWC")];
+      return [dilation2d(getParamValue("x", node2, tensorMap, context), getParamValue("filter", node2, tensorMap, context), [strideHeight, strideWidth], pad3, [dilationHeight, dilationWidth], "NHWC")];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp5 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp5 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "Fill": {
-      const shape = getParamValue("shape", node, tensorMap, context);
-      const dtype = getParamValue("dtype", node, tensorMap, context);
-      const value = getParamValue("value", node, tensorMap, context);
+      const shape = getParamValue("shape", node2, tensorMap, context);
+      const dtype = getParamValue("dtype", node2, tensorMap, context);
+      const value = getParamValue("value", node2, tensorMap, context);
       return [fill(shape, value, dtype)];
     }
     case "LinSpace": {
-      const start = getParamValue("start", node, tensorMap, context);
-      const stop = getParamValue("stop", node, tensorMap, context);
-      const num = getParamValue("num", node, tensorMap, context);
+      const start = getParamValue("start", node2, tensorMap, context);
+      const stop = getParamValue("stop", node2, tensorMap, context);
+      const num = getParamValue("num", node2, tensorMap, context);
       return [linspace(start, stop, num)];
     }
     case "Multinomial": {
-      const logits = getParamValue("logits", node, tensorMap, context);
-      const numSamples = getParamValue("numSamples", node, tensorMap, context);
-      const seed = getParamValue("seed", node, tensorMap, context);
+      const logits = getParamValue("logits", node2, tensorMap, context);
+      const numSamples = getParamValue("numSamples", node2, tensorMap, context);
+      const seed = getParamValue("seed", node2, tensorMap, context);
       return [multinomial(logits, numSamples, seed)];
     }
     case "OneHot": {
-      const indices = getParamValue("indices", node, tensorMap, context);
-      const depth = getParamValue("depth", node, tensorMap, context);
-      const onValue = getParamValue("onValue", node, tensorMap, context);
-      const offValue = getParamValue("offValue", node, tensorMap, context);
+      const indices = getParamValue("indices", node2, tensorMap, context);
+      const depth = getParamValue("depth", node2, tensorMap, context);
+      const onValue = getParamValue("onValue", node2, tensorMap, context);
+      const offValue = getParamValue("offValue", node2, tensorMap, context);
       return [oneHot(indices, depth, onValue, offValue)];
     }
     case "Ones": {
-      return [ones2(getParamValue("shape", node, tensorMap, context), getParamValue("dtype", node, tensorMap, context))];
+      return [ones2(getParamValue("shape", node2, tensorMap, context), getParamValue("dtype", node2, tensorMap, context))];
     }
     case "OnesLike": {
-      return [onesLike(getParamValue("x", node, tensorMap, context))];
+      return [onesLike(getParamValue("x", node2, tensorMap, context))];
     }
     case "RandomUniform": {
-      return [randomUniform(getParamValue("shape", node, tensorMap, context), getParamValue("minval", node, tensorMap, context), getParamValue("maxval", node, tensorMap, context), getParamValue("dtype", node, tensorMap, context))];
+      return [randomUniform(getParamValue("shape", node2, tensorMap, context), getParamValue("minval", node2, tensorMap, context), getParamValue("maxval", node2, tensorMap, context), getParamValue("dtype", node2, tensorMap, context))];
     }
     case "Range": {
-      const start = getParamValue("start", node, tensorMap, context);
-      const stop = getParamValue("stop", node, tensorMap, context);
-      const step5 = getParamValue("step", node, tensorMap, context);
-      return [range(start, stop, step5, getParamValue("dtype", node, tensorMap, context))];
+      const start = getParamValue("start", node2, tensorMap, context);
+      const stop = getParamValue("stop", node2, tensorMap, context);
+      const step5 = getParamValue("step", node2, tensorMap, context);
+      return [range(start, stop, step5, getParamValue("dtype", node2, tensorMap, context))];
     }
     case "TruncatedNormal": {
-      const shape = getParamValue("shape", node, tensorMap, context);
-      const mean4 = getParamValue("mean", node, tensorMap, context);
-      const stdDev = getParamValue("stdDev", node, tensorMap, context);
-      const seed = getParamValue("seed", node, tensorMap, context);
-      return [truncatedNormal(shape, mean4, stdDev, getParamValue("dtype", node, tensorMap, context), seed)];
+      const shape = getParamValue("shape", node2, tensorMap, context);
+      const mean4 = getParamValue("mean", node2, tensorMap, context);
+      const stdDev = getParamValue("stdDev", node2, tensorMap, context);
+      const seed = getParamValue("seed", node2, tensorMap, context);
+      return [truncatedNormal(shape, mean4, stdDev, getParamValue("dtype", node2, tensorMap, context), seed)];
     }
     case "Zeros": {
-      return [zeros(getParamValue("shape", node, tensorMap, context), getParamValue("dtype", node, tensorMap, context))];
+      return [zeros(getParamValue("shape", node2, tensorMap, context), getParamValue("dtype", node2, tensorMap, context))];
     }
     case "ZerosLike": {
-      return [zerosLike(getParamValue("x", node, tensorMap, context))];
+      return [zerosLike(getParamValue("x", node2, tensorMap, context))];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-function nmsParams(node, tensorMap, context) {
-  const boxes = getParamValue("boxes", node, tensorMap, context);
-  const scores = getParamValue("scores", node, tensorMap, context);
-  const maxOutputSize = getParamValue("maxOutputSize", node, tensorMap, context);
-  const iouThreshold = getParamValue("iouThreshold", node, tensorMap, context);
-  const scoreThreshold = getParamValue("scoreThreshold", node, tensorMap, context);
-  const softNmsSigma = getParamValue("softNmsSigma", node, tensorMap, context);
+function nmsParams(node2, tensorMap, context) {
+  const boxes = getParamValue("boxes", node2, tensorMap, context);
+  const scores = getParamValue("scores", node2, tensorMap, context);
+  const maxOutputSize = getParamValue("maxOutputSize", node2, tensorMap, context);
+  const iouThreshold = getParamValue("iouThreshold", node2, tensorMap, context);
+  const scoreThreshold = getParamValue("scoreThreshold", node2, tensorMap, context);
+  const softNmsSigma = getParamValue("softNmsSigma", node2, tensorMap, context);
   return {
     boxes,
     scores,
@@ -33764,97 +33764,97 @@ function nmsParams(node, tensorMap, context) {
     softNmsSigma
   };
 }
-var executeOp6 = async (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp6 = async (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "NonMaxSuppressionV5": {
-      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = nmsParams(node, tensorMap, context);
+      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = nmsParams(node2, tensorMap, context);
       const result = await image.nonMaxSuppressionWithScoreAsync(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
       return [result.selectedIndices, result.selectedScores];
     }
     case "NonMaxSuppressionV4": {
-      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node, tensorMap, context);
-      const padToMaxOutputSize = getParamValue("padToMaxOutputSize", node, tensorMap, context);
+      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node2, tensorMap, context);
+      const padToMaxOutputSize = getParamValue("padToMaxOutputSize", node2, tensorMap, context);
       const result = await image.nonMaxSuppressionPaddedAsync(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
       return [result.selectedIndices, result.validOutputs];
     }
     case "NonMaxSuppressionV3":
     case "NonMaxSuppressionV2": {
-      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node, tensorMap, context);
+      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node2, tensorMap, context);
       return [await image.nonMaxSuppressionAsync(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold)];
     }
     case "Where": {
-      const condition = cast(getParamValue("condition", node, tensorMap, context), "bool");
+      const condition = cast(getParamValue("condition", node2, tensorMap, context), "bool");
       const result = [await whereAsync(condition)];
       condition.dispose();
       return result;
     }
     case "ListDiff": {
-      return setdiff1dAsync(getParamValue("x", node, tensorMap, context), getParamValue("y", node, tensorMap, context));
+      return setdiff1dAsync(getParamValue("x", node2, tensorMap, context), getParamValue("y", node2, tensorMap, context));
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp7 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp7 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "TopKV2": {
-      const x = getParamValue("x", node, tensorMap, context);
-      const k = getParamValue("k", node, tensorMap, context);
-      const sorted = getParamValue("sorted", node, tensorMap, context);
+      const x = getParamValue("x", node2, tensorMap, context);
+      const k = getParamValue("k", node2, tensorMap, context);
+      const sorted = getParamValue("sorted", node2, tensorMap, context);
       const result = topk(x, k, sorted);
       return [result.values, result.indices];
     }
     case "Unique": {
-      const x = getParamValue("x", node, tensorMap, context);
+      const x = getParamValue("x", node2, tensorMap, context);
       const result = unique(x);
       return [result.values, result.indices];
     }
     case "UniqueV2": {
-      const x = getParamValue("x", node, tensorMap, context);
-      const axis = getParamValue("axis", node, tensorMap, context);
+      const x = getParamValue("x", node2, tensorMap, context);
+      const axis = getParamValue("axis", node2, tensorMap, context);
       const result = unique(x, axis);
       return [result.values, result.indices];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp8 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp8 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "Const": {
-      return tensorMap[node.name];
+      return tensorMap[node2.name];
     }
     case "PlaceholderWithDefault":
-      const def = getParamValue("default", node, tensorMap, context);
-      return [getTensor(node.name, tensorMap, context) || def];
+      const def = getParamValue("default", node2, tensorMap, context);
+      return [getTensor(node2.name, tensorMap, context) || def];
     case "Placeholder":
-      return [getTensor(node.name, tensorMap, context)];
+      return [getTensor(node2.name, tensorMap, context)];
     case "Identity":
     case "StopGradient":
     case "FakeQuantWithMinMaxVars": {
-      const data2 = getParamValue("x", node, tensorMap, context);
+      const data2 = getParamValue("x", node2, tensorMap, context);
       return [cloneTensor(data2)];
     }
     case "IdentityN":
-      return getParamValue("x", node, tensorMap, context).map((t) => cloneTensor(t));
+      return getParamValue("x", node2, tensorMap, context).map((t) => cloneTensor(t));
     case "Snapshot":
-      const snapshot = getParamValue("x", node, tensorMap, context);
+      const snapshot = getParamValue("x", node2, tensorMap, context);
       return [cloneTensor(snapshot)];
     case "Shape":
-      return [tensor1d(getParamValue("x", node, tensorMap, context).shape, "int32")];
+      return [tensor1d(getParamValue("x", node2, tensorMap, context).shape, "int32")];
     case "ShapeN":
-      return getParamValue("x", node, tensorMap, context).map((t) => tensor1d(t.shape));
+      return getParamValue("x", node2, tensorMap, context).map((t) => tensor1d(t.shape));
     case "Size":
-      return [scalar(getParamValue("x", node, tensorMap, context).size, "int32")];
+      return [scalar(getParamValue("x", node2, tensorMap, context).size, "int32")];
     case "Rank":
-      return [scalar(getParamValue("x", node, tensorMap, context).rank, "int32")];
+      return [scalar(getParamValue("x", node2, tensorMap, context).rank, "int32")];
     case "NoOp":
       return [scalar(1)];
     case "Print":
-      const input2 = getParamValue("x", node, tensorMap, context);
-      const data = getParamValue("data", node, tensorMap, context);
-      const message = getParamValue("message", node, tensorMap, context);
-      const summarize = getParamValue("summarize", node, tensorMap, context);
+      const input2 = getParamValue("x", node2, tensorMap, context);
+      const data = getParamValue("data", node2, tensorMap, context);
+      const message = getParamValue("message", node2, tensorMap, context);
+      const summarize = getParamValue("summarize", node2, tensorMap, context);
       console.warn("The graph has a tf.print() operation,usually used for debugging, which slows down performance.");
       console.log(message);
       for (let i = 0; i < data.length; i++) {
@@ -33862,7 +33862,7 @@ var executeOp8 = (node, tensorMap, context) => {
       }
       return [input2];
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
 var HashTable = class {
@@ -33932,124 +33932,124 @@ var HashTable = class {
     }
   }
 };
-var executeOp9 = async (node, tensorMap, context, resourceManager) => {
-  switch (node.op) {
+var executeOp9 = async (node2, tensorMap, context, resourceManager) => {
+  switch (node2.op) {
     case "HashTable":
     case "HashTableV2": {
-      const keyDType = getParamValue("keyDType", node, tensorMap, context);
-      const valueDType = getParamValue("valueDType", node, tensorMap, context);
+      const keyDType = getParamValue("keyDType", node2, tensorMap, context);
+      const valueDType = getParamValue("valueDType", node2, tensorMap, context);
       const hashTable2 = new HashTable(keyDType, valueDType);
-      resourceManager.addHashTable(node.name, hashTable2);
+      resourceManager.addHashTable(node2.name, hashTable2);
       return [hashTable2.handle];
     }
     case "LookupTableImport":
     case "LookupTableImportV2": {
-      const handle = getParamValue("tableHandle", node, tensorMap, context, resourceManager);
-      const keys = getParamValue("keys", node, tensorMap, context);
-      const values = getParamValue("values", node, tensorMap, context);
+      const handle = getParamValue("tableHandle", node2, tensorMap, context, resourceManager);
+      const keys = getParamValue("keys", node2, tensorMap, context);
+      const values = getParamValue("values", node2, tensorMap, context);
       const hashTable2 = resourceManager.getHashTableById(handle.id);
       return [await hashTable2.import(keys, values)];
     }
     case "LookupTableFind":
     case "LookupTableFindV2": {
-      const handle = getParamValue("tableHandle", node, tensorMap, context, resourceManager);
-      const keys = getParamValue("keys", node, tensorMap, context);
-      const defaultValue = getParamValue("defaultValue", node, tensorMap, context);
+      const handle = getParamValue("tableHandle", node2, tensorMap, context, resourceManager);
+      const keys = getParamValue("keys", node2, tensorMap, context);
+      const defaultValue = getParamValue("defaultValue", node2, tensorMap, context);
       const hashTable2 = resourceManager.getHashTableById(handle.id);
       return [await hashTable2.find(keys, defaultValue)];
     }
     case "LookupTableSize":
     case "LookupTableSizeV2": {
-      const handle = getParamValue("tableHandle", node, tensorMap, context, resourceManager);
+      const handle = getParamValue("tableHandle", node2, tensorMap, context, resourceManager);
       const hashTable2 = resourceManager.getHashTableById(handle.id);
       return [hashTable2.tensorSize()];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp10 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp10 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "ResizeBilinear": {
-      const images = getParamValue("images", node, tensorMap, context);
-      const size = getParamValue("size", node, tensorMap, context);
-      const alignCorners = getParamValue("alignCorners", node, tensorMap, context);
-      const halfPixelCenters = getParamValue("halfPixelCenters", node, tensorMap, context);
+      const images = getParamValue("images", node2, tensorMap, context);
+      const size = getParamValue("size", node2, tensorMap, context);
+      const alignCorners = getParamValue("alignCorners", node2, tensorMap, context);
+      const halfPixelCenters = getParamValue("halfPixelCenters", node2, tensorMap, context);
       return [image.resizeBilinear(images, [size[0], size[1]], alignCorners, halfPixelCenters)];
     }
     case "ResizeNearestNeighbor": {
-      const images = getParamValue("images", node, tensorMap, context);
-      const size = getParamValue("size", node, tensorMap, context);
-      const alignCorners = getParamValue("alignCorners", node, tensorMap, context);
-      const halfPixelCenters = getParamValue("halfPixelCenters", node, tensorMap, context);
+      const images = getParamValue("images", node2, tensorMap, context);
+      const size = getParamValue("size", node2, tensorMap, context);
+      const alignCorners = getParamValue("alignCorners", node2, tensorMap, context);
+      const halfPixelCenters = getParamValue("halfPixelCenters", node2, tensorMap, context);
       return [image.resizeNearestNeighbor(images, [size[0], size[1]], alignCorners, halfPixelCenters)];
     }
     case "CropAndResize": {
-      const image32 = getParamValue("image", node, tensorMap, context);
-      const boxes = getParamValue("boxes", node, tensorMap, context);
-      const boxInd = getParamValue("boxInd", node, tensorMap, context);
-      const cropSize = getParamValue("cropSize", node, tensorMap, context);
-      const method = getParamValue("method", node, tensorMap, context);
-      const extrapolationValue = getParamValue("extrapolationValue", node, tensorMap, context);
+      const image32 = getParamValue("image", node2, tensorMap, context);
+      const boxes = getParamValue("boxes", node2, tensorMap, context);
+      const boxInd = getParamValue("boxInd", node2, tensorMap, context);
+      const cropSize = getParamValue("cropSize", node2, tensorMap, context);
+      const method = getParamValue("method", node2, tensorMap, context);
+      const extrapolationValue = getParamValue("extrapolationValue", node2, tensorMap, context);
       return [image.cropAndResize(image32, boxes, boxInd, cropSize, method, extrapolationValue)];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp11 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp11 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "Equal": {
-      return [equal(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [equal(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "NotEqual": {
-      return [notEqual(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [notEqual(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "Greater": {
-      return [greater(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [greater(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "GreaterEqual": {
-      return [greaterEqual(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [greaterEqual(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "Less": {
-      return [less(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [less(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "LessEqual": {
-      return [lessEqual(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [lessEqual(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "LogicalAnd": {
-      return [logicalAnd(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [logicalAnd(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "LogicalNot": {
-      return [logicalNot(getParamValue("a", node, tensorMap, context))];
+      return [logicalNot(getParamValue("a", node2, tensorMap, context))];
     }
     case "LogicalOr": {
-      return [logicalOr(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [logicalOr(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     case "Select":
     case "SelectV2": {
-      return [where(getParamValue("condition", node, tensorMap, context), getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context))];
+      return [where(getParamValue("condition", node2, tensorMap, context), getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context))];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp12 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp12 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "BatchMatMul":
     case "BatchMatMulV2":
     case "MatMul":
-      return [matMul(getParamValue("a", node, tensorMap, context), getParamValue("b", node, tensorMap, context), getParamValue("transposeA", node, tensorMap, context), getParamValue("transposeB", node, tensorMap, context))];
+      return [matMul(getParamValue("a", node2, tensorMap, context), getParamValue("b", node2, tensorMap, context), getParamValue("transposeA", node2, tensorMap, context), getParamValue("transposeB", node2, tensorMap, context))];
     case "Einsum":
-      return [einsum(getParamValue("equation", node, tensorMap, context), ...getParamValue("tensors", node, tensorMap, context))];
+      return [einsum(getParamValue("equation", node2, tensorMap, context), ...getParamValue("tensors", node2, tensorMap, context))];
     case "Transpose":
-      return [transpose(getParamValue("x", node, tensorMap, context), getParamValue("perm", node, tensorMap, context))];
+      return [transpose(getParamValue("x", node2, tensorMap, context), getParamValue("perm", node2, tensorMap, context))];
     case "_FusedMatMul":
-      const [extraOp, activationFunc] = getParamValue("fusedOps", node, tensorMap, context);
+      const [extraOp, activationFunc] = getParamValue("fusedOps", node2, tensorMap, context);
       const isBiasAdd = extraOp === "biasadd";
       const isPrelu = activationFunc === "prelu";
-      const numArgs = getParamValue("numArgs", node, tensorMap, context);
-      const leakyreluAlpha = getParamValue("leakyreluAlpha", node, tensorMap, context);
+      const numArgs = getParamValue("numArgs", node2, tensorMap, context);
+      const leakyreluAlpha = getParamValue("leakyreluAlpha", node2, tensorMap, context);
       if (isBiasAdd) {
         if (isPrelu && numArgs !== 2) {
           throw new Error("Fused MatMul with BiasAdd and Prelu must have two extra arguments: bias and alpha.");
@@ -34058,172 +34058,172 @@ var executeOp12 = (node, tensorMap, context) => {
           throw new Error("Fused MatMul with BiasAdd must have one extra argument: bias.");
         }
       }
-      const [biasArg, preluArg] = getParamValue("args", node, tensorMap, context);
+      const [biasArg, preluArg] = getParamValue("args", node2, tensorMap, context);
       return [fused_ops_exports.matMul({
-        a: getParamValue("a", node, tensorMap, context),
-        b: getParamValue("b", node, tensorMap, context),
-        transposeA: getParamValue("transposeA", node, tensorMap, context),
-        transposeB: getParamValue("transposeB", node, tensorMap, context),
+        a: getParamValue("a", node2, tensorMap, context),
+        b: getParamValue("b", node2, tensorMap, context),
+        transposeA: getParamValue("transposeA", node2, tensorMap, context),
+        transposeB: getParamValue("transposeB", node2, tensorMap, context),
         bias: biasArg,
         activation: activationFunc,
         preluActivationWeights: preluArg,
         leakyreluAlpha
       })];
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp13 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp13 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "FusedBatchNorm":
     case "FusedBatchNormV2": {
-      return [batchNorm(getParamValue("x", node, tensorMap, context), getParamValue("mean", node, tensorMap, context), getParamValue("variance", node, tensorMap, context), getParamValue("offset", node, tensorMap, context), getParamValue("scale", node, tensorMap, context), getParamValue("epsilon", node, tensorMap, context))];
+      return [batchNorm(getParamValue("x", node2, tensorMap, context), getParamValue("mean", node2, tensorMap, context), getParamValue("variance", node2, tensorMap, context), getParamValue("offset", node2, tensorMap, context), getParamValue("scale", node2, tensorMap, context), getParamValue("epsilon", node2, tensorMap, context))];
     }
     case "FusedBatchNormV3": {
-      return [batchNorm(getParamValue("x", node, tensorMap, context), getParamValue("mean", node, tensorMap, context), getParamValue("variance", node, tensorMap, context), getParamValue("offset", node, tensorMap, context), getParamValue("scale", node, tensorMap, context), getParamValue("epsilon", node, tensorMap, context))];
+      return [batchNorm(getParamValue("x", node2, tensorMap, context), getParamValue("mean", node2, tensorMap, context), getParamValue("variance", node2, tensorMap, context), getParamValue("offset", node2, tensorMap, context), getParamValue("scale", node2, tensorMap, context), getParamValue("epsilon", node2, tensorMap, context))];
     }
     case "LRN": {
-      return [localResponseNormalization(getParamValue("x", node, tensorMap, context), getParamValue("radius", node, tensorMap, context), getParamValue("bias", node, tensorMap, context), getParamValue("alpha", node, tensorMap, context), getParamValue("beta", node, tensorMap, context))];
+      return [localResponseNormalization(getParamValue("x", node2, tensorMap, context), getParamValue("radius", node2, tensorMap, context), getParamValue("bias", node2, tensorMap, context), getParamValue("alpha", node2, tensorMap, context), getParamValue("beta", node2, tensorMap, context))];
     }
     case "Softmax": {
-      return [softmax(getParamValue("x", node, tensorMap, context))];
+      return [softmax(getParamValue("x", node2, tensorMap, context))];
     }
     case "LogSoftmax": {
-      return [logSoftmax(getParamValue("x", node, tensorMap, context))];
+      return [logSoftmax(getParamValue("x", node2, tensorMap, context))];
     }
     case "SparseToDense": {
-      return [sparseToDense(getParamValue("sparseIndices", node, tensorMap, context), getParamValue("outputShape", node, tensorMap, context), getParamValue("sparseValues", node, tensorMap, context), getParamValue("defaultValue", node, tensorMap, context))];
+      return [sparseToDense(getParamValue("sparseIndices", node2, tensorMap, context), getParamValue("outputShape", node2, tensorMap, context), getParamValue("sparseValues", node2, tensorMap, context), getParamValue("defaultValue", node2, tensorMap, context))];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp14 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp14 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "Max": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const keepDims = getParamValue("keepDims", node, tensorMap, context);
-      return [max(getParamValue("x", node, tensorMap, context), axis, keepDims)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const keepDims = getParamValue("keepDims", node2, tensorMap, context);
+      return [max(getParamValue("x", node2, tensorMap, context), axis, keepDims)];
     }
     case "Mean": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const keepDims = getParamValue("keepDims", node, tensorMap, context);
-      return [mean(getParamValue("x", node, tensorMap, context), axis, keepDims)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const keepDims = getParamValue("keepDims", node2, tensorMap, context);
+      return [mean(getParamValue("x", node2, tensorMap, context), axis, keepDims)];
     }
     case "Min": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const keepDims = getParamValue("keepDims", node, tensorMap, context);
-      return [min(getParamValue("x", node, tensorMap, context), axis, keepDims)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const keepDims = getParamValue("keepDims", node2, tensorMap, context);
+      return [min(getParamValue("x", node2, tensorMap, context), axis, keepDims)];
     }
     case "Sum": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const keepDims = getParamValue("keepDims", node, tensorMap, context);
-      return [sum2(getParamValue("x", node, tensorMap, context), axis, keepDims)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const keepDims = getParamValue("keepDims", node2, tensorMap, context);
+      return [sum2(getParamValue("x", node2, tensorMap, context), axis, keepDims)];
     }
     case "All": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const keepDims = getParamValue("keepDims", node, tensorMap, context);
-      return [all(getParamValue("x", node, tensorMap, context), axis, keepDims)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const keepDims = getParamValue("keepDims", node2, tensorMap, context);
+      return [all(getParamValue("x", node2, tensorMap, context), axis, keepDims)];
     }
     case "Any": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const keepDims = getParamValue("keepDims", node, tensorMap, context);
-      return [any(getParamValue("x", node, tensorMap, context), axis, keepDims)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const keepDims = getParamValue("keepDims", node2, tensorMap, context);
+      return [any(getParamValue("x", node2, tensorMap, context), axis, keepDims)];
     }
     case "ArgMax": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      return [argMax(getParamValue("x", node, tensorMap, context), axis)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      return [argMax(getParamValue("x", node2, tensorMap, context), axis)];
     }
     case "ArgMin": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      return [argMin(getParamValue("x", node, tensorMap, context), axis)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      return [argMin(getParamValue("x", node2, tensorMap, context), axis)];
     }
     case "Prod": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const keepDims = getParamValue("keepDims", node, tensorMap, context);
-      return [prod(getParamValue("x", node, tensorMap, context), axis, keepDims)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const keepDims = getParamValue("keepDims", node2, tensorMap, context);
+      return [prod(getParamValue("x", node2, tensorMap, context), axis, keepDims)];
     }
     case "Cumsum": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const exclusive = getParamValue("exclusive", node, tensorMap, context);
-      const reverse5 = getParamValue("reverse", node, tensorMap, context);
-      return [cumsum(getParamValue("x", node, tensorMap, context), axis, exclusive, reverse5)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const exclusive = getParamValue("exclusive", node2, tensorMap, context);
+      const reverse5 = getParamValue("reverse", node2, tensorMap, context);
+      return [cumsum(getParamValue("x", node2, tensorMap, context), axis, exclusive, reverse5)];
     }
     case "Bincount":
-      const x = getParamValue("x", node, tensorMap, context);
-      const weights = getParamValue("weights", node, tensorMap, context);
-      const size = getParamValue("size", node, tensorMap, context);
+      const x = getParamValue("x", node2, tensorMap, context);
+      const weights = getParamValue("weights", node2, tensorMap, context);
+      const size = getParamValue("size", node2, tensorMap, context);
       return [bincount(x, weights, size)];
     case "DenseBincount": {
-      const x2 = getParamValue("x", node, tensorMap, context);
-      const weights2 = getParamValue("weights", node, tensorMap, context);
-      const size2 = getParamValue("size", node, tensorMap, context);
-      const binaryOutput = getParamValue("binaryOutput", node, tensorMap, context);
+      const x2 = getParamValue("x", node2, tensorMap, context);
+      const weights2 = getParamValue("weights", node2, tensorMap, context);
+      const size2 = getParamValue("size", node2, tensorMap, context);
+      const binaryOutput = getParamValue("binaryOutput", node2, tensorMap, context);
       return [denseBincount(x2, weights2, size2, binaryOutput)];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp15 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp15 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "ConcatV2":
     case "Concat": {
-      const n = getParamValue("n", node, tensorMap, context);
-      const axis = getParamValue("axis", node, tensorMap, context);
-      let inputs = getParamValue("tensors", node, tensorMap, context);
+      const n = getParamValue("n", node2, tensorMap, context);
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      let inputs = getParamValue("tensors", node2, tensorMap, context);
       inputs = inputs.slice(0, n);
       return [concat(inputs, axis)];
     }
     case "Gather": {
-      const input2 = getParamValue("x", node, tensorMap, context);
-      const indices = getParamValue("indices", node, tensorMap, context);
+      const input2 = getParamValue("x", node2, tensorMap, context);
+      const indices = getParamValue("indices", node2, tensorMap, context);
       return [gather(input2, cast(indices, "int32"), 0)];
     }
     case "GatherV2": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const batchDims = getParamValue("batchDims", node, tensorMap, context);
-      const input2 = getParamValue("x", node, tensorMap, context);
-      const indices = getParamValue("indices", node, tensorMap, context);
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const batchDims = getParamValue("batchDims", node2, tensorMap, context);
+      const input2 = getParamValue("x", node2, tensorMap, context);
+      const indices = getParamValue("indices", node2, tensorMap, context);
       return [gather(input2, cast(indices, "int32"), axis, batchDims)];
     }
     case "Reverse": {
-      const dims = getParamValue("dims", node, tensorMap, context);
+      const dims = getParamValue("dims", node2, tensorMap, context);
       const axis = [];
       for (let i = 0; i < dims.length; i++) {
         if (dims[i]) {
           axis.push(i);
         }
       }
-      const input2 = getParamValue("x", node, tensorMap, context);
+      const input2 = getParamValue("x", node2, tensorMap, context);
       return [reverse(input2, axis)];
     }
     case "ReverseV2": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const input2 = getParamValue("x", node, tensorMap, context);
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const input2 = getParamValue("x", node2, tensorMap, context);
       return [reverse(input2, axis)];
     }
     case "Slice": {
-      const begin = getParamValue("begin", node, tensorMap, context);
-      const size = getParamValue("size", node, tensorMap, context);
-      return [slice(getParamValue("x", node, tensorMap, context), begin, size)];
+      const begin = getParamValue("begin", node2, tensorMap, context);
+      const size = getParamValue("size", node2, tensorMap, context);
+      return [slice(getParamValue("x", node2, tensorMap, context), begin, size)];
     }
     case "StridedSlice": {
-      const begin = getParamValue("begin", node, tensorMap, context);
-      const end = getParamValue("end", node, tensorMap, context);
-      const strides = getParamValue("strides", node, tensorMap, context);
-      const beginMask = getParamValue("beginMask", node, tensorMap, context);
-      const endMask = getParamValue("endMask", node, tensorMap, context);
-      const ellipsisMask = getParamValue("ellipsisMask", node, tensorMap, context);
-      const newAxisMask = getParamValue("newAxisMask", node, tensorMap, context);
-      const shrinkAxisMask = getParamValue("shrinkAxisMask", node, tensorMap, context);
-      const tensor2 = getParamValue("x", node, tensorMap, context);
+      const begin = getParamValue("begin", node2, tensorMap, context);
+      const end = getParamValue("end", node2, tensorMap, context);
+      const strides = getParamValue("strides", node2, tensorMap, context);
+      const beginMask = getParamValue("beginMask", node2, tensorMap, context);
+      const endMask = getParamValue("endMask", node2, tensorMap, context);
+      const ellipsisMask = getParamValue("ellipsisMask", node2, tensorMap, context);
+      const newAxisMask = getParamValue("newAxisMask", node2, tensorMap, context);
+      const shrinkAxisMask = getParamValue("shrinkAxisMask", node2, tensorMap, context);
+      const tensor2 = getParamValue("x", node2, tensorMap, context);
       return [stridedSlice(tensor2, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask)];
     }
     case "Pack": {
       return tidy(() => {
-        const axis = getParamValue("axis", node, tensorMap, context);
-        const tensors = getParamValue("tensors", node, tensorMap, context);
+        const axis = getParamValue("axis", node2, tensorMap, context);
+        const tensors = getParamValue("tensors", node2, tensorMap, context);
         const shape = tensors[0].shape;
         const squeezedShape = squeeze(tensors[0]).shape;
         const mapped = tensors.map((tensor2) => {
@@ -34237,47 +34237,47 @@ var executeOp15 = (node, tensorMap, context) => {
       });
     }
     case "Unpack": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const tensor2 = getParamValue("tensor", node, tensorMap, context);
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const tensor2 = getParamValue("tensor", node2, tensorMap, context);
       return unstack(tensor2, axis);
     }
     case "Tile": {
-      const reps = getParamValue("reps", node, tensorMap, context);
-      return [tile(getParamValue("x", node, tensorMap, context), reps)];
+      const reps = getParamValue("reps", node2, tensorMap, context);
+      return [tile(getParamValue("x", node2, tensorMap, context), reps)];
     }
     case "Split":
     case "SplitV": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      const numOrSizeSplits = getParamValue("numOrSizeSplits", node, tensorMap, context);
-      const tensor2 = getParamValue("x", node, tensorMap, context);
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      const numOrSizeSplits = getParamValue("numOrSizeSplits", node2, tensorMap, context);
+      const tensor2 = getParamValue("x", node2, tensorMap, context);
       return split(tensor2, numOrSizeSplits, axis);
     }
     case "ScatterNd": {
-      const indices = getParamValue("indices", node, tensorMap, context);
-      const values = getParamValue("values", node, tensorMap, context);
-      const shape = getParamValue("shape", node, tensorMap, context);
+      const indices = getParamValue("indices", node2, tensorMap, context);
+      const values = getParamValue("values", node2, tensorMap, context);
+      const shape = getParamValue("shape", node2, tensorMap, context);
       return [scatterND(indices, values, shape)];
     }
     case "GatherNd": {
-      const x = getParamValue("x", node, tensorMap, context);
-      const indices = getParamValue("indices", node, tensorMap, context);
+      const x = getParamValue("x", node2, tensorMap, context);
+      const indices = getParamValue("indices", node2, tensorMap, context);
       return [gatherND(x, indices)];
     }
     case "SparseToDense": {
-      const indices = getParamValue("sparseIndices", node, tensorMap, context);
-      const shape = getParamValue("outputShape", node, tensorMap, context);
-      const sparseValues = getParamValue("sparseValues", node, tensorMap, context);
-      const defaultValue = getParamValue("defaultValue", node, tensorMap, context);
+      const indices = getParamValue("sparseIndices", node2, tensorMap, context);
+      const shape = getParamValue("outputShape", node2, tensorMap, context);
+      const sparseValues = getParamValue("sparseValues", node2, tensorMap, context);
+      const defaultValue = getParamValue("defaultValue", node2, tensorMap, context);
       return [sparseToDense(indices, sparseValues, shape, sparseValues.dtype === defaultValue.dtype ? defaultValue : cast(defaultValue, sparseValues.dtype))];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp16 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp16 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "SparseFillEmptyRows": {
-      const { outputIndices, outputValues, emptyRowIndicator, reverseIndexMap } = sparse.sparseFillEmptyRows(getParamValue("indices", node, tensorMap, context), getParamValue("values", node, tensorMap, context), getParamValue("denseShape", node, tensorMap, context), getParamValue("defaultValue", node, tensorMap, context));
+      const { outputIndices, outputValues, emptyRowIndicator, reverseIndexMap } = sparse.sparseFillEmptyRows(getParamValue("indices", node2, tensorMap, context), getParamValue("values", node2, tensorMap, context), getParamValue("denseShape", node2, tensorMap, context), getParamValue("defaultValue", node2, tensorMap, context));
       return [
         outputIndices,
         outputValues,
@@ -34286,157 +34286,157 @@ var executeOp16 = (node, tensorMap, context) => {
       ];
     }
     case "SparseReshape": {
-      const { outputIndices, outputShape } = sparse.sparseReshape(getParamValue("inputIndices", node, tensorMap, context), getParamValue("inputShape", node, tensorMap, context), getParamValue("newShape", node, tensorMap, context));
+      const { outputIndices, outputShape } = sparse.sparseReshape(getParamValue("inputIndices", node2, tensorMap, context), getParamValue("inputShape", node2, tensorMap, context), getParamValue("newShape", node2, tensorMap, context));
       return [outputIndices, outputShape];
     }
     case "SparseSegmentMean": {
-      const outputData = sparse.sparseSegmentMean(getParamValue("data", node, tensorMap, context), getParamValue("indices", node, tensorMap, context), getParamValue("segmentIds", node, tensorMap, context));
+      const outputData = sparse.sparseSegmentMean(getParamValue("data", node2, tensorMap, context), getParamValue("indices", node2, tensorMap, context), getParamValue("segmentIds", node2, tensorMap, context));
       return [outputData];
     }
     case "SparseSegmentSum": {
-      const outputData = sparse.sparseSegmentSum(getParamValue("data", node, tensorMap, context), getParamValue("indices", node, tensorMap, context), getParamValue("segmentIds", node, tensorMap, context));
+      const outputData = sparse.sparseSegmentSum(getParamValue("data", node2, tensorMap, context), getParamValue("indices", node2, tensorMap, context), getParamValue("segmentIds", node2, tensorMap, context));
       return [outputData];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp17 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp17 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "FFT": {
-      return [fft(getParamValue("x", node, tensorMap, context))];
+      return [fft(getParamValue("x", node2, tensorMap, context))];
     }
     case "IFFT": {
-      return [ifft(getParamValue("x", node, tensorMap, context))];
+      return [ifft(getParamValue("x", node2, tensorMap, context))];
     }
     case "RFFT": {
-      return [rfft(getParamValue("x", node, tensorMap, context))];
+      return [rfft(getParamValue("x", node2, tensorMap, context))];
     }
     case "IRFFT": {
-      return [irfft(getParamValue("x", node, tensorMap, context))];
+      return [irfft(getParamValue("x", node2, tensorMap, context))];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp18 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp18 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "StringNGrams": {
-      const { nGrams, nGramsSplits } = string.stringNGrams(getParamValue("data", node, tensorMap, context), getParamValue("dataSplits", node, tensorMap, context), getParamValue("separator", node, tensorMap, context), getParamValue("nGramWidths", node, tensorMap, context), getParamValue("leftPad", node, tensorMap, context), getParamValue("rightPad", node, tensorMap, context), getParamValue("padWidth", node, tensorMap, context), getParamValue("preserveShortSequences", node, tensorMap, context));
+      const { nGrams, nGramsSplits } = string.stringNGrams(getParamValue("data", node2, tensorMap, context), getParamValue("dataSplits", node2, tensorMap, context), getParamValue("separator", node2, tensorMap, context), getParamValue("nGramWidths", node2, tensorMap, context), getParamValue("leftPad", node2, tensorMap, context), getParamValue("rightPad", node2, tensorMap, context), getParamValue("padWidth", node2, tensorMap, context), getParamValue("preserveShortSequences", node2, tensorMap, context));
       return [nGrams, nGramsSplits];
     }
     case "StringSplit": {
-      const { indices, values, shape } = string.stringSplit(getParamValue("input", node, tensorMap, context), getParamValue("delimiter", node, tensorMap, context), getParamValue("skipEmpty", node, tensorMap, context));
+      const { indices, values, shape } = string.stringSplit(getParamValue("input", node2, tensorMap, context), getParamValue("delimiter", node2, tensorMap, context), getParamValue("skipEmpty", node2, tensorMap, context));
       return [indices, values, shape];
     }
     case "StringToHashBucketFast": {
-      const output = string.stringToHashBucketFast(getParamValue("input", node, tensorMap, context), getParamValue("numBuckets", node, tensorMap, context));
+      const output = string.stringToHashBucketFast(getParamValue("input", node2, tensorMap, context), getParamValue("numBuckets", node2, tensorMap, context));
       return [output];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-var executeOp19 = (node, tensorMap, context) => {
-  switch (node.op) {
+var executeOp19 = (node2, tensorMap, context) => {
+  switch (node2.op) {
     case "Cast": {
-      return [cast(getParamValue("x", node, tensorMap, context), getParamValue("dtype", node, tensorMap, context))];
+      return [cast(getParamValue("x", node2, tensorMap, context), getParamValue("dtype", node2, tensorMap, context))];
     }
     case "ExpandDims": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      return [expandDims(getParamValue("x", node, tensorMap, context), axis)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      return [expandDims(getParamValue("x", node2, tensorMap, context), axis)];
     }
     case "Squeeze": {
-      const axis = getParamValue("axis", node, tensorMap, context);
-      return [squeeze(getParamValue("x", node, tensorMap, context), axis)];
+      const axis = getParamValue("axis", node2, tensorMap, context);
+      return [squeeze(getParamValue("x", node2, tensorMap, context), axis)];
     }
     case "Reshape": {
-      return [reshape(getParamValue("x", node, tensorMap, context), getParamValue("shape", node, tensorMap, context))];
+      return [reshape(getParamValue("x", node2, tensorMap, context), getParamValue("shape", node2, tensorMap, context))];
     }
     case "MirrorPad": {
-      return [mirrorPad(getParamValue("x", node, tensorMap, context), getParamValue("padding", node, tensorMap, context), getParamValue("mode", node, tensorMap, context))];
+      return [mirrorPad(getParamValue("x", node2, tensorMap, context), getParamValue("padding", node2, tensorMap, context), getParamValue("mode", node2, tensorMap, context))];
     }
     case "PadV2":
     case "Pad": {
-      return [pad(getParamValue("x", node, tensorMap, context), getParamValue("padding", node, tensorMap, context), getParamValue("constantValue", node, tensorMap, context))];
+      return [pad(getParamValue("x", node2, tensorMap, context), getParamValue("padding", node2, tensorMap, context), getParamValue("constantValue", node2, tensorMap, context))];
     }
     case "SpaceToBatchND": {
-      const blockShape = getParamValue("blockShape", node, tensorMap, context);
-      const paddings = getParamValue("paddings", node, tensorMap, context);
-      return [spaceToBatchND(getParamValue("x", node, tensorMap, context), blockShape, paddings)];
+      const blockShape = getParamValue("blockShape", node2, tensorMap, context);
+      const paddings = getParamValue("paddings", node2, tensorMap, context);
+      return [spaceToBatchND(getParamValue("x", node2, tensorMap, context), blockShape, paddings)];
     }
     case "BatchToSpaceND": {
-      const blockShape = getParamValue("blockShape", node, tensorMap, context);
-      const crops = getParamValue("crops", node, tensorMap, context);
-      return [batchToSpaceND(getParamValue("x", node, tensorMap, context), blockShape, crops)];
+      const blockShape = getParamValue("blockShape", node2, tensorMap, context);
+      const crops = getParamValue("crops", node2, tensorMap, context);
+      return [batchToSpaceND(getParamValue("x", node2, tensorMap, context), blockShape, crops)];
     }
     case "DepthToSpace": {
-      const blockSize = getParamValue("blockSize", node, tensorMap, context);
-      const dataFormat = getParamValue("dataFormat", node, tensorMap, context).toUpperCase();
-      return [depthToSpace(getParamValue("x", node, tensorMap, context), blockSize, dataFormat)];
+      const blockSize = getParamValue("blockSize", node2, tensorMap, context);
+      const dataFormat = getParamValue("dataFormat", node2, tensorMap, context).toUpperCase();
+      return [depthToSpace(getParamValue("x", node2, tensorMap, context), blockSize, dataFormat)];
     }
     case "BroadcastTo": {
-      return [broadcastTo(getParamValue("x", node, tensorMap, context), getParamValue("shape", node, tensorMap, context))];
+      return [broadcastTo(getParamValue("x", node2, tensorMap, context), getParamValue("shape", node2, tensorMap, context))];
     }
     case "BroadcastArgs": {
-      return [broadcastArgs(getParamValue("s0", node, tensorMap, context), getParamValue("s1", node, tensorMap, context))];
+      return [broadcastArgs(getParamValue("s0", node2, tensorMap, context), getParamValue("s1", node2, tensorMap, context))];
     }
     default:
-      throw TypeError(`Node type ${node.op} is not implemented`);
+      throw TypeError(`Node type ${node2.op} is not implemented`);
   }
 };
-function executeOp20(node, tensorMap, context, resourceManager) {
-  const value = ((node2, tensorMap2, context2) => {
-    switch (node2.category) {
+function executeOp20(node2, tensorMap, context, resourceManager) {
+  const value = ((node22, tensorMap2, context2) => {
+    switch (node22.category) {
       case "arithmetic":
-        return tidy(() => executeOp(node2, tensorMap2, context2));
+        return tidy(() => executeOp(node22, tensorMap2, context2));
       case "basic_math":
-        return tidy(() => executeOp2(node2, tensorMap2, context2));
+        return tidy(() => executeOp2(node22, tensorMap2, context2));
       case "control":
-        return executeOp3(node2, tensorMap2, context2);
+        return executeOp3(node22, tensorMap2, context2);
       case "convolution":
-        return tidy(() => executeOp4(node2, tensorMap2, context2));
+        return tidy(() => executeOp4(node22, tensorMap2, context2));
       case "creation":
-        return tidy(() => executeOp5(node2, tensorMap2, context2));
+        return tidy(() => executeOp5(node22, tensorMap2, context2));
       case "dynamic":
-        return executeOp6(node2, tensorMap2, context2);
+        return executeOp6(node22, tensorMap2, context2);
       case "evaluation":
-        return tidy(() => executeOp7(node2, tensorMap2, context2));
+        return tidy(() => executeOp7(node22, tensorMap2, context2));
       case "image":
-        return tidy(() => executeOp10(node2, tensorMap2, context2));
+        return tidy(() => executeOp10(node22, tensorMap2, context2));
       case "graph":
-        return tidy(() => executeOp8(node2, tensorMap2, context2));
+        return tidy(() => executeOp8(node22, tensorMap2, context2));
       case "logical":
-        return tidy(() => executeOp11(node2, tensorMap2, context2));
+        return tidy(() => executeOp11(node22, tensorMap2, context2));
       case "matrices":
-        return tidy(() => executeOp12(node2, tensorMap2, context2));
+        return tidy(() => executeOp12(node22, tensorMap2, context2));
       case "normalization":
-        return tidy(() => executeOp13(node2, tensorMap2, context2));
+        return tidy(() => executeOp13(node22, tensorMap2, context2));
       case "reduction":
-        return tidy(() => executeOp14(node2, tensorMap2, context2));
+        return tidy(() => executeOp14(node22, tensorMap2, context2));
       case "slice_join":
-        return tidy(() => executeOp15(node2, tensorMap2, context2));
+        return tidy(() => executeOp15(node22, tensorMap2, context2));
       case "sparse":
-        return tidy(() => executeOp16(node2, tensorMap2, context2));
+        return tidy(() => executeOp16(node22, tensorMap2, context2));
       case "spectral":
-        return tidy(() => executeOp17(node2, tensorMap2, context2));
+        return tidy(() => executeOp17(node22, tensorMap2, context2));
       case "string":
-        return tidy(() => executeOp18(node2, tensorMap2, context2));
+        return tidy(() => executeOp18(node22, tensorMap2, context2));
       case "transformation":
-        return tidy(() => executeOp19(node2, tensorMap2, context2));
+        return tidy(() => executeOp19(node22, tensorMap2, context2));
       case "hash_table":
-        return executeOp9(node2, tensorMap2, context2, resourceManager);
+        return executeOp9(node22, tensorMap2, context2, resourceManager);
       case "custom":
-        const opMapper = getRegisteredOp(node2.op);
+        const opMapper = getRegisteredOp(node22.op);
         if (opMapper && opMapper.customExecutor) {
-          return opMapper.customExecutor(new NodeValueImpl(node2, tensorMap2, context2));
+          return opMapper.customExecutor(new NodeValueImpl(node22, tensorMap2, context2));
         } else {
-          throw TypeError(`Custom op ${node2.op} is not registered.`);
+          throw TypeError(`Custom op ${node22.op} is not registered.`);
         }
       default:
-        throw TypeError(`Unknown op '${node2.op}'. File an issue at https://github.com/tensorflow/tfjs/issues so we can add it, or register a custom execution with tf.registerOp()`);
+        throw TypeError(`Unknown op '${node22.op}'. File an issue at https://github.com/tensorflow/tfjs/issues so we can add it, or register a custom execution with tf.registerOp()`);
     }
-  })(node, tensorMap, context);
+  })(node2, tensorMap, context);
   if (util_exports.isPromise(value)) {
     return value.then((data) => [].concat(data));
   }
@@ -34546,32 +34546,32 @@ function getExecutionSubgraph(inputs, outputs, weightMap, initNodes) {
   const inputNodeNames = Object.keys(inputs).map((name) => parseNodeName(name)[0]);
   let initNodeNames = [];
   if (initNodes != null) {
-    initNodeNames = initNodes.map((node) => parseNodeName(node.name)[0]);
+    initNodeNames = initNodes.map((node2) => parseNodeName(node2.name)[0]);
   }
   const frontier = [...outputs];
   while (frontier.length > 0) {
-    const node = frontier.pop();
-    if (isControlFlow(node) || isDynamicShape(node) || isHashTable(node)) {
+    const node2 = frontier.pop();
+    if (isControlFlow(node2) || isDynamicShape(node2) || isHashTable(node2)) {
       if (dynamicNode == null) {
-        dynamicNode = node;
+        dynamicNode = node2;
         syncInputs = dynamicNode.children.map((child) => child.name).filter((name) => usedNodes.has(name));
       }
     }
-    usedNodes.add(node.name);
-    if (weightMap[node.name] != null) {
+    usedNodes.add(node2.name);
+    if (weightMap[node2.name] != null) {
       continue;
     }
-    if (inputNodeNames.indexOf(node.name) !== -1) {
+    if (inputNodeNames.indexOf(node2.name) !== -1) {
       continue;
     }
-    if (initNodeNames.indexOf(node.name) !== -1) {
+    if (initNodeNames.indexOf(node2.name) !== -1) {
       continue;
     }
-    if (node.inputs.length === 0) {
-      missingInputs.push(node.name);
+    if (node2.inputs.length === 0) {
+      missingInputs.push(node2.name);
       continue;
     }
-    node.inputs.forEach((input2) => {
+    node2.inputs.forEach((input2) => {
       if (seen.has(input2.name)) {
         return;
       }
@@ -34597,21 +34597,21 @@ function getNodesInTopologicalOrder(graph2, weightMap, executionInfo) {
     }
   });
   if (initNodes != null) {
-    initNodes.forEach((node) => {
-      if (usedNodes.has(node.name)) {
-        frontier.push(node);
+    initNodes.forEach((node2) => {
+      if (usedNodes.has(node2.name)) {
+        frontier.push(node2);
       }
     });
   }
   const seen = new Set();
   const orderedNodes = [];
   while (frontier.length > 0) {
-    const node = frontier.pop();
-    seen.add(node.name);
-    if (!weightMap[node.name]) {
-      orderedNodes.push(node);
+    const node2 = frontier.pop();
+    seen.add(node2.name);
+    if (!weightMap[node2.name]) {
+      orderedNodes.push(node2);
     }
-    node.children.forEach((child) => {
+    node2.children.forEach((child) => {
       if (!seen.has(child.name) && usedNodes.has(child.name) && child.inputs.every((input2) => seen.has(input2.name))) {
         frontier.push(child);
       }
@@ -34646,14 +34646,14 @@ var HASH_TABLE_OPS = [
   "LookupTableSize",
   "LookupTableSizeV2"
 ];
-function isControlFlow(node) {
-  return CONTROL_FLOW_OPS.indexOf(node.op) >= 0;
+function isControlFlow(node2) {
+  return CONTROL_FLOW_OPS.indexOf(node2.op) >= 0;
 }
-function isDynamicShape(node) {
-  return DYNAMIC_SHAPE_OPS.indexOf(node.op) >= 0;
+function isDynamicShape(node2) {
+  return DYNAMIC_SHAPE_OPS.indexOf(node2.op) >= 0;
 }
-function isHashTable(node) {
-  return HASH_TABLE_OPS.indexOf(node.op) >= 0;
+function isHashTable(node2) {
+  return HASH_TABLE_OPS.indexOf(node2.op) >= 0;
 }
 var GraphExecutor = class {
   constructor(graph2, parent) {
@@ -34693,30 +34693,30 @@ var GraphExecutor = class {
     this._resourceManager = resourceManager;
   }
   get inputs() {
-    return this._inputs.map((node) => {
+    return this._inputs.map((node2) => {
       return {
-        name: node.name,
-        shape: node.attrParams["shape"] ? node.attrParams["shape"].value : void 0,
-        dtype: node.attrParams["dtype"] ? node.attrParams["dtype"].value : void 0
+        name: node2.name,
+        shape: node2.attrParams["shape"] ? node2.attrParams["shape"].value : void 0,
+        dtype: node2.attrParams["dtype"] ? node2.attrParams["dtype"].value : void 0
       };
     });
   }
   get outputs() {
-    return this._outputs.map((node) => {
+    return this._outputs.map((node2) => {
       return {
-        name: node.name,
-        shape: node.attrParams["shape"] ? node.attrParams["shape"].value : void 0,
-        dtype: node.attrParams["dtype"] ? node.attrParams["dtype"].value : void 0
+        name: node2.name,
+        shape: node2.attrParams["shape"] ? node2.attrParams["shape"].value : void 0,
+        dtype: node2.attrParams["dtype"] ? node2.attrParams["dtype"].value : void 0
       };
     });
   }
   get inputNodes() {
-    return this._inputs.map((node) => node.signatureKey || node.name);
+    return this._inputs.map((node2) => node2.signatureKey || node2.name);
   }
   get outputNodes() {
-    return this._outputs.map((node) => {
-      const name = node.signatureKey || node.name;
-      return node.defaultOutput ? `${name}:${node.defaultOutput}` : name;
+    return this._outputs.map((node2) => {
+      const name = node2.signatureKey || node2.name;
+      return node2.defaultOutput ? `${name}:${node2.defaultOutput}` : name;
     });
   }
   get functions() {
@@ -34726,8 +34726,8 @@ var GraphExecutor = class {
     }, {});
   }
   getCompilationKey(inputs, outputs) {
-    const sortedInputs = inputs.map((node) => node.name).sort();
-    const sortedOutputs = outputs.map((node) => node.name).sort();
+    const sortedInputs = inputs.map((node2) => node2.name).sort();
+    const sortedOutputs = outputs.map((node2) => node2.name).sort();
     return sortedInputs.join(this.SEPERATOR) + "--" + sortedOutputs.join(this.SEPERATOR);
   }
   compile(inputs, outputs) {
@@ -34776,14 +34776,14 @@ var GraphExecutor = class {
       const tensorsToKeep = this.getFrozenTensorIds(tensorsMap);
       const intermediateTensorConsumerCount = {};
       for (let i = 0; i < orderedNodes.length; i++) {
-        const node = orderedNodes[i];
-        if (!tensorsMap[node.name]) {
-          const tensors = executeOp20(node, tensorsMap, context, this._resourceManager);
+        const node2 = orderedNodes[i];
+        if (!tensorsMap[node2.name]) {
+          const tensors = executeOp20(node2, tensorsMap, context, this._resourceManager);
           if (util_exports.isPromise(tensors)) {
-            throw new Error(`The execution of the op '${node.op}' returned a promise. Please use model.executeAsync() instead.`);
+            throw new Error(`The execution of the op '${node2.op}' returned a promise. Please use model.executeAsync() instead.`);
           }
-          tensorsMap[node.name] = tensors;
-          this.checkTensorForDisposal(node.name, node, tensorsMap, context, tensorsToKeep, outputNodeNames, intermediateTensorConsumerCount);
+          tensorsMap[node2.name] = tensors;
+          this.checkTensorForDisposal(node2.name, node2, tensorsMap, context, tensorsToKeep, outputNodeNames, intermediateTensorConsumerCount);
         }
       }
       if (this.parent == null) {
@@ -34796,16 +34796,16 @@ var GraphExecutor = class {
     const ids = [].concat.apply([], Object.keys(tensorMap).map((key) => tensorMap[key]).map((tensors) => tensors.map((tensor2) => tensor2.id)));
     return new Set(ids);
   }
-  checkTensorForDisposal(nodeName, node, tensorMap, context, tensorsToKeep, outputNames, intermediateTensorConsumerCount) {
-    if (node.category === "control" || outputNames.indexOf(nodeName) !== -1) {
+  checkTensorForDisposal(nodeName, node2, tensorMap, context, tensorsToKeep, outputNames, intermediateTensorConsumerCount) {
+    if (node2.category === "control" || outputNames.indexOf(nodeName) !== -1) {
       return;
     }
     tensorMap[nodeName].forEach((tensor2) => {
       if (tensor2 != null) {
-        intermediateTensorConsumerCount[tensor2.id] = (intermediateTensorConsumerCount[tensor2.id] || 0) + node.children.length;
+        intermediateTensorConsumerCount[tensor2.id] = (intermediateTensorConsumerCount[tensor2.id] || 0) + node2.children.length;
       }
     });
-    node.inputs.forEach((input2) => {
+    node2.inputs.forEach((input2) => {
       if (input2.category !== "control") {
         const tensors = getTensorsForCurrentContenxt(input2.name, tensorMap, context);
         if (tensors != null) {
@@ -34874,8 +34874,8 @@ var GraphExecutor = class {
       ...inputNodes,
       ...this.graph.weights,
       ...this._initNodes || []
-    ].map((node) => {
-      return { node, contexts: context.currentContext };
+    ].map((node2) => {
+      return { node: node2, contexts: context.currentContext };
     });
     const tensorsMap = Object.assign({}, this.weightMap);
     Object.keys(inputs).forEach((name) => {
@@ -34894,7 +34894,7 @@ var GraphExecutor = class {
     if (dynamicNode == null && !isFunctionExecution) {
       console.warn(`This model execution did not contain any nodes with control flow or dynamic output shapes. You can use model.execute() instead.`);
     }
-    const missingOutputs = outputNodes.filter((node) => !isControlFlow(node) && !getTensor(node.name, tensorsMap, context)).map((node) => node.name);
+    const missingOutputs = outputNodes.filter((node2) => !isControlFlow(node2) && !getTensor(node2.name, tensorsMap, context)).map((node2) => node2.name);
     if (missingOutputs.length > 0) {
       let alternativeMsg = "";
       if (dynamicNode != null) {
@@ -34938,8 +34938,8 @@ var GraphExecutor = class {
     }
     return promises;
   }
-  processChildNodes(node, stack2, context, tensorMap, added, usedNodes) {
-    node.children.forEach((childNode) => {
+  processChildNodes(node2, stack2, context, tensorMap, added, usedNodes) {
+    node2.children.forEach((childNode) => {
       const [nodeName] = getNodeNameAndIndex(childNode.name, context);
       if (added[nodeName] || !usedNodes.has(childNode.name)) {
         return;
@@ -34966,14 +34966,14 @@ var GraphExecutor = class {
     Object.keys(inputs).forEach((name) => {
       const input2 = inputs[name];
       const [nodeName] = parseNodeName(name);
-      const node = this.graph.nodes[nodeName];
-      if (node.attrParams["shape"] && node.attrParams["shape"].value) {
-        const shape = node.attrParams["shape"].value;
+      const node2 = this.graph.nodes[nodeName];
+      if (node2.attrParams["shape"] && node2.attrParams["shape"].value) {
+        const shape = node2.attrParams["shape"].value;
         const match3 = shape.length === input2.shape.length && input2.shape.every((dim, index) => shape[index] === -1 || shape[index] === dim);
-        util_exports.assert(match3, () => `The shape of dict['${node.name}'] provided in model.execute(dict) must be [${shape}], but was [${input2.shape}]`);
+        util_exports.assert(match3, () => `The shape of dict['${node2.name}'] provided in model.execute(dict) must be [${shape}], but was [${input2.shape}]`);
       }
-      if (node.attrParams["dtype"] && node.attrParams["dtype"].value) {
-        util_exports.assert(input2.dtype === node.attrParams["dtype"].value, () => `The dtype of dict['${node.name}'] provided in model.execute(dict) must be ${node.attrParams["dtype"].value}, but was ${input2.dtype}`);
+      if (node2.attrParams["dtype"] && node2.attrParams["dtype"].value) {
+        util_exports.assert(input2.dtype === node2.attrParams["dtype"].value, () => `The dtype of dict['${node2.name}'] provided in model.execute(dict) must be ${node2.attrParams["dtype"].value}, but was ${input2.dtype}`);
       }
     });
   }
@@ -59728,80 +59728,6 @@ var version16 = {
   "tfjs-backend-wasm": version8
 };
 
-// src/tfjs/backend.ts
-var config2 = {
-  name: "humangl",
-  priority: 99,
-  canvas: null,
-  gl: null,
-  width: 1024,
-  height: 1024,
-  extensions: [],
-  webGLattr: {
-    alpha: false,
-    antialias: false,
-    premultipliedAlpha: false,
-    preserveDrawingBuffer: false,
-    depth: false,
-    stencil: false,
-    failIfMajorPerformanceCaveat: false,
-    desynchronized: true
-  }
-};
-function extensions() {
-  const gl = config2.gl;
-  if (!gl)
-    return;
-  config2.extensions = gl.getSupportedExtensions();
-}
-function register() {
-  if (!findBackend(config2.name)) {
-    try {
-      config2.canvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(config2.width, config2.height) : document.createElement("canvas");
-    } catch (err) {
-      log("error: cannot create canvas:", err);
-      return;
-    }
-    try {
-      config2.gl = config2.canvas.getContext("webgl2", config2.webGLattr);
-    } catch (err) {
-      log("error: cannot get WebGL2 context:", err);
-      return;
-    }
-    try {
-      setWebGLContext(2, config2.gl);
-    } catch (err) {
-      log("error: cannot set WebGL2 context:", err);
-      return;
-    }
-    try {
-      const ctx = new GPGPUContext(config2.gl);
-      registerBackend(config2.name, () => new MathBackendWebGL(ctx), config2.priority);
-    } catch (err) {
-      log("error: cannot register WebGL backend:", err);
-      return;
-    }
-    try {
-      const kernels = getKernelsForBackend("webgl");
-      kernels.forEach((kernelConfig) => {
-        const newKernelConfig = { ...kernelConfig, backendName: config2.name };
-        registerKernel(newKernelConfig);
-      });
-    } catch (err) {
-      log("error: cannot update WebGL backend registration:", err);
-      return;
-    }
-    try {
-      ENV.set("WEBGL_VERSION", 2);
-    } catch (err) {
-      log("error: cannot set WebGL backend flags:", err);
-      return;
-    }
-    extensions();
-    log("backend registered:", config2.name);
-  }
-}
-
 // src/blazeface/box.ts
 function scaleBoxCoordinates(box6, factor) {
   const startPoint = [box6.startPoint[0] * factor[0], box6.startPoint[1] * factor[1]];
@@ -69448,6 +69374,26 @@ function process4(input2, config3) {
   const canvas2 = config3.filter.return ? outCanvas : null;
   return { tensor: tensor2, canvas: canvas2 };
 }
+var lastInputSum = 0;
+var lastCacheDiff = 1;
+async function skip(instance, input2) {
+  if (instance.config.cacheSensitivity === 0)
+    return false;
+  const resizeFact = 32;
+  if (!input2.shape[1] || !input2.shape[2])
+    return false;
+  const reduced = image.resizeBilinear(input2, [Math.trunc(input2.shape[1] / resizeFact), Math.trunc(input2.shape[2] / resizeFact)]);
+  const reducedData = await reduced.data();
+  let sum6 = 0;
+  for (let i = 0; i < reducedData.length / 3; i++)
+    sum6 += reducedData[3 * i + 2];
+  reduced.dispose();
+  const diff = 100 * (Math.max(sum6, lastInputSum) / Math.min(sum6, lastInputSum) - 1);
+  lastInputSum = sum6;
+  const skipFrame = diff < Math.max(instance.config.cacheSensitivity, lastCacheDiff);
+  lastCacheDiff = diff > 10 * instance.config.cacheSensitivity ? 0 : diff;
+  return skipFrame;
+}
 
 // src/segmentation/segmentation.ts
 var model10;
@@ -69612,6 +69558,39 @@ async function load13(instance) {
       instance.models.faceres = await load3(instance.config);
     if (instance.config.segmentation.enabled && !instance.models.segmentation)
       instance.models.segmentation = await load12(instance.config);
+  }
+}
+async function validate(instance) {
+  const simpleOps = ["const", "placeholder", "noop", "pad", "squeeze", "add", "sub", "mul", "div"];
+  for (const defined of Object.keys(instance.models)) {
+    if (instance.models[defined]) {
+      let models2 = [];
+      if (Array.isArray(instance.models[defined]))
+        models2 = instance.models[defined].map((model11) => model11.executor ? model11 : model11.model);
+      else
+        models2 = [instance.models[defined]];
+      for (const model11 of models2) {
+        const ops = [];
+        const executor = model11 == null ? void 0 : model11.executor;
+        if (executor) {
+          for (const kernel of Object.values(executor.graph.nodes)) {
+            const op2 = kernel.op.toLowerCase();
+            if (!ops.includes(op2))
+              ops.push(op2);
+          }
+        }
+        const missing = [];
+        for (const op2 of ops) {
+          if (!simpleOps.includes(op2) && !instance.env.kernels.includes(op2) && !instance.env.kernels.includes(op2.replace("_", "")) && !instance.env.kernels.includes(op2.replace("native", "")) && !instance.env.kernels.includes(op2.replace("v2", ""))) {
+            missing.push(op2);
+          }
+        }
+        if (!executor && instance.config.debug)
+          log("model executor not found:", defined);
+        if (missing.length > 0 && instance.config.debug)
+          log("model validation:", defined, missing);
+      }
+    }
   }
 }
 
@@ -70568,6 +70547,166 @@ function calc(newResult) {
   return bufferedResult;
 }
 
+// src/tfjs/humangl.ts
+var config2 = {
+  name: "humangl",
+  priority: 99,
+  canvas: null,
+  gl: null,
+  width: 1024,
+  height: 1024,
+  extensions: [],
+  webGLattr: {
+    alpha: false,
+    antialias: false,
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false,
+    depth: false,
+    stencil: false,
+    failIfMajorPerformanceCaveat: false,
+    desynchronized: true
+  }
+};
+function extensions() {
+  const gl = config2.gl;
+  if (!gl)
+    return;
+  config2.extensions = gl.getSupportedExtensions();
+}
+function register() {
+  if (!findBackend(config2.name)) {
+    try {
+      config2.canvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(config2.width, config2.height) : document.createElement("canvas");
+    } catch (err) {
+      log("error: cannot create canvas:", err);
+      return;
+    }
+    try {
+      config2.gl = config2.canvas.getContext("webgl2", config2.webGLattr);
+    } catch (err) {
+      log("error: cannot get WebGL2 context:", err);
+      return;
+    }
+    try {
+      setWebGLContext(2, config2.gl);
+    } catch (err) {
+      log("error: cannot set WebGL2 context:", err);
+      return;
+    }
+    try {
+      const ctx = new GPGPUContext(config2.gl);
+      registerBackend(config2.name, () => new MathBackendWebGL(ctx), config2.priority);
+    } catch (err) {
+      log("error: cannot register WebGL backend:", err);
+      return;
+    }
+    try {
+      const kernels = getKernelsForBackend("webgl");
+      kernels.forEach((kernelConfig) => {
+        const newKernelConfig = { ...kernelConfig, backendName: config2.name };
+        registerKernel(newKernelConfig);
+      });
+    } catch (err) {
+      log("error: cannot update WebGL backend registration:", err);
+      return;
+    }
+    try {
+      ENV.set("WEBGL_VERSION", 2);
+    } catch (err) {
+      log("error: cannot set WebGL backend flags:", err);
+      return;
+    }
+    extensions();
+    log("backend registered:", config2.name);
+  }
+}
+
+// src/tfjs/backend.ts
+async function check(instance) {
+  if (instance.initial || instance.config.backend && instance.config.backend.length > 0 && getBackend() !== instance.config.backend) {
+    const timeStamp = now();
+    instance.state = "backend";
+    if (instance.config.backend && instance.config.backend.length > 0) {
+      if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && instance.config.debug) {
+        log("running inside web worker");
+      }
+      if (env2.browser && instance.config.backend === "tensorflow") {
+        log("override: backend set to tensorflow while running in browser");
+        instance.config.backend = "humangl";
+      }
+      if (env2.node && (instance.config.backend === "webgl" || instance.config.backend === "humangl")) {
+        log(`override: backend set to ${instance.config.backend} while running in nodejs`);
+        instance.config.backend = "tensorflow";
+      }
+      if (env2.browser && instance.config.backend === "webgpu") {
+        if (typeof navigator === "undefined" || typeof navigator["gpu"] === "undefined") {
+          log("override: backend set to webgpu but browser does not support webgpu");
+          instance.config.backend = "humangl";
+        } else {
+          const adapter = await navigator["gpu"].requestAdapter();
+          if (instance.config.debug)
+            log("enumerated webgpu adapter:", adapter);
+        }
+      }
+      if (instance.config.backend === "humangl")
+        register();
+      const available = Object.keys(engine().registryFactory);
+      if (instance.config.debug)
+        log("available backends:", available);
+      if (!available.includes(instance.config.backend)) {
+        log(`error: backend ${instance.config.backend} not found in registry`);
+        instance.config.backend = env2.node ? "tensorflow" : "humangl";
+        log(`override: setting backend ${instance.config.backend}`);
+      }
+      if (instance.config.debug)
+        log("setting backend:", instance.config.backend);
+      if (instance.config.backend === "wasm") {
+        if (instance.config.debug)
+          log("wasm path:", instance.config.wasmPath);
+        if (typeof (tfjs_esm_exports == null ? void 0 : tfjs_esm_exports.setWasmPaths) !== "undefined")
+          await setWasmPaths(instance.config.wasmPath);
+        else
+          throw new Error("Human: WASM backend is not loaded");
+        const simd = await env().getAsync("WASM_HAS_SIMD_SUPPORT");
+        const mt = await env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+        if (instance.config.debug)
+          log(`wasm execution: ${simd ? "SIMD" : "no SIMD"} ${mt ? "multithreaded" : "singlethreaded"}`);
+        if (instance.config.debug && !simd)
+          log("warning: wasm simd support is not enabled");
+      }
+      await setBackend(instance.config.backend);
+      try {
+        await setBackend(instance.config.backend);
+        await ready();
+      } catch (err) {
+        log("error: cannot set backend:", instance.config.backend, err);
+      }
+    }
+    if (getBackend() === "humangl") {
+      ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
+      ENV.set("WEBGL_CPU_FORWARD", true);
+      ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
+      ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
+      if (typeof instance.config["deallocate"] !== "undefined" && instance.config["deallocate"]) {
+        log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
+        ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
+      }
+      const gl = await backend().getGPGPUContext().gl;
+      if (instance.config.debug)
+        log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+    }
+    enableProdMode();
+    await ready();
+    instance.performance.backend = Math.trunc(now() - timeStamp);
+    instance.config.backend = getBackend();
+    get3();
+    instance.env = env2;
+  }
+}
+
+// package.json
+var version17 = "2.2.0";
+
 // src/sample.ts
 var face3 = `
 /9j/4AAQSkZJRgABAQEAYABgAAD/4QBoRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUA
@@ -71291,19 +71430,110 @@ SbAjYZAI2E7AIEgIEgIEgMdkSy2NgY7MdlmyNoBXsxmFuyNgVTVjNV3KjlBRNTlXTVHKCrlIqt5T
 lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
-// package.json
-var version17 = "2.2.0";
+// src/warmup.ts
+async function warmupBitmap(instance) {
+  const b64toBlob = (base64, type = "application/octet-stream") => fetch(`data:${type};base64,${base64}`).then((res2) => res2.blob());
+  let blob;
+  let res;
+  switch (instance.config.warmup) {
+    case "face":
+      blob = await b64toBlob(face3);
+      break;
+    case "full":
+      blob = await b64toBlob(body3);
+      break;
+    default:
+      blob = null;
+  }
+  if (blob) {
+    const bitmap = await createImageBitmap(blob);
+    res = await instance.detect(bitmap, instance.config);
+    bitmap.close();
+  }
+  return res;
+}
+async function warmupCanvas(instance) {
+  return new Promise((resolve) => {
+    let src;
+    let size = 0;
+    switch (instance.config.warmup) {
+      case "face":
+        size = 256;
+        src = "data:image/jpeg;base64," + face3;
+        break;
+      case "full":
+      case "body":
+        size = 1200;
+        src = "data:image/jpeg;base64," + body3;
+        break;
+      default:
+        src = null;
+    }
+    const img = new Image();
+    img.onload = async () => {
+      const canvas2 = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(size, size) : document.createElement("canvas");
+      canvas2.width = img.naturalWidth;
+      canvas2.height = img.naturalHeight;
+      const ctx = canvas2.getContext("2d");
+      ctx == null ? void 0 : ctx.drawImage(img, 0, 0);
+      const res = await instance.detect(canvas2, instance.config);
+      resolve(res);
+    };
+    if (src)
+      img.src = src;
+    else
+      resolve(null);
+  });
+}
+async function warmupNode(instance) {
+  const atob2 = (str) => Buffer.from(str, "base64");
+  let img;
+  if (instance.config.warmup === "face")
+    img = atob2(face3);
+  if (instance.config.warmup === "body" || instance.config.warmup === "full")
+    img = atob2(body3);
+  if (!img)
+    return null;
+  let res;
+  if (typeof void 0 !== "undefined") {
+    const data = (void 0).decodeJpeg(img);
+    const expanded = data.expandDims(0);
+    instance.tf.dispose(data);
+    res = await instance.detect(expanded, instance.config);
+    instance.tf.dispose(expanded);
+  } else {
+    if (instance.config.debug)
+      log("Warmup tfjs-node not loaded");
+  }
+  return res;
+}
+async function warmup(instance, userConfig) {
+  const t0 = now();
+  if (userConfig)
+    instance.config = mergeDeep(instance.config, userConfig);
+  if (!instance.config.warmup || instance.config.warmup === "none")
+    return { error: "null" };
+  let res;
+  if (typeof createImageBitmap === "function")
+    res = await warmupBitmap(instance);
+  else if (typeof Image !== "undefined")
+    res = await warmupCanvas(instance);
+  else
+    res = await warmupNode(instance);
+  const t1 = now();
+  if (instance.config.debug)
+    log("Warmup", instance.config.warmup, Math.round(t1 - t0), "ms");
+  instance.emit("warmup");
+  return res;
+}
 
 // src/human.ts
-var _numTensors, _analyzeMemoryLeaks, _checkSanity, _firstRun, _lastInputSum, _lastCacheDiff, _sanity, _emit, _checkBackend, _skipFrame, _warmupBitmap, _warmupCanvas, _warmupNode;
+var _numTensors, _analyzeMemoryLeaks, _checkSanity, _sanity;
 var Human = class {
   constructor(userConfig) {
     __privateAdd(this, _numTensors, void 0);
     __privateAdd(this, _analyzeMemoryLeaks, void 0);
     __privateAdd(this, _checkSanity, void 0);
-    __privateAdd(this, _firstRun, void 0);
-    __privateAdd(this, _lastInputSum, void 0);
-    __privateAdd(this, _lastCacheDiff, void 0);
     this.analyze = (...msg) => {
       if (!__privateGet(this, _analyzeMemoryLeaks))
         return;
@@ -71328,183 +71558,13 @@ var Human = class {
       }
       return null;
     });
-    __privateAdd(this, _emit, (event) => {
+    this.image = (input2) => process4(input2, this.config);
+    this.emit = (event) => {
       var _a;
       return (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
-    });
-    __privateAdd(this, _checkBackend, async () => {
-      var _a;
-      if (__privateGet(this, _firstRun) || this.config.backend && this.config.backend.length > 0 && this.tf.getBackend() !== this.config.backend) {
-        const timeStamp = now();
-        this.state = "backend";
-        if (this.config.backend && this.config.backend.length > 0) {
-          if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && this.config.debug) {
-            log("running inside web worker");
-          }
-          if (this.env.browser && this.config.backend === "tensorflow") {
-            log("override: backend set to tensorflow while running in browser");
-            this.config.backend = "humangl";
-          }
-          if (this.env.node && (this.config.backend === "webgl" || this.config.backend === "humangl")) {
-            log(`override: backend set to ${this.config.backend} while running in nodejs`);
-            this.config.backend = "tensorflow";
-          }
-          if (this.env.browser && this.config.backend === "webgpu") {
-            if (typeof navigator === "undefined" || typeof navigator["gpu"] === "undefined") {
-              log("override: backend set to webgpu but browser does not support webgpu");
-              this.config.backend = "humangl";
-            } else {
-              const adapter = await navigator["gpu"].requestAdapter();
-              if (this.config.debug)
-                log("enumerated webgpu adapter:", adapter);
-            }
-          }
-          if (this.config.backend === "humangl")
-            register();
-          const available = Object.keys(this.tf.engine().registryFactory);
-          if (this.config.debug)
-            log("available backends:", available);
-          if (!available.includes(this.config.backend)) {
-            log(`error: backend ${this.config.backend} not found in registry`);
-            this.config.backend = this.env.node ? "tensorflow" : "humangl";
-            log(`override: setting backend ${this.config.backend}`);
-          }
-          if (this.config.debug)
-            log("setting backend:", this.config.backend);
-          if (this.config.backend === "wasm") {
-            if (this.config.debug)
-              log("wasm path:", this.config.wasmPath);
-            if (typeof ((_a = this.tf) == null ? void 0 : _a.setWasmPaths) !== "undefined")
-              this.tf.setWasmPaths(this.config.wasmPath);
-            else
-              throw new Error("Human: WASM backend is not loaded");
-            const simd = await this.tf.env().getAsync("WASM_HAS_SIMD_SUPPORT");
-            const mt = await this.tf.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
-            if (this.config.debug)
-              log(`wasm execution: ${simd ? "SIMD" : "no SIMD"} ${mt ? "multithreaded" : "singlethreaded"}`);
-            if (this.config.debug && !simd)
-              log("warning: wasm simd support is not enabled");
-          }
-          try {
-            await this.tf.setBackend(this.config.backend);
-          } catch (err) {
-            log("error: cannot set backend:", this.config.backend, err);
-          }
-        }
-        if (this.tf.getBackend() === "humangl") {
-          this.tf.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
-          this.tf.ENV.set("WEBGL_CPU_FORWARD", true);
-          this.tf.ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
-          this.tf.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
-          if (typeof this.config["deallocate"] !== "undefined" && this.config["deallocate"]) {
-            log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
-            this.tf.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
-          }
-          const gl = await this.tf.backend().getGPGPUContext().gl;
-          if (this.config.debug)
-            log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
-        }
-        this.tf.enableProdMode();
-        await this.tf.ready();
-        this.performance.backend = Math.trunc(now() - timeStamp);
-        this.config.backend = this.tf.getBackend();
-        get3();
-        this.env = env2;
-      }
-    });
+    };
     this.next = (result) => calc(result || this.result);
-    __privateAdd(this, _skipFrame, async (input2) => {
-      if (this.config.cacheSensitivity === 0)
-        return false;
-      const resizeFact = 32;
-      if (!input2.shape[1] || !input2.shape[2])
-        return false;
-      const reduced = image.resizeBilinear(input2, [Math.trunc(input2.shape[1] / resizeFact), Math.trunc(input2.shape[2] / resizeFact)]);
-      const reducedData = await reduced.data();
-      let sum6 = 0;
-      for (let i = 0; i < reducedData.length / 3; i++)
-        sum6 += reducedData[3 * i + 2];
-      reduced.dispose();
-      const diff = 100 * (Math.max(sum6, __privateGet(this, _lastInputSum)) / Math.min(sum6, __privateGet(this, _lastInputSum)) - 1);
-      __privateSet(this, _lastInputSum, sum6);
-      const skipFrame = diff < Math.max(this.config.cacheSensitivity, __privateGet(this, _lastCacheDiff));
-      __privateSet(this, _lastCacheDiff, diff > 10 * this.config.cacheSensitivity ? 0 : diff);
-      return skipFrame;
-    });
-    __privateAdd(this, _warmupBitmap, async () => {
-      const b64toBlob = (base64, type = "application/octet-stream") => fetch(`data:${type};base64,${base64}`).then((res2) => res2.blob());
-      let blob;
-      let res;
-      switch (this.config.warmup) {
-        case "face":
-          blob = await b64toBlob(face3);
-          break;
-        case "full":
-          blob = await b64toBlob(body3);
-          break;
-        default:
-          blob = null;
-      }
-      if (blob) {
-        const bitmap = await createImageBitmap(blob);
-        res = await this.detect(bitmap, this.config);
-        bitmap.close();
-      }
-      return res;
-    });
-    __privateAdd(this, _warmupCanvas, async () => new Promise((resolve) => {
-      let src;
-      let size = 0;
-      switch (this.config.warmup) {
-        case "face":
-          size = 256;
-          src = "data:image/jpeg;base64," + face3;
-          break;
-        case "full":
-        case "body":
-          size = 1200;
-          src = "data:image/jpeg;base64," + body3;
-          break;
-        default:
-          src = null;
-      }
-      const img = new Image();
-      img.onload = async () => {
-        const canvas2 = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(size, size) : document.createElement("canvas");
-        canvas2.width = img.naturalWidth;
-        canvas2.height = img.naturalHeight;
-        const ctx = canvas2.getContext("2d");
-        ctx == null ? void 0 : ctx.drawImage(img, 0, 0);
-        const res = await this.detect(canvas2, this.config);
-        resolve(res);
-      };
-      if (src)
-        img.src = src;
-      else
-        resolve(null);
-    }));
-    __privateAdd(this, _warmupNode, async () => {
-      const atob2 = (str) => Buffer.from(str, "base64");
-      let img;
-      if (this.config.warmup === "face")
-        img = atob2(face3);
-      if (this.config.warmup === "body" || this.config.warmup === "full")
-        img = atob2(body3);
-      if (!img)
-        return null;
-      let res;
-      if (typeof void 0 !== "undefined") {
-        const data = (void 0).decodeJpeg(img);
-        const expanded = data.expandDims(0);
-        this.tf.dispose(data);
-        res = await this.detect(expanded, this.config);
-        this.tf.dispose(expanded);
-      } else {
-        if (this.config.debug)
-          log("Warmup tfjs-node not loaded");
-      }
-      return res;
-    });
+    this.warmup = (userConfig) => warmup(this, userConfig);
     get3();
     this.env = env2;
     config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${version9}/dist/`;
@@ -71519,8 +71579,7 @@ var Human = class {
     __privateSet(this, _numTensors, 0);
     __privateSet(this, _analyzeMemoryLeaks, false);
     __privateSet(this, _checkSanity, false);
-    __privateSet(this, _firstRun, true);
-    __privateSet(this, _lastCacheDiff, 0);
+    this.initial = true;
     this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
     this.events = new EventTarget();
     this.models = {
@@ -71540,12 +71599,10 @@ var Human = class {
       segmentation: null
     };
     this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [] };
-    this.image = (input2) => process4(input2, this.config);
     this.process = { tensor: null, canvas: null };
     this.faceTriangulation = triangulation;
     this.faceUVMap = uvmap;
-    __privateSet(this, _lastInputSum, 1);
-    __privateGet(this, _emit).call(this, "create");
+    this.emit("create");
   }
   similarity(embedding1, embedding2) {
     return similarity(embedding1, embedding2);
@@ -71565,12 +71622,13 @@ var Human = class {
     const count3 = Object.values(this.models).filter((model11) => model11).length;
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);
-    if (__privateGet(this, _firstRun)) {
+    if (this.initial) {
       if (this.config.debug)
         log(`version: ${this.version}`);
       if (this.config.debug)
         log(`tfjs version: ${this.tf.version_core}`);
-      await __privateGet(this, _checkBackend).call(this);
+      await check(this);
+      await ready();
       if (this.env.browser) {
         if (this.config.debug)
           log("configuration:", this.config);
@@ -71579,14 +71637,14 @@ var Human = class {
       }
     }
     await load13(this);
-    if (__privateGet(this, _firstRun)) {
-      if (this.config.debug)
-        log("tf engine state:", this.tf.engine().state.numBytes, "bytes", this.tf.engine().state.numTensors, "tensors");
-      __privateSet(this, _firstRun, false);
-    }
+    if (this.initial && this.config.debug)
+      log("tf engine state:", this.tf.engine().state.numBytes, "bytes", this.tf.engine().state.numTensors, "tensors");
+    this.initial = false;
     const loaded = Object.values(this.models).filter((model11) => model11).length;
-    if (loaded !== count3)
-      __privateGet(this, _emit).call(this, "load");
+    if (loaded !== count3) {
+      await validate(this);
+      this.emit("load");
+    }
     const current = Math.trunc(now() - timeStamp);
     if (current > (this.performance.load || 0))
       this.performance.load = current;
@@ -71605,13 +71663,14 @@ var Human = class {
         resolve({ error });
       }
       const timeStart = now();
-      await __privateGet(this, _checkBackend).call(this);
+      await check(this);
       await this.load();
       timeStamp = now();
       this.process = process4(input2, this.config);
+      const inputTensor = this.process.tensor;
       this.performance.image = Math.trunc(now() - timeStamp);
       this.analyze("Get Image:");
-      if (this.config.segmentation.enabled && this.process && this.process.tensor) {
+      if (this.config.segmentation.enabled && this.process && inputTensor) {
         this.analyze("Start Segmentation:");
         this.state = "run:segmentation";
         timeStamp = now();
@@ -71620,19 +71679,19 @@ var Human = class {
         if (elapsedTime > 0)
           this.performance.segmentation = elapsedTime;
         if (this.process.canvas) {
-          dispose(this.process.tensor);
+          dispose(inputTensor);
           this.process = process4(this.process.canvas, this.config);
         }
         this.analyze("End Segmentation:");
       }
-      if (!this.process || !this.process.tensor) {
+      if (!this.process || !inputTensor) {
         log("could not convert input to tensor");
         resolve({ error: "could not convert input to tensor" });
         return;
       }
-      __privateGet(this, _emit).call(this, "image");
+      this.emit("image");
       timeStamp = now();
-      this.config.skipFrame = await __privateGet(this, _skipFrame).call(this, this.process.tensor);
+      this.config.skipFrame = await skip(this, inputTensor);
       if (!this.performance.frames)
         this.performance.frames = 0;
       if (!this.performance.cached)
@@ -71647,13 +71706,13 @@ var Human = class {
       let handRes = [];
       let objectRes = [];
       if (this.config.async) {
-        faceRes = this.config.face.enabled ? detectFace(this, this.process.tensor) : [];
+        faceRes = this.config.face.enabled ? detectFace(this, inputTensor) : [];
         if (this.performance.face)
           delete this.performance.face;
       } else {
         this.state = "run:face";
         timeStamp = now();
-        faceRes = this.config.face.enabled ? await detectFace(this, this.process.tensor) : [];
+        faceRes = this.config.face.enabled ? await detectFace(this, inputTensor) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.face = elapsedTime;
@@ -71661,26 +71720,26 @@ var Human = class {
       this.analyze("Start Body:");
       if (this.config.async) {
         if ((_a = this.config.body.modelPath) == null ? void 0 : _a.includes("posenet"))
-          bodyRes = this.config.body.enabled ? predict4(this.process.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict4(inputTensor, this.config) : [];
         else if ((_b = this.config.body.modelPath) == null ? void 0 : _b.includes("blazepose"))
-          bodyRes = this.config.body.enabled ? predict6(this.process.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict6(inputTensor, this.config) : [];
         else if ((_c = this.config.body.modelPath) == null ? void 0 : _c.includes("efficientpose"))
-          bodyRes = this.config.body.enabled ? predict7(this.process.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict7(inputTensor, this.config) : [];
         else if ((_d = this.config.body.modelPath) == null ? void 0 : _d.includes("movenet"))
-          bodyRes = this.config.body.enabled ? predict8(this.process.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict8(inputTensor, this.config) : [];
         if (this.performance.body)
           delete this.performance.body;
       } else {
         this.state = "run:body";
         timeStamp = now();
         if ((_e = this.config.body.modelPath) == null ? void 0 : _e.includes("posenet"))
-          bodyRes = this.config.body.enabled ? await predict4(this.process.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict4(inputTensor, this.config) : [];
         else if ((_f = this.config.body.modelPath) == null ? void 0 : _f.includes("blazepose"))
-          bodyRes = this.config.body.enabled ? await predict6(this.process.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict6(inputTensor, this.config) : [];
         else if ((_g = this.config.body.modelPath) == null ? void 0 : _g.includes("efficientpose"))
-          bodyRes = this.config.body.enabled ? await predict7(this.process.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict7(inputTensor, this.config) : [];
         else if ((_h = this.config.body.modelPath) == null ? void 0 : _h.includes("movenet"))
-          bodyRes = this.config.body.enabled ? await predict8(this.process.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict8(inputTensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.body = elapsedTime;
@@ -71688,13 +71747,13 @@ var Human = class {
       this.analyze("End Body:");
       this.analyze("Start Hand:");
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? predict5(this.process.tensor, this.config) : [];
+        handRes = this.config.hand.enabled ? predict5(inputTensor, this.config) : [];
         if (this.performance.hand)
           delete this.performance.hand;
       } else {
         this.state = "run:hand";
         timeStamp = now();
-        handRes = this.config.hand.enabled ? await predict5(this.process.tensor, this.config) : [];
+        handRes = this.config.hand.enabled ? await predict5(inputTensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.hand = elapsedTime;
@@ -71703,18 +71762,18 @@ var Human = class {
       this.analyze("Start Object:");
       if (this.config.async) {
         if ((_i = this.config.object.modelPath) == null ? void 0 : _i.includes("nanodet"))
-          objectRes = this.config.object.enabled ? predict9(this.process.tensor, this.config) : [];
+          objectRes = this.config.object.enabled ? predict9(inputTensor, this.config) : [];
         else if ((_j = this.config.object.modelPath) == null ? void 0 : _j.includes("centernet"))
-          objectRes = this.config.object.enabled ? predict10(this.process.tensor, this.config) : [];
+          objectRes = this.config.object.enabled ? predict10(inputTensor, this.config) : [];
         if (this.performance.object)
           delete this.performance.object;
       } else {
         this.state = "run:object";
         timeStamp = now();
         if ((_k = this.config.object.modelPath) == null ? void 0 : _k.includes("nanodet"))
-          objectRes = this.config.object.enabled ? await predict9(this.process.tensor, this.config) : [];
+          objectRes = this.config.object.enabled ? await predict9(inputTensor, this.config) : [];
         else if ((_l = this.config.object.modelPath) == null ? void 0 : _l.includes("centernet"))
-          objectRes = this.config.object.enabled ? await predict10(this.process.tensor, this.config) : [];
+          objectRes = this.config.object.enabled ? await predict10(inputTensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.object = elapsedTime;
@@ -71747,44 +71806,16 @@ var Human = class {
           return join2(faceRes, bodyRes, handRes, gestureRes, shape);
         }
       };
-      dispose(this.process.tensor);
-      __privateGet(this, _emit).call(this, "detect");
+      dispose(inputTensor);
+      this.emit("detect");
       resolve(this.result);
     });
-  }
-  async warmup(userConfig) {
-    const t0 = now();
-    if (userConfig)
-      this.config = mergeDeep(this.config, userConfig);
-    if (!this.config.warmup || this.config.warmup === "none")
-      return { error: "null" };
-    let res;
-    if (typeof createImageBitmap === "function")
-      res = await __privateGet(this, _warmupBitmap).call(this);
-    else if (typeof Image !== "undefined")
-      res = await __privateGet(this, _warmupCanvas).call(this);
-    else
-      res = await __privateGet(this, _warmupNode).call(this);
-    const t1 = now();
-    if (this.config.debug)
-      log("Warmup", this.config.warmup, Math.round(t1 - t0), "ms", res);
-    __privateGet(this, _emit).call(this, "warmup");
-    return res;
   }
 };
 _numTensors = new WeakMap();
 _analyzeMemoryLeaks = new WeakMap();
 _checkSanity = new WeakMap();
-_firstRun = new WeakMap();
-_lastInputSum = new WeakMap();
-_lastCacheDiff = new WeakMap();
 _sanity = new WeakMap();
-_emit = new WeakMap();
-_checkBackend = new WeakMap();
-_skipFrame = new WeakMap();
-_warmupBitmap = new WeakMap();
-_warmupCanvas = new WeakMap();
-_warmupNode = new WeakMap();
 export {
   Human,
   Human as default,

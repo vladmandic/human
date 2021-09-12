@@ -6,7 +6,7 @@
  */
 export interface Config {
     /** Backend used for TFJS operations */
-    backend: null | '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu';
+    backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu' | null | string;
     /** Path to *.wasm files if backend is set to `wasm` */
     wasmPath: string;
     /** Print debug statements to console */
@@ -17,7 +17,7 @@ export interface Config {
      * - warmup pre-initializes all models for faster inference but can take significant time on startup
      * - only used for `webgl` and `humangl` backends
     */
-    warmup: 'none' | 'face' | 'full' | 'body';
+    warmup: 'none' | 'face' | 'full' | 'body' | string;
     /** Base model path (typically starting with file://, http:// or https://) for all models
      * - individual modelPath values are relative to this path
     */

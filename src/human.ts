@@ -226,7 +226,7 @@ export class Human {
   #sanity = (input: Input): null | string => {
     if (!this.#checkSanity) return null;
     if (!input) return 'input is not defined';
-    if (this.tf.ENV.flags.IS_NODE && !(input instanceof tf.Tensor)) return 'input must be a tensor';
+    if (this.env.node && !(input instanceof tf.Tensor)) return 'input must be a tensor';
     try {
       this.tf.getBackend();
     } catch {
@@ -293,10 +293,10 @@ export class Human {
     if (this.#firstRun) { // print version info on first run and check for correct backend setup
       if (this.config.debug) log(`version: ${this.version}`);
       if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
-      if (this.config.debug) log('environment:', env.env);
+      // if (this.config.debug) log('environment:', this.env);
 
       await this.#checkBackend();
-      if (this.tf.ENV.flags.IS_BROWSER) {
+      if (this.env.browser) {
         if (this.config.debug) log('configuration:', this.config);
         if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
       }
@@ -322,7 +322,7 @@ export class Human {
   // check if backend needs initialization if it changed
   /** @hidden */
   #checkBackend = async () => {
-    if (this.#firstRun || (this.config.backend && (this.config.backend.length > 0) || (this.tf.getBackend() !== this.config.backend))) {
+    if (this.#firstRun || (this.config.backend && (this.config.backend.length > 0) && (this.tf.getBackend() !== this.config.backend))) {
       const timeStamp = now();
       this.state = 'backend';
       /* force backend reload
@@ -343,17 +343,17 @@ export class Human {
         }
 
         // force browser vs node backend
-        if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === 'tensorflow') {
+        if (this.env.browser && this.config.backend === 'tensorflow') {
           log('override: backend set to tensorflow while running in browser');
           this.config.backend = 'humangl';
         }
-        if (this.tf.ENV.flags.IS_NODE && (this.config.backend === 'webgl' || this.config.backend === 'humangl')) {
+        if (this.env.node && (this.config.backend === 'webgl' || this.config.backend === 'humangl')) {
           log(`override: backend set to ${this.config.backend} while running in nodejs`);
           this.config.backend = 'tensorflow';
         }
 
         // handle webgpu
-        if (this.tf.ENV.flags.IS_BROWSER && this.config.backend === 'webgpu') {
+        if (this.env.browser && this.config.backend === 'webgpu') {
           if (typeof navigator === 'undefined' || typeof navigator['gpu'] === 'undefined') {
             log('override: backend set to webgpu but browser does not support webgpu');
             this.config.backend = 'humangl';
@@ -370,8 +370,8 @@ export class Human {
 
         if (!available.includes(this.config.backend)) {
           log(`error: backend ${this.config.backend} not found in registry`);
-          this.config.backend = this.tf.ENV.flags.IS_NODE ? 'tensorflow' : 'humangl';
-          log(`override: using backend ${this.config.backend} instead`);
+          this.config.backend = this.env.node ? 'tensorflow' : 'humangl';
+          log(`override: setting backend ${this.config.backend}`);
         }
 
         if (this.config.debug) log('setting backend:', this.config.backend);
@@ -415,6 +415,7 @@ export class Human {
       this.tf.enableProdMode();
       await this.tf.ready();
       this.performance.backend = Math.trunc(now() - timeStamp);
+      this.config.backend = this.tf.getBackend();
 
       env.get(); // update env on backend init
       this.env = env.env;

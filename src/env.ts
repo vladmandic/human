@@ -121,7 +121,7 @@ export async function get() {
   if (env.webgpu.supported) env.webgpu.adapter = (await navigator['gpu'].requestAdapter())?.name;
 
   // enumerate kernels
-  env.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName);
+  env.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
 
   // get cpu info
   // cpuinfo();

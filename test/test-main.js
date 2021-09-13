@@ -2,7 +2,7 @@ const process = require('process');
 const canvasJS = require('canvas');
 
 let fetch; // fetch is dynamically imported later
-
+let tensors = 0;
 let config;
 
 const log = (status, ...data) => {
@@ -52,7 +52,7 @@ async function getImage(human, input) {
 }
 
 function printResults(detect) {
-  const person = (detect.face && detect.face[0]) ? { confidence: detect.face[0].confidence, age: detect.face[0].age, gender: detect.face[0].gender } : {};
+  const person = (detect.face && detect.face[0]) ? { score: detect.face[0].score, age: detect.face[0].age, gender: detect.face[0].gender } : {};
   const object = (detect.object && detect.object[0]) ? { score: detect.object[0].score, class: detect.object[0].label } : {};
   const body = (detect.body && detect.body[0]) ? { score: detect.body[0].score, keypoints: detect.body[0].keypoints.length } : {};
   const persons = detect.persons;
@@ -70,8 +70,10 @@ async function testInstance(human) {
   log('info', 'tfjs version:', human.tf.version.tfjs);
 
   await human.load();
+  tensors = human.tf.engine().state.numTensors;
   if (config.backend === human.tf.getBackend()) log('state', 'passed: set backend:', config.backend);
   else log('error', 'failed: set backend:', config.backend);
+  log('state', 'tensors', tensors);
 
   if (human.models) {
     log('state', 'passed: load models');
@@ -93,6 +95,8 @@ async function testWarmup(human, title) {
   }
   if (warmup) {
     log('state', 'passed: warmup:', config.warmup, title);
+    // const count = human.tf.engine().state.numTensors;
+    // if (count - tensors > 0) log('warn', 'failed: memory', config.warmup, title, 'tensors:', count - tensors);
     printResults(warmup);
     return true;
   }
@@ -101,6 +105,8 @@ async function testWarmup(human, title) {
 }
 
 async function testDetect(human, input, title) {
+  await human.load(config);
+  tensors = human.tf.engine().state.numTensors;
   const image = input ? await getImage(human, input) : human.tf.randomNormal([1, 1024, 1024, 3]);
   if (!image) {
     log('error', 'failed: detect: input is null');
@@ -115,11 +121,18 @@ async function testDetect(human, input, title) {
   if (image instanceof human.tf.Tensor) human.tf.dispose(image);
   if (detect) {
     log('state', 'passed: detect:', input || 'random', title);
+    // const count = human.tf.engine().state.numTensors;
+    // if (count - tensors > 0) log('warn', 'failed: memory', config.warmup, title, 'tensors:', count - tensors);
     printResults(detect);
     return true;
   }
   log('error', 'failed: detect', input || 'random', title);
   return false;
+}
+const evt = { image: 0, detect: 0, warmup: 0 };
+async function events(event) {
+  log('state', 'event:', event);
+  evt[event]++;
 }
 
 async function test(Human, inputConfig) {
@@ -132,6 +145,10 @@ async function test(Human, inputConfig) {
   }
   const t0 = process.hrtime.bigint();
   const human = new Human(config);
+  human.events.addEventListener('warmup', () => events('warmup'));
+  human.events.addEventListener('image', () => events('image'));
+  human.events.addEventListener('detect', () => events('detect'));
+
   // await human.tf.ready();
   await testInstance(human);
   config.warmup = 'none';
@@ -141,12 +158,14 @@ async function test(Human, inputConfig) {
   config.warmup = 'body';
   await testWarmup(human, 'default');
 
-  log('info', 'test body variants');
-  config.body = { modelPath: 'posenet.json', enabled: true };
-  await testDetect(human, 'samples/ai-body.jpg', 'posenet');
-  config.body = { modelPath: 'movenet-lightning.json', enabled: true };
-  await testDetect(human, 'samples/ai-body.jpg', 'movenet');
+  log('info', 'test default');
+  await testDetect(human, 'samples/ai-body.jpg', 'default');
 
+  log('info', 'test body variants');
+  config.body = { modelPath: 'posenet.json' };
+  await testDetect(human, 'samples/ai-body.jpg', 'posenet');
+  config.body = { modelPath: 'movenet-lightning.json' };
+  await testDetect(human, 'samples/ai-body.jpg', 'movenet');
   await testDetect(human, null, 'default');
   log('info', 'test: first instance');
   await testDetect(human, 'samples/ai-upper.jpg', 'default');
@@ -163,6 +182,10 @@ async function test(Human, inputConfig) {
     testDetect(second, 'samples/ai-upper.jpg', 'default'),
   ]);
   const t1 = process.hrtime.bigint();
+  const leak = human.tf.engine().state.numTensors - tensors;
+  if (leak === 0) log('state', 'passeed: no memory leak');
+  else log('error', 'failed: memory leak', leak);
+  log('info', 'events:', evt);
   log('info', 'test complete:', Math.trunc(Number(t1 - t0) / 1000 / 1000), 'ms');
 }
 

@@ -6,8 +6,8 @@
 
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import { Tensor, GraphModel } from '../tfjs/types';
-import { Config } from '../config';
+import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Config } from '../config';
 
 let model: GraphModel;
 const last: Array<{
@@ -140,7 +140,8 @@ export async function predict(image: Tensor, config: Config, idx, count) {
       }
       const argmax = tf.argMax(resT.find((t) => t.shape[1] === 100), 1);
       const age = (await argmax.data())[0];
-      const all = await resT.find((t) => t.shape[1] === 100).data(); // inside tf.tidy
+      tf.dispose(argmax);
+      const all = await resT.find((t) => t.shape[1] === 100).data();
       obj.age = Math.round(all[age - 1] > all[age + 1] ? 10 * age - 100 * all[age - 1] : 10 * age + 100 * all[age + 1]) / 10;
 
       const desc = resT.find((t) => t.shape[1] === 1024);
@@ -151,7 +152,6 @@ export async function predict(image: Tensor, config: Config, idx, count) {
       obj.descriptor = [...descriptor];
       resT.forEach((t) => tf.dispose(t));
     }
-
     last[idx] = obj;
     lastCount = count;
     resolve(obj);

@@ -4,7 +4,7 @@
 
 import { log, now, mergeDeep } from './helpers';
 import { Config, defaults } from './config';
-import { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult } from './result';
+import type { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as models from './models';
 import * as face from './face';
@@ -27,7 +27,7 @@ import * as env from './env';
 import * as backend from './tfjs/backend';
 import * as app from '../package.json';
 import * as warmups from './warmup';
-import { Tensor, GraphModel } from './tfjs/types';
+import type { Tensor, GraphModel } from './tfjs/types';
 
 // export types
 export * from './config';
@@ -38,7 +38,7 @@ export { env } from './env';
 /** Defines all possible input types for **Human** detection
  * @typedef Input Type
  */
-export type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
+export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.env.Canvas;
 
 /** Events dispatched by `human.events`
  * - `create`: triggered when Human object is instantiated
@@ -257,7 +257,7 @@ export class Human {
    * @returns Canvas
    */
   segmentation(input: Input, background?: Input) {
-    return segmentation.process(input, background, this.config);
+    return input ? segmentation.process(input, background, this.config) : null;
   }
 
   /** Enhance method performs additional enhacements to face image previously detected for futher this.processing
@@ -373,28 +373,28 @@ export class Human {
       await this.load();
 
       timeStamp = now();
-      this.process = image.process(input, this.config);
-      const inputTensor = this.process.tensor;
+      let img = image.process(input, this.config);
+      this.process = img;
       this.performance.image = Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
 
       // run segmentation prethis.processing
-      if (this.config.segmentation.enabled && this.process && inputTensor) {
+      if (this.config.segmentation.enabled && this.process && img.tensor && img.canvas) {
         this.analyze('Start Segmentation:');
         this.state = 'run:segmentation';
         timeStamp = now();
-        await segmentation.predict(this.process);
+        await segmentation.predict(img);
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.segmentation = elapsedTime;
-        if (this.process.canvas) {
+        if (img.canvas) {
           // replace input
-          tf.dispose(inputTensor);
-          this.process = image.process(this.process.canvas, this.config);
+          tf.dispose(img.tensor);
+          img = image.process(img.canvas, this.config);
         }
         this.analyze('End Segmentation:');
       }
 
-      if (!this.process || !inputTensor) {
+      if (!img.tensor) {
         log('could not convert input to tensor');
         resolve({ error: 'could not convert input to tensor' });
         return;
@@ -402,7 +402,7 @@ export class Human {
       this.emit('image');
 
       timeStamp = now();
-      this.config.skipFrame = await image.skip(this, inputTensor);
+      this.config.skipFrame = await image.skip(this.config, img.tensor);
       if (!this.performance.frames) this.performance.frames = 0;
       if (!this.performance.cached) this.performance.cached = 0;
       (this.performance.frames as number)++;
@@ -419,12 +419,12 @@ export class Human {
 
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       if (this.config.async) {
-        faceRes = this.config.face.enabled ? face.detectFace(this, inputTensor) : [];
+        faceRes = this.config.face.enabled ? face.detectFace(this, img.tensor) : [];
         if (this.performance.face) delete this.performance.face;
       } else {
         this.state = 'run:face';
         timeStamp = now();
-        faceRes = this.config.face.enabled ? await face.detectFace(this, inputTensor) : [];
+        faceRes = this.config.face.enabled ? await face.detectFace(this, img.tensor) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.face = elapsedTime;
       }
@@ -432,18 +432,18 @@ export class Human {
       // run body: can be posenet, blazepose, efficientpose, movenet
       this.analyze('Start Body:');
       if (this.config.async) {
-        if (this.config.body.modelPath?.includes('posenet')) bodyRes = this.config.body.enabled ? posenet.predict(inputTensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? blazepose.predict(inputTensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('efficientpose')) bodyRes = this.config.body.enabled ? efficientpose.predict(inputTensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('movenet')) bodyRes = this.config.body.enabled ? movenet.predict(inputTensor, this.config) : [];
+        if (this.config.body.modelPath?.includes('posenet')) bodyRes = this.config.body.enabled ? posenet.predict(img.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? blazepose.predict(img.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('efficientpose')) bodyRes = this.config.body.enabled ? efficientpose.predict(img.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('movenet')) bodyRes = this.config.body.enabled ? movenet.predict(img.tensor, this.config) : [];
         if (this.performance.body) delete this.performance.body;
       } else {
         this.state = 'run:body';
         timeStamp = now();
-        if (this.config.body.modelPath?.includes('posenet')) bodyRes = this.config.body.enabled ? await posenet.predict(inputTensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? await blazepose.predict(inputTensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('efficientpose')) bodyRes = this.config.body.enabled ? await efficientpose.predict(inputTensor, this.config) : [];
-        else if (this.config.body.modelPath?.includes('movenet')) bodyRes = this.config.body.enabled ? await movenet.predict(inputTensor, this.config) : [];
+        if (this.config.body.modelPath?.includes('posenet')) bodyRes = this.config.body.enabled ? await posenet.predict(img.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? await blazepose.predict(img.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('efficientpose')) bodyRes = this.config.body.enabled ? await efficientpose.predict(img.tensor, this.config) : [];
+        else if (this.config.body.modelPath?.includes('movenet')) bodyRes = this.config.body.enabled ? await movenet.predict(img.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.body = elapsedTime;
       }
@@ -452,12 +452,12 @@ export class Human {
       // run handpose
       this.analyze('Start Hand:');
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? handpose.predict(inputTensor, this.config) : [];
+        handRes = this.config.hand.enabled ? handpose.predict(img.tensor, this.config) : [];
         if (this.performance.hand) delete this.performance.hand;
       } else {
         this.state = 'run:hand';
         timeStamp = now();
-        handRes = this.config.hand.enabled ? await handpose.predict(inputTensor, this.config) : [];
+        handRes = this.config.hand.enabled ? await handpose.predict(img.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.hand = elapsedTime;
       }
@@ -466,14 +466,14 @@ export class Human {
       // run nanodet
       this.analyze('Start Object:');
       if (this.config.async) {
-        if (this.config.object.modelPath?.includes('nanodet')) objectRes = this.config.object.enabled ? nanodet.predict(inputTensor, this.config) : [];
-        else if (this.config.object.modelPath?.includes('centernet')) objectRes = this.config.object.enabled ? centernet.predict(inputTensor, this.config) : [];
+        if (this.config.object.modelPath?.includes('nanodet')) objectRes = this.config.object.enabled ? nanodet.predict(img.tensor, this.config) : [];
+        else if (this.config.object.modelPath?.includes('centernet')) objectRes = this.config.object.enabled ? centernet.predict(img.tensor, this.config) : [];
         if (this.performance.object) delete this.performance.object;
       } else {
         this.state = 'run:object';
         timeStamp = now();
-        if (this.config.object.modelPath?.includes('nanodet')) objectRes = this.config.object.enabled ? await nanodet.predict(inputTensor, this.config) : [];
-        else if (this.config.object.modelPath?.includes('centernet')) objectRes = this.config.object.enabled ? await centernet.predict(inputTensor, this.config) : [];
+        if (this.config.object.modelPath?.includes('nanodet')) objectRes = this.config.object.enabled ? await nanodet.predict(img.tensor, this.config) : [];
+        else if (this.config.object.modelPath?.includes('centernet')) objectRes = this.config.object.enabled ? await centernet.predict(img.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.object = elapsedTime;
       }
@@ -507,7 +507,7 @@ export class Human {
       };
 
       // finally dispose input tensor
-      tf.dispose(inputTensor);
+      tf.dispose(img.tensor);
 
       // log('Result:', result);
       this.emit('detect');

@@ -2,7 +2,7 @@
  * Gesture detection module
  */
 
-import { GestureResult } from '../result';
+import type { GestureResult } from '../result';
 import * as fingerPose from '../fingerpose/fingerpose';
 
 /**

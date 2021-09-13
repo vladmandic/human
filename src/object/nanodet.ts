@@ -5,9 +5,9 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
-import { ObjectResult } from '../result';
-import { GraphModel, Tensor } from '../tfjs/types';
-import { Config } from '../config';
+import type { ObjectResult } from '../result';
+import type { GraphModel, Tensor } from '../tfjs/types';
+import type { Config } from '../config';
 import { env } from '../env';
 
 let model;

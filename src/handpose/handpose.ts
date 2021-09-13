@@ -7,9 +7,9 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
 import * as handpipeline from './handpipeline';
 import * as fingerPose from '../fingerpose/fingerpose';
-import { HandResult } from '../result';
-import { Tensor, GraphModel } from '../tfjs/types';
-import { Config } from '../config';
+import type { HandResult } from '../result';
+import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Config } from '../config';
 
 const meshAnnotations = {
   thumb: [1, 2, 3, 4],

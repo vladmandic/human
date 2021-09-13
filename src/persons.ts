@@ -2,7 +2,7 @@
  * Module that analyzes existing results and recombines them into a unified person object
  */
 
-import { FaceResult, BodyResult, HandResult, GestureResult, PersonResult } from './result';
+import type { FaceResult, BodyResult, HandResult, GestureResult, PersonResult } from './result';
 
 export function join(faces: Array<FaceResult>, bodies: Array<BodyResult>, hands: Array<HandResult>, gestures: Array<GestureResult>, shape: Array<number> | undefined): Array<PersonResult> {
   let id = 0;

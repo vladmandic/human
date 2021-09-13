@@ -8,8 +8,8 @@ import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as emotion from './emotion/emotion';
 import * as faceres from './faceres/faceres';
-import { FaceResult } from './result';
-import { Tensor } from './tfjs/types';
+import type { FaceResult } from './result';
+import type { Tensor } from './tfjs/types';
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
@@ -250,7 +250,6 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       rotation,
       tensor,
     });
-
     parent.analyze('End Face');
   }
   parent.analyze('End FaceMesh:');

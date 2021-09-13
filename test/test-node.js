@@ -14,10 +14,10 @@ const config = {
     description: { enabled: true },
     emotion: { enabled: true },
   },
-  hand: { enabled: true, rotation: true },
-  body: { enabled: true },
-  object: { enabled: true },
-  segmentation: { enabled: true },
+  hand: { enabled: false, rotation: true },
+  body: { enabled: false },
+  object: { enabled: false },
+  segmentation: { enabled: false },
   filter: { enabled: false },
 };
 

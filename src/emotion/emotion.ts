@@ -3,8 +3,8 @@
  */
 
 import { log, join } from '../helpers';
-import { Config } from '../config';
-import { Tensor, GraphModel } from '../tfjs/types';
+import type { Config } from '../config';
+import type { Tensor, GraphModel } from '../tfjs/types';
 import * as tf from '../../dist/tfjs.esm.js';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];

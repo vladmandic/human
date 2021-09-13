@@ -1,5 +1,5 @@
 import * as kpt from './keypoints';
-import { BodyResult } from '../result';
+import type { BodyResult } from '../result';
 
 export function eitherPointDoesntMeetConfidence(a: number, b: number, minConfidence: number) {
   return (a < minConfidence || b < minConfidence);

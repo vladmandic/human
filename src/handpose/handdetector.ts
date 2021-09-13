@@ -1,7 +1,7 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as anchors from './anchors';
-import { Tensor, GraphModel } from '../tfjs/types';
+import type { Tensor, GraphModel } from '../tfjs/types';
 
 export class HandDetector {
   model: GraphModel;

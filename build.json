@@ -13,7 +13,7 @@
     "locations": ["dist/*", "types/*", "typedoc/*"]
   },
   "lint": {
-    "locations": [ "src/**/*.ts", "test/*.js", "demo/**/*.js" ],
+    "locations": [ "*.json", "src/**/*.ts", "test/**/*.js", "demo/**/*.js" ],
     "rules": { }
   },
   "changelog": {
@@ -133,7 +133,7 @@
     ]
   },
   "watch": {
-    "locations": [ "src/**", "tfjs/*" ]
+    "locations": [ "src/**/*", "tfjs/**/*" ]
   },
   "typescript": {
     "allowJs": false

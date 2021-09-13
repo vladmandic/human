@@ -1,8 +1,8 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as util from './util';
-import * as detector from './handdetector';
-import { Tensor, GraphModel } from '../tfjs/types';
+import type * as detector from './handdetector';
+import type { Tensor, GraphModel } from '../tfjs/types';
 import { env } from '../env';
 
 const palmBoxEnlargeFactor = 5; // default 3

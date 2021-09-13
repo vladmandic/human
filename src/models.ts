@@ -1,5 +1,5 @@
 import { log } from './helpers';
-import { GraphModel } from './tfjs/types';
+import type { GraphModel } from './tfjs/types';
 import * as facemesh from './blazeface/facemesh';
 import * as faceres from './faceres/faceres';
 import * as emotion from './emotion/emotion';

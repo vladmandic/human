@@ -5,7 +5,7 @@ const config = {
   modelBasePath: 'file://models/',
   backend: 'tensorflow',
   debug: false,
-  async: false,
+  async: true,
   face: {
     enabled: true,
     detector: { enabled: true, rotation: true },

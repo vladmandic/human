@@ -9,7 +9,13 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/12 mandic00@live.com
+### **HEAD -> main** 2021/09/13 mandic00@live.com
+
+- enable canvas patching for nodejs
+- full ts strict typechecks
+- fix multiple memory leaks
+
+### **origin/main** 2021/09/12 mandic00@live.com
 
 - add dynamic kernel op detection
 - added human.env diagnostic class

@@ -6,3 +6,4 @@ export declare function decode(offsets: any, scores: any, displacementsFwd: any,
     box: [number, number, number, number];
     score: number;
 }[];
+//# sourceMappingURL=poses.d.ts.map

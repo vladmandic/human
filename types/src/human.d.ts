@@ -2,12 +2,12 @@
  * Human main module
  */
 import { Config } from './config';
-import { Result } from './result';
+import type { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as draw from './draw/draw';
 import * as env from './env';
-import { Tensor, GraphModel } from './tfjs/types';
+import type { Tensor, GraphModel } from './tfjs/types';
 export * from './config';
 export * from './result';
 export type { DrawOptions } from './draw/draw';
@@ -15,7 +15,7 @@ export { env } from './env';
 /** Defines all possible input types for **Human** detection
  * @typedef Input Type
  */
-export declare type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
+export declare type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.env.Canvas;
 /** Events dispatched by `human.events`
  * - `create`: triggered when Human object is instantiated
  * - `load`: triggered when models are loaded (explicitly or on-demand)
@@ -159,7 +159,7 @@ export declare class Human {
      * @param background?: {@link Input}
      * @returns Canvas
      */
-    segmentation(input: Input, background?: Input): Promise<OffscreenCanvas | HTMLCanvasElement | null>;
+    segmentation(input: Input, background?: Input): Promise<OffscreenCanvas | HTMLCanvasElement | null> | null;
     /** Enhance method performs additional enhacements to face image previously detected for futher this.processing
      * @param input: Tensor as provided in human.result.face[n].tensor
      * @returns Tensor
@@ -220,3 +220,4 @@ export declare class Human {
  * Class Human is also available as default export
  */
 export { Human as default };
+//# sourceMappingURL=human.d.ts.map

@@ -4086,28 +4086,28 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           return findEventTarget(target);
         }
         function _emscripten_set_canvas_element_size_calling_thread(target, width, height) {
-          var canvas2 = findCanvasEventTarget(target);
-          if (!canvas2)
+          var canvas3 = findCanvasEventTarget(target);
+          if (!canvas3)
             return -4;
-          if (canvas2.canvasSharedPtr) {
-            GROWABLE_HEAP_I32()[canvas2.canvasSharedPtr >> 2] = width;
-            GROWABLE_HEAP_I32()[canvas2.canvasSharedPtr + 4 >> 2] = height;
+          if (canvas3.canvasSharedPtr) {
+            GROWABLE_HEAP_I32()[canvas3.canvasSharedPtr >> 2] = width;
+            GROWABLE_HEAP_I32()[canvas3.canvasSharedPtr + 4 >> 2] = height;
           }
-          if (canvas2.offscreenCanvas || !canvas2.controlTransferredOffscreen) {
-            if (canvas2.offscreenCanvas)
-              canvas2 = canvas2.offscreenCanvas;
+          if (canvas3.offscreenCanvas || !canvas3.controlTransferredOffscreen) {
+            if (canvas3.offscreenCanvas)
+              canvas3 = canvas3.offscreenCanvas;
             var autoResizeViewport = false;
-            if (canvas2.GLctxObject && canvas2.GLctxObject.GLctx) {
-              var prevViewport = canvas2.GLctxObject.GLctx.getParameter(2978);
-              autoResizeViewport = prevViewport[0] === 0 && prevViewport[1] === 0 && prevViewport[2] === canvas2.width && prevViewport[3] === canvas2.height;
+            if (canvas3.GLctxObject && canvas3.GLctxObject.GLctx) {
+              var prevViewport = canvas3.GLctxObject.GLctx.getParameter(2978);
+              autoResizeViewport = prevViewport[0] === 0 && prevViewport[1] === 0 && prevViewport[2] === canvas3.width && prevViewport[3] === canvas3.height;
             }
-            canvas2.width = width;
-            canvas2.height = height;
+            canvas3.width = width;
+            canvas3.height = height;
             if (autoResizeViewport) {
-              canvas2.GLctxObject.GLctx.viewport(0, 0, width, height);
+              canvas3.GLctxObject.GLctx.viewport(0, 0, width, height);
             }
-          } else if (canvas2.canvasSharedPtr) {
-            var targetThread = GROWABLE_HEAP_I32()[canvas2.canvasSharedPtr + 8 >> 2];
+          } else if (canvas3.canvasSharedPtr) {
+            var targetThread = GROWABLE_HEAP_I32()[canvas3.canvasSharedPtr + 8 >> 2];
             _emscripten_set_offscreencanvas_size_on_target_thread(targetThread, target, width, height);
             return 1;
           } else {
@@ -4121,8 +4121,8 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           return _emscripten_set_canvas_element_size_calling_thread(target, width, height);
         }
         function _emscripten_set_canvas_element_size(target, width, height) {
-          var canvas2 = findCanvasEventTarget(target);
-          if (canvas2) {
+          var canvas3 = findCanvasEventTarget(target);
+          if (canvas3) {
             return _emscripten_set_canvas_element_size_calling_thread(target, width, height);
           } else {
             return _emscripten_set_canvas_element_size_main_thread(target, width, height);
@@ -4194,8 +4194,8 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
             source += UTF8ToString(GROWABLE_HEAP_I32()[string3 + i * 4 >> 2], len < 0 ? void 0 : len);
           }
           return source;
-        }, createContext: function(canvas2, webGLContextAttributes) {
-          var ctx = canvas2.getContext("webgl", webGLContextAttributes);
+        }, createContext: function(canvas3, webGLContextAttributes) {
+          var ctx = canvas3.getContext("webgl", webGLContextAttributes);
           if (!ctx)
             return 0;
           var handle = GL.registerContext(ctx, webGLContextAttributes);
@@ -4275,14 +4275,14 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           var a = attributes >> 2;
           var powerPreference = GROWABLE_HEAP_I32()[a + (24 >> 2)];
           var contextAttributes = { "alpha": !!GROWABLE_HEAP_I32()[a + (0 >> 2)], "depth": !!GROWABLE_HEAP_I32()[a + (4 >> 2)], "stencil": !!GROWABLE_HEAP_I32()[a + (8 >> 2)], "antialias": !!GROWABLE_HEAP_I32()[a + (12 >> 2)], "premultipliedAlpha": !!GROWABLE_HEAP_I32()[a + (16 >> 2)], "preserveDrawingBuffer": !!GROWABLE_HEAP_I32()[a + (20 >> 2)], "powerPreference": __emscripten_webgl_power_preferences[powerPreference], "failIfMajorPerformanceCaveat": !!GROWABLE_HEAP_I32()[a + (28 >> 2)], majorVersion: GROWABLE_HEAP_I32()[a + (32 >> 2)], minorVersion: GROWABLE_HEAP_I32()[a + (36 >> 2)], enableExtensionsByDefault: GROWABLE_HEAP_I32()[a + (40 >> 2)], explicitSwapControl: GROWABLE_HEAP_I32()[a + (44 >> 2)], proxyContextToMainThread: GROWABLE_HEAP_I32()[a + (48 >> 2)], renderViaOffscreenBackBuffer: GROWABLE_HEAP_I32()[a + (52 >> 2)] };
-          var canvas2 = findCanvasEventTarget(target);
-          if (!canvas2) {
+          var canvas3 = findCanvasEventTarget(target);
+          if (!canvas3) {
             return 0;
           }
           if (contextAttributes.explicitSwapControl) {
             return 0;
           }
-          var contextHandle = GL.createContext(canvas2, contextAttributes);
+          var contextHandle = GL.createContext(canvas3, contextAttributes);
           return contextHandle;
         }
         function _emscripten_webgl_create_context(a0, a12) {
@@ -10488,7 +10488,7 @@ async function fromPixelsAsync(pixels, numChannels = 3) {
   }
   return fromPixels_(inputs, numChannels);
 }
-async function toPixels(img, canvas2) {
+async function toPixels(img, canvas3) {
   let $img = convertToTensor(img, "img", "toPixels");
   if (!(img instanceof Tensor)) {
     const originalImgTensor = $img;
@@ -10536,10 +10536,10 @@ async function toPixels(img, canvas2) {
     bytes[j + 2] = Math.round(rgba[2]);
     bytes[j + 3] = Math.round(rgba[3]);
   }
-  if (canvas2 != null) {
-    canvas2.width = width;
-    canvas2.height = height;
-    const ctx = canvas2.getContext("2d");
+  if (canvas3 != null) {
+    canvas3.width = width;
+    canvas3.height = height;
+    const ctx = canvas3.getContext("2d");
     const imageData = new ImageData(bytes, width, height);
     ctx.putImageData(imageData, 0, 0);
   }
@@ -43093,15 +43093,15 @@ function getWebGLRenderingContext(webGLVersion) {
   if (webGLVersion !== 1 && webGLVersion !== 2) {
     throw new Error("Cannot get WebGL rendering context, WebGL is disabled.");
   }
-  const canvas2 = createCanvas(webGLVersion);
-  canvas2.addEventListener("webglcontextlost", (ev) => {
+  const canvas3 = createCanvas(webGLVersion);
+  canvas3.addEventListener("webglcontextlost", (ev) => {
     ev.preventDefault();
     delete contexts[webGLVersion];
   }, false);
   if (webGLVersion === 1) {
-    return canvas2.getContext("webgl", WEBGL_ATTRIBUTES) || canvas2.getContext("experimental-webgl", WEBGL_ATTRIBUTES);
+    return canvas3.getContext("webgl", WEBGL_ATTRIBUTES) || canvas3.getContext("experimental-webgl", WEBGL_ATTRIBUTES);
   }
-  return canvas2.getContext("webgl2", WEBGL_ATTRIBUTES);
+  return canvas3.getContext("webgl2", WEBGL_ATTRIBUTES);
 }
 var PackingScheme;
 (function(PackingScheme2) {
@@ -59746,16 +59746,16 @@ function getBoxCenter(box6) {
     box6.startPoint[1] + (box6.endPoint[1] - box6.startPoint[1]) / 2
   ];
 }
-function cutBoxFromImageAndResize(box6, image4, cropSize) {
-  const h = image4.shape[1];
-  const w = image4.shape[2];
+function cutBoxFromImageAndResize(box6, image5, cropSize) {
+  const h = image5.shape[1];
+  const w = image5.shape[2];
   const boxes = [[
     box6.startPoint[1] / h,
     box6.startPoint[0] / w,
     box6.endPoint[1] / h,
     box6.endPoint[0] / w
   ]];
-  return image.cropAndResize(image4, boxes, [0], cropSize);
+  return image.cropAndResize(image5, boxes, [0], cropSize);
 }
 function enlargeBox(box6, factor = 1.5) {
   const center = getBoxCenter(box6);
@@ -59899,7 +59899,7 @@ var BlazeFaceModel = class {
   async getBoundingBoxes(inputImage, userConfig) {
     var _a, _b, _c, _d;
     if (!inputImage || inputImage["isDisposedInternal"] || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
-      return null;
+      return { boxes: [] };
     const [batch, boxes, scores] = tidy(() => {
       const resizedImage = image.resizeBilinear(inputImage, [this.inputSize, this.inputSize]);
       const normalizedImage = sub(div(resizedImage, 127.5), 0.5);
@@ -59929,11 +59929,9 @@ var BlazeFaceModel = class {
       const confidence = scoresData[nms[i]];
       if (confidence > (((_d = this.config.face.detector) == null ? void 0 : _d.minConfidence) || 0)) {
         const boundingBox = slice(boxes, [nms[i], 0], [1, -1]);
-        const localBox = createBox(boundingBox);
-        dispose(boundingBox);
-        const anchor = this.anchorsData[nms[i]];
         const landmarks = tidy(() => reshape(squeeze(slice(batch, [nms[i], keypointsCount - 1], [1, -1])), [keypointsCount, -1]));
-        annotatedBoxes.push({ box: localBox, landmarks, anchor, confidence });
+        annotatedBoxes.push({ box: createBox(boundingBox), landmarks, anchor: this.anchorsData[nms[i]], confidence });
+        dispose(boundingBox);
       }
     }
     dispose(batch);
@@ -63421,12 +63419,12 @@ var Pipeline = class {
     const angle = computeRotation(box6.landmarks[indexOfMouth], box6.landmarks[indexOfForehead]);
     const faceCenter = getBoxCenter({ startPoint: box6.startPoint, endPoint: box6.endPoint });
     const faceCenterNormalized = [faceCenter[0] / input2.shape[2], faceCenter[1] / input2.shape[1]];
-    const rotatedImage = image.rotateWithOffset(input2, angle, 0, faceCenterNormalized);
+    const rotated = image.rotateWithOffset(input2, angle, 0, faceCenterNormalized);
     const rotationMatrix = buildRotationMatrix(-angle, faceCenter);
-    const cut = config3.face.mesh.enabled ? cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, rotatedImage, [this.meshSize, this.meshSize]) : cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, rotatedImage, [this.boxSize, this.boxSize]);
+    const cut = config3.face.mesh.enabled ? cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, rotated, [this.meshSize, this.meshSize]) : cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, rotated, [this.boxSize, this.boxSize]);
     const face5 = div(cut, 255);
     dispose(cut);
-    dispose(rotatedImage);
+    dispose(rotated);
     return [angle, rotationMatrix, face5];
   }
   async augmentIris(rawCoords, face5) {
@@ -63510,11 +63508,11 @@ var Pipeline = class {
         [angle, rotationMatrix, face5] = this.correctFaceRotation(config3, box6, input2);
       } else {
         rotationMatrix = IDENTITY_MATRIX;
-        const clonedImage = input2.clone();
-        const cut = config3.face.mesh.enabled ? cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, clonedImage, [this.meshSize, this.meshSize]) : cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, clonedImage, [this.boxSize, this.boxSize]);
+        const cloned = input2.clone();
+        const cut = config3.face.mesh.enabled ? cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, cloned, [this.meshSize, this.meshSize]) : cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, cloned, [this.boxSize, this.boxSize]);
         face5 = div(cut, 255);
         dispose(cut);
-        dispose(clonedImage);
+        dispose(cloned);
       }
       if (!config3.face.mesh.enabled) {
         results.push({
@@ -63543,6 +63541,7 @@ var Pipeline = class {
           const mesh = this.transformRawCoords(rawCoords, box6, angle, rotationMatrix);
           box6 = { ...enlargeBox(calculateLandmarksBoundingBox(mesh), 1.5), confidence: box6.confidence };
           if (config3.face.detector.rotation && config3.face.mesh.enabled && config3.face.description.enabled && env2.kernels.includes("rotatewithoffset")) {
+            dispose(face5);
             [angle, rotationMatrix, face5] = this.correctFaceRotation(config3, box6, input2);
           }
           results.push({
@@ -63609,8 +63608,6 @@ async function predict(input2, config3) {
       annotations: annotations3,
       tensor: prediction.image
     });
-    if (prediction.coords)
-      dispose(prediction.coords);
   }
   return results;
 }
@@ -63690,7 +63687,7 @@ function match(embedding2, db, threshold3 = 0) {
   return best;
 }
 function enhance(input2) {
-  const image4 = tidy(() => {
+  const image5 = tidy(() => {
     const tensor2 = input2.image || input2.tensor || input2;
     if (!(tensor2 instanceof Tensor))
       return null;
@@ -63701,9 +63698,9 @@ function enhance(input2) {
     const norm2 = mul(crop, 255);
     return norm2;
   });
-  return image4;
+  return image5;
 }
-async function predict2(image4, config3, idx, count3) {
+async function predict2(image5, config3, idx, count3) {
   var _a, _b, _c;
   if (!model2)
     return null;
@@ -63714,7 +63711,7 @@ async function predict2(image4, config3, idx, count3) {
   skipped = 0;
   return new Promise(async (resolve) => {
     var _a2, _b2;
-    const enhanced = enhance(image4);
+    const enhanced = enhance(image5);
     let resT;
     const obj = {
       age: 0,
@@ -63734,6 +63731,7 @@ async function predict2(image4, config3, idx, count3) {
       }
       const argmax2 = argMax(resT.find((t) => t.shape[1] === 100), 1);
       const age = (await argmax2.data())[0];
+      dispose(argmax2);
       const all6 = await resT.find((t) => t.shape[1] === 100).data();
       obj.age = Math.round(all6[age - 1] > all6[age + 1] ? 10 * age - 100 * all6[age - 1] : 10 * age + 100 * all6[age + 1]) / 10;
       const desc = resT.find((t) => t.shape[1] === 1024);
@@ -63766,7 +63764,7 @@ async function load4(config3) {
     log("cached model:", model3.modelUrl);
   return model3;
 }
-async function predict3(image4, config3, idx, count3) {
+async function predict3(image5, config3, idx, count3) {
   var _a;
   if (!model3)
     return null;
@@ -63777,7 +63775,7 @@ async function predict3(image4, config3, idx, count3) {
   skipped2 = 0;
   return new Promise(async (resolve) => {
     var _a2, _b;
-    const resize = image.resizeBilinear(image4, [model3.inputs[0].shape[2], model3.inputs[0].shape[1]], false);
+    const resize = image.resizeBilinear(image5, [model3.inputs[0].shape[2], model3.inputs[0].shape[1]], false);
     const [red, green, blue] = split(resize, 3, 3);
     dispose(resize);
     const redNorm = mul(red, rgb[0]);
@@ -64164,16 +64162,16 @@ function getBoxCenter2(box6) {
     box6.startPoint[1] + (box6.endPoint[1] - box6.startPoint[1]) / 2
   ];
 }
-function cutBoxFromImageAndResize2(box6, image4, cropSize) {
-  const h = image4.shape[1];
-  const w = image4.shape[2];
+function cutBoxFromImageAndResize2(box6, image5, cropSize) {
+  const h = image5.shape[1];
+  const w = image5.shape[2];
   const boxes = [[
     box6.startPoint[1] / h,
     box6.startPoint[0] / w,
     box6.endPoint[1] / h,
     box6.endPoint[0] / w
   ]];
-  return image.cropAndResize(image4, boxes, [0], cropSize);
+  return image.cropAndResize(image5, boxes, [0], cropSize);
 }
 function scaleBoxCoordinates2(box6, factor) {
   const startPoint = [box6.startPoint[0] * factor[0], box6.startPoint[1] * factor[1]];
@@ -67200,9 +67198,9 @@ var HandDetector = class {
   async estimateHandBounds(input2, config3) {
     const inputHeight = input2.shape[1];
     const inputWidth = input2.shape[2];
-    const image4 = tidy(() => sub(div(image.resizeBilinear(input2, [this.inputSize, this.inputSize]), 127.5), 1));
-    const predictions = await this.getBoxes(image4, config3);
-    dispose(image4);
+    const image5 = tidy(() => sub(div(image.resizeBilinear(input2, [this.inputSize, this.inputSize]), 127.5), 1));
+    const predictions = await this.getBoxes(image5, config3);
+    dispose(image5);
     const hands = [];
     if (!predictions || predictions.length === 0)
       return hands;
@@ -67344,11 +67342,11 @@ var HandPipeline = class {
       Math.trunc(coord[2])
     ]);
   }
-  async estimateHands(image4, config3) {
+  async estimateHands(image5, config3) {
     let useFreshBox = false;
     let boxes;
     if (this.skipped === 0 || this.skipped > config3.hand.skipFrames || !config3.hand.landmarks || !config3.skipFrame) {
-      boxes = await this.handDetector.estimateHandBounds(image4, config3);
+      boxes = await this.handDetector.estimateHandBounds(image5, config3);
       this.skipped = 0;
     }
     if (config3.skipFrame)
@@ -67367,8 +67365,8 @@ var HandPipeline = class {
       if (config3.hand.landmarks) {
         const angle = config3.hand.rotation ? computeRotation2(currentBox.palmLandmarks[palmLandmarksPalmBase], currentBox.palmLandmarks[palmLandmarksMiddleFingerBase]) : 0;
         const palmCenter = getBoxCenter2(currentBox);
-        const palmCenterNormalized = [palmCenter[0] / image4.shape[2], palmCenter[1] / image4.shape[1]];
-        const rotatedImage = config3.hand.rotation && env2.kernels.includes("rotatewithoffset") ? image.rotateWithOffset(image4, angle, 0, palmCenterNormalized) : image4.clone();
+        const palmCenterNormalized = [palmCenter[0] / image5.shape[2], palmCenter[1] / image5.shape[1]];
+        const rotatedImage = config3.hand.rotation && env2.kernels.includes("rotatewithoffset") ? image.rotateWithOffset(image5, angle, 0, palmCenterNormalized) : image5.clone();
         const rotationMatrix = buildRotationMatrix2(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
         const croppedInput = cutBoxFromImageAndResize2(newBox, rotatedImage, [this.inputSize, this.inputSize]);
@@ -67970,13 +67968,13 @@ async function load7(config3) {
     log("cached model:", model5["modelUrl"]);
   return model5;
 }
-async function predict6(image4, config3) {
+async function predict6(image5, config3) {
   if (!model5)
     return [];
   if (!config3.body.enabled)
     return [];
-  const imgSize = { width: image4.shape[2] || 0, height: image4.shape[1] || 0 };
-  const resize = image.resizeBilinear(image4, [model5["width"], model5["height"]], false);
+  const imgSize = { width: image5.shape[2] || 0, height: image5.shape[1] || 0 };
+  const resize = image.resizeBilinear(image5, [model5["width"], model5["height"]], false);
   const normalize = div(resize, [255]);
   dispose(resize);
   const resT = await model5.predict(normalize);
@@ -68052,7 +68050,7 @@ function max2d(inputs, minScore) {
     return [0, 0, newScore];
   });
 }
-async function predict7(image4, config3) {
+async function predict7(image5, config3) {
   var _a;
   if (skipped3 < (((_a = config3.body) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && Object.keys(keypoints).length > 0) {
     skipped3++;
@@ -68064,7 +68062,7 @@ async function predict7(image4, config3) {
     const tensor2 = tidy(() => {
       if (!model6.inputs[0].shape)
         return null;
-      const resize = image.resizeBilinear(image4, [model6.inputs[0].shape[2], model6.inputs[0].shape[1]], false);
+      const resize = image.resizeBilinear(image5, [model6.inputs[0].shape[2], model6.inputs[0].shape[1]], false);
       const enhance2 = mul(resize, 2);
       const norm2 = enhance2.sub(1);
       return norm2;
@@ -68090,8 +68088,8 @@ async function predict7(image4, config3) {
               y2 / model6.inputs[0].shape[1]
             ],
             position: [
-              Math.round(image4.shape[2] * x2 / model6.inputs[0].shape[2]),
-              Math.round(image4.shape[1] * y2 / model6.inputs[0].shape[1])
+              Math.round(image5.shape[2] * x2 / model6.inputs[0].shape[2]),
+              Math.round(image5.shape[1] * y2 / model6.inputs[0].shape[1])
             ]
           });
         }
@@ -68138,7 +68136,7 @@ async function load9(config3) {
     log("cached model:", model7["modelUrl"]);
   return model7;
 }
-async function parseSinglePose(res, config3, image4) {
+async function parseSinglePose(res, config3, image5) {
   keypoints2.length = 0;
   const kpt3 = res[0][0];
   for (let id = 0; id < kpt3.length; id++) {
@@ -68152,8 +68150,8 @@ async function parseSinglePose(res, config3, image4) {
           kpt3[id][0]
         ],
         position: [
-          Math.round((image4.shape[2] || 0) * kpt3[id][1]),
-          Math.round((image4.shape[1] || 0) * kpt3[id][0])
+          Math.round((image5.shape[2] || 0) * kpt3[id][1]),
+          Math.round((image5.shape[1] || 0) * kpt3[id][0])
         ]
       });
     }
@@ -68179,7 +68177,7 @@ async function parseSinglePose(res, config3, image4) {
   persons2.push({ id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints2 });
   return persons2;
 }
-async function parseMultiPose(res, config3, image4) {
+async function parseMultiPose(res, config3, image5) {
   const persons2 = [];
   for (let p2 = 0; p2 < res[0].length; p2++) {
     const kpt3 = res[0][p2];
@@ -68198,8 +68196,8 @@ async function parseMultiPose(res, config3, image4) {
             kpt3[3 * i + 0]
           ],
           position: [
-            Math.trunc(kpt3[3 * i + 1] * (image4.shape[2] || 0)),
-            Math.trunc(kpt3[3 * i + 0] * (image4.shape[1] || 0))
+            Math.trunc(kpt3[3 * i + 1] * (image5.shape[2] || 0)),
+            Math.trunc(kpt3[3 * i + 0] * (image5.shape[1] || 0))
           ]
         });
       }
@@ -68210,17 +68208,17 @@ async function parseMultiPose(res, config3, image4) {
       score: score2,
       boxRaw: boxRaw2,
       box: [
-        Math.trunc(boxRaw2[0] * (image4.shape[2] || 0)),
-        Math.trunc(boxRaw2[1] * (image4.shape[1] || 0)),
-        Math.trunc(boxRaw2[2] * (image4.shape[2] || 0)),
-        Math.trunc(boxRaw2[3] * (image4.shape[1] || 0))
+        Math.trunc(boxRaw2[0] * (image5.shape[2] || 0)),
+        Math.trunc(boxRaw2[1] * (image5.shape[1] || 0)),
+        Math.trunc(boxRaw2[2] * (image5.shape[2] || 0)),
+        Math.trunc(boxRaw2[3] * (image5.shape[1] || 0))
       ],
       keypoints: keypoints2
     });
   }
   return persons2;
 }
-async function predict8(image4, config3) {
+async function predict8(image5, config3) {
   if (skipped4 < (config3.body.skipFrames || 0) && config3.skipFrame && Object.keys(keypoints2).length > 0) {
     skipped4++;
     return [{ id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints2 }];
@@ -68233,7 +68231,7 @@ async function predict8(image4, config3) {
       let inputSize = model7.inputs[0].shape[2];
       if (inputSize === -1)
         inputSize = 256;
-      const resize = image.resizeBilinear(image4, [inputSize, inputSize], false);
+      const resize = image.resizeBilinear(image5, [inputSize, inputSize], false);
       const cast6 = cast(resize, "int32");
       return cast6;
     });
@@ -68246,9 +68244,9 @@ async function predict8(image4, config3) {
     const res = await resT.array();
     let persons2;
     if (resT.shape[2] === 17)
-      persons2 = await parseSinglePose(res, config3, image4);
+      persons2 = await parseSinglePose(res, config3, image5);
     else if (resT.shape[2] === 56)
-      persons2 = await parseMultiPose(res, config3, image4);
+      persons2 = await parseMultiPose(res, config3, image5);
     dispose(resT);
     resolve(persons2);
   });
@@ -68419,7 +68417,7 @@ async function process2(res, inputSize, outputShape, config3) {
   results = results.filter((_val, idx) => nmsIdx.includes(idx)).sort((a, b) => b.score - a.score);
   return results;
 }
-async function predict9(image4, config3) {
+async function predict9(image5, config3) {
   if (skipped5 < (config3.object.skipFrames || 0) && config3.skipFrame && last3.length > 0) {
     skipped5++;
     return last3;
@@ -68428,8 +68426,8 @@ async function predict9(image4, config3) {
   if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
     return last3;
   return new Promise(async (resolve) => {
-    const outputSize = [image4.shape[2], image4.shape[1]];
-    const resize = image.resizeBilinear(image4, [model8.inputSize, model8.inputSize], false);
+    const outputSize = [image5.shape[2], image5.shape[1]];
+    const resize = image.resizeBilinear(image5, [model8.inputSize, model8.inputSize], false);
     const norm2 = div(resize, 255);
     const transpose5 = norm2.transpose([0, 3, 1, 2]);
     dispose(norm2);
@@ -68474,6 +68472,7 @@ async function process3(res, inputSize, outputShape, config3) {
   dispose(squeezeT);
   const stackT = stack([arr[1], arr[0], arr[3], arr[2]], 1);
   const boxesT = squeeze(stackT);
+  dispose(stackT);
   const scoresT = squeeze(arr[4]);
   const classesT = squeeze(arr[5]);
   arr.forEach((t) => dispose(t));
@@ -68677,8 +68676,8 @@ function GLImageFilter(params) {
     gl.uniform1f(_currentProgram.uniform.flipY, flipY ? -1 : 1);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   };
-  this.apply = function(image4) {
-    _resize(image4.width, image4.height);
+  this.apply = function(image5) {
+    _resize(image5.width, image5.height);
     _drawCount = 0;
     if (!_sourceTexture)
       _sourceTexture = gl.createTexture();
@@ -68687,7 +68686,7 @@ function GLImageFilter(params) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image4);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image5);
     if (_filterChain.length === 0) {
       _draw();
       return _canvas;
@@ -69238,11 +69237,28 @@ var maxSize = 2048;
 var inCanvas;
 var outCanvas;
 var fx;
+function canvas(width, height) {
+  let c;
+  if (env2.browser) {
+    if (typeof OffscreenCanvas !== "undefined") {
+      c = new OffscreenCanvas(width, height);
+    } else {
+      c = document.createElement("canvas");
+      c.width = width;
+      c.height = height;
+    }
+  } else {
+    c = typeof env2.Canvas !== "undefined" ? new env2.Canvas(width, height) : null;
+  }
+  if (!c)
+    throw new Error("Human: Cannot create canvas");
+  return c;
+}
 function process4(input2, config3) {
   let tensor2;
   if (!input2)
     throw new Error("Human: Input is missing");
-  if (!(input2 instanceof Tensor) && !(typeof Image !== "undefined" && input2 instanceof Image) && !(typeof ImageData !== "undefined" && input2 instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input2 instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input2 instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input2 instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input2 instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input2 instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input2 instanceof OffscreenCanvas)) {
+  if (!(input2 instanceof Tensor) && !(typeof Image !== "undefined" && input2 instanceof Image) && !(typeof env2.Canvas !== "undefined" && input2 instanceof env2.Canvas) && !(typeof ImageData !== "undefined" && input2 instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input2 instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input2 instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input2 instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input2 instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input2 instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input2 instanceof OffscreenCanvas)) {
     throw new Error("Human: Input type is not recognized");
   }
   if (input2 instanceof Tensor) {
@@ -69275,15 +69291,10 @@ function process4(input2, config3) {
       targetHeight = originalHeight * ((config3.filter.width || 0) / originalWidth);
     if (!targetWidth || !targetHeight)
       throw new Error("Human: Input cannot determine dimension");
-    if (!inCanvas || (inCanvas == null ? void 0 : inCanvas.width) !== targetWidth || (inCanvas == null ? void 0 : inCanvas.height) !== targetHeight) {
-      inCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
-      if ((inCanvas == null ? void 0 : inCanvas.width) !== targetWidth)
-        inCanvas.width = targetWidth;
-      if ((inCanvas == null ? void 0 : inCanvas.height) !== targetHeight)
-        inCanvas.height = targetHeight;
-    }
+    if (!inCanvas || (inCanvas == null ? void 0 : inCanvas.width) !== targetWidth || (inCanvas == null ? void 0 : inCanvas.height) !== targetHeight)
+      inCanvas = canvas(targetWidth, targetHeight);
     const ctx = inCanvas.getContext("2d");
-    if (input2 instanceof ImageData) {
+    if (typeof ImageData !== "undefined" && input2 instanceof ImageData) {
       ctx.putImageData(input2, 0, 0);
     } else {
       if (config3.filter.flip && typeof ctx.translate !== "undefined") {
@@ -69297,7 +69308,7 @@ function process4(input2, config3) {
     }
     if (config3.filter.enabled) {
       if (!fx || !outCanvas || inCanvas.width !== outCanvas.width || (inCanvas == null ? void 0 : inCanvas.height) !== (outCanvas == null ? void 0 : outCanvas.height)) {
-        outCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height) : document.createElement("canvas");
+        outCanvas = canvas(inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
         if ((outCanvas == null ? void 0 : outCanvas.width) !== (inCanvas == null ? void 0 : inCanvas.width))
           outCanvas.width = inCanvas == null ? void 0 : inCanvas.width;
         if ((outCanvas == null ? void 0 : outCanvas.height) !== (inCanvas == null ? void 0 : inCanvas.height))
@@ -69345,53 +69356,65 @@ function process4(input2, config3) {
       if (outCanvas.data) {
         const shape = [outCanvas.height, outCanvas.width, 3];
         pixels = tensor3d(outCanvas.data, shape, "int32");
-      } else if (outCanvas instanceof ImageData) {
+      } else if (typeof ImageData !== "undefined" && outCanvas instanceof ImageData) {
         pixels = browser_exports ? browser_exports.fromPixels(outCanvas) : null;
       } else if (config3.backend === "webgl" || config3.backend === "humangl") {
-        const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
+        const tempCanvas = canvas(targetWidth, targetHeight);
         tempCanvas.width = targetWidth;
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext("2d");
         tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
-        pixels = browser_exports ? browser_exports.fromPixels(tempCanvas) : null;
+        pixels = browser_exports && env2.browser ? browser_exports.fromPixels(tempCanvas) : null;
       } else {
-        const tempCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(targetWidth, targetHeight) : document.createElement("canvas");
+        const tempCanvas = canvas(targetWidth, targetHeight);
         tempCanvas.width = targetWidth;
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext("2d");
-        tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
-        const data = tempCtx == null ? void 0 : tempCtx.getImageData(0, 0, targetWidth, targetHeight);
-        pixels = browser_exports ? browser_exports.fromPixels(data) : null;
+        tempCtx.drawImage(outCanvas, 0, 0);
+        const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+        if (browser_exports && env2.browser) {
+          pixels = browser_exports.fromPixels(data);
+        } else {
+          pixels = tidy(() => {
+            const imageData = tensor(Array.from(data.data), [targetWidth, targetHeight, 4]);
+            const channels = split(imageData, 4, 2);
+            const rgb2 = stack([channels[0], channels[1], channels[2]], 2);
+            const expand = reshape(rgb2, [imageData.shape[0], imageData.shape[1], 3]);
+            return expand;
+          });
+        }
       }
       if (pixels) {
         const casted = cast(pixels, "float32");
         tensor2 = expandDims(casted, 0);
         dispose(pixels);
         dispose(casted);
+      } else {
+        tensor2 = zeros([1, targetWidth, targetHeight, 3]);
+        throw new Error("Human: Cannot create tensor from input");
       }
     }
   }
-  const canvas2 = config3.filter.return ? outCanvas : null;
-  return { tensor: tensor2, canvas: canvas2 };
+  return { tensor: tensor2, canvas: config3.filter.return ? outCanvas : null };
 }
 var lastInputSum = 0;
 var lastCacheDiff = 1;
-async function skip(instance, input2) {
-  if (instance.config.cacheSensitivity === 0)
+async function skip(config3, input2) {
+  if (config3.cacheSensitivity === 0)
     return false;
   const resizeFact = 32;
   if (!input2.shape[1] || !input2.shape[2])
     return false;
   const reduced = image.resizeBilinear(input2, [Math.trunc(input2.shape[1] / resizeFact), Math.trunc(input2.shape[2] / resizeFact)]);
   const reducedData = await reduced.data();
+  dispose(reduced);
   let sum6 = 0;
   for (let i = 0; i < reducedData.length / 3; i++)
     sum6 += reducedData[3 * i + 2];
-  reduced.dispose();
   const diff = 100 * (Math.max(sum6, lastInputSum) / Math.min(sum6, lastInputSum) - 1);
   lastInputSum = sum6;
-  const skipFrame = diff < Math.max(instance.config.cacheSensitivity, lastCacheDiff);
-  lastCacheDiff = diff > 10 * instance.config.cacheSensitivity ? 0 : diff;
+  const skipFrame = diff < Math.max(config3.cacheSensitivity, lastCacheDiff);
+  lastCacheDiff = diff > 10 * config3.cacheSensitivity ? 0 : diff;
   return skipFrame;
 }
 
@@ -69423,6 +69446,7 @@ async function predict11(input2) {
   dispose(resizeInput);
   dispose(norm2);
   const squeeze2 = squeeze(res, 0);
+  dispose(res);
   let resizeOutput;
   if (squeeze2.shape[2] === 2) {
     const softmax6 = squeeze2.softmax();
@@ -69440,16 +69464,18 @@ async function predict11(input2) {
   } else {
     resizeOutput = image.resizeBilinear(squeeze2, [width, height]);
   }
-  if (typeof document === "undefined")
-    return resizeOutput.data();
+  dispose(squeeze2);
+  if (env2.node) {
+    const data = await resizeOutput.data();
+    dispose(resizeOutput);
+    return data;
+  }
   const overlay = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(width, height) : document.createElement("canvas");
   overlay.width = width;
   overlay.height = height;
   if (browser_exports)
     await browser_exports.toPixels(resizeOutput, overlay);
   dispose(resizeOutput);
-  dispose(squeeze2);
-  dispose(res);
   const alphaCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(width, height) : document.createElement("canvas");
   alphaCanvas.width = width;
   alphaCanvas.height = height;
@@ -69902,7 +69928,7 @@ var draw_exports = {};
 __export(draw_exports, {
   all: () => all5,
   body: () => body2,
-  canvas: () => canvas,
+  canvas: () => canvas2,
   face: () => face2,
   gesture: () => gesture,
   hand: () => hand2,
@@ -70375,7 +70401,7 @@ async function person(inCanvas2, result, drawOptions) {
     }
   }
 }
-async function canvas(inCanvas2, outCanvas2) {
+async function canvas2(inCanvas2, outCanvas2) {
   if (!inCanvas2 || !outCanvas2)
     return;
   getCanvasContext(outCanvas2);
@@ -71455,29 +71481,34 @@ async function warmupBitmap(instance) {
 async function warmupCanvas(instance) {
   return new Promise((resolve) => {
     let src;
-    let size = 0;
     switch (instance.config.warmup) {
       case "face":
-        size = 256;
         src = "data:image/jpeg;base64," + face3;
         break;
       case "full":
       case "body":
-        size = 1200;
         src = "data:image/jpeg;base64," + body3;
         break;
       default:
         src = null;
     }
-    const img = new Image();
+    let img;
+    if (typeof Image !== "undefined")
+      img = new Image();
+    else if (env2.Image)
+      img = new env2.Image();
     img.onload = async () => {
-      const canvas2 = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(size, size) : document.createElement("canvas");
-      canvas2.width = img.naturalWidth;
-      canvas2.height = img.naturalHeight;
-      const ctx = canvas2.getContext("2d");
-      ctx == null ? void 0 : ctx.drawImage(img, 0, 0);
-      const res = await instance.detect(canvas2, instance.config);
-      resolve(res);
+      const canvas3 = canvas(img.naturalWidth, img.naturalHeight);
+      if (!canvas3) {
+        log("Warmup: Canvas not found");
+        resolve({});
+      } else {
+        const ctx = canvas3.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        const tensor2 = await instance.image(canvas3);
+        const res = await instance.detect(tensor2.tensor, instance.config);
+        resolve(res);
+      }
     };
     if (src)
       img.src = src;
@@ -71516,7 +71547,7 @@ async function warmup(instance, userConfig) {
   let res;
   if (typeof createImageBitmap === "function")
     res = await warmupBitmap(instance);
-  else if (typeof Image !== "undefined")
+  else if (typeof Image !== "undefined" || env2.Canvas !== void 0)
     res = await warmupCanvas(instance);
   else
     res = await warmupNode(instance);
@@ -71608,7 +71639,7 @@ var Human = class {
     return similarity(embedding1, embedding2);
   }
   segmentation(input2, background) {
-    return process5(input2, background, this.config);
+    return input2 ? process5(input2, background, this.config) : null;
   }
   enhance(input2) {
     return enhance(input2);
@@ -71666,32 +71697,32 @@ var Human = class {
       await check(this);
       await this.load();
       timeStamp = now();
-      this.process = process4(input2, this.config);
-      const inputTensor = this.process.tensor;
+      let img = process4(input2, this.config);
+      this.process = img;
       this.performance.image = Math.trunc(now() - timeStamp);
       this.analyze("Get Image:");
-      if (this.config.segmentation.enabled && this.process && inputTensor) {
+      if (this.config.segmentation.enabled && this.process && img.tensor && img.canvas) {
         this.analyze("Start Segmentation:");
         this.state = "run:segmentation";
         timeStamp = now();
-        await predict11(this.process);
+        await predict11(img);
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.segmentation = elapsedTime;
-        if (this.process.canvas) {
-          dispose(inputTensor);
-          this.process = process4(this.process.canvas, this.config);
+        if (img.canvas) {
+          dispose(img.tensor);
+          img = process4(img.canvas, this.config);
         }
         this.analyze("End Segmentation:");
       }
-      if (!this.process || !inputTensor) {
+      if (!img.tensor) {
         log("could not convert input to tensor");
         resolve({ error: "could not convert input to tensor" });
         return;
       }
       this.emit("image");
       timeStamp = now();
-      this.config.skipFrame = await skip(this, inputTensor);
+      this.config.skipFrame = await skip(this.config, img.tensor);
       if (!this.performance.frames)
         this.performance.frames = 0;
       if (!this.performance.cached)
@@ -71706,13 +71737,13 @@ var Human = class {
       let handRes = [];
       let objectRes = [];
       if (this.config.async) {
-        faceRes = this.config.face.enabled ? detectFace(this, inputTensor) : [];
+        faceRes = this.config.face.enabled ? detectFace(this, img.tensor) : [];
         if (this.performance.face)
           delete this.performance.face;
       } else {
         this.state = "run:face";
         timeStamp = now();
-        faceRes = this.config.face.enabled ? await detectFace(this, inputTensor) : [];
+        faceRes = this.config.face.enabled ? await detectFace(this, img.tensor) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.face = elapsedTime;
@@ -71720,26 +71751,26 @@ var Human = class {
       this.analyze("Start Body:");
       if (this.config.async) {
         if ((_a = this.config.body.modelPath) == null ? void 0 : _a.includes("posenet"))
-          bodyRes = this.config.body.enabled ? predict4(inputTensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict4(img.tensor, this.config) : [];
         else if ((_b = this.config.body.modelPath) == null ? void 0 : _b.includes("blazepose"))
-          bodyRes = this.config.body.enabled ? predict6(inputTensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict6(img.tensor, this.config) : [];
         else if ((_c = this.config.body.modelPath) == null ? void 0 : _c.includes("efficientpose"))
-          bodyRes = this.config.body.enabled ? predict7(inputTensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict7(img.tensor, this.config) : [];
         else if ((_d = this.config.body.modelPath) == null ? void 0 : _d.includes("movenet"))
-          bodyRes = this.config.body.enabled ? predict8(inputTensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict8(img.tensor, this.config) : [];
         if (this.performance.body)
           delete this.performance.body;
       } else {
         this.state = "run:body";
         timeStamp = now();
         if ((_e = this.config.body.modelPath) == null ? void 0 : _e.includes("posenet"))
-          bodyRes = this.config.body.enabled ? await predict4(inputTensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict4(img.tensor, this.config) : [];
         else if ((_f = this.config.body.modelPath) == null ? void 0 : _f.includes("blazepose"))
-          bodyRes = this.config.body.enabled ? await predict6(inputTensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict6(img.tensor, this.config) : [];
         else if ((_g = this.config.body.modelPath) == null ? void 0 : _g.includes("efficientpose"))
-          bodyRes = this.config.body.enabled ? await predict7(inputTensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict7(img.tensor, this.config) : [];
         else if ((_h = this.config.body.modelPath) == null ? void 0 : _h.includes("movenet"))
-          bodyRes = this.config.body.enabled ? await predict8(inputTensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict8(img.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.body = elapsedTime;
@@ -71747,13 +71778,13 @@ var Human = class {
       this.analyze("End Body:");
       this.analyze("Start Hand:");
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? predict5(inputTensor, this.config) : [];
+        handRes = this.config.hand.enabled ? predict5(img.tensor, this.config) : [];
         if (this.performance.hand)
           delete this.performance.hand;
       } else {
         this.state = "run:hand";
         timeStamp = now();
-        handRes = this.config.hand.enabled ? await predict5(inputTensor, this.config) : [];
+        handRes = this.config.hand.enabled ? await predict5(img.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.hand = elapsedTime;
@@ -71762,18 +71793,18 @@ var Human = class {
       this.analyze("Start Object:");
       if (this.config.async) {
         if ((_i = this.config.object.modelPath) == null ? void 0 : _i.includes("nanodet"))
-          objectRes = this.config.object.enabled ? predict9(inputTensor, this.config) : [];
+          objectRes = this.config.object.enabled ? predict9(img.tensor, this.config) : [];
         else if ((_j = this.config.object.modelPath) == null ? void 0 : _j.includes("centernet"))
-          objectRes = this.config.object.enabled ? predict10(inputTensor, this.config) : [];
+          objectRes = this.config.object.enabled ? predict10(img.tensor, this.config) : [];
         if (this.performance.object)
           delete this.performance.object;
       } else {
         this.state = "run:object";
         timeStamp = now();
         if ((_k = this.config.object.modelPath) == null ? void 0 : _k.includes("nanodet"))
-          objectRes = this.config.object.enabled ? await predict9(inputTensor, this.config) : [];
+          objectRes = this.config.object.enabled ? await predict9(img.tensor, this.config) : [];
         else if ((_l = this.config.object.modelPath) == null ? void 0 : _l.includes("centernet"))
-          objectRes = this.config.object.enabled ? await predict10(inputTensor, this.config) : [];
+          objectRes = this.config.object.enabled ? await predict10(img.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.object = elapsedTime;
@@ -71806,7 +71837,7 @@ var Human = class {
           return join2(faceRes, bodyRes, handRes, gestureRes, shape);
         }
       };
-      dispose(inputTensor);
+      dispose(img.tensor);
       this.emit("detect");
       resolve(this.result);
     });

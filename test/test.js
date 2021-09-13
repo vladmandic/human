@@ -19,6 +19,8 @@ const ignoreMessages = [
   'cudart_stub.cc',
   'cuda_driver.cc:326',
   'cpu_allocator_impl.cc',
+  '--trace-warnings',
+  'ExperimentalWarning',
 ];
 
 const status = {
@@ -48,8 +50,9 @@ function logStdIO(ok, test, buffer) {
 }
 
 async function runTest(test) {
+  log.info();
+  log.info(test, 'start');
   return new Promise((resolve) => {
-    log.info(test, 'start');
     const child = fork(path.join(__dirname, test), [], { silent: true });
     child.on('message', (data) => logMessage(test, data));
     child.on('error', (data) => log.error(test, ':', data.message || data));
@@ -68,6 +71,7 @@ async function testAll() {
   process.on('uncaughtException', (data) => log.error('nodejs unhandled exception', data));
   log.info('tests:', tests);
   for (const test of tests) await runTest(test);
+  log.info();
   log.info('status:', status);
 }
 

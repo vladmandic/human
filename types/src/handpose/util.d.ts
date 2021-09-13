@@ -7,3 +7,4 @@ export declare function multiplyTransformMatrices(mat1: any, mat2: any): number[
 export declare function buildRotationMatrix(rotation: any, center: any): number[][];
 export declare function invertTransformMatrix(matrix: any): any[][];
 export declare function rotatePoint(homogeneousCoordinate: any, rotationMatrix: any): number[];
+//# sourceMappingURL=util.d.ts.map

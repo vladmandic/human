@@ -20,3 +20,4 @@ export declare function invertTransformMatrix(matrix: any): any[][];
 export declare function rotatePoint(homogeneousCoordinate: any, rotationMatrix: any): number[];
 export declare function xyDistanceBetweenPoints(a: any, b: any): number;
 export declare function generateAnchors(inputSize: any): [number, number][];
+//# sourceMappingURL=util.d.ts.map

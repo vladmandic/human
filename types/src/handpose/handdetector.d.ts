@@ -1,4 +1,4 @@
-import { Tensor, GraphModel } from '../tfjs/types';
+import type { Tensor, GraphModel } from '../tfjs/types';
 export declare class HandDetector {
     model: GraphModel;
     anchors: number[][];
@@ -21,3 +21,4 @@ export declare class HandDetector {
         confidence: number;
     }[]>;
 }
+//# sourceMappingURL=handdetector.d.ts.map

@@ -1,12 +1,12 @@
-import { GraphModel } from '../tfjs/types';
-import { BlazeFaceModel } from './blazeface';
+import type { GraphModel } from '../tfjs/types';
+import type { BlazeFaceModel } from './blazeface';
 export declare class Pipeline {
     storedBoxes: Array<{
         startPoint: number[];
         endPoint: number[];
         landmarks: Array<number>;
         confidence: number;
-        faceConfidence?: number;
+        faceConfidence?: number | undefined;
     }>;
     boundingBoxDetector: BlazeFaceModel;
     meshDetector: GraphModel;
@@ -26,7 +26,7 @@ export declare class Pipeline {
             endPoint: number[];
             landmarks: any;
         };
-        boxSize: number[];
+        boxSize: [number, number];
         crop: any;
     };
     getEyeCoords(eyeData: any, eyeBox: any, eyeBoxSize: any, flip?: boolean): {
@@ -45,3 +45,4 @@ export declare class Pipeline {
         image: any;
     }[] | null>;
 }
+//# sourceMappingURL=facepipeline.d.ts.map

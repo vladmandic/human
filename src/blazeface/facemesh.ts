@@ -7,9 +7,9 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as blazeface from './blazeface';
 import * as facepipeline from './facepipeline';
 import * as coords from './coords';
-import { GraphModel, Tensor } from '../tfjs/types';
-import { FaceResult } from '../result';
-import { Config } from '../config';
+import type { GraphModel, Tensor } from '../tfjs/types';
+import type { FaceResult } from '../result';
+import type { Config } from '../config';
 
 let faceModels: [blazeface.BlazeFaceModel | null, GraphModel | null, GraphModel | null] = [null, null, null];
 let facePipeline;
@@ -53,7 +53,6 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
       annotations,
       tensor: prediction.image,
     });
-    if (prediction.coords) tf.dispose(prediction.coords);
   }
   return results;
 }

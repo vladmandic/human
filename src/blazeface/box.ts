@@ -6,14 +6,14 @@ export function scaleBoxCoordinates(box, factor) {
   return { startPoint, endPoint };
 }
 
-export function getBoxSize(box) {
+export function getBoxSize(box): [number, number] {
   return [
     Math.abs(box.endPoint[0] - box.startPoint[0]),
     Math.abs(box.endPoint[1] - box.startPoint[1]),
   ];
 }
 
-export function getBoxCenter(box) {
+export function getBoxCenter(box): [number, number] {
   return [
     box.startPoint[0] + (box.endPoint[0] - box.startPoint[0]) / 2,
     box.startPoint[1] + (box.endPoint[1] - box.startPoint[1]) / 2,
@@ -35,7 +35,7 @@ export function cutBoxFromImageAndResize(box, image, cropSize) {
 export function enlargeBox(box, factor = 1.5) {
   const center = getBoxCenter(box);
   const size = getBoxSize(box);
-  const newHalfSize = [factor * size[0] / 2, factor * size[1] / 2];
+  const newHalfSize: [number, number] = [factor * size[0] / 2, factor * size[1] / 2];
   const startPoint = [center[0] - newHalfSize[0], center[1] - newHalfSize[1]];
   const endPoint = [center[0] + newHalfSize[0], center[1] + newHalfSize[1]];
   return { startPoint, endPoint, landmarks: box.landmarks };

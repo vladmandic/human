@@ -5,7 +5,7 @@
 
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import { Tensor, GraphModel } from '../tfjs/types';
+import type { Tensor, GraphModel } from '../tfjs/types';
 
 type DB = Array<{ name: string, source: string, embedding: number[] }>;
 let model: GraphModel;

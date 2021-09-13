@@ -2,8 +2,8 @@
  * Type definitions for Human result object
  */
 
-import { Tensor } from './tfjs/types';
-import { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
+import type { Tensor } from './tfjs/types';
+import type { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
 
 /** Face results
  * Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
@@ -186,7 +186,7 @@ export interface Result {
   /** global performance object with timing values for each operation */
   performance: Record<string, unknown>,
   /** optional processed canvas that can be used to draw input on screen */
-  canvas?: OffscreenCanvas | HTMLCanvasElement | null,
+  canvas?: OffscreenCanvas | HTMLCanvasElement | null | undefined,
   /** timestamp of detection representing the milliseconds elapsed since the UNIX epoch */
   readonly timestamp: number,
   /** getter property that returns unified persons object  */

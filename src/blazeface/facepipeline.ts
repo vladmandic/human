@@ -2,8 +2,8 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as bounding from './box';
 import * as util from './util';
 import * as coords from './coords';
-import { Tensor, GraphModel } from '../tfjs/types';
-import { BlazeFaceModel } from './blazeface';
+import type { Tensor, GraphModel } from '../tfjs/types';
+import type { BlazeFaceModel } from './blazeface';
 import { env } from '../env';
 
 const leftOutline = coords.MESH_ANNOTATIONS['leftEyeLower0'];
@@ -56,7 +56,7 @@ function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
 }
 // The Pipeline coordinates between the bounding box and skeleton models.
 export class Pipeline {
-  storedBoxes: Array<{ startPoint: number[], endPoint: number[], landmarks: Array<number>, confidence: number, faceConfidence?: number }>;
+  storedBoxes: Array<{ startPoint: number[], endPoint: number[], landmarks: Array<number>, confidence: number, faceConfidence?: number | undefined }>;
   boundingBoxDetector: BlazeFaceModel; // tf.GraphModel
   meshDetector: GraphModel; // tf.GraphModel
   irisModel: GraphModel; // tf.GraphModel
@@ -158,17 +158,17 @@ export class Pipeline {
 
   correctFaceRotation(config, box, input) {
     const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= meshLandmarks.count) ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
-    const angle = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
-    const faceCenter = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
-    const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-    const rotatedImage = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
+    const angle: number = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
+    const faceCenter: [number, number] = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
+    const faceCenterNormalized: [number, number] = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
+    const rotated = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
     const rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
     const cut = config.face.mesh.enabled
-      ? bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.meshSize, this.meshSize])
-      : bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotatedImage, [this.boxSize, this.boxSize]);
+      ? bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotated, [this.meshSize, this.meshSize])
+      : bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotated, [this.boxSize, this.boxSize]);
     const face = tf.div(cut, 255);
     tf.dispose(cut);
-    tf.dispose(rotatedImage);
+    tf.dispose(rotated);
     return [angle, rotationMatrix, face];
   }
 
@@ -262,15 +262,14 @@ export class Pipeline {
         [angle, rotationMatrix, face] = this.correctFaceRotation(config, box, input);
       } else {
         rotationMatrix = util.IDENTITY_MATRIX;
-        const clonedImage = input.clone();
+        const cloned = input.clone();
         const cut = config.face.mesh.enabled
-          ? bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.meshSize, this.meshSize])
-          : bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, clonedImage, [this.boxSize, this.boxSize]);
+          ? bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, cloned, [this.meshSize, this.meshSize])
+          : bounding.cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, cloned, [this.boxSize, this.boxSize]);
         face = tf.div(cut, 255);
         tf.dispose(cut);
-        tf.dispose(clonedImage);
+        tf.dispose(cloned);
       }
-
       // if we're not going to produce mesh, don't spend time with further processing
       if (!config.face.mesh.enabled) {
         results.push({
@@ -304,9 +303,9 @@ export class Pipeline {
 
           // do rotation one more time with mesh keypoints if we want to return perfect image
           if (config.face.detector.rotation && config.face.mesh.enabled && config.face.description.enabled && env.kernels.includes('rotatewithoffset')) {
+            tf.dispose(face); // we'll overwrite original face
             [angle, rotationMatrix, face] = this.correctFaceRotation(config, box, input);
           }
-
           results.push({
             mesh,
             box,

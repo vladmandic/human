@@ -1,5 +1,5 @@
-import * as detector from './handdetector';
-import { GraphModel } from '../tfjs/types';
+import type * as detector from './handdetector';
+import type { GraphModel } from '../tfjs/types';
 export declare class HandPipeline {
     handDetector: detector.HandDetector;
     handPoseModel: GraphModel;
@@ -29,7 +29,7 @@ export declare class HandPipeline {
     };
     transformRawCoords(rawCoords: any, box2: any, angle: any, rotationMatrix: any): any;
     estimateHands(image: any, config: any): Promise<{
-        landmarks?: number[] | undefined;
+        landmarks?: number[];
         confidence: number;
         box: {
             topLeft: number[];
@@ -37,3 +37,4 @@ export declare class HandPipeline {
         };
     }[]>;
 }
+//# sourceMappingURL=handpipeline.d.ts.map

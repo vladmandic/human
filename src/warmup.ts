@@ -1,8 +1,10 @@
 import { log, now, mergeDeep } from './helpers';
 import * as sample from './sample';
 import * as tf from '../dist/tfjs.esm.js';
-import { Config } from './config';
-import { Result } from './result';
+import * as image from './image/image';
+import type { Config } from './config';
+import type { Result } from './result';
+import { env } from './env';
 
 async function warmupBitmap(instance) {
   const b64toBlob = (base64: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
@@ -24,31 +26,38 @@ async function warmupBitmap(instance) {
 async function warmupCanvas(instance) {
   return new Promise((resolve) => {
     let src;
-    let size = 0;
+    // let size = 0;
     switch (instance.config.warmup) {
       case 'face':
-        size = 256;
+        // size = 256;
         src = 'data:image/jpeg;base64,' + sample.face;
         break;
       case 'full':
       case 'body':
-        size = 1200;
+        // size = 1200;
         src = 'data:image/jpeg;base64,' + sample.body;
         break;
       default:
         src = null;
     }
     // src = encodeURI('../assets/human-sample-upper.jpg');
-    const img = new Image();
+    let img;
+    if (typeof Image !== 'undefined') img = new Image();
+    // @ts-ignore env.image is an external monkey-patch
+    else if (env.Image) img = new env.Image();
     img.onload = async () => {
-      const canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(size, size) : document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      ctx?.drawImage(img, 0, 0);
-      // const data = ctx?.getImageData(0, 0, canvas.height, canvas.width);
-      const res = await instance.detect(canvas, instance.config);
-      resolve(res);
+      const canvas = image.canvas(img.naturalWidth, img.naturalHeight);
+      if (!canvas) {
+        log('Warmup: Canvas not found');
+        resolve({});
+      } else {
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        // const data = ctx?.getImageData(0, 0, canvas.height, canvas.width);
+        const tensor = await instance.image(canvas);
+        const res = await instance.detect(tensor.tensor, instance.config);
+        resolve(res);
+      }
     };
     if (src) img.src = src;
     else resolve(null);
@@ -93,7 +102,7 @@ export async function warmup(instance, userConfig?: Partial<Config>): Promise<Re
   if (!instance.config.warmup || instance.config.warmup === 'none') return { error: 'null' };
   let res;
   if (typeof createImageBitmap === 'function') res = await warmupBitmap(instance);
-  else if (typeof Image !== 'undefined') res = await warmupCanvas(instance);
+  else if (typeof Image !== 'undefined' || env.Canvas !== undefined) res = await warmupCanvas(instance);
   else res = await warmupNode(instance);
   const t1 = now();
   if (instance.config.debug) log('Warmup', instance.config.warmup, Math.round(t1 - t0), 'ms');

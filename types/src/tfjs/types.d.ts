@@ -11,3 +11,4 @@ export { Tensor } from '@tensorflow/tfjs-core/dist/index';
  * @external
  */
 export { GraphModel } from '@tensorflow/tfjs-converter/dist/index';
+//# sourceMappingURL=types.d.ts.map

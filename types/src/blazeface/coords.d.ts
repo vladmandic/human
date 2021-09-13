@@ -47,3 +47,4 @@ export declare const VTX7: number[];
 export declare const UV68: number[][];
 export declare const UV33: number[][];
 export declare const UV7: number[][];
+//# sourceMappingURL=coords.d.ts.map

@@ -5,9 +5,9 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
-import { ObjectResult } from '../result';
-import { GraphModel, Tensor } from '../tfjs/types';
-import { Config } from '../config';
+import type { ObjectResult } from '../result';
+import type { GraphModel, Tensor } from '../tfjs/types';
+import type { Config } from '../config';
 import { env } from '../env';
 
 let model;
@@ -36,6 +36,7 @@ async function process(res: Tensor, inputSize, outputShape, config: Config) {
   tf.dispose(squeezeT);
   const stackT = tf.stack([arr[1], arr[0], arr[3], arr[2]], 1); // reorder dims as tf.nms expects y, x
   const boxesT = tf.squeeze(stackT);
+  tf.dispose(stackT);
   const scoresT = tf.squeeze(arr[4]);
   const classesT = tf.squeeze(arr[5]);
   arr.forEach((t) => tf.dispose(t));
@@ -86,6 +87,7 @@ export async function predict(input: Tensor, config: Config): Promise<ObjectResu
 
     const obj = await process(objectT, model.inputSize, outputSize, config);
     last = obj;
+
     resolve(obj);
   });
 }

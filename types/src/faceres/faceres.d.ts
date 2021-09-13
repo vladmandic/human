@@ -3,8 +3,8 @@
  * Returns Age, Gender, Descriptor
  * Implements Face simmilarity function
  */
-import { Tensor, GraphModel } from '../tfjs/types';
-import { Config } from '../config';
+import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Config } from '../config';
 declare type DB = Array<{
     name: string;
     source: string;
@@ -21,3 +21,4 @@ export declare function match(embedding: Array<number>, db: DB, threshold?: numb
 export declare function enhance(input: any): Tensor;
 export declare function predict(image: Tensor, config: Config, idx: any, count: any): Promise<unknown>;
 export {};
+//# sourceMappingURL=faceres.d.ts.map

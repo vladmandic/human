@@ -7,9 +7,9 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as annotations from './annotations';
-import { Tensor, GraphModel } from '../tfjs/types';
-import { BodyResult } from '../result';
-import { Config } from '../config';
+import type { Tensor, GraphModel } from '../tfjs/types';
+import type { BodyResult } from '../result';
+import type { Config } from '../config';
 
 let model: GraphModel;
 

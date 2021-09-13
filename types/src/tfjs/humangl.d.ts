@@ -27,3 +27,4 @@ export declare const config: {
  * @returns void
  */
 export declare function register(): void;
+//# sourceMappingURL=humangl.d.ts.map

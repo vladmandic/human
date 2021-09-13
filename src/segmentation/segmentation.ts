@@ -5,8 +5,9 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
-import { GraphModel, Tensor } from '../tfjs/types';
-import { Config } from '../config';
+import type { GraphModel, Tensor } from '../tfjs/types';
+import type { Config } from '../config';
+import { env } from '../env';
 
 type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 
@@ -36,6 +37,7 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
   tf.dispose(norm);
 
   const squeeze = tf.squeeze(res, 0);
+  tf.dispose(res);
   let resizeOutput;
   if (squeeze.shape[2] === 2) {
     // model meet has two channels for fg and bg
@@ -57,16 +59,19 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
   } else { // model selfie has a single channel that we can use directly
     resizeOutput = tf.image.resizeBilinear(squeeze, [width, height]);
   }
+  tf.dispose(squeeze);
 
-  if (typeof document === 'undefined') return resizeOutput.data(); // we're running in nodejs so return alpha array as-is
+  if (env.node) {
+    const data = await resizeOutput.data();
+    tf.dispose(resizeOutput);
+    return data; // we're running in nodejs so return alpha array as-is
+  }
 
   const overlay = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(width, height) : document.createElement('canvas');
   overlay.width = width;
   overlay.height = height;
   if (tf.browser) await tf.browser.toPixels(resizeOutput, overlay);
   tf.dispose(resizeOutput);
-  tf.dispose(squeeze);
-  tf.dispose(res);
 
   // get alpha channel data
   const alphaCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(width, height) : document.createElement('canvas'); // need one more copy since input may already have gl context so 2d context fails

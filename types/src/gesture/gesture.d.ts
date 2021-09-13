@@ -1,7 +1,7 @@
 /**
  * Gesture detection module
  */
-import { GestureResult } from '../result';
+import type { GestureResult } from '../result';
 /**
  * @typedef FaceGesture
  */
@@ -22,3 +22,4 @@ export declare const body: (res: any) => GestureResult[];
 export declare const face: (res: any) => GestureResult[];
 export declare const iris: (res: any) => GestureResult[];
 export declare const hand: (res: any) => GestureResult[];
+//# sourceMappingURL=gesture.d.ts.map

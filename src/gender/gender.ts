@@ -5,8 +5,8 @@
 
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
-import { Config } from '../config';
-import { GraphModel, Tensor } from '../tfjs/types';
+import type { Config } from '../config';
+import type { GraphModel, Tensor } from '../tfjs/types';
 
 let model: GraphModel;
 let last = { gender: '' };

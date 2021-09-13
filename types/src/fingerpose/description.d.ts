@@ -55,3 +55,4 @@ declare const FingerDirection: {
     getName: (value: any) => any;
 };
 export { Finger, FingerCurl, FingerDirection };
+//# sourceMappingURL=description.d.ts.map

@@ -22,3 +22,4 @@ export declare function shiftBox(box: any, shiftFactor: any): {
     endPoint: any[];
     palmLandmarks: any;
 };
+//# sourceMappingURL=box.d.ts.map

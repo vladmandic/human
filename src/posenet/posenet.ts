@@ -6,9 +6,9 @@ import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as poses from './poses';
 import * as util from './utils';
-import { BodyResult } from '../result';
-import { Tensor, GraphModel } from '../tfjs/types';
-import { Config } from '../config';
+import type { BodyResult } from '../result';
+import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Config } from '../config';
 
 let model: GraphModel;
 const poseNetOutputs = ['MobilenetV1/offset_2/BiasAdd'/* offsets */, 'MobilenetV1/heatmap_2/BiasAdd'/* heatmapScores */, 'MobilenetV1/displacement_fwd_2/BiasAdd'/* displacementFwd */, 'MobilenetV1/displacement_bwd_2/BiasAdd'/* displacementBwd */];

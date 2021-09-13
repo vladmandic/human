@@ -1,4 +1,4 @@
-import { BodyResult } from '../result';
+import type { BodyResult } from '../result';
 export declare function eitherPointDoesntMeetConfidence(a: number, b: number, minConfidence: number): boolean;
 export declare function getAdjacentKeyPoints(keypoints: any, minConfidence: number): any[];
 export declare function getBoundingBox(keypoints: any): [number, number, number, number];
@@ -39,3 +39,4 @@ export declare function clampVector(a: any, min: any, max: any): {
     y: any;
     x: any;
 };
+//# sourceMappingURL=utils.d.ts.map

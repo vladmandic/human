@@ -186,8 +186,8 @@ export interface GestureConfig {
  */
 export interface Config {
   /** Backend used for TFJS operations */
-  // backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu' | null,
-  backend: string;
+  backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu',
+  // backend: string;
 
   /** Path to *.wasm files if backend is set to `wasm` */
   wasmPath: string,
@@ -202,8 +202,8 @@ export interface Config {
    * - warmup pre-initializes all models for faster inference but can take significant time on startup
    * - only used for `webgl` and `humangl` backends
   */
-  // warmup: 'none' | 'face' | 'full' | 'body' | string,
-  warmup: string;
+  warmup: 'none' | 'face' | 'full' | 'body',
+  // warmup: string;
 
   /** Base model path (typically starting with file://, http:// or https://) for all models
    * - individual modelPath values are relative to this path

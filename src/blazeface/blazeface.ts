@@ -2,8 +2,8 @@ import { log, join, mergeDeep } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as util from './util';
-import { Config } from '../config';
-import { Tensor, GraphModel } from '../tfjs/types';
+import type { Config } from '../config';
+import type { Tensor, GraphModel } from '../tfjs/types';
 
 const keypointsCount = 6;
 
@@ -39,7 +39,7 @@ export class BlazeFaceModel {
 
   async getBoundingBoxes(inputImage: Tensor, userConfig: Config) {
     // sanity check on input
-    if ((!inputImage) || (inputImage['isDisposedInternal']) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return null;
+    if ((!inputImage) || (inputImage['isDisposedInternal']) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return { boxes: [] };
     const [batch, boxes, scores] = tf.tidy(() => {
       const resizedImage = tf.image.resizeBilinear(inputImage, [this.inputSize, this.inputSize]);
       const normalizedImage = tf.sub(tf.div(resizedImage, 127.5), 0.5);
@@ -65,22 +65,21 @@ export class BlazeFaceModel {
     const nmsTensor = await tf.image.nonMaxSuppressionAsync(boxes, scores, (this.config.face.detector?.maxDetected || 0), (this.config.face.detector?.iouThreshold || 0), (this.config.face.detector?.minConfidence || 0));
     const nms = await nmsTensor.array();
     tf.dispose(nmsTensor);
-    const annotatedBoxes: Array<{ box: { startPoint: Tensor, endPoint: Tensor }, landmarks: Tensor, anchor: number[], confidence: number }> = [];
+    const annotatedBoxes: Array<{ box: { startPoint: Tensor, endPoint: Tensor }, landmarks: Tensor, anchor: [number, number] | undefined, confidence: number }> = [];
     const scoresData = await scores.data();
     for (let i = 0; i < nms.length; i++) {
       const confidence = scoresData[nms[i]];
       if (confidence > (this.config.face.detector?.minConfidence || 0)) {
         const boundingBox = tf.slice(boxes, [nms[i], 0], [1, -1]);
-        const localBox = box.createBox(boundingBox);
-        tf.dispose(boundingBox);
-        const anchor = this.anchorsData[nms[i]];
         const landmarks = tf.tidy(() => tf.reshape(tf.squeeze(tf.slice(batch, [nms[i], keypointsCount - 1], [1, -1])), [keypointsCount, -1]));
-        annotatedBoxes.push({ box: localBox, landmarks, anchor, confidence });
+        annotatedBoxes.push({ box: box.createBox(boundingBox), landmarks, anchor: this.anchorsData[nms[i]], confidence });
+        tf.dispose(boundingBox);
       }
     }
     tf.dispose(batch);
     tf.dispose(boxes);
     tf.dispose(scores);
+
     return {
       boxes: annotatedBoxes,
       scaleFactor: [inputImage.shape[2] / this.inputSize, inputImage.shape[1] / this.inputSize],

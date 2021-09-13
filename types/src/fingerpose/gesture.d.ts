@@ -10,3 +10,4 @@ export default class Gesture {
     setWeight(finger: any, weight: any): void;
     matchAgainst(detectedCurls: any, detectedDirections: any): number;
 }
+//# sourceMappingURL=gesture.d.ts.map

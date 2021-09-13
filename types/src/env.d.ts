@@ -24,7 +24,10 @@ export interface Env {
         adapter: undefined | string;
     };
     kernels: string[];
+    Canvas: undefined;
+    Image: undefined;
 }
 export declare const env: Env;
 export declare function cpuinfo(): void;
 export declare function get(): Promise<void>;
+//# sourceMappingURL=env.d.ts.map

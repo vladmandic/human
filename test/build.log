@@ -12218,3 +12218,16 @@
 2021-09-13 13:27:42 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":7,"inputBytes":2168,"outputBytes":2343983} 
 2021-09-13 13:27:42 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":50,"inputBytes":2817071,"outputBytes":1394644} 
 2021-09-13 13:27:43 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":50,"inputBytes":2817071,"outputBytes":2588986} 
+2021-09-13 13:29:40 [36mINFO: [39m Watch: {"event":"modify","input":"src/env.ts"} 
+2021-09-13 13:29:40 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-13 13:29:40 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":50,"inputBytes":474586,"outputBytes":403826} 
+2021-09-13 13:29:40 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-13 13:29:40 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":50,"inputBytes":474594,"outputBytes":403830} 
+2021-09-13 13:29:40 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-13 13:29:40 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":50,"inputBytes":474661,"outputBytes":403902} 
+2021-09-13 13:29:40 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-13 13:29:40 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":50,"inputBytes":474760,"outputBytes":406054} 
+2021-09-13 13:29:41 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":7,"inputBytes":2168,"outputBytes":2343983} 
+2021-09-13 13:29:41 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":50,"inputBytes":2817153,"outputBytes":1395892} 
+2021-09-13 13:29:41 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":50,"inputBytes":2817153,"outputBytes":2591282} 
+2021-09-13 13:29:51 [36mINFO: [39m Build exiting... 

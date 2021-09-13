@@ -8,6 +8,7 @@ var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __require = typeof require !== "undefined" ? require : (x) => {
   throw new Error('Dynamic require of "' + x + '" is not supported');
@@ -24,6 +25,10 @@ var __reExport = (target, module, desc) => {
         __defProp(target, key, { get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable });
   }
   return target;
+};
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
 };
 var __accessCheck = (obj, member, msg) => {
   if (!member.has(obj))
@@ -382,6 +387,11 @@ function decodeBounds(boxOutputs, anchors3, inputSize) {
 }
 var BlazeFaceModel = class {
   constructor(model10, config3) {
+    __publicField(this, "model");
+    __publicField(this, "anchorsData");
+    __publicField(this, "anchors");
+    __publicField(this, "inputSize");
+    __publicField(this, "config");
     this.model = model10;
     this.anchorsData = generateAnchors(model10.inputs[0].shape[1]);
     this.anchors = tfjs_esm_exports.tensor2d(this.anchorsData);
@@ -3741,7 +3751,9 @@ var env2 = {
     supported: void 0,
     adapter: void 0
   },
-  kernels: []
+  kernels: [],
+  Canvas: void 0,
+  Image: void 0
 };
 async function get() {
   var _a;
@@ -3828,6 +3840,16 @@ function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
 }
 var Pipeline = class {
   constructor(boundingBoxDetector, meshDetector, irisModel) {
+    __publicField(this, "storedBoxes");
+    __publicField(this, "boundingBoxDetector");
+    __publicField(this, "meshDetector");
+    __publicField(this, "irisModel");
+    __publicField(this, "boxSize");
+    __publicField(this, "meshSize");
+    __publicField(this, "irisSize");
+    __publicField(this, "irisEnlarge");
+    __publicField(this, "skipped");
+    __publicField(this, "detectedFaces");
     var _a, _b;
     this.storedBoxes = [];
     this.boundingBoxDetector = boundingBoxDetector;
@@ -4394,6 +4416,9 @@ function scalePoses(poses2, [height, width], [inputResolutionHeight, inputResolu
 }
 var MaxHeap = class {
   constructor(maxSize2, getElementValue) {
+    __publicField(this, "priorityQueue");
+    __publicField(this, "numberOfElements");
+    __publicField(this, "getElementValue");
     this.priorityQueue = new Array(maxSize2);
     this.numberOfElements = -1;
     this.getElementValue = getElementValue;
@@ -7643,6 +7668,12 @@ var anchors = [
 // src/handpose/handdetector.ts
 var HandDetector = class {
   constructor(model10) {
+    __publicField(this, "model");
+    __publicField(this, "anchors");
+    __publicField(this, "anchorsTensor");
+    __publicField(this, "inputSize");
+    __publicField(this, "inputSizeTensor");
+    __publicField(this, "doubleInputSizeTensor");
     this.model = model10;
     this.anchors = anchors.map((anchor) => [anchor.x, anchor.y]);
     this.anchorsTensor = tfjs_esm_exports.tensor2d(this.anchors);
@@ -7780,6 +7811,12 @@ var palmLandmarksPalmBase = 0;
 var palmLandmarksMiddleFingerBase = 2;
 var HandPipeline = class {
   constructor(handDetector, handPoseModel2) {
+    __publicField(this, "handDetector");
+    __publicField(this, "handPoseModel");
+    __publicField(this, "inputSize");
+    __publicField(this, "storedBoxes");
+    __publicField(this, "skipped");
+    __publicField(this, "detectedHands");
     var _a;
     this.handDetector = handDetector;
     this.handPoseModel = handPoseModel2;
@@ -8160,6 +8197,11 @@ function estimate(landmarks) {
 // src/fingerpose/gesture.ts
 var Gesture = class {
   constructor(name) {
+    __publicField(this, "name");
+    __publicField(this, "curls");
+    __publicField(this, "directions");
+    __publicField(this, "weights");
+    __publicField(this, "weightsRelative");
     this.name = name;
     this.curls = {};
     this.directions = {};
@@ -12054,10 +12096,24 @@ async function warmup(instance, userConfig) {
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _sanity;
 var Human = class {
   constructor(userConfig) {
+    __publicField(this, "version");
+    __publicField(this, "config");
+    __publicField(this, "result");
+    __publicField(this, "state");
+    __publicField(this, "process");
+    __publicField(this, "tf");
+    __publicField(this, "env");
+    __publicField(this, "draw");
+    __publicField(this, "models");
+    __publicField(this, "events");
+    __publicField(this, "faceTriangulation");
+    __publicField(this, "faceUVMap");
+    __publicField(this, "performance");
     __privateAdd(this, _numTensors, void 0);
     __privateAdd(this, _analyzeMemoryLeaks, void 0);
     __privateAdd(this, _checkSanity, void 0);
-    this.analyze = (...msg) => {
+    __publicField(this, "initial");
+    __publicField(this, "analyze", (...msg) => {
       if (!__privateGet(this, _analyzeMemoryLeaks))
         return;
       const currentTensors = this.tf.engine().state.numTensors;
@@ -12066,7 +12122,7 @@ var Human = class {
       const leaked = currentTensors - previousTensors;
       if (leaked !== 0)
         log(...msg, leaked);
-    };
+    });
     __privateAdd(this, _sanity, (input) => {
       if (!__privateGet(this, _checkSanity))
         return null;
@@ -12081,13 +12137,13 @@ var Human = class {
       }
       return null;
     });
-    this.image = (input) => process4(input, this.config);
-    this.emit = (event) => {
+    __publicField(this, "image", (input) => process4(input, this.config));
+    __publicField(this, "emit", (event) => {
       var _a;
       return (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
-    };
-    this.next = (result) => calc(result || this.result);
-    this.warmup = (userConfig) => warmup(this, userConfig);
+    });
+    __publicField(this, "next", (result) => calc(result || this.result));
+    __publicField(this, "warmup", (userConfig) => warmup(this, userConfig));
     get();
     this.env = env2;
     config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfjs_esm_exports.version_core}/dist/`;

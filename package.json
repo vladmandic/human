@@ -67,13 +67,13 @@
     "@tensorflow/tfjs-node": "^3.9.0",
     "@tensorflow/tfjs-node-gpu": "^3.9.0",
     "@types/node": "^16.9.1",
-    "@typescript-eslint/eslint-plugin": "^4.31.0",
-    "@typescript-eslint/parser": "^4.31.0",
-    "@vladmandic/pilogger": "^0.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
     "@vladmandic/build": "^0.4.1",
+    "@vladmandic/pilogger": "^0.3.1",
     "canvas": "^2.8.0",
     "dayjs": "^1.10.7",
-    "esbuild": "^0.12.26",
+    "esbuild": "^0.12.27",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
@@ -83,9 +83,7 @@
     "node-fetch": "^3.0.0",
     "seedrandom": "^3.0.5",
     "tslib": "^2.3.1",
-    "typedoc": "0.22.2",
+    "typedoc": "0.22.3",
     "typescript": "4.4.3"
-  },
-  "dependencies": {
   }
 }

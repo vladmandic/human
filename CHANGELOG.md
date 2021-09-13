@@ -11,12 +11,11 @@
   
 ### **HEAD -> main** 2021/09/13 mandic00@live.com
 
+- enhanced automated tests
 - enable canvas patching for nodejs
 - full ts strict typechecks
 - fix multiple memory leaks
-
-### **origin/main** 2021/09/12 mandic00@live.com
-
+- modularize human class and add model validation
 - add dynamic kernel op detection
 - added human.env diagnostic class
 - minor typos

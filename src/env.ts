@@ -26,6 +26,8 @@ export interface Env {
     adapter: undefined | string,
   },
   kernels: string[],
+  Canvas: undefined,
+  Image: undefined,
 }
 
 export const env: Env = {
@@ -54,6 +56,8 @@ export const env: Env = {
     adapter: undefined,
   },
   kernels: [],
+  Canvas: undefined,
+  Image: undefined,
 };
 
 export function cpuinfo() {

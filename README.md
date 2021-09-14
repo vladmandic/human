@@ -300,7 +300,7 @@ Default models in Human library are:
 - **Body Analysis**: MoveNet - Lightning variation
 - **Hand Analysis**: MediaPipe Hands
 - **Body Segmentation**: Google Selfie
-- **Object Detection**: CenterNet
+- **Object Detection**: MB3 CenterNet
 - **Body Segmentation**: Google Selfie
 
 Note that alternative models are provided and can be enabled via configuration  

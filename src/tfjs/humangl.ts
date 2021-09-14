@@ -5,6 +5,7 @@
 
 import { log } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
+import * as image from '../image/image';
 
 export const config = {
   name: 'humangl',
@@ -46,13 +47,13 @@ export function register(): void {
   if (!tf.findBackend(config.name)) {
     // log('backend registration:', config.name);
     try {
-      config.canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(config.width, config.height) : document.createElement('canvas');
+      config.canvas = image.canvas(100, 100);
     } catch (err) {
       log('error: cannot create canvas:', err);
       return;
     }
     try {
-      config.gl = config.canvas.getContext('webgl2', config.webGLattr) as WebGL2RenderingContext;
+      config.gl = config.canvas?.getContext('webgl2', config.webGLattr) as WebGL2RenderingContext;
     } catch (err) {
       log('error: cannot get WebGL2 context:', err);
       return;

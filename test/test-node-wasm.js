@@ -4,7 +4,9 @@ const { Canvas, Image } = require('canvas');
 const Human = require('../dist/human.node-wasm.js');
 const test = require('./test-main.js').test;
 
+// @ts-ignore
 Human.env.Canvas = Canvas;
+// @ts-ignore
 Human.env.Image = Image;
 
 const config = {

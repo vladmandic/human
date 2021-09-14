@@ -29,10 +29,9 @@ export function canvas(width, height) {
     }
   } else {
     // @ts-ignore // env.canvas is an external monkey-patch
-    // eslint-disable-next-line new-cap
     c = (typeof env.Canvas !== 'undefined') ? new env.Canvas(width, height) : null;
   }
-  if (!c) throw new Error('Human: Cannot create canvas');
+  // if (!c) throw new Error('Human: Cannot create canvas');
   return c;
 }
 
@@ -100,7 +99,7 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
       }
     }
     // imagefx transforms using gl
-    if (config.filter.enabled) {
+    if (config.filter.enabled && env.webgl.supported) {
       if (!fx || !outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas?.height !== outCanvas?.height)) {
         outCanvas = canvas(inCanvas?.width, inCanvas?.height);
         if (outCanvas?.width !== inCanvas?.width) outCanvas.width = inCanvas?.width;

@@ -66,6 +66,24 @@
       .icon:hover { background: #505050; filter: grayscale(0); }
       .hint { opacity: 0; transition-duration: 0.5s; transition-property: opacity; font-style: italic; position: fixed; top: 5rem; padding: 8px; margin: 8px; box-shadow: 0 0 2px 2px #303030; }
       .input-file { align-self: center; width: 5rem; }
+
+      .results { position: absolute; left: 0; top: 6rem; background: #303030; width: 20rem; height: 90%; font-size: 0.8rem; overflow-y: auto; display: none }
+      .results::-webkit-scrollbar { background-color: #303030; }
+      .results::-webkit-scrollbar-thumb { background: black; border-radius: 10px; }
+      .json-line { margin: 4px 0; display: flex; justify-content: flex-start; }
+      .json {	margin-right: 8px; margin-left: 8px; }
+      .json-type { color: lightyellow; }
+      .json-key {	color: white; }
+      .json-index { color: lightcoral; }
+      .json-value {	margin-left: 20px; }
+      .json-number { color: lightgreen; }
+      .json-boolean { color: lightyellow; }
+      .json-string { color: lightblue; }
+      .json-size { color: gray; }
+      .hide {	display: none; }
+      .fas { display: inline-block;	width: 0;	height: 0; border-style: solid; }
+      .fa-caret-down { border-width: 10px 8px 0 8px; border-color: white transparent }
+      .fa-caret-right {	border-width: 10px 0 8px 10px; border-color: transparent transparent transparent white; }
     </style>
   </head>
   <body>
@@ -95,5 +113,6 @@
     <div id="samples-container" class="samples-container"></div>
     <div id="hint" class="hint"></div>
     <div id="log" class="log"></div>
+    <div id="results" class="results"></div>
   </body>
 </html>

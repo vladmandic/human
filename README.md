@@ -128,6 +128,12 @@ All options as presented in the demo application...
 
 <br>
 
+**Results Browser:**  
+[ *Demo -> Display -> Show Results* ]<br>
+![Results](assets/screenshot-results.png)
+
+<br>
+
 **Face Similarity Matching:**  
 Extracts all faces from provided input images,  
 sorts them by similarity to selected face  

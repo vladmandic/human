@@ -64513,10 +64513,16 @@ function process2(input2, config3) {
     else
       throw new Error(`Human: Input tensor shape must be [1, height, width, 3] and instead was ${input2.shape}`);
   } else {
+    if (typeof input2["readyState"] !== "undefined" && input2["readyState"] <= 2) {
+      log("input stream is not ready");
+      return { tensor: null, canvas: inCanvas };
+    }
     const originalWidth = input2["naturalWidth"] || input2["videoWidth"] || input2["width"] || input2["shape"] && input2["shape"][1] > 0;
     const originalHeight = input2["naturalHeight"] || input2["videoHeight"] || input2["height"] || input2["shape"] && input2["shape"][2] > 0;
-    if (!originalWidth || !originalHeight)
+    if (!originalWidth || !originalHeight) {
+      log("cannot determine input dimensions");
       return { tensor: null, canvas: inCanvas };
+    }
     let targetWidth = originalWidth;
     let targetHeight = originalHeight;
     if (targetWidth > maxSize) {
@@ -70992,18 +70998,17 @@ async function person(inCanvas2, result, drawOptions) {
     }
   }
 }
-async function canvas2(inCanvas2, outCanvas2) {
-  if (!inCanvas2 || !outCanvas2)
+async function canvas2(input2, output) {
+  if (!input2 || !output)
     return;
-  getCanvasContext(outCanvas2);
-  const ctx = getCanvasContext(inCanvas2);
-  ctx.drawImage(inCanvas2, 0, 0);
+  const ctx = getCanvasContext(output);
+  ctx.drawImage(input2, 0, 0);
 }
 async function all5(inCanvas2, result, drawOptions) {
+  if (!result || !result.performance || !result || !inCanvas2)
+    return null;
   const timestamp = now();
   const localOptions = mergeDeep(options2, drawOptions);
-  if (!result || !inCanvas2)
-    return null;
   const promise = Promise.all([
     face2(inCanvas2, result.face, localOptions),
     body2(inCanvas2, result.body, localOptions),
@@ -72200,8 +72205,6 @@ var Human = class {
       var _a;
       return (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
-    __publicField(this, "next", (result) => calc(result || this.result));
-    __publicField(this, "warmup", (userConfig) => warmup(this, userConfig));
     get3();
     this.env = env2;
     config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${version}/dist/`;
@@ -72244,7 +72247,7 @@ var Human = class {
   similarity(embedding1, embedding2) {
     return similarity(embedding1, embedding2);
   }
-  segmentation(input2, background) {
+  async segmentation(input2, background) {
     return input2 ? process5(input2, background, this.config) : null;
   }
   enhance(input2) {
@@ -72285,6 +72288,12 @@ var Human = class {
     const current = Math.trunc(now() - timeStamp);
     if (current > (this.performance.load || 0))
       this.performance.load = current;
+  }
+  next(result = this.result) {
+    return calc(result);
+  }
+  async warmup(userConfig) {
+    return warmup(this, userConfig);
   }
   async detect(input2, userConfig) {
     return new Promise(async (resolve) => {

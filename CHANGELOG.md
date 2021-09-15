@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/14 mandic00@live.com
+### **HEAD -> main** 2021/09/15 mandic00@live.com
 
+- reorganize tfjs bundle
 - experimental custom tfjs bundle - disabled
 - add platform and backend capabilities detection
 - enhanced automated tests

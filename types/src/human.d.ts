@@ -139,6 +139,9 @@ export declare class Human {
      * @returns { tensor, canvas }
      */
     image: (input: Input) => {
+        /** Defines all possible input types for **Human** detection
+         * @typedef Input Type
+         */
         tensor: Tensor<import("@tensorflow/tfjs-core").Rank> | null;
         canvas: OffscreenCanvas | HTMLCanvasElement;
     };
@@ -159,7 +162,7 @@ export declare class Human {
      * @param background?: {@link Input}
      * @returns Canvas
      */
-    segmentation(input: Input, background?: Input): Promise<OffscreenCanvas | HTMLCanvasElement | null> | null;
+    segmentation(input: Input, background?: Input): Promise<OffscreenCanvas | HTMLCanvasElement | null>;
     /** Enhance method performs additional enhacements to face image previously detected for futher this.processing
      * @param input: Tensor as provided in human.result.face[n].tensor
      * @returns Tensor
@@ -195,13 +198,14 @@ export declare class Human {
      * @param result?: {@link Result} optional use specific result set to run interpolation on
      * @returns result: {@link Result}
      */
-    next: (result?: Result | undefined) => Result;
+    next(result?: Result): Result;
     /** Warmup method pre-initializes all configured models for faster inference
      * - can take significant time on startup
      * - only used for `webgl` and `humangl` backends
      * @param userConfig?: {@link Config}
+     * @returns result: {@link Result}
     */
-    warmup: (userConfig?: Partial<Config> | undefined) => Promise<Result | {
+    warmup(userConfig?: Partial<Config>): Promise<Result | {
         error: any;
     }>;
     /** Main detection method

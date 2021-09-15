@@ -48,6 +48,6 @@ export declare function body(inCanvas: HTMLCanvasElement, result: Array<BodyResu
 export declare function hand(inCanvas: HTMLCanvasElement, result: Array<HandResult>, drawOptions?: DrawOptions): Promise<void>;
 export declare function object(inCanvas: HTMLCanvasElement, result: Array<ObjectResult>, drawOptions?: DrawOptions): Promise<void>;
 export declare function person(inCanvas: HTMLCanvasElement, result: Array<PersonResult>, drawOptions?: DrawOptions): Promise<void>;
-export declare function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasElement): Promise<void>;
+export declare function canvas(input: HTMLCanvasElement | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: HTMLCanvasElement): Promise<void>;
 export declare function all(inCanvas: HTMLCanvasElement, result: Result, drawOptions?: DrawOptions): Promise<[void, void, void, void, void] | null>;
 //# sourceMappingURL=draw.d.ts.map

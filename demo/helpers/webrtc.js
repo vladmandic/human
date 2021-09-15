@@ -9,6 +9,22 @@ async function log(...msg) {
   }
 }
 
+/**
+ * helper implementation of webrtc 
+ * performs:
+ * - discovery
+ * - handshake
+ * - connct to webrtc stream
+ * - assign webrtc stream to video element
+ *
+ * for development purposes i'm using test webrtc server that reads rtsp stream from a security camera:
+ * <https://github.com/vladmandic/stream-rtsp>
+ * 
+* @param {string} server
+* @param {string} streamName
+* @param {HTMLVideoElement} elementName
+* @return {promise}
+*/
 async function webRTC(server, streamName, elementName) {
   const suuid = streamName;
   log('client starting');

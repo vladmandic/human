@@ -492,17 +492,16 @@ export async function person(inCanvas: HTMLCanvasElement, result: Array<PersonRe
   }
 }
 
-export async function canvas(inCanvas: HTMLCanvasElement, outCanvas: HTMLCanvasElement) {
-  if (!inCanvas || !outCanvas) return;
-  getCanvasContext(outCanvas);
-  const ctx = getCanvasContext(inCanvas);
-  ctx.drawImage(inCanvas, 0, 0);
+export async function canvas(input: HTMLCanvasElement | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: HTMLCanvasElement) {
+  if (!input || !output) return;
+  const ctx = getCanvasContext(output);
+  ctx.drawImage(input, 0, 0);
 }
 
 export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptions?: DrawOptions) {
+  if (!result || !result.performance || !result || !inCanvas) return null;
   const timestamp = now();
   const localOptions = mergeDeep(options, drawOptions);
-  if (!result || !inCanvas) return null;
 
   const promise = Promise.all([
     face(inCanvas, result.face, localOptions),

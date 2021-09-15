@@ -26,6 +26,7 @@ import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
 import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
 import webRTC from './helpers/webrtc.js';
+import jsonView from './helpers/jsonview.js';
 
 let human;
 
@@ -99,6 +100,7 @@ const ui = {
   framesDraw: 0, // internal, statistics on frames drawn
   framesDetect: 0, // internal, statistics on frames detected
   bench: true, // show gl fps benchmark window
+  results: false, // show results tree
   lastFrame: 0, // time of last frame processing
   viewportSet: false, // internal, has custom viewport been set
   background: null, // holds instance of segmentation background image
@@ -250,6 +252,14 @@ async function drawResults(input) {
   } else {
     human.draw.all(canvas, result, drawOptions);
   }
+
+  // show tree with results
+  if (ui.results) {
+    const div = document.getElementById('results');
+    div.innerHTML = '';
+    jsonView(result, div, 'Results', ['canvas', 'timestamp']);
+  }
+
   /* alternatively use individual functions
   human.draw.face(canvas, result.face);
   human.draw.body(canvas, result.body);
@@ -631,6 +641,10 @@ function setupMenu() {
   const top = `${document.getElementById('menubar').clientHeight}px`;
 
   menu.display = new Menu(document.body, '', { top, left: x[0] });
+  menu.display.addBool('results tree', ui, 'results', (val) => {
+    ui.results = val;
+    document.getElementById('results').style.display = ui.results ? 'block' : 'none';
+  });
   menu.display.addBool('perf monitor', ui, 'bench', (val) => ui.bench = val);
   menu.display.addBool('buffer output', ui, 'buffered', (val) => ui.buffered = val);
   menu.display.addBool('crop & scale', ui, 'crop', (val) => {
@@ -988,6 +1002,7 @@ async function main() {
   status('human: ready');
   document.getElementById('loader').style.display = 'none';
   document.getElementById('play').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
 
   // init drag & drop
   await dragAndDrop();

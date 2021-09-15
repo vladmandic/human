@@ -102,7 +102,7 @@ export async function backendInfo() {
   env.webgl.backend = env.backends.includes('webgl');
   if (env.webgl.supported && env.webgl.backend) {
     // @ts-ignore getGPGPUContext only exists on WebGL backend
-    const gl = tf.backend().gpgpu !== 'undefined' ? await tf.backend().getGPGPUContext().gl : null;
+    const gl = (tf.backend().gpgpu !== 'undefined') && (tf.backend().getGPGPUContext) ? await tf.backend().getGPGPUContext().gl : null;
     if (gl) {
       env.webgl.version = gl.getParameter(gl.VERSION);
       env.webgl.renderer = gl.getParameter(gl.RENDERER);

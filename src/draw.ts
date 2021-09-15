@@ -2,9 +2,9 @@
  * Module that implements helper draw functions, exposed as human.draw
  */
 
-import { TRI468 as triangulation } from '../blazeface/coords';
-import { mergeDeep, now } from '../helpers';
-import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult } from '../result';
+import { TRI468 as triangulation } from './blazeface/coords';
+import { mergeDeep, now } from './helpers';
+import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult } from './result';
 
 /**
  * Draw Options
@@ -139,7 +139,7 @@ function curves(ctx, points: [number, number, number?][] = [], localOptions) {
   }
 }
 
-export async function gesture(inCanvas: HTMLCanvasElement, result: Array<GestureResult>, drawOptions?: DrawOptions) {
+export async function gesture(inCanvas: HTMLCanvasElement | OffscreenCanvas, result: Array<GestureResult>, drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -164,7 +164,7 @@ export async function gesture(inCanvas: HTMLCanvasElement, result: Array<Gesture
   }
 }
 
-export async function face(inCanvas: HTMLCanvasElement, result: Array<FaceResult>, drawOptions?: DrawOptions) {
+export async function face(inCanvas: HTMLCanvasElement | OffscreenCanvas, result: Array<FaceResult>, drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -266,7 +266,7 @@ export async function face(inCanvas: HTMLCanvasElement, result: Array<FaceResult
   }
 }
 
-export async function body(inCanvas: HTMLCanvasElement, result: Array<BodyResult>, drawOptions?: DrawOptions) {
+export async function body(inCanvas: HTMLCanvasElement | OffscreenCanvas, result: Array<BodyResult>, drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -376,7 +376,7 @@ export async function body(inCanvas: HTMLCanvasElement, result: Array<BodyResult
   }
 }
 
-export async function hand(inCanvas: HTMLCanvasElement, result: Array<HandResult>, drawOptions?: DrawOptions) {
+export async function hand(inCanvas: HTMLCanvasElement | OffscreenCanvas, result: Array<HandResult>, drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -441,7 +441,7 @@ export async function hand(inCanvas: HTMLCanvasElement, result: Array<HandResult
   }
 }
 
-export async function object(inCanvas: HTMLCanvasElement, result: Array<ObjectResult>, drawOptions?: DrawOptions) {
+export async function object(inCanvas: HTMLCanvasElement | OffscreenCanvas, result: Array<ObjectResult>, drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -466,7 +466,7 @@ export async function object(inCanvas: HTMLCanvasElement, result: Array<ObjectRe
   }
 }
 
-export async function person(inCanvas: HTMLCanvasElement, result: Array<PersonResult>, drawOptions?: DrawOptions) {
+export async function person(inCanvas: HTMLCanvasElement | OffscreenCanvas, result: Array<PersonResult>, drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -492,38 +492,24 @@ export async function person(inCanvas: HTMLCanvasElement, result: Array<PersonRe
   }
 }
 
-export async function canvas(input: HTMLCanvasElement | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: HTMLCanvasElement) {
+export async function canvas(input: HTMLCanvasElement | OffscreenCanvas | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: HTMLCanvasElement) {
   if (!input || !output) return;
   const ctx = getCanvasContext(output);
   ctx.drawImage(input, 0, 0);
 }
 
-export async function all(inCanvas: HTMLCanvasElement, result: Result, drawOptions?: DrawOptions) {
+export async function all(inCanvas: HTMLCanvasElement | OffscreenCanvas, result: Result, drawOptions?: Partial<DrawOptions>) {
   if (!result || !result.performance || !result || !inCanvas) return null;
   const timestamp = now();
   const localOptions = mergeDeep(options, drawOptions);
-
   const promise = Promise.all([
     face(inCanvas, result.face, localOptions),
     body(inCanvas, result.body, localOptions),
     hand(inCanvas, result.hand, localOptions),
     object(inCanvas, result.object, localOptions),
-    // person(inCanvas, result.persons, localOptions);
     gesture(inCanvas, result.gesture, localOptions), // gestures do not have buffering
+    // person(inCanvas, result.persons, localOptions); // already included above
   ]);
-  /*
-  if (!bufferedResult) bufferedResult = result; // first pass
-  else if (localOptions.bufferedOutput) calcBuffered(result); // do results interpolation
-  else bufferedResult = result; // or just use results as-is
-  const promises: Promise<void>[] = [];
-  promises.push(face(inCanvas, bufferedResult.face, localOptions));
-  promises.push(body(inCanvas, bufferedResult.body, localOptions));
-  promises.push(hand(inCanvas, bufferedResult.hand, localOptions));
-  promises.push(object(inCanvas, bufferedResult.object, localOptions));
-  // promises.push(person(inCanvas, bufferedResult.persons, localOptions));
-  promises.push(gesture(inCanvas, result.gesture, localOptions)); // gestures do not have buffering
-  // await Promise.all(promises);
-  */
   result.performance.draw = Math.trunc(now() - timestamp);
   return promise;
 }

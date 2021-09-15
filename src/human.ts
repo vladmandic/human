@@ -4,7 +4,7 @@
 
 import { log, now, mergeDeep } from './helpers';
 import { Config, defaults } from './config';
-import type { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult } from './result';
+import type { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as models from './models';
 import * as face from './face';
@@ -20,7 +20,7 @@ import * as centernet from './object/centernet';
 import * as segmentation from './segmentation/segmentation';
 import * as gesture from './gesture/gesture';
 import * as image from './image/image';
-import * as draw from './draw/draw';
+import * as draw from './draw';
 import * as persons from './persons';
 import * as interpolate from './interpolate';
 import * as env from './env';
@@ -28,17 +28,18 @@ import * as backend from './tfjs/backend';
 import * as app from '../package.json';
 import * as warmups from './warmup';
 import type { Tensor, GraphModel } from './tfjs/types';
+import type { DrawOptions } from './draw';
 
 // export types
 export * from './config';
 export * from './result';
-export type { DrawOptions } from './draw/draw';
+export type { DrawOptions } from './draw';
 export { env } from './env';
 
 /** Defines all possible input types for **Human** detection
  * @typedef Input Type
  */
-export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.env.Canvas;
+export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 
 /** Events dispatched by `human.events`
  * - `create`: triggered when Human object is instantiated
@@ -73,29 +74,36 @@ export type TensorFlow = typeof tf;
 export class Human {
   /** Current version of Human library in *semver* format */
   version: string;
+
   /** Current configuration
    * - Details: {@link Config}
    */
   config: Config;
+
   /** Last known result of detect run
    * - Can be accessed anytime after initial detection
    */
   result: Result;
+
   /** Current state of Human library
    * - Can be polled to determine operations that are currently executed
    * - Progresses through: 'config', 'check', 'backend', 'load', 'run:<model>', 'idle'
    */
   state: string;
+
   /** currenty processed image tensor and canvas */
   process: { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null };
+
   /** @internal: Instance of TensorFlow/JS used by Human
    * - Can be embedded or externally provided
    */
   tf: TensorFlow;
+
   /**
    * Object containing environment information used for diagnostics
    */
   env: env.Env;
+
   /** Draw helper classes that can draw detected objects on canvas using specified draw
    * - options: {@link DrawOptions} global settings for all draw operations, can be overriden for each draw method
    * - face: draw detected faces
@@ -104,15 +112,9 @@ export class Human {
    * - canvas: draw this.processed canvas which is a this.processed copy of the input
    * - all: meta-function that performs: canvas, face, body, hand
    */
-  draw: {
-    options: draw.DrawOptions,
-    gesture: typeof draw.gesture,
-    face: typeof draw.face,
-    body: typeof draw.body,
-    hand: typeof draw.hand,
-    canvas: typeof draw.canvas,
-    all: typeof draw.all,
-  };
+  // draw: typeof draw;
+  draw: { canvas, face, body, hand, gesture, object, person, all, options: DrawOptions };
+
   /** @internal: Currently loaded models */
   models: {
     face: [unknown, GraphModel | null, GraphModel | null] | null,
@@ -130,6 +132,7 @@ export class Human {
     faceres: GraphModel | null,
     segmentation: GraphModel | null,
   };
+
   /** Container for events dispatched by Human
    *
    * Possible events:
@@ -166,7 +169,6 @@ export class Human {
     Object.defineProperty(this, 'version', { value: app.version }); // expose version property directly on class itself
     this.config = mergeDeep(defaults, userConfig || {});
     this.tf = tf;
-    this.draw = draw;
     this.state = 'idle';
     this.#numTensors = 0;
     this.#analyzeMemoryLeaks = false;
@@ -177,11 +179,11 @@ export class Human {
     // object that contains all initialized models
     this.models = {
       face: null, // array of models
+      handpose: null, // array of models
       posenet: null,
       blazepose: null,
       efficientpose: null,
       movenet: null,
-      handpose: null, // array of models
       age: null,
       gender: null,
       emotion: null,
@@ -190,6 +192,18 @@ export class Human {
       centernet: null,
       faceres: null,
       segmentation: null,
+    };
+    // reexport draw methods
+    this.draw = {
+      options: draw.options as DrawOptions,
+      canvas: (input: HTMLCanvasElement | OffscreenCanvas | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: HTMLCanvasElement) => draw.canvas(input, output),
+      face: (output: HTMLCanvasElement | OffscreenCanvas, result: FaceResult[], options?: Partial<DrawOptions>) => draw.face(output, result, options),
+      body: (output: HTMLCanvasElement | OffscreenCanvas, result: BodyResult[], options?: Partial<DrawOptions>) => draw.body(output, result, options),
+      hand: (output: HTMLCanvasElement | OffscreenCanvas, result: HandResult[], options?: Partial<DrawOptions>) => draw.hand(output, result, options),
+      gesture: (output: HTMLCanvasElement | OffscreenCanvas, result: GestureResult[], options?: Partial<DrawOptions>) => draw.gesture(output, result, options),
+      object: (output: HTMLCanvasElement | OffscreenCanvas, result: ObjectResult[], options?: Partial<DrawOptions>) => draw.object(output, result, options),
+      person: (output: HTMLCanvasElement | OffscreenCanvas, result: PersonResult[], options?: Partial<DrawOptions>) => draw.person(output, result, options),
+      all: (output: HTMLCanvasElement | OffscreenCanvas, result: Result, options?: Partial<DrawOptions>) => draw.all(output, result, options),
     };
     this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [] };
     // export access to image this.processing

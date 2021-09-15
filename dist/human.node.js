@@ -8764,10 +8764,9 @@ var HandPipeline = class {
     __publicField(this, "storedBoxes");
     __publicField(this, "skipped");
     __publicField(this, "detectedHands");
-    var _a;
     this.handDetector = handDetector;
     this.handPoseModel = handPoseModel2;
-    this.inputSize = (_a = this.handPoseModel) == null ? void 0 : _a.inputs[0].shape[2];
+    this.inputSize = this.handPoseModel.inputs[0].shape ? this.handPoseModel.inputs[0].shape[2] : 0;
     this.storedBoxes = [];
     this.skipped = 0;
     this.detectedHands = 0;
@@ -8875,7 +8874,8 @@ var HandPipeline = class {
         const enlarged = enlargeBox2(squarifyBox2(currentBox), handBoxEnlargeFactor);
         const result = {
           confidence: currentBox.confidence,
-          box: { topLeft: enlarged.startPoint, bottomRight: enlarged.endPoint }
+          box: { topLeft: enlarged.startPoint, bottomRight: enlarged.endPoint },
+          landmarks: []
         };
         hands.push(result);
       }
@@ -10523,19 +10523,7 @@ var hand = (res) => {
   return gestures;
 };
 
-// src/draw/draw.ts
-var draw_exports = {};
-__export(draw_exports, {
-  all: () => all,
-  body: () => body2,
-  canvas: () => canvas2,
-  face: () => face2,
-  gesture: () => gesture,
-  hand: () => hand2,
-  object: () => object,
-  options: () => options2,
-  person: () => person
-});
+// src/draw.ts
 var options2 = {
   color: "rgba(173, 216, 230, 0.6)",
   labelColor: "rgba(173, 216, 230, 1)",
@@ -12220,7 +12208,6 @@ var Human = class {
     Object.defineProperty(this, "version", { value: version });
     this.config = mergeDeep(config, userConfig || {});
     this.tf = tf24;
-    this.draw = draw_exports;
     this.state = "idle";
     __privateSet(this, _numTensors, 0);
     __privateSet(this, _analyzeMemoryLeaks, false);
@@ -12230,11 +12217,11 @@ var Human = class {
     this.events = new EventTarget();
     this.models = {
       face: null,
+      handpose: null,
       posenet: null,
       blazepose: null,
       efficientpose: null,
       movenet: null,
-      handpose: null,
       age: null,
       gender: null,
       emotion: null,
@@ -12243,6 +12230,17 @@ var Human = class {
       centernet: null,
       faceres: null,
       segmentation: null
+    };
+    this.draw = {
+      options: options2,
+      canvas: (input, output) => canvas2(input, output),
+      face: (output, result, options3) => face2(output, result, options3),
+      body: (output, result, options3) => body2(output, result, options3),
+      hand: (output, result, options3) => hand2(output, result, options3),
+      gesture: (output, result, options3) => gesture(output, result, options3),
+      object: (output, result, options3) => object(output, result, options3),
+      person: (output, result, options3) => person(output, result, options3),
+      all: (output, result, options3) => all(output, result, options3)
     };
     this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [] };
     this.process = { tensor: null, canvas: null };

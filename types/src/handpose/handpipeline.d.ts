@@ -29,7 +29,7 @@ export declare class HandPipeline {
     };
     transformRawCoords(rawCoords: any, box2: any, angle: any, rotationMatrix: any): any;
     estimateHands(image: any, config: any): Promise<{
-        landmarks?: number[];
+        landmarks: number[];
         confidence: number;
         box: {
             topLeft: number[];

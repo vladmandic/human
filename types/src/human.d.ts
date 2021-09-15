@@ -5,17 +5,17 @@ import { Config } from './config';
 import type { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
-import * as draw from './draw/draw';
 import * as env from './env';
 import type { Tensor, GraphModel } from './tfjs/types';
+import type { DrawOptions } from './draw';
 export * from './config';
 export * from './result';
-export type { DrawOptions } from './draw/draw';
+export type { DrawOptions } from './draw';
 export { env } from './env';
 /** Defines all possible input types for **Human** detection
  * @typedef Input Type
  */
-export declare type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.env.Canvas;
+export declare type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 /** Events dispatched by `human.events`
  * - `create`: triggered when Human object is instantiated
  * - `load`: triggered when models are loaded (explicitly or on-demand)
@@ -84,13 +84,15 @@ export declare class Human {
      * - all: meta-function that performs: canvas, face, body, hand
      */
     draw: {
-        options: draw.DrawOptions;
-        gesture: typeof draw.gesture;
-        face: typeof draw.face;
-        body: typeof draw.body;
-        hand: typeof draw.hand;
-        canvas: typeof draw.canvas;
-        all: typeof draw.all;
+        canvas: any;
+        face: any;
+        body: any;
+        hand: any;
+        gesture: any;
+        object: any;
+        person: any;
+        all: any;
+        options: DrawOptions;
     };
     /** @internal: Currently loaded models */
     models: {
@@ -139,9 +141,6 @@ export declare class Human {
      * @returns { tensor, canvas }
      */
     image: (input: Input) => {
-        /** Defines all possible input types for **Human** detection
-         * @typedef Input Type
-         */
         tensor: Tensor<import("@tensorflow/tfjs-core").Rank> | null;
         canvas: OffscreenCanvas | HTMLCanvasElement;
     };

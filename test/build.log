@@ -13084,3 +13084,578 @@
 2021-09-13 23:21:42 [35mSTATE:[39m Lint: {"locations":["*.json","src/**/*.ts","test/**/*.js","demo/**/*.js"],"files":82,"errors":0,"warnings":0} 
 2021-09-13 23:21:42 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
 2021-09-13 23:21:42 [36mINFO: [39m Done... 
+2021-09-14 19:15:34 [36mINFO: [39m @vladmandic/human version 2.2.0 
+2021-09-14 19:15:34 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-09-14 19:15:34 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.2.0"} 
+2021-09-14 19:15:34 [36mINFO: [39m Environment: {"profile":"development","config":"build.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-09-14 19:15:34 [36mINFO: [39m Toolchain: {"build":"0.4.1","esbuild":"0.12.27","typescript":"4.4.3","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-09-14 19:15:34 [36mINFO: [39m Build: {"profile":"development","steps":["serve","watch","compile"]} 
+2021-09-14 19:15:34 [35mSTATE:[39m WebServer: {"ssl":false,"port":10030,"root":"."} 
+2021-09-14 19:15:34 [35mSTATE:[39m WebServer: {"ssl":true,"port":10031,"root":".","sslKey":"node_modules/@vladmandic/build/cert/https.key","sslCrt":"node_modules/@vladmandic/build/cert/https.crt"} 
+2021-09-14 19:15:34 [35mSTATE:[39m Watch: {"locations":["src/**","src/**/*","tfjs/**/*"]} 
+2021-09-14 19:15:34 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-14 19:15:34 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":50,"inputBytes":475042,"outputBytes":404031} 
+2021-09-14 19:15:34 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-14 19:15:35 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":50,"inputBytes":475050,"outputBytes":404035} 
+2021-09-14 19:15:35 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-14 19:15:35 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":50,"inputBytes":475117,"outputBytes":404107} 
+2021-09-14 19:15:35 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-14 19:15:35 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":50,"inputBytes":475216,"outputBytes":406295} 
+2021-09-14 19:15:35 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":3,"inputBytes":3175944,"outputBytes":3158689} 
+2021-09-14 19:15:35 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":50,"inputBytes":3632315,"outputBytes":2531160} 
+2021-09-14 19:15:36 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":50,"inputBytes":3632315,"outputBytes":3566564} 
+2021-09-14 19:15:36 [36mINFO: [39m Listening... 
+2021-09-14 19:15:45 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:15:45 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:15:45 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:15:45 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:15:46 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:15:46 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:15:46 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:15:46 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:15:46 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:40 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:40 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:40 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:40 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:40 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:40 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:40 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:40 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:40 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:40 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:42 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:42 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:48 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:48 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:48 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:49 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:49 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:49 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:49 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:49 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:49 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:16:49 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:53 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:53 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:53 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:53 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:53 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:53 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:53 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:53 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:53 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:53 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:55 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:55 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:18:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:19:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:19:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:19:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:19:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:19:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:19:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:19:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:19:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:19:55 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:19:55 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:54 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:55 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:24:55 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:42 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:42 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:44 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:44 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:44 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:44 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:44 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:44 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:44 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:44 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:45 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:27:45 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:33 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:33 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:33 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:33 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:33 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:33 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:33 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:33 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:33 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:29:34 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:40:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:40:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:40:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:40:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:40:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:40:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:40:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:40:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:00 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:00 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:02 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:02 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:02 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:02 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:02 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:02 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:02 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:02 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:02 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:02 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:41:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:34 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:34 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:34 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:34 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:34 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:34 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:34 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:34 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:34 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:34 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:42:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:27 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:27 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:27 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:27 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:27 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:27 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:27 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:27 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:27 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:27 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:28 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:28 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:28 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:28 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3566564,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:28 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:28 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:28 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:28 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:29 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6731696,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:48:29 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:49:55 [36mINFO: [39m Build exiting... 
+2021-09-14 19:49:57 [36mINFO: [39m @vladmandic/human version 2.2.0 
+2021-09-14 19:49:57 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-09-14 19:49:57 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.2.0"} 
+2021-09-14 19:49:57 [36mINFO: [39m Environment: {"profile":"development","config":"build.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-09-14 19:49:57 [36mINFO: [39m Toolchain: {"build":"0.4.1","esbuild":"0.12.27","typescript":"4.4.3","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-09-14 19:49:57 [36mINFO: [39m Build: {"profile":"development","steps":["serve","watch","compile"]} 
+2021-09-14 19:49:57 [35mSTATE:[39m WebServer: {"ssl":false,"port":10030,"root":"."} 
+2021-09-14 19:49:57 [35mSTATE:[39m WebServer: {"ssl":true,"port":10031,"root":".","sslKey":"node_modules/@vladmandic/build/cert/https.key","sslCrt":"node_modules/@vladmandic/build/cert/https.crt"} 
+2021-09-14 19:49:57 [35mSTATE:[39m Watch: {"locations":["src/**","src/**/*","tfjs/**/*"]} 
+2021-09-14 19:49:57 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-14 19:49:57 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":50,"inputBytes":475042,"outputBytes":404031} 
+2021-09-14 19:49:57 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-14 19:49:57 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":50,"inputBytes":475050,"outputBytes":404035} 
+2021-09-14 19:49:57 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-14 19:49:57 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":50,"inputBytes":475117,"outputBytes":404107} 
+2021-09-14 19:49:57 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-14 19:49:57 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":50,"inputBytes":475216,"outputBytes":406295} 
+2021-09-14 19:49:58 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":3,"inputBytes":4273935,"outputBytes":4231497} 
+2021-09-14 19:49:58 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":50,"inputBytes":4705123,"outputBytes":3095919} 
+2021-09-14 19:49:59 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":50,"inputBytes":4705123,"outputBytes":4639201} 
+2021-09-14 19:49:59 [36mINFO: [39m Listening... 
+2021-09-14 19:50:06 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:06 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:06 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:06 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":4639201,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:06 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:06 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:06 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:06 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:07 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":9861199,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:07 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:07 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":4115,"url":"/index-pwa.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:42 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":1938,"url":"/index-worker.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:42 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":3095919,"url":"/dist/human.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:42 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:42 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17980,"url":"/models/emotion.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":113998,"url":"/models/handdetect.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":129116,"url":"/models/handskeleton.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":161813,"url":"/models/movenet-lightning.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":820516,"url":"/models/emotion.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":3515612,"url":"/models/handdetect.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":5502280,"url":"/models/handskeleton.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:50:43 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4650216,"url":"/models/movenet-lightning.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:51:30 [36mINFO: [39m Build exiting... 
+2021-09-14 19:51:39 [36mINFO: [39m @vladmandic/human version 2.2.0 
+2021-09-14 19:51:39 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-09-14 19:51:39 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.2.0"} 
+2021-09-14 19:51:39 [36mINFO: [39m Environment: {"profile":"development","config":"build.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-09-14 19:51:39 [36mINFO: [39m Toolchain: {"build":"0.4.1","esbuild":"0.12.27","typescript":"4.4.3","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-09-14 19:51:39 [36mINFO: [39m Build: {"profile":"development","steps":["serve","watch","compile"]} 
+2021-09-14 19:51:39 [35mSTATE:[39m WebServer: {"ssl":false,"port":10030,"root":"."} 
+2021-09-14 19:51:39 [35mSTATE:[39m WebServer: {"ssl":true,"port":10031,"root":".","sslKey":"node_modules/@vladmandic/build/cert/https.key","sslCrt":"node_modules/@vladmandic/build/cert/https.crt"} 
+2021-09-14 19:51:39 [35mSTATE:[39m Watch: {"locations":["src/**","src/**/*","tfjs/**/*"]} 
+2021-09-14 19:51:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-14 19:51:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":50,"inputBytes":475042,"outputBytes":404031} 
+2021-09-14 19:51:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-14 19:51:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":50,"inputBytes":475050,"outputBytes":404035} 
+2021-09-14 19:51:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-14 19:51:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":50,"inputBytes":475117,"outputBytes":404107} 
+2021-09-14 19:51:39 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-14 19:51:39 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":50,"inputBytes":475216,"outputBytes":406295} 
+2021-09-14 19:51:40 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":3,"inputBytes":4273935,"outputBytes":4231497} 
+2021-09-14 19:51:41 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":50,"inputBytes":4705123,"outputBytes":3095919} 
+2021-09-14 19:51:41 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":50,"inputBytes":4705123,"outputBytes":4639201} 
+2021-09-14 19:51:41 [36mINFO: [39m Listening... 
+2021-09-14 19:52:27 [36mINFO: [39m Build exiting... 
+2021-09-14 19:52:29 [36mINFO: [39m @vladmandic/human version 2.2.0 
+2021-09-14 19:52:29 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-09-14 19:52:29 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.2.0"} 
+2021-09-14 19:52:29 [36mINFO: [39m Environment: {"profile":"development","config":"build.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-09-14 19:52:29 [36mINFO: [39m Toolchain: {"build":"0.4.1","esbuild":"0.12.27","typescript":"4.4.3","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-09-14 19:52:29 [36mINFO: [39m Build: {"profile":"development","steps":["serve","watch","compile"]} 
+2021-09-14 19:52:29 [35mSTATE:[39m WebServer: {"ssl":false,"port":10030,"root":"."} 
+2021-09-14 19:52:29 [35mSTATE:[39m WebServer: {"ssl":true,"port":10031,"root":".","sslKey":"node_modules/@vladmandic/build/cert/https.key","sslCrt":"node_modules/@vladmandic/build/cert/https.crt"} 
+2021-09-14 19:52:29 [35mSTATE:[39m Watch: {"locations":["src/**","src/**/*","tfjs/**/*"]} 
+2021-09-14 19:52:29 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-14 19:52:29 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":50,"inputBytes":475042,"outputBytes":404031} 
+2021-09-14 19:52:29 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-14 19:52:29 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":50,"inputBytes":475050,"outputBytes":404035} 
+2021-09-14 19:52:29 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-14 19:52:29 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":50,"inputBytes":475117,"outputBytes":404107} 
+2021-09-14 19:52:29 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-14 19:52:29 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":50,"inputBytes":475216,"outputBytes":406295} 
+2021-09-14 19:52:30 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":3,"inputBytes":2218174,"outputBytes":2184245} 
+2021-09-14 19:52:30 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":50,"inputBytes":2657871,"outputBytes":1388317} 
+2021-09-14 19:52:30 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":50,"inputBytes":2657871,"outputBytes":2593543} 
+2021-09-14 19:52:30 [36mINFO: [39m Listening... 
+2021-09-14 19:52:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2593543,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6362477,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:36 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":4115,"url":"/index-pwa.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":1938,"url":"/index-worker.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":1388317,"url":"/dist/human.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17980,"url":"/models/emotion.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":113998,"url":"/models/handdetect.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":129116,"url":"/models/handskeleton.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":161813,"url":"/models/movenet-lightning.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":820516,"url":"/models/emotion.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4650216,"url":"/models/movenet-lightning.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":5502280,"url":"/models/handskeleton.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":3515612,"url":"/models/handdetect.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:52:41 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/?backend=wasm&worker=false","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2593543,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6362477,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":4115,"url":"/index-pwa.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/?backend=humangl&worker=false","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2593543,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6362477,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":4115,"url":"/index-pwa.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17980,"url":"/models/emotion.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":113998,"url":"/models/handdetect.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":129116,"url":"/models/handskeleton.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":161813,"url":"/models/movenet-lightning.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":820516,"url":"/models/emotion.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":3515612,"url":"/models/handdetect.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":5502280,"url":"/models/handskeleton.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:16 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4650216,"url":"/models/movenet-lightning.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/?backend=webgl&worker=false","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2593543,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6362477,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:38 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":4115,"url":"/index-pwa.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17980,"url":"/models/emotion.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":113998,"url":"/models/handdetect.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":129116,"url":"/models/handskeleton.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":161813,"url":"/models/movenet-lightning.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":820516,"url":"/models/emotion.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":3515612,"url":"/models/handdetect.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":5502280,"url":"/models/handskeleton.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:55:39 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4650216,"url":"/models/movenet-lightning.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:03 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/?backend=webgl&worker=false&async=false","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:03 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:03 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:03 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2593543,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:03 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:03 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:03 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:03 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6362477,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:04 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":4115,"url":"/index-pwa.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:05 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:05 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:05 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:05 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:05 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:05 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:29 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/?backend=webgl&worker=false&async=false","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:29 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:29 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:29 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2593543,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:29 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:29 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:29 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:29 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6362477,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":4115,"url":"/index-pwa.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:57:40 [33mWARN: [39m HTTP: {"method":"GET","ver":"1.1","status":404,"url":"/index 0","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:03 [36mINFO: [39m Build exiting... 
+2021-09-14 19:58:05 [36mINFO: [39m @vladmandic/human version 2.2.0 
+2021-09-14 19:58:05 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-09-14 19:58:05 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.2.0"} 
+2021-09-14 19:58:05 [36mINFO: [39m Environment: {"profile":"development","config":"build.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-09-14 19:58:05 [36mINFO: [39m Toolchain: {"build":"0.4.1","esbuild":"0.12.27","typescript":"4.4.3","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-09-14 19:58:05 [36mINFO: [39m Build: {"profile":"development","steps":["serve","watch","compile"]} 
+2021-09-14 19:58:05 [35mSTATE:[39m WebServer: {"ssl":false,"port":10030,"root":"."} 
+2021-09-14 19:58:05 [35mSTATE:[39m WebServer: {"ssl":true,"port":10031,"root":".","sslKey":"node_modules/@vladmandic/build/cert/https.key","sslCrt":"node_modules/@vladmandic/build/cert/https.crt"} 
+2021-09-14 19:58:05 [35mSTATE:[39m Watch: {"locations":["src/**","src/**/*","tfjs/**/*"]} 
+2021-09-14 19:58:05 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-14 19:58:05 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":50,"inputBytes":475042,"outputBytes":404031} 
+2021-09-14 19:58:05 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-14 19:58:05 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":50,"inputBytes":475050,"outputBytes":404035} 
+2021-09-14 19:58:05 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-14 19:58:05 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":50,"inputBytes":475117,"outputBytes":404107} 
+2021-09-14 19:58:05 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-14 19:58:05 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":50,"inputBytes":475216,"outputBytes":406295} 
+2021-09-14 19:58:06 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":7,"inputBytes":2168,"outputBytes":2343983} 
+2021-09-14 19:58:06 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":50,"inputBytes":2817609,"outputBytes":1396101} 
+2021-09-14 19:58:07 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":50,"inputBytes":2817609,"outputBytes":2591595} 
+2021-09-14 19:58:07 [36mINFO: [39m Listening... 
+2021-09-14 19:58:09 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:09 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:09 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:09 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2591595,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:09 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:09 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:09 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:09 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:10 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":4115,"url":"/index-pwa.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:12 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:12 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":303,"url":"/manifest.webmanifest","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:12 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6556950,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:17 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":6435,"url":"/?backend=webgl&worker=false&async=false","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:17 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:17 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":44734,"url":"/index.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:17 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2591595,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:17 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":14222,"url":"/helpers/menu.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:17 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":10894,"url":"/helpers/gl-bench.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:17 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2976,"url":"/helpers/webrtc.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:17 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:17 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6556950,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:17 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:17 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":4115,"url":"/index-pwa.js","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:18 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:18 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:18 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:18 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:18 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:18 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:19 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17980,"url":"/models/emotion.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:19 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":820516,"url":"/models/emotion.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:19 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":113998,"url":"/models/handdetect.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:19 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":129116,"url":"/models/handskeleton.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:19 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":3515612,"url":"/models/handdetect.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:19 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":5502280,"url":"/models/handskeleton.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:19 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":161813,"url":"/models/movenet-lightning.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:19 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4650216,"url":"/models/movenet-lightning.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:19 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:58:19 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-09-14 19:59:05 [36mINFO: [39m Build exiting... 
+2021-09-14 20:01:37 [36mINFO: [39m @vladmandic/human version 2.2.0 
+2021-09-14 20:01:37 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v16.5.0 
+2021-09-14 20:01:37 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.2.0"} 
+2021-09-14 20:01:37 [36mINFO: [39m Environment: {"profile":"production","config":"build.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-09-14 20:01:37 [36mINFO: [39m Toolchain: {"build":"0.4.1","esbuild":"0.12.28","typescript":"4.4.3","typedoc":"0.21.9","eslint":"7.32.0"} 
+2021-09-14 20:01:37 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
+2021-09-14 20:01:37 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
+2021-09-14 20:01:37 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1416} 
+2021-09-14 20:01:37 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":50,"inputBytes":475042,"outputBytes":404031} 
+2021-09-14 20:01:37 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1424} 
+2021-09-14 20:01:37 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":50,"inputBytes":475050,"outputBytes":404035} 
+2021-09-14 20:01:37 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1491} 
+2021-09-14 20:01:37 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":50,"inputBytes":475117,"outputBytes":404107} 
+2021-09-14 20:01:37 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":2168,"outputBytes":1590} 
+2021-09-14 20:01:37 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":50,"inputBytes":475216,"outputBytes":406295} 
+2021-09-14 20:01:38 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":7,"inputBytes":2168,"outputBytes":2343983} 
+2021-09-14 20:01:38 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":50,"inputBytes":2817609,"outputBytes":1396101} 
+2021-09-14 20:01:39 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":50,"inputBytes":2817609,"outputBytes":2591595} 
+2021-09-14 20:01:54 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types","files":94} 
+2021-09-14 20:02:00 [35mSTATE:[39m TypeDoc: {"input":"src/human.ts","output":"typedoc","objects":29,"index":true} 
+2021-09-14 20:02:26 [35mSTATE:[39m Lint: {"locations":["*.json","src/**/*.ts","test/**/*.js","demo/**/*.js"],"files":82,"errors":0,"warnings":0} 
+2021-09-14 20:02:26 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
+2021-09-14 20:02:26 [36mINFO: [39m Done... 

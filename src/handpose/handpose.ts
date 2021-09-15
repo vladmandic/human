@@ -32,7 +32,6 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
     const annotations = {};
     if (predictions[i].landmarks) {
       for (const key of Object.keys(meshAnnotations)) {
-        // @ts-ignore landmarks are not undefined
         annotations[key] = meshAnnotations[key].map((index) => predictions[i].landmarks[index]);
       }
     }

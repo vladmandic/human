@@ -40,4 +40,3 @@ async function main() {
 }
 
 main();
-// @ts-ignore // in nodejs+wasm must set explicitly before using human

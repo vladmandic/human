@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/09/15 mandic00@live.com
 
+- add simple webcam and webrtc demo
 - added visual results browser to demo
 - reorganize tfjs bundle
 - experimental custom tfjs bundle - disabled

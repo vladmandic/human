@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/09/14 mandic00@live.com
 
+- experimental custom tfjs bundle - disabled
 - add platform and backend capabilities detection
 - enhanced automated tests
 - enable canvas patching for nodejs

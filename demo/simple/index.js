@@ -1,3 +1,12 @@
+/**
+ * Human demo for browsers
+ *
+ * @description Simple Human demo for browsers using WebCam or WebRTC
+ *
+ * @configuration
+ * config={}: contains all model configuration used by human
+ */
+
 import Human from '../../dist/human.esm.js'; // equivalent of @vladmandic/human
 import webRTC from '../helpers/webrtc.js'; // handle webrtc handshake and connects to webrtc stream
 

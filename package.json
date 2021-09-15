@@ -73,7 +73,7 @@
     "@vladmandic/pilogger": "^0.3.1",
     "canvas": "^2.8.0",
     "dayjs": "^1.10.7",
-    "esbuild": "^0.12.27",
+    "esbuild": "^0.12.28",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",

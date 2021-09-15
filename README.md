@@ -65,7 +65,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 
 ## Additional notes
 
-- [**Notes on Backends**](https://github.com/vladmandic/human/wiki/Backends)
+- [**Comparing Backends**](https://github.com/vladmandic/human/wiki/Backends)
 - [**Development Server**](https://github.com/vladmandic/human/wiki/Development-Server)
 - [**Build Process**](https://github.com/vladmandic/human/wiki/Build-Process)
 - [**Adding Custom Modules**](https://github.com/vladmandic/human/wiki/Module)

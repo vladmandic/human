@@ -22,8 +22,7 @@ export class HandPipeline {
   constructor(handDetector, handPoseModel) {
     this.handDetector = handDetector;
     this.handPoseModel = handPoseModel;
-    // @ts-ignore model is not undefined here
-    this.inputSize = this.handPoseModel?.inputs[0].shape[2];
+    this.inputSize = this.handPoseModel.inputs[0].shape ? this.handPoseModel.inputs[0].shape[2] : 0;
     this.storedBoxes = [];
     this.skipped = 0;
     this.detectedHands = 0;
@@ -100,7 +99,7 @@ export class HandPipeline {
       // for (const possible of boxes) this.storedBoxes.push(possible);
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }
-    const hands: Array<{ landmarks?: number[], confidence: number, box: { topLeft: number[], bottomRight: number[] } }> = [];
+    const hands: Array<{ landmarks: number[], confidence: number, box: { topLeft: number[], bottomRight: number[] } }> = [];
 
     // go through working set of boxes
     for (let i = 0; i < this.storedBoxes.length; i++) {
@@ -146,6 +145,7 @@ export class HandPipeline {
         const result = {
           confidence: currentBox.confidence,
           box: { topLeft: enlarged.startPoint, bottomRight: enlarged.endPoint },
+          landmarks: [],
         };
         hands.push(result);
       }

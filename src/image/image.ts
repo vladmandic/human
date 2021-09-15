@@ -7,6 +7,7 @@ import * as fxImage from './imagefx';
 import type { Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../env';
+import { log } from '../helpers';
 
 type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.Canvas;
 
@@ -62,9 +63,16 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
     else throw new Error(`Human: Input tensor shape must be [1, height, width, 3] and instead was ${(input as unknown as Tensor).shape}`);
   } else {
     // check if resizing will be needed
+    if (typeof input['readyState'] !== 'undefined' && input['readyState'] <= 2) {
+      log('input stream is not ready');
+      return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
+    }
     const originalWidth = input['naturalWidth'] || input['videoWidth'] || input['width'] || (input['shape'] && (input['shape'][1] > 0));
     const originalHeight = input['naturalHeight'] || input['videoHeight'] || input['height'] || (input['shape'] && (input['shape'][2] > 0));
-    if (!originalWidth || !originalHeight) return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
+    if (!originalWidth || !originalHeight) {
+      log('cannot determine input dimensions');
+      return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
+    }
     let targetWidth = originalWidth;
     let targetHeight = originalHeight;
     if (targetWidth > maxSize) {
@@ -153,7 +161,6 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
       outCanvas = inCanvas;
       if (fx) fx = null;
     }
-
     // create tensor from image if tensor is not already defined
     if (!tensor) {
       let pixels;

@@ -904,7 +904,6 @@ async function pwaRegister() {
 }
 
 async function main() {
-  /*
   window.addEventListener('unhandledrejection', (evt) => {
     // eslint-disable-next-line no-console
     console.error(evt.reason || evt);
@@ -912,7 +911,6 @@ async function main() {
     status('exception error');
     evt.preventDefault();
   });
-  */
 
   log('demo starting ...');
 

@@ -150,7 +150,6 @@ export class Human {
   #analyzeMemoryLeaks: boolean;
   #checkSanity: boolean;
   initial: boolean;
-
   // definition end
 
   /**
@@ -256,7 +255,7 @@ export class Human {
    * @param background?: {@link Input}
    * @returns Canvas
    */
-  segmentation(input: Input, background?: Input) {
+  async segmentation(input: Input, background?: Input) {
     return input ? segmentation.process(input, background, this.config) : null;
   }
 
@@ -327,14 +326,19 @@ export class Human {
    * @param result?: {@link Result} optional use specific result set to run interpolation on
    * @returns result: {@link Result}
    */
-  next = (result?: Result) => interpolate.calc(result || this.result) as Result;
+  next(result: Result = this.result) {
+    return interpolate.calc(result) as Result;
+  }
 
   /** Warmup method pre-initializes all configured models for faster inference
    * - can take significant time on startup
    * - only used for `webgl` and `humangl` backends
    * @param userConfig?: {@link Config}
+   * @returns result: {@link Result}
   */
-  warmup = (userConfig?: Partial<Config>) => warmups.warmup(this, userConfig) as Promise<Result | { error }>
+  async warmup(userConfig?: Partial<Config>): Promise<Result | { error }> {
+    return warmups.warmup(this, userConfig) as Promise<Result | { error }>;
+  }
 
   /** Main detection method
    * - Analyze configuration: {@link Config}

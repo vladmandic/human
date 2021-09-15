@@ -83,6 +83,14 @@
         "output": "dist/human.node-wasm.js",
         "external": ["@tensorflow"]
       },
+      { 
+        "name": "tfjs/browser/version",
+        "platform": "browser",
+        "format": "esm",
+        "input": "tfjs/tf-version.ts",
+        "output": "dist/tfjs.version.js",
+        "external": ["fs", "os", "buffer", "util"]
+      },
       {
         "name": "tfjs/browser/esm/nobundle",
         "platform": "browser",

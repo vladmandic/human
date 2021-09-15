@@ -4688,7 +4688,7 @@ async function backendInfo() {
   env.webgl.supported = typeof ctx !== "undefined";
   env.webgl.backend = env.backends.includes("webgl");
   if (env.webgl.supported && env.webgl.backend) {
-    const gl = tf4.backend().gpgpu !== "undefined" ? await tf4.backend().getGPGPUContext().gl : null;
+    const gl = tf4.backend().gpgpu !== "undefined" && tf4.backend().getGPGPUContext ? await tf4.backend().getGPGPUContext().gl : null;
     if (gl) {
       env.webgl.version = gl.getParameter(gl.VERSION);
       env.webgl.renderer = gl.getParameter(gl.RENDERER);

@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/13 mandic00@live.com
+### **HEAD -> main** 2021/09/14 mandic00@live.com
 
+- add platform and backend capabilities detection
 - enhanced automated tests
 - enable canvas patching for nodejs
 - full ts strict typechecks

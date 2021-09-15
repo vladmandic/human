@@ -5558,30 +5558,6 @@ var require_tfjs_backend_wasm = __commonJS({
   }
 });
 
-// node_modules/.pnpm/@tensorflow+tfjs@3.9.0_seedrandom@3.0.5/node_modules/@tensorflow/tfjs/package.json
-var version = "3.9.0";
-
-// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/package.json
-var version2 = "3.9.0";
-
-// node_modules/.pnpm/@tensorflow+tfjs-data@3.9.0_470c05e138890ee649df8440b2dfddf4/node_modules/@tensorflow/tfjs-data/package.json
-var version3 = "3.9.0";
-
-// node_modules/.pnpm/@tensorflow+tfjs-layers@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-layers/package.json
-var version4 = "3.9.0";
-
-// node_modules/.pnpm/@tensorflow+tfjs-converter@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-converter/package.json
-var version5 = "3.9.0";
-
-// node_modules/.pnpm/@tensorflow+tfjs-backend-cpu@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-backend-cpu/package.json
-var version6 = "3.9.0";
-
-// node_modules/.pnpm/@tensorflow+tfjs-backend-webgl@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-backend-webgl/package.json
-var version7 = "3.9.0";
-
-// node_modules/.pnpm/@tensorflow+tfjs-backend-wasm@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-backend-wasm/package.json
-var version8 = "3.9.0";
-
 // node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/backends/backend.js
 var EPSILON_FLOAT32 = 1e-7;
 var EPSILON_FLOAT16 = 1e-4;
@@ -10599,7 +10575,7 @@ function encodeStrings(a) {
 }
 
 // node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/version.js
-var version9 = "3.9.0";
+var version = "3.9.0";
 
 // node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/globals.js
 function enableProdMode() {
@@ -18381,6 +18357,821 @@ for (const gradientConfig of gradConfigs) {
   registerGradient(gradientConfig);
 }
 
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/abs.js
+getGlobalTensorClass().prototype.abs = function() {
+  this.throwIfDisposed();
+  return abs(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/acos.js
+getGlobalTensorClass().prototype.acos = function() {
+  this.throwIfDisposed();
+  return acos(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/acosh.js
+getGlobalTensorClass().prototype.acosh = function() {
+  this.throwIfDisposed();
+  return acosh(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/add.js
+getGlobalTensorClass().prototype.add = function(b) {
+  this.throwIfDisposed();
+  return add2(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/all.js
+getGlobalTensorClass().prototype.all = function(axis, keepDims) {
+  this.throwIfDisposed();
+  return all(this, axis, keepDims);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/any.js
+getGlobalTensorClass().prototype.any = function(axis, keepDims) {
+  this.throwIfDisposed();
+  return any(this, axis, keepDims);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/arg_max.js
+getGlobalTensorClass().prototype.argMax = function(axis) {
+  this.throwIfDisposed();
+  return argMax(this, axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/arg_min.js
+getGlobalTensorClass().prototype.argMin = function(axis) {
+  this.throwIfDisposed();
+  return argMin(this, axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/as_scalar.js
+getGlobalTensorClass().prototype.asScalar = function() {
+  this.throwIfDisposed();
+  assert(this.size === 1, () => "The array must have only 1 element.");
+  return reshape(this, []);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/as_type.js
+getGlobalTensorClass().prototype.asType = function(dtype) {
+  this.throwIfDisposed();
+  return cast(this, dtype);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/as1d.js
+getGlobalTensorClass().prototype.as1D = function() {
+  this.throwIfDisposed();
+  return reshape(this, [this.size]);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/as2d.js
+getGlobalTensorClass().prototype.as2D = function(rows, columns) {
+  this.throwIfDisposed();
+  return reshape(this, [rows, columns]);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/as3d.js
+getGlobalTensorClass().prototype.as3D = function(rows, columns, depth) {
+  this.throwIfDisposed();
+  return reshape(this, [rows, columns, depth]);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/as4d.js
+getGlobalTensorClass().prototype.as4D = function(rows, columns, depth, depth2) {
+  this.throwIfDisposed();
+  return reshape(this, [rows, columns, depth, depth2]);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/as5d.js
+getGlobalTensorClass().prototype.as5D = function(rows, columns, depth, depth2, depth3) {
+  this.throwIfDisposed();
+  return reshape(this, [rows, columns, depth, depth2, depth3]);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/asin.js
+getGlobalTensorClass().prototype.asin = function() {
+  this.throwIfDisposed();
+  return asin(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/asinh.js
+getGlobalTensorClass().prototype.asinh = function() {
+  this.throwIfDisposed();
+  return asinh(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/atan.js
+getGlobalTensorClass().prototype.atan = function() {
+  this.throwIfDisposed();
+  return atan(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/atan2.js
+getGlobalTensorClass().prototype.atan2 = function(b) {
+  this.throwIfDisposed();
+  return atan2(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/atanh.js
+getGlobalTensorClass().prototype.atanh = function() {
+  this.throwIfDisposed();
+  return atanh(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/avg_pool.js
+getGlobalTensorClass().prototype.avgPool = function(filterSize, strides, pad3, dimRoundingMode) {
+  this.throwIfDisposed();
+  return avgPool(this, filterSize, strides, pad3, dimRoundingMode);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/batch_to_space_nd.js
+getGlobalTensorClass().prototype.batchToSpaceND = function(blockShape, crops) {
+  this.throwIfDisposed();
+  return batchToSpaceND(this, blockShape, crops);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/batchnorm.js
+getGlobalTensorClass().prototype.batchNorm = function(mean4, variance, offset, scale2, varianceEpsilon) {
+  this.throwIfDisposed();
+  return batchNorm(this, mean4, variance, offset, scale2, varianceEpsilon);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/broadcast_to.js
+getGlobalTensorClass().prototype.broadcastTo = function(shape) {
+  this.throwIfDisposed();
+  return broadcastTo(this, shape);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/cast.js
+getGlobalTensorClass().prototype.cast = function(dtype) {
+  this.throwIfDisposed();
+  return cast(this, dtype);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/ceil.js
+getGlobalTensorClass().prototype.ceil = function() {
+  this.throwIfDisposed();
+  return ceil(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/clip_by_value.js
+getGlobalTensorClass().prototype.clipByValue = function(min6, max6) {
+  this.throwIfDisposed();
+  return clipByValue(this, min6, max6);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/concat.js
+getGlobalTensorClass().prototype.concat = function(x, axis) {
+  this.throwIfDisposed();
+  if (x instanceof Tensor) {
+    x = [x];
+  }
+  return concat([this, ...x], axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/conv1d.js
+getGlobalTensorClass().prototype.conv1d = function(filter, stride, pad3, dataFormat, dilation, dimRoundingMode) {
+  this.throwIfDisposed();
+  return conv1d(this, filter, stride, pad3, dataFormat, dilation, dimRoundingMode);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/conv2d_transpose.js
+getGlobalTensorClass().prototype.conv2dTranspose = function(filter, outputShape, strides, pad3, dimRoundingMode) {
+  this.throwIfDisposed();
+  return conv2dTranspose(this, filter, outputShape, strides, pad3, dimRoundingMode);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/conv2d.js
+getGlobalTensorClass().prototype.conv2d = function(filter, strides, pad3, dataFormat, dilations, dimRoundingMode) {
+  this.throwIfDisposed();
+  return conv2d(this, filter, strides, pad3, dataFormat, dilations, dimRoundingMode);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/cos.js
+getGlobalTensorClass().prototype.cos = function() {
+  this.throwIfDisposed();
+  return cos(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/cosh.js
+getGlobalTensorClass().prototype.cosh = function() {
+  this.throwIfDisposed();
+  return cosh(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/cumsum.js
+getGlobalTensorClass().prototype.cumsum = function(axis, exclusive, reverse5) {
+  this.throwIfDisposed();
+  return cumsum(this, axis, exclusive, reverse5);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/depth_to_space.js
+getGlobalTensorClass().prototype.depthToSpace = function(blockSize, dataFormat) {
+  this.throwIfDisposed();
+  return depthToSpace(this, blockSize, dataFormat);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/depthwise_conv2d.js
+getGlobalTensorClass().prototype.depthwiseConv2d = function(filter, strides, pad3, dataFormat, dilations, dimRoundingMode) {
+  this.throwIfDisposed();
+  return depthwiseConv2d(this, filter, strides, pad3, dataFormat, dilations, dimRoundingMode);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/dilation2d.js
+getGlobalTensorClass().prototype.dilation2d = function(filter, strides, pad3, dilations, dataFormat) {
+  this.throwIfDisposed();
+  return dilation2d(this, filter, strides, pad3, dilations, dataFormat);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/div_no_nan.js
+getGlobalTensorClass().prototype.divNoNan = function(b) {
+  this.throwIfDisposed();
+  return divNoNan(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/div.js
+getGlobalTensorClass().prototype.div = function(b) {
+  this.throwIfDisposed();
+  return div(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/dot.js
+getGlobalTensorClass().prototype.dot = function(b) {
+  this.throwIfDisposed();
+  return dot(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/elu.js
+getGlobalTensorClass().prototype.elu = function() {
+  this.throwIfDisposed();
+  return elu(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/equal.js
+getGlobalTensorClass().prototype.equal = function(b) {
+  this.throwIfDisposed();
+  return equal(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/erf.js
+getGlobalTensorClass().prototype.erf = function() {
+  this.throwIfDisposed();
+  return erf(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/exp.js
+getGlobalTensorClass().prototype.exp = function() {
+  this.throwIfDisposed();
+  return exp(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/expand_dims.js
+getGlobalTensorClass().prototype.expandDims = function(axis) {
+  this.throwIfDisposed();
+  return expandDims(this, axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/expm1.js
+getGlobalTensorClass().prototype.expm1 = function() {
+  this.throwIfDisposed();
+  return expm1(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/fft.js
+getGlobalTensorClass().prototype.fft = function() {
+  this.throwIfDisposed();
+  return fft(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/flatten.js
+getGlobalTensorClass().prototype.flatten = function() {
+  this.throwIfDisposed();
+  return reshape(this, [this.size]);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/floor.js
+getGlobalTensorClass().prototype.floor = function() {
+  this.throwIfDisposed();
+  return floor(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/floorDiv.js
+getGlobalTensorClass().prototype.floorDiv = function(b) {
+  this.throwIfDisposed();
+  return floorDiv(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/gather.js
+getGlobalTensorClass().prototype.gather = function(indices, axis) {
+  this.throwIfDisposed();
+  return gather(this, indices, axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/greater_equal.js
+getGlobalTensorClass().prototype.greaterEqual = function(b) {
+  this.throwIfDisposed();
+  return greaterEqual(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/greater.js
+getGlobalTensorClass().prototype.greater = function(b) {
+  this.throwIfDisposed();
+  return greater(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/ifft.js
+getGlobalTensorClass().prototype.ifft = function() {
+  this.throwIfDisposed();
+  return ifft(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/irfft.js
+getGlobalTensorClass().prototype.irfft = function() {
+  this.throwIfDisposed();
+  return irfft(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/is_finite.js
+getGlobalTensorClass().prototype.isFinite = function() {
+  this.throwIfDisposed();
+  return isFinite2(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/is_inf.js
+getGlobalTensorClass().prototype.isInf = function() {
+  this.throwIfDisposed();
+  return isInf(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/is_nan.js
+getGlobalTensorClass().prototype.isNaN = function() {
+  this.throwIfDisposed();
+  return isNaN2(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/leaky_relu.js
+getGlobalTensorClass().prototype.leakyRelu = function(alpha) {
+  this.throwIfDisposed();
+  return leakyRelu(this, alpha);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/less_equal.js
+getGlobalTensorClass().prototype.lessEqual = function(b) {
+  this.throwIfDisposed();
+  return lessEqual(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/less.js
+getGlobalTensorClass().prototype.less = function(b) {
+  this.throwIfDisposed();
+  return less(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/local_response_normalization.js
+getGlobalTensorClass().prototype.localResponseNormalization = function(depthRadius, bias, alpha, beta) {
+  this.throwIfDisposed();
+  return localResponseNormalization(this, depthRadius, bias, alpha, beta);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/log_sigmoid.js
+getGlobalTensorClass().prototype.logSigmoid = function() {
+  this.throwIfDisposed();
+  return logSigmoid(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/log_softmax.js
+getGlobalTensorClass().prototype.logSoftmax = function(axis) {
+  this.throwIfDisposed();
+  return logSoftmax(this, axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/log_sum_exp.js
+getGlobalTensorClass().prototype.logSumExp = function(axis, keepDims) {
+  this.throwIfDisposed();
+  return logSumExp(this, axis, keepDims);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/log.js
+getGlobalTensorClass().prototype.log = function() {
+  this.throwIfDisposed();
+  return log5(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/log1p.js
+getGlobalTensorClass().prototype.log1p = function() {
+  this.throwIfDisposed();
+  return log1p(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/logical_and.js
+getGlobalTensorClass().prototype.logicalAnd = function(b) {
+  this.throwIfDisposed();
+  return logicalAnd(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/logical_not.js
+getGlobalTensorClass().prototype.logicalNot = function() {
+  this.throwIfDisposed();
+  return logicalNot(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/logical_or.js
+getGlobalTensorClass().prototype.logicalOr = function(b) {
+  this.throwIfDisposed();
+  return logicalOr(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/logical_xor.js
+getGlobalTensorClass().prototype.logicalXor = function(b) {
+  this.throwIfDisposed();
+  return logicalXor(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/mat_mul.js
+getGlobalTensorClass().prototype.matMul = function(b, transposeA, transposeB) {
+  this.throwIfDisposed();
+  return matMul(this, b, transposeA, transposeB);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/max_pool.js
+getGlobalTensorClass().prototype.maxPool = function(filterSize, strides, pad3, dimRoundingMode) {
+  this.throwIfDisposed();
+  return maxPool(this, filterSize, strides, pad3, dimRoundingMode);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/max.js
+getGlobalTensorClass().prototype.max = function(axis, keepDims) {
+  this.throwIfDisposed();
+  return max(this, axis, keepDims);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/maximum.js
+getGlobalTensorClass().prototype.maximum = function(b) {
+  this.throwIfDisposed();
+  return maximum(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/mean.js
+getGlobalTensorClass().prototype.mean = function(axis, keepDims) {
+  this.throwIfDisposed();
+  return mean(this, axis, keepDims);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/min.js
+getGlobalTensorClass().prototype.min = function(axis, keepDims) {
+  this.throwIfDisposed();
+  return min(this, axis, keepDims);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/minimum.js
+getGlobalTensorClass().prototype.minimum = function(b) {
+  this.throwIfDisposed();
+  return minimum(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/mirror_pad.js
+getGlobalTensorClass().prototype.mirrorPad = function(paddings, mode) {
+  this.throwIfDisposed();
+  return mirrorPad(this, paddings, mode);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/mod.js
+getGlobalTensorClass().prototype.mod = function(b) {
+  this.throwIfDisposed();
+  return mod(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/mul.js
+getGlobalTensorClass().prototype.mul = function(b) {
+  this.throwIfDisposed();
+  return mul(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/neg.js
+getGlobalTensorClass().prototype.neg = function() {
+  this.throwIfDisposed();
+  return neg(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/norm.js
+getGlobalTensorClass().prototype.norm = function(ord, axis, keepDims) {
+  this.throwIfDisposed();
+  return norm(this, ord, axis, keepDims);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/not_equal.js
+getGlobalTensorClass().prototype.notEqual = function(b) {
+  this.throwIfDisposed();
+  return notEqual(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/one_hot.js
+getGlobalTensorClass().prototype.oneHot = function(depth, onValue = 1, offValue = 0) {
+  this.throwIfDisposed();
+  return oneHot(this, depth, onValue, offValue);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/ones_like.js
+getGlobalTensorClass().prototype.onesLike = function() {
+  this.throwIfDisposed();
+  return onesLike(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/pad.js
+getGlobalTensorClass().prototype.pad = function(paddings, constantValue) {
+  this.throwIfDisposed();
+  return pad(this, paddings, constantValue);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/pool.js
+getGlobalTensorClass().prototype.pool = function(windowShape, poolingType, padding, dilationRate, strides) {
+  this.throwIfDisposed();
+  return pool(this, windowShape, poolingType, padding, dilationRate, strides);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/pow.js
+getGlobalTensorClass().prototype.pow = function(exp4) {
+  this.throwIfDisposed();
+  return pow(this, exp4);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/prelu.js
+getGlobalTensorClass().prototype.prelu = function(alpha) {
+  this.throwIfDisposed();
+  return prelu(this, alpha);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/prod.js
+getGlobalTensorClass().prototype.prod = function(axis, keepDims) {
+  this.throwIfDisposed();
+  return prod(this, axis, keepDims);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/reciprocal.js
+getGlobalTensorClass().prototype.reciprocal = function() {
+  this.throwIfDisposed();
+  return reciprocal(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/relu.js
+getGlobalTensorClass().prototype.relu = function() {
+  this.throwIfDisposed();
+  return relu(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/relu6.js
+getGlobalTensorClass().prototype.relu6 = function() {
+  this.throwIfDisposed();
+  return relu6(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/reshape_as.js
+getGlobalTensorClass().prototype.reshapeAs = function(x) {
+  this.throwIfDisposed();
+  return reshape(this, x.shape);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/reshape.js
+getGlobalTensorClass().prototype.reshape = function(shape) {
+  this.throwIfDisposed();
+  return reshape(this, shape);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/resize_bilinear.js
+getGlobalTensorClass().prototype.resizeBilinear = function(newShape2D, alignCorners, halfPixelCenters) {
+  this.throwIfDisposed();
+  return resizeBilinear(this, newShape2D, alignCorners, halfPixelCenters);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/resize_nearest_neighbor.js
+getGlobalTensorClass().prototype.resizeNearestNeighbor = function(newShape2D, alignCorners, halfFloatCenters) {
+  this.throwIfDisposed();
+  return resizeNearestNeighbor(this, newShape2D, alignCorners, halfFloatCenters);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/reverse.js
+getGlobalTensorClass().prototype.reverse = function(axis) {
+  this.throwIfDisposed();
+  return reverse(this, axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/rfft.js
+getGlobalTensorClass().prototype.rfft = function() {
+  this.throwIfDisposed();
+  return rfft(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/round.js
+getGlobalTensorClass().prototype.round = function() {
+  this.throwIfDisposed();
+  return round2(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/rsqrt.js
+getGlobalTensorClass().prototype.rsqrt = function() {
+  this.throwIfDisposed();
+  return rsqrt(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/selu.js
+getGlobalTensorClass().prototype.selu = function() {
+  this.throwIfDisposed();
+  return selu(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/separable_conv2d.js
+getGlobalTensorClass().prototype.separableConv2d = function(depthwiseFilter, pointwiseFilter, strides, pad3, dilation, dataFormat) {
+  this.throwIfDisposed();
+  return separableConv2d(this, depthwiseFilter, pointwiseFilter, strides, pad3, dilation, dataFormat);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/sigmoid.js
+getGlobalTensorClass().prototype.sigmoid = function() {
+  this.throwIfDisposed();
+  return sigmoid(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/sign.js
+getGlobalTensorClass().prototype.sign = function() {
+  this.throwIfDisposed();
+  return sign(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/sin.js
+getGlobalTensorClass().prototype.sin = function() {
+  this.throwIfDisposed();
+  return sin(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/sinh.js
+getGlobalTensorClass().prototype.sinh = function() {
+  this.throwIfDisposed();
+  return sinh(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/slice.js
+getGlobalTensorClass().prototype.slice = function(begin, size) {
+  this.throwIfDisposed();
+  return slice(this, begin, size);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/softmax.js
+getGlobalTensorClass().prototype.softmax = function(dim) {
+  this.throwIfDisposed();
+  return softmax(this, dim);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/softplus.js
+getGlobalTensorClass().prototype.softplus = function() {
+  this.throwIfDisposed();
+  return softplus(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/space_to_batch_nd.js
+getGlobalTensorClass().prototype.spaceToBatchND = function(blockShape, paddings) {
+  this.throwIfDisposed();
+  return spaceToBatchND(this, blockShape, paddings);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/split.js
+getGlobalTensorClass().prototype.split = function(numOrSizeSplits, axis) {
+  this.throwIfDisposed();
+  return split(this, numOrSizeSplits, axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/sqrt.js
+getGlobalTensorClass().prototype.sqrt = function() {
+  this.throwIfDisposed();
+  return sqrt(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/square.js
+getGlobalTensorClass().prototype.square = function() {
+  this.throwIfDisposed();
+  return square(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/squared_difference.js
+getGlobalTensorClass().prototype.squaredDifference = function(b) {
+  this.throwIfDisposed();
+  return squaredDifference(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/squeeze.js
+getGlobalTensorClass().prototype.squeeze = function(axis) {
+  this.throwIfDisposed();
+  return squeeze(this, axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/stack.js
+getGlobalTensorClass().prototype.stack = function(x, axis) {
+  this.throwIfDisposed();
+  const tensorsToBeStacked = x instanceof Tensor ? [this, x] : [this, ...x];
+  return stack(tensorsToBeStacked, axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/step.js
+getGlobalTensorClass().prototype.step = function(alpha) {
+  this.throwIfDisposed();
+  return step(this, alpha);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/strided_slice.js
+getGlobalTensorClass().prototype.stridedSlice = function(begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask) {
+  this.throwIfDisposed();
+  return stridedSlice(this, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/sub.js
+getGlobalTensorClass().prototype.sub = function(b) {
+  this.throwIfDisposed();
+  return sub(this, b);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/sum.js
+getGlobalTensorClass().prototype.sum = function(axis, keepDims) {
+  this.throwIfDisposed();
+  return sum2(this, axis, keepDims);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/tan.js
+getGlobalTensorClass().prototype.tan = function() {
+  this.throwIfDisposed();
+  return tan(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/tanh.js
+getGlobalTensorClass().prototype.tanh = function() {
+  this.throwIfDisposed();
+  return tanh2(this);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/tile.js
+getGlobalTensorClass().prototype.tile = function(reps) {
+  this.throwIfDisposed();
+  return tile(this, reps);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/to_bool.js
+getGlobalTensorClass().prototype.toBool = function() {
+  this.throwIfDisposed();
+  return cast(this, "bool");
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/to_float.js
+getGlobalTensorClass().prototype.toFloat = function() {
+  this.throwIfDisposed();
+  return cast(this, "float32");
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/to_int.js
+getGlobalTensorClass().prototype.toInt = function() {
+  this.throwIfDisposed();
+  return cast(this, "int32");
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/topk.js
+getGlobalTensorClass().prototype.topk = function(k, sorted) {
+  this.throwIfDisposed();
+  return topk(this, k, sorted);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/transpose.js
+getGlobalTensorClass().prototype.transpose = function(perm) {
+  this.throwIfDisposed();
+  return transpose(this, perm);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/unique.js
+getGlobalTensorClass().prototype.unique = function(axis) {
+  this.throwIfDisposed();
+  return unique(this, axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/unsorted_segment_sum.js
+getGlobalTensorClass().prototype.unsortedSegmentSum = function(segmentIds, numSegments) {
+  this.throwIfDisposed();
+  return unsortedSegmentSum(this, segmentIds, numSegments);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/unstack.js
+getGlobalTensorClass().prototype.unstack = function(axis) {
+  this.throwIfDisposed();
+  return unstack(this, axis);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/where.js
+getGlobalTensorClass().prototype.where = function(condition, x) {
+  this.throwIfDisposed();
+  return where(condition, this, x);
+};
+
+// node_modules/.pnpm/@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-core/dist/public/chained_ops/zeros_like.js
+getGlobalTensorClass().prototype.zerosLike = function() {
+  this.throwIfDisposed();
+  return zerosLike(this);
+};
+
 // node_modules/.pnpm/@tensorflow+tfjs-layers@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-layers/dist/exports_constraints.js
 var exports_constraints_exports = {};
 __export(exports_constraints_exports, {
@@ -21526,7 +22317,7 @@ function convertTsToPythonic(tsConfig, key) {
 }
 
 // node_modules/.pnpm/@tensorflow+tfjs-layers@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-layers/dist/version.js
-var version10 = "3.9.0";
+var version2 = "3.9.0";
 
 // node_modules/.pnpm/@tensorflow+tfjs-layers@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-layers/dist/engine/executor.js
 function assertFeedCompatibility(key, val) {
@@ -22134,7 +22925,7 @@ var Container = class extends Layer {
     const modelConfig = {};
     modelConfig["className"] = this.getClassName();
     modelConfig["config"] = theConfig;
-    modelConfig["kerasVersion"] = `tfjs-layers ${version10}`;
+    modelConfig["kerasVersion"] = `tfjs-layers ${version2}`;
     modelConfig["backend"] = "TensorFlow.js";
     return modelConfig;
   }
@@ -23934,7 +24725,7 @@ var LayersModel = class extends Container {
     const modelArtifacts = {
       modelTopology: modelConfig,
       format: LAYERS_MODEL_FORMAT_NAME,
-      generatedBy: `TensorFlow.js tfjs-layers v${version10}`,
+      generatedBy: `TensorFlow.js tfjs-layers v${version2}`,
       convertedBy: null
     };
     const includeOptimizer = config == null ? false : config.includeOptimizer;
@@ -35711,7 +36502,7 @@ async function loadGraphModel(modelUrl, options = {}) {
 }
 
 // node_modules/.pnpm/@tensorflow+tfjs-converter@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-converter/dist/version.js
-var version11 = "3.9.0";
+var version3 = "3.9.0";
 
 // node_modules/.pnpm/@tensorflow+tfjs-data@3.9.0_470c05e138890ee649df8440b2dfddf4/node_modules/@tensorflow/tfjs-data/dist/index.js
 var dist_exports = {};
@@ -35726,7 +36517,7 @@ __export(dist_exports, {
   func: () => func,
   generator: () => generator,
   microphone: () => microphone,
-  version_data: () => version12,
+  version_data: () => version4,
   webcam: () => webcam,
   zip: () => zip
 });
@@ -37486,7 +38277,7 @@ async function microphone(microphoneConfig) {
 }
 
 // node_modules/.pnpm/@tensorflow+tfjs-data@3.9.0_470c05e138890ee649df8440b2dfddf4/node_modules/@tensorflow/tfjs-data/dist/version.js
-var version12 = "3.9.0";
+var version4 = "3.9.0";
 
 // node_modules/.pnpm/@tensorflow+tfjs-backend-cpu@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-backend-cpu/dist/cpu_util.js
 function assertNotComplex(tensor2, opName) {
@@ -39092,9 +39883,6 @@ function uniqueImpl(values, axis, shape, dtype) {
     indices
   };
 }
-
-// node_modules/.pnpm/@tensorflow+tfjs-backend-cpu@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-backend-cpu/dist/version.js
-var version13 = "3.9.0";
 
 // node_modules/.pnpm/@tensorflow+tfjs-backend-cpu@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-backend-cpu/dist/base.js
 registerBackend("cpu", () => new MathBackendCPU(), 1);
@@ -44667,7 +45455,7 @@ ENV3.registerFlag("TOPK_K_CPU_HANDOFF_THRESHOLD", () => 128);
 
 // node_modules/.pnpm/@tensorflow+tfjs-backend-webgl@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-backend-webgl/dist/glsl_version.js
 function getGlslDifferences() {
-  let version17;
+  let version10;
   let attribute;
   let varyingVs;
   let varyingFs;
@@ -44678,7 +45466,7 @@ function getGlslDifferences() {
   let defineSpecialInf;
   let defineRound;
   if (env().getNumber("WEBGL_VERSION") === 2) {
-    version17 = "#version 300 es";
+    version10 = "#version 300 es";
     attribute = "in";
     varyingVs = "out";
     varyingFs = "in";
@@ -44709,7 +45497,7 @@ function getGlslDifferences() {
       }
     `;
   } else {
-    version17 = "";
+    version10 = "";
     attribute = "attribute";
     varyingVs = "varying";
     varyingFs = "varying";
@@ -44746,7 +45534,7 @@ function getGlslDifferences() {
     `;
   }
   return {
-    version: version17,
+    version: version10,
     attribute,
     varyingVs,
     varyingFs,
@@ -48675,7 +49463,7 @@ function float32ToTypedArray(a, dtype) {
 }
 
 // node_modules/.pnpm/@tensorflow+tfjs-backend-webgl@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-backend-webgl/dist/version.js
-var version14 = "3.9.0";
+var version5 = "3.9.0";
 
 // node_modules/.pnpm/@tensorflow+tfjs-backend-webgl@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-backend-webgl/dist/webgl.js
 function forceHalfFloat() {
@@ -61416,7 +62204,7 @@ function setWasmPaths(prefixOrFileMap, usePlatformFetch = false) {
 }
 
 // node_modules/.pnpm/@tensorflow+tfjs-backend-wasm@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-backend-wasm/dist/version.js
-var version15 = "3.9.0";
+var version8 = "3.9.0";
 
 // node_modules/.pnpm/@tensorflow+tfjs-backend-wasm@3.9.0_@tensorflow+tfjs-core@3.9.0/node_modules/@tensorflow/tfjs-backend-wasm/dist/base.js
 var WASM_PRIORITY = 2;
@@ -61425,16 +62213,24 @@ registerBackend("wasm", async () => {
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
 
-// tfjs/tf-browser.ts
-var version16 = {
-  tfjs: version,
-  "tfjs-core": version2,
-  "tfjs-data": version3,
-  "tfjs-layers": version4,
-  "tfjs-converter": version5,
-  "tfjs-backend-cpu": version6,
-  "tfjs-backend-webgl": version7,
-  "tfjs-backend-wasm": version8
+// dist/tfjs.version.js
+var version9 = "3.9.0";
+var version22 = "3.9.0";
+var version32 = "3.9.0";
+var version42 = "3.9.0";
+var version52 = "3.9.0";
+var version62 = "3.9.0";
+var version72 = "3.9.0";
+var version82 = "3.9.0";
+var version92 = {
+  tfjs: version9,
+  "tfjs-core": version22,
+  "tfjs-data": version32,
+  "tfjs-layers": version42,
+  "tfjs-converter": version52,
+  "tfjs-backend-cpu": version62,
+  "tfjs-backend-webgl": version72,
+  "tfjs-backend-wasm": version82
 };
 export {
   Abs,
@@ -61543,7 +62339,6 @@ export {
   LogicalAnd,
   LogicalNot,
   LogicalOr,
-  MathBackendCPU,
   MathBackendWebGL,
   Max,
   MaxPool,
@@ -61853,7 +62648,6 @@ export {
   setWasmPaths,
   setWebGLContext,
   setdiff1dAsync,
-  shared_exports as shared,
   sigmoid,
   sign,
   signal,
@@ -61912,13 +62706,12 @@ export {
   valueAndGrads,
   variable,
   variableGrads,
-  version16 as version,
-  version11 as version_converter,
-  version9 as version_core,
-  version13 as version_cpu,
-  version10 as version_layers,
-  version15 as version_wasm,
-  version14 as version_webgl,
+  version92 as version,
+  version3 as version_converter,
+  version as version_core,
+  version2 as version_layers,
+  version8 as version_wasm,
+  version5 as version_webgl,
   webgl,
   webgl_util_exports as webgl_util,
   where,

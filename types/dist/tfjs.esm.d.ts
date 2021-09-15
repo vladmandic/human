@@ -861,70 +861,6 @@ export var LogSoftmax: string;
 export var LogicalAnd: string;
 export var LogicalNot: string;
 export var LogicalOr: string;
-export var MathBackendCPU: {
-    new (): {
-        blockSize: number;
-        firstUse: boolean;
-        data: {
-            backend: any;
-            dataMover: any;
-            data: WeakMap<object, any>;
-            dataIdsCount: number;
-            get(dataId: any): any;
-            set(dataId: any, value: any): void;
-            has(dataId: any): boolean;
-            delete(dataId: any): boolean;
-            numDataIds(): number;
-        };
-        nextDataId(): number;
-        write(values: any, shape: any, dtype: any): {
-            id: number;
-        };
-        makeTensorInfo(shape: any, dtype: any, values: any): {
-            dataId: {
-                id: number;
-            };
-            shape: any;
-            dtype: any;
-        };
-        refCount(dataId: any): any;
-        incRef(dataId: any): void;
-        decRef(dataId: any): void;
-        move(dataId: any, values: any, shape: any, dtype: any, refCount: any): void;
-        numDataIds(): number;
-        read(dataId: any): Promise<any>;
-        readSync(dataId: any): any;
-        bufferSync(t: any): {
-            dtype: any;
-            shape: any;
-            size: any;
-            values: any;
-            strides: any[];
-            set(value: any, ...locs: any[]): void;
-            get(...locs: any[]): any;
-            locToIndex(locs: any): any;
-            indexToLoc(index: any): any[];
-            readonly rank: any;
-            toTensor(): any;
-        };
-        makeOutput(values: any, shape: any, dtype: any): any;
-        disposeData(dataId: any, force?: boolean): boolean;
-        disposeIntermediateTensorInfo(tensorInfo: any): void;
-        time(f: any): Promise<{
-            kernelMs: number;
-        }>;
-        memory(): {
-            unreliable: boolean;
-            reasons: string[];
-        };
-        where(condition: any): any;
-        dispose(): void;
-        floatPrecision(): number;
-        epsilon(): number;
-        timerAvailable(): boolean;
-    };
-    nextDataId: number;
-};
 export var MathBackendWebGL: {
     new (gpgpu: any): {
         pendingRead: WeakMap<object, any>;
@@ -2070,7 +2006,6 @@ export function setWasmPath(path: any, usePlatformFetch?: boolean): void;
 export function setWasmPaths(prefixOrFileMap: any, usePlatformFetch?: boolean): void;
 export function setWebGLContext(webGLVersion: any, gl: any): void;
 export function setdiff1dAsync(x: any, y: any): Promise<any[]>;
-declare var shared_exports: {};
 export function sigmoid(...args: any[]): any;
 export namespace sigmoid { }
 export function sign(...args: any[]): any;
@@ -2201,7 +2136,7 @@ export function variableGrads(f: any, varList: any): {
     value: any;
     grads: {};
 };
-declare var version16: {
+declare var version92: {
     tfjs: string;
     "tfjs-core": string;
     "tfjs-data": string;
@@ -2211,12 +2146,11 @@ declare var version16: {
     "tfjs-backend-webgl": string;
     "tfjs-backend-wasm": string;
 };
-declare var version11: string;
-declare var version9: string;
-declare var version13: string;
-declare var version10: string;
-declare var version15: string;
-declare var version14: string;
+declare var version3: string;
+declare var version: string;
+declare var version2: string;
+declare var version8: string;
+declare var version5: string;
 export namespace webgl {
     export { forceHalfFloat };
 }
@@ -2634,5 +2568,5 @@ declare var OptimizerConstructors: {
         getClassName(): any;
     };
 };
-export { add2 as add, backend_util_exports as backend_util, browser_exports as browser, exports_constraints_exports as constraints, dist_exports as data, device_util_exports as device_util, fused_ops_exports as fused, gather_nd_util_exports as gather_util, gpgpu_util_exports as gpgpu_util, exports_initializers_exports as initializers, io_exports as io, isFinite2 as isFinite, isNaN2 as isNaN, kernel_impls_exports as kernel_impls, exports_layers_exports as layers, log5 as log, math_exports as math, exports_metrics_exports as metrics, exports_models_exports as models, ones2 as ones, print2 as print, exports_regularizers_exports as regularizers, round2 as round, scatter_nd_util_exports as scatter_util, serialization_exports as serialization, shared_exports as shared, slice_util_exports as slice_util, sum2 as sum, tanh2 as tanh, tensor_util_exports as tensor_util, test_util_exports as test_util, util_exports as util, version16 as version, version11 as version_converter, version9 as version_core, version13 as version_cpu, version10 as version_layers, version15 as version_wasm, version14 as version_webgl, webgl_util_exports as webgl_util };
+export { add2 as add, backend_util_exports as backend_util, browser_exports as browser, exports_constraints_exports as constraints, dist_exports as data, device_util_exports as device_util, fused_ops_exports as fused, gather_nd_util_exports as gather_util, gpgpu_util_exports as gpgpu_util, exports_initializers_exports as initializers, io_exports as io, isFinite2 as isFinite, isNaN2 as isNaN, kernel_impls_exports as kernel_impls, exports_layers_exports as layers, log5 as log, math_exports as math, exports_metrics_exports as metrics, exports_models_exports as models, ones2 as ones, print2 as print, exports_regularizers_exports as regularizers, round2 as round, scatter_nd_util_exports as scatter_util, serialization_exports as serialization, slice_util_exports as slice_util, sum2 as sum, tanh2 as tanh, tensor_util_exports as tensor_util, test_util_exports as test_util, util_exports as util, version92 as version, version3 as version_converter, version as version_core, version2 as version_layers, version8 as version_wasm, version5 as version_webgl, webgl_util_exports as webgl_util };
 //# sourceMappingURL=tfjs.esm.d.ts.map

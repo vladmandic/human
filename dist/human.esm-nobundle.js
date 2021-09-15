@@ -190,39 +190,31 @@ var config = {
 // dist/tfjs.esm.js
 var tfjs_esm_exports = {};
 __export(tfjs_esm_exports, {
-  data: () => data,
-  version: () => version
+  version: () => version9
 });
 __reExport(tfjs_esm_exports, dist_star);
 __reExport(tfjs_esm_exports, dist_star2);
 __reExport(tfjs_esm_exports, dist_star3);
-__reExport(tfjs_esm_exports, dist_star4);
-__reExport(tfjs_esm_exports, dist_star5);
-__reExport(tfjs_esm_exports, dist_star6);
-import { version as tfjsVersion } from "@tensorflow/tfjs/package.json";
-import { version as tfjsCoreVersion } from "@tensorflow/tfjs-core/package.json";
-import { version as tfjsDataVersion } from "@tensorflow/tfjs-data/package.json";
-import { version as tfjsLayersVersion } from "@tensorflow/tfjs-layers/package.json";
-import { version as tfjsConverterVersion } from "@tensorflow/tfjs-converter/package.json";
-import { version as tfjsBackendCPUVersion } from "@tensorflow/tfjs-backend-cpu/package.json";
-import { version as tfjsBackendWebGLVersion } from "@tensorflow/tfjs-backend-webgl/package.json";
-import { version as tfjsBackendWASMVersion } from "@tensorflow/tfjs-backend-wasm/package.json";
-import * as dist_star from "@tensorflow/tfjs-core/dist/index.js";
-import * as dist_star2 from "@tensorflow/tfjs-layers/dist/index.js";
-import * as dist_star3 from "@tensorflow/tfjs-converter/dist/index.js";
-import * as data from "@tensorflow/tfjs-data/dist/index.js";
-import * as dist_star4 from "@tensorflow/tfjs-backend-cpu/dist/index.js";
-import * as dist_star5 from "@tensorflow/tfjs-backend-webgl/dist/index.js";
-import * as dist_star6 from "@tensorflow/tfjs-backend-wasm/dist/index.js";
-var version = {
-  tfjs: tfjsVersion,
-  "tfjs-core": tfjsCoreVersion,
-  "tfjs-data": tfjsDataVersion,
-  "tfjs-layers": tfjsLayersVersion,
-  "tfjs-converter": tfjsConverterVersion,
-  "tfjs-backend-cpu": tfjsBackendCPUVersion,
-  "tfjs-backend-webgl": tfjsBackendWebGLVersion,
-  "tfjs-backend-wasm": tfjsBackendWASMVersion
+import * as dist_star from "@tensorflow/tfjs/dist/index.js";
+import * as dist_star2 from "@tensorflow/tfjs-backend-webgl/dist/index.js";
+import * as dist_star3 from "@tensorflow/tfjs-backend-wasm/dist/index.js";
+var version = "3.9.0";
+var version2 = "3.9.0";
+var version3 = "3.9.0";
+var version4 = "3.9.0";
+var version5 = "3.9.0";
+var version6 = "3.9.0";
+var version7 = "3.9.0";
+var version8 = "3.9.0";
+var version9 = {
+  tfjs: version,
+  "tfjs-core": version2,
+  "tfjs-data": version3,
+  "tfjs-layers": version4,
+  "tfjs-converter": version5,
+  "tfjs-backend-cpu": version6,
+  "tfjs-backend-webgl": version7,
+  "tfjs-backend-wasm": version8
 };
 
 // src/blazeface/box.ts
@@ -4568,12 +4560,12 @@ function process2(input, config3) {
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext("2d");
         tempCtx.drawImage(outCanvas, 0, 0);
-        const data2 = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+        const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
         if (tfjs_esm_exports.browser && env.browser) {
-          pixels = tfjs_esm_exports.browser.fromPixels(data2);
+          pixels = tfjs_esm_exports.browser.fromPixels(data);
         } else {
           pixels = tfjs_esm_exports.tidy(() => {
-            const imageData = tfjs_esm_exports.tensor(Array.from(data2.data), [targetWidth, targetHeight, 4]);
+            const imageData = tfjs_esm_exports.tensor(Array.from(data.data), [targetWidth, targetHeight, 4]);
             const channels = tfjs_esm_exports.split(imageData, 4, 2);
             const rgb2 = tfjs_esm_exports.stack([channels[0], channels[1], channels[2]], 2);
             const expand = tfjs_esm_exports.reshape(rgb2, [imageData.shape[0], imageData.shape[1], 3]);
@@ -4661,7 +4653,7 @@ async function backendInfo() {
   env.webgl.supported = typeof ctx !== "undefined";
   env.webgl.backend = env.backends.includes("webgl");
   if (env.webgl.supported && env.webgl.backend) {
-    const gl = tfjs_esm_exports.backend().gpgpu !== "undefined" ? await tfjs_esm_exports.backend().getGPGPUContext().gl : null;
+    const gl = tfjs_esm_exports.backend().gpgpu !== "undefined" && tfjs_esm_exports.backend().getGPGPUContext ? await tfjs_esm_exports.backend().getGPGPUContext().gl : null;
     if (gl) {
       env.webgl.version = gl.getParameter(gl.VERSION);
       env.webgl.renderer = gl.getParameter(gl.RENDERER);
@@ -5207,11 +5199,11 @@ async function predict3(image22, config3, idx, count2) {
     const obj = [];
     if ((_a2 = config3.face.emotion) == null ? void 0 : _a2.enabled) {
       const emotionT = await model2.predict(normalize);
-      const data2 = await emotionT.data();
+      const data = await emotionT.data();
       tfjs_esm_exports.dispose(emotionT);
-      for (let i = 0; i < data2.length; i++) {
-        if (data2[i] > (((_b = config3.face.emotion) == null ? void 0 : _b.minConfidence) || 0))
-          obj.push({ score: Math.min(0.99, Math.trunc(100 * data2[i]) / 100), emotion: annotations[i] });
+      for (let i = 0; i < data.length; i++) {
+        if (data[i] > (((_b = config3.face.emotion) == null ? void 0 : _b.minConfidence) || 0))
+          obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] });
       }
       obj.sort((a, b) => b.score - a.score);
     }
@@ -10008,9 +10000,9 @@ async function predict11(input) {
   }
   tfjs_esm_exports.dispose(squeeze7);
   if (env.node) {
-    const data2 = await resizeOutput.data();
+    const data = await resizeOutput.data();
     tfjs_esm_exports.dispose(resizeOutput);
-    return data2;
+    return data;
   }
   const overlay = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(width, height) : document.createElement("canvas");
   overlay.width = width;
@@ -11274,7 +11266,7 @@ async function check(instance) {
 }
 
 // package.json
-var version2 = "2.2.0";
+var version10 = "2.2.0";
 
 // src/sample.ts
 var face3 = `
@@ -12070,9 +12062,9 @@ async function warmupNode(instance) {
     return null;
   let res;
   if (typeof tfjs_esm_exports["node"] !== "undefined") {
-    const data2 = tfjs_esm_exports["node"].decodeJpeg(img);
-    const expanded = data2.expandDims(0);
-    instance.tf.dispose(data2);
+    const data = tfjs_esm_exports["node"].decodeJpeg(img);
+    const expanded = data.expandDims(0);
+    instance.tf.dispose(data);
     res = await instance.detect(expanded, instance.config);
     instance.tf.dispose(expanded);
   } else {
@@ -12158,8 +12150,8 @@ var Human = class {
     config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfjs_esm_exports.version_core}/dist/`;
     config.modelBasePath = this.env.browser ? "../models/" : "file://models/";
     config.backend = this.env.browser ? "humangl" : "tensorflow";
-    this.version = version2;
-    Object.defineProperty(this, "version", { value: version2 });
+    this.version = version10;
+    Object.defineProperty(this, "version", { value: version10 });
     this.config = mergeDeep(config, userConfig || {});
     this.tf = tfjs_esm_exports;
     this.draw = draw_exports;

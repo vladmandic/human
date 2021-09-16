@@ -36,11 +36,12 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 
 ## Demos
 
-- [**Main Application**](https://vladmandic.github.io/human/demo/index.html)
-- [**Face Extraction, Description, Identification and Matching**](https://vladmandic.github.io/human/demo/facematch/index.html)
-- [**Face Extraction and 3D Rendering**](https://vladmandic.github.io/human/demo/face3d/index.html)
-- [**Multithreaded Detection Showcasing Maximum Performance**](https://vladmandic.github.io/human/demo/multithread/index.html)
-- [**Documentation for Demo Applications**](https://github.com/vladmandic/human/wiki/Demos)
+- [**List of all Demo applications**](https://github.com/vladmandic/human/wiki/Demos)
+- [*Live:* **Main Application**](https://vladmandic.github.io/human/demo/index.html)
+- [*Live:* **Face Extraction, Description, Identification and Matching**](https://vladmandic.github.io/human/demo/facematch/index.html)
+- [*Live:* **Face Extraction and 3D Rendering**](https://vladmandic.github.io/human/demo/face3d/index.html)
+- [*Live:* **Multithreaded Detection Showcasing Maximum Performance**](https://vladmandic.github.io/human/demo/multithread/index.html)
+- [*Live:* **VR Model with Head, Face, Eye, Body and Hand tracking**](https://vladmandic.github.io/human-vrm/src/human-vrm.html)
 
 ## Project pages
 
@@ -125,6 +126,11 @@ All options as presented in the demo application...
 
 **Large Group:**  
 ![Group](assets/screenshot-group.jpg)
+
+<br>
+
+**VR Model Tracking:**  
+![vrmodel](assets/screenshot-vrm.jpg)
 
 <br>
 

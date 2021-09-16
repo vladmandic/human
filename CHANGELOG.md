@@ -9,8 +9,13 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/15 mandic00@live.com
+### **2.2.1** 2021/09/16 mandic00@live.com
 
+
+### **origin/main** 2021/09/16 mandic00@live.com
+
+- all tests passing
+- redefine draw helpers interface
 - add simple webcam and webrtc demo
 - added visual results browser to demo
 - reorganize tfjs bundle

@@ -11259,7 +11259,7 @@ async function check(instance) {
 }
 
 // package.json
-var version10 = "2.2.0";
+var version10 = "2.2.1";
 
 // src/sample.ts
 var face3 = `

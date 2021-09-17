@@ -43,13 +43,14 @@ export { env } from './env';
 export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 
 /** Events dispatched by `human.events`
+ *
  * - `create`: triggered when Human object is instantiated
  * - `load`: triggered when models are loaded (explicitly or on-demand)
  * - `image`: triggered when input image is this.processed
  * - `result`: triggered when detection is complete
  * - `warmup`: triggered when warmup is complete
  */
-export type Events = 'create' | 'load' | 'image' | 'result' | 'warmup';
+export type Events = 'create' | 'load' | 'image' | 'result' | 'warmup' | 'error';
 
 /** Error message
  * @typedef Error Type
@@ -61,8 +62,7 @@ export type Error = { error: string };
  */
 export type TensorFlow = typeof tf;
 
-/**
- * **Human** library main class
+/** **Human** library main class
  *
  * All methods and properties are available only as members of Human class
  *
@@ -71,6 +71,7 @@ export type TensorFlow = typeof tf;
  * - Possible inputs: {@link Input}
  *
  * @param userConfig: {@link Config}
+ * @return instance
  */
 export class Human {
   /** Current version of Human library in *semver* format */
@@ -95,14 +96,13 @@ export class Human {
   /** currenty processed image tensor and canvas */
   process: { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null };
 
-  /** @internal: Instance of TensorFlow/JS used by Human
-   * - Can be embedded or externally provided
+  /** Instance of TensorFlow/JS used by Human
+   *  - Can be embedded or externally provided
+   * @internal
    */
   tf: TensorFlow;
 
-  /**
-   * Object containing environment information used for diagnostics
-   */
+  /** Object containing environment information used for diagnostics */
   env: env.Env;
 
   /** Draw helper classes that can draw detected objects on canvas using specified draw
@@ -113,10 +113,11 @@ export class Human {
    * - canvas: draw this.processed canvas which is a this.processed copy of the input
    * - all: meta-function that performs: canvas, face, body, hand
    */
-  // draw: typeof draw;
   draw: { canvas, face, body, hand, gesture, object, person, all, options: DrawOptions };
 
-  /** @internal: Currently loaded models */
+  /** Currently loaded models
+   * @internal
+  */
   models: {
     face: [unknown, GraphModel | null, GraphModel | null] | null,
     posenet: GraphModel | null,
@@ -142,6 +143,7 @@ export class Human {
    * - `image`: triggered when input image is this.processed
    * - `result`: triggered when detection is complete
    * - `warmup`: triggered when warmup is complete
+   * - `error`: triggered on some errors
    */
   events: EventTarget;
   /** Reference face triangualtion array of 468 points, used for triangle references between points */
@@ -157,9 +159,11 @@ export class Human {
   gl: Record<string, unknown>;
   // definition end
 
-  /**
-   * Creates instance of Human library that is futher used for all operations
+  /** Constructor for **Human** library that is futher used for all operations
+   *
    * @param userConfig: {@link Config}
+   *
+   * @return instance
    */
   constructor(userConfig?: Partial<Config>) {
     env.get();
@@ -252,7 +256,8 @@ export class Human {
   image = (input: Input) => image.process(input, this.config);
 
   /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
-   * - Calculation is based on normalized Minkowski distance between
+   * - Calculation is based on normalized Minkowski distance between two descriptors
+   * - Default is Euclidean distance which is Minkowski distance of 2nd order
    *
    * @param embedding1: face descriptor as array of numbers
    * @param embedding2: face descriptor as array of numbers
@@ -263,10 +268,9 @@ export class Human {
     return faceres.similarity(embedding1, embedding2);
   }
 
-  /**
-   * Segmentation method takes any input and returns this.processed canvas with body segmentation
-   * Optional parameter background is used to fill the background with specific input
-   * Segmentation is not triggered as part of detect this.process
+  /** Segmentation method takes any input and returns this.processed canvas with body segmentation
+   *  - Optional parameter background is used to fill the background with specific input
+   *  - Segmentation is not triggered as part of detect this.process
    *
    * @param input: {@link Input}
    * @param background?: {@link Input}
@@ -276,7 +280,8 @@ export class Human {
     return input ? segmentation.process(input, background, this.config) : null;
   }
 
-  /** Enhance method performs additional enhacements to face image previously detected for futher this.processing
+  /** Enhance method performs additional enhacements to face image previously detected for futher processing
+   *
    * @param input: Tensor as provided in human.result.face[n].tensor
    * @returns Tensor
    */
@@ -286,6 +291,7 @@ export class Human {
   }
 
   /** Math method find best match between provided face descriptor and predefined database of known descriptors
+   *
    * @param faceEmbedding: face descriptor previsouly calculated on any face
    * @param db: array of mapping of face descriptors to known values
    * @param threshold: minimum score for matching to be considered in the result
@@ -296,9 +302,22 @@ export class Human {
     return faceres.match(faceEmbedding, db, threshold);
   }
 
+  /** Explicit backend initialization
+   *  - Normally done implicitly during initial load phase
+   *  - Call to explictly register and initialize TFJS backend without any other operations
+   *  - Used in webworker environments where there can be multiple instances of Human and not all initialized
+   *
+   * @return Promise<void>
+   */
+  init() {
+    backend.check(this);
+  }
+
   /** Load method preloads all configured models on-demand
    * - Not explicitly required as any required model is load implicitly on it's first run
+   *
    * @param userConfig?: {@link Config}
+   * @return Promise<void>
   */
   async load(userConfig?: Partial<Config>) {
     this.state = 'load';
@@ -309,7 +328,7 @@ export class Human {
     if (env.env.initial) { // print version info on first run and check for correct backend setup
       if (this.config.debug) log(`version: ${this.version}`);
       if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
-      await backend.check(this);
+      if (!await backend.check(this)) log('error: backend check failed');
       await tf.ready();
       if (this.env.browser) {
         if (this.config.debug) log('configuration:', this.config);
@@ -335,8 +354,7 @@ export class Human {
   /** @hidden */
   emit = (event: string) => this.events?.dispatchEvent(new Event(event));
 
-  /**
-   * Runs interpolation using last known result and returns smoothened result
+  /** Runs interpolation using last known result and returns smoothened result
    * Interpolation is based on time since last known result so can be called independently
    *
    * @param result?: {@link Result} optional use specific result set to run interpolation on
@@ -536,7 +554,5 @@ export class Human {
   }
 }
 
-/**
- * Class Human is also available as default export
- */
+/** Class Human as default export */
 export { Human as default };

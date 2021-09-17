@@ -53,24 +53,21 @@ export async function check(instance) {
       if (instance.config.backend === 'wasm') {
         if (instance.config.debug) log('wasm path:', instance.config.wasmPath);
         if (typeof tf?.setWasmPaths !== 'undefined') await tf.setWasmPaths(instance.config.wasmPath);
-        else throw new Error('Human: WASM backend is not loaded');
+        else throw new Error('wasm backend is not loaded');
         const simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
         const mt = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT');
         if (instance.config.debug) log(`wasm execution: ${simd ? 'SIMD' : 'no SIMD'} ${mt ? 'multithreaded' : 'singlethreaded'}`);
         if (instance.config.debug && !simd) log('warning: wasm simd support is not enabled');
       }
 
-      await tf.setBackend(instance.config.backend);
-
       try {
         await tf.setBackend(instance.config.backend);
         await tf.ready();
       } catch (err) {
         log('error: cannot set backend:', instance.config.backend, err);
+        return false;
       }
     }
-
-    tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
 
     // handle webgl & humangl
     if (tf.getBackend() === 'humangl') {
@@ -97,4 +94,5 @@ export async function check(instance) {
     env.get(); // update env on backend init
     instance.env = env.env;
   }
+  return true;
 }

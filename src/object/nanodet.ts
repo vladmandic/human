@@ -17,7 +17,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 const scaleBox = 2.5; // increase box size
 
 export async function load(config: Config): Promise<GraphModel> {
-  if (!model) {
+  if (!model || env.initial) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath || ''));
     const inputs = Object.values(model.modelSignature['inputs']);
     model.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;

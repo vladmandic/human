@@ -4,11 +4,12 @@
 
 import { log, join } from '../helpers';
 import type { Config } from '../config';
-import type { Tensor, GraphModel } from '../tfjs/types';
+import type { GraphModel, Tensor } from '../tfjs/types';
 import * as tf from '../../dist/tfjs.esm.js';
+import { env } from '../env';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
-let model;
+let model: GraphModel | null;
 // let last: Array<{ score: number, emotion: string }> = [];
 const last: Array<Array<{ score: number, emotion: string }>> = [];
 let lastCount = 0;
@@ -18,11 +19,12 @@ let skipped = Number.MAX_SAFE_INTEGER;
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
 
 export async function load(config: Config): Promise<GraphModel> {
+  if (env.initial) model = null;
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.face.emotion?.modelPath || ''));
-    if (!model || !model.modelUrl) log('load model failed:', config.face.emotion?.modelPath || '');
-    else if (config.debug) log('load model:', model.modelUrl);
-  } else if (config.debug) log('cached model:', model.modelUrl);
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.face.emotion?.modelPath || '')) as unknown as GraphModel;
+    if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
+    else if (config.debug) log('load model:', model['modelUrl']);
+  } else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 
@@ -34,7 +36,7 @@ export async function predict(image: Tensor, config: Config, idx, count) {
   }
   skipped = 0;
   return new Promise(async (resolve) => {
-    const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+    const resize = tf.image.resizeBilinear(image, [model?.inputs[0].shape ? model.inputs[0].shape[2] : 0, model?.inputs[0].shape ? model.inputs[0].shape[1] : 0], false);
     const [red, green, blue] = tf.split(resize, 3, 3);
     tf.dispose(resize);
     // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html
@@ -52,7 +54,7 @@ export async function predict(image: Tensor, config: Config, idx, count) {
     tf.dispose(grayscale);
     const obj: Array<{ score: number, emotion: string }> = [];
     if (config.face.emotion?.enabled) {
-      const emotionT = await model.predict(normalize); // result is already in range 0..1, no need for additional activation
+      const emotionT = await model?.predict(normalize) as Tensor; // result is already in range 0..1, no need for additional activation
       const data = await emotionT.data();
       tf.dispose(emotionT);
       for (let i = 0; i < data.length; i++) {

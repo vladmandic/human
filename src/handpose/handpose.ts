@@ -10,6 +10,7 @@ import * as fingerPose from '../fingerpose/fingerpose';
 import type { HandResult } from '../result';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
+import { env } from '../env';
 
 const meshAnnotations = {
   thumb: [1, 2, 3, 4],
@@ -79,6 +80,10 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
 }
 
 export async function load(config: Config): Promise<[GraphModel | null, GraphModel | null]> {
+  if (env.initial) {
+    handDetectorModel = null;
+    handPoseModel = null;
+  }
   if (!handDetectorModel || !handPoseModel) {
     [handDetectorModel, handPoseModel] = await Promise.all([
       config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector?.modelPath || ''), { fromTFHub: (config.hand.detector?.modelPath || '').includes('tfhub.dev') }) as unknown as GraphModel : null,

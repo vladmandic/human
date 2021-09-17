@@ -8,8 +8,9 @@ import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
+import { env } from '../env';
 
-let model: GraphModel;
+let model: GraphModel | null;
 const last: Array<{
   age: number,
   gender: string,
@@ -24,6 +25,7 @@ type DB = Array<{ name: string, source: string, embedding: number[] }>;
 
 export async function load(config: Config): Promise<GraphModel> {
   const modelUrl = join(config.modelBasePath, config.face.description?.modelPath || '');
+  if (env.initial) model = null;
   if (!model) {
     model = await tf.loadGraphModel(modelUrl) as unknown as GraphModel;
     if (!model) log('load model failed:', config.face.description?.modelPath || '');
@@ -66,7 +68,7 @@ export function enhance(input): Tensor {
     // do a tight crop of image and resize it to fit the model
     const box = [[0.05, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
     // const box = [[0.0, 0.0, 1.0, 1.0]]; // basically no crop for test
-    if (!model.inputs[0].shape) return null; // model has no shape so no point continuing
+    if (!model?.inputs[0].shape) return null; // model has no shape so no point continuing
     const crop = (tensor.shape.length === 3)
       ? tf.image.cropAndResize(tf.expandDims(tensor, 0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch dimension if missing
       : tf.image.cropAndResize(tensor, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
@@ -128,7 +130,7 @@ export async function predict(image: Tensor, config: Config, idx, count) {
       descriptor: <number[]>[],
     };
 
-    if (config.face.description?.enabled) resT = await model.predict(enhanced);
+    if (config.face.description?.enabled) resT = await model?.predict(enhanced);
     tf.dispose(enhanced);
 
     if (resT) {

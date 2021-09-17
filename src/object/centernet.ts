@@ -10,23 +10,24 @@ import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../env';
 
-let model;
+let model: GraphModel | null;
+let inputSize = 0;
 let last: ObjectResult[] = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 
 export async function load(config: Config): Promise<GraphModel> {
+  if (env.initial) model = null;
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath || ''));
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath || '')) as unknown as GraphModel;
     const inputs = Object.values(model.modelSignature['inputs']);
-    model.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
-    if (!model.inputSize) throw new Error(`Human: Cannot determine model inputSize: ${config.object.modelPath}`);
-    if (!model || !model.modelUrl) log('load model failed:', config.object.modelPath);
-    else if (config.debug) log('load model:', model.modelUrl);
-  } else if (config.debug) log('cached model:', model.modelUrl);
+    inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!model || !model['modelUrl']) log('load model failed:', config.object.modelPath);
+    else if (config.debug) log('load model:', model['modelUrl']);
+  } else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 
-async function process(res: Tensor, inputSize, outputShape, config: Config) {
+async function process(res: Tensor | null, outputShape, config: Config) {
   if (!res) return [];
   const results: Array<ObjectResult> = [];
   const detections = await res.array();
@@ -81,11 +82,11 @@ export async function predict(input: Tensor, config: Config): Promise<ObjectResu
   if (!env.kernels.includes('mod') || !env.kernels.includes('sparsetodense')) return last;
   return new Promise(async (resolve) => {
     const outputSize = [input.shape[2], input.shape[1]];
-    const resize = tf.image.resizeBilinear(input, [model.inputSize, model.inputSize]);
-    const objectT = config.object.enabled ? model.execute(resize, ['tower_0/detections']) : null;
+    const resize = tf.image.resizeBilinear(input, [inputSize, inputSize]);
+    const objectT = config.object.enabled ? model?.execute(resize, ['tower_0/detections']) as Tensor : null;
     tf.dispose(resize);
 
-    const obj = await process(objectT, model.inputSize, outputSize, config);
+    const obj = await process(objectT, outputSize, config);
     last = obj;
 
     resolve(obj);

@@ -7,8 +7,9 @@ import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
+import { env } from '../env';
 
-let model: GraphModel;
+let model: GraphModel | null;
 let last = { gender: '' };
 let skipped = Number.MAX_SAFE_INTEGER;
 let alternative = false;
@@ -18,6 +19,7 @@ const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function load(config: Config | any) {
+  if (env.initial) model = null;
   if (!model) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.face.gender.modelPath)) as unknown as GraphModel;
     alternative = model.inputs[0].shape ? model.inputs[0]?.shape[3] === 1 : false;
@@ -36,7 +38,7 @@ export async function predict(image: Tensor, config: Config | any) {
   }
   skipped = 0;
   return new Promise(async (resolve) => {
-    if (!model.inputs[0].shape) return;
+    if (!model?.inputs[0].shape) return;
     const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
     let enhance;
     if (alternative) {

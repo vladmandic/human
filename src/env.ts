@@ -8,6 +8,7 @@ export interface Env {
   platform: undefined | string,
   agent: undefined | string,
   backends: string[],
+  initial: boolean,
   tfjs: {
     version: undefined | string,
   },
@@ -39,6 +40,7 @@ export const env: Env = {
   worker: undefined,
   platform: undefined,
   agent: undefined,
+  initial: true,
   backends: [],
   tfjs: {
     version: undefined,

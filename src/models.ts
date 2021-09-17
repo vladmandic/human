@@ -11,13 +11,35 @@ import * as movenet from './movenet/movenet';
 import * as nanodet from './object/nanodet';
 import * as centernet from './object/centernet';
 import * as segmentation from './segmentation/segmentation';
+import { env } from './env';
 // import * as agegenderrace from './gear/agegenderrace';
+
+export function reset(instance) {
+  // if (instance.config.debug) log('resetting loaded models');
+  instance.models = {
+    face: null, // array of models
+    handpose: null, // array of models
+    posenet: null,
+    blazepose: null,
+    efficientpose: null,
+    movenet: null,
+    age: null,
+    gender: null,
+    emotion: null,
+    embedding: null,
+    nanodet: null,
+    centernet: null,
+    faceres: null,
+    segmentation: null,
+  };
+}
 
 /** Load method preloads all instance.configured models on-demand
  * - Not explicitly required as any required model is load implicitly on it's first run
  * @param userinstance.config?: {@link instance.config}
 */
 export async function load(instance) {
+  if (env.initial) reset(instance);
   if (instance.config.async) { // load models concurrently
     [
       instance.models.face,
@@ -68,17 +90,23 @@ export async function validate(instance) {
   for (const defined of Object.keys(instance.models)) {
     if (instance.models[defined]) { // check if model is loaded
       let models: GraphModel[] = [];
-      if (Array.isArray(instance.models[defined])) models = instance.models[defined].map((model) => (model.executor ? model : model.model));
+      if (Array.isArray(instance.models[defined])) models = instance.models[defined].map((model) => ((model && model.executor) ? model : model.model));
       else models = [instance.models[defined]];
       for (const model of models) {
+        if (!model) {
+          if (instance.config.debug) log('model marked as loaded but not defined:', defined);
+          continue;
+        }
         const ops: string[] = [];
         // @ts-ignore // executor is a private method
         const executor = model?.executor;
-        if (executor) {
+        if (executor && executor.graph.nodes) {
           for (const kernel of Object.values(executor.graph.nodes)) {
             const op = (kernel as Op).op.toLowerCase();
             if (!ops.includes(op)) ops.push(op);
           }
+        } else {
+          if (!executor && instance.config.debug) log('model signature not determined:', defined);
         }
         const missing: string[] = [];
         for (const op of ops) {
@@ -90,10 +118,9 @@ export async function validate(instance) {
             missing.push(op);
           }
         }
-        if (!executor && instance.config.debug) log('model executor not found:', defined);
+        // log('model validation ops:', defined, ops);
         if (missing.length > 0 && instance.config.debug) log('model validation:', defined, missing);
       }
     }
   }
-  // log.data('ops used by model:', ops);
 }

@@ -6,12 +6,14 @@
 import { log, join } from '../helpers';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { Tensor, GraphModel } from '../tfjs/types';
+import { env } from '../env';
 
 type DB = Array<{ name: string, source: string, embedding: number[] }>;
-let model: GraphModel;
+let model: GraphModel | null;
 
 export async function load(config) {
   const modelUrl = join(config.modelBasePath, config.face.embedding.modelPath);
+  if (env.initial) model = null;
   if (!model) {
     model = await tf.loadGraphModel(modelUrl) as unknown as GraphModel;
     if (!model) log('load model failed:', config.face.embedding.modelPath);
@@ -99,7 +101,7 @@ export async function predict(input, config): Promise<number[]> {
         const nchw = image.transpose([3, 0, 1, 2]);
         */
 
-        const res = model.predict(image);
+        const res = model?.predict(image);
 
         /*
         // optionally do it twice with flipped image and average results

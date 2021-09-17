@@ -340,13 +340,13 @@ function rotatePoint(homogeneousCoordinate, rotationMatrix) {
     dot(homogeneousCoordinate, rotationMatrix[1])
   ];
 }
-function generateAnchors(inputSize) {
-  const spec = { strides: [inputSize / 16, inputSize / 8], anchors: [2, 6] };
+function generateAnchors(inputSize2) {
+  const spec = { strides: [inputSize2 / 16, inputSize2 / 8], anchors: [2, 6] };
   const anchors3 = [];
   for (let i = 0; i < spec.strides.length; i++) {
     const stride = spec.strides[i];
-    const gridRows = Math.floor((inputSize + stride - 1) / stride);
-    const gridCols = Math.floor((inputSize + stride - 1) / stride);
+    const gridRows = Math.floor((inputSize2 + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize2 + stride - 1) / stride);
     const anchorsNum = spec.anchors[i];
     for (let gridY = 0; gridY < gridRows; gridY++) {
       const anchorY = stride * (gridY + 0.5);
@@ -363,17 +363,17 @@ function generateAnchors(inputSize) {
 
 // src/blazeface/blazeface.ts
 var keypointsCount = 6;
-function decodeBounds(boxOutputs, anchors3, inputSize) {
+function decodeBounds(boxOutputs, anchors3, inputSize2) {
   const boxStarts = tfjs_esm_exports.slice(boxOutputs, [0, 1], [-1, 2]);
   const centers = tfjs_esm_exports.add(boxStarts, anchors3);
   const boxSizes = tfjs_esm_exports.slice(boxOutputs, [0, 3], [-1, 2]);
-  const boxSizesNormalized = tfjs_esm_exports.div(boxSizes, inputSize);
-  const centersNormalized = tfjs_esm_exports.div(centers, inputSize);
+  const boxSizesNormalized = tfjs_esm_exports.div(boxSizes, inputSize2);
+  const centersNormalized = tfjs_esm_exports.div(centers, inputSize2);
   const halfBoxSize = tfjs_esm_exports.div(boxSizesNormalized, 2);
   const starts = tfjs_esm_exports.sub(centersNormalized, halfBoxSize);
   const ends = tfjs_esm_exports.add(centersNormalized, halfBoxSize);
-  const startNormalized = tfjs_esm_exports.mul(starts, inputSize);
-  const endNormalized = tfjs_esm_exports.mul(ends, inputSize);
+  const startNormalized = tfjs_esm_exports.mul(starts, inputSize2);
+  const endNormalized = tfjs_esm_exports.mul(ends, inputSize2);
   const concatAxis = 1;
   return tfjs_esm_exports.concat2d([startNormalized, endNormalized], concatAxis);
 }
@@ -4562,9 +4562,13 @@ function process2(input, config3) {
         pixels = tfjs_esm_exports.browser && env.browser ? tfjs_esm_exports.browser.fromPixels(tempCanvas) : null;
       } else {
         const tempCanvas = canvas(targetWidth, targetHeight);
+        if (!tempCanvas)
+          return { tensor: null, canvas: inCanvas };
         tempCanvas.width = targetWidth;
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext("2d");
+        if (!tempCtx)
+          return { tensor: null, canvas: inCanvas };
         tempCtx.drawImage(outCanvas, 0, 0);
         const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
         if (tfjs_esm_exports.browser && env.browser) {
@@ -4620,6 +4624,7 @@ var env = {
   worker: void 0,
   platform: void 0,
   agent: void 0,
+  initial: true,
   backends: [],
   tfjs: {
     version: void 0
@@ -5024,7 +5029,9 @@ async function predict(input, config3) {
   return results;
 }
 async function load2(config3) {
-  if (!faceModels[0] && config3.face.enabled || !faceModels[1] && config3.face.mesh.enabled || !faceModels[2] && config3.face.iris.enabled) {
+  if (env.initial)
+    faceModels = [null, null, null];
+  if (!faceModels[0] && config3.face.enabled || !faceModels[1] && config3.face.mesh.enabled || !faceModels[2] && config3.face.iris.enabled || env.initial) {
     faceModels = await Promise.all([
       !faceModels[0] && config3.face.enabled ? load(config3) : null,
       !faceModels[1] && config3.face.mesh.enabled ? tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.mesh.modelPath), { fromTFHub: config3.face.mesh.modelPath.includes("tfhub.dev") }) : null,
@@ -5064,6 +5071,8 @@ var skipped = Number.MAX_SAFE_INTEGER;
 async function load3(config3) {
   var _a, _b;
   const modelUrl = join(config3.modelBasePath, ((_a = config3.face.description) == null ? void 0 : _a.modelPath) || "");
+  if (env.initial)
+    model = null;
   if (!model) {
     model = await tfjs_esm_exports.loadGraphModel(modelUrl);
     if (!model)
@@ -5104,7 +5113,7 @@ function enhance(input) {
     if (!(tensor3 instanceof tfjs_esm_exports.Tensor))
       return null;
     const box6 = [[0.05, 0.15, 0.85, 0.85]];
-    if (!model.inputs[0].shape)
+    if (!(model == null ? void 0 : model.inputs[0].shape))
       return null;
     const crop = tensor3.shape.length === 3 ? tfjs_esm_exports.image.cropAndResize(tfjs_esm_exports.expandDims(tensor3, 0), box6, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) : tfjs_esm_exports.image.cropAndResize(tensor3, box6, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
     const norm = tfjs_esm_exports.mul(crop, 255);
@@ -5132,7 +5141,7 @@ async function predict2(image22, config3, idx, count2) {
       descriptor: []
     };
     if ((_a2 = config3.face.description) == null ? void 0 : _a2.enabled)
-      resT = await model.predict(enhanced);
+      resT = await (model == null ? void 0 : model.predict(enhanced));
     tfjs_esm_exports.dispose(enhanced);
     if (resT) {
       const gender = await resT.find((t) => t.shape[1] === 1).data();
@@ -5165,15 +5174,17 @@ var lastCount2 = 0;
 var skipped2 = Number.MAX_SAFE_INTEGER;
 var rgb = [0.2989, 0.587, 0.114];
 async function load4(config3) {
-  var _a, _b;
+  var _a;
+  if (env.initial)
+    model2 = null;
   if (!model2) {
     model2 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.emotion) == null ? void 0 : _a.modelPath) || ""));
-    if (!model2 || !model2.modelUrl)
-      log("load model failed:", ((_b = config3.face.emotion) == null ? void 0 : _b.modelPath) || "");
+    if (!model2 || !model2["modelUrl"])
+      log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
-      log("load model:", model2.modelUrl);
+      log("load model:", model2["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model2.modelUrl);
+    log("cached model:", model2["modelUrl"]);
   return model2;
 }
 async function predict3(image22, config3, idx, count2) {
@@ -5187,7 +5198,7 @@ async function predict3(image22, config3, idx, count2) {
   skipped2 = 0;
   return new Promise(async (resolve) => {
     var _a2, _b;
-    const resize = tfjs_esm_exports.image.resizeBilinear(image22, [model2.inputs[0].shape[2], model2.inputs[0].shape[1]], false);
+    const resize = tfjs_esm_exports.image.resizeBilinear(image22, [(model2 == null ? void 0 : model2.inputs[0].shape) ? model2.inputs[0].shape[2] : 0, (model2 == null ? void 0 : model2.inputs[0].shape) ? model2.inputs[0].shape[1] : 0], false);
     const [red, green, blue] = tfjs_esm_exports.split(resize, 3, 3);
     tfjs_esm_exports.dispose(resize);
     const redNorm = tfjs_esm_exports.mul(red, rgb[0]);
@@ -5204,7 +5215,7 @@ async function predict3(image22, config3, idx, count2) {
     tfjs_esm_exports.dispose(grayscale);
     const obj = [];
     if ((_a2 = config3.face.emotion) == null ? void 0 : _a2.enabled) {
-      const emotionT = await model2.predict(normalize);
+      const emotionT = await (model2 == null ? void 0 : model2.predict(normalize));
       const data = await emotionT.data();
       tfjs_esm_exports.dispose(emotionT);
       for (let i = 0; i < data.length; i++) {
@@ -5553,7 +5564,7 @@ async function predict4(input, config3) {
   return scaled;
 }
 async function load5(config3) {
-  if (!model3) {
+  if (!model3 || env.initial) {
     model3 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
     if (!model3 || !model3["modelUrl"])
       log("load model failed:", config3.body.modelPath);
@@ -9283,6 +9294,10 @@ async function predict5(input, config3) {
 }
 async function load6(config3) {
   var _a, _b, _c, _d, _e, _f;
+  if (env.initial) {
+    handDetectorModel = null;
+    handPoseModel = null;
+  }
   if (!handDetectorModel || !handPoseModel) {
     [handDetectorModel, handPoseModel] = await Promise.all([
       config3.hand.enabled ? tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""), { fromTFHub: (((_b = config3.hand.detector) == null ? void 0 : _b.modelPath) || "").includes("tfhub.dev") }) : null,
@@ -9388,6 +9403,8 @@ var upper = [
 // src/blazepose/blazepose.ts
 var model4;
 async function load7(config3) {
+  if (env.initial)
+    model4 = null;
   if (!model4) {
     model4 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
     model4["width"] = parseInt(model4["signature"].inputs["input_1:0"].tensorShape.dim[2].size);
@@ -9457,6 +9474,8 @@ var score = 0;
 var skipped3 = Number.MAX_SAFE_INTEGER;
 var bodyParts = ["head", "neck", "rightShoulder", "rightElbow", "rightWrist", "chest", "leftShoulder", "leftElbow", "leftWrist", "pelvis", "rightHip", "rightKnee", "rightAnkle", "leftHip", "leftKnee", "leftAnkle"];
 async function load8(config3) {
+  if (env.initial)
+    model5 = null;
   if (!model5) {
     model5 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
     if (!model5 || !model5["modelUrl"])
@@ -9492,7 +9511,7 @@ async function predict7(image22, config3) {
   return new Promise(async (resolve) => {
     var _a2;
     const tensor3 = tfjs_esm_exports.tidy(() => {
-      if (!model5.inputs[0].shape)
+      if (!(model5 == null ? void 0 : model5.inputs[0].shape))
         return null;
       const resize = tfjs_esm_exports.image.resizeBilinear(image22, [model5.inputs[0].shape[2], model5.inputs[0].shape[1]], false);
       const enhance2 = tfjs_esm_exports.mul(resize, 2);
@@ -9501,7 +9520,7 @@ async function predict7(image22, config3) {
     });
     let resT;
     if (config3.body.enabled)
-      resT = await model5.predict(tensor3);
+      resT = await (model5 == null ? void 0 : model5.predict(tensor3));
     tfjs_esm_exports.dispose(tensor3);
     if (resT) {
       keypoints.length = 0;
@@ -9558,6 +9577,8 @@ var score2 = 0;
 var skipped4 = Number.MAX_SAFE_INTEGER;
 var bodyParts2 = ["nose", "leftEye", "rightEye", "leftEar", "rightEar", "leftShoulder", "rightShoulder", "leftElbow", "rightElbow", "leftWrist", "rightWrist", "leftHip", "rightHip", "leftKnee", "rightKnee", "leftAnkle", "rightAnkle"];
 async function load9(config3) {
+  if (env.initial)
+    model6 = null;
   if (!model6) {
     model6 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
     if (!model6 || !model6["modelUrl"])
@@ -9658,18 +9679,18 @@ async function predict8(image22, config3) {
   skipped4 = 0;
   return new Promise(async (resolve) => {
     const tensor3 = tfjs_esm_exports.tidy(() => {
-      if (!model6.inputs[0].shape)
+      if (!(model6 == null ? void 0 : model6.inputs[0].shape))
         return null;
-      let inputSize = model6.inputs[0].shape[2];
-      if (inputSize === -1)
-        inputSize = 256;
-      const resize = tfjs_esm_exports.image.resizeBilinear(image22, [inputSize, inputSize], false);
+      let inputSize2 = model6.inputs[0].shape[2];
+      if (inputSize2 === -1)
+        inputSize2 = 256;
+      const resize = tfjs_esm_exports.image.resizeBilinear(image22, [inputSize2, inputSize2], false);
       const cast4 = tfjs_esm_exports.cast(resize, "int32");
       return cast4;
     });
     let resT;
     if (config3.body.enabled)
-      resT = await model6.predict(tensor3);
+      resT = await (model6 == null ? void 0 : model6.predict(tensor3));
     tfjs_esm_exports.dispose(tensor3);
     if (!resT)
       resolve([]);
@@ -9774,7 +9795,7 @@ var last3 = [];
 var skipped5 = Number.MAX_SAFE_INTEGER;
 var scaleBox = 2.5;
 async function load10(config3) {
-  if (!model7) {
+  if (!model7 || env.initial) {
     model7 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model7.modelSignature["inputs"]);
     model7.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
@@ -9788,7 +9809,7 @@ async function load10(config3) {
     log("cached model:", model7.modelUrl);
   return model7;
 }
-async function process3(res, inputSize, outputShape, config3) {
+async function process3(res, inputSize2, outputShape, config3) {
   let id = 0;
   let results = [];
   for (const strideSize of [1, 2, 4]) {
@@ -9806,7 +9827,7 @@ async function process3(res, inputSize, outputShape, config3) {
           if (score3 > config3.object.minConfidence && j !== 61) {
             const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize;
             const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize;
-            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize));
+            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize2));
             const [x, y] = [
               cx - scaleBox / strideSize * boxOffset[0],
               cy - scaleBox / strideSize * boxOffset[1]
@@ -9876,24 +9897,25 @@ async function predict9(image22, config3) {
 
 // src/object/centernet.ts
 var model8;
+var inputSize = 0;
 var last4 = [];
 var skipped6 = Number.MAX_SAFE_INTEGER;
 async function load11(config3) {
+  if (env.initial)
+    model8 = null;
   if (!model8) {
     model8 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model8.modelSignature["inputs"]);
-    model8.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
-    if (!model8.inputSize)
-      throw new Error(`Human: Cannot determine model inputSize: ${config3.object.modelPath}`);
-    if (!model8 || !model8.modelUrl)
+    inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!model8 || !model8["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", model8.modelUrl);
+      log("load model:", model8["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model8.modelUrl);
+    log("cached model:", model8["modelUrl"]);
   return model8;
 }
-async function process4(res, inputSize, outputShape, config3) {
+async function process4(res, outputShape, config3) {
   if (!res)
     return [];
   const results = [];
@@ -9949,10 +9971,10 @@ async function predict10(input, config3) {
     return last4;
   return new Promise(async (resolve) => {
     const outputSize = [input.shape[2], input.shape[1]];
-    const resize = tfjs_esm_exports.image.resizeBilinear(input, [model8.inputSize, model8.inputSize]);
-    const objectT = config3.object.enabled ? model8.execute(resize, ["tower_0/detections"]) : null;
+    const resize = tfjs_esm_exports.image.resizeBilinear(input, [inputSize, inputSize]);
+    const objectT = config3.object.enabled ? model8 == null ? void 0 : model8.execute(resize, ["tower_0/detections"]) : null;
     tfjs_esm_exports.dispose(resize);
-    const obj = await process4(objectT, model8.inputSize, outputSize, config3);
+    const obj = await process4(objectT, outputSize, config3);
     last4 = obj;
     resolve(obj);
   });
@@ -9962,7 +9984,7 @@ async function predict10(input, config3) {
 var model9;
 var busy = false;
 async function load12(config3) {
-  if (!model9) {
+  if (!model9 || env.initial) {
     model9 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
     if (!model9 || !model9["modelUrl"])
       log("load model failed:", config3.segmentation.modelPath);
@@ -10074,7 +10096,27 @@ async function process5(input, background, config3) {
 }
 
 // src/models.ts
+function reset(instance) {
+  instance.models = {
+    face: null,
+    handpose: null,
+    posenet: null,
+    blazepose: null,
+    efficientpose: null,
+    movenet: null,
+    age: null,
+    gender: null,
+    emotion: null,
+    embedding: null,
+    nanodet: null,
+    centernet: null,
+    faceres: null,
+    segmentation: null
+  };
+}
 async function load13(instance) {
+  if (env.initial)
+    reset(instance);
   if (instance.config.async) {
     [
       instance.models.face,
@@ -10130,20 +10172,28 @@ async function validate(instance) {
   const simpleOps = ["const", "placeholder", "noop", "pad", "squeeze", "add", "sub", "mul", "div"];
   for (const defined of Object.keys(instance.models)) {
     if (instance.models[defined]) {
-      let models2 = [];
+      let models3 = [];
       if (Array.isArray(instance.models[defined]))
-        models2 = instance.models[defined].map((model10) => model10.executor ? model10 : model10.model);
+        models3 = instance.models[defined].map((model10) => model10 && model10.executor ? model10 : model10.model);
       else
-        models2 = [instance.models[defined]];
-      for (const model10 of models2) {
+        models3 = [instance.models[defined]];
+      for (const model10 of models3) {
+        if (!model10) {
+          if (instance.config.debug)
+            log("model marked as loaded but not defined:", defined);
+          continue;
+        }
         const ops = [];
         const executor = model10 == null ? void 0 : model10.executor;
-        if (executor) {
+        if (executor && executor.graph.nodes) {
           for (const kernel of Object.values(executor.graph.nodes)) {
             const op = kernel.op.toLowerCase();
             if (!ops.includes(op))
               ops.push(op);
           }
+        } else {
+          if (!executor && instance.config.debug)
+            log("model signature not determined:", defined);
         }
         const missing = [];
         for (const op of ops) {
@@ -10151,8 +10201,6 @@ async function validate(instance) {
             missing.push(op);
           }
         }
-        if (!executor && instance.config.debug)
-          log("model executor not found:", defined);
         if (missing.length > 0 && instance.config.debug)
           log("model validation:", defined, missing);
       }
@@ -11103,11 +11151,9 @@ function calc(newResult) {
 // src/tfjs/humangl.ts
 var config2 = {
   name: "humangl",
-  priority: 99,
+  priority: 999,
   canvas: null,
   gl: null,
-  width: 1024,
-  height: 1024,
   extensions: [],
   webGLattr: {
     alpha: false,
@@ -11126,26 +11172,57 @@ function extensions() {
     return;
   config2.extensions = gl.getSupportedExtensions();
 }
-function register() {
+async function register(instance) {
   var _a;
+  if (config2.name in tfjs_esm_exports.engine().registry && (!config2.gl || !config2.gl.getParameter(config2.gl.VERSION))) {
+    log("error: humangl backend invalid context");
+    log("resetting humangl backend");
+    reset(instance);
+    await tfjs_esm_exports.removeBackend(config2.name);
+    await register(instance);
+  }
   if (!tfjs_esm_exports.findBackend(config2.name)) {
     try {
-      config2.canvas = canvas(100, 100);
+      config2.canvas = await canvas(100, 100);
     } catch (err) {
       log("error: cannot create canvas:", err);
       return;
     }
     try {
       config2.gl = (_a = config2.canvas) == null ? void 0 : _a.getContext("webgl2", config2.webGLattr);
+      if (config2.canvas) {
+        config2.canvas.addEventListener("webglcontextlost", async (e) => {
+          var _a2;
+          const err = (_a2 = config2.gl) == null ? void 0 : _a2.getError();
+          log("error: humangl context lost:", err, e);
+          log("gpu memory usage:", instance.tf.engine().backendInstance.numBytesInGPU);
+          log("resetting humangl backend");
+          env.initial = true;
+          reset(instance);
+          await tfjs_esm_exports.removeBackend(config2.name);
+        });
+        config2.canvas.addEventListener("webglcontextrestored", (e) => {
+          log("error: humangl context restored:", e);
+        });
+        config2.canvas.addEventListener("webglcontextcreationerror", (e) => {
+          log("error: humangl context create:", e);
+        });
+      }
     } catch (err) {
-      log("error: cannot get WebGL2 context:", err);
+      log("error: cannot get WebGL context:", err);
       return;
     }
     try {
       tfjs_esm_exports.setWebGLContext(2, config2.gl);
     } catch (err) {
-      log("error: cannot set WebGL2 context:", err);
+      log("error: cannot set WebGL context:", err);
       return;
+    }
+    const current = tfjs_esm_exports.backend().getGPGPUContext().gl;
+    if (current) {
+      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
+    } else {
+      log("error: no current context:", current, config2.gl);
     }
     try {
       const ctx = new tfjs_esm_exports.GPGPUContext(config2.gl);
@@ -11177,19 +11254,22 @@ function register() {
 
 // src/tfjs/backend.ts
 async function check(instance) {
-  if (instance.initial || instance.config.backend && instance.config.backend.length > 0 && tfjs_esm_exports.getBackend() !== instance.config.backend) {
+  if (env.initial || instance.config.backend && instance.config.backend.length > 0 && tfjs_esm_exports.getBackend() !== instance.config.backend) {
     const timeStamp = now();
     instance.state = "backend";
     if (instance.config.backend && instance.config.backend.length > 0) {
       if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && instance.config.debug) {
-        log("running inside web worker");
+        if (instance.config.debug)
+          log("running inside web worker");
       }
       if (env.browser && instance.config.backend === "tensorflow") {
-        log("override: backend set to tensorflow while running in browser");
+        if (instance.config.debug)
+          log("override: backend set to tensorflow while running in browser");
         instance.config.backend = "humangl";
       }
       if (env.node && (instance.config.backend === "webgl" || instance.config.backend === "humangl")) {
-        log(`override: backend set to ${instance.config.backend} while running in nodejs`);
+        if (instance.config.debug)
+          log(`override: backend set to ${instance.config.backend} while running in nodejs`);
         instance.config.backend = "tensorflow";
       }
       if (env.browser && instance.config.backend === "webgpu") {
@@ -11203,14 +11283,15 @@ async function check(instance) {
         }
       }
       if (instance.config.backend === "humangl")
-        register();
+        await register(instance);
       const available = Object.keys(tfjs_esm_exports.engine().registryFactory);
       if (instance.config.debug)
         log("available backends:", available);
       if (!available.includes(instance.config.backend)) {
         log(`error: backend ${instance.config.backend} not found in registry`);
         instance.config.backend = env.node ? "tensorflow" : "humangl";
-        log(`override: setting backend ${instance.config.backend}`);
+        if (instance.config.debug)
+          log(`override: setting backend ${instance.config.backend}`);
       }
       if (instance.config.debug)
         log("setting backend:", instance.config.backend);
@@ -11236,6 +11317,7 @@ async function check(instance) {
         log("error: cannot set backend:", instance.config.backend, err);
       }
     }
+    tfjs_esm_exports.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
     if (tfjs_esm_exports.getBackend() === "humangl") {
       tfjs_esm_exports.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
       tfjs_esm_exports.ENV.set("WEBGL_CPU_FORWARD", true);
@@ -12106,7 +12188,7 @@ var Human = class {
     __privateAdd(this, _numTensors, void 0);
     __privateAdd(this, _analyzeMemoryLeaks, void 0);
     __privateAdd(this, _checkSanity, void 0);
-    __publicField(this, "initial");
+    __publicField(this, "gl");
     __publicField(this, "analyze", (...msg) => {
       if (!__privateGet(this, _analyzeMemoryLeaks))
         return;
@@ -12149,7 +12231,6 @@ var Human = class {
     __privateSet(this, _numTensors, 0);
     __privateSet(this, _analyzeMemoryLeaks, false);
     __privateSet(this, _checkSanity, false);
-    this.initial = true;
     this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
     this.events = new EventTarget();
     this.models = {
@@ -12183,6 +12264,7 @@ var Human = class {
     this.process = { tensor: null, canvas: null };
     this.faceTriangulation = triangulation;
     this.faceUVMap = uvmap;
+    this.gl = config2;
     this.emit("create");
   }
   similarity(embedding1, embedding2) {
@@ -12203,7 +12285,7 @@ var Human = class {
     const count2 = Object.values(this.models).filter((model10) => model10).length;
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);
-    if (this.initial) {
+    if (env.initial) {
       if (this.config.debug)
         log(`version: ${this.version}`);
       if (this.config.debug)
@@ -12218,9 +12300,9 @@ var Human = class {
       }
     }
     await load13(this);
-    if (this.initial && this.config.debug)
+    if (env.initial && this.config.debug)
       log("tf engine state:", this.tf.engine().state.numBytes, "bytes", this.tf.engine().state.numTensors, "tensors");
-    this.initial = false;
+    env.initial = false;
     const loaded = Object.values(this.models).filter((model10) => model10).length;
     if (loaded !== count2) {
       await validate(this);

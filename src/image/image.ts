@@ -18,7 +18,7 @@ let outCanvas;
 // @ts-ignore // imagefx is js module that should be converted to a class
 let fx: fxImage.GLImageFilter | null; // instance of imagefx
 
-export function canvas(width, height) {
+export function canvas(width, height): HTMLCanvasElement | OffscreenCanvas {
   let c;
   if (env.browser) {
     if (typeof OffscreenCanvas !== 'undefined') {
@@ -180,9 +180,11 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
       } else { // cpu and wasm kernel does not implement efficient fromPixels method
         // we cant use canvas as-is as it already has a context, so we do a silly one more canvas and do fromPixels on ImageData instead
         const tempCanvas = canvas(targetWidth, targetHeight);
+        if (!tempCanvas) return { tensor: null, canvas: inCanvas };
         tempCanvas.width = targetWidth;
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext('2d');
+        if (!tempCtx) return { tensor: null, canvas: inCanvas };
         tempCtx.drawImage(outCanvas, 0, 0);
         const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
         if (tf.browser && env.browser) {

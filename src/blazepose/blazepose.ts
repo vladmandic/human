@@ -10,10 +10,12 @@ import * as annotations from './annotations';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { BodyResult } from '../result';
 import type { Config } from '../config';
+import { env } from '../env';
 
-let model: GraphModel;
+let model: GraphModel | null;
 
 export async function load(config: Config): Promise<GraphModel> {
+  if (env.initial) model = null;
   if (!model) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
     model['width'] = parseInt(model['signature'].inputs['input_1:0'].tensorShape.dim[2].size);

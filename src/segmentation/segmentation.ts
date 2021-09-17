@@ -15,7 +15,7 @@ let model: GraphModel;
 let busy = false;
 
 export async function load(config: Config): Promise<GraphModel> {
-  if (!model) {
+  if (!model || env.initial) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.segmentation.modelPath || '')) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.segmentation.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);

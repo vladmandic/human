@@ -10,6 +10,7 @@ import * as coords from './coords';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { FaceResult } from '../result';
 import type { Config } from '../config';
+import { env } from '../env';
 
 let faceModels: [blazeface.BlazeFaceModel | null, GraphModel | null, GraphModel | null] = [null, null, null];
 let facePipeline;
@@ -58,7 +59,8 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
 }
 
 export async function load(config): Promise<[unknown, GraphModel | null, GraphModel | null]> {
-  if ((!faceModels[0] && config.face.enabled) || (!faceModels[1] && config.face.mesh.enabled) || (!faceModels[2] && config.face.iris.enabled)) {
+  if (env.initial) faceModels = [null, null, null];
+  if ((!faceModels[0] && config.face.enabled) || (!faceModels[1] && config.face.mesh.enabled) || (!faceModels[2] && config.face.iris.enabled) || env.initial) {
     faceModels = await Promise.all([
       (!faceModels[0] && config.face.enabled) ? blazeface.load(config) : null,
       (!faceModels[1] && config.face.mesh.enabled) ? tf.loadGraphModel(join(config.modelBasePath, config.face.mesh.modelPath), { fromTFHub: config.face.mesh.modelPath.includes('tfhub.dev') }) as unknown as GraphModel : null,

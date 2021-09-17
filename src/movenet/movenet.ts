@@ -7,8 +7,9 @@ import * as tf from '../../dist/tfjs.esm.js';
 import type { BodyResult } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
+import { env } from '../env';
 
-let model: GraphModel;
+let model: GraphModel | null;
 
 type Keypoints = { score: number, part: string, position: [number, number], positionRaw: [number, number] };
 const keypoints: Array<Keypoints> = [];
@@ -22,6 +23,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 const bodyParts = ['nose', 'leftEye', 'rightEye', 'leftEar', 'rightEar', 'leftShoulder', 'rightShoulder', 'leftElbow', 'rightElbow', 'leftWrist', 'rightWrist', 'leftHip', 'rightHip', 'leftKnee', 'rightKnee', 'leftAnkle', 'rightAnkle'];
 
 export async function load(config: Config): Promise<GraphModel> {
+  if (env.initial) model = null;
   if (!model) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
@@ -122,7 +124,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
   skipped = 0;
   return new Promise(async (resolve) => {
     const tensor = tf.tidy(() => {
-      if (!model.inputs[0].shape) return null;
+      if (!model?.inputs[0].shape) return null;
       let inputSize = model.inputs[0].shape[2];
       if (inputSize === -1) inputSize = 256;
       const resize = tf.image.resizeBilinear(image, [inputSize, inputSize], false);
@@ -131,7 +133,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
     });
 
     let resT;
-    if (config.body.enabled) resT = await model.predict(tensor);
+    if (config.body.enabled) resT = await model?.predict(tensor);
     tf.dispose(tensor);
 
     if (!resT) resolve([]);

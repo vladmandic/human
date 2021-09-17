@@ -4,16 +4,16 @@
  */
 
 import { log } from '../helpers';
+import { env } from '../env';
+import * as models from '../models';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
 
 export const config = {
   name: 'humangl',
-  priority: 99,
+  priority: 999,
   canvas: <null | OffscreenCanvas | HTMLCanvasElement>null,
   gl: <null | WebGL2RenderingContext>null,
-  width: 1024,
-  height: 1024,
   extensions: <string[]> [],
   webGLattr: { // https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2
     alpha: false,
@@ -43,26 +43,57 @@ function extensions(): void {
  *
  * @returns void
  */
-export function register(): void {
+export async function register(instance): Promise<void> {
+  // force backend reload if gl context is not valid
+  if ((config.name in tf.engine().registry) && (!config.gl || !config.gl.getParameter(config.gl.VERSION))) {
+    log('error: humangl backend invalid context');
+    log('resetting humangl backend');
+    models.reset(instance);
+    await tf.removeBackend(config.name);
+    await register(instance); // re-register
+  }
   if (!tf.findBackend(config.name)) {
-    // log('backend registration:', config.name);
     try {
-      config.canvas = image.canvas(100, 100);
+      config.canvas = await image.canvas(100, 100);
     } catch (err) {
       log('error: cannot create canvas:', err);
       return;
     }
     try {
       config.gl = config.canvas?.getContext('webgl2', config.webGLattr) as WebGL2RenderingContext;
+      if (config.canvas) {
+        config.canvas.addEventListener('webglcontextlost', async (e) => {
+          const err = config.gl?.getError();
+          log('error: humangl context lost:', err, e);
+          log('gpu memory usage:', instance.tf.engine().backendInstance.numBytesInGPU);
+          log('resetting humangl backend');
+          env.initial = true;
+          models.reset(instance);
+          await tf.removeBackend(config.name);
+          // await register(instance); // re-register
+        });
+        config.canvas.addEventListener('webglcontextrestored', (e) => {
+          log('error: humangl context restored:', e);
+        });
+        config.canvas.addEventListener('webglcontextcreationerror', (e) => {
+          log('error: humangl context create:', e);
+        });
+      }
     } catch (err) {
-      log('error: cannot get WebGL2 context:', err);
+      log('error: cannot get WebGL context:', err);
       return;
     }
     try {
       tf.setWebGLContext(2, config.gl);
     } catch (err) {
-      log('error: cannot set WebGL2 context:', err);
+      log('error: cannot set WebGL context:', err);
       return;
+    }
+    const current = tf.backend().getGPGPUContext().gl;
+    if (current) {
+      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
+    } else {
+      log('error: no current context:', current, config.gl);
     }
     try {
       const ctx = new tf.GPGPUContext(config.gl);

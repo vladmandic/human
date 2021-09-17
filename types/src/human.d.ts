@@ -17,13 +17,14 @@ export { env } from './env';
  */
 export declare type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 /** Events dispatched by `human.events`
+ *
  * - `create`: triggered when Human object is instantiated
  * - `load`: triggered when models are loaded (explicitly or on-demand)
  * - `image`: triggered when input image is this.processed
  * - `result`: triggered when detection is complete
  * - `warmup`: triggered when warmup is complete
  */
-export declare type Events = 'create' | 'load' | 'image' | 'result' | 'warmup';
+export declare type Events = 'create' | 'load' | 'image' | 'result' | 'warmup' | 'error';
 /** Error message
  * @typedef Error Type
  */
@@ -34,8 +35,7 @@ export declare type Error = {
  * @external
  */
 export declare type TensorFlow = typeof tf;
-/**
- * **Human** library main class
+/** **Human** library main class
  *
  * All methods and properties are available only as members of Human class
  *
@@ -44,6 +44,7 @@ export declare type TensorFlow = typeof tf;
  * - Possible inputs: {@link Input}
  *
  * @param userConfig: {@link Config}
+ * @return instance
  */
 export declare class Human {
     #private;
@@ -67,13 +68,12 @@ export declare class Human {
         tensor: Tensor | null;
         canvas: OffscreenCanvas | HTMLCanvasElement | null;
     };
-    /** @internal: Instance of TensorFlow/JS used by Human
-     * - Can be embedded or externally provided
+    /** Instance of TensorFlow/JS used by Human
+     *  - Can be embedded or externally provided
+     * @internal
      */
     tf: TensorFlow;
-    /**
-     * Object containing environment information used for diagnostics
-     */
+    /** Object containing environment information used for diagnostics */
     env: env.Env;
     /** Draw helper classes that can draw detected objects on canvas using specified draw
      * - options: {@link DrawOptions} global settings for all draw operations, can be overriden for each draw method
@@ -94,7 +94,9 @@ export declare class Human {
         all: any;
         options: DrawOptions;
     };
-    /** @internal: Currently loaded models */
+    /** Currently loaded models
+     * @internal
+    */
     models: {
         face: [unknown, GraphModel | null, GraphModel | null] | null;
         posenet: GraphModel | null;
@@ -119,6 +121,7 @@ export declare class Human {
      * - `image`: triggered when input image is this.processed
      * - `result`: triggered when detection is complete
      * - `warmup`: triggered when warmup is complete
+     * - `error`: triggered on some errors
      */
     events: EventTarget;
     /** Reference face triangualtion array of 468 points, used for triangle references between points */
@@ -127,10 +130,13 @@ export declare class Human {
     faceUVMap: typeof facemesh.uvmap;
     /** Performance object that contains values for all recently performed operations */
     performance: Record<string, number>;
-    initial: boolean;
-    /**
-     * Creates instance of Human library that is futher used for all operations
+    /** WebGL debug info */
+    gl: Record<string, unknown>;
+    /** Constructor for **Human** library that is futher used for all operations
+     *
      * @param userConfig: {@link Config}
+     *
+     * @return instance
      */
     constructor(userConfig?: Partial<Config>);
     /** @hidden */
@@ -145,29 +151,31 @@ export declare class Human {
         canvas: OffscreenCanvas | HTMLCanvasElement;
     };
     /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
-     * - Calculation is based on normalized Minkowski distance between
+     * - Calculation is based on normalized Minkowski distance between two descriptors
+     * - Default is Euclidean distance which is Minkowski distance of 2nd order
      *
      * @param embedding1: face descriptor as array of numbers
      * @param embedding2: face descriptor as array of numbers
      * @returns similarity: number
     */
     similarity(embedding1: Array<number>, embedding2: Array<number>): number;
-    /**
-     * Segmentation method takes any input and returns this.processed canvas with body segmentation
-     * Optional parameter background is used to fill the background with specific input
-     * Segmentation is not triggered as part of detect this.process
+    /** Segmentation method takes any input and returns this.processed canvas with body segmentation
+     *  - Optional parameter background is used to fill the background with specific input
+     *  - Segmentation is not triggered as part of detect this.process
      *
      * @param input: {@link Input}
      * @param background?: {@link Input}
      * @returns Canvas
      */
     segmentation(input: Input, background?: Input): Promise<OffscreenCanvas | HTMLCanvasElement | null>;
-    /** Enhance method performs additional enhacements to face image previously detected for futher this.processing
+    /** Enhance method performs additional enhacements to face image previously detected for futher processing
+     *
      * @param input: Tensor as provided in human.result.face[n].tensor
      * @returns Tensor
      */
     enhance(input: Tensor): Tensor | null;
     /** Math method find best match between provided face descriptor and predefined database of known descriptors
+     *
      * @param faceEmbedding: face descriptor previsouly calculated on any face
      * @param db: array of mapping of face descriptors to known values
      * @param threshold: minimum score for matching to be considered in the result
@@ -183,15 +191,24 @@ export declare class Human {
         similarity: number;
         embedding: number[];
     };
+    /** Explicit backend initialization
+     *  - Normally done implicitly during initial load phase
+     *  - Call to explictly register and initialize TFJS backend without any other operations
+     *  - Used in webworker environments where there can be multiple instances of Human and not all initialized
+     *
+     * @return Promise<void>
+     */
+    init(): void;
     /** Load method preloads all configured models on-demand
      * - Not explicitly required as any required model is load implicitly on it's first run
+     *
      * @param userConfig?: {@link Config}
+     * @return Promise<void>
     */
     load(userConfig?: Partial<Config>): Promise<void>;
     /** @hidden */
     emit: (event: string) => boolean;
-    /**
-     * Runs interpolation using last known result and returns smoothened result
+    /** Runs interpolation using last known result and returns smoothened result
      * Interpolation is based on time since last known result so can be called independently
      *
      * @param result?: {@link Result} optional use specific result set to run interpolation on
@@ -219,8 +236,6 @@ export declare class Human {
     */
     detect(input: Input, userConfig?: Partial<Config>): Promise<Result | Error>;
 }
-/**
- * Class Human is also available as default export
- */
+/** Class Human as default export */
 export { Human as default };
 //# sourceMappingURL=human.d.ts.map

@@ -70234,10 +70234,11 @@ async function validate(instance) {
   for (const defined of Object.keys(instance.models)) {
     if (instance.models[defined]) {
       let models3 = [];
-      if (Array.isArray(instance.models[defined]))
-        models3 = instance.models[defined].map((model11) => model11 && model11.executor ? model11 : model11.model);
-      else
+      if (Array.isArray(instance.models[defined])) {
+        models3 = instance.models[defined].filter((model11) => model11 !== null).map((model11) => model11 && model11.executor ? model11 : model11.model);
+      } else {
         models3 = [instance.models[defined]];
+      }
       for (const model11 of models3) {
         if (!model11) {
           if (instance.config.debug)
@@ -71395,7 +71396,7 @@ async function check(instance) {
 }
 
 // package.json
-var version6 = "2.2.1";
+var version6 = "2.2.2";
 
 // src/sample.ts
 var face3 = `
@@ -72168,7 +72169,8 @@ async function warmupCanvas(instance) {
         resolve({});
       } else {
         const ctx = canvas3.getContext("2d");
-        ctx.drawImage(img, 0, 0);
+        if (ctx)
+          ctx.drawImage(img, 0, 0);
         const tensor2 = await instance.image(canvas3);
         const res = await instance.detect(tensor2.tensor, instance.config);
         resolve(res);

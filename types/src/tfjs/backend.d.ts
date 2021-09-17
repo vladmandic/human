@@ -1,2 +1,2 @@
-export declare function check(instance: any): Promise<void>;
+export declare function check(instance: any): Promise<boolean>;
 //# sourceMappingURL=backend.d.ts.map

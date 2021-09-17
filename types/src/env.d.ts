@@ -5,6 +5,7 @@ export interface Env {
     platform: undefined | string;
     agent: undefined | string;
     backends: string[];
+    initial: boolean;
     tfjs: {
         version: undefined | string;
     };

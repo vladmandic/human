@@ -1,1 +1,1 @@
-{"version":3,"file":"humangl.d.ts","sourceRoot":"","sources":["../../../src/tfjs/humangl.ts"],"names":[],"mappings":"AAAA;;;GAGG;AAMH,eAAO,MAAM,MAAM;;;;;;;;;;;;;;;;;;CAkBlB,CAAC;AAaF;;;;GAIG;AACH,wBAAgB,QAAQ,IAAI,IAAI,CA+C/B"}
+{"version":3,"file":"humangl.d.ts","sourceRoot":"","sources":["../../../src/tfjs/humangl.ts"],"names":[],"mappings":"AAAA;;;GAGG;AAQH,eAAO,MAAM,MAAM;;;;;;;;;;;;;;;;CAgBlB,CAAC;AAaF;;;;GAIG;AACH,wBAAsB,QAAQ,CAAC,QAAQ,KAAA,GAAG,OAAO,CAAC,IAAI,CAAC,CAoFtD"}

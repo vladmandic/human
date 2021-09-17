@@ -52,7 +52,7 @@ async function warmupCanvas(instance) {
         resolve({});
       } else {
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
+        if (ctx) ctx.drawImage(img, 0, 0);
         // const data = ctx?.getImageData(0, 0, canvas.height, canvas.width);
         const tensor = await instance.image(canvas);
         const res = await instance.detect(tensor.tensor, instance.config);

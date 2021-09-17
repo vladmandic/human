@@ -90,8 +90,13 @@ export async function validate(instance) {
   for (const defined of Object.keys(instance.models)) {
     if (instance.models[defined]) { // check if model is loaded
       let models: GraphModel[] = [];
-      if (Array.isArray(instance.models[defined])) models = instance.models[defined].map((model) => ((model && model.executor) ? model : model.model));
-      else models = [instance.models[defined]];
+      if (Array.isArray(instance.models[defined])) {
+        models = instance.models[defined]
+          .filter((model) => (model !== null))
+          .map((model) => ((model && model.executor) ? model : model.model));
+      } else {
+        models = [instance.models[defined]];
+      }
       for (const model of models) {
         if (!model) {
           if (instance.config.debug) log('model marked as loaded but not defined:', defined);

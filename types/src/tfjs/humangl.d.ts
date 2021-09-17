@@ -7,8 +7,6 @@ export declare const config: {
     priority: number;
     canvas: OffscreenCanvas | HTMLCanvasElement | null;
     gl: WebGL2RenderingContext | null;
-    width: number;
-    height: number;
     extensions: string[];
     webGLattr: {
         alpha: boolean;
@@ -26,5 +24,5 @@ export declare const config: {
  *
  * @returns void
  */
-export declare function register(): void;
+export declare function register(instance: any): Promise<void>;
 //# sourceMappingURL=humangl.d.ts.map

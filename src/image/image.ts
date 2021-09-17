@@ -32,7 +32,7 @@ export function canvas(width, height): HTMLCanvasElement | OffscreenCanvas {
     // @ts-ignore // env.canvas is an external monkey-patch
     c = (typeof env.Canvas !== 'undefined') ? new env.Canvas(width, height) : null;
   }
-  // if (!c) throw new Error('Human: Cannot create canvas');
+  // if (!c) throw new Error('cannot create canvas');
   return c;
 }
 
@@ -41,7 +41,7 @@ export function canvas(width, height): HTMLCanvasElement | OffscreenCanvas {
 // input is resized and run through imagefx filter
 export function process(input: Input, config: Config): { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement } {
   let tensor;
-  if (!input) throw new Error('Human: Input is missing');
+  if (!input) throw new Error('input is missing');
   // sanity checks since different browsers do not implement all dom elements
   if (
     !(input instanceof tf.Tensor)
@@ -55,12 +55,12 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
     && !(typeof HTMLCanvasElement !== 'undefined' && input instanceof HTMLCanvasElement)
     && !(typeof OffscreenCanvas !== 'undefined' && input instanceof OffscreenCanvas)
   ) {
-    throw new Error('Human: Input type is not recognized');
+    throw new Error('input type is not recognized');
   }
   if (input instanceof tf.Tensor) {
     // if input is tensor, use as-is
     if ((input as unknown as Tensor).shape && (input as unknown as Tensor).shape.length === 4 && (input as unknown as Tensor).shape[0] === 1 && (input as unknown as Tensor).shape[3] === 3) tensor = tf.clone(input);
-    else throw new Error(`Human: Input tensor shape must be [1, height, width, 3] and instead was ${(input as unknown as Tensor).shape}`);
+    else throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${(input as unknown as Tensor).shape}`);
   } else {
     // check if resizing will be needed
     if (typeof input['readyState'] !== 'undefined' && input['readyState'] <= 2) {
@@ -89,7 +89,7 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
     else if ((config.filter.height || 0) > 0) targetWidth = originalWidth * ((config.filter.height || 0) / originalHeight);
     if ((config.filter.height || 0) > 0) targetHeight = config.filter.height;
     else if ((config.filter.width || 0) > 0) targetHeight = originalHeight * ((config.filter.width || 0) / originalWidth);
-    if (!targetWidth || !targetHeight) throw new Error('Human: Input cannot determine dimension');
+    if (!targetWidth || !targetHeight) throw new Error('input cannot determine dimension');
     if (!inCanvas || (inCanvas?.width !== targetWidth) || (inCanvas?.height !== targetHeight)) inCanvas = canvas(targetWidth, targetHeight);
 
     // draw input to our canvas
@@ -176,7 +176,11 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext('2d');
         tempCtx?.drawImage(outCanvas, 0, 0);
-        pixels = (tf.browser && env.browser) ? tf.browser.fromPixels(tempCanvas) : null;
+        try {
+          pixels = (tf.browser && env.browser) ? tf.browser.fromPixels(tempCanvas) : null;
+        } catch (err) {
+          throw new Error('browser webgl error');
+        }
       } else { // cpu and wasm kernel does not implement efficient fromPixels method
         // we cant use canvas as-is as it already has a context, so we do a silly one more canvas and do fromPixels on ImageData instead
         const tempCanvas = canvas(targetWidth, targetHeight);
@@ -206,7 +210,7 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
         tf.dispose(casted);
       } else {
         tensor = tf.zeros([1, targetWidth, targetHeight, 3]);
-        throw new Error('Human: Cannot create tensor from input');
+        throw new Error('cannot create tensor from input');
       }
     }
   }

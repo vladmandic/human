@@ -4,10 +4,10 @@
  */
 
 import { log } from '../helpers';
-import { env } from '../env';
-import * as models from '../models';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
+import * as models from '../models';
+// import { env } from '../env';
 
 export const config = {
   name: 'humangl',
@@ -47,10 +47,12 @@ export async function register(instance): Promise<void> {
   // force backend reload if gl context is not valid
   if ((config.name in tf.engine().registry) && (!config.gl || !config.gl.getParameter(config.gl.VERSION))) {
     log('error: humangl backend invalid context');
-    log('resetting humangl backend');
     models.reset(instance);
+    /*
+    log('resetting humangl backend');
     await tf.removeBackend(config.name);
     await register(instance); // re-register
+    */
   }
   if (!tf.findBackend(config.name)) {
     try {
@@ -63,14 +65,18 @@ export async function register(instance): Promise<void> {
       config.gl = config.canvas?.getContext('webgl2', config.webGLattr) as WebGL2RenderingContext;
       if (config.canvas) {
         config.canvas.addEventListener('webglcontextlost', async (e) => {
-          const err = config.gl?.getError();
-          log('error: humangl context lost:', err, e);
-          log('gpu memory usage:', instance.tf.engine().backendInstance.numBytesInGPU);
+          log('error: humangl:', e.type);
+          // log('gpu memory usage:', instance.tf.engine().backendInstance.numBytesInGPU);
+          log('possible browser memory leak using webgl');
+          instance.emit('error');
+          throw new Error('browser webgl error');
+          /*
           log('resetting humangl backend');
           env.initial = true;
           models.reset(instance);
           await tf.removeBackend(config.name);
-          // await register(instance); // re-register
+          await register(instance); // re-register
+          */
         });
         config.canvas.addEventListener('webglcontextrestored', (e) => {
           log('error: humangl context restored:', e);

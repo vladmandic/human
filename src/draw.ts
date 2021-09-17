@@ -68,7 +68,7 @@ export const options: DrawOptions = {
 
 const getCanvasContext = (input) => {
   if (input && input.getContext) return input.getContext('2d');
-  throw new Error('Human: Invalid Canvas');
+  throw new Error('invalid canvas');
 };
 
 const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);

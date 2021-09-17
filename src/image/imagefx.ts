@@ -17,7 +17,7 @@ function GLProgram(gl, vertexSource, fragmentSource) {
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error('Filter: GL compile failed', gl.getShaderInfoLog(shader));
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error('filter: gl compile failed', gl.getShaderInfoLog(shader));
     return shader;
   };
 
@@ -30,7 +30,7 @@ function GLProgram(gl, vertexSource, fragmentSource) {
   gl.attachShader(this.id, _fsh);
   gl.linkProgram(this.id);
 
-  if (!gl.getProgramParameter(this.id, gl.LINK_STATUS)) throw new Error('Filter: GL link failed', gl.getProgramInfoLog(this.id));
+  if (!gl.getProgramParameter(this.id, gl.LINK_STATUS)) throw new Error('filter: gl link failed', gl.getProgramInfoLog(this.id));
 
   gl.useProgram(this.id);
   // Collect attributes
@@ -61,7 +61,7 @@ export function GLImageFilter(params) {
   const _shaderProgramCache = { };
   const DRAW = { INTERMEDIATE: 1 };
   const gl = _canvas.getContext('webgl');
-  if (!gl) throw new Error('Filter: getContext() failed');
+  if (!gl) throw new Error('filter: context failed');
 
   this.addFilter = function (name) {
     // eslint-disable-next-line prefer-rest-params

@@ -34,6 +34,7 @@ let userConfig = {
   warmup: 'none',
   backend: 'humangl',
   debug: true,
+  filter: { enabled: false },
   /*
   wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
   async: false,
@@ -80,7 +81,7 @@ const ui = {
   useWorker: true, // use web workers for processing
   worker: 'index-worker.js',
   maxFPSframes: 10, // keep fps history for how many frames
-  modelsPreload: true, // preload human models on startup
+  modelsPreload: false, // preload human models on startup
   modelsWarmup: false, // warmup human models on startup
   buffered: true, // should output be buffered between frames
   interpolated: true, // should output be interpolated for smoothness between frames
@@ -180,7 +181,7 @@ function status(msg) {
 async function videoPlay() {
   document.getElementById('btnStartText').innerHTML = 'pause video';
   await document.getElementById('video').play();
-  status();
+  // status();
 }
 
 async function videoPause() {
@@ -337,7 +338,7 @@ async function setupCamera() {
     } catch (err) {
       log(err);
     } finally {
-      status();
+      // status();
     }
     return '';
   }
@@ -394,28 +395,22 @@ async function setupCamera() {
   if (initialCameraAccess) log('selected video source:', track, settings); // log('selected camera:', track.label, 'id:', settings.deviceId);
   ui.camera = { name: track.label.toLowerCase(), width: video.videoWidth, height: video.videoHeight, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   initialCameraAccess = false;
-  const promise = !stream || new Promise((resolve) => {
-    video.onloadeddata = () => {
-      if (settings.width > settings.height) canvas.style.width = '100vw';
-      else canvas.style.height = '100vh';
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ui.menuWidth.input.setAttribute('value', video.videoWidth);
-      ui.menuHeight.input.setAttribute('value', video.videoHeight);
-      if (live || ui.autoPlay) videoPlay();
-      // eslint-disable-next-line no-use-before-define
-      if ((live || ui.autoPlay) && !ui.detectThread) runHumanDetect(video, canvas);
-      ui.busy = false;
-      resolve();
-    };
-  });
-  // attach input to video element
-  if (stream) {
-    video.srcObject = stream;
-    return promise;
-  }
-  ui.busy = false;
-  return 'camera stream empty';
+
+  if (!stream) return 'camera stream empty';
+
+  const ready = new Promise((resolve) => (video.onloadeddata = () => resolve(true)));
+  video.srcObject = stream;
+  await ready;
+  if (settings.width > settings.height) canvas.style.width = '100vw';
+  else canvas.style.height = '100vh';
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  ui.menuWidth.input.setAttribute('value', video.videoWidth);
+  ui.menuHeight.input.setAttribute('value', video.videoHeight);
+  if (live || ui.autoPlay) await videoPlay();
+  // eslint-disable-next-line no-use-before-define
+  if ((live || ui.autoPlay) && !ui.detectThread) runHumanDetect(video, canvas);
+  return 'camera stream ready';
 }
 
 function initPerfMonitor() {
@@ -500,9 +495,8 @@ function runHumanDetect(input, canvas, timestamp) {
     // perform detection in worker
     webWorker(input, data, canvas, timestamp);
   } else {
-    if (human.env.initial) status('starting detection');
-    else status();
     human.detect(input, userConfig).then((result) => {
+      status();
       /*
       setTimeout(async () => { // simulate gl context lost 2sec after initial detection
         const ext = human.gl && human.gl.gl ? human.gl.gl.getExtension('WEBGL_lose_context') : {};
@@ -926,15 +920,16 @@ async function pwaRegister() {
 }
 
 async function main() {
-  /*
   window.addEventListener('unhandledrejection', (evt) => {
+    if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
+    if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
+    const msg = evt.reason.message || evt.reason || evt;
     // eslint-disable-next-line no-console
-    console.error(evt.reason || evt);
-    document.getElementById('log').innerHTML = evt.reason.message || evt.reason || evt;
-    status('exception error');
+    console.error(msg);
+    document.getElementById('log').innerHTML = msg;
+    status(`exception: ${msg}`);
     evt.preventDefault();
   });
-  */
 
   log('demo starting ...');
 
@@ -945,7 +940,7 @@ async function main() {
   // sanity check for webworker compatibility
   if (typeof Worker === 'undefined' || typeof OffscreenCanvas === 'undefined') {
     ui.useWorker = false;
-    log('workers are disabled due to missing browser functionality');
+    log('webworker functionality is disabled due to missing browser functionality');
   }
 
   // register PWA ServiceWorker
@@ -1010,6 +1005,8 @@ async function main() {
     await human.load(userConfig); // this is not required, just pre-loads all models
     const loaded = Object.keys(human.models).filter((a) => human.models[a]);
     log('demo loaded models:', loaded);
+  } else {
+    await human.init();
   }
 
   // warmup models

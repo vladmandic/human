@@ -34,7 +34,6 @@ let userConfig = {
   warmup: 'none',
   backend: 'humangl',
   debug: true,
-  filter: { enabled: false },
   /*
   wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
   async: false,
@@ -106,6 +105,7 @@ const ui = {
   lastFrame: 0, // time of last frame processing
   viewportSet: false, // internal, has custom viewport been set
   background: null, // holds instance of segmentation background image
+  exceptionHandler: true, // should capture all unhandled exceptions
 
   // webrtc
   useWebRTC: false, // use webrtc as camera source instead of local webcam
@@ -920,16 +920,18 @@ async function pwaRegister() {
 }
 
 async function main() {
-  window.addEventListener('unhandledrejection', (evt) => {
-    if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
-    if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
-    const msg = evt.reason.message || evt.reason || evt;
-    // eslint-disable-next-line no-console
-    console.error(msg);
-    document.getElementById('log').innerHTML = msg;
-    status(`exception: ${msg}`);
-    evt.preventDefault();
-  });
+  if (ui.exceptionHandler) {
+    window.addEventListener('unhandledrejection', (evt) => {
+      if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
+      if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
+      const msg = evt.reason.message || evt.reason || evt;
+      // eslint-disable-next-line no-console
+      console.error(msg);
+      document.getElementById('log').innerHTML = msg;
+      status(`exception: ${msg}`);
+      evt.preventDefault();
+    });
+  }
 
   log('demo starting ...');
 
@@ -985,7 +987,8 @@ async function main() {
   // create instance of human
   human = new Human(userConfig);
   log('human version:', human.version);
-  userConfig = { ...human.config, ...userConfig };
+  // we've merged human defaults with user config and now lets store it back so it can be accessed by methods such as menu
+  userConfig = human.config;
   if (typeof tf !== 'undefined') {
     // eslint-disable-next-line no-undef
     log('TensorFlow external version:', tf.version);

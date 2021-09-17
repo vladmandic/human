@@ -101,7 +101,7 @@ function join(folder, file) {
   const skipJoin = file.startsWith(".") || file.startsWith("/") || file.startsWith("http:") || file.startsWith("https:") || file.startsWith("file:");
   const path = skipJoin ? `${file}` : `${folder}${separator}${file}`;
   if (!path.toLocaleLowerCase().includes(".json"))
-    throw new Error(`Human: ModelPath Error: ${path} Expecting JSON file`);
+    throw new Error(`modelpath error: ${path} expecting json file`);
   return path;
 }
 function log(...msg) {
@@ -3766,7 +3766,7 @@ function GLProgram(gl, vertexSource, fragmentSource) {
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
-      throw new Error("Filter: GL compile failed", gl.getShaderInfoLog(shader));
+      throw new Error("filter: gl compile failed", gl.getShaderInfoLog(shader));
     return shader;
   };
   this.uniform = {};
@@ -3778,7 +3778,7 @@ function GLProgram(gl, vertexSource, fragmentSource) {
   gl.attachShader(this.id, _fsh);
   gl.linkProgram(this.id);
   if (!gl.getProgramParameter(this.id, gl.LINK_STATUS))
-    throw new Error("Filter: GL link failed", gl.getProgramInfoLog(this.id));
+    throw new Error("filter: gl link failed", gl.getProgramInfoLog(this.id));
   gl.useProgram(this.id);
   _collect(vertexSource, "attribute", this.attribute);
   for (const a in this.attribute)
@@ -3807,7 +3807,7 @@ function GLImageFilter(params) {
   const DRAW = { INTERMEDIATE: 1 };
   const gl = _canvas.getContext("webgl");
   if (!gl)
-    throw new Error("Filter: getContext() failed");
+    throw new Error("filter: context failed");
   this.addFilter = function(name) {
     const args = Array.prototype.slice.call(arguments, 1);
     const filter = _filter[name];
@@ -4481,15 +4481,15 @@ function canvas(width, height) {
 function process2(input, config3) {
   let tensor3;
   if (!input)
-    throw new Error("Human: Input is missing");
+    throw new Error("input is missing");
   if (!(input instanceof tf3.Tensor) && !(typeof Image !== "undefined" && input instanceof Image) && !(typeof env.Canvas !== "undefined" && input instanceof env.Canvas) && !(typeof ImageData !== "undefined" && input instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input instanceof OffscreenCanvas)) {
-    throw new Error("Human: Input type is not recognized");
+    throw new Error("input type is not recognized");
   }
   if (input instanceof tf3.Tensor) {
     if (input.shape && input.shape.length === 4 && input.shape[0] === 1 && input.shape[3] === 3)
       tensor3 = tf3.clone(input);
     else
-      throw new Error(`Human: Input tensor shape must be [1, height, width, 3] and instead was ${input.shape}`);
+      throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${input.shape}`);
   } else {
     if (typeof input["readyState"] !== "undefined" && input["readyState"] <= 2) {
       log("input stream is not ready");
@@ -4520,7 +4520,7 @@ function process2(input, config3) {
     else if ((config3.filter.width || 0) > 0)
       targetHeight = originalHeight * ((config3.filter.width || 0) / originalWidth);
     if (!targetWidth || !targetHeight)
-      throw new Error("Human: Input cannot determine dimension");
+      throw new Error("input cannot determine dimension");
     if (!inCanvas || (inCanvas == null ? void 0 : inCanvas.width) !== targetWidth || (inCanvas == null ? void 0 : inCanvas.height) !== targetHeight)
       inCanvas = canvas(targetWidth, targetHeight);
     const ctx = inCanvas.getContext("2d");
@@ -4594,7 +4594,11 @@ function process2(input, config3) {
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext("2d");
         tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
-        pixels = tf3.browser && env.browser ? tf3.browser.fromPixels(tempCanvas) : null;
+        try {
+          pixels = tf3.browser && env.browser ? tf3.browser.fromPixels(tempCanvas) : null;
+        } catch (err) {
+          throw new Error("browser webgl error");
+        }
       } else {
         const tempCanvas = canvas(targetWidth, targetHeight);
         if (!tempCanvas)
@@ -4625,7 +4629,7 @@ function process2(input, config3) {
         tf3.dispose(casted);
       } else {
         tensor3 = tf3.zeros([1, targetWidth, targetHeight, 3]);
-        throw new Error("Human: Cannot create tensor from input");
+        throw new Error("cannot create tensor from input");
       }
     }
   }
@@ -4690,7 +4694,7 @@ async function backendInfo() {
   env.backends = Object.keys(tf4.engine().registryFactory);
   env.wasm.supported = typeof WebAssembly !== "undefined";
   env.wasm.backend = env.backends.includes("wasm");
-  if (env.wasm.supported && env.wasm.backend) {
+  if (env.wasm.supported && env.wasm.backend && tf4.getBackend() === "wasm") {
     env.wasm.simd = await tf4.env().getAsync("WASM_HAS_SIMD_SUPPORT");
     env.wasm.multithread = await tf4.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
   }
@@ -4698,8 +4702,8 @@ async function backendInfo() {
   const ctx = c ? c.getContext("webgl2") : void 0;
   env.webgl.supported = typeof ctx !== "undefined";
   env.webgl.backend = env.backends.includes("webgl");
-  if (env.webgl.supported && env.webgl.backend) {
-    const gl = tf4.backend().gpgpu !== "undefined" && tf4.backend().getGPGPUContext ? await tf4.backend().getGPGPUContext().gl : null;
+  if (env.webgl.supported && env.webgl.backend && (tf4.getBackend() === "webgl" || tf4.getBackend() === "humangl")) {
+    const gl = tf4.backend().gpgpu !== "undefined" ? await tf4.backend().getGPGPUContext().gl : null;
     if (gl) {
       env.webgl.version = gl.getParameter(gl.VERSION);
       env.webgl.renderer = gl.getParameter(gl.RENDERER);
@@ -9858,7 +9862,7 @@ async function load10(config3) {
     const inputs = Object.values(model7.modelSignature["inputs"]);
     model7.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
     if (!model7.inputSize)
-      throw new Error(`Human: Cannot determine model inputSize: ${config3.object.modelPath}`);
+      throw new Error(`cannot determine model inputSize: ${config3.object.modelPath}`);
     if (!model7 || !model7.modelUrl)
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
@@ -10595,7 +10599,7 @@ var options2 = {
 var getCanvasContext = (input) => {
   if (input && input.getContext)
     return input.getContext("2d");
-  throw new Error("Human: Invalid Canvas");
+  throw new Error("invalid canvas");
 };
 var rad2deg = (theta) => Math.round(theta * 180 / Math.PI);
 function point(ctx, x, y, z = 0, localOptions) {
@@ -11238,10 +11242,7 @@ async function register(instance) {
   var _a;
   if (config2.name in tf21.engine().registry && (!config2.gl || !config2.gl.getParameter(config2.gl.VERSION))) {
     log("error: humangl backend invalid context");
-    log("resetting humangl backend");
     reset(instance);
-    await tf21.removeBackend(config2.name);
-    await register(instance);
   }
   if (!tf21.findBackend(config2.name)) {
     try {
@@ -11254,14 +11255,10 @@ async function register(instance) {
       config2.gl = (_a = config2.canvas) == null ? void 0 : _a.getContext("webgl2", config2.webGLattr);
       if (config2.canvas) {
         config2.canvas.addEventListener("webglcontextlost", async (e) => {
-          var _a2;
-          const err = (_a2 = config2.gl) == null ? void 0 : _a2.getError();
-          log("error: humangl context lost:", err, e);
-          log("gpu memory usage:", instance.tf.engine().backendInstance.numBytesInGPU);
-          log("resetting humangl backend");
-          env.initial = true;
-          reset(instance);
-          await tf21.removeBackend(config2.name);
+          log("error: humangl:", e.type);
+          log("possible browser memory leak using webgl");
+          instance.emit("error");
+          throw new Error("browser webgl error");
         });
         config2.canvas.addEventListener("webglcontextrestored", (e) => {
           log("error: humangl context restored:", e);
@@ -11364,7 +11361,7 @@ async function check(instance) {
         if (typeof (tf22 == null ? void 0 : tf22.setWasmPaths) !== "undefined")
           await tf22.setWasmPaths(instance.config.wasmPath);
         else
-          throw new Error("Human: WASM backend is not loaded");
+          throw new Error("wasm backend is not loaded");
         const simd = await tf22.env().getAsync("WASM_HAS_SIMD_SUPPORT");
         const mt = await tf22.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
         if (instance.config.debug)
@@ -11372,15 +11369,14 @@ async function check(instance) {
         if (instance.config.debug && !simd)
           log("warning: wasm simd support is not enabled");
       }
-      await tf22.setBackend(instance.config.backend);
       try {
         await tf22.setBackend(instance.config.backend);
         await tf22.ready();
       } catch (err) {
         log("error: cannot set backend:", instance.config.backend, err);
+        return false;
       }
     }
-    tf22.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
     if (tf22.getBackend() === "humangl") {
       tf22.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
       tf22.ENV.set("WEBGL_CPU_FORWARD", true);
@@ -11401,6 +11397,7 @@ async function check(instance) {
     get();
     instance.env = env;
   }
+  return true;
 }
 
 // package.json
@@ -12343,6 +12340,9 @@ var Human = class {
   match(faceEmbedding, db, threshold = 0) {
     return match(faceEmbedding, db, threshold);
   }
+  init() {
+    check(this);
+  }
   async load(userConfig) {
     this.state = "load";
     const timeStamp = now();
@@ -12354,7 +12354,8 @@ var Human = class {
         log(`version: ${this.version}`);
       if (this.config.debug)
         log(`tfjs version: ${this.tf.version_core}`);
-      await check(this);
+      if (!await check(this))
+        log("error: backend check failed");
       await tf24.ready();
       if (this.env.browser) {
         if (this.config.debug)

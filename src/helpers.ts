@@ -7,7 +7,7 @@ export function join(folder: string, file: string): string {
   const separator = folder.endsWith('/') ? '' : '/';
   const skipJoin = file.startsWith('.') || file.startsWith('/') || file.startsWith('http:') || file.startsWith('https:') || file.startsWith('file:');
   const path = skipJoin ? `${file}` : `${folder}${separator}${file}`;
-  if (!path.toLocaleLowerCase().includes('.json')) throw new Error(`Human: ModelPath Error: ${path} Expecting JSON file`);
+  if (!path.toLocaleLowerCase().includes('.json')) throw new Error(`modelpath error: ${path} expecting json file`);
   return path;
 }
 

@@ -93,18 +93,19 @@ export async function backendInfo() {
   env.backends = Object.keys(tf.engine().registryFactory);
   env.wasm.supported = typeof WebAssembly !== 'undefined';
   env.wasm.backend = env.backends.includes('wasm');
-  if (env.wasm.supported && env.wasm.backend) {
+  if (env.wasm.supported && env.wasm.backend && tf.getBackend() === 'wasm') {
     env.wasm.simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
     env.wasm.multithread = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT');
   }
 
   const c = image.canvas(100, 100);
-  const ctx = c ? c.getContext('webgl2') : undefined;
+  const ctx = c ? c.getContext('webgl2') : undefined; // causes too many gl contexts
+  // const ctx = typeof tf.backend().getGPGPUContext !== undefined ? tf.backend().getGPGPUContext : null;
   env.webgl.supported = typeof ctx !== 'undefined';
   env.webgl.backend = env.backends.includes('webgl');
-  if (env.webgl.supported && env.webgl.backend) {
+  if (env.webgl.supported && env.webgl.backend && (tf.getBackend() === 'webgl' || tf.getBackend() === 'humangl')) {
     // @ts-ignore getGPGPUContext only exists on WebGL backend
-    const gl = (tf.backend().gpgpu !== 'undefined') && (tf.backend().getGPGPUContext) ? await tf.backend().getGPGPUContext().gl : null;
+    const gl = tf.backend().gpgpu !== 'undefined' ? await tf.backend().getGPGPUContext().gl : null;
     if (gl) {
       env.webgl.version = gl.getParameter(gl.VERSION);
       env.webgl.renderer = gl.getParameter(gl.RENDERER);

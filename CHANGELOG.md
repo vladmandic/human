@@ -9,11 +9,19 @@
   
 ## Changelog
   
+### **HEAD -> main** 2021/09/17 mandic00@live.com
+
+
+### **2.2.2** 2021/09/17 mandic00@live.com
+
+- experimental webgl status monitoring
+
+### **release: 2.2.1** 2021/09/16 mandic00@live.com
+
+
 ### **2.2.1** 2021/09/16 mandic00@live.com
 
-
-### **origin/main** 2021/09/16 mandic00@live.com
-
+- add vr model demo
 - all tests passing
 - redefine draw helpers interface
 - add simple webcam and webrtc demo

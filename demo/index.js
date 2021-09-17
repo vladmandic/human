@@ -33,6 +33,7 @@ let human;
 let userConfig = {
   warmup: 'none',
   backend: 'humangl',
+  debug: true,
   /*
   wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
   async: false,
@@ -176,6 +177,20 @@ function status(msg) {
   }
 }
 
+async function videoPlay() {
+  document.getElementById('btnStartText').innerHTML = 'pause video';
+  await document.getElementById('video').play();
+  status();
+}
+
+async function videoPause() {
+  document.getElementById('btnStartText').innerHTML = 'start video';
+  await document.getElementById('video').pause();
+  status('paused');
+  document.getElementById('play').style.display = 'block';
+  document.getElementById('loader').style.display = 'none';
+}
+
 const compare = { enabled: false, original: null };
 async function calcSimmilarity(result) {
   document.getElementById('compare-container').style.display = compare.enabled ? 'block' : 'none';
@@ -280,7 +295,7 @@ async function drawResults(input) {
   const avgDraw = ui.drawFPS.length > 0 ? Math.trunc(10 * ui.drawFPS.reduce((a, b) => a + b, 0) / ui.drawFPS.length) / 10 : 0;
   const warning = (ui.detectFPS.length > 5) && (avgDetect < 2) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
   const fps = avgDetect > 0 ? `FPS process:${avgDetect} refresh:${avgDraw}` : '';
-  const backend = engine.state.numTensors > 0 ? `backend: ${human.tf.getBackend()} | ${memory}` : 'running in web worker';
+  const backend = engine.state.numTensors > 0 ? `${human.tf.getBackend()} | ${memory}` : `${result.backend} | tensors: ${result.tensors} in worker`;
   document.getElementById('log').innerHTML = `
     video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
     backend: ${backend}<br>
@@ -387,7 +402,7 @@ async function setupCamera() {
       canvas.height = video.videoHeight;
       ui.menuWidth.input.setAttribute('value', video.videoWidth);
       ui.menuHeight.input.setAttribute('value', video.videoHeight);
-      if (live || ui.autoPlay) video.play();
+      if (live || ui.autoPlay) videoPlay();
       // eslint-disable-next-line no-use-before-define
       if ((live || ui.autoPlay) && !ui.detectThread) runHumanDetect(video, canvas);
       ui.busy = false;
@@ -485,8 +500,20 @@ function runHumanDetect(input, canvas, timestamp) {
     // perform detection in worker
     webWorker(input, data, canvas, timestamp);
   } else {
+    if (human.env.initial) status('starting detection');
+    else status();
     human.detect(input, userConfig).then((result) => {
-      status();
+      /*
+      setTimeout(async () => { // simulate gl context lost 2sec after initial detection
+        const ext = human.gl && human.gl.gl ? human.gl.gl.getExtension('WEBGL_lose_context') : {};
+        if (ext && ext.loseContext) {
+          log('simulate context lost:', human.env.webgl, human.gl, ext);
+          human.gl.gl.getExtension('WEBGL_lose_context').loseContext();
+          await videoPause();
+          status('Exception: WebGL');
+        }
+      }, 2000);
+      */
       if (result.performance && result.performance.total) ui.detectFPS.push(1000 / result.performance.total);
       if (ui.detectFPS.length > ui.maxFPSframes) ui.detectFPS.shift();
       if (ui.bench) {
@@ -588,10 +615,8 @@ async function processVideo(input, title) {
   video.addEventListener('canplay', async () => {
     for (const m of Object.values(menu)) m.hide();
     document.getElementById('samples-container').style.display = 'none';
-    document.getElementById('play').style.display = 'none';
     canvas.style.display = 'block';
-    document.getElementById('btnStartText').innerHTML = 'pause video';
-    await video.play();
+    await videoPlay();
     if (!ui.detectThread) runHumanDetect(video, canvas);
   });
   video.src = input;
@@ -605,17 +630,14 @@ async function detectVideo() {
   canvas.style.display = 'block';
   cancelAnimationFrame(ui.detectThread);
   if ((video.srcObject !== null) && !video.paused) {
-    document.getElementById('btnStartText').innerHTML = 'start video';
-    status('paused');
-    await video.pause();
+    await videoPause();
     // if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
   } else {
     const cameraError = await setupCamera();
     if (!cameraError) {
       status('starting detection');
       for (const m of Object.values(menu)) m.hide();
-      document.getElementById('btnStartText').innerHTML = 'pause video';
-      await video.play();
+      await videoPlay();
       runHumanDetect(video, canvas);
     } else {
       status(cameraError);
@@ -904,6 +926,7 @@ async function pwaRegister() {
 }
 
 async function main() {
+  /*
   window.addEventListener('unhandledrejection', (evt) => {
     // eslint-disable-next-line no-console
     console.error(evt.reason || evt);
@@ -911,6 +934,7 @@ async function main() {
     status('exception error');
     evt.preventDefault();
   });
+  */
 
   log('demo starting ...');
 
@@ -1028,6 +1052,7 @@ async function main() {
   }
 
   if (human.config.debug) log('environment:', human.env);
+  if (human.config.backend === 'humangl' && human.config.debug) log('backend:', human.gl);
 }
 
 window.onload = main;

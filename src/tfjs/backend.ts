@@ -4,33 +4,24 @@ import * as env from '../env';
 import * as tf from '../../dist/tfjs.esm.js';
 
 export async function check(instance) {
-  if (instance.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
+  if (env.env.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
     const timeStamp = now();
     instance.state = 'backend';
-    /* force backend reload
-    if (instance.config.backend in tf.engine().registry) {
-      const backendFactory = tf.findBackendFactory(instance.config.backend);
-      tf.removeBackend(instance.config.backend);
-      tf.registerBackend(instance.config.backend, backendFactory);
-    } else {
-      log('Backend not registred:', instance.config.backend);
-    }
-    */
 
     if (instance.config.backend && instance.config.backend.length > 0) {
       // detect web worker
       // @ts-ignore ignore missing type for WorkerGlobalScope as that is the point
       if (typeof window === 'undefined' && typeof WorkerGlobalScope !== 'undefined' && instance.config.debug) {
-        log('running inside web worker');
+        if (instance.config.debug) log('running inside web worker');
       }
 
       // force browser vs node backend
       if (env.env.browser && instance.config.backend === 'tensorflow') {
-        log('override: backend set to tensorflow while running in browser');
+        if (instance.config.debug) log('override: backend set to tensorflow while running in browser');
         instance.config.backend = 'humangl';
       }
       if (env.env.node && (instance.config.backend === 'webgl' || instance.config.backend === 'humangl')) {
-        log(`override: backend set to ${instance.config.backend} while running in nodejs`);
+        if (instance.config.debug) log(`override: backend set to ${instance.config.backend} while running in nodejs`);
         instance.config.backend = 'tensorflow';
       }
 
@@ -46,14 +37,14 @@ export async function check(instance) {
       }
 
       // check available backends
-      if (instance.config.backend === 'humangl') humangl.register();
+      if (instance.config.backend === 'humangl') await humangl.register(instance);
       const available = Object.keys(tf.engine().registryFactory);
       if (instance.config.debug) log('available backends:', available);
 
       if (!available.includes(instance.config.backend)) {
         log(`error: backend ${instance.config.backend} not found in registry`);
         instance.config.backend = env.env.node ? 'tensorflow' : 'humangl';
-        log(`override: setting backend ${instance.config.backend}`);
+        if (instance.config.debug) log(`override: setting backend ${instance.config.backend}`);
       }
 
       if (instance.config.debug) log('setting backend:', instance.config.backend);
@@ -78,6 +69,8 @@ export async function check(instance) {
         log('error: cannot set backend:', instance.config.backend, err);
       }
     }
+
+    tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
 
     // handle webgl & humangl
     if (tf.getBackend() === 'humangl') {

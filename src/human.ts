@@ -25,6 +25,7 @@ import * as persons from './persons';
 import * as interpolate from './interpolate';
 import * as env from './env';
 import * as backend from './tfjs/backend';
+import * as humangl from './tfjs/humangl';
 import * as app from '../package.json';
 import * as warmups from './warmup';
 import type { Tensor, GraphModel } from './tfjs/types';
@@ -152,7 +153,8 @@ export class Human {
   #numTensors: number;
   #analyzeMemoryLeaks: boolean;
   #checkSanity: boolean;
-  initial: boolean;
+  /** WebGL debug info */
+  gl: Record<string, unknown>;
   // definition end
 
   /**
@@ -173,7 +175,6 @@ export class Human {
     this.#numTensors = 0;
     this.#analyzeMemoryLeaks = false;
     this.#checkSanity = false;
-    this.initial = true;
     this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
     this.events = new EventTarget();
     // object that contains all initialized models
@@ -212,6 +213,8 @@ export class Human {
     // export raw access to underlying models
     this.faceTriangulation = facemesh.triangulation;
     this.faceUVMap = facemesh.uvmap;
+    // set gl info
+    this.gl = humangl.config;
     // include platform info
     this.emit('create');
   }
@@ -303,7 +306,7 @@ export class Human {
     const count = Object.values(this.models).filter((model) => model).length;
     if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
 
-    if (this.initial) { // print version info on first run and check for correct backend setup
+    if (env.env.initial) { // print version info on first run and check for correct backend setup
       if (this.config.debug) log(`version: ${this.version}`);
       if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
       await backend.check(this);
@@ -315,9 +318,8 @@ export class Human {
     }
 
     await models.load(this); // actually loads models
-
-    if (this.initial && this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors'); // print memory stats on first run
-    this.initial = false;
+    if (env.env.initial && this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors'); // print memory stats on first run
+    env.env.initial = false;
 
     const loaded = Object.values(this.models).filter((model) => model).length;
     if (loaded !== count) { // number of loaded models changed

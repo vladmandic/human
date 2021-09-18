@@ -34,10 +34,7 @@ export function reset(instance) {
   };
 }
 
-/** Load method preloads all instance.configured models on-demand
- * - Not explicitly required as any required model is load implicitly on it's first run
- * @param userinstance.config?: {@link instance.config}
-*/
+/** Load method preloads all instance.configured models on-demand */
 export async function load(instance) {
   if (env.initial) reset(instance);
   if (instance.config.async) { // load models concurrently

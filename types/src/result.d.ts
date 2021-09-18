@@ -191,7 +191,7 @@ export interface Result {
     hand: Array<HandResult>;
     /** {@link GestureResult}: detection & analysis results */
     gesture: Array<GestureResult>;
-    /** {@link ItemResult}: detection & analysis results */
+    /** {@link ObjectResult}: detection & analysis results */
     object: Array<ObjectResult>;
     /** global performance object with timing values for each operation */
     performance: Record<string, unknown>;

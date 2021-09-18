@@ -144,12 +144,15 @@ async function test(Human, inputConfig) {
     return;
   }
   const t0 = process.hrtime.bigint();
-  const human = new Human(config);
+  let human;
+
+  // test event emitter
+  human = new Human(config);
   human.events.addEventListener('warmup', () => events('warmup'));
   human.events.addEventListener('image', () => events('image'));
   human.events.addEventListener('detect', () => events('detect'));
 
-  // await human.tf.ready();
+  // test warmup sequences
   await testInstance(human);
   config.warmup = 'none';
   await testWarmup(human, 'default');
@@ -158,33 +161,63 @@ async function test(Human, inputConfig) {
   config.warmup = 'body';
   await testWarmup(human, 'default');
 
+  // test default config
   log('info', 'test default');
+  human = new Human(config);
   await testDetect(human, 'samples/ai-body.jpg', 'default');
 
+  // test detectors only
+  log('info', 'test detectors');
+  config.face = { mesh: { enabled: false }, iris: { enabled: false }, hand: { landmarks: false } };
+  human = new Human(config);
+  await testDetect(human, 'samples/ai-body.jpg', 'default');
+
+  // test posenet and movenet
   log('info', 'test body variants');
   config.body = { modelPath: 'posenet.json' };
   await testDetect(human, 'samples/ai-body.jpg', 'posenet');
   config.body = { modelPath: 'movenet-lightning.json' };
   await testDetect(human, 'samples/ai-body.jpg', 'movenet');
+
+  // test multiple instances
+  const first = new Human(config);
+  const second = new Human(config);
   await testDetect(human, null, 'default');
   log('info', 'test: first instance');
-  await testDetect(human, 'samples/ai-upper.jpg', 'default');
+  await testDetect(first, 'samples/ai-upper.jpg', 'default');
   log('info', 'test: second instance');
-  const second = new Human(config);
   await testDetect(second, 'samples/ai-upper.jpg', 'default');
+
+  // test async multiple instances
   log('info', 'test: concurrent');
   await Promise.all([
     testDetect(human, 'samples/ai-face.jpg', 'default'),
+    testDetect(first, 'samples/ai-face.jpg', 'default'),
     testDetect(second, 'samples/ai-face.jpg', 'default'),
     testDetect(human, 'samples/ai-body.jpg', 'default'),
+    testDetect(first, 'samples/ai-body.jpg', 'default'),
     testDetect(second, 'samples/ai-body.jpg', 'default'),
     testDetect(human, 'samples/ai-upper.jpg', 'default'),
+    testDetect(first, 'samples/ai-upper.jpg', 'default'),
     testDetect(second, 'samples/ai-upper.jpg', 'default'),
   ]);
+
+  // tests end
   const t1 = process.hrtime.bigint();
+
+  // check tensor leaks
   const leak = human.tf.engine().state.numTensors - tensors;
   if (leak === 0) log('state', 'passeed: no memory leak');
   else log('error', 'failed: memory leak', leak);
+
+  // check if all instances reported same
+  const tensors1 = human.tf.engine().state.numTensors;
+  const tensors2 = first.tf.engine().state.numTensors;
+  const tensors3 = second.tf.engine().state.numTensors;
+  if (tensors1 === tensors2 && tensors1 === tensors3 && tensors2 === tensors3) log('state', 'passeed: equal usage');
+  else log('error', 'failed: equal usage', tensors1, tensors2, tensors3);
+
+  // report end
   log('info', 'events:', evt);
   log('info', 'test complete:', Math.trunc(Number(t1 - t0) / 1000 / 1000), 'ms');
 }

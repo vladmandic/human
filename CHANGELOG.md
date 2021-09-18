@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/09/17 mandic00@live.com
 
+- webgl exception handling
 
 ### **2.2.2** 2021/09/17 mandic00@live.com
 

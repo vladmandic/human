@@ -58,6 +58,23 @@ var now = () => {
     return performance.now();
   return parseInt((Number(process.hrtime.bigint()) / 1e3 / 1e3).toString());
 };
+function validate(defaults, config3, parent = "config", msgs = []) {
+  for (const key of Object.keys(config3)) {
+    if (typeof config3[key] === "object") {
+      validate(defaults[key], config3[key], key, msgs);
+    } else {
+      const defined = typeof defaults[key] !== "undefined";
+      if (!defined)
+        msgs.push({ reason: "unknown property", where: `${parent}.${key} = ${config3[key]}` });
+      const same = typeof defaults[key] === typeof config3[key];
+      if (defined && !same)
+        msgs.push({ reason: "property type mismatch", where: `${parent}.${key} = ${config3[key]}`, expected: typeof defaults[key] });
+    }
+  }
+  if (config3.debug && parent === "config" && msgs.length > 0)
+    log("invalid configuration", msgs);
+  return msgs;
+}
 function mergeDeep(...objects) {
   const isObject = (obj) => obj && typeof obj === "object";
   return objects.reduce((prev, obj) => {
@@ -64607,7 +64624,7 @@ function process2(input2, config3) {
       let pixels;
       if (outCanvas.data) {
         const shape = [outCanvas.height, outCanvas.width, 3];
-        pixels = tensor3d(outCanvas.data, shape, "int32");
+        pixels = tensor3d(outCanvas.data, shape, "float32");
       } else if (typeof ImageData !== "undefined" && outCanvas instanceof ImageData) {
         pixels = browser_exports ? browser_exports.fromPixels(outCanvas) : null;
       } else if (config3.backend === "webgl" || config3.backend === "humangl") {
@@ -68676,7 +68693,7 @@ var HandDetector = class {
     const scores = await t.scores.data();
     t.boxes = slice(t.predictions, [0, 1], [-1, 4]);
     t.norm = this.normalizeBoxes(t.boxes);
-    t.nms = await image.nonMaxSuppressionAsync(t.norm, t.scores, 10 * config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
+    t.nms = await image.nonMaxSuppressionAsync(t.norm, t.scores, 3 * config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
     const nms = await t.nms.array();
     const hands = [];
     for (const index of nms) {
@@ -68789,7 +68806,7 @@ var HandPipeline = class {
     __publicField(this, "detectedHands");
     this.handDetector = handDetector;
     this.handPoseModel = handPoseModel2;
-    this.inputSize = this.handPoseModel.inputs[0].shape ? this.handPoseModel.inputs[0].shape[2] : 0;
+    this.inputSize = this.handPoseModel && this.handPoseModel.inputs[0].shape ? this.handPoseModel.inputs[0].shape[2] : 0;
     this.storedBoxes = [];
     this.skipped = 0;
     this.detectedHands = 0;
@@ -68905,6 +68922,8 @@ var HandPipeline = class {
     }
     this.storedBoxes = this.storedBoxes.filter((a) => a !== null);
     this.detectedHands = hands.length;
+    if (hands.length > config3.hand.maxDetected)
+      hands.length = config3.hand.maxDetected;
     return hands;
   }
 };
@@ -68966,6 +68985,8 @@ function calculateSlope(point1x, point1y, point2x, point2y) {
   return slope;
 }
 function getSlopes(point1, point2) {
+  if (!point1 || !point2)
+    return [0, 0];
   const slopeXY = calculateSlope(point1[0], point1[1], point2[0], point2[1]);
   if (point1.length === 2)
     return slopeXY;
@@ -69264,6 +69285,8 @@ var gestures_default = [ThumbsUp, Victory];
 // src/fingerpose/fingerpose.ts
 var minConfidence = 0.7;
 function analyze(keypoints3) {
+  if (!keypoints3 || keypoints3.length === 0)
+    return null;
   const estimatorRes = estimate(keypoints3);
   const landmarks = {};
   for (const fingerIdx of Finger.all) {
@@ -69275,8 +69298,10 @@ function analyze(keypoints3) {
   return landmarks;
 }
 function match2(keypoints3) {
-  const estimatorRes = estimate(keypoints3);
   const poses2 = [];
+  if (!keypoints3 || keypoints3.length === 0)
+    return poses2;
+  const estimatorRes = estimate(keypoints3);
   for (const gesture3 of gestures_default) {
     const confidence = gesture3.matchAgainst(estimatorRes.curls, estimatorRes.directions);
     if (confidence >= minConfidence)
@@ -70229,7 +70254,7 @@ async function load13(instance) {
       instance.models.segmentation = await load12(instance.config);
   }
 }
-async function validate(instance) {
+async function validate2(instance) {
   const simpleOps = ["const", "placeholder", "noop", "pad", "squeeze", "add", "sub", "mul", "div"];
   for (const defined of Object.keys(instance.models)) {
     if (instance.models[defined]) {
@@ -70557,7 +70582,7 @@ var hand = (res) => {
   for (let i = 0; i < res.length; i++) {
     const fingers = [];
     for (const [finger, pos] of Object.entries(res[i]["annotations"])) {
-      if (finger !== "palmBase" && Array.isArray(pos))
+      if (finger !== "palmBase" && Array.isArray(pos) && pos[0])
         fingers.push({ name: finger.toLowerCase(), position: pos[0] });
     }
     if (fingers && fingers.length > 0) {
@@ -72269,6 +72294,8 @@ var Human = class {
       }
       return null;
     });
+    __publicField(this, "reset", () => this.config = JSON.parse(JSON.stringify(config)));
+    __publicField(this, "validate", (userConfig) => validate(config, userConfig || this.config));
     __publicField(this, "image", (input2) => process2(input2, this.config));
     __publicField(this, "emit", (event) => {
       var _a;
@@ -72281,7 +72308,11 @@ var Human = class {
     config.backend = this.env.browser ? "humangl" : "tensorflow";
     this.version = version6;
     Object.defineProperty(this, "version", { value: version6 });
-    this.config = mergeDeep(config, userConfig || {});
+    this.config = JSON.parse(JSON.stringify(config));
+    Object.seal(this.config);
+    if (userConfig)
+      this.config = mergeDeep(this.config, userConfig);
+    validate(config, this.config);
     this.tf = tfjs_esm_exports;
     this.state = "idle";
     __privateSet(this, _numTensors, 0);
@@ -72365,7 +72396,7 @@ var Human = class {
     env2.initial = false;
     const loaded = Object.values(this.models).filter((model11) => model11).length;
     if (loaded !== count3) {
-      await validate(this);
+      await validate2(this);
       this.emit("load");
     }
     const current = Math.trunc(now() - timeStamp);

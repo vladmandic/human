@@ -23,15 +23,18 @@ const ignoreMessages = [
   'ExperimentalWarning',
 ];
 
-const status = {
-  passed: 0,
-  failed: 0,
-};
+const status = {};
 
 function logMessage(test, data) {
-  log[data[0]](test, ...data[1]);
-  if (data[1][0].startsWith('passed')) status.passed++;
-  if (data[1][0].startsWith('failed')) status.failed++;
+  if (!status[test]) status[test] = { passed: 0, failed: 0 };
+  if (log[data[0]]) {
+    log[data[0]](test, ...data[1]);
+  } else {
+    log.error('unknown facility', test, ...data[1]);
+    status[test].failed++;
+  }
+  if (data[1][0].startsWith('passed')) status[test].passed++;
+  if (data[1][0].startsWith('failed')) status[test].failed++;
 }
 
 function logStdIO(ok, test, buffer) {

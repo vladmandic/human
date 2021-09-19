@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/17 mandic00@live.com
+### **HEAD -> main** 2021/09/18 mandic00@live.com
 
+- prevent validation failed on some model combinations
 - webgl exception handling
 
 ### **2.2.2** 2021/09/17 mandic00@live.com

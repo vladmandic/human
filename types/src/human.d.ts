@@ -141,6 +141,14 @@ export declare class Human {
     constructor(userConfig?: Partial<Config>);
     /** @hidden */
     analyze: (...msg: string[]) => void;
+    /** Reset configuration to default values */
+    reset: () => any;
+    /** Validate current configuration schema */
+    validate: (userConfig?: Partial<Config> | undefined) => {
+        reason: string;
+        where: string;
+        expected?: string;
+    }[];
     /** Process input as return canvas and tensor
      *
      * @param input: {@link Input}

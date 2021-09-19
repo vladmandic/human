@@ -22,7 +22,7 @@ export class HandPipeline {
   constructor(handDetector, handPoseModel) {
     this.handDetector = handDetector;
     this.handPoseModel = handPoseModel;
-    this.inputSize = this.handPoseModel.inputs[0].shape ? this.handPoseModel.inputs[0].shape[2] : 0;
+    this.inputSize = this.handPoseModel && this.handPoseModel.inputs[0].shape ? this.handPoseModel.inputs[0].shape[2] : 0;
     this.storedBoxes = [];
     this.skipped = 0;
     this.detectedHands = 0;
@@ -152,6 +152,7 @@ export class HandPipeline {
     }
     this.storedBoxes = this.storedBoxes.filter((a) => a !== null);
     this.detectedHands = hands.length;
+    if (hands.length > config.hand.maxDetected) hands.length = config.hand.maxDetected;
     return hands;
   }
 }

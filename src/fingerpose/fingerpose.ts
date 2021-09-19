@@ -7,6 +7,7 @@ import Gestures from './gestures';
 const minConfidence = 0.7;
 
 export function analyze(keypoints) { // get estimations of curl / direction for each finger
+  if (!keypoints || keypoints.length === 0) return null;
   const estimatorRes = estimator.estimate(keypoints);
   const landmarks = {};
   for (const fingerIdx of Finger.all) {
@@ -20,8 +21,9 @@ export function analyze(keypoints) { // get estimations of curl / direction for 
 }
 
 export function match(keypoints) { // compare gesture description to each known gesture
-  const estimatorRes = estimator.estimate(keypoints);
   const poses: Array<{ name: string, confidence: number }> = [];
+  if (!keypoints || keypoints.length === 0) return poses;
+  const estimatorRes = estimator.estimate(keypoints);
   for (const gesture of Gestures) {
     const confidence = gesture.matchAgainst(estimatorRes.curls, estimatorRes.directions);
     if (confidence >= minConfidence) poses.push({ name: gesture.name, confidence });

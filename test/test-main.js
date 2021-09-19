@@ -190,6 +190,14 @@ async function test(Human, inputConfig) {
   else log('state', 'passed: default result face match');
 
   // test default config
+  log('info', 'test sync');
+  human.reset();
+  config.async = false;
+  res = await testDetect(human, 'samples/ai-body.jpg', 'default');
+  if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default sync', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  else log('state', 'passed: default sync');
+
+  // test object detection
   log('info', 'test object');
   human.reset();
   config.object = { enabled: true };

@@ -63,10 +63,10 @@ function validate(defaults, config3, parent = "config", msgs = []) {
     if (typeof config3[key] === "object") {
       validate(defaults[key], config3[key], key, msgs);
     } else {
-      const defined = typeof defaults[key] !== "undefined";
+      const defined = defaults && typeof defaults[key] !== "undefined";
       if (!defined)
         msgs.push({ reason: "unknown property", where: `${parent}.${key} = ${config3[key]}` });
-      const same = typeof defaults[key] === typeof config3[key];
+      const same = defaults && typeof defaults[key] === typeof config3[key];
       if (defined && !same)
         msgs.push({ reason: "property type mismatch", where: `${parent}.${key} = ${config3[key]}`, expected: typeof defaults[key] });
     }

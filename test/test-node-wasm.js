@@ -19,7 +19,7 @@ const config = {
   async: false,
   face: {
     enabled: true,
-    detector: { enabled: true, rotation: false },
+    detector: { rotation: false },
     mesh: { enabled: true },
     iris: { enabled: true },
     description: { enabled: true },

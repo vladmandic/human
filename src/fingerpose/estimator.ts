@@ -21,6 +21,7 @@ function calculateSlope(point1x, point1y, point2x, point2y) {
 // point1, point2 are 2d or 3d point arrays (xy[z])
 // returns either a single scalar (2d) or array of two slopes (3d)
 function getSlopes(point1, point2) {
+  if (!point1 || !point2) return [0, 0];
   const slopeXY = calculateSlope(point1[0], point1[1], point2[0], point2[1]);
   if (point1.length === 2) return slopeXY;
   const slopeYZ = calculateSlope(point1[1], point1[2], point2[1], point2[2]);

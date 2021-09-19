@@ -8,7 +8,7 @@ const config = {
   async: true,
   face: {
     enabled: true,
-    detector: { enabled: true, rotation: true },
+    detector: { rotation: true },
     mesh: { enabled: true },
     iris: { enabled: true },
     description: { enabled: true },

@@ -12,6 +12,14 @@ const tests = [
   'test-node-wasm.js',
 ];
 
+const demos = [
+  '../demo/nodejs/node.js',
+  '../demo/nodejs/node-canvas.js',
+  '../demo/nodejs/node-env.js',
+  '../demo/nodejs/node-event.js',
+  '../demo/nodejs/node-multiprocess.js',
+];
+
 const ignoreMessages = [
   'cpu_feature_guard.cc',
   'rebuild TensorFlow',
@@ -65,6 +73,19 @@ async function runTest(test) {
   });
 }
 
+async function runDemo(demo) {
+  log.info();
+  log.info(demo, 'start');
+  return new Promise((resolve) => {
+    const child = fork(path.join(__dirname, demo), [], { silent: true });
+    child.on('message', (data) => logMessage(demo, data));
+    child.on('error', (data) => log.error(demo, ':', data.message || data));
+    child.on('close', (code) => resolve(code));
+    child.stdout?.on('data', (data) => logStdIO(true, demo, data));
+    child.stderr?.on('data', (data) => logStdIO(false, demo, data));
+  });
+}
+
 async function testAll() {
   logFile = path.join(__dirname, logFile);
   if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
@@ -73,6 +94,7 @@ async function testAll() {
   process.on('unhandledRejection', (data) => log.error('nodejs unhandled rejection', data));
   process.on('uncaughtException', (data) => log.error('nodejs unhandled exception', data));
   log.info('tests:', tests);
+  for (const demo of demos) await runDemo(demo);
   for (const test of tests) await runTest(test);
   log.info();
   log.info('status:', status);

@@ -31,9 +31,9 @@ export function validate(defaults, config, parent = 'config', msgs: Array<{ reas
     if (typeof config[key] === 'object') {
       validate(defaults[key], config[key], key, msgs);
     } else {
-      const defined = (typeof defaults[key] !== 'undefined');
+      const defined = defaults && (typeof defaults[key] !== 'undefined');
       if (!defined) msgs.push({ reason: 'unknown property', where: `${parent}.${key} = ${config[key]}` });
-      const same = typeof defaults[key] === typeof config[key];
+      const same = defaults && typeof defaults[key] === typeof config[key];
       if (defined && !same) msgs.push({ reason: 'property type mismatch', where: `${parent}.${key} = ${config[key]}`, expected: typeof defaults[key] });
     }
     // ok = ok && defined && same;

@@ -166,7 +166,7 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
       let pixels;
       if (outCanvas.data) { // if we have data, just convert to tensor
         const shape = [outCanvas.height, outCanvas.width, 3];
-        pixels = tf.tensor3d(outCanvas.data, shape, 'int32');
+        pixels = tf.tensor3d(outCanvas.data, shape, 'float32');
       } else if ((typeof ImageData !== 'undefined') && (outCanvas instanceof ImageData)) { // if input is imagedata, just use it
         pixels = tf.browser ? tf.browser.fromPixels(outCanvas) : null;
       } else if (config.backend === 'webgl' || config.backend === 'humangl') { // tf kernel-optimized method to get imagedata

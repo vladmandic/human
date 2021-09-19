@@ -30,6 +30,15 @@ Feature is automatically disabled in NodeJS without user impact
 
 <br>
 
+### Face Emotion Detection
+
+Face Emotion detection using WASM backend has reduced precision due to math errors in backend  
+
+- Backend WASM incorrect handling of `int32` tensors  
+  <https://github.com/tensorflow/tfjs/issues/5641>
+
+<br>
+
 ### Hand Detection
 
 Enhanced rotation correction for hand detection is not working in NodeJS due to missing kernel op in TFJS  
@@ -38,7 +47,10 @@ Feature is automatically disabled in NodeJS without user impact
 - Backend NodeJS missing kernel op `RotateWithOffset`  
   <https://github.com/tensorflow/tfjs/issues/5473>  
 
-Hand detection using WASM backend has reduced precision due to math rounding errors in backend  
+Hand detection using WASM backend has reduced precision due to math errors in backend  
+
+- Backend WASM incorrect handling of `int32` tensors  
+  <https://github.com/tensorflow/tfjs/issues/5641>
 
 <br>
 

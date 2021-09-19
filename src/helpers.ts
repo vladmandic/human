@@ -25,6 +25,23 @@ export const now = () => {
   return parseInt((Number(process.hrtime.bigint()) / 1000 / 1000).toString());
 };
 
+// helper function: checks current config validity
+export function validate(defaults, config, parent = 'config', msgs: Array<{ reason: string, where: string, expected?: string }> = []) {
+  for (const key of Object.keys(config)) {
+    if (typeof config[key] === 'object') {
+      validate(defaults[key], config[key], key, msgs);
+    } else {
+      const defined = (typeof defaults[key] !== 'undefined');
+      if (!defined) msgs.push({ reason: 'unknown property', where: `${parent}.${key} = ${config[key]}` });
+      const same = typeof defaults[key] === typeof config[key];
+      if (defined && !same) msgs.push({ reason: 'property type mismatch', where: `${parent}.${key} = ${config[key]}`, expected: typeof defaults[key] });
+    }
+    // ok = ok && defined && same;
+  }
+  if (config.debug && parent === 'config' && msgs.length > 0) log('invalid configuration', msgs);
+  return msgs;
+}
+
 // helper function: perform deep merge of multiple objects so it allows full inheriance with overrides
 export function mergeDeep(...objects) {
   const isObject = (obj) => obj && typeof obj === 'object';

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Human Browser Tests</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=yes">
+    <meta name="keywords" content="Human">
+    <meta name="application-name" content="Human">
+    <meta name="description" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
+    <meta name="msapplication-tooltip" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="../../assets/icon.png">
+    <style>
+      @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../../assets/lato-light.woff2') }
+      html { font-family: 'Lato', 'Segoe UI'; font-size: 14px; font-variant: small-caps; }
+      body { margin: 0; background: black; color: white; }
+      canvas { position: absolute; bottom: 10px; right: 10px; width: 256px; height: 256px; }
+      pre { line-height: 150%; }
+      .events { position: absolute; top: 10px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; }
+      .state { position: absolute; top: 60px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; }
+    </style>
+  </head>
+  <body>
+    <pre id="log"></pre>
+    <div id="events" class="events"></div>
+    <div id="state" class="state"></div>
+    <script type="module">
+      import Human from '../dist/human.esm.js';
+
+      const config = {
+        async: true,
+        warmup: 'full',
+        debug: true,
+        cacheSensitivity: 0,
+        object: { enabled: true },
+      }
+
+      const backends = ['wasm', 'webgl', 'humangl'];
+      // const backends = ['humangl'];
+
+      const start = performance.now();
+
+      function str(...msg) {
+        if (!Array.isArray(msg)) return msg;
+        let line = '';
+        for (const entry of msg) {
+          if (typeof entry === 'object') line += JSON.stringify(entry).replace(/"/g, '').replace(/,/g, ', ').replace(/:/g, ': ');
+          else line += entry;
+        }
+        return line + '\n';
+      }
+
+      async function log(...msgs) {
+        document.getElementById('log').innerHTML += str(...msgs);
+        console.log(...msgs);
+      }
+
+      async function image(url) {
+        const el = document.createElement('img');
+        el.id = 'image';
+        const loaded = new Promise((resolve) => { el.onload = () => resolve(true) });
+        el.src = url;
+        await loaded;
+        return el;
+      }
+
+      async function wait(time) {
+        const waiting = new Promise((resolve) => setTimeout(() => resolve(), time));
+        await waiting;
+      }
+
+      async function events(event) {
+        document.getElementById('events').innerText = `${Math.round(performance.now() - start)}ms Event: ${event}`;
+      }
+
+      async function main() {
+        log('human tests');
+        let res;
+        let human = new Human(config);
+        setInterval(() => { document.getElementById('state').innerText = `State: ${human.state}`; }, 10);
+        log({ version: human.version });
+        log({ env: human.env });
+        log({ config: human.config });
+        for (const backend of backends) {
+          log('');
+          log('test start:', backend);
+          human.config.backend = backend;
+          human = new Human(config);
+          human.events.addEventListener('warmup', () => events('warmup'));
+          human.events.addEventListener('image', () => events('image'));
+          human.events.addEventListener('detect', () => events('detect'));
+          await human.load();
+          human.env.offscreen = false;
+          human.env.initial = false;
+          await human.init();
+          log({ tfjs: human.tf.version.tfjs, backend: human.tf.getBackend() });
+          const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
+          log({ models: { models }});
+          log({ memory: human.tf.engine().state });
+          res = await human.validate();
+          log({ validate: res });
+          res = await human.warmup();
+          log({ warmup: res });
+          let img = await image('../../samples/ai-body.jpg');
+          const input = await human.image(img);
+          let node = document.body.appendChild(res.canvas);
+          await wait(100);
+          log({ input });
+          res = await human.detect(input.tensor);
+          log({ detect: res});
+          const interpolated = human.next();
+          log({ interpolated });
+          const persons = res.persons;
+          log({ persons: { persons } });
+          log({ summary: { persons: persons.length, face: res.face.length, body: res.body.length, hand: res.hand.length, object: res.object.length, gesture: res.gesture.length }});
+          log({ performance: human.performance });
+          human.tf.dispose(input.tensor);
+          document.body.removeChild(node);
+          await wait(100);
+
+          img = await image('../../samples/ai-face.jpg');
+          human.reset();
+          human.config.backend = backend;
+          for (const val of [0, 0.25, 0.5, 0.75, 10]) {
+            human.performance = {};
+            const t0 = performance.now();
+            for (let i = 0; i < 10; i++) {
+              res = await human.detect(img, { cacheSensitivity: val, filter: { pixelate: 5 * i } });
+              node = document.body.appendChild(res.canvas);
+            }
+            const t1 = performance.now();
+            log({ benchmark: { time: Math.round((t1 - t0) / 10), cacheSensitivity: val }, performance: human.performance });
+            await wait(100);
+          }
+          document.body.removeChild(node);
+
+          log({ memory: human.tf.engine().state });
+        }
+        log('');
+        log('tests complete');
+      }
+
+      main();
+    </script>
+  </body>
+</html>

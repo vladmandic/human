@@ -45,6 +45,7 @@ function extensions(): void {
  */
 export async function register(instance): Promise<void> {
   // force backend reload if gl context is not valid
+  if (instance.config.backend !== 'humangl') return;
   if ((config.name in tf.engine().registry) && (!config.gl || !config.gl.getParameter(config.gl.VERSION))) {
     log('error: humangl backend invalid context');
     models.reset(instance);
@@ -95,11 +96,12 @@ export async function register(instance): Promise<void> {
       log('error: cannot set WebGL context:', err);
       return;
     }
-    const current = tf.backend().getGPGPUContext().gl;
+    const current = tf.backend().getGPGPUContext ? tf.backend().getGPGPUContext().gl : null;
     if (current) {
       log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
     } else {
-      log('error: no current context:', current, config.gl);
+      log('error: no current gl context:', current, config.gl);
+      return;
     }
     try {
       const ctx = new tf.GPGPUContext(config.gl);

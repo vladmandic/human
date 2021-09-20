@@ -27,7 +27,7 @@ const config = {
   },
   hand: { enabled: true, rotation: false },
   body: { enabled: true },
-  object: { enabled: false },
+  object: { enabled: true },
   segmentation: { enabled: true },
   filter: { enabled: false },
 };

@@ -67,25 +67,19 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
     return data; // we're running in nodejs so return alpha array as-is
   }
 
-  const overlay = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(width, height) : document.createElement('canvas');
-  overlay.width = width;
-  overlay.height = height;
+  const overlay = image.canvas(width, height);
   if (tf.browser) await tf.browser.toPixels(resizeOutput, overlay);
   tf.dispose(resizeOutput);
 
   // get alpha channel data
-  const alphaCanvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(width, height) : document.createElement('canvas'); // need one more copy since input may already have gl context so 2d context fails
-  alphaCanvas.width = width;
-  alphaCanvas.height = height;
+  const alphaCanvas = image.canvas(width, height);
   const ctxAlpha = alphaCanvas.getContext('2d') as CanvasRenderingContext2D;
   ctxAlpha.filter = 'blur(8px';
   await ctxAlpha.drawImage(overlay, 0, 0);
   const alpha = ctxAlpha.getImageData(0, 0, width, height).data;
 
   // get original canvas merged with overlay
-  const original = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(width, height) : document.createElement('canvas'); // need one more copy since input may already have gl context so 2d context fails
-  original.width = width;
-  original.height = height;
+  const original = image.canvas(width, height);
   const ctx = original.getContext('2d') as CanvasRenderingContext2D;
   if (input.canvas) await ctx.drawImage(input.canvas, 0, 0);
   // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation // best options are: darken, color-burn, multiply
@@ -105,19 +99,21 @@ export async function process(input: Input, background: Input | undefined, confi
   busy = true;
   if (!model) await load(config);
   const img = image.process(input, config);
+  const tmp = image.process(background, config);
+  if (!img.canvas || !tmp.canvas) {
+    if (config.debug) log('segmentation cannot process input or background');
+    return null;
+  }
   const alpha = await predict(img);
   tf.dispose(img.tensor);
 
   if (background && alpha) {
-    const tmp = image.process(background, config);
-    const bg = tmp.canvas;
+    const bg = tmp.canvas as HTMLCanvasElement;
     tf.dispose(tmp.tensor);
-    const fg = img.canvas;
+    const fg = img.canvas as HTMLCanvasElement;
     const fgData = fg.getContext('2d')?.getImageData(0, 0, fg.width, fg.height).data as Uint8ClampedArray;
 
-    const c = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(fg.width, fg.height) : document.createElement('canvas');
-    c.width = fg.width;
-    c.height = fg.height;
+    const c = image.canvas(fg.width, fg.height);
     const ctx = c.getContext('2d') as CanvasRenderingContext2D;
 
     ctx.globalCompositeOperation = 'copy'; // reset

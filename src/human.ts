@@ -442,7 +442,7 @@ export class Human {
       }
 
       if (!img.tensor) {
-        log('could not convert input to tensor');
+        if (this.config.debug) log('could not convert input to tensor');
         resolve({ error: 'could not convert input to tensor' });
         return;
       }

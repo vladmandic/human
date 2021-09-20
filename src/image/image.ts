@@ -39,9 +39,13 @@ export function canvas(width, height): HTMLCanvasElement | OffscreenCanvas {
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
 // input is resized and run through imagefx filter
-export function process(input: Input, config: Config): { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement } {
+export function process(input: Input, config: Config): { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null } {
   let tensor;
-  if (!input) throw new Error('input is missing');
+  if (!input) {
+    // throw new Error('input is missing');
+    if (config.debug) log('input is missing');
+    return { tensor: null, canvas: null }; // video may become temporarily unavailable due to onresize
+  }
   // sanity checks since different browsers do not implement all dom elements
   if (
     !(input instanceof tf.Tensor)
@@ -64,13 +68,13 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
   } else {
     // check if resizing will be needed
     if (typeof input['readyState'] !== 'undefined' && input['readyState'] <= 2) {
-      log('input stream is not ready');
+      if (config.debug) log('input stream is not ready');
       return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
     }
     const originalWidth = input['naturalWidth'] || input['videoWidth'] || input['width'] || (input['shape'] && (input['shape'][1] > 0));
     const originalHeight = input['naturalHeight'] || input['videoHeight'] || input['height'] || (input['shape'] && (input['shape'][2] > 0));
     if (!originalWidth || !originalHeight) {
-      log('cannot determine input dimensions');
+      if (config.debug) log('cannot determine input dimensions');
       return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
     }
     let targetWidth = originalWidth;

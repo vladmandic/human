@@ -60,6 +60,7 @@ function logStdIO(ok, test, buffer) {
   }
 }
 
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 async function runTest(test) {
   log.info();
   log.info(test, 'start');
@@ -73,6 +74,7 @@ async function runTest(test) {
   });
 }
 
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 async function runDemo(demo) {
   log.info();
   log.info(demo, 'start');
@@ -94,7 +96,8 @@ async function testAll() {
   process.on('unhandledRejection', (data) => log.error('nodejs unhandled rejection', data));
   process.on('uncaughtException', (data) => log.error('nodejs unhandled exception', data));
   log.info('tests:', tests);
-  for (const demo of demos) await runDemo(demo);
+  log.info('demos:', demos);
+  // for (const demo of demos) await runDemo(demo);
   for (const test of tests) await runTest(test);
   log.info();
   log.info('status:', status);

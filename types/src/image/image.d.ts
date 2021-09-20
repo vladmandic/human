@@ -8,7 +8,7 @@ declare type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLM
 export declare function canvas(width: any, height: any): HTMLCanvasElement | OffscreenCanvas;
 export declare function process(input: Input, config: Config): {
     tensor: Tensor | null;
-    canvas: OffscreenCanvas | HTMLCanvasElement;
+    canvas: OffscreenCanvas | HTMLCanvasElement | null;
 };
 export declare function skip(config: any, input: Tensor): Promise<boolean>;
 export {};

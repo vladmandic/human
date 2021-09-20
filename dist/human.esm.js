@@ -64519,8 +64519,11 @@ function canvas(width, height) {
 }
 function process2(input2, config3) {
   let tensor2;
-  if (!input2)
-    throw new Error("input is missing");
+  if (!input2) {
+    if (config3.debug)
+      log("input is missing");
+    return { tensor: null, canvas: null };
+  }
   if (!(input2 instanceof Tensor) && !(typeof Image !== "undefined" && input2 instanceof Image) && !(typeof env2.Canvas !== "undefined" && input2 instanceof env2.Canvas) && !(typeof ImageData !== "undefined" && input2 instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input2 instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input2 instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input2 instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input2 instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input2 instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input2 instanceof OffscreenCanvas)) {
     throw new Error("input type is not recognized");
   }
@@ -64531,13 +64534,15 @@ function process2(input2, config3) {
       throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${input2.shape}`);
   } else {
     if (typeof input2["readyState"] !== "undefined" && input2["readyState"] <= 2) {
-      log("input stream is not ready");
+      if (config3.debug)
+        log("input stream is not ready");
       return { tensor: null, canvas: inCanvas };
     }
     const originalWidth = input2["naturalWidth"] || input2["videoWidth"] || input2["width"] || input2["shape"] && input2["shape"][1] > 0;
     const originalHeight = input2["naturalHeight"] || input2["videoHeight"] || input2["height"] || input2["shape"] && input2["shape"][2] > 0;
     if (!originalWidth || !originalHeight) {
-      log("cannot determine input dimensions");
+      if (config3.debug)
+        log("cannot determine input dimensions");
       return { tensor: null, canvas: inCanvas };
     }
     let targetWidth = originalWidth;
@@ -70118,22 +70123,16 @@ async function predict11(input2) {
     dispose(resizeOutput);
     return data;
   }
-  const overlay = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(width, height) : document.createElement("canvas");
-  overlay.width = width;
-  overlay.height = height;
+  const overlay = canvas(width, height);
   if (browser_exports)
     await browser_exports.toPixels(resizeOutput, overlay);
   dispose(resizeOutput);
-  const alphaCanvas = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(width, height) : document.createElement("canvas");
-  alphaCanvas.width = width;
-  alphaCanvas.height = height;
+  const alphaCanvas = canvas(width, height);
   const ctxAlpha = alphaCanvas.getContext("2d");
   ctxAlpha.filter = "blur(8px";
   await ctxAlpha.drawImage(overlay, 0, 0);
   const alpha = ctxAlpha.getImageData(0, 0, width, height).data;
-  const original = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(width, height) : document.createElement("canvas");
-  original.width = width;
-  original.height = height;
+  const original = canvas(width, height);
   const ctx = original.getContext("2d");
   if (input2.canvas)
     await ctx.drawImage(input2.canvas, 0, 0);
@@ -70153,17 +70152,20 @@ async function process5(input2, background, config3) {
   if (!model10)
     await load12(config3);
   const img = process2(input2, config3);
+  const tmp = process2(background, config3);
+  if (!img.canvas || !tmp.canvas) {
+    if (config3.debug)
+      log("segmentation cannot process input or background");
+    return null;
+  }
   const alpha = await predict11(img);
   dispose(img.tensor);
   if (background && alpha) {
-    const tmp = process2(background, config3);
     const bg = tmp.canvas;
     dispose(tmp.tensor);
     const fg = img.canvas;
     const fgData = (_a = fg.getContext("2d")) == null ? void 0 : _a.getImageData(0, 0, fg.width, fg.height).data;
-    const c = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(fg.width, fg.height) : document.createElement("canvas");
-    c.width = fg.width;
-    c.height = fg.height;
+    const c = canvas(fg.width, fg.height);
     const ctx = c.getContext("2d");
     ctx.globalCompositeOperation = "copy";
     ctx.drawImage(bg, 0, 0, c.width, c.height);
@@ -72445,7 +72447,8 @@ var Human = class {
         this.analyze("End Segmentation:");
       }
       if (!img.tensor) {
-        log("could not convert input to tensor");
+        if (this.config.debug)
+          log("could not convert input to tensor");
         resolve({ error: "could not convert input to tensor" });
         return;
       }

@@ -156,7 +156,7 @@ export declare class Human {
      */
     image: (input: Input) => {
         tensor: Tensor<import("@tensorflow/tfjs-core").Rank> | null;
-        canvas: OffscreenCanvas | HTMLCanvasElement;
+        canvas: OffscreenCanvas | HTMLCanvasElement | null;
     };
     /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
      * - Calculation is based on normalized Minkowski distance between two descriptors

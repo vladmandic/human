@@ -63,3 +63,9 @@ export const minmax = (data: Array<number>) => data.reduce((acc: Array<number>, 
   acc[1] = (acc[1] === undefined || val > acc[1]) ? val : acc[1];
   return acc;
 }, []);
+
+// helper function: async wait
+export async function wait(time) {
+  const waiting = new Promise((resolve) => setTimeout(() => resolve(true), time));
+  await waiting;
+}

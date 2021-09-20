@@ -1,3 +1,4 @@
+const fs = require('fs');
 const process = require('process');
 const canvasJS = require('canvas');
 
@@ -165,6 +166,13 @@ async function test(Human, inputConfig) {
   else log('error', 'failed: configuration default validation', invalid);
   delete config.invalid;
 
+  // test model loading
+  await human.load();
+  const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
+  const loaded = models.filter((model) => model.loaded);
+  if (models.length === 14 && loaded.length === 7) log('state', 'passed: models loaded', models.length, loaded.length);
+  else log('error', 'failed: models loaded', models.length, loaded.length);
+
   // test warmup sequences
   await testInstance(human);
   config.warmup = 'none';
@@ -175,27 +183,72 @@ async function test(Human, inputConfig) {
   res = await testWarmup(human, 'default');
   if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 0 || res?.gesture?.length !== 3) log('error', 'failed: warmup face result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: warmup face result match');
-
   config.warmup = 'body';
   res = await testWarmup(human, 'default');
   if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 0 || res?.gesture?.length !== 3) log('error', 'failed: warmup body result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: warmup body result match');
 
-  // test default config
+  // test default config async
   log('info', 'test default');
   human.reset();
+  config.async = true;
   config.cacheSensitivity = 0;
   res = await testDetect(human, 'samples/ai-body.jpg', 'default');
   if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default result face mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: default result face match');
 
-  // test default config
+  // test default config sync
   log('info', 'test sync');
   human.reset();
   config.async = false;
+  config.cacheSensitivity = 0;
   res = await testDetect(human, 'samples/ai-body.jpg', 'default');
   if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default sync', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: default sync');
+
+  // test image processing
+  const img1 = await human.image(null);
+  const img2 = await human.image(await getImage(human, 'samples/ai-face.jpg'));
+  if (!img1 || !img2 || img1.tensor !== null || img2.tensor?.shape?.length !== 4) log('error', 'failed: image input', img1?.tensor?.shape, img2?.tensor?.shape);
+  else log('state', 'passed: image input', img1?.tensor?.shape, img2?.tensor?.shape);
+
+  // test null input
+  res = await human.detect(null);
+  if (!res || !res.error) log('error', 'failed: invalid input', res);
+  else log('state', 'passed: invalid input', res);
+
+  // test face similarity
+  log('info', 'test face similarity');
+  human.reset();
+  config.async = false;
+  config.cacheSensitivity = 0;
+  let res1 = await testDetect(human, 'samples/ai-face.jpg', 'default');
+  let res2 = await testDetect(human, 'samples/ai-body.jpg', 'default');
+  let res3 = await testDetect(human, 'samples/ai-upper.jpg', 'default');
+  const desc1 = res1 && res1.face && res1.face[0] && res1.face[0].embedding ? [...res1.face[0].embedding] : null;
+  const desc2 = res2 && res2.face && res2.face[0] && res2.face[0].embedding ? [...res2.face[0].embedding] : null;
+  const desc3 = res3 && res3.face && res3.face[0] && res3.face[0].embedding ? [...res3.face[0].embedding] : null;
+  if (!desc1 || !desc2 || !desc3 || desc1.length !== 1024 || desc2.length !== 1024 || desc3.length !== 1024) log('error', 'failed: face descriptor', desc1?.length, desc2?.length, desc3?.length);
+  else log('state', 'passed: face descriptor');
+  res1 = Math.round(100 * human.similarity(desc1, desc2));
+  res2 = Math.round(100 * human.similarity(desc1, desc3));
+  res3 = Math.round(100 * human.similarity(desc2, desc3));
+  if (res1 !== 51 || res2 !== 49 || res3 !== 53) log('error', 'failed: face match ', res1, res2, res3);
+  else log('state', 'passed: face match');
+
+  // test face matching
+  log('info', 'test face matching');
+  let db = [];
+  try {
+    db = JSON.parse(fs.readFileSync('demo/facematch/faces.json').toString());
+  } catch { /***/ }
+  if (db.length < 100) log('error', 'failed: face database ', db.length);
+  else log('state', 'passed: face database', db.length);
+  res1 = human.match(desc1, db);
+  res2 = human.match(desc2, db);
+  res3 = human.match(desc3, db);
+  if (!res1 || !res1['name'] || !res2 || !res2['name'] || !res3 || !res3['name']) log('error', 'failed: face match ', res1);
+  else log('state', 'passed: face match', { first: { name: res1.name, similarity: res1.similarity } }, { second: { name: res2.name, similarity: res2.similarity } }, { third: { name: res3.name, similarity: res3.similarity } });
 
   // test object detection
   log('info', 'test object');
@@ -272,6 +325,22 @@ async function test(Human, inputConfig) {
     testDetect(first, 'samples/ai-upper.jpg', 'default'),
     testDetect(second, 'samples/ai-upper.jpg', 'default'),
   ]);
+
+  // test monkey-patch
+  human.env.Canvas = canvasJS.Canvas; // monkey-patch human to use external canvas library
+  const inputImage = await canvasJS.loadImage('samples/ai-face.jpg'); // load image using canvas library
+  const inputCanvas = new canvasJS.Canvas(inputImage.width, inputImage.height); // create canvas
+  const ctx = inputCanvas.getContext('2d');
+  ctx.drawImage(inputImage, 0, 0); // draw input image onto canvas
+  res = await human.detect(inputCanvas);
+  if (!res || res?.face?.length !== 1) log('error', 'failed: monkey patch');
+  else log('state', 'passed: monkey patch');
+
+  // test segmentation
+  res = await human.segmentation(inputCanvas, inputCanvas);
+  if (!res || !res.width || !res.height) log('error', 'failed: segmentation', res);
+  else log('state', 'passed: segmentation', [res.width, res.height]);
+  human.env.Canvas = undefined;
 
   // tests end
   const t1 = process.hrtime.bigint();

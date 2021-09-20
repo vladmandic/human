@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/18 mandic00@live.com
+### **HEAD -> main** 2021/09/19 mandic00@live.com
 
+- added configuration validation
 - prevent validation failed on some model combinations
 - webgl exception handling
 

@@ -1,7 +1,8 @@
 import * as tf from '../dist/tfjs.esm.js';
 import * as image from './image/image';
+import { mergeDeep } from './helpers';
 
-export interface Env {
+export type Env = {
   browser: undefined | boolean,
   node: undefined | boolean,
   worker: undefined | boolean,
@@ -12,6 +13,7 @@ export interface Env {
   tfjs: {
     version: undefined | string,
   },
+  offscreen: undefined | boolean,
   wasm: {
     supported: undefined | boolean,
     backend: undefined | boolean,
@@ -34,7 +36,8 @@ export interface Env {
   Image: undefined,
 }
 
-export const env: Env = {
+// eslint-disable-next-line import/no-mutable-exports
+export let env: Env = {
   browser: undefined,
   node: undefined,
   worker: undefined,
@@ -42,6 +45,7 @@ export const env: Env = {
   agent: undefined,
   initial: true,
   backends: [],
+  offscreen: undefined,
   tfjs: {
     version: undefined,
   },
@@ -127,6 +131,8 @@ export async function get() {
   env.worker = env.browser ? (typeof WorkerGlobalScope !== 'undefined') : undefined;
   env.tfjs.version = tf.version_core;
 
+  // offscreencanvas supported?
+  env.offscreen = typeof env.offscreen === 'undefined' ? typeof OffscreenCanvas !== undefined : env.offscreen;
   // get platform and agent
   if (typeof navigator !== 'undefined') {
     const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
@@ -141,9 +147,12 @@ export async function get() {
     env.platform = `${process.platform} ${process.arch}`;
     env.agent = `NodeJS ${process.version}`;
   }
-
   await backendInfo();
 
   // get cpu info
   // await cpuInfo();
+}
+
+export async function set(obj) {
+  env = mergeDeep(env, obj);
 }

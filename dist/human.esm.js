@@ -91,6 +91,10 @@ function mergeDeep(...objects) {
     return prev;
   }, {});
 }
+async function wait(time2) {
+  const waiting = new Promise((resolve) => setTimeout(() => resolve(true), time2));
+  await waiting;
+}
 
 // src/config.ts
 var config = {
@@ -101,6 +105,7 @@ var config = {
   async: true,
   warmup: "full",
   cacheSensitivity: 0.75,
+  yield: false,
   skipFrame: false,
   filter: {
     enabled: true,
@@ -64505,7 +64510,7 @@ var fx;
 function canvas(width, height) {
   let c;
   if (env2.browser) {
-    if (typeof OffscreenCanvas !== "undefined") {
+    if (env2.offscreen) {
       c = new OffscreenCanvas(width, height);
     } else {
       c = document.createElement("canvas");
@@ -64528,6 +64533,8 @@ function process2(input2, config3) {
     throw new Error("input type is not recognized");
   }
   if (input2 instanceof Tensor) {
+    if (input2.isDisposed)
+      throw new Error("input tensor is disposed");
     if (input2.shape && input2.shape.length === 4 && input2.shape[0] === 1 && input2.shape[3] === 3)
       tensor2 = clone(input2);
     else
@@ -64709,6 +64716,7 @@ var env2 = {
   agent: void 0,
   initial: true,
   backends: [],
+  offscreen: void 0,
   tfjs: {
     version: void 0
   },
@@ -64764,6 +64772,7 @@ async function get3() {
   env2.node = typeof process !== "undefined";
   env2.worker = env2.browser ? typeof WorkerGlobalScope !== "undefined" : void 0;
   env2.tfjs.version = version;
+  env2.offscreen = typeof env2.offscreen === "undefined" ? typeof OffscreenCanvas !== void 0 : env2.offscreen;
   if (typeof navigator !== "undefined") {
     const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
     if (raw && raw[0]) {
@@ -64779,6 +64788,9 @@ async function get3() {
     env2.agent = `NodeJS ${process.version}`;
   }
   await backendInfo();
+}
+async function set(obj) {
+  env2 = mergeDeep(env2, obj);
 }
 
 // src/blazeface/facepipeline.ts
@@ -71263,6 +71275,8 @@ function extensions() {
 }
 async function register(instance) {
   var _a;
+  if (instance.config.backend !== "humangl")
+    return;
   if (config2.name in engine().registry && (!config2.gl || !config2.gl.getParameter(config2.gl.VERSION))) {
     log("error: humangl backend invalid context");
     reset(instance);
@@ -71300,11 +71314,12 @@ async function register(instance) {
       log("error: cannot set WebGL context:", err);
       return;
     }
-    const current = backend().getGPGPUContext().gl;
+    const current = backend().getGPGPUContext ? backend().getGPGPUContext().gl : null;
     if (current) {
       log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
     } else {
-      log("error: no current context:", current, config2.gl);
+      log("error: no current gl context:", current, config2.gl);
+      return;
     }
     try {
       const ctx = new GPGPUContext(config2.gl);
@@ -72370,6 +72385,7 @@ var Human = class {
   }
   init() {
     check(this);
+    set(this.env);
   }
   async load(userConfig) {
     this.state = "load";
@@ -72412,6 +72428,8 @@ var Human = class {
     return warmup(this, userConfig);
   }
   async detect(input2, userConfig) {
+    if (this.config.yield)
+      await wait(1);
     return new Promise(async (resolve) => {
       var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n;
       this.state = "config";
@@ -72427,6 +72445,8 @@ var Human = class {
       const timeStart = now();
       await check(this);
       await this.load();
+      if (this.config.yield)
+        await wait(1);
       timeStamp = now();
       let img = process2(input2, this.config);
       this.process = img;
@@ -72468,12 +72488,12 @@ var Human = class {
       let bodyRes = [];
       let handRes = [];
       let objectRes = [];
+      this.state = "run:face";
       if (this.config.async) {
         faceRes = this.config.face.enabled ? detectFace(this, img.tensor) : [];
         if (this.performance.face)
           delete this.performance.face;
       } else {
-        this.state = "run:face";
         timeStamp = now();
         faceRes = this.config.face.enabled ? await detectFace(this, img.tensor) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
@@ -72481,6 +72501,7 @@ var Human = class {
           this.performance.face = elapsedTime;
       }
       this.analyze("Start Body:");
+      this.state = "run:body";
       if (this.config.async) {
         if ((_a = this.config.body.modelPath) == null ? void 0 : _a.includes("posenet"))
           bodyRes = this.config.body.enabled ? predict4(img.tensor, this.config) : [];
@@ -72493,7 +72514,6 @@ var Human = class {
         if (this.performance.body)
           delete this.performance.body;
       } else {
-        this.state = "run:body";
         timeStamp = now();
         if ((_e = this.config.body.modelPath) == null ? void 0 : _e.includes("posenet"))
           bodyRes = this.config.body.enabled ? await predict4(img.tensor, this.config) : [];
@@ -72509,12 +72529,12 @@ var Human = class {
       }
       this.analyze("End Body:");
       this.analyze("Start Hand:");
+      this.state = "run:hand";
       if (this.config.async) {
         handRes = this.config.hand.enabled ? predict5(img.tensor, this.config) : [];
         if (this.performance.hand)
           delete this.performance.hand;
       } else {
-        this.state = "run:hand";
         timeStamp = now();
         handRes = this.config.hand.enabled ? await predict5(img.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
@@ -72523,6 +72543,7 @@ var Human = class {
       }
       this.analyze("End Hand:");
       this.analyze("Start Object:");
+      this.state = "run:object";
       if (this.config.async) {
         if ((_i = this.config.object.modelPath) == null ? void 0 : _i.includes("nanodet"))
           objectRes = this.config.object.enabled ? predict9(img.tensor, this.config) : [];
@@ -72531,7 +72552,6 @@ var Human = class {
         if (this.performance.object)
           delete this.performance.object;
       } else {
-        this.state = "run:object";
         timeStamp = now();
         if ((_k = this.config.object.modelPath) == null ? void 0 : _k.includes("nanodet"))
           objectRes = this.config.object.enabled ? await predict9(img.tensor, this.config) : [];
@@ -72542,8 +72562,12 @@ var Human = class {
           this.performance.object = elapsedTime;
       }
       this.analyze("End Object:");
+      this.state = "run:await";
+      if (this.config.yield)
+        await wait(1);
       if (this.config.async)
         [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
+      this.state = "run:gesture";
       let gestureRes = [];
       if (this.config.gesture.enabled) {
         timeStamp = now();
@@ -72554,7 +72578,6 @@ var Human = class {
           delete this.performance.gesture;
       }
       this.performance.total = Math.trunc(now() - timeStart);
-      this.state = "idle";
       const shape = ((_n = (_m = this.process) == null ? void 0 : _m.tensor) == null ? void 0 : _n.shape) || [];
       this.result = {
         face: faceRes,
@@ -72571,6 +72594,7 @@ var Human = class {
       };
       dispose(img.tensor);
       this.emit("detect");
+      this.state = "idle";
       resolve(this.result);
     });
   }

@@ -21,7 +21,7 @@ let fx: fxImage.GLImageFilter | null; // instance of imagefx
 export function canvas(width, height): HTMLCanvasElement | OffscreenCanvas {
   let c;
   if (env.browser) {
-    if (typeof OffscreenCanvas !== 'undefined') {
+    if (env.offscreen) {
       c = new OffscreenCanvas(width, height);
     } else {
       c = document.createElement('canvas');
@@ -63,6 +63,7 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
   }
   if (input instanceof tf.Tensor) {
     // if input is tensor, use as-is
+    if (input.isDisposed) throw new Error('input tensor is disposed');
     if ((input as unknown as Tensor).shape && (input as unknown as Tensor).shape.length === 4 && (input as unknown as Tensor).shape[0] === 1 && (input as unknown as Tensor).shape[3] === 3) tensor = tf.clone(input);
     else throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${(input as unknown as Tensor).shape}`);
   } else {

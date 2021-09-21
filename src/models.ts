@@ -5,6 +5,7 @@ import * as faceres from './faceres/faceres';
 import * as emotion from './emotion/emotion';
 import * as posenet from './posenet/posenet';
 import * as handpose from './handpose/handpose';
+import * as handtrack from './handtrack/handtrack';
 import * as blazepose from './blazepose/blazepose';
 import * as efficientpose from './efficientpose/efficientpose';
 import * as movenet from './movenet/movenet';
@@ -19,6 +20,7 @@ export function reset(instance) {
   instance.models = {
     face: null, // array of models
     handpose: null, // array of models
+    handtrack: null, // array of models
     posenet: null,
     blazepose: null,
     efficientpose: null,
@@ -42,6 +44,7 @@ export async function load(instance) {
       instance.models.face,
       instance.models.emotion,
       instance.models.handpose,
+      instance.models.handtrack,
       instance.models.posenet,
       instance.models.blazepose,
       instance.models.efficientpose,
@@ -54,7 +57,8 @@ export async function load(instance) {
     ] = await Promise.all([
       instance.models.face || (instance.config.face.enabled ? facemesh.load(instance.config) : null),
       instance.models.emotion || ((instance.config.face.enabled && instance.config.face.emotion.enabled) ? emotion.load(instance.config) : null),
-      instance.models.handpose || (instance.config.hand.enabled ? handpose.load(instance.config) : null),
+      instance.models.handpose || (instance.config.hand.enabled && instance.config.hand.detector.modelPath.includes('handdetect') ? handpose.load(instance.config) : null),
+      instance.models.handtrack || (instance.config.hand.enabled && instance.config.hand.detector.modelPath.includes('handtrack') ? handtrack.load(instance.config) : null),
       instance.models.posenet || (instance.config.body.enabled && instance.config.body.modelPath.includes('posenet') ? posenet.load(instance.config) : null),
       instance.models.blazepose || (instance.config.body.enabled && instance.config.body.modelPath.includes('blazepose') ? blazepose.load(instance.config) : null),
       instance.models.efficientpose || (instance.config.body.enabled && instance.config.body.modelPath.includes('efficientpose') ? efficientpose.load(instance.config) : null),
@@ -68,7 +72,8 @@ export async function load(instance) {
   } else { // load models sequentially
     if (instance.config.face.enabled && !instance.models.face) instance.models.face = await facemesh.load(instance.config);
     if (instance.config.face.enabled && instance.config.face.emotion.enabled && !instance.models.emotion) instance.models.emotion = await emotion.load(instance.config);
-    if (instance.config.hand.enabled && !instance.models.handpose) instance.models.handpose = await handpose.load(instance.config);
+    if (instance.config.hand.enabled && !instance.models.handpose && instance.config.hand.detector.modelPath.includes('handdetect')) instance.models.handpose = await handpose.load(instance.config);
+    if (instance.config.hand.enabled && !instance.models.handtrack && instance.config.hand.detector.modelPath.includes('handtrack')) instance.models.handtrack = await handtrack.load(instance.config);
     if (instance.config.body.enabled && !instance.models.posenet && instance.config.body.modelPath.includes('posenet')) instance.models.posenet = await posenet.load(instance.config);
     if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body.modelPath.includes('blazepose')) instance.models.blazepose = await blazepose.load(instance.config);
     if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body.modelPath.includes('efficientpose')) instance.models.efficientpose = await blazepose.load(instance.config);

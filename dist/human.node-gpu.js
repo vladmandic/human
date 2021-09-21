@@ -4506,7 +4506,7 @@ function process2(input, config3) {
     throw new Error("input type is not recognized");
   }
   if (input instanceof tf3.Tensor) {
-    if (input.isDisposed)
+    if (input["isDisposedInternal"])
       throw new Error("input tensor is disposed");
     if (input.shape && input.shape.length === 4 && input.shape[0] === 1 && input.shape[3] === 3)
       tensor3 = tf3.clone(input);
@@ -4745,7 +4745,7 @@ async function get() {
   env.node = typeof process !== "undefined";
   env.worker = env.browser ? typeof WorkerGlobalScope !== "undefined" : void 0;
   env.tfjs.version = tf4.version_core;
-  env.offscreen = typeof env.offscreen === "undefined" ? typeof OffscreenCanvas !== void 0 : env.offscreen;
+  env.offscreen = typeof env.offscreen === "undefined" ? typeof OffscreenCanvas !== "undefined" : env.offscreen;
   if (typeof navigator !== "undefined") {
     const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
     if (raw && raw[0]) {

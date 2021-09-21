@@ -132,7 +132,7 @@ export async function get() {
   env.tfjs.version = tf.version_core;
 
   // offscreencanvas supported?
-  env.offscreen = typeof env.offscreen === 'undefined' ? typeof OffscreenCanvas !== undefined : env.offscreen;
+  env.offscreen = typeof env.offscreen === 'undefined' ? typeof OffscreenCanvas !== 'undefined' : env.offscreen;
   // get platform and agent
   if (typeof navigator !== 'undefined') {
     const raw = navigator.userAgent.match(/\(([^()]+)\)/g);

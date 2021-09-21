@@ -9,8 +9,13 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/19 mandic00@live.com
+### **HEAD -> main** 2021/09/20 mandic00@live.com
 
+- initial automated browser tests
+
+### **origin/main** 2021/09/20 mandic00@live.com
+
+- more automated tests
 - added configuration validation
 - prevent validation failed on some model combinations
 - webgl exception handling

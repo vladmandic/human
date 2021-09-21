@@ -1,4 +1,4 @@
-export interface Env {
+export declare type Env = {
     browser: undefined | boolean;
     node: undefined | boolean;
     worker: undefined | boolean;
@@ -9,6 +9,7 @@ export interface Env {
     tfjs: {
         version: undefined | string;
     };
+    offscreen: undefined | boolean;
     wasm: {
         supported: undefined | boolean;
         backend: undefined | boolean;
@@ -29,9 +30,10 @@ export interface Env {
     kernels: string[];
     Canvas: undefined;
     Image: undefined;
-}
-export declare const env: Env;
+};
+export declare let env: Env;
 export declare function cpuInfo(): Promise<void>;
 export declare function backendInfo(): Promise<void>;
 export declare function get(): Promise<void>;
+export declare function set(obj: any): Promise<void>;
 //# sourceMappingURL=env.d.ts.map

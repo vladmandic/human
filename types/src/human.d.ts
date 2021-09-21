@@ -11,7 +11,7 @@ import type { DrawOptions } from './draw';
 export * from './config';
 export * from './result';
 export type { DrawOptions } from './draw';
-export { env } from './env';
+export { env, Env } from './env';
 /** Defines all possible input types for **Human** detection
  * @typedef Input Type
  */
@@ -142,7 +142,7 @@ export declare class Human {
     /** @hidden */
     analyze: (...msg: string[]) => void;
     /** Reset configuration to default values */
-    reset: () => any;
+    reset: () => void;
     /** Validate current configuration schema */
     validate: (userConfig?: Partial<Config> | undefined) => {
         reason: string;
@@ -202,11 +202,11 @@ export declare class Human {
     /** Explicit backend initialization
      *  - Normally done implicitly during initial load phase
      *  - Call to explictly register and initialize TFJS backend without any other operations
-     *  - Used in webworker environments where there can be multiple instances of Human and not all initialized
+     *  - Use when changing backend during runtime
      *
      * @return Promise<void>
      */
-    init(): void;
+    init(): Promise<void>;
     /** Load method preloads all configured models on-demand
      * - Not explicitly required as any required model is load implicitly on it's first run
      *

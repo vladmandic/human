@@ -64529,7 +64529,7 @@ function process2(input2, config3) {
     throw new Error("input type is not recognized");
   }
   if (input2 instanceof Tensor) {
-    if (input2.isDisposed)
+    if (input2["isDisposedInternal"])
       throw new Error("input tensor is disposed");
     if (input2.shape && input2.shape.length === 4 && input2.shape[0] === 1 && input2.shape[3] === 3)
       tensor2 = clone(input2);
@@ -64768,7 +64768,7 @@ async function get3() {
   env2.node = typeof process !== "undefined";
   env2.worker = env2.browser ? typeof WorkerGlobalScope !== "undefined" : void 0;
   env2.tfjs.version = version;
-  env2.offscreen = typeof env2.offscreen === "undefined" ? typeof OffscreenCanvas !== void 0 : env2.offscreen;
+  env2.offscreen = typeof env2.offscreen === "undefined" ? typeof OffscreenCanvas !== "undefined" : env2.offscreen;
   if (typeof navigator !== "undefined") {
     const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
     if (raw && raw[0]) {

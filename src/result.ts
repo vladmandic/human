@@ -97,9 +97,12 @@ export interface BodyResult {
 export interface HandResult {
   id: number,
   score: number,
+  boxScore: number,
+  fingerScore: number,
   box: [number, number, number, number],
   boxRaw: [number, number, number, number],
   keypoints: Array<[number, number, number]>,
+  label: string,
   annotations: Record<
     'index' | 'middle' | 'pinky' | 'ring' | 'thumb' | 'palm',
     Array<[number, number, number]>

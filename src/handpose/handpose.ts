@@ -69,6 +69,9 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
     hands.push({
       id: i,
       score: Math.round(100 * predictions[i].confidence) / 100,
+      boxScore: Math.round(100 * predictions[i].boxConfidence) / 100,
+      fingerScore: Math.round(100 * predictions[i].fingerConfidence) / 100,
+      label: 'hand',
       box,
       boxRaw,
       keypoints,

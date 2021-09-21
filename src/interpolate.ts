@@ -59,15 +59,19 @@ export function calc(newResult: Result): Result {
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor)) as [number, number, number, number];
       const boxRaw = (newResult.hand[i].boxRaw // update boxRaw
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor)) as [number, number, number, number];
-      const keypoints = newResult.hand[i].keypoints ? newResult.hand[i].keypoints // update landmarks
+      if (bufferedResult.hand[i].keypoints.length !== newResult.hand[i].keypoints.length) bufferedResult.hand[i].keypoints = newResult.hand[i].keypoints; // reset keypoints as previous frame did not have them
+      const keypoints = newResult.hand[i].keypoints && newResult.hand[i].keypoints.length > 0 ? newResult.hand[i].keypoints // update landmarks
         .map((landmark, j) => landmark
           .map((coord, k) => (((bufferedFactor - 1) * bufferedResult.hand[i].keypoints[j][k] + coord) / bufferedFactor)) as [number, number, number])
         : [];
-      const keys = Object.keys(newResult.hand[i].annotations); // update annotations
       const annotations = {};
-      for (const key of keys) {
-        annotations[key] = newResult.hand[i].annotations[key]
-          .map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor));
+      if (Object.keys(bufferedResult.hand[i].annotations).length !== Object.keys(newResult.hand[i].annotations).length) bufferedResult.hand[i].annotations = newResult.hand[i].annotations; // reset annotations as previous frame did not have them
+      if (newResult.hand[i].annotations) {
+        for (const key of Object.keys(newResult.hand[i].annotations)) { // update annotations
+          annotations[key] = newResult.hand[i].annotations[key] && newResult.hand[i].annotations[key][0]
+            ? newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor))
+            : null;
+        }
       }
       bufferedResult.hand[i] = { ...newResult.hand[i], box, boxRaw, keypoints, annotations: annotations as HandResult['annotations'] }; // shallow clone plus updated values
     }

@@ -12,6 +12,7 @@ async function warmupBitmap(instance) {
   let res;
   switch (instance.config.warmup) {
     case 'face': blob = await b64toBlob(sample.face); break;
+    case 'body':
     case 'full': blob = await b64toBlob(sample.body); break;
     default: blob = null;
   }
@@ -98,14 +99,17 @@ async function warmupNode(instance) {
 */
 export async function warmup(instance, userConfig?: Partial<Config>): Promise<Result | { error }> {
   const t0 = now();
+  instance.state = 'warmup';
   if (userConfig) instance.config = mergeDeep(instance.config, userConfig) as Config;
   if (!instance.config.warmup || instance.config.warmup === 'none') return { error: 'null' };
   let res;
-  if (typeof createImageBitmap === 'function') res = await warmupBitmap(instance);
-  else if (typeof Image !== 'undefined' || env.Canvas !== undefined) res = await warmupCanvas(instance);
-  else res = await warmupNode(instance);
-  const t1 = now();
-  if (instance.config.debug) log('Warmup', instance.config.warmup, Math.round(t1 - t0), 'ms');
-  instance.emit('warmup');
-  return res;
+  return new Promise(async (resolve) => {
+    if (typeof createImageBitmap === 'function') res = await warmupBitmap(instance);
+    else if (typeof Image !== 'undefined' || env.Canvas !== undefined) res = await warmupCanvas(instance);
+    else res = await warmupNode(instance);
+    const t1 = now();
+    if (instance.config.debug) log('Warmup', instance.config.warmup, Math.round(t1 - t0), 'ms');
+    instance.emit('warmup');
+    resolve(res);
+  });
 }

@@ -14,28 +14,30 @@
       @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../../assets/lato-light.woff2') }
       html { font-family: 'Lato', 'Segoe UI'; font-size: 14px; font-variant: small-caps; }
       body { margin: 0; background: black; color: white; }
-      canvas { position: absolute; bottom: 10px; right: 10px; width: 256px; height: 256px; }
-      pre { line-height: 150%; }
-      .events { position: absolute; top: 10px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; }
-      .state { position: absolute; top: 60px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; }
+      .canvas { position: absolute; bottom: 10px; right: 10px; width: 256px; height: 256px; z-index: 99; }
+      .pre { line-height: 150%; }
+      .events { position: absolute; top: 10px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; z-index: 99; }
+      .state { position: absolute; top: 60px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; z-index: 99; }
     </style>
   </head>
   <body>
-    <pre id="log"></pre>
+    <pre id="log" class="pre"></pre>
     <div id="events" class="events"></div>
     <div id="state" class="state"></div>
+    <canvas id="canvas" class="canvas" width=256 height=256></canvas>
     <script type="module">
       import Human from '../dist/human.esm.js';
 
       const config = {
         async: true,
-        warmup: 'full',
+        warmup: 'none',
         debug: true,
         cacheSensitivity: 0,
         object: { enabled: true },
       }
 
       const backends = ['wasm', 'webgl', 'humangl'];
+      // const backends = ['wasm', 'wasm'];
       // const backends = ['humangl'];
 
       const start = performance.now();
@@ -50,9 +52,14 @@
         return line + '\n';
       }
 
+      let last = new Date();
       async function log(...msgs) {
-        document.getElementById('log').innerHTML += str(...msgs);
-        console.log(...msgs);
+        const dt = new Date();
+        const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
+        const elap = (dt - last).toString().padStart(5, '0');
+        document.getElementById('log').innerHTML += ts + ' +' + elap + 'ms' + '&nbsp' + str(...msgs);
+        console.log(ts, elap, ...msgs);
+        last = dt;
       }
 
       async function image(url) {
@@ -69,6 +76,13 @@
         await waiting;
       }
 
+      function draw(canvas = null) {
+        const c = document.getElementById('canvas');
+        const ctx = c.getContext('2d');
+        if (canvas) ctx.drawImage(canvas, 0, 0, c.width, c.height);
+        else ctx.clearRect(0, 0, c.width, c.height);
+      }
+
       async function events(event) {
         document.getElementById('events').innerText = `${Math.round(performance.now() - start)}ms Event: ${event}`;
       }
@@ -77,66 +91,62 @@
         log('human tests');
         let res;
         let human = new Human(config);
-        setInterval(() => { document.getElementById('state').innerText = `State: ${human.state}`; }, 10);
+        human.events.addEventListener('warmup', () => events('warmup'));
+        human.events.addEventListener('image', () => events('image'));
+        human.events.addEventListener('detect', () => events('detect'));
+        const timer = setInterval(() => { document.getElementById('state').innerText = `State: ${human.state}`; }, 10);
         log({ version: human.version });
         log({ env: human.env });
         log({ config: human.config });
+        log({ tfjs: human.tf.version.tfjs, backend: human.config.backend });
+        await human.load();
+        const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
+        log({ models });
         for (const backend of backends) {
-          log('');
+          log();
           log('test start:', backend);
           human.config.backend = backend;
-          human = new Human(config);
-          human.events.addEventListener('warmup', () => events('warmup'));
-          human.events.addEventListener('image', () => events('image'));
-          human.events.addEventListener('detect', () => events('detect'));
-          await human.load();
-          human.env.offscreen = false;
-          human.env.initial = false;
           await human.init();
-          log({ tfjs: human.tf.version.tfjs, backend: human.tf.getBackend() });
-          const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
-          log({ models: { models }});
-          log({ memory: human.tf.engine().state });
+          log({ initialized: human.tf.getBackend() });
+          log({ memory: human.tf.memory() });
           res = await human.validate();
           log({ validate: res });
-          res = await human.warmup();
-          log({ warmup: res });
+          res = await human.warmup({ warmup: 'face'});
+          draw(res.canvas);
+          log({ warmup: 'face' });
           let img = await image('../../samples/ai-body.jpg');
           const input = await human.image(img);
-          let node = document.body.appendChild(res.canvas);
-          await wait(100);
-          log({ input });
+          log({ input: input.tensor.shape });
+          draw(res.canvas);
           res = await human.detect(input.tensor);
-          log({ detect: res});
+          log({ detect: true });
           const interpolated = human.next();
-          log({ interpolated });
+          log({ interpolated: true });
           const persons = res.persons;
-          log({ persons: { persons } });
+          log({ persons: true });
           log({ summary: { persons: persons.length, face: res.face.length, body: res.body.length, hand: res.hand.length, object: res.object.length, gesture: res.gesture.length }});
           log({ performance: human.performance });
           human.tf.dispose(input.tensor);
-          document.body.removeChild(node);
-          await wait(100);
+          draw();
 
           img = await image('../../samples/ai-face.jpg');
-          human.reset();
-          human.config.backend = backend;
           for (const val of [0, 0.25, 0.5, 0.75, 10]) {
             human.performance = {};
             const t0 = performance.now();
             for (let i = 0; i < 10; i++) {
-              res = await human.detect(img, { cacheSensitivity: val, filter: { pixelate: 5 * i } });
-              node = document.body.appendChild(res.canvas);
+              res = await human.detect(img, { cacheSensitivity: val, filter: { pixelate: 5 * i }, object: { enabled: false } });
+              draw(res.canvas);
             }
             const t1 = performance.now();
             log({ benchmark: { time: Math.round((t1 - t0) / 10), cacheSensitivity: val }, performance: human.performance });
-            await wait(100);
+            await wait(10);
           }
-          document.body.removeChild(node);
+          draw();
 
-          log({ memory: human.tf.engine().state });
+          log({ memory: human.tf.memory() });
         }
-        log('');
+        clearInterval(timer);
+        log();
         log('tests complete');
       }
 

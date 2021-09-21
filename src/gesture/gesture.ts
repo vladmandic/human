@@ -123,8 +123,10 @@ export const hand = (res): GestureResult[] => {
   const gestures: Array<{ hand: number, gesture: HandGesture }> = [];
   for (let i = 0; i < res.length; i++) {
     const fingers: Array<{ name: string, position: number }> = [];
-    for (const [finger, pos] of Object.entries(res[i]['annotations'])) {
-      if (finger !== 'palmBase' && Array.isArray(pos) && pos[0]) fingers.push({ name: finger.toLowerCase(), position: pos[0] }); // get tip of each finger
+    if (res[i]['annotations']) {
+      for (const [finger, pos] of Object.entries(res[i]['annotations'])) {
+        if (finger !== 'palmBase' && Array.isArray(pos) && pos[0]) fingers.push({ name: finger.toLowerCase(), position: pos[0] }); // get tip of each finger
+      }
     }
     if (fingers && fingers.length > 0) {
       const closest = fingers.reduce((best, a) => (best.position[2] < a.position[2] ? best : a));
@@ -132,8 +134,10 @@ export const hand = (res): GestureResult[] => {
       const highest = fingers.reduce((best, a) => (best.position[1] < a.position[1] ? best : a));
       gestures.push({ hand: i, gesture: `${highest.name} up` as HandGesture });
     }
-    const poses = fingerPose.match(res[i]['keypoints']);
-    for (const pose of poses) gestures.push({ hand: i, gesture: pose.name as HandGesture });
+    if (res[i]['keypoints']) {
+      const poses = fingerPose.match(res[i]['keypoints']);
+      for (const pose of poses) gestures.push({ hand: i, gesture: pose.name as HandGesture });
+    }
   }
   return gestures;
 };

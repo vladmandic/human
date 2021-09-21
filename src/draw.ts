@@ -390,10 +390,10 @@ export async function hand(inCanvas: HTMLCanvasElement | OffscreenCanvas, result
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== '') {
           ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText('hand', h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
+          ctx.fillText(`${h.label}:${Math.trunc(100 * h.score)}%`, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
         }
         ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText('hand', h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+        ctx.fillText(`${h.label}:${Math.trunc(100 * h.score)}%`, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
       }
       ctx.stroke();
     }
@@ -405,9 +405,9 @@ export async function hand(inCanvas: HTMLCanvasElement | OffscreenCanvas, result
         }
       }
     }
-    if (localOptions.drawLabels) {
+    if (localOptions.drawLabels && h.annotations) {
       const addHandLabel = (part, title) => {
-        if (!part) return;
+        if (!part || part.length === 0 || !part[0]) return;
         ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + (2 * part[part.length - 1][2])}, ${127.5 - (2 * part[part.length - 1][2])}, 255, 0.5)` : localOptions.color;
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
       };
@@ -419,9 +419,9 @@ export async function hand(inCanvas: HTMLCanvasElement | OffscreenCanvas, result
       addHandLabel(h.annotations['thumb'], 'thumb');
       addHandLabel(h.annotations['palm'], 'palm');
     }
-    if (localOptions.drawPolygons) {
+    if (localOptions.drawPolygons && h.annotations) {
       const addHandLine = (part) => {
-        if (!part) return;
+        if (!part || part.length === 0 || !part[0]) return;
         for (let i = 0; i < part.length; i++) {
           ctx.beginPath();
           ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + (2 * part[i][2])}, ${127.5 - (2 * part[i][2])}, 255, 0.5)` : localOptions.color;

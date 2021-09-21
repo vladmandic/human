@@ -147,10 +147,6 @@ function mergeDeep(...objects) {
     return prev;
   }, {});
 }
-async function wait(time) {
-  const waiting = new Promise((resolve) => setTimeout(() => resolve(true), time));
-  await waiting;
-}
 
 // src/config.ts
 var config = {
@@ -11355,10 +11351,10 @@ async function register(instance) {
 
 // src/tfjs/backend.ts
 var tf22 = __toModule(require_tfjs_esm());
-async function check(instance) {
-  if (env.initial || instance.config.backend && instance.config.backend.length > 0 && tf22.getBackend() !== instance.config.backend) {
+async function check(instance, force = false) {
+  instance.state = "backend";
+  if (force || env.initial || instance.config.backend && instance.config.backend.length > 0 && tf22.getBackend() !== instance.config.backend) {
     const timeStamp = now();
-    instance.state = "backend";
     if (instance.config.backend && instance.config.backend.length > 0) {
       if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && instance.config.debug) {
         if (instance.config.debug)
@@ -12178,6 +12174,7 @@ async function warmupBitmap(instance) {
     case "face":
       blob = await b64toBlob(face3);
       break;
+    case "body":
     case "full":
       blob = await b64toBlob(body3);
       break;
@@ -12254,22 +12251,25 @@ async function warmupNode(instance) {
 }
 async function warmup(instance, userConfig) {
   const t0 = now();
+  instance.state = "warmup";
   if (userConfig)
     instance.config = mergeDeep(instance.config, userConfig);
   if (!instance.config.warmup || instance.config.warmup === "none")
     return { error: "null" };
   let res;
-  if (typeof createImageBitmap === "function")
-    res = await warmupBitmap(instance);
-  else if (typeof Image !== "undefined" || env.Canvas !== void 0)
-    res = await warmupCanvas(instance);
-  else
-    res = await warmupNode(instance);
-  const t1 = now();
-  if (instance.config.debug)
-    log("Warmup", instance.config.warmup, Math.round(t1 - t0), "ms");
-  instance.emit("warmup");
-  return res;
+  return new Promise(async (resolve) => {
+    if (typeof createImageBitmap === "function")
+      res = await warmupBitmap(instance);
+    else if (typeof Image !== "undefined" || env.Canvas !== void 0)
+      res = await warmupCanvas(instance);
+    else
+      res = await warmupNode(instance);
+    const t1 = now();
+    if (instance.config.debug)
+      log("Warmup", instance.config.warmup, Math.round(t1 - t0), "ms");
+    instance.emit("warmup");
+    resolve(res);
+  });
 }
 
 // src/human.ts
@@ -12317,7 +12317,11 @@ var Human = class {
       }
       return null;
     });
-    __publicField(this, "reset", () => this.config = JSON.parse(JSON.stringify(config)));
+    __publicField(this, "reset", () => {
+      const currentBackend = this.config.backend;
+      this.config = JSON.parse(JSON.stringify(config));
+      this.config.backend = currentBackend;
+    });
     __publicField(this, "validate", (userConfig) => validate(config, userConfig || this.config));
     __publicField(this, "image", (input) => process2(input, this.config));
     __publicField(this, "emit", (event) => {
@@ -12389,8 +12393,9 @@ var Human = class {
   match(faceEmbedding, db, threshold = 0) {
     return match(faceEmbedding, db, threshold);
   }
-  init() {
-    check(this);
+  async init() {
+    await check(this, true);
+    await this.tf.ready();
     set(this.env);
   }
   async load(userConfig) {
@@ -12434,8 +12439,7 @@ var Human = class {
     return warmup(this, userConfig);
   }
   async detect(input, userConfig) {
-    if (this.config.yield)
-      await wait(1);
+    this.state = "detect";
     return new Promise(async (resolve) => {
       var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n;
       this.state = "config";
@@ -12451,16 +12455,15 @@ var Human = class {
       const timeStart = now();
       await check(this);
       await this.load();
-      if (this.config.yield)
-        await wait(1);
       timeStamp = now();
+      this.state = "image";
       let img = process2(input, this.config);
       this.process = img;
       this.performance.image = Math.trunc(now() - timeStamp);
       this.analyze("Get Image:");
       if (this.config.segmentation.enabled && this.process && img.tensor && img.canvas) {
         this.analyze("Start Segmentation:");
-        this.state = "run:segmentation";
+        this.state = "detect:segmentation";
         timeStamp = now();
         await predict11(img);
         elapsedTime = Math.trunc(now() - timeStamp);
@@ -12494,7 +12497,7 @@ var Human = class {
       let bodyRes = [];
       let handRes = [];
       let objectRes = [];
-      this.state = "run:face";
+      this.state = "detect:face";
       if (this.config.async) {
         faceRes = this.config.face.enabled ? detectFace(this, img.tensor) : [];
         if (this.performance.face)
@@ -12507,7 +12510,7 @@ var Human = class {
           this.performance.face = elapsedTime;
       }
       this.analyze("Start Body:");
-      this.state = "run:body";
+      this.state = "detect:body";
       if (this.config.async) {
         if ((_a = this.config.body.modelPath) == null ? void 0 : _a.includes("posenet"))
           bodyRes = this.config.body.enabled ? predict4(img.tensor, this.config) : [];
@@ -12535,7 +12538,7 @@ var Human = class {
       }
       this.analyze("End Body:");
       this.analyze("Start Hand:");
-      this.state = "run:hand";
+      this.state = "detect:hand";
       if (this.config.async) {
         handRes = this.config.hand.enabled ? predict5(img.tensor, this.config) : [];
         if (this.performance.hand)
@@ -12549,7 +12552,7 @@ var Human = class {
       }
       this.analyze("End Hand:");
       this.analyze("Start Object:");
-      this.state = "run:object";
+      this.state = "detect:object";
       if (this.config.async) {
         if ((_i = this.config.object.modelPath) == null ? void 0 : _i.includes("nanodet"))
           objectRes = this.config.object.enabled ? predict9(img.tensor, this.config) : [];
@@ -12568,12 +12571,10 @@ var Human = class {
           this.performance.object = elapsedTime;
       }
       this.analyze("End Object:");
-      this.state = "run:await";
-      if (this.config.yield)
-        await wait(1);
+      this.state = "detect:await";
       if (this.config.async)
         [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
-      this.state = "run:gesture";
+      this.state = "detect:gesture";
       let gestureRes = [];
       if (this.config.gesture.enabled) {
         timeStamp = now();

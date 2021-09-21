@@ -3,10 +3,10 @@ import * as humangl from './humangl';
 import * as env from '../env';
 import * as tf from '../../dist/tfjs.esm.js';
 
-export async function check(instance) {
-  if (env.env.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
+export async function check(instance, force = false) {
+  instance.state = 'backend';
+  if (force || env.env.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
     const timeStamp = now();
-    instance.state = 'backend';
 
     if (instance.config.backend && instance.config.backend.length > 0) {
       // detect web worker

@@ -233,8 +233,8 @@ async function test(Human, inputConfig) {
   res1 = Math.round(100 * human.similarity(desc1, desc2));
   res2 = Math.round(100 * human.similarity(desc1, desc3));
   res3 = Math.round(100 * human.similarity(desc2, desc3));
-  if (res1 !== 51 || res2 !== 49 || res3 !== 53) log('error', 'failed: face match ', res1, res2, res3);
-  else log('state', 'passed: face match');
+  if (res1 !== 51 || res2 !== 49 || res3 !== 53) log('error', 'failed: face similarity ', res1, res2, res3);
+  else log('state', 'passed: face similarity');
 
   // test face matching
   log('info', 'test face matching');
@@ -247,7 +247,7 @@ async function test(Human, inputConfig) {
   res1 = human.match(desc1, db);
   res2 = human.match(desc2, db);
   res3 = human.match(desc3, db);
-  if (!res1 || !res1['name'] || !res2 || !res2['name'] || !res3 || !res3['name']) log('error', 'failed: face match ', res1);
+  if (!res1 || !res1['name'] || !res2 || !res2['name'] || !res3 || !res3['name']) log('error', 'failed: face match ', res1, res2, res3);
   else log('state', 'passed: face match', { first: { name: res1.name, similarity: res1.similarity } }, { second: { name: res2.name, similarity: res2.similarity } }, { third: { name: res3.name, similarity: res3.similarity } });
 
   // test object detection

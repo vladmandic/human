@@ -44,19 +44,19 @@ let userConfig = {
   },
   face: { enabled: false,
     detector: { return: false, rotation: true },
-    mesh: { enabled: true },
-    iris: { enabled: true },
+    mesh: { enabled: false },
+    iris: { enabled: false },
     description: { enabled: false },
     emotion: { enabled: false },
   },
   object: { enabled: false },
   gesture: { enabled: true },
-  hand: { enabled: true },
+  // hand: { enabled: true, landmarks: false, maxDetected: 3, minConfidence: 0.1 },
+  hand: { enabled: true, maxDetected: 3, minConfidence: 0.3, detector: { modelPath: 'handtrack.json' } },
   body: { enabled: false },
   // body: { enabled: true, modelPath: 'movenet-multipose.json' },
   // body: { enabled: true, modelPath: 'posenet.json' },
   segmentation: { enabled: false },
-  /*
   */
 };
 

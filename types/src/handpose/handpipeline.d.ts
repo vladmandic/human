@@ -31,6 +31,8 @@ export declare class HandPipeline {
     estimateHands(image: any, config: any): Promise<{
         landmarks: number[];
         confidence: number;
+        boxConfidence: number;
+        fingerConfidence: number;
         box: {
             topLeft: number[];
             bottomRight: number[];

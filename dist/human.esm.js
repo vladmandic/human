@@ -10667,8 +10667,8 @@ function calculateShapes(updates, indices, shape) {
   const safeSliceDim = sliceRank < 1 ? 1 : sliceRank;
   const numUpdates = sizeFromShape(indices.shape) / safeSliceDim;
   const strides = [...computeStrides(shape.slice(0, sliceRank)), 1];
-  const outputSize = sizeFromShape(shape);
-  return { sliceRank, numUpdates, sliceSize, strides, outputSize };
+  const outputSize2 = sizeFromShape(shape);
+  return { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 };
 }
 var slice_util_exports = {};
 __export2(slice_util_exports, {
@@ -13454,14 +13454,14 @@ async function setdiff1dAsync_(x, y) {
   const xVals = await $x.data();
   const yVals = await $y.data();
   const ySet = new Set(yVals);
-  let outputSize = 0;
+  let outputSize2 = 0;
   for (let i = 0; i < xVals.length; i++) {
     if (!ySet.has(xVals[i])) {
-      outputSize++;
+      outputSize2++;
     }
   }
-  const buffer2 = new TensorBuffer([outputSize], $x.dtype);
-  const indices = new TensorBuffer([outputSize], "int32");
+  const buffer2 = new TensorBuffer([outputSize2], $x.dtype);
+  const indices = new TensorBuffer([outputSize2], "int32");
   for (let i = 0, p2 = 0; i < xVals.length; i++) {
     if (!ySet.has(xVals[i])) {
       buffer2.values[p2] = xVals[i];
@@ -14446,9 +14446,9 @@ function stft_(signal2, frameLength, frameStep, fftLength, windowFn = hannWindow
   return rfft(windowedSignal, fftLength);
 }
 var stft = op({ stft_ });
-function cropAndResize_(image32, boxes, boxInd, cropSize, method = "bilinear", extrapolationValue = 0) {
+function cropAndResize_(image32, boxes2, boxInd, cropSize, method = "bilinear", extrapolationValue = 0) {
   const $image = convertToTensor(image32, "image", "cropAndResize");
-  const $boxes = convertToTensor(boxes, "boxes", "cropAndResize", "float32");
+  const $boxes = convertToTensor(boxes2, "boxes", "cropAndResize", "float32");
   const $boxInd = convertToTensor(boxInd, "boxInd", "cropAndResize", "int32");
   const numBoxes = $boxes.shape[0];
   assert($image.rank === 4, () => `Error in cropAndResize: image must be rank 4,but got rank ${$image.rank}.`);
@@ -14492,7 +14492,7 @@ function rotateWithOffset_(image32, radians, fillValue = 0, center = 0.5) {
   return res;
 }
 var rotateWithOffset = op({ rotateWithOffset_ });
-function nonMaxSuppSanityCheck(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma) {
+function nonMaxSuppSanityCheck(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma) {
   if (iouThreshold == null) {
     iouThreshold = 0.5;
   }
@@ -14502,18 +14502,18 @@ function nonMaxSuppSanityCheck(boxes, scores, maxOutputSize, iouThreshold, score
   if (softNmsSigma == null) {
     softNmsSigma = 0;
   }
-  const numBoxes = boxes.shape[0];
+  const numBoxes = boxes2.shape[0];
   maxOutputSize = Math.min(maxOutputSize, numBoxes);
   assert(0 <= iouThreshold && iouThreshold <= 1, () => `iouThreshold must be in [0, 1], but was '${iouThreshold}'`);
-  assert(boxes.rank === 2, () => `boxes must be a 2D tensor, but was of rank '${boxes.rank}'`);
-  assert(boxes.shape[1] === 4, () => `boxes must have 4 columns, but 2nd dimension was ${boxes.shape[1]}`);
+  assert(boxes2.rank === 2, () => `boxes must be a 2D tensor, but was of rank '${boxes2.rank}'`);
+  assert(boxes2.shape[1] === 4, () => `boxes must have 4 columns, but 2nd dimension was ${boxes2.shape[1]}`);
   assert(scores.rank === 1, () => "scores must be a 1D tensor");
   assert(scores.shape[0] === numBoxes, () => `scores has incompatible shape with boxes. Expected ${numBoxes}, but was ${scores.shape[0]}`);
   assert(0 <= softNmsSigma && softNmsSigma <= 1, () => `softNmsSigma must be in [0, 1], but was '${softNmsSigma}'`);
   return { maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma };
 }
-function nonMaxSuppression_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY) {
-  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppression");
+function nonMaxSuppression_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY) {
+  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppression");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppression");
   const inputs = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold);
   maxOutputSize = inputs.maxOutputSize;
@@ -14551,16 +14551,16 @@ function binarySearch_(arr, target, comparator) {
   }
   return found ? left : -left - 1;
 }
-function nonMaxSuppressionV3Impl(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold) {
-  return nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, 0);
+function nonMaxSuppressionV3Impl(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold) {
+  return nonMaxSuppressionImpl_(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, 0);
 }
-function nonMaxSuppressionV4Impl(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize) {
-  return nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, 0, false, padToMaxOutputSize, true);
+function nonMaxSuppressionV4Impl(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize) {
+  return nonMaxSuppressionImpl_(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, 0, false, padToMaxOutputSize, true);
 }
-function nonMaxSuppressionV5Impl(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma) {
-  return nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma, true);
+function nonMaxSuppressionV5Impl(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma) {
+  return nonMaxSuppressionImpl_(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma, true);
 }
-function nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma, returnScoresTensor = false, padToMaxOutputSize = false, returnValidOutputs = false) {
+function nonMaxSuppressionImpl_(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma, returnScoresTensor = false, padToMaxOutputSize = false, returnValidOutputs = false) {
   const candidates = [];
   for (let i = 0; i < scores.length; i++) {
     if (scores[i] > scoreThreshold) {
@@ -14579,7 +14579,7 @@ function nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scor
     }
     let ignoreCandidate = false;
     for (let j = selectedIndices.length - 1; j >= suppressBeginIndex; --j) {
-      const iou = intersectionOverUnion(boxes, boxIndex, selectedIndices[j]);
+      const iou = intersectionOverUnion(boxes2, boxIndex, selectedIndices[j]);
       if (iou >= iouThreshold) {
         ignoreCandidate = true;
         break;
@@ -14614,9 +14614,9 @@ function nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scor
   }
   return result;
 }
-function intersectionOverUnion(boxes, i, j) {
-  const iCoord = boxes.subarray(i * 4, i * 4 + 4);
-  const jCoord = boxes.subarray(j * 4, j * 4 + 4);
+function intersectionOverUnion(boxes2, i, j) {
+  const iCoord = boxes2.subarray(i * 4, i * 4 + 4);
+  const jCoord = boxes2.subarray(j * 4, j * 4 + 4);
   const yminI = Math.min(iCoord[0], iCoord[2]);
   const xminI = Math.min(iCoord[1], iCoord[3]);
   const ymaxI = Math.max(iCoord[0], iCoord[2]);
@@ -14644,8 +14644,8 @@ function suppressWeight(iouThreshold, scale2, iou) {
 function ascendingComparator(c1, c2) {
   return c1.score - c2.score || c1.score === c2.score && c2.boxIndex - c1.boxIndex;
 }
-async function nonMaxSuppressionAsync_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY) {
-  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppressionAsync");
+async function nonMaxSuppressionAsync_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY) {
+  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppressionAsync");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppressionAsync");
   const inputs = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold);
   maxOutputSize = inputs.maxOutputSize;
@@ -14655,7 +14655,7 @@ async function nonMaxSuppressionAsync_(boxes, scores, maxOutputSize, iouThreshol
   const boxesVals = boxesAndScores[0];
   const scoresVals = boxesAndScores[1];
   const { selectedIndices } = nonMaxSuppressionV3Impl(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold);
-  if ($boxes !== boxes) {
+  if ($boxes !== boxes2) {
     $boxes.dispose();
   }
   if ($scores !== scores) {
@@ -14664,8 +14664,8 @@ async function nonMaxSuppressionAsync_(boxes, scores, maxOutputSize, iouThreshol
   return tensor1d(selectedIndices, "int32");
 }
 var nonMaxSuppressionAsync = nonMaxSuppressionAsync_;
-function nonMaxSuppressionWithScore_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, softNmsSigma = 0) {
-  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppression");
+function nonMaxSuppressionWithScore_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, softNmsSigma = 0) {
+  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppression");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppression");
   const params = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
   maxOutputSize = params.maxOutputSize;
@@ -14678,8 +14678,8 @@ function nonMaxSuppressionWithScore_(boxes, scores, maxOutputSize, iouThreshold 
   return { selectedIndices: result[0], selectedScores: result[1] };
 }
 var nonMaxSuppressionWithScore = op({ nonMaxSuppressionWithScore_ });
-async function nonMaxSuppressionWithScoreAsync_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, softNmsSigma = 0) {
-  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppressionAsync");
+async function nonMaxSuppressionWithScoreAsync_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, softNmsSigma = 0) {
+  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppressionAsync");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppressionAsync");
   const params = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
   maxOutputSize = params.maxOutputSize;
@@ -14690,7 +14690,7 @@ async function nonMaxSuppressionWithScoreAsync_(boxes, scores, maxOutputSize, io
   const boxesVals = boxesAndScores[0];
   const scoresVals = boxesAndScores[1];
   const { selectedIndices, selectedScores } = nonMaxSuppressionV5Impl(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
-  if ($boxes !== boxes) {
+  if ($boxes !== boxes2) {
     $boxes.dispose();
   }
   if ($scores !== scores) {
@@ -14702,8 +14702,8 @@ async function nonMaxSuppressionWithScoreAsync_(boxes, scores, maxOutputSize, io
   };
 }
 var nonMaxSuppressionWithScoreAsync = nonMaxSuppressionWithScoreAsync_;
-function nonMaxSuppressionPadded_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, padToMaxOutputSize = false) {
-  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppression");
+function nonMaxSuppressionPadded_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, padToMaxOutputSize = false) {
+  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppression");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppression");
   const params = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold, null);
   const $maxOutputSize = params.maxOutputSize;
@@ -14720,8 +14720,8 @@ function nonMaxSuppressionPadded_(boxes, scores, maxOutputSize, iouThreshold = 0
   return { selectedIndices: result[0], validOutputs: result[1] };
 }
 var nonMaxSuppressionPadded = op({ nonMaxSuppressionPadded_ });
-async function nonMaxSuppressionPaddedAsync_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, padToMaxOutputSize = false) {
-  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppressionAsync");
+async function nonMaxSuppressionPaddedAsync_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, padToMaxOutputSize = false) {
+  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppressionAsync");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppressionAsync");
   const params = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold, null);
   const $maxOutputSize = params.maxOutputSize;
@@ -14729,7 +14729,7 @@ async function nonMaxSuppressionPaddedAsync_(boxes, scores, maxOutputSize, iouTh
   const $scoreThreshold = params.scoreThreshold;
   const [boxesVals, scoresVals] = await Promise.all([$boxes.data(), $scores.data()]);
   const { selectedIndices, validOutputs } = nonMaxSuppressionV4Impl(boxesVals, scoresVals, $maxOutputSize, $iouThreshold, $scoreThreshold, padToMaxOutputSize);
-  if ($boxes !== boxes) {
+  if ($boxes !== boxes2) {
     $boxes.dispose();
   }
   if ($scores !== scores) {
@@ -34306,14 +34306,14 @@ var executeOp5 = (node2, tensorMap, context) => {
   }
 };
 function nmsParams(node2, tensorMap, context) {
-  const boxes = getParamValue("boxes", node2, tensorMap, context);
+  const boxes2 = getParamValue("boxes", node2, tensorMap, context);
   const scores = getParamValue("scores", node2, tensorMap, context);
   const maxOutputSize = getParamValue("maxOutputSize", node2, tensorMap, context);
   const iouThreshold = getParamValue("iouThreshold", node2, tensorMap, context);
   const scoreThreshold = getParamValue("scoreThreshold", node2, tensorMap, context);
   const softNmsSigma = getParamValue("softNmsSigma", node2, tensorMap, context);
   return {
-    boxes,
+    boxes: boxes2,
     scores,
     maxOutputSize,
     iouThreshold,
@@ -34324,20 +34324,20 @@ function nmsParams(node2, tensorMap, context) {
 var executeOp6 = async (node2, tensorMap, context) => {
   switch (node2.op) {
     case "NonMaxSuppressionV5": {
-      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = nmsParams(node2, tensorMap, context);
-      const result = await image.nonMaxSuppressionWithScoreAsync(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
+      const { boxes: boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = nmsParams(node2, tensorMap, context);
+      const result = await image.nonMaxSuppressionWithScoreAsync(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
       return [result.selectedIndices, result.selectedScores];
     }
     case "NonMaxSuppressionV4": {
-      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node2, tensorMap, context);
+      const { boxes: boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node2, tensorMap, context);
       const padToMaxOutputSize = getParamValue("padToMaxOutputSize", node2, tensorMap, context);
-      const result = await image.nonMaxSuppressionPaddedAsync(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
+      const result = await image.nonMaxSuppressionPaddedAsync(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
       return [result.selectedIndices, result.validOutputs];
     }
     case "NonMaxSuppressionV3":
     case "NonMaxSuppressionV2": {
-      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node2, tensorMap, context);
-      return [await image.nonMaxSuppressionAsync(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold)];
+      const { boxes: boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node2, tensorMap, context);
+      return [await image.nonMaxSuppressionAsync(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold)];
     }
     case "Where": {
       const condition = cast(getParamValue("condition", node2, tensorMap, context), "bool");
@@ -34543,12 +34543,12 @@ var executeOp10 = (node2, tensorMap, context) => {
     }
     case "CropAndResize": {
       const image32 = getParamValue("image", node2, tensorMap, context);
-      const boxes = getParamValue("boxes", node2, tensorMap, context);
+      const boxes2 = getParamValue("boxes", node2, tensorMap, context);
       const boxInd = getParamValue("boxInd", node2, tensorMap, context);
       const cropSize = getParamValue("cropSize", node2, tensorMap, context);
       const method = getParamValue("method", node2, tensorMap, context);
       const extrapolationValue = getParamValue("extrapolationValue", node2, tensorMap, context);
-      return [image.cropAndResize(image32, boxes, boxInd, cropSize, method, extrapolationValue)];
+      return [image.cropAndResize(image32, boxes2, boxInd, cropSize, method, extrapolationValue)];
     }
     default:
       throw TypeError(`Node type ${node2.op} is not implemented`);
@@ -36192,11 +36192,11 @@ var SkipIterator = class extends LazyIterator {
   }
   async serialNext() {
     while (this.count++ < this.maxCount) {
-      const skipped7 = await this.upstream.next();
-      if (skipped7.done) {
-        return skipped7;
+      const skipped8 = await this.upstream.next();
+      if (skipped8.done) {
+        return skipped8;
       }
-      dispose(skipped7.value);
+      dispose(skipped8.value);
     }
     return this.upstream.next();
   }
@@ -38495,9 +38495,9 @@ function sparseReshapeImpl(inputIndices, inputIndicesShape, inputDType, inputSha
     }
     outputShape[unknownIndex] = missing;
   }
-  const outputSize = util_exports.sizeFromShape(outputShape);
-  if (outputSize !== denseSize) {
-    throw new Error(`Input to reshape is a tensor with ${denseSize} dense values, but the requested shape has ${outputSize}. inputShape=${inputShape} outputShape=${outputShape}`);
+  const outputSize2 = util_exports.sizeFromShape(outputShape);
+  if (outputSize2 !== denseSize) {
+    throw new Error(`Input to reshape is a tensor with ${denseSize} dense values, but the requested shape has ${outputSize2}. inputShape=${inputShape} outputShape=${outputShape}`);
   }
   const inputRank = inputShape.length;
   const inputStrides = [];
@@ -38794,7 +38794,7 @@ function split3(str, delimiters, skipEmpty, result) {
 function stringSplitImpl(input2, delimiter, skipEmpty) {
   const batchSize = input2.length;
   const tokens = [];
-  let outputSize = 0;
+  let outputSize2 = 0;
   let maxNumEntries = 0;
   const numIndices = new Array(batchSize);
   for (let i = 0; i < batchSize; ++i) {
@@ -38802,11 +38802,11 @@ function stringSplitImpl(input2, delimiter, skipEmpty) {
     split3(input2[i], delimiter, skipEmpty, tokens);
     const nEntries = tokens.length - prevTokensLength;
     numIndices[i] = nEntries;
-    outputSize += nEntries;
+    outputSize2 += nEntries;
     maxNumEntries = Math.max(maxNumEntries, nEntries);
   }
-  const indices = util_exports.getArrayFromDType("int32", outputSize * 2);
-  const values = new Array(outputSize);
+  const indices = util_exports.getArrayFromDType("int32", outputSize2 * 2);
+  const values = new Array(outputSize2);
   const shape = [batchSize, maxNumEntries];
   let c = 0;
   for (let i = 0; i < batchSize; ++i) {
@@ -40429,13 +40429,13 @@ var coshConfig = {
 };
 function cropAndResize2(args) {
   const { inputs, backend: backend22, attrs } = args;
-  const { image: image32, boxes, boxInd } = inputs;
+  const { image: image32, boxes: boxes2, boxInd } = inputs;
   const { cropSize, method, extrapolationValue } = attrs;
   const [batch, imageHeight, imageWidth, numChannels] = image32.shape;
-  const numBoxes = boxes.shape[0];
+  const numBoxes = boxes2.shape[0];
   const [cropHeight, cropWidth] = cropSize;
   const output = buffer([numBoxes, cropHeight, cropWidth, numChannels], "float32");
-  const boxVals = backend22.data.get(boxes.dataId).values;
+  const boxVals = backend22.data.get(boxes2.dataId).values;
   const boxIndVals = backend22.data.get(boxInd.dataId).values;
   const imageVals = backend22.data.get(image32.dataId).values;
   const inStride = util_exports.computeStrides(image32.shape);
@@ -41178,17 +41178,17 @@ function fftBatch(input2, inverse, cpuBackend) {
   return result;
 }
 function fftImpl(input2, inverse, cpuBackend) {
-  const inputSize2 = util_exports.sizeFromShape(input2.shape);
+  const inputSize3 = util_exports.sizeFromShape(input2.shape);
   const inputVals = cpuBackend.data.get(input2.dataId);
   const realVals = cpuBackend.data.get(inputVals.complexTensorInfos.real.dataId).values;
   const imagVals = cpuBackend.data.get(inputVals.complexTensorInfos.imag.dataId).values;
-  if (isExponentOf2(inputSize2)) {
-    const result = fftRadix2(realVals, imagVals, inputSize2, inverse, cpuBackend);
+  if (isExponentOf2(inputSize3)) {
+    const result = fftRadix2(realVals, imagVals, inputSize3, inverse, cpuBackend);
     const resultShape = [input2.shape[0], input2.shape[1]];
     if (inverse) {
       const realInfo = cpuBackend.makeTensorInfo(resultShape, "float32", result.real);
       const imagInfo = cpuBackend.makeTensorInfo(resultShape, "float32", result.imag);
-      const sizeInfo = cpuBackend.makeTensorInfo([], "float32", util_exports.createScalarValue(inputSize2, "float32"));
+      const sizeInfo = cpuBackend.makeTensorInfo([], "float32", util_exports.createScalarValue(inputSize3, "float32"));
       const sizeInfoCopy = identity2({ inputs: { x: sizeInfo }, backend: cpuBackend });
       const divRealInfo = realDivConfig.kernelFunc({ inputs: { a: realInfo, b: sizeInfo }, backend: cpuBackend });
       const divImagInfo = realDivConfig.kernelFunc({ inputs: { a: imagInfo, b: sizeInfoCopy }, backend: cpuBackend });
@@ -41205,7 +41205,7 @@ function fftImpl(input2, inverse, cpuBackend) {
     return result;
   } else {
     const data = backend_util_exports.mergeRealAndImagArrays(realVals, imagVals);
-    const rawOutput = fourierTransformByMatmul(data, inputSize2, inverse);
+    const rawOutput = fourierTransformByMatmul(data, inputSize3, inverse);
     return backend_util_exports.splitRealAndImagArrays(rawOutput);
   }
 }
@@ -41327,9 +41327,9 @@ function fourierTransformByMatmul(data, size, inverse) {
 function fft2(args) {
   const { inputs, backend: backend22 } = args;
   const { input: input2 } = inputs;
-  const inputSize2 = util_exports.sizeFromShape(input2.shape);
+  const inputSize3 = util_exports.sizeFromShape(input2.shape);
   const innerDimensionSize = input2.shape[input2.shape.length - 1];
-  const batch = inputSize2 / innerDimensionSize;
+  const batch = inputSize3 / innerDimensionSize;
   const input2D = reshape3({
     inputs: { x: input2 },
     backend: backend22,
@@ -41528,9 +41528,9 @@ var gatherV2Config = {
 function ifft2(args) {
   const { inputs, backend: backend22 } = args;
   const { input: input2 } = inputs;
-  const inputSize2 = util_exports.sizeFromShape(input2.shape);
+  const inputSize3 = util_exports.sizeFromShape(input2.shape);
   const innerDimensionSize = input2.shape[input2.shape.length - 1];
-  const batch = inputSize2 / innerDimensionSize;
+  const batch = inputSize3 / innerDimensionSize;
   const input2D = reshape3({
     inputs: { x: input2 },
     backend: backend22,
@@ -42107,10 +42107,10 @@ var multinomialConfig = {
 var nonMaxSuppressionV3Impl2 = kernel_impls_exports.nonMaxSuppressionV3Impl;
 function nonMaxSuppressionV3(args) {
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes, scores } = inputs;
+  const { boxes: boxes2, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold } = attrs;
-  assertNotComplex(boxes, "NonMaxSuppression");
-  const boxesVals = backend22.data.get(boxes.dataId).values;
+  assertNotComplex(boxes2, "NonMaxSuppression");
+  const boxesVals = backend22.data.get(boxes2.dataId).values;
   const scoresVals = backend22.data.get(scores.dataId).values;
   const { selectedIndices } = nonMaxSuppressionV3Impl2(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold);
   return backend22.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices));
@@ -42123,10 +42123,10 @@ var nonMaxSuppressionV3Config = {
 var nonMaxSuppressionV4Impl2 = kernel_impls_exports.nonMaxSuppressionV4Impl;
 function nonMaxSuppressionV4(args) {
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes, scores } = inputs;
+  const { boxes: boxes2, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize } = attrs;
-  assertNotComplex(boxes, "NonMaxSuppressionPadded");
-  const boxesVals = backend22.data.get(boxes.dataId).values;
+  assertNotComplex(boxes2, "NonMaxSuppressionPadded");
+  const boxesVals = backend22.data.get(boxes2.dataId).values;
   const scoresVals = backend22.data.get(scores.dataId).values;
   const { selectedIndices, validOutputs } = nonMaxSuppressionV4Impl2(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
   return [
@@ -42142,10 +42142,10 @@ var nonMaxSuppressionV4Config = {
 var nonMaxSuppressionV5Impl2 = kernel_impls_exports.nonMaxSuppressionV5Impl;
 function nonMaxSuppressionV5(args) {
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes, scores } = inputs;
+  const { boxes: boxes2, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = attrs;
-  assertNotComplex(boxes, "NonMaxSuppressionWithScore");
-  const boxesVals = backend22.data.get(boxes.dataId).values;
+  assertNotComplex(boxes2, "NonMaxSuppressionWithScore");
+  const boxesVals = backend22.data.get(boxes2.dataId).values;
   const scoresVals = backend22.data.get(scores.dataId).values;
   const maxOutputSizeVal = maxOutputSize;
   const iouThresholdVal = iouThreshold;
@@ -42666,11 +42666,11 @@ var roundConfig = {
   backendName: "cpu",
   kernelFunc: round3
 };
-function scatterImpl(indices, updates, shape, outputSize, sliceSize, numUpdates, sliceRank, strides, defaultValue, sumDupeIndices) {
-  const flattenShape = [outputSize / sliceSize, sliceSize];
+function scatterImpl(indices, updates, shape, outputSize2, sliceSize, numUpdates, sliceRank, strides, defaultValue, sumDupeIndices) {
+  const flattenShape = [outputSize2 / sliceSize, sliceSize];
   const indicesData = indices.values;
   const updatesData = updates.values;
-  if (outputSize === 0) {
+  if (outputSize2 === 0) {
     return buffer(shape, updates.dtype);
   }
   const outBuf = buffer(flattenShape, updates.dtype);
@@ -42683,7 +42683,7 @@ function scatterImpl(indices, updates, shape, outputSize, sliceSize, numUpdates,
       index.push(dim);
       flattenIndex += dim * strides[j];
     }
-    if (flattenIndex < 0 || flattenIndex >= outputSize / sliceSize) {
+    if (flattenIndex < 0 || flattenIndex >= outputSize2 / sliceSize) {
       throw new Error(`Invalid indices: ${index} does not index into ${shape}`);
     }
     for (let k = 0; k < sliceSize; k++) {
@@ -42700,11 +42700,11 @@ function scatterNd(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { indices, updates } = inputs;
   const { shape } = attrs;
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize } = backend_util_exports.calculateShapes(updates, indices, shape);
+  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(updates, indices, shape);
   const sumDupeIndices = true;
   const indicesBuf = backend22.bufferSync(indices);
   const updatesBuf = backend22.bufferSync(updates);
-  const outBuf = scatterImpl(indicesBuf, updatesBuf, shape, outputSize, sliceSize, numUpdates, sliceRank, strides, 0, sumDupeIndices);
+  const outBuf = scatterImpl(indicesBuf, updatesBuf, shape, outputSize2, sliceSize, numUpdates, sliceRank, strides, 0, sumDupeIndices);
   return backend22.makeTensorInfo(shape, outBuf.dtype, outBuf.values);
 }
 var scatterNdConfig = {
@@ -42957,12 +42957,12 @@ function sparseToDense2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { sparseIndices, sparseValues, defaultValue } = inputs;
   const { outputShape } = attrs;
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
+  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
   const sumDupeIndices = false;
   const indicesBuf = backend22.bufferSync(sparseIndices);
   const updatesBuf = backend22.bufferSync(sparseValues);
   const $defaultValue = backend22.data.get(defaultValue.dataId).values[0];
-  const outBuf = scatterImpl(indicesBuf, updatesBuf, outputShape, outputSize, sliceSize, numUpdates, sliceRank, strides, $defaultValue, sumDupeIndices);
+  const outBuf = scatterImpl(indicesBuf, updatesBuf, outputShape, outputSize2, sliceSize, numUpdates, sliceRank, strides, $defaultValue, sumDupeIndices);
   return backend22.makeTensorInfo(outputShape, outBuf.dtype, outBuf.values);
 }
 var sparseToDenseConfig = {
@@ -43083,10 +43083,10 @@ function stringSplit2(args) {
   const $input = backend22.data.get(input2.dataId).values;
   const $delimiter = backend22.data.get(delimiter.dataId).values[0];
   const [indices, values, shape] = stringSplitImpl($input, $delimiter, skipEmpty);
-  const outputSize = values.length;
+  const outputSize2 = values.length;
   return [
-    backend22.makeTensorInfo([outputSize, 2], "int32", indices),
-    backend22.makeTensorInfo([outputSize], "string", values),
+    backend22.makeTensorInfo([outputSize2, 2], "int32", indices),
+    backend22.makeTensorInfo([outputSize2], "string", values),
     backend22.makeTensorInfo([2], "int32", new Int32Array(shape))
   ];
 }
@@ -51954,10 +51954,10 @@ var CropAndResizeProgram = class {
 };
 var cropAndResize3 = (args) => {
   const { inputs, backend: backend22, attrs } = args;
-  const { image: image32, boxes, boxInd } = inputs;
+  const { image: image32, boxes: boxes2, boxInd } = inputs;
   const { cropSize, method, extrapolationValue } = attrs;
-  const program = new CropAndResizeProgram(image32.shape, boxes.shape, cropSize, method, extrapolationValue);
-  return backend22.runWebGLProgram(program, [image32, boxes, boxInd], "float32");
+  const program = new CropAndResizeProgram(image32.shape, boxes2.shape, cropSize, method, extrapolationValue);
+  return backend22.runWebGLProgram(program, [image32, boxes2, boxInd], "float32");
 };
 var cropAndResizeConfig2 = {
   kernelName: CropAndResize,
@@ -53032,9 +53032,9 @@ var FFTProgram = class {
 };
 function fftImpl2(x, inverse, backend22) {
   const xData = backend22.texData.get(x.dataId);
-  const inputSize2 = util_exports.sizeFromShape(x.shape);
+  const inputSize3 = util_exports.sizeFromShape(x.shape);
   const innerDimensionSize = x.shape[x.shape.length - 1];
-  const batch = inputSize2 / innerDimensionSize;
+  const batch = inputSize3 / innerDimensionSize;
   const input2D = reshape4({ inputs: { x }, backend: backend22, attrs: { shape: [batch, innerDimensionSize] } });
   const xShape = input2D.shape;
   const realProgram = new FFTProgram("real", xShape, inverse);
@@ -54655,9 +54655,9 @@ var nonMaxSuppressionV3Impl3 = kernel_impls_exports.nonMaxSuppressionV3Impl;
 function nonMaxSuppressionV32(args) {
   backend_util_exports.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes, scores } = inputs;
+  const { boxes: boxes2, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold } = attrs;
-  const boxesVals = backend22.readSync(boxes.dataId);
+  const boxesVals = backend22.readSync(boxes2.dataId);
   const scoresVals = backend22.readSync(scores.dataId);
   const { selectedIndices } = nonMaxSuppressionV3Impl3(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold);
   return backend22.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices));
@@ -54671,9 +54671,9 @@ var nonMaxSuppressionV4Impl3 = kernel_impls_exports.nonMaxSuppressionV4Impl;
 function nonMaxSuppressionV42(args) {
   backend_util_exports.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes, scores } = inputs;
+  const { boxes: boxes2, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize } = attrs;
-  const boxesVals = backend22.readSync(boxes.dataId);
+  const boxesVals = backend22.readSync(boxes2.dataId);
   const scoresVals = backend22.readSync(scores.dataId);
   const { selectedIndices, validOutputs } = nonMaxSuppressionV4Impl3(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
   return [
@@ -54690,9 +54690,9 @@ var nonMaxSuppressionV5Impl3 = kernel_impls_exports.nonMaxSuppressionV5Impl;
 function nonMaxSuppressionV52(args) {
   backend_util_exports.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes, scores } = inputs;
+  const { boxes: boxes2, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = attrs;
-  const boxesVals = backend22.readSync(boxes.dataId);
+  const boxesVals = backend22.readSync(boxes2.dataId);
   const scoresVals = backend22.readSync(scores.dataId);
   const maxOutputSizeVal = maxOutputSize;
   const iouThresholdVal = iouThreshold;
@@ -55850,9 +55850,9 @@ function scatterNd2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { indices, updates } = inputs;
   const { shape } = attrs;
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize } = backend_util_exports.calculateShapes(updates, indices, shape);
-  const flattenShape = [outputSize / sliceSize, sliceSize];
-  if (outputSize === 0) {
+  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(updates, indices, shape);
+  const flattenShape = [outputSize2 / sliceSize, sliceSize];
+  if (outputSize2 === 0) {
     return backend22.makeTensorInfo(shape, indices.dtype);
   }
   const flattenIndices = reshape4({ inputs: { x: indices }, backend: backend22, attrs: { shape: [numUpdates, sliceRank] } });
@@ -56156,9 +56156,9 @@ function sparseToDense3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { sparseIndices, sparseValues, defaultValue } = inputs;
   const { outputShape } = attrs;
-  const { sliceRank, numUpdates, strides, outputSize } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
+  const { sliceRank, numUpdates, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
   const sumDupeIndices = false;
-  const program = new ScatterProgram(numUpdates, sliceRank, sparseIndices.shape.length, sparseValues.shape.length, strides, [outputSize, 1], sumDupeIndices);
+  const program = new ScatterProgram(numUpdates, sliceRank, sparseIndices.shape.length, sparseValues.shape.length, strides, [outputSize2, 1], sumDupeIndices);
   const res = backend22.runWebGLProgram(program, [sparseValues, sparseIndices, defaultValue], sparseValues.dtype);
   const reshaped = reshape4({ inputs: { x: res }, backend: backend22, attrs: { shape: outputShape } });
   backend22.disposeIntermediateTensorInfo(res);
@@ -56322,10 +56322,10 @@ function stringSplit3(args) {
   const $input = backend22.readSync(input2.dataId);
   const $delimiter = backend22.readSync(delimiter.dataId)[0];
   const [indices, values, shape] = stringSplitImplCPU($input, $delimiter, skipEmpty);
-  const outputSize = values.length;
+  const outputSize2 = values.length;
   return [
-    backend22.makeTensorInfo([outputSize, 2], "int32", indices),
-    backend22.makeTensorInfo([outputSize], "string", values),
+    backend22.makeTensorInfo([outputSize2, 2], "int32", indices),
+    backend22.makeTensorInfo([outputSize2], "string", values),
     backend22.makeTensorInfo([2], "int32", new Int32Array(shape))
   ];
 }
@@ -58091,8 +58091,8 @@ function setup11(backend22) {
 function cropAndResize4(args) {
   const { backend: backend22, inputs, attrs } = args;
   const { method, extrapolationValue, cropSize } = attrs;
-  const { image: image32, boxes, boxInd } = inputs;
-  const numBoxes = boxes.shape[0];
+  const { image: image32, boxes: boxes2, boxInd } = inputs;
+  const numBoxes = boxes2.shape[0];
   const [cropHeight, cropWidth] = cropSize;
   const outShape = [numBoxes, cropHeight, cropWidth, image32.shape[3]];
   let imagesData = backend22.dataIdMap.get(image32.dataId);
@@ -58102,7 +58102,7 @@ function cropAndResize4(args) {
     imagesData = backend22.dataIdMap.get(castedData.dataId);
   }
   const imagesId = imagesData.id;
-  const boxesId = backend22.dataIdMap.get(boxes.dataId).id;
+  const boxesId = backend22.dataIdMap.get(boxes2.dataId).id;
   const boxIndId = backend22.dataIdMap.get(boxInd.dataId).id;
   const out = backend22.makeOutput(outShape, "float32");
   const outId = backend22.dataIdMap.get(out.dataId).id;
@@ -58917,8 +58917,8 @@ function setup26(backend22) {
 function kernelFunc(args) {
   const { backend: backend22, inputs, attrs } = args;
   const { iouThreshold, maxOutputSize, scoreThreshold } = attrs;
-  const { boxes, scores } = inputs;
-  const boxesId = backend22.dataIdMap.get(boxes.dataId).id;
+  const { boxes: boxes2, scores } = inputs;
+  const boxesId = backend22.dataIdMap.get(boxes2.dataId).id;
   const scoresId = backend22.dataIdMap.get(scores.dataId).id;
   const resOffset = wasmFunc4(boxesId, scoresId, maxOutputSize, iouThreshold, scoreThreshold);
   const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend22, resOffset);
@@ -58947,8 +58947,8 @@ function setup27(backend22) {
 function nonMaxSuppressionV43(args) {
   const { backend: backend22, inputs, attrs } = args;
   const { iouThreshold, maxOutputSize, scoreThreshold, padToMaxOutputSize } = attrs;
-  const { boxes, scores } = inputs;
-  const boxesId = backend22.dataIdMap.get(boxes.dataId).id;
+  const { boxes: boxes2, scores } = inputs;
+  const boxesId = backend22.dataIdMap.get(boxes2.dataId).id;
   const scoresId = backend22.dataIdMap.get(scores.dataId).id;
   const resOffset = wasmFunc5(boxesId, scoresId, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
   const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend22, resOffset);
@@ -58977,8 +58977,8 @@ function setup28(backend22) {
 function kernelFunc2(args) {
   const { backend: backend22, inputs, attrs } = args;
   const { iouThreshold, maxOutputSize, scoreThreshold, softNmsSigma } = attrs;
-  const { boxes, scores } = inputs;
-  const boxesId = backend22.dataIdMap.get(boxes.dataId).id;
+  const { boxes: boxes2, scores } = inputs;
+  const boxesId = backend22.dataIdMap.get(boxes2.dataId).id;
   const scoresId = backend22.dataIdMap.get(scores.dataId).id;
   const resOffset = wasmFunc6(boxesId, scoresId, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
   const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend22, resOffset);
@@ -59337,14 +59337,14 @@ function scatterNd3(args) {
   if (util_exports.sizeFromShape(shape) === 0) {
     return out;
   }
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize } = scatter_nd_util_exports.calculateShapes(updates, indices, shape);
+  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = scatter_nd_util_exports.calculateShapes(updates, indices, shape);
   const indicesData = backend22.dataIdMap.get(indices.dataId);
   const indicesId = indicesData.id;
   const updatesData = backend22.dataIdMap.get(updates.dataId);
   const updatesId = updatesData.id;
   const stridesBytes = new Uint8Array(new Int32Array(strides).buffer);
   const outId = backend22.dataIdMap.get(out.dataId).id;
-  wasmScatterNd(indicesId, updatesId, CppDType[updates.dtype], sliceRank, numUpdates, sliceSize, stridesBytes, outputSize, outId);
+  wasmScatterNd(indicesId, updatesId, CppDType[updates.dtype], sliceRank, numUpdates, sliceSize, stridesBytes, outputSize2, outId);
   return out;
 }
 var scatterNdConfig3 = {
@@ -60313,13 +60313,13 @@ function getBoxCenter(box6) {
 function cutBoxFromImageAndResize(box6, image7, cropSize) {
   const h = image7.shape[1];
   const w = image7.shape[2];
-  const boxes = [[
+  const boxes2 = [[
     box6.startPoint[1] / h,
     box6.startPoint[0] / w,
     box6.endPoint[1] / h,
     box6.endPoint[0] / w
   ]];
-  return image.cropAndResize(image7, boxes, [0], cropSize);
+  return image.cropAndResize(image7, boxes2, [0], cropSize);
 }
 function enlargeBox(box6, factor = 1.5) {
   const center = getBoxCenter(box6);
@@ -60415,13 +60415,13 @@ function rotatePoint(homogeneousCoordinate, rotationMatrix) {
     dot4(homogeneousCoordinate, rotationMatrix[1])
   ];
 }
-function generateAnchors(inputSize2) {
-  const spec = { strides: [inputSize2 / 16, inputSize2 / 8], anchors: [2, 6] };
+function generateAnchors(inputSize3) {
+  const spec = { strides: [inputSize3 / 16, inputSize3 / 8], anchors: [2, 6] };
   const anchors3 = [];
   for (let i = 0; i < spec.strides.length; i++) {
     const stride = spec.strides[i];
-    const gridRows = Math.floor((inputSize2 + stride - 1) / stride);
-    const gridCols = Math.floor((inputSize2 + stride - 1) / stride);
+    const gridRows = Math.floor((inputSize3 + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize3 + stride - 1) / stride);
     const anchorsNum = spec.anchors[i];
     for (let gridY = 0; gridY < gridRows; gridY++) {
       const anchorY = stride * (gridY + 0.5);
@@ -60438,17 +60438,17 @@ function generateAnchors(inputSize2) {
 
 // src/blazeface/blazeface.ts
 var keypointsCount = 6;
-function decodeBounds(boxOutputs, anchors3, inputSize2) {
+function decodeBounds(boxOutputs, anchors3, inputSize3) {
   const boxStarts = slice(boxOutputs, [0, 1], [-1, 2]);
   const centers = add2(boxStarts, anchors3);
   const boxSizes = slice(boxOutputs, [0, 3], [-1, 2]);
-  const boxSizesNormalized = div(boxSizes, inputSize2);
-  const centersNormalized = div(centers, inputSize2);
+  const boxSizesNormalized = div(boxSizes, inputSize3);
+  const centersNormalized = div(centers, inputSize3);
   const halfBoxSize = div(boxSizesNormalized, 2);
   const starts = sub(centersNormalized, halfBoxSize);
   const ends = add2(centersNormalized, halfBoxSize);
-  const startNormalized = mul(starts, inputSize2);
-  const endNormalized = mul(ends, inputSize2);
+  const startNormalized = mul(starts, inputSize3);
+  const endNormalized = mul(ends, inputSize3);
   const concatAxis = 1;
   return concat2d([startNormalized, endNormalized], concatAxis);
 }
@@ -60469,7 +60469,7 @@ var BlazeFaceModel = class {
     var _a, _b, _c, _d;
     if (!inputImage || inputImage["isDisposedInternal"] || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
       return { boxes: [] };
-    const [batch, boxes, scores] = tidy(() => {
+    const [batch, boxes2, scores] = tidy(() => {
       const resizedImage = image.resizeBilinear(inputImage, [this.inputSize, this.inputSize]);
       const normalizedImage = sub(div(resizedImage, 127.5), 0.5);
       const res = this.model.execute(normalizedImage);
@@ -60489,7 +60489,7 @@ var BlazeFaceModel = class {
       return [batchOut, boxesOut, scoresOut];
     });
     this.config = mergeDeep(this.config, userConfig);
-    const nmsTensor = await image.nonMaxSuppressionAsync(boxes, scores, ((_a = this.config.face.detector) == null ? void 0 : _a.maxDetected) || 0, ((_b = this.config.face.detector) == null ? void 0 : _b.iouThreshold) || 0, ((_c = this.config.face.detector) == null ? void 0 : _c.minConfidence) || 0);
+    const nmsTensor = await image.nonMaxSuppressionAsync(boxes2, scores, ((_a = this.config.face.detector) == null ? void 0 : _a.maxDetected) || 0, ((_b = this.config.face.detector) == null ? void 0 : _b.iouThreshold) || 0, ((_c = this.config.face.detector) == null ? void 0 : _c.minConfidence) || 0);
     const nms = await nmsTensor.array();
     dispose(nmsTensor);
     const annotatedBoxes = [];
@@ -60497,14 +60497,14 @@ var BlazeFaceModel = class {
     for (let i = 0; i < nms.length; i++) {
       const confidence = scoresData[nms[i]];
       if (confidence > (((_d = this.config.face.detector) == null ? void 0 : _d.minConfidence) || 0)) {
-        const boundingBox = slice(boxes, [nms[i], 0], [1, -1]);
+        const boundingBox = slice(boxes2, [nms[i], 0], [1, -1]);
         const landmarks = tidy(() => reshape(squeeze(slice(batch, [nms[i], keypointsCount - 1], [1, -1])), [keypointsCount, -1]));
         annotatedBoxes.push({ box: createBox(boundingBox), landmarks, anchor: this.anchorsData[nms[i]], confidence });
         dispose(boundingBox);
       }
     }
     dispose(batch);
-    dispose(boxes);
+    dispose(boxes2);
     dispose(scores);
     return {
       boxes: annotatedBoxes,
@@ -65682,13 +65682,13 @@ function getBoxCenter2(box6) {
 function cutBoxFromImageAndResize2(box6, image7, cropSize) {
   const h = image7.shape[1];
   const w = image7.shape[2];
-  const boxes = [[
+  const boxes2 = [[
     box6.startPoint[1] / h,
     box6.startPoint[0] / w,
     box6.endPoint[1] / h,
     box6.endPoint[0] / w
   ]];
-  return image.cropAndResize(image7, boxes, [0], cropSize);
+  return image.cropAndResize(image7, boxes2, [0], cropSize);
 }
 function scaleBoxCoordinates2(box6, factor) {
   const startPoint = [box6.startPoint[0] * factor[0], box6.startPoint[1] * factor[1]];
@@ -68681,10 +68681,10 @@ var HandDetector = class {
     this.inputSizeTensor = tensor1d([this.inputSize, this.inputSize]);
     this.doubleInputSizeTensor = tensor1d([this.inputSize * 2, this.inputSize * 2]);
   }
-  normalizeBoxes(boxes) {
+  normalizeBoxes(boxes2) {
     return tidy(() => {
-      const boxOffsets = slice(boxes, [0, 0], [-1, 2]);
-      const boxSizes = slice(boxes, [0, 2], [-1, 2]);
+      const boxOffsets = slice(boxes2, [0, 0], [-1, 2]);
+      const boxSizes = slice(boxes2, [0, 2], [-1, 2]);
       const boxCenterPoints = add2(div(boxOffsets, this.inputSizeTensor), this.anchorsTensor);
       const halfBoxSizes = div(boxSizes, this.doubleInputSizeTensor);
       const startPoints = mul(sub(boxCenterPoints, halfBoxSizes), this.inputSizeTensor);
@@ -68728,9 +68728,9 @@ var HandDetector = class {
     if (!predictions || predictions.length === 0)
       return hands;
     for (const prediction of predictions) {
-      const boxes = await prediction.box.data();
-      const startPoint = boxes.slice(0, 2);
-      const endPoint = boxes.slice(2, 4);
+      const boxes2 = await prediction.box.data();
+      const startPoint = boxes2.slice(0, 2);
+      const endPoint = boxes2.slice(2, 4);
       const palmLandmarks = await prediction.palmLandmarks.array();
       dispose(prediction.box);
       dispose(prediction.palmLandmarks);
@@ -68872,16 +68872,16 @@ var HandPipeline = class {
   }
   async estimateHands(image7, config3) {
     let useFreshBox = false;
-    let boxes;
+    let boxes2;
     if (this.skipped === 0 || this.skipped > config3.hand.skipFrames || !config3.hand.landmarks || !config3.skipFrame) {
-      boxes = await this.handDetector.estimateHandBounds(image7, config3);
+      boxes2 = await this.handDetector.estimateHandBounds(image7, config3);
       this.skipped = 0;
     }
     if (config3.skipFrame)
       this.skipped++;
-    if (boxes && boxes.length > 0 && (boxes.length !== this.detectedHands && this.detectedHands !== config3.hand.maxDetected || !config3.hand.landmarks)) {
+    if (boxes2 && boxes2.length > 0 && (boxes2.length !== this.detectedHands && this.detectedHands !== config3.hand.maxDetected || !config3.hand.landmarks)) {
       this.detectedHands = 0;
-      this.storedBoxes = [...boxes];
+      this.storedBoxes = [...boxes2];
       if (this.storedBoxes.length > 0)
         useFreshBox = true;
     }
@@ -68916,6 +68916,8 @@ var HandPipeline = class {
           const result = {
             landmarks: coords4,
             confidence,
+            boxConfidence: currentBox.confidence,
+            fingerConfidence: confidence,
             box: { topLeft: nextBoundingBox.startPoint, bottomRight: nextBoundingBox.endPoint }
           };
           hands.push(result);
@@ -68927,6 +68929,8 @@ var HandPipeline = class {
         const enlarged = enlargeBox2(squarifyBox2(currentBox), handBoxEnlargeFactor);
         const result = {
           confidence: currentBox.confidence,
+          boxConfidence: currentBox.confidence,
+          fingerConfidence: 0,
           box: { topLeft: enlarged.startPoint, bottomRight: enlarged.endPoint },
           landmarks: []
         };
@@ -69382,6 +69386,9 @@ async function predict5(input2, config3) {
     hands.push({
       id: i,
       score: Math.round(100 * predictions[i].confidence) / 100,
+      boxScore: Math.round(100 * predictions[i].boxConfidence) / 100,
+      fingerScore: Math.round(100 * predictions[i].fingerConfidence) / 100,
+      label: "hand",
       box: box6,
       boxRaw: boxRaw3,
       keypoints: keypoints3,
@@ -69421,6 +69428,149 @@ async function load6(config3) {
   const handDetector = new HandDetector(handDetectorModel);
   handPipeline = new HandPipeline(handDetector, handPoseModel);
   return [handDetectorModel, handPoseModel];
+}
+
+// src/handtrack/handtrack.ts
+var models = [null, null];
+var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "StatefulPartitionedCall/Postprocessor/ExpandDims_1"];
+var inputSize = [0, 0];
+var classes = [
+  "hand",
+  "fist",
+  "pinch",
+  "point",
+  "face",
+  "tip",
+  "pinchtip"
+];
+var skipped3 = 0;
+var outputSize;
+var boxes = [];
+var fingerMap = {
+  thumb: [1, 2, 3, 4],
+  index: [5, 6, 7, 8],
+  middle: [9, 10, 11, 12],
+  ring: [13, 14, 15, 16],
+  pinky: [17, 18, 19, 20],
+  palm: [0]
+};
+async function load7(config3) {
+  var _a, _b;
+  if (env2.initial) {
+    models[0] = null;
+    models[1] = null;
+  }
+  if (!models[0]) {
+    models[0] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""));
+    const inputs = Object.values(models[0].modelSignature["inputs"]);
+    inputSize[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!models[0] || !models[0]["modelUrl"])
+      log("load model failed:", config3.object.modelPath);
+    else if (config3.debug)
+      log("load model:", models[0]["modelUrl"]);
+  } else if (config3.debug)
+    log("cached model:", models[0]["modelUrl"]);
+  if (!models[1]) {
+    models[1] = await loadGraphModel(join(config3.modelBasePath, ((_b = config3.hand.skeleton) == null ? void 0 : _b.modelPath) || ""));
+    const inputs = Object.values(models[1].modelSignature["inputs"]);
+    inputSize[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!models[1] || !models[1]["modelUrl"])
+      log("load model failed:", config3.object.modelPath);
+    else if (config3.debug)
+      log("load model:", models[1]["modelUrl"]);
+  } else if (config3.debug)
+    log("cached model:", models[1]["modelUrl"]);
+  return models;
+}
+async function detectHands(input2, config3) {
+  const hands = [];
+  if (!input2 || !models[0])
+    return hands;
+  const t = {};
+  t.resize = image.resizeBilinear(input2, [240, 320]);
+  t.cast = cast(t.resize, "int32");
+  [t.rawScores, t.rawBoxes] = await models[0].executeAsync(t.cast, modelOutputNodes);
+  t.boxes = squeeze(t.rawBoxes, [0, 2]);
+  t.scores = squeeze(t.rawScores, [0]);
+  const classScores = unstack(t.scores, 1);
+  let id = 0;
+  for (let i = 0; i < classScores.length; i++) {
+    if (i !== 0 && i !== 1)
+      continue;
+    t.nms = await image.nonMaxSuppressionAsync(t.boxes, classScores[i], config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
+    const nms = await t.nms.data();
+    dispose(t.nms);
+    for (const res of Array.from(nms)) {
+      const boxSlice = slice(t.boxes, res, 1);
+      const yxBox = await boxSlice.data();
+      const boxRaw3 = [yxBox[1], yxBox[0], yxBox[3] - yxBox[1], yxBox[2] - yxBox[0]];
+      const box6 = [Math.trunc(boxRaw3[0] * outputSize[0]), Math.trunc(boxRaw3[1] * outputSize[1]), Math.trunc(boxRaw3[2] * outputSize[0]), Math.trunc(boxRaw3[3] * outputSize[1])];
+      dispose(boxSlice);
+      const scoreSlice = slice(classScores[i], res, 1);
+      const score3 = (await scoreSlice.data())[0];
+      dispose(scoreSlice);
+      const hand3 = { id: id++, score: score3, box: box6, boxRaw: boxRaw3, label: classes[i], yxBox };
+      hands.push(hand3);
+    }
+  }
+  classScores.forEach((tensor2) => dispose(tensor2));
+  Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
+  return hands;
+}
+async function detectFingers(input2, h, config3) {
+  const hand3 = {
+    id: h.id,
+    score: Math.round(100 * h.score) / 100,
+    boxScore: Math.round(100 * h.score) / 100,
+    fingerScore: 0,
+    box: h.box,
+    boxRaw: h.boxRaw,
+    label: h.label,
+    keypoints: [],
+    landmarks: {},
+    annotations: {}
+  };
+  if (!input2 || !models[1] || !config3.hand.landmarks)
+    return hand3;
+  const t = {};
+  t.crop = image.cropAndResize(input2, [h.yxBox], [0], [inputSize[1], inputSize[1]], "bilinear");
+  t.cast = cast(t.crop, "float32");
+  t.div = div(t.cast, 255);
+  [t.score, t.keypoints] = models[1].execute(t.div);
+  const score3 = Math.round(100 * (await t.score.data())[0] / 100);
+  if (score3 > (config3.hand.minConfidence || 0)) {
+    hand3.fingerScore = score3;
+    t.reshaped = reshape(t.keypoints, [-1, 3]);
+    const rawCoords = await t.reshaped.array();
+    hand3.keypoints = rawCoords.map((coord) => [
+      h.box[2] * coord[0] / inputSize[1] + h.box[0],
+      h.box[3] * coord[1] / inputSize[1] + h.box[1],
+      (h.box[2] + h.box[3]) / 2 / inputSize[1] * coord[2]
+    ]);
+    hand3.landmarks = analyze(hand3.keypoints);
+    for (const key of Object.keys(fingerMap)) {
+      hand3.annotations[key] = fingerMap[key].map((index) => hand3.landmarks && hand3.keypoints[index] ? hand3.keypoints[index] : null);
+    }
+  }
+  Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
+  return hand3;
+}
+var last3 = 0;
+async function predict6(input2, config3) {
+  outputSize = [input2.shape[2] || 0, input2.shape[1] || 0];
+  if (skipped3 < (config3.object.skipFrames || 0) && config3.skipFrame) {
+    skipped3++;
+    const hands2 = await Promise.all(boxes.map((hand3) => detectFingers(input2, hand3, config3)));
+    const withFingers2 = hands2.filter((hand3) => hand3.fingerScore > 0).length;
+    if (withFingers2 === last3)
+      return hands2;
+  }
+  skipped3 = 0;
+  boxes = await detectHands(input2, config3);
+  const hands = await Promise.all(boxes.map((hand3) => detectFingers(input2, hand3, config3)));
+  const withFingers = hands.filter((hand3) => hand3.fingerScore > 0).length;
+  last3 = withFingers;
+  return hands;
 }
 
 // src/blazepose/annotations.ts
@@ -69501,7 +69651,7 @@ var upper = [
 
 // src/blazepose/blazepose.ts
 var model5;
-async function load7(config3) {
+async function load8(config3) {
   if (env2.initial)
     model5 = null;
   if (!model5) {
@@ -69516,7 +69666,7 @@ async function load7(config3) {
     log("cached model:", model5["modelUrl"]);
   return model5;
 }
-async function predict6(image7, config3) {
+async function predict7(image7, config3) {
   if (!model5)
     return [];
   if (!config3.body.enabled)
@@ -69570,9 +69720,9 @@ var keypoints = [];
 var box4 = [0, 0, 0, 0];
 var boxRaw = [0, 0, 0, 0];
 var score = 0;
-var skipped3 = Number.MAX_SAFE_INTEGER;
+var skipped4 = Number.MAX_SAFE_INTEGER;
 var bodyParts = ["head", "neck", "rightShoulder", "rightElbow", "rightWrist", "chest", "leftShoulder", "leftElbow", "leftWrist", "pelvis", "rightHip", "rightKnee", "rightAnkle", "leftHip", "leftKnee", "leftAnkle"];
-async function load8(config3) {
+async function load9(config3) {
   if (env2.initial)
     model6 = null;
   if (!model6) {
@@ -69600,13 +69750,13 @@ function max2d(inputs, minScore) {
     return [0, 0, newScore];
   });
 }
-async function predict7(image7, config3) {
+async function predict8(image7, config3) {
   var _a;
-  if (skipped3 < (((_a = config3.body) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && Object.keys(keypoints).length > 0) {
-    skipped3++;
+  if (skipped4 < (((_a = config3.body) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && Object.keys(keypoints).length > 0) {
+    skipped4++;
     return [{ id: 0, score, box: box4, boxRaw, keypoints }];
   }
-  skipped3 = 0;
+  skipped4 = 0;
   return new Promise(async (resolve) => {
     var _a2;
     const tensor2 = tidy(() => {
@@ -69673,9 +69823,9 @@ var keypoints2 = [];
 var box5 = [0, 0, 0, 0];
 var boxRaw2 = [0, 0, 0, 0];
 var score2 = 0;
-var skipped4 = Number.MAX_SAFE_INTEGER;
+var skipped5 = Number.MAX_SAFE_INTEGER;
 var bodyParts2 = ["nose", "leftEye", "rightEye", "leftEar", "rightEar", "leftShoulder", "rightShoulder", "leftElbow", "rightElbow", "leftWrist", "rightWrist", "leftHip", "rightHip", "leftKnee", "rightKnee", "leftAnkle", "rightAnkle"];
-async function load9(config3) {
+async function load10(config3) {
   if (env2.initial)
     model7 = null;
   if (!model7) {
@@ -69770,20 +69920,20 @@ async function parseMultiPose(res, config3, image7) {
   }
   return persons2;
 }
-async function predict8(image7, config3) {
-  if (skipped4 < (config3.body.skipFrames || 0) && config3.skipFrame && Object.keys(keypoints2).length > 0) {
-    skipped4++;
+async function predict9(image7, config3) {
+  if (skipped5 < (config3.body.skipFrames || 0) && config3.skipFrame && Object.keys(keypoints2).length > 0) {
+    skipped5++;
     return [{ id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints2 }];
   }
-  skipped4 = 0;
+  skipped5 = 0;
   return new Promise(async (resolve) => {
     const tensor2 = tidy(() => {
       if (!(model7 == null ? void 0 : model7.inputs[0].shape))
         return null;
-      let inputSize2 = model7.inputs[0].shape[2];
-      if (inputSize2 === -1)
-        inputSize2 = 256;
-      const resize = image.resizeBilinear(image7, [inputSize2, inputSize2], false);
+      let inputSize3 = model7.inputs[0].shape[2];
+      if (inputSize3 === -1)
+        inputSize3 = 256;
+      const resize = image.resizeBilinear(image7, [inputSize3, inputSize3], false);
       const cast6 = cast(resize, "int32");
       return cast6;
     });
@@ -69890,10 +70040,10 @@ var labels = [
 
 // src/object/nanodet.ts
 var model8;
-var last3 = [];
-var skipped5 = Number.MAX_SAFE_INTEGER;
+var last4 = [];
+var skipped6 = Number.MAX_SAFE_INTEGER;
 var scaleBox = 2.5;
-async function load10(config3) {
+async function load11(config3) {
   if (!model8 || env2.initial) {
     model8 = await loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model8.modelSignature["inputs"]);
@@ -69908,7 +70058,7 @@ async function load10(config3) {
     log("cached model:", model8.modelUrl);
   return model8;
 }
-async function process3(res, inputSize2, outputShape, config3) {
+async function process3(res, inputSize3, outputShape, config3) {
   let id = 0;
   let results = [];
   for (const strideSize of [1, 2, 4]) {
@@ -69926,7 +70076,7 @@ async function process3(res, inputSize2, outputShape, config3) {
           if (score3 > config3.object.minConfidence && j !== 61) {
             const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize;
             const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize;
-            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize2));
+            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize3));
             const [x, y] = [
               cx - scaleBox / strideSize * boxOffset[0],
               cy - scaleBox / strideSize * boxOffset[1]
@@ -69969,16 +70119,16 @@ async function process3(res, inputSize2, outputShape, config3) {
   results = results.filter((_val, idx) => nmsIdx.includes(idx)).sort((a, b) => b.score - a.score);
   return results;
 }
-async function predict9(image7, config3) {
-  if (skipped5 < (config3.object.skipFrames || 0) && config3.skipFrame && last3.length > 0) {
-    skipped5++;
-    return last3;
+async function predict10(image7, config3) {
+  if (skipped6 < (config3.object.skipFrames || 0) && config3.skipFrame && last4.length > 0) {
+    skipped6++;
+    return last4;
   }
-  skipped5 = 0;
+  skipped6 = 0;
   if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
-    return last3;
+    return last4;
   return new Promise(async (resolve) => {
-    const outputSize = [image7.shape[2], image7.shape[1]];
+    const outputSize2 = [image7.shape[2], image7.shape[1]];
     const resize = image.resizeBilinear(image7, [model8.inputSize, model8.inputSize], false);
     const norm2 = div(resize, 255);
     const transpose5 = norm2.transpose([0, 3, 1, 2]);
@@ -69988,24 +70138,24 @@ async function predict9(image7, config3) {
     if (config3.object.enabled)
       objectT = await model8.predict(transpose5);
     dispose(transpose5);
-    const obj = await process3(objectT, model8.inputSize, outputSize, config3);
-    last3 = obj;
+    const obj = await process3(objectT, model8.inputSize, outputSize2, config3);
+    last4 = obj;
     resolve(obj);
   });
 }
 
 // src/object/centernet.ts
 var model9;
-var inputSize = 0;
-var last4 = [];
-var skipped6 = Number.MAX_SAFE_INTEGER;
-async function load11(config3) {
+var inputSize2 = 0;
+var last5 = [];
+var skipped7 = Number.MAX_SAFE_INTEGER;
+async function load12(config3) {
   if (env2.initial)
     model9 = null;
   if (!model9) {
     model9 = await loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model9.modelSignature["inputs"]);
-    inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    inputSize2 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
     if (!model9 || !model9["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
@@ -70041,14 +70191,14 @@ async function process4(res, outputShape, config3) {
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
     const [x, y] = [
-      detections[0][id][0] / inputSize,
-      detections[0][id][1] / inputSize
+      detections[0][id][0] / inputSize2,
+      detections[0][id][1] / inputSize2
     ];
     const boxRaw3 = [
       x,
       y,
-      detections[0][id][2] / inputSize - x,
-      detections[0][id][3] / inputSize - y
+      detections[0][id][2] / inputSize2 - x,
+      detections[0][id][3] / inputSize2 - y
     ];
     const box6 = [
       Math.trunc(boxRaw3[0] * outputShape[0]),
@@ -70060,21 +70210,21 @@ async function process4(res, outputShape, config3) {
   }
   return results;
 }
-async function predict10(input2, config3) {
-  if (skipped6 < (config3.object.skipFrames || 0) && config3.skipFrame && last4.length > 0) {
-    skipped6++;
-    return last4;
+async function predict11(input2, config3) {
+  if (skipped7 < (config3.object.skipFrames || 0) && config3.skipFrame && last5.length > 0) {
+    skipped7++;
+    return last5;
   }
-  skipped6 = 0;
+  skipped7 = 0;
   if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
-    return last4;
+    return last5;
   return new Promise(async (resolve) => {
-    const outputSize = [input2.shape[2], input2.shape[1]];
-    const resize = image.resizeBilinear(input2, [inputSize, inputSize]);
+    const outputSize2 = [input2.shape[2], input2.shape[1]];
+    const resize = image.resizeBilinear(input2, [inputSize2, inputSize2]);
     const objectT = config3.object.enabled ? model9 == null ? void 0 : model9.execute(resize, ["tower_0/detections"]) : null;
     dispose(resize);
-    const obj = await process4(objectT, outputSize, config3);
-    last4 = obj;
+    const obj = await process4(objectT, outputSize2, config3);
+    last5 = obj;
     resolve(obj);
   });
 }
@@ -70082,7 +70232,7 @@ async function predict10(input2, config3) {
 // src/segmentation/segmentation.ts
 var model10;
 var busy = false;
-async function load12(config3) {
+async function load13(config3) {
   if (!model10 || env2.initial) {
     model10 = await loadGraphModel(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
     if (!model10 || !model10["modelUrl"])
@@ -70093,7 +70243,7 @@ async function load12(config3) {
     log("cached model:", model10["modelUrl"]);
   return model10;
 }
-async function predict11(input2) {
+async function predict12(input2) {
   var _a, _b;
   const width = ((_a = input2.tensor) == null ? void 0 : _a.shape[1]) || 0;
   const height = ((_b = input2.tensor) == null ? void 0 : _b.shape[2]) || 0;
@@ -70158,7 +70308,7 @@ async function process5(input2, background, config3) {
     return null;
   busy = true;
   if (!model10)
-    await load12(config3);
+    await load13(config3);
   const img = process2(input2, config3);
   const tmp = process2(background, config3);
   if (!img.canvas || !tmp.canvas) {
@@ -70166,7 +70316,7 @@ async function process5(input2, background, config3) {
       log("segmentation cannot process input or background");
     return null;
   }
-  const alpha = await predict11(img);
+  const alpha = await predict12(img);
   dispose(img.tensor);
   if (background && alpha) {
     const bg = tmp.canvas;
@@ -70196,6 +70346,7 @@ function reset(instance) {
   instance.models = {
     face: null,
     handpose: null,
+    handtrack: null,
     posenet: null,
     blazepose: null,
     efficientpose: null,
@@ -70210,7 +70361,7 @@ function reset(instance) {
     segmentation: null
   };
 }
-async function load13(instance) {
+async function load14(instance) {
   if (env2.initial)
     reset(instance);
   if (instance.config.async) {
@@ -70218,6 +70369,7 @@ async function load13(instance) {
       instance.models.face,
       instance.models.emotion,
       instance.models.handpose,
+      instance.models.handtrack,
       instance.models.posenet,
       instance.models.blazepose,
       instance.models.efficientpose,
@@ -70229,52 +70381,55 @@ async function load13(instance) {
     ] = await Promise.all([
       instance.models.face || (instance.config.face.enabled ? load2(instance.config) : null),
       instance.models.emotion || (instance.config.face.enabled && instance.config.face.emotion.enabled ? load4(instance.config) : null),
-      instance.models.handpose || (instance.config.hand.enabled ? load6(instance.config) : null),
+      instance.models.handpose || (instance.config.hand.enabled && instance.config.hand.detector.modelPath.includes("handdetect") ? load6(instance.config) : null),
+      instance.models.handtrack || (instance.config.hand.enabled && instance.config.hand.detector.modelPath.includes("handtrack") ? load7(instance.config) : null),
       instance.models.posenet || (instance.config.body.enabled && instance.config.body.modelPath.includes("posenet") ? load5(instance.config) : null),
-      instance.models.blazepose || (instance.config.body.enabled && instance.config.body.modelPath.includes("blazepose") ? load7(instance.config) : null),
-      instance.models.efficientpose || (instance.config.body.enabled && instance.config.body.modelPath.includes("efficientpose") ? load8(instance.config) : null),
-      instance.models.movenet || (instance.config.body.enabled && instance.config.body.modelPath.includes("movenet") ? load9(instance.config) : null),
-      instance.models.nanodet || (instance.config.object.enabled && instance.config.object.modelPath.includes("nanodet") ? load10(instance.config) : null),
-      instance.models.centernet || (instance.config.object.enabled && instance.config.object.modelPath.includes("centernet") ? load11(instance.config) : null),
+      instance.models.blazepose || (instance.config.body.enabled && instance.config.body.modelPath.includes("blazepose") ? load8(instance.config) : null),
+      instance.models.efficientpose || (instance.config.body.enabled && instance.config.body.modelPath.includes("efficientpose") ? load9(instance.config) : null),
+      instance.models.movenet || (instance.config.body.enabled && instance.config.body.modelPath.includes("movenet") ? load10(instance.config) : null),
+      instance.models.nanodet || (instance.config.object.enabled && instance.config.object.modelPath.includes("nanodet") ? load11(instance.config) : null),
+      instance.models.centernet || (instance.config.object.enabled && instance.config.object.modelPath.includes("centernet") ? load12(instance.config) : null),
       instance.models.faceres || (instance.config.face.enabled && instance.config.face.description.enabled ? load3(instance.config) : null),
-      instance.models.segmentation || (instance.config.segmentation.enabled ? load12(instance.config) : null)
+      instance.models.segmentation || (instance.config.segmentation.enabled ? load13(instance.config) : null)
     ]);
   } else {
     if (instance.config.face.enabled && !instance.models.face)
       instance.models.face = await load2(instance.config);
     if (instance.config.face.enabled && instance.config.face.emotion.enabled && !instance.models.emotion)
       instance.models.emotion = await load4(instance.config);
-    if (instance.config.hand.enabled && !instance.models.handpose)
+    if (instance.config.hand.enabled && !instance.models.handpose && instance.config.hand.detector.modelPath.includes("handdetect"))
       instance.models.handpose = await load6(instance.config);
+    if (instance.config.hand.enabled && !instance.models.handtrack && instance.config.hand.detector.modelPath.includes("handtrack"))
+      instance.models.handtrack = await load7(instance.config);
     if (instance.config.body.enabled && !instance.models.posenet && instance.config.body.modelPath.includes("posenet"))
       instance.models.posenet = await load5(instance.config);
     if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body.modelPath.includes("blazepose"))
-      instance.models.blazepose = await load7(instance.config);
+      instance.models.blazepose = await load8(instance.config);
     if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body.modelPath.includes("efficientpose"))
-      instance.models.efficientpose = await load7(instance.config);
+      instance.models.efficientpose = await load8(instance.config);
     if (instance.config.body.enabled && !instance.models.movenet && instance.config.body.modelPath.includes("movenet"))
-      instance.models.movenet = await load9(instance.config);
+      instance.models.movenet = await load10(instance.config);
     if (instance.config.object.enabled && !instance.models.nanodet && instance.config.object.modelPath.includes("nanodet"))
-      instance.models.nanodet = await load10(instance.config);
+      instance.models.nanodet = await load11(instance.config);
     if (instance.config.object.enabled && !instance.models.centernet && instance.config.object.modelPath.includes("centernet"))
-      instance.models.centernet = await load11(instance.config);
+      instance.models.centernet = await load12(instance.config);
     if (instance.config.face.enabled && instance.config.face.description.enabled && !instance.models.faceres)
       instance.models.faceres = await load3(instance.config);
     if (instance.config.segmentation.enabled && !instance.models.segmentation)
-      instance.models.segmentation = await load12(instance.config);
+      instance.models.segmentation = await load13(instance.config);
   }
 }
 async function validate2(instance) {
   const simpleOps = ["const", "placeholder", "noop", "pad", "squeeze", "add", "sub", "mul", "div"];
   for (const defined of Object.keys(instance.models)) {
     if (instance.models[defined]) {
-      let models3 = [];
+      let models4 = [];
       if (Array.isArray(instance.models[defined])) {
-        models3 = instance.models[defined].filter((model11) => model11 !== null).map((model11) => model11 && model11.executor ? model11 : model11.model);
+        models4 = instance.models[defined].filter((model11) => model11 !== null).map((model11) => model11 && model11.executor ? model11 : model11.model);
       } else {
-        models3 = [instance.models[defined]];
+        models4 = [instance.models[defined]];
       }
-      for (const model11 of models3) {
+      for (const model11 of models4) {
         if (!model11) {
           if (instance.config.debug)
             log("model marked as loaded but not defined:", defined);
@@ -70591,9 +70746,11 @@ var hand = (res) => {
   const gestures = [];
   for (let i = 0; i < res.length; i++) {
     const fingers = [];
-    for (const [finger, pos] of Object.entries(res[i]["annotations"])) {
-      if (finger !== "palmBase" && Array.isArray(pos) && pos[0])
-        fingers.push({ name: finger.toLowerCase(), position: pos[0] });
+    if (res[i]["annotations"]) {
+      for (const [finger, pos] of Object.entries(res[i]["annotations"])) {
+        if (finger !== "palmBase" && Array.isArray(pos) && pos[0])
+          fingers.push({ name: finger.toLowerCase(), position: pos[0] });
+      }
     }
     if (fingers && fingers.length > 0) {
       const closest = fingers.reduce((best, a) => best.position[2] < a.position[2] ? best : a);
@@ -70601,9 +70758,11 @@ var hand = (res) => {
       const highest = fingers.reduce((best, a) => best.position[1] < a.position[1] ? best : a);
       gestures.push({ hand: i, gesture: `${highest.name} up` });
     }
-    const poses2 = match2(res[i]["keypoints"]);
-    for (const pose of poses2)
-      gestures.push({ hand: i, gesture: pose.name });
+    if (res[i]["keypoints"]) {
+      const poses2 = match2(res[i]["keypoints"]);
+      for (const pose of poses2)
+        gestures.push({ hand: i, gesture: pose.name });
+    }
   }
   return gestures;
 };
@@ -70973,10 +71132,10 @@ async function hand2(inCanvas2, result, drawOptions) {
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== "") {
           ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText("hand", h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
+          ctx.fillText(`${h.label}:${Math.trunc(100 * h.score)}%`, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
         }
         ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText("hand", h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+        ctx.fillText(`${h.label}:${Math.trunc(100 * h.score)}%`, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
       }
       ctx.stroke();
     }
@@ -70988,9 +71147,9 @@ async function hand2(inCanvas2, result, drawOptions) {
         }
       }
     }
-    if (localOptions.drawLabels) {
+    if (localOptions.drawLabels && h.annotations) {
       const addHandLabel = (part, title) => {
-        if (!part)
+        if (!part || part.length === 0 || !part[0])
           return;
         ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * part[part.length - 1][2]}, ${127.5 - 2 * part[part.length - 1][2]}, 255, 0.5)` : localOptions.color;
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
@@ -71003,9 +71162,9 @@ async function hand2(inCanvas2, result, drawOptions) {
       addHandLabel(h.annotations["thumb"], "thumb");
       addHandLabel(h.annotations["palm"], "palm");
     }
-    if (localOptions.drawPolygons) {
+    if (localOptions.drawPolygons && h.annotations) {
       const addHandLine = (part) => {
-        if (!part)
+        if (!part || part.length === 0 || !part[0])
           return;
         for (let i = 0; i < part.length; i++) {
           ctx.beginPath();
@@ -71190,11 +71349,16 @@ function calc(newResult) {
     for (let i = 0; i < newResult.hand.length; i++) {
       const box6 = newResult.hand[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor);
       const boxRaw3 = newResult.hand[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor);
-      const keypoints3 = newResult.hand[i].keypoints ? newResult.hand[i].keypoints.map((landmark, j) => landmark.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].keypoints[j][k] + coord) / bufferedFactor)) : [];
-      const keys = Object.keys(newResult.hand[i].annotations);
+      if (bufferedResult.hand[i].keypoints.length !== newResult.hand[i].keypoints.length)
+        bufferedResult.hand[i].keypoints = newResult.hand[i].keypoints;
+      const keypoints3 = newResult.hand[i].keypoints && newResult.hand[i].keypoints.length > 0 ? newResult.hand[i].keypoints.map((landmark, j) => landmark.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].keypoints[j][k] + coord) / bufferedFactor)) : [];
       const annotations3 = {};
-      for (const key of keys) {
-        annotations3[key] = newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor));
+      if (Object.keys(bufferedResult.hand[i].annotations).length !== Object.keys(newResult.hand[i].annotations).length)
+        bufferedResult.hand[i].annotations = newResult.hand[i].annotations;
+      if (newResult.hand[i].annotations) {
+        for (const key of Object.keys(newResult.hand[i].annotations)) {
+          annotations3[key] = newResult.hand[i].annotations[key] && newResult.hand[i].annotations[key][0] ? newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor)) : null;
+        }
       }
       bufferedResult.hand[i] = { ...newResult.hand[i], box: box6, boxRaw: boxRaw3, keypoints: keypoints3, annotations: annotations3 };
     }
@@ -72344,6 +72508,7 @@ var Human = class {
     this.models = {
       face: null,
       handpose: null,
+      handtrack: null,
       posenet: null,
       blazepose: null,
       efficientpose: null,
@@ -72413,7 +72578,7 @@ var Human = class {
           log("tf flags:", this.tf.ENV.flags);
       }
     }
-    await load13(this);
+    await load14(this);
     if (env2.initial && this.config.debug)
       log("tf engine state:", this.tf.engine().state.numBytes, "bytes", this.tf.engine().state.numTensors, "tensors");
     env2.initial = false;
@@ -72435,7 +72600,7 @@ var Human = class {
   async detect(input2, userConfig) {
     this.state = "detect";
     return new Promise(async (resolve) => {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n;
+      var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v;
       this.state = "config";
       let timeStamp;
       let elapsedTime;
@@ -72459,7 +72624,7 @@ var Human = class {
         this.analyze("Start Segmentation:");
         this.state = "detect:segmentation";
         timeStamp = now();
-        await predict11(img);
+        await predict12(img);
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.segmentation = elapsedTime;
@@ -72509,11 +72674,11 @@ var Human = class {
         if ((_a = this.config.body.modelPath) == null ? void 0 : _a.includes("posenet"))
           bodyRes = this.config.body.enabled ? predict4(img.tensor, this.config) : [];
         else if ((_b = this.config.body.modelPath) == null ? void 0 : _b.includes("blazepose"))
-          bodyRes = this.config.body.enabled ? predict6(img.tensor, this.config) : [];
-        else if ((_c = this.config.body.modelPath) == null ? void 0 : _c.includes("efficientpose"))
           bodyRes = this.config.body.enabled ? predict7(img.tensor, this.config) : [];
-        else if ((_d = this.config.body.modelPath) == null ? void 0 : _d.includes("movenet"))
+        else if ((_c = this.config.body.modelPath) == null ? void 0 : _c.includes("efficientpose"))
           bodyRes = this.config.body.enabled ? predict8(img.tensor, this.config) : [];
+        else if ((_d = this.config.body.modelPath) == null ? void 0 : _d.includes("movenet"))
+          bodyRes = this.config.body.enabled ? predict9(img.tensor, this.config) : [];
         if (this.performance.body)
           delete this.performance.body;
       } else {
@@ -72521,11 +72686,11 @@ var Human = class {
         if ((_e = this.config.body.modelPath) == null ? void 0 : _e.includes("posenet"))
           bodyRes = this.config.body.enabled ? await predict4(img.tensor, this.config) : [];
         else if ((_f = this.config.body.modelPath) == null ? void 0 : _f.includes("blazepose"))
-          bodyRes = this.config.body.enabled ? await predict6(img.tensor, this.config) : [];
-        else if ((_g = this.config.body.modelPath) == null ? void 0 : _g.includes("efficientpose"))
           bodyRes = this.config.body.enabled ? await predict7(img.tensor, this.config) : [];
-        else if ((_h = this.config.body.modelPath) == null ? void 0 : _h.includes("movenet"))
+        else if ((_g = this.config.body.modelPath) == null ? void 0 : _g.includes("efficientpose"))
           bodyRes = this.config.body.enabled ? await predict8(img.tensor, this.config) : [];
+        else if ((_h = this.config.body.modelPath) == null ? void 0 : _h.includes("movenet"))
+          bodyRes = this.config.body.enabled ? await predict9(img.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.body = elapsedTime;
@@ -72534,12 +72699,18 @@ var Human = class {
       this.analyze("Start Hand:");
       this.state = "detect:hand";
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? predict5(img.tensor, this.config) : [];
+        if ((_j = (_i = this.config.hand.detector) == null ? void 0 : _i.modelPath) == null ? void 0 : _j.includes("handdetect"))
+          handRes = this.config.hand.enabled ? predict5(img.tensor, this.config) : [];
+        else if ((_l = (_k = this.config.hand.detector) == null ? void 0 : _k.modelPath) == null ? void 0 : _l.includes("handtrack"))
+          handRes = this.config.hand.enabled ? predict6(img.tensor, this.config) : [];
         if (this.performance.hand)
           delete this.performance.hand;
       } else {
         timeStamp = now();
-        handRes = this.config.hand.enabled ? await predict5(img.tensor, this.config) : [];
+        if ((_n = (_m = this.config.hand.detector) == null ? void 0 : _m.modelPath) == null ? void 0 : _n.includes("handdetect"))
+          handRes = this.config.hand.enabled ? await predict5(img.tensor, this.config) : [];
+        else if ((_p = (_o = this.config.hand.detector) == null ? void 0 : _o.modelPath) == null ? void 0 : _p.includes("handtrack"))
+          handRes = this.config.hand.enabled ? await predict6(img.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.hand = elapsedTime;
@@ -72548,18 +72719,18 @@ var Human = class {
       this.analyze("Start Object:");
       this.state = "detect:object";
       if (this.config.async) {
-        if ((_i = this.config.object.modelPath) == null ? void 0 : _i.includes("nanodet"))
-          objectRes = this.config.object.enabled ? predict9(img.tensor, this.config) : [];
-        else if ((_j = this.config.object.modelPath) == null ? void 0 : _j.includes("centernet"))
+        if ((_q = this.config.object.modelPath) == null ? void 0 : _q.includes("nanodet"))
           objectRes = this.config.object.enabled ? predict10(img.tensor, this.config) : [];
+        else if ((_r = this.config.object.modelPath) == null ? void 0 : _r.includes("centernet"))
+          objectRes = this.config.object.enabled ? predict11(img.tensor, this.config) : [];
         if (this.performance.object)
           delete this.performance.object;
       } else {
         timeStamp = now();
-        if ((_k = this.config.object.modelPath) == null ? void 0 : _k.includes("nanodet"))
-          objectRes = this.config.object.enabled ? await predict9(img.tensor, this.config) : [];
-        else if ((_l = this.config.object.modelPath) == null ? void 0 : _l.includes("centernet"))
+        if ((_s = this.config.object.modelPath) == null ? void 0 : _s.includes("nanodet"))
           objectRes = this.config.object.enabled ? await predict10(img.tensor, this.config) : [];
+        else if ((_t = this.config.object.modelPath) == null ? void 0 : _t.includes("centernet"))
+          objectRes = this.config.object.enabled ? await predict11(img.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.object = elapsedTime;
@@ -72579,7 +72750,7 @@ var Human = class {
           delete this.performance.gesture;
       }
       this.performance.total = Math.trunc(now() - timeStart);
-      const shape = ((_n = (_m = this.process) == null ? void 0 : _m.tensor) == null ? void 0 : _n.shape) || [];
+      const shape = ((_v = (_u = this.process) == null ? void 0 : _u.tensor) == null ? void 0 : _v.shape) || [];
       this.result = {
         face: faceRes,
         body: bodyRes,

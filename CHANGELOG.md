@@ -11,10 +11,9 @@
   
 ### **HEAD -> main** 2021/09/20 mandic00@live.com
 
+- support for dynamic backend switching
 - initial automated browser tests
-
-### **origin/main** 2021/09/20 mandic00@live.com
-
+- enhanced automated test coverage
 - more automated tests
 - added configuration validation
 - prevent validation failed on some model combinations

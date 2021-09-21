@@ -99,7 +99,7 @@ export class HandPipeline {
       // for (const possible of boxes) this.storedBoxes.push(possible);
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }
-    const hands: Array<{ landmarks: number[], confidence: number, box: { topLeft: number[], bottomRight: number[] } }> = [];
+    const hands: Array<{ landmarks: number[], confidence: number, boxConfidence: number, fingerConfidence: number, box: { topLeft: number[], bottomRight: number[] } }> = [];
 
     // go through working set of boxes
     for (let i = 0; i < this.storedBoxes.length; i++) {
@@ -131,6 +131,8 @@ export class HandPipeline {
           const result = {
             landmarks: coords,
             confidence,
+            boxConfidence: currentBox.confidence,
+            fingerConfidence: confidence,
             box: { topLeft: nextBoundingBox.startPoint, bottomRight: nextBoundingBox.endPoint },
           };
           hands.push(result);
@@ -144,6 +146,8 @@ export class HandPipeline {
         const enlarged = box.enlargeBox(box.squarifyBox(currentBox), handBoxEnlargeFactor);
         const result = {
           confidence: currentBox.confidence,
+          boxConfidence: currentBox.confidence,
+          fingerConfidence: 0,
           box: { topLeft: enlarged.startPoint, bottomRight: enlarged.endPoint },
           landmarks: [],
         };

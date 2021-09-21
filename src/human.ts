@@ -11,6 +11,7 @@ import * as face from './face';
 import * as facemesh from './blazeface/facemesh';
 import * as faceres from './faceres/faceres';
 import * as posenet from './posenet/posenet';
+import * as handtrack from './handtrack/handtrack';
 import * as handpose from './handpose/handpose';
 import * as blazepose from './blazepose/blazepose';
 import * as efficientpose from './efficientpose/efficientpose';
@@ -125,6 +126,7 @@ export class Human {
     efficientpose: GraphModel | null,
     movenet: GraphModel | null,
     handpose: [GraphModel | null, GraphModel | null] | null,
+    handtrack: [GraphModel | null, GraphModel | null] | null,
     age: GraphModel | null,
     gender: GraphModel | null,
     emotion: GraphModel | null,
@@ -188,6 +190,7 @@ export class Human {
     this.models = {
       face: null, // array of models
       handpose: null, // array of models
+      handtrack: null, // array of models
       posenet: null,
       blazepose: null,
       efficientpose: null,
@@ -508,11 +511,13 @@ export class Human {
       this.analyze('Start Hand:');
       this.state = 'detect:hand';
       if (this.config.async) {
-        handRes = this.config.hand.enabled ? handpose.predict(img.tensor, this.config) : [];
+        if (this.config.hand.detector?.modelPath?.includes('handdetect')) handRes = this.config.hand.enabled ? handpose.predict(img.tensor, this.config) : [];
+        else if (this.config.hand.detector?.modelPath?.includes('handtrack')) handRes = this.config.hand.enabled ? handtrack.predict(img.tensor, this.config) : [];
         if (this.performance.hand) delete this.performance.hand;
       } else {
         timeStamp = now();
-        handRes = this.config.hand.enabled ? await handpose.predict(img.tensor, this.config) : [];
+        if (this.config.hand.detector?.modelPath?.includes('handdetect')) handRes = this.config.hand.enabled ? await handpose.predict(img.tensor, this.config) : [];
+        else if (this.config.hand.detector?.modelPath?.includes('handtrack')) handRes = this.config.hand.enabled ? await handtrack.predict(img.tensor, this.config) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.hand = elapsedTime;
       }

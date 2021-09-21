@@ -104,6 +104,7 @@ export declare class Human {
         efficientpose: GraphModel | null;
         movenet: GraphModel | null;
         handpose: [GraphModel | null, GraphModel | null] | null;
+        handtrack: [GraphModel | null, GraphModel | null] | null;
         age: GraphModel | null;
         gender: GraphModel | null;
         emotion: GraphModel | null;

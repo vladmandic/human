@@ -5,9 +5,9 @@ const Human = require('../dist/human.node-wasm.js');
 const test = require('./test-main.js').test;
 
 // @ts-ignore
-Human.env.Canvas = Canvas;
+Human.env.Canvas = Canvas; // requires monkey-patch as wasm does not have tf.browser namespace
 // @ts-ignore
-Human.env.Image = Image;
+Human.env.Image = Image; // requires monkey-patch as wasm does not have tf.browser namespace
 
 const config = {
   // modelBasePath: 'http://localhost:10030/models/',

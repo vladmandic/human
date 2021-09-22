@@ -34,6 +34,7 @@ export type Env = {
   kernels: string[],
   Canvas: undefined,
   Image: undefined,
+  ImageData: undefined,
 }
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -69,6 +70,7 @@ export let env: Env = {
   kernels: [],
   Canvas: undefined,
   Image: undefined,
+  ImageData: undefined,
 };
 
 export async function cpuInfo() {

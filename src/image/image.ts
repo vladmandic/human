@@ -30,7 +30,8 @@ export function canvas(width, height): HTMLCanvasElement | OffscreenCanvas {
     }
   } else {
     // @ts-ignore // env.canvas is an external monkey-patch
-    c = (typeof env.Canvas !== 'undefined') ? new env.Canvas(width, height) : null;
+    if (typeof env.Canvas !== 'undefined') c = new env.Canvas(width, height);
+    else if (typeof globalThis.Canvas !== 'undefined') c = new globalThis.Canvas(width, height);
   }
   // if (!c) throw new Error('cannot create canvas');
   return c;
@@ -51,6 +52,7 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
     !(input instanceof tf.Tensor)
     && !(typeof Image !== 'undefined' && input instanceof Image)
     && !(typeof env.Canvas !== 'undefined' && input instanceof env.Canvas)
+    && !(typeof globalThis.Canvas !== 'undefined' && input instanceof globalThis.Canvas)
     && !(typeof ImageData !== 'undefined' && input instanceof ImageData)
     && !(typeof ImageBitmap !== 'undefined' && input instanceof ImageBitmap)
     && !(typeof HTMLImageElement !== 'undefined' && input instanceof HTMLImageElement)

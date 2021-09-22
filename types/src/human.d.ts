@@ -182,7 +182,7 @@ export declare class Human {
      * @returns { data, canvas, alpha }
      */
     segmentation(input: Input, background?: Input): Promise<{
-        data: Uint8ClampedArray | null;
+        data: number[];
         canvas: HTMLCanvasElement | OffscreenCanvas | null;
         alpha: HTMLCanvasElement | OffscreenCanvas | null;
     }>;

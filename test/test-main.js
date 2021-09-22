@@ -327,7 +327,8 @@ async function test(Human, inputConfig) {
   ]);
 
   // test monkey-patch
-  human.env.Canvas = canvasJS.Canvas; // monkey-patch human to use external canvas library
+  globalThis.Canvas = canvasJS.Canvas; // monkey-patch to use external canvas library
+  globalThis.ImageData = canvasJS.ImageData; // monkey-patch to use external canvas library
   const inputImage = await canvasJS.loadImage('samples/ai-face.jpg'); // load image using canvas library
   const inputCanvas = new canvasJS.Canvas(inputImage.width, inputImage.height); // create canvas
   const ctx = inputCanvas.getContext('2d');
@@ -338,7 +339,7 @@ async function test(Human, inputConfig) {
 
   // test segmentation
   res = await human.segmentation(inputCanvas, inputCanvas);
-  if (!res || !res.data) log('error', 'failed: segmentation', res);
+  if (!res || !res.data || !res.canvas) log('error', 'failed: segmentation');
   else log('state', 'passed: segmentation', [res.data.length]);
   human.env.Canvas = undefined;
 

@@ -30,6 +30,7 @@ export declare type Env = {
     kernels: string[];
     Canvas: undefined;
     Image: undefined;
+    ImageData: undefined;
 };
 export declare let env: Env;
 export declare function cpuInfo(): Promise<void>;

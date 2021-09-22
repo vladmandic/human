@@ -21,11 +21,15 @@ const config = { // just enable all and leave default settings
 async function main() {
   log.header();
 
+  globalThis.Canvas = canvas.Canvas; // patch global namespace with canvas library
+  globalThis.ImageData = canvas.ImageData; // patch global namespace with canvas library
+  // human.env.Canvas = canvas.Canvas; // alternatively monkey-patch human to use external canvas library
+  // human.env.ImageData = canvas.ImageData; // alternatively monkey-patch human to use external canvas library
+
   // init
   const human = new Human.Human(config); // create instance of human
   log.info('Human:', human.version);
-  // @ts-ignore
-  human.env.Canvas = canvas.Canvas; // monkey-patch human to use external canvas library
+
   await human.load(); // pre-load models
   log.info('Loaded models:', Object.keys(human.models).filter((a) => human.models[a]));
   log.info('Memory state:', human.tf.engine().memory());
@@ -45,6 +49,10 @@ async function main() {
 
     // run detection
     const result = await human.detect(inputCanvas);
+
+    // run segmentation
+    // const seg = await human.segmentation(inputCanvas);
+    // log.data('Segmentation:', { data: seg.data.length, alpha: typeof seg.alpha, canvas: typeof seg.canvas });
 
     // print results summary
     const persons = result.persons; // invoke persons getter, only used to print summary on console

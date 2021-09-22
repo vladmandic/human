@@ -4485,7 +4485,10 @@ function canvas(width, height) {
       c.height = height;
     }
   } else {
-    c = typeof env.Canvas !== "undefined" ? new env.Canvas(width, height) : null;
+    if (typeof env.Canvas !== "undefined")
+      c = new env.Canvas(width, height);
+    else if (typeof globalThis.Canvas !== "undefined")
+      c = new globalThis.Canvas(width, height);
   }
   return c;
 }
@@ -4496,7 +4499,7 @@ function process2(input, config3) {
       log("input is missing");
     return { tensor: null, canvas: null };
   }
-  if (!(input instanceof tf3.Tensor) && !(typeof Image !== "undefined" && input instanceof Image) && !(typeof env.Canvas !== "undefined" && input instanceof env.Canvas) && !(typeof ImageData !== "undefined" && input instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input instanceof OffscreenCanvas)) {
+  if (!(input instanceof tf3.Tensor) && !(typeof Image !== "undefined" && input instanceof Image) && !(typeof env.Canvas !== "undefined" && input instanceof env.Canvas) && !(typeof globalThis.Canvas !== "undefined" && input instanceof globalThis.Canvas) && !(typeof ImageData !== "undefined" && input instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input instanceof OffscreenCanvas)) {
     throw new Error("input type is not recognized");
   }
   if (input instanceof tf3.Tensor) {
@@ -4706,7 +4709,8 @@ var env = {
   },
   kernels: [],
   Canvas: void 0,
-  Image: void 0
+  Image: void 0,
+  ImageData: void 0
 };
 async function backendInfo() {
   var _a;
@@ -10288,53 +10292,51 @@ async function load13(config3) {
     log("cached model:", model9["modelUrl"]);
   return model9;
 }
-async function predict12(input, config3) {
+async function process5(input, background, config3) {
   var _a, _b;
-  const width = ((_a = input.tensor) == null ? void 0 : _a.shape[2]) || 0;
-  const height = ((_b = input.tensor) == null ? void 0 : _b.shape[1]) || 0;
-  if (!input.tensor || !model9 || !model9.inputs[0].shape)
-    return { data: null, canvas: null, alpha: null };
-  const resizeInput = tf20.image.resizeBilinear(input.tensor, [model9.inputs[0].shape[1], model9.inputs[0].shape[2]], false);
-  const norm = tf20.div(resizeInput, 255);
-  const res = model9.predict(norm);
-  tf20.dispose(resizeInput);
-  tf20.dispose(norm);
-  const squeeze8 = tf20.squeeze(res, 0);
-  tf20.dispose(res);
-  let dataT;
-  if (squeeze8.shape[2] === 2) {
-    const softmax = squeeze8.softmax();
-    const [bg, fg] = tf20.unstack(softmax, 2);
-    const expand = tf20.expandDims(fg, 2);
-    const pad = tf20.expandDims(expand, 0);
-    tf20.dispose(softmax);
-    tf20.dispose(bg);
-    tf20.dispose(fg);
-    const crop = tf20.image.cropAndResize(pad, [[0, 0, 0.5, 0.5]], [0], [width, height]);
-    dataT = tf20.squeeze(crop, 0);
-    tf20.dispose(crop);
-    tf20.dispose(expand);
-    tf20.dispose(pad);
+  if (busy)
+    return { data: [], canvas: null, alpha: null };
+  busy = true;
+  if (!model9)
+    await load13(config3);
+  const inputImage = process2(input, config3);
+  const width = ((_a = inputImage.canvas) == null ? void 0 : _a.width) || 0;
+  const height = ((_b = inputImage.canvas) == null ? void 0 : _b.height) || 0;
+  if (!inputImage.tensor)
+    return { data: [], canvas: null, alpha: null };
+  const t = {};
+  t.resize = tf20.image.resizeBilinear(inputImage.tensor, [model9.inputs[0].shape ? model9.inputs[0].shape[1] : 0, model9.inputs[0].shape ? model9.inputs[0].shape[2] : 0], false);
+  tf20.dispose(inputImage.tensor);
+  t.norm = tf20.div(t.resize, 255);
+  t.res = model9.predict(t.norm);
+  t.squeeze = tf20.squeeze(t.res, 0);
+  if (t.squeeze.shape[2] === 2) {
+    t.softmax = tf20.softmax(t.squeeze);
+    [t.bg, t.fg] = tf20.unstack(t.softmax, 2);
+    t.expand = tf20.expandDims(t.fg, 2);
+    t.pad = tf20.expandDims(t.expand, 0);
+    t.crop = tf20.image.cropAndResize(t.pad, [[0, 0, 0.5, 0.5]], [0], [width, height]);
+    t.data = tf20.squeeze(t.crop, 0);
   } else {
-    dataT = tf20.image.resizeBilinear(squeeze8, [height, width]);
+    t.data = tf20.image.resizeBilinear(t.squeeze, [height, width]);
   }
-  tf20.dispose(squeeze8);
-  const data = await dataT.dataSync();
-  if (env.node) {
-    tf20.dispose(dataT);
+  const data = Array.from(await t.data.data());
+  if (env.node && !env.Canvas && typeof ImageData === "undefined") {
+    if (config3.debug)
+      log("canvas support missing");
+    Object.keys(t).forEach((tensor3) => tf20.dispose(t[tensor3]));
     return { data, canvas: null, alpha: null };
   }
   const alphaCanvas = canvas(width, height);
-  await tf20.browser.toPixels(dataT, alphaCanvas);
-  tf20.dispose(dataT);
+  await tf20.browser.toPixels(t.data, alphaCanvas);
   const alphaCtx = alphaCanvas.getContext("2d");
   if (config3.segmentation.blur && config3.segmentation.blur > 0)
     alphaCtx.filter = `blur(${config3.segmentation.blur}px)`;
   const alphaData = alphaCtx.getImageData(0, 0, width, height);
   const compositeCanvas = canvas(width, height);
   const compositeCtx = compositeCanvas.getContext("2d");
-  if (input.canvas)
-    compositeCtx.drawImage(input.canvas, 0, 0);
+  if (inputImage.canvas)
+    compositeCtx.drawImage(inputImage.canvas, 0, 0);
   compositeCtx.globalCompositeOperation = "darken";
   if (config3.segmentation.blur && config3.segmentation.blur > 0)
     compositeCtx.filter = `blur(${config3.segmentation.blur}px)`;
@@ -10345,29 +10347,18 @@ async function predict12(input, config3) {
   for (let i = 0; i < width * height; i++)
     compositeData.data[4 * i + 3] = alphaData.data[4 * i + 0];
   compositeCtx.putImageData(compositeData, 0, 0);
-  return { data, canvas: compositeCanvas, alpha: alphaCanvas };
-}
-async function process5(input, background, config3) {
-  var _a, _b;
-  if (busy)
-    return { data: null, canvas: null, alpha: null };
-  busy = true;
-  if (!model9)
-    await load13(config3);
-  const inputImage = process2(input, config3);
-  const segmentation3 = await predict12(inputImage, config3);
-  tf20.dispose(inputImage.tensor);
   let mergedCanvas = null;
-  if (background && segmentation3.canvas) {
-    mergedCanvas = canvas(((_a = inputImage.canvas) == null ? void 0 : _a.width) || 0, ((_b = inputImage.canvas) == null ? void 0 : _b.height) || 0);
+  if (background && compositeCanvas) {
+    mergedCanvas = canvas(width, height);
     const bgImage = process2(background, config3);
     tf20.dispose(bgImage.tensor);
     const ctxMerge = mergedCanvas.getContext("2d");
     ctxMerge.drawImage(bgImage.canvas, 0, 0, mergedCanvas.width, mergedCanvas.height);
-    ctxMerge.drawImage(segmentation3.canvas, 0, 0);
+    ctxMerge.drawImage(compositeCanvas, 0, 0);
   }
+  Object.keys(t).forEach((tensor3) => tf20.dispose(t[tensor3]));
   busy = false;
-  return { data: segmentation3.data, canvas: mergedCanvas || segmentation3.canvas, alpha: segmentation3.alpha };
+  return { data, canvas: mergedCanvas || compositeCanvas, alpha: alphaCanvas };
 }
 
 // src/models.ts

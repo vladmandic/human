@@ -170,7 +170,7 @@ async function test(Human, inputConfig) {
   await human.load();
   const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
   const loaded = models.filter((model) => model.loaded);
-  if (models.length === 14 && loaded.length === 7) log('state', 'passed: models loaded', models.length, loaded.length);
+  if (models.length === 15 && loaded.length === 7) log('state', 'passed: models loaded', models.length, loaded.length);
   else log('error', 'failed: models loaded', models.length, loaded.length);
 
   // test warmup sequences
@@ -338,8 +338,8 @@ async function test(Human, inputConfig) {
 
   // test segmentation
   res = await human.segmentation(inputCanvas, inputCanvas);
-  if (!res || !res.width || !res.height) log('error', 'failed: segmentation', res);
-  else log('state', 'passed: segmentation', [res.width, res.height]);
+  if (!res || !res.data) log('error', 'failed: segmentation', res);
+  else log('state', 'passed: segmentation', [res.data.length]);
   human.env.Canvas = undefined;
 
   // tests end

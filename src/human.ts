@@ -47,7 +47,7 @@ export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMe
  *
  * - `create`: triggered when Human object is instantiated
  * - `load`: triggered when models are loaded (explicitly or on-demand)
- * - `image`: triggered when input image is this.processed
+ * - `image`: triggered when input image is processed
  * - `result`: triggered when detection is complete
  * - `warmup`: triggered when warmup is complete
  */
@@ -111,7 +111,7 @@ export class Human {
    * - face: draw detected faces
    * - body: draw detected people and body parts
    * - hand: draw detected hands and hand parts
-   * - canvas: draw this.processed canvas which is a this.processed copy of the input
+   * - canvas: draw processed canvas which is a processed copy of the input
    * - all: meta-function that performs: canvas, face, body, hand
    */
   draw: { canvas, face, body, hand, gesture, object, person, all, options: DrawOptions };
@@ -142,7 +142,7 @@ export class Human {
    * Possible events:
    * - `create`: triggered when Human object is instantiated
    * - `load`: triggered when models are loaded (explicitly or on-demand)
-   * - `image`: triggered when input image is this.processed
+   * - `image`: triggered when input image is processed
    * - `result`: triggered when detection is complete
    * - `warmup`: triggered when warmup is complete
    * - `error`: triggered on some errors
@@ -217,7 +217,7 @@ export class Human {
       all: (output: HTMLCanvasElement | OffscreenCanvas, result: Result, options?: Partial<DrawOptions>) => draw.all(output, result, options),
     };
     this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [] };
-    // export access to image this.processing
+    // export access to image processing
     // @ts-ignore eslint-typescript cannot correctly infer type in anonymous function
     this.process = { tensor: null, canvas: null };
     // export raw access to underlying models
@@ -284,16 +284,21 @@ export class Human {
     return faceres.similarity(embedding1, embedding2);
   }
 
-  /** Segmentation method takes any input and returns this.processed canvas with body segmentation
+  /** Segmentation method takes any input and returns processed canvas with body segmentation
    *  - Optional parameter background is used to fill the background with specific input
-   *  - Segmentation is not triggered as part of detect this.process
+   *  - Segmentation is not triggered as part of detect process
+   *
+   *  Returns:
+   *  - `data` as raw data array with per-pixel segmentation values
+   *  - `canvas` as canvas which is input image filtered with segementation data and optionally merged with background image. canvas alpha values are set to segmentation values for easy merging
+   *  - `alpha` as grayscale canvas that represents segmentation alpha values
    *
    * @param input: {@link Input}
    * @param background?: {@link Input}
-   * @returns Canvas
+   * @returns { data, canvas, alpha }
    */
-  async segmentation(input: Input, background?: Input) {
-    return input ? segmentation.process(input, background, this.config) : null;
+  async segmentation(input: Input, background?: Input): Promise<{ data: Uint8ClampedArray | null, canvas: HTMLCanvasElement | OffscreenCanvas | null, alpha: HTMLCanvasElement | OffscreenCanvas | null }> {
+    return segmentation.process(input, background, this.config);
   }
 
   /** Enhance method performs additional enhacements to face image previously detected for futher processing
@@ -394,7 +399,7 @@ export class Human {
 
   /** Main detection method
    * - Analyze configuration: {@link Config}
-   * - Pre-this.process input: {@link Input}
+   * - Pre-process input: {@link Input}
    * - Run inference for all configured models
    * - Process and return result: {@link Result}
    *
@@ -431,26 +436,24 @@ export class Human {
 
       timeStamp = now();
       this.state = 'image';
-      let img = image.process(input, this.config);
+      const img = image.process(input, this.config) as { canvas: HTMLCanvasElement | OffscreenCanvas, tensor: Tensor };
       this.process = img;
       this.performance.image = Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
 
-      // run segmentation prethis.processing
-      if (this.config.segmentation.enabled && this.process && img.tensor && img.canvas) {
+      // segmentation is only run explicitly via human.segmentation() which calls segmentation.process()
+      /*
+      if (this.config.segmentation.enabled && process && img.tensor && img.canvas) {
         this.analyze('Start Segmentation:');
         this.state = 'detect:segmentation';
         timeStamp = now();
-        await segmentation.predict(img);
+        const seg = await segmentation.predict(img, this.config);
+        img = { canvas: seg.canvas, tensor: seg.tensor };
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0) this.performance.segmentation = elapsedTime;
-        if (img.canvas) {
-          // replace input
-          tf.dispose(img.tensor);
-          img = image.process(img.canvas, this.config);
-        }
         this.analyze('End Segmentation:');
       }
+      */
 
       if (!img.tensor) {
         if (this.config.debug) log('could not convert input to tensor');

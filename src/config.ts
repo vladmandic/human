@@ -118,10 +118,12 @@ export interface ObjectConfig {
  *
  * - enabled: true/false
  * - modelPath: object detection model, can be absolute path or relative to modelBasePath
+ * - blur: blur segmentation output by <number> pixels for more realistic image
 */
 export interface SegmentationConfig {
   enabled: boolean,
   modelPath: string,
+  blur: number,
 }
 
 /** Run input through image filters before inference
@@ -399,6 +401,7 @@ const config: Config = {
                              // remove background or replace it with user-provided background
     modelPath: 'selfie.json',  // experimental: object detection model, can be absolute path or relative to modelBasePath
                              // can be 'selfie' or 'meet'
+    blur: 8,                 // blur segmentation output by n pixels for more realistic image
   },
 };
 export { config as defaults };

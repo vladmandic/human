@@ -13,11 +13,6 @@
 
 <br>
 
-### Segmentation
-
-- Implement `NodeJS` support
-- Test for leaks
-
 ### Backends
 
 - Optimize shader packing for WebGL backend:  

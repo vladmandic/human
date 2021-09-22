@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/09/22 mandic00@live.com
 
+- redo segmentation and handtracking
 - prototype handtracking
 - automated browser tests
 - support for dynamic backend switching

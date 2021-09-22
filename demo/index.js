@@ -245,14 +245,14 @@ async function drawResults(input) {
   if (userConfig.segmentation.enabled && ui.buffered) { // refresh segmentation if using buffered output
     const seg = await human.segmentation(input, ui.background);
     if (seg.alpha) {
-      let c = document.getElementById('segmentation-mask');
-      let ctx = c.getContext('2d');
-      ctx.clearRect(0, 0, c.width, c.height); // need to clear as seg.alpha is alpha based canvas so it adds
-      ctx.drawImage(seg.alpha, 0, 0, seg.alpha.width, seg.alpha.height, 0, 0, c.width, c.height);
-      c = document.getElementById('segmentation-canvas');
-      ctx = c.getContext('2d');
-      ctx.clearRect(0, 0, c.width, c.height); // need to clear as seg.alpha is alpha based canvas so it adds
-      ctx.drawImage(seg.canvas, 0, 0, seg.alpha.width, seg.alpha.height, 0, 0, c.width, c.height);
+      const canvasSegMask = document.getElementById('segmentation-mask');
+      const ctxSegMask = canvasSegMask.getContext('2d');
+      ctxSegMask.clearRect(0, 0, canvasSegMask.width, canvasSegMask.height); // need to clear as seg.alpha is alpha based canvas so it adds
+      ctxSegMask.drawImage(seg.alpha, 0, 0, seg.alpha.width, seg.alpha.height, 0, 0, canvasSegMask.width, canvasSegMask.height);
+      const canvasSegCanvas = document.getElementById('segmentation-canvas');
+      const ctxSegCanvas = canvasSegCanvas.getContext('2d');
+      ctxSegCanvas.clearRect(0, 0, canvasSegCanvas.width, canvasSegCanvas.height); // need to clear as seg.alpha is alpha based canvas so it adds
+      ctxSegCanvas.drawImage(seg.canvas, 0, 0, seg.alpha.width, seg.alpha.height, 0, 0, canvasSegCanvas.width, canvasSegCanvas.height);
     }
     // result.canvas = seg.alpha;
   } else if (!result.canvas || ui.buffered) { // refresh with input if using buffered output or if missing canvas

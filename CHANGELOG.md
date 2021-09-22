@@ -9,11 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/21 mandic00@live.com
+### **HEAD -> main** 2021/09/22 mandic00@live.com
 
-
-### **origin/main** 2021/09/20 mandic00@live.com
-
+- prototype handtracking
+- automated browser tests
 - support for dynamic backend switching
 - initial automated browser tests
 - enhanced automated test coverage

@@ -2,14 +2,31 @@
 
 ## Work in Progress
 
-WebGL shader optimizations for faster load and initial detection
+<br>
 
-- Fix shader packing: <https://github.com/tensorflow/tfjs/issues/5343>
-- Add and benchmark WGSL for WebGPU
+### Handtrack
+
+- Finish implementation
+- Set defaults and image sizes
+- Optimize model
+- Add tests
 
 <br>
 
-## Exploring
+### Segmentation
+
+- Implement `NodeJS` support
+- Test for leaks
+
+### Backends
+
+- Optimize shader packing for WebGL backend:  
+  <https://github.com/tensorflow/tfjs/issues/5343>  
+- Add and benchmark WGSL for WebGPU  
+
+<br>
+
+### Exploring
 
 - Optical Flow: <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
 - TFLite Models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>

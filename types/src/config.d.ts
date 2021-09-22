@@ -1,3 +1,4 @@
+/** Dectector part of face configuration */
 export interface FaceDetectorConfig {
     modelPath: string;
     rotation: boolean;
@@ -7,20 +8,26 @@ export interface FaceDetectorConfig {
     iouThreshold: number;
     return: boolean;
 }
+/** Mesh part of face configuration */
 export interface FaceMeshConfig {
     enabled: boolean;
     modelPath: string;
 }
+/** Iris part of face configuration */
 export interface FaceIrisConfig {
     enabled: boolean;
     modelPath: string;
 }
+/** Description or face embedding part of face configuration
+ * - also used by age and gender detection
+ */
 export interface FaceDescriptionConfig {
     enabled: boolean;
     modelPath: string;
     skipFrames: number;
     minConfidence: number;
 }
+/** Emotion part of face configuration */
 export interface FaceEmotionConfig {
     enabled: boolean;
     minConfidence: number;
@@ -29,6 +36,7 @@ export interface FaceEmotionConfig {
 }
 /** Controlls and configures all face-specific options:
  * - face detection, face mesh detection, age, gender, emotion detection and face description
+ *
  * Parameters:
  * - enabled: true/false
  * - modelPath: path for each of face models
@@ -47,10 +55,15 @@ export interface FaceConfig {
     emotion: Partial<FaceEmotionConfig>;
 }
 /** Controlls and configures all body detection specific options
+ *
+ * Parameters:
  * - enabled: true/false
  * - modelPath: body pose model, can be absolute path or relative to modelBasePath
  * - minConfidence: threshold for discarding a prediction
  * - maxDetected: maximum number of people detected in the input, should be set to the minimum number for performance
+ *
+ * Changing `modelPath` will change module responsible for hand detection and tracking
+ * Allowed values are 'posenet.json', 'blazepose.json', 'efficientpose.json', 'movenet-lightning.json', 'movenet-thunder.json', 'movenet-multipose.json'
 */
 export interface BodyConfig {
     enabled: boolean;
@@ -60,6 +73,8 @@ export interface BodyConfig {
     skipFrames: number;
 }
 /** Controlls and configures all hand detection specific options
+ *
+ * Parameters:
  * - enabled: true/false
  * - landmarks: detect hand landmarks or just hand boundary box
  * - modelPath: paths for hand detector and hand skeleton models, can be absolute path or relative to modelBasePath
@@ -67,6 +82,9 @@ export interface BodyConfig {
  * - iouThreshold: ammount of overlap between two detected objects before one object is removed
  * - maxDetected: maximum number of hands detected in the input, should be set to the minimum number for performance
  * - rotation: use best-guess rotated hand image or just box with rotation as-is, false means higher performance, but incorrect finger mapping if hand is inverted
+ *
+ * Changing `detector.modelPath` will change module responsible for hand detection and tracking
+ * Allowed values are `handdetect.json` and `handtrack.json`
 */
 export interface HandConfig {
     enabled: boolean;
@@ -89,6 +107,9 @@ export interface HandConfig {
  * - minConfidence: minimum score that detection must have to return as valid object
  * - iouThreshold: ammount of overlap between two detected objects before one object is removed
  * - maxDetected: maximum number of detections to return
+ *
+ * Changing `modelPath` will change module responsible for hand detection and tracking
+ * Allowed values are `mb3-centernet.json` and `nanodet.json`
 */
 export interface ObjectConfig {
     enabled: boolean;
@@ -106,7 +127,11 @@ export interface ObjectConfig {
  *
  * - enabled: true/false
  * - modelPath: object detection model, can be absolute path or relative to modelBasePath
- * - blur: blur segmentation output for more realistic image
+ * - blur: blur segmentation output by <number> pixels for more realistic image
+ *
+ * Changing `modelPath` will change module responsible for hand detection and tracking
+ * Allowed values are `selfie.json` and `meet.json`
+
 */
 export interface SegmentationConfig {
     enabled: boolean;
@@ -114,7 +139,8 @@ export interface SegmentationConfig {
     blur: number;
 }
 /** Run input through image filters before inference
- * - image filters run with near-zero latency as they are executed on the GPU
+ * - available only in Browser environments
+ * - image filters run with near-zero latency as they are executed on the GPU using WebGL
 */
 export interface FilterConfig {
     enabled: boolean;
@@ -182,7 +208,6 @@ export interface Config {
     async: boolean;
     /** What to use for `human.warmup()`
      * - warmup pre-initializes all models for faster inference but can take significant time on startup
-     * - only used for `webgl` and `humangl` backends
     */
     warmup: 'none' | 'face' | 'full' | 'body';
     /** Base model path (typically starting with file://, http:// or https://) for all models
@@ -194,8 +219,6 @@ export interface Config {
      * - set to 0 to disable caching
     */
     cacheSensitivity: number;
-    /** Yield to main thread periodically */
-    yield: boolean;
     /** Internal Variable */
     skipFrame: boolean;
     /** Run input through image filters before inference

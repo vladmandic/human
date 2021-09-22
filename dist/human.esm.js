@@ -7,9 +7,13 @@
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
-var __require = typeof require !== "undefined" ? require : (x) => {
+var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
+  get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
+}) : x)(function(x) {
+  if (typeof require !== "undefined")
+    return require.apply(this, arguments);
   throw new Error('Dynamic require of "' + x + '" is not supported');
-};
+});
 var __export = (target, all6) => {
   __markAsModule(target);
   for (var name in all6)
@@ -101,7 +105,6 @@ var config = {
   async: true,
   warmup: "full",
   cacheSensitivity: 0.75,
-  yield: false,
   skipFrame: false,
   filter: {
     enabled: true,
@@ -691,9 +694,13 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule2 = (target) => __defProp2(target, "__esModule", { value: true });
-var __require2 = typeof __require !== "undefined" ? __require : (x) => {
+var __require2 = /* @__PURE__ */ ((x) => typeof __require !== "undefined" ? __require : typeof Proxy !== "undefined" ? new Proxy(x, {
+  get: (a, b) => (typeof __require !== "undefined" ? __require : a)[b]
+}) : x)(function(x) {
+  if (typeof __require !== "undefined")
+    return __require.apply(this, arguments);
   throw new Error('Dynamic require of "' + x + '" is not supported');
-};
+});
 var __commonJS = (cb, mod4) => function __require22() {
   return mod4 || (0, cb[Object.keys(cb)[0]])((mod4 = { exports: {} }).exports, mod4), mod4.exports;
 };
@@ -1537,7 +1544,7 @@ var require_long = __commonJS({
   }
 });
 var require_browser = __commonJS({
-  "(disabled):node_modules/.pnpm/node-fetch@2.6.2/node_modules/node-fetch/browser.js"() {
+  "(disabled):node_modules/.pnpm/node-fetch@2.6.5/node_modules/node-fetch/browser.js"() {
   }
 });
 var require_alea = __commonJS({

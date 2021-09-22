@@ -174,9 +174,7 @@ export declare class Human {
      *
      *  Returns:
      *  - `data` as raw data array with per-pixel segmentation values
-     *  - `canvas` as canvas which is input image filtered with segementation data
-     *    and optionally merged with background image
-     *    canvas alpha values are set to segmentation values for easy merging
+     *  - `canvas` as canvas which is input image filtered with segementation data and optionally merged with background image. canvas alpha values are set to segmentation values for easy merging
      *  - `alpha` as grayscale canvas that represents segmentation alpha values
      *
      * @param input: {@link Input}

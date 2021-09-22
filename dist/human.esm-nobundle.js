@@ -10,9 +10,6 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
-var __require = typeof require !== "undefined" ? require : (x) => {
-  throw new Error('Dynamic require of "' + x + '" is not supported');
-};
 var __export = (target, all2) => {
   __markAsModule(target);
   for (var name in all2)
@@ -112,7 +109,6 @@ var config = {
   async: true,
   warmup: "full",
   cacheSensitivity: 0.75,
-  yield: false,
   skipFrame: false,
   filter: {
     enabled: true,

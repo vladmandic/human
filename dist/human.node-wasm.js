@@ -12,10 +12,7 @@ var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
-var __require = typeof require !== "undefined" ? require : (x) => {
-  throw new Error('Dynamic require of "' + x + '" is not supported');
-};
-var __commonJS = (cb, mod) => function __require2() {
+var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[Object.keys(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
 var __export = (target, all2) => {
@@ -67,9 +64,6 @@ var require_tfjs_esm = __commonJS({
     var __getProtoOf2 = Object.getPrototypeOf;
     var __hasOwnProp2 = Object.prototype.hasOwnProperty;
     var __markAsModule2 = (target) => __defProp2(target, "__esModule", { value: true });
-    var __require2 = typeof require !== "undefined" ? require : (x) => {
-      throw new Error('Dynamic require of "' + x + '" is not supported');
-    };
     var __reExport2 = (target, module22, desc) => {
       if (module22 && typeof module22 === "object" || typeof module22 === "function") {
         for (let key of __getOwnPropNames2(module22))
@@ -158,7 +152,6 @@ var config = {
   async: true,
   warmup: "full",
   cacheSensitivity: 0.75,
-  yield: false,
   skipFrame: false,
   filter: {
     enabled: true,

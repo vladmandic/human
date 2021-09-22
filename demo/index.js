@@ -51,8 +51,8 @@ let userConfig = {
   },
   object: { enabled: false },
   gesture: { enabled: true },
-  // hand: { enabled: true, landmarks: false, maxDetected: 3, minConfidence: 0.1 },
-  hand: { enabled: true, maxDetected: 3, minConfidence: 0.3, detector: { modelPath: 'handtrack.json' } },
+  hand: { enabled: false },
+  // hand: { enabled: true, maxDetected: 1, minConfidence: 0.5, detector: { modelPath: 'handtrack.json' } },
   body: { enabled: false },
   // body: { enabled: true, modelPath: 'movenet-multipose.json' },
   // body: { enabled: true, modelPath: 'posenet.json' },
@@ -241,8 +241,20 @@ async function drawResults(input) {
   // draw fps chart
   await menu.process.updateChart('FPS', ui.detectFPS);
 
+  document.getElementById('segmentation-container').style.display = userConfig.segmentation.enabled ? 'block' : 'none';
   if (userConfig.segmentation.enabled && ui.buffered) { // refresh segmentation if using buffered output
-    result.canvas = await human.segmentation(input, ui.background, userConfig);
+    const seg = await human.segmentation(input, ui.background);
+    if (seg.alpha) {
+      let c = document.getElementById('segmentation-mask');
+      let ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, c.width, c.height); // need to clear as seg.alpha is alpha based canvas so it adds
+      ctx.drawImage(seg.alpha, 0, 0, seg.alpha.width, seg.alpha.height, 0, 0, c.width, c.height);
+      c = document.getElementById('segmentation-canvas');
+      ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, c.width, c.height); // need to clear as seg.alpha is alpha based canvas so it adds
+      ctx.drawImage(seg.canvas, 0, 0, seg.alpha.width, seg.alpha.height, 0, 0, c.width, c.height);
+    }
+    // result.canvas = seg.alpha;
   } else if (!result.canvas || ui.buffered) { // refresh with input if using buffered output or if missing canvas
     const image = await human.image(input);
     result.canvas = image.canvas;
@@ -825,14 +837,14 @@ async function processDataURL(f, action) {
           if (document.getElementById('canvas').style.display === 'block') { // replace canvas used for video
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
-            const overlaid = await human.segmentation(canvas, ui.background, userConfig);
-            if (overlaid) ctx.drawImage(overlaid, 0, 0);
+            const seg = await human.segmentation(canvas, ui.background, userConfig);
+            if (seg.canvas) ctx.drawImage(seg.canvas, 0, 0);
           } else {
             const canvases = document.getElementById('samples-container').children; // replace loaded images
             for (const canvas of canvases) {
               const ctx = canvas.getContext('2d');
-              const overlaid = await human.segmentation(canvas, ui.background, userConfig);
-              if (overlaid) ctx.drawImage(overlaid, 0, 0);
+              const seg = await human.segmentation(canvas, ui.background, userConfig);
+              if (seg.canvas) ctx.drawImage(seg.canvas, 0, 0);
             }
           }
         };

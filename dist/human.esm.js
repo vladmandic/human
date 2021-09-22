@@ -190,7 +190,8 @@ var config = {
   },
   segmentation: {
     enabled: false,
-    modelPath: "selfie.json"
+    modelPath: "selfie.json",
+    blur: 8
   }
 };
 
@@ -1021,27 +1022,27 @@ var require_long = __commonJS({
     var INT_CACHE = {};
     var UINT_CACHE = {};
     function fromInt(value, unsigned) {
-      var obj, cachedObj, cache;
+      var obj, cachedObj, cache2;
       if (unsigned) {
         value >>>= 0;
-        if (cache = 0 <= value && value < 256) {
+        if (cache2 = 0 <= value && value < 256) {
           cachedObj = UINT_CACHE[value];
           if (cachedObj)
             return cachedObj;
         }
         obj = fromBits(value, (value | 0) < 0 ? -1 : 0, true);
-        if (cache)
+        if (cache2)
           UINT_CACHE[value] = obj;
         return obj;
       } else {
         value |= 0;
-        if (cache = -128 <= value && value < 128) {
+        if (cache2 = -128 <= value && value < 128) {
           cachedObj = INT_CACHE[value];
           if (cachedObj)
             return cachedObj;
         }
         obj = fromBits(value, value < 0 ? -1 : 0, false);
-        if (cache)
+        if (cache2)
           INT_CACHE[value] = obj;
         return obj;
       }
@@ -14446,9 +14447,9 @@ function stft_(signal2, frameLength, frameStep, fftLength, windowFn = hannWindow
   return rfft(windowedSignal, fftLength);
 }
 var stft = op({ stft_ });
-function cropAndResize_(image32, boxes2, boxInd, cropSize, method = "bilinear", extrapolationValue = 0) {
+function cropAndResize_(image32, boxes, boxInd, cropSize, method = "bilinear", extrapolationValue = 0) {
   const $image = convertToTensor(image32, "image", "cropAndResize");
-  const $boxes = convertToTensor(boxes2, "boxes", "cropAndResize", "float32");
+  const $boxes = convertToTensor(boxes, "boxes", "cropAndResize", "float32");
   const $boxInd = convertToTensor(boxInd, "boxInd", "cropAndResize", "int32");
   const numBoxes = $boxes.shape[0];
   assert($image.rank === 4, () => `Error in cropAndResize: image must be rank 4,but got rank ${$image.rank}.`);
@@ -14492,7 +14493,7 @@ function rotateWithOffset_(image32, radians, fillValue = 0, center = 0.5) {
   return res;
 }
 var rotateWithOffset = op({ rotateWithOffset_ });
-function nonMaxSuppSanityCheck(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma) {
+function nonMaxSuppSanityCheck(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma) {
   if (iouThreshold == null) {
     iouThreshold = 0.5;
   }
@@ -14502,18 +14503,18 @@ function nonMaxSuppSanityCheck(boxes2, scores, maxOutputSize, iouThreshold, scor
   if (softNmsSigma == null) {
     softNmsSigma = 0;
   }
-  const numBoxes = boxes2.shape[0];
+  const numBoxes = boxes.shape[0];
   maxOutputSize = Math.min(maxOutputSize, numBoxes);
   assert(0 <= iouThreshold && iouThreshold <= 1, () => `iouThreshold must be in [0, 1], but was '${iouThreshold}'`);
-  assert(boxes2.rank === 2, () => `boxes must be a 2D tensor, but was of rank '${boxes2.rank}'`);
-  assert(boxes2.shape[1] === 4, () => `boxes must have 4 columns, but 2nd dimension was ${boxes2.shape[1]}`);
+  assert(boxes.rank === 2, () => `boxes must be a 2D tensor, but was of rank '${boxes.rank}'`);
+  assert(boxes.shape[1] === 4, () => `boxes must have 4 columns, but 2nd dimension was ${boxes.shape[1]}`);
   assert(scores.rank === 1, () => "scores must be a 1D tensor");
   assert(scores.shape[0] === numBoxes, () => `scores has incompatible shape with boxes. Expected ${numBoxes}, but was ${scores.shape[0]}`);
   assert(0 <= softNmsSigma && softNmsSigma <= 1, () => `softNmsSigma must be in [0, 1], but was '${softNmsSigma}'`);
   return { maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma };
 }
-function nonMaxSuppression_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY) {
-  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppression");
+function nonMaxSuppression_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY) {
+  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppression");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppression");
   const inputs = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold);
   maxOutputSize = inputs.maxOutputSize;
@@ -14551,16 +14552,16 @@ function binarySearch_(arr, target, comparator) {
   }
   return found ? left : -left - 1;
 }
-function nonMaxSuppressionV3Impl(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold) {
-  return nonMaxSuppressionImpl_(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, 0);
+function nonMaxSuppressionV3Impl(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold) {
+  return nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, 0);
 }
-function nonMaxSuppressionV4Impl(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize) {
-  return nonMaxSuppressionImpl_(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, 0, false, padToMaxOutputSize, true);
+function nonMaxSuppressionV4Impl(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize) {
+  return nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, 0, false, padToMaxOutputSize, true);
 }
-function nonMaxSuppressionV5Impl(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma) {
-  return nonMaxSuppressionImpl_(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma, true);
+function nonMaxSuppressionV5Impl(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma) {
+  return nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma, true);
 }
-function nonMaxSuppressionImpl_(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma, returnScoresTensor = false, padToMaxOutputSize = false, returnValidOutputs = false) {
+function nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma, returnScoresTensor = false, padToMaxOutputSize = false, returnValidOutputs = false) {
   const candidates = [];
   for (let i = 0; i < scores.length; i++) {
     if (scores[i] > scoreThreshold) {
@@ -14579,7 +14580,7 @@ function nonMaxSuppressionImpl_(boxes2, scores, maxOutputSize, iouThreshold, sco
     }
     let ignoreCandidate = false;
     for (let j = selectedIndices.length - 1; j >= suppressBeginIndex; --j) {
-      const iou = intersectionOverUnion(boxes2, boxIndex, selectedIndices[j]);
+      const iou = intersectionOverUnion(boxes, boxIndex, selectedIndices[j]);
       if (iou >= iouThreshold) {
         ignoreCandidate = true;
         break;
@@ -14614,9 +14615,9 @@ function nonMaxSuppressionImpl_(boxes2, scores, maxOutputSize, iouThreshold, sco
   }
   return result;
 }
-function intersectionOverUnion(boxes2, i, j) {
-  const iCoord = boxes2.subarray(i * 4, i * 4 + 4);
-  const jCoord = boxes2.subarray(j * 4, j * 4 + 4);
+function intersectionOverUnion(boxes, i, j) {
+  const iCoord = boxes.subarray(i * 4, i * 4 + 4);
+  const jCoord = boxes.subarray(j * 4, j * 4 + 4);
   const yminI = Math.min(iCoord[0], iCoord[2]);
   const xminI = Math.min(iCoord[1], iCoord[3]);
   const ymaxI = Math.max(iCoord[0], iCoord[2]);
@@ -14644,8 +14645,8 @@ function suppressWeight(iouThreshold, scale2, iou) {
 function ascendingComparator(c1, c2) {
   return c1.score - c2.score || c1.score === c2.score && c2.boxIndex - c1.boxIndex;
 }
-async function nonMaxSuppressionAsync_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY) {
-  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppressionAsync");
+async function nonMaxSuppressionAsync_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY) {
+  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppressionAsync");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppressionAsync");
   const inputs = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold);
   maxOutputSize = inputs.maxOutputSize;
@@ -14655,7 +14656,7 @@ async function nonMaxSuppressionAsync_(boxes2, scores, maxOutputSize, iouThresho
   const boxesVals = boxesAndScores[0];
   const scoresVals = boxesAndScores[1];
   const { selectedIndices } = nonMaxSuppressionV3Impl(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold);
-  if ($boxes !== boxes2) {
+  if ($boxes !== boxes) {
     $boxes.dispose();
   }
   if ($scores !== scores) {
@@ -14664,8 +14665,8 @@ async function nonMaxSuppressionAsync_(boxes2, scores, maxOutputSize, iouThresho
   return tensor1d(selectedIndices, "int32");
 }
 var nonMaxSuppressionAsync = nonMaxSuppressionAsync_;
-function nonMaxSuppressionWithScore_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, softNmsSigma = 0) {
-  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppression");
+function nonMaxSuppressionWithScore_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, softNmsSigma = 0) {
+  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppression");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppression");
   const params = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
   maxOutputSize = params.maxOutputSize;
@@ -14678,8 +14679,8 @@ function nonMaxSuppressionWithScore_(boxes2, scores, maxOutputSize, iouThreshold
   return { selectedIndices: result[0], selectedScores: result[1] };
 }
 var nonMaxSuppressionWithScore = op({ nonMaxSuppressionWithScore_ });
-async function nonMaxSuppressionWithScoreAsync_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, softNmsSigma = 0) {
-  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppressionAsync");
+async function nonMaxSuppressionWithScoreAsync_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, softNmsSigma = 0) {
+  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppressionAsync");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppressionAsync");
   const params = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
   maxOutputSize = params.maxOutputSize;
@@ -14690,7 +14691,7 @@ async function nonMaxSuppressionWithScoreAsync_(boxes2, scores, maxOutputSize, i
   const boxesVals = boxesAndScores[0];
   const scoresVals = boxesAndScores[1];
   const { selectedIndices, selectedScores } = nonMaxSuppressionV5Impl(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
-  if ($boxes !== boxes2) {
+  if ($boxes !== boxes) {
     $boxes.dispose();
   }
   if ($scores !== scores) {
@@ -14702,8 +14703,8 @@ async function nonMaxSuppressionWithScoreAsync_(boxes2, scores, maxOutputSize, i
   };
 }
 var nonMaxSuppressionWithScoreAsync = nonMaxSuppressionWithScoreAsync_;
-function nonMaxSuppressionPadded_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, padToMaxOutputSize = false) {
-  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppression");
+function nonMaxSuppressionPadded_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, padToMaxOutputSize = false) {
+  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppression");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppression");
   const params = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold, null);
   const $maxOutputSize = params.maxOutputSize;
@@ -14720,8 +14721,8 @@ function nonMaxSuppressionPadded_(boxes2, scores, maxOutputSize, iouThreshold = 
   return { selectedIndices: result[0], validOutputs: result[1] };
 }
 var nonMaxSuppressionPadded = op({ nonMaxSuppressionPadded_ });
-async function nonMaxSuppressionPaddedAsync_(boxes2, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, padToMaxOutputSize = false) {
-  const $boxes = convertToTensor(boxes2, "boxes", "nonMaxSuppressionAsync");
+async function nonMaxSuppressionPaddedAsync_(boxes, scores, maxOutputSize, iouThreshold = 0.5, scoreThreshold = Number.NEGATIVE_INFINITY, padToMaxOutputSize = false) {
+  const $boxes = convertToTensor(boxes, "boxes", "nonMaxSuppressionAsync");
   const $scores = convertToTensor(scores, "scores", "nonMaxSuppressionAsync");
   const params = nonMaxSuppSanityCheck($boxes, $scores, maxOutputSize, iouThreshold, scoreThreshold, null);
   const $maxOutputSize = params.maxOutputSize;
@@ -14729,7 +14730,7 @@ async function nonMaxSuppressionPaddedAsync_(boxes2, scores, maxOutputSize, iouT
   const $scoreThreshold = params.scoreThreshold;
   const [boxesVals, scoresVals] = await Promise.all([$boxes.data(), $scores.data()]);
   const { selectedIndices, validOutputs } = nonMaxSuppressionV4Impl(boxesVals, scoresVals, $maxOutputSize, $iouThreshold, $scoreThreshold, padToMaxOutputSize);
-  if ($boxes !== boxes2) {
+  if ($boxes !== boxes) {
     $boxes.dispose();
   }
   if ($scores !== scores) {
@@ -34306,14 +34307,14 @@ var executeOp5 = (node2, tensorMap, context) => {
   }
 };
 function nmsParams(node2, tensorMap, context) {
-  const boxes2 = getParamValue("boxes", node2, tensorMap, context);
+  const boxes = getParamValue("boxes", node2, tensorMap, context);
   const scores = getParamValue("scores", node2, tensorMap, context);
   const maxOutputSize = getParamValue("maxOutputSize", node2, tensorMap, context);
   const iouThreshold = getParamValue("iouThreshold", node2, tensorMap, context);
   const scoreThreshold = getParamValue("scoreThreshold", node2, tensorMap, context);
   const softNmsSigma = getParamValue("softNmsSigma", node2, tensorMap, context);
   return {
-    boxes: boxes2,
+    boxes,
     scores,
     maxOutputSize,
     iouThreshold,
@@ -34324,20 +34325,20 @@ function nmsParams(node2, tensorMap, context) {
 var executeOp6 = async (node2, tensorMap, context) => {
   switch (node2.op) {
     case "NonMaxSuppressionV5": {
-      const { boxes: boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = nmsParams(node2, tensorMap, context);
-      const result = await image.nonMaxSuppressionWithScoreAsync(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
+      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = nmsParams(node2, tensorMap, context);
+      const result = await image.nonMaxSuppressionWithScoreAsync(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
       return [result.selectedIndices, result.selectedScores];
     }
     case "NonMaxSuppressionV4": {
-      const { boxes: boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node2, tensorMap, context);
+      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node2, tensorMap, context);
       const padToMaxOutputSize = getParamValue("padToMaxOutputSize", node2, tensorMap, context);
-      const result = await image.nonMaxSuppressionPaddedAsync(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
+      const result = await image.nonMaxSuppressionPaddedAsync(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
       return [result.selectedIndices, result.validOutputs];
     }
     case "NonMaxSuppressionV3":
     case "NonMaxSuppressionV2": {
-      const { boxes: boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node2, tensorMap, context);
-      return [await image.nonMaxSuppressionAsync(boxes2, scores, maxOutputSize, iouThreshold, scoreThreshold)];
+      const { boxes, scores, maxOutputSize, iouThreshold, scoreThreshold } = nmsParams(node2, tensorMap, context);
+      return [await image.nonMaxSuppressionAsync(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold)];
     }
     case "Where": {
       const condition = cast(getParamValue("condition", node2, tensorMap, context), "bool");
@@ -34543,12 +34544,12 @@ var executeOp10 = (node2, tensorMap, context) => {
     }
     case "CropAndResize": {
       const image32 = getParamValue("image", node2, tensorMap, context);
-      const boxes2 = getParamValue("boxes", node2, tensorMap, context);
+      const boxes = getParamValue("boxes", node2, tensorMap, context);
       const boxInd = getParamValue("boxInd", node2, tensorMap, context);
       const cropSize = getParamValue("cropSize", node2, tensorMap, context);
       const method = getParamValue("method", node2, tensorMap, context);
       const extrapolationValue = getParamValue("extrapolationValue", node2, tensorMap, context);
-      return [image.cropAndResize(image32, boxes2, boxInd, cropSize, method, extrapolationValue)];
+      return [image.cropAndResize(image32, boxes, boxInd, cropSize, method, extrapolationValue)];
     }
     default:
       throw TypeError(`Node type ${node2.op} is not implemented`);
@@ -40429,13 +40430,13 @@ var coshConfig = {
 };
 function cropAndResize2(args) {
   const { inputs, backend: backend22, attrs } = args;
-  const { image: image32, boxes: boxes2, boxInd } = inputs;
+  const { image: image32, boxes, boxInd } = inputs;
   const { cropSize, method, extrapolationValue } = attrs;
   const [batch, imageHeight, imageWidth, numChannels] = image32.shape;
-  const numBoxes = boxes2.shape[0];
+  const numBoxes = boxes.shape[0];
   const [cropHeight, cropWidth] = cropSize;
   const output = buffer([numBoxes, cropHeight, cropWidth, numChannels], "float32");
-  const boxVals = backend22.data.get(boxes2.dataId).values;
+  const boxVals = backend22.data.get(boxes.dataId).values;
   const boxIndVals = backend22.data.get(boxInd.dataId).values;
   const imageVals = backend22.data.get(image32.dataId).values;
   const inStride = util_exports.computeStrides(image32.shape);
@@ -42107,10 +42108,10 @@ var multinomialConfig = {
 var nonMaxSuppressionV3Impl2 = kernel_impls_exports.nonMaxSuppressionV3Impl;
 function nonMaxSuppressionV3(args) {
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes: boxes2, scores } = inputs;
+  const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold } = attrs;
-  assertNotComplex(boxes2, "NonMaxSuppression");
-  const boxesVals = backend22.data.get(boxes2.dataId).values;
+  assertNotComplex(boxes, "NonMaxSuppression");
+  const boxesVals = backend22.data.get(boxes.dataId).values;
   const scoresVals = backend22.data.get(scores.dataId).values;
   const { selectedIndices } = nonMaxSuppressionV3Impl2(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold);
   return backend22.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices));
@@ -42123,10 +42124,10 @@ var nonMaxSuppressionV3Config = {
 var nonMaxSuppressionV4Impl2 = kernel_impls_exports.nonMaxSuppressionV4Impl;
 function nonMaxSuppressionV4(args) {
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes: boxes2, scores } = inputs;
+  const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize } = attrs;
-  assertNotComplex(boxes2, "NonMaxSuppressionPadded");
-  const boxesVals = backend22.data.get(boxes2.dataId).values;
+  assertNotComplex(boxes, "NonMaxSuppressionPadded");
+  const boxesVals = backend22.data.get(boxes.dataId).values;
   const scoresVals = backend22.data.get(scores.dataId).values;
   const { selectedIndices, validOutputs } = nonMaxSuppressionV4Impl2(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
   return [
@@ -42142,10 +42143,10 @@ var nonMaxSuppressionV4Config = {
 var nonMaxSuppressionV5Impl2 = kernel_impls_exports.nonMaxSuppressionV5Impl;
 function nonMaxSuppressionV5(args) {
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes: boxes2, scores } = inputs;
+  const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = attrs;
-  assertNotComplex(boxes2, "NonMaxSuppressionWithScore");
-  const boxesVals = backend22.data.get(boxes2.dataId).values;
+  assertNotComplex(boxes, "NonMaxSuppressionWithScore");
+  const boxesVals = backend22.data.get(boxes.dataId).values;
   const scoresVals = backend22.data.get(scores.dataId).values;
   const maxOutputSizeVal = maxOutputSize;
   const iouThresholdVal = iouThreshold;
@@ -51954,10 +51955,10 @@ var CropAndResizeProgram = class {
 };
 var cropAndResize3 = (args) => {
   const { inputs, backend: backend22, attrs } = args;
-  const { image: image32, boxes: boxes2, boxInd } = inputs;
+  const { image: image32, boxes, boxInd } = inputs;
   const { cropSize, method, extrapolationValue } = attrs;
-  const program = new CropAndResizeProgram(image32.shape, boxes2.shape, cropSize, method, extrapolationValue);
-  return backend22.runWebGLProgram(program, [image32, boxes2, boxInd], "float32");
+  const program = new CropAndResizeProgram(image32.shape, boxes.shape, cropSize, method, extrapolationValue);
+  return backend22.runWebGLProgram(program, [image32, boxes, boxInd], "float32");
 };
 var cropAndResizeConfig2 = {
   kernelName: CropAndResize,
@@ -54655,9 +54656,9 @@ var nonMaxSuppressionV3Impl3 = kernel_impls_exports.nonMaxSuppressionV3Impl;
 function nonMaxSuppressionV32(args) {
   backend_util_exports.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes: boxes2, scores } = inputs;
+  const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold } = attrs;
-  const boxesVals = backend22.readSync(boxes2.dataId);
+  const boxesVals = backend22.readSync(boxes.dataId);
   const scoresVals = backend22.readSync(scores.dataId);
   const { selectedIndices } = nonMaxSuppressionV3Impl3(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold);
   return backend22.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices));
@@ -54671,9 +54672,9 @@ var nonMaxSuppressionV4Impl3 = kernel_impls_exports.nonMaxSuppressionV4Impl;
 function nonMaxSuppressionV42(args) {
   backend_util_exports.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes: boxes2, scores } = inputs;
+  const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize } = attrs;
-  const boxesVals = backend22.readSync(boxes2.dataId);
+  const boxesVals = backend22.readSync(boxes.dataId);
   const scoresVals = backend22.readSync(scores.dataId);
   const { selectedIndices, validOutputs } = nonMaxSuppressionV4Impl3(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
   return [
@@ -54690,9 +54691,9 @@ var nonMaxSuppressionV5Impl3 = kernel_impls_exports.nonMaxSuppressionV5Impl;
 function nonMaxSuppressionV52(args) {
   backend_util_exports.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   const { inputs, backend: backend22, attrs } = args;
-  const { boxes: boxes2, scores } = inputs;
+  const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = attrs;
-  const boxesVals = backend22.readSync(boxes2.dataId);
+  const boxesVals = backend22.readSync(boxes.dataId);
   const scoresVals = backend22.readSync(scores.dataId);
   const maxOutputSizeVal = maxOutputSize;
   const iouThresholdVal = iouThreshold;
@@ -58091,8 +58092,8 @@ function setup11(backend22) {
 function cropAndResize4(args) {
   const { backend: backend22, inputs, attrs } = args;
   const { method, extrapolationValue, cropSize } = attrs;
-  const { image: image32, boxes: boxes2, boxInd } = inputs;
-  const numBoxes = boxes2.shape[0];
+  const { image: image32, boxes, boxInd } = inputs;
+  const numBoxes = boxes.shape[0];
   const [cropHeight, cropWidth] = cropSize;
   const outShape = [numBoxes, cropHeight, cropWidth, image32.shape[3]];
   let imagesData = backend22.dataIdMap.get(image32.dataId);
@@ -58102,7 +58103,7 @@ function cropAndResize4(args) {
     imagesData = backend22.dataIdMap.get(castedData.dataId);
   }
   const imagesId = imagesData.id;
-  const boxesId = backend22.dataIdMap.get(boxes2.dataId).id;
+  const boxesId = backend22.dataIdMap.get(boxes.dataId).id;
   const boxIndId = backend22.dataIdMap.get(boxInd.dataId).id;
   const out = backend22.makeOutput(outShape, "float32");
   const outId = backend22.dataIdMap.get(out.dataId).id;
@@ -58917,8 +58918,8 @@ function setup26(backend22) {
 function kernelFunc(args) {
   const { backend: backend22, inputs, attrs } = args;
   const { iouThreshold, maxOutputSize, scoreThreshold } = attrs;
-  const { boxes: boxes2, scores } = inputs;
-  const boxesId = backend22.dataIdMap.get(boxes2.dataId).id;
+  const { boxes, scores } = inputs;
+  const boxesId = backend22.dataIdMap.get(boxes.dataId).id;
   const scoresId = backend22.dataIdMap.get(scores.dataId).id;
   const resOffset = wasmFunc4(boxesId, scoresId, maxOutputSize, iouThreshold, scoreThreshold);
   const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend22, resOffset);
@@ -58947,8 +58948,8 @@ function setup27(backend22) {
 function nonMaxSuppressionV43(args) {
   const { backend: backend22, inputs, attrs } = args;
   const { iouThreshold, maxOutputSize, scoreThreshold, padToMaxOutputSize } = attrs;
-  const { boxes: boxes2, scores } = inputs;
-  const boxesId = backend22.dataIdMap.get(boxes2.dataId).id;
+  const { boxes, scores } = inputs;
+  const boxesId = backend22.dataIdMap.get(boxes.dataId).id;
   const scoresId = backend22.dataIdMap.get(scores.dataId).id;
   const resOffset = wasmFunc5(boxesId, scoresId, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
   const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend22, resOffset);
@@ -58977,8 +58978,8 @@ function setup28(backend22) {
 function kernelFunc2(args) {
   const { backend: backend22, inputs, attrs } = args;
   const { iouThreshold, maxOutputSize, scoreThreshold, softNmsSigma } = attrs;
-  const { boxes: boxes2, scores } = inputs;
-  const boxesId = backend22.dataIdMap.get(boxes2.dataId).id;
+  const { boxes, scores } = inputs;
+  const boxesId = backend22.dataIdMap.get(boxes.dataId).id;
   const scoresId = backend22.dataIdMap.get(scores.dataId).id;
   const resOffset = wasmFunc6(boxesId, scoresId, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
   const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend22, resOffset);
@@ -60313,13 +60314,13 @@ function getBoxCenter(box6) {
 function cutBoxFromImageAndResize(box6, image7, cropSize) {
   const h = image7.shape[1];
   const w = image7.shape[2];
-  const boxes2 = [[
+  const boxes = [[
     box6.startPoint[1] / h,
     box6.startPoint[0] / w,
     box6.endPoint[1] / h,
     box6.endPoint[0] / w
   ]];
-  return image.cropAndResize(image7, boxes2, [0], cropSize);
+  return image.cropAndResize(image7, boxes, [0], cropSize);
 }
 function enlargeBox(box6, factor = 1.5) {
   const center = getBoxCenter(box6);
@@ -60469,7 +60470,7 @@ var BlazeFaceModel = class {
     var _a, _b, _c, _d;
     if (!inputImage || inputImage["isDisposedInternal"] || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
       return { boxes: [] };
-    const [batch, boxes2, scores] = tidy(() => {
+    const [batch, boxes, scores] = tidy(() => {
       const resizedImage = image.resizeBilinear(inputImage, [this.inputSize, this.inputSize]);
       const normalizedImage = sub(div(resizedImage, 127.5), 0.5);
       const res = this.model.execute(normalizedImage);
@@ -60489,7 +60490,7 @@ var BlazeFaceModel = class {
       return [batchOut, boxesOut, scoresOut];
     });
     this.config = mergeDeep(this.config, userConfig);
-    const nmsTensor = await image.nonMaxSuppressionAsync(boxes2, scores, ((_a = this.config.face.detector) == null ? void 0 : _a.maxDetected) || 0, ((_b = this.config.face.detector) == null ? void 0 : _b.iouThreshold) || 0, ((_c = this.config.face.detector) == null ? void 0 : _c.minConfidence) || 0);
+    const nmsTensor = await image.nonMaxSuppressionAsync(boxes, scores, ((_a = this.config.face.detector) == null ? void 0 : _a.maxDetected) || 0, ((_b = this.config.face.detector) == null ? void 0 : _b.iouThreshold) || 0, ((_c = this.config.face.detector) == null ? void 0 : _c.minConfidence) || 0);
     const nms = await nmsTensor.array();
     dispose(nmsTensor);
     const annotatedBoxes = [];
@@ -60497,14 +60498,14 @@ var BlazeFaceModel = class {
     for (let i = 0; i < nms.length; i++) {
       const confidence = scoresData[nms[i]];
       if (confidence > (((_d = this.config.face.detector) == null ? void 0 : _d.minConfidence) || 0)) {
-        const boundingBox = slice(boxes2, [nms[i], 0], [1, -1]);
+        const boundingBox = slice(boxes, [nms[i], 0], [1, -1]);
         const landmarks = tidy(() => reshape(squeeze(slice(batch, [nms[i], keypointsCount - 1], [1, -1])), [keypointsCount, -1]));
         annotatedBoxes.push({ box: createBox(boundingBox), landmarks, anchor: this.anchorsData[nms[i]], confidence });
         dispose(boundingBox);
       }
     }
     dispose(batch);
-    dispose(boxes2);
+    dispose(boxes);
     dispose(scores);
     return {
       boxes: annotatedBoxes,
@@ -65682,13 +65683,13 @@ function getBoxCenter2(box6) {
 function cutBoxFromImageAndResize2(box6, image7, cropSize) {
   const h = image7.shape[1];
   const w = image7.shape[2];
-  const boxes2 = [[
+  const boxes = [[
     box6.startPoint[1] / h,
     box6.startPoint[0] / w,
     box6.endPoint[1] / h,
     box6.endPoint[0] / w
   ]];
-  return image.cropAndResize(image7, boxes2, [0], cropSize);
+  return image.cropAndResize(image7, boxes, [0], cropSize);
 }
 function scaleBoxCoordinates2(box6, factor) {
   const startPoint = [box6.startPoint[0] * factor[0], box6.startPoint[1] * factor[1]];
@@ -68681,10 +68682,10 @@ var HandDetector = class {
     this.inputSizeTensor = tensor1d([this.inputSize, this.inputSize]);
     this.doubleInputSizeTensor = tensor1d([this.inputSize * 2, this.inputSize * 2]);
   }
-  normalizeBoxes(boxes2) {
+  normalizeBoxes(boxes) {
     return tidy(() => {
-      const boxOffsets = slice(boxes2, [0, 0], [-1, 2]);
-      const boxSizes = slice(boxes2, [0, 2], [-1, 2]);
+      const boxOffsets = slice(boxes, [0, 0], [-1, 2]);
+      const boxSizes = slice(boxes, [0, 2], [-1, 2]);
       const boxCenterPoints = add2(div(boxOffsets, this.inputSizeTensor), this.anchorsTensor);
       const halfBoxSizes = div(boxSizes, this.doubleInputSizeTensor);
       const startPoints = mul(sub(boxCenterPoints, halfBoxSizes), this.inputSizeTensor);
@@ -68728,9 +68729,9 @@ var HandDetector = class {
     if (!predictions || predictions.length === 0)
       return hands;
     for (const prediction of predictions) {
-      const boxes2 = await prediction.box.data();
-      const startPoint = boxes2.slice(0, 2);
-      const endPoint = boxes2.slice(2, 4);
+      const boxes = await prediction.box.data();
+      const startPoint = boxes.slice(0, 2);
+      const endPoint = boxes.slice(2, 4);
       const palmLandmarks = await prediction.palmLandmarks.array();
       dispose(prediction.box);
       dispose(prediction.palmLandmarks);
@@ -68872,16 +68873,16 @@ var HandPipeline = class {
   }
   async estimateHands(image7, config3) {
     let useFreshBox = false;
-    let boxes2;
+    let boxes;
     if (this.skipped === 0 || this.skipped > config3.hand.skipFrames || !config3.hand.landmarks || !config3.skipFrame) {
-      boxes2 = await this.handDetector.estimateHandBounds(image7, config3);
+      boxes = await this.handDetector.estimateHandBounds(image7, config3);
       this.skipped = 0;
     }
     if (config3.skipFrame)
       this.skipped++;
-    if (boxes2 && boxes2.length > 0 && (boxes2.length !== this.detectedHands && this.detectedHands !== config3.hand.maxDetected || !config3.hand.landmarks)) {
+    if (boxes && boxes.length > 0 && (boxes.length !== this.detectedHands && this.detectedHands !== config3.hand.maxDetected || !config3.hand.landmarks)) {
       this.detectedHands = 0;
-      this.storedBoxes = [...boxes2];
+      this.storedBoxes = [...boxes];
       if (this.storedBoxes.length > 0)
         useFreshBox = true;
     }
@@ -69433,7 +69434,7 @@ async function load6(config3) {
 // src/handtrack/handtrack.ts
 var models = [null, null];
 var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "StatefulPartitionedCall/Postprocessor/ExpandDims_1"];
-var inputSize = [0, 0];
+var inputSize = [[0, 0], [0, 0]];
 var classes = [
   "hand",
   "fist",
@@ -69445,7 +69446,11 @@ var classes = [
 ];
 var skipped3 = 0;
 var outputSize;
-var boxes = [];
+var cache = {
+  handBoxes: [],
+  fingerBoxes: [],
+  tmpBoxes: []
+};
 var fingerMap = {
   thumb: [1, 2, 3, 4],
   index: [5, 6, 7, 8],
@@ -69463,7 +69468,8 @@ async function load7(config3) {
   if (!models[0]) {
     models[0] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""));
     const inputs = Object.values(models[0].modelSignature["inputs"]);
-    inputSize[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    inputSize[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
     if (!models[0] || !models[0]["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
@@ -69473,7 +69479,8 @@ async function load7(config3) {
   if (!models[1]) {
     models[1] = await loadGraphModel(join(config3.modelBasePath, ((_b = config3.hand.skeleton) == null ? void 0 : _b.modelPath) || ""));
     const inputs = Object.values(models[1].modelSignature["inputs"]);
-    inputSize[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    inputSize[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
     if (!models[1] || !models[1]["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
@@ -69487,7 +69494,10 @@ async function detectHands(input2, config3) {
   if (!input2 || !models[0])
     return hands;
   const t = {};
-  t.resize = image.resizeBilinear(input2, [240, 320]);
+  const ratio = (input2.shape[2] || 1) / (input2.shape[1] || 1);
+  const height = Math.min(Math.round((input2.shape[1] || 0) / 8) * 8, 512);
+  const width = Math.round(height * ratio / 8) * 8;
+  t.resize = image.resizeBilinear(input2, [height, width]);
   t.cast = cast(t.resize, "int32");
   [t.rawScores, t.rawBoxes] = await models[0].executeAsync(t.cast, modelOutputNodes);
   t.boxes = squeeze(t.rawBoxes, [0, 2]);
@@ -69515,7 +69525,35 @@ async function detectHands(input2, config3) {
   }
   classScores.forEach((tensor2) => dispose(tensor2));
   Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
+  hands.sort((a, b) => b.score - a.score);
+  if (hands.length > (config3.hand.maxDetected || 1))
+    hands.length = config3.hand.maxDetected || 1;
   return hands;
+}
+var boxScaleFact = 1.5;
+function updateBoxes(h, keypoints3) {
+  const finger = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
+  const minmax = [Math.min(...finger[0]), Math.max(...finger[0]), Math.min(...finger[1]), Math.max(...finger[1])];
+  const center = [(minmax[0] + minmax[1]) / 2, (minmax[2] + minmax[3]) / 2];
+  const diff = Math.max(center[0] - minmax[0], center[1] - minmax[2], -center[0] + minmax[1], -center[1] + minmax[3]) * boxScaleFact;
+  h.box = [
+    Math.trunc(center[0] - diff),
+    Math.trunc(center[1] - diff),
+    Math.trunc(2 * diff),
+    Math.trunc(2 * diff)
+  ];
+  h.boxRaw = [
+    h.box[0] / outputSize[0],
+    h.box[1] / outputSize[1],
+    h.box[2] / outputSize[0],
+    h.box[3] / outputSize[1]
+  ];
+  h.yxBox = [
+    h.boxRaw[1],
+    h.boxRaw[0],
+    h.boxRaw[3] + h.boxRaw[1],
+    h.boxRaw[2] + h.boxRaw[0]
+  ];
 }
 async function detectFingers(input2, h, config3) {
   const hand3 = {
@@ -69530,46 +69568,57 @@ async function detectFingers(input2, h, config3) {
     landmarks: {},
     annotations: {}
   };
-  if (!input2 || !models[1] || !config3.hand.landmarks)
+  if (!input2 || !models[1])
     return hand3;
-  const t = {};
-  t.crop = image.cropAndResize(input2, [h.yxBox], [0], [inputSize[1], inputSize[1]], "bilinear");
-  t.cast = cast(t.crop, "float32");
-  t.div = div(t.cast, 255);
-  [t.score, t.keypoints] = models[1].execute(t.div);
-  const score3 = Math.round(100 * (await t.score.data())[0] / 100);
-  if (score3 > (config3.hand.minConfidence || 0)) {
-    hand3.fingerScore = score3;
-    t.reshaped = reshape(t.keypoints, [-1, 3]);
-    const rawCoords = await t.reshaped.array();
-    hand3.keypoints = rawCoords.map((coord) => [
-      h.box[2] * coord[0] / inputSize[1] + h.box[0],
-      h.box[3] * coord[1] / inputSize[1] + h.box[1],
-      (h.box[2] + h.box[3]) / 2 / inputSize[1] * coord[2]
-    ]);
-    hand3.landmarks = analyze(hand3.keypoints);
-    for (const key of Object.keys(fingerMap)) {
-      hand3.annotations[key] = fingerMap[key].map((index) => hand3.landmarks && hand3.keypoints[index] ? hand3.keypoints[index] : null);
+  if (config3.hand.landmarks) {
+    const t = {};
+    if (!h.yxBox)
+      return hand3;
+    t.crop = image.cropAndResize(input2, [h.yxBox], [0], [inputSize[1][0], inputSize[1][1]], "bilinear");
+    t.cast = cast(t.crop, "float32");
+    t.div = div(t.cast, 255);
+    [t.score, t.keypoints] = models[1].execute(t.div);
+    const score3 = Math.round(100 * (await t.score.data())[0] / 100);
+    if (score3 > (config3.hand.minConfidence || 0)) {
+      hand3.fingerScore = score3;
+      t.reshaped = reshape(t.keypoints, [-1, 3]);
+      const rawCoords = await t.reshaped.array();
+      hand3.keypoints = rawCoords.map((coord) => [
+        h.box[2] * coord[0] / inputSize[1][0] + h.box[0],
+        h.box[3] * coord[1] / inputSize[1][1] + h.box[1],
+        (h.box[2] + h.box[3]) / 2 / inputSize[1][0] * coord[2]
+      ]);
+      updateBoxes(h, hand3.keypoints);
+      hand3.box = h.box;
+      hand3.landmarks = analyze(hand3.keypoints);
+      for (const key of Object.keys(fingerMap)) {
+        hand3.annotations[key] = fingerMap[key].map((index) => hand3.landmarks && hand3.keypoints[index] ? hand3.keypoints[index] : null);
+      }
+      cache.tmpBoxes.push(h);
     }
+    Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
   }
-  Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
   return hand3;
 }
-var last3 = 0;
 async function predict6(input2, config3) {
   outputSize = [input2.shape[2] || 0, input2.shape[1] || 0];
-  if (skipped3 < (config3.object.skipFrames || 0) && config3.skipFrame) {
+  let hands = [];
+  cache.tmpBoxes = [];
+  if (!config3.hand.landmarks)
+    cache.fingerBoxes = cache.handBoxes;
+  if (skipped3 < (config3.hand.skipFrames || 0) && config3.skipFrame) {
     skipped3++;
-    const hands2 = await Promise.all(boxes.map((hand3) => detectFingers(input2, hand3, config3)));
-    const withFingers2 = hands2.filter((hand3) => hand3.fingerScore > 0).length;
-    if (withFingers2 === last3)
-      return hands2;
+    hands = await Promise.all(cache.fingerBoxes.map((hand3) => detectFingers(input2, hand3, config3)));
+  } else {
+    skipped3 = 0;
+    hands = await Promise.all(cache.fingerBoxes.map((hand3) => detectFingers(input2, hand3, config3)));
+    if (hands.length !== config3.hand.maxDetected) {
+      cache.handBoxes = await detectHands(input2, config3);
+      const newHands = await Promise.all(cache.handBoxes.map((hand3) => detectFingers(input2, hand3, config3)));
+      hands = hands.concat(newHands);
+    }
   }
-  skipped3 = 0;
-  boxes = await detectHands(input2, config3);
-  const hands = await Promise.all(boxes.map((hand3) => detectFingers(input2, hand3, config3)));
-  const withFingers = hands.filter((hand3) => hand3.fingerScore > 0).length;
-  last3 = withFingers;
+  cache.fingerBoxes = [...cache.tmpBoxes];
   return hands;
 }
 
@@ -70040,7 +70089,7 @@ var labels = [
 
 // src/object/nanodet.ts
 var model8;
-var last4 = [];
+var last3 = [];
 var skipped6 = Number.MAX_SAFE_INTEGER;
 var scaleBox = 2.5;
 async function load11(config3) {
@@ -70120,13 +70169,13 @@ async function process3(res, inputSize3, outputShape, config3) {
   return results;
 }
 async function predict10(image7, config3) {
-  if (skipped6 < (config3.object.skipFrames || 0) && config3.skipFrame && last4.length > 0) {
+  if (skipped6 < (config3.object.skipFrames || 0) && config3.skipFrame && last3.length > 0) {
     skipped6++;
-    return last4;
+    return last3;
   }
   skipped6 = 0;
   if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
-    return last4;
+    return last3;
   return new Promise(async (resolve) => {
     const outputSize2 = [image7.shape[2], image7.shape[1]];
     const resize = image.resizeBilinear(image7, [model8.inputSize, model8.inputSize], false);
@@ -70139,7 +70188,7 @@ async function predict10(image7, config3) {
       objectT = await model8.predict(transpose5);
     dispose(transpose5);
     const obj = await process3(objectT, model8.inputSize, outputSize2, config3);
-    last4 = obj;
+    last3 = obj;
     resolve(obj);
   });
 }
@@ -70147,7 +70196,7 @@ async function predict10(image7, config3) {
 // src/object/centernet.ts
 var model9;
 var inputSize2 = 0;
-var last5 = [];
+var last4 = [];
 var skipped7 = Number.MAX_SAFE_INTEGER;
 async function load12(config3) {
   if (env2.initial)
@@ -70211,20 +70260,20 @@ async function process4(res, outputShape, config3) {
   return results;
 }
 async function predict11(input2, config3) {
-  if (skipped7 < (config3.object.skipFrames || 0) && config3.skipFrame && last5.length > 0) {
+  if (skipped7 < (config3.object.skipFrames || 0) && config3.skipFrame && last4.length > 0) {
     skipped7++;
-    return last5;
+    return last4;
   }
   skipped7 = 0;
   if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
-    return last5;
+    return last4;
   return new Promise(async (resolve) => {
     const outputSize2 = [input2.shape[2], input2.shape[1]];
     const resize = image.resizeBilinear(input2, [inputSize2, inputSize2]);
     const objectT = config3.object.enabled ? model9 == null ? void 0 : model9.execute(resize, ["tower_0/detections"]) : null;
     dispose(resize);
     const obj = await process4(objectT, outputSize2, config3);
-    last5 = obj;
+    last4 = obj;
     resolve(obj);
   });
 }
@@ -70243,14 +70292,12 @@ async function load13(config3) {
     log("cached model:", model10["modelUrl"]);
   return model10;
 }
-async function predict12(input2) {
+async function predict12(input2, config3) {
   var _a, _b;
-  const width = ((_a = input2.tensor) == null ? void 0 : _a.shape[1]) || 0;
-  const height = ((_b = input2.tensor) == null ? void 0 : _b.shape[2]) || 0;
-  if (!input2.tensor)
-    return null;
-  if (!model10 || !model10.inputs[0].shape)
-    return null;
+  const width = ((_a = input2.tensor) == null ? void 0 : _a.shape[2]) || 0;
+  const height = ((_b = input2.tensor) == null ? void 0 : _b.shape[1]) || 0;
+  if (!input2.tensor || !model10 || !model10.inputs[0].shape)
+    return { data: null, canvas: null, alpha: null };
   const resizeInput = image.resizeBilinear(input2.tensor, [model10.inputs[0].shape[1], model10.inputs[0].shape[2]], false);
   const norm2 = div(resizeInput, 255);
   const res = model10.predict(norm2);
@@ -70258,7 +70305,7 @@ async function predict12(input2) {
   dispose(norm2);
   const squeeze2 = squeeze(res, 0);
   dispose(res);
-  let resizeOutput;
+  let dataT;
   if (squeeze2.shape[2] === 2) {
     const softmax6 = squeeze2.softmax();
     const [bg, fg] = unstack(softmax6, 2);
@@ -70268,77 +70315,63 @@ async function predict12(input2) {
     dispose(bg);
     dispose(fg);
     const crop = image.cropAndResize(pad3, [[0, 0, 0.5, 0.5]], [0], [width, height]);
-    resizeOutput = squeeze(crop, 0);
+    dataT = squeeze(crop, 0);
     dispose(crop);
     dispose(expand);
     dispose(pad3);
   } else {
-    resizeOutput = image.resizeBilinear(squeeze2, [width, height]);
+    dataT = image.resizeBilinear(squeeze2, [height, width]);
   }
   dispose(squeeze2);
+  const data = await dataT.dataSync();
   if (env2.node) {
-    const data = await resizeOutput.data();
-    dispose(resizeOutput);
-    return data;
+    dispose(dataT);
+    return { data, canvas: null, alpha: null };
   }
-  const overlay = canvas(width, height);
-  if (browser_exports)
-    await browser_exports.toPixels(resizeOutput, overlay);
-  dispose(resizeOutput);
   const alphaCanvas = canvas(width, height);
-  const ctxAlpha = alphaCanvas.getContext("2d");
-  ctxAlpha.filter = "blur(8px";
-  await ctxAlpha.drawImage(overlay, 0, 0);
-  const alpha = ctxAlpha.getImageData(0, 0, width, height).data;
-  const original = canvas(width, height);
-  const ctx = original.getContext("2d");
+  await browser_exports.toPixels(dataT, alphaCanvas);
+  dispose(dataT);
+  const alphaCtx = alphaCanvas.getContext("2d");
+  if (config3.segmentation.blur && config3.segmentation.blur > 0)
+    alphaCtx.filter = `blur(${config3.segmentation.blur}px)`;
+  const alphaData = alphaCtx.getImageData(0, 0, width, height);
+  const compositeCanvas = canvas(width, height);
+  const compositeCtx = compositeCanvas.getContext("2d");
   if (input2.canvas)
-    await ctx.drawImage(input2.canvas, 0, 0);
-  ctx.globalCompositeOperation = "darken";
-  ctx.filter = "blur(8px)";
-  await ctx.drawImage(overlay, 0, 0);
-  ctx.globalCompositeOperation = "source-over";
-  ctx.filter = "none";
-  input2.canvas = original;
-  return alpha;
+    compositeCtx.drawImage(input2.canvas, 0, 0);
+  compositeCtx.globalCompositeOperation = "darken";
+  if (config3.segmentation.blur && config3.segmentation.blur > 0)
+    compositeCtx.filter = `blur(${config3.segmentation.blur}px)`;
+  compositeCtx.drawImage(alphaCanvas, 0, 0);
+  compositeCtx.globalCompositeOperation = "source-over";
+  compositeCtx.filter = "none";
+  const compositeData = compositeCtx.getImageData(0, 0, width, height);
+  for (let i = 0; i < width * height; i++)
+    compositeData.data[4 * i + 3] = alphaData.data[4 * i + 0];
+  compositeCtx.putImageData(compositeData, 0, 0);
+  return { data, canvas: compositeCanvas, alpha: alphaCanvas };
 }
 async function process5(input2, background, config3) {
-  var _a;
+  var _a, _b;
   if (busy)
-    return null;
+    return { data: null, canvas: null, alpha: null };
   busy = true;
   if (!model10)
     await load13(config3);
-  const img = process2(input2, config3);
-  const tmp = process2(background, config3);
-  if (!img.canvas || !tmp.canvas) {
-    if (config3.debug)
-      log("segmentation cannot process input or background");
-    return null;
-  }
-  const alpha = await predict12(img);
-  dispose(img.tensor);
-  if (background && alpha) {
-    const bg = tmp.canvas;
-    dispose(tmp.tensor);
-    const fg = img.canvas;
-    const fgData = (_a = fg.getContext("2d")) == null ? void 0 : _a.getImageData(0, 0, fg.width, fg.height).data;
-    const c = canvas(fg.width, fg.height);
-    const ctx = c.getContext("2d");
-    ctx.globalCompositeOperation = "copy";
-    ctx.drawImage(bg, 0, 0, c.width, c.height);
-    const cData = ctx.getImageData(0, 0, c.width, c.height);
-    for (let i = 0; i < c.width * c.height; i++) {
-      cData.data[4 * i + 0] = (255 - alpha[4 * i + 0]) / 255 * cData.data[4 * i + 0] + alpha[4 * i + 0] / 255 * fgData[4 * i + 0];
-      cData.data[4 * i + 1] = (255 - alpha[4 * i + 1]) / 255 * cData.data[4 * i + 1] + alpha[4 * i + 1] / 255 * fgData[4 * i + 1];
-      cData.data[4 * i + 2] = (255 - alpha[4 * i + 2]) / 255 * cData.data[4 * i + 2] + alpha[4 * i + 2] / 255 * fgData[4 * i + 2];
-      cData.data[4 * i + 3] = (255 - alpha[4 * i + 3]) / 255 * cData.data[4 * i + 3] + alpha[4 * i + 3] / 255 * fgData[4 * i + 3];
-    }
-    ctx.putImageData(cData, 0, 0);
-    img.canvas = c;
+  const inputImage = process2(input2, config3);
+  const segmentation3 = await predict12(inputImage, config3);
+  dispose(inputImage.tensor);
+  let mergedCanvas = null;
+  if (background && segmentation3.canvas) {
+    mergedCanvas = canvas(((_a = inputImage.canvas) == null ? void 0 : _a.width) || 0, ((_b = inputImage.canvas) == null ? void 0 : _b.height) || 0);
+    const bgImage = process2(background, config3);
+    dispose(bgImage.tensor);
+    const ctxMerge = mergedCanvas.getContext("2d");
+    ctxMerge.drawImage(bgImage.canvas, 0, 0, mergedCanvas.width, mergedCanvas.height);
+    ctxMerge.drawImage(segmentation3.canvas, 0, 0);
   }
   busy = false;
-  return img.canvas;
+  return { data: segmentation3.data, canvas: mergedCanvas || segmentation3.canvas, alpha: segmentation3.alpha };
 }
 
 // src/models.ts
@@ -72544,7 +72577,7 @@ var Human = class {
     return similarity(embedding1, embedding2);
   }
   async segmentation(input2, background) {
-    return input2 ? process5(input2, background, this.config) : null;
+    return process5(input2, background, this.config);
   }
   enhance(input2) {
     return enhance(input2);
@@ -72616,24 +72649,10 @@ var Human = class {
       await this.load();
       timeStamp = now();
       this.state = "image";
-      let img = process2(input2, this.config);
+      const img = process2(input2, this.config);
       this.process = img;
       this.performance.image = Math.trunc(now() - timeStamp);
       this.analyze("Get Image:");
-      if (this.config.segmentation.enabled && this.process && img.tensor && img.canvas) {
-        this.analyze("Start Segmentation:");
-        this.state = "detect:segmentation";
-        timeStamp = now();
-        await predict12(img);
-        elapsedTime = Math.trunc(now() - timeStamp);
-        if (elapsedTime > 0)
-          this.performance.segmentation = elapsedTime;
-        if (img.canvas) {
-          dispose(img.tensor);
-          img = process2(img.canvas, this.config);
-        }
-        this.analyze("End Segmentation:");
-      }
       if (!img.tensor) {
         if (this.config.debug)
           log("could not convert input to tensor");

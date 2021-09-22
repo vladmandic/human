@@ -8,7 +8,15 @@ export declare function load(config: Config): Promise<GraphModel>;
 export declare function predict(input: {
     tensor: Tensor | null;
     canvas: OffscreenCanvas | HTMLCanvasElement | null;
-}): Promise<Uint8ClampedArray | null>;
-export declare function process(input: Input, background: Input | undefined, config: Config): Promise<HTMLCanvasElement | OffscreenCanvas | null>;
+}, config: Config): Promise<{
+    data: Uint8ClampedArray | null;
+    canvas: HTMLCanvasElement | OffscreenCanvas | null;
+    alpha: HTMLCanvasElement | OffscreenCanvas | null;
+}>;
+export declare function process(input: Input, background: Input | undefined, config: Config): Promise<{
+    data: Uint8ClampedArray | null;
+    canvas: HTMLCanvasElement | OffscreenCanvas | null;
+    alpha: HTMLCanvasElement | OffscreenCanvas | null;
+}>;
 export {};
 //# sourceMappingURL=segmentation.d.ts.map

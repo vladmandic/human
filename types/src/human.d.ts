@@ -20,7 +20,7 @@ export declare type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement 
  *
  * - `create`: triggered when Human object is instantiated
  * - `load`: triggered when models are loaded (explicitly or on-demand)
- * - `image`: triggered when input image is this.processed
+ * - `image`: triggered when input image is processed
  * - `result`: triggered when detection is complete
  * - `warmup`: triggered when warmup is complete
  */
@@ -80,7 +80,7 @@ export declare class Human {
      * - face: draw detected faces
      * - body: draw detected people and body parts
      * - hand: draw detected hands and hand parts
-     * - canvas: draw this.processed canvas which is a this.processed copy of the input
+     * - canvas: draw processed canvas which is a processed copy of the input
      * - all: meta-function that performs: canvas, face, body, hand
      */
     draw: {
@@ -119,7 +119,7 @@ export declare class Human {
      * Possible events:
      * - `create`: triggered when Human object is instantiated
      * - `load`: triggered when models are loaded (explicitly or on-demand)
-     * - `image`: triggered when input image is this.processed
+     * - `image`: triggered when input image is processed
      * - `result`: triggered when detection is complete
      * - `warmup`: triggered when warmup is complete
      * - `error`: triggered on some errors
@@ -168,15 +168,26 @@ export declare class Human {
      * @returns similarity: number
     */
     similarity(embedding1: Array<number>, embedding2: Array<number>): number;
-    /** Segmentation method takes any input and returns this.processed canvas with body segmentation
+    /** Segmentation method takes any input and returns processed canvas with body segmentation
      *  - Optional parameter background is used to fill the background with specific input
-     *  - Segmentation is not triggered as part of detect this.process
+     *  - Segmentation is not triggered as part of detect process
+     *
+     *  Returns:
+     *  - `data` as raw data array with per-pixel segmentation values
+     *  - `canvas` as canvas which is input image filtered with segementation data
+     *    and optionally merged with background image
+     *    canvas alpha values are set to segmentation values for easy merging
+     *  - `alpha` as grayscale canvas that represents segmentation alpha values
      *
      * @param input: {@link Input}
      * @param background?: {@link Input}
-     * @returns Canvas
+     * @returns { data, canvas, alpha }
      */
-    segmentation(input: Input, background?: Input): Promise<OffscreenCanvas | HTMLCanvasElement | null>;
+    segmentation(input: Input, background?: Input): Promise<{
+        data: Uint8ClampedArray | null;
+        canvas: HTMLCanvasElement | OffscreenCanvas | null;
+        alpha: HTMLCanvasElement | OffscreenCanvas | null;
+    }>;
     /** Enhance method performs additional enhacements to face image previously detected for futher processing
      *
      * @param input: Tensor as provided in human.result.face[n].tensor
@@ -235,7 +246,7 @@ export declare class Human {
     }>;
     /** Main detection method
      * - Analyze configuration: {@link Config}
-     * - Pre-this.process input: {@link Input}
+     * - Pre-process input: {@link Input}
      * - Run inference for all configured models
      * - Process and return result: {@link Result}
      *

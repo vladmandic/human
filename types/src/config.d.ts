@@ -106,10 +106,12 @@ export interface ObjectConfig {
  *
  * - enabled: true/false
  * - modelPath: object detection model, can be absolute path or relative to modelBasePath
+ * - blur: blur segmentation output for more realistic image
 */
 export interface SegmentationConfig {
     enabled: boolean;
     modelPath: string;
+    blur: number;
 }
 /** Run input through image filters before inference
  * - image filters run with near-zero latency as they are executed on the GPU

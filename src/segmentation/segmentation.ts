@@ -23,11 +23,11 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-export async function predict(input: { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null }): Promise<Uint8ClampedArray | null> {
-  const width = input.tensor?.shape[1] || 0;
-  const height = input.tensor?.shape[2] || 0;
-  if (!input.tensor) return null;
-  if (!model || !model.inputs[0].shape) return null;
+export async function predict(input: { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null }, config: Config)
+: Promise<{ data: Uint8ClampedArray | null, canvas: HTMLCanvasElement | OffscreenCanvas | null, alpha: HTMLCanvasElement | OffscreenCanvas | null }> {
+  const width = input.tensor?.shape[2] || 0;
+  const height = input.tensor?.shape[1] || 0;
+  if (!input.tensor || !model || !model.inputs[0].shape) return { data: null, canvas: null, alpha: null };
   const resizeInput = tf.image.resizeBilinear(input.tensor, [model.inputs[0].shape[1], model.inputs[0].shape[2]], false);
   const norm = tf.div(resizeInput, 255);
   const res = model.predict(norm) as Tensor;
@@ -38,7 +38,7 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
 
   const squeeze = tf.squeeze(res, 0);
   tf.dispose(res);
-  let resizeOutput;
+  let dataT;
   if (squeeze.shape[2] === 2) {
     // model meet has two channels for fg and bg
     const softmax = squeeze.softmax();
@@ -52,82 +52,66 @@ export async function predict(input: { tensor: Tensor | null, canvas: OffscreenC
     const crop = tf.image.cropAndResize(pad, [[0, 0, 0.5, 0.5]], [0], [width, height]);
     // otherwise run softmax after unstack and use standard resize
     // resizeOutput = tf.image.resizeBilinear(expand, [input.tensor?.shape[1], input.tensor?.shape[2]]);
-    resizeOutput = tf.squeeze(crop, 0);
+    dataT = tf.squeeze(crop, 0);
     tf.dispose(crop);
     tf.dispose(expand);
     tf.dispose(pad);
   } else { // model selfie has a single channel that we can use directly
-    resizeOutput = tf.image.resizeBilinear(squeeze, [width, height]);
+    dataT = tf.image.resizeBilinear(squeeze, [height, width]);
   }
   tf.dispose(squeeze);
+  const data = await dataT.dataSync();
 
   if (env.node) {
-    const data = await resizeOutput.data();
-    tf.dispose(resizeOutput);
-    return data; // we're running in nodejs so return alpha array as-is
+    tf.dispose(dataT);
+    return { data, canvas: null, alpha: null }; // running in nodejs so return alpha array as-is
   }
 
-  const overlay = image.canvas(width, height);
-  if (tf.browser) await tf.browser.toPixels(resizeOutput, overlay);
-  tf.dispose(resizeOutput);
-
-  // get alpha channel data
   const alphaCanvas = image.canvas(width, height);
-  const ctxAlpha = alphaCanvas.getContext('2d') as CanvasRenderingContext2D;
-  ctxAlpha.filter = 'blur(8px';
-  await ctxAlpha.drawImage(overlay, 0, 0);
-  const alpha = ctxAlpha.getImageData(0, 0, width, height).data;
+  await tf.browser.toPixels(dataT, alphaCanvas);
+  tf.dispose(dataT);
+  const alphaCtx = alphaCanvas.getContext('2d') as CanvasRenderingContext2D;
+  if (config.segmentation.blur && config.segmentation.blur > 0) alphaCtx.filter = `blur(${config.segmentation.blur}px)`; // use css filter for bluring, can be done with gaussian blur manually instead
+  const alphaData = alphaCtx.getImageData(0, 0, width, height);
 
-  // get original canvas merged with overlay
-  const original = image.canvas(width, height);
-  const ctx = original.getContext('2d') as CanvasRenderingContext2D;
-  if (input.canvas) await ctx.drawImage(input.canvas, 0, 0);
-  // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation // best options are: darken, color-burn, multiply
-  ctx.globalCompositeOperation = 'darken';
-  ctx.filter = 'blur(8px)'; // use css filter for bluring, can be done with gaussian blur manually instead
-  await ctx.drawImage(overlay, 0, 0);
-  ctx.globalCompositeOperation = 'source-over'; // reset
-  ctx.filter = 'none'; // reset
+  // original canvas where only alpha shows
+  const compositeCanvas = image.canvas(width, height);
+  const compositeCtx = compositeCanvas.getContext('2d') as CanvasRenderingContext2D;
+  if (input.canvas) compositeCtx.drawImage(input.canvas, 0, 0);
+  compositeCtx.globalCompositeOperation = 'darken'; // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation // best options are: darken, color-burn, multiply
+  if (config.segmentation.blur && config.segmentation.blur > 0) compositeCtx.filter = `blur(${config.segmentation.blur}px)`; // use css filter for bluring, can be done with gaussian blur manually instead
+  compositeCtx.drawImage(alphaCanvas, 0, 0);
+  compositeCtx.globalCompositeOperation = 'source-over'; // reset composite operation
+  compositeCtx.filter = 'none'; // reset css filter
+  const compositeData = compositeCtx.getImageData(0, 0, width, height);
+  for (let i = 0; i < width * height; i++) compositeData.data[4 * i + 3] = alphaData.data[4 * i + 0]; // copy original alpha value to new composite canvas
+  compositeCtx.putImageData(compositeData, 0, 0);
 
-  input.canvas = original;
-
-  return alpha;
+  return { data, canvas: compositeCanvas, alpha: alphaCanvas };
 }
 
-export async function process(input: Input, background: Input | undefined, config: Config): Promise<HTMLCanvasElement | OffscreenCanvas | null> {
-  if (busy) return null;
+export async function process(input: Input, background: Input | undefined, config: Config)
+: Promise<{ data: Uint8ClampedArray | null, canvas: HTMLCanvasElement | OffscreenCanvas | null, alpha: HTMLCanvasElement | OffscreenCanvas | null }> {
+  if (busy) return { data: null, canvas: null, alpha: null };
   busy = true;
   if (!model) await load(config);
-  const img = image.process(input, config);
-  const tmp = image.process(background, config);
-  if (!img.canvas || !tmp.canvas) {
-    if (config.debug) log('segmentation cannot process input or background');
-    return null;
+  const inputImage = image.process(input, config);
+  const segmentation = await predict(inputImage, config);
+  tf.dispose(inputImage.tensor);
+  let mergedCanvas: HTMLCanvasElement | OffscreenCanvas | null = null;
+
+  if (background && segmentation.canvas) { // draw background with segmentation as overlay if background is present
+    mergedCanvas = image.canvas(inputImage.canvas?.width || 0, inputImage.canvas?.height || 0);
+    const bgImage = image.process(background, config);
+    tf.dispose(bgImage.tensor);
+    const ctxMerge = mergedCanvas.getContext('2d') as CanvasRenderingContext2D;
+    // ctxMerge.globalCompositeOperation = 'source-over';
+    ctxMerge.drawImage(bgImage.canvas as HTMLCanvasElement, 0, 0, mergedCanvas.width, mergedCanvas.height);
+    // ctxMerge.globalCompositeOperation = 'source-atop';
+    ctxMerge.drawImage(segmentation.canvas as HTMLCanvasElement, 0, 0);
+    // ctxMerge.globalCompositeOperation = 'source-over';
   }
-  const alpha = await predict(img);
-  tf.dispose(img.tensor);
 
-  if (background && alpha) {
-    const bg = tmp.canvas as HTMLCanvasElement;
-    tf.dispose(tmp.tensor);
-    const fg = img.canvas as HTMLCanvasElement;
-    const fgData = fg.getContext('2d')?.getImageData(0, 0, fg.width, fg.height).data as Uint8ClampedArray;
-
-    const c = image.canvas(fg.width, fg.height);
-    const ctx = c.getContext('2d') as CanvasRenderingContext2D;
-
-    ctx.globalCompositeOperation = 'copy'; // reset
-    ctx.drawImage(bg, 0, 0, c.width, c.height);
-    const cData = ctx.getImageData(0, 0, c.width, c.height) as ImageData;
-    for (let i = 0; i < c.width * c.height; i++) { // this should be done with globalCompositeOperation instead of looping through image data
-      cData.data[4 * i + 0] = ((255 - alpha[4 * i + 0]) / 255.0 * cData.data[4 * i + 0]) + (alpha[4 * i + 0] / 255.0 * fgData[4 * i + 0]);
-      cData.data[4 * i + 1] = ((255 - alpha[4 * i + 1]) / 255.0 * cData.data[4 * i + 1]) + (alpha[4 * i + 1] / 255.0 * fgData[4 * i + 1]);
-      cData.data[4 * i + 2] = ((255 - alpha[4 * i + 2]) / 255.0 * cData.data[4 * i + 2]) + (alpha[4 * i + 2] / 255.0 * fgData[4 * i + 2]);
-      cData.data[4 * i + 3] = ((255 - alpha[4 * i + 3]) / 255.0 * cData.data[4 * i + 3]) + (alpha[4 * i + 3] / 255.0 * fgData[4 * i + 3]);
-    }
-    ctx.putImageData(cData, 0, 0);
-    img.canvas = c;
-  }
   busy = false;
-  return img.canvas;
+  return { data: segmentation.data, canvas: mergedCanvas || segmentation.canvas, alpha: segmentation.alpha };
 }

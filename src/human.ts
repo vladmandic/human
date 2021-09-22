@@ -297,7 +297,7 @@ export class Human {
    * @param background?: {@link Input}
    * @returns { data, canvas, alpha }
    */
-  async segmentation(input: Input, background?: Input): Promise<{ data: Uint8ClampedArray | null, canvas: HTMLCanvasElement | OffscreenCanvas | null, alpha: HTMLCanvasElement | OffscreenCanvas | null }> {
+  async segmentation(input: Input, background?: Input): Promise<{ data: number[], canvas: HTMLCanvasElement | OffscreenCanvas | null, alpha: HTMLCanvasElement | OffscreenCanvas | null }> {
     return segmentation.process(input, background, this.config);
   }
 
@@ -440,20 +440,6 @@ export class Human {
       this.process = img;
       this.performance.image = Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
-
-      // segmentation is only run explicitly via human.segmentation() which calls segmentation.process()
-      /*
-      if (this.config.segmentation.enabled && process && img.tensor && img.canvas) {
-        this.analyze('Start Segmentation:');
-        this.state = 'detect:segmentation';
-        timeStamp = now();
-        const seg = await segmentation.predict(img, this.config);
-        img = { canvas: seg.canvas, tensor: seg.tensor };
-        elapsedTime = Math.trunc(now() - timeStamp);
-        if (elapsedTime > 0) this.performance.segmentation = elapsedTime;
-        this.analyze('End Segmentation:');
-      }
-      */
 
       if (!img.tensor) {
         if (this.config.debug) log('could not convert input to tensor');

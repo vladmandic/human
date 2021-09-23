@@ -4,14 +4,16 @@
 import { Config } from './config';
 import type { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';
+import * as models from './models';
 import * as facemesh from './blazeface/facemesh';
 import * as env from './env';
-import type { Tensor, GraphModel } from './tfjs/types';
+import type { Tensor } from './tfjs/types';
 import type { DrawOptions } from './draw';
 export * from './config';
 export * from './result';
 export type { DrawOptions } from './draw';
 export { env, Env } from './env';
+export { Models } from './models';
 /** Defines all possible input types for **Human** detection
  * @typedef Input Type
  */
@@ -97,23 +99,7 @@ export declare class Human {
     /** Currently loaded models
      * @internal
     */
-    models: {
-        face: [unknown, GraphModel | null, GraphModel | null] | null;
-        posenet: GraphModel | null;
-        blazepose: GraphModel | null;
-        efficientpose: GraphModel | null;
-        movenet: GraphModel | null;
-        handpose: [GraphModel | null, GraphModel | null] | null;
-        handtrack: [GraphModel | null, GraphModel | null] | null;
-        age: GraphModel | null;
-        gender: GraphModel | null;
-        emotion: GraphModel | null;
-        embedding: GraphModel | null;
-        nanodet: GraphModel | null;
-        centernet: GraphModel | null;
-        faceres: GraphModel | null;
-        segmentation: GraphModel | null;
-    };
+    models: models.Models;
     /** Container for events dispatched by Human
      *
      * Possible events:

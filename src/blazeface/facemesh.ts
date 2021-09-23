@@ -58,7 +58,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
   return results;
 }
 
-export async function load(config): Promise<[unknown, GraphModel | null, GraphModel | null]> {
+export async function load(config): Promise<[GraphModel | null, GraphModel | null, GraphModel | null]> {
   if (env.initial) faceModels = [null, null, null];
   if ((!faceModels[0] && config.face.enabled) || (!faceModels[1] && config.face.mesh.enabled) || (!faceModels[2] && config.face.iris.enabled) || env.initial) {
     faceModels = await Promise.all([
@@ -80,7 +80,7 @@ export async function load(config): Promise<[unknown, GraphModel | null, GraphMo
     if (faceModels[2]) log('cached model:', faceModels[2]['modelUrl']);
   }
   facePipeline = new facepipeline.Pipeline(faceModels[0], faceModels[1], faceModels[2]);
-  return faceModels;
+  return [faceModels[0]?.model || null, faceModels[1], faceModels[2]];
 }
 
 export const triangulation = coords.TRI468;

@@ -5,6 +5,7 @@ import * as coords from './coords';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { BlazeFaceModel } from './blazeface';
 import { env } from '../env';
+import { log } from '../helpers';
 
 const leftOutline = coords.MESH_ANNOTATIONS['leftEyeLower0'];
 const rightOutline = coords.MESH_ANNOTATIONS['rightEyeLower0'];
@@ -172,7 +173,11 @@ export class Pipeline {
     return [angle, rotationMatrix, face];
   }
 
-  async augmentIris(rawCoords, face) {
+  async augmentIris(rawCoords, face, config) {
+    if (!this.irisModel) {
+      if (config.debug) log('face mesh detection requested, but model is not loaded');
+      return rawCoords;
+    }
     const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true);
     const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = this.getEyeBox(rawCoords, face, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1]);
     const combined = tf.concat([leftEyeCrop, rightEyeCrop]);
@@ -280,6 +285,8 @@ export class Pipeline {
           confidence: box.confidence,
           image: face,
         });
+      } else if (!this.meshDetector) {
+        if (config.debug) log('face mesh detection requested, but model is not loaded');
       } else {
         const [contours, confidence, contourCoords] = this.meshDetector.execute(face) as Array<Tensor>; // The first returned tensor represents facial contours which are already included in the coordinates.
         tf.dispose(contours);
@@ -295,7 +302,7 @@ export class Pipeline {
           box.confidence = faceConfidence; // reset confidence of cached box
           tf.dispose(face);
         } else {
-          if (config.face.iris.enabled) rawCoords = await this.augmentIris(rawCoords, face);
+          if (config.face.iris.enabled) rawCoords = await this.augmentIris(rawCoords, face, config);
 
           // override box from detection with one calculated from mesh
           const mesh = this.transformRawCoords(rawCoords, box, angle, rotationMatrix);

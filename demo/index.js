@@ -31,10 +31,10 @@ import jsonView from './helpers/jsonview.js';
 let human;
 
 let userConfig = {
+  /*
   warmup: 'none',
   backend: 'humangl',
   debug: true,
-  /*
   wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
   async: false,
   cacheSensitivity: 0.75,
@@ -51,8 +51,8 @@ let userConfig = {
   },
   object: { enabled: false },
   gesture: { enabled: true },
-  hand: { enabled: false },
-  // hand: { enabled: true, maxDetected: 1, minConfidence: 0.5, detector: { modelPath: 'handtrack.json' } },
+  // hand: { enabled: false },
+  hand: { enabled: true, maxDetected: 1, minConfidence: 0.5, detector: { modelPath: 'handtrack.json' } },
   body: { enabled: false },
   // body: { enabled: true, modelPath: 'movenet-multipose.json' },
   // body: { enabled: true, modelPath: 'posenet.json' },

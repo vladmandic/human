@@ -9,6 +9,7 @@ import type { ObjectResult } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../env';
+import { fakeOps } from '../tfjs/backend';
 
 let model: GraphModel | null;
 let inputSize = 0;
@@ -18,6 +19,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
   if (!model) {
+    fakeOps(['floormod'], config);
     model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath || '')) as unknown as GraphModel;
     const inputs = Object.values(model.modelSignature['inputs']);
     inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;

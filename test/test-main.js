@@ -3,7 +3,6 @@ const process = require('process');
 const canvasJS = require('canvas');
 
 let fetch; // fetch is dynamically imported later
-let tensors = 0;
 let config;
 
 const log = (status, ...data) => {
@@ -73,10 +72,9 @@ async function testInstance(human) {
   log('info', 'tfjs version:', human.tf.version.tfjs);
 
   await human.load();
-  tensors = human.tf.engine().state.numTensors;
   if (config.backend === human.tf.getBackend()) log('state', 'passed: set backend:', config.backend);
   else log('error', 'failed: set backend:', config.backend);
-  log('state', 'tensors', tensors);
+  log('state', 'tensors', human.tf.memory().numTensors);
 
   if (human.models) {
     log('state', 'passed: load models');
@@ -107,9 +105,9 @@ async function testWarmup(human, title) {
   return warmup;
 }
 
-async function testDetect(human, input, title) {
+async function testDetect(human, input, title, checkLeak = true) {
   await human.load(config);
-  tensors = human.tf.engine().state.numTensors;
+  const tensors = human.tf.engine().state.numTensors;
   const image = input ? await getImage(human, input) : human.tf.randomNormal([1, 1024, 1024, 3]);
   if (!image) {
     log('error', 'failed: detect: input is null');
@@ -129,6 +127,11 @@ async function testDetect(human, input, title) {
     printResults(detect);
   } else {
     log('error', 'failed: detect', input || 'random', title);
+  }
+  // check tensor leaks
+  if (checkLeak) {
+    const leak = human.tf.engine().state.numTensors - tensors;
+    if (leak !== 0) log('error', 'failed: memory leak', leak);
   }
   return detect;
 }
@@ -170,8 +173,8 @@ async function test(Human, inputConfig) {
   await human.load();
   const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
   const loaded = models.filter((model) => model.loaded);
-  if (models.length === 15 && loaded.length === 7) log('state', 'passed: models loaded', models.length, loaded.length);
-  else log('error', 'failed: models loaded', models.length, loaded.length);
+  if (models.length === 19 && loaded.length === 10) log('state', 'passed: models loaded', models);
+  else log('error', 'failed: models loaded', models);
 
   // test warmup sequences
   await testInstance(human);
@@ -315,15 +318,15 @@ async function test(Human, inputConfig) {
   // test async multiple instances
   log('info', 'test: concurrent');
   await Promise.all([
-    testDetect(human, 'samples/ai-face.jpg', 'default'),
-    testDetect(first, 'samples/ai-face.jpg', 'default'),
-    testDetect(second, 'samples/ai-face.jpg', 'default'),
-    testDetect(human, 'samples/ai-body.jpg', 'default'),
-    testDetect(first, 'samples/ai-body.jpg', 'default'),
-    testDetect(second, 'samples/ai-body.jpg', 'default'),
-    testDetect(human, 'samples/ai-upper.jpg', 'default'),
-    testDetect(first, 'samples/ai-upper.jpg', 'default'),
-    testDetect(second, 'samples/ai-upper.jpg', 'default'),
+    testDetect(human, 'samples/ai-face.jpg', 'default', false),
+    testDetect(first, 'samples/ai-face.jpg', 'default', false),
+    testDetect(second, 'samples/ai-face.jpg', 'default', false),
+    testDetect(human, 'samples/ai-body.jpg', 'default', false),
+    testDetect(first, 'samples/ai-body.jpg', 'default', false),
+    testDetect(second, 'samples/ai-body.jpg', 'default', false),
+    testDetect(human, 'samples/ai-upper.jpg', 'default', false),
+    testDetect(first, 'samples/ai-upper.jpg', 'default', false),
+    testDetect(second, 'samples/ai-upper.jpg', 'default', false),
   ]);
 
   // test monkey-patch
@@ -346,11 +349,6 @@ async function test(Human, inputConfig) {
   // tests end
   const t1 = process.hrtime.bigint();
 
-  // check tensor leaks
-  const leak = human.tf.engine().state.numTensors - tensors;
-  if (leak === 0) log('state', 'passeed: no memory leak');
-  else log('error', 'failed: memory leak', leak);
-
   // check if all instances reported same
   const tensors1 = human.tf.engine().state.numTensors;
   const tensors2 = first.tf.engine().state.numTensors;
@@ -360,6 +358,7 @@ async function test(Human, inputConfig) {
 
   // report end
   log('info', 'events:', evt);
+  log('info', 'tensors', human.tf.memory().numTensors);
   log('info', 'test complete:', Math.trunc(Number(t1 - t0) / 1000 / 1000), 'ms');
 }
 

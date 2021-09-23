@@ -12,77 +12,72 @@ import * as movenet from './movenet/movenet';
 import * as nanodet from './object/nanodet';
 import * as centernet from './object/centernet';
 import * as segmentation from './segmentation/segmentation';
+import type { Human } from './human';
 import { env } from './env';
-// import * as agegenderrace from './gear/agegenderrace';
+import * as agegenderrace from './gear/agegenderrace';
 
-export function reset(instance) {
+/** Instances of all possible TFJS Graph Models used by Human
+ * - loaded as needed based on configuration
+ * - initialized explictly with `human.load()` method
+ * - initialized implicity on first call to `human.detect()`
+ * - each model can be `null` if not loaded, instance of `GraphModel` if loaded or `Promise` if loading
+ */
+export class Models {
+  age: null | GraphModel | Promise<GraphModel> = null;
+  agegenderrace: null | GraphModel | Promise<GraphModel> = null;
+  blazepose: null | GraphModel | Promise<GraphModel> = null;
+  centernet: null | GraphModel | Promise<GraphModel> = null;
+  efficientpose: null | GraphModel | Promise<GraphModel> = null;
+  embedding: null | GraphModel | Promise<GraphModel> = null;
+  emotion: null | GraphModel | Promise<GraphModel> = null;
+  facedetect: null | GraphModel | Promise<GraphModel> = null;
+  faceiris: null | GraphModel | Promise<GraphModel> = null;
+  facemesh: null | GraphModel | Promise<GraphModel> = null;
+  faceres: null | GraphModel | Promise<GraphModel> = null;
+  gender: null | GraphModel | Promise<GraphModel> = null;
+  handpose: null | GraphModel | Promise<GraphModel> = null;
+  handskeleton: null | GraphModel | Promise<GraphModel> = null;
+  handtrack: null | GraphModel | Promise<GraphModel> = null;
+  movenet: null | GraphModel | Promise<GraphModel> = null;
+  nanodet: null | GraphModel | Promise<GraphModel> = null;
+  posenet: null | GraphModel | Promise<GraphModel> = null;
+  segmentation: null | GraphModel | Promise<GraphModel> = null;
+}
+
+export function reset(instance: Human) {
   // if (instance.config.debug) log('resetting loaded models');
-  instance.models = {
-    face: null, // array of models
-    handpose: null, // array of models
-    handtrack: null, // array of models
-    posenet: null,
-    blazepose: null,
-    efficientpose: null,
-    movenet: null,
-    age: null,
-    gender: null,
-    emotion: null,
-    embedding: null,
-    nanodet: null,
-    centernet: null,
-    faceres: null,
-    segmentation: null,
-  };
+  for (const model of Object.keys(instance.models)) instance.models[model] = null;
 }
 
 /** Load method preloads all instance.configured models on-demand */
-export async function load(instance) {
+export async function load(instance: Human) {
   if (env.initial) reset(instance);
-  if (instance.config.async) { // load models concurrently
-    [
-      instance.models.face,
-      instance.models.emotion,
-      instance.models.handpose,
-      instance.models.handtrack,
-      instance.models.posenet,
-      instance.models.blazepose,
-      instance.models.efficientpose,
-      instance.models.movenet,
-      instance.models.nanodet,
-      instance.models.centernet,
-      instance.models.faceres,
-      instance.models.segmentation,
-      // instance.models.agegenderrace,
-    ] = await Promise.all([
-      instance.models.face || (instance.config.face.enabled ? facemesh.load(instance.config) : null),
-      instance.models.emotion || ((instance.config.face.enabled && instance.config.face.emotion.enabled) ? emotion.load(instance.config) : null),
-      instance.models.handpose || (instance.config.hand.enabled && instance.config.hand.detector.modelPath.includes('handdetect') ? handpose.load(instance.config) : null),
-      instance.models.handtrack || (instance.config.hand.enabled && instance.config.hand.detector.modelPath.includes('handtrack') ? handtrack.load(instance.config) : null),
-      instance.models.posenet || (instance.config.body.enabled && instance.config.body.modelPath.includes('posenet') ? posenet.load(instance.config) : null),
-      instance.models.blazepose || (instance.config.body.enabled && instance.config.body.modelPath.includes('blazepose') ? blazepose.load(instance.config) : null),
-      instance.models.efficientpose || (instance.config.body.enabled && instance.config.body.modelPath.includes('efficientpose') ? efficientpose.load(instance.config) : null),
-      instance.models.movenet || (instance.config.body.enabled && instance.config.body.modelPath.includes('movenet') ? movenet.load(instance.config) : null),
-      instance.models.nanodet || (instance.config.object.enabled && instance.config.object.modelPath.includes('nanodet') ? nanodet.load(instance.config) : null),
-      instance.models.centernet || (instance.config.object.enabled && instance.config.object.modelPath.includes('centernet') ? centernet.load(instance.config) : null),
-      instance.models.faceres || ((instance.config.face.enabled && instance.config.face.description.enabled) ? faceres.load(instance.config) : null),
-      instance.models.segmentation || (instance.config.segmentation.enabled ? segmentation.load(instance.config) : null),
-      // instance.models.agegenderrace || ((instance.config.face.enabled && instance.config.face.agegenderrace.enabled) ? agegenderrace.load(instance.config) : null),
-    ]);
-  } else { // load models sequentially
-    if (instance.config.face.enabled && !instance.models.face) instance.models.face = await facemesh.load(instance.config);
-    if (instance.config.face.enabled && instance.config.face.emotion.enabled && !instance.models.emotion) instance.models.emotion = await emotion.load(instance.config);
-    if (instance.config.hand.enabled && !instance.models.handpose && instance.config.hand.detector.modelPath.includes('handdetect')) instance.models.handpose = await handpose.load(instance.config);
-    if (instance.config.hand.enabled && !instance.models.handtrack && instance.config.hand.detector.modelPath.includes('handtrack')) instance.models.handtrack = await handtrack.load(instance.config);
-    if (instance.config.body.enabled && !instance.models.posenet && instance.config.body.modelPath.includes('posenet')) instance.models.posenet = await posenet.load(instance.config);
-    if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body.modelPath.includes('blazepose')) instance.models.blazepose = await blazepose.load(instance.config);
-    if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body.modelPath.includes('efficientpose')) instance.models.efficientpose = await blazepose.load(instance.config);
-    if (instance.config.body.enabled && !instance.models.movenet && instance.config.body.modelPath.includes('movenet')) instance.models.movenet = await movenet.load(instance.config);
-    if (instance.config.object.enabled && !instance.models.nanodet && instance.config.object.modelPath.includes('nanodet')) instance.models.nanodet = await nanodet.load(instance.config);
-    if (instance.config.object.enabled && !instance.models.centernet && instance.config.object.modelPath.includes('centernet')) instance.models.centernet = await centernet.load(instance.config);
-    if (instance.config.face.enabled && instance.config.face.description.enabled && !instance.models.faceres) instance.models.faceres = await faceres.load(instance.config);
-    if (instance.config.segmentation.enabled && !instance.models.segmentation) instance.models.segmentation = await segmentation.load(instance.config);
-    // if (instance.config.face.enabled && instance.config.face.agegenderrace.enabled && !instance.models.agegenderrace) instance.models.agegenderrace = await agegenderrace.load(instance.config);
+  if (instance.config.face.enabled) { // face model is a combo that must be loaded as a whole
+    if (!instance.models.facedetect) [instance.models.facedetect, instance.models.facemesh, instance.models.faceiris] = await facemesh.load(instance.config);
+    if (instance.config.face.mesh?.enabled && !instance.models.facemesh) [instance.models.facedetect, instance.models.facemesh, instance.models.faceiris] = await facemesh.load(instance.config);
+    if (instance.config.face.iris?.enabled && !instance.models.faceiris) [instance.models.facedetect, instance.models.facemesh, instance.models.faceiris] = await facemesh.load(instance.config);
+  }
+  if (instance.config.hand.enabled) { // handpose model is a combo that must be loaded as a whole
+    if (!instance.models.handpose && instance.config.hand.detector?.modelPath?.includes('handdetect')) [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
+    if (!instance.models.handskeleton && instance.config.hand.landmarks && instance.config.hand.detector?.modelPath?.includes('handdetect')) [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
+  }
+  if (instance.config.hand.enabled && !instance.models.handtrack && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handtrack = handtrack.loadDetect(instance.config);
+  if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handskeleton = handtrack.loadSkeleton(instance.config);
+  if (instance.config.body.enabled && !instance.models.posenet && instance.config.body?.modelPath?.includes('posenet')) instance.models.posenet = posenet.load(instance.config);
+  if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body?.modelPath?.includes('efficientpose')) instance.models.efficientpose = efficientpose.load(instance.config);
+  if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body?.modelPath?.includes('blazepose')) instance.models.blazepose = blazepose.load(instance.config);
+  if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body?.modelPath?.includes('efficientpose')) instance.models.efficientpose = blazepose.load(instance.config);
+  if (instance.config.body.enabled && !instance.models.movenet && instance.config.body?.modelPath?.includes('movenet')) instance.models.movenet = movenet.load(instance.config);
+  if (instance.config.object.enabled && !instance.models.nanodet && instance.config.object?.modelPath?.includes('nanodet')) instance.models.nanodet = nanodet.load(instance.config);
+  if (instance.config.object.enabled && !instance.models.centernet && instance.config.object?.modelPath?.includes('centernet')) instance.models.centernet = centernet.load(instance.config);
+  if (instance.config.face.enabled && instance.config.face.emotion?.enabled && !instance.models.emotion) instance.models.emotion = emotion.load(instance.config);
+  if (instance.config.face.enabled && instance.config.face.description?.enabled && !instance.models.faceres) instance.models.faceres = faceres.load(instance.config);
+  if (instance.config.segmentation.enabled && !instance.models.segmentation) instance.models.segmentation = segmentation.load(instance.config);
+  if (instance.config.face.enabled && instance.config.face['agegenderrace']?.enabled && !instance.models.agegenderrace) instance.models.agegenderrace = agegenderrace.load(instance.config);
+
+  // models are loaded in parallel asynchronously so lets wait until they are actually loaded
+  for await (const model of Object.keys(instance.models)) {
+    if (instance.models[model] && typeof instance.models[model] !== 'undefined') instance.models[model] = await instance.models[model];
   }
 }
 

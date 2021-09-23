@@ -9,9 +9,11 @@ import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../env';
 import * as fingerPose from '../fingerpose/fingerpose';
+import { fakeOps } from '../tfjs/backend';
 
 const models: [GraphModel | null, GraphModel | null] = [null, null];
 const modelOutputNodes = ['StatefulPartitionedCall/Postprocessor/Slice', 'StatefulPartitionedCall/Postprocessor/ExpandDims_1'];
+
 const inputSize = [[0, 0], [0, 0]];
 
 const classes = [
@@ -55,12 +57,12 @@ const fingerMap = {
   palm: [0],
 };
 
-export async function load(config: Config): Promise<[GraphModel, GraphModel]> {
-  if (env.initial) {
-    models[0] = null;
-    models[1] = null;
-  }
+export async function loadDetect(config: Config): Promise<GraphModel> {
+  if (env.initial) models[0] = null;
   if (!models[0]) {
+    // handtrack model has some kernel ops defined in model but those are never referenced and non-existent in tfjs
+    // ideally need to prune the model itself
+    fakeOps(['tensorlistreserve', 'enter', 'tensorlistfromtensor', 'merge', 'loopcond', 'switch', 'exit', 'tensorliststack', 'nextiteration', 'tensorlistsetitem', 'tensorlistgetitem', 'reciprocal', 'shape', 'split', 'where'], config);
     models[0] = await tf.loadGraphModel(join(config.modelBasePath, config.hand.detector?.modelPath || '')) as unknown as GraphModel;
     const inputs = Object.values(models[0].modelSignature['inputs']);
     inputSize[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
@@ -68,6 +70,11 @@ export async function load(config: Config): Promise<[GraphModel, GraphModel]> {
     if (!models[0] || !models[0]['modelUrl']) log('load model failed:', config.object.modelPath);
     else if (config.debug) log('load model:', models[0]['modelUrl']);
   } else if (config.debug) log('cached model:', models[0]['modelUrl']);
+  return models[0];
+}
+
+export async function loadSkeleton(config: Config): Promise<GraphModel> {
+  if (env.initial) models[1] = null;
   if (!models[1]) {
     models[1] = await tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton?.modelPath || '')) as unknown as GraphModel;
     const inputs = Object.values(models[1].modelSignature['inputs']);
@@ -76,7 +83,13 @@ export async function load(config: Config): Promise<[GraphModel, GraphModel]> {
     if (!models[1] || !models[1]['modelUrl']) log('load model failed:', config.object.modelPath);
     else if (config.debug) log('load model:', models[1]['modelUrl']);
   } else if (config.debug) log('cached model:', models[1]['modelUrl']);
-  return models as [GraphModel, GraphModel];
+  return models[1];
+}
+
+export async function load(config: Config): Promise<[GraphModel | null, GraphModel | null]> {
+  if (!models[0]) await loadDetect(config);
+  if (!models[1]) await loadSkeleton(config);
+  return models;
 }
 
 async function detectHands(input: Tensor, config: Config): Promise<HandDetectResult[]> {
@@ -217,4 +230,20 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
 - TFJS Port: <https://github.com/victordibia/handtrack.js/>
 - Original: <https://github.com/victordibia/handtracking>
 - Writeup: <https://medium.com/@victor.dibia/how-to-build-a-real-time-hand-detector-using-neural-networks-ssd-on-tensorflow-d6bac0e4b2ce>
+- Convert:
+  tensorflowjs_converter --input_format=tf_frozen_model --output_format=tfjs_graph_model \
+  --output_node_names='num_detections,detection_boxes,detection_scores,detection_classes' --saved_model_tags=serve --quantize_uint8=* \
+  --strip_debug_ops=* --weight_shard_size_bytes=10000000000 --control_flow_v2=true frozen_inference_graph.pb graph
+
+webmodel/efficientdet512d0/base/model.json
+webmodel/centernet512fpn/base/model.json
+https://github.com/victordibia/handtrack.js/commit/70d5d9c98e69688414cddaad044bd8730bc982d1#diff-c40e819be4ec1dc29f26913f5cdeb05202261b3a1725ab259cb235ea0f0fc5d6
+
+git rev-list HEAD -- webmodel/*
+  9ba7220fb31e9168aa248500cc70800566f4c719
+  70d5d9c98e69688414cddaad044bd8730bc982d1
+
+git checkout 9ba7220fb31e9168aa248500cc70800566f4c719^ -- webmodel
+git checkout 70d5d9c98e69688414cddaad044bd8730bc982d1^ -- webmodel
+
 */

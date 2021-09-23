@@ -226,10 +226,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       delete faces[i].annotations.leftEyeIris;
       delete faces[i].annotations.rightEyeIris;
     }
-    const irisSize = (faces[i].annotations?.leftEyeIris && faces[i].annotations?.rightEyeIris)
-    /* note: average human iris size is 11.7mm */
+    const irisSize = (faces[i].annotations && faces[i].annotations.leftEyeIris && faces[i].annotations.rightEyeIris
+      && (faces[i].annotations.leftEyeIris.length > 0) && (faces[i].annotations.rightEyeIris.length > 0)
+      && (faces[i].annotations.leftEyeIris[0] !== null) && (faces[i].annotations.rightEyeIris[0] !== null))
       ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2]
-      : 0;
+      : 0; // note: average human iris size is 11.7mm
 
     // optionally return tensor
     const tensor = parent.config.face.detector.return ? tf.squeeze(faces[i].tensor) : null;

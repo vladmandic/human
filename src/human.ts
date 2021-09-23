@@ -29,7 +29,7 @@ import * as backend from './tfjs/backend';
 import * as humangl from './tfjs/humangl';
 import * as app from '../package.json';
 import * as warmups from './warmup';
-import type { Tensor, GraphModel } from './tfjs/types';
+import type { Tensor } from './tfjs/types';
 import type { DrawOptions } from './draw';
 
 // export types
@@ -37,6 +37,7 @@ export * from './config';
 export * from './result';
 export type { DrawOptions } from './draw';
 export { env, Env } from './env';
+export { Models } from './models';
 
 /** Defines all possible input types for **Human** detection
  * @typedef Input Type
@@ -119,23 +120,7 @@ export class Human {
   /** Currently loaded models
    * @internal
   */
-  models: {
-    face: [unknown, GraphModel | null, GraphModel | null] | null,
-    posenet: GraphModel | null,
-    blazepose: GraphModel | null,
-    efficientpose: GraphModel | null,
-    movenet: GraphModel | null,
-    handpose: [GraphModel | null, GraphModel | null] | null,
-    handtrack: [GraphModel | null, GraphModel | null] | null,
-    age: GraphModel | null,
-    gender: GraphModel | null,
-    emotion: GraphModel | null,
-    embedding: GraphModel | null,
-    nanodet: GraphModel | null,
-    centernet: GraphModel | null,
-    faceres: GraphModel | null,
-    segmentation: GraphModel | null,
-  };
+  models: models.Models;
 
   /** Container for events dispatched by Human
    *
@@ -187,23 +172,7 @@ export class Human {
     this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
     this.events = new EventTarget();
     // object that contains all initialized models
-    this.models = {
-      face: null, // array of models
-      handpose: null, // array of models
-      handtrack: null, // array of models
-      posenet: null,
-      blazepose: null,
-      efficientpose: null,
-      movenet: null,
-      age: null,
-      gender: null,
-      emotion: null,
-      embedding: null,
-      nanodet: null,
-      centernet: null,
-      faceres: null,
-      segmentation: null,
-    };
+    this.models = new models.Models();
     // reexport draw methods
     this.draw = {
       options: draw.options as DrawOptions,

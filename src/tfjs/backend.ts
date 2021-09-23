@@ -96,3 +96,19 @@ export async function check(instance, force = false) {
   }
   return true;
 }
+
+// register fake missing tfjs ops
+export function fakeOps(kernelNames: Array<string>, config) {
+  // if (config.debug) log('registerKernel:', kernelNames);
+  for (const kernelName of kernelNames) {
+    const kernelConfig = {
+      kernelName,
+      backendName: config.backend,
+      kernelFunc: () => { if (config.debug) log('kernelFunc', kernelName, config.backend); },
+      // setupFunc: () => { if (config.debug) log('kernelFunc', kernelName, config.backend); },
+      // disposeFunc: () => { if (config.debug) log('kernelFunc', kernelName, config.backend); },
+    };
+    tf.registerKernel(kernelConfig);
+  }
+  env.env.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase()); // re-scan registered ops
+}

@@ -6,7 +6,11 @@
 
 ### Handtrack
 
-- Add tests
+- Evaluate and switch default
+
+### Models
+
+- Document and publish optional models
 
 <br>
 

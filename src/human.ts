@@ -80,13 +80,15 @@ export class Human {
   version: string;
 
   /** Current configuration
-   * - Details: {@link Config}
+   * - Definition: {@link Config}
+   * - Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L292)
    */
   config: Config;
 
   /** Last known result of detect run
    * - Can be accessed anytime after initial detection
-   */
+   * - Definition: {@link Result}
+  */
   result: Result;
 
   /** Current state of Human library
@@ -101,6 +103,8 @@ export class Human {
   /** Instance of TensorFlow/JS used by Human
    *  - Can be embedded or externally provided
    * @internal
+   *
+   * [TFJS API]<https://js.tensorflow.org/api/latest/>
    */
   tf: TensorFlow;
 
@@ -119,6 +123,7 @@ export class Human {
 
   /** Currently loaded models
    * @internal
+   * {@link Models}
   */
   models: models.Models;
 
@@ -150,7 +155,7 @@ export class Human {
    *
    * @param userConfig: {@link Config}
    *
-   * @return instance
+   * @return instance: {@link Human}
    */
   constructor(userConfig?: Partial<Config>) {
     env.get();

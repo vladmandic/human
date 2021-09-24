@@ -58,6 +58,7 @@ const fingerMap = {
 };
 
 export async function loadDetect(config: Config): Promise<GraphModel> {
+  // HandTrack Model: Original: <https://github.com/victordibia/handtracking> TFJS Port: <https://github.com/victordibia/handtrack.js/>
   if (env.initial) models[0] = null;
   if (!models[0]) {
     // handtrack model has some kernel ops defined in model but those are never referenced and non-existent in tfjs
@@ -224,26 +225,3 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
   cache.fingerBoxes = [...cache.tmpBoxes]; // repopulate cache with validated hands
   return hands as HandResult[];
 }
-
-/*
-- Live Site: <https://victordibia.com/handtrack.js/#/>
-- TFJS Port: <https://github.com/victordibia/handtrack.js/>
-- Original: <https://github.com/victordibia/handtracking>
-- Writeup: <https://medium.com/@victor.dibia/how-to-build-a-real-time-hand-detector-using-neural-networks-ssd-on-tensorflow-d6bac0e4b2ce>
-- Convert:
-  tensorflowjs_converter --input_format=tf_frozen_model --output_format=tfjs_graph_model \
-  --output_node_names='num_detections,detection_boxes,detection_scores,detection_classes' --saved_model_tags=serve --quantize_uint8=* \
-  --strip_debug_ops=* --weight_shard_size_bytes=10000000000 --control_flow_v2=true frozen_inference_graph.pb graph
-
-webmodel/efficientdet512d0/base/model.json
-webmodel/centernet512fpn/base/model.json
-https://github.com/victordibia/handtrack.js/commit/70d5d9c98e69688414cddaad044bd8730bc982d1#diff-c40e819be4ec1dc29f26913f5cdeb05202261b3a1725ab259cb235ea0f0fc5d6
-
-git rev-list HEAD -- webmodel/*
-  9ba7220fb31e9168aa248500cc70800566f4c719
-  70d5d9c98e69688414cddaad044bd8730bc982d1
-
-git checkout 9ba7220fb31e9168aa248500cc70800566f4c719^ -- webmodel
-git checkout 70d5d9c98e69688414cddaad044bd8730bc982d1^ -- webmodel
-
-*/

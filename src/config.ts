@@ -211,13 +211,26 @@ export interface GestureConfig {
  *
  * Contains all configurable parameters
  * @typedef Config
+ *
+ * Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L292)
  */
 export interface Config {
-  /** Backend used for TFJS operations */
+  /** Backend used for TFJS operations
+   * Valid build-in backends are:
+   * - Browser: `cpu`, `wasm`, `webgl`, `humangl`
+   * - NodeJS: `cpu`, `wasm`, `tensorflow`
+   *
+   * Experimental:
+   * - Browser: `webgpu` - requires custom build of `tfjs-backend-webgpu`
+   *
+   * Defaults: `humangl` for browser and `tensorflow` for nodejs
+  */
   backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu',
   // backend: string;
 
-  /** Path to *.wasm files if backend is set to `wasm` */
+  /** Path to *.wasm files if backend is set to `wasm`
+   * - if not set, auto-detects to link to CDN `jsdelivr` when running in browser
+  */
   wasmPath: string,
 
   /** Print debug statements to console */
@@ -248,20 +261,27 @@ export interface Config {
 
   /** Run input through image filters before inference
    * - image filters run with near-zero latency as they are executed on the GPU
+   *
+   * {@link FilterConfig}
   */
   filter: Partial<FilterConfig>,
-  // type definition end
 
+  /** {@link GestureConfig} */
   gesture: Partial<GestureConfig>;
 
+  /** {@link FaceConfig} */
   face: Partial<FaceConfig>,
 
+  /** {@link BodyConfig} */
   body: Partial<BodyConfig>,
 
+  /** {@link HandConfig} */
   hand: Partial<HandConfig>,
 
+  /** {@link ObjectConfig} */
   object: Partial<ObjectConfig>,
 
+  /** {@link SegmentationConfig} */
   segmentation: Partial<SegmentationConfig>,
 }
 
@@ -332,7 +352,7 @@ const config: Config = {
       skipFrames: 15,        // how many max frames to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
-                             // box for updated face analysis as the head probably hasn't moved much
+                             // box for updated face analysis as the head does not move fast
                              // in short time (10 * 1/25 = 0.25 sec)
       minConfidence: 0.2,    // threshold for discarding a prediction
       iouThreshold: 0.1,     // ammount of overlap between two detected objects before one object is removed
@@ -386,10 +406,11 @@ const config: Config = {
     enabled: true,
     rotation: true,          // use best-guess rotated hand image or just box with rotation as-is
                              // false means higher performance, but incorrect finger mapping if hand is inverted
+                             // only valid for `handdetect` variation
     skipFrames: 18,          // how many max frames to go without re-running the hand bounding box detector
                              // only used when cacheSensitivity is not zero
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
-                             // box for updated hand skeleton analysis as the hand probably
+                             // box for updated hand skeleton analysis as the hand
                              // hasn't moved much in short time (10 * 1/25 = 0.25 sec)
     minConfidence: 0.8,      // threshold for discarding a prediction
     iouThreshold: 0.2,       // ammount of overlap between two detected objects before one object is removed
@@ -427,4 +448,5 @@ const config: Config = {
     blur: 8,                 // blur segmentation output by n pixels for more realistic image
   },
 };
+
 export { config as defaults };

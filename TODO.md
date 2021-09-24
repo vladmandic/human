@@ -6,9 +6,6 @@
 
 ### Handtrack
 
-- Finish implementation
-- Set defaults and image sizes
-- Optimize model
 - Add tests
 
 <br>

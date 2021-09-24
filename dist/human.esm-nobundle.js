@@ -11606,7 +11606,7 @@ function calc(newResult) {
 }
 
 // package.json
-var version10 = "2.2.2";
+var version10 = "2.2.3";
 
 // src/sample.ts
 var face3 = `

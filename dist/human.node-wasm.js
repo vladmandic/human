@@ -11671,7 +11671,7 @@ function calc(newResult) {
 }
 
 // package.json
-var version = "2.2.2";
+var version = "2.2.3";
 
 // src/sample.ts
 var face3 = `

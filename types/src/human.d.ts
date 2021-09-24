@@ -53,12 +53,14 @@ export declare class Human {
     /** Current version of Human library in *semver* format */
     version: string;
     /** Current configuration
-     * - Details: {@link Config}
+     * - Definition: {@link Config}
+     * - Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L292)
      */
     config: Config;
     /** Last known result of detect run
      * - Can be accessed anytime after initial detection
-     */
+     * - Definition: {@link Result}
+    */
     result: Result;
     /** Current state of Human library
      * - Can be polled to determine operations that are currently executed
@@ -73,6 +75,8 @@ export declare class Human {
     /** Instance of TensorFlow/JS used by Human
      *  - Can be embedded or externally provided
      * @internal
+     *
+     * [TFJS API]<https://js.tensorflow.org/api/latest/>
      */
     tf: TensorFlow;
     /** Object containing environment information used for diagnostics */
@@ -98,6 +102,7 @@ export declare class Human {
     };
     /** Currently loaded models
      * @internal
+     * {@link Models}
     */
     models: models.Models;
     /** Container for events dispatched by Human
@@ -123,7 +128,7 @@ export declare class Human {
      *
      * @param userConfig: {@link Config}
      *
-     * @return instance
+     * @return instance: {@link Human}
      */
     constructor(userConfig?: Partial<Config>);
     /** @hidden */

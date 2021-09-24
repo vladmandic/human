@@ -196,11 +196,24 @@ export interface GestureConfig {
  *
  * Contains all configurable parameters
  * @typedef Config
+ *
+ * Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L292)
  */
 export interface Config {
-    /** Backend used for TFJS operations */
+    /** Backend used for TFJS operations
+     * Valid build-in backends are:
+     * - Browser: `cpu`, `wasm`, `webgl`, `humangl`
+     * - NodeJS: `cpu`, `wasm`, `tensorflow`
+     *
+     * Experimental:
+     * - Browser: `webgpu` - requires custom build of `tfjs-backend-webgpu`
+     *
+     * Defaults: `humangl` for browser and `tensorflow` for nodejs
+    */
     backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu';
-    /** Path to *.wasm files if backend is set to `wasm` */
+    /** Path to *.wasm files if backend is set to `wasm`
+     * - if not set, auto-detects to link to CDN `jsdelivr` when running in browser
+    */
     wasmPath: string;
     /** Print debug statements to console */
     debug: boolean;
@@ -223,13 +236,21 @@ export interface Config {
     skipFrame: boolean;
     /** Run input through image filters before inference
      * - image filters run with near-zero latency as they are executed on the GPU
+     *
+     * {@link FilterConfig}
     */
     filter: Partial<FilterConfig>;
+    /** {@link GestureConfig} */
     gesture: Partial<GestureConfig>;
+    /** {@link FaceConfig} */
     face: Partial<FaceConfig>;
+    /** {@link BodyConfig} */
     body: Partial<BodyConfig>;
+    /** {@link HandConfig} */
     hand: Partial<HandConfig>;
+    /** {@link ObjectConfig} */
     object: Partial<ObjectConfig>;
+    /** {@link SegmentationConfig} */
     segmentation: Partial<SegmentationConfig>;
 }
 /**

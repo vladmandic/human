@@ -302,9 +302,24 @@ async function test(Human, inputConfig) {
   // test posenet and movenet
   log('info', 'test body variants');
   config.body = { modelPath: 'posenet.json' };
-  await testDetect(human, 'samples/ai-body.jpg', 'posenet');
+  res = await testDetect(human, 'samples/ai-body.jpg', 'posenet');
+  if (!res || res?.body?.length !== 1) log('error', 'failed: body posenet');
+  else log('state', 'passed: body posenet');
   config.body = { modelPath: 'movenet-lightning.json' };
-  await testDetect(human, 'samples/ai-body.jpg', 'movenet');
+  res = await testDetect(human, 'samples/ai-body.jpg', 'movenet');
+  if (!res || res?.body?.length !== 1) log('error', 'failed: body movenet');
+  else log('state', 'passed: body movenet');
+
+  // test handdetect and handtrack
+  log('info', 'test hand variants');
+  config.hand = { enabled: true, maxDetected: 2, minConfidence: 0.1, detector: { modelPath: 'handdetect.json' } };
+  res = await testDetect(human, 'samples/ai-body.jpg', 'handdetect');
+  if (!res || res?.hand?.length !== 2) log('error', 'failed: hand handdetect');
+  else log('state', 'passed: hand handdetect');
+  config.hand = { enabled: true, maxDetected: 2, minConfidence: 0.1, detector: { modelPath: 'handtrack.json' } };
+  res = await testDetect(human, 'samples/ai-body.jpg', 'handtrack');
+  if (!res || res?.hand?.length !== 2) log('error', 'failed: hand handdetect');
+  else log('state', 'passed: hand handdetect');
 
   // test multiple instances
   const first = new Human(config);

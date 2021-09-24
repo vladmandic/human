@@ -9,8 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/22 mandic00@live.com
+### **2.2.3** 2021/09/24 mandic00@live.com
 
+
+### **origin/main** 2021/09/23 mandic00@live.com
+
+- support segmentation for nodejs
 - redo segmentation and handtracking
 - prototype handtracking
 - automated browser tests

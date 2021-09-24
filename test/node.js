@@ -31,6 +31,8 @@ const ignoreMessages = [
   'ExperimentalWarning',
 ];
 
+const failedMessages = [];
+
 const status = {};
 
 function logMessage(test, data) {
@@ -42,7 +44,10 @@ function logMessage(test, data) {
     status[test].failed++;
   }
   if (data[1][0].startsWith('passed')) status[test].passed++;
-  if (data[1][0].startsWith('failed')) status[test].failed++;
+  if (data[1][0].startsWith('failed')) {
+    status[test].failed++;
+    failedMessages.push({ test, data });
+  }
 }
 
 function logStdIO(ok, test, buffer) {
@@ -100,6 +105,7 @@ async function testAll() {
   // for (const demo of demos) await runDemo(demo);
   for (const test of tests) await runTest(test);
   log.info();
+  log.info('failed', failedMessages);
   log.info('status:', status);
 }
 

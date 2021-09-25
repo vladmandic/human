@@ -15,6 +15,7 @@ import { env } from '../env';
 import * as fingerPose from '../fingerpose/fingerpose';
 import { fakeOps } from '../tfjs/backend';
 
+const boxScaleFact = 1.5; // hand finger model prefers slighly larger box
 const models: [GraphModel | null, GraphModel | null] = [null, null];
 const modelOutputNodes = ['StatefulPartitionedCall/Postprocessor/Slice', 'StatefulPartitionedCall/Postprocessor/ExpandDims_1'];
 
@@ -118,7 +119,15 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
     tf.dispose(t.nms);
     for (const res of Array.from(nms)) { // generates results for each class
       const boxSlice = tf.slice(t.boxes, res, 1);
-      const yxBox = await boxSlice.data();
+      let yxBox: [number, number, number, number] = [0, 0, 0, 0];
+      if (config.hand.landmarks) { // scale box
+        const detectedBox: [number, number, number, number] = await boxSlice.data();
+        const boxCenter: [number, number] = [(detectedBox[0] + detectedBox[2]) / 2, (detectedBox[1] + detectedBox[3]) / 2];
+        const boxDiff: [number, number, number, number] = [+boxCenter[0] - detectedBox[0], +boxCenter[1] - detectedBox[1], -boxCenter[0] + detectedBox[2], -boxCenter[1] + detectedBox[3]];
+        yxBox = [boxCenter[0] - boxScaleFact * boxDiff[0], boxCenter[1] - boxScaleFact * boxDiff[1], boxCenter[0] + boxScaleFact * boxDiff[2], boxCenter[1] + boxScaleFact * boxDiff[3]];
+      } else { // use box as-is
+        yxBox = await boxSlice.data();
+      }
       const boxRaw: [number, number, number, number] = [yxBox[1], yxBox[0], yxBox[3] - yxBox[1], yxBox[2] - yxBox[0]];
       const box: [number, number, number, number] = [Math.trunc(boxRaw[0] * outputSize[0]), Math.trunc(boxRaw[1] * outputSize[1]), Math.trunc(boxRaw[2] * outputSize[0]), Math.trunc(boxRaw[3] * outputSize[1])];
       tf.dispose(boxSlice);
@@ -136,7 +145,6 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   return hands;
 }
 
-const boxScaleFact = 1.5; // hand finger model prefers slighly larger box
 function updateBoxes(h, keypoints) {
   const finger = [keypoints.map((pt) => pt[0]), keypoints.map((pt) => pt[1])]; // all fingers coords
   const minmax = [Math.min(...finger[0]), Math.max(...finger[0]), Math.min(...finger[1]), Math.max(...finger[1])]; // find min and max coordinates for x and y of all fingers

@@ -71,8 +71,11 @@ export interface FaceConfig {
  * - minConfidence: threshold for discarding a prediction
  * - maxDetected: maximum number of people detected in the input, should be set to the minimum number for performance
  *
+ * `maxDetected` is valid for `posenet` and `movenet-multipose` as other models are single-pose only
+ * `maxDetected` can be set to -1 to auto-detect based on number of detected faces
+ *
  * Changing `modelPath` will change module responsible for hand detection and tracking
- * Allowed values are 'posenet.json', 'blazepose.json', 'efficientpose.json', 'movenet-lightning.json', 'movenet-thunder.json', 'movenet-multipose.json'
+ * Allowed values are `posenet.json`, `blazepose.json`, `efficientpose.json`, `movenet-lightning.json`, `movenet-thunder.json`, `movenet-multipose.json`
 */
 export interface BodyConfig {
   enabled: boolean,
@@ -92,6 +95,8 @@ export interface BodyConfig {
  * - iouThreshold: ammount of overlap between two detected objects before one object is removed
  * - maxDetected: maximum number of hands detected in the input, should be set to the minimum number for performance
  * - rotation: use best-guess rotated hand image or just box with rotation as-is, false means higher performance, but incorrect finger mapping if hand is inverted
+ *
+ * `maxDetected` can be set to -1 to auto-detect based on number of detected faces
  *
  * Changing `detector.modelPath` will change module responsible for hand detection and tracking
  * Allowed values are `handdetect.json` and `handtrack.json`
@@ -394,9 +399,10 @@ const config: Config = {
     enabled: true,
     modelPath: 'movenet-lightning.json',  // body model, can be absolute path or relative to modelBasePath
                              // can be 'posenet', 'blazepose', 'efficientpose', 'movenet-lightning', 'movenet-thunder'
-    maxDetected: 1,          // maximum number of people detected in the input
+    maxDetected: -1,         // maximum number of people detected in the input
                              // should be set to the minimum number for performance
-                             // only valid for posenet as other models detects single pose
+                             // only valid for posenet and movenet-multipose as other models detects single pose
+                             // set to -1 to autodetect based on number of detected faces
     minConfidence: 0.2,      // threshold for discarding a prediction
     skipFrames: 1,           // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
@@ -414,8 +420,9 @@ const config: Config = {
                              // hasn't moved much in short time (10 * 1/25 = 0.25 sec)
     minConfidence: 0.8,      // threshold for discarding a prediction
     iouThreshold: 0.2,       // ammount of overlap between two detected objects before one object is removed
-    maxDetected: 1,          // maximum number of hands detected in the input
+    maxDetected: -1,         // maximum number of hands detected in the input
                              // should be set to the minimum number for performance
+                             // set to -1 to autodetect based on number of detected faces
     landmarks: true,         // detect hand landmarks or just hand boundary box
     detector: {
       modelPath: 'handdetect.json',  // hand detector model, can be absolute path or relative to modelBasePath

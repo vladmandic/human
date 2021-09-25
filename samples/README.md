@@ -3,7 +3,7 @@
 Sample Images used by `Human` library demos and automated tests
 Not required for normal funcioning of library
 
-Samples were generated using default configuration without any fine-tuning using command:
+Samples were generated using command:
 
 ```shell
 node test/test-node-canvas.js samples/in/ samples/out/

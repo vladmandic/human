@@ -11,17 +11,10 @@ const config = { // just enable all and leave default settings
   async: false,
   cacheSensitivity: 0,
   face: { enabled: true },
-  hand: { enabled: true },
-  body: { enabled: true },
   object: { enabled: true },
   gesture: { enabled: true },
-  /*
-  face: { enabled: true, detector: { minConfidence: 0.1 } },
-  hand: { enabled: true, maxDetected: 2, minConfidence: 0.1, detector: { modelPath: 'handtrack.json' } }, // use alternative hand model
-  body: { enabled: true, minConfidence: 0.1 },
-  object: { enabled: true, minConfidence: 0.1 },
-  gesture: { enabled: true },
-  */
+  hand: { enabled: true, minConfidence: 0.4, detector: { modelPath: 'handtrack.json' } },
+  body: { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/movenet-multipose.json' },
 };
 
 async function main() {
@@ -53,13 +46,6 @@ async function main() {
   log.info(`Processing folder: ${inDir} entries:`, dir.length, 'images', images.length);
   for (const image of images) {
     const inFile = path.join(inDir, image);
-    /*
-    const inputImage = await canvas.loadImage(inFile); // load image using canvas library
-    log.state('Loaded image:', inFile, inputImage.width, inputImage.height);
-    const inputCanvas = new canvas.Canvas(inputImage.width, inputImage.height); // create canvas
-    const inputCtx = inputCanvas.getContext('2d');
-    inputCtx.drawImage(inputImage, 0, 0); // draw input image onto canvas
-    */
     const buffer = fs.readFileSync(inFile);
     const tensor = human.tf.tidy(() => {
       const decode = human.tf.node.decodeImage(buffer, 3);

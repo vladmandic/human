@@ -296,7 +296,7 @@ async function test(Human, inputConfig) {
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
   if (!res || res?.face?.length !== 1 || res?.face[0]?.gender || res?.face[0]?.age || res?.face[0]?.embedding) log('error', 'failed: detectors result face mismatch', res?.face);
   else log('state', 'passed: detector result face match');
-  if (!res || res?.hand?.length !== 1 || res?.hand[0]?.landmarks) log('error', 'failed: detectors result hand mismatch', res?.hand?.length);
+  if (!res || res?.hand?.length !== 2 || res?.hand[0]?.landmarks) log('error', 'failed: detectors result hand mismatch', res?.hand?.length);
   else log('state', 'passed: detector result hand match');
 
   // test posenet and movenet

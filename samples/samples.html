@@ -9,34 +9,37 @@
     <meta name="description" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
     <meta name="msapplication-tooltip" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
     <meta name="theme-color" content="#000000">
-    <link rel="manifest" href="../manifest.webmanifest">
-    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="../../assets/icon.png">
+    <link rel="manifest" href="../demo/manifest.webmanifest">
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="../assets/icon.png">
     <style>
       @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../../assets/lato-light.woff2') }
       html { font-family: 'Lato', 'Segoe UI'; font-size: 24px; font-variant: small-caps; }
-      body { margin: 24px; background: black; color: white; overflow-x: hidden; overflow-y: auto; text-align: -webkit-center; min-height: 100%; max-height: 100%; }
+      body { margin: 24px; background: black; color: white; overflow-x: auto; overflow-y: auto; text-align: -webkit-center; min-height: 100%; max-height: 100%; }
       ::-webkit-scrollbar { height: 8px; border: 0; border-radius: 0; }
       ::-webkit-scrollbar-thumb { background: grey }
       ::-webkit-scrollbar-track { margin: 3px; }
       .text { margin: 24px }
-      .strip { display: flex; width: 100%; overflow: auto; }
-      .thumb { height: 150px; margin: 2px; padding: 2px; }
-      .thumb:hover { filter: grayscale(1); background: white; }
+      .strip { display: flex; width: 100%; overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; }
+      .thumb { height: 180px; margin: 2px; padding: 2px; }
+      .thumb:hover { filter: grayscale(1); transform: scale(1.08); transition : all 0.3s ease; }   
       .image-container { margin: 24px 3px 3px 3px }
-      .image { max-width: -webkit-fill-available; }
+      .image-zoomwidth { max-width: 94vw; }
+      .image-zoomheight { max-height: 70vh; }
+      .image-zoomfull { max-height: -webkit-fill-available; }
     </style>
   </head>
   <body>
     <div class="text">Human Examples Gallery</div>
     <div id="strip" class="strip"></div>
     <div class="image-container">
-      <img id="image" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" class="image" />
+      <img id="image" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" class="image-zoomwidth" />
     </div>
     <script>
       const samples = [
         'ai-body.jpg', 'ai-upper.jpg',
-        'person-vlado.jpg', 'person-linda.jpg', 'person-celeste.jpg', 'person-tetiana.jpg',
+        'person-carolina.jpg', 'person-celeste.jpg', 'person-leila1.jpg', 'person-leila2.jpg', 'person-lexi.jpg', 'person-linda.jpg', 'person-nicole.jpg', 'person-tasia.jpg',
+        'person-tetiana.jpg', 'person-vlado1.jpg', 'person-vlado5.jpg', 'person-vlado.jpg', 'person-christina.jpg', 'person-lauren.jpg', 
         'group-1.jpg', 'group-2.jpg', 'group-3.jpg', 'group-4.jpg', 'group-5.jpg', 'group-6.jpg', 'group-7.jpg',
         'daz3d-brianna.jpg', 'daz3d-chiyo.jpg', 'daz3d-cody.jpg', 'daz3d-drew-01.jpg', 'daz3d-drew-02.jpg', 'daz3d-ella-01.jpg', 'daz3d-ella-02.jpg', 'daz3d-gillian.jpg',
         'daz3d-hye-01.jpg', 'daz3d-hye-02.jpg', 'daz3d-kaia.jpg', 'daz3d-karen.jpg', 'daz3d-kiaria-01.jpg', 'daz3d-kiaria-02.jpg', 'daz3d-lilah-01.jpg', 'daz3d-lilah-02.jpg',
@@ -45,12 +48,22 @@
         'daz3d-_emotions01.jpg', 'daz3d-_emotions02.jpg', 'daz3d-_emotions03.jpg', 'daz3d-_emotions04.jpg', 'daz3d-_emotions05.jpg',
       ];
       const image = document.getElementById('image');
+      image.addEventListener('click', () => {
+        if (image.classList.contains('image-zoomwidth')) image.className = 'image-zoomheight';
+        else if (image.classList.contains('image-zoomheight')) image.className = 'image-zoomfull';
+        else if (image.classList.contains('image-zoomfull')) image.className = 'image-zoomwidth';
+      });
+      const strip = document.getElementById('strip');
       for (const sample of samples) {
         const el = document.createElement('img');
         el.className = 'thumb';
         el.src = el.title = el.alt = `/samples/in/${sample}`;
-        el.addEventListener('click', () => image.src = image.alt = image.title = el.src.replace('/in/', '/out/'));
-        document.getElementById('strip')?.appendChild(el);
+        el.addEventListener('click', (evt) => {
+          image.src = image.alt = image.title = el.src.replace('/in/', '/out/');
+          console.log(evt);
+          strip.scrollLeft = evt.target.offsetLeft - window.innerWidth / 2 + evt.target.offsetWidth / 2;
+        });
+        strip.appendChild(el);
       }
     </script> 
   </body>

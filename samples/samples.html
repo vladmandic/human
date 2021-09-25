@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Human Examples Gallery</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=yes">
+    <meta name="keywords" content="Human">
+    <meta name="application-name" content="Human">
+    <meta name="description" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
+    <meta name="msapplication-tooltip" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="../../assets/icon.png">
+    <style>
+      @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../../assets/lato-light.woff2') }
+      html { font-family: 'Lato', 'Segoe UI'; font-size: 24px; font-variant: small-caps; }
+      body { margin: 24px; background: black; color: white; overflow-x: hidden; overflow-y: auto; text-align: -webkit-center; min-height: 100%; max-height: 100%; }
+      ::-webkit-scrollbar { height: 8px; border: 0; border-radius: 0; }
+      ::-webkit-scrollbar-thumb { background: grey }
+      ::-webkit-scrollbar-track { margin: 3px; }
+      .text { margin: 24px }
+      .strip { display: flex; width: 100%; overflow: auto; }
+      .thumb { height: 150px; margin: 2px; padding: 2px; }
+      .thumb:hover { filter: grayscale(1); background: white; }
+      .image-container { margin: 24px 3px 3px 3px }
+      .image { max-width: -webkit-fill-available; }
+    </style>
+  </head>
+  <body>
+    <div class="text">Human Examples Gallery</div>
+    <div id="strip" class="strip"></div>
+    <div class="image-container">
+      <img id="image" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" class="image" />
+    </div>
+    <script>
+      const samples = [
+        'ai-body.jpg', 'ai-upper.jpg',
+        'person-vlado.jpg', 'person-linda.jpg', 'person-celeste.jpg', 'person-tetiana.jpg',
+        'group-1.jpg', 'group-2.jpg', 'group-3.jpg', 'group-4.jpg', 'group-5.jpg', 'group-6.jpg', 'group-7.jpg',
+        'daz3d-brianna.jpg', 'daz3d-chiyo.jpg', 'daz3d-cody.jpg', 'daz3d-drew-01.jpg', 'daz3d-drew-02.jpg', 'daz3d-ella-01.jpg', 'daz3d-ella-02.jpg', 'daz3d-gillian.jpg',
+        'daz3d-hye-01.jpg', 'daz3d-hye-02.jpg', 'daz3d-kaia.jpg', 'daz3d-karen.jpg', 'daz3d-kiaria-01.jpg', 'daz3d-kiaria-02.jpg', 'daz3d-lilah-01.jpg', 'daz3d-lilah-02.jpg',
+        'daz3d-lilah-03.jpg', 'daz3d-lila.jpg', 'daz3d-lindsey.jpg', 'daz3d-megah.jpg', 'daz3d-selina-01.jpg', 'daz3d-selina-02.jpg', 'daz3d-snow.jpg',
+        'daz3d-sunshine.jpg', 'daz3d-taia.jpg', 'daz3d-tuesday-01.jpg', 'daz3d-tuesday-02.jpg', 'daz3d-tuesday-03.jpg', 'daz3d-zoe.jpg', 'daz3d-ginnifer.jpg',
+        'daz3d-_emotions01.jpg', 'daz3d-_emotions02.jpg', 'daz3d-_emotions03.jpg', 'daz3d-_emotions04.jpg', 'daz3d-_emotions05.jpg',
+      ];
+      const image = document.getElementById('image');
+      for (const sample of samples) {
+        const el = document.createElement('img');
+        el.className = 'thumb';
+        el.src = el.title = el.alt = `/samples/in/${sample}`;
+        el.addEventListener('click', () => image.src = image.alt = image.title = el.src.replace('/in/', '/out/'));
+        document.getElementById('strip')?.appendChild(el);
+      }
+    </script> 
+  </body>
+</html>

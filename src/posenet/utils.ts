@@ -1,3 +1,8 @@
+/**
+ * PoseNet body detection model implementation constants
+ * See `posenet.ts` for entry point
+ */
+
 import * as kpt from './keypoints';
 import type { BodyResult } from '../result';
 

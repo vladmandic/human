@@ -9,11 +9,13 @@
   
 ## Changelog
   
+### **HEAD -> main** 2021/09/24 mandic00@live.com
+
+- new release
+
 ### **2.2.3** 2021/09/24 mandic00@live.com
 
-
-### **origin/main** 2021/09/23 mandic00@live.com
-
+- optimize model loading
 - support segmentation for nodejs
 - redo segmentation and handtracking
 - prototype handtracking

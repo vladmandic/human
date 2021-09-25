@@ -42,6 +42,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 - [*Live:* **Face Extraction and 3D Rendering**](https://vladmandic.github.io/human/demo/face3d/index.html)
 - [*Live:* **Multithreaded Detection Showcasing Maximum Performance**](https://vladmandic.github.io/human/demo/multithread/index.html)
 - [*Live:* **VR Model with Head, Face, Eye, Body and Hand tracking**](https://vladmandic.github.io/human-vrm/src/human-vrm.html)
+- [Examples galery](https://vladmandic.github.io/human/samples/samples.html)
 
 ## Project pages
 
@@ -75,6 +76,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 - [**Platform Support**](https://github.com/vladmandic/human/wiki/Platforms)
 - [**Diagnostic and Performance trace information**](https://github.com/vladmandic/human/wiki/Diag)
 - [**List of Models & Credits**](https://github.com/vladmandic/human/wiki/Models)
+- [**Models Download Repository**](https://github.com/vladmandic/human-models)
 - [**Security & Privacy Policy**](https://github.com/vladmandic/human/blob/main/SECURITY.md)
 - [**License & Usage Restrictions**](https://github.com/vladmandic/human/blob/main/LICENSE)
 
@@ -86,6 +88,15 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 
 <hr><br>
 
+## Examples
+
+Visit [Examples galery](https://vladmandic.github.io/human/samples/samples.html) for more examples  
+<https://vladmandic.github.io/human/samples/samples.html>
+
+![samples](assets/samples.jpg)
+
+<br>
+
 ## Options
 
 All options as presented in the demo application...  
@@ -95,52 +106,15 @@ All options as presented in the demo application...
 
 <br>
 
-## Examples
-
-<br>
-
-**Face Close-up:**  
-![Face](assets/screenshot-face.jpg)
-
-<br>
-
-**Face under a high angle:**  
-![Angle](assets/screenshot-angle.jpg)
-
-<br>
-
-**Full Person Details:**  
-![Pose](assets/screenshot-person.jpg)
-
-<br>
-
-**Pose Detection:**  
-![Pose](assets/screenshot-pose.jpg)
-
-<br>
-
-**Body Segmentation and Background Replacement:**  
-![Pose](assets/screenshot-segmentation.jpg)
-
-<br>
-
-**Large Group:**  
-![Group](assets/screenshot-group.jpg)
-
-<br>
-
-**VR Model Tracking:**  
-![vrmodel](assets/screenshot-vrm.jpg)
-
-<br>
-
 **Results Browser:**  
 [ *Demo -> Display -> Show Results* ]<br>
 ![Results](assets/screenshot-results.png)
 
 <br>
 
-**Face Similarity Matching:**  
+## Advanced Examples
+
+1. **Face Similarity Matching:**  
 Extracts all faces from provided input images,  
 sorts them by similarity to selected face  
 and optionally matches detected face with database of known people to guess their names
@@ -150,10 +124,15 @@ and optionally matches detected face with database of known people to guess thei
 
 <br>
 
-**Face3D OpenGL Rendering:**  
+2. **Face3D OpenGL Rendering:**  
 > [demo/face3d](demo/face3d/index.html)
 
 ![Face Matching](assets/screenshot-face3d.jpg)
+
+<br>
+
+3. **VR Model Tracking:**  
+![vrmodel](assets/screenshot-vrm.jpg)
 
 <br>
 

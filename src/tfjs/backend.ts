@@ -1,4 +1,6 @@
-import { log, now } from '../helpers';
+/** TFJS backend initialization and customization */
+
+import { log, now } from '../util';
 import * as humangl from './humangl';
 import * as env from '../env';
 import * as tf from '../../dist/tfjs.esm.js';

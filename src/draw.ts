@@ -3,7 +3,7 @@
  */
 
 import { TRI468 as triangulation } from './blazeface/coords';
-import { mergeDeep, now } from './helpers';
+import { mergeDeep, now } from './util';
 import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult } from './result';
 
 /**

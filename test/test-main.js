@@ -196,7 +196,7 @@ async function test(Human, inputConfig) {
   human.reset();
   config.async = true;
   config.cacheSensitivity = 0;
-  res = await testDetect(human, 'samples/ai-body.jpg', 'default');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
   if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default result face mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: default result face match');
 
@@ -205,13 +205,13 @@ async function test(Human, inputConfig) {
   human.reset();
   config.async = false;
   config.cacheSensitivity = 0;
-  res = await testDetect(human, 'samples/ai-body.jpg', 'default');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
   if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default sync', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: default sync');
 
   // test image processing
   const img1 = await human.image(null);
-  const img2 = await human.image(await getImage(human, 'samples/ai-face.jpg'));
+  const img2 = await human.image(await getImage(human, 'samples/in/ai-face.jpg'));
   if (!img1 || !img2 || img1.tensor !== null || img2.tensor?.shape?.length !== 4) log('error', 'failed: image input', img1?.tensor?.shape, img2?.tensor?.shape);
   else log('state', 'passed: image input', img1?.tensor?.shape, img2?.tensor?.shape);
 
@@ -225,9 +225,9 @@ async function test(Human, inputConfig) {
   human.reset();
   config.async = false;
   config.cacheSensitivity = 0;
-  let res1 = await testDetect(human, 'samples/ai-face.jpg', 'default');
-  let res2 = await testDetect(human, 'samples/ai-body.jpg', 'default');
-  let res3 = await testDetect(human, 'samples/ai-upper.jpg', 'default');
+  let res1 = await testDetect(human, 'samples/in/ai-face.jpg', 'default');
+  let res2 = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
+  let res3 = await testDetect(human, 'samples/in/ai-upper.jpg', 'default');
   const desc1 = res1 && res1.face && res1.face[0] && res1.face[0].embedding ? [...res1.face[0].embedding] : null;
   const desc2 = res2 && res2.face && res2.face[0] && res2.face[0].embedding ? [...res2.face[0].embedding] : null;
   const desc3 = res3 && res3.face && res3.face[0] && res3.face[0].embedding ? [...res3.face[0].embedding] : null;
@@ -257,7 +257,7 @@ async function test(Human, inputConfig) {
   log('info', 'test object');
   human.reset();
   config.object = { enabled: true };
-  res = await testDetect(human, 'samples/ai-body.jpg', 'default');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
   if (!res || res?.object?.length !== 1 || res?.object[0]?.label !== 'person') log('error', 'failed: object result mismatch', res?.object?.length);
   else log('state', 'passed: object result match');
 
@@ -268,7 +268,7 @@ async function test(Human, inputConfig) {
   config.face = { detector: { minConfidence: 0.0001, maxDetected: 1 } };
   config.body = { minConfidence: 0.0001, maxDetected: 1 };
   config.hand = { minConfidence: 0.0001, maxDetected: 3 };
-  res = await testDetect(human, 'samples/ai-body.jpg', 'default');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
   if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 3 || res?.gesture?.length !== 9) log('error', 'failed: sensitive result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: sensitive result match');
 
@@ -293,7 +293,7 @@ async function test(Human, inputConfig) {
   human.reset();
   config.face = { mesh: { enabled: false }, iris: { enabled: false }, description: { enabled: false }, emotion: { enabled: false } };
   config.hand = { landmarks: false };
-  res = await testDetect(human, 'samples/ai-body.jpg', 'default');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
   if (!res || res?.face?.length !== 1 || res?.face[0]?.gender || res?.face[0]?.age || res?.face[0]?.embedding) log('error', 'failed: detectors result face mismatch', res?.face);
   else log('state', 'passed: detector result face match');
   if (!res || res?.hand?.length !== 1 || res?.hand[0]?.landmarks) log('error', 'failed: detectors result hand mismatch', res?.hand?.length);
@@ -302,22 +302,22 @@ async function test(Human, inputConfig) {
   // test posenet and movenet
   log('info', 'test body variants');
   config.body = { modelPath: 'posenet.json' };
-  res = await testDetect(human, 'samples/ai-body.jpg', 'posenet');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'posenet');
   if (!res || res?.body?.length !== 1) log('error', 'failed: body posenet');
   else log('state', 'passed: body posenet');
   config.body = { modelPath: 'movenet-lightning.json' };
-  res = await testDetect(human, 'samples/ai-body.jpg', 'movenet');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'movenet');
   if (!res || res?.body?.length !== 1) log('error', 'failed: body movenet');
   else log('state', 'passed: body movenet');
 
   // test handdetect and handtrack
   log('info', 'test hand variants');
   config.hand = { enabled: true, maxDetected: 2, minConfidence: 0.1, detector: { modelPath: 'handdetect.json' } };
-  res = await testDetect(human, 'samples/ai-body.jpg', 'handdetect');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'handdetect');
   if (!res || res?.hand?.length !== 2) log('error', 'failed: hand handdetect');
   else log('state', 'passed: hand handdetect');
   config.hand = { enabled: true, maxDetected: 2, minConfidence: 0.1, detector: { modelPath: 'handtrack.json' } };
-  res = await testDetect(human, 'samples/ai-body.jpg', 'handtrack');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'handtrack');
   if (!res || res?.hand?.length !== 2) log('error', 'failed: hand handdetect');
   else log('state', 'passed: hand handdetect');
 
@@ -326,28 +326,28 @@ async function test(Human, inputConfig) {
   const second = new Human(config);
   await testDetect(human, null, 'default');
   log('info', 'test: first instance');
-  await testDetect(first, 'samples/ai-upper.jpg', 'default');
+  await testDetect(first, 'samples/in/ai-upper.jpg', 'default');
   log('info', 'test: second instance');
-  await testDetect(second, 'samples/ai-upper.jpg', 'default');
+  await testDetect(second, 'samples/in/ai-upper.jpg', 'default');
 
   // test async multiple instances
   log('info', 'test: concurrent');
   await Promise.all([
-    testDetect(human, 'samples/ai-face.jpg', 'default', false),
-    testDetect(first, 'samples/ai-face.jpg', 'default', false),
-    testDetect(second, 'samples/ai-face.jpg', 'default', false),
-    testDetect(human, 'samples/ai-body.jpg', 'default', false),
-    testDetect(first, 'samples/ai-body.jpg', 'default', false),
-    testDetect(second, 'samples/ai-body.jpg', 'default', false),
-    testDetect(human, 'samples/ai-upper.jpg', 'default', false),
-    testDetect(first, 'samples/ai-upper.jpg', 'default', false),
-    testDetect(second, 'samples/ai-upper.jpg', 'default', false),
+    testDetect(human, 'samples/in/ai-face.jpg', 'default', false),
+    testDetect(first, 'samples/in/ai-face.jpg', 'default', false),
+    testDetect(second, 'samples/in/ai-face.jpg', 'default', false),
+    testDetect(human, 'samples/in/ai-body.jpg', 'default', false),
+    testDetect(first, 'samples/in/ai-body.jpg', 'default', false),
+    testDetect(second, 'samples/in/ai-body.jpg', 'default', false),
+    testDetect(human, 'samples/in/ai-upper.jpg', 'default', false),
+    testDetect(first, 'samples/in/ai-upper.jpg', 'default', false),
+    testDetect(second, 'samples/in/ai-upper.jpg', 'default', false),
   ]);
 
   // test monkey-patch
   globalThis.Canvas = canvasJS.Canvas; // monkey-patch to use external canvas library
   globalThis.ImageData = canvasJS.ImageData; // monkey-patch to use external canvas library
-  const inputImage = await canvasJS.loadImage('samples/ai-face.jpg'); // load image using canvas library
+  const inputImage = await canvasJS.loadImage('samples/in/ai-face.jpg'); // load image using canvas library
   const inputCanvas = new canvasJS.Canvas(inputImage.width, inputImage.height); // create canvas
   const ctx = inputCanvas.getContext('2d');
   ctx.drawImage(inputImage, 0, 0); // draw input image onto canvas

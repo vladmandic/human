@@ -1,5 +1,5 @@
 /**
- * Image Processing module used by Human
+ * Image Processing algorithm implementation
  */
 
 import * as tf from '../../dist/tfjs.esm.js';
@@ -7,7 +7,7 @@ import * as fxImage from './imagefx';
 import type { Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../env';
-import { log } from '../helpers';
+import { log } from '../util';
 
 type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.Canvas;
 
@@ -84,11 +84,11 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
     let targetHeight = originalHeight;
     if (targetWidth > maxSize) {
       targetWidth = maxSize;
-      targetHeight = targetWidth * originalHeight / originalWidth;
+      targetHeight = Math.trunc(targetWidth * originalHeight / originalWidth);
     }
     if (targetHeight > maxSize) {
       targetHeight = maxSize;
-      targetWidth = targetHeight * originalWidth / originalHeight;
+      targetWidth = Math.trunc(targetHeight * originalWidth / originalHeight);
     }
 
     // create our canvas and resize it if needed

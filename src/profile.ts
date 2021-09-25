@@ -1,8 +1,9 @@
 /**
  * Profiling calculations
+ * Debug only
  */
 
-import { log } from './helpers';
+import { log } from './util';
 
 export const data = {};
 

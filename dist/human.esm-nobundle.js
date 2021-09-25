@@ -168,7 +168,7 @@ var config = {
   body: {
     enabled: true,
     modelPath: "movenet-lightning.json",
-    maxDetected: 1,
+    maxDetected: -1,
     minConfidence: 0.2,
     skipFrames: 1
   },
@@ -178,7 +178,7 @@ var config = {
     skipFrames: 18,
     minConfidence: 0.8,
     iouThreshold: 0.2,
-    maxDetected: 1,
+    maxDetected: -1,
     landmarks: true,
     detector: {
       modelPath: "handdetect.json"
@@ -9586,6 +9586,7 @@ function fakeOps(kernelNames, config3) {
 }
 
 // src/handtrack/handtrack.ts
+var boxScaleFact = 1.5;
 var models2 = [null, null];
 var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "StatefulPartitionedCall/Postprocessor/ExpandDims_1"];
 var inputSize = [[0, 0], [0, 0]];
@@ -9671,7 +9672,15 @@ async function detectHands(input, config3) {
     tfjs_esm_exports.dispose(t.nms);
     for (const res of Array.from(nms)) {
       const boxSlice = tfjs_esm_exports.slice(t.boxes, res, 1);
-      const yxBox = await boxSlice.data();
+      let yxBox = [0, 0, 0, 0];
+      if (config3.hand.landmarks) {
+        const detectedBox = await boxSlice.data();
+        const boxCenter = [(detectedBox[0] + detectedBox[2]) / 2, (detectedBox[1] + detectedBox[3]) / 2];
+        const boxDiff = [+boxCenter[0] - detectedBox[0], +boxCenter[1] - detectedBox[1], -boxCenter[0] + detectedBox[2], -boxCenter[1] + detectedBox[3]];
+        yxBox = [boxCenter[0] - boxScaleFact * boxDiff[0], boxCenter[1] - boxScaleFact * boxDiff[1], boxCenter[0] + boxScaleFact * boxDiff[2], boxCenter[1] + boxScaleFact * boxDiff[3]];
+      } else {
+        yxBox = await boxSlice.data();
+      }
       const boxRaw3 = [yxBox[1], yxBox[0], yxBox[3] - yxBox[1], yxBox[2] - yxBox[0]];
       const box6 = [Math.trunc(boxRaw3[0] * outputSize[0]), Math.trunc(boxRaw3[1] * outputSize[1]), Math.trunc(boxRaw3[2] * outputSize[0]), Math.trunc(boxRaw3[3] * outputSize[1])];
       tfjs_esm_exports.dispose(boxSlice);
@@ -9689,7 +9698,6 @@ async function detectHands(input, config3) {
     hands.length = config3.hand.maxDetected || 1;
   return hands;
 }
-var boxScaleFact = 1.5;
 function updateBoxes(h, keypoints3) {
   const finger = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
   const minmax = [Math.min(...finger[0]), Math.max(...finger[0]), Math.min(...finger[1]), Math.max(...finger[1])];
@@ -10037,6 +10045,7 @@ async function load9(config3) {
   if (env.initial)
     model6 = null;
   if (!model6) {
+    fakeOps(["size"], config3);
     model6 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
     if (!model6 || !model6["modelUrl"])
       log("load model failed:", config3.body.modelPath);
@@ -10089,8 +10098,8 @@ async function parseSinglePose(res, config3, image24) {
 }
 async function parseMultiPose(res, config3, image24) {
   const persons2 = [];
-  for (let p = 0; p < res[0].length; p++) {
-    const kpt3 = res[0][p];
+  for (let id = 0; id < res[0].length; id++) {
+    const kpt3 = res[0][id];
     score2 = Math.round(100 * kpt3[51 + 4]) / 100;
     if (score2 < config3.body.minConfidence)
       continue;
@@ -10101,20 +10110,14 @@ async function parseMultiPose(res, config3, image24) {
         keypoints2.push({
           part: bodyParts2[i],
           score: partScore,
-          positionRaw: [
-            kpt3[3 * i + 1],
-            kpt3[3 * i + 0]
-          ],
-          position: [
-            Math.trunc(kpt3[3 * i + 1] * (image24.shape[2] || 0)),
-            Math.trunc(kpt3[3 * i + 0] * (image24.shape[1] || 0))
-          ]
+          positionRaw: [kpt3[3 * i + 1], kpt3[3 * i + 0]],
+          position: [Math.trunc(kpt3[3 * i + 1] * (image24.shape[2] || 0)), Math.trunc(kpt3[3 * i + 0] * (image24.shape[1] || 0))]
         });
       }
     }
     boxRaw2 = [kpt3[51 + 1], kpt3[51 + 0], kpt3[51 + 3] - kpt3[51 + 1], kpt3[51 + 2] - kpt3[51 + 0]];
     persons2.push({
-      id: p,
+      id,
       score: score2,
       boxRaw: boxRaw2,
       box: [
@@ -10123,7 +10126,7 @@ async function parseMultiPose(res, config3, image24) {
         Math.trunc(boxRaw2[2] * (image24.shape[2] || 0)),
         Math.trunc(boxRaw2[3] * (image24.shape[1] || 0))
       ],
-      keypoints: keypoints2
+      keypoints: [...keypoints2]
     });
   }
   return persons2;
@@ -10152,13 +10155,13 @@ async function predict9(image24, config3) {
     if (!resT)
       resolve([]);
     const res = await resT.array();
-    let persons2;
+    let body4;
     if (resT.shape[2] === 17)
-      persons2 = await parseSinglePose(res, config3, image24);
+      body4 = await parseSinglePose(res, config3, image24);
     else if (resT.shape[2] === 56)
-      persons2 = await parseMultiPose(res, config3, image24);
+      body4 = await parseMultiPose(res, config3, image24);
     tfjs_esm_exports.dispose(resT);
-    resolve(persons2);
+    resolve(body4);
   });
 }
 
@@ -12649,29 +12652,32 @@ var Human = class {
         if (elapsedTime > 0)
           this.performance.face = elapsedTime;
       }
+      if (this.config.async && (this.config.body.maxDetected === -1 || this.config.hand.maxDetected === -1))
+        faceRes = await faceRes;
       this.analyze("Start Body:");
       this.state = "detect:body";
+      const bodyConfig = this.config.body.maxDetected === -1 ? mergeDeep(this.config, { body: { maxDetected: 1 * faceRes.length } }) : this.config;
       if (this.config.async) {
         if ((_a = this.config.body.modelPath) == null ? void 0 : _a.includes("posenet"))
-          bodyRes = this.config.body.enabled ? predict4(img.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict4(img.tensor, bodyConfig) : [];
         else if ((_b = this.config.body.modelPath) == null ? void 0 : _b.includes("blazepose"))
-          bodyRes = this.config.body.enabled ? predict7(img.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict7(img.tensor, bodyConfig) : [];
         else if ((_c = this.config.body.modelPath) == null ? void 0 : _c.includes("efficientpose"))
-          bodyRes = this.config.body.enabled ? predict8(img.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict8(img.tensor, bodyConfig) : [];
         else if ((_d = this.config.body.modelPath) == null ? void 0 : _d.includes("movenet"))
-          bodyRes = this.config.body.enabled ? predict9(img.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? predict9(img.tensor, bodyConfig) : [];
         if (this.performance.body)
           delete this.performance.body;
       } else {
         timeStamp = now();
         if ((_e = this.config.body.modelPath) == null ? void 0 : _e.includes("posenet"))
-          bodyRes = this.config.body.enabled ? await predict4(img.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict4(img.tensor, bodyConfig) : [];
         else if ((_f = this.config.body.modelPath) == null ? void 0 : _f.includes("blazepose"))
-          bodyRes = this.config.body.enabled ? await predict7(img.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict7(img.tensor, bodyConfig) : [];
         else if ((_g = this.config.body.modelPath) == null ? void 0 : _g.includes("efficientpose"))
-          bodyRes = this.config.body.enabled ? await predict8(img.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict8(img.tensor, bodyConfig) : [];
         else if ((_h = this.config.body.modelPath) == null ? void 0 : _h.includes("movenet"))
-          bodyRes = this.config.body.enabled ? await predict9(img.tensor, this.config) : [];
+          bodyRes = this.config.body.enabled ? await predict9(img.tensor, bodyConfig) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.body = elapsedTime;
@@ -12679,19 +12685,20 @@ var Human = class {
       this.analyze("End Body:");
       this.analyze("Start Hand:");
       this.state = "detect:hand";
+      const handConfig = this.config.hand.maxDetected === -1 ? mergeDeep(this.config, { hand: { maxDetected: 2 * faceRes.length } }) : this.config;
       if (this.config.async) {
         if ((_j = (_i = this.config.hand.detector) == null ? void 0 : _i.modelPath) == null ? void 0 : _j.includes("handdetect"))
-          handRes = this.config.hand.enabled ? predict5(img.tensor, this.config) : [];
+          handRes = this.config.hand.enabled ? predict5(img.tensor, handConfig) : [];
         else if ((_l = (_k = this.config.hand.detector) == null ? void 0 : _k.modelPath) == null ? void 0 : _l.includes("handtrack"))
-          handRes = this.config.hand.enabled ? predict6(img.tensor, this.config) : [];
+          handRes = this.config.hand.enabled ? predict6(img.tensor, handConfig) : [];
         if (this.performance.hand)
           delete this.performance.hand;
       } else {
         timeStamp = now();
         if ((_n = (_m = this.config.hand.detector) == null ? void 0 : _m.modelPath) == null ? void 0 : _n.includes("handdetect"))
-          handRes = this.config.hand.enabled ? await predict5(img.tensor, this.config) : [];
+          handRes = this.config.hand.enabled ? await predict5(img.tensor, handConfig) : [];
         else if ((_p = (_o = this.config.hand.detector) == null ? void 0 : _o.modelPath) == null ? void 0 : _p.includes("handtrack"))
-          handRes = this.config.hand.enabled ? await predict6(img.tensor, this.config) : [];
+          handRes = this.config.hand.enabled ? await predict6(img.tensor, handConfig) : [];
         elapsedTime = Math.trunc(now() - timeStamp);
         if (elapsedTime > 0)
           this.performance.hand = elapsedTime;

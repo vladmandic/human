@@ -62,8 +62,11 @@ export interface FaceConfig {
  * - minConfidence: threshold for discarding a prediction
  * - maxDetected: maximum number of people detected in the input, should be set to the minimum number for performance
  *
+ * `maxDetected` is valid for `posenet` and `movenet-multipose` as other models are single-pose only
+ * `maxDetected` can be set to -1 to auto-detect based on number of detected faces
+ *
  * Changing `modelPath` will change module responsible for hand detection and tracking
- * Allowed values are 'posenet.json', 'blazepose.json', 'efficientpose.json', 'movenet-lightning.json', 'movenet-thunder.json', 'movenet-multipose.json'
+ * Allowed values are `posenet.json`, `blazepose.json`, `efficientpose.json`, `movenet-lightning.json`, `movenet-thunder.json`, `movenet-multipose.json`
 */
 export interface BodyConfig {
     enabled: boolean;
@@ -82,6 +85,8 @@ export interface BodyConfig {
  * - iouThreshold: ammount of overlap between two detected objects before one object is removed
  * - maxDetected: maximum number of hands detected in the input, should be set to the minimum number for performance
  * - rotation: use best-guess rotated hand image or just box with rotation as-is, false means higher performance, but incorrect finger mapping if hand is inverted
+ *
+ * `maxDetected` can be set to -1 to auto-detect based on number of detected faces
  *
  * Changing `detector.modelPath` will change module responsible for hand detection and tracking
  * Allowed values are `handdetect.json` and `handtrack.json`

@@ -9,6 +9,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import type { BodyResult } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
+import { fakeOps } from '../tfjs/backend';
 import { env } from '../env';
 
 let model: GraphModel | null;
@@ -27,6 +28,7 @@ const bodyParts = ['nose', 'leftEye', 'rightEye', 'leftEar', 'rightEar', 'leftSh
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
   if (!model) {
+    fakeOps(['size'], config);
     model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
@@ -78,8 +80,8 @@ async function parseSinglePose(res, config, image) {
 
 async function parseMultiPose(res, config, image) {
   const persons: Array<Person> = [];
-  for (let p = 0; p < res[0].length; p++) {
-    const kpt = res[0][p];
+  for (let id = 0; id < res[0].length; id++) {
+    const kpt = res[0][id];
     score = Math.round(100 * kpt[51 + 4]) / 100;
     // eslint-disable-next-line no-continue
     if (score < config.body.minConfidence) continue;
@@ -90,20 +92,14 @@ async function parseMultiPose(res, config, image) {
         keypoints.push({
           part: bodyParts[i],
           score: partScore,
-          positionRaw: [
-            kpt[3 * i + 1],
-            kpt[3 * i + 0],
-          ],
-          position: [
-            Math.trunc(kpt[3 * i + 1] * (image.shape[2] || 0)),
-            Math.trunc(kpt[3 * i + 0] * (image.shape[1] || 0)),
-          ],
+          positionRaw: [kpt[3 * i + 1], kpt[3 * i + 0]],
+          position: [Math.trunc(kpt[3 * i + 1] * (image.shape[2] || 0)), Math.trunc(kpt[3 * i + 0] * (image.shape[1] || 0))],
         });
       }
     }
     boxRaw = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
     persons.push({
-      id: p,
+      id,
       score,
       boxRaw,
       box: [
@@ -112,7 +108,7 @@ async function parseMultiPose(res, config, image) {
         Math.trunc(boxRaw[2] * (image.shape[2] || 0)),
         Math.trunc(boxRaw[3] * (image.shape[1] || 0)),
       ],
-      keypoints,
+      keypoints: [...keypoints],
     });
   }
   return persons;
@@ -140,11 +136,11 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
 
     if (!resT) resolve([]);
     const res = await resT.array();
-    let persons;
-    if (resT.shape[2] === 17) persons = await parseSinglePose(res, config, image);
-    else if (resT.shape[2] === 56) persons = await parseMultiPose(res, config, image);
+    let body;
+    if (resT.shape[2] === 17) body = await parseSinglePose(res, config, image);
+    else if (resT.shape[2] === 56) body = await parseMultiPose(res, config, image);
     tf.dispose(resT);
 
-    resolve(persons);
+    resolve(body);
   });
 }

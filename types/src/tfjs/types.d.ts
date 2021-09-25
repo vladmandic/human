@@ -1,6 +1,4 @@
-/**
- * Export common TensorFlow types
- */
+/** TFJS common types exports */
 /**
  * TensorFlow Tensor type
  * @external

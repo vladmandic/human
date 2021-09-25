@@ -1,8 +1,10 @@
 /**
- * CenterNet object detection module
+ * CenterNet object detection model implementation
+ *
+ * Based on: [**NanoDet**](https://github.com/RangiLyu/nanodet)
  */
 
-import { log, join } from '../helpers';
+import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
 import type { ObjectResult } from '../result';

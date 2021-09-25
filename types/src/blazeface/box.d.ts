@@ -1,3 +1,7 @@
+/**
+ * BlazeFace, FaceMesh & Iris model implementation
+ * See `facemesh.ts` for entry point
+ */
 export declare function scaleBoxCoordinates(box: any, factor: any): {
     startPoint: number[];
     endPoint: number[];

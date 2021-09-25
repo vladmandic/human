@@ -1,3 +1,7 @@
+/**
+ * HandPose model implementation
+ * See `handpose.ts` for entry point
+ */
 export declare function getBoxSize(box: any): number[];
 export declare function getBoxCenter(box: any): any[];
 export declare function cutBoxFromImageAndResize(box: any, image: any, cropSize: any): any;

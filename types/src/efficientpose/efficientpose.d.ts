@@ -1,5 +1,7 @@
 /**
- * EfficientPose Module
+ * EfficientPose model implementation
+ *
+ * Based on: [**EfficientPose**](https://github.com/daniegr/EfficientPose)
  */
 import type { BodyResult } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';

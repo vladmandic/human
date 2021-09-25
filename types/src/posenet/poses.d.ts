@@ -1,3 +1,7 @@
+/**
+ * PoseNet body detection model implementation
+ * See `posenet.ts` for entry point
+ */
 import * as utils from './utils';
 export declare function decodePose(root: any, scores: any, offsets: any, displacementsFwd: any, displacementsBwd: any): any[];
 export declare function buildPartWithScoreQueue(minConfidence: any, scores: any): utils.MaxHeap;

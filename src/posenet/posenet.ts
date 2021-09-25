@@ -1,8 +1,10 @@
 /**
- * PoseNet module entry point
+ * PoseNet body detection model implementation
+ *
+ * Based on: [**PoseNet**](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5)
  */
 
-import { log, join } from '../helpers';
+import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as poses from './poses';
 import * as util from './utils';

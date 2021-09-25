@@ -1,6 +1,10 @@
 /**
- * Module that analyzes person age
- * Obsolete
+ * GEAR [gender/emotion/age/race] model implementation
+ *
+ * Based on: [**GEAR Predictor**](https://github.com/Udolf15/GEAR-Predictor)
+ *
+ * Obsolete and replaced by `faceres` that performs age/gender/descriptor analysis
+ * Config placeholder: agegenderrace: { enabled: true, modelPath: 'gear.json' },
  */
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';

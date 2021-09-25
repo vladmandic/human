@@ -1,3 +1,8 @@
+/**
+ * BlazeFace, FaceMesh & Iris model implementation
+ * See `facemesh.ts` for entry point
+ */
+
 import * as tf from '../../dist/tfjs.esm.js';
 
 export function scaleBoxCoordinates(box, factor) {

@@ -1,5 +1,7 @@
 /**
- * Emotion Module
+ * Emotion model implementation
+ *
+ * [**Oarriaga**](https://github.com/oarriaga/face_classification)
  */
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';

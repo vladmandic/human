@@ -1,3 +1,7 @@
+/**
+ * PoseNet body detection model implementation constants
+ * See `posenet.ts` for entry point
+ */
 import type { BodyResult } from '../result';
 export declare function eitherPointDoesntMeetConfidence(a: number, b: number, minConfidence: number): boolean;
 export declare function getAdjacentKeyPoints(keypoints: any, minConfidence: number): any[];

@@ -1,3 +1,7 @@
+/**
+ * BlazeFace, FaceMesh & Iris model implementation
+ * See `facemesh.ts` for entry point
+ */
 export declare const IDENTITY_MATRIX: number[][];
 /**
  * Normalizes the provided angle to the range -pi to pi.

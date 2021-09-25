@@ -1,5 +1,9 @@
 /**
- * Hand Detection and Segmentation
+ * HandTrack model implementation
+ *
+ * Based on:
+ * - Hand Detection & Skeleton: [**MediaPipe HandPose**](https://drive.google.com/file/d/1sv4sSb9BSNVZhLzxXJ0jBv9DqD-4jnAz/view)
+ * - Hand Tracking: [**HandTracking**](https://github.com/victordibia/handtracking)
  */
 import type { HandResult } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';

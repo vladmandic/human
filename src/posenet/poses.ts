@@ -1,3 +1,8 @@
+/**
+ * PoseNet body detection model implementation
+ * See `posenet.ts` for entry point
+ */
+
 import * as utils from './utils';
 import * as kpt from './keypoints';
 

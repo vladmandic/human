@@ -1,27 +1,13 @@
 /**
- * Module that analyzes person age
- * Obsolete
+ * GEAR [gender/emotion/age/race] model implementation
+ *
+ * Based on: [**GEAR Predictor**](https://github.com/Udolf15/GEAR-Predictor)
+ *
+ * Obsolete and replaced by `faceres` that performs age/gender/descriptor analysis
+ * Config placeholder: agegenderrace: { enabled: true, modelPath: 'gear.json' },
  */
 
-/*
-  to enable, add to config.ts
-
-    agegenderrace: {
-      enabled: boolean,
-      modelPath: string,
-      skipFrames: number,
-    }
-
-    agegenderrace: {
-      enabled: true,
-      modelPath: 'gear.json',
-      skipFrames: 1,
-    },
-
-  and enable model loading in models.ts
-*/
-
-import { log, join } from '../helpers';
+import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';

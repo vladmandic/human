@@ -1,5 +1,7 @@
 /**
- * EfficientPose Module
+ * MoveNet model implementation
+ *
+ * Based on: [**MoveNet**](https://blog.tensorflow.org/2021/05/next-generation-pose-detection-with-movenet-and-tensorflowjs.html)
  */
 import type { BodyResult } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';

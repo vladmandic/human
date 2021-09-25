@@ -1,3 +1,7 @@
+/**
+ * HandPose model implementation
+ * See `handpose.ts` for entry point
+ */
 import type * as detector from './handdetector';
 import type { GraphModel } from '../tfjs/types';
 export declare class HandPipeline {

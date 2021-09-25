@@ -1,5 +1,7 @@
 /**
- * CenterNet object detection module
+ * CenterNet object detection model implementation
+ *
+ * Based on: [**NanoDet**](https://github.com/RangiLyu/nanodet)
  */
 import type { ObjectResult } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';

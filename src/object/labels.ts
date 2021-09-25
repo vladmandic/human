@@ -1,5 +1,5 @@
 /**
- * CoCo Labels used by object detection modules
+ * CoCo Labels used by object detection implementations
  */
 export const labels = [
   { class: 1, label: 'person' },

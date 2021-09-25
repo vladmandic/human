@@ -1,3 +1,7 @@
+/**
+ * BlazeFace, FaceMesh & Iris model implementation
+ * See `facemesh.ts` for entry point
+ */
 import type { GraphModel } from '../tfjs/types';
 import type { BlazeFaceModel } from './blazeface';
 export declare class Pipeline {

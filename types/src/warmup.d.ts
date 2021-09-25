@@ -1,3 +1,6 @@
+/**
+ * Warmup algorithm that uses embedded images to excercise loaded models for faster future inference
+ */
 import type { Config } from './config';
 import type { Result } from './result';
 /** Warmup method pre-initializes all configured models for faster inference

@@ -1,4 +1,8 @@
-// based on <https://github.com/andypotato/fingerpose>
+/**
+ * FingerPose algorithm implementation constants
+ *
+ * Based on: [**FingerPose***](https://github.com/andypotato/fingerpose)
+ */
 
 import * as estimator from './estimator';
 import { Finger, FingerCurl, FingerDirection } from './description';

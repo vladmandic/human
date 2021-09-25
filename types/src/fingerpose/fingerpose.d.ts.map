@@ -1,1 +1,1 @@
-{"version":3,"file":"fingerpose.d.ts","sourceRoot":"","sources":["../../../src/fingerpose/fingerpose.ts"],"names":[],"mappings":"AAQA,wBAAgB,OAAO,CAAC,SAAS,KAAA,aAYhC;AAED,wBAAgB,KAAK,CAAC,SAAS,KAAA;UACF,MAAM;gBAAc,MAAM;IAStD"}
+{"version":3,"file":"fingerpose.d.ts","sourceRoot":"","sources":["../../../src/fingerpose/fingerpose.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AAQH,wBAAgB,OAAO,CAAC,SAAS,KAAA,aAYhC;AAED,wBAAgB,KAAK,CAAC,SAAS,KAAA;UACF,MAAM;gBAAc,MAAM;IAStD"}

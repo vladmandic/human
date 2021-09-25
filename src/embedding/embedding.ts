@@ -1,9 +1,12 @@
 /**
- * Module that analyzes face descriptors/embedding
- * Obsolete
+ * EfficientPose model implementation
+ *
+ * Based on: [**BecauseofAI MobileFace**](https://github.com/becauseofAI/MobileFace)
+ *
+ * Obsolete and replaced by `faceres` that performs age/gender/descriptor analysis
  */
 
-import { log, join } from '../helpers';
+import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import { env } from '../env';

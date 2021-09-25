@@ -1,3 +1,6 @@
+/**
+ * Loader and Validator for all models used by Human
+ */
 import type { GraphModel } from './tfjs/types';
 import type { Human } from './human';
 /** Instances of all possible TFJS Graph Models used by Human

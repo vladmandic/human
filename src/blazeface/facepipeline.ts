@@ -1,3 +1,8 @@
+/**
+ * BlazeFace, FaceMesh & Iris model implementation
+ * See `facemesh.ts` for entry point
+ */
+
 import * as tf from '../../dist/tfjs.esm.js';
 import * as bounding from './box';
 import * as util from './util';
@@ -5,7 +10,7 @@ import * as coords from './coords';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { BlazeFaceModel } from './blazeface';
 import { env } from '../env';
-import { log } from '../helpers';
+import { log } from '../util';
 
 const leftOutline = coords.MESH_ANNOTATIONS['leftEyeLower0'];
 const rightOutline = coords.MESH_ANNOTATIONS['rightEyeLower0'];

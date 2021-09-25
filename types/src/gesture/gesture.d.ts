@@ -1,5 +1,5 @@
 /**
- * Gesture detection module
+ * Gesture detection algorithm
  */
 import type { GestureResult } from '../result';
 /**

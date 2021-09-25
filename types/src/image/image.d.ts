@@ -1,5 +1,5 @@
 /**
- * Image Processing module used by Human
+ * Image Processing algorithm implementation
  */
 import type { Tensor } from '../tfjs/types';
 import type { Config } from '../config';

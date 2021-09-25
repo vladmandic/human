@@ -1,9 +1,6 @@
-/**
- * Custom TFJS backend for Human based on WebGL
- * Not used by default
- */
+/** TFJS custom backend registration */
 
-import { log } from '../helpers';
+import { log } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
 import * as models from '../models';

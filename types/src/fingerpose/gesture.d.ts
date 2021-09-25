@@ -1,3 +1,7 @@
+/**
+ * FingerPose algorithm implementation
+ * See `fingerpose.ts` for entry point
+ */
 export default class Gesture {
     name: any;
     curls: any;

@@ -1,3 +1,7 @@
+/**
+ * BlazeFace, FaceMesh & Iris model implementation
+ * See `facemesh.ts` for entry point
+ */
 export declare const MESH_ANNOTATIONS: {
     silhouette: number[];
     lipsUpperOuter: number[];

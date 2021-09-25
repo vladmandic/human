@@ -1,9 +1,9 @@
 /**
- * Module that analyzes person age
- * Obsolete
+ * Face algorithm implementation
+ * Uses FaceMesh, Emotion and FaceRes models to create a unified pipeline
  */
 
-import { log, now } from './helpers';
+import { log, now } from './util';
 import * as tf from '../dist/tfjs.esm.js';
 import * as facemesh from './blazeface/facemesh';
 import * as emotion from './emotion/emotion';

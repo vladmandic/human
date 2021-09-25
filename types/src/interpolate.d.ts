@@ -1,5 +1,5 @@
 /**
- * Module that interpolates results for smoother animations
+ * Results interpolation for smoothening of video detection results inbetween detected frames
  */
 import type { Result } from './result';
 export declare function calc(newResult: Result): Result;

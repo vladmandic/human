@@ -1,3 +1,8 @@
+/**
+ * PoseNet body detection model implementation constants
+ * See `posenet.ts` for entry point
+ */
+
 export const partNames = [
   'nose', 'leftEye', 'rightEye', 'leftEar', 'rightEar', 'leftShoulder',
   'rightShoulder', 'leftElbow', 'rightElbow', 'leftWrist', 'rightWrist',

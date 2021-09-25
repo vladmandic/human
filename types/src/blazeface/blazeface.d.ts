@@ -1,3 +1,7 @@
+/**
+ * BlazeFace, FaceMesh & Iris model implementation
+ * See `facemesh.ts` for entry point
+ */
 import type { Config } from '../config';
 import type { Tensor, GraphModel } from '../tfjs/types';
 export declare class BlazeFaceModel {

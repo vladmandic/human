@@ -1,3 +1,7 @@
+/**
+ * PoseNet body detection model implementation constants
+ * See `posenet.ts` for entry point
+ */
 export declare const partNames: string[];
 export declare const count: number;
 export declare const partIds: {};

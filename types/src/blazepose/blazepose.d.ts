@@ -1,5 +1,7 @@
 /**
- * BlazePose Module
+ * BlazePose model implementation
+ *
+ * Based on : [**BlazePose**](https://drive.google.com/file/d/10IU-DRP2ioSNjKFdiGbmmQX81xAYj88s/view)
  */
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { BodyResult } from '../result';

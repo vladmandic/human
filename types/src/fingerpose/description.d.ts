@@ -1,3 +1,7 @@
+/**
+ * FingerPose algorithm implementation constants
+ * See `fingerpose.ts` for entry point
+ */
 declare const Finger: {
     thumb: number;
     index: number;

@@ -1,8 +1,10 @@
 /**
- * NanoDet object detection module
+ * NanoDet object detection model implementation
+ *
+ * Based on: [**MB3-CenterNet**](https://github.com/610265158/mobilenetv3_centernet)
  */
 
-import { log, join } from '../helpers';
+import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
 import type { ObjectResult } from '../result';

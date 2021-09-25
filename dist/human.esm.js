@@ -42,7 +42,7 @@ var __privateSet = (obj, member, value, setter) => {
   return value;
 };
 
-// src/helpers.ts
+// src/util.ts
 function join(folder, file) {
   const separator = folder.endsWith("/") ? "" : "/";
   const skipJoin = file.startsWith(".") || file.startsWith("/") || file.startsWith("http:") || file.startsWith("https:") || file.startsWith("file:");
@@ -64563,11 +64563,11 @@ function process2(input2, config3) {
     let targetHeight = originalHeight;
     if (targetWidth > maxSize) {
       targetWidth = maxSize;
-      targetHeight = targetWidth * originalHeight / originalWidth;
+      targetHeight = Math.trunc(targetWidth * originalHeight / originalWidth);
     }
     if (targetHeight > maxSize) {
       targetHeight = maxSize;
-      targetWidth = targetHeight * originalWidth / originalHeight;
+      targetWidth = Math.trunc(targetHeight * originalWidth / originalHeight);
     }
     if ((config3.filter.width || 0) > 0)
       targetWidth = config3.filter.width;
@@ -72551,13 +72551,6 @@ var Human = class {
       }
       return null;
     });
-    __publicField(this, "reset", () => {
-      const currentBackend = this.config.backend;
-      this.config = JSON.parse(JSON.stringify(config));
-      this.config.backend = currentBackend;
-    });
-    __publicField(this, "validate", (userConfig) => validate(config, userConfig || this.config));
-    __publicField(this, "image", (input2) => process2(input2, this.config));
     __publicField(this, "emit", (event) => {
       var _a;
       return (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
@@ -72573,7 +72566,6 @@ var Human = class {
     Object.seal(this.config);
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);
-    validate(config, this.config);
     this.tf = tfjs_esm_exports;
     this.state = "idle";
     __privateSet(this, _numTensors, 0);
@@ -72599,6 +72591,17 @@ var Human = class {
     this.faceUVMap = uvmap;
     this.gl = config2;
     this.emit("create");
+  }
+  reset() {
+    const currentBackend = this.config.backend;
+    this.config = JSON.parse(JSON.stringify(config));
+    this.config.backend = currentBackend;
+  }
+  validate(userConfig) {
+    return validate(config, userConfig || this.config);
+  }
+  image(input2) {
+    return process2(input2, this.config);
   }
   similarity(embedding1, embedding2) {
     return similarity(embedding1, embedding2);

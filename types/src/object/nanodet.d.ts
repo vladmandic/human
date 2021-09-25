@@ -1,5 +1,7 @@
 /**
- * NanoDet object detection module
+ * NanoDet object detection model implementation
+ *
+ * Based on: [**MB3-CenterNet**](https://github.com/610265158/mobilenetv3_centernet)
  */
 import type { ObjectResult } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';

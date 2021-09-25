@@ -1,10 +1,10 @@
 /**
- * BlazePose Module
+ * BlazePose model implementation
+ *
+ * Based on : [**BlazePose**](https://drive.google.com/file/d/10IU-DRP2ioSNjKFdiGbmmQX81xAYj88s/view)
  */
 
-// paper: https://ai.googleblog.com/2020/08/on-device-real-time-body-pose-tracking.html
-
-import { log, join } from '../helpers';
+import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as annotations from './annotations';
 import type { Tensor, GraphModel } from '../tfjs/types';

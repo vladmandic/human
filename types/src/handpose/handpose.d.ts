@@ -1,5 +1,7 @@
 /**
- * HandPose module entry point
+ * HandPose model implementation
+ *
+ * Based on: [**MediaPipe HandPose**](https://drive.google.com/file/d/1sv4sSb9BSNVZhLzxXJ0jBv9DqD-4jnAz/view)
  */
 import type { HandResult } from '../result';
 import type { Tensor, GraphModel } from '../tfjs/types';

@@ -1,3 +1,8 @@
+/**
+ * BlazePose model implemenation constants
+ * See `blazepose.ts` for entry point
+ */
+
 export const full = [
   'nose',
   'leftEyeInside',

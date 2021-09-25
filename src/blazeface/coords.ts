@@ -1,3 +1,8 @@
+/**
+ * BlazeFace, FaceMesh & Iris model implementation
+ * See `facemesh.ts` for entry point
+ */
+
 export const MESH_ANNOTATIONS = {
   silhouette: [
     10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288,

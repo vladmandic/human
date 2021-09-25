@@ -1,3 +1,7 @@
+/**
+ * HandPose model implementation
+ * See `handpose.ts` for entry point
+ */
 import type { Tensor, GraphModel } from '../tfjs/types';
 export declare class HandDetector {
     model: GraphModel;

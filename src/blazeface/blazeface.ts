@@ -1,4 +1,9 @@
-import { log, join, mergeDeep } from '../helpers';
+/**
+ * BlazeFace, FaceMesh & Iris model implementation
+ * See `facemesh.ts` for entry point
+ */
+
+import { log, join, mergeDeep } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as util from './util';

@@ -1,7 +1,4 @@
-/**
- * Custom TFJS backend for Human based on WebGL
- * Not used by default
- */
+/** TFJS custom backend registration */
 export declare const config: {
     name: string;
     priority: number;

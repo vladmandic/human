@@ -134,9 +134,9 @@ export declare class Human {
     /** @hidden */
     analyze: (...msg: string[]) => void;
     /** Reset configuration to default values */
-    reset: () => void;
+    reset(): void;
     /** Validate current configuration schema */
-    validate: (userConfig?: Partial<Config> | undefined) => {
+    validate(userConfig?: Partial<Config>): {
         reason: string;
         where: string;
         expected?: string;
@@ -146,7 +146,7 @@ export declare class Human {
      * @param input: {@link Input}
      * @returns { tensor, canvas }
      */
-    image: (input: Input) => {
+    image(input: Input): {
         tensor: Tensor<import("@tensorflow/tfjs-core").Rank> | null;
         canvas: OffscreenCanvas | HTMLCanvasElement | null;
     };

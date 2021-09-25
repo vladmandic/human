@@ -1,3 +1,8 @@
+/**
+ * HandPose model implementation
+ * See `handpose.ts` for entry point
+ */
+
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as anchors from './anchors';

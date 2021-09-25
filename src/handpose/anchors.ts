@@ -1,3 +1,8 @@
+/**
+ * HandPose model implementation constants
+ * See `handpose.ts` for entry point
+ */
+
 export const anchors = [
   { x: 0.015625, y: 0.015625 },
   { x: 0.015625, y: 0.015625 },

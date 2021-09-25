@@ -1,5 +1,5 @@
 /**
- * Module that analyzes existing results and recombines them into a unified person object
+ * Analyze detection Results and sort&combine them into per-person view
  */
 
 import type { FaceResult, BodyResult, HandResult, GestureResult, PersonResult } from './result';

@@ -2,7 +2,7 @@
  * Human main module
  */
 
-import { log, now, mergeDeep, validate } from './helpers';
+import { log, now, mergeDeep, validate } from './util';
 import { Config, defaults } from './config';
 import type { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult } from './result';
 import * as tf from '../dist/tfjs.esm.js';
@@ -168,7 +168,6 @@ export class Human {
     this.config = JSON.parse(JSON.stringify(defaults));
     Object.seal(this.config);
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
-    validate(defaults, this.config);
     this.tf = tf;
     this.state = 'idle';
     this.#numTensors = 0;
@@ -229,21 +228,25 @@ export class Human {
   }
 
   /** Reset configuration to default values */
-  reset = () => {
+  reset() {
     const currentBackend = this.config.backend; // save backend;
     this.config = JSON.parse(JSON.stringify(defaults));
     this.config.backend = currentBackend;
   }
 
   /** Validate current configuration schema */
-  validate = (userConfig?: Partial<Config>) => validate(defaults, userConfig || this.config);
+  validate(userConfig?: Partial<Config>) {
+    return validate(defaults, userConfig || this.config);
+  }
 
   /** Process input as return canvas and tensor
    *
    * @param input: {@link Input}
    * @returns { tensor, canvas }
    */
-  image = (input: Input) => image.process(input, this.config);
+  image(input: Input) {
+    return image.process(input, this.config);
+  }
 
   /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
    * - Calculation is based on normalized Minkowski distance between two descriptors

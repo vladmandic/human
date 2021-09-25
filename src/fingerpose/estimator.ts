@@ -1,3 +1,8 @@
+/**
+ * FingerPose algorithm implementation
+ * See `fingerpose.ts` for entry point
+ */
+
 import { Finger, FingerCurl, FingerDirection } from './description';
 
 const options = {

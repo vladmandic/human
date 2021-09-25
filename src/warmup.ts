@@ -1,4 +1,8 @@
-import { log, now, mergeDeep } from './helpers';
+/**
+ * Warmup algorithm that uses embedded images to excercise loaded models for faster future inference
+ */
+
+import { log, now, mergeDeep } from './util';
 import * as sample from './sample';
 import * as tf from '../dist/tfjs.esm.js';
 import * as image from './image/image';

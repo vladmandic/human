@@ -1,3 +1,8 @@
+/**
+ * HandPose model implementation
+ * See `handpose.ts` for entry point
+ */
+
 import * as tf from '../../dist/tfjs.esm.js';
 
 export function getBoxSize(box) {

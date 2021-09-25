@@ -1,9 +1,12 @@
 /**
- * Module that analyzes person age
- * Obsolete
+ * Age model implementation
+ *
+ * Based on: [**SSR-Net**](https://github.com/shamangary/SSR-Net)
+ *
+ * Obsolete and replaced by `faceres` that performs age/gender/descriptor analysis
  */
 
-import { log, join } from '../helpers';
+import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';

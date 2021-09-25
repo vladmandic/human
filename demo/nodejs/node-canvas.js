@@ -12,7 +12,7 @@ const Human = require('../../dist/human.node.js'); // this is 'const Human = req
 const config = { // just enable all and leave default settings
   debug: false,
   face: { enabled: true }, // includes mesh, iris, emotion, descriptor
-  hand: { enabled: true },
+  hand: { enabled: true, maxDetected: 2, minConfidence: 0.5, detector: { modelPath: 'handtrack.json' } }, // use alternative hand model
   body: { enabled: true },
   object: { enabled: true },
   gestures: { enabled: true },

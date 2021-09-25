@@ -1,8 +1,12 @@
 /**
- * EfficientPose Module
+ * Image segmentation for body detection model
+ *
+ * Based on:
+ * - [**MediaPipe Meet**](https://drive.google.com/file/d/1lnP1bRi9CSqQQXUHa13159vLELYDgDu0/preview)
+ * - [**MediaPipe Selfie**](https://drive.google.com/file/d/1dCfozqknMa068vVsO2j_1FgZkW_e3VWv/preview)
  */
 
-import { log, join } from '../helpers';
+import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
 import type { GraphModel, Tensor } from '../tfjs/types';

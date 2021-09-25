@@ -1,4 +1,8 @@
-import { log } from './helpers';
+/**
+ * Loader and Validator for all models used by Human
+ */
+
+import { log } from './util';
 import type { GraphModel } from './tfjs/types';
 import * as facemesh from './blazeface/facemesh';
 import * as faceres from './faceres/faceres';

@@ -4,16 +4,18 @@
 
 <br>
 
-### Hand
+### Models
+
+#### Hand
 
 - Evaluate and switch default default model from `handdetect` to `handtrack`
 
-## Body
+#### Body
 
 - Implement new variations of `BlazePose` models
 - Add virtual box frame caching to `MoveNet`
 
-## Face
+#### Face
 
 - Reimplement `BlazeFace`, `FaceMesh`, `Iris` with new pipeline and frame caching
 
@@ -21,9 +23,28 @@
 
 ### Backends
 
+#### WebGL
 - Optimize shader packing for WebGL backend:  
   <https://github.com/tensorflow/tfjs/issues/5343>  
-- Add and benchmark WGSL for WebGPU  
+
+#### WASM
+
+- Backend WASM incorrect handling of `int32` tensors  
+  <https://github.com/tensorflow/tfjs/issues/5641>
+
+#### WebGPU
+
+Implementation of WebGPU backend  
+Experimental support only until support is officially added in Chromium
+
+- Evaluate WGSL vs GLSL for WebGPU  
+- Backend WebGPU missing kernel ops
+  <https://github.com/tensorflow/tfjs/issues/5496>
+- Backend WebGPU incompatible with web workers
+  <https://github.com/tensorflow/tfjs/issues/5467>
+- Backend WebGPU incompatible with sync read calls
+  <https://github.com/tensorflow/tfjs/issues/5468>
+
 
 <br>
 
@@ -32,7 +53,7 @@
 - Optical Flow: <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
 - TFLite Models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
 
-<br>
+<br><hr><br>
 
 ## Known Issues
 
@@ -46,17 +67,6 @@ Feature is automatically disabled in NodeJS without user impact
 - Backend NodeJS missing kernel op `RotateWithOffset`  
   <https://github.com/tensorflow/tfjs/issues/5473>  
 
-<br>
-
-### Face Emotion Detection
-
-Face Emotion detection using WASM backend has reduced precision due to math errors in backend  
-
-- Backend WASM incorrect handling of `int32` tensors  
-  <https://github.com/tensorflow/tfjs/issues/5641>
-
-<br>
-
 ### Hand Detection
 
 Enhanced rotation correction for hand detection is not working in NodeJS due to missing kernel op in TFJS  
@@ -65,18 +75,11 @@ Feature is automatically disabled in NodeJS without user impact
 - Backend NodeJS missing kernel op `RotateWithOffset`  
   <https://github.com/tensorflow/tfjs/issues/5473>  
 
-Hand detection using WASM backend has reduced precision due to math errors in backend  
-
-- Backend WASM incorrect handling of `int32` tensors  
-  <https://github.com/tensorflow/tfjs/issues/5641>
-
-<br>
-
 ### Body Detection
 
-MoveNet MultiPose model does not work with WASM backend due to missing F32 implementation
+MoveNet MultiPose model does not work with WASM backend due to missing F32 broadcast implementation
 
-- Backend WASM missing F32 implementation  
+- Backend WASM missing F32 broadcat implementation  
   <https://github.com/tensorflow/tfjs/issues/5516>  
 
 ### Object Detection
@@ -87,19 +90,3 @@ Object detection using CenterNet or NanoDet models is not working when using WAS
   <https://github.com/tensorflow/tfjs/issues/5110>  
 - Backend WASM missing kernel op `SparseToDense`  
   <https://github.com/tensorflow/tfjs/issues/4824>  
-
-### WebGPU Backend
-
-Implementation of WebGPU backend  
-Experimental support only
-
-*Target: `Human` v2.3 with `Chrome` v94 and `TFJS` v4.0*
-
-<br>
-
-- Backend WebGPU missing kernel ops
-  <https://github.com/tensorflow/tfjs/issues/5496>
-- Backend WebGPU incompatible with web workers
-  <https://github.com/tensorflow/tfjs/issues/5467>
-- Backend WebGPU incompatible with sync read calls
-  <https://github.com/tensorflow/tfjs/issues/5468>

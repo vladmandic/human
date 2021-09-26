@@ -4,13 +4,18 @@
 
 <br>
 
-### Handtrack
+### Hand
 
-- Evaluate and switch default
+- Evaluate and switch default default model from `handdetect` to `handtrack`
 
-### Models
+## Body
 
-- Document and publish optional models
+- Implement new variations of `BlazePose` models
+- Add virtual box frame caching to `MoveNet`
+
+## Face
+
+- Reimplement `BlazeFace`, `FaceMesh`, `Iris` with new pipeline and frame caching
 
 <br>
 

@@ -8,7 +8,7 @@
 
 import { log, join, scaleBox } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
-import type { HandResult } from '../result';
+import type { HandResult, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../env';
@@ -29,10 +29,10 @@ let outputSize: [number, number] = [0, 0];
 type HandDetectResult = {
   id: number,
   score: number,
-  box: [number, number, number, number],
-  boxRaw: [number, number, number, number],
+  box: Box,
+  boxRaw: Box,
   label: string,
-  yxBox: [number, number, number, number],
+  yxBox: Box,
 }
 
 const cache: {
@@ -111,17 +111,17 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
     tf.dispose(t.nms);
     for (const res of Array.from(nms)) { // generates results for each class
       const boxSlice = tf.slice(t.boxes, res, 1);
-      let yxBox: [number, number, number, number] = [0, 0, 0, 0];
+      let yxBox: Box = [0, 0, 0, 0];
       if (config.hand.landmarks) { // scale box
-        const detectedBox: [number, number, number, number] = await boxSlice.data();
+        const detectedBox: Box = await boxSlice.data();
         const boxCenter: [number, number] = [(detectedBox[0] + detectedBox[2]) / 2, (detectedBox[1] + detectedBox[3]) / 2];
-        const boxDiff: [number, number, number, number] = [+boxCenter[0] - detectedBox[0], +boxCenter[1] - detectedBox[1], -boxCenter[0] + detectedBox[2], -boxCenter[1] + detectedBox[3]];
+        const boxDiff: Box = [+boxCenter[0] - detectedBox[0], +boxCenter[1] - detectedBox[1], -boxCenter[0] + detectedBox[2], -boxCenter[1] + detectedBox[3]];
         yxBox = [boxCenter[0] - boxScaleFact * boxDiff[0], boxCenter[1] - boxScaleFact * boxDiff[1], boxCenter[0] + boxScaleFact * boxDiff[2], boxCenter[1] + boxScaleFact * boxDiff[3]];
       } else { // use box as-is
         yxBox = await boxSlice.data();
       }
-      const boxRaw: [number, number, number, number] = [yxBox[1], yxBox[0], yxBox[3] - yxBox[1], yxBox[2] - yxBox[0]];
-      const box: [number, number, number, number] = [Math.trunc(boxRaw[0] * outputSize[0]), Math.trunc(boxRaw[1] * outputSize[1]), Math.trunc(boxRaw[2] * outputSize[0]), Math.trunc(boxRaw[3] * outputSize[1])];
+      const boxRaw: Box = [yxBox[1], yxBox[0], yxBox[3] - yxBox[1], yxBox[2] - yxBox[0]];
+      const box: Box = [Math.trunc(boxRaw[0] * outputSize[0]), Math.trunc(boxRaw[1] * outputSize[1]), Math.trunc(boxRaw[2] * outputSize[0]), Math.trunc(boxRaw[3] * outputSize[1])];
       tf.dispose(boxSlice);
       const scoreSlice = tf.slice(classScores[i], res, 1);
       const score = (await scoreSlice.data())[0];

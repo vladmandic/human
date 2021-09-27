@@ -6,7 +6,7 @@
 
 import { log, join, scaleBox } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
-import type { BodyResult } from '../result';
+import type { BodyResult, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { fakeOps } from '../tfjs/backend';
@@ -14,14 +14,11 @@ import { env } from '../env';
 
 let model: GraphModel | null;
 let inputSize = 0;
-const cachedBoxes: Array<[number, number, number, number]> = [];
+const cachedBoxes: Array<Box> = [];
 
 type Keypoints = { score: number, part: string, position: [number, number], positionRaw: [number, number] };
-type Body = { id: number, score: number, box: [number, number, number, number], boxRaw: [number, number, number, number], keypoints: Array<Keypoints> }
+type Body = { id: number, score: number, box: Box, boxRaw: Box, keypoints: Array<Keypoints> }
 
-let box: [number, number, number, number] = [0, 0, 0, 0];
-let boxRaw: [number, number, number, number] = [0, 0, 0, 0];
-let score = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 const keypoints: Array<Keypoints> = [];
 
@@ -43,6 +40,7 @@ export async function load(config: Config): Promise<GraphModel> {
 async function parseSinglePose(res, config, image, inputBox) {
   const kpt = res[0][0];
   keypoints.length = 0;
+  let score = 0;
   for (let id = 0; id < kpt.length; id++) {
     score = kpt[id][2];
     if (score > config.body.minConfidence) {
@@ -64,7 +62,7 @@ async function parseSinglePose(res, config, image, inputBox) {
   score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
   const x = keypoints.map((a) => a.position[0]);
   const y = keypoints.map((a) => a.position[1]);
-  box = [
+  const box: Box = [
     Math.min(...x),
     Math.min(...y),
     Math.max(...x) - Math.min(...x),
@@ -72,7 +70,7 @@ async function parseSinglePose(res, config, image, inputBox) {
   ];
   const xRaw = keypoints.map((a) => a.positionRaw[0]);
   const yRaw = keypoints.map((a) => a.positionRaw[1]);
-  boxRaw = [
+  const boxRaw: Box = [
     Math.min(...xRaw),
     Math.min(...yRaw),
     Math.max(...xRaw) - Math.min(...xRaw),
@@ -87,7 +85,7 @@ async function parseMultiPose(res, config, image, inputBox) {
   const bodies: Array<Body> = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt = res[0][id];
-    score = Math.round(100 * kpt[51 + 4]) / 100;
+    const score = Math.round(100 * kpt[51 + 4]) / 100;
     // eslint-disable-next-line no-continue
     if (score < config.body.minConfidence) continue;
     keypoints.length = 0;
@@ -106,7 +104,7 @@ async function parseMultiPose(res, config, image, inputBox) {
         });
       }
     }
-    boxRaw = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
+    const boxRaw: Box = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
     bodies.push({
       id,
       score,

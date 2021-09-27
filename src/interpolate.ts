@@ -2,7 +2,7 @@
  * Results interpolation for smoothening of video detection results inbetween detected frames
  */
 
-import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult } from './result';
+import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult, Box, Point } from './result';
 
 const bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 
@@ -30,9 +30,9 @@ export function calc(newResult: Result): Result {
   } else {
     for (let i = 0; i < newResult.body.length; i++) {
       const box = newResult.body[i].box // update box
-        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].box[j] + b) / bufferedFactor) as [number, number, number, number];
+        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].box[j] + b) / bufferedFactor) as Box;
       const boxRaw = newResult.body[i].boxRaw // update boxRaw
-        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + b) / bufferedFactor) as [number, number, number, number];
+        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + b) / bufferedFactor) as Box;
       const keypoints = (newResult.body[i].keypoints // update keypoints
         .map((keypoint, j) => ({
           score: keypoint.score,
@@ -56,13 +56,13 @@ export function calc(newResult: Result): Result {
   } else {
     for (let i = 0; i < newResult.hand.length; i++) {
       const box = (newResult.hand[i].box// update box
-        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor)) as [number, number, number, number];
+        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor)) as Box;
       const boxRaw = (newResult.hand[i].boxRaw // update boxRaw
-        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor)) as [number, number, number, number];
+        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor)) as Box;
       if (bufferedResult.hand[i].keypoints.length !== newResult.hand[i].keypoints.length) bufferedResult.hand[i].keypoints = newResult.hand[i].keypoints; // reset keypoints as previous frame did not have them
       const keypoints = newResult.hand[i].keypoints && newResult.hand[i].keypoints.length > 0 ? newResult.hand[i].keypoints // update landmarks
         .map((landmark, j) => landmark
-          .map((coord, k) => (((bufferedFactor - 1) * bufferedResult.hand[i].keypoints[j][k] + coord) / bufferedFactor)) as [number, number, number])
+          .map((coord, k) => (((bufferedFactor - 1) * (bufferedResult.hand[i].keypoints[j][k] || 1) + (coord || 0)) / bufferedFactor)) as Point)
         : [];
       const annotations = {};
       if (Object.keys(bufferedResult.hand[i].annotations).length !== Object.keys(newResult.hand[i].annotations).length) bufferedResult.hand[i].annotations = newResult.hand[i].annotations; // reset annotations as previous frame did not have them
@@ -83,9 +83,9 @@ export function calc(newResult: Result): Result {
   } else {
     for (let i = 0; i < newResult.face.length; i++) {
       const box = (newResult.face[i].box // update box
-        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor)) as [number, number, number, number];
+        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor)) as Box;
       const boxRaw = (newResult.face[i].boxRaw // update boxRaw
-        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor)) as [number, number, number, number];
+        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor)) as Box;
       const rotation: {
         matrix: [number, number, number, number, number, number, number, number, number],
         angle: { roll: number, yaw: number, pitch: number },
@@ -112,9 +112,9 @@ export function calc(newResult: Result): Result {
   } else {
     for (let i = 0; i < newResult.object.length; i++) {
       const box = (newResult.object[i].box // update box
-        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].box[j] + b) / bufferedFactor)) as [number, number, number, number];
+        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].box[j] + b) / bufferedFactor)) as Box;
       const boxRaw = (newResult.object[i].boxRaw // update boxRaw
-        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].boxRaw[j] + b) / bufferedFactor)) as [number, number, number, number];
+        .map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].boxRaw[j] + b) / bufferedFactor)) as Box;
       bufferedResult.object[i] = { ...newResult.object[i], box, boxRaw }; // shallow clone plus updated values
     }
   }
@@ -127,7 +127,7 @@ export function calc(newResult: Result): Result {
     } else {
       for (let i = 0; i < newPersons.length; i++) { // update person box, we don't update the rest as it's updated as reference anyhow
         bufferedResult.persons[i].box = (newPersons[i].box
-          .map((box, j) => ((bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box) / bufferedFactor)) as [number, number, number, number];
+          .map((box, j) => ((bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box) / bufferedFactor)) as Box;
       }
     }
   }

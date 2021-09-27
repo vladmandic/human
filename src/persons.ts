@@ -2,7 +2,7 @@
  * Analyze detection Results and sort&combine them into per-person view
  */
 
-import type { FaceResult, BodyResult, HandResult, GestureResult, PersonResult } from './result';
+import type { FaceResult, BodyResult, HandResult, GestureResult, PersonResult, Box } from './result';
 
 export function join(faces: Array<FaceResult>, bodies: Array<BodyResult>, hands: Array<HandResult>, gestures: Array<GestureResult>, shape: Array<number> | undefined): Array<PersonResult> {
   let id = 0;
@@ -44,7 +44,7 @@ export function join(faces: Array<FaceResult>, bodies: Array<BodyResult>, hands:
     // create new overarching box from all boxes beloning to person
     const x: number[] = [];
     const y: number[] = [];
-    const extractXY = (box: [number, number, number, number] | undefined) => { // extract all [x, y] coordinates from boxes [x, y, width, height]
+    const extractXY = (box: Box | undefined) => { // extract all [x, y] coordinates from boxes [x, y, width, height]
       if (box && box.length === 4) {
         x.push(box[0], box[0] + box[2]);
         y.push(box[1], box[1] + box[3]);

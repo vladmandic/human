@@ -3,13 +3,13 @@
  * Uses FaceMesh, Emotion and FaceRes models to create a unified pipeline
  */
 
-import { log, now } from './util';
-import * as tf from '../dist/tfjs.esm.js';
-import * as facemesh from './blazeface/facemesh';
-import * as emotion from './emotion/emotion';
-import * as faceres from './faceres/faceres';
-import type { FaceResult } from './result';
-import type { Tensor } from './tfjs/types';
+import { log, now } from '../util/util';
+import * as tf from '../../dist/tfjs.esm.js';
+import * as facemesh from '../blazeface/facemesh';
+import * as emotion from '../gear/emotion';
+import * as faceres from './faceres';
+import type { FaceResult } from '../result';
+import type { Tensor } from '../tfjs/types';
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);

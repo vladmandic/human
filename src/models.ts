@@ -2,23 +2,23 @@
  * Loader and Validator for all models used by Human
  */
 
-import { log } from './util';
+import { log } from './util/util';
 import type { GraphModel } from './tfjs/types';
 import * as facemesh from './blazeface/facemesh';
-import * as faceres from './faceres/faceres';
-import * as emotion from './emotion/emotion';
+import * as faceres from './face/faceres';
+import * as emotion from './gear/emotion';
 import * as posenet from './posenet/posenet';
 import * as handpose from './handpose/handpose';
-import * as handtrack from './handtrack/handtrack';
-import * as blazepose from './blazepose/blazepose';
-import * as efficientpose from './efficientpose/efficientpose';
-import * as movenet from './movenet/movenet';
+import * as handtrack from './hand/handtrack';
+import * as blazepose from './body/blazepose';
+import * as efficientpose from './body/efficientpose';
+import * as movenet from './body/movenet';
 import * as nanodet from './object/nanodet';
 import * as centernet from './object/centernet';
 import * as segmentation from './segmentation/segmentation';
 import type { Human } from './human';
-import { env } from './env';
-import * as agegenderrace from './gear/agegenderrace';
+import { env } from './util/env';
+import * as agegenderrace from './gear/gear-agegenderrace';
 
 /** Instances of all possible TFJS Graph Models used by Human
  * - loaded as needed based on configuration
@@ -29,6 +29,7 @@ import * as agegenderrace from './gear/agegenderrace';
 export class Models {
   age: null | GraphModel | Promise<GraphModel> = null;
   agegenderrace: null | GraphModel | Promise<GraphModel> = null;
+  blazeposedetect: null | GraphModel | Promise<GraphModel> = null;
   blazepose: null | GraphModel | Promise<GraphModel> = null;
   centernet: null | GraphModel | Promise<GraphModel> = null;
   efficientpose: null | GraphModel | Promise<GraphModel> = null;
@@ -69,8 +70,9 @@ export async function load(instance: Human) {
   if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handskeleton = handtrack.loadSkeleton(instance.config);
   if (instance.config.body.enabled && !instance.models.posenet && instance.config.body?.modelPath?.includes('posenet')) instance.models.posenet = posenet.load(instance.config);
   if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body?.modelPath?.includes('efficientpose')) instance.models.efficientpose = efficientpose.load(instance.config);
-  if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body?.modelPath?.includes('blazepose')) instance.models.blazepose = blazepose.load(instance.config);
-  if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body?.modelPath?.includes('efficientpose')) instance.models.efficientpose = blazepose.load(instance.config);
+  if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body?.modelPath?.includes('blazepose')) instance.models.blazepose = blazepose.loadPose(instance.config);
+  if (instance.config.body.enabled && !instance.models.blazeposedetect && instance.config.body.detector?.modelPath && instance.config.body?.modelPath?.includes('blazepose')) instance.models.blazeposedetect = blazepose.loadDetect(instance.config);
+  if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body?.modelPath?.includes('efficientpose')) instance.models.efficientpose = efficientpose.load(instance.config);
   if (instance.config.body.enabled && !instance.models.movenet && instance.config.body?.modelPath?.includes('movenet')) instance.models.movenet = movenet.load(instance.config);
   if (instance.config.object.enabled && !instance.models.nanodet && instance.config.object?.modelPath?.includes('nanodet')) instance.models.nanodet = nanodet.load(instance.config);
   if (instance.config.object.enabled && !instance.models.centernet && instance.config.object?.modelPath?.includes('centernet')) instance.models.centernet = centernet.load(instance.config);

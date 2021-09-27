@@ -4,13 +4,13 @@
  * Based on: [**NanoDet**](https://github.com/RangiLyu/nanodet)
  */
 
-import { log, join } from '../util';
+import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
 import type { ObjectResult, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
-import { env } from '../env';
+import { env } from '../util/env';
 import { fakeOps } from '../tfjs/backend';
 
 let model: GraphModel | null;

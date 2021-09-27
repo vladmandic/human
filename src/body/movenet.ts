@@ -4,19 +4,20 @@
  * Based on: [**MoveNet**](https://blog.tensorflow.org/2021/05/next-generation-pose-detection-with-movenet-and-tensorflowjs.html)
  */
 
-import { log, join, scaleBox } from '../util';
+import { log, join } from '../util/util';
+import { scale } from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
-import type { BodyResult, Box } from '../result';
+import type { BodyResult, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { fakeOps } from '../tfjs/backend';
-import { env } from '../env';
+import { env } from '../util/env';
 
 let model: GraphModel | null;
 let inputSize = 0;
 const cachedBoxes: Array<Box> = [];
 
-type Keypoints = { score: number, part: string, position: [number, number], positionRaw: [number, number] };
+type Keypoints = { score: number, part: string, position: Point, positionRaw: Point };
 type Body = { id: number, score: number, box: Box, boxRaw: Box, keypoints: Array<Keypoints> }
 
 let skipped = Number.MAX_SAFE_INTEGER;
@@ -157,7 +158,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
       for (let i = 0; i < bodies.length; i++) {
         if (bodies[i].keypoints.length > 10) { // only update cache if we detected sufficient number of keypoints
           const kpts = bodies[i].keypoints.map((kpt) => kpt.position);
-          const newBox = scaleBox(kpts, 1.5, [input.shape[2], input.shape[1]]);
+          const newBox = scale(kpts, 1.5, [input.shape[2], input.shape[1]]);
           cachedBoxes.push([...newBox.yxBox]);
         }
       }

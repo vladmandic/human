@@ -9,7 +9,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
 import * as handpipeline from './handpipeline';
 import * as fingerPose from '../fingerpose/fingerpose';
-import type { HandResult } from '../result';
+import type { HandResult, Box, Point } from '../result';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../env';
@@ -39,10 +39,10 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
       }
     }
 
-    const keypoints = predictions[i].landmarks as unknown as Array<[number, number, number]>;
+    const keypoints = predictions[i].landmarks as unknown as Array<Point>;
 
-    let box: [number, number, number, number] = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0]; // maximums so conditionals work
-    let boxRaw: [number, number, number, number] = [0, 0, 0, 0];
+    let box: Box = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0]; // maximums so conditionals work
+    let boxRaw: Box = [0, 0, 0, 0];
     if (keypoints && keypoints.length > 0) { // if we have landmarks, calculate box based on landmarks
       for (const pt of keypoints) {
         if (pt[0] < box[0]) box[0] = pt[0];

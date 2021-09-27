@@ -6,7 +6,7 @@
 
 import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
-import type { BodyResult } from '../result';
+import type { BodyResult, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../env';
@@ -16,8 +16,8 @@ let model: GraphModel | null;
 type Keypoints = { score: number, part: string, position: [number, number], positionRaw: [number, number] };
 
 const keypoints: Array<Keypoints> = [];
-let box: [number, number, number, number] = [0, 0, 0, 0];
-let boxRaw: [number, number, number, number] = [0, 0, 0, 0];
+let box: Box = [0, 0, 0, 0];
+let boxRaw: Box = [0, 0, 0, 0];
 let score = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 

@@ -400,7 +400,7 @@ export async function hand(inCanvas: HTMLCanvasElement | OffscreenCanvas, result
     if (localOptions.drawPoints) {
       if (h.keypoints && h.keypoints.length > 0) {
         for (const pt of h.keypoints) {
-          ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + (2 * pt[2])}, ${127.5 - (2 * pt[2])}, 255, 0.5)` : localOptions.color;
+          ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + (2 * (pt[2] || 0))}, ${127.5 - (2 * (pt[2] || 0))}, 255, 0.5)` : localOptions.color;
           point(ctx, pt[0], pt[1], 0, localOptions);
         }
       }

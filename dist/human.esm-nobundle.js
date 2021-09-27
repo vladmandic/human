@@ -9583,6 +9583,7 @@ async function check(instance, force = false) {
       tfjs_esm_exports.ENV.set("WEBGL_CPU_FORWARD", true);
       tfjs_esm_exports.ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
       tfjs_esm_exports.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
+      tfjs_esm_exports.ENV.set("CPU_HANDOFF_SIZE_THRESHOLD", 128);
       if (typeof instance.config["deallocate"] !== "undefined" && instance.config["deallocate"]) {
         log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
         tfjs_esm_exports.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
@@ -9751,7 +9752,7 @@ async function detectFingers(input, h, config3) {
       hand3.keypoints = rawCoords.map((coord) => [
         h.box[2] * coord[0] / inputSize[1][0] + h.box[0],
         h.box[3] * coord[1] / inputSize[1][1] + h.box[1],
-        (h.box[2] + h.box[3]) / 2 / inputSize[1][0] * coord[2]
+        (h.box[2] + h.box[3]) / 2 / inputSize[1][0] * (coord[2] || 0)
       ]);
       const updatedBox = scale(hand3.keypoints, boxScaleFact, outputSize);
       h.box = updatedBox.box;

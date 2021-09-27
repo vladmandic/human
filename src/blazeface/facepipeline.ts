@@ -166,8 +166,8 @@ export class Pipeline {
   correctFaceRotation(config, box, input) {
     const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= meshLandmarks.count) ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
     const angle: number = util.computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
-    const faceCenter: [number, number] = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
-    const faceCenterNormalized: [number, number] = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
+    const faceCenter: Point = bounding.getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
+    const faceCenterNormalized: Point = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
     const rotated = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
     const rotationMatrix = util.buildRotationMatrix(-angle, faceCenter);
     const cut = config.face.mesh.enabled

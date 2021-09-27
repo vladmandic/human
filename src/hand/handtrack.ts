@@ -9,7 +9,7 @@
 import { log, join } from '../util/util';
 import { scale } from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
-import type { HandResult, Box } from '../result';
+import type { HandResult, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
@@ -25,7 +25,7 @@ const inputSize = [[0, 0], [0, 0]];
 const classes = ['hand', 'fist', 'pinch', 'point', 'face', 'tip', 'pinchtip'];
 
 let skipped = 0;
-let outputSize: [number, number] = [0, 0];
+let outputSize: Point = [0, 0];
 
 type HandDetectResult = {
   id: number,
@@ -115,7 +115,7 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
       let yxBox: Box = [0, 0, 0, 0];
       if (config.hand.landmarks) { // scale box
         const detectedBox: Box = await boxSlice.data();
-        const boxCenter: [number, number] = [(detectedBox[0] + detectedBox[2]) / 2, (detectedBox[1] + detectedBox[3]) / 2];
+        const boxCenter: Point = [(detectedBox[0] + detectedBox[2]) / 2, (detectedBox[1] + detectedBox[3]) / 2];
         const boxDiff: Box = [+boxCenter[0] - detectedBox[0], +boxCenter[1] - detectedBox[1], -boxCenter[0] + detectedBox[2], -boxCenter[1] + detectedBox[3]];
         yxBox = [boxCenter[0] - boxScaleFact * boxDiff[0], boxCenter[1] - boxScaleFact * boxDiff[1], boxCenter[0] + boxScaleFact * boxDiff[2], boxCenter[1] + boxScaleFact * boxDiff[3]];
       } else { // use box as-is
@@ -163,11 +163,11 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
     if (score > (config.hand.minConfidence || 0)) {
       hand.fingerScore = score;
       t.reshaped = tf.reshape(t.keypoints, [-1, 3]);
-      const rawCoords = await t.reshaped.array() as number[];
-      hand.keypoints = (rawCoords as number[]).map((coord) => [
+      const rawCoords = await t.reshaped.array() as Point[];
+      hand.keypoints = (rawCoords as Point[]).map((coord) => [
         (h.box[2] * coord[0] / inputSize[1][0]) + h.box[0],
         (h.box[3] * coord[1] / inputSize[1][1]) + h.box[1],
-        (h.box[2] + h.box[3]) / 2 / inputSize[1][0] * coord[2],
+        (h.box[2] + h.box[3]) / 2 / inputSize[1][0] * (coord[2] || 0),
       ]);
       const updatedBox = scale(hand.keypoints, boxScaleFact, outputSize); // replace detected box with box calculated around keypoints
       h.box = updatedBox.box;

@@ -45,7 +45,7 @@ async function parseSinglePose(res, config, image, inputBox) {
   for (let id = 0; id < kpt.length; id++) {
     score = kpt[id][2];
     if (score > config.body.minConfidence) {
-      const positionRaw: [number, number] = [
+      const positionRaw: Point = [
         (inputBox[3] - inputBox[1]) * kpt[id][1] + inputBox[1],
         (inputBox[2] - inputBox[0]) * kpt[id][0] + inputBox[0],
       ];
@@ -93,7 +93,7 @@ async function parseMultiPose(res, config, image, inputBox) {
     for (let i = 0; i < 17; i++) {
       const partScore = Math.round(100 * kpt[3 * i + 2]) / 100;
       if (partScore > config.body.minConfidence) {
-        const positionRaw: [number, number] = [
+        const positionRaw: Point = [
           (inputBox[3] - inputBox[1]) * kpt[3 * i + 1] + inputBox[1],
           (inputBox[2] - inputBox[0]) * kpt[3 * i + 0] + inputBox[0],
         ];

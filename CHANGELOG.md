@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/09/27 mandic00@live.com
 
+- define app specific types
 - implement box caching for movenet
 - autodetect number of bodies and hands
 - upload new samples

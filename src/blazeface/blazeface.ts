@@ -3,7 +3,7 @@
  * See `facemesh.ts` for entry point
  */
 
-import { log, join, mergeDeep } from '../util';
+import { log, join, mergeDeep } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as box from './box';
 import * as util from './util';

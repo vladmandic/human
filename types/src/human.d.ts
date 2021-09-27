@@ -6,13 +6,13 @@ import type { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as models from './models';
 import * as facemesh from './blazeface/facemesh';
-import * as env from './env';
+import * as env from './util/env';
 import type { Tensor } from './tfjs/types';
-import type { DrawOptions } from './draw';
+import type { DrawOptions } from './util/draw';
 export * from './config';
 export * from './result';
-export type { DrawOptions } from './draw';
-export { env, Env } from './env';
+export type { DrawOptions } from './util/draw';
+export { env, Env } from './util/env';
 export { Box, Point } from './result';
 export { Models } from './models';
 /** Defines all possible input types for **Human** detection

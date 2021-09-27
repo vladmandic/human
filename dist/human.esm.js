@@ -42,7 +42,7 @@ var __privateSet = (obj, member, value, setter) => {
   return value;
 };
 
-// src/util.ts
+// src/util/util.ts
 function join(folder, file) {
   const separator = folder.endsWith("/") ? "" : "/";
   const skipJoin = file.startsWith(".") || file.startsWith("/") || file.startsWith("http:") || file.startsWith("https:") || file.startsWith("file:");
@@ -94,31 +94,6 @@ function mergeDeep(...objects) {
     });
     return prev;
   }, {});
-}
-function scaleBox(keypoints3, boxScaleFact2, outputSize2) {
-  const coords4 = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
-  const maxmin = [Math.max(...coords4[0]), Math.min(...coords4[0]), Math.max(...coords4[1]), Math.min(...coords4[1])];
-  const center = [(maxmin[0] + maxmin[1]) / 2, (maxmin[2] + maxmin[3]) / 2];
-  const diff = Math.max(center[0] - maxmin[1], center[1] - maxmin[3], -center[0] + maxmin[0], -center[1] + maxmin[2]) * boxScaleFact2;
-  const box5 = [
-    Math.trunc(center[0] - diff),
-    Math.trunc(center[1] - diff),
-    Math.trunc(2 * diff),
-    Math.trunc(2 * diff)
-  ];
-  const boxRaw2 = [
-    box5[0] / outputSize2[0],
-    box5[1] / outputSize2[1],
-    box5[2] / outputSize2[0],
-    box5[3] / outputSize2[1]
-  ];
-  const yxBox = [
-    boxRaw2[1],
-    boxRaw2[0],
-    boxRaw2[3] + boxRaw2[1],
-    boxRaw2[2] + boxRaw2[0]
-  ];
-  return { box: box5, boxRaw: boxRaw2, yxBox };
 }
 
 // src/config.ts
@@ -189,6 +164,9 @@ var config = {
   body: {
     enabled: true,
     modelPath: "movenet-lightning.json",
+    detector: {
+      modelPath: ""
+    },
     maxDetected: -1,
     minConfidence: 0.2,
     skipFrames: 1
@@ -10700,8 +10678,8 @@ function calculateShapes(updates, indices, shape) {
   const safeSliceDim = sliceRank < 1 ? 1 : sliceRank;
   const numUpdates = sizeFromShape(indices.shape) / safeSliceDim;
   const strides = [...computeStrides(shape.slice(0, sliceRank)), 1];
-  const outputSize2 = sizeFromShape(shape);
-  return { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 };
+  const outputSize3 = sizeFromShape(shape);
+  return { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize3 };
 }
 var slice_util_exports = {};
 __export2(slice_util_exports, {
@@ -11764,7 +11742,7 @@ function xAs4D(x) {
   }
   return x4D;
 }
-function batchNorm_(x, mean4, variance, offset, scale2, varianceEpsilon) {
+function batchNorm_(x, mean4, variance, offset, scale22, varianceEpsilon) {
   if (varianceEpsilon == null) {
     varianceEpsilon = 1e-3;
   }
@@ -11772,8 +11750,8 @@ function batchNorm_(x, mean4, variance, offset, scale2, varianceEpsilon) {
   const $mean = convertToTensor(mean4, "mean", "batchNorm");
   const $variance = convertToTensor(variance, "variance", "batchNorm");
   let $scale;
-  if (scale2 != null) {
-    $scale = convertToTensor(scale2, "scale", "batchNorm");
+  if (scale22 != null) {
+    $scale = convertToTensor(scale22, "scale", "batchNorm");
   }
   let $offset;
   if (offset != null) {
@@ -11795,13 +11773,13 @@ function batchNorm_(x, mean4, variance, offset, scale2, varianceEpsilon) {
   return reshape(res, $x.shape);
 }
 var batchNorm = op({ batchNorm_ });
-function batchNorm2d_(x, mean4, variance, offset, scale2, varianceEpsilon) {
+function batchNorm2d_(x, mean4, variance, offset, scale22, varianceEpsilon) {
   const $x = convertToTensor(x, "x", "batchNorm");
   const $mean = convertToTensor(mean4, "mean", "batchNorm");
   const $variance = convertToTensor(variance, "variance", "batchNorm");
   let $scale;
-  if (scale2 != null) {
-    $scale = convertToTensor(scale2, "scale", "batchNorm");
+  if (scale22 != null) {
+    $scale = convertToTensor(scale22, "scale", "batchNorm");
   }
   let $offset;
   if (offset != null) {
@@ -11819,13 +11797,13 @@ function batchNorm2d_(x, mean4, variance, offset, scale2, varianceEpsilon) {
   return batchNorm($x, $mean, $variance, $offset, $scale, varianceEpsilon);
 }
 var batchNorm2d = op({ batchNorm2d_ });
-function batchNorm3d_(x, mean4, variance, offset, scale2, varianceEpsilon) {
+function batchNorm3d_(x, mean4, variance, offset, scale22, varianceEpsilon) {
   const $x = convertToTensor(x, "x", "batchNorm");
   const $mean = convertToTensor(mean4, "mean", "batchNorm");
   const $variance = convertToTensor(variance, "variance", "batchNorm");
   let $scale;
-  if (scale2 != null) {
-    $scale = convertToTensor(scale2, "scale", "batchNorm");
+  if (scale22 != null) {
+    $scale = convertToTensor(scale22, "scale", "batchNorm");
   }
   let $offset;
   if (offset != null) {
@@ -11843,13 +11821,13 @@ function batchNorm3d_(x, mean4, variance, offset, scale2, varianceEpsilon) {
   return batchNorm($x, $mean, $variance, $offset, $scale, varianceEpsilon);
 }
 var batchNorm3d = op({ batchNorm3d_ });
-function batchNorm4d_(x, mean4, variance, offset, scale2, varianceEpsilon) {
+function batchNorm4d_(x, mean4, variance, offset, scale22, varianceEpsilon) {
   const $x = convertToTensor(x, "x", "batchNorm");
   const $mean = convertToTensor(mean4, "mean", "batchNorm");
   const $variance = convertToTensor(variance, "variance", "batchNorm");
   let $scale;
-  if (scale2 != null) {
-    $scale = convertToTensor(scale2, "scale", "batchNorm");
+  if (scale22 != null) {
+    $scale = convertToTensor(scale22, "scale", "batchNorm");
   }
   let $offset;
   if (offset != null) {
@@ -13487,14 +13465,14 @@ async function setdiff1dAsync_(x, y) {
   const xVals = await $x.data();
   const yVals = await $y.data();
   const ySet = new Set(yVals);
-  let outputSize2 = 0;
+  let outputSize3 = 0;
   for (let i = 0; i < xVals.length; i++) {
     if (!ySet.has(xVals[i])) {
-      outputSize2++;
+      outputSize3++;
     }
   }
-  const buffer2 = new TensorBuffer([outputSize2], $x.dtype);
-  const indices = new TensorBuffer([outputSize2], "int32");
+  const buffer2 = new TensorBuffer([outputSize3], $x.dtype);
+  const indices = new TensorBuffer([outputSize3], "int32");
   for (let i = 0, p2 = 0; i < xVals.length; i++) {
     if (!ySet.has(xVals[i])) {
       buffer2.values[p2] = xVals[i];
@@ -14601,7 +14579,7 @@ function nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scor
     }
   }
   candidates.sort(ascendingComparator);
-  const scale2 = softNmsSigma > 0 ? -0.5 / softNmsSigma : 0;
+  const scale22 = softNmsSigma > 0 ? -0.5 / softNmsSigma : 0;
   const selectedIndices = [];
   const selectedScores = [];
   while (selectedIndices.length < maxOutputSize && candidates.length > 0) {
@@ -14617,7 +14595,7 @@ function nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scor
         ignoreCandidate = true;
         break;
       }
-      candidate.score = candidate.score * suppressWeight(iouThreshold, scale2, iou);
+      candidate.score = candidate.score * suppressWeight(iouThreshold, scale22, iou);
       if (candidate.score <= scoreThreshold) {
         break;
       }
@@ -14670,8 +14648,8 @@ function intersectionOverUnion(boxes, i, j) {
   const intersectionArea = Math.max(intersectionYmax - intersectionYmin, 0) * Math.max(intersectionXmax - intersectionXmin, 0);
   return intersectionArea / (areaI + areaJ - intersectionArea);
 }
-function suppressWeight(iouThreshold, scale2, iou) {
-  const weight = Math.exp(scale2 * iou * iou);
+function suppressWeight(iouThreshold, scale22, iou) {
+  const weight = Math.exp(scale22 * iou * iou);
   return iou <= iouThreshold ? weight : 0;
 }
 function ascendingComparator(c1, c2) {
@@ -17126,8 +17104,8 @@ var fusedBatchNormGradConfig = {
   inputsToSave: ["x", "mean", "variance", "scale"],
   gradFunc: (dy, saved, attrs) => {
     const { varianceEpsilon } = attrs;
-    const [x, mean4, variance, scale2] = saved;
-    const scaleValue = scale2 == null ? scalar(1) : scale2;
+    const [x, mean4, variance, scale22] = saved;
+    const scaleValue = scale22 == null ? scalar(1) : scale22;
     const reductionAxes = getReductionAxes(mean4.shape, x.shape);
     const tileShape = [];
     if (mean4.rank === 1) {
@@ -17763,8 +17741,8 @@ var seluGradConfig = {
       x: () => {
         const mask = greater(x, scalar(0));
         const scaleAlpha2 = scalar(SELU_SCALEALPHA);
-        const scale2 = scalar(SELU_SCALE);
-        const greaterThanZeroDer = mul(dy, scale2);
+        const scale22 = scalar(SELU_SCALE);
+        const greaterThanZeroDer = mul(dy, scale22);
         const lessEqualZeroDer = mul(mul(dy, scaleAlpha2), exp(cast(x, "float32")));
         return where(mask, greaterThanZeroDer, lessEqualZeroDer);
       }
@@ -18237,9 +18215,9 @@ getGlobalTensorClass().prototype.batchToSpaceND = function(blockShape, crops) {
   this.throwIfDisposed();
   return batchToSpaceND(this, blockShape, crops);
 };
-getGlobalTensorClass().prototype.batchNorm = function(mean4, variance, offset, scale2, varianceEpsilon) {
+getGlobalTensorClass().prototype.batchNorm = function(mean4, variance, offset, scale22, varianceEpsilon) {
   this.throwIfDisposed();
-  return batchNorm(this, mean4, variance, offset, scale2, varianceEpsilon);
+  return batchNorm(this, mean4, variance, offset, scale22, varianceEpsilon);
 };
 getGlobalTensorClass().prototype.broadcastTo = function(shape) {
   this.throwIfDisposed();
@@ -19718,23 +19696,23 @@ var VarianceScaling = class extends Initializer {
     const fans = computeFans(shape);
     const fanIn = fans[0];
     const fanOut = fans[1];
-    let scale2 = this.scale;
+    let scale22 = this.scale;
     if (this.mode === "fanIn") {
-      scale2 /= Math.max(1, fanIn);
+      scale22 /= Math.max(1, fanIn);
     } else if (this.mode === "fanOut") {
-      scale2 /= Math.max(1, fanOut);
+      scale22 /= Math.max(1, fanOut);
     } else {
-      scale2 /= Math.max(1, (fanIn + fanOut) / 2);
+      scale22 /= Math.max(1, (fanIn + fanOut) / 2);
     }
     if (this.distribution === "normal") {
-      const stddev = Math.sqrt(scale2);
+      const stddev = Math.sqrt(scale22);
       dtype = dtype || "float32";
       if (dtype !== "float32" && dtype !== "int32") {
         throw new NotImplementedError(`${this.getClassName()} does not support dType ${dtype}.`);
       }
       return truncatedNormal(shape, 0, stddev, dtype, this.seed);
     } else {
-      const limit = Math.sqrt(3 * scale2);
+      const limit = Math.sqrt(3 * scale22);
       return randomUniform(shape, -limit, limit, dtype);
     }
   }
@@ -28220,8 +28198,8 @@ var AlphaDropout = class extends Layer {
         const droppedInputs = () => {
           const input2 = getExactlyOneTensor(inputs);
           const alpha = 1.6732632423543772;
-          const scale2 = 1.0507009873554805;
-          const alphaP = -alpha * scale2;
+          const scale22 = 1.0507009873554805;
+          const alphaP = -alpha * scale22;
           let keptIdx = greaterEqual(randomUniform(noiseShape), this.rate);
           keptIdx = cast2(keptIdx, "float32");
           const a = ((1 - this.rate) * (1 + this.rate * alphaP ** 2)) ** -0.5;
@@ -28475,7 +28453,7 @@ var LayerNormalization = class extends Layer {
           return v;
         }
       };
-      let scale2 = broadcast(this.gamma.read());
+      let scale22 = broadcast(this.gamma.read());
       let offset = broadcast(this.beta.read());
       const momentsTiling = [];
       const scaleOffsetTiling = [];
@@ -28490,9 +28468,9 @@ var LayerNormalization = class extends Layer {
       }
       mean4 = tile(mean4, momentsTiling);
       variance = tile(variance, momentsTiling);
-      scale2 = tile(scale2, scaleOffsetTiling);
+      scale22 = tile(scale22, scaleOffsetTiling);
       offset = tile(offset, scaleOffsetTiling);
-      return batchNormalization(input2, mean4, variance, offset, scale2, this.epsilon);
+      return batchNormalization(input2, mean4, variance, offset, scale22, this.epsilon);
     });
   }
   getConfig() {
@@ -35342,14 +35320,14 @@ var GraphExecutor = class {
     this.checkOutputs(outputs);
     const inputNodes = names.map((name) => this.graph.nodes[parseNodeName(name)[0]]);
     const outputNodeNames = outputs.map((name) => parseNodeName(name)[0]);
-    let outputNodes = outputNodeNames.map((name) => this.graph.nodes[name]);
-    if (outputNodes.length === 0) {
-      outputNodes = this._outputs;
+    let outputNodes2 = outputNodeNames.map((name) => this.graph.nodes[name]);
+    if (outputNodes2.length === 0) {
+      outputNodes2 = this._outputs;
     }
-    const compilationKey = this.getCompilationKey(inputNodes, outputNodes);
+    const compilationKey = this.getCompilationKey(inputNodes, outputNodes2);
     let orderedNodes = this.compiledMap.get(compilationKey);
     if (orderedNodes == null) {
-      orderedNodes = this.compile(inputs, outputNodes);
+      orderedNodes = this.compile(inputs, outputNodes2);
       this.compiledMap.set(compilationKey, orderedNodes);
     }
     const tensorArrayMap = {};
@@ -35455,11 +35433,11 @@ var GraphExecutor = class {
     const names = Object.keys(inputs);
     const inputNodes = names.map((name) => this.graph.nodes[parseNodeName(name)[0]]);
     const outputNodeNames = outputNames.map((name) => parseNodeName(name)[0]);
-    let outputNodes = outputNodeNames.map((name) => this.graph.nodes[name]);
-    if (outputNodes.length === 0) {
-      outputNodes = this._outputs;
+    let outputNodes2 = outputNodeNames.map((name) => this.graph.nodes[name]);
+    if (outputNodes2.length === 0) {
+      outputNodes2 = this._outputs;
     }
-    const { usedNodes, missingInputs, dynamicNode, syncInputs } = getExecutionSubgraph(inputs, outputNodes, this.weightMap, this._initNodes);
+    const { usedNodes, missingInputs, dynamicNode, syncInputs } = getExecutionSubgraph(inputs, outputNodes2, this.weightMap, this._initNodes);
     const stack2 = [
       ...inputNodes,
       ...this.graph.weights,
@@ -35484,7 +35462,7 @@ var GraphExecutor = class {
     if (dynamicNode == null && !isFunctionExecution) {
       console.warn(`This model execution did not contain any nodes with control flow or dynamic output shapes. You can use model.execute() instead.`);
     }
-    const missingOutputs = outputNodes.filter((node2) => !isControlFlow(node2) && !getTensor(node2.name, tensorsMap, context)).map((node2) => node2.name);
+    const missingOutputs = outputNodes2.filter((node2) => !isControlFlow(node2) && !getTensor(node2.name, tensorsMap, context)).map((node2) => node2.name);
     if (missingOutputs.length > 0) {
       let alternativeMsg = "";
       if (dynamicNode != null) {
@@ -38528,9 +38506,9 @@ function sparseReshapeImpl(inputIndices, inputIndicesShape, inputDType, inputSha
     }
     outputShape[unknownIndex] = missing;
   }
-  const outputSize2 = util_exports.sizeFromShape(outputShape);
-  if (outputSize2 !== denseSize) {
-    throw new Error(`Input to reshape is a tensor with ${denseSize} dense values, but the requested shape has ${outputSize2}. inputShape=${inputShape} outputShape=${outputShape}`);
+  const outputSize3 = util_exports.sizeFromShape(outputShape);
+  if (outputSize3 !== denseSize) {
+    throw new Error(`Input to reshape is a tensor with ${denseSize} dense values, but the requested shape has ${outputSize3}. inputShape=${inputShape} outputShape=${outputShape}`);
   }
   const inputRank = inputShape.length;
   const inputStrides = [];
@@ -38827,7 +38805,7 @@ function split3(str, delimiters, skipEmpty, result) {
 function stringSplitImpl(input2, delimiter, skipEmpty) {
   const batchSize = input2.length;
   const tokens = [];
-  let outputSize2 = 0;
+  let outputSize3 = 0;
   let maxNumEntries = 0;
   const numIndices = new Array(batchSize);
   for (let i = 0; i < batchSize; ++i) {
@@ -38835,11 +38813,11 @@ function stringSplitImpl(input2, delimiter, skipEmpty) {
     split3(input2[i], delimiter, skipEmpty, tokens);
     const nEntries = tokens.length - prevTokensLength;
     numIndices[i] = nEntries;
-    outputSize2 += nEntries;
+    outputSize3 += nEntries;
     maxNumEntries = Math.max(maxNumEntries, nEntries);
   }
-  const indices = util_exports.getArrayFromDType("int32", outputSize2 * 2);
-  const values = new Array(outputSize2);
+  const indices = util_exports.getArrayFromDType("int32", outputSize3 * 2);
+  const values = new Array(outputSize3);
   const shape = [batchSize, maxNumEntries];
   let c = 0;
   for (let i = 0; i < batchSize; ++i) {
@@ -39863,11 +39841,11 @@ var avgPoolGradConfig2 = {
 };
 function batchNorm2(args) {
   const { inputs, backend: backend22, attrs } = args;
-  const { x, scale: scale2, offset, mean: mean4, variance } = inputs;
+  const { x, scale: scale22, offset, mean: mean4, variance } = inputs;
   util_exports.assert(mean4.shape.length === variance.shape.length, () => "Batch normalization gradient requires mean and variance to have equal ranks.");
   util_exports.assert(offset == null || mean4.shape.length === offset.shape.length, () => "Batch normalization gradient requires mean and offset to have equal ranks.");
-  util_exports.assert(scale2 == null || mean4.shape.length === scale2.shape.length, () => "Batch normalization gradient requires mean and scale to have equal ranks.");
-  assertNotComplex([x, mean4, variance, scale2, offset], "batchNorm");
+  util_exports.assert(scale22 == null || mean4.shape.length === scale22.shape.length, () => "Batch normalization gradient requires mean and scale to have equal ranks.");
+  assertNotComplex([x, mean4, variance, scale22, offset], "batchNorm");
   let { varianceEpsilon } = attrs;
   if (varianceEpsilon == null) {
     varianceEpsilon = 1e-3;
@@ -39875,7 +39853,7 @@ function batchNorm2(args) {
   const xVals = backend22.data.get(x.dataId).values;
   const mVals = backend22.data.get(mean4.dataId).values;
   const varVals = backend22.data.get(variance.dataId).values;
-  const sVals = scale2 ? backend22.data.get(scale2.dataId).values : new Float32Array([1]);
+  const sVals = scale22 ? backend22.data.get(scale22.dataId).values : new Float32Array([1]);
   const offVals = offset ? backend22.data.get(offset.dataId).values : new Float32Array([0]);
   const outVals = new Float32Array(xVals.length);
   const offValsLength = offVals.length;
@@ -41211,17 +41189,17 @@ function fftBatch(input2, inverse, cpuBackend) {
   return result;
 }
 function fftImpl(input2, inverse, cpuBackend) {
-  const inputSize4 = util_exports.sizeFromShape(input2.shape);
+  const inputSize5 = util_exports.sizeFromShape(input2.shape);
   const inputVals = cpuBackend.data.get(input2.dataId);
   const realVals = cpuBackend.data.get(inputVals.complexTensorInfos.real.dataId).values;
   const imagVals = cpuBackend.data.get(inputVals.complexTensorInfos.imag.dataId).values;
-  if (isExponentOf2(inputSize4)) {
-    const result = fftRadix2(realVals, imagVals, inputSize4, inverse, cpuBackend);
+  if (isExponentOf2(inputSize5)) {
+    const result = fftRadix2(realVals, imagVals, inputSize5, inverse, cpuBackend);
     const resultShape = [input2.shape[0], input2.shape[1]];
     if (inverse) {
       const realInfo = cpuBackend.makeTensorInfo(resultShape, "float32", result.real);
       const imagInfo = cpuBackend.makeTensorInfo(resultShape, "float32", result.imag);
-      const sizeInfo = cpuBackend.makeTensorInfo([], "float32", util_exports.createScalarValue(inputSize4, "float32"));
+      const sizeInfo = cpuBackend.makeTensorInfo([], "float32", util_exports.createScalarValue(inputSize5, "float32"));
       const sizeInfoCopy = identity2({ inputs: { x: sizeInfo }, backend: cpuBackend });
       const divRealInfo = realDivConfig.kernelFunc({ inputs: { a: realInfo, b: sizeInfo }, backend: cpuBackend });
       const divImagInfo = realDivConfig.kernelFunc({ inputs: { a: imagInfo, b: sizeInfoCopy }, backend: cpuBackend });
@@ -41238,7 +41216,7 @@ function fftImpl(input2, inverse, cpuBackend) {
     return result;
   } else {
     const data = backend_util_exports.mergeRealAndImagArrays(realVals, imagVals);
-    const rawOutput = fourierTransformByMatmul(data, inputSize4, inverse);
+    const rawOutput = fourierTransformByMatmul(data, inputSize5, inverse);
     return backend_util_exports.splitRealAndImagArrays(rawOutput);
   }
 }
@@ -41360,9 +41338,9 @@ function fourierTransformByMatmul(data, size, inverse) {
 function fft2(args) {
   const { inputs, backend: backend22 } = args;
   const { input: input2 } = inputs;
-  const inputSize4 = util_exports.sizeFromShape(input2.shape);
+  const inputSize5 = util_exports.sizeFromShape(input2.shape);
   const innerDimensionSize = input2.shape[input2.shape.length - 1];
-  const batch = inputSize4 / innerDimensionSize;
+  const batch = inputSize5 / innerDimensionSize;
   const input2D = reshape3({
     inputs: { x: input2 },
     backend: backend22,
@@ -41561,9 +41539,9 @@ var gatherV2Config = {
 function ifft2(args) {
   const { inputs, backend: backend22 } = args;
   const { input: input2 } = inputs;
-  const inputSize4 = util_exports.sizeFromShape(input2.shape);
+  const inputSize5 = util_exports.sizeFromShape(input2.shape);
   const innerDimensionSize = input2.shape[input2.shape.length - 1];
-  const batch = inputSize4 / innerDimensionSize;
+  const batch = inputSize5 / innerDimensionSize;
   const input2D = reshape3({
     inputs: { x: input2 },
     backend: backend22,
@@ -42699,11 +42677,11 @@ var roundConfig = {
   backendName: "cpu",
   kernelFunc: round3
 };
-function scatterImpl(indices, updates, shape, outputSize2, sliceSize, numUpdates, sliceRank, strides, defaultValue, sumDupeIndices) {
-  const flattenShape = [outputSize2 / sliceSize, sliceSize];
+function scatterImpl(indices, updates, shape, outputSize3, sliceSize, numUpdates, sliceRank, strides, defaultValue, sumDupeIndices) {
+  const flattenShape = [outputSize3 / sliceSize, sliceSize];
   const indicesData = indices.values;
   const updatesData = updates.values;
-  if (outputSize2 === 0) {
+  if (outputSize3 === 0) {
     return buffer(shape, updates.dtype);
   }
   const outBuf = buffer(flattenShape, updates.dtype);
@@ -42716,7 +42694,7 @@ function scatterImpl(indices, updates, shape, outputSize2, sliceSize, numUpdates
       index.push(dim);
       flattenIndex += dim * strides[j];
     }
-    if (flattenIndex < 0 || flattenIndex >= outputSize2 / sliceSize) {
+    if (flattenIndex < 0 || flattenIndex >= outputSize3 / sliceSize) {
       throw new Error(`Invalid indices: ${index} does not index into ${shape}`);
     }
     for (let k = 0; k < sliceSize; k++) {
@@ -42733,11 +42711,11 @@ function scatterNd(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { indices, updates } = inputs;
   const { shape } = attrs;
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(updates, indices, shape);
+  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize3 } = backend_util_exports.calculateShapes(updates, indices, shape);
   const sumDupeIndices = true;
   const indicesBuf = backend22.bufferSync(indices);
   const updatesBuf = backend22.bufferSync(updates);
-  const outBuf = scatterImpl(indicesBuf, updatesBuf, shape, outputSize2, sliceSize, numUpdates, sliceRank, strides, 0, sumDupeIndices);
+  const outBuf = scatterImpl(indicesBuf, updatesBuf, shape, outputSize3, sliceSize, numUpdates, sliceRank, strides, 0, sumDupeIndices);
   return backend22.makeTensorInfo(shape, outBuf.dtype, outBuf.values);
 }
 var scatterNdConfig = {
@@ -42990,12 +42968,12 @@ function sparseToDense2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { sparseIndices, sparseValues, defaultValue } = inputs;
   const { outputShape } = attrs;
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
+  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize3 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
   const sumDupeIndices = false;
   const indicesBuf = backend22.bufferSync(sparseIndices);
   const updatesBuf = backend22.bufferSync(sparseValues);
   const $defaultValue = backend22.data.get(defaultValue.dataId).values[0];
-  const outBuf = scatterImpl(indicesBuf, updatesBuf, outputShape, outputSize2, sliceSize, numUpdates, sliceRank, strides, $defaultValue, sumDupeIndices);
+  const outBuf = scatterImpl(indicesBuf, updatesBuf, outputShape, outputSize3, sliceSize, numUpdates, sliceRank, strides, $defaultValue, sumDupeIndices);
   return backend22.makeTensorInfo(outputShape, outBuf.dtype, outBuf.values);
 }
 var sparseToDenseConfig = {
@@ -43116,10 +43094,10 @@ function stringSplit2(args) {
   const $input = backend22.data.get(input2.dataId).values;
   const $delimiter = backend22.data.get(delimiter.dataId).values[0];
   const [indices, values, shape] = stringSplitImpl($input, $delimiter, skipEmpty);
-  const outputSize2 = values.length;
+  const outputSize3 = values.length;
   return [
-    backend22.makeTensorInfo([outputSize2, 2], "int32", indices),
-    backend22.makeTensorInfo([outputSize2], "string", values),
+    backend22.makeTensorInfo([outputSize3, 2], "int32", indices),
+    backend22.makeTensorInfo([outputSize3], "string", values),
     backend22.makeTensorInfo([2], "int32", new Int32Array(shape))
   ];
 }
@@ -50433,10 +50411,10 @@ var BatchNormPackedProgram = class {
   }
 };
 var batchNorm3 = ({ inputs, backend: backend22, attrs }) => {
-  const { x, mean: mean4, variance, offset, scale: scale2 } = inputs;
+  const { x, mean: mean4, variance, offset, scale: scale22 } = inputs;
   util_exports.assert(mean4.shape.length === variance.shape.length, () => "Batch normalization gradient requires mean and variance to have equal ranks.");
   util_exports.assert(offset == null || mean4.shape.length === offset.shape.length, () => "Batch normalization gradient requires mean and offset to have equal ranks.");
-  util_exports.assert(scale2 == null || mean4.shape.length === scale2.shape.length, () => "Batch normalization gradient requires mean and scale to have equal ranks.");
+  util_exports.assert(scale22 == null || mean4.shape.length === scale22.shape.length, () => "Batch normalization gradient requires mean and scale to have equal ranks.");
   let { varianceEpsilon } = attrs;
   if (varianceEpsilon == null) {
     varianceEpsilon = 1e-3;
@@ -50448,9 +50426,9 @@ var batchNorm3 = ({ inputs, backend: backend22, attrs }) => {
     finalInputs.push(offset);
   }
   let scaleShape = null;
-  if (scale2 != null) {
-    scaleShape = scale2.shape;
-    finalInputs.push(scale2);
+  if (scale22 != null) {
+    scaleShape = scale22.shape;
+    finalInputs.push(scale22);
   }
   const program = env().getBool("WEBGL_PACK_NORMALIZATION") ? new BatchNormPackedProgram(x.shape, mean4.shape, variance.shape, offsetShape, scaleShape, varianceEpsilon) : new BatchNormProgram(x.shape, mean4.shape, variance.shape, offsetShape, scaleShape, varianceEpsilon);
   const output = backend22.runWebGLProgram(program, finalInputs, finalInputs[0].dtype);
@@ -53065,9 +53043,9 @@ var FFTProgram = class {
 };
 function fftImpl2(x, inverse, backend22) {
   const xData = backend22.texData.get(x.dataId);
-  const inputSize4 = util_exports.sizeFromShape(x.shape);
+  const inputSize5 = util_exports.sizeFromShape(x.shape);
   const innerDimensionSize = x.shape[x.shape.length - 1];
-  const batch = inputSize4 / innerDimensionSize;
+  const batch = inputSize5 / innerDimensionSize;
   const input2D = reshape4({ inputs: { x }, backend: backend22, attrs: { shape: [batch, innerDimensionSize] } });
   const xShape = input2D.shape;
   const realProgram = new FFTProgram("real", xShape, inverse);
@@ -55883,9 +55861,9 @@ function scatterNd2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { indices, updates } = inputs;
   const { shape } = attrs;
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(updates, indices, shape);
-  const flattenShape = [outputSize2 / sliceSize, sliceSize];
-  if (outputSize2 === 0) {
+  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize3 } = backend_util_exports.calculateShapes(updates, indices, shape);
+  const flattenShape = [outputSize3 / sliceSize, sliceSize];
+  if (outputSize3 === 0) {
     return backend22.makeTensorInfo(shape, indices.dtype);
   }
   const flattenIndices = reshape4({ inputs: { x: indices }, backend: backend22, attrs: { shape: [numUpdates, sliceRank] } });
@@ -56189,9 +56167,9 @@ function sparseToDense3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { sparseIndices, sparseValues, defaultValue } = inputs;
   const { outputShape } = attrs;
-  const { sliceRank, numUpdates, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
+  const { sliceRank, numUpdates, strides, outputSize: outputSize3 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
   const sumDupeIndices = false;
-  const program = new ScatterProgram(numUpdates, sliceRank, sparseIndices.shape.length, sparseValues.shape.length, strides, [outputSize2, 1], sumDupeIndices);
+  const program = new ScatterProgram(numUpdates, sliceRank, sparseIndices.shape.length, sparseValues.shape.length, strides, [outputSize3, 1], sumDupeIndices);
   const res = backend22.runWebGLProgram(program, [sparseValues, sparseIndices, defaultValue], sparseValues.dtype);
   const reshaped = reshape4({ inputs: { x: res }, backend: backend22, attrs: { shape: outputShape } });
   backend22.disposeIntermediateTensorInfo(res);
@@ -56355,10 +56333,10 @@ function stringSplit3(args) {
   const $input = backend22.readSync(input2.dataId);
   const $delimiter = backend22.readSync(delimiter.dataId)[0];
   const [indices, values, shape] = stringSplitImplCPU($input, $delimiter, skipEmpty);
-  const outputSize2 = values.length;
+  const outputSize3 = values.length;
   return [
-    backend22.makeTensorInfo([outputSize2, 2], "int32", indices),
-    backend22.makeTensorInfo([outputSize2], "string", values),
+    backend22.makeTensorInfo([outputSize3, 2], "int32", indices),
+    backend22.makeTensorInfo([outputSize3], "string", values),
     backend22.makeTensorInfo([2], "int32", new Int32Array(shape))
   ];
 }
@@ -58371,12 +58349,12 @@ function setup16(backend22) {
 function fusedBatchNorm(args) {
   const { backend: backend22, inputs, attrs } = args;
   const { varianceEpsilon } = attrs;
-  const { x, mean: mean4, variance, offset, scale: scale2 } = inputs;
+  const { x, mean: mean4, variance, offset, scale: scale22 } = inputs;
   const xId = backend22.dataIdMap.get(x.dataId).id;
   const meanId = backend22.dataIdMap.get(mean4.dataId).id;
   const varianceId = backend22.dataIdMap.get(variance.dataId).id;
   const offsetId = offset != null ? backend22.dataIdMap.get(offset.dataId).id : 0;
-  const scaleId = scale2 != null ? backend22.dataIdMap.get(scale2.dataId).id : 0;
+  const scaleId = scale22 != null ? backend22.dataIdMap.get(scale22.dataId).id : 0;
   const out = backend22.makeOutput(x.shape, x.dtype);
   if (util_exports.sizeFromShape(x.shape) === 0) {
     return out;
@@ -59370,14 +59348,14 @@ function scatterNd3(args) {
   if (util_exports.sizeFromShape(shape) === 0) {
     return out;
   }
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = scatter_nd_util_exports.calculateShapes(updates, indices, shape);
+  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize3 } = scatter_nd_util_exports.calculateShapes(updates, indices, shape);
   const indicesData = backend22.dataIdMap.get(indices.dataId);
   const indicesId = indicesData.id;
   const updatesData = backend22.dataIdMap.get(updates.dataId);
   const updatesId = updatesData.id;
   const stridesBytes = new Uint8Array(new Int32Array(strides).buffer);
   const outId = backend22.dataIdMap.get(out.dataId).id;
-  wasmScatterNd(indicesId, updatesId, CppDType[updates.dtype], sliceRank, numUpdates, sliceSize, stridesBytes, outputSize2, outId);
+  wasmScatterNd(indicesId, updatesId, CppDType[updates.dtype], sliceRank, numUpdates, sliceSize, stridesBytes, outputSize3, outId);
   return out;
 }
 var scatterNdConfig3 = {
@@ -60448,13 +60426,13 @@ function rotatePoint(homogeneousCoordinate, rotationMatrix) {
     dot4(homogeneousCoordinate, rotationMatrix[1])
   ];
 }
-function generateAnchors(inputSize4) {
-  const spec = { strides: [inputSize4 / 16, inputSize4 / 8], anchors: [2, 6] };
+function generateAnchors(inputSize5) {
+  const spec = { strides: [inputSize5 / 16, inputSize5 / 8], anchors: [2, 6] };
   const anchors3 = [];
   for (let i = 0; i < spec.strides.length; i++) {
     const stride = spec.strides[i];
-    const gridRows = Math.floor((inputSize4 + stride - 1) / stride);
-    const gridCols = Math.floor((inputSize4 + stride - 1) / stride);
+    const gridRows = Math.floor((inputSize5 + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize5 + stride - 1) / stride);
     const anchorsNum = spec.anchors[i];
     for (let gridY = 0; gridY < gridRows; gridY++) {
       const anchorY = stride * (gridY + 0.5);
@@ -60471,31 +60449,31 @@ function generateAnchors(inputSize4) {
 
 // src/blazeface/blazeface.ts
 var keypointsCount = 6;
-function decodeBounds(boxOutputs, anchors3, inputSize4) {
+function decodeBounds(boxOutputs, anchors3, inputSize5) {
   const boxStarts = slice(boxOutputs, [0, 1], [-1, 2]);
   const centers = add2(boxStarts, anchors3);
   const boxSizes = slice(boxOutputs, [0, 3], [-1, 2]);
-  const boxSizesNormalized = div(boxSizes, inputSize4);
-  const centersNormalized = div(centers, inputSize4);
+  const boxSizesNormalized = div(boxSizes, inputSize5);
+  const centersNormalized = div(centers, inputSize5);
   const halfBoxSize = div(boxSizesNormalized, 2);
   const starts = sub(centersNormalized, halfBoxSize);
   const ends = add2(centersNormalized, halfBoxSize);
-  const startNormalized = mul(starts, inputSize4);
-  const endNormalized = mul(ends, inputSize4);
+  const startNormalized = mul(starts, inputSize5);
+  const endNormalized = mul(ends, inputSize5);
   const concatAxis = 1;
   return concat2d([startNormalized, endNormalized], concatAxis);
 }
 var BlazeFaceModel = class {
-  constructor(model12, config3) {
+  constructor(model11, config3) {
     __publicField(this, "model");
     __publicField(this, "anchorsData");
     __publicField(this, "anchors");
     __publicField(this, "inputSize");
     __publicField(this, "config");
-    this.model = model12;
-    this.anchorsData = generateAnchors(model12.inputs[0].shape[1]);
+    this.model = model11;
+    this.anchorsData = generateAnchors(model11.inputs[0].shape[1]);
     this.anchors = tensor2d(this.anchorsData);
-    this.inputSize = model12.inputs[0].shape[2];
+    this.inputSize = model11.inputs[0].shape[2];
     this.config = config3;
   }
   async getBoundingBoxes(inputImage, userConfig) {
@@ -60547,12 +60525,12 @@ var BlazeFaceModel = class {
 };
 async function load(config3) {
   var _a, _b, _c;
-  const model12 = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.detector) == null ? void 0 : _a.modelPath) || ""), { fromTFHub: (((_b = config3.face.detector) == null ? void 0 : _b.modelPath) || "").includes("tfhub.dev") });
-  const blazeFace = new BlazeFaceModel(model12, config3);
-  if (!model12 || !model12.modelUrl)
+  const model11 = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.detector) == null ? void 0 : _a.modelPath) || ""), { fromTFHub: (((_b = config3.face.detector) == null ? void 0 : _b.modelPath) || "").includes("tfhub.dev") });
+  const blazeFace = new BlazeFaceModel(model11, config3);
+  if (!model11 || !model11.modelUrl)
     log("load model failed:", ((_c = config3.face.detector) == null ? void 0 : _c.modelPath) || "");
   else if (config3.debug)
-    log("load model:", model12.modelUrl);
+    log("load model:", model11.modelUrl);
   return blazeFace;
 }
 
@@ -64739,7 +64717,7 @@ async function skip(config3, input2) {
   return skipFrame;
 }
 
-// src/env.ts
+// src/util/env.ts
 var env2 = {
   browser: void 0,
   node: void 0,
@@ -65200,7 +65178,7 @@ async function load2(config3) {
 var triangulation = TRI468;
 var uvmap = UV468;
 
-// src/faceres/faceres.ts
+// src/face/faceres.ts
 var model2;
 var last = [];
 var lastCount = 0;
@@ -65303,7 +65281,7 @@ async function predict2(image7, config3, idx, count3) {
   });
 }
 
-// src/emotion/emotion.ts
+// src/gear/emotion.ts
 var annotations = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
 var model3;
 var last2 = [];
@@ -68713,14 +68691,14 @@ var anchors = [
 
 // src/handpose/handdetector.ts
 var HandDetector = class {
-  constructor(model12) {
+  constructor(model11) {
     __publicField(this, "model");
     __publicField(this, "anchors");
     __publicField(this, "anchorsTensor");
     __publicField(this, "inputSize");
     __publicField(this, "inputSizeTensor");
     __publicField(this, "doubleInputSizeTensor");
-    this.model = model12;
+    this.model = model11;
     this.anchors = anchors.map((anchor) => [anchor.x, anchor.y]);
     this.anchorsTensor = tensor2d(this.anchors);
     this.inputSize = this.model && this.model.inputs && this.model.inputs[0].shape ? this.model.inputs[0].shape[2] : 0;
@@ -69476,6 +69454,33 @@ async function load6(config3) {
   return [handDetectorModel, handPoseModel];
 }
 
+// src/util/box.ts
+function scale2(keypoints3, boxScaleFact2, outputSize3) {
+  const coords4 = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
+  const maxmin = [Math.max(...coords4[0]), Math.min(...coords4[0]), Math.max(...coords4[1]), Math.min(...coords4[1])];
+  const center = [(maxmin[0] + maxmin[1]) / 2, (maxmin[2] + maxmin[3]) / 2];
+  const diff = Math.max(center[0] - maxmin[1], center[1] - maxmin[3], -center[0] + maxmin[0], -center[1] + maxmin[2]) * boxScaleFact2;
+  const box5 = [
+    Math.trunc(center[0] - diff),
+    Math.trunc(center[1] - diff),
+    Math.trunc(2 * diff),
+    Math.trunc(2 * diff)
+  ];
+  const boxRaw2 = [
+    box5[0] / outputSize3[0],
+    box5[1] / outputSize3[1],
+    box5[2] / outputSize3[0],
+    box5[3] / outputSize3[1]
+  ];
+  const yxBox = [
+    boxRaw2[1],
+    boxRaw2[0],
+    boxRaw2[3] + boxRaw2[1],
+    boxRaw2[2] + boxRaw2[0]
+  ];
+  return { box: box5, boxRaw: boxRaw2, yxBox };
+}
+
 // src/tfjs/humangl.ts
 var config2 = {
   name: "humangl",
@@ -69678,7 +69683,7 @@ function fakeOps(kernelNames, config3) {
   env2.kernels = getKernelsForBackend(getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
 }
 
-// src/handtrack/handtrack.ts
+// src/hand/handtrack.ts
 var boxScaleFact = 1.5;
 var models2 = [null, null];
 var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "StatefulPartitionedCall/Postprocessor/ExpandDims_1"];
@@ -69816,7 +69821,7 @@ async function detectFingers(input2, h, config3) {
         h.box[3] * coord[1] / inputSize[1][1] + h.box[1],
         (h.box[2] + h.box[3]) / 2 / inputSize[1][0] * coord[2]
       ]);
-      const updatedBox = scaleBox(hand3.keypoints, boxScaleFact, outputSize);
+      const updatedBox = scale2(hand3.keypoints, boxScaleFact, outputSize);
       h.box = updatedBox.box;
       h.boxRaw = updatedBox.boxRaw;
       h.yxBox = updatedBox.yxBox;
@@ -69853,7 +69858,7 @@ async function predict6(input2, config3) {
   return hands;
 }
 
-// src/blazepose/annotations.ts
+// src/body/annotations.ts
 var full = [
   "nose",
   "leftEyeInside",
@@ -69929,57 +69934,71 @@ var upper = [
   "right:30"
 ];
 
-// src/blazepose/blazepose.ts
-var model5;
-async function load7(config3) {
+// src/body/blazepose.ts
+var models3 = [null, null];
+var outputNodes = ["ld_3d", "activation_segmentation", "activation_heatmap", "world_3d", "output_poseflag"];
+var inputSize2 = [[0, 0], [0, 0]];
+var outputSize2 = [0, 0];
+async function loadDetect2(config3) {
+  var _a;
   if (env2.initial)
-    model5 = null;
-  if (!model5) {
-    model5 = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
-    model5["width"] = parseInt(model5["signature"].inputs["input_1:0"].tensorShape.dim[2].size);
-    model5["height"] = parseInt(model5["signature"].inputs["input_1:0"].tensorShape.dim[1].size);
-    if (!model5 || !model5["modelUrl"])
-      log("load model failed:", config3.body.modelPath);
+    models3[0] = null;
+  if (!models3[0]) {
+    models3[0] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.body.detector) == null ? void 0 : _a.modelPath) || ""));
+    const inputs = Object.values(models3[0].modelSignature["inputs"]);
+    inputSize2[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize2[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!models3[0] || !models3[0]["modelUrl"])
+      log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", model5["modelUrl"]);
+      log("load model:", models3[0]["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model5["modelUrl"]);
-  return model5;
+    log("cached model:", models3[0]["modelUrl"]);
+  return models3[0];
 }
-async function predict7(image7, config3) {
-  if (!model5)
-    return [];
-  if (!config3.body.enabled)
-    return [];
-  const imgSize = { width: image7.shape[2] || 0, height: image7.shape[1] || 0 };
-  const resize = image.resizeBilinear(image7, [model5["width"], model5["height"]], false);
-  const normalize = div(resize, [255]);
-  dispose(resize);
-  const resT = await model5.predict(normalize);
-  const findT = resT.find((t) => t.size === 195 || t.size === 155);
-  const points = await (findT == null ? void 0 : findT.data()) || [];
-  resT.forEach((t) => dispose(t));
-  dispose(normalize);
+async function loadPose(config3) {
+  if (env2.initial)
+    models3[1] = null;
+  if (!models3[1]) {
+    models3[1] = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    const inputs = Object.values(models3[1].modelSignature["inputs"]);
+    inputSize2[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize2[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!models3[1] || !models3[1]["modelUrl"])
+      log("load model failed:", config3.object.modelPath);
+    else if (config3.debug)
+      log("load model:", models3[1]["modelUrl"]);
+  } else if (config3.debug)
+    log("cached model:", models3[1]["modelUrl"]);
+  return models3[1];
+}
+async function detectParts(input2, config3) {
+  var _a;
+  const t = {};
+  t.resize = image.resizeBilinear(input2, [inputSize2[1][0], inputSize2[1][1]]);
+  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = await ((_a = models3[1]) == null ? void 0 : _a.execute(t.resize, outputNodes));
+  const points = await t.ld.data();
   const keypoints3 = [];
   const labels2 = (points == null ? void 0 : points.length) === 195 ? full : upper;
   const depth = 5;
   for (let i = 0; i < points.length / depth; i++) {
-    keypoints3.push({
-      id: i,
-      part: labels2[i],
-      position: [
-        Math.trunc(imgSize.width * points[depth * i + 0] / 255),
-        Math.trunc(imgSize.height * points[depth * i + 1] / 255),
-        Math.trunc(points[depth * i + 2]) + 0
-      ],
-      positionRaw: [
-        points[depth * i + 0] / 255,
-        points[depth * i + 1] / 255,
-        points[depth * i + 2] + 0
-      ],
-      score: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100,
-      presence: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 4])))) / 100
-    });
+    const score3 = (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100;
+    if (score3 > (config3.body.minConfidence || 0)) {
+      keypoints3.push({
+        part: labels2[i],
+        position: [
+          Math.trunc(outputSize2[0] * points[depth * i + 0] / 255),
+          Math.trunc(outputSize2[1] * points[depth * i + 1] / 255),
+          Math.trunc(points[depth * i + 2]) + 0
+        ],
+        positionRaw: [
+          points[depth * i + 0] / 255,
+          points[depth * i + 1] / 255,
+          points[depth * i + 2] + 0
+        ],
+        score: score3
+      });
+    }
   }
   const x = keypoints3.map((a) => a.position[0]);
   const y = keypoints3.map((a) => a.position[1]);
@@ -69991,29 +70010,37 @@ async function predict7(image7, config3) {
   ];
   const boxRaw2 = [0, 0, 0, 0];
   const score2 = keypoints3.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
-  return [{ id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints3 }];
+  Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
+  return { id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints3 };
+}
+async function predict7(input2, config3) {
+  outputSize2 = [input2.shape[2] || 0, input2.shape[1] || 0];
+  const bodies = [];
+  const body4 = await detectParts(input2, config3);
+  bodies.push(body4);
+  return bodies;
 }
 
-// src/efficientpose/efficientpose.ts
-var model6;
+// src/body/efficientpose.ts
+var model5;
 var keypoints = [];
 var box4 = [0, 0, 0, 0];
 var boxRaw = [0, 0, 0, 0];
 var score = 0;
 var skipped4 = Number.MAX_SAFE_INTEGER;
 var bodyParts = ["head", "neck", "rightShoulder", "rightElbow", "rightWrist", "chest", "leftShoulder", "leftElbow", "leftWrist", "pelvis", "rightHip", "rightKnee", "rightAnkle", "leftHip", "leftKnee", "leftAnkle"];
-async function load8(config3) {
+async function load7(config3) {
   if (env2.initial)
-    model6 = null;
-  if (!model6) {
-    model6 = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
-    if (!model6 || !model6["modelUrl"])
+    model5 = null;
+  if (!model5) {
+    model5 = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    if (!model5 || !model5["modelUrl"])
       log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
-      log("load model:", model6["modelUrl"]);
+      log("load model:", model5["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model6["modelUrl"]);
-  return model6;
+    log("cached model:", model5["modelUrl"]);
+  return model5;
 }
 function max2d(inputs, minScore) {
   const [width, height] = inputs.shape;
@@ -70040,16 +70067,16 @@ async function predict8(image7, config3) {
   return new Promise(async (resolve) => {
     var _a2;
     const tensor2 = tidy(() => {
-      if (!(model6 == null ? void 0 : model6.inputs[0].shape))
+      if (!(model5 == null ? void 0 : model5.inputs[0].shape))
         return null;
-      const resize = image.resizeBilinear(image7, [model6.inputs[0].shape[2], model6.inputs[0].shape[1]], false);
+      const resize = image.resizeBilinear(image7, [model5.inputs[0].shape[2], model5.inputs[0].shape[1]], false);
       const enhance2 = mul(resize, 2);
       const norm2 = enhance2.sub(1);
       return norm2;
     });
     let resT;
     if (config3.body.enabled)
-      resT = await (model6 == null ? void 0 : model6.predict(tensor2));
+      resT = await (model5 == null ? void 0 : model5.predict(tensor2));
     dispose(tensor2);
     if (resT) {
       keypoints.length = 0;
@@ -70064,12 +70091,12 @@ async function predict8(image7, config3) {
             score: Math.round(100 * partScore) / 100,
             part: bodyParts[id],
             positionRaw: [
-              x2 / model6.inputs[0].shape[2],
-              y2 / model6.inputs[0].shape[1]
+              x2 / model5.inputs[0].shape[2],
+              y2 / model5.inputs[0].shape[1]
             ],
             position: [
-              Math.round(image7.shape[2] * x2 / model6.inputs[0].shape[2]),
-              Math.round(image7.shape[1] * y2 / model6.inputs[0].shape[1])
+              Math.round(image7.shape[2] * x2 / model5.inputs[0].shape[2]),
+              Math.round(image7.shape[1] * y2 / model5.inputs[0].shape[1])
             ]
           });
         }
@@ -70097,29 +70124,29 @@ async function predict8(image7, config3) {
   });
 }
 
-// src/movenet/movenet.ts
-var model7;
-var inputSize2 = 0;
+// src/body/movenet.ts
+var model6;
+var inputSize3 = 0;
 var cachedBoxes = [];
 var skipped5 = Number.MAX_SAFE_INTEGER;
 var keypoints2 = [];
 var bodyParts2 = ["nose", "leftEye", "rightEye", "leftEar", "rightEar", "leftShoulder", "rightShoulder", "leftElbow", "rightElbow", "leftWrist", "rightWrist", "leftHip", "rightHip", "leftKnee", "rightKnee", "leftAnkle", "rightAnkle"];
-async function load9(config3) {
+async function load8(config3) {
   if (env2.initial)
-    model7 = null;
-  if (!model7) {
+    model6 = null;
+  if (!model6) {
     fakeOps(["size"], config3);
-    model7 = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
-    if (!model7 || !model7["modelUrl"])
+    model6 = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    if (!model6 || !model6["modelUrl"])
       log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
-      log("load model:", model7["modelUrl"]);
+      log("load model:", model6["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model7["modelUrl"]);
-  inputSize2 = model7.inputs[0].shape ? model7.inputs[0].shape[2] : 0;
-  if (inputSize2 === -1)
-    inputSize2 = 256;
-  return model7;
+    log("cached model:", model6["modelUrl"]);
+  inputSize3 = model6.inputs[0].shape ? model6.inputs[0].shape[2] : 0;
+  if (inputSize3 === -1)
+    inputSize3 = 256;
+  return model6;
 }
 async function parseSinglePose(res, config3, image7, inputBox) {
   const kpt3 = res[0][0];
@@ -70204,7 +70231,7 @@ async function parseMultiPose(res, config3, image7, inputBox) {
   return bodies;
 }
 async function predict9(input2, config3) {
-  if (!model7 || !(model7 == null ? void 0 : model7.inputs[0].shape))
+  if (!model6 || !(model6 == null ? void 0 : model6.inputs[0].shape))
     return [];
   return new Promise(async (resolve) => {
     const t = {};
@@ -70213,18 +70240,18 @@ async function predict9(input2, config3) {
       cachedBoxes.length = 0;
     skipped5++;
     for (let i = 0; i < cachedBoxes.length; i++) {
-      t.crop = image.cropAndResize(input2, [cachedBoxes[i]], [0], [inputSize2, inputSize2], "bilinear");
+      t.crop = image.cropAndResize(input2, [cachedBoxes[i]], [0], [inputSize3, inputSize3], "bilinear");
       t.cast = cast(t.crop, "int32");
-      t.res = await (model7 == null ? void 0 : model7.predict(t.cast));
+      t.res = await (model6 == null ? void 0 : model6.predict(t.cast));
       const res = await t.res.array();
       const newBodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input2, cachedBoxes[i]) : await parseMultiPose(res, config3, input2, cachedBoxes[i]);
       bodies = bodies.concat(newBodies);
       Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
     }
     if (bodies.length !== config3.body.maxDetected && skipped5 > (config3.body.skipFrames || 0)) {
-      t.resized = image.resizeBilinear(input2, [inputSize2, inputSize2], false);
+      t.resized = image.resizeBilinear(input2, [inputSize3, inputSize3], false);
       t.cast = cast(t.resized, "int32");
-      t.res = await (model7 == null ? void 0 : model7.predict(t.cast));
+      t.res = await (model6 == null ? void 0 : model6.predict(t.cast));
       const res = await t.res.array();
       bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input2, [0, 0, 1, 1]) : await parseMultiPose(res, config3, input2, [0, 0, 1, 1]);
       Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
@@ -70236,7 +70263,7 @@ async function predict9(input2, config3) {
       for (let i = 0; i < bodies.length; i++) {
         if (bodies[i].keypoints.length > 10) {
           const kpts = bodies[i].keypoints.map((kpt3) => kpt3.position);
-          const newBox = scaleBox(kpts, 1.5, [input2.shape[2], input2.shape[1]]);
+          const newBox = scale2(kpts, 1.5, [input2.shape[2], input2.shape[1]]);
           cachedBoxes.push([...newBox.yxBox]);
         }
       }
@@ -70330,26 +70357,26 @@ var labels = [
 ];
 
 // src/object/nanodet.ts
-var model8;
+var model7;
 var last3 = [];
 var skipped6 = Number.MAX_SAFE_INTEGER;
-var scaleBox2 = 2.5;
-async function load10(config3) {
-  if (!model8 || env2.initial) {
-    model8 = await loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
-    const inputs = Object.values(model8.modelSignature["inputs"]);
-    model8.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
-    if (!model8.inputSize)
+var scaleBox = 2.5;
+async function load9(config3) {
+  if (!model7 || env2.initial) {
+    model7 = await loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
+    const inputs = Object.values(model7.modelSignature["inputs"]);
+    model7.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
+    if (!model7.inputSize)
       throw new Error(`cannot determine model inputSize: ${config3.object.modelPath}`);
-    if (!model8 || !model8.modelUrl)
+    if (!model7 || !model7.modelUrl)
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", model8.modelUrl);
+      log("load model:", model7.modelUrl);
   } else if (config3.debug)
-    log("cached model:", model8.modelUrl);
-  return model8;
+    log("cached model:", model7.modelUrl);
+  return model7;
 }
-async function process3(res, inputSize4, outputShape, config3) {
+async function process3(res, inputSize5, outputShape, config3) {
   let id = 0;
   let results = [];
   for (const strideSize of [1, 2, 4]) {
@@ -70367,14 +70394,14 @@ async function process3(res, inputSize4, outputShape, config3) {
           if (score2 > config3.object.minConfidence && j !== 61) {
             const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize;
             const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize;
-            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize4));
+            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize5));
             const [x, y] = [
-              cx - scaleBox2 / strideSize * boxOffset[0],
-              cy - scaleBox2 / strideSize * boxOffset[1]
+              cx - scaleBox / strideSize * boxOffset[0],
+              cy - scaleBox / strideSize * boxOffset[1]
             ];
             const [w, h] = [
-              cx + scaleBox2 / strideSize * boxOffset[2] - x,
-              cy + scaleBox2 / strideSize * boxOffset[3] - y
+              cx + scaleBox / strideSize * boxOffset[2] - x,
+              cy + scaleBox / strideSize * boxOffset[3] - y
             ];
             let boxRaw2 = [x, y, w, h];
             boxRaw2 = boxRaw2.map((a) => Math.max(0, Math.min(a, 1)));
@@ -70419,42 +70446,42 @@ async function predict10(image7, config3) {
   if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
     return last3;
   return new Promise(async (resolve) => {
-    const outputSize2 = [image7.shape[2], image7.shape[1]];
-    const resize = image.resizeBilinear(image7, [model8.inputSize, model8.inputSize], false);
+    const outputSize3 = [image7.shape[2], image7.shape[1]];
+    const resize = image.resizeBilinear(image7, [model7.inputSize, model7.inputSize], false);
     const norm2 = div(resize, 255);
     const transpose5 = norm2.transpose([0, 3, 1, 2]);
     dispose(norm2);
     dispose(resize);
     let objectT;
     if (config3.object.enabled)
-      objectT = await model8.predict(transpose5);
+      objectT = await model7.predict(transpose5);
     dispose(transpose5);
-    const obj = await process3(objectT, model8.inputSize, outputSize2, config3);
+    const obj = await process3(objectT, model7.inputSize, outputSize3, config3);
     last3 = obj;
     resolve(obj);
   });
 }
 
 // src/object/centernet.ts
-var model9;
-var inputSize3 = 0;
+var model8;
+var inputSize4 = 0;
 var last4 = [];
 var skipped7 = Number.MAX_SAFE_INTEGER;
-async function load11(config3) {
+async function load10(config3) {
   if (env2.initial)
-    model9 = null;
-  if (!model9) {
+    model8 = null;
+  if (!model8) {
     fakeOps(["floormod"], config3);
-    model9 = await loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
-    const inputs = Object.values(model9.modelSignature["inputs"]);
-    inputSize3 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!model9 || !model9["modelUrl"])
+    model8 = await loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
+    const inputs = Object.values(model8.modelSignature["inputs"]);
+    inputSize4 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!model8 || !model8["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", model9["modelUrl"]);
+      log("load model:", model8["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model9["modelUrl"]);
-  return model9;
+    log("cached model:", model8["modelUrl"]);
+  return model8;
 }
 async function process4(res, outputShape, config3) {
   if (!res)
@@ -70483,14 +70510,14 @@ async function process4(res, outputShape, config3) {
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
     const [x, y] = [
-      detections[0][id][0] / inputSize3,
-      detections[0][id][1] / inputSize3
+      detections[0][id][0] / inputSize4,
+      detections[0][id][1] / inputSize4
     ];
     const boxRaw2 = [
       x,
       y,
-      detections[0][id][2] / inputSize3 - x,
-      detections[0][id][3] / inputSize3 - y
+      detections[0][id][2] / inputSize4 - x,
+      detections[0][id][3] / inputSize4 - y
     ];
     const box5 = [
       Math.trunc(boxRaw2[0] * outputShape[0]),
@@ -70511,47 +70538,47 @@ async function predict11(input2, config3) {
   if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
     return last4;
   return new Promise(async (resolve) => {
-    const outputSize2 = [input2.shape[2], input2.shape[1]];
-    const resize = image.resizeBilinear(input2, [inputSize3, inputSize3]);
-    const objectT = config3.object.enabled ? model9 == null ? void 0 : model9.execute(resize, ["tower_0/detections"]) : null;
+    const outputSize3 = [input2.shape[2], input2.shape[1]];
+    const resize = image.resizeBilinear(input2, [inputSize4, inputSize4]);
+    const objectT = config3.object.enabled ? model8 == null ? void 0 : model8.execute(resize, ["tower_0/detections"]) : null;
     dispose(resize);
-    const obj = await process4(objectT, outputSize2, config3);
+    const obj = await process4(objectT, outputSize3, config3);
     last4 = obj;
     resolve(obj);
   });
 }
 
 // src/segmentation/segmentation.ts
-var model10;
+var model9;
 var busy = false;
-async function load12(config3) {
-  if (!model10 || env2.initial) {
-    model10 = await loadGraphModel(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
-    if (!model10 || !model10["modelUrl"])
+async function load11(config3) {
+  if (!model9 || env2.initial) {
+    model9 = await loadGraphModel(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
+    if (!model9 || !model9["modelUrl"])
       log("load model failed:", config3.segmentation.modelPath);
     else if (config3.debug)
-      log("load model:", model10["modelUrl"]);
+      log("load model:", model9["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model10["modelUrl"]);
-  return model10;
+    log("cached model:", model9["modelUrl"]);
+  return model9;
 }
 async function process5(input2, background, config3) {
   var _a, _b;
   if (busy)
     return { data: [], canvas: null, alpha: null };
   busy = true;
-  if (!model10)
-    await load12(config3);
+  if (!model9)
+    await load11(config3);
   const inputImage = process2(input2, config3);
   const width = ((_a = inputImage.canvas) == null ? void 0 : _a.width) || 0;
   const height = ((_b = inputImage.canvas) == null ? void 0 : _b.height) || 0;
   if (!inputImage.tensor)
     return { data: [], canvas: null, alpha: null };
   const t = {};
-  t.resize = image.resizeBilinear(inputImage.tensor, [model10.inputs[0].shape ? model10.inputs[0].shape[1] : 0, model10.inputs[0].shape ? model10.inputs[0].shape[2] : 0], false);
+  t.resize = image.resizeBilinear(inputImage.tensor, [model9.inputs[0].shape ? model9.inputs[0].shape[1] : 0, model9.inputs[0].shape ? model9.inputs[0].shape[2] : 0], false);
   dispose(inputImage.tensor);
   t.norm = div(t.resize, 255);
-  t.res = model10.predict(t.norm);
+  t.res = model9.predict(t.norm);
   t.squeeze = squeeze(t.res, 0);
   if (t.squeeze.shape[2] === 2) {
     t.softmax = softmax(t.squeeze);
@@ -70604,21 +70631,21 @@ async function process5(input2, background, config3) {
   return { data, canvas: mergedCanvas || compositeCanvas, alpha: alphaCanvas };
 }
 
-// src/gear/agegenderrace.ts
-var model11;
+// src/gear/gear-agegenderrace.ts
+var model10;
 var skipped8 = Number.MAX_SAFE_INTEGER;
-async function load13(config3) {
+async function load12(config3) {
   if (env2.initial)
-    model11 = null;
-  if (!model11) {
-    model11 = await loadGraphModel(join(config3.modelBasePath, config3.face.agegenderrace.modelPath));
-    if (!model11 || !model11["modelUrl"])
+    model10 = null;
+  if (!model10) {
+    model10 = await loadGraphModel(join(config3.modelBasePath, config3.face.agegenderrace.modelPath));
+    if (!model10 || !model10["modelUrl"])
       log("load model failed:", config3.face.agegenderrace.modelPath);
     else if (config3.debug)
-      log("load model:", model11["modelUrl"]);
+      log("load model:", model10["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model11["modelUrl"]);
-  return model11;
+    log("cached model:", model10["modelUrl"]);
+  return model10;
 }
 
 // src/models.ts
@@ -70626,6 +70653,7 @@ var Models = class {
   constructor() {
     __publicField(this, "age", null);
     __publicField(this, "agegenderrace", null);
+    __publicField(this, "blazeposedetect", null);
     __publicField(this, "blazepose", null);
     __publicField(this, "centernet", null);
     __publicField(this, "efficientpose", null);
@@ -70646,11 +70674,11 @@ var Models = class {
   }
 };
 function reset(instance) {
-  for (const model12 of Object.keys(instance.models))
-    instance.models[model12] = null;
+  for (const model11 of Object.keys(instance.models))
+    instance.models[model11] = null;
 }
-async function load14(instance) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A;
+async function load13(instance) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D;
   if (env2.initial)
     reset(instance);
   if (instance.config.face.enabled) {
@@ -70674,48 +70702,50 @@ async function load14(instance) {
   if (instance.config.body.enabled && !instance.models.posenet && ((_l = (_k = instance.config.body) == null ? void 0 : _k.modelPath) == null ? void 0 : _l.includes("posenet")))
     instance.models.posenet = load5(instance.config);
   if (instance.config.body.enabled && !instance.models.efficientpose && ((_n = (_m = instance.config.body) == null ? void 0 : _m.modelPath) == null ? void 0 : _n.includes("efficientpose")))
-    instance.models.efficientpose = load8(instance.config);
-  if (instance.config.body.enabled && !instance.models.blazepose && ((_p = (_o = instance.config.body) == null ? void 0 : _o.modelPath) == null ? void 0 : _p.includes("blazepose")))
-    instance.models.blazepose = load7(instance.config);
-  if (instance.config.body.enabled && !instance.models.efficientpose && ((_r = (_q = instance.config.body) == null ? void 0 : _q.modelPath) == null ? void 0 : _r.includes("efficientpose")))
     instance.models.efficientpose = load7(instance.config);
-  if (instance.config.body.enabled && !instance.models.movenet && ((_t = (_s = instance.config.body) == null ? void 0 : _s.modelPath) == null ? void 0 : _t.includes("movenet")))
-    instance.models.movenet = load9(instance.config);
-  if (instance.config.object.enabled && !instance.models.nanodet && ((_v = (_u = instance.config.object) == null ? void 0 : _u.modelPath) == null ? void 0 : _v.includes("nanodet")))
-    instance.models.nanodet = load10(instance.config);
-  if (instance.config.object.enabled && !instance.models.centernet && ((_x = (_w = instance.config.object) == null ? void 0 : _w.modelPath) == null ? void 0 : _x.includes("centernet")))
-    instance.models.centernet = load11(instance.config);
-  if (instance.config.face.enabled && ((_y = instance.config.face.emotion) == null ? void 0 : _y.enabled) && !instance.models.emotion)
+  if (instance.config.body.enabled && !instance.models.blazepose && ((_p = (_o = instance.config.body) == null ? void 0 : _o.modelPath) == null ? void 0 : _p.includes("blazepose")))
+    instance.models.blazepose = loadPose(instance.config);
+  if (instance.config.body.enabled && !instance.models.blazeposedetect && ((_q = instance.config.body.detector) == null ? void 0 : _q.modelPath) && ((_s = (_r = instance.config.body) == null ? void 0 : _r.modelPath) == null ? void 0 : _s.includes("blazepose")))
+    instance.models.blazeposedetect = loadDetect2(instance.config);
+  if (instance.config.body.enabled && !instance.models.efficientpose && ((_u = (_t = instance.config.body) == null ? void 0 : _t.modelPath) == null ? void 0 : _u.includes("efficientpose")))
+    instance.models.efficientpose = load7(instance.config);
+  if (instance.config.body.enabled && !instance.models.movenet && ((_w = (_v = instance.config.body) == null ? void 0 : _v.modelPath) == null ? void 0 : _w.includes("movenet")))
+    instance.models.movenet = load8(instance.config);
+  if (instance.config.object.enabled && !instance.models.nanodet && ((_y = (_x = instance.config.object) == null ? void 0 : _x.modelPath) == null ? void 0 : _y.includes("nanodet")))
+    instance.models.nanodet = load9(instance.config);
+  if (instance.config.object.enabled && !instance.models.centernet && ((_A = (_z = instance.config.object) == null ? void 0 : _z.modelPath) == null ? void 0 : _A.includes("centernet")))
+    instance.models.centernet = load10(instance.config);
+  if (instance.config.face.enabled && ((_B = instance.config.face.emotion) == null ? void 0 : _B.enabled) && !instance.models.emotion)
     instance.models.emotion = load4(instance.config);
-  if (instance.config.face.enabled && ((_z = instance.config.face.description) == null ? void 0 : _z.enabled) && !instance.models.faceres)
+  if (instance.config.face.enabled && ((_C = instance.config.face.description) == null ? void 0 : _C.enabled) && !instance.models.faceres)
     instance.models.faceres = load3(instance.config);
   if (instance.config.segmentation.enabled && !instance.models.segmentation)
-    instance.models.segmentation = load12(instance.config);
-  if (instance.config.face.enabled && ((_A = instance.config.face["agegenderrace"]) == null ? void 0 : _A.enabled) && !instance.models.agegenderrace)
-    instance.models.agegenderrace = load13(instance.config);
-  for await (const model12 of Object.keys(instance.models)) {
-    if (instance.models[model12] && typeof instance.models[model12] !== "undefined")
-      instance.models[model12] = await instance.models[model12];
+    instance.models.segmentation = load11(instance.config);
+  if (instance.config.face.enabled && ((_D = instance.config.face["agegenderrace"]) == null ? void 0 : _D.enabled) && !instance.models.agegenderrace)
+    instance.models.agegenderrace = load12(instance.config);
+  for await (const model11 of Object.keys(instance.models)) {
+    if (instance.models[model11] && typeof instance.models[model11] !== "undefined")
+      instance.models[model11] = await instance.models[model11];
   }
 }
 async function validate2(instance) {
   const simpleOps = ["const", "placeholder", "noop", "pad", "squeeze", "add", "sub", "mul", "div"];
   for (const defined of Object.keys(instance.models)) {
     if (instance.models[defined]) {
-      let models4 = [];
+      let models5 = [];
       if (Array.isArray(instance.models[defined])) {
-        models4 = instance.models[defined].filter((model12) => model12 !== null).map((model12) => model12 && model12.executor ? model12 : model12.model);
+        models5 = instance.models[defined].filter((model11) => model11 !== null).map((model11) => model11 && model11.executor ? model11 : model11.model);
       } else {
-        models4 = [instance.models[defined]];
+        models5 = [instance.models[defined]];
       }
-      for (const model12 of models4) {
-        if (!model12) {
+      for (const model11 of models5) {
+        if (!model11) {
           if (instance.config.debug)
             log("model marked as loaded but not defined:", defined);
           continue;
         }
         const ops = [];
-        const executor = model12 == null ? void 0 : model12.executor;
+        const executor = model11 == null ? void 0 : model11.executor;
         if (executor && executor.graph.nodes) {
           for (const kernel of Object.values(executor.graph.nodes)) {
             const op2 = kernel.op.toLowerCase();
@@ -70739,7 +70769,7 @@ async function validate2(instance) {
   }
 }
 
-// src/face.ts
+// src/face/face.ts
 var calculateGaze = (face5) => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]);
   if (!face5.annotations["rightEyeIris"] || !face5.annotations["leftEyeIris"])
@@ -71046,7 +71076,7 @@ var hand = (res) => {
   return gestures;
 };
 
-// src/draw.ts
+// src/util/draw.ts
 var options2 = {
   color: "rgba(173, 216, 230, 0.6)",
   labelColor: "rgba(173, 216, 230, 1)",
@@ -71592,7 +71622,7 @@ function join2(faces, bodies, hands, gestures, shape) {
   return persons2;
 }
 
-// src/interpolate.ts
+// src/util/interpolate.ts
 var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 function calc(newResult) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u;
@@ -72638,7 +72668,7 @@ var Human = class {
   async load(userConfig) {
     this.state = "load";
     const timeStamp = now();
-    const count3 = Object.values(this.models).filter((model12) => model12).length;
+    const count3 = Object.values(this.models).filter((model11) => model11).length;
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);
     if (env2.initial) {
@@ -72656,11 +72686,11 @@ var Human = class {
           log("tf flags:", this.tf.ENV.flags);
       }
     }
-    await load14(this);
+    await load13(this);
     if (env2.initial && this.config.debug)
       log("tf engine state:", this.tf.engine().state.numBytes, "bytes", this.tf.engine().state.numTensors, "tensors");
     env2.initial = false;
-    const loaded = Object.values(this.models).filter((model12) => model12).length;
+    const loaded = Object.values(this.models).filter((model11) => model11).length;
     if (loaded !== count3) {
       await validate2(this);
       this.emit("load");

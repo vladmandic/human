@@ -46,7 +46,7 @@ var __privateSet = (obj, member, value, setter) => {
   return value;
 };
 
-// src/util.ts
+// src/util/util.ts
 function join(folder, file) {
   const separator = folder.endsWith("/") ? "" : "/";
   const skipJoin = file.startsWith(".") || file.startsWith("/") || file.startsWith("http:") || file.startsWith("https:") || file.startsWith("file:");
@@ -98,31 +98,6 @@ function mergeDeep(...objects) {
     });
     return prev;
   }, {});
-}
-function scaleBox(keypoints3, boxScaleFact2, outputSize2) {
-  const coords3 = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
-  const maxmin = [Math.max(...coords3[0]), Math.min(...coords3[0]), Math.max(...coords3[1]), Math.min(...coords3[1])];
-  const center = [(maxmin[0] + maxmin[1]) / 2, (maxmin[2] + maxmin[3]) / 2];
-  const diff = Math.max(center[0] - maxmin[1], center[1] - maxmin[3], -center[0] + maxmin[0], -center[1] + maxmin[2]) * boxScaleFact2;
-  const box5 = [
-    Math.trunc(center[0] - diff),
-    Math.trunc(center[1] - diff),
-    Math.trunc(2 * diff),
-    Math.trunc(2 * diff)
-  ];
-  const boxRaw2 = [
-    box5[0] / outputSize2[0],
-    box5[1] / outputSize2[1],
-    box5[2] / outputSize2[0],
-    box5[3] / outputSize2[1]
-  ];
-  const yxBox = [
-    boxRaw2[1],
-    boxRaw2[0],
-    boxRaw2[3] + boxRaw2[1],
-    boxRaw2[2] + boxRaw2[0]
-  ];
-  return { box: box5, boxRaw: boxRaw2, yxBox };
 }
 
 // src/config.ts
@@ -193,6 +168,9 @@ var config = {
   body: {
     enabled: true,
     modelPath: "movenet-lightning.json",
+    detector: {
+      modelPath: ""
+    },
     maxDetected: -1,
     minConfidence: 0.2,
     skipFrames: 1
@@ -380,13 +358,13 @@ function rotatePoint(homogeneousCoordinate, rotationMatrix) {
     dot(homogeneousCoordinate, rotationMatrix[1])
   ];
 }
-function generateAnchors(inputSize4) {
-  const spec = { strides: [inputSize4 / 16, inputSize4 / 8], anchors: [2, 6] };
+function generateAnchors(inputSize5) {
+  const spec = { strides: [inputSize5 / 16, inputSize5 / 8], anchors: [2, 6] };
   const anchors3 = [];
   for (let i = 0; i < spec.strides.length; i++) {
     const stride = spec.strides[i];
-    const gridRows = Math.floor((inputSize4 + stride - 1) / stride);
-    const gridCols = Math.floor((inputSize4 + stride - 1) / stride);
+    const gridRows = Math.floor((inputSize5 + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize5 + stride - 1) / stride);
     const anchorsNum = spec.anchors[i];
     for (let gridY = 0; gridY < gridRows; gridY++) {
       const anchorY = stride * (gridY + 0.5);
@@ -403,31 +381,31 @@ function generateAnchors(inputSize4) {
 
 // src/blazeface/blazeface.ts
 var keypointsCount = 6;
-function decodeBounds(boxOutputs, anchors3, inputSize4) {
+function decodeBounds(boxOutputs, anchors3, inputSize5) {
   const boxStarts = tfjs_esm_exports.slice(boxOutputs, [0, 1], [-1, 2]);
   const centers = tfjs_esm_exports.add(boxStarts, anchors3);
   const boxSizes = tfjs_esm_exports.slice(boxOutputs, [0, 3], [-1, 2]);
-  const boxSizesNormalized = tfjs_esm_exports.div(boxSizes, inputSize4);
-  const centersNormalized = tfjs_esm_exports.div(centers, inputSize4);
+  const boxSizesNormalized = tfjs_esm_exports.div(boxSizes, inputSize5);
+  const centersNormalized = tfjs_esm_exports.div(centers, inputSize5);
   const halfBoxSize = tfjs_esm_exports.div(boxSizesNormalized, 2);
   const starts = tfjs_esm_exports.sub(centersNormalized, halfBoxSize);
   const ends = tfjs_esm_exports.add(centersNormalized, halfBoxSize);
-  const startNormalized = tfjs_esm_exports.mul(starts, inputSize4);
-  const endNormalized = tfjs_esm_exports.mul(ends, inputSize4);
+  const startNormalized = tfjs_esm_exports.mul(starts, inputSize5);
+  const endNormalized = tfjs_esm_exports.mul(ends, inputSize5);
   const concatAxis = 1;
   return tfjs_esm_exports.concat2d([startNormalized, endNormalized], concatAxis);
 }
 var BlazeFaceModel = class {
-  constructor(model11, config3) {
+  constructor(model10, config3) {
     __publicField(this, "model");
     __publicField(this, "anchorsData");
     __publicField(this, "anchors");
     __publicField(this, "inputSize");
     __publicField(this, "config");
-    this.model = model11;
-    this.anchorsData = generateAnchors(model11.inputs[0].shape[1]);
+    this.model = model10;
+    this.anchorsData = generateAnchors(model10.inputs[0].shape[1]);
     this.anchors = tfjs_esm_exports.tensor2d(this.anchorsData);
-    this.inputSize = model11.inputs[0].shape[2];
+    this.inputSize = model10.inputs[0].shape[2];
     this.config = config3;
   }
   async getBoundingBoxes(inputImage, userConfig) {
@@ -479,12 +457,12 @@ var BlazeFaceModel = class {
 };
 async function load(config3) {
   var _a, _b, _c;
-  const model11 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.detector) == null ? void 0 : _a.modelPath) || ""), { fromTFHub: (((_b = config3.face.detector) == null ? void 0 : _b.modelPath) || "").includes("tfhub.dev") });
-  const blazeFace = new BlazeFaceModel(model11, config3);
-  if (!model11 || !model11.modelUrl)
+  const model10 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.detector) == null ? void 0 : _a.modelPath) || ""), { fromTFHub: (((_b = config3.face.detector) == null ? void 0 : _b.modelPath) || "").includes("tfhub.dev") });
+  const blazeFace = new BlazeFaceModel(model10, config3);
+  if (!model10 || !model10.modelUrl)
     log("load model failed:", ((_c = config3.face.detector) == null ? void 0 : _c.modelPath) || "");
   else if (config3.debug)
-    log("load model:", model11.modelUrl);
+    log("load model:", model10.modelUrl);
   return blazeFace;
 }
 
@@ -4671,7 +4649,7 @@ async function skip(config3, input) {
   return skipFrame;
 }
 
-// src/env.ts
+// src/util/env.ts
 var env = {
   browser: void 0,
   node: void 0,
@@ -5132,7 +5110,7 @@ async function load2(config3) {
 var triangulation = TRI468;
 var uvmap = UV468;
 
-// src/faceres/faceres.ts
+// src/face/faceres.ts
 var model;
 var last = [];
 var lastCount = 0;
@@ -5235,7 +5213,7 @@ async function predict2(image24, config3, idx, count2) {
   });
 }
 
-// src/emotion/emotion.ts
+// src/gear/emotion.ts
 var annotations = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
 var model2;
 var last2 = [];
@@ -8645,14 +8623,14 @@ var anchors = [
 
 // src/handpose/handdetector.ts
 var HandDetector = class {
-  constructor(model11) {
+  constructor(model10) {
     __publicField(this, "model");
     __publicField(this, "anchors");
     __publicField(this, "anchorsTensor");
     __publicField(this, "inputSize");
     __publicField(this, "inputSizeTensor");
     __publicField(this, "doubleInputSizeTensor");
-    this.model = model11;
+    this.model = model10;
     this.anchors = anchors.map((anchor) => [anchor.x, anchor.y]);
     this.anchorsTensor = tfjs_esm_exports.tensor2d(this.anchors);
     this.inputSize = this.model && this.model.inputs && this.model.inputs[0].shape ? this.model.inputs[0].shape[2] : 0;
@@ -9408,6 +9386,33 @@ async function load6(config3) {
   return [handDetectorModel, handPoseModel];
 }
 
+// src/util/box.ts
+function scale(keypoints3, boxScaleFact2, outputSize3) {
+  const coords3 = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
+  const maxmin = [Math.max(...coords3[0]), Math.min(...coords3[0]), Math.max(...coords3[1]), Math.min(...coords3[1])];
+  const center = [(maxmin[0] + maxmin[1]) / 2, (maxmin[2] + maxmin[3]) / 2];
+  const diff = Math.max(center[0] - maxmin[1], center[1] - maxmin[3], -center[0] + maxmin[0], -center[1] + maxmin[2]) * boxScaleFact2;
+  const box5 = [
+    Math.trunc(center[0] - diff),
+    Math.trunc(center[1] - diff),
+    Math.trunc(2 * diff),
+    Math.trunc(2 * diff)
+  ];
+  const boxRaw2 = [
+    box5[0] / outputSize3[0],
+    box5[1] / outputSize3[1],
+    box5[2] / outputSize3[0],
+    box5[3] / outputSize3[1]
+  ];
+  const yxBox = [
+    boxRaw2[1],
+    boxRaw2[0],
+    boxRaw2[3] + boxRaw2[1],
+    boxRaw2[2] + boxRaw2[0]
+  ];
+  return { box: box5, boxRaw: boxRaw2, yxBox };
+}
+
 // src/tfjs/humangl.ts
 var config2 = {
   name: "humangl",
@@ -9610,7 +9615,7 @@ function fakeOps(kernelNames, config3) {
   env.kernels = tfjs_esm_exports.getKernelsForBackend(tfjs_esm_exports.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
 }
 
-// src/handtrack/handtrack.ts
+// src/hand/handtrack.ts
 var boxScaleFact = 1.5;
 var models2 = [null, null];
 var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "StatefulPartitionedCall/Postprocessor/ExpandDims_1"];
@@ -9748,7 +9753,7 @@ async function detectFingers(input, h, config3) {
         h.box[3] * coord[1] / inputSize[1][1] + h.box[1],
         (h.box[2] + h.box[3]) / 2 / inputSize[1][0] * coord[2]
       ]);
-      const updatedBox = scaleBox(hand3.keypoints, boxScaleFact, outputSize);
+      const updatedBox = scale(hand3.keypoints, boxScaleFact, outputSize);
       h.box = updatedBox.box;
       h.boxRaw = updatedBox.boxRaw;
       h.yxBox = updatedBox.yxBox;
@@ -9785,7 +9790,7 @@ async function predict6(input, config3) {
   return hands;
 }
 
-// src/blazepose/annotations.ts
+// src/body/annotations.ts
 var full = [
   "nose",
   "leftEyeInside",
@@ -9861,57 +9866,71 @@ var upper = [
   "right:30"
 ];
 
-// src/blazepose/blazepose.ts
-var model4;
-async function load7(config3) {
+// src/body/blazepose.ts
+var models3 = [null, null];
+var outputNodes = ["ld_3d", "activation_segmentation", "activation_heatmap", "world_3d", "output_poseflag"];
+var inputSize2 = [[0, 0], [0, 0]];
+var outputSize2 = [0, 0];
+async function loadDetect2(config3) {
+  var _a;
   if (env.initial)
-    model4 = null;
-  if (!model4) {
-    model4 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
-    model4["width"] = parseInt(model4["signature"].inputs["input_1:0"].tensorShape.dim[2].size);
-    model4["height"] = parseInt(model4["signature"].inputs["input_1:0"].tensorShape.dim[1].size);
-    if (!model4 || !model4["modelUrl"])
-      log("load model failed:", config3.body.modelPath);
+    models3[0] = null;
+  if (!models3[0]) {
+    models3[0] = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_a = config3.body.detector) == null ? void 0 : _a.modelPath) || ""));
+    const inputs = Object.values(models3[0].modelSignature["inputs"]);
+    inputSize2[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize2[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!models3[0] || !models3[0]["modelUrl"])
+      log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", model4["modelUrl"]);
+      log("load model:", models3[0]["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model4["modelUrl"]);
-  return model4;
+    log("cached model:", models3[0]["modelUrl"]);
+  return models3[0];
 }
-async function predict7(image24, config3) {
-  if (!model4)
-    return [];
-  if (!config3.body.enabled)
-    return [];
-  const imgSize = { width: image24.shape[2] || 0, height: image24.shape[1] || 0 };
-  const resize = tfjs_esm_exports.image.resizeBilinear(image24, [model4["width"], model4["height"]], false);
-  const normalize = tfjs_esm_exports.div(resize, [255]);
-  tfjs_esm_exports.dispose(resize);
-  const resT = await model4.predict(normalize);
-  const findT = resT.find((t) => t.size === 195 || t.size === 155);
-  const points = await (findT == null ? void 0 : findT.data()) || [];
-  resT.forEach((t) => tfjs_esm_exports.dispose(t));
-  tfjs_esm_exports.dispose(normalize);
+async function loadPose(config3) {
+  if (env.initial)
+    models3[1] = null;
+  if (!models3[1]) {
+    models3[1] = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    const inputs = Object.values(models3[1].modelSignature["inputs"]);
+    inputSize2[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize2[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!models3[1] || !models3[1]["modelUrl"])
+      log("load model failed:", config3.object.modelPath);
+    else if (config3.debug)
+      log("load model:", models3[1]["modelUrl"]);
+  } else if (config3.debug)
+    log("cached model:", models3[1]["modelUrl"]);
+  return models3[1];
+}
+async function detectParts(input, config3) {
+  var _a;
+  const t = {};
+  t.resize = tfjs_esm_exports.image.resizeBilinear(input, [inputSize2[1][0], inputSize2[1][1]]);
+  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = await ((_a = models3[1]) == null ? void 0 : _a.execute(t.resize, outputNodes));
+  const points = await t.ld.data();
   const keypoints3 = [];
   const labels2 = (points == null ? void 0 : points.length) === 195 ? full : upper;
   const depth = 5;
   for (let i = 0; i < points.length / depth; i++) {
-    keypoints3.push({
-      id: i,
-      part: labels2[i],
-      position: [
-        Math.trunc(imgSize.width * points[depth * i + 0] / 255),
-        Math.trunc(imgSize.height * points[depth * i + 1] / 255),
-        Math.trunc(points[depth * i + 2]) + 0
-      ],
-      positionRaw: [
-        points[depth * i + 0] / 255,
-        points[depth * i + 1] / 255,
-        points[depth * i + 2] + 0
-      ],
-      score: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100,
-      presence: (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 4])))) / 100
-    });
+    const score3 = (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100;
+    if (score3 > (config3.body.minConfidence || 0)) {
+      keypoints3.push({
+        part: labels2[i],
+        position: [
+          Math.trunc(outputSize2[0] * points[depth * i + 0] / 255),
+          Math.trunc(outputSize2[1] * points[depth * i + 1] / 255),
+          Math.trunc(points[depth * i + 2]) + 0
+        ],
+        positionRaw: [
+          points[depth * i + 0] / 255,
+          points[depth * i + 1] / 255,
+          points[depth * i + 2] + 0
+        ],
+        score: score3
+      });
+    }
   }
   const x = keypoints3.map((a) => a.position[0]);
   const y = keypoints3.map((a) => a.position[1]);
@@ -9923,29 +9942,37 @@ async function predict7(image24, config3) {
   ];
   const boxRaw2 = [0, 0, 0, 0];
   const score2 = keypoints3.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
-  return [{ id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints3 }];
+  Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
+  return { id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints3 };
+}
+async function predict7(input, config3) {
+  outputSize2 = [input.shape[2] || 0, input.shape[1] || 0];
+  const bodies = [];
+  const body4 = await detectParts(input, config3);
+  bodies.push(body4);
+  return bodies;
 }
 
-// src/efficientpose/efficientpose.ts
-var model5;
+// src/body/efficientpose.ts
+var model4;
 var keypoints = [];
 var box4 = [0, 0, 0, 0];
 var boxRaw = [0, 0, 0, 0];
 var score = 0;
 var skipped4 = Number.MAX_SAFE_INTEGER;
 var bodyParts = ["head", "neck", "rightShoulder", "rightElbow", "rightWrist", "chest", "leftShoulder", "leftElbow", "leftWrist", "pelvis", "rightHip", "rightKnee", "rightAnkle", "leftHip", "leftKnee", "leftAnkle"];
-async function load8(config3) {
+async function load7(config3) {
   if (env.initial)
-    model5 = null;
-  if (!model5) {
-    model5 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
-    if (!model5 || !model5["modelUrl"])
+    model4 = null;
+  if (!model4) {
+    model4 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    if (!model4 || !model4["modelUrl"])
       log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
-      log("load model:", model5["modelUrl"]);
+      log("load model:", model4["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model5["modelUrl"]);
-  return model5;
+    log("cached model:", model4["modelUrl"]);
+  return model4;
 }
 function max2d(inputs, minScore) {
   const [width, height] = inputs.shape;
@@ -9972,16 +9999,16 @@ async function predict8(image24, config3) {
   return new Promise(async (resolve) => {
     var _a2;
     const tensor3 = tfjs_esm_exports.tidy(() => {
-      if (!(model5 == null ? void 0 : model5.inputs[0].shape))
+      if (!(model4 == null ? void 0 : model4.inputs[0].shape))
         return null;
-      const resize = tfjs_esm_exports.image.resizeBilinear(image24, [model5.inputs[0].shape[2], model5.inputs[0].shape[1]], false);
+      const resize = tfjs_esm_exports.image.resizeBilinear(image24, [model4.inputs[0].shape[2], model4.inputs[0].shape[1]], false);
       const enhance2 = tfjs_esm_exports.mul(resize, 2);
       const norm = enhance2.sub(1);
       return norm;
     });
     let resT;
     if (config3.body.enabled)
-      resT = await (model5 == null ? void 0 : model5.predict(tensor3));
+      resT = await (model4 == null ? void 0 : model4.predict(tensor3));
     tfjs_esm_exports.dispose(tensor3);
     if (resT) {
       keypoints.length = 0;
@@ -9996,12 +10023,12 @@ async function predict8(image24, config3) {
             score: Math.round(100 * partScore) / 100,
             part: bodyParts[id],
             positionRaw: [
-              x2 / model5.inputs[0].shape[2],
-              y2 / model5.inputs[0].shape[1]
+              x2 / model4.inputs[0].shape[2],
+              y2 / model4.inputs[0].shape[1]
             ],
             position: [
-              Math.round(image24.shape[2] * x2 / model5.inputs[0].shape[2]),
-              Math.round(image24.shape[1] * y2 / model5.inputs[0].shape[1])
+              Math.round(image24.shape[2] * x2 / model4.inputs[0].shape[2]),
+              Math.round(image24.shape[1] * y2 / model4.inputs[0].shape[1])
             ]
           });
         }
@@ -10029,29 +10056,29 @@ async function predict8(image24, config3) {
   });
 }
 
-// src/movenet/movenet.ts
-var model6;
-var inputSize2 = 0;
+// src/body/movenet.ts
+var model5;
+var inputSize3 = 0;
 var cachedBoxes = [];
 var skipped5 = Number.MAX_SAFE_INTEGER;
 var keypoints2 = [];
 var bodyParts2 = ["nose", "leftEye", "rightEye", "leftEar", "rightEar", "leftShoulder", "rightShoulder", "leftElbow", "rightElbow", "leftWrist", "rightWrist", "leftHip", "rightHip", "leftKnee", "rightKnee", "leftAnkle", "rightAnkle"];
-async function load9(config3) {
+async function load8(config3) {
   if (env.initial)
-    model6 = null;
-  if (!model6) {
+    model5 = null;
+  if (!model5) {
     fakeOps(["size"], config3);
-    model6 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
-    if (!model6 || !model6["modelUrl"])
+    model5 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    if (!model5 || !model5["modelUrl"])
       log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
-      log("load model:", model6["modelUrl"]);
+      log("load model:", model5["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model6["modelUrl"]);
-  inputSize2 = model6.inputs[0].shape ? model6.inputs[0].shape[2] : 0;
-  if (inputSize2 === -1)
-    inputSize2 = 256;
-  return model6;
+    log("cached model:", model5["modelUrl"]);
+  inputSize3 = model5.inputs[0].shape ? model5.inputs[0].shape[2] : 0;
+  if (inputSize3 === -1)
+    inputSize3 = 256;
+  return model5;
 }
 async function parseSinglePose(res, config3, image24, inputBox) {
   const kpt3 = res[0][0];
@@ -10136,7 +10163,7 @@ async function parseMultiPose(res, config3, image24, inputBox) {
   return bodies;
 }
 async function predict9(input, config3) {
-  if (!model6 || !(model6 == null ? void 0 : model6.inputs[0].shape))
+  if (!model5 || !(model5 == null ? void 0 : model5.inputs[0].shape))
     return [];
   return new Promise(async (resolve) => {
     const t = {};
@@ -10145,18 +10172,18 @@ async function predict9(input, config3) {
       cachedBoxes.length = 0;
     skipped5++;
     for (let i = 0; i < cachedBoxes.length; i++) {
-      t.crop = tfjs_esm_exports.image.cropAndResize(input, [cachedBoxes[i]], [0], [inputSize2, inputSize2], "bilinear");
+      t.crop = tfjs_esm_exports.image.cropAndResize(input, [cachedBoxes[i]], [0], [inputSize3, inputSize3], "bilinear");
       t.cast = tfjs_esm_exports.cast(t.crop, "int32");
-      t.res = await (model6 == null ? void 0 : model6.predict(t.cast));
+      t.res = await (model5 == null ? void 0 : model5.predict(t.cast));
       const res = await t.res.array();
       const newBodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, cachedBoxes[i]) : await parseMultiPose(res, config3, input, cachedBoxes[i]);
       bodies = bodies.concat(newBodies);
       Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
     }
     if (bodies.length !== config3.body.maxDetected && skipped5 > (config3.body.skipFrames || 0)) {
-      t.resized = tfjs_esm_exports.image.resizeBilinear(input, [inputSize2, inputSize2], false);
+      t.resized = tfjs_esm_exports.image.resizeBilinear(input, [inputSize3, inputSize3], false);
       t.cast = tfjs_esm_exports.cast(t.resized, "int32");
-      t.res = await (model6 == null ? void 0 : model6.predict(t.cast));
+      t.res = await (model5 == null ? void 0 : model5.predict(t.cast));
       const res = await t.res.array();
       bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, [0, 0, 1, 1]) : await parseMultiPose(res, config3, input, [0, 0, 1, 1]);
       Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
@@ -10168,7 +10195,7 @@ async function predict9(input, config3) {
       for (let i = 0; i < bodies.length; i++) {
         if (bodies[i].keypoints.length > 10) {
           const kpts = bodies[i].keypoints.map((kpt3) => kpt3.position);
-          const newBox = scaleBox(kpts, 1.5, [input.shape[2], input.shape[1]]);
+          const newBox = scale(kpts, 1.5, [input.shape[2], input.shape[1]]);
           cachedBoxes.push([...newBox.yxBox]);
         }
       }
@@ -10262,26 +10289,26 @@ var labels = [
 ];
 
 // src/object/nanodet.ts
-var model7;
+var model6;
 var last3 = [];
 var skipped6 = Number.MAX_SAFE_INTEGER;
-var scaleBox2 = 2.5;
-async function load10(config3) {
-  if (!model7 || env.initial) {
-    model7 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
-    const inputs = Object.values(model7.modelSignature["inputs"]);
-    model7.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
-    if (!model7.inputSize)
+var scaleBox = 2.5;
+async function load9(config3) {
+  if (!model6 || env.initial) {
+    model6 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
+    const inputs = Object.values(model6.modelSignature["inputs"]);
+    model6.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
+    if (!model6.inputSize)
       throw new Error(`cannot determine model inputSize: ${config3.object.modelPath}`);
-    if (!model7 || !model7.modelUrl)
+    if (!model6 || !model6.modelUrl)
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", model7.modelUrl);
+      log("load model:", model6.modelUrl);
   } else if (config3.debug)
-    log("cached model:", model7.modelUrl);
-  return model7;
+    log("cached model:", model6.modelUrl);
+  return model6;
 }
-async function process3(res, inputSize4, outputShape, config3) {
+async function process3(res, inputSize5, outputShape, config3) {
   let id = 0;
   let results = [];
   for (const strideSize of [1, 2, 4]) {
@@ -10299,14 +10326,14 @@ async function process3(res, inputSize4, outputShape, config3) {
           if (score2 > config3.object.minConfidence && j !== 61) {
             const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize;
             const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize;
-            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize4));
+            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize5));
             const [x, y] = [
-              cx - scaleBox2 / strideSize * boxOffset[0],
-              cy - scaleBox2 / strideSize * boxOffset[1]
+              cx - scaleBox / strideSize * boxOffset[0],
+              cy - scaleBox / strideSize * boxOffset[1]
             ];
             const [w, h] = [
-              cx + scaleBox2 / strideSize * boxOffset[2] - x,
-              cy + scaleBox2 / strideSize * boxOffset[3] - y
+              cx + scaleBox / strideSize * boxOffset[2] - x,
+              cy + scaleBox / strideSize * boxOffset[3] - y
             ];
             let boxRaw2 = [x, y, w, h];
             boxRaw2 = boxRaw2.map((a) => Math.max(0, Math.min(a, 1)));
@@ -10351,42 +10378,42 @@ async function predict10(image24, config3) {
   if (!env.kernels.includes("mod") || !env.kernels.includes("sparsetodense"))
     return last3;
   return new Promise(async (resolve) => {
-    const outputSize2 = [image24.shape[2], image24.shape[1]];
-    const resize = tfjs_esm_exports.image.resizeBilinear(image24, [model7.inputSize, model7.inputSize], false);
+    const outputSize3 = [image24.shape[2], image24.shape[1]];
+    const resize = tfjs_esm_exports.image.resizeBilinear(image24, [model6.inputSize, model6.inputSize], false);
     const norm = tfjs_esm_exports.div(resize, 255);
     const transpose = norm.transpose([0, 3, 1, 2]);
     tfjs_esm_exports.dispose(norm);
     tfjs_esm_exports.dispose(resize);
     let objectT;
     if (config3.object.enabled)
-      objectT = await model7.predict(transpose);
+      objectT = await model6.predict(transpose);
     tfjs_esm_exports.dispose(transpose);
-    const obj = await process3(objectT, model7.inputSize, outputSize2, config3);
+    const obj = await process3(objectT, model6.inputSize, outputSize3, config3);
     last3 = obj;
     resolve(obj);
   });
 }
 
 // src/object/centernet.ts
-var model8;
-var inputSize3 = 0;
+var model7;
+var inputSize4 = 0;
 var last4 = [];
 var skipped7 = Number.MAX_SAFE_INTEGER;
-async function load11(config3) {
+async function load10(config3) {
   if (env.initial)
-    model8 = null;
-  if (!model8) {
+    model7 = null;
+  if (!model7) {
     fakeOps(["floormod"], config3);
-    model8 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
-    const inputs = Object.values(model8.modelSignature["inputs"]);
-    inputSize3 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!model8 || !model8["modelUrl"])
+    model7 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
+    const inputs = Object.values(model7.modelSignature["inputs"]);
+    inputSize4 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!model7 || !model7["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", model8["modelUrl"]);
+      log("load model:", model7["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model8["modelUrl"]);
-  return model8;
+    log("cached model:", model7["modelUrl"]);
+  return model7;
 }
 async function process4(res, outputShape, config3) {
   if (!res)
@@ -10415,14 +10442,14 @@ async function process4(res, outputShape, config3) {
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
     const [x, y] = [
-      detections[0][id][0] / inputSize3,
-      detections[0][id][1] / inputSize3
+      detections[0][id][0] / inputSize4,
+      detections[0][id][1] / inputSize4
     ];
     const boxRaw2 = [
       x,
       y,
-      detections[0][id][2] / inputSize3 - x,
-      detections[0][id][3] / inputSize3 - y
+      detections[0][id][2] / inputSize4 - x,
+      detections[0][id][3] / inputSize4 - y
     ];
     const box5 = [
       Math.trunc(boxRaw2[0] * outputShape[0]),
@@ -10443,47 +10470,47 @@ async function predict11(input, config3) {
   if (!env.kernels.includes("mod") || !env.kernels.includes("sparsetodense"))
     return last4;
   return new Promise(async (resolve) => {
-    const outputSize2 = [input.shape[2], input.shape[1]];
-    const resize = tfjs_esm_exports.image.resizeBilinear(input, [inputSize3, inputSize3]);
-    const objectT = config3.object.enabled ? model8 == null ? void 0 : model8.execute(resize, ["tower_0/detections"]) : null;
+    const outputSize3 = [input.shape[2], input.shape[1]];
+    const resize = tfjs_esm_exports.image.resizeBilinear(input, [inputSize4, inputSize4]);
+    const objectT = config3.object.enabled ? model7 == null ? void 0 : model7.execute(resize, ["tower_0/detections"]) : null;
     tfjs_esm_exports.dispose(resize);
-    const obj = await process4(objectT, outputSize2, config3);
+    const obj = await process4(objectT, outputSize3, config3);
     last4 = obj;
     resolve(obj);
   });
 }
 
 // src/segmentation/segmentation.ts
-var model9;
+var model8;
 var busy = false;
-async function load12(config3) {
-  if (!model9 || env.initial) {
-    model9 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
-    if (!model9 || !model9["modelUrl"])
+async function load11(config3) {
+  if (!model8 || env.initial) {
+    model8 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
+    if (!model8 || !model8["modelUrl"])
       log("load model failed:", config3.segmentation.modelPath);
     else if (config3.debug)
-      log("load model:", model9["modelUrl"]);
+      log("load model:", model8["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model9["modelUrl"]);
-  return model9;
+    log("cached model:", model8["modelUrl"]);
+  return model8;
 }
 async function process5(input, background, config3) {
   var _a, _b;
   if (busy)
     return { data: [], canvas: null, alpha: null };
   busy = true;
-  if (!model9)
-    await load12(config3);
+  if (!model8)
+    await load11(config3);
   const inputImage = process2(input, config3);
   const width = ((_a = inputImage.canvas) == null ? void 0 : _a.width) || 0;
   const height = ((_b = inputImage.canvas) == null ? void 0 : _b.height) || 0;
   if (!inputImage.tensor)
     return { data: [], canvas: null, alpha: null };
   const t = {};
-  t.resize = tfjs_esm_exports.image.resizeBilinear(inputImage.tensor, [model9.inputs[0].shape ? model9.inputs[0].shape[1] : 0, model9.inputs[0].shape ? model9.inputs[0].shape[2] : 0], false);
+  t.resize = tfjs_esm_exports.image.resizeBilinear(inputImage.tensor, [model8.inputs[0].shape ? model8.inputs[0].shape[1] : 0, model8.inputs[0].shape ? model8.inputs[0].shape[2] : 0], false);
   tfjs_esm_exports.dispose(inputImage.tensor);
   t.norm = tfjs_esm_exports.div(t.resize, 255);
-  t.res = model9.predict(t.norm);
+  t.res = model8.predict(t.norm);
   t.squeeze = tfjs_esm_exports.squeeze(t.res, 0);
   if (t.squeeze.shape[2] === 2) {
     t.softmax = tfjs_esm_exports.softmax(t.squeeze);
@@ -10536,21 +10563,21 @@ async function process5(input, background, config3) {
   return { data, canvas: mergedCanvas || compositeCanvas, alpha: alphaCanvas };
 }
 
-// src/gear/agegenderrace.ts
-var model10;
+// src/gear/gear-agegenderrace.ts
+var model9;
 var skipped8 = Number.MAX_SAFE_INTEGER;
-async function load13(config3) {
+async function load12(config3) {
   if (env.initial)
-    model10 = null;
-  if (!model10) {
-    model10 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.agegenderrace.modelPath));
-    if (!model10 || !model10["modelUrl"])
+    model9 = null;
+  if (!model9) {
+    model9 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.agegenderrace.modelPath));
+    if (!model9 || !model9["modelUrl"])
       log("load model failed:", config3.face.agegenderrace.modelPath);
     else if (config3.debug)
-      log("load model:", model10["modelUrl"]);
+      log("load model:", model9["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model10["modelUrl"]);
-  return model10;
+    log("cached model:", model9["modelUrl"]);
+  return model9;
 }
 
 // src/models.ts
@@ -10558,6 +10585,7 @@ var Models = class {
   constructor() {
     __publicField(this, "age", null);
     __publicField(this, "agegenderrace", null);
+    __publicField(this, "blazeposedetect", null);
     __publicField(this, "blazepose", null);
     __publicField(this, "centernet", null);
     __publicField(this, "efficientpose", null);
@@ -10578,11 +10606,11 @@ var Models = class {
   }
 };
 function reset(instance) {
-  for (const model11 of Object.keys(instance.models))
-    instance.models[model11] = null;
+  for (const model10 of Object.keys(instance.models))
+    instance.models[model10] = null;
 }
-async function load14(instance) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A;
+async function load13(instance) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D;
   if (env.initial)
     reset(instance);
   if (instance.config.face.enabled) {
@@ -10606,48 +10634,50 @@ async function load14(instance) {
   if (instance.config.body.enabled && !instance.models.posenet && ((_l = (_k = instance.config.body) == null ? void 0 : _k.modelPath) == null ? void 0 : _l.includes("posenet")))
     instance.models.posenet = load5(instance.config);
   if (instance.config.body.enabled && !instance.models.efficientpose && ((_n = (_m = instance.config.body) == null ? void 0 : _m.modelPath) == null ? void 0 : _n.includes("efficientpose")))
-    instance.models.efficientpose = load8(instance.config);
-  if (instance.config.body.enabled && !instance.models.blazepose && ((_p = (_o = instance.config.body) == null ? void 0 : _o.modelPath) == null ? void 0 : _p.includes("blazepose")))
-    instance.models.blazepose = load7(instance.config);
-  if (instance.config.body.enabled && !instance.models.efficientpose && ((_r = (_q = instance.config.body) == null ? void 0 : _q.modelPath) == null ? void 0 : _r.includes("efficientpose")))
     instance.models.efficientpose = load7(instance.config);
-  if (instance.config.body.enabled && !instance.models.movenet && ((_t = (_s = instance.config.body) == null ? void 0 : _s.modelPath) == null ? void 0 : _t.includes("movenet")))
-    instance.models.movenet = load9(instance.config);
-  if (instance.config.object.enabled && !instance.models.nanodet && ((_v = (_u = instance.config.object) == null ? void 0 : _u.modelPath) == null ? void 0 : _v.includes("nanodet")))
-    instance.models.nanodet = load10(instance.config);
-  if (instance.config.object.enabled && !instance.models.centernet && ((_x = (_w = instance.config.object) == null ? void 0 : _w.modelPath) == null ? void 0 : _x.includes("centernet")))
-    instance.models.centernet = load11(instance.config);
-  if (instance.config.face.enabled && ((_y = instance.config.face.emotion) == null ? void 0 : _y.enabled) && !instance.models.emotion)
+  if (instance.config.body.enabled && !instance.models.blazepose && ((_p = (_o = instance.config.body) == null ? void 0 : _o.modelPath) == null ? void 0 : _p.includes("blazepose")))
+    instance.models.blazepose = loadPose(instance.config);
+  if (instance.config.body.enabled && !instance.models.blazeposedetect && ((_q = instance.config.body.detector) == null ? void 0 : _q.modelPath) && ((_s = (_r = instance.config.body) == null ? void 0 : _r.modelPath) == null ? void 0 : _s.includes("blazepose")))
+    instance.models.blazeposedetect = loadDetect2(instance.config);
+  if (instance.config.body.enabled && !instance.models.efficientpose && ((_u = (_t = instance.config.body) == null ? void 0 : _t.modelPath) == null ? void 0 : _u.includes("efficientpose")))
+    instance.models.efficientpose = load7(instance.config);
+  if (instance.config.body.enabled && !instance.models.movenet && ((_w = (_v = instance.config.body) == null ? void 0 : _v.modelPath) == null ? void 0 : _w.includes("movenet")))
+    instance.models.movenet = load8(instance.config);
+  if (instance.config.object.enabled && !instance.models.nanodet && ((_y = (_x = instance.config.object) == null ? void 0 : _x.modelPath) == null ? void 0 : _y.includes("nanodet")))
+    instance.models.nanodet = load9(instance.config);
+  if (instance.config.object.enabled && !instance.models.centernet && ((_A = (_z = instance.config.object) == null ? void 0 : _z.modelPath) == null ? void 0 : _A.includes("centernet")))
+    instance.models.centernet = load10(instance.config);
+  if (instance.config.face.enabled && ((_B = instance.config.face.emotion) == null ? void 0 : _B.enabled) && !instance.models.emotion)
     instance.models.emotion = load4(instance.config);
-  if (instance.config.face.enabled && ((_z = instance.config.face.description) == null ? void 0 : _z.enabled) && !instance.models.faceres)
+  if (instance.config.face.enabled && ((_C = instance.config.face.description) == null ? void 0 : _C.enabled) && !instance.models.faceres)
     instance.models.faceres = load3(instance.config);
   if (instance.config.segmentation.enabled && !instance.models.segmentation)
-    instance.models.segmentation = load12(instance.config);
-  if (instance.config.face.enabled && ((_A = instance.config.face["agegenderrace"]) == null ? void 0 : _A.enabled) && !instance.models.agegenderrace)
-    instance.models.agegenderrace = load13(instance.config);
-  for await (const model11 of Object.keys(instance.models)) {
-    if (instance.models[model11] && typeof instance.models[model11] !== "undefined")
-      instance.models[model11] = await instance.models[model11];
+    instance.models.segmentation = load11(instance.config);
+  if (instance.config.face.enabled && ((_D = instance.config.face["agegenderrace"]) == null ? void 0 : _D.enabled) && !instance.models.agegenderrace)
+    instance.models.agegenderrace = load12(instance.config);
+  for await (const model10 of Object.keys(instance.models)) {
+    if (instance.models[model10] && typeof instance.models[model10] !== "undefined")
+      instance.models[model10] = await instance.models[model10];
   }
 }
 async function validate2(instance) {
   const simpleOps = ["const", "placeholder", "noop", "pad", "squeeze", "add", "sub", "mul", "div"];
   for (const defined of Object.keys(instance.models)) {
     if (instance.models[defined]) {
-      let models4 = [];
+      let models5 = [];
       if (Array.isArray(instance.models[defined])) {
-        models4 = instance.models[defined].filter((model11) => model11 !== null).map((model11) => model11 && model11.executor ? model11 : model11.model);
+        models5 = instance.models[defined].filter((model10) => model10 !== null).map((model10) => model10 && model10.executor ? model10 : model10.model);
       } else {
-        models4 = [instance.models[defined]];
+        models5 = [instance.models[defined]];
       }
-      for (const model11 of models4) {
-        if (!model11) {
+      for (const model10 of models5) {
+        if (!model10) {
           if (instance.config.debug)
             log("model marked as loaded but not defined:", defined);
           continue;
         }
         const ops = [];
-        const executor = model11 == null ? void 0 : model11.executor;
+        const executor = model10 == null ? void 0 : model10.executor;
         if (executor && executor.graph.nodes) {
           for (const kernel of Object.values(executor.graph.nodes)) {
             const op = kernel.op.toLowerCase();
@@ -10671,7 +10701,7 @@ async function validate2(instance) {
   }
 }
 
-// src/face.ts
+// src/face/face.ts
 var calculateGaze = (face5) => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]);
   if (!face5.annotations["rightEyeIris"] || !face5.annotations["leftEyeIris"])
@@ -10978,7 +11008,7 @@ var hand = (res) => {
   return gestures;
 };
 
-// src/draw.ts
+// src/util/draw.ts
 var options2 = {
   color: "rgba(173, 216, 230, 0.6)",
   labelColor: "rgba(173, 216, 230, 1)",
@@ -11524,7 +11554,7 @@ function join2(faces, bodies, hands, gestures, shape) {
   return persons2;
 }
 
-// src/interpolate.ts
+// src/util/interpolate.ts
 var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 function calc(newResult) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u;
@@ -12570,7 +12600,7 @@ var Human = class {
   async load(userConfig) {
     this.state = "load";
     const timeStamp = now();
-    const count2 = Object.values(this.models).filter((model11) => model11).length;
+    const count2 = Object.values(this.models).filter((model10) => model10).length;
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);
     if (env.initial) {
@@ -12588,11 +12618,11 @@ var Human = class {
           log("tf flags:", this.tf.ENV.flags);
       }
     }
-    await load14(this);
+    await load13(this);
     if (env.initial && this.config.debug)
       log("tf engine state:", this.tf.engine().state.numBytes, "bytes", this.tf.engine().state.numTensors, "tensors");
     env.initial = false;
-    const loaded = Object.values(this.models).filter((model11) => model11).length;
+    const loaded = Object.values(this.models).filter((model10) => model10).length;
     if (loaded !== count2) {
       await validate2(this);
       this.emit("load");

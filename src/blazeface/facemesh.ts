@@ -7,7 +7,7 @@
  * - Eye Iris Details: [**MediaPipe Iris**](https://drive.google.com/file/d/1bsWbokp9AklH2ANjCfmjqEzzxO1CNbMu/view)
  */
 
-import { log, join } from '../util';
+import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as blazeface from './blazeface';
 import * as facepipeline from './facepipeline';
@@ -15,7 +15,7 @@ import * as coords from './coords';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { FaceResult, Box } from '../result';
 import type { Config } from '../config';
-import { env } from '../env';
+import { env } from '../util/env';
 
 let faceModels: [blazeface.BlazeFaceModel | null, GraphModel | null, GraphModel | null] = [null, null, null];
 let facePipeline;

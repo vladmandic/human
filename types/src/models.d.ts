@@ -12,6 +12,7 @@ import type { Human } from './human';
 export declare class Models {
     age: null | GraphModel | Promise<GraphModel>;
     agegenderrace: null | GraphModel | Promise<GraphModel>;
+    blazeposedetect: null | GraphModel | Promise<GraphModel>;
     blazepose: null | GraphModel | Promise<GraphModel>;
     centernet: null | GraphModel | Promise<GraphModel>;
     efficientpose: null | GraphModel | Promise<GraphModel>;

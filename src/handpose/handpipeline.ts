@@ -8,7 +8,7 @@ import * as box from './box';
 import * as util from './util';
 import type * as detector from './handdetector';
 import type { Tensor, GraphModel } from '../tfjs/types';
-import { env } from '../env';
+import { env } from '../util/env';
 
 const palmBoxEnlargeFactor = 5; // default 3
 const handBoxEnlargeFactor = 1.65; // default 1.65

@@ -6,12 +6,12 @@
  * - [**MediaPipe Selfie**](https://drive.google.com/file/d/1dCfozqknMa068vVsO2j_1FgZkW_e3VWv/preview)
  */
 
-import { log, join } from '../util';
+import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
-import { env } from '../env';
+import { env } from '../util/env';
 
 type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
 

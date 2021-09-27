@@ -9,8 +9,8 @@ import * as util from './util';
 import * as coords from './coords';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { BlazeFaceModel } from './blazeface';
-import { env } from '../env';
-import { log } from '../util';
+import { env } from '../util/env';
+import { log } from '../util/util';
 import type { Point } from '../result';
 
 const leftOutline = coords.MESH_ANNOTATIONS['leftEyeLower0'];

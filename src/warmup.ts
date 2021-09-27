@@ -2,13 +2,13 @@
  * Warmup algorithm that uses embedded images to excercise loaded models for faster future inference
  */
 
-import { log, now, mergeDeep } from './util';
+import { log, now, mergeDeep } from './util/util';
 import * as sample from './sample';
 import * as tf from '../dist/tfjs.esm.js';
 import * as image from './image/image';
 import type { Config } from './config';
 import type { Result } from './result';
-import { env } from './env';
+import { env } from './util/env';
 
 async function warmupBitmap(instance) {
   const b64toBlob = (base64: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());

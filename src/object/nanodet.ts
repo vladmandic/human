@@ -7,7 +7,7 @@
 import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
-import type { ObjectResult } from '../result';
+import type { ObjectResult, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../env';
@@ -58,8 +58,8 @@ async function process(res, inputSize, outputShape, config) {
               cx + (scaleBox / strideSize * boxOffset[2]) - x,
               cy + (scaleBox / strideSize * boxOffset[3]) - y,
             ];
-            let boxRaw = [x, y, w, h]; // results normalized to range 0..1
-            boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1))); // fix out-of-bounds coords
+            let boxRaw: Box = [x, y, w, h]; // results normalized to range 0..1
+            boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1))) as Box; // fix out-of-bounds coords
             const box = [ // results normalized to input image pixels
               boxRaw[0] * outputShape[0],
               boxRaw[1] * outputShape[1],
@@ -74,8 +74,8 @@ async function process(res, inputSize, outputShape, config) {
               label: labels[j].label,
               // center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
               // centerRaw: [cx, cy],
-              box: (box.map((a) => Math.trunc(a))) as [number, number, number, number],
-              boxRaw: boxRaw as [number, number, number, number],
+              box: box.map((a) => Math.trunc(a)) as Box,
+              boxRaw,
             };
             results.push(result);
           }

@@ -2,6 +2,8 @@
  * Simple helper functions used accross codebase
  */
 
+import type { Box } from './result';
+
 // helper function: join two paths
 export function join(folder: string, file: string): string {
   const separator = folder.endsWith('/') ? '' : '/';
@@ -81,18 +83,18 @@ export function scaleBox(keypoints, boxScaleFact, outputSize) {
     Math.trunc(center[1] - diff),
     Math.trunc(2 * diff),
     Math.trunc(2 * diff),
-  ] as [number, number, number, number];
+  ] as Box;
   const boxRaw = [ // work backwards
     box[0] / outputSize[0],
     box[1] / outputSize[1],
     box[2] / outputSize[0],
     box[3] / outputSize[1],
-  ] as [number, number, number, number];
+  ] as Box;
   const yxBox = [ // work backwards
     boxRaw[1],
     boxRaw[0],
     boxRaw[3] + boxRaw[1],
     boxRaw[2] + boxRaw[0],
-  ] as [number, number, number, number];
+  ] as Box;
   return { box, boxRaw, yxBox };
 }

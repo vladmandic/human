@@ -1,1 +1,1 @@
-{"version":3,"file":"interpolate.d.ts","sourceRoot":"","sources":["../../src/interpolate.ts"],"names":[],"mappings":"AAAA;;GAEG;AAEH,OAAO,KAAK,EAAE,MAAM,EAAiF,MAAM,UAAU,CAAC;AAItH,wBAAgB,IAAI,CAAC,SAAS,EAAE,MAAM,GAAG,MAAM,CAmI9C"}
+{"version":3,"file":"interpolate.d.ts","sourceRoot":"","sources":["../../src/interpolate.ts"],"names":[],"mappings":"AAAA;;GAEG;AAEH,OAAO,KAAK,EAAE,MAAM,EAA6F,MAAM,UAAU,CAAC;AAIlI,wBAAgB,IAAI,CAAC,SAAS,EAAE,MAAM,GAAG,MAAM,CAmI9C"}

@@ -37,6 +37,7 @@ export * from './config';
 export * from './result';
 export type { DrawOptions } from './draw';
 export { env, Env } from './env';
+export { Box, Point } from './result';
 export { Models } from './models';
 
 /** Defines all possible input types for **Human** detection

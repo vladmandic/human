@@ -1,6 +1,7 @@
 /**
  * Simple helper functions used accross codebase
  */
+import type { Box } from './result';
 export declare function join(folder: string, file: string): string;
 export declare function log(...msg: any[]): void;
 export declare const now: () => number;
@@ -16,4 +17,9 @@ export declare function validate(defaults: any, config: any, parent?: string, ms
 export declare function mergeDeep(...objects: any[]): any;
 export declare const minmax: (data: Array<number>) => number[];
 export declare function wait(time: any): Promise<void>;
+export declare function scaleBox(keypoints: any, boxScaleFact: any, outputSize: any): {
+    box: Box;
+    boxRaw: Box;
+    yxBox: Box;
+};
 //# sourceMappingURL=util.d.ts.map

@@ -4,6 +4,7 @@
  */
 import type { GraphModel } from '../tfjs/types';
 import type { BlazeFaceModel } from './blazeface';
+import type { Point } from '../result';
 export declare class Pipeline {
     storedBoxes: Array<{
         startPoint: number[];
@@ -34,8 +35,8 @@ export declare class Pipeline {
         crop: any;
     };
     getEyeCoords(eyeData: any, eyeBox: any, eyeBoxSize: any, flip?: boolean): {
-        rawCoords: [number, number, number][];
-        iris: [number, number, number][];
+        rawCoords: Point[];
+        iris: Point[];
     };
     getAdjustedIrisCoords(rawCoords: any, irisCoords: any, direction: any): any;
     correctFaceRotation(config: any, box: any, input: any): any[];

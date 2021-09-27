@@ -3,6 +3,8 @@
  */
 import type { Tensor } from './tfjs/types';
 import type { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
+export declare type Box = [number, number, number, number];
+export declare type Point = [number, number, number?];
 /** Face results
  * Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
  * Some values may be null if specific model is not enabled
@@ -35,11 +37,11 @@ export interface FaceResult {
     score: number;
     boxScore: number;
     faceScore: number;
-    box: [number, number, number, number];
-    boxRaw: [number, number, number, number];
-    mesh: Array<[number, number, number]>;
-    meshRaw: Array<[number, number, number]>;
-    annotations: Record<string, Array<[number, number, number]>>;
+    box: Box;
+    boxRaw: Box;
+    mesh: Array<Point>;
+    meshRaw: Array<Point>;
+    annotations: Record<string, Point[]>;
     age?: number;
     gender?: string;
     genderScore?: number;
@@ -79,12 +81,12 @@ export interface FaceResult {
 export interface BodyResult {
     id: number;
     score: number;
-    box: [number, number, number, number];
-    boxRaw: [number, number, number, number];
+    box: Box;
+    boxRaw: Box;
     keypoints: Array<{
         part: string;
-        position: [number, number, number?];
-        positionRaw: [number, number, number?];
+        position: Point;
+        positionRaw: Point;
         score: number;
         presence?: number;
     }>;
@@ -105,11 +107,11 @@ export interface HandResult {
     score: number;
     boxScore: number;
     fingerScore: number;
-    box: [number, number, number, number];
-    boxRaw: [number, number, number, number];
-    keypoints: Array<[number, number, number]>;
+    box: Box;
+    boxRaw: Box;
+    keypoints: Array<Point>;
     label: string;
-    annotations: Record<'index' | 'middle' | 'pinky' | 'ring' | 'thumb' | 'palm', Array<[number, number, number]>>;
+    annotations: Record<'index' | 'middle' | 'pinky' | 'ring' | 'thumb' | 'palm', Array<Point>>;
     landmarks: Record<'index' | 'middle' | 'pinky' | 'ring' | 'thumb', {
         curl: 'none' | 'half' | 'full';
         direction: 'verticalUp' | 'verticalDown' | 'horizontalLeft' | 'horizontalRight' | 'diagonalUpRight' | 'diagonalUpLeft' | 'diagonalDownRight' | 'diagonalDownLeft';
@@ -132,8 +134,8 @@ export interface ObjectResult {
     score: number;
     class: number;
     label: string;
-    box: [number, number, number, number];
-    boxRaw: [number, number, number, number];
+    box: Box;
+    boxRaw: Box;
 }
 /** Gesture results
  * @typedef Gesture Type
@@ -177,8 +179,8 @@ export interface PersonResult {
         right: HandResult | null;
     };
     gestures: Array<GestureResult>;
-    box: [number, number, number, number];
-    boxRaw?: [number, number, number, number];
+    box: Box;
+    boxRaw?: Box;
 }
 /**
  * Result interface definition for **Human** library

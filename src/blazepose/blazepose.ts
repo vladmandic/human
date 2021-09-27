@@ -8,7 +8,7 @@ import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as annotations from './annotations';
 import type { Tensor, GraphModel } from '../tfjs/types';
-import type { BodyResult } from '../result';
+import type { BodyResult, Box, Point } from '../result';
 import type { Config } from '../config';
 import { env } from '../env';
 
@@ -38,7 +38,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
   const points = await findT?.data() || []; // order of output tensors may change between models, full has 195 and upper has 155 items
   resT.forEach((t) => tf.dispose(t));
   tf.dispose(normalize);
-  const keypoints: Array<{ id, part, position: [number, number, number], positionRaw: [number, number, number], score, presence }> = [];
+  const keypoints: Array<{ id, part, position: Point, positionRaw: Point, score, presence }> = [];
   const labels = points?.length === 195 ? annotations.full : annotations.upper; // full model has 39 keypoints, upper has 31 keypoints
   const depth = 5; // each points has x,y,z,visibility,presence
   for (let i = 0; i < points.length / depth; i++) {
@@ -61,13 +61,13 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
   }
   const x = keypoints.map((a) => a.position[0]);
   const y = keypoints.map((a) => a.position[1]);
-  const box: [number, number, number, number] = [
+  const box: Box = [
     Math.min(...x),
     Math.min(...y),
     Math.max(...x) - Math.min(...x),
     Math.max(...y) - Math.min(...x),
   ];
-  const boxRaw: [number, number, number, number] = [0, 0, 0, 0]; // not yet implemented
+  const boxRaw: Box = [0, 0, 0, 0]; // not yet implemented
   const score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
   return [{ id: 0, score, box, boxRaw, keypoints }];
 }

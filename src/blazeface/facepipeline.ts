@@ -11,6 +11,7 @@ import type { Tensor, GraphModel } from '../tfjs/types';
 import type { BlazeFaceModel } from './blazeface';
 import { env } from '../env';
 import { log } from '../util';
+import type { Point } from '../result';
 
 const leftOutline = coords.MESH_ANNOTATIONS['leftEyeLower0'];
 const rightOutline = coords.MESH_ANNOTATIONS['rightEyeLower0'];
@@ -131,7 +132,7 @@ export class Pipeline {
 
   // Given a cropped image of an eye, returns the coordinates of the contours surrounding the eye and the iris.
   getEyeCoords(eyeData, eyeBox, eyeBoxSize, flip = false) {
-    const eyeRawCoords: Array<[number, number, number]> = [];
+    const eyeRawCoords: Array<Point> = [];
     for (let i = 0; i < irisLandmarks.numCoordinates; i++) {
       const x = eyeData[i * 3];
       const y = eyeData[i * 3 + 1];

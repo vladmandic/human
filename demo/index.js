@@ -105,7 +105,7 @@ const ui = {
   lastFrame: 0, // time of last frame processing
   viewportSet: false, // internal, has custom viewport been set
   background: null, // holds instance of segmentation background image
-  exceptionHandler: true, // should capture all unhandled exceptions
+  exceptionHandler: false, // should capture all unhandled exceptions
 
   // webrtc
   useWebRTC: false, // use webrtc as camera source instead of local webcam

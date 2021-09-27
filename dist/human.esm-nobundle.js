@@ -99,6 +99,31 @@ function mergeDeep(...objects) {
     return prev;
   }, {});
 }
+function scaleBox(keypoints3, boxScaleFact2, outputSize2) {
+  const coords3 = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
+  const maxmin = [Math.max(...coords3[0]), Math.min(...coords3[0]), Math.max(...coords3[1]), Math.min(...coords3[1])];
+  const center = [(maxmin[0] + maxmin[1]) / 2, (maxmin[2] + maxmin[3]) / 2];
+  const diff = Math.max(center[0] - maxmin[1], center[1] - maxmin[3], -center[0] + maxmin[0], -center[1] + maxmin[2]) * boxScaleFact2;
+  const box6 = [
+    Math.trunc(center[0] - diff),
+    Math.trunc(center[1] - diff),
+    Math.trunc(2 * diff),
+    Math.trunc(2 * diff)
+  ];
+  const boxRaw3 = [
+    box6[0] / outputSize2[0],
+    box6[1] / outputSize2[1],
+    box6[2] / outputSize2[0],
+    box6[3] / outputSize2[1]
+  ];
+  const yxBox = [
+    boxRaw3[1],
+    boxRaw3[0],
+    boxRaw3[3] + boxRaw3[1],
+    boxRaw3[2] + boxRaw3[0]
+  ];
+  return { box: box6, boxRaw: boxRaw3, yxBox };
+}
 
 // src/config.ts
 var config = {
@@ -355,13 +380,13 @@ function rotatePoint(homogeneousCoordinate, rotationMatrix) {
     dot(homogeneousCoordinate, rotationMatrix[1])
   ];
 }
-function generateAnchors(inputSize3) {
-  const spec = { strides: [inputSize3 / 16, inputSize3 / 8], anchors: [2, 6] };
+function generateAnchors(inputSize4) {
+  const spec = { strides: [inputSize4 / 16, inputSize4 / 8], anchors: [2, 6] };
   const anchors3 = [];
   for (let i = 0; i < spec.strides.length; i++) {
     const stride = spec.strides[i];
-    const gridRows = Math.floor((inputSize3 + stride - 1) / stride);
-    const gridCols = Math.floor((inputSize3 + stride - 1) / stride);
+    const gridRows = Math.floor((inputSize4 + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize4 + stride - 1) / stride);
     const anchorsNum = spec.anchors[i];
     for (let gridY = 0; gridY < gridRows; gridY++) {
       const anchorY = stride * (gridY + 0.5);
@@ -378,17 +403,17 @@ function generateAnchors(inputSize3) {
 
 // src/blazeface/blazeface.ts
 var keypointsCount = 6;
-function decodeBounds(boxOutputs, anchors3, inputSize3) {
+function decodeBounds(boxOutputs, anchors3, inputSize4) {
   const boxStarts = tfjs_esm_exports.slice(boxOutputs, [0, 1], [-1, 2]);
   const centers = tfjs_esm_exports.add(boxStarts, anchors3);
   const boxSizes = tfjs_esm_exports.slice(boxOutputs, [0, 3], [-1, 2]);
-  const boxSizesNormalized = tfjs_esm_exports.div(boxSizes, inputSize3);
-  const centersNormalized = tfjs_esm_exports.div(centers, inputSize3);
+  const boxSizesNormalized = tfjs_esm_exports.div(boxSizes, inputSize4);
+  const centersNormalized = tfjs_esm_exports.div(centers, inputSize4);
   const halfBoxSize = tfjs_esm_exports.div(boxSizesNormalized, 2);
   const starts = tfjs_esm_exports.sub(centersNormalized, halfBoxSize);
   const ends = tfjs_esm_exports.add(centersNormalized, halfBoxSize);
-  const startNormalized = tfjs_esm_exports.mul(starts, inputSize3);
-  const endNormalized = tfjs_esm_exports.mul(ends, inputSize3);
+  const startNormalized = tfjs_esm_exports.mul(starts, inputSize4);
+  const endNormalized = tfjs_esm_exports.mul(ends, inputSize4);
   const concatAxis = 1;
   return tfjs_esm_exports.concat2d([startNormalized, endNormalized], concatAxis);
 }
@@ -9590,17 +9615,9 @@ var boxScaleFact = 1.5;
 var models2 = [null, null];
 var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "StatefulPartitionedCall/Postprocessor/ExpandDims_1"];
 var inputSize = [[0, 0], [0, 0]];
-var classes = [
-  "hand",
-  "fist",
-  "pinch",
-  "point",
-  "face",
-  "tip",
-  "pinchtip"
-];
+var classes = ["hand", "fist", "pinch", "point", "face", "tip", "pinchtip"];
 var skipped3 = 0;
-var outputSize;
+var outputSize = [0, 0];
 var cache = {
   handBoxes: [],
   fingerBoxes: [],
@@ -9698,30 +9715,6 @@ async function detectHands(input, config3) {
     hands.length = config3.hand.maxDetected || 1;
   return hands;
 }
-function updateBoxes(h, keypoints3) {
-  const finger = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
-  const minmax = [Math.min(...finger[0]), Math.max(...finger[0]), Math.min(...finger[1]), Math.max(...finger[1])];
-  const center = [(minmax[0] + minmax[1]) / 2, (minmax[2] + minmax[3]) / 2];
-  const diff = Math.max(center[0] - minmax[0], center[1] - minmax[2], -center[0] + minmax[1], -center[1] + minmax[3]) * boxScaleFact;
-  h.box = [
-    Math.trunc(center[0] - diff),
-    Math.trunc(center[1] - diff),
-    Math.trunc(2 * diff),
-    Math.trunc(2 * diff)
-  ];
-  h.boxRaw = [
-    h.box[0] / outputSize[0],
-    h.box[1] / outputSize[1],
-    h.box[2] / outputSize[0],
-    h.box[3] / outputSize[1]
-  ];
-  h.yxBox = [
-    h.boxRaw[1],
-    h.boxRaw[0],
-    h.boxRaw[3] + h.boxRaw[1],
-    h.boxRaw[2] + h.boxRaw[0]
-  ];
-}
 async function detectFingers(input, h, config3) {
   const hand3 = {
     id: h.id,
@@ -9755,7 +9748,10 @@ async function detectFingers(input, h, config3) {
         h.box[3] * coord[1] / inputSize[1][1] + h.box[1],
         (h.box[2] + h.box[3]) / 2 / inputSize[1][0] * coord[2]
       ]);
-      updateBoxes(h, hand3.keypoints);
+      const updatedBox = scaleBox(hand3.keypoints, boxScaleFact, outputSize);
+      h.box = updatedBox.box;
+      h.boxRaw = updatedBox.boxRaw;
+      h.yxBox = updatedBox.yxBox;
       hand3.box = h.box;
       hand3.landmarks = analyze(hand3.keypoints);
       for (const key of Object.keys(fingerMap)) {
@@ -10035,11 +10031,13 @@ async function predict8(image24, config3) {
 
 // src/movenet/movenet.ts
 var model6;
-var keypoints2 = [];
+var inputSize2 = 0;
+var cachedBoxes = [];
 var box5 = [0, 0, 0, 0];
 var boxRaw2 = [0, 0, 0, 0];
 var score2 = 0;
 var skipped5 = Number.MAX_SAFE_INTEGER;
+var keypoints2 = [];
 var bodyParts2 = ["nose", "leftEye", "rightEye", "leftEar", "rightEar", "leftShoulder", "rightShoulder", "leftElbow", "rightElbow", "leftWrist", "rightWrist", "leftHip", "rightHip", "leftKnee", "rightKnee", "leftAnkle", "rightAnkle"];
 async function load9(config3) {
   if (env.initial)
@@ -10053,24 +10051,28 @@ async function load9(config3) {
       log("load model:", model6["modelUrl"]);
   } else if (config3.debug)
     log("cached model:", model6["modelUrl"]);
+  inputSize2 = model6.inputs[0].shape ? model6.inputs[0].shape[2] : 0;
+  if (inputSize2 === -1)
+    inputSize2 = 256;
   return model6;
 }
-async function parseSinglePose(res, config3, image24) {
-  keypoints2.length = 0;
+async function parseSinglePose(res, config3, image24, inputBox) {
   const kpt3 = res[0][0];
+  keypoints2.length = 0;
   for (let id = 0; id < kpt3.length; id++) {
     score2 = kpt3[id][2];
     if (score2 > config3.body.minConfidence) {
+      const positionRaw = [
+        (inputBox[3] - inputBox[1]) * kpt3[id][1] + inputBox[1],
+        (inputBox[2] - inputBox[0]) * kpt3[id][0] + inputBox[0]
+      ];
       keypoints2.push({
         score: Math.round(100 * score2) / 100,
         part: bodyParts2[id],
-        positionRaw: [
-          kpt3[id][1],
-          kpt3[id][0]
-        ],
+        positionRaw,
         position: [
-          Math.round((image24.shape[2] || 0) * kpt3[id][1]),
-          Math.round((image24.shape[1] || 0) * kpt3[id][0])
+          Math.round((image24.shape[2] || 0) * positionRaw[0]),
+          Math.round((image24.shape[1] || 0) * positionRaw[1])
         ]
       });
     }
@@ -10092,12 +10094,12 @@ async function parseSinglePose(res, config3, image24) {
     Math.max(...xRaw) - Math.min(...xRaw),
     Math.max(...yRaw) - Math.min(...yRaw)
   ];
-  const persons2 = [];
-  persons2.push({ id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints2 });
-  return persons2;
+  const bodies = [];
+  bodies.push({ id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints2 });
+  return bodies;
 }
-async function parseMultiPose(res, config3, image24) {
-  const persons2 = [];
+async function parseMultiPose(res, config3, image24, inputBox) {
+  const bodies = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt3 = res[0][id];
     score2 = Math.round(100 * kpt3[51 + 4]) / 100;
@@ -10107,16 +10109,20 @@ async function parseMultiPose(res, config3, image24) {
     for (let i = 0; i < 17; i++) {
       const partScore = Math.round(100 * kpt3[3 * i + 2]) / 100;
       if (partScore > config3.body.minConfidence) {
+        const positionRaw = [
+          (inputBox[3] - inputBox[1]) * kpt3[3 * i + 1] + inputBox[1],
+          (inputBox[2] - inputBox[0]) * kpt3[3 * i + 0] + inputBox[0]
+        ];
         keypoints2.push({
           part: bodyParts2[i],
           score: partScore,
-          positionRaw: [kpt3[3 * i + 1], kpt3[3 * i + 0]],
-          position: [Math.trunc(kpt3[3 * i + 1] * (image24.shape[2] || 0)), Math.trunc(kpt3[3 * i + 0] * (image24.shape[1] || 0))]
+          positionRaw,
+          position: [Math.trunc(positionRaw[0] * (image24.shape[2] || 0)), Math.trunc(positionRaw[0] * (image24.shape[1] || 0))]
         });
       }
     }
     boxRaw2 = [kpt3[51 + 1], kpt3[51 + 0], kpt3[51 + 3] - kpt3[51 + 1], kpt3[51 + 2] - kpt3[51 + 0]];
-    persons2.push({
+    bodies.push({
       id,
       score: score2,
       boxRaw: boxRaw2,
@@ -10129,39 +10135,47 @@ async function parseMultiPose(res, config3, image24) {
       keypoints: [...keypoints2]
     });
   }
-  return persons2;
+  return bodies;
 }
-async function predict9(image24, config3) {
-  if (skipped5 < (config3.body.skipFrames || 0) && config3.skipFrame && Object.keys(keypoints2).length > 0) {
-    skipped5++;
-    return [{ id: 0, score: score2, box: box5, boxRaw: boxRaw2, keypoints: keypoints2 }];
-  }
-  skipped5 = 0;
+async function predict9(input, config3) {
+  if (!model6 || !(model6 == null ? void 0 : model6.inputs[0].shape))
+    return [];
   return new Promise(async (resolve) => {
-    const tensor3 = tfjs_esm_exports.tidy(() => {
-      if (!(model6 == null ? void 0 : model6.inputs[0].shape))
-        return null;
-      let inputSize3 = model6.inputs[0].shape[2];
-      if (inputSize3 === -1)
-        inputSize3 = 256;
-      const resize = tfjs_esm_exports.image.resizeBilinear(image24, [inputSize3, inputSize3], false);
-      const cast5 = tfjs_esm_exports.cast(resize, "int32");
-      return cast5;
-    });
-    let resT;
-    if (config3.body.enabled)
-      resT = await (model6 == null ? void 0 : model6.predict(tensor3));
-    tfjs_esm_exports.dispose(tensor3);
-    if (!resT)
-      resolve([]);
-    const res = await resT.array();
-    let body4;
-    if (resT.shape[2] === 17)
-      body4 = await parseSinglePose(res, config3, image24);
-    else if (resT.shape[2] === 56)
-      body4 = await parseMultiPose(res, config3, image24);
-    tfjs_esm_exports.dispose(resT);
-    resolve(body4);
+    const t = {};
+    let bodies = [];
+    if (!config3.skipFrame)
+      cachedBoxes.length = 0;
+    skipped5++;
+    for (let i = 0; i < cachedBoxes.length; i++) {
+      t.crop = tfjs_esm_exports.image.cropAndResize(input, [cachedBoxes[i]], [0], [inputSize2, inputSize2], "bilinear");
+      t.cast = tfjs_esm_exports.cast(t.crop, "int32");
+      t.res = await (model6 == null ? void 0 : model6.predict(t.cast));
+      const res = await t.res.array();
+      const newBodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, cachedBoxes[i]) : await parseMultiPose(res, config3, input, cachedBoxes[i]);
+      bodies = bodies.concat(newBodies);
+      Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
+    }
+    if (bodies.length !== config3.body.maxDetected && skipped5 > (config3.body.skipFrames || 0)) {
+      t.resized = tfjs_esm_exports.image.resizeBilinear(input, [inputSize2, inputSize2], false);
+      t.cast = tfjs_esm_exports.cast(t.resized, "int32");
+      t.res = await (model6 == null ? void 0 : model6.predict(t.cast));
+      const res = await t.res.array();
+      bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, [0, 0, 1, 1]) : await parseMultiPose(res, config3, input, [0, 0, 1, 1]);
+      Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
+      cachedBoxes.length = 0;
+      skipped5 = 0;
+    }
+    if (config3.skipFrame) {
+      cachedBoxes.length = 0;
+      for (let i = 0; i < bodies.length; i++) {
+        if (bodies[i].keypoints.length > 10) {
+          const kpts = bodies[i].keypoints.map((kpt3) => kpt3.position);
+          const newBox = scaleBox(kpts, 1.5, [input.shape[2], input.shape[1]]);
+          cachedBoxes.push([...newBox.yxBox]);
+        }
+      }
+    }
+    resolve(bodies);
   });
 }
 
@@ -10253,7 +10267,7 @@ var labels = [
 var model7;
 var last3 = [];
 var skipped6 = Number.MAX_SAFE_INTEGER;
-var scaleBox = 2.5;
+var scaleBox2 = 2.5;
 async function load10(config3) {
   if (!model7 || env.initial) {
     model7 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
@@ -10269,7 +10283,7 @@ async function load10(config3) {
     log("cached model:", model7.modelUrl);
   return model7;
 }
-async function process3(res, inputSize3, outputShape, config3) {
+async function process3(res, inputSize4, outputShape, config3) {
   let id = 0;
   let results = [];
   for (const strideSize of [1, 2, 4]) {
@@ -10287,14 +10301,14 @@ async function process3(res, inputSize3, outputShape, config3) {
           if (score3 > config3.object.minConfidence && j !== 61) {
             const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize;
             const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize;
-            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize3));
+            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize4));
             const [x, y] = [
-              cx - scaleBox / strideSize * boxOffset[0],
-              cy - scaleBox / strideSize * boxOffset[1]
+              cx - scaleBox2 / strideSize * boxOffset[0],
+              cy - scaleBox2 / strideSize * boxOffset[1]
             ];
             const [w, h] = [
-              cx + scaleBox / strideSize * boxOffset[2] - x,
-              cy + scaleBox / strideSize * boxOffset[3] - y
+              cx + scaleBox2 / strideSize * boxOffset[2] - x,
+              cy + scaleBox2 / strideSize * boxOffset[3] - y
             ];
             let boxRaw3 = [x, y, w, h];
             boxRaw3 = boxRaw3.map((a) => Math.max(0, Math.min(a, 1)));
@@ -10357,7 +10371,7 @@ async function predict10(image24, config3) {
 
 // src/object/centernet.ts
 var model8;
-var inputSize2 = 0;
+var inputSize3 = 0;
 var last4 = [];
 var skipped7 = Number.MAX_SAFE_INTEGER;
 async function load11(config3) {
@@ -10367,7 +10381,7 @@ async function load11(config3) {
     fakeOps(["floormod"], config3);
     model8 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model8.modelSignature["inputs"]);
-    inputSize2 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    inputSize3 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
     if (!model8 || !model8["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
@@ -10403,14 +10417,14 @@ async function process4(res, outputShape, config3) {
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
     const [x, y] = [
-      detections[0][id][0] / inputSize2,
-      detections[0][id][1] / inputSize2
+      detections[0][id][0] / inputSize3,
+      detections[0][id][1] / inputSize3
     ];
     const boxRaw3 = [
       x,
       y,
-      detections[0][id][2] / inputSize2 - x,
-      detections[0][id][3] / inputSize2 - y
+      detections[0][id][2] / inputSize3 - x,
+      detections[0][id][3] / inputSize3 - y
     ];
     const box6 = [
       Math.trunc(boxRaw3[0] * outputShape[0]),
@@ -10432,7 +10446,7 @@ async function predict11(input, config3) {
     return last4;
   return new Promise(async (resolve) => {
     const outputSize2 = [input.shape[2], input.shape[1]];
-    const resize = tfjs_esm_exports.image.resizeBilinear(input, [inputSize2, inputSize2]);
+    const resize = tfjs_esm_exports.image.resizeBilinear(input, [inputSize3, inputSize3]);
     const objectT = config3.object.enabled ? model8 == null ? void 0 : model8.execute(resize, ["tower_0/detections"]) : null;
     tfjs_esm_exports.dispose(resize);
     const obj = await process4(objectT, outputSize2, config3);
@@ -12656,7 +12670,7 @@ var Human = class {
         faceRes = await faceRes;
       this.analyze("Start Body:");
       this.state = "detect:body";
-      const bodyConfig = this.config.body.maxDetected === -1 ? mergeDeep(this.config, { body: { maxDetected: 1 * faceRes.length } }) : this.config;
+      const bodyConfig = this.config.body.maxDetected === -1 ? mergeDeep(this.config, { body: { maxDetected: this.config.face.enabled ? 1 * faceRes.length : 1 } }) : this.config;
       if (this.config.async) {
         if ((_a = this.config.body.modelPath) == null ? void 0 : _a.includes("posenet"))
           bodyRes = this.config.body.enabled ? predict4(img.tensor, bodyConfig) : [];
@@ -12685,7 +12699,7 @@ var Human = class {
       this.analyze("End Body:");
       this.analyze("Start Hand:");
       this.state = "detect:hand";
-      const handConfig = this.config.hand.maxDetected === -1 ? mergeDeep(this.config, { hand: { maxDetected: 2 * faceRes.length } }) : this.config;
+      const handConfig = this.config.hand.maxDetected === -1 ? mergeDeep(this.config, { hand: { maxDetected: this.config.face.enabled ? 2 * faceRes.length : 1 } }) : this.config;
       if (this.config.async) {
         if ((_j = (_i = this.config.hand.detector) == null ? void 0 : _i.modelPath) == null ? void 0 : _j.includes("handdetect"))
           handRes = this.config.hand.enabled ? predict5(img.tensor, handConfig) : [];

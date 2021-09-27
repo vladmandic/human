@@ -6,7 +6,7 @@
  * - Hand Tracking: [**HandTracking**](https://github.com/victordibia/handtracking)
  */
 
-import { log, join } from '../util';
+import { log, join, scaleBox } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { HandResult } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
@@ -21,18 +21,10 @@ const modelOutputNodes = ['StatefulPartitionedCall/Postprocessor/Slice', 'Statef
 
 const inputSize = [[0, 0], [0, 0]];
 
-const classes = [
-  'hand',
-  'fist',
-  'pinch',
-  'point',
-  'face',
-  'tip',
-  'pinchtip',
-];
+const classes = ['hand', 'fist', 'pinch', 'point', 'face', 'tip', 'pinchtip'];
 
 let skipped = 0;
-let outputSize;
+let outputSize: [number, number] = [0, 0];
 
 type HandDetectResult = {
   id: number,
@@ -145,31 +137,6 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   return hands;
 }
 
-function updateBoxes(h, keypoints) {
-  const finger = [keypoints.map((pt) => pt[0]), keypoints.map((pt) => pt[1])]; // all fingers coords
-  const minmax = [Math.min(...finger[0]), Math.max(...finger[0]), Math.min(...finger[1]), Math.max(...finger[1])]; // find min and max coordinates for x and y of all fingers
-  const center = [(minmax[0] + minmax[1]) / 2, (minmax[2] + minmax[3]) / 2]; // find center x and y coord of all fingers
-  const diff = Math.max(center[0] - minmax[0], center[1] - minmax[2], -center[0] + minmax[1], -center[1] + minmax[3]) * boxScaleFact; // largest distance from center in any direction
-  h.box = [
-    Math.trunc(center[0] - diff),
-    Math.trunc(center[1] - diff),
-    Math.trunc(2 * diff),
-    Math.trunc(2 * diff),
-  ] as [number, number, number, number];
-  h.boxRaw = [ // work backwards
-    h.box[0] / outputSize[0],
-    h.box[1] / outputSize[1],
-    h.box[2] / outputSize[0],
-    h.box[3] / outputSize[1],
-  ] as [number, number, number, number];
-  h.yxBox = [ // work backwards
-    h.boxRaw[1],
-    h.boxRaw[0],
-    h.boxRaw[3] + h.boxRaw[1],
-    h.boxRaw[2] + h.boxRaw[0],
-  ] as [number, number, number, number];
-}
-
 async function detectFingers(input: Tensor, h: HandDetectResult, config: Config): Promise<HandResult> {
   const hand: HandResult = {
     id: h.id,
@@ -201,7 +168,10 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
         (h.box[3] * coord[1] / inputSize[1][1]) + h.box[1],
         (h.box[2] + h.box[3]) / 2 / inputSize[1][0] * coord[2],
       ]);
-      updateBoxes(h, hand.keypoints); // replace detected box with box calculated around keypoints
+      const updatedBox = scaleBox(hand.keypoints, boxScaleFact, outputSize); // replace detected box with box calculated around keypoints
+      h.box = updatedBox.box;
+      h.boxRaw = updatedBox.boxRaw;
+      h.yxBox = updatedBox.yxBox;
       hand.box = h.box;
       hand.landmarks = fingerPose.analyze(hand.keypoints) as HandResult['landmarks']; // calculate finger landmarks
       for (const key of Object.keys(fingerMap)) { // map keypoints to per-finger annotations
@@ -222,16 +192,13 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
   if ((skipped < (config.hand.skipFrames || 0)) && config.skipFrame) { // just run finger detection while reusing cached boxes
     skipped++;
     hands = await Promise.all(cache.fingerBoxes.map((hand) => detectFingers(input, hand, config))); // run from finger box cache
-    // console.log('SKIP', skipped, hands.length, cache.handBoxes.length, cache.fingerBoxes.length, cache.tmpBoxes.length);
   } else { // calculate new boxes and run finger detection
     skipped = 0;
     hands = await Promise.all(cache.fingerBoxes.map((hand) => detectFingers(input, hand, config))); // run from finger box cache
-    // console.log('CACHE', skipped, hands.length, cache.handBoxes.length, cache.fingerBoxes.length, cache.tmpBoxes.length);
     if (hands.length !== config.hand.maxDetected) { // run hand detection only if we dont have enough hands in cache
       cache.handBoxes = await detectHands(input, config);
       const newHands = await Promise.all(cache.handBoxes.map((hand) => detectFingers(input, hand, config)));
       hands = hands.concat(newHands);
-      // console.log('DETECT', skipped, hands.length, cache.handBoxes.length, cache.fingerBoxes.length, cache.tmpBoxes.length);
     }
   }
   cache.fingerBoxes = [...cache.tmpBoxes]; // repopulate cache with validated hands

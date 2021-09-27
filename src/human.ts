@@ -458,7 +458,7 @@ export class Human {
       // run body: can be posenet, blazepose, efficientpose, movenet
       this.analyze('Start Body:');
       this.state = 'detect:body';
-      const bodyConfig = this.config.body.maxDetected === -1 ? mergeDeep(this.config, { body: { maxDetected: 1 * (faceRes as FaceResult[]).length } }) : this.config; // autodetect number of bodies
+      const bodyConfig = this.config.body.maxDetected === -1 ? mergeDeep(this.config, { body: { maxDetected: this.config.face.enabled ? 1 * (faceRes as FaceResult[]).length : 1 } }) : this.config; // autodetect number of bodies
       if (this.config.async) {
         if (this.config.body.modelPath?.includes('posenet')) bodyRes = this.config.body.enabled ? posenet.predict(img.tensor, bodyConfig) : [];
         else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? blazepose.predict(img.tensor, bodyConfig) : [];
@@ -479,7 +479,7 @@ export class Human {
       // run handpose
       this.analyze('Start Hand:');
       this.state = 'detect:hand';
-      const handConfig = this.config.hand.maxDetected === -1 ? mergeDeep(this.config, { hand: { maxDetected: 2 * (faceRes as FaceResult[]).length } }) : this.config; // autodetect number of hands
+      const handConfig = this.config.hand.maxDetected === -1 ? mergeDeep(this.config, { hand: { maxDetected: this.config.face.enabled ? 2 * (faceRes as FaceResult[]).length : 1 } }) : this.config; // autodetect number of hands
       if (this.config.async) {
         if (this.config.hand.detector?.modelPath?.includes('handdetect')) handRes = this.config.hand.enabled ? handpose.predict(img.tensor, handConfig) : [];
         else if (this.config.hand.detector?.modelPath?.includes('handtrack')) handRes = this.config.hand.enabled ? handtrack.predict(img.tensor, handConfig) : [];

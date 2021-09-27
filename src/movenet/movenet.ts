@@ -4,7 +4,7 @@
  * Based on: [**MoveNet**](https://blog.tensorflow.org/2021/05/next-generation-pose-detection-with-movenet-and-tensorflowjs.html)
  */
 
-import { log, join } from '../util';
+import { log, join, scaleBox } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { BodyResult } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
@@ -13,15 +13,17 @@ import { fakeOps } from '../tfjs/backend';
 import { env } from '../env';
 
 let model: GraphModel | null;
+let inputSize = 0;
+const cachedBoxes: Array<[number, number, number, number]> = [];
 
 type Keypoints = { score: number, part: string, position: [number, number], positionRaw: [number, number] };
-const keypoints: Array<Keypoints> = [];
-type Person = { id: number, score: number, box: [number, number, number, number], boxRaw: [number, number, number, number], keypoints: Array<Keypoints> }
+type Body = { id: number, score: number, box: [number, number, number, number], boxRaw: [number, number, number, number], keypoints: Array<Keypoints> }
 
 let box: [number, number, number, number] = [0, 0, 0, 0];
 let boxRaw: [number, number, number, number] = [0, 0, 0, 0];
 let score = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
+const keypoints: Array<Keypoints> = [];
 
 const bodyParts = ['nose', 'leftEye', 'rightEye', 'leftEar', 'rightEar', 'leftShoulder', 'rightShoulder', 'leftElbow', 'rightElbow', 'leftWrist', 'rightWrist', 'leftHip', 'rightHip', 'leftKnee', 'rightKnee', 'leftAnkle', 'rightAnkle'];
 
@@ -33,25 +35,28 @@ export async function load(config: Config): Promise<GraphModel> {
     if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
+  inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
+  if (inputSize === -1) inputSize = 256;
   return model;
 }
 
-async function parseSinglePose(res, config, image) {
-  keypoints.length = 0;
+async function parseSinglePose(res, config, image, inputBox) {
   const kpt = res[0][0];
+  keypoints.length = 0;
   for (let id = 0; id < kpt.length; id++) {
     score = kpt[id][2];
     if (score > config.body.minConfidence) {
+      const positionRaw: [number, number] = [
+        (inputBox[3] - inputBox[1]) * kpt[id][1] + inputBox[1],
+        (inputBox[2] - inputBox[0]) * kpt[id][0] + inputBox[0],
+      ];
       keypoints.push({
         score: Math.round(100 * score) / 100,
         part: bodyParts[id],
-        positionRaw: [ // normalized to 0..1
-          kpt[id][1],
-          kpt[id][0],
-        ],
+        positionRaw,
         position: [ // normalized to input image size
-          Math.round((image.shape[2] || 0) * kpt[id][1]),
-          Math.round((image.shape[1] || 0) * kpt[id][0]),
+          Math.round((image.shape[2] || 0) * positionRaw[0]),
+          Math.round((image.shape[1] || 0) * positionRaw[1]),
         ],
       });
     }
@@ -73,13 +78,13 @@ async function parseSinglePose(res, config, image) {
     Math.max(...xRaw) - Math.min(...xRaw),
     Math.max(...yRaw) - Math.min(...yRaw),
   ];
-  const persons: Array<Person> = [];
-  persons.push({ id: 0, score, box, boxRaw, keypoints });
-  return persons;
+  const bodies: Array<Body> = [];
+  bodies.push({ id: 0, score, box, boxRaw, keypoints });
+  return bodies;
 }
 
-async function parseMultiPose(res, config, image) {
-  const persons: Array<Person> = [];
+async function parseMultiPose(res, config, image, inputBox) {
+  const bodies: Array<Body> = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt = res[0][id];
     score = Math.round(100 * kpt[51 + 4]) / 100;
@@ -89,16 +94,20 @@ async function parseMultiPose(res, config, image) {
     for (let i = 0; i < 17; i++) {
       const partScore = Math.round(100 * kpt[3 * i + 2]) / 100;
       if (partScore > config.body.minConfidence) {
+        const positionRaw: [number, number] = [
+          (inputBox[3] - inputBox[1]) * kpt[3 * i + 1] + inputBox[1],
+          (inputBox[2] - inputBox[0]) * kpt[3 * i + 0] + inputBox[0],
+        ];
         keypoints.push({
           part: bodyParts[i],
           score: partScore,
-          positionRaw: [kpt[3 * i + 1], kpt[3 * i + 0]],
-          position: [Math.trunc(kpt[3 * i + 1] * (image.shape[2] || 0)), Math.trunc(kpt[3 * i + 0] * (image.shape[1] || 0))],
+          positionRaw,
+          position: [Math.trunc(positionRaw[0] * (image.shape[2] || 0)), Math.trunc(positionRaw[0] * (image.shape[1] || 0))],
         });
       }
     }
     boxRaw = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
-    persons.push({
+    bodies.push({
       id,
       score,
       boxRaw,
@@ -111,36 +120,50 @@ async function parseMultiPose(res, config, image) {
       keypoints: [...keypoints],
     });
   }
-  return persons;
+  return bodies;
 }
 
-export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
-  if ((skipped < (config.body.skipFrames || 0)) && config.skipFrame && Object.keys(keypoints).length > 0) {
-    skipped++;
-    return [{ id: 0, score, box, boxRaw, keypoints }];
-  }
-  skipped = 0;
+export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
+  if (!model || !model?.inputs[0].shape) return [];
   return new Promise(async (resolve) => {
-    const tensor = tf.tidy(() => {
-      if (!model?.inputs[0].shape) return null;
-      let inputSize = model.inputs[0].shape[2];
-      if (inputSize === -1) inputSize = 256;
-      const resize = tf.image.resizeBilinear(image, [inputSize, inputSize], false);
-      const cast = tf.cast(resize, 'int32');
-      return cast;
-    });
+    const t: Record<string, Tensor> = {};
 
-    let resT;
-    if (config.body.enabled) resT = await model?.predict(tensor);
-    tf.dispose(tensor);
+    let bodies: Array<Body> = [];
 
-    if (!resT) resolve([]);
-    const res = await resT.array();
-    let body;
-    if (resT.shape[2] === 17) body = await parseSinglePose(res, config, image);
-    else if (resT.shape[2] === 56) body = await parseMultiPose(res, config, image);
-    tf.dispose(resT);
+    if (!config.skipFrame) cachedBoxes.length = 0; // allowed to use cache or not
+    skipped++;
 
-    resolve(body);
+    for (let i = 0; i < cachedBoxes.length; i++) { // run detection based on cached boxes
+      t.crop = tf.image.cropAndResize(input, [cachedBoxes[i]], [0], [inputSize, inputSize], 'bilinear');
+      t.cast = tf.cast(t.crop, 'int32');
+      t.res = await model?.predict(t.cast) as Tensor;
+      const res = await t.res.array();
+      const newBodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, cachedBoxes[i]) : await parseMultiPose(res, config, input, cachedBoxes[i]);
+      bodies = bodies.concat(newBodies);
+      Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
+    }
+
+    if ((bodies.length !== config.body.maxDetected) && (skipped > (config.body.skipFrames || 0))) { // run detection on full frame
+      t.resized = tf.image.resizeBilinear(input, [inputSize, inputSize], false);
+      t.cast = tf.cast(t.resized, 'int32');
+      t.res = await model?.predict(t.cast) as Tensor;
+      const res = await t.res.array();
+      bodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, [0, 0, 1, 1]) : await parseMultiPose(res, config, input, [0, 0, 1, 1]);
+      Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
+      cachedBoxes.length = 0; // reset cache
+      skipped = 0;
+    }
+
+    if (config.skipFrame) { // create box cache based on last detections
+      cachedBoxes.length = 0;
+      for (let i = 0; i < bodies.length; i++) {
+        if (bodies[i].keypoints.length > 10) { // only update cache if we detected sufficient number of keypoints
+          const kpts = bodies[i].keypoints.map((kpt) => kpt.position);
+          const newBox = scaleBox(kpts, 1.5, [input.shape[2], input.shape[1]]);
+          cachedBoxes.push([...newBox.yxBox]);
+        }
+      }
+    }
+    resolve(bodies);
   });
 }

@@ -2,9 +2,9 @@
  * Module that implements helper draw functions, exposed as human.draw
  */
 
-import { TRI468 as triangulation } from './blazeface/coords';
+import { TRI468 as triangulation } from '../blazeface/coords';
 import { mergeDeep, now } from './util';
-import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult } from './result';
+import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult } from '../result';
 
 /**
  * Draw Options

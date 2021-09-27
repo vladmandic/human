@@ -4,12 +4,12 @@
  * Based on: [**EfficientPose**](https://github.com/daniegr/EfficientPose)
  */
 
-import { log, join } from '../util';
+import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { BodyResult, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
-import { env } from '../env';
+import { env } from '../util/env';
 
 let model: GraphModel | null;
 

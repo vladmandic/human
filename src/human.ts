@@ -2,41 +2,42 @@
  * Human main module
  */
 
-import { log, now, mergeDeep, validate } from './util';
+import { log, now, mergeDeep, validate } from './util/util';
 import { Config, defaults } from './config';
 import type { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as models from './models';
-import * as face from './face';
+import * as face from './face/face';
 import * as facemesh from './blazeface/facemesh';
-import * as faceres from './faceres/faceres';
+import * as faceres from './face/faceres';
 import * as posenet from './posenet/posenet';
-import * as handtrack from './handtrack/handtrack';
+import * as handtrack from './hand/handtrack';
 import * as handpose from './handpose/handpose';
-import * as blazepose from './blazepose/blazepose';
-import * as efficientpose from './efficientpose/efficientpose';
-import * as movenet from './movenet/movenet';
+// import * as blazepose from './body/blazepose-v1';
+import * as blazepose from './body/blazepose';
+import * as efficientpose from './body/efficientpose';
+import * as movenet from './body/movenet';
 import * as nanodet from './object/nanodet';
 import * as centernet from './object/centernet';
 import * as segmentation from './segmentation/segmentation';
 import * as gesture from './gesture/gesture';
 import * as image from './image/image';
-import * as draw from './draw';
+import * as draw from './util/draw';
 import * as persons from './persons';
-import * as interpolate from './interpolate';
-import * as env from './env';
+import * as interpolate from './util/interpolate';
+import * as env from './util/env';
 import * as backend from './tfjs/backend';
 import * as humangl from './tfjs/humangl';
 import * as app from '../package.json';
 import * as warmups from './warmup';
 import type { Tensor } from './tfjs/types';
-import type { DrawOptions } from './draw';
+import type { DrawOptions } from './util/draw';
 
 // export types
 export * from './config';
 export * from './result';
-export type { DrawOptions } from './draw';
-export { env, Env } from './env';
+export type { DrawOptions } from './util/draw';
+export { env, Env } from './util/env';
 export { Box, Point } from './result';
 export { Models } from './models';
 

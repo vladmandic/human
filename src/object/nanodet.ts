@@ -4,13 +4,13 @@
  * Based on: [**MB3-CenterNet**](https://github.com/610265158/mobilenetv3_centernet)
  */
 
-import { log, join } from '../util';
+import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
 import type { ObjectResult, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
-import { env } from '../env';
+import { env } from '../util/env';
 
 let model;
 let last: Array<ObjectResult> = [];

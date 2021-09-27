@@ -6,12 +6,13 @@
  * - Hand Tracking: [**HandTracking**](https://github.com/victordibia/handtracking)
  */
 
-import { log, join, scaleBox } from '../util';
+import { log, join } from '../util/util';
+import { scale } from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { HandResult, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
-import { env } from '../env';
+import { env } from '../util/env';
 import * as fingerPose from '../fingerpose/fingerpose';
 import { fakeOps } from '../tfjs/backend';
 
@@ -168,7 +169,7 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
         (h.box[3] * coord[1] / inputSize[1][1]) + h.box[1],
         (h.box[2] + h.box[3]) / 2 / inputSize[1][0] * coord[2],
       ]);
-      const updatedBox = scaleBox(hand.keypoints, boxScaleFact, outputSize); // replace detected box with box calculated around keypoints
+      const updatedBox = scale(hand.keypoints, boxScaleFact, outputSize); // replace detected box with box calculated around keypoints
       h.box = updatedBox.box;
       h.boxRaw = updatedBox.boxRaw;
       h.yxBox = updatedBox.yxBox;

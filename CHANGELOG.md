@@ -9,11 +9,11 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/25 mandic00@live.com
+### **HEAD -> main** 2021/09/27 mandic00@live.com
 
-
-### **origin/main** 2021/09/25 mandic00@live.com
-
+- autodetect number of bodies and hands
+- upload new samples
+- new samples gallery and major code folder restructure
 - new release
 
 ### **2.2.3** 2021/09/24 mandic00@live.com

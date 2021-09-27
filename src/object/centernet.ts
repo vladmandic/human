@@ -7,7 +7,7 @@
 import { log, join } from '../util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
-import type { ObjectResult } from '../result';
+import type { ObjectResult, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../env';
@@ -60,18 +60,18 @@ async function process(res: Tensor | null, outputShape, config: Config) {
       detections[0][id][0] / inputSize,
       detections[0][id][1] / inputSize,
     ];
-    const boxRaw = [
+    const boxRaw: Box = [
       x,
       y,
       detections[0][id][2] / inputSize - x,
       detections[0][id][3] / inputSize - y,
-    ] as [number, number, number, number];
-    const box = [
+    ];
+    const box: Box = [
       Math.trunc(boxRaw[0] * outputShape[0]),
       Math.trunc(boxRaw[1] * outputShape[1]),
       Math.trunc(boxRaw[2] * outputShape[0]),
       Math.trunc(boxRaw[3] * outputShape[1]),
-    ] as [number, number, number, number];
+    ];
     results.push({ id: i++, score, class: classVal, label, box, boxRaw });
   }
   return results;

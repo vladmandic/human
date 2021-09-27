@@ -70,6 +70,7 @@ export interface FaceConfig {
  * - modelPath: body pose model, can be absolute path or relative to modelBasePath
  * - minConfidence: threshold for discarding a prediction
  * - maxDetected: maximum number of people detected in the input, should be set to the minimum number for performance
+ * - detector: optional body detector
  *
  * `maxDetected` is valid for `posenet` and `movenet-multipose` as other models are single-pose only
  * `maxDetected` can be set to -1 to auto-detect based on number of detected faces
@@ -83,6 +84,9 @@ export interface BodyConfig {
   maxDetected: number,
   minConfidence: number,
   skipFrames: number,
+  detector?: {
+    modelPath: string
+  },
 }
 
 /** Controlls and configures all hand detection specific options
@@ -399,6 +403,9 @@ const config: Config = {
     enabled: true,
     modelPath: 'movenet-lightning.json',  // body model, can be absolute path or relative to modelBasePath
                              // can be 'posenet', 'blazepose', 'efficientpose', 'movenet-lightning', 'movenet-thunder'
+    detector: {
+      modelPath: '',         // optional body detector
+    },
     maxDetected: -1,         // maximum number of people detected in the input
                              // should be set to the minimum number for performance
                              // only valid for posenet and movenet-multipose as other models detects single pose

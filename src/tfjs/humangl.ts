@@ -1,6 +1,6 @@
 /** TFJS custom backend registration */
 
-import { log } from '../util';
+import { log } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
 import * as models from '../models';

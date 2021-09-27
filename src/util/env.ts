@@ -1,5 +1,5 @@
-import * as tf from '../dist/tfjs.esm.js';
-import * as image from './image/image';
+import * as tf from '../../dist/tfjs.esm.js';
+import * as image from '../image/image';
 import { mergeDeep } from './util';
 
 export type Env = {

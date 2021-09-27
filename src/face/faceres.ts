@@ -7,11 +7,11 @@
  * Based on: [**HSE-FaceRes**](https://github.com/HSE-asavchenko/HSE_FaceRec_tf)
  */
 
-import { log, join } from '../util';
+import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
-import { env } from '../env';
+import { env } from '../util/env';
 
 let model: GraphModel | null;
 const last: Array<{

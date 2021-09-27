@@ -6,11 +6,11 @@
  * Obsolete and replaced by `faceres` that performs age/gender/descriptor analysis
  */
 
-import { log, join } from '../util';
+import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
-import { env } from '../env';
+import { env } from '../util/env';
 
 let model: GraphModel | null;
 

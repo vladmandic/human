@@ -4,11 +4,11 @@
  * [**Oarriaga**](https://github.com/oarriaga/face_classification)
  */
 
-import { log, join } from '../util';
+import { log, join } from '../util/util';
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import * as tf from '../../dist/tfjs.esm.js';
-import { env } from '../env';
+import { env } from '../util/env';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
 let model: GraphModel | null;

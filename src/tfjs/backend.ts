@@ -1,8 +1,8 @@
 /** TFJS backend initialization and customization */
 
-import { log, now } from '../util';
+import { log, now } from '../util/util';
 import * as humangl from './humangl';
-import * as env from '../env';
+import * as env from '../util/env';
 import * as tf from '../../dist/tfjs.esm.js';
 
 export async function check(instance, force = false) {

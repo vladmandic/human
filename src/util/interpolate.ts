@@ -2,7 +2,7 @@
  * Results interpolation for smoothening of video detection results inbetween detected frames
  */
 
-import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult, Box, Point } from './result';
+import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult, Box, Point } from '../result';
 
 const bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 

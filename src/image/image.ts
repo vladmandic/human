@@ -6,8 +6,8 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as fxImage from './imagefx';
 import type { Tensor } from '../tfjs/types';
 import type { Config } from '../config';
-import { env } from '../env';
-import { log } from '../util';
+import { env } from '../util/env';
+import { log } from '../util/util';
 
 type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.Canvas;
 

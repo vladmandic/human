@@ -77,6 +77,7 @@ export async function check(instance, force = false) {
       tf.ENV.set('WEBGL_CPU_FORWARD', true);
       tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', false);
       tf.ENV.set('WEBGL_USE_SHAPES_UNIFORMS', true);
+      tf.ENV.set('CPU_HANDOFF_SIZE_THRESHOLD', 128);
       // if (!instance.config.object.enabled) tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
       if (typeof instance.config['deallocate'] !== 'undefined' && instance.config['deallocate']) { // hidden param
         log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);

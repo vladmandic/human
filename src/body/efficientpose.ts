@@ -6,14 +6,14 @@
 
 import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
-import type { BodyResult, Box } from '../result';
+import type { BodyResult, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
 
-type Keypoints = { score: number, part: string, position: [number, number], positionRaw: [number, number] };
+type Keypoints = { score: number, part: string, position: Point, positionRaw: Point };
 
 const keypoints: Array<Keypoints> = [];
 let box: Box = [0, 0, 0, 0];

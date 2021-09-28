@@ -134,7 +134,7 @@ var config = {
     detector: {
       modelPath: "blazeface.json",
       rotation: true,
-      maxDetected: 15,
+      maxDetected: 1,
       skipFrames: 15,
       minConfidence: 0.2,
       iouThreshold: 0.1,
@@ -175,12 +175,12 @@ var config = {
     enabled: true,
     rotation: true,
     skipFrames: 18,
-    minConfidence: 0.8,
+    minConfidence: 0.5,
     iouThreshold: 0.2,
     maxDetected: -1,
     landmarks: true,
     detector: {
-      modelPath: "handdetect.json"
+      modelPath: "handtrack.json"
     },
     skeleton: {
       modelPath: "handskeleton.json"

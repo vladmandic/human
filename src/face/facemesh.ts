@@ -97,7 +97,6 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
       tf.dispose(coordsReshaped);
       if (faceConfidence < (config.face.detector?.minConfidence || 1)) {
         box.confidence = faceConfidence; // reset confidence of cached box
-        tf.dispose(face.tensor);
       } else {
         if (config.face.iris?.enabled) rawCoords = await iris.augmentIris(rawCoords, face.tensor, config, inputSize); // augment results with iris
         face.mesh = util.transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize); // get processed mesh

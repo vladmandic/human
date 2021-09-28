@@ -4,16 +4,16 @@ const process = require('process');
 const log = require('@vladmandic/pilogger');
 const canvas = require('canvas');
 const tf = require('@tensorflow/tfjs-node'); // for nodejs, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
-const Human = require('../dist/human.node.js'); // this is 'const Human = require('../dist/human.node-gpu.js').default;'
+const Human = require('../../dist/human.node.js'); // this is 'const Human = require('../dist/human.node-gpu.js').default;'
 
 const config = { // just enable all and leave default settings
   debug: true,
   async: false,
   cacheSensitivity: 0,
-  face: { enabled: true },
+  face: { enabled: true, detector: { maxDetected: 20 } },
   object: { enabled: true },
   gesture: { enabled: true },
-  hand: { enabled: true, minConfidence: 0.4, detector: { modelPath: 'handtrack.json' } },
+  hand: { enabled: true },
   body: { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/movenet-multipose.json' },
 };
 

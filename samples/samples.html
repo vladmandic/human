@@ -21,12 +21,14 @@
       ::-webkit-scrollbar-track { margin: 3px; }
       .text { margin: 24px }
       .strip { display: flex; width: 100%; overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; }
-      .thumb { height: 180px; margin: 2px; padding: 2px; }
+      .thumb { height: 180px; margin: 2px; padding: 2px; cursor: grab; }
       .thumb:hover { filter: grayscale(1); transform: scale(1.08); transition : all 0.3s ease; }   
-      .image-container { margin: 24px 3px 3px 3px }
+      .image-container { margin: 24px 3px 3px 3px; cursor: nwse-resize; }
       .image-zoomwidth { max-width: 94vw; }
       .image-zoomheight { max-height: 70vh; }
       .image-zoomfull { max-height: -webkit-fill-available; }
+      .arrow { font-size: 2rem; font-weight: bolder; background: grey; border-radius: 4px; position: fixed; top: 140px; opacity: 65%; cursor: pointer; }
+      .arrow:hover { background: white; color: grey }
     </style>
   </head>
   <body>
@@ -34,6 +36,8 @@
     <div id="strip" class="strip"></div>
     <div class="image-container">
       <img id="image" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" class="image-zoomwidth" />
+      <div class="arrow" id="arrow-left" style="left: 10px">&lt;</div>
+      <div class="arrow" id="arrow-right" style="right: 10px">&gt;</div>
     </div>
     <script>
       const samples = [
@@ -54,13 +58,14 @@
         else if (image.classList.contains('image-zoomfull')) image.className = 'image-zoomwidth';
       });
       const strip = document.getElementById('strip');
+      document.getElementById('arrow-left').addEventListener('click', () => strip.scrollLeft -= strip.offsetWidth);
+      document.getElementById('arrow-right').addEventListener('click', () => strip.scrollLeft += strip.offsetWidth);
       for (const sample of samples) {
         const el = document.createElement('img');
         el.className = 'thumb';
         el.src = el.title = el.alt = `/samples/in/${sample}`;
         el.addEventListener('click', (evt) => {
           image.src = image.alt = image.title = el.src.replace('/in/', '/out/');
-          console.log(evt);
           strip.scrollLeft = evt.target.offsetLeft - window.innerWidth / 2 + evt.target.offsetWidth / 2;
         });
         strip.appendChild(el);

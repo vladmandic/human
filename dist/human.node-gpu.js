@@ -4983,7 +4983,6 @@ async function predict(input, config3) {
       tf6.dispose(coordsReshaped);
       if (faceConfidence < (((_h = config3.face.detector) == null ? void 0 : _h.minConfidence) || 1)) {
         box4.confidence = faceConfidence;
-        tf6.dispose(face5.tensor);
       } else {
         if ((_i = config3.face.iris) == null ? void 0 : _i.enabled)
           rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize3);
@@ -10024,6 +10023,25 @@ async function load9(config3) {
     inputSize6 = 256;
   return model8;
 }
+function createBox2(points) {
+  const x = points.map((a) => a.position[0]);
+  const y = points.map((a) => a.position[1]);
+  const box4 = [
+    Math.min(...x),
+    Math.min(...y),
+    Math.max(...x) - Math.min(...x),
+    Math.max(...y) - Math.min(...y)
+  ];
+  const xRaw = points.map((a) => a.positionRaw[0]);
+  const yRaw = points.map((a) => a.positionRaw[1]);
+  const boxRaw2 = [
+    Math.min(...xRaw),
+    Math.min(...yRaw),
+    Math.max(...xRaw) - Math.min(...xRaw),
+    Math.max(...yRaw) - Math.min(...yRaw)
+  ];
+  return [box4, boxRaw2];
+}
 async function parseSinglePose(res, config3, image24, inputBox) {
   const kpt = res[0][0];
   keypoints2.length = 0;
@@ -10047,23 +10065,8 @@ async function parseSinglePose(res, config3, image24, inputBox) {
     }
   }
   score2 = keypoints2.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
-  const x = keypoints2.map((a) => a.position[0]);
-  const y = keypoints2.map((a) => a.position[1]);
-  const box4 = [
-    Math.min(...x),
-    Math.min(...y),
-    Math.max(...x) - Math.min(...x),
-    Math.max(...y) - Math.min(...y)
-  ];
-  const xRaw = keypoints2.map((a) => a.positionRaw[0]);
-  const yRaw = keypoints2.map((a) => a.positionRaw[1]);
-  const boxRaw2 = [
-    Math.min(...xRaw),
-    Math.min(...yRaw),
-    Math.max(...xRaw) - Math.min(...xRaw),
-    Math.max(...yRaw) - Math.min(...yRaw)
-  ];
   const bodies = [];
+  const [box4, boxRaw2] = createBox2(keypoints2);
   bodies.push({ id: 0, score: score2, box: box4, boxRaw: boxRaw2, keypoints: keypoints2 });
   return bodies;
 }
@@ -10071,39 +10074,35 @@ async function parseMultiPose(res, config3, image24, inputBox) {
   const bodies = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt = res[0][id];
-    const score2 = Math.round(100 * kpt[51 + 4]) / 100;
-    if (score2 < config3.body.minConfidence)
-      continue;
-    keypoints2.length = 0;
-    for (let i = 0; i < 17; i++) {
-      const partScore = Math.round(100 * kpt[3 * i + 2]) / 100;
-      if (partScore > config3.body.minConfidence) {
-        const positionRaw = [
-          (inputBox[3] - inputBox[1]) * kpt[3 * i + 1] + inputBox[1],
-          (inputBox[2] - inputBox[0]) * kpt[3 * i + 0] + inputBox[0]
-        ];
-        keypoints2.push({
-          part: bodyParts2[i],
-          score: partScore,
-          positionRaw,
-          position: [Math.trunc(positionRaw[0] * (image24.shape[2] || 0)), Math.trunc(positionRaw[0] * (image24.shape[1] || 0))]
-        });
+    const totalScore = Math.round(100 * kpt[51 + 4]) / 100;
+    if (totalScore > config3.body.minConfidence) {
+      keypoints2.length = 0;
+      for (let i = 0; i < 17; i++) {
+        const score2 = kpt[3 * i + 2];
+        if (score2 > config3.body.minConfidence) {
+          const positionRaw = [
+            (inputBox[3] - inputBox[1]) * kpt[3 * i + 1] + inputBox[1],
+            (inputBox[2] - inputBox[0]) * kpt[3 * i + 0] + inputBox[0]
+          ];
+          keypoints2.push({
+            part: bodyParts2[i],
+            score: Math.round(100 * score2) / 100,
+            positionRaw,
+            position: [
+              Math.round((image24.shape[2] || 0) * positionRaw[0]),
+              Math.round((image24.shape[1] || 0) * positionRaw[1])
+            ]
+          });
+        }
       }
+      const boxRaw2 = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
+      const box4 = [Math.trunc(boxRaw2[0] * (image24.shape[2] || 0)), Math.trunc(boxRaw2[1] * (image24.shape[1] || 0)), Math.trunc(boxRaw2[2] * (image24.shape[2] || 0)), Math.trunc(boxRaw2[3] * (image24.shape[1] || 0))];
+      bodies.push({ id, score: totalScore, boxRaw: boxRaw2, box: box4, keypoints: [...keypoints2] });
     }
-    const boxRaw2 = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
-    bodies.push({
-      id,
-      score: score2,
-      boxRaw: boxRaw2,
-      box: [
-        Math.trunc(boxRaw2[0] * (image24.shape[2] || 0)),
-        Math.trunc(boxRaw2[1] * (image24.shape[1] || 0)),
-        Math.trunc(boxRaw2[2] * (image24.shape[2] || 0)),
-        Math.trunc(boxRaw2[3] * (image24.shape[1] || 0))
-      ],
-      keypoints: [...keypoints2]
-    });
   }
+  bodies.sort((a, b) => b.score - a.score);
+  if (bodies.length > config3.body.maxDetected)
+    bodies.length = config3.body.maxDetected;
   return bodies;
 }
 async function predict9(input, config3) {

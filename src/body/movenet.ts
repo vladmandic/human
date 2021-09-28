@@ -38,6 +38,26 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
+function createBox(points): [Box, Box] {
+  const x = points.map((a) => a.position[0]);
+  const y = points.map((a) => a.position[1]);
+  const box: Box = [
+    Math.min(...x),
+    Math.min(...y),
+    Math.max(...x) - Math.min(...x),
+    Math.max(...y) - Math.min(...y),
+  ];
+  const xRaw = points.map((a) => a.positionRaw[0]);
+  const yRaw = points.map((a) => a.positionRaw[1]);
+  const boxRaw: Box = [
+    Math.min(...xRaw),
+    Math.min(...yRaw),
+    Math.max(...xRaw) - Math.min(...xRaw),
+    Math.max(...yRaw) - Math.min(...yRaw),
+  ];
+  return [box, boxRaw];
+}
+
 async function parseSinglePose(res, config, image, inputBox) {
   const kpt = res[0][0];
   keypoints.length = 0;
@@ -61,23 +81,8 @@ async function parseSinglePose(res, config, image, inputBox) {
     }
   }
   score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
-  const x = keypoints.map((a) => a.position[0]);
-  const y = keypoints.map((a) => a.position[1]);
-  const box: Box = [
-    Math.min(...x),
-    Math.min(...y),
-    Math.max(...x) - Math.min(...x),
-    Math.max(...y) - Math.min(...y),
-  ];
-  const xRaw = keypoints.map((a) => a.positionRaw[0]);
-  const yRaw = keypoints.map((a) => a.positionRaw[1]);
-  const boxRaw: Box = [
-    Math.min(...xRaw),
-    Math.min(...yRaw),
-    Math.max(...xRaw) - Math.min(...xRaw),
-    Math.max(...yRaw) - Math.min(...yRaw),
-  ];
   const bodies: Array<Body> = [];
+  const [box, boxRaw] = createBox(keypoints);
   bodies.push({ id: 0, score, box, boxRaw, keypoints });
   return bodies;
 }
@@ -86,39 +91,36 @@ async function parseMultiPose(res, config, image, inputBox) {
   const bodies: Array<Body> = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt = res[0][id];
-    const score = Math.round(100 * kpt[51 + 4]) / 100;
-    // eslint-disable-next-line no-continue
-    if (score < config.body.minConfidence) continue;
-    keypoints.length = 0;
-    for (let i = 0; i < 17; i++) {
-      const partScore = Math.round(100 * kpt[3 * i + 2]) / 100;
-      if (partScore > config.body.minConfidence) {
-        const positionRaw: Point = [
-          (inputBox[3] - inputBox[1]) * kpt[3 * i + 1] + inputBox[1],
-          (inputBox[2] - inputBox[0]) * kpt[3 * i + 0] + inputBox[0],
-        ];
-        keypoints.push({
-          part: bodyParts[i],
-          score: partScore,
-          positionRaw,
-          position: [Math.trunc(positionRaw[0] * (image.shape[2] || 0)), Math.trunc(positionRaw[0] * (image.shape[1] || 0))],
-        });
+    const totalScore = Math.round(100 * kpt[51 + 4]) / 100;
+    if (totalScore > config.body.minConfidence) {
+      keypoints.length = 0;
+      for (let i = 0; i < 17; i++) {
+        const score = kpt[3 * i + 2];
+        if (score > config.body.minConfidence) {
+          const positionRaw: Point = [
+            (inputBox[3] - inputBox[1]) * kpt[3 * i + 1] + inputBox[1],
+            (inputBox[2] - inputBox[0]) * kpt[3 * i + 0] + inputBox[0],
+          ];
+          keypoints.push({
+            part: bodyParts[i],
+            score: Math.round(100 * score) / 100,
+            positionRaw,
+            position: [
+              Math.round((image.shape[2] || 0) * positionRaw[0]),
+              Math.round((image.shape[1] || 0) * positionRaw[1]),
+            ],
+          });
+        }
       }
+      // const [box, boxRaw] = createBox(keypoints);
+      // movenet-multipose has built-in box details
+      const boxRaw: Box = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
+      const box: Box = [Math.trunc(boxRaw[0] * (image.shape[2] || 0)), Math.trunc(boxRaw[1] * (image.shape[1] || 0)), Math.trunc(boxRaw[2] * (image.shape[2] || 0)), Math.trunc(boxRaw[3] * (image.shape[1] || 0))];
+      bodies.push({ id, score: totalScore, boxRaw, box, keypoints: [...keypoints] });
     }
-    const boxRaw: Box = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
-    bodies.push({
-      id,
-      score,
-      boxRaw,
-      box: [
-        Math.trunc(boxRaw[0] * (image.shape[2] || 0)),
-        Math.trunc(boxRaw[1] * (image.shape[1] || 0)),
-        Math.trunc(boxRaw[2] * (image.shape[2] || 0)),
-        Math.trunc(boxRaw[3] * (image.shape[1] || 0)),
-      ],
-      keypoints: [...keypoints],
-    });
   }
+  bodies.sort((a, b) => b.score - a.score);
+  if (bodies.length > config.body.maxDetected) bodies.length = config.body.maxDetected;
   return bodies;
 }
 

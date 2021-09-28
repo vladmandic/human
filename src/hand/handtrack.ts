@@ -13,7 +13,7 @@ import type { HandResult, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
-import * as fingerPose from '../fingerpose/fingerpose';
+import * as fingerPose from './fingerpose';
 import { fakeOps } from '../tfjs/backend';
 
 const boxScaleFact = 1.5; // hand finger model prefers slighly larger box

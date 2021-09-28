@@ -1,11 +1,19 @@
 /**
  * PoseNet body detection model implementation
- * See `posenet.ts` for entry point
+ *
+ * Based on: [**PoseNet**](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5)
  */
 
-import * as utils from './utils';
-import * as kpt from './keypoints';
-import type { Box } from '../result';
+import { log, join } from '../util/util';
+import * as tf from '../../dist/tfjs.esm.js';
+import type { BodyResult, Box } from '../result';
+import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Config } from '../config';
+import { env } from '../util/env';
+import * as utils from './posenetutils';
+
+let model: GraphModel;
+const poseNetOutputs = ['MobilenetV1/offset_2/BiasAdd'/* offsets */, 'MobilenetV1/heatmap_2/BiasAdd'/* heatmapScores */, 'MobilenetV1/displacement_fwd_2/BiasAdd'/* displacementFwd */, 'MobilenetV1/displacement_bwd_2/BiasAdd'/* displacementBwd */];
 
 const localMaximumRadius = 1;
 const outputStride = 16;
@@ -37,11 +45,11 @@ function traverse(edgeId, sourceKeypoint, targetId, scores, offsets, displacemen
   }
   const targetKeyPointIndices = getStridedIndexNearPoint(targetKeypoint, height, width);
   const score = scores.get(targetKeyPointIndices.y, targetKeyPointIndices.x, targetId);
-  return { position: targetKeypoint, part: kpt.partNames[targetId], score };
+  return { position: targetKeypoint, part: utils.partNames[targetId], score };
 }
 
 export function decodePose(root, scores, offsets, displacementsFwd, displacementsBwd) {
-  const tuples = kpt.poseChain.map(([parentJoinName, childJoinName]) => ([kpt.partIds[parentJoinName], kpt.partIds[childJoinName]]));
+  const tuples = utils.poseChain.map(([parentJoinName, childJoinName]) => ([utils.partIds[parentJoinName], utils.partIds[childJoinName]]));
   const edgesFwd = tuples.map(([, childJointId]) => childJointId);
   const edgesBwd = tuples.map(([parentJointId]) => parentJointId);
   const numParts = scores.shape[2]; // [21,21,17]
@@ -51,7 +59,7 @@ export function decodePose(root, scores, offsets, displacementsFwd, displacement
   const rootPoint = utils.getImageCoords(root.part, outputStride, offsets);
   keypoints[root.part.id] = {
     score: root.score,
-    part: kpt.partNames[root.part.id],
+    part: utils.partNames[root.part.id],
     position: rootPoint,
   };
   // Decode the part positions upwards in the tree, following the backward displacements.
@@ -145,4 +153,33 @@ export function decode(offsets, scores, displacementsFwd, displacementsBwd, maxD
     if (score > minConfidence) poses.push({ keypoints, box, score: Math.round(100 * score) / 100 });
   }
   return poses;
+}
+
+export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
+  const res = tf.tidy(() => {
+    if (!model.inputs[0].shape) return [];
+    const resized = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
+    const normalized = tf.sub(tf.div(tf.cast(resized, 'float32'), 127.5), 1.0);
+    const results: Array<Tensor> = model.execute(normalized, poseNetOutputs) as Array<Tensor>;
+    const results3d = results.map((y) => tf.squeeze(y, [0]));
+    results3d[1] = results3d[1].sigmoid(); // apply sigmoid on scores
+    return results3d;
+  });
+
+  const buffers = await Promise.all(res.map((tensor: Tensor) => tensor.buffer()));
+  for (const t of res) tf.dispose(t);
+
+  const decoded = await decode(buffers[0], buffers[1], buffers[2], buffers[3], config.body.maxDetected, config.body.minConfidence);
+  if (!model.inputs[0].shape) return [];
+  const scaled = utils.scalePoses(decoded, [input.shape[1], input.shape[2]], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) as BodyResult[];
+  return scaled;
+}
+
+export async function load(config: Config): Promise<GraphModel> {
+  if (!model || env.initial) {
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
+    if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
+    else if (config.debug) log('load model:', model['modelUrl']);
+  } else if (config.debug) log('cached model:', model['modelUrl']);
+  return model;
 }

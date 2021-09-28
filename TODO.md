@@ -6,13 +6,7 @@
 
 ### Models
 
-#### Hand
-
-- Evaluate and switch default default model from `handdetect` to `handtrack`
-
-#### Face
-
-- Reimplement `BlazeFace`, `FaceMesh`, `Iris` with new pipeline and frame caching
+- Implement BlazePose end-to-end
 
 <br>
 

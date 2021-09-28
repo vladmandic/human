@@ -356,7 +356,7 @@ const config: Config = {
       rotation: true,        // use best-guess rotated face image or just box with rotation as-is
                              // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees
                              // this parameter is not valid in nodejs
-      maxDetected: 15,       // maximum number of faces detected in the input
+      maxDetected: 1,        // maximum number of faces detected in the input
                              // should be set to the minimum number for performance
       skipFrames: 15,        // how many max frames to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
@@ -425,14 +425,14 @@ const config: Config = {
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated hand skeleton analysis as the hand
                              // hasn't moved much in short time (10 * 1/25 = 0.25 sec)
-    minConfidence: 0.8,      // threshold for discarding a prediction
+    minConfidence: 0.5,      // threshold for discarding a prediction
     iouThreshold: 0.2,       // ammount of overlap between two detected objects before one object is removed
     maxDetected: -1,         // maximum number of hands detected in the input
                              // should be set to the minimum number for performance
                              // set to -1 to autodetect based on number of detected faces
     landmarks: true,         // detect hand landmarks or just hand boundary box
     detector: {
-      modelPath: 'handdetect.json',  // hand detector model, can be absolute path or relative to modelBasePath
+      modelPath: 'handtrack.json',  // hand detector model, can be absolute path or relative to modelBasePath
                              // can be 'handdetect' or 'handtrack'
     },
     skeleton: {

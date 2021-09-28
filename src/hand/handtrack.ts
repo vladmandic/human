@@ -96,7 +96,7 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   if (!input || !models[0]) return hands;
   const t: Record<string, Tensor> = {};
   const ratio = (input.shape[2] || 1) / (input.shape[1] || 1);
-  const height = Math.min(Math.round((input.shape[1] || 0) / 8) * 8, 512); // use dynamic input size but cap at 1024
+  const height = Math.min(Math.round((input.shape[1] || 0) / 8) * 8, 512); // use dynamic input size but cap at 512
   const width = Math.round(height * ratio / 8) * 8;
   t.resize = tf.image.resizeBilinear(input, [height, width]); // todo: resize with padding
   t.cast = tf.cast(t.resize, 'int32');
@@ -106,7 +106,7 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   const classScores = tf.unstack(t.scores, 1);
   let id = 0;
   for (let i = 0; i < classScores.length; i++) {
-    if (i !== 0 && i !== 1) continue;
+    if (i === 4) continue; // skip faces
     t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, classScores[i], config.hand.maxDetected, config.hand.iouThreshold, config.hand.minConfidence);
     const nms = await t.nms.data();
     tf.dispose(t.nms);
@@ -151,16 +151,17 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
     landmarks: {} as HandResult['landmarks'],
     annotations: {} as HandResult['annotations'],
   };
-  if (!input || !models[1]) return hand; // something is wrong
-  if (config.hand.landmarks) {
+  if (input && models[1] && config.hand.landmarks) {
     const t: Record<string, Tensor> = {};
     if (!h.yxBox) return hand;
     t.crop = tf.image.cropAndResize(input, [h.yxBox], [0], [inputSize[1][0], inputSize[1][1]], 'bilinear');
     t.cast = tf.cast(t.crop, 'float32');
     t.div = tf.div(t.cast, 255);
     [t.score, t.keypoints] = models[1].execute(t.div) as Tensor[];
-    const score = Math.round(100 * (await t.score.data())[0] / 100);
-    if (score > (config.hand.minConfidence || 0)) {
+    // const score = Math.round(100 * (await t.score.data())[0] / 100);
+    const rawScore = (await t.score.data())[0];
+    const score = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100; // reverse sigmoid value
+    if (score >= (config.hand.minConfidence || 0)) {
       hand.fingerScore = score;
       t.reshaped = tf.reshape(t.keypoints, [-1, 3]);
       const rawCoords = await t.reshaped.array() as Point[];
@@ -178,7 +179,8 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
       for (const key of Object.keys(fingerMap)) { // map keypoints to per-finger annotations
         hand.annotations[key] = fingerMap[key].map((index) => (hand.landmarks && hand.keypoints[index] ? hand.keypoints[index] : null));
       }
-      cache.tmpBoxes.push(h); // if finger detection is enabled, only update cache if fingers are detected
+      const ratioBoxFrame = Math.min(h.box[2] / (input.shape[2] || 1), h.box[3] / (input.shape[1] || 1));
+      if (ratioBoxFrame > 0.05) cache.tmpBoxes.push(h); // if finger detection is enabled, only update cache if fingers are detected and box is big enough
     }
     Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   }
@@ -190,16 +192,16 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
   let hands: Array<HandResult> = [];
   cache.tmpBoxes = []; // clear temp cache
   if (!config.hand.landmarks) cache.fingerBoxes = cache.handBoxes; // if hand detection only reset finger boxes cache
+  if (!config.skipFrame) cache.fingerBoxes = [];
   if ((skipped < (config.hand.skipFrames || 0)) && config.skipFrame) { // just run finger detection while reusing cached boxes
     skipped++;
     hands = await Promise.all(cache.fingerBoxes.map((hand) => detectFingers(input, hand, config))); // run from finger box cache
   } else { // calculate new boxes and run finger detection
     skipped = 0;
     hands = await Promise.all(cache.fingerBoxes.map((hand) => detectFingers(input, hand, config))); // run from finger box cache
-    if (hands.length !== config.hand.maxDetected) { // run hand detection only if we dont have enough hands in cache
+    if (hands.length !== config.hand.maxDetected) { // re-run with hand detection only if we dont have enough hands in cache
       cache.handBoxes = await detectHands(input, config);
-      const newHands = await Promise.all(cache.handBoxes.map((hand) => detectFingers(input, hand, config)));
-      hands = hands.concat(newHands);
+      hands = await Promise.all(cache.handBoxes.map((hand) => detectFingers(input, hand, config)));
     }
   }
   cache.fingerBoxes = [...cache.tmpBoxes]; // repopulate cache with validated hands

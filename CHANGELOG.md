@@ -9,8 +9,14 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/09/27 mandic00@live.com
+### **HEAD -> main** 2021/09/28 mandic00@live.com
 
+- enable handtrack as default model
+- redesign face processing
+
+### **origin/main** 2021/09/27 mandic00@live.com
+
+- refactoring
 - define app specific types
 - implement box caching for movenet
 - autodetect number of bodies and hands

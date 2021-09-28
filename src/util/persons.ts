@@ -2,7 +2,7 @@
  * Analyze detection Results and sort&combine them into per-person view
  */
 
-import type { FaceResult, BodyResult, HandResult, GestureResult, PersonResult, Box } from './result';
+import type { FaceResult, BodyResult, HandResult, GestureResult, PersonResult, Box } from '../result';
 
 export function join(faces: Array<FaceResult>, bodies: Array<BodyResult>, hands: Array<HandResult>, gestures: Array<GestureResult>, shape: Array<number> | undefined): Array<PersonResult> {
   let id = 0;

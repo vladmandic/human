@@ -67,6 +67,9 @@ const drawOptions = {
   drawLabels: true,
   drawPolygons: true,
   drawPoints: false,
+  fillPolygons: false,
+  useCurves: false,
+  useDepth: true,
 };
 
 // ui options
@@ -105,7 +108,7 @@ const ui = {
   lastFrame: 0, // time of last frame processing
   viewportSet: false, // internal, has custom viewport been set
   background: null, // holds instance of segmentation background image
-  exceptionHandler: false, // should capture all unhandled exceptions
+  exceptionHandler: true, // should capture all unhandled exceptions
 
   // webrtc
   useWebRTC: false, // use webrtc as camera source instead of local webcam
@@ -684,13 +687,13 @@ function setupMenu() {
     setupCamera();
   });
   menu.display.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.display.addBool('use depth', human.draw.options, 'useDepth');
-  menu.display.addBool('use curves', human.draw.options, 'useCurves');
-  menu.display.addBool('print labels', human.draw.options, 'drawLabels');
-  menu.display.addBool('draw points', human.draw.options, 'drawPoints');
-  menu.display.addBool('draw boxes', human.draw.options, 'drawBoxes');
-  menu.display.addBool('draw polygons', human.draw.options, 'drawPolygons');
-  menu.display.addBool('fill polygons', human.draw.options, 'fillPolygons');
+  menu.display.addBool('use depth', drawOptions, 'useDepth');
+  menu.display.addBool('use curves', drawOptions, 'useCurves');
+  menu.display.addBool('print labels', drawOptions, 'drawLabels');
+  menu.display.addBool('draw points', drawOptions, 'drawPoints');
+  menu.display.addBool('draw boxes', drawOptions, 'drawBoxes');
+  menu.display.addBool('draw polygons', drawOptions, 'drawPolygons');
+  menu.display.addBool('fill polygons', drawOptions, 'fillPolygons');
 
   menu.image = new Menu(document.body, '', { top, left: x[1] });
   menu.image.addBool('enabled', userConfig.filter, 'enabled', (val) => userConfig.filter.enabled = val);

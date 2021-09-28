@@ -8,7 +8,7 @@ import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handdetector';
 import * as handpipeline from './handpipeline';
-import * as fingerPose from '../fingerpose/fingerpose';
+import * as fingerPose from '../hand/fingerpose';
 import type { HandResult, Box, Point } from '../result';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';

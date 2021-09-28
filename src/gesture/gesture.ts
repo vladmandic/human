@@ -3,7 +3,7 @@
  */
 
 import type { GestureResult } from '../result';
-import * as fingerPose from '../fingerpose/fingerpose';
+import * as fingerPose from '../hand/fingerpose';
 
 /**
  * @typedef FaceGesture
@@ -63,7 +63,7 @@ export const face = (res): GestureResult[] => {
   if (!res) return [];
   const gestures: Array<{ face: number, gesture: FaceGesture }> = [];
   for (let i = 0; i < res.length; i++) {
-    if (res[i].mesh && res[i].mesh.length > 0) {
+    if (res[i].mesh && res[i].mesh.length > 450) {
       const eyeFacing = res[i].mesh[33][2] - res[i].mesh[263][2];
       if (Math.abs(eyeFacing) < 10) gestures.push({ face: i, gesture: 'facing center' });
       else gestures.push({ face: i, gesture: `facing ${eyeFacing < 0 ? 'left' : 'right'}` });
@@ -84,7 +84,7 @@ export const iris = (res): GestureResult[] => {
   if (!res) return [];
   const gestures: Array<{ iris: number, gesture: IrisGesture }> = [];
   for (let i = 0; i < res.length; i++) {
-    if (!res[i].annotations || !res[i].annotations.leftEyeIris || !res[i].annotations.rightEyeIris) continue;
+    if (!res[i].annotations || !res[i].annotations.leftEyeIris || !res[i].annotations.leftEyeIris[0] || !res[i].annotations.rightEyeIris || !res[i].annotations.rightEyeIris[0]) continue;
     const sizeXLeft = res[i].annotations.leftEyeIris[3][0] - res[i].annotations.leftEyeIris[1][0];
     const sizeYLeft = res[i].annotations.leftEyeIris[4][1] - res[i].annotations.leftEyeIris[2][1];
     const areaLeft = Math.abs(sizeXLeft * sizeYLeft);

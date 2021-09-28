@@ -1,10 +1,13 @@
 /**
- * FingerPose algorithm implementation
- * See `fingerpose.ts` for entry point
+ * FingerPose algorithm implementation constants
+ *
+ * Based on: [**FingerPose***](https://github.com/andypotato/fingerpose)
  */
 
-import { Finger, FingerCurl, FingerDirection } from './description';
+import { Finger, FingerCurl, FingerDirection } from './fingerdef';
+import Gestures from '../hand/fingergesture';
 
+const minConfidence = 0.7;
 const options = {
   // curl estimation
   HALF_CURL_START_LIMIT: 60.0,
@@ -169,7 +172,7 @@ function calculateFingerDirection(startPoint, midPoint, endPoint, fingerSlopes) 
   return estimatedDirection;
 }
 
-export function estimate(landmarks) {
+function estimate(landmarks) {
   // step 1: calculate slopes
   const slopesXY: Array<number[]> = [];
   const slopesYZ: Array<number[]> = [];
@@ -211,4 +214,30 @@ export function estimate(landmarks) {
     fingerDirections[finger] = fingerPosition;
   }
   return { curls: fingerCurls, directions: fingerDirections };
+}
+
+export function analyze(keypoints) { // get estimations of curl / direction for each finger
+  if (!keypoints || keypoints.length === 0) return null;
+  const estimatorRes = estimate(keypoints);
+  const landmarks = {};
+  for (const fingerIdx of Finger.all) {
+    landmarks[Finger.getName(fingerIdx)] = {
+      curl: FingerCurl.getName(estimatorRes.curls[fingerIdx]),
+      direction: FingerDirection.getName(estimatorRes.directions[fingerIdx]),
+    };
+  }
+  // console.log('finger landmarks', landmarks);
+  return landmarks;
+}
+
+export function match(keypoints) { // compare gesture description to each known gesture
+  const poses: Array<{ name: string, confidence: number }> = [];
+  if (!keypoints || keypoints.length === 0) return poses;
+  const estimatorRes = estimate(keypoints);
+  for (const gesture of Gestures) {
+    const confidence = gesture.matchAgainst(estimatorRes.curls, estimatorRes.directions);
+    if (confidence >= minConfidence) poses.push({ name: gesture.name, confidence });
+  }
+  // console.log('finger poses', poses);
+  return poses;
 }

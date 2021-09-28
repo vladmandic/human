@@ -135,7 +135,7 @@ var config = {
       modelPath: "blazeface.json",
       rotation: true,
       maxDetected: 1,
-      skipFrames: 15,
+      skipFrames: 11,
       minConfidence: 0.2,
       iouThreshold: 0.1,
       return: false
@@ -148,17 +148,17 @@ var config = {
       enabled: true,
       modelPath: "iris.json"
     },
-    description: {
-      enabled: true,
-      modelPath: "faceres.json",
-      skipFrames: 11,
-      minConfidence: 0.1
-    },
     emotion: {
       enabled: true,
       minConfidence: 0.1,
-      skipFrames: 17,
+      skipFrames: 12,
       modelPath: "emotion.json"
+    },
+    description: {
+      enabled: true,
+      modelPath: "faceres.json",
+      skipFrames: 13,
+      minConfidence: 0.1
     }
   },
   body: {
@@ -174,7 +174,7 @@ var config = {
   hand: {
     enabled: true,
     rotation: true,
-    skipFrames: 18,
+    skipFrames: 14,
     minConfidence: 0.5,
     iouThreshold: 0.2,
     maxDetected: -1,
@@ -192,7 +192,7 @@ var config = {
     minConfidence: 0.2,
     iouThreshold: 0.4,
     maxDetected: 10,
-    skipFrames: 19
+    skipFrames: 15
   },
   segmentation: {
     enabled: false,
@@ -69640,7 +69640,7 @@ async function detectHands(input2, config3) {
   const classScores = unstack(t.scores, 1);
   let id = 0;
   for (let i = 0; i < classScores.length; i++) {
-    if (i !== 0 && i !== 1)
+    if (i === 4)
       continue;
     t.nms = await image.nonMaxSuppressionAsync(t.boxes, classScores[i], config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
     const nms = await t.nms.data();
@@ -69686,9 +69686,7 @@ async function detectFingers(input2, h, config3) {
     landmarks: {},
     annotations: {}
   };
-  if (!input2 || !models2[1])
-    return hand3;
-  if (config3.hand.landmarks) {
+  if (input2 && models2[1] && config3.hand.landmarks) {
     const t = {};
     if (!h.yxBox)
       return hand3;
@@ -69696,8 +69694,9 @@ async function detectFingers(input2, h, config3) {
     t.cast = cast(t.crop, "float32");
     t.div = div(t.cast, 255);
     [t.score, t.keypoints] = models2[1].execute(t.div);
-    const score2 = Math.round(100 * (await t.score.data())[0] / 100);
-    if (score2 > (config3.hand.minConfidence || 0)) {
+    const rawScore = (await t.score.data())[0];
+    const score2 = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100;
+    if (score2 >= (config3.hand.minConfidence || 0)) {
       hand3.fingerScore = score2;
       t.reshaped = reshape(t.keypoints, [-1, 3]);
       const rawCoords = await t.reshaped.array();
@@ -69715,7 +69714,9 @@ async function detectFingers(input2, h, config3) {
       for (const key of Object.keys(fingerMap)) {
         hand3.annotations[key] = fingerMap[key].map((index) => hand3.landmarks && hand3.keypoints[index] ? hand3.keypoints[index] : null);
       }
-      cache.tmpBoxes.push(h);
+      const ratioBoxFrame = Math.min(h.box[2] / (input2.shape[2] || 1), h.box[3] / (input2.shape[1] || 1));
+      if (ratioBoxFrame > 0.05)
+        cache.tmpBoxes.push(h);
     }
     Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
   }
@@ -69727,6 +69728,8 @@ async function predict6(input2, config3) {
   cache.tmpBoxes = [];
   if (!config3.hand.landmarks)
     cache.fingerBoxes = cache.handBoxes;
+  if (!config3.skipFrame)
+    cache.fingerBoxes = [];
   if (skipped4 < (config3.hand.skipFrames || 0) && config3.skipFrame) {
     skipped4++;
     hands = await Promise.all(cache.fingerBoxes.map((hand3) => detectFingers(input2, hand3, config3)));
@@ -69735,8 +69738,7 @@ async function predict6(input2, config3) {
     hands = await Promise.all(cache.fingerBoxes.map((hand3) => detectFingers(input2, hand3, config3)));
     if (hands.length !== config3.hand.maxDetected) {
       cache.handBoxes = await detectHands(input2, config3);
-      const newHands = await Promise.all(cache.handBoxes.map((hand3) => detectFingers(input2, hand3, config3)));
-      hands = hands.concat(newHands);
+      hands = await Promise.all(cache.handBoxes.map((hand3) => detectFingers(input2, hand3, config3)));
     }
   }
   cache.fingerBoxes = [...cache.tmpBoxes];
@@ -71328,10 +71330,10 @@ async function hand2(inCanvas2, result, drawOptions) {
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== "") {
           ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText(`${h.label}:${Math.trunc(100 * h.score)}%`, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
+          ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
         }
         ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText(`${h.label}:${Math.trunc(100 * h.score)}%`, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+        ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
       }
       ctx.stroke();
     }

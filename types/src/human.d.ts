@@ -5,7 +5,7 @@ import { Config } from './config';
 import type { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';
 import * as models from './models';
-import * as facemesh from './blazeface/facemesh';
+import * as facemesh from './face/facemesh';
 import * as env from './util/env';
 import type { Tensor } from './tfjs/types';
 import type { DrawOptions } from './util/draw';

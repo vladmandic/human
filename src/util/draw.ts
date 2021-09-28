@@ -391,10 +391,10 @@ export async function hand(inCanvas: HTMLCanvasElement | OffscreenCanvas, result
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== '') {
           ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText(`${h.label}:${Math.trunc(100 * h.score)}%`, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
+          ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]); // can use h.label
         }
         ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText(`${h.label}:${Math.trunc(100 * h.score)}%`, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+        ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]); // can use h.label
       }
       ctx.stroke();
     }

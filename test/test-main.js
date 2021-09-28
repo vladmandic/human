@@ -173,22 +173,26 @@ async function test(Human, inputConfig) {
   await human.load();
   const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
   const loaded = models.filter((model) => model.loaded);
-  if (models.length === 19 && loaded.length === 10) log('state', 'passed: models loaded', models);
-  else log('error', 'failed: models loaded', models);
+  if (models.length === 20 && loaded.length === 10) log('state', 'passed: models loaded', models.length, loaded.length, models);
+  else log('error', 'failed: models loaded', models.length, loaded.length, models);
+
+  // increase defaults
+  config.face = { detector: { maxDetected: 20 } };
 
   // test warmup sequences
   await testInstance(human);
+  config.cacheSensitivity = 0;
   config.warmup = 'none';
   res = await testWarmup(human, 'default');
   if (res.error !== 'null') log('error', 'failed: warmup none result mismatch');
   else log('state', 'passed: warmup none result match');
   config.warmup = 'face';
   res = await testWarmup(human, 'default');
-  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 0 || res?.gesture?.length !== 3) log('error', 'failed: warmup face result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 1 || res?.gesture?.length !== 6) log('error', 'failed: warmup face result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: warmup face result match');
   config.warmup = 'body';
   res = await testWarmup(human, 'default');
-  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 0 || res?.gesture?.length !== 3) log('error', 'failed: warmup body result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  if (!res || res?.face?.length !== 1 || res?.body?.length !== 0 || res?.hand?.length !== 1 || res?.gesture?.length !== 4) log('error', 'failed: warmup body result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: warmup body result match');
 
   // test default config async
@@ -233,10 +237,10 @@ async function test(Human, inputConfig) {
   const desc3 = res3 && res3.face && res3.face[0] && res3.face[0].embedding ? [...res3.face[0].embedding] : null;
   if (!desc1 || !desc2 || !desc3 || desc1.length !== 1024 || desc2.length !== 1024 || desc3.length !== 1024) log('error', 'failed: face descriptor', desc1?.length, desc2?.length, desc3?.length);
   else log('state', 'passed: face descriptor');
-  res1 = Math.round(100 * human.similarity(desc1, desc2));
-  res2 = Math.round(100 * human.similarity(desc1, desc3));
-  res3 = Math.round(100 * human.similarity(desc2, desc3));
-  if (res1 !== 51 || res2 !== 49 || res3 !== 53) log('error', 'failed: face similarity ', res1, res2, res3);
+  res1 = Math.round(10 * human.similarity(desc1, desc2));
+  res2 = Math.round(10 * human.similarity(desc1, desc3));
+  res3 = Math.round(10 * human.similarity(desc2, desc3));
+  if (res1 !== 5 || res2 !== 5 || res3 !== 5) log('error', 'failed: face similarity ', res1, res2, res3);
   else log('state', 'passed: face similarity');
 
   // test face matching
@@ -266,17 +270,19 @@ async function test(Human, inputConfig) {
   human.reset();
   config.cacheSensitivity = 0;
   config.face = { detector: { minConfidence: 0.0001, maxDetected: 1 } };
-  config.body = { minConfidence: 0.0001, maxDetected: 1 };
-  config.hand = { minConfidence: 0.0001, maxDetected: 3 };
+  config.body = { minConfidence: 0.0001 };
+  config.hand = { minConfidence: 0.0001 };
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
-  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 3 || res?.gesture?.length !== 9) log('error', 'failed: sensitive result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 2 || res?.gesture?.length !== 7) log('error', 'failed: sensitive result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: sensitive result match');
 
   // test sensitive details face
   const face = res && res.face ? res.face[0] : null;
-  if (!face || face?.box?.length !== 4 || face?.mesh?.length !== 478 || face?.emotion?.length !== 4 || face?.embedding?.length !== 1024 || face?.rotation?.matrix?.length !== 9) {
-    log('error', 'failed: sensitive face result mismatch', res?.face?.length, face?.box?.length, face?.mesh?.length, face?.emotion?.length, face?.embedding?.length, face?.rotation?.matrix?.length);
+  if (!face || face?.box?.length !== 4 || face?.mesh?.length !== 478 || face?.embedding?.length !== 1024 || face?.rotation?.matrix?.length !== 9) {
+    log('error', 'failed: sensitive face result mismatch', res?.face?.length, face?.box?.length, face?.mesh?.length, face?.embedding?.length, face?.rotation?.matrix?.length);
   } else log('state', 'passed: sensitive face result match');
+  if (!face || face?.emotion?.length !== 4) log('error', 'failed: sensitive face emotion result mismatch', face?.emotion.length);
+  else log('state', 'passed: sensitive face emotion result mismatch', face?.emotion.length);
 
   // test sensitive details body
   const body = res && res.body ? res.body[0] : null;
@@ -296,7 +302,7 @@ async function test(Human, inputConfig) {
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
   if (!res || res?.face?.length !== 1 || res?.face[0]?.gender || res?.face[0]?.age || res?.face[0]?.embedding) log('error', 'failed: detectors result face mismatch', res?.face);
   else log('state', 'passed: detector result face match');
-  if (!res || res?.hand?.length !== 2 || res?.hand[0]?.landmarks) log('error', 'failed: detectors result hand mismatch', res?.hand?.length);
+  if (!res || res?.hand?.length !== 1 || res?.hand[0]?.landmarks?.length > 0) log('error', 'failed: detectors result hand mismatch', res?.hand?.length);
   else log('state', 'passed: detector result hand match');
 
   // test posenet and movenet

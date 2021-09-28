@@ -5,8 +5,6 @@ Not required for normal funcioning of library
 
 Samples were generated using command:
 
-```shell
-node test/test-node-canvas.js samples/in/ samples/out/
-```
+> node demo/nodejs/process-folder.js samples/in/ samples/out/
 
 Samples galery viewer: <https://vladmandic.github.io/human/samples/samples.html>

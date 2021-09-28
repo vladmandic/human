@@ -3,15 +3,48 @@
  * See `posenet.ts` for entry point
  */
 
-import * as kpt from './keypoints';
 import type { BodyResult } from '../result';
+
+export const partNames = [
+  'nose', 'leftEye', 'rightEye', 'leftEar', 'rightEar', 'leftShoulder',
+  'rightShoulder', 'leftElbow', 'rightElbow', 'leftWrist', 'rightWrist',
+  'leftHip', 'rightHip', 'leftKnee', 'rightKnee', 'leftAnkle', 'rightAnkle',
+];
+
+export const count = partNames.length; // 17 keypoints
+
+export const partIds = partNames.reduce((result, jointName, i) => {
+  result[jointName] = i;
+  return result;
+}, {});
+
+const connectedPartNames = [
+  ['leftHip', 'leftShoulder'], ['leftElbow', 'leftShoulder'],
+  ['leftElbow', 'leftWrist'], ['leftHip', 'leftKnee'],
+  ['leftKnee', 'leftAnkle'], ['rightHip', 'rightShoulder'],
+  ['rightElbow', 'rightShoulder'], ['rightElbow', 'rightWrist'],
+  ['rightHip', 'rightKnee'], ['rightKnee', 'rightAnkle'],
+  ['leftShoulder', 'rightShoulder'], ['leftHip', 'rightHip'],
+];
+export const connectedPartIndices = connectedPartNames.map(([jointNameA, jointNameB]) => ([partIds[jointNameA], partIds[jointNameB]]));
+
+export const poseChain = [
+  ['nose', 'leftEye'], ['leftEye', 'leftEar'], ['nose', 'rightEye'],
+  ['rightEye', 'rightEar'], ['nose', 'leftShoulder'],
+  ['leftShoulder', 'leftElbow'], ['leftElbow', 'leftWrist'],
+  ['leftShoulder', 'leftHip'], ['leftHip', 'leftKnee'],
+  ['leftKnee', 'leftAnkle'], ['nose', 'rightShoulder'],
+  ['rightShoulder', 'rightElbow'], ['rightElbow', 'rightWrist'],
+  ['rightShoulder', 'rightHip'], ['rightHip', 'rightKnee'],
+  ['rightKnee', 'rightAnkle'],
+];
 
 export function eitherPointDoesntMeetConfidence(a: number, b: number, minConfidence: number) {
   return (a < minConfidence || b < minConfidence);
 }
 
 export function getAdjacentKeyPoints(keypoints, minConfidence: number) {
-  return kpt.connectedPartIndices.reduce((result, [leftJoint, rightJoint]) => {
+  return connectedPartIndices.reduce((result, [leftJoint, rightJoint]) => {
     if (eitherPointDoesntMeetConfidence(keypoints[leftJoint].score, keypoints[rightJoint].score, minConfidence)) {
       return result;
     }
@@ -123,7 +156,7 @@ export class MaxHeap {
 export function getOffsetPoint(y, x, keypoint, offsets) {
   return {
     y: offsets.get(y, x, keypoint),
-    x: offsets.get(y, x, keypoint + kpt.count),
+    x: offsets.get(y, x, keypoint + count),
   };
 }
 

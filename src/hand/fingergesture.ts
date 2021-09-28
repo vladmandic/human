@@ -3,11 +3,10 @@
  * See `fingerpose.ts` for entry point
  */
 
-import { Finger, FingerCurl, FingerDirection } from './description';
-import Gesture from './gesture';
+import { Finger, FingerCurl, FingerDirection, FingerGesture } from './fingerdef';
 
 // describe thumbs up gesture 👍
-const ThumbsUp = new Gesture('thumbs up');
+const ThumbsUp = new FingerGesture('thumbs up');
 ThumbsUp.addCurl(Finger.thumb, FingerCurl.none, 1.0);
 ThumbsUp.addDirection(Finger.thumb, FingerDirection.verticalUp, 1.0);
 ThumbsUp.addDirection(Finger.thumb, FingerDirection.diagonalUpLeft, 0.25);
@@ -19,7 +18,7 @@ for (const finger of [Finger.index, Finger.middle, Finger.ring, Finger.pinky]) {
 }
 
 // describe Victory gesture ✌️
-const Victory = new Gesture('victory');
+const Victory = new FingerGesture('victory');
 Victory.addCurl(Finger.thumb, FingerCurl.half, 0.5);
 Victory.addCurl(Finger.thumb, FingerCurl.none, 0.5);
 Victory.addDirection(Finger.thumb, FingerDirection.verticalUp, 1.0);

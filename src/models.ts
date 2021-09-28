@@ -4,10 +4,12 @@
 
 import { log } from './util/util';
 import type { GraphModel } from './tfjs/types';
-import * as facemesh from './blazeface/facemesh';
+import * as blazeface from './face/blazeface';
+import * as facemesh from './face/facemesh';
+import * as iris from './face/iris';
 import * as faceres from './face/faceres';
 import * as emotion from './gear/emotion';
-import * as posenet from './posenet/posenet';
+import * as posenet from './body/posenet';
 import * as handpose from './handpose/handpose';
 import * as handtrack from './hand/handtrack';
 import * as blazepose from './body/blazepose';
@@ -57,15 +59,13 @@ export function reset(instance: Human) {
 /** Load method preloads all instance.configured models on-demand */
 export async function load(instance: Human) {
   if (env.initial) reset(instance);
-  if (instance.config.face.enabled) { // face model is a combo that must be loaded as a whole
-    if (!instance.models.facedetect) [instance.models.facedetect, instance.models.facemesh, instance.models.faceiris] = await facemesh.load(instance.config);
-    if (instance.config.face.mesh?.enabled && !instance.models.facemesh) [instance.models.facedetect, instance.models.facemesh, instance.models.faceiris] = await facemesh.load(instance.config);
-    if (instance.config.face.iris?.enabled && !instance.models.faceiris) [instance.models.facedetect, instance.models.facemesh, instance.models.faceiris] = await facemesh.load(instance.config);
-  }
   if (instance.config.hand.enabled) { // handpose model is a combo that must be loaded as a whole
     if (!instance.models.handpose && instance.config.hand.detector?.modelPath?.includes('handdetect')) [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
     if (!instance.models.handskeleton && instance.config.hand.landmarks && instance.config.hand.detector?.modelPath?.includes('handdetect')) [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
   }
+  if (instance.config.face.enabled && !instance.models.facedetect) instance.models.facedetect = blazeface.load(instance.config);
+  if (instance.config.face.enabled && instance.config.face.mesh?.enabled && !instance.models.facemesh) instance.models.facemesh = facemesh.load(instance.config);
+  if (instance.config.face.enabled && instance.config.face.iris?.enabled && !instance.models.faceiris) instance.models.faceiris = iris.load(instance.config);
   if (instance.config.hand.enabled && !instance.models.handtrack && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handtrack = handtrack.loadDetect(instance.config);
   if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handskeleton = handtrack.loadSkeleton(instance.config);
   if (instance.config.body.enabled && !instance.models.posenet && instance.config.body?.modelPath?.includes('posenet')) instance.models.posenet = posenet.load(instance.config);

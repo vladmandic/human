@@ -2,7 +2,7 @@
  * Module that implements helper draw functions, exposed as human.draw
  */
 
-import { TRI468 as triangulation } from '../blazeface/coords';
+import { TRI468 as triangulation } from '../face/facemeshcoords';
 import { mergeDeep, now } from './util';
 import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult } from '../result';
 
@@ -204,20 +204,21 @@ export async function face(inCanvas: HTMLCanvasElement | OffscreenCanvas, result
     if (f.mesh && f.mesh.length > 0) {
       if (localOptions.drawPoints) {
         for (const pt of f.mesh) point(ctx, pt[0], pt[1], pt[2], localOptions);
-        // for (const pt of f.meshRaw) point(ctx, pt[0] * inCanvas.offsetWidth, pt[1] * inCanvas.offsetHeight, pt[2]);
       }
       if (localOptions.drawPolygons) {
         ctx.lineWidth = 1;
-        for (let i = 0; i < triangulation.length / 3; i++) {
-          const points = [
-            triangulation[i * 3 + 0],
-            triangulation[i * 3 + 1],
-            triangulation[i * 3 + 2],
-          ].map((index) => f.mesh[index]);
-          lines(ctx, points, localOptions);
+        if (f.mesh.length > 450) {
+          for (let i = 0; i < triangulation.length / 3; i++) {
+            const points = [
+              triangulation[i * 3 + 0],
+              triangulation[i * 3 + 1],
+              triangulation[i * 3 + 2],
+            ].map((index) => f.mesh[index]);
+            lines(ctx, points, localOptions);
+          }
         }
         // iris: array[center, left, top, right, bottom]
-        if (f.annotations && f.annotations['leftEyeIris']) {
+        if (f.annotations && f.annotations['leftEyeIris'] && f.annotations['leftEyeIris'][0]) {
           ctx.strokeStyle = localOptions.useDepth ? 'rgba(255, 200, 255, 0.3)' : localOptions.color;
           ctx.beginPath();
           const sizeX = Math.abs(f.annotations['leftEyeIris'][3][0] - f.annotations['leftEyeIris'][1][0]) / 2;
@@ -229,7 +230,7 @@ export async function face(inCanvas: HTMLCanvasElement | OffscreenCanvas, result
             ctx.fill();
           }
         }
-        if (f.annotations && f.annotations['rightEyeIris']) {
+        if (f.annotations && f.annotations['rightEyeIris'] && f.annotations['rightEyeIris'][0]) {
           ctx.strokeStyle = localOptions.useDepth ? 'rgba(255, 200, 255, 0.3)' : localOptions.color;
           ctx.beginPath();
           const sizeX = Math.abs(f.annotations['rightEyeIris'][3][0] - f.annotations['rightEyeIris'][1][0]) / 2;

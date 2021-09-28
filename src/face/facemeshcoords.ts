@@ -3,7 +3,7 @@
  * See `facemesh.ts` for entry point
  */
 
-export const MESH_ANNOTATIONS = {
+export const meshAnnotations = {
   silhouette: [
     10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288,
     397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136,
@@ -40,6 +40,22 @@ export const MESH_ANNOTATIONS = {
   noseLeftCorner: [327],
   rightCheek: [205],
   leftCheek: [425],
+};
+
+export const meshLandmarks = {
+  count: 468,
+  mouth: 13,
+  symmetryLine: [13, meshAnnotations['midwayBetweenEyes'][0]],
+};
+
+export const blazeFaceLandmarks = {
+  leftEye: 0,
+  rightEye: 1,
+  nose: 2,
+  mouth: 3,
+  leftEar: 4,
+  rightEar: 5,
+  symmetryLine: [3, 2],
 };
 
 export const MESH_TO_IRIS_INDICES_MAP = [ // A mapping from facemesh model keypoints to iris model keypoints.

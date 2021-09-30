@@ -237,25 +237,23 @@ async function test(Human, inputConfig) {
   const desc3 = res3 && res3.face && res3.face[0] && res3.face[0].embedding ? [...res3.face[0].embedding] : null;
   if (!desc1 || !desc2 || !desc3 || desc1.length !== 1024 || desc2.length !== 1024 || desc3.length !== 1024) log('error', 'failed: face descriptor', desc1?.length, desc2?.length, desc3?.length);
   else log('state', 'passed: face descriptor');
-  res1 = Math.round(10 * human.similarity(desc1, desc2));
-  res2 = Math.round(10 * human.similarity(desc1, desc3));
-  res3 = Math.round(10 * human.similarity(desc2, desc3));
-  if (res1 !== 5 || res2 !== 5 || res3 !== 5) log('error', 'failed: face similarity ', res1, res2, res3);
-  else log('state', 'passed: face similarity');
+  res1 = human.similarity(desc1, desc1);
+  res2 = human.similarity(desc1, desc2);
+  res3 = human.similarity(desc1, desc3);
+  if (res1 < 1 || res2 < 0.9 || res3 < 0.85) log('error', 'failed: face similarity ', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
+  else log('state', 'passed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
 
   // test face matching
   log('info', 'test face matching');
-  let db = [];
-  try {
-    db = JSON.parse(fs.readFileSync('demo/facematch/faces.json').toString());
-  } catch { /***/ }
-  if (db.length < 100) log('error', 'failed: face database ', db.length);
+  const db = JSON.parse(fs.readFileSync('demo/facematch/faces.json').toString());
+  const arr = db.map((rec) => rec.embedding);
+  if (db.length < 20) log('error', 'failed: face database ', db.length);
   else log('state', 'passed: face database', db.length);
-  res1 = human.match(desc1, db);
-  res2 = human.match(desc2, db);
-  res3 = human.match(desc3, db);
-  if (!res1 || !res1['name'] || !res2 || !res2['name'] || !res3 || !res3['name']) log('error', 'failed: face match ', res1, res2, res3);
-  else log('state', 'passed: face match', { first: { name: res1.name, similarity: res1.similarity } }, { second: { name: res2.name, similarity: res2.similarity } }, { third: { name: res3.name, similarity: res3.similarity } });
+  res1 = human.match(desc1, arr);
+  res2 = human.match(desc2, arr);
+  res3 = human.match(desc3, arr);
+  if (res1.index !== 4 || res2.index !== 4 || res3.index !== 4) log('error', 'failed: face match ', res1, res2, res3);
+  else log('state', 'passed: face match', { first: { index: res1.index, similarity: res1.similarity } }, { second: { index: res2.index, similarity: res2.similarity } }, { third: { index: res3.index, similarity: res3.similarity } });
 
   // test object detection
   log('info', 'test object');

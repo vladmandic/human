@@ -51,13 +51,13 @@ export class Models {
   segmentation: null | GraphModel | Promise<GraphModel> = null;
 }
 
-export function reset(instance: Human) {
+export function reset(instance: Human): void {
   // if (instance.config.debug) log('resetting loaded models');
   for (const model of Object.keys(instance.models)) instance.models[model] = null;
 }
 
 /** Load method preloads all instance.configured models on-demand */
-export async function load(instance: Human) {
+export async function load(instance: Human): Promise<void> {
   if (env.initial) reset(instance);
   if (instance.config.hand.enabled) { // handpose model is a combo that must be loaded as a whole
     if (!instance.models.handpose && instance.config.hand.detector?.modelPath?.includes('handdetect')) [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
@@ -87,7 +87,7 @@ export async function load(instance: Human) {
   }
 }
 
-export async function validate(instance) {
+export async function validate(instance: Human): Promise<void> {
   interface Op { name: string, category: string, op: string }
   const simpleOps = ['const', 'placeholder', 'noop', 'pad', 'squeeze', 'add', 'sub', 'mul', 'div'];
   for (const defined of Object.keys(instance.models)) {

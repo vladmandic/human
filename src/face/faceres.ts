@@ -24,8 +24,6 @@ const last: Array<{
 let lastCount = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
-type DB = Array<{ name: string, source: string, embedding: number[] }>;
-
 export async function load(config: Config): Promise<GraphModel> {
   const modelUrl = join(config.modelBasePath, config.face.description?.modelPath || '');
   if (env.initial) model = null;
@@ -35,31 +33,6 @@ export async function load(config: Config): Promise<GraphModel> {
     else if (config.debug) log('load model:', modelUrl);
   } else if (config.debug) log('cached model:', modelUrl);
   return model;
-}
-
-export function similarity(embedding1: Array<number>, embedding2: Array<number>, order = 2): number {
-  if (!embedding1 || !embedding2) return 0;
-  if (embedding1?.length === 0 || embedding2?.length === 0) return 0;
-  if (embedding1?.length !== embedding2?.length) return 0;
-  // general minkowski distance, euclidean distance is limited case where order is 2
-  const distance = 5.0 * embedding1
-    .map((_val, i) => (Math.abs(embedding1[i] - embedding2[i]) ** order)) // distance squared
-    .reduce((sum, now) => (sum + now), 0) // sum all distances
-    ** (1 / order); // get root of
-  const res = Math.max(0, 100 - distance) / 100.0;
-  return res;
-}
-
-export function match(embedding: Array<number>, db: DB, threshold = 0) {
-  let best = { similarity: 0, name: '', source: '', embedding: [] as number[] };
-  if (!embedding || !db || !Array.isArray(embedding) || !Array.isArray(db)) return best;
-  for (const f of db) {
-    if (f.embedding && f.name) {
-      const perc = similarity(embedding, f.embedding);
-      if (perc > threshold && perc > best.similarity) best = { ...f, similarity: perc };
-    }
-  }
-  return best;
 }
 
 export function enhance(input): Tensor {

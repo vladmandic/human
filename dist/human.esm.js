@@ -35537,8 +35537,8 @@ var GraphExecutor = class {
       const node2 = this.graph.nodes[nodeName];
       if (node2.attrParams["shape"] && node2.attrParams["shape"].value) {
         const shape = node2.attrParams["shape"].value;
-        const match3 = shape.length === input2.shape.length && input2.shape.every((dim, index) => shape[index] === -1 || shape[index] === dim);
-        util_exports.assert(match3, () => `The shape of dict['${node2.name}'] provided in model.execute(dict) must be [${shape}], but was [${input2.shape}]`);
+        const match4 = shape.length === input2.shape.length && input2.shape.every((dim, index) => shape[index] === -1 || shape[index] === dim);
+        util_exports.assert(match4, () => `The shape of dict['${node2.name}'] provided in model.execute(dict) must be [${shape}], but was [${input2.shape}]`);
       }
       if (node2.attrParams["dtype"] && node2.attrParams["dtype"].value) {
         util_exports.assert(input2.dtype === node2.attrParams["dtype"].value, () => `The dtype of dict['${node2.name}'] provided in model.execute(dict) must be ${node2.attrParams["dtype"].value}, but was ${input2.dtype}`);
@@ -60303,6 +60303,1010 @@ var version92 = {
   "tfjs-backend-wasm": version82
 };
 
+// package.json
+var version6 = "2.3.0";
+
+// src/image/imagefx.ts
+function GLProgram(gl, vertexSource, fragmentSource) {
+  const _collect = function(source, prefix, collection) {
+    const r = new RegExp("\\b" + prefix + " \\w+ (\\w+)", "ig");
+    source.replace(r, (match4, name) => {
+      collection[name] = 0;
+      return match4;
+    });
+  };
+  const _compile = function(source, type) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+      throw new Error("filter: gl compile failed", gl.getShaderInfoLog(shader));
+    return shader;
+  };
+  this.uniform = {};
+  this.attribute = {};
+  const _vsh = _compile(vertexSource, gl.VERTEX_SHADER);
+  const _fsh = _compile(fragmentSource, gl.FRAGMENT_SHADER);
+  this.id = gl.createProgram();
+  gl.attachShader(this.id, _vsh);
+  gl.attachShader(this.id, _fsh);
+  gl.linkProgram(this.id);
+  if (!gl.getProgramParameter(this.id, gl.LINK_STATUS))
+    throw new Error("filter: gl link failed", gl.getProgramInfoLog(this.id));
+  gl.useProgram(this.id);
+  _collect(vertexSource, "attribute", this.attribute);
+  for (const a in this.attribute)
+    this.attribute[a] = gl.getAttribLocation(this.id, a);
+  _collect(vertexSource, "uniform", this.uniform);
+  _collect(fragmentSource, "uniform", this.uniform);
+  for (const u in this.uniform)
+    this.uniform[u] = gl.getUniformLocation(this.id, u);
+}
+function GLImageFilter(params) {
+  if (!params)
+    params = {};
+  let _drawCount = 0;
+  let _sourceTexture = null;
+  let _lastInChain = false;
+  let _currentFramebufferIndex = -1;
+  let _tempFramebuffers = [null, null];
+  let _filterChain = [];
+  let _width = -1;
+  let _height = -1;
+  let _vertexBuffer = null;
+  let _currentProgram = null;
+  const _filter = {};
+  const _canvas = params.canvas || document.createElement("canvas");
+  const _shaderProgramCache = {};
+  const DRAW = { INTERMEDIATE: 1 };
+  const gl = _canvas.getContext("webgl");
+  if (!gl)
+    throw new Error("filter: context failed");
+  this.addFilter = function(name) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    const filter = _filter[name];
+    _filterChain.push({ func: filter, args });
+  };
+  this.reset = function() {
+    _filterChain = [];
+  };
+  const _resize = function(width, height) {
+    if (width === _width && height === _height) {
+      return;
+    }
+    _canvas.width = width;
+    _width = width;
+    _canvas.height = height;
+    _height = height;
+    if (!_vertexBuffer) {
+      const vertices = new Float32Array([
+        -1,
+        -1,
+        0,
+        1,
+        1,
+        -1,
+        1,
+        1,
+        -1,
+        1,
+        0,
+        0,
+        -1,
+        1,
+        0,
+        0,
+        1,
+        -1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ]);
+      _vertexBuffer = gl.createBuffer(), gl.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    }
+    gl.viewport(0, 0, _width, _height);
+    _tempFramebuffers = [null, null];
+  };
+  const _createFramebufferTexture = function(width, height) {
+    const fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    const renderbuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    return { fbo, texture };
+  };
+  const _getTempFramebuffer = function(index) {
+    _tempFramebuffers[index] = _tempFramebuffers[index] || _createFramebufferTexture(_width, _height);
+    return _tempFramebuffers[index];
+  };
+  const _draw = function(flags = null) {
+    var _a, _b;
+    let source = null;
+    let target = null;
+    let flipY = false;
+    if (_drawCount === 0) {
+      source = _sourceTexture;
+    } else {
+      source = (_a = _getTempFramebuffer(_currentFramebufferIndex)) == null ? void 0 : _a.texture;
+    }
+    _drawCount++;
+    if (_lastInChain && !(flags & DRAW.INTERMEDIATE)) {
+      target = null;
+      flipY = _drawCount % 2 === 0;
+    } else {
+      _currentFramebufferIndex = (_currentFramebufferIndex + 1) % 2;
+      target = (_b = _getTempFramebuffer(_currentFramebufferIndex)) == null ? void 0 : _b.fbo;
+    }
+    gl.bindTexture(gl.TEXTURE_2D, source);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, target);
+    gl.uniform1f(_currentProgram.uniform.flipY, flipY ? -1 : 1);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  };
+  this.apply = function(image7) {
+    _resize(image7.width, image7.height);
+    _drawCount = 0;
+    if (!_sourceTexture)
+      _sourceTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, _sourceTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image7);
+    if (_filterChain.length === 0) {
+      _draw();
+      return _canvas;
+    }
+    for (let i = 0; i < _filterChain.length; i++) {
+      _lastInChain = i === _filterChain.length - 1;
+      const f = _filterChain[i];
+      f.func.apply(this, f.args || []);
+    }
+    return _canvas;
+  };
+  const _compileShader = function(fragmentSource) {
+    if (_shaderProgramCache[fragmentSource]) {
+      _currentProgram = _shaderProgramCache[fragmentSource];
+      gl.useProgram(_currentProgram.id);
+      return _currentProgram;
+    }
+    const SHADER = {};
+    SHADER.VERTEX_IDENTITY = [
+      "precision highp float;",
+      "attribute vec2 pos;",
+      "attribute vec2 uv;",
+      "varying vec2 vUv;",
+      "uniform float flipY;",
+      "void main(void) {",
+      "vUv = uv;",
+      "gl_Position = vec4(pos.x, pos.y*flipY, 0.0, 1.);",
+      "}"
+    ].join("\n");
+    SHADER.FRAGMENT_IDENTITY = [
+      "precision highp float;",
+      "varying vec2 vUv;",
+      "uniform sampler2D texture;",
+      "void main(void) {",
+      "gl_FragColor = texture2D(texture, vUv);",
+      "}"
+    ].join("\n");
+    _currentProgram = new GLProgram(gl, SHADER.VERTEX_IDENTITY, fragmentSource);
+    const floatSize = Float32Array.BYTES_PER_ELEMENT;
+    const vertSize = 4 * floatSize;
+    gl.enableVertexAttribArray(_currentProgram.attribute.pos);
+    gl.vertexAttribPointer(_currentProgram.attribute.pos, 2, gl.FLOAT, false, vertSize, 0 * floatSize);
+    gl.enableVertexAttribArray(_currentProgram.attribute.uv);
+    gl.vertexAttribPointer(_currentProgram.attribute.uv, 2, gl.FLOAT, false, vertSize, 2 * floatSize);
+    _shaderProgramCache[fragmentSource] = _currentProgram;
+    return _currentProgram;
+  };
+  _filter.colorMatrix = function(matrix) {
+    const m = new Float32Array(matrix);
+    m[4] /= 255;
+    m[9] /= 255;
+    m[14] /= 255;
+    m[19] /= 255;
+    const shader = m[18] === 1 && m[3] === 0 && m[8] === 0 && m[13] === 0 && m[15] === 0 && m[16] === 0 && m[17] === 0 && m[19] === 0 ? _filter.colorMatrix.SHADER.WITHOUT_ALPHA : _filter.colorMatrix.SHADER.WITH_ALPHA;
+    const program = _compileShader(shader);
+    gl.uniform1fv(program.uniform.m, m);
+    _draw();
+  };
+  _filter.colorMatrix.SHADER = {};
+  _filter.colorMatrix.SHADER.WITH_ALPHA = [
+    "precision highp float;",
+    "varying vec2 vUv;",
+    "uniform sampler2D texture;",
+    "uniform float m[20];",
+    "void main(void) {",
+    "vec4 c = texture2D(texture, vUv);",
+    "gl_FragColor.r = m[0] * c.r + m[1] * c.g + m[2] * c.b + m[3] * c.a + m[4];",
+    "gl_FragColor.g = m[5] * c.r + m[6] * c.g + m[7] * c.b + m[8] * c.a + m[9];",
+    "gl_FragColor.b = m[10] * c.r + m[11] * c.g + m[12] * c.b + m[13] * c.a + m[14];",
+    "gl_FragColor.a = m[15] * c.r + m[16] * c.g + m[17] * c.b + m[18] * c.a + m[19];",
+    "}"
+  ].join("\n");
+  _filter.colorMatrix.SHADER.WITHOUT_ALPHA = [
+    "precision highp float;",
+    "varying vec2 vUv;",
+    "uniform sampler2D texture;",
+    "uniform float m[20];",
+    "void main(void) {",
+    "vec4 c = texture2D(texture, vUv);",
+    "gl_FragColor.r = m[0] * c.r + m[1] * c.g + m[2] * c.b + m[4];",
+    "gl_FragColor.g = m[5] * c.r + m[6] * c.g + m[7] * c.b + m[9];",
+    "gl_FragColor.b = m[10] * c.r + m[11] * c.g + m[12] * c.b + m[14];",
+    "gl_FragColor.a = c.a;",
+    "}"
+  ].join("\n");
+  _filter.brightness = function(brightness) {
+    const b = (brightness || 0) + 1;
+    _filter.colorMatrix([
+      b,
+      0,
+      0,
+      0,
+      0,
+      0,
+      b,
+      0,
+      0,
+      0,
+      0,
+      0,
+      b,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.saturation = function(amount) {
+    const x = (amount || 0) * 2 / 3 + 1;
+    const y = (x - 1) * -0.5;
+    _filter.colorMatrix([
+      x,
+      y,
+      y,
+      0,
+      0,
+      y,
+      x,
+      y,
+      0,
+      0,
+      y,
+      y,
+      x,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.desaturate = function() {
+    _filter.saturation(-1);
+  };
+  _filter.contrast = function(amount) {
+    const v = (amount || 0) + 1;
+    const o = -128 * (v - 1);
+    _filter.colorMatrix([
+      v,
+      0,
+      0,
+      0,
+      o,
+      0,
+      v,
+      0,
+      0,
+      o,
+      0,
+      0,
+      v,
+      0,
+      o,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.negative = function() {
+    _filter.contrast(-2);
+  };
+  _filter.hue = function(rotation) {
+    rotation = (rotation || 0) / 180 * Math.PI;
+    const cos4 = Math.cos(rotation);
+    const sin4 = Math.sin(rotation);
+    const lumR = 0.213;
+    const lumG = 0.715;
+    const lumB = 0.072;
+    _filter.colorMatrix([
+      lumR + cos4 * (1 - lumR) + sin4 * -lumR,
+      lumG + cos4 * -lumG + sin4 * -lumG,
+      lumB + cos4 * -lumB + sin4 * (1 - lumB),
+      0,
+      0,
+      lumR + cos4 * -lumR + sin4 * 0.143,
+      lumG + cos4 * (1 - lumG) + sin4 * 0.14,
+      lumB + cos4 * -lumB + sin4 * -0.283,
+      0,
+      0,
+      lumR + cos4 * -lumR + sin4 * -(1 - lumR),
+      lumG + cos4 * -lumG + sin4 * lumG,
+      lumB + cos4 * (1 - lumB) + sin4 * lumB,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.desaturateLuminance = function() {
+    _filter.colorMatrix([
+      0.2764723,
+      0.929708,
+      0.0938197,
+      0,
+      -37.1,
+      0.2764723,
+      0.929708,
+      0.0938197,
+      0,
+      -37.1,
+      0.2764723,
+      0.929708,
+      0.0938197,
+      0,
+      -37.1,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.sepia = function() {
+    _filter.colorMatrix([
+      0.393,
+      0.7689999,
+      0.18899999,
+      0,
+      0,
+      0.349,
+      0.6859999,
+      0.16799999,
+      0,
+      0,
+      0.272,
+      0.5339999,
+      0.13099999,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.brownie = function() {
+    _filter.colorMatrix([
+      0.5997023498159715,
+      0.34553243048391263,
+      -0.2708298674538042,
+      0,
+      47.43192855600873,
+      -0.037703249837783157,
+      0.8609577587992641,
+      0.15059552388459913,
+      0,
+      -36.96841498319127,
+      0.24113635128153335,
+      -0.07441037908422492,
+      0.44972182064877153,
+      0,
+      -7.562075277591283,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.vintagePinhole = function() {
+    _filter.colorMatrix([
+      0.6279345635605994,
+      0.3202183420819367,
+      -0.03965408211312453,
+      0,
+      9.651285835294123,
+      0.02578397704808868,
+      0.6441188644374771,
+      0.03259127616149294,
+      0,
+      7.462829176470591,
+      0.0466055556782719,
+      -0.0851232987247891,
+      0.5241648018700465,
+      0,
+      5.159190588235296,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.kodachrome = function() {
+    _filter.colorMatrix([
+      1.1285582396593525,
+      -0.3967382283601348,
+      -0.03992559172921793,
+      0,
+      63.72958762196502,
+      -0.16404339962244616,
+      1.0835251566291304,
+      -0.05498805115633132,
+      0,
+      24.732407896706203,
+      -0.16786010706155763,
+      -0.5603416277695248,
+      1.6014850761964943,
+      0,
+      35.62982807460946,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.technicolor = function() {
+    _filter.colorMatrix([
+      1.9125277891456083,
+      -0.8545344976951645,
+      -0.09155508482755585,
+      0,
+      11.793603434377337,
+      -0.3087833385928097,
+      1.7658908555458428,
+      -0.10601743074722245,
+      0,
+      -70.35205161461398,
+      -0.231103377548616,
+      -0.7501899197440212,
+      1.847597816108189,
+      0,
+      30.950940869491138,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.polaroid = function() {
+    _filter.colorMatrix([
+      1.438,
+      -0.062,
+      -0.062,
+      0,
+      0,
+      -0.122,
+      1.378,
+      -0.122,
+      0,
+      0,
+      -0.016,
+      -0.016,
+      1.483,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.shiftToBGR = function() {
+    _filter.colorMatrix([
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.convolution = function(matrix) {
+    const m = new Float32Array(matrix);
+    const pixelSizeX = 1 / _width;
+    const pixelSizeY = 1 / _height;
+    const program = _compileShader(_filter.convolution.SHADER);
+    gl.uniform1fv(program.uniform.m, m);
+    gl.uniform2f(program.uniform.px, pixelSizeX, pixelSizeY);
+    _draw();
+  };
+  _filter.convolution.SHADER = [
+    "precision highp float;",
+    "varying vec2 vUv;",
+    "uniform sampler2D texture;",
+    "uniform vec2 px;",
+    "uniform float m[9];",
+    "void main(void) {",
+    "vec4 c11 = texture2D(texture, vUv - px);",
+    "vec4 c12 = texture2D(texture, vec2(vUv.x, vUv.y - px.y));",
+    "vec4 c13 = texture2D(texture, vec2(vUv.x + px.x, vUv.y - px.y));",
+    "vec4 c21 = texture2D(texture, vec2(vUv.x - px.x, vUv.y) );",
+    "vec4 c22 = texture2D(texture, vUv);",
+    "vec4 c23 = texture2D(texture, vec2(vUv.x + px.x, vUv.y) );",
+    "vec4 c31 = texture2D(texture, vec2(vUv.x - px.x, vUv.y + px.y) );",
+    "vec4 c32 = texture2D(texture, vec2(vUv.x, vUv.y + px.y) );",
+    "vec4 c33 = texture2D(texture, vUv + px );",
+    "gl_FragColor = ",
+    "c11 * m[0] + c12 * m[1] + c22 * m[2] +",
+    "c21 * m[3] + c22 * m[4] + c23 * m[5] +",
+    "c31 * m[6] + c32 * m[7] + c33 * m[8];",
+    "gl_FragColor.a = c22.a;",
+    "}"
+  ].join("\n");
+  _filter.detectEdges = function() {
+    _filter.convolution.call(this, [
+      0,
+      1,
+      0,
+      1,
+      -4,
+      1,
+      0,
+      1,
+      0
+    ]);
+  };
+  _filter.sobelX = function() {
+    _filter.convolution.call(this, [
+      -1,
+      0,
+      1,
+      -2,
+      0,
+      2,
+      -1,
+      0,
+      1
+    ]);
+  };
+  _filter.sobelY = function() {
+    _filter.convolution.call(this, [
+      -1,
+      -2,
+      -1,
+      0,
+      0,
+      0,
+      1,
+      2,
+      1
+    ]);
+  };
+  _filter.sharpen = function(amount) {
+    const a = amount || 1;
+    _filter.convolution.call(this, [
+      0,
+      -1 * a,
+      0,
+      -1 * a,
+      1 + 4 * a,
+      -1 * a,
+      0,
+      -1 * a,
+      0
+    ]);
+  };
+  _filter.emboss = function(size2) {
+    const s = size2 || 1;
+    _filter.convolution.call(this, [
+      -2 * s,
+      -1 * s,
+      0,
+      -1 * s,
+      1,
+      1 * s,
+      0,
+      1 * s,
+      2 * s
+    ]);
+  };
+  _filter.blur = function(size2) {
+    const blurSizeX = size2 / 7 / _width;
+    const blurSizeY = size2 / 7 / _height;
+    const program = _compileShader(_filter.blur.SHADER);
+    gl.uniform2f(program.uniform.px, 0, blurSizeY);
+    _draw(DRAW.INTERMEDIATE);
+    gl.uniform2f(program.uniform.px, blurSizeX, 0);
+    _draw();
+  };
+  _filter.blur.SHADER = [
+    "precision highp float;",
+    "varying vec2 vUv;",
+    "uniform sampler2D texture;",
+    "uniform vec2 px;",
+    "void main(void) {",
+    "gl_FragColor = vec4(0.0);",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-7.0*px.x, -7.0*px.y))*0.0044299121055113265;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-6.0*px.x, -6.0*px.y))*0.00895781211794;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-5.0*px.x, -5.0*px.y))*0.0215963866053;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-4.0*px.x, -4.0*px.y))*0.0443683338718;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-3.0*px.x, -3.0*px.y))*0.0776744219933;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-2.0*px.x, -2.0*px.y))*0.115876621105;",
+    "gl_FragColor += texture2D(texture, vUv + vec2(-1.0*px.x, -1.0*px.y))*0.147308056121;",
+    "gl_FragColor += texture2D(texture, vUv                             )*0.159576912161;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 1.0*px.x,  1.0*px.y))*0.147308056121;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 2.0*px.x,  2.0*px.y))*0.115876621105;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 3.0*px.x,  3.0*px.y))*0.0776744219933;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 4.0*px.x,  4.0*px.y))*0.0443683338718;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 5.0*px.x,  5.0*px.y))*0.0215963866053;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 6.0*px.x,  6.0*px.y))*0.00895781211794;",
+    "gl_FragColor += texture2D(texture, vUv + vec2( 7.0*px.x,  7.0*px.y))*0.0044299121055113265;",
+    "}"
+  ].join("\n");
+  _filter.pixelate = function(size2) {
+    const blurSizeX = size2 / _width;
+    const blurSizeY = size2 / _height;
+    const program = _compileShader(_filter.pixelate.SHADER);
+    gl.uniform2f(program.uniform.size, blurSizeX, blurSizeY);
+    _draw();
+  };
+  _filter.pixelate.SHADER = [
+    "precision highp float;",
+    "varying vec2 vUv;",
+    "uniform vec2 size;",
+    "uniform sampler2D texture;",
+    "vec2 pixelate(vec2 coord, vec2 size) {",
+    "return floor( coord / size ) * size;",
+    "}",
+    "void main(void) {",
+    "gl_FragColor = vec4(0.0);",
+    "vec2 coord = pixelate(vUv, size);",
+    "gl_FragColor += texture2D(texture, coord);",
+    "}"
+  ].join("\n");
+}
+
+// src/util/env.ts
+var env2 = {
+  browser: void 0,
+  node: void 0,
+  worker: void 0,
+  platform: void 0,
+  agent: void 0,
+  initial: true,
+  backends: [],
+  offscreen: void 0,
+  tfjs: {
+    version: void 0
+  },
+  wasm: {
+    supported: void 0,
+    backend: void 0,
+    simd: void 0,
+    multithread: void 0
+  },
+  webgl: {
+    supported: void 0,
+    backend: void 0,
+    version: void 0,
+    renderer: void 0
+  },
+  webgpu: {
+    supported: void 0,
+    backend: void 0,
+    adapter: void 0
+  },
+  kernels: [],
+  Canvas: void 0,
+  Image: void 0,
+  ImageData: void 0
+};
+async function backendInfo() {
+  var _a;
+  env2.backends = Object.keys(engine().registryFactory);
+  env2.wasm.supported = typeof WebAssembly !== "undefined";
+  env2.wasm.backend = env2.backends.includes("wasm");
+  if (env2.wasm.supported && env2.wasm.backend && getBackend() === "wasm") {
+    env2.wasm.simd = await env().getAsync("WASM_HAS_SIMD_SUPPORT");
+    env2.wasm.multithread = await env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+  }
+  const c = canvas(100, 100);
+  const ctx = c ? c.getContext("webgl2") : void 0;
+  env2.webgl.supported = typeof ctx !== "undefined";
+  env2.webgl.backend = env2.backends.includes("webgl");
+  if (env2.webgl.supported && env2.webgl.backend && (getBackend() === "webgl" || getBackend() === "humangl")) {
+    const gl = backend().gpgpu !== "undefined" ? await backend().getGPGPUContext().gl : null;
+    if (gl) {
+      env2.webgl.version = gl.getParameter(gl.VERSION);
+      env2.webgl.renderer = gl.getParameter(gl.RENDERER);
+    }
+  }
+  env2.webgpu.supported = env2.browser && typeof navigator["gpu"] !== "undefined";
+  env2.webgpu.backend = env2.backends.includes("webgpu");
+  if (env2.webgpu.supported)
+    env2.webgpu.adapter = (_a = await navigator["gpu"].requestAdapter()) == null ? void 0 : _a.name;
+  env2.kernels = getKernelsForBackend(getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+}
+async function get3() {
+  env2.browser = typeof navigator !== "undefined";
+  env2.node = typeof process !== "undefined";
+  env2.worker = env2.browser ? typeof WorkerGlobalScope !== "undefined" : void 0;
+  env2.tfjs.version = version;
+  env2.offscreen = typeof env2.offscreen === "undefined" ? typeof OffscreenCanvas !== "undefined" : env2.offscreen;
+  if (typeof navigator !== "undefined") {
+    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
+    if (raw && raw[0]) {
+      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
+      env2.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
+      env2.agent = navigator.userAgent.replace(raw[0], "");
+      if (env2.platform[1])
+        env2.agent = env2.agent.replace(raw[1], "");
+      env2.agent = env2.agent.replace(/  /g, " ");
+    }
+  } else if (typeof process !== "undefined") {
+    env2.platform = `${process.platform} ${process.arch}`;
+    env2.agent = `NodeJS ${process.version}`;
+  }
+  await backendInfo();
+}
+async function set(obj) {
+  env2 = mergeDeep(env2, obj);
+}
+
+// src/image/image.ts
+var maxSize = 2048;
+var inCanvas;
+var outCanvas;
+var fx;
+function canvas(width, height) {
+  let c;
+  if (env2.browser) {
+    if (env2.offscreen) {
+      c = new OffscreenCanvas(width, height);
+    } else {
+      c = document.createElement("canvas");
+      c.width = width;
+      c.height = height;
+    }
+  } else {
+    if (typeof env2.Canvas !== "undefined")
+      c = new env2.Canvas(width, height);
+    else if (typeof globalThis.Canvas !== "undefined")
+      c = new globalThis.Canvas(width, height);
+  }
+  return c;
+}
+function process2(input2, config3) {
+  let tensor2;
+  if (!input2) {
+    if (config3.debug)
+      log("input is missing");
+    return { tensor: null, canvas: null };
+  }
+  if (!(input2 instanceof Tensor) && !(typeof Image !== "undefined" && input2 instanceof Image) && !(typeof env2.Canvas !== "undefined" && input2 instanceof env2.Canvas) && !(typeof globalThis.Canvas !== "undefined" && input2 instanceof globalThis.Canvas) && !(typeof ImageData !== "undefined" && input2 instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input2 instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input2 instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input2 instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input2 instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input2 instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input2 instanceof OffscreenCanvas)) {
+    throw new Error("input type is not recognized");
+  }
+  if (input2 instanceof Tensor) {
+    if (input2["isDisposedInternal"])
+      throw new Error("input tensor is disposed");
+    if (input2.shape && input2.shape.length === 4 && input2.shape[0] === 1 && input2.shape[3] === 3)
+      tensor2 = clone(input2);
+    else
+      throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${input2.shape}`);
+  } else {
+    if (typeof input2["readyState"] !== "undefined" && input2["readyState"] <= 2) {
+      if (config3.debug)
+        log("input stream is not ready");
+      return { tensor: null, canvas: inCanvas };
+    }
+    const originalWidth = input2["naturalWidth"] || input2["videoWidth"] || input2["width"] || input2["shape"] && input2["shape"][1] > 0;
+    const originalHeight = input2["naturalHeight"] || input2["videoHeight"] || input2["height"] || input2["shape"] && input2["shape"][2] > 0;
+    if (!originalWidth || !originalHeight) {
+      if (config3.debug)
+        log("cannot determine input dimensions");
+      return { tensor: null, canvas: inCanvas };
+    }
+    let targetWidth = originalWidth;
+    let targetHeight = originalHeight;
+    if (targetWidth > maxSize) {
+      targetWidth = maxSize;
+      targetHeight = Math.trunc(targetWidth * originalHeight / originalWidth);
+    }
+    if (targetHeight > maxSize) {
+      targetHeight = maxSize;
+      targetWidth = Math.trunc(targetHeight * originalWidth / originalHeight);
+    }
+    if ((config3.filter.width || 0) > 0)
+      targetWidth = config3.filter.width;
+    else if ((config3.filter.height || 0) > 0)
+      targetWidth = originalWidth * ((config3.filter.height || 0) / originalHeight);
+    if ((config3.filter.height || 0) > 0)
+      targetHeight = config3.filter.height;
+    else if ((config3.filter.width || 0) > 0)
+      targetHeight = originalHeight * ((config3.filter.width || 0) / originalWidth);
+    if (!targetWidth || !targetHeight)
+      throw new Error("input cannot determine dimension");
+    if (!inCanvas || (inCanvas == null ? void 0 : inCanvas.width) !== targetWidth || (inCanvas == null ? void 0 : inCanvas.height) !== targetHeight)
+      inCanvas = canvas(targetWidth, targetHeight);
+    const ctx = inCanvas.getContext("2d");
+    if (typeof ImageData !== "undefined" && input2 instanceof ImageData) {
+      ctx.putImageData(input2, 0, 0);
+    } else {
+      if (config3.filter.flip && typeof ctx.translate !== "undefined") {
+        ctx.translate(originalWidth, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(input2, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+      } else {
+        ctx.drawImage(input2, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
+      }
+    }
+    if (config3.filter.enabled && env2.webgl.supported) {
+      if (!fx || !outCanvas || inCanvas.width !== outCanvas.width || (inCanvas == null ? void 0 : inCanvas.height) !== (outCanvas == null ? void 0 : outCanvas.height)) {
+        outCanvas = canvas(inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
+        if ((outCanvas == null ? void 0 : outCanvas.width) !== (inCanvas == null ? void 0 : inCanvas.width))
+          outCanvas.width = inCanvas == null ? void 0 : inCanvas.width;
+        if ((outCanvas == null ? void 0 : outCanvas.height) !== (inCanvas == null ? void 0 : inCanvas.height))
+          outCanvas.height = inCanvas == null ? void 0 : inCanvas.height;
+        fx = env2.browser ? new GLImageFilter({ canvas: outCanvas }) : null;
+      }
+      if (!fx)
+        return { tensor: null, canvas: inCanvas };
+      fx.reset();
+      fx.addFilter("brightness", config3.filter.brightness);
+      if (config3.filter.contrast !== 0)
+        fx.addFilter("contrast", config3.filter.contrast);
+      if (config3.filter.sharpness !== 0)
+        fx.addFilter("sharpen", config3.filter.sharpness);
+      if (config3.filter.blur !== 0)
+        fx.addFilter("blur", config3.filter.blur);
+      if (config3.filter.saturation !== 0)
+        fx.addFilter("saturation", config3.filter.saturation);
+      if (config3.filter.hue !== 0)
+        fx.addFilter("hue", config3.filter.hue);
+      if (config3.filter.negative)
+        fx.addFilter("negative");
+      if (config3.filter.sepia)
+        fx.addFilter("sepia");
+      if (config3.filter.vintage)
+        fx.addFilter("brownie");
+      if (config3.filter.sepia)
+        fx.addFilter("sepia");
+      if (config3.filter.kodachrome)
+        fx.addFilter("kodachrome");
+      if (config3.filter.technicolor)
+        fx.addFilter("technicolor");
+      if (config3.filter.polaroid)
+        fx.addFilter("polaroid");
+      if (config3.filter.pixelate !== 0)
+        fx.addFilter("pixelate", config3.filter.pixelate);
+      fx.apply(inCanvas);
+    } else {
+      outCanvas = inCanvas;
+      if (fx)
+        fx = null;
+    }
+    if (!tensor2) {
+      let pixels;
+      if (outCanvas.data) {
+        const shape = [outCanvas.height, outCanvas.width, 3];
+        pixels = tensor3d(outCanvas.data, shape, "float32");
+      } else if (typeof ImageData !== "undefined" && outCanvas instanceof ImageData) {
+        pixels = browser_exports ? browser_exports.fromPixels(outCanvas) : null;
+      } else if (config3.backend === "webgl" || config3.backend === "humangl") {
+        const tempCanvas = canvas(targetWidth, targetHeight);
+        tempCanvas.width = targetWidth;
+        tempCanvas.height = targetHeight;
+        const tempCtx = tempCanvas.getContext("2d");
+        tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
+        try {
+          pixels = browser_exports && env2.browser ? browser_exports.fromPixels(tempCanvas) : null;
+        } catch (err) {
+          throw new Error("browser webgl error");
+        }
+      } else {
+        const tempCanvas = canvas(targetWidth, targetHeight);
+        if (!tempCanvas)
+          return { tensor: null, canvas: inCanvas };
+        tempCanvas.width = targetWidth;
+        tempCanvas.height = targetHeight;
+        const tempCtx = tempCanvas.getContext("2d");
+        if (!tempCtx)
+          return { tensor: null, canvas: inCanvas };
+        tempCtx.drawImage(outCanvas, 0, 0);
+        const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+        if (browser_exports && env2.browser) {
+          pixels = browser_exports.fromPixels(data);
+        } else {
+          pixels = tidy(() => {
+            const imageData = tensor(Array.from(data.data), [targetWidth, targetHeight, 4]);
+            const channels = split(imageData, 4, 2);
+            const rgb2 = stack([channels[0], channels[1], channels[2]], 2);
+            const expand = reshape(rgb2, [imageData.shape[0], imageData.shape[1], 3]);
+            return expand;
+          });
+        }
+      }
+      if (pixels) {
+        const casted = cast(pixels, "float32");
+        tensor2 = expandDims(casted, 0);
+        dispose(pixels);
+        dispose(casted);
+      } else {
+        tensor2 = zeros([1, targetWidth, targetHeight, 3]);
+        throw new Error("cannot create tensor from input");
+      }
+    }
+  }
+  return { tensor: tensor2, canvas: config3.filter.return ? outCanvas : null };
+}
+var lastInputSum = 0;
+var lastCacheDiff = 1;
+async function skip(config3, input2) {
+  if (config3.cacheSensitivity === 0)
+    return false;
+  const resizeFact = 32;
+  if (!input2.shape[1] || !input2.shape[2])
+    return false;
+  const reduced = image.resizeBilinear(input2, [Math.trunc(input2.shape[1] / resizeFact), Math.trunc(input2.shape[2] / resizeFact)]);
+  const reducedData = await reduced.data();
+  dispose(reduced);
+  let sum6 = 0;
+  for (let i = 0; i < reducedData.length / 3; i++)
+    sum6 += reducedData[3 * i + 2];
+  const diff = 100 * (Math.max(sum6, lastInputSum) / Math.min(sum6, lastInputSum) - 1);
+  lastInputSum = sum6;
+  const skipFrame = diff < Math.max(config3.cacheSensitivity, lastCacheDiff);
+  lastCacheDiff = diff > 10 * config3.cacheSensitivity ? 0 : diff;
+  return skipFrame;
+}
+
 // src/face/facemeshcoords.ts
 var meshAnnotations = {
   silhouette: [
@@ -63721,1007 +64725,6 @@ function correctFaceRotation(box4, input2, inputSize8) {
   return [angle, rotationMatrix, face5];
 }
 
-// src/image/imagefx.ts
-function GLProgram(gl, vertexSource, fragmentSource) {
-  const _collect = function(source, prefix, collection) {
-    const r = new RegExp("\\b" + prefix + " \\w+ (\\w+)", "ig");
-    source.replace(r, (match3, name) => {
-      collection[name] = 0;
-      return match3;
-    });
-  };
-  const _compile = function(source, type) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
-      throw new Error("filter: gl compile failed", gl.getShaderInfoLog(shader));
-    return shader;
-  };
-  this.uniform = {};
-  this.attribute = {};
-  const _vsh = _compile(vertexSource, gl.VERTEX_SHADER);
-  const _fsh = _compile(fragmentSource, gl.FRAGMENT_SHADER);
-  this.id = gl.createProgram();
-  gl.attachShader(this.id, _vsh);
-  gl.attachShader(this.id, _fsh);
-  gl.linkProgram(this.id);
-  if (!gl.getProgramParameter(this.id, gl.LINK_STATUS))
-    throw new Error("filter: gl link failed", gl.getProgramInfoLog(this.id));
-  gl.useProgram(this.id);
-  _collect(vertexSource, "attribute", this.attribute);
-  for (const a in this.attribute)
-    this.attribute[a] = gl.getAttribLocation(this.id, a);
-  _collect(vertexSource, "uniform", this.uniform);
-  _collect(fragmentSource, "uniform", this.uniform);
-  for (const u in this.uniform)
-    this.uniform[u] = gl.getUniformLocation(this.id, u);
-}
-function GLImageFilter(params) {
-  if (!params)
-    params = {};
-  let _drawCount = 0;
-  let _sourceTexture = null;
-  let _lastInChain = false;
-  let _currentFramebufferIndex = -1;
-  let _tempFramebuffers = [null, null];
-  let _filterChain = [];
-  let _width = -1;
-  let _height = -1;
-  let _vertexBuffer = null;
-  let _currentProgram = null;
-  const _filter = {};
-  const _canvas = params.canvas || document.createElement("canvas");
-  const _shaderProgramCache = {};
-  const DRAW = { INTERMEDIATE: 1 };
-  const gl = _canvas.getContext("webgl");
-  if (!gl)
-    throw new Error("filter: context failed");
-  this.addFilter = function(name) {
-    const args = Array.prototype.slice.call(arguments, 1);
-    const filter = _filter[name];
-    _filterChain.push({ func: filter, args });
-  };
-  this.reset = function() {
-    _filterChain = [];
-  };
-  const _resize = function(width, height) {
-    if (width === _width && height === _height) {
-      return;
-    }
-    _canvas.width = width;
-    _width = width;
-    _canvas.height = height;
-    _height = height;
-    if (!_vertexBuffer) {
-      const vertices = new Float32Array([
-        -1,
-        -1,
-        0,
-        1,
-        1,
-        -1,
-        1,
-        1,
-        -1,
-        1,
-        0,
-        0,
-        -1,
-        1,
-        0,
-        0,
-        1,
-        -1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        0
-      ]);
-      _vertexBuffer = gl.createBuffer(), gl.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-    }
-    gl.viewport(0, 0, _width, _height);
-    _tempFramebuffers = [null, null];
-  };
-  const _createFramebufferTexture = function(width, height) {
-    const fbo = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    const renderbuffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
-    const texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    return { fbo, texture };
-  };
-  const _getTempFramebuffer = function(index) {
-    _tempFramebuffers[index] = _tempFramebuffers[index] || _createFramebufferTexture(_width, _height);
-    return _tempFramebuffers[index];
-  };
-  const _draw = function(flags = null) {
-    var _a, _b;
-    let source = null;
-    let target = null;
-    let flipY = false;
-    if (_drawCount === 0) {
-      source = _sourceTexture;
-    } else {
-      source = (_a = _getTempFramebuffer(_currentFramebufferIndex)) == null ? void 0 : _a.texture;
-    }
-    _drawCount++;
-    if (_lastInChain && !(flags & DRAW.INTERMEDIATE)) {
-      target = null;
-      flipY = _drawCount % 2 === 0;
-    } else {
-      _currentFramebufferIndex = (_currentFramebufferIndex + 1) % 2;
-      target = (_b = _getTempFramebuffer(_currentFramebufferIndex)) == null ? void 0 : _b.fbo;
-    }
-    gl.bindTexture(gl.TEXTURE_2D, source);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, target);
-    gl.uniform1f(_currentProgram.uniform.flipY, flipY ? -1 : 1);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-  };
-  this.apply = function(image7) {
-    _resize(image7.width, image7.height);
-    _drawCount = 0;
-    if (!_sourceTexture)
-      _sourceTexture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, _sourceTexture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image7);
-    if (_filterChain.length === 0) {
-      _draw();
-      return _canvas;
-    }
-    for (let i = 0; i < _filterChain.length; i++) {
-      _lastInChain = i === _filterChain.length - 1;
-      const f = _filterChain[i];
-      f.func.apply(this, f.args || []);
-    }
-    return _canvas;
-  };
-  const _compileShader = function(fragmentSource) {
-    if (_shaderProgramCache[fragmentSource]) {
-      _currentProgram = _shaderProgramCache[fragmentSource];
-      gl.useProgram(_currentProgram.id);
-      return _currentProgram;
-    }
-    const SHADER = {};
-    SHADER.VERTEX_IDENTITY = [
-      "precision highp float;",
-      "attribute vec2 pos;",
-      "attribute vec2 uv;",
-      "varying vec2 vUv;",
-      "uniform float flipY;",
-      "void main(void) {",
-      "vUv = uv;",
-      "gl_Position = vec4(pos.x, pos.y*flipY, 0.0, 1.);",
-      "}"
-    ].join("\n");
-    SHADER.FRAGMENT_IDENTITY = [
-      "precision highp float;",
-      "varying vec2 vUv;",
-      "uniform sampler2D texture;",
-      "void main(void) {",
-      "gl_FragColor = texture2D(texture, vUv);",
-      "}"
-    ].join("\n");
-    _currentProgram = new GLProgram(gl, SHADER.VERTEX_IDENTITY, fragmentSource);
-    const floatSize = Float32Array.BYTES_PER_ELEMENT;
-    const vertSize = 4 * floatSize;
-    gl.enableVertexAttribArray(_currentProgram.attribute.pos);
-    gl.vertexAttribPointer(_currentProgram.attribute.pos, 2, gl.FLOAT, false, vertSize, 0 * floatSize);
-    gl.enableVertexAttribArray(_currentProgram.attribute.uv);
-    gl.vertexAttribPointer(_currentProgram.attribute.uv, 2, gl.FLOAT, false, vertSize, 2 * floatSize);
-    _shaderProgramCache[fragmentSource] = _currentProgram;
-    return _currentProgram;
-  };
-  _filter.colorMatrix = function(matrix) {
-    const m = new Float32Array(matrix);
-    m[4] /= 255;
-    m[9] /= 255;
-    m[14] /= 255;
-    m[19] /= 255;
-    const shader = m[18] === 1 && m[3] === 0 && m[8] === 0 && m[13] === 0 && m[15] === 0 && m[16] === 0 && m[17] === 0 && m[19] === 0 ? _filter.colorMatrix.SHADER.WITHOUT_ALPHA : _filter.colorMatrix.SHADER.WITH_ALPHA;
-    const program = _compileShader(shader);
-    gl.uniform1fv(program.uniform.m, m);
-    _draw();
-  };
-  _filter.colorMatrix.SHADER = {};
-  _filter.colorMatrix.SHADER.WITH_ALPHA = [
-    "precision highp float;",
-    "varying vec2 vUv;",
-    "uniform sampler2D texture;",
-    "uniform float m[20];",
-    "void main(void) {",
-    "vec4 c = texture2D(texture, vUv);",
-    "gl_FragColor.r = m[0] * c.r + m[1] * c.g + m[2] * c.b + m[3] * c.a + m[4];",
-    "gl_FragColor.g = m[5] * c.r + m[6] * c.g + m[7] * c.b + m[8] * c.a + m[9];",
-    "gl_FragColor.b = m[10] * c.r + m[11] * c.g + m[12] * c.b + m[13] * c.a + m[14];",
-    "gl_FragColor.a = m[15] * c.r + m[16] * c.g + m[17] * c.b + m[18] * c.a + m[19];",
-    "}"
-  ].join("\n");
-  _filter.colorMatrix.SHADER.WITHOUT_ALPHA = [
-    "precision highp float;",
-    "varying vec2 vUv;",
-    "uniform sampler2D texture;",
-    "uniform float m[20];",
-    "void main(void) {",
-    "vec4 c = texture2D(texture, vUv);",
-    "gl_FragColor.r = m[0] * c.r + m[1] * c.g + m[2] * c.b + m[4];",
-    "gl_FragColor.g = m[5] * c.r + m[6] * c.g + m[7] * c.b + m[9];",
-    "gl_FragColor.b = m[10] * c.r + m[11] * c.g + m[12] * c.b + m[14];",
-    "gl_FragColor.a = c.a;",
-    "}"
-  ].join("\n");
-  _filter.brightness = function(brightness) {
-    const b = (brightness || 0) + 1;
-    _filter.colorMatrix([
-      b,
-      0,
-      0,
-      0,
-      0,
-      0,
-      b,
-      0,
-      0,
-      0,
-      0,
-      0,
-      b,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.saturation = function(amount) {
-    const x = (amount || 0) * 2 / 3 + 1;
-    const y = (x - 1) * -0.5;
-    _filter.colorMatrix([
-      x,
-      y,
-      y,
-      0,
-      0,
-      y,
-      x,
-      y,
-      0,
-      0,
-      y,
-      y,
-      x,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.desaturate = function() {
-    _filter.saturation(-1);
-  };
-  _filter.contrast = function(amount) {
-    const v = (amount || 0) + 1;
-    const o = -128 * (v - 1);
-    _filter.colorMatrix([
-      v,
-      0,
-      0,
-      0,
-      o,
-      0,
-      v,
-      0,
-      0,
-      o,
-      0,
-      0,
-      v,
-      0,
-      o,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.negative = function() {
-    _filter.contrast(-2);
-  };
-  _filter.hue = function(rotation) {
-    rotation = (rotation || 0) / 180 * Math.PI;
-    const cos4 = Math.cos(rotation);
-    const sin4 = Math.sin(rotation);
-    const lumR = 0.213;
-    const lumG = 0.715;
-    const lumB = 0.072;
-    _filter.colorMatrix([
-      lumR + cos4 * (1 - lumR) + sin4 * -lumR,
-      lumG + cos4 * -lumG + sin4 * -lumG,
-      lumB + cos4 * -lumB + sin4 * (1 - lumB),
-      0,
-      0,
-      lumR + cos4 * -lumR + sin4 * 0.143,
-      lumG + cos4 * (1 - lumG) + sin4 * 0.14,
-      lumB + cos4 * -lumB + sin4 * -0.283,
-      0,
-      0,
-      lumR + cos4 * -lumR + sin4 * -(1 - lumR),
-      lumG + cos4 * -lumG + sin4 * lumG,
-      lumB + cos4 * (1 - lumB) + sin4 * lumB,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.desaturateLuminance = function() {
-    _filter.colorMatrix([
-      0.2764723,
-      0.929708,
-      0.0938197,
-      0,
-      -37.1,
-      0.2764723,
-      0.929708,
-      0.0938197,
-      0,
-      -37.1,
-      0.2764723,
-      0.929708,
-      0.0938197,
-      0,
-      -37.1,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.sepia = function() {
-    _filter.colorMatrix([
-      0.393,
-      0.7689999,
-      0.18899999,
-      0,
-      0,
-      0.349,
-      0.6859999,
-      0.16799999,
-      0,
-      0,
-      0.272,
-      0.5339999,
-      0.13099999,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.brownie = function() {
-    _filter.colorMatrix([
-      0.5997023498159715,
-      0.34553243048391263,
-      -0.2708298674538042,
-      0,
-      47.43192855600873,
-      -0.037703249837783157,
-      0.8609577587992641,
-      0.15059552388459913,
-      0,
-      -36.96841498319127,
-      0.24113635128153335,
-      -0.07441037908422492,
-      0.44972182064877153,
-      0,
-      -7.562075277591283,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.vintagePinhole = function() {
-    _filter.colorMatrix([
-      0.6279345635605994,
-      0.3202183420819367,
-      -0.03965408211312453,
-      0,
-      9.651285835294123,
-      0.02578397704808868,
-      0.6441188644374771,
-      0.03259127616149294,
-      0,
-      7.462829176470591,
-      0.0466055556782719,
-      -0.0851232987247891,
-      0.5241648018700465,
-      0,
-      5.159190588235296,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.kodachrome = function() {
-    _filter.colorMatrix([
-      1.1285582396593525,
-      -0.3967382283601348,
-      -0.03992559172921793,
-      0,
-      63.72958762196502,
-      -0.16404339962244616,
-      1.0835251566291304,
-      -0.05498805115633132,
-      0,
-      24.732407896706203,
-      -0.16786010706155763,
-      -0.5603416277695248,
-      1.6014850761964943,
-      0,
-      35.62982807460946,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.technicolor = function() {
-    _filter.colorMatrix([
-      1.9125277891456083,
-      -0.8545344976951645,
-      -0.09155508482755585,
-      0,
-      11.793603434377337,
-      -0.3087833385928097,
-      1.7658908555458428,
-      -0.10601743074722245,
-      0,
-      -70.35205161461398,
-      -0.231103377548616,
-      -0.7501899197440212,
-      1.847597816108189,
-      0,
-      30.950940869491138,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.polaroid = function() {
-    _filter.colorMatrix([
-      1.438,
-      -0.062,
-      -0.062,
-      0,
-      0,
-      -0.122,
-      1.378,
-      -0.122,
-      0,
-      0,
-      -0.016,
-      -0.016,
-      1.483,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.shiftToBGR = function() {
-    _filter.colorMatrix([
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.convolution = function(matrix) {
-    const m = new Float32Array(matrix);
-    const pixelSizeX = 1 / _width;
-    const pixelSizeY = 1 / _height;
-    const program = _compileShader(_filter.convolution.SHADER);
-    gl.uniform1fv(program.uniform.m, m);
-    gl.uniform2f(program.uniform.px, pixelSizeX, pixelSizeY);
-    _draw();
-  };
-  _filter.convolution.SHADER = [
-    "precision highp float;",
-    "varying vec2 vUv;",
-    "uniform sampler2D texture;",
-    "uniform vec2 px;",
-    "uniform float m[9];",
-    "void main(void) {",
-    "vec4 c11 = texture2D(texture, vUv - px);",
-    "vec4 c12 = texture2D(texture, vec2(vUv.x, vUv.y - px.y));",
-    "vec4 c13 = texture2D(texture, vec2(vUv.x + px.x, vUv.y - px.y));",
-    "vec4 c21 = texture2D(texture, vec2(vUv.x - px.x, vUv.y) );",
-    "vec4 c22 = texture2D(texture, vUv);",
-    "vec4 c23 = texture2D(texture, vec2(vUv.x + px.x, vUv.y) );",
-    "vec4 c31 = texture2D(texture, vec2(vUv.x - px.x, vUv.y + px.y) );",
-    "vec4 c32 = texture2D(texture, vec2(vUv.x, vUv.y + px.y) );",
-    "vec4 c33 = texture2D(texture, vUv + px );",
-    "gl_FragColor = ",
-    "c11 * m[0] + c12 * m[1] + c22 * m[2] +",
-    "c21 * m[3] + c22 * m[4] + c23 * m[5] +",
-    "c31 * m[6] + c32 * m[7] + c33 * m[8];",
-    "gl_FragColor.a = c22.a;",
-    "}"
-  ].join("\n");
-  _filter.detectEdges = function() {
-    _filter.convolution.call(this, [
-      0,
-      1,
-      0,
-      1,
-      -4,
-      1,
-      0,
-      1,
-      0
-    ]);
-  };
-  _filter.sobelX = function() {
-    _filter.convolution.call(this, [
-      -1,
-      0,
-      1,
-      -2,
-      0,
-      2,
-      -1,
-      0,
-      1
-    ]);
-  };
-  _filter.sobelY = function() {
-    _filter.convolution.call(this, [
-      -1,
-      -2,
-      -1,
-      0,
-      0,
-      0,
-      1,
-      2,
-      1
-    ]);
-  };
-  _filter.sharpen = function(amount) {
-    const a = amount || 1;
-    _filter.convolution.call(this, [
-      0,
-      -1 * a,
-      0,
-      -1 * a,
-      1 + 4 * a,
-      -1 * a,
-      0,
-      -1 * a,
-      0
-    ]);
-  };
-  _filter.emboss = function(size2) {
-    const s = size2 || 1;
-    _filter.convolution.call(this, [
-      -2 * s,
-      -1 * s,
-      0,
-      -1 * s,
-      1,
-      1 * s,
-      0,
-      1 * s,
-      2 * s
-    ]);
-  };
-  _filter.blur = function(size2) {
-    const blurSizeX = size2 / 7 / _width;
-    const blurSizeY = size2 / 7 / _height;
-    const program = _compileShader(_filter.blur.SHADER);
-    gl.uniform2f(program.uniform.px, 0, blurSizeY);
-    _draw(DRAW.INTERMEDIATE);
-    gl.uniform2f(program.uniform.px, blurSizeX, 0);
-    _draw();
-  };
-  _filter.blur.SHADER = [
-    "precision highp float;",
-    "varying vec2 vUv;",
-    "uniform sampler2D texture;",
-    "uniform vec2 px;",
-    "void main(void) {",
-    "gl_FragColor = vec4(0.0);",
-    "gl_FragColor += texture2D(texture, vUv + vec2(-7.0*px.x, -7.0*px.y))*0.0044299121055113265;",
-    "gl_FragColor += texture2D(texture, vUv + vec2(-6.0*px.x, -6.0*px.y))*0.00895781211794;",
-    "gl_FragColor += texture2D(texture, vUv + vec2(-5.0*px.x, -5.0*px.y))*0.0215963866053;",
-    "gl_FragColor += texture2D(texture, vUv + vec2(-4.0*px.x, -4.0*px.y))*0.0443683338718;",
-    "gl_FragColor += texture2D(texture, vUv + vec2(-3.0*px.x, -3.0*px.y))*0.0776744219933;",
-    "gl_FragColor += texture2D(texture, vUv + vec2(-2.0*px.x, -2.0*px.y))*0.115876621105;",
-    "gl_FragColor += texture2D(texture, vUv + vec2(-1.0*px.x, -1.0*px.y))*0.147308056121;",
-    "gl_FragColor += texture2D(texture, vUv                             )*0.159576912161;",
-    "gl_FragColor += texture2D(texture, vUv + vec2( 1.0*px.x,  1.0*px.y))*0.147308056121;",
-    "gl_FragColor += texture2D(texture, vUv + vec2( 2.0*px.x,  2.0*px.y))*0.115876621105;",
-    "gl_FragColor += texture2D(texture, vUv + vec2( 3.0*px.x,  3.0*px.y))*0.0776744219933;",
-    "gl_FragColor += texture2D(texture, vUv + vec2( 4.0*px.x,  4.0*px.y))*0.0443683338718;",
-    "gl_FragColor += texture2D(texture, vUv + vec2( 5.0*px.x,  5.0*px.y))*0.0215963866053;",
-    "gl_FragColor += texture2D(texture, vUv + vec2( 6.0*px.x,  6.0*px.y))*0.00895781211794;",
-    "gl_FragColor += texture2D(texture, vUv + vec2( 7.0*px.x,  7.0*px.y))*0.0044299121055113265;",
-    "}"
-  ].join("\n");
-  _filter.pixelate = function(size2) {
-    const blurSizeX = size2 / _width;
-    const blurSizeY = size2 / _height;
-    const program = _compileShader(_filter.pixelate.SHADER);
-    gl.uniform2f(program.uniform.size, blurSizeX, blurSizeY);
-    _draw();
-  };
-  _filter.pixelate.SHADER = [
-    "precision highp float;",
-    "varying vec2 vUv;",
-    "uniform vec2 size;",
-    "uniform sampler2D texture;",
-    "vec2 pixelate(vec2 coord, vec2 size) {",
-    "return floor( coord / size ) * size;",
-    "}",
-    "void main(void) {",
-    "gl_FragColor = vec4(0.0);",
-    "vec2 coord = pixelate(vUv, size);",
-    "gl_FragColor += texture2D(texture, coord);",
-    "}"
-  ].join("\n");
-}
-
-// src/image/image.ts
-var maxSize = 2048;
-var inCanvas;
-var outCanvas;
-var fx;
-function canvas(width, height) {
-  let c;
-  if (env2.browser) {
-    if (env2.offscreen) {
-      c = new OffscreenCanvas(width, height);
-    } else {
-      c = document.createElement("canvas");
-      c.width = width;
-      c.height = height;
-    }
-  } else {
-    if (typeof env2.Canvas !== "undefined")
-      c = new env2.Canvas(width, height);
-    else if (typeof globalThis.Canvas !== "undefined")
-      c = new globalThis.Canvas(width, height);
-  }
-  return c;
-}
-function process2(input2, config3) {
-  let tensor2;
-  if (!input2) {
-    if (config3.debug)
-      log("input is missing");
-    return { tensor: null, canvas: null };
-  }
-  if (!(input2 instanceof Tensor) && !(typeof Image !== "undefined" && input2 instanceof Image) && !(typeof env2.Canvas !== "undefined" && input2 instanceof env2.Canvas) && !(typeof globalThis.Canvas !== "undefined" && input2 instanceof globalThis.Canvas) && !(typeof ImageData !== "undefined" && input2 instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input2 instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input2 instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input2 instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input2 instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input2 instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input2 instanceof OffscreenCanvas)) {
-    throw new Error("input type is not recognized");
-  }
-  if (input2 instanceof Tensor) {
-    if (input2["isDisposedInternal"])
-      throw new Error("input tensor is disposed");
-    if (input2.shape && input2.shape.length === 4 && input2.shape[0] === 1 && input2.shape[3] === 3)
-      tensor2 = clone(input2);
-    else
-      throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${input2.shape}`);
-  } else {
-    if (typeof input2["readyState"] !== "undefined" && input2["readyState"] <= 2) {
-      if (config3.debug)
-        log("input stream is not ready");
-      return { tensor: null, canvas: inCanvas };
-    }
-    const originalWidth = input2["naturalWidth"] || input2["videoWidth"] || input2["width"] || input2["shape"] && input2["shape"][1] > 0;
-    const originalHeight = input2["naturalHeight"] || input2["videoHeight"] || input2["height"] || input2["shape"] && input2["shape"][2] > 0;
-    if (!originalWidth || !originalHeight) {
-      if (config3.debug)
-        log("cannot determine input dimensions");
-      return { tensor: null, canvas: inCanvas };
-    }
-    let targetWidth = originalWidth;
-    let targetHeight = originalHeight;
-    if (targetWidth > maxSize) {
-      targetWidth = maxSize;
-      targetHeight = Math.trunc(targetWidth * originalHeight / originalWidth);
-    }
-    if (targetHeight > maxSize) {
-      targetHeight = maxSize;
-      targetWidth = Math.trunc(targetHeight * originalWidth / originalHeight);
-    }
-    if ((config3.filter.width || 0) > 0)
-      targetWidth = config3.filter.width;
-    else if ((config3.filter.height || 0) > 0)
-      targetWidth = originalWidth * ((config3.filter.height || 0) / originalHeight);
-    if ((config3.filter.height || 0) > 0)
-      targetHeight = config3.filter.height;
-    else if ((config3.filter.width || 0) > 0)
-      targetHeight = originalHeight * ((config3.filter.width || 0) / originalWidth);
-    if (!targetWidth || !targetHeight)
-      throw new Error("input cannot determine dimension");
-    if (!inCanvas || (inCanvas == null ? void 0 : inCanvas.width) !== targetWidth || (inCanvas == null ? void 0 : inCanvas.height) !== targetHeight)
-      inCanvas = canvas(targetWidth, targetHeight);
-    const ctx = inCanvas.getContext("2d");
-    if (typeof ImageData !== "undefined" && input2 instanceof ImageData) {
-      ctx.putImageData(input2, 0, 0);
-    } else {
-      if (config3.filter.flip && typeof ctx.translate !== "undefined") {
-        ctx.translate(originalWidth, 0);
-        ctx.scale(-1, 1);
-        ctx.drawImage(input2, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-      } else {
-        ctx.drawImage(input2, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
-      }
-    }
-    if (config3.filter.enabled && env2.webgl.supported) {
-      if (!fx || !outCanvas || inCanvas.width !== outCanvas.width || (inCanvas == null ? void 0 : inCanvas.height) !== (outCanvas == null ? void 0 : outCanvas.height)) {
-        outCanvas = canvas(inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
-        if ((outCanvas == null ? void 0 : outCanvas.width) !== (inCanvas == null ? void 0 : inCanvas.width))
-          outCanvas.width = inCanvas == null ? void 0 : inCanvas.width;
-        if ((outCanvas == null ? void 0 : outCanvas.height) !== (inCanvas == null ? void 0 : inCanvas.height))
-          outCanvas.height = inCanvas == null ? void 0 : inCanvas.height;
-        fx = env2.browser ? new GLImageFilter({ canvas: outCanvas }) : null;
-      }
-      if (!fx)
-        return { tensor: null, canvas: inCanvas };
-      fx.reset();
-      fx.addFilter("brightness", config3.filter.brightness);
-      if (config3.filter.contrast !== 0)
-        fx.addFilter("contrast", config3.filter.contrast);
-      if (config3.filter.sharpness !== 0)
-        fx.addFilter("sharpen", config3.filter.sharpness);
-      if (config3.filter.blur !== 0)
-        fx.addFilter("blur", config3.filter.blur);
-      if (config3.filter.saturation !== 0)
-        fx.addFilter("saturation", config3.filter.saturation);
-      if (config3.filter.hue !== 0)
-        fx.addFilter("hue", config3.filter.hue);
-      if (config3.filter.negative)
-        fx.addFilter("negative");
-      if (config3.filter.sepia)
-        fx.addFilter("sepia");
-      if (config3.filter.vintage)
-        fx.addFilter("brownie");
-      if (config3.filter.sepia)
-        fx.addFilter("sepia");
-      if (config3.filter.kodachrome)
-        fx.addFilter("kodachrome");
-      if (config3.filter.technicolor)
-        fx.addFilter("technicolor");
-      if (config3.filter.polaroid)
-        fx.addFilter("polaroid");
-      if (config3.filter.pixelate !== 0)
-        fx.addFilter("pixelate", config3.filter.pixelate);
-      fx.apply(inCanvas);
-    } else {
-      outCanvas = inCanvas;
-      if (fx)
-        fx = null;
-    }
-    if (!tensor2) {
-      let pixels;
-      if (outCanvas.data) {
-        const shape = [outCanvas.height, outCanvas.width, 3];
-        pixels = tensor3d(outCanvas.data, shape, "float32");
-      } else if (typeof ImageData !== "undefined" && outCanvas instanceof ImageData) {
-        pixels = browser_exports ? browser_exports.fromPixels(outCanvas) : null;
-      } else if (config3.backend === "webgl" || config3.backend === "humangl") {
-        const tempCanvas = canvas(targetWidth, targetHeight);
-        tempCanvas.width = targetWidth;
-        tempCanvas.height = targetHeight;
-        const tempCtx = tempCanvas.getContext("2d");
-        tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
-        try {
-          pixels = browser_exports && env2.browser ? browser_exports.fromPixels(tempCanvas) : null;
-        } catch (err) {
-          throw new Error("browser webgl error");
-        }
-      } else {
-        const tempCanvas = canvas(targetWidth, targetHeight);
-        if (!tempCanvas)
-          return { tensor: null, canvas: inCanvas };
-        tempCanvas.width = targetWidth;
-        tempCanvas.height = targetHeight;
-        const tempCtx = tempCanvas.getContext("2d");
-        if (!tempCtx)
-          return { tensor: null, canvas: inCanvas };
-        tempCtx.drawImage(outCanvas, 0, 0);
-        const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
-        if (browser_exports && env2.browser) {
-          pixels = browser_exports.fromPixels(data);
-        } else {
-          pixels = tidy(() => {
-            const imageData = tensor(Array.from(data.data), [targetWidth, targetHeight, 4]);
-            const channels = split(imageData, 4, 2);
-            const rgb2 = stack([channels[0], channels[1], channels[2]], 2);
-            const expand = reshape(rgb2, [imageData.shape[0], imageData.shape[1], 3]);
-            return expand;
-          });
-        }
-      }
-      if (pixels) {
-        const casted = cast(pixels, "float32");
-        tensor2 = expandDims(casted, 0);
-        dispose(pixels);
-        dispose(casted);
-      } else {
-        tensor2 = zeros([1, targetWidth, targetHeight, 3]);
-        throw new Error("cannot create tensor from input");
-      }
-    }
-  }
-  return { tensor: tensor2, canvas: config3.filter.return ? outCanvas : null };
-}
-var lastInputSum = 0;
-var lastCacheDiff = 1;
-async function skip(config3, input2) {
-  if (config3.cacheSensitivity === 0)
-    return false;
-  const resizeFact = 32;
-  if (!input2.shape[1] || !input2.shape[2])
-    return false;
-  const reduced = image.resizeBilinear(input2, [Math.trunc(input2.shape[1] / resizeFact), Math.trunc(input2.shape[2] / resizeFact)]);
-  const reducedData = await reduced.data();
-  dispose(reduced);
-  let sum6 = 0;
-  for (let i = 0; i < reducedData.length / 3; i++)
-    sum6 += reducedData[3 * i + 2];
-  const diff = 100 * (Math.max(sum6, lastInputSum) / Math.min(sum6, lastInputSum) - 1);
-  lastInputSum = sum6;
-  const skipFrame = diff < Math.max(config3.cacheSensitivity, lastCacheDiff);
-  lastCacheDiff = diff > 10 * config3.cacheSensitivity ? 0 : diff;
-  return skipFrame;
-}
-
-// src/util/env.ts
-var env2 = {
-  browser: void 0,
-  node: void 0,
-  worker: void 0,
-  platform: void 0,
-  agent: void 0,
-  initial: true,
-  backends: [],
-  offscreen: void 0,
-  tfjs: {
-    version: void 0
-  },
-  wasm: {
-    supported: void 0,
-    backend: void 0,
-    simd: void 0,
-    multithread: void 0
-  },
-  webgl: {
-    supported: void 0,
-    backend: void 0,
-    version: void 0,
-    renderer: void 0
-  },
-  webgpu: {
-    supported: void 0,
-    backend: void 0,
-    adapter: void 0
-  },
-  kernels: [],
-  Canvas: void 0,
-  Image: void 0,
-  ImageData: void 0
-};
-async function backendInfo() {
-  var _a;
-  env2.backends = Object.keys(engine().registryFactory);
-  env2.wasm.supported = typeof WebAssembly !== "undefined";
-  env2.wasm.backend = env2.backends.includes("wasm");
-  if (env2.wasm.supported && env2.wasm.backend && getBackend() === "wasm") {
-    env2.wasm.simd = await env().getAsync("WASM_HAS_SIMD_SUPPORT");
-    env2.wasm.multithread = await env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
-  }
-  const c = canvas(100, 100);
-  const ctx = c ? c.getContext("webgl2") : void 0;
-  env2.webgl.supported = typeof ctx !== "undefined";
-  env2.webgl.backend = env2.backends.includes("webgl");
-  if (env2.webgl.supported && env2.webgl.backend && (getBackend() === "webgl" || getBackend() === "humangl")) {
-    const gl = backend().gpgpu !== "undefined" ? await backend().getGPGPUContext().gl : null;
-    if (gl) {
-      env2.webgl.version = gl.getParameter(gl.VERSION);
-      env2.webgl.renderer = gl.getParameter(gl.RENDERER);
-    }
-  }
-  env2.webgpu.supported = env2.browser && typeof navigator["gpu"] !== "undefined";
-  env2.webgpu.backend = env2.backends.includes("webgpu");
-  if (env2.webgpu.supported)
-    env2.webgpu.adapter = (_a = await navigator["gpu"].requestAdapter()) == null ? void 0 : _a.name;
-  env2.kernels = getKernelsForBackend(getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
-}
-async function get3() {
-  env2.browser = typeof navigator !== "undefined";
-  env2.node = typeof process !== "undefined";
-  env2.worker = env2.browser ? typeof WorkerGlobalScope !== "undefined" : void 0;
-  env2.tfjs.version = version;
-  env2.offscreen = typeof env2.offscreen === "undefined" ? typeof OffscreenCanvas !== "undefined" : env2.offscreen;
-  if (typeof navigator !== "undefined") {
-    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
-    if (raw && raw[0]) {
-      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
-      env2.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
-      env2.agent = navigator.userAgent.replace(raw[0], "");
-      if (env2.platform[1])
-        env2.agent = env2.agent.replace(raw[1], "");
-      env2.agent = env2.agent.replace(/  /g, " ");
-    }
-  } else if (typeof process !== "undefined") {
-    env2.platform = `${process.platform} ${process.arch}`;
-    env2.agent = `NodeJS ${process.version}`;
-  }
-  await backendInfo();
-}
-async function set(obj) {
-  env2 = mergeDeep(env2, obj);
-}
-
 // src/face/blazeface.ts
 var keypointsCount = 6;
 var model2;
@@ -65088,30 +65091,6 @@ async function load4(config3) {
   } else if (config3.debug)
     log("cached model:", modelUrl);
   return model5;
-}
-function similarity(embedding1, embedding2, order = 2) {
-  if (!embedding1 || !embedding2)
-    return 0;
-  if ((embedding1 == null ? void 0 : embedding1.length) === 0 || (embedding2 == null ? void 0 : embedding2.length) === 0)
-    return 0;
-  if ((embedding1 == null ? void 0 : embedding1.length) !== (embedding2 == null ? void 0 : embedding2.length))
-    return 0;
-  const distance = 5 * embedding1.map((_val, i) => Math.abs(embedding1[i] - embedding2[i]) ** order).reduce((sum6, now3) => sum6 + now3, 0) ** (1 / order);
-  const res = Math.max(0, 100 - distance) / 100;
-  return res;
-}
-function match(embedding2, db, threshold3 = 0) {
-  let best = { similarity: 0, name: "", source: "", embedding: [] };
-  if (!embedding2 || !db || !Array.isArray(embedding2) || !Array.isArray(db))
-    return best;
-  for (const f of db) {
-    if (f.embedding && f.name) {
-      const perc = similarity(embedding2, f.embedding);
-      if (perc > threshold3 && perc > best.similarity)
-        best = { ...f, similarity: perc };
-    }
-  }
-  return best;
 }
 function enhance(input2) {
   const image7 = tidy(() => {
@@ -69221,7 +69200,7 @@ function analyze(keypoints3) {
   }
   return landmarks;
 }
-function match2(keypoints3) {
+function match(keypoints3) {
   const poses = [];
   if (!keypoints3 || keypoints3.length === 0)
     return poses;
@@ -69364,212 +69343,9 @@ function scale2(keypoints3, boxScaleFact2, outputSize3) {
   return { box: box4, boxRaw: boxRaw2, yxBox };
 }
 
-// src/tfjs/humangl.ts
-var config2 = {
-  name: "humangl",
-  priority: 999,
-  canvas: null,
-  gl: null,
-  extensions: [],
-  webGLattr: {
-    alpha: false,
-    antialias: false,
-    premultipliedAlpha: false,
-    preserveDrawingBuffer: false,
-    depth: false,
-    stencil: false,
-    failIfMajorPerformanceCaveat: false,
-    desynchronized: true
-  }
-};
-function extensions() {
-  const gl = config2.gl;
-  if (!gl)
-    return;
-  config2.extensions = gl.getSupportedExtensions();
-}
-async function register(instance) {
-  var _a;
-  if (instance.config.backend !== "humangl")
-    return;
-  if (config2.name in engine().registry && (!config2.gl || !config2.gl.getParameter(config2.gl.VERSION))) {
-    log("error: humangl backend invalid context");
-    reset(instance);
-  }
-  if (!findBackend(config2.name)) {
-    try {
-      config2.canvas = await canvas(100, 100);
-    } catch (err) {
-      log("error: cannot create canvas:", err);
-      return;
-    }
-    try {
-      config2.gl = (_a = config2.canvas) == null ? void 0 : _a.getContext("webgl2", config2.webGLattr);
-      if (config2.canvas) {
-        config2.canvas.addEventListener("webglcontextlost", async (e) => {
-          log("error: humangl:", e.type);
-          log("possible browser memory leak using webgl");
-          instance.emit("error");
-          throw new Error("browser webgl error");
-        });
-        config2.canvas.addEventListener("webglcontextrestored", (e) => {
-          log("error: humangl context restored:", e);
-        });
-        config2.canvas.addEventListener("webglcontextcreationerror", (e) => {
-          log("error: humangl context create:", e);
-        });
-      }
-    } catch (err) {
-      log("error: cannot get WebGL context:", err);
-      return;
-    }
-    try {
-      setWebGLContext(2, config2.gl);
-    } catch (err) {
-      log("error: cannot set WebGL context:", err);
-      return;
-    }
-    const current = backend().getGPGPUContext ? backend().getGPGPUContext().gl : null;
-    if (current) {
-      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
-    } else {
-      log("error: no current gl context:", current, config2.gl);
-      return;
-    }
-    try {
-      const ctx = new GPGPUContext(config2.gl);
-      registerBackend(config2.name, () => new MathBackendWebGL(ctx), config2.priority);
-    } catch (err) {
-      log("error: cannot register WebGL backend:", err);
-      return;
-    }
-    try {
-      const kernels = getKernelsForBackend("webgl");
-      kernels.forEach((kernelConfig) => {
-        const newKernelConfig = { ...kernelConfig, backendName: config2.name };
-        registerKernel(newKernelConfig);
-      });
-    } catch (err) {
-      log("error: cannot update WebGL backend registration:", err);
-      return;
-    }
-    try {
-      ENV.set("WEBGL_VERSION", 2);
-    } catch (err) {
-      log("error: cannot set WebGL backend flags:", err);
-      return;
-    }
-    extensions();
-    log("backend registered:", config2.name);
-  }
-}
-
-// src/tfjs/backend.ts
-async function check(instance, force = false) {
-  instance.state = "backend";
-  if (force || env2.initial || instance.config.backend && instance.config.backend.length > 0 && getBackend() !== instance.config.backend) {
-    const timeStamp = now();
-    if (instance.config.backend && instance.config.backend.length > 0) {
-      if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && instance.config.debug) {
-        if (instance.config.debug)
-          log("running inside web worker");
-      }
-      if (env2.browser && instance.config.backend === "tensorflow") {
-        if (instance.config.debug)
-          log("override: backend set to tensorflow while running in browser");
-        instance.config.backend = "humangl";
-      }
-      if (env2.node && (instance.config.backend === "webgl" || instance.config.backend === "humangl")) {
-        if (instance.config.debug)
-          log(`override: backend set to ${instance.config.backend} while running in nodejs`);
-        instance.config.backend = "tensorflow";
-      }
-      if (env2.browser && instance.config.backend === "webgpu") {
-        if (typeof navigator === "undefined" || typeof navigator["gpu"] === "undefined") {
-          log("override: backend set to webgpu but browser does not support webgpu");
-          instance.config.backend = "humangl";
-        } else {
-          const adapter = await navigator["gpu"].requestAdapter();
-          if (instance.config.debug)
-            log("enumerated webgpu adapter:", adapter);
-        }
-      }
-      if (instance.config.backend === "humangl")
-        await register(instance);
-      const available = Object.keys(engine().registryFactory);
-      if (instance.config.debug)
-        log("available backends:", available);
-      if (!available.includes(instance.config.backend)) {
-        log(`error: backend ${instance.config.backend} not found in registry`);
-        instance.config.backend = env2.node ? "tensorflow" : "humangl";
-        if (instance.config.debug)
-          log(`override: setting backend ${instance.config.backend}`);
-      }
-      if (instance.config.debug)
-        log("setting backend:", instance.config.backend);
-      if (instance.config.backend === "wasm") {
-        if (instance.config.debug)
-          log("wasm path:", instance.config.wasmPath);
-        if (typeof (tfjs_esm_exports == null ? void 0 : tfjs_esm_exports.setWasmPaths) !== "undefined")
-          await setWasmPaths(instance.config.wasmPath);
-        else
-          throw new Error("wasm backend is not loaded");
-        const simd = await env().getAsync("WASM_HAS_SIMD_SUPPORT");
-        const mt = await env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
-        if (instance.config.debug)
-          log(`wasm execution: ${simd ? "SIMD" : "no SIMD"} ${mt ? "multithreaded" : "singlethreaded"}`);
-        if (instance.config.debug && !simd)
-          log("warning: wasm simd support is not enabled");
-      }
-      try {
-        await setBackend(instance.config.backend);
-        await ready();
-      } catch (err) {
-        log("error: cannot set backend:", instance.config.backend, err);
-        return false;
-      }
-    }
-    if (getBackend() === "humangl") {
-      ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
-      ENV.set("WEBGL_CPU_FORWARD", true);
-      ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
-      ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
-      ENV.set("CPU_HANDOFF_SIZE_THRESHOLD", 128);
-      if (typeof instance.config["deallocate"] !== "undefined" && instance.config["deallocate"]) {
-        log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
-        ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
-      }
-      const gl = await backend().getGPGPUContext().gl;
-      if (instance.config.debug)
-        log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
-    }
-    enableProdMode();
-    await ready();
-    instance.performance.backend = Math.trunc(now() - timeStamp);
-    instance.config.backend = getBackend();
-    get3();
-    instance.env = env2;
-  }
-  return true;
-}
-function fakeOps(kernelNames, config3) {
-  for (const kernelName of kernelNames) {
-    const kernelConfig = {
-      kernelName,
-      backendName: config3.backend,
-      kernelFunc: () => {
-        if (config3.debug)
-          log("kernelFunc", kernelName, config3.backend);
-      }
-    };
-    registerKernel(kernelConfig);
-  }
-  env2.kernels = getKernelsForBackend(getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
-}
-
 // src/hand/handtrack.ts
 var boxScaleFact = 1.5;
-var models2 = [null, null];
+var models = [null, null];
 var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "StatefulPartitionedCall/Postprocessor/ExpandDims_1"];
 var inputSize4 = [[0, 0], [0, 0]];
 var classes = ["hand", "fist", "pinch", "point", "face", "tip", "pinchtip"];
@@ -69591,41 +69367,41 @@ var fingerMap = {
 async function loadDetect(config3) {
   var _a;
   if (env2.initial)
-    models2[0] = null;
-  if (!models2[0]) {
+    models[0] = null;
+  if (!models[0]) {
     fakeOps(["tensorlistreserve", "enter", "tensorlistfromtensor", "merge", "loopcond", "switch", "exit", "tensorliststack", "nextiteration", "tensorlistsetitem", "tensorlistgetitem", "reciprocal", "shape", "split", "where"], config3);
-    models2[0] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""));
-    const inputs = Object.values(models2[0].modelSignature["inputs"]);
+    models[0] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""));
+    const inputs = Object.values(models[0].modelSignature["inputs"]);
     inputSize4[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize4[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models2[0] || !models2[0]["modelUrl"])
+    if (!models[0] || !models[0]["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", models2[0]["modelUrl"]);
+      log("load model:", models[0]["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", models2[0]["modelUrl"]);
-  return models2[0];
+    log("cached model:", models[0]["modelUrl"]);
+  return models[0];
 }
 async function loadSkeleton(config3) {
   var _a;
   if (env2.initial)
-    models2[1] = null;
-  if (!models2[1]) {
-    models2[1] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath) || ""));
-    const inputs = Object.values(models2[1].modelSignature["inputs"]);
+    models[1] = null;
+  if (!models[1]) {
+    models[1] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath) || ""));
+    const inputs = Object.values(models[1].modelSignature["inputs"]);
     inputSize4[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize4[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models2[1] || !models2[1]["modelUrl"])
+    if (!models[1] || !models[1]["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", models2[1]["modelUrl"]);
+      log("load model:", models[1]["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", models2[1]["modelUrl"]);
-  return models2[1];
+    log("cached model:", models[1]["modelUrl"]);
+  return models[1];
 }
 async function detectHands(input2, config3) {
   const hands = [];
-  if (!input2 || !models2[0])
+  if (!input2 || !models[0])
     return hands;
   const t = {};
   const ratio = (input2.shape[2] || 1) / (input2.shape[1] || 1);
@@ -69633,7 +69409,7 @@ async function detectHands(input2, config3) {
   const width = Math.round(height * ratio / 8) * 8;
   t.resize = image.resizeBilinear(input2, [height, width]);
   t.cast = cast(t.resize, "int32");
-  [t.rawScores, t.rawBoxes] = await models2[0].executeAsync(t.cast, modelOutputNodes);
+  [t.rawScores, t.rawBoxes] = await models[0].executeAsync(t.cast, modelOutputNodes);
   t.boxes = squeeze(t.rawBoxes, [0, 2]);
   t.scores = squeeze(t.rawScores, [0]);
   const classScores = unstack(t.scores, 1);
@@ -69685,14 +69461,14 @@ async function detectFingers(input2, h, config3) {
     landmarks: {},
     annotations: {}
   };
-  if (input2 && models2[1] && config3.hand.landmarks) {
+  if (input2 && models[1] && config3.hand.landmarks) {
     const t = {};
     if (!h.yxBox)
       return hand3;
     t.crop = image.cropAndResize(input2, [h.yxBox], [0], [inputSize4[1][0], inputSize4[1][1]], "bilinear");
     t.cast = cast(t.crop, "float32");
     t.div = div(t.cast, 255);
-    [t.score, t.keypoints] = models2[1].execute(t.div);
+    [t.score, t.keypoints] = models[1].execute(t.div);
     const rawScore = (await t.score.data())[0];
     const score2 = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100;
     if (score2 >= (config3.hand.minConfidence || 0)) {
@@ -69821,48 +69597,48 @@ var upper = [
 ];
 
 // src/body/blazepose.ts
-var models3 = [null, null];
+var models2 = [null, null];
 var outputNodes = ["ld_3d", "activation_segmentation", "activation_heatmap", "world_3d", "output_poseflag"];
 var inputSize5 = [[0, 0], [0, 0]];
 var outputSize2 = [0, 0];
 async function loadDetect2(config3) {
   var _a;
   if (env2.initial)
-    models3[0] = null;
-  if (!models3[0]) {
-    models3[0] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.body.detector) == null ? void 0 : _a.modelPath) || ""));
-    const inputs = Object.values(models3[0].modelSignature["inputs"]);
+    models2[0] = null;
+  if (!models2[0]) {
+    models2[0] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.body.detector) == null ? void 0 : _a.modelPath) || ""));
+    const inputs = Object.values(models2[0].modelSignature["inputs"]);
     inputSize5[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize5[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models3[0] || !models3[0]["modelUrl"])
+    if (!models2[0] || !models2[0]["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", models3[0]["modelUrl"]);
+      log("load model:", models2[0]["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", models3[0]["modelUrl"]);
-  return models3[0];
+    log("cached model:", models2[0]["modelUrl"]);
+  return models2[0];
 }
 async function loadPose(config3) {
   if (env2.initial)
-    models3[1] = null;
-  if (!models3[1]) {
-    models3[1] = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
-    const inputs = Object.values(models3[1].modelSignature["inputs"]);
+    models2[1] = null;
+  if (!models2[1]) {
+    models2[1] = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    const inputs = Object.values(models2[1].modelSignature["inputs"]);
     inputSize5[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize5[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models3[1] || !models3[1]["modelUrl"])
+    if (!models2[1] || !models2[1]["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", models3[1]["modelUrl"]);
+      log("load model:", models2[1]["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", models3[1]["modelUrl"]);
-  return models3[1];
+    log("cached model:", models2[1]["modelUrl"]);
+  return models2[1];
 }
 async function detectParts(input2, config3) {
   var _a;
   const t = {};
   t.resize = image.resizeBilinear(input2, [inputSize5[1][0], inputSize5[1][1]]);
-  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = await ((_a = models3[1]) == null ? void 0 : _a.execute(t.resize, outputNodes));
+  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = await ((_a = models2[1]) == null ? void 0 : _a.execute(t.resize, outputNodes));
   const points = await t.ld.data();
   const keypoints3 = [];
   const labels2 = (points == null ? void 0 : points.length) === 195 ? full : upper;
@@ -70653,6 +70429,699 @@ async function validate2(instance) {
   }
 }
 
+// src/tfjs/humangl.ts
+var config2 = {
+  name: "humangl",
+  priority: 999,
+  canvas: null,
+  gl: null,
+  extensions: [],
+  webGLattr: {
+    alpha: false,
+    antialias: false,
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false,
+    depth: false,
+    stencil: false,
+    failIfMajorPerformanceCaveat: false,
+    desynchronized: true
+  }
+};
+function extensions() {
+  const gl = config2.gl;
+  if (!gl)
+    return;
+  config2.extensions = gl.getSupportedExtensions();
+}
+async function register(instance) {
+  var _a;
+  if (instance.config.backend !== "humangl")
+    return;
+  if (config2.name in engine().registry && (!config2.gl || !config2.gl.getParameter(config2.gl.VERSION))) {
+    log("error: humangl backend invalid context");
+    reset(instance);
+  }
+  if (!findBackend(config2.name)) {
+    try {
+      config2.canvas = await canvas(100, 100);
+    } catch (err) {
+      log("error: cannot create canvas:", err);
+      return;
+    }
+    try {
+      config2.gl = (_a = config2.canvas) == null ? void 0 : _a.getContext("webgl2", config2.webGLattr);
+      if (config2.canvas) {
+        config2.canvas.addEventListener("webglcontextlost", async (e) => {
+          log("error: humangl:", e.type);
+          log("possible browser memory leak using webgl");
+          instance.emit("error");
+          throw new Error("browser webgl error");
+        });
+        config2.canvas.addEventListener("webglcontextrestored", (e) => {
+          log("error: humangl context restored:", e);
+        });
+        config2.canvas.addEventListener("webglcontextcreationerror", (e) => {
+          log("error: humangl context create:", e);
+        });
+      }
+    } catch (err) {
+      log("error: cannot get WebGL context:", err);
+      return;
+    }
+    try {
+      setWebGLContext(2, config2.gl);
+    } catch (err) {
+      log("error: cannot set WebGL context:", err);
+      return;
+    }
+    const current = backend().getGPGPUContext ? backend().getGPGPUContext().gl : null;
+    if (current) {
+      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
+    } else {
+      log("error: no current gl context:", current, config2.gl);
+      return;
+    }
+    try {
+      const ctx = new GPGPUContext(config2.gl);
+      registerBackend(config2.name, () => new MathBackendWebGL(ctx), config2.priority);
+    } catch (err) {
+      log("error: cannot register WebGL backend:", err);
+      return;
+    }
+    try {
+      const kernels = getKernelsForBackend("webgl");
+      kernels.forEach((kernelConfig) => {
+        const newKernelConfig = { ...kernelConfig, backendName: config2.name };
+        registerKernel(newKernelConfig);
+      });
+    } catch (err) {
+      log("error: cannot update WebGL backend registration:", err);
+      return;
+    }
+    try {
+      ENV.set("WEBGL_VERSION", 2);
+    } catch (err) {
+      log("error: cannot set WebGL backend flags:", err);
+      return;
+    }
+    extensions();
+    log("backend registered:", config2.name);
+  }
+}
+
+// src/tfjs/backend.ts
+async function check(instance, force = false) {
+  instance.state = "backend";
+  if (force || env2.initial || instance.config.backend && instance.config.backend.length > 0 && getBackend() !== instance.config.backend) {
+    const timeStamp = now();
+    if (instance.config.backend && instance.config.backend.length > 0) {
+      if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && instance.config.debug) {
+        if (instance.config.debug)
+          log("running inside web worker");
+      }
+      if (env2.browser && instance.config.backend === "tensorflow") {
+        if (instance.config.debug)
+          log("override: backend set to tensorflow while running in browser");
+        instance.config.backend = "humangl";
+      }
+      if (env2.node && (instance.config.backend === "webgl" || instance.config.backend === "humangl")) {
+        if (instance.config.debug)
+          log(`override: backend set to ${instance.config.backend} while running in nodejs`);
+        instance.config.backend = "tensorflow";
+      }
+      if (env2.browser && instance.config.backend === "webgpu") {
+        if (typeof navigator === "undefined" || typeof navigator["gpu"] === "undefined") {
+          log("override: backend set to webgpu but browser does not support webgpu");
+          instance.config.backend = "humangl";
+        } else {
+          const adapter = await navigator["gpu"].requestAdapter();
+          if (instance.config.debug)
+            log("enumerated webgpu adapter:", adapter);
+        }
+      }
+      if (instance.config.backend === "humangl")
+        await register(instance);
+      const available = Object.keys(engine().registryFactory);
+      if (instance.config.debug)
+        log("available backends:", available);
+      if (!available.includes(instance.config.backend)) {
+        log(`error: backend ${instance.config.backend} not found in registry`);
+        instance.config.backend = env2.node ? "tensorflow" : "humangl";
+        if (instance.config.debug)
+          log(`override: setting backend ${instance.config.backend}`);
+      }
+      if (instance.config.debug)
+        log("setting backend:", instance.config.backend);
+      if (instance.config.backend === "wasm") {
+        if (instance.config.debug)
+          log("wasm path:", instance.config.wasmPath);
+        if (typeof (tfjs_esm_exports == null ? void 0 : tfjs_esm_exports.setWasmPaths) !== "undefined")
+          await setWasmPaths(instance.config.wasmPath);
+        else
+          throw new Error("wasm backend is not loaded");
+        const simd = await env().getAsync("WASM_HAS_SIMD_SUPPORT");
+        const mt = await env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+        if (instance.config.debug)
+          log(`wasm execution: ${simd ? "SIMD" : "no SIMD"} ${mt ? "multithreaded" : "singlethreaded"}`);
+        if (instance.config.debug && !simd)
+          log("warning: wasm simd support is not enabled");
+      }
+      try {
+        await setBackend(instance.config.backend);
+        await ready();
+      } catch (err) {
+        log("error: cannot set backend:", instance.config.backend, err);
+        return false;
+      }
+    }
+    if (getBackend() === "humangl") {
+      ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
+      ENV.set("WEBGL_CPU_FORWARD", true);
+      ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
+      ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
+      ENV.set("CPU_HANDOFF_SIZE_THRESHOLD", 128);
+      if (typeof instance.config["deallocate"] !== "undefined" && instance.config["deallocate"]) {
+        log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
+        ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
+      }
+      const gl = await backend().getGPGPUContext().gl;
+      if (instance.config.debug)
+        log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+    }
+    enableProdMode();
+    await ready();
+    instance.performance.backend = Math.trunc(now() - timeStamp);
+    instance.config.backend = getBackend();
+    get3();
+    instance.env = env2;
+  }
+  return true;
+}
+function fakeOps(kernelNames, config3) {
+  for (const kernelName of kernelNames) {
+    const kernelConfig = {
+      kernelName,
+      backendName: config3.backend,
+      kernelFunc: () => {
+        if (config3.debug)
+          log("kernelFunc", kernelName, config3.backend);
+      }
+    };
+    registerKernel(kernelConfig);
+  }
+  env2.kernels = getKernelsForBackend(getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+}
+
+// src/util/draw.ts
+var options2 = {
+  color: "rgba(173, 216, 230, 0.6)",
+  labelColor: "rgba(173, 216, 230, 1)",
+  shadowColor: "black",
+  font: 'small-caps 14px "Segoe UI"',
+  lineHeight: 18,
+  lineWidth: 4,
+  pointSize: 2,
+  roundRect: 8,
+  drawPoints: false,
+  drawLabels: true,
+  drawBoxes: true,
+  drawPolygons: true,
+  drawGaze: true,
+  fillPolygons: false,
+  useDepth: true,
+  useCurves: false,
+  bufferedOutput: true
+};
+var getCanvasContext = (input2) => {
+  if (input2 && input2.getContext)
+    return input2.getContext("2d");
+  throw new Error("invalid canvas");
+};
+var rad2deg = (theta) => Math.round(theta * 180 / Math.PI);
+function point(ctx, x, y, z = 0, localOptions) {
+  ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
+  ctx.beginPath();
+  ctx.arc(x, y, localOptions.pointSize, 0, 2 * Math.PI);
+  ctx.fill();
+}
+function rect(ctx, x, y, width, height, localOptions) {
+  ctx.beginPath();
+  if (localOptions.useCurves) {
+    const cx = (x + x + width) / 2;
+    const cy = (y + y + height) / 2;
+    ctx.ellipse(cx, cy, width / 2, height / 2, 0, 0, 2 * Math.PI);
+  } else {
+    ctx.lineWidth = localOptions.lineWidth;
+    ctx.moveTo(x + localOptions.roundRect, y);
+    ctx.lineTo(x + width - localOptions.roundRect, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + localOptions.roundRect);
+    ctx.lineTo(x + width, y + height - localOptions.roundRect);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - localOptions.roundRect, y + height);
+    ctx.lineTo(x + localOptions.roundRect, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - localOptions.roundRect);
+    ctx.lineTo(x, y + localOptions.roundRect);
+    ctx.quadraticCurveTo(x, y, x + localOptions.roundRect, y);
+    ctx.closePath();
+  }
+  ctx.stroke();
+}
+function lines(ctx, points = [], localOptions) {
+  if (points === void 0 || points.length === 0)
+    return;
+  ctx.beginPath();
+  ctx.moveTo(points[0][0], points[0][1]);
+  for (const pt of points) {
+    const z = pt[2] || 0;
+    ctx.strokeStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
+    ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
+    ctx.lineTo(pt[0], Math.round(pt[1]));
+  }
+  ctx.stroke();
+  if (localOptions.fillPolygons) {
+    ctx.closePath();
+    ctx.fill();
+  }
+}
+function curves(ctx, points = [], localOptions) {
+  if (points === void 0 || points.length === 0)
+    return;
+  if (!localOptions.useCurves || points.length <= 2) {
+    lines(ctx, points, localOptions);
+    return;
+  }
+  ctx.moveTo(points[0][0], points[0][1]);
+  for (let i = 0; i < points.length - 2; i++) {
+    const xc = (points[i][0] + points[i + 1][0]) / 2;
+    const yc = (points[i][1] + points[i + 1][1]) / 2;
+    ctx.quadraticCurveTo(points[i][0], points[i][1], xc, yc);
+  }
+  ctx.quadraticCurveTo(points[points.length - 2][0], points[points.length - 2][1], points[points.length - 1][0], points[points.length - 1][1]);
+  ctx.stroke();
+  if (localOptions.fillPolygons) {
+    ctx.closePath();
+    ctx.fill();
+  }
+}
+async function gesture(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options2, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  const ctx = getCanvasContext(inCanvas2);
+  ctx.font = localOptions.font;
+  ctx.fillStyle = localOptions.color;
+  let i = 1;
+  for (let j = 0; j < result.length; j++) {
+    let where2 = [];
+    let what = [];
+    [where2, what] = Object.entries(result[j]);
+    if (what.length > 1 && what[1].length > 0) {
+      const who = where2[1] > 0 ? `#${where2[1]}` : "";
+      const label = `${where2[0]} ${who}: ${what[1]}`;
+      if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+        ctx.fillStyle = localOptions.shadowColor;
+        ctx.fillText(label, 8, 2 + i * localOptions.lineHeight);
+      }
+      ctx.fillStyle = localOptions.labelColor;
+      ctx.fillText(label, 6, 0 + i * localOptions.lineHeight);
+      i += 1;
+    }
+  }
+}
+async function face(inCanvas2, result, drawOptions) {
+  var _a, _b, _c, _d;
+  const localOptions = mergeDeep(options2, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  const ctx = getCanvasContext(inCanvas2);
+  for (const f of result) {
+    ctx.font = localOptions.font;
+    ctx.strokeStyle = localOptions.color;
+    ctx.fillStyle = localOptions.color;
+    if (localOptions.drawBoxes)
+      rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
+    const labels2 = [];
+    labels2.push(`face: ${Math.trunc(100 * f.score)}%`);
+    if (f.genderScore)
+      labels2.push(`${f.gender || ""} ${Math.trunc(100 * f.genderScore)}%`);
+    if (f.age)
+      labels2.push(`age: ${f.age || ""}`);
+    if (f.iris)
+      labels2.push(`distance: ${f.iris}`);
+    if (f.emotion && f.emotion.length > 0) {
+      const emotion3 = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
+      if (emotion3.length > 3)
+        emotion3.length = 3;
+      labels2.push(emotion3.join(" "));
+    }
+    if (f.rotation && f.rotation.angle && f.rotation.gaze) {
+      if (f.rotation.angle.roll)
+        labels2.push(`roll: ${rad2deg(f.rotation.angle.roll)}\xB0 yaw:${rad2deg(f.rotation.angle.yaw)}\xB0 pitch:${rad2deg(f.rotation.angle.pitch)}\xB0`);
+      if (f.rotation.gaze.bearing)
+        labels2.push(`gaze: ${rad2deg(f.rotation.gaze.bearing)}\xB0`);
+    }
+    if (labels2.length === 0)
+      labels2.push("face");
+    ctx.fillStyle = localOptions.color;
+    for (let i = labels2.length - 1; i >= 0; i--) {
+      const x = Math.max(f.box[0], 0);
+      const y = i * localOptions.lineHeight + f.box[1];
+      if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+        ctx.fillStyle = localOptions.shadowColor;
+        ctx.fillText(labels2[i], x + 5, y + 16);
+      }
+      ctx.fillStyle = localOptions.labelColor;
+      ctx.fillText(labels2[i], x + 4, y + 15);
+    }
+    ctx.lineWidth = 1;
+    if (f.mesh && f.mesh.length > 0) {
+      if (localOptions.drawPoints) {
+        for (const pt of f.mesh)
+          point(ctx, pt[0], pt[1], pt[2], localOptions);
+      }
+      if (localOptions.drawPolygons) {
+        ctx.lineWidth = 1;
+        if (f.mesh.length > 450) {
+          for (let i = 0; i < TRI468.length / 3; i++) {
+            const points = [
+              TRI468[i * 3 + 0],
+              TRI468[i * 3 + 1],
+              TRI468[i * 3 + 2]
+            ].map((index) => f.mesh[index]);
+            lines(ctx, points, localOptions);
+          }
+        }
+        if (f.annotations && f.annotations["leftEyeIris"] && f.annotations["leftEyeIris"][0]) {
+          ctx.strokeStyle = localOptions.useDepth ? "rgba(255, 200, 255, 0.3)" : localOptions.color;
+          ctx.beginPath();
+          const sizeX = Math.abs(f.annotations["leftEyeIris"][3][0] - f.annotations["leftEyeIris"][1][0]) / 2;
+          const sizeY = Math.abs(f.annotations["leftEyeIris"][4][1] - f.annotations["leftEyeIris"][2][1]) / 2;
+          ctx.ellipse(f.annotations["leftEyeIris"][0][0], f.annotations["leftEyeIris"][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+          if (localOptions.fillPolygons) {
+            ctx.fillStyle = localOptions.useDepth ? "rgba(255, 255, 200, 0.3)" : localOptions.color;
+            ctx.fill();
+          }
+        }
+        if (f.annotations && f.annotations["rightEyeIris"] && f.annotations["rightEyeIris"][0]) {
+          ctx.strokeStyle = localOptions.useDepth ? "rgba(255, 200, 255, 0.3)" : localOptions.color;
+          ctx.beginPath();
+          const sizeX = Math.abs(f.annotations["rightEyeIris"][3][0] - f.annotations["rightEyeIris"][1][0]) / 2;
+          const sizeY = Math.abs(f.annotations["rightEyeIris"][4][1] - f.annotations["rightEyeIris"][2][1]) / 2;
+          ctx.ellipse(f.annotations["rightEyeIris"][0][0], f.annotations["rightEyeIris"][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+          if (localOptions.fillPolygons) {
+            ctx.fillStyle = localOptions.useDepth ? "rgba(255, 255, 200, 0.3)" : localOptions.color;
+            ctx.fill();
+          }
+        }
+        if (localOptions.drawGaze && ((_b = (_a = f.rotation) == null ? void 0 : _a.gaze) == null ? void 0 : _b.strength) && ((_d = (_c = f.rotation) == null ? void 0 : _c.gaze) == null ? void 0 : _d.bearing) && f.annotations["leftEyeIris"] && f.annotations["rightEyeIris"] && f.annotations["leftEyeIris"][0] && f.annotations["rightEyeIris"][0]) {
+          ctx.strokeStyle = "pink";
+          ctx.beginPath();
+          const leftGaze = [
+            f.annotations["leftEyeIris"][0][0] + Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3],
+            f.annotations["leftEyeIris"][0][1] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]
+          ];
+          ctx.moveTo(f.annotations["leftEyeIris"][0][0], f.annotations["leftEyeIris"][0][1]);
+          ctx.lineTo(leftGaze[0], leftGaze[1]);
+          const rightGaze = [
+            f.annotations["rightEyeIris"][0][0] + Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3],
+            f.annotations["rightEyeIris"][0][1] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]
+          ];
+          ctx.moveTo(f.annotations["rightEyeIris"][0][0], f.annotations["rightEyeIris"][0][1]);
+          ctx.lineTo(rightGaze[0], rightGaze[1]);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+}
+async function body(inCanvas2, result, drawOptions) {
+  var _a;
+  const localOptions = mergeDeep(options2, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  const ctx = getCanvasContext(inCanvas2);
+  ctx.lineJoin = "round";
+  for (let i = 0; i < result.length; i++) {
+    ctx.strokeStyle = localOptions.color;
+    ctx.fillStyle = localOptions.color;
+    ctx.lineWidth = localOptions.lineWidth;
+    ctx.font = localOptions.font;
+    if (localOptions.drawBoxes && result[i].box && ((_a = result[i].box) == null ? void 0 : _a.length) === 4) {
+      rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
+      if (localOptions.drawLabels) {
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+      }
+    }
+    if (localOptions.drawPoints) {
+      for (let pt = 0; pt < result[i].keypoints.length; pt++) {
+        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position[2] ? `rgba(${127.5 + 2 * (result[i].keypoints[pt].position[2] || 0)}, ${127.5 - 2 * (result[i].keypoints[pt].position[2] || 0)}, 255, 0.5)` : localOptions.color;
+        point(ctx, result[i].keypoints[pt].position[0], result[i].keypoints[pt].position[1], 0, localOptions);
+      }
+    }
+    if (localOptions.drawLabels) {
+      ctx.font = localOptions.font;
+      if (result[i].keypoints) {
+        for (const pt of result[i].keypoints) {
+          ctx.fillStyle = localOptions.useDepth && pt.position[2] ? `rgba(${127.5 + 2 * pt.position[2]}, ${127.5 - 2 * pt.position[2]}, 255, 0.5)` : localOptions.color;
+          ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position[0] + 4, pt.position[1] + 4);
+        }
+      }
+    }
+    if (localOptions.drawPolygons && result[i].keypoints) {
+      let part;
+      const points = [];
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      curves(ctx, points, localOptions);
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "rightHip");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "leftHip");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      if (points.length === 4)
+        lines(ctx, points, localOptions);
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "leftHip");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "leftKnee");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "leftAnkle");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "leftHeel");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "leftFoot");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      curves(ctx, points, localOptions);
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "rightHip");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "rightKnee");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "rightAnkle");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "rightHeel");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "rightFoot");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      curves(ctx, points, localOptions);
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "leftElbow");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "leftWrist");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "leftPalm");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      curves(ctx, points, localOptions);
+      points.length = 0;
+      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "rightElbow");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "rightWrist");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      part = result[i].keypoints.find((a) => a.part === "rightPalm");
+      if (part)
+        points.push([part.position[0], part.position[1]]);
+      curves(ctx, points, localOptions);
+    }
+  }
+}
+async function hand(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options2, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  const ctx = getCanvasContext(inCanvas2);
+  ctx.lineJoin = "round";
+  ctx.font = localOptions.font;
+  for (const h of result) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
+      if (localOptions.drawLabels) {
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+      }
+      ctx.stroke();
+    }
+    if (localOptions.drawPoints) {
+      if (h.keypoints && h.keypoints.length > 0) {
+        for (const pt of h.keypoints) {
+          ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * (pt[2] || 0)}, ${127.5 - 2 * (pt[2] || 0)}, 255, 0.5)` : localOptions.color;
+          point(ctx, pt[0], pt[1], 0, localOptions);
+        }
+      }
+    }
+    if (localOptions.drawLabels && h.annotations) {
+      const addHandLabel = (part, title) => {
+        if (!part || part.length === 0 || !part[0])
+          return;
+        ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * part[part.length - 1][2]}, ${127.5 - 2 * part[part.length - 1][2]}, 255, 0.5)` : localOptions.color;
+        ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
+      };
+      ctx.font = localOptions.font;
+      addHandLabel(h.annotations["index"], "index");
+      addHandLabel(h.annotations["middle"], "middle");
+      addHandLabel(h.annotations["ring"], "ring");
+      addHandLabel(h.annotations["pinky"], "pinky");
+      addHandLabel(h.annotations["thumb"], "thumb");
+      addHandLabel(h.annotations["palm"], "palm");
+    }
+    if (localOptions.drawPolygons && h.annotations) {
+      const addHandLine = (part) => {
+        if (!part || part.length === 0 || !part[0])
+          return;
+        for (let i = 0; i < part.length; i++) {
+          ctx.beginPath();
+          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * part[i][2]}, ${127.5 - 2 * part[i][2]}, 255, 0.5)` : localOptions.color;
+          ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
+          ctx.lineTo(part[i][0], part[i][1]);
+          ctx.stroke();
+        }
+      };
+      ctx.lineWidth = localOptions.lineWidth;
+      addHandLine(h.annotations["index"]);
+      addHandLine(h.annotations["middle"]);
+      addHandLine(h.annotations["ring"]);
+      addHandLine(h.annotations["pinky"]);
+      addHandLine(h.annotations["thumb"]);
+    }
+  }
+}
+async function object(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options2, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  const ctx = getCanvasContext(inCanvas2);
+  ctx.lineJoin = "round";
+  ctx.font = localOptions.font;
+  for (const h of result) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
+      if (localOptions.drawLabels) {
+        const label = `${h.label} ${Math.round(100 * h.score)}%`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+      }
+      ctx.stroke();
+    }
+  }
+}
+async function person(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options2, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  const ctx = getCanvasContext(inCanvas2);
+  ctx.lineJoin = "round";
+  ctx.font = localOptions.font;
+  for (let i = 0; i < result.length; i++) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
+      if (localOptions.drawLabels) {
+        const label = `person #${i}`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+      }
+      ctx.stroke();
+    }
+  }
+}
+async function canvas2(input2, output) {
+  if (!input2 || !output)
+    return;
+  const ctx = getCanvasContext(output);
+  ctx.drawImage(input2, 0, 0);
+}
+async function all5(inCanvas2, result, drawOptions) {
+  if (!result || !result.performance || !result || !inCanvas2)
+    return null;
+  const timestamp = now();
+  const localOptions = mergeDeep(options2, drawOptions);
+  const promise = Promise.all([
+    face(inCanvas2, result.face, localOptions),
+    body(inCanvas2, result.body, localOptions),
+    hand(inCanvas2, result.hand, localOptions),
+    object(inCanvas2, result.object, localOptions),
+    gesture(inCanvas2, result.gesture, localOptions)
+  ]);
+  result.performance.draw = Math.trunc(now() - timestamp);
+  return promise;
+}
+
 // src/face/angles.ts
 var calculateGaze = (face5) => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]);
@@ -70847,7 +71316,7 @@ var detectFace = async (parent, input2) => {
 };
 
 // src/gesture/gesture.ts
-var body = (res) => {
+var body2 = (res) => {
   if (!res)
     return [];
   const gestures = [];
@@ -70868,7 +71337,7 @@ var body = (res) => {
   }
   return gestures;
 };
-var face = (res) => {
+var face2 = (res) => {
   if (!res)
     return [];
   const gestures = [];
@@ -70935,7 +71404,7 @@ var iris3 = (res) => {
   }
   return gestures;
 };
-var hand = (res) => {
+var hand2 = (res) => {
   if (!res)
     return [];
   const gestures = [];
@@ -70954,561 +71423,13 @@ var hand = (res) => {
       gestures.push({ hand: i, gesture: `${highest.name} up` });
     }
     if (res[i]["keypoints"]) {
-      const poses = match2(res[i]["keypoints"]);
+      const poses = match(res[i]["keypoints"]);
       for (const pose of poses)
         gestures.push({ hand: i, gesture: pose.name });
     }
   }
   return gestures;
 };
-
-// src/util/draw.ts
-var options2 = {
-  color: "rgba(173, 216, 230, 0.6)",
-  labelColor: "rgba(173, 216, 230, 1)",
-  shadowColor: "black",
-  font: 'small-caps 14px "Segoe UI"',
-  lineHeight: 18,
-  lineWidth: 4,
-  pointSize: 2,
-  roundRect: 8,
-  drawPoints: false,
-  drawLabels: true,
-  drawBoxes: true,
-  drawPolygons: true,
-  drawGaze: true,
-  fillPolygons: false,
-  useDepth: true,
-  useCurves: false,
-  bufferedOutput: true
-};
-var getCanvasContext = (input2) => {
-  if (input2 && input2.getContext)
-    return input2.getContext("2d");
-  throw new Error("invalid canvas");
-};
-var rad2deg = (theta) => Math.round(theta * 180 / Math.PI);
-function point(ctx, x, y, z = 0, localOptions) {
-  ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
-  ctx.beginPath();
-  ctx.arc(x, y, localOptions.pointSize, 0, 2 * Math.PI);
-  ctx.fill();
-}
-function rect(ctx, x, y, width, height, localOptions) {
-  ctx.beginPath();
-  if (localOptions.useCurves) {
-    const cx = (x + x + width) / 2;
-    const cy = (y + y + height) / 2;
-    ctx.ellipse(cx, cy, width / 2, height / 2, 0, 0, 2 * Math.PI);
-  } else {
-    ctx.lineWidth = localOptions.lineWidth;
-    ctx.moveTo(x + localOptions.roundRect, y);
-    ctx.lineTo(x + width - localOptions.roundRect, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + localOptions.roundRect);
-    ctx.lineTo(x + width, y + height - localOptions.roundRect);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - localOptions.roundRect, y + height);
-    ctx.lineTo(x + localOptions.roundRect, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - localOptions.roundRect);
-    ctx.lineTo(x, y + localOptions.roundRect);
-    ctx.quadraticCurveTo(x, y, x + localOptions.roundRect, y);
-    ctx.closePath();
-  }
-  ctx.stroke();
-}
-function lines(ctx, points = [], localOptions) {
-  if (points === void 0 || points.length === 0)
-    return;
-  ctx.beginPath();
-  ctx.moveTo(points[0][0], points[0][1]);
-  for (const pt of points) {
-    const z = pt[2] || 0;
-    ctx.strokeStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
-    ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
-    ctx.lineTo(pt[0], Math.round(pt[1]));
-  }
-  ctx.stroke();
-  if (localOptions.fillPolygons) {
-    ctx.closePath();
-    ctx.fill();
-  }
-}
-function curves(ctx, points = [], localOptions) {
-  if (points === void 0 || points.length === 0)
-    return;
-  if (!localOptions.useCurves || points.length <= 2) {
-    lines(ctx, points, localOptions);
-    return;
-  }
-  ctx.moveTo(points[0][0], points[0][1]);
-  for (let i = 0; i < points.length - 2; i++) {
-    const xc = (points[i][0] + points[i + 1][0]) / 2;
-    const yc = (points[i][1] + points[i + 1][1]) / 2;
-    ctx.quadraticCurveTo(points[i][0], points[i][1], xc, yc);
-  }
-  ctx.quadraticCurveTo(points[points.length - 2][0], points[points.length - 2][1], points[points.length - 1][0], points[points.length - 1][1]);
-  ctx.stroke();
-  if (localOptions.fillPolygons) {
-    ctx.closePath();
-    ctx.fill();
-  }
-}
-async function gesture(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options2, drawOptions);
-  if (!result || !inCanvas2)
-    return;
-  const ctx = getCanvasContext(inCanvas2);
-  ctx.font = localOptions.font;
-  ctx.fillStyle = localOptions.color;
-  let i = 1;
-  for (let j = 0; j < result.length; j++) {
-    let where2 = [];
-    let what = [];
-    [where2, what] = Object.entries(result[j]);
-    if (what.length > 1 && what[1].length > 0) {
-      const who = where2[1] > 0 ? `#${where2[1]}` : "";
-      const label = `${where2[0]} ${who}: ${what[1]}`;
-      if (localOptions.shadowColor && localOptions.shadowColor !== "") {
-        ctx.fillStyle = localOptions.shadowColor;
-        ctx.fillText(label, 8, 2 + i * localOptions.lineHeight);
-      }
-      ctx.fillStyle = localOptions.labelColor;
-      ctx.fillText(label, 6, 0 + i * localOptions.lineHeight);
-      i += 1;
-    }
-  }
-}
-async function face2(inCanvas2, result, drawOptions) {
-  var _a, _b, _c, _d;
-  const localOptions = mergeDeep(options2, drawOptions);
-  if (!result || !inCanvas2)
-    return;
-  const ctx = getCanvasContext(inCanvas2);
-  for (const f of result) {
-    ctx.font = localOptions.font;
-    ctx.strokeStyle = localOptions.color;
-    ctx.fillStyle = localOptions.color;
-    if (localOptions.drawBoxes)
-      rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
-    const labels2 = [];
-    labels2.push(`face: ${Math.trunc(100 * f.score)}%`);
-    if (f.genderScore)
-      labels2.push(`${f.gender || ""} ${Math.trunc(100 * f.genderScore)}%`);
-    if (f.age)
-      labels2.push(`age: ${f.age || ""}`);
-    if (f.iris)
-      labels2.push(`distance: ${f.iris}`);
-    if (f.emotion && f.emotion.length > 0) {
-      const emotion3 = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
-      if (emotion3.length > 3)
-        emotion3.length = 3;
-      labels2.push(emotion3.join(" "));
-    }
-    if (f.rotation && f.rotation.angle && f.rotation.gaze) {
-      if (f.rotation.angle.roll)
-        labels2.push(`roll: ${rad2deg(f.rotation.angle.roll)}\xB0 yaw:${rad2deg(f.rotation.angle.yaw)}\xB0 pitch:${rad2deg(f.rotation.angle.pitch)}\xB0`);
-      if (f.rotation.gaze.bearing)
-        labels2.push(`gaze: ${rad2deg(f.rotation.gaze.bearing)}\xB0`);
-    }
-    if (labels2.length === 0)
-      labels2.push("face");
-    ctx.fillStyle = localOptions.color;
-    for (let i = labels2.length - 1; i >= 0; i--) {
-      const x = Math.max(f.box[0], 0);
-      const y = i * localOptions.lineHeight + f.box[1];
-      if (localOptions.shadowColor && localOptions.shadowColor !== "") {
-        ctx.fillStyle = localOptions.shadowColor;
-        ctx.fillText(labels2[i], x + 5, y + 16);
-      }
-      ctx.fillStyle = localOptions.labelColor;
-      ctx.fillText(labels2[i], x + 4, y + 15);
-    }
-    ctx.lineWidth = 1;
-    if (f.mesh && f.mesh.length > 0) {
-      if (localOptions.drawPoints) {
-        for (const pt of f.mesh)
-          point(ctx, pt[0], pt[1], pt[2], localOptions);
-      }
-      if (localOptions.drawPolygons) {
-        ctx.lineWidth = 1;
-        if (f.mesh.length > 450) {
-          for (let i = 0; i < TRI468.length / 3; i++) {
-            const points = [
-              TRI468[i * 3 + 0],
-              TRI468[i * 3 + 1],
-              TRI468[i * 3 + 2]
-            ].map((index) => f.mesh[index]);
-            lines(ctx, points, localOptions);
-          }
-        }
-        if (f.annotations && f.annotations["leftEyeIris"] && f.annotations["leftEyeIris"][0]) {
-          ctx.strokeStyle = localOptions.useDepth ? "rgba(255, 200, 255, 0.3)" : localOptions.color;
-          ctx.beginPath();
-          const sizeX = Math.abs(f.annotations["leftEyeIris"][3][0] - f.annotations["leftEyeIris"][1][0]) / 2;
-          const sizeY = Math.abs(f.annotations["leftEyeIris"][4][1] - f.annotations["leftEyeIris"][2][1]) / 2;
-          ctx.ellipse(f.annotations["leftEyeIris"][0][0], f.annotations["leftEyeIris"][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
-          ctx.stroke();
-          if (localOptions.fillPolygons) {
-            ctx.fillStyle = localOptions.useDepth ? "rgba(255, 255, 200, 0.3)" : localOptions.color;
-            ctx.fill();
-          }
-        }
-        if (f.annotations && f.annotations["rightEyeIris"] && f.annotations["rightEyeIris"][0]) {
-          ctx.strokeStyle = localOptions.useDepth ? "rgba(255, 200, 255, 0.3)" : localOptions.color;
-          ctx.beginPath();
-          const sizeX = Math.abs(f.annotations["rightEyeIris"][3][0] - f.annotations["rightEyeIris"][1][0]) / 2;
-          const sizeY = Math.abs(f.annotations["rightEyeIris"][4][1] - f.annotations["rightEyeIris"][2][1]) / 2;
-          ctx.ellipse(f.annotations["rightEyeIris"][0][0], f.annotations["rightEyeIris"][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
-          ctx.stroke();
-          if (localOptions.fillPolygons) {
-            ctx.fillStyle = localOptions.useDepth ? "rgba(255, 255, 200, 0.3)" : localOptions.color;
-            ctx.fill();
-          }
-        }
-        if (localOptions.drawGaze && ((_b = (_a = f.rotation) == null ? void 0 : _a.gaze) == null ? void 0 : _b.strength) && ((_d = (_c = f.rotation) == null ? void 0 : _c.gaze) == null ? void 0 : _d.bearing) && f.annotations["leftEyeIris"] && f.annotations["rightEyeIris"] && f.annotations["leftEyeIris"][0] && f.annotations["rightEyeIris"][0]) {
-          ctx.strokeStyle = "pink";
-          ctx.beginPath();
-          const leftGaze = [
-            f.annotations["leftEyeIris"][0][0] + Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3],
-            f.annotations["leftEyeIris"][0][1] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]
-          ];
-          ctx.moveTo(f.annotations["leftEyeIris"][0][0], f.annotations["leftEyeIris"][0][1]);
-          ctx.lineTo(leftGaze[0], leftGaze[1]);
-          const rightGaze = [
-            f.annotations["rightEyeIris"][0][0] + Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3],
-            f.annotations["rightEyeIris"][0][1] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]
-          ];
-          ctx.moveTo(f.annotations["rightEyeIris"][0][0], f.annotations["rightEyeIris"][0][1]);
-          ctx.lineTo(rightGaze[0], rightGaze[1]);
-          ctx.stroke();
-        }
-      }
-    }
-  }
-}
-async function body2(inCanvas2, result, drawOptions) {
-  var _a;
-  const localOptions = mergeDeep(options2, drawOptions);
-  if (!result || !inCanvas2)
-    return;
-  const ctx = getCanvasContext(inCanvas2);
-  ctx.lineJoin = "round";
-  for (let i = 0; i < result.length; i++) {
-    ctx.strokeStyle = localOptions.color;
-    ctx.fillStyle = localOptions.color;
-    ctx.lineWidth = localOptions.lineWidth;
-    ctx.font = localOptions.font;
-    if (localOptions.drawBoxes && result[i].box && ((_a = result[i].box) == null ? void 0 : _a.length) === 4) {
-      rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
-      if (localOptions.drawLabels) {
-        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
-          ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
-        }
-        ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
-      }
-    }
-    if (localOptions.drawPoints) {
-      for (let pt = 0; pt < result[i].keypoints.length; pt++) {
-        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position[2] ? `rgba(${127.5 + 2 * (result[i].keypoints[pt].position[2] || 0)}, ${127.5 - 2 * (result[i].keypoints[pt].position[2] || 0)}, 255, 0.5)` : localOptions.color;
-        point(ctx, result[i].keypoints[pt].position[0], result[i].keypoints[pt].position[1], 0, localOptions);
-      }
-    }
-    if (localOptions.drawLabels) {
-      ctx.font = localOptions.font;
-      if (result[i].keypoints) {
-        for (const pt of result[i].keypoints) {
-          ctx.fillStyle = localOptions.useDepth && pt.position[2] ? `rgba(${127.5 + 2 * pt.position[2]}, ${127.5 - 2 * pt.position[2]}, 255, 0.5)` : localOptions.color;
-          ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position[0] + 4, pt.position[1] + 4);
-        }
-      }
-    }
-    if (localOptions.drawPolygons && result[i].keypoints) {
-      let part;
-      const points = [];
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      curves(ctx, points, localOptions);
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightHip");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftHip");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      if (points.length === 4)
-        lines(ctx, points, localOptions);
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "leftHip");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftKnee");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftAnkle");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftHeel");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftFoot");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      curves(ctx, points, localOptions);
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "rightHip");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightKnee");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightAnkle");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightHeel");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightFoot");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      curves(ctx, points, localOptions);
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftElbow");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftWrist");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftPalm");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      curves(ctx, points, localOptions);
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightElbow");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightWrist");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightPalm");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      curves(ctx, points, localOptions);
-    }
-  }
-}
-async function hand2(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options2, drawOptions);
-  if (!result || !inCanvas2)
-    return;
-  const ctx = getCanvasContext(inCanvas2);
-  ctx.lineJoin = "round";
-  ctx.font = localOptions.font;
-  for (const h of result) {
-    if (localOptions.drawBoxes) {
-      ctx.strokeStyle = localOptions.color;
-      ctx.fillStyle = localOptions.color;
-      rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
-      if (localOptions.drawLabels) {
-        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
-          ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
-        }
-        ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
-      }
-      ctx.stroke();
-    }
-    if (localOptions.drawPoints) {
-      if (h.keypoints && h.keypoints.length > 0) {
-        for (const pt of h.keypoints) {
-          ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * (pt[2] || 0)}, ${127.5 - 2 * (pt[2] || 0)}, 255, 0.5)` : localOptions.color;
-          point(ctx, pt[0], pt[1], 0, localOptions);
-        }
-      }
-    }
-    if (localOptions.drawLabels && h.annotations) {
-      const addHandLabel = (part, title) => {
-        if (!part || part.length === 0 || !part[0])
-          return;
-        ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * part[part.length - 1][2]}, ${127.5 - 2 * part[part.length - 1][2]}, 255, 0.5)` : localOptions.color;
-        ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
-      };
-      ctx.font = localOptions.font;
-      addHandLabel(h.annotations["index"], "index");
-      addHandLabel(h.annotations["middle"], "middle");
-      addHandLabel(h.annotations["ring"], "ring");
-      addHandLabel(h.annotations["pinky"], "pinky");
-      addHandLabel(h.annotations["thumb"], "thumb");
-      addHandLabel(h.annotations["palm"], "palm");
-    }
-    if (localOptions.drawPolygons && h.annotations) {
-      const addHandLine = (part) => {
-        if (!part || part.length === 0 || !part[0])
-          return;
-        for (let i = 0; i < part.length; i++) {
-          ctx.beginPath();
-          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * part[i][2]}, ${127.5 - 2 * part[i][2]}, 255, 0.5)` : localOptions.color;
-          ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
-          ctx.lineTo(part[i][0], part[i][1]);
-          ctx.stroke();
-        }
-      };
-      ctx.lineWidth = localOptions.lineWidth;
-      addHandLine(h.annotations["index"]);
-      addHandLine(h.annotations["middle"]);
-      addHandLine(h.annotations["ring"]);
-      addHandLine(h.annotations["pinky"]);
-      addHandLine(h.annotations["thumb"]);
-    }
-  }
-}
-async function object(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options2, drawOptions);
-  if (!result || !inCanvas2)
-    return;
-  const ctx = getCanvasContext(inCanvas2);
-  ctx.lineJoin = "round";
-  ctx.font = localOptions.font;
-  for (const h of result) {
-    if (localOptions.drawBoxes) {
-      ctx.strokeStyle = localOptions.color;
-      ctx.fillStyle = localOptions.color;
-      rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
-      if (localOptions.drawLabels) {
-        const label = `${h.label} ${Math.round(100 * h.score)}%`;
-        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
-          ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText(label, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
-        }
-        ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText(label, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
-      }
-      ctx.stroke();
-    }
-  }
-}
-async function person(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options2, drawOptions);
-  if (!result || !inCanvas2)
-    return;
-  const ctx = getCanvasContext(inCanvas2);
-  ctx.lineJoin = "round";
-  ctx.font = localOptions.font;
-  for (let i = 0; i < result.length; i++) {
-    if (localOptions.drawBoxes) {
-      ctx.strokeStyle = localOptions.color;
-      ctx.fillStyle = localOptions.color;
-      rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
-      if (localOptions.drawLabels) {
-        const label = `person #${i}`;
-        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
-          ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText(label, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
-        }
-        ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText(label, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
-      }
-      ctx.stroke();
-    }
-  }
-}
-async function canvas2(input2, output) {
-  if (!input2 || !output)
-    return;
-  const ctx = getCanvasContext(output);
-  ctx.drawImage(input2, 0, 0);
-}
-async function all5(inCanvas2, result, drawOptions) {
-  if (!result || !result.performance || !result || !inCanvas2)
-    return null;
-  const timestamp = now();
-  const localOptions = mergeDeep(options2, drawOptions);
-  const promise = Promise.all([
-    face2(inCanvas2, result.face, localOptions),
-    body2(inCanvas2, result.body, localOptions),
-    hand2(inCanvas2, result.hand, localOptions),
-    object(inCanvas2, result.object, localOptions),
-    gesture(inCanvas2, result.gesture, localOptions)
-  ]);
-  result.performance.draw = Math.trunc(now() - timestamp);
-  return promise;
-}
-
-// src/util/persons.ts
-function join2(faces, bodies, hands, gestures, shape) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
-  let id = 0;
-  const persons2 = [];
-  for (const face5 of faces) {
-    const person2 = { id: id++, face: face5, body: null, hands: { left: null, right: null }, gestures: [], box: [0, 0, 0, 0] };
-    for (const body4 of bodies) {
-      if (face5.box[0] > body4.box[0] && face5.box[0] < body4.box[0] + body4.box[2] && face5.box[1] + face5.box[3] > body4.box[1] && face5.box[1] + face5.box[3] < body4.box[1] + body4.box[3]) {
-        person2.body = body4;
-      }
-    }
-    if (person2.body) {
-      for (const hand3 of hands) {
-        if (hand3.box[0] + hand3.box[2] > person2.body.box[0] && hand3.box[0] + hand3.box[2] < person2.body.box[0] + person2.body.box[2] && hand3.box[1] + hand3.box[3] > person2.body.box[1] && hand3.box[1] + hand3.box[3] < person2.body.box[1] + person2.body.box[3]) {
-          if (person2.hands)
-            person2.hands.left = hand3;
-        }
-        if (hand3.box[0] < person2.body.box[0] + person2.body.box[2] && hand3.box[0] > person2.body.box[0] && hand3.box[1] + hand3.box[3] > person2.body.box[1] && hand3.box[1] + hand3.box[3] < person2.body.box[1] + person2.body.box[3]) {
-          if (person2.hands)
-            person2.hands.right = hand3;
-        }
-      }
-    }
-    for (const gesture3 of gestures) {
-      if (gesture3["face"] !== void 0 && gesture3["face"] === face5.id)
-        (_a = person2.gestures) == null ? void 0 : _a.push(gesture3);
-      else if (gesture3["iris"] !== void 0 && gesture3["iris"] === face5.id)
-        (_b = person2.gestures) == null ? void 0 : _b.push(gesture3);
-      else if (gesture3["body"] !== void 0 && gesture3["body"] === ((_c = person2.body) == null ? void 0 : _c.id))
-        (_d = person2.gestures) == null ? void 0 : _d.push(gesture3);
-      else if (gesture3["hand"] !== void 0 && gesture3["hand"] === ((_f = (_e = person2.hands) == null ? void 0 : _e.left) == null ? void 0 : _f.id))
-        (_g = person2.gestures) == null ? void 0 : _g.push(gesture3);
-      else if (gesture3["hand"] !== void 0 && gesture3["hand"] === ((_i = (_h = person2.hands) == null ? void 0 : _h.right) == null ? void 0 : _i.id))
-        (_j = person2.gestures) == null ? void 0 : _j.push(gesture3);
-    }
-    const x = [];
-    const y = [];
-    const extractXY = (box4) => {
-      if (box4 && box4.length === 4) {
-        x.push(box4[0], box4[0] + box4[2]);
-        y.push(box4[1], box4[1] + box4[3]);
-      }
-    };
-    extractXY((_k = person2.face) == null ? void 0 : _k.box);
-    extractXY((_l = person2.body) == null ? void 0 : _l.box);
-    extractXY((_n = (_m = person2.hands) == null ? void 0 : _m.left) == null ? void 0 : _n.box);
-    extractXY((_p = (_o = person2.hands) == null ? void 0 : _o.right) == null ? void 0 : _p.box);
-    const minX = Math.min(...x);
-    const minY = Math.min(...y);
-    person2.box = [minX, minY, Math.max(...x) - minX, Math.max(...y) - minY];
-    if (shape && shape[1] && shape[2])
-      person2.boxRaw = [person2.box[0] / shape[2], person2.box[1] / shape[1], person2.box[2] / shape[2], person2.box[3] / shape[1]];
-    persons2.push(person2);
-  }
-  return persons2;
-}
 
 // src/util/interpolate.ts
 var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
@@ -71606,8 +71527,96 @@ function calc(newResult) {
   return bufferedResult;
 }
 
-// package.json
-var version6 = "2.3.0";
+// src/face/match.ts
+function distance(descriptor1, descriptor2, options3 = { order: 2 }) {
+  let sum6 = 0;
+  for (let i = 0; i < descriptor1.length; i++) {
+    const diff = options3.order === 2 ? descriptor1[i] - descriptor2[i] : Math.abs(descriptor1[i] - descriptor2[i]);
+    sum6 += options3.order === 2 ? diff * diff : diff ** options3.order;
+  }
+  return sum6;
+}
+function similarity(descriptor1, descriptor2, options3 = { order: 2 }) {
+  const dist = distance(descriptor1, descriptor2, options3);
+  const invert = options3.order === 2 ? Math.sqrt(dist) : dist ** (1 / options3.order);
+  return Math.max(0, 100 - invert) / 100;
+}
+function match2(descriptor, descriptors, options3 = { order: 2, threshold: 0 }) {
+  if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0 || descriptor.length !== descriptors[0].length) {
+    return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
+  }
+  let best = Number.MAX_SAFE_INTEGER;
+  let index = -1;
+  for (let i = 0; i < descriptors.length; i++) {
+    const res = distance(descriptor, descriptors[i], { order: options3.order });
+    if (res < best) {
+      best = res;
+      index = i;
+    }
+    if (best < options3.threshold)
+      break;
+  }
+  best = options3.order === 2 ? Math.sqrt(best) : best ** (1 / options3.order);
+  return { index, distance: best, similarity: Math.max(0, 100 - best) / 100 };
+}
+
+// src/util/persons.ts
+function join2(faces, bodies, hands, gestures, shape) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
+  let id = 0;
+  const persons2 = [];
+  for (const face5 of faces) {
+    const person2 = { id: id++, face: face5, body: null, hands: { left: null, right: null }, gestures: [], box: [0, 0, 0, 0] };
+    for (const body4 of bodies) {
+      if (face5.box[0] > body4.box[0] && face5.box[0] < body4.box[0] + body4.box[2] && face5.box[1] + face5.box[3] > body4.box[1] && face5.box[1] + face5.box[3] < body4.box[1] + body4.box[3]) {
+        person2.body = body4;
+      }
+    }
+    if (person2.body) {
+      for (const hand3 of hands) {
+        if (hand3.box[0] + hand3.box[2] > person2.body.box[0] && hand3.box[0] + hand3.box[2] < person2.body.box[0] + person2.body.box[2] && hand3.box[1] + hand3.box[3] > person2.body.box[1] && hand3.box[1] + hand3.box[3] < person2.body.box[1] + person2.body.box[3]) {
+          if (person2.hands)
+            person2.hands.left = hand3;
+        }
+        if (hand3.box[0] < person2.body.box[0] + person2.body.box[2] && hand3.box[0] > person2.body.box[0] && hand3.box[1] + hand3.box[3] > person2.body.box[1] && hand3.box[1] + hand3.box[3] < person2.body.box[1] + person2.body.box[3]) {
+          if (person2.hands)
+            person2.hands.right = hand3;
+        }
+      }
+    }
+    for (const gesture3 of gestures) {
+      if (gesture3["face"] !== void 0 && gesture3["face"] === face5.id)
+        (_a = person2.gestures) == null ? void 0 : _a.push(gesture3);
+      else if (gesture3["iris"] !== void 0 && gesture3["iris"] === face5.id)
+        (_b = person2.gestures) == null ? void 0 : _b.push(gesture3);
+      else if (gesture3["body"] !== void 0 && gesture3["body"] === ((_c = person2.body) == null ? void 0 : _c.id))
+        (_d = person2.gestures) == null ? void 0 : _d.push(gesture3);
+      else if (gesture3["hand"] !== void 0 && gesture3["hand"] === ((_f = (_e = person2.hands) == null ? void 0 : _e.left) == null ? void 0 : _f.id))
+        (_g = person2.gestures) == null ? void 0 : _g.push(gesture3);
+      else if (gesture3["hand"] !== void 0 && gesture3["hand"] === ((_i = (_h = person2.hands) == null ? void 0 : _h.right) == null ? void 0 : _i.id))
+        (_j = person2.gestures) == null ? void 0 : _j.push(gesture3);
+    }
+    const x = [];
+    const y = [];
+    const extractXY = (box4) => {
+      if (box4 && box4.length === 4) {
+        x.push(box4[0], box4[0] + box4[2]);
+        y.push(box4[1], box4[1] + box4[3]);
+      }
+    };
+    extractXY((_k = person2.face) == null ? void 0 : _k.box);
+    extractXY((_l = person2.body) == null ? void 0 : _l.box);
+    extractXY((_n = (_m = person2.hands) == null ? void 0 : _m.left) == null ? void 0 : _n.box);
+    extractXY((_p = (_o = person2.hands) == null ? void 0 : _o.right) == null ? void 0 : _p.box);
+    const minX = Math.min(...x);
+    const minY = Math.min(...y);
+    person2.box = [minX, minY, Math.max(...x) - minX, Math.max(...y) - minY];
+    if (shape && shape[1] && shape[2])
+      person2.boxRaw = [person2.box[0] / shape[2], person2.box[1] / shape[1], person2.box[2] / shape[2], person2.box[3] / shape[1]];
+    persons2.push(person2);
+  }
+  return persons2;
+}
 
 // src/sample.ts
 var face3 = `
@@ -72484,9 +72493,13 @@ var Human = class {
       }
       return null;
     });
+    __publicField(this, "similarity", similarity);
+    __publicField(this, "distance", distance);
+    __publicField(this, "match", match2);
     __publicField(this, "emit", (event) => {
       var _a;
-      return (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
+      if (this.events && this.events.dispatchEvent)
+        (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
     get3();
     this.env = env2;
@@ -72505,14 +72518,14 @@ var Human = class {
     __privateSet(this, _analyzeMemoryLeaks, false);
     __privateSet(this, _checkSanity, false);
     this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
-    this.events = new EventTarget();
+    this.events = typeof EventTarget !== "undefined" ? new EventTarget() : void 0;
     this.models = new Models();
     this.draw = {
       options: options2,
       canvas: (input2, output) => canvas2(input2, output),
-      face: (output, result, options3) => face2(output, result, options3),
-      body: (output, result, options3) => body2(output, result, options3),
-      hand: (output, result, options3) => hand2(output, result, options3),
+      face: (output, result, options3) => face(output, result, options3),
+      body: (output, result, options3) => body(output, result, options3),
+      hand: (output, result, options3) => hand(output, result, options3),
       gesture: (output, result, options3) => gesture(output, result, options3),
       object: (output, result, options3) => object(output, result, options3),
       person: (output, result, options3) => person(output, result, options3),
@@ -72536,17 +72549,11 @@ var Human = class {
   image(input2) {
     return process2(input2, this.config);
   }
-  similarity(embedding1, embedding2) {
-    return similarity(embedding1, embedding2);
-  }
   async segmentation(input2, background) {
     return process5(input2, background, this.config);
   }
   enhance(input2) {
     return enhance(input2);
-  }
-  match(faceEmbedding, db, threshold3 = 0) {
-    return match(faceEmbedding, db, threshold3);
   }
   async init() {
     await check(this, true);
@@ -72729,7 +72736,7 @@ var Human = class {
       let gestureRes = [];
       if (this.config.gesture.enabled) {
         timeStamp = now();
-        gestureRes = [...face(faceRes), ...body(bodyRes), ...hand(handRes), ...iris3(faceRes)];
+        gestureRes = [...face2(faceRes), ...body2(bodyRes), ...hand2(handRes), ...iris3(faceRes)];
         if (!this.config.async)
           this.performance.gesture = Math.trunc(now() - timeStamp);
         else if (this.performance.gesture)

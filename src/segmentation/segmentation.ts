@@ -12,8 +12,7 @@ import * as image from '../image/image';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
-
-type Input = Tensor | typeof Image | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
+import type { Input } from '../image/image';
 
 let model: GraphModel;
 let busy = false;

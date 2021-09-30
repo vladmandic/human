@@ -75,11 +75,12 @@ async function SelectFaceCanvas(face) {
       ctx.font = 'small-caps 0.4rem "Lato"';
       ctx.fillStyle = 'rgba(255, 255, 255, 1)';
     }
-    const person = await human.match(face.embedding, db);
-    log('Match:', person);
+    const arr = db.map((rec) => rec.embedding);
+    const res = await human.match(face.embedding, arr);
+    log('Match:', db[res.index].name);
     document.getElementById('desc').innerHTML = `
       ${face.fileName}<br>
-      Match: ${Math.round(1000 * person.similarity) / 10}% ${person.name}
+      Match: ${Math.round(1000 * res.similarity) / 10}% ${db[res.index].name}
     `;
     embedding = face.embedding.map((a) => parseFloat(a.toFixed(4)));
     navigator.clipboard.writeText(`{"name":"unknown", "source":"${face.fileName}", "embedding":[${embedding}]},`);
@@ -91,7 +92,7 @@ async function SelectFaceCanvas(face) {
   for (const canvas of canvases) {
     // calculate similarity from selected face to current one in the loop
     const current = all[canvas.tag.sample][canvas.tag.face];
-    const similarity = human.similarity(face.embedding, current.embedding, 3);
+    const similarity = human.similarity(face.embedding, current.embedding);
     // get best match
     // draw the canvas
     canvas.title = similarity;
@@ -107,9 +108,10 @@ async function SelectFaceCanvas(face) {
     // identify person
     ctx.font = 'small-caps 1rem "Lato"';
     const start = performance.now();
-    const person = await human.match(current.embedding, db);
+    const arr = db.map((rec) => rec.embedding);
+    const res = await human.match(face.embedding, arr);
     time += (performance.now() - start);
-    if (person.similarity && person.similarity > minScore) ctx.fillText(`DB: ${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
+    if (res.similarity > minScore) ctx.fillText(`DB: ${(100 * res.similarity).toFixed(1)}% ${db[res.index].name}`, 4, canvas.height - 30);
   }
 
   log('Analyzed:', 'Face:', canvases.length, 'DB:', db.length, 'Time:', time);
@@ -145,9 +147,10 @@ async function AddFaceCanvas(index, res, fileName) {
       ctx.font = 'small-caps 0.8rem "Lato"';
       ctx.fillStyle = 'rgba(255, 255, 255, 1)';
       ctx.fillText(`${res.face[i].age}y ${(100 * (res.face[i].genderScore || 0)).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
-      const person = await human.match(res.face[i].embedding, db);
+      const arr = db.map((rec) => rec.embedding);
+      const result = await human.match(res.face[i].embedding, arr);
       ctx.font = 'small-caps 1rem "Lato"';
-      if (person.similarity && person.similarity > minScore) ctx.fillText(`${(100 * person.similarity).toFixed(1)}% ${person.name}`, 4, canvas.height - 30);
+      if (result.similarity && res.similarity > minScore) ctx.fillText(`${(100 * result.similarity).toFixed(1)}% ${db[result.index].name}`, 4, canvas.height - 30);
     }
   }
   return ok;
@@ -212,7 +215,7 @@ async function main() {
     images = images.map((a) => `/human/samples/in/${a}`);
     log('Adding static image list:', images);
   } else {
-    log('Disoovered images:', images);
+    log('Discovered images:', images);
   }
 
   // download and analyze all images

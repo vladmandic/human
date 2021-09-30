@@ -9,7 +9,7 @@ import type { Config } from '../config';
 import { env } from '../util/env';
 import { log } from '../util/util';
 
-type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.Canvas;
+export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.Canvas;
 
 const maxSize = 2048;
 // internal temp canvases

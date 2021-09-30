@@ -1,24 +1,31 @@
 /**
  * Human main module
  */
-import { Config } from './config';
-import type { Result } from './result';
 import * as tf from '../dist/tfjs.esm.js';
-import * as models from './models';
-import * as facemesh from './face/facemesh';
 import * as env from './util/env';
+import * as facemesh from './face/facemesh';
+import * as match from './face/match';
+import * as models from './models';
+import type { Result } from './result';
 import type { Tensor } from './tfjs/types';
 import type { DrawOptions } from './util/draw';
+import type { Input } from './image/image';
+import type { Config } from './config';
+/** Defines configuration options used by all **Human** methods */
 export * from './config';
+/** Defines result types returned by all **Human** methods */
 export * from './result';
+/** Defines DrawOptions used by `human.draw.*` methods */
 export type { DrawOptions } from './util/draw';
 export { env, Env } from './util/env';
+/** Face descriptor type as number array */
+export type { Descriptor } from './face/match';
+/** Box and Point primitives */
 export { Box, Point } from './result';
+/** Defines all possible models used by **Human** library */
 export { Models } from './models';
-/** Defines all possible input types for **Human** detection
- * @typedef Input Type
- */
-export declare type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
+/** Defines all possible input types for **Human** detection */
+export { Input } from './image/image';
 /** Events dispatched by `human.events`
  *
  * - `create`: triggered when Human object is instantiated
@@ -116,7 +123,7 @@ export declare class Human {
      * - `warmup`: triggered when warmup is complete
      * - `error`: triggered on some errors
      */
-    events: EventTarget;
+    events: EventTarget | undefined;
     /** Reference face triangualtion array of 468 points, used for triangle references between points */
     faceTriangulation: typeof facemesh.triangulation;
     /** Refernce UV map of 468 values, used for 3D mapping of the face mesh */
@@ -142,6 +149,10 @@ export declare class Human {
         where: string;
         expected?: string;
     }[];
+    /** Exports face matching methods */
+    similarity: typeof match.similarity;
+    distance: typeof match.distance;
+    match: typeof match.match;
     /** Process input as return canvas and tensor
      *
      * @param input: {@link Input}
@@ -149,17 +160,8 @@ export declare class Human {
      */
     image(input: Input): {
         tensor: Tensor<import("@tensorflow/tfjs-core").Rank> | null;
-        canvas: OffscreenCanvas | HTMLCanvasElement | null;
+        canvas: HTMLCanvasElement | OffscreenCanvas | null;
     };
-    /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
-     * - Calculation is based on normalized Minkowski distance between two descriptors
-     * - Default is Euclidean distance which is Minkowski distance of 2nd order
-     *
-     * @param embedding1: face descriptor as array of numbers
-     * @param embedding2: face descriptor as array of numbers
-     * @returns similarity: number
-    */
-    similarity(embedding1: Array<number>, embedding2: Array<number>): number;
     /** Segmentation method takes any input and returns processed canvas with body segmentation
      *  - Optional parameter background is used to fill the background with specific input
      *  - Segmentation is not triggered as part of detect process
@@ -184,23 +186,6 @@ export declare class Human {
      * @returns Tensor
      */
     enhance(input: Tensor): Tensor | null;
-    /** Math method find best match between provided face descriptor and predefined database of known descriptors
-     *
-     * @param faceEmbedding: face descriptor previsouly calculated on any face
-     * @param db: array of mapping of face descriptors to known values
-     * @param threshold: minimum score for matching to be considered in the result
-     * @returns best match
-     */
-    match(faceEmbedding: Array<number>, db: Array<{
-        name: string;
-        source: string;
-        embedding: number[];
-    }>, threshold?: number): {
-        name: string;
-        source: string;
-        similarity: number;
-        embedding: number[];
-    };
     /** Explicit backend initialization
      *  - Normally done implicitly during initial load phase
      *  - Call to explictly register and initialize TFJS backend without any other operations
@@ -217,7 +202,7 @@ export declare class Human {
     */
     load(userConfig?: Partial<Config>): Promise<void>;
     /** @hidden */
-    emit: (event: string) => boolean;
+    emit: (event: string) => void;
     /** Runs interpolation using last known result and returns smoothened result
      * Interpolation is based on time since last known result so can be called independently
      *

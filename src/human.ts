@@ -2,49 +2,64 @@
  * Human main module
  */
 
+// module imports
 import { log, now, mergeDeep, validate } from './util/util';
-import { Config, defaults } from './config';
-import type { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult } from './result';
+import { defaults } from './config';
 import * as tf from '../dist/tfjs.esm.js';
-import * as models from './models';
+import * as app from '../package.json';
+import * as backend from './tfjs/backend';
+// import * as blazepose from './body/blazepose-v1';
+import * as blazepose from './body/blazepose';
+import * as centernet from './object/centernet';
+import * as draw from './util/draw';
+import * as efficientpose from './body/efficientpose';
+import * as env from './util/env';
 import * as face from './face/face';
 import * as facemesh from './face/facemesh';
 import * as faceres from './face/faceres';
-import * as posenet from './body/posenet';
-import * as handtrack from './hand/handtrack';
+import * as gesture from './gesture/gesture';
 import * as handpose from './handpose/handpose';
-// import * as blazepose from './body/blazepose-v1';
-import * as blazepose from './body/blazepose';
-import * as efficientpose from './body/efficientpose';
+import * as handtrack from './hand/handtrack';
+import * as humangl from './tfjs/humangl';
+import * as image from './image/image';
+import * as interpolate from './util/interpolate';
+import * as match from './face/match';
+import * as models from './models';
 import * as movenet from './body/movenet';
 import * as nanodet from './object/nanodet';
-import * as centernet from './object/centernet';
-import * as segmentation from './segmentation/segmentation';
-import * as gesture from './gesture/gesture';
-import * as image from './image/image';
-import * as draw from './util/draw';
 import * as persons from './util/persons';
-import * as interpolate from './util/interpolate';
-import * as env from './util/env';
-import * as backend from './tfjs/backend';
-import * as humangl from './tfjs/humangl';
-import * as app from '../package.json';
+import * as posenet from './body/posenet';
+import * as segmentation from './segmentation/segmentation';
 import * as warmups from './warmup';
+
+// type definitions
+import type { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult } from './result';
 import type { Tensor } from './tfjs/types';
 import type { DrawOptions } from './util/draw';
+import type { Input } from './image/image';
+import type { Config } from './config';
 
-// export types
+/** Defines configuration options used by all **Human** methods */
 export * from './config';
+
+/** Defines result types returned by all **Human** methods */
 export * from './result';
+
+/** Defines DrawOptions used by `human.draw.*` methods */
 export type { DrawOptions } from './util/draw';
 export { env, Env } from './util/env';
+
+/** Face descriptor type as number array */
+export type { Descriptor } from './face/match';
+
+/** Box and Point primitives */
 export { Box, Point } from './result';
+
+/** Defines all possible models used by **Human** library */
 export { Models } from './models';
 
-/** Defines all possible input types for **Human** detection
- * @typedef Input Type
- */
-export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas;
+/** Defines all possible input types for **Human** detection */
+export { Input } from './image/image';
 
 /** Events dispatched by `human.events`
  *
@@ -139,7 +154,7 @@ export class Human {
    * - `warmup`: triggered when warmup is complete
    * - `error`: triggered on some errors
    */
-  events: EventTarget;
+  events: EventTarget | undefined;
   /** Reference face triangualtion array of 468 points, used for triangle references between points */
   faceTriangulation: typeof facemesh.triangulation;
   /** Refernce UV map of 468 values, used for 3D mapping of the face mesh */
@@ -176,7 +191,7 @@ export class Human {
     this.#analyzeMemoryLeaks = false;
     this.#checkSanity = false;
     this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
-    this.events = new EventTarget();
+    this.events = (typeof EventTarget !== 'undefined') ? new EventTarget() : undefined;
     // object that contains all initialized models
     this.models = new models.Models();
     // reexport draw methods
@@ -230,16 +245,21 @@ export class Human {
   }
 
   /** Reset configuration to default values */
-  reset() {
+  reset(): void {
     const currentBackend = this.config.backend; // save backend;
     this.config = JSON.parse(JSON.stringify(defaults));
     this.config.backend = currentBackend;
   }
 
   /** Validate current configuration schema */
-  validate(userConfig?: Partial<Config>) {
+  public validate(userConfig?: Partial<Config>) {
     return validate(defaults, userConfig || this.config);
   }
+
+  /** Exports face matching methods */
+  public similarity = match.similarity;
+  public distance = match.distance;
+  public match = match.match;
 
   /** Process input as return canvas and tensor
    *
@@ -248,19 +268,6 @@ export class Human {
    */
   image(input: Input) {
     return image.process(input, this.config);
-  }
-
-  /** Simmilarity method calculates simmilarity between two provided face descriptors (face embeddings)
-   * - Calculation is based on normalized Minkowski distance between two descriptors
-   * - Default is Euclidean distance which is Minkowski distance of 2nd order
-   *
-   * @param embedding1: face descriptor as array of numbers
-   * @param embedding2: face descriptor as array of numbers
-   * @returns similarity: number
-  */
-  // eslint-disable-next-line class-methods-use-this
-  similarity(embedding1: Array<number>, embedding2: Array<number>): number {
-    return faceres.similarity(embedding1, embedding2);
   }
 
   /** Segmentation method takes any input and returns processed canvas with body segmentation
@@ -290,18 +297,6 @@ export class Human {
     return faceres.enhance(input);
   }
 
-  /** Math method find best match between provided face descriptor and predefined database of known descriptors
-   *
-   * @param faceEmbedding: face descriptor previsouly calculated on any face
-   * @param db: array of mapping of face descriptors to known values
-   * @param threshold: minimum score for matching to be considered in the result
-   * @returns best match
-   */
-  // eslint-disable-next-line class-methods-use-this
-  match(faceEmbedding: Array<number>, db: Array<{ name: string, source: string, embedding: number[] }>, threshold = 0): { name: string, source: string, similarity: number, embedding: number[] } {
-    return faceres.match(faceEmbedding, db, threshold);
-  }
-
   /** Explicit backend initialization
    *  - Normally done implicitly during initial load phase
    *  - Call to explictly register and initialize TFJS backend without any other operations
@@ -309,7 +304,7 @@ export class Human {
    *
    * @return Promise<void>
    */
-  async init() {
+  async init(): Promise<void> {
     await backend.check(this, true);
     await this.tf.ready();
     env.set(this.env);
@@ -321,7 +316,7 @@ export class Human {
    * @param userConfig?: {@link Config}
    * @return Promise<void>
   */
-  async load(userConfig?: Partial<Config>) {
+  async load(userConfig?: Partial<Config>): Promise<void> {
     this.state = 'load';
     const timeStamp = now();
     const count = Object.values(this.models).filter((model) => model).length;
@@ -354,7 +349,9 @@ export class Human {
 
   // emit event
   /** @hidden */
-  emit = (event: string) => this.events?.dispatchEvent(new Event(event));
+  emit = (event: string) => {
+    if (this.events && this.events.dispatchEvent) this.events?.dispatchEvent(new Event(event));
+  }
 
   /** Runs interpolation using last known result and returns smoothened result
    * Interpolation is based on time since last known result so can be called independently
@@ -362,7 +359,7 @@ export class Human {
    * @param result?: {@link Result} optional use specific result set to run interpolation on
    * @returns result: {@link Result}
    */
-  next(result: Result = this.result) {
+  next(result: Result = this.result): Result {
     return interpolate.calc(result) as Result;
   }
 

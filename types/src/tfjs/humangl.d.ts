@@ -2,7 +2,7 @@
 export declare const config: {
     name: string;
     priority: number;
-    canvas: OffscreenCanvas | HTMLCanvasElement | null;
+    canvas: HTMLCanvasElement | OffscreenCanvas | null;
     gl: WebGL2RenderingContext | null;
     extensions: string[];
     webGLattr: {

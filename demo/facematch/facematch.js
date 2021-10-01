@@ -21,12 +21,12 @@ const userConfig = {
     detector: { rotation: true, return: true, maxDetected: 20 },
     mesh: { enabled: true },
     embedding: { enabled: false },
-    iris: { enabled: false },
+    iris: { enabled: true },
     emotion: { enabled: true },
     description: { enabled: true },
   },
   hand: { enabled: false },
-  gesture: { enabled: false },
+  gesture: { enabled: true },
   body: { enabled: false },
   filter: { enabled: true },
   segmentation: { enabled: false },
@@ -46,6 +46,10 @@ function log(...msg) {
   console.log(ts, ...msg);
 }
 
+function title(msg) {
+  document.getElementById('title').innerHTML = msg;
+}
+
 async function loadFaceMatchDB() {
   // download db with known faces
   try {
@@ -61,7 +65,9 @@ async function loadFaceMatchDB() {
 async function SelectFaceCanvas(face) {
   // if we have face image tensor, enhance it and display it
   let embedding;
+  document.getElementById('orig').style.filter = 'blur(16px)';
   if (face.tensor) {
+    title('Sorting Faces by Similarity');
     const enhanced = human.enhance(face);
     if (enhanced) {
       const c = document.getElementById('orig');
@@ -78,9 +84,14 @@ async function SelectFaceCanvas(face) {
     const arr = db.map((rec) => rec.embedding);
     const res = await human.match(face.embedding, arr);
     log('Match:', db[res.index].name);
+    const emotion = face.emotion[0] ? `${Math.round(100 * face.emotion[0].score)}% ${face.emotion[0].emotion}` : 'N/A';
     document.getElementById('desc').innerHTML = `
-      ${face.fileName}<br>
-      Match: ${Math.round(1000 * res.similarity) / 10}% ${db[res.index].name}
+      source: ${face.fileName}<br>
+      match: ${Math.round(1000 * res.similarity) / 10}% ${db[res.index].name}<br>
+      score: ${Math.round(100 * face.boxScore)}% detection ${Math.round(100 * face.faceScore)}% analysis<br>
+      age: ${face.age} years<br>
+      gender: ${Math.round(100 * face.genderScore)}% ${face.gender}<br>
+      emotion: ${emotion}<br>
     `;
     embedding = face.embedding.map((a) => parseFloat(a.toFixed(4)));
     navigator.clipboard.writeText(`{"name":"unknown", "source":"${face.fileName}", "embedding":[${embedding}]},`);
@@ -93,9 +104,9 @@ async function SelectFaceCanvas(face) {
     // calculate similarity from selected face to current one in the loop
     const current = all[canvas.tag.sample][canvas.tag.face];
     const similarity = human.similarity(face.embedding, current.embedding);
+    canvas.tag.similarity = similarity;
     // get best match
     // draw the canvas
-    canvas.title = similarity;
     await human.tf.browser.toPixels(current.tensor, canvas);
     const ctx = canvas.getContext('2d');
     ctx.font = 'small-caps 1rem "Lato"';
@@ -118,8 +129,10 @@ async function SelectFaceCanvas(face) {
   // sort all faces by similarity
   const sorted = document.getElementById('faces');
   [...sorted.children]
-    .sort((a, b) => parseFloat(b.title) - parseFloat(a.title))
+    .sort((a, b) => parseFloat(b.tag.similarity) - parseFloat(a.tag.similarity))
     .forEach((canvas) => sorted.appendChild(canvas));
+  document.getElementById('orig').style.filter = 'blur(0)';
+  title('Selected Face');
 }
 
 async function AddFaceCanvas(index, res, fileName) {
@@ -134,6 +147,14 @@ async function AddFaceCanvas(index, res, fileName) {
     canvas.width = 200;
     canvas.height = 200;
     canvas.className = 'face';
+    const emotion = res.face[i].emotion[0] ? `${Math.round(100 * res.face[i].emotion[0].score)}% ${res.face[i].emotion[0].emotion}` : 'N/A';
+    canvas.title = `
+      source: ${res.face[i].fileName}
+      score: ${Math.round(100 * res.face[i].boxScore)}% detection ${Math.round(100 * res.face[i].faceScore)}% analysis
+      age: ${res.face[i].age} years
+      gender: ${Math.round(100 * res.face[i].genderScore)}% ${res.face[i].gender}
+      emotion: ${emotion}
+    `.replace(/  /g, ' ');
     // mouse click on any face canvas triggers analysis
     canvas.addEventListener('click', (evt) => {
       log('Select:', 'Image:', evt.target.tag.sample, 'Face:', evt.target.tag.face, 'Source:', evt.target.tag.source, all[evt.target.tag.sample][evt.target.tag.face]);
@@ -156,7 +177,9 @@ async function AddFaceCanvas(index, res, fileName) {
   return ok;
 }
 
-async function AddImageElement(index, image) {
+async function AddImageElement(index, image, length) {
+  const faces = all.reduce((prev, curr) => prev += curr.length, 0);
+  title(`Analyzing Input Images<br> ${Math.round(100 * index / length)}% [${index} / ${length}]<br>Found ${faces} Faces`);
   return new Promise((resolve) => {
     const img = new Image(128, 128);
     img.onload = () => { // must wait until image is loaded
@@ -188,12 +211,14 @@ async function main() {
   // pre-load human models
   await human.load();
 
+  title('Loading Face Match Database');
   let images = [];
   let dir = [];
   // load face descriptor database
   await loadFaceMatchDB();
 
   // enumerate all sample images in /assets
+  title('Enumerating Input Images');
   const res = await fetch('/samples/in');
   dir = (res && res.ok) ? await res.json() : [];
   images = images.concat(dir.filter((img) => (img.endsWith('.jpg') && img.includes('sample'))));
@@ -219,7 +244,7 @@ async function main() {
   }
 
   // download and analyze all images
-  for (let i = 0; i < images.length; i++) await AddImageElement(i, images[i]);
+  for (let i = 0; i < images.length; i++) await AddImageElement(i, images[i], images.length);
 
   // print stats
   const num = all.reduce((prev, cur) => prev += cur.length, 0);
@@ -229,6 +254,7 @@ async function main() {
   // if we didn't download db, generate it from current faces
   if (!db || db.length === 0) await createFaceMatchDB();
 
+  title('');
   log('Ready');
 }
 

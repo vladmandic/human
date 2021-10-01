@@ -14,30 +14,36 @@
     <link rel="apple-touch-icon" href="../../assets/icon.png">
     <script src="./facematch.js" type="module"></script>
     <style>
+      img { object-fit: contain; }
       @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../../assets/lato-light.woff2') }
       html { font-family: 'Lato', 'Segoe UI'; font-size: 24px; font-variant: small-caps; }
-      body { margin: 0; background: black; color: white; overflow-x: hidden; }
-      img { object-fit: contain; }
-      .face { width: 128px; height: 128px; }
+      body { margin: 24px; background: black; color: white; overflow: hidden; text-align: -webkit-center; min-height: 100%; max-height: 100%; }
+      ::-webkit-scrollbar { height: 8px; border: 0; border-radius: 0; }
+      ::-webkit-scrollbar-thumb { background: grey }
+      ::-webkit-scrollbar-track { margin: 3px; }
+      .orig { width: 200px; height: 200px; padding-bottom: 20px; filter: blur(16px); transition : all 0.5s ease; }
+      .text { margin: 24px; }
+      .face { width: 128px; height: 128px; margin: 2px; padding: 2px; cursor: grab; transform: scale(1.00); transition : all 0.3s ease; }
+      .face:hover { filter: grayscale(1); transform: scale(1.08); transition : all 0.3s ease; }   
     </style>
   </head>
   <body>
     <div style="display: block">
       <div style="display: flex">
-        <div>
-          Selected Face<br>
-          <canvas id="orig" style="width: 200px; height: 200px; padding: 20px"></canvas>
-          <div id="desc" style="font-size: 0.8rem;"></div>
+        <div style="min-width: 400px">
+          <div class="text" id="title"></div>
+          <canvas id="orig" class="orig"></canvas>
+          <div id="desc" style="font-size: 0.8rem; text-align: left;"></div>
         </div>
         <div style="width: 20px"></div>
         <div>
-          Sample Images<br>
-          <div id="images" style="display: flex; flex-wrap: wrap; width: 85vw"></div>
+          <div class="text">Input Images</div>
+          <div id="images" style="display: flex; width: 60vw; overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth"></div>
         </div>
       </div>
       <div id="list" style="height: 10px"></div>
-      Extracted Faces - click on a face to sort by similarity and get a known face match:<br>
-      <div id="faces"></div>
+      <div class="text">Select person to sort by similarity and get a known face match</div>
+      <div id="faces" style="height: 50vh; overflow-y: auto"></div>
   </div>
   </body>
 </html>

@@ -3,8 +3,11 @@
     "web-recommended"
   ],
   "browserslist": [
-    "last 1 versions",
-    "not ie < 20"
+    "chrome >= 90",
+    "edge >= 90",
+    "firefox >= 90",
+    "android >= 90",
+    "safari >= 15"
   ],
   "hints": {
     "no-inline-styles": "off",

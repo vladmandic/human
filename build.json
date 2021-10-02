@@ -7,7 +7,8 @@
   },
   "profiles": {
     "production": ["clean", "compile", "typings", "typedoc", "lint", "changelog"],
-    "development": ["serve", "watch", "compile"]
+    "development": ["serve", "watch", "compile"],
+    "serve": ["serve"]
   },
   "clean": {
     "locations": ["dist/*", "types/*", "typedoc/*"]

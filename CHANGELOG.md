@@ -9,7 +9,7 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/01 mandic00@live.com
+### **HEAD -> main** 2021/10/02 mandic00@live.com
 
 - breaking change: new similarity and match methods
 - release candidate

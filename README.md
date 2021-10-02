@@ -75,6 +75,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 - [**Performance Profiling**](https://github.com/vladmandic/human/wiki/Profiling)
 - [**Platform Support**](https://github.com/vladmandic/human/wiki/Platforms)
 - [**Diagnostic and Performance trace information**](https://github.com/vladmandic/human/wiki/Diag)
+- [**Dockerize Human applications**](https://github.com/vladmandic/human/wiki/Docker)
 - [**List of Models & Credits**](https://github.com/vladmandic/human/wiki/Models)
 - [**Models Download Repository**](https://github.com/vladmandic/human-models)
 - [**Security & Privacy Policy**](https://github.com/vladmandic/human/blob/main/SECURITY.md)

@@ -1,3 +1,4 @@
+process.env.TF_CPP_MIN_LOG_LEVEL = '2';
 const Human = require('../dist/human.node.js').default;
 const test = require('./test-main.js').test;
 

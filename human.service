@@ -5,7 +5,7 @@ After=network.target network-online.target
 [Service]
 Type=simple
 Environment="NODE_ENV=production"
-ExecStart=<path-to-node> server/serve.js
+ExecStart=<path-to-node> <your-project-folder>/node_modules/@vladmandic/build/src/build.js --profile development
 WorkingDirectory=<your-project-folder>
 StandardOutput=inherit
 StandardError=inherit

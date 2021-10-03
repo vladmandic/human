@@ -135,6 +135,7 @@ async function detect(input) {
   } else {
     log.data('  Gesture: N/A');
   }
+
   if (result && result.object && result.object.length > 0) {
     for (let i = 0; i < result.object.length; i++) {
       const object = result.object[i];

@@ -45,7 +45,7 @@ export async function check(instance, force = false) {
 
       if (!available.includes(instance.config.backend)) {
         log(`error: backend ${instance.config.backend} not found in registry`);
-        instance.config.backend = env.env.node ? 'tensorflow' : 'humangl';
+        instance.config.backend = env.env.node ? 'tensorflow' : 'webgl';
         if (instance.config.debug) log(`override: setting backend ${instance.config.backend}`);
       }
 
@@ -83,9 +83,17 @@ export async function check(instance, force = false) {
         log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
         tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
       }
-      // @ts-ignore getGPGPUContext only exists on WebGL backend
-      const gl = await tf.backend().getGPGPUContext().gl;
-      if (instance.config.debug) log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+      if (tf.backend().getGPGPUContext) {
+        const gl = await tf.backend().getGPGPUContext().gl;
+        if (instance.config.debug) log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+      }
+    }
+
+    // handle webgpu
+    if (tf.getBackend() === 'humangl') {
+      tf.ENV.set('WEBGPU_USE_GLSL', true);
+      tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', false);
+      tf.ENV.set('WEBGL_USE_SHAPES_UNIFORMS', true);
     }
 
     // wait for ready

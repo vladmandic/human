@@ -93,13 +93,6 @@ export async function register(instance): Promise<void> {
       log('error: cannot set WebGL context:', err);
       return;
     }
-    const current = tf.backend().getGPGPUContext ? tf.backend().getGPGPUContext().gl : null;
-    if (current) {
-      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
-    } else {
-      log('error: no current gl context:', current, config.gl);
-      return;
-    }
     try {
       const ctx = new tf.GPGPUContext(config.gl);
       tf.registerBackend(config.name, () => new tf.MathBackendWebGL(ctx), config.priority);
@@ -115,6 +108,13 @@ export async function register(instance): Promise<void> {
       });
     } catch (err) {
       log('error: cannot update WebGL backend registration:', err);
+      return;
+    }
+    const current = tf.backend().getGPGPUContext ? tf.backend().getGPGPUContext().gl : null;
+    if (current) {
+      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
+    } else {
+      log('error: no current gl context:', current, config.gl);
       return;
     }
     try {

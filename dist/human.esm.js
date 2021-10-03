@@ -70494,13 +70494,6 @@ async function register(instance) {
       log("error: cannot set WebGL context:", err);
       return;
     }
-    const current = backend().getGPGPUContext ? backend().getGPGPUContext().gl : null;
-    if (current) {
-      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
-    } else {
-      log("error: no current gl context:", current, config2.gl);
-      return;
-    }
     try {
       const ctx = new GPGPUContext(config2.gl);
       registerBackend(config2.name, () => new MathBackendWebGL(ctx), config2.priority);
@@ -70516,6 +70509,13 @@ async function register(instance) {
       });
     } catch (err) {
       log("error: cannot update WebGL backend registration:", err);
+      return;
+    }
+    const current = backend().getGPGPUContext ? backend().getGPGPUContext().gl : null;
+    if (current) {
+      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
+    } else {
+      log("error: no current gl context:", current, config2.gl);
       return;
     }
     try {
@@ -70566,7 +70566,7 @@ async function check(instance, force = false) {
         log("available backends:", available);
       if (!available.includes(instance.config.backend)) {
         log(`error: backend ${instance.config.backend} not found in registry`);
-        instance.config.backend = env2.node ? "tensorflow" : "humangl";
+        instance.config.backend = env2.node ? "tensorflow" : "webgl";
         if (instance.config.debug)
           log(`override: setting backend ${instance.config.backend}`);
       }
@@ -70604,9 +70604,16 @@ async function check(instance, force = false) {
         log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
         ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
       }
-      const gl = await backend().getGPGPUContext().gl;
-      if (instance.config.debug)
-        log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+      if (backend().getGPGPUContext) {
+        const gl = await backend().getGPGPUContext().gl;
+        if (instance.config.debug)
+          log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+      }
+    }
+    if (getBackend() === "humangl") {
+      ENV.set("WEBGPU_USE_GLSL", true);
+      ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
+      ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
     }
     enableProdMode();
     await ready();

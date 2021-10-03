@@ -10426,13 +10426,6 @@ async function register(instance) {
       log("error: cannot set WebGL context:", err);
       return;
     }
-    const current = tfjs_esm_exports.backend().getGPGPUContext ? tfjs_esm_exports.backend().getGPGPUContext().gl : null;
-    if (current) {
-      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
-    } else {
-      log("error: no current gl context:", current, config2.gl);
-      return;
-    }
     try {
       const ctx = new tfjs_esm_exports.GPGPUContext(config2.gl);
       tfjs_esm_exports.registerBackend(config2.name, () => new tfjs_esm_exports.MathBackendWebGL(ctx), config2.priority);
@@ -10448,6 +10441,13 @@ async function register(instance) {
       });
     } catch (err) {
       log("error: cannot update WebGL backend registration:", err);
+      return;
+    }
+    const current = tfjs_esm_exports.backend().getGPGPUContext ? tfjs_esm_exports.backend().getGPGPUContext().gl : null;
+    if (current) {
+      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
+    } else {
+      log("error: no current gl context:", current, config2.gl);
       return;
     }
     try {
@@ -10498,7 +10498,7 @@ async function check(instance, force = false) {
         log("available backends:", available);
       if (!available.includes(instance.config.backend)) {
         log(`error: backend ${instance.config.backend} not found in registry`);
-        instance.config.backend = env2.node ? "tensorflow" : "humangl";
+        instance.config.backend = env2.node ? "tensorflow" : "webgl";
         if (instance.config.debug)
           log(`override: setting backend ${instance.config.backend}`);
       }
@@ -10536,9 +10536,16 @@ async function check(instance, force = false) {
         log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
         tfjs_esm_exports.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
       }
-      const gl = await tfjs_esm_exports.backend().getGPGPUContext().gl;
-      if (instance.config.debug)
-        log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+      if (tfjs_esm_exports.backend().getGPGPUContext) {
+        const gl = await tfjs_esm_exports.backend().getGPGPUContext().gl;
+        if (instance.config.debug)
+          log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+      }
+    }
+    if (tfjs_esm_exports.getBackend() === "humangl") {
+      tfjs_esm_exports.ENV.set("WEBGPU_USE_GLSL", true);
+      tfjs_esm_exports.ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
+      tfjs_esm_exports.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
     }
     tfjs_esm_exports.enableProdMode();
     await tfjs_esm_exports.ready();

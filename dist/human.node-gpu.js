@@ -10486,13 +10486,6 @@ async function register(instance) {
       log("error: cannot set WebGL context:", err);
       return;
     }
-    const current = tf22.backend().getGPGPUContext ? tf22.backend().getGPGPUContext().gl : null;
-    if (current) {
-      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
-    } else {
-      log("error: no current gl context:", current, config2.gl);
-      return;
-    }
     try {
       const ctx = new tf22.GPGPUContext(config2.gl);
       tf22.registerBackend(config2.name, () => new tf22.MathBackendWebGL(ctx), config2.priority);
@@ -10508,6 +10501,13 @@ async function register(instance) {
       });
     } catch (err) {
       log("error: cannot update WebGL backend registration:", err);
+      return;
+    }
+    const current = tf22.backend().getGPGPUContext ? tf22.backend().getGPGPUContext().gl : null;
+    if (current) {
+      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
+    } else {
+      log("error: no current gl context:", current, config2.gl);
       return;
     }
     try {
@@ -10559,7 +10559,7 @@ async function check(instance, force = false) {
         log("available backends:", available);
       if (!available.includes(instance.config.backend)) {
         log(`error: backend ${instance.config.backend} not found in registry`);
-        instance.config.backend = env2.node ? "tensorflow" : "humangl";
+        instance.config.backend = env2.node ? "tensorflow" : "webgl";
         if (instance.config.debug)
           log(`override: setting backend ${instance.config.backend}`);
       }
@@ -10597,9 +10597,16 @@ async function check(instance, force = false) {
         log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
         tf23.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
       }
-      const gl = await tf23.backend().getGPGPUContext().gl;
-      if (instance.config.debug)
-        log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+      if (tf23.backend().getGPGPUContext) {
+        const gl = await tf23.backend().getGPGPUContext().gl;
+        if (instance.config.debug)
+          log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+      }
+    }
+    if (tf23.getBackend() === "humangl") {
+      tf23.ENV.set("WEBGPU_USE_GLSL", true);
+      tf23.ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
+      tf23.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
     }
     tf23.enableProdMode();
     await tf23.ready();

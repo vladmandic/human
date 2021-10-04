@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/02 mandic00@live.com
+### **HEAD -> main** 2021/10/03 mandic00@live.com
 
+- added docker notes
 - breaking change: new similarity and match methods
 - release candidate
 - tweaked default values

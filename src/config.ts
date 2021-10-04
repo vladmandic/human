@@ -411,7 +411,7 @@ const config: Config = {
                              // only valid for posenet and movenet-multipose as other models detects single pose
                              // set to -1 to autodetect based on number of detected faces
     minConfidence: 0.2,      // threshold for discarding a prediction
-    skipFrames: 1,           // how many max frames to go without re-running the detector
+    skipFrames: 5,           // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
 },
 

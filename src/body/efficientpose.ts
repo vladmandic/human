@@ -6,22 +6,19 @@
 
 import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
-import type { BodyResult, Box, Point } from '../result';
+import * as coords from './efficientposecoords';
+import type { BodyKeypoint, BodyResult, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
 
-type Keypoints = { score: number, part: string, position: Point, positionRaw: Point };
-
-const keypoints: Array<Keypoints> = [];
+const keypoints: Array<BodyKeypoint> = [];
 let box: Box = [0, 0, 0, 0];
 let boxRaw: Box = [0, 0, 0, 0];
 let score = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
-
-const bodyParts = ['head', 'neck', 'rightShoulder', 'rightElbow', 'rightWrist', 'chest', 'leftShoulder', 'leftElbow', 'leftWrist', 'pelvis', 'rightHip', 'rightKnee', 'rightAnkle', 'leftHip', 'leftKnee', 'leftAnkle'];
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
@@ -41,9 +38,9 @@ function max2d(inputs, minScore) {
     const reshaped = tf.reshape(inputs, [height * width]); // combine all data
     const newScore = tf.max(reshaped, 0).dataSync()[0]; // get highest score // inside tf.tidy
     if (newScore > minScore) { // skip coordinate calculation is score is too low
-      const coords = tf.argMax(reshaped, 0);
-      const x = mod(coords, width).dataSync()[0]; // inside tf.tidy
-      const y = tf.div(coords, tf.scalar(width, 'int32')).dataSync()[0]; // inside tf.tidy
+      const coordinates = tf.argMax(reshaped, 0);
+      const x = mod(coordinates, width).dataSync()[0]; // inside tf.tidy
+      const y = tf.div(coordinates, tf.scalar(width, 'int32')).dataSync()[0]; // inside tf.tidy
       return [x, y, newScore];
     }
     return [0, 0, newScore];
@@ -53,7 +50,7 @@ function max2d(inputs, minScore) {
 export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
   if ((skipped < (config.body?.skipFrames || 0)) && config.skipFrame && Object.keys(keypoints).length > 0) {
     skipped++;
-    return [{ id: 0, score, box, boxRaw, keypoints }];
+    return [{ id: 0, score, box, boxRaw, keypoints, annotations: {} }];
   }
   skipped = 0;
   return new Promise(async (resolve) => {
@@ -83,7 +80,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
         if (score > (config.body?.minConfidence || 0)) {
           keypoints.push({
             score: Math.round(100 * partScore) / 100,
-            part: bodyParts[id],
+            part: coords.kpt[id],
             positionRaw: [ // normalized to 0..1
               // @ts-ignore model is not undefined here
               x / model.inputs[0].shape[2], y / model.inputs[0].shape[1],
@@ -114,6 +111,16 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
       Math.max(...xRaw) - Math.min(...xRaw),
       Math.max(...yRaw) - Math.min(...yRaw),
     ];
-    resolve([{ id: 0, score, box, boxRaw, keypoints }]);
+    const annotations: Record<string, Point[][]> = {};
+    for (const [name, indexes] of Object.entries(coords.connected)) {
+      const pt: Array<Point[]> = [];
+      for (let i = 0; i < indexes.length - 1; i++) {
+        const pt0 = keypoints.find((kpt) => kpt.part === indexes[i]);
+        const pt1 = keypoints.find((kpt) => kpt.part === indexes[i + 1]);
+        if (pt0 && pt1 && pt0.score > (config.body.minConfidence || 0) && pt1.score > (config.body.minConfidence || 0)) pt.push([pt0.position, pt1.position]);
+      }
+      annotations[name] = pt;
+    }
+    resolve([{ id: 0, score, box, boxRaw, keypoints, annotations }]);
   });
 }

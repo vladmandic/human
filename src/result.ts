@@ -59,6 +59,13 @@ export interface FaceResult {
   tensor?: Tensor,
 }
 
+export type BodyKeypoint = {
+  part: string,
+  position: Point,
+  positionRaw: Point,
+  score: number,
+}
+
 /** Body results
  *
  * Each results has:
@@ -77,13 +84,8 @@ export interface BodyResult {
   score: number,
   box: Box,
   boxRaw: Box,
-  keypoints: Array<{
-    part: string,
-    position: Point,
-    positionRaw: Point,
-    score: number,
-    presence?: number,
-  }>
+  annotations: Record<string, Point[][]>,
+  keypoints: Array<BodyKeypoint>
 }
 
 /** Hand results

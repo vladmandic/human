@@ -217,7 +217,7 @@ var config = {
     },
     maxDetected: -1,
     minConfidence: 0.2,
-    skipFrames: 5
+    skipFrames: 1
   },
   hand: {
     enabled: true,
@@ -1201,8 +1201,6 @@ function process2(input, config3) {
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext("2d");
         tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
-        console.log("PIXELS", tempCanvas);
-        pixels = tf2.browser && env2.browser ? tf2.browser.fromPixels(tempCanvas) : null;
         try {
           pixels = tf2.browser && env2.browser ? tf2.browser.fromPixels(tempCanvas) : null;
         } catch (err) {
@@ -9505,7 +9503,7 @@ async function predict6(input, config3) {
 }
 
 // src/body/blazepose.ts
-var tf15 = __toModule(require("@tensorflow/tfjs"));
+var tf15 = __toModule(require_tfjs_esm());
 
 // src/body/blazeposecoords.ts
 var kpt = [
@@ -10579,8 +10577,9 @@ async function register(instance) {
       if (config2.canvas) {
         config2.canvas.addEventListener("webglcontextlost", async (e) => {
           log("error: humangl:", e.type);
-          log("possible browser memory leak using webgl");
+          log("possible browser memory leak using webgl or conflict with multiple backend registrations");
           instance.emit("error");
+          throw new Error("browser webgl error");
         });
         config2.canvas.addEventListener("webglcontextrestored", (e) => {
           log("error: humangl context restored:", e);

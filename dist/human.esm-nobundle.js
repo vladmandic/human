@@ -173,7 +173,7 @@ var config = {
     },
     maxDetected: -1,
     minConfidence: 0.2,
-    skipFrames: 5
+    skipFrames: 1
   },
   hand: {
     enabled: true,
@@ -1177,8 +1177,6 @@ function process2(input, config3) {
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext("2d");
         tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
-        console.log("PIXELS", tempCanvas);
-        pixels = tfjs_esm_exports.browser && env2.browser ? tfjs_esm_exports.browser.fromPixels(tempCanvas) : null;
         try {
           pixels = tfjs_esm_exports.browser && env2.browser ? tfjs_esm_exports.browser.fromPixels(tempCanvas) : null;
         } catch (err) {
@@ -9454,15 +9452,6 @@ async function predict6(input, config3) {
   return hands;
 }
 
-// src/body/blazepose.ts
-import {
-  dispose as dispose12,
-  div as div8,
-  image as image13,
-  loadGraphModel as loadGraphModel9,
-  pad
-} from "@tensorflow/tfjs";
-
 // src/body/blazeposecoords.ts
 var kpt = [
   "nose",
@@ -9529,7 +9518,7 @@ async function loadDetect2(config3) {
   if (env3.initial)
     models2[0] = null;
   if (!models2[0] && ((_a = config3.body.detector) == null ? void 0 : _a.modelPath) || "") {
-    models2[0] = await loadGraphModel9(join(config3.modelBasePath, ((_b = config3.body.detector) == null ? void 0 : _b.modelPath) || ""));
+    models2[0] = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_b = config3.body.detector) == null ? void 0 : _b.modelPath) || ""));
     const inputs = Object.values(models2[0].modelSignature["inputs"]);
     inputSize5[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize5[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -9546,7 +9535,7 @@ async function loadPose(config3) {
   if (env3.initial)
     models2[1] = null;
   if (!models2[1]) {
-    models2[1] = await loadGraphModel9(join(config3.modelBasePath, config3.body.modelPath || ""));
+    models2[1] = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
     const inputs = Object.values(models2[1].modelSignature["inputs"]);
     inputSize5[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize5[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -9579,10 +9568,10 @@ async function prepareImage(input) {
     [input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0, input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0],
     [0, 0]
   ];
-  t.pad = pad(input, padding);
-  t.resize = image13.resizeBilinear(t.pad, [inputSize5[1][0], inputSize5[1][1]]);
-  const final = div8(t.resize, 255);
-  Object.keys(t).forEach((tensor3) => dispose12(t[tensor3]));
+  t.pad = tfjs_esm_exports.pad(input, padding);
+  t.resize = tfjs_esm_exports.image.resizeBilinear(t.pad, [inputSize5[1][0], inputSize5[1][1]]);
+  const final = tfjs_esm_exports.div(t.resize, 255);
+  Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
   return final;
 }
 function rescaleKeypoints(keypoints3, outputSize2) {
@@ -9619,7 +9608,7 @@ async function detectParts(input, config3, outputSize2) {
     return null;
   const keypoints3 = rescaleKeypoints(keypointsRelative, outputSize2);
   const boxes = calculateBoxes(keypoints3, [outputSize2[0], outputSize2[1]]);
-  Object.keys(t).forEach((tensor3) => dispose12(t[tensor3]));
+  Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
   const annotations2 = {};
   for (const [name, indexes] of Object.entries(connected)) {
     const pt = [];
@@ -10523,8 +10512,9 @@ async function register(instance) {
       if (config2.canvas) {
         config2.canvas.addEventListener("webglcontextlost", async (e) => {
           log("error: humangl:", e.type);
-          log("possible browser memory leak using webgl");
+          log("possible browser memory leak using webgl or conflict with multiple backend registrations");
           instance.emit("error");
+          throw new Error("browser webgl error");
         });
         config2.canvas.addEventListener("webglcontextrestored", (e) => {
           log("error: humangl context restored:", e);

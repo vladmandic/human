@@ -4,11 +4,11 @@
       "browser": true,
       "commonjs": true,
       "node": true,
-      "es2020": true
+      "es2021": true
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2020
+    "ecmaVersion": 2021
   },
   "plugins": [
     "@typescript-eslint"

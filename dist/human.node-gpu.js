@@ -216,7 +216,7 @@ var config = {
     },
     maxDetected: -1,
     minConfidence: 0.2,
-    skipFrames: 1
+    skipFrames: 5
   },
   hand: {
     enabled: true,
@@ -1200,6 +1200,8 @@ function process2(input, config3) {
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext("2d");
         tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
+        console.log("PIXELS", tempCanvas);
+        pixels = tf2.browser && env2.browser ? tf2.browser.fromPixels(tempCanvas) : null;
         try {
           pixels = tf2.browser && env2.browser ? tf2.browser.fromPixels(tempCanvas) : null;
         } catch (err) {
@@ -8780,11 +8782,11 @@ var HandPipeline = class {
           const rawCoords = await keypointsReshaped.array();
           tf12.dispose(keypoints3);
           tf12.dispose(keypointsReshaped);
-          const coords4 = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
-          const nextBoundingBox = this.getBoxForHandLandmarks(coords4);
+          const coords7 = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
+          const nextBoundingBox = this.getBoxForHandLandmarks(coords7);
           this.storedBoxes[i] = { ...nextBoundingBox, confidence };
           const result = {
-            landmarks: coords4,
+            landmarks: coords7,
             confidence,
             boxConfidence: currentBox.confidence,
             fingerConfidence: confidence,
@@ -9211,10 +9213,10 @@ async function predict5(input, config3) {
     return [];
   const hands = [];
   for (let i = 0; i < predictions.length; i++) {
-    const annotations3 = {};
+    const annotations2 = {};
     if (predictions[i].landmarks) {
       for (const key of Object.keys(meshAnnotations2)) {
-        annotations3[key] = meshAnnotations2[key].map((index) => predictions[i].landmarks[index]);
+        annotations2[key] = meshAnnotations2[key].map((index) => predictions[i].landmarks[index]);
       }
     }
     const keypoints3 = predictions[i].landmarks;
@@ -9258,7 +9260,7 @@ async function predict5(input, config3) {
       box: box4,
       boxRaw: boxRaw2,
       keypoints: keypoints3,
-      annotations: annotations3,
+      annotations: annotations2,
       landmarks
     });
   }
@@ -9297,9 +9299,9 @@ async function load7(config3) {
 }
 
 // src/util/box.ts
-function scale(keypoints3, boxScaleFact2, outputSize3) {
-  const coords4 = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
-  const maxmin = [Math.max(...coords4[0]), Math.min(...coords4[0]), Math.max(...coords4[1]), Math.min(...coords4[1])];
+function scale(keypoints3, boxScaleFact2, outputSize2) {
+  const coords7 = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
+  const maxmin = [Math.max(...coords7[0]), Math.min(...coords7[0]), Math.max(...coords7[1]), Math.min(...coords7[1])];
   const center = [(maxmin[0] + maxmin[1]) / 2, (maxmin[2] + maxmin[3]) / 2];
   const diff = Math.max(center[0] - maxmin[1], center[1] - maxmin[3], -center[0] + maxmin[0], -center[1] + maxmin[2]) * boxScaleFact2;
   const box4 = [
@@ -9309,10 +9311,10 @@ function scale(keypoints3, boxScaleFact2, outputSize3) {
     Math.trunc(2 * diff)
   ];
   const boxRaw2 = [
-    box4[0] / outputSize3[0],
-    box4[1] / outputSize3[1],
-    box4[2] / outputSize3[0],
-    box4[3] / outputSize3[1]
+    box4[0] / outputSize2[0],
+    box4[1] / outputSize2[1],
+    box4[2] / outputSize2[0],
+    box4[3] / outputSize2[1]
   ];
   const yxBox = [
     boxRaw2[1],
@@ -9502,10 +9504,10 @@ async function predict6(input, config3) {
 }
 
 // src/body/blazepose.ts
-var tf15 = __toModule(require_tfjs_esm());
+var tf15 = __toModule(require("@tensorflow/tfjs"));
 
-// src/body/annotations.ts
-var full = [
+// src/body/blazeposecoords.ts
+var kpt = [
   "nose",
   "leftEyeInside",
   "leftEye",
@@ -9539,58 +9541,38 @@ var full = [
   "rightHeel",
   "leftFoot",
   "rightFoot",
-  "midHip",
-  "forehead",
+  "bodyCenter",
+  "bodyTop",
   "leftThumb",
   "leftHand",
   "rightThumb",
   "rightHand"
 ];
-var upper = [
-  "nose",
-  "leftEyeInside",
-  "leftEye",
-  "leftEyeOutside",
-  "rightEyeInside",
-  "rightEye",
-  "rightEyeOutside",
-  "leftEar",
-  "rightEar",
-  "leftMouth",
-  "rightMouth",
-  "leftShoulder",
-  "rightShoulder",
-  "leftElbow",
-  "rightElbow",
-  "left:15",
-  "right:16",
-  "left:17",
-  "right:18",
-  "left:19",
-  "right:20",
-  "left:21",
-  "right:22",
-  "leftChest",
-  "rightChest",
-  "neck",
-  "forehead",
-  "left:27",
-  "right:28",
-  "left:29",
-  "right:30"
-];
+var connected = {
+  leftLeg: ["leftHip", "leftKnee", "leftAnkle", "leftHeel", "leftFoot"],
+  rightLeg: ["rightHip", "rightKnee", "rightAnkle", "rightHeel", "rightFoot"],
+  torso: ["leftShoulder", "rightShoulder", "rightHip", "leftHip", "leftShoulder"],
+  leftArm: ["leftShoulder", "leftElbow", "leftWrist", "leftPalm"],
+  rightArm: ["rightShoulder", "rightElbow", "rightWrist", "rightPalm"],
+  leftHand: [],
+  rightHand: [],
+  head: []
+};
 
 // src/body/blazepose.ts
+var env3 = { initial: true };
 var models2 = [null, null];
-var outputNodes = ["ld_3d", "activation_segmentation", "activation_heatmap", "world_3d", "output_poseflag"];
 var inputSize5 = [[0, 0], [0, 0]];
-var outputSize2 = [0, 0];
+var skipped5 = Number.MAX_SAFE_INTEGER;
+var outputNodes;
+var cache2 = null;
+var padding = [[0, 0], [0, 0], [0, 0], [0, 0]];
 async function loadDetect2(config3) {
-  var _a;
-  if (env2.initial)
+  var _a, _b;
+  if (env3.initial)
     models2[0] = null;
-  if (!models2[0]) {
-    models2[0] = await tf15.loadGraphModel(join(config3.modelBasePath, ((_a = config3.body.detector) == null ? void 0 : _a.modelPath) || ""));
+  if (!models2[0] && ((_a = config3.body.detector) == null ? void 0 : _a.modelPath) || "") {
+    models2[0] = await tf15.loadGraphModel(join(config3.modelBasePath, ((_b = config3.body.detector) == null ? void 0 : _b.modelPath) || ""));
     const inputs = Object.values(models2[0].modelSignature["inputs"]);
     inputSize5[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize5[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -9598,18 +9580,23 @@ async function loadDetect2(config3) {
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
       log("load model:", models2[0]["modelUrl"]);
-  } else if (config3.debug)
+  } else if (config3.debug && models2[0])
     log("cached model:", models2[0]["modelUrl"]);
   return models2[0];
 }
 async function loadPose(config3) {
-  if (env2.initial)
+  var _a;
+  if (env3.initial)
     models2[1] = null;
   if (!models2[1]) {
     models2[1] = await tf15.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
     const inputs = Object.values(models2[1].modelSignature["inputs"]);
     inputSize5[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize5[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if ((_a = config3.body.modelPath) == null ? void 0 : _a.includes("lite"))
+      outputNodes = ["ld_3d", "output_segmentation", "output_heatmap", "world_3d", "output_poseflag"];
+    else
+      outputNodes = ["Identity", "Identity_2", "Identity_3", "Identity_4", "Identity_1"];
     if (!models2[1] || !models2[1]["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
@@ -9618,64 +9605,128 @@ async function loadPose(config3) {
     log("cached model:", models2[1]["modelUrl"]);
   return models2[1];
 }
-async function detectParts(input, config3) {
-  var _a;
-  const t = {};
-  t.resize = tf15.image.resizeBilinear(input, [inputSize5[1][0], inputSize5[1][1]]);
-  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = await ((_a = models2[1]) == null ? void 0 : _a.execute(t.resize, outputNodes));
-  const points = await t.ld.data();
-  const keypoints3 = [];
-  const labels2 = (points == null ? void 0 : points.length) === 195 ? full : upper;
-  const depth = 5;
-  for (let i = 0; i < points.length / depth; i++) {
-    const score3 = (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100;
-    if (score3 > (config3.body.minConfidence || 0)) {
-      keypoints3.push({
-        part: labels2[i],
-        position: [
-          Math.trunc(outputSize2[0] * points[depth * i + 0] / 255),
-          Math.trunc(outputSize2[1] * points[depth * i + 1] / 255),
-          Math.trunc(points[depth * i + 2]) + 0
-        ],
-        positionRaw: [
-          points[depth * i + 0] / 255,
-          points[depth * i + 1] / 255,
-          points[depth * i + 2] + 0
-        ],
-        score: score3
-      });
-    }
-  }
+function calculateBoxes(keypoints3, outputSize2) {
   const x = keypoints3.map((a) => a.position[0]);
   const y = keypoints3.map((a) => a.position[1]);
-  const box4 = [
-    Math.min(...x),
-    Math.min(...y),
-    Math.max(...x) - Math.min(...x),
-    Math.max(...y) - Math.min(...x)
+  const keypointsBox = [Math.min(...x), Math.min(...y), Math.max(...x) - Math.min(...x), Math.max(...y) - Math.min(...y)];
+  const keypointsBoxRaw = [keypointsBox[0] / outputSize2[0], keypointsBox[1] / outputSize2[1], keypointsBox[2] / outputSize2[0], keypointsBox[3] / outputSize2[1]];
+  return { keypointsBox, keypointsBoxRaw };
+}
+async function prepareImage(input) {
+  const t = {};
+  if (!input.shape || !input.shape[1] || !input.shape[2])
+    return input;
+  padding = [
+    [0, 0],
+    [input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0, input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0],
+    [input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0, input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0],
+    [0, 0]
   ];
-  const boxRaw2 = [0, 0, 0, 0];
-  const score2 = keypoints3.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
+  t.pad = tf15.pad(input, padding);
+  t.resize = tf15.image.resizeBilinear(t.pad, [inputSize5[1][0], inputSize5[1][1]]);
+  const final = tf15.div(t.resize, 255);
   Object.keys(t).forEach((tensor3) => tf15.dispose(t[tensor3]));
-  return { id: 0, score: score2, box: box4, boxRaw: boxRaw2, keypoints: keypoints3 };
+  return final;
+}
+function rescaleKeypoints(keypoints3, outputSize2) {
+  for (const kpt4 of keypoints3) {
+    kpt4.position = [
+      kpt4.position[0] * (outputSize2[0] + padding[2][0] + padding[2][1]) / outputSize2[0] - padding[2][0],
+      kpt4.position[1] * (outputSize2[1] + padding[1][0] + padding[1][1]) / outputSize2[1] - padding[1][0],
+      kpt4.position[2]
+    ];
+    kpt4.positionRaw = [
+      kpt4.position[0] / outputSize2[0],
+      kpt4.position[1] / outputSize2[1],
+      kpt4.position[2]
+    ];
+  }
+  return keypoints3;
+}
+async function detectParts(input, config3, outputSize2) {
+  var _a;
+  const t = {};
+  t.input = await prepareImage(input);
+  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = await ((_a = models2[1]) == null ? void 0 : _a.execute(t.input, outputNodes));
+  const points = await t.ld.data();
+  const keypointsRelative = [];
+  const depth = 5;
+  for (let i = 0; i < points.length / depth; i++) {
+    const score2 = (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100;
+    const positionRaw = [points[depth * i + 0] / inputSize5[1][0], points[depth * i + 1] / inputSize5[1][1], points[depth * i + 2] + 0];
+    const position = [Math.trunc(outputSize2[0] * positionRaw[0]), Math.trunc(outputSize2[1] * positionRaw[1]), positionRaw[2]];
+    keypointsRelative.push({ part: kpt[i], positionRaw, position, score: score2 });
+  }
+  const avgScore = Math.round(100 * keypointsRelative.reduce((prev, curr) => prev += curr.score, 0) / keypointsRelative.length) / 100;
+  if (avgScore < (config3.body.minConfidence || 0))
+    return null;
+  const keypoints3 = rescaleKeypoints(keypointsRelative, outputSize2);
+  const boxes = calculateBoxes(keypoints3, [outputSize2[0], outputSize2[1]]);
+  Object.keys(t).forEach((tensor3) => tf15.dispose(t[tensor3]));
+  const annotations2 = {};
+  for (const [name, indexes] of Object.entries(connected)) {
+    const pt = [];
+    for (let i = 0; i < indexes.length - 1; i++) {
+      const pt0 = keypoints3.find((kpt4) => kpt4.part === indexes[i]);
+      const pt1 = keypoints3.find((kpt4) => kpt4.part === indexes[i + 1]);
+      if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
+        pt.push([pt0.position, pt1.position]);
+    }
+    annotations2[name] = pt;
+  }
+  return { id: 0, score: avgScore, box: boxes.keypointsBox, boxRaw: boxes.keypointsBoxRaw, keypoints: keypoints3, annotations: annotations2 };
 }
 async function predict7(input, config3) {
-  outputSize2 = [input.shape[2] || 0, input.shape[1] || 0];
-  const bodies = [];
-  const body4 = await detectParts(input, config3);
-  bodies.push(body4);
-  return bodies;
+  const outputSize2 = [input.shape[2] || 0, input.shape[1] || 0];
+  if (skipped5 < (config3.body.skipFrames || 0) && config3.skipFrame) {
+    skipped5++;
+  } else {
+    cache2 = await detectParts(input, config3, outputSize2);
+    skipped5 = 0;
+  }
+  if (cache2)
+    return [cache2];
+  return [];
 }
 
 // src/body/efficientpose.ts
 var tf16 = __toModule(require_tfjs_esm());
+
+// src/body/efficientposecoords.ts
+var kpt2 = [
+  "head",
+  "neck",
+  "rightShoulder",
+  "rightElbow",
+  "rightWrist",
+  "chest",
+  "leftShoulder",
+  "leftElbow",
+  "leftWrist",
+  "bodyCenter",
+  "rightHip",
+  "rightKnee",
+  "rightAnkle",
+  "leftHip",
+  "leftKnee",
+  "leftAnkle"
+];
+var connected2 = {
+  leftLeg: ["leftHip", "leftKnee", "leftAnkle"],
+  rightLeg: ["rightHip", "rightKnee", "rightAnkle"],
+  torso: ["leftShoulder", "rightShoulder", "rightHip", "leftHip", "leftShoulder"],
+  leftArm: ["leftShoulder", "leftElbow", "leftWrist"],
+  rightArm: ["rightShoulder", "rightElbow", "rightWrist"],
+  head: []
+};
+
+// src/body/efficientpose.ts
 var model7;
 var keypoints = [];
 var box3 = [0, 0, 0, 0];
 var boxRaw = [0, 0, 0, 0];
 var score = 0;
-var skipped5 = Number.MAX_SAFE_INTEGER;
-var bodyParts = ["head", "neck", "rightShoulder", "rightElbow", "rightWrist", "chest", "leftShoulder", "leftElbow", "leftWrist", "pelvis", "rightHip", "rightKnee", "rightAnkle", "leftHip", "leftKnee", "leftAnkle"];
+var skipped6 = Number.MAX_SAFE_INTEGER;
 async function load8(config3) {
   if (env2.initial)
     model7 = null;
@@ -9696,9 +9747,9 @@ function max2d(inputs, minScore) {
     const reshaped = tf16.reshape(inputs, [height * width]);
     const newScore = tf16.max(reshaped, 0).dataSync()[0];
     if (newScore > minScore) {
-      const coords4 = tf16.argMax(reshaped, 0);
-      const x = mod(coords4, width).dataSync()[0];
-      const y = tf16.div(coords4, tf16.scalar(width, "int32")).dataSync()[0];
+      const coordinates = tf16.argMax(reshaped, 0);
+      const x = mod(coordinates, width).dataSync()[0];
+      const y = tf16.div(coordinates, tf16.scalar(width, "int32")).dataSync()[0];
       return [x, y, newScore];
     }
     return [0, 0, newScore];
@@ -9706,11 +9757,11 @@ function max2d(inputs, minScore) {
 }
 async function predict8(image24, config3) {
   var _a;
-  if (skipped5 < (((_a = config3.body) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && Object.keys(keypoints).length > 0) {
-    skipped5++;
-    return [{ id: 0, score, box: box3, boxRaw, keypoints }];
+  if (skipped6 < (((_a = config3.body) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && Object.keys(keypoints).length > 0) {
+    skipped6++;
+    return [{ id: 0, score, box: box3, boxRaw, keypoints, annotations: {} }];
   }
-  skipped5 = 0;
+  skipped6 = 0;
   return new Promise(async (resolve) => {
     var _a2;
     const tensor3 = tf16.tidy(() => {
@@ -9736,7 +9787,7 @@ async function predict8(image24, config3) {
         if (score > (((_a2 = config3.body) == null ? void 0 : _a2.minConfidence) || 0)) {
           keypoints.push({
             score: Math.round(100 * partScore) / 100,
-            part: bodyParts[id],
+            part: kpt2[id],
             positionRaw: [
               x2 / model7.inputs[0].shape[2],
               y2 / model7.inputs[0].shape[1]
@@ -9767,18 +9818,59 @@ async function predict8(image24, config3) {
       Math.max(...xRaw) - Math.min(...xRaw),
       Math.max(...yRaw) - Math.min(...yRaw)
     ];
-    resolve([{ id: 0, score, box: box3, boxRaw, keypoints }]);
+    const annotations2 = {};
+    for (const [name, indexes] of Object.entries(connected2)) {
+      const pt = [];
+      for (let i = 0; i < indexes.length - 1; i++) {
+        const pt0 = keypoints.find((kpt4) => kpt4.part === indexes[i]);
+        const pt1 = keypoints.find((kpt4) => kpt4.part === indexes[i + 1]);
+        if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
+          pt.push([pt0.position, pt1.position]);
+      }
+      annotations2[name] = pt;
+    }
+    resolve([{ id: 0, score, box: box3, boxRaw, keypoints, annotations: annotations2 }]);
   });
 }
 
 // src/body/movenet.ts
 var tf17 = __toModule(require_tfjs_esm());
+
+// src/body/movenetcoords.ts
+var kpt3 = [
+  "nose",
+  "leftEye",
+  "rightEye",
+  "leftEar",
+  "rightEar",
+  "leftShoulder",
+  "rightShoulder",
+  "leftElbow",
+  "rightElbow",
+  "leftWrist",
+  "rightWrist",
+  "leftHip",
+  "rightHip",
+  "leftKnee",
+  "rightKnee",
+  "leftAnkle",
+  "rightAnkle"
+];
+var connected3 = {
+  leftLeg: ["leftHip", "leftKnee", "leftAnkle"],
+  rightLeg: ["rightHip", "rightKnee", "rightAnkle"],
+  torso: ["leftShoulder", "rightShoulder", "rightHip", "leftHip", "leftShoulder"],
+  leftArm: ["leftShoulder", "leftElbow", "leftWrist"],
+  rightArm: ["rightShoulder", "rightElbow", "rightWrist"],
+  head: []
+};
+
+// src/body/movenet.ts
 var model8;
 var inputSize6 = 0;
 var cachedBoxes = [];
-var skipped6 = Number.MAX_SAFE_INTEGER;
+var skipped7 = Number.MAX_SAFE_INTEGER;
 var keypoints2 = [];
-var bodyParts2 = ["nose", "leftEye", "rightEye", "leftEar", "rightEar", "leftShoulder", "rightShoulder", "leftElbow", "rightElbow", "leftWrist", "rightWrist", "leftHip", "rightHip", "leftKnee", "rightKnee", "leftAnkle", "rightAnkle"];
 async function load9(config3) {
   if (env2.initial)
     model8 = null;
@@ -9816,19 +9908,19 @@ function createBox2(points) {
   return [box4, boxRaw2];
 }
 async function parseSinglePose(res, config3, image24, inputBox) {
-  const kpt = res[0][0];
+  const kpt4 = res[0][0];
   keypoints2.length = 0;
   let score2 = 0;
-  for (let id = 0; id < kpt.length; id++) {
-    score2 = kpt[id][2];
+  for (let id = 0; id < kpt4.length; id++) {
+    score2 = kpt4[id][2];
     if (score2 > config3.body.minConfidence) {
       const positionRaw = [
-        (inputBox[3] - inputBox[1]) * kpt[id][1] + inputBox[1],
-        (inputBox[2] - inputBox[0]) * kpt[id][0] + inputBox[0]
+        (inputBox[3] - inputBox[1]) * kpt4[id][1] + inputBox[1],
+        (inputBox[2] - inputBox[0]) * kpt4[id][0] + inputBox[0]
       ];
       keypoints2.push({
         score: Math.round(100 * score2) / 100,
-        part: bodyParts2[id],
+        part: kpt3[id],
         positionRaw,
         position: [
           Math.round((image24.shape[2] || 0) * positionRaw[0]),
@@ -9840,25 +9932,36 @@ async function parseSinglePose(res, config3, image24, inputBox) {
   score2 = keypoints2.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
   const bodies = [];
   const [box4, boxRaw2] = createBox2(keypoints2);
-  bodies.push({ id: 0, score: score2, box: box4, boxRaw: boxRaw2, keypoints: keypoints2 });
+  const annotations2 = {};
+  for (const [name, indexes] of Object.entries(connected3)) {
+    const pt = [];
+    for (let i = 0; i < indexes.length - 1; i++) {
+      const pt0 = keypoints2.find((kp) => kp.part === indexes[i]);
+      const pt1 = keypoints2.find((kp) => kp.part === indexes[i + 1]);
+      if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
+        pt.push([pt0.position, pt1.position]);
+    }
+    annotations2[name] = pt;
+  }
+  bodies.push({ id: 0, score: score2, box: box4, boxRaw: boxRaw2, keypoints: keypoints2, annotations: annotations2 });
   return bodies;
 }
 async function parseMultiPose(res, config3, image24, inputBox) {
   const bodies = [];
   for (let id = 0; id < res[0].length; id++) {
-    const kpt = res[0][id];
-    const totalScore = Math.round(100 * kpt[51 + 4]) / 100;
+    const kpt4 = res[0][id];
+    const totalScore = Math.round(100 * kpt4[51 + 4]) / 100;
     if (totalScore > config3.body.minConfidence) {
       keypoints2.length = 0;
       for (let i = 0; i < 17; i++) {
-        const score2 = kpt[3 * i + 2];
+        const score2 = kpt4[3 * i + 2];
         if (score2 > config3.body.minConfidence) {
           const positionRaw = [
-            (inputBox[3] - inputBox[1]) * kpt[3 * i + 1] + inputBox[1],
-            (inputBox[2] - inputBox[0]) * kpt[3 * i + 0] + inputBox[0]
+            (inputBox[3] - inputBox[1]) * kpt4[3 * i + 1] + inputBox[1],
+            (inputBox[2] - inputBox[0]) * kpt4[3 * i + 0] + inputBox[0]
           ];
           keypoints2.push({
-            part: bodyParts2[i],
+            part: kpt3[i],
             score: Math.round(100 * score2) / 100,
             positionRaw,
             position: [
@@ -9868,9 +9971,19 @@ async function parseMultiPose(res, config3, image24, inputBox) {
           });
         }
       }
-      const boxRaw2 = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
-      const box4 = [Math.trunc(boxRaw2[0] * (image24.shape[2] || 0)), Math.trunc(boxRaw2[1] * (image24.shape[1] || 0)), Math.trunc(boxRaw2[2] * (image24.shape[2] || 0)), Math.trunc(boxRaw2[3] * (image24.shape[1] || 0))];
-      bodies.push({ id, score: totalScore, boxRaw: boxRaw2, box: box4, keypoints: [...keypoints2] });
+      const [box4, boxRaw2] = createBox2(keypoints2);
+      const annotations2 = {};
+      for (const [name, indexes] of Object.entries(connected3)) {
+        const pt = [];
+        for (let i = 0; i < indexes.length - 1; i++) {
+          const pt0 = keypoints2.find((kp) => kp.part === indexes[i]);
+          const pt1 = keypoints2.find((kp) => kp.part === indexes[i + 1]);
+          if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
+            pt.push([pt0.position, pt1.position]);
+        }
+        annotations2[name] = pt;
+      }
+      bodies.push({ id, score: totalScore, boxRaw: boxRaw2, box: box4, keypoints: [...keypoints2], annotations: annotations2 });
     }
   }
   bodies.sort((a, b) => b.score - a.score);
@@ -9886,7 +9999,7 @@ async function predict9(input, config3) {
     let bodies = [];
     if (!config3.skipFrame)
       cachedBoxes.length = 0;
-    skipped6++;
+    skipped7++;
     for (let i = 0; i < cachedBoxes.length; i++) {
       t.crop = tf17.image.cropAndResize(input, [cachedBoxes[i]], [0], [inputSize6, inputSize6], "bilinear");
       t.cast = tf17.cast(t.crop, "int32");
@@ -9896,7 +10009,7 @@ async function predict9(input, config3) {
       bodies = bodies.concat(newBodies);
       Object.keys(t).forEach((tensor3) => tf17.dispose(t[tensor3]));
     }
-    if (bodies.length !== config3.body.maxDetected && skipped6 > (config3.body.skipFrames || 0)) {
+    if (bodies.length !== config3.body.maxDetected && skipped7 > (config3.body.skipFrames || 0)) {
       t.resized = tf17.image.resizeBilinear(input, [inputSize6, inputSize6], false);
       t.cast = tf17.cast(t.resized, "int32");
       t.res = await (model8 == null ? void 0 : model8.predict(t.cast));
@@ -9904,13 +10017,13 @@ async function predict9(input, config3) {
       bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, [0, 0, 1, 1]) : await parseMultiPose(res, config3, input, [0, 0, 1, 1]);
       Object.keys(t).forEach((tensor3) => tf17.dispose(t[tensor3]));
       cachedBoxes.length = 0;
-      skipped6 = 0;
+      skipped7 = 0;
     }
     if (config3.skipFrame) {
       cachedBoxes.length = 0;
       for (let i = 0; i < bodies.length; i++) {
         if (bodies[i].keypoints.length > 10) {
-          const kpts = bodies[i].keypoints.map((kpt) => kpt.position);
+          const kpts = bodies[i].keypoints.map((kpt4) => kpt4.position);
           const newBox = scale(kpts, 1.5, [input.shape[2], input.shape[1]]);
           cachedBoxes.push([...newBox.yxBox]);
         }
@@ -10010,7 +10123,7 @@ var labels = [
 // src/object/nanodet.ts
 var model9;
 var last3 = [];
-var skipped7 = Number.MAX_SAFE_INTEGER;
+var skipped8 = Number.MAX_SAFE_INTEGER;
 var scaleBox = 2.5;
 async function load10(config3) {
   if (!model9 || env2.initial) {
@@ -10089,15 +10202,15 @@ async function process3(res, inputSize8, outputShape, config3) {
   return results;
 }
 async function predict10(image24, config3) {
-  if (skipped7 < (config3.object.skipFrames || 0) && config3.skipFrame && last3.length > 0) {
-    skipped7++;
+  if (skipped8 < (config3.object.skipFrames || 0) && config3.skipFrame && last3.length > 0) {
+    skipped8++;
     return last3;
   }
-  skipped7 = 0;
+  skipped8 = 0;
   if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
     return last3;
   return new Promise(async (resolve) => {
-    const outputSize3 = [image24.shape[2], image24.shape[1]];
+    const outputSize2 = [image24.shape[2], image24.shape[1]];
     const resize = tf18.image.resizeBilinear(image24, [model9.inputSize, model9.inputSize], false);
     const norm = tf18.div(resize, 255);
     const transpose = norm.transpose([0, 3, 1, 2]);
@@ -10107,7 +10220,7 @@ async function predict10(image24, config3) {
     if (config3.object.enabled)
       objectT = await model9.predict(transpose);
     tf18.dispose(transpose);
-    const obj = await process3(objectT, model9.inputSize, outputSize3, config3);
+    const obj = await process3(objectT, model9.inputSize, outputSize2, config3);
     last3 = obj;
     resolve(obj);
   });
@@ -10118,7 +10231,7 @@ var tf19 = __toModule(require_tfjs_esm());
 var model10;
 var inputSize7 = 0;
 var last4 = [];
-var skipped8 = Number.MAX_SAFE_INTEGER;
+var skipped9 = Number.MAX_SAFE_INTEGER;
 async function load11(config3) {
   if (env2.initial)
     model10 = null;
@@ -10182,19 +10295,19 @@ async function process4(res, outputShape, config3) {
   return results;
 }
 async function predict11(input, config3) {
-  if (skipped8 < (config3.object.skipFrames || 0) && config3.skipFrame && last4.length > 0) {
-    skipped8++;
+  if (skipped9 < (config3.object.skipFrames || 0) && config3.skipFrame && last4.length > 0) {
+    skipped9++;
     return last4;
   }
-  skipped8 = 0;
+  skipped9 = 0;
   if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
     return last4;
   return new Promise(async (resolve) => {
-    const outputSize3 = [input.shape[2], input.shape[1]];
+    const outputSize2 = [input.shape[2], input.shape[1]];
     const resize = tf19.image.resizeBilinear(input, [inputSize7, inputSize7]);
     const objectT = config3.object.enabled ? model10 == null ? void 0 : model10.execute(resize, ["tower_0/detections"]) : null;
     tf19.dispose(resize);
-    const obj = await process4(objectT, outputSize3, config3);
+    const obj = await process4(objectT, outputSize2, config3);
     last4 = obj;
     resolve(obj);
   });
@@ -10287,7 +10400,7 @@ async function process5(input, background, config3) {
 // src/gear/gear-agegenderrace.ts
 var tf21 = __toModule(require_tfjs_esm());
 var model12;
-var skipped9 = Number.MAX_SAFE_INTEGER;
+var skipped10 = Number.MAX_SAFE_INTEGER;
 async function load13(config3) {
   if (env2.initial)
     model12 = null;
@@ -10467,7 +10580,6 @@ async function register(instance) {
           log("error: humangl:", e.type);
           log("possible browser memory leak using webgl");
           instance.emit("error");
-          throw new Error("browser webgl error");
         });
         config2.canvas.addEventListener("webglcontextrestored", (e) => {
           log("error: humangl context restored:", e);
@@ -10603,10 +10715,8 @@ async function check(instance, force = false) {
           log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }
     }
-    if (tf23.getBackend() === "humangl") {
+    if (tf23.getBackend() === "webgpu") {
       tf23.ENV.set("WEBGPU_USE_GLSL", true);
-      tf23.ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
-      tf23.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
     }
     tf23.enableProdMode();
     await tf23.ready();
@@ -10878,109 +10988,24 @@ async function body(inCanvas2, result, drawOptions) {
         ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
       }
     }
-    if (localOptions.drawPoints) {
+    if (localOptions.drawPoints && result[i].keypoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
         ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position[2] ? `rgba(${127.5 + 2 * (result[i].keypoints[pt].position[2] || 0)}, ${127.5 - 2 * (result[i].keypoints[pt].position[2] || 0)}, 255, 0.5)` : localOptions.color;
         point(ctx, result[i].keypoints[pt].position[0], result[i].keypoints[pt].position[1], 0, localOptions);
       }
     }
-    if (localOptions.drawLabels) {
+    if (localOptions.drawLabels && result[i].keypoints) {
       ctx.font = localOptions.font;
-      if (result[i].keypoints) {
-        for (const pt of result[i].keypoints) {
-          ctx.fillStyle = localOptions.useDepth && pt.position[2] ? `rgba(${127.5 + 2 * pt.position[2]}, ${127.5 - 2 * pt.position[2]}, 255, 0.5)` : localOptions.color;
-          ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position[0] + 4, pt.position[1] + 4);
-        }
+      for (const pt of result[i].keypoints) {
+        ctx.fillStyle = localOptions.useDepth && pt.position[2] ? `rgba(${127.5 + 2 * pt.position[2]}, ${127.5 - 2 * pt.position[2]}, 255, 0.5)` : localOptions.color;
+        ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position[0] + 4, pt.position[1] + 4);
       }
     }
-    if (localOptions.drawPolygons && result[i].keypoints) {
-      let part;
-      const points = [];
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      curves(ctx, points, localOptions);
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightHip");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftHip");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      if (points.length === 4)
-        lines(ctx, points, localOptions);
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "leftHip");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftKnee");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftAnkle");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftHeel");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftFoot");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      curves(ctx, points, localOptions);
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "rightHip");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightKnee");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightAnkle");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightHeel");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightFoot");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      curves(ctx, points, localOptions);
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "leftShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftElbow");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftWrist");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "leftPalm");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      curves(ctx, points, localOptions);
-      points.length = 0;
-      part = result[i].keypoints.find((a) => a.part === "rightShoulder");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightElbow");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightWrist");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      part = result[i].keypoints.find((a) => a.part === "rightPalm");
-      if (part)
-        points.push([part.position[0], part.position[1]]);
-      curves(ctx, points, localOptions);
+    if (localOptions.drawPolygons && result[i].keypoints && result[i].annotations) {
+      for (const part of Object.values(result[i].annotations)) {
+        for (const connected4 of part)
+          curves(ctx, connected4, localOptions);
+      }
     }
   }
 }
@@ -11473,15 +11498,15 @@ function calc(newResult) {
       if (bufferedResult.hand[i].keypoints.length !== newResult.hand[i].keypoints.length)
         bufferedResult.hand[i].keypoints = newResult.hand[i].keypoints;
       const keypoints3 = newResult.hand[i].keypoints && newResult.hand[i].keypoints.length > 0 ? newResult.hand[i].keypoints.map((landmark, j) => landmark.map((coord, k) => ((bufferedFactor - 1) * (bufferedResult.hand[i].keypoints[j][k] || 1) + (coord || 0)) / bufferedFactor)) : [];
-      const annotations3 = {};
+      const annotations2 = {};
       if (Object.keys(bufferedResult.hand[i].annotations).length !== Object.keys(newResult.hand[i].annotations).length)
         bufferedResult.hand[i].annotations = newResult.hand[i].annotations;
       if (newResult.hand[i].annotations) {
         for (const key of Object.keys(newResult.hand[i].annotations)) {
-          annotations3[key] = newResult.hand[i].annotations[key] && newResult.hand[i].annotations[key][0] ? newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor)) : null;
+          annotations2[key] = newResult.hand[i].annotations[key] && newResult.hand[i].annotations[key][0] ? newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor)) : null;
         }
       }
-      bufferedResult.hand[i] = { ...newResult.hand[i], box: box4, boxRaw: boxRaw2, keypoints: keypoints3, annotations: annotations3 };
+      bufferedResult.hand[i] = { ...newResult.hand[i], box: box4, boxRaw: boxRaw2, keypoints: keypoints3, annotations: annotations2 };
     }
   }
   if (!bufferedResult.face || newResult.face.length !== bufferedResult.face.length) {

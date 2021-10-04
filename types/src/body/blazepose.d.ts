@@ -1,7 +1,5 @@
 /**
  * BlazePose model implementation
- *
- * Based on : [**BlazePose**](https://github.com/google/mediapipe/blob/master/mediapipe/modules/pose_detection)
  */
 import type { BodyResult } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';

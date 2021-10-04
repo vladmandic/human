@@ -37,7 +37,7 @@ export const full = [
   'rightHeel',
   'leftFoot',
   'rightFoot',
-  'midHip',
+  'bodyCenter',
   'forehead',
   'leftThumb',
   'leftHand',

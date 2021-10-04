@@ -67,7 +67,7 @@ export async function register(instance): Promise<void> {
           // log('gpu memory usage:', instance.tf.engine().backendInstance.numBytesInGPU);
           log('possible browser memory leak using webgl');
           instance.emit('error');
-          throw new Error('browser webgl error');
+          // throw new Error('browser webgl error');
           /*
           log('resetting humangl backend');
           env.initial = true;

@@ -90,10 +90,8 @@ export async function check(instance, force = false) {
     }
 
     // handle webgpu
-    if (tf.getBackend() === 'humangl') {
+    if (tf.getBackend() === 'webgpu') {
       tf.ENV.set('WEBGPU_USE_GLSL', true);
-      tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', false);
-      tf.ENV.set('WEBGL_USE_SHAPES_UNIFORMS', true);
     }
 
     // wait for ready

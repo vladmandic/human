@@ -7,7 +7,8 @@
 import { log, join } from '../util/util';
 import { scale } from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
-import type { BodyResult, Box, Point } from '../result';
+import * as coords from './movenetcoords';
+import type { BodyKeypoint, BodyResult, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { fakeOps } from '../tfjs/backend';
@@ -17,13 +18,8 @@ let model: GraphModel | null;
 let inputSize = 0;
 const cachedBoxes: Array<Box> = [];
 
-type Keypoints = { score: number, part: string, position: Point, positionRaw: Point };
-type Body = { id: number, score: number, box: Box, boxRaw: Box, keypoints: Array<Keypoints> }
-
 let skipped = Number.MAX_SAFE_INTEGER;
-const keypoints: Array<Keypoints> = [];
-
-const bodyParts = ['nose', 'leftEye', 'rightEye', 'leftEar', 'rightEar', 'leftShoulder', 'rightShoulder', 'leftElbow', 'rightElbow', 'leftWrist', 'rightWrist', 'leftHip', 'rightHip', 'leftKnee', 'rightKnee', 'leftAnkle', 'rightAnkle'];
+const keypoints: Array<BodyKeypoint> = [];
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
@@ -71,7 +67,7 @@ async function parseSinglePose(res, config, image, inputBox) {
       ];
       keypoints.push({
         score: Math.round(100 * score) / 100,
-        part: bodyParts[id],
+        part: coords.kpt[id],
         positionRaw,
         position: [ // normalized to input image size
           Math.round((image.shape[2] || 0) * positionRaw[0]),
@@ -81,14 +77,24 @@ async function parseSinglePose(res, config, image, inputBox) {
     }
   }
   score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
-  const bodies: Array<Body> = [];
+  const bodies: Array<BodyResult> = [];
   const [box, boxRaw] = createBox(keypoints);
-  bodies.push({ id: 0, score, box, boxRaw, keypoints });
+  const annotations: Record<string, Point[][]> = {};
+  for (const [name, indexes] of Object.entries(coords.connected)) {
+    const pt: Array<Point[]> = [];
+    for (let i = 0; i < indexes.length - 1; i++) {
+      const pt0 = keypoints.find((kp) => kp.part === indexes[i]);
+      const pt1 = keypoints.find((kp) => kp.part === indexes[i + 1]);
+      if (pt0 && pt1 && pt0.score > (config.body.minConfidence || 0) && pt1.score > (config.body.minConfidence || 0)) pt.push([pt0.position, pt1.position]);
+    }
+    annotations[name] = pt;
+  }
+  bodies.push({ id: 0, score, box, boxRaw, keypoints, annotations });
   return bodies;
 }
 
 async function parseMultiPose(res, config, image, inputBox) {
-  const bodies: Array<Body> = [];
+  const bodies: Array<BodyResult> = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt = res[0][id];
     const totalScore = Math.round(100 * kpt[51 + 4]) / 100;
@@ -102,7 +108,7 @@ async function parseMultiPose(res, config, image, inputBox) {
             (inputBox[2] - inputBox[0]) * kpt[3 * i + 0] + inputBox[0],
           ];
           keypoints.push({
-            part: bodyParts[i],
+            part: coords.kpt[i],
             score: Math.round(100 * score) / 100,
             positionRaw,
             position: [
@@ -112,11 +118,21 @@ async function parseMultiPose(res, config, image, inputBox) {
           });
         }
       }
-      // const [box, boxRaw] = createBox(keypoints);
+      const [box, boxRaw] = createBox(keypoints);
       // movenet-multipose has built-in box details
-      const boxRaw: Box = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
-      const box: Box = [Math.trunc(boxRaw[0] * (image.shape[2] || 0)), Math.trunc(boxRaw[1] * (image.shape[1] || 0)), Math.trunc(boxRaw[2] * (image.shape[2] || 0)), Math.trunc(boxRaw[3] * (image.shape[1] || 0))];
-      bodies.push({ id, score: totalScore, boxRaw, box, keypoints: [...keypoints] });
+      // const boxRaw: Box = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
+      // const box: Box = [Math.trunc(boxRaw[0] * (image.shape[2] || 0)), Math.trunc(boxRaw[1] * (image.shape[1] || 0)), Math.trunc(boxRaw[2] * (image.shape[2] || 0)), Math.trunc(boxRaw[3] * (image.shape[1] || 0))];
+      const annotations: Record<string, Point[][]> = {};
+      for (const [name, indexes] of Object.entries(coords.connected)) {
+        const pt: Array<Point[]> = [];
+        for (let i = 0; i < indexes.length - 1; i++) {
+          const pt0 = keypoints.find((kp) => kp.part === indexes[i]);
+          const pt1 = keypoints.find((kp) => kp.part === indexes[i + 1]);
+          if (pt0 && pt1 && pt0.score > (config.body.minConfidence || 0) && pt1.score > (config.body.minConfidence || 0)) pt.push([pt0.position, pt1.position]);
+        }
+        annotations[name] = pt;
+      }
+      bodies.push({ id, score: totalScore, boxRaw, box, keypoints: [...keypoints], annotations });
     }
   }
   bodies.sort((a, b) => b.score - a.score);
@@ -129,7 +145,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
   return new Promise(async (resolve) => {
     const t: Record<string, Tensor> = {};
 
-    let bodies: Array<Body> = [];
+    let bodies: Array<BodyResult> = [];
 
     if (!config.skipFrame) cachedBoxes.length = 0; // allowed to use cache or not
     skipped++;

@@ -8,7 +8,6 @@ import { defaults } from './config';
 import * as tf from '../dist/tfjs.esm.js';
 import * as app from '../package.json';
 import * as backend from './tfjs/backend';
-// import * as blazepose from './body/blazepose-v1';
 import * as blazepose from './body/blazepose';
 import * as centernet from './object/centernet';
 import * as draw from './util/draw';

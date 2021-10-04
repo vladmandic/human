@@ -183,8 +183,6 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
         tempCanvas.height = targetHeight;
         const tempCtx = tempCanvas.getContext('2d');
         tempCtx?.drawImage(outCanvas, 0, 0);
-        console.log('PIXELS', tempCanvas);
-        pixels = (tf.browser && env.browser) ? tf.browser.fromPixels(tempCanvas) : null;
         try {
           pixels = (tf.browser && env.browser) ? tf.browser.fromPixels(tempCanvas) : null;
         } catch (err) {

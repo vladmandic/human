@@ -31,13 +31,6 @@ import jsonView from './helpers/jsonview.js';
 let human;
 
 let userConfig = {
-  face: { enabled: false },
-  object: { enabled: false },
-  gesture: { enabled: true },
-  hand: { enabled: false },
-  body: { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/blazepose-lite.json' },
-  segmentation: { enabled: false },
-
   /*
   warmup: 'none',
   backend: 'humangl',
@@ -98,6 +91,7 @@ const ui = {
   autoPlay: false, // start webcam & detection on load
 
   // internal variables
+  exceptionHandler: false, // should capture all unhandled exceptions
   busy: false, // internal camera busy flag
   menuWidth: 0, // internal
   menuHeight: 0, // internal
@@ -115,7 +109,6 @@ const ui = {
   lastFrame: 0, // time of last frame processing
   viewportSet: false, // internal, has custom viewport been set
   background: null, // holds instance of segmentation background image
-  exceptionHandler: false, // should capture all unhandled exceptions
 
   // webrtc
   useWebRTC: false, // use webrtc as camera source instead of local webcam

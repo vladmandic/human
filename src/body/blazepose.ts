@@ -2,7 +2,7 @@
  * BlazePose model implementation
  */
 
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '../../dist/tfjs.esm.js';
 import { log, join } from '../util/util';
 import type { BodyKeypoint, BodyResult, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
@@ -87,8 +87,8 @@ async function prepareImage(input: Tensor): Promise<Tensor> {
     [input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0, input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0], // width before&after
     [0, 0], // dont touch rbg
   ];
-  t.pad = tf.pad(input as tf.Tensor4D, padding);
-  t.resize = tf.image.resizeBilinear(t.pad as tf.Tensor4D, [inputSize[1][0], inputSize[1][1]]);
+  t.pad = tf.pad(input, padding);
+  t.resize = tf.image.resizeBilinear(t.pad, [inputSize[1][0], inputSize[1][1]]);
   const final = tf.div(t.resize, 255);
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   return final;

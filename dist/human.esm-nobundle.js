@@ -236,7 +236,7 @@ var version9 = {
 };
 
 // package.json
-var version10 = "2.3.0";
+var version10 = "2.3.1";
 
 // src/image/imagefx.ts
 function GLProgram(gl, vertexSource, fragmentSource) {

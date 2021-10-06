@@ -1,6 +1,6 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
-import { mergeDeep } from './util';
+import { mergeDeep, log } from './util';
 
 export type Env = {
   browser: undefined | boolean,
@@ -129,8 +129,6 @@ export async function backendInfo() {
 export async function get() {
   env.browser = typeof navigator !== 'undefined';
   env.node = typeof process !== 'undefined';
-  // @ts-ignore WorkerGlobalScope evaluated in browser only
-  env.worker = env.browser ? (typeof WorkerGlobalScope !== 'undefined') : undefined;
   env.tfjs.version = tf.version_core;
 
   // offscreencanvas supported?
@@ -144,11 +142,21 @@ export async function get() {
       env.agent = navigator.userAgent.replace(raw[0], '');
       if (env.platform[1]) env.agent = env.agent.replace(raw[1], '');
       env.agent = env.agent.replace(/  /g, ' ');
+
+      // chrome offscreencanvas gpu memory leak
+      const isChrome = env.agent.match(/Chrome\/.[0-9]/g);
+      const verChrome = isChrome && isChrome[0] ? isChrome[0].split('/')[1] : 0;
+      if (verChrome > 0 && verChrome > 92 && verChrome < 96) {
+        log('disabling offscreenCanvas due to browser error:', isChrome ? isChrome[0] : 'unknown');
+        env.offscreen = false;
+      }
     }
   } else if (typeof process !== 'undefined') {
     env.platform = `${process.platform} ${process.arch}`;
     env.agent = `NodeJS ${process.version}`;
   }
+  // @ts-ignore WorkerGlobalScope evaluated in browser only
+  env.worker = env.browser && env.offscreen ? (typeof WorkerGlobalScope !== 'undefined') : undefined;
   await backendInfo();
 
   // get cpu info

@@ -9,8 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/04 mandic00@live.com
+### **2.3.1** 2021/10/06 mandic00@live.com
 
+
+### **origin/main** 2021/10/06 mandic00@live.com
+
+- fix backend conflict in webworker
 - add blazepose v2 and add annotations to body results
 - fix backend order initialization
 - added docker notes

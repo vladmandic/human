@@ -1008,7 +1008,6 @@ async function backendInfo() {
 async function get() {
   env2.browser = typeof navigator !== "undefined";
   env2.node = typeof process !== "undefined";
-  env2.worker = env2.browser ? typeof WorkerGlobalScope !== "undefined" : void 0;
   env2.tfjs.version = tfjs_esm_exports.version_core;
   env2.offscreen = typeof env2.offscreen === "undefined" ? typeof OffscreenCanvas !== "undefined" : env2.offscreen;
   if (typeof navigator !== "undefined") {
@@ -1020,11 +1019,18 @@ async function get() {
       if (env2.platform[1])
         env2.agent = env2.agent.replace(raw[1], "");
       env2.agent = env2.agent.replace(/  /g, " ");
+      const isChrome = env2.agent.match(/Chrome\/.[0-9]/g);
+      const verChrome = isChrome && isChrome[0] ? isChrome[0].split("/")[1] : 0;
+      if (verChrome > 0 && verChrome > 92 && verChrome < 96) {
+        log("disabling offscreenCanvas due to browser error:", isChrome ? isChrome[0] : "unknown");
+        env2.offscreen = false;
+      }
     }
   } else if (typeof process !== "undefined") {
     env2.platform = `${process.platform} ${process.arch}`;
     env2.agent = `NodeJS ${process.version}`;
   }
+  env2.worker = env2.browser && env2.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
   await backendInfo();
 }
 async function set(obj) {
@@ -1042,6 +1048,8 @@ function canvas(width, height) {
     if (env2.offscreen) {
       c = new OffscreenCanvas(width, height);
     } else {
+      if (typeof document === "undefined")
+        throw new Error("attempted to run in web worker but offscreenCanvas is not supported");
       c = document.createElement("canvas");
       c.width = width;
       c.height = height;

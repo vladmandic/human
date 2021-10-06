@@ -24,6 +24,7 @@ export function canvas(width, height): HTMLCanvasElement | OffscreenCanvas {
     if (env.offscreen) {
       c = new OffscreenCanvas(width, height);
     } else {
+      if (typeof document === 'undefined') throw new Error('attempted to run in web worker but offscreenCanvas is not supported');
       c = document.createElement('canvas');
       c.width = width;
       c.height = height;

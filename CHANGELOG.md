@@ -11,9 +11,8 @@
   
 ### **HEAD -> main** 2021/10/04 mandic00@live.com
 
-
-### **origin/main** 2021/10/03 mandic00@live.com
-
+- add blazepose v2 and add annotations to body results
+- fix backend order initialization
 - added docker notes
 - breaking change: new similarity and match methods
 - release candidate

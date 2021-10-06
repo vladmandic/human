@@ -1,3 +1,4 @@
 node_modules
 pnpm-lock.yaml
 assets/tf*
+*.swp

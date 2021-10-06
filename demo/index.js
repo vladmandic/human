@@ -499,7 +499,7 @@ function runHumanDetect(input, canvas, timestamp) {
     return;
   }
   if (ui.hintsThread) clearInterval(ui.hintsThread);
-  if (ui.useWorker) {
+  if (ui.useWorker && human.env.offscreen) {
     // get image data from video as we cannot send html objects to webworker
     const offscreen = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(canvas.width, canvas.height) : document.createElement('canvas');
     offscreen.width = canvas.width;

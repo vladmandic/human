@@ -10711,7 +10711,7 @@ async function check(instance, force = false) {
       tf23.ENV.set("WEBGL_CPU_FORWARD", true);
       tf23.ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
       tf23.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
-      tf23.ENV.set("CPU_HANDOFF_SIZE_THRESHOLD", 128);
+      tf23.ENV.set("CPU_HANDOFF_SIZE_THRESHOLD", 256);
       if (typeof instance.config["deallocate"] !== "undefined" && instance.config["deallocate"]) {
         log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
         tf23.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
@@ -10723,7 +10723,7 @@ async function check(instance, force = false) {
       }
     }
     if (tf23.getBackend() === "webgpu") {
-      tf23.ENV.set("WEBGPU_USE_GLSL", true);
+      tf23.ENV.set("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD", 256);
     }
     tf23.enableProdMode();
     await tf23.ready();
@@ -10839,6 +10839,29 @@ function curves(ctx, points = [], localOptions) {
     ctx.fill();
   }
 }
+function arrow(ctx, from, to, radius = 5) {
+  let angle;
+  let x;
+  let y;
+  ctx.beginPath();
+  ctx.moveTo(from[0], from[1]);
+  ctx.lineTo(to[0], to[1]);
+  angle = Math.atan2(to[1] - from[1], to[0] - from[0]);
+  x = radius * Math.cos(angle) + to[0];
+  y = radius * Math.sin(angle) + to[1];
+  ctx.moveTo(x, y);
+  angle += 1 / 3 * (2 * Math.PI);
+  x = radius * Math.cos(angle) + to[0];
+  y = radius * Math.sin(angle) + to[1];
+  ctx.lineTo(x, y);
+  angle += 1 / 3 * (2 * Math.PI);
+  x = radius * Math.cos(angle) + to[0];
+  y = radius * Math.sin(angle) + to[1];
+  ctx.lineTo(x, y);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.fill();
+}
 async function gesture(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
@@ -10865,7 +10888,7 @@ async function gesture(inCanvas2, result, drawOptions) {
   }
 }
 async function face(inCanvas2, result, drawOptions) {
-  var _a, _b, _c, _d;
+  var _a, _b, _c, _d, _e;
   const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
@@ -10951,22 +10974,40 @@ async function face(inCanvas2, result, drawOptions) {
             ctx.fill();
           }
         }
-        if (localOptions.drawGaze && ((_b = (_a = f.rotation) == null ? void 0 : _a.gaze) == null ? void 0 : _b.strength) && ((_d = (_c = f.rotation) == null ? void 0 : _c.gaze) == null ? void 0 : _d.bearing) && f.annotations["leftEyeIris"] && f.annotations["rightEyeIris"] && f.annotations["leftEyeIris"][0] && f.annotations["rightEyeIris"][0]) {
+        if (localOptions.drawGaze && ((_a = f.rotation) == null ? void 0 : _a.angle)) {
           ctx.strokeStyle = "pink";
-          ctx.beginPath();
+          const valX = f.box[0] + f.box[2] / 2 - f.box[3] * rad2deg(f.rotation.angle.yaw) / 90;
+          const valY = f.box[1] + f.box[3] / 2 + f.box[2] * rad2deg(f.rotation.angle.pitch) / 90;
+          const pathV = new Path2D(`
+            M ${f.box[0] + f.box[2] / 2} ${f.box[1]}
+            C
+              ${valX} ${f.box[1]},
+              ${valX} ${f.box[1] + f.box[3]},
+              ${f.box[0] + f.box[2] / 2} ${f.box[1] + f.box[3]}
+          `);
+          const pathH = new Path2D(`
+            M ${f.box[0]} ${f.box[1] + f.box[3] / 2}
+            C 
+              ${f.box[0]} ${valY},
+              ${f.box[0] + f.box[2]} ${valY},
+              ${f.box[0] + f.box[2]} ${f.box[1] + f.box[3] / 2}
+          `);
+          ctx.stroke(pathH);
+          ctx.stroke(pathV);
+        }
+        if (localOptions.drawGaze && ((_c = (_b = f.rotation) == null ? void 0 : _b.gaze) == null ? void 0 : _c.strength) && ((_e = (_d = f.rotation) == null ? void 0 : _d.gaze) == null ? void 0 : _e.bearing) && f.annotations["leftEyeIris"] && f.annotations["rightEyeIris"] && f.annotations["leftEyeIris"][0] && f.annotations["rightEyeIris"][0]) {
+          ctx.strokeStyle = "pink";
+          ctx.fillStyle = "pink";
           const leftGaze = [
             f.annotations["leftEyeIris"][0][0] + Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3],
             f.annotations["leftEyeIris"][0][1] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]
           ];
-          ctx.moveTo(f.annotations["leftEyeIris"][0][0], f.annotations["leftEyeIris"][0][1]);
-          ctx.lineTo(leftGaze[0], leftGaze[1]);
+          arrow(ctx, [f.annotations["leftEyeIris"][0][0], f.annotations["leftEyeIris"][0][1]], [leftGaze[0], leftGaze[1]], 4);
           const rightGaze = [
             f.annotations["rightEyeIris"][0][0] + Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3],
             f.annotations["rightEyeIris"][0][1] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]
           ];
-          ctx.moveTo(f.annotations["rightEyeIris"][0][0], f.annotations["rightEyeIris"][0][1]);
-          ctx.lineTo(rightGaze[0], rightGaze[1]);
-          ctx.stroke();
+          arrow(ctx, [f.annotations["rightEyeIris"][0][0], f.annotations["rightEyeIris"][0][1]], [rightGaze[0], rightGaze[1]], 4);
         }
       }
     }

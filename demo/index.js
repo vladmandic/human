@@ -31,6 +31,8 @@ import jsonView from './helpers/jsonview.js';
 let human;
 
 let userConfig = {
+  body: { enabled: false },
+  hand: { enabled: false },
   /*
   warmup: 'none',
   backend: 'humangl',
@@ -408,7 +410,7 @@ async function setupCamera() {
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
   if (initialCameraAccess) log('selected video source:', track, settings); // log('selected camera:', track.label, 'id:', settings.deviceId);
-  ui.camera = { name: track.label.toLowerCase(), width: video.videoWidth, height: video.videoHeight, facing: settings.facingMode === 'user' ? 'front' : 'back' };
+  ui.camera = { name: track.label.toLowerCase(), width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   initialCameraAccess = false;
 
   if (!stream) return 'camera stream empty';

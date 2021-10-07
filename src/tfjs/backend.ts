@@ -51,7 +51,7 @@ export async function check(instance, force = false) {
 
       if (instance.config.debug) log('setting backend:', instance.config.backend);
 
-      // handle wasm
+      // customize wasm
       if (instance.config.backend === 'wasm') {
         if (instance.config.debug) log('wasm path:', instance.config.wasmPath);
         if (typeof tf?.setWasmPaths !== 'undefined') await tf.setWasmPaths(instance.config.wasmPath);
@@ -71,13 +71,13 @@ export async function check(instance, force = false) {
       }
     }
 
-    // handle webgl & humangl
+    // customize humangl
     if (tf.getBackend() === 'humangl') {
       tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
       tf.ENV.set('WEBGL_CPU_FORWARD', true);
       tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', false);
       tf.ENV.set('WEBGL_USE_SHAPES_UNIFORMS', true);
-      tf.ENV.set('CPU_HANDOFF_SIZE_THRESHOLD', 128);
+      tf.ENV.set('CPU_HANDOFF_SIZE_THRESHOLD', 256);
       // if (!instance.config.object.enabled) tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
       if (typeof instance.config['deallocate'] !== 'undefined' && instance.config['deallocate']) { // hidden param
         log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
@@ -89,9 +89,9 @@ export async function check(instance, force = false) {
       }
     }
 
-    // handle webgpu
+    // customize webgpu
     if (tf.getBackend() === 'webgpu') {
-      tf.ENV.set('WEBGPU_USE_GLSL', true);
+      tf.ENV.set('WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD', 256);
     }
 
     // wait for ready

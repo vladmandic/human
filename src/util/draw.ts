@@ -73,14 +73,14 @@ const getCanvasContext = (input) => {
 
 const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
 
-function point(ctx, x, y, z = 0, localOptions) {
+function point(ctx: CanvasRenderingContext2D, x, y, z = 0, localOptions) {
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
   ctx.beginPath();
   ctx.arc(x, y, localOptions.pointSize, 0, 2 * Math.PI);
   ctx.fill();
 }
 
-function rect(ctx, x, y, width, height, localOptions) {
+function rect(ctx: CanvasRenderingContext2D, x, y, width, height, localOptions) {
   ctx.beginPath();
   if (localOptions.useCurves) {
     const cx = (x + x + width) / 2;
@@ -102,7 +102,7 @@ function rect(ctx, x, y, width, height, localOptions) {
   ctx.stroke();
 }
 
-function lines(ctx, points: Point[] = [], localOptions) {
+function lines(ctx: CanvasRenderingContext2D, points: Point[] = [], localOptions) {
   if (points === undefined || points.length === 0) return;
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
@@ -119,7 +119,7 @@ function lines(ctx, points: Point[] = [], localOptions) {
   }
 }
 
-function curves(ctx, points: Point[] = [], localOptions) {
+function curves(ctx: CanvasRenderingContext2D, points: Point[] = [], localOptions) {
   if (points === undefined || points.length === 0) return;
   if (!localOptions.useCurves || points.length <= 2) {
     lines(ctx, points, localOptions);
@@ -137,6 +137,30 @@ function curves(ctx, points: Point[] = [], localOptions) {
     ctx.closePath();
     ctx.fill();
   }
+}
+
+function arrow(ctx: CanvasRenderingContext2D, from: Point, to: Point, radius = 5) {
+  let angle;
+  let x;
+  let y;
+  ctx.beginPath();
+  ctx.moveTo(from[0], from[1]);
+  ctx.lineTo(to[0], to[1]);
+  angle = Math.atan2(to[1] - from[1], to[0] - from[0]);
+  x = radius * Math.cos(angle) + to[0];
+  y = radius * Math.sin(angle) + to[1];
+  ctx.moveTo(x, y);
+  angle += (1.0 / 3.0) * (2 * Math.PI);
+  x = radius * Math.cos(angle) + to[0];
+  y = radius * Math.sin(angle) + to[1];
+  ctx.lineTo(x, y);
+  angle += (1.0 / 3.0) * (2 * Math.PI);
+  x = radius * Math.cos(angle) + to[0];
+  y = radius * Math.sin(angle) + to[1];
+  ctx.lineTo(x, y);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.fill();
 }
 
 export async function gesture(inCanvas: HTMLCanvasElement | OffscreenCanvas, result: Array<GestureResult>, drawOptions?: Partial<DrawOptions>) {
@@ -242,25 +266,40 @@ export async function face(inCanvas: HTMLCanvasElement | OffscreenCanvas, result
             ctx.fill();
           }
         }
+        if (localOptions.drawGaze && f.rotation?.angle) {
+          ctx.strokeStyle = 'pink';
+          const valX = (f.box[0] + f.box[2] / 2) - (f.box[3] * rad2deg(f.rotation.angle.yaw) / 90);
+          const valY = (f.box[1] + f.box[3] / 2) + (f.box[2] * rad2deg(f.rotation.angle.pitch) / 90);
+          const pathV = new Path2D(`
+            M ${f.box[0] + f.box[2] / 2} ${f.box[1]}
+            C
+              ${valX} ${f.box[1]},
+              ${valX} ${f.box[1] + f.box[3]},
+              ${f.box[0] + f.box[2] / 2} ${f.box[1] + f.box[3]}
+          `);
+          const pathH = new Path2D(`
+            M ${f.box[0]} ${f.box[1] + f.box[3] / 2}
+            C 
+              ${f.box[0]} ${valY},
+              ${f.box[0] + f.box[2]} ${valY},
+              ${f.box[0] + f.box[2]} ${f.box[1] + f.box[3] / 2}
+          `);
+          ctx.stroke(pathH);
+          ctx.stroke(pathV);
+        }
         if (localOptions.drawGaze && f.rotation?.gaze?.strength && f.rotation?.gaze?.bearing && f.annotations['leftEyeIris'] && f.annotations['rightEyeIris'] && f.annotations['leftEyeIris'][0] && f.annotations['rightEyeIris'][0]) {
           ctx.strokeStyle = 'pink';
-          ctx.beginPath();
-
+          ctx.fillStyle = 'pink';
           const leftGaze = [
             f.annotations['leftEyeIris'][0][0] + (Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]),
             f.annotations['leftEyeIris'][0][1] + (Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]),
           ];
-          ctx.moveTo(f.annotations['leftEyeIris'][0][0], f.annotations['leftEyeIris'][0][1]);
-          ctx.lineTo(leftGaze[0], leftGaze[1]);
-
+          arrow(ctx, [f.annotations['leftEyeIris'][0][0], f.annotations['leftEyeIris'][0][1]], [leftGaze[0], leftGaze[1]], 4);
           const rightGaze = [
             f.annotations['rightEyeIris'][0][0] + (Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]),
             f.annotations['rightEyeIris'][0][1] + (Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]),
           ];
-          ctx.moveTo(f.annotations['rightEyeIris'][0][0], f.annotations['rightEyeIris'][0][1]);
-          ctx.lineTo(rightGaze[0], rightGaze[1]);
-
-          ctx.stroke();
+          arrow(ctx, [f.annotations['rightEyeIris'][0][0], f.annotations['rightEyeIris'][0][1]], [rightGaze[0], rightGaze[1]], 4);
         }
       }
     }

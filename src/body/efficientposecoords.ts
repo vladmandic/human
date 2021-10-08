@@ -1,4 +1,4 @@
-export const kpt = [
+export const kpt: Array<string> = [
   'head',
   'neck',
   'rightShoulder',
@@ -17,7 +17,7 @@ export const kpt = [
   'leftAnkle',
 ];
 
-export const connected = {
+export const connected: Record<string, string[]> = {
   leftLeg: ['leftHip', 'leftKnee', 'leftAnkle'],
   rightLeg: ['rightHip', 'rightKnee', 'rightAnkle'],
   torso: ['leftShoulder', 'rightShoulder', 'rightHip', 'leftHip', 'leftShoulder'],

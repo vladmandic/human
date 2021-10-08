@@ -3,10 +3,16 @@
  */
 
 import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult, Box, Point } from '../result';
+import type { Config } from '../config';
+
+import * as moveNetCoords from '../body/movenetcoords';
+import * as blazePoseCoords from '../body/blazeposecoords';
+import * as efficientPoseCoords from '../body/efficientposecoords';
 
 const bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 
-export function calc(newResult: Result): Result {
+export function calc(newResult: Result, config: Config): Result {
+  const t0 = performance.now();
   if (!newResult) return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
   // each record is only updated using deep clone when number of detected record changes, otherwise it will converge by itself
   // otherwise bufferedResult is a shallow clone of result plus updated local calculated values
@@ -46,7 +52,22 @@ export function calc(newResult: Result): Result {
             bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].positionRaw[1] + keypoint.positionRaw[1]) / bufferedFactor : keypoint.position[1],
           ],
         }))) as Array<{ score: number, part: string, position: [number, number, number?], positionRaw: [number, number, number?] }>;
-      bufferedResult.body[i] = { ...newResult.body[i], box, boxRaw, keypoints }; // shallow clone plus updated values
+      const annotations: Record<string, Point[][]> = {};
+
+      let coords = { connected: {} };
+      if (config.body?.modelPath?.includes('efficientpose')) coords = efficientPoseCoords;
+      else if (config.body?.modelPath?.includes('blazepose')) coords = blazePoseCoords;
+      else if (config.body?.modelPath?.includes('movenet')) coords = moveNetCoords;
+      for (const [name, indexes] of Object.entries(coords.connected as Record<string, string[]>)) {
+        const pt: Array<Point[]> = [];
+        for (let j = 0; j < indexes.length - 1; j++) {
+          const pt0 = keypoints.find((kp) => kp.part === indexes[j]);
+          const pt1 = keypoints.find((kp) => kp.part === indexes[j + 1]);
+          if (pt0 && pt1 && pt0.score > (config.body.minConfidence || 0) && pt1.score > (config.body.minConfidence || 0)) pt.push([pt0.position, pt1.position]);
+        }
+        annotations[name] = pt;
+      }
+      bufferedResult.body[i] = { ...newResult.body[i], box, boxRaw, keypoints, annotations: annotations as BodyResult['annotations'] }; // shallow clone plus updated values
     }
   }
 
@@ -64,12 +85,16 @@ export function calc(newResult: Result): Result {
         .map((landmark, j) => landmark
           .map((coord, k) => (((bufferedFactor - 1) * (bufferedResult.hand[i].keypoints[j][k] || 1) + (coord || 0)) / bufferedFactor)) as Point)
         : [];
-      const annotations = {};
-      if (Object.keys(bufferedResult.hand[i].annotations).length !== Object.keys(newResult.hand[i].annotations).length) bufferedResult.hand[i].annotations = newResult.hand[i].annotations; // reset annotations as previous frame did not have them
-      if (newResult.hand[i].annotations) {
+      let annotations = {};
+      if (Object.keys(bufferedResult.hand[i].annotations).length !== Object.keys(newResult.hand[i].annotations).length) {
+        bufferedResult.hand[i].annotations = newResult.hand[i].annotations; // reset annotations as previous frame did not have them
+        annotations = bufferedResult.hand[i].annotations;
+      } else if (newResult.hand[i].annotations) {
         for (const key of Object.keys(newResult.hand[i].annotations)) { // update annotations
           annotations[key] = newResult.hand[i].annotations[key] && newResult.hand[i].annotations[key][0]
-            ? newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor))
+            ? newResult.hand[i].annotations[key]
+              .map((val, j) => val
+                .map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor))
             : null;
         }
       }
@@ -134,7 +159,10 @@ export function calc(newResult: Result): Result {
 
   // just copy latest gestures without interpolation
   if (newResult.gesture) bufferedResult.gesture = newResult.gesture as GestureResult[];
-  if (newResult.performance) bufferedResult.performance = newResult.performance;
+
+  // append interpolation performance data
+  const t1 = performance.now();
+  if (newResult.performance) bufferedResult.performance = { ...newResult.performance, interpolate: Math.round(t1 - t0) };
 
   return bufferedResult;
 }

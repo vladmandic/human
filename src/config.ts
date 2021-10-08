@@ -420,12 +420,12 @@ const config: Config = {
     rotation: true,          // use best-guess rotated hand image or just box with rotation as-is
                              // false means higher performance, but incorrect finger mapping if hand is inverted
                              // only valid for `handdetect` variation
-    skipFrames: 14,          // how many max frames to go without re-running the hand bounding box detector
+    skipFrames: 1,           // how many max frames to go without re-running the hand bounding box detector
                              // only used when cacheSensitivity is not zero
                              // e.g., if model is running st 25 FPS, we can re-use existing bounding
                              // box for updated hand skeleton analysis as the hand
                              // hasn't moved much in short time (10 * 1/25 = 0.25 sec)
-    minConfidence: 0.5,      // threshold for discarding a prediction
+    minConfidence: 0.55,     // threshold for discarding a prediction
     iouThreshold: 0.2,       // ammount of overlap between two detected objects before one object is removed
     maxDetected: -1,         // maximum number of hands detected in the input
                              // should be set to the minimum number for performance

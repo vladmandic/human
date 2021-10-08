@@ -277,12 +277,10 @@ async function drawResults(input) {
   }
 
   // draw all results using interpolated results
-  if (ui.interpolated) {
-    const interpolated = human.next(result);
-    human.draw.all(canvas, interpolated, drawOptions);
-  } else {
-    human.draw.all(canvas, result, drawOptions);
-  }
+  let interpolated;
+  if (ui.interpolated) interpolated = human.next(result);
+  else interpolated = result;
+  human.draw.all(canvas, interpolated, drawOptions);
 
   // show tree with results
   if (ui.results) {
@@ -315,7 +313,7 @@ async function drawResults(input) {
   document.getElementById('log').innerHTML = `
     video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
     backend: ${backend}<br>
-    performance: ${str(lastDetectedResult.performance)}ms ${fps}<br>
+    performance: ${str(interpolated.performance)}ms ${fps}<br>
     ${warning}<br>
   `;
   ui.framesDraw++;

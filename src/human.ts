@@ -359,7 +359,7 @@ export class Human {
    * @returns result: {@link Result}
    */
   next(result: Result = this.result): Result {
-    return interpolate.calc(result) as Result;
+    return interpolate.calc(result, this.config) as Result;
   }
 
   /** Warmup method pre-initializes all configured models for faster inference

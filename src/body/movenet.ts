@@ -5,7 +5,7 @@
  */
 
 import { log, join } from '../util/util';
-import { scale } from '../util/box';
+import * as box from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './movenetcoords';
 import type { BodyKeypoint, BodyResult, Box, Point } from '../result';
@@ -16,7 +16,15 @@ import { env } from '../util/env';
 
 let model: GraphModel | null;
 let inputSize = 0;
-const cachedBoxes: Array<Box> = [];
+const boxExpandFact = 1.5; // increase to 150%
+
+const cache: {
+  boxes: Array<Box>,
+  bodies: Array<BodyResult>;
+} = {
+  boxes: [],
+  bodies: [],
+};
 
 let skipped = Number.MAX_SAFE_INTEGER;
 const keypoints: Array<BodyKeypoint> = [];
@@ -32,26 +40,6 @@ export async function load(config: Config): Promise<GraphModel> {
   inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
   if (inputSize === -1) inputSize = 256;
   return model;
-}
-
-function createBox(points): [Box, Box] {
-  const x = points.map((a) => a.position[0]);
-  const y = points.map((a) => a.position[1]);
-  const box: Box = [
-    Math.min(...x),
-    Math.min(...y),
-    Math.max(...x) - Math.min(...x),
-    Math.max(...y) - Math.min(...y),
-  ];
-  const xRaw = points.map((a) => a.positionRaw[0]);
-  const yRaw = points.map((a) => a.positionRaw[1]);
-  const boxRaw: Box = [
-    Math.min(...xRaw),
-    Math.min(...yRaw),
-    Math.max(...xRaw) - Math.min(...xRaw),
-    Math.max(...yRaw) - Math.min(...yRaw),
-  ];
-  return [box, boxRaw];
 }
 
 async function parseSinglePose(res, config, image, inputBox) {
@@ -78,7 +66,7 @@ async function parseSinglePose(res, config, image, inputBox) {
   }
   score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
   const bodies: Array<BodyResult> = [];
-  const [box, boxRaw] = createBox(keypoints);
+  const newBox = box.calc(keypoints.map((pt) => pt.position), [image.shape[2], image.shape[1]]);
   const annotations: Record<string, Point[][]> = {};
   for (const [name, indexes] of Object.entries(coords.connected)) {
     const pt: Array<Point[]> = [];
@@ -89,7 +77,7 @@ async function parseSinglePose(res, config, image, inputBox) {
     }
     annotations[name] = pt;
   }
-  bodies.push({ id: 0, score, box, boxRaw, keypoints, annotations });
+  bodies.push({ id: 0, score, box: newBox.box, boxRaw: newBox.boxRaw, keypoints, annotations });
   return bodies;
 }
 
@@ -111,14 +99,11 @@ async function parseMultiPose(res, config, image, inputBox) {
             part: coords.kpt[i],
             score: Math.round(100 * score) / 100,
             positionRaw,
-            position: [
-              Math.round((image.shape[2] || 0) * positionRaw[0]),
-              Math.round((image.shape[1] || 0) * positionRaw[1]),
-            ],
+            position: [Math.round((image.shape[2] || 0) * positionRaw[0]), Math.round((image.shape[1] || 0) * positionRaw[1])],
           });
         }
       }
-      const [box, boxRaw] = createBox(keypoints);
+      const newBox = box.calc(keypoints.map((pt) => pt.position), [image.shape[2], image.shape[1]]);
       // movenet-multipose has built-in box details
       // const boxRaw: Box = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
       // const box: Box = [Math.trunc(boxRaw[0] * (image.shape[2] || 0)), Math.trunc(boxRaw[1] * (image.shape[1] || 0)), Math.trunc(boxRaw[2] * (image.shape[2] || 0)), Math.trunc(boxRaw[3] * (image.shape[1] || 0))];
@@ -132,7 +117,7 @@ async function parseMultiPose(res, config, image, inputBox) {
         }
         annotations[name] = pt;
       }
-      bodies.push({ id, score: totalScore, boxRaw, box, keypoints: [...keypoints], annotations });
+      bodies.push({ id, score: totalScore, box: newBox.box, boxRaw: newBox.boxRaw, keypoints: [...keypoints], annotations });
     }
   }
   bodies.sort((a, b) => b.score - a.score);
@@ -141,46 +126,44 @@ async function parseMultiPose(res, config, image, inputBox) {
 }
 
 export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
-  if (!model || !model?.inputs[0].shape) return [];
+  if (!model || !model?.inputs[0].shape) return []; // something is wrong with the model
+  if (!config.skipFrame) cache.boxes.length = 0; // allowed to use cache or not
+  skipped++; // increment skip frames
+  if (config.skipFrame && (skipped <= (config.body.skipFrames || 0))) {
+    return cache.bodies; // return cached results without running anything
+  }
   return new Promise(async (resolve) => {
     const t: Record<string, Tensor> = {};
-
-    let bodies: Array<BodyResult> = [];
-
-    if (!config.skipFrame) cachedBoxes.length = 0; // allowed to use cache or not
-    skipped++;
-
-    for (let i = 0; i < cachedBoxes.length; i++) { // run detection based on cached boxes
-      t.crop = tf.image.cropAndResize(input, [cachedBoxes[i]], [0], [inputSize, inputSize], 'bilinear');
-      t.cast = tf.cast(t.crop, 'int32');
-      t.res = await model?.predict(t.cast) as Tensor;
-      const res = await t.res.array();
-      const newBodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, cachedBoxes[i]) : await parseMultiPose(res, config, input, cachedBoxes[i]);
-      bodies = bodies.concat(newBodies);
-      Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
+    skipped = 0;
+    cache.bodies = []; // reset bodies result
+    if (cache.boxes.length >= (config.body.maxDetected || 0)) { // if we have enough cached boxes run detection using cache
+      for (let i = 0; i < cache.boxes.length; i++) { // run detection based on cached boxes
+        t.crop = tf.image.cropAndResize(input, [cache.boxes[i]], [0], [inputSize, inputSize], 'bilinear');
+        t.cast = tf.cast(t.crop, 'int32');
+        t.res = await model?.predict(t.cast) as Tensor;
+        const res = await t.res.array();
+        const newBodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, cache.boxes[i]) : await parseMultiPose(res, config, input, cache.boxes[i]);
+        cache.bodies = cache.bodies.concat(newBodies);
+        Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
+      }
     }
-
-    if ((bodies.length !== config.body.maxDetected) && (skipped > (config.body.skipFrames || 0))) { // run detection on full frame
+    if (cache.bodies.length !== config.body.maxDetected) { // did not find enough bodies based on cached boxes so run detection on full frame
       t.resized = tf.image.resizeBilinear(input, [inputSize, inputSize], false);
       t.cast = tf.cast(t.resized, 'int32');
       t.res = await model?.predict(t.cast) as Tensor;
       const res = await t.res.array();
-      bodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, [0, 0, 1, 1]) : await parseMultiPose(res, config, input, [0, 0, 1, 1]);
+      cache.bodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, [0, 0, 1, 1]) : await parseMultiPose(res, config, input, [0, 0, 1, 1]);
+      // cache.bodies = cache.bodies.map((body) => ({ ...body, box: box.scale(body.box, 0.5) }));
       Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
-      cachedBoxes.length = 0; // reset cache
-      skipped = 0;
     }
-
-    if (config.skipFrame) { // create box cache based on last detections
-      cachedBoxes.length = 0;
-      for (let i = 0; i < bodies.length; i++) {
-        if (bodies[i].keypoints.length > 10) { // only update cache if we detected sufficient number of keypoints
-          const kpts = bodies[i].keypoints.map((kpt) => kpt.position);
-          const newBox = scale(kpts, 1.5, [input.shape[2], input.shape[1]]);
-          cachedBoxes.push([...newBox.yxBox]);
-        }
+    cache.boxes.length = 0; // reset cache
+    for (let i = 0; i < cache.bodies.length; i++) {
+      if (cache.bodies[i].keypoints.length > (coords.kpt.length / 2)) { // only update cache if we detected at least half keypoints
+        const scaledBox = box.scale(cache.bodies[i].boxRaw, boxExpandFact);
+        const cropBox = box.crop(scaledBox);
+        cache.boxes.push(cropBox);
       }
     }
-    resolve(bodies);
+    resolve(cache.bodies);
   });
 }

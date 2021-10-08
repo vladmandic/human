@@ -1,6 +1,6 @@
 /* eslint-disable no-multi-spaces */
 
-export const kpt = [
+export const kpt: Array<string> = [
   'nose',            //  0
   'leftEyeInside',   //  1
   'leftEye',         //  2
@@ -42,7 +42,7 @@ export const kpt = [
   'rightHand',       // 38
 ];
 
-export const connected = {
+export const connected: Record<string, string[]> = {
   leftLeg: ['leftHip', 'leftKnee', 'leftAnkle', 'leftHeel', 'leftFoot'],
   rightLeg: ['rightHip', 'rightKnee', 'rightAnkle', 'rightHeel', 'rightFoot'],
   torso: ['leftShoulder', 'rightShoulder', 'rightHip', 'leftHip', 'leftShoulder'],

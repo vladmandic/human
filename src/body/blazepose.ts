@@ -142,6 +142,11 @@ async function detectParts(input: Tensor, config: Config, outputSize: [number, n
 }
 
 export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
+  /** blazepose caching
+   * not fully implemented
+   * 1. if skipFrame returned cached
+   * 2. run detection based on squared full frame
+   */
   const outputSize: [number, number] = [input.shape[2] || 0, input.shape[1] || 0];
   if ((skipped < (config.body.skipFrames || 0)) && config.skipFrame) {
     skipped++;

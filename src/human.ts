@@ -265,8 +265,8 @@ export class Human {
    * @param input: {@link Input}
    * @returns { tensor, canvas }
    */
-  image(input: Input) {
-    return image.process(input, this.config);
+  image(input: Input, getTensor: boolean = true) {
+    return image.process(input, this.config, getTensor);
   }
 
   /** Segmentation method takes any input and returns processed canvas with body segmentation

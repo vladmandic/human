@@ -7,17 +7,19 @@
 import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './efficientposecoords';
-import type { BodyKeypoint, BodyResult, Box, Point } from '../result';
+import type { BodyResult, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
 
-const keypoints: Array<BodyKeypoint> = [];
-let box: Box = [0, 0, 0, 0];
-let boxRaw: Box = [0, 0, 0, 0];
-let score = 0;
+const cache: BodyResult = { id: 0, keypoints: [], box: [0, 0, 0, 0], boxRaw: [0, 0, 0, 0], score: 0, annotations: {} };
+
+// const keypoints: Array<BodyKeypoint> = [];
+// let box: Box = [0, 0, 0, 0];
+// let boxRaw: Box = [0, 0, 0, 0];
+// let score = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
 export async function load(config: Config): Promise<GraphModel> {
@@ -48,9 +50,14 @@ function max2d(inputs, minScore) {
 }
 
 export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
-  if ((skipped < (config.body?.skipFrames || 0)) && config.skipFrame && Object.keys(keypoints).length > 0) {
+  /** blazepose caching
+   * not fully implemented
+   * 1. if skipFrame returned cached
+   * 2. run detection based on squared full frame
+   */
+  if ((skipped < (config.body?.skipFrames || 0)) && config.skipFrame && Object.keys(cache.keypoints).length > 0) {
     skipped++;
-    return [{ id: 0, score, box, boxRaw, keypoints, annotations: {} }];
+    return [cache];
   }
   skipped = 0;
   return new Promise(async (resolve) => {
@@ -67,7 +74,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
     tf.dispose(tensor);
 
     if (resT) {
-      keypoints.length = 0;
+      cache.keypoints.length = 0;
       const squeeze = resT.squeeze();
       tf.dispose(resT);
       // body parts are basically just a stack of 2d tensors
@@ -77,8 +84,8 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
       for (let id = 0; id < stack.length; id++) {
         // actual processing to get coordinates and score
         const [x, y, partScore] = max2d(stack[id], config.body.minConfidence);
-        if (score > (config.body?.minConfidence || 0)) {
-          keypoints.push({
+        if (partScore > (config.body?.minConfidence || 0)) {
+          cache.keypoints.push({
             score: Math.round(100 * partScore) / 100,
             part: coords.kpt[id],
             positionRaw: [ // normalized to 0..1
@@ -94,33 +101,32 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
       }
       stack.forEach((s) => tf.dispose(s));
     }
-    score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
-    const x = keypoints.map((a) => a.position[0]);
-    const y = keypoints.map((a) => a.position[1]);
-    box = [
+    cache.score = cache.keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
+    const x = cache.keypoints.map((a) => a.position[0]);
+    const y = cache.keypoints.map((a) => a.position[1]);
+    cache.box = [
       Math.min(...x),
       Math.min(...y),
       Math.max(...x) - Math.min(...x),
       Math.max(...y) - Math.min(...y),
     ];
-    const xRaw = keypoints.map((a) => a.positionRaw[0]);
-    const yRaw = keypoints.map((a) => a.positionRaw[1]);
-    boxRaw = [
+    const xRaw = cache.keypoints.map((a) => a.positionRaw[0]);
+    const yRaw = cache.keypoints.map((a) => a.positionRaw[1]);
+    cache.boxRaw = [
       Math.min(...xRaw),
       Math.min(...yRaw),
       Math.max(...xRaw) - Math.min(...xRaw),
       Math.max(...yRaw) - Math.min(...yRaw),
     ];
-    const annotations: Record<string, Point[][]> = {};
     for (const [name, indexes] of Object.entries(coords.connected)) {
       const pt: Array<Point[]> = [];
       for (let i = 0; i < indexes.length - 1; i++) {
-        const pt0 = keypoints.find((kpt) => kpt.part === indexes[i]);
-        const pt1 = keypoints.find((kpt) => kpt.part === indexes[i + 1]);
+        const pt0 = cache.keypoints.find((kpt) => kpt.part === indexes[i]);
+        const pt1 = cache.keypoints.find((kpt) => kpt.part === indexes[i + 1]);
         if (pt0 && pt1 && pt0.score > (config.body.minConfidence || 0) && pt1.score > (config.body.minConfidence || 0)) pt.push([pt0.position, pt1.position]);
       }
-      annotations[name] = pt;
+      cache.annotations[name] = pt;
     }
-    resolve([{ id: 0, score, box, boxRaw, keypoints, annotations }]);
+    resolve([cache]);
   });
 }

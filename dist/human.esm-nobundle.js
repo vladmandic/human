@@ -956,6 +956,7 @@ var env2 = {
   initial: true,
   backends: [],
   offscreen: void 0,
+  filter: void 0,
   tfjs: {
     version: void 0
   },
@@ -1021,12 +1022,6 @@ async function get() {
       if (env2.platform[1])
         env2.agent = env2.agent.replace(raw[1], "");
       env2.agent = env2.agent.replace(/  /g, " ");
-      const isChrome = env2.agent.match(/Chrome\/.[0-9]/g);
-      const verChrome = isChrome && isChrome[0] ? isChrome[0].split("/")[1] : 0;
-      if (verChrome > 0 && verChrome > 92 && verChrome < 96) {
-        log("disabling offscreenCanvas due to browser error:", isChrome ? isChrome[0] : "unknown");
-        env2.offscreen = false;
-      }
     }
   } else if (typeof process !== "undefined") {
     env2.platform = `${process.platform} ${process.arch}`;
@@ -1041,8 +1036,8 @@ async function set(obj) {
 
 // src/image/image.ts
 var maxSize = 2048;
-var inCanvas;
-var outCanvas;
+var inCanvas = null;
+var outCanvas = null;
 var fx;
 function canvas(width, height) {
   let c;
@@ -1064,8 +1059,13 @@ function canvas(width, height) {
   }
   return c;
 }
-function process2(input, config3) {
-  let tensor3;
+function copy(input, output) {
+  const outputCanvas = output || canvas(input.width, input.height);
+  const ctx = outputCanvas.getContext("2d");
+  ctx.drawImage(input, 0, 0);
+  return outputCanvas;
+}
+function process2(input, config3, getTensor = true) {
   if (!input) {
     if (config3.debug)
       log("input is missing");
@@ -1077,10 +1077,10 @@ function process2(input, config3) {
   if (input instanceof tfjs_esm_exports.Tensor) {
     if (input["isDisposedInternal"])
       throw new Error("input tensor is disposed");
-    if (input.shape && input.shape.length === 4 && input.shape[0] === 1 && input.shape[3] === 3)
-      tensor3 = tfjs_esm_exports.clone(input);
-    else
+    else if (!input.shape || input.shape.length !== 4 || input.shape[0] !== 1 || input.shape[3] !== 3)
       throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${input.shape}`);
+    else
+      return { tensor: tfjs_esm_exports.clone(input), canvas: config3.filter.return ? outCanvas : null };
   } else {
     if (typeof input["readyState"] !== "undefined" && input["readyState"] <= 2) {
       if (config3.debug)
@@ -1116,28 +1116,25 @@ function process2(input, config3) {
       throw new Error("input cannot determine dimension");
     if (!inCanvas || (inCanvas == null ? void 0 : inCanvas.width) !== targetWidth || (inCanvas == null ? void 0 : inCanvas.height) !== targetHeight)
       inCanvas = canvas(targetWidth, targetHeight);
-    const ctx = inCanvas.getContext("2d");
+    const inCtx = inCanvas.getContext("2d");
     if (typeof ImageData !== "undefined" && input instanceof ImageData) {
-      ctx.putImageData(input, 0, 0);
+      inCtx.putImageData(input, 0, 0);
     } else {
-      if (config3.filter.flip && typeof ctx.translate !== "undefined") {
-        ctx.translate(originalWidth, 0);
-        ctx.scale(-1, 1);
-        ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
+      if (config3.filter.flip && typeof inCtx.translate !== "undefined") {
+        inCtx.translate(originalWidth, 0);
+        inCtx.scale(-1, 1);
+        inCtx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
+        inCtx.setTransform(1, 0, 0, 1, 0, 0);
       } else {
-        ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
+        inCtx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
       }
     }
+    if (!outCanvas || inCanvas.width !== outCanvas.width || (inCanvas == null ? void 0 : inCanvas.height) !== (outCanvas == null ? void 0 : outCanvas.height))
+      outCanvas = canvas(inCanvas.width, inCanvas.height);
     if (config3.filter.enabled && env2.webgl.supported) {
-      if (!fx || !outCanvas || inCanvas.width !== outCanvas.width || (inCanvas == null ? void 0 : inCanvas.height) !== (outCanvas == null ? void 0 : outCanvas.height)) {
-        outCanvas = canvas(inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
-        if ((outCanvas == null ? void 0 : outCanvas.width) !== (inCanvas == null ? void 0 : inCanvas.width))
-          outCanvas.width = inCanvas == null ? void 0 : inCanvas.width;
-        if ((outCanvas == null ? void 0 : outCanvas.height) !== (inCanvas == null ? void 0 : inCanvas.height))
-          outCanvas.height = inCanvas == null ? void 0 : inCanvas.height;
+      if (!fx)
         fx = env2.browser ? new GLImageFilter({ canvas: outCanvas }) : null;
-      }
+      env2.filter = !!fx;
       if (!fx)
         return { tensor: null, canvas: inCanvas };
       fx.reset();
@@ -1170,82 +1167,93 @@ function process2(input, config3) {
         fx.addFilter("pixelate", config3.filter.pixelate);
       fx.apply(inCanvas);
     } else {
-      outCanvas = inCanvas;
+      copy(inCanvas, outCanvas);
       if (fx)
         fx = null;
+      env2.filter = !!fx;
     }
-    if (!tensor3) {
-      let pixels;
-      if (outCanvas.data) {
-        const shape = [outCanvas.height, outCanvas.width, 3];
-        pixels = tfjs_esm_exports.tensor3d(outCanvas.data, shape, "float32");
-      } else if (typeof ImageData !== "undefined" && outCanvas instanceof ImageData) {
-        pixels = tfjs_esm_exports.browser ? tfjs_esm_exports.browser.fromPixels(outCanvas) : null;
-      } else if (config3.backend === "webgl" || config3.backend === "humangl") {
-        const tempCanvas = canvas(targetWidth, targetHeight);
-        tempCanvas.width = targetWidth;
-        tempCanvas.height = targetHeight;
-        const tempCtx = tempCanvas.getContext("2d");
-        tempCtx == null ? void 0 : tempCtx.drawImage(outCanvas, 0, 0);
-        try {
-          pixels = tfjs_esm_exports.browser && env2.browser ? tfjs_esm_exports.browser.fromPixels(tempCanvas) : null;
-        } catch (err) {
-          throw new Error("browser webgl error");
-        }
+    if (!getTensor)
+      return { tensor: null, canvas: outCanvas };
+    let pixels;
+    let depth = 3;
+    if (typeof ImageData !== "undefined" && input instanceof ImageData || input["data"] && input["width"] && input["height"]) {
+      if (env2.browser && tfjs_esm_exports.browser) {
+        pixels = tfjs_esm_exports.browser ? tfjs_esm_exports.browser.fromPixels(input) : null;
       } else {
-        const tempCanvas = canvas(targetWidth, targetHeight);
-        if (!tempCanvas)
-          return { tensor: null, canvas: inCanvas };
-        tempCanvas.width = targetWidth;
-        tempCanvas.height = targetHeight;
-        const tempCtx = tempCanvas.getContext("2d");
-        if (!tempCtx)
-          return { tensor: null, canvas: inCanvas };
-        tempCtx.drawImage(outCanvas, 0, 0);
-        const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
-        if (tfjs_esm_exports.browser && env2.browser) {
-          pixels = tfjs_esm_exports.browser.fromPixels(data);
+        depth = input["data"].length / input["height"] / input["width"];
+        const arr = new Uint8Array(input["data"]["buffer"]);
+        pixels = tfjs_esm_exports.tensor(arr, [input["height"], input["width"], depth], "float32");
+      }
+    } else {
+      if (tfjs_esm_exports.browser && env2.browser) {
+        if (config3.backend === "webgl" || config3.backend === "humangl" || config3.backend === "webgpu") {
+          pixels = tfjs_esm_exports.browser.fromPixels(outCanvas);
         } else {
-          pixels = tfjs_esm_exports.tidy(() => {
-            const imageData = tfjs_esm_exports.tensor(Array.from(data.data), [targetWidth, targetHeight, 4]);
-            const channels = tfjs_esm_exports.split(imageData, 4, 2);
-            const rgb2 = tfjs_esm_exports.stack([channels[0], channels[1], channels[2]], 2);
-            const expand = tfjs_esm_exports.reshape(rgb2, [imageData.shape[0], imageData.shape[1], 3]);
-            return expand;
-          });
+          const tempCanvas = copy(outCanvas);
+          pixels = tfjs_esm_exports.browser.fromPixels(tempCanvas);
         }
-      }
-      if (pixels) {
-        const casted = tfjs_esm_exports.cast(pixels, "float32");
-        tensor3 = tfjs_esm_exports.expandDims(casted, 0);
-        tfjs_esm_exports.dispose(pixels);
-        tfjs_esm_exports.dispose(casted);
       } else {
-        tensor3 = tfjs_esm_exports.zeros([1, targetWidth, targetHeight, 3]);
-        throw new Error("cannot create tensor from input");
+        const tempCanvas = copy(outCanvas);
+        const tempCtx = tempCanvas.getContext("2d");
+        const tempData = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+        depth = input["data"].length / targetWidth / targetHeight;
+        const arr = new Uint8Array(tempData.data.buffer);
+        pixels = tfjs_esm_exports.tensor(arr, [targetWidth, targetHeight, depth]);
       }
     }
+    if (depth === 4) {
+      const rgb2 = tfjs_esm_exports.slice3d(pixels, [0, 0, 0], [-1, -1, 3]);
+      tfjs_esm_exports.dispose(pixels);
+      pixels = rgb2;
+    }
+    if (!pixels)
+      throw new Error("cannot create tensor from input");
+    const casted = tfjs_esm_exports.cast(pixels, "float32");
+    const tensor3 = tfjs_esm_exports.expandDims(casted, 0);
+    tfjs_esm_exports.dispose([pixels, casted]);
+    return { tensor: tensor3, canvas: config3.filter.return ? outCanvas : null };
   }
-  return { tensor: tensor3, canvas: config3.filter.return ? outCanvas : null };
 }
 var lastInputSum = 0;
 var lastCacheDiff = 1;
+var benchmarked = 0;
+var checksum = async (input) => {
+  const resizeFact = 48;
+  const reduced = tfjs_esm_exports.image.resizeBilinear(input, [Math.trunc((input.shape[1] || 1) / resizeFact), Math.trunc((input.shape[2] || 1) / resizeFact)]);
+  const tfSum = async () => {
+    const sumT = tfjs_esm_exports.sum(reduced);
+    const sum0 = await sumT.data();
+    tfjs_esm_exports.dispose(sumT);
+    return sum0[0];
+  };
+  const jsSum = async () => {
+    const reducedData = await reduced.data();
+    let sum0 = 0;
+    for (let i = 0; i < reducedData.length / 3; i++)
+      sum0 += reducedData[3 * i + 2];
+    return sum0;
+  };
+  if (benchmarked === 0) {
+    const t0 = performance.now();
+    await jsSum();
+    const t1 = performance.now();
+    await tfSum();
+    const t2 = performance.now();
+    benchmarked = t1 - t0 < t2 - t1 ? 1 : 2;
+  }
+  const res = benchmarked === 1 ? await jsSum() : await tfSum();
+  tfjs_esm_exports.dispose(reduced);
+  return res;
+};
 async function skip(config3, input) {
   if (config3.cacheSensitivity === 0)
     return false;
-  const resizeFact = 32;
-  if (!input.shape[1] || !input.shape[2])
-    return false;
-  const reduced = tfjs_esm_exports.image.resizeBilinear(input, [Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
-  const reducedData = await reduced.data();
-  tfjs_esm_exports.dispose(reduced);
-  let sum = 0;
-  for (let i = 0; i < reducedData.length / 3; i++)
-    sum += reducedData[3 * i + 2];
-  const diff = 100 * (Math.max(sum, lastInputSum) / Math.min(sum, lastInputSum) - 1);
-  lastInputSum = sum;
-  const skipFrame = diff < Math.max(config3.cacheSensitivity, lastCacheDiff);
+  const sum2 = await checksum(input);
+  const diff = 100 * (Math.max(sum2, lastInputSum) / Math.min(sum2, lastInputSum) - 1);
+  lastInputSum = sum2;
+  let skipFrame = diff < Math.max(config3.cacheSensitivity, lastCacheDiff);
   lastCacheDiff = diff > 10 * config3.cacheSensitivity ? 0 : diff;
+  skipFrame = skipFrame && lastCacheDiff > 0;
   return skipFrame;
 }
 
@@ -4534,41 +4542,41 @@ var UV7 = VTX7.map((x) => UV468[x]);
 
 // src/face/facemeshutil.ts
 var createBox = (startEndTensor) => ({ startPoint: tfjs_esm_exports.slice(startEndTensor, [0, 0], [-1, 2]), endPoint: tfjs_esm_exports.slice(startEndTensor, [0, 2], [-1, 2]) });
-var getBoxSize = (box6) => [Math.abs(box6.endPoint[0] - box6.startPoint[0]), Math.abs(box6.endPoint[1] - box6.startPoint[1])];
-var getBoxCenter = (box6) => [box6.startPoint[0] + (box6.endPoint[0] - box6.startPoint[0]) / 2, box6.startPoint[1] + (box6.endPoint[1] - box6.startPoint[1]) / 2];
-var getClampedBox = (box6, input) => box6 ? [
-  Math.trunc(Math.max(0, box6.startPoint[0])),
-  Math.trunc(Math.max(0, box6.startPoint[1])),
-  Math.trunc(Math.min(input.shape[2] || 0, box6.endPoint[0]) - Math.max(0, box6.startPoint[0])),
-  Math.trunc(Math.min(input.shape[1] || 0, box6.endPoint[1]) - Math.max(0, box6.startPoint[1]))
+var getBoxSize = (box5) => [Math.abs(box5.endPoint[0] - box5.startPoint[0]), Math.abs(box5.endPoint[1] - box5.startPoint[1])];
+var getBoxCenter = (box5) => [box5.startPoint[0] + (box5.endPoint[0] - box5.startPoint[0]) / 2, box5.startPoint[1] + (box5.endPoint[1] - box5.startPoint[1]) / 2];
+var getClampedBox = (box5, input) => box5 ? [
+  Math.trunc(Math.max(0, box5.startPoint[0])),
+  Math.trunc(Math.max(0, box5.startPoint[1])),
+  Math.trunc(Math.min(input.shape[2] || 0, box5.endPoint[0]) - Math.max(0, box5.startPoint[0])),
+  Math.trunc(Math.min(input.shape[1] || 0, box5.endPoint[1]) - Math.max(0, box5.startPoint[1]))
 ] : [0, 0, 0, 0];
-var getRawBox = (box6, input) => box6 ? [
-  box6.startPoint[0] / (input.shape[2] || 0),
-  box6.startPoint[1] / (input.shape[1] || 0),
-  (box6.endPoint[0] - box6.startPoint[0]) / (input.shape[2] || 0),
-  (box6.endPoint[1] - box6.startPoint[1]) / (input.shape[1] || 0)
+var getRawBox = (box5, input) => box5 ? [
+  box5.startPoint[0] / (input.shape[2] || 0),
+  box5.startPoint[1] / (input.shape[1] || 0),
+  (box5.endPoint[0] - box5.startPoint[0]) / (input.shape[2] || 0),
+  (box5.endPoint[1] - box5.startPoint[1]) / (input.shape[1] || 0)
 ] : [0, 0, 0, 0];
-var scaleBoxCoordinates = (box6, factor) => {
-  const startPoint = [box6.startPoint[0] * factor[0], box6.startPoint[1] * factor[1]];
-  const endPoint = [box6.endPoint[0] * factor[0], box6.endPoint[1] * factor[1]];
+var scaleBoxCoordinates = (box5, factor) => {
+  const startPoint = [box5.startPoint[0] * factor[0], box5.startPoint[1] * factor[1]];
+  const endPoint = [box5.endPoint[0] * factor[0], box5.endPoint[1] * factor[1]];
   return { startPoint, endPoint };
 };
-var cutBoxFromImageAndResize = (box6, image24, cropSize) => {
+var cutBoxFromImageAndResize = (box5, image24, cropSize) => {
   const h = image24.shape[1];
   const w = image24.shape[2];
-  return tfjs_esm_exports.image.cropAndResize(image24, [[box6.startPoint[1] / h, box6.startPoint[0] / w, box6.endPoint[1] / h, box6.endPoint[0] / w]], [0], cropSize);
+  return tfjs_esm_exports.image.cropAndResize(image24, [[box5.startPoint[1] / h, box5.startPoint[0] / w, box5.endPoint[1] / h, box5.endPoint[0] / w]], [0], cropSize);
 };
-var enlargeBox = (box6, factor = 1.5) => {
-  const center = getBoxCenter(box6);
-  const size2 = getBoxSize(box6);
+var enlargeBox = (box5, factor = 1.5) => {
+  const center = getBoxCenter(box5);
+  const size2 = getBoxSize(box5);
   const halfSize = [factor * size2[0] / 2, factor * size2[1] / 2];
-  return { startPoint: [center[0] - halfSize[0], center[1] - halfSize[1]], endPoint: [center[0] + halfSize[0], center[1] + halfSize[1]], landmarks: box6.landmarks };
+  return { startPoint: [center[0] - halfSize[0], center[1] - halfSize[1]], endPoint: [center[0] + halfSize[0], center[1] + halfSize[1]], landmarks: box5.landmarks };
 };
-var squarifyBox = (box6) => {
-  const centers = getBoxCenter(box6);
-  const size2 = getBoxSize(box6);
+var squarifyBox = (box5) => {
+  const centers = getBoxCenter(box5);
+  const size2 = getBoxSize(box5);
   const halfSize = Math.max(...size2) / 2;
-  return { startPoint: [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)], endPoint: [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)], landmarks: box6.landmarks };
+  return { startPoint: [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)], endPoint: [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)], landmarks: box5.landmarks };
 };
 var calculateLandmarksBoundingBox = (landmarks) => {
   const xs = landmarks.map((d) => d[0]);
@@ -4629,15 +4637,15 @@ function generateAnchors(inputSize8) {
       const anchorY = stride * (gridY + 0.5);
       for (let gridX = 0; gridX < gridCols; gridX++) {
         const anchorX = stride * (gridX + 0.5);
-        for (let n = 0; n < anchorsNum; n++)
+        for (let n2 = 0; n2 < anchorsNum; n2++)
           anchors4.push([anchorX, anchorY]);
       }
     }
   }
   return anchors4;
 }
-function transformRawCoords(rawCoords, box6, angle, rotationMatrix, inputSize8) {
-  const boxSize = getBoxSize({ startPoint: box6.startPoint, endPoint: box6.endPoint });
+function transformRawCoords(rawCoords, box5, angle, rotationMatrix, inputSize8) {
+  const boxSize = getBoxSize({ startPoint: box5.startPoint, endPoint: box5.endPoint });
   const coordsScaled = rawCoords.map((coord) => [
     boxSize[0] / inputSize8 * (coord[0] - inputSize8 / 2),
     boxSize[1] / inputSize8 * (coord[1] - inputSize8 / 2),
@@ -4646,21 +4654,21 @@ function transformRawCoords(rawCoords, box6, angle, rotationMatrix, inputSize8) 
   const coordsRotationMatrix = angle !== 0 ? buildRotationMatrix(angle, [0, 0]) : IDENTITY_MATRIX;
   const coordsRotated = angle !== 0 ? coordsScaled.map((coord) => [...rotatePoint(coord, coordsRotationMatrix), coord[2]]) : coordsScaled;
   const inverseRotationMatrix = angle !== 0 ? invertTransformMatrix(rotationMatrix) : IDENTITY_MATRIX;
-  const boxCenter = [...getBoxCenter({ startPoint: box6.startPoint, endPoint: box6.endPoint }), 1];
+  const boxCenter = [...getBoxCenter({ startPoint: box5.startPoint, endPoint: box5.endPoint }), 1];
   return coordsRotated.map((coord) => [
     Math.round(coord[0] + dot(boxCenter, inverseRotationMatrix[0])),
     Math.round(coord[1] + dot(boxCenter, inverseRotationMatrix[1])),
     Math.round(coord[2] || 0)
   ]);
 }
-function correctFaceRotation(box6, input, inputSize8) {
-  const [indexOfMouth, indexOfForehead] = box6.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
-  const angle = computeRotation(box6.landmarks[indexOfMouth], box6.landmarks[indexOfForehead]);
-  const faceCenter = getBoxCenter({ startPoint: box6.startPoint, endPoint: box6.endPoint });
+function correctFaceRotation(box5, input, inputSize8) {
+  const [indexOfMouth, indexOfForehead] = box5.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
+  const angle = computeRotation(box5.landmarks[indexOfMouth], box5.landmarks[indexOfForehead]);
+  const faceCenter = getBoxCenter({ startPoint: box5.startPoint, endPoint: box5.endPoint });
   const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
   const rotated = tfjs_esm_exports.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
   const rotationMatrix = buildRotationMatrix(-angle, faceCenter);
-  const cut = cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, rotated, [inputSize8, inputSize8]);
+  const cut = cutBoxFromImageAndResize({ startPoint: box5.startPoint, endPoint: box5.endPoint }, rotated, [inputSize8, inputSize8]);
   const face5 = tfjs_esm_exports.div(cut, 255);
   tfjs_esm_exports.dispose(cut);
   tfjs_esm_exports.dispose(rotated);
@@ -4808,20 +4816,20 @@ var getLeftToRightEyeDepthDifference = (rawCoords) => {
   return leftEyeZ - rightEyeZ;
 };
 var getEyeBox = (rawCoords, face5, eyeInnerCornerIndex, eyeOuterCornerIndex, flip = false, meshSize) => {
-  const box6 = squarifyBox(enlargeBox(calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), irisEnlarge));
-  const boxSize = getBoxSize(box6);
+  const box5 = squarifyBox(enlargeBox(calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), irisEnlarge));
+  const boxSize = getBoxSize(box5);
   let crop2 = tfjs_esm_exports.image.cropAndResize(face5, [[
-    box6.startPoint[1] / meshSize,
-    box6.startPoint[0] / meshSize,
-    box6.endPoint[1] / meshSize,
-    box6.endPoint[0] / meshSize
+    box5.startPoint[1] / meshSize,
+    box5.startPoint[0] / meshSize,
+    box5.endPoint[1] / meshSize,
+    box5.endPoint[0] / meshSize
   ]], [0], [inputSize2, inputSize2]);
   if (flip && env2.kernels.includes("flipleftright")) {
     const flipped = tfjs_esm_exports.image.flipLeftRight(crop2);
     tfjs_esm_exports.dispose(crop2);
     crop2 = flipped;
   }
-  return { box: box6, boxSize, crop: crop2 };
+  return { box: box5, boxSize, crop: crop2 };
 };
 var getEyeCoords = (eyeData, eyeBox, eyeBoxSize, flip = false) => {
   const eyeRawCoords = [];
@@ -4916,7 +4924,7 @@ async function predict(input, config3) {
   const faces = [];
   const newBoxes = [];
   let id = 0;
-  for (let box6 of boxCache) {
+  for (let box5 of boxCache) {
     let angle = 0;
     let rotationMatrix;
     const face5 = {
@@ -4931,21 +4939,21 @@ async function predict(input, config3) {
       annotations: {}
     };
     if (((_d = config3.face.detector) == null ? void 0 : _d.rotation) && ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) && env2.kernels.includes("rotatewithoffset")) {
-      [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box6, input, inputSize3);
+      [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box5, input, inputSize3);
     } else {
       rotationMatrix = IDENTITY_MATRIX;
-      const cut = cutBoxFromImageAndResize({ startPoint: box6.startPoint, endPoint: box6.endPoint }, input, ((_f = config3.face.mesh) == null ? void 0 : _f.enabled) ? [inputSize3, inputSize3] : [size(), size()]);
+      const cut = cutBoxFromImageAndResize({ startPoint: box5.startPoint, endPoint: box5.endPoint }, input, ((_f = config3.face.mesh) == null ? void 0 : _f.enabled) ? [inputSize3, inputSize3] : [size(), size()]);
       face5.tensor = tfjs_esm_exports.div(cut, 255);
       tfjs_esm_exports.dispose(cut);
     }
-    face5.boxScore = Math.round(100 * box6.confidence) / 100;
+    face5.boxScore = Math.round(100 * box5.confidence) / 100;
     if (!((_g = config3.face.mesh) == null ? void 0 : _g.enabled)) {
-      face5.box = getClampedBox(box6, input);
-      face5.boxRaw = getRawBox(box6, input);
-      face5.score = Math.round(100 * box6.confidence || 0) / 100;
-      face5.mesh = box6.landmarks.map((pt) => [
-        (box6.startPoint[0] + box6.endPoint[0]) / 2 + (box6.endPoint[0] + box6.startPoint[0]) * pt[0] / size(),
-        (box6.startPoint[1] + box6.endPoint[1]) / 2 + (box6.endPoint[1] + box6.startPoint[1]) * pt[1] / size()
+      face5.box = getClampedBox(box5, input);
+      face5.boxRaw = getRawBox(box5, input);
+      face5.score = Math.round(100 * box5.confidence || 0) / 100;
+      face5.mesh = box5.landmarks.map((pt) => [
+        (box5.startPoint[0] + box5.endPoint[0]) / 2 + (box5.endPoint[0] + box5.startPoint[0]) * pt[0] / size(),
+        (box5.startPoint[1] + box5.endPoint[1]) / 2 + (box5.endPoint[1] + box5.startPoint[1]) * pt[1] / size()
       ]);
       face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize3]);
       for (const key of Object.keys(blazeFaceLandmarks))
@@ -4963,28 +4971,28 @@ async function predict(input, config3) {
       tfjs_esm_exports.dispose(contourCoords);
       tfjs_esm_exports.dispose(coordsReshaped);
       if (faceConfidence < (((_h = config3.face.detector) == null ? void 0 : _h.minConfidence) || 1)) {
-        box6.confidence = faceConfidence;
+        box5.confidence = faceConfidence;
       } else {
         if ((_i = config3.face.iris) == null ? void 0 : _i.enabled)
           rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize3);
-        face5.mesh = transformRawCoords(rawCoords, box6, angle, rotationMatrix, inputSize3);
+        face5.mesh = transformRawCoords(rawCoords, box5, angle, rotationMatrix, inputSize3);
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize3]);
-        box6 = { ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), 1.5), confidence: box6.confidence };
+        box5 = { ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), 1.5), confidence: box5.confidence };
         for (const key of Object.keys(meshAnnotations))
           face5.annotations[key] = meshAnnotations[key].map((index) => face5.mesh[index]);
         if (((_j = config3.face.detector) == null ? void 0 : _j.rotation) && config3.face.mesh.enabled && ((_k = config3.face.description) == null ? void 0 : _k.enabled) && env2.kernels.includes("rotatewithoffset")) {
           tfjs_esm_exports.dispose(face5.tensor);
-          [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box6, input, inputSize3);
+          [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box5, input, inputSize3);
         }
-        face5.box = getClampedBox(box6, input);
-        face5.boxRaw = getRawBox(box6, input);
-        face5.score = Math.round(100 * faceConfidence || 100 * box6.confidence || 0) / 100;
+        face5.box = getClampedBox(box5, input);
+        face5.boxRaw = getRawBox(box5, input);
+        face5.score = Math.round(100 * faceConfidence || 100 * box5.confidence || 0) / 100;
         face5.faceScore = Math.round(100 * faceConfidence) / 100;
-        box6 = { ...squarifyBox(box6), confidence: box6.confidence, faceConfidence };
+        box5 = { ...squarifyBox(box5), confidence: box5.confidence, faceConfidence };
       }
     }
     faces.push(face5);
-    newBoxes.push(box6);
+    newBoxes.push(box5);
   }
   if ((_l = config3.face.mesh) == null ? void 0 : _l.enabled)
     boxCache = newBoxes.filter((a) => {
@@ -5039,10 +5047,10 @@ function enhance(input) {
     const tensor3 = input.image || input.tensor || input;
     if (!(tensor3 instanceof tfjs_esm_exports.Tensor))
       return null;
-    const box6 = [[0.05, 0.15, 0.85, 0.85]];
+    const box5 = [[0.05, 0.15, 0.85, 0.85]];
     if (!(model4 == null ? void 0 : model4.inputs[0].shape))
       return null;
-    const crop2 = tensor3.shape.length === 3 ? tfjs_esm_exports.image.cropAndResize(tfjs_esm_exports.expandDims(tensor3, 0), box6, [0], [model4.inputs[0].shape[2], model4.inputs[0].shape[1]]) : tfjs_esm_exports.image.cropAndResize(tensor3, box6, [0], [model4.inputs[0].shape[2], model4.inputs[0].shape[1]]);
+    const crop2 = tensor3.shape.length === 3 ? tfjs_esm_exports.image.cropAndResize(tfjs_esm_exports.expandDims(tensor3, 0), box5, [0], [model4.inputs[0].shape[2], model4.inputs[0].shape[1]]) : tfjs_esm_exports.image.cropAndResize(tensor3, box5, [0], [model4.inputs[0].shape[2], model4.inputs[0].shape[1]]);
     const norm = tfjs_esm_exports.mul(crop2, 255);
     return norm;
   });
@@ -5216,8 +5224,8 @@ var poseChain = [
   ["rightHip", "rightKnee"],
   ["rightKnee", "rightAnkle"]
 ];
-function getBoundingBox(keypoints3) {
-  const coord = keypoints3.reduce(({ maxX, maxY, minX, minY }, { position: { x, y } }) => ({
+function getBoundingBox(keypoints2) {
+  const coord = keypoints2.reduce(({ maxX, maxY, minX, minY }, { position: { x, y } }) => ({
     maxX: Math.max(maxX, x),
     maxY: Math.max(maxY, y),
     minX: Math.min(minX, x),
@@ -5238,8 +5246,8 @@ function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolut
     score: pose.score,
     boxRaw: [pose.box[0] / inputResolutionWidth, pose.box[1] / inputResolutionHeight, pose.box[2] / inputResolutionWidth, pose.box[3] / inputResolutionHeight],
     box: [Math.trunc(pose.box[0] * scaleX), Math.trunc(pose.box[1] * scaleY), Math.trunc(pose.box[2] * scaleX), Math.trunc(pose.box[3] * scaleY)],
-    keypoints: pose.keypoints.map(({ score: score2, part, position }) => ({
-      score: score2,
+    keypoints: pose.keypoints.map(({ score, part, position }) => ({
+      score,
       part,
       position: [Math.trunc(position.x * scaleX), Math.trunc(position.y * scaleY)],
       positionRaw: [position.x / inputResolutionHeight, position.y / inputResolutionHeight]
@@ -5365,8 +5373,8 @@ function traverse(edgeId, sourceKeypoint, targetId, scores, offsets, displacemen
     targetKeypoint = addVectors({ x: targetKeypointIndices.x * outputStride, y: targetKeypointIndices.y * outputStride }, { x: offsetPoint.x, y: offsetPoint.y });
   }
   const targetKeyPointIndices = getStridedIndexNearPoint(targetKeypoint, height, width);
-  const score2 = scores.get(targetKeyPointIndices.y, targetKeyPointIndices.x, targetId);
-  return { position: targetKeypoint, part: partNames[targetId], score: score2 };
+  const score = scores.get(targetKeyPointIndices.y, targetKeyPointIndices.x, targetId);
+  return { position: targetKeypoint, part: partNames[targetId], score };
 }
 function decodePose(root, scores, offsets, displacementsFwd, displacementsBwd) {
   const tuples = poseChain.map(([parentJoinName, childJoinName]) => [partIds[parentJoinName], partIds[childJoinName]]);
@@ -5374,9 +5382,9 @@ function decodePose(root, scores, offsets, displacementsFwd, displacementsBwd) {
   const edgesBwd = tuples.map(([parentJointId]) => parentJointId);
   const numParts = scores.shape[2];
   const numEdges = edgesFwd.length;
-  const keypoints3 = new Array(numParts);
+  const keypoints2 = new Array(numParts);
   const rootPoint = getImageCoords(root.part, outputStride, offsets);
-  keypoints3[root.part.id] = {
+  keypoints2[root.part.id] = {
     score: root.score,
     part: partNames[root.part.id],
     position: rootPoint
@@ -5384,20 +5392,20 @@ function decodePose(root, scores, offsets, displacementsFwd, displacementsBwd) {
   for (let edge = numEdges - 1; edge >= 0; --edge) {
     const sourceId = edgesFwd[edge];
     const targetId = edgesBwd[edge];
-    if (keypoints3[sourceId] && !keypoints3[targetId]) {
-      keypoints3[targetId] = traverse(edge, keypoints3[sourceId], targetId, scores, offsets, displacementsBwd);
+    if (keypoints2[sourceId] && !keypoints2[targetId]) {
+      keypoints2[targetId] = traverse(edge, keypoints2[sourceId], targetId, scores, offsets, displacementsBwd);
     }
   }
   for (let edge = 0; edge < numEdges; ++edge) {
     const sourceId = edgesBwd[edge];
     const targetId = edgesFwd[edge];
-    if (keypoints3[sourceId] && !keypoints3[targetId]) {
-      keypoints3[targetId] = traverse(edge, keypoints3[sourceId], targetId, scores, offsets, displacementsFwd);
+    if (keypoints2[sourceId] && !keypoints2[targetId]) {
+      keypoints2[targetId] = traverse(edge, keypoints2[sourceId], targetId, scores, offsets, displacementsFwd);
     }
   }
-  return keypoints3;
+  return keypoints2;
 }
-function scoreIsMaximumInLocalWindow(keypointId, score2, heatmapY, heatmapX, scores) {
+function scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, scores) {
   const [height, width] = scores.shape;
   let localMaximum = true;
   const yStart = Math.max(heatmapY - localMaximumRadius, 0);
@@ -5406,7 +5414,7 @@ function scoreIsMaximumInLocalWindow(keypointId, score2, heatmapY, heatmapX, sco
     const xStart = Math.max(heatmapX - localMaximumRadius, 0);
     const xEnd = Math.min(heatmapX + localMaximumRadius + 1, width);
     for (let xCurrent = xStart; xCurrent < xEnd; ++xCurrent) {
-      if (scores.get(yCurrent, xCurrent, keypointId) > score2) {
+      if (scores.get(yCurrent, xCurrent, keypointId) > score) {
         localMaximum = false;
         break;
       }
@@ -5418,36 +5426,36 @@ function scoreIsMaximumInLocalWindow(keypointId, score2, heatmapY, heatmapX, sco
 }
 function buildPartWithScoreQueue(minConfidence2, scores) {
   const [height, width, numKeypoints] = scores.shape;
-  const queue = new MaxHeap(height * width * numKeypoints, ({ score: score2 }) => score2);
+  const queue = new MaxHeap(height * width * numKeypoints, ({ score }) => score);
   for (let heatmapY = 0; heatmapY < height; ++heatmapY) {
     for (let heatmapX = 0; heatmapX < width; ++heatmapX) {
       for (let keypointId = 0; keypointId < numKeypoints; ++keypointId) {
-        const score2 = scores.get(heatmapY, heatmapX, keypointId);
-        if (score2 < minConfidence2)
+        const score = scores.get(heatmapY, heatmapX, keypointId);
+        if (score < minConfidence2)
           continue;
-        if (scoreIsMaximumInLocalWindow(keypointId, score2, heatmapY, heatmapX, scores))
-          queue.enqueue({ score: score2, part: { heatmapY, heatmapX, id: keypointId } });
+        if (scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, scores))
+          queue.enqueue({ score, part: { heatmapY, heatmapX, id: keypointId } });
       }
     }
   }
   return queue;
 }
 function withinRadius(poses, { x, y }, keypointId) {
-  return poses.some(({ keypoints: keypoints3 }) => {
+  return poses.some(({ keypoints: keypoints2 }) => {
     var _a;
-    const correspondingKeypoint = (_a = keypoints3[keypointId]) == null ? void 0 : _a.position;
+    const correspondingKeypoint = (_a = keypoints2[keypointId]) == null ? void 0 : _a.position;
     if (!correspondingKeypoint)
       return false;
     return squaredDistance(y, x, correspondingKeypoint.y, correspondingKeypoint.x) <= squaredNmsRadius;
   });
 }
-function getInstanceScore(existingPoses, keypoints3) {
-  const notOverlappedKeypointScores = keypoints3.reduce((result, { position, score: score2 }, keypointId) => {
+function getInstanceScore(existingPoses, keypoints2) {
+  const notOverlappedKeypointScores = keypoints2.reduce((result, { position, score }, keypointId) => {
     if (!withinRadius(existingPoses, position, keypointId))
-      result += score2;
+      result += score;
     return result;
   }, 0);
-  return notOverlappedKeypointScores / keypoints3.length;
+  return notOverlappedKeypointScores / keypoints2.length;
 }
 function decode(offsets, scores, displacementsFwd, displacementsBwd, maxDetected, minConfidence2) {
   const poses = [];
@@ -5457,12 +5465,12 @@ function decode(offsets, scores, displacementsFwd, displacementsBwd, maxDetected
     const rootImageCoords = getImageCoords(root.part, outputStride, offsets);
     if (withinRadius(poses, rootImageCoords, root.part.id))
       continue;
-    let keypoints3 = decodePose(root, scores, offsets, displacementsFwd, displacementsBwd);
-    keypoints3 = keypoints3.filter((a) => a.score > minConfidence2);
-    const score2 = getInstanceScore(poses, keypoints3);
-    const box6 = getBoundingBox(keypoints3);
-    if (score2 > minConfidence2)
-      poses.push({ keypoints: keypoints3, box: box6, score: Math.round(100 * score2) / 100 });
+    let keypoints2 = decodePose(root, scores, offsets, displacementsFwd, displacementsBwd);
+    keypoints2 = keypoints2.filter((a) => a.score > minConfidence2);
+    const score = getInstanceScore(poses, keypoints2);
+    const box5 = getBoundingBox(keypoints2);
+    if (score > minConfidence2)
+      poses.push({ keypoints: keypoints2, box: box5, score: Math.round(100 * score) / 100 });
   }
   return poses;
 }
@@ -5499,54 +5507,54 @@ async function load6(config3) {
 }
 
 // src/handpose/box.ts
-function getBoxSize2(box6) {
+function getBoxSize2(box5) {
   return [
-    Math.abs(box6.endPoint[0] - box6.startPoint[0]),
-    Math.abs(box6.endPoint[1] - box6.startPoint[1])
+    Math.abs(box5.endPoint[0] - box5.startPoint[0]),
+    Math.abs(box5.endPoint[1] - box5.startPoint[1])
   ];
 }
-function getBoxCenter2(box6) {
+function getBoxCenter2(box5) {
   return [
-    box6.startPoint[0] + (box6.endPoint[0] - box6.startPoint[0]) / 2,
-    box6.startPoint[1] + (box6.endPoint[1] - box6.startPoint[1]) / 2
+    box5.startPoint[0] + (box5.endPoint[0] - box5.startPoint[0]) / 2,
+    box5.startPoint[1] + (box5.endPoint[1] - box5.startPoint[1]) / 2
   ];
 }
-function cutBoxFromImageAndResize2(box6, image24, cropSize) {
+function cutBoxFromImageAndResize2(box5, image24, cropSize) {
   const h = image24.shape[1];
   const w = image24.shape[2];
   const boxes = [[
-    box6.startPoint[1] / h,
-    box6.startPoint[0] / w,
-    box6.endPoint[1] / h,
-    box6.endPoint[0] / w
+    box5.startPoint[1] / h,
+    box5.startPoint[0] / w,
+    box5.endPoint[1] / h,
+    box5.endPoint[0] / w
   ]];
   return tfjs_esm_exports.image.cropAndResize(image24, boxes, [0], cropSize);
 }
-function scaleBoxCoordinates2(box6, factor) {
-  const startPoint = [box6.startPoint[0] * factor[0], box6.startPoint[1] * factor[1]];
-  const endPoint = [box6.endPoint[0] * factor[0], box6.endPoint[1] * factor[1]];
-  const palmLandmarks = box6.palmLandmarks.map((coord) => {
+function scaleBoxCoordinates2(box5, factor) {
+  const startPoint = [box5.startPoint[0] * factor[0], box5.startPoint[1] * factor[1]];
+  const endPoint = [box5.endPoint[0] * factor[0], box5.endPoint[1] * factor[1]];
+  const palmLandmarks = box5.palmLandmarks.map((coord) => {
     const scaledCoord = [coord[0] * factor[0], coord[1] * factor[1]];
     return scaledCoord;
   });
-  return { startPoint, endPoint, palmLandmarks, confidence: box6.confidence };
+  return { startPoint, endPoint, palmLandmarks, confidence: box5.confidence };
 }
-function enlargeBox2(box6, factor = 1.5) {
-  const center = getBoxCenter2(box6);
-  const size2 = getBoxSize2(box6);
+function enlargeBox2(box5, factor = 1.5) {
+  const center = getBoxCenter2(box5);
+  const size2 = getBoxSize2(box5);
   const newHalfSize = [factor * size2[0] / 2, factor * size2[1] / 2];
   const startPoint = [center[0] - newHalfSize[0], center[1] - newHalfSize[1]];
   const endPoint = [center[0] + newHalfSize[0], center[1] + newHalfSize[1]];
-  return { startPoint, endPoint, palmLandmarks: box6.palmLandmarks };
+  return { startPoint, endPoint, palmLandmarks: box5.palmLandmarks };
 }
-function squarifyBox2(box6) {
-  const centers = getBoxCenter2(box6);
-  const size2 = getBoxSize2(box6);
+function squarifyBox2(box5) {
+  const centers = getBoxCenter2(box5);
+  const size2 = getBoxSize2(box5);
   const maxEdge = Math.max(...size2);
   const halfSize = maxEdge / 2;
   const startPoint = [centers[0] - halfSize, centers[1] - halfSize];
   const endPoint = [centers[0] + halfSize, centers[1] + halfSize];
-  return { startPoint, endPoint, palmLandmarks: box6.palmLandmarks };
+  return { startPoint, endPoint, palmLandmarks: box5.palmLandmarks };
 }
 
 // src/handpose/anchors.ts
@@ -8733,14 +8741,14 @@ var HandPipeline = class {
         const handImage = tfjs_esm_exports.div(croppedInput, 255);
         tfjs_esm_exports.dispose(croppedInput);
         tfjs_esm_exports.dispose(rotatedImage);
-        const [confidenceT, keypoints3] = await this.handPoseModel.predict(handImage);
+        const [confidenceT, keypoints2] = await this.handPoseModel.predict(handImage);
         tfjs_esm_exports.dispose(handImage);
         const confidence = (await confidenceT.data())[0];
         tfjs_esm_exports.dispose(confidenceT);
         if (confidence >= config3.hand.minConfidence / 4) {
-          const keypointsReshaped = tfjs_esm_exports.reshape(keypoints3, [-1, 3]);
+          const keypointsReshaped = tfjs_esm_exports.reshape(keypoints2, [-1, 3]);
           const rawCoords = await keypointsReshaped.array();
-          tfjs_esm_exports.dispose(keypoints3);
+          tfjs_esm_exports.dispose(keypoints2);
           tfjs_esm_exports.dispose(keypointsReshaped);
           const coords7 = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
           const nextBoundingBox = this.getBoxForHandLandmarks(coords7);
@@ -8756,7 +8764,7 @@ var HandPipeline = class {
         } else {
           this.storedBoxes[i] = null;
         }
-        tfjs_esm_exports.dispose(keypoints3);
+        tfjs_esm_exports.dispose(keypoints2);
       } else {
         const enlarged = enlargeBox2(squarifyBox2(currentBox), handBoxEnlargeFactor);
         const result = {
@@ -8852,9 +8860,9 @@ var FingerGesture = class {
         confidence += this.weightsRelative[fingerIdx];
         continue;
       }
-      for (const [expectedCurl, score2] of expectedCurls) {
+      for (const [expectedCurl, score] of expectedCurls) {
         if (detectedCurl === expectedCurl) {
-          confidence += score2 * this.weightsRelative[fingerIdx];
+          confidence += score * this.weightsRelative[fingerIdx];
           break;
         }
       }
@@ -8866,9 +8874,9 @@ var FingerGesture = class {
         confidence += this.weightsRelative[fingerIdx];
         continue;
       }
-      for (const [expectedDirection, score2] of expectedDirections) {
+      for (const [expectedDirection, score] of expectedDirections) {
         if (detectedDirection === expectedDirection) {
-          confidence += score2 * this.weightsRelative[fingerIdx];
+          confidence += score * this.weightsRelative[fingerIdx];
           break;
         }
       }
@@ -9129,10 +9137,10 @@ function estimate(landmarks) {
   }
   return { curls: fingerCurls, directions: fingerDirections };
 }
-function analyze(keypoints3) {
-  if (!keypoints3 || keypoints3.length === 0)
+function analyze(keypoints2) {
+  if (!keypoints2 || keypoints2.length === 0)
     return null;
-  const estimatorRes = estimate(keypoints3);
+  const estimatorRes = estimate(keypoints2);
   const landmarks = {};
   for (const fingerIdx of Finger.all) {
     landmarks[Finger.getName(fingerIdx)] = {
@@ -9142,11 +9150,11 @@ function analyze(keypoints3) {
   }
   return landmarks;
 }
-function match(keypoints3) {
+function match(keypoints2) {
   const poses = [];
-  if (!keypoints3 || keypoints3.length === 0)
+  if (!keypoints2 || keypoints2.length === 0)
     return poses;
-  const estimatorRes = estimate(keypoints3);
+  const estimatorRes = estimate(keypoints2);
   for (const gesture3 of fingergesture_default) {
     const confidence = gesture3.matchAgainst(estimatorRes.curls, estimatorRes.directions);
     if (confidence >= minConfidence)
@@ -9179,47 +9187,47 @@ async function predict5(input, config3) {
         annotations2[key] = meshAnnotations2[key].map((index) => predictions[i].landmarks[index]);
       }
     }
-    const keypoints3 = predictions[i].landmarks;
-    let box6 = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0];
-    let boxRaw2 = [0, 0, 0, 0];
-    if (keypoints3 && keypoints3.length > 0) {
-      for (const pt of keypoints3) {
-        if (pt[0] < box6[0])
-          box6[0] = pt[0];
-        if (pt[1] < box6[1])
-          box6[1] = pt[1];
-        if (pt[0] > box6[2])
-          box6[2] = pt[0];
-        if (pt[1] > box6[3])
-          box6[3] = pt[1];
+    const keypoints2 = predictions[i].landmarks;
+    let box5 = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0];
+    let boxRaw = [0, 0, 0, 0];
+    if (keypoints2 && keypoints2.length > 0) {
+      for (const pt of keypoints2) {
+        if (pt[0] < box5[0])
+          box5[0] = pt[0];
+        if (pt[1] < box5[1])
+          box5[1] = pt[1];
+        if (pt[0] > box5[2])
+          box5[2] = pt[0];
+        if (pt[1] > box5[3])
+          box5[3] = pt[1];
       }
-      box6[2] -= box6[0];
-      box6[3] -= box6[1];
-      boxRaw2 = [box6[0] / (input.shape[2] || 0), box6[1] / (input.shape[1] || 0), box6[2] / (input.shape[2] || 0), box6[3] / (input.shape[1] || 0)];
+      box5[2] -= box5[0];
+      box5[3] -= box5[1];
+      boxRaw = [box5[0] / (input.shape[2] || 0), box5[1] / (input.shape[1] || 0), box5[2] / (input.shape[2] || 0), box5[3] / (input.shape[1] || 0)];
     } else {
-      box6 = predictions[i].box ? [
+      box5 = predictions[i].box ? [
         Math.trunc(Math.max(0, predictions[i].box.topLeft[0])),
         Math.trunc(Math.max(0, predictions[i].box.topLeft[1])),
         Math.trunc(Math.min(input.shape[2] || 0, predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0])),
         Math.trunc(Math.min(input.shape[1] || 0, predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1]))
       ] : [0, 0, 0, 0];
-      boxRaw2 = [
+      boxRaw = [
         predictions[i].box.topLeft[0] / (input.shape[2] || 0),
         predictions[i].box.topLeft[1] / (input.shape[1] || 0),
         (predictions[i].box.bottomRight[0] - predictions[i].box.topLeft[0]) / (input.shape[2] || 0),
         (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / (input.shape[1] || 0)
       ];
     }
-    const landmarks = analyze(keypoints3);
+    const landmarks = analyze(keypoints2);
     hands.push({
       id: i,
       score: Math.round(100 * predictions[i].confidence) / 100,
       boxScore: Math.round(100 * predictions[i].boxConfidence) / 100,
       fingerScore: Math.round(100 * predictions[i].fingerConfidence) / 100,
       label: "hand",
-      box: box6,
-      boxRaw: boxRaw2,
-      keypoints: keypoints3,
+      box: box5,
+      boxRaw,
+      keypoints: keypoints2,
       annotations: annotations2,
       landmarks
     });
@@ -9259,31 +9267,36 @@ async function load7(config3) {
 }
 
 // src/util/box.ts
-function calc(keypoints3, outputSize2 = [1, 1]) {
-  const coords7 = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
+function calc(keypoints2, outputSize2 = [1, 1]) {
+  const coords7 = [keypoints2.map((pt) => pt[0]), keypoints2.map((pt) => pt[1])];
   const min = [Math.min(...coords7[0]), Math.min(...coords7[1])];
   const max3 = [Math.max(...coords7[0]), Math.max(...coords7[1])];
-  const box6 = [min[0], min[1], max3[0] - min[0], max3[1] - min[1]];
-  const boxRaw2 = [box6[0] / outputSize2[0], box6[1] / outputSize2[1], box6[2] / outputSize2[0], box6[3] / outputSize2[1]];
-  return { box: box6, boxRaw: boxRaw2 };
+  const box5 = [min[0], min[1], max3[0] - min[0], max3[1] - min[1]];
+  const boxRaw = [box5[0] / outputSize2[0], box5[1] / outputSize2[1], box5[2] / outputSize2[0], box5[3] / outputSize2[1]];
+  return { box: box5, boxRaw };
 }
-function square(keypoints3, outputSize2 = [1, 1]) {
-  const coords7 = [keypoints3.map((pt) => pt[0]), keypoints3.map((pt) => pt[1])];
+function square(keypoints2, outputSize2 = [1, 1]) {
+  const coords7 = [keypoints2.map((pt) => pt[0]), keypoints2.map((pt) => pt[1])];
   const min = [Math.min(...coords7[0]), Math.min(...coords7[1])];
   const max3 = [Math.max(...coords7[0]), Math.max(...coords7[1])];
   const center = [(min[0] + max3[0]) / 2, (min[1] + max3[1]) / 2];
   const dist = Math.max(center[0] - min[0], center[1] - min[1], -center[0] + max3[0], -center[1] + max3[1]);
-  const box6 = [Math.trunc(center[0] - dist), Math.trunc(center[1] - dist), Math.trunc(2 * dist), Math.trunc(2 * dist)];
-  const boxRaw2 = [box6[0] / outputSize2[0], box6[1] / outputSize2[1], box6[2] / outputSize2[0], box6[3] / outputSize2[1]];
-  return { box: box6, boxRaw: boxRaw2 };
+  const box5 = [Math.trunc(center[0] - dist), Math.trunc(center[1] - dist), Math.trunc(2 * dist), Math.trunc(2 * dist)];
+  const boxRaw = [box5[0] / outputSize2[0], box5[1] / outputSize2[1], box5[2] / outputSize2[0], box5[3] / outputSize2[1]];
+  return { box: box5, boxRaw };
 }
-function scale(box6, scaleFact) {
-  const dist = [box6[2] * (scaleFact - 1), box6[3] * (scaleFact - 1)];
-  const newBox = [box6[0] - dist[0] / 2, box6[1] - dist[1] / 2, box6[2] + dist[0], box6[3] + dist[0]];
+function scale(box5, scaleFact) {
+  const dist = [box5[2] * scaleFact, box5[3] * scaleFact];
+  const newBox = [
+    box5[0] - (dist[0] - box5[2]) / 2,
+    box5[1] - (dist[1] - box5[3]) / 2,
+    dist[0],
+    dist[1]
+  ];
   return newBox;
 }
-function crop(box6) {
-  const yxBox = [Math.max(0, box6[1]), Math.max(0, box6[0]), Math.min(1, box6[3] + box6[1]), Math.min(1, box6[2] + box6[0])];
+function crop(box5) {
+  const yxBox = [Math.max(0, box5[1]), Math.max(0, box5[0]), Math.min(1, box5[3] + box5[1]), Math.min(1, box5[2] + box5[0])];
   return yxBox;
 }
 
@@ -9293,6 +9306,8 @@ var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "Stateful
 var inputSize4 = [[0, 0], [0, 0]];
 var classes = ["hand", "fist", "pinch", "point", "face", "tip", "pinchtip"];
 var boxExpandFact = 1.6;
+var maxDetectorResolution = 512;
+var detectorExpandFact = 1.2;
 var skipped4 = 0;
 var outputSize = [0, 0];
 var cache = {
@@ -9348,7 +9363,7 @@ async function detectHands(input, config3) {
     return hands;
   const t = {};
   const ratio = (input.shape[2] || 1) / (input.shape[1] || 1);
-  const height = Math.min(Math.round((input.shape[1] || 0) / 8) * 8, 512);
+  const height = Math.min(Math.round((input.shape[1] || 0) / 8) * 8, maxDetectorResolution);
   const width = Math.round(height * ratio / 8) * 8;
   t.resize = tfjs_esm_exports.image.resizeBilinear(input, [height, width]);
   t.cast = tfjs_esm_exports.cast(t.resize, "int32");
@@ -9370,12 +9385,13 @@ async function detectHands(input, config3) {
     const boxSlice = tfjs_esm_exports.slice(t.boxes, nmsIndex, 1);
     const boxData = await boxSlice.data();
     tfjs_esm_exports.dispose(boxSlice);
-    const boxInput = [boxData[1], boxData[0], boxData[3] - boxData[1], boxData[2] - boxData[0]];
-    const boxRaw2 = scale(boxInput, 1.2);
-    const boxFull = [Math.trunc(boxRaw2[0] * outputSize[0]), Math.trunc(boxRaw2[1] * outputSize[1]), Math.trunc(boxRaw2[2] * outputSize[0]), Math.trunc(boxRaw2[3] * outputSize[1])];
-    const score2 = scores[nmsIndex];
+    const boxSquareSize = Math.max(boxData[3] - boxData[1], boxData[2] - boxData[0]);
+    const boxRaw = scale([boxData[1], boxData[0], boxSquareSize, boxSquareSize], detectorExpandFact);
+    const boxCrop = crop(boxRaw);
+    const boxFull = [Math.trunc(boxData[1] * outputSize[0]), Math.trunc(boxData[0] * outputSize[1]), Math.trunc((boxData[3] - boxData[1]) * outputSize[0]), Math.trunc((boxData[2] - boxData[0]) * outputSize[1])];
+    const score = scores[nmsIndex];
     const label = classes[classNum[nmsIndex]];
-    const hand3 = { id: id++, score: score2, box: boxFull, boxRaw: boxRaw2, boxCrop: crop(boxRaw2), label };
+    const hand3 = { id: id++, score, box: boxFull, boxRaw, boxCrop, label };
     hands.push(hand3);
   }
   Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
@@ -9399,20 +9415,23 @@ async function detectFingers(input, h, config3) {
   };
   if (input && models[1] && config3.hand.landmarks && h.score > (config3.hand.minConfidence || 0)) {
     const t = {};
-    t.crop = tfjs_esm_exports.image.cropAndResize(input, [crop(h.boxRaw)], [0], [inputSize4[1][0], inputSize4[1][1]], "bilinear");
+    t.crop = tfjs_esm_exports.image.cropAndResize(input, [h.boxCrop], [0], [inputSize4[1][0], inputSize4[1][1]], "bilinear");
     t.cast = tfjs_esm_exports.cast(t.crop, "float32");
     t.div = tfjs_esm_exports.div(t.cast, 255);
     [t.score, t.keypoints] = models[1].execute(t.div);
     const rawScore = (await t.score.data())[0];
-    const score2 = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100;
-    if (score2 >= (config3.hand.minConfidence || 0)) {
-      hand3.fingerScore = score2;
+    const score = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100;
+    if (score >= (config3.hand.minConfidence || 0)) {
+      hand3.fingerScore = score;
       t.reshaped = tfjs_esm_exports.reshape(t.keypoints, [-1, 3]);
-      const rawCoords = await t.reshaped.array();
-      hand3.keypoints = rawCoords.map((kpt4) => [
-        outputSize[0] * ((h.boxCrop[3] - h.boxCrop[1]) * kpt4[0] / inputSize4[1][0] + h.boxCrop[1]),
-        outputSize[1] * ((h.boxCrop[2] - h.boxCrop[0]) * kpt4[1] / inputSize4[1][1] + h.boxCrop[0]),
-        h.boxCrop[3] + h.boxCrop[3] / 2 * (kpt4[2] || 0)
+      const coordsData = await t.reshaped.array();
+      const coordsRaw = coordsData.map((kpt4) => [kpt4[0] / inputSize4[1][1], kpt4[1] / inputSize4[1][0], kpt4[2] || 0]);
+      const coordsNorm = coordsRaw.map((kpt4) => [kpt4[0] * h.boxRaw[2], kpt4[1] * h.boxRaw[3], kpt4[2] || 0]);
+      console.log(outputSize, h.box);
+      hand3.keypoints = coordsNorm.map((kpt4) => [
+        outputSize[0] * kpt4[0] + h.box[0],
+        outputSize[1] * kpt4[1] + h.box[1],
+        kpt4[2] || 0
       ]);
       hand3.landmarks = analyze(hand3.keypoints);
       for (const key of Object.keys(fingerMap)) {
@@ -9423,36 +9442,43 @@ async function detectFingers(input, h, config3) {
   }
   return hand3;
 }
+var n = 0;
 async function predict6(input, config3) {
   var _a, _b;
+  n++;
   if (!models[0] || !models[1] || !((_a = models[0]) == null ? void 0 : _a.inputs[0].shape) || !((_b = models[1]) == null ? void 0 : _b.inputs[0].shape))
     return [];
   outputSize = [input.shape[2] || 0, input.shape[1] || 0];
   skipped4++;
   if (config3.skipFrame && skipped4 <= (config3.hand.skipFrames || 0)) {
+    console.log(n, "SKIP", { results: cache.hands.length });
     return cache.hands;
   }
   return new Promise(async (resolve) => {
-    skipped4 = 0;
-    if (cache.boxes.length >= (config3.hand.maxDetected || 0)) {
+    console.log(n, "DETECT", { skipped: skipped4, hands: cache.hands.length, boxes: cache.boxes.length });
+    if (config3.skipFrame && skipped4 <= 10 * (config3.hand.skipFrames || 0) && cache.hands.length > 0) {
       cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config3)));
+      console.log(n, "HANDS", { hands: cache.hands.length });
     } else {
-      cache.hands = [];
-    }
-    if (cache.hands.length !== config3.hand.maxDetected) {
       cache.boxes = await detectHands(input, config3);
+      console.log(n, "BOXES", { hands: cache.boxes.length });
       cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config3)));
+      console.log(n, "HANDS", { hands: cache.hands.length });
+      skipped4 = 0;
     }
     const oldCache = [...cache.boxes];
     cache.boxes.length = 0;
-    for (let i = 0; i < cache.hands.length; i++) {
-      const boxKpt = square(cache.hands[i].keypoints, outputSize);
-      if (boxKpt.box[2] / (input.shape[2] || 1) > 0.05 && boxKpt.box[3] / (input.shape[1] || 1) > 0.05 && cache.hands[i].fingerScore && cache.hands[i].fingerScore > (config3.hand.minConfidence || 0)) {
-        const boxScale = scale(boxKpt.box, boxExpandFact);
-        const boxScaleRaw = scale(boxKpt.boxRaw, boxExpandFact);
-        const boxCrop = crop(boxScaleRaw);
-        cache.boxes.push({ ...oldCache[i], box: boxScale, boxRaw: boxScaleRaw, boxCrop });
+    if (config3.cacheSensitivity > 0) {
+      for (let i = 0; i < cache.hands.length; i++) {
+        const boxKpt = square(cache.hands[i].keypoints, outputSize);
+        if (boxKpt.box[2] / (input.shape[2] || 1) > 0.05 && boxKpt.box[3] / (input.shape[1] || 1) > 0.05 && cache.hands[i].fingerScore && cache.hands[i].fingerScore > (config3.hand.minConfidence || 0)) {
+          const boxScale = scale(boxKpt.box, boxExpandFact);
+          const boxScaleRaw = scale(boxKpt.boxRaw, boxExpandFact);
+          const boxCrop = crop(boxScaleRaw);
+          cache.boxes.push({ ...oldCache[i], box: boxScale, boxRaw: boxScaleRaw, boxCrop });
+        }
       }
+      console.log(n, "CACHED", { hands: cache.boxes.length });
     }
     resolve(cache.hands);
   });
@@ -9562,9 +9588,9 @@ async function loadPose(config3) {
     log("cached model:", models2[1]["modelUrl"]);
   return models2[1];
 }
-function calculateBoxes(keypoints3, outputSize2) {
-  const x = keypoints3.map((a) => a.position[0]);
-  const y = keypoints3.map((a) => a.position[1]);
+function calculateBoxes(keypoints2, outputSize2) {
+  const x = keypoints2.map((a) => a.position[0]);
+  const y = keypoints2.map((a) => a.position[1]);
   const keypointsBox = [Math.min(...x), Math.min(...y), Math.max(...x) - Math.min(...x), Math.max(...y) - Math.min(...y)];
   const keypointsBoxRaw = [keypointsBox[0] / outputSize2[0], keypointsBox[1] / outputSize2[1], keypointsBox[2] / outputSize2[0], keypointsBox[3] / outputSize2[1]];
   return { keypointsBox, keypointsBoxRaw };
@@ -9585,8 +9611,8 @@ async function prepareImage(input) {
   Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
   return final;
 }
-function rescaleKeypoints(keypoints3, outputSize2) {
-  for (const kpt4 of keypoints3) {
+function rescaleKeypoints(keypoints2, outputSize2) {
+  for (const kpt4 of keypoints2) {
     kpt4.position = [
       kpt4.position[0] * (outputSize2[0] + padding[2][0] + padding[2][1]) / outputSize2[0] - padding[2][0],
       kpt4.position[1] * (outputSize2[1] + padding[1][0] + padding[1][1]) / outputSize2[1] - padding[1][0],
@@ -9598,7 +9624,7 @@ function rescaleKeypoints(keypoints3, outputSize2) {
       kpt4.position[2]
     ];
   }
-  return keypoints3;
+  return keypoints2;
 }
 async function detectParts(input, config3, outputSize2) {
   var _a;
@@ -9609,29 +9635,29 @@ async function detectParts(input, config3, outputSize2) {
   const keypointsRelative = [];
   const depth = 5;
   for (let i = 0; i < points.length / depth; i++) {
-    const score2 = (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100;
+    const score = (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100;
     const positionRaw = [points[depth * i + 0] / inputSize5[1][0], points[depth * i + 1] / inputSize5[1][1], points[depth * i + 2] + 0];
     const position = [Math.trunc(outputSize2[0] * positionRaw[0]), Math.trunc(outputSize2[1] * positionRaw[1]), positionRaw[2]];
-    keypointsRelative.push({ part: kpt[i], positionRaw, position, score: score2 });
+    keypointsRelative.push({ part: kpt[i], positionRaw, position, score });
   }
   const avgScore = Math.round(100 * keypointsRelative.reduce((prev, curr) => prev += curr.score, 0) / keypointsRelative.length) / 100;
   if (avgScore < (config3.body.minConfidence || 0))
     return null;
-  const keypoints3 = rescaleKeypoints(keypointsRelative, outputSize2);
-  const boxes = calculateBoxes(keypoints3, [outputSize2[0], outputSize2[1]]);
+  const keypoints2 = rescaleKeypoints(keypointsRelative, outputSize2);
+  const boxes = calculateBoxes(keypoints2, [outputSize2[0], outputSize2[1]]);
   Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
   const annotations2 = {};
   for (const [name, indexes] of Object.entries(connected)) {
     const pt = [];
     for (let i = 0; i < indexes.length - 1; i++) {
-      const pt0 = keypoints3.find((kpt4) => kpt4.part === indexes[i]);
-      const pt1 = keypoints3.find((kpt4) => kpt4.part === indexes[i + 1]);
+      const pt0 = keypoints2.find((kpt4) => kpt4.part === indexes[i]);
+      const pt1 = keypoints2.find((kpt4) => kpt4.part === indexes[i + 1]);
       if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
         pt.push([pt0.position, pt1.position]);
     }
     annotations2[name] = pt;
   }
-  return { id: 0, score: avgScore, box: boxes.keypointsBox, boxRaw: boxes.keypointsBoxRaw, keypoints: keypoints3, annotations: annotations2 };
+  return { id: 0, score: avgScore, box: boxes.keypointsBox, boxRaw: boxes.keypointsBoxRaw, keypoints: keypoints2, annotations: annotations2 };
 }
 async function predict7(input, config3) {
   const outputSize2 = [input.shape[2] || 0, input.shape[1] || 0];
@@ -9681,10 +9707,7 @@ var connected2 = {
 
 // src/body/efficientpose.ts
 var model7;
-var keypoints = [];
-var box4 = [0, 0, 0, 0];
-var boxRaw = [0, 0, 0, 0];
-var score = 0;
+var cache3 = { id: 0, keypoints: [], box: [0, 0, 0, 0], boxRaw: [0, 0, 0, 0], score: 0, annotations: {} };
 var skipped6 = Number.MAX_SAFE_INTEGER;
 async function load8(config3) {
   if (env2.initial)
@@ -9716,9 +9739,9 @@ function max2d(inputs, minScore) {
 }
 async function predict8(image24, config3) {
   var _a;
-  if (skipped6 < (((_a = config3.body) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && Object.keys(keypoints).length > 0) {
+  if (skipped6 < (((_a = config3.body) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && Object.keys(cache3.keypoints).length > 0) {
     skipped6++;
-    return [{ id: 0, score, box: box4, boxRaw, keypoints, annotations: {} }];
+    return [cache3];
   }
   skipped6 = 0;
   return new Promise(async (resolve) => {
@@ -9736,15 +9759,15 @@ async function predict8(image24, config3) {
       resT = await (model7 == null ? void 0 : model7.predict(tensor3));
     tfjs_esm_exports.dispose(tensor3);
     if (resT) {
-      keypoints.length = 0;
+      cache3.keypoints.length = 0;
       const squeeze8 = resT.squeeze();
       tfjs_esm_exports.dispose(resT);
-      const stack4 = squeeze8.unstack(2);
+      const stack3 = squeeze8.unstack(2);
       tfjs_esm_exports.dispose(squeeze8);
-      for (let id = 0; id < stack4.length; id++) {
-        const [x2, y2, partScore] = max2d(stack4[id], config3.body.minConfidence);
-        if (score > (((_a2 = config3.body) == null ? void 0 : _a2.minConfidence) || 0)) {
-          keypoints.push({
+      for (let id = 0; id < stack3.length; id++) {
+        const [x2, y2, partScore] = max2d(stack3[id], config3.body.minConfidence);
+        if (partScore > (((_a2 = config3.body) == null ? void 0 : _a2.minConfidence) || 0)) {
+          cache3.keypoints.push({
             score: Math.round(100 * partScore) / 100,
             part: kpt2[id],
             positionRaw: [
@@ -9758,37 +9781,36 @@ async function predict8(image24, config3) {
           });
         }
       }
-      stack4.forEach((s) => tfjs_esm_exports.dispose(s));
+      stack3.forEach((s) => tfjs_esm_exports.dispose(s));
     }
-    score = keypoints.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
-    const x = keypoints.map((a) => a.position[0]);
-    const y = keypoints.map((a) => a.position[1]);
-    box4 = [
+    cache3.score = cache3.keypoints.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
+    const x = cache3.keypoints.map((a) => a.position[0]);
+    const y = cache3.keypoints.map((a) => a.position[1]);
+    cache3.box = [
       Math.min(...x),
       Math.min(...y),
       Math.max(...x) - Math.min(...x),
       Math.max(...y) - Math.min(...y)
     ];
-    const xRaw = keypoints.map((a) => a.positionRaw[0]);
-    const yRaw = keypoints.map((a) => a.positionRaw[1]);
-    boxRaw = [
+    const xRaw = cache3.keypoints.map((a) => a.positionRaw[0]);
+    const yRaw = cache3.keypoints.map((a) => a.positionRaw[1]);
+    cache3.boxRaw = [
       Math.min(...xRaw),
       Math.min(...yRaw),
       Math.max(...xRaw) - Math.min(...xRaw),
       Math.max(...yRaw) - Math.min(...yRaw)
     ];
-    const annotations2 = {};
     for (const [name, indexes] of Object.entries(connected2)) {
       const pt = [];
       for (let i = 0; i < indexes.length - 1; i++) {
-        const pt0 = keypoints.find((kpt4) => kpt4.part === indexes[i]);
-        const pt1 = keypoints.find((kpt4) => kpt4.part === indexes[i + 1]);
+        const pt0 = cache3.keypoints.find((kpt4) => kpt4.part === indexes[i]);
+        const pt1 = cache3.keypoints.find((kpt4) => kpt4.part === indexes[i + 1]);
         if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
           pt.push([pt0.position, pt1.position]);
       }
-      annotations2[name] = pt;
+      cache3.annotations[name] = pt;
     }
-    resolve([{ id: 0, score, box: box4, boxRaw, keypoints, annotations: annotations2 }]);
+    resolve([cache3]);
   });
 }
 
@@ -9796,7 +9818,8 @@ async function predict8(image24, config3) {
 var movenetcoords_exports = {};
 __export(movenetcoords_exports, {
   connected: () => connected3,
-  kpt: () => kpt3
+  kpt: () => kpt3,
+  pairs: () => pairs
 });
 var kpt3 = [
   "nose",
@@ -9817,6 +9840,16 @@ var kpt3 = [
   "leftAnkle",
   "rightAnkle"
 ];
+var pairs = [
+  ["leftEye", "rightEye"],
+  ["leftEar", "rightEar"],
+  ["leftShoulder", "rightShoulder"],
+  ["leftElbow", "rightElbow"],
+  ["leftWrist", "rightWrist"],
+  ["leftHip", "rightHip"],
+  ["leftKnee", "rightKnee"],
+  ["leftAnkle", "rightAnkle"]
+];
 var connected3 = {
   leftLeg: ["leftHip", "leftKnee", "leftAnkle"],
   rightLeg: ["rightHip", "rightKnee", "rightAnkle"],
@@ -9830,12 +9863,12 @@ var connected3 = {
 var model8;
 var inputSize6 = 0;
 var boxExpandFact2 = 1.5;
-var cache3 = {
+var cache4 = {
   boxes: [],
   bodies: []
 };
 var skipped7 = Number.MAX_SAFE_INTEGER;
-var keypoints2 = [];
+var keypoints = [];
 async function load9(config3) {
   if (env2.initial)
     model8 = null;
@@ -9853,19 +9886,32 @@ async function load9(config3) {
     inputSize6 = 256;
   return model8;
 }
+function fixSides() {
+  for (const pair of pairs) {
+    let left = keypoints.find((kp) => kp.part === pair[0]);
+    let right = keypoints.find((kp) => kp.part === pair[1]);
+    if (left && right) {
+      if (left.position[0] > right.position[0]) {
+        const tmp = left;
+        left = right;
+        right = tmp;
+      }
+    }
+  }
+}
 async function parseSinglePose(res, config3, image24, inputBox) {
   const kpt4 = res[0][0];
-  keypoints2.length = 0;
-  let score2 = 0;
+  keypoints.length = 0;
+  let score = 0;
   for (let id = 0; id < kpt4.length; id++) {
-    score2 = kpt4[id][2];
-    if (score2 > config3.body.minConfidence) {
+    score = kpt4[id][2];
+    if (score > config3.body.minConfidence) {
       const positionRaw = [
         (inputBox[3] - inputBox[1]) * kpt4[id][1] + inputBox[1],
         (inputBox[2] - inputBox[0]) * kpt4[id][0] + inputBox[0]
       ];
-      keypoints2.push({
-        score: Math.round(100 * score2) / 100,
+      keypoints.push({
+        score: Math.round(100 * score) / 100,
         part: kpt3[id],
         positionRaw,
         position: [
@@ -9875,21 +9921,22 @@ async function parseSinglePose(res, config3, image24, inputBox) {
       });
     }
   }
-  score2 = keypoints2.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
+  fixSides();
+  score = keypoints.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
   const bodies = [];
-  const newBox = calc(keypoints2.map((pt) => pt.position), [image24.shape[2], image24.shape[1]]);
+  const newBox = calc(keypoints.map((pt) => pt.position), [image24.shape[2], image24.shape[1]]);
   const annotations2 = {};
   for (const [name, indexes] of Object.entries(connected3)) {
     const pt = [];
     for (let i = 0; i < indexes.length - 1; i++) {
-      const pt0 = keypoints2.find((kp) => kp.part === indexes[i]);
-      const pt1 = keypoints2.find((kp) => kp.part === indexes[i + 1]);
+      const pt0 = keypoints.find((kp) => kp.part === indexes[i]);
+      const pt1 = keypoints.find((kp) => kp.part === indexes[i + 1]);
       if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
         pt.push([pt0.position, pt1.position]);
     }
     annotations2[name] = pt;
   }
-  bodies.push({ id: 0, score: score2, box: newBox.box, boxRaw: newBox.boxRaw, keypoints: keypoints2, annotations: annotations2 });
+  bodies.push({ id: 0, score, box: newBox.box, boxRaw: newBox.boxRaw, keypoints, annotations: annotations2 });
   return bodies;
 }
 async function parseMultiPose(res, config3, image24, inputBox) {
@@ -9898,35 +9945,36 @@ async function parseMultiPose(res, config3, image24, inputBox) {
     const kpt4 = res[0][id];
     const totalScore = Math.round(100 * kpt4[51 + 4]) / 100;
     if (totalScore > config3.body.minConfidence) {
-      keypoints2.length = 0;
+      keypoints.length = 0;
       for (let i = 0; i < 17; i++) {
-        const score2 = kpt4[3 * i + 2];
-        if (score2 > config3.body.minConfidence) {
+        const score = kpt4[3 * i + 2];
+        if (score > config3.body.minConfidence) {
           const positionRaw = [
             (inputBox[3] - inputBox[1]) * kpt4[3 * i + 1] + inputBox[1],
             (inputBox[2] - inputBox[0]) * kpt4[3 * i + 0] + inputBox[0]
           ];
-          keypoints2.push({
+          keypoints.push({
             part: kpt3[i],
-            score: Math.round(100 * score2) / 100,
+            score: Math.round(100 * score) / 100,
             positionRaw,
             position: [Math.round((image24.shape[2] || 0) * positionRaw[0]), Math.round((image24.shape[1] || 0) * positionRaw[1])]
           });
         }
       }
-      const newBox = calc(keypoints2.map((pt) => pt.position), [image24.shape[2], image24.shape[1]]);
+      fixSides();
+      const newBox = calc(keypoints.map((pt) => pt.position), [image24.shape[2], image24.shape[1]]);
       const annotations2 = {};
       for (const [name, indexes] of Object.entries(connected3)) {
         const pt = [];
         for (let i = 0; i < indexes.length - 1; i++) {
-          const pt0 = keypoints2.find((kp) => kp.part === indexes[i]);
-          const pt1 = keypoints2.find((kp) => kp.part === indexes[i + 1]);
+          const pt0 = keypoints.find((kp) => kp.part === indexes[i]);
+          const pt1 = keypoints.find((kp) => kp.part === indexes[i + 1]);
           if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
             pt.push([pt0.position, pt1.position]);
         }
         annotations2[name] = pt;
       }
-      bodies.push({ id, score: totalScore, box: newBox.box, boxRaw: newBox.boxRaw, keypoints: [...keypoints2], annotations: annotations2 });
+      bodies.push({ id, score: totalScore, box: newBox.box, boxRaw: newBox.boxRaw, keypoints: [...keypoints], annotations: annotations2 });
     }
   }
   bodies.sort((a, b) => b.score - a.score);
@@ -9938,43 +9986,43 @@ async function predict9(input, config3) {
   if (!model8 || !(model8 == null ? void 0 : model8.inputs[0].shape))
     return [];
   if (!config3.skipFrame)
-    cache3.boxes.length = 0;
+    cache4.boxes.length = 0;
   skipped7++;
   if (config3.skipFrame && skipped7 <= (config3.body.skipFrames || 0)) {
-    return cache3.bodies;
+    return cache4.bodies;
   }
   return new Promise(async (resolve) => {
     const t = {};
     skipped7 = 0;
-    cache3.bodies = [];
-    if (cache3.boxes.length >= (config3.body.maxDetected || 0)) {
-      for (let i = 0; i < cache3.boxes.length; i++) {
-        t.crop = tfjs_esm_exports.image.cropAndResize(input, [cache3.boxes[i]], [0], [inputSize6, inputSize6], "bilinear");
+    cache4.bodies = [];
+    if (cache4.boxes.length >= (config3.body.maxDetected || 0)) {
+      for (let i = 0; i < cache4.boxes.length; i++) {
+        t.crop = tfjs_esm_exports.image.cropAndResize(input, [cache4.boxes[i]], [0], [inputSize6, inputSize6], "bilinear");
         t.cast = tfjs_esm_exports.cast(t.crop, "int32");
         t.res = await (model8 == null ? void 0 : model8.predict(t.cast));
         const res = await t.res.array();
-        const newBodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, cache3.boxes[i]) : await parseMultiPose(res, config3, input, cache3.boxes[i]);
-        cache3.bodies = cache3.bodies.concat(newBodies);
+        const newBodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, cache4.boxes[i]) : await parseMultiPose(res, config3, input, cache4.boxes[i]);
+        cache4.bodies = cache4.bodies.concat(newBodies);
         Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
       }
     }
-    if (cache3.bodies.length !== config3.body.maxDetected) {
+    if (cache4.bodies.length !== config3.body.maxDetected) {
       t.resized = tfjs_esm_exports.image.resizeBilinear(input, [inputSize6, inputSize6], false);
       t.cast = tfjs_esm_exports.cast(t.resized, "int32");
       t.res = await (model8 == null ? void 0 : model8.predict(t.cast));
       const res = await t.res.array();
-      cache3.bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, [0, 0, 1, 1]) : await parseMultiPose(res, config3, input, [0, 0, 1, 1]);
+      cache4.bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, [0, 0, 1, 1]) : await parseMultiPose(res, config3, input, [0, 0, 1, 1]);
       Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
     }
-    cache3.boxes.length = 0;
-    for (let i = 0; i < cache3.bodies.length; i++) {
-      if (cache3.bodies[i].keypoints.length > kpt3.length / 2) {
-        const scaledBox = scale(cache3.bodies[i].boxRaw, boxExpandFact2);
+    cache4.boxes.length = 0;
+    for (let i = 0; i < cache4.bodies.length; i++) {
+      if (cache4.bodies[i].keypoints.length > kpt3.length / 2) {
+        const scaledBox = scale(cache4.bodies[i].boxRaw, boxExpandFact2);
         const cropBox = crop(scaledBox);
-        cache3.boxes.push(cropBox);
+        cache4.boxes.push(cropBox);
       }
     }
-    resolve(cache3.bodies);
+    resolve(cache4.bodies);
   });
 }
 
@@ -10096,8 +10144,8 @@ async function process3(res, inputSize8, outputShape, config3) {
       const scores = await scoresT.array();
       for (let i = 0; i < scoresT.shape[0]; i++) {
         for (let j = 0; j < scoresT.shape[1]; j++) {
-          const score2 = scores[i][j];
-          if (score2 > config3.object.minConfidence && j !== 61) {
+          const score = scores[i][j];
+          if (score > config3.object.minConfidence && j !== 61) {
             const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize;
             const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize;
             const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize8));
@@ -10109,21 +10157,21 @@ async function process3(res, inputSize8, outputShape, config3) {
               cx + scaleBox / strideSize * boxOffset[2] - x,
               cy + scaleBox / strideSize * boxOffset[3] - y
             ];
-            let boxRaw2 = [x, y, w, h];
-            boxRaw2 = boxRaw2.map((a) => Math.max(0, Math.min(a, 1)));
-            const box6 = [
-              boxRaw2[0] * outputShape[0],
-              boxRaw2[1] * outputShape[1],
-              boxRaw2[2] * outputShape[0],
-              boxRaw2[3] * outputShape[1]
+            let boxRaw = [x, y, w, h];
+            boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1)));
+            const box5 = [
+              boxRaw[0] * outputShape[0],
+              boxRaw[1] * outputShape[1],
+              boxRaw[2] * outputShape[0],
+              boxRaw[3] * outputShape[1]
             ];
             const result = {
               id: id++,
-              score: Math.round(100 * score2) / 100,
+              score: Math.round(100 * score) / 100,
               class: j + 1,
               label: labels[j].label,
-              box: box6.map((a) => Math.trunc(a)),
-              boxRaw: boxRaw2
+              box: box5.map((a) => Math.trunc(a)),
+              boxRaw
             };
             results.push(result);
           }
@@ -10212,26 +10260,26 @@ async function process4(res, outputShape, config3) {
   tfjs_esm_exports.dispose(nmsT);
   let i = 0;
   for (const id of nms) {
-    const score2 = Math.trunc(100 * detections[0][id][4]) / 100;
+    const score = Math.trunc(100 * detections[0][id][4]) / 100;
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
     const [x, y] = [
       detections[0][id][0] / inputSize7,
       detections[0][id][1] / inputSize7
     ];
-    const boxRaw2 = [
+    const boxRaw = [
       x,
       y,
       detections[0][id][2] / inputSize7 - x,
       detections[0][id][3] / inputSize7 - y
     ];
-    const box6 = [
-      Math.trunc(boxRaw2[0] * outputShape[0]),
-      Math.trunc(boxRaw2[1] * outputShape[1]),
-      Math.trunc(boxRaw2[2] * outputShape[0]),
-      Math.trunc(boxRaw2[3] * outputShape[1])
+    const box5 = [
+      Math.trunc(boxRaw[0] * outputShape[0]),
+      Math.trunc(boxRaw[1] * outputShape[1]),
+      Math.trunc(boxRaw[2] * outputShape[0]),
+      Math.trunc(boxRaw[3] * outputShape[1])
     ];
-    results.push({ id: i++, score: score2, class: classVal, label, box: box6, boxRaw: boxRaw2 });
+    results.push({ id: i++, score, class: classVal, label, box: box5, boxRaw });
   }
   return results;
 }
@@ -11329,16 +11377,16 @@ var body2 = (res) => {
     const leftWrist = res[i].keypoints.find((a) => a.part === "leftWrist");
     const rightWrist = res[i].keypoints.find((a) => a.part === "rightWrist");
     const nose = res[i].keypoints.find((a) => a.part === "nose");
-    if (nose && leftWrist && rightWrist && leftWrist.position.y < nose.position.y && rightWrist.position.y < nose.position.y)
+    if (nose && leftWrist && rightWrist && leftWrist.position[1] < nose.position[1] && rightWrist.position[1] < nose.position[1])
       gestures.push({ body: i, gesture: "i give up" });
-    else if (nose && leftWrist && leftWrist.position.y < nose.position.y)
+    else if (nose && leftWrist && leftWrist.position[1] < nose.position[1])
       gestures.push({ body: i, gesture: "raise left hand" });
-    else if (nose && rightWrist && rightWrist.position.y < nose.position.y)
+    else if (nose && rightWrist && rightWrist.position[1] < nose.position[1])
       gestures.push({ body: i, gesture: "raise right hand" });
     const leftShoulder = res[i].keypoints.find((a) => a.part === "leftShoulder");
     const rightShoulder = res[i].keypoints.find((a) => a.part === "rightShoulder");
     if (leftShoulder && rightShoulder)
-      gestures.push({ body: i, gesture: `leaning ${leftShoulder.position.y > rightShoulder.position.y ? "left" : "right"}` });
+      gestures.push({ body: i, gesture: `leaning ${leftShoulder.position[1] > rightShoulder.position[1] ? "left" : "right"}` });
   }
   return gestures;
 };
@@ -11450,9 +11498,9 @@ function calc2(newResult, config3) {
     bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
   } else {
     for (let i = 0; i < newResult.body.length; i++) {
-      const box6 = newResult.body[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].box[j] + b) / bufferedFactor);
-      const boxRaw2 = newResult.body[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + b) / bufferedFactor);
-      const keypoints3 = newResult.body[i].keypoints.map((keypoint, j) => ({
+      const box5 = newResult.body[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].box[j] + b) / bufferedFactor);
+      const boxRaw = newResult.body[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + b) / bufferedFactor);
+      const keypoints2 = newResult.body[i].keypoints.map((keypoint, j) => ({
         score: keypoint.score,
         part: keypoint.part,
         position: [
@@ -11475,25 +11523,25 @@ function calc2(newResult, config3) {
       for (const [name, indexes] of Object.entries(coords7.connected)) {
         const pt = [];
         for (let j = 0; j < indexes.length - 1; j++) {
-          const pt0 = keypoints3.find((kp) => kp.part === indexes[j]);
-          const pt1 = keypoints3.find((kp) => kp.part === indexes[j + 1]);
+          const pt0 = keypoints2.find((kp) => kp.part === indexes[j]);
+          const pt1 = keypoints2.find((kp) => kp.part === indexes[j + 1]);
           if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
             pt.push([pt0.position, pt1.position]);
         }
         annotations2[name] = pt;
       }
-      bufferedResult.body[i] = { ...newResult.body[i], box: box6, boxRaw: boxRaw2, keypoints: keypoints3, annotations: annotations2 };
+      bufferedResult.body[i] = { ...newResult.body[i], box: box5, boxRaw, keypoints: keypoints2, annotations: annotations2 };
     }
   }
   if (!bufferedResult.hand || newResult.hand.length !== bufferedResult.hand.length) {
     bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand));
   } else {
     for (let i = 0; i < newResult.hand.length; i++) {
-      const box6 = newResult.hand[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor);
-      const boxRaw2 = newResult.hand[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor);
+      const box5 = newResult.hand[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor);
+      const boxRaw = newResult.hand[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor);
       if (bufferedResult.hand[i].keypoints.length !== newResult.hand[i].keypoints.length)
         bufferedResult.hand[i].keypoints = newResult.hand[i].keypoints;
-      const keypoints3 = newResult.hand[i].keypoints && newResult.hand[i].keypoints.length > 0 ? newResult.hand[i].keypoints.map((landmark, j) => landmark.map((coord, k) => ((bufferedFactor - 1) * (bufferedResult.hand[i].keypoints[j][k] || 1) + (coord || 0)) / bufferedFactor)) : [];
+      const keypoints2 = newResult.hand[i].keypoints && newResult.hand[i].keypoints.length > 0 ? newResult.hand[i].keypoints.map((landmark, j) => landmark.map((coord, k) => ((bufferedFactor - 1) * (bufferedResult.hand[i].keypoints[j][k] || 1) + (coord || 0)) / bufferedFactor)) : [];
       let annotations2 = {};
       if (Object.keys(bufferedResult.hand[i].annotations).length !== Object.keys(newResult.hand[i].annotations).length) {
         bufferedResult.hand[i].annotations = newResult.hand[i].annotations;
@@ -11503,15 +11551,15 @@ function calc2(newResult, config3) {
           annotations2[key] = newResult.hand[i].annotations[key] && newResult.hand[i].annotations[key][0] ? newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor)) : null;
         }
       }
-      bufferedResult.hand[i] = { ...newResult.hand[i], box: box6, boxRaw: boxRaw2, keypoints: keypoints3, annotations: annotations2 };
+      bufferedResult.hand[i] = { ...newResult.hand[i], box: box5, boxRaw, keypoints: keypoints2, annotations: annotations2 };
     }
   }
   if (!bufferedResult.face || newResult.face.length !== bufferedResult.face.length) {
     bufferedResult.face = JSON.parse(JSON.stringify(newResult.face));
   } else {
     for (let i = 0; i < newResult.face.length; i++) {
-      const box6 = newResult.face[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor);
-      const boxRaw2 = newResult.face[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor);
+      const box5 = newResult.face[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor);
+      const boxRaw = newResult.face[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor);
       const rotation = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
       rotation.matrix = (_g = newResult.face[i].rotation) == null ? void 0 : _g.matrix;
       rotation.angle = {
@@ -11523,16 +11571,16 @@ function calc2(newResult, config3) {
         bearing: ((bufferedFactor - 1) * (((_u = (_t = bufferedResult.face[i].rotation) == null ? void 0 : _t.gaze) == null ? void 0 : _u.bearing) || 0) + (((_w = (_v = newResult.face[i].rotation) == null ? void 0 : _v.gaze) == null ? void 0 : _w.bearing) || 0)) / bufferedFactor,
         strength: ((bufferedFactor - 1) * (((_y = (_x = bufferedResult.face[i].rotation) == null ? void 0 : _x.gaze) == null ? void 0 : _y.strength) || 0) + (((_A = (_z = newResult.face[i].rotation) == null ? void 0 : _z.gaze) == null ? void 0 : _A.strength) || 0)) / bufferedFactor
       };
-      bufferedResult.face[i] = { ...newResult.face[i], rotation, box: box6, boxRaw: boxRaw2 };
+      bufferedResult.face[i] = { ...newResult.face[i], rotation, box: box5, boxRaw };
     }
   }
   if (!bufferedResult.object || newResult.object.length !== bufferedResult.object.length) {
     bufferedResult.object = JSON.parse(JSON.stringify(newResult.object));
   } else {
     for (let i = 0; i < newResult.object.length; i++) {
-      const box6 = newResult.object[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].box[j] + b) / bufferedFactor);
-      const boxRaw2 = newResult.object[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].boxRaw[j] + b) / bufferedFactor);
-      bufferedResult.object[i] = { ...newResult.object[i], box: box6, boxRaw: boxRaw2 };
+      const box5 = newResult.object[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].box[j] + b) / bufferedFactor);
+      const boxRaw = newResult.object[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].boxRaw[j] + b) / bufferedFactor);
+      bufferedResult.object[i] = { ...newResult.object[i], box: box5, boxRaw };
     }
   }
   if (newResult.persons) {
@@ -11541,7 +11589,7 @@ function calc2(newResult, config3) {
       bufferedResult.persons = JSON.parse(JSON.stringify(newPersons));
     } else {
       for (let i = 0; i < newPersons.length; i++) {
-        bufferedResult.persons[i].box = newPersons[i].box.map((box6, j) => ((bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box6) / bufferedFactor);
+        bufferedResult.persons[i].box = newPersons[i].box.map((box5, j) => ((bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box5) / bufferedFactor);
       }
     }
   }
@@ -11555,12 +11603,12 @@ function calc2(newResult, config3) {
 
 // src/face/match.ts
 function distance(descriptor1, descriptor2, options3 = { order: 2 }) {
-  let sum = 0;
+  let sum2 = 0;
   for (let i = 0; i < descriptor1.length; i++) {
     const diff = options3.order === 2 ? descriptor1[i] - descriptor2[i] : Math.abs(descriptor1[i] - descriptor2[i]);
-    sum += options3.order === 2 ? diff * diff : diff ** options3.order;
+    sum2 += options3.order === 2 ? diff * diff : diff ** options3.order;
   }
-  return sum;
+  return sum2;
 }
 function similarity(descriptor1, descriptor2, options3 = { order: 2 }) {
   const dist = distance(descriptor1, descriptor2, options3);
@@ -11624,10 +11672,10 @@ function join2(faces, bodies, hands, gestures, shape) {
     }
     const x = [];
     const y = [];
-    const extractXY = (box6) => {
-      if (box6 && box6.length === 4) {
-        x.push(box6[0], box6[0] + box6[2]);
-        y.push(box6[1], box6[1] + box6[3]);
+    const extractXY = (box5) => {
+      if (box5 && box5.length === 4) {
+        x.push(box5[0], box5[0] + box5[2]);
+        y.push(box5[1], box5[1] + box5[3]);
       }
     };
     extractXY((_k = person2.face) == null ? void 0 : _k.box);
@@ -12572,8 +12620,8 @@ var Human = class {
   validate(userConfig) {
     return validate(config, userConfig || this.config);
   }
-  image(input) {
-    return process2(input, this.config);
+  image(input, getTensor = true) {
+    return process2(input, this.config, getTensor);
   }
   async segmentation(input, background) {
     return process5(input, background, this.config);

@@ -42,6 +42,20 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
+function fixSides() { // model sometimes mixes up left vs right keypoints so we fix them
+  for (const pair of coords.pairs) {
+    let left = keypoints.find((kp) => kp.part === pair[0]);
+    let right = keypoints.find((kp) => kp.part === pair[1]);
+    if (left && right) {
+      if (left.position[0] > right.position[0]) {
+        const tmp = left;
+        left = right;
+        right = tmp;
+      }
+    }
+  }
+}
+
 async function parseSinglePose(res, config, image, inputBox) {
   const kpt = res[0][0];
   keypoints.length = 0;
@@ -64,6 +78,7 @@ async function parseSinglePose(res, config, image, inputBox) {
       });
     }
   }
+  fixSides();
   score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
   const bodies: Array<BodyResult> = [];
   const newBox = box.calc(keypoints.map((pt) => pt.position), [image.shape[2], image.shape[1]]);
@@ -103,6 +118,7 @@ async function parseMultiPose(res, config, image, inputBox) {
           });
         }
       }
+      fixSides();
       const newBox = box.calc(keypoints.map((pt) => pt.position), [image.shape[2], image.shape[1]]);
       // movenet-multipose has built-in box details
       // const boxRaw: Box = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
@@ -126,6 +142,13 @@ async function parseMultiPose(res, config, image, inputBox) {
 }
 
 export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
+  /** movenet caching
+   * 1. if skipFrame returned cached
+   * 2. if enough cached boxes run using cached boxes
+   * 3. if not enough detected bodies rerun using full frame
+   * 4. regenerate cached boxes based on current keypoints
+   */
+
   if (!model || !model?.inputs[0].shape) return []; // something is wrong with the model
   if (!config.skipFrame) cache.boxes.length = 0; // allowed to use cache or not
   skipped++; // increment skip frames
@@ -153,7 +176,6 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
       t.res = await model?.predict(t.cast) as Tensor;
       const res = await t.res.array();
       cache.bodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, [0, 0, 1, 1]) : await parseMultiPose(res, config, input, [0, 0, 1, 1]);
-      // cache.bodies = cache.bodies.map((body) => ({ ...body, box: box.scale(body.box, 0.5) }));
       Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
     }
     cache.boxes.length = 0; // reset cache

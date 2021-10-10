@@ -31,6 +31,15 @@ import jsonView from './helpers/jsonview.js';
 let human;
 
 let userConfig = {
+  cacheSensitivity: 0,
+  hand: { enabled: true },
+  body: { enabled: false },
+  face: { enabled: false },
+  /*
+  hand: { enabled: false, maxDetected: 1, skipFrames: 0 },
+  body: { enabled: false },
+  face: { enabled: false },
+  */
   /*
   warmup: 'none',
   backend: 'humangl',
@@ -259,7 +268,7 @@ async function drawResults(input) {
     }
     // result.canvas = seg.alpha;
   } else if (!result.canvas || ui.buffered) { // refresh with input if using buffered output or if missing canvas
-    const image = await human.image(input);
+    const image = await human.image(input, false);
     result.canvas = image.canvas;
     human.tf.dispose(image.tensor);
   }
@@ -302,17 +311,17 @@ async function drawResults(input) {
 
   // update log
   const engine = human.tf.engine();
-  const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
-  const memory = `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   const processing = result.canvas ? `processing: ${result.canvas.width} x ${result.canvas.height}` : '';
   const avgDetect = ui.detectFPS.length > 0 ? Math.trunc(10 * ui.detectFPS.reduce((a, b) => a + b, 0) / ui.detectFPS.length) / 10 : 0;
   const avgDraw = ui.drawFPS.length > 0 ? Math.trunc(10 * ui.drawFPS.reduce((a, b) => a + b, 0) / ui.drawFPS.length) / 10 : 0;
   const warning = (ui.detectFPS.length > 5) && (avgDetect < 2) ? '<font color="lightcoral">warning: your performance is low: try switching to higher performance backend, lowering resolution or disabling some models</font>' : '';
   const fps = avgDetect > 0 ? `FPS process:${avgDetect} refresh:${avgDraw}` : '';
-  const backend = engine.state.numTensors > 0 ? `${human.tf.getBackend()} | ${memory}` : `${result.backend} | tensors: ${result.tensors} in worker`;
+  const backend = result.backend || human.tf.getBackend();
+  const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
+  const memory = result.tensors || `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   document.getElementById('log').innerHTML = `
     video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
-    backend: ${backend}<br>
+    backend: ${backend} | ${memory}<br>
     performance: ${str(interpolated.performance)}ms ${fps}<br>
     ${warning}<br>
   `;

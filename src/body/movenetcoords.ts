@@ -18,6 +18,17 @@ export const kpt: Array<string> = [
   'rightAnkle',
 ];
 
+export const pairs: Array<string[]> = [
+  ['leftEye', 'rightEye'],
+  ['leftEar', 'rightEar'],
+  ['leftShoulder', 'rightShoulder'],
+  ['leftElbow', 'rightElbow'],
+  ['leftWrist', 'rightWrist'],
+  ['leftHip', 'rightHip'],
+  ['leftKnee', 'rightKnee'],
+  ['leftAnkle', 'rightAnkle'],
+];
+
 export const connected: Record<string, string[]> = {
   leftLeg: ['leftHip', 'leftKnee', 'leftAnkle'],
   rightLeg: ['rightHip', 'rightKnee', 'rightAnkle'],

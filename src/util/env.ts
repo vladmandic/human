@@ -1,39 +1,57 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
-import { mergeDeep, log } from './util';
+import { mergeDeep } from './util';
 
 export type Env = {
+  /** Running in Browser */
   browser: undefined | boolean,
+  /** Running in NodeJS */
   node: undefined | boolean,
+  /** Running in WebWorker thread */
   worker: undefined | boolean,
+  /** Detected platform */
   platform: undefined | string,
+  /** Detected agent */
   agent: undefined | string,
+  /** List of supported backends */
   backends: string[],
+  /** Has any work been performed so far */
   initial: boolean,
+  /** Are image filters supported? */
+  filter: undefined | boolean,
+  /** TFJS instance details */
   tfjs: {
     version: undefined | string,
   },
+  /** Is offscreenCanvas supported? */
   offscreen: undefined | boolean,
+  /** WASM detected capabilities */
   wasm: {
     supported: undefined | boolean,
     backend: undefined | boolean,
     simd: undefined | boolean,
     multithread: undefined | boolean,
   },
+  /** WebGL detected capabilities */
   webgl: {
     supported: undefined | boolean,
     backend: undefined | boolean,
     version: undefined | string,
     renderer: undefined | string,
   },
+  /** WebGPU detected capabilities */
   webgpu: {
     supported: undefined | boolean,
     backend: undefined | boolean,
     adapter: undefined | string,
   },
+  /** List of supported kernels for current backend */
   kernels: string[],
+  /** MonkeyPatch for Canvas */
   Canvas: undefined,
+  /** MonkeyPatch for Image */
   Image: undefined,
+  /** MonkeyPatch for ImageData */
   ImageData: undefined,
 }
 
@@ -47,6 +65,7 @@ export let env: Env = {
   initial: true,
   backends: [],
   offscreen: undefined,
+  filter: undefined,
   tfjs: {
     version: undefined,
   },
@@ -144,12 +163,14 @@ export async function get() {
       env.agent = env.agent.replace(/  /g, ' ');
 
       // chrome offscreencanvas gpu memory leak
+      /*
       const isChrome = env.agent.match(/Chrome\/.[0-9]/g);
       const verChrome = isChrome && isChrome[0] ? isChrome[0].split('/')[1] : 0;
       if (verChrome > 0 && verChrome > 92 && verChrome < 96) {
         log('disabling offscreenCanvas due to browser error:', isChrome ? isChrome[0] : 'unknown');
         env.offscreen = false;
       }
+      */
     }
   } else if (typeof process !== 'undefined') {
     env.platform = `${process.platform} ${process.arch}`;

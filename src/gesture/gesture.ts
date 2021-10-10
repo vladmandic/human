@@ -47,14 +47,14 @@ export const body = (res): GestureResult[] => {
     const leftWrist = res[i].keypoints.find((a) => (a.part === 'leftWrist'));
     const rightWrist = res[i].keypoints.find((a) => (a.part === 'rightWrist'));
     const nose = res[i].keypoints.find((a) => (a.part === 'nose'));
-    if (nose && leftWrist && rightWrist && (leftWrist.position.y < nose.position.y) && (rightWrist.position.y < nose.position.y)) gestures.push({ body: i, gesture: 'i give up' });
-    else if (nose && leftWrist && (leftWrist.position.y < nose.position.y)) gestures.push({ body: i, gesture: 'raise left hand' });
-    else if (nose && rightWrist && (rightWrist.position.y < nose.position.y)) gestures.push({ body: i, gesture: 'raise right hand' });
+    if (nose && leftWrist && rightWrist && (leftWrist.position[1] < nose.position[1]) && (rightWrist.position[1] < nose.position[1])) gestures.push({ body: i, gesture: 'i give up' });
+    else if (nose && leftWrist && (leftWrist.position[1] < nose.position[1])) gestures.push({ body: i, gesture: 'raise left hand' });
+    else if (nose && rightWrist && (rightWrist.position[1] < nose.position[1])) gestures.push({ body: i, gesture: 'raise right hand' });
 
     // leaning
     const leftShoulder = res[i].keypoints.find((a) => (a.part === 'leftShoulder'));
     const rightShoulder = res[i].keypoints.find((a) => (a.part === 'rightShoulder'));
-    if (leftShoulder && rightShoulder) gestures.push({ body: i, gesture: `leaning ${(leftShoulder.position.y > rightShoulder.position.y) ? 'left' : 'right'}` });
+    if (leftShoulder && rightShoulder) gestures.push({ body: i, gesture: `leaning ${(leftShoulder.position[1] > rightShoulder.position[1]) ? 'left' : 'right'}` });
   }
   return gestures;
 };

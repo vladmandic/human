@@ -23,7 +23,9 @@ const inputSize = [[0, 0], [0, 0]];
 
 const classes = ['hand', 'fist', 'pinch', 'point', 'face', 'tip', 'pinchtip'];
 
-const boxExpandFact = 1.6; // increase to 160%
+const boxExpandFact = 1.6;
+const maxDetectorResolution = 512;
+const detectorExpandFact = 1.2;
 
 let skipped = 0;
 let outputSize: [number, number] = [0, 0];
@@ -95,7 +97,7 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   if (!input || !models[0]) return hands;
   const t: Record<string, Tensor> = {};
   const ratio = (input.shape[2] || 1) / (input.shape[1] || 1);
-  const height = Math.min(Math.round((input.shape[1] || 0) / 8) * 8, 512); // use dynamic input size but cap at 512
+  const height = Math.min(Math.round((input.shape[1] || 0) / 8) * 8, maxDetectorResolution); // use dynamic input size but cap at 512
   const width = Math.round(height * ratio / 8) * 8;
   t.resize = tf.image.resizeBilinear(input, [height, width]); // todo: resize with padding
   t.cast = tf.cast(t.resize, 'int32');
@@ -117,12 +119,13 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
     const boxSlice = tf.slice(t.boxes, nmsIndex, 1);
     const boxData = await boxSlice.data();
     tf.dispose(boxSlice);
-    const boxInput: Box = [boxData[1], boxData[0], boxData[3] - boxData[1], boxData[2] - boxData[0]];
-    const boxRaw: Box = box.scale(boxInput, 1.2); // handtrack model returns tight box so we expand it a bit
-    const boxFull: Box = [Math.trunc(boxRaw[0] * outputSize[0]), Math.trunc(boxRaw[1] * outputSize[1]), Math.trunc(boxRaw[2] * outputSize[0]), Math.trunc(boxRaw[3] * outputSize[1])];
+    const boxSquareSize = Math.max(boxData[3] - boxData[1], boxData[2] - boxData[0]);
+    const boxRaw: Box = box.scale([boxData[1], boxData[0], boxSquareSize, boxSquareSize], detectorExpandFact); // for raw box we use squared and expanded box
+    const boxCrop: Box = box.crop(boxRaw); // crop box is based on raw box
+    const boxFull: Box = [Math.trunc(boxData[1] * outputSize[0]), Math.trunc(boxData[0] * outputSize[1]), Math.trunc((boxData[3] - boxData[1]) * outputSize[0]), Math.trunc((boxData[2] - boxData[0]) * outputSize[1])]; // for box we keep original scaled values
     const score = scores[nmsIndex];
     const label = classes[classNum[nmsIndex]];
-    const hand: HandDetectResult = { id: id++, score, box: boxFull, boxRaw, boxCrop: box.crop(boxRaw), label };
+    const hand: HandDetectResult = { id: id++, score, box: boxFull, boxRaw, boxCrop, label };
     hands.push(hand);
   }
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
@@ -146,7 +149,7 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
   };
   if (input && models[1] && config.hand.landmarks && h.score > (config.hand.minConfidence || 0)) {
     const t: Record<string, Tensor> = {};
-    t.crop = tf.image.cropAndResize(input, [box.crop(h.boxRaw)], [0], [inputSize[1][0], inputSize[1][1]], 'bilinear');
+    t.crop = tf.image.cropAndResize(input, [h.boxCrop], [0], [inputSize[1][0], inputSize[1][1]], 'bilinear');
     t.cast = tf.cast(t.crop, 'float32');
     t.div = tf.div(t.cast, 255);
     [t.score, t.keypoints] = models[1].execute(t.div) as Tensor[];
@@ -155,12 +158,17 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
     if (score >= (config.hand.minConfidence || 0)) {
       hand.fingerScore = score;
       t.reshaped = tf.reshape(t.keypoints, [-1, 3]);
-      const rawCoords = await t.reshaped.array() as Point[];
-      hand.keypoints = (rawCoords as Point[]).map((kpt) => [
-        outputSize[0] * ((h.boxCrop[3] - h.boxCrop[1]) * kpt[0] / inputSize[1][0] + h.boxCrop[1]),
-        outputSize[1] * ((h.boxCrop[2] - h.boxCrop[0]) * kpt[1] / inputSize[1][1] + h.boxCrop[0]),
-        (h.boxCrop[3] + h.boxCrop[3] / 2 * (kpt[2] || 0)),
+      const coordsData: Point[] = await t.reshaped.array() as Point[];
+      const coordsRaw: Point[] = coordsData.map((kpt) => [kpt[0] / inputSize[1][1], kpt[1] / inputSize[1][0], (kpt[2] || 0)]);
+      const coordsNorm: Point[] = coordsRaw.map((kpt) => [kpt[0] * h.boxRaw[2], kpt[1] * h.boxRaw[3], (kpt[2] || 0)]);
+      console.log(outputSize, h.box);
+      hand.keypoints = (coordsNorm).map((kpt) => [
+        outputSize[0] * kpt[0] + h.box[0],
+        outputSize[1] * kpt[1] + h.box[1],
+        (kpt[2] || 0),
       ]);
+      // hand.box = box.scale(h.box, 1 / detectorExpandFact); // scale box down for visual appeal
+      // hand.boxRaw = box.scale(h.boxRaw, 1 / detectorExpandFact); // scale box down for visual appeal
       hand.landmarks = fingerPose.analyze(hand.keypoints) as HandResult['landmarks']; // calculate finger landmarks
       for (const key of Object.keys(fingerMap)) { // map keypoints to per-finger annotations
         hand.annotations[key] = fingerMap[key].map((index) => (hand.landmarks && hand.keypoints[index] ? hand.keypoints[index] : null));
@@ -171,15 +179,27 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
   return hand;
 }
 
+let n = 0;
 export async function predict(input: Tensor, config: Config): Promise<HandResult[]> {
+  n++;
+  /** handtrack caching
+   * 1. if skipFrame returned cached
+   * 2. if any cached results but although not sure if its enough we continute anyhow for 10x skipframes
+   * 3. eventually rerun detector to generated new cached boxes and reset skipped
+   * 4. generate cached boxes based on detected keypoints
+   */
   if (!models[0] || !models[1] || !models[0]?.inputs[0].shape || !models[1]?.inputs[0].shape) return []; // something is wrong with the model
   outputSize = [input.shape[2] || 0, input.shape[1] || 0];
 
   skipped++; // increment skip frames
   if (config.skipFrame && (skipped <= (config.hand.skipFrames || 0))) {
+    console.log(n, 'SKIP', { results: cache.hands.length });
     return cache.hands; // return cached results without running anything
   }
   return new Promise(async (resolve) => {
+    console.log(n, 'DETECT', { skipped, hands: cache.hands.length, boxes: cache.boxes.length });
+    // this is logically consistent but insufficiently efficient
+    /*
     skipped = 0;
     if (cache.boxes.length >= (config.hand.maxDetected || 0)) {
       cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config))); // if we have enough cached boxes run detection using cache
@@ -191,17 +211,32 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
       cache.boxes = await detectHands(input, config);
       cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
     }
+    */
+
+    if (config.skipFrame && skipped <= 10 * (config.hand.skipFrames || 0) && cache.hands.length > 0) { // we have some cached results but although not sure if its enough we continute anyhow for 10x skipframes
+      cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
+      console.log(n, 'HANDS', { hands: cache.hands.length });
+    } else {
+      cache.boxes = await detectHands(input, config);
+      console.log(n, 'BOXES', { hands: cache.boxes.length });
+      cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
+      console.log(n, 'HANDS', { hands: cache.hands.length });
+      skipped = 0;
+    }
 
     const oldCache = [...cache.boxes];
     cache.boxes.length = 0; // reset cache
-    for (let i = 0; i < cache.hands.length; i++) {
-      const boxKpt = box.square(cache.hands[i].keypoints, outputSize);
-      if (boxKpt.box[2] / (input.shape[2] || 1) > 0.05 && boxKpt.box[3] / (input.shape[1] || 1) > 0.05 && cache.hands[i].fingerScore && cache.hands[i].fingerScore > (config.hand.minConfidence || 0)) {
-        const boxScale = box.scale(boxKpt.box, boxExpandFact);
-        const boxScaleRaw = box.scale(boxKpt.boxRaw, boxExpandFact);
-        const boxCrop = box.crop(boxScaleRaw);
-        cache.boxes.push({ ...oldCache[i], box: boxScale, boxRaw: boxScaleRaw, boxCrop });
+    if (config.cacheSensitivity > 0) {
+      for (let i = 0; i < cache.hands.length; i++) {
+        const boxKpt = box.square(cache.hands[i].keypoints, outputSize);
+        if (boxKpt.box[2] / (input.shape[2] || 1) > 0.05 && boxKpt.box[3] / (input.shape[1] || 1) > 0.05 && cache.hands[i].fingerScore && cache.hands[i].fingerScore > (config.hand.minConfidence || 0)) {
+          const boxScale = box.scale(boxKpt.box, boxExpandFact);
+          const boxScaleRaw = box.scale(boxKpt.boxRaw, boxExpandFact);
+          const boxCrop = box.crop(boxScaleRaw);
+          cache.boxes.push({ ...oldCache[i], box: boxScale, boxRaw: boxScaleRaw, boxCrop });
+        }
       }
+      console.log(n, 'CACHED', { hands: cache.boxes.length });
     }
     resolve(cache.hands);
   });

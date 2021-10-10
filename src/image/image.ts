@@ -13,8 +13,8 @@ export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMe
 
 const maxSize = 2048;
 // internal temp canvases
-let inCanvas;
-let outCanvas;
+let inCanvas: HTMLCanvasElement | OffscreenCanvas | null = null; // use global variable to avoid recreating canvas on each frame
+let outCanvas: HTMLCanvasElement | OffscreenCanvas | null = null; // use global variable to avoid recreating canvas on each frame
 // @ts-ignore // imagefx is js module that should be converted to a class
 let fx: fxImage.GLImageFilter | null; // instance of imagefx
 
@@ -38,11 +38,17 @@ export function canvas(width, height): HTMLCanvasElement | OffscreenCanvas {
   return c;
 }
 
+export function copy(input: HTMLCanvasElement | OffscreenCanvas, output?: HTMLCanvasElement | OffscreenCanvas) {
+  const outputCanvas = output || canvas(input.width, input.height);
+  const ctx = outputCanvas.getContext('2d') as CanvasRenderingContext2D;
+  ctx.drawImage(input, 0, 0);
+  return outputCanvas;
+}
+
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
 // input is resized and run through imagefx filter
-export function process(input: Input, config: Config): { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null } {
-  let tensor;
+export function process(input: Input, config: Config, getTensor: boolean = true): { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null } {
   if (!input) {
     // throw new Error('input is missing');
     if (config.debug) log('input is missing');
@@ -66,9 +72,9 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
   }
   if (input instanceof tf.Tensor) {
     // if input is tensor, use as-is
-    if ((input as Tensor)['isDisposedInternal']) throw new Error('input tensor is disposed');
-    if ((input as Tensor).shape && (input as Tensor).shape.length === 4 && (input as unknown as Tensor).shape[0] === 1 && (input as unknown as Tensor).shape[3] === 3) tensor = tf.clone(input);
-    else throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${(input as Tensor).shape}`);
+    if ((input)['isDisposedInternal']) throw new Error('input tensor is disposed');
+    else if (!input.shape || input.shape.length !== 4 || input.shape[0] !== 1 || input.shape[3] !== 3) throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${input.shape}`);
+    else return { tensor: tf.clone(input), canvas: (config.filter.return ? outCanvas : null) };
   } else {
     // check if resizing will be needed
     if (typeof input['readyState'] !== 'undefined' && input['readyState'] <= 2) {
@@ -101,28 +107,26 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
     if (!inCanvas || (inCanvas?.width !== targetWidth) || (inCanvas?.height !== targetHeight)) inCanvas = canvas(targetWidth, targetHeight);
 
     // draw input to our canvas
-    const ctx = inCanvas.getContext('2d');
+    const inCtx = inCanvas.getContext('2d') as CanvasRenderingContext2D;
     if ((typeof ImageData !== 'undefined') && (input instanceof ImageData)) {
-      ctx.putImageData(input, 0, 0);
+      inCtx.putImageData(input, 0, 0);
     } else {
-      if (config.filter.flip && typeof ctx.translate !== 'undefined') {
-        ctx.translate(originalWidth, 0);
-        ctx.scale(-1, 1);
-        ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
-        ctx.setTransform(1, 0, 0, 1, 0, 0); // resets transforms to defaults
+      if (config.filter.flip && typeof inCtx.translate !== 'undefined') {
+        inCtx.translate(originalWidth, 0);
+        inCtx.scale(-1, 1);
+        inCtx.drawImage(input as CanvasImageSource, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
+        inCtx.setTransform(1, 0, 0, 1, 0, 0); // resets transforms to defaults
       } else {
-        ctx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
+        inCtx.drawImage(input as CanvasImageSource, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
       }
     }
-    // imagefx transforms using gl
+
+    if (!outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas?.height !== outCanvas?.height)) outCanvas = canvas(inCanvas.width, inCanvas.height); // init output canvas
+
+    // imagefx transforms using gl from input canvas to output canvas
     if (config.filter.enabled && env.webgl.supported) {
-      if (!fx || !outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas?.height !== outCanvas?.height)) {
-        outCanvas = canvas(inCanvas?.width, inCanvas?.height);
-        if (outCanvas?.width !== inCanvas?.width) outCanvas.width = inCanvas?.width;
-        if (outCanvas?.height !== inCanvas?.height) outCanvas.height = inCanvas?.height;
-        // log('created FX filter');
-        fx = env.browser ? new fxImage.GLImageFilter({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
-      }
+      if (!fx) fx = env.browser ? new fxImage.GLImageFilter({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
+      env.filter = !!fx;
       if (!fx) return { tensor: null, canvas: inCanvas };
       fx.reset();
       fx.addFilter('brightness', config.filter.brightness); // must have at least one filter enabled
@@ -140,118 +144,105 @@ export function process(input: Input, config: Config): { tensor: Tensor | null, 
       if (config.filter.polaroid) fx.addFilter('polaroid');
       if (config.filter.pixelate !== 0) fx.addFilter('pixelate', config.filter.pixelate);
       fx.apply(inCanvas);
-      // read pixel data
-      /*
-      const gl = outCanvas.getContext('webgl');
-      if (gl) {
-        const glBuffer = new Uint8Array(outCanvas.width * outCanvas.height * 4);
-        const pixBuffer = new Uint8Array(outCanvas.width * outCanvas.height * 3);
-        gl.readPixels(0, 0, outCanvas.width, outCanvas.height, gl.RGBA, gl.UNSIGNED_BYTE, glBuffer);
-        // gl returns rbga while we only need rgb, so discarding alpha channel
-        // gl returns starting point as lower left, so need to invert vertical
-        let i = 0;
-        for (let y = outCanvas.height - 1; y >= 0; y--) {
-          for (let x = 0; x < outCanvas.width; x++) {
-            const index = (x + y * outCanvas.width) * 4;
-            pixBuffer[i++] = glBuffer[index + 0];
-            pixBuffer[i++] = glBuffer[index + 1];
-            pixBuffer[i++] = glBuffer[index + 2];
-          }
-        }
-        outCanvas.data = pixBuffer;
-        const shape = [outCanvas.height, outCanvas.width, 3];
-        const pixels = tf.tensor3d(outCanvas.data, shape, 'float32');
-        tensor = tf.expandDims(pixels, 0);
-        tf.dispose(pixels);
-      }
-      */
     } else {
-      outCanvas = inCanvas;
+      copy(inCanvas, outCanvas); // if no filters applied, output canvas is input canvas
       if (fx) fx = null;
+      env.filter = !!fx;
     }
-    // create tensor from image if tensor is not already defined
-    if (!tensor) {
-      let pixels;
-      if (outCanvas.data) { // if we have data, just convert to tensor
-        const shape = [outCanvas.height, outCanvas.width, 3];
-        pixels = tf.tensor3d(outCanvas.data, shape, 'float32');
-      } else if ((typeof ImageData !== 'undefined') && (outCanvas instanceof ImageData)) { // if input is imagedata, just use it
-        pixels = tf.browser ? tf.browser.fromPixels(outCanvas) : null;
-      } else if (config.backend === 'webgl' || config.backend === 'humangl') { // tf kernel-optimized method to get imagedata
-        // we cant use canvas as-is as it already has a context, so we do a silly one more canvas
-        const tempCanvas = canvas(targetWidth, targetHeight);
-        tempCanvas.width = targetWidth;
-        tempCanvas.height = targetHeight;
-        const tempCtx = tempCanvas.getContext('2d');
-        tempCtx?.drawImage(outCanvas, 0, 0);
-        try {
-          pixels = (tf.browser && env.browser) ? tf.browser.fromPixels(tempCanvas) : null;
-        } catch (err) {
-          throw new Error('browser webgl error');
-        }
-      } else { // cpu and wasm kernel does not implement efficient fromPixels method
-        // we cant use canvas as-is as it already has a context, so we do a silly one more canvas and do fromPixels on ImageData instead
-        const tempCanvas = canvas(targetWidth, targetHeight);
-        if (!tempCanvas) return { tensor: null, canvas: inCanvas };
-        tempCanvas.width = targetWidth;
-        tempCanvas.height = targetHeight;
-        const tempCtx = tempCanvas.getContext('2d');
-        if (!tempCtx) return { tensor: null, canvas: inCanvas };
-        tempCtx.drawImage(outCanvas, 0, 0);
-        const data = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
-        if (tf.browser && env.browser) {
-          pixels = tf.browser.fromPixels(data);
-        } else {
-          pixels = tf.tidy(() => {
-            const imageData = tf.tensor(Array.from(data.data), [targetWidth, targetHeight, 4]);
-            const channels = tf.split(imageData, 4, 2); // split rgba to channels
-            const rgb = tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb and ignore alpha
-            const expand = tf.reshape(rgb, [imageData.shape[0], imageData.shape[1], 3]); // move extra dim from the end of tensor and use it as batch number instead
-            return expand;
-          });
-        }
-      }
-      if (pixels) {
-        const casted = tf.cast(pixels, 'float32');
-        tensor = tf.expandDims(casted, 0);
-        tf.dispose(pixels);
-        tf.dispose(casted);
+
+    if (!getTensor) return { tensor: null, canvas: outCanvas }; // just canvas was requested
+
+    // create tensor from image unless input was a tensor already
+    let pixels;
+    let depth = 3;
+    if ((typeof ImageData !== 'undefined' && input instanceof ImageData) || (input['data'] && input['width'] && input['height'])) { // if input is imagedata, just use it
+      if (env.browser && tf.browser) {
+        pixels = tf.browser ? tf.browser.fromPixels(input) : null;
       } else {
-        tensor = tf.zeros([1, targetWidth, targetHeight, 3]);
-        throw new Error('cannot create tensor from input');
+        depth = input['data'].length / input['height'] / input['width'];
+        // const arr = Uint8Array.from(input['data']);
+        const arr = new Uint8Array(input['data']['buffer']);
+        pixels = tf.tensor(arr, [input['height'], input['width'], depth], 'float32');
+      }
+    } else {
+      if (tf.browser && env.browser) {
+        if (config.backend === 'webgl' || config.backend === 'humangl' || config.backend === 'webgpu') {
+          pixels = tf.browser.fromPixels(outCanvas); // safe to reuse since both backend and context are gl based
+        } else {
+          const tempCanvas = copy(outCanvas); // cannot use output canvas as it already has gl context so we do a silly one more canvas
+          pixels = tf.browser.fromPixels(tempCanvas);
+        }
+      } else {
+        const tempCanvas = copy(outCanvas); // cannot use output canvas as it already has gl context so we do a silly one more canvas
+        const tempCtx = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
+        const tempData = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+        depth = input['data'].length / targetWidth / targetHeight;
+        const arr = new Uint8Array(tempData.data.buffer);
+        pixels = tf.tensor(arr, [targetWidth, targetHeight, depth]);
       }
     }
+    if (depth === 4) { // rgba to rgb
+      const rgb = tf.slice3d(pixels, [0, 0, 0], [-1, -1, 3]); // strip alpha channel
+      tf.dispose(pixels);
+      pixels = rgb;
+      /*
+      const channels = tf.split(pixels, 4, 2); // split rgba to channels
+      tf.dispose(pixels);
+      const rgb = tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb and ignore alpha
+      pixels = tf.reshape(rgb, [rgb.shape[0], rgb.shape[1], 3]); // move extra dim from the end of tensor and use it as batch number instead
+      tf.dispose([rgb, ...channels]);
+      */
+    }
+    if (!pixels) throw new Error('cannot create tensor from input');
+    const casted = tf.cast(pixels, 'float32');
+    const tensor = tf.expandDims(casted, 0);
+    tf.dispose([pixels, casted]);
+    return { tensor, canvas: (config.filter.return ? outCanvas : null) };
   }
-  return { tensor, canvas: (config.filter.return ? outCanvas : null) };
 }
 
 let lastInputSum = 0;
 let lastCacheDiff = 1;
+let benchmarked = 0;
+
+const checksum = async (input: Tensor): Promise<number> => { // use tf sum or js based sum loop depending on which is faster
+  const resizeFact = 48;
+  const reduced: Tensor = tf.image.resizeBilinear(input, [Math.trunc((input.shape[1] || 1) / resizeFact), Math.trunc((input.shape[2] || 1) / resizeFact)]);
+  const tfSum = async (): Promise<number> => {
+    const sumT = tf.sum(reduced);
+    const sum0 = await sumT.data();
+    tf.dispose(sumT);
+    return sum0[0];
+  };
+  const jsSum = async (): Promise<number> => {
+    const reducedData = await reduced.data(); // raw image rgb array
+    let sum0 = 0;
+    for (let i = 0; i < reducedData.length / 3; i++) sum0 += reducedData[3 * i + 2]; // look only at green value of each pixel
+    return sum0;
+  };
+  if (benchmarked === 0) {
+    const t0 = performance.now();
+    await jsSum();
+    const t1 = performance.now();
+    await tfSum();
+    const t2 = performance.now();
+    benchmarked = t1 - t0 < t2 - t1 ? 1 : 2;
+  }
+  const res = benchmarked === 1 ? await jsSum() : await tfSum();
+  tf.dispose(reduced);
+  return res;
+};
+
 export async function skip(config, input: Tensor) {
   if (config.cacheSensitivity === 0) return false;
-  const resizeFact = 32;
-  if (!input.shape[1] || !input.shape[2]) return false;
-  const reduced: Tensor = tf.image.resizeBilinear(input, [Math.trunc(input.shape[1] / resizeFact), Math.trunc(input.shape[2] / resizeFact)]);
-
-  // use tensor sum
-  /*
-  const sumT = this.tf.sum(reduced);
-  const sum = await sumT.data()[0] as number;
-  sumT.dispose();
-  */
-  // use js loop sum, faster than uploading tensor to gpu calculating and downloading back
-  const reducedData = await reduced.data(); // raw image rgb array
-  tf.dispose(reduced);
-  let sum = 0;
-  for (let i = 0; i < reducedData.length / 3; i++) sum += reducedData[3 * i + 2]; // look only at green value of each pixel
-
+  const sum = await checksum(input);
   const diff = 100 * (Math.max(sum, lastInputSum) / Math.min(sum, lastInputSum) - 1);
   lastInputSum = sum;
   // if previous frame was skipped, skip this frame if changed more than cacheSensitivity
   // if previous frame was not skipped, then look for cacheSensitivity or difference larger than one in previous frame to avoid resetting cache in subsequent frames unnecessarily
-  const skipFrame = diff < Math.max(config.cacheSensitivity, lastCacheDiff);
+  let skipFrame = diff < Math.max(config.cacheSensitivity, lastCacheDiff);
   // if difference is above 10x threshold, don't use last value to force reset cache for significant change of scenes or images
   lastCacheDiff = diff > 10 * config.cacheSensitivity ? 0 : diff;
-  // console.log('skipFrame', skipFrame, this.config.cacheSensitivity, diff);
+  skipFrame = skipFrame && (lastCacheDiff > 0); // if no cached diff value then force no skip
   return skipFrame;
 }

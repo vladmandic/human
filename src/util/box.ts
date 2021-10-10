@@ -21,8 +21,13 @@ export function square(keypoints: Array<Point>, outputSize: [number, number] = [
 }
 
 export function scale(box: Box, scaleFact: number) {
-  const dist = [box[2] * (scaleFact - 1), box[3] * (scaleFact - 1)];
-  const newBox: Box = [box[0] - dist[0] / 2, box[1] - dist[1] / 2, box[2] + dist[0], box[3] + dist[0]];
+  const dist = [box[2] * scaleFact, box[3] * scaleFact];
+  const newBox: Box = [
+    box[0] - (dist[0] - box[2]) / 2,
+    box[1] - (dist[1] - box[3]) / 2,
+    dist[0],
+    dist[1],
+  ];
   return newBox;
 }
 

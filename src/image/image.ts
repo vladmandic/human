@@ -165,9 +165,9 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
         pixels = tf.browser ? tf.browser.fromPixels(input) : null;
       } else {
         depth = input['data'].length / input['height'] / input['width'];
-        const arr = Uint8Array.from(input['data']);
-        // const arr = new Uint8Array(input['data']['buffer']);
-        pixels = tf.tensor(arr, [input['height'], input['width'], depth], 'float32');
+        // const arr = Uint8Array.from(input['data']);
+        const arr = new Uint8Array(input['data']['buffer']);
+        pixels = tf.tensor(arr, [input['height'], input['width'], depth], 'int32');
       }
     } else {
       if (!tmpCanvas || (outCanvas.width !== tmpCanvas.width) || (outCanvas?.height !== tmpCanvas?.height)) tmpCanvas = canvas(outCanvas.width, outCanvas.height); // init output canvas

@@ -89,7 +89,7 @@ export interface BodyResult {
     score: number;
     box: Box;
     boxRaw: Box;
-    annotations: Record<string, Point[][]>;
+    annotations: Record<string, Array<Point[]>>;
     keypoints: Array<BodyKeypoint>;
 }
 /** Hand results

@@ -1,12 +1,3 @@
-export declare const kpt: string[];
-export declare const connected: {
-    leftLeg: string[];
-    rightLeg: string[];
-    torso: string[];
-    leftArm: string[];
-    rightArm: string[];
-    leftHand: never[];
-    rightHand: never[];
-    head: never[];
-};
+export declare const kpt: Array<string>;
+export declare const connected: Record<string, string[]>;
 //# sourceMappingURL=blazeposecoords.d.ts.map

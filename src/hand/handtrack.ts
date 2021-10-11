@@ -22,10 +22,11 @@ const modelOutputNodes = ['StatefulPartitionedCall/Postprocessor/Slice', 'Statef
 const inputSize = [[0, 0], [0, 0]];
 
 const classes = ['hand', 'fist', 'pinch', 'point', 'face', 'tip', 'pinchtip'];
+const faceIndex = 4;
 
 const boxExpandFact = 1.6;
 const maxDetectorResolution = 512;
-const detectorExpandFact = 1.2;
+const detectorExpandFact = 1.4;
 
 let skipped = 0;
 let outputSize: [number, number] = [0, 0];
@@ -104,10 +105,11 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   [t.rawScores, t.rawBoxes] = await models[0].executeAsync(t.cast, modelOutputNodes) as Tensor[];
   t.boxes = tf.squeeze(t.rawBoxes, [0, 2]);
   t.scores = tf.squeeze(t.rawScores, [0]);
-  const classScores = tf.unstack(t.scores, 1); // unstack scores based on classes
-  classScores.splice(4, 1); // remove faces
+  const classScores: Array<Tensor> = tf.unstack(t.scores, 1); // unstack scores based on classes
+  tf.dispose(classScores[faceIndex]);
+  classScores.splice(faceIndex, 1); // remove faces
   t.filtered = tf.stack(classScores, 1); // restack
-  tf.dispose(...classScores);
+  tf.dispose(classScores);
   t.max = tf.max(t.filtered, 1); // max overall score
   t.argmax = tf.argMax(t.filtered, 1); // class index of max overall score
   let id = 0;
@@ -117,12 +119,13 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   const classNum = await t.argmax.data();
   for (const nmsIndex of Array.from(nms)) { // generates results for each class
     const boxSlice = tf.slice(t.boxes, nmsIndex, 1);
-    const boxData = await boxSlice.data();
+    const boxYX = await boxSlice.data();
     tf.dispose(boxSlice);
-    const boxSquareSize = Math.max(boxData[3] - boxData[1], boxData[2] - boxData[0]);
-    const boxRaw: Box = box.scale([boxData[1], boxData[0], boxSquareSize, boxSquareSize], detectorExpandFact); // for raw box we use squared and expanded box
+    // const boxSquareSize = Math.max(boxData[3] - boxData[1], boxData[2] - boxData[0]);
+    const boxData: Box = [boxYX[1], boxYX[0], boxYX[3] - boxYX[1], boxYX[2] - boxYX[0]]; // yx box reshaped to standard box
+    const boxRaw: Box = box.scale(boxData, detectorExpandFact);
     const boxCrop: Box = box.crop(boxRaw); // crop box is based on raw box
-    const boxFull: Box = [Math.trunc(boxData[1] * outputSize[0]), Math.trunc(boxData[0] * outputSize[1]), Math.trunc((boxData[3] - boxData[1]) * outputSize[0]), Math.trunc((boxData[2] - boxData[0]) * outputSize[1])]; // for box we keep original scaled values
+    const boxFull: Box = [Math.trunc(boxData[0] * outputSize[0]), Math.trunc(boxData[1] * outputSize[1]), Math.trunc(boxData[2] * outputSize[0]), Math.trunc(boxData[3] * outputSize[1])];
     const score = scores[nmsIndex];
     const label = classes[classNum[nmsIndex]];
     const hand: HandDetectResult = { id: id++, score, box: boxFull, boxRaw, boxCrop, label };
@@ -161,10 +164,9 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
       const coordsData: Point[] = await t.reshaped.array() as Point[];
       const coordsRaw: Point[] = coordsData.map((kpt) => [kpt[0] / inputSize[1][1], kpt[1] / inputSize[1][0], (kpt[2] || 0)]);
       const coordsNorm: Point[] = coordsRaw.map((kpt) => [kpt[0] * h.boxRaw[2], kpt[1] * h.boxRaw[3], (kpt[2] || 0)]);
-      console.log(outputSize, h.box);
       hand.keypoints = (coordsNorm).map((kpt) => [
-        outputSize[0] * kpt[0] + h.box[0],
-        outputSize[1] * kpt[1] + h.box[1],
+        outputSize[0] * (kpt[0] + h.boxRaw[0]),
+        outputSize[1] * (kpt[1] + h.boxRaw[1]),
         (kpt[2] || 0),
       ]);
       // hand.box = box.scale(h.box, 1 / detectorExpandFact); // scale box down for visual appeal
@@ -179,13 +181,11 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
   return hand;
 }
 
-let n = 0;
 export async function predict(input: Tensor, config: Config): Promise<HandResult[]> {
-  n++;
   /** handtrack caching
    * 1. if skipFrame returned cached
-   * 2. if any cached results but although not sure if its enough we continute anyhow for 10x skipframes
-   * 3. eventually rerun detector to generated new cached boxes and reset skipped
+   * 2. if any cached results but although not sure if its enough we continute anyhow for 5x skipframes
+   * 3. if not skipframe or eventually rerun detector to generated new cached boxes and reset skipped
    * 4. generate cached boxes based on detected keypoints
    */
   if (!models[0] || !models[1] || !models[0]?.inputs[0].shape || !models[1]?.inputs[0].shape) return []; // something is wrong with the model
@@ -193,34 +193,14 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
 
   skipped++; // increment skip frames
   if (config.skipFrame && (skipped <= (config.hand.skipFrames || 0))) {
-    console.log(n, 'SKIP', { results: cache.hands.length });
     return cache.hands; // return cached results without running anything
   }
   return new Promise(async (resolve) => {
-    console.log(n, 'DETECT', { skipped, hands: cache.hands.length, boxes: cache.boxes.length });
-    // this is logically consistent but insufficiently efficient
-    /*
-    skipped = 0;
-    if (cache.boxes.length >= (config.hand.maxDetected || 0)) {
-      cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config))); // if we have enough cached boxes run detection using cache
-    } else {
-      cache.hands = []; // reset hands
-    }
-
-    if (cache.hands.length !== config.hand.maxDetected) { // did not find enough hands based on cached boxes so run detection on full frame
-      cache.boxes = await detectHands(input, config);
+    if (config.skipFrame && skipped < 5 * (config.hand.skipFrames || 0) && cache.hands.length > 0) { // we have some cached results but although not sure if its enough we continute anyhow for bit longer
       cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
-    }
-    */
-
-    if (config.skipFrame && skipped <= 10 * (config.hand.skipFrames || 0) && cache.hands.length > 0) { // we have some cached results but although not sure if its enough we continute anyhow for 10x skipframes
-      cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
-      console.log(n, 'HANDS', { hands: cache.hands.length });
     } else {
       cache.boxes = await detectHands(input, config);
-      console.log(n, 'BOXES', { hands: cache.boxes.length });
       cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
-      console.log(n, 'HANDS', { hands: cache.hands.length });
       skipped = 0;
     }
 
@@ -236,7 +216,6 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
           cache.boxes.push({ ...oldCache[i], box: boxScale, boxRaw: boxScaleRaw, boxCrop });
         }
       }
-      console.log(n, 'CACHED', { hands: cache.boxes.length });
     }
     resolve(cache.hands);
   });

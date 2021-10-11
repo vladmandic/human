@@ -83,7 +83,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         ((box.startPoint[1] + box.endPoint[1])) / 2 + ((box.endPoint[1] + box.startPoint[1]) * pt[1] / blazeface.size()),
       ]);
       face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize]);
-      for (const key of Object.keys(coords.blazeFaceLandmarks)) face.annotations[key] = [face.mesh[coords.blazeFaceLandmarks[key]]]; // add annotations
+      for (const key of Object.keys(coords.blazeFaceLandmarks)) face.annotations[key] = [face.mesh[coords.blazeFaceLandmarks[key] as number]]; // add annotations
     } else if (!model) { // mesh enabled, but not loaded
       if (config.debug) log('face mesh detection requested, but model is not loaded');
     } else { // mesh enabled

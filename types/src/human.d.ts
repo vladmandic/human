@@ -158,7 +158,7 @@ export declare class Human {
      * @param input: {@link Input}
      * @returns { tensor, canvas }
      */
-    image(input: Input): {
+    image(input: Input, getTensor?: boolean): {
         tensor: Tensor<import("@tensorflow/tfjs-core").Rank> | null;
         canvas: HTMLCanvasElement | OffscreenCanvas | null;
     };

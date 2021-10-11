@@ -9,11 +9,20 @@
   
 ## Changelog
   
+### **HEAD -> main** 2021/10/10 mandic00@live.com
+
+
+### **origin/main** 2021/10/08 mandic00@live.com
+
+- demo default config cleanup
+- improve gaze and face angle visualizations in draw
+
+### **release 2.3.1** 2021/10/06 mandic00@live.com
+
+
 ### **2.3.1** 2021/10/06 mandic00@live.com
 
-
-### **origin/main** 2021/10/06 mandic00@live.com
-
+- workaround for chrome offscreencanvas bug
 - fix backend conflict in webworker
 - add blazepose v2 and add annotations to body results
 - fix backend order initialization

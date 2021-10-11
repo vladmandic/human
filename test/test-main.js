@@ -192,7 +192,7 @@ async function test(Human, inputConfig) {
   else log('state', 'passed: warmup face result match');
   config.warmup = 'body';
   res = await testWarmup(human, 'default');
-  if (!res || res?.face?.length !== 1 || res?.body?.length !== 0 || res?.hand?.length !== 1 || res?.gesture?.length !== 4) log('error', 'failed: warmup body result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 1 || res?.gesture?.length !== 5) log('error', 'failed: warmup body result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: warmup body result match');
 
   // test default config async

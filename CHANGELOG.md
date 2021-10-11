@@ -11,9 +11,8 @@
   
 ### **HEAD -> main** 2021/10/10 mandic00@live.com
 
-
-### **origin/main** 2021/10/08 mandic00@live.com
-
+- image processing fixes
+- redesign body and hand caching and interpolation
 - demo default config cleanup
 - improve gaze and face angle visualizations in draw
 

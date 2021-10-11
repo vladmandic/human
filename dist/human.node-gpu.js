@@ -1204,8 +1204,8 @@ function process2(input, config3, getTensor = true) {
         pixels = tf2.browser ? tf2.browser.fromPixels(input) : null;
       } else {
         depth = input["data"].length / input["height"] / input["width"];
-        const arr = Uint8Array.from(input["data"]);
-        pixels = tf2.tensor(arr, [input["height"], input["width"], depth], "float32");
+        const arr = new Uint8Array(input["data"]["buffer"]);
+        pixels = tf2.tensor(arr, [input["height"], input["width"], depth], "int32");
       }
     } else {
       if (!tmpCanvas || outCanvas.width !== tmpCanvas.width || (outCanvas == null ? void 0 : outCanvas.height) !== (tmpCanvas == null ? void 0 : tmpCanvas.height))
@@ -10763,7 +10763,9 @@ async function check(instance, force = false) {
       }
     }
     if (tf23.getBackend() === "webgpu") {
-      tf23.ENV.set("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD", 256);
+      tf23.ENV.set("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD", 512);
+      tf23.ENV.set("WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE", 0);
+      tf23.ENV.set("WEBGPU_CPU_FORWARD", true);
     }
     tf23.enableProdMode();
     await tf23.ready();

@@ -68672,8 +68672,8 @@ function process2(input2, config3, getTensor2 = true) {
         pixels = browser_exports ? browser_exports.fromPixels(input2) : null;
       } else {
         depth = input2["data"].length / input2["height"] / input2["width"];
-        const arr = Uint8Array.from(input2["data"]);
-        pixels = tensor(arr, [input2["height"], input2["width"], depth], "float32");
+        const arr = new Uint8Array(input2["data"]["buffer"]);
+        pixels = tensor(arr, [input2["height"], input2["width"], depth], "int32");
       }
     } else {
       if (!tmpCanvas || outCanvas.width !== tmpCanvas.width || (outCanvas == null ? void 0 : outCanvas.height) !== (tmpCanvas == null ? void 0 : tmpCanvas.height))
@@ -78189,7 +78189,9 @@ async function check(instance, force = false) {
       }
     }
     if (getBackend() === "webgpu") {
-      ENV.set("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD", 256);
+      ENV.set("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD", 512);
+      ENV.set("WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE", 0);
+      ENV.set("WEBGPU_CPU_FORWARD", true);
     }
     enableProdMode();
     await ready();

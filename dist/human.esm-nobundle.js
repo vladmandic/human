@@ -1183,8 +1183,8 @@ function process2(input, config3, getTensor = true) {
         pixels = tfjs_esm_exports.browser ? tfjs_esm_exports.browser.fromPixels(input) : null;
       } else {
         depth = input["data"].length / input["height"] / input["width"];
-        const arr = Uint8Array.from(input["data"]);
-        pixels = tfjs_esm_exports.tensor(arr, [input["height"], input["width"], depth], "float32");
+        const arr = new Uint8Array(input["data"]["buffer"]);
+        pixels = tfjs_esm_exports.tensor(arr, [input["height"], input["width"], depth], "int32");
       }
     } else {
       if (!tmpCanvas || outCanvas.width !== tmpCanvas.width || (outCanvas == null ? void 0 : outCanvas.height) !== (tmpCanvas == null ? void 0 : tmpCanvas.height))
@@ -10700,7 +10700,9 @@ async function check(instance, force = false) {
       }
     }
     if (tfjs_esm_exports.getBackend() === "webgpu") {
-      tfjs_esm_exports.ENV.set("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD", 256);
+      tfjs_esm_exports.ENV.set("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD", 512);
+      tfjs_esm_exports.ENV.set("WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE", 0);
+      tfjs_esm_exports.ENV.set("WEBGPU_CPU_FORWARD", true);
     }
     tfjs_esm_exports.enableProdMode();
     await tfjs_esm_exports.ready();

@@ -152,8 +152,8 @@ export function transformRawCoords(rawCoords, box, angle, rotationMatrix, inputS
 }
 
 export function correctFaceRotation(box, input, inputSize) {
-  const [indexOfMouth, indexOfForehead] = (box.landmarks.length >= coords.meshLandmarks.count) ? coords.meshLandmarks.symmetryLine : coords.blazeFaceLandmarks.symmetryLine;
-  const angle: number = computeRotation(box.landmarks[indexOfMouth], box.landmarks[indexOfForehead]);
+  const symmetryLine = (box.landmarks.length >= coords.meshLandmarks.count) ? coords.meshLandmarks.symmetryLine : coords.blazeFaceLandmarks.symmetryLine;
+  const angle: number = computeRotation(box.landmarks[symmetryLine[0]], box.landmarks[symmetryLine[1]]);
   const faceCenter: Point = getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
   const faceCenterNormalized: Point = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
   const rotated = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node

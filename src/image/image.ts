@@ -15,6 +15,7 @@ const maxSize = 2048;
 // internal temp canvases
 let inCanvas: HTMLCanvasElement | OffscreenCanvas | null = null; // use global variable to avoid recreating canvas on each frame
 let outCanvas: HTMLCanvasElement | OffscreenCanvas | null = null; // use global variable to avoid recreating canvas on each frame
+let tmpCanvas: HTMLCanvasElement | OffscreenCanvas | null = null; // use global variable to avoid recreating canvas on each frame
 // @ts-ignore // imagefx is js module that should be converted to a class
 let fx: fxImage.GLImageFilter | null; // instance of imagefx
 
@@ -72,9 +73,13 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
   }
   if (input instanceof tf.Tensor) {
     // if input is tensor, use as-is
-    if ((input)['isDisposedInternal']) throw new Error('input tensor is disposed');
-    else if (!input.shape || input.shape.length !== 4 || input.shape[0] !== 1 || input.shape[3] !== 3) throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${input.shape}`);
-    else return { tensor: tf.clone(input), canvas: (config.filter.return ? outCanvas : null) };
+    if ((input)['isDisposedInternal']) {
+      throw new Error('input tensor is disposed');
+    } else if (!(input as Tensor).shape || (input as Tensor).shape.length !== 4 || (input as Tensor).shape[0] !== 1 || (input as Tensor).shape[3] !== 3) {
+      throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${input['shape']}`);
+    } else {
+      return { tensor: tf.clone(input), canvas: (config.filter.return ? outCanvas : null) };
+    }
   } else {
     // check if resizing will be needed
     if (typeof input['readyState'] !== 'undefined' && input['readyState'] <= 2) {
@@ -114,10 +119,10 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
       if (config.filter.flip && typeof inCtx.translate !== 'undefined') {
         inCtx.translate(originalWidth, 0);
         inCtx.scale(-1, 1);
-        inCtx.drawImage(input as CanvasImageSource, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
+        inCtx.drawImage(input as OffscreenCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
         inCtx.setTransform(1, 0, 0, 1, 0, 0); // resets transforms to defaults
       } else {
-        inCtx.drawImage(input as CanvasImageSource, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
+        inCtx.drawImage(input as OffscreenCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
       }
     }
 
@@ -160,23 +165,24 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
         pixels = tf.browser ? tf.browser.fromPixels(input) : null;
       } else {
         depth = input['data'].length / input['height'] / input['width'];
-        // const arr = Uint8Array.from(input['data']);
-        const arr = new Uint8Array(input['data']['buffer']);
+        const arr = Uint8Array.from(input['data']);
+        // const arr = new Uint8Array(input['data']['buffer']);
         pixels = tf.tensor(arr, [input['height'], input['width'], depth], 'float32');
       }
     } else {
+      if (!tmpCanvas || (outCanvas.width !== tmpCanvas.width) || (outCanvas?.height !== tmpCanvas?.height)) tmpCanvas = canvas(outCanvas.width, outCanvas.height); // init output canvas
       if (tf.browser && env.browser) {
         if (config.backend === 'webgl' || config.backend === 'humangl' || config.backend === 'webgpu') {
           pixels = tf.browser.fromPixels(outCanvas); // safe to reuse since both backend and context are gl based
         } else {
-          const tempCanvas = copy(outCanvas); // cannot use output canvas as it already has gl context so we do a silly one more canvas
-          pixels = tf.browser.fromPixels(tempCanvas);
+          tmpCanvas = copy(outCanvas); // cannot use output canvas as it already has gl context so we do a silly one more canvas
+          pixels = tf.browser.fromPixels(tmpCanvas);
         }
       } else {
         const tempCanvas = copy(outCanvas); // cannot use output canvas as it already has gl context so we do a silly one more canvas
         const tempCtx = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
         const tempData = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
-        depth = input['data'].length / targetWidth / targetHeight;
+        depth = tempData.data.length / targetWidth / targetHeight;
         const arr = new Uint8Array(tempData.data.buffer);
         pixels = tf.tensor(arr, [targetWidth, targetHeight, depth]);
       }

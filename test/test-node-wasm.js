@@ -10,6 +10,7 @@ Human.env.Canvas = Canvas; // requires monkey-patch as wasm does not have tf.bro
 Human.env.Image = Image; // requires monkey-patch as wasm does not have tf.browser namespace
 
 const config = {
+  cacheSensitivity: 0,
   modelBasePath: 'https://vladmandic.github.io/human/models/',
   // modelBasePath: 'http://localhost:10030/models/',
   backend: 'wasm',

@@ -31,15 +31,6 @@ import jsonView from './helpers/jsonview.js';
 let human;
 
 let userConfig = {
-  cacheSensitivity: 0,
-  hand: { enabled: true },
-  body: { enabled: false },
-  face: { enabled: false },
-  /*
-  hand: { enabled: false, maxDetected: 1, skipFrames: 0 },
-  body: { enabled: false },
-  face: { enabled: false },
-  */
   /*
   warmup: 'none',
   backend: 'humangl',
@@ -118,6 +109,7 @@ const ui = {
   lastFrame: 0, // time of last frame processing
   viewportSet: false, // internal, has custom viewport been set
   background: null, // holds instance of segmentation background image
+  transferCanvas: null, // canvas used to transfer data to and from worker
 
   // webrtc
   useWebRTC: false, // use webrtc as camera source instead of local webcam
@@ -318,7 +310,7 @@ async function drawResults(input) {
   const fps = avgDetect > 0 ? `FPS process:${avgDetect} refresh:${avgDraw}` : '';
   const backend = result.backend || human.tf.getBackend();
   const gpu = engine.backendInstance ? `gpu: ${(engine.backendInstance.numBytesInGPU ? engine.backendInstance.numBytesInGPU : 0).toLocaleString()} bytes` : '';
-  const memory = result.tensors || `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
+  const memory = result.tensors ? `tensors: ${result.tensors.toLocaleString()} in worker` : `system: ${engine.state.numBytes.toLocaleString()} bytes ${gpu} | tensors: ${engine.state.numTensors.toLocaleString()}`;
   document.getElementById('log').innerHTML = `
     video: ${ui.camera.name} | facing: ${ui.camera.facing} | screen: ${window.innerWidth} x ${window.innerHeight} camera: ${ui.camera.width} x ${ui.camera.height} ${processing}<br>
     backend: ${backend} | ${memory}<br>
@@ -469,13 +461,17 @@ function webWorker(input, image, canvas, timestamp) {
       if (document.getElementById('gl-bench')) document.getElementById('gl-bench').style.display = ui.bench ? 'block' : 'none';
       lastDetectedResult = msg.data.result;
 
-      if (msg.data.image) {
-        lastDetectedResult.canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(msg.data.width, msg.data.height) : document.createElement('canvas');
-        lastDetectedResult.canvas.width = msg.data.width;
-        lastDetectedResult.canvas.height = msg.data.height;
+      if (msg.data.image) { // we dont really need canvas since we draw from video
+        /*
+        if (!lastDetectedResult.canvas || lastDetectedResult.canvas.width !== msg.data.width || lastDetectedResult.canvas.height !== msg.data.height) {
+          lastDetectedResult.canvas = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(msg.data.width, msg.data.height) : document.createElement('canvas');
+          lastDetectedResult.canvas.width = msg.data.width;
+          lastDetectedResult.canvas.height = msg.data.height;
+        }
         const ctx = lastDetectedResult.canvas.getContext('2d');
         const imageData = new ImageData(new Uint8ClampedArray(msg.data.image), msg.data.width, msg.data.height);
         ctx.putImageData(imageData, 0, 0);
+        */
       }
 
       ui.framesDetect++;
@@ -508,10 +504,12 @@ function runHumanDetect(input, canvas, timestamp) {
   if (ui.hintsThread) clearInterval(ui.hintsThread);
   if (ui.useWorker && human.env.offscreen) {
     // get image data from video as we cannot send html objects to webworker
-    const offscreen = (typeof OffscreenCanvas !== 'undefined') ? new OffscreenCanvas(canvas.width, canvas.height) : document.createElement('canvas');
-    offscreen.width = canvas.width;
-    offscreen.height = canvas.height;
-    const ctx = offscreen.getContext('2d');
+    if (!ui.transferCanvas || ui.transferCanvas.width !== canvas.width || ui.transferCanvas.height || canvas.height) {
+      ui.transferCanvas = document.createElement('canvas');
+      ui.transferCanvas.width = canvas.width;
+      ui.transferCanvas.height = canvas.height;
+    }
+    const ctx = ui.transferCanvas.getContext('2d');
     ctx.drawImage(input, 0, 0, canvas.width, canvas.height);
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     // perform detection in worker

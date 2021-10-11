@@ -3,6 +3,7 @@ const Human = require('../dist/human.node.js').default;
 const test = require('./test-main.js').test;
 
 const config = {
+  cacheSensitivity: 0,
   modelBasePath: 'file://models/',
   backend: 'tensorflow',
   debug: false,

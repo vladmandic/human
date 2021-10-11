@@ -91,7 +91,9 @@ export async function check(instance, force = false) {
 
     // customize webgpu
     if (tf.getBackend() === 'webgpu') {
-      tf.ENV.set('WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD', 256);
+      tf.ENV.set('WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD', 512);
+      tf.ENV.set('WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE', 0);
+      tf.ENV.set('WEBGPU_CPU_FORWARD', true);
     }
 
     // wait for ready

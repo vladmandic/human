@@ -31,9 +31,9 @@ import jsonView from './helpers/jsonview.js';
 let human;
 
 let userConfig = {
-  face: { enabled: false },
-  body: { enabled: false },
-  hand: { enabled: false },
+  // face: { enabled: false },
+  // body: { enabled: false },
+  // hand: { enabled: false },
   /*
   warmup: 'none',
   backend: 'humangl',
@@ -41,10 +41,7 @@ let userConfig = {
   wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
   async: false,
   cacheSensitivity: 0.75,
-  filter: {
-    enabled: false,
-    flip: false,
-  },
+  filter: { enabled: false, flip: false },
   face: { enabled: false,
     detector: { return: false, rotation: true },
     mesh: { enabled: false },
@@ -54,11 +51,9 @@ let userConfig = {
   },
   object: { enabled: false },
   gesture: { enabled: true },
-  // hand: { enabled: false },
   hand: { enabled: true, maxDetected: 1, minConfidence: 0.5, detector: { modelPath: 'handtrack.json' } },
   body: { enabled: false },
   // body: { enabled: true, modelPath: 'movenet-multipose.json' },
-  // body: { enabled: true, modelPath: 'posenet.json' },
   segmentation: { enabled: false },
   */
 };
@@ -94,7 +89,7 @@ const ui = {
   autoPlay: false, // start webcam & detection on load
 
   // internal variables
-  exceptionHandler: false, // should capture all unhandled exceptions
+  exceptionHandler: true, // should capture all unhandled exceptions
   busy: false, // internal camera busy flag
   menuWidth: 0, // internal
   menuHeight: 0, // internal

@@ -134,21 +134,22 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
       env.filter = !!fx;
       if (!fx) return { tensor: null, canvas: inCanvas };
       fx.reset();
-      fx.addFilter('brightness', config.filter.brightness); // must have at least one filter enabled
-      if (config.filter.contrast !== 0) fx.addFilter('contrast', config.filter.contrast);
-      if (config.filter.sharpness !== 0) fx.addFilter('sharpen', config.filter.sharpness);
-      if (config.filter.blur !== 0) fx.addFilter('blur', config.filter.blur);
-      if (config.filter.saturation !== 0) fx.addFilter('saturation', config.filter.saturation);
-      if (config.filter.hue !== 0) fx.addFilter('hue', config.filter.hue);
-      if (config.filter.negative) fx.addFilter('negative');
-      if (config.filter.sepia) fx.addFilter('sepia');
-      if (config.filter.vintage) fx.addFilter('brownie');
-      if (config.filter.sepia) fx.addFilter('sepia');
-      if (config.filter.kodachrome) fx.addFilter('kodachrome');
-      if (config.filter.technicolor) fx.addFilter('technicolor');
-      if (config.filter.polaroid) fx.addFilter('polaroid');
-      if (config.filter.pixelate !== 0) fx.addFilter('pixelate', config.filter.pixelate);
-      outCanvas = fx.apply(inCanvas);
+      if (config.filter.brightness !== 0) fx.add('brightness', config.filter.brightness);
+      if (config.filter.contrast !== 0) fx.add('contrast', config.filter.contrast);
+      if (config.filter.sharpness !== 0) fx.add('sharpen', config.filter.sharpness);
+      if (config.filter.blur !== 0) fx.add('blur', config.filter.blur);
+      if (config.filter.saturation !== 0) fx.add('saturation', config.filter.saturation);
+      if (config.filter.hue !== 0) fx.add('hue', config.filter.hue);
+      if (config.filter.negative) fx.add('negative');
+      if (config.filter.sepia) fx.add('sepia');
+      if (config.filter.vintage) fx.add('brownie');
+      if (config.filter.sepia) fx.add('sepia');
+      if (config.filter.kodachrome) fx.add('kodachrome');
+      if (config.filter.technicolor) fx.add('technicolor');
+      if (config.filter.polaroid) fx.add('polaroid');
+      if (config.filter.pixelate !== 0) fx.add('pixelate', config.filter.pixelate);
+      if (fx.get() > 0) outCanvas = fx.apply(inCanvas);
+      else outCanvas = fx.draw(inCanvas);
     } else {
       copy(inCanvas, outCanvas); // if no filters applied, output canvas is input canvas
       if (fx) fx = null;

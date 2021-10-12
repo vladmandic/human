@@ -253,7 +253,7 @@ var config = {
 var tf26 = __toModule(require_tfjs_esm());
 
 // package.json
-var version = "2.3.2";
+var version = "2.3.3";
 
 // src/tfjs/humangl.ts
 var tf22 = __toModule(require_tfjs_esm());
@@ -362,19 +362,19 @@ var convolution = `
 `;
 
 // src/image/imagefx.ts
+var collect = (source, prefix, collection) => {
+  const r = new RegExp("\\b" + prefix + " \\w+ (\\w+)", "ig");
+  source.replace(r, (match4, name) => {
+    collection[name] = 0;
+    return match4;
+  });
+};
 var GLProgram = class {
   constructor(gl, vertexSource, fragmentSource) {
     __publicField(this, "uniform", {});
     __publicField(this, "attribute", {});
     __publicField(this, "gl");
     __publicField(this, "id");
-    __publicField(this, "collect", (source, prefix, collection) => {
-      const r = new RegExp("\\b" + prefix + " \\w+ (\\w+)", "ig");
-      source.replace(r, (match4, name) => {
-        collection[name] = 0;
-        return match4;
-      });
-    });
     __publicField(this, "compile", (source, type) => {
       const shader = this.gl.createShader(type);
       this.gl.shaderSource(shader, source);
@@ -393,11 +393,11 @@ var GLProgram = class {
     if (!this.gl.getProgramParameter(this.id, this.gl.LINK_STATUS))
       throw new Error(`filter: gl link failed: ${this.gl.getProgramInfoLog(this.id)}`);
     this.gl.useProgram(this.id);
-    this.collect(vertexSource, "attribute", this.attribute);
+    collect(vertexSource, "attribute", this.attribute);
     for (const a in this.attribute)
       this.attribute[a] = this.gl.getAttribLocation(this.id, a);
-    this.collect(vertexSource, "uniform", this.uniform);
-    this.collect(fragmentSource, "uniform", this.uniform);
+    collect(vertexSource, "uniform", this.uniform);
+    collect(fragmentSource, "uniform", this.uniform);
     for (const u in this.uniform)
       this.uniform[u] = this.gl.getUniformLocation(this.id, u);
   }

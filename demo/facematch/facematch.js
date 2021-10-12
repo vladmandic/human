@@ -12,13 +12,13 @@ const userConfig = {
   backend: 'wasm',
   async: false,
   warmup: 'none',
-  cacheSimilarity: 0,
+  cacheSensitivity: 0,
   debug: true,
   modelBasePath: '../../models/',
   // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
   face: {
     enabled: true,
-    detector: { rotation: true, return: true, maxDetected: 20 },
+    detector: { rotation: true, return: true, maxDetected: 50 },
     mesh: { enabled: true },
     embedding: { enabled: false },
     iris: { enabled: true },
@@ -120,7 +120,7 @@ async function SelectFaceCanvas(face) {
     ctx.font = 'small-caps 1rem "Lato"';
     const start = performance.now();
     const arr = db.map((rec) => rec.embedding);
-    const res = await human.match(face.embedding, arr);
+    const res = await human.match(current.embedding, arr);
     time += (performance.now() - start);
     if (res.similarity > minScore) ctx.fillText(`DB: ${(100 * res.similarity).toFixed(1)}% ${db[res.index].name}`, 4, canvas.height - 30);
   }
@@ -226,7 +226,7 @@ async function main() {
   // could not dynamically enumerate images so using static list
   if (images.length === 0) {
     images = [
-      'ai-body.jpg', 'ai-upper.jpg',
+      'ai-body.jpg', 'solvay1927.jpg', 'ai-upper.jpg',
       'person-carolina.jpg', 'person-celeste.jpg', 'person-leila1.jpg', 'person-leila2.jpg', 'person-lexi.jpg', 'person-linda.jpg', 'person-nicole.jpg', 'person-tasia.jpg',
       'person-tetiana.jpg', 'person-vlado1.jpg', 'person-vlado5.jpg', 'person-vlado.jpg', 'person-christina.jpg', 'person-lauren.jpg',
       'group-1.jpg', 'group-2.jpg', 'group-3.jpg', 'group-4.jpg', 'group-5.jpg', 'group-6.jpg', 'group-7.jpg',
@@ -242,6 +242,8 @@ async function main() {
   } else {
     log('Discovered images:', images);
   }
+
+  // images = ['/samples/in/solvay1927.jpg'];
 
   // download and analyze all images
   for (let i = 0; i < images.length; i++) await AddImageElement(i, images[i], images.length);

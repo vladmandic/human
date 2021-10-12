@@ -6,15 +6,12 @@
 
 ### Models
 
-- Implement BlazePose end-to-end
+- Optimize BlazePose
+- Add Anti-Spoofing
 
 <br>
 
 ### Backends
-
-#### WebGL
-- Optimize shader packing for WebGL backend:  
-  <https://github.com/tensorflow/tfjs/issues/5343>  
 
 #### WASM
 
@@ -23,17 +20,9 @@
 
 #### WebGPU
 
-Implementation of WebGPU backend  
 Experimental support only until support is officially added in Chromium
-
-- Evaluate WGSL vs GLSL for WebGPU  
-- Backend WebGPU missing kernel ops
-  <https://github.com/tensorflow/tfjs/issues/5496>
-- Backend WebGPU incompatible with web workers
-  <https://github.com/tensorflow/tfjs/issues/5467>
-- Backend WebGPU incompatible with sync read calls
-  <https://github.com/tensorflow/tfjs/issues/5468>
-
+- Performance issues:
+  <https://github.com/tensorflow/tfjs/issues/5689>
 
 <br>
 

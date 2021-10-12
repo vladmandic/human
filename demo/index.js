@@ -146,7 +146,7 @@ let bench;
 let lastDetectedResult = {};
 
 // helper function: async pause
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // helper function: translates json to human readable string

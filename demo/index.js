@@ -31,6 +31,9 @@ import jsonView from './helpers/jsonview.js';
 let human;
 
 let userConfig = {
+  face: { enabled: false },
+  body: { enabled: false },
+  hand: { enabled: false },
   /*
   warmup: 'none',
   backend: 'humangl',
@@ -91,7 +94,7 @@ const ui = {
   autoPlay: false, // start webcam & detection on load
 
   // internal variables
-  exceptionHandler: true, // should capture all unhandled exceptions
+  exceptionHandler: false, // should capture all unhandled exceptions
   busy: false, // internal camera busy flag
   menuWidth: 0, // internal
   menuHeight: 0, // internal
@@ -146,6 +149,10 @@ const menu = {};
 let worker;
 let bench;
 let lastDetectedResult = {};
+
+// helper function: async pause
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // helper function: translates json to human readable string
 function str(...msg) {
@@ -225,15 +232,18 @@ async function calcSimmilarity(result) {
 }
 
 const isLive = (input) => {
-  const videoLive = input.readyState > 2;
-  const cameraLive = input.srcObject?.getVideoTracks()[0].readyState === 'live';
-  const live = (videoLive || cameraLive) && (!input.paused);
+  const isCamera = input.srcObject?.getVideoTracks()[0] && input.srcObject?.getVideoTracks()[0].enabled;
+  const isVideoLive = input.readyState > 2;
+  const isCameraLive = input.srcObject?.getVideoTracks()[0].readyState === 'live';
+  let live = isCamera ? isCameraLive : isVideoLive;
+  live = live && !input.paused;
   return live;
 };
 
 // draws processed results and starts processing of a next frame
 let lastDraw = performance.now();
 async function drawResults(input) {
+  // await delay(25);
   const result = lastDetectedResult;
   const canvas = document.getElementById('canvas');
 
@@ -325,6 +335,7 @@ async function drawResults(input) {
       ui.drawThread = requestAnimationFrame(() => drawResults(input));
     } else {
       cancelAnimationFrame(ui.drawThread);
+      videoPause();
       ui.drawThread = null;
     }
   } else {

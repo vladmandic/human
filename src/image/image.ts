@@ -148,7 +148,7 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
       if (config.filter.technicolor) fx.addFilter('technicolor');
       if (config.filter.polaroid) fx.addFilter('polaroid');
       if (config.filter.pixelate !== 0) fx.addFilter('pixelate', config.filter.pixelate);
-      fx.apply(inCanvas);
+      outCanvas = fx.apply(inCanvas);
     } else {
       copy(inCanvas, outCanvas); // if no filters applied, output canvas is input canvas
       if (fx) fx = null;
@@ -156,6 +156,7 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
     }
 
     if (!getTensor) return { tensor: null, canvas: outCanvas }; // just canvas was requested
+    if (!outCanvas) throw new Error('cannot create output canvas');
 
     // create tensor from image unless input was a tensor already
     let pixels;

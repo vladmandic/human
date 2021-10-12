@@ -9,8 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/10 mandic00@live.com
+### **HEAD -> main** 2021/10/12 mandic00@live.com
 
+
+### **release: 2.3.2** 2021/10/11 mandic00@live.com
+
+- major precision improvements to movenet and handtrack
 - image processing fixes
 - redesign body and hand caching and interpolation
 - demo default config cleanup

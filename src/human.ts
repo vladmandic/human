@@ -227,7 +227,7 @@ export class Human {
     this.#numTensors = currentTensors;
     const leaked = currentTensors - previousTensors;
     if (leaked !== 0) log(...msg, leaked);
-  }
+  };
 
   // quick sanity check on inputs
   /** @hidden */
@@ -241,7 +241,7 @@ export class Human {
       return 'backend not loaded';
     }
     return null;
-  }
+  };
 
   /** Reset configuration to default values */
   reset(): void {
@@ -350,7 +350,7 @@ export class Human {
   /** @hidden */
   emit = (event: string) => {
     if (this.events && this.events.dispatchEvent) this.events?.dispatchEvent(new Event(event));
-  }
+  };
 
   /** Runs interpolation using last known result and returns smoothened result
    * Interpolation is based on time since last known result so can be called independently

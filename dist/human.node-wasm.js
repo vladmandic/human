@@ -384,11 +384,11 @@ var GLProgram = class {
       return shader;
     });
     this.gl = gl;
-    const _vsh = this.compile(vertexSource, this.gl.VERTEX_SHADER);
-    const _fsh = this.compile(fragmentSource, this.gl.FRAGMENT_SHADER);
+    const vertexShader = this.compile(vertexSource, this.gl.VERTEX_SHADER);
+    const fragmentShader = this.compile(fragmentSource, this.gl.FRAGMENT_SHADER);
     this.id = this.gl.createProgram();
-    this.gl.attachShader(this.id, _vsh);
-    this.gl.attachShader(this.id, _fsh);
+    this.gl.attachShader(this.id, vertexShader);
+    this.gl.attachShader(this.id, fragmentShader);
     this.gl.linkProgram(this.id);
     if (!this.gl.getProgramParameter(this.id, this.gl.LINK_STATUS))
       throw new Error(`filter: gl link failed: ${this.gl.getProgramInfoLog(this.id)}`);
@@ -402,50 +402,37 @@ var GLProgram = class {
       this.uniform[u] = this.gl.getUniformLocation(this.id, u);
   }
 };
-function GLImageFilter(params) {
-  if (!params)
-    params = {};
-  let _drawCount = 0;
-  let _sourceTexture = null;
-  let _lastInChain = false;
-  let _currentFramebufferIndex = -1;
-  let _tempFramebuffers = [null, null];
-  let _filterChain = [];
-  let _width = -1;
-  let _height = -1;
-  let _vertexBuffer = null;
-  let _currentProgram = null;
-  const _canvas = params.canvas || typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(100, 100) : document.createElement("canvas");
-  const _shaderProgramCache = {};
+function GLImageFilter(params = {}) {
+  let drawCount = 0;
+  let sourceTexture = null;
+  let lastInChain = false;
+  let currentFramebufferIndex = -1;
+  let tempFramebuffers = [null, null];
+  let filterChain = [];
+  let vertexBuffer = null;
+  let currentProgram = null;
+  const canvas3 = params["canvas"] || typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(100, 100) : document.createElement("canvas");
+  const shaderProgramCache = {};
   const DRAW = { INTERMEDIATE: 1 };
-  const gl = _canvas.getContext("webgl");
+  const gl = canvas3.getContext("webgl");
   if (!gl)
     throw new Error("filter: cannot get webgl context");
-  this.addFilter = function(name) {
-    const args = Array.prototype.slice.call(arguments, 1);
-    const filter = _filter[name];
-    _filterChain.push({ func: filter, args });
-  };
-  this.reset = function() {
-    _filterChain = [];
-  };
-  const _resize = function(width, height) {
-    if (width === _width && height === _height)
+  function resize(width, height) {
+    if (width === canvas3.width && height === canvas3.height)
       return;
-    _canvas.width = width;
-    _width = width;
-    _canvas.height = height;
-    _height = height;
-    if (!_vertexBuffer) {
+    canvas3.width = width;
+    canvas3.height = height;
+    if (!vertexBuffer) {
       const vertices = new Float32Array([-1, -1, 0, 1, 1, -1, 1, 1, -1, 1, 0, 0, -1, 1, 0, 0, 1, -1, 1, 1, 1, 1, 1, 0]);
-      _vertexBuffer = gl.createBuffer(), gl.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+      vertexBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     }
-    gl.viewport(0, 0, _width, _height);
-    _tempFramebuffers = [null, null];
-  };
-  const _createFramebufferTexture = function(width, height) {
+    gl.viewport(0, 0, canvas3.width, canvas3.height);
+    tempFramebuffers = [null, null];
+  }
+  function createFramebufferTexture(width, height) {
     const fbo = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     const renderbuffer = gl.createRenderbuffer();
@@ -461,74 +448,52 @@ function GLImageFilter(params) {
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     return { fbo, texture };
-  };
-  const _getTempFramebuffer = function(index) {
-    _tempFramebuffers[index] = _tempFramebuffers[index] || _createFramebufferTexture(_width, _height);
-    return _tempFramebuffers[index];
-  };
-  const _draw = function(flags = 0) {
+  }
+  function getTempFramebuffer(index) {
+    tempFramebuffers[index] = tempFramebuffers[index] || createFramebufferTexture(canvas3.width, canvas3.height);
+    return tempFramebuffers[index];
+  }
+  function draw2(flags = 0) {
     var _a, _b;
-    if (!_currentProgram)
+    if (!currentProgram)
       return;
     let source = null;
     let target = null;
     let flipY = false;
-    if (_drawCount === 0)
-      source = _sourceTexture;
+    if (drawCount === 0)
+      source = sourceTexture;
     else
-      source = (_a = _getTempFramebuffer(_currentFramebufferIndex)) == null ? void 0 : _a.texture;
-    _drawCount++;
-    if (_lastInChain && !(flags & DRAW.INTERMEDIATE)) {
+      source = ((_a = getTempFramebuffer(currentFramebufferIndex)) == null ? void 0 : _a.texture) || null;
+    drawCount++;
+    if (lastInChain && !(flags & DRAW.INTERMEDIATE)) {
       target = null;
-      flipY = _drawCount % 2 === 0;
+      flipY = drawCount % 2 === 0;
     } else {
-      _currentFramebufferIndex = (_currentFramebufferIndex + 1) % 2;
-      target = (_b = _getTempFramebuffer(_currentFramebufferIndex)) == null ? void 0 : _b.fbo;
+      currentFramebufferIndex = (currentFramebufferIndex + 1) % 2;
+      target = ((_b = getTempFramebuffer(currentFramebufferIndex)) == null ? void 0 : _b.fbo) || null;
     }
     gl.bindTexture(gl.TEXTURE_2D, source);
     gl.bindFramebuffer(gl.FRAMEBUFFER, target);
-    gl.uniform1f(_currentProgram.uniform["flipY"], flipY ? -1 : 1);
+    gl.uniform1f(currentProgram.uniform["flipY"], flipY ? -1 : 1);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
-  };
-  this.apply = function(image24) {
-    _resize(image24.width, image24.height);
-    _drawCount = 0;
-    if (!_sourceTexture)
-      _sourceTexture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, _sourceTexture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image24);
-    if (_filterChain.length === 0) {
-      _draw();
-    } else {
-      for (let i = 0; i < _filterChain.length; i++) {
-        _lastInChain = i === _filterChain.length - 1;
-        const f = _filterChain[i];
-        f.func.apply(this, f.args || []);
-      }
+  }
+  function compileShader(fragmentSource) {
+    if (shaderProgramCache[fragmentSource]) {
+      currentProgram = shaderProgramCache[fragmentSource];
+      gl.useProgram((currentProgram == null ? void 0 : currentProgram.id) || null);
+      return currentProgram;
     }
-    return _canvas;
-  };
-  const _compileShader = function(fragmentSource) {
-    if (_shaderProgramCache[fragmentSource]) {
-      _currentProgram = _shaderProgramCache[fragmentSource];
-      gl.useProgram(_currentProgram == null ? void 0 : _currentProgram.id);
-      return _currentProgram;
-    }
-    _currentProgram = new GLProgram(gl, vertexIdentity, fragmentSource);
+    currentProgram = new GLProgram(gl, vertexIdentity, fragmentSource);
     const floatSize = Float32Array.BYTES_PER_ELEMENT;
     const vertSize = 4 * floatSize;
-    gl.enableVertexAttribArray(_currentProgram.attribute["pos"]);
-    gl.vertexAttribPointer(_currentProgram.attribute["pos"], 2, gl.FLOAT, false, vertSize, 0 * floatSize);
-    gl.enableVertexAttribArray(_currentProgram.attribute.uv);
-    gl.vertexAttribPointer(_currentProgram.attribute["uv"], 2, gl.FLOAT, false, vertSize, 2 * floatSize);
-    _shaderProgramCache[fragmentSource] = _currentProgram;
-    return _currentProgram;
-  };
-  const _filter = {
+    gl.enableVertexAttribArray(currentProgram.attribute["pos"]);
+    gl.vertexAttribPointer(currentProgram.attribute["pos"], 2, gl.FLOAT, false, vertSize, 0 * floatSize);
+    gl.enableVertexAttribArray(currentProgram.attribute["uv"]);
+    gl.vertexAttribPointer(currentProgram.attribute["uv"], 2, gl.FLOAT, false, vertSize, 2 * floatSize);
+    shaderProgramCache[fragmentSource] = currentProgram;
+    return currentProgram;
+  }
+  const filter = {
     colorMatrix: (matrix) => {
       const m = new Float32Array(matrix);
       m[4] /= 255;
@@ -536,13 +501,13 @@ function GLImageFilter(params) {
       m[14] /= 255;
       m[19] /= 255;
       const shader = m[18] === 1 && m[3] === 0 && m[8] === 0 && m[13] === 0 && m[15] === 0 && m[16] === 0 && m[17] === 0 && m[19] === 0 ? colorMatrixWithoutAlpha : colorMatrixWithAlpha;
-      const program = _compileShader(shader);
+      const program = compileShader(shader);
       gl.uniform1fv(program == null ? void 0 : program.uniform["m"], m);
-      _draw();
+      draw2();
     },
     brightness: (brightness) => {
       const b = (brightness || 0) + 1;
-      _filter.colorMatrix([
+      filter.colorMatrix([
         b,
         0,
         0,
@@ -568,7 +533,7 @@ function GLImageFilter(params) {
     saturation: (amount) => {
       const x = (amount || 0) * 2 / 3 + 1;
       const y = (x - 1) * -0.5;
-      _filter.colorMatrix([
+      filter.colorMatrix([
         x,
         y,
         y,
@@ -592,12 +557,12 @@ function GLImageFilter(params) {
       ]);
     },
     desaturate: () => {
-      _filter.saturation(-1);
+      filter.saturation(-1);
     },
     contrast: (amount) => {
       const v = (amount || 0) + 1;
       const o = -128 * (v - 1);
-      _filter.colorMatrix([
+      filter.colorMatrix([
         v,
         0,
         0,
@@ -621,7 +586,7 @@ function GLImageFilter(params) {
       ]);
     },
     negative: () => {
-      _filter.contrast(-2);
+      filter.contrast(-2);
     },
     hue: (rotation) => {
       rotation = (rotation || 0) / 180 * Math.PI;
@@ -630,7 +595,7 @@ function GLImageFilter(params) {
       const lumR = 0.213;
       const lumG = 0.715;
       const lumB = 0.072;
-      _filter.colorMatrix([
+      filter.colorMatrix([
         lumR + cos * (1 - lumR) + sin * -lumR,
         lumG + cos * -lumG + sin * -lumG,
         lumB + cos * -lumB + sin * (1 - lumB),
@@ -654,7 +619,7 @@ function GLImageFilter(params) {
       ]);
     },
     desaturateLuminance: () => {
-      _filter.colorMatrix([
+      filter.colorMatrix([
         0.2764723,
         0.929708,
         0.0938197,
@@ -678,7 +643,7 @@ function GLImageFilter(params) {
       ]);
     },
     sepia: () => {
-      _filter.colorMatrix([
+      filter.colorMatrix([
         0.393,
         0.7689999,
         0.18899999,
@@ -702,7 +667,7 @@ function GLImageFilter(params) {
       ]);
     },
     brownie: () => {
-      _filter.colorMatrix([
+      filter.colorMatrix([
         0.5997023498159715,
         0.34553243048391263,
         -0.2708298674538042,
@@ -726,7 +691,7 @@ function GLImageFilter(params) {
       ]);
     },
     vintagePinhole: () => {
-      _filter.colorMatrix([
+      filter.colorMatrix([
         0.6279345635605994,
         0.3202183420819367,
         -0.03965408211312453,
@@ -750,7 +715,7 @@ function GLImageFilter(params) {
       ]);
     },
     kodachrome: () => {
-      _filter.colorMatrix([
+      filter.colorMatrix([
         1.1285582396593525,
         -0.3967382283601348,
         -0.03992559172921793,
@@ -774,7 +739,7 @@ function GLImageFilter(params) {
       ]);
     },
     technicolor: () => {
-      _filter.colorMatrix([
+      filter.colorMatrix([
         1.9125277891456083,
         -0.8545344976951645,
         -0.09155508482755585,
@@ -798,7 +763,7 @@ function GLImageFilter(params) {
       ]);
     },
     polaroid: () => {
-      _filter.colorMatrix([
+      filter.colorMatrix([
         1.438,
         -0.062,
         -0.062,
@@ -822,7 +787,7 @@ function GLImageFilter(params) {
       ]);
     },
     shiftToBGR: () => {
-      _filter.colorMatrix([
+      filter.colorMatrix([
         0,
         0,
         1,
@@ -847,15 +812,15 @@ function GLImageFilter(params) {
     },
     convolution: (matrix) => {
       const m = new Float32Array(matrix);
-      const pixelSizeX = 1 / _width;
-      const pixelSizeY = 1 / _height;
-      const program = _compileShader(convolution);
+      const pixelSizeX = 1 / canvas3.width;
+      const pixelSizeY = 1 / canvas3.height;
+      const program = compileShader(convolution);
       gl.uniform1fv(program == null ? void 0 : program.uniform["m"], m);
       gl.uniform2f(program == null ? void 0 : program.uniform["px"], pixelSizeX, pixelSizeY);
-      _draw();
+      draw2();
     },
     detectEdges: () => {
-      _filter.convolution.call(this, [
+      filter.convolution.call(this, [
         0,
         1,
         0,
@@ -868,7 +833,7 @@ function GLImageFilter(params) {
       ]);
     },
     sobelX: () => {
-      _filter.convolution.call(this, [
+      filter.convolution.call(this, [
         -1,
         0,
         1,
@@ -881,7 +846,7 @@ function GLImageFilter(params) {
       ]);
     },
     sobelY: () => {
-      _filter.convolution.call(this, [
+      filter.convolution.call(this, [
         -1,
         -2,
         -1,
@@ -895,7 +860,7 @@ function GLImageFilter(params) {
     },
     sharpen: (amount) => {
       const a = amount || 1;
-      _filter.convolution.call(this, [
+      filter.convolution.call(this, [
         0,
         -1 * a,
         0,
@@ -909,7 +874,7 @@ function GLImageFilter(params) {
     },
     emboss: (size2) => {
       const s = size2 || 1;
-      _filter.convolution.call(this, [
+      filter.convolution.call(this, [
         -2 * s,
         -1 * s,
         0,
@@ -922,21 +887,54 @@ function GLImageFilter(params) {
       ]);
     },
     blur: (size2) => {
-      const blurSizeX = size2 / 7 / _width;
-      const blurSizeY = size2 / 7 / _height;
-      const program = _compileShader(blur);
+      const blurSizeX = size2 / 7 / canvas3.width;
+      const blurSizeY = size2 / 7 / canvas3.height;
+      const program = compileShader(blur);
       gl.uniform2f(program == null ? void 0 : program.uniform["px"], 0, blurSizeY);
-      _draw(DRAW.INTERMEDIATE);
+      draw2(DRAW.INTERMEDIATE);
       gl.uniform2f(program == null ? void 0 : program.uniform["px"], blurSizeX, 0);
-      _draw();
+      draw2();
     },
     pixelate: (size2) => {
-      const blurSizeX = size2 / _width;
-      const blurSizeY = size2 / _height;
-      const program = _compileShader(pixelate);
+      const blurSizeX = size2 / canvas3.width;
+      const blurSizeY = size2 / canvas3.height;
+      const program = compileShader(pixelate);
       gl.uniform2f(program == null ? void 0 : program.uniform["size"], blurSizeX, blurSizeY);
-      _draw();
+      draw2();
     }
+  };
+  this.add = function(name) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    const func = filter[name];
+    filterChain.push({ func, args });
+  };
+  this.reset = function() {
+    filterChain = [];
+  };
+  this.get = function() {
+    return filterChain;
+  };
+  this.apply = function(image24) {
+    resize(image24.width, image24.height);
+    drawCount = 0;
+    if (!sourceTexture)
+      sourceTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, sourceTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image24);
+    for (let i = 0; i < filterChain.length; i++) {
+      lastInChain = i === filterChain.length - 1;
+      const f = filterChain[i];
+      f.func.apply(this, f.args || []);
+    }
+    return canvas3;
+  };
+  this.draw = function(image24) {
+    this.add("brightness", 0);
+    return this.apply(image24);
   };
 }
 
@@ -1135,34 +1133,38 @@ function process2(input, config3, getTensor = true) {
       if (!fx)
         return { tensor: null, canvas: inCanvas };
       fx.reset();
-      fx.addFilter("brightness", config3.filter.brightness);
+      if (config3.filter.brightness !== 0)
+        fx.add("brightness", config3.filter.brightness);
       if (config3.filter.contrast !== 0)
-        fx.addFilter("contrast", config3.filter.contrast);
+        fx.add("contrast", config3.filter.contrast);
       if (config3.filter.sharpness !== 0)
-        fx.addFilter("sharpen", config3.filter.sharpness);
+        fx.add("sharpen", config3.filter.sharpness);
       if (config3.filter.blur !== 0)
-        fx.addFilter("blur", config3.filter.blur);
+        fx.add("blur", config3.filter.blur);
       if (config3.filter.saturation !== 0)
-        fx.addFilter("saturation", config3.filter.saturation);
+        fx.add("saturation", config3.filter.saturation);
       if (config3.filter.hue !== 0)
-        fx.addFilter("hue", config3.filter.hue);
+        fx.add("hue", config3.filter.hue);
       if (config3.filter.negative)
-        fx.addFilter("negative");
+        fx.add("negative");
       if (config3.filter.sepia)
-        fx.addFilter("sepia");
+        fx.add("sepia");
       if (config3.filter.vintage)
-        fx.addFilter("brownie");
+        fx.add("brownie");
       if (config3.filter.sepia)
-        fx.addFilter("sepia");
+        fx.add("sepia");
       if (config3.filter.kodachrome)
-        fx.addFilter("kodachrome");
+        fx.add("kodachrome");
       if (config3.filter.technicolor)
-        fx.addFilter("technicolor");
+        fx.add("technicolor");
       if (config3.filter.polaroid)
-        fx.addFilter("polaroid");
+        fx.add("polaroid");
       if (config3.filter.pixelate !== 0)
-        fx.addFilter("pixelate", config3.filter.pixelate);
-      outCanvas = fx.apply(inCanvas);
+        fx.add("pixelate", config3.filter.pixelate);
+      if (fx.get() > 0)
+        outCanvas = fx.apply(inCanvas);
+      else
+        outCanvas = fx.draw(inCanvas);
     } else {
       copy(inCanvas, outCanvas);
       if (fx)

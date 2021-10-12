@@ -5,6 +5,14 @@
 
 import * as shaders from './imagefxshaders';
 
+const collect = (source, prefix, collection) => {
+  const r = new RegExp('\\b' + prefix + ' \\w+ (\\w+)', 'ig');
+  source.replace(r, (match, name) => {
+    collection[name] = 0;
+    return match;
+  });
+};
+
 class GLProgram {
   uniform = {};
   attribute = {};
@@ -20,20 +28,12 @@ class GLProgram {
     this.gl.linkProgram(this.id);
     if (!this.gl.getProgramParameter(this.id, this.gl.LINK_STATUS)) throw new Error(`filter: gl link failed: ${this.gl.getProgramInfoLog(this.id)}`);
     this.gl.useProgram(this.id);
-    this.collect(vertexSource, 'attribute', this.attribute); // Collect attributes
+    collect(vertexSource, 'attribute', this.attribute); // Collect attributes
     for (const a in this.attribute) this.attribute[a] = this.gl.getAttribLocation(this.id, a);
-    this.collect(vertexSource, 'uniform', this.uniform); // Collect uniforms
-    this.collect(fragmentSource, 'uniform', this.uniform);
+    collect(vertexSource, 'uniform', this.uniform); // Collect uniforms
+    collect(fragmentSource, 'uniform', this.uniform);
     for (const u in this.uniform) this.uniform[u] = this.gl.getUniformLocation(this.id, u);
   }
-
-  collect = (source, prefix, collection) => {
-    const r = new RegExp('\\b' + prefix + ' \\w+ (\\w+)', 'ig');
-    source.replace(r, (match, name) => {
-      collection[name] = 0;
-      return match;
-    });
-  };
 
   compile = (source, type): WebGLShader => {
     const shader = this.gl.createShader(type) as WebGLShader;

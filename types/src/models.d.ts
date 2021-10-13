@@ -30,6 +30,7 @@ export declare class Models {
     nanodet: null | GraphModel | Promise<GraphModel>;
     posenet: null | GraphModel | Promise<GraphModel>;
     segmentation: null | GraphModel | Promise<GraphModel>;
+    antispoof: null | GraphModel | Promise<GraphModel>;
 }
 export declare function reset(instance: Human): void;
 /** Load method preloads all instance.configured models on-demand */

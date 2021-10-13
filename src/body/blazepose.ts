@@ -24,7 +24,7 @@ export async function loadDetect(config: Config): Promise<GraphModel> {
     const inputs = Object.values(models[0].modelSignature['inputs']);
     inputSize[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models[0] || !models[0]['modelUrl']) log('load model failed:', config.object.modelPath);
+    if (!models[0] || !models[0]['modelUrl']) log('load model failed:', config.body.detector?.modelPath);
     else if (config.debug) log('load model:', models[0]['modelUrl']);
   } else if (config.debug && models[0]) log('cached model:', models[0]['modelUrl']);
   return models[0] as GraphModel;
@@ -39,7 +39,7 @@ export async function loadPose(config: Config): Promise<GraphModel> {
     inputSize[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
     if (config.body.modelPath?.includes('lite')) outputNodes = ['ld_3d', 'output_segmentation', 'output_heatmap', 'world_3d', 'output_poseflag'];
     else outputNodes = ['Identity', 'Identity_2', 'Identity_3', 'Identity_4', 'Identity_1']; // v2 from pinto full and heavy
-    if (!models[1] || !models[1]['modelUrl']) log('load model failed:', config.object.modelPath);
+    if (!models[1] || !models[1]['modelUrl']) log('load model failed:', config.body.modelPath);
     else if (config.debug) log('load model:', models[1]['modelUrl']);
   } else if (config.debug) log('cached model:', models[1]['modelUrl']);
   return models[1];

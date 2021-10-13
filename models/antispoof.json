@@ -1,0 +1,60 @@
+{
+  "format": "graph-model",
+  "generatedBy": "https://www.kaggle.com/anku420/fake-face-detection",
+  "convertedBy": "https://github.com/vladmandic",
+  "signature":
+  {
+      "inputs":
+      {
+          "conv2d_input": {"name":"conv2d_input:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"-1"},{"size":"128"},{"size":"128"},{"size":"3"}]}}
+      },
+      "outputs":
+      {
+          "activation_4": {"name":"Identity:0","dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"-1"},{"size":"1"}]}}
+      }
+  },
+  "modelTopology":
+  {
+      "node":
+      [
+          {"name":"unknown","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"3"},{"size":"3"},{"size":"3"},{"size":"64"}]}}},"dtype":{"type":"DT_FLOAT"}}},
+          {"name":"unknown_0","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"64"}]}}},"dtype":{"type":"DT_FLOAT"}}},
+          {"name":"unknown_1","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"3"},{"size":"3"},{"size":"64"},{"size":"32"}]}}},"dtype":{"type":"DT_FLOAT"}}},
+          {"name":"unknown_2","op":"Const","attr":{"dtype":{"type":"DT_FLOAT"},"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"32"}]}}}}},
+          {"name":"unknown_3","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"3"},{"size":"3"},{"size":"32"},{"size":"16"}]}}},"dtype":{"type":"DT_FLOAT"}}},
+          {"name":"unknown_4","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"16"}]}}},"dtype":{"type":"DT_FLOAT"}}},
+          {"name":"StatefulPartitionedCall/sequential/flatten/Const","op":"Const","attr":{"dtype":{"type":"DT_INT32"},"value":{"tensor":{"dtype":"DT_INT32","tensorShape":{"dim":[{"size":"2"}]}}}}},
+          {"name":"unknown_5","op":"Const","attr":{"dtype":{"type":"DT_FLOAT"},"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"3136"},{"size":"128"}]}}}}},
+          {"name":"unknown_6","op":"Const","attr":{"dtype":{"type":"DT_FLOAT"},"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"128"}]}}}}},
+          {"name":"unknown_7","op":"Const","attr":{"dtype":{"type":"DT_FLOAT"},"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"128"},{"size":"1"}]}}}}},
+          {"name":"unknown_8","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"}]}}},"dtype":{"type":"DT_FLOAT"}}},
+          {"name":"conv2d_input","op":"Placeholder","attr":{"dtype":{"type":"DT_FLOAT"},"shape":{"shape":{"dim":[{"size":"-1"},{"size":"128"},{"size":"128"},{"size":"3"}]}}}},
+          {"name":"StatefulPartitionedCall/sequential/conv2d/BiasAdd","op":"_FusedConv2D","input":["conv2d_input","unknown","unknown_0"],"device":"/device:CPU:0","attr":{"padding":{"s":"VkFMSUQ="},"num_args":{"i":"1"},"explicit_paddings":{"list":{}},"use_cudnn_on_gpu":{"b":true},"strides":{"list":{"i":["1","1","1","1"]}},"T":{"type":"DT_FLOAT"},"data_format":{"s":"TkhXQw=="},"fused_ops":{"list":{"s":["Qmlhc0FkZA=="]}},"epsilon":{"f":0},"dilations":{"list":{"i":["1","1","1","1"]}}}},
+          {"name":"StatefulPartitionedCall/sequential/max_pooling2d/MaxPool","op":"MaxPool","input":["StatefulPartitionedCall/sequential/conv2d/BiasAdd"],"attr":{"ksize":{"list":{"i":["1","2","2","1"]}},"T":{"type":"DT_FLOAT"},"data_format":{"s":"TkhXQw=="},"strides":{"list":{"i":["1","2","2","1"]}},"padding":{"s":"VkFMSUQ="},"explicit_paddings":{"list":{}}}},
+          {"name":"StatefulPartitionedCall/sequential/activation/Relu","op":"Relu","input":["StatefulPartitionedCall/sequential/max_pooling2d/MaxPool"],"attr":{"T":{"type":"DT_FLOAT"}}},
+          {"name":"StatefulPartitionedCall/sequential/conv2d_1/BiasAdd","op":"_FusedConv2D","input":["StatefulPartitionedCall/sequential/activation/Relu","unknown_1","unknown_2"],"device":"/device:CPU:0","attr":{"epsilon":{"f":0},"strides":{"list":{"i":["1","1","1","1"]}},"fused_ops":{"list":{"s":["Qmlhc0FkZA=="]}},"T":{"type":"DT_FLOAT"},"dilations":{"list":{"i":["1","1","1","1"]}},"num_args":{"i":"1"},"use_cudnn_on_gpu":{"b":true},"padding":{"s":"VkFMSUQ="},"data_format":{"s":"TkhXQw=="},"explicit_paddings":{"list":{}}}},
+          {"name":"StatefulPartitionedCall/sequential/max_pooling2d_1/MaxPool","op":"MaxPool","input":["StatefulPartitionedCall/sequential/conv2d_1/BiasAdd"],"attr":{"T":{"type":"DT_FLOAT"},"strides":{"list":{"i":["1","2","2","1"]}},"padding":{"s":"VkFMSUQ="},"data_format":{"s":"TkhXQw=="},"ksize":{"list":{"i":["1","2","2","1"]}},"explicit_paddings":{"list":{}}}},
+          {"name":"StatefulPartitionedCall/sequential/activation_1/Relu","op":"Relu","input":["StatefulPartitionedCall/sequential/max_pooling2d_1/MaxPool"],"attr":{"T":{"type":"DT_FLOAT"}}},
+          {"name":"StatefulPartitionedCall/sequential/conv2d_2/BiasAdd","op":"_FusedConv2D","input":["StatefulPartitionedCall/sequential/activation_1/Relu","unknown_3","unknown_4"],"device":"/device:CPU:0","attr":{"strides":{"list":{"i":["1","1","1","1"]}},"data_format":{"s":"TkhXQw=="},"use_cudnn_on_gpu":{"b":true},"T":{"type":"DT_FLOAT"},"fused_ops":{"list":{"s":["Qmlhc0FkZA=="]}},"num_args":{"i":"1"},"explicit_paddings":{"list":{}},"epsilon":{"f":0},"padding":{"s":"VkFMSUQ="},"dilations":{"list":{"i":["1","1","1","1"]}}}},
+          {"name":"StatefulPartitionedCall/sequential/max_pooling2d_2/MaxPool","op":"MaxPool","input":["StatefulPartitionedCall/sequential/conv2d_2/BiasAdd"],"attr":{"data_format":{"s":"TkhXQw=="},"explicit_paddings":{"list":{}},"padding":{"s":"VkFMSUQ="},"strides":{"list":{"i":["1","2","2","1"]}},"ksize":{"list":{"i":["1","2","2","1"]}},"T":{"type":"DT_FLOAT"}}},
+          {"name":"StatefulPartitionedCall/sequential/activation_2/Relu","op":"Relu","input":["StatefulPartitionedCall/sequential/max_pooling2d_2/MaxPool"],"attr":{"T":{"type":"DT_FLOAT"}}},
+          {"name":"StatefulPartitionedCall/sequential/flatten/Reshape","op":"Reshape","input":["StatefulPartitionedCall/sequential/activation_2/Relu","StatefulPartitionedCall/sequential/flatten/Const"],"attr":{"T":{"type":"DT_FLOAT"},"Tshape":{"type":"DT_INT32"}}},
+          {"name":"StatefulPartitionedCall/sequential/activation_3/Relu","op":"_FusedMatMul","input":["StatefulPartitionedCall/sequential/flatten/Reshape","unknown_5","unknown_6"],"device":"/device:CPU:0","attr":{"num_args":{"i":"1"},"transpose_b":{"b":false},"fused_ops":{"list":{"s":["Qmlhc0FkZA==","UmVsdQ=="]}},"epsilon":{"f":0},"T":{"type":"DT_FLOAT"},"transpose_a":{"b":false}}},
+          {"name":"StatefulPartitionedCall/sequential/dense_1/BiasAdd","op":"_FusedMatMul","input":["StatefulPartitionedCall/sequential/activation_3/Relu","unknown_7","unknown_8"],"device":"/device:CPU:0","attr":{"transpose_b":{"b":false},"fused_ops":{"list":{"s":["Qmlhc0FkZA=="]}},"num_args":{"i":"1"},"T":{"type":"DT_FLOAT"},"epsilon":{"f":0},"transpose_a":{"b":false}}},
+          {"name":"StatefulPartitionedCall/sequential/activation_4/Sigmoid","op":"Sigmoid","input":["StatefulPartitionedCall/sequential/dense_1/BiasAdd"],"attr":{"T":{"type":"DT_FLOAT"}}},
+          {"name":"Identity","op":"Identity","input":["StatefulPartitionedCall/sequential/activation_4/Sigmoid"],"attr":{"T":{"type":"DT_FLOAT"}}}
+      ],
+      "library": {},
+      "versions":
+      {
+          "producer": 716
+      }
+  },
+  "weightsManifest":
+  [
+      {
+          "paths": ["antispoof.bin"],
+          "weights": [{"name":"unknown","shape":[3,3,3,64],"dtype":"float32","quantization":{"dtype":"float16","original_dtype":"float32"}},{"name":"unknown_0","shape":[64],"dtype":"float32","quantization":{"dtype":"float16","original_dtype":"float32"}},{"name":"unknown_1","shape":[3,3,64,32],"dtype":"float32","quantization":{"dtype":"float16","original_dtype":"float32"}},{"name":"unknown_2","shape":[32],"dtype":"float32","quantization":{"dtype":"float16","original_dtype":"float32"}},{"name":"unknown_3","shape":[3,3,32,16],"dtype":"float32","quantization":{"dtype":"float16","original_dtype":"float32"}},{"name":"unknown_4","shape":[16],"dtype":"float32","quantization":{"dtype":"float16","original_dtype":"float32"}},{"name":"StatefulPartitionedCall/sequential/flatten/Const","shape":[2],"dtype":"int32"},{"name":"unknown_5","shape":[3136,128],"dtype":"float32","quantization":{"dtype":"float16","original_dtype":"float32"}},{"name":"unknown_6","shape":[128],"dtype":"float32","quantization":{"dtype":"float16","original_dtype":"float32"}},{"name":"unknown_7","shape":[128,1],"dtype":"float32","quantization":{"dtype":"float16","original_dtype":"float32"}},{"name":"unknown_8","shape":[1],"dtype":"float32","quantization":{"dtype":"float16","original_dtype":"float32"}}]
+      }
+  ]
+}

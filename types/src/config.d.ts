@@ -34,6 +34,12 @@ export interface FaceEmotionConfig {
     skipFrames: number;
     modelPath: string;
 }
+/** Emotion part of face configuration */
+export interface FaceAntiSpoofConfig {
+    enabled: boolean;
+    skipFrames: number;
+    modelPath: string;
+}
 /** Controlls and configures all face-specific options:
  * - face detection, face mesh detection, age, gender, emotion detection and face description
  *
@@ -53,6 +59,7 @@ export interface FaceConfig {
     iris: Partial<FaceIrisConfig>;
     description: Partial<FaceDescriptionConfig>;
     emotion: Partial<FaceEmotionConfig>;
+    antispoof: Partial<FaceAntiSpoofConfig>;
 }
 /** Controlls and configures all body detection specific options
  *

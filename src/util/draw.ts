@@ -203,6 +203,7 @@ export async function face(inCanvas: HTMLCanvasElement | OffscreenCanvas, result
     if (f.genderScore) labels.push(`${f.gender || ''} ${Math.trunc(100 * f.genderScore)}%`);
     if (f.age) labels.push(`age: ${f.age || ''}`);
     if (f.iris) labels.push(`distance: ${f.iris}`);
+    if (f.real) labels.push(`Real: ${Math.trunc(100 * f.real)}%`);
     if (f.emotion && f.emotion.length > 0) {
       const emotion = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
       if (emotion.length > 3) emotion.length = 3;

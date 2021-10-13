@@ -9,8 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/12 mandic00@live.com
+### **HEAD -> main** 2021/10/13 mandic00@live.com
 
+- add node-match advanced example using worker thread pool
+- package updates
 - optimize image preprocessing
 
 ### **release: 2.3.2** 2021/10/11 mandic00@live.com

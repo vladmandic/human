@@ -1,1 +1,1 @@
-{"version":3,"file":"face.d.ts","sourceRoot":"","sources":["../../../src/face/face.ts"],"names":[],"mappings":"AAAA;;;GAGG;AAOH,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,WAAW,CAAC;AAC5C,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,eAAe,CAAC;AAG5C,eAAO,MAAM,UAAU,uBAAiD,MAAM,KAAG,QAAQ,UAAU,EAAE,CAqHpG,CAAC"}
+{"version":3,"file":"face.d.ts","sourceRoot":"","sources":["../../../src/face/face.ts"],"names":[],"mappings":"AAAA;;;GAGG;AAQH,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,WAAW,CAAC;AAC5C,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,eAAe,CAAC;AAG5C,eAAO,MAAM,UAAU,uBAAiD,MAAM,KAAG,QAAQ,UAAU,EAAE,CAmIpG,CAAC"}

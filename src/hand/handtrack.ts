@@ -196,9 +196,11 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
     return cache.hands; // return cached results without running anything
   }
   return new Promise(async (resolve) => {
-    if (config.skipFrame && skipped < 5 * (config.hand.skipFrames || 0) && cache.hands.length > 0) { // we have some cached results but although not sure if its enough we continute anyhow for bit longer
+    if (config.skipFrame && cache.hands.length === config.hand.maxDetected) { // we have all detected hands
       cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
-    } else {
+    } else if (config.skipFrame && skipped < 3 * (config.hand.skipFrames || 0) && cache.hands.length > 0) { // we have some cached results but although not sure if its enough we continute anyhow for bit longer
+      cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
+    } else { // finally rerun detector
       cache.boxes = await detectHands(input, config);
       cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
       skipped = 0;

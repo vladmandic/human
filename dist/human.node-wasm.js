@@ -9711,7 +9711,9 @@ async function predict9(input, config3) {
     return cache3.hands;
   }
   return new Promise(async (resolve) => {
-    if (config3.skipFrame && skipped9 < 5 * (config3.hand.skipFrames || 0) && cache3.hands.length > 0) {
+    if (config3.skipFrame && cache3.hands.length === config3.hand.maxDetected) {
+      cache3.hands = await Promise.all(cache3.boxes.map((handBox) => detectFingers(input, handBox, config3)));
+    } else if (config3.skipFrame && skipped9 < 3 * (config3.hand.skipFrames || 0) && cache3.hands.length > 0) {
       cache3.hands = await Promise.all(cache3.boxes.map((handBox) => detectFingers(input, handBox, config3)));
     } else {
       cache3.boxes = await detectHands(input, config3);

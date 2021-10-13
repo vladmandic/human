@@ -7,7 +7,9 @@
 ### Models
 
 - Optimize BlazePose
+- Add BlazePose heatmaps
 - Add Anti-Spoofing
+- Update NanoDet
 
 <br>
 

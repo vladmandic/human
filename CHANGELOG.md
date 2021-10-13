@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/10/12 mandic00@live.com
 
+- optimize image preprocessing
 
 ### **release: 2.3.2** 2021/10/11 mandic00@live.com
 

@@ -30,6 +30,7 @@ Experimental support only until support is officially added in Chromium
 
 - Optical Flow: <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
 - TFLite Models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
+- Histogram Equalization: Regular, Adaptive, Contrast Limited
 
 <br><hr><br>
 

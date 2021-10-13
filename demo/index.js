@@ -31,7 +31,6 @@ import jsonView from './helpers/jsonview.js';
 let human;
 
 let userConfig = {
-  face: { antispoof: { enabled: true } },
   // face: { enabled: false },
   // body: { enabled: false },
   // hand: { enabled: false },

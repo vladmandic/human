@@ -8,7 +8,6 @@
 
 - Optimize BlazePose
 - Add BlazePose heatmaps
-- Update NanoDet
 
 <br>
 

@@ -173,7 +173,7 @@ async function test(Human, inputConfig) {
   await human.load();
   const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
   const loaded = models.filter((model) => model.loaded);
-  if (models.length === 20 && loaded.length === 10) log('state', 'passed: models loaded', models.length, loaded.length, models);
+  if (models.length === 21 && loaded.length === 10) log('state', 'passed: models loaded', models.length, loaded.length, models);
   else log('error', 'failed: models loaded', models.length, loaded.length, models);
 
   // increase defaults

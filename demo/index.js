@@ -31,6 +31,7 @@ import jsonView from './helpers/jsonview.js';
 let human;
 
 let userConfig = {
+  face: { antispoof: { enabled: true } },
   // face: { enabled: false },
   // body: { enabled: false },
   // hand: { enabled: false },
@@ -609,6 +610,7 @@ async function processImage(input, title) {
       const prev = document.getElementsByClassName('thumbnail');
       if (prev && prev.length > 0) document.getElementById('samples-container').insertBefore(thumb, prev[0]);
       else document.getElementById('samples-container').appendChild(thumb);
+      document.getElementById('samples-container').style.display = 'block';
 
       // finish up
       status();

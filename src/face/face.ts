@@ -8,6 +8,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as facemesh from './facemesh';
 import * as emotion from '../gear/emotion';
 import * as faceres from './faceres';
+import * as antispoof from './antispoof';
 import type { FaceResult } from '../result';
 import type { Tensor } from '../tfjs/types';
 import { calculateFaceAngle } from './angles';
@@ -21,6 +22,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
   let genderRes;
   let emotionRes;
   let embeddingRes;
+  let antispoofRes;
   let descRes;
   const faceRes: Array<FaceResult> = [];
   parent.state = 'run:face';
@@ -55,6 +57,18 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     }
     parent.analyze('End Emotion:');
 
+    // run antispoof, inherits face from blazeface
+    parent.analyze('Start AntiSpoof:');
+    if (parent.config.async) {
+      antispoofRes = parent.config.face.antispoof.enabled ? antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+    } else {
+      parent.state = 'run:antispoof';
+      timeStamp = now();
+      antispoofRes = parent.config.face.antispoof.enabled ? await antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+      parent.performance.antispoof = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze('End AntiSpoof:');
+
     // run gear, inherits face from blazeface
     /*
     parent.analyze('Start GEAR:');
@@ -83,7 +97,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
 
     // if async wait for results
     if (parent.config.async) {
-      [ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes]);
+      [ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes]);
     }
 
     parent.analyze('Finish Face:');
@@ -115,6 +129,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       genderScore: descRes.genderScore,
       embedding: descRes.descriptor,
       emotion: emotionRes,
+      real: antispoofRes,
       iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,
       rotation,
       tensor,

@@ -31,7 +31,7 @@ export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
   if (!model) {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.face.iris?.modelPath || '')) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
+    if (!model || !model['modelUrl']) log('load model failed:', config.face.iris?.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
   inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;

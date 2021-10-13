@@ -68,7 +68,7 @@ export async function loadDetect(config: Config): Promise<GraphModel> {
     const inputs = Object.values(models[0].modelSignature['inputs']);
     inputSize[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models[0] || !models[0]['modelUrl']) log('load model failed:', config.object.modelPath);
+    if (!models[0] || !models[0]['modelUrl']) log('load model failed:', config.hand.detector?.modelPath);
     else if (config.debug) log('load model:', models[0]['modelUrl']);
   } else if (config.debug) log('cached model:', models[0]['modelUrl']);
   return models[0];
@@ -81,7 +81,7 @@ export async function loadSkeleton(config: Config): Promise<GraphModel> {
     const inputs = Object.values(models[1].modelSignature['inputs']);
     inputSize[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models[1] || !models[1]['modelUrl']) log('load model failed:', config.object.modelPath);
+    if (!models[1] || !models[1]['modelUrl']) log('load model failed:', config.hand.skeleton?.modelPath);
     else if (config.debug) log('load model:', models[1]['modelUrl']);
   } else if (config.debug) log('cached model:', models[1]['modelUrl']);
   return models[1];

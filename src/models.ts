@@ -2,25 +2,26 @@
  * Loader and Validator for all models used by Human
  */
 
+import { env } from './util/env';
 import { log } from './util/util';
-import type { GraphModel } from './tfjs/types';
+import * as agegenderrace from './gear/gear-agegenderrace';
+import * as antispoof from './face/antispoof';
 import * as blazeface from './face/blazeface';
-import * as facemesh from './face/facemesh';
-import * as iris from './face/iris';
-import * as faceres from './face/faceres';
+import * as blazepose from './body/blazepose';
+import * as centernet from './object/centernet';
+import * as efficientpose from './body/efficientpose';
 import * as emotion from './gear/emotion';
-import * as posenet from './body/posenet';
+import * as facemesh from './face/facemesh';
+import * as faceres from './face/faceres';
 import * as handpose from './handpose/handpose';
 import * as handtrack from './hand/handtrack';
-import * as blazepose from './body/blazepose';
-import * as efficientpose from './body/efficientpose';
+import * as iris from './face/iris';
 import * as movenet from './body/movenet';
 import * as nanodet from './object/nanodet';
-import * as centernet from './object/centernet';
+import * as posenet from './body/posenet';
 import * as segmentation from './segmentation/segmentation';
+import type { GraphModel } from './tfjs/types';
 import type { Human } from './human';
-import { env } from './util/env';
-import * as agegenderrace from './gear/gear-agegenderrace';
 
 /** Instances of all possible TFJS Graph Models used by Human
  * - loaded as needed based on configuration
@@ -49,6 +50,7 @@ export class Models {
   nanodet: null | GraphModel | Promise<GraphModel> = null;
   posenet: null | GraphModel | Promise<GraphModel> = null;
   segmentation: null | GraphModel | Promise<GraphModel> = null;
+  antispoof: null | GraphModel | Promise<GraphModel> = null;
 }
 
 export function reset(instance: Human): void {
@@ -66,6 +68,7 @@ export async function load(instance: Human): Promise<void> {
   if (instance.config.face.enabled && !instance.models.facedetect) instance.models.facedetect = blazeface.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.mesh?.enabled && !instance.models.facemesh) instance.models.facemesh = facemesh.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.iris?.enabled && !instance.models.faceiris) instance.models.faceiris = iris.load(instance.config);
+  if (instance.config.face.enabled && instance.config.face.antispoof?.enabled && !instance.models.antispoof) instance.models.antispoof = antispoof.load(instance.config);
   if (instance.config.hand.enabled && !instance.models.handtrack && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handtrack = handtrack.loadDetect(instance.config);
   if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handskeleton = handtrack.loadSkeleton(instance.config);
   if (instance.config.body.enabled && !instance.models.posenet && instance.config.body?.modelPath?.includes('posenet')) instance.models.posenet = posenet.load(instance.config);

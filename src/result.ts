@@ -29,6 +29,7 @@ export type Point = [number, number, number?];
  * - embedding: facial descriptor as array of numerical elements
  * - iris: iris distance from current viewpoint as distance value in centimeters for a typical camera
  *   field of view of 88 degrees. value should be adjusted manually as needed
+ * - real: anti-spoofing analysis to determine if face is real of fake
  * - rotation: face rotiation that contains both angles and matrix used for 3d transformations
  *  - angle: face angle as object with values for roll, yaw and pitch angles
  *  - matrix: 3d transofrmation matrix as array of numeric values
@@ -51,6 +52,7 @@ export interface FaceResult {
   emotion?: Array<{ score: number, emotion: string }>,
   embedding?: Array<number>,
   iris?: number,
+  real?: number,
   rotation?: {
     angle: { roll: number, yaw: number, pitch: number },
     matrix: [number, number, number, number, number, number, number, number, number],

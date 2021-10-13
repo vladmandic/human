@@ -42,6 +42,13 @@ export interface FaceEmotionConfig {
   modelPath: string,
 }
 
+/** Emotion part of face configuration */
+export interface FaceAntiSpoofConfig {
+  enabled: boolean,
+  skipFrames: number,
+  modelPath: string,
+}
+
 /** Controlls and configures all face-specific options:
  * - face detection, face mesh detection, age, gender, emotion detection and face description
  *
@@ -61,6 +68,7 @@ export interface FaceConfig {
   iris: Partial<FaceIrisConfig>,
   description: Partial<FaceDescriptionConfig>,
   emotion: Partial<FaceEmotionConfig>,
+  antispoof: Partial<FaceAntiSpoofConfig>,
 }
 
 /** Controlls and configures all body detection specific options
@@ -396,6 +404,14 @@ const config: Config = {
       skipFrames: 13,        // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
       minConfidence: 0.1,    // threshold for discarding a prediction
+    },
+
+    antispoof: {
+      enabled: false,
+      skipFrames: 14,        // how max many frames to go without re-running the detector
+                             // only used when cacheSensitivity is not zero
+      modelPath: 'antispoof.json',  // face description model
+                             // can be either absolute path or relative to modelBasePath
     },
   },
 

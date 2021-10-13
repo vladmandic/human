@@ -11,20 +11,21 @@ let records = 0;
 
 const descLength = 1024; // descriptor length in bytes
 
-function distance(descriptor1, index, options = { order: 2 }) {
+function distance(descBuffer, index, options = { order: 2 }) {
+  const descriptor = new Float32Array(descBuffer);
   let sum = 0;
-  for (let i = 0; i < descriptor1.length; i++) {
-    const diff = (options.order === 2) ? (descriptor1[i] - view[index * descLength + i]) : (Math.abs(descriptor1[i] - view[index * descLength + i]));
+  for (let i = 0; i < descriptor.length; i++) {
+    const diff = (options.order === 2) ? (descriptor[i] - view[index * descLength + i]) : (Math.abs(descriptor[i] - view[index * descLength + i]));
     sum += (options.order === 2) ? (diff * diff) : (diff ** options.order);
   }
   return sum;
 }
 
-function match(descriptor, options = { order: 2 }) {
+function match(descBuffer, options = { order: 2 }) {
   let best = Number.MAX_SAFE_INTEGER;
   let index = -1;
   for (let i = 0; i < records; i++) {
-    const res = distance(descriptor, i, { order: options.order });
+    const res = distance(descBuffer, i, { order: options.order });
     if (res < best) {
       best = res;
       index = i;

@@ -125,8 +125,12 @@ async function workersStart(numWorkers) {
 }
 
 const match = (descriptor) => {
+  // const arr = Float32Array.from(descriptor);
+  const buffer = new ArrayBuffer(options.descLength * 4);
+  const view = new Float32Array(buffer);
+  view.set(descriptor);
   const available = data.workers.filter((worker) => !!worker).length; // find number of available workers
-  if (available > 0) data.workers[data.requestID % available].postMessage({ descriptor, request: data.requestID }); // round robin to first available worker
+  if (available > 0) data.workers[data.requestID % available].postMessage({ descriptor: buffer, request: data.requestID }, [buffer]); // round robin to first available worker
   else log.error('no available workers');
 };
 

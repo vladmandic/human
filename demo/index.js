@@ -32,7 +32,7 @@ let human;
 
 let userConfig = {
   // face: { enabled: false },
-  // body: { enabled: false },
+  // body: { enabled: true },
   // hand: { enabled: false },
   /*
   warmup: 'none',

@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/10/13 mandic00@live.com
 
+- use transferrable buffer for worker messages
 - add optional anti-spoofing module
 - add node-match advanced example using worker thread pool
 - package updates

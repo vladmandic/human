@@ -8,6 +8,7 @@ import { log, join } from '../util/util';
 import * as box from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './movenetcoords';
+import * as fix from './movenetfix';
 import type { BodyKeypoint, BodyResult, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
@@ -16,18 +17,16 @@ import { env } from '../util/env';
 
 let model: GraphModel | null;
 let inputSize = 0;
-const boxExpandFact = 1.5; // increase to 150%
+let skipped = Number.MAX_SAFE_INTEGER;
+// const boxExpandFact = 1.5; // increase to 150%
 
 const cache: {
-  boxes: Array<Box>,
+  boxes: Array<Box>, // unused
   bodies: Array<BodyResult>;
 } = {
   boxes: [],
   bodies: [],
 };
-
-let skipped = Number.MAX_SAFE_INTEGER;
-const keypoints: Array<BodyKeypoint> = [];
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
@@ -42,23 +41,9 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-function fixSides() { // model sometimes mixes up left vs right keypoints so we fix them
-  for (const pair of coords.pairs) {
-    let left = keypoints.find((kp) => kp.part === pair[0]);
-    let right = keypoints.find((kp) => kp.part === pair[1]);
-    if (left && right) {
-      if (left.position[0] > right.position[0]) {
-        const tmp = left;
-        left = right;
-        right = tmp;
-      }
-    }
-  }
-}
-
 async function parseSinglePose(res, config, image, inputBox) {
   const kpt = res[0][0];
-  keypoints.length = 0;
+  const keypoints: Array<BodyKeypoint> = [];
   let score = 0;
   for (let id = 0; id < kpt.length; id++) {
     score = kpt[id][2];
@@ -78,7 +63,6 @@ async function parseSinglePose(res, config, image, inputBox) {
       });
     }
   }
-  fixSides();
   score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
   const bodies: Array<BodyResult> = [];
   const newBox = box.calc(keypoints.map((pt) => pt.position), [image.shape[2], image.shape[1]]);
@@ -92,7 +76,9 @@ async function parseSinglePose(res, config, image, inputBox) {
     }
     annotations[name] = pt;
   }
-  bodies.push({ id: 0, score, box: newBox.box, boxRaw: newBox.boxRaw, keypoints, annotations });
+  const body: BodyResult = { id: 0, score, box: newBox.box, boxRaw: newBox.boxRaw, keypoints, annotations };
+  fix.bodyParts(body);
+  bodies.push(body);
   return bodies;
 }
 
@@ -102,7 +88,7 @@ async function parseMultiPose(res, config, image, inputBox) {
     const kpt = res[0][id];
     const totalScore = Math.round(100 * kpt[51 + 4]) / 100;
     if (totalScore > config.body.minConfidence) {
-      keypoints.length = 0;
+      const keypoints: Array<BodyKeypoint> = [];
       for (let i = 0; i < 17; i++) {
         const score = kpt[3 * i + 2];
         if (score > config.body.minConfidence) {
@@ -118,7 +104,6 @@ async function parseMultiPose(res, config, image, inputBox) {
           });
         }
       }
-      fixSides();
       const newBox = box.calc(keypoints.map((pt) => pt.position), [image.shape[2], image.shape[1]]);
       // movenet-multipose has built-in box details
       // const boxRaw: Box = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
@@ -133,7 +118,9 @@ async function parseMultiPose(res, config, image, inputBox) {
         }
         annotations[name] = pt;
       }
-      bodies.push({ id, score: totalScore, box: newBox.box, boxRaw: newBox.boxRaw, keypoints: [...keypoints], annotations });
+      const body: BodyResult = { id, score: totalScore, box: newBox.box, boxRaw: newBox.boxRaw, keypoints: [...keypoints], annotations };
+      fix.bodyParts(body);
+      bodies.push(body);
     }
   }
   bodies.sort((a, b) => b.score - a.score);
@@ -158,11 +145,14 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
   return new Promise(async (resolve) => {
     const t: Record<string, Tensor> = {};
     skipped = 0;
+    // run detection on squared input and cached boxes
+    /*
     cache.bodies = []; // reset bodies result
     if (cache.boxes.length >= (config.body.maxDetected || 0)) { // if we have enough cached boxes run detection using cache
       for (let i = 0; i < cache.boxes.length; i++) { // run detection based on cached boxes
         t.crop = tf.image.cropAndResize(input, [cache.boxes[i]], [0], [inputSize, inputSize], 'bilinear');
         t.cast = tf.cast(t.crop, 'int32');
+        // t.input = prepareImage(input);
         t.res = await model?.predict(t.cast) as Tensor;
         const res = await t.res.array();
         const newBodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, cache.boxes[i]) : await parseMultiPose(res, config, input, cache.boxes[i]);
@@ -171,11 +161,11 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
       }
     }
     if (cache.bodies.length !== config.body.maxDetected) { // did not find enough bodies based on cached boxes so run detection on full frame
-      t.resized = tf.image.resizeBilinear(input, [inputSize, inputSize], false);
-      t.cast = tf.cast(t.resized, 'int32');
-      t.res = await model?.predict(t.cast) as Tensor;
+      t.input = prepareImage(input);
+      t.res = await model?.predict(t.input) as Tensor;
       const res = await t.res.array();
       cache.bodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, [0, 0, 1, 1]) : await parseMultiPose(res, config, input, [0, 0, 1, 1]);
+      for (const body of cache.bodies) rescaleBody(body, [input.shape[2] || 1, input.shape[1] || 1]);
       Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
     }
     cache.boxes.length = 0; // reset cache
@@ -186,6 +176,21 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
         cache.boxes.push(cropBox);
       }
     }
+    */
+
+    // run detection on squared input and no cached boxes
+    t.input = fix.padInput(input, inputSize);
+    t.res = await model?.predict(t.input) as Tensor;
+    const res = await t.res.array();
+    cache.bodies = (t.res.shape[2] === 17)
+      ? await parseSinglePose(res, config, input, [0, 0, 1, 1])
+      : await parseMultiPose(res, config, input, [0, 0, 1, 1]);
+    for (const body of cache.bodies) {
+      fix.rescaleBody(body, [input.shape[2] || 1, input.shape[1] || 1]);
+      fix.jitter(body.keypoints);
+    }
+    Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
+
     resolve(cache.bodies);
   });
 }

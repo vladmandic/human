@@ -6,9 +6,6 @@
 
 ### Models
 
-- Optimize BlazePose
-- Add BlazePose heatmaps
-
 <br>
 
 ### Backends

@@ -72434,22 +72434,26 @@ function rescaleKeypoints(keypoints, outputSize2) {
   }
   return keypoints;
 }
+var sigmoid6 = (x) => 1 - 1 / (1 + Math.exp(x));
 async function detectParts(input2, config3, outputSize2) {
   var _a;
   const t = {};
   t.input = await prepareImage(input2);
   [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = await ((_a = models[1]) == null ? void 0 : _a.execute(t.input, outputNodes));
+  const poseScoreRaw = (await t.poseflag.data())[0];
+  const poseScore = Math.max(0, (poseScoreRaw - 0.8) / (1 - 0.8));
   const points = await t.ld.data();
   const keypointsRelative = [];
   const depth = 5;
   for (let i = 0; i < points.length / depth; i++) {
-    const score = (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100;
+    const score = sigmoid6(points[depth * i + 3]);
+    const presence = sigmoid6(points[depth * i + 4]);
+    const adjScore = Math.trunc(100 * score * presence * poseScore) / 100;
     const positionRaw = [points[depth * i + 0] / inputSize2[1][0], points[depth * i + 1] / inputSize2[1][1], points[depth * i + 2] + 0];
     const position = [Math.trunc(outputSize2[0] * positionRaw[0]), Math.trunc(outputSize2[1] * positionRaw[1]), positionRaw[2]];
-    keypointsRelative.push({ part: kpt[i], positionRaw, position, score });
+    keypointsRelative.push({ part: kpt[i], positionRaw, position, score: adjScore });
   }
-  const avgScore = Math.round(100 * keypointsRelative.reduce((prev, curr) => prev += curr.score, 0) / keypointsRelative.length) / 100;
-  if (avgScore < (config3.body.minConfidence || 0))
+  if (poseScore < (config3.body.minConfidence || 0))
     return null;
   const keypoints = rescaleKeypoints(keypointsRelative, outputSize2);
   const boxes = calculateBoxes(keypoints, [outputSize2[0], outputSize2[1]]);
@@ -72465,11 +72469,12 @@ async function detectParts(input2, config3, outputSize2) {
     }
     annotations2[name] = pt;
   }
-  return { id: 0, score: avgScore, box: boxes.keypointsBox, boxRaw: boxes.keypointsBoxRaw, keypoints, annotations: annotations2 };
+  const body4 = { id: 0, score: Math.trunc(100 * poseScore) / 100, box: boxes.keypointsBox, boxRaw: boxes.keypointsBoxRaw, keypoints, annotations: annotations2 };
+  return body4;
 }
 async function predict2(input2, config3) {
   const outputSize2 = [input2.shape[2] || 0, input2.shape[1] || 0];
-  if (skipped3 < (config3.body.skipFrames || 0) && config3.skipFrame) {
+  if (skipped3 < (config3.body.skipFrames || 0) && config3.skipFrame && cache !== null) {
     skipped3++;
   } else {
     cache = await detectParts(input2, config3, outputSize2);

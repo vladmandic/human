@@ -31,9 +31,9 @@ import jsonView from './helpers/jsonview.js';
 let human;
 
 let userConfig = {
-  // face: { enabled: false },
-  // body: { enabled: true },
-  // hand: { enabled: false },
+  face: { enabled: false },
+  body: { enabled: true, modelPath: '../../human-models/models/blazepose-lite.json' },
+  hand: { enabled: false },
   /*
   warmup: 'none',
   backend: 'humangl',

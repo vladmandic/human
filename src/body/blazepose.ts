@@ -56,25 +56,6 @@ function calculateBoxes(keypoints: Array<BodyKeypoint>, outputSize: [number, num
   const y = keypoints.map((a) => a.position[1]);
   const keypointsBox: Box = [Math.min(...x), Math.min(...y), Math.max(...x) - Math.min(...x), Math.max(...y) - Math.min(...y)];
   const keypointsBoxRaw: Box = [keypointsBox[0] / outputSize[0], keypointsBox[1] / outputSize[1], keypointsBox[2] / outputSize[0], keypointsBox[3] / outputSize[1]];
-  /*
-   const leftShoulder = keypoints.find((kpt) => kpt.part === 'leftShoulder');
-   const rightShoulder = keypoints.find((kpt) => kpt.part === 'rightShoulder');
-   if (!leftShoulder || !rightShoulder || !config.skipFrame) { // reset cache box coords
-     cache.box = [0, 0, 1, 1];
-     cache.boxRaw = cache.box;
-   } else { // recalculate cache box coords
-     const size = [leftShoulder.position[0] - rightShoulder.position[0], leftShoulder.position[1] - rightShoulder.position[1]];
-     const shoulderWidth = Math.sqrt((size[0] * size[0]) + (size[1] * size[1])); // distance between left and right shoulder
-     const shoulderCenter: Point = [(leftShoulder.position[0] + rightShoulder.position[0]) / 2, (leftShoulder.position[1] + rightShoulder.position[1]) / 2]; // center point between left and right shoulder
-     const bodyCenter: Point = [shoulderCenter[0], shoulderCenter[0] + (shoulderWidth), 0]; // approximate center of the body
-     const bodyCenterRaw: Point = [bodyCenter[0] / outputSize[0], bodyCenter[1] / outputSize[1], 0];
-     const bodyCenterKpt: Keypoint = { part: 'bodyCenter', positionRaw: bodyCenterRaw, position: bodyCenter, score: 1 }; // add virtual keypoint
-     keypoints.push(bodyCenterKpt);
-     const scaleFact = 2.5;
-     cache.box = [Math.trunc(bodyCenter[0] - (scaleFact * shoulderWidth)), Math.trunc(bodyCenter[1] - (scaleFact * shoulderWidth)), Math.trunc(2 * scaleFact * shoulderWidth), Math.trunc(2 * scaleFact * shoulderWidth)];
-     cache.boxRaw = [cache.box[0] / outputSize[0], cache.box[1] / outputSize[1], cache.box[2] / outputSize[0], cache.box[3] / outputSize[1]];
-   }
-   */
   return { keypointsBox, keypointsBoxRaw };
 }
 
@@ -108,23 +89,33 @@ function rescaleKeypoints(keypoints: Array<BodyKeypoint>, outputSize: [number, n
   return keypoints;
 }
 
+const sigmoid = (x) => (1 - (1 / (1 + Math.exp(x))));
+
 async function detectParts(input: Tensor, config: Config, outputSize: [number, number]): Promise<BodyResult | null> {
   const t: Record<string, Tensor> = {};
   t.input = await prepareImage(input);
-  [t.ld/* 1,195 */, t.segmentation/* 1,256,256,1 */, t.heatmap/* 1,64,64,39 */, t.world/* 1,117 */, t.poseflag/* 1,1 */] = await models[1]?.execute(t.input, outputNodes) as Tensor[]; // run model
+  /**
+   * t.ld: 39 keypoints [x,y,z,score,presence] normalized to input size
+   * t.segmentation:
+   * t.heatmap:
+   * t.world: 39 keypoints [x,y,z] normalized to -1..1
+   * t.poseflag: body score
+   */
+  [t.ld/* 1,195(39*5) */, t.segmentation/* 1,256,256,1 */, t.heatmap/* 1,64,64,39 */, t.world/* 1,117(39*3) */, t.poseflag/* 1,1 */] = await models[1]?.execute(t.input, outputNodes) as Tensor[]; // run model
+  const poseScoreRaw = (await t.poseflag.data())[0];
+  const poseScore = Math.max(0, (poseScoreRaw - 0.8) / (1 - 0.8)); // blow up score variance 5x
   const points = await t.ld.data();
   const keypointsRelative: Array<BodyKeypoint> = [];
   const depth = 5; // each points has x,y,z,visibility,presence
   for (let i = 0; i < points.length / depth; i++) {
-    const score = (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 3])))) / 100; // normally this is from tf.sigmoid but no point of running sigmoid on full array which has coords as well
-    // const presence = (100 - Math.trunc(100 / (1 + Math.exp(points[depth * i + 4])))) / 100; // reverse sigmoid value
+    const score = sigmoid(points[depth * i + 3]);
+    const presence = sigmoid(points[depth * i + 4]);
+    const adjScore = Math.trunc(100 * score * presence * poseScore) / 100;
     const positionRaw: Point = [points[depth * i + 0] / inputSize[1][0], points[depth * i + 1] / inputSize[1][1], points[depth * i + 2] + 0];
     const position: Point = [Math.trunc(outputSize[0] * positionRaw[0]), Math.trunc(outputSize[1] * positionRaw[1]), positionRaw[2] as number];
-    // if (positionRaw[0] < 0 || positionRaw[1] < 0 || positionRaw[0] > 1 || positionRaw[1] > 1) score = 0;
-    keypointsRelative.push({ part: coords.kpt[i], positionRaw, position, score });
+    keypointsRelative.push({ part: coords.kpt[i], positionRaw, position, score: adjScore });
   }
-  const avgScore = Math.round(100 * keypointsRelative.reduce((prev, curr) => prev += curr.score, 0) / keypointsRelative.length) / 100; // average score of keypoints
-  if (avgScore < (config.body.minConfidence || 0)) return null;
+  if (poseScore < (config.body.minConfidence || 0)) return null;
   const keypoints: Array<BodyKeypoint> = rescaleKeypoints(keypointsRelative, outputSize); // keypoints were relative to input image which is cropped
   const boxes = calculateBoxes(keypoints, [outputSize[0], outputSize[1]]); // now find boxes based on rescaled keypoints
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
@@ -138,17 +129,13 @@ async function detectParts(input: Tensor, config: Config, outputSize: [number, n
     }
     annotations[name] = pt;
   }
-  return { id: 0, score: avgScore, box: boxes.keypointsBox, boxRaw: boxes.keypointsBoxRaw, keypoints, annotations };
+  const body = { id: 0, score: Math.trunc(100 * poseScore) / 100, box: boxes.keypointsBox, boxRaw: boxes.keypointsBoxRaw, keypoints, annotations };
+  return body;
 }
 
 export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
-  /** blazepose caching
-   * not fully implemented
-   * 1. if skipFrame returned cached
-   * 2. run detection based on squared full frame
-   */
   const outputSize: [number, number] = [input.shape[2] || 0, input.shape[1] || 0];
-  if ((skipped < (config.body.skipFrames || 0)) && config.skipFrame) {
+  if ((skipped < (config.body.skipFrames || 0)) && config.skipFrame && cache !== null) {
     skipped++;
   } else {
     cache = await detectParts(input, config, outputSize);

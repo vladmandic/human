@@ -9,7 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/13 mandic00@live.com
+### **HEAD -> main** 2021/10/15 mandic00@live.com
+
+- remove handdetect from default package
+- remove posenet from default package
+
+### **origin/main** 2021/10/14 mandic00@live.com
 
 - use transferrable buffer for worker messages
 - add optional anti-spoofing module

@@ -58,13 +58,13 @@ async function main() {
   log.info('Memory state:', human.tf.engine().memory());
   const tensor = await getImage(human);
   log.state('Processing:', tensor['shape']);
-  const t0 = performance.now();
+  const t0 = human.now();
   await human.detect(tensor, myConfig);
-  const t1 = performance.now();
+  const t1 = human.now();
   log.state('Backend:', human.tf.getBackend());
   log.data('Warmup:', Math.round(t1 - t0));
   for (let i = 0; i < loop; i++) await human.detect(tensor, myConfig);
-  const t2 = performance.now();
+  const t2 = human.now();
   log.data('Average:', Math.round((t2 - t1) / loop));
 }
 

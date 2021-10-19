@@ -162,7 +162,7 @@ export function calc(newResult: Result, config: Config): Result {
   if (newResult.gesture) bufferedResult.gesture = newResult.gesture as GestureResult[];
 
   // append interpolation performance data
-  const t1 = performance.now();
+  const t1 = now();
   if (newResult.performance) bufferedResult.performance = { ...newResult.performance, interpolate: Math.round(t1 - t0) };
 
   return bufferedResult;

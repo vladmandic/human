@@ -9,10 +9,13 @@
   
 ## Changelog
   
+### **2.3.5** 2021/10/19 mandic00@live.com
+
+
+### **origin/main** 2021/10/19 snaggadhagga@gmail.com
+
+
 ### **2.3.4** 2021/10/19 mandic00@live.com
-
-
-### **origin/main** 2021/10/19 mandic00@live.com
 
 - minor blazepose optimizations
 - compress samples

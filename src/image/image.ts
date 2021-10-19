@@ -7,7 +7,7 @@ import * as fxImage from './imagefx';
 import type { Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
-import { log } from '../util/util';
+import { log, now } from '../util/util';
 
 export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.Canvas;
 
@@ -229,11 +229,11 @@ const checksum = async (input: Tensor): Promise<number> => { // use tf sum or js
     return sum0;
   };
   if (benchmarked === 0) {
-    const t0 = performance.now();
+    const t0 = now();
     await jsSum();
-    const t1 = performance.now();
+    const t1 = now();
     await tfSum();
-    const t2 = performance.now();
+    const t2 = now();
     benchmarked = t1 - t0 < t2 - t1 ? 1 : 2;
   }
   const res = benchmarked === 1 ? await jsSum() : await tfSum();

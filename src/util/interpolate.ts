@@ -8,11 +8,12 @@ import type { Config } from '../config';
 import * as moveNetCoords from '../body/movenetcoords';
 import * as blazePoseCoords from '../body/blazeposecoords';
 import * as efficientPoseCoords from '../body/efficientposecoords';
+import { now } from './util';
 
 const bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 
 export function calc(newResult: Result, config: Config): Result {
-  const t0 = performance.now();
+  const t0 = now();
   if (!newResult) return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
   // each record is only updated using deep clone when number of detected record changes, otherwise it will converge by itself
   // otherwise bufferedResult is a shallow clone of result plus updated local calculated values

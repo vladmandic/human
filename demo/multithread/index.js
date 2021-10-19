@@ -155,8 +155,6 @@ async function runDetection() {
     bench.begin();
   }
   const ctx = canvas.getContext('2d');
-  // const image = await human.image(video);
-  // ctx.drawImage(image.canvas, 0, 0, canvas.width, canvas.height);
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   if (!busy.face) {
@@ -197,7 +195,6 @@ async function setupCamera() {
       facingMode: 'user',
       resizeMode: 'crop-and-scale',
       width: { ideal: document.body.clientWidth },
-      // height: { ideal: document.body.clientHeight }, // not set as we're using aspectRation to get height instead
       aspectRatio: document.body.clientWidth / document.body.clientHeight,
     },
   };

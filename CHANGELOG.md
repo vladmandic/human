@@ -1,4 +1,4 @@
-# packageJson  
+#   
 
   Version: **undefined**  
   Description: **undefined**  
@@ -11,11 +11,10 @@
   
 ### **HEAD -> main** 2021/10/15 mandic00@live.com
 
+- compress samples
 - remove handdetect from default package
 - remove posenet from default package
-
-### **origin/main** 2021/10/14 mandic00@live.com
-
+- enhanced movenet postprocessing
 - use transferrable buffer for worker messages
 - add optional anti-spoofing module
 - add node-match advanced example using worker thread pool

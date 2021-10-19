@@ -260,6 +260,11 @@ export class Human {
   public distance = match.distance;
   public match = match.match;
 
+  /** Utility wrapper for performance.now() */
+  now(): number {
+    return now();
+  }
+
   /** Process input as return canvas and tensor
    *
    * @param input: {@link Input}

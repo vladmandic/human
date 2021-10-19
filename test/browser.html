@@ -114,7 +114,7 @@
           res = await human.warmup({ warmup: 'face'});
           draw(res.canvas);
           log({ warmup: 'face' });
-          let img = await image('../../samples/ai-body.jpg');
+          let img = await image('../../samples/in/ai-body.jpg');
           const input = await human.image(img);
           log({ input: input.tensor.shape });
           draw(res.canvas);
@@ -129,7 +129,7 @@
           human.tf.dispose(input.tensor);
           draw();
 
-          img = await image('../../samples/ai-face.jpg');
+          img = await image('../../samples/in/ai-face.jpg');
           for (const val of [0, 0.25, 0.5, 0.75, 10]) {
             human.performance = {};
             const t0 = performance.now();

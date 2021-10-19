@@ -118,10 +118,10 @@ async function SelectFaceCanvas(face) {
     ctx.fillText(`${current.age}y ${(100 * (current.genderScore || 0)).toFixed(1)}% ${current.gender}`, 4, canvas.height - 6);
     // identify person
     ctx.font = 'small-caps 1rem "Lato"';
-    const start = performance.now();
+    const start = human.now();
     const arr = db.map((rec) => rec.embedding);
     const res = await human.match(current.embedding, arr);
-    time += (performance.now() - start);
+    time += (human.now() - start);
     if (res.similarity > minScore) ctx.fillText(`DB: ${(100 * res.similarity).toFixed(1)}% ${db[res.index].name}`, 4, canvas.height - 30);
   }
 

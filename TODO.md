@@ -2,9 +2,13 @@
 
 ## Work in Progress
 
+- Switch to custom `tfjs` for main `human` ESM bundle
+
 <br>
 
 ### Models
+
+- Body segmentation: `robust-video-matting`
 
 <br>
 
@@ -66,3 +70,12 @@ Object detection using CenterNet or NanoDet models is not working when using WAS
   <https://github.com/tensorflow/tfjs/issues/5110>  
 - Backend WASM missing kernel op `SparseToDense`  
   <https://github.com/tensorflow/tfjs/issues/4824>  
+
+<br><hr><br>
+
+## Pending Release
+
+- Enhanced **MoveNet** post-processing
+- Add optional **Anti-Spoof** module
+- Remove old **HandDetect** and **PoseNet** models from default installation
+- Refactor **ImageFX** module

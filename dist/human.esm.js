@@ -67732,7 +67732,7 @@ var version92 = {
 };
 
 // package.json
-var version6 = "2.3.3";
+var version6 = "2.3.4";
 
 // src/image/imagefxshaders.ts
 var vertexIdentity = `

@@ -9,8 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/15 mandic00@live.com
+### **2.3.4** 2021/10/19 mandic00@live.com
 
+
+### **origin/main** 2021/10/19 mandic00@live.com
+
+- minor blazepose optimizations
 - compress samples
 - remove handdetect from default package
 - remove posenet from default package

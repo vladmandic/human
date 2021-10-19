@@ -243,7 +243,7 @@ var version9 = {
 };
 
 // package.json
-var version10 = "2.3.3";
+var version10 = "2.3.4";
 
 // src/image/imagefxshaders.ts
 var vertexIdentity = `

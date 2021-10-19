@@ -257,7 +257,7 @@ var config = {
 var tf28 = __toModule(require_tfjs_esm());
 
 // package.json
-var version = "2.3.3";
+var version = "2.3.4";
 
 // src/tfjs/humangl.ts
 var tf24 = __toModule(require_tfjs_esm());

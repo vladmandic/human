@@ -257,7 +257,7 @@ var config = {
 var tf28 = __toModule(require_tfjs_esm());
 
 // package.json
-var version = "2.3.4";
+var version = "2.3.5";
 
 // src/tfjs/humangl.ts
 var tf24 = __toModule(require_tfjs_esm());
@@ -1241,11 +1241,11 @@ var checksum = async (input) => {
     return sum0;
   };
   if (benchmarked === 0) {
-    const t0 = performance.now();
+    const t0 = now();
     await jsSum();
-    const t1 = performance.now();
+    const t1 = now();
     await tfSum();
-    const t2 = performance.now();
+    const t2 = now();
     benchmarked = t1 - t0 < t2 - t1 ? 1 : 2;
   }
   const res = benchmarked === 1 ? await jsSum() : await tfSum();
@@ -11678,7 +11678,7 @@ var hand2 = (res) => {
 var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
 function calc2(newResult, config3) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A;
-  const t0 = performance.now();
+  const t0 = now();
   if (!newResult)
     return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
   const elapsed = Date.now() - newResult.timestamp;
@@ -11785,7 +11785,7 @@ function calc2(newResult, config3) {
   }
   if (newResult.gesture)
     bufferedResult.gesture = newResult.gesture;
-  const t1 = performance.now();
+  const t1 = now();
   if (newResult.performance)
     bufferedResult.performance = { ...newResult.performance, interpolate: Math.round(t1 - t0) };
   return bufferedResult;
@@ -12810,6 +12810,9 @@ var Human = class {
   }
   validate(userConfig) {
     return validate(config, userConfig || this.config);
+  }
+  now() {
+    return now();
   }
   image(input, getTensor = true) {
     return process2(input, this.config, getTensor);

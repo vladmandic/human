@@ -153,6 +153,8 @@ export declare class Human {
     similarity: typeof match.similarity;
     distance: typeof match.distance;
     match: typeof match.match;
+    /** Utility wrapper for performance.now() */
+    now(): number;
     /** Process input as return canvas and tensor
      *
      * @param input: {@link Input}

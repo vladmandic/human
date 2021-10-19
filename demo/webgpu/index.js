@@ -140,10 +140,10 @@ function log(...msg) {
 }
 
 async function drawResults() {
-  start.draw = performance.now();
+  start.draw = human.now();
   const interpolated = human.next(result);
   await human.draw.all(canvas, interpolated);
-  time.draw = Math.round(1 + performance.now() - start.draw);
+  time.draw = Math.round(1 + human.now() - start.draw);
   const fps = Math.round(10 * 1000 / time.main) / 10;
   const draw = Math.round(10 * 1000 / time.draw) / 10;
   document.getElementById('log').innerText = `Human: version ${human.version} | Performance: Main ${time.main}ms Face: ${time.face}ms Body: ${time.body}ms Hand: ${time.hand}ms Object ${time.object}ms | FPS: ${fps} / ${draw}`;
@@ -153,11 +153,11 @@ async function drawResults() {
 async function receiveMessage(msg) {
   result[msg.data.type] = msg.data.result;
   busy[msg.data.type] = false;
-  time[msg.data.type] = Math.round(performance.now() - start[msg.data.type]);
+  time[msg.data.type] = Math.round(human.now() - start[msg.data.type]);
 }
 
 async function runDetection() {
-  start.main = performance.now();
+  start.main = human.now();
   if (!bench) {
     bench = new GLBench(null, { trackGPU: false, chartHz: 20, chartLen: 20 });
     bench.begin();
@@ -169,26 +169,26 @@ async function runDetection() {
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   if (!busy.face) {
     busy.face = true;
-    start.face = performance.now();
+    start.face = human.now();
     workers.face.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.face, type: 'face' }, [imageData.data.buffer.slice(0)]);
   }
   if (!busy.body) {
     busy.body = true;
-    start.body = performance.now();
+    start.body = human.now();
     workers.body.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.body, type: 'body' }, [imageData.data.buffer.slice(0)]);
   }
   if (!busy.hand) {
     busy.hand = true;
-    start.hand = performance.now();
+    start.hand = human.now();
     workers.hand.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.hand, type: 'hand' }, [imageData.data.buffer.slice(0)]);
   }
   if (!busy.object) {
     busy.object = true;
-    start.object = performance.now();
+    start.object = human.now();
     workers.object.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.object, type: 'object' }, [imageData.data.buffer.slice(0)]);
   }
 
-  time.main = Math.round(performance.now() - start.main);
+  time.main = Math.round(human.now() - start.main);
 
   bench.nextFrame();
   requestAnimationFrame(runDetection);

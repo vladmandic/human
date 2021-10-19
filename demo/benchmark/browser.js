@@ -38,13 +38,13 @@ async function main() {
   log('Memory state:', human.tf.engine().memory());
   const element = document.getElementById('image');
   const processed = await human.image(element);
-  const t0 = performance.now();
+  const t0 = human.now();
   await human.detect(processed.tensor, myConfig);
-  const t1 = performance.now();
+  const t1 = human.now();
   log('Backend:', human.tf.getBackend());
   log('Warmup:', Math.round(t1 - t0));
   for (let i = 0; i < loop; i++) await human.detect(processed.tensor, myConfig);
-  const t2 = performance.now();
+  const t2 = human.now();
   log('Average:', Math.round((t2 - t1) / loop));
 }
 

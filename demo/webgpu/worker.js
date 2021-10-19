@@ -1,8 +1,8 @@
 /// <reference lib="webworker" />
 
 // import Human from '../../dist/human.esm'; // load Human using IIFE script as Chome Mobile does not support Modules as Workers
-self.importScripts('../../assets/tf.es2017.js');
-self.importScripts('../../assets/tf-backend-webgpu.es2017.js');
+// self.importScripts('../../assets/tf.es2017.js');
+// self.importScripts('../../assets/tf-backend-webgpu.es2017.js');
 self.importScripts('../../dist/human.js');
 
 let human;

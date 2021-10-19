@@ -236,16 +236,16 @@ const isLive = (input) => {
 };
 
 // draws processed results and starts processing of a next frame
-let lastDraw = performance.now();
+let lastDraw = 0;
 async function drawResults(input) {
   // await delay(25);
   const result = lastDetectedResult;
   const canvas = document.getElementById('canvas');
 
   // update draw fps data
-  ui.drawFPS.push(1000 / (performance.now() - lastDraw));
+  ui.drawFPS.push(1000 / (human.now() - lastDraw));
   if (ui.drawFPS.length > ui.maxFPSframes) ui.drawFPS.shift();
-  lastDraw = performance.now();
+  lastDraw = human.now();
 
   // draw fps chart
   await menu.process.updateChart('FPS', ui.detectFPS);
@@ -323,7 +323,7 @@ async function drawResults(input) {
     ${warning}<br>
   `;
   ui.framesDraw++;
-  ui.lastFrame = performance.now();
+  ui.lastFrame = human.now();
   // if buffered, immediate loop but limit frame rate although it's going to run slower as JS is singlethreaded
   if (ui.buffered) {
     if (isLive(input)) {

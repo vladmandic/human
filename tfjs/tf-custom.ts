@@ -3,4 +3,4 @@
  * @external
  */
 
-export * from '../assets/tfjs.esm.js';
+export * from '../../tfjs/dist/tfjs.esm';

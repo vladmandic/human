@@ -219,6 +219,11 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
         }
       }
     }
+    for (let i = 0; i < cache.hands.length; i++) { // replace deteced boxes with calculated boxes in final output
+      const bbox = box.calc(cache.hands[i].keypoints, outputSize);
+      cache.hands[i].box = bbox.box;
+      cache.hands[i].boxRaw = bbox.boxRaw;
+    }
     resolve(cache.hands);
   });
 }

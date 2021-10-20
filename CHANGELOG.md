@@ -9,11 +9,12 @@
   
 ## Changelog
   
+### **HEAD -> main** 2021/10/19 mandic00@live.com
+
+
 ### **2.3.5** 2021/10/19 mandic00@live.com
 
-
-### **origin/main** 2021/10/19 snaggadhagga@gmail.com
-
+- removed direct usage of performance.now
 
 ### **2.3.4** 2021/10/19 mandic00@live.com
 

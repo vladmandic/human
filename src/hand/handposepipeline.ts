@@ -4,9 +4,8 @@
  */
 
 import * as tf from '../../dist/tfjs.esm.js';
-import * as box from './box';
-import * as util from './util';
-import type * as detector from './handdetector';
+import * as util from './handposeutil';
+import type * as detector from './handposedetector';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import { env } from '../util/env';
 
@@ -45,12 +44,12 @@ export class HandPipeline {
   getBoxForPalmLandmarks(palmLandmarks, rotationMatrix) {
     const rotatedPalmLandmarks = palmLandmarks.map((coord) => util.rotatePoint([...coord, 1], rotationMatrix));
     const boxAroundPalm = this.calculateLandmarksBoundingBox(rotatedPalmLandmarks);
-    return box.enlargeBox(box.squarifyBox(boxAroundPalm), palmBoxEnlargeFactor);
+    return util.enlargeBox(util.squarifyBox(boxAroundPalm), palmBoxEnlargeFactor);
   }
 
   getBoxForHandLandmarks(landmarks) {
     const boundingBox = this.calculateLandmarksBoundingBox(landmarks);
-    const boxAroundHand = box.enlargeBox(box.squarifyBox(boundingBox), handBoxEnlargeFactor);
+    const boxAroundHand = util.enlargeBox(util.squarifyBox(boundingBox), handBoxEnlargeFactor);
     boxAroundHand.palmLandmarks = [];
     for (let i = 0; i < palmLandmarkIds.length; i++) {
       boxAroundHand.palmLandmarks.push(landmarks[palmLandmarkIds[i]].slice(0, 2));
@@ -59,7 +58,7 @@ export class HandPipeline {
   }
 
   transformRawCoords(rawCoords, box2, angle, rotationMatrix) {
-    const boxSize = box.getBoxSize(box2);
+    const boxSize = util.getBoxSize(box2);
     const scaleFactor = [boxSize[0] / this.inputSize, boxSize[1] / this.inputSize, (boxSize[0] + boxSize[1]) / this.inputSize / 2];
     const coordsScaled = rawCoords.map((coord) => [
       scaleFactor[0] * (coord[0] - this.inputSize / 2),
@@ -72,7 +71,7 @@ export class HandPipeline {
       return [...rotated, coord[2]];
     });
     const inverseRotationMatrix = util.invertTransformMatrix(rotationMatrix);
-    const boxCenter = [...box.getBoxCenter(box2), 1];
+    const boxCenter = [...util.getBoxCenter(box2), 1];
     const originalBoxCenter = [
       util.dot(boxCenter, inverseRotationMatrix[0]),
       util.dot(boxCenter, inverseRotationMatrix[1]),
@@ -112,12 +111,12 @@ export class HandPipeline {
       if (!currentBox) continue;
       if (config.hand.landmarks) {
         const angle = config.hand.rotation ? util.computeRotation(currentBox.palmLandmarks[palmLandmarksPalmBase], currentBox.palmLandmarks[palmLandmarksMiddleFingerBase]) : 0;
-        const palmCenter = box.getBoxCenter(currentBox);
+        const palmCenter = util.getBoxCenter(currentBox);
         const palmCenterNormalized = [palmCenter[0] / image.shape[2], palmCenter[1] / image.shape[1]];
         const rotatedImage = config.hand.rotation && env.kernels.includes('rotatewithoffset') ? tf.image.rotateWithOffset(image, angle, 0, palmCenterNormalized) : image.clone();
         const rotationMatrix = util.buildRotationMatrix(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
-        const croppedInput = box.cutBoxFromImageAndResize(newBox, rotatedImage, [this.inputSize, this.inputSize]);
+        const croppedInput = util.cutBoxFromImageAndResize(newBox, rotatedImage, [this.inputSize, this.inputSize]);
         const handImage = tf.div(croppedInput, 255);
         tf.dispose(croppedInput);
         tf.dispose(rotatedImage);
@@ -148,7 +147,7 @@ export class HandPipeline {
         tf.dispose(keypoints);
       } else {
         // const enlarged = box.enlargeBox(box.squarifyBox(box.shiftBox(currentBox, HAND_BOX_SHIFT_VECTOR)), handBoxEnlargeFactor);
-        const enlarged = box.enlargeBox(box.squarifyBox(currentBox), handBoxEnlargeFactor);
+        const enlarged = util.enlargeBox(util.squarifyBox(currentBox), handBoxEnlargeFactor);
         const result = {
           confidence: currentBox.confidence,
           boxConfidence: currentBox.confidence,

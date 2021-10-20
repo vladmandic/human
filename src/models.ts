@@ -13,7 +13,7 @@ import * as efficientpose from './body/efficientpose';
 import * as emotion from './gear/emotion';
 import * as facemesh from './face/facemesh';
 import * as faceres from './face/faceres';
-import * as handpose from './handpose/handpose';
+import * as handpose from './hand/handpose';
 import * as handtrack from './hand/handtrack';
 import * as iris from './face/iris';
 import * as movenet from './body/movenet';

@@ -69,7 +69,7 @@
     "@types/node": "^16.11.1",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
-    "@vladmandic/build": "^0.6.1",
+    "@vladmandic/build": "^0.6.2",
     "@vladmandic/pilogger": "^0.3.3",
     "canvas": "^2.8.0",
     "dayjs": "^1.10.7",

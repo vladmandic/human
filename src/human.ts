@@ -17,7 +17,7 @@ import * as face from './face/face';
 import * as facemesh from './face/facemesh';
 import * as faceres from './face/faceres';
 import * as gesture from './gesture/gesture';
-import * as handpose from './handpose/handpose';
+import * as handpose from './hand/handpose';
 import * as handtrack from './hand/handtrack';
 import * as humangl from './tfjs/humangl';
 import * as image from './image/image';

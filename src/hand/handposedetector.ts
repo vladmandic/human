@@ -4,8 +4,8 @@
  */
 
 import * as tf from '../../dist/tfjs.esm.js';
-import * as box from './box';
-import * as anchors from './anchors';
+import * as util from './handposeutil';
+import * as anchors from './handposeanchors';
 import type { Tensor, GraphModel } from '../tfjs/types';
 
 export class HandDetector {
@@ -81,7 +81,7 @@ export class HandDetector {
       const palmLandmarks = await prediction.palmLandmarks.array();
       tf.dispose(prediction.box);
       tf.dispose(prediction.palmLandmarks);
-      hands.push(box.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks, confidence: prediction.confidence }, [inputWidth / this.inputSize, inputHeight / this.inputSize]));
+      hands.push(util.scaleBoxCoordinates({ startPoint, endPoint, palmLandmarks, confidence: prediction.confidence }, [inputWidth / this.inputSize, inputHeight / this.inputSize]));
     }
     return hands;
   }

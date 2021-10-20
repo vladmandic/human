@@ -109,6 +109,26 @@
         "sourcemap": true,
         "external": ["@tensorflow", "fs", "os", "buffer", "util"]
       },
+
+      {
+        "name": "tfjs/browser/esm/custom",
+        "platform": "browser",
+        "format": "esm",
+        "input": "tfjs/tf-custom.ts",
+        "output": "dist/tfjs.esm.js",
+        "sourcemap": true,
+        "external": ["fs", "os", "buffer", "util"]
+      },
+      {
+        "name": "human/browser/esm/custom",
+        "platform": "browser",
+        "format": "esm",
+        "input": "src/human.ts",
+        "output": "dist/human.custom.esm.js",
+        "sourcemap": true,
+        "external": ["fs", "os", "buffer", "util"]
+      },
+
       {
         "name": "tfjs/browser/esm/bundle",
         "platform": "browser",

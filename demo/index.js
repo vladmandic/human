@@ -63,6 +63,7 @@ const drawOptions = {
   drawBoxes: true,
   drawGaze: true,
   drawLabels: true,
+  drawGestures: true,
   drawPolygons: true,
   drawPoints: false,
   fillPolygons: false,

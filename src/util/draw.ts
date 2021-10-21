@@ -37,6 +37,7 @@ export interface DrawOptions {
   roundRect: number,
   drawPoints: boolean,
   drawLabels: boolean,
+  drawGestures: boolean,
   drawBoxes: boolean,
   drawPolygons: boolean,
   drawGaze: boolean,
@@ -58,6 +59,7 @@ export const options: DrawOptions = {
   drawPoints: <boolean>false,
   drawLabels: <boolean>true,
   drawBoxes: <boolean>true,
+  drawGestures: <boolean>true,
   drawPolygons: <boolean>true,
   drawGaze: <boolean>true,
   fillPolygons: <boolean>false,
@@ -166,24 +168,26 @@ function arrow(ctx: CanvasRenderingContext2D, from: Point, to: Point, radius = 5
 export async function gesture(inCanvas: HTMLCanvasElement | OffscreenCanvas, result: Array<GestureResult>, drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
-  const ctx = getCanvasContext(inCanvas);
-  ctx.font = localOptions.font;
-  ctx.fillStyle = localOptions.color;
-  let i = 1;
-  for (let j = 0; j < result.length; j++) {
-    let where: unknown[] = []; // what&where is a record
-    let what: unknown[] = []; // what&where is a record
-    [where, what] = Object.entries(result[j]);
-    if ((what.length > 1) && ((what[1] as string).length > 0)) {
-      const who = where[1] as number > 0 ? `#${where[1]}` : '';
-      const label = `${where[0]} ${who}: ${what[1]}`;
-      if (localOptions.shadowColor && localOptions.shadowColor !== '') {
-        ctx.fillStyle = localOptions.shadowColor;
-        ctx.fillText(label, 8, 2 + (i * localOptions.lineHeight));
+  if (localOptions.drawGestures) {
+    const ctx = getCanvasContext(inCanvas);
+    ctx.font = localOptions.font;
+    ctx.fillStyle = localOptions.color;
+    let i = 1;
+    for (let j = 0; j < result.length; j++) {
+      let where: unknown[] = []; // what&where is a record
+      let what: unknown[] = []; // what&where is a record
+      [where, what] = Object.entries(result[j]);
+      if ((what.length > 1) && ((what[1] as string).length > 0)) {
+        const who = where[1] as number > 0 ? `#${where[1]}` : '';
+        const label = `${where[0]} ${who}: ${what[1]}`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== '') {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, 8, 2 + (i * localOptions.lineHeight));
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, 6, 0 + (i * localOptions.lineHeight));
+        i += 1;
       }
-      ctx.fillStyle = localOptions.labelColor;
-      ctx.fillText(label, 6, 0 + (i * localOptions.lineHeight));
-      i += 1;
     }
   }
 }
@@ -197,33 +201,35 @@ export async function face(inCanvas: HTMLCanvasElement | OffscreenCanvas, result
     ctx.strokeStyle = localOptions.color;
     ctx.fillStyle = localOptions.color;
     if (localOptions.drawBoxes) rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
-    // silly hack since fillText does not suport new line
-    const labels:string[] = [];
-    labels.push(`face: ${Math.trunc(100 * f.score)}%`);
-    if (f.genderScore) labels.push(`${f.gender || ''} ${Math.trunc(100 * f.genderScore)}%`);
-    if (f.age) labels.push(`age: ${f.age || ''}`);
-    if (f.iris) labels.push(`distance: ${f.iris}`);
-    if (f.real) labels.push(`Real: ${Math.trunc(100 * f.real)}%`);
-    if (f.emotion && f.emotion.length > 0) {
-      const emotion = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
-      if (emotion.length > 3) emotion.length = 3;
-      labels.push(emotion.join(' '));
-    }
-    if (f.rotation && f.rotation.angle && f.rotation.gaze) {
-      if (f.rotation.angle.roll) labels.push(`roll: ${rad2deg(f.rotation.angle.roll)}° yaw:${rad2deg(f.rotation.angle.yaw)}° pitch:${rad2deg(f.rotation.angle.pitch)}°`);
-      if (f.rotation.gaze.bearing) labels.push(`gaze: ${rad2deg(f.rotation.gaze.bearing)}°`);
-    }
-    if (labels.length === 0) labels.push('face');
-    ctx.fillStyle = localOptions.color;
-    for (let i = labels.length - 1; i >= 0; i--) {
-      const x = Math.max(f.box[0], 0);
-      const y = i * localOptions.lineHeight + f.box[1];
-      if (localOptions.shadowColor && localOptions.shadowColor !== '') {
-        ctx.fillStyle = localOptions.shadowColor;
-        ctx.fillText(labels[i], x + 5, y + 16);
+    if (localOptions.drawLabels) {
+      // silly hack since fillText does not suport new line
+      const labels:string[] = [];
+      labels.push(`face: ${Math.trunc(100 * f.score)}%`);
+      if (f.genderScore) labels.push(`${f.gender || ''} ${Math.trunc(100 * f.genderScore)}%`);
+      if (f.age) labels.push(`age: ${f.age || ''}`);
+      if (f.iris) labels.push(`distance: ${f.iris}`);
+      if (f.real) labels.push(`real: ${Math.trunc(100 * f.real)}%`);
+      if (f.emotion && f.emotion.length > 0) {
+        const emotion = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
+        if (emotion.length > 3) emotion.length = 3;
+        labels.push(emotion.join(' '));
       }
-      ctx.fillStyle = localOptions.labelColor;
-      ctx.fillText(labels[i], x + 4, y + 15);
+      if (f.rotation && f.rotation.angle && f.rotation.gaze) {
+        if (f.rotation.angle.roll) labels.push(`roll: ${rad2deg(f.rotation.angle.roll)}° yaw:${rad2deg(f.rotation.angle.yaw)}° pitch:${rad2deg(f.rotation.angle.pitch)}°`);
+        if (f.rotation.gaze.bearing) labels.push(`gaze: ${rad2deg(f.rotation.gaze.bearing)}°`);
+      }
+      if (labels.length === 0) labels.push('face');
+      ctx.fillStyle = localOptions.color;
+      for (let i = labels.length - 1; i >= 0; i--) {
+        const x = Math.max(f.box[0], 0);
+        const y = i * localOptions.lineHeight + f.box[1];
+        if (localOptions.shadowColor && localOptions.shadowColor !== '') {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(labels[i], x + 5, y + 16);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(labels[i], x + 4, y + 15);
+      }
     }
     ctx.lineWidth = 1;
     if (f.mesh && f.mesh.length > 0) {

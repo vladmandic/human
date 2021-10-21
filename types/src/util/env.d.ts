@@ -1,20 +1,21 @@
-export declare type Env = {
+/** Env class that holds detected capabilities */
+export declare class Env {
     /** Running in Browser */
-    browser: undefined | boolean;
+    browser: boolean;
     /** Running in NodeJS */
-    node: undefined | boolean;
+    node: boolean;
     /** Running in WebWorker thread */
-    worker: undefined | boolean;
+    worker: boolean;
     /** Detected platform */
-    platform: undefined | string;
+    platform: string;
     /** Detected agent */
-    agent: undefined | string;
+    agent: string;
     /** List of supported backends */
     backends: string[];
     /** Has any work been performed so far */
     initial: boolean;
     /** Are image filters supported? */
-    filter: undefined | boolean;
+    filter: boolean | undefined;
     /** TFJS instance details */
     tfjs: {
         version: undefined | string;
@@ -41,6 +42,11 @@ export declare type Env = {
         backend: undefined | boolean;
         adapter: undefined | string;
     };
+    /** CPU info */
+    cpu: {
+        model: undefined | string;
+        flags: string[];
+    };
     /** List of supported kernels for current backend */
     kernels: string[];
     /** MonkeyPatch for Canvas */
@@ -49,10 +55,9 @@ export declare type Env = {
     Image: undefined;
     /** MonkeyPatch for ImageData */
     ImageData: undefined;
-};
-export declare let env: Env;
-export declare function cpuInfo(): Promise<void>;
-export declare function backendInfo(): Promise<void>;
-export declare function get(): Promise<void>;
-export declare function set(obj: any): Promise<void>;
+    constructor();
+    updateBackend(): Promise<void>;
+    updateCPU(): Promise<void>;
+}
+export declare const env: Env;
 //# sourceMappingURL=env.d.ts.map

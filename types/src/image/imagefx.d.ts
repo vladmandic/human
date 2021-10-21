@@ -8,7 +8,6 @@
  * @property {function} add add specified filter to filter chain
  * @property {function} apply execute filter chain and draw result
  * @property {function} draw just draw input to result
- * @param {HTMLCanvasElement | OffscreenCanvas} canvas use specific canvas for all webgl bindings
  */
-export declare function GLImageFilter(params?: {}): void;
+export declare function GLImageFilter(): void;
 //# sourceMappingURL=imagefx.d.ts.map

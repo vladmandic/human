@@ -33,6 +33,7 @@ export interface DrawOptions {
     roundRect: number;
     drawPoints: boolean;
     drawLabels: boolean;
+    drawGestures: boolean;
     drawBoxes: boolean;
     drawPolygons: boolean;
     drawGaze: boolean;

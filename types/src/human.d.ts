@@ -1,9 +1,11 @@
 /**
  * Human main module
  */
+import { Env } from './util/env';
 import * as tf from '../dist/tfjs.esm.js';
-import * as env from './util/env';
+import * as draw from './util/draw';
 import * as facemesh from './face/facemesh';
+import * as image from './image/image';
 import * as match from './face/match';
 import * as models from './models';
 import type { Result } from './result';
@@ -88,7 +90,7 @@ export declare class Human {
      */
     tf: TensorFlow;
     /** Object containing environment information used for diagnostics */
-    env: env.Env;
+    env: Env;
     /** Draw helper classes that can draw detected objects on canvas using specified draw
      * - options: {@link DrawOptions} global settings for all draw operations, can be overriden for each draw method
      * - face: draw detected faces
@@ -98,14 +100,14 @@ export declare class Human {
      * - all: meta-function that performs: canvas, face, body, hand
      */
     draw: {
-        canvas: any;
-        face: any;
-        body: any;
-        hand: any;
-        gesture: any;
-        object: any;
-        person: any;
-        all: any;
+        canvas: typeof draw.canvas;
+        face: typeof draw.face;
+        body: typeof draw.body;
+        hand: typeof draw.hand;
+        gesture: typeof draw.gesture;
+        object: typeof draw.object;
+        person: typeof draw.person;
+        all: typeof draw.all;
         options: DrawOptions;
     };
     /** Currently loaded models
@@ -162,7 +164,7 @@ export declare class Human {
      */
     image(input: Input, getTensor?: boolean): {
         tensor: Tensor<import("@tensorflow/tfjs-core").Rank> | null;
-        canvas: HTMLCanvasElement | OffscreenCanvas | null;
+        canvas: image.AnyCanvas | null;
     };
     /** Segmentation method takes any input and returns processed canvas with body segmentation
      *  - Optional parameter background is used to fill the background with specific input

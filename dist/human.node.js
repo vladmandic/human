@@ -10937,6 +10937,7 @@ var options2 = {
   drawPoints: false,
   drawLabels: true,
   drawBoxes: true,
+  drawGestures: true,
   drawPolygons: true,
   drawGaze: true,
   fillPolygons: false,
@@ -11041,24 +11042,26 @@ async function gesture(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2)
     return;
-  const ctx = getCanvasContext(inCanvas2);
-  ctx.font = localOptions.font;
-  ctx.fillStyle = localOptions.color;
-  let i = 1;
-  for (let j = 0; j < result.length; j++) {
-    let where = [];
-    let what = [];
-    [where, what] = Object.entries(result[j]);
-    if (what.length > 1 && what[1].length > 0) {
-      const who = where[1] > 0 ? `#${where[1]}` : "";
-      const label = `${where[0]} ${who}: ${what[1]}`;
-      if (localOptions.shadowColor && localOptions.shadowColor !== "") {
-        ctx.fillStyle = localOptions.shadowColor;
-        ctx.fillText(label, 8, 2 + i * localOptions.lineHeight);
+  if (localOptions.drawGestures) {
+    const ctx = getCanvasContext(inCanvas2);
+    ctx.font = localOptions.font;
+    ctx.fillStyle = localOptions.color;
+    let i = 1;
+    for (let j = 0; j < result.length; j++) {
+      let where = [];
+      let what = [];
+      [where, what] = Object.entries(result[j]);
+      if (what.length > 1 && what[1].length > 0) {
+        const who = where[1] > 0 ? `#${where[1]}` : "";
+        const label = `${where[0]} ${who}: ${what[1]}`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, 8, 2 + i * localOptions.lineHeight);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, 6, 0 + i * localOptions.lineHeight);
+        i += 1;
       }
-      ctx.fillStyle = localOptions.labelColor;
-      ctx.fillText(label, 6, 0 + i * localOptions.lineHeight);
-      i += 1;
     }
   }
 }
@@ -11074,40 +11077,42 @@ async function face(inCanvas2, result, drawOptions) {
     ctx.fillStyle = localOptions.color;
     if (localOptions.drawBoxes)
       rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
-    const labels2 = [];
-    labels2.push(`face: ${Math.trunc(100 * f.score)}%`);
-    if (f.genderScore)
-      labels2.push(`${f.gender || ""} ${Math.trunc(100 * f.genderScore)}%`);
-    if (f.age)
-      labels2.push(`age: ${f.age || ""}`);
-    if (f.iris)
-      labels2.push(`distance: ${f.iris}`);
-    if (f.real)
-      labels2.push(`Real: ${Math.trunc(100 * f.real)}%`);
-    if (f.emotion && f.emotion.length > 0) {
-      const emotion3 = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
-      if (emotion3.length > 3)
-        emotion3.length = 3;
-      labels2.push(emotion3.join(" "));
-    }
-    if (f.rotation && f.rotation.angle && f.rotation.gaze) {
-      if (f.rotation.angle.roll)
-        labels2.push(`roll: ${rad2deg(f.rotation.angle.roll)}\xB0 yaw:${rad2deg(f.rotation.angle.yaw)}\xB0 pitch:${rad2deg(f.rotation.angle.pitch)}\xB0`);
-      if (f.rotation.gaze.bearing)
-        labels2.push(`gaze: ${rad2deg(f.rotation.gaze.bearing)}\xB0`);
-    }
-    if (labels2.length === 0)
-      labels2.push("face");
-    ctx.fillStyle = localOptions.color;
-    for (let i = labels2.length - 1; i >= 0; i--) {
-      const x = Math.max(f.box[0], 0);
-      const y = i * localOptions.lineHeight + f.box[1];
-      if (localOptions.shadowColor && localOptions.shadowColor !== "") {
-        ctx.fillStyle = localOptions.shadowColor;
-        ctx.fillText(labels2[i], x + 5, y + 16);
+    if (localOptions.drawLabels) {
+      const labels2 = [];
+      labels2.push(`face: ${Math.trunc(100 * f.score)}%`);
+      if (f.genderScore)
+        labels2.push(`${f.gender || ""} ${Math.trunc(100 * f.genderScore)}%`);
+      if (f.age)
+        labels2.push(`age: ${f.age || ""}`);
+      if (f.iris)
+        labels2.push(`distance: ${f.iris}`);
+      if (f.real)
+        labels2.push(`real: ${Math.trunc(100 * f.real)}%`);
+      if (f.emotion && f.emotion.length > 0) {
+        const emotion3 = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
+        if (emotion3.length > 3)
+          emotion3.length = 3;
+        labels2.push(emotion3.join(" "));
       }
-      ctx.fillStyle = localOptions.labelColor;
-      ctx.fillText(labels2[i], x + 4, y + 15);
+      if (f.rotation && f.rotation.angle && f.rotation.gaze) {
+        if (f.rotation.angle.roll)
+          labels2.push(`roll: ${rad2deg(f.rotation.angle.roll)}\xB0 yaw:${rad2deg(f.rotation.angle.yaw)}\xB0 pitch:${rad2deg(f.rotation.angle.pitch)}\xB0`);
+        if (f.rotation.gaze.bearing)
+          labels2.push(`gaze: ${rad2deg(f.rotation.gaze.bearing)}\xB0`);
+      }
+      if (labels2.length === 0)
+        labels2.push("face");
+      ctx.fillStyle = localOptions.color;
+      for (let i = labels2.length - 1; i >= 0; i--) {
+        const x = Math.max(f.box[0], 0);
+        const y = i * localOptions.lineHeight + f.box[1];
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(labels2[i], x + 5, y + 16);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(labels2[i], x + 4, y + 15);
+      }
     }
     ctx.lineWidth = 1;
     if (f.mesh && f.mesh.length > 0) {
@@ -11510,31 +11515,31 @@ var detectFace = async (parent, input) => {
     const rotation = calculateFaceAngle(faces[i], [input.shape[2], input.shape[1]]);
     parent.analyze("Start Emotion:");
     if (parent.config.async) {
-      emotionRes = parent.config.face.emotion.enabled ? predict5(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : {};
+      emotionRes = parent.config.face.emotion.enabled ? predict5(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:emotion";
       timeStamp = now();
-      emotionRes = parent.config.face.emotion.enabled ? await predict5(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : {};
+      emotionRes = parent.config.face.emotion.enabled ? await predict5(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.emotion = Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Emotion:");
     parent.analyze("Start AntiSpoof:");
     if (parent.config.async) {
-      antispoofRes = parent.config.face.antispoof.enabled ? predict(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : {};
+      antispoofRes = parent.config.face.antispoof.enabled ? predict(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:antispoof";
       timeStamp = now();
-      antispoofRes = parent.config.face.antispoof.enabled ? await predict(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : {};
+      antispoofRes = parent.config.face.antispoof.enabled ? await predict(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.antispoof = Math.trunc(now() - timeStamp);
     }
     parent.analyze("End AntiSpoof:");
     parent.analyze("Start Description:");
     if (parent.config.async) {
-      descRes = parent.config.face.description.enabled ? predict7(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : [];
+      descRes = parent.config.face.description.enabled ? predict7(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:description";
       timeStamp = now();
-      descRes = parent.config.face.description.enabled ? await predict7(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : [];
+      descRes = parent.config.face.description.enabled ? await predict7(faces[i].tensor || tf26.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.embedding = Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Description:");
@@ -11554,10 +11559,10 @@ var detectFace = async (parent, input) => {
     faceRes.push({
       ...faces[i],
       id: i,
-      age: descRes.age,
-      gender: descRes.gender,
-      genderScore: descRes.genderScore,
-      embedding: descRes.descriptor,
+      age: descRes == null ? void 0 : descRes.age,
+      gender: descRes == null ? void 0 : descRes.gender,
+      genderScore: descRes == null ? void 0 : descRes.genderScore,
+      embedding: descRes == null ? void 0 : descRes.descriptor,
       emotion: emotionRes,
       real: antispoofRes,
       iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,

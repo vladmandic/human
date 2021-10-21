@@ -4,6 +4,7 @@
  */
 
 import * as shaders from './imagefxshaders';
+import { canvas } from './image';
 
 const collect = (source, prefix, collection) => {
   const r = new RegExp('\\b' + prefix + ' \\w+ (\\w+)', 'ig');
@@ -51,9 +52,9 @@ class GLProgram {
  * @property {function} add add specified filter to filter chain
  * @property {function} apply execute filter chain and draw result
  * @property {function} draw just draw input to result
- * @param {HTMLCanvasElement | OffscreenCanvas} canvas use specific canvas for all webgl bindings
  */
-export function GLImageFilter(params = {}) {
+
+export function GLImageFilter() {
   let drawCount = 0;
   let sourceTexture: WebGLTexture | null = null;
   let lastInChain = false;
@@ -62,16 +63,16 @@ export function GLImageFilter(params = {}) {
   let filterChain: Record<string, unknown>[] = [];
   let vertexBuffer: WebGLBuffer | null = null;
   let currentProgram: GLProgram | null = null;
-  const canvas = params['canvas'] || typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(100, 100) : document.createElement('canvas');
+  const fxcanvas = canvas(100, 100);
   const shaderProgramCache = { }; // key is the shader program source, value is the compiled program
   const DRAW = { INTERMEDIATE: 1 };
-  const gl = canvas.getContext('webgl') as WebGLRenderingContext;
+  const gl = fxcanvas.getContext('webgl') as WebGLRenderingContext;
   if (!gl) throw new Error('filter: cannot get webgl context');
 
   function resize(width, height) {
-    if (width === canvas.width && height === canvas.height) return; // Same width/height? Nothing to do here
-    canvas.width = width;
-    canvas.height = height;
+    if (width === fxcanvas.width && height === fxcanvas.height) return; // Same width/height? Nothing to do here
+    fxcanvas.width = width;
+    fxcanvas.height = height;
     if (!vertexBuffer) { // Create the context if we don't have it yet
       const vertices = new Float32Array([-1, -1, 0, 1, 1, -1, 1, 1, -1, 1, 0, 0, -1, 1, 0, 0, 1, -1, 1, 1, 1, 1, 1, 0]); // Create the vertex buffer for the two triangles [x, y, u, v] * 6
       vertexBuffer = gl.createBuffer();
@@ -79,7 +80,7 @@ export function GLImageFilter(params = {}) {
       gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     }
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.viewport(0, 0, fxcanvas.width, fxcanvas.height);
     tempFramebuffers = [null, null]; // Delete old temp framebuffers
   }
 
@@ -102,7 +103,7 @@ export function GLImageFilter(params = {}) {
   }
 
   function getTempFramebuffer(index) {
-    tempFramebuffers[index] = tempFramebuffers[index] || createFramebufferTexture(canvas.width, canvas.height);
+    tempFramebuffers[index] = tempFramebuffers[index] || createFramebufferTexture(fxcanvas.width, fxcanvas.height);
     return tempFramebuffers[index];
   }
 
@@ -288,8 +289,8 @@ export function GLImageFilter(params = {}) {
 
     convolution: (matrix) => { // general convolution Filter
       const m = new Float32Array(matrix);
-      const pixelSizeX = 1 / canvas.width;
-      const pixelSizeY = 1 / canvas.height;
+      const pixelSizeX = 1 / fxcanvas.width;
+      const pixelSizeY = 1 / fxcanvas.height;
       const program = compileShader(shaders.convolution);
       gl.uniform1fv(program?.uniform['m'], m);
       gl.uniform2f(program?.uniform['px'], pixelSizeX, pixelSizeY);
@@ -344,8 +345,8 @@ export function GLImageFilter(params = {}) {
     },
 
     blur: (size) => {
-      const blurSizeX = (size / 7) / canvas.width;
-      const blurSizeY = (size / 7) / canvas.height;
+      const blurSizeX = (size / 7) / fxcanvas.width;
+      const blurSizeY = (size / 7) / fxcanvas.height;
       const program = compileShader(shaders.blur);
       // Vertical
       gl.uniform2f(program?.uniform['px'], 0, blurSizeY);
@@ -356,8 +357,8 @@ export function GLImageFilter(params = {}) {
     },
 
     pixelate: (size) => {
-      const blurSizeX = (size) / canvas.width;
-      const blurSizeY = (size) / canvas.height;
+      const blurSizeX = (size) / fxcanvas.width;
+      const blurSizeY = (size) / fxcanvas.height;
       const program = compileShader(shaders.pixelate);
       gl.uniform2f(program?.uniform['size'], blurSizeX, blurSizeY);
       draw();
@@ -399,7 +400,7 @@ export function GLImageFilter(params = {}) {
       // @ts-ignore function assigment
       f.func.apply(this, f.args || []);
     }
-    return canvas;
+    return fxcanvas;
   };
 
   // @ts-ignore this

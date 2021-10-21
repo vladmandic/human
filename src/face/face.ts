@@ -48,11 +48,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     // run emotion, inherits face from blazeface
     parent.analyze('Start Emotion:');
     if (parent.config.async) {
-      emotionRes = parent.config.face.emotion.enabled ? emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+      emotionRes = parent.config.face.emotion.enabled ? emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = 'run:emotion';
       timeStamp = now();
-      emotionRes = parent.config.face.emotion.enabled ? await emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+      emotionRes = parent.config.face.emotion.enabled ? await emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.emotion = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Emotion:');
@@ -60,11 +60,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     // run antispoof, inherits face from blazeface
     parent.analyze('Start AntiSpoof:');
     if (parent.config.async) {
-      antispoofRes = parent.config.face.antispoof.enabled ? antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+      antispoofRes = parent.config.face.antispoof.enabled ? antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = 'run:antispoof';
       timeStamp = now();
-      antispoofRes = parent.config.face.antispoof.enabled ? await antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+      antispoofRes = parent.config.face.antispoof.enabled ? await antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.antispoof = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End AntiSpoof:');
@@ -86,11 +86,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     // run emotion, inherits face from blazeface
     parent.analyze('Start Description:');
     if (parent.config.async) {
-      descRes = parent.config.face.description.enabled ? faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : [];
+      descRes = parent.config.face.description.enabled ? faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = 'run:description';
       timeStamp = now();
-      descRes = parent.config.face.description.enabled ? await faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : [];
+      descRes = parent.config.face.description.enabled ? await faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.embedding = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Description:');
@@ -124,10 +124,10 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     faceRes.push({
       ...faces[i],
       id: i,
-      age: descRes.age,
-      gender: descRes.gender,
-      genderScore: descRes.genderScore,
-      embedding: descRes.descriptor,
+      age: descRes?.age,
+      gender: descRes?.gender,
+      genderScore: descRes?.genderScore,
+      embedding: descRes?.descriptor,
       emotion: emotionRes,
       real: antispoofRes,
       iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,

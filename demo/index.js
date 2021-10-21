@@ -90,7 +90,7 @@ const ui = {
   autoPlay: false, // start webcam & detection on load
 
   // internal variables
-  exceptionHandler: false, // should capture all unhandled exceptions
+  exceptionHandler: true, // should capture all unhandled exceptions
   busy: false, // internal camera busy flag
   menuWidth: 0, // internal
   menuHeight: 0, // internal

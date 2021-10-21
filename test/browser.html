@@ -26,7 +26,7 @@
     <div id="state" class="state"></div>
     <canvas id="canvas" class="canvas" width=256 height=256></canvas>
     <script type="module">
-      import Human from '../dist/human.esm.js';
+      import Human from '../dist/human.custom.esm.js';
 
       const config = {
         async: true,
@@ -36,9 +36,7 @@
         object: { enabled: true },
       }
 
-      const backends = ['wasm', 'webgl', 'humangl'];
-      // const backends = ['wasm', 'wasm'];
-      // const backends = ['humangl'];
+      const backends = ['wasm', 'webgl', 'humangl', 'webgpu'];
 
       const start = performance.now();
 
@@ -91,14 +89,16 @@
         log('human tests');
         let res;
         let human = new Human(config);
+        await human.init();
+        human.env.offscreen = false;
         human.events.addEventListener('warmup', () => events('warmup'));
         human.events.addEventListener('image', () => events('image'));
         human.events.addEventListener('detect', () => events('detect'));
         const timer = setInterval(() => { document.getElementById('state').innerText = `State: ${human.state}`; }, 10);
         log({ version: human.version });
-        log({ env: human.env });
+        log({ tfjs: human.tf.version.tfjs });
+        log({ environment: human.env });
         log({ config: human.config });
-        log({ tfjs: human.tf.version.tfjs, backend: human.config.backend });
         await human.load();
         const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
         log({ models });

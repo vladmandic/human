@@ -175,7 +175,9 @@ export class Human {
    */
   constructor(userConfig?: Partial<Config>) {
     this.env = env;
-    defaults.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`;
+    defaults.wasmPath = tf.version_core.includes('-') // custom build or official build
+      ? 'https://vladmandic.github.io/tfjs/dist/'
+      : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`;
     defaults.modelBasePath = env.browser ? '../models/' : 'file://models/';
     defaults.backend = env.browser ? 'humangl' : 'tensorflow';
     this.version = app.version; // expose version property on instance of class

@@ -60,7 +60,6 @@ export class HandDetector {
       const palmBox = tf.slice(t.norm, [index, 0], [1, -1]);
       const palmLandmarks = tf.tidy(() => tf.reshape(this.normalizeLandmarks(tf.slice(t.predictions, [index, 5], [1, 14]), index), [-1, 2]));
       hands.push({ box: palmBox, palmLandmarks, confidence: scores[index] });
-      // console.log('handdetector:getBoxes', nms.length, index, scores[index], config.hand.maxDetected, config.hand.iouThreshold, config.hand.minConfidence, palmBox.dataSync());
     }
     for (const tensor of Object.keys(t)) tf.dispose(t[tensor]); // dispose all
     return hands;

@@ -141,7 +141,6 @@ export class HandPipeline {
           };
           hands.push(result);
         } else {
-          // console.log('handpipeline:estimateHands low', confidence);
           this.storedBoxes[i] = null;
         }
         tf.dispose(keypoints);

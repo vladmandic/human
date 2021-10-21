@@ -226,7 +226,6 @@ export function analyze(keypoints) { // get estimations of curl / direction for 
       direction: FingerDirection.getName(estimatorRes.directions[fingerIdx]),
     };
   }
-  // console.log('finger landmarks', landmarks);
   return landmarks;
 }
 
@@ -238,6 +237,5 @@ export function match(keypoints) { // compare gesture description to each known 
     const confidence = gesture.matchAgainst(estimatorRes.curls, estimatorRes.directions);
     if (confidence >= minConfidence) poses.push({ name: gesture.name, confidence });
   }
-  // console.log('finger poses', poses);
   return poses;
 }

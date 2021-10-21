@@ -9,8 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/21 mandic00@live.com
+### **2.3.6** 2021/10/21 mandic00@live.com
 
+
+### **origin/main** 2021/10/21 mandic00@live.com
+
+- refactor human.env to a class type
 - add human.custom.esm using custom tfjs build
 
 ### **2.3.5** 2021/10/19 mandic00@live.com

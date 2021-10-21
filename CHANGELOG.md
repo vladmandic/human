@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/19 mandic00@live.com
+### **HEAD -> main** 2021/10/21 mandic00@live.com
 
+- add human.custom.esm using custom tfjs build
 
 ### **2.3.5** 2021/10/19 mandic00@live.com
 

@@ -135,7 +135,7 @@ export class Human {
    * - canvas: draw processed canvas which is a processed copy of the input
    * - all: meta-function that performs: canvas, face, body, hand
    */
-  draw: { canvas, face, body, hand, gesture, object, person, all, options: DrawOptions };
+  draw: { canvas: typeof draw.canvas, face: typeof draw.face, body: typeof draw.body, hand: typeof draw.hand, gesture: typeof draw.gesture, object: typeof draw.object, person: typeof draw.person, all: typeof draw.all, options: DrawOptions };
 
   /** Currently loaded models
    * @internal

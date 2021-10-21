@@ -742,7 +742,7 @@ var __toModule = (module) => {
   return __reExport(__markAsModule2(__defProp2(module != null ? __create(__getProtoOf(module)) : {}, "default", module && module.__esModule && "default" in module ? { get: () => module.default, enumerable: true } : { value: module, enumerable: true })), module);
 };
 var require_long = __commonJS({
-  "src/node_modules/long/src/long.js"(exports, module) {
+  "node_modules/.pnpm/long@4.0.0/node_modules/long/src/long.js"(exports, module) {
     module.exports = Long2;
     var wasm = null;
     try {
@@ -1564,8 +1564,8 @@ var require_long = __commonJS({
     };
   }
 });
-var require_browser = __commonJS({
-  "(disabled):src/node_modules/node-fetch/browser.js"() {
+var require_node_fetch = __commonJS({
+  "(disabled):node-fetch"() {
   }
 });
 var require_util = __commonJS({
@@ -1573,7 +1573,7 @@ var require_util = __commonJS({
   }
 });
 var require_alea = __commonJS({
-  "src/node_modules/seedrandom/lib/alea.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/alea.js"(exports, module) {
     (function(global2, module2, define2) {
       function Alea(seed) {
         var me = this, mash = Mash();
@@ -1657,7 +1657,7 @@ var require_alea = __commonJS({
   }
 });
 var require_xor128 = __commonJS({
-  "src/node_modules/seedrandom/lib/xor128.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xor128.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this, strseed = "";
@@ -1723,7 +1723,7 @@ var require_xor128 = __commonJS({
   }
 });
 var require_xorwow = __commonJS({
-  "src/node_modules/seedrandom/lib/xorwow.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xorwow.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this, strseed = "";
@@ -1796,7 +1796,7 @@ var require_xorwow = __commonJS({
   }
 });
 var require_xorshift7 = __commonJS({
-  "src/node_modules/seedrandom/lib/xorshift7.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xorshift7.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this;
@@ -1885,7 +1885,7 @@ var require_xorshift7 = __commonJS({
   }
 });
 var require_xor4096 = __commonJS({
-  "src/node_modules/seedrandom/lib/xor4096.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xor4096.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this;
@@ -1989,7 +1989,7 @@ var require_xor4096 = __commonJS({
   }
 });
 var require_tychei = __commonJS({
-  "src/node_modules/seedrandom/lib/tychei.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/tychei.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this, strseed = "";
@@ -2065,7 +2065,7 @@ var require_crypto = __commonJS({
   }
 });
 var require_seedrandom = __commonJS({
-  "src/node_modules/seedrandom/seedrandom.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/seedrandom.js"(exports, module) {
     (function(global2, pool3, math) {
       var width = 256, chunks = 6, digits = 52, rngname = "random", startdenom = math.pow(width, chunks), significance = math.pow(2, digits), overflow = significance * 2, mask = width - 1, nodecrypto;
       function seedrandom5(seed, options3, callback) {
@@ -2196,7 +2196,7 @@ var require_seedrandom = __commonJS({
   }
 });
 var require_seedrandom2 = __commonJS({
-  "src/node_modules/seedrandom/index.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/index.js"(exports, module) {
     var alea5 = require_alea();
     var xor128 = require_xor128();
     var xorwow = require_xorwow();
@@ -9091,7 +9091,7 @@ if (env().get("IS_BROWSER")) {
   }
 }
 var getNodeFetch = {
-  importFetch: () => require_browser()
+  importFetch: () => require_node_fetch()
 };
 var systemFetch;
 var PlatformNode = class {
@@ -55282,7 +55282,6 @@ var fromPixelsConfig = {
 var fromPixels2DContext2;
 function fromPixels2(args) {
   const { inputs, backend: backend3, attrs } = args;
-  console.log("webgl fromPixels args", args);
   let { pixels } = inputs;
   const { numChannels } = attrs;
   const isVideo = typeof HTMLVideoElement !== "undefined" && pixels instanceof HTMLVideoElement;
@@ -64000,7 +63999,7 @@ function fromPixels3(args) {
   }
   const isVideo = typeof HTMLVideoElement !== "undefined" && pixels instanceof HTMLVideoElement;
   const isImage = typeof HTMLImageElement !== "undefined" && pixels instanceof HTMLImageElement;
-  const isCanvas = typeof HTMLCanvasElement !== "undefined" && pixels instanceof HTMLCanvasElement || typeof OffscreenCanvas !== "undefined" && pixels instanceof OffscreenCanvas;
+  const isCanvas = typeof HTMLCanvasElement !== "undefined" && pixels instanceof HTMLCanvasElement;
   const isImageBitmap = typeof ImageBitmap !== "undefined" && pixels instanceof ImageBitmap;
   const [width, height] = isVideo ? [
     pixels.videoWidth,
@@ -71323,7 +71322,7 @@ var Env = class {
 var env2 = new Env();
 
 // package.json
-var version = "2.3.5";
+var version = "2.3.6";
 
 // src/gear/gear-agegenderrace.ts
 var model2;
@@ -82783,7 +82782,7 @@ var Human = class {
         (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
     this.env = env2;
-    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${version_core}/dist/`;
+    config.wasmPath = version_core.includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${version_core}/dist/`;
     config.modelBasePath = env2.browser ? "../models/" : "file://models/";
     config.backend = env2.browser ? "humangl" : "tensorflow";
     this.version = version;

@@ -1286,7 +1286,7 @@ var env = new Env();
 var tf28 = __toModule(require_tfjs_esm());
 
 // package.json
-var version = "2.3.5";
+var version = "2.3.6";
 
 // src/tfjs/humangl.ts
 var tf24 = __toModule(require_tfjs_esm());
@@ -12795,7 +12795,7 @@ var Human = class {
         (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
     this.env = env;
-    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf28.version_core}/dist/`;
+    config.wasmPath = tf28.version_core.includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf28.version_core}/dist/`;
     config.modelBasePath = env.browser ? "../models/" : "file://models/";
     config.backend = env.browser ? "humangl" : "tensorflow";
     this.version = version;

@@ -1271,7 +1271,7 @@ var Env = class {
 var env = new Env();
 
 // package.json
-var version10 = "2.3.5";
+var version10 = "2.3.6";
 
 // src/gear/gear-agegenderrace.ts
 var model;
@@ -12731,7 +12731,7 @@ var Human = class {
         (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
     this.env = env;
-    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfjs_esm_exports.version_core}/dist/`;
+    config.wasmPath = tfjs_esm_exports.version_core.includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfjs_esm_exports.version_core}/dist/`;
     config.modelBasePath = env.browser ? "../models/" : "file://models/";
     config.backend = env.browser ? "humangl" : "tensorflow";
     this.version = version10;

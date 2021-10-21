@@ -1,13 +1,13 @@
 /** TFJS backend initialization and customization */
 
 import { log, now } from '../util/util';
+import { env } from '../util/env';
 import * as humangl from './humangl';
-import * as env from '../util/env';
 import * as tf from '../../dist/tfjs.esm.js';
 
 export async function check(instance, force = false) {
   instance.state = 'backend';
-  if (force || env.env.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
+  if (force || env.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
     const timeStamp = now();
 
     if (instance.config.backend && instance.config.backend.length > 0) {
@@ -18,17 +18,17 @@ export async function check(instance, force = false) {
       }
 
       // force browser vs node backend
-      if (env.env.browser && instance.config.backend === 'tensorflow') {
+      if (env.browser && instance.config.backend === 'tensorflow') {
         if (instance.config.debug) log('override: backend set to tensorflow while running in browser');
         instance.config.backend = 'humangl';
       }
-      if (env.env.node && (instance.config.backend === 'webgl' || instance.config.backend === 'humangl')) {
+      if (env.node && (instance.config.backend === 'webgl' || instance.config.backend === 'humangl')) {
         if (instance.config.debug) log(`override: backend set to ${instance.config.backend} while running in nodejs`);
         instance.config.backend = 'tensorflow';
       }
 
       // handle webgpu
-      if (env.env.browser && instance.config.backend === 'webgpu') {
+      if (env.browser && instance.config.backend === 'webgpu') {
         if (typeof navigator === 'undefined' || typeof navigator['gpu'] === 'undefined') {
           log('override: backend set to webgpu but browser does not support webgpu');
           instance.config.backend = 'humangl';
@@ -45,7 +45,7 @@ export async function check(instance, force = false) {
 
       if (!available.includes(instance.config.backend)) {
         log(`error: backend ${instance.config.backend} not found in registry`);
-        instance.config.backend = env.env.node ? 'tensorflow' : 'webgl';
+        instance.config.backend = env.node ? 'tensorflow' : 'webgl';
         if (instance.config.debug) log(`override: setting backend ${instance.config.backend}`);
       }
 
@@ -75,7 +75,7 @@ export async function check(instance, force = false) {
     if (tf.getBackend() === 'humangl') {
       tf.ENV.set('CHECK_COMPUTATION_FOR_ERRORS', false);
       tf.ENV.set('WEBGL_CPU_FORWARD', true);
-      tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', false);
+      // tf.ENV.set('WEBGL_PACK_DEPTHWISECONV', false);
       tf.ENV.set('WEBGL_USE_SHAPES_UNIFORMS', true);
       tf.ENV.set('CPU_HANDOFF_SIZE_THRESHOLD', 256);
       // if (!instance.config.object.enabled) tf.ENV.set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
@@ -91,9 +91,9 @@ export async function check(instance, force = false) {
 
     // customize webgpu
     if (tf.getBackend() === 'webgpu') {
-      tf.ENV.set('WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD', 512);
-      tf.ENV.set('WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE', 0);
-      tf.ENV.set('WEBGPU_CPU_FORWARD', true);
+      // tf.ENV.set('WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD', 512);
+      // tf.ENV.set('WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE', 0);
+      // tf.ENV.set('WEBGPU_CPU_FORWARD', true);
     }
 
     // wait for ready
@@ -102,8 +102,7 @@ export async function check(instance, force = false) {
     instance.performance.backend = Math.trunc(now() - timeStamp);
     instance.config.backend = tf.getBackend();
 
-    env.get(); // update env on backend init
-    instance.env = env.env;
+    env.updateBackend(); // update env on backend init
   }
   return true;
 }
@@ -121,5 +120,5 @@ export function fakeOps(kernelNames: Array<string>, config) {
     };
     tf.registerKernel(kernelConfig);
   }
-  env.env.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase()); // re-scan registered ops
+  env.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase()); // re-scan registered ops
 }

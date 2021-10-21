@@ -12,6 +12,7 @@ import webRTC from '../helpers/webrtc.js'; // handle webrtc handshake and connec
 
 const config = { // use default values for everything just specify models location
   modelBasePath: '../../models',
+  backend: 'humangl',
 };
 
 const human = new Human(config);

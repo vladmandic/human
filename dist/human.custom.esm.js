@@ -688,7 +688,7 @@ __export(tfjs_esm_exports, {
   variableGrads: () => variableGrads,
   version: () => version8,
   version_converter: () => version3,
-  version_core: () => version,
+  version_core: () => version_core,
   version_cpu: () => version5,
   version_layers: () => version2,
   version_wasm: () => version7,
@@ -10414,7 +10414,6 @@ function encodeStrings(a) {
   }
   return a;
 }
-var version = "0.0.0";
 function enableProdMode() {
   env().set("PROD", true);
 }
@@ -46161,7 +46160,7 @@ ENV3.registerFlag("WEBGL_USE_SHAPES_UNIFORMS", () => false);
 ENV3.registerFlag("TOPK_LAST_DIM_CPU_HANDOFF_SIZE_THRESHOLD", () => 1e5);
 ENV3.registerFlag("TOPK_K_CPU_HANDOFF_THRESHOLD", () => 128);
 function getGlslDifferences() {
-  let version92;
+  let version9;
   let attribute;
   let varyingVs;
   let varyingFs;
@@ -46172,7 +46171,7 @@ function getGlslDifferences() {
   let defineSpecialInf;
   let defineRound;
   if (env().getNumber("WEBGL_VERSION") === 2) {
-    version92 = "#version 300 es";
+    version9 = "#version 300 es";
     attribute = "in";
     varyingVs = "out";
     varyingFs = "in";
@@ -46203,7 +46202,7 @@ function getGlslDifferences() {
       }
     `;
   } else {
-    version92 = "";
+    version9 = "";
     attribute = "attribute";
     varyingVs = "varying";
     varyingFs = "varying";
@@ -46240,7 +46239,7 @@ function getGlslDifferences() {
     `;
   }
   return {
-    version: version92,
+    version: version9,
     attribute,
     varyingVs,
     varyingFs,
@@ -55283,6 +55282,7 @@ var fromPixelsConfig = {
 var fromPixels2DContext2;
 function fromPixels2(args) {
   const { inputs, backend: backend3, attrs } = args;
+  console.log("webgl fromPixels args", args);
   let { pixels } = inputs;
   const { numChannels } = attrs;
   const isVideo = typeof HTMLVideoElement !== "undefined" && pixels instanceof HTMLVideoElement;
@@ -61417,6 +61417,7 @@ var {
   stringNGramsImpl: stringNGramsImplCPU2,
   subImpl: subImplCPU2,
   tileImpl: tileImplCPU2,
+  topKImpl: topKImplCPU2,
   transposeImpl: transposeImplCPU2,
   uniqueImpl: uniqueImplCPU2
 } = shared_exports;
@@ -63999,7 +64000,7 @@ function fromPixels3(args) {
   }
   const isVideo = typeof HTMLVideoElement !== "undefined" && pixels instanceof HTMLVideoElement;
   const isImage = typeof HTMLImageElement !== "undefined" && pixels instanceof HTMLImageElement;
-  const isCanvas = typeof HTMLCanvasElement !== "undefined" && pixels instanceof HTMLCanvasElement;
+  const isCanvas = typeof HTMLCanvasElement !== "undefined" && pixels instanceof HTMLCanvasElement || typeof OffscreenCanvas !== "undefined" && pixels instanceof OffscreenCanvas;
   const isImageBitmap = typeof ImageBitmap !== "undefined" && pixels instanceof ImageBitmap;
   const [width, height] = isVideo ? [
     pixels.videoWidth,
@@ -64355,12 +64356,6 @@ function gatherV23(args) {
   const { x, indices } = inputs;
   const { axis, batchDims } = attrs;
   const parsedAxis = util_exports.parseAxisParam(axis, x.shape)[0];
-  const indicesVals = backend3.readSync(indices.dataId);
-  const axisDim = x.shape[parsedAxis];
-  for (let i = 0; i < indicesVals.length; ++i) {
-    const index = indicesVals[i];
-    util_exports.assert(index <= axisDim - 1 && index >= 0, () => `GatherV2: the index value ${index} is not in [0, ${axisDim - 1}]`);
-  }
   const shapeInfo = backend_util_exports.segment_util.collectGatherOpShapeInfo(x, indices, parsedAxis, batchDims);
   const indicesSize = util_exports.sizeFromShape(indices.shape);
   const toDispose = [];
@@ -65673,6 +65668,272 @@ var tileConfig3 = {
   backendName: "webgpu",
   kernelFunc: tile5
 };
+var SwapProgram2 = class {
+  constructor(shape) {
+    this.variableNames = ["x", "indices"];
+    this.workGroupSize = [256, 1, 1];
+    this.outputShape = shape;
+    this.dispatchLayout = flatDispatchLayout(this.outputShape);
+    this.dispatch = computeDispatch(this.dispatchLayout, this.outputShape, this.workGroupSize);
+    this.uniforms = `inputSize : i32; firstPass : i32; negativeInf : f32;
+        dir : i32; inc : i32;`;
+    this.shaderKey = "swap";
+    this.size = util_exports.sizeFromShape(this.outputShape);
+  }
+  getUserCode() {
+    const userCode = `
+        ${getMainHeaderString()} {
+          ${getGlobalIndexString()}
+          if (index < uniforms.size) {
+            let outC = getOutputCoords(globalId, index);
+            let batch = outC[0];
+            let elemIdx = outC[1];
+            // We compare elements pair-wise within a group of size 2 * inc.
+            // The comparing rule for each group alternates between ascending
+            // and descending. Within each group, we compare each pair at
+            // positions i and i+inc. To decide whether an element at position i
+            // is x0 or x1, we mod it by 2 * inc, if the result is smaller than
+            // inc, it is in the first half of the group, we denote it as x0,
+            // otherwise we denote it as x1.
+            // For example, as shown in the Bitonic top K paper referenced
+            // above, Figure5(a) shows that element[1] is in the second half of
+            // the group when group size is 2, but it is in the first half of
+            // the group when group size is 4.
+            let isFirstInPair = elemIdx % (2 * uniforms.inc) < uniforms.inc;
+            var i = 0;
+            if (isFirstInPair) {
+              i = elemIdx;
+            } else {
+              i = elemIdx - uniforms.inc;
+            }
+
+            var i0 = 0;
+            if (uniforms.firstPass == 1) {
+              i0 = i;
+            } else {
+              i0 = i32(getIndices(batch, i));
+            }
+
+            var i1 = 0;
+            if (uniforms.firstPass == 1) {
+              i1 = i + uniforms.inc;
+            } else {
+              i1 = i32(getIndices(batch, i + uniforms.inc));
+            }
+
+            var x0 = f32(0.0);
+            var x1 = f32(0.0);
+            if (i0 < uniforms.inputSize) {
+              x0 = getX(batch, i0);
+            } else {
+              x0 = uniforms.negativeInf;
+            }
+            if (i1 < uniforms.inputSize) {
+              x1 = getX(batch, i1);
+            } else {
+              x1 = uniforms.negativeInf;
+            }
+
+            let reverse = elemIdx % (2 * uniforms.dir) >= uniforms.dir;
+            let isGreater = x0 > x1 || (x0 == x1 && i1 > i0);
+            if (reverse == isGreater) {
+              // Elements in opposite order of direction
+              let iTemp = i0;
+              i0 = i1;
+              i1 = iTemp;
+            }
+            if (isFirstInPair) {
+              setOutputFlat(index, f32(i0));
+            } else {
+              setOutputFlat(index, f32(i1));
+            }
+          }
+        }
+      `;
+    return userCode;
+  }
+};
+var MergeProgram2 = class {
+  constructor(shape) {
+    this.variableNames = ["x", "indices"];
+    this.workGroupSize = [256, 1, 1];
+    this.outputShape = shape;
+    this.dispatchLayout = flatDispatchLayout(this.outputShape);
+    this.dispatch = computeDispatch(this.dispatchLayout, this.outputShape, this.workGroupSize);
+    this.uniforms = `inputSize : i32; firstPass : i32; k : i32;`;
+    this.shaderKey = "merge";
+    this.size = util_exports.sizeFromShape(this.outputShape);
+  }
+  getUserCode() {
+    const userCode = `
+        ${getMainHeaderString()} {
+          ${getGlobalIndexString()}
+          if (index < uniforms.size) {
+            let outC = getOutputCoords(globalId, index);
+            let batch = outC[0];
+            let elemIdx = outC[1];
+            // The output size is half of the previous size.
+            // If the previous sequence is | | | | _ _ _ _  | | | |  _ _ _ _
+            // (k=4), we only need to output the indices at positions |, the
+            // indices at positions _ can be thrown away, see Figure5(b) After
+            // Phase 2 (Merge phase) in the Bitonic Top K paper referenced
+            // above.
+            // For example, the paper shows we only need to output the orange
+            // bars. The output sequence should look like this | | | | | | | |.
+            // Because the sequence is halved, to map the output index back to
+            // the previous sequence to find the corresponding value, we need
+            // to double the index. When we double the index, we basically
+            // interpolate a position, so 2i looks like
+            // | _ | _ | _ | _ | _ | _ | _. We move the | to the first k
+            // position of each 2k positions by - elemIdx % k. E.g. for output
+            // at index 4,5,6,7, we want to get the corresponding element at
+            // original index 8,9,10,11, for output at index 8,9,10,11,
+            // we want to get the corresponding element at original index
+            // 16,17,18,19, so on and so forth.
+
+            var i = 0;
+            if (elemIdx < uniforms.k) {
+              i = elemIdx;
+            } else {
+              i = elemIdx * 2 - elemIdx % uniforms.k;
+            }
+            var i0 = 0;
+            if (uniforms.firstPass == 1) {
+              i0 = i;
+            } else {
+              i0 = i32(getIndices(batch, i));
+            }
+            var i1 = 0;
+            if (uniforms.firstPass == 1) {
+              i1 = i + uniforms.k;
+            } else {
+              i1 = i32(getIndices(batch, i + uniforms.k));
+            }
+
+            let x0 = getX(batch, i0);
+            var x1 = f32(0.0);
+            if (i1 < uniforms.inputSize) {
+              x1 = getX(batch, i1);
+            } else {
+              x1 = x0;
+            }
+
+            if (x0 >= x1) {
+              setOutputFlat(index, f32(i0));
+            } else {
+              setOutputFlat(index, f32(i1));
+            }
+          }
+        }
+      `;
+    return userCode;
+  }
+};
+function disposeIntermediateTensorInfoOrNull2(backend3, tensorInfo) {
+  if (tensorInfo !== null) {
+    backend3.disposeData(tensorInfo.dataId);
+  }
+}
+function roundUpToPow22(num) {
+  let pow22 = 1;
+  while (pow22 < num) {
+    pow22 *= 2;
+  }
+  return pow22;
+}
+function topK3(args) {
+  const { inputs, backend: backend3, attrs } = args;
+  const { x } = inputs;
+  const { k, sorted } = attrs;
+  const xShape = x.shape;
+  const lastDim = xShape[xShape.length - 1];
+  if (backend3.shouldExecuteOnCPU([x])) {
+    const xVals = backend3.readSync(x.dataId);
+    const [allTopKVals, allTopKIndices] = topKImplCPU2(xVals, xShape, x.dtype, k, sorted);
+    return [
+      backend3.makeTensorInfo(allTopKVals.shape, allTopKVals.dtype, allTopKVals.values),
+      backend3.makeTensorInfo(allTopKIndices.shape, allTopKIndices.dtype, allTopKIndices.values)
+    ];
+  }
+  if (k === 0) {
+    xShape[xShape.length - 1] = 0;
+    return [
+      backend3.makeTensorInfo(xShape, x.dtype, []),
+      backend3.makeTensorInfo(xShape, "int32", [])
+    ];
+  }
+  if (lastDim === 1) {
+    return [
+      x,
+      fill4({ attrs: { shape: xShape, dtype: "int32", value: 0 }, backend: backend3 })
+    ];
+  }
+  const xSize = util_exports.sizeFromShape(xShape);
+  const batch = xSize / lastDim;
+  const x2D = reshape5({ inputs: { x }, attrs: { shape: [batch, lastDim] }, backend: backend3 });
+  const kPow2 = roundUpToPow22(k);
+  const lastDimPow2 = roundUpToPow22(lastDim);
+  let indices = null;
+  const getInputs = () => indices === null ? [x2D, x2D] : [x2D, indices];
+  const runSwap = (dir, inc, shape) => {
+    const inputs2 = getInputs();
+    const program = new SwapProgram2(shape);
+    const firstPass = indices === null ? 1 : 0;
+    const uniformDataSwap = [
+      { type: "int32", data: [lastDim] },
+      { type: "int32", data: [firstPass] },
+      { type: "float32", data: [Number.NEGATIVE_INFINITY] },
+      { type: "int32", data: [dir] },
+      { type: "int32", data: [inc] }
+    ];
+    const prevIndices2 = indices;
+    indices = backend3.runWebGPUProgram(program, inputs2, "int32", uniformDataSwap);
+    disposeIntermediateTensorInfoOrNull2(backend3, prevIndices2);
+  };
+  for (let len = 1; len < kPow2; len *= 2) {
+    const dir = len * 2;
+    for (let inc = len; inc >= 1; inc /= 2) {
+      runSwap(dir, inc, [batch, lastDimPow2]);
+    }
+  }
+  for (let indicesSize = lastDimPow2; indicesSize > kPow2; indicesSize /= 2) {
+    const inputs2 = getInputs();
+    const mergeProgram = new MergeProgram2([batch, indicesSize / 2]);
+    const firstPass = indices === null ? 1 : 0;
+    const uniformDataMerge = [
+      { type: "int32", data: [lastDim] },
+      { type: "int32", data: [firstPass] },
+      { type: "int32", data: [kPow2] }
+    ];
+    const prevIndices2 = indices;
+    indices = backend3.runWebGPUProgram(mergeProgram, inputs2, "int32", uniformDataMerge);
+    disposeIntermediateTensorInfoOrNull2(backend3, prevIndices2);
+    const len = kPow2 / 2;
+    const dir = len * 2;
+    for (let inc = len; inc >= 1; inc /= 2) {
+      runSwap(dir, inc, indices.shape);
+    }
+  }
+  let prevIndices = indices;
+  indices = slice4({ inputs: { x: indices }, backend: backend3, attrs: { begin: 0, size: [batch, k] } });
+  disposeIntermediateTensorInfoOrNull2(backend3, prevIndices);
+  let values = gatherV23({ inputs: { x: x2D, indices }, backend: backend3, attrs: { axis: 1, batchDims: 1 } });
+  disposeIntermediateTensorInfoOrNull2(backend3, x2D);
+  const newShape = xShape.slice(0, -1);
+  newShape.push(k);
+  prevIndices = indices;
+  indices = reshape5({ inputs: { x: indices }, attrs: { shape: newShape }, backend: backend3 });
+  disposeIntermediateTensorInfoOrNull2(backend3, prevIndices);
+  const prevValues = values;
+  values = reshape5({ inputs: { x: values }, attrs: { shape: newShape }, backend: backend3 });
+  disposeIntermediateTensorInfoOrNull2(backend3, prevValues);
+  return [values, indices];
+}
+var topKConfig3 = {
+  kernelName: TopK,
+  backendName: "webgpu",
+  kernelFunc: topK3
+};
 var TransformProgram2 = class {
   constructor(outShape) {
     this.variableNames = ["Image", "Transforms"];
@@ -65980,6 +66241,7 @@ var kernelConfigs3 = [
   sumConfig3,
   tanhConfig3,
   tileConfig3,
+  topKConfig3,
   transformConfig3,
   transposeConfig3,
   unpackConfig3,
@@ -66842,11 +67104,11 @@ var _WebGPUBackend = class extends KernelBackend {
     this.disposed = true;
   }
 };
-var WebGPUBackend71 = _WebGPUBackend;
-WebGPUBackend71.nextDataId = 0;
+var WebGPUBackend72 = _WebGPUBackend;
+WebGPUBackend72.nextDataId = 0;
 var webgpu_exports = {};
 __export2(webgpu_exports, {
-  WebGPUBackend: () => WebGPUBackend71,
+  WebGPUBackend: () => WebGPUBackend72,
   webgpu_util: () => webgpu_util_exports
 });
 if (device_util_exports.isBrowser() && isWebGPUSupported()) {
@@ -66864,7 +67126,7 @@ if (device_util_exports.isBrowser() && isWebGPUSupported()) {
       console.warn(`This device doesn't support timestamp-query extension. Start Chrome browser with flag --disable-dawn-features=disallow_unsafe_apis then try again. Or zero will shown for the kernel time when profiling mode isenabled. Using performance.now is not workable for webgpu sinceit doesn't support synchronously to read data from GPU.`);
     }
     const device = await adapter.requestDevice(deviceDescriptor);
-    return new WebGPUBackend71(device, supportTimeQuery);
+    return new WebGPUBackend72(device, supportTimeQuery);
   }, 3);
 }
 var CppDType;
@@ -69450,7 +69712,7 @@ var topk2 = ({ inputs, backend: backend3, attrs }) => {
   wasmTopK(xId, xShapeBytes, x.shape.length, CppDType[x.dtype], k, sorted, outValuesId, outIndicesId);
   return [outValues, outIndices];
 };
-var topKConfig3 = {
+var topKConfig4 = {
   kernelName: TopK,
   backendName: "wasm",
   setupFunc: setup44,
@@ -69658,7 +69920,7 @@ var kernelConfigs4 = [
   tanConfig3,
   tanhConfig4,
   tileConfig4,
-  topKConfig3,
+  topKConfig4,
   transformConfig4,
   transposeConfig4,
   unpackConfig4,
@@ -70026,7 +70288,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm67(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.9.0-20211020";
+var externalVersion = "3.9.0-20211021";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,
@@ -70037,9 +70299,7 @@ var version8 = {
   "tfjs-backend-webgl": externalVersion,
   "tfjs-backend-wasm": externalVersion
 };
-
-// package.json
-var version9 = "2.3.5";
+var version_core = version8["tfjs-core"];
 
 // src/image/imagefxshaders.ts
 var vertexIdentity = `
@@ -70182,7 +70442,7 @@ var GLProgram = class {
       this.uniform[u] = this.gl.getUniformLocation(this.id, u);
   }
 };
-function GLImageFilter(params = {}) {
+function GLImageFilter() {
   let drawCount = 0;
   let sourceTexture = null;
   let lastInChain = false;
@@ -70191,17 +70451,17 @@ function GLImageFilter(params = {}) {
   let filterChain = [];
   let vertexBuffer = null;
   let currentProgram = null;
-  const canvas3 = params["canvas"] || typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(100, 100) : document.createElement("canvas");
+  const fxcanvas = canvas(100, 100);
   const shaderProgramCache = {};
   const DRAW = { INTERMEDIATE: 1 };
-  const gl = canvas3.getContext("webgl");
+  const gl = fxcanvas.getContext("webgl");
   if (!gl)
     throw new Error("filter: cannot get webgl context");
   function resize(width, height) {
-    if (width === canvas3.width && height === canvas3.height)
+    if (width === fxcanvas.width && height === fxcanvas.height)
       return;
-    canvas3.width = width;
-    canvas3.height = height;
+    fxcanvas.width = width;
+    fxcanvas.height = height;
     if (!vertexBuffer) {
       const vertices = new Float32Array([-1, -1, 0, 1, 1, -1, 1, 1, -1, 1, 0, 0, -1, 1, 0, 0, 1, -1, 1, 1, 1, 1, 1, 0]);
       vertexBuffer = gl.createBuffer();
@@ -70209,7 +70469,7 @@ function GLImageFilter(params = {}) {
       gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     }
-    gl.viewport(0, 0, canvas3.width, canvas3.height);
+    gl.viewport(0, 0, fxcanvas.width, fxcanvas.height);
     tempFramebuffers = [null, null];
   }
   function createFramebufferTexture(width, height) {
@@ -70230,7 +70490,7 @@ function GLImageFilter(params = {}) {
     return { fbo, texture };
   }
   function getTempFramebuffer(index) {
-    tempFramebuffers[index] = tempFramebuffers[index] || createFramebufferTexture(canvas3.width, canvas3.height);
+    tempFramebuffers[index] = tempFramebuffers[index] || createFramebufferTexture(fxcanvas.width, fxcanvas.height);
     return tempFramebuffers[index];
   }
   function draw2(flags = 0) {
@@ -70592,8 +70852,8 @@ function GLImageFilter(params = {}) {
     },
     convolution: (matrix) => {
       const m = new Float32Array(matrix);
-      const pixelSizeX = 1 / canvas3.width;
-      const pixelSizeY = 1 / canvas3.height;
+      const pixelSizeX = 1 / fxcanvas.width;
+      const pixelSizeY = 1 / fxcanvas.height;
       const program = compileShader(convolution);
       gl.uniform1fv(program == null ? void 0 : program.uniform["m"], m);
       gl.uniform2f(program == null ? void 0 : program.uniform["px"], pixelSizeX, pixelSizeY);
@@ -70667,8 +70927,8 @@ function GLImageFilter(params = {}) {
       ]);
     },
     blur: (size2) => {
-      const blurSizeX = size2 / 7 / canvas3.width;
-      const blurSizeY = size2 / 7 / canvas3.height;
+      const blurSizeX = size2 / 7 / fxcanvas.width;
+      const blurSizeY = size2 / 7 / fxcanvas.height;
       const program = compileShader(blur);
       gl.uniform2f(program == null ? void 0 : program.uniform["px"], 0, blurSizeY);
       draw2(DRAW.INTERMEDIATE);
@@ -70676,8 +70936,8 @@ function GLImageFilter(params = {}) {
       draw2();
     },
     pixelate: (size2) => {
-      const blurSizeX = size2 / canvas3.width;
-      const blurSizeY = size2 / canvas3.height;
+      const blurSizeX = size2 / fxcanvas.width;
+      const blurSizeY = size2 / fxcanvas.height;
       const program = compileShader(pixelate);
       gl.uniform2f(program == null ? void 0 : program.uniform["size"], blurSizeX, blurSizeY);
       draw2();
@@ -70710,100 +70970,12 @@ function GLImageFilter(params = {}) {
       const f = filterChain[i];
       f.func.apply(this, f.args || []);
     }
-    return canvas3;
+    return fxcanvas;
   };
   this.draw = function(image7) {
     this.add("brightness", 0);
     return this.apply(image7);
   };
-}
-
-// src/util/env.ts
-var env2 = {
-  browser: void 0,
-  node: void 0,
-  worker: void 0,
-  platform: void 0,
-  agent: void 0,
-  initial: true,
-  backends: [],
-  offscreen: void 0,
-  filter: void 0,
-  tfjs: {
-    version: void 0
-  },
-  wasm: {
-    supported: void 0,
-    backend: void 0,
-    simd: void 0,
-    multithread: void 0
-  },
-  webgl: {
-    supported: void 0,
-    backend: void 0,
-    version: void 0,
-    renderer: void 0
-  },
-  webgpu: {
-    supported: void 0,
-    backend: void 0,
-    adapter: void 0
-  },
-  kernels: [],
-  Canvas: void 0,
-  Image: void 0,
-  ImageData: void 0
-};
-async function backendInfo() {
-  var _a;
-  env2.backends = Object.keys(engine().registryFactory);
-  env2.wasm.supported = typeof WebAssembly !== "undefined";
-  env2.wasm.backend = env2.backends.includes("wasm");
-  if (env2.wasm.supported && env2.wasm.backend && getBackend() === "wasm") {
-    env2.wasm.simd = await env().getAsync("WASM_HAS_SIMD_SUPPORT");
-    env2.wasm.multithread = await env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
-  }
-  const c = canvas(100, 100);
-  const ctx = c ? c.getContext("webgl2") : void 0;
-  env2.webgl.supported = typeof ctx !== "undefined";
-  env2.webgl.backend = env2.backends.includes("webgl");
-  if (env2.webgl.supported && env2.webgl.backend && (getBackend() === "webgl" || getBackend() === "humangl")) {
-    const gl = backend().gpgpu !== "undefined" ? await backend().getGPGPUContext().gl : null;
-    if (gl) {
-      env2.webgl.version = gl.getParameter(gl.VERSION);
-      env2.webgl.renderer = gl.getParameter(gl.RENDERER);
-    }
-  }
-  env2.webgpu.supported = env2.browser && typeof navigator["gpu"] !== "undefined";
-  env2.webgpu.backend = env2.backends.includes("webgpu");
-  if (env2.webgpu.supported)
-    env2.webgpu.adapter = (_a = await navigator["gpu"].requestAdapter()) == null ? void 0 : _a.name;
-  env2.kernels = getKernelsForBackend(getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
-}
-async function get3() {
-  env2.browser = typeof navigator !== "undefined";
-  env2.node = typeof process !== "undefined";
-  env2.tfjs.version = version;
-  env2.offscreen = typeof env2.offscreen === "undefined" ? typeof OffscreenCanvas !== "undefined" : env2.offscreen;
-  if (typeof navigator !== "undefined") {
-    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
-    if (raw && raw[0]) {
-      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
-      env2.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
-      env2.agent = navigator.userAgent.replace(raw[0], "");
-      if (env2.platform[1])
-        env2.agent = env2.agent.replace(raw[1], "");
-      env2.agent = env2.agent.replace(/  /g, " ");
-    }
-  } else if (typeof process !== "undefined") {
-    env2.platform = `${process.platform} ${process.arch}`;
-    env2.agent = `NodeJS ${process.version}`;
-  }
-  env2.worker = env2.browser && env2.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
-  await backendInfo();
-}
-async function set(obj) {
-  env2 = mergeDeep(env2, obj);
 }
 
 // src/image/image.ts
@@ -70907,7 +71079,7 @@ function process2(input2, config3, getTensor2 = true) {
       outCanvas = canvas(inCanvas.width, inCanvas.height);
     if (config3.filter.enabled && env2.webgl.supported) {
       if (!fx)
-        fx = env2.browser ? new GLImageFilter({ canvas: outCanvas }) : null;
+        fx = env2.browser ? new GLImageFilter() : null;
       env2.filter = !!fx;
       if (!fx)
         return { tensor: null, canvas: inCanvas };
@@ -71038,6 +71210,120 @@ async function skip(config3, input2) {
   skipFrame = skipFrame && lastCacheDiff > 0;
   return skipFrame;
 }
+
+// src/util/env.ts
+var Env = class {
+  constructor() {
+    __publicField(this, "browser");
+    __publicField(this, "node");
+    __publicField(this, "worker");
+    __publicField(this, "platform", "");
+    __publicField(this, "agent", "");
+    __publicField(this, "backends", []);
+    __publicField(this, "initial");
+    __publicField(this, "filter");
+    __publicField(this, "tfjs");
+    __publicField(this, "offscreen");
+    __publicField(this, "wasm", {
+      supported: void 0,
+      backend: void 0,
+      simd: void 0,
+      multithread: void 0
+    });
+    __publicField(this, "webgl", {
+      supported: void 0,
+      backend: void 0,
+      version: void 0,
+      renderer: void 0
+    });
+    __publicField(this, "webgpu", {
+      supported: void 0,
+      backend: void 0,
+      adapter: void 0
+    });
+    __publicField(this, "cpu", {
+      model: void 0,
+      flags: []
+    });
+    __publicField(this, "kernels", []);
+    __publicField(this, "Canvas");
+    __publicField(this, "Image");
+    __publicField(this, "ImageData");
+    this.browser = typeof navigator !== "undefined";
+    this.node = typeof process !== "undefined";
+    this.tfjs = { version: version_core };
+    this.offscreen = typeof OffscreenCanvas !== "undefined";
+    this.initial = true;
+    this.worker = this.browser && this.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
+    if (typeof navigator !== "undefined") {
+      const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
+      if (raw && raw[0]) {
+        const platformMatch = raw[0].match(/\(([^()]+)\)/g);
+        this.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
+        this.agent = navigator.userAgent.replace(raw[0], "");
+        if (this.platform[1])
+          this.agent = this.agent.replace(raw[1], "");
+        this.agent = this.agent.replace(/  /g, " ");
+      }
+    } else if (typeof process !== "undefined") {
+      this.platform = `${process.platform} ${process.arch}`;
+      this.agent = `NodeJS ${process.version}`;
+    }
+  }
+  async updateBackend() {
+    var _a;
+    this.backends = Object.keys(engine().registryFactory);
+    this.wasm.supported = typeof WebAssembly !== "undefined";
+    this.wasm.backend = this.backends.includes("wasm");
+    if (this.wasm.supported && this.wasm.backend && getBackend() === "wasm") {
+      this.wasm.simd = await env().getAsync("WASM_HAS_SIMD_SUPPORT");
+      this.wasm.multithread = await env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+    }
+    const c = canvas(100, 100);
+    const ctx = c ? c.getContext("webgl2") : void 0;
+    this.webgl.supported = typeof ctx !== "undefined";
+    this.webgl.backend = this.backends.includes("webgl");
+    if (this.webgl.supported && this.webgl.backend && (getBackend() === "webgl" || getBackend() === "humangl")) {
+      const gl = backend().gpgpu !== "undefined" ? await backend().getGPGPUContext().gl : null;
+      if (gl) {
+        this.webgl.version = gl.getParameter(gl.VERSION);
+        this.webgl.renderer = gl.getParameter(gl.RENDERER);
+      }
+    }
+    this.webgpu.supported = this.browser && typeof navigator["gpu"] !== "undefined";
+    this.webgpu.backend = this.backends.includes("webgpu");
+    if (this.webgpu.supported)
+      this.webgpu.adapter = (_a = await navigator["gpu"].requestAdapter()) == null ? void 0 : _a.name;
+    this.kernels = getKernelsForBackend(getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+  }
+  async updateCPU() {
+    var _a;
+    const cpu = { model: "", flags: [] };
+    if (this.node && ((_a = this.platform) == null ? void 0 : _a.startsWith("linux"))) {
+      const fs = __require("fs");
+      try {
+        const data = fs.readFileSync("/proc/cpuinfo").toString();
+        for (const line of data.split("\n")) {
+          if (line.startsWith("model name")) {
+            cpu.model = line.match(/:(.*)/g)[0].replace(":", "").trim();
+          }
+          if (line.startsWith("flags")) {
+            cpu.flags = line.match(/:(.*)/g)[0].replace(":", "").trim().split(" ").sort();
+          }
+        }
+      } catch (e) {
+      }
+    }
+    if (!this["cpu"])
+      Object.defineProperty(this, "cpu", { value: cpu });
+    else
+      this["cpu"] = cpu;
+  }
+};
+var env2 = new Env();
+
+// package.json
+var version = "2.3.5";
 
 // src/gear/gear-agegenderrace.ts
 var model2;
@@ -80594,7 +80880,6 @@ async function check(instance, force = false) {
     if (getBackend() === "humangl") {
       ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
       ENV.set("WEBGL_CPU_FORWARD", true);
-      ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
       ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
       ENV.set("CPU_HANDOFF_SIZE_THRESHOLD", 256);
       if (typeof instance.config["deallocate"] !== "undefined" && instance.config["deallocate"]) {
@@ -80608,16 +80893,12 @@ async function check(instance, force = false) {
       }
     }
     if (getBackend() === "webgpu") {
-      ENV.set("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD", 512);
-      ENV.set("WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE", 0);
-      ENV.set("WEBGPU_CPU_FORWARD", true);
     }
     enableProdMode();
     await ready();
     instance.performance.backend = Math.trunc(now() - timeStamp);
     instance.config.backend = getBackend();
-    get3();
-    instance.env = env2;
+    env2.updateBackend();
   }
   return true;
 }
@@ -82496,13 +82777,12 @@ var Human = class {
       if (this.events && this.events.dispatchEvent)
         (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
-    get3();
     this.env = env2;
-    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${version}/dist/`;
-    config.modelBasePath = this.env.browser ? "../models/" : "file://models/";
-    config.backend = this.env.browser ? "humangl" : "tensorflow";
-    this.version = version9;
-    Object.defineProperty(this, "version", { value: version9 });
+    config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${version_core}/dist/`;
+    config.modelBasePath = env2.browser ? "../models/" : "file://models/";
+    config.backend = env2.browser ? "humangl" : "tensorflow";
+    this.version = version;
+    Object.defineProperty(this, "version", { value: version });
     this.config = JSON.parse(JSON.stringify(config));
     Object.seal(this.config);
     if (userConfig)
@@ -82556,7 +82836,6 @@ var Human = class {
   async init() {
     await check(this, true);
     await this.tf.ready();
-    set(this.env);
   }
   async load(userConfig) {
     this.state = "load";
@@ -82767,6 +83046,7 @@ _analyzeMemoryLeaks = new WeakMap();
 _checkSanity = new WeakMap();
 _sanity = new WeakMap();
 export {
+  Env,
   Human,
   Models,
   Human as default,

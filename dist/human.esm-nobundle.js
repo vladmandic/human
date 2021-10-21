@@ -10,6 +10,13 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
+var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
+  get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
+}) : x)(function(x) {
+  if (typeof require !== "undefined")
+    return require.apply(this, arguments);
+  throw new Error('Dynamic require of "' + x + '" is not supported');
+});
 var __export = (target, all2) => {
   __markAsModule(target);
   for (var name in all2)
@@ -242,9 +249,6 @@ var version9 = {
   "tfjs-backend-wasm": version8
 };
 
-// package.json
-var version10 = "2.3.5";
-
 // src/image/imagefxshaders.ts
 var vertexIdentity = `
   precision highp float;
@@ -386,7 +390,7 @@ var GLProgram = class {
       this.uniform[u] = this.gl.getUniformLocation(this.id, u);
   }
 };
-function GLImageFilter(params = {}) {
+function GLImageFilter() {
   let drawCount = 0;
   let sourceTexture = null;
   let lastInChain = false;
@@ -395,17 +399,17 @@ function GLImageFilter(params = {}) {
   let filterChain = [];
   let vertexBuffer = null;
   let currentProgram = null;
-  const canvas3 = params["canvas"] || typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(100, 100) : document.createElement("canvas");
+  const fxcanvas = canvas(100, 100);
   const shaderProgramCache = {};
   const DRAW = { INTERMEDIATE: 1 };
-  const gl = canvas3.getContext("webgl");
+  const gl = fxcanvas.getContext("webgl");
   if (!gl)
     throw new Error("filter: cannot get webgl context");
   function resize(width, height) {
-    if (width === canvas3.width && height === canvas3.height)
+    if (width === fxcanvas.width && height === fxcanvas.height)
       return;
-    canvas3.width = width;
-    canvas3.height = height;
+    fxcanvas.width = width;
+    fxcanvas.height = height;
     if (!vertexBuffer) {
       const vertices = new Float32Array([-1, -1, 0, 1, 1, -1, 1, 1, -1, 1, 0, 0, -1, 1, 0, 0, 1, -1, 1, 1, 1, 1, 1, 0]);
       vertexBuffer = gl.createBuffer();
@@ -413,7 +417,7 @@ function GLImageFilter(params = {}) {
       gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     }
-    gl.viewport(0, 0, canvas3.width, canvas3.height);
+    gl.viewport(0, 0, fxcanvas.width, fxcanvas.height);
     tempFramebuffers = [null, null];
   }
   function createFramebufferTexture(width, height) {
@@ -434,7 +438,7 @@ function GLImageFilter(params = {}) {
     return { fbo, texture };
   }
   function getTempFramebuffer(index) {
-    tempFramebuffers[index] = tempFramebuffers[index] || createFramebufferTexture(canvas3.width, canvas3.height);
+    tempFramebuffers[index] = tempFramebuffers[index] || createFramebufferTexture(fxcanvas.width, fxcanvas.height);
     return tempFramebuffers[index];
   }
   function draw2(flags = 0) {
@@ -796,8 +800,8 @@ function GLImageFilter(params = {}) {
     },
     convolution: (matrix) => {
       const m = new Float32Array(matrix);
-      const pixelSizeX = 1 / canvas3.width;
-      const pixelSizeY = 1 / canvas3.height;
+      const pixelSizeX = 1 / fxcanvas.width;
+      const pixelSizeY = 1 / fxcanvas.height;
       const program = compileShader(convolution);
       gl.uniform1fv(program == null ? void 0 : program.uniform["m"], m);
       gl.uniform2f(program == null ? void 0 : program.uniform["px"], pixelSizeX, pixelSizeY);
@@ -871,8 +875,8 @@ function GLImageFilter(params = {}) {
       ]);
     },
     blur: (size2) => {
-      const blurSizeX = size2 / 7 / canvas3.width;
-      const blurSizeY = size2 / 7 / canvas3.height;
+      const blurSizeX = size2 / 7 / fxcanvas.width;
+      const blurSizeY = size2 / 7 / fxcanvas.height;
       const program = compileShader(blur);
       gl.uniform2f(program == null ? void 0 : program.uniform["px"], 0, blurSizeY);
       draw2(DRAW.INTERMEDIATE);
@@ -880,8 +884,8 @@ function GLImageFilter(params = {}) {
       draw2();
     },
     pixelate: (size2) => {
-      const blurSizeX = size2 / canvas3.width;
-      const blurSizeY = size2 / canvas3.height;
+      const blurSizeX = size2 / fxcanvas.width;
+      const blurSizeY = size2 / fxcanvas.height;
       const program = compileShader(pixelate);
       gl.uniform2f(program == null ? void 0 : program.uniform["size"], blurSizeX, blurSizeY);
       draw2();
@@ -914,100 +918,12 @@ function GLImageFilter(params = {}) {
       const f = filterChain[i];
       f.func.apply(this, f.args || []);
     }
-    return canvas3;
+    return fxcanvas;
   };
   this.draw = function(image25) {
     this.add("brightness", 0);
     return this.apply(image25);
   };
-}
-
-// src/util/env.ts
-var env2 = {
-  browser: void 0,
-  node: void 0,
-  worker: void 0,
-  platform: void 0,
-  agent: void 0,
-  initial: true,
-  backends: [],
-  offscreen: void 0,
-  filter: void 0,
-  tfjs: {
-    version: void 0
-  },
-  wasm: {
-    supported: void 0,
-    backend: void 0,
-    simd: void 0,
-    multithread: void 0
-  },
-  webgl: {
-    supported: void 0,
-    backend: void 0,
-    version: void 0,
-    renderer: void 0
-  },
-  webgpu: {
-    supported: void 0,
-    backend: void 0,
-    adapter: void 0
-  },
-  kernels: [],
-  Canvas: void 0,
-  Image: void 0,
-  ImageData: void 0
-};
-async function backendInfo() {
-  var _a;
-  env2.backends = Object.keys(tfjs_esm_exports.engine().registryFactory);
-  env2.wasm.supported = typeof WebAssembly !== "undefined";
-  env2.wasm.backend = env2.backends.includes("wasm");
-  if (env2.wasm.supported && env2.wasm.backend && tfjs_esm_exports.getBackend() === "wasm") {
-    env2.wasm.simd = await tfjs_esm_exports.env().getAsync("WASM_HAS_SIMD_SUPPORT");
-    env2.wasm.multithread = await tfjs_esm_exports.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
-  }
-  const c = canvas(100, 100);
-  const ctx = c ? c.getContext("webgl2") : void 0;
-  env2.webgl.supported = typeof ctx !== "undefined";
-  env2.webgl.backend = env2.backends.includes("webgl");
-  if (env2.webgl.supported && env2.webgl.backend && (tfjs_esm_exports.getBackend() === "webgl" || tfjs_esm_exports.getBackend() === "humangl")) {
-    const gl = tfjs_esm_exports.backend().gpgpu !== "undefined" ? await tfjs_esm_exports.backend().getGPGPUContext().gl : null;
-    if (gl) {
-      env2.webgl.version = gl.getParameter(gl.VERSION);
-      env2.webgl.renderer = gl.getParameter(gl.RENDERER);
-    }
-  }
-  env2.webgpu.supported = env2.browser && typeof navigator["gpu"] !== "undefined";
-  env2.webgpu.backend = env2.backends.includes("webgpu");
-  if (env2.webgpu.supported)
-    env2.webgpu.adapter = (_a = await navigator["gpu"].requestAdapter()) == null ? void 0 : _a.name;
-  env2.kernels = tfjs_esm_exports.getKernelsForBackend(tfjs_esm_exports.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
-}
-async function get() {
-  env2.browser = typeof navigator !== "undefined";
-  env2.node = typeof process !== "undefined";
-  env2.tfjs.version = tfjs_esm_exports.version_core;
-  env2.offscreen = typeof env2.offscreen === "undefined" ? typeof OffscreenCanvas !== "undefined" : env2.offscreen;
-  if (typeof navigator !== "undefined") {
-    const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
-    if (raw && raw[0]) {
-      const platformMatch = raw[0].match(/\(([^()]+)\)/g);
-      env2.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
-      env2.agent = navigator.userAgent.replace(raw[0], "");
-      if (env2.platform[1])
-        env2.agent = env2.agent.replace(raw[1], "");
-      env2.agent = env2.agent.replace(/  /g, " ");
-    }
-  } else if (typeof process !== "undefined") {
-    env2.platform = `${process.platform} ${process.arch}`;
-    env2.agent = `NodeJS ${process.version}`;
-  }
-  env2.worker = env2.browser && env2.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
-  await backendInfo();
-}
-async function set(obj) {
-  env2 = mergeDeep(env2, obj);
 }
 
 // src/image/image.ts
@@ -1018,8 +934,8 @@ var tmpCanvas = null;
 var fx;
 function canvas(width, height) {
   let c;
-  if (env2.browser) {
-    if (env2.offscreen) {
+  if (env.browser) {
+    if (env.offscreen) {
       c = new OffscreenCanvas(width, height);
     } else {
       if (typeof document === "undefined")
@@ -1029,8 +945,8 @@ function canvas(width, height) {
       c.height = height;
     }
   } else {
-    if (typeof env2.Canvas !== "undefined")
-      c = new env2.Canvas(width, height);
+    if (typeof env.Canvas !== "undefined")
+      c = new env.Canvas(width, height);
     else if (typeof globalThis.Canvas !== "undefined")
       c = new globalThis.Canvas(width, height);
   }
@@ -1048,7 +964,7 @@ function process2(input, config3, getTensor = true) {
       log("input is missing");
     return { tensor: null, canvas: null };
   }
-  if (!(input instanceof tfjs_esm_exports.Tensor) && !(typeof Image !== "undefined" && input instanceof Image) && !(typeof env2.Canvas !== "undefined" && input instanceof env2.Canvas) && !(typeof globalThis.Canvas !== "undefined" && input instanceof globalThis.Canvas) && !(typeof ImageData !== "undefined" && input instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input instanceof OffscreenCanvas)) {
+  if (!(input instanceof tfjs_esm_exports.Tensor) && !(typeof Image !== "undefined" && input instanceof Image) && !(typeof env.Canvas !== "undefined" && input instanceof env.Canvas) && !(typeof globalThis.Canvas !== "undefined" && input instanceof globalThis.Canvas) && !(typeof ImageData !== "undefined" && input instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input instanceof OffscreenCanvas)) {
     throw new Error("input type is not recognized");
   }
   if (input instanceof tfjs_esm_exports.Tensor) {
@@ -1109,10 +1025,10 @@ function process2(input, config3, getTensor = true) {
     }
     if (!outCanvas || inCanvas.width !== outCanvas.width || (inCanvas == null ? void 0 : inCanvas.height) !== (outCanvas == null ? void 0 : outCanvas.height))
       outCanvas = canvas(inCanvas.width, inCanvas.height);
-    if (config3.filter.enabled && env2.webgl.supported) {
+    if (config3.filter.enabled && env.webgl.supported) {
       if (!fx)
-        fx = env2.browser ? new GLImageFilter({ canvas: outCanvas }) : null;
-      env2.filter = !!fx;
+        fx = env.browser ? new GLImageFilter() : null;
+      env.filter = !!fx;
       if (!fx)
         return { tensor: null, canvas: inCanvas };
       fx.reset();
@@ -1152,7 +1068,7 @@ function process2(input, config3, getTensor = true) {
       copy(inCanvas, outCanvas);
       if (fx)
         fx = null;
-      env2.filter = !!fx;
+      env.filter = !!fx;
     }
     if (!getTensor)
       return { tensor: null, canvas: outCanvas };
@@ -1161,7 +1077,7 @@ function process2(input, config3, getTensor = true) {
     let pixels;
     let depth = 3;
     if (typeof ImageData !== "undefined" && input instanceof ImageData || input["data"] && input["width"] && input["height"]) {
-      if (env2.browser && tfjs_esm_exports.browser) {
+      if (env.browser && tfjs_esm_exports.browser) {
         pixels = tfjs_esm_exports.browser ? tfjs_esm_exports.browser.fromPixels(input) : null;
       } else {
         depth = input["data"].length / input["height"] / input["width"];
@@ -1171,7 +1087,7 @@ function process2(input, config3, getTensor = true) {
     } else {
       if (!tmpCanvas || outCanvas.width !== tmpCanvas.width || (outCanvas == null ? void 0 : outCanvas.height) !== (tmpCanvas == null ? void 0 : tmpCanvas.height))
         tmpCanvas = canvas(outCanvas.width, outCanvas.height);
-      if (tfjs_esm_exports.browser && env2.browser) {
+      if (tfjs_esm_exports.browser && env.browser) {
         if (config3.backend === "webgl" || config3.backend === "humangl" || config3.backend === "webgpu") {
           pixels = tfjs_esm_exports.browser.fromPixels(outCanvas);
         } else {
@@ -1243,11 +1159,125 @@ async function skip(config3, input) {
   return skipFrame;
 }
 
+// src/util/env.ts
+var Env = class {
+  constructor() {
+    __publicField(this, "browser");
+    __publicField(this, "node");
+    __publicField(this, "worker");
+    __publicField(this, "platform", "");
+    __publicField(this, "agent", "");
+    __publicField(this, "backends", []);
+    __publicField(this, "initial");
+    __publicField(this, "filter");
+    __publicField(this, "tfjs");
+    __publicField(this, "offscreen");
+    __publicField(this, "wasm", {
+      supported: void 0,
+      backend: void 0,
+      simd: void 0,
+      multithread: void 0
+    });
+    __publicField(this, "webgl", {
+      supported: void 0,
+      backend: void 0,
+      version: void 0,
+      renderer: void 0
+    });
+    __publicField(this, "webgpu", {
+      supported: void 0,
+      backend: void 0,
+      adapter: void 0
+    });
+    __publicField(this, "cpu", {
+      model: void 0,
+      flags: []
+    });
+    __publicField(this, "kernels", []);
+    __publicField(this, "Canvas");
+    __publicField(this, "Image");
+    __publicField(this, "ImageData");
+    this.browser = typeof navigator !== "undefined";
+    this.node = typeof process !== "undefined";
+    this.tfjs = { version: tfjs_esm_exports.version_core };
+    this.offscreen = typeof OffscreenCanvas !== "undefined";
+    this.initial = true;
+    this.worker = this.browser && this.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
+    if (typeof navigator !== "undefined") {
+      const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
+      if (raw && raw[0]) {
+        const platformMatch = raw[0].match(/\(([^()]+)\)/g);
+        this.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
+        this.agent = navigator.userAgent.replace(raw[0], "");
+        if (this.platform[1])
+          this.agent = this.agent.replace(raw[1], "");
+        this.agent = this.agent.replace(/  /g, " ");
+      }
+    } else if (typeof process !== "undefined") {
+      this.platform = `${process.platform} ${process.arch}`;
+      this.agent = `NodeJS ${process.version}`;
+    }
+  }
+  async updateBackend() {
+    var _a;
+    this.backends = Object.keys(tfjs_esm_exports.engine().registryFactory);
+    this.wasm.supported = typeof WebAssembly !== "undefined";
+    this.wasm.backend = this.backends.includes("wasm");
+    if (this.wasm.supported && this.wasm.backend && tfjs_esm_exports.getBackend() === "wasm") {
+      this.wasm.simd = await tfjs_esm_exports.env().getAsync("WASM_HAS_SIMD_SUPPORT");
+      this.wasm.multithread = await tfjs_esm_exports.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+    }
+    const c = canvas(100, 100);
+    const ctx = c ? c.getContext("webgl2") : void 0;
+    this.webgl.supported = typeof ctx !== "undefined";
+    this.webgl.backend = this.backends.includes("webgl");
+    if (this.webgl.supported && this.webgl.backend && (tfjs_esm_exports.getBackend() === "webgl" || tfjs_esm_exports.getBackend() === "humangl")) {
+      const gl = tfjs_esm_exports.backend().gpgpu !== "undefined" ? await tfjs_esm_exports.backend().getGPGPUContext().gl : null;
+      if (gl) {
+        this.webgl.version = gl.getParameter(gl.VERSION);
+        this.webgl.renderer = gl.getParameter(gl.RENDERER);
+      }
+    }
+    this.webgpu.supported = this.browser && typeof navigator["gpu"] !== "undefined";
+    this.webgpu.backend = this.backends.includes("webgpu");
+    if (this.webgpu.supported)
+      this.webgpu.adapter = (_a = await navigator["gpu"].requestAdapter()) == null ? void 0 : _a.name;
+    this.kernels = tfjs_esm_exports.getKernelsForBackend(tfjs_esm_exports.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+  }
+  async updateCPU() {
+    var _a;
+    const cpu = { model: "", flags: [] };
+    if (this.node && ((_a = this.platform) == null ? void 0 : _a.startsWith("linux"))) {
+      const fs = __require("fs");
+      try {
+        const data = fs.readFileSync("/proc/cpuinfo").toString();
+        for (const line of data.split("\n")) {
+          if (line.startsWith("model name")) {
+            cpu.model = line.match(/:(.*)/g)[0].replace(":", "").trim();
+          }
+          if (line.startsWith("flags")) {
+            cpu.flags = line.match(/:(.*)/g)[0].replace(":", "").trim().split(" ").sort();
+          }
+        }
+      } catch (e) {
+      }
+    }
+    if (!this["cpu"])
+      Object.defineProperty(this, "cpu", { value: cpu });
+    else
+      this["cpu"] = cpu;
+  }
+};
+var env = new Env();
+
+// package.json
+var version10 = "2.3.5";
+
 // src/gear/gear-agegenderrace.ts
 var model;
 var skipped = Number.MAX_SAFE_INTEGER;
 async function load(config3) {
-  if (env2.initial)
+  if (env.initial)
     model = null;
   if (!model) {
     model = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.face.agegenderrace.modelPath));
@@ -1267,7 +1297,7 @@ var skipped2 = Number.MAX_SAFE_INTEGER;
 var lastCount = 0;
 async function load2(config3) {
   var _a, _b;
-  if (env2.initial)
+  if (env.initial)
     model2 = null;
   if (!model2) {
     model2 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.antispoof) == null ? void 0 : _a.modelPath) || ""));
@@ -4726,7 +4756,7 @@ var inputSize = 0;
 var size = () => inputSize;
 async function load3(config3) {
   var _a, _b;
-  if (env2.initial)
+  if (env.initial)
     model3 = null;
   if (!model3) {
     model3 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.detector) == null ? void 0 : _a.modelPath) || ""));
@@ -5086,7 +5116,7 @@ var inputSize3 = 0;
 var last = [];
 var skipped4 = Number.MAX_SAFE_INTEGER;
 async function load4(config3) {
-  if (env2.initial)
+  if (env.initial)
     model4 = null;
   if (!model4) {
     fakeOps(["floormod"], config3);
@@ -5153,7 +5183,7 @@ async function predict3(input, config3) {
     return last;
   }
   skipped4 = 0;
-  if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
+  if (!env.kernels.includes("mod") || !env.kernels.includes("sparsetodense"))
     return last;
   return new Promise(async (resolve) => {
     const outputSize2 = [input.shape[2], input.shape[1]];
@@ -5204,7 +5234,7 @@ var model5;
 var cache2 = { id: 0, keypoints: [], box: [0, 0, 0, 0], boxRaw: [0, 0, 0, 0], score: 0, annotations: {} };
 var skipped5 = Number.MAX_SAFE_INTEGER;
 async function load5(config3) {
-  if (env2.initial)
+  if (env.initial)
     model5 = null;
   if (!model5) {
     model5 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
@@ -5317,7 +5347,7 @@ var skipped6 = Number.MAX_SAFE_INTEGER;
 var rgb = [0.2989, 0.587, 0.114];
 async function load6(config3) {
   var _a, _b;
-  if (env2.initial)
+  if (env.initial)
     model6 = null;
   if (!model6) {
     model6 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.emotion) == null ? void 0 : _a.modelPath) || ""));
@@ -5391,7 +5421,7 @@ var irisLandmarks = {
 };
 async function load7(config3) {
   var _a, _b;
-  if (env2.initial)
+  if (env.initial)
     model7 = null;
   if (!model7) {
     model7 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.iris) == null ? void 0 : _a.modelPath) || ""));
@@ -5436,7 +5466,7 @@ var getEyeBox = (rawCoords, face5, eyeInnerCornerIndex, eyeOuterCornerIndex, fli
     box4.endPoint[1] / meshSize,
     box4.endPoint[0] / meshSize
   ]], [0], [inputSize4, inputSize4]);
-  if (flip && env2.kernels.includes("flipleftright")) {
+  if (flip && env.kernels.includes("flipleftright")) {
     const flipped = tfjs_esm_exports.image.flipLeftRight(crop2);
     tfjs_esm_exports.dispose(crop2);
     crop2 = flipped;
@@ -5550,7 +5580,7 @@ async function predict6(input, config3) {
       faceScore: 0,
       annotations: {}
     };
-    if (((_d = config3.face.detector) == null ? void 0 : _d.rotation) && ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) && env2.kernels.includes("rotatewithoffset")) {
+    if (((_d = config3.face.detector) == null ? void 0 : _d.rotation) && ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) && env.kernels.includes("rotatewithoffset")) {
       [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box4, input, inputSize5);
     } else {
       rotationMatrix = IDENTITY_MATRIX;
@@ -5592,7 +5622,7 @@ async function predict6(input, config3) {
         box4 = { ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), 1.5), confidence: box4.confidence };
         for (const key of Object.keys(meshAnnotations))
           face5.annotations[key] = meshAnnotations[key].map((index) => face5.mesh[index]);
-        if (((_j = config3.face.detector) == null ? void 0 : _j.rotation) && config3.face.mesh.enabled && ((_k = config3.face.description) == null ? void 0 : _k.enabled) && env2.kernels.includes("rotatewithoffset")) {
+        if (((_j = config3.face.detector) == null ? void 0 : _j.rotation) && config3.face.mesh.enabled && ((_k = config3.face.description) == null ? void 0 : _k.enabled) && env.kernels.includes("rotatewithoffset")) {
           tfjs_esm_exports.dispose(face5.tensor);
           [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box4, input, inputSize5);
         }
@@ -5616,7 +5646,7 @@ async function predict6(input, config3) {
 }
 async function load8(config3) {
   var _a, _b;
-  if (env2.initial)
+  if (env.initial)
     model8 = null;
   if (!model8) {
     model8 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.mesh) == null ? void 0 : _a.modelPath) || ""));
@@ -5642,7 +5672,7 @@ var skipped8 = Number.MAX_SAFE_INTEGER;
 async function load9(config3) {
   var _a, _b;
   const modelUrl = join(config3.modelBasePath, ((_a = config3.face.description) == null ? void 0 : _a.modelPath) || "");
-  if (env2.initial)
+  if (env.initial)
     model9 = null;
   if (!model9) {
     model9 = await tfjs_esm_exports.loadGraphModel(modelUrl);
@@ -8939,7 +8969,7 @@ var HandPipeline = class {
         const angle = config3.hand.rotation ? computeRotation2(currentBox.palmLandmarks[palmLandmarksPalmBase], currentBox.palmLandmarks[palmLandmarksMiddleFingerBase]) : 0;
         const palmCenter = getBoxCenter2(currentBox);
         const palmCenterNormalized = [palmCenter[0] / image25.shape[2], palmCenter[1] / image25.shape[1]];
-        const rotatedImage = config3.hand.rotation && env2.kernels.includes("rotatewithoffset") ? tfjs_esm_exports.image.rotateWithOffset(image25, angle, 0, palmCenterNormalized) : image25.clone();
+        const rotatedImage = config3.hand.rotation && env.kernels.includes("rotatewithoffset") ? tfjs_esm_exports.image.rotateWithOffset(image25, angle, 0, palmCenterNormalized) : image25.clone();
         const rotationMatrix = buildRotationMatrix2(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
         const croppedInput = cutBoxFromImageAndResize2(newBox, rotatedImage, [this.inputSize, this.inputSize]);
@@ -9441,7 +9471,7 @@ async function predict8(input, config3) {
 }
 async function load10(config3) {
   var _a, _b, _c, _d, _e, _f;
-  if (env2.initial) {
+  if (env.initial) {
     handDetectorModel = null;
     handPoseModel = null;
   }
@@ -9530,7 +9560,7 @@ var fingerMap = {
 };
 async function loadDetect2(config3) {
   var _a, _b;
-  if (env2.initial)
+  if (env.initial)
     models2[0] = null;
   if (!models2[0]) {
     fakeOps(["tensorlistreserve", "enter", "tensorlistfromtensor", "merge", "loopcond", "switch", "exit", "tensorliststack", "nextiteration", "tensorlistsetitem", "tensorlistgetitem", "reciprocal", "shape", "split", "where"], config3);
@@ -9548,7 +9578,7 @@ async function loadDetect2(config3) {
 }
 async function loadSkeleton(config3) {
   var _a, _b;
-  if (env2.initial)
+  if (env.initial)
     models2[1] = null;
   if (!models2[1]) {
     models2[1] = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath) || ""));
@@ -9853,7 +9883,7 @@ var cache5 = {
   bodies: []
 };
 async function load11(config3) {
-  if (env2.initial)
+  if (env.initial)
     model10 = null;
   if (!model10) {
     fakeOps(["size"], config3);
@@ -9985,7 +10015,7 @@ var last4 = [];
 var skipped11 = Number.MAX_SAFE_INTEGER;
 var scaleBox = 2.5;
 async function load12(config3) {
-  if (!model11 || env2.initial) {
+  if (!model11 || env.initial) {
     model11 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model11.modelSignature["inputs"]);
     model11.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
@@ -10066,7 +10096,7 @@ async function predict11(image25, config3) {
     return last4;
   }
   skipped11 = 0;
-  if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
+  if (!env.kernels.includes("mod") || !env.kernels.includes("sparsetodense"))
     return last4;
   return new Promise(async (resolve) => {
     const outputSize2 = [image25.shape[2], image25.shape[1]];
@@ -10414,7 +10444,7 @@ async function predict12(input, config3) {
   return scaled;
 }
 async function load13(config3) {
-  if (!model12 || env2.initial) {
+  if (!model12 || env.initial) {
     model12 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
     if (!model12 || !model12["modelUrl"])
       log("load model failed:", config3.body.modelPath);
@@ -10429,7 +10459,7 @@ async function load13(config3) {
 var model13;
 var busy = false;
 async function load14(config3) {
-  if (!model13 || env2.initial) {
+  if (!model13 || env.initial) {
     model13 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
     if (!model13 || !model13["modelUrl"])
       log("load model failed:", config3.segmentation.modelPath);
@@ -10468,7 +10498,7 @@ async function process5(input, background, config3) {
     t.data = tfjs_esm_exports.image.resizeBilinear(t.squeeze, [height, width]);
   }
   const data = Array.from(await t.data.data());
-  if (env2.node && !env2.Canvas && typeof ImageData === "undefined") {
+  if (env.node && !env.Canvas && typeof ImageData === "undefined") {
     if (config3.debug)
       log("canvas support missing");
     Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
@@ -10540,7 +10570,7 @@ function reset(instance) {
 }
 async function load15(instance) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E;
-  if (env2.initial)
+  if (env.initial)
     reset(instance);
   if (instance.config.hand.enabled) {
     if (!instance.models.handpose && ((_b = (_a = instance.config.hand.detector) == null ? void 0 : _a.modelPath) == null ? void 0 : _b.includes("handdetect")))
@@ -10733,24 +10763,24 @@ async function register(instance) {
 // src/tfjs/backend.ts
 async function check(instance, force = false) {
   instance.state = "backend";
-  if (force || env2.initial || instance.config.backend && instance.config.backend.length > 0 && tfjs_esm_exports.getBackend() !== instance.config.backend) {
+  if (force || env.initial || instance.config.backend && instance.config.backend.length > 0 && tfjs_esm_exports.getBackend() !== instance.config.backend) {
     const timeStamp = now();
     if (instance.config.backend && instance.config.backend.length > 0) {
       if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && instance.config.debug) {
         if (instance.config.debug)
           log("running inside web worker");
       }
-      if (env2.browser && instance.config.backend === "tensorflow") {
+      if (env.browser && instance.config.backend === "tensorflow") {
         if (instance.config.debug)
           log("override: backend set to tensorflow while running in browser");
         instance.config.backend = "humangl";
       }
-      if (env2.node && (instance.config.backend === "webgl" || instance.config.backend === "humangl")) {
+      if (env.node && (instance.config.backend === "webgl" || instance.config.backend === "humangl")) {
         if (instance.config.debug)
           log(`override: backend set to ${instance.config.backend} while running in nodejs`);
         instance.config.backend = "tensorflow";
       }
-      if (env2.browser && instance.config.backend === "webgpu") {
+      if (env.browser && instance.config.backend === "webgpu") {
         if (typeof navigator === "undefined" || typeof navigator["gpu"] === "undefined") {
           log("override: backend set to webgpu but browser does not support webgpu");
           instance.config.backend = "humangl";
@@ -10767,7 +10797,7 @@ async function check(instance, force = false) {
         log("available backends:", available);
       if (!available.includes(instance.config.backend)) {
         log(`error: backend ${instance.config.backend} not found in registry`);
-        instance.config.backend = env2.node ? "tensorflow" : "webgl";
+        instance.config.backend = env.node ? "tensorflow" : "webgl";
         if (instance.config.debug)
           log(`override: setting backend ${instance.config.backend}`);
       }
@@ -10798,7 +10828,6 @@ async function check(instance, force = false) {
     if (tfjs_esm_exports.getBackend() === "humangl") {
       tfjs_esm_exports.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
       tfjs_esm_exports.ENV.set("WEBGL_CPU_FORWARD", true);
-      tfjs_esm_exports.ENV.set("WEBGL_PACK_DEPTHWISECONV", false);
       tfjs_esm_exports.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
       tfjs_esm_exports.ENV.set("CPU_HANDOFF_SIZE_THRESHOLD", 256);
       if (typeof instance.config["deallocate"] !== "undefined" && instance.config["deallocate"]) {
@@ -10812,16 +10841,12 @@ async function check(instance, force = false) {
       }
     }
     if (tfjs_esm_exports.getBackend() === "webgpu") {
-      tfjs_esm_exports.ENV.set("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD", 512);
-      tfjs_esm_exports.ENV.set("WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE", 0);
-      tfjs_esm_exports.ENV.set("WEBGPU_CPU_FORWARD", true);
     }
     tfjs_esm_exports.enableProdMode();
     await tfjs_esm_exports.ready();
     instance.performance.backend = Math.trunc(now() - timeStamp);
     instance.config.backend = tfjs_esm_exports.getBackend();
-    get();
-    instance.env = env2;
+    env.updateBackend();
   }
   return true;
 }
@@ -10837,7 +10862,7 @@ function fakeOps(kernelNames, config3) {
     };
     tfjs_esm_exports.registerKernel(kernelConfig);
   }
-  env2.kernels = tfjs_esm_exports.getKernelsForBackend(tfjs_esm_exports.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+  env.kernels = tfjs_esm_exports.getKernelsForBackend(tfjs_esm_exports.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
 }
 
 // src/util/draw.ts
@@ -12580,8 +12605,8 @@ async function warmupCanvas(instance) {
     let img;
     if (typeof Image !== "undefined")
       img = new Image();
-    else if (env2.Image)
-      img = new env2.Image();
+    else if (env.Image)
+      img = new env.Image();
     img.onload = async () => {
       const canvas3 = canvas(img.naturalWidth, img.naturalHeight);
       if (!canvas3) {
@@ -12635,7 +12660,7 @@ async function warmup(instance, userConfig) {
   return new Promise(async (resolve) => {
     if (typeof createImageBitmap === "function")
       res = await warmupBitmap(instance);
-    else if (typeof Image !== "undefined" || env2.Canvas !== void 0)
+    else if (typeof Image !== "undefined" || env.Canvas !== void 0)
       res = await warmupCanvas(instance);
     else
       res = await warmupNode(instance);
@@ -12700,11 +12725,10 @@ var Human = class {
       if (this.events && this.events.dispatchEvent)
         (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
-    get();
-    this.env = env2;
+    this.env = env;
     config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfjs_esm_exports.version_core}/dist/`;
-    config.modelBasePath = this.env.browser ? "../models/" : "file://models/";
-    config.backend = this.env.browser ? "humangl" : "tensorflow";
+    config.modelBasePath = env.browser ? "../models/" : "file://models/";
+    config.backend = env.browser ? "humangl" : "tensorflow";
     this.version = version10;
     Object.defineProperty(this, "version", { value: version10 });
     this.config = JSON.parse(JSON.stringify(config));
@@ -12760,7 +12784,6 @@ var Human = class {
   async init() {
     await check(this, true);
     await this.tf.ready();
-    set(this.env);
   }
   async load(userConfig) {
     this.state = "load";
@@ -12768,7 +12791,7 @@ var Human = class {
     const count2 = Object.values(this.models).filter((model14) => model14).length;
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);
-    if (env2.initial) {
+    if (env.initial) {
       if (this.config.debug)
         log(`version: ${this.version}`);
       if (this.config.debug)
@@ -12784,9 +12807,9 @@ var Human = class {
       }
     }
     await load15(this);
-    if (env2.initial && this.config.debug)
+    if (env.initial && this.config.debug)
       log("tf engine state:", this.tf.engine().state.numBytes, "bytes", this.tf.engine().state.numTensors, "tensors");
-    env2.initial = false;
+    env.initial = false;
     const loaded = Object.values(this.models).filter((model14) => model14).length;
     if (loaded !== count2) {
       await validate2(this);
@@ -12971,10 +12994,11 @@ _analyzeMemoryLeaks = new WeakMap();
 _checkSanity = new WeakMap();
 _sanity = new WeakMap();
 export {
+  Env,
   Human,
   Models,
   Human as default,
   config as defaults,
-  env2 as env
+  env
 };
 //# sourceMappingURL=human.esm-nobundle.js.map

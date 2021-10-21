@@ -5,6 +5,7 @@
 // module imports
 import { log, now, mergeDeep, validate } from './util/util';
 import { defaults } from './config';
+import { env, Env } from './util/env';
 import * as tf from '../dist/tfjs.esm.js';
 import * as app from '../package.json';
 import * as backend from './tfjs/backend';
@@ -12,7 +13,6 @@ import * as blazepose from './body/blazepose';
 import * as centernet from './object/centernet';
 import * as draw from './util/draw';
 import * as efficientpose from './body/efficientpose';
-import * as env from './util/env';
 import * as face from './face/face';
 import * as facemesh from './face/facemesh';
 import * as faceres from './face/faceres';
@@ -125,7 +125,7 @@ export class Human {
   tf: TensorFlow;
 
   /** Object containing environment information used for diagnostics */
-  env: env.Env;
+  env: Env;
 
   /** Draw helper classes that can draw detected objects on canvas using specified draw
    * - options: {@link DrawOptions} global settings for all draw operations, can be overriden for each draw method
@@ -174,11 +174,10 @@ export class Human {
    * @return instance: {@link Human}
    */
   constructor(userConfig?: Partial<Config>) {
-    env.get();
-    this.env = env.env;
+    this.env = env;
     defaults.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`;
-    defaults.modelBasePath = this.env.browser ? '../models/' : 'file://models/';
-    defaults.backend = this.env.browser ? 'humangl' : 'tensorflow';
+    defaults.modelBasePath = env.browser ? '../models/' : 'file://models/';
+    defaults.backend = env.browser ? 'humangl' : 'tensorflow';
     this.version = app.version; // expose version property on instance of class
     Object.defineProperty(this, 'version', { value: app.version }); // expose version property directly on class itself
     this.config = JSON.parse(JSON.stringify(defaults));
@@ -311,7 +310,6 @@ export class Human {
   async init(): Promise<void> {
     await backend.check(this, true);
     await this.tf.ready();
-    env.set(this.env);
   }
 
   /** Load method preloads all configured models on-demand
@@ -326,7 +324,7 @@ export class Human {
     const count = Object.values(this.models).filter((model) => model).length;
     if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
 
-    if (env.env.initial) { // print version info on first run and check for correct backend setup
+    if (env.initial) { // print version info on first run and check for correct backend setup
       if (this.config.debug) log(`version: ${this.version}`);
       if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
       if (!await backend.check(this)) log('error: backend check failed');
@@ -338,8 +336,8 @@ export class Human {
     }
 
     await models.load(this); // actually loads models
-    if (env.env.initial && this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors'); // print memory stats on first run
-    env.env.initial = false;
+    if (env.initial && this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors'); // print memory stats on first run
+    env.initial = false;
 
     const loaded = Object.values(this.models).filter((model) => model).length;
     if (loaded !== count) { // number of loaded models changed

@@ -89,7 +89,7 @@ const ui = {
   autoPlay: false, // start webcam & detection on load
 
   // internal variables
-  exceptionHandler: true, // should capture all unhandled exceptions
+  exceptionHandler: false, // should capture all unhandled exceptions
   busy: false, // internal camera busy flag
   menuWidth: 0, // internal
   menuHeight: 0, // internal
@@ -168,13 +168,15 @@ function log(...msg) {
   if (ui.console) console.log(ts, ...msg);
 }
 
+let prevStatus = '';
 function status(msg) {
   const div = document.getElementById('status');
-  if (div && msg && msg.length > 0) {
+  if (div && msg && msg !== prevStatus && msg.length > 0) {
     log('status', msg);
     document.getElementById('play').style.display = 'none';
     document.getElementById('loader').style.display = 'block';
     div.innerText = msg;
+    prevStatus = msg;
   } else {
     const video = document.getElementById('video');
     const playing = (video.srcObject !== null) && !video.paused;

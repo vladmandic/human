@@ -10,16 +10,17 @@ import { env } from '../util/env';
 import { log, now } from '../util/util';
 
 export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.Canvas;
+export type AnyCanvas = HTMLCanvasElement | OffscreenCanvas;
 
 const maxSize = 2048;
 // internal temp canvases
-let inCanvas: HTMLCanvasElement | OffscreenCanvas | null = null; // use global variable to avoid recreating canvas on each frame
-let outCanvas: HTMLCanvasElement | OffscreenCanvas | null = null; // use global variable to avoid recreating canvas on each frame
-let tmpCanvas: HTMLCanvasElement | OffscreenCanvas | null = null; // use global variable to avoid recreating canvas on each frame
+let inCanvas: AnyCanvas | null = null; // use global variable to avoid recreating canvas on each frame
+let outCanvas: AnyCanvas | null = null; // use global variable to avoid recreating canvas on each frame
+let tmpCanvas: AnyCanvas | null = null; // use global variable to avoid recreating canvas on each frame
 // @ts-ignore // imagefx is js module that should be converted to a class
 let fx: fxImage.GLImageFilter | null; // instance of imagefx
 
-export function canvas(width, height): HTMLCanvasElement | OffscreenCanvas {
+export function canvas(width, height): AnyCanvas {
   let c;
   if (env.browser) {
     if (env.offscreen) {
@@ -39,7 +40,7 @@ export function canvas(width, height): HTMLCanvasElement | OffscreenCanvas {
   return c;
 }
 
-export function copy(input: HTMLCanvasElement | OffscreenCanvas, output?: HTMLCanvasElement | OffscreenCanvas) {
+export function copy(input: AnyCanvas, output?: AnyCanvas) {
   const outputCanvas = output || canvas(input.width, input.height);
   const ctx = outputCanvas.getContext('2d') as CanvasRenderingContext2D;
   ctx.drawImage(input, 0, 0);
@@ -49,7 +50,7 @@ export function copy(input: HTMLCanvasElement | OffscreenCanvas, output?: HTMLCa
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
 // input is resized and run through imagefx filter
-export function process(input: Input, config: Config, getTensor: boolean = true): { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null } {
+export function process(input: Input, config: Config, getTensor: boolean = true): { tensor: Tensor | null, canvas: AnyCanvas | null } {
   if (!input) {
     // throw new Error('input is missing');
     if (config.debug) log('input is missing');
@@ -119,10 +120,10 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
       if (config.filter.flip && typeof inCtx.translate !== 'undefined') {
         inCtx.translate(originalWidth, 0);
         inCtx.scale(-1, 1);
-        inCtx.drawImage(input as OffscreenCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
+        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
         inCtx.setTransform(1, 0, 0, 1, 0, 0); // resets transforms to defaults
       } else {
-        inCtx.drawImage(input as OffscreenCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
+        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
       }
     }
 
@@ -130,7 +131,7 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
 
     // imagefx transforms using gl from input canvas to output canvas
     if (config.filter.enabled && env.webgl.supported) {
-      if (!fx) fx = env.browser ? new fxImage.GLImageFilter({ canvas: outCanvas }) : null; // && (typeof document !== 'undefined')
+      if (!fx) fx = env.browser ? new fxImage.GLImageFilter() : null; // && (typeof document !== 'undefined')
       env.filter = !!fx;
       if (!fx) return { tensor: null, canvas: inCanvas };
       fx.reset();

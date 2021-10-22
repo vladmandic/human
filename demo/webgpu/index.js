@@ -6,7 +6,7 @@
  */
 // @ts-nocheck // typescript checks disabled as this is pure javascript
 
-import Human from '../../dist/human.esm.js';
+import Human from '../../dist/human.custom.esm.js';
 import GLBench from '../helpers/gl-bench.js';
 
 const workerJS = './worker.js';
@@ -189,7 +189,6 @@ async function runDetection() {
   }
 
   time.main = Math.round(human.now() - start.main);
-
   bench.nextFrame();
   requestAnimationFrame(runDetection);
 }
@@ -240,10 +239,10 @@ async function setupCamera() {
 }
 
 async function startWorkers() {
-  if (!workers.face) workers.face = new Worker(workerJS);
-  if (!workers.body) workers.body = new Worker(workerJS);
-  if (!workers.hand) workers.hand = new Worker(workerJS);
-  if (!workers.object) workers.object = new Worker(workerJS);
+  if (!workers.face) workers.face = new Worker(workerJS, { type: 'module' });
+  if (!workers.body) workers.body = new Worker(workerJS, { type: 'module' });
+  if (!workers.hand) workers.hand = new Worker(workerJS, { type: 'module' });
+  if (!workers.object) workers.object = new Worker(workerJS, { type: 'module' });
   workers.face.onmessage = receiveMessage;
   workers.body.onmessage = receiveMessage;
   workers.hand.onmessage = receiveMessage;
@@ -251,6 +250,7 @@ async function startWorkers() {
 }
 
 async function main() {
+  /*
   window.addEventListener('unhandledrejection', (evt) => {
     // eslint-disable-next-line no-console
     console.error(evt.reason || evt);
@@ -258,6 +258,7 @@ async function main() {
     status('exception error');
     evt.preventDefault();
   });
+  */
 
   if (typeof Worker === 'undefined' || typeof OffscreenCanvas === 'undefined') {
     status('workers are not supported');
@@ -269,6 +270,7 @@ async function main() {
 
   await startWorkers();
   await setupCamera();
+  await human.init();
   runDetection();
   drawResults();
 }

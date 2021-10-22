@@ -230,14 +230,14 @@ import * as dist_star from "@tensorflow/tfjs/dist/index.js";
 import * as dist_star2 from "@tensorflow/tfjs-backend-webgl/dist/index.js";
 import * as dist_star3 from "@tensorflow/tfjs-backend-wasm/dist/index.js";
 import * as dist_star4 from "@tensorflow/tfjs-backend-webgpu/dist/index.js";
-var version = "3.9.0";
-var version2 = "3.9.0";
-var version3 = "3.9.0";
-var version4 = "3.9.0";
-var version5 = "3.9.0";
-var version6 = "3.9.0";
-var version7 = "3.9.0";
-var version8 = "3.9.0";
+var version = "3.10.0";
+var version2 = "3.10.0";
+var version3 = "3.10.0";
+var version4 = "3.10.0";
+var version5 = "3.10.0";
+var version6 = "3.10.0";
+var version7 = "3.10.0";
+var version8 = "3.10.0";
 var version9 = {
   tfjs: version,
   "tfjs-core": version2,
@@ -1271,7 +1271,7 @@ var Env = class {
 var env = new Env();
 
 // package.json
-var version10 = "2.3.6";
+var version10 = "2.4.0";
 
 // src/gear/gear-agegenderrace.ts
 var model;

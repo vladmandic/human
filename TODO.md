@@ -4,33 +4,19 @@
 
 <br>
 
-### Models
-
-- Body segmentation: `robust-video-matting`
-
-<br>
-
-### Backends
-
-#### WASM
-
-- Backend WASM incorrect handling of `int32` tensors  
-  <https://github.com/tensorflow/tfjs/issues/5641>
-
-#### WebGPU
-
-Experimental support only until support is officially added in Chromium
-- Performance issues:
-  <https://github.com/tensorflow/tfjs/issues/5689>
-
-<br>
-
 ### Exploring
 
 - Optical Flow: <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
 - TFLite Models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
 - Histogram Equalization: Regular, Adaptive, Contrast Limited
 - Switch to custom `tfjs` for main `human` ESM bundle
+- Body segmentation: `robust-video-matting`
+
+#### WebGPU
+
+Experimental support only until support is officially added in Chromium
+- Performance issues:
+  <https://github.com/tensorflow/tfjs/issues/5689>
 
 <br><hr><br>
 
@@ -41,14 +27,6 @@ Experimental support only until support is officially added in Chromium
 ### Face Detection
 
 Enhanced rotation correction for face detection is not working in NodeJS due to missing kernel op in TFJS  
-Feature is automatically disabled in NodeJS without user impact  
-
-- Backend NodeJS missing kernel op `RotateWithOffset`  
-  <https://github.com/tensorflow/tfjs/issues/5473>  
-
-### Hand Detection
-
-Enhanced rotation correction for hand detection is not working in NodeJS due to missing kernel op in TFJS  
 Feature is automatically disabled in NodeJS without user impact  
 
 - Backend NodeJS missing kernel op `RotateWithOffset`  
@@ -74,7 +52,11 @@ Object detection using CenterNet or NanoDet models is not working when using WAS
 
 ## Pending Release
 
+- Update to TFJS 3.10.0
+- Multiple bug fixes
+- Utility class `human.env`
 - Enhanced **MoveNet** post-processing
 - Add optional **Anti-Spoof** module
 - Remove old **HandDetect** and **PoseNet** models from default installation
 - Refactor **ImageFX** module
+- Experimental `human.custom.esm` with custom **TFJS** build

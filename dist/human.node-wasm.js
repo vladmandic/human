@@ -1286,7 +1286,7 @@ var env = new Env();
 var tf28 = __toModule(require_tfjs_esm());
 
 // package.json
-var version = "2.3.6";
+var version = "2.4.0";
 
 // src/tfjs/humangl.ts
 var tf24 = __toModule(require_tfjs_esm());

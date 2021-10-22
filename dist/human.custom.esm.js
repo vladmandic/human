@@ -37544,6 +37544,9 @@ function deepMapInternal(input2, mapFn, seen = new Map(), containedIn = new Set(
   if (input2 == null) {
     return null;
   }
+  if (typeof Blob === "function" && input2 instanceof Blob) {
+    return input2.slice();
+  }
   if (containedIn.has(input2)) {
     throw new Error("Circular references are not supported.");
   }
@@ -37566,6 +37569,9 @@ function deepMapInternal(input2, mapFn, seen = new Map(), containedIn = new Set(
       mappedIterable[k] = childResult;
     }
     containedIn.delete(input2);
+    if (input2.__proto__) {
+      mappedIterable.__proto__ = input2.__proto__;
+    }
     return mappedIterable;
   } else {
     throw new Error(`Can't recurse into non-iterable type: ${input2}`);
@@ -39169,7 +39175,7 @@ var FileChunkIterator = class extends ByteChunkIterator2 {
     return { value: await chunk, done: false };
   }
 };
-async function urlChunkIterator(url, options3 = {}) {
+async function urlChunkIterator(url, options3 = {}, fetchFunc) {
   let urlString;
   let requestInit;
   if (typeof url === "string") {
@@ -39178,7 +39184,7 @@ async function urlChunkIterator(url, options3 = {}) {
     urlString = url.url;
     requestInit = getRequestInitFromRequest(url);
   }
-  const response = await util_exports.fetch(urlString, requestInit);
+  const response = await (fetchFunc || util_exports.fetch)(urlString, requestInit);
   if (response.ok) {
     const uint8Array = new Uint8Array(await response.arrayBuffer());
     return new FileChunkIterator(uint8Array, options3);
@@ -63999,7 +64005,7 @@ function fromPixels3(args) {
   }
   const isVideo = typeof HTMLVideoElement !== "undefined" && pixels instanceof HTMLVideoElement;
   const isImage = typeof HTMLImageElement !== "undefined" && pixels instanceof HTMLImageElement;
-  const isCanvas = typeof HTMLCanvasElement !== "undefined" && pixels instanceof HTMLCanvasElement;
+  const isCanvas = typeof HTMLCanvasElement !== "undefined" && pixels instanceof HTMLCanvasElement || typeof OffscreenCanvas !== "undefined" && pixels instanceof OffscreenCanvas;
   const isImageBitmap = typeof ImageBitmap !== "undefined" && pixels instanceof ImageBitmap;
   const [width, height] = isVideo ? [
     pixels.videoWidth,
@@ -70287,7 +70293,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm67(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.9.0-20211021";
+var externalVersion = "3.10.0-20211022";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,
@@ -71322,7 +71328,7 @@ var Env = class {
 var env2 = new Env();
 
 // package.json
-var version = "2.3.6";
+var version = "2.4.0";
 
 // src/gear/gear-agegenderrace.ts
 var model2;

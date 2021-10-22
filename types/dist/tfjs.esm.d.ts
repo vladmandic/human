@@ -334,6 +334,8 @@ export var Cumsum: string;
 export var CustomCallback: {
     new (args: any, yieldEvery: any): {
         currentEpoch: number;
+        nowFunc: any;
+        nextFrameFunc: any;
         yieldEvery: any;
         maybeWait(epoch: any, batch: any, logs: any): Promise<void>;
         trainBegin: any;
@@ -1219,7 +1221,7 @@ export var RNN: {
         countParams(): number;
         getWeights(trainableOnly?: boolean): any;
         setWeights(weights: any): void;
-        addWeight(name: any, shape: any, dtype: any, initializer: any, regularizer: any, trainable: any, constraint: any): {
+        addWeight(name: any, shape: any, dtype: any, initializer: any, regularizer: any, trainable: any, constraint: any, getInitializerFunc: any): {
             dtype: string;
             shape: any;
             id: number;
@@ -1604,6 +1606,7 @@ export function getBackend(): any;
 export function getGradient(kernelName: any): any;
 export function getKernel(kernelName: any, backendName: any): any;
 export function getKernelsForBackend(backendName: any): any[];
+export function getThreadsCount(): number;
 declare var gpgpu_util_exports: {};
 export function grad(f: any): (x: any, dy: any) => any;
 export function grads(f: any): (args: any, dy: any) => any;
@@ -2002,6 +2005,7 @@ export function sequential(config: any): any;
 declare var serialization_exports: {};
 export function setBackend(backendName: any): any;
 export function setPlatform(platformName: any, platform: any): void;
+export function setThreadsCount(numThreads: any): void;
 export function setWasmPath(path: any, usePlatformFetch?: boolean): void;
 export function setWasmPaths(prefixOrFileMap: any, usePlatformFetch?: boolean): void;
 export function setWebGLContext(webGLVersion: any, gl: any): void;

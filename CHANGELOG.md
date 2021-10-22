@@ -9,11 +9,12 @@
   
 ## Changelog
   
+### **HEAD -> main** 2021/10/21 mandic00@live.com
+
+
 ### **2.3.6** 2021/10/21 mandic00@live.com
 
-
-### **origin/main** 2021/10/21 mandic00@live.com
-
+- fix for human.draw labels and typedefs
 - refactor human.env to a class type
 - add human.custom.esm using custom tfjs build
 

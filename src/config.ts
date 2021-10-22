@@ -1,53 +1,42 @@
 /* eslint-disable indent */
 /* eslint-disable no-multi-spaces */
 
-/** Dectector part of face configuration */
-export interface FaceDetectorConfig {
+export interface GenericConfig {
+  enabled: boolean,
   modelPath: string,
+  skipFrames: number,
+  skipTime: number,
+}
+
+/** Dectector part of face configuration */
+export interface FaceDetectorConfig extends GenericConfig {
   rotation: boolean,
   maxDetected: number,
-  skipFrames: number,
   minConfidence: number,
   iouThreshold: number,
   return: boolean,
 }
 
 /** Mesh part of face configuration */
-export interface FaceMeshConfig {
-  enabled: boolean,
-  modelPath: string,
-}
+export type FaceMeshConfig = GenericConfig
 
 /** Iris part of face configuration */
-export interface FaceIrisConfig {
-  enabled: boolean,
-  modelPath: string,
-}
+export type FaceIrisConfig = GenericConfig
 
 /** Description or face embedding part of face configuration
  * - also used by age and gender detection
  */
-export interface FaceDescriptionConfig {
-  enabled: boolean,
-  modelPath: string,
-  skipFrames: number,
+export interface FaceDescriptionConfig extends GenericConfig {
   minConfidence: number,
 }
 
 /** Emotion part of face configuration */
-export interface FaceEmotionConfig {
-  enabled: boolean,
+export interface FaceEmotionConfig extends GenericConfig {
   minConfidence: number,
-  skipFrames: number,
-  modelPath: string,
 }
 
 /** Emotion part of face configuration */
-export interface FaceAntiSpoofConfig {
-  enabled: boolean,
-  skipFrames: number,
-  modelPath: string,
-}
+export type FaceAntiSpoofConfig = GenericConfig
 
 /** Controlls and configures all face-specific options:
  * - face detection, face mesh detection, age, gender, emotion detection and face description
@@ -86,18 +75,15 @@ export interface FaceConfig {
  * Changing `modelPath` will change module responsible for hand detection and tracking
  * Allowed values are `posenet.json`, `blazepose.json`, `efficientpose.json`, `movenet-lightning.json`, `movenet-thunder.json`, `movenet-multipose.json`
 */
-export interface BodyConfig {
-  enabled: boolean,
-  modelPath: string,
+export interface BodyConfig extends GenericConfig {
   maxDetected: number,
   minConfidence: number,
-  skipFrames: number,
   detector?: {
     modelPath: string
   },
 }
 
-/** Controlls and configures all hand detection specific options
+/** Controls and configures all hand detection specific options
  *
  * Parameters:
  * - enabled: true/false
@@ -113,10 +99,8 @@ export interface BodyConfig {
  * Changing `detector.modelPath` will change module responsible for hand detection and tracking
  * Allowed values are `handdetect.json` and `handtrack.json`
 */
-export interface HandConfig {
-  enabled: boolean,
+export interface HandConfig extends GenericConfig {
   rotation: boolean,
-  skipFrames: number,
   minConfidence: number,
   iouThreshold: number,
   maxDetected: number,
@@ -139,13 +123,10 @@ export interface HandConfig {
  * Changing `modelPath` will change module responsible for hand detection and tracking
  * Allowed values are `mb3-centernet.json` and `nanodet.json`
 */
-export interface ObjectConfig {
-  enabled: boolean,
-  modelPath: string,
+export interface ObjectConfig extends GenericConfig {
   minConfidence: number,
   iouThreshold: number,
   maxDetected: number,
-  skipFrames: number,
 }
 
 /** Controlls and configures all body segmentation module
@@ -368,9 +349,8 @@ const config: Config = {
                              // should be set to the minimum number for performance
       skipFrames: 11,        // how many max frames to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
-                             // e.g., if model is running st 25 FPS, we can re-use existing bounding
-                             // box for updated face analysis as the head does not move fast
-                             // in short time (10 * 1/25 = 0.25 sec)
+      skipTime: 2000,        // how many ms to go without re-running the face bounding box detector
+                             // only used when cacheSensitivity is not zero
       minConfidence: 0.2,    // threshold for discarding a prediction
       iouThreshold: 0.1,     // ammount of overlap between two detected objects before one object is removed
       return: false,         // return extracted face as tensor
@@ -393,6 +373,8 @@ const config: Config = {
       minConfidence: 0.1,    // threshold for discarding a prediction
       skipFrames: 12,        // how max many frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
+      skipTime: 2000,        // how many ms to go without re-running the face bounding box detector
+                             // only used when cacheSensitivity is not zero
       modelPath: 'emotion.json',  // face emotion model, can be absolute path or relative to modelBasePath
     },
 
@@ -403,12 +385,16 @@ const config: Config = {
                              // can be either absolute path or relative to modelBasePath
       skipFrames: 13,        // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
+      skipTime: 2000,        // how many ms to go without re-running the face bounding box detector
+                             // only used when cacheSensitivity is not zero
       minConfidence: 0.1,    // threshold for discarding a prediction
     },
 
     antispoof: {
       enabled: false,
       skipFrames: 14,        // how max many frames to go without re-running the detector
+                             // only used when cacheSensitivity is not zero
+      skipTime: 2000,        // how many ms to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
       modelPath: 'antispoof.json',  // face description model
                              // can be either absolute path or relative to modelBasePath
@@ -429,6 +415,8 @@ const config: Config = {
     minConfidence: 0.3,      // threshold for discarding a prediction
     skipFrames: 1,           // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
+    skipTime: 2000,          // how many ms to go without re-running the face bounding box detector
+                             // only used when cacheSensitivity is not zero
 },
 
   hand: {
@@ -438,9 +426,8 @@ const config: Config = {
                              // only valid for `handdetect` variation
     skipFrames: 2,           // how many max frames to go without re-running the hand bounding box detector
                              // only used when cacheSensitivity is not zero
-                             // e.g., if model is running st 25 FPS, we can re-use existing bounding
-                             // box for updated hand skeleton analysis as the hand
-                             // hasn't moved much in short time (10 * 1/25 = 0.25 sec)
+    skipTime: 2000,          // how many ms to go without re-running the face bounding box detector
+                             // only used when cacheSensitivity is not zero
     minConfidence: 0.50,     // threshold for discarding a prediction
     iouThreshold: 0.2,       // ammount of overlap between two detected objects before one object is removed
     maxDetected: -1,         // maximum number of hands detected in the input
@@ -464,6 +451,8 @@ const config: Config = {
     iouThreshold: 0.4,       // ammount of overlap between two detected objects before one object is removed
     maxDetected: 10,         // maximum number of objects detected in the input
     skipFrames: 15,          // how many max frames to go without re-running the detector
+                             // only used when cacheSensitivity is not zero
+    skipTime: 2000,          // how many ms to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
   },
 

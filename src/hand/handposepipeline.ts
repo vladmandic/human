@@ -8,12 +8,14 @@ import * as util from './handposeutil';
 import type * as detector from './handposedetector';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import { env } from '../util/env';
+import { now } from '../util/util';
 
 const palmBoxEnlargeFactor = 5; // default 3
 const handBoxEnlargeFactor = 1.65; // default 1.65
 const palmLandmarkIds = [0, 5, 9, 13, 17, 1, 2];
 const palmLandmarksPalmBase = 0;
 const palmLandmarksMiddleFingerBase = 2;
+let lastTime = 0;
 
 export class HandPipeline {
   handDetector: detector.HandDetector;
@@ -90,7 +92,7 @@ export class HandPipeline {
     let boxes;
 
     // console.log('handpipeline:estimateHands:skip criteria', this.skipped, config.hand.skipFrames, !config.hand.landmarks, !config.skipFrame); // should skip hand detector?
-    if ((this.skipped === 0) || (this.skipped > config.hand.skipFrames) || !config.hand.landmarks || !config.skipFrame) {
+    if ((this.skipped === 0) || ((this.skipped > config.hand.skipFrames) && ((config.hand.skipTime || 0) <= (now() - lastTime))) || !config.hand.landmarks || !config.skipFrame) {
       boxes = await this.handDetector.estimateHandBounds(image, config);
       this.skipped = 0;
     }
@@ -121,6 +123,7 @@ export class HandPipeline {
         tf.dispose(croppedInput);
         tf.dispose(rotatedImage);
         const [confidenceT, keypoints] = await this.handPoseModel.predict(handImage) as Array<Tensor>;
+        lastTime = now();
         tf.dispose(handImage);
         const confidence = (await confidenceT.data())[0];
         tf.dispose(confidenceT);

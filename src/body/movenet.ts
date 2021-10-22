@@ -4,7 +4,7 @@
  * Based on: [**MoveNet**](https://blog.tensorflow.org/2021/05/next-generation-pose-detection-with-movenet-and-tensorflowjs.html)
  */
 
-import { log, join } from '../util/util';
+import { log, join, now } from '../util/util';
 import * as box from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './movenetcoords';
@@ -23,9 +23,11 @@ let skipped = Number.MAX_SAFE_INTEGER;
 const cache: {
   boxes: Array<Box>, // unused
   bodies: Array<BodyResult>;
+  last: number,
 } = {
   boxes: [],
   bodies: [],
+  last: 0,
 };
 
 export async function load(config: Config): Promise<GraphModel> {
@@ -129,17 +131,10 @@ async function parseMultiPose(res, config, image, inputBox) {
 }
 
 export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
-  /** movenet caching
-   * 1. if skipFrame returned cached
-   * 2. if enough cached boxes run using cached boxes
-   * 3. if not enough detected bodies rerun using full frame
-   * 4. regenerate cached boxes based on current keypoints
-   */
-
   if (!model || !model?.inputs[0].shape) return []; // something is wrong with the model
   if (!config.skipFrame) cache.boxes.length = 0; // allowed to use cache or not
   skipped++; // increment skip frames
-  if (config.skipFrame && (skipped <= (config.body.skipFrames || 0))) {
+  if (config.skipFrame && (skipped <= (config.body.skipFrames || 0) && ((config.body.skipTime || 0) <= (now() - cache.last)))) {
     return cache.bodies; // return cached results without running anything
   }
   return new Promise(async (resolve) => {
@@ -181,6 +176,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
     // run detection on squared input and no cached boxes
     t.input = fix.padInput(input, inputSize);
     t.res = await model?.predict(t.input) as Tensor;
+    cache.last = now();
     const res = await t.res.array();
     cache.bodies = (t.res.shape[2] === 17)
       ? await parseSinglePose(res, config, input, [0, 0, 1, 1])

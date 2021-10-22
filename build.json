@@ -33,6 +33,8 @@
     "global": {
       "target": "es2018",
       "sourcemap": false,
+      "treeShaking": true,
+      "ignoreAnnotations": true,
       "banner": { "js": "/*\n  Human\n  homepage: <https://github.com/vladmandic/human>\n  author: <https://github.com/vladmandic>'\n*/\n" }
     },
     "targets": [

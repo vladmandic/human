@@ -56,7 +56,7 @@ export async function process(input: Input, background: Input | undefined, confi
   } else {
     t.data = tf.image.resizeBilinear(t.squeeze, [height, width]); // model selfie has a single channel that we can use directly
   }
-  const data = Array.from(await t.data.data());
+  const data = Array.from(await t.data.data()) as number[];
 
   if (env.node && !env.Canvas && (typeof ImageData === 'undefined')) {
     if (config.debug) log('canvas support missing');

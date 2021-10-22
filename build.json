@@ -137,6 +137,7 @@
         "format": "esm",
         "input": "tfjs/tf-browser.ts",
         "output": "dist/tfjs.esm.js",
+        "minify": true,
         "sourcemap": true,
         "external": ["fs", "os", "buffer", "util"]
       },

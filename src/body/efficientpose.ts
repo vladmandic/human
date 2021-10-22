@@ -4,7 +4,7 @@
  * Based on: [**EfficientPose**](https://github.com/daniegr/EfficientPose)
  */
 
-import { log, join } from '../util/util';
+import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './efficientposecoords';
 import type { BodyResult, Point } from '../result';
@@ -13,7 +13,7 @@ import type { Config } from '../config';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
-
+let last = 0;
 const cache: BodyResult = { id: 0, keypoints: [], box: [0, 0, 0, 0], boxRaw: [0, 0, 0, 0], score: 0, annotations: {} };
 
 // const keypoints: Array<BodyKeypoint> = [];
@@ -50,12 +50,7 @@ function max2d(inputs, minScore) {
 }
 
 export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
-  /** blazepose caching
-   * not fully implemented
-   * 1. if skipFrame returned cached
-   * 2. run detection based on squared full frame
-   */
-  if ((skipped < (config.body?.skipFrames || 0)) && config.skipFrame && Object.keys(cache.keypoints).length > 0) {
+  if ((skipped < (config.body?.skipFrames || 0)) && config.skipFrame && Object.keys(cache.keypoints).length > 0 && ((config.body.skipTime || 0) <= (now() - last))) {
     skipped++;
     return [cache];
   }
@@ -71,6 +66,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
 
     let resT;
     if (config.body.enabled) resT = await model?.predict(tensor);
+    last = now();
     tf.dispose(tensor);
 
     if (resT) {

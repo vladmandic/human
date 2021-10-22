@@ -90,7 +90,6 @@
         let res;
         let human = new Human(config);
         await human.init();
-        human.env.offscreen = false;
         human.events.addEventListener('warmup', () => events('warmup'));
         human.events.addEventListener('image', () => events('image'));
         human.events.addEventListener('detect', () => events('detect'));

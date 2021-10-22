@@ -701,7 +701,7 @@ __export(tfjs_esm_exports, {
   zeros: () => zeros,
   zerosLike: () => zerosLike
 });
-var __require2 = /* @__PURE__ */ ((x) => typeof __require !== "undefined" ? __require : typeof Proxy !== "undefined" ? new Proxy(x, {
+var __require2 = ((x) => typeof __require !== "undefined" ? __require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof __require !== "undefined" ? __require : a)[b]
 }) : x)(function(x) {
   if (typeof __require !== "undefined")
@@ -715,7 +715,7 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule2 = (target) => __defProp2(target, "__esModule", { value: true });
-var __require22 = /* @__PURE__ */ ((x) => typeof __require2 !== "undefined" ? __require2 : typeof Proxy !== "undefined" ? new Proxy(x, {
+var __require22 = ((x) => typeof __require2 !== "undefined" ? __require2 : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof __require2 !== "undefined" ? __require2 : a)[b]
 }) : x)(function(x) {
   if (typeof __require2 !== "undefined")

@@ -1099,6 +1099,7 @@ export var Optimizer: {
     };
     fromConfig(cls: any, config: any): any;
 };
+declare var OptimizerConstructors2: {};
 export var Pack: string;
 export var PadV2: string;
 export var Pool: string;
@@ -2154,12 +2155,11 @@ declare var version3: string;
 declare var version: string;
 declare var version2: string;
 declare var version8: string;
-declare var version5: string;
+declare var version6: string;
 export namespace webgl {
     export { forceHalfFloat };
 }
 declare var webgl_util_exports: {};
-declare var webgpu_exports: {};
 export function where(...args: any[]): any;
 export namespace where { }
 export function whereAsync(condition: any): Promise<any>;
@@ -2573,5 +2573,5 @@ declare var OptimizerConstructors: {
         getClassName(): any;
     };
 };
-export { add2 as add, backend_util_exports as backend_util, browser_exports as browser, exports_constraints_exports as constraints, dist_exports as data, device_util_exports as device_util, fused_ops_exports as fused, gather_nd_util_exports as gather_util, gpgpu_util_exports as gpgpu_util, exports_initializers_exports as initializers, io_exports as io, isFinite2 as isFinite, isNaN2 as isNaN, kernel_impls_exports as kernel_impls, exports_layers_exports as layers, log5 as log, math_exports as math, exports_metrics_exports as metrics, exports_models_exports as models, ones2 as ones, print2 as print, exports_regularizers_exports as regularizers, round2 as round, scatter_nd_util_exports as scatter_util, serialization_exports as serialization, slice_util_exports as slice_util, sum2 as sum, tanh2 as tanh, tensor_util_exports as tensor_util, test_util_exports as test_util, util_exports as util, version92 as version, version3 as version_converter, version as version_core, version2 as version_layers, version8 as version_wasm, version5 as version_webgl, webgl_util_exports as webgl_util, webgpu_exports as webgpu };
+export { OptimizerConstructors2 as OptimizerConstructors, add2 as add, backend_util_exports as backend_util, browser_exports as browser, exports_constraints_exports as constraints, dist_exports as data, device_util_exports as device_util, fused_ops_exports as fused, gather_nd_util_exports as gather_util, gpgpu_util_exports as gpgpu_util, exports_initializers_exports as initializers, io_exports as io, isFinite2 as isFinite, isNaN2 as isNaN, kernel_impls_exports as kernel_impls, exports_layers_exports as layers, log5 as log, math_exports as math, exports_metrics_exports as metrics, exports_models_exports as models, ones2 as ones, print2 as print, exports_regularizers_exports as regularizers, round2 as round, scatter_nd_util_exports as scatter_util, serialization_exports as serialization, slice_util_exports as slice_util, sum2 as sum, tanh2 as tanh, tensor_util_exports as tensor_util, test_util_exports as test_util, util_exports as util, version92 as version, version3 as version_converter, version as version_core, version2 as version_layers, version8 as version_wasm, version6 as version_webgl, webgl_util_exports as webgl_util };
 //# sourceMappingURL=tfjs.esm.d.ts.map

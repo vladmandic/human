@@ -220,16 +220,19 @@ var config = {
 // dist/tfjs.esm.js
 var tfjs_esm_exports = {};
 __export(tfjs_esm_exports, {
+  GraphModel: () => GraphModel,
+  OptimizerConstructors: () => OptimizerConstructors,
+  Tensor: () => Tensor,
   version: () => version9
 });
 __reExport(tfjs_esm_exports, dist_star);
 __reExport(tfjs_esm_exports, dist_star2);
 __reExport(tfjs_esm_exports, dist_star3);
-__reExport(tfjs_esm_exports, dist_star4);
 import * as dist_star from "@tensorflow/tfjs/dist/index.js";
 import * as dist_star2 from "@tensorflow/tfjs-backend-webgl/dist/index.js";
 import * as dist_star3 from "@tensorflow/tfjs-backend-wasm/dist/index.js";
-import * as dist_star4 from "@tensorflow/tfjs-backend-webgpu/dist/index.js";
+import { Tensor } from "@tensorflow/tfjs/dist/index.js";
+import { GraphModel } from "@tensorflow/tfjs-converter/dist/index";
 var version = "3.10.0";
 var version2 = "3.10.0";
 var version3 = "3.10.0";
@@ -248,6 +251,7 @@ var version9 = {
   "tfjs-backend-webgl": version7,
   "tfjs-backend-wasm": version8
 };
+var OptimizerConstructors = {};
 
 // src/image/imagefxshaders.ts
 var vertexIdentity = `
@@ -964,10 +968,10 @@ function process2(input, config3, getTensor = true) {
       log("input is missing");
     return { tensor: null, canvas: null };
   }
-  if (!(input instanceof tfjs_esm_exports.Tensor) && !(typeof Image !== "undefined" && input instanceof Image) && !(typeof env.Canvas !== "undefined" && input instanceof env.Canvas) && !(typeof globalThis.Canvas !== "undefined" && input instanceof globalThis.Canvas) && !(typeof ImageData !== "undefined" && input instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input instanceof OffscreenCanvas)) {
+  if (!(input instanceof Tensor) && !(typeof Image !== "undefined" && input instanceof Image) && !(typeof env.Canvas !== "undefined" && input instanceof env.Canvas) && !(typeof globalThis.Canvas !== "undefined" && input instanceof globalThis.Canvas) && !(typeof ImageData !== "undefined" && input instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input instanceof OffscreenCanvas)) {
     throw new Error("input type is not recognized");
   }
-  if (input instanceof tfjs_esm_exports.Tensor) {
+  if (input instanceof Tensor) {
     if (input["isDisposedInternal"]) {
       throw new Error("input tensor is disposed");
     } else if (!input.shape || input.shape.length !== 4 || input.shape[0] !== 1 || input.shape[3] !== 3) {
@@ -5687,7 +5691,7 @@ async function load9(config3) {
 function enhance(input) {
   const image25 = tfjs_esm_exports.tidy(() => {
     const tensor3 = input.image || input.tensor || input;
-    if (!(tensor3 instanceof tfjs_esm_exports.Tensor))
+    if (!(tensor3 instanceof Tensor))
       return null;
     const box4 = [[0.05, 0.15, 0.85, 0.85]];
     if (!(model9 == null ? void 0 : model9.inputs[0].shape))
@@ -12713,7 +12717,7 @@ var Human = class {
         return null;
       if (!input)
         return "input is not defined";
-      if (this.env.node && !(input instanceof tfjs_esm_exports.Tensor))
+      if (this.env.node && !(input instanceof Tensor))
         return "input must be a tensor";
       try {
         this.tf.getBackend();

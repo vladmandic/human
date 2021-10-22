@@ -2,6 +2,8 @@
 
 ## Work in Progress
 
+- `skipTime`: testing, documentation
+
 <br>
 
 ### Exploring
@@ -55,6 +57,7 @@ Object detection using CenterNet or NanoDet models is not working when using WAS
 - Update to TFJS 3.10.0
 - Multiple bug fixes
 - Utility class `human.env`
+- Add `skipTime` in addition to `skipFrames`
 - Enhanced **MoveNet** post-processing
 - Add optional **Anti-Spoof** module
 - Remove old **HandDetect** and **PoseNet** models from default installation

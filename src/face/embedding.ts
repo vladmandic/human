@@ -112,19 +112,3 @@ export async function predict(input, config): Promise<number[]> {
     resolve(data);
   });
 }
-
-/*
-git clone https://github.com/becauseofAI/MobileFace
-cd MobileFace/MobileFace_Identification
-mmconvert --srcFramework mxnet --inputWeight MobileFace_Identification_V3-0000.params --inputNetwork MobileFace_Identification_V3-symbol.json --inputShape 3,112,112 --dstFramework tensorflow --outputModel saved
-saved_model_cli show --dir saved/
-tensorflowjs_converter --input_format tf_saved_model --output_format tfjs_graph_model --saved_model_tags train saved/ graph/
-~/dev/detector/signature.js graph/
-2021-03-12 08:25:12 DATA:  created on: 2021-03-12T13:17:11.960Z
-2021-03-12 08:25:12 INFO:  graph model: /home/vlado/dev/face/MobileFace/MobileFace_Identification/graph/model.json
-2021-03-12 08:25:12 INFO:  size: { unreliable: true, numTensors: 75, numDataBuffers: 75, numBytes: 2183192 }
-2021-03-12 08:25:12 INFO:  model inputs based on signature
-2021-03-12 08:25:12 INFO:  model outputs based on signature
-2021-03-12 08:25:12 DATA:  inputs: [ { name: 'data:0', dtype: 'DT_FLOAT', shape: [ -1, 112, 112, 3, [length]: 4 ] }, [length]: 1 ]
-2021-03-12 08:25:12 DATA:  outputs: [ { id: 0, name: 'batchnorm0/add_1:0', dytpe: 'DT_FLOAT', shape: [ -1, 256, [length]: 2 ] }, [length]: 1 ]
-*/

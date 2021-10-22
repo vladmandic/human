@@ -7,7 +7,7 @@
  * Config placeholder: agegenderrace: { enabled: true, modelPath: 'gear.json' },
  */
 
-import { log, join } from '../util/util';
+import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
@@ -16,6 +16,7 @@ import { env } from '../util/env';
 let model: GraphModel | null;
 
 let last = { age: 0 };
+let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,7 +34,7 @@ export async function load(config: Config | any) {
 export async function predict(image: Tensor, config: Config) {
   if (!model) return null;
   // @ts-ignore config disabled
-  if ((skipped < config.face.agegenderrace.skipFrames) && config.skipFrame && last.age && (last.age > 0)) {
+  if ((skipped < config.face.agegenderrace?.skipFrames) && ((config.face.agegenderrace?.skipTime || 0) <= (now() - lastTime)) && config.skipFrame && last.age && (last.age > 0)) {
     skipped++;
     return last;
   }
@@ -50,6 +51,7 @@ export async function predict(image: Tensor, config: Config) {
 
     // @ts-ignore array definition unavailable at compile time
     if (config.face.agegenderrace.enabled) [ageT, genderT, raceT] = await model.execute(resize, ['age_output', 'gender_output', 'race_output']);
+    lastTime = now();
     tf.dispose(resize);
     // tf.dispose(enhance);
 

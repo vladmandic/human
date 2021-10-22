@@ -6,7 +6,7 @@
  * Obsolete and replaced by `faceres` that performs age/gender/descriptor analysis
  */
 
-import { log, join } from '../util/util';
+import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
@@ -14,6 +14,7 @@ import { env } from '../util/env';
 
 let model: GraphModel | null;
 let last = { gender: '' };
+let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 let alternative = false;
 
@@ -35,7 +36,7 @@ export async function load(config: Config | any) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function predict(image: Tensor, config: Config | any) {
   if (!model) return null;
-  if ((skipped < config.face.gender.skipFrames) && config.skipFrame && last.gender !== '') {
+  if ((skipped < config.face.gender.skipFrames) && ((config.face.gender.skipTime || 0) <= (now() - lastTime)) && config.skipFrame && last.gender !== '') {
     skipped++;
     return last;
   }
@@ -63,6 +64,7 @@ export async function predict(image: Tensor, config: Config | any) {
     const obj = { gender: '', confidence: 0 };
 
     if (config.face.gender.enabled) genderT = await model.predict(enhance);
+    lastTime = now();
     tf.dispose(enhance);
 
     if (genderT) {

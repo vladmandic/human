@@ -7,7 +7,7 @@
  * Based on: [**HSE-FaceRes**](https://github.com/HSE-asavchenko/HSE_FaceRec_tf)
  */
 
-import { log, join } from '../util/util';
+import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
@@ -21,6 +21,7 @@ const last: Array<{
   descriptor: number[],
 }> = [];
 
+let lastTime = 0;
 let lastCount = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
@@ -90,15 +91,12 @@ export function enhance(input): Tensor {
 
 export async function predict(image: Tensor, config: Config, idx, count) {
   if (!model) return null;
-  if ((skipped < (config.face.description?.skipFrames || 0)) && config.skipFrame && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
+  if ((skipped < (config.face.description?.skipFrames || 0)) && ((config.face.description?.skipTime || 0) <= (now() - lastTime)) && config.skipFrame && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
     skipped++;
     return last[idx];
   }
   skipped = 0;
   return new Promise(async (resolve) => {
-    const enhanced = enhance(image);
-
-    let resT;
     const obj = {
       age: <number>0,
       gender: <string>'unknown',
@@ -106,11 +104,13 @@ export async function predict(image: Tensor, config: Config, idx, count) {
       descriptor: <number[]>[],
     };
 
-    if (config.face.description?.enabled) resT = await model?.predict(enhanced);
-    tf.dispose(enhanced);
-
-    if (resT) {
-      const gender = await resT.find((t) => t.shape[1] === 1).data();
+    if (config.face.description?.enabled) {
+      const enhanced = enhance(image);
+      const resT = await model?.predict(enhanced) as Tensor[];
+      lastTime = now();
+      tf.dispose(enhanced);
+      const genderT = await resT.find((t) => t.shape[1] === 1) as Tensor;
+      const gender = await genderT.data();
       const confidence = Math.trunc(200 * Math.abs((gender[0] - 0.5))) / 100;
       if (confidence > (config.face.description?.minConfidence || 0)) {
         obj.gender = gender[0] <= 0.5 ? 'female' : 'male';
@@ -119,15 +119,16 @@ export async function predict(image: Tensor, config: Config, idx, count) {
       const argmax = tf.argMax(resT.find((t) => t.shape[1] === 100), 1);
       const age = (await argmax.data())[0];
       tf.dispose(argmax);
-      const all = await resT.find((t) => t.shape[1] === 100).data();
+      const ageT = resT.find((t) => t.shape[1] === 100) as Tensor;
+      const all = await ageT.data();
       obj.age = Math.round(all[age - 1] > all[age + 1] ? 10 * age - 100 * all[age - 1] : 10 * age + 100 * all[age + 1]) / 10;
 
       const desc = resT.find((t) => t.shape[1] === 1024);
       // const reshape = desc.reshape([128, 8]); // reshape large 1024-element descriptor to 128 x 8
       // const reduce = reshape.logSumExp(1); // reduce 2nd dimension by calculating logSumExp on it which leaves us with 128-element descriptor
-
-      const descriptor = await desc.data();
-      obj.descriptor = [...descriptor];
+      const descriptor = desc ? await desc.data() : <number[]>[];
+      // obj.descriptor = [...descriptor];
+      obj.descriptor = Array.from(descriptor);
       resT.forEach((t) => tf.dispose(t));
     }
     last[idx] = obj;

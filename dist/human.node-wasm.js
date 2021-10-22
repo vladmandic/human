@@ -185,6 +185,7 @@ var config = {
       rotation: true,
       maxDetected: 1,
       skipFrames: 11,
+      skipTime: 2e3,
       minConfidence: 0.2,
       iouThreshold: 0.1,
       return: false
@@ -201,17 +202,20 @@ var config = {
       enabled: true,
       minConfidence: 0.1,
       skipFrames: 12,
+      skipTime: 2e3,
       modelPath: "emotion.json"
     },
     description: {
       enabled: true,
       modelPath: "faceres.json",
       skipFrames: 13,
+      skipTime: 2e3,
       minConfidence: 0.1
     },
     antispoof: {
       enabled: false,
       skipFrames: 14,
+      skipTime: 2e3,
       modelPath: "antispoof.json"
     }
   },
@@ -223,12 +227,14 @@ var config = {
     },
     maxDetected: -1,
     minConfidence: 0.3,
-    skipFrames: 1
+    skipFrames: 1,
+    skipTime: 2e3
   },
   hand: {
     enabled: true,
     rotation: true,
     skipFrames: 2,
+    skipTime: 2e3,
     minConfidence: 0.5,
     iouThreshold: 0.2,
     maxDetected: -1,
@@ -246,7 +252,8 @@ var config = {
     minConfidence: 0.2,
     iouThreshold: 0.4,
     maxDetected: 10,
-    skipFrames: 15
+    skipFrames: 15,
+    skipTime: 2e3
   },
   segmentation: {
     enabled: false,
@@ -1315,6 +1322,7 @@ var model2;
 var cached = [];
 var skipped2 = Number.MAX_SAFE_INTEGER;
 var lastCount = 0;
+var last = 0;
 async function load2(config3) {
   var _a, _b;
   if (env.initial)
@@ -1330,10 +1338,10 @@ async function load2(config3) {
   return model2;
 }
 async function predict(image25, config3, idx, count2) {
-  var _a;
+  var _a, _b;
   if (!model2)
     return null;
-  if (skipped2 < (((_a = config3.face.antispoof) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && lastCount === count2 && cached[idx]) {
+  if (skipped2 < (((_a = config3.face.antispoof) == null ? void 0 : _a.skipFrames) || 0) && (((_b = config3.face.antispoof) == null ? void 0 : _b.skipTime) || 0) <= now() - last && config3.skipFrame && lastCount === count2 && cached[idx]) {
     skipped2++;
     return cached[idx];
   }
@@ -1344,6 +1352,7 @@ async function predict(image25, config3, idx, count2) {
     const num = (await res.data())[0];
     cached[idx] = Math.round(100 * num) / 100;
     lastCount = count2;
+    last = now();
     tf4.dispose([resize, res]);
     resolve(cached[idx]);
   });
@@ -4928,6 +4937,7 @@ var skipped3 = Number.MAX_SAFE_INTEGER;
 var outputNodes;
 var cache = null;
 var padding = [[0, 0], [0, 0], [0, 0], [0, 0]];
+var last2 = 0;
 async function loadDetect(config3) {
   var _a, _b, _c;
   if (env3.initial)
@@ -5044,10 +5054,11 @@ async function detectParts(input, config3, outputSize2) {
 }
 async function predict2(input, config3) {
   const outputSize2 = [input.shape[2] || 0, input.shape[1] || 0];
-  if (skipped3 < (config3.body.skipFrames || 0) && config3.skipFrame && cache !== null) {
+  if (skipped3 < (config3.body.skipFrames || 0) && (config3.body.skipTime || 0) <= now() - last2 && config3.skipFrame && cache !== null) {
     skipped3++;
   } else {
     cache = await detectParts(input, config3, outputSize2);
+    last2 = now();
     skipped3 = 0;
   }
   if (cache)
@@ -5145,7 +5156,8 @@ var labels = [
 // src/object/centernet.ts
 var model4;
 var inputSize3 = 0;
-var last = [];
+var last3 = [];
+var lastTime = 0;
 var skipped4 = Number.MAX_SAFE_INTEGER;
 async function load4(config3) {
   if (env.initial)
@@ -5210,20 +5222,21 @@ async function process3(res, outputShape, config3) {
   return results;
 }
 async function predict3(input, config3) {
-  if (skipped4 < (config3.object.skipFrames || 0) && config3.skipFrame && last.length > 0) {
+  if (skipped4 < (config3.object.skipFrames || 0) && (config3.object.skipTime || 0) <= now() - lastTime && config3.skipFrame && last3.length > 0) {
     skipped4++;
-    return last;
+    return last3;
   }
   skipped4 = 0;
   if (!env.kernels.includes("mod") || !env.kernels.includes("sparsetodense"))
-    return last;
+    return last3;
   return new Promise(async (resolve) => {
     const outputSize2 = [input.shape[2], input.shape[1]];
     const resize = tf8.image.resizeBilinear(input, [inputSize3, inputSize3]);
     const objectT = config3.object.enabled ? model4 == null ? void 0 : model4.execute(resize, ["tower_0/detections"]) : null;
+    lastTime = now();
     tf8.dispose(resize);
     const obj = await process3(objectT, outputSize2, config3);
-    last = obj;
+    last3 = obj;
     resolve(obj);
   });
 }
@@ -5266,6 +5279,7 @@ var connected2 = {
 
 // src/body/efficientpose.ts
 var model5;
+var last4 = 0;
 var cache2 = { id: 0, keypoints: [], box: [0, 0, 0, 0], boxRaw: [0, 0, 0, 0], score: 0, annotations: {} };
 var skipped5 = Number.MAX_SAFE_INTEGER;
 async function load5(config3) {
@@ -5298,7 +5312,7 @@ function max2d(inputs, minScore) {
 }
 async function predict4(image25, config3) {
   var _a;
-  if (skipped5 < (((_a = config3.body) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && Object.keys(cache2.keypoints).length > 0) {
+  if (skipped5 < (((_a = config3.body) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && Object.keys(cache2.keypoints).length > 0 && (config3.body.skipTime || 0) <= now() - last4) {
     skipped5++;
     return [cache2];
   }
@@ -5316,6 +5330,7 @@ async function predict4(image25, config3) {
     let resT;
     if (config3.body.enabled)
       resT = await (model5 == null ? void 0 : model5.predict(tensor3));
+    last4 = now();
     tf9.dispose(tensor3);
     if (resT) {
       cache2.keypoints.length = 0;
@@ -5377,8 +5392,9 @@ async function predict4(image25, config3) {
 var tf10 = __toModule(require_tfjs_esm());
 var annotations = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
 var model6;
-var last2 = [];
+var last5 = [];
 var lastCount2 = 0;
+var lastTime2 = 0;
 var skipped6 = Number.MAX_SAFE_INTEGER;
 var rgb = [0.2989, 0.587, 0.114];
 async function load6(config3) {
@@ -5396,44 +5412,45 @@ async function load6(config3) {
   return model6;
 }
 async function predict5(image25, config3, idx, count2) {
-  var _a;
+  var _a, _b;
   if (!model6)
     return null;
-  if (skipped6 < (((_a = config3.face.emotion) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && lastCount2 === count2 && last2[idx] && last2[idx].length > 0) {
+  if (skipped6 < (((_a = config3.face.emotion) == null ? void 0 : _a.skipFrames) || 0) && (((_b = config3.face.emotion) == null ? void 0 : _b.skipTime) || 0) <= now() - lastTime2 && config3.skipFrame && lastCount2 === count2 && last5[idx] && last5[idx].length > 0) {
     skipped6++;
-    return last2[idx];
+    return last5[idx];
   }
   skipped6 = 0;
   return new Promise(async (resolve) => {
-    var _a2, _b;
-    const resize = tf10.image.resizeBilinear(image25, [(model6 == null ? void 0 : model6.inputs[0].shape) ? model6.inputs[0].shape[2] : 0, (model6 == null ? void 0 : model6.inputs[0].shape) ? model6.inputs[0].shape[1] : 0], false);
-    const [red, green, blue] = tf10.split(resize, 3, 3);
-    tf10.dispose(resize);
-    const redNorm = tf10.mul(red, rgb[0]);
-    const greenNorm = tf10.mul(green, rgb[1]);
-    const blueNorm = tf10.mul(blue, rgb[2]);
-    tf10.dispose(red);
-    tf10.dispose(green);
-    tf10.dispose(blue);
-    const grayscale = tf10.addN([redNorm, greenNorm, blueNorm]);
-    tf10.dispose(redNorm);
-    tf10.dispose(greenNorm);
-    tf10.dispose(blueNorm);
-    const normalize = tf10.tidy(() => tf10.mul(tf10.sub(grayscale, 0.5), 2));
-    tf10.dispose(grayscale);
+    var _a2, _b2;
     const obj = [];
     if ((_a2 = config3.face.emotion) == null ? void 0 : _a2.enabled) {
+      const resize = tf10.image.resizeBilinear(image25, [(model6 == null ? void 0 : model6.inputs[0].shape) ? model6.inputs[0].shape[2] : 0, (model6 == null ? void 0 : model6.inputs[0].shape) ? model6.inputs[0].shape[1] : 0], false);
+      const [red, green, blue] = tf10.split(resize, 3, 3);
+      tf10.dispose(resize);
+      const redNorm = tf10.mul(red, rgb[0]);
+      const greenNorm = tf10.mul(green, rgb[1]);
+      const blueNorm = tf10.mul(blue, rgb[2]);
+      tf10.dispose(red);
+      tf10.dispose(green);
+      tf10.dispose(blue);
+      const grayscale = tf10.addN([redNorm, greenNorm, blueNorm]);
+      tf10.dispose(redNorm);
+      tf10.dispose(greenNorm);
+      tf10.dispose(blueNorm);
+      const normalize = tf10.tidy(() => tf10.mul(tf10.sub(grayscale, 0.5), 2));
+      tf10.dispose(grayscale);
       const emotionT = await (model6 == null ? void 0 : model6.predict(normalize));
+      lastTime2 = now();
       const data = await emotionT.data();
       tf10.dispose(emotionT);
       for (let i = 0; i < data.length; i++) {
-        if (data[i] > (((_b = config3.face.emotion) == null ? void 0 : _b.minConfidence) || 0))
+        if (data[i] > (((_b2 = config3.face.emotion) == null ? void 0 : _b2.minConfidence) || 0))
           obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] });
       }
       obj.sort((a, b) => b.score - a.score);
+      tf10.dispose(normalize);
     }
-    tf10.dispose(normalize);
-    last2[idx] = obj;
+    last5[idx] = obj;
     lastCount2 = count2;
     resolve(obj);
   });
@@ -5580,11 +5597,13 @@ var boxCache = [];
 var model8 = null;
 var inputSize5 = 0;
 var skipped7 = Number.MAX_SAFE_INTEGER;
+var lastTime3 = 0;
 var detectedFaces = 0;
 async function predict6(input, config3) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
-  if (!config3.skipFrame || (detectedFaces !== ((_a = config3.face.detector) == null ? void 0 : _a.maxDetected) || !((_b = config3.face.mesh) == null ? void 0 : _b.enabled)) && skipped7 > (((_c = config3.face.detector) == null ? void 0 : _c.skipFrames) || 0)) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m;
+  if (!config3.skipFrame || (detectedFaces !== ((_a = config3.face.detector) == null ? void 0 : _a.maxDetected) || !((_b = config3.face.mesh) == null ? void 0 : _b.enabled)) && (skipped7 > (((_c = config3.face.detector) == null ? void 0 : _c.skipFrames) || 0) && (((_d = config3.face.description) == null ? void 0 : _d.skipTime) || 0) <= now() - lastTime3)) {
     const newBoxes2 = await getBoxes(input, config3);
+    lastTime3 = now();
     boxCache = [];
     for (const possible of newBoxes2.boxes) {
       const startPoint = await possible.box.startPoint.data();
@@ -5620,16 +5639,16 @@ async function predict6(input, config3) {
       faceScore: 0,
       annotations: {}
     };
-    if (((_d = config3.face.detector) == null ? void 0 : _d.rotation) && ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) && env.kernels.includes("rotatewithoffset")) {
+    if (((_e = config3.face.detector) == null ? void 0 : _e.rotation) && ((_f = config3.face.mesh) == null ? void 0 : _f.enabled) && env.kernels.includes("rotatewithoffset")) {
       [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box4, input, inputSize5);
     } else {
       rotationMatrix = IDENTITY_MATRIX;
-      const cut = cutBoxFromImageAndResize({ startPoint: box4.startPoint, endPoint: box4.endPoint }, input, ((_f = config3.face.mesh) == null ? void 0 : _f.enabled) ? [inputSize5, inputSize5] : [size(), size()]);
+      const cut = cutBoxFromImageAndResize({ startPoint: box4.startPoint, endPoint: box4.endPoint }, input, ((_g = config3.face.mesh) == null ? void 0 : _g.enabled) ? [inputSize5, inputSize5] : [size(), size()]);
       face5.tensor = tf12.div(cut, 255);
       tf12.dispose(cut);
     }
     face5.boxScore = Math.round(100 * box4.confidence) / 100;
-    if (!((_g = config3.face.mesh) == null ? void 0 : _g.enabled)) {
+    if (!((_h = config3.face.mesh) == null ? void 0 : _h.enabled)) {
       face5.box = getClampedBox(box4, input);
       face5.boxRaw = getRawBox(box4, input);
       face5.score = Math.round(100 * box4.confidence || 0) / 100;
@@ -5652,17 +5671,17 @@ async function predict6(input, config3) {
       let rawCoords = await coordsReshaped.array();
       tf12.dispose(contourCoords);
       tf12.dispose(coordsReshaped);
-      if (faceConfidence < (((_h = config3.face.detector) == null ? void 0 : _h.minConfidence) || 1)) {
+      if (faceConfidence < (((_i = config3.face.detector) == null ? void 0 : _i.minConfidence) || 1)) {
         box4.confidence = faceConfidence;
       } else {
-        if ((_i = config3.face.iris) == null ? void 0 : _i.enabled)
+        if ((_j = config3.face.iris) == null ? void 0 : _j.enabled)
           rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize5);
         face5.mesh = transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize5);
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize5]);
         box4 = { ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), 1.5), confidence: box4.confidence };
         for (const key of Object.keys(meshAnnotations))
           face5.annotations[key] = meshAnnotations[key].map((index) => face5.mesh[index]);
-        if (((_j = config3.face.detector) == null ? void 0 : _j.rotation) && config3.face.mesh.enabled && ((_k = config3.face.description) == null ? void 0 : _k.enabled) && env.kernels.includes("rotatewithoffset")) {
+        if (((_k = config3.face.detector) == null ? void 0 : _k.rotation) && config3.face.mesh.enabled && ((_l = config3.face.description) == null ? void 0 : _l.enabled) && env.kernels.includes("rotatewithoffset")) {
           tf12.dispose(face5.tensor);
           [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box4, input, inputSize5);
         }
@@ -5676,7 +5695,7 @@ async function predict6(input, config3) {
     faces.push(face5);
     newBoxes.push(box4);
   }
-  if ((_l = config3.face.mesh) == null ? void 0 : _l.enabled)
+  if ((_m = config3.face.mesh) == null ? void 0 : _m.enabled)
     boxCache = newBoxes.filter((a) => {
       var _a2;
       return a.confidence > (((_a2 = config3.face.detector) == null ? void 0 : _a2.minConfidence) || 0);
@@ -5707,7 +5726,8 @@ var uvmap = UV468;
 // src/face/faceres.ts
 var tf13 = __toModule(require_tfjs_esm());
 var model9;
-var last3 = [];
+var last6 = [];
+var lastTime4 = 0;
 var lastCount3 = 0;
 var skipped8 = Number.MAX_SAFE_INTEGER;
 async function load9(config3) {
@@ -5740,29 +5760,29 @@ function enhance(input) {
   return image25;
 }
 async function predict7(image25, config3, idx, count2) {
-  var _a, _b, _c;
+  var _a, _b, _c, _d;
   if (!model9)
     return null;
-  if (skipped8 < (((_a = config3.face.description) == null ? void 0 : _a.skipFrames) || 0) && config3.skipFrame && lastCount3 === count2 && ((_b = last3[idx]) == null ? void 0 : _b.age) && ((_c = last3[idx]) == null ? void 0 : _c.age) > 0) {
+  if (skipped8 < (((_a = config3.face.description) == null ? void 0 : _a.skipFrames) || 0) && (((_b = config3.face.description) == null ? void 0 : _b.skipTime) || 0) <= now() - lastTime4 && config3.skipFrame && lastCount3 === count2 && ((_c = last6[idx]) == null ? void 0 : _c.age) && ((_d = last6[idx]) == null ? void 0 : _d.age) > 0) {
     skipped8++;
-    return last3[idx];
+    return last6[idx];
   }
   skipped8 = 0;
   return new Promise(async (resolve) => {
     var _a2, _b2;
-    const enhanced = enhance(image25);
-    let resT;
     const obj = {
       age: 0,
       gender: "unknown",
       genderScore: 0,
       descriptor: []
     };
-    if ((_a2 = config3.face.description) == null ? void 0 : _a2.enabled)
-      resT = await (model9 == null ? void 0 : model9.predict(enhanced));
-    tf13.dispose(enhanced);
-    if (resT) {
-      const gender = await resT.find((t) => t.shape[1] === 1).data();
+    if ((_a2 = config3.face.description) == null ? void 0 : _a2.enabled) {
+      const enhanced = enhance(image25);
+      const resT = await (model9 == null ? void 0 : model9.predict(enhanced));
+      lastTime4 = now();
+      tf13.dispose(enhanced);
+      const genderT = await resT.find((t) => t.shape[1] === 1);
+      const gender = await genderT.data();
       const confidence = Math.trunc(200 * Math.abs(gender[0] - 0.5)) / 100;
       if (confidence > (((_b2 = config3.face.description) == null ? void 0 : _b2.minConfidence) || 0)) {
         obj.gender = gender[0] <= 0.5 ? "female" : "male";
@@ -5771,14 +5791,15 @@ async function predict7(image25, config3, idx, count2) {
       const argmax = tf13.argMax(resT.find((t) => t.shape[1] === 100), 1);
       const age = (await argmax.data())[0];
       tf13.dispose(argmax);
-      const all2 = await resT.find((t) => t.shape[1] === 100).data();
+      const ageT = resT.find((t) => t.shape[1] === 100);
+      const all2 = await ageT.data();
       obj.age = Math.round(all2[age - 1] > all2[age + 1] ? 10 * age - 100 * all2[age - 1] : 10 * age + 100 * all2[age + 1]) / 10;
       const desc = resT.find((t) => t.shape[1] === 1024);
-      const descriptor = await desc.data();
-      obj.descriptor = [...descriptor];
+      const descriptor = desc ? await desc.data() : [];
+      obj.descriptor = Array.from(descriptor);
       resT.forEach((t) => tf13.dispose(t));
     }
-    last3[idx] = obj;
+    last6[idx] = obj;
     lastCount3 = count2;
     resolve(obj);
   });
@@ -8933,6 +8954,7 @@ var handBoxEnlargeFactor = 1.65;
 var palmLandmarkIds = [0, 5, 9, 13, 17, 1, 2];
 var palmLandmarksPalmBase = 0;
 var palmLandmarksMiddleFingerBase = 2;
+var lastTime5 = 0;
 var HandPipeline = class {
   constructor(handDetector, handPoseModel2) {
     __publicField(this, "handDetector");
@@ -8997,7 +9019,7 @@ var HandPipeline = class {
   async estimateHands(image25, config3) {
     let useFreshBox = false;
     let boxes;
-    if (this.skipped === 0 || this.skipped > config3.hand.skipFrames || !config3.hand.landmarks || !config3.skipFrame) {
+    if (this.skipped === 0 || this.skipped > config3.hand.skipFrames && (config3.hand.skipTime || 0) <= now() - lastTime5 || !config3.hand.landmarks || !config3.skipFrame) {
       boxes = await this.handDetector.estimateHandBounds(image25, config3);
       this.skipped = 0;
     }
@@ -9026,6 +9048,7 @@ var HandPipeline = class {
         tf16.dispose(croppedInput);
         tf16.dispose(rotatedImage);
         const [confidenceT, keypoints] = await this.handPoseModel.predict(handImage);
+        lastTime5 = now();
         tf16.dispose(handImage);
         const confidence = (await confidenceT.data())[0];
         tf16.dispose(confidenceT);
@@ -9595,6 +9618,7 @@ var boxExpandFact = 1.6;
 var maxDetectorResolution = 512;
 var detectorExpandFact = 1.4;
 var skipped9 = 0;
+var lastTime6 = 0;
 var outputSize = [0, 0];
 var cache3 = {
   boxes: [],
@@ -9734,16 +9758,17 @@ async function predict9(input, config3) {
     return [];
   outputSize = [input.shape[2] || 0, input.shape[1] || 0];
   skipped9++;
-  if (config3.skipFrame && skipped9 <= (config3.hand.skipFrames || 0)) {
+  if (config3.skipFrame && skipped9 <= (config3.hand.skipFrames || 0) && (config3.hand.skipTime || 0) <= now() - lastTime6) {
     return cache3.hands;
   }
   return new Promise(async (resolve) => {
     if (config3.skipFrame && cache3.hands.length === config3.hand.maxDetected) {
       cache3.hands = await Promise.all(cache3.boxes.map((handBox) => detectFingers(input, handBox, config3)));
-    } else if (config3.skipFrame && skipped9 < 3 * (config3.hand.skipFrames || 0) && cache3.hands.length > 0) {
+    } else if (config3.skipFrame && skipped9 < 3 * (config3.hand.skipFrames || 0) && (config3.hand.skipTime || 0) <= 3 * (now() - lastTime6) && cache3.hands.length > 0) {
       cache3.hands = await Promise.all(cache3.boxes.map((handBox) => detectFingers(input, handBox, config3)));
     } else {
       cache3.boxes = await detectHands(input, config3);
+      lastTime6 = now();
       cache3.hands = await Promise.all(cache3.boxes.map((handBox) => detectFingers(input, handBox, config3)));
       skipped9 = 0;
     }
@@ -9934,7 +9959,8 @@ var inputSize7 = 0;
 var skipped10 = Number.MAX_SAFE_INTEGER;
 var cache5 = {
   boxes: [],
-  bodies: []
+  bodies: [],
+  last: 0
 };
 async function load11(config3) {
   if (env.initial)
@@ -10044,7 +10070,7 @@ async function predict10(input, config3) {
   if (!config3.skipFrame)
     cache5.boxes.length = 0;
   skipped10++;
-  if (config3.skipFrame && skipped10 <= (config3.body.skipFrames || 0)) {
+  if (config3.skipFrame && (skipped10 <= (config3.body.skipFrames || 0) && (config3.body.skipTime || 0) <= now() - cache5.last)) {
     return cache5.bodies;
   }
   return new Promise(async (resolve) => {
@@ -10052,6 +10078,7 @@ async function predict10(input, config3) {
     skipped10 = 0;
     t.input = padInput(input, inputSize7);
     t.res = await (model10 == null ? void 0 : model10.predict(t.input));
+    cache5.last = now();
     const res = await t.res.array();
     cache5.bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, [0, 0, 1, 1]) : await parseMultiPose(res, config3, input, [0, 0, 1, 1]);
     for (const body4 of cache5.bodies) {
@@ -10066,7 +10093,8 @@ async function predict10(input, config3) {
 // src/object/nanodet.ts
 var tf21 = __toModule(require_tfjs_esm());
 var model11;
-var last4 = [];
+var last7 = [];
+var lastTime7 = 0;
 var skipped11 = Number.MAX_SAFE_INTEGER;
 var scaleBox = 2.5;
 async function load12(config3) {
@@ -10146,13 +10174,13 @@ async function process4(res, inputSize8, outputShape, config3) {
   return results;
 }
 async function predict11(image25, config3) {
-  if (skipped11 < (config3.object.skipFrames || 0) && config3.skipFrame && last4.length > 0) {
+  if (skipped11 < (config3.object.skipFrames || 0) && (config3.object.skipTime || 0) <= now() - lastTime7 && config3.skipFrame && last7.length > 0) {
     skipped11++;
-    return last4;
+    return last7;
   }
   skipped11 = 0;
   if (!env.kernels.includes("mod") || !env.kernels.includes("sparsetodense"))
-    return last4;
+    return last7;
   return new Promise(async (resolve) => {
     const outputSize2 = [image25.shape[2], image25.shape[1]];
     const resize = tf21.image.resizeBilinear(image25, [model11.inputSize, model11.inputSize], false);
@@ -10163,9 +10191,10 @@ async function predict11(image25, config3) {
     let objectT;
     if (config3.object.enabled)
       objectT = await model11.predict(transpose);
+    lastTime7 = now();
     tf21.dispose(transpose);
     const obj = await process4(objectT, model11.inputSize, outputSize2, config3);
-    last4 = obj;
+    last7 = obj;
     resolve(obj);
   });
 }

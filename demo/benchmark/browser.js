@@ -1,6 +1,4 @@
-// import * as tf from '../../assets/tf.es2017.js';
-// import '../../assets/tf-backend-webgpu.es2017.js';
-import Human from '../../dist/human.esm.js';
+import Human from '../../dist/human.custom.esm.js';
 
 const loop = 20;
 

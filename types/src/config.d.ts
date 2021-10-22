@@ -1,45 +1,33 @@
-/** Dectector part of face configuration */
-export interface FaceDetectorConfig {
+export interface GenericConfig {
+    enabled: boolean;
     modelPath: string;
+    skipFrames: number;
+    skipTime: number;
+}
+/** Dectector part of face configuration */
+export interface FaceDetectorConfig extends GenericConfig {
     rotation: boolean;
     maxDetected: number;
-    skipFrames: number;
     minConfidence: number;
     iouThreshold: number;
     return: boolean;
 }
 /** Mesh part of face configuration */
-export interface FaceMeshConfig {
-    enabled: boolean;
-    modelPath: string;
-}
+export declare type FaceMeshConfig = GenericConfig;
 /** Iris part of face configuration */
-export interface FaceIrisConfig {
-    enabled: boolean;
-    modelPath: string;
-}
+export declare type FaceIrisConfig = GenericConfig;
 /** Description or face embedding part of face configuration
  * - also used by age and gender detection
  */
-export interface FaceDescriptionConfig {
-    enabled: boolean;
-    modelPath: string;
-    skipFrames: number;
+export interface FaceDescriptionConfig extends GenericConfig {
     minConfidence: number;
 }
 /** Emotion part of face configuration */
-export interface FaceEmotionConfig {
-    enabled: boolean;
+export interface FaceEmotionConfig extends GenericConfig {
     minConfidence: number;
-    skipFrames: number;
-    modelPath: string;
 }
 /** Emotion part of face configuration */
-export interface FaceAntiSpoofConfig {
-    enabled: boolean;
-    skipFrames: number;
-    modelPath: string;
-}
+export declare type FaceAntiSpoofConfig = GenericConfig;
 /** Controlls and configures all face-specific options:
  * - face detection, face mesh detection, age, gender, emotion detection and face description
  *
@@ -76,17 +64,14 @@ export interface FaceConfig {
  * Changing `modelPath` will change module responsible for hand detection and tracking
  * Allowed values are `posenet.json`, `blazepose.json`, `efficientpose.json`, `movenet-lightning.json`, `movenet-thunder.json`, `movenet-multipose.json`
 */
-export interface BodyConfig {
-    enabled: boolean;
-    modelPath: string;
+export interface BodyConfig extends GenericConfig {
     maxDetected: number;
     minConfidence: number;
-    skipFrames: number;
     detector?: {
         modelPath: string;
     };
 }
-/** Controlls and configures all hand detection specific options
+/** Controls and configures all hand detection specific options
  *
  * Parameters:
  * - enabled: true/false
@@ -102,10 +87,8 @@ export interface BodyConfig {
  * Changing `detector.modelPath` will change module responsible for hand detection and tracking
  * Allowed values are `handdetect.json` and `handtrack.json`
 */
-export interface HandConfig {
-    enabled: boolean;
+export interface HandConfig extends GenericConfig {
     rotation: boolean;
-    skipFrames: number;
     minConfidence: number;
     iouThreshold: number;
     maxDetected: number;
@@ -127,13 +110,10 @@ export interface HandConfig {
  * Changing `modelPath` will change module responsible for hand detection and tracking
  * Allowed values are `mb3-centernet.json` and `nanodet.json`
 */
-export interface ObjectConfig {
-    enabled: boolean;
-    modelPath: string;
+export interface ObjectConfig extends GenericConfig {
     minConfidence: number;
     iouThreshold: number;
     maxDetected: number;
-    skipFrames: number;
 }
 /** Controlls and configures all body segmentation module
  * removes background from input containing person

@@ -4,7 +4,7 @@
  * Based on: [**NanoDet**](https://github.com/RangiLyu/nanodet)
  */
 
-import { log, join } from '../util/util';
+import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
 import type { ObjectResult, Box } from '../result';
@@ -16,6 +16,7 @@ import { fakeOps } from '../tfjs/backend';
 let model: GraphModel | null;
 let inputSize = 0;
 let last: ObjectResult[] = [];
+let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
 export async function load(config: Config): Promise<GraphModel> {
@@ -78,7 +79,7 @@ async function process(res: Tensor | null, outputShape, config: Config) {
 }
 
 export async function predict(input: Tensor, config: Config): Promise<ObjectResult[]> {
-  if ((skipped < (config.object.skipFrames || 0)) && config.skipFrame && (last.length > 0)) {
+  if ((skipped < (config.object.skipFrames || 0)) && ((config.object.skipTime || 0) <= (now() - lastTime)) && config.skipFrame && (last.length > 0)) {
     skipped++;
     return last;
   }
@@ -88,6 +89,7 @@ export async function predict(input: Tensor, config: Config): Promise<ObjectResu
     const outputSize = [input.shape[2], input.shape[1]];
     const resize = tf.image.resizeBilinear(input, [inputSize, inputSize]);
     const objectT = config.object.enabled ? model?.execute(resize, ['tower_0/detections']) as Tensor : null;
+    lastTime = now();
     tf.dispose(resize);
 
     const obj = await process(objectT, outputSize, config);

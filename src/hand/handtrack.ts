@@ -6,7 +6,7 @@
  * - Hand Tracking: [**HandTracking**](https://github.com/victordibia/handtracking)
  */
 
-import { log, join } from '../util/util';
+import { log, join, now } from '../util/util';
 import * as box from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
 import type { HandResult, Box, Point } from '../result';
@@ -29,6 +29,7 @@ const maxDetectorResolution = 512;
 const detectorExpandFact = 1.4;
 
 let skipped = 0;
+let lastTime = 0;
 let outputSize: [number, number] = [0, 0];
 
 type HandDetectResult = {
@@ -184,7 +185,7 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
 export async function predict(input: Tensor, config: Config): Promise<HandResult[]> {
   /** handtrack caching
    * 1. if skipFrame returned cached
-   * 2. if any cached results but although not sure if its enough we continute anyhow for 5x skipframes
+   * 2. if any cached results but although not sure if its enough we continute anyhow for 3x skipframes
    * 3. if not skipframe or eventually rerun detector to generated new cached boxes and reset skipped
    * 4. generate cached boxes based on detected keypoints
    */
@@ -192,16 +193,17 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
   outputSize = [input.shape[2] || 0, input.shape[1] || 0];
 
   skipped++; // increment skip frames
-  if (config.skipFrame && (skipped <= (config.hand.skipFrames || 0))) {
+  if (config.skipFrame && (skipped <= (config.hand.skipFrames || 0)) && ((config.hand.skipTime || 0) <= (now() - lastTime))) {
     return cache.hands; // return cached results without running anything
   }
   return new Promise(async (resolve) => {
     if (config.skipFrame && cache.hands.length === config.hand.maxDetected) { // we have all detected hands
       cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
-    } else if (config.skipFrame && skipped < 3 * (config.hand.skipFrames || 0) && cache.hands.length > 0) { // we have some cached results but although not sure if its enough we continute anyhow for bit longer
+    } else if (config.skipFrame && skipped < 3 * (config.hand.skipFrames || 0) && ((config.hand.skipTime || 0) <= 3 * (now() - lastTime)) && cache.hands.length > 0) { // we have some cached results: maybe not enough but anyhow continue for bit longer
       cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
     } else { // finally rerun detector
       cache.boxes = await detectHands(input, config);
+      lastTime = now();
       cache.hands = await Promise.all(cache.boxes.map((handBox) => detectFingers(input, handBox, config)));
       skipped = 0;
     }

@@ -7,7 +7,7 @@
  * - Eye Iris Details: [**MediaPipe Iris**](https://drive.google.com/file/d/1bsWbokp9AklH2ANjCfmjqEzzxO1CNbMu/view)
  */
 
-import { log, join } from '../util/util';
+import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as blazeface from './blazeface';
 import * as util from './facemeshutil';
@@ -23,11 +23,14 @@ let boxCache: Array<BoxCache> = [];
 let model: GraphModel | null = null;
 let inputSize = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
+let lastTime = 0;
 let detectedFaces = 0;
 
 export async function predict(input: Tensor, config: Config): Promise<FaceResult[]> {
-  if (!config.skipFrame || (((detectedFaces !== config.face.detector?.maxDetected) || !config.face.mesh?.enabled)) && (skipped > (config.face.detector?.skipFrames || 0))) { // reset cached boxes
+  // reset cached boxes
+  if (!config.skipFrame || (((detectedFaces !== config.face.detector?.maxDetected) || !config.face.mesh?.enabled)) && (skipped > (config.face.detector?.skipFrames || 0) && ((config.face.description?.skipTime || 0) <= (now() - lastTime)))) {
     const newBoxes = await blazeface.getBoxes(input, config); // get results from blazeface detector
+    lastTime = now();
     boxCache = []; // empty cache
     for (const possible of newBoxes.boxes) { // extract data from detector
       const startPoint = await possible.box.startPoint.data() as unknown as Point;

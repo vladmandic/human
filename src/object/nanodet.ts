@@ -4,7 +4,7 @@
  * Based on: [**MB3-CenterNet**](https://github.com/610265158/mobilenetv3_centernet)
  */
 
-import { log, join } from '../util/util';
+import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
 import type { ObjectResult, Box } from '../result';
@@ -14,6 +14,7 @@ import { env } from '../util/env';
 
 let model;
 let last: Array<ObjectResult> = [];
+let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
 const scaleBox = 2.5; // increase box size
@@ -106,7 +107,7 @@ async function process(res, inputSize, outputShape, config) {
 }
 
 export async function predict(image: Tensor, config: Config): Promise<ObjectResult[]> {
-  if ((skipped < (config.object.skipFrames || 0)) && config.skipFrame && (last.length > 0)) {
+  if ((skipped < (config.object.skipFrames || 0)) && ((config.object.skipTime || 0) <= (now() - lastTime)) && config.skipFrame && (last.length > 0)) {
     skipped++;
     return last;
   }
@@ -122,6 +123,7 @@ export async function predict(image: Tensor, config: Config): Promise<ObjectResu
 
     let objectT;
     if (config.object.enabled) objectT = await model.predict(transpose);
+    lastTime = now();
     tf.dispose(transpose);
 
     const obj = await process(objectT, model.inputSize, outputSize, config);

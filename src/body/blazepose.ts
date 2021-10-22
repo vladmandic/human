@@ -3,7 +3,7 @@
  */
 
 import * as tf from '../../dist/tfjs.esm.js';
-import { log, join } from '../util/util';
+import { log, join, now } from '../util/util';
 import type { BodyKeypoint, BodyResult, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
@@ -16,6 +16,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 let outputNodes: string[]; // different for lite/full/heavy
 let cache: BodyResult | null = null;
 let padding: [number, number][] = [[0, 0], [0, 0], [0, 0], [0, 0]];
+let last = 0;
 
 export async function loadDetect(config: Config): Promise<GraphModel> {
   if (env.initial) models[0] = null;
@@ -135,10 +136,11 @@ async function detectParts(input: Tensor, config: Config, outputSize: [number, n
 
 export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
   const outputSize: [number, number] = [input.shape[2] || 0, input.shape[1] || 0];
-  if ((skipped < (config.body.skipFrames || 0)) && config.skipFrame && cache !== null) {
+  if ((skipped < (config.body.skipFrames || 0)) && ((config.body.skipTime || 0) <= (now() - last)) && config.skipFrame && cache !== null) {
     skipped++;
   } else {
     cache = await detectParts(input, config, outputSize);
+    last = now();
     skipped = 0;
   }
   if (cache) return [cache];

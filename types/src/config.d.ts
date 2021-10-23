@@ -229,7 +229,7 @@ export interface Config {
     */
     cacheSensitivity: number;
     /** Internal Variable */
-    skipFrame: boolean;
+    skipAllowed: boolean;
     /** Run input through image filters before inference
      * - image filters run with near-zero latency as they are executed on the GPU
      *

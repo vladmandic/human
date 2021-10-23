@@ -2,16 +2,14 @@
 
 ## Work in Progress
 
-- `skipTime`: testing, documentation
-
 <br>
 
 ### Exploring
 
-- Optical Flow: <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
-- TFLite Models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
-- Histogram Equalization: Regular, Adaptive, Contrast Limited
 - Switch to custom `tfjs` for main `human` ESM bundle
+- Optical Flow: <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
+- Histogram Equalization: Regular, Adaptive, Contrast Limited
+- TFLite Models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
 - Body segmentation: `robust-video-matting`
 
 #### WebGPU
@@ -55,6 +53,7 @@ Object detection using CenterNet or NanoDet models is not working when using WAS
 ## Pending Release
 
 - Update to TFJS 3.10.0
+- Time based caching
 - Multiple bug fixes
 - Utility class `human.env`
 - Add `skipTime` in addition to `skipFrames`

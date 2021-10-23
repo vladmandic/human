@@ -34,7 +34,11 @@ export async function load(config: Config | any) {
 export async function predict(image: Tensor, config: Config) {
   if (!model) return null;
   // @ts-ignore config disabled
-  if ((skipped < config.face.agegenderrace?.skipFrames) && ((config.face.agegenderrace?.skipTime || 0) <= (now() - lastTime)) && config.skipFrame && last.age && (last.age > 0)) {
+  const skipFrame = skipped < (config.face.agegenderrace?.skipFrames || 0);
+  // @ts-ignore config disabled
+  const skipTime = (config.face.agegenderrace?.skipTime || 0) > (now() - lastTime);
+  // @ts-ignore config disabled
+  if (config.skipAllowed && skipTime && skipFrame && last.age && (last.age > 0)) {
     skipped++;
     return last;
   }

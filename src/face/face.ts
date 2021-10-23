@@ -4,6 +4,7 @@
  */
 
 import { log, now } from '../util/util';
+import { env } from '../util/env';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as facemesh from './facemesh';
 import * as emotion from '../gear/emotion';
@@ -29,7 +30,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
   timeStamp = now();
 
   const faces = await facemesh.predict(input, parent.config);
-  parent.performance.face = Math.trunc(now() - timeStamp);
+  parent.performance.face = env.perfadd ? (parent.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
   if (!input.shape || input.shape.length !== 4) return [];
   if (!faces) return [];
   // for (const face of faces) {
@@ -53,7 +54,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       parent.state = 'run:emotion';
       timeStamp = now();
       emotionRes = parent.config.face.emotion.enabled ? await emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.emotion = Math.trunc(now() - timeStamp);
+      parent.performance.emotion = env.perfadd ? (parent.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Emotion:');
 
@@ -65,7 +66,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       parent.state = 'run:antispoof';
       timeStamp = now();
       antispoofRes = parent.config.face.antispoof.enabled ? await antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.antispoof = Math.trunc(now() - timeStamp);
+      parent.performance.antispoof = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze('End AntiSpoof:');
 
@@ -91,7 +92,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       parent.state = 'run:description';
       timeStamp = now();
       descRes = parent.config.face.description.enabled ? await faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.embedding = Math.trunc(now() - timeStamp);
+      parent.performance.embedding = env.perfadd ? (parent.performance.embedding || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Description:');
 

@@ -1016,6 +1016,7 @@ async function main() {
 
   // create instance of human
   human = new Human(userConfig);
+  human.env.perfadd = true;
 
   log('human version:', human.version);
   // we've merged human defaults with user config and now lets store it back so it can be accessed by methods such as menu

@@ -25,6 +25,8 @@ export class Env {
   };
   /** Is offscreenCanvas supported? */
   offscreen: undefined | boolean;
+  /** Are performance counter instant values or additive */
+  perfadd: boolean = false;
   /** WASM detected capabilities */
   wasm: {
     supported: undefined | boolean,

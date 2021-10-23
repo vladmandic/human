@@ -326,7 +326,7 @@ export class Human {
     const count = Object.values(this.models).filter((model) => model).length;
     if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
 
-    if (env.initial) { // print version info on first run and check for correct backend setup
+    if (this.env.initial) { // print version info on first run and check for correct backend setup
       if (this.config.debug) log(`version: ${this.version}`);
       if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
       if (!await backend.check(this)) log('error: backend check failed');
@@ -338,8 +338,8 @@ export class Human {
     }
 
     await models.load(this); // actually loads models
-    if (env.initial && this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors'); // print memory stats on first run
-    env.initial = false;
+    if (this.env.initial && this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors'); // print memory stats on first run
+    this.env.initial = false;
 
     const loaded = Object.values(this.models).filter((model) => model).length;
     if (loaded !== count) { // number of loaded models changed
@@ -348,7 +348,7 @@ export class Human {
     }
 
     const current = Math.trunc(now() - timeStamp);
-    if (current > (this.performance.load as number || 0)) this.performance.load = current;
+    if (current > (this.performance.load as number || 0)) this.performance.load = this.env.perfadd ? (this.performance.load || 0) + current : current;
   }
 
   // emit event
@@ -393,7 +393,6 @@ export class Human {
     return new Promise(async (resolve) => {
       this.state = 'config';
       let timeStamp;
-      let elapsedTime;
 
       // update configuration
       this.config = mergeDeep(this.config, userConfig) as Config;
@@ -418,7 +417,7 @@ export class Human {
       this.state = 'image';
       const img = image.process(input, this.config) as { canvas: HTMLCanvasElement | OffscreenCanvas, tensor: Tensor };
       this.process = img;
-      this.performance.image = Math.trunc(now() - timeStamp);
+      this.performance.image = this.env.perfadd ? (this.performance.image || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
 
       if (!img.tensor) {
@@ -429,12 +428,12 @@ export class Human {
       this.emit('image');
 
       timeStamp = now();
-      this.config.skipFrame = await image.skip(this.config, img.tensor);
+      this.config.skipAllowed = await image.skip(this.config, img.tensor);
       if (!this.performance.frames) this.performance.frames = 0;
       if (!this.performance.cached) this.performance.cached = 0;
       (this.performance.frames as number)++;
-      if (this.config.skipFrame) this.performance.cached++;
-      this.performance.changed = Math.trunc(now() - timeStamp);
+      if (this.config.skipAllowed) this.performance.cached++;
+      this.performance.changed = this.env.perfadd ? (this.performance.changed || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze('Check Changed:');
 
       // prepare where to store model results
@@ -452,8 +451,7 @@ export class Human {
       } else {
         timeStamp = now();
         faceRes = this.config.face.enabled ? await face.detectFace(this, img.tensor) : [];
-        elapsedTime = Math.trunc(now() - timeStamp);
-        if (elapsedTime > 0) this.performance.face = elapsedTime;
+        this.performance.face = this.env.perfadd ? (this.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       }
 
       if (this.config.async && (this.config.body.maxDetected === -1 || this.config.hand.maxDetected === -1)) faceRes = await faceRes; // need face result for auto-detect number of hands or bodies
@@ -474,8 +472,7 @@ export class Human {
         else if (this.config.body.modelPath?.includes('blazepose')) bodyRes = this.config.body.enabled ? await blazepose.predict(img.tensor, bodyConfig) : [];
         else if (this.config.body.modelPath?.includes('efficientpose')) bodyRes = this.config.body.enabled ? await efficientpose.predict(img.tensor, bodyConfig) : [];
         else if (this.config.body.modelPath?.includes('movenet')) bodyRes = this.config.body.enabled ? await movenet.predict(img.tensor, bodyConfig) : [];
-        elapsedTime = Math.trunc(now() - timeStamp);
-        if (elapsedTime > 0) this.performance.body = elapsedTime;
+        this.performance.body = this.env.perfadd ? (this.performance.body || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       }
       this.analyze('End Body:');
 
@@ -491,8 +488,7 @@ export class Human {
         timeStamp = now();
         if (this.config.hand.detector?.modelPath?.includes('handdetect')) handRes = this.config.hand.enabled ? await handpose.predict(img.tensor, handConfig) : [];
         else if (this.config.hand.detector?.modelPath?.includes('handtrack')) handRes = this.config.hand.enabled ? await handtrack.predict(img.tensor, handConfig) : [];
-        elapsedTime = Math.trunc(now() - timeStamp);
-        if (elapsedTime > 0) this.performance.hand = elapsedTime;
+        this.performance.hand = this.env.perfadd ? (this.performance.hand || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       }
       this.analyze('End Hand:');
 
@@ -507,8 +503,7 @@ export class Human {
         timeStamp = now();
         if (this.config.object.modelPath?.includes('nanodet')) objectRes = this.config.object.enabled ? await nanodet.predict(img.tensor, this.config) : [];
         else if (this.config.object.modelPath?.includes('centernet')) objectRes = this.config.object.enabled ? await centernet.predict(img.tensor, this.config) : [];
-        elapsedTime = Math.trunc(now() - timeStamp);
-        if (elapsedTime > 0) this.performance.object = elapsedTime;
+        this.performance.object = this.env.perfadd ? (this.performance.object || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       }
       this.analyze('End Object:');
 
@@ -522,7 +517,7 @@ export class Human {
       if (this.config.gesture.enabled) {
         timeStamp = now();
         gestureRes = [...gesture.face(faceRes), ...gesture.body(bodyRes), ...gesture.hand(handRes), ...gesture.iris(faceRes)];
-        if (!this.config.async) this.performance.gesture = Math.trunc(now() - timeStamp);
+        if (!this.config.async) this.performance.gesture = this.env.perfadd ? (this.performance.gesture || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
         else if (this.performance.gesture) delete this.performance.gesture;
       }
 

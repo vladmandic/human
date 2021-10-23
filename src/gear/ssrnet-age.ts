@@ -33,7 +33,9 @@ export async function load(config: Config | any) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function predict(image: Tensor, config: Config | any) {
   if (!model) return null;
-  if ((skipped < config.face.age.skipFrames) && ((config.face.age.skipTime || 0) <= (now() - lastTime)) && config.skipFrame && last.age && (last.age > 0)) {
+  const skipTime = (config.face.age?.skipTime || 0) > (now() - lastTime);
+  const skipFrame = skipped < (config.face.age?.skipFrames || 0);
+  if (config.skipAllowed && skipTime && skipFrame && last.age && (last.age > 0)) {
     skipped++;
     return last;
   }

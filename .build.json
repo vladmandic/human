@@ -128,6 +128,7 @@
         "input": "src/human.ts",
         "output": "dist/human.custom.esm.js",
         "sourcemap": true,
+        "minify": true,
         "external": ["fs", "os", "buffer", "util"]
       },
 

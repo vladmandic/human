@@ -60,6 +60,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 - [**Usage & Functions**](https://github.com/vladmandic/human/wiki/Usage)
 - [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration)
 - [**Output Details**](https://github.com/vladmandic/human/wiki/Outputs)
+- [**Caching & Smoothing**](https://github.com/vladmandic/human/wiki/Caching)
 - [**Face Recognition & Face Description**](https://github.com/vladmandic/human/wiki/Embedding)
 - [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)
 - [**Common Issues**](https://github.com/vladmandic/human/wiki/Issues)

@@ -255,7 +255,7 @@ export interface Config {
   cacheSensitivity: number;
 
   /** Internal Variable */
-  skipFrame: boolean;
+  skipAllowed: boolean;
 
   /** Run input through image filters before inference
    * - image filters run with near-zero latency as they are executed on the GPU
@@ -302,10 +302,10 @@ const config: Config = {
                              // warmup pre-initializes all models for faster inference but can take
                              // significant time on startup
                              // only used for `webgl` and `humangl` backends
-  cacheSensitivity: 0.75,    // cache sensitivity
+  cacheSensitivity: 0.70,    // cache sensitivity
                              // values 0..1 where 0.01 means reset cache if input changed more than 1%
                              // set to 0 to disable caching
-  skipFrame: false,          // internal & dynamic
+  skipAllowed: false,        // internal & dynamic
   filter: {                  // run input through image filters before inference
                              // image filters run with near-zero latency as they are executed on the GPU
     enabled: true,           // enable image pre-processing filters
@@ -347,9 +347,9 @@ const config: Config = {
                              // this parameter is not valid in nodejs
       maxDetected: 1,        // maximum number of faces detected in the input
                              // should be set to the minimum number for performance
-      skipFrames: 11,        // how many max frames to go without re-running the face bounding box detector
+      skipFrames: 99,        // how many max frames to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
-      skipTime: 2000,        // how many ms to go without re-running the face bounding box detector
+      skipTime: 2500,        // how many ms to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
       minConfidence: 0.2,    // threshold for discarding a prediction
       iouThreshold: 0.1,     // ammount of overlap between two detected objects before one object is removed
@@ -371,9 +371,9 @@ const config: Config = {
     emotion: {
       enabled: true,
       minConfidence: 0.1,    // threshold for discarding a prediction
-      skipFrames: 12,        // how max many frames to go without re-running the detector
+      skipFrames: 99,        // how max many frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
-      skipTime: 2000,        // how many ms to go without re-running the face bounding box detector
+      skipTime: 1500,        // how many ms to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
       modelPath: 'emotion.json',  // face emotion model, can be absolute path or relative to modelBasePath
     },
@@ -383,18 +383,18 @@ const config: Config = {
                              // recommended to enable detector.rotation and mesh.enabled
       modelPath: 'faceres.json',  // face description model
                              // can be either absolute path or relative to modelBasePath
-      skipFrames: 13,        // how many max frames to go without re-running the detector
+      skipFrames: 99,        // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
-      skipTime: 2000,        // how many ms to go without re-running the face bounding box detector
+      skipTime: 3000,        // how many ms to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
       minConfidence: 0.1,    // threshold for discarding a prediction
     },
 
     antispoof: {
       enabled: false,
-      skipFrames: 14,        // how max many frames to go without re-running the detector
+      skipFrames: 99,        // how max many frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
-      skipTime: 2000,        // how many ms to go without re-running the face bounding box detector
+      skipTime: 4000,        // how many ms to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
       modelPath: 'antispoof.json',  // face description model
                              // can be either absolute path or relative to modelBasePath
@@ -415,7 +415,7 @@ const config: Config = {
     minConfidence: 0.3,      // threshold for discarding a prediction
     skipFrames: 1,           // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
-    skipTime: 2000,          // how many ms to go without re-running the face bounding box detector
+    skipTime: 200,           // how many ms to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
 },
 
@@ -424,7 +424,7 @@ const config: Config = {
     rotation: true,          // use best-guess rotated hand image or just box with rotation as-is
                              // false means higher performance, but incorrect finger mapping if hand is inverted
                              // only valid for `handdetect` variation
-    skipFrames: 2,           // how many max frames to go without re-running the hand bounding box detector
+    skipFrames: 99,          // how many max frames to go without re-running the hand bounding box detector
                              // only used when cacheSensitivity is not zero
     skipTime: 2000,          // how many ms to go without re-running the face bounding box detector
                              // only used when cacheSensitivity is not zero
@@ -450,9 +450,9 @@ const config: Config = {
     minConfidence: 0.2,      // threshold for discarding a prediction
     iouThreshold: 0.4,       // ammount of overlap between two detected objects before one object is removed
     maxDetected: 10,         // maximum number of objects detected in the input
-    skipFrames: 15,          // how many max frames to go without re-running the detector
+    skipFrames: 99,          // how many max frames to go without re-running the detector
                              // only used when cacheSensitivity is not zero
-    skipTime: 2000,          // how many ms to go without re-running the face bounding box detector
+    skipTime: 1000,          // how many ms to go without re-running object detector
                              // only used when cacheSensitivity is not zero
   },
 

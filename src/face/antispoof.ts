@@ -12,7 +12,7 @@ let model: GraphModel | null;
 const cached: Array<number> = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 let lastCount = 0;
-let last = 0;
+let lastTime = 0;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
@@ -26,7 +26,9 @@ export async function load(config: Config): Promise<GraphModel> {
 
 export async function predict(image: Tensor, config: Config, idx, count) {
   if (!model) return null;
-  if ((skipped < (config.face.antispoof?.skipFrames || 0)) && ((config.face.antispoof?.skipTime || 0) <= (now() - last)) && config.skipFrame && (lastCount === count) && cached[idx]) {
+  const skipTime = (config.face.antispoof?.skipTime || 0) > (now() - lastTime);
+  const skipFrame = skipped < (config.face.antispoof?.skipFrames || 0);
+  if (config.skipAllowed && skipTime && skipFrame && (lastCount === count) && cached[idx]) {
     skipped++;
     return cached[idx];
   }
@@ -37,7 +39,7 @@ export async function predict(image: Tensor, config: Config, idx, count) {
     const num = (await res.data())[0];
     cached[idx] = Math.round(100 * num) / 100;
     lastCount = count;
-    last = now();
+    lastTime = now();
     tf.dispose([resize, res]);
     resolve(cached[idx]);
   });

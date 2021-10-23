@@ -30,7 +30,7 @@ export class HandPipeline {
     this.handPoseModel = handPoseModel;
     this.inputSize = this.handPoseModel && this.handPoseModel.inputs[0].shape ? this.handPoseModel.inputs[0].shape[2] : 0;
     this.storedBoxes = [];
-    this.skipped = 0;
+    this.skipped = Number.MAX_SAFE_INTEGER;
     this.detectedHands = 0;
   }
 
@@ -88,15 +88,15 @@ export class HandPipeline {
   async estimateHands(image, config) {
     let useFreshBox = false;
 
-    // run new detector every skipFrames unless we only want box to start with
+    // run new detector every skipFrames
     let boxes;
-
-    // console.log('handpipeline:estimateHands:skip criteria', this.skipped, config.hand.skipFrames, !config.hand.landmarks, !config.skipFrame); // should skip hand detector?
-    if ((this.skipped === 0) || ((this.skipped > config.hand.skipFrames) && ((config.hand.skipTime || 0) <= (now() - lastTime))) || !config.hand.landmarks || !config.skipFrame) {
+    const skipTime = (config.hand.skipTime || 0) > (now() - lastTime);
+    const skipFrame = this.skipped < (config.hand.skipFrames || 0);
+    if (config.skipAllowed && skipTime && skipFrame) {
       boxes = await this.handDetector.estimateHandBounds(image, config);
       this.skipped = 0;
     }
-    if (config.skipFrame) this.skipped++;
+    if (config.skipAllowed) this.skipped++;
 
     // if detector result count doesn't match current working set, use it to reset current working set
     if (boxes && (boxes.length > 0) && ((boxes.length !== this.detectedHands) && (this.detectedHands !== config.hand.maxDetected) || !config.hand.landmarks)) {

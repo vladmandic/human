@@ -11,9 +11,9 @@
   
 ### **HEAD -> main** 2021/10/22 mandic00@live.com
 
-
-### **origin/main** 2021/10/22 mandic00@live.com
-
+- initial work on skiptime
+- added generic types
+- enhanced typing exports
 - add optional autodetected custom wasm path
 
 ### **2.3.6** 2021/10/21 mandic00@live.com

@@ -132,9 +132,11 @@ async function parseMultiPose(res, config, image, inputBox) {
 
 export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
   if (!model || !model?.inputs[0].shape) return []; // something is wrong with the model
-  if (!config.skipFrame) cache.boxes.length = 0; // allowed to use cache or not
+  if (!config.skipAllowed) cache.boxes.length = 0; // allowed to use cache or not
   skipped++; // increment skip frames
-  if (config.skipFrame && (skipped <= (config.body.skipFrames || 0) && ((config.body.skipTime || 0) <= (now() - cache.last)))) {
+  const skipTime = (config.body.skipTime || 0) > (now() - cache.last);
+  const skipFrame = skipped < (config.body.skipFrames || 0);
+  if (config.skipAllowed && skipTime && skipFrame) {
     return cache.bodies; // return cached results without running anything
   }
   return new Promise(async (resolve) => {

@@ -28,7 +28,10 @@ let detectedFaces = 0;
 
 export async function predict(input: Tensor, config: Config): Promise<FaceResult[]> {
   // reset cached boxes
-  if (!config.skipFrame || (((detectedFaces !== config.face.detector?.maxDetected) || !config.face.mesh?.enabled)) && (skipped > (config.face.detector?.skipFrames || 0) && ((config.face.description?.skipTime || 0) <= (now() - lastTime)))) {
+
+  const skipTime = (config.face.detector?.skipTime || 0) > (now() - lastTime);
+  const skipFrame = skipped < (config.face.detector?.skipFrames || 0);
+  if (!config.skipAllowed || !skipTime || !skipFrame || detectedFaces === 0) {
     const newBoxes = await blazeface.getBoxes(input, config); // get results from blazeface detector
     lastTime = now();
     boxCache = []; // empty cache

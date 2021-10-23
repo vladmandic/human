@@ -91,7 +91,9 @@ export function enhance(input): Tensor {
 
 export async function predict(image: Tensor, config: Config, idx, count) {
   if (!model) return null;
-  if ((skipped < (config.face.description?.skipFrames || 0)) && ((config.face.description?.skipTime || 0) <= (now() - lastTime)) && config.skipFrame && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
+  const skipFrame = skipped < (config.face.description?.skipFrames || 0);
+  const skipTime = (config.face.description?.skipTime || 0) > (now() - lastTime);
+  if (config.skipAllowed && skipFrame && skipTime && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
     skipped++;
     return last[idx];
   }

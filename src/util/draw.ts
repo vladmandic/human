@@ -4,6 +4,7 @@
 
 import { TRI468 as triangulation } from '../face/facemeshcoords';
 import { mergeDeep, now } from './util';
+import { env } from './env';
 import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult, Point } from '../result';
 
 /**
@@ -479,7 +480,7 @@ export async function canvas(input: HTMLCanvasElement | OffscreenCanvas | HTMLIm
 
 export async function all(inCanvas: HTMLCanvasElement | OffscreenCanvas, result: Result, drawOptions?: Partial<DrawOptions>) {
   if (!result || !result.performance || !result || !inCanvas) return null;
-  const timestamp = now();
+  const timeStamp = now();
   const localOptions = mergeDeep(options, drawOptions);
   const promise = Promise.all([
     face(inCanvas, result.face, localOptions),
@@ -489,6 +490,6 @@ export async function all(inCanvas: HTMLCanvasElement | OffscreenCanvas, result:
     gesture(inCanvas, result.gesture, localOptions), // gestures do not have buffering
     // person(inCanvas, result.persons, localOptions); // already included above
   ]);
-  result.performance.draw = Math.trunc(now() - timestamp);
+  result.performance.draw = env.perfadd ? (result.performance.draw as number || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
   return promise;
 }

@@ -194,7 +194,7 @@ export interface Result {
   /** {@link ObjectResult}: detection & analysis results */
   object: Array<ObjectResult>
   /** global performance object with timing values for each operation */
-  performance: Record<string, unknown>,
+  performance: Record<string, number>,
   /** optional processed canvas that can be used to draw input on screen */
   canvas?: OffscreenCanvas | HTMLCanvasElement | null | undefined,
   /** timestamp of detection representing the milliseconds elapsed since the UNIX epoch */

@@ -57,8 +57,10 @@ Object detection using CenterNet or NanoDet models is not working when using WAS
 - Multiple bug fixes
 - Utility class `human.env`
 - Add `skipTime` in addition to `skipFrames`
+- Updated configuration default values
+- Updated TS typings
 - Enhanced **MoveNet** post-processing
 - Add optional **Anti-Spoof** module
 - Remove old **HandDetect** and **PoseNet** models from default installation
 - Refactor **ImageFX** module
-- Experimental `human.custom.esm` with custom **TFJS** build
+- Experimental `human.custom.esm` module with custom **TFJS** build

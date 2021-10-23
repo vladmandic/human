@@ -79,7 +79,9 @@ async function process(res: Tensor | null, outputShape, config: Config) {
 }
 
 export async function predict(input: Tensor, config: Config): Promise<ObjectResult[]> {
-  if ((skipped < (config.object.skipFrames || 0)) && ((config.object.skipTime || 0) <= (now() - lastTime)) && config.skipFrame && (last.length > 0)) {
+  const skipTime = (config.object.skipTime || 0) > (now() - lastTime);
+  const skipFrame = skipped < (config.object.skipFrames || 0);
+  if (config.skipAllowed && skipTime && skipFrame && (last.length > 0)) {
     skipped++;
     return last;
   }

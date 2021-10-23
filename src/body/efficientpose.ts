@@ -13,7 +13,7 @@ import type { Config } from '../config';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
-let last = 0;
+let lastTime = 0;
 const cache: BodyResult = { id: 0, keypoints: [], box: [0, 0, 0, 0], boxRaw: [0, 0, 0, 0], score: 0, annotations: {} };
 
 // const keypoints: Array<BodyKeypoint> = [];
@@ -50,7 +50,9 @@ function max2d(inputs, minScore) {
 }
 
 export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
-  if ((skipped < (config.body?.skipFrames || 0)) && config.skipFrame && Object.keys(cache.keypoints).length > 0 && ((config.body.skipTime || 0) <= (now() - last))) {
+  const skipTime = (config.body.skipTime || 0) > (now() - lastTime);
+  const skipFrame = skipped < (config.body.skipFrames || 0);
+  if (config.skipAllowed && skipTime && skipFrame && Object.keys(cache.keypoints).length > 0) {
     skipped++;
     return [cache];
   }
@@ -66,7 +68,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
 
     let resT;
     if (config.body.enabled) resT = await model?.predict(tensor);
-    last = now();
+    lastTime = now();
     tf.dispose(tensor);
 
     if (resT) {

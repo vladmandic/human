@@ -33,7 +33,9 @@ export async function load(config: Config): Promise<GraphModel> {
 
 export async function predict(image: Tensor, config: Config, idx, count) {
   if (!model) return null;
-  if ((skipped < (config.face.emotion?.skipFrames || 0)) && ((config.face.emotion?.skipTime || 0) <= (now() - lastTime)) && config.skipFrame && (lastCount === count) && last[idx] && (last[idx].length > 0)) {
+  const skipFrame = skipped < (config.face.emotion?.skipFrames || 0);
+  const skipTime = (config.face.emotion?.skipTime || 0) > (now() - lastTime);
+  if (config.skipAllowed && skipTime && skipFrame && (lastCount === count) && last[idx] && (last[idx].length > 0)) {
     skipped++;
     return last[idx];
   }

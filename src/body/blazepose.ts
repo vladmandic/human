@@ -16,7 +16,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 let outputNodes: string[]; // different for lite/full/heavy
 let cache: BodyResult | null = null;
 let padding: [number, number][] = [[0, 0], [0, 0], [0, 0], [0, 0]];
-let last = 0;
+let lastTime = 0;
 
 export async function loadDetect(config: Config): Promise<GraphModel> {
   if (env.initial) models[0] = null;
@@ -136,11 +136,13 @@ async function detectParts(input: Tensor, config: Config, outputSize: [number, n
 
 export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
   const outputSize: [number, number] = [input.shape[2] || 0, input.shape[1] || 0];
-  if ((skipped < (config.body.skipFrames || 0)) && ((config.body.skipTime || 0) <= (now() - last)) && config.skipFrame && cache !== null) {
+  const skipTime = (config.body.skipTime || 0) > (now() - lastTime);
+  const skipFrame = skipped < (config.body.skipFrames || 0);
+  if (config.skipAllowed && skipTime && skipFrame && cache !== null) {
     skipped++;
   } else {
     cache = await detectParts(input, config, outputSize);
-    last = now();
+    lastTime = now();
     skipped = 0;
   }
   if (cache) return [cache];

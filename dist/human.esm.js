@@ -34561,7 +34561,7 @@ var fx2;
 function canvas(width, height) {
   let c;
   if (env.browser) {
-    if (env.offscreen) {
+    if (env.worker) {
       c = new OffscreenCanvas(width, height);
     } else {
       if (typeof document === "undefined")
@@ -45429,27 +45429,28 @@ function calc2(newResult, config3) {
 }
 
 // src/face/match.ts
-function distance(descriptor1, descriptor2, options3 = { order: 2 }) {
+function distance(descriptor1, descriptor2, options3 = { order: 2, multiplier: 20 }) {
   let sum = 0;
   for (let i = 0; i < descriptor1.length; i++) {
     const diff = options3.order === 2 ? descriptor1[i] - descriptor2[i] : Math.abs(descriptor1[i] - descriptor2[i]);
     sum += options3.order === 2 ? diff * diff : diff ** options3.order;
   }
-  return sum;
+  return (options3.multiplier || 20) * sum;
 }
-function similarity(descriptor1, descriptor2, options3 = { order: 2 }) {
+function similarity(descriptor1, descriptor2, options3 = { order: 2, multiplier: 20 }) {
   const dist = distance(descriptor1, descriptor2, options3);
-  const invert = options3.order === 2 ? Math.sqrt(dist) : dist ** (1 / options3.order);
-  return Math.max(0, 100 - invert) / 100;
+  const root = options3.order === 2 ? Math.sqrt(dist) : dist ** (1 / options3.order);
+  const invert = Math.max(0, 100 - root) / 100;
+  return invert;
 }
-function match2(descriptor, descriptors, options3 = { order: 2, threshold: 0 }) {
+function match2(descriptor, descriptors, options3 = { order: 2, threshold: 0, multiplier: 20 }) {
   if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0 || descriptor.length !== descriptors[0].length) {
     return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
   }
   let best = Number.MAX_SAFE_INTEGER;
   let index = -1;
   for (let i = 0; i < descriptors.length; i++) {
-    const res = distance(descriptor, descriptors[i], { order: options3.order });
+    const res = distance(descriptor, descriptors[i], options3);
     if (res < best) {
       best = res;
       index = i;

@@ -9,8 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/25 mandic00@live.com
+### **2.4.1** 2021/10/25 mandic00@live.com
 
+
+### **origin/main** 2021/10/25 mandic00@live.com
+
+- increase face similarity match resolution
 - time based caching
 - turn on minification
 - initial work on skiptime

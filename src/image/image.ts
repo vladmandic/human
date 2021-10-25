@@ -22,16 +22,16 @@ let fx: fxImage.GLImageFilter | null; // instance of imagefx
 
 export function canvas(width, height): AnyCanvas {
   let c;
-  if (env.browser) {
-    if (env.offscreen) {
+  if (env.browser) { // browser defines canvas object
+    if (env.worker) { // if runing in web  worker use OffscreenCanvas
       c = new OffscreenCanvas(width, height);
-    } else {
+    } else { // otherwise use DOM canvas
       if (typeof document === 'undefined') throw new Error('attempted to run in web worker but offscreenCanvas is not supported');
       c = document.createElement('canvas');
       c.width = width;
       c.height = height;
     }
-  } else {
+  } else { // if not running in browser, there is no "default" canvas object, so we need monkey patch or fail
     // @ts-ignore // env.canvas is an external monkey-patch
     if (typeof env.Canvas !== 'undefined') c = new env.Canvas(width, height);
     else if (typeof globalThis.Canvas !== 'undefined') c = new globalThis.Canvas(width, height);
@@ -40,6 +40,7 @@ export function canvas(width, height): AnyCanvas {
   return c;
 }
 
+// helper function to copy canvas from input to output
 export function copy(input: AnyCanvas, output?: AnyCanvas) {
   const outputCanvas = output || canvas(input.width, input.height);
   const ctx = outputCanvas.getContext('2d') as CanvasRenderingContext2D;

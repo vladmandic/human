@@ -12,7 +12,7 @@ import * as image from '../image/image';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
-import type { Input } from '../image/image';
+import type { Input } from '../exports';
 
 let model: GraphModel;
 let busy = false;

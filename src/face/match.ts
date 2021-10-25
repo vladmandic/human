@@ -7,25 +7,27 @@ export type Descriptor = Array<number>
  *
  * Options:
  * - `order`
+ * - `multiplier` factor by how much to enhance difference analysis in range of 1..100
  *
  * Note: No checks are performed for performance reasons so make sure to pass valid number arrays of equal length
  */
-export function distance(descriptor1: Descriptor, descriptor2: Descriptor, options = { order: 2 }) {
+export function distance(descriptor1: Descriptor, descriptor2: Descriptor, options = { order: 2, multiplier: 20 }) {
   // general minkowski distance, euclidean distance is limited case where order is 2
   let sum = 0;
   for (let i = 0; i < descriptor1.length; i++) {
     const diff = (options.order === 2) ? (descriptor1[i] - descriptor2[i]) : (Math.abs(descriptor1[i] - descriptor2[i]));
     sum += (options.order === 2) ? (diff * diff) : (diff ** options.order);
   }
-  return sum;
+  return (options.multiplier || 20) * sum;
 }
 
 /** Calculates normalized similarity between two descriptors based on their `distance`
  */
-export function similarity(descriptor1: Descriptor, descriptor2: Descriptor, options = { order: 2 }) {
+export function similarity(descriptor1: Descriptor, descriptor2: Descriptor, options = { order: 2, multiplier: 20 }) {
   const dist = distance(descriptor1, descriptor2, options);
-  const invert = (options.order === 2) ? Math.sqrt(dist) : dist ** (1 / options.order);
-  return Math.max(0, 100 - invert) / 100.0;
+  const root = (options.order === 2) ? Math.sqrt(dist) : dist ** (1 / options.order);
+  const invert = Math.max(0, 100 - root) / 100.0;
+  return invert;
 }
 
 /** Matches given descriptor to a closest entry in array of descriptors
@@ -33,22 +35,23 @@ export function similarity(descriptor1: Descriptor, descriptor2: Descriptor, opt
  * @param descriptors array of face descriptors to commpare given descriptor to
  *
  * Options:
- * - `order` see {@link distance} method
  * - `threshold` match will return result first result for which {@link distance} is below `threshold` even if there may be better results
+ * - `order` see {@link distance} method
+ * - `multiplier` see {@link distance} method
  *
  * @returns object with index, distance and similarity
  * - `index` index array index where best match was found or -1 if no matches
  * - {@link distance} calculated `distance` of given descriptor to the best match
  * - {@link similarity} calculated normalized `similarity` of given descriptor to the best match
 */
-export function match(descriptor: Descriptor, descriptors: Array<Descriptor>, options = { order: 2, threshold: 0 }) {
+export function match(descriptor: Descriptor, descriptors: Array<Descriptor>, options = { order: 2, threshold: 0, multiplier: 20 }) {
   if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0 || descriptor.length !== descriptors[0].length) { // validate input
     return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
   }
   let best = Number.MAX_SAFE_INTEGER;
   let index = -1;
   for (let i = 0; i < descriptors.length; i++) {
-    const res = distance(descriptor, descriptors[i], { order: options.order });
+    const res = distance(descriptor, descriptors[i], options);
     if (res < best) {
       best = res;
       index = i;

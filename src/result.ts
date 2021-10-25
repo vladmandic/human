@@ -5,148 +5,135 @@
 import type { Tensor } from './tfjs/types';
 import type { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
 
+/** generic box as [x, y, width, height] */
 export type Box = [number, number, number, number];
+/** generic point as [x, y, z?] */
 export type Point = [number, number, number?];
 
 /** Face results
- * Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
- * Some values may be null if specific model is not enabled
- *
- * Each result has:
- * - id: face id number
- * - score: overal detection confidence score value
- * - boxScore: face box detection confidence score value
- * - faceScore: face keypoints detection confidence score value
- * - box: face bounding box as array of [x, y, width, height], normalized to image resolution
- * - boxRaw: face bounding box as array of [x, y, width, height], normalized to range 0..1
- * - mesh: face keypoints as array of [x, y, z] points of face mesh, normalized to image resolution
- * - meshRaw: face keypoints as array of [x, y, z] points of face mesh, normalized to range 0..1
- * - annotations: annotated face keypoints as array of annotated face mesh points
- * - age: age as value
- * - gender: gender as value
- * - genderScore: gender detection confidence score as value
- * - emotion: emotions as array of possible emotions with their individual scores
- * - embedding: facial descriptor as array of numerical elements
- * - iris: iris distance from current viewpoint as distance value in centimeters for a typical camera
- *   field of view of 88 degrees. value should be adjusted manually as needed
- * - real: anti-spoofing analysis to determine if face is real of fake
- * - rotation: face rotiation that contains both angles and matrix used for 3d transformations
- *  - angle: face angle as object with values for roll, yaw and pitch angles
- *  - matrix: 3d transofrmation matrix as array of numeric values
- *  - gaze: gaze direction as object with values for bearing in radians and relative strength
- * - tensor: face tensor as Tensor object which contains detected face
+ * - Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
+ * - Some values may be null if specific model is not enabled
  */
 export interface FaceResult {
+  /** face id */
   id: number
+  /** overall face score */
   score: number,
+  /** detection score */
   boxScore: number,
+  /** mesh score */
   faceScore: number,
+  /** detected face box */
   box: Box,
+  /** detected face box normalized to 0..1 */
   boxRaw: Box,
+  /** detected face mesh */
   mesh: Array<Point>
+  /** detected face mesh normalized to 0..1 */
   meshRaw: Array<Point>
+  /** mesh keypoints combined into annotated results */
   annotations: Record<string, Point[]>,
+  /** detected age */
   age?: number,
+  /** detected gender */
   gender?: string,
+  /** gender detection score */
   genderScore?: number,
+  /** detected emotions */
   emotion?: Array<{ score: number, emotion: string }>,
+  /** face descriptor */
   embedding?: Array<number>,
+  /** face iris distance from camera */
   iris?: number,
+  /** face anti-spoofing result confidence */
   real?: number,
+  /** face rotation details */
   rotation?: {
     angle: { roll: number, yaw: number, pitch: number },
     matrix: [number, number, number, number, number, number, number, number, number],
     gaze: { bearing: number, strength: number },
   }
+  /** detected face as tensor that can be used in further pipelines */
   tensor?: Tensor,
 }
 
-export type BodyKeypoint = {
+export interface BodyKeypoint {
+  /** body part name */
   part: string,
+  /** body part position */
   position: Point,
+  /** body part position normalized to 0..1 */
   positionRaw: Point,
+  /** body part detection score */
   score: number,
 }
 
-/** Body results
- *
- * Each results has:
- * - id: body id number
- * - score: overall detection score
- * - box: bounding box: x, y, width, height normalized to input image resolution
- * - boxRaw: bounding box: x, y, width, height normalized to 0..1
- * - keypoints: array of keypoints
- *  - part: body part name
- *  - position: body part position with x,y,z coordinates
- *  - score: body part score value
- *  - presence: body part presence value
- */
+/** Body results */
 export interface BodyResult {
+  /** body id */
   id: number,
+  /** body detection score */
   score: number,
+  /** detected body box */
   box: Box,
+  /** detected body box normalized to 0..1 */
   boxRaw: Box,
-  annotations: Record<string, Array<Point[]>>,
+  /** detected body keypoints */
   keypoints: Array<BodyKeypoint>
+  /** detected body keypoints combined into annotated parts */
+  annotations: Record<string, Array<Point[]>>,
 }
 
-/** Hand results
- *
- * Each result has:
- * - id: hand id number
- * - score: detection confidence score as value
- * - box: bounding box: x, y, width, height normalized to input image resolution
- * - boxRaw: bounding box: x, y, width, height normalized to 0..1
- * - keypoints: keypoints as array of [x, y, z] points of hand, normalized to image resolution
- * - annotations: annotated landmarks for each hand part with keypoints
- * - landmarks: annotated landmarks for eachb hand part with logical curl and direction strings
- */
+/** Hand results */
 export interface HandResult {
+  /** hand id */
   id: number,
+  /** hand overal score */
   score: number,
+  /** hand detection score */
   boxScore: number,
+  /** hand skelton score */
   fingerScore: number,
+  /** detected hand box */
   box: Box,
+  /** detected hand box normalized to 0..1 */
   boxRaw: Box,
+  /** detected hand keypoints */
   keypoints: Array<Point>,
+  /** detected hand class */
   label: string,
+  /** detected hand keypoints combined into annotated parts */
   annotations: Record<
     'index' | 'middle' | 'pinky' | 'ring' | 'thumb' | 'palm',
     Array<Point>
   >,
+  /** detected hand parts annotated with part gestures */
   landmarks: Record<
     'index' | 'middle' | 'pinky' | 'ring' | 'thumb',
     { curl: 'none' | 'half' | 'full', direction: 'verticalUp' | 'verticalDown' | 'horizontalLeft' | 'horizontalRight' | 'diagonalUpRight' | 'diagonalUpLeft' | 'diagonalDownRight' | 'diagonalDownLeft' }
   >,
 }
 
-/** Object results
-*
-* Array of individual results with one object per detected gesture
-* Each result has:
-* - id: object id number
-* - score as value
-* - label as detected class name
-* - box: bounding box: x, y, width, height normalized to input image resolution
-* - boxRaw: bounding box: x, y, width, height normalized to 0..1
-* - center: optional center point as array of [x, y], normalized to image resolution
-* - centerRaw: optional center point as array of [x, y], normalized to range 0..1
-*/
+/** Object results */
 export interface ObjectResult {
+  /** object id */
   id: number,
+  /** object detection score */
   score: number,
+  /** detected object class id */
   class: number,
+  /** detected object class name */
   label: string,
+  /** detected object box */
   box: Box,
+  /** detected object box normalized to 0..1 */
   boxRaw: Box,
 }
 
-/** Gesture results
+/** Gesture combined results
  * @typedef Gesture Type
- *
- * Array of individual results with one object per detected gesture
  * Each result has:
- * - part: part name and number where gesture was detected: face, iris, body, hand
+ * - part: part name and number where gesture was detected: `face`, `iris`, `body`, `hand`
  * - gesture: gesture detected
  */
 export type GestureResult =
@@ -156,24 +143,22 @@ export type GestureResult =
   | { 'hand': number, gesture: HandGesture }
 
 /** Person getter
-* @interface Person Interface
-*
-* Each result has:
-* - id: person id
-* - face: face object
-* - body: body object
-* - hands: array of hand objects
-* - gestures: array of gestures
-* - box: bounding box: x, y, width, height normalized to input image resolution
-* - boxRaw: bounding box: x, y, width, height normalized to 0..1
+* - Triggers combining all individual results into a virtual person object
 */
 export interface PersonResult {
+  /** person id */
   id: number,
+  /** face result that belongs to this person */
   face: FaceResult,
+  /** body result that belongs to this person */
   body: BodyResult | null,
+  /** left and right hand results that belong to this person */
   hands: { left: HandResult | null, right: HandResult | null },
+  /** detected gestures specific to this person */
   gestures: Array<GestureResult>,
+  /** box that defines the person */
   box: Box,
+  /** box that defines the person normalized to 0..1 */
   boxRaw?: Box,
 }
 

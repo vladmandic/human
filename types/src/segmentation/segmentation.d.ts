@@ -7,7 +7,7 @@
  */
 import type { GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
-import type { Input } from '../image/image';
+import type { Input } from '../exports';
 export declare function load(config: Config): Promise<GraphModel>;
 export declare function process(input: Input, background: Input | undefined, config: Config): Promise<{
     data: Array<number>;

@@ -4,13 +4,9 @@
 
 import * as tf from '../../dist/tfjs.esm.js';
 import * as fxImage from './imagefx';
-import type { Tensor } from '../tfjs/types';
-import type { Config } from '../config';
+import type { Input, AnyCanvas, Tensor, Config } from '../exports';
 import { env } from '../util/env';
 import { log, now } from '../util/util';
-
-export type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.Canvas;
-export type AnyCanvas = HTMLCanvasElement | OffscreenCanvas;
 
 const maxSize = 2048;
 // internal temp canvases

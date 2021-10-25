@@ -1,57 +1,57 @@
 /* eslint-disable indent */
 /* eslint-disable no-multi-spaces */
 
+/** Generic config type inherited by all module types */
 export interface GenericConfig {
+  /** @property is module enabled? */
   enabled: boolean,
+  /** @property path to model json file */
   modelPath: string,
+  /** @property how many max frames to go without re-running model if cached results are acceptable */
   skipFrames: number,
+  /** @property how many max miliseconds to go without re-running model if cached results are acceptable */
   skipTime: number,
 }
 
 /** Dectector part of face configuration */
 export interface FaceDetectorConfig extends GenericConfig {
+  /** @property is face rotation correction performed after detecting face? */
   rotation: boolean,
+  /** @property maximum number of detected faces */
   maxDetected: number,
+  /** @property minimum confidence for a detected face before results are discarded */
   minConfidence: number,
+  /** @property minimum overlap between two detected faces before one is discarded */
   iouThreshold: number,
+  /** @property should face detection return face tensor to be used in some other extenrnal model? */
   return: boolean,
 }
 
 /** Mesh part of face configuration */
-export type FaceMeshConfig = GenericConfig
+export interface FaceMeshConfig extends GenericConfig {}
 
 /** Iris part of face configuration */
-export type FaceIrisConfig = GenericConfig
+export interface FaceIrisConfig extends GenericConfig {}
 
 /** Description or face embedding part of face configuration
  * - also used by age and gender detection
  */
 export interface FaceDescriptionConfig extends GenericConfig {
+  /** @property minimum confidence for a detected face before results are discarded */
   minConfidence: number,
 }
 
 /** Emotion part of face configuration */
 export interface FaceEmotionConfig extends GenericConfig {
+  /** @property minimum confidence for a detected face before results are discarded */
   minConfidence: number,
 }
 
-/** Emotion part of face configuration */
-export type FaceAntiSpoofConfig = GenericConfig
+/** Anti-spoofing part of face configuration */
+export interface FaceAntiSpoofConfig extends GenericConfig {}
 
-/** Controlls and configures all face-specific options:
- * - face detection, face mesh detection, age, gender, emotion detection and face description
- *
- * Parameters:
- * - enabled: true/false
- * - modelPath: path for each of face models
- * - minConfidence: threshold for discarding a prediction
- * - iouThreshold: ammount of overlap between two detected objects before one object is removed
- * - maxDetected: maximum number of faces detected in the input, should be set to the minimum number for performance
- * - rotation: use calculated rotated face image or just box with rotation as-is, false means higher performance, but incorrect mesh mapping on higher face angles
- * - return: return extracted face as tensor for futher user processing, in which case user is reponsible for manually disposing the tensor
-*/
-export interface FaceConfig {
-  enabled: boolean,
+/** Configures all face-specific options: face detection, mesh analysis, age, gender, emotion detection and face description */
+export interface FaceConfig extends GenericConfig {
   detector: Partial<FaceDetectorConfig>,
   mesh: Partial<FaceMeshConfig>,
   iris: Partial<FaceIrisConfig>,
@@ -60,92 +60,58 @@ export interface FaceConfig {
   antispoof: Partial<FaceAntiSpoofConfig>,
 }
 
-/** Controlls and configures all body detection specific options
- *
- * Parameters:
- * - enabled: true/false
- * - modelPath: body pose model, can be absolute path or relative to modelBasePath
- * - minConfidence: threshold for discarding a prediction
- * - maxDetected: maximum number of people detected in the input, should be set to the minimum number for performance
- * - detector: optional body detector
- *
- * `maxDetected` is valid for `posenet` and `movenet-multipose` as other models are single-pose only
- * `maxDetected` can be set to -1 to auto-detect based on number of detected faces
- *
- * Changing `modelPath` will change module responsible for hand detection and tracking
- * Allowed values are `posenet.json`, `blazepose.json`, `efficientpose.json`, `movenet-lightning.json`, `movenet-thunder.json`, `movenet-multipose.json`
-*/
+/** Configures all body detection specific options */
 export interface BodyConfig extends GenericConfig {
+  /** @property maximum numboer of detected bodies */
   maxDetected: number,
+  /** @property minimum confidence for a detected body before results are discarded */
   minConfidence: number,
   detector?: {
+    /** @property path to optional body detector model json file */
     modelPath: string
   },
 }
 
-/** Controls and configures all hand detection specific options
- *
- * Parameters:
- * - enabled: true/false
- * - landmarks: detect hand landmarks or just hand boundary box
- * - modelPath: paths for hand detector and hand skeleton models, can be absolute path or relative to modelBasePath
- * - minConfidence: threshold for discarding a prediction
- * - iouThreshold: ammount of overlap between two detected objects before one object is removed
- * - maxDetected: maximum number of hands detected in the input, should be set to the minimum number for performance
- * - rotation: use best-guess rotated hand image or just box with rotation as-is, false means higher performance, but incorrect finger mapping if hand is inverted
- *
- * `maxDetected` can be set to -1 to auto-detect based on number of detected faces
- *
- * Changing `detector.modelPath` will change module responsible for hand detection and tracking
- * Allowed values are `handdetect.json` and `handtrack.json`
-*/
+/** Configures all hand detection specific options */
 export interface HandConfig extends GenericConfig {
+  /** @property should hand rotation correction be performed after hand detection? */
   rotation: boolean,
+  /** @property minimum confidence for a detected hand before results are discarded */
   minConfidence: number,
+  /** @property minimum overlap between two detected hands before one is discarded */
   iouThreshold: number,
+  /** @property maximum number of detected hands */
   maxDetected: number,
+  /** @property should hand landmarks be detected or just return detected hand box */
   landmarks: boolean,
   detector: {
+    /** @property path to hand detector model json */
     modelPath?: string,
   },
   skeleton: {
+    /** @property path to hand skeleton model json */
     modelPath?: string,
   },
 }
 
-/** Controlls and configures all object detection specific options
- * - enabled: true/false
- * - modelPath: object detection model, can be absolute path or relative to modelBasePath
- * - minConfidence: minimum score that detection must have to return as valid object
- * - iouThreshold: ammount of overlap between two detected objects before one object is removed
- * - maxDetected: maximum number of detections to return
- *
- * Changing `modelPath` will change module responsible for hand detection and tracking
- * Allowed values are `mb3-centernet.json` and `nanodet.json`
-*/
+/** Configures all object detection specific options */
 export interface ObjectConfig extends GenericConfig {
+  /** @property minimum confidence for a detected objects before results are discarded */
   minConfidence: number,
+  /** @property minimum overlap between two detected objects before one is discarded */
   iouThreshold: number,
+  /** @property maximum number of detected objects */
   maxDetected: number,
 }
 
-/** Controlls and configures all body segmentation module
+/** Configures all body segmentation module
  * removes background from input containing person
  * if segmentation is enabled it will run as preprocessing task before any other model
  * alternatively leave it disabled and use it on-demand using human.segmentation method which can
  * remove background or replace it with user-provided background
- *
- * - enabled: true/false
- * - modelPath: object detection model, can be absolute path or relative to modelBasePath
- * - blur: blur segmentation output by <number> pixels for more realistic image
- *
- * Changing `modelPath` will change module responsible for hand detection and tracking
- * Allowed values are `selfie.json` and `meet.json`
-
 */
-export interface SegmentationConfig {
-  enabled: boolean,
-  modelPath: string,
+export interface SegmentationConfig extends GenericConfig {
+  /** @property blur segmentation output by <number> pixels for more realistic image */
   blur: number,
 }
 
@@ -154,6 +120,7 @@ export interface SegmentationConfig {
  * - image filters run with near-zero latency as they are executed on the GPU using WebGL
 */
 export interface FilterConfig {
+  /** @property are image filters enabled? */
   enabled: boolean,
   /** Resize input width
   * - if both width and height are set to 0, there is no resizing
@@ -167,40 +134,41 @@ export interface FilterConfig {
   * - if both are set, values are used as-is
   */
   height: number,
-  /** Return processed canvas imagedata in result */
+  /** @property return processed canvas imagedata in result */
   return: boolean,
-  /** Flip input as mirror image */
+  /** @property flip input as mirror image */
   flip: boolean,
-  /** Range: -1 (darken) to 1 (lighten) */
+  /** @property range: -1 (darken) to 1 (lighten) */
   brightness: number,
-  /** Range: -1 (reduce contrast) to 1 (increase contrast) */
+  /** @property range: -1 (reduce contrast) to 1 (increase contrast) */
   contrast: number,
-  /** Range: 0 (no sharpening) to 1 (maximum sharpening) */
+  /** @property range: 0 (no sharpening) to 1 (maximum sharpening) */
   sharpness: number,
-  /** Range: 0 (no blur) to N (blur radius in pixels) */
+  /** @property range: 0 (no blur) to N (blur radius in pixels) */
   blur: number
-  /** Range: -1 (reduce saturation) to 1 (increase saturation) */
+  /** @property range: -1 (reduce saturation) to 1 (increase saturation) */
   saturation: number,
-  /** Range: 0 (no change) to 360 (hue rotation in degrees) */
+  /** @property range: 0 (no change) to 360 (hue rotation in degrees) */
   hue: number,
-  /** Image negative */
+  /** @property image negative */
   negative: boolean,
-  /** Image sepia colors */
+  /** @property image sepia colors */
   sepia: boolean,
-  /** Image vintage colors */
+  /** @property image vintage colors */
   vintage: boolean,
-  /** Image kodachrome colors */
+  /** @property image kodachrome colors */
   kodachrome: boolean,
-  /** Image technicolor colors */
+  /** @property image technicolor colors */
   technicolor: boolean,
-  /** Image polaroid camera effect */
+  /** @property image polaroid camera effect */
   polaroid: boolean,
-  /** Range: 0 (no pixelate) to N (number of pixels to pixelate) */
+  /** @property range: 0 (no pixelate) to N (number of pixels to pixelate) */
   pixelate: number,
 }
 
 /** Controlls gesture detection */
 export interface GestureConfig {
+  /** @property is gesture detection enabled? */
   enabled: boolean,
 }
 
@@ -257,11 +225,7 @@ export interface Config {
   /** Internal Variable */
   skipAllowed: boolean;
 
-  /** Run input through image filters before inference
-   * - image filters run with near-zero latency as they are executed on the GPU
-   *
-   * {@link FilterConfig}
-  */
+  /** {@link FilterConfig} */
   filter: Partial<FilterConfig>,
 
   /** {@link GestureConfig} */
@@ -283,10 +247,7 @@ export interface Config {
   segmentation: Partial<SegmentationConfig>,
 }
 
-/**
- * [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L244)
- *
- */
+/** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L250) */
 const config: Config = {
   backend: '',               // select tfjs backend to use, leave empty to use default backend
                              // for browser environments: 'webgl', 'wasm', 'cpu', or 'humangl' (which is a custom version of webgl)

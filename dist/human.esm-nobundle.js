@@ -10938,8 +10938,7 @@ var options2 = {
   drawGaze: true,
   fillPolygons: false,
   useDepth: true,
-  useCurves: false,
-  bufferedOutput: true
+  useCurves: false
 };
 var getCanvasContext = (input) => {
   if (input && input.getContext)
@@ -13046,9 +13045,7 @@ _analyzeMemoryLeaks = new WeakMap();
 _checkSanity = new WeakMap();
 _sanity = new WeakMap();
 export {
-  Env,
   Human,
-  Models,
   Human as default,
   config as defaults,
   env

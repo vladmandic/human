@@ -1,5 +1,6 @@
 /**
  * Human main module
+ * @author <https://github.com/vladmandic>
  */
 
 // module imports
@@ -30,55 +31,22 @@ import * as persons from './util/persons';
 import * as posenet from './body/posenet';
 import * as segmentation from './segmentation/segmentation';
 import * as warmups from './warmup';
-
 // type definitions
-import type { Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult } from './result';
-import type { Tensor } from './tfjs/types';
-import type { DrawOptions } from './util/draw';
-import type { Input } from './image/image';
-import type { Config } from './config';
+import type { Input, Tensor, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult } from './exports';
+// type exports
+export * from './exports';
 
-/** Defines configuration options used by all **Human** methods */
-export * from './config';
-
-/** Defines result types returned by all **Human** methods */
-export * from './result';
-
-/** Defines DrawOptions used by `human.draw.*` methods */
-export type { DrawOptions } from './util/draw';
-export { env, Env } from './util/env';
-
-/** Face descriptor type as number array */
-export type { Descriptor } from './face/match';
-
-/** Box and Point primitives */
-export { Box, Point } from './result';
-
-/** Defines all possible models used by **Human** library */
-export { Models } from './models';
-
-/** Defines all possible input types for **Human** detection */
-export { Input } from './image/image';
-
-/** Events dispatched by `human.events`
- *
- * - `create`: triggered when Human object is instantiated
- * - `load`: triggered when models are loaded (explicitly or on-demand)
- * - `image`: triggered when input image is processed
- * - `result`: triggered when detection is complete
- * - `warmup`: triggered when warmup is complete
- */
-export type Events = 'create' | 'load' | 'image' | 'result' | 'warmup' | 'error';
-
-/** Error message
- * @typedef Error Type
- */
-export type Error = { error: string };
-
-/** Instance of TensorFlow/JS
- * @external
+/** Instance of TensorFlow/JS used by Human
+ * - Can be TFJS that is bundled with `Human` or a manually imported TFJS library
+ * @external [API](https://js.tensorflow.org/api/latest/)
  */
 export type TensorFlow = typeof tf;
+
+/** Error message */
+export type Error = {
+  /** @property error message */
+  error: string,
+};
 
 /** **Human** library main class
  *
@@ -89,21 +57,19 @@ export type TensorFlow = typeof tf;
  * - Possible inputs: {@link Input}
  *
  * @param userConfig: {@link Config}
- * @return instance
+ * @returns instance of {@link Human}
  */
 export class Human {
   /** Current version of Human library in *semver* format */
   version: string;
 
   /** Current configuration
-   * - Definition: {@link Config}
-   * - Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L292)
+   * - Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L250)
    */
   config: Config;
 
   /** Last known result of detect run
    * - Can be accessed anytime after initial detection
-   * - Definition: {@link Result}
   */
   result: Result;
 
@@ -128,12 +94,7 @@ export class Human {
   env: Env;
 
   /** Draw helper classes that can draw detected objects on canvas using specified draw
-   * - options: {@link DrawOptions} global settings for all draw operations, can be overriden for each draw method
-   * - face: draw detected faces
-   * - body: draw detected people and body parts
-   * - hand: draw detected hands and hand parts
-   * - canvas: draw processed canvas which is a processed copy of the input
-   * - all: meta-function that performs: canvas, face, body, hand
+   * @property options global settings for all draw operations, can be overriden for each draw method {@link DrawOptions}
    */
   draw: { canvas: typeof draw.canvas, face: typeof draw.face, body: typeof draw.body, hand: typeof draw.hand, gesture: typeof draw.gesture, object: typeof draw.object, person: typeof draw.person, all: typeof draw.all, options: DrawOptions };
 
@@ -144,7 +105,7 @@ export class Human {
   models: models.Models;
 
   /** Container for events dispatched by Human
-   *
+   * {@type} EventTarget
    * Possible events:
    * - `create`: triggered when Human object is instantiated
    * - `load`: triggered when models are loaded (explicitly or on-demand)
@@ -169,9 +130,8 @@ export class Human {
 
   /** Constructor for **Human** library that is futher used for all operations
    *
-   * @param userConfig: {@link Config}
-   *
-   * @return instance: {@link Human}
+   * @param {Config} userConfig
+   * @returns {Human}
    */
   constructor(userConfig?: Partial<Config>) {
     this.env = env;
@@ -269,6 +229,7 @@ export class Human {
   /** Process input as return canvas and tensor
    *
    * @param input: {@link Input}
+   * @param {boolean} input.getTensor should image processing also return tensor or just canvas
    * @returns { tensor, canvas }
    */
   image(input: Input, getTensor: boolean = true) {
@@ -276,17 +237,17 @@ export class Human {
   }
 
   /** Segmentation method takes any input and returns processed canvas with body segmentation
-   *  - Optional parameter background is used to fill the background with specific input
    *  - Segmentation is not triggered as part of detect process
    *
    *  Returns:
-   *  - `data` as raw data array with per-pixel segmentation values
-   *  - `canvas` as canvas which is input image filtered with segementation data and optionally merged with background image. canvas alpha values are set to segmentation values for easy merging
-   *  - `alpha` as grayscale canvas that represents segmentation alpha values
    *
    * @param input: {@link Input}
    * @param background?: {@link Input}
-   * @returns { data, canvas, alpha }
+   *  - Optional parameter background is used to fill the background with specific input
+   * @returns {object}
+   *  - `data` as raw data array with per-pixel segmentation values
+   *  - `canvas` as canvas which is input image filtered with segementation data and optionally merged with background image. canvas alpha values are set to segmentation values for easy merging
+   *  - `alpha` as grayscale canvas that represents segmentation alpha values
    */
   async segmentation(input: Input, background?: Input): Promise<{ data: number[], canvas: HTMLCanvasElement | OffscreenCanvas | null, alpha: HTMLCanvasElement | OffscreenCanvas | null }> {
     return segmentation.process(input, background, this.config);
@@ -307,7 +268,7 @@ export class Human {
    *  - Call to explictly register and initialize TFJS backend without any other operations
    *  - Use when changing backend during runtime
    *
-   * @return Promise<void>
+   * @returns {void}
    */
   async init(): Promise<void> {
     await backend.check(this, true);

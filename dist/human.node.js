@@ -82,9 +82,7 @@ var require_tfjs_esm = __commonJS({
 
 // src/human.ts
 __export(exports, {
-  Env: () => Env,
   Human: () => Human,
-  Models: () => Models,
   default: () => Human,
   defaults: () => config,
   env: () => env
@@ -10995,8 +10993,7 @@ var options2 = {
   drawGaze: true,
   fillPolygons: false,
   useDepth: true,
-  useCurves: false,
-  bufferedOutput: true
+  useCurves: false
 };
 var getCanvasContext = (input) => {
   if (input && input.getContext)
@@ -13108,9 +13105,7 @@ _checkSanity = new WeakMap();
 _sanity = new WeakMap();
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  Env,
   Human,
-  Models,
   defaults,
   env
 });

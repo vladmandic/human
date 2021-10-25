@@ -1,11 +1,7 @@
 /**
  * Image Processing algorithm implementation
  */
-import type { Tensor } from '../tfjs/types';
-import type { Config } from '../config';
-import { env } from '../util/env';
-export declare type Input = Tensor | ImageData | ImageBitmap | HTMLImageElement | HTMLMediaElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | typeof Image | typeof env.Canvas;
-export declare type AnyCanvas = HTMLCanvasElement | OffscreenCanvas;
+import type { Input, AnyCanvas, Tensor, Config } from '../exports';
 export declare function canvas(width: any, height: any): AnyCanvas;
 export declare function copy(input: AnyCanvas, output?: AnyCanvas): AnyCanvas;
 export declare function process(input: Input, config: Config, getTensor?: boolean): {

@@ -34898,7 +34898,7 @@ var Env = class {
 var env = new Env();
 
 // package.json
-var version = "2.4.0";
+var version = "2.4.1";
 
 // src/gear/gear-agegenderrace.ts
 var model;

@@ -49,21 +49,3 @@ Object detection using CenterNet or NanoDet models is not working when using WAS
   <https://github.com/tensorflow/tfjs/issues/4824>  
 
 <br><hr><br>
-
-## Pending Release
-
-- Update to TFJS 3.10.0
-- Update to Node v17 for Dev environment
-- Time based caching
-- Multiple bug fixes
-- Utility class `human.env`
-- Add `skipTime` in addition to `skipFrames`
-- Updated configuration default values
-- Updated TS typings
-- Updated JSDoc comments and **TypeDoc** documentation
-- Enhanced **MoveNet** post-processing
-- Increase `human.similarity` resolution
-- Add optional **Anti-Spoof** module
-- Remove old **HandDetect** and **PoseNet** models from default installation
-- Refactor **ImageFX** module
-- Experimental `human.custom.esm` module with custom **TFJS** build

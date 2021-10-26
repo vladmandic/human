@@ -15,6 +15,6 @@ onmessage = async (msg) => {
   if (!human) human = new Human.default(msg.data.config);
   const image = new ImageData(new Uint8ClampedArray(msg.data.image), msg.data.width, msg.data.height);
   let result = {};
-  result = await human.detect(image, msg.data.config);
+  result = await human.detect(image);
   postMessage({ result: result[msg.data.type], type: msg.data.type });
 };

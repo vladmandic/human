@@ -168,7 +168,7 @@ export var AvgPool: string;
 export var AvgPool3D: string;
 export var AvgPool3DGrad: string;
 export var AvgPoolGrad: string;
-declare var BackendWasm67: {
+export var BackendWasm: {
     new (wasm: any): {
         wasm: any;
         dataIdNextNumber: number;
@@ -358,7 +358,7 @@ export var CustomCallback: {
     };
 };
 export var DataStorage: {
-    new (backend3: any, dataMover: any): {
+    new (backend2: any, dataMover: any): {
         backend: any;
         dataMover: any;
         data: WeakMap<object, any>;
@@ -509,7 +509,7 @@ export var FromPixels: string;
 export var FusedBatchNorm: string;
 export var FusedConv2D: string;
 export var FusedDepthwiseConv2D: string;
-declare var GPGPUContext2: {
+export var GPGPUContext: {
     new (gl: any): {
         outputTexture: any;
         program: any;
@@ -769,7 +769,7 @@ export var KernelBackend: {
 };
 export var LRN: string;
 export var LRNGrad: string;
-declare var LayerVariable2: {
+export var LayerVariable: {
     new (val: any, dtype?: string, name?: string, trainable?: boolean, constraint?: null): {
         dtype: string;
         shape: any;
@@ -1553,7 +1553,7 @@ export var RNN: {
     nodeKey(layer: any, nodeIndex: any): string;
 };
 export var Range: string;
-declare var Rank2: any;
+export var Rank: any;
 export var Real: string;
 export var RealDiv: string;
 export var Reciprocal: string;
@@ -1646,7 +1646,7 @@ export var SymbolicTensor: {
 };
 export var Tan: string;
 export var Tanh: string;
-declare var Tensor4: {
+export var Tensor: {
     new (shape: any, dtype: any, dataId: any, id: any): {
         kept: boolean;
         isDisposedInternal: boolean;
@@ -2636,5 +2636,5 @@ declare function stringSplit(...args: any[]): any;
 declare namespace stringSplit { }
 declare function stringToHashBucketFast(...args: any[]): any;
 declare namespace stringToHashBucketFast { }
-export { BackendWasm67 as BackendWasm, GPGPUContext2 as GPGPUContext, LayerVariable2 as LayerVariable, Rank2 as Rank, Tensor4 as Tensor, add2 as add, backend_util_exports as backend_util, browser_exports as browser, exports_constraints_exports as constraints, src_exports as data, device_util_exports as device_util, fused_ops_exports as fused, gather_nd_util_exports as gather_util, gpgpu_util_exports as gpgpu_util, exports_initializers_exports as initializers, io_exports as io, isFinite2 as isFinite, isNaN2 as isNaN, kernel_impls_exports as kernel_impls, exports_layers_exports as layers, log5 as log, math_exports as math, exports_metrics_exports as metrics, exports_models_exports as models, ones2 as ones, print2 as print, exports_regularizers_exports as regularizers, round2 as round, scatter_nd_util_exports as scatter_util, serialization_exports as serialization, shared_exports as shared, slice_util_exports as slice_util, sum2 as sum, tanh2 as tanh, tensor_util_exports as tensor_util, test_util_exports as test_util, util_exports as util, version8 as version, version3 as version_converter, version5 as version_cpu, version2 as version_layers, version7 as version_wasm, version6 as version_webgl, webgl_util_exports as webgl_util, webgpu_exports as webgpu };
+export { add2 as add, backend_util_exports as backend_util, browser_exports as browser, exports_constraints_exports as constraints, src_exports as data, device_util_exports as device_util, fused_ops_exports as fused, gather_nd_util_exports as gather_util, gpgpu_util_exports as gpgpu_util, exports_initializers_exports as initializers, io_exports as io, isFinite2 as isFinite, isNaN2 as isNaN, kernel_impls_exports as kernel_impls, exports_layers_exports as layers, log5 as log, math_exports as math, exports_metrics_exports as metrics, exports_models_exports as models, ones2 as ones, print2 as print, exports_regularizers_exports as regularizers, round2 as round, scatter_nd_util_exports as scatter_util, serialization_exports as serialization, shared_exports as shared, slice_util_exports as slice_util, sum2 as sum, tanh2 as tanh, tensor_util_exports as tensor_util, test_util_exports as test_util, util_exports as util, version8 as version, version3 as version_converter, version5 as version_cpu, version2 as version_layers, version7 as version_wasm, version6 as version_webgl, webgl_util_exports as webgl_util, webgpu_exports as webgpu };
 //# sourceMappingURL=tfjs.esm.d.ts.map

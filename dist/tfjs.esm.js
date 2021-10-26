@@ -595,7 +595,7 @@ var require_long = __commonJS({
       return this.not().add(ONE);
     };
     LongPrototype.neg = LongPrototype.negate;
-    LongPrototype.add = function add6(addend) {
+    LongPrototype.add = function add5(addend) {
       if (!isLong(addend))
         addend = fromValue(addend);
       var a48 = this.high >>> 16;
@@ -626,7 +626,7 @@ var require_long = __commonJS({
       return this.add(subtrahend.neg());
     };
     LongPrototype.sub = LongPrototype.subtract;
-    LongPrototype.multiply = function multiply5(multiplier) {
+    LongPrototype.multiply = function multiply4(multiplier) {
       if (this.isZero())
         return ZERO;
       if (!isLong(multiplier))
@@ -4806,8 +4806,8 @@ var require_tfjs_backend_wasm = __commonJS({
 var EPSILON_FLOAT32 = 1e-7;
 var EPSILON_FLOAT16 = 1e-4;
 var DataStorage = class {
-  constructor(backend3, dataMover) {
-    this.backend = backend3;
+  constructor(backend2, dataMover) {
+    this.backend = backend2;
     this.dataMover = dataMover;
     this.data = new WeakMap();
     this.dataIdsCount = 0;
@@ -4914,11 +4914,11 @@ function swap(object, left, right) {
   object[right] = temp;
 }
 function sum(arr) {
-  let sum8 = 0;
+  let sum7 = 0;
   for (let i = 0; i < arr.length; i++) {
-    sum8 += arr[i];
+    sum7 += arr[i];
   }
-  return sum8;
+  return sum7;
 }
 function randUniform(a, b) {
   const r = Math.random();
@@ -5672,8 +5672,8 @@ function getKernelsForBackend(backendName) {
       break;
     }
     const [key, config] = value;
-    const [backend3] = key.split("_");
-    if (backend3 === backendName) {
+    const [backend2] = key.split("_");
+    if (backend2 === backendName) {
       result.push(config);
     }
   }
@@ -6107,7 +6107,7 @@ function getFilteredNodesXToY(tape, xs, y) {
   }
   return filteredTape;
 }
-function backpropagateGradients(tensorAccumulatedGradientMap, filteredTape, tidy2, add6) {
+function backpropagateGradients(tensorAccumulatedGradientMap, filteredTape, tidy2, add5) {
   for (let i = filteredTape.length - 1; i >= 0; i--) {
     const node = filteredTape[i];
     const dys = [];
@@ -6139,7 +6139,7 @@ function backpropagateGradients(tensorAccumulatedGradientMap, filteredTape, tidy
         tensorAccumulatedGradientMap[x.id] = dx;
       } else {
         const curGradient = tensorAccumulatedGradientMap[x.id];
-        tensorAccumulatedGradientMap[x.id] = add6(curGradient, dx);
+        tensorAccumulatedGradientMap[x.id] = add5(curGradient, dx);
         curGradient.dispose();
       }
     }
@@ -6355,7 +6355,7 @@ function setOpHandler(handler) {
 function setDeprecationWarningFn(fn) {
   deprecationWarningFn = fn;
 }
-var Tensor4 = class {
+var Tensor = class {
   constructor(shape, dtype, dataId, id) {
     this.kept = false;
     this.isDisposedInternal = false;
@@ -6391,7 +6391,7 @@ var Tensor4 = class {
       const bytes = await data;
       try {
         return bytes.map((b) => decodeString(b));
-      } catch (e) {
+      } catch {
         throw new Error("Failed to decode the string bytes into utf-8. To get the original bytes, call tensor.bytes().");
       }
     }
@@ -6403,7 +6403,7 @@ var Tensor4 = class {
     if (this.dtype === "string") {
       try {
         return data.map((b) => decodeString(b));
-      } catch (e) {
+      } catch {
         throw new Error("Failed to decode the string bytes into utf-8. To get the original bytes, call tensor.bytes().");
       }
     }
@@ -6453,18 +6453,18 @@ var Tensor4 = class {
     return trackerFn().makeVariable(this, trainable, name, dtype);
   }
 };
-Object.defineProperty(Tensor4, Symbol.hasInstance, {
+Object.defineProperty(Tensor, Symbol.hasInstance, {
   value: (instance) => {
     return !!instance && instance.data != null && instance.dataSync != null && instance.throwIfDisposed != null;
   }
 });
 function getGlobalTensorClass() {
   return getGlobal("Tensor", () => {
-    return Tensor4;
+    return Tensor;
   });
 }
 getGlobalTensorClass();
-var Variable = class extends Tensor4 {
+var Variable = class extends Tensor {
   constructor(initialValue, trainable, name, tensorId) {
     super(initialValue.shape, initialValue.dtype, initialValue.dataId, tensorId);
     this.trainable = trainable;
@@ -6488,7 +6488,7 @@ var Variable = class extends Tensor4 {
 };
 Object.defineProperty(Variable, Symbol.hasInstance, {
   value: (instance) => {
-    return instance instanceof Tensor4 && instance.assign != null && instance.assign instanceof Function;
+    return instance instanceof Tensor && instance.assign != null && instance.assign instanceof Function;
   }
 });
 var tensor_util_exports = {};
@@ -6498,16 +6498,16 @@ __export(tensor_util_exports, {
   isTensorInList: () => isTensorInList,
   makeTypesMatch: () => makeTypesMatch
 });
-var Rank2;
-(function(Rank41) {
-  Rank41["R0"] = "R0";
-  Rank41["R1"] = "R1";
-  Rank41["R2"] = "R2";
-  Rank41["R3"] = "R3";
-  Rank41["R4"] = "R4";
-  Rank41["R5"] = "R5";
-  Rank41["R6"] = "R6";
-})(Rank2 || (Rank2 = {}));
+var Rank;
+(function(Rank18) {
+  Rank18["R0"] = "R0";
+  Rank18["R1"] = "R1";
+  Rank18["R2"] = "R2";
+  Rank18["R3"] = "R3";
+  Rank18["R4"] = "R4";
+  Rank18["R5"] = "R5";
+  Rank18["R6"] = "R6";
+})(Rank || (Rank = {}));
 var UpcastInt32AndMap;
 (function(UpcastInt32AndMap2) {
   UpcastInt32AndMap2["float32"] = "float32";
@@ -6577,7 +6577,7 @@ function walkTensorContainer(container, list, seen) {
   if (container == null) {
     return;
   }
-  if (container instanceof Tensor4) {
+  if (container instanceof Tensor) {
     list.push(container);
     return;
   }
@@ -6741,10 +6741,10 @@ var _Engine = class {
       throw new Error(`Cannot initialize backend ${backendName}, no registration found.`);
     }
     try {
-      const backend3 = registryFactoryEntry.factory();
-      if (backend3 && !(backend3 instanceof KernelBackend) && typeof backend3.then === "function") {
+      const backend2 = registryFactoryEntry.factory();
+      if (backend2 && !(backend2 instanceof KernelBackend) && typeof backend2.then === "function") {
         const promiseId = ++this.pendingBackendInitId;
-        const success = backend3.then((backendInstance) => {
+        const success = backend2.then((backendInstance) => {
           if (promiseId < this.pendingBackendInitId) {
             return false;
           }
@@ -6763,7 +6763,7 @@ var _Engine = class {
         this.pendingBackendInit = success;
         return { success, asyncInit: true };
       } else {
-        this.registry[backendName] = backend3;
+        this.registry[backendName] = backend2;
         return { success: true, asyncInit: false };
       }
     } catch (err) {
@@ -6810,14 +6810,14 @@ var _Engine = class {
     }
     throw new Error(`Could not initialize any backends, all backend initializations failed.`);
   }
-  moveData(backend3, dataId) {
+  moveData(backend2, dataId) {
     const info = this.state.tensorInfo.get(dataId);
     const srcBackend = info.backend;
     const values = this.readSync(dataId);
     const refCount = srcBackend.refCount(dataId);
     srcBackend.disposeData(dataId, true);
-    info.backend = backend3;
-    backend3.move(dataId, values, info.shape, info.dtype, refCount);
+    info.backend = backend2;
+    backend2.move(dataId, values, info.shape, info.dtype, refCount);
     if (this.shouldCheckForMemLeaks()) {
       this.state.numDataMovesStack[this.state.numDataMovesStack.length - 1]++;
     }
@@ -7017,19 +7017,19 @@ var _Engine = class {
     }
     return [];
   }
-  makeTensor(values, shape, dtype, backend3) {
+  makeTensor(values, shape, dtype, backend2) {
     if (values == null) {
       throw new Error("Values passed to engine.makeTensor() are null");
     }
     dtype = dtype || "float32";
-    backend3 = backend3 || this.backend;
+    backend2 = backend2 || this.backend;
     let backendVals = values;
     if (dtype === "string" && isString(values[0])) {
       backendVals = values.map((d) => encodeString(d));
     }
-    const dataId = backend3.write(backendVals, shape, dtype);
-    const t = new Tensor4(shape, dtype, dataId, this.nextTensorId());
-    this.trackTensor(t, backend3);
+    const dataId = backend2.write(backendVals, shape, dtype);
+    const t = new Tensor(shape, dtype, dataId, this.nextTensorId());
+    this.trackTensor(t, backend2);
     if (dtype === "string") {
       const info = this.state.tensorInfo.get(dataId);
       const newBytes = bytesFromStringArray(backendVals);
@@ -7038,10 +7038,10 @@ var _Engine = class {
     }
     return t;
   }
-  makeTensorFromDataId(dataId, shape, dtype, backend3) {
+  makeTensorFromDataId(dataId, shape, dtype, backend2) {
     dtype = dtype || "float32";
-    const t = new Tensor4(shape, dtype, dataId, this.nextTensorId());
-    this.trackTensor(t, backend3);
+    const t = new Tensor(shape, dtype, dataId, this.nextTensorId());
+    this.trackTensor(t, backend2);
     return t;
   }
   makeVariable(initialValue, trainable = true, name, dtype) {
@@ -7057,7 +7057,7 @@ var _Engine = class {
     this.incRef(v, this.backend);
     return v;
   }
-  trackTensor(a, backend3) {
+  trackTensor(a, backend2) {
     this.state.numTensors++;
     if (a.dtype === "string") {
       this.state.numStringTensors++;
@@ -7070,7 +7070,7 @@ var _Engine = class {
     if (!this.state.tensorInfo.has(a.dataId)) {
       this.state.numDataBuffers++;
       this.state.tensorInfo.set(a.dataId, {
-        backend: backend3 || this.backend,
+        backend: backend2 || this.backend,
         dtype: a.dtype,
         shape: a.shape,
         bytes
@@ -7080,12 +7080,12 @@ var _Engine = class {
       this.track(a);
     }
   }
-  incRef(a, backend3) {
-    this.trackTensor(a, backend3);
+  incRef(a, backend2) {
+    this.trackTensor(a, backend2);
     this.backend.incRef(a.dataId);
   }
-  removeDataId(dataId, backend3) {
-    if (this.state.tensorInfo.has(dataId) && this.state.tensorInfo.get(dataId).backend === backend3) {
+  removeDataId(dataId, backend2) {
+    if (this.state.tensorInfo.has(dataId) && this.state.tensorInfo.get(dataId).backend === backend2) {
       this.state.tensorInfo.delete(dataId);
       this.state.numDataBuffers--;
     }
@@ -7222,7 +7222,7 @@ var _Engine = class {
       throw new Error(`dy must have 'float32' dtype, but has '${dy.dtype}'`);
     }
     const y = this.scopedRun(() => this.startTape(), () => this.endTape(), () => this.tidy("forward", f));
-    assert(y instanceof Tensor4, () => "The result y returned by f() must be a tensor.");
+    assert(y instanceof Tensor, () => "The result y returned by f() must be a tensor.");
     const filteredTape = getFilteredNodesXToY(this.state.activeTape, xs, y);
     if (!allowNoGradients && filteredTape.length === 0 && xs.length > 0) {
       throw new Error("Cannot compute gradient of y=f(x) with respect to x. Make sure that the f you passed encloses all operations that lead from x to y.");
@@ -7246,7 +7246,7 @@ var _Engine = class {
   customGrad(f) {
     assert(isFunction(f), () => "The f passed in customGrad(f) must be a function.");
     return (...inputs) => {
-      assert(inputs.every((t) => t instanceof Tensor4), () => "The args passed in customGrad(f)(x1, x2,...) must all be tensors");
+      assert(inputs.every((t) => t instanceof Tensor), () => "The args passed in customGrad(f)(x1, x2,...) must all be tensors");
       let res;
       const inputMap = {};
       inputs.forEach((input2, i) => {
@@ -7254,7 +7254,7 @@ var _Engine = class {
       });
       const forwardFunc = (_, save) => {
         res = f(...[...inputs, save]);
-        assert(res.value instanceof Tensor4, () => "The function f passed in customGrad(f) must return an object where `obj.value` is a tensor");
+        assert(res.value instanceof Tensor, () => "The function f passed in customGrad(f) must return an object where `obj.value` is a tensor");
         assert(isFunction(res.gradFunc), () => "The function f passed in customGrad(f) must return an object where `obj.gradFunc` is a function.");
         return res.value;
       };
@@ -7262,7 +7262,7 @@ var _Engine = class {
         const gradRes = res.gradFunc(dy, saved);
         const grads2 = Array.isArray(gradRes) ? gradRes : [gradRes];
         assert(grads2.length === inputs.length, () => "The function f passed in customGrad(f) must return an object where `obj.gradFunc` is a function that returns the same number of tensors as inputs passed to f(...).");
-        assert(grads2.every((t) => t instanceof Tensor4), () => "The function f passed in customGrad(f) must return an object where `obj.gradFunc` is a function that returns a list of only tensors.");
+        assert(grads2.every((t) => t instanceof Tensor), () => "The function f passed in customGrad(f) must return an object where `obj.gradFunc` is a function that returns a list of only tensors.");
         const gradMap = {};
         grads2.forEach((grad2, i) => {
           gradMap[i] = () => grad2;
@@ -7431,7 +7431,7 @@ function assertDtype(expectedDtype, actualDType, argName, functionName) {
   }
 }
 function convertToTensor(x, argName, functionName, parseAsDtype = "numeric") {
-  if (x instanceof Tensor4) {
+  if (x instanceof Tensor) {
     assertDtype(parseAsDtype, x.dtype, argName, functionName);
     return x;
   }
@@ -9137,7 +9137,7 @@ async function fromPixelsAsync(pixels, numChannels = 3) {
 }
 async function toPixels(img, canvas) {
   let $img = convertToTensor(img, "img", "toPixels");
-  if (!(img instanceof Tensor4)) {
+  if (!(img instanceof Tensor)) {
     const originalImgTensor = $img;
     $img = cast(originalImgTensor, "int32");
     originalImgTensor.dispose();
@@ -10533,13 +10533,13 @@ function xAs4D(x) {
   }
   return x4D;
 }
-function batchNorm_(x, mean7, variance2, offset, scale2, varianceEpsilon) {
+function batchNorm_(x, mean5, variance, offset, scale2, varianceEpsilon) {
   if (varianceEpsilon == null) {
     varianceEpsilon = 1e-3;
   }
   const $x = convertToTensor(x, "x", "batchNorm");
-  const $mean = convertToTensor(mean7, "mean", "batchNorm");
-  const $variance = convertToTensor(variance2, "variance", "batchNorm");
+  const $mean = convertToTensor(mean5, "mean", "batchNorm");
+  const $variance = convertToTensor(variance, "variance", "batchNorm");
   let $scale;
   if (scale2 != null) {
     $scale = convertToTensor(scale2, "scale", "batchNorm");
@@ -10564,10 +10564,10 @@ function batchNorm_(x, mean7, variance2, offset, scale2, varianceEpsilon) {
   return reshape(res, $x.shape);
 }
 var batchNorm = op({ batchNorm_ });
-function batchNorm2d_(x, mean7, variance2, offset, scale2, varianceEpsilon) {
+function batchNorm2d_(x, mean5, variance, offset, scale2, varianceEpsilon) {
   const $x = convertToTensor(x, "x", "batchNorm");
-  const $mean = convertToTensor(mean7, "mean", "batchNorm");
-  const $variance = convertToTensor(variance2, "variance", "batchNorm");
+  const $mean = convertToTensor(mean5, "mean", "batchNorm");
+  const $variance = convertToTensor(variance, "variance", "batchNorm");
   let $scale;
   if (scale2 != null) {
     $scale = convertToTensor(scale2, "scale", "batchNorm");
@@ -10588,10 +10588,10 @@ function batchNorm2d_(x, mean7, variance2, offset, scale2, varianceEpsilon) {
   return batchNorm($x, $mean, $variance, $offset, $scale, varianceEpsilon);
 }
 var batchNorm2d = op({ batchNorm2d_ });
-function batchNorm3d_(x, mean7, variance2, offset, scale2, varianceEpsilon) {
+function batchNorm3d_(x, mean5, variance, offset, scale2, varianceEpsilon) {
   const $x = convertToTensor(x, "x", "batchNorm");
-  const $mean = convertToTensor(mean7, "mean", "batchNorm");
-  const $variance = convertToTensor(variance2, "variance", "batchNorm");
+  const $mean = convertToTensor(mean5, "mean", "batchNorm");
+  const $variance = convertToTensor(variance, "variance", "batchNorm");
   let $scale;
   if (scale2 != null) {
     $scale = convertToTensor(scale2, "scale", "batchNorm");
@@ -10612,10 +10612,10 @@ function batchNorm3d_(x, mean7, variance2, offset, scale2, varianceEpsilon) {
   return batchNorm($x, $mean, $variance, $offset, $scale, varianceEpsilon);
 }
 var batchNorm3d = op({ batchNorm3d_ });
-function batchNorm4d_(x, mean7, variance2, offset, scale2, varianceEpsilon) {
+function batchNorm4d_(x, mean5, variance, offset, scale2, varianceEpsilon) {
   const $x = convertToTensor(x, "x", "batchNorm");
-  const $mean = convertToTensor(mean7, "mean", "batchNorm");
-  const $variance = convertToTensor(variance2, "variance", "batchNorm");
+  const $mean = convertToTensor(mean5, "mean", "batchNorm");
+  const $variance = convertToTensor(variance, "variance", "batchNorm");
   let $scale;
   if (scale2 != null) {
     $scale = convertToTensor(scale2, "scale", "batchNorm");
@@ -11328,8 +11328,8 @@ function grads(f) {
 function valueAndGrad(f) {
   assert(isFunction(f), () => "The f passed in valueAndGrad(f) must be a function");
   return (x, dy) => {
-    assert(x instanceof Tensor4, () => "The x passed in valueAndGrad(f)(x) must be a tensor");
-    assert(dy == null || dy instanceof Tensor4, () => "The dy passed in valueAndGrad(f)(x, dy) must be a tensor");
+    assert(x instanceof Tensor, () => "The x passed in valueAndGrad(f)(x) must be a tensor");
+    assert(dy == null || dy instanceof Tensor, () => "The dy passed in valueAndGrad(f)(x, dy) must be a tensor");
     const { grads: grads2, value } = ENGINE.gradients(() => f(x), [x], dy);
     checkGrads(grads2);
     return { grad: grads2[0], value };
@@ -11338,8 +11338,8 @@ function valueAndGrad(f) {
 function valueAndGrads(f) {
   assert(isFunction(f), () => "The f passed in valueAndGrads(f) must be a function");
   return (args, dy) => {
-    assert(Array.isArray(args) && args.every((arg) => arg instanceof Tensor4), () => "The args passed in valueAndGrads(f)(args) must be array of tensors");
-    assert(dy == null || dy instanceof Tensor4, () => "The dy passed in valueAndGrads(f)(args, dy) must be a tensor");
+    assert(Array.isArray(args) && args.every((arg) => arg instanceof Tensor), () => "The args passed in valueAndGrads(f)(args) must be array of tensors");
+    assert(dy == null || dy instanceof Tensor, () => "The dy passed in valueAndGrads(f)(args, dy) must be a tensor");
     const res = ENGINE.gradients(() => f(...args), args, dy);
     if (dy != null) {
       assertShapesMatch(res.value.shape, dy.shape, "The shape of dy passed in valueAndGrads(f)([x1,...], dy) must match the shape returned by f([x1,...])");
@@ -11358,9 +11358,9 @@ function variableGrads(f, varList) {
       varList.push(ENGINE.registeredVariables[varName]);
     }
   }
-  const specifiedNonTrainable = specifiedVarList ? varList.filter((variable3) => !variable3.trainable) : null;
+  const specifiedNonTrainable = specifiedVarList ? varList.filter((variable2) => !variable2.trainable) : null;
   const originalVarCount = varList.length;
-  varList = varList.filter((variable3) => variable3.trainable);
+  varList = varList.filter((variable2) => variable2.trainable);
   assert(varList.length > 0, () => `variableGrads() expects at least one of the input variables to be trainable, but none of the ${originalVarCount} variables is trainable.`);
   const allowNoGradients = true;
   const { value, grads: grads2 } = ENGINE.gradients(f, varList, null, allowNoGradients);
@@ -11668,11 +11668,11 @@ function meshgrid(x, y, { indexing = "xy" } = {}) {
   if (x === void 0) {
     return [];
   }
-  let $x = convertToTensor(x, "x", "meshgrid", x instanceof Tensor4 ? x.dtype : "float32");
+  let $x = convertToTensor(x, "x", "meshgrid", x instanceof Tensor ? x.dtype : "float32");
   if (y === void 0) {
     return [$x];
   }
-  let $y = convertToTensor(y, "y", "meshgrid", y instanceof Tensor4 ? y.dtype : "float32");
+  let $y = convertToTensor(y, "y", "meshgrid", y instanceof Tensor ? y.dtype : "float32");
   const w = sizeFromShape($x.shape);
   const h = sizeFromShape($y.shape);
   if (indexing === "xy") {
@@ -11750,8 +11750,8 @@ function moments_(x, axis = null, keepDims = false) {
     keepDimsShape = expandShapeToKeepDim(xMean.shape, axes);
   }
   const devSquared = square(sub(cast(x, "float32"), reshape(xMean, keepDimsShape)));
-  const variance2 = mean(devSquared, axes, keepDims);
-  return { mean: xMean, variance: variance2 };
+  const variance = mean(devSquared, axes, keepDims);
+  return { mean: xMean, variance };
 }
 var moments = op({ moments_ });
 function multiRNNCell_(lstmCells, data, c, h) {
@@ -11967,8 +11967,8 @@ function rand_(shape, randFunction, dtype) {
 var rand = op({ rand_ });
 var seedrandom = __toModule(require_seedrandom2());
 var MPRandGauss = class {
-  constructor(mean7, stdDeviation, dtype, truncated, seed) {
-    this.mean = mean7;
+  constructor(mean5, stdDeviation, dtype, truncated, seed) {
+    this.mean = mean5;
     this.stdDev = stdDeviation;
     this.dtype = dtype;
     this.nextVal = NaN;
@@ -12106,11 +12106,11 @@ function randomGamma_(shape, alpha, beta = 1, dtype = "float32", seed) {
   return res.toTensor();
 }
 var randomGamma = op({ randomGamma_ });
-function randomNormal_(shape, mean7 = 0, stdDev = 1, dtype, seed) {
+function randomNormal_(shape, mean5 = 0, stdDev = 1, dtype, seed) {
   if (dtype != null && dtype === "bool") {
     throw new Error(`Unsupported data type ${dtype}`);
   }
-  const randGauss = new MPRandGauss(mean7, stdDev, dtype, false, seed);
+  const randGauss = new MPRandGauss(mean5, stdDev, dtype, false, seed);
   const res = buffer(shape, dtype);
   for (let i = 0; i < res.values.length; i++) {
     res.values[i] = randGauss.nextValue();
@@ -12554,11 +12554,11 @@ function topk_(x, k = 1, sorted = true) {
   return { values, indices };
 }
 var topk = op({ topk_ });
-function truncatedNormal_(shape, mean7 = 0, stdDev = 1, dtype, seed) {
+function truncatedNormal_(shape, mean5 = 0, stdDev = 1, dtype, seed) {
   if (dtype != null && dtype === "bool") {
     throw new Error(`Unsupported data type $ { dtype }`);
   }
-  const randGauss = new MPRandGauss(mean7, stdDev, dtype, true, seed);
+  const randGauss = new MPRandGauss(mean5, stdDev, dtype, true, seed);
   const res = buffer(shape, dtype);
   for (let i = 0; i < res.values.length; i++) {
     res.values[i] = randGauss.nextValue();
@@ -12710,13 +12710,13 @@ function movingAverage_(v, x, decay, step5, zeroDebias = true) {
   assert(arraysEqual($v.shape, $x.shape), () => "Shape mismatch in v and x");
   const one = scalar(1);
   const oneMinusDecay = sub(one, $decay);
-  let update2 = mul(sub($x, $v), oneMinusDecay);
+  let update = mul(sub($x, $v), oneMinusDecay);
   if (zeroDebias) {
     assert(step5 != null, () => "When using zeroDebias: true, step is required.");
     const $step = convertToTensor(step5, "step", "movingAverage");
-    update2 = div(update2, sub(one, pow($decay, $step)));
+    update = div(update, sub(one, pow($decay, $step)));
   }
-  return add2($v, update2);
+  return add2($v, update);
 }
 var movingAverage = op({ movingAverage_ });
 function scatterND_(indices, updates, shape) {
@@ -12794,7 +12794,7 @@ function dropout_(x, rate, noiseShape, seed) {
   assert($x.dtype === "float32", () => `x has to be a floating point tensor since it's going to be scaled, but got a ${$x.dtype} tensor instead.`);
   assert(rate >= 0 && rate < 1, () => `rate must be a float in the range [0, 1), but got ${rate}.`);
   if (rate === 0) {
-    return x instanceof Tensor4 ? $x.clone() : $x;
+    return x instanceof Tensor ? $x.clone() : $x;
   }
   const $noiseShape = getNoiseShape($x, noiseShape);
   const keepProb = 1 - rate;
@@ -15929,55 +15929,55 @@ var fusedBatchNormGradConfig = {
   inputsToSave: ["x", "mean", "variance", "scale"],
   gradFunc: (dy, saved, attrs) => {
     const { varianceEpsilon } = attrs;
-    const [x, mean7, variance2, scale2] = saved;
+    const [x, mean5, variance, scale2] = saved;
     const scaleValue = scale2 == null ? scalar(1) : scale2;
-    const reductionAxes = getReductionAxes(mean7.shape, x.shape);
+    const reductionAxes = getReductionAxes(mean5.shape, x.shape);
     const tileShape = [];
-    if (mean7.rank === 1) {
+    if (mean5.rank === 1) {
       for (let i = 0; i < x.shape.length - 1; ++i) {
         tileShape.push(x.shape[i]);
       }
       tileShape.push(1);
     }
-    const xMinusMean = sub(x, mean7);
+    const xMinusMean = sub(x, mean5);
     const dyTimesScaleValue = mul(dy, scaleValue);
-    const oneOverSqrtVariance = rsqrt(add2(variance2, scalar(varianceEpsilon)));
+    const oneOverSqrtVariance = rsqrt(add2(variance, scalar(varianceEpsilon)));
     const minusHalfRCube = mul(mul(mul(oneOverSqrtVariance, oneOverSqrtVariance), oneOverSqrtVariance), scalar(-0.5));
     const derX = () => {
-      if (mean7.rank === 1) {
-        return reshape(mul(mul(dy, tile(reshape(oneOverSqrtVariance, [1, 1, 1, mean7.shape[0]]), tileShape)), scaleValue), x.shape);
+      if (mean5.rank === 1) {
+        return reshape(mul(mul(dy, tile(reshape(oneOverSqrtVariance, [1, 1, 1, mean5.shape[0]]), tileShape)), scaleValue), x.shape);
       } else {
         return reshape(mul(mul(dy, oneOverSqrtVariance), scaleValue), x.shape);
       }
     };
     const derMean = () => {
       let meanDer = mul(mul(oneOverSqrtVariance, scalar(-1)), dyTimesScaleValue);
-      if (mean7.rank === 1) {
+      if (mean5.rank === 1) {
         meanDer = sum2(meanDer, reductionAxes);
       }
-      return reshape(meanDer, mean7.shape);
+      return reshape(meanDer, mean5.shape);
     };
     const derVariance = () => {
       let varianceDer = mul(mul(minusHalfRCube, xMinusMean), dyTimesScaleValue);
-      if (mean7.rank === 1) {
+      if (mean5.rank === 1) {
         varianceDer = sum2(varianceDer, reductionAxes);
       }
-      return reshape(varianceDer, mean7.shape);
+      return reshape(varianceDer, mean5.shape);
     };
     const derScale = () => {
       const xMinusMean2TimesRsqrt = mul(xMinusMean, oneOverSqrtVariance);
       let scaleDer = mul(dy, xMinusMean2TimesRsqrt);
-      if (mean7.rank === 1) {
+      if (mean5.rank === 1) {
         scaleDer = sum2(scaleDer, reductionAxes);
       }
-      return reshape(scaleDer, mean7.shape);
+      return reshape(scaleDer, mean5.shape);
     };
     const derOffset = () => {
       let offsetDer = dy;
-      if (mean7.rank === 1) {
+      if (mean5.rank === 1) {
         offsetDer = sum2(offsetDer, reductionAxes);
       }
-      return reshape(offsetDer, mean7.shape);
+      return reshape(offsetDer, mean5.shape);
     };
     return {
       x: derX,
@@ -17651,8 +17651,8 @@ function tile2(x, n) {
   }
   return tile(x, n);
 }
-function randomNormal2(shape, mean7 = 0, stddev = 1, dtype, seed) {
-  return randomNormal(shape, mean7, stddev, dtype, seed);
+function randomNormal2(shape, mean5 = 0, stddev = 1, dtype, seed) {
+  return randomNormal(shape, mean5, stddev, dtype, seed);
 }
 function dot2(a, b, activation2, bias) {
   if (a.rank < 2 || b.rank < 2) {
@@ -18234,9 +18234,9 @@ __export(exports_layers_exports, {
   RNN: () => RNN,
   RNNCell: () => RNNCell,
   activation: () => activation,
-  add: () => add4,
+  add: () => add3,
   alphaDropout: () => alphaDropout,
-  average: () => average2,
+  average: () => average,
   averagePooling1d: () => averagePooling1d,
   averagePooling2d: () => averagePooling2d,
   averagePooling3d: () => averagePooling3d,
@@ -18248,11 +18248,11 @@ __export(exports_layers_exports, {
   avgPooling3d: () => avgPooling3d,
   batchNormalization: () => batchNormalization2,
   bidirectional: () => bidirectional,
-  concatenate: () => concatenate3,
-  conv1d: () => conv1d3,
-  conv2d: () => conv2d4,
+  concatenate: () => concatenate2,
+  conv1d: () => conv1d2,
+  conv2d: () => conv2d3,
   conv2dTranspose: () => conv2dTranspose2,
-  conv3d: () => conv3d3,
+  conv3d: () => conv3d2,
   conv3dTranspose: () => conv3dTranspose2,
   convLstm2d: () => convLstm2d,
   convLstm2dCell: () => convLstm2dCell,
@@ -18286,9 +18286,9 @@ __export(exports_layers_exports, {
   maxPooling1d: () => maxPooling1d,
   maxPooling2d: () => maxPooling2d,
   maxPooling3d: () => maxPooling3d,
-  maximum: () => maximum3,
-  minimum: () => minimum3,
-  multiply: () => multiply2,
+  maximum: () => maximum2,
+  minimum: () => minimum2,
+  multiply: () => multiply,
   permute: () => permute,
   prelu: () => prelu2,
   reLU: () => reLU,
@@ -18366,7 +18366,7 @@ function countParamsInWeights(weights) {
   return count2;
 }
 var DEFAULT_VARIABLE_NAME_PREFIX = "Variable";
-var LayerVariable2 = class {
+var LayerVariable = class {
   constructor(val, dtype = "float32", name = DEFAULT_VARIABLE_NAME_PREFIX, trainable = true, constraint = null) {
     this.dtype = dtype == null ? "float32" : dtype;
     this.shape = val.shape;
@@ -18420,8 +18420,8 @@ function batchGetValue(xs) {
 }
 function batchSetValue(variablesAndValues) {
   variablesAndValues.forEach((variableAndValue) => {
-    const variable3 = variableAndValue[0];
-    variable3.write(variableAndValue[1]);
+    const variable2 = variableAndValue[0];
+    variable2.write(variableAndValue[1]);
   });
 }
 var InputSpec = class {
@@ -18868,7 +18868,7 @@ var Layer = class extends serialization_exports.Serializable {
       initializer = getInitializerFunc != null ? getInitializerFunc() : getInitializer("zeros");
     }
     const initValue = initializer.apply(shape, dtype);
-    const weight = new LayerVariable2(initValue, dtype, name, trainable, constraint);
+    const weight = new LayerVariable(initValue, dtype, name, trainable, constraint);
     initValue.dispose();
     if (regularizer != null) {
       this.addLoss(() => regularizer.apply(weight.read()));
@@ -19148,9 +19148,9 @@ function disposeTensorsInLogs(logs) {
   }
 }
 var ModelLoggingVerbosity;
-(function(ModelLoggingVerbosity5) {
-  ModelLoggingVerbosity5[ModelLoggingVerbosity5["SILENT"] = 0] = "SILENT";
-  ModelLoggingVerbosity5[ModelLoggingVerbosity5["VERBOSE"] = 1] = "VERBOSE";
+(function(ModelLoggingVerbosity4) {
+  ModelLoggingVerbosity4[ModelLoggingVerbosity4["SILENT"] = 0] = "SILENT";
+  ModelLoggingVerbosity4[ModelLoggingVerbosity4["VERBOSE"] = 1] = "VERBOSE";
 })(ModelLoggingVerbosity || (ModelLoggingVerbosity = {}));
 var DEFAULT_YIELD_EVERY_MS = 125;
 var BaseCallback = class {
@@ -19705,14 +19705,14 @@ function sparseCategoricalAccuracy(yTrue, yPred) {
   }
   return cast(equal(yTrue, yPred), "float32");
 }
-var mse2 = meanSquaredError2;
-var MSE2 = meanSquaredError2;
-var mae2 = meanAbsoluteError;
-var MAE2 = meanAbsoluteError;
-var mape2 = meanAbsolutePercentageError;
-var MAPE2 = meanAbsolutePercentageError;
+var mse = meanSquaredError2;
+var MSE = meanSquaredError2;
+var mae = meanAbsoluteError;
+var MAE = meanAbsoluteError;
+var mape = meanAbsolutePercentageError;
+var MAPE = meanAbsolutePercentageError;
 var categoricalCrossentropy2 = categoricalCrossentropy;
-var cosine2 = cosineProximity;
+var cosine = cosineProximity;
 var sparseCategoricalCrossentropy2 = sparseCategoricalCrossentropy;
 var metricsMap = {
   binaryAccuracy,
@@ -19720,13 +19720,13 @@ var metricsMap = {
   precision,
   categoricalCrossentropy: categoricalCrossentropy2,
   sparseCategoricalCrossentropy: sparseCategoricalCrossentropy2,
-  mse: mse2,
-  MSE: MSE2,
-  mae: mae2,
-  MAE: MAE2,
-  mape: mape2,
-  MAPE: MAPE2,
-  cosine: cosine2
+  mse,
+  MSE,
+  mae,
+  MAE,
+  mape,
+  MAPE,
+  cosine
 };
 function get2(identifier) {
   if (typeof identifier === "string" && identifier in metricsMap) {
@@ -20320,7 +20320,7 @@ function getNodeOutputs(fetch4) {
   }
   return layerOutputs;
 }
-var Container3 = class extends Layer {
+var Container = class extends Layer {
   constructor(args) {
     super({});
     this.containerNodes = new Set();
@@ -20411,7 +20411,7 @@ var Container3 = class extends Layer {
       if (finishedNodes2.indexOf(node) !== -1) {
         return;
       }
-      this.containerNodes.add(Container3.nodeKey(layer, nodeIndex));
+      this.containerNodes.add(Container.nodeKey(layer, nodeIndex));
       if (!(layer.id in layerIndices)) {
         layerIndices[layer.id] = Object.keys(layerIndices).length;
       }
@@ -20490,7 +20490,7 @@ var Container3 = class extends Layer {
         return 0;
       });
       for (const layer of layersForDepth) {
-        if (layer instanceof Container3) {
+        if (layer instanceof Container) {
           this.internalContainerRefs.push(layer);
         }
         this.layers.push(layer);
@@ -20807,9 +20807,9 @@ var Container3 = class extends Layer {
     const nodeConversionMap = {};
     let keptNodes;
     for (const layer of this.layers) {
-      keptNodes = layer instanceof Container3 ? 1 : 0;
+      keptNodes = layer instanceof Container ? 1 : 0;
       for (let originalNodeIndex = 0; originalNodeIndex < layer.inboundNodes.length; originalNodeIndex++) {
-        const nodeKey = Container3.nodeKey(layer, originalNodeIndex);
+        const nodeKey = Container.nodeKey(layer, originalNodeIndex);
         if (this.containerNodes.has(nodeKey)) {
           nodeConversionMap[nodeKey] = keptNodes;
           keptNodes += 1;
@@ -20842,7 +20842,7 @@ var Container3 = class extends Layer {
       const losses4 = [];
       for (const layer of this.layers) {
         for (let nodeIndex = 0; nodeIndex < layer.inboundNodes.length; ++nodeIndex) {
-          const nodeKey = Container3.nodeKey(layer, nodeIndex);
+          const nodeKey = Container.nodeKey(layer, nodeIndex);
           if (this.containerNodes.has(nodeKey)) {
             losses4.push(...layer.calculateLosses());
           }
@@ -20861,7 +20861,7 @@ var Container3 = class extends Layer {
       const filteredInboundNodes = [];
       for (let originalNodeIndex = 0; originalNodeIndex < layer.inboundNodes.length; originalNodeIndex++) {
         const node = layer.inboundNodes[originalNodeIndex];
-        const nodeKey = Container3.nodeKey(layer, originalNodeIndex);
+        const nodeKey = Container.nodeKey(layer, originalNodeIndex);
         let kwargs = {};
         if (this.containerNodes.has(nodeKey)) {
           if (node.callArgs) {
@@ -20879,7 +20879,7 @@ var Container3 = class extends Layer {
               const inboundLayer = node.inboundLayers[i];
               const nodeIndex = node.nodeIndices[i];
               const tensorIndex = node.tensorIndices[i];
-              const nodeKey2 = Container3.nodeKey(inboundLayer, nodeIndex);
+              const nodeKey2 = Container.nodeKey(inboundLayer, nodeIndex);
               let newNodeIndex = nodeConversionMap[nodeKey2];
               if (newNodeIndex == null) {
                 newNodeIndex = 0;
@@ -20902,7 +20902,7 @@ var Container3 = class extends Layer {
     for (let i = 0; i < this.inputLayers.length; i++) {
       const layer = this.inputLayers[i];
       const nodeIndex = this.inputLayersNodeIndices[i];
-      const nodeKey = Container3.nodeKey(layer, nodeIndex);
+      const nodeKey = Container.nodeKey(layer, nodeIndex);
       if (!this.containerNodes.has(nodeKey)) {
         continue;
       }
@@ -20918,7 +20918,7 @@ var Container3 = class extends Layer {
     for (let i = 0; i < this.outputLayers.length; i++) {
       const layer = this.outputLayers[i];
       const nodeIndex = this.outputLayersNodeIndices[i];
-      const nodeKey = Container3.nodeKey(layer, nodeIndex);
+      const nodeKey = Container.nodeKey(layer, nodeIndex);
       if (!this.containerNodes.has(nodeKey)) {
         continue;
       }
@@ -21138,7 +21138,7 @@ function standardizeDataIteratorOutput(model2, iteratorOut) {
   return { xs: flattenedXs, ys: flattenedYs };
 }
 function flattenTensorOrArrayOrMap(inputOrOutput, names, values) {
-  if (values instanceof Tensor4) {
+  if (values instanceof Tensor) {
     return [values];
   } else if (Array.isArray(values)) {
     util_exports.assert(values.length === names.length, () => `Received an array of ${values.length} Tensors, but expected ${names.length} to match the ${inputOrOutput} keys ${names}.`);
@@ -21557,7 +21557,7 @@ async function fitTensors(model2, x, y, args = {}) {
 }
 function ensureTensorsRank2OrHigher(tensors) {
   const outs = [];
-  if (tensors instanceof Tensor4) {
+  if (tensors instanceof Tensor) {
     tensors = [tensors];
   }
   for (let i = 0; i < tensors.length; ++i) {
@@ -21577,7 +21577,7 @@ function disposeNewTensors(tensors, refTensors) {
     return;
   }
   const oldTensorIds = [];
-  if (refTensors instanceof Tensor4) {
+  if (refTensors instanceof Tensor) {
     oldTensorIds.push(refTensors.id);
   } else if (Array.isArray(refTensors)) {
     refTensors.forEach((t) => oldTensorIds.push(t.id));
@@ -21588,7 +21588,7 @@ function disposeNewTensors(tensors, refTensors) {
     }
   }
   const tensorsToDispose = [];
-  if (tensors instanceof Tensor4) {
+  if (tensors instanceof Tensor) {
     if (oldTensorIds.indexOf(tensors.id) === -1) {
       tensorsToDispose.push(tensors);
     }
@@ -21613,7 +21613,7 @@ function disposeNewTensors(tensors, refTensors) {
   });
 }
 function isDataTensor(x) {
-  return x instanceof Tensor4;
+  return x instanceof Tensor;
 }
 function isDataArray(x) {
   return Array.isArray(x);
@@ -21803,7 +21803,7 @@ function collectMetrics(metrics2, outputNames) {
   }
 }
 var LAYERS_MODEL_FORMAT_NAME = "layers-model";
-var LayersModel = class extends Container3 {
+var LayersModel = class extends Container {
   constructor(args) {
     super(args);
     this.isTraining = false;
@@ -22002,7 +22002,7 @@ var LayersModel = class extends Container3 {
     const outputNames = outputsIsArray ? outputs : [outputs];
     const outputSymbolicTensors = this.retrieveSymbolicTensors(outputNames);
     const feedDict = new FeedDict();
-    if (inputs instanceof Tensor4) {
+    if (inputs instanceof Tensor) {
       inputs = [inputs];
     }
     if (Array.isArray(inputs)) {
@@ -22829,103 +22829,103 @@ function input(config) {
 function registerCallbackConstructor(verbosityLevel, callbackConstructor) {
   CallbackConstructorRegistry.registerCallbackConstructor(verbosityLevel, callbackConstructor);
 }
-var Activation7 = class extends serialization_exports.Serializable {
+var Activation2 = class extends serialization_exports.Serializable {
   getConfig() {
     return {};
   }
 };
-var Elu2 = class extends Activation7 {
+var Elu2 = class extends Activation2 {
   apply(x, alpha = 1) {
     return elu2(x, alpha);
   }
 };
 Elu2.className = "elu";
 serialization_exports.registerClass(Elu2);
-var Selu2 = class extends Activation7 {
+var Selu2 = class extends Activation2 {
   apply(x) {
     return selu(x);
   }
 };
 Selu2.className = "selu";
 serialization_exports.registerClass(Selu2);
-var Relu2 = class extends Activation7 {
+var Relu2 = class extends Activation2 {
   apply(x) {
     return relu(x);
   }
 };
 Relu2.className = "relu";
 serialization_exports.registerClass(Relu2);
-var Relu62 = class extends Activation7 {
+var Relu62 = class extends Activation2 {
   apply(x) {
     return tidy(() => minimum(6, relu(x)));
   }
 };
 Relu62.className = "relu6";
 serialization_exports.registerClass(Relu62);
-var Linear = class extends Activation7 {
+var Linear = class extends Activation2 {
   apply(x) {
     return x;
   }
 };
 Linear.className = "linear";
 serialization_exports.registerClass(Linear);
-var Sigmoid2 = class extends Activation7 {
+var Sigmoid2 = class extends Activation2 {
   apply(x) {
     return sigmoid(x);
   }
 };
 Sigmoid2.className = "sigmoid";
 serialization_exports.registerClass(Sigmoid2);
-var HardSigmoid = class extends Activation7 {
+var HardSigmoid = class extends Activation2 {
   apply(x) {
     return hardSigmoid(x);
   }
 };
 HardSigmoid.className = "hardSigmoid";
 serialization_exports.registerClass(HardSigmoid);
-var Softplus2 = class extends Activation7 {
+var Softplus2 = class extends Activation2 {
   apply(x) {
     return softplus(x);
   }
 };
 Softplus2.className = "softplus";
 serialization_exports.registerClass(Softplus2);
-var Softsign = class extends Activation7 {
+var Softsign = class extends Activation2 {
   apply(x) {
     return softsign(x);
   }
 };
 Softsign.className = "softsign";
 serialization_exports.registerClass(Softsign);
-var Tanh2 = class extends Activation7 {
+var Tanh2 = class extends Activation2 {
   apply(x) {
     return tanh2(x);
   }
 };
 Tanh2.className = "tanh";
 serialization_exports.registerClass(Tanh2);
-var Softmax2 = class extends Activation7 {
+var Softmax2 = class extends Activation2 {
   apply(x, axis = -1) {
     return softmax(x, axis);
   }
 };
 Softmax2.className = "softmax";
 serialization_exports.registerClass(Softmax2);
-var LogSoftmax2 = class extends Activation7 {
+var LogSoftmax2 = class extends Activation2 {
   apply(x, axis = -1) {
     return logSoftmax(x, axis);
   }
 };
 LogSoftmax2.className = "logSoftmax";
 serialization_exports.registerClass(LogSoftmax2);
-var Swish = class extends Activation7 {
+var Swish = class extends Activation2 {
   apply(x, alpha = 1) {
     return tidy(() => mul(sigmoid(mul(x, alpha)), x));
   }
 };
 Swish.className = "swish";
 serialization_exports.registerClass(Swish);
-var Mish = class extends Activation7 {
+var Mish = class extends Activation2 {
   apply(x) {
     return tidy(() => mul(x, tanh2(softplus(x))));
   }
@@ -22950,7 +22950,7 @@ function getActivation(identifier) {
     config["className"] = identifier;
     config["config"] = {};
     return deserializeActivation(config);
-  } else if (identifier instanceof Activation7) {
+  } else if (identifier instanceof Activation2) {
     return identifier;
   } else {
     return deserializeActivation(identifier);
@@ -22961,9 +22961,9 @@ function assertObjectArgs(args) {
     throw new Error(`Argument to L1L2 regularizer's constructor is expected to be an object, but received: ${args}`);
   }
 }
-var Regularizer2 = class extends serialization_exports.Serializable {
+var Regularizer = class extends serialization_exports.Serializable {
 };
-var L1L2 = class extends Regularizer2 {
+var L1L2 = class extends Regularizer {
   constructor(args) {
     super();
     assertObjectArgs(args);
@@ -23018,7 +23018,7 @@ function getRegularizer(identifier) {
     const className = identifier in REGULARIZER_IDENTIFIER_REGISTRY_SYMBOL_MAP ? REGULARIZER_IDENTIFIER_REGISTRY_SYMBOL_MAP[identifier] : identifier;
     const config = { className, config: {} };
     return deserializeRegularizer(config);
-  } else if (identifier instanceof Regularizer2) {
+  } else if (identifier instanceof Regularizer) {
     return identifier;
   } else {
     return deserializeRegularizer(identifier);
@@ -25582,7 +25582,7 @@ var Flatten = class extends Layer {
 };
 Flatten.className = "Flatten";
 serialization_exports.registerClass(Flatten);
-var Activation11 = class extends Layer {
+var Activation5 = class extends Layer {
   constructor(args) {
     super(args);
     this.supportsMasking = true;
@@ -25602,8 +25602,8 @@ var Activation11 = class extends Layer {
     return config;
   }
 };
-Activation11.className = "Activation";
-serialization_exports.registerClass(Activation11);
+Activation5.className = "Activation";
+serialization_exports.registerClass(Activation5);
 var RepeatVector = class extends Layer {
   constructor(args) {
     super(args);
@@ -26509,14 +26509,14 @@ var AlphaDropout = class extends Layer {
 };
 AlphaDropout.className = "AlphaDropout";
 serialization_exports.registerClass(AlphaDropout);
-function batchNormalization(x, mean7, variance2, beta, gamma, epsilon3 = 1e-3) {
+function batchNormalization(x, mean5, variance, beta, gamma, epsilon3 = 1e-3) {
   let out;
   if (x.rank === 2) {
-    out = batchNorm2d(x, mean7, variance2, beta, gamma, epsilon3);
+    out = batchNorm2d(x, mean5, variance, beta, gamma, epsilon3);
   } else if (x.rank === 3) {
-    out = batchNorm3d(x, mean7, variance2, beta, gamma, epsilon3);
+    out = batchNorm3d(x, mean5, variance, beta, gamma, epsilon3);
   } else if (x.rank === 4) {
-    out = batchNorm4d(x, mean7, variance2, beta, gamma, epsilon3);
+    out = batchNorm4d(x, mean5, variance, beta, gamma, epsilon3);
   } else {
     throw new NotImplementedError(`batchNormalization is not implemented for array of rank ${x.rank} yet`);
   }
@@ -26525,17 +26525,17 @@ function batchNormalization(x, mean7, variance2, beta, gamma, epsilon3 = 1e-3) {
 function regularNormalizeBatchInTraining(x, gamma, beta, reductionAxes, epsilon3 = 1e-3) {
   return tidy(() => {
     const meanAndVariance = moments(x, reductionAxes);
-    const mean7 = meanAndVariance.mean;
-    const variance2 = meanAndVariance.variance;
-    const normed = batchNormalization(x, mean7, variance2, beta, gamma, epsilon3);
-    return [normed, mean7, variance2];
+    const mean5 = meanAndVariance.mean;
+    const variance = meanAndVariance.variance;
+    const normed = batchNormalization(x, mean5, variance, beta, gamma, epsilon3);
+    return [normed, mean5, variance];
   });
 }
 function broadcastNormalizeBatchInTraining(x, gamma, beta, reductionAxes, epsilon3 = 1e-3) {
   return tidy(() => {
     const meanAndVariance = moments(x, reductionAxes);
-    const mean7 = meanAndVariance.mean;
-    const variance2 = meanAndVariance.variance;
+    const mean5 = meanAndVariance.mean;
+    const variance = meanAndVariance.variance;
     const targetShape = [];
     for (const axis of range2(0, x.rank)) {
       if (reductionAxes.indexOf(axis) !== -1) {
@@ -26544,12 +26544,12 @@ function broadcastNormalizeBatchInTraining(x, gamma, beta, reductionAxes, epsilo
         targetShape.push(x.shape[axis]);
       }
     }
-    const broadcastMean = reshape(mean7, targetShape);
-    const broadcastVariance = reshape(variance2, targetShape);
+    const broadcastMean = reshape(mean5, targetShape);
+    const broadcastVariance = reshape(variance, targetShape);
     const broadcastGamma = gamma == null ? null : reshape(gamma, targetShape);
     const broadcastBeta = beta == null ? null : reshape(beta, targetShape);
     const normed = batchNormalization(x, broadcastMean, broadcastVariance, broadcastBeta, broadcastGamma, epsilon3);
-    return [normed, mean7, variance2];
+    return [normed, mean5, variance];
   });
 }
 function normalizeBatchInTraining(x, gamma, beta, reductionAxes, epsilon3 = 1e-3) {
@@ -26627,18 +26627,18 @@ var BatchNormalization = class extends Layer {
       if (!training) {
         return normalizeInference();
       }
-      const [normedTraining, mean7, variance2] = normalizeBatchInTraining(input2, this.gamma.read(), this.beta.read(), reductionAxes, this.epsilon);
-      const doMovingAverage = (variable3, value, momentum) => {
+      const [normedTraining, mean5, variance] = normalizeBatchInTraining(input2, this.gamma.read(), this.beta.read(), reductionAxes, this.epsilon);
+      const doMovingAverage = (variable2, value, momentum) => {
         tidy(() => {
           const decay = 1 - momentum;
-          const origValue = variable3.read();
+          const origValue = variable2.read();
           const updateDelta = mul(sub(origValue, value), decay);
-          variable3.write(sub(origValue, updateDelta));
+          variable2.write(sub(origValue, updateDelta));
         });
       };
       const updateMovingMeanAndVariance = () => {
-        doMovingAverage(this.movingMean, mean7, this.momentum);
-        doMovingAverage(this.movingVariance, variance2, this.momentum);
+        doMovingAverage(this.movingMean, mean5, this.momentum);
+        doMovingAverage(this.movingVariance, variance, this.momentum);
       };
       updateMovingMeanAndVariance();
       return normedTraining;
@@ -26735,7 +26735,7 @@ var LayerNormalization = class extends Layer {
     const nDims = inputShape.length;
     return tidy(() => {
       const keepDims = true;
-      let { mean: mean7, variance: variance2 } = moments(input2, this.axis, keepDims);
+      let { mean: mean5, variance } = moments(input2, this.axis, keepDims);
       const broadcastShape = pyListRepeat(1, nDims);
       for (const dim of this.axis) {
         broadcastShape[dim] = inputShape[dim];
@@ -26760,11 +26760,11 @@ var LayerNormalization = class extends Layer {
           scaleOffsetTiling.push(inputShape[i]);
         }
       }
-      mean7 = tile(mean7, momentsTiling);
-      variance2 = tile(variance2, momentsTiling);
+      mean5 = tile(mean5, momentsTiling);
+      variance = tile(variance, momentsTiling);
       scale2 = tile(scale2, scaleOffsetTiling);
       offset = tile(offset, scaleOffsetTiling);
-      return batchNormalization(input2, mean7, variance2, offset, scale2, this.epsilon);
+      return batchNormalization(input2, mean5, variance, offset, scale2, this.epsilon);
     });
   }
   getConfig() {
@@ -27671,16 +27671,16 @@ function softmax2(args) {
 function thresholdedReLU(args) {
   return new ThresholdedReLU(args);
 }
-function conv1d3(args) {
+function conv1d2(args) {
   return new Conv1D(args);
 }
-function conv2d4(args) {
+function conv2d3(args) {
   return new Conv2D2(args);
 }
 function conv2dTranspose2(args) {
   return new Conv2DTranspose(args);
 }
-function conv3d3(args) {
+function conv3d2(args) {
   return new Conv3D2(args);
 }
 function conv3dTranspose2(args) {
@@ -27699,7 +27699,7 @@ function depthwiseConv2d4(args) {
   return new DepthwiseConv2D(args);
 }
 function activation(args) {
-  return new Activation11(args);
+  return new Activation5(args);
 }
 function dense(args) {
   return new Dense(args);
@@ -27725,22 +27725,22 @@ function permute(args) {
 function embedding(args) {
   return new Embedding(args);
 }
-function add4(args) {
+function add3(args) {
   return new Add2(args);
 }
-function average2(args) {
+function average(args) {
   return new Average(args);
 }
-function concatenate3(args) {
+function concatenate2(args) {
   return new Concatenate(args);
 }
-function maximum3(args) {
+function maximum2(args) {
   return new Maximum2(args);
 }
-function minimum3(args) {
+function minimum2(args) {
   return new Minimum2(args);
 }
-function multiply2(args) {
+function multiply(args) {
   return new Multiply2(args);
 }
 function dot3(args) {
@@ -27857,18 +27857,18 @@ function masking(args) {
 }
 var exports_metrics_exports = {};
 __export(exports_metrics_exports, {
-  MAPE: () => MAPE3,
-  MSE: () => MSE3,
+  MAPE: () => MAPE2,
+  MSE: () => MSE2,
   binaryAccuracy: () => binaryAccuracy2,
   binaryCrossentropy: () => binaryCrossentropy3,
   categoricalAccuracy: () => categoricalAccuracy2,
   categoricalCrossentropy: () => categoricalCrossentropy3,
   cosineProximity: () => cosineProximity2,
-  mape: () => mape3,
+  mape: () => mape2,
   meanAbsoluteError: () => meanAbsoluteError2,
   meanAbsolutePercentageError: () => meanAbsolutePercentageError2,
   meanSquaredError: () => meanSquaredError3,
-  mse: () => mse3,
+  mse: () => mse2,
   precision: () => precision2,
   recall: () => recall2,
   sparseCategoricalAccuracy: () => sparseCategoricalAccuracy2
@@ -27903,19 +27903,19 @@ function meanAbsoluteError2(yTrue, yPred) {
 function meanAbsolutePercentageError2(yTrue, yPred) {
   return meanAbsolutePercentageError(yTrue, yPred);
 }
-function MAPE3(yTrue, yPred) {
+function MAPE2(yTrue, yPred) {
   return meanAbsolutePercentageError(yTrue, yPred);
 }
-function mape3(yTrue, yPred) {
+function mape2(yTrue, yPred) {
   return meanAbsolutePercentageError(yTrue, yPred);
 }
 function meanSquaredError3(yTrue, yPred) {
   return meanSquaredError2(yTrue, yPred);
 }
-function MSE3(yTrue, yPred) {
+function MSE2(yTrue, yPred) {
   return meanSquaredError2(yTrue, yPred);
 }
-function mse3(yTrue, yPred) {
+function mse2(yTrue, yPred) {
   return meanSquaredError2(yTrue, yPred);
 }
 var exports_models_exports = {};
@@ -28035,38 +28035,38 @@ function earlyStopping(args) {
   return new EarlyStopping(args);
 }
 var callbacks = { earlyStopping };
-var DataType40;
-(function(DataType89) {
-  DataType89[DataType89["DT_INVALID"] = 0] = "DT_INVALID";
-  DataType89[DataType89["DT_FLOAT"] = 1] = "DT_FLOAT";
-  DataType89[DataType89["DT_DOUBLE"] = 2] = "DT_DOUBLE";
-  DataType89[DataType89["DT_INT32"] = 3] = "DT_INT32";
-  DataType89[DataType89["DT_UINT8"] = 4] = "DT_UINT8";
-  DataType89[DataType89["DT_INT16"] = 5] = "DT_INT16";
-  DataType89[DataType89["DT_INT8"] = 6] = "DT_INT8";
-  DataType89[DataType89["DT_STRING"] = 7] = "DT_STRING";
-  DataType89[DataType89["DT_COMPLEX64"] = 8] = "DT_COMPLEX64";
-  DataType89[DataType89["DT_INT64"] = 9] = "DT_INT64";
-  DataType89[DataType89["DT_BOOL"] = 10] = "DT_BOOL";
-  DataType89[DataType89["DT_QINT8"] = 11] = "DT_QINT8";
-  DataType89[DataType89["DT_QUINT8"] = 12] = "DT_QUINT8";
-  DataType89[DataType89["DT_QINT32"] = 13] = "DT_QINT32";
-  DataType89[DataType89["DT_BFLOAT16"] = 14] = "DT_BFLOAT16";
-  DataType89[DataType89["DT_FLOAT_REF"] = 101] = "DT_FLOAT_REF";
-  DataType89[DataType89["DT_DOUBLE_REF"] = 102] = "DT_DOUBLE_REF";
-  DataType89[DataType89["DT_INT32_REF"] = 103] = "DT_INT32_REF";
-  DataType89[DataType89["DT_UINT8_REF"] = 104] = "DT_UINT8_REF";
-  DataType89[DataType89["DT_INT16_REF"] = 105] = "DT_INT16_REF";
-  DataType89[DataType89["DT_INT8_REF"] = 106] = "DT_INT8_REF";
-  DataType89[DataType89["DT_STRING_REF"] = 107] = "DT_STRING_REF";
-  DataType89[DataType89["DT_COMPLEX64_REF"] = 108] = "DT_COMPLEX64_REF";
-  DataType89[DataType89["DT_INT64_REF"] = 109] = "DT_INT64_REF";
-  DataType89[DataType89["DT_BOOL_REF"] = 110] = "DT_BOOL_REF";
-  DataType89[DataType89["DT_QINT8_REF"] = 111] = "DT_QINT8_REF";
-  DataType89[DataType89["DT_QUINT8_REF"] = 112] = "DT_QUINT8_REF";
-  DataType89[DataType89["DT_QINT32_REF"] = 113] = "DT_QINT32_REF";
-  DataType89[DataType89["DT_BFLOAT16_REF"] = 114] = "DT_BFLOAT16_REF";
-})(DataType40 || (DataType40 = {}));
+var DataType8;
+(function(DataType50) {
+  DataType50[DataType50["DT_INVALID"] = 0] = "DT_INVALID";
+  DataType50[DataType50["DT_FLOAT"] = 1] = "DT_FLOAT";
+  DataType50[DataType50["DT_DOUBLE"] = 2] = "DT_DOUBLE";
+  DataType50[DataType50["DT_INT32"] = 3] = "DT_INT32";
+  DataType50[DataType50["DT_UINT8"] = 4] = "DT_UINT8";
+  DataType50[DataType50["DT_INT16"] = 5] = "DT_INT16";
+  DataType50[DataType50["DT_INT8"] = 6] = "DT_INT8";
+  DataType50[DataType50["DT_STRING"] = 7] = "DT_STRING";
+  DataType50[DataType50["DT_COMPLEX64"] = 8] = "DT_COMPLEX64";
+  DataType50[DataType50["DT_INT64"] = 9] = "DT_INT64";
+  DataType50[DataType50["DT_BOOL"] = 10] = "DT_BOOL";
+  DataType50[DataType50["DT_QINT8"] = 11] = "DT_QINT8";
+  DataType50[DataType50["DT_QUINT8"] = 12] = "DT_QUINT8";
+  DataType50[DataType50["DT_QINT32"] = 13] = "DT_QINT32";
+  DataType50[DataType50["DT_BFLOAT16"] = 14] = "DT_BFLOAT16";
+  DataType50[DataType50["DT_FLOAT_REF"] = 101] = "DT_FLOAT_REF";
+  DataType50[DataType50["DT_DOUBLE_REF"] = 102] = "DT_DOUBLE_REF";
+  DataType50[DataType50["DT_INT32_REF"] = 103] = "DT_INT32_REF";
+  DataType50[DataType50["DT_UINT8_REF"] = 104] = "DT_UINT8_REF";
+  DataType50[DataType50["DT_INT16_REF"] = 105] = "DT_INT16_REF";
+  DataType50[DataType50["DT_INT8_REF"] = 106] = "DT_INT8_REF";
+  DataType50[DataType50["DT_STRING_REF"] = 107] = "DT_STRING_REF";
+  DataType50[DataType50["DT_COMPLEX64_REF"] = 108] = "DT_COMPLEX64_REF";
+  DataType50[DataType50["DT_INT64_REF"] = 109] = "DT_INT64_REF";
+  DataType50[DataType50["DT_BOOL_REF"] = 110] = "DT_BOOL_REF";
+  DataType50[DataType50["DT_QINT8_REF"] = 111] = "DT_QINT8_REF";
+  DataType50[DataType50["DT_QUINT8_REF"] = 112] = "DT_QUINT8_REF";
+  DataType50[DataType50["DT_QINT32_REF"] = 113] = "DT_QINT32_REF";
+  DataType50[DataType50["DT_BFLOAT16_REF"] = 114] = "DT_BFLOAT16_REF";
+})(DataType8 || (DataType8 = {}));
 var SaverDef;
 (function(SaverDef2) {
   let CheckpointFormatVersion;
@@ -34334,21 +34334,21 @@ function getNumberParam(attrs, name, def) {
 }
 function parseDtypeParam(value) {
   if (typeof value === "string") {
-    value = DataType40[value];
+    value = DataType8[value];
   }
   switch (value) {
-    case DataType40.DT_FLOAT:
+    case DataType8.DT_FLOAT:
       return "float32";
-    case DataType40.DT_INT32:
-    case DataType40.DT_INT64:
-    case DataType40.DT_INT8:
-    case DataType40.DT_UINT8:
+    case DataType8.DT_INT32:
+    case DataType8.DT_INT64:
+    case DataType8.DT_INT8:
+    case DataType8.DT_UINT8:
       return "int32";
-    case DataType40.DT_BOOL:
+    case DataType8.DT_BOOL:
       return "bool";
-    case DataType40.DT_DOUBLE:
+    case DataType8.DT_DOUBLE:
       return "float32";
-    case DataType40.DT_STRING:
+    case DataType8.DT_STRING:
       return "string";
     default:
       return null;
@@ -35017,7 +35017,7 @@ function scatter(tensor2, indices, elementShape, numElements) {
   });
   return list;
 }
-function split3(tensor2, length, elementShape) {
+function split2(tensor2, length, elementShape) {
   let totalLength = 0;
   const cumulativeLengths = length.map((len) => {
     totalLength += len;
@@ -35289,7 +35289,7 @@ var executeOp3 = async (node, tensorMap, context) => {
       const splitTensor = getParamValue("tensor", node, tensorMap, context);
       const elementShape = getParamValue("elementShape", node, tensorMap, context);
       const lengths = getParamValue("lengths", node, tensorMap, context);
-      const tensorList = split3(splitTensor, lengths, elementShape);
+      const tensorList = split2(splitTensor, lengths, elementShape);
       context.addTensorList(tensorList);
       return [tensorList.idTensor];
     }
@@ -35512,10 +35512,10 @@ var executeOp5 = (node, tensorMap, context) => {
     }
     case "TruncatedNormal": {
       const shape = getParamValue("shape", node, tensorMap, context);
-      const mean7 = getParamValue("mean", node, tensorMap, context);
+      const mean5 = getParamValue("mean", node, tensorMap, context);
       const stdDev = getParamValue("stdDev", node, tensorMap, context);
       const seed = getParamValue("seed", node, tensorMap, context);
-      return [truncatedNormal(shape, mean7, stdDev, getParamValue("dtype", node, tensorMap, context), seed)];
+      return [truncatedNormal(shape, mean5, stdDev, getParamValue("dtype", node, tensorMap, context), seed)];
     }
     case "Zeros": {
       return [zeros(getParamValue("shape", node, tensorMap, context), getParamValue("dtype", node, tensorMap, context))];
@@ -36233,7 +36233,7 @@ function executeOp20(node, tensorMap, context, resourceManager) {
   }
   return [].concat(value);
 }
-var ExecutionContext23 = class {
+var ExecutionContext = class {
   constructor(weightMap = {}, tensorArrayMap = {}, tensorListMap = {}, functionMap = {}) {
     this.weightMap = weightMap;
     this.tensorArrayMap = tensorArrayMap;
@@ -36556,7 +36556,7 @@ var GraphExecutor = class {
     const tensorArrayMap = {};
     const tensorListMap = {};
     return tidy(() => {
-      const context = new ExecutionContext23(this.weightMap, tensorArrayMap, tensorListMap, this.functionExecutorMap);
+      const context = new ExecutionContext(this.weightMap, tensorArrayMap, tensorListMap, this.functionExecutorMap);
       const tensorsMap = { ...this.weightMap };
       Object.keys(inputs).forEach((name) => {
         const [nodeName, index] = parseNodeName(name);
@@ -36626,7 +36626,7 @@ var GraphExecutor = class {
       outputs = this.mapOutputs(outputs);
       this.checkOutputs(outputs);
     }
-    const context = new ExecutionContext23(this.weightMap, tensorArrayMap, tensorListMap, this.functionExecutorMap);
+    const context = new ExecutionContext(this.weightMap, tensorArrayMap, tensorListMap, this.functionExecutorMap);
     const tensorMap = await this.executeWithControlFlow(inputs, context, outputs, isFunctionExecution);
     const results = outputs.map((name) => getTensor(name, tensorMap, context));
     const outputIds = results.map((t) => t.id);
@@ -36807,7 +36807,7 @@ var GraphExecutor = class {
     });
   }
 };
-var ResourceManager5 = class {
+var ResourceManager = class {
   constructor(hashTableNameToHandle = {}, hashTableMap = {}) {
     this.hashTableNameToHandle = hashTableNameToHandle;
     this.hashTableMap = hashTableMap;
@@ -36843,7 +36843,7 @@ var GraphModel = class {
     if (loadOptions == null) {
       this.loadOptions = {};
     }
-    this.resourceManager = new ResourceManager5();
+    this.resourceManager = new ResourceManager();
   }
   get modelVersion() {
     return this.version;
@@ -36936,7 +36936,7 @@ var GraphModel = class {
     return this.execute(inputs, this.outputNodes);
   }
   normalizeInputs(inputs) {
-    if (!(inputs instanceof Tensor4) && !Array.isArray(inputs)) {
+    if (!(inputs instanceof Tensor) && !Array.isArray(inputs)) {
       return inputs;
     }
     inputs = Array.isArray(inputs) ? inputs : [inputs];
@@ -37001,7 +37001,7 @@ var version3 = "0.0.0";
 var src_exports = {};
 __export(src_exports, {
   CSVDataset: () => CSVDataset,
-  Dataset: () => Dataset4,
+  Dataset: () => Dataset,
   FileDataSource: () => FileDataSource,
   TextLineDataset: () => TextLineDataset,
   URLDataSource: () => URLDataSource,
@@ -37014,6 +37014,8 @@ __export(src_exports, {
   webcam: () => webcam,
   zip: () => zip
 });
+var seedrandom3 = __toModule(require_seedrandom2());
+var seedrandom2 = __toModule(require_seedrandom2());
 function deepMap(input2, mapFn) {
   return deepMapInternal(input2, mapFn);
 }
@@ -37113,10 +37115,10 @@ function isIterable2(obj) {
     const { StringDecoder } = require_string_decoder();
     isTextDecoder = obj instanceof StringDecoder;
   }
-  return obj != null && !ArrayBuffer.isView(obj) && (Array.isArray(obj) || typeof obj === "object" && !(obj instanceof Tensor4) && !(obj instanceof Promise) && !isTextDecoder);
+  return obj != null && !ArrayBuffer.isView(obj) && (Array.isArray(obj) || typeof obj === "object" && !(obj instanceof Tensor) && !(obj instanceof Promise) && !isTextDecoder);
 }
 function canTensorify(obj) {
-  return obj == null || isPrimitive(obj) || Array.isArray(obj) || typeof obj === "object" && obj instanceof Tensor4 || util_exports.isTypedArray(obj);
+  return obj == null || isPrimitive(obj) || Array.isArray(obj) || typeof obj === "object" && obj instanceof Tensor || util_exports.isTypedArray(obj);
 }
 function isPrimitive(value) {
   return value === null || typeof value !== "object" && typeof value !== "function";
@@ -37125,7 +37127,7 @@ function deepClone(container) {
   return deepMap(container, cloneIfTensor);
 }
 function cloneIfTensor(item) {
-  if (item instanceof Tensor4) {
+  if (item instanceof Tensor) {
     return { value: item.clone(), recurse: false };
   } else if (isIterable2(item)) {
     return { value: null, recurse: true };
@@ -37260,7 +37262,6 @@ var _GrowingRingBuffer = class extends RingBuffer {
 };
 var GrowingRingBuffer = _GrowingRingBuffer;
 GrowingRingBuffer.INITIAL_CAPACITY = 32;
-var seedrandom2 = __toModule(require_seedrandom2());
 function iteratorFromItems(items) {
   return new ArrayIterator(items);
 }
@@ -37273,7 +37274,7 @@ function iteratorFromConcatenated(baseIterators, baseErrorHandler) {
 function iteratorFromZipped(iterators, mismatchMode = ZipMismatchMode.FAIL) {
   return new ZipIterator(iterators, mismatchMode);
 }
-var LazyIterator2 = class {
+var LazyIterator = class {
   async toArray() {
     const result = [];
     let x = await this.next();
@@ -37363,7 +37364,7 @@ var LazyIterator2 = class {
     return new SerialIterator(this);
   }
 };
-var ArrayIterator = class extends LazyIterator2 {
+var ArrayIterator = class extends LazyIterator {
   constructor(items) {
     super();
     this.items = items;
@@ -37381,7 +37382,7 @@ var ArrayIterator = class extends LazyIterator2 {
     return { value: deepClone(item), done: false };
   }
 };
-var FunctionCallIterator = class extends LazyIterator2 {
+var FunctionCallIterator = class extends LazyIterator {
   constructor(nextFn) {
     super();
     this.nextFn = nextFn;
@@ -37398,7 +37399,7 @@ var FunctionCallIterator = class extends LazyIterator2 {
     }
   }
 };
-var SerialIterator = class extends LazyIterator2 {
+var SerialIterator = class extends LazyIterator {
   constructor(upstream) {
     super();
     this.upstream = upstream;
@@ -37415,7 +37416,7 @@ var SerialIterator = class extends LazyIterator2 {
     return this.upstream.next();
   }
 };
-var SkipIterator = class extends LazyIterator2 {
+var SkipIterator = class extends LazyIterator {
   constructor(upstream, maxCount) {
     super();
     this.upstream = upstream;
@@ -37441,7 +37442,7 @@ var SkipIterator = class extends LazyIterator2 {
     return this.upstream.next();
   }
 };
-var TakeIterator = class extends LazyIterator2 {
+var TakeIterator = class extends LazyIterator {
   constructor(upstream, maxCount) {
     super();
     this.upstream = upstream;
@@ -37458,7 +37459,7 @@ var TakeIterator = class extends LazyIterator2 {
     return this.upstream.next();
   }
 };
-var RowMajorBatchIterator = class extends LazyIterator2 {
+var RowMajorBatchIterator = class extends LazyIterator {
   constructor(upstream, batchSize, enableSmallLastBatch = true) {
     super();
     this.upstream = upstream;
@@ -37488,7 +37489,7 @@ var RowMajorBatchIterator = class extends LazyIterator2 {
     return { value: batch, done: false };
   }
 };
-var FilterIterator = class extends LazyIterator2 {
+var FilterIterator = class extends LazyIterator {
   constructor(upstream, predicate) {
     super();
     this.upstream = upstream;
@@ -37512,7 +37513,7 @@ var FilterIterator = class extends LazyIterator2 {
     }
   }
 };
-var MapIterator = class extends LazyIterator2 {
+var MapIterator = class extends LazyIterator {
   constructor(upstream, transform6) {
     super();
     this.upstream = upstream;
@@ -37537,7 +37538,7 @@ var MapIterator = class extends LazyIterator2 {
     return { value: mapped, done: false };
   }
 };
-var ErrorHandlingLazyIterator = class extends LazyIterator2 {
+var ErrorHandlingLazyIterator = class extends LazyIterator {
   constructor(upstream, handler) {
     super();
     this.upstream = upstream;
@@ -37564,7 +37565,7 @@ var ErrorHandlingLazyIterator = class extends LazyIterator2 {
     }
   }
 };
-var AsyncMapIterator = class extends LazyIterator2 {
+var AsyncMapIterator = class extends LazyIterator {
   constructor(upstream, transform6) {
     super();
     this.upstream = upstream;
@@ -37589,7 +37590,7 @@ var AsyncMapIterator = class extends LazyIterator2 {
     return { value: mapped, done: false };
   }
 };
-var OneToManyIterator = class extends LazyIterator2 {
+var OneToManyIterator = class extends LazyIterator {
   constructor() {
     super();
     this.outputQueue = new GrowingRingBuffer();
@@ -37634,7 +37635,7 @@ var FlatmapIterator = class extends OneToManyIterator {
     return true;
   }
 };
-var ChainedIterator = class extends LazyIterator2 {
+var ChainedIterator = class extends LazyIterator {
   constructor(iterators, baseErrorHandler) {
     super();
     this.baseErrorHandler = baseErrorHandler;
@@ -37676,7 +37677,7 @@ var ZipMismatchMode;
   ZipMismatchMode2[ZipMismatchMode2["SHORTEST"] = 1] = "SHORTEST";
   ZipMismatchMode2[ZipMismatchMode2["LONGEST"] = 2] = "LONGEST";
 })(ZipMismatchMode || (ZipMismatchMode = {}));
-var ZipIterator = class extends LazyIterator2 {
+var ZipIterator = class extends LazyIterator {
   constructor(iterators, mismatchMode = 0) {
     super();
     this.iterators = iterators;
@@ -37693,7 +37694,7 @@ var ZipIterator = class extends LazyIterator2 {
     let numIterators = 0;
     let iteratorsDone = 0;
     function getNext(container) {
-      if (container instanceof LazyIterator2) {
+      if (container instanceof LazyIterator) {
         const result = container.next();
         return {
           value: result.then((x) => {
@@ -37731,7 +37732,7 @@ var ZipIterator = class extends LazyIterator2 {
     return this.currentPromise;
   }
 };
-var PrefetchIterator = class extends LazyIterator2 {
+var PrefetchIterator = class extends LazyIterator {
   constructor(upstream, bufferSize) {
     super();
     this.upstream = upstream;
@@ -37788,8 +37789,7 @@ var ShuffleIterator = class extends PrefetchIterator {
     return { value: null, done: true };
   }
 };
-var seedrandom3 = __toModule(require_seedrandom2());
-var Dataset4 = class {
+var Dataset = class {
   constructor() {
     this.size = null;
   }
@@ -37927,9 +37927,9 @@ var Dataset4 = class {
     return (await this.iterator()).toArrayForTest();
   }
 };
-Dataset4.MAX_BUFFER_SIZE = 1e4;
+Dataset.MAX_BUFFER_SIZE = 1e4;
 function datasetFromIteratorFn(iteratorFn, size = null) {
-  return new class extends Dataset4 {
+  return new class extends Dataset {
     constructor() {
       super(...arguments);
       this.size = size;
@@ -37958,7 +37958,7 @@ function zip(datasets) {
   }
   return datasetFromIteratorFn(async () => {
     const streams = await deepMapAndAwaitAll(datasets, (d) => {
-      if (d instanceof Dataset4) {
+      if (d instanceof Dataset) {
         return { value: d.iterator(), recurse: false };
       } else if (isIterable2(d)) {
         return { value: null, recurse: true };
@@ -37984,13 +37984,13 @@ function batchConcat(arrays) {
   if (arrays.length === 0) {
     throw new Error("Can't make a batch of zero elements.");
   }
-  if (arrays[0] instanceof Tensor4) {
+  if (arrays[0] instanceof Tensor) {
     return stack(arrays);
   } else {
     return tensor(arrays);
   }
 }
-var TextLineDataset = class extends Dataset4 {
+var TextLineDataset = class extends Dataset {
   constructor(input2) {
     super();
     this.input = input2;
@@ -38013,7 +38013,7 @@ var STATE_FIELD = Symbol("field");
 var STATE_QUOTE = Symbol("quote");
 var STATE_QUOTE_AFTER_QUOTE = Symbol("quoteafterquote");
 var STATE_WITHIN_QUOTE_IN_QUOTE = Symbol("quoteinquote");
-var CSVDataset = class extends Dataset4 {
+var CSVDataset = class extends Dataset {
   constructor(input2, csvConfig) {
     super();
     this.input = input2;
@@ -38240,7 +38240,7 @@ var CSVDataset = class extends Dataset4 {
     return result;
   }
 };
-var MicrophoneIterator = class extends LazyIterator2 {
+var MicrophoneIterator = class extends LazyIterator {
   constructor(microphoneConfig) {
     super();
     this.microphoneConfig = microphoneConfig;
@@ -38375,7 +38375,7 @@ var MicrophoneIterator = class extends LazyIterator2 {
     return tensor(vals, shape);
   }
 };
-var WebcamIterator = class extends LazyIterator2 {
+var WebcamIterator = class extends LazyIterator {
   constructor(webcamVideoElement, webcamConfig) {
     super();
     this.webcamVideoElement = webcamVideoElement;
@@ -38507,9 +38507,9 @@ var WebcamIterator = class extends LazyIterator2 {
     throw new Error("Can not convert infinite video stream to array.");
   }
 };
-var DataSource3 = class {
+var DataSource = class {
 };
-var StringIterator = class extends LazyIterator2 {
+var StringIterator = class extends LazyIterator {
   split(separator) {
     return new SplitIterator(this, separator);
   }
@@ -38556,7 +38556,7 @@ var SplitIteratorImpl = class extends OneToManyIterator {
     return true;
   }
 };
-var ByteChunkIterator2 = class extends LazyIterator2 {
+var ByteChunkIterator = class extends LazyIterator {
   decodeUTF8() {
     return new Utf8Iterator(this);
   }
@@ -38606,7 +38606,7 @@ var Utf8IteratorImpl = class extends OneToManyIterator {
     return true;
   }
 };
-var FileChunkIterator = class extends ByteChunkIterator2 {
+var FileChunkIterator = class extends ByteChunkIterator {
   constructor(file, options = {}) {
     super();
     this.file = file;
@@ -38686,7 +38686,7 @@ var getRequestInitFromRequest = (request) => {
 function isLocalPath(source) {
   return typeof source === "string" && source.substr(0, 7) === "file://";
 }
-var FileDataSource = class extends DataSource3 {
+var FileDataSource = class extends DataSource {
   constructor(input2, options = {}) {
     super();
     this.input = input2;
@@ -38700,7 +38700,7 @@ var FileDataSource = class extends DataSource3 {
     return new FileChunkIterator(this.input, this.options);
   }
 };
-var URLDataSource = class extends DataSource3 {
+var URLDataSource = class extends DataSource {
   constructor(url, fileOptions = {}) {
     super();
     this.url = url;
@@ -38817,7 +38817,7 @@ var _MathBackendCPU = class extends KernelBackend {
     if (t.dtype === "string") {
       try {
         decodedData = data.map((d) => util_exports.decodeString(d));
-      } catch (e) {
+      } catch {
         throw new Error("Failed to decode encoded string bytes into utf-8");
       }
     }
@@ -38973,15 +38973,15 @@ function createSimpleBinaryKernelImpl(op2) {
   };
 }
 function complex2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { real: real5, imag: imag5 } = inputs;
-  const realVals = backend3.data.get(real5.dataId).values;
-  const imagVals = backend3.data.get(imag5.dataId).values;
-  const complexInfo = backend3.makeTensorInfo(real5.shape, "complex64");
-  const complex5 = backend3.data.get(complexInfo.dataId);
+  const realVals = backend2.data.get(real5.dataId).values;
+  const imagVals = backend2.data.get(imag5.dataId).values;
+  const complexInfo = backend2.makeTensorInfo(real5.shape, "complex64");
+  const complex5 = backend2.data.get(complexInfo.dataId);
   complex5.complexTensorInfos = {
-    real: backend3.makeTensorInfo(real5.shape, "float32", realVals),
-    imag: backend3.makeTensorInfo(imag5.shape, "float32", imagVals)
+    real: backend2.makeTensorInfo(real5.shape, "float32", realVals),
+    imag: backend2.makeTensorInfo(imag5.shape, "float32", imagVals)
   };
   return complexInfo;
 }
@@ -38990,19 +38990,19 @@ var complexConfig = {
   backendName: "cpu",
   kernelFunc: complex2
 };
-function zeros3(backend3, shape, dtype = "float32") {
+function zeros3(backend2, shape, dtype = "float32") {
   if (dtype === "complex64") {
-    const real5 = zeros3(backend3, shape, "float32");
-    const imag5 = zeros3(backend3, shape, "float32");
-    return complex2({ inputs: { real: real5, imag: imag5 }, backend: backend3 });
+    const real5 = zeros3(backend2, shape, "float32");
+    const imag5 = zeros3(backend2, shape, "float32");
+    return complex2({ inputs: { real: real5, imag: imag5 }, backend: backend2 });
   }
   const values = util_exports.makeZerosTypedArray(util_exports.sizeFromShape(shape), dtype);
-  return backend3.makeTensorInfo(shape, dtype, values);
+  return backend2.makeTensorInfo(shape, dtype, values);
 }
 function identity2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
-  backend3.incRef(x.dataId);
+  backend2.incRef(x.dataId);
   return { dataId: x.dataId, shape: x.shape, dtype: x.dtype };
 }
 var identityConfig = {
@@ -39011,11 +39011,11 @@ var identityConfig = {
   kernelFunc: identity2
 };
 function real2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { input: input2 } = inputs;
-  const real5 = backend3.data.get(input2.dataId).complexTensorInfos.real;
-  const realVal = backend3.data.get(real5.dataId).values;
-  return backend3.makeTensorInfo(real5.shape, real5.dtype, realVal);
+  const real5 = backend2.data.get(input2.dataId).complexTensorInfos.real;
+  const realVal = backend2.data.get(real5.dataId).values;
+  return backend2.makeTensorInfo(real5.shape, real5.dtype, realVal);
 }
 var realConfig = {
   kernelName: Real,
@@ -39023,40 +39023,40 @@ var realConfig = {
   kernelFunc: real2
 };
 function cast3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { dtype } = attrs;
   if (dtype === "complex64") {
     if (x.dtype === "complex64") {
-      return identity2({ inputs: { x }, backend: backend3 });
+      return identity2({ inputs: { x }, backend: backend2 });
     }
-    const zerosTensorInfo = zeros3(backend3, x.shape, x.dtype);
-    const floatX = cast3({ inputs: { x }, backend: backend3, attrs: { dtype: "float32" } });
-    const result = complex2({ inputs: { real: floatX, imag: zerosTensorInfo }, backend: backend3 });
-    backend3.disposeIntermediateTensorInfo(zerosTensorInfo);
-    backend3.disposeIntermediateTensorInfo(floatX);
+    const zerosTensorInfo = zeros3(backend2, x.shape, x.dtype);
+    const floatX = cast3({ inputs: { x }, backend: backend2, attrs: { dtype: "float32" } });
+    const result = complex2({ inputs: { real: floatX, imag: zerosTensorInfo }, backend: backend2 });
+    backend2.disposeIntermediateTensorInfo(zerosTensorInfo);
+    backend2.disposeIntermediateTensorInfo(floatX);
     return result;
   }
   if (x.dtype === "complex64") {
-    const realPart = real2({ inputs: { input: x }, backend: backend3 });
-    const result = cast3({ inputs: { x: realPart }, backend: backend3, attrs: { dtype } });
-    backend3.disposeIntermediateTensorInfo(realPart);
+    const realPart = real2({ inputs: { input: x }, backend: backend2 });
+    const result = cast3({ inputs: { x: realPart }, backend: backend2, attrs: { dtype } });
+    backend2.disposeIntermediateTensorInfo(realPart);
     return result;
   }
   if (!util_exports.hasEncodingLoss(x.dtype, dtype)) {
-    const result = identity2({ inputs: { x }, backend: backend3 });
+    const result = identity2({ inputs: { x }, backend: backend2 });
     return { dataId: result.dataId, shape: result.shape, dtype };
   }
   if (dtype === "int32") {
-    const values = backend3.data.get(x.dataId).values;
+    const values = backend2.data.get(x.dataId).values;
     const resultValues = Int32Array.from(values);
-    return backend3.makeTensorInfo(x.shape, "int32", resultValues);
+    return backend2.makeTensorInfo(x.shape, "int32", resultValues);
   }
   if (dtype === "bool") {
-    const xVals = backend3.data.get(x.dataId).values;
+    const xVals = backend2.data.get(x.dataId).values;
     const zero = util_exports.toTypedArray([0], x.dtype);
     const [resultData, resultShape] = createSimpleBinaryKernelImpl((a, b) => a !== b ? 1 : 0)(x.shape, [], xVals, zero, "bool");
-    return backend3.makeTensorInfo(resultShape, "bool", resultData);
+    return backend2.makeTensorInfo(resultShape, "bool", resultData);
   }
   throw new Error(`Error in Cast: failed to cast ${x.dtype} to ${dtype}`);
 }
@@ -39067,9 +39067,9 @@ var castConfig = {
 };
 function binaryKernelFunc(name, simpleImpl, complexImpl, dtype) {
   if (complexImpl == null) {
-    return ({ inputs, backend: backend3 }) => {
+    return ({ inputs, backend: backend2 }) => {
       const { a, b } = inputs;
-      const cpuBackend = backend3;
+      const cpuBackend = backend2;
       assertNotComplex([a, b], name);
       const aVals = cpuBackend.data.get(a.dataId).values;
       const bVals = cpuBackend.data.get(b.dataId).values;
@@ -39080,9 +39080,9 @@ function binaryKernelFunc(name, simpleImpl, complexImpl, dtype) {
       return cpuBackend.makeTensorInfo(resultShape, $dtype, resultData);
     };
   }
-  return ({ inputs, backend: backend3 }) => {
+  return ({ inputs, backend: backend2 }) => {
     const { a, b } = inputs;
-    const cpuBackend = backend3;
+    const cpuBackend = backend2;
     if (a.dtype === "complex64" || b.dtype === "complex64") {
       const $aComplex = cast3({ inputs: { x: a }, backend: cpuBackend, attrs: { dtype: "complex64" } });
       const $aComplexVals = cpuBackend.data.get($aComplex.dataId);
@@ -39159,11 +39159,11 @@ var addImpl = createSimpleBinaryKernelImpl((a, b) => a + b);
 var addComplexImpl = createComplexBinaryKernelImpl((aReal, aImag, bReal, bImag) => {
   return { real: aReal + bReal, imag: aImag + bImag };
 });
-var add5 = binaryKernelFunc(Add, addImpl, addComplexImpl);
+var add4 = binaryKernelFunc(Add, addImpl, addComplexImpl);
 var addConfig = {
   kernelName: Add,
   backendName: "cpu",
-  kernelFunc: add5
+  kernelFunc: add4
 };
 function bincountImpl(xVals, weightsVals, weightsDtype, weightsShape, size) {
   const weightsSize = util_exports.sizeFromShape(weightsShape);
@@ -39220,13 +39220,13 @@ function createSimpleUnaryImpl(op2) {
   };
 }
 function unaryKernelFunc(name, op2, dtype) {
-  return ({ inputs, attrs, backend: backend3 }) => {
+  return ({ inputs, attrs, backend: backend2 }) => {
     const { x } = inputs;
     assertNotComplex(x, name);
     if (x.dtype === "string" || dtype === "string") {
       throw new Error("unaryKernelFunc does not support string input/output");
     }
-    const cpuBackend = backend3;
+    const cpuBackend = backend2;
     const values = cpuBackend.data.get(x.dataId).values;
     const xSize = util_exports.sizeFromShape(x.shape);
     const $dtype = dtype || x.dtype;
@@ -39238,13 +39238,13 @@ function unaryKernelFunc(name, op2, dtype) {
   };
 }
 function unaryKernelFuncFromImpl(name, unaryImpl, dtype) {
-  return ({ inputs, attrs, backend: backend3 }) => {
+  return ({ inputs, attrs, backend: backend2 }) => {
     const { x } = inputs;
     assertNotComplex(x, name);
     if (x.dtype === "string" || dtype === "string") {
       throw new Error("unaryKernelFunc does not support string input/output");
     }
-    const cpuBackend = backend3;
+    const cpuBackend = backend2;
     const values = cpuBackend.data.get(x.dataId).values;
     const $dtype = dtype || x.dtype;
     const newValues = unaryImpl(values, $dtype, attrs);
@@ -39404,18 +39404,18 @@ function maxImpl(aVals, reduceSize, outShape, dtype) {
   return vals;
 }
 var maximumImpl = createSimpleBinaryKernelImpl((aValue, bValue) => Math.max(aValue, bValue));
-var maximum4 = binaryKernelFunc(Maximum, maximumImpl);
+var maximum3 = binaryKernelFunc(Maximum, maximumImpl);
 var maximumConfig = {
   kernelName: Maximum,
   backendName: "cpu",
-  kernelFunc: maximum4
+  kernelFunc: maximum3
 };
 var minimumImpl = createSimpleBinaryKernelImpl((aValue, bValue) => Math.min(aValue, bValue));
-var minimum4 = binaryKernelFunc(Minimum, minimumImpl);
+var minimum3 = binaryKernelFunc(Minimum, minimumImpl);
 var minimumConfig = {
   kernelName: Minimum,
   backendName: "cpu",
-  kernelFunc: minimum4
+  kernelFunc: minimum3
 };
 var multiplyImpl = createSimpleBinaryKernelImpl((aValue, bValue) => aValue * bValue);
 var multiplyComplexImpl = createComplexBinaryKernelImpl((aReal, aImag, bReal, bImag) => {
@@ -39424,23 +39424,23 @@ var multiplyComplexImpl = createComplexBinaryKernelImpl((aReal, aImag, bReal, bI
     imag: aReal * bImag + aImag * bReal
   };
 });
-var multiply3 = binaryKernelFunc(Multiply, multiplyImpl, multiplyComplexImpl);
+var multiply2 = binaryKernelFunc(Multiply, multiplyImpl, multiplyComplexImpl);
 var multiplyConfig = {
   kernelName: Multiply,
   backendName: "cpu",
-  kernelFunc: multiply3
+  kernelFunc: multiply2
 };
 function negImpl(xVals, xShape, xDtype) {
   const minusOne = util_exports.createScalarValue(-1, xDtype);
   return multiplyImpl([], xShape, minusOne, xVals, xDtype);
 }
 function neg2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
   assertNotComplex(x, "neg");
-  const xVals = backend3.data.get(x.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
   const [res, newShape] = negImpl(xVals, x.shape, x.dtype);
-  return backend3.makeTensorInfo(newShape, x.dtype, res);
+  return backend2.makeTensorInfo(newShape, x.dtype, res);
 }
 var negConfig = {
   kernelName: Neg,
@@ -39472,7 +39472,7 @@ function transposeImpl(xVals, xShape, dtype, perm, newShape) {
   return result;
 }
 function transpose2(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const { x } = inputs;
   const { perm } = attrs;
   assertNotComplex(x, "transpose");
@@ -39481,9 +39481,9 @@ function transpose2(args) {
   for (let i = 0; i < newShape.length; i++) {
     newShape[i] = x.shape[perm[i]];
   }
-  const values = backend3.data.get(x.dataId).values;
+  const values = backend2.data.get(x.dataId).values;
   const result = transposeImpl(values, x.shape, x.dtype, perm, newShape);
-  const dataId = backend3.write(result, newShape, x.dtype);
+  const dataId = backend2.write(result, newShape, x.dtype);
   return { dataId, shape: newShape, dtype: x.dtype };
 }
 var transposeConfig = {
@@ -39507,7 +39507,7 @@ function prodImpl(xShape, xDtype, xVals, reductionAxes) {
   return { outVals, outShape, outDtype };
 }
 function prod2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
   assertNotComplex(x, "prod");
@@ -39518,18 +39518,18 @@ function prod2(args) {
   let permutedX = x;
   const intermediateTensorInfos = [];
   if (permutation != null) {
-    permutedX = transpose2({ inputs: { x }, backend: backend3, attrs: { perm: permutation } });
+    permutedX = transpose2({ inputs: { x }, backend: backend2, attrs: { perm: permutation } });
     intermediateTensorInfos.push(permutedX);
     reductionAxes = backend_util_exports.getInnerMostAxes(reductionAxes.length, xRank);
   }
-  const xVals = backend3.data.get(permutedX.dataId).values;
+  const xVals = backend2.data.get(permutedX.dataId).values;
   const { outVals, outShape, outDtype } = prodImpl(permutedX.shape, permutedX.dtype, xVals, reductionAxes);
   let resultShape = outShape;
   if (keepDims) {
     resultShape = backend_util_exports.expandShapeToKeepDim(outShape, axes);
   }
-  intermediateTensorInfos.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
-  return backend3.makeTensorInfo(resultShape, outDtype, outVals);
+  intermediateTensorInfos.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
+  return backend2.makeTensorInfo(resultShape, outDtype, outVals);
 }
 var prodConfig = {
   kernelName: Prod,
@@ -39593,15 +39593,15 @@ function sliceImpl(vals, begin, size, shape, dtype) {
   return outBuf.values;
 }
 function slice2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { begin, size } = attrs;
   assertNotComplex(x, "slice");
   const [$begin, $size] = slice_util_exports.parseSliceParams(x, begin, size);
   slice_util_exports.assertParamsValid(x, $begin, $size);
-  const vals = backend3.data.get(x.dataId).values;
+  const vals = backend2.data.get(x.dataId).values;
   const outVals = sliceImpl(vals, $begin, $size, x.shape, x.dtype);
-  return backend3.makeTensorInfo($size, x.dtype, outVals);
+  return backend2.makeTensorInfo($size, x.dtype, outVals);
 }
 var sliceConfig = {
   kernelName: Slice,
@@ -39996,7 +39996,7 @@ var StringNGramsOp = class {
 function stringNGramsImpl(data, dataSplits, separator, nGramWidths, leftPad, rightPad2, padWidth, preserveShortSequences) {
   return new StringNGramsOp(separator, nGramWidths, leftPad, rightPad2, padWidth, preserveShortSequences).compute(data, dataSplits);
 }
-function split4(str, delimiters, skipEmpty, result) {
+function split3(str, delimiters, skipEmpty, result) {
   if (!str.length) {
     return;
   }
@@ -40041,7 +40041,7 @@ function stringSplitImpl(input2, delimiter, skipEmpty) {
   const numIndices = new Array(batchSize);
   for (let i = 0; i < batchSize; ++i) {
     const prevTokensLength = tokens.length;
-    split4(input2[i], delimiter, skipEmpty, tokens);
+    split3(input2[i], delimiter, skipEmpty, tokens);
     const nEntries = tokens.length - prevTokensLength;
     numIndices[i] = nEntries;
     outputSize += nEntries;
@@ -40239,17 +40239,17 @@ var eluConfig = {
   kernelFunc: elu4
 };
 function leakyRelu2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { alpha } = attrs;
   assertNotComplex([x], "leakyRelu");
   const xSize = util_exports.sizeFromShape(x.shape);
-  const xVals = backend3.data.get(x.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
   const outVals = util_exports.getTypedArrayFromDType("float32", xSize);
   for (let i = 0; i < xVals.length; i++) {
     outVals[i] = xVals[i] < 0 ? alpha * xVals[i] : xVals[i];
   }
-  return backend3.makeTensorInfo(x.shape, "float32", outVals);
+  return backend2.makeTensorInfo(x.shape, "float32", outVals);
 }
 var leakyReluConfig = {
   kernelName: LeakyRelu,
@@ -40258,13 +40258,13 @@ var leakyReluConfig = {
 };
 var preluImpl = createSimpleBinaryKernelImpl((xValue, aValue) => xValue < 0 ? aValue * xValue : xValue);
 function prelu3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x, alpha } = inputs;
   assertNotComplex([x, alpha], "prelu");
-  const aVals = backend3.data.get(x.dataId).values;
-  const bVals = backend3.data.get(alpha.dataId).values;
+  const aVals = backend2.data.get(x.dataId).values;
+  const bVals = backend2.data.get(alpha.dataId).values;
   const [resultData, resultShape] = preluImpl(x.shape, alpha.shape, aVals, bVals, "float32");
-  return backend3.makeTensorInfo(resultShape, "float32", resultData);
+  return backend2.makeTensorInfo(resultShape, "float32", resultData);
 }
 var preluConfig = {
   kernelName: Prelu,
@@ -40283,34 +40283,34 @@ var relu6Config = {
   backendName: "cpu",
   kernelFunc: relu62
 };
-function applyActivation2(backend3, x, activation2, preluActivationWeights, leakyreluAlpha) {
+function applyActivation2(backend2, x, activation2, preluActivationWeights, leakyreluAlpha) {
   if (activation2 === "linear") {
-    return identity2({ inputs: { x }, backend: backend3 });
+    return identity2({ inputs: { x }, backend: backend2 });
   } else if (activation2 === "relu") {
-    return relu2({ inputs: { x }, backend: backend3 });
+    return relu2({ inputs: { x }, backend: backend2 });
   } else if (activation2 === "elu") {
-    return elu4({ inputs: { x }, backend: backend3 });
+    return elu4({ inputs: { x }, backend: backend2 });
   } else if (activation2 === "relu6") {
-    return relu62({ inputs: { x }, backend: backend3 });
+    return relu62({ inputs: { x }, backend: backend2 });
   } else if (activation2 === "prelu") {
-    return prelu3({ inputs: { x, alpha: preluActivationWeights }, backend: backend3 });
+    return prelu3({ inputs: { x, alpha: preluActivationWeights }, backend: backend2 });
   } else if (activation2 === "leakyrelu") {
-    return leakyRelu2({ inputs: { x }, backend: backend3, attrs: { alpha: leakyreluAlpha } });
+    return leakyRelu2({ inputs: { x }, backend: backend2, attrs: { alpha: leakyreluAlpha } });
   } else if (activation2 === "sigmoid") {
-    return sigmoid2({ inputs: { x }, backend: backend3 });
+    return sigmoid2({ inputs: { x }, backend: backend2 });
   }
   throw new Error(`Activation ${activation2} has not been implemented for the CPU backend.`);
 }
 function reshape3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { shape } = attrs;
   const xSize = util_exports.sizeFromShape(x.shape);
   const $shape = util_exports.inferFromImplicitShape(shape, xSize);
   const $xSize = util_exports.sizeFromShape($shape);
   util_exports.assert(xSize === $xSize, () => `The new shape (${$shape}) has ${$xSize} elements and the old shape (${x.shape}) has ${xSize} elements. The new shape and old shape must have the same number of elements.`);
-  backend3.incRef(x.dataId);
-  const xData = backend3.data.get(x.dataId);
+  backend2.incRef(x.dataId);
+  const xData = backend2.data.get(x.dataId);
   if (xData.complexTensorInfos != null) {
     const real5 = xData.complexTensorInfos.real;
     const imag5 = xData.complexTensorInfos.imag;
@@ -40325,7 +40325,7 @@ var reshapeConfig = {
   kernelFunc: reshape3
 };
 function batchMatMul(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { a, b } = inputs;
   const { transposeA, transposeB } = attrs;
   assertNotComplex([a, b], "matMul");
@@ -40346,14 +40346,14 @@ function batchMatMul(args) {
   util_exports.assert(innerShapeA === innerShapeB, () => `Error in matMul: inner shapes (${innerShapeA}) and (${innerShapeB}) of Tensors with shapes ${a.shape} and ${b.shape} and transposeA=${transposeA} and transposeB=${transposeB} must match.`);
   const a3dShape = transposeA ? [batchDimA, innerShapeA, outerShapeA] : [batchDimA, outerShapeA, innerShapeA];
   const b3dShape = transposeB ? [batchDimB, outerShapeB, innerShapeB] : [batchDimB, innerShapeB, outerShapeB];
-  const a3d = reshape3({ inputs: { x: a }, backend: backend3, attrs: { shape: a3dShape } });
-  const b3d = reshape3({ inputs: { x: b }, backend: backend3, attrs: { shape: b3dShape } });
+  const a3d = reshape3({ inputs: { x: a }, backend: backend2, attrs: { shape: a3dShape } });
+  const b3d = reshape3({ inputs: { x: b }, backend: backend2, attrs: { shape: b3dShape } });
   const sharedDim = transposeA ? a3d.shape[1] : a3d.shape[2];
   const leftDim = transposeA ? a3d.shape[2] : a3d.shape[1];
   const rightDim = transposeB ? b3d.shape[1] : b3d.shape[2];
   const batchDim = Math.max(batchDimA, batchDimB);
-  const a3dValues = backend3.data.get(a3d.dataId).values;
-  const b3dValues = backend3.data.get(b3d.dataId).values;
+  const a3dValues = backend2.data.get(a3d.dataId).values;
+  const b3dValues = backend2.data.get(b3d.dataId).values;
   const a3dStrides = util_exports.computeStrides(a3d.shape);
   const b3dStrides = util_exports.computeStrides(b3d.shape);
   const [aBatch, aOuterStep, aInnerStep] = transposeA ? [a3dStrides[0], 1, a3dStrides[1]] : [a3dStrides[0], a3dStrides[1], 1];
@@ -40361,7 +40361,7 @@ function batchMatMul(args) {
   const size = leftDim * rightDim;
   const result = buffer([batchDim, leftDim, rightDim], a3d.dtype);
   const resVals = result.values;
-  const blockSize = backend3.blockSize;
+  const blockSize = backend2.blockSize;
   for (let bi = 0; bi < batchDim; bi++) {
     for (let i0 = 0; i0 < leftDim; i0 += blockSize) {
       for (let j0 = 0; j0 < rightDim; j0 += blockSize) {
@@ -40371,24 +40371,24 @@ function batchMatMul(args) {
           const kBlock = Math.min(k02 + blockSize, sharedDim);
           for (let i = i0; i < iBlock; i++) {
             for (let j = j0; j < jBlock; j++) {
-              let sum8 = 0;
+              let sum7 = 0;
               for (let k = k02; k < kBlock; k++) {
                 const batchOffsetA = Math.min(bi, batchDimA - 1) * aBatch;
                 const batchOffsetB = Math.min(bi, batchDimB - 1) * bBatch;
                 const aVal = a3dValues[batchOffsetA + i * aOuterStep + k * aInnerStep];
                 const bVal = b3dValues[k * bInnerStep + j * bOuterStep + batchOffsetB];
-                sum8 += aVal * bVal;
+                sum7 += aVal * bVal;
               }
-              resVals[bi * size + (i * rightDim + j)] += sum8;
+              resVals[bi * size + (i * rightDim + j)] += sum7;
             }
           }
         }
       }
     }
   }
-  backend3.disposeIntermediateTensorInfo(a3d);
-  backend3.disposeIntermediateTensorInfo(b3d);
-  return backend3.makeTensorInfo(outShape, result.dtype, result.values);
+  backend2.disposeIntermediateTensorInfo(a3d);
+  backend2.disposeIntermediateTensorInfo(b3d);
+  return backend2.makeTensorInfo(outShape, result.dtype, result.values);
 }
 var batchMatMulConfig = {
   kernelName: BatchMatMul,
@@ -40396,27 +40396,27 @@ var batchMatMulConfig = {
   kernelFunc: batchMatMul
 };
 function _fusedMatMul(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { a, b, bias, preluActivationWeights } = inputs;
   const { transposeA, transposeB, activation: activation2, leakyreluAlpha } = attrs;
   let current;
   let addRes;
   let activationRes;
   const intermediates = [];
-  const matMulRes = batchMatMul({ inputs: { a, b }, attrs: { transposeA, transposeB }, backend: backend3 });
+  const matMulRes = batchMatMul({ inputs: { a, b }, attrs: { transposeA, transposeB }, backend: backend2 });
   current = matMulRes;
   if (bias) {
-    addRes = add5({ inputs: { a: current, b: bias }, backend: backend3 });
+    addRes = add4({ inputs: { a: current, b: bias }, backend: backend2 });
     intermediates.push(current);
     current = addRes;
   }
   if (activation2) {
-    activationRes = applyActivation2(backend3, current, activation2, preluActivationWeights, leakyreluAlpha);
+    activationRes = applyActivation2(backend2, current, activation2, preluActivationWeights, leakyreluAlpha);
     intermediates.push(current);
     current = activationRes;
   }
   for (const i of intermediates) {
-    backend3.disposeIntermediateTensorInfo(i);
+    backend2.disposeIntermediateTensorInfo(i);
   }
   return current;
 }
@@ -40438,10 +40438,10 @@ var acoshConfig = {
   kernelFunc: acosh2
 };
 function addN2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const tensors = inputs;
   assertNotComplex(inputs, "addN");
-  const vals = tensors.map((t) => backend3.data.get(t.dataId).values);
+  const vals = tensors.map((t) => backend2.data.get(t.dataId).values);
   const outBuf = buffer(tensors[0].shape, tensors[0].dtype);
   const outVals = outBuf.values;
   for (let i = 0; i < tensors.length; i++) {
@@ -40450,7 +40450,7 @@ function addN2(args) {
       outVals[j] += currVals[j];
     }
   }
-  return backend3.makeTensorInfo(outBuf.shape, outBuf.dtype, outBuf.values);
+  return backend2.makeTensorInfo(outBuf.shape, outBuf.dtype, outBuf.values);
 }
 var addNConfig = {
   kernelName: AddN,
@@ -40458,7 +40458,7 @@ var addNConfig = {
   kernelFunc: addN2
 };
 function all2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
   assertNotComplex(x, "all");
@@ -40467,14 +40467,14 @@ function all2(args) {
   const permutedAxes = backend_util_exports.getAxesPermutation(axes, x.shape.length);
   let $x = x;
   if (permutedAxes != null) {
-    $x = transpose2({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    $x = transpose2({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     axes = backend_util_exports.getInnerMostAxes(axes.length, x.shape.length);
   }
   backend_util_exports.assertAxesAreInnerMostDims("all", axes, $x.shape.length);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes($x.shape, axes);
   const reduceSize = util_exports.sizeFromShape(reduceShape);
   const vals = util_exports.makeZerosTypedArray(util_exports.sizeFromShape(outShape), $x.dtype);
-  const aVals = backend3.data.get($x.dataId).values;
+  const aVals = backend2.data.get($x.dataId).values;
   for (let i = 0; i < vals.length; ++i) {
     const offset = i * reduceSize;
     let all5 = aVals[offset];
@@ -40485,13 +40485,13 @@ function all2(args) {
     vals[i] = all5;
   }
   if (permutedAxes != null) {
-    backend3.disposeIntermediateTensorInfo($x);
+    backend2.disposeIntermediateTensorInfo($x);
   }
-  const result = backend3.makeTensorInfo(outShape, $x.dtype, vals);
+  const result = backend2.makeTensorInfo(outShape, $x.dtype, vals);
   if (keepDims) {
     const expandedShape = backend_util_exports.expandShapeToKeepDim(outShape, origAxes);
-    const reshapedResult = reshape3({ inputs: { x: result }, backend: backend3, attrs: { shape: expandedShape } });
-    backend3.disposeIntermediateTensorInfo(result);
+    const reshapedResult = reshape3({ inputs: { x: result }, backend: backend2, attrs: { shape: expandedShape } });
+    backend2.disposeIntermediateTensorInfo(result);
     return reshapedResult;
   }
   return result;
@@ -40502,7 +40502,7 @@ var allConfig = {
   kernelFunc: all2
 };
 function any2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
   assertNotComplex(x, "any");
@@ -40511,14 +40511,14 @@ function any2(args) {
   const permutedAxes = backend_util_exports.getAxesPermutation(axes, x.shape.length);
   let $x = x;
   if (permutedAxes != null) {
-    $x = transpose2({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    $x = transpose2({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     axes = backend_util_exports.getInnerMostAxes(axes.length, x.shape.length);
   }
   backend_util_exports.assertAxesAreInnerMostDims("any", axes, $x.shape.length);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes($x.shape, axes);
   const reduceSize = util_exports.sizeFromShape(reduceShape);
   const vals = util_exports.makeZerosTypedArray(util_exports.sizeFromShape(outShape), $x.dtype);
-  const aVals = backend3.data.get($x.dataId).values;
+  const aVals = backend2.data.get($x.dataId).values;
   for (let i = 0; i < vals.length; ++i) {
     const offset = i * reduceSize;
     let anyVal = aVals[offset];
@@ -40529,13 +40529,13 @@ function any2(args) {
     vals[i] = anyVal;
   }
   if (permutedAxes != null) {
-    backend3.disposeIntermediateTensorInfo($x);
+    backend2.disposeIntermediateTensorInfo($x);
   }
-  const result = backend3.makeTensorInfo(outShape, $x.dtype, vals);
+  const result = backend2.makeTensorInfo(outShape, $x.dtype, vals);
   if (keepDims) {
     const expandedShape = backend_util_exports.expandShapeToKeepDim(outShape, origAxes);
-    const reshapedResult = reshape3({ inputs: { x: result }, backend: backend3, attrs: { shape: expandedShape } });
-    backend3.disposeIntermediateTensorInfo(result);
+    const reshapedResult = reshape3({ inputs: { x: result }, backend: backend2, attrs: { shape: expandedShape } });
+    backend2.disposeIntermediateTensorInfo(result);
     return reshapedResult;
   }
   return result;
@@ -40546,7 +40546,7 @@ var anyConfig = {
   kernelFunc: any2
 };
 function argMax2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis } = attrs;
   assertNotComplex(x, "argMax");
@@ -40555,7 +40555,7 @@ function argMax2(args) {
   let $x = x;
   const intermediateTensorInfos = [];
   if (permutedAxes != null) {
-    $x = transpose2({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    $x = transpose2({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     intermediateTensorInfos.push($x);
     axes = backend_util_exports.getInnerMostAxes(axes.length, $x.shape.length);
   }
@@ -40565,7 +40565,7 @@ function argMax2(args) {
   const outSize = util_exports.sizeFromShape(outShape);
   const vals = util_exports.makeZerosTypedArray(outSize, "int32");
   const reduceSize = util_exports.sizeFromShape(reduceShape);
-  const aVals = backend3.data.get($x.dataId).values;
+  const aVals = backend2.data.get($x.dataId).values;
   for (let i = 0; i < vals.length; ++i) {
     const offset = i * reduceSize;
     let max7 = aVals[offset];
@@ -40579,8 +40579,8 @@ function argMax2(args) {
     }
     vals[i] = maxIndex;
   }
-  intermediateTensorInfos.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
-  return backend3.makeTensorInfo(outShape, "int32", vals);
+  intermediateTensorInfos.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
+  return backend2.makeTensorInfo(outShape, "int32", vals);
 }
 var argMaxConfig = {
   kernelName: ArgMax,
@@ -40588,7 +40588,7 @@ var argMaxConfig = {
   kernelFunc: argMax2
 };
 function argMin2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis } = attrs;
   assertNotComplex(x, "argMin");
@@ -40597,7 +40597,7 @@ function argMin2(args) {
   let $x = x;
   const intermediateTensorInfos = [];
   if (permutedAxes != null) {
-    $x = transpose2({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    $x = transpose2({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     intermediateTensorInfos.push($x);
     axes = backend_util_exports.getInnerMostAxes(axes.length, $x.shape.length);
   }
@@ -40607,7 +40607,7 @@ function argMin2(args) {
   const outSize = util_exports.sizeFromShape(outShape);
   const vals = util_exports.makeZerosTypedArray(outSize, "int32");
   const reduceSize = util_exports.sizeFromShape(reduceShape);
-  const aVals = backend3.data.get($x.dataId).values;
+  const aVals = backend2.data.get($x.dataId).values;
   for (let i = 0; i < vals.length; ++i) {
     const offset = i * reduceSize;
     let min7 = aVals[offset];
@@ -40621,8 +40621,8 @@ function argMin2(args) {
     }
     vals[i] = minIndex;
   }
-  intermediateTensorInfos.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
-  return backend3.makeTensorInfo(outShape, "int32", vals);
+  intermediateTensorInfos.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
+  return backend2.makeTensorInfo(outShape, "int32", vals);
 }
 var argMinConfig = {
   kernelName: ArgMin,
@@ -40913,7 +40913,7 @@ function maxPool3dPositions(xBuf, convInfo) {
   return maxPositions;
 }
 function avgPool2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   assertNotComplex(x, "avgPool");
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
@@ -40922,12 +40922,12 @@ function avgPool2(args) {
   const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
   let res;
   if (convInfo.filterWidth === 1 && convInfo.filterHeight === 1 && util_exports.arraysEqual(convInfo.inShape, convInfo.outShape)) {
-    res = identity2({ inputs: { x }, backend: backend3 });
+    res = identity2({ inputs: { x }, backend: backend2 });
   } else {
-    const xValues = backend3.data.get(x.dataId).values;
+    const xValues = backend2.data.get(x.dataId).values;
     const strides2 = util_exports.computeStrides(x.shape);
     const buffer2 = pool2(xValues, x.shape, x.dtype, strides2, convInfo, "avg");
-    res = backend3.makeTensorInfo(convInfo.outShape, x.dtype, buffer2.values);
+    res = backend2.makeTensorInfo(convInfo.outShape, x.dtype, buffer2.values);
   }
   return res;
 }
@@ -40937,14 +40937,14 @@ var avgPoolConfig = {
   kernelFunc: avgPool2
 };
 function avgPool3D(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { filterSize, strides, pad: pad3, dimRoundingMode, dataFormat } = attrs;
   assertNotComplex(x, "avgPool3d");
   const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode, dataFormat);
-  const xValues = backend3.data.get(x.dataId).values;
+  const xValues = backend2.data.get(x.dataId).values;
   const outBuf = pool3d2(xValues, x.shape, x.dtype, util_exports.computeStrides(x.shape), convInfo, "avg");
-  return backend3.makeTensorInfo(outBuf.shape, "float32", outBuf.values);
+  return backend2.makeTensorInfo(outBuf.shape, "float32", outBuf.values);
 }
 var avgPool3DConfig = {
   kernelName: AvgPool3D,
@@ -40952,7 +40952,7 @@ var avgPool3DConfig = {
   kernelFunc: avgPool3D
 };
 function avgPool3DGrad(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, input: input2 } = inputs;
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
   assertNotComplex([dy, input2], "avgPool3DGrad");
@@ -40974,7 +40974,7 @@ function avgPool3DGrad(args) {
   const padTop = effectiveFilterHeight - 1 - convInfo.padInfo.top;
   const dx = buffer(input2.shape, "float32");
   const avgMultiplier = 1 / (filterDepth * filterHeight * filterWidth);
-  const dyBuf = backend3.bufferSync(dy);
+  const dyBuf = backend2.bufferSync(dy);
   for (let batch = 0; batch < convInfo.batchSize; ++batch) {
     for (let channel = 0; channel < convInfo.inChannels; ++channel) {
       for (let dxDepth = 0; dxDepth < convInfo.inDepth; ++dxDepth) {
@@ -41010,7 +41010,7 @@ function avgPool3DGrad(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(dx.shape, dx.dtype, dx.values);
+  return backend2.makeTensorInfo(dx.shape, dx.dtype, dx.values);
 }
 var avgPool3DGradConfig2 = {
   kernelName: AvgPool3DGrad,
@@ -41018,7 +41018,7 @@ var avgPool3DGradConfig2 = {
   kernelFunc: avgPool3DGrad
 };
 function avgPoolGrad2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, input: input2 } = inputs;
   const x = input2;
   assertNotComplex([dy, input2], "avgPoolGrad");
@@ -41036,7 +41036,7 @@ function avgPoolGrad2(args) {
   const padTop = effectiveFilterHeight - 1 - convInfo.padInfo.top;
   const dx = buffer(x.shape, "float32");
   const avgMultiplier = 1 / (filterHeight * filterWidth);
-  const dyData = backend3.data.get(dy.dataId).values;
+  const dyData = backend2.data.get(dy.dataId).values;
   const dyBuf = buffer(dy.shape, "float32", dyData);
   for (let b = 0; b < convInfo.batchSize; ++b) {
     for (let d = 0; d < convInfo.inChannels; ++d) {
@@ -41064,7 +41064,7 @@ function avgPoolGrad2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(dx.shape, dx.dtype, dx.values);
+  return backend2.makeTensorInfo(dx.shape, dx.dtype, dx.values);
 }
 var avgPoolGradConfig2 = {
   kernelName: AvgPoolGrad,
@@ -41072,21 +41072,21 @@ var avgPoolGradConfig2 = {
   kernelFunc: avgPoolGrad2
 };
 function batchNorm2(args) {
-  const { inputs, backend: backend3, attrs } = args;
-  const { x, scale: scale2, offset, mean: mean7, variance: variance2 } = inputs;
-  util_exports.assert(mean7.shape.length === variance2.shape.length, () => "Batch normalization gradient requires mean and variance to have equal ranks.");
-  util_exports.assert(offset == null || mean7.shape.length === offset.shape.length, () => "Batch normalization gradient requires mean and offset to have equal ranks.");
-  util_exports.assert(scale2 == null || mean7.shape.length === scale2.shape.length, () => "Batch normalization gradient requires mean and scale to have equal ranks.");
-  assertNotComplex([x, mean7, variance2, scale2, offset], "batchNorm");
+  const { inputs, backend: backend2, attrs } = args;
+  const { x, scale: scale2, offset, mean: mean5, variance } = inputs;
+  util_exports.assert(mean5.shape.length === variance.shape.length, () => "Batch normalization gradient requires mean and variance to have equal ranks.");
+  util_exports.assert(offset == null || mean5.shape.length === offset.shape.length, () => "Batch normalization gradient requires mean and offset to have equal ranks.");
+  util_exports.assert(scale2 == null || mean5.shape.length === scale2.shape.length, () => "Batch normalization gradient requires mean and scale to have equal ranks.");
+  assertNotComplex([x, mean5, variance, scale2, offset], "batchNorm");
   let { varianceEpsilon } = attrs;
   if (varianceEpsilon == null) {
     varianceEpsilon = 1e-3;
   }
-  const xVals = backend3.data.get(x.dataId).values;
-  const mVals = backend3.data.get(mean7.dataId).values;
-  const varVals = backend3.data.get(variance2.dataId).values;
-  const sVals = scale2 ? backend3.data.get(scale2.dataId).values : new Float32Array([1]);
-  const offVals = offset ? backend3.data.get(offset.dataId).values : new Float32Array([0]);
+  const xVals = backend2.data.get(x.dataId).values;
+  const mVals = backend2.data.get(mean5.dataId).values;
+  const varVals = backend2.data.get(variance.dataId).values;
+  const sVals = scale2 ? backend2.data.get(scale2.dataId).values : new Float32Array([1]);
+  const offVals = offset ? backend2.data.get(offset.dataId).values : new Float32Array([0]);
   const outVals = new Float32Array(xVals.length);
   const offValsLength = offVals.length;
   const sValsLength = sVals.length;
@@ -41111,7 +41111,7 @@ function batchNorm2(args) {
       vi = 0;
     }
   }
-  return backend3.makeTensorInfo(x.shape, x.dtype, outVals);
+  return backend2.makeTensorInfo(x.shape, x.dtype, outVals);
 }
 var batchNormConfig = {
   kernelName: FusedBatchNorm,
@@ -41119,7 +41119,7 @@ var batchNormConfig = {
   kernelFunc: batchNorm2
 };
 function batchToSpaceND2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { blockShape, crops } = attrs;
   assertNotComplex([x], "batchToSpaceND");
@@ -41129,17 +41129,17 @@ function batchToSpaceND2(args) {
   const reshapedPermuted = backend_util_exports.getReshapedPermuted(x.shape, blockShape, prod6);
   const sliceBeginCoords = backend_util_exports.getSliceBeginCoords(crops, blockShape.length);
   const sliceSize = backend_util_exports.getSliceSize(reshapedPermuted, crops, blockShape.length);
-  const xReshaped = reshape3({ inputs: { x }, backend: backend3, attrs: { shape: reshaped } });
-  const xTransposed = transpose2({ inputs: { x: xReshaped }, backend: backend3, attrs: { perm: permuted } });
-  const xTransposedReshaped = reshape3({ inputs: { x: xTransposed }, backend: backend3, attrs: { shape: reshapedPermuted } });
+  const xReshaped = reshape3({ inputs: { x }, backend: backend2, attrs: { shape: reshaped } });
+  const xTransposed = transpose2({ inputs: { x: xReshaped }, backend: backend2, attrs: { perm: permuted } });
+  const xTransposedReshaped = reshape3({ inputs: { x: xTransposed }, backend: backend2, attrs: { shape: reshapedPermuted } });
   const result = slice2({
     inputs: { x: xTransposedReshaped },
-    backend: backend3,
+    backend: backend2,
     attrs: { begin: sliceBeginCoords, size: sliceSize }
   });
-  backend3.disposeIntermediateTensorInfo(xReshaped);
-  backend3.disposeIntermediateTensorInfo(xTransposed);
-  backend3.disposeIntermediateTensorInfo(xTransposedReshaped);
+  backend2.disposeIntermediateTensorInfo(xReshaped);
+  backend2.disposeIntermediateTensorInfo(xTransposed);
+  backend2.disposeIntermediateTensorInfo(xTransposedReshaped);
   return result;
 }
 var batchToSpaceNDConfig = {
@@ -41148,13 +41148,13 @@ var batchToSpaceNDConfig = {
   kernelFunc: batchToSpaceND2
 };
 function bincount2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, weights } = inputs;
   const { size } = attrs;
-  const xVals = backend3.data.get(x.dataId).values;
-  const weightsVals = backend3.data.get(weights.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
+  const weightsVals = backend2.data.get(weights.dataId).values;
   const outVals = bincountImpl(xVals, weightsVals, weights.dtype, weights.shape, size);
-  return backend3.makeTensorInfo([size], weights.dtype, outVals);
+  return backend2.makeTensorInfo([size], weights.dtype, outVals);
 }
 var bincountConfig = {
   kernelName: Bincount,
@@ -41162,12 +41162,12 @@ var bincountConfig = {
   kernelFunc: bincount2
 };
 function broadcastArgs2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { s0, s1 } = inputs;
-  const s0Vals = backend3.data.get(s0.dataId).values;
-  const s1Vals = backend3.data.get(s1.dataId).values;
+  const s0Vals = backend2.data.get(s0.dataId).values;
+  const s1Vals = backend2.data.get(s1.dataId).values;
   const broadcastShape = backend_util_exports.assertAndGetBroadcastShape(Array.from(s0Vals), Array.from(s1Vals));
-  return backend3.makeTensorInfo([broadcastShape.length], "int32", Int32Array.from(broadcastShape));
+  return backend2.makeTensorInfo([broadcastShape.length], "int32", Int32Array.from(broadcastShape));
 }
 var broadcastArgsConfig = {
   kernelName: BroadcastArgs,
@@ -41208,11 +41208,11 @@ var complexAbsConfig = {
   kernelFunc: complexAbs
 };
 function imag2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { input: input2 } = inputs;
-  const imag5 = backend3.data.get(input2.dataId).complexTensorInfos.imag;
-  const imagVal = backend3.data.get(imag5.dataId).values;
-  return backend3.makeTensorInfo(imag5.shape, imag5.dtype, imagVal);
+  const imag5 = backend2.data.get(input2.dataId).complexTensorInfos.imag;
+  const imagVal = backend2.data.get(imag5.dataId).values;
+  return backend2.makeTensorInfo(imag5.shape, imag5.dtype, imagVal);
 }
 var imagConfig = {
   kernelName: Imag,
@@ -41220,45 +41220,45 @@ var imagConfig = {
   kernelFunc: imag2
 };
 function concat2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { axis } = attrs;
   const $axis = util_exports.parseAxisParam(axis, inputs[0].shape)[0];
   let outShape = backend_util_exports.computeOutShape(inputs.map((t) => t.shape), $axis);
   if (util_exports.sizeFromShape(outShape) === 0) {
-    return backend3.makeTensorInfo(outShape, inputs[0].dtype, []);
+    return backend2.makeTensorInfo(outShape, inputs[0].dtype, []);
   }
   const $inputs = inputs.filter((t) => util_exports.sizeFromShape(t.shape) > 0);
   if ($inputs.length === 1) {
-    return identity2({ inputs: { x: $inputs[0] }, backend: backend3 });
+    return identity2({ inputs: { x: $inputs[0] }, backend: backend2 });
   }
   const shapes = $inputs.map((t) => t.shape);
   backend_util_exports.assertParamsConsistent(shapes, $axis);
   if ($inputs[0].dtype === "complex64") {
-    const reals = $inputs.map((t) => real2({ inputs: { input: t }, backend: backend3 }));
-    const imags = $inputs.map((t) => imag2({ inputs: { input: t }, backend: backend3 }));
-    const realConcated = concat2({ inputs: reals, backend: backend3, attrs: { axis: $axis } });
-    const imagConcated = concat2({ inputs: imags, backend: backend3, attrs: { axis: $axis } });
-    const result = complex2({ inputs: { real: realConcated, imag: imagConcated }, backend: backend3 });
-    reals.forEach((r) => backend3.disposeIntermediateTensorInfo(r));
-    imags.forEach((i) => backend3.disposeIntermediateTensorInfo(i));
-    backend3.disposeIntermediateTensorInfo(realConcated);
-    backend3.disposeIntermediateTensorInfo(imagConcated);
+    const reals = $inputs.map((t) => real2({ inputs: { input: t }, backend: backend2 }));
+    const imags = $inputs.map((t) => imag2({ inputs: { input: t }, backend: backend2 }));
+    const realConcated = concat2({ inputs: reals, backend: backend2, attrs: { axis: $axis } });
+    const imagConcated = concat2({ inputs: imags, backend: backend2, attrs: { axis: $axis } });
+    const result = complex2({ inputs: { real: realConcated, imag: imagConcated }, backend: backend2 });
+    reals.forEach((r) => backend2.disposeIntermediateTensorInfo(r));
+    imags.forEach((i) => backend2.disposeIntermediateTensorInfo(i));
+    backend2.disposeIntermediateTensorInfo(realConcated);
+    backend2.disposeIntermediateTensorInfo(imagConcated);
     return result;
   }
   const inputs2D = $inputs.map((t) => {
     const innerSize = util_exports.sizeFromShape(t.shape.slice($axis));
     const shape = [-1, innerSize];
-    return reshape3({ inputs: { x: t }, backend: backend3, attrs: { shape } });
+    return reshape3({ inputs: { x: t }, backend: backend2, attrs: { shape } });
   });
   const inputsValShapes = inputs2D.map((t) => {
-    return { vals: backend3.data.get(t.dataId).values, shape: t.shape };
+    return { vals: backend2.data.get(t.dataId).values, shape: t.shape };
   });
   outShape = backend_util_exports.computeOutShape(inputs2D.map((t) => t.shape), 1);
   const simplyConcat = inputs2D[0].shape[0] === 1;
   const outVals = concatImpl(inputsValShapes, outShape, inputs[0].dtype, simplyConcat);
   const finalOutShape = backend_util_exports.computeOutShape($inputs.map((t) => t.shape), $axis);
-  const outInfo = backend3.makeTensorInfo(finalOutShape, inputs[0].dtype, outVals);
-  inputs2D.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  const outInfo = backend2.makeTensorInfo(finalOutShape, inputs[0].dtype, outVals);
+  inputs2D.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return outInfo;
 }
 var concatConfig = {
@@ -41267,7 +41267,7 @@ var concatConfig = {
   kernelFunc: concat2
 };
 function conv2D(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter } = inputs;
   const { strides, pad: pad3, dataFormat, dilations, dimRoundingMode } = attrs;
   assertNotComplex([x, filter], "conv2d");
@@ -41291,8 +41291,8 @@ function conv2D(args) {
   const yRowStride = isChannelsLast ? y.strides[1] : y.strides[2];
   const yColStride = isChannelsLast ? y.strides[2] : 1;
   const yChannelStride = isChannelsLast ? 1 : y.strides[1];
-  const xVals = backend3.data.get(x.dataId).values;
-  const wVals = backend3.data.get(filter.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
+  const wVals = backend2.data.get(filter.dataId).values;
   const yVals = y.values;
   for (let b = 0; b < convInfo.batchSize; ++b) {
     const xOffset1 = b * xBatchStride;
@@ -41330,7 +41330,7 @@ function conv2D(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(y.shape, y.dtype, yVals);
+  return backend2.makeTensorInfo(y.shape, y.dtype, yVals);
 }
 var conv2DConfig = {
   kernelName: Conv2D,
@@ -41338,7 +41338,7 @@ var conv2DConfig = {
   kernelFunc: conv2D
 };
 function conv2DBackpropFilter2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, dy } = inputs;
   const { strides, pad: pad3, dataFormat, dimRoundingMode, filterShape } = attrs;
   assertNotComplex([x, dy], "conv2dBackpropFilter");
@@ -41349,8 +41349,8 @@ function conv2DBackpropFilter2(args) {
   const dW = new TensorBuffer(convInfo.filterShape, "float32");
   const leftPad = convInfo.padInfo.left;
   const topPad = convInfo.padInfo.top;
-  const xVals = backend3.data.get(x.dataId).values;
-  const dyVals = backend3.data.get(dy.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
+  const dyVals = backend2.data.get(dy.dataId).values;
   const xBuf = new TensorBuffer(x.shape, x.dtype, xVals);
   const dyBuf = new TensorBuffer(dy.shape, dy.dtype, dyVals);
   for (let wR = 0; wR < filterHeight; ++wR) {
@@ -41380,7 +41380,7 @@ function conv2DBackpropFilter2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(dW.shape, dW.dtype, dW.values);
+  return backend2.makeTensorInfo(dW.shape, dW.dtype, dW.values);
 }
 var conv2DBackpropFilterConfig = {
   kernelName: Conv2DBackpropFilter,
@@ -41388,7 +41388,7 @@ var conv2DBackpropFilterConfig = {
   kernelFunc: conv2DBackpropFilter2
 };
 function conv2DBackpropInput2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, filter } = inputs;
   const { inputShape, strides, pad: pad3, dataFormat, dimRoundingMode } = attrs;
   assertNotComplex([dy, filter], "conv2dBackpropInput");
@@ -41398,8 +41398,8 @@ function conv2DBackpropInput2(args) {
   const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides, 1, pad3, dimRoundingMode, false, $dataFormat);
   const dx = new TensorBuffer(convInfo.inShape, "float32");
   const dxValues = dx.values;
-  const dyValues = backend3.data.get(dy.dataId).values;
-  const fltValues = backend3.data.get(filter.dataId).values;
+  const dyValues = backend2.data.get(dy.dataId).values;
+  const fltValues = backend2.data.get(filter.dataId).values;
   const [fltS0, fltS1, fltS2] = filterStrides;
   const {
     batchSize,
@@ -41456,7 +41456,7 @@ function conv2DBackpropInput2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(dx.shape, dx.dtype, dx.values);
+  return backend2.makeTensorInfo(dx.shape, dx.dtype, dx.values);
 }
 var conv2DBackpropInputConfig = {
   kernelName: Conv2DBackpropInput,
@@ -41464,7 +41464,7 @@ var conv2DBackpropInputConfig = {
   kernelFunc: conv2DBackpropInput2
 };
 function conv3D(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter } = inputs;
   const { strides, pad: pad3, dilations } = attrs;
   assertNotComplex([x, filter], "conv3d");
@@ -41482,8 +41482,8 @@ function conv3D(args) {
   const padLeft = padInfo.left;
   const padTop = padInfo.top;
   const y = new TensorBuffer(convInfo.outShape, x.dtype);
-  const xVals = backend3.data.get(x.dataId).values;
-  const wVals = backend3.data.get(filter.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
+  const wVals = backend2.data.get(filter.dataId).values;
   const yVals = y.values;
   const xStrides = util_exports.computeStrides(x.shape);
   const filterStrides = util_exports.computeStrides(filter.shape);
@@ -41535,7 +41535,7 @@ function conv3D(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(y.shape, y.dtype, y.values);
+  return backend2.makeTensorInfo(y.shape, y.dtype, y.values);
 }
 var conv3DConfig = {
   kernelName: Conv3D,
@@ -41543,7 +41543,7 @@ var conv3DConfig = {
   kernelFunc: conv3D
 };
 function conv3DBackpropFilterV2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, dy } = inputs;
   const { strides, pad: pad3, filterShape } = attrs;
   assertNotComplex([x, dy], "conv3dBackpropFilterV2");
@@ -41559,9 +41559,9 @@ function conv3DBackpropFilterV2(args) {
   const dw = new TensorBuffer(convInfo.filterShape, "float32");
   const dwValues = dw.values;
   const [dwS0, dwS1, dwS2, dwS3] = dw.strides;
-  const dyValues = backend3.data.get(dy.dataId).values;
+  const dyValues = backend2.data.get(dy.dataId).values;
   const [dyS0, dyS1, dyS2, dyS3] = dyStrides;
-  const xValues = backend3.data.get(x.dataId).values;
+  const xValues = backend2.data.get(x.dataId).values;
   const [xS0, xS1, xS2, xS3] = xStrides;
   const frontPad = convInfo.padInfo.front;
   const leftPad = convInfo.padInfo.left;
@@ -41608,7 +41608,7 @@ function conv3DBackpropFilterV2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(dw.shape, dw.dtype, dw.values);
+  return backend2.makeTensorInfo(dw.shape, dw.dtype, dw.values);
 }
 var conv3DBackpropFilterV2Config = {
   kernelName: Conv3DBackpropFilterV2,
@@ -41616,7 +41616,7 @@ var conv3DBackpropFilterV2Config = {
   kernelFunc: conv3DBackpropFilterV2
 };
 function conv3DBackpropInputV2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, filter } = inputs;
   const { pad: pad3, strides, inputShape } = attrs;
   assertNotComplex([dy], "conv3dBackpropInputV2");
@@ -41626,9 +41626,9 @@ function conv3DBackpropInputV2(args) {
   const dx = new TensorBuffer(convInfo.inShape, "float32");
   const dxValues = dx.values;
   const [dxS0, dxS1, dxS2, dxS3] = dx.strides;
-  const dyValues = backend3.data.get(dy.dataId).values;
+  const dyValues = backend2.data.get(dy.dataId).values;
   const [dyS0, dyS1, dyS2, dyS3] = dyStrides;
-  const fltValues = backend3.data.get(filter.dataId).values;
+  const fltValues = backend2.data.get(filter.dataId).values;
   const [fltS0, fltS1, fltS2, fltS3] = filterStrides;
   const {
     batchSize,
@@ -41687,7 +41687,7 @@ function conv3DBackpropInputV2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(dx.shape, dx.dtype, dx.values);
+  return backend2.makeTensorInfo(dx.shape, dx.dtype, dx.values);
 }
 var conv3DBackpropInputV2Config = {
   kernelName: Conv3DBackpropInputV2,
@@ -41707,16 +41707,16 @@ var coshConfig = {
   kernelFunc: cosh2
 };
 function cropAndResize2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { image: image3, boxes, boxInd } = inputs;
   const { cropSize, method, extrapolationValue } = attrs;
   const [batch, imageHeight, imageWidth, numChannels] = image3.shape;
   const numBoxes = boxes.shape[0];
   const [cropHeight, cropWidth] = cropSize;
   const output = buffer([numBoxes, cropHeight, cropWidth, numChannels], "float32");
-  const boxVals = backend3.data.get(boxes.dataId).values;
-  const boxIndVals = backend3.data.get(boxInd.dataId).values;
-  const imageVals = backend3.data.get(image3.dataId).values;
+  const boxVals = backend2.data.get(boxes.dataId).values;
+  const boxIndVals = backend2.data.get(boxInd.dataId).values;
+  const imageVals = backend2.data.get(image3.dataId).values;
   const inStride = util_exports.computeStrides(image3.shape);
   const outStride = util_exports.computeStrides(output.shape);
   for (let b = 0; b < numBoxes; b++) {
@@ -41794,7 +41794,7 @@ function cropAndResize2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(output.shape, output.dtype, output.values);
+  return backend2.makeTensorInfo(output.shape, output.dtype, output.values);
 }
 var cropAndResizeConfig = {
   kernelName: CropAndResize,
@@ -41802,14 +41802,14 @@ var cropAndResizeConfig = {
   kernelFunc: cropAndResize2
 };
 function cumsum2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, exclusive, reverse: reverse5 } = attrs;
   assertNotComplex(x, "cumsum");
   const permutation = backend_util_exports.getAxesPermutation([axis], x.shape.length);
   let $x = x;
   if (permutation != null) {
-    $x = transpose2({ inputs: { x }, backend: backend3, attrs: { perm: permutation } });
+    $x = transpose2({ inputs: { x }, backend: backend2, attrs: { perm: permutation } });
   }
   const permutedAxis = backend_util_exports.getInnerMostAxes(1, x.shape.length)[0];
   if (permutedAxis !== $x.shape.length - 1) {
@@ -41817,7 +41817,7 @@ function cumsum2(args) {
   }
   const resultDtype = upcastType($x.dtype, "int32");
   const vals = util_exports.makeZerosTypedArray(util_exports.sizeFromShape($x.shape), resultDtype);
-  const aVals = backend3.data.get($x.dataId).values;
+  const aVals = backend2.data.get($x.dataId).values;
   const finalDim = $x.shape[$x.shape.length - 1];
   const indexAdjuster = reverse5 ? (i, j) => i + finalDim - j - 1 : (i, j) => i + j;
   for (let i = 0; i < aVals.length; i += finalDim) {
@@ -41831,12 +41831,12 @@ function cumsum2(args) {
       }
     }
   }
-  const result = backend3.makeTensorInfo($x.shape, resultDtype, vals);
+  const result = backend2.makeTensorInfo($x.shape, resultDtype, vals);
   if (permutation != null) {
     const reversePermutation = backend_util_exports.getUndoAxesPermutation(permutation);
-    const reverseTransposedResult = transpose2({ inputs: { x: result }, backend: backend3, attrs: { perm: reversePermutation } });
-    backend3.disposeIntermediateTensorInfo(result);
-    backend3.disposeIntermediateTensorInfo($x);
+    const reverseTransposedResult = transpose2({ inputs: { x: result }, backend: backend2, attrs: { perm: reversePermutation } });
+    backend2.disposeIntermediateTensorInfo(result);
+    backend2.disposeIntermediateTensorInfo($x);
     return reverseTransposedResult;
   }
   return result;
@@ -41847,19 +41847,19 @@ var cumsumConfig = {
   kernelFunc: cumsum2
 };
 function denseBincount2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, weights } = inputs;
   const { size, binaryOutput } = attrs;
   if (x.shape.length === 1) {
-    const xVals = backend3.data.get(x.dataId).values;
-    const weightsVals = backend3.data.get(weights.dataId).values;
+    const xVals = backend2.data.get(x.dataId).values;
+    const weightsVals = backend2.data.get(weights.dataId).values;
     const outVals = bincountImpl(xVals, weightsVals, weights.dtype, weights.shape, size);
-    return backend3.makeTensorInfo([size], weights.dtype, outVals);
+    return backend2.makeTensorInfo([size], weights.dtype, outVals);
   } else if (x.shape.length === 2) {
-    const xBuf = backend3.bufferSync(x);
-    const weightsBuf = backend3.bufferSync(weights);
+    const xBuf = backend2.bufferSync(x);
+    const weightsBuf = backend2.bufferSync(weights);
     const outBuf = bincountReduceImpl(xBuf, weightsBuf, size, binaryOutput);
-    return backend3.makeTensorInfo(outBuf.shape, weights.dtype, outBuf.values);
+    return backend2.makeTensorInfo(outBuf.shape, weights.dtype, outBuf.values);
   }
   throw new Error(`Error in denseBincount: input must be at most rank 2, but got rank${x.shape.length}.`);
 }
@@ -41869,7 +41869,7 @@ var denseBincountConfig = {
   kernelFunc: denseBincount2
 };
 function depthToSpace2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { blockSize, dataFormat } = attrs;
   util_exports.assert(dataFormat === "NHWC", () => `Only NHWC dataFormat supported on CPU for depthToSpace. Got ${dataFormat}`);
@@ -41880,7 +41880,7 @@ function depthToSpace2(args) {
   const outputHeight = inputHeight * blockSize;
   const outputWidth = inputWidth * blockSize;
   const outputDepth = inputDepth / (blockSize * blockSize);
-  const xValues = backend3.data.get(x.dataId).values;
+  const xValues = backend2.data.get(x.dataId).values;
   const result = new Float32Array(batchSize * outputHeight * outputWidth * outputDepth);
   let outputIdx = 0;
   for (let b = 0; b < batchSize; ++b) {
@@ -41899,7 +41899,7 @@ function depthToSpace2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo([batchSize, outputHeight, outputWidth, outputDepth], x.dtype, result);
+  return backend2.makeTensorInfo([batchSize, outputHeight, outputWidth, outputDepth], x.dtype, result);
 }
 var depthToSpaceConfig = {
   kernelName: DepthToSpace,
@@ -41907,7 +41907,7 @@ var depthToSpaceConfig = {
   kernelFunc: depthToSpace2
 };
 function depthwiseConv2dNative(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter } = inputs;
   const { strides, pad: pad3, dilations, dimRoundingMode } = attrs;
   assertNotComplex([x, filter], "depthwiseConv2DNative");
@@ -41924,8 +41924,8 @@ function depthwiseConv2dNative(args) {
   const padTop = padInfo.top;
   const chMul = convInfo.outChannels / convInfo.inChannels;
   const y = new TensorBuffer(convInfo.outShape, x.dtype);
-  const xVals = backend3.data.get(x.dataId).values;
-  const wVals = backend3.data.get(filter.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
+  const wVals = backend2.data.get(filter.dataId).values;
   const yVals = y.values;
   for (let b = 0; b < convInfo.batchSize; ++b) {
     const xOffset1 = b * xStrides[0];
@@ -41965,7 +41965,7 @@ function depthwiseConv2dNative(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(y.shape, y.dtype, y.values);
+  return backend2.makeTensorInfo(y.shape, y.dtype, y.values);
 }
 var depthwiseConv2dNativeConfig = {
   kernelName: DepthwiseConv2dNative,
@@ -41973,7 +41973,7 @@ var depthwiseConv2dNativeConfig = {
   kernelFunc: depthwiseConv2dNative
 };
 function depthwiseConv2dNativeBackpropFilter2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, dy } = inputs;
   const { strides, dilations, pad: pad3, dimRoundingMode, filterShape } = attrs;
   assertNotComplex([x, dy], "depthwiseConv2dNativeBackpropFilter");
@@ -41983,9 +41983,9 @@ function depthwiseConv2dNativeBackpropFilter2(args) {
   const leftPad = convInfo.padInfo.left;
   const topPad = convInfo.padInfo.top;
   const chMul = convInfo.outChannels / convInfo.inChannels;
-  const xVals = backend3.data.get(x.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
   const xBuf = new TensorBuffer(x.shape, x.dtype, xVals);
-  const dyVals = backend3.data.get(dy.dataId).values;
+  const dyVals = backend2.data.get(dy.dataId).values;
   const dyBuf = new TensorBuffer(dy.shape, dy.dtype, dyVals);
   for (let wR = 0; wR < filterHeight; ++wR) {
     const yRMin = Math.max(0, Math.ceil((topPad - wR) / strideHeight));
@@ -42010,7 +42010,7 @@ function depthwiseConv2dNativeBackpropFilter2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(dW.shape, dW.dtype, dW.values);
+  return backend2.makeTensorInfo(dW.shape, dW.dtype, dW.values);
 }
 var depthwiseConv2dNativeBackpropFilterConfig = {
   kernelName: DepthwiseConv2dNativeBackpropFilter,
@@ -42018,7 +42018,7 @@ var depthwiseConv2dNativeBackpropFilterConfig = {
   kernelFunc: depthwiseConv2dNativeBackpropFilter2
 };
 function depthwiseConv2dNativeBackpropInput2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, filter } = inputs;
   const { strides, dilations, pad: pad3, dimRoundingMode, inputShape } = attrs;
   assertNotComplex([dy, filter], "depthwiseConv2DNativeBackpropInput");
@@ -42028,9 +42028,9 @@ function depthwiseConv2dNativeBackpropInput2(args) {
   const dx = new TensorBuffer(convInfo.inShape, "float32");
   const dxValues = dx.values;
   const [dxS0, dxS1, dxS2] = dx.strides;
-  const dyValues = backend3.data.get(dy.dataId).values;
+  const dyValues = backend2.data.get(dy.dataId).values;
   const [dyS0, dyS1, dyS2] = dyStrides;
-  const fltValues = backend3.data.get(filter.dataId).values;
+  const fltValues = backend2.data.get(filter.dataId).values;
   const [fltS0, fltS1, fltS2] = filterStrides;
   const {
     batchSize,
@@ -42078,7 +42078,7 @@ function depthwiseConv2dNativeBackpropInput2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(dx.shape, dx.dtype, dx.values);
+  return backend2.makeTensorInfo(dx.shape, dx.dtype, dx.values);
 }
 var depthwiseConv2dNativeBackpropInputConfig = {
   kernelName: DepthwiseConv2dNativeBackpropInput,
@@ -42086,17 +42086,17 @@ var depthwiseConv2dNativeBackpropInputConfig = {
   kernelFunc: depthwiseConv2dNativeBackpropInput2
 };
 function diag2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
   const xSize = util_exports.sizeFromShape(x.shape);
-  const xVals = backend3.data.get(x.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
   const outBuf = buffer([xSize, xSize], x.dtype);
   const vals = outBuf.values;
   for (let i = 0; i < xVals.length; i++) {
     vals[i * xSize + i] = xVals[i];
   }
   const outShape = [...x.shape, ...x.shape];
-  return backend3.makeTensorInfo(outShape, outBuf.dtype, outBuf.values);
+  return backend2.makeTensorInfo(outShape, outBuf.dtype, outBuf.values);
 }
 var diagConfig = {
   kernelName: Diag,
@@ -42106,10 +42106,10 @@ var diagConfig = {
 var dilation2dConfig = {
   kernelName: Dilation2D,
   backendName: "cpu",
-  kernelFunc: ({ inputs, backend: backend3, attrs }) => {
+  kernelFunc: ({ inputs, backend: backend2, attrs }) => {
     const { x, filter } = inputs;
     const { strides, pad: pad3, dilations } = attrs;
-    const cpuBackend = backend3;
+    const cpuBackend = backend2;
     const xVals = cpuBackend.data.get(x.dataId).values;
     const xRank = x.shape.length;
     const filterVals = cpuBackend.data.get(filter.dataId).values;
@@ -42169,10 +42169,10 @@ var dilation2dConfig = {
 var dilation2dBackpropFilterConfig = {
   kernelName: Dilation2DBackpropFilter,
   backendName: "cpu",
-  kernelFunc: ({ inputs, backend: backend3, attrs }) => {
+  kernelFunc: ({ inputs, backend: backend2, attrs }) => {
     const { x, filter, dy } = inputs;
     const { strides, pad: pad3, dilations } = attrs;
-    const cpuBackend = backend3;
+    const cpuBackend = backend2;
     const $x = util_exports.toNestedArray(x.shape, cpuBackend.data.get(x.dataId).values);
     const $filter = util_exports.toNestedArray(filter.shape, cpuBackend.data.get(filter.dataId).values);
     const {
@@ -42193,7 +42193,7 @@ var dilation2dBackpropFilterConfig = {
     } = backend_util_exports.computeDilation2DInfo(x.shape, filter.shape, strides, pad3, "NHWC", dilations);
     util_exports.assert(dy.rank === outShape.length, () => `Error in ${Dilation2DBackpropFilter}, dy must have the same rank as output ${outShape.length}, but got ${dy.rank}`);
     const $dy = util_exports.toNestedArray(outShape, cpuBackend.data.get(dy.dataId).values);
-    const gradients2 = util_exports.makeZerosNestedTypedArray(filter.shape, filter.dtype);
+    const gradients = util_exports.makeZerosNestedTypedArray(filter.shape, filter.dtype);
     for (let b = 0; b < batchSize; ++b) {
       for (let hOut = 0; hOut < outHeight; ++hOut) {
         const hBeg = hOut * strideHeight - padInfo.top;
@@ -42219,22 +42219,22 @@ var dilation2dBackpropFilterConfig = {
                 }
               }
             }
-            gradients2[hMax][wMax][d] += $dy[b][hOut][wOut][d];
+            gradients[hMax][wMax][d] += $dy[b][hOut][wOut][d];
           }
         }
       }
     }
-    const dataId = cpuBackend.write(util_exports.toTypedArray(gradients2, x.dtype), filter.shape, filter.dtype);
+    const dataId = cpuBackend.write(util_exports.toTypedArray(gradients, x.dtype), filter.shape, filter.dtype);
     return { dataId, shape: filter.shape, dtype: filter.dtype };
   }
 };
 var dilation2dBackpropInputConfig = {
   kernelName: Dilation2DBackpropInput,
   backendName: "cpu",
-  kernelFunc: ({ inputs, backend: backend3, attrs }) => {
+  kernelFunc: ({ inputs, backend: backend2, attrs }) => {
     const { x, filter, dy } = inputs;
     const { strides, pad: pad3, dilations } = attrs;
-    const cpuBackend = backend3;
+    const cpuBackend = backend2;
     const $x = util_exports.toNestedArray(x.shape, cpuBackend.data.get(x.dataId).values);
     const $filter = util_exports.toNestedArray(filter.shape, cpuBackend.data.get(filter.dataId).values);
     const {
@@ -42255,7 +42255,7 @@ var dilation2dBackpropInputConfig = {
     } = backend_util_exports.computeDilation2DInfo(x.shape, filter.shape, strides, pad3, "NHWC", dilations);
     util_exports.assert(dy.rank === outShape.length, () => `Error in ${Dilation2DBackpropInput}, dy must have the same rank as output ${outShape.length}, but got ${dy.rank}`);
     const $dy = util_exports.toNestedArray(outShape, cpuBackend.data.get(dy.dataId).values);
-    const gradients2 = util_exports.makeZerosNestedTypedArray(x.shape, x.dtype);
+    const gradients = util_exports.makeZerosNestedTypedArray(x.shape, x.dtype);
     for (let b = 0; b < batchSize; ++b) {
       for (let hOut = 0; hOut < outHeight; ++hOut) {
         const hBeg = hOut * strideHeight - padInfo.top;
@@ -42281,25 +42281,25 @@ var dilation2dBackpropInputConfig = {
                 }
               }
             }
-            gradients2[b][hInMax][wInMax][d] += $dy[b][hOut][wOut][d];
+            gradients[b][hInMax][wInMax][d] += $dy[b][hOut][wOut][d];
           }
         }
       }
     }
-    const dataId = cpuBackend.write(util_exports.toTypedArray(gradients2, x.dtype), x.shape, x.dtype);
+    const dataId = cpuBackend.write(util_exports.toTypedArray(gradients, x.dtype), x.shape, x.dtype);
     return { dataId, shape: x.shape, dtype: x.dtype };
   }
 };
-function sum4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+function sum3(args) {
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
   assertNotComplex(x, "sum");
   let $x;
   if (x.dtype === "bool") {
-    $x = cast3({ inputs: { x }, backend: backend3, attrs: { dtype: "int32" } });
+    $x = cast3({ inputs: { x }, backend: backend2, attrs: { dtype: "int32" } });
   } else {
-    $x = identity2({ inputs: { x }, backend: backend3 });
+    $x = identity2({ inputs: { x }, backend: backend2 });
   }
   const xRank = $x.shape.length;
   const axes = util_exports.parseAxisParam(axis, $x.shape);
@@ -42307,43 +42307,43 @@ function sum4(args) {
   let reductionAxes = axes;
   let permutedX = $x;
   if (permutation != null) {
-    permutedX = transpose2({ inputs: { x: $x }, backend: backend3, attrs: { perm: permutation } });
+    permutedX = transpose2({ inputs: { x: $x }, backend: backend2, attrs: { perm: permutation } });
     reductionAxes = backend_util_exports.getInnerMostAxes(reductionAxes.length, xRank);
   }
   backend_util_exports.assertAxesAreInnerMostDims("sum", reductionAxes, permutedX.shape.length);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(permutedX.shape, reductionAxes);
   const resultDtype = backend_util_exports.upcastType(permutedX.dtype, "int32");
-  let result = zeros3(backend3, outShape, resultDtype);
+  let result = zeros3(backend2, outShape, resultDtype);
   const reduceSize = util_exports.sizeFromShape(reduceShape);
-  const vals = backend3.data.get(result.dataId).values;
-  const aVals = backend3.data.get(permutedX.dataId).values;
+  const vals = backend2.data.get(result.dataId).values;
+  const aVals = backend2.data.get(permutedX.dataId).values;
   for (let i = 0; i < vals.length; ++i) {
     const offset = i * reduceSize;
-    let sum8 = 0;
+    let sum7 = 0;
     for (let j = 0; j < reduceSize; ++j) {
-      sum8 += aVals[offset + j];
+      sum7 += aVals[offset + j];
     }
-    vals[i] = sum8;
+    vals[i] = sum7;
   }
   if (keepDims) {
     const newShape = backend_util_exports.expandShapeToKeepDim(result.shape, axes);
     const oldResult = result;
-    result = reshape3({ inputs: { x: result }, backend: backend3, attrs: { shape: newShape } });
-    backend3.disposeIntermediateTensorInfo(oldResult);
+    result = reshape3({ inputs: { x: result }, backend: backend2, attrs: { shape: newShape } });
+    backend2.disposeIntermediateTensorInfo(oldResult);
   }
-  backend3.disposeIntermediateTensorInfo($x);
+  backend2.disposeIntermediateTensorInfo($x);
   if (permutation != null) {
-    backend3.disposeIntermediateTensorInfo(permutedX);
+    backend2.disposeIntermediateTensorInfo(permutedX);
   }
   return result;
 }
 var sumConfig = {
   kernelName: Sum,
   backendName: "cpu",
-  kernelFunc: sum4
+  kernelFunc: sum3
 };
 function einsum2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { equation } = attrs;
   const tensors = inputs;
   const { allDims, summedDims, idDims } = backend_util_exports.decodeEinsumEquation(equation, tensors.length);
@@ -42360,7 +42360,7 @@ function einsum2(args) {
       if (backend_util_exports.isIdentityPermutation(perm)) {
         x = tensors[idTerm];
       } else {
-        x = transpose2({ inputs: { x: tensors[idTerm] }, backend: backend3, attrs: { perm } });
+        x = transpose2({ inputs: { x: tensors[idTerm] }, backend: backend2, attrs: { perm } });
         tensorsToDispose.push(x);
       }
       const targetShape = x.shape.slice();
@@ -42368,21 +42368,21 @@ function einsum2(args) {
         targetShape.splice(dimsToExpand[k], 0, 1);
       }
       if (!util_exports.arraysEqual(x.shape, targetShape)) {
-        x = reshape3({ inputs: { x }, backend: backend3, attrs: { shape: targetShape } });
+        x = reshape3({ inputs: { x }, backend: backend2, attrs: { shape: targetShape } });
         tensorsToDispose.push(x);
       }
       if (out === null) {
         out = x;
       } else {
-        out = multiply3({ inputs: { a: x, b: out }, backend: backend3 });
+        out = multiply2({ inputs: { a: x, b: out }, backend: backend2 });
         tensorsToDispose.push(out);
       }
     }
     if (i < nSteps - 1) {
       if (path[i] >= 0) {
-        out = sum4({
+        out = sum3({
           inputs: { x: out },
-          backend: backend3,
+          backend: backend2,
           attrs: {
             axis: path[i] - (allDims.length - numDimsRemaining),
             keepDims: false
@@ -42397,7 +42397,7 @@ function einsum2(args) {
     if (tensorInfo === out) {
       continue;
     }
-    backend3.disposeIntermediateTensorInfo(tensorInfo);
+    backend2.disposeIntermediateTensorInfo(tensorInfo);
   }
   return out;
 }
@@ -42407,12 +42407,12 @@ var einsumConfig = {
   kernelFunc: einsum2
 };
 function eluGrad(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { dy, y } = inputs;
   assertNotComplex([dy, y], "eluGrad");
   const resultValues = new Float32Array(util_exports.sizeFromShape(y.shape));
-  const values = backend3.data.get(y.dataId).values;
-  const dyValues = backend3.data.get(dy.dataId).values;
+  const values = backend2.data.get(y.dataId).values;
+  const dyValues = backend2.data.get(dy.dataId).values;
   for (let i = 0; i < values.length; ++i) {
     const v = values[i];
     if (v >= 1) {
@@ -42421,7 +42421,7 @@ function eluGrad(args) {
       resultValues[i] = dyValues[i] * (v + 1);
     }
   }
-  return backend3.makeTensorInfo(y.shape, "float32", resultValues);
+  return backend2.makeTensorInfo(y.shape, "float32", resultValues);
 }
 var eluGradConfig2 = {
   kernelName: EluGrad,
@@ -42435,10 +42435,10 @@ var a3 = backend_util_exports.ERF_A3;
 var a4 = backend_util_exports.ERF_A4;
 var a5 = backend_util_exports.ERF_A5;
 var erf2 = unaryKernelFunc(Erf, (xi) => {
-  const sign5 = Math.sign(xi);
+  const sign4 = Math.sign(xi);
   const v = Math.abs(xi);
   const t = 1 / (1 + p * v);
-  return sign5 * (1 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-v * v));
+  return sign4 * (1 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-v * v));
 });
 var erfConfig = {
   kernelName: Erf,
@@ -42446,7 +42446,7 @@ var erfConfig = {
   kernelFunc: erf2
 };
 function expandDims3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { input: input2 } = inputs;
   const { dim } = attrs;
   const inputRank = input2.shape.length;
@@ -42457,7 +42457,7 @@ function expandDims3(args) {
     $dim = inputRank + dim + 1;
   }
   newShape.splice($dim, 0, 1);
-  return reshape3({ inputs: { x: input2 }, backend: backend3, attrs: { shape: newShape } });
+  return reshape3({ inputs: { x: input2 }, backend: backend2, attrs: { shape: newShape } });
 }
 var expandDimsConfig = {
   kernelName: ExpandDims,
@@ -42589,8 +42589,8 @@ function fftRadix2(realVals, imagVals, size, inverse, cpuBackend) {
   const eRealInfo = cpuBackend.makeTensorInfo(eShape, "float32", e.real);
   const eImagInfo = cpuBackend.makeTensorInfo(eShape, "float32", e.imag);
   const complexInfo = complex2({ inputs: { real: eRealInfo, imag: eImagInfo }, backend: cpuBackend });
-  const exponentInfo = multiply3({ inputs: { a: complexInfo, b: $oddTensorInfo }, backend: cpuBackend });
-  const addPart = add5({
+  const exponentInfo = multiply2({ inputs: { a: complexInfo, b: $oddTensorInfo }, backend: cpuBackend });
+  const addPart = add4({
     inputs: { a: $evenTensorInfo, b: exponentInfo },
     backend: cpuBackend
   });
@@ -42660,20 +42660,20 @@ function fourierTransformByMatmul(data, size, inverse) {
   return ret;
 }
 function fft2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { input: input2 } = inputs;
   const inputSize = util_exports.sizeFromShape(input2.shape);
   const innerDimensionSize = input2.shape[input2.shape.length - 1];
   const batch = inputSize / innerDimensionSize;
   const input2D = reshape3({
     inputs: { x: input2 },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [batch, innerDimensionSize] }
   });
-  const result = fftBatch(input2D, false, backend3);
-  const resultReshaped = reshape3({ inputs: { x: result }, backend: backend3, attrs: { shape: input2.shape } });
-  backend3.disposeIntermediateTensorInfo(input2D);
-  backend3.disposeIntermediateTensorInfo(result);
+  const result = fftBatch(input2D, false, backend2);
+  const resultReshaped = reshape3({ inputs: { x: result }, backend: backend2, attrs: { shape: input2.shape } });
+  backend2.disposeIntermediateTensorInfo(input2D);
+  backend2.disposeIntermediateTensorInfo(result);
   return resultReshaped;
 }
 var fftConfig = {
@@ -42682,12 +42682,12 @@ var fftConfig = {
   kernelFunc: fft2
 };
 function fill2(args) {
-  const { backend: backend3, attrs } = args;
+  const { backend: backend2, attrs } = args;
   const { shape, value, dtype } = attrs;
   const $dtype = dtype || util_exports.inferDtype(value);
   const values = util_exports.getArrayFromDType($dtype, util_exports.sizeFromShape(shape));
   fillValues(values, value, $dtype);
-  return backend3.makeTensorInfo(shape, $dtype, values);
+  return backend2.makeTensorInfo(shape, $dtype, values);
 }
 var fillConfig = {
   kernelName: Fill,
@@ -42704,9 +42704,9 @@ function fillValues(values, value, dtype) {
 var flipLeftRightConfig = {
   kernelName: FlipLeftRight,
   backendName: "cpu",
-  kernelFunc: ({ inputs, attrs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, attrs, backend: backend2 }) => {
     const { image: image3 } = inputs;
-    const cpuBackend = backend3;
+    const cpuBackend = backend2;
     const output = util_exports.getTypedArrayFromDType(image3.dtype, util_exports.sizeFromShape(image3.shape));
     const [batch, imageHeight, imageWidth, numChannels] = image3.shape;
     const imageVals = cpuBackend.data.get(image3.dataId).values;
@@ -42742,7 +42742,7 @@ var floorDivConfig = {
   kernelFunc: floorDiv2
 };
 function fusedConv2D(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
     strides,
@@ -42755,18 +42755,18 @@ function fusedConv2D(args) {
   } = attrs;
   let result = conv2D({
     inputs: { x, filter },
-    backend: backend3,
+    backend: backend2,
     attrs: { strides, pad: pad3, dataFormat, dilations, dimRoundingMode }
   });
   if (bias) {
     const resultOld = result;
-    result = add5({ inputs: { a: result, b: bias }, backend: backend3 });
-    backend3.disposeIntermediateTensorInfo(resultOld);
+    result = add4({ inputs: { a: result, b: bias }, backend: backend2 });
+    backend2.disposeIntermediateTensorInfo(resultOld);
   }
   if (activation2) {
     const resultOld = result;
-    result = applyActivation2(backend3, result, activation2, preluActivationWeights, leakyreluAlpha);
-    backend3.disposeIntermediateTensorInfo(resultOld);
+    result = applyActivation2(backend2, result, activation2, preluActivationWeights, leakyreluAlpha);
+    backend2.disposeIntermediateTensorInfo(resultOld);
   }
   return result;
 }
@@ -42776,7 +42776,7 @@ var fusedConv2DConfig = {
   kernelFunc: fusedConv2D
 };
 function fusedDepthwiseConv2D(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
     strides,
@@ -42789,18 +42789,18 @@ function fusedDepthwiseConv2D(args) {
   } = attrs;
   let result = depthwiseConv2dNative({
     inputs: { x, filter },
-    backend: backend3,
+    backend: backend2,
     attrs: { strides, pad: pad3, dataFormat, dilations, dimRoundingMode }
   });
   if (bias) {
     const oldResult = result;
-    result = add5({ inputs: { a: result, b: bias }, backend: backend3 });
-    backend3.disposeIntermediateTensorInfo(oldResult);
+    result = add4({ inputs: { a: result, b: bias }, backend: backend2 });
+    backend2.disposeIntermediateTensorInfo(oldResult);
   }
   if (activation2) {
     const oldResult = result;
-    result = applyActivation2(backend3, result, activation2, preluActivationWeights, leakyreluAlpha);
-    backend3.disposeIntermediateTensorInfo(oldResult);
+    result = applyActivation2(backend2, result, activation2, preluActivationWeights, leakyreluAlpha);
+    backend2.disposeIntermediateTensorInfo(oldResult);
   }
   return result;
 }
@@ -42810,19 +42810,19 @@ var fusedDepthwiseConv2DConfig = {
   kernelFunc: fusedDepthwiseConv2D
 };
 function gatherNd(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { params, indices } = inputs;
   const paramsSize = util_exports.sizeFromShape(params.shape);
   const indicesShape = indices.shape;
   const sliceRank = indicesShape[indicesShape.length - 1];
   const [resultShape, numSlices, sliceSize, strides] = backend_util_exports.prepareAndValidate(params, indices);
   if (numSlices === 0) {
-    return backend3.makeTensorInfo(resultShape, params.dtype, []);
+    return backend2.makeTensorInfo(resultShape, params.dtype, []);
   }
-  const indicesData = backend3.data.get(indices.dataId).values;
-  const paramsBuf = backend3.bufferSync(params);
+  const indicesData = backend2.data.get(indices.dataId).values;
+  const paramsBuf = backend2.bufferSync(params);
   const outBuf = gatherNdImpl(indicesData, paramsBuf, params.dtype, numSlices, sliceRank, sliceSize, strides, params.shape, paramsSize);
-  return backend3.makeTensorInfo(resultShape, params.dtype, outBuf.values);
+  return backend2.makeTensorInfo(resultShape, params.dtype, outBuf.values);
 }
 var gatherNdConfig = {
   kernelName: GatherNd,
@@ -42830,12 +42830,12 @@ var gatherNdConfig = {
   kernelFunc: gatherNd
 };
 function gatherV2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, indices } = inputs;
   const { axis, batchDims } = attrs;
   assertNotComplex([x, indices], "gatherV2");
   const parsedAxis = util_exports.parseAxisParam(axis, x.shape)[0];
-  const indicesVals = backend3.data.get(indices.dataId).values;
+  const indicesVals = backend2.data.get(indices.dataId).values;
   const axisDim = x.shape[parsedAxis];
   for (let i = 0; i < indicesVals.length; ++i) {
     const index = indicesVals[i];
@@ -42849,7 +42849,7 @@ function gatherV2(args) {
   const shapeInfo = backend_util_exports.segment_util.collectGatherOpShapeInfo(x, indices, parsedAxis, $batchDims);
   const flattenX = reshape3({
     inputs: { x },
-    backend: backend3,
+    backend: backend2,
     attrs: {
       shape: [
         shapeInfo.batchSize,
@@ -42861,7 +42861,7 @@ function gatherV2(args) {
   });
   const flattenIndex = reshape3({
     inputs: { x: indices },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [shapeInfo.batchSize, indicesSize / shapeInfo.batchSize] }
   });
   const flattenOutputShape = [
@@ -42870,12 +42870,12 @@ function gatherV2(args) {
     indicesSize / shapeInfo.batchSize,
     shapeInfo.sliceSize
   ];
-  const indicesBuf = backend3.bufferSync(flattenIndex);
-  const xBuf = backend3.bufferSync(flattenX);
+  const indicesBuf = backend2.bufferSync(flattenIndex);
+  const xBuf = backend2.bufferSync(flattenX);
   const outBuf = gatherV2Impl(xBuf, indicesBuf, flattenOutputShape);
-  backend3.disposeIntermediateTensorInfo(flattenX);
-  backend3.disposeIntermediateTensorInfo(flattenIndex);
-  return backend3.makeTensorInfo(shapeInfo.outputShape, outBuf.dtype, outBuf.values);
+  backend2.disposeIntermediateTensorInfo(flattenX);
+  backend2.disposeIntermediateTensorInfo(flattenIndex);
+  return backend2.makeTensorInfo(shapeInfo.outputShape, outBuf.dtype, outBuf.values);
 }
 var gatherV2Config = {
   kernelName: GatherV2,
@@ -42883,20 +42883,20 @@ var gatherV2Config = {
   kernelFunc: gatherV2
 };
 function ifft2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { input: input2 } = inputs;
   const inputSize = util_exports.sizeFromShape(input2.shape);
   const innerDimensionSize = input2.shape[input2.shape.length - 1];
   const batch = inputSize / innerDimensionSize;
   const input2D = reshape3({
     inputs: { x: input2 },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [batch, innerDimensionSize] }
   });
-  const result = fftBatch(input2D, true, backend3);
-  const resultReshaped = reshape3({ inputs: { x: result }, backend: backend3, attrs: { shape: input2.shape } });
-  backend3.disposeIntermediateTensorInfo(input2D);
-  backend3.disposeIntermediateTensorInfo(result);
+  const result = fftBatch(input2D, true, backend2);
+  const resultReshaped = reshape3({ inputs: { x: result }, backend: backend2, attrs: { shape: input2.shape } });
+  backend2.disposeIntermediateTensorInfo(input2D);
+  backend2.disposeIntermediateTensorInfo(result);
   return resultReshaped;
 }
 var ifftConfig = {
@@ -42923,10 +42923,10 @@ var isNaNConfig = {
   kernelFunc: isNaN3
 };
 function linSpace(args) {
-  const { backend: backend3, attrs } = args;
+  const { backend: backend2, attrs } = args;
   const { start, stop, num } = attrs;
   const outVals = linSpaceImpl(start, stop, num);
-  return backend3.makeTensorInfo([outVals.length], "float32", outVals);
+  return backend2.makeTensorInfo([outVals.length], "float32", outVals);
 }
 var linSpaceConfig = {
   kernelName: LinSpace,
@@ -42960,32 +42960,32 @@ var logicalOrConfig = {
   kernelFunc: logicalOr2
 };
 function lRN(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { depthRadius, bias, alpha, beta } = attrs;
   assertNotComplex(x, "LRN");
   const channels = x.shape[3];
   const maxD = channels - 1;
-  const xValues = backend3.data.get(x.dataId).values;
+  const xValues = backend2.data.get(x.dataId).values;
   const size = util_exports.sizeFromShape(x.shape);
   const result = new Float32Array(size);
   function sumAcrossChannels(offset) {
     const currentChannel = offset % channels;
     let beginSumOffset = offset - currentChannel + Math.max(0, currentChannel - depthRadius);
     const endSumOffset = offset - currentChannel + Math.min(currentChannel + depthRadius, maxD);
-    let sum8 = 0;
+    let sum7 = 0;
     for (; beginSumOffset <= endSumOffset; beginSumOffset++) {
       const z = xValues[beginSumOffset];
-      sum8 += z * z;
+      sum7 += z * z;
     }
-    return sum8;
+    return sum7;
   }
   for (let offset = 0; offset < size; offset++) {
-    const sum8 = sumAcrossChannels(offset);
-    const val = xValues[offset] * Math.pow(bias + alpha * sum8, -beta);
+    const sum7 = sumAcrossChannels(offset);
+    const val = xValues[offset] * Math.pow(bias + alpha * sum7, -beta);
     result[offset] = val;
   }
-  return backend3.makeTensorInfo(x.shape, x.dtype, result);
+  return backend2.makeTensorInfo(x.shape, x.dtype, result);
 }
 var lRNConfig = {
   kernelName: LRN,
@@ -42993,15 +42993,15 @@ var lRNConfig = {
   kernelFunc: lRN
 };
 function lRNGrad(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, y, dy } = inputs;
   const { depthRadius, bias, alpha, beta } = attrs;
   assertNotComplex(dy, "LRNGrad");
   const dySize = util_exports.sizeFromShape(dy.shape);
   const channels = dy.shape[3];
-  const dyValues = backend3.data.get(dy.dataId).values;
-  const xValues = backend3.data.get(x.dataId).values;
-  const yValues = backend3.data.get(y.dataId).values;
+  const dyValues = backend2.data.get(dy.dataId).values;
+  const xValues = backend2.data.get(x.dataId).values;
+  const yValues = backend2.data.get(y.dataId).values;
   const result = new Float32Array(dySize);
   const size = dySize;
   for (let offset = 0; offset < size; offset++) {
@@ -43022,7 +43022,7 @@ function lRNGrad(args) {
       result[k] += dyi;
     }
   }
-  return backend3.makeTensorInfo(dy.shape, x.dtype, result);
+  return backend2.makeTensorInfo(dy.shape, x.dtype, result);
 }
 var lRNGradConfig = {
   kernelName: LRNGrad,
@@ -43030,10 +43030,10 @@ var lRNGradConfig = {
   kernelFunc: lRNGrad
 };
 function max3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { reductionIndices, keepDims } = attrs;
-  const cpuBackend = backend3;
+  const cpuBackend = backend2;
   let xShape = x.shape;
   const xRank = xShape.length;
   const origAxes = util_exports.parseAxisParam(reductionIndices, xShape);
@@ -43068,7 +43068,7 @@ var maxConfig = {
   kernelFunc: max3
 };
 function maxPool2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   assertNotComplex(x, "maxPool");
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
@@ -43077,12 +43077,12 @@ function maxPool2(args) {
   const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
   let res;
   if (convInfo.filterWidth === 1 && convInfo.filterHeight === 1 && util_exports.arraysEqual(convInfo.inShape, convInfo.outShape)) {
-    res = identity2({ inputs: { x }, backend: backend3 });
+    res = identity2({ inputs: { x }, backend: backend2 });
   } else {
-    const xValues = backend3.data.get(x.dataId).values;
+    const xValues = backend2.data.get(x.dataId).values;
     const strides2 = util_exports.computeStrides(x.shape);
     const buffer2 = pool2(xValues, x.shape, x.dtype, strides2, convInfo, "max");
-    res = backend3.makeTensorInfo(convInfo.outShape, x.dtype, buffer2.values);
+    res = backend2.makeTensorInfo(convInfo.outShape, x.dtype, buffer2.values);
   }
   return res;
 }
@@ -43092,14 +43092,14 @@ var maxPoolConfig = {
   kernelFunc: maxPool2
 };
 function maxPool3D(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { filterSize, strides, pad: pad3, dimRoundingMode, dataFormat } = attrs;
   assertNotComplex(x, "maxPool3d");
   const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode, dataFormat);
-  const xValues = backend3.data.get(x.dataId).values;
+  const xValues = backend2.data.get(x.dataId).values;
   const outBuf = pool3d2(xValues, x.shape, x.dtype, util_exports.computeStrides(x.shape), convInfo, "max");
-  return backend3.makeTensorInfo(outBuf.shape, "float32", outBuf.values);
+  return backend2.makeTensorInfo(outBuf.shape, "float32", outBuf.values);
 }
 var maxPool3DConfig = {
   kernelName: MaxPool3D,
@@ -43107,12 +43107,12 @@ var maxPool3DConfig = {
   kernelFunc: maxPool3D
 };
 function maxPool3DGrad(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, input: input2 } = inputs;
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
   assertNotComplex([dy, input2], "maxPool3DGrad");
   const convInfo = backend_util_exports.computePool3DInfo(input2.shape, filterSize, strides, 1, pad3, dimRoundingMode);
-  const inputBuf = backend3.bufferSync(input2);
+  const inputBuf = backend2.bufferSync(input2);
   const maxPosBuf = maxPool3dPositions(inputBuf, convInfo);
   const strideDepth = convInfo.strideDepth;
   const strideHeight = convInfo.strideHeight;
@@ -43127,7 +43127,7 @@ function maxPool3DGrad(args) {
   const padLeft = effectiveFilterWidth - 1 - convInfo.padInfo.left;
   const padTop = effectiveFilterHeight - 1 - convInfo.padInfo.top;
   const dx = buffer(input2.shape, "float32");
-  const dyBuf = backend3.bufferSync(dy);
+  const dyBuf = backend2.bufferSync(dy);
   for (let batch = 0; batch < convInfo.batchSize; ++batch) {
     for (let channel = 0; channel < convInfo.inChannels; ++channel) {
       for (let dxDepth = 0; dxDepth < convInfo.inDepth; ++dxDepth) {
@@ -43169,7 +43169,7 @@ function maxPool3DGrad(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(dx.shape, dx.dtype, dx.values);
+  return backend2.makeTensorInfo(dx.shape, dx.dtype, dx.values);
 }
 var maxPool3DGradConfig2 = {
   kernelName: MaxPool3DGrad,
@@ -43177,13 +43177,13 @@ var maxPool3DGradConfig2 = {
   kernelFunc: maxPool3DGrad
 };
 function maxPoolGrad2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, input: input2, output } = inputs;
   const x = input2;
   assertNotComplex([input2, output], "maxPoolGrad");
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
   const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode);
-  const xValues = backend3.data.get(x.dataId).values;
+  const xValues = backend2.data.get(x.dataId).values;
   const maxPosBuf = buffer(convInfo.outShape, x.dtype, maxPoolPositions(xValues, x.shape, x.dtype, convInfo).values);
   const strideHeight = convInfo.strideHeight;
   const strideWidth = convInfo.strideWidth;
@@ -43194,7 +43194,7 @@ function maxPoolGrad2(args) {
   const padLeft = effectiveFilterWidth - 1 - convInfo.padInfo.left;
   const padTop = effectiveFilterHeight - 1 - convInfo.padInfo.top;
   const dx = buffer(x.shape, "float32");
-  const dyData = backend3.data.get(dy.dataId).values;
+  const dyData = backend2.data.get(dy.dataId).values;
   const dyBuf = buffer(dy.shape, "float32", dyData);
   for (let b = 0; b < convInfo.batchSize; ++b) {
     for (let d = 0; d < convInfo.inChannels; ++d) {
@@ -43228,7 +43228,7 @@ function maxPoolGrad2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(dx.shape, dx.dtype, dx.values);
+  return backend2.makeTensorInfo(dx.shape, dx.dtype, dx.values);
 }
 var maxPoolGradConfig2 = {
   kernelName: MaxPoolGrad,
@@ -43244,10 +43244,10 @@ function maxPoolWithArgmaxImpl(xValues, xShape, dtype, includeBatchInIndex, conv
 var maxPoolWithArgmaxConfig = {
   kernelName: MaxPoolWithArgmax,
   backendName: "cpu",
-  kernelFunc: ({ inputs, attrs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, attrs, backend: backend2 }) => {
     const { x } = inputs;
     const { filterSize, strides, pad: pad3, includeBatchInIndex } = attrs;
-    const cpuBackend = backend3;
+    const cpuBackend = backend2;
     assertNotComplex(x, "MaxPoolWithArgmax");
     const values = cpuBackend.data.get(x.dataId).values;
     const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, [1, 1], pad3);
@@ -43260,8 +43260,8 @@ var maxPoolWithArgmaxConfig = {
     ];
   }
 };
-function mean4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+function mean2(args) {
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
   const axes = util_exports.parseAxisParam(axis, x.shape);
@@ -43269,23 +43269,23 @@ function mean4(args) {
   const reduceShape = shapes[1];
   const reduceSize = util_exports.sizeFromShape(reduceShape);
   const toDispose = [];
-  const reduceSizeScalar = backend3.makeTensorInfo([], "float32", new Float32Array([reduceSize]));
+  const reduceSizeScalar = backend2.makeTensorInfo([], "float32", new Float32Array([reduceSize]));
   toDispose.push(reduceSizeScalar);
-  const $x = cast3({ inputs: { x }, backend: backend3, attrs: { dtype: "float32" } });
+  const $x = cast3({ inputs: { x }, backend: backend2, attrs: { dtype: "float32" } });
   toDispose.push($x);
-  const res = div2({ inputs: { a: $x, b: reduceSizeScalar }, backend: backend3 });
+  const res = div2({ inputs: { a: $x, b: reduceSizeScalar }, backend: backend2 });
   toDispose.push(res);
-  const result = sum4({ inputs: { x: res }, backend: backend3, attrs: { axis, keepDims } });
-  toDispose.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  const result = sum3({ inputs: { x: res }, backend: backend2, attrs: { axis, keepDims } });
+  toDispose.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return result;
 }
 var meanConfig = {
   kernelName: Mean,
   backendName: "cpu",
-  kernelFunc: mean4
+  kernelFunc: mean2
 };
 function min3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
   assertNotComplex(x, "min");
@@ -43294,14 +43294,14 @@ function min3(args) {
   const permutedAxes = backend_util_exports.getAxesPermutation(axes, x.shape.length);
   let $x = x;
   if (permutedAxes != null) {
-    $x = transpose2({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    $x = transpose2({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     axes = backend_util_exports.getInnerMostAxes(axes.length, x.shape.length);
   }
   backend_util_exports.assertAxesAreInnerMostDims("min", axes, $x.shape.length);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes($x.shape, axes);
   const reduceSize = util_exports.sizeFromShape(reduceShape);
   const vals = util_exports.makeZerosTypedArray(util_exports.sizeFromShape(outShape), $x.dtype);
-  const aVals = backend3.data.get($x.dataId).values;
+  const aVals = backend2.data.get($x.dataId).values;
   for (let i = 0; i < vals.length; ++i) {
     const offset = i * reduceSize;
     let min7 = aVals[offset];
@@ -43314,13 +43314,13 @@ function min3(args) {
     vals[i] = min7;
   }
   if (permutedAxes != null) {
-    backend3.disposeIntermediateTensorInfo($x);
+    backend2.disposeIntermediateTensorInfo($x);
   }
-  const result = backend3.makeTensorInfo(outShape, $x.dtype, vals);
+  const result = backend2.makeTensorInfo(outShape, $x.dtype, vals);
   if (keepDims) {
     const expandedShape = backend_util_exports.expandShapeToKeepDim(outShape, origAxes);
-    const reshapedResult = reshape3({ inputs: { x: result }, backend: backend3, attrs: { shape: expandedShape } });
-    backend3.disposeIntermediateTensorInfo(result);
+    const reshapedResult = reshape3({ inputs: { x: result }, backend: backend2, attrs: { shape: expandedShape } });
+    backend2.disposeIntermediateTensorInfo(result);
     return reshapedResult;
   }
   return result;
@@ -43331,7 +43331,7 @@ var minConfig = {
   kernelFunc: min3
 };
 function mirrorPad2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { paddings, mode } = attrs;
   assertNotComplex(x, "mirrorPad");
@@ -43339,7 +43339,7 @@ function mirrorPad2(args) {
   const start = paddings.map((p2) => p2[0]);
   const end = paddings.map((p2, i) => p2[0] + x.shape[i]);
   const offset = mode === "reflect" ? 0 : 1;
-  const xVals = backend3.data.get(x.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
   const xRank = x.shape.length;
   const xStrides = util_exports.computeStrides(x.shape);
   const resultSize = util_exports.sizeFromShape(outShape);
@@ -43359,7 +43359,7 @@ function mirrorPad2(args) {
     const inIndex = util_exports.locToIndex(coords3, xRank, xStrides);
     resVals[i] = xVals[inIndex];
   }
-  const outId = backend3.write(resVals, outShape, x.dtype);
+  const outId = backend2.write(resVals, outShape, x.dtype);
   return { dataId: outId, shape: outShape, dtype: x.dtype };
 }
 var mirrorPadConfig = {
@@ -43381,8 +43381,9 @@ var modConfig = {
   backendName: "cpu",
   kernelFunc: mod2
 };
+var seedrandom4 = __toModule(require_seedrandom2());
 function softmax3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { logits } = inputs;
   const { dim } = attrs;
   const logitsRank = logits.shape.length;
@@ -43396,22 +43397,22 @@ function softmax3(args) {
   const axes = util_exports.parseAxisParam([$dim], logits.shape);
   const maxLogit = max3({
     inputs: { x: logits },
-    backend: backend3,
+    backend: backend2,
     attrs: { reductionIndices: axes, keepDims: false }
   });
   const expandedShape = backend_util_exports.expandShapeToKeepDim(maxLogit.shape, axes);
-  const maxLogitReshaped = reshape3({ inputs: { x: maxLogit }, backend: backend3, attrs: { shape: expandedShape } });
-  const a = sub2({ inputs: { a: logits, b: maxLogitReshaped }, backend: backend3 });
-  const b = exp2({ inputs: { x: a }, backend: backend3 });
-  const sumExp = sum4({ inputs: { x: b }, backend: backend3, attrs: { axis: axes, keepDims: false } });
-  const sumReshaped = reshape3({ inputs: { x: sumExp }, backend: backend3, attrs: { shape: expandedShape } });
-  const result = div2({ inputs: { a: b, b: sumReshaped }, backend: backend3 });
-  backend3.disposeIntermediateTensorInfo(maxLogit);
-  backend3.disposeIntermediateTensorInfo(maxLogitReshaped);
-  backend3.disposeIntermediateTensorInfo(a);
-  backend3.disposeIntermediateTensorInfo(b);
-  backend3.disposeIntermediateTensorInfo(sumExp);
-  backend3.disposeIntermediateTensorInfo(sumReshaped);
+  const maxLogitReshaped = reshape3({ inputs: { x: maxLogit }, backend: backend2, attrs: { shape: expandedShape } });
+  const a = sub2({ inputs: { a: logits, b: maxLogitReshaped }, backend: backend2 });
+  const b = exp2({ inputs: { x: a }, backend: backend2 });
+  const sumExp = sum3({ inputs: { x: b }, backend: backend2, attrs: { axis: axes, keepDims: false } });
+  const sumReshaped = reshape3({ inputs: { x: sumExp }, backend: backend2, attrs: { shape: expandedShape } });
+  const result = div2({ inputs: { a: b, b: sumReshaped }, backend: backend2 });
+  backend2.disposeIntermediateTensorInfo(maxLogit);
+  backend2.disposeIntermediateTensorInfo(maxLogitReshaped);
+  backend2.disposeIntermediateTensorInfo(a);
+  backend2.disposeIntermediateTensorInfo(b);
+  backend2.disposeIntermediateTensorInfo(sumExp);
+  backend2.disposeIntermediateTensorInfo(sumReshaped);
   return result;
 }
 var softmaxConfig = {
@@ -43419,16 +43420,15 @@ var softmaxConfig = {
   backendName: "cpu",
   kernelFunc: softmax3
 };
-var seedrandom4 = __toModule(require_seedrandom2());
 function multinomial2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { logits } = inputs;
   const { numSamples, seed, normalized } = attrs;
   assertNotComplex(logits, "multinomial");
-  const probabilities = normalized ? logits : softmax3({ inputs: { logits }, backend: backend3, attrs: { dim: -1 } });
+  const probabilities = normalized ? logits : softmax3({ inputs: { logits }, backend: backend2, attrs: { dim: -1 } });
   const batchSize = probabilities.shape[0];
   const numEvents = probabilities.shape[1];
-  const probVals = backend3.data.get(probabilities.dataId).values;
+  const probVals = backend2.data.get(probabilities.dataId).values;
   const resShape = [batchSize, numSamples];
   const resVals = util_exports.makeZerosTypedArray(util_exports.sizeFromShape(resShape), "int32");
   for (let b = 0; b < batchSize; ++b) {
@@ -43452,9 +43452,9 @@ function multinomial2(args) {
     }
   }
   if (!normalized) {
-    backend3.disposeIntermediateTensorInfo(probabilities);
+    backend2.disposeIntermediateTensorInfo(probabilities);
   }
-  return backend3.makeTensorInfo(resShape, "int32", resVals);
+  return backend2.makeTensorInfo(resShape, "int32", resVals);
 }
 var multinomialConfig = {
   kernelName: Multinomial,
@@ -43463,14 +43463,14 @@ var multinomialConfig = {
 };
 var nonMaxSuppressionV3Impl2 = kernel_impls_exports.nonMaxSuppressionV3Impl;
 function nonMaxSuppressionV3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold } = attrs;
   assertNotComplex(boxes, "NonMaxSuppression");
-  const boxesVals = backend3.data.get(boxes.dataId).values;
-  const scoresVals = backend3.data.get(scores.dataId).values;
+  const boxesVals = backend2.data.get(boxes.dataId).values;
+  const scoresVals = backend2.data.get(scores.dataId).values;
   const { selectedIndices } = nonMaxSuppressionV3Impl2(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold);
-  return backend3.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices));
+  return backend2.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices));
 }
 var nonMaxSuppressionV3Config = {
   kernelName: NonMaxSuppressionV3,
@@ -43479,16 +43479,16 @@ var nonMaxSuppressionV3Config = {
 };
 var nonMaxSuppressionV4Impl2 = kernel_impls_exports.nonMaxSuppressionV4Impl;
 function nonMaxSuppressionV4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize } = attrs;
   assertNotComplex(boxes, "NonMaxSuppressionPadded");
-  const boxesVals = backend3.data.get(boxes.dataId).values;
-  const scoresVals = backend3.data.get(scores.dataId).values;
+  const boxesVals = backend2.data.get(boxes.dataId).values;
+  const scoresVals = backend2.data.get(scores.dataId).values;
   const { selectedIndices, validOutputs } = nonMaxSuppressionV4Impl2(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
   return [
-    backend3.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices)),
-    backend3.makeTensorInfo([], "int32", new Int32Array([validOutputs]))
+    backend2.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices)),
+    backend2.makeTensorInfo([], "int32", new Int32Array([validOutputs]))
   ];
 }
 var nonMaxSuppressionV4Config = {
@@ -43498,20 +43498,20 @@ var nonMaxSuppressionV4Config = {
 };
 var nonMaxSuppressionV5Impl2 = kernel_impls_exports.nonMaxSuppressionV5Impl;
 function nonMaxSuppressionV5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = attrs;
   assertNotComplex(boxes, "NonMaxSuppressionWithScore");
-  const boxesVals = backend3.data.get(boxes.dataId).values;
-  const scoresVals = backend3.data.get(scores.dataId).values;
+  const boxesVals = backend2.data.get(boxes.dataId).values;
+  const scoresVals = backend2.data.get(scores.dataId).values;
   const maxOutputSizeVal = maxOutputSize;
   const iouThresholdVal = iouThreshold;
   const scoreThresholdVal = scoreThreshold;
   const softNmsSigmaVal = softNmsSigma;
   const { selectedIndices, selectedScores } = nonMaxSuppressionV5Impl2(boxesVals, scoresVals, maxOutputSizeVal, iouThresholdVal, scoreThresholdVal, softNmsSigmaVal);
   return [
-    backend3.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices)),
-    backend3.makeTensorInfo([selectedScores.length], "float32", new Float32Array(selectedScores))
+    backend2.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices)),
+    backend2.makeTensorInfo([selectedScores.length], "float32", new Float32Array(selectedScores))
   ];
 }
 var nonMaxSuppressionV5Config = {
@@ -43519,82 +43519,82 @@ var nonMaxSuppressionV5Config = {
   backendName: "cpu",
   kernelFunc: nonMaxSuppressionV5
 };
-function oneHot3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+function oneHot2(args) {
+  const { inputs, backend: backend2, attrs } = args;
   const { indices } = inputs;
   const { depth, onValue, offValue } = attrs;
   assertNotComplex(indices, "oneHot");
   const indicesSize = util_exports.sizeFromShape(indices.shape);
   const res = new Float32Array(indicesSize * depth);
   res.fill(offValue);
-  const indicesVal = backend3.data.get(indices.dataId).values;
+  const indicesVal = backend2.data.get(indices.dataId).values;
   for (let event = 0; event < indicesSize; ++event) {
     if (indicesVal[event] >= 0 && indicesVal[event] < depth) {
       res[event * depth + indicesVal[event]] = onValue;
     }
   }
-  return backend3.makeTensorInfo([...indices.shape, depth], "int32", res);
+  return backend2.makeTensorInfo([...indices.shape, depth], "int32", res);
 }
 var oneHotConfig = {
   kernelName: OneHot,
   backendName: "cpu",
-  kernelFunc: oneHot3
+  kernelFunc: oneHot2
 };
-function zerosLike3(args) {
-  const { inputs, backend: backend3 } = args;
+function zerosLike2(args) {
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
   if (x.dtype === "string") {
     throw new Error("zerosLike is not supported for string tensors");
   } else if (x.dtype === "complex64") {
-    const realPart = real2({ inputs: { input: x }, backend: backend3 });
-    const r = zerosLike3({ inputs: { x: realPart }, backend: backend3 });
-    const imagPart = imag2({ inputs: { input: x }, backend: backend3 });
-    const i = zerosLike3({ inputs: { x: imagPart }, backend: backend3 });
-    const result = complex2({ inputs: { real: r, imag: i }, backend: backend3 });
-    backend3.disposeIntermediateTensorInfo(realPart);
-    backend3.disposeIntermediateTensorInfo(r);
-    backend3.disposeIntermediateTensorInfo(imagPart);
-    backend3.disposeIntermediateTensorInfo(i);
+    const realPart = real2({ inputs: { input: x }, backend: backend2 });
+    const r = zerosLike2({ inputs: { x: realPart }, backend: backend2 });
+    const imagPart = imag2({ inputs: { input: x }, backend: backend2 });
+    const i = zerosLike2({ inputs: { x: imagPart }, backend: backend2 });
+    const result = complex2({ inputs: { real: r, imag: i }, backend: backend2 });
+    backend2.disposeIntermediateTensorInfo(realPart);
+    backend2.disposeIntermediateTensorInfo(r);
+    backend2.disposeIntermediateTensorInfo(imagPart);
+    backend2.disposeIntermediateTensorInfo(i);
     return result;
   } else {
-    return fill2({ backend: backend3, attrs: { shape: x.shape, value: 0, dtype: x.dtype } });
+    return fill2({ backend: backend2, attrs: { shape: x.shape, value: 0, dtype: x.dtype } });
   }
 }
 var zerosLikeConfig = {
   kernelName: ZerosLike,
   backendName: "cpu",
-  kernelFunc: zerosLike3
+  kernelFunc: zerosLike2
 };
-function onesLike3(args) {
-  const { inputs, backend: backend3 } = args;
+function onesLike2(args) {
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
   if (x.dtype === "string") {
     throw new Error("onesLike is not supported for string tensors");
   } else if (x.dtype === "complex64") {
-    const realPart = real2({ inputs: { input: x }, backend: backend3 });
-    const r = onesLike3({ inputs: { x: realPart }, backend: backend3 });
-    const imagPart = imag2({ inputs: { input: x }, backend: backend3 });
-    const i = zerosLike3({ inputs: { x: imagPart }, backend: backend3 });
-    const result = complex2({ inputs: { real: r, imag: i }, backend: backend3 });
-    backend3.disposeIntermediateTensorInfo(realPart);
-    backend3.disposeIntermediateTensorInfo(r);
-    backend3.disposeIntermediateTensorInfo(imagPart);
-    backend3.disposeIntermediateTensorInfo(i);
+    const realPart = real2({ inputs: { input: x }, backend: backend2 });
+    const r = onesLike2({ inputs: { x: realPart }, backend: backend2 });
+    const imagPart = imag2({ inputs: { input: x }, backend: backend2 });
+    const i = zerosLike2({ inputs: { x: imagPart }, backend: backend2 });
+    const result = complex2({ inputs: { real: r, imag: i }, backend: backend2 });
+    backend2.disposeIntermediateTensorInfo(realPart);
+    backend2.disposeIntermediateTensorInfo(r);
+    backend2.disposeIntermediateTensorInfo(imagPart);
+    backend2.disposeIntermediateTensorInfo(i);
     return result;
   } else {
-    return fill2({ backend: backend3, attrs: { shape: x.shape, value: 1, dtype: x.dtype } });
+    return fill2({ backend: backend2, attrs: { shape: x.shape, value: 1, dtype: x.dtype } });
   }
 }
 var onesLikeConfig = {
   kernelName: OnesLike,
   backendName: "cpu",
-  kernelFunc: onesLike3
+  kernelFunc: onesLike2
 };
 function pack(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { axis } = attrs;
   if (inputs.length === 1) {
-    return expandDims3({ inputs: { input: inputs[0] }, backend: backend3, attrs: { dim: axis } });
+    return expandDims3({ inputs: { input: inputs[0] }, backend: backend2, attrs: { dim: axis } });
   }
   const shape = inputs[0].shape;
   const dtype = inputs[0].dtype;
@@ -43604,12 +43604,12 @@ function pack(args) {
   });
   const intermediateTensorInfos = [];
   const expandedTensors = inputs.map((t) => {
-    const expandedT = expandDims3({ inputs: { input: t }, backend: backend3, attrs: { dim: axis } });
+    const expandedT = expandDims3({ inputs: { input: t }, backend: backend2, attrs: { dim: axis } });
     intermediateTensorInfos.push(expandedT);
     return expandedT;
   });
-  const result = concat2({ inputs: expandedTensors, backend: backend3, attrs: { axis } });
-  intermediateTensorInfos.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  const result = concat2({ inputs: expandedTensors, backend: backend2, attrs: { axis } });
+  intermediateTensorInfos.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return result;
 }
 var packConfig = {
@@ -43618,13 +43618,13 @@ var packConfig = {
   kernelFunc: pack
 };
 function padV2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { paddings, constantValue } = attrs;
   assertNotComplex(x, "pad");
   const outShape = paddings.map((p2, i) => p2[0] + x.shape[i] + p2[1]);
   const start = paddings.map((p2) => p2[0]);
-  const xVals = backend3.data.get(x.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
   const xSize = util_exports.sizeFromShape(x.shape);
   const xRank = x.shape.length;
   const xStrides = util_exports.computeStrides(x.shape);
@@ -43641,7 +43641,7 @@ function padV2(args) {
     const outIndex = util_exports.locToIndex(outCoords, resultRank, resultStrides);
     resVals[outIndex] = xVals[i];
   }
-  const outId = backend3.write(resVals, outShape, x.dtype);
+  const outId = backend2.write(resVals, outShape, x.dtype);
   return { dataId: outId, shape: outShape, dtype: x.dtype };
 }
 var padV2Config = {
@@ -43650,17 +43650,17 @@ var padV2Config = {
   kernelFunc: padV2
 };
 var powImpl = createSimpleBinaryKernelImpl((a, b) => Math.pow(a, b));
-var pow3 = binaryKernelFunc(Pow, powImpl);
+var pow2 = binaryKernelFunc(Pow, powImpl);
 var powConfig = {
   kernelName: Pow,
   backendName: "cpu",
-  kernelFunc: pow3
+  kernelFunc: pow2
 };
 function range3(args) {
-  const { backend: backend3, attrs } = args;
+  const { backend: backend2, attrs } = args;
   const { start, stop, dtype, step: step5 } = attrs;
   const values = rangeImpl(start, stop, step5, dtype);
-  return backend3.makeTensorInfo([values.length], dtype, values);
+  return backend2.makeTensorInfo([values.length], dtype, values);
 }
 var rangeConfig = {
   kernelName: Range,
@@ -43674,14 +43674,14 @@ var reciprocalConfig = {
   kernelFunc: reciprocal2
 };
 function resizeBilinear2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { images } = inputs;
   const { alignCorners, halfPixelCenters, size } = attrs;
   assertNotComplex(images, "resizeBilinear");
   const imagesStrides = util_exports.computeStrides(images.shape);
   const [newHeight, newWidth] = size;
   const [batch, oldHeight, oldWidth, numChannels] = images.shape;
-  const xValues = backend3.data.get(images.dataId).values;
+  const xValues = backend2.data.get(images.dataId).values;
   const result = new Float32Array(util_exports.sizeFromShape([batch, newHeight, newWidth, numChannels]));
   const effectiveInputSize = [
     alignCorners && newHeight > 1 ? oldHeight - 1 : oldHeight,
@@ -43734,7 +43734,7 @@ function resizeBilinear2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo([batch, newHeight, newWidth, numChannels], "float32", result);
+  return backend2.makeTensorInfo([batch, newHeight, newWidth, numChannels], "float32", result);
 }
 var resizeBilinearConfig = {
   kernelName: ResizeBilinear,
@@ -43742,7 +43742,7 @@ var resizeBilinearConfig = {
   kernelFunc: resizeBilinear2
 };
 function resizeBilinearGrad(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { images, dy } = inputs;
   const { alignCorners } = attrs;
   assertNotComplex([dy, images], "resizeBilinearGrad");
@@ -43760,7 +43760,7 @@ function resizeBilinearGrad(args) {
   ];
   const heightScale = effectiveXSize[0] / effectiveYSize[0];
   const widthScale = effectiveXSize[1] / effectiveYSize[1];
-  const dyValues = backend3.data.get(dy.dataId).values;
+  const dyValues = backend2.data.get(dy.dataId).values;
   let offset = 0;
   for (let b = 0; b < batch; b++) {
     const bOffset = b * imagesStrides[0];
@@ -43796,7 +43796,7 @@ function resizeBilinearGrad(args) {
       }
     }
   }
-  return backend3.makeTensorInfo([batch, xWidth, xHeight, depth], "float32", output);
+  return backend2.makeTensorInfo([batch, xWidth, xHeight, depth], "float32", output);
 }
 var resizeBilinearGradConfig2 = {
   kernelName: ResizeBilinearGrad,
@@ -43804,14 +43804,14 @@ var resizeBilinearGradConfig2 = {
   kernelFunc: resizeBilinearGrad
 };
 function resizeNearestNeighbor2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { images } = inputs;
   const { alignCorners, halfPixelCenters, size } = attrs;
   assertNotComplex(images, "resizeNearestNeighbor");
   const imagesStrides = util_exports.computeStrides(images.shape);
   const [newHeight, newWidth] = size;
   const [batch, oldHeight, oldWidth, numChannels] = images.shape;
-  const xValues = backend3.data.get(images.dataId).values;
+  const xValues = backend2.data.get(images.dataId).values;
   const output = new Float32Array(batch * newHeight * newWidth * numChannels);
   const effectiveInputSize = [
     alignCorners && newHeight > 1 ? oldHeight - 1 : oldHeight,
@@ -43847,7 +43847,7 @@ function resizeNearestNeighbor2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo([batch, newHeight, newWidth, numChannels], images.dtype, output);
+  return backend2.makeTensorInfo([batch, newHeight, newWidth, numChannels], images.dtype, output);
 }
 var resizeNearestNeighborConfig = {
   kernelName: ResizeNearestNeighbor,
@@ -43855,7 +43855,7 @@ var resizeNearestNeighborConfig = {
   kernelFunc: resizeNearestNeighbor2
 };
 function resizeNearestNeighborGrad(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { images, dy } = inputs;
   const { alignCorners } = attrs;
   assertNotComplex([dy, images], "resizeNearestNeighborGrad");
@@ -43864,7 +43864,7 @@ function resizeNearestNeighborGrad(args) {
   const [batch, xHeight, xWidth, depth] = images.shape;
   const [, yHeight, yWidth] = dy.shape;
   const output = new Float32Array(batch * xHeight * xWidth * depth);
-  const dyValues = backend3.data.get(dy.dataId).values;
+  const dyValues = backend2.data.get(dy.dataId).values;
   const effectiveXSize = [
     alignCorners && yHeight > 1 ? xHeight - 1 : xHeight,
     alignCorners && yWidth > 1 ? xWidth - 1 : xWidth
@@ -43920,7 +43920,7 @@ function resizeNearestNeighborGrad(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(images.shape, images.dtype, output);
+  return backend2.makeTensorInfo(images.shape, images.dtype, output);
 }
 var resizeNearestNeighborGradConfig2 = {
   kernelName: ResizeNearestNeighborGrad,
@@ -43928,24 +43928,24 @@ var resizeNearestNeighborGradConfig2 = {
   kernelFunc: resizeNearestNeighborGrad
 };
 function reverse2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { dims } = attrs;
   assertNotComplex(x, "reverse");
   const xRank = x.shape.length;
   const $dims = util_exports.parseAxisParam(dims, x.shape);
   if (xRank === 0) {
-    return identity2({ inputs: { x }, backend: backend3 });
+    return identity2({ inputs: { x }, backend: backend2 });
   }
   const outBuf = new TensorBuffer(x.shape, x.dtype);
-  const xBuf = backend3.bufferSync(x);
+  const xBuf = backend2.bufferSync(x);
   for (let i = 0; i < outBuf.size; i++) {
     const outLoc = outBuf.indexToLoc(i);
     const inLoc = outLoc.slice();
     $dims.forEach((d) => inLoc[d] = x.shape[d] - 1 - inLoc[d]);
     outBuf.set(xBuf.get(...inLoc), ...outLoc);
   }
-  return backend3.makeTensorInfo(outBuf.shape, outBuf.dtype, outBuf.values);
+  return backend2.makeTensorInfo(outBuf.shape, outBuf.dtype, outBuf.values);
 }
 var reverseConfig = {
   kernelName: Reverse,
@@ -43955,10 +43955,10 @@ var reverseConfig = {
 var rotateWithOffsetConfig = {
   kernelName: RotateWithOffset,
   backendName: "cpu",
-  kernelFunc: ({ inputs, attrs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, attrs, backend: backend2 }) => {
     const { image: image3 } = inputs;
     const { radians, fillValue, center } = attrs;
-    const cpuBackend = backend3;
+    const cpuBackend = backend2;
     const output = util_exports.getTypedArrayFromDType(image3.dtype, util_exports.sizeFromShape(image3.shape));
     const [batch, imageHeight, imageWidth, numChannels] = image3.shape;
     const [centerX, centerY] = backend_util_exports.getImageCenter(center, imageHeight, imageWidth);
@@ -44054,15 +44054,15 @@ function scatterImpl(indices, updates, shape, outputSize, sliceSize, numUpdates,
   return outBuf;
 }
 function scatterNd(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { indices, updates } = inputs;
   const { shape } = attrs;
   const { sliceRank, numUpdates, sliceSize, strides, outputSize } = backend_util_exports.calculateShapes(updates, indices, shape);
   const sumDupeIndices = true;
-  const indicesBuf = backend3.bufferSync(indices);
-  const updatesBuf = backend3.bufferSync(updates);
+  const indicesBuf = backend2.bufferSync(indices);
+  const updatesBuf = backend2.bufferSync(updates);
   const outBuf = scatterImpl(indicesBuf, updatesBuf, shape, outputSize, sliceSize, numUpdates, sliceRank, strides, 0, sumDupeIndices);
-  return backend3.makeTensorInfo(shape, outBuf.dtype, outBuf.values);
+  return backend2.makeTensorInfo(shape, outBuf.dtype, outBuf.values);
 }
 var scatterNdConfig = {
   kernelName: ScatterNd,
@@ -44070,13 +44070,13 @@ var scatterNdConfig = {
   kernelFunc: scatterNd
 };
 function select2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { condition, t, e } = inputs;
   assertNotComplex([condition, t, e], "select");
   const conditionRank = condition.shape.length;
-  const values = backend3.data.get(condition.dataId).values;
-  const tValues = backend3.data.get(t.dataId).values;
-  const eValues = backend3.data.get(e.dataId).values;
+  const values = backend2.data.get(condition.dataId).values;
+  const tValues = backend2.data.get(t.dataId).values;
+  const eValues = backend2.data.get(e.dataId).values;
   const resultDtype = upcastType(t.dtype, e.dtype);
   const newValues = util_exports.makeZerosTypedArray(util_exports.sizeFromShape(t.shape), resultDtype);
   let index = 0;
@@ -44090,7 +44090,7 @@ function select2(args) {
       }
     }
   }
-  return backend3.makeTensorInfo(t.shape, resultDtype, newValues);
+  return backend2.makeTensorInfo(t.shape, resultDtype, newValues);
 }
 var selectConfig = {
   kernelName: Select,
@@ -44111,7 +44111,7 @@ var seluConfig = {
   backendName: "cpu",
   kernelFunc: selu2
 };
-var sign3 = unaryKernelFunc(Sign, (xi) => {
+var sign2 = unaryKernelFunc(Sign, (xi) => {
   if (xi < 0) {
     return -1;
   } else if (xi > 0) {
@@ -44123,7 +44123,7 @@ var sign3 = unaryKernelFunc(Sign, (xi) => {
 var signConfig = {
   kernelName: Sign,
   backendName: "cpu",
-  kernelFunc: sign3
+  kernelFunc: sign2
 };
 var sin2 = unaryKernelFunc(Sin, (xi) => Math.sin(xi));
 var sinConfig = {
@@ -44159,7 +44159,7 @@ var softplusConfig = {
   kernelFunc: softplus2
 };
 function spaceToBatchND2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { blockShape, paddings } = attrs;
   assertNotComplex([x], "spaceToBatchND");
@@ -44171,7 +44171,7 @@ function spaceToBatchND2(args) {
   }
   const paddedX = padV2Config.kernelFunc({
     inputs: { x },
-    backend: backend3,
+    backend: backend2,
     attrs: { paddings: completePaddings, constantValue: 0 }
   });
   const reshapedPaddedShape = backend_util_exports.getReshaped(paddedX.shape, blockShape, prod6, false);
@@ -44179,16 +44179,16 @@ function spaceToBatchND2(args) {
   const flattenShape = backend_util_exports.getReshapedPermuted(paddedX.shape, blockShape, prod6, false);
   const reshapeInputs = { x: paddedX };
   const reshapeAttrs = { shape: reshapedPaddedShape };
-  const paddedXReshaped = reshape3({ inputs: reshapeInputs, backend: backend3, attrs: reshapeAttrs });
+  const paddedXReshaped = reshape3({ inputs: reshapeInputs, backend: backend2, attrs: reshapeAttrs });
   const transposeInputs = { x: paddedXReshaped };
   const transposeAttrs = { perm: permutedReshapedPaddedPermutation };
-  const paddedXT = transpose2({ inputs: transposeInputs, backend: backend3, attrs: transposeAttrs });
+  const paddedXT = transpose2({ inputs: transposeInputs, backend: backend2, attrs: transposeAttrs });
   const resultReshapeInputs = { x: paddedXT };
   const resultReshapeAttrs = { shape: flattenShape };
-  const result = reshape3({ inputs: resultReshapeInputs, backend: backend3, attrs: resultReshapeAttrs });
-  backend3.disposeIntermediateTensorInfo(paddedX);
-  backend3.disposeIntermediateTensorInfo(paddedXReshaped);
-  backend3.disposeIntermediateTensorInfo(paddedXT);
+  const result = reshape3({ inputs: resultReshapeInputs, backend: backend2, attrs: resultReshapeAttrs });
+  backend2.disposeIntermediateTensorInfo(paddedX);
+  backend2.disposeIntermediateTensorInfo(paddedXReshaped);
+  backend2.disposeIntermediateTensorInfo(paddedXT);
   return result;
 }
 var spaceToBatchNDConfig = {
@@ -44197,7 +44197,7 @@ var spaceToBatchNDConfig = {
   kernelFunc: spaceToBatchND2
 };
 function sparseFillEmptyRows2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { indices, values, denseShape, defaultValue } = inputs;
   if (denseShape.shape.length !== 1) {
     throw new Error(`Dense shape must be a vector, saw:
@@ -44215,10 +44215,10 @@ function sparseFillEmptyRows2(args) {
     throw new Error(`Default value must be a scalar, saw:
         ${defaultValue.shape}`);
   }
-  const $indices = backend3.data.get(indices.dataId).values;
-  const $values = backend3.data.get(values.dataId).values;
-  const $denseShape = backend3.data.get(denseShape.dataId).values;
-  const $defaultValue = backend3.data.get(defaultValue.dataId).values[0];
+  const $indices = backend2.data.get(indices.dataId).values;
+  const $values = backend2.data.get(values.dataId).values;
+  const $denseShape = backend2.data.get(denseShape.dataId).values;
+  const $defaultValue = backend2.data.get(defaultValue.dataId).values[0];
   const [
     outputIndices,
     outputIndicesShape,
@@ -44227,10 +44227,10 @@ function sparseFillEmptyRows2(args) {
     reverseIndexMap
   ] = sparseFillEmptyRowsImpl($indices, indices.shape, indices.dtype, $values, values.dtype, $denseShape, $defaultValue);
   return [
-    backend3.makeTensorInfo(outputIndicesShape, indices.dtype, outputIndices),
-    backend3.makeTensorInfo([outputIndicesShape[0]], values.dtype, outputValues),
-    backend3.makeTensorInfo([emptyRowIndicator.length], "bool", new Uint8Array(emptyRowIndicator.map((value) => Number(value)))),
-    backend3.makeTensorInfo([reverseIndexMap.length], indices.dtype, new Int32Array(reverseIndexMap))
+    backend2.makeTensorInfo(outputIndicesShape, indices.dtype, outputIndices),
+    backend2.makeTensorInfo([outputIndicesShape[0]], values.dtype, outputValues),
+    backend2.makeTensorInfo([emptyRowIndicator.length], "bool", new Uint8Array(emptyRowIndicator.map((value) => Number(value)))),
+    backend2.makeTensorInfo([reverseIndexMap.length], indices.dtype, new Int32Array(reverseIndexMap))
   ];
 }
 var sparseFillEmptyRowsConfig = {
@@ -44239,7 +44239,7 @@ var sparseFillEmptyRowsConfig = {
   kernelFunc: sparseFillEmptyRows2
 };
 function sparseReshape2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { inputIndices, inputShape, newShape } = inputs;
   if (inputIndices.shape.length !== 2) {
     throw new Error(`Input indices should be a matrix but received shape
@@ -44252,13 +44252,13 @@ function sparseReshape2(args) {
   if (newShape.shape.length !== 1) {
     throw new Error(`Target shape should be a vector but received shape ${newShape.shape}`);
   }
-  const $inputShape = Array.from(backend3.data.get(inputShape.dataId).values);
-  const $inputIndices = backend3.data.get(inputIndices.dataId).values;
-  const targetShape = Array.from(backend3.data.get(newShape.dataId).values);
+  const $inputShape = Array.from(backend2.data.get(inputShape.dataId).values);
+  const $inputIndices = backend2.data.get(inputIndices.dataId).values;
+  const targetShape = Array.from(backend2.data.get(newShape.dataId).values);
   const [newIndices, indicesShape, outputShape] = sparseReshapeImpl($inputIndices, inputIndices.shape, inputIndices.dtype, $inputShape, targetShape);
   return [
-    backend3.makeTensorInfo(indicesShape, inputIndices.dtype, newIndices),
-    backend3.makeTensorInfo([outputShape.length], newShape.dtype, new Int32Array(outputShape))
+    backend2.makeTensorInfo(indicesShape, inputIndices.dtype, newIndices),
+    backend2.makeTensorInfo([outputShape.length], newShape.dtype, new Int32Array(outputShape))
   ];
 }
 var sparseReshapeConfig = {
@@ -44267,7 +44267,7 @@ var sparseReshapeConfig = {
   kernelFunc: sparseReshape2
 };
 function sparseSegmentMean2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { data, indices, segmentIds } = inputs;
   if (data.shape.length < 1) {
     throw new Error(`Data should be at least 1 dimensional but received scalar`);
@@ -44280,11 +44280,11 @@ function sparseSegmentMean2(args) {
     throw new Error(`Segment ids should be a vector but received shape
           ${segmentIds.shape}`);
   }
-  const $data = backend3.data.get(data.dataId).values;
-  const $indices = backend3.data.get(indices.dataId).values;
-  const $segmentIds = backend3.data.get(segmentIds.dataId).values;
+  const $data = backend2.data.get(data.dataId).values;
+  const $indices = backend2.data.get(indices.dataId).values;
+  const $segmentIds = backend2.data.get(segmentIds.dataId).values;
   const [outputData, outputDataShape] = sparseSegmentReductionImpl($data, data.shape, data.dtype, $indices, $segmentIds, true);
-  return backend3.makeTensorInfo(outputDataShape, data.dtype, outputData);
+  return backend2.makeTensorInfo(outputDataShape, data.dtype, outputData);
 }
 var sparseSegmentMeanConfig = {
   kernelName: SparseSegmentMean,
@@ -44292,7 +44292,7 @@ var sparseSegmentMeanConfig = {
   kernelFunc: sparseSegmentMean2
 };
 function sparseSegmentSum2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { data, indices, segmentIds } = inputs;
   if (data.shape.length < 1) {
     throw new Error(`Data should be at least 1 dimensional but received scalar`);
@@ -44305,11 +44305,11 @@ function sparseSegmentSum2(args) {
     throw new Error(`Segment ids should be a vector but received shape
          ${segmentIds.shape}`);
   }
-  const $data = backend3.data.get(data.dataId).values;
-  const $indices = backend3.data.get(indices.dataId).values;
-  const $segmentIds = backend3.data.get(segmentIds.dataId).values;
+  const $data = backend2.data.get(data.dataId).values;
+  const $indices = backend2.data.get(indices.dataId).values;
+  const $segmentIds = backend2.data.get(segmentIds.dataId).values;
   const [outputData, outputDataShape] = sparseSegmentReductionImpl($data, data.shape, data.dtype, $indices, $segmentIds);
-  return backend3.makeTensorInfo(outputDataShape, data.dtype, outputData);
+  return backend2.makeTensorInfo(outputDataShape, data.dtype, outputData);
 }
 var sparseSegmentSumConfig = {
   kernelName: SparseSegmentSum,
@@ -44317,16 +44317,16 @@ var sparseSegmentSumConfig = {
   kernelFunc: sparseSegmentSum2
 };
 function sparseToDense2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { sparseIndices, sparseValues, defaultValue } = inputs;
   const { outputShape } = attrs;
   const { sliceRank, numUpdates, sliceSize, strides, outputSize } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
   const sumDupeIndices = false;
-  const indicesBuf = backend3.bufferSync(sparseIndices);
-  const updatesBuf = backend3.bufferSync(sparseValues);
-  const $defaultValue = backend3.data.get(defaultValue.dataId).values[0];
+  const indicesBuf = backend2.bufferSync(sparseIndices);
+  const updatesBuf = backend2.bufferSync(sparseValues);
+  const $defaultValue = backend2.data.get(defaultValue.dataId).values[0];
   const outBuf = scatterImpl(indicesBuf, updatesBuf, outputShape, outputSize, sliceSize, numUpdates, sliceRank, strides, $defaultValue, sumDupeIndices);
-  return backend3.makeTensorInfo(outputShape, outBuf.dtype, outBuf.values);
+  return backend2.makeTensorInfo(outputShape, outBuf.dtype, outBuf.values);
 }
 var sparseToDenseConfig = {
   kernelName: SparseToDense,
@@ -44334,7 +44334,7 @@ var sparseToDenseConfig = {
   kernelFunc: sparseToDense2
 };
 function splitV(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { numOrSizeSplits, axis } = attrs;
   const $axis = util_exports.parseAxisParam(axis, x.shape)[0];
@@ -44344,7 +44344,7 @@ function splitV(args) {
   return splitSizes.map((s) => {
     const sliceSize = [...size];
     sliceSize[$axis] = s;
-    const sliceT = slice2({ inputs: { x }, backend: backend3, attrs: { begin, size: sliceSize } });
+    const sliceT = slice2({ inputs: { x }, backend: backend2, attrs: { begin, size: sliceSize } });
     begin[$axis] += s;
     return sliceT;
   });
@@ -44357,9 +44357,9 @@ var splitVConfig = {
 var squareConfig = {
   kernelName: Square,
   backendName: "cpu",
-  kernelFunc: ({ inputs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, backend: backend2 }) => {
     const { x } = inputs;
-    const cpuBackend = backend3;
+    const cpuBackend = backend2;
     assertNotComplex(x, "square");
     const values = cpuBackend.data.get(x.dataId).values;
     const newValues = new Float32Array(values.length);
@@ -44385,7 +44385,7 @@ var stepConfig = {
   kernelFunc: step2
 };
 function stridedSlice2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const {
     begin,
@@ -44410,17 +44410,17 @@ function stridedSlice2(args) {
   } = slice_util_exports.sliceInfo(x.shape, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
   let result;
   if (isIdentity) {
-    result = reshape3({ inputs: { x }, backend: backend3, attrs: { shape: finalShape } });
+    result = reshape3({ inputs: { x }, backend: backend2, attrs: { shape: finalShape } });
   } else if (sliceDim0 || isSimpleSlice) {
     util_exports.assert(x.shape.length >= 1, () => `Input must have rank at least 1, got: ${x.shape.length}`);
     const size = slice_util_exports.computeOutShape($begin, $end, $strides);
-    const sliced = slice2({ inputs: { x }, backend: backend3, attrs: { begin: $begin, size } });
-    result = reshape3({ inputs: { x: sliced }, backend: backend3, attrs: { shape: finalShape } });
-    backend3.disposeIntermediateTensorInfo(sliced);
+    const sliced = slice2({ inputs: { x }, backend: backend2, attrs: { begin: $begin, size } });
+    result = reshape3({ inputs: { x: sliced }, backend: backend2, attrs: { shape: finalShape } });
+    backend2.disposeIntermediateTensorInfo(sliced);
   } else {
-    const xBuf = backend3.bufferSync(x);
+    const xBuf = backend2.bufferSync(x);
     const outBuf = stridedSliceImpl(finalShapeSparse, xBuf, $strides, $begin);
-    result = backend3.makeTensorInfo(finalShape, outBuf.dtype, outBuf.values);
+    result = backend2.makeTensorInfo(finalShape, outBuf.dtype, outBuf.values);
   }
   return result;
 }
@@ -44430,7 +44430,7 @@ var stridedSliceConfig = {
   kernelFunc: stridedSlice2
 };
 function stringNGrams2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const {
     separator,
     nGramWidths,
@@ -44440,12 +44440,12 @@ function stringNGrams2(args) {
     preserveShortSequences
   } = attrs;
   const { data, dataSplits } = inputs;
-  const $data = backend3.data.get(data.dataId).values;
-  const $dataSplits = backend3.data.get(dataSplits.dataId).values;
+  const $data = backend2.data.get(data.dataId).values;
+  const $dataSplits = backend2.data.get(dataSplits.dataId).values;
   const [nGrams, nGramsSplits] = stringNGramsImpl($data, $dataSplits, separator, nGramWidths, leftPad, rightPad2, padWidth, preserveShortSequences);
   return [
-    backend3.makeTensorInfo([nGrams.length], "string", nGrams),
-    backend3.makeTensorInfo(dataSplits.shape, "int32", nGramsSplits)
+    backend2.makeTensorInfo([nGrams.length], "string", nGrams),
+    backend2.makeTensorInfo(dataSplits.shape, "int32", nGramsSplits)
   ];
 }
 var stringNGramsConfig = {
@@ -44454,7 +44454,7 @@ var stringNGramsConfig = {
   kernelFunc: stringNGrams2
 };
 function stringSplit2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { skipEmpty } = attrs;
   const { input: input2, delimiter } = inputs;
   if (input2.dtype !== "string") {
@@ -44466,14 +44466,14 @@ function stringSplit2(args) {
   if (delimiter.shape.length !== 0) {
     throw new Error(`Delimiter must be a scalar, got shape: ${delimiter.shape}`);
   }
-  const $input = backend3.data.get(input2.dataId).values;
-  const $delimiter = backend3.data.get(delimiter.dataId).values[0];
+  const $input = backend2.data.get(input2.dataId).values;
+  const $delimiter = backend2.data.get(delimiter.dataId).values[0];
   const [indices, values, shape] = stringSplitImpl($input, $delimiter, skipEmpty);
   const outputSize = values.length;
   return [
-    backend3.makeTensorInfo([outputSize, 2], "int32", indices),
-    backend3.makeTensorInfo([outputSize], "string", values),
-    backend3.makeTensorInfo([2], "int32", new Int32Array(shape))
+    backend2.makeTensorInfo([outputSize, 2], "int32", indices),
+    backend2.makeTensorInfo([outputSize], "string", values),
+    backend2.makeTensorInfo([2], "int32", new Int32Array(shape))
   ];
 }
 var stringSplitConfig = {
@@ -44482,7 +44482,7 @@ var stringSplitConfig = {
   kernelFunc: stringSplit2
 };
 function stringToHashBucketFast2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { numBuckets } = attrs;
   const { input: input2 } = inputs;
   if (input2.dtype !== "string") {
@@ -44491,9 +44491,9 @@ function stringToHashBucketFast2(args) {
   if (numBuckets <= 0) {
     throw new Error(`Number of buckets must be at least 1`);
   }
-  const $input = backend3.data.get(input2.dataId).values;
+  const $input = backend2.data.get(input2.dataId).values;
   const output = stringToHashBucketFastImpl($input, numBuckets);
-  return backend3.makeTensorInfo(input2.shape, "int32", output);
+  return backend2.makeTensorInfo(input2.shape, "int32", output);
 }
 var stringToHashBucketFastConfig = {
   kernelName: StringToHashBucketFast,
@@ -44513,12 +44513,12 @@ var tanhConfig = {
   kernelFunc: tanh3
 };
 function tile3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { reps } = attrs;
   assertNotComplex(x, "tile");
-  const outBuf = tileImpl(backend3.bufferSync(x), reps);
-  return backend3.makeTensorInfo(outBuf.shape, outBuf.dtype, outBuf.values);
+  const outBuf = tileImpl(backend2.bufferSync(x), reps);
+  return backend2.makeTensorInfo(outBuf.shape, outBuf.dtype, outBuf.values);
 }
 var tileConfig = {
   kernelName: Tile,
@@ -44526,15 +44526,15 @@ var tileConfig = {
   kernelFunc: tile3
 };
 function topK(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { k, sorted } = attrs;
   assertNotComplex(x, "topk");
-  const xVals = backend3.data.get(x.dataId).values;
+  const xVals = backend2.data.get(x.dataId).values;
   const [allTopKVals, allTopKIndices] = topKImpl(xVals, x.shape, x.dtype, k, sorted);
   return [
-    backend3.makeTensorInfo(allTopKVals.shape, allTopKVals.dtype, allTopKVals.values),
-    backend3.makeTensorInfo(allTopKIndices.shape, allTopKIndices.dtype, allTopKIndices.values)
+    backend2.makeTensorInfo(allTopKVals.shape, allTopKVals.dtype, allTopKVals.values),
+    backend2.makeTensorInfo(allTopKIndices.shape, allTopKIndices.dtype, allTopKIndices.values)
   ];
 }
 var topKConfig = {
@@ -44543,7 +44543,7 @@ var topKConfig = {
   kernelFunc: topK
 };
 function transform2(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const { image: image3, transforms } = inputs;
   const { interpolation, fillMode, fillValue, outputShape } = attrs;
   const [batch, imageHeight, imageWidth, numChannels] = image3.shape;
@@ -44555,8 +44555,8 @@ function transform2(args) {
   const colStride = strides[2];
   const outVals = util_exports.getTypedArrayFromDType(image3.dtype, util_exports.sizeFromShape(outShape));
   outVals.fill(fillValue);
-  const imageVals = backend3.data.get(image3.dataId).values;
-  const transformVals = backend3.data.get(transforms.dataId).values;
+  const imageVals = backend2.data.get(image3.dataId).values;
+  const transformVals = backend2.data.get(transforms.dataId).values;
   for (let b = 0; b < batch; ++b) {
     const transform6 = transforms.shape[0] === 1 ? transformVals : transformVals.subarray(b * 8, b * 8 + 8);
     for (let outY = 0; outY < outHeight; ++outY) {
@@ -44586,9 +44586,9 @@ function transform2(args) {
         }
       }
     }
-    return backend3.makeTensorInfo(outShape, image3.dtype, outVals);
+    return backend2.makeTensorInfo(outShape, image3.dtype, outVals);
   }
-  const dataId = backend3.write(outVals, outShape, image3.dtype);
+  const dataId = backend2.write(outVals, outShape, image3.dtype);
   return { dataId, shape: image3.shape, dtype: image3.dtype };
 }
 var transformConfig = {
@@ -44682,15 +44682,15 @@ function bilinearInterpolation(imageVals, imageHeight, imageWidth, batchStride, 
   return (yCeil - y) * valueYFloor + (y - yFloor) * valueYCeil;
 }
 function unique3(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const { axis } = attrs;
   const { x } = inputs;
   assertNotComplex(x, "unique");
-  const values = backend3.data.get(x.dataId).values;
+  const values = backend2.data.get(x.dataId).values;
   const { outputValues, outputShape, indices } = uniqueImpl(values, axis, x.shape, x.dtype);
   return [
-    backend3.makeTensorInfo(outputShape, x.dtype, outputValues),
-    backend3.makeTensorInfo([indices.length], "int32", indices)
+    backend2.makeTensorInfo(outputShape, x.dtype, outputValues),
+    backend2.makeTensorInfo([indices.length], "int32", indices)
   ];
 }
 var uniqueConfig = {
@@ -44699,7 +44699,7 @@ var uniqueConfig = {
   kernelFunc: unique3
 };
 function unpack(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { value } = inputs;
   let { axis } = attrs;
   if (axis < 0) {
@@ -44720,9 +44720,9 @@ function unpack(args) {
   const res = new Array(num);
   for (let i = 0; i < res.length; i++) {
     begin[axis] = i;
-    const tempRes = slice2({ inputs: { x: value }, backend: backend3, attrs: { begin, size } });
-    res[i] = reshape3({ inputs: { x: tempRes }, backend: backend3, attrs: { shape: outShape } });
-    backend3.disposeIntermediateTensorInfo(tempRes);
+    const tempRes = slice2({ inputs: { x: value }, backend: backend2, attrs: { begin, size } });
+    res[i] = reshape3({ inputs: { x: tempRes }, backend: backend2, attrs: { shape: outShape } });
+    backend2.disposeIntermediateTensorInfo(tempRes);
   }
   return res;
 }
@@ -44732,7 +44732,7 @@ var unpackConfig = {
   kernelFunc: unpack
 };
 function unsortedSegmentSum2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, segmentIds } = inputs;
   const { numSegments } = attrs;
   assertNotComplex(x, "unsortedSegmentSum");
@@ -44743,17 +44743,17 @@ function unsortedSegmentSum2(args) {
   const numIters = xRank - segmentIdsRank;
   let $segmentIds = segmentIds;
   for (let i = 0; i < numIters; ++i) {
-    const expanded = expandDims3({ inputs: { input: $segmentIds }, backend: backend3, attrs: { dim: i + 1 } });
+    const expanded = expandDims3({ inputs: { input: $segmentIds }, backend: backend2, attrs: { dim: i + 1 } });
     $segmentIds = expanded;
     intermediates.push(expanded);
   }
   for (let i = 0; i < numSegments; ++i) {
     const scalarValue = util_exports.createScalarValue(i, "int32");
-    const segmentId = backend3.makeTensorInfo([], "int32", scalarValue);
-    const mask = equal2({ inputs: { a: segmentId, b: $segmentIds }, backend: backend3 });
-    const maskCasted = cast3({ inputs: { x: mask }, backend: backend3, attrs: { dtype: "float32" } });
-    const mul2 = multiply3({ inputs: { a: maskCasted, b: x }, backend: backend3 });
-    const sumTensorInfo = sum4({ inputs: { x: mul2 }, backend: backend3, attrs: { axis: 0, keepDims: false } });
+    const segmentId = backend2.makeTensorInfo([], "int32", scalarValue);
+    const mask = equal2({ inputs: { a: segmentId, b: $segmentIds }, backend: backend2 });
+    const maskCasted = cast3({ inputs: { x: mask }, backend: backend2, attrs: { dtype: "float32" } });
+    const mul2 = multiply2({ inputs: { a: maskCasted, b: x }, backend: backend2 });
+    const sumTensorInfo = sum3({ inputs: { x: mul2 }, backend: backend2, attrs: { axis: 0, keepDims: false } });
     res.push(sumTensorInfo);
     intermediates.push(segmentId);
     intermediates.push(mask);
@@ -44761,8 +44761,8 @@ function unsortedSegmentSum2(args) {
     intermediates.push(mul2);
     intermediates.push(sumTensorInfo);
   }
-  const result = pack({ inputs: res, backend: backend3, attrs: { axis: 0 } });
-  intermediates.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  const result = pack({ inputs: res, backend: backend2, attrs: { axis: 0 } });
+  intermediates.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return result;
 }
 var unsortedSegmentSumConfig = {
@@ -45046,16 +45046,16 @@ function getWebGLRenderingContext(webGLVersion) {
   return canvas.getContext("webgl2", WEBGL_ATTRIBUTES);
 }
 var PackingScheme;
-(function(PackingScheme3) {
-  PackingScheme3[PackingScheme3["DENSE"] = 0] = "DENSE";
-  PackingScheme3[PackingScheme3["SHARED_BATCH"] = 1] = "SHARED_BATCH";
+(function(PackingScheme2) {
+  PackingScheme2[PackingScheme2["DENSE"] = 0] = "DENSE";
+  PackingScheme2[PackingScheme2["SHARED_BATCH"] = 1] = "SHARED_BATCH";
 })(PackingScheme || (PackingScheme = {}));
 var TextureUsage;
-(function(TextureUsage3) {
-  TextureUsage3[TextureUsage3["RENDER"] = 0] = "RENDER";
-  TextureUsage3[TextureUsage3["UPLOAD"] = 1] = "UPLOAD";
-  TextureUsage3[TextureUsage3["PIXELS"] = 2] = "PIXELS";
-  TextureUsage3[TextureUsage3["DOWNLOAD"] = 3] = "DOWNLOAD";
+(function(TextureUsage2) {
+  TextureUsage2[TextureUsage2["RENDER"] = 0] = "RENDER";
+  TextureUsage2[TextureUsage2["UPLOAD"] = 1] = "UPLOAD";
+  TextureUsage2[TextureUsage2["PIXELS"] = 2] = "PIXELS";
+  TextureUsage2[TextureUsage2["DOWNLOAD"] = 3] = "DOWNLOAD";
 })(TextureUsage || (TextureUsage = {}));
 var PhysicalTextureType;
 (function(PhysicalTextureType2) {
@@ -48060,7 +48060,7 @@ function downloadMatrixFromPackedOutputTexture(gl, physicalRows, physicalCols) {
   callAndCheck(gl, () => gl.readPixels(0, 0, physicalCols, physicalRows, gl.RGBA, gl.FLOAT, packedRGBA));
   return packedRGBA;
 }
-var GPGPUContext2 = class {
+var GPGPUContext = class {
   constructor(gl) {
     this.outputTexture = null;
     this.program = null;
@@ -49003,7 +49003,7 @@ var _MathBackendWebGL = class extends KernelBackend {
     if (gpgpu == null) {
       const gl = getWebGLContext(env().getNumber("WEBGL_VERSION"));
       this.binaryCache = getBinaryCache(env().getNumber("WEBGL_VERSION"));
-      this.gpgpu = new GPGPUContext2(gl);
+      this.gpgpu = new GPGPUContext(gl);
       this.canvas = gl.canvas;
       this.gpgpuCreatedLocally = true;
     } else {
@@ -49178,7 +49178,7 @@ var _MathBackendWebGL = class extends KernelBackend {
     if (t.dtype === "string") {
       try {
         decodedData = data.map((d) => util_exports.decodeString(d));
-      } catch (e) {
+      } catch {
         throw new Error("Failed to decode encoded string bytes into utf-8");
       }
     }
@@ -49776,9 +49776,9 @@ var BinaryOpPackedProgram = class {
   }
 };
 function identity3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
-  backend3.incRef(x.dataId);
+  backend2.incRef(x.dataId);
   return { dataId: x.dataId, shape: x.shape, dtype: x.dtype };
 }
 var identityConfig2 = {
@@ -49787,12 +49787,12 @@ var identityConfig2 = {
   kernelFunc: identity3
 };
 function complex3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { real: real5, imag: imag5 } = inputs;
-  const complexInfo = backend3.makeTensorInfo(real5.shape, "complex64");
-  const complex5 = backend3.texData.get(complexInfo.dataId);
-  const realTensorInfo = identity3({ inputs: { x: real5 }, backend: backend3 });
-  const imagTensorInfo = identity3({ inputs: { x: imag5 }, backend: backend3 });
+  const complexInfo = backend2.makeTensorInfo(real5.shape, "complex64");
+  const complex5 = backend2.texData.get(complexInfo.dataId);
+  const realTensorInfo = identity3({ inputs: { x: real5 }, backend: backend2 });
+  const imagTensorInfo = identity3({ inputs: { x: imag5 }, backend: backend2 });
   complex5.complexTensorInfos = { real: realTensorInfo, imag: imagTensorInfo };
   return complexInfo;
 }
@@ -49807,13 +49807,13 @@ var LEAKYRELU_PACKED = `
   return (aLessThanZero * (b * a)) + ((vec4(1.0) - aLessThanZero) * a);
 `;
 function leakyRelu3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { alpha } = attrs;
-  const $alpha = backend3.makeTensorInfo([], "float32", util_exports.createScalarValue(alpha, "float32"));
+  const $alpha = backend2.makeTensorInfo([], "float32", util_exports.createScalarValue(alpha, "float32"));
   const program = env().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new BinaryOpPackedProgram(LEAKYRELU_PACKED, x.shape, $alpha.shape) : new BinaryOpProgram(LEAKYRELU, x.shape, $alpha.shape);
-  const result = backend3.runWebGLProgram(program, [x, $alpha], "float32");
-  backend3.disposeIntermediateTensorInfo($alpha);
+  const result = backend2.runWebGLProgram(program, [x, $alpha], "float32");
+  backend2.disposeIntermediateTensorInfo($alpha);
   return result;
 }
 var leakyReluConfig2 = {
@@ -49827,10 +49827,10 @@ var PRELU_PACKED = `
   return (aLessThanZero * (b * a)) + ((vec4(1.0) - aLessThanZero) * a);
 `;
 function prelu4(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x, alpha } = inputs;
   const program = env().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new BinaryOpPackedProgram(PRELU_PACKED, x.shape, alpha.shape) : new BinaryOpProgram(PRELU, x.shape, alpha.shape);
-  return backend3.runWebGLProgram(program, [x, alpha], "float32");
+  return backend2.runWebGLProgram(program, [x, alpha], "float32");
 }
 var preluConfig2 = {
   kernelName: Prelu,
@@ -49849,9 +49849,9 @@ var CHECK_NAN_SNIPPET_BINARY_PACKED = `
   result.a = isNaN.a > 0. ? NAN : result.a;
 `;
 function unaryKernelFunc2({ opSnippet, packedOpSnippet, cpuKernelImpl, dtype }) {
-  return ({ inputs, backend: backend3 }) => {
+  return ({ inputs, backend: backend2 }) => {
     const { x } = inputs;
-    const webglBackend = backend3;
+    const webglBackend = backend2;
     const $dtype = dtype || x.dtype;
     if (webglBackend.shouldExecuteOnCPU([x]) && cpuKernelImpl != null) {
       const xData = webglBackend.texData.get(x.dataId);
@@ -49876,9 +49876,9 @@ function binaryKernelFunc2({
   cpuKernelImpl,
   dtype
 }) {
-  return ({ inputs, backend: backend3 }) => {
+  return ({ inputs, backend: backend2 }) => {
     const { a, b } = inputs;
-    const webglBackend = backend3;
+    const webglBackend = backend2;
     if (supportsComplex && a.dtype === "complex64") {
       const aData = webglBackend.texData.get(a.dataId);
       const bData = webglBackend.texData.get(b.dataId);
@@ -50074,13 +50074,13 @@ var BinaryOpComplexProgram = class {
   }
 };
 var MUL = "return a * b;";
-function multiply4(args) {
-  const { inputs, backend: backend3 } = args;
+function multiply3(args) {
+  const { inputs, backend: backend2 } = args;
   const { a, b } = inputs;
   const dtype = backend_util_exports.upcastType(a.dtype, b.dtype);
   if (a.dtype === "complex64") {
-    const aData = backend3.texData.get(a.dataId);
-    const bData = backend3.texData.get(b.dataId);
+    const aData = backend2.texData.get(a.dataId);
+    const bData = backend2.texData.get(b.dataId);
     const realProgram = new BinaryOpComplexProgram(COMPLEX_MULTIPLY.REAL, a.shape, b.shape);
     const imagProgram = new BinaryOpComplexProgram(COMPLEX_MULTIPLY.IMAG, a.shape, b.shape);
     const inputs2 = [
@@ -50105,19 +50105,19 @@ function multiply4(args) {
         shape: b.shape
       }
     ];
-    const realPart = backend3.runWebGLProgram(realProgram, inputs2, "float32");
-    const imagPart = backend3.runWebGLProgram(imagProgram, inputs2, "float32");
-    const complexOutput = complex3({ inputs: { real: realPart, imag: imagPart }, backend: backend3 });
-    backend3.disposeIntermediateTensorInfo(realPart);
-    backend3.disposeIntermediateTensorInfo(imagPart);
+    const realPart = backend2.runWebGLProgram(realProgram, inputs2, "float32");
+    const imagPart = backend2.runWebGLProgram(imagProgram, inputs2, "float32");
+    const complexOutput = complex3({ inputs: { real: realPart, imag: imagPart }, backend: backend2 });
+    backend2.disposeIntermediateTensorInfo(realPart);
+    backend2.disposeIntermediateTensorInfo(imagPart);
     return complexOutput;
   }
-  if (backend3.shouldExecuteOnCPU([a, b])) {
-    const aData = backend3.texData.get(a.dataId);
-    const bData = backend3.texData.get(b.dataId);
+  if (backend2.shouldExecuteOnCPU([a, b])) {
+    const aData = backend2.texData.get(a.dataId);
+    const bData = backend2.texData.get(b.dataId);
     const [outValues, outShape] = multiplyImplCPU(a.shape, b.shape, aData.values, bData.values, dtype);
-    const out = backend3.makeTensorInfo(outShape, dtype);
-    const outData = backend3.texData.get(out.dataId);
+    const out = backend2.makeTensorInfo(outShape, dtype);
+    const outData = backend2.texData.get(out.dataId);
     outData.values = outValues;
     return out;
   }
@@ -50127,14 +50127,14 @@ function multiply4(args) {
   } else {
     program = new BinaryOpProgram(MUL, a.shape, b.shape);
   }
-  return backend3.runWebGLProgram(program, [a, b], dtype);
+  return backend2.runWebGLProgram(program, [a, b], dtype);
 }
 var multiplyConfig2 = {
   kernelName: Multiply,
   backendName: "webgl",
-  kernelFunc: multiply4
+  kernelFunc: multiply3
 };
-function packedReshape(input2, afterShape, backend3) {
+function packedReshape(input2, afterShape, backend2) {
   const input3DShape = [
     getBatchDim(input2.shape),
     ...getRowsCols(input2.shape)
@@ -50151,14 +50151,14 @@ function packedReshape(input2, afterShape, backend3) {
   const program = new ReshapePackedProgram(afterShapeAs3D, input3DShape);
   const preventEagerUnpackingOfOutput = true;
   const customValues = [input3DShape];
-  const output = backend3.runWebGLProgram(program, [input3D], input2.dtype, customValues, preventEagerUnpackingOfOutput);
+  const output = backend2.runWebGLProgram(program, [input3D], input2.dtype, customValues, preventEagerUnpackingOfOutput);
   return { dataId: output.dataId, shape: afterShape, dtype: output.dtype };
 }
 function reshape4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { shape } = attrs;
-  const webglBackend = backend3;
+  const webglBackend = backend2;
   const xSize = util_exports.sizeFromShape(x.shape);
   const $shape = util_exports.inferFromImplicitShape(shape, xSize);
   const $xSize = util_exports.sizeFromShape($shape);
@@ -50398,7 +50398,7 @@ function getReductionStages(inShape) {
   }
   return stages;
 }
-function reduce(x, dtype, reductionType, backend3) {
+function reduce(x, dtype, reductionType, backend2) {
   const reductionStages = getReductionStages(x.shape);
   let result = x;
   for (let i = 0; i < reductionStages.length; i++) {
@@ -50411,9 +50411,9 @@ function reduce(x, dtype, reductionType, backend3) {
       program = new ReduceProgram({ windowSize, inSize, batchSize: x.shape[0], outSize }, reductionType);
     }
     previousResult = result;
-    result = backend3.runWebGLProgram(program, [result], dtype);
+    result = backend2.runWebGLProgram(program, [result], dtype);
     if (previousResult.dataId !== x.dataId) {
-      backend3.disposeIntermediateTensorInfo(previousResult);
+      backend2.disposeIntermediateTensorInfo(previousResult);
     }
   }
   return result;
@@ -50492,11 +50492,11 @@ var TransposePackedProgram = class {
     `;
   }
 };
-function transposeImpl2(x, perm, backend3) {
+function transposeImpl2(x, perm, backend2) {
   const program = env().getBool("WEBGL_PACK_ARRAY_OPERATIONS") ? new TransposePackedProgram(x.shape, perm) : new TransposeProgram(x.shape, perm);
-  return backend3.runWebGLProgram(program, [x], x.dtype);
+  return backend2.runWebGLProgram(program, [x], x.dtype);
 }
-function sumImpl(x, axis, keepDims, backend3) {
+function sumImpl(x, axis, keepDims, backend2) {
   const reductionIndices = axis;
   const xRank = x.shape.length;
   const origAxes = util_exports.parseAxisParam(reductionIndices, x.shape);
@@ -50505,7 +50505,7 @@ function sumImpl(x, axis, keepDims, backend3) {
   const sumInputIsTransposed = permutedAxes != null;
   let sumInput = x;
   if (sumInputIsTransposed) {
-    sumInput = transposeImpl2(x, permutedAxes, backend3);
+    sumInput = transposeImpl2(x, permutedAxes, backend2);
     axes = backend_util_exports.getInnerMostAxes(axes.length, xRank);
   }
   backend_util_exports.assertAxesAreInnerMostDims("sum", axes, xRank);
@@ -50517,33 +50517,33 @@ function sumImpl(x, axis, keepDims, backend3) {
   const inSize = util_exports.sizeFromShape(reduceShape);
   const xSize = util_exports.sizeFromShape(x.shape);
   const batchSize = xSize / inSize;
-  const reshapedInput = reshape4({ inputs: { x: sumInput }, attrs: { shape: [batchSize, inSize] }, backend: backend3 });
+  const reshapedInput = reshape4({ inputs: { x: sumInput }, attrs: { shape: [batchSize, inSize] }, backend: backend2 });
   const outType = sumOutType(x.dtype);
-  const reduced = reduce(reshapedInput, outType, "sum", backend3);
-  const out = reshape4({ inputs: { x: reduced }, attrs: { shape: outShape }, backend: backend3 });
-  backend3.disposeIntermediateTensorInfo(reshapedInput);
-  backend3.disposeIntermediateTensorInfo(reduced);
+  const reduced = reduce(reshapedInput, outType, "sum", backend2);
+  const out = reshape4({ inputs: { x: reduced }, attrs: { shape: outShape }, backend: backend2 });
+  backend2.disposeIntermediateTensorInfo(reshapedInput);
+  backend2.disposeIntermediateTensorInfo(reduced);
   if (sumInputIsTransposed) {
-    backend3.disposeIntermediateTensorInfo(sumInput);
+    backend2.disposeIntermediateTensorInfo(sumInput);
   }
   return out;
 }
-function sum5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+function sum4(args) {
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
-  return sumImpl(x, axis, keepDims, backend3);
+  return sumImpl(x, axis, keepDims, backend2);
 }
 var sumConfig2 = {
   kernelName: Sum,
   backendName: "webgl",
-  kernelFunc: sum5
+  kernelFunc: sum4
 };
 function transpose3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { perm } = attrs;
-  const webglBackend = backend3;
+  const webglBackend = backend2;
   const xRank = x.shape.length;
   const newShape = new Array(xRank);
   for (let i = 0; i < newShape.length; i++) {
@@ -50573,7 +50573,7 @@ function batchMatMulImpl({
   b,
   transposeA,
   transposeB,
-  backend: backend3,
+  backend: backend2,
   bias = null,
   preluActivationWeights = null,
   leakyreluAlpha = 0,
@@ -50596,8 +50596,8 @@ function batchMatMulImpl({
   util_exports.assert(innerShapeA === innerShapeB, () => `Error in matMul: inner shapes (${innerShapeA}) and (${innerShapeB}) of Tensors with shapes ${a.shape} and ${b.shape} and transposeA=${transposeA} and transposeB=${transposeB} must match.`);
   const a3dShape = transposeA ? [batchDimA, innerShapeA, outerShapeA] : [batchDimA, outerShapeA, innerShapeA];
   const b3dShape = transposeB ? [batchDimB, outerShapeB, innerShapeB] : [batchDimB, innerShapeB, outerShapeB];
-  const a3d = reshape4({ inputs: { x: a }, backend: backend3, attrs: { shape: a3dShape } });
-  const b3d = reshape4({ inputs: { x: b }, backend: backend3, attrs: { shape: b3dShape } });
+  const a3d = reshape4({ inputs: { x: a }, backend: backend2, attrs: { shape: a3dShape } });
+  const b3d = reshape4({ inputs: { x: b }, backend: backend2, attrs: { shape: b3dShape } });
   const intermediates = [a3d, b3d];
   const batchDim = Math.max(batchDimA, batchDimB);
   const sharedDim = transposeA ? a3d.shape[1] : a3d.shape[2];
@@ -50611,11 +50611,11 @@ function batchMatMulImpl({
     let aVec = a3d;
     let bVec = b3d;
     if (transposeA) {
-      aVec = transpose3({ inputs: { x: a3d }, backend: backend3, attrs: { perm: [0, 2, 1] } });
+      aVec = transpose3({ inputs: { x: a3d }, backend: backend2, attrs: { perm: [0, 2, 1] } });
       intermediates.push(aVec);
     }
     if (transposeB) {
-      bVec = transpose3({ inputs: { x: b3d }, backend: backend3, attrs: { perm: [0, 2, 1] } });
+      bVec = transpose3({ inputs: { x: b3d }, backend: backend2, attrs: { perm: [0, 2, 1] } });
       intermediates.push(bVec);
     }
     const shouldReshapeA = outerShapeB !== 1;
@@ -50624,7 +50624,7 @@ function batchMatMulImpl({
     if (shouldReshapeA) {
       aVec3d = reshape4({
         inputs: { x: aVec },
-        backend: backend3,
+        backend: backend2,
         attrs: { shape: [batchDim, sharedDim, 1] }
       });
       intermediates.push(aVec3d);
@@ -50634,13 +50634,13 @@ function batchMatMulImpl({
     if (shouldReshapeB) {
       bVec3d = reshape4({
         inputs: { x: bVec },
-        backend: backend3,
+        backend: backend2,
         attrs: { shape: [batchDim, 1, sharedDim] }
       });
       intermediates.push(bVec3d);
     }
-    const product = multiply4({ inputs: { a: aVec3d, b: bVec3d }, backend: backend3 });
-    out = sum5({ inputs: { x: product }, backend: backend3, attrs: { axis, keepDims: true } });
+    const product = multiply3({ inputs: { a: aVec3d, b: bVec3d }, backend: backend2 });
+    out = sum4({ inputs: { x: product }, backend: backend2, attrs: { axis, keepDims: true } });
     intermediates.push(product);
   } else {
     const dtype = upcastType(a.dtype, b.dtype);
@@ -50653,21 +50653,21 @@ function batchMatMulImpl({
       inputs.push(preluActivationWeights);
     }
     if (hasLeakyreluAlpha) {
-      const $leakyreluAlpha = backend3.makeTensorInfo([], "float32", util_exports.createScalarValue(leakyreluAlpha, "float32"));
+      const $leakyreluAlpha = backend2.makeTensorInfo([], "float32", util_exports.createScalarValue(leakyreluAlpha, "float32"));
       inputs.push($leakyreluAlpha);
       intermediates.push($leakyreluAlpha);
     }
-    out = backend3.runWebGLProgram(program, inputs, dtype);
+    out = backend2.runWebGLProgram(program, inputs, dtype);
   }
-  const outReshaped = reshape4({ inputs: { x: out }, backend: backend3, attrs: { shape: outShape } });
+  const outReshaped = reshape4({ inputs: { x: out }, backend: backend2, attrs: { shape: outShape } });
   intermediates.push(out);
   for (const i of intermediates) {
-    backend3.disposeIntermediateTensorInfo(i);
+    backend2.disposeIntermediateTensorInfo(i);
   }
   return outReshaped;
 }
 function _fusedMatMul2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { a, b, bias, preluActivationWeights } = inputs;
   const { transposeA, transposeB, activation: activation2, leakyreluAlpha } = attrs;
   return batchMatMulImpl({
@@ -50675,7 +50675,7 @@ function _fusedMatMul2(args) {
     b,
     transposeA,
     transposeB,
-    backend: backend3,
+    backend: backend2,
     bias,
     preluActivationWeights,
     leakyreluAlpha,
@@ -50689,12 +50689,12 @@ var _fusedMatMulConfig2 = {
 };
 var ABS2 = `return abs(x);`;
 function abs3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
-  if (backend3.shouldExecuteOnCPU([x]) && x.dtype !== "complex64") {
-    const xData = backend3.texData.get(x.dataId);
+  if (backend2.shouldExecuteOnCPU([x]) && x.dtype !== "complex64") {
+    const xData = backend2.texData.get(x.dataId);
     const outValues = simpleAbsImplCPU(xData.values);
-    return backend3.makeTensorInfo(x.shape, x.dtype, outValues);
+    return backend2.makeTensorInfo(x.shape, x.dtype, outValues);
   }
   let program;
   if (env().getBool("WEBGL_PACK_UNARY_OPERATIONS")) {
@@ -50702,7 +50702,7 @@ function abs3(args) {
   } else {
     program = new UnaryOpProgram(x.shape, ABS2);
   }
-  return backend3.runWebGLProgram(program, [x], x.dtype);
+  return backend2.runWebGLProgram(program, [x], x.dtype);
 }
 var absConfig2 = {
   kernelName: Abs,
@@ -50748,11 +50748,11 @@ var AddNProgram = class {
     this.outputShape = outputShape;
     this.variableNames = shapes.map((_, i) => `T${i}`);
     const snippets = [];
-    this.variableNames.forEach((variable3) => {
-      snippets.push(`float v${variable3} = get${variable3}AtOutCoords();`);
+    this.variableNames.forEach((variable2) => {
+      snippets.push(`float v${variable2} = get${variable2}AtOutCoords();`);
     });
-    const operation = this.variableNames.map((variable3) => {
-      return `v${variable3}`;
+    const operation = this.variableNames.map((variable2) => {
+      return `v${variable2}`;
     }).join(" + ");
     this.userCode = `
       void main() {
@@ -50772,11 +50772,11 @@ var AddNPackedProgram = class {
     this.outputShape = outputShape;
     this.variableNames = shapes.map((_, i) => `T${i}`);
     const snippets = [];
-    this.variableNames.forEach((variable3) => {
-      snippets.push(`vec4 v${variable3} = get${variable3}AtOutCoords();`);
+    this.variableNames.forEach((variable2) => {
+      snippets.push(`vec4 v${variable2} = get${variable2}AtOutCoords();`);
     });
-    const operation = this.variableNames.map((variable3) => {
-      return `v${variable3}`;
+    const operation = this.variableNames.map((variable2) => {
+      return `v${variable2}`;
     }).join(" + ");
     this.userCode = `
       void main() {
@@ -50789,22 +50789,22 @@ var AddNPackedProgram = class {
   }
 };
 function addN3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const tensors = inputs;
   if (tensors.length === 1) {
-    return identity3({ inputs: { x: tensors[0] }, backend: backend3 });
+    return identity3({ inputs: { x: tensors[0] }, backend: backend2 });
   }
   if (tensors.length > env().get("WEBGL_MAX_TEXTURES_IN_SHADER")) {
     const midIndex = Math.floor(tensors.length / 2);
-    const leftSide = addN3({ inputs: tensors.slice(0, midIndex), backend: backend3 });
-    const rightSide = addN3({ inputs: tensors.slice(midIndex), backend: backend3 });
-    return addN3({ inputs: [leftSide, rightSide], backend: backend3 });
+    const leftSide = addN3({ inputs: tensors.slice(0, midIndex), backend: backend2 });
+    const rightSide = addN3({ inputs: tensors.slice(midIndex), backend: backend2 });
+    return addN3({ inputs: [leftSide, rightSide], backend: backend2 });
   }
   const dtype = tensors.map((t) => t.dtype).reduce((d1, d2) => upcastType(d1, d2));
   const shapes = tensors.map((t) => t.shape);
   const usePackedOp = env().getBool("WEBGL_PACK");
   const program = usePackedOp ? new AddNPackedProgram(tensors[0].shape, shapes) : new AddNProgram(tensors[0].shape, shapes);
-  return backend3.runWebGLProgram(program, tensors, dtype);
+  return backend2.runWebGLProgram(program, tensors, dtype);
 }
 var addNConfig2 = {
   kernelName: AddN,
@@ -50812,7 +50812,7 @@ var addNConfig2 = {
   kernelFunc: addN3
 };
 function all3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
   const xRank = x.shape.length;
@@ -50821,25 +50821,25 @@ function all3(args) {
   const permutedAxes = backend_util_exports.getAxesPermutation(axes, xRank);
   let permutedX = x;
   if (permutedAxes != null) {
-    permutedX = transpose3({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    permutedX = transpose3({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     axes = backend_util_exports.getInnerMostAxes(axes.length, xRank);
   }
   backend_util_exports.assertAxesAreInnerMostDims("all", axes, xRank);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(permutedX.shape, axes);
   const inSize = util_exports.sizeFromShape(reduceShape);
-  const a2D = reshape4({ inputs: { x: permutedX }, backend: backend3, attrs: { shape: [-1, inSize] } });
-  const reduced = reduce(a2D, a2D.dtype, "all", backend3);
+  const a2D = reshape4({ inputs: { x: permutedX }, backend: backend2, attrs: { shape: [-1, inSize] } });
+  const reduced = reduce(a2D, a2D.dtype, "all", backend2);
   let res;
   if (keepDims) {
     const newShape = backend_util_exports.expandShapeToKeepDim(outShape, origAxes);
-    res = reshape4({ inputs: { x: reduced }, backend: backend3, attrs: { shape: newShape } });
+    res = reshape4({ inputs: { x: reduced }, backend: backend2, attrs: { shape: newShape } });
   } else {
-    res = reshape4({ inputs: { x: reduced }, backend: backend3, attrs: { shape: outShape } });
+    res = reshape4({ inputs: { x: reduced }, backend: backend2, attrs: { shape: outShape } });
   }
-  backend3.disposeIntermediateTensorInfo(a2D);
-  backend3.disposeIntermediateTensorInfo(reduced);
+  backend2.disposeIntermediateTensorInfo(a2D);
+  backend2.disposeIntermediateTensorInfo(reduced);
   if (permutedAxes != null) {
-    backend3.disposeIntermediateTensorInfo(permutedX);
+    backend2.disposeIntermediateTensorInfo(permutedX);
   }
   return res;
 }
@@ -50849,7 +50849,7 @@ var allConfig2 = {
   kernelFunc: all3
 };
 function any3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
   const xRank = x.shape.length;
@@ -50858,25 +50858,25 @@ function any3(args) {
   const permutedAxes = backend_util_exports.getAxesPermutation(axes, xRank);
   let permutedX = x;
   if (permutedAxes != null) {
-    permutedX = transpose3({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    permutedX = transpose3({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     axes = backend_util_exports.getInnerMostAxes(axes.length, xRank);
   }
   backend_util_exports.assertAxesAreInnerMostDims("any", axes, xRank);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(permutedX.shape, axes);
   const inSize = util_exports.sizeFromShape(reduceShape);
-  const a2D = reshape4({ inputs: { x: permutedX }, backend: backend3, attrs: { shape: [-1, inSize] } });
-  const reduced = reduce(a2D, a2D.dtype, "any", backend3);
+  const a2D = reshape4({ inputs: { x: permutedX }, backend: backend2, attrs: { shape: [-1, inSize] } });
+  const reduced = reduce(a2D, a2D.dtype, "any", backend2);
   let res;
   if (keepDims) {
     const newShape = backend_util_exports.expandShapeToKeepDim(outShape, origAxes);
-    res = reshape4({ inputs: { x: reduced }, backend: backend3, attrs: { shape: newShape } });
+    res = reshape4({ inputs: { x: reduced }, backend: backend2, attrs: { shape: newShape } });
   } else {
-    res = reshape4({ inputs: { x: reduced }, backend: backend3, attrs: { shape: outShape } });
+    res = reshape4({ inputs: { x: reduced }, backend: backend2, attrs: { shape: outShape } });
   }
-  backend3.disposeIntermediateTensorInfo(a2D);
-  backend3.disposeIntermediateTensorInfo(reduced);
+  backend2.disposeIntermediateTensorInfo(a2D);
+  backend2.disposeIntermediateTensorInfo(reduced);
   if (permutedAxes != null) {
-    backend3.disposeIntermediateTensorInfo(permutedX);
+    backend2.disposeIntermediateTensorInfo(permutedX);
   }
   return res;
 }
@@ -51023,7 +51023,7 @@ var ArgMinMaxPackedProgram = class {
     `;
   }
 };
-function argReduce(backend3, x, reduceType, bestIndicesA = null) {
+function argReduce(backend2, x, reduceType, bestIndicesA = null) {
   let batchSize = x.shape[0];
   let inSize = x.shape[1];
   if (bestIndicesA != null) {
@@ -51037,54 +51037,54 @@ function argReduce(backend3, x, reduceType, bestIndicesA = null) {
   if (bestIndicesA != null) {
     inputs.push(bestIndicesA);
   }
-  const output = backend3.runWebGLProgram(program, inputs, "int32");
+  const output = backend2.runWebGLProgram(program, inputs, "int32");
   if (output.shape[1] === 1) {
     return output;
   }
-  const result = argReduce(backend3, x, reduceType, output);
-  backend3.disposeIntermediateTensorInfo(output);
+  const result = argReduce(backend2, x, reduceType, output);
+  backend2.disposeIntermediateTensorInfo(output);
   return result;
 }
-function argReducePacked(backend3, x, reduceType, bestIndicesA = null) {
+function argReducePacked(backend2, x, reduceType, bestIndicesA = null) {
   const inShape = bestIndicesA != null ? bestIndicesA.shape : x.shape;
   const inSize = inShape[inShape.length - 1];
   const windowSize = backend_util_exports.computeOptimalWindowSize(inSize);
   const program = new ArgMinMaxPackedProgram(inShape, windowSize, reduceType, bestIndicesA == null);
   const inputs = bestIndicesA == null ? [x] : [x, bestIndicesA];
-  const output = backend3.runWebGLProgram(program, inputs, "int32");
+  const output = backend2.runWebGLProgram(program, inputs, "int32");
   if (output.shape.length === x.shape.length) {
-    const result = argReducePacked(backend3, x, reduceType, output);
-    backend3.disposeIntermediateTensorInfo(output);
+    const result = argReducePacked(backend2, x, reduceType, output);
+    backend2.disposeIntermediateTensorInfo(output);
     return result;
   }
   return output;
 }
-function argMinMaxReduce(backend3, x, axis, reduceType) {
+function argMinMaxReduce(backend2, x, axis, reduceType) {
   const axes = [axis];
   backend_util_exports.assertAxesAreInnerMostDims("arg" + reduceType.charAt(0).toUpperCase() + reduceType.slice(1), axes, x.shape.length);
   if (!env().getBool("WEBGL_PACK_REDUCE") || x.shape.length <= 2) {
     const intermediateTensorInfos = [];
-    const xtexData = backend3.texData.get(x.dataId);
+    const xtexData = backend2.texData.get(x.dataId);
     const xIsPacked = xtexData !== null && xtexData.isPacked;
     let xUnPacked = x;
     if (xIsPacked) {
-      xUnPacked = backend3.unpackTensor(x);
+      xUnPacked = backend2.unpackTensor(x);
       intermediateTensorInfos.push(xUnPacked);
     }
     const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(xUnPacked.shape, axes);
     const inSize = util_exports.sizeFromShape(reduceShape);
-    const a2D = reshape4({ inputs: { x: xUnPacked }, backend: backend3, attrs: { shape: [-1, inSize] } });
+    const a2D = reshape4({ inputs: { x: xUnPacked }, backend: backend2, attrs: { shape: [-1, inSize] } });
     intermediateTensorInfos.push(a2D);
-    const reduced = argReduce(backend3, a2D, reduceType);
+    const reduced = argReduce(backend2, a2D, reduceType);
     intermediateTensorInfos.push(reduced);
-    const reshaped = reshape4({ inputs: { x: reduced }, backend: backend3, attrs: { shape: outShape } });
-    intermediateTensorInfos.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+    const reshaped = reshape4({ inputs: { x: reduced }, backend: backend2, attrs: { shape: outShape } });
+    intermediateTensorInfos.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
     return reshaped;
   }
-  return argReducePacked(backend3, x, reduceType);
+  return argReducePacked(backend2, x, reduceType);
 }
 function argMax3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis } = attrs;
   let axes = util_exports.parseAxisParam(axis, x.shape);
@@ -51092,13 +51092,13 @@ function argMax3(args) {
   let $x = x;
   const intermediateTensorInfos = [];
   if (permutedAxes != null) {
-    $x = transpose3({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    $x = transpose3({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     intermediateTensorInfos.push($x);
     axes = backend_util_exports.getInnerMostAxes(axes.length, $x.shape.length);
   }
   backend_util_exports.assertAxesAreInnerMostDims("argMax", [axes[0]], $x.shape.length);
-  const out = argMinMaxReduce(backend3, $x, axes[0], "max");
-  intermediateTensorInfos.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  const out = argMinMaxReduce(backend2, $x, axes[0], "max");
+  intermediateTensorInfos.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return out;
 }
 var argMaxConfig2 = {
@@ -51107,7 +51107,7 @@ var argMaxConfig2 = {
   kernelFunc: argMax3
 };
 function argMin3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis } = attrs;
   let axes = util_exports.parseAxisParam(axis, x.shape);
@@ -51115,13 +51115,13 @@ function argMin3(args) {
   let $x = x;
   const intermediateTensorInfos = [];
   if (permutedAxes != null) {
-    $x = transpose3({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    $x = transpose3({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     intermediateTensorInfos.push($x);
     axes = backend_util_exports.getInnerMostAxes(axes.length, $x.shape.length);
   }
   backend_util_exports.assertAxesAreInnerMostDims("argMin", [axes[0]], $x.shape.length);
-  const out = argMinMaxReduce(backend3, $x, axes[0], "min");
-  intermediateTensorInfos.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  const out = argMinMaxReduce(backend2, $x, axes[0], "min");
+  intermediateTensorInfos.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return out;
 }
 var argMinConfig2 = {
@@ -51566,7 +51566,7 @@ var Pool3DProgram = class {
   }
 };
 function avgPool3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   assertNotComplex2(x, "avgPool");
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
@@ -51574,10 +51574,10 @@ function avgPool3(args) {
   util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in avgPool: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
   const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
   if (convInfo.filterWidth === 1 && convInfo.filterHeight === 1 && util_exports.arraysEqual(convInfo.inShape, convInfo.outShape)) {
-    return identity3({ inputs: { x }, backend: backend3 });
+    return identity3({ inputs: { x }, backend: backend2 });
   }
   const avgPoolProgram = new Pool2DProgram(convInfo, "avg", false);
-  return backend3.runWebGLProgram(avgPoolProgram, [x], "float32");
+  return backend2.runWebGLProgram(avgPoolProgram, [x], "float32");
 }
 var avgPoolConfig2 = {
   kernelName: AvgPool,
@@ -51585,13 +51585,13 @@ var avgPoolConfig2 = {
   kernelFunc: avgPool3
 };
 function avgPool3D2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { filterSize, strides, pad: pad3, dimRoundingMode, dataFormat } = attrs;
   const dilations = [1, 1, 1];
   const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode, dataFormat);
   const avgPoolProgram = new Pool3DProgram(convInfo, "avg", false);
-  return backend3.runWebGLProgram(avgPoolProgram, [x], "float32");
+  return backend2.runWebGLProgram(avgPoolProgram, [x], "float32");
 }
 var avgPool3DConfig2 = {
   kernelName: AvgPool3D,
@@ -51738,14 +51738,14 @@ var AvgPool3DBackpropProgram = class {
   }
 };
 function avgPool3DGrad2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, input: input2 } = inputs;
   const x = input2;
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
   const dilations = [1, 1, 1];
   const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
   const avgPoolBackpropProgram = new AvgPool3DBackpropProgram(convInfo);
-  return backend3.runWebGLProgram(avgPoolBackpropProgram, [dy], x.dtype);
+  return backend2.runWebGLProgram(avgPoolBackpropProgram, [dy], x.dtype);
 }
 var avgPoolGrad3DConfig = {
   kernelName: AvgPool3DGrad,
@@ -51753,14 +51753,14 @@ var avgPoolGrad3DConfig = {
   kernelFunc: avgPool3DGrad2
 };
 function avgPoolGrad3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, input: input2 } = inputs;
   const x = input2;
   assertNotComplex2([dy, input2], "avgPoolGrad");
   const { filterSize, strides, pad: pad3 } = attrs;
   const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, 1, pad3);
   const avgPoolBackpropProgram = new AvgPool2DBackpropProgram(convInfo);
-  return backend3.runWebGLProgram(avgPoolBackpropProgram, [dy], x.dtype);
+  return backend2.runWebGLProgram(avgPoolBackpropProgram, [dy], x.dtype);
 }
 var avgPoolGradConfig3 = {
   kernelName: AvgPoolGrad,
@@ -51768,10 +51768,10 @@ var avgPoolGradConfig3 = {
   kernelFunc: avgPoolGrad3
 };
 function batchMatMul2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { a, b } = inputs;
   const { transposeA, transposeB } = attrs;
-  return batchMatMulImpl({ a, b, transposeA, transposeB, backend: backend3 });
+  return batchMatMulImpl({ a, b, transposeA, transposeB, backend: backend2 });
 }
 var batchMatMulConfig2 = {
   kernelName: BatchMatMul,
@@ -51846,16 +51846,16 @@ var BatchNormPackedProgram = class {
     `;
   }
 };
-var batchNorm3 = ({ inputs, backend: backend3, attrs }) => {
-  const { x, mean: mean7, variance: variance2, offset, scale: scale2 } = inputs;
-  util_exports.assert(mean7.shape.length === variance2.shape.length, () => "Batch normalization gradient requires mean and variance to have equal ranks.");
-  util_exports.assert(offset == null || mean7.shape.length === offset.shape.length, () => "Batch normalization gradient requires mean and offset to have equal ranks.");
-  util_exports.assert(scale2 == null || mean7.shape.length === scale2.shape.length, () => "Batch normalization gradient requires mean and scale to have equal ranks.");
+var batchNorm3 = ({ inputs, backend: backend2, attrs }) => {
+  const { x, mean: mean5, variance, offset, scale: scale2 } = inputs;
+  util_exports.assert(mean5.shape.length === variance.shape.length, () => "Batch normalization gradient requires mean and variance to have equal ranks.");
+  util_exports.assert(offset == null || mean5.shape.length === offset.shape.length, () => "Batch normalization gradient requires mean and offset to have equal ranks.");
+  util_exports.assert(scale2 == null || mean5.shape.length === scale2.shape.length, () => "Batch normalization gradient requires mean and scale to have equal ranks.");
   let { varianceEpsilon } = attrs;
   if (varianceEpsilon == null) {
     varianceEpsilon = 1e-3;
   }
-  const finalInputs = [x, mean7, variance2];
+  const finalInputs = [x, mean5, variance];
   let offsetShape = null;
   if (offset != null) {
     offsetShape = offset.shape;
@@ -51866,8 +51866,8 @@ var batchNorm3 = ({ inputs, backend: backend3, attrs }) => {
     scaleShape = scale2.shape;
     finalInputs.push(scale2);
   }
-  const program = env().getBool("WEBGL_PACK_NORMALIZATION") ? new BatchNormPackedProgram(x.shape, mean7.shape, variance2.shape, offsetShape, scaleShape, varianceEpsilon) : new BatchNormProgram(x.shape, mean7.shape, variance2.shape, offsetShape, scaleShape, varianceEpsilon);
-  const output = backend3.runWebGLProgram(program, finalInputs, finalInputs[0].dtype);
+  const program = env().getBool("WEBGL_PACK_NORMALIZATION") ? new BatchNormPackedProgram(x.shape, mean5.shape, variance.shape, offsetShape, scaleShape, varianceEpsilon) : new BatchNormProgram(x.shape, mean5.shape, variance.shape, offsetShape, scaleShape, varianceEpsilon);
+  const output = backend2.runWebGLProgram(program, finalInputs, finalInputs[0].dtype);
   return output;
 };
 var batchNormConfig2 = {
@@ -51957,10 +51957,10 @@ var SlicePackedProgram = class {
     `;
   }
 };
-function shallowSlice(x, begin, size, backend3) {
-  const xTexData = backend3.texData.get(x.dataId);
-  const t = backend3.makeTensorInfo(size, x.dtype);
-  const newTexData = backend3.texData.get(t.dataId);
+function shallowSlice(x, begin, size, backend2) {
+  const xTexData = backend2.texData.get(x.dataId);
+  const t = backend2.makeTensorInfo(size, x.dtype);
+  const newTexData = backend2.texData.get(t.dataId);
   Object.assign(newTexData, xTexData);
   newTexData.refCount = 1;
   newTexData.shape = size;
@@ -51973,33 +51973,33 @@ function shallowSlice(x, begin, size, backend3) {
     flatOffset,
     origDataId: xTexData.slice && xTexData.slice.origDataId || x.dataId
   };
-  const refCount = backend3.dataRefCount.get(newTexData.slice.origDataId) || 1;
-  backend3.dataRefCount.set(newTexData.slice.origDataId, refCount + 1);
+  const refCount = backend2.dataRefCount.get(newTexData.slice.origDataId) || 1;
+  backend2.dataRefCount.set(newTexData.slice.origDataId, refCount + 1);
   return t;
 }
 function slice3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { begin, size } = attrs;
   const [$begin, $size] = slice_util_exports.parseSliceParams(x, begin, size);
   slice_util_exports.assertParamsValid(x, $begin, $size);
   if (util_exports.sizeFromShape($size) === 0) {
-    return backend3.makeTensorInfo($size, x.dtype, []);
+    return backend2.makeTensorInfo($size, x.dtype, []);
   }
-  if (backend3.shouldExecuteOnCPU([x]) || x.dtype === "string") {
-    const xTexData = backend3.texData.get(x.dataId);
+  if (backend2.shouldExecuteOnCPU([x]) || x.dtype === "string") {
+    const xTexData = backend2.texData.get(x.dataId);
     const outValues = sliceImplCPU(xTexData.values, $begin, $size, x.shape, x.dtype);
-    return backend3.makeTensorInfo($size, x.dtype, outValues);
+    return backend2.makeTensorInfo($size, x.dtype, outValues);
   }
-  const { isPacked } = backend3.texData.get(x.dataId);
+  const { isPacked } = backend2.texData.get(x.dataId);
   const isContinous = slice_util_exports.isSliceContinous(x.shape, $begin, $size);
   if (isPacked || !isContinous) {
     const program = env().getBool("WEBGL_PACK_ARRAY_OPERATIONS") ? new SlicePackedProgram($size) : new SliceProgram($size);
     const customValues = [$begin];
-    return backend3.runWebGLProgram(program, [x], x.dtype, customValues);
+    return backend2.runWebGLProgram(program, [x], x.dtype, customValues);
   }
-  backend3.uploadToGPU(x.dataId);
-  return shallowSlice(x, $begin, $size, backend3);
+  backend2.uploadToGPU(x.dataId);
+  return shallowSlice(x, $begin, $size, backend2);
 }
 var sliceConfig2 = {
   kernelName: Slice,
@@ -52007,7 +52007,7 @@ var sliceConfig2 = {
   kernelFunc: slice3
 };
 var batchToSpaceND3 = (args) => {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { blockShape, crops } = attrs;
   util_exports.assert(x.shape.length <= 4, () => "batchToSpaceND for rank > 4 with a WebGL backend not implemented yet");
@@ -52018,22 +52018,22 @@ var batchToSpaceND3 = (args) => {
   const sliceBeginCoords = backend_util_exports.getSliceBeginCoords(crops, blockShape.length);
   const sliceSize = backend_util_exports.getSliceSize(reshapedPermuted, crops, blockShape.length);
   const toDispose = [];
-  const reshapedIntermediate = reshape4({ inputs: { x }, backend: backend3, attrs: { shape: reshaped } });
-  const transposedIntermediate = transpose3({ inputs: { x: reshapedIntermediate }, backend: backend3, attrs: { perm: permuted } });
+  const reshapedIntermediate = reshape4({ inputs: { x }, backend: backend2, attrs: { shape: reshaped } });
+  const transposedIntermediate = transpose3({ inputs: { x: reshapedIntermediate }, backend: backend2, attrs: { perm: permuted } });
   const reshapedIntermediate2 = reshape4({
     inputs: { x: transposedIntermediate },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: reshapedPermuted }
   });
   const sliced = slice3({
     inputs: { x: reshapedIntermediate2 },
-    backend: backend3,
+    backend: backend2,
     attrs: { begin: sliceBeginCoords, size: sliceSize }
   });
   toDispose.push(reshapedIntermediate);
   toDispose.push(transposedIntermediate);
   toDispose.push(reshapedIntermediate2);
-  toDispose.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  toDispose.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return sliced;
 };
 var batchToSpaceNDConfig2 = {
@@ -52042,13 +52042,13 @@ var batchToSpaceNDConfig2 = {
   kernelFunc: batchToSpaceND3
 };
 function bincount3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, weights } = inputs;
   const { size } = attrs;
-  const xVals = backend3.readSync(x.dataId);
-  const weightsVals = backend3.readSync(weights.dataId);
+  const xVals = backend2.readSync(x.dataId);
+  const weightsVals = backend2.readSync(weights.dataId);
   const outVals = bincountImplCPU(xVals, weightsVals, weights.dtype, weights.shape, size);
-  return backend3.makeTensorInfo([size], weights.dtype, outVals);
+  return backend2.makeTensorInfo([size], weights.dtype, outVals);
 }
 var bincountConfig2 = {
   kernelName: Bincount,
@@ -52056,30 +52056,30 @@ var bincountConfig2 = {
   kernelFunc: bincount3
 };
 function broadcastArgs3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { s0, s1 } = inputs;
-  const s0Vals = backend3.readSync(s0.dataId);
-  const s1Vals = backend3.readSync(s1.dataId);
+  const s0Vals = backend2.readSync(s0.dataId);
+  const s1Vals = backend2.readSync(s1.dataId);
   const broadcastShape = backend_util_exports.assertAndGetBroadcastShape(Array.from(s0Vals), Array.from(s1Vals));
-  return backend3.makeTensorInfo([broadcastShape.length], "int32", Int32Array.from(broadcastShape));
+  return backend2.makeTensorInfo([broadcastShape.length], "int32", Int32Array.from(broadcastShape));
 }
 var broadcastArgsConfig2 = {
   kernelName: BroadcastArgs,
   backendName: "webgl",
   kernelFunc: broadcastArgs3
 };
-var NOT_EQUAL2 = `return float(a != b);`;
-var notEqual3 = binaryKernelFunc2({ opSnippet: NOT_EQUAL2, cpuKernelImpl: notEqualImplCPU, dtype: "bool" });
+var NOT_EQUAL = `return float(a != b);`;
+var notEqual3 = binaryKernelFunc2({ opSnippet: NOT_EQUAL, cpuKernelImpl: notEqualImplCPU, dtype: "bool" });
 var notEqualConfig2 = {
   kernelName: NotEqual,
   backendName: "webgl",
   kernelFunc: notEqual3
 };
 function real3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { input: input2 } = inputs;
-  const inputData = backend3.texData.get(input2.dataId);
-  return identity3({ inputs: { x: inputData.complexTensorInfos.real }, backend: backend3 });
+  const inputData = backend2.texData.get(input2.dataId);
+  return identity3({ inputs: { x: inputData.complexTensorInfos.real }, backend: backend2 });
 }
 var realConfig2 = {
   kernelName: Real,
@@ -52087,44 +52087,44 @@ var realConfig2 = {
   kernelFunc: real3
 };
 var TO_INT = `return float(int(x));`;
-function int(input2, backend3) {
+function int(input2, backend2) {
   const program = new UnaryOpProgram(input2.shape, TO_INT);
-  const output = backend3.runWebGLProgram(program, [input2], "int32");
+  const output = backend2.runWebGLProgram(program, [input2], "int32");
   return { dataId: output.dataId, shape: output.shape, dtype: output.dtype };
 }
 function cast4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { dtype } = attrs;
   if (dtype === "complex64") {
     if (x.dtype === "complex64") {
-      return identity3({ inputs: { x }, backend: backend3 });
+      return identity3({ inputs: { x }, backend: backend2 });
     }
     const zerosTensor = zeros(x.shape);
-    const floatX = cast4({ inputs: { x }, backend: backend3, attrs: { dtype: "float32" } });
-    const result = complex3({ inputs: { real: floatX, imag: zerosTensor }, backend: backend3 });
+    const floatX = cast4({ inputs: { x }, backend: backend2, attrs: { dtype: "float32" } });
+    const result = complex3({ inputs: { real: floatX, imag: zerosTensor }, backend: backend2 });
     zerosTensor.dispose();
-    backend3.disposeIntermediateTensorInfo(floatX);
+    backend2.disposeIntermediateTensorInfo(floatX);
     return result;
   }
   if (x.dtype === "complex64") {
-    const realPart = real3({ inputs: { input: x }, backend: backend3 });
-    const result = cast4({ inputs: { x: realPart }, backend: backend3, attrs: { dtype } });
-    backend3.disposeIntermediateTensorInfo(realPart);
+    const realPart = real3({ inputs: { input: x }, backend: backend2 });
+    const result = cast4({ inputs: { x: realPart }, backend: backend2, attrs: { dtype } });
+    backend2.disposeIntermediateTensorInfo(realPart);
     return result;
   }
   if (!util_exports.hasEncodingLoss(x.dtype, dtype)) {
-    const result = identity3({ inputs: { x }, backend: backend3 });
+    const result = identity3({ inputs: { x }, backend: backend2 });
     return { dataId: result.dataId, shape: result.shape, dtype };
   }
   if (dtype === "int32") {
-    return int(x, backend3);
+    return int(x, backend2);
   }
   if (dtype === "bool") {
-    const zerosTensorInfo = backend3.makeTensorInfo([], "bool", util_exports.getTypedArrayFromDType("bool", 1));
+    const zerosTensorInfo = backend2.makeTensorInfo([], "bool", util_exports.getTypedArrayFromDType("bool", 1));
     const binaryInputs = { a: x, b: zerosTensorInfo };
-    const result = notEqual3({ inputs: binaryInputs, backend: backend3 });
-    backend3.disposeIntermediateTensorInfo(zerosTensorInfo);
+    const result = notEqual3({ inputs: binaryInputs, backend: backend2 });
+    backend2.disposeIntermediateTensorInfo(zerosTensorInfo);
     return result;
   }
   throw new Error(`Error in Cast: failed to cast ${x.dtype} to ${dtype}`);
@@ -52188,7 +52188,7 @@ var ClipPackedProgram = class {
   }
 };
 function clipByValue2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { clipValueMin, clipValueMax } = attrs;
   let program;
@@ -52198,7 +52198,7 @@ function clipByValue2(args) {
     program = new ClipProgram(x.shape);
   }
   const customValues = [[clipValueMin], [clipValueMax]];
-  return backend3.runWebGLProgram(program, [x], x.dtype, customValues);
+  return backend2.runWebGLProgram(program, [x], x.dtype, customValues);
 }
 var clipByValueConfig = {
   kernelName: ClipByValue,
@@ -52233,15 +52233,15 @@ function makeComplexComponentTensorInfo(complexTensor, complexPart) {
   };
 }
 function complexAbs2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
-  const xData = backend3.texData.get(x.dataId);
+  const xData = backend2.texData.get(x.dataId);
   const program = new ComplexAbsProgram(x.shape);
   const programInputs = [
     makeComplexComponentTensorInfo(x, xData.complexTensorInfos.real),
     makeComplexComponentTensorInfo(x, xData.complexTensorInfos.imag)
   ];
-  return backend3.runWebGLProgram(program, programInputs, programInputs[0].dtype);
+  return backend2.runWebGLProgram(program, programInputs, programInputs[0].dtype);
 }
 var complexAbsConfig2 = {
   kernelName: ComplexAbs,
@@ -52357,31 +52357,31 @@ function shiftedChannels(channels, channel, shift) {
   return res.join();
 }
 function imag3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { input: input2 } = inputs;
-  const inputData = backend3.texData.get(input2.dataId);
-  return identity3({ inputs: { x: inputData.complexTensorInfos.imag }, backend: backend3 });
+  const inputData = backend2.texData.get(input2.dataId);
+  return identity3({ inputs: { x: inputData.complexTensorInfos.imag }, backend: backend2 });
 }
 var imagConfig2 = {
   kernelName: Imag,
   backendName: "webgl",
   kernelFunc: imag3
 };
-function concatImpl2(inputs, axis, backend3) {
+function concatImpl2(inputs, axis, backend2) {
   const dtype = inputs[0].dtype;
   if (dtype === "complex64") {
-    const reals = inputs.map((t) => real3({ inputs: { input: t }, backend: backend3 }));
-    const imags = inputs.map((t) => imag3({ inputs: { input: t }, backend: backend3 }));
-    const realConcated = concatImpl2(reals, axis, backend3);
-    const imagConcated = concatImpl2(imags, axis, backend3);
-    const result2 = complex3({ inputs: { real: realConcated, imag: imagConcated }, backend: backend3 });
-    reals.forEach((r) => backend3.disposeIntermediateTensorInfo(r));
-    imags.forEach((i) => backend3.disposeIntermediateTensorInfo(i));
-    backend3.disposeIntermediateTensorInfo(realConcated);
-    backend3.disposeIntermediateTensorInfo(imagConcated);
+    const reals = inputs.map((t) => real3({ inputs: { input: t }, backend: backend2 }));
+    const imags = inputs.map((t) => imag3({ inputs: { input: t }, backend: backend2 }));
+    const realConcated = concatImpl2(reals, axis, backend2);
+    const imagConcated = concatImpl2(imags, axis, backend2);
+    const result2 = complex3({ inputs: { real: realConcated, imag: imagConcated }, backend: backend2 });
+    reals.forEach((r) => backend2.disposeIntermediateTensorInfo(r));
+    imags.forEach((i) => backend2.disposeIntermediateTensorInfo(i));
+    backend2.disposeIntermediateTensorInfo(realConcated);
+    backend2.disposeIntermediateTensorInfo(imagConcated);
     return result2;
   }
-  let runOnCpu = backend3.shouldExecuteOnCPU(inputs);
+  let runOnCpu = backend2.shouldExecuteOnCPU(inputs);
   if (dtype === "string") {
     runOnCpu = true;
   }
@@ -52389,64 +52389,64 @@ function concatImpl2(inputs, axis, backend3) {
     const tensors2D2 = inputs.map((t) => {
       const innerSize = util_exports.sizeFromShape(t.shape.slice(axis));
       const shape = [-1, innerSize];
-      return reshape4({ inputs: { x: t }, backend: backend3, attrs: { shape } });
+      return reshape4({ inputs: { x: t }, backend: backend2, attrs: { shape } });
     });
     const inputsValShapes = tensors2D2.map((t) => {
-      return { vals: backend3.readSync(t.dataId), shape: t.shape };
+      return { vals: backend2.readSync(t.dataId), shape: t.shape };
     });
     const outShape2 = backend_util_exports.computeOutShape(tensors2D2.map((t) => t.shape), 1);
     const simplyConcat = tensors2D2[0].shape[0] === 1;
     const outVals = concatImplCPU(inputsValShapes, outShape2, dtype, simplyConcat);
     const finalOutShape = backend_util_exports.computeOutShape(inputs.map((t) => t.shape), axis);
-    const outInfo = backend3.makeTensorInfo(finalOutShape, dtype, outVals);
-    tensors2D2.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+    const outInfo = backend2.makeTensorInfo(finalOutShape, dtype, outVals);
+    tensors2D2.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
     return outInfo;
   }
   if (inputs.length > env().getNumber("WEBGL_MAX_TEXTURES_IN_SHADER")) {
     const midIndex = Math.floor(inputs.length / 2);
-    const leftSide = concatImpl2(inputs.slice(0, midIndex), axis, backend3);
-    const rightSide = concatImpl2(inputs.slice(midIndex), axis, backend3);
-    const result2 = concatImpl2([leftSide, rightSide], axis, backend3);
-    backend3.disposeIntermediateTensorInfo(leftSide);
-    backend3.disposeIntermediateTensorInfo(rightSide);
+    const leftSide = concatImpl2(inputs.slice(0, midIndex), axis, backend2);
+    const rightSide = concatImpl2(inputs.slice(midIndex), axis, backend2);
+    const result2 = concatImpl2([leftSide, rightSide], axis, backend2);
+    backend2.disposeIntermediateTensorInfo(leftSide);
+    backend2.disposeIntermediateTensorInfo(rightSide);
     return result2;
   }
   if (env().getBool("WEBGL_PACK_ARRAY_OPERATIONS") && inputs[0].shape.length > 1) {
     const program2 = new ConcatPackedProgram(inputs.map((t) => t.shape), axis);
-    return backend3.runWebGLProgram(program2, inputs, dtype);
+    return backend2.runWebGLProgram(program2, inputs, dtype);
   }
-  const { tensors2D, outShape } = computeTensors2D(inputs, axis, backend3);
+  const { tensors2D, outShape } = computeTensors2D(inputs, axis, backend2);
   const program = new ConcatProgram(tensors2D.map((t) => t.shape));
-  const result = backend3.runWebGLProgram(program, tensors2D, dtype);
-  tensors2D.forEach((r) => backend3.disposeIntermediateTensorInfo(r));
-  const reshapedResult = reshape4({ inputs: { x: result }, attrs: { shape: outShape }, backend: backend3 });
-  backend3.disposeIntermediateTensorInfo(result);
+  const result = backend2.runWebGLProgram(program, tensors2D, dtype);
+  tensors2D.forEach((r) => backend2.disposeIntermediateTensorInfo(r));
+  const reshapedResult = reshape4({ inputs: { x: result }, attrs: { shape: outShape }, backend: backend2 });
+  backend2.disposeIntermediateTensorInfo(result);
   return reshapedResult;
 }
-function computeTensors2D(inputs, axis, backend3) {
+function computeTensors2D(inputs, axis, backend2) {
   const outShape = backend_util_exports.computeOutShape(inputs.map((t) => t.shape), axis);
   const tensors2D = inputs.map((x) => reshape4({
     inputs: { x },
     attrs: { shape: [-1, util_exports.sizeFromShape(x.shape.slice(axis))] },
-    backend: backend3
+    backend: backend2
   }));
   return { tensors2D, outShape };
 }
 function concat3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { axis } = attrs;
   const $axis = util_exports.parseAxisParam(axis, inputs[0].shape)[0];
   const outShape = backend_util_exports.computeOutShape(inputs.map((t) => t.shape), $axis);
   if (util_exports.sizeFromShape(outShape) === 0) {
-    return backend3.makeTensorInfo(outShape, inputs[0].dtype, []);
+    return backend2.makeTensorInfo(outShape, inputs[0].dtype, []);
   }
   const $inputs = inputs.filter((t) => util_exports.sizeFromShape(t.shape) > 0);
   if ($inputs.length === 1) {
-    return identity3({ inputs: { x: $inputs[0] }, backend: backend3 });
+    return identity3({ inputs: { x: $inputs[0] }, backend: backend2 });
   }
   const shapes = $inputs.map((t) => t.shape);
   backend_util_exports.assertParamsConsistent(shapes, $axis);
-  return concatImpl2($inputs, $axis, backend3);
+  return concatImpl2($inputs, $axis, backend2);
 }
 var concatConfig2 = {
   kernelName: Concat,
@@ -52820,14 +52820,14 @@ function conv2dByMatMul({
   x,
   filter,
   convInfo,
-  backend: backend3,
+  backend: backend2,
   bias = null,
   preluActivationWeights = null,
   leakyreluAlpha = 0,
   activation: activation2 = null
 }) {
   const xShape = x.shape;
-  const xTexData = backend3.texData.get(x.dataId);
+  const xTexData = backend2.texData.get(x.dataId);
   const sharedMatMulDim = convInfo.inChannels;
   const outerShapeX = xShape[0] * xShape[1] * xShape[2];
   const outerShapeFilter = convInfo.outChannels;
@@ -52851,14 +52851,14 @@ function conv2dByMatMul({
     util_exports.assert(isReshapeFree(xTexData.shape, xReshaped.shape), () => `packed reshape ${xTexData.shape} to ${xReshaped.shape} isn't free`);
     const filterReshaped = reshape4({
       inputs: { x: filter },
-      backend: backend3,
+      backend: backend2,
       attrs: { shape: [1, convInfo.inChannels, convInfo.outChannels] }
     });
     intermediates.push(filterReshaped);
     const pointwiseConv = batchMatMulImpl({
       a: xReshaped,
       b: filterReshaped,
-      backend: backend3,
+      backend: backend2,
       transposeA,
       transposeB,
       bias,
@@ -52866,23 +52866,23 @@ function conv2dByMatMul({
       preluActivationWeights,
       leakyreluAlpha
     });
-    const pointwiseConvTexData = backend3.texData.get(pointwiseConv.dataId);
+    const pointwiseConvTexData = backend2.texData.get(pointwiseConv.dataId);
     util_exports.assert(pointwiseConvTexData.isPacked, () => "batchMatMul result is expected to be packed");
     xTexData.shape = originalXTexDataShape;
     pointwiseConvTexData.shape = convInfo.outShape;
-    out = identity3({ inputs: { x: pointwiseConv }, backend: backend3 });
+    out = identity3({ inputs: { x: pointwiseConv }, backend: backend2 });
     out.shape = convInfo.outShape;
     intermediates.push(pointwiseConv);
   } else {
     const targetShape = isChannelsLast ? xShape[0] * xShape[1] * xShape[2] : xShape[0] * xShape[2] * xShape[3];
     const xReshaped = reshape4({
       inputs: { x },
-      backend: backend3,
+      backend: backend2,
       attrs: { shape: [1, targetShape, convInfo.inChannels] }
     });
     const filterReshaped = reshape4({
       inputs: { x: filter },
-      backend: backend3,
+      backend: backend2,
       attrs: { shape: [1, convInfo.inChannels, convInfo.outChannels] }
     });
     const result = batchMatMulImpl({
@@ -52890,19 +52890,19 @@ function conv2dByMatMul({
       b: filterReshaped,
       transposeA,
       transposeB,
-      backend: backend3,
+      backend: backend2,
       bias,
       activation: activation2,
       preluActivationWeights,
       leakyreluAlpha
     });
-    out = reshape4({ inputs: { x: result }, backend: backend3, attrs: { shape: convInfo.outShape } });
+    out = reshape4({ inputs: { x: result }, backend: backend2, attrs: { shape: convInfo.outShape } });
     intermediates.push(xReshaped);
     intermediates.push(filterReshaped);
     intermediates.push(result);
   }
   for (const i of intermediates) {
-    backend3.disposeIntermediateTensorInfo(i);
+    backend2.disposeIntermediateTensorInfo(i);
   }
   return out;
 }
@@ -52910,7 +52910,7 @@ function conv2dWithIm2Row({
   x,
   filter,
   convInfo,
-  backend: backend3,
+  backend: backend2,
   bias = null,
   preluActivationWeights = null,
   leakyreluAlpha = 0,
@@ -52931,10 +52931,10 @@ function conv2dWithIm2Row({
   const transposeA = true;
   const transposeB = false;
   const intermediates = [];
-  const xSqueezed = reshape4({ inputs: { x }, backend: backend3, attrs: { shape: x.shape.slice(1) } });
+  const xSqueezed = reshape4({ inputs: { x }, backend: backend2, attrs: { shape: x.shape.slice(1) } });
   const w2Row = reshape4({
     inputs: { x: filter },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [1, sharedDim, util_exports.sizeFromShape(filter.shape) / sharedDim] }
   });
   intermediates.push(xSqueezed);
@@ -52949,10 +52949,10 @@ function conv2dWithIm2Row({
     [convInfo.filterWidth * convInfo.inChannels],
     [convInfo.outWidth]
   ];
-  const im2Col = backend3.runWebGLProgram(im2ColProgram, [xSqueezed], "float32", customValues);
+  const im2Col = backend2.runWebGLProgram(im2ColProgram, [xSqueezed], "float32", customValues);
   const im2ColReshaped = reshape4({
     inputs: { x: im2Col },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [1, x2ColShape[0], x2ColShape[1]] }
   });
   intermediates.push(im2Col);
@@ -52970,42 +52970,42 @@ function conv2dWithIm2Row({
     inputs.push(preluActivationWeights);
   }
   if (hasLeakyreluAlpha) {
-    const $leakyreluAlpha = backend3.makeTensorInfo([], "float32", util_exports.createScalarValue(leakyreluAlpha, "float32"));
+    const $leakyreluAlpha = backend2.makeTensorInfo([], "float32", util_exports.createScalarValue(leakyreluAlpha, "float32"));
     inputs.push($leakyreluAlpha);
     intermediates.push($leakyreluAlpha);
   }
-  const product = backend3.runWebGLProgram(matmulProgram, inputs, "float32");
+  const product = backend2.runWebGLProgram(matmulProgram, inputs, "float32");
   const outShape = isChannelsLast ? [1, outHeight, outWidth, convInfo.outChannels] : [1, convInfo.outChannels, outHeight, outWidth];
-  const out = reshape4({ inputs: { x: product }, backend: backend3, attrs: { shape: outShape } });
+  const out = reshape4({ inputs: { x: product }, backend: backend2, attrs: { shape: outShape } });
   intermediates.push(product);
   for (const i of intermediates) {
-    backend3.disposeIntermediateTensorInfo(i);
+    backend2.disposeIntermediateTensorInfo(i);
   }
   return out;
 }
-function conv2d5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+function conv2d4(args) {
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter } = inputs;
   const { strides, pad: pad3, dataFormat, dilations, dimRoundingMode } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
   const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad3, dimRoundingMode, false, $dataFormat);
   let out;
   if (convInfo.filterHeight === 1 && convInfo.filterWidth === 1 && convInfo.dilationHeight === 1 && convInfo.dilationWidth === 1 && convInfo.strideHeight === 1 && convInfo.strideWidth === 1 && (convInfo.padInfo.type === "SAME" || convInfo.padInfo.type === "VALID")) {
-    out = conv2dByMatMul({ x, filter, convInfo, backend: backend3 });
+    out = conv2dByMatMul({ x, filter, convInfo, backend: backend2 });
   } else if (env().getBool("WEBGL_CONV_IM2COL") && x.shape[0] === 1) {
-    out = conv2dWithIm2Row({ x, filter, convInfo, backend: backend3 });
+    out = conv2dWithIm2Row({ x, filter, convInfo, backend: backend2 });
   } else {
     const program = new Conv2DProgram(convInfo);
-    out = backend3.runWebGLProgram(program, [x, filter], "float32");
+    out = backend2.runWebGLProgram(program, [x, filter], "float32");
   }
-  const outReshaped = reshape4({ inputs: { x: out }, backend: backend3, attrs: { shape: convInfo.outShape } });
-  backend3.disposeIntermediateTensorInfo(out);
+  const outReshaped = reshape4({ inputs: { x: out }, backend: backend2, attrs: { shape: convInfo.outShape } });
+  backend2.disposeIntermediateTensorInfo(out);
   return outReshaped;
 }
 var conv2DConfig2 = {
   kernelName: Conv2D,
   backendName: "webgl",
-  kernelFunc: conv2d5
+  kernelFunc: conv2d4
 };
 var Conv2DDerFilterProgram = class {
   constructor(convInfo) {
@@ -53260,13 +53260,13 @@ var Conv3DDerInputProgram = class {
   }
 };
 function conv2DBackpropFilter3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, dy } = inputs;
   const { strides, pad: pad3, dataFormat, dimRoundingMode, filterShape } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
   const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filterShape, strides, 1, pad3, dimRoundingMode, false, $dataFormat);
   const program = new Conv2DDerFilterProgram(convInfo);
-  return backend3.runWebGLProgram(program, [x, dy], "float32");
+  return backend2.runWebGLProgram(program, [x, dy], "float32");
 }
 var conv2DBackpropFilterConfig2 = {
   kernelName: Conv2DBackpropFilter,
@@ -53274,13 +53274,13 @@ var conv2DBackpropFilterConfig2 = {
   kernelFunc: conv2DBackpropFilter3
 };
 function conv2DBackpropInput3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, filter } = inputs;
   const { inputShape, strides, pad: pad3, dataFormat, dimRoundingMode } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
   const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides, 1, pad3, dimRoundingMode, false, $dataFormat);
   const program = new Conv2DDerInputProgram(convInfo);
-  return backend3.runWebGLProgram(program, [dy, filter], "float32");
+  return backend2.runWebGLProgram(program, [dy, filter], "float32");
 }
 var conv2DBackpropInputConfig2 = {
   kernelName: Conv2DBackpropInput,
@@ -53288,12 +53288,12 @@ var conv2DBackpropInputConfig2 = {
   kernelFunc: conv2DBackpropInput3
 };
 function conv3D2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter } = inputs;
   const { strides, pad: pad3, dilations } = attrs;
   const convInfo = backend_util_exports.computeConv3DInfo(x.shape, filter.shape, strides, dilations, pad3);
   const program = new Conv3DProgram(convInfo);
-  return backend3.runWebGLProgram(program, [x, filter], "float32");
+  return backend2.runWebGLProgram(program, [x, filter], "float32");
 }
 var conv3DConfig2 = {
   kernelName: Conv3D,
@@ -53301,12 +53301,12 @@ var conv3DConfig2 = {
   kernelFunc: conv3D2
 };
 function conv3DBackpropFilterV22(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, dy } = inputs;
   const { strides, pad: pad3, filterShape } = attrs;
   const convInfo = backend_util_exports.computeConv3DInfo(x.shape, filterShape, strides, 1, pad3);
   const program = new Conv3DDerFilterProgram(convInfo);
-  return backend3.runWebGLProgram(program, [x, dy], "float32");
+  return backend2.runWebGLProgram(program, [x, dy], "float32");
 }
 var conv3DBackpropFilterV2Config2 = {
   kernelName: Conv3DBackpropFilterV2,
@@ -53314,12 +53314,12 @@ var conv3DBackpropFilterV2Config2 = {
   kernelFunc: conv3DBackpropFilterV22
 };
 function conv3DBackpropInput2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, filter } = inputs;
   const { pad: pad3, strides, inputShape } = attrs;
   const convInfo = backend_util_exports.computeConv3DInfo(inputShape, filter.shape, strides, 1, pad3);
   const program = new Conv3DDerInputProgram(convInfo);
-  return backend3.runWebGLProgram(program, [dy, filter], "float32");
+  return backend2.runWebGLProgram(program, [dy, filter], "float32");
 }
 var conv3DBackpropInputConfig = {
   kernelName: Conv3DBackpropInputV2,
@@ -53438,11 +53438,11 @@ var CropAndResizeProgram = class {
   }
 };
 var cropAndResize3 = (args) => {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { image: image3, boxes, boxInd } = inputs;
   const { cropSize, method, extrapolationValue } = attrs;
   const program = new CropAndResizeProgram(image3.shape, boxes.shape, cropSize, method, extrapolationValue);
-  return backend3.runWebGLProgram(program, [image3, boxes, boxInd], "float32");
+  return backend2.runWebGLProgram(program, [image3, boxes, boxInd], "float32");
 };
 var cropAndResizeConfig2 = {
   kernelName: CropAndResize,
@@ -53509,39 +53509,39 @@ function getFinalCoord(rank, name) {
   }
 }
 function cumsum3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, exclusive, reverse: reverse5 } = attrs;
   const xRank = x.shape.length;
   const permutation = backend_util_exports.getAxesPermutation([axis], xRank);
   let permutedX = x;
   if (permutation != null) {
-    permutedX = transpose3({ inputs: { x }, backend: backend3, attrs: { perm: permutation } });
+    permutedX = transpose3({ inputs: { x }, backend: backend2, attrs: { perm: permutation } });
   }
   const permutedAxis = backend_util_exports.getInnerMostAxes(1, xRank)[0];
   if (permutedAxis !== xRank - 1) {
     throw new Error(`WebGL cumsum shader expects an inner-most axis=${x.shape.length - 1} but got axis=${axis}`);
   }
   const size = permutedX.shape[permutedAxis];
-  let result = identity3({ inputs: { x: permutedX }, backend: backend3 });
+  let result = identity3({ inputs: { x: permutedX }, backend: backend2 });
   for (let i = 0; i <= Math.ceil(Math.log2(size)) - 1; i++) {
     const program = new CumSumProgram(permutedX.shape, false, reverse5);
     const customValues = [[i]];
     const prevResult = result;
-    result = backend3.runWebGLProgram(program, [result], result.dtype, customValues);
-    backend3.disposeIntermediateTensorInfo(prevResult);
+    result = backend2.runWebGLProgram(program, [result], result.dtype, customValues);
+    backend2.disposeIntermediateTensorInfo(prevResult);
   }
   if (exclusive) {
     const program = new CumSumProgram(permutedX.shape, exclusive, reverse5);
     const prevResult = result;
-    result = backend3.runWebGLProgram(program, [result], result.dtype);
-    backend3.disposeIntermediateTensorInfo(prevResult);
+    result = backend2.runWebGLProgram(program, [result], result.dtype);
+    backend2.disposeIntermediateTensorInfo(prevResult);
   }
   if (permutation != null) {
     const reversePermutation = backend_util_exports.getUndoAxesPermutation(permutation);
-    const reverseTransposedResult = transpose3({ inputs: { x: result }, backend: backend3, attrs: { perm: reversePermutation } });
-    backend3.disposeIntermediateTensorInfo(result);
-    backend3.disposeIntermediateTensorInfo(permutedX);
+    const reverseTransposedResult = transpose3({ inputs: { x: result }, backend: backend2, attrs: { perm: reversePermutation } });
+    backend2.disposeIntermediateTensorInfo(result);
+    backend2.disposeIntermediateTensorInfo(permutedX);
     return reverseTransposedResult;
   }
   return result;
@@ -53552,19 +53552,19 @@ var cumsumConfig2 = {
   kernelFunc: cumsum3
 };
 function denseBincount3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, weights } = inputs;
   const { size, binaryOutput } = attrs;
   if (x.shape.length === 1) {
-    const xVals = backend3.readSync(x.dataId);
-    const weightsVals = backend3.readSync(weights.dataId);
+    const xVals = backend2.readSync(x.dataId);
+    const weightsVals = backend2.readSync(weights.dataId);
     const outVals = bincountImplCPU(xVals, weightsVals, weights.dtype, weights.shape, size);
-    return backend3.makeTensorInfo([size], weights.dtype, outVals);
+    return backend2.makeTensorInfo([size], weights.dtype, outVals);
   } else if (x.shape.length === 2) {
-    const xBuf = backend3.bufferSync(x);
-    const weightsBuf = backend3.bufferSync(weights);
+    const xBuf = backend2.bufferSync(x);
+    const weightsBuf = backend2.bufferSync(weights);
     const outBuf = bincountReduceImplCPU(xBuf, weightsBuf, size, binaryOutput);
-    return backend3.makeTensorInfo(outBuf.shape, weights.dtype, outBuf.values);
+    return backend2.makeTensorInfo(outBuf.shape, weights.dtype, outBuf.values);
   }
   throw new Error(`Error in denseBincount: input must be at most rank 2, but got rank${x.shape.length}.`);
 }
@@ -53638,7 +53638,7 @@ var DepthToSpaceProgram = class {
   }
 };
 function depthToSpace3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { blockSize, dataFormat } = attrs;
   const batchSize = x.shape[0];
@@ -53650,7 +53650,7 @@ function depthToSpace3(args) {
   const outputDepth = inputDepth / (blockSize * blockSize);
   const outputShape = dataFormat === "NHWC" ? [batchSize, outputHeight, outputWidth, outputDepth] : [batchSize, outputDepth, outputHeight, outputWidth];
   const program = new DepthToSpaceProgram(outputShape, blockSize, dataFormat);
-  return backend3.runWebGLProgram(program, [x], x.dtype);
+  return backend2.runWebGLProgram(program, [x], x.dtype);
 }
 var depthToSpaceConfig2 = {
   kernelName: DepthToSpace,
@@ -54045,7 +54045,7 @@ var DepthwiseConvPacked2DProgram = class {
   }
 };
 function depthwiseConv2dNative2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter } = inputs;
   const { strides, pad: pad3, dilations, dimRoundingMode } = attrs;
   let $dilations = dilations;
@@ -54066,7 +54066,7 @@ function depthwiseConv2dNative2(args) {
     [convInfo.dilationHeight, convInfo.dilationWidth],
     [convInfo.inHeight, convInfo.inWidth]
   ];
-  return backend3.runWebGLProgram(program, [x, filter], "float32", customValues);
+  return backend2.runWebGLProgram(program, [x, filter], "float32", customValues);
 }
 var depthwiseConv2dNativeConfig2 = {
   kernelName: DepthwiseConv2dNative,
@@ -54180,12 +54180,12 @@ var DepthwiseConv2DDerInputProgram = class {
   }
 };
 function depthwiseConv2dNativeBackpropFilter3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, dy } = inputs;
   const { strides, dilations, pad: pad3, dimRoundingMode, filterShape } = attrs;
   const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filterShape, strides, dilations, pad3, dimRoundingMode, true);
   const program = new DepthwiseConv2DDerFilterProgram(convInfo);
-  return backend3.runWebGLProgram(program, [x, dy], "float32");
+  return backend2.runWebGLProgram(program, [x, dy], "float32");
 }
 var depthwiseConv2dNativeBackpropFilterConfig2 = {
   kernelName: DepthwiseConv2dNativeBackpropFilter,
@@ -54193,12 +54193,12 @@ var depthwiseConv2dNativeBackpropFilterConfig2 = {
   kernelFunc: depthwiseConv2dNativeBackpropFilter3
 };
 function depthwiseConv2dNativeBackpropInput3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, filter } = inputs;
   const { strides, dilations, pad: pad3, dimRoundingMode, inputShape } = attrs;
   const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides, dilations, pad3, dimRoundingMode, true);
   const program = new DepthwiseConv2DDerInputProgram(convInfo);
-  return backend3.runWebGLProgram(program, [dy, filter], "float32");
+  return backend2.runWebGLProgram(program, [dy, filter], "float32");
 }
 var depthwiseConv2dNativeBackpropInputConfig2 = {
   kernelName: DepthwiseConv2dNativeBackpropInput,
@@ -54219,16 +54219,16 @@ var DiagProgram = class {
   }
 };
 function diag3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
   const outShape = [...x.shape, ...x.shape];
   const xSize = util_exports.sizeFromShape(x.shape);
-  const flat = reshape4({ inputs: { x }, backend: backend3, attrs: { shape: [xSize] } });
+  const flat = reshape4({ inputs: { x }, backend: backend2, attrs: { shape: [xSize] } });
   const program = new DiagProgram(xSize);
-  const res = backend3.runWebGLProgram(program, [flat], flat.dtype);
-  const out = reshape4({ inputs: { x: res }, backend: backend3, attrs: { shape: outShape } });
-  backend3.disposeIntermediateTensorInfo(flat);
-  backend3.disposeIntermediateTensorInfo(res);
+  const res = backend2.runWebGLProgram(program, [flat], flat.dtype);
+  const out = reshape4({ inputs: { x: res }, backend: backend2, attrs: { shape: outShape } });
+  backend2.disposeIntermediateTensorInfo(flat);
+  backend2.disposeIntermediateTensorInfo(res);
   return out;
 }
 var diagConfig2 = {
@@ -54294,15 +54294,15 @@ var Dilation2DProgram = class {
   }
 };
 function dilation2D(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter } = inputs;
   const { strides, pad: pad3, dilations } = attrs;
   const convInfo = backend_util_exports.computeDilation2DInfo(x.shape, filter.shape, strides, pad3, "NHWC", dilations);
   let out;
   const program = new Dilation2DProgram(convInfo);
-  out = backend3.runWebGLProgram(program, [x, filter], "float32");
-  const outReshaped = reshape4({ inputs: { x: out }, backend: backend3, attrs: { shape: convInfo.outShape } });
-  backend3.disposeIntermediateTensorInfo(out);
+  out = backend2.runWebGLProgram(program, [x, filter], "float32");
+  const outReshaped = reshape4({ inputs: { x: out }, backend: backend2, attrs: { shape: convInfo.outShape } });
+  backend2.disposeIntermediateTensorInfo(out);
   return outReshaped;
 }
 var dilation2DConfig = {
@@ -54311,7 +54311,7 @@ var dilation2DConfig = {
   kernelFunc: dilation2D
 };
 function einsum3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { equation } = attrs;
   const tensors = inputs;
   const { allDims, summedDims, idDims } = backend_util_exports.decodeEinsumEquation(equation, tensors.length);
@@ -54328,7 +54328,7 @@ function einsum3(args) {
       if (backend_util_exports.isIdentityPermutation(perm)) {
         x = tensors[idTerm];
       } else {
-        x = transpose3({ inputs: { x: tensors[idTerm] }, backend: backend3, attrs: { perm } });
+        x = transpose3({ inputs: { x: tensors[idTerm] }, backend: backend2, attrs: { perm } });
         tensorsToDispose.push(x);
       }
       const targetShape = x.shape.slice();
@@ -54336,21 +54336,21 @@ function einsum3(args) {
         targetShape.splice(dimsToExpand[k], 0, 1);
       }
       if (!util_exports.arraysEqual(x.shape, targetShape)) {
-        x = reshape4({ inputs: { x }, backend: backend3, attrs: { shape: targetShape } });
+        x = reshape4({ inputs: { x }, backend: backend2, attrs: { shape: targetShape } });
         tensorsToDispose.push(x);
       }
       if (out === null) {
         out = x;
       } else {
-        out = multiply4({ inputs: { a: x, b: out }, backend: backend3 });
+        out = multiply3({ inputs: { a: x, b: out }, backend: backend2 });
         tensorsToDispose.push(out);
       }
     }
     if (i < nSteps - 1) {
       if (path[i] >= 0) {
-        out = sum5({
+        out = sum4({
           inputs: { x: out },
-          backend: backend3,
+          backend: backend2,
           attrs: {
             axis: path[i] - (allDims.length - numDimsRemaining),
             keepDims: false
@@ -54365,7 +54365,7 @@ function einsum3(args) {
     if (tensorInfo === out) {
       continue;
     }
-    backend3.disposeIntermediateTensorInfo(tensorInfo);
+    backend2.disposeIntermediateTensorInfo(tensorInfo);
   }
   return out;
 }
@@ -54391,16 +54391,16 @@ var eluConfig2 = {
   backendName: "webgl",
   kernelFunc: elu5
 };
-var ELU_DER2 = `return (b >= 1.0) ? a : a * (b + 1.0);`;
+var ELU_DER = `return (b >= 1.0) ? a : a * (b + 1.0);`;
 var ELU_DER_PACKED = `
   vec4 bGTEZero = vec4(greaterThanEqual(b, vec4(0.)));
   return (bGTEZero * a) + ((vec4(1.0) - bGTEZero) * (a * (b + vec4(1.0))));
 `;
 var eluGrad2 = (args) => {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { dy, y } = inputs;
-  const program = env().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new BinaryOpPackedProgram(ELU_DER_PACKED, dy.shape, y.shape) : new BinaryOpProgram(ELU_DER2, dy.shape, y.shape);
-  return backend3.runWebGLProgram(program, [dy, y], dy.dtype);
+  const program = env().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new BinaryOpPackedProgram(ELU_DER_PACKED, dy.shape, y.shape) : new BinaryOpProgram(ELU_DER, dy.shape, y.shape);
+  return backend2.runWebGLProgram(program, [dy, y], dy.dtype);
 };
 var eluGradConfig3 = {
   kernelName: EluGrad,
@@ -54457,7 +54457,7 @@ var expConfig2 = {
   kernelFunc: exp3
 };
 function expandDims4(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const { dim } = attrs;
   const { input: input2 } = inputs;
   const inputRank = input2.shape.length;
@@ -54468,7 +54468,7 @@ function expandDims4(args) {
     $dim = inputRank + dim + 1;
   }
   newShape.splice($dim, 0, 1);
-  return reshape4({ inputs: { x: input2 }, backend: backend3, attrs: { shape: newShape } });
+  return reshape4({ inputs: { x: input2 }, backend: backend2, attrs: { shape: newShape } });
 }
 var expandDimsConfig2 = {
   kernelName: ExpandDims,
@@ -54533,12 +54533,12 @@ var FFTProgram = class {
     `;
   }
 };
-function fftImpl2(x, inverse, backend3) {
-  const xData = backend3.texData.get(x.dataId);
+function fftImpl2(x, inverse, backend2) {
+  const xData = backend2.texData.get(x.dataId);
   const inputSize = util_exports.sizeFromShape(x.shape);
   const innerDimensionSize = x.shape[x.shape.length - 1];
   const batch = inputSize / innerDimensionSize;
-  const input2D = reshape4({ inputs: { x }, backend: backend3, attrs: { shape: [batch, innerDimensionSize] } });
+  const input2D = reshape4({ inputs: { x }, backend: backend2, attrs: { shape: [batch, innerDimensionSize] } });
   const xShape = input2D.shape;
   const realProgram = new FFTProgram("real", xShape, inverse);
   const imagProgram = new FFTProgram("imag", xShape, inverse);
@@ -54554,20 +54554,20 @@ function fftImpl2(x, inverse, backend3) {
       shape: xShape
     }
   ];
-  const realPart = backend3.runWebGLProgram(realProgram, inputs, "float32");
-  const imagPart = backend3.runWebGLProgram(imagProgram, inputs, "float32");
-  const complexOutput = complex3({ inputs: { real: realPart, imag: imagPart }, backend: backend3 });
-  backend3.disposeIntermediateTensorInfo(realPart);
-  backend3.disposeIntermediateTensorInfo(imagPart);
-  const complexOutputReshaped = reshape4({ inputs: { x: complexOutput }, backend: backend3, attrs: { shape: x.shape } });
-  backend3.disposeIntermediateTensorInfo(input2D);
-  backend3.disposeIntermediateTensorInfo(complexOutput);
+  const realPart = backend2.runWebGLProgram(realProgram, inputs, "float32");
+  const imagPart = backend2.runWebGLProgram(imagProgram, inputs, "float32");
+  const complexOutput = complex3({ inputs: { real: realPart, imag: imagPart }, backend: backend2 });
+  backend2.disposeIntermediateTensorInfo(realPart);
+  backend2.disposeIntermediateTensorInfo(imagPart);
+  const complexOutputReshaped = reshape4({ inputs: { x: complexOutput }, backend: backend2, attrs: { shape: x.shape } });
+  backend2.disposeIntermediateTensorInfo(input2D);
+  backend2.disposeIntermediateTensorInfo(complexOutput);
   return complexOutputReshaped;
 }
 function fft3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { input: input2 } = inputs;
-  return fftImpl2(input2, false, backend3);
+  return fftImpl2(input2, false, backend2);
 }
 var fftConfig2 = {
   kernelName: FFT,
@@ -54589,18 +54589,18 @@ var FillProgram = class {
   }
 };
 function fill3(args) {
-  const { backend: backend3, attrs } = args;
+  const { backend: backend2, attrs } = args;
   const { shape, value } = attrs;
   let { dtype } = attrs;
   dtype = dtype || util_exports.inferDtype(value);
   if (dtype === "string") {
     const values = util_exports.getArrayFromDType(dtype, util_exports.sizeFromShape(shape));
     values.fill(value);
-    return backend3.makeTensorInfo(shape, dtype, values);
+    return backend2.makeTensorInfo(shape, dtype, values);
   } else {
     const program = new FillProgram(shape, value);
     const customValues = [[value]];
-    return backend3.runWebGLProgram(program, [], dtype, customValues);
+    return backend2.runWebGLProgram(program, [], dtype, customValues);
   }
 }
 var fillConfig2 = {
@@ -54634,9 +54634,9 @@ var FlipLeftRightProgram = class {
 var flipLeftRightConfig2 = {
   kernelName: FlipLeftRight,
   backendName: "webgl",
-  kernelFunc: ({ inputs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, backend: backend2 }) => {
     const { image: image3 } = inputs;
-    const webglBackend = backend3;
+    const webglBackend = backend2;
     const program = new FlipLeftRightProgram(image3.shape);
     const output = webglBackend.runWebGLProgram(program, [image3], image3.dtype);
     return output;
@@ -54771,7 +54771,7 @@ var fromPixelsConfig = {
 };
 var fromPixels2DContext2;
 function fromPixels2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   let { pixels } = inputs;
   const { numChannels } = attrs;
   const isVideo = typeof HTMLVideoElement !== "undefined" && pixels instanceof HTMLVideoElement;
@@ -54791,16 +54791,16 @@ function fromPixels2(args) {
     fromPixels2DContext2.drawImage(pixels, 0, 0, width, height);
     pixels = fromPixels2DContext2.canvas;
   }
-  const tempPixelHandle = backend3.makeTensorInfo(texShape, "int32");
-  backend3.texData.get(tempPixelHandle.dataId).usage = TextureUsage.PIXELS;
-  backend3.gpgpu.uploadPixelDataToTexture(backend3.getTexture(tempPixelHandle.dataId), pixels);
+  const tempPixelHandle = backend2.makeTensorInfo(texShape, "int32");
+  backend2.texData.get(tempPixelHandle.dataId).usage = TextureUsage.PIXELS;
+  backend2.gpgpu.uploadPixelDataToTexture(backend2.getTexture(tempPixelHandle.dataId), pixels);
   const program = env().getBool("WEBGL_PACK") ? new FromPixelsPackedProgram(outShape) : new FromPixelsProgram(outShape);
-  const res = backend3.runWebGLProgram(program, [tempPixelHandle], "int32");
-  backend3.disposeData(tempPixelHandle.dataId);
+  const res = backend2.runWebGLProgram(program, [tempPixelHandle], "int32");
+  backend2.disposeData(tempPixelHandle.dataId);
   return res;
 }
 function fusedConv2d(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
     strides,
@@ -54820,7 +54820,7 @@ function fusedConv2d(args) {
       x,
       filter,
       convInfo,
-      backend: backend3,
+      backend: backend2,
       bias,
       activation: activation2,
       preluActivationWeights,
@@ -54831,7 +54831,7 @@ function fusedConv2d(args) {
       x,
       filter,
       convInfo,
-      backend: backend3,
+      backend: backend2,
       bias,
       activation: activation2,
       preluActivationWeights,
@@ -54851,15 +54851,15 @@ function fusedConv2d(args) {
       inputs2.push(preluActivationWeights);
     }
     if (hasLeakyreluAlpha) {
-      const $leakyreluAlpha = backend3.makeTensorInfo([], "float32", util_exports.createScalarValue(leakyreluAlpha, "float32"));
+      const $leakyreluAlpha = backend2.makeTensorInfo([], "float32", util_exports.createScalarValue(leakyreluAlpha, "float32"));
       inputs2.push($leakyreluAlpha);
       intermediates.push($leakyreluAlpha);
     }
-    out = backend3.runWebGLProgram(program, inputs2, "float32");
+    out = backend2.runWebGLProgram(program, inputs2, "float32");
   }
-  const outReshaped = reshape4({ inputs: { x: out }, backend: backend3, attrs: { shape: convInfo.outShape } });
+  const outReshaped = reshape4({ inputs: { x: out }, backend: backend2, attrs: { shape: convInfo.outShape } });
   intermediates.push(out);
-  intermediates.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  intermediates.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return outReshaped;
 }
 var fusedConv2DConfig2 = {
@@ -54868,7 +54868,7 @@ var fusedConv2DConfig2 = {
   kernelFunc: fusedConv2d
 };
 function fusedDepthwiseConv2D2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const { strides, pad: pad3, dilations, dimRoundingMode, activation: activation2, leakyreluAlpha } = attrs;
   const intermediates = [];
@@ -54891,7 +54891,7 @@ function fusedDepthwiseConv2D2(args) {
     programInputs.push(preluActivationWeights);
   }
   if (hasLeakyreluAlpha) {
-    const $leakyreluAlpha = backend3.makeTensorInfo([], "float32", util_exports.createScalarValue(leakyreluAlpha, "float32"));
+    const $leakyreluAlpha = backend2.makeTensorInfo([], "float32", util_exports.createScalarValue(leakyreluAlpha, "float32"));
     programInputs.push($leakyreluAlpha);
     intermediates.push($leakyreluAlpha);
   }
@@ -54907,8 +54907,8 @@ function fusedDepthwiseConv2D2(args) {
     [convInfo.dilationHeight, convInfo.dilationWidth],
     [convInfo.inHeight, convInfo.inWidth]
   ];
-  const result = backend3.runWebGLProgram(program, programInputs, "float32", customValues);
-  intermediates.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  const result = backend2.runWebGLProgram(program, programInputs, "float32", customValues);
+  intermediates.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return result;
 }
 var fusedDepthwiseConv2DConfig2 = {
@@ -54940,30 +54940,30 @@ var GatherNDProgram = class {
   }
 };
 function gatherNd2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { params, indices } = inputs;
   const indicesShape = indices.shape;
   const sliceRank = indicesShape[indicesShape.length - 1];
   const paramsSize = util_exports.sizeFromShape(params.shape);
   const [resultShape, numSlices, sliceSize, strides] = backend_util_exports.prepareAndValidate(params, indices);
-  const flattenIndices = reshape4({ inputs: { x: indices }, backend: backend3, attrs: { shape: [numSlices, sliceRank] } });
+  const flattenIndices = reshape4({ inputs: { x: indices }, backend: backend2, attrs: { shape: [numSlices, sliceRank] } });
   const flattenX = reshape4({
     inputs: { x: params },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [util_exports.sizeFromShape(params.shape) / sliceSize, sliceSize] }
   });
-  if (backend3.shouldExecuteOnCPU([params, indices]) || params.dtype === "string") {
-    const indicesData = backend3.readSync(indices.dataId);
-    const paramsBuf = backend3.bufferSync(params);
+  if (backend2.shouldExecuteOnCPU([params, indices]) || params.dtype === "string") {
+    const indicesData = backend2.readSync(indices.dataId);
+    const paramsBuf = backend2.bufferSync(params);
     const outValue = gatherNdImplCPU(indicesData, paramsBuf, params.dtype, numSlices, sliceRank, sliceSize, strides, params.shape, paramsSize);
-    return backend3.makeTensorInfo(resultShape, params.dtype, outValue.values);
+    return backend2.makeTensorInfo(resultShape, params.dtype, outValue.values);
   }
   const program = new GatherNDProgram(sliceRank, strides, [numSlices, sliceSize]);
-  const res = backend3.runWebGLProgram(program, [flattenX, flattenIndices], flattenX.dtype);
-  const reshaped = reshape4({ inputs: { x: res }, backend: backend3, attrs: { shape: resultShape } });
-  backend3.disposeIntermediateTensorInfo(flattenIndices);
-  backend3.disposeIntermediateTensorInfo(flattenX);
-  backend3.disposeIntermediateTensorInfo(res);
+  const res = backend2.runWebGLProgram(program, [flattenX, flattenIndices], flattenX.dtype);
+  const reshaped = reshape4({ inputs: { x: res }, backend: backend2, attrs: { shape: resultShape } });
+  backend2.disposeIntermediateTensorInfo(flattenIndices);
+  backend2.disposeIntermediateTensorInfo(flattenX);
+  backend2.disposeIntermediateTensorInfo(res);
   return reshaped;
 }
 var gatherNdConfig2 = {
@@ -54999,11 +54999,11 @@ function getSourceCoords2(aShape, axis) {
   return sourceCoords.join();
 }
 function gatherV22(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, indices } = inputs;
   const { axis, batchDims } = attrs;
   const parsedAxis = util_exports.parseAxisParam(axis, x.shape)[0];
-  const indicesVals = backend3.readSync(indices.dataId);
+  const indicesVals = backend2.readSync(indices.dataId);
   const axisDim = x.shape[parsedAxis];
   for (let i = 0; i < indicesVals.length; ++i) {
     const index = indicesVals[i];
@@ -55014,7 +55014,7 @@ function gatherV22(args) {
   const toDispose = [];
   const flattenX = reshape4({
     inputs: { x },
-    backend: backend3,
+    backend: backend2,
     attrs: {
       shape: [
         shapeInfo.batchSize,
@@ -55026,7 +55026,7 @@ function gatherV22(args) {
   });
   const flattenIndex = reshape4({
     inputs: { x: indices },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [shapeInfo.batchSize, indicesSize / shapeInfo.batchSize] }
   });
   toDispose.push(flattenX);
@@ -55037,18 +55037,18 @@ function gatherV22(args) {
     indicesSize / shapeInfo.batchSize,
     shapeInfo.sliceSize
   ];
-  if (backend3.shouldExecuteOnCPU([x, indices]) || x.dtype === "string") {
-    const indicesBuf = backend3.bufferSync(flattenIndex);
-    const xBuf = backend3.bufferSync(flattenX);
+  if (backend2.shouldExecuteOnCPU([x, indices]) || x.dtype === "string") {
+    const indicesBuf = backend2.bufferSync(flattenIndex);
+    const xBuf = backend2.bufferSync(flattenX);
     const outBuf = gatherV2ImplCPU(xBuf, indicesBuf, flattenOutputShape);
-    toDispose.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
-    return backend3.makeTensorInfo(shapeInfo.outputShape, outBuf.dtype, outBuf.values);
+    toDispose.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
+    return backend2.makeTensorInfo(shapeInfo.outputShape, outBuf.dtype, outBuf.values);
   }
   const program = new GatherProgram(flattenX.shape, flattenOutputShape);
-  const res = backend3.runWebGLProgram(program, [flattenX, flattenIndex], flattenX.dtype);
+  const res = backend2.runWebGLProgram(program, [flattenX, flattenIndex], flattenX.dtype);
   toDispose.push(res);
-  const reshaped = reshape4({ inputs: { x: res }, backend: backend3, attrs: { shape: shapeInfo.outputShape } });
-  toDispose.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  const reshaped = reshape4({ inputs: { x: res }, backend: backend2, attrs: { shape: shapeInfo.outputShape } });
+  toDispose.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return reshaped;
 }
 var gatherV2Config2 = {
@@ -55087,9 +55087,9 @@ var greaterEqualConfig2 = {
   kernelFunc: greaterEqual3
 };
 function ifft3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { input: input2 } = inputs;
-  return fftImpl2(input2, true, backend3);
+  return fftImpl2(input2, true, backend2);
 }
 var ifftConfig2 = {
   kernelName: IFFT,
@@ -55148,10 +55148,10 @@ var lessEqualConfig2 = {
   kernelFunc: lessEqual3
 };
 function linSpace2(args) {
-  const { backend: backend3, attrs } = args;
+  const { backend: backend2, attrs } = args;
   const { start, stop, num } = attrs;
   const outVals = linSpaceImplCPU(start, stop, num);
-  return backend3.makeTensorInfo([outVals.length], "float32", outVals);
+  return backend2.makeTensorInfo([outVals.length], "float32", outVals);
 }
 var linSpaceConfig2 = {
   kernelName: LinSpace,
@@ -55341,11 +55341,11 @@ var LRNPackedProgram = class {
   }
 };
 var lrn = (args) => {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { depthRadius, bias, alpha, beta } = attrs;
   const program = env().getBool("WEBGL_PACK_NORMALIZATION") ? new LRNPackedProgram(x.shape, depthRadius, bias, alpha, beta) : new LRNProgram(x.shape, depthRadius, bias, alpha, beta);
-  return backend3.runWebGLProgram(program, [x], x.dtype);
+  return backend2.runWebGLProgram(program, [x], x.dtype);
 };
 var LRNConfig = {
   kernelName: LRN,
@@ -55421,30 +55421,30 @@ var LRNGradProgram = class {
   }
 };
 var lrnGrad = (args) => {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, y, dy } = inputs;
   const { depthRadius, bias, alpha, beta } = attrs;
   const program = new LRNGradProgram(x.shape, depthRadius, bias, alpha, beta);
-  return backend3.runWebGLProgram(program, [x, y, dy], x.dtype);
+  return backend2.runWebGLProgram(program, [x, y, dy], x.dtype);
 };
 var LRNGradConfig = {
   kernelName: LRNGrad,
   backendName: "webgl",
   kernelFunc: lrnGrad
 };
-function maxImpl2(x, reduceShape, outShape, backend3) {
+function maxImpl2(x, reduceShape, outShape, backend2) {
   const inSize = util_exports.sizeFromShape(reduceShape);
   const xSize = util_exports.sizeFromShape(x.shape);
   const batchSize = xSize / inSize;
-  const reshapedInput = reshape4({ inputs: { x }, attrs: { shape: [batchSize, inSize] }, backend: backend3 });
-  const reduced = reduce(reshapedInput, x.dtype, "max", backend3);
-  const reshapedOutput = reshape4({ inputs: { x: reduced }, attrs: { shape: outShape }, backend: backend3 });
-  backend3.disposeIntermediateTensorInfo(reshapedInput);
-  backend3.disposeIntermediateTensorInfo(reduced);
+  const reshapedInput = reshape4({ inputs: { x }, attrs: { shape: [batchSize, inSize] }, backend: backend2 });
+  const reduced = reduce(reshapedInput, x.dtype, "max", backend2);
+  const reshapedOutput = reshape4({ inputs: { x: reduced }, attrs: { shape: outShape }, backend: backend2 });
+  backend2.disposeIntermediateTensorInfo(reshapedInput);
+  backend2.disposeIntermediateTensorInfo(reduced);
   return reshapedOutput;
 }
 function max4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { reductionIndices, keepDims } = attrs;
   const xRank = x.shape.length;
@@ -55452,22 +55452,22 @@ function max4(args) {
   let axes = origAxes;
   const permutedAxes = backend_util_exports.getAxesPermutation(axes, xRank);
   const maxInputIsTransposed = permutedAxes != null;
-  const shouldExecuteOnCPU = backend3.shouldExecuteOnCPU([x]);
+  const shouldExecuteOnCPU = backend2.shouldExecuteOnCPU([x]);
   let maxInput = x;
   if (maxInputIsTransposed) {
     if (shouldExecuteOnCPU) {
-      const xTexData = backend3.texData.get(maxInput.dataId);
+      const xTexData = backend2.texData.get(maxInput.dataId);
       const values = xTexData.values;
       const newShape = new Array(xRank);
       for (let i = 0; i < newShape.length; i++) {
         newShape[i] = x.shape[permutedAxes[i]];
       }
       const maxInputValues = transposeImplCPU(values, x.shape, x.dtype, permutedAxes, newShape);
-      maxInput = backend3.makeTensorInfo(newShape, x.dtype);
-      const maxInputData = backend3.texData.get(maxInput.dataId);
+      maxInput = backend2.makeTensorInfo(newShape, x.dtype);
+      const maxInputData = backend2.texData.get(maxInput.dataId);
       maxInputData.values = maxInputValues;
     } else {
-      maxInput = transposeImpl2(x, permutedAxes, backend3);
+      maxInput = transposeImpl2(x, permutedAxes, backend2);
     }
     axes = backend_util_exports.getInnerMostAxes(axes.length, xRank);
   }
@@ -55479,17 +55479,17 @@ function max4(args) {
   }
   let out;
   if (shouldExecuteOnCPU) {
-    const xTexData = backend3.texData.get(maxInput.dataId);
+    const xTexData = backend2.texData.get(maxInput.dataId);
     const values = xTexData.values;
     const outValues = maxImplCPU(values, util_exports.sizeFromShape(reduceShape), outShape, x.dtype);
-    out = backend3.makeTensorInfo(outShape, x.dtype);
-    const outData = backend3.texData.get(out.dataId);
+    out = backend2.makeTensorInfo(outShape, x.dtype);
+    const outData = backend2.texData.get(out.dataId);
     outData.values = outValues;
   } else {
-    out = maxImpl2(maxInput, reduceShape, outShape, backend3);
+    out = maxImpl2(maxInput, reduceShape, outShape, backend2);
   }
   if (maxInputIsTransposed) {
-    backend3.disposeIntermediateTensorInfo(maxInput);
+    backend2.disposeIntermediateTensorInfo(maxInput);
   }
   return out;
 }
@@ -55507,7 +55507,7 @@ var MAXIMUM_PACKED = `
   ` + CHECK_NAN_SNIPPET3 + `
   return result;
 `;
-var maximum5 = binaryKernelFunc2({
+var maximum4 = binaryKernelFunc2({
   opSnippet: MAXIMUM,
   packedOpSnippet: MAXIMUM_PACKED,
   cpuKernelImpl: maximumImplCPU
@@ -55515,10 +55515,10 @@ var maximum5 = binaryKernelFunc2({
 var maximumConfig2 = {
   kernelName: Maximum,
   backendName: "webgl",
-  kernelFunc: maximum5
+  kernelFunc: maximum4
 };
 function maxPool3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   assertNotComplex2(x, "maxPool");
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
@@ -55526,10 +55526,10 @@ function maxPool3(args) {
   util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
   const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
   if (convInfo.filterWidth === 1 && convInfo.filterHeight === 1 && util_exports.arraysEqual(convInfo.inShape, convInfo.outShape)) {
-    return identity3({ inputs: { x }, backend: backend3 });
+    return identity3({ inputs: { x }, backend: backend2 });
   }
   const maxPoolProgram = new Pool2DProgram(convInfo, "max", false);
-  return backend3.runWebGLProgram(maxPoolProgram, [x], x.dtype);
+  return backend2.runWebGLProgram(maxPoolProgram, [x], x.dtype);
 }
 var maxPoolConfig2 = {
   kernelName: MaxPool,
@@ -55537,13 +55537,13 @@ var maxPoolConfig2 = {
   kernelFunc: maxPool3
 };
 function maxPool3d2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { filterSize, strides, pad: pad3, dataFormat, dimRoundingMode } = attrs;
   const dilations = [1, 1, 1];
   const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode, dataFormat);
   const maxPoolProgram = new Pool3DProgram(convInfo, "max", false);
-  return backend3.runWebGLProgram(maxPoolProgram, [x], x.dtype);
+  return backend2.runWebGLProgram(maxPoolProgram, [x], x.dtype);
 }
 var maxPool3DConfig2 = {
   kernelName: MaxPool3D,
@@ -55696,17 +55696,17 @@ var MaxPool3DBackpropProgram = class {
   }
 };
 function maxPool3DGrad2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, input: input2 } = inputs;
   const x = input2;
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
   const dilations = [1, 1, 1];
   const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
   const maxPool3dPositionsProgram = new Pool3DProgram(convInfo, "max", true);
-  const maxPool3dPositions2 = backend3.runWebGLProgram(maxPool3dPositionsProgram, [x], x.dtype);
+  const maxPool3dPositions2 = backend2.runWebGLProgram(maxPool3dPositionsProgram, [x], x.dtype);
   const maxPoolBackpropProgram = new MaxPool3DBackpropProgram(convInfo);
-  const result = backend3.runWebGLProgram(maxPoolBackpropProgram, [dy, maxPool3dPositions2], x.dtype);
-  backend3.disposeIntermediateTensorInfo(maxPool3dPositions2);
+  const result = backend2.runWebGLProgram(maxPoolBackpropProgram, [dy, maxPool3dPositions2], x.dtype);
+  backend2.disposeIntermediateTensorInfo(maxPool3dPositions2);
   return result;
 }
 var maxPoolGrad3DConfig = {
@@ -55715,7 +55715,7 @@ var maxPoolGrad3DConfig = {
   kernelFunc: maxPool3DGrad2
 };
 function maxPoolGrad3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, input: input2, output } = inputs;
   const x = input2;
   assertNotComplex2([input2, output], "maxPoolGrad");
@@ -55723,10 +55723,10 @@ function maxPoolGrad3(args) {
   const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode);
   const getPositions = true;
   const maxPoolPositionsProgram = new Pool2DProgram(convInfo, "max", getPositions);
-  const maxPoolPositions2 = backend3.runWebGLProgram(maxPoolPositionsProgram, [x], x.dtype);
+  const maxPoolPositions2 = backend2.runWebGLProgram(maxPoolPositionsProgram, [x], x.dtype);
   const maxPoolBackPropProgram = new MaxPool2DBackpropProgram(convInfo);
-  const result = backend3.runWebGLProgram(maxPoolBackPropProgram, [dy, maxPoolPositions2], x.dtype);
-  backend3.disposeIntermediateTensorInfo(maxPoolPositions2);
+  const result = backend2.runWebGLProgram(maxPoolBackPropProgram, [dy, maxPoolPositions2], x.dtype);
+  backend2.disposeIntermediateTensorInfo(maxPoolPositions2);
   return result;
 }
 var maxPoolGradConfig3 = {
@@ -55734,20 +55734,20 @@ var maxPoolGradConfig3 = {
   backendName: "webgl",
   kernelFunc: maxPoolGrad3
 };
-function maxPoolWithArgmaxImpl2(x, includeBatchInIndex, convInfo, backend3) {
+function maxPoolWithArgmaxImpl2(x, includeBatchInIndex, convInfo, backend2) {
   let program = new Pool2DProgram(convInfo, "max", false);
-  const poolOutput = backend3.runWebGLProgram(program, [x], "float32");
+  const poolOutput = backend2.runWebGLProgram(program, [x], "float32");
   program = new Pool2DProgram(convInfo, "max", true, true, includeBatchInIndex);
-  const indexOutput = backend3.runWebGLProgram(program, [x], "float32");
+  const indexOutput = backend2.runWebGLProgram(program, [x], "float32");
   return [poolOutput, indexOutput];
 }
 var maxPoolWithArgmaxConfig2 = {
   kernelName: MaxPoolWithArgmax,
   backendName: "webgl",
-  kernelFunc: ({ inputs, attrs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, attrs, backend: backend2 }) => {
     const { x } = inputs;
     const { filterSize, strides, pad: pad3, includeBatchInIndex } = attrs;
-    const webglBackend = backend3;
+    const webglBackend = backend2;
     util_exports.assert(x.shape.length === 4, () => `Error in maxPool: input must be rank 4 but got rank ${x.shape.length}.`);
     const dilations = [1, 1];
     util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
@@ -55756,24 +55756,24 @@ var maxPoolWithArgmaxConfig2 = {
     return [result, indexes];
   }
 };
-function meanImpl(x, reduceShape, outShape, backend3) {
+function meanImpl(x, reduceShape, outShape, backend2) {
   const inSize = util_exports.sizeFromShape(reduceShape);
   const xSize = util_exports.sizeFromShape(x.shape);
   const batchSize = xSize / inSize;
-  const reshapedInput = reshape4({ inputs: { x }, attrs: { shape: [batchSize, inSize] }, backend: backend3 });
-  const reduced = reduce(reshapedInput, "float32", "mean", backend3);
-  const reshapedOutput = reshape4({ inputs: { x: reduced }, attrs: { shape: outShape }, backend: backend3 });
-  backend3.disposeIntermediateTensorInfo(reshapedInput);
-  backend3.disposeIntermediateTensorInfo(reduced);
+  const reshapedInput = reshape4({ inputs: { x }, attrs: { shape: [batchSize, inSize] }, backend: backend2 });
+  const reduced = reduce(reshapedInput, "float32", "mean", backend2);
+  const reshapedOutput = reshape4({ inputs: { x: reduced }, attrs: { shape: outShape }, backend: backend2 });
+  backend2.disposeIntermediateTensorInfo(reshapedInput);
+  backend2.disposeIntermediateTensorInfo(reduced);
   return reshapedOutput;
 }
 var meanConfig2 = {
   kernelName: Mean,
   backendName: "webgl",
-  kernelFunc: ({ inputs, attrs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, attrs, backend: backend2 }) => {
     const { x } = inputs;
     const { keepDims, axis } = attrs;
-    const webglBackend = backend3;
+    const webglBackend = backend2;
     const xRank = x.shape.length;
     const origAxes = util_exports.parseAxisParam(axis, x.shape);
     let axes = origAxes;
@@ -55814,7 +55814,7 @@ var meanConfig2 = {
   }
 };
 function min4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
   const xRank = x.shape.length;
@@ -55823,25 +55823,25 @@ function min4(args) {
   const permutedAxes = backend_util_exports.getAxesPermutation(axes, xRank);
   let permutedX = x;
   if (permutedAxes != null) {
-    permutedX = transpose3({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    permutedX = transpose3({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     axes = backend_util_exports.getInnerMostAxes(axes.length, x.shape.length);
   }
   backend_util_exports.assertAxesAreInnerMostDims("min", axes, xRank);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(permutedX.shape, axes);
   const inSize = util_exports.sizeFromShape(reduceShape);
-  const a2D = reshape4({ inputs: { x: permutedX }, backend: backend3, attrs: { shape: [-1, inSize] } });
-  const reduced = reduce(a2D, a2D.dtype, "min", backend3);
+  const a2D = reshape4({ inputs: { x: permutedX }, backend: backend2, attrs: { shape: [-1, inSize] } });
+  const reduced = reduce(a2D, a2D.dtype, "min", backend2);
   let res;
   if (keepDims) {
     const newShape = backend_util_exports.expandShapeToKeepDim(outShape, origAxes);
-    res = reshape4({ inputs: { x: reduced }, backend: backend3, attrs: { shape: newShape } });
+    res = reshape4({ inputs: { x: reduced }, backend: backend2, attrs: { shape: newShape } });
   } else {
-    res = reshape4({ inputs: { x: reduced }, backend: backend3, attrs: { shape: outShape } });
+    res = reshape4({ inputs: { x: reduced }, backend: backend2, attrs: { shape: outShape } });
   }
-  backend3.disposeIntermediateTensorInfo(a2D);
-  backend3.disposeIntermediateTensorInfo(reduced);
+  backend2.disposeIntermediateTensorInfo(a2D);
+  backend2.disposeIntermediateTensorInfo(reduced);
   if (permutedAxes != null) {
-    backend3.disposeIntermediateTensorInfo(permutedX);
+    backend2.disposeIntermediateTensorInfo(permutedX);
   }
   return res;
 }
@@ -55859,7 +55859,7 @@ var MINIMUM_PACKED = `
   ` + CHECK_NAN_SNIPPET3 + `
   return result;
 `;
-var minimum5 = binaryKernelFunc2({
+var minimum4 = binaryKernelFunc2({
   opSnippet: MINIMUM,
   packedOpSnippet: MINIMUM_PACKED,
   cpuKernelImpl: minimumImplCPU
@@ -55867,7 +55867,7 @@ var minimum5 = binaryKernelFunc2({
 var minimumConfig2 = {
   kernelName: Minimum,
   backendName: "webgl",
-  kernelFunc: minimum5
+  kernelFunc: minimum4
 };
 var MirrorPadProgram = class {
   constructor(xShape, paddings, mode) {
@@ -55997,11 +55997,11 @@ var MirrorPadPackedProgram = class {
     `;
   }
 };
-var mirrorPadKernelFunc = ({ inputs, backend: backend3, attrs }) => {
+var mirrorPadKernelFunc = ({ inputs, backend: backend2, attrs }) => {
   const { x } = inputs;
   const { paddings, mode } = attrs;
   const program = env().getBool("WEBGL_PACK_ARRAY_OPERATIONS") ? new MirrorPadPackedProgram(x.shape, paddings, mode) : new MirrorPadProgram(x.shape, paddings, mode);
-  const output = backend3.runWebGLProgram(program, [x], x.dtype);
+  const output = backend2.runWebGLProgram(program, [x], x.dtype);
   return output;
 };
 var mirrorPadConfig2 = {
@@ -56097,28 +56097,28 @@ var subConfig2 = {
   kernelFunc: sub3
 };
 function softmax4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { logits } = inputs;
   const { dim } = attrs;
   const axes = util_exports.parseAxisParam([dim], logits.shape);
   const maxLogit = max4({
     inputs: { x: logits },
-    backend: backend3,
+    backend: backend2,
     attrs: { reductionIndices: axes, keepDims: false }
   });
   const expandedShape = backend_util_exports.expandShapeToKeepDim(maxLogit.shape, axes);
-  const maxLogitsReshaped = reshape4({ inputs: { x: maxLogit }, backend: backend3, attrs: { shape: expandedShape } });
-  const a = sub3({ inputs: { a: logits, b: maxLogitsReshaped }, backend: backend3 });
-  const b = exp3({ inputs: { x: a }, backend: backend3 });
-  const sumExp = sum5({ inputs: { x: b }, backend: backend3, attrs: { axis: axes, keepDims: false } });
-  const sumExpReshaped = reshape4({ inputs: { x: sumExp }, backend: backend3, attrs: { shape: expandedShape } });
-  const res = realDiv({ inputs: { a: b, b: sumExpReshaped }, backend: backend3 });
-  backend3.disposeIntermediateTensorInfo(maxLogit);
-  backend3.disposeIntermediateTensorInfo(maxLogitsReshaped);
-  backend3.disposeIntermediateTensorInfo(a);
-  backend3.disposeIntermediateTensorInfo(b);
-  backend3.disposeIntermediateTensorInfo(sumExp);
-  backend3.disposeIntermediateTensorInfo(sumExpReshaped);
+  const maxLogitsReshaped = reshape4({ inputs: { x: maxLogit }, backend: backend2, attrs: { shape: expandedShape } });
+  const a = sub3({ inputs: { a: logits, b: maxLogitsReshaped }, backend: backend2 });
+  const b = exp3({ inputs: { x: a }, backend: backend2 });
+  const sumExp = sum4({ inputs: { x: b }, backend: backend2, attrs: { axis: axes, keepDims: false } });
+  const sumExpReshaped = reshape4({ inputs: { x: sumExp }, backend: backend2, attrs: { shape: expandedShape } });
+  const res = realDiv({ inputs: { a: b, b: sumExpReshaped }, backend: backend2 });
+  backend2.disposeIntermediateTensorInfo(maxLogit);
+  backend2.disposeIntermediateTensorInfo(maxLogitsReshaped);
+  backend2.disposeIntermediateTensorInfo(a);
+  backend2.disposeIntermediateTensorInfo(b);
+  backend2.disposeIntermediateTensorInfo(sumExp);
+  backend2.disposeIntermediateTensorInfo(sumExpReshaped);
   return res;
 }
 var softmaxConfig2 = {
@@ -56127,17 +56127,17 @@ var softmaxConfig2 = {
   kernelFunc: softmax4
 };
 function multinomial3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { logits } = inputs;
   const { numSamples, seed, normalized } = attrs;
-  const probs = normalized ? logits : softmax4({ inputs: { logits }, backend: backend3, attrs: { dim: logits.shape.length - 1 } });
+  const probs = normalized ? logits : softmax4({ inputs: { logits }, backend: backend2, attrs: { dim: logits.shape.length - 1 } });
   const batchSize = probs.shape[0];
   const numOutcomes = probs.shape[1];
   const program = new MultinomialProgram(batchSize, numOutcomes, numSamples);
   const customValues = [[seed]];
-  const res = backend3.runWebGLProgram(program, [probs], "int32", customValues);
+  const res = backend2.runWebGLProgram(program, [probs], "int32", customValues);
   if (!normalized) {
-    backend3.disposeIntermediateTensorInfo(probs);
+    backend2.disposeIntermediateTensorInfo(probs);
   }
   return res;
 }
@@ -56148,12 +56148,12 @@ var multinomialConfig2 = {
 };
 var NEG = `return -x;`;
 function neg3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
-  if (backend3.shouldExecuteOnCPU([x])) {
-    const xData = backend3.texData.get(x.dataId);
+  if (backend2.shouldExecuteOnCPU([x])) {
+    const xData = backend2.texData.get(x.dataId);
     const [outValues, newShape] = negImplCPU(xData.values, x.shape, x.dtype);
-    return backend3.makeTensorInfo(newShape, x.dtype, outValues);
+    return backend2.makeTensorInfo(newShape, x.dtype, outValues);
   }
   let program;
   if (env().getBool("WEBGL_PACK_UNARY_OPERATIONS")) {
@@ -56161,7 +56161,7 @@ function neg3(args) {
   } else {
     program = new UnaryOpProgram(x.shape, NEG);
   }
-  return backend3.runWebGLProgram(program, [x], x.dtype);
+  return backend2.runWebGLProgram(program, [x], x.dtype);
 }
 var negConfig2 = {
   kernelName: Neg,
@@ -56171,13 +56171,13 @@ var negConfig2 = {
 var nonMaxSuppressionV3Impl3 = kernel_impls_exports.nonMaxSuppressionV3Impl;
 function nonMaxSuppressionV32(args) {
   backend_util_exports.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold } = attrs;
-  const boxesVals = backend3.readSync(boxes.dataId);
-  const scoresVals = backend3.readSync(scores.dataId);
+  const boxesVals = backend2.readSync(boxes.dataId);
+  const scoresVals = backend2.readSync(scores.dataId);
   const { selectedIndices } = nonMaxSuppressionV3Impl3(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold);
-  return backend3.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices));
+  return backend2.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices));
 }
 var nonMaxSuppressionV3Config2 = {
   kernelName: NonMaxSuppressionV3,
@@ -56187,15 +56187,15 @@ var nonMaxSuppressionV3Config2 = {
 var nonMaxSuppressionV4Impl3 = kernel_impls_exports.nonMaxSuppressionV4Impl;
 function nonMaxSuppressionV42(args) {
   backend_util_exports.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize } = attrs;
-  const boxesVals = backend3.readSync(boxes.dataId);
-  const scoresVals = backend3.readSync(scores.dataId);
+  const boxesVals = backend2.readSync(boxes.dataId);
+  const scoresVals = backend2.readSync(scores.dataId);
   const { selectedIndices, validOutputs } = nonMaxSuppressionV4Impl3(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
   return [
-    backend3.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices)),
-    backend3.makeTensorInfo([], "int32", new Int32Array([validOutputs]))
+    backend2.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices)),
+    backend2.makeTensorInfo([], "int32", new Int32Array([validOutputs]))
   ];
 }
 var nonMaxSuppressionV4Config2 = {
@@ -56206,19 +56206,19 @@ var nonMaxSuppressionV4Config2 = {
 var nonMaxSuppressionV5Impl3 = kernel_impls_exports.nonMaxSuppressionV5Impl;
 function nonMaxSuppressionV52(args) {
   backend_util_exports.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = attrs;
-  const boxesVals = backend3.readSync(boxes.dataId);
-  const scoresVals = backend3.readSync(scores.dataId);
+  const boxesVals = backend2.readSync(boxes.dataId);
+  const scoresVals = backend2.readSync(scores.dataId);
   const maxOutputSizeVal = maxOutputSize;
   const iouThresholdVal = iouThreshold;
   const scoreThresholdVal = scoreThreshold;
   const softNmsSigmaVal = softNmsSigma;
   const { selectedIndices, selectedScores } = nonMaxSuppressionV5Impl3(boxesVals, scoresVals, maxOutputSizeVal, iouThresholdVal, scoreThresholdVal, softNmsSigmaVal);
   return [
-    backend3.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices)),
-    backend3.makeTensorInfo([selectedScores.length], "float32", new Float32Array(selectedScores))
+    backend2.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices)),
+    backend2.makeTensorInfo([selectedScores.length], "float32", new Float32Array(selectedScores))
   ];
 }
 var nonMaxSuppressionV5Config2 = {
@@ -56240,38 +56240,38 @@ var OneHotProgram = class {
     `;
   }
 };
-var oneHot4 = (args) => {
-  const { inputs, backend: backend3, attrs } = args;
+var oneHot3 = (args) => {
+  const { inputs, backend: backend2, attrs } = args;
   const { indices } = inputs;
   const { depth, onValue, offValue } = attrs;
   const indicesSize = util_exports.sizeFromShape(indices.shape);
   const program = new OneHotProgram(indicesSize, depth, onValue, offValue);
-  const reshaped = reshape4({ inputs: { x: indices }, backend: backend3, attrs: { shape: [indicesSize] } });
-  const result = backend3.runWebGLProgram(program, [reshaped], indices.dtype);
-  backend3.disposeIntermediateTensorInfo(reshaped);
+  const reshaped = reshape4({ inputs: { x: indices }, backend: backend2, attrs: { shape: [indicesSize] } });
+  const result = backend2.runWebGLProgram(program, [reshaped], indices.dtype);
+  backend2.disposeIntermediateTensorInfo(reshaped);
   const outShape = [...indices.shape, depth];
-  const out = reshape4({ inputs: { x: result }, backend: backend3, attrs: { shape: outShape } });
-  backend3.disposeIntermediateTensorInfo(result);
+  const out = reshape4({ inputs: { x: result }, backend: backend2, attrs: { shape: outShape } });
+  backend2.disposeIntermediateTensorInfo(result);
   return out;
 };
 var oneHotConfig2 = {
   kernelName: OneHot,
   backendName: "webgl",
-  kernelFunc: oneHot4
+  kernelFunc: oneHot3
 };
-function zerosLike4(args) {
-  const { inputs, backend: backend3 } = args;
+function zerosLike3(args) {
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
   if (x.dtype === "complex64") {
-    const realPart = real3({ inputs: { input: x }, backend: backend3 });
-    const r = zerosLike4({ inputs: { x: realPart }, backend: backend3 });
-    const imagPart = imag3({ inputs: { input: x }, backend: backend3 });
-    const i = zerosLike4({ inputs: { x: imagPart }, backend: backend3 });
-    const result = complex3({ inputs: { real: r, imag: i }, backend: backend3 });
-    backend3.disposeIntermediateTensorInfo(realPart);
-    backend3.disposeIntermediateTensorInfo(r);
-    backend3.disposeIntermediateTensorInfo(imagPart);
-    backend3.disposeIntermediateTensorInfo(i);
+    const realPart = real3({ inputs: { input: x }, backend: backend2 });
+    const r = zerosLike3({ inputs: { x: realPart }, backend: backend2 });
+    const imagPart = imag3({ inputs: { input: x }, backend: backend2 });
+    const i = zerosLike3({ inputs: { x: imagPart }, backend: backend2 });
+    const result = complex3({ inputs: { real: r, imag: i }, backend: backend2 });
+    backend2.disposeIntermediateTensorInfo(realPart);
+    backend2.disposeIntermediateTensorInfo(r);
+    backend2.disposeIntermediateTensorInfo(imagPart);
+    backend2.disposeIntermediateTensorInfo(i);
     return result;
   } else {
     return fill3({
@@ -56280,45 +56280,45 @@ function zerosLike4(args) {
         dtype: x.dtype,
         value: x.dtype === "string" ? "" : 0
       },
-      backend: backend3
+      backend: backend2
     });
   }
 }
 var zerosLikeConfig2 = {
   kernelName: ZerosLike,
   backendName: "webgl",
-  kernelFunc: zerosLike4
+  kernelFunc: zerosLike3
 };
-function onesLike4(args) {
-  const { inputs, backend: backend3 } = args;
+function onesLike3(args) {
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
   if (x.dtype === "string") {
     throw new Error("onesLike is not supported under string dtype");
   } else if (x.dtype === "complex64") {
-    const realPart = real3({ inputs: { input: x }, backend: backend3 });
-    const r = onesLike4({ inputs: { x: realPart }, backend: backend3 });
-    const imagPart = imag3({ inputs: { input: x }, backend: backend3 });
-    const i = zerosLike4({ inputs: { x: imagPart }, backend: backend3 });
-    const result = complex3({ inputs: { real: r, imag: i }, backend: backend3 });
-    backend3.disposeIntermediateTensorInfo(realPart);
-    backend3.disposeIntermediateTensorInfo(r);
-    backend3.disposeIntermediateTensorInfo(imagPart);
-    backend3.disposeIntermediateTensorInfo(i);
+    const realPart = real3({ inputs: { input: x }, backend: backend2 });
+    const r = onesLike3({ inputs: { x: realPart }, backend: backend2 });
+    const imagPart = imag3({ inputs: { input: x }, backend: backend2 });
+    const i = zerosLike3({ inputs: { x: imagPart }, backend: backend2 });
+    const result = complex3({ inputs: { real: r, imag: i }, backend: backend2 });
+    backend2.disposeIntermediateTensorInfo(realPart);
+    backend2.disposeIntermediateTensorInfo(r);
+    backend2.disposeIntermediateTensorInfo(imagPart);
+    backend2.disposeIntermediateTensorInfo(i);
     return result;
   } else {
-    return fill3({ attrs: { shape: x.shape, dtype: x.dtype, value: 1 }, backend: backend3 });
+    return fill3({ attrs: { shape: x.shape, dtype: x.dtype, value: 1 }, backend: backend2 });
   }
 }
 var onesLikeConfig2 = {
   kernelName: OnesLike,
   backendName: "webgl",
-  kernelFunc: onesLike4
+  kernelFunc: onesLike3
 };
 function pack2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { axis } = attrs;
   if (inputs.length === 1) {
-    return expandDims4({ inputs: { input: inputs[0] }, backend: backend3, attrs: { dim: axis } });
+    return expandDims4({ inputs: { input: inputs[0] }, backend: backend2, attrs: { dim: axis } });
   }
   const shape = inputs[0].shape;
   const dtype = inputs[0].dtype;
@@ -56328,12 +56328,12 @@ function pack2(args) {
   });
   const intermediateTensorInfos = [];
   const expandedTensors = inputs.map((t) => {
-    const expandedT = expandDims4({ inputs: { input: t }, backend: backend3, attrs: { dim: axis } });
+    const expandedT = expandDims4({ inputs: { input: t }, backend: backend2, attrs: { dim: axis } });
     intermediateTensorInfos.push(expandedT);
     return expandedT;
   });
-  const result = concat3({ inputs: expandedTensors, backend: backend3, attrs: { axis } });
-  intermediateTensorInfos.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  const result = concat3({ inputs: expandedTensors, backend: backend2, attrs: { axis } });
+  intermediateTensorInfos.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return result;
 }
 var packConfig2 = {
@@ -56438,19 +56438,19 @@ var PadPackedProgram = class {
   }
 };
 var padV22 = (args) => {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { paddings, constantValue } = attrs;
   if (util_exports.sizeFromShape(x.shape) === 0) {
     const outputShape = paddings.map((p2, i) => p2[0] + x.shape[i] + p2[1]);
     return fill3({
-      backend: backend3,
+      backend: backend2,
       attrs: { shape: outputShape, value: constantValue, dtype: x.dtype }
     });
   }
   const program = env().getBool("WEBGL_PACK_ARRAY_OPERATIONS") ? new PadPackedProgram(x.shape, paddings, constantValue) : new PadProgram(x.shape, paddings, constantValue);
   const customValues = [[constantValue]];
-  return backend3.runWebGLProgram(program, [x], x.dtype, customValues);
+  return backend2.runWebGLProgram(program, [x], x.dtype, customValues);
 };
 var padV2Config2 = {
   kernelName: PadV2,
@@ -56484,14 +56484,14 @@ var POW_PACKED = `
   ` + CHECK_NAN_SNIPPET3 + `
   return result;
 `;
-var pow4 = binaryKernelFunc2({ opSnippet: POW, packedOpSnippet: POW_PACKED });
+var pow3 = binaryKernelFunc2({ opSnippet: POW, packedOpSnippet: POW_PACKED });
 var powConfig2 = {
   kernelName: Pow,
   backendName: "webgl",
-  kernelFunc: pow4
+  kernelFunc: pow3
 };
 function prod3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
   const xRank = x.shape.length;
@@ -56501,32 +56501,32 @@ function prod3(args) {
   const permutedAxes = backend_util_exports.getAxesPermutation(axes, xRank);
   let permutedX = x;
   if (permutedAxes != null) {
-    permutedX = transpose3({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    permutedX = transpose3({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     axes = backend_util_exports.getInnerMostAxes(axes.length, xRank);
     toDispose.push(permutedX);
   }
   backend_util_exports.assertAxesAreInnerMostDims("prod", axes, xRank);
   let res;
-  if (backend3.shouldExecuteOnCPU([permutedX])) {
-    const xVals = backend3.texData.get(permutedX.dataId).values;
+  if (backend2.shouldExecuteOnCPU([permutedX])) {
+    const xVals = backend2.texData.get(permutedX.dataId).values;
     const { outVals, outShape, outDtype } = prodImplCPU(permutedX.shape, permutedX.dtype, xVals, axes);
-    res = backend3.makeTensorInfo(outShape, outDtype, outVals);
+    res = backend2.makeTensorInfo(outShape, outDtype, outVals);
   } else {
     const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(permutedX.shape, axes);
     const inSize = util_exports.sizeFromShape(reduceShape);
-    const a2D = reshape4({ inputs: { x: permutedX }, backend: backend3, attrs: { shape: [-1, inSize] } });
+    const a2D = reshape4({ inputs: { x: permutedX }, backend: backend2, attrs: { shape: [-1, inSize] } });
     const outputDType = sumOutType(x.dtype);
-    const reduced = reduce(a2D, outputDType, "prod", backend3);
-    res = reshape4({ inputs: { x: reduced }, backend: backend3, attrs: { shape: outShape } });
+    const reduced = reduce(a2D, outputDType, "prod", backend2);
+    res = reshape4({ inputs: { x: reduced }, backend: backend2, attrs: { shape: outShape } });
     toDispose.push(a2D);
     toDispose.push(reduced);
   }
   if (keepDims) {
     toDispose.push(res);
     const newShape = backend_util_exports.expandShapeToKeepDim(res.shape, origAxes);
-    res = reshape4({ inputs: { x: res }, backend: backend3, attrs: { shape: newShape } });
+    res = reshape4({ inputs: { x: res }, backend: backend2, attrs: { shape: newShape } });
   }
-  toDispose.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  toDispose.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return res;
 }
 var prodConfig2 = {
@@ -56535,10 +56535,10 @@ var prodConfig2 = {
   kernelFunc: prod3
 };
 var range4 = (args) => {
-  const { backend: backend3, attrs } = args;
+  const { backend: backend2, attrs } = args;
   const { start, stop, step: step5, dtype } = attrs;
   const values = rangeImplCPU(start, stop, step5, dtype);
-  return backend3.makeTensorInfo([values.length], dtype, values);
+  return backend2.makeTensorInfo([values.length], dtype, values);
 };
 var rangeConfig2 = {
   kernelName: Range,
@@ -56751,12 +56751,12 @@ var ResizeBilinearPackedProgram = class {
   }
 };
 function resizeBilinear3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { images } = inputs;
   const { alignCorners, halfPixelCenters, size } = attrs;
   const [newHeight, newWidth] = size;
   const program = env().getBool("WEBGL_PACK_IMAGE_OPERATIONS") ? new ResizeBilinearPackedProgram(images.shape, newHeight, newWidth, alignCorners, halfPixelCenters) : new ResizeBilinearProgram(images.shape, newHeight, newWidth, alignCorners, halfPixelCenters);
-  return backend3.runWebGLProgram(program, [images], "float32");
+  return backend2.runWebGLProgram(program, [images], "float32");
 }
 var resizeBilinearConfig2 = {
   kernelName: ResizeBilinear,
@@ -56869,11 +56869,11 @@ var ResizeBilinearBackpropProgram = class {
   }
 };
 function resizeBilinearGrad2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { images, dy } = inputs;
   const { alignCorners } = attrs;
   const program = new ResizeBilinearBackpropProgram(dy.shape, images.shape, alignCorners);
-  return backend3.runWebGLProgram(program, [dy], dy.dtype);
+  return backend2.runWebGLProgram(program, [dy], dy.dtype);
 }
 var resizeBilinearGradConfig3 = {
   kernelName: ResizeBilinearGrad,
@@ -56994,12 +56994,12 @@ var ResizeNearestNeighborPackedProgram = class {
   }
 };
 function resizeNearestNeighbor3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { images } = inputs;
   const { alignCorners, halfPixelCenters, size } = attrs;
   const [newHeight, newWidth] = size;
   const program = env().getBool("WEBGL_PACK_IMAGE_OPERATIONS") ? new ResizeNearestNeighborPackedProgram(images.shape, newHeight, newWidth, alignCorners, halfPixelCenters) : new ResizeNearestNeighborProgram(images.shape, newHeight, newWidth, alignCorners, halfPixelCenters);
-  return backend3.runWebGLProgram(program, [images], images.dtype);
+  return backend2.runWebGLProgram(program, [images], images.dtype);
 }
 var resizeNearestNeighborConfig2 = {
   kernelName: ResizeNearestNeighbor,
@@ -57101,11 +57101,11 @@ var ResizeNearestNeigborBackpropProgram = class {
   }
 };
 function resizeNearestNeighborGrad2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { images, dy } = inputs;
   const { alignCorners } = attrs;
   const program = new ResizeNearestNeigborBackpropProgram(dy.shape, images.shape, alignCorners);
-  return backend3.runWebGLProgram(program, [dy], dy.dtype);
+  return backend2.runWebGLProgram(program, [dy], dy.dtype);
 }
 var resizeNearestNeighborGradConfig3 = {
   kernelName: ResizeNearestNeighborGrad,
@@ -57224,16 +57224,16 @@ var ReversePackedProgram = class {
   }
 };
 function reverse3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { dims } = attrs;
   const xRank = x.shape.length;
   const $dims = util_exports.parseAxisParam(dims, x.shape);
   if (xRank === 0) {
-    return identity3({ inputs: { x }, backend: backend3 });
+    return identity3({ inputs: { x }, backend: backend2 });
   }
   const program = env().getBool("WEBGL_PACK_ARRAY_OPERATIONS") ? new ReversePackedProgram(x.shape, $dims) : new ReverseProgram(x.shape, $dims);
-  return backend3.runWebGLProgram(program, [x], x.dtype);
+  return backend2.runWebGLProgram(program, [x], x.dtype);
 }
 var reverseConfig2 = {
   kernelName: Reverse,
@@ -57279,10 +57279,10 @@ var RotateProgram = class {
 var rotateWithOffsetConfig2 = {
   kernelName: RotateWithOffset,
   backendName: "webgl",
-  kernelFunc: ({ inputs, attrs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, attrs, backend: backend2 }) => {
     const { image: image3 } = inputs;
     const { radians, fillValue, center } = attrs;
-    const webglBackend = backend3;
+    const webglBackend = backend2;
     const program = new RotateProgram(image3.shape, fillValue);
     const [centerX, centerY] = backend_util_exports.getImageCenter(center, image3.shape[1], image3.shape[2]);
     const customValues = [[centerX, centerY, Math.sin(radians), Math.cos(radians)]];
@@ -57364,24 +57364,24 @@ var ScatterProgram = class {
   }
 };
 function scatterNd2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { indices, updates } = inputs;
   const { shape } = attrs;
   const { sliceRank, numUpdates, sliceSize, strides, outputSize } = backend_util_exports.calculateShapes(updates, indices, shape);
   const flattenShape = [outputSize / sliceSize, sliceSize];
   if (outputSize === 0) {
-    return backend3.makeTensorInfo(shape, indices.dtype);
+    return backend2.makeTensorInfo(shape, indices.dtype);
   }
-  const flattenIndices = reshape4({ inputs: { x: indices }, backend: backend3, attrs: { shape: [numUpdates, sliceRank] } });
-  const flattenX = reshape4({ inputs: { x: updates }, backend: backend3, attrs: { shape: [numUpdates, sliceSize] } });
-  const defaultValue = backend3.makeTensorInfo([], "float32", new Float32Array([0]));
+  const flattenIndices = reshape4({ inputs: { x: indices }, backend: backend2, attrs: { shape: [numUpdates, sliceRank] } });
+  const flattenX = reshape4({ inputs: { x: updates }, backend: backend2, attrs: { shape: [numUpdates, sliceSize] } });
+  const defaultValue = backend2.makeTensorInfo([], "float32", new Float32Array([0]));
   const program = new ScatterProgram(numUpdates, sliceRank, flattenIndices.shape.length, flattenX.shape.length, strides, flattenShape);
-  const res = backend3.runWebGLProgram(program, [flattenX, flattenIndices, defaultValue], flattenX.dtype);
-  const reshaped = reshape4({ inputs: { x: res }, backend: backend3, attrs: { shape } });
-  backend3.disposeIntermediateTensorInfo(flattenIndices);
-  backend3.disposeIntermediateTensorInfo(flattenX);
-  backend3.disposeIntermediateTensorInfo(res);
-  backend3.disposeIntermediateTensorInfo(defaultValue);
+  const res = backend2.runWebGLProgram(program, [flattenX, flattenIndices, defaultValue], flattenX.dtype);
+  const reshaped = reshape4({ inputs: { x: res }, backend: backend2, attrs: { shape } });
+  backend2.disposeIntermediateTensorInfo(flattenIndices);
+  backend2.disposeIntermediateTensorInfo(flattenX);
+  backend2.disposeIntermediateTensorInfo(res);
+  backend2.disposeIntermediateTensorInfo(defaultValue);
   return reshaped;
 }
 var scatterNdConfig2 = {
@@ -57429,10 +57429,10 @@ var SelectProgram = class {
   }
 };
 function select3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { condition, t, e } = inputs;
   const program = new SelectProgram(condition.shape.length, t.shape, t.shape.length);
-  return backend3.runWebGLProgram(program, [condition, t, e], upcastType(t.dtype, e.dtype));
+  return backend2.runWebGLProgram(program, [condition, t, e], upcastType(t.dtype, e.dtype));
 }
 var selectConfig2 = {
   kernelName: Select,
@@ -57467,11 +57467,11 @@ var SIGN = `
   if (isnan(x)) { return 0.0; }
   return sign(x);
 `;
-var sign4 = unaryKernelFunc2({ opSnippet: SIGN });
+var sign3 = unaryKernelFunc2({ opSnippet: SIGN });
 var signConfig2 = {
   kernelName: Sign,
   backendName: "webgl",
-  kernelFunc: sign4
+  kernelFunc: sign3
 };
 var SIN = CHECK_NAN_SNIPPET_UNARY + `
   return sin(x);
@@ -57520,7 +57520,7 @@ var softplusConfig2 = {
   kernelFunc: softplus3
 };
 var spaceToBatchND3 = (args) => {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { blockShape, paddings } = attrs;
   util_exports.assert(x.shape.length <= 4, () => "spaceToBatchND for rank > 4 with a WebGL backend not implemented yet");
@@ -57533,23 +57533,23 @@ var spaceToBatchND3 = (args) => {
   const toDispose = [];
   const paddedX = padV22({
     inputs: { x },
-    backend: backend3,
+    backend: backend2,
     attrs: { paddings: completePaddings, constantValue: 0 }
   });
   const reshapedPaddedShape = backend_util_exports.getReshaped(paddedX.shape, blockShape, prod6, false);
   const permutedReshapedPaddedPermutation = backend_util_exports.getPermuted(reshapedPaddedShape.length, blockShape.length, false);
   const flattenShape = backend_util_exports.getReshapedPermuted(paddedX.shape, blockShape, prod6, false);
-  const reshapedPaddedX = reshape4({ inputs: { x: paddedX }, backend: backend3, attrs: { shape: reshapedPaddedShape } });
+  const reshapedPaddedX = reshape4({ inputs: { x: paddedX }, backend: backend2, attrs: { shape: reshapedPaddedShape } });
   const paddedXT = transpose3({
     inputs: { x: reshapedPaddedX },
-    backend: backend3,
+    backend: backend2,
     attrs: { perm: permutedReshapedPaddedPermutation }
   });
-  const result = reshape4({ inputs: { x: paddedXT }, backend: backend3, attrs: { shape: flattenShape } });
+  const result = reshape4({ inputs: { x: paddedXT }, backend: backend2, attrs: { shape: flattenShape } });
   toDispose.push(paddedX);
   toDispose.push(reshapedPaddedX);
   toDispose.push(paddedXT);
-  toDispose.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  toDispose.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return result;
 };
 var spaceToBatchNDConfig2 = {
@@ -57558,7 +57558,7 @@ var spaceToBatchNDConfig2 = {
   kernelFunc: spaceToBatchND3
 };
 function sparseFillEmptyRows3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { indices, values, denseShape, defaultValue } = inputs;
   if (denseShape.shape.length !== 1) {
     throw new Error(`Dense shape must be a vector, saw:
@@ -57576,10 +57576,10 @@ function sparseFillEmptyRows3(args) {
     throw new Error(`Default value must be a scalar, saw:
         ${defaultValue.shape}`);
   }
-  const $indices = backend3.readSync(indices.dataId);
-  const $values = backend3.readSync(values.dataId);
-  const $denseShape = backend3.readSync(denseShape.dataId);
-  const $defaultValue = backend3.readSync(defaultValue.dataId)[0];
+  const $indices = backend2.readSync(indices.dataId);
+  const $values = backend2.readSync(values.dataId);
+  const $denseShape = backend2.readSync(denseShape.dataId);
+  const $defaultValue = backend2.readSync(defaultValue.dataId)[0];
   const [
     outputIndices,
     outputIndicesShape,
@@ -57588,10 +57588,10 @@ function sparseFillEmptyRows3(args) {
     reverseIndexMap
   ] = sparseFillEmptyRowsImplCPU($indices, indices.shape, indices.dtype, $values, values.dtype, $denseShape, $defaultValue);
   return [
-    backend3.makeTensorInfo(outputIndicesShape, indices.dtype, outputIndices),
-    backend3.makeTensorInfo([outputIndicesShape[0]], values.dtype, outputValues),
-    backend3.makeTensorInfo([emptyRowIndicator.length], "bool", new Uint8Array(emptyRowIndicator.map((value) => Number(value)))),
-    backend3.makeTensorInfo([reverseIndexMap.length], indices.dtype, new Int32Array(reverseIndexMap))
+    backend2.makeTensorInfo(outputIndicesShape, indices.dtype, outputIndices),
+    backend2.makeTensorInfo([outputIndicesShape[0]], values.dtype, outputValues),
+    backend2.makeTensorInfo([emptyRowIndicator.length], "bool", new Uint8Array(emptyRowIndicator.map((value) => Number(value)))),
+    backend2.makeTensorInfo([reverseIndexMap.length], indices.dtype, new Int32Array(reverseIndexMap))
   ];
 }
 var sparseFillEmptyRowsConfig2 = {
@@ -57600,7 +57600,7 @@ var sparseFillEmptyRowsConfig2 = {
   kernelFunc: sparseFillEmptyRows3
 };
 function sparseReshape3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { inputIndices, inputShape, newShape } = inputs;
   if (inputIndices.shape.length !== 2) {
     throw new Error(`Input indices should be a matrix but received shape ${inputIndices.shape}`);
@@ -57611,13 +57611,13 @@ function sparseReshape3(args) {
   if (newShape.shape.length !== 1) {
     throw new Error(`Target shape should be a vector but received shape ${newShape.shape}`);
   }
-  const $inputShape = Array.from(backend3.readSync(inputShape.dataId));
-  const $inputIndices = backend3.readSync(inputIndices.dataId);
-  const targetShape = Array.from(backend3.readSync(newShape.dataId));
+  const $inputShape = Array.from(backend2.readSync(inputShape.dataId));
+  const $inputIndices = backend2.readSync(inputIndices.dataId);
+  const targetShape = Array.from(backend2.readSync(newShape.dataId));
   const [newIndices, indicesShape, outputShape] = sparseReshapeImplCPU($inputIndices, inputIndices.shape, inputIndices.dtype, $inputShape, targetShape);
   return [
-    backend3.makeTensorInfo(indicesShape, inputIndices.dtype, newIndices),
-    backend3.makeTensorInfo([outputShape.length], newShape.dtype, new Int32Array(outputShape))
+    backend2.makeTensorInfo(indicesShape, inputIndices.dtype, newIndices),
+    backend2.makeTensorInfo([outputShape.length], newShape.dtype, new Int32Array(outputShape))
   ];
 }
 var sparseReshapeConfig2 = {
@@ -57626,7 +57626,7 @@ var sparseReshapeConfig2 = {
   kernelFunc: sparseReshape3
 };
 function sparseSegmentMean3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { data, indices, segmentIds } = inputs;
   if (data.shape.length < 1) {
     throw new Error(`Data should be at least 1 dimensional but received scalar`);
@@ -57639,11 +57639,11 @@ function sparseSegmentMean3(args) {
     throw new Error(`Segment ids should be a vector but received shape
               ${segmentIds.shape}`);
   }
-  const $data = backend3.readSync(data.dataId);
-  const $indices = backend3.readSync(indices.dataId);
-  const $segmentIds = backend3.readSync(segmentIds.dataId);
+  const $data = backend2.readSync(data.dataId);
+  const $indices = backend2.readSync(indices.dataId);
+  const $segmentIds = backend2.readSync(segmentIds.dataId);
   const [outputData, outputDataShape] = sparseSegmentReductionImplCPU($data, data.shape, data.dtype, $indices, $segmentIds, true);
-  return backend3.makeTensorInfo(outputDataShape, data.dtype, outputData);
+  return backend2.makeTensorInfo(outputDataShape, data.dtype, outputData);
 }
 var sparseSegmentMeanConfig2 = {
   kernelName: SparseSegmentMean,
@@ -57651,7 +57651,7 @@ var sparseSegmentMeanConfig2 = {
   kernelFunc: sparseSegmentMean3
 };
 function sparseSegmentSum3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { data, indices, segmentIds } = inputs;
   if (data.shape.length < 1) {
     throw new Error(`Data should be at least 1 dimensional but received scalar`);
@@ -57664,11 +57664,11 @@ function sparseSegmentSum3(args) {
     throw new Error(`Segment ids should be a vector but received shape
              ${segmentIds.shape}`);
   }
-  const $data = backend3.readSync(data.dataId);
-  const $indices = backend3.readSync(indices.dataId);
-  const $segmentIds = backend3.readSync(segmentIds.dataId);
+  const $data = backend2.readSync(data.dataId);
+  const $indices = backend2.readSync(indices.dataId);
+  const $segmentIds = backend2.readSync(segmentIds.dataId);
   const [outputData, outputDataShape] = sparseSegmentReductionImplCPU($data, data.shape, data.dtype, $indices, $segmentIds);
-  return backend3.makeTensorInfo(outputDataShape, data.dtype, outputData);
+  return backend2.makeTensorInfo(outputDataShape, data.dtype, outputData);
 }
 var sparseSegmentSumConfig2 = {
   kernelName: SparseSegmentSum,
@@ -57676,15 +57676,15 @@ var sparseSegmentSumConfig2 = {
   kernelFunc: sparseSegmentSum3
 };
 function sparseToDense3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { sparseIndices, sparseValues, defaultValue } = inputs;
   const { outputShape } = attrs;
   const { sliceRank, numUpdates, strides, outputSize } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
   const sumDupeIndices = false;
   const program = new ScatterProgram(numUpdates, sliceRank, sparseIndices.shape.length, sparseValues.shape.length, strides, [outputSize, 1], sumDupeIndices);
-  const res = backend3.runWebGLProgram(program, [sparseValues, sparseIndices, defaultValue], sparseValues.dtype);
-  const reshaped = reshape4({ inputs: { x: res }, backend: backend3, attrs: { shape: outputShape } });
-  backend3.disposeIntermediateTensorInfo(res);
+  const res = backend2.runWebGLProgram(program, [sparseValues, sparseIndices, defaultValue], sparseValues.dtype);
+  const reshaped = reshape4({ inputs: { x: res }, backend: backend2, attrs: { shape: outputShape } });
+  backend2.disposeIntermediateTensorInfo(res);
   return reshaped;
 }
 var sparseToDenseConfig2 = {
@@ -57693,7 +57693,7 @@ var sparseToDenseConfig2 = {
   kernelFunc: sparseToDense3
 };
 function splitV2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { numOrSizeSplits, axis } = attrs;
   const $axis = util_exports.parseAxisParam(axis, x.shape)[0];
@@ -57704,7 +57704,7 @@ function splitV2(args) {
   return splitSizes.map((s) => {
     const sliceSize = [...size];
     sliceSize[$axis] = s;
-    const sliceT = slice3({ inputs: { x }, backend: backend3, attrs: { begin, size: sliceSize } });
+    const sliceT = slice3({ inputs: { x }, backend: backend2, attrs: { begin, size: sliceSize } });
     begin[$axis] += s;
     return sliceT;
   });
@@ -57728,20 +57728,20 @@ var squareConfig2 = {
   backendName: "webgl",
   kernelFunc: square3
 };
-var SQUARED_DIFFERENCE2 = "return (a - b) * (a - b);";
-var squaredDifference3 = binaryKernelFunc2({ opSnippet: SQUARED_DIFFERENCE2, packedOpSnippet: SQUARED_DIFFERENCE2 });
+var SQUARED_DIFFERENCE = "return (a - b) * (a - b);";
+var squaredDifference3 = binaryKernelFunc2({ opSnippet: SQUARED_DIFFERENCE, packedOpSnippet: SQUARED_DIFFERENCE });
 var squaredDifferenceConfig2 = {
   kernelName: SquaredDifference,
   backendName: "webgl",
   kernelFunc: squaredDifference3
 };
-function step3({ inputs, attrs, backend: backend3 }) {
+function step3({ inputs, attrs, backend: backend2 }) {
   const { x } = inputs;
   const opSnippet = CHECK_NAN_SNIPPET + `
     return x > 0.0 ? 1.0 : float(${attrs.alpha});
   `;
   const program = new UnaryOpProgram(x.shape, opSnippet);
-  return backend3.runWebGLProgram(program, [x], x.dtype);
+  return backend2.runWebGLProgram(program, [x], x.dtype);
 }
 var stepConfig2 = {
   kernelName: Step,
@@ -57777,7 +57777,7 @@ var StridedSliceProgram = class {
   }
 };
 function stridedSlice3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const {
     begin,
@@ -57801,27 +57801,27 @@ function stridedSlice3(args) {
   } = slice_util_exports.sliceInfo(x.shape, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
   let result;
   if (isIdentity) {
-    result = reshape4({ inputs: { x }, backend: backend3, attrs: { shape: finalShape } });
+    result = reshape4({ inputs: { x }, backend: backend2, attrs: { shape: finalShape } });
   } else if (sliceDim0 || isSimpleSlice) {
     util_exports.assert(x.shape.length >= 1, () => `Input must have rank at least 1, got: ${x.shape.length}`);
     const size = slice_util_exports.computeOutShape($begin, $end, $strides);
-    const sliced = slice3({ inputs: { x }, backend: backend3, attrs: { begin: $begin, size } });
-    result = reshape4({ inputs: { x: sliced }, backend: backend3, attrs: { shape: finalShape } });
-    backend3.disposeIntermediateTensorInfo(sliced);
+    const sliced = slice3({ inputs: { x }, backend: backend2, attrs: { begin: $begin, size } });
+    result = reshape4({ inputs: { x: sliced }, backend: backend2, attrs: { shape: finalShape } });
+    backend2.disposeIntermediateTensorInfo(sliced);
   } else {
-    const shouldExecuteOnCPU = backend3.shouldExecuteOnCPU([x]);
+    const shouldExecuteOnCPU = backend2.shouldExecuteOnCPU([x]);
     if (shouldExecuteOnCPU) {
-      const values = backend3.readSync(x.dataId);
+      const values = backend2.readSync(x.dataId);
       const xBuf = buffer(x.shape, x.dtype, values);
       const resultValues = stridedSliceImplCPU(finalShapeSparse, xBuf, $strides, $begin);
-      result = backend3.makeTensorInfo(finalShape, x.dtype, resultValues.values);
+      result = backend2.makeTensorInfo(finalShape, x.dtype, resultValues.values);
     } else {
       const program = new StridedSliceProgram($begin, $strides, finalShapeSparse);
-      result = backend3.runWebGLProgram(program, [x], x.dtype);
+      result = backend2.runWebGLProgram(program, [x], x.dtype);
     }
   }
-  const resultReshaped = reshape4({ inputs: { x: result }, backend: backend3, attrs: { shape: finalShape } });
-  backend3.disposeIntermediateTensorInfo(result);
+  const resultReshaped = reshape4({ inputs: { x: result }, backend: backend2, attrs: { shape: finalShape } });
+  backend2.disposeIntermediateTensorInfo(result);
   return resultReshaped;
 }
 var stridedSliceConfig2 = {
@@ -57830,7 +57830,7 @@ var stridedSliceConfig2 = {
   kernelFunc: stridedSlice3
 };
 function stringNGrams3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const {
     separator,
     nGramWidths,
@@ -57840,12 +57840,12 @@ function stringNGrams3(args) {
     preserveShortSequences
   } = attrs;
   const { data, dataSplits } = inputs;
-  const $data = backend3.readSync(data.dataId);
-  const $dataSplits = backend3.readSync(dataSplits.dataId);
+  const $data = backend2.readSync(data.dataId);
+  const $dataSplits = backend2.readSync(dataSplits.dataId);
   const [nGrams, nGramsSplits] = stringNGramsImplCPU($data, $dataSplits, separator, nGramWidths, leftPad, rightPad2, padWidth, preserveShortSequences);
   return [
-    backend3.makeTensorInfo([nGrams.length], "string", nGrams),
-    backend3.makeTensorInfo(dataSplits.shape, "int32", nGramsSplits)
+    backend2.makeTensorInfo([nGrams.length], "string", nGrams),
+    backend2.makeTensorInfo(dataSplits.shape, "int32", nGramsSplits)
   ];
 }
 var stringNGramsConfig2 = {
@@ -57854,7 +57854,7 @@ var stringNGramsConfig2 = {
   kernelFunc: stringNGrams3
 };
 function stringSplit3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { skipEmpty } = attrs;
   const { input: input2, delimiter } = inputs;
   if (input2.dtype !== "string") {
@@ -57866,14 +57866,14 @@ function stringSplit3(args) {
   if (delimiter.shape.length !== 0) {
     throw new Error(`Delimiter must be a scalar, got shape: ${delimiter.shape}`);
   }
-  const $input = backend3.readSync(input2.dataId);
-  const $delimiter = backend3.readSync(delimiter.dataId)[0];
+  const $input = backend2.readSync(input2.dataId);
+  const $delimiter = backend2.readSync(delimiter.dataId)[0];
   const [indices, values, shape] = stringSplitImplCPU($input, $delimiter, skipEmpty);
   const outputSize = values.length;
   return [
-    backend3.makeTensorInfo([outputSize, 2], "int32", indices),
-    backend3.makeTensorInfo([outputSize], "string", values),
-    backend3.makeTensorInfo([2], "int32", new Int32Array(shape))
+    backend2.makeTensorInfo([outputSize, 2], "int32", indices),
+    backend2.makeTensorInfo([outputSize], "string", values),
+    backend2.makeTensorInfo([2], "int32", new Int32Array(shape))
   ];
 }
 var stringSplitConfig2 = {
@@ -57882,7 +57882,7 @@ var stringSplitConfig2 = {
   kernelFunc: stringSplit3
 };
 function stringToHashBucketFast3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { numBuckets } = attrs;
   const { input: input2 } = inputs;
   if (input2.dtype !== "string") {
@@ -57891,9 +57891,9 @@ function stringToHashBucketFast3(args) {
   if (numBuckets <= 0) {
     throw new Error(`Number of buckets must be at least 1`);
   }
-  const $input = backend3.readSync(input2.dataId);
+  const $input = backend2.readSync(input2.dataId);
   const output = stringToHashBucketFastImplCPU($input, numBuckets);
-  return backend3.makeTensorInfo(input2.shape, "int32", output);
+  return backend2.makeTensorInfo(input2.shape, "int32", output);
 }
 var stringToHashBucketFastConfig2 = {
   kernelName: StringToHashBucketFast,
@@ -57952,18 +57952,18 @@ function getSourceCoords3(aShape) {
   return sourceCoords.join();
 }
 function tile4(params) {
-  const { inputs, backend: backend3, attrs } = params;
+  const { inputs, backend: backend2, attrs } = params;
   const { x } = inputs;
   const { reps } = attrs;
   if (x.dtype === "string" || x.shape.length > 5) {
-    const data = backend3.readSync(x.dataId);
+    const data = backend2.readSync(x.dataId);
     const value = x.dtype === "string" ? data.map((d) => util_exports.decodeString(d)) : data;
     const buf = buffer(x.shape, x.dtype, value);
     const outBuf = tileImplCPU(buf, reps);
-    return backend3.makeTensorInfo(outBuf.shape, outBuf.dtype, outBuf.values);
+    return backend2.makeTensorInfo(outBuf.shape, outBuf.dtype, outBuf.values);
   }
   const program = new TileProgram(x.shape, reps);
-  const output = backend3.runWebGLProgram(program, [x], x.dtype);
+  const output = backend2.runWebGLProgram(program, [x], x.dtype);
   return output;
 }
 var tileConfig2 = {
@@ -58071,9 +58071,9 @@ var MergeProgram = class {
      `;
   }
 };
-function disposeIntermediateTensorInfoOrNull(backend3, tensorInfo) {
+function disposeIntermediateTensorInfoOrNull(backend2, tensorInfo) {
   if (tensorInfo !== null) {
-    backend3.disposeIntermediateTensorInfo(tensorInfo);
+    backend2.disposeIntermediateTensorInfo(tensorInfo);
   }
 }
 function roundUpToPow2(num) {
@@ -58084,42 +58084,42 @@ function roundUpToPow2(num) {
   return pow22;
 }
 function topK2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { k, sorted } = attrs;
   const TOPK_LAST_DIM_CPU_HANDOFF_SIZE_THRESHOLD = env().getNumber("TOPK_LAST_DIM_CPU_HANDOFF_SIZE_THRESHOLD");
   const TOPK_K_CPU_HANDOFF_THRESHOLD = env().getNumber("TOPK_K_CPU_HANDOFF_THRESHOLD");
   const xShape = x.shape;
   const lastDim = xShape[xShape.length - 1];
-  if (backend3.shouldExecuteOnCPU([x]) || lastDim < TOPK_LAST_DIM_CPU_HANDOFF_SIZE_THRESHOLD || k > TOPK_K_CPU_HANDOFF_THRESHOLD) {
-    const xVals = backend3.readSync(x.dataId);
+  if (backend2.shouldExecuteOnCPU([x]) || lastDim < TOPK_LAST_DIM_CPU_HANDOFF_SIZE_THRESHOLD || k > TOPK_K_CPU_HANDOFF_THRESHOLD) {
+    const xVals = backend2.readSync(x.dataId);
     const [allTopKVals, allTopKIndices] = topKImplCPU(xVals, xShape, x.dtype, k, sorted);
     return [
-      backend3.makeTensorInfo(allTopKVals.shape, allTopKVals.dtype, allTopKVals.values),
-      backend3.makeTensorInfo(allTopKIndices.shape, allTopKIndices.dtype, allTopKIndices.values)
+      backend2.makeTensorInfo(allTopKVals.shape, allTopKVals.dtype, allTopKVals.values),
+      backend2.makeTensorInfo(allTopKIndices.shape, allTopKIndices.dtype, allTopKIndices.values)
     ];
   }
   if (k === 0) {
     xShape[xShape.length - 1] = 0;
     return [
-      backend3.makeTensorInfo(xShape, x.dtype, []),
-      backend3.makeTensorInfo(xShape, "int32", [])
+      backend2.makeTensorInfo(xShape, x.dtype, []),
+      backend2.makeTensorInfo(xShape, "int32", [])
     ];
   }
   if (lastDim === 1) {
     return [
       x,
-      fill3({ attrs: { shape: xShape, dtype: "int32", value: 0 }, backend: backend3 })
+      fill3({ attrs: { shape: xShape, dtype: "int32", value: 0 }, backend: backend2 })
     ];
   }
-  const xtexData = backend3.texData.get(x.dataId);
+  const xtexData = backend2.texData.get(x.dataId);
   const xIsPacked = xtexData !== null && xtexData.isPacked;
-  const xUnPacked = xIsPacked ? backend3.unpackTensor(x) : x;
+  const xUnPacked = xIsPacked ? backend2.unpackTensor(x) : x;
   const xSize = util_exports.sizeFromShape(xShape);
   const batch = xSize / lastDim;
-  const x2D = reshape4({ inputs: { x: xUnPacked }, attrs: { shape: [batch, lastDim] }, backend: backend3 });
+  const x2D = reshape4({ inputs: { x: xUnPacked }, attrs: { shape: [batch, lastDim] }, backend: backend2 });
   if (xIsPacked) {
-    disposeIntermediateTensorInfoOrNull(backend3, xUnPacked);
+    disposeIntermediateTensorInfoOrNull(backend2, xUnPacked);
   }
   const kPow2 = roundUpToPow2(k);
   const lastDimPow2 = roundUpToPow2(lastDim);
@@ -58131,8 +58131,8 @@ function topK2(args) {
     const fistPass = indices === null ? 1 : 0;
     const customValues = [[lastDim], [fistPass], [Number.NEGATIVE_INFINITY], [dir], [inc]];
     const prevIndices2 = indices;
-    indices = backend3.runWebGLProgram(program, inputs2, "int32", customValues);
-    disposeIntermediateTensorInfoOrNull(backend3, prevIndices2);
+    indices = backend2.runWebGLProgram(program, inputs2, "int32", customValues);
+    disposeIntermediateTensorInfoOrNull(backend2, prevIndices2);
   };
   for (let len = 1; len < kPow2; len *= 2) {
     const dir = len * 2;
@@ -58146,8 +58146,8 @@ function topK2(args) {
     const firstPass = indices === null ? 1 : 0;
     const customValues = [[lastDim], [firstPass], [kPow2]];
     const prevIndices2 = indices;
-    indices = backend3.runWebGLProgram(mergeProgram, inputs2, "int32", customValues);
-    disposeIntermediateTensorInfoOrNull(backend3, prevIndices2);
+    indices = backend2.runWebGLProgram(mergeProgram, inputs2, "int32", customValues);
+    disposeIntermediateTensorInfoOrNull(backend2, prevIndices2);
     const len = kPow2 / 2;
     const dir = len * 2;
     for (let inc = len; inc >= 1; inc /= 2) {
@@ -58155,18 +58155,18 @@ function topK2(args) {
     }
   }
   let prevIndices = indices;
-  indices = slice3({ inputs: { x: indices }, backend: backend3, attrs: { begin: 0, size: [batch, k] } });
-  disposeIntermediateTensorInfoOrNull(backend3, prevIndices);
-  let values = gatherV22({ inputs: { x: x2D, indices }, backend: backend3, attrs: { axis: 1, batchDims: 1 } });
-  disposeIntermediateTensorInfoOrNull(backend3, x2D);
+  indices = slice3({ inputs: { x: indices }, backend: backend2, attrs: { begin: 0, size: [batch, k] } });
+  disposeIntermediateTensorInfoOrNull(backend2, prevIndices);
+  let values = gatherV22({ inputs: { x: x2D, indices }, backend: backend2, attrs: { axis: 1, batchDims: 1 } });
+  disposeIntermediateTensorInfoOrNull(backend2, x2D);
   const newShape = xShape.slice(0, -1);
   newShape.push(k);
   prevIndices = indices;
-  indices = reshape4({ inputs: { x: indices }, attrs: { shape: newShape }, backend: backend3 });
-  disposeIntermediateTensorInfoOrNull(backend3, prevIndices);
+  indices = reshape4({ inputs: { x: indices }, attrs: { shape: newShape }, backend: backend2 });
+  disposeIntermediateTensorInfoOrNull(backend2, prevIndices);
   const prevValues = values;
-  values = reshape4({ inputs: { x: values }, attrs: { shape: newShape }, backend: backend3 });
-  disposeIntermediateTensorInfoOrNull(backend3, prevValues);
+  values = reshape4({ inputs: { x: values }, attrs: { shape: newShape }, backend: backend2 });
+  disposeIntermediateTensorInfoOrNull(backend2, prevValues);
   return [values, indices];
 }
 var topKConfig2 = {
@@ -58313,7 +58313,7 @@ var TransformProgram = class {
   }
 };
 function transform3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { image: image3, transforms } = inputs;
   const { interpolation, fillMode, fillValue, outputShape } = attrs;
   const [batch, imageHeight, imageWidth, numChannels] = image3.shape;
@@ -58325,7 +58325,7 @@ function transform3(args) {
     numChannels
   ];
   const program = new TransformProgram(imageHeight, imageWidth, interpolation, fillMode, fillValue, outShape);
-  return backend3.runWebGLProgram(program, [image3, transforms], "float32");
+  return backend2.runWebGLProgram(program, [image3, transforms], "float32");
 }
 var transformConfig2 = {
   kernelName: Transform,
@@ -58333,16 +58333,16 @@ var transformConfig2 = {
   kernelFunc: transform3
 };
 function unique4(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const { axis } = attrs;
   const { x } = inputs;
   assertNotComplex2(x, "unique");
   console.warn("WARNING: ", "UI might be locked temporarily as data is being downloaded");
-  const values = backend3.readSync(x.dataId);
+  const values = backend2.readSync(x.dataId);
   const { outputValues, outputShape, indices } = uniqueImplCPU(values, axis, x.shape, x.dtype);
   return [
-    backend3.makeTensorInfo(outputShape, x.dtype, outputValues),
-    backend3.makeTensorInfo([indices.length], "int32", indices)
+    backend2.makeTensorInfo(outputShape, x.dtype, outputValues),
+    backend2.makeTensorInfo([indices.length], "int32", indices)
   ];
 }
 var uniqueConfig2 = {
@@ -58351,7 +58351,7 @@ var uniqueConfig2 = {
   kernelFunc: unique4
 };
 function unpack2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { value } = inputs;
   let { axis } = attrs;
   if (axis < 0) {
@@ -58374,12 +58374,12 @@ function unpack2(args) {
   const res = new Array(num);
   for (let i = 0; i < res.length; i++) {
     begin[axis] = i;
-    const sliced = slice3({ inputs: { x }, backend: backend3, attrs: { begin, size } });
-    const reshaped = reshape4({ inputs: { x: sliced }, backend: backend3, attrs: { shape: outShape } });
+    const sliced = slice3({ inputs: { x }, backend: backend2, attrs: { begin, size } });
+    const reshaped = reshape4({ inputs: { x: sliced }, backend: backend2, attrs: { shape: outShape } });
     res[i] = reshaped;
     toDispose.push(sliced);
   }
-  toDispose.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  toDispose.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return res;
 }
 var unpackConfig2 = {
@@ -58519,7 +58519,7 @@ var SegmentOpProgram = class {
   }
 };
 function unsortedSegmentSum3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, segmentIds } = inputs;
   const { numSegments } = attrs;
   const xRank = x.shape.length;
@@ -58528,13 +58528,13 @@ function unsortedSegmentSum3(args) {
   const permutation = backend_util_exports.getAxesPermutation([axis], xRank);
   let permutedX = x;
   if (permutation != null) {
-    permutedX = transpose3({ inputs: { x }, backend: backend3, attrs: { perm: permutation } });
+    permutedX = transpose3({ inputs: { x }, backend: backend2, attrs: { perm: permutation } });
     toDispose.push(permutedX);
     axis = backend_util_exports.getInnerMostAxes(1, xRank)[0];
   }
   const outShape = backend_util_exports.segment_util.computeOutShape(permutedX.shape, axis, numSegments);
   const inSize = util_exports.sizeFromShape([permutedX.shape[axis]]);
-  const a2D = reshape4({ inputs: { x: permutedX }, backend: backend3, attrs: { shape: [-1, inSize] } });
+  const a2D = reshape4({ inputs: { x: permutedX }, backend: backend2, attrs: { shape: [-1, inSize] } });
   toDispose.push(a2D);
   const outputDType = sumOutType(x.dtype);
   const segOpCompute = (x2, segOpType, segmentIds2, dtype, numSegments2) => {
@@ -58543,18 +58543,18 @@ function unsortedSegmentSum3(args) {
     const windowSize = backend_util_exports.segment_util.segOpComputeOptimalWindowSize(inSize2, numSegments2);
     const segOpInfo = { windowSize, inSize: inSize2, batchSize, numSegments: numSegments2 };
     const program = new SegmentOpProgram(segOpInfo, segOpType);
-    const output = backend3.compileAndRun(program, [x2, segmentIds2], dtype);
+    const output = backend2.compileAndRun(program, [x2, segmentIds2], dtype);
     toDispose.push(output);
     if (output.shape[1] === numSegments2) {
       return output;
     }
     const rangeInfo = range4({
-      backend: backend3,
+      backend: backend2,
       attrs: { start: 0, stop: numSegments2, step: 1, dtype: "float32" }
     });
     const tileInfo = tile4({
       inputs: { x: rangeInfo },
-      backend: backend3,
+      backend: backend2,
       attrs: { reps: [inSize2 / windowSize] }
     });
     toDispose.push(rangeInfo);
@@ -58563,14 +58563,14 @@ function unsortedSegmentSum3(args) {
     return result2;
   };
   const segOpResult = segOpCompute(a2D, "unsortedSegmentSum", segmentIds, outputDType, numSegments);
-  const reshaped = reshape4({ inputs: { x: segOpResult }, backend: backend3, attrs: { shape: outShape } });
+  const reshaped = reshape4({ inputs: { x: segOpResult }, backend: backend2, attrs: { shape: outShape } });
   let result = reshaped;
   if (permutation != null) {
     toDispose.push(reshaped);
     const perm = backend_util_exports.getUndoAxesPermutation(permutation);
-    result = transpose3({ inputs: { x: result }, backend: backend3, attrs: { perm } });
+    result = transpose3({ inputs: { x: result }, backend: backend2, attrs: { perm } });
   }
-  toDispose.forEach((t) => backend3.disposeIntermediateTensorInfo(t));
+  toDispose.forEach((t) => backend2.disposeIntermediateTensorInfo(t));
   return result;
 }
 var unsortedSegmentSumConfig2 = {
@@ -59417,33 +59417,33 @@ function isWebGPUSupported() {
   return true;
 }
 var BinaryOpType;
-(function(BinaryOpType7) {
-  BinaryOpType7[BinaryOpType7["MUL"] = 0] = "MUL";
-  BinaryOpType7[BinaryOpType7["ADD"] = 1] = "ADD";
-  BinaryOpType7[BinaryOpType7["SUB"] = 2] = "SUB";
-  BinaryOpType7[BinaryOpType7["DIV"] = 3] = "DIV";
-  BinaryOpType7[BinaryOpType7["EQUAL"] = 4] = "EQUAL";
-  BinaryOpType7[BinaryOpType7["GREATER"] = 5] = "GREATER";
-  BinaryOpType7[BinaryOpType7["GREATER_EQUAL"] = 6] = "GREATER_EQUAL";
-  BinaryOpType7[BinaryOpType7["LESS"] = 7] = "LESS";
-  BinaryOpType7[BinaryOpType7["LESS_EQUAL"] = 8] = "LESS_EQUAL";
-  BinaryOpType7[BinaryOpType7["LOGICAL_AND"] = 9] = "LOGICAL_AND";
-  BinaryOpType7[BinaryOpType7["NOT_EQUAL"] = 10] = "NOT_EQUAL";
-  BinaryOpType7[BinaryOpType7["SQUARED_DIFFERENCE"] = 11] = "SQUARED_DIFFERENCE";
-  BinaryOpType7[BinaryOpType7["INT_DIV"] = 12] = "INT_DIV";
-  BinaryOpType7[BinaryOpType7["POW"] = 13] = "POW";
-  BinaryOpType7[BinaryOpType7["PRELU"] = 14] = "PRELU";
-  BinaryOpType7[BinaryOpType7["MAX"] = 15] = "MAX";
-  BinaryOpType7[BinaryOpType7["MIN"] = 16] = "MIN";
-  BinaryOpType7[BinaryOpType7["COMPLEX_MULTIPLY_REAL"] = 17] = "COMPLEX_MULTIPLY_REAL";
-  BinaryOpType7[BinaryOpType7["COMPLEX_MULTIPLY_IMAG"] = 18] = "COMPLEX_MULTIPLY_IMAG";
+(function(BinaryOpType6) {
+  BinaryOpType6[BinaryOpType6["MUL"] = 0] = "MUL";
+  BinaryOpType6[BinaryOpType6["ADD"] = 1] = "ADD";
+  BinaryOpType6[BinaryOpType6["SUB"] = 2] = "SUB";
+  BinaryOpType6[BinaryOpType6["DIV"] = 3] = "DIV";
+  BinaryOpType6[BinaryOpType6["EQUAL"] = 4] = "EQUAL";
+  BinaryOpType6[BinaryOpType6["GREATER"] = 5] = "GREATER";
+  BinaryOpType6[BinaryOpType6["GREATER_EQUAL"] = 6] = "GREATER_EQUAL";
+  BinaryOpType6[BinaryOpType6["LESS"] = 7] = "LESS";
+  BinaryOpType6[BinaryOpType6["LESS_EQUAL"] = 8] = "LESS_EQUAL";
+  BinaryOpType6[BinaryOpType6["LOGICAL_AND"] = 9] = "LOGICAL_AND";
+  BinaryOpType6[BinaryOpType6["NOT_EQUAL"] = 10] = "NOT_EQUAL";
+  BinaryOpType6[BinaryOpType6["SQUARED_DIFFERENCE"] = 11] = "SQUARED_DIFFERENCE";
+  BinaryOpType6[BinaryOpType6["INT_DIV"] = 12] = "INT_DIV";
+  BinaryOpType6[BinaryOpType6["POW"] = 13] = "POW";
+  BinaryOpType6[BinaryOpType6["PRELU"] = 14] = "PRELU";
+  BinaryOpType6[BinaryOpType6["MAX"] = 15] = "MAX";
+  BinaryOpType6[BinaryOpType6["MIN"] = 16] = "MIN";
+  BinaryOpType6[BinaryOpType6["COMPLEX_MULTIPLY_REAL"] = 17] = "COMPLEX_MULTIPLY_REAL";
+  BinaryOpType6[BinaryOpType6["COMPLEX_MULTIPLY_IMAG"] = 18] = "COMPLEX_MULTIPLY_IMAG";
 })(BinaryOpType || (BinaryOpType = {}));
 var ADD2 = "return a + b;";
 var COMPLEX_MULTIPLY_REAL = "return areal * breal - aimag * bimag;";
 var COMPLEX_MULTIPLY_IMAG = "return areal * bimag + aimag * breal;";
 var DIV2 = "return a / b;";
 var MUL2 = "return a * b;";
-var SQUARED_DIFFERENCE3 = "return (a - b) * (a - b);";
+var SQUARED_DIFFERENCE2 = "return (a - b) * (a - b);";
 var SUB2 = "return a - b;";
 var EQUAL2 = "return f32(a == b);";
 var EQUAL_VEC4 = "return vec4<f32>(a == b);";
@@ -59504,7 +59504,7 @@ var INT_DIV_VEC4 = `
   }
   return vec4<f32>(resultTemp);
   `;
-var NOT_EQUAL3 = "return f32(a != b);";
+var NOT_EQUAL2 = "return f32(a != b);";
 var NOT_EQUAL_VEC4 = "return vec4<f32>(a != b);";
 var POW2 = `
   if(a < 0.0 && floor(b) < b) {
@@ -59581,9 +59581,9 @@ function getBinaryOpString(type, useVec4) {
     case 9:
       return useVec4 ? LOGICAL_AND_VEC4 : LOGICAL_AND2;
     case 10:
-      return useVec4 ? NOT_EQUAL_VEC4 : NOT_EQUAL3;
+      return useVec4 ? NOT_EQUAL_VEC4 : NOT_EQUAL2;
     case 11:
-      return SQUARED_DIFFERENCE3;
+      return SQUARED_DIFFERENCE2;
     case 12:
       return useVec4 ? INT_DIV_VEC4 : INT_DIV2;
     case 14:
@@ -59603,30 +59603,30 @@ function getBinaryOpString(type, useVec4) {
   }
 }
 var UnaryOpType;
-(function(UnaryOpType4) {
-  UnaryOpType4[UnaryOpType4["ABS"] = 0] = "ABS";
-  UnaryOpType4[UnaryOpType4["CEIL"] = 1] = "CEIL";
-  UnaryOpType4[UnaryOpType4["COS"] = 2] = "COS";
-  UnaryOpType4[UnaryOpType4["COSH"] = 3] = "COSH";
-  UnaryOpType4[UnaryOpType4["ELU"] = 4] = "ELU";
-  UnaryOpType4[UnaryOpType4["EXP"] = 5] = "EXP";
-  UnaryOpType4[UnaryOpType4["EXPM1"] = 6] = "EXPM1";
-  UnaryOpType4[UnaryOpType4["FLOOR"] = 7] = "FLOOR";
-  UnaryOpType4[UnaryOpType4["LINEAR"] = 8] = "LINEAR";
-  UnaryOpType4[UnaryOpType4["LOG"] = 9] = "LOG";
-  UnaryOpType4[UnaryOpType4["LOGICAL_NOT"] = 10] = "LOGICAL_NOT";
-  UnaryOpType4[UnaryOpType4["NEG"] = 11] = "NEG";
-  UnaryOpType4[UnaryOpType4["PRELU"] = 12] = "PRELU";
-  UnaryOpType4[UnaryOpType4["RELU"] = 13] = "RELU";
-  UnaryOpType4[UnaryOpType4["RELU6"] = 14] = "RELU6";
-  UnaryOpType4[UnaryOpType4["RSQRT"] = 15] = "RSQRT";
-  UnaryOpType4[UnaryOpType4["SIN"] = 16] = "SIN";
-  UnaryOpType4[UnaryOpType4["SINH"] = 17] = "SINH";
-  UnaryOpType4[UnaryOpType4["SIGMOID"] = 18] = "SIGMOID";
-  UnaryOpType4[UnaryOpType4["SQRT"] = 19] = "SQRT";
-  UnaryOpType4[UnaryOpType4["SQUARE"] = 20] = "SQUARE";
-  UnaryOpType4[UnaryOpType4["TANH"] = 21] = "TANH";
-  UnaryOpType4[UnaryOpType4["TO_INT"] = 22] = "TO_INT";
+(function(UnaryOpType3) {
+  UnaryOpType3[UnaryOpType3["ABS"] = 0] = "ABS";
+  UnaryOpType3[UnaryOpType3["CEIL"] = 1] = "CEIL";
+  UnaryOpType3[UnaryOpType3["COS"] = 2] = "COS";
+  UnaryOpType3[UnaryOpType3["COSH"] = 3] = "COSH";
+  UnaryOpType3[UnaryOpType3["ELU"] = 4] = "ELU";
+  UnaryOpType3[UnaryOpType3["EXP"] = 5] = "EXP";
+  UnaryOpType3[UnaryOpType3["EXPM1"] = 6] = "EXPM1";
+  UnaryOpType3[UnaryOpType3["FLOOR"] = 7] = "FLOOR";
+  UnaryOpType3[UnaryOpType3["LINEAR"] = 8] = "LINEAR";
+  UnaryOpType3[UnaryOpType3["LOG"] = 9] = "LOG";
+  UnaryOpType3[UnaryOpType3["LOGICAL_NOT"] = 10] = "LOGICAL_NOT";
+  UnaryOpType3[UnaryOpType3["NEG"] = 11] = "NEG";
+  UnaryOpType3[UnaryOpType3["PRELU"] = 12] = "PRELU";
+  UnaryOpType3[UnaryOpType3["RELU"] = 13] = "RELU";
+  UnaryOpType3[UnaryOpType3["RELU6"] = 14] = "RELU6";
+  UnaryOpType3[UnaryOpType3["RSQRT"] = 15] = "RSQRT";
+  UnaryOpType3[UnaryOpType3["SIN"] = 16] = "SIN";
+  UnaryOpType3[UnaryOpType3["SINH"] = 17] = "SINH";
+  UnaryOpType3[UnaryOpType3["SIGMOID"] = 18] = "SIGMOID";
+  UnaryOpType3[UnaryOpType3["SQRT"] = 19] = "SQRT";
+  UnaryOpType3[UnaryOpType3["SQUARE"] = 20] = "SQUARE";
+  UnaryOpType3[UnaryOpType3["TANH"] = 21] = "TANH";
+  UnaryOpType3[UnaryOpType3["TO_INT"] = 22] = "TO_INT";
 })(UnaryOpType || (UnaryOpType = {}));
 var ABS3 = `return abs(a);`;
 var CEIL2 = `return ceil(a);`;
@@ -60444,7 +60444,7 @@ function batchMatMulImpl2({
   b,
   transposeA,
   transposeB,
-  backend: backend3,
+  backend: backend2,
   bias = null,
   preluActivationWeights = null,
   leakyreluAlpha = 0,
@@ -60467,8 +60467,8 @@ function batchMatMulImpl2({
   util_exports.assert(innerShapeA === innerShapeB, () => `Error in matMul: inner shapes (${innerShapeA}) and (${innerShapeB}) of Tensors with shapes ${a.shape} and ${b.shape} and transposeA=${transposeA} and transposeB=${transposeB} must match.`);
   const a3dShape = transposeA ? [batchDimA, innerShapeA, outerShapeA] : [batchDimA, outerShapeA, innerShapeA];
   const b3dShape = transposeB ? [batchDimB, outerShapeB, innerShapeB] : [batchDimB, innerShapeB, outerShapeB];
-  const a3d = reshape5({ inputs: { x: a }, backend: backend3, attrs: { shape: a3dShape } });
-  const b3d = reshape5({ inputs: { x: b }, backend: backend3, attrs: { shape: b3dShape } });
+  const a3d = reshape5({ inputs: { x: a }, backend: backend2, attrs: { shape: a3dShape } });
+  const b3d = reshape5({ inputs: { x: b }, backend: backend2, attrs: { shape: b3dShape } });
   const intermediates = [a3d, b3d];
   const batchDim = Math.max(batchDimA, batchDimB);
   const useVec4 = innerShapeA % 4 === 0 && outerShapeB % 4 === 0 && !transposeA && !transposeB && outerShapeB >= 32;
@@ -60492,16 +60492,16 @@ function batchMatMulImpl2({
     { type: "int32", data: [outerShapeB] },
     { type: "int32", data: [innerShapeA] }
   ];
-  const out = backend3.runWebGPUProgram(program, inputs, a.dtype, dimensions);
-  const outReshaped = reshape5({ inputs: { x: out }, backend: backend3, attrs: { shape: outShape } });
+  const out = backend2.runWebGPUProgram(program, inputs, a.dtype, dimensions);
+  const outReshaped = reshape5({ inputs: { x: out }, backend: backend2, attrs: { shape: outShape } });
   intermediates.push(out);
   for (const i of intermediates) {
-    backend3.disposeData(i.dataId);
+    backend2.disposeData(i.dataId);
   }
   return outReshaped;
 }
 function _fusedMatMul3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { a, b, bias, preluActivationWeights } = inputs;
   const { transposeA, transposeB, activation: activation2, leakyreluAlpha } = attrs;
   return batchMatMulImpl2({
@@ -60509,7 +60509,7 @@ function _fusedMatMul3(args) {
     b,
     transposeA,
     transposeB,
-    backend: backend3,
+    backend: backend2,
     bias,
     preluActivationWeights,
     leakyreluAlpha,
@@ -60756,12 +60756,12 @@ var identityConfig3 = {
   kernelFunc: identity4
 };
 function complex4(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { real: real5, imag: imag5 } = inputs;
-  const complexInfo = backend3.makeTensorInfo(real5.shape, "complex64");
-  const complex5 = backend3.tensorMap.get(complexInfo.dataId);
-  const realTensorInfo = identity4({ inputs: { x: real5 }, backend: backend3 });
-  const imagTensorInfo = identity4({ inputs: { x: imag5 }, backend: backend3 });
+  const complexInfo = backend2.makeTensorInfo(real5.shape, "complex64");
+  const complex5 = backend2.tensorMap.get(complexInfo.dataId);
+  const realTensorInfo = identity4({ inputs: { x: real5 }, backend: backend2 });
+  const imagTensorInfo = identity4({ inputs: { x: imag5 }, backend: backend2 });
   complex5.complexTensorInfos = { real: realTensorInfo, imag: imagTensorInfo };
   return complexInfo;
 }
@@ -60798,9 +60798,9 @@ var UnaryOpProgram2 = class {
   }
 };
 function unaryKernelFunc3({ opType, cpuKernelImpl, dtype }) {
-  return ({ inputs, backend: backend3 }) => {
+  return ({ inputs, backend: backend2 }) => {
     const { x } = inputs;
-    const webgpuBackend = backend3;
+    const webgpuBackend = backend2;
     const $dtype = dtype || x.dtype;
     if (webgpuBackend.shouldExecuteOnCPU([x]) && cpuKernelImpl != null) {
       const xData = webgpuBackend.tensorMap.get(x.dataId);
@@ -60812,9 +60812,9 @@ function unaryKernelFunc3({ opType, cpuKernelImpl, dtype }) {
   };
 }
 function binaryKernelFunc3({ opSnippet, cpuKernelImpl, supportsComplex = false, dtype }) {
-  return ({ inputs, backend: backend3 }) => {
+  return ({ inputs, backend: backend2 }) => {
     const { a, b } = inputs;
-    const webgpuBackend = backend3;
+    const webgpuBackend = backend2;
     if (supportsComplex && a.dtype === "complex64") {
       const aData = webgpuBackend.tensorMap.get(a.dataId);
       const bData = webgpuBackend.tensorMap.get(b.dataId);
@@ -60947,11 +60947,11 @@ var AddNPackedProgram2 = class {
   }
   getUserCode() {
     const snippets = [];
-    this.variableNames.forEach((variable3) => {
-      snippets.push(`let v${variable3} = get${variable3}AtOutCoordsByCoords(coords);`);
+    this.variableNames.forEach((variable2) => {
+      snippets.push(`let v${variable2} = get${variable2}AtOutCoordsByCoords(coords);`);
     });
-    const operation = this.variableNames.map((variable3) => {
-      return `v${variable3}`;
+    const operation = this.variableNames.map((variable2) => {
+      return `v${variable2}`;
     }).join(" + ");
     const userCode = `
       ${getMainHeaderString()} {
@@ -60970,15 +60970,15 @@ var AddNPackedProgram2 = class {
   }
 };
 function addN4(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const tensors = inputs;
   if (tensors.length === 1) {
-    return identity4({ inputs: { x: tensors[0] }, backend: backend3 });
+    return identity4({ inputs: { x: tensors[0] }, backend: backend2 });
   }
   const dtype = tensors.map((t) => t.dtype).reduce((d1, d2) => upcastType(d1, d2));
   const shapes = tensors.map((t) => t.shape);
   const program = new AddNPackedProgram2(shapes);
-  return backend3.runWebGPUProgram(program, tensors, dtype);
+  return backend2.runWebGPUProgram(program, tensors, dtype);
 }
 var addNConfig3 = {
   kernelName: AddN,
@@ -61208,20 +61208,20 @@ function getSwitchedCoords2(newDim) {
   return switchedCoords.join();
 }
 function transpose4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { perm } = attrs;
-  const webgpuBackend = backend3;
+  const webgpuBackend = backend2;
   const xRank = x.shape.length;
   const newShape = new Array(xRank);
   for (let i = 0; i < newShape.length; i++) {
     newShape[i] = x.shape[perm[i]];
   }
-  if (backend3.shouldExecuteOnCPU([x])) {
+  if (backend2.shouldExecuteOnCPU([x])) {
     const xData = webgpuBackend.tensorMap.get(x.dataId);
     const values = xData.values;
     const outValues = transposeImplCPU2(values, x.shape, x.dtype, perm, newShape);
-    return backend3.makeTensorInfo(newShape, x.dtype, outValues);
+    return backend2.makeTensorInfo(newShape, x.dtype, outValues);
   }
   if (x.shape.length === 2 && util_exports.arraysEqual(perm, [1, 0])) {
     const program2 = new TransposeSharedProgram(x.shape, perm);
@@ -61236,7 +61236,7 @@ var transposeConfig3 = {
   kernelFunc: transpose4
 };
 function argMax4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis } = attrs;
   let axes = util_exports.parseAxisParam(axis, x.shape);
@@ -61244,15 +61244,15 @@ function argMax4(args) {
   let $x = x;
   const intermediateTensorInfos = [];
   if (permutedAxes != null) {
-    $x = transpose4({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    $x = transpose4({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     intermediateTensorInfos.push($x);
     axes = backend_util_exports.getInnerMostAxes(axes.length, $x.shape.length);
   }
   backend_util_exports.assertAxesAreInnerMostDims("argMax", [axes[0]], $x.shape.length);
   const program = new ArgMinMaxProgram2($x.shape, axes[0], "max");
   const uniformData = [{ type: "int32", data: [axes[0]] }];
-  const out = backend3.runWebGPUProgram(program, [$x], "int32", uniformData);
-  intermediateTensorInfos.forEach((t) => backend3.disposeData(t.dataId));
+  const out = backend2.runWebGPUProgram(program, [$x], "int32", uniformData);
+  intermediateTensorInfos.forEach((t) => backend2.disposeData(t.dataId));
   return out;
 }
 var argMaxConfig3 = {
@@ -61261,7 +61261,7 @@ var argMaxConfig3 = {
   kernelFunc: argMax4
 };
 function argMin4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis } = attrs;
   let axes = util_exports.parseAxisParam(axis, x.shape);
@@ -61269,15 +61269,15 @@ function argMin4(args) {
   let $x = x;
   const intermediateTensorInfos = [];
   if (permutedAxes != null) {
-    $x = transpose4({ inputs: { x }, backend: backend3, attrs: { perm: permutedAxes } });
+    $x = transpose4({ inputs: { x }, backend: backend2, attrs: { perm: permutedAxes } });
     intermediateTensorInfos.push($x);
     axes = backend_util_exports.getInnerMostAxes(axes.length, $x.shape.length);
   }
   backend_util_exports.assertAxesAreInnerMostDims("argMin", [axes[0]], $x.shape.length);
   const program = new ArgMinMaxProgram2($x.shape, axes[0], "min");
   const uniformData = [{ type: "int32", data: [axes[0]] }];
-  const out = backend3.runWebGPUProgram(program, [$x], "int32", uniformData);
-  intermediateTensorInfos.forEach((t) => backend3.disposeData(t.dataId));
+  const out = backend2.runWebGPUProgram(program, [$x], "int32", uniformData);
+  intermediateTensorInfos.forEach((t) => backend2.disposeData(t.dataId));
   return out;
 }
 var argMinConfig3 = {
@@ -61375,13 +61375,13 @@ var PoolWithFilterSizeEqualsOneProgram = class {
   }
 };
 function avgPool4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
   const dilations = 1;
   const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
   if (convInfo.filterWidth === 1 && convInfo.filterHeight === 1 && util_exports.arraysEqual(convInfo.inShape, convInfo.outShape)) {
-    return identity4({ inputs: { x }, backend: backend3 });
+    return identity4({ inputs: { x }, backend: backend2 });
   }
   let program;
   const dimensions = [{ type: "int32", data: [convInfo.strideHeight, convInfo.strideWidth] }];
@@ -61397,7 +61397,7 @@ function avgPool4(args) {
       data: [convInfo.effectiveFilterHeight, convInfo.effectiveFilterWidth]
     });
   }
-  return backend3.runWebGPUProgram(program, [x], x.dtype, dimensions);
+  return backend2.runWebGPUProgram(program, [x], x.dtype, dimensions);
 }
 var avgPoolConfig3 = {
   kernelName: AvgPool,
@@ -61405,10 +61405,10 @@ var avgPoolConfig3 = {
   kernelFunc: avgPool4
 };
 function batchMatMul3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { a, b } = inputs;
   const { transposeA, transposeB } = attrs;
-  return batchMatMulImpl2({ a, b, transposeA, transposeB, backend: backend3 });
+  return batchMatMulImpl2({ a, b, transposeA, transposeB, backend: backend2 });
 }
 var batchMatMulConfig3 = {
   kernelName: BatchMatMul,
@@ -61467,22 +61467,22 @@ function getCoords3(rank) {
   }
 }
 function slice4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { begin, size } = attrs;
   const [$begin, $size] = slice_util_exports.parseSliceParams(x, begin, size);
   slice_util_exports.assertParamsValid(x, $begin, $size);
-  if (backend3.shouldExecuteOnCPU([x]) || x.dtype === "string") {
-    const xBufferInfo = backend3.tensorMap.get(x.dataId);
+  if (backend2.shouldExecuteOnCPU([x]) || x.dtype === "string") {
+    const xBufferInfo = backend2.tensorMap.get(x.dataId);
     const outValues = sliceImplCPU2(xBufferInfo.values, $begin, $size, x.shape, x.dtype);
-    return backend3.makeTensorInfo($size, x.dtype, outValues);
+    return backend2.makeTensorInfo($size, x.dtype, outValues);
   }
   if (util_exports.sizeFromShape($size) === 0) {
-    return backend3.makeTensorInfo($size, x.dtype, []);
+    return backend2.makeTensorInfo($size, x.dtype, []);
   }
   const program = new SliceProgram2($begin, $size);
   const uniformData = [{ type: "int32", data: $begin }];
-  return backend3.runWebGPUProgram(program, [x], x.dtype, uniformData);
+  return backend2.runWebGPUProgram(program, [x], x.dtype, uniformData);
 }
 var sliceConfig3 = {
   kernelName: Slice,
@@ -61490,7 +61490,7 @@ var sliceConfig3 = {
   kernelFunc: slice4
 };
 var batchToSpaceND4 = (args) => {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { blockShape, crops } = attrs;
   util_exports.assert(x.shape.length <= 4, () => "batchToSpaceND for rank > 4 with a WebGPU backend not implemented yet");
@@ -61501,22 +61501,22 @@ var batchToSpaceND4 = (args) => {
   const sliceBeginCoords = backend_util_exports.getSliceBeginCoords(crops, blockShape.length);
   const sliceSize = backend_util_exports.getSliceSize(reshapedPermuted, crops, blockShape.length);
   const toDispose = [];
-  const reshapedIntermediate = reshape5({ inputs: { x }, backend: backend3, attrs: { shape: reshaped } });
-  const transposedIntermediate = transpose4({ inputs: { x: reshapedIntermediate }, backend: backend3, attrs: { perm: permuted } });
+  const reshapedIntermediate = reshape5({ inputs: { x }, backend: backend2, attrs: { shape: reshaped } });
+  const transposedIntermediate = transpose4({ inputs: { x: reshapedIntermediate }, backend: backend2, attrs: { perm: permuted } });
   const reshapedIntermediate2 = reshape5({
     inputs: { x: transposedIntermediate },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: reshapedPermuted }
   });
   const sliced = slice4({
     inputs: { x: reshapedIntermediate2 },
-    backend: backend3,
+    backend: backend2,
     attrs: { begin: sliceBeginCoords, size: sliceSize }
   });
   toDispose.push(reshapedIntermediate);
   toDispose.push(transposedIntermediate);
   toDispose.push(reshapedIntermediate2);
-  toDispose.forEach((t) => backend3.disposeData(t.dataId));
+  toDispose.forEach((t) => backend2.disposeData(t.dataId));
   return sliced;
 };
 var batchToSpaceNDConfig3 = {
@@ -61535,54 +61535,54 @@ var notEqualConfig3 = {
   kernelFunc: notEqual4
 };
 function real4(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { input: input2 } = inputs;
-  const inputData = backend3.tensorMap.get(input2.dataId);
-  return identity4({ inputs: { x: inputData.complexTensorInfos.real }, backend: backend3 });
+  const inputData = backend2.tensorMap.get(input2.dataId);
+  return identity4({ inputs: { x: inputData.complexTensorInfos.real }, backend: backend2 });
 }
 var realConfig3 = {
   kernelName: Real,
   backendName: "webgpu",
   kernelFunc: real4
 };
-function int2(input2, backend3) {
+function int2(input2, backend2) {
   const program = new UnaryOpProgram2(input2.shape, UnaryOpType.TO_INT);
-  const output = backend3.runWebGPUProgram(program, [input2], "int32");
+  const output = backend2.runWebGPUProgram(program, [input2], "int32");
   return { dataId: output.dataId, shape: output.shape, dtype: output.dtype };
 }
 function cast5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { dtype } = attrs;
   if (dtype === "complex64") {
     if (x.dtype === "complex64") {
-      return identity4({ inputs: { x }, backend: backend3 });
+      return identity4({ inputs: { x }, backend: backend2 });
     }
     const zerosTensor = zeros(x.shape);
-    const floatX = cast5({ inputs: { x }, backend: backend3, attrs: { dtype: "float32" } });
-    const result = complex4({ inputs: { real: floatX, imag: zerosTensor }, backend: backend3 });
+    const floatX = cast5({ inputs: { x }, backend: backend2, attrs: { dtype: "float32" } });
+    const result = complex4({ inputs: { real: floatX, imag: zerosTensor }, backend: backend2 });
     zerosTensor.dispose();
-    backend3.disposeData(floatX.dataId);
+    backend2.disposeData(floatX.dataId);
     return result;
   }
   if (x.dtype === "complex64") {
-    const realPart = real4({ inputs: { input: x }, backend: backend3 });
-    const result = cast5({ inputs: { x: realPart }, backend: backend3, attrs: { dtype } });
-    backend3.disposeData(realPart.dataId);
+    const realPart = real4({ inputs: { input: x }, backend: backend2 });
+    const result = cast5({ inputs: { x: realPart }, backend: backend2, attrs: { dtype } });
+    backend2.disposeData(realPart.dataId);
     return result;
   }
   if (!util_exports.hasEncodingLoss(x.dtype, dtype)) {
-    const result = identity4({ inputs: { x }, backend: backend3 });
+    const result = identity4({ inputs: { x }, backend: backend2 });
     return { dataId: result.dataId, shape: result.shape, dtype };
   }
   if (dtype === "int32") {
-    return int2(x, backend3);
+    return int2(x, backend2);
   }
   if (dtype === "bool") {
-    const zerosTensorInfo = backend3.makeTensorInfo([], "bool", util_exports.getTypedArrayFromDType("bool", 1));
+    const zerosTensorInfo = backend2.makeTensorInfo([], "bool", util_exports.getTypedArrayFromDType("bool", 1));
     const binaryInputs = { a: x, b: zerosTensorInfo };
-    const result = notEqual4({ inputs: binaryInputs, backend: backend3 });
-    backend3.disposeData(zerosTensorInfo.dataId);
+    const result = notEqual4({ inputs: binaryInputs, backend: backend2 });
+    backend2.disposeData(zerosTensorInfo.dataId);
     return result;
   }
   throw new Error(`Error in Cast: failed to cast ${x.dtype} to ${dtype}`);
@@ -61662,7 +61662,7 @@ var ClipProgram2 = class {
   }
 };
 function clipByValue3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { clipValueMin, clipValueMax } = attrs;
   let program;
@@ -61675,7 +61675,7 @@ function clipByValue3(args) {
   } else {
     program = new ClipProgram2(x.shape);
   }
-  return backend3.runWebGPUProgram(program, [x], x.dtype, uniformData);
+  return backend2.runWebGPUProgram(program, [x], x.dtype, uniformData);
 }
 var clipByValueConfig2 = {
   kernelName: ClipByValue,
@@ -61732,31 +61732,31 @@ var ConcatProgram2 = class {
   }
 };
 function imag4(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { input: input2 } = inputs;
-  const inputData = backend3.tensorMap.get(input2.dataId);
-  return identity4({ inputs: { x: inputData.complexTensorInfos.imag }, backend: backend3 });
+  const inputData = backend2.tensorMap.get(input2.dataId);
+  return identity4({ inputs: { x: inputData.complexTensorInfos.imag }, backend: backend2 });
 }
 var imagConfig3 = {
   kernelName: Imag,
   backendName: "webgpu",
   kernelFunc: imag4
 };
-function concatImpl3(inputs, axis, backend3) {
+function concatImpl3(inputs, axis, backend2) {
   const dtype = inputs[0].dtype;
   if (dtype === "complex64") {
-    const reals = inputs.map((t) => real4({ inputs: { input: t }, backend: backend3 }));
-    const imags = inputs.map((t) => imag4({ inputs: { input: t }, backend: backend3 }));
-    const realConcated = concatImpl3(reals, axis, backend3);
-    const imagConcated = concatImpl3(imags, axis, backend3);
-    const result = complex4({ inputs: { real: realConcated, imag: imagConcated }, backend: backend3 });
-    reals.forEach((r) => backend3.disposeData(r.dataId));
-    imags.forEach((i) => backend3.disposeData(i.dataId));
-    backend3.disposeData(realConcated.dataId);
-    backend3.disposeData(imagConcated.dataId);
+    const reals = inputs.map((t) => real4({ inputs: { input: t }, backend: backend2 }));
+    const imags = inputs.map((t) => imag4({ inputs: { input: t }, backend: backend2 }));
+    const realConcated = concatImpl3(reals, axis, backend2);
+    const imagConcated = concatImpl3(imags, axis, backend2);
+    const result = complex4({ inputs: { real: realConcated, imag: imagConcated }, backend: backend2 });
+    reals.forEach((r) => backend2.disposeData(r.dataId));
+    imags.forEach((i) => backend2.disposeData(i.dataId));
+    backend2.disposeData(realConcated.dataId);
+    backend2.disposeData(imagConcated.dataId);
     return result;
   }
-  let runOnCpu = backend3.shouldExecuteOnCPU(inputs);
+  let runOnCpu = backend2.shouldExecuteOnCPU(inputs);
   if (dtype === "string") {
     runOnCpu = true;
   }
@@ -61764,32 +61764,32 @@ function concatImpl3(inputs, axis, backend3) {
     const tensors2D2 = inputs.map((t) => {
       const innerSize = util_exports.sizeFromShape(t.shape.slice(axis));
       const shape = [-1, innerSize];
-      return reshape5({ inputs: { x: t }, backend: backend3, attrs: { shape } });
+      return reshape5({ inputs: { x: t }, backend: backend2, attrs: { shape } });
     });
     const inputsValShapes = tensors2D2.map((t) => {
-      return { vals: backend3.readSync(t.dataId), shape: t.shape };
+      return { vals: backend2.readSync(t.dataId), shape: t.shape };
     });
     const outShape2 = backend_util_exports.computeOutShape(tensors2D2.map((t) => t.shape), 1);
     const simplyConcat = tensors2D2[0].shape[0] === 1;
     const outVals = concatImplCPU2(inputsValShapes, outShape2, dtype, simplyConcat);
     const finalOutShape = backend_util_exports.computeOutShape(inputs.map((t) => t.shape), axis);
-    const outInfo = backend3.makeTensorInfo(finalOutShape, dtype, outVals);
-    tensors2D2.forEach((t) => backend3.disposeData(t.dataId));
+    const outInfo = backend2.makeTensorInfo(finalOutShape, dtype, outVals);
+    tensors2D2.forEach((t) => backend2.disposeData(t.dataId));
     return outInfo;
   }
-  const { tensors2D, outShape } = computeTensors2D2(inputs, axis, backend3);
+  const { tensors2D, outShape } = computeTensors2D2(inputs, axis, backend2);
   const program = new ConcatProgram2(tensors2D.map((t) => t.shape));
-  const res = backend3.runWebGPUProgram(program, tensors2D, tensors2D[0].dtype);
-  tensors2D.forEach((r) => backend3.disposeData(r.dataId));
-  const reshapedResult = reshape5({ inputs: { x: res }, backend: backend3, attrs: { shape: outShape } });
-  backend3.disposeData(res.dataId);
+  const res = backend2.runWebGPUProgram(program, tensors2D, tensors2D[0].dtype);
+  tensors2D.forEach((r) => backend2.disposeData(r.dataId));
+  const reshapedResult = reshape5({ inputs: { x: res }, backend: backend2, attrs: { shape: outShape } });
+  backend2.disposeData(res.dataId);
   return reshapedResult;
 }
-function computeTensors2D2(inputs, axis, backend3) {
+function computeTensors2D2(inputs, axis, backend2) {
   const outShape = backend_util_exports.computeOutShape(inputs.map((t) => t.shape), axis);
   const tensors2D = inputs.map((t) => reshape5({
     inputs: { x: t },
-    backend: backend3,
+    backend: backend2,
     attrs: {
       shape: [
         util_exports.sizeFromShape(t.shape.slice(0, axis)),
@@ -61800,20 +61800,20 @@ function computeTensors2D2(inputs, axis, backend3) {
   return { tensors2D, outShape };
 }
 function concat4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { axis } = attrs;
   const $axis = util_exports.parseAxisParam(axis, inputs[0].shape)[0];
   const outShape = backend_util_exports.computeOutShape(inputs.map((t) => t.shape), $axis);
   if (util_exports.sizeFromShape(outShape) === 0) {
-    return backend3.makeTensorInfo(outShape, inputs[0].dtype, []);
+    return backend2.makeTensorInfo(outShape, inputs[0].dtype, []);
   }
   const $inputs = inputs.filter((t) => util_exports.sizeFromShape(t.shape) > 0);
   if ($inputs.length === 1) {
-    return identity4({ inputs: { x: $inputs[0] }, backend: backend3 });
+    return identity4({ inputs: { x: $inputs[0] }, backend: backend2 });
   }
   const shapes = $inputs.map((t) => t.shape);
   backend_util_exports.assertParamsConsistent(shapes, $axis);
-  return concatImpl3($inputs, $axis, backend3);
+  return concatImpl3($inputs, $axis, backend2);
 }
 var concatConfig3 = {
   kernelName: Concat,
@@ -61875,7 +61875,7 @@ function conv2dByMatMul2({
   x,
   filter,
   convInfo,
-  backend: backend3,
+  backend: backend2,
   bias = null,
   preluActivationWeights = null,
   leakyreluAlpha = 0,
@@ -61888,12 +61888,12 @@ function conv2dByMatMul2({
   const targetShape = isChannelsLast ? xShape[0] * xShape[1] * xShape[2] : xShape[0] * xShape[2] * xShape[3];
   const xReshaped = reshape5({
     inputs: { x },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [1, targetShape, convInfo.inChannels] }
   });
   const filterReshaped = reshape5({
     inputs: { x: filter },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [1, convInfo.inChannels, convInfo.outChannels] }
   });
   const result = batchMatMulImpl2({
@@ -61901,23 +61901,23 @@ function conv2dByMatMul2({
     b: filterReshaped,
     transposeA,
     transposeB,
-    backend: backend3,
+    backend: backend2,
     bias,
     activation: activation2,
     preluActivationWeights,
     leakyreluAlpha
   });
-  const out = reshape5({ inputs: { x: result }, backend: backend3, attrs: { shape: convInfo.outShape } });
-  backend3.disposeData(xReshaped.dataId);
-  backend3.disposeData(filterReshaped.dataId);
-  backend3.disposeData(result.dataId);
+  const out = reshape5({ inputs: { x: result }, backend: backend2, attrs: { shape: convInfo.outShape } });
+  backend2.disposeData(xReshaped.dataId);
+  backend2.disposeData(filterReshaped.dataId);
+  backend2.disposeData(result.dataId);
   return out;
 }
 function conv2dWithIm2Col({
   x,
   filter,
   convInfo,
-  backend: backend3,
+  backend: backend2,
   bias = null,
   preluActivationWeights = null,
   leakyreluAlpha = 0,
@@ -61943,8 +61943,8 @@ function conv2dWithIm2Col({
   const transposeA = false;
   const transposeB = false;
   const intermediates = [];
-  const xSqueezed = reshape5({ inputs: { x }, backend: backend3, attrs: { shape: x.shape.slice(1) } });
-  const w2Row = reshape5({ inputs: { x: filter }, backend: backend3, attrs: { shape: [1, sharedDim, -1] } });
+  const xSqueezed = reshape5({ inputs: { x }, backend: backend2, attrs: { shape: x.shape.slice(1) } });
+  const w2Row = reshape5({ inputs: { x: filter }, backend: backend2, attrs: { shape: [1, sharedDim, -1] } });
   intermediates.push(xSqueezed);
   intermediates.push(w2Row);
   const im2ColProgram = new Im2ColProgram(x2ColShape, isChannelsLast);
@@ -61956,10 +61956,10 @@ function conv2dWithIm2Col({
     { type: "int32", data: [inChannels * filterWidth] },
     { type: "int32", data: [inChannels] }
   ];
-  const im2Col = backend3.runWebGPUProgram(im2ColProgram, [xSqueezed], xSqueezed.dtype, dimensions);
+  const im2Col = backend2.runWebGPUProgram(im2ColProgram, [xSqueezed], xSqueezed.dtype, dimensions);
   const im2Col3D = reshape5({
     inputs: { x: im2Col },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [1, x2ColShape[0], x2ColShape[1]] }
   });
   intermediates.push(im2Col);
@@ -61974,12 +61974,12 @@ function conv2dWithIm2Col({
     { type: "int32", data: [dimBOuter] },
     { type: "int32", data: [dimInner] }
   ];
-  const result = backend3.runWebGPUProgram(matMulProgram, [im2Col3D, w2Row], im2Col3D.dtype, matmulDimensions);
+  const result = backend2.runWebGPUProgram(matMulProgram, [im2Col3D, w2Row], im2Col3D.dtype, matmulDimensions);
   const outShape = isChannelsLast ? [1, outHeight, outWidth, convInfo.outChannels] : [1, convInfo.outChannels, outHeight, outWidth];
-  const out = reshape5({ inputs: { x: result }, backend: backend3, attrs: { shape: outShape } });
+  const out = reshape5({ inputs: { x: result }, backend: backend2, attrs: { shape: outShape } });
   intermediates.push(result);
   for (const i of intermediates) {
-    backend3.disposeData(i.dataId);
+    backend2.disposeData(i.dataId);
   }
   return out;
 }
@@ -62359,17 +62359,17 @@ var Conv2DNaiveProgram = class {
     return userCode;
   }
 };
-function conv2d6(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+function conv2d5(args) {
+  const { inputs, attrs, backend: backend2 } = args;
   const { x, filter } = inputs;
   const { strides, pad: pad3, dataFormat, dilations, dimRoundingMode } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
   const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad3, dimRoundingMode, false, $dataFormat);
   if (convInfo.filterHeight === 1 && convInfo.filterWidth === 1 && convInfo.dilationHeight === 1 && convInfo.dilationWidth === 1 && convInfo.strideHeight === 1 && convInfo.strideWidth === 1 && (convInfo.padInfo.type === "SAME" || convInfo.padInfo.type === "VALID")) {
-    return conv2dByMatMul2({ x, filter, convInfo, backend: backend3 });
+    return conv2dByMatMul2({ x, filter, convInfo, backend: backend2 });
   }
   if (env().getBool("WEBGPU_CONV_SEPARATE_IM2COL_SHADER") && x.shape[0] === 1) {
-    return conv2dWithIm2Col({ x, filter, convInfo, backend: backend3 });
+    return conv2dWithIm2Col({ x, filter, convInfo, backend: backend2 });
   }
   let program;
   const padInfo = [convInfo.padInfo.top, convInfo.padInfo.left];
@@ -62393,12 +62393,12 @@ function conv2d6(args) {
     const dimInner = convInfo.filterHeight * convInfo.filterWidth * convInfo.inShape[3];
     dimensions.push({ type: "int32", data: [dimAOuter] }, { type: "int32", data: [dimBOuter] }, { type: "int32", data: [dimInner] });
   }
-  return backend3.runWebGPUProgram(program, [x, filter], x.dtype, dimensions);
+  return backend2.runWebGPUProgram(program, [x, filter], x.dtype, dimensions);
 }
 var conv2DConfig3 = {
   kernelName: Conv2D,
   backendName: "webgpu",
-  kernelFunc: conv2d6
+  kernelFunc: conv2d5
 };
 var Conv2DDerInputMMProgram = class {
   constructor(convInfo) {
@@ -62543,7 +62543,7 @@ var Conv2DDerInputProgram2 = class {
   }
 };
 function conv2DBackpropInput4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { dy, filter } = inputs;
   const { inputShape, strides, pad: pad3, dataFormat, dimRoundingMode } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
@@ -62578,7 +62578,7 @@ function conv2DBackpropInput4(args) {
     const dimInner = convInfo.filterHeight * convInfo.filterWidth * convInfo.outChannels;
     dimensions.push({ type: "uint32", data: [dimAOuter] }, { type: "uint32", data: [dimBOuter] }, { type: "uint32", data: [dimInner] });
   }
-  return backend3.runWebGPUProgram(program, [dy, filter], "float32", dimensions);
+  return backend2.runWebGPUProgram(program, [dy, filter], "float32", dimensions);
 }
 var conv2DBackpropInputConfig3 = {
   kernelName: Conv2DBackpropInput,
@@ -62696,12 +62696,12 @@ var CropAndResizeProgram2 = class {
   }
 };
 var cropAndResize4 = (args) => {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { image: image3, boxes, boxInd } = inputs;
   const { cropSize, method, extrapolationValue } = attrs;
   const program = new CropAndResizeProgram2(image3.shape[3], boxes.shape, cropSize, method);
   const uniformData = [{ type: "float32", data: [extrapolationValue] }];
-  return backend3.runWebGPUProgram(program, [image3, boxes, boxInd], "float32", uniformData);
+  return backend2.runWebGPUProgram(program, [image3, boxes, boxInd], "float32", uniformData);
 };
 var cropAndResizeConfig3 = {
   kernelName: CropAndResize,
@@ -62782,7 +62782,7 @@ var DepthToSpaceProgram2 = class {
   }
 };
 function depthToSpace4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { blockSize, dataFormat } = attrs;
   const batchSize = x.shape[0];
@@ -62797,7 +62797,7 @@ function depthToSpace4(args) {
     { type: "int32", data: [blockSize] }
   ];
   const program = new DepthToSpaceProgram2(outputShape, dataFormat);
-  return backend3.runWebGPUProgram(program, [x], x.dtype, uniformData);
+  return backend2.runWebGPUProgram(program, [x], x.dtype, uniformData);
 }
 var depthToSpaceConfig3 = {
   kernelName: DepthToSpace,
@@ -63030,7 +63030,7 @@ var DepthwiseConv2DProgram2 = class {
   }
 };
 function depthwiseConv2dNative3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter } = inputs;
   const { strides, pad: pad3, dilations, dimRoundingMode } = attrs;
   let $dilations = dilations;
@@ -63050,7 +63050,7 @@ function depthwiseConv2dNative3(args) {
     { type: "int32", data: [convInfo.dilationHeight, convInfo.dilationWidth] },
     { type: "int32", data: [convInfo.inHeight, convInfo.inWidth] }
   ];
-  return backend3.runWebGPUProgram(program, [x, filter], x.dtype, dimensions);
+  return backend2.runWebGPUProgram(program, [x, filter], x.dtype, dimensions);
 }
 var depthwiseConv2dNativeConfig3 = {
   kernelName: DepthwiseConv2dNative,
@@ -63158,7 +63158,7 @@ var ReduceProgram2 = class {
     return userCode;
   }
 };
-function reduce2(x, axis, keepDims, reduceType, backend3) {
+function reduce2(x, axis, keepDims, reduceType, backend2) {
   const xRank = x.shape.length;
   const toDispose = [];
   const origAxes = util_exports.parseAxisParam(axis, x.shape);
@@ -63166,7 +63166,7 @@ function reduce2(x, axis, keepDims, reduceType, backend3) {
   const permutedAxes = backend_util_exports.getAxesPermutation(axes, xRank);
   let input2 = x;
   if (permutedAxes != null) {
-    input2 = transpose4({ inputs: { x }, attrs: { perm: permutedAxes }, backend: backend3 });
+    input2 = transpose4({ inputs: { x }, attrs: { perm: permutedAxes }, backend: backend2 });
     axes = backend_util_exports.getInnerMostAxes(axes.length, xRank);
     toDispose.push(input2);
   }
@@ -63177,16 +63177,16 @@ function reduce2(x, axis, keepDims, reduceType, backend3) {
     resOutShape = backend_util_exports.expandShapeToKeepDim(reduceOutShape, origAxes);
   }
   let res;
-  if ((reduceType === "max" || reduceType === "prod") && backend3.shouldExecuteOnCPU([input2])) {
-    const xVals = backend3.tensorMap.get(input2.dataId).values;
+  if ((reduceType === "max" || reduceType === "prod") && backend2.shouldExecuteOnCPU([input2])) {
+    const xVals = backend2.tensorMap.get(input2.dataId).values;
     switch (reduceType) {
       case "max":
         const outValues = maxImplCPU2(xVals, util_exports.sizeFromShape(reduceShape), resOutShape, x.dtype);
-        res = backend3.makeTensorInfo(resOutShape, x.dtype, outValues);
+        res = backend2.makeTensorInfo(resOutShape, x.dtype, outValues);
         break;
       case "prod":
         const { outVals, outShape, outDtype } = prodImplCPU2(input2.shape, input2.dtype, xVals, axes);
-        res = backend3.makeTensorInfo(outShape, outDtype, outVals);
+        res = backend2.makeTensorInfo(outShape, outDtype, outVals);
         break;
       default:
         throw new Error(`${reduceType} CPU implementation is not yet supported.`);
@@ -63201,26 +63201,26 @@ function reduce2(x, axis, keepDims, reduceType, backend3) {
       { type: "int32", data: [inSize] }
     ];
     const program = new ReduceProgram2(reduceInfo, reduceType, dtype);
-    const reduced = backend3.runWebGPUProgram(program, [input2], dtype, uniformData);
+    const reduced = backend2.runWebGPUProgram(program, [input2], dtype, uniformData);
     toDispose.push(reduced);
-    res = reshape5({ inputs: { x: reduced }, attrs: { shape: resOutShape }, backend: backend3 });
+    res = reshape5({ inputs: { x: reduced }, attrs: { shape: resOutShape }, backend: backend2 });
   }
-  toDispose.forEach((t) => backend3.disposeData(t.dataId));
+  toDispose.forEach((t) => backend2.disposeData(t.dataId));
   return res;
 }
-function sum6(args) {
-  const { inputs, backend: backend3, attrs } = args;
+function sum5(args) {
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
-  return reduce2(x, axis, keepDims, "sum", backend3);
+  return reduce2(x, axis, keepDims, "sum", backend2);
 }
 var sumConfig3 = {
   kernelName: Sum,
   backendName: "webgpu",
-  kernelFunc: sum6
+  kernelFunc: sum5
 };
 function einsum4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { equation } = attrs;
   const tensors = inputs;
   const { allDims, summedDims, idDims } = backend_util_exports.decodeEinsumEquation(equation, tensors.length);
@@ -63237,7 +63237,7 @@ function einsum4(args) {
       if (backend_util_exports.isIdentityPermutation(perm)) {
         x = tensors[idTerm];
       } else {
-        x = transpose4({ inputs: { x: tensors[idTerm] }, backend: backend3, attrs: { perm } });
+        x = transpose4({ inputs: { x: tensors[idTerm] }, backend: backend2, attrs: { perm } });
         tensorsToDispose.push(x);
       }
       const targetShape = x.shape.slice();
@@ -63245,21 +63245,21 @@ function einsum4(args) {
         targetShape.splice(dimsToExpand[k], 0, 1);
       }
       if (!util_exports.arraysEqual(x.shape, targetShape)) {
-        x = reshape5({ inputs: { x }, backend: backend3, attrs: { shape: targetShape } });
+        x = reshape5({ inputs: { x }, backend: backend2, attrs: { shape: targetShape } });
         tensorsToDispose.push(x);
       }
       if (out === null) {
         out = x;
       } else {
-        out = multiplyKernelFunc({ inputs: { a: x, b: out }, backend: backend3 });
+        out = multiplyKernelFunc({ inputs: { a: x, b: out }, backend: backend2 });
         tensorsToDispose.push(out);
       }
     }
     if (i < nSteps - 1) {
       if (path[i] >= 0) {
-        out = sum6({
+        out = sum5({
           inputs: { x: out },
-          backend: backend3,
+          backend: backend2,
           attrs: {
             axis: path[i] - (allDims.length - numDimsRemaining),
             keepDims: false
@@ -63274,7 +63274,7 @@ function einsum4(args) {
     if (tensorInfo === out) {
       continue;
     }
-    backend3.disposeData(tensorInfo.dataId);
+    backend2.disposeData(tensorInfo.dataId);
   }
   return out;
 }
@@ -63306,7 +63306,7 @@ var expConfig3 = {
   kernelFunc: exp4
 };
 function expandDims5(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const { dim } = attrs;
   const { input: input2 } = inputs;
   const inputRank = input2.shape.length;
@@ -63317,7 +63317,7 @@ function expandDims5(args) {
     $dim = inputRank + dim + 1;
   }
   newShape.splice($dim, 0, 1);
-  return reshape5({ inputs: { x: input2 }, backend: backend3, attrs: { shape: newShape } });
+  return reshape5({ inputs: { x: input2 }, backend: backend2, attrs: { shape: newShape } });
 }
 var expandDimsConfig3 = {
   kernelName: ExpandDims,
@@ -63355,18 +63355,18 @@ var FillProgram2 = class {
   }
 };
 function fill4(args) {
-  const { backend: backend3, attrs } = args;
+  const { backend: backend2, attrs } = args;
   const { shape, value } = attrs;
   let { dtype } = attrs;
   dtype = dtype || util_exports.inferDtype(value);
   if (dtype === "string") {
     const values = util_exports.getArrayFromDType(dtype, util_exports.sizeFromShape(shape));
     values.fill(value);
-    return backend3.makeTensorInfo(shape, dtype, values);
+    return backend2.makeTensorInfo(shape, dtype, values);
   } else {
     const program = new FillProgram2(shape);
     const uniformData = [{ type: "float32", data: [value] }];
-    return backend3.runWebGPUProgram(program, [], dtype, uniformData);
+    return backend2.runWebGPUProgram(program, [], dtype, uniformData);
   }
 }
 var fillConfig3 = {
@@ -63404,9 +63404,9 @@ var FlipLeftRightProgram2 = class {
 var flipLeftRightConfig3 = {
   kernelName: FlipLeftRight,
   backendName: "webgpu",
-  kernelFunc: ({ inputs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, backend: backend2 }) => {
     const { image: image3 } = inputs;
-    const webgpuBackend = backend3;
+    const webgpuBackend = backend2;
     const program = new FlipLeftRightProgram2(image3.shape);
     const output = webgpuBackend.runWebGPUProgram(program, [image3], image3.dtype);
     return output;
@@ -63446,40 +63446,40 @@ function makeShaderKey2(program, shapes, types, broadcastDimsKey = "", inputShap
   return key;
 }
 function fromPixelsExternalImage(args) {
-  const { externalImage, backend: backend3, attrs, outShape, useImport } = args;
+  const { externalImage, backend: backend2, attrs, outShape, useImport } = args;
   const { numChannels } = attrs;
   const size = util_exports.sizeFromShape(outShape);
   const strides = util_exports.computeStrides(outShape);
-  const output = backend3.makeTensorInfo(outShape, "int32");
-  const program = backend3.getFromPixelsProgram(useImport ? "import" : "copyExternal");
+  const output = backend2.makeTensorInfo(outShape, "int32");
+  const program = backend2.getFromPixelsProgram(useImport ? "import" : "copyExternal");
   program.updateOutputShape(outShape);
   const outputShapes = [output.shape];
   const outputTypes = [output.dtype, useImport ? "import" : "copyExternal"];
   const key = makeShaderKey2(program, outputShapes, outputTypes);
-  const layout = program.getLayout(backend3.device);
-  const pipeline = backend3.getAndSavePipeline(key, () => {
-    return compileProgram2(backend3.device, program, layout.pipelineLayout, [], output, true);
+  const layout = program.getLayout(backend2.device);
+  const pipeline = backend2.getAndSavePipeline(key, () => {
+    return compileProgram2(backend2.device, program, layout.pipelineLayout, [], output, true);
   });
   program.setPipeline(pipeline);
   if (!useImport) {
-    backend3.queue.copyExternalImageToTexture({ source: externalImage, origin: { x: 0, y: 0 } }, {
-      texture: program.makeInputTexture(backend3.device, outShape[1], outShape[0])
+    backend2.queue.copyExternalImageToTexture({ source: externalImage, origin: { x: 0, y: 0 } }, {
+      texture: program.makeInputTexture(backend2.device, outShape[1], outShape[0])
     }, [outShape[1], outShape[0]]);
   }
-  const info = backend3.tensorMap.get(output.dataId);
-  info.bufferInfo.buffer = backend3.acquireBuffer(info.bufferInfo.byteSize);
+  const info = backend2.tensorMap.get(output.dataId);
+  info.bufferInfo.buffer = backend2.acquireBuffer(info.bufferInfo.byteSize);
   const uniformData = [size, numChannels, ...strides, ...program.dispatch];
-  program.setUniform(backend3.device, uniformData);
+  program.setUniform(backend2.device, uniformData);
   let externalResource;
   if (useImport) {
     const externalTextureDescriptor = {
       source: externalImage
     };
-    externalResource = backend3.device.importExternalTexture(externalTextureDescriptor);
+    externalResource = backend2.device.importExternalTexture(externalTextureDescriptor);
   } else {
     externalResource = program.inputTexture.createView();
   }
-  backend3.runFromPixelsProgram(program, info.bufferInfo.buffer, layout, externalResource, output.dataId);
+  backend2.runFromPixelsProgram(program, info.bufferInfo.buffer, layout, externalResource, output.dataId);
   return output;
 }
 var fromPixelsConfig2 = {
@@ -63489,7 +63489,7 @@ var fromPixelsConfig2 = {
 };
 var fromPixels2DContext3;
 function fromPixels3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   let { pixels } = inputs;
   const { numChannels } = attrs;
   if (pixels == null) {
@@ -63508,7 +63508,7 @@ function fromPixels3(args) {
     if (isVideo) {
       return fromPixelsExternalImage({
         externalImage: pixels,
-        backend: backend3,
+        backend: backend2,
         attrs,
         outShape,
         useImport: true
@@ -63527,7 +63527,7 @@ function fromPixels3(args) {
   if (isImageBitmap || isCanvas || isVideo || isImage) {
     return fromPixelsExternalImage({
       externalImage: pixels,
-      backend: backend3,
+      backend: backend2,
       attrs,
       outShape,
       useImport: false
@@ -63545,11 +63545,11 @@ function fromPixels3(args) {
       }
     }
   }
-  const output = backend3.makeTensorInfo(outShape, "int32");
-  const info = backend3.tensorMap.get(output.dataId);
+  const output = backend2.makeTensorInfo(outShape, "int32");
+  const info = backend2.tensorMap.get(output.dataId);
   info.values = new Int32Array(pixelArray);
-  backend3.maybeReleaseBuffer(output.dataId);
-  backend3.uploadToGPU(output.dataId);
+  backend2.maybeReleaseBuffer(output.dataId);
+  backend2.uploadToGPU(output.dataId);
   return output;
 }
 var BatchNormProgram2 = class {
@@ -63616,11 +63616,11 @@ var BatchNormProgram2 = class {
 var fusedBatchNormConfig = {
   kernelName: FusedBatchNorm,
   backendName: "webgpu",
-  kernelFunc: ({ inputs, attrs, backend: backend3 }) => {
-    const { x, scale: scale2, offset, mean: mean7, variance: variance2 } = inputs;
+  kernelFunc: ({ inputs, attrs, backend: backend2 }) => {
+    const { x, scale: scale2, offset, mean: mean5, variance } = inputs;
     const { varianceEpsilon } = attrs;
-    const webGPUBackend = backend3;
-    const batchNormInputs = [x, mean7, variance2];
+    const webGPUBackend = backend2;
+    const batchNormInputs = [x, mean5, variance];
     let offsetShape = null;
     if (offset != null) {
       offsetShape = offset.shape;
@@ -63631,13 +63631,13 @@ var fusedBatchNormConfig = {
       scaleShape = scale2.shape;
       batchNormInputs.push(scale2);
     }
-    const program = new BatchNormProgram2(x.shape, mean7.shape, variance2.shape, offsetShape, scaleShape);
+    const program = new BatchNormProgram2(x.shape, mean5.shape, variance.shape, offsetShape, scaleShape);
     const uniformData = [{ type: "float32", data: [varianceEpsilon] }];
     return webGPUBackend.runWebGPUProgram(program, batchNormInputs, x.dtype, uniformData);
   }
 };
 function fusedConv2d2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
     strides,
@@ -63658,7 +63658,7 @@ function fusedConv2d2(args) {
       x,
       filter,
       convInfo,
-      backend: backend3,
+      backend: backend2,
       bias,
       activation: activation2,
       preluActivationWeights,
@@ -63694,7 +63694,7 @@ function fusedConv2d2(args) {
   if (hasPreluActivationWeights) {
     inputVar.push(preluActivationWeights);
   }
-  return backend3.runWebGPUProgram(program, inputVar, x.dtype, dimensions);
+  return backend2.runWebGPUProgram(program, inputVar, x.dtype, dimensions);
 }
 var fusedConv2DConfig3 = {
   kernelName: FusedConv2D,
@@ -63702,7 +63702,7 @@ var fusedConv2DConfig3 = {
   kernelFunc: fusedConv2d2
 };
 function fusedDepthwiseConv2D3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const { strides, pad: pad3, dilations, dimRoundingMode, activation: activation2 } = attrs;
   let $dilations = dilations;
@@ -63732,7 +63732,7 @@ function fusedDepthwiseConv2D3(args) {
     { type: "int32", data: [convInfo.dilationHeight, convInfo.dilationWidth] },
     { type: "int32", data: [convInfo.inHeight, convInfo.inWidth] }
   ];
-  const result = backend3.runWebGPUProgram(program, programInputs, "float32", dimensions);
+  const result = backend2.runWebGPUProgram(program, programInputs, "float32", dimensions);
   return result;
 }
 var fusedDepthwiseConv2DConfig3 = {
@@ -63778,31 +63778,31 @@ var GatherNDProgram2 = class {
   }
 };
 function gatherNd3(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { params, indices } = inputs;
   const indicesShape = indices.shape;
   const sliceRank = indicesShape[indicesShape.length - 1];
   const paramsSize = util_exports.sizeFromShape(params.shape);
   const [resultShape, numSlices, sliceSize, strides] = backend_util_exports.prepareAndValidate(params, indices);
-  const flattenIndices = reshape5({ inputs: { x: indices }, backend: backend3, attrs: { shape: [numSlices, sliceRank] } });
+  const flattenIndices = reshape5({ inputs: { x: indices }, backend: backend2, attrs: { shape: [numSlices, sliceRank] } });
   const flattenX = reshape5({
     inputs: { x: params },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [util_exports.sizeFromShape(params.shape) / sliceSize, sliceSize] }
   });
-  if (backend3.shouldExecuteOnCPU([params, indices]) || params.dtype === "string") {
-    const indicesData = backend3.readSync(indices.dataId);
-    const paramsBuf = backend3.bufferSync(params);
+  if (backend2.shouldExecuteOnCPU([params, indices]) || params.dtype === "string") {
+    const indicesData = backend2.readSync(indices.dataId);
+    const paramsBuf = backend2.bufferSync(params);
     const outValue = gatherNdImplCPU2(indicesData, paramsBuf, params.dtype, numSlices, sliceRank, sliceSize, strides, params.shape, paramsSize);
-    return backend3.makeTensorInfo(resultShape, params.dtype, outValue.values);
+    return backend2.makeTensorInfo(resultShape, params.dtype, outValue.values);
   }
   const program = new GatherNDProgram2(sliceRank, [numSlices, sliceSize]);
   const uniformData = [{ type: "int32", data: [sliceRank] }, { type: "int32", data: strides }];
-  const res = backend3.runWebGPUProgram(program, [flattenX, flattenIndices], flattenX.dtype, uniformData);
-  const reshaped = reshape5({ inputs: { x: res }, backend: backend3, attrs: { shape: resultShape } });
-  backend3.disposeData(flattenIndices.dataId);
-  backend3.disposeData(flattenX.dataId);
-  backend3.disposeData(res.dataId);
+  const res = backend2.runWebGPUProgram(program, [flattenX, flattenIndices], flattenX.dtype, uniformData);
+  const reshaped = reshape5({ inputs: { x: res }, backend: backend2, attrs: { shape: resultShape } });
+  backend2.disposeData(flattenIndices.dataId);
+  backend2.disposeData(flattenX.dataId);
+  backend2.disposeData(res.dataId);
   return reshaped;
 }
 var gatherNdConfig3 = {
@@ -63849,7 +63849,7 @@ function getSourceCoords4(aShape, typePrefix = "int") {
   return sourceCoords.join();
 }
 function gatherV23(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x, indices } = inputs;
   const { axis, batchDims } = attrs;
   const parsedAxis = util_exports.parseAxisParam(axis, x.shape)[0];
@@ -63858,7 +63858,7 @@ function gatherV23(args) {
   const toDispose = [];
   const flattenX = reshape5({
     inputs: { x },
-    backend: backend3,
+    backend: backend2,
     attrs: {
       shape: [
         shapeInfo.batchSize,
@@ -63870,7 +63870,7 @@ function gatherV23(args) {
   });
   const flattenIndex = reshape5({
     inputs: { x: indices },
-    backend: backend3,
+    backend: backend2,
     attrs: { shape: [shapeInfo.batchSize, indicesSize / shapeInfo.batchSize] }
   });
   toDispose.push(flattenX);
@@ -63881,22 +63881,22 @@ function gatherV23(args) {
     indicesSize / shapeInfo.batchSize,
     shapeInfo.sliceSize
   ];
-  if (backend3.shouldExecuteOnCPU([x, indices])) {
-    const indicesBufferInfo = backend3.tensorMap.get(flattenIndex.dataId);
+  if (backend2.shouldExecuteOnCPU([x, indices])) {
+    const indicesBufferInfo = backend2.tensorMap.get(flattenIndex.dataId);
     const indicesValues = indicesBufferInfo.values;
     const indicesBuf = buffer(flattenIndex.shape, flattenIndex.dtype, indicesValues);
-    const xBufferInfo = backend3.tensorMap.get(flattenX.dataId);
+    const xBufferInfo = backend2.tensorMap.get(flattenX.dataId);
     const xValues = xBufferInfo.values;
     const xBuf = buffer(flattenX.shape, flattenX.dtype, xValues);
     const outBuf = gatherV2ImplCPU2(xBuf, indicesBuf, flattenOutputShape);
-    toDispose.forEach((t) => backend3.disposeData(t.dataId));
-    return backend3.makeTensorInfo(shapeInfo.outputShape, outBuf.dtype, outBuf.values);
+    toDispose.forEach((t) => backend2.disposeData(t.dataId));
+    return backend2.makeTensorInfo(shapeInfo.outputShape, outBuf.dtype, outBuf.values);
   }
   const program = new GatherProgram2(flattenX.shape, flattenOutputShape);
-  const res = backend3.runWebGPUProgram(program, [flattenX, flattenIndex], flattenX.dtype);
+  const res = backend2.runWebGPUProgram(program, [flattenX, flattenIndex], flattenX.dtype);
   toDispose.push(res);
-  const reshaped = reshape5({ inputs: { x: res }, backend: backend3, attrs: { shape: shapeInfo.outputShape } });
-  toDispose.forEach((t) => backend3.disposeData(t.dataId));
+  const reshaped = reshape5({ inputs: { x: res }, backend: backend2, attrs: { shape: shapeInfo.outputShape } });
+  toDispose.forEach((t) => backend2.disposeData(t.dataId));
   return reshaped;
 }
 var gatherV2Config3 = {
@@ -63962,27 +63962,27 @@ var logicalNotConfig3 = {
   kernelFunc: logicalNot4
 };
 function max5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { reductionIndices, keepDims } = attrs;
-  return reduce2(x, reductionIndices, keepDims, "max", backend3);
+  return reduce2(x, reductionIndices, keepDims, "max", backend2);
 }
 var maxConfig3 = {
   kernelName: Max,
   backendName: "webgpu",
   kernelFunc: max5
 };
-var maximum6 = binaryKernelFunc3({
+var maximum5 = binaryKernelFunc3({
   opSnippet: BinaryOpType.MAX,
   cpuKernelImpl: maximumImplCPU2
 });
 var maximumConfig3 = {
   kernelName: Maximum,
   backendName: "webgpu",
-  kernelFunc: maximum6
+  kernelFunc: maximum5
 };
 function maxPool4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
   const dilations = 1;
@@ -63991,7 +63991,7 @@ function maxPool4(args) {
   const dimensions = [];
   if (convInfo.filterHeight === 1 && convInfo.filterWidth === 1) {
     if (util_exports.arraysEqual(convInfo.inShape, convInfo.outShape)) {
-      return identity4({ inputs: { x }, backend: backend3 });
+      return identity4({ inputs: { x }, backend: backend2 });
     }
     program = new PoolWithFilterSizeEqualsOneProgram(convInfo);
     dimensions.push({ type: "int32", data: [convInfo.strideHeight, convInfo.strideWidth] });
@@ -64005,43 +64005,43 @@ function maxPool4(args) {
       data: [convInfo.effectiveFilterHeight, convInfo.effectiveFilterWidth]
     });
   }
-  return backend3.runWebGPUProgram(program, [x], x.dtype, dimensions);
+  return backend2.runWebGPUProgram(program, [x], x.dtype, dimensions);
 }
 var maxPoolConfig3 = {
   kernelName: MaxPool,
   backendName: "webgpu",
   kernelFunc: maxPool4
 };
-function mean5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+function mean3(args) {
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { keepDims, axis } = attrs;
-  return reduce2(x, axis, keepDims, "mean", backend3);
+  return reduce2(x, axis, keepDims, "mean", backend2);
 }
 var meanConfig3 = {
   kernelName: Mean,
   backendName: "webgpu",
-  kernelFunc: mean5
+  kernelFunc: mean3
 };
 function min5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
-  return reduce2(x, axis, keepDims, "min", backend3);
+  return reduce2(x, axis, keepDims, "min", backend2);
 }
 var minConfig3 = {
   kernelName: Min,
   backendName: "webgpu",
   kernelFunc: min5
 };
-var minimum6 = binaryKernelFunc3({
+var minimum5 = binaryKernelFunc3({
   opSnippet: BinaryOpType.MIN,
   cpuKernelImpl: minimumImplCPU2
 });
 var minimumConfig3 = {
   kernelName: Minimum,
   backendName: "webgpu",
-  kernelFunc: minimum6
+  kernelFunc: minimum5
 };
 var MirrorPadProgram2 = class {
   constructor(xShape, paddings, mode) {
@@ -64092,10 +64092,10 @@ var MirrorPadProgram2 = class {
 var mirrorPadConfig3 = {
   kernelName: MirrorPad,
   backendName: "webgpu",
-  kernelFunc: ({ inputs, attrs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, attrs, backend: backend2 }) => {
     const { x } = inputs;
     const { paddings, mode } = attrs;
-    const webGPUBackend = backend3;
+    const webGPUBackend = backend2;
     const uniformData = paddings.map((p2) => {
       return { type: "int32", data: [p2[0], p2[1]] };
     });
@@ -64105,15 +64105,15 @@ var mirrorPadConfig3 = {
   }
 };
 function neg4(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
-  if (backend3.shouldExecuteOnCPU([x])) {
-    const xData = backend3.tensorMap.get(x.dataId);
+  if (backend2.shouldExecuteOnCPU([x])) {
+    const xData = backend2.tensorMap.get(x.dataId);
     const [outValues, newShape] = negImplCPU2(xData.values, x.shape, x.dtype);
-    return backend3.makeTensorInfo(newShape, x.dtype, outValues);
+    return backend2.makeTensorInfo(newShape, x.dtype, outValues);
   }
   const program = new UnaryOpProgram2(x.shape, UnaryOpType.NEG);
-  return backend3.runWebGPUProgram(program, [x], x.dtype);
+  return backend2.runWebGPUProgram(program, [x], x.dtype);
 }
 var negConfig3 = {
   kernelName: Neg,
@@ -64122,13 +64122,13 @@ var negConfig3 = {
 };
 function nonMaxSuppressionV33(args) {
   console.warn("tf.nonMaxSuppression() in webgpu locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold } = attrs;
-  const boxesVals = backend3.readSync(boxes.dataId);
-  const scoresVals = backend3.readSync(scores.dataId);
+  const boxesVals = backend2.readSync(boxes.dataId);
+  const scoresVals = backend2.readSync(scores.dataId);
   const { selectedIndices } = kernel_impls_exports.nonMaxSuppressionV3Impl(boxesVals, scoresVals, maxOutputSize, iouThreshold, scoreThreshold);
-  return backend3.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices));
+  return backend2.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices));
 }
 var nonMaxSuppressionV3Config3 = {
   kernelName: NonMaxSuppressionV3,
@@ -64137,19 +64137,19 @@ var nonMaxSuppressionV3Config3 = {
 };
 function nonMaxSuppressionV53(args) {
   console.warn("tf.nonMaxSuppression() in webgpu locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { boxes, scores } = inputs;
   const { maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma } = attrs;
-  const boxesVals = backend3.readSync(boxes.dataId);
-  const scoresVals = backend3.readSync(scores.dataId);
+  const boxesVals = backend2.readSync(boxes.dataId);
+  const scoresVals = backend2.readSync(scores.dataId);
   const maxOutputSizeVal = maxOutputSize;
   const iouThresholdVal = iouThreshold;
   const scoreThresholdVal = scoreThreshold;
   const softNmsSigmaVal = softNmsSigma;
   const { selectedIndices, selectedScores } = kernel_impls_exports.nonMaxSuppressionV5Impl(boxesVals, scoresVals, maxOutputSizeVal, iouThresholdVal, scoreThresholdVal, softNmsSigmaVal);
   return [
-    backend3.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices)),
-    backend3.makeTensorInfo([selectedScores.length], "float32", new Float32Array(selectedScores))
+    backend2.makeTensorInfo([selectedIndices.length], "int32", new Int32Array(selectedIndices)),
+    backend2.makeTensorInfo([selectedScores.length], "float32", new Float32Array(selectedScores))
   ];
 }
 var nonMaxSuppressionV5Config3 = {
@@ -64157,19 +64157,19 @@ var nonMaxSuppressionV5Config3 = {
   backendName: "webgpu",
   kernelFunc: nonMaxSuppressionV53
 };
-function zerosLike5(args) {
-  const { inputs, backend: backend3 } = args;
+function zerosLike4(args) {
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
   if (x.dtype === "complex64") {
-    const realPart = real4({ inputs: { input: x }, backend: backend3 });
-    const r = zerosLike5({ inputs: { x: realPart }, backend: backend3 });
-    const imagPart = imag4({ inputs: { input: x }, backend: backend3 });
-    const i = zerosLike5({ inputs: { x: imagPart }, backend: backend3 });
-    const result = complex4({ inputs: { real: r, imag: i }, backend: backend3 });
-    backend3.disposeData(realPart.dataId);
-    backend3.disposeData(r.dataId);
-    backend3.disposeData(imagPart.dataId);
-    backend3.disposeData(i.dataId);
+    const realPart = real4({ inputs: { input: x }, backend: backend2 });
+    const r = zerosLike4({ inputs: { x: realPart }, backend: backend2 });
+    const imagPart = imag4({ inputs: { input: x }, backend: backend2 });
+    const i = zerosLike4({ inputs: { x: imagPart }, backend: backend2 });
+    const result = complex4({ inputs: { real: r, imag: i }, backend: backend2 });
+    backend2.disposeData(realPart.dataId);
+    backend2.disposeData(r.dataId);
+    backend2.disposeData(imagPart.dataId);
+    backend2.disposeData(i.dataId);
     return result;
   } else {
     return fill4({
@@ -64178,45 +64178,45 @@ function zerosLike5(args) {
         dtype: x.dtype,
         value: x.dtype === "string" ? "" : 0
       },
-      backend: backend3
+      backend: backend2
     });
   }
 }
 var zerosLikeConfig3 = {
   kernelName: ZerosLike,
   backendName: "webgpu",
-  kernelFunc: zerosLike5
+  kernelFunc: zerosLike4
 };
-function onesLike5(args) {
-  const { inputs, backend: backend3 } = args;
+function onesLike4(args) {
+  const { inputs, backend: backend2 } = args;
   const { x } = inputs;
   if (x.dtype === "string") {
     throw new Error("onesLike is not supported under string dtype");
   } else if (x.dtype === "complex64") {
-    const realPart = real4({ inputs: { input: x }, backend: backend3 });
-    const r = onesLike5({ inputs: { x: realPart }, backend: backend3 });
-    const imagPart = imag4({ inputs: { input: x }, backend: backend3 });
-    const i = zerosLike5({ inputs: { x: imagPart }, backend: backend3 });
-    const result = complex4({ inputs: { real: r, imag: i }, backend: backend3 });
-    backend3.disposeData(realPart.dataId);
-    backend3.disposeData(r.dataId);
-    backend3.disposeData(imagPart.dataId);
-    backend3.disposeData(i.dataId);
+    const realPart = real4({ inputs: { input: x }, backend: backend2 });
+    const r = onesLike4({ inputs: { x: realPart }, backend: backend2 });
+    const imagPart = imag4({ inputs: { input: x }, backend: backend2 });
+    const i = zerosLike4({ inputs: { x: imagPart }, backend: backend2 });
+    const result = complex4({ inputs: { real: r, imag: i }, backend: backend2 });
+    backend2.disposeData(realPart.dataId);
+    backend2.disposeData(r.dataId);
+    backend2.disposeData(imagPart.dataId);
+    backend2.disposeData(i.dataId);
     return result;
   } else {
-    return fill4({ attrs: { shape: x.shape, dtype: x.dtype, value: 1 }, backend: backend3 });
+    return fill4({ attrs: { shape: x.shape, dtype: x.dtype, value: 1 }, backend: backend2 });
   }
 }
 var onesLikeConfig3 = {
   kernelName: OnesLike,
   backendName: "webgpu",
-  kernelFunc: onesLike5
+  kernelFunc: onesLike4
 };
 function pack3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { axis } = attrs;
   if (inputs.length === 1) {
-    return expandDims5({ inputs: { input: inputs[0] }, backend: backend3, attrs: { dim: axis } });
+    return expandDims5({ inputs: { input: inputs[0] }, backend: backend2, attrs: { dim: axis } });
   }
   const shape = inputs[0].shape;
   const dtype = inputs[0].dtype;
@@ -64226,12 +64226,12 @@ function pack3(args) {
   });
   const intermediateTensorInfos = [];
   const expandedTensors = inputs.map((t) => {
-    const expandedT = expandDims5({ inputs: { input: t }, backend: backend3, attrs: { dim: axis } });
+    const expandedT = expandDims5({ inputs: { input: t }, backend: backend2, attrs: { dim: axis } });
     intermediateTensorInfos.push(expandedT);
     return expandedT;
   });
-  const result = concat4({ inputs: expandedTensors, backend: backend3, attrs: { axis } });
-  intermediateTensorInfos.forEach((t) => backend3.disposeData(t.dataId));
+  const result = concat4({ inputs: expandedTensors, backend: backend2, attrs: { axis } });
+  intermediateTensorInfos.forEach((t) => backend2.disposeData(t.dataId));
   return result;
 }
 var packConfig3 = {
@@ -64285,42 +64285,42 @@ var PadProgram2 = class {
   }
 };
 var padV23 = (args) => {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { paddings, constantValue } = attrs;
   if (paddings.every((p2) => util_exports.arraysEqual(p2, [0, 0]))) {
-    return identity4({ inputs: { x }, backend: backend3 });
+    return identity4({ inputs: { x }, backend: backend2 });
   }
   if (util_exports.sizeFromShape(x.shape) === 0) {
     const outputShape = paddings.map((p2, i) => p2[0] + x.shape[i] + p2[1]);
     return fill4({
-      backend: backend3,
+      backend: backend2,
       attrs: { shape: outputShape, value: constantValue, dtype: x.dtype }
     });
   }
   const uniformData = [{ type: "float32", data: [constantValue] }];
   paddings.map((p2) => uniformData.push({ type: "int32", data: [p2[0], p2[1]] }));
   const program = new PadProgram2(x.shape, paddings);
-  return backend3.runWebGPUProgram(program, [x], x.dtype, uniformData);
+  return backend2.runWebGPUProgram(program, [x], x.dtype, uniformData);
 };
 var padV2Config3 = {
   kernelName: PadV2,
   backendName: "webgpu",
   kernelFunc: padV23
 };
-var pow5 = binaryKernelFunc3({
+var pow4 = binaryKernelFunc3({
   opSnippet: BinaryOpType.POW
 });
 var powConfig3 = {
   kernelName: Pow,
   backendName: "webgpu",
-  kernelFunc: pow5
+  kernelFunc: pow4
 };
 function prelu5(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x, alpha } = inputs;
   const program = new BinaryOpProgram2(BinaryOpType.PRELU, x.shape, alpha.shape);
-  return backend3.runWebGPUProgram(program, [x, alpha], "float32");
+  return backend2.runWebGPUProgram(program, [x, alpha], "float32");
 }
 var preluConfig3 = {
   kernelName: Prelu,
@@ -64328,10 +64328,10 @@ var preluConfig3 = {
   kernelFunc: prelu5
 };
 function prod4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, keepDims } = attrs;
-  return reduce2(x, axis, keepDims, "prod", backend3);
+  return reduce2(x, axis, keepDims, "prod", backend2);
 }
 var prodConfig3 = {
   kernelName: Prod,
@@ -64339,10 +64339,10 @@ var prodConfig3 = {
   kernelFunc: prod4
 };
 var range5 = (args) => {
-  const { backend: backend3, attrs } = args;
+  const { backend: backend2, attrs } = args;
   const { start, stop, step: step5, dtype } = attrs;
   const values = rangeImplCPU2(start, stop, step5, dtype);
-  return backend3.makeTensorInfo([values.length], dtype, values);
+  return backend2.makeTensorInfo([values.length], dtype, values);
 };
 var rangeConfig3 = {
   kernelName: Range,
@@ -64428,12 +64428,12 @@ var ResizeBilinearProgram2 = class {
   }
 };
 function resizeBilinear4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { images } = inputs;
   const { alignCorners, size, halfPixelCenters } = attrs;
   const [newHeight, newWidth] = size;
   const program = new ResizeBilinearProgram2(images.shape, newHeight, newWidth, alignCorners, halfPixelCenters);
-  return backend3.runWebGPUProgram(program, [images], "float32");
+  return backend2.runWebGPUProgram(program, [images], "float32");
 }
 var resizeBilinearConfig3 = {
   kernelName: ResizeBilinear,
@@ -64498,12 +64498,12 @@ var ResizeNearestNeighborProgram2 = class {
   }
 };
 function resizeNearestNeighbor4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { images } = inputs;
   const { alignCorners, halfPixelCenters, size } = attrs;
   const [newHeight, newWidth] = size;
   const program = new ResizeNearestNeighborProgram2(images.shape, newHeight, newWidth, alignCorners, halfPixelCenters);
-  return backend3.runWebGPUProgram(program, [images], images.dtype);
+  return backend2.runWebGPUProgram(program, [images], images.dtype);
 }
 var resizeNearestNeighborConfig3 = {
   kernelName: ResizeNearestNeighbor,
@@ -64563,10 +64563,10 @@ var RotateProgram2 = class {
 var rotateWithOffsetConfig3 = {
   kernelName: RotateWithOffset,
   backendName: "webgpu",
-  kernelFunc: ({ inputs, attrs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, attrs, backend: backend2 }) => {
     const { image: image3 } = inputs;
     const { radians, fillValue, center } = attrs;
-    const webgpuBackend = backend3;
+    const webgpuBackend = backend2;
     const program = new RotateProgram2(image3.shape, fillValue);
     const [centerX, centerY] = backend_util_exports.getImageCenter(center, image3.shape[1], image3.shape[2]);
     const uniformData = [
@@ -64672,25 +64672,25 @@ var ScatterOptimizedProgram = class {
   }
 };
 function scatterNd3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { indices, updates } = inputs;
   const { shape } = attrs;
   const { sliceRank, numUpdates, sliceSize, strides, outputSize } = backend_util_exports.calculateShapes(updates, indices, shape);
   const flattenShape = [outputSize / sliceSize, sliceSize];
   if (outputSize === 0) {
-    return backend3.makeTensorInfo(shape, indices.dtype);
+    return backend2.makeTensorInfo(shape, indices.dtype);
   }
-  const flattenIndices = reshape5({ inputs: { x: indices }, backend: backend3, attrs: { shape: [numUpdates, sliceRank] } });
-  const flattenX = reshape5({ inputs: { x: updates }, backend: backend3, attrs: { shape: [numUpdates, sliceSize] } });
+  const flattenIndices = reshape5({ inputs: { x: indices }, backend: backend2, attrs: { shape: [numUpdates, sliceRank] } });
+  const flattenX = reshape5({ inputs: { x: updates }, backend: backend2, attrs: { shape: [numUpdates, sliceSize] } });
   const type = flattenX.dtype;
-  const output = fill4({ backend: backend3, attrs: { shape: flattenShape, value: 0, dtype: type } });
+  const output = fill4({ backend: backend2, attrs: { shape: flattenShape, value: 0, dtype: type } });
   const uniformData = [{ type: "int32", data: [sliceRank] }, { type: "int32", data: strides }];
   const program = new ScatterOptimizedProgram(flattenX.shape, sliceRank, flattenIndices.shape.length, flattenX.shape.length, strides, flattenShape, type);
-  const res = backend3.runWebGPUProgram(program, [flattenX, flattenIndices], type, uniformData, output);
-  const reshaped = reshape5({ inputs: { x: res }, backend: backend3, attrs: { shape } });
-  backend3.disposeData(flattenIndices.dataId);
-  backend3.disposeData(flattenX.dataId);
-  backend3.disposeData(res.dataId);
+  const res = backend2.runWebGPUProgram(program, [flattenX, flattenIndices], type, uniformData, output);
+  const reshaped = reshape5({ inputs: { x: res }, backend: backend2, attrs: { shape } });
+  backend2.disposeData(flattenIndices.dataId);
+  backend2.disposeData(flattenX.dataId);
+  backend2.disposeData(res.dataId);
   return reshaped;
 }
 var scatterNdConfig3 = {
@@ -64750,10 +64750,10 @@ var SelectProgram2 = class {
   }
 };
 function select4(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { condition, t, e } = inputs;
   const program = new SelectProgram2(condition.shape.length, t.shape, t.shape.length);
-  return backend3.runWebGPUProgram(program, [condition, t, e], upcastType(t.dtype, e.dtype));
+  return backend2.runWebGPUProgram(program, [condition, t, e], upcastType(t.dtype, e.dtype));
 }
 var selectConfig3 = {
   kernelName: Select,
@@ -64789,28 +64789,28 @@ var subConfig3 = {
   kernelFunc: sub4
 };
 function softmax5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { logits } = inputs;
   const { dim } = attrs;
   const axes = util_exports.parseAxisParam([dim], logits.shape);
   const maxLogit = max5({
     inputs: { x: logits },
-    backend: backend3,
+    backend: backend2,
     attrs: { reductionIndices: axes, keepDims: false }
   });
   const expandedShape = backend_util_exports.expandShapeToKeepDim(maxLogit.shape, axes);
-  const maxLogitsReshaped = reshape5({ inputs: { x: maxLogit }, backend: backend3, attrs: { shape: expandedShape } });
-  const a = sub4({ inputs: { a: logits, b: maxLogitsReshaped }, backend: backend3 });
-  const b = exp4({ inputs: { x: a }, backend: backend3 });
-  const sumExp = sum6({ inputs: { x: b }, backend: backend3, attrs: { axis: axes, keepDims: false } });
-  const sumExpReshaped = reshape5({ inputs: { x: sumExp }, backend: backend3, attrs: { shape: expandedShape } });
-  const res = realDiv2({ inputs: { a: b, b: sumExpReshaped }, backend: backend3 });
-  backend3.disposeData(maxLogit.dataId);
-  backend3.disposeData(maxLogitsReshaped.dataId);
-  backend3.disposeData(a.dataId);
-  backend3.disposeData(b.dataId);
-  backend3.disposeData(sumExp.dataId);
-  backend3.disposeData(sumExpReshaped.dataId);
+  const maxLogitsReshaped = reshape5({ inputs: { x: maxLogit }, backend: backend2, attrs: { shape: expandedShape } });
+  const a = sub4({ inputs: { a: logits, b: maxLogitsReshaped }, backend: backend2 });
+  const b = exp4({ inputs: { x: a }, backend: backend2 });
+  const sumExp = sum5({ inputs: { x: b }, backend: backend2, attrs: { axis: axes, keepDims: false } });
+  const sumExpReshaped = reshape5({ inputs: { x: sumExp }, backend: backend2, attrs: { shape: expandedShape } });
+  const res = realDiv2({ inputs: { a: b, b: sumExpReshaped }, backend: backend2 });
+  backend2.disposeData(maxLogit.dataId);
+  backend2.disposeData(maxLogitsReshaped.dataId);
+  backend2.disposeData(a.dataId);
+  backend2.disposeData(b.dataId);
+  backend2.disposeData(sumExp.dataId);
+  backend2.disposeData(sumExpReshaped.dataId);
   return res;
 }
 var softmaxConfig3 = {
@@ -64819,7 +64819,7 @@ var softmaxConfig3 = {
   kernelFunc: softmax5
 };
 var spaceToBatchND4 = (args) => {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { blockShape, paddings } = attrs;
   util_exports.assert(x.shape.length <= 4, () => "spaceToBatchND for rank > 4 with a WebGPU backend not implemented yet");
@@ -64832,23 +64832,23 @@ var spaceToBatchND4 = (args) => {
   const toDispose = [];
   const paddedX = padV23({
     inputs: { x },
-    backend: backend3,
+    backend: backend2,
     attrs: { paddings: completePaddings, constantValue: 0 }
   });
   const reshapedPaddedShape = backend_util_exports.getReshaped(paddedX.shape, blockShape, prod6, false);
   const permutedReshapedPaddedPermutation = backend_util_exports.getPermuted(reshapedPaddedShape.length, blockShape.length, false);
   const flattenShape = backend_util_exports.getReshapedPermuted(paddedX.shape, blockShape, prod6, false);
-  const reshapedPaddedX = reshape5({ inputs: { x: paddedX }, backend: backend3, attrs: { shape: reshapedPaddedShape } });
+  const reshapedPaddedX = reshape5({ inputs: { x: paddedX }, backend: backend2, attrs: { shape: reshapedPaddedShape } });
   const paddedXT = transpose4({
     inputs: { x: reshapedPaddedX },
-    backend: backend3,
+    backend: backend2,
     attrs: { perm: permutedReshapedPaddedPermutation }
   });
-  const result = reshape5({ inputs: { x: paddedXT }, backend: backend3, attrs: { shape: flattenShape } });
+  const result = reshape5({ inputs: { x: paddedXT }, backend: backend2, attrs: { shape: flattenShape } });
   toDispose.push(paddedX);
   toDispose.push(reshapedPaddedX);
   toDispose.push(paddedXT);
-  toDispose.forEach((t) => backend3.disposeData(t.dataId));
+  toDispose.forEach((t) => backend2.disposeData(t.dataId));
   return result;
 };
 var spaceToBatchNDConfig3 = {
@@ -64922,7 +64922,7 @@ var ScatterProgram2 = class {
   }
 };
 function sparseToDense4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { sparseIndices, sparseValues, defaultValue } = inputs;
   const { outputShape } = attrs;
   const { sliceRank, numUpdates, strides, outputSize } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
@@ -64933,9 +64933,9 @@ function sparseToDense4(args) {
     { type: "int32", data: strides }
   ];
   const program = new ScatterProgram2(numUpdates, sliceRank, sparseIndices.shape.length, sparseValues.shape.length, strides, [outputSize, 1], sumDupeIndices);
-  const res = backend3.runWebGPUProgram(program, [sparseValues, sparseIndices, defaultValue], sparseValues.dtype, uniformData);
-  const reshaped = reshape5({ inputs: { x: res }, backend: backend3, attrs: { shape: outputShape } });
-  backend3.disposeData(res.dataId);
+  const res = backend2.runWebGPUProgram(program, [sparseValues, sparseIndices, defaultValue], sparseValues.dtype, uniformData);
+  const reshaped = reshape5({ inputs: { x: res }, backend: backend2, attrs: { shape: outputShape } });
+  backend2.disposeData(res.dataId);
   return reshaped;
 }
 var sparseToDenseConfig3 = {
@@ -64944,7 +64944,7 @@ var sparseToDenseConfig3 = {
   kernelFunc: sparseToDense4
 };
 function splitV3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { numOrSizeSplits, axis } = attrs;
   const $axis = util_exports.parseAxisParam(axis, x.shape)[0];
@@ -64955,7 +64955,7 @@ function splitV3(args) {
   return splitSizes.map((s) => {
     const sliceSize = [...size];
     sliceSize[$axis] = s;
-    const sliceT = slice4({ inputs: { x }, backend: backend3, attrs: { begin, size: sliceSize } });
+    const sliceT = slice4({ inputs: { x }, backend: backend2, attrs: { begin, size: sliceSize } });
     begin[$axis] += s;
     return sliceT;
   });
@@ -64974,9 +64974,9 @@ var sqrtConfig3 = {
 var squareConfig3 = {
   kernelName: Square,
   backendName: "webgpu",
-  kernelFunc: ({ inputs, backend: backend3 }) => {
+  kernelFunc: ({ inputs, backend: backend2 }) => {
     const { x } = inputs;
-    const webGPUBackend = backend3;
+    const webGPUBackend = backend2;
     const program = new UnaryOpProgram2(x.shape, UnaryOpType.SQUARE);
     return webGPUBackend.runWebGPUProgram(program, [x], x.dtype);
   }
@@ -65027,7 +65027,7 @@ var StridedSliceProgram2 = class {
   }
 };
 function stridedSlice4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const {
     begin,
@@ -65051,24 +65051,24 @@ function stridedSlice4(args) {
   } = slice_util_exports.sliceInfo(x.shape, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
   let result;
   if (isIdentity) {
-    result = reshape5({ inputs: { x }, backend: backend3, attrs: { shape: finalShape } });
+    result = reshape5({ inputs: { x }, backend: backend2, attrs: { shape: finalShape } });
   } else if (sliceDim0 || isSimpleSlice) {
     util_exports.assert(x.shape.length >= 1, () => `Input must have rank at least 1, got: ${x.shape.length}`);
     const size = slice_util_exports.computeOutShape($begin, $end, $strides);
-    const sliced = slice4({ inputs: { x }, backend: backend3, attrs: { begin: $begin, size } });
-    result = reshape5({ inputs: { x: sliced }, backend: backend3, attrs: { shape: finalShape } });
-    backend3.disposeData(sliced);
+    const sliced = slice4({ inputs: { x }, backend: backend2, attrs: { begin: $begin, size } });
+    result = reshape5({ inputs: { x: sliced }, backend: backend2, attrs: { shape: finalShape } });
+    backend2.disposeData(sliced);
   } else {
-    const shouldExecuteOnCPU = backend3.shouldExecuteOnCPU([x]);
+    const shouldExecuteOnCPU = backend2.shouldExecuteOnCPU([x]);
     if (shouldExecuteOnCPU) {
-      const values = backend3.readSync(x.dataId);
+      const values = backend2.readSync(x.dataId);
       const xBuf = buffer(x.shape, x.dtype, values);
       const resultValues = stridedSliceImplCPU2(finalShapeSparse, xBuf, $strides, $begin);
-      result = backend3.makeTensorInfo(finalShape, x.dtype, resultValues.values);
+      result = backend2.makeTensorInfo(finalShape, x.dtype, resultValues.values);
     } else {
       const program = new StridedSliceProgram2(finalShapeSparse);
       const uniformData = [{ type: "int32", data: $begin }, { type: "int32", data: $strides }];
-      result = backend3.runWebGPUProgram(program, [x], x.dtype, uniformData);
+      result = backend2.runWebGPUProgram(program, [x], x.dtype, uniformData);
     }
   }
   return result;
@@ -65079,7 +65079,7 @@ var stridedSliceConfig3 = {
   kernelFunc: stridedSlice4
 };
 function stringNGrams4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const {
     separator,
     nGramWidths,
@@ -65089,12 +65089,12 @@ function stringNGrams4(args) {
     preserveShortSequences
   } = attrs;
   const { data, dataSplits } = inputs;
-  const $data = backend3.readSync(data.dataId);
-  const $dataSplits = backend3.readSync(dataSplits.dataId);
+  const $data = backend2.readSync(data.dataId);
+  const $dataSplits = backend2.readSync(dataSplits.dataId);
   const [nGrams, nGramsSplits] = stringNGramsImplCPU2($data, $dataSplits, separator, nGramWidths, leftPad, rightPad2, padWidth, preserveShortSequences);
   return [
-    backend3.makeTensorInfo([nGrams.length], "string", nGrams),
-    backend3.makeTensorInfo(dataSplits.shape, "int32", nGramsSplits)
+    backend2.makeTensorInfo([nGrams.length], "string", nGrams),
+    backend2.makeTensorInfo(dataSplits.shape, "int32", nGramsSplits)
   ];
 }
 var stringNGramsConfig3 = {
@@ -65152,18 +65152,18 @@ function getSourceCoords5(rank, uniformPrefix = "") {
   return sourceCoords.join();
 }
 function tile5(params) {
-  const { inputs, backend: backend3, attrs } = params;
+  const { inputs, backend: backend2, attrs } = params;
   const { x } = inputs;
   const { reps } = attrs;
-  if (backend3.shouldExecuteOnCPU([x]) || x.dtype === "string" || x.shape.length >= 5) {
-    const data = backend3.readSync(x.dataId);
+  if (backend2.shouldExecuteOnCPU([x]) || x.dtype === "string" || x.shape.length >= 5) {
+    const data = backend2.readSync(x.dataId);
     const value = x.dtype === "string" ? data.map((d) => util_exports.decodeString(d)) : data;
     const buf = buffer(x.shape, x.dtype, value);
     const outBuf = tileImplCPU2(buf, reps);
-    return backend3.makeTensorInfo(outBuf.shape, outBuf.dtype, outBuf.values);
+    return backend2.makeTensorInfo(outBuf.shape, outBuf.dtype, outBuf.values);
   }
   const program = new TileProgram2(x.shape, reps);
-  const output = backend3.runWebGPUProgram(program, [x], x.dtype);
+  const output = backend2.runWebGPUProgram(program, [x], x.dtype);
   return output;
 }
 var tileConfig3 = {
@@ -65332,9 +65332,9 @@ var MergeProgram2 = class {
     return userCode;
   }
 };
-function disposeIntermediateTensorInfoOrNull2(backend3, tensorInfo) {
+function disposeIntermediateTensorInfoOrNull2(backend2, tensorInfo) {
   if (tensorInfo !== null) {
-    backend3.disposeData(tensorInfo.dataId);
+    backend2.disposeData(tensorInfo.dataId);
   }
 }
 function roundUpToPow22(num) {
@@ -65345,35 +65345,35 @@ function roundUpToPow22(num) {
   return pow22;
 }
 function topK3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { k, sorted } = attrs;
   const xShape = x.shape;
   const lastDim = xShape[xShape.length - 1];
-  if (backend3.shouldExecuteOnCPU([x])) {
-    const xVals = backend3.readSync(x.dataId);
+  if (backend2.shouldExecuteOnCPU([x])) {
+    const xVals = backend2.readSync(x.dataId);
     const [allTopKVals, allTopKIndices] = topKImplCPU2(xVals, xShape, x.dtype, k, sorted);
     return [
-      backend3.makeTensorInfo(allTopKVals.shape, allTopKVals.dtype, allTopKVals.values),
-      backend3.makeTensorInfo(allTopKIndices.shape, allTopKIndices.dtype, allTopKIndices.values)
+      backend2.makeTensorInfo(allTopKVals.shape, allTopKVals.dtype, allTopKVals.values),
+      backend2.makeTensorInfo(allTopKIndices.shape, allTopKIndices.dtype, allTopKIndices.values)
     ];
   }
   if (k === 0) {
     xShape[xShape.length - 1] = 0;
     return [
-      backend3.makeTensorInfo(xShape, x.dtype, []),
-      backend3.makeTensorInfo(xShape, "int32", [])
+      backend2.makeTensorInfo(xShape, x.dtype, []),
+      backend2.makeTensorInfo(xShape, "int32", [])
     ];
   }
   if (lastDim === 1) {
     return [
       x,
-      fill4({ attrs: { shape: xShape, dtype: "int32", value: 0 }, backend: backend3 })
+      fill4({ attrs: { shape: xShape, dtype: "int32", value: 0 }, backend: backend2 })
     ];
   }
   const xSize = util_exports.sizeFromShape(xShape);
   const batch = xSize / lastDim;
-  const x2D = reshape5({ inputs: { x }, attrs: { shape: [batch, lastDim] }, backend: backend3 });
+  const x2D = reshape5({ inputs: { x }, attrs: { shape: [batch, lastDim] }, backend: backend2 });
   const kPow2 = roundUpToPow22(k);
   const lastDimPow2 = roundUpToPow22(lastDim);
   let indices = null;
@@ -65390,8 +65390,8 @@ function topK3(args) {
       { type: "int32", data: [inc] }
     ];
     const prevIndices2 = indices;
-    indices = backend3.runWebGPUProgram(program, inputs2, "int32", uniformDataSwap);
-    disposeIntermediateTensorInfoOrNull2(backend3, prevIndices2);
+    indices = backend2.runWebGPUProgram(program, inputs2, "int32", uniformDataSwap);
+    disposeIntermediateTensorInfoOrNull2(backend2, prevIndices2);
   };
   for (let len = 1; len < kPow2; len *= 2) {
     const dir = len * 2;
@@ -65409,8 +65409,8 @@ function topK3(args) {
       { type: "int32", data: [kPow2] }
     ];
     const prevIndices2 = indices;
-    indices = backend3.runWebGPUProgram(mergeProgram, inputs2, "int32", uniformDataMerge);
-    disposeIntermediateTensorInfoOrNull2(backend3, prevIndices2);
+    indices = backend2.runWebGPUProgram(mergeProgram, inputs2, "int32", uniformDataMerge);
+    disposeIntermediateTensorInfoOrNull2(backend2, prevIndices2);
     const len = kPow2 / 2;
     const dir = len * 2;
     for (let inc = len; inc >= 1; inc /= 2) {
@@ -65418,18 +65418,18 @@ function topK3(args) {
     }
   }
   let prevIndices = indices;
-  indices = slice4({ inputs: { x: indices }, backend: backend3, attrs: { begin: 0, size: [batch, k] } });
-  disposeIntermediateTensorInfoOrNull2(backend3, prevIndices);
-  let values = gatherV23({ inputs: { x: x2D, indices }, backend: backend3, attrs: { axis: 1, batchDims: 1 } });
-  disposeIntermediateTensorInfoOrNull2(backend3, x2D);
+  indices = slice4({ inputs: { x: indices }, backend: backend2, attrs: { begin: 0, size: [batch, k] } });
+  disposeIntermediateTensorInfoOrNull2(backend2, prevIndices);
+  let values = gatherV23({ inputs: { x: x2D, indices }, backend: backend2, attrs: { axis: 1, batchDims: 1 } });
+  disposeIntermediateTensorInfoOrNull2(backend2, x2D);
   const newShape = xShape.slice(0, -1);
   newShape.push(k);
   prevIndices = indices;
-  indices = reshape5({ inputs: { x: indices }, attrs: { shape: newShape }, backend: backend3 });
-  disposeIntermediateTensorInfoOrNull2(backend3, prevIndices);
+  indices = reshape5({ inputs: { x: indices }, attrs: { shape: newShape }, backend: backend2 });
+  disposeIntermediateTensorInfoOrNull2(backend2, prevIndices);
   const prevValues = values;
-  values = reshape5({ inputs: { x: values }, attrs: { shape: newShape }, backend: backend3 });
-  disposeIntermediateTensorInfoOrNull2(backend3, prevValues);
+  values = reshape5({ inputs: { x: values }, attrs: { shape: newShape }, backend: backend2 });
+  disposeIntermediateTensorInfoOrNull2(backend2, prevValues);
   return [values, indices];
 }
 var topKConfig3 = {
@@ -65570,7 +65570,7 @@ var TransformProgram2 = class {
   }
 };
 function transform4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { image: image3, transforms } = inputs;
   const { interpolation, fillMode, fillValue, outputShape } = attrs;
   const [batch, imageHeight, imageWidth, numChannels] = image3.shape;
@@ -65606,7 +65606,7 @@ function transform4(args) {
     { type: "int32", data: [fillModeId] },
     { type: "float32", data: [fillValue] }
   ];
-  return backend3.runWebGPUProgram(program, [image3, transforms], "float32", uniformData);
+  return backend2.runWebGPUProgram(program, [image3, transforms], "float32", uniformData);
 }
 var transformConfig3 = {
   kernelName: Transform,
@@ -65614,7 +65614,7 @@ var transformConfig3 = {
   kernelFunc: transform4
 };
 function unpack3(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { value } = inputs;
   let { axis } = attrs;
   if (axis < 0) {
@@ -65637,12 +65637,12 @@ function unpack3(args) {
   const res = new Array(num);
   for (let i = 0; i < res.length; i++) {
     begin[axis] = i;
-    const sliced = slice4({ inputs: { x }, backend: backend3, attrs: { begin, size } });
-    const reshaped = reshape5({ inputs: { x: sliced }, backend: backend3, attrs: { shape: outShape } });
+    const sliced = slice4({ inputs: { x }, backend: backend2, attrs: { begin, size } });
+    const reshaped = reshape5({ inputs: { x: sliced }, backend: backend2, attrs: { shape: outShape } });
     res[i] = reshaped;
     toDispose.push(sliced);
   }
-  toDispose.forEach((t) => backend3.disposeData(t.dataId));
+  toDispose.forEach((t) => backend2.disposeData(t.dataId));
   return res;
 }
 var unpackConfig3 = {
@@ -66251,7 +66251,7 @@ var _WebGPUBackend = class extends KernelBackend {
     if (t.dtype === "string") {
       try {
         decodedData = data.map((d) => util_exports.decodeString(d));
-      } catch (e) {
+      } catch {
         throw new Error("Failed to decode encoded string bytes into utf-8");
       }
     }
@@ -66607,11 +66607,11 @@ var _WebGPUBackend = class extends KernelBackend {
     this.disposed = true;
   }
 };
-var WebGPUBackend72 = _WebGPUBackend;
-WebGPUBackend72.nextDataId = 0;
+var WebGPUBackend = _WebGPUBackend;
+WebGPUBackend.nextDataId = 0;
 var webgpu_exports = {};
 __export(webgpu_exports, {
-  WebGPUBackend: () => WebGPUBackend72,
+  WebGPUBackend: () => WebGPUBackend,
   webgpu_util: () => webgpu_util_exports
 });
 if (device_util_exports.isBrowser() && isWebGPUSupported()) {
@@ -66629,7 +66629,7 @@ if (device_util_exports.isBrowser() && isWebGPUSupported()) {
       console.warn(`This device doesn't support timestamp-query extension. Start Chrome browser with flag --disable-dawn-features=disallow_unsafe_apis then try again. Or zero will shown for the kernel time when profiling mode isenabled. Using performance.now is not workable for webgpu sinceit doesn't support synchronously to read data from GPU.`);
     }
     const device = await adapter.requestDevice(deviceDescriptor);
-    return new WebGPUBackend72(device, supportTimeQuery);
+    return new WebGPUBackend(device, supportTimeQuery);
   }, 3);
 }
 var CppDType;
@@ -66651,8 +66651,8 @@ var FusableActivation;
   FusableActivation2[FusableActivation2["elu"] = 6] = "elu";
 })(FusableActivation || (FusableActivation = {}));
 var wasmFusedMatMul;
-function setup(backend3) {
-  wasmFusedMatMul = backend3.wasm.cwrap(_FusedMatMul, null, [
+function setup(backend2) {
+  wasmFusedMatMul = backend2.wasm.cwrap(_FusedMatMul, null, [
     "number",
     "array",
     "number",
@@ -66669,23 +66669,23 @@ function setup(backend3) {
   ]);
 }
 function fusedBatchMatMul(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { a, b, bias, preluActivationWeights } = inputs;
   if (a.dtype !== "float32" || b.dtype !== "float32") {
     throw new Error(`_FusedMatMul for non non-float32 tensors not yet supported.`);
   }
   const { transposeA, transposeB, activation: activation2, leakyreluAlpha } = attrs;
-  const aId = backend3.dataIdMap.get(a.dataId).id;
-  const bId = backend3.dataIdMap.get(b.dataId).id;
+  const aId = backend2.dataIdMap.get(a.dataId).id;
+  const bId = backend2.dataIdMap.get(b.dataId).id;
   let biasId = 0;
   if (bias != null) {
-    const biasData = backend3.dataIdMap.get(bias.dataId);
+    const biasData = backend2.dataIdMap.get(bias.dataId);
     if (biasData.shape.length !== 1) {
       throw new Error(`_FusedMatMul only supports rank-1 bias but got rank ${biasData.shape.length}.`);
     }
     biasId = biasData.id;
   }
-  const preluActivationWeightsId = preluActivationWeights == null ? 0 : backend3.dataIdMap.get(preluActivationWeights.dataId).id;
+  const preluActivationWeightsId = preluActivationWeights == null ? 0 : backend2.dataIdMap.get(preluActivationWeights.dataId).id;
   const fusedActivation = FusableActivation[activation2];
   if (fusedActivation == null) {
     throw new Error(`${activation2} activation not yet supported for FusedConv2D in the wasm backend.`);
@@ -66693,8 +66693,8 @@ function fusedBatchMatMul(args) {
   const leftDim = transposeA ? a.shape[2] : a.shape[1];
   const rightDim = transposeB ? b.shape[1] : b.shape[2];
   const batchDim = a.shape[0];
-  const out = backend3.makeOutput([batchDim, leftDim, rightDim], a.dtype);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput([batchDim, leftDim, rightDim], a.dtype);
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const aShapeBytes = new Uint8Array(new Int32Array(a.shape).buffer);
   const bShapeBytes = new Uint8Array(new Int32Array(b.shape).buffer);
   wasmFusedMatMul(aId, aShapeBytes, a.shape.length, bId, bShapeBytes, b.shape.length, transposeA, transposeB, fusedActivation, biasId, preluActivationWeightsId, leakyreluAlpha || 0, outId);
@@ -66708,18 +66708,18 @@ var fusedMatMulConfig = {
 };
 function createUnaryKernelConfig(kernelName, outType) {
   let wasmFunc9;
-  function setupFunc3(backend3) {
-    wasmFunc9 = backend3.wasm.cwrap(kernelName, null, [
+  function setupFunc3(backend2) {
+    wasmFunc9 = backend2.wasm.cwrap(kernelName, null, [
       "number",
       "number",
       "number"
     ]);
   }
   function kernelFunc3(args) {
-    const { backend: backend3, inputs: { x } } = args;
-    const xId = backend3.dataIdMap.get(x.dataId).id;
-    const out = backend3.makeOutput(x.shape, outType || x.dtype);
-    const outId = backend3.dataIdMap.get(out.dataId).id;
+    const { backend: backend2, inputs: { x } } = args;
+    const xId = backend2.dataIdMap.get(x.dataId).id;
+    const out = backend2.makeOutput(x.shape, outType || x.dtype);
+    const outId = backend2.dataIdMap.get(out.dataId).id;
     if (util_exports.sizeFromShape(out.shape) === 0) {
       return out;
     }
@@ -66731,8 +66731,8 @@ function createUnaryKernelConfig(kernelName, outType) {
 var absConfig4 = createUnaryKernelConfig(Abs);
 function createBinaryKernelConfig(kernelName, supportsFullBroadcast17, dtype) {
   let wasmFunc9;
-  function setupFunc3(backend3) {
-    wasmFunc9 = backend3.wasm.cwrap(kernelName, null, [
+  function setupFunc3(backend2) {
+    wasmFunc9 = backend2.wasm.cwrap(kernelName, null, [
       "number",
       "array",
       "number",
@@ -66744,19 +66744,19 @@ function createBinaryKernelConfig(kernelName, supportsFullBroadcast17, dtype) {
     ]);
   }
   function kernelFunc3(args) {
-    const { backend: backend3, inputs } = args;
+    const { backend: backend2, inputs } = args;
     const { a, b } = inputs;
-    const aId = backend3.dataIdMap.get(a.dataId).id;
-    const bId = backend3.dataIdMap.get(b.dataId).id;
+    const aId = backend2.dataIdMap.get(a.dataId).id;
+    const bId = backend2.dataIdMap.get(b.dataId).id;
     const outputType = dtype != null ? dtype : a.dtype;
     const newShape = backend_util_exports.assertAndGetBroadcastShape(a.shape, b.shape);
-    const out = backend3.makeOutput(newShape, outputType);
+    const out = backend2.makeOutput(newShape, outputType);
     if (util_exports.sizeFromShape(newShape) === 0) {
       return out;
     }
     const aShapeBytes = new Uint8Array(new Int32Array(a.shape).buffer);
     const bShapeBytes = new Uint8Array(new Int32Array(b.shape).buffer);
-    const outId = backend3.dataIdMap.get(out.dataId).id;
+    const outId = backend2.dataIdMap.get(out.dataId).id;
     const kernelFunc4 = () => wasmFunc9(aId, aShapeBytes, a.shape.length, bId, bShapeBytes, b.shape.length, CppDType[a.dtype], outId);
     if (supportsFullBroadcast17 && a.dtype === "float32") {
       kernelFunc4();
@@ -66778,8 +66778,8 @@ function createBinaryKernelConfig(kernelName, supportsFullBroadcast17, dtype) {
 var supportsFullBroadcast = true;
 var addConfig4 = createBinaryKernelConfig(Add, supportsFullBroadcast);
 var wasmFunc;
-function setupFunc(backend3) {
-  wasmFunc = backend3.wasm.cwrap(AddN, null, [
+function setupFunc(backend2) {
+  wasmFunc = backend2.wasm.cwrap(AddN, null, [
     "array",
     "number",
     "number",
@@ -66787,14 +66787,14 @@ function setupFunc(backend3) {
   ]);
 }
 function addn(args) {
-  const { inputs, backend: backend3 } = args;
-  const out = backend3.makeOutput(inputs[0].shape, inputs[0].dtype);
+  const { inputs, backend: backend2 } = args;
+  const out = backend2.makeOutput(inputs[0].shape, inputs[0].dtype);
   if (util_exports.sizeFromShape(out.shape) === 0) {
     return out;
   }
-  const inputIds = inputs.map((x) => backend3.dataIdMap.get(x.dataId).id);
+  const inputIds = inputs.map((x) => backend2.dataIdMap.get(x.dataId).id);
   const inputIdsBytes = new Uint8Array(new Int32Array(inputIds).buffer);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmFunc(inputIdsBytes, inputIds.length, CppDType[out.dtype], outId);
   return out;
 }
@@ -66805,10 +66805,10 @@ var addNConfig4 = {
   kernelFunc: addn
 };
 function identity5(args) {
-  const { inputs: { x }, backend: backend3 } = args;
-  const out = backend3.makeOutput(x.shape, x.dtype);
-  const inVals = backend3.typedArrayFromHeap(x);
-  const outVals = backend3.typedArrayFromHeap(out);
+  const { inputs: { x }, backend: backend2 } = args;
+  const out = backend2.makeOutput(x.shape, x.dtype);
+  const inVals = backend2.typedArrayFromHeap(x);
+  const outVals = backend2.typedArrayFromHeap(out);
   outVals.set(inVals);
   return out;
 }
@@ -66818,8 +66818,8 @@ var identityConfig4 = {
   kernelFunc: identity5
 };
 var wasmTranspose;
-function setup2(backend3) {
-  wasmTranspose = backend3.wasm.cwrap(Transpose, null, [
+function setup2(backend2) {
+  wasmTranspose = backend2.wasm.cwrap(Transpose, null, [
     "number",
     "array",
     "number",
@@ -66830,7 +66830,7 @@ function setup2(backend3) {
   ]);
 }
 function transpose5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const [reducedShape, perm] = removeOneSizeDims(inputs.x.shape, attrs.perm);
   let permIsNoOp = true;
   for (let i = 0; i < perm.length; i++) {
@@ -66845,13 +66845,13 @@ function transpose5(args) {
     dtype: inputs.x.dtype
   };
   if (permIsNoOp) {
-    const cloned = identity5({ inputs, backend: backend3 });
+    const cloned = identity5({ inputs, backend: backend2 });
     cloned.shape = outShape;
     return cloned;
   }
-  const out = backend3.makeOutput(outShape, x.dtype);
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput(outShape, x.dtype);
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const permBytes = new Uint8Array(new Int32Array(perm).buffer);
   const xShapeBytes = new Uint8Array(new Int32Array(x.shape).buffer);
   wasmTranspose(xId, xShapeBytes, x.shape.length, CppDType[x.dtype], outId, permBytes, perm.length);
@@ -66892,7 +66892,7 @@ var transposeConfig4 = {
   kernelFunc: transpose5,
   setupFunc: setup2
 };
-function permuteAxesAndTranspose(x, axis, backend3) {
+function permuteAxesAndTranspose(x, axis, backend2) {
   const xShape = x.shape;
   const xRank = x.shape.length;
   const originalAxes = util_exports.parseAxisParam(axis, xShape);
@@ -66906,9 +66906,9 @@ function permuteAxesAndTranspose(x, axis, backend3) {
       newShape[i] = xShape[permutedAxes[i]];
     }
     axes = backend_util_exports.getInnerMostAxes(axes.length, xRank);
-    xTransposed = transpose5({ inputs: { x }, attrs: { perm: permutedAxes }, backend: backend3 });
-    const xId = backend3.dataIdMap.get(x.dataId).id;
-    const transposedId = backend3.dataIdMap.get(xTransposed.dataId).id;
+    xTransposed = transpose5({ inputs: { x }, attrs: { perm: permutedAxes }, backend: backend2 });
+    const xId = backend2.dataIdMap.get(x.dataId).id;
+    const transposedId = backend2.dataIdMap.get(xTransposed.dataId).id;
     if (transposedId !== xId) {
       inputWasTransposed = true;
     }
@@ -66916,19 +66916,19 @@ function permuteAxesAndTranspose(x, axis, backend3) {
   return { transposed: xTransposed, originalAxes, axes, inputWasTransposed };
 }
 var wasmAll;
-function setup3(backend3) {
-  wasmAll = backend3.wasm.cwrap(All, null, ["number, number, number"]);
+function setup3(backend2) {
+  wasmAll = backend2.wasm.cwrap(All, null, ["number, number, number"]);
 }
 function all4(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { axis, keepDims } = attrs;
   const { x } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   let inputId = xId;
   let input2 = x;
-  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend3);
+  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend2);
   if (inputWasTransposed) {
-    const transposedId = backend3.dataIdMap.get(transposed.dataId).id;
+    const transposedId = backend2.dataIdMap.get(transposed.dataId).id;
     input2 = transposed;
     inputId = transposedId;
   }
@@ -66936,13 +66936,13 @@ function all4(args) {
   backend_util_exports.assertAxesAreInnerMostDims("all", axes, inputRank);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(input2.shape, axes);
   const reduceSize = util_exports.sizeFromShape(reduceShape);
-  const out = backend3.makeOutput(outShape, x.dtype);
+  const out = backend2.makeOutput(outShape, x.dtype);
   if (util_exports.sizeFromShape(input2.shape) !== 0) {
-    const outId = backend3.dataIdMap.get(out.dataId).id;
+    const outId = backend2.dataIdMap.get(out.dataId).id;
     wasmAll(inputId, reduceSize, outId);
   }
   if (inputWasTransposed) {
-    backend3.disposeData(transposed.dataId);
+    backend2.disposeData(transposed.dataId);
   }
   if (keepDims) {
     const newShape = backend_util_exports.expandShapeToKeepDim(out.shape, originalAxes);
@@ -66957,19 +66957,19 @@ var allConfig3 = {
   kernelFunc: all4
 };
 var wasmAny;
-function setup4(backend3) {
-  wasmAny = backend3.wasm.cwrap(Any, null, ["number, number, number"]);
+function setup4(backend2) {
+  wasmAny = backend2.wasm.cwrap(Any, null, ["number, number, number"]);
 }
 function any4(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { axis, keepDims } = attrs;
   const { x } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   let inputId = xId;
   let input2 = x;
-  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend3);
+  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend2);
   if (inputWasTransposed) {
-    const transposedId = backend3.dataIdMap.get(transposed.dataId).id;
+    const transposedId = backend2.dataIdMap.get(transposed.dataId).id;
     input2 = transposed;
     inputId = transposedId;
   }
@@ -66977,13 +66977,13 @@ function any4(args) {
   backend_util_exports.assertAxesAreInnerMostDims("any", axes, inputRank);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(input2.shape, axes);
   const reduceSize = util_exports.sizeFromShape(reduceShape);
-  const out = backend3.makeOutput(outShape, x.dtype);
+  const out = backend2.makeOutput(outShape, x.dtype);
   if (util_exports.sizeFromShape(input2.shape) !== 0) {
-    const outId = backend3.dataIdMap.get(out.dataId).id;
+    const outId = backend2.dataIdMap.get(out.dataId).id;
     wasmAny(inputId, reduceSize, outId);
   }
   if (inputWasTransposed) {
-    backend3.disposeData(transposed.dataId);
+    backend2.disposeData(transposed.dataId);
   }
   if (keepDims) {
     const newShape = backend_util_exports.expandShapeToKeepDim(out.shape, originalAxes);
@@ -66998,8 +66998,8 @@ var anyConfig3 = {
   kernelFunc: any4
 };
 var wasmFunc2;
-function setup5(backend3) {
-  wasmFunc2 = backend3.wasm.cwrap(ArgMax, null, [
+function setup5(backend2) {
+  wasmFunc2 = backend2.wasm.cwrap(ArgMax, null, [
     "number",
     "number",
     "number",
@@ -67008,28 +67008,28 @@ function setup5(backend3) {
   ]);
 }
 function argmax(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { axis } = attrs;
   const { x } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   let inputId = xId;
   let input2 = x;
-  const { transposed, axes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend3);
+  const { transposed, axes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend2);
   if (inputWasTransposed) {
-    const transposedId = backend3.dataIdMap.get(transposed.dataId).id;
+    const transposedId = backend2.dataIdMap.get(transposed.dataId).id;
     if (transposedId !== xId) {
       input2 = transposed;
       inputId = transposedId;
     }
   }
   const outShape = input2.shape.slice(0, -1);
-  const out = backend3.makeOutput(outShape, "int32");
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput(outShape, "int32");
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const outerSize = util_exports.sizeFromShape(out.shape);
   const innerSize = input2.shape[axes[0]];
   wasmFunc2(inputId, CppDType[input2.dtype], outerSize, innerSize, outId);
   if (inputWasTransposed) {
-    backend3.disposeData(transposed.dataId);
+    backend2.disposeData(transposed.dataId);
   }
   return out;
 }
@@ -67040,8 +67040,8 @@ var argMaxConfig4 = {
   setupFunc: setup5
 };
 var wasmAvgPool;
-function setup6(backend3) {
-  wasmAvgPool = backend3.wasm.cwrap(AvgPool, null, [
+function setup6(backend2) {
+  wasmAvgPool = backend2.wasm.cwrap(AvgPool, null, [
     "number",
     "number",
     "number",
@@ -67059,9 +67059,9 @@ function setup6(backend3) {
   ]);
 }
 function avgPool5(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const x = inputs.x;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
   const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode);
   const filterHeight = convInfo.filterHeight;
@@ -67079,8 +67079,8 @@ function avgPool5(args) {
   if (convInfo.dilationWidth !== 1 || convInfo.dilationHeight !== 1) {
     throw new Error(`was backend only supports average pooling with dilation = [1, 1], got [${convInfo.dilationHeight}, ${convInfo.dilationWidth}].`);
   }
-  const out = backend3.makeOutput(convInfo.outShape, "float32");
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput(convInfo.outShape, "float32");
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmAvgPool(xId, x.shape[0], x.shape[1], x.shape[2], filterHeight, filterWidth, padTop, padRight, padBottom, padLeft, strideHeight, strideWidth, channels, outId);
   return out;
 }
@@ -67106,8 +67106,8 @@ var reshapeConfig4 = {
   kernelFunc: reshape6
 };
 var wasmBatchMatMul;
-function setup7(backend3) {
-  wasmBatchMatMul = backend3.wasm.cwrap(BatchMatMul, null, [
+function setup7(backend2) {
+  wasmBatchMatMul = backend2.wasm.cwrap(BatchMatMul, null, [
     "number",
     "array",
     "number",
@@ -67120,7 +67120,7 @@ function setup7(backend3) {
   ]);
 }
 function batchMatMul4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { a, b } = inputs;
   const { transposeA, transposeB } = attrs;
   if (a.dtype !== "float32" || b.dtype !== "float32") {
@@ -67143,20 +67143,20 @@ function batchMatMul4(args) {
   util_exports.assert(innerShapeA === innerShapeB, () => `Error in matMul: inner shapes (${innerShapeA}) and (${innerShapeB}) of Tensors with shapes ${a.shape} and ${b.shape} and transposeA=${transposeA} and transposeB=${transposeB} must match.`);
   const a3dShape = transposeA ? [batchDimA, innerShapeA, outerShapeA] : [batchDimA, outerShapeA, innerShapeA];
   const b3dShape = transposeB ? [batchDimB, outerShapeB, innerShapeB] : [batchDimB, innerShapeB, outerShapeB];
-  const a3d = reshape6({ inputs: { x: a }, backend: backend3, attrs: { shape: a3dShape } });
-  const b3d = reshape6({ inputs: { x: b }, backend: backend3, attrs: { shape: b3dShape } });
-  const a3dId = backend3.dataIdMap.get(a3d.dataId).id;
-  const b3dId = backend3.dataIdMap.get(b3d.dataId).id;
+  const a3d = reshape6({ inputs: { x: a }, backend: backend2, attrs: { shape: a3dShape } });
+  const b3d = reshape6({ inputs: { x: b }, backend: backend2, attrs: { shape: b3dShape } });
+  const a3dId = backend2.dataIdMap.get(a3d.dataId).id;
+  const b3dId = backend2.dataIdMap.get(b3d.dataId).id;
   const leftDim = transposeA ? a3d.shape[2] : a3d.shape[1];
   const rightDim = transposeB ? b3d.shape[1] : b3d.shape[2];
   const batchDim = Math.max(batchDimA, batchDimB);
-  const out = backend3.makeOutput([batchDim, leftDim, rightDim], a3d.dtype);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput([batchDim, leftDim, rightDim], a3d.dtype);
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const aShapeBytes = new Uint8Array(new Int32Array(a3d.shape).buffer);
   const bShapeBytes = new Uint8Array(new Int32Array(b3d.shape).buffer);
   wasmBatchMatMul(a3dId, aShapeBytes, a3d.shape.length, b3dId, bShapeBytes, b3d.shape.length, transposeA, transposeB, outId);
-  backend3.disposeData(a3d.dataId);
-  backend3.disposeData(b3d.dataId);
+  backend2.disposeData(a3d.dataId);
+  backend2.disposeData(b3d.dataId);
   out.shape = outShape;
   return out;
 }
@@ -67167,19 +67167,19 @@ var batchMatMulConfig4 = {
   kernelFunc: batchMatMul4
 };
 function slice5(args) {
-  const { inputs: { x }, attrs: { begin, size }, backend: backend3 } = args;
+  const { inputs: { x }, attrs: { begin, size }, backend: backend2 } = args;
   const [begin_, size_] = slice_util_exports.parseSliceParams(x, begin, size);
   const isContinous = slice_util_exports.isSliceContinous(x.shape, begin_, size_);
-  const xVals = backend3.readSync(x.dataId);
-  const out = backend3.makeOutput(size_, x.dtype);
+  const xVals = backend2.readSync(x.dataId);
+  const out = backend2.makeOutput(size_, x.dtype);
   const xStrides = util_exports.computeStrides(x.shape);
-  const outData = backend3.dataIdMap.get(out.dataId);
+  const outData = backend2.dataIdMap.get(out.dataId);
   if (isContinous) {
     const flatOffset = slice_util_exports.computeFlatOffset(begin_, xStrides);
     if (x.dtype === "string") {
       outData.stringBytes = xVals.slice(flatOffset, flatOffset + util_exports.sizeFromShape(size_));
     } else {
-      const outVals2 = backend3.typedArrayFromHeap(out);
+      const outVals2 = backend2.typedArrayFromHeap(out);
       outVals2.set(xVals.subarray(flatOffset, flatOffset + util_exports.sizeFromShape(size_)));
     }
     return out;
@@ -67189,7 +67189,7 @@ function slice5(args) {
     outData.stringBytes = res;
     return out;
   }
-  const outVals = backend3.typedArrayFromHeap(out);
+  const outVals = backend2.typedArrayFromHeap(out);
   const rank = x.shape.length;
   if (rank === 2) {
     slice2d2(xVals, xStrides[0], outVals, begin_, size_);
@@ -67254,7 +67254,7 @@ var sliceConfig4 = {
   kernelFunc: slice5
 };
 function batchToSpaceND5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { blockShape, crops } = attrs;
   const prod6 = blockShape.reduce((a, b) => a * b);
@@ -67263,17 +67263,17 @@ function batchToSpaceND5(args) {
   const reshapedPermuted = backend_util_exports.getReshapedPermuted(x.shape, blockShape, prod6);
   const sliceBeginCoords = backend_util_exports.getSliceBeginCoords(crops, blockShape.length);
   const sliceSize = backend_util_exports.getSliceSize(reshapedPermuted, crops, blockShape.length);
-  const xReshaped = reshape6({ inputs: { x }, backend: backend3, attrs: { shape: reshaped } });
-  const xTransposed = transpose5({ inputs: { x: xReshaped }, backend: backend3, attrs: { perm: permuted } });
-  const xTransposedReshaped = reshape6({ inputs: { x: xTransposed }, backend: backend3, attrs: { shape: reshapedPermuted } });
+  const xReshaped = reshape6({ inputs: { x }, backend: backend2, attrs: { shape: reshaped } });
+  const xTransposed = transpose5({ inputs: { x: xReshaped }, backend: backend2, attrs: { perm: permuted } });
+  const xTransposedReshaped = reshape6({ inputs: { x: xTransposed }, backend: backend2, attrs: { shape: reshapedPermuted } });
   const result = slice5({
     inputs: { x: xTransposedReshaped },
-    backend: backend3,
+    backend: backend2,
     attrs: { begin: sliceBeginCoords, size: sliceSize }
   });
-  backend3.disposeData(xReshaped.dataId);
-  backend3.disposeData(xTransposed.dataId);
-  backend3.disposeData(xReshaped.dataId);
+  backend2.disposeData(xReshaped.dataId);
+  backend2.disposeData(xTransposed.dataId);
+  backend2.disposeData(xReshaped.dataId);
   return result;
 }
 var batchToSpaceNDConfig4 = {
@@ -67282,10 +67282,10 @@ var batchToSpaceNDConfig4 = {
   kernelFunc: batchToSpaceND5
 };
 function cast6(args) {
-  const { inputs: { x }, attrs: { dtype }, backend: backend3 } = args;
-  const out = backend3.makeOutput(x.shape, dtype);
-  const inVals = backend3.typedArrayFromHeap(x);
-  const outVals = backend3.typedArrayFromHeap(out);
+  const { inputs: { x }, attrs: { dtype }, backend: backend2 } = args;
+  const out = backend2.makeOutput(x.shape, dtype);
+  const inVals = backend2.typedArrayFromHeap(x);
+  const outVals = backend2.typedArrayFromHeap(out);
   outVals.set(inVals);
   return out;
 }
@@ -67296,8 +67296,8 @@ var castConfig4 = {
 };
 var ceilConfig4 = createUnaryKernelConfig(Ceil);
 var wasmClip;
-function setup8(backend3) {
-  wasmClip = backend3.wasm.cwrap(ClipByValue, null, [
+function setup8(backend2) {
+  wasmClip = backend2.wasm.cwrap(ClipByValue, null, [
     "number",
     "number",
     "number",
@@ -67305,12 +67305,12 @@ function setup8(backend3) {
   ]);
 }
 function clip2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { clipValueMin, clipValueMax } = attrs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const out = backend3.makeOutput(x.shape, x.dtype);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const out = backend2.makeOutput(x.shape, x.dtype);
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmClip(xId, clipValueMin, clipValueMax, outId);
   return out;
 }
@@ -67321,14 +67321,14 @@ var clipByValueConfig3 = {
   kernelFunc: clip2
 };
 function concat5(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const axis = util_exports.parseAxisParam(args.attrs.axis, inputs[0].shape)[0];
   let outShape = backend_util_exports.computeOutShape(inputs.map((t) => t.shape), axis);
   const $inputs = inputs.filter((t) => util_exports.sizeFromShape(t.shape) > 0);
   if ($inputs.length === 1) {
-    return identity5({ inputs: { x: $inputs[0] }, backend: backend3 });
+    return identity5({ inputs: { x: $inputs[0] }, backend: backend2 });
   }
-  const out = backend3.makeOutput(outShape, inputs[0].dtype);
+  const out = backend2.makeOutput(outShape, inputs[0].dtype);
   if (util_exports.sizeFromShape(outShape) === 0) {
     return out;
   }
@@ -67338,19 +67338,19 @@ function concat5(args) {
     const inputs2D = $inputs.map((t) => {
       const innerSize = util_exports.sizeFromShape(t.shape.slice(axis));
       const shape = [-1, innerSize];
-      return reshape6({ inputs: { x: t }, backend: backend3, attrs: { shape } });
+      return reshape6({ inputs: { x: t }, backend: backend2, attrs: { shape } });
     });
     const inputsValShapes = inputs2D.map((t) => {
-      return { vals: backend3.readSync(t.dataId), shape: t.shape };
+      return { vals: backend2.readSync(t.dataId), shape: t.shape };
     });
     outShape = backend_util_exports.computeOutShape(inputs2D.map((t) => t.shape), 1);
     const simplyConcat = inputs2D[0].shape[0] === 1;
     const outVals2 = concatImpl(inputsValShapes, outShape, inputs[0].dtype, simplyConcat);
     const finalOutShape = backend_util_exports.computeOutShape($inputs.map((t) => t.shape), axis);
     out.shape = finalOutShape;
-    const outData = backend3.dataIdMap.get(out.dataId);
+    const outData = backend2.dataIdMap.get(out.dataId);
     outData.stringBytes = backend_util_exports.fromStringArrayToUint8(outVals2);
-    inputs2D.forEach((t) => backend3.disposeData(t.dataId));
+    inputs2D.forEach((t) => backend2.disposeData(t.dataId));
     return out;
   }
   const batchDim = util_exports.sizeFromShape($inputs[0].shape.slice(0, axis));
@@ -67360,8 +67360,8 @@ function concat5(args) {
     sumInnerDims += innerDim;
     return innerDim;
   });
-  const inVals = $inputs.map((input2) => backend3.typedArrayFromHeap(input2));
-  const outVals = backend3.typedArrayFromHeap(out);
+  const inVals = $inputs.map((input2) => backend2.typedArrayFromHeap(input2));
+  const outVals = backend2.typedArrayFromHeap(out);
   for (let b = 0; b < batchDim; b++) {
     let outOffset = b * sumInnerDims;
     for (let i = 0; i < inVals.length; i++) {
@@ -67380,8 +67380,8 @@ var concatConfig4 = {
   kernelFunc: concat5
 };
 var wasmConv2d;
-function setup9(backend3) {
-  wasmConv2d = backend3.wasm.cwrap(Conv2D, null, [
+function setup9(backend2) {
+  wasmConv2d = backend2.wasm.cwrap(Conv2D, null, [
     "number",
     "number",
     "number",
@@ -67403,11 +67403,11 @@ function setup9(backend3) {
     "number"
   ]);
 }
-function conv2d7(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+function conv2d6(args) {
+  const { inputs, attrs, backend: backend2 } = args;
   const { x, filter } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const filterId = backend3.dataIdMap.get(filter.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const filterId = backend2.dataIdMap.get(filter.dataId).id;
   const { strides, dilations, pad: pad3, dimRoundingMode, dataFormat } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
   const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad3, dimRoundingMode, false, $dataFormat);
@@ -67427,8 +67427,8 @@ function conv2d7(args) {
   if (convInfo.dataFormat !== "channelsLast") {
     throw new Error(`wasm backend Conv2D does not support dataFormat:'${convInfo.dataFormat}'. Please use 'channelsLast'.`);
   }
-  const out = backend3.makeOutput(convInfo.outShape, "float32");
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput(convInfo.outShape, "float32");
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmConv2d(xId, x.shape[0], x.shape[1], x.shape[2], filterId, filterHeight, filterWidth, padTop, padRight, padBottom, padLeft, isSamePad, dilationHeight, dilationWidth, strideHeight, strideWidth, inputChannels, outputChannels, outId);
   return out;
 }
@@ -67436,11 +67436,11 @@ var conv2DConfig4 = {
   kernelName: Conv2D,
   backendName: "wasm",
   setupFunc: setup9,
-  kernelFunc: conv2d7
+  kernelFunc: conv2d6
 };
 var wasmConv2DBackpropInput;
-function setup10(backend3) {
-  wasmConv2DBackpropInput = backend3.wasm.cwrap(Conv2DBackpropInput, null, [
+function setup10(backend2) {
+  wasmConv2DBackpropInput = backend2.wasm.cwrap(Conv2DBackpropInput, null, [
     "number",
     "number",
     "number",
@@ -67471,7 +67471,7 @@ function setup10(backend3) {
   ]);
 }
 function conv2DBackpropInput5(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { dy, filter } = inputs;
   const { strides, pad: pad3, dataFormat, dimRoundingMode, inputShape } = attrs;
   const dilations = 1;
@@ -67504,10 +67504,10 @@ function conv2DBackpropInput5(args) {
   const yRowStride = isChannelsLast ? dyStrides[1] : dyStrides[2];
   const yColStride = isChannelsLast ? dyStrides[2] : 1;
   const yChannelStride = isChannelsLast ? 1 : dyStrides[1];
-  const out = backend3.makeOutput(convInfo.inShape, "float32");
-  const outId = backend3.dataIdMap.get(out.dataId).id;
-  const dyId = backend3.dataIdMap.get(dy.dataId).id;
-  const filterId = backend3.dataIdMap.get(filter.dataId).id;
+  const out = backend2.makeOutput(convInfo.inShape, "float32");
+  const outId = backend2.dataIdMap.get(out.dataId).id;
+  const dyId = backend2.dataIdMap.get(dy.dataId).id;
+  const filterId = backend2.dataIdMap.get(filter.dataId).id;
   wasmConv2DBackpropInput(dyId, filterId, batchSize, filterHeight, filterWidth, inHeight, inWidth, inChannels, outHeight, outWidth, outChannels, strideHeight, strideWidth, topPad, leftPad, fltS0, fltS1, fltS2, xBatchStride, xRowStride, xColStride, xChannelStride, yBatchStride, yRowStride, yColStride, yChannelStride, outId);
   return out;
 }
@@ -67525,8 +67525,8 @@ var InterpolationMethod;
   InterpolationMethod2[InterpolationMethod2["nearest"] = 1] = "nearest";
 })(InterpolationMethod || (InterpolationMethod = {}));
 var wasmCropAndResize;
-function setup11(backend3) {
-  wasmCropAndResize = backend3.wasm.cwrap(CropAndResize, null, [
+function setup11(backend2) {
+  wasmCropAndResize = backend2.wasm.cwrap(CropAndResize, null, [
     "number",
     "number",
     "number",
@@ -67540,27 +67540,27 @@ function setup11(backend3) {
   ]);
 }
 function cropAndResize5(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { method, extrapolationValue, cropSize } = attrs;
   const { image: image3, boxes, boxInd } = inputs;
   const numBoxes = boxes.shape[0];
   const [cropHeight, cropWidth] = cropSize;
   const outShape = [numBoxes, cropHeight, cropWidth, image3.shape[3]];
-  let imagesData = backend3.dataIdMap.get(image3.dataId);
+  let imagesData = backend2.dataIdMap.get(image3.dataId);
   let castedData;
   if (image3.dtype !== "float32") {
-    castedData = cast6({ backend: backend3, inputs: { x: image3 }, attrs: { dtype: "float32" } });
-    imagesData = backend3.dataIdMap.get(castedData.dataId);
+    castedData = cast6({ backend: backend2, inputs: { x: image3 }, attrs: { dtype: "float32" } });
+    imagesData = backend2.dataIdMap.get(castedData.dataId);
   }
   const imagesId = imagesData.id;
-  const boxesId = backend3.dataIdMap.get(boxes.dataId).id;
-  const boxIndId = backend3.dataIdMap.get(boxInd.dataId).id;
-  const out = backend3.makeOutput(outShape, "float32");
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const boxesId = backend2.dataIdMap.get(boxes.dataId).id;
+  const boxIndId = backend2.dataIdMap.get(boxInd.dataId).id;
+  const out = backend2.makeOutput(outShape, "float32");
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const imagesShapeBytes = new Uint8Array(new Int32Array(image3.shape).buffer);
   wasmCropAndResize(imagesId, boxesId, boxIndId, numBoxes, imagesShapeBytes, cropHeight, cropWidth, InterpolationMethod[method], extrapolationValue, outId);
   if (castedData != null) {
-    backend3.disposeData(castedData.dataId);
+    backend2.disposeData(castedData.dataId);
   }
   return out;
 }
@@ -67571,8 +67571,8 @@ var cropAndResizeConfig4 = {
   kernelFunc: cropAndResize5
 };
 var wasmCumsum;
-function setup12(backend3) {
-  wasmCumsum = backend3.wasm.cwrap(Cumsum, null, [
+function setup12(backend2) {
+  wasmCumsum = backend2.wasm.cwrap(Cumsum, null, [
     "number",
     "number",
     "number",
@@ -67582,7 +67582,7 @@ function setup12(backend3) {
   ]);
 }
 function cumsum4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { axis, exclusive, reverse: reverse5 } = attrs;
   const xRank = x.shape.length;
@@ -67590,21 +67590,21 @@ function cumsum4(args) {
   const permutation = backend_util_exports.getAxesPermutation([axis], xRank);
   let permutedX = x;
   if (permutation !== null) {
-    permutedX = transpose5({ inputs: { x }, attrs: { perm: permutation }, backend: backend3 });
+    permutedX = transpose5({ inputs: { x }, attrs: { perm: permutation }, backend: backend2 });
   }
   const permutedAxis = backend_util_exports.getInnerMostAxes(1, xRank)[0];
   backend_util_exports.assertAxesAreInnerMostDims("cumsum", [permutedAxis], xRank);
-  const permutedOut = backend3.makeOutput(permutedX.shape, permutedX.dtype);
+  const permutedOut = backend2.makeOutput(permutedX.shape, permutedX.dtype);
   const finalDim = permutedX.shape[permutedAxis];
-  const permutedXId = backend3.dataIdMap.get(permutedX.dataId).id;
-  const permutedOutId = backend3.dataIdMap.get(permutedOut.dataId).id;
+  const permutedXId = backend2.dataIdMap.get(permutedX.dataId).id;
+  const permutedOutId = backend2.dataIdMap.get(permutedOut.dataId).id;
   wasmCumsum(permutedXId, exclusive ? 1 : 0, reverse5 ? 1 : 0, finalDim, permutedOutId, CppDType[x.dtype]);
   let out = permutedOut;
   if (permutation !== null) {
     const undoPermutation = backend_util_exports.getUndoAxesPermutation(permutation);
-    out = transpose5({ inputs: { x: permutedOut }, attrs: { perm: undoPermutation }, backend: backend3 });
-    backend3.disposeData(permutedX.dataId);
-    backend3.disposeData(permutedOut.dataId);
+    out = transpose5({ inputs: { x: permutedOut }, attrs: { perm: undoPermutation }, backend: backend2 });
+    backend2.disposeData(permutedX.dataId);
+    backend2.disposeData(permutedOut.dataId);
   }
   return out;
 }
@@ -67615,8 +67615,8 @@ var cumsumConfig3 = {
   kernelFunc: cumsum4
 };
 var wasmDepthToSpace;
-function setup13(backend3) {
-  wasmDepthToSpace = backend3.wasm.cwrap(DepthToSpace, null, [
+function setup13(backend2) {
+  wasmDepthToSpace = backend2.wasm.cwrap(DepthToSpace, null, [
     "number",
     "number",
     "number",
@@ -67629,7 +67629,7 @@ function setup13(backend3) {
   ]);
 }
 function depthToSpace5(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { x } = inputs;
   const { blockSize, dataFormat } = attrs;
   const batchSize = x.shape[0];
@@ -67640,13 +67640,13 @@ function depthToSpace5(args) {
   const outputWidth = inputWidth * blockSize;
   const outputDepth = inputDepth / (blockSize * blockSize);
   const outputShape = dataFormat === "NHWC" ? [batchSize, outputHeight, outputWidth, outputDepth] : [batchSize, outputDepth, outputHeight, outputWidth];
-  const out = backend3.makeOutput(outputShape, "float32");
-  const xData = backend3.dataIdMap.get(x.dataId);
+  const out = backend2.makeOutput(outputShape, "float32");
+  const xData = backend2.dataIdMap.get(x.dataId);
   const xId = xData.id;
   const xStridesBytes = new Uint8Array(new Int32Array(util_exports.computeStrides(x.shape)).buffer);
   const outputShapeBytes = new Uint8Array(new Int32Array(outputShape).buffer);
   const outStridesBytes = new Uint8Array(new Int32Array(util_exports.computeStrides(outputShape)).buffer);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const channelsLast = dataFormat === "NHWC" ? 1 : 0;
   wasmDepthToSpace(xId, blockSize, channelsLast, xStridesBytes, x.shape.length - 1, outputShapeBytes, outStridesBytes, outputShape.length, outId);
   return out;
@@ -67658,8 +67658,8 @@ var depthToSpaceConfig4 = {
   kernelFunc: depthToSpace5
 };
 var wasmDepthwiseConv2d;
-function setup14(backend3) {
-  wasmDepthwiseConv2d = backend3.wasm.cwrap(DepthwiseConv2dNative, null, [
+function setup14(backend2) {
+  wasmDepthwiseConv2d = backend2.wasm.cwrap(DepthwiseConv2dNative, null, [
     "number",
     "number",
     "number",
@@ -67682,10 +67682,10 @@ function setup14(backend3) {
   ]);
 }
 function depthwiseConv2d5(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const { x, filter } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const filterId = backend3.dataIdMap.get(filter.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const filterId = backend2.dataIdMap.get(filter.dataId).id;
   const { strides, dilations, pad: pad3, dimRoundingMode } = attrs;
   const $dilations = dilations == null ? [1, 1] : dilations;
   const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, $dilations, pad3, dimRoundingMode, true);
@@ -67705,8 +67705,8 @@ function depthwiseConv2d5(args) {
   if (convInfo.dataFormat !== "channelsLast") {
     throw new Error(`wasm backend DepthwiseConv2dNative does not support dataFormat:'${convInfo.dataFormat}'. Please use 'channelsLast'.`);
   }
-  const out = backend3.makeOutput(convInfo.outShape, "float32");
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput(convInfo.outShape, "float32");
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmDepthwiseConv2d(xId, x.shape[0], x.shape[1], x.shape[2], filterId, filterHeight, filterWidth, padTop, padRight, padBottom, padLeft, isSamePad, dilationHeight, dilationWidth, strideHeight, strideWidth, inputChannels, outputChannels, outId);
   return out;
 }
@@ -67721,7 +67721,7 @@ var supportsFullBroadcast2 = false;
 var equalConfig4 = createBinaryKernelConfig(Equal, supportsFullBroadcast2, "bool");
 var expConfig4 = createUnaryKernelConfig(Exp, "float32");
 function expandDims6(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const { input: input2 } = inputs;
   const { dim } = attrs;
   const inputRank = input2.shape.length;
@@ -67732,7 +67732,7 @@ function expandDims6(args) {
     $dim = inputRank + dim + 1;
   }
   newShape.splice($dim, 0, 1);
-  return reshape6({ inputs: { x: input2 }, backend: backend3, attrs: { shape: newShape } });
+  return reshape6({ inputs: { x: input2 }, backend: backend2, attrs: { shape: newShape } });
 }
 var expandDimsConfig4 = {
   kernelName: ExpandDims,
@@ -67740,9 +67740,9 @@ var expandDimsConfig4 = {
   kernelFunc: expandDims6
 };
 function fill5(args) {
-  const { attrs: { shape, value, dtype }, backend: backend3 } = args;
-  const out = backend3.makeOutput(shape, dtype);
-  const outVals = backend3.typedArrayFromHeap(out);
+  const { attrs: { shape, value, dtype }, backend: backend2 } = args;
+  const out = backend2.makeOutput(shape, dtype);
+  const outVals = backend2.typedArrayFromHeap(out);
   outVals.fill(value);
   return out;
 }
@@ -67752,8 +67752,8 @@ var fillConfig4 = {
   kernelFunc: fill5
 };
 var wasmFlipLeftRight;
-function setup15(backend3) {
-  wasmFlipLeftRight = backend3.wasm.cwrap(FlipLeftRight, null, [
+function setup15(backend2) {
+  wasmFlipLeftRight = backend2.wasm.cwrap(FlipLeftRight, null, [
     "number",
     "number",
     "number",
@@ -67763,11 +67763,11 @@ function setup15(backend3) {
   ]);
 }
 function flipLeftRight2(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { image: image3 } = inputs;
-  const out = backend3.makeOutput(image3.shape, image3.dtype);
-  const imageId = backend3.dataIdMap.get(image3.dataId).id;
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput(image3.shape, image3.dtype);
+  const imageId = backend2.dataIdMap.get(image3.dataId).id;
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const [batch, imageHeight, imageWidth, numChannels] = image3.shape;
   wasmFlipLeftRight(imageId, batch, imageHeight, imageWidth, numChannels, outId);
   return out;
@@ -67782,23 +67782,23 @@ var floorConfig4 = createUnaryKernelConfig(Floor);
 var supportsFullBroadcast3 = false;
 var floorDivConfig4 = createBinaryKernelConfig(FloorDiv, supportsFullBroadcast3);
 var wasmBatchNorm;
-function setup16(backend3) {
-  wasmBatchNorm = backend3.wasm.cwrap(FusedBatchNorm, null, ["number", "number", "number", "number", "number", "number", "number"]);
+function setup16(backend2) {
+  wasmBatchNorm = backend2.wasm.cwrap(FusedBatchNorm, null, ["number", "number", "number", "number", "number", "number", "number"]);
 }
 function fusedBatchNorm(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { varianceEpsilon } = attrs;
-  const { x, mean: mean7, variance: variance2, offset, scale: scale2 } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const meanId = backend3.dataIdMap.get(mean7.dataId).id;
-  const varianceId = backend3.dataIdMap.get(variance2.dataId).id;
-  const offsetId = offset != null ? backend3.dataIdMap.get(offset.dataId).id : 0;
-  const scaleId = scale2 != null ? backend3.dataIdMap.get(scale2.dataId).id : 0;
-  const out = backend3.makeOutput(x.shape, x.dtype);
+  const { x, mean: mean5, variance, offset, scale: scale2 } = inputs;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const meanId = backend2.dataIdMap.get(mean5.dataId).id;
+  const varianceId = backend2.dataIdMap.get(variance.dataId).id;
+  const offsetId = offset != null ? backend2.dataIdMap.get(offset.dataId).id : 0;
+  const scaleId = scale2 != null ? backend2.dataIdMap.get(scale2.dataId).id : 0;
+  const out = backend2.makeOutput(x.shape, x.dtype);
   if (util_exports.sizeFromShape(x.shape) === 0) {
     return out;
   }
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmBatchNorm(xId, meanId, varianceId, offsetId, scaleId, varianceEpsilon, outId);
   return out;
 }
@@ -67809,8 +67809,8 @@ var fusedBatchNormConfig2 = {
   kernelFunc: fusedBatchNorm
 };
 var wasmFusedConv2d;
-function setup17(backend3) {
-  wasmFusedConv2d = backend3.wasm.cwrap(FusedConv2D, null, [
+function setup17(backend2) {
+  wasmFusedConv2d = backend2.wasm.cwrap(FusedConv2D, null, [
     "number",
     "number",
     "number",
@@ -67837,7 +67837,7 @@ function setup17(backend3) {
   ]);
 }
 function fusedConv2d3(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
     strides,
@@ -67853,12 +67853,12 @@ function fusedConv2d3(args) {
   if (fusedActivation == null) {
     throw new Error(`${activation2} activation not yet supported for FusedConv2D in the wasm backend.`);
   }
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const filterId = backend3.dataIdMap.get(filter.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const filterId = backend2.dataIdMap.get(filter.dataId).id;
   const outputChannels = convInfo.outChannels;
   let biasId = 0;
   if (bias != null) {
-    const biasData = backend3.dataIdMap.get(bias.dataId);
+    const biasData = backend2.dataIdMap.get(bias.dataId);
     if (biasData.shape.length !== 1) {
       throw new Error(`FusedConv2D only supports rank-1 bias but got rank ${biasData.shape.length}.`);
     }
@@ -67885,9 +67885,9 @@ function fusedConv2d3(args) {
   if (dataFormat !== "NHWC") {
     throw new Error(`wasm backend FusedConv2D does not support dataFormat:'${dataFormat}'. Please use 'NHWC'.`);
   }
-  const out = backend3.makeOutput(convInfo.outShape, "float32");
-  const outId = backend3.dataIdMap.get(out.dataId).id;
-  const preluActivationWeightsId = preluActivationWeights == null ? 0 : backend3.dataIdMap.get(preluActivationWeights.dataId).id;
+  const out = backend2.makeOutput(convInfo.outShape, "float32");
+  const outId = backend2.dataIdMap.get(out.dataId).id;
+  const preluActivationWeightsId = preluActivationWeights == null ? 0 : backend2.dataIdMap.get(preluActivationWeights.dataId).id;
   wasmFusedConv2d(xId, batchSize, inHeight, inWidth, filterId, filterHeight, filterWidth, biasId, padTop, padRight, padBottom, padLeft, isSamePad, dilationHeight, dilationWidth, strideHeight, strideWidth, inputChannels, outputChannels, fusedActivation, preluActivationWeightsId, leakyreluAlpha || 0, outId);
   return out;
 }
@@ -67898,8 +67898,8 @@ var fusedConv2DConfig4 = {
   kernelFunc: fusedConv2d3
 };
 var wasmFusedDepthwiseConv2d;
-function setup18(backend3) {
-  wasmFusedDepthwiseConv2d = backend3.wasm.cwrap(FusedDepthwiseConv2D, null, [
+function setup18(backend2) {
+  wasmFusedDepthwiseConv2d = backend2.wasm.cwrap(FusedDepthwiseConv2D, null, [
     "number",
     "number",
     "number",
@@ -67926,7 +67926,7 @@ function setup18(backend3) {
   ]);
 }
 function fusedDepthwiseConv2d(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
     strides,
@@ -67942,12 +67942,12 @@ function fusedDepthwiseConv2d(args) {
   if (fusedActivation == null) {
     throw new Error(`${activation2} activation not yet supported for FusedDepthwiseConv2D in the wasm backend.`);
   }
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const filterId = backend3.dataIdMap.get(filter.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const filterId = backend2.dataIdMap.get(filter.dataId).id;
   const outputChannels = convInfo.outChannels;
   let biasId = 0;
   if (bias != null) {
-    const biasData = backend3.dataIdMap.get(bias.dataId);
+    const biasData = backend2.dataIdMap.get(bias.dataId);
     if (biasData.shape.length !== 1) {
       throw new Error(`FusedDepthwiseConv2D only supports rank-1 bias but got rank ${biasData.shape.length}.`);
     }
@@ -67974,9 +67974,9 @@ function fusedDepthwiseConv2d(args) {
   if (dataFormat !== "NHWC") {
     throw new Error(`wasm backend FusedDepthwiseConv2D does not support dataFormat:'${dataFormat}'. Please use 'NHWC'.`);
   }
-  const out = backend3.makeOutput(convInfo.outShape, "float32");
-  const outId = backend3.dataIdMap.get(out.dataId).id;
-  const preluActivationWeightsId = preluActivationWeights == null ? 0 : backend3.dataIdMap.get(preluActivationWeights.dataId).id;
+  const out = backend2.makeOutput(convInfo.outShape, "float32");
+  const outId = backend2.dataIdMap.get(out.dataId).id;
+  const preluActivationWeightsId = preluActivationWeights == null ? 0 : backend2.dataIdMap.get(preluActivationWeights.dataId).id;
   wasmFusedDepthwiseConv2d(xId, batchSize, inHeight, inWidth, filterId, filterHeight, filterWidth, biasId, padTop, padRight, padBottom, padLeft, isSamePad, dilationHeight, dilationWidth, strideHeight, strideWidth, inputChannels, outputChannels, fusedActivation, preluActivationWeightsId, leakyreluAlpha || 0, outId);
   return out;
 }
@@ -67987,8 +67987,8 @@ var fusedDepthwiseConv2DConfig4 = {
   kernelFunc: fusedDepthwiseConv2d
 };
 var wasmGatherNd;
-function setup19(backend3) {
-  wasmGatherNd = backend3.wasm.cwrap(GatherNd, null, [
+function setup19(backend2) {
+  wasmGatherNd = backend2.wasm.cwrap(GatherNd, null, [
     "number",
     "number",
     "number",
@@ -68000,21 +68000,21 @@ function setup19(backend3) {
   ]);
 }
 function gatherNd4(args) {
-  const { backend: backend3, inputs } = args;
+  const { backend: backend2, inputs } = args;
   const { params, indices } = inputs;
   const [resultShape, numSlices, sliceSize, strides] = gather_nd_util_exports.prepareAndValidate(params, indices);
-  const out = backend3.makeOutput(resultShape, params.dtype);
+  const out = backend2.makeOutput(resultShape, params.dtype);
   if (numSlices === 0) {
     return out;
   }
   const indicesShape = indices.shape;
   const sliceRank = indicesShape[indicesShape.length - 1];
-  const xData = backend3.dataIdMap.get(params.dataId);
+  const xData = backend2.dataIdMap.get(params.dataId);
   const xId = xData.id;
-  const indicesData = backend3.dataIdMap.get(indices.dataId);
+  const indicesData = backend2.dataIdMap.get(indices.dataId);
   const indicesId = indicesData.id;
   const stridesBytes = new Uint8Array(new Int32Array(strides).buffer);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmGatherNd(xId, CppDType[params.dtype], indicesId, numSlices, sliceRank, sliceSize, stridesBytes, outId);
   return out;
 }
@@ -68025,8 +68025,8 @@ var gatherNdConfig4 = {
   kernelFunc: gatherNd4
 };
 var wasmGather;
-function setup20(backend3) {
-  wasmGather = backend3.wasm.cwrap("Gather", null, [
+function setup20(backend2) {
+  wasmGather = backend2.wasm.cwrap("Gather", null, [
     "number",
     "number",
     "array",
@@ -68038,11 +68038,11 @@ function setup20(backend3) {
   ]);
 }
 function gatherV24(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { x, indices } = inputs;
   const { axis, batchDims } = attrs;
   const parsedAxis = util_exports.parseAxisParam(axis, x.shape)[0];
-  const indicesVals = backend3.readSync(indices.dataId);
+  const indicesVals = backend2.readSync(indices.dataId);
   const axisDim = x.shape[parsedAxis];
   for (let i = 0; i < indicesVals.length; ++i) {
     const index = indicesVals[i];
@@ -68059,13 +68059,13 @@ function gatherV24(args) {
         shapeInfo.sliceSize
       ]
     },
-    backend: backend3
+    backend: backend2
   });
   const indicesSize = util_exports.sizeFromShape(indices.shape);
   const flattenIndex = reshape6({
     inputs: { x: indices },
     attrs: { shape: [shapeInfo.batchSize, indicesSize / shapeInfo.batchSize] },
-    backend: backend3
+    backend: backend2
   });
   const flattenOutputShape = [
     shapeInfo.batchSize,
@@ -68073,21 +68073,21 @@ function gatherV24(args) {
     indicesSize / shapeInfo.batchSize,
     shapeInfo.sliceSize
   ];
-  const out = backend3.makeOutput(flattenOutputShape, x.dtype);
+  const out = backend2.makeOutput(flattenOutputShape, x.dtype);
   if (util_exports.sizeFromShape(x.shape) === 0) {
     return out;
   }
   const stridesSize = flattenX.shape.length - 1;
-  const xData = backend3.dataIdMap.get(flattenX.dataId);
+  const xData = backend2.dataIdMap.get(flattenX.dataId);
   const xId = xData.id;
-  const indicesData = backend3.dataIdMap.get(flattenIndex.dataId);
+  const indicesData = backend2.dataIdMap.get(flattenIndex.dataId);
   const indicesId = indicesData.id;
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const xStridesBytes = new Uint8Array(new Int32Array(util_exports.computeStrides(flattenX.shape)).buffer);
   const outStridesBytes = new Uint8Array(new Int32Array(util_exports.computeStrides(flattenOutputShape)).buffer);
   wasmGather(xId, CppDType[x.dtype], xStridesBytes, stridesSize, indicesId, shapeInfo.batchSize, outStridesBytes, outId);
-  backend3.disposeData(flattenX.dataId);
-  backend3.disposeData(flattenIndex.dataId);
+  backend2.disposeData(flattenX.dataId);
+  backend2.disposeData(flattenIndex.dataId);
   out.shape = shapeInfo.outputShape;
   return out;
 }
@@ -68102,8 +68102,8 @@ var greaterConfig4 = createBinaryKernelConfig(Greater, supportsFullBroadcast4, "
 var supportsFullBroadcast5 = false;
 var greaterEqualConfig4 = createBinaryKernelConfig(GreaterEqual, supportsFullBroadcast5, "bool");
 var wasmFunc3;
-function setupFunc2(backend3) {
-  wasmFunc3 = backend3.wasm.cwrap(LeakyRelu, null, [
+function setupFunc2(backend2) {
+  wasmFunc3 = backend2.wasm.cwrap(LeakyRelu, null, [
     "number",
     "number",
     "number",
@@ -68111,11 +68111,11 @@ function setupFunc2(backend3) {
   ]);
 }
 function leakyRelu4(args) {
-  const { inputs: { x }, attrs: { alpha }, backend: backend3 } = args;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const out = backend3.makeOutput(x.shape, "float32");
+  const { inputs: { x }, attrs: { alpha }, backend: backend2 } = args;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const out = backend2.makeOutput(x.shape, "float32");
   if (util_exports.sizeFromShape(x.shape) !== 0) {
-    const outId = backend3.dataIdMap.get(out.dataId).id;
+    const outId = backend2.dataIdMap.get(out.dataId).id;
     wasmFunc3(xId, CppDType[x.dtype], alpha, outId);
   }
   return out;
@@ -68134,8 +68134,8 @@ var logConfig4 = createUnaryKernelConfig(Log);
 var supportsFullBroadcast8 = false;
 var logicalAndConfig4 = createBinaryKernelConfig(LogicalAnd, supportsFullBroadcast8, "bool");
 var wasmMax;
-function setup21(backend3) {
-  wasmMax = backend3.wasm.cwrap(Max, null, [
+function setup21(backend2) {
+  wasmMax = backend2.wasm.cwrap(Max, null, [
     "number",
     "number",
     "number",
@@ -68143,15 +68143,15 @@ function setup21(backend3) {
   ]);
 }
 function max6(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { reductionIndices: axis, keepDims } = attrs;
   const { x } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   let inputId = xId;
   let input2 = x;
-  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend3);
+  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend2);
   if (inputWasTransposed) {
-    const transposedId = backend3.dataIdMap.get(transposed.dataId).id;
+    const transposedId = backend2.dataIdMap.get(transposed.dataId).id;
     input2 = transposed;
     inputId = transposedId;
   }
@@ -68159,13 +68159,13 @@ function max6(args) {
   backend_util_exports.assertAxesAreInnerMostDims("max", axes, inputRank);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(input2.shape, axes);
   const reduceSize = util_exports.sizeFromShape(reduceShape);
-  const out = backend3.makeOutput(outShape, x.dtype);
+  const out = backend2.makeOutput(outShape, x.dtype);
   if (util_exports.sizeFromShape(input2.shape) !== 0) {
-    const outId = backend3.dataIdMap.get(out.dataId).id;
+    const outId = backend2.dataIdMap.get(out.dataId).id;
     wasmMax(inputId, CppDType[x.dtype], reduceSize, outId);
   }
   if (inputWasTransposed) {
-    backend3.disposeData(transposed.dataId);
+    backend2.disposeData(transposed.dataId);
   }
   if (keepDims) {
     const newShape = backend_util_exports.expandShapeToKeepDim(out.shape, originalAxes);
@@ -68182,8 +68182,8 @@ var maxConfig4 = {
 var supportsFullBroadcast9 = false;
 var maximumConfig4 = createBinaryKernelConfig(Maximum, supportsFullBroadcast9);
 var wasmMaxPool;
-function setup22(backend3) {
-  wasmMaxPool = backend3.wasm.cwrap(MaxPool, null, [
+function setup22(backend2) {
+  wasmMaxPool = backend2.wasm.cwrap(MaxPool, null, [
     "number",
     "number",
     "number",
@@ -68204,9 +68204,9 @@ function setup22(backend3) {
   ]);
 }
 function maxPool5(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const x = inputs.x;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   util_exports.assert(x.dtype === "float32", () => `Error in MaxPool: only float32 input is supported. Got ${x.dtype}.`);
   const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
   const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode);
@@ -68225,8 +68225,8 @@ function maxPool5(args) {
   if (convInfo.dataFormat !== "channelsLast") {
     throw new Error(`wasm backend does not support dataFormat:'${convInfo.dataFormat}'. Please use 'channelsLast'.`);
   }
-  const out = backend3.makeOutput(convInfo.outShape, "float32");
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput(convInfo.outShape, "float32");
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmMaxPool(xId, x.shape[0], x.shape[1], x.shape[2], filterHeight, filterWidth, padTop, padRight, padBottom, padLeft, dilationHeight, dilationWidth, strideHeight, strideWidth, inputChannels, outputChannels, outId);
   return out;
 }
@@ -68237,20 +68237,20 @@ var maxPoolConfig4 = {
   kernelFunc: maxPool5
 };
 var wasmMean;
-function setup23(backend3) {
-  wasmMean = backend3.wasm.cwrap(Mean, null, ["number, number, number"]);
+function setup23(backend2) {
+  wasmMean = backend2.wasm.cwrap(Mean, null, ["number, number, number"]);
 }
-function mean6(args) {
-  const { backend: backend3, inputs, attrs } = args;
+function mean4(args) {
+  const { backend: backend2, inputs, attrs } = args;
   const { axis, keepDims } = attrs;
   const { x } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   let inputId = xId;
   let input2 = x;
-  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend3);
+  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend2);
   let reductionAxes = axes;
   if (inputWasTransposed) {
-    const transposedId = backend3.dataIdMap.get(transposed.dataId).id;
+    const transposedId = backend2.dataIdMap.get(transposed.dataId).id;
     if (transposedId !== xId) {
       input2 = transposed;
       inputId = transposedId;
@@ -68262,23 +68262,23 @@ function mean6(args) {
   const reduceSize = util_exports.sizeFromShape(reduceShape);
   let castedInput = input2;
   if (input2.dtype !== "float32") {
-    castedInput = cast6({ backend: backend3, inputs: { x: input2 }, attrs: { dtype: "float32" } });
-    inputId = backend3.dataIdMap.get(castedInput.dataId).id;
+    castedInput = cast6({ backend: backend2, inputs: { x: input2 }, attrs: { dtype: "float32" } });
+    inputId = backend2.dataIdMap.get(castedInput.dataId).id;
   }
-  const out = backend3.makeOutput(outShape, "float32");
+  const out = backend2.makeOutput(outShape, "float32");
   if (util_exports.sizeFromShape(input2.shape) !== 0) {
-    const outId = backend3.dataIdMap.get(out.dataId).id;
+    const outId = backend2.dataIdMap.get(out.dataId).id;
     wasmMean(inputId, reduceSize, outId);
   }
   if (inputWasTransposed) {
-    backend3.disposeData(transposed.dataId);
+    backend2.disposeData(transposed.dataId);
   }
   if (keepDims) {
     const newShape = backend_util_exports.expandShapeToKeepDim(out.shape, originalAxes);
     out.shape = newShape;
   }
   if (input2.dtype !== "float32") {
-    backend3.disposeData(castedInput.dataId);
+    backend2.disposeData(castedInput.dataId);
   }
   return out;
 }
@@ -68286,11 +68286,11 @@ var meanConfig4 = {
   kernelName: Mean,
   backendName: "wasm",
   setupFunc: setup23,
-  kernelFunc: mean6
+  kernelFunc: mean4
 };
 var wasmMin;
-function setup24(backend3) {
-  wasmMin = backend3.wasm.cwrap(Min, null, [
+function setup24(backend2) {
+  wasmMin = backend2.wasm.cwrap(Min, null, [
     "number",
     "number",
     "number",
@@ -68298,15 +68298,15 @@ function setup24(backend3) {
   ]);
 }
 function min6(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { axis, keepDims } = attrs;
   const { x } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   let inputId = xId;
   let input2 = x;
-  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend3);
+  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend2);
   if (inputWasTransposed) {
-    const transposedId = backend3.dataIdMap.get(transposed.dataId).id;
+    const transposedId = backend2.dataIdMap.get(transposed.dataId).id;
     if (transposedId !== xId) {
       input2 = transposed;
       inputId = transposedId;
@@ -68316,13 +68316,13 @@ function min6(args) {
   backend_util_exports.assertAxesAreInnerMostDims("min", axes, inputRank);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(input2.shape, axes);
   const reduceSize = util_exports.sizeFromShape(reduceShape);
-  const out = backend3.makeOutput(outShape, input2.dtype);
+  const out = backend2.makeOutput(outShape, input2.dtype);
   if (util_exports.sizeFromShape(input2.shape) !== 0) {
-    const outId = backend3.dataIdMap.get(out.dataId).id;
+    const outId = backend2.dataIdMap.get(out.dataId).id;
     wasmMin(inputId, CppDType[x.dtype], reduceSize, outId);
   }
   if (inputWasTransposed) {
-    backend3.disposeData(transposed.dataId);
+    backend2.disposeData(transposed.dataId);
   }
   if (keepDims) {
     const newShape = backend_util_exports.expandShapeToKeepDim(out.shape, originalAxes);
@@ -68344,8 +68344,8 @@ var MirrorPaddingMode;
   MirrorPaddingMode2[MirrorPaddingMode2["symmetric"] = 1] = "symmetric";
 })(MirrorPaddingMode || (MirrorPaddingMode = {}));
 var wasmMirrorPad;
-function setup25(backend3) {
-  wasmMirrorPad = backend3.wasm.cwrap(MirrorPad, null, [
+function setup25(backend2) {
+  wasmMirrorPad = backend2.wasm.cwrap(MirrorPad, null, [
     "number",
     "array",
     "number",
@@ -68357,11 +68357,11 @@ function setup25(backend3) {
   ]);
 }
 function mirrorPad3(args) {
-  const { inputs: { x }, backend: backend3, attrs: { paddings, mode } } = args;
+  const { inputs: { x }, backend: backend2, attrs: { paddings, mode } } = args;
   const outShape = paddings.map((p2, i) => p2[0] + x.shape[i] + p2[1]);
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const out = backend3.makeOutput(outShape, x.dtype);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const out = backend2.makeOutput(outShape, x.dtype);
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const xShapeBytes = new Uint8Array(new Int32Array(x.shape).buffer);
   const prePaddingsFlat = paddings.map((padTuple) => padTuple[0]);
   const postPaddingsFlat = paddings.map((padTuple) => padTuple[1]);
@@ -68379,18 +68379,18 @@ var mirrorPadConfig4 = {
 var supportsFullBroadcast11 = true;
 var multiplyConfig4 = createBinaryKernelConfig(Multiply, supportsFullBroadcast11);
 var negConfig4 = createUnaryKernelConfig(Neg);
-function parseResultStruct(backend3, resOffset) {
-  const result = new Int32Array(backend3.wasm.HEAPU8.buffer, resOffset, 4);
+function parseResultStruct(backend2, resOffset) {
+  const result = new Int32Array(backend2.wasm.HEAPU8.buffer, resOffset, 4);
   const pSelectedIndices = result[0];
   const selectedSize = result[1];
   const pSelectedScores = result[2];
   const pValidOutputs = result[3];
-  backend3.wasm._free(resOffset);
+  backend2.wasm._free(resOffset);
   return { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs };
 }
 var wasmFunc4;
-function setup26(backend3) {
-  wasmFunc4 = backend3.wasm.cwrap(NonMaxSuppressionV3, "number", [
+function setup26(backend2) {
+  wasmFunc4 = backend2.wasm.cwrap(NonMaxSuppressionV3, "number", [
     "number",
     "number",
     "number",
@@ -68399,16 +68399,16 @@ function setup26(backend3) {
   ]);
 }
 function kernelFunc(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { iouThreshold, maxOutputSize, scoreThreshold } = attrs;
   const { boxes, scores } = inputs;
-  const boxesId = backend3.dataIdMap.get(boxes.dataId).id;
-  const scoresId = backend3.dataIdMap.get(scores.dataId).id;
+  const boxesId = backend2.dataIdMap.get(boxes.dataId).id;
+  const scoresId = backend2.dataIdMap.get(scores.dataId).id;
   const resOffset = wasmFunc4(boxesId, scoresId, maxOutputSize, iouThreshold, scoreThreshold);
-  const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend3, resOffset);
-  backend3.wasm._free(pSelectedScores);
-  backend3.wasm._free(pValidOutputs);
-  const selectedIndicesTensor = backend3.makeOutput([selectedSize], "int32", pSelectedIndices);
+  const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend2, resOffset);
+  backend2.wasm._free(pSelectedScores);
+  backend2.wasm._free(pValidOutputs);
+  const selectedIndicesTensor = backend2.makeOutput([selectedSize], "int32", pSelectedIndices);
   return selectedIndicesTensor;
 }
 var nonMaxSuppressionV3Config4 = {
@@ -68418,8 +68418,8 @@ var nonMaxSuppressionV3Config4 = {
   kernelFunc
 };
 var wasmFunc5;
-function setup27(backend3) {
-  wasmFunc5 = backend3.wasm.cwrap(NonMaxSuppressionV4, "number", [
+function setup27(backend2) {
+  wasmFunc5 = backend2.wasm.cwrap(NonMaxSuppressionV4, "number", [
     "number",
     "number",
     "number",
@@ -68429,16 +68429,16 @@ function setup27(backend3) {
   ]);
 }
 function nonMaxSuppressionV43(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { iouThreshold, maxOutputSize, scoreThreshold, padToMaxOutputSize } = attrs;
   const { boxes, scores } = inputs;
-  const boxesId = backend3.dataIdMap.get(boxes.dataId).id;
-  const scoresId = backend3.dataIdMap.get(scores.dataId).id;
+  const boxesId = backend2.dataIdMap.get(boxes.dataId).id;
+  const scoresId = backend2.dataIdMap.get(scores.dataId).id;
   const resOffset = wasmFunc5(boxesId, scoresId, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize);
-  const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend3, resOffset);
-  backend3.wasm._free(pSelectedScores);
-  const selectedIndicesTensor = backend3.makeOutput([selectedSize], "int32", pSelectedIndices);
-  const validOutputsTensor = backend3.makeOutput([], "int32", pValidOutputs);
+  const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend2, resOffset);
+  backend2.wasm._free(pSelectedScores);
+  const selectedIndicesTensor = backend2.makeOutput([selectedSize], "int32", pSelectedIndices);
+  const validOutputsTensor = backend2.makeOutput([], "int32", pValidOutputs);
   return [selectedIndicesTensor, validOutputsTensor];
 }
 var nonMaxSuppressionV4Config3 = {
@@ -68448,8 +68448,8 @@ var nonMaxSuppressionV4Config3 = {
   kernelFunc: nonMaxSuppressionV43
 };
 var wasmFunc6;
-function setup28(backend3) {
-  wasmFunc6 = backend3.wasm.cwrap(NonMaxSuppressionV5, "number", [
+function setup28(backend2) {
+  wasmFunc6 = backend2.wasm.cwrap(NonMaxSuppressionV5, "number", [
     "number",
     "number",
     "number",
@@ -68459,16 +68459,16 @@ function setup28(backend3) {
   ]);
 }
 function kernelFunc2(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { iouThreshold, maxOutputSize, scoreThreshold, softNmsSigma } = attrs;
   const { boxes, scores } = inputs;
-  const boxesId = backend3.dataIdMap.get(boxes.dataId).id;
-  const scoresId = backend3.dataIdMap.get(scores.dataId).id;
+  const boxesId = backend2.dataIdMap.get(boxes.dataId).id;
+  const scoresId = backend2.dataIdMap.get(scores.dataId).id;
   const resOffset = wasmFunc6(boxesId, scoresId, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma);
-  const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend3, resOffset);
-  backend3.wasm._free(pValidOutputs);
-  const selectedIndicesTensor = backend3.makeOutput([selectedSize], "int32", pSelectedIndices);
-  const selectedScoresTensor = backend3.makeOutput([selectedSize], "float32", pSelectedScores);
+  const { pSelectedIndices, selectedSize, pSelectedScores, pValidOutputs } = parseResultStruct(backend2, resOffset);
+  backend2.wasm._free(pValidOutputs);
+  const selectedIndicesTensor = backend2.makeOutput([selectedSize], "int32", pSelectedIndices);
+  const selectedScoresTensor = backend2.makeOutput([selectedSize], "float32", pSelectedScores);
   return [selectedIndicesTensor, selectedScoresTensor];
 }
 var nonMaxSuppressionV5Config4 = {
@@ -68480,8 +68480,8 @@ var nonMaxSuppressionV5Config4 = {
 var supportsFullBroadcast12 = false;
 var notEqualConfig4 = createBinaryKernelConfig(NotEqual, supportsFullBroadcast12, "bool");
 var wasmOneHot;
-function setup29(backend3) {
-  wasmOneHot = backend3.wasm.cwrap(OneHot, null, [
+function setup29(backend2) {
+  wasmOneHot = backend2.wasm.cwrap(OneHot, null, [
     "number",
     "number",
     "number",
@@ -68489,13 +68489,13 @@ function setup29(backend3) {
     "number"
   ]);
 }
-function oneHot5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+function oneHot4(args) {
+  const { inputs, backend: backend2, attrs } = args;
   const { indices } = inputs;
   const { depth, onValue, offValue } = attrs;
-  const out = backend3.makeOutput([...indices.shape, depth], "int32");
-  const outId = backend3.dataIdMap.get(out.dataId).id;
-  const indicesData = backend3.dataIdMap.get(indices.dataId);
+  const out = backend2.makeOutput([...indices.shape, depth], "int32");
+  const outId = backend2.dataIdMap.get(out.dataId).id;
+  const indicesData = backend2.dataIdMap.get(indices.dataId);
   const indicesId = indicesData.id;
   wasmOneHot(indicesId, depth, onValue, offValue, outId);
   return out;
@@ -68504,25 +68504,25 @@ var oneHotConfig3 = {
   kernelName: OneHot,
   backendName: "wasm",
   setupFunc: setup29,
-  kernelFunc: oneHot5
+  kernelFunc: oneHot4
 };
-function onesLike6(args) {
-  const { inputs: { x }, backend: backend3 } = args;
-  const out = backend3.makeOutput(x.shape, x.dtype);
-  const outVals = backend3.typedArrayFromHeap(out);
+function onesLike5(args) {
+  const { inputs: { x }, backend: backend2 } = args;
+  const out = backend2.makeOutput(x.shape, x.dtype);
+  const outVals = backend2.typedArrayFromHeap(out);
   outVals.fill(1);
   return out;
 }
 var onesLikeConfig4 = {
   kernelName: OnesLike,
   backendName: "wasm",
-  kernelFunc: onesLike6
+  kernelFunc: onesLike5
 };
 function pack4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { axis } = attrs;
   if (inputs.length === 1) {
-    return expandDims6({ inputs: { input: inputs[0] }, backend: backend3, attrs: { dim: axis } });
+    return expandDims6({ inputs: { input: inputs[0] }, backend: backend2, attrs: { dim: axis } });
   }
   const shape = inputs[0].shape;
   const dtype = inputs[0].dtype;
@@ -68532,12 +68532,12 @@ function pack4(args) {
   });
   const intermediateTensorInfos = [];
   const expandedTensors = inputs.map((t) => {
-    const expandedT = expandDims6({ inputs: { input: t }, backend: backend3, attrs: { dim: axis } });
+    const expandedT = expandDims6({ inputs: { input: t }, backend: backend2, attrs: { dim: axis } });
     intermediateTensorInfos.push(expandedT);
     return expandedT;
   });
-  const result = concat5({ inputs: expandedTensors, backend: backend3, attrs: { axis } });
-  intermediateTensorInfos.forEach((t) => backend3.disposeData(t.dataId));
+  const result = concat5({ inputs: expandedTensors, backend: backend2, attrs: { axis } });
+  intermediateTensorInfos.forEach((t) => backend2.disposeData(t.dataId));
   return result;
 }
 var packConfig4 = {
@@ -68546,8 +68546,8 @@ var packConfig4 = {
   kernelFunc: pack4
 };
 var wasmPadV2;
-function setup30(backend3) {
-  wasmPadV2 = backend3.wasm.cwrap(PadV2, null, [
+function setup30(backend2) {
+  wasmPadV2 = backend2.wasm.cwrap(PadV2, null, [
     "number",
     "array",
     "number",
@@ -68559,17 +68559,17 @@ function setup30(backend3) {
   ]);
 }
 function pad2(args) {
-  const { inputs: { x }, backend: backend3, attrs: { paddings, constantValue } } = args;
+  const { inputs: { x }, backend: backend2, attrs: { paddings, constantValue } } = args;
   const outShape = paddings.map((p2, i) => p2[0] + x.shape[i] + p2[1]);
   if (util_exports.sizeFromShape(x.shape) === 0) {
     return fill5({
-      backend: backend3,
+      backend: backend2,
       attrs: { shape: outShape, value: constantValue, dtype: x.dtype }
     });
   }
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const out = backend3.makeOutput(outShape, x.dtype);
-  const outTensorData = backend3.dataIdMap.get(out.dataId);
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const out = backend2.makeOutput(outShape, x.dtype);
+  const outTensorData = backend2.dataIdMap.get(out.dataId);
   const outId = outTensorData.id;
   const xShapeBytes = new Uint8Array(new Int32Array(x.shape).buffer);
   const prePaddingsFlat = paddings.map((padTuple) => padTuple[0]);
@@ -68588,30 +68588,30 @@ var padV2Config4 = {
 var supportsFullBroadcast13 = false;
 var powConfig4 = createBinaryKernelConfig(Pow, supportsFullBroadcast13);
 var wasmPrelu;
-function setup31(backend3) {
-  wasmPrelu = backend3.wasm.cwrap(Prelu, null, [
+function setup31(backend2) {
+  wasmPrelu = backend2.wasm.cwrap(Prelu, null, [
     "number",
     "number",
     "number"
   ]);
 }
 function prelu6(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { x, alpha } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const weightsId = backend3.dataIdMap.get(alpha.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const weightsId = backend2.dataIdMap.get(alpha.dataId).id;
   let inputId = xId;
   const input2 = x;
   let castedInput = input2;
   if (input2.dtype !== "float32") {
-    castedInput = cast6({ backend: backend3, inputs: { x }, attrs: { dtype: "float32" } });
-    inputId = backend3.dataIdMap.get(castedInput.dataId).id;
+    castedInput = cast6({ backend: backend2, inputs: { x }, attrs: { dtype: "float32" } });
+    inputId = backend2.dataIdMap.get(castedInput.dataId).id;
   }
-  const out = backend3.makeOutput(x.shape, "float32");
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput(x.shape, "float32");
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmPrelu(inputId, weightsId, outId);
   if (input2.dtype !== "float32") {
-    backend3.disposeData(castedInput.dataId);
+    backend2.disposeData(castedInput.dataId);
   }
   return out;
 }
@@ -68622,8 +68622,8 @@ var preluConfig4 = {
   kernelFunc: prelu6
 };
 var wasmProd;
-function setup32(backend3) {
-  wasmProd = backend3.wasm.cwrap(Prod, null, [
+function setup32(backend2) {
+  wasmProd = backend2.wasm.cwrap(Prod, null, [
     "number",
     "number",
     "number",
@@ -68631,16 +68631,16 @@ function setup32(backend3) {
   ]);
 }
 function prod5(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { axis, keepDims } = attrs;
   const { x } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   let inputId = xId;
   let input2 = x;
-  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend3);
+  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend2);
   let reductionAxes = axes;
   if (inputWasTransposed) {
-    const transposedId = backend3.dataIdMap.get(transposed.dataId).id;
+    const transposedId = backend2.dataIdMap.get(transposed.dataId).id;
     if (transposedId !== xId) {
       input2 = transposed;
       inputId = transposedId;
@@ -68650,13 +68650,13 @@ function prod5(args) {
   backend_util_exports.assertAxesAreInnerMostDims("prod", reductionAxes, input2.shape.length);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(input2.shape, reductionAxes);
   const reduceSize = util_exports.sizeFromShape(reduceShape);
-  const out = backend3.makeOutput(outShape, input2.dtype);
+  const out = backend2.makeOutput(outShape, input2.dtype);
   if (util_exports.sizeFromShape(input2.shape) !== 0) {
-    const outId = backend3.dataIdMap.get(out.dataId).id;
+    const outId = backend2.dataIdMap.get(out.dataId).id;
     wasmProd(inputId, reduceSize, CppDType[out.dtype], outId);
   }
   if (inputWasTransposed) {
-    backend3.disposeData(transposed.dataId);
+    backend2.disposeData(transposed.dataId);
   }
   if (keepDims) {
     const newShape = backend_util_exports.expandShapeToKeepDim(out.shape, originalAxes);
@@ -68671,11 +68671,11 @@ var prodConfig4 = {
   kernelFunc: prod5
 };
 var range6 = (args) => {
-  const { backend: backend3, attrs } = args;
+  const { backend: backend2, attrs } = args;
   const { start, stop, step: step5, dtype } = attrs;
   const values = rangeImpl(start, stop, step5, dtype);
-  const out = backend3.makeOutput([values.length], dtype);
-  const outVals = backend3.typedArrayFromHeap(out);
+  const out = backend2.makeOutput([values.length], dtype);
+  const outVals = backend2.typedArrayFromHeap(out);
   outVals.set(values);
   return out;
 };
@@ -68689,8 +68689,8 @@ var realDivConfig4 = createBinaryKernelConfig(RealDiv, supportsFullBroadcast14);
 var reluConfig4 = createUnaryKernelConfig(Relu);
 var relu6Config4 = createUnaryKernelConfig(Relu6);
 var wasmResizeBilinear;
-function setup33(backend3) {
-  wasmResizeBilinear = backend3.wasm.cwrap(ResizeBilinear, null, [
+function setup33(backend2) {
+  wasmResizeBilinear = backend2.wasm.cwrap(ResizeBilinear, null, [
     "number",
     "number",
     "number",
@@ -68704,27 +68704,27 @@ function setup33(backend3) {
   ]);
 }
 function resizeBilinear5(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { images } = inputs;
   const { alignCorners, halfPixelCenters, size } = attrs;
   const [newHeight, newWidth] = size;
   const [batch, oldHeight, oldWidth, numChannels] = images.shape;
   const outShape = [batch, newHeight, newWidth, numChannels];
-  let xData = backend3.dataIdMap.get(images.dataId);
+  let xData = backend2.dataIdMap.get(images.dataId);
   let castedData;
   if (xData.dtype !== "float32") {
-    castedData = cast6({ backend: backend3, inputs: { x: images }, attrs: { dtype: "float32" } });
-    xData = backend3.dataIdMap.get(castedData.dataId);
+    castedData = cast6({ backend: backend2, inputs: { x: images }, attrs: { dtype: "float32" } });
+    xData = backend2.dataIdMap.get(castedData.dataId);
   }
   const xId = xData.id;
-  const out = backend3.makeOutput(outShape, "float32");
+  const out = backend2.makeOutput(outShape, "float32");
   if (util_exports.sizeFromShape(images.shape) === 0) {
     return out;
   }
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmResizeBilinear(xId, batch, oldHeight, oldWidth, numChannels, newHeight, newWidth, alignCorners ? 1 : 0, halfPixelCenters ? 1 : 0, outId);
   if (castedData != null) {
-    backend3.disposeData(castedData.dataId);
+    backend2.disposeData(castedData.dataId);
   }
   return out;
 }
@@ -68735,8 +68735,8 @@ var resizeBilinearConfig4 = {
   kernelFunc: resizeBilinear5
 };
 var wasmReverse;
-function setup34(backend3) {
-  wasmReverse = backend3.wasm.cwrap(Reverse, null, [
+function setup34(backend2) {
+  wasmReverse = backend2.wasm.cwrap(Reverse, null, [
     "number",
     "array",
     "number",
@@ -68746,21 +68746,21 @@ function setup34(backend3) {
   ]);
 }
 function reverse4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { dims } = attrs;
   const axes = util_exports.parseAxisParam(dims, x.shape);
   if (x.shape.length === 0) {
-    return identity5({ inputs: { x }, backend: backend3 });
+    return identity5({ inputs: { x }, backend: backend2 });
   }
-  const out = backend3.makeOutput(x.shape, x.dtype);
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput(x.shape, x.dtype);
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const axesBytes = new Uint8Array(new Int32Array(axes).buffer);
   const outShapeBytes = new Uint8Array(new Int32Array(x.shape).buffer);
   wasmReverse(xId, axesBytes, axes.length, outShapeBytes, x.shape.length, outId);
-  const reshaped = reshape6({ inputs: { x: out }, attrs: { shape: x.shape }, backend: backend3 });
-  backend3.disposeData(out.dataId);
+  const reshaped = reshape6({ inputs: { x: out }, attrs: { shape: x.shape }, backend: backend2 });
+  backend2.disposeData(out.dataId);
   return reshaped;
 }
 var reverseConfig3 = {
@@ -68770,8 +68770,8 @@ var reverseConfig3 = {
   setupFunc: setup34
 };
 var wasmRotate;
-function setup35(backend3) {
-  wasmRotate = backend3.wasm.cwrap(RotateWithOffset, null, [
+function setup35(backend2) {
+  wasmRotate = backend2.wasm.cwrap(RotateWithOffset, null, [
     "number",
     "number",
     "number",
@@ -68786,12 +68786,12 @@ function setup35(backend3) {
   ]);
 }
 function rotateWithOffset2(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { image: image3 } = inputs;
   const { radians, fillValue, center } = attrs;
-  const out = backend3.makeOutput(image3.shape, image3.dtype);
-  const imageId = backend3.dataIdMap.get(image3.dataId).id;
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput(image3.shape, image3.dtype);
+  const imageId = backend2.dataIdMap.get(image3.dataId).id;
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const [batch, imageHeight, imageWidth, numChannels] = image3.shape;
   const [centerX, centerY] = backend_util_exports.getImageCenter(center, imageHeight, imageWidth);
   const fillIsBlack = fillValue === 0;
@@ -68810,8 +68810,8 @@ var rotateWithOffsetConfig4 = {
 var roundConfig3 = createUnaryKernelConfig(Round);
 var rsqrtConfig4 = createUnaryKernelConfig(Rsqrt);
 var wasmScatterNd;
-function setup36(backend3) {
-  wasmScatterNd = backend3.wasm.cwrap(ScatterNd, null, [
+function setup36(backend2) {
+  wasmScatterNd = backend2.wasm.cwrap(ScatterNd, null, [
     "number",
     "number",
     "number",
@@ -68824,20 +68824,20 @@ function setup36(backend3) {
   ]);
 }
 function scatterNd4(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { indices, updates } = inputs;
   const { shape } = attrs;
-  const out = backend3.makeOutput(shape, updates.dtype);
+  const out = backend2.makeOutput(shape, updates.dtype);
   if (util_exports.sizeFromShape(shape) === 0) {
     return out;
   }
   const { sliceRank, numUpdates, sliceSize, strides, outputSize } = scatter_nd_util_exports.calculateShapes(updates, indices, shape);
-  const indicesData = backend3.dataIdMap.get(indices.dataId);
+  const indicesData = backend2.dataIdMap.get(indices.dataId);
   const indicesId = indicesData.id;
-  const updatesData = backend3.dataIdMap.get(updates.dataId);
+  const updatesData = backend2.dataIdMap.get(updates.dataId);
   const updatesId = updatesData.id;
   const stridesBytes = new Uint8Array(new Int32Array(strides).buffer);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmScatterNd(indicesId, updatesId, CppDType[updates.dtype], sliceRank, numUpdates, sliceSize, stridesBytes, outputSize, outId);
   return out;
 }
@@ -68848,8 +68848,8 @@ var scatterNdConfig4 = {
   kernelFunc: scatterNd4
 };
 var wasmSelect;
-function setup37(backend3) {
-  wasmSelect = backend3.wasm.cwrap("SelectV2", null, [
+function setup37(backend2) {
+  wasmSelect = backend2.wasm.cwrap("SelectV2", null, [
     "number",
     "number",
     "number",
@@ -68858,13 +68858,13 @@ function setup37(backend3) {
   ]);
 }
 function select5(args) {
-  const { inputs, backend: backend3 } = args;
+  const { inputs, backend: backend2 } = args;
   const { condition, t, e } = inputs;
-  const conditionId = backend3.dataIdMap.get(condition.dataId).id;
-  const tId = backend3.dataIdMap.get(t.dataId).id;
-  const eId = backend3.dataIdMap.get(e.dataId).id;
-  const out = backend3.makeOutput(t.shape, t.dtype);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const conditionId = backend2.dataIdMap.get(condition.dataId).id;
+  const tId = backend2.dataIdMap.get(t.dataId).id;
+  const eId = backend2.dataIdMap.get(e.dataId).id;
+  const out = backend2.makeOutput(t.shape, t.dtype);
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const cRank = condition.shape.length;
   const tRank = t.shape.length;
   const offset = cRank === 0 || cRank > 1 || tRank === 1 ? 1 : util_exports.sizeFromShape(t.shape.slice(1));
@@ -68878,14 +68878,14 @@ var selectConfig4 = {
   setupFunc: setup37
 };
 var wasmFunc7;
-function setup38(backend3) {
-  wasmFunc7 = backend3.wasm.cwrap(Sigmoid, null, ["number", "number"]);
+function setup38(backend2) {
+  wasmFunc7 = backend2.wasm.cwrap(Sigmoid, null, ["number", "number"]);
 }
 function sigmoid5(args) {
-  const { backend: backend3, inputs: { x } } = args;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const out = backend3.makeOutput(x.shape, x.dtype);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const { backend: backend2, inputs: { x } } = args;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const out = backend2.makeOutput(x.shape, x.dtype);
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   if (util_exports.sizeFromShape(out.shape) === 0) {
     return out;
   }
@@ -68900,8 +68900,8 @@ var sigmoidConfig4 = {
 };
 var sinConfig4 = createUnaryKernelConfig(Sin);
 var wasmFunc8;
-function setup39(backend3) {
-  wasmFunc8 = backend3.wasm.cwrap(Softmax, null, [
+function setup39(backend2) {
+  wasmFunc8 = backend2.wasm.cwrap(Softmax, null, [
     "number",
     "number",
     "number",
@@ -68909,10 +68909,10 @@ function setup39(backend3) {
   ]);
 }
 function softmax6(args) {
-  const { backend: backend3, inputs: { logits }, attrs: { dim } } = args;
-  const xId = backend3.dataIdMap.get(logits.dataId).id;
-  const out = backend3.makeOutput(logits.shape, logits.dtype);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const { backend: backend2, inputs: { logits }, attrs: { dim } } = args;
+  const xId = backend2.dataIdMap.get(logits.dataId).id;
+  const out = backend2.makeOutput(logits.shape, logits.dtype);
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   const channels = logits.shape[dim];
   const batch = util_exports.sizeFromShape(logits.shape) / channels;
   if (util_exports.sizeFromShape(out.shape) === 0) {
@@ -68928,7 +68928,7 @@ var softmaxConfig4 = {
   kernelFunc: softmax6
 };
 function spaceToBatchND5(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
   const { blockShape, paddings } = attrs;
   const prod6 = util_exports.sizeFromShape(blockShape);
@@ -68939,7 +68939,7 @@ function spaceToBatchND5(args) {
   }
   const paddedX = padV2Config4.kernelFunc({
     inputs: { x },
-    backend: backend3,
+    backend: backend2,
     attrs: { paddings: completePaddings, constantValue: 0 }
   });
   const reshapedPaddedShape = backend_util_exports.getReshaped(paddedX.shape, blockShape, prod6, false);
@@ -68947,16 +68947,16 @@ function spaceToBatchND5(args) {
   const flattenShape = backend_util_exports.getReshapedPermuted(paddedX.shape, blockShape, prod6, false);
   const reshapeInputs = { x: paddedX };
   const reshapeAttrs = { shape: reshapedPaddedShape };
-  const paddedXReshaped = reshape6({ inputs: reshapeInputs, backend: backend3, attrs: reshapeAttrs });
+  const paddedXReshaped = reshape6({ inputs: reshapeInputs, backend: backend2, attrs: reshapeAttrs });
   const transposeInputs = { x: paddedXReshaped };
   const transposeAttrs = { perm: permutedReshapedPaddedPermutation };
-  const paddedXT = transpose5({ inputs: transposeInputs, backend: backend3, attrs: transposeAttrs });
+  const paddedXT = transpose5({ inputs: transposeInputs, backend: backend2, attrs: transposeAttrs });
   const resultReshapeInputs = { x: paddedXT };
   const resultReshapeAttrs = { shape: flattenShape };
-  const result = reshape6({ inputs: resultReshapeInputs, backend: backend3, attrs: resultReshapeAttrs });
-  backend3.disposeData(paddedX.dataId);
-  backend3.disposeData(paddedXReshaped.dataId);
-  backend3.disposeData(paddedXT.dataId);
+  const result = reshape6({ inputs: resultReshapeInputs, backend: backend2, attrs: resultReshapeAttrs });
+  backend2.disposeData(paddedX.dataId);
+  backend2.disposeData(paddedXReshaped.dataId);
+  backend2.disposeData(paddedXT.dataId);
   return result;
 }
 var spaceToBatchNDConfig4 = {
@@ -68965,7 +68965,7 @@ var spaceToBatchNDConfig4 = {
   kernelFunc: spaceToBatchND5
 };
 function splitV4(args) {
-  const { inputs, attrs, backend: backend3 } = args;
+  const { inputs, attrs, backend: backend2 } = args;
   const { x } = inputs;
   const { numOrSizeSplits, axis } = attrs;
   const $axis = util_exports.parseAxisParam(axis, x.shape)[0];
@@ -68975,7 +68975,7 @@ function splitV4(args) {
   return splitSizes.map((s) => {
     const xSliceSize = [...size];
     xSliceSize[$axis] = s;
-    const xSlice = slice5({ inputs: { x }, attrs: { begin, size: xSliceSize }, backend: backend3 });
+    const xSlice = slice5({ inputs: { x }, attrs: { begin, size: xSliceSize }, backend: backend2 });
     begin[$axis] += s;
     return xSlice;
   });
@@ -68990,8 +68990,8 @@ var squareConfig4 = createUnaryKernelConfig(Square);
 var supportsFullBroadcast15 = true;
 var squaredDifferenceConfig4 = createBinaryKernelConfig(SquaredDifference, supportsFullBroadcast15);
 var wasmStep;
-function setup40(backend3) {
-  wasmStep = backend3.wasm.cwrap(Step, null, [
+function setup40(backend2) {
+  wasmStep = backend2.wasm.cwrap(Step, null, [
     "number",
     "number",
     "number",
@@ -68999,12 +68999,12 @@ function setup40(backend3) {
   ]);
 }
 function step4(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { alpha } = attrs;
   const { x } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
-  const out = backend3.makeOutput(x.shape, x.dtype);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
+  const out = backend2.makeOutput(x.shape, x.dtype);
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmStep(xId, alpha, CppDType[x.dtype], outId);
   return out;
 }
@@ -69015,8 +69015,8 @@ var stepConfig3 = {
   kernelFunc: step4
 };
 var wasmStridedSlice;
-function setup41(backend3) {
-  wasmStridedSlice = backend3.wasm.cwrap(StridedSlice, null, [
+function setup41(backend2) {
+  wasmStridedSlice = backend2.wasm.cwrap(StridedSlice, null, [
     "number",
     "array",
     "number",
@@ -69030,7 +69030,7 @@ function setup41(backend3) {
   ]);
 }
 function stridedSlice5(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { x } = inputs;
   const {
     begin,
@@ -69054,26 +69054,26 @@ function stridedSlice5(args) {
   } = slice_util_exports.sliceInfo(x.shape, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
   let result;
   if (isIdentity) {
-    result = reshape6({ inputs: { x }, backend: backend3, attrs: { shape: finalShape } });
+    result = reshape6({ inputs: { x }, backend: backend2, attrs: { shape: finalShape } });
   } else if (sliceDim0 || isSimpleSlice) {
     util_exports.assert(x.shape.length >= 1, () => `Input must have rank at least 1, got: ${x.shape.length}`);
     const size = slice_util_exports.computeOutShape($begin, $end, $strides);
-    const sliced = slice5({ inputs: { x }, backend: backend3, attrs: { begin: $begin, size } });
-    result = reshape6({ inputs: { x: sliced }, backend: backend3, attrs: { shape: finalShape } });
-    backend3.disposeData(sliced.dataId);
+    const sliced = slice5({ inputs: { x }, backend: backend2, attrs: { begin: $begin, size } });
+    result = reshape6({ inputs: { x: sliced }, backend: backend2, attrs: { shape: finalShape } });
+    backend2.disposeData(sliced.dataId);
   } else {
-    const out = backend3.makeOutput(finalShapeSparse, "float32");
-    const xId = backend3.dataIdMap.get(x.dataId).id;
+    const out = backend2.makeOutput(finalShapeSparse, "float32");
+    const xId = backend2.dataIdMap.get(x.dataId).id;
     const xStridesBytes = new Uint8Array(new Int32Array(util_exports.computeStrides(x.shape)).buffer);
     const beginBytes = new Uint8Array(new Int32Array($begin).buffer);
     const endBytes = new Uint8Array(new Int32Array($end).buffer);
     const stridesBytes = new Uint8Array(new Int32Array($strides).buffer);
     const outputShapeBytes = new Uint8Array(new Int32Array(finalShapeSparse).buffer);
     const outStridesBytes = new Uint8Array(new Int32Array(util_exports.computeStrides(finalShapeSparse)).buffer);
-    const outId = backend3.dataIdMap.get(out.dataId).id;
+    const outId = backend2.dataIdMap.get(out.dataId).id;
     wasmStridedSlice(xId, xStridesBytes, x.shape.length, beginBytes, endBytes, stridesBytes, outputShapeBytes, outStridesBytes, finalShapeSparse.length, outId);
-    result = reshape6({ inputs: { x: out }, backend: backend3, attrs: { shape: finalShape } });
-    backend3.disposeData(out.dataId);
+    result = reshape6({ inputs: { x: out }, backend: backend2, attrs: { shape: finalShape } });
+    backend2.disposeData(out.dataId);
   }
   return result;
 }
@@ -69086,25 +69086,25 @@ var stridedSliceConfig4 = {
 var supportsFullBroadcast16 = true;
 var subConfig4 = createBinaryKernelConfig(Sub, supportsFullBroadcast16);
 var wasmSum;
-function setup42(backend3) {
-  wasmSum = backend3.wasm.cwrap(Sum, null, [
+function setup42(backend2) {
+  wasmSum = backend2.wasm.cwrap(Sum, null, [
     "number",
     "number",
     "number",
     "number"
   ]);
 }
-function sum7(args) {
-  const { backend: backend3, inputs, attrs } = args;
+function sum6(args) {
+  const { backend: backend2, inputs, attrs } = args;
   const { axis, keepDims } = attrs;
   const { x } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   let inputId = xId;
   let input2 = x;
-  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend3);
+  const { transposed, axes, originalAxes, inputWasTransposed } = permuteAxesAndTranspose(x, axis, backend2);
   let reductionAxes = axes;
   if (inputWasTransposed) {
-    const transposedId = backend3.dataIdMap.get(transposed.dataId).id;
+    const transposedId = backend2.dataIdMap.get(transposed.dataId).id;
     if (transposedId !== xId) {
       input2 = transposed;
       inputId = transposedId;
@@ -69114,13 +69114,13 @@ function sum7(args) {
   backend_util_exports.assertAxesAreInnerMostDims("sum", reductionAxes, input2.shape.length);
   const [outShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(input2.shape, reductionAxes);
   const reduceSize = util_exports.sizeFromShape(reduceShape);
-  const out = backend3.makeOutput(outShape, input2.dtype);
+  const out = backend2.makeOutput(outShape, input2.dtype);
   if (util_exports.sizeFromShape(input2.shape) !== 0) {
-    const outId = backend3.dataIdMap.get(out.dataId).id;
+    const outId = backend2.dataIdMap.get(out.dataId).id;
     wasmSum(inputId, reduceSize, CppDType[out.dtype], outId);
   }
   if (inputWasTransposed) {
-    backend3.disposeData(transposed.dataId);
+    backend2.disposeData(transposed.dataId);
   }
   if (keepDims) {
     const newShape = backend_util_exports.expandShapeToKeepDim(out.shape, originalAxes);
@@ -69132,13 +69132,13 @@ var sumConfig4 = {
   kernelName: Sum,
   backendName: "wasm",
   setupFunc: setup42,
-  kernelFunc: sum7
+  kernelFunc: sum6
 };
 var tanConfig3 = createUnaryKernelConfig(Tan);
 var tanhConfig4 = createUnaryKernelConfig(Tanh);
 var wasmTile;
-function setup43(backend3) {
-  wasmTile = backend3.wasm.cwrap(Tile, null, [
+function setup43(backend2) {
+  wasmTile = backend2.wasm.cwrap(Tile, null, [
     "number",
     "array",
     "number",
@@ -69148,9 +69148,9 @@ function setup43(backend3) {
   ]);
 }
 function tile6(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { x } = inputs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   const { reps } = attrs;
   const newShape = new Array(x.shape.length);
   for (let i = 0; i < newShape.length; i++) {
@@ -69158,8 +69158,8 @@ function tile6(args) {
   }
   const xShapeBytes = new Uint8Array(new Int32Array(x.shape).buffer);
   const newShapeBytes = new Uint8Array(new Int32Array(newShape).buffer);
-  const out = backend3.makeOutput(newShape, x.dtype);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
+  const out = backend2.makeOutput(newShape, x.dtype);
+  const outId = backend2.dataIdMap.get(out.dataId).id;
   wasmTile(xId, xShapeBytes, x.shape.length, newShapeBytes, newShape.length, CppDType[out.dtype], outId);
   return out;
 }
@@ -69170,8 +69170,8 @@ var tileConfig4 = {
   kernelFunc: tile6
 };
 var wasmTopK;
-function setup44(backend3) {
-  wasmTopK = backend3.wasm.cwrap(TopK, null, [
+function setup44(backend2) {
+  wasmTopK = backend2.wasm.cwrap(TopK, null, [
     "number",
     "array",
     "number",
@@ -69182,17 +69182,17 @@ function setup44(backend3) {
     "number"
   ]);
 }
-var topk2 = ({ inputs, backend: backend3, attrs }) => {
+var topk2 = ({ inputs, backend: backend2, attrs }) => {
   const { x } = inputs;
   const { k, sorted } = attrs;
-  const xId = backend3.dataIdMap.get(x.dataId).id;
+  const xId = backend2.dataIdMap.get(x.dataId).id;
   const xShapeBytes = new Uint8Array(new Int32Array(x.shape).buffer);
   const outputShape = x.shape.slice();
   outputShape[outputShape.length - 1] = k;
-  const outValues = backend3.makeOutput(outputShape, x.dtype);
-  const outValuesId = backend3.dataIdMap.get(outValues.dataId).id;
-  const outIndices = backend3.makeOutput(outputShape, "int32");
-  const outIndicesId = backend3.dataIdMap.get(outIndices.dataId).id;
+  const outValues = backend2.makeOutput(outputShape, x.dtype);
+  const outValuesId = backend2.dataIdMap.get(outValues.dataId).id;
+  const outIndices = backend2.makeOutput(outputShape, "int32");
+  const outIndicesId = backend2.dataIdMap.get(outIndices.dataId).id;
   wasmTopK(xId, xShapeBytes, x.shape.length, CppDType[x.dtype], k, sorted, outValuesId, outIndicesId);
   return [outValues, outIndices];
 };
@@ -69203,8 +69203,8 @@ var topKConfig4 = {
   kernelFunc: topk2
 };
 var wasmTransform;
-function setup45(backend3) {
-  wasmTransform = backend3.wasm.cwrap(Transform, null, [
+function setup45(backend2) {
+  wasmTransform = backend2.wasm.cwrap(Transform, null, [
     "number",
     "number",
     "bool",
@@ -69223,7 +69223,7 @@ function setup45(backend3) {
   ]);
 }
 function transform5(args) {
-  const { backend: backend3, inputs, attrs } = args;
+  const { backend: backend2, inputs, attrs } = args;
   const { image: image3, transforms } = inputs;
   const { interpolation, fillMode, fillValue, outputShape } = attrs;
   const [batch, imageHeight, imageWidth, numChannels] = image3.shape;
@@ -69235,11 +69235,11 @@ function transform5(args) {
     numChannels
   ];
   const strides = new Uint8Array(new Int32Array(util_exports.computeStrides(image3.shape)).buffer);
-  const out = backend3.makeOutput(outShape, image3.dtype);
-  const outId = backend3.dataIdMap.get(out.dataId).id;
-  const imageData = backend3.dataIdMap.get(image3.dataId);
+  const out = backend2.makeOutput(outShape, image3.dtype);
+  const outId = backend2.dataIdMap.get(out.dataId).id;
+  const imageData = backend2.dataIdMap.get(image3.dataId);
   const imageId = imageData.id;
-  const transformsData = backend3.dataIdMap.get(transforms.dataId);
+  const transformsData = backend2.dataIdMap.get(transforms.dataId);
   const transformsId = transformsData.id;
   const interpolationModeId = interpolation === "nearest" ? 1 : 2;
   let fillModeId;
@@ -69270,7 +69270,7 @@ var transformConfig4 = {
   kernelFunc: transform5
 };
 function unpack4(args) {
-  const { inputs, backend: backend3, attrs } = args;
+  const { inputs, backend: backend2, attrs } = args;
   const { value } = inputs;
   let { axis } = attrs;
   if (axis < 0) {
@@ -69291,7 +69291,7 @@ function unpack4(args) {
   size[axis] = 1;
   for (let i = 0; i < outs.length; i++) {
     begin[axis] = i;
-    outs[i] = slice5({ inputs: { x: value }, attrs: { begin, size }, backend: backend3 });
+    outs[i] = slice5({ inputs: { x: value }, attrs: { begin, size }, backend: backend2 });
   }
   return outs.map(({ dataId, dtype }) => ({ dataId, dtype, shape: outShape }));
 }
@@ -69300,17 +69300,17 @@ var unpackConfig4 = {
   backendName: "wasm",
   kernelFunc: unpack4
 };
-function zerosLike6(args) {
-  const { inputs: { x }, backend: backend3 } = args;
-  const out = backend3.makeOutput(x.shape, x.dtype);
-  const outVals = backend3.typedArrayFromHeap(out);
+function zerosLike5(args) {
+  const { inputs: { x }, backend: backend2 } = args;
+  const out = backend2.makeOutput(x.shape, x.dtype);
+  const outVals = backend2.typedArrayFromHeap(out);
   outVals.fill(0);
   return out;
 }
 var zerosLikeConfig4 = {
   kernelName: ZerosLike,
   backendName: "wasm",
-  kernelFunc: zerosLike6
+  kernelFunc: zerosLike5
 };
 var kernelConfigs4 = [
   absConfig4,
@@ -69494,10 +69494,10 @@ ENV5.registerFlag("WASM_HAS_MULTITHREAD_SUPPORT", async () => {
     return false;
   }
 });
+var import_tfjs_backend_wasm_threaded_simd = __toModule(require_tfjs_backend_wasm_threaded_simd());
 var wasmWorkerContents = 'var Module={};function threadPrintErr(){var text=Array.prototype.slice.call(arguments).join(" ");console.error(text)}function threadAlert(){var text=Array.prototype.slice.call(arguments).join(" ");postMessage({cmd:"alert",text:text,threadId:Module["_pthread_self"]()})}var err=threadPrintErr;this.alert=threadAlert;Module["instantiateWasm"]=function(info,receiveInstance){var instance=new WebAssembly.Instance(Module["wasmModule"],info);Module["wasmModule"]=null;receiveInstance(instance);return instance.exports};function moduleLoaded(){}this.onmessage=function(e){try{if(e.data.cmd==="load"){Module["wasmModule"]=e.data.wasmModule;Module["wasmMemory"]=e.data.wasmMemory;Module["buffer"]=Module["wasmMemory"].buffer;Module["ENVIRONMENT_IS_PTHREAD"]=true;if(typeof e.data.urlOrBlob==="string"){importScripts(e.data.urlOrBlob)}else{var objectUrl=URL.createObjectURL(e.data.urlOrBlob);importScripts(objectUrl);URL.revokeObjectURL(objectUrl)}WasmBackendModuleThreadedSimd(Module).then(function(instance){Module=instance;moduleLoaded()})}else if(e.data.cmd==="objectTransfer"){Module["PThread"].receiveObjectTransfer(e.data)}else if(e.data.cmd==="run"){Module["__performance_now_clock_drift"]=performance.now()-e.data.time;Module["__emscripten_thread_init"](e.data.threadInfoStruct,0,0);var max=e.data.stackBase;var top=e.data.stackBase+e.data.stackSize;Module["establishStackSpace"](top,max);Module["_emscripten_tls_init"]();Module["PThread"].receiveObjectTransfer(e.data);Module["PThread"].setThreadStatus(Module["_pthread_self"](),1);try{var result=Module["invokeEntryPoint"](e.data.start_routine,e.data.arg);if(!Module["getNoExitRuntime"]())Module["PThread"].threadExit(result)}catch(ex){if(ex==="Canceled!"){Module["PThread"].threadCancel()}else if(ex!="unwind"){if(ex instanceof Module["ExitStatus"]){if(Module["getNoExitRuntime"]()){}else{Module["PThread"].threadExit(ex.status)}}else{Module["PThread"].threadExit(-2);throw ex}}}}else if(e.data.cmd==="cancel"){if(Module["_pthread_self"]()){Module["PThread"].threadCancel()}}else if(e.data.target==="setimmediate"){}else if(e.data.cmd==="processThreadQueue"){if(Module["_pthread_self"]()){Module["_emscripten_current_thread_process_queued_calls"]()}}else{err("worker.js received unknown command "+e.data.cmd);err(e.data)}}catch(ex){err("worker.js onmessage() captured an uncaught exception: "+ex);if(ex&&ex.stack)err(ex.stack);throw ex}};if(typeof process==="object"&&typeof process.versions==="object"&&typeof process.versions.node==="string"){self={location:{href:__filename}};var onmessage=this.onmessage;var nodeWorkerThreads=require("worker_threads");global.Worker=nodeWorkerThreads.Worker;var parentPort=nodeWorkerThreads.parentPort;parentPort.on("message",function(data){onmessage({data:data})});var nodeFS=require("fs");var nodeRead=function(filename){return nodeFS.readFileSync(filename,"utf8")};function globalEval(x){global.require=require;global.Module=Module;eval.call(null,x)}importScripts=function(f){globalEval(nodeRead(f))};postMessage=function(msg){parentPort.postMessage(msg)};if(typeof performance==="undefined"){performance={now:function(){return Date.now()}}}}';
-var import_tfjs_backend_wasm_threaded_simd2 = __toModule(require_tfjs_backend_wasm_threaded_simd());
-var import_tfjs_backend_wasm2 = __toModule(require_tfjs_backend_wasm());
-var BackendWasm67 = class extends KernelBackend {
+var import_tfjs_backend_wasm = __toModule(require_tfjs_backend_wasm());
+var BackendWasm = class extends KernelBackend {
   constructor(wasm) {
     super();
     this.wasm = wasm;
@@ -69685,10 +69685,10 @@ async function init() {
     };
     let wasm;
     if (threadsSupported && simdSupported && wasmPath == null) {
-      factoryConfig.mainScriptUrlOrBlob = new Blob([`var WasmBackendModuleThreadedSimd = ` + import_tfjs_backend_wasm_threaded_simd2.default.toString()], { type: "text/javascript" });
-      wasm = (0, import_tfjs_backend_wasm_threaded_simd2.default)(factoryConfig);
+      factoryConfig.mainScriptUrlOrBlob = new Blob([`var WasmBackendModuleThreadedSimd = ` + import_tfjs_backend_wasm_threaded_simd.default.toString()], { type: "text/javascript" });
+      wasm = (0, import_tfjs_backend_wasm_threaded_simd.default)(factoryConfig);
     } else {
-      wasm = (0, import_tfjs_backend_wasm2.default)(factoryConfig);
+      wasm = (0, import_tfjs_backend_wasm.default)(factoryConfig);
     }
     wasm.then((module) => {
       initialized = true;
@@ -69770,7 +69770,7 @@ var version7 = "0.0.0";
 var WASM_PRIORITY = 2;
 registerBackend("wasm", async () => {
   const { wasm } = await init();
-  return new BackendWasm67(wasm);
+  return new BackendWasm(wasm);
 }, WASM_PRIORITY);
 var externalVersion = "3.10.0-20211026";
 var version8 = {
@@ -69809,7 +69809,7 @@ export {
   AvgPool3D,
   AvgPool3DGrad,
   AvgPoolGrad,
-  BackendWasm67 as BackendWasm,
+  BackendWasm,
   BatchMatMul,
   BatchToSpaceND,
   Bincount,
@@ -69864,7 +69864,7 @@ export {
   FusedBatchNorm,
   FusedConv2D,
   FusedDepthwiseConv2D,
-  GPGPUContext2 as GPGPUContext,
+  GPGPUContext,
   GatherNd,
   GatherV2,
   GraphModel,
@@ -69881,7 +69881,7 @@ export {
   KernelBackend,
   LRN,
   LRNGrad,
-  LayerVariable2 as LayerVariable,
+  LayerVariable,
   LayersModel,
   LeakyRelu,
   Less,
@@ -69929,7 +69929,7 @@ export {
   RMSPropOptimizer,
   RNN,
   Range,
-  Rank2 as Rank,
+  Rank,
   Real,
   RealDiv,
   Reciprocal,
@@ -69977,7 +69977,7 @@ export {
   SymbolicTensor,
   Tan,
   Tanh,
-  Tensor4 as Tensor,
+  Tensor,
   TensorBuffer,
   Tile,
   TopK,

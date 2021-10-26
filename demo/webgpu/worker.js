@@ -1,8 +1,7 @@
 /// <reference lib="webworker" />
 
-// import Human from '../../dist/human.esm'; // load Human using IIFE script as Chome Mobile does not support Modules as Workers
+// load Human using IIFE script as Chome Mobile does not support Modules as Workers
 // self.importScripts('../../dist/human.js');
-
 import * as Human from '../../dist/human.custom.esm.js';
 
 let human;

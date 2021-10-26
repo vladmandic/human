@@ -4,8 +4,8 @@
  * @description Experimental Demo app for Human using WebGPU
  *
  */
-// @ts-nocheck // typescript checks disabled as this is pure javascript
 
+/** @type {Human} */
 import Human from '../../dist/human.custom.esm.js';
 import GLBench from '../helpers/gl-bench.js';
 
@@ -100,9 +100,13 @@ const busy = {
 };
 
 const workers = {
+  /** @type {Worker | null} */
   face: null,
+  /** @type {Worker | null} */
   body: null,
+  /** @type {Worker | null} */
   hand: null,
+  /** @type {Worker | null} */
   object: null,
 };
 
@@ -146,7 +150,8 @@ async function drawResults() {
   time.draw = Math.round(1 + human.now() - start.draw);
   const fps = Math.round(10 * 1000 / time.main) / 10;
   const draw = Math.round(10 * 1000 / time.draw) / 10;
-  document.getElementById('log').innerText = `Human: version ${human.version} | Performance: Main ${time.main}ms Face: ${time.face}ms Body: ${time.body}ms Hand: ${time.hand}ms Object ${time.object}ms | FPS: ${fps} / ${draw}`;
+  const div = document.getElementById('log');
+  if (div) div.innerText = `Human: version ${human.version} | Performance: Main ${time.main}ms Face: ${time.face}ms Body: ${time.body}ms Hand: ${time.hand}ms Object ${time.object}ms | FPS: ${fps} / ${draw}`;
   requestAnimationFrame(drawResults);
 }
 
@@ -160,7 +165,7 @@ async function runDetection() {
   start.main = human.now();
   if (!bench) {
     bench = new GLBench(null, { trackGPU: false, chartHz: 20, chartLen: 20 });
-    bench.begin();
+    bench.begin('human');
   }
   const ctx = canvas.getContext('2d');
   // const image = await human.image(video);
@@ -170,22 +175,22 @@ async function runDetection() {
   if (!busy.face) {
     busy.face = true;
     start.face = human.now();
-    workers.face.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.face, type: 'face' }, [imageData.data.buffer.slice(0)]);
+    if (workers.face) workers.face.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.face, type: 'face' }, [imageData.data.buffer.slice(0)]);
   }
   if (!busy.body) {
     busy.body = true;
     start.body = human.now();
-    workers.body.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.body, type: 'body' }, [imageData.data.buffer.slice(0)]);
+    if (workers.body) workers.body.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.body, type: 'body' }, [imageData.data.buffer.slice(0)]);
   }
   if (!busy.hand) {
     busy.hand = true;
     start.hand = human.now();
-    workers.hand.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.hand, type: 'hand' }, [imageData.data.buffer.slice(0)]);
+    if (workers.hand) workers.hand.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.hand, type: 'hand' }, [imageData.data.buffer.slice(0)]);
   }
   if (!busy.object) {
     busy.object = true;
     start.object = human.now();
-    workers.object.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.object, type: 'object' }, [imageData.data.buffer.slice(0)]);
+    if (workers.object) workers.object.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, config: config.object, type: 'object' }, [imageData.data.buffer.slice(0)]);
   }
 
   time.main = Math.round(human.now() - start.main);
@@ -194,8 +199,8 @@ async function runDetection() {
 }
 
 async function setupCamera() {
-  video = document.getElementById('video');
-  canvas = document.getElementById('canvas');
+  video = document.getElementById('video') || document.createElement('video');
+  canvas = document.getElementById('canvas') || document.createElement('canvas');
   const output = document.getElementById('log');
   let stream;
   const constraints = {
@@ -214,28 +219,30 @@ async function setupCamera() {
   try {
     stream = await navigator.mediaDevices.getUserMedia(constraints);
   } catch (err) {
-    output.innerText += `\n${err.name}: ${err.message}`;
-    status(err.name);
+    if (output) output.innerText += `\n${err.name}: ${err.message}`;
     log('camera error:', err);
   }
-  const tracks = stream.getVideoTracks();
-  log('enumerated viable tracks:', tracks);
-  const track = stream.getVideoTracks()[0];
-  const settings = track.getSettings();
-  log('selected video source:', track, settings);
-  const promise = !stream || new Promise((resolve) => {
-    video.onloadeddata = () => {
-      if (settings.width > settings.height) canvas.style.width = '100vw';
-      else canvas.style.height = '100vh';
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      video.play();
-      resolve();
-    };
-  });
-  // attach input to video element
-  if (stream) video.srcObject = stream;
-  return promise;
+  if (stream) {
+    const tracks = stream.getVideoTracks();
+    log('enumerated viable tracks:', tracks);
+    const track = stream.getVideoTracks()[0];
+    const settings = track.getSettings();
+    log('selected video source:', track, settings);
+    const promise = new Promise((resolve) => {
+      video.onloadeddata = () => {
+        if (settings.width && settings.height && settings.width > settings.height) canvas.style.width = '100vw';
+        else canvas.style.height = '100vh';
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        video.play();
+        resolve(true);
+      };
+    });
+    // attach input to video element
+    video['srcObject'] = stream;
+    return promise;
+  }
+  return false;
 }
 
 async function startWorkers() {
@@ -261,12 +268,12 @@ async function main() {
   */
 
   if (typeof Worker === 'undefined' || typeof OffscreenCanvas === 'undefined') {
-    status('workers are not supported');
     return;
   }
 
   human = new Human(config.main);
-  document.getElementById('log').innerText = `Human: version ${human.version}`;
+  const div = document.getElementById('log');
+  if (div) div.innerText = `Human: version ${human.version}`;
 
   await startWorkers();
   await setupCamera();

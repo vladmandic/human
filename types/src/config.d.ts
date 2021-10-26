@@ -216,7 +216,7 @@ export interface Config {
     /** {@link SegmentationConfig} */
     segmentation: Partial<SegmentationConfig>;
 }
-/** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L250) */
+/** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L252) */
 declare const config: Config;
 export { config as defaults };
 //# sourceMappingURL=config.d.ts.map

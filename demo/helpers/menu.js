@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 let instance = 0;
 let CSScreated = false;
 
@@ -86,6 +84,7 @@ class Menu {
   }
 
   createMenu(parent, title = '', position = { top: null, left: null, bottom: null, right: null }) {
+    /** @type {HTMLDivElement} */
     this.menu = document.createElement('div');
     this.menu.id = `menu-${instance}`;
     this.menu.className = 'menu';
@@ -120,6 +119,7 @@ class Menu {
 
     this.menu.appendChild(this.container);
     if (typeof parent === 'object') parent.appendChild(this.menu);
+    // @ts-ignore undefined
     else document.getElementById(parent).appendChild(this.menu);
   }
 
@@ -133,11 +133,11 @@ class Menu {
   }
 
   get width() {
-    return this.menu.offsetWidth || 0;
+    return this.menu ? this.menu.offsetWidth : 0;
   }
 
   get height() {
-    return this.menu.offsetHeight || 0;
+    return this.menu ? this.menu.offsetHeight : 0;
   }
 
   hide() {
@@ -184,6 +184,7 @@ class Menu {
       this.hidden = !this.hidden;
       const all = document.getElementsByClassName('menu');
       for (const item of all) {
+        // @ts-ignore
         item.style.display = this.hidden ? 'none' : 'block';
       }
     });
@@ -205,8 +206,10 @@ class Menu {
     el.innerHTML = `<div class="menu-checkbox"><input class="menu-checkbox" type="checkbox" id="${this.newID}" ${object[variable] ? 'checked' : ''}/><label class="menu-checkbox-label" for="${this.ID}"></label></div>${title}`;
     if (this.container) this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
-      object[variable] = evt.target.checked;
-      if (callback) callback(evt.target.checked);
+      if (evt.target) {
+        object[variable] = evt.target['checked'];
+        if (callback) callback(evt.target['checked']);
+      }
     });
     return el;
   }
@@ -225,7 +228,7 @@ class Menu {
     el.style.fontVariant = document.body.style.fontVariant;
     if (this.container) this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
-      if (callback) callback(items[evt.target.selectedIndex]);
+      if (callback && evt.target) callback(items[evt.target['selectedIndex']]);
     });
     return el;
   }
@@ -237,12 +240,13 @@ class Menu {
     if (this.container) this.container.appendChild(el);
     el.addEventListener('change', (evt) => {
       if (evt.target) {
-        object[variable] = parseInt(evt.target.value) === parseFloat(evt.target.value) ? parseInt(evt.target.value) : parseFloat(evt.target.value);
-        evt.target.setAttribute('value', evt.target.value);
-        if (callback) callback(evt.target.value);
+        object[variable] = parseInt(evt.target['value']) === parseFloat(evt.target['value']) ? parseInt(evt.target['value']) : parseFloat(evt.target['value']);
+        // @ts-ignore
+        evt.target.setAttribute('value', evt.target['value']);
+        if (callback) callback(evt.target['value']);
       }
     });
-    el.input = el.children[0];
+    el['input'] = el.children[0];
     return el;
   }
 
@@ -302,9 +306,12 @@ class Menu {
   // eslint-disable-next-line class-methods-use-this
   async updateChart(id, values) {
     if (!values || (values.length === 0)) return;
+    /** @type {HTMLCanvasElement} */ 
+    // @ts-ignore undefined
     const canvas = document.getElementById(`menu-canvas-${id}`);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     ctx.fillStyle = theme.background;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     const width = canvas.width / values.length;
@@ -318,7 +325,7 @@ class Menu {
       ctx.fillRect(i * width, 0, width - 4, canvas.height);
       ctx.fillStyle = theme.background;
       ctx.font = `${width / 1.5}px "Segoe UI"`;
-      ctx.fillText(Math.round(values[i]), i * width + 1, canvas.height - 1, width - 1);
+      ctx.fillText(Math.round(values[i]).toString(), i * width + 1, canvas.height - 1, width - 1);
     }
   }
 }

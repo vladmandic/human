@@ -9,11 +9,15 @@
   
 ## Changelog
   
+### **HEAD -> main** 2021/10/25 mandic00@live.com
+
+
+### **release: 2.4.1** 2021/10/25 mandic00@live.com
+
+
 ### **2.4.1** 2021/10/25 mandic00@live.com
 
-
-### **origin/main** 2021/10/25 mandic00@live.com
-
+- refactoring plus jsdoc comments
 - increase face similarity match resolution
 - time based caching
 - turn on minification

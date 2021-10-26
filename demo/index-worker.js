@@ -1,12 +1,17 @@
-/// <reference lib="webworker" />
+/**
+ * Web worker used by main demo app
+ * Loaded from index.js
+ */
+
+/// <reference lib="webworker"/>
 
 // load Human using IIFE script as Chome Mobile does not support Modules as Workers
-// import Human from '../dist/human.esm.js';
+/** @type {Human} */
+const Human = {};
 self.importScripts('../dist/human.js');
 
 let busy = false;
-// @ts-ignore // Human is registered as global namespace using IIFE script
-// eslint-disable-next-line no-undef, new-cap
+// eslint-disable-next-line new-cap
 const human = new Human.default();
 
 onmessage = async (msg) => { // receive message from main thread

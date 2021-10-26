@@ -143,6 +143,7 @@ function mergeDeep(...objects) {
 }
 
 // src/config.ts
+var timeFact = 1e3;
 var config = {
   backend: "",
   modelBasePath: "",
@@ -182,7 +183,7 @@ var config = {
       rotation: true,
       maxDetected: 1,
       skipFrames: 99,
-      skipTime: 2500,
+      skipTime: 2.5 * timeFact,
       minConfidence: 0.2,
       iouThreshold: 0.1,
       return: false
@@ -199,20 +200,20 @@ var config = {
       enabled: true,
       minConfidence: 0.1,
       skipFrames: 99,
-      skipTime: 1500,
+      skipTime: 1.5 * timeFact,
       modelPath: "emotion.json"
     },
     description: {
       enabled: true,
       modelPath: "faceres.json",
       skipFrames: 99,
-      skipTime: 3e3,
+      skipTime: 3 * timeFact,
       minConfidence: 0.1
     },
     antispoof: {
       enabled: false,
       skipFrames: 99,
-      skipTime: 4e3,
+      skipTime: 4 * timeFact,
       modelPath: "antispoof.json"
     }
   },
@@ -225,13 +226,13 @@ var config = {
     maxDetected: -1,
     minConfidence: 0.3,
     skipFrames: 1,
-    skipTime: 200
+    skipTime: 0.2 * timeFact
   },
   hand: {
     enabled: true,
     rotation: true,
     skipFrames: 99,
-    skipTime: 2e3,
+    skipTime: 2 * timeFact,
     minConfidence: 0.5,
     iouThreshold: 0.2,
     maxDetected: -1,
@@ -250,7 +251,7 @@ var config = {
     iouThreshold: 0.4,
     maxDetected: 10,
     skipFrames: 99,
-    skipTime: 1e3
+    skipTime: 1 * timeFact
   },
   segmentation: {
     enabled: false,
@@ -11872,18 +11873,18 @@ function calc2(newResult, config3) {
 function distance(descriptor1, descriptor2, options3 = { order: 2, multiplier: 20 }) {
   let sum2 = 0;
   for (let i = 0; i < descriptor1.length; i++) {
-    const diff = options3.order === 2 ? descriptor1[i] - descriptor2[i] : Math.abs(descriptor1[i] - descriptor2[i]);
-    sum2 += options3.order === 2 ? diff * diff : diff ** options3.order;
+    const diff = !options3.order || options3.order === 2 ? descriptor1[i] - descriptor2[i] : Math.abs(descriptor1[i] - descriptor2[i]);
+    sum2 += !options3.order || options3.order === 2 ? diff * diff : diff ** options3.order;
   }
   return (options3.multiplier || 20) * sum2;
 }
 function similarity(descriptor1, descriptor2, options3 = { order: 2, multiplier: 20 }) {
   const dist = distance(descriptor1, descriptor2, options3);
-  const root = options3.order === 2 ? Math.sqrt(dist) : dist ** (1 / options3.order);
+  const root = !options3.order || options3.order === 2 ? Math.sqrt(dist) : dist ** (1 / options3.order);
   const invert = Math.max(0, 100 - root) / 100;
   return invert;
 }
-function match2(descriptor, descriptors, options3 = { order: 2, threshold: 0, multiplier: 20 }) {
+function match2(descriptor, descriptors, options3 = { order: 2, multiplier: 20, threshold: 0 }) {
   if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0 || descriptor.length !== descriptors[0].length) {
     return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
   }
@@ -11895,10 +11896,10 @@ function match2(descriptor, descriptors, options3 = { order: 2, threshold: 0, mu
       best = res;
       index = i;
     }
-    if (best < options3.threshold)
+    if (best < (options3.threshold || 0))
       break;
   }
-  best = options3.order === 2 ? Math.sqrt(best) : best ** (1 / options3.order);
+  best = !options3.order || options3.order === 2 ? Math.sqrt(best) : best ** (1 / options3.order);
   return { index, distance: best, similarity: Math.max(0, 100 - best) / 100 };
 }
 
@@ -12922,7 +12923,7 @@ var Human = class {
         if (this.config.debug)
           log("configuration:", this.config);
         if (this.config.debug)
-          log("tf flags:", this.tf.ENV.flags);
+          log("tf flags:", this.tf.ENV["flags"]);
       }
     }
     await load15(this);

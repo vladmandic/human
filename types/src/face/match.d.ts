@@ -1,5 +1,10 @@
 /** Face descriptor type as number array */
 export declare type Descriptor = Array<number>;
+export declare type Options = {
+    order?: number;
+    threshold?: number;
+    multiplier?: number;
+} | undefined;
 /** Calculates distance between two descriptors
  * @param {object} options
  * @param {number} options.order algorithm to use
@@ -8,10 +13,7 @@ export declare type Descriptor = Array<number>;
  * - default is 20 which normalizes results to similarity above 0.5 can be considered a match
  * @returns {number}
  */
-export declare function distance(descriptor1: Descriptor, descriptor2: Descriptor, options?: {
-    order: number;
-    multiplier: number;
-}): number;
+export declare function distance(descriptor1: Descriptor, descriptor2: Descriptor, options?: Options): number;
 /** Calculates normalized similarity between two face descriptors based on their `distance`
  * @param {object} options
  * @param {number} options.order algorithm to use
@@ -20,10 +22,7 @@ export declare function distance(descriptor1: Descriptor, descriptor2: Descripto
  * - default is 20 which normalizes results to similarity above 0.5 can be considered a match
  * @returns {number} similarity between two face descriptors normalized to 0..1 range where 0 is no similarity and 1 is perfect similarity
  */
-export declare function similarity(descriptor1: Descriptor, descriptor2: Descriptor, options?: {
-    order: number;
-    multiplier: number;
-}): number;
+export declare function similarity(descriptor1: Descriptor, descriptor2: Descriptor, options?: Options): number;
 /** Matches given descriptor to a closest entry in array of descriptors
  * @param descriptor face descriptor
  * @param descriptors array of face descriptors to commpare given descriptor to
@@ -35,11 +34,7 @@ export declare function similarity(descriptor1: Descriptor, descriptor2: Descrip
  * - {@link distance} calculated `distance` of given descriptor to the best match
  * - {@link similarity} calculated normalized `similarity` of given descriptor to the best match
 */
-export declare function match(descriptor: Descriptor, descriptors: Array<Descriptor>, options?: {
-    order: number;
-    threshold: number;
-    multiplier: number;
-}): {
+export declare function match(descriptor: Descriptor, descriptors: Array<Descriptor>, options?: Options): {
     index: number;
     distance: number;
     similarity: number;

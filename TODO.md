@@ -2,11 +2,12 @@
 
 ## Work in Progress
 
+- Switch to custom `tfjs` for main `human` ESM bundle
+
 <br>
 
 ### Exploring
 
-- Switch to custom `tfjs` for main `human` ESM bundle
 - Optical Flow: <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
 - Histogram Equalization: Regular, Adaptive, Contrast Limited
 - TFLite Models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
@@ -21,6 +22,9 @@ Experimental support only until support is officially added in Chromium
 <br><hr><br>
 
 ## Known Issues
+
+- `tfjs.esm.d.ts` missing namespace `OptimizerConstructors`
+- exports from `match` are marked as private
 
 <br>
 

@@ -37,7 +37,7 @@ const UISVG = `
 
 class GLBench {
   /** GLBench constructor
-   * @param { WebGLRenderingContext | WebGL2RenderingContext } gl context
+   * @param { WebGLRenderingContext | WebGL2RenderingContext | null } gl context
    * @param { Object | undefined } settings additional settings
    */
   constructor(gl, settings = {}) {

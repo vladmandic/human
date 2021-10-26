@@ -1,5 +1,6 @@
 /** Face descriptor type as number array */
 export type Descriptor = Array<number>
+export type Options = { order?: number, threshold?: number, multiplier?: number } | undefined;
 
 /** Calculates distance between two descriptors
  * @param {object} options
@@ -9,12 +10,12 @@ export type Descriptor = Array<number>
  * - default is 20 which normalizes results to similarity above 0.5 can be considered a match
  * @returns {number}
  */
-export function distance(descriptor1: Descriptor, descriptor2: Descriptor, options = { order: 2, multiplier: 20 }) {
+export function distance(descriptor1: Descriptor, descriptor2: Descriptor, options: Options = { order: 2, multiplier: 20 }) {
   // general minkowski distance, euclidean distance is limited case where order is 2
   let sum = 0;
   for (let i = 0; i < descriptor1.length; i++) {
-    const diff = (options.order === 2) ? (descriptor1[i] - descriptor2[i]) : (Math.abs(descriptor1[i] - descriptor2[i]));
-    sum += (options.order === 2) ? (diff * diff) : (diff ** options.order);
+    const diff = (!options.order || options.order === 2) ? (descriptor1[i] - descriptor2[i]) : (Math.abs(descriptor1[i] - descriptor2[i]));
+    sum += (!options.order || options.order === 2) ? (diff * diff) : (diff ** options.order);
   }
   return (options.multiplier || 20) * sum;
 }
@@ -27,9 +28,9 @@ export function distance(descriptor1: Descriptor, descriptor2: Descriptor, optio
  * - default is 20 which normalizes results to similarity above 0.5 can be considered a match
  * @returns {number} similarity between two face descriptors normalized to 0..1 range where 0 is no similarity and 1 is perfect similarity
  */
-export function similarity(descriptor1: Descriptor, descriptor2: Descriptor, options = { order: 2, multiplier: 20 }) {
+export function similarity(descriptor1: Descriptor, descriptor2: Descriptor, options: Options = { order: 2, multiplier: 20 }) {
   const dist = distance(descriptor1, descriptor2, options);
-  const root = (options.order === 2) ? Math.sqrt(dist) : dist ** (1 / options.order);
+  const root = (!options.order || options.order === 2) ? Math.sqrt(dist) : dist ** (1 / options.order);
   const invert = Math.max(0, 100 - root) / 100.0;
   return invert;
 }
@@ -45,7 +46,7 @@ export function similarity(descriptor1: Descriptor, descriptor2: Descriptor, opt
  * - {@link distance} calculated `distance` of given descriptor to the best match
  * - {@link similarity} calculated normalized `similarity` of given descriptor to the best match
 */
-export function match(descriptor: Descriptor, descriptors: Array<Descriptor>, options = { order: 2, threshold: 0, multiplier: 20 }) {
+export function match(descriptor: Descriptor, descriptors: Array<Descriptor>, options: Options = { order: 2, multiplier: 20, threshold: 0 }) {
   if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0 || descriptor.length !== descriptors[0].length) { // validate input
     return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
   }
@@ -57,8 +58,8 @@ export function match(descriptor: Descriptor, descriptors: Array<Descriptor>, op
       best = res;
       index = i;
     }
-    if (best < options.threshold) break;
+    if (best < (options.threshold || 0)) break;
   }
-  best = (options.order === 2) ? Math.sqrt(best) : best ** (1 / options.order);
+  best = (!options.order || options.order === 2) ? Math.sqrt(best) : best ** (1 / options.order);
   return { index, distance: best, similarity: Math.max(0, 100 - best) / 100.0 };
 }

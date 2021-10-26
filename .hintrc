@@ -5,7 +5,7 @@
   "browserslist": [
     "chrome >= 90",
     "edge >= 90",
-    "firefox >= 90",
+    "firefox >= 100",
     "android >= 90",
     "safari >= 15"
   ],

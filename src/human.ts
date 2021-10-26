@@ -212,7 +212,7 @@ export class Human {
   }
 
   /** Validate current configuration schema */
-  public validate(userConfig?: Partial<Config>) {
+  validate(userConfig?: Partial<Config>) {
     return validate(defaults, userConfig || this.config);
   }
 
@@ -294,7 +294,7 @@ export class Human {
       await tf.ready();
       if (this.env.browser) {
         if (this.config.debug) log('configuration:', this.config);
-        if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
+        if (this.config.debug) log('tf flags:', this.tf.ENV['flags']);
       }
     }
 

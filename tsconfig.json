@@ -6,6 +6,7 @@
     "outDir": "types",
     "baseUrl": "./",
     "paths": { "tslib": ["./node_modules/tslib/tslib.d.ts"] },
+    "lib": ["es2020", "dom", "webworker"],
     "allowJs": true,
     "allowSyntheticDefaultImports": false,
     "allowUnreachableCode": false,
@@ -50,7 +51,7 @@
     "tabSize": 2
   },
   "exclude": ["node_modules/", "types/", "tfjs/", "dist/"],
-  "include": ["src"],
+  "include": ["src", "types/human.d.ts"],
   "typedocOptions": {
     "externalPattern": ["node_modules/", "tfjs/"]
   }

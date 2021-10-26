@@ -11,7 +11,8 @@
     "ecmaVersion": 2021
   },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "html"
   ],
   "extends": [
     "airbnb-base",

@@ -1,12 +1,12 @@
-// @ts-nocheck // typescript checks disabled as this is pure javascript
-
+// @ts-nocheck
 /**
  * Human demo for browsers
  *
  * Demo for face descriptor analysis and face simmilarity analysis
  */
 
-import Human from '../../dist/human.esm.js';
+/** @type {Human} */
+import Human from '../../dist/human.custom.esm.js';
 
 const userConfig = {
   backend: 'wasm',
@@ -15,7 +15,6 @@ const userConfig = {
   cacheSensitivity: 0,
   debug: true,
   modelBasePath: '../../models/',
-  // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
   face: {
     enabled: true,
     detector: { rotation: true, return: true, maxDetected: 50 },
@@ -165,6 +164,7 @@ async function AddFaceCanvas(index, res, fileName) {
       await human.tf.browser.toPixels(res.face[i].tensor, canvas);
       document.getElementById('faces').appendChild(canvas);
       const ctx = canvas.getContext('2d');
+      if (!ctx) return false;
       ctx.font = 'small-caps 0.8rem "Lato"';
       ctx.fillStyle = 'rgba(255, 255, 255, 1)';
       ctx.fillText(`${res.face[i].age}y ${(100 * (res.face[i].genderScore || 0)).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
@@ -258,6 +258,8 @@ async function main() {
 
   title('');
   log('Ready');
+  human.validate(userConfig);
+  human.similarity([], []);
 }
 
 window.onload = main;

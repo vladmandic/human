@@ -34,7 +34,7 @@
         debug: true,
         cacheSensitivity: 0,
         object: { enabled: true },
-      }
+      };
 
       const backends = ['wasm', 'webgl', 'humangl', 'webgpu'];
 
@@ -55,7 +55,8 @@
         const dt = new Date();
         const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
         const elap = (dt - last).toString().padStart(5, '0');
-        document.getElementById('log').innerHTML += ts + ' +' + elap + 'ms' + '&nbsp' + str(...msgs);
+        document.getElementById('log').innerHTML += ts + ' +' + elap + 'ms &nbsp' + str(...msgs);
+        // eslint-disable-next-line no-console
         console.log(ts, elap, ...msgs);
         last = dt;
       }
@@ -63,7 +64,7 @@
       async function image(url) {
         const el = document.createElement('img');
         el.id = 'image';
-        const loaded = new Promise((resolve) => { el.onload = () => resolve(true) });
+        const loaded = new Promise((resolve) => { el.onload = () => resolve(true); });
         el.src = url;
         await loaded;
         return el;
@@ -88,7 +89,7 @@
       async function main() {
         log('human tests');
         let res;
-        let human = new Human(config);
+        const human = new Human(config);
         await human.init();
         human.events.addEventListener('warmup', () => events('warmup'));
         human.events.addEventListener('image', () => events('image'));
@@ -110,7 +111,7 @@
           log({ memory: human.tf.memory() });
           res = await human.validate();
           log({ validate: res });
-          res = await human.warmup({ warmup: 'face'});
+          res = await human.warmup({ warmup: 'face' });
           draw(res.canvas);
           log({ warmup: 'face' });
           let img = await image('../../samples/in/ai-body.jpg');
@@ -119,11 +120,11 @@
           draw(res.canvas);
           res = await human.detect(input.tensor);
           log({ detect: true });
-          const interpolated = human.next();
+          human.next();
           log({ interpolated: true });
           const persons = res.persons;
           log({ persons: true });
-          log({ summary: { persons: persons.length, face: res.face.length, body: res.body.length, hand: res.hand.length, object: res.object.length, gesture: res.gesture.length }});
+          log({ summary: { persons: persons.length, face: res.face.length, body: res.body.length, hand: res.hand.length, object: res.object.length, gesture: res.gesture.length } });
           log({ performance: human.performance });
           human.tf.dispose(input.tensor);
           draw();

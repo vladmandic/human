@@ -6,12 +6,11 @@
 /// <reference lib="webworker"/>
 
 // load Human using IIFE script as Chome Mobile does not support Modules as Workers
-/** @type {Human} */
-const Human = {};
 self.importScripts('../dist/human.js');
 
 let busy = false;
-// eslint-disable-next-line new-cap
+// @ts-ignore
+// eslint-disable-next-line new-cap, no-undef
 const human = new Human.default();
 
 onmessage = async (msg) => { // receive message from main thread

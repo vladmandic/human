@@ -5,7 +5,6 @@
 */
 
 var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
@@ -18,28 +17,6 @@ var __export = (target, all6) => {
   __markAsModule(target);
   for (var name in all6)
     __defProp(target, name, { get: all6[name], enumerable: true });
-};
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-var __accessCheck = (obj, member, msg) => {
-  if (!member.has(obj))
-    throw TypeError("Cannot " + msg);
-};
-var __privateGet = (obj, member, getter) => {
-  __accessCheck(obj, member, "read from private field");
-  return getter ? getter.call(obj) : member.get(obj);
-};
-var __privateAdd = (obj, member, value) => {
-  if (member.has(obj))
-    throw TypeError("Cannot add the same private member more than once");
-  member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
-};
-var __privateSet = (obj, member, value, setter) => {
-  __accessCheck(obj, member, "write to private field");
-  setter ? setter.call(obj, value) : member.set(obj, value);
-  return value;
 };
 
 // src/util/util.ts
@@ -70597,19 +70574,11 @@ var collect = (source, prefix, collection) => {
   });
 };
 var GLProgram = class {
+  uniform = {};
+  attribute = {};
+  gl;
+  id;
   constructor(gl, vertexSource, fragmentSource) {
-    __publicField(this, "uniform", {});
-    __publicField(this, "attribute", {});
-    __publicField(this, "gl");
-    __publicField(this, "id");
-    __publicField(this, "compile", (source, type) => {
-      const shader = this.gl.createShader(type);
-      this.gl.shaderSource(shader, source);
-      this.gl.compileShader(shader);
-      if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS))
-        throw new Error(`filter: gl compile failed: ${this.gl.getShaderInfoLog(shader)}`);
-      return shader;
-    });
     this.gl = gl;
     const vertexShader = this.compile(vertexSource, this.gl.VERTEX_SHADER);
     const fragmentShader = this.compile(fragmentSource, this.gl.FRAGMENT_SHADER);
@@ -70628,6 +70597,14 @@ var GLProgram = class {
     for (const u in this.uniform)
       this.uniform[u] = this.gl.getUniformLocation(this.id, u);
   }
+  compile = (source, type) => {
+    const shader = this.gl.createShader(type);
+    this.gl.shaderSource(shader, source);
+    this.gl.compileShader(shader);
+    if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS))
+      throw new Error(`filter: gl compile failed: ${this.gl.getShaderInfoLog(shader)}`);
+    return shader;
+  };
 };
 function GLImageFilter() {
   let drawCount = 0;
@@ -71399,43 +71376,43 @@ async function skip(config3, input2) {
 
 // src/util/env.ts
 var Env = class {
+  browser;
+  node;
+  worker;
+  platform = "";
+  agent = "";
+  backends = [];
+  initial;
+  filter;
+  tfjs;
+  offscreen;
+  perfadd = false;
+  wasm = {
+    supported: void 0,
+    backend: void 0,
+    simd: void 0,
+    multithread: void 0
+  };
+  webgl = {
+    supported: void 0,
+    backend: void 0,
+    version: void 0,
+    renderer: void 0
+  };
+  webgpu = {
+    supported: void 0,
+    backend: void 0,
+    adapter: void 0
+  };
+  cpu = {
+    model: void 0,
+    flags: []
+  };
+  kernels = [];
+  Canvas;
+  Image;
+  ImageData;
   constructor() {
-    __publicField(this, "browser");
-    __publicField(this, "node");
-    __publicField(this, "worker");
-    __publicField(this, "platform", "");
-    __publicField(this, "agent", "");
-    __publicField(this, "backends", []);
-    __publicField(this, "initial");
-    __publicField(this, "filter");
-    __publicField(this, "tfjs");
-    __publicField(this, "offscreen");
-    __publicField(this, "perfadd", false);
-    __publicField(this, "wasm", {
-      supported: void 0,
-      backend: void 0,
-      simd: void 0,
-      multithread: void 0
-    });
-    __publicField(this, "webgl", {
-      supported: void 0,
-      backend: void 0,
-      version: void 0,
-      renderer: void 0
-    });
-    __publicField(this, "webgpu", {
-      supported: void 0,
-      backend: void 0,
-      adapter: void 0
-    });
-    __publicField(this, "cpu", {
-      model: void 0,
-      flags: []
-    });
-    __publicField(this, "kernels", []);
-    __publicField(this, "Canvas");
-    __publicField(this, "Image");
-    __publicField(this, "ImageData");
     this.browser = typeof navigator !== "undefined";
     this.node = typeof process !== "undefined";
     this.tfjs = { version: version_core };
@@ -79049,13 +79026,13 @@ var anchors2 = [
 
 // src/hand/handposedetector.ts
 var HandDetector = class {
+  model;
+  anchors;
+  anchorsTensor;
+  inputSize;
+  inputSizeTensor;
+  doubleInputSizeTensor;
   constructor(model15) {
-    __publicField(this, "model");
-    __publicField(this, "anchors");
-    __publicField(this, "anchorsTensor");
-    __publicField(this, "inputSize");
-    __publicField(this, "inputSizeTensor");
-    __publicField(this, "doubleInputSizeTensor");
     this.model = model15;
     this.anchors = anchors2.map((anchor) => [anchor.x, anchor.y]);
     this.anchorsTensor = tensor2d(this.anchors);
@@ -79130,13 +79107,13 @@ var palmLandmarksPalmBase = 0;
 var palmLandmarksMiddleFingerBase = 2;
 var lastTime8 = 0;
 var HandPipeline = class {
+  handDetector;
+  handPoseModel;
+  inputSize;
+  storedBoxes;
+  skipped;
+  detectedHands;
   constructor(handDetector, handPoseModel2) {
-    __publicField(this, "handDetector");
-    __publicField(this, "handPoseModel");
-    __publicField(this, "inputSize");
-    __publicField(this, "storedBoxes");
-    __publicField(this, "skipped");
-    __publicField(this, "detectedHands");
     this.handDetector = handDetector;
     this.handPoseModel = handPoseModel2;
     this.inputSize = this.handPoseModel && this.handPoseModel.inputs[0].shape ? this.handPoseModel.inputs[0].shape[2] : 0;
@@ -79307,12 +79284,12 @@ var FingerDirection = {
   getName: (value) => FingerDirection.nameMapping[value]
 };
 var FingerGesture = class {
+  name;
+  curls;
+  directions;
+  weights;
+  weightsRelative;
   constructor(name) {
-    __publicField(this, "name");
-    __publicField(this, "curls");
-    __publicField(this, "directions");
-    __publicField(this, "weights");
-    __publicField(this, "weightsRelative");
     this.name = name;
     this.curls = {};
     this.directions = {};
@@ -80463,10 +80440,10 @@ function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolut
   return scaledPoses;
 }
 var MaxHeap = class {
+  priorityQueue;
+  numberOfElements;
+  getElementValue;
   constructor(maxSize2, getElementValue) {
-    __publicField(this, "priorityQueue");
-    __publicField(this, "numberOfElements");
-    __publicField(this, "getElementValue");
     this.priorityQueue = new Array(maxSize2);
     this.numberOfElements = -1;
     this.getElementValue = getElementValue;
@@ -80795,29 +80772,27 @@ async function process5(input2, background, config3) {
 
 // src/models.ts
 var Models = class {
-  constructor() {
-    __publicField(this, "age", null);
-    __publicField(this, "agegenderrace", null);
-    __publicField(this, "blazeposedetect", null);
-    __publicField(this, "blazepose", null);
-    __publicField(this, "centernet", null);
-    __publicField(this, "efficientpose", null);
-    __publicField(this, "embedding", null);
-    __publicField(this, "emotion", null);
-    __publicField(this, "facedetect", null);
-    __publicField(this, "faceiris", null);
-    __publicField(this, "facemesh", null);
-    __publicField(this, "faceres", null);
-    __publicField(this, "gender", null);
-    __publicField(this, "handpose", null);
-    __publicField(this, "handskeleton", null);
-    __publicField(this, "handtrack", null);
-    __publicField(this, "movenet", null);
-    __publicField(this, "nanodet", null);
-    __publicField(this, "posenet", null);
-    __publicField(this, "segmentation", null);
-    __publicField(this, "antispoof", null);
-  }
+  age = null;
+  agegenderrace = null;
+  blazeposedetect = null;
+  blazepose = null;
+  centernet = null;
+  efficientpose = null;
+  embedding = null;
+  emotion = null;
+  facedetect = null;
+  faceiris = null;
+  facemesh = null;
+  faceres = null;
+  gender = null;
+  handpose = null;
+  handskeleton = null;
+  handtrack = null;
+  movenet = null;
+  nanodet = null;
+  posenet = null;
+  segmentation = null;
+  antispoof = null;
 };
 function reset(instance) {
   for (const model15 of Object.keys(instance.models))
@@ -82926,57 +82901,25 @@ async function warmup(instance, userConfig) {
 }
 
 // src/human.ts
-var _numTensors, _analyzeMemoryLeaks, _checkSanity, _sanity;
 var Human = class {
+  version;
+  config;
+  result;
+  state;
+  process;
+  tf;
+  env;
+  draw;
+  models;
+  events;
+  faceTriangulation;
+  faceUVMap;
+  performance;
+  #numTensors;
+  #analyzeMemoryLeaks;
+  #checkSanity;
+  gl;
   constructor(userConfig) {
-    __publicField(this, "version");
-    __publicField(this, "config");
-    __publicField(this, "result");
-    __publicField(this, "state");
-    __publicField(this, "process");
-    __publicField(this, "tf");
-    __publicField(this, "env");
-    __publicField(this, "draw");
-    __publicField(this, "models");
-    __publicField(this, "events");
-    __publicField(this, "faceTriangulation");
-    __publicField(this, "faceUVMap");
-    __publicField(this, "performance");
-    __privateAdd(this, _numTensors, void 0);
-    __privateAdd(this, _analyzeMemoryLeaks, void 0);
-    __privateAdd(this, _checkSanity, void 0);
-    __publicField(this, "gl");
-    __publicField(this, "analyze", (...msg) => {
-      if (!__privateGet(this, _analyzeMemoryLeaks))
-        return;
-      const currentTensors = this.tf.engine().state.numTensors;
-      const previousTensors = __privateGet(this, _numTensors);
-      __privateSet(this, _numTensors, currentTensors);
-      const leaked = currentTensors - previousTensors;
-      if (leaked !== 0)
-        log(...msg, leaked);
-    });
-    __privateAdd(this, _sanity, (input2) => {
-      if (!__privateGet(this, _checkSanity))
-        return null;
-      if (!input2)
-        return "input is not defined";
-      if (this.env.node && !(input2 instanceof Tensor))
-        return "input must be a tensor";
-      try {
-        this.tf.getBackend();
-      } catch {
-        return "backend not loaded";
-      }
-      return null;
-    });
-    __publicField(this, "similarity", similarity);
-    __publicField(this, "distance", distance);
-    __publicField(this, "match", match2);
-    __publicField(this, "emit", (event) => {
-      if (this.events && this.events.dispatchEvent)
-        this.events?.dispatchEvent(new Event(event));
-    });
     this.env = env2;
     config.wasmPath = version_core.includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${version_core}/dist/`;
     config.modelBasePath = env2.browser ? "../models/" : "file://models/";
@@ -82989,9 +82932,9 @@ var Human = class {
       this.config = mergeDeep(this.config, userConfig);
     this.tf = tfjs_esm_exports;
     this.state = "idle";
-    __privateSet(this, _numTensors, 0);
-    __privateSet(this, _analyzeMemoryLeaks, false);
-    __privateSet(this, _checkSanity, false);
+    this.#numTensors = 0;
+    this.#analyzeMemoryLeaks = false;
+    this.#checkSanity = false;
     this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
     this.events = typeof EventTarget !== "undefined" ? new EventTarget() : void 0;
     this.models = new Models();
@@ -83013,6 +82956,30 @@ var Human = class {
     this.gl = config2;
     this.emit("create");
   }
+  analyze = (...msg) => {
+    if (!this.#analyzeMemoryLeaks)
+      return;
+    const currentTensors = this.tf.engine().state.numTensors;
+    const previousTensors = this.#numTensors;
+    this.#numTensors = currentTensors;
+    const leaked = currentTensors - previousTensors;
+    if (leaked !== 0)
+      log(...msg, leaked);
+  };
+  #sanity = (input2) => {
+    if (!this.#checkSanity)
+      return null;
+    if (!input2)
+      return "input is not defined";
+    if (this.env.node && !(input2 instanceof Tensor))
+      return "input must be a tensor";
+    try {
+      this.tf.getBackend();
+    } catch {
+      return "backend not loaded";
+    }
+    return null;
+  };
   reset() {
     const currentBackend = this.config.backend;
     this.config = JSON.parse(JSON.stringify(config));
@@ -83021,6 +82988,9 @@ var Human = class {
   validate(userConfig) {
     return validate(config, userConfig || this.config);
   }
+  similarity = similarity;
+  distance = distance;
+  match = match2;
   now() {
     return now();
   }
@@ -83055,6 +83025,8 @@ var Human = class {
         if (this.config.debug)
           log("configuration:", this.config);
         if (this.config.debug)
+          log("environment:", this.env);
+        if (this.config.debug)
           log("tf flags:", this.tf.ENV["flags"]);
       }
     }
@@ -83071,6 +83043,10 @@ var Human = class {
     if (current > (this.performance.load || 0))
       this.performance.load = this.env.perfadd ? (this.performance.load || 0) + current : current;
   }
+  emit = (event) => {
+    if (this.events && this.events.dispatchEvent)
+      this.events?.dispatchEvent(new Event(event));
+  };
   next(result = this.result) {
     return calc2(result, this.config);
   }
@@ -83084,7 +83060,7 @@ var Human = class {
       let timeStamp;
       this.config = mergeDeep(this.config, userConfig);
       this.state = "check";
-      const error = __privateGet(this, _sanity).call(this, input2);
+      const error = this.#sanity(input2);
       if (error) {
         log(error, input2);
         resolve({ error });
@@ -83231,10 +83207,6 @@ var Human = class {
     });
   }
 };
-_numTensors = new WeakMap();
-_analyzeMemoryLeaks = new WeakMap();
-_checkSanity = new WeakMap();
-_sanity = new WeakMap();
 export {
   Human,
   Human as default,

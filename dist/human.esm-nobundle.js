@@ -12825,6 +12825,8 @@ var Human = class {
         if (this.config.debug)
           log("configuration:", this.config);
         if (this.config.debug)
+          log("environment:", this.env);
+        if (this.config.debug)
           log("tf flags:", this.tf.ENV["flags"]);
       }
     }

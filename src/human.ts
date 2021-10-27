@@ -294,6 +294,7 @@ export class Human {
       await tf.ready();
       if (this.env.browser) {
         if (this.config.debug) log('configuration:', this.config);
+        if (this.config.debug) log('environment:', this.env);
         if (this.config.debug) log('tf flags:', this.tf.ENV['flags']);
       }
     }

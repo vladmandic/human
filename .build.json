@@ -145,6 +145,7 @@
       {
         "name": "tfjs/browser/esm/custom",
         "platform": "browser",
+        "target": "esnext",
         "format": "esm",
         "input": "tfjs/tf-custom.ts",
         "output": "dist/tfjs.esm.js",
@@ -154,6 +155,7 @@
       {
         "name": "human/browser/esm/custom",
         "platform": "browser",
+        "target": "esnext",
         "format": "esm",
         "input": "src/human.ts",
         "output": "dist/human.custom.esm.js",
@@ -162,11 +164,22 @@
         "external": ["fs", "os", "buffer", "util"],
         "typings": "types",
         "typedoc": "typedoc"
+      },
+      {
+        "name": "demo/browser",
+        "platform": "browser",
+        "target": "esnext",
+        "format": "esm",
+        "input": "demo/typescript/index.ts",
+        "output": "demo/typescript/index.js",
+        "sourcemap": true,
+        "minify": false,
+        "external": ["*/human.custom.esm.js"]
       }
     ]
   },
   "watch": {
-    "locations": [ "src/**/*", "tfjs/**/*" ]
+    "locations": [ "src/**/*", "tfjs/**/*", "demo/**/*.ts" ]
   },
   "typescript": {
     "allowJs": false

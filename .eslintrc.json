@@ -27,7 +27,8 @@
   ],
   "ignorePatterns": [
     "assets",
-    "demo/helpers",
+    "demo/helpers/*.js",
+    "demo/typescript/*.js",
     "dist",
     "media",
     "models",

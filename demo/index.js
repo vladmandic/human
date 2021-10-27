@@ -415,7 +415,7 @@ async function setupCamera() {
   }
   const track = stream.getVideoTracks()[0];
   const settings = track.getSettings();
-  if (initialCameraAccess) log('selected video source:', track, settings); // log('selected camera:', track.label, 'id:', settings.deviceId);
+  if (initialCameraAccess) log('selected video source:', track, settings);
   ui.camera = { name: track.label.toLowerCase(), width: settings.width, height: settings.height, facing: settings.facingMode === 'user' ? 'front' : 'back' };
   initialCameraAccess = false;
 

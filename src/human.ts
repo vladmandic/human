@@ -1,6 +1,10 @@
 /**
  * Human main module
+ * @default Human Library
+ * @summary <https://github.com/vladmandic/human>
  * @author <https://github.com/vladmandic>
+ * @copyright <https://github.com/vladmandic>
+ * @license MIT
  */
 
 // module imports
@@ -150,7 +154,7 @@ export class Human {
     this.#numTensors = 0;
     this.#analyzeMemoryLeaks = false;
     this.#checkSanity = false;
-    this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
+    this.performance = {};
     this.events = (typeof EventTarget !== 'undefined') ? new EventTarget() : undefined;
     // object that contains all initialized models
     this.models = new models.Models();
@@ -310,7 +314,7 @@ export class Human {
     }
 
     const current = Math.trunc(now() - timeStamp);
-    if (current > (this.performance.load as number || 0)) this.performance.load = this.env.perfadd ? (this.performance.load || 0) + current : current;
+    if (current > (this.performance.loadModels as number || 0)) this.performance.loadModels = this.env.perfadd ? (this.performance.loadModels || 0) + current : current;
   }
 
   // emit event
@@ -335,8 +339,12 @@ export class Human {
    * @param userConfig?: {@link Config}
    * @returns result: {@link Result}
   */
-  async warmup(userConfig?: Partial<Config>): Promise<Result | { error }> {
-    return warmups.warmup(this, userConfig) as Promise<Result | { error }>;
+  async warmup(userConfig?: Partial<Config>) {
+    const t0 = now();
+    const res = await warmups.warmup(this, userConfig);
+    const t1 = now();
+    this.performance.warmup = Math.trunc(t1 - t0);
+    return res;
   }
 
   /** Main detection method
@@ -379,7 +387,7 @@ export class Human {
       this.state = 'image';
       const img = image.process(input, this.config) as { canvas: HTMLCanvasElement | OffscreenCanvas, tensor: Tensor };
       this.process = img;
-      this.performance.image = this.env.perfadd ? (this.performance.image || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      this.performance.inputProcess = this.env.perfadd ? (this.performance.inputProcess || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
 
       if (!img.tensor) {
@@ -391,11 +399,11 @@ export class Human {
 
       timeStamp = now();
       this.config.skipAllowed = await image.skip(this.config, img.tensor);
-      if (!this.performance.frames) this.performance.frames = 0;
-      if (!this.performance.cached) this.performance.cached = 0;
-      (this.performance.frames as number)++;
-      if (this.config.skipAllowed) this.performance.cached++;
-      this.performance.changed = this.env.perfadd ? (this.performance.changed || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      if (!this.performance.totalFrames) this.performance.totalFrames = 0;
+      if (!this.performance.cachedFrames) this.performance.cachedFrames = 0;
+      (this.performance.totalFrames as number)++;
+      if (this.config.skipAllowed) this.performance.cachedFrames++;
+      this.performance.inputCheck = this.env.perfadd ? (this.performance.inputCheck || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze('Check Changed:');
 
       // prepare where to store model results
@@ -454,7 +462,7 @@ export class Human {
       }
       this.analyze('End Hand:');
 
-      // run nanodet
+      // run object detection
       this.analyze('Start Object:');
       this.state = 'detect:object';
       if (this.config.async) {
@@ -483,7 +491,7 @@ export class Human {
         else if (this.performance.gesture) delete this.performance.gesture;
       }
 
-      this.performance.total = Math.trunc(now() - timeStart);
+      this.performance.total = this.env.perfadd ? (this.performance.total || 0) + Math.trunc(now() - timeStart) : Math.trunc(now() - timeStart);
       const shape = this.process?.tensor?.shape || [];
       this.result = {
         face: faceRes as FaceResult[],

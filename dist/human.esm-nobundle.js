@@ -1278,7 +1278,7 @@ var Env = class {
 var env = new Env();
 
 // package.json
-var version10 = "2.4.1";
+var version10 = "2.4.2";
 
 // src/gear/gear-agegenderrace.ts
 var model;
@@ -10867,7 +10867,7 @@ async function check(instance, force = false) {
     }
     tfjs_esm_exports.enableProdMode();
     await tfjs_esm_exports.ready();
-    instance.performance.backend = Math.trunc(now() - timeStamp);
+    instance.performance.initBackend = Math.trunc(now() - timeStamp);
     instance.config.backend = tfjs_esm_exports.getBackend();
     env.updateBackend();
   }
@@ -10908,6 +10908,7 @@ var options2 = {
   useDepth: true,
   useCurves: false
 };
+var drawTime = 0;
 var getCanvasContext = (input) => {
   if (input && input.getContext)
     return input.getContext("2d");
@@ -11334,7 +11335,8 @@ async function all(inCanvas2, result, drawOptions) {
     object(inCanvas2, result.object, localOptions),
     gesture(inCanvas2, result.gesture, localOptions)
   ]);
-  result.performance.draw = env.perfadd ? (result.performance.draw || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+  drawTime = env.perfadd ? drawTime + Math.round(now() - timeStamp) : Math.round(now() - timeStamp);
+  result.performance.draw = drawTime;
   return promise;
 }
 
@@ -11497,7 +11499,7 @@ var detectFace = async (parent, input) => {
       parent.state = "run:description";
       timeStamp = now();
       descRes = parent.config.face.description.enabled ? await predict7(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.embedding = env.perfadd ? (parent.performance.embedding || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      parent.performance.description = env.perfadd ? (parent.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Description:");
     if (parent.config.async) {
@@ -11660,6 +11662,7 @@ var hand2 = (res) => {
 
 // src/util/interpolate.ts
 var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
+var interpolateTime = 0;
 function calc2(newResult, config3) {
   const t0 = now();
   if (!newResult)
@@ -11769,8 +11772,9 @@ function calc2(newResult, config3) {
   if (newResult.gesture)
     bufferedResult.gesture = newResult.gesture;
   const t1 = now();
+  interpolateTime = env.perfadd ? interpolateTime + Math.round(t1 - t0) : Math.round(t1 - t0);
   if (newResult.performance)
-    bufferedResult.performance = { ...newResult.performance, interpolate: Math.round(t1 - t0) };
+    bufferedResult.performance = { ...newResult.performance, interpolate: interpolateTime };
   return bufferedResult;
 }
 
@@ -12762,7 +12766,7 @@ var Human = class {
     __privateSet(this, _numTensors, 0);
     __privateSet(this, _analyzeMemoryLeaks, false);
     __privateSet(this, _checkSanity, false);
-    this.performance = { backend: 0, load: 0, image: 0, frames: 0, cached: 0, changed: 0, total: 0, draw: 0 };
+    this.performance = {};
     this.events = typeof EventTarget !== "undefined" ? new EventTarget() : void 0;
     this.models = new Models();
     this.draw = {
@@ -12840,14 +12844,18 @@ var Human = class {
       this.emit("load");
     }
     const current = Math.trunc(now() - timeStamp);
-    if (current > (this.performance.load || 0))
-      this.performance.load = this.env.perfadd ? (this.performance.load || 0) + current : current;
+    if (current > (this.performance.loadModels || 0))
+      this.performance.loadModels = this.env.perfadd ? (this.performance.loadModels || 0) + current : current;
   }
   next(result = this.result) {
     return calc2(result, this.config);
   }
   async warmup(userConfig) {
-    return warmup(this, userConfig);
+    const t0 = now();
+    const res = await warmup(this, userConfig);
+    const t1 = now();
+    this.performance.warmup = Math.trunc(t1 - t0);
+    return res;
   }
   async detect(input, userConfig) {
     this.state = "detect";
@@ -12868,7 +12876,7 @@ var Human = class {
       this.state = "image";
       const img = process2(input, this.config);
       this.process = img;
-      this.performance.image = this.env.perfadd ? (this.performance.image || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      this.performance.inputProcess = this.env.perfadd ? (this.performance.inputProcess || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze("Get Image:");
       if (!img.tensor) {
         if (this.config.debug)
@@ -12879,14 +12887,14 @@ var Human = class {
       this.emit("image");
       timeStamp = now();
       this.config.skipAllowed = await skip(this.config, img.tensor);
-      if (!this.performance.frames)
-        this.performance.frames = 0;
-      if (!this.performance.cached)
-        this.performance.cached = 0;
-      this.performance.frames++;
+      if (!this.performance.totalFrames)
+        this.performance.totalFrames = 0;
+      if (!this.performance.cachedFrames)
+        this.performance.cachedFrames = 0;
+      this.performance.totalFrames++;
       if (this.config.skipAllowed)
-        this.performance.cached++;
-      this.performance.changed = this.env.perfadd ? (this.performance.changed || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+        this.performance.cachedFrames++;
+      this.performance.inputCheck = this.env.perfadd ? (this.performance.inputCheck || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze("Check Changed:");
       let faceRes = [];
       let bodyRes = [];
@@ -12981,7 +12989,7 @@ var Human = class {
         else if (this.performance.gesture)
           delete this.performance.gesture;
       }
-      this.performance.total = Math.trunc(now() - timeStart);
+      this.performance.total = this.env.perfadd ? (this.performance.total || 0) + Math.trunc(now() - timeStart) : Math.trunc(now() - timeStart);
       const shape = this.process?.tensor?.shape || [];
       this.result = {
         face: faceRes,
@@ -13013,4 +13021,12 @@ export {
   config as defaults,
   env
 };
+/**
+ * Human main module
+ * @default Human Library
+ * @summary <https://github.com/vladmandic/human>
+ * @author <https://github.com/vladmandic>
+ * @copyright <https://github.com/vladmandic>
+ * @license MIT
+ */
 //# sourceMappingURL=human.esm-nobundle.js.map

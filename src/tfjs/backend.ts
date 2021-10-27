@@ -99,7 +99,7 @@ export async function check(instance, force = false) {
     // wait for ready
     tf.enableProdMode();
     await tf.ready();
-    instance.performance.backend = Math.trunc(now() - timeStamp);
+    instance.performance.initBackend = Math.trunc(now() - timeStamp);
     instance.config.backend = tf.getBackend();
 
     env.updateBackend(); // update env on backend init

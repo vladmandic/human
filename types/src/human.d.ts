@@ -1,6 +1,10 @@
 /**
  * Human main module
+ * @default Human Library
+ * @summary <https://github.com/vladmandic/human>
  * @author <https://github.com/vladmandic>
+ * @copyright <https://github.com/vladmandic>
+ * @license MIT
  */
 import { Env } from './util/env';
 import * as tf from '../dist/tfjs.esm.js';

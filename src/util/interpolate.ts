@@ -9,8 +9,10 @@ import * as moveNetCoords from '../body/movenetcoords';
 import * as blazePoseCoords from '../body/blazeposecoords';
 import * as efficientPoseCoords from '../body/efficientposecoords';
 import { now } from './util';
+import { env } from './env';
 
 const bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
+let interpolateTime = 0;
 
 export function calc(newResult: Result, config: Config): Result {
   const t0 = now();
@@ -163,7 +165,8 @@ export function calc(newResult: Result, config: Config): Result {
 
   // append interpolation performance data
   const t1 = now();
-  if (newResult.performance) bufferedResult.performance = { ...newResult.performance, interpolate: Math.round(t1 - t0) };
+  interpolateTime = env.perfadd ? interpolateTime + Math.round(t1 - t0) : Math.round(t1 - t0);
+  if (newResult.performance) bufferedResult.performance = { ...newResult.performance, interpolate: interpolateTime };
 
   return bufferedResult;
 }

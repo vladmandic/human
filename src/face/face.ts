@@ -92,7 +92,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       parent.state = 'run:description';
       timeStamp = now();
       descRes = parent.config.face.description.enabled ? await faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.embedding = env.perfadd ? (parent.performance.embedding || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      parent.performance.description = env.perfadd ? (parent.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Description:');
 

@@ -68,6 +68,8 @@ export const options: DrawOptions = {
   useCurves: <boolean>false,
 };
 
+let drawTime = 0;
+
 const getCanvasContext = (input) => {
   if (input && input.getContext) return input.getContext('2d');
   throw new Error('invalid canvas');
@@ -499,6 +501,7 @@ export async function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Par
     gesture(inCanvas, result.gesture, localOptions), // gestures do not have buffering
     // person(inCanvas, result.persons, localOptions); // already included above
   ]);
-  result.performance.draw = env.perfadd ? (result.performance.draw as number || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+  drawTime = env.perfadd ? drawTime + Math.round(now() - timeStamp) : Math.round(now() - timeStamp);
+  result.performance.draw = drawTime;
   return promise;
 }

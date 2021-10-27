@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/10/26 mandic00@live.com
 
+- switch to custom tfjs for demos
 
 ### **release: 2.4.1** 2021/10/25 mandic00@live.com
 

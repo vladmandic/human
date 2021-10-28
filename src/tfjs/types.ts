@@ -16,3 +16,5 @@ export { GraphModel } from '@tensorflow/tfjs-converter/dist/index';
  * @external
  */
 export { Long } from 'long';
+// import Long from 'long';
+// export { Long };

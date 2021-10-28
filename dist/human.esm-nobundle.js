@@ -239,14 +239,14 @@ import * as dist_star2 from "@tensorflow/tfjs-backend-webgl/dist/index.js";
 import * as dist_star3 from "@tensorflow/tfjs-backend-wasm/dist/index.js";
 import { Tensor } from "@tensorflow/tfjs/dist/index.js";
 import { GraphModel } from "@tensorflow/tfjs-converter/dist/index";
-var version = "3.10.0";
-var version2 = "3.10.0";
-var version3 = "3.10.0";
-var version4 = "3.10.0";
-var version5 = "3.10.0";
-var version6 = "3.10.0";
-var version7 = "3.10.0";
-var version8 = "3.10.0";
+var version = "3.11.0";
+var version2 = "3.11.0";
+var version3 = "3.11.0";
+var version4 = "3.11.0";
+var version5 = "3.11.0";
+var version6 = "3.11.0";
+var version7 = "3.11.0";
+var version8 = "3.11.0";
 var version9 = {
   tfjs: version,
   "tfjs-core": version2,
@@ -1278,7 +1278,7 @@ var Env = class {
 var env = new Env();
 
 // package.json
-var version10 = "2.4.2";
+var version10 = "2.4.3";
 
 // src/gear/gear-agegenderrace.ts
 var model;

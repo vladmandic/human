@@ -3,6 +3,7 @@
 ## Work in Progress
 
 - Switch to custom `tfjs` for main `human` ESM bundle
+- Sort out incompatibility with latest `long.js` 5.0.0 due to CJS to ESM switch
 
 <br>
 

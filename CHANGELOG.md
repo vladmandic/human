@@ -9,11 +9,15 @@
   
 ## Changelog
   
-### **2.4.2** 2021/10/27 mandic00@live.com
+### **2.4.3** 2021/10/28 mandic00@live.com
 
 
 ### **origin/main** 2021/10/27 mandic00@live.com
 
+
+### **2.4.2** 2021/10/27 mandic00@live.com
+
+- add ts demo
 - switch from es2018 to es2020 for main build
 - switch to custom tfjs for demos
 

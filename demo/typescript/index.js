@@ -44,9 +44,9 @@ async function webCam() {
   dom.canvas.width = dom.video.videoWidth;
   dom.canvas.height = dom.video.videoHeight;
   const track = stream.getVideoTracks()[0];
-  const capabilities = track.getCapabilities();
-  const settings = track.getSettings();
-  const constraints = track.getConstraints();
+  const capabilities = track.getCapabilities ? track.getCapabilities() : "";
+  const settings = track.getSettings ? track.getSettings() : "";
+  const constraints = track.getConstraints ? track.getConstraints() : "";
   log("video:", dom.video.videoWidth, dom.video.videoHeight, track.label, { stream, track, settings, constraints, capabilities });
   dom.canvas.onclick = () => {
     if (dom.video.paused)

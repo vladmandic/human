@@ -168,35 +168,39 @@ export interface GestureConfig {
  */
 export interface Config {
     /** Backend used for TFJS operations
-     * Valid build-in backends are:
-     * - Browser: `cpu`, `wasm`, `webgl`, `humangl`
+     * valid build-in backends are:
+     * - Browser: `cpu`, `wasm`, `webgl`, `humangl`, `webgpu`
      * - NodeJS: `cpu`, `wasm`, `tensorflow`
-     *
-     * Experimental:
-     * - Browser: `webgpu` - requires custom build of `tfjs-backend-webgpu`
-     *
-     * Defaults: `humangl` for browser and `tensorflow` for nodejs
+     * default: `humangl` for browser and `tensorflow` for nodejs
     */
     backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu';
     /** Path to *.wasm files if backend is set to `wasm`
-     * - if not set, auto-detects to link to CDN `jsdelivr` when running in browser
+     * default: auto-detects to link to CDN `jsdelivr` when running in browser
     */
     wasmPath: string;
-    /** Print debug statements to console */
+    /** Print debug statements to console
+     * default: `true`
+    */
     debug: boolean;
-    /** Perform model loading and inference concurrently or sequentially */
+    /** Perform model loading and inference concurrently or sequentially
+     * default: `true`
+    */
     async: boolean;
     /** What to use for `human.warmup()`
      * - warmup pre-initializes all models for faster inference but can take significant time on startup
+     * - used by `webgl`, `humangl` and `webgpu` backends
+     * default: `full`
     */
     warmup: 'none' | 'face' | 'full' | 'body';
     /** Base model path (typically starting with file://, http:// or https://) for all models
      * - individual modelPath values are relative to this path
+     * default: `../models/` for browsers and `file://models/` for nodejs
     */
     modelBasePath: string;
     /** Cache sensitivity
      * - values 0..1 where 0.01 means reset cache if input changed more than 1%
      * - set to 0 to disable caching
+     * default: 0.7
     */
     cacheSensitivity: number;
     /** Internal Variable */
@@ -216,7 +220,7 @@ export interface Config {
     /** {@link SegmentationConfig} */
     segmentation: Partial<SegmentationConfig>;
 }
-/** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L250) */
+/** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L253) */
 declare const config: Config;
 export { config as defaults };
 //# sourceMappingURL=config.d.ts.map

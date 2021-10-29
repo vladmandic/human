@@ -14,20 +14,19 @@
 - TFLite Models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
 - Body segmentation: `robust-video-matting`
 
+<br><hr><br>
+
+## Known Issues
+
+### Type Definitions
+- `tfjs.esm.d.ts` missing namespace `OptimizerConstructors`
+- exports from `match` are marked as private
+
 #### WebGPU
 
 Experimental support only until support is officially added in Chromium
 - Performance issues:
   <https://github.com/tensorflow/tfjs/issues/5689>
-
-<br><hr><br>
-
-## Known Issues
-
-- `tfjs.esm.d.ts` missing namespace `OptimizerConstructors`
-- exports from `match` are marked as private
-
-<br>
 
 ### Face Detection
 

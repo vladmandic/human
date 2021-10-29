@@ -182,43 +182,46 @@ export interface GestureConfig {
  */
 export interface Config {
   /** Backend used for TFJS operations
-   * Valid build-in backends are:
-   * - Browser: `cpu`, `wasm`, `webgl`, `humangl`
+   * valid build-in backends are:
+   * - Browser: `cpu`, `wasm`, `webgl`, `humangl`, `webgpu`
    * - NodeJS: `cpu`, `wasm`, `tensorflow`
-   *
-   * Experimental:
-   * - Browser: `webgpu` - requires custom build of `tfjs-backend-webgpu`
-   *
-   * Defaults: `humangl` for browser and `tensorflow` for nodejs
+   * default: `humangl` for browser and `tensorflow` for nodejs
   */
   backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu',
-  // backend: string;
 
   /** Path to *.wasm files if backend is set to `wasm`
-   * - if not set, auto-detects to link to CDN `jsdelivr` when running in browser
+   * default: auto-detects to link to CDN `jsdelivr` when running in browser
   */
   wasmPath: string,
 
-  /** Print debug statements to console */
+  /** Print debug statements to console
+   * default: `true`
+  */
   debug: boolean,
 
-  /** Perform model loading and inference concurrently or sequentially */
+  /** Perform model loading and inference concurrently or sequentially
+   * default: `true`
+  */
   async: boolean,
 
   /** What to use for `human.warmup()`
    * - warmup pre-initializes all models for faster inference but can take significant time on startup
+   * - used by `webgl`, `humangl` and `webgpu` backends
+   * default: `full`
   */
   warmup: 'none' | 'face' | 'full' | 'body',
   // warmup: string;
 
   /** Base model path (typically starting with file://, http:// or https://) for all models
    * - individual modelPath values are relative to this path
+   * default: `../models/` for browsers and `file://models/` for nodejs
   */
   modelBasePath: string,
 
   /** Cache sensitivity
    * - values 0..1 where 0.01 means reset cache if input changed more than 1%
    * - set to 0 to disable caching
+   * default: 0.7
   */
   cacheSensitivity: number;
 
@@ -247,185 +250,120 @@ export interface Config {
   segmentation: Partial<SegmentationConfig>,
 }
 
-/** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L250) */
+/** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L253) */
 const config: Config = {
-  backend: '',               // select tfjs backend to use, leave empty to use default backend
-                             // for browser environments: 'webgl', 'wasm', 'cpu', or 'humangl' (which is a custom version of webgl)
-                             // for nodejs environments: 'tensorflow', 'wasm', 'cpu'
-                             // default set to `humangl` for browsers and `tensorflow` for nodejs
-  modelBasePath: '',         // base path for all models
-                             // default set to `../models/` for browsers and `file://models/` for nodejs
-  wasmPath: '',              // path for wasm binaries, only used for backend: wasm
-                             // default set to download from jsdeliv during Human class instantiation
-  debug: true,               // print additional status messages to console
-  async: true,               // execute enabled models in parallel
-  warmup: 'full',            // what to use for human.warmup(), can be 'none', 'face', 'full'
-                             // warmup pre-initializes all models for faster inference but can take
-                             // significant time on startup
-                             // only used for `webgl` and `humangl` backends
-  cacheSensitivity: 0.70,    // cache sensitivity
-                             // values 0..1 where 0.01 means reset cache if input changed more than 1%
-                             // set to 0 to disable caching
-  skipAllowed: false,        // internal & dynamic
-  filter: {                  // run input through image filters before inference
-                             // image filters run with near-zero latency as they are executed on the GPU
-    enabled: true,           // enable image pre-processing filters
-    width: 0,                // resize input width
-    height: 0,               // resize input height
-                             // if both width and height are set to 0, there is no resizing
-                             // if just one is set, second one is scaled automatically
-                             // if both are set, values are used as-is
-    flip: false,             // flip input as mirror image
-    return: true,            // return processed canvas imagedata in result
-    brightness: 0,           // range: -1 (darken) to 1 (lighten)
-    contrast: 0,             // range: -1 (reduce contrast) to 1 (increase contrast)
-    sharpness: 0,            // range: 0 (no sharpening) to 1 (maximum sharpening)
-    blur: 0,                 // range: 0 (no blur) to N (blur radius in pixels)
-    saturation: 0,           // range: -1 (reduce saturation) to 1 (increase saturation)
-    hue: 0,                  // range: 0 (no change) to 360 (hue rotation in degrees)
-    negative: false,         // image negative
-    sepia: false,            // image sepia colors
-    vintage: false,          // image vintage colors
-    kodachrome: false,       // image kodachrome colors
-    technicolor: false,      // image technicolor colors
-    polaroid: false,         // image polaroid camera effect
-    pixelate: 0,             // range: 0 (no pixelate) to N (number of pixels to pixelate)
+  backend: '',
+  modelBasePath: '',
+  wasmPath: '',
+  debug: true,
+  async: true,
+  warmup: 'full',
+  cacheSensitivity: 0.70,
+  skipAllowed: false,
+  filter: {
+    enabled: true,
+    width: 0,
+    height: 0,
+    flip: false,
+    return: true,
+    brightness: 0,
+    contrast: 0,
+    sharpness: 0,
+    blur: 0,
+    saturation: 0,
+    hue: 0,
+    negative: false,
+    sepia: false,
+    vintage: false,
+    kodachrome: false,
+    technicolor: false,
+    polaroid: false,
+    pixelate: 0,
   },
-
   gesture: {
-    enabled: true,           // enable gesture recognition based on model results
+    enabled: true,
   },
-
   face: {
-    enabled: true,           // controls if specified modul is enabled
-                             // face.enabled is required for all face models:
-                             // detector, mesh, iris, age, gender, emotion
-                             // (note: module is not loaded until it is required)
+    enabled: true,
     detector: {
-      modelPath: 'blazeface.json', // detector model, can be absolute path or relative to modelBasePath
-      rotation: true,        // use best-guess rotated face image or just box with rotation as-is
-                             // false means higher performance, but incorrect mesh mapping if face angle is above 20 degrees
-                             // this parameter is not valid in nodejs
-      maxDetected: 1,        // maximum number of faces detected in the input
-                             // should be set to the minimum number for performance
-      skipFrames: 99,        // how many max frames to go without re-running the face bounding box detector
-                             // only used when cacheSensitivity is not zero
-      skipTime: 2500,        // how many ms to go without re-running the face bounding box detector
-                             // only used when cacheSensitivity is not zero
-      minConfidence: 0.2,    // threshold for discarding a prediction
-      iouThreshold: 0.1,     // ammount of overlap between two detected objects before one object is removed
-      return: false,         // return extracted face as tensor
-                              // in which case user is reponsible for disposing the tensor
+      modelPath: 'blazeface.json',
+      rotation: true,
+      maxDetected: 1,
+      skipFrames: 99,
+      skipTime: 2500,
+      minConfidence: 0.2,
+      iouThreshold: 0.1,
+      return: false,
     },
-
     mesh: {
       enabled: true,
-      modelPath: 'facemesh.json',  // facemesh model, can be absolute path or relative to modelBasePath
+      modelPath: 'facemesh.json',
     },
-
     iris: {
       enabled: true,
-      modelPath: 'iris.json',  // face iris model
-                             // can be either absolute path or relative to modelBasePath
+      modelPath: 'iris.json',
     },
-
     emotion: {
       enabled: true,
-      minConfidence: 0.1,    // threshold for discarding a prediction
-      skipFrames: 99,        // how max many frames to go without re-running the detector
-                             // only used when cacheSensitivity is not zero
-      skipTime: 1500,        // how many ms to go without re-running the face bounding box detector
-                             // only used when cacheSensitivity is not zero
-      modelPath: 'emotion.json',  // face emotion model, can be absolute path or relative to modelBasePath
+      minConfidence: 0.1,
+      skipFrames: 99,
+      skipTime: 1500,
+      modelPath: 'emotion.json',
     },
-
     description: {
-      enabled: true,         // to improve accuracy of face description extraction it is
-                             // recommended to enable detector.rotation and mesh.enabled
-      modelPath: 'faceres.json',  // face description model
-                             // can be either absolute path or relative to modelBasePath
-      skipFrames: 99,        // how many max frames to go without re-running the detector
-                             // only used when cacheSensitivity is not zero
-      skipTime: 3000,        // how many ms to go without re-running the face bounding box detector
-                             // only used when cacheSensitivity is not zero
-      minConfidence: 0.1,    // threshold for discarding a prediction
+      enabled: true,
+      modelPath: 'faceres.json',
+      skipFrames: 99,
+      skipTime: 3000,
+      minConfidence: 0.1,
     },
-
     antispoof: {
       enabled: false,
-      skipFrames: 99,        // how max many frames to go without re-running the detector
-                             // only used when cacheSensitivity is not zero
-      skipTime: 4000,        // how many ms to go without re-running the face bounding box detector
-                             // only used when cacheSensitivity is not zero
-      modelPath: 'antispoof.json',  // face description model
-                             // can be either absolute path or relative to modelBasePath
+      skipFrames: 99,
+      skipTime: 4000,
+      modelPath: 'antispoof.json',
     },
   },
-
   body: {
     enabled: true,
-    modelPath: 'movenet-lightning.json',  // body model, can be absolute path or relative to modelBasePath
-                             // can be 'posenet', 'blazepose', 'efficientpose', 'movenet-lightning', 'movenet-thunder'
+    modelPath: 'movenet-lightning.json',
     detector: {
-      modelPath: '',         // optional body detector
+      modelPath: '',
     },
-    maxDetected: -1,         // maximum number of people detected in the input
-                             // should be set to the minimum number for performance
-                             // only valid for posenet and movenet-multipose as other models detects single pose
-                             // set to -1 to autodetect based on number of detected faces
-    minConfidence: 0.3,      // threshold for discarding a prediction
-    skipFrames: 1,           // how many max frames to go without re-running the detector
-                             // only used when cacheSensitivity is not zero
-    skipTime: 200,           // how many ms to go without re-running the face bounding box detector
-                             // only used when cacheSensitivity is not zero
-},
-
+    maxDetected: -1,
+    minConfidence: 0.3,
+    skipFrames: 1,
+    skipTime: 200,
+  },
   hand: {
     enabled: true,
-    rotation: true,          // use best-guess rotated hand image or just box with rotation as-is
-                             // false means higher performance, but incorrect finger mapping if hand is inverted
-                             // only valid for `handdetect` variation
-    skipFrames: 99,          // how many max frames to go without re-running the hand bounding box detector
-                             // only used when cacheSensitivity is not zero
-    skipTime: 2000,          // how many ms to go without re-running the face bounding box detector
-                             // only used when cacheSensitivity is not zero
-    minConfidence: 0.50,     // threshold for discarding a prediction
-    iouThreshold: 0.2,       // ammount of overlap between two detected objects before one object is removed
-    maxDetected: -1,         // maximum number of hands detected in the input
-                             // should be set to the minimum number for performance
-                             // set to -1 to autodetect based on number of detected faces
-    landmarks: true,         // detect hand landmarks or just hand boundary box
+    rotation: true,
+    skipFrames: 99,
+    skipTime: 2000,
+    minConfidence: 0.50,
+    iouThreshold: 0.2,
+    maxDetected: -1,
+    landmarks: true,
     detector: {
-      modelPath: 'handtrack.json',  // hand detector model, can be absolute path or relative to modelBasePath
-                             // can be 'handdetect' or 'handtrack'
+      modelPath: 'handtrack.json',
     },
     skeleton: {
-      modelPath: 'handskeleton.json',  // hand skeleton model, can be absolute path or relative to modelBasePath
+      modelPath: 'handskeleton.json',
     },
   },
-
   object: {
     enabled: false,
-    modelPath: 'mb3-centernet.json',  // experimental: object detection model, can be absolute path or relative to modelBasePath
-                             // can be 'mb3-centernet' or 'nanodet'
-    minConfidence: 0.2,      // threshold for discarding a prediction
-    iouThreshold: 0.4,       // ammount of overlap between two detected objects before one object is removed
-    maxDetected: 10,         // maximum number of objects detected in the input
-    skipFrames: 99,          // how many max frames to go without re-running the detector
-                             // only used when cacheSensitivity is not zero
-    skipTime: 1000,          // how many ms to go without re-running object detector
-                             // only used when cacheSensitivity is not zero
+    modelPath: 'mb3-centernet.json',
+    minConfidence: 0.2,
+    iouThreshold: 0.4,
+    maxDetected: 10,
+    skipFrames: 99,
+    skipTime: 1000,
   },
-
   segmentation: {
-    enabled: false,          // controlls and configures all body segmentation module
-                             // removes background from input containing person
-                             // if segmentation is enabled it will run as preprocessing task before any other model
-                             // alternatively leave it disabled and use it on-demand using human.segmentation method which can
-                             // remove background or replace it with user-provided background
-    modelPath: 'selfie.json',  // experimental: object detection model, can be absolute path or relative to modelBasePath
-                             // can be 'selfie' or 'meet'
-    blur: 8,                 // blur segmentation output by n pixels for more realistic image
+    enabled: false,
+    modelPath: 'selfie.json',
+    blur: 8,
   },
 };
 

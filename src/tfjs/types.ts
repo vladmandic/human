@@ -13,8 +13,7 @@ export { Tensor } from '@tensorflow/tfjs-core/dist/index';
 export { GraphModel } from '@tensorflow/tfjs-converter/dist/index';
 
 /** Tensorflow Long type
- * @external
+ * @external long
  */
+// eslint-disable-next-line node/no-missing-import
 export { Long } from 'long';
-// import Long from 'long';
-// export { Long };

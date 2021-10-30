@@ -4,5 +4,3 @@ samples
 typedoc
 test
 wiki
-dist/tfjs.esm.js
-dist/tfjs.esm.js.map

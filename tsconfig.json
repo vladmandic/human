@@ -13,7 +13,7 @@
     "allowUnusedLabels": false,
     "alwaysStrict": true,
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "emitDecoratorMetadata": true,
     "esModuleInterop": false,
     "exactOptionalPropertyTypes": true,

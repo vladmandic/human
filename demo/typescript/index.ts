@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import Human from '../../dist/human.custom.esm.js'; // equivalent of @vladmandic/human
+import Human from '../../dist/human.esm.js'; // equivalent of @vladmandic/human
 
 const config = {
   modelBasePath: '../../models',

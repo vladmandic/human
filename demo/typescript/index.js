@@ -5,7 +5,7 @@
 */
 
 // demo/typescript/index.ts
-import Human from "../../dist/human.custom.esm.js";
+import Human from "../../dist/human.esm.js";
 var config = {
   modelBasePath: "../../models",
   backend: "humangl",

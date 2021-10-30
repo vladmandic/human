@@ -9,4 +9,3 @@ export declare function process(input: Input, config: Config, getTensor?: boolea
     canvas: AnyCanvas | null;
 };
 export declare function skip(config: any, input: Tensor): Promise<boolean>;
-//# sourceMappingURL=image.d.ts.map

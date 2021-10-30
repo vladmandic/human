@@ -11,4 +11,3 @@ import type { Result } from './result';
 export declare function warmup(instance: any, userConfig?: Partial<Config>): Promise<Result | {
     error: any;
 }>;
-//# sourceMappingURL=warmup.d.ts.map

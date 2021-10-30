@@ -5,19 +5,19 @@ const threads = require('worker_threads');
 
 // global optinos
 const options = {
-  dbFile: './faces.json', // sample face db
+  dbFile: 'demo/facematch/faces.json', // sample face db
   dbMax: 10000, // maximum number of records to hold in memory
-  threadPoolSize: 6, // number of worker threads to create in thread pool
+  threadPoolSize: 12, // number of worker threads to create in thread pool
   workerSrc: './node-match-worker.js', // code that executes in the worker thread
   debug: false, // verbose messages
-  minThreshold: 0.9, // match returns first record that meets the similarity threshold, set to 0 to always scan all records
+  minThreshold: 0.5, // match returns first record that meets the similarity threshold, set to 0 to always scan all records
   descLength: 1024, // descriptor length
 };
 
 // test options
 const testOptions = {
-  dbFact: 100, // load db n times to fake huge size
-  maxJobs: 100, // exit after processing this many jobs
+  dbFact: 175, // load db n times to fake huge size
+  maxJobs: 200, // exit after processing this many jobs
   fuzDescriptors: true, // randomize descriptor content before match for harder jobs
 };
 

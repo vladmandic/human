@@ -43,4 +43,3 @@ export declare class HandPipeline {
         };
     }[]>;
 }
-//# sourceMappingURL=handposepipeline.d.ts.map

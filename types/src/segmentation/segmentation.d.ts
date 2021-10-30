@@ -14,4 +14,3 @@ export declare function process(input: Input, background: Input | undefined, con
     canvas: HTMLCanvasElement | OffscreenCanvas | null;
     alpha: HTMLCanvasElement | OffscreenCanvas | null;
 }>;
-//# sourceMappingURL=segmentation.d.ts.map

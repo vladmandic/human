@@ -21,4 +21,3 @@ export declare function getBoxes(inputImage: Tensor, config: Config): Promise<{
     }[];
     scaleFactor: number[];
 }>;
-//# sourceMappingURL=blazeface.d.ts.map

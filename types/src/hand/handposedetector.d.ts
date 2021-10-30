@@ -25,4 +25,3 @@ export declare class HandDetector {
         confidence: number;
     }[]>;
 }
-//# sourceMappingURL=handposedetector.d.ts.map

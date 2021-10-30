@@ -10,7 +10,6 @@ export { Tensor } from '@tensorflow/tfjs-core/dist/index';
  */
 export { GraphModel } from '@tensorflow/tfjs-converter/dist/index';
 /** Tensorflow Long type
- * @external
+ * @external long
  */
 export { Long } from 'long';
-//# sourceMappingURL=types.d.ts.map

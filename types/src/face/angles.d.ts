@@ -10,4 +10,3 @@ export declare const calculateFaceAngle: (face: any, imageSize: any) => {
         strength: number;
     };
 };
-//# sourceMappingURL=angles.d.ts.map

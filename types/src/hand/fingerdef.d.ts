@@ -70,4 +70,3 @@ export declare class FingerGesture {
     setWeight(finger: any, weight: any): void;
     matchAgainst(detectedCurls: any, detectedDirections: any): number;
 }
-//# sourceMappingURL=fingerdef.d.ts.map

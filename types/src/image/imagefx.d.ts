@@ -10,4 +10,3 @@
  * @property {function} draw just draw input to result
  */
 export declare function GLImageFilter(): void;
-//# sourceMappingURL=imagefx.d.ts.map

@@ -195,4 +195,3 @@ export interface Result {
     /** getter property that returns unified persons object  */
     persons: Array<PersonResult>;
 }
-//# sourceMappingURL=result.d.ts.map

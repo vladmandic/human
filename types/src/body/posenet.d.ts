@@ -16,4 +16,3 @@ export declare function decode(offsets: any, scores: any, displacementsFwd: any,
 }[];
 export declare function predict(input: Tensor, config: Config): Promise<BodyResult[]>;
 export declare function load(config: Config): Promise<GraphModel>;
-//# sourceMappingURL=posenet.d.ts.map

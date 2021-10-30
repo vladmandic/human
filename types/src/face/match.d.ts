@@ -39,4 +39,3 @@ export declare function match(descriptor: Descriptor, descriptors: Array<Descrip
     distance: number;
     similarity: number;
 };
-//# sourceMappingURL=match.d.ts.map

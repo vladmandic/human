@@ -18,4 +18,3 @@ export declare const getEyeCoords: (eyeData: any, eyeBox: any, eyeBoxSize: any, 
 };
 export declare const getAdjustedIrisCoords: (rawCoords: any, irisCoords: any, direction: any) => any;
 export declare function augmentIris(rawCoords: any, face: any, config: any, meshSize: any): Promise<any>;
-//# sourceMappingURL=iris.d.ts.map

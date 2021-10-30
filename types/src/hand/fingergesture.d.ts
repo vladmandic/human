@@ -5,4 +5,3 @@
 import { FingerGesture } from './fingerdef';
 declare const _default: FingerGesture[];
 export default _default;
-//# sourceMappingURL=fingergesture.d.ts.map

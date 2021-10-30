@@ -62,4 +62,3 @@ export declare class Env {
     updateCPU(): Promise<void>;
 }
 export declare const env: Env;
-//# sourceMappingURL=env.d.ts.map

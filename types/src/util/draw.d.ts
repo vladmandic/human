@@ -61,4 +61,3 @@ export declare function canvas(input: AnyCanvas | HTMLImageElement | HTMLMediaEl
  * @returns {Promise}
 */
 export declare function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Partial<DrawOptions>): Promise<[void, void, void, void, void] | null>;
-//# sourceMappingURL=draw.d.ts.map

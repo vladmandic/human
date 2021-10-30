@@ -4,6 +4,8 @@
   author: <https://github.com/vladmandic>'
 */
 
+var __reflectGet = Reflect.get;
+var __reflectSet = Reflect.set;
 var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
 }) : x)(function(x) {
@@ -49130,8 +49132,10 @@ var _MathBackendWebGL = class extends KernelBackend {
     if (values != null) {
       return this.convertAndCacheOnCPU(dataId);
     }
-    if (!env().getBool("WEBGL_DOWNLOAD_FLOAT_ENABLED") && env().getNumber("WEBGL_VERSION") === 2) {
-      throw new Error(`tensor.data() with WEBGL_DOWNLOAD_FLOAT_ENABLED=false and WEBGL_VERSION=2 not yet supported.`);
+    if (env().getBool("DEBUG")) {
+      if (!env().getBool("WEBGL_DOWNLOAD_FLOAT_ENABLED") && env().getNumber("WEBGL_VERSION") === 2) {
+        throw new Error(`tensor.data() with WEBGL_DOWNLOAD_FLOAT_ENABLED=false and WEBGL_VERSION=2 not yet supported.`);
+      }
     }
     let buffer2 = null;
     let tmpDownloadTarget;
@@ -69889,7 +69893,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211029";
+var externalVersion = "3.11.0-20211030";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,

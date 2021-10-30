@@ -30,4 +30,3 @@ export declare type ImageObjects = ImageData | ImageBitmap;
 export declare type ExternalCanvas = typeof env.Canvas;
 /** Defines all possible input types for **Human** detection */
 export declare type Input = Tensor | AnyCanvas | AnyImage | AnyVideo | ImageObjects | ExternalCanvas;
-//# sourceMappingURL=exports.d.ts.map

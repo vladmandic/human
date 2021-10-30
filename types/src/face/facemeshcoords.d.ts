@@ -20,4 +20,3 @@ export declare const VTX7: Array<number>;
 export declare const UV68: [number, number][];
 export declare const UV33: [number, number][];
 export declare const UV7: [number, number][];
-//# sourceMappingURL=facemeshcoords.d.ts.map

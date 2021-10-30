@@ -13,4 +13,3 @@ export declare function predict(input: Tensor, config: Config): Promise<FaceResu
 export declare function load(config: Config): Promise<GraphModel>;
 export declare const triangulation: number[];
 export declare const uvmap: [number, number][];
-//# sourceMappingURL=facemesh.d.ts.map

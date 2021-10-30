@@ -22,4 +22,3 @@ export declare const config: {
  * @returns void
  */
 export declare function register(instance: any): Promise<void>;
-//# sourceMappingURL=humangl.d.ts.map

@@ -7,7 +7,7 @@
  * config={}: contains all model configuration used by human
  */
 
-import Human from '../../dist/human.custom.esm.js'; // equivalent of @vladmandic/human
+import Human from '../../dist/human.esm.js'; // equivalent of @vladmandic/human
 import webRTC from '../helpers/webrtc.js'; // handle webrtc handshake and connects to webrtc stream
 
 const config = { // use default values for everything just specify models location

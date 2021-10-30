@@ -5,4 +5,3 @@ export declare const labels: {
     class: number;
     label: string;
 }[];
-//# sourceMappingURL=labels.d.ts.map

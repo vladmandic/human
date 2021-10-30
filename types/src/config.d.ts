@@ -223,4 +223,3 @@ export interface Config {
 /** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L253) */
 declare const config: Config;
 export { config as defaults };
-//# sourceMappingURL=config.d.ts.map

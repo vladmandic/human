@@ -1,39 +1,39 @@
-/* eslint-disable node/no-missing-import */
-
-/*
-declare module '@vladmandic/human/dist/tfjs.esm' {
-  export * from '@vladmandic/human/types/dist/tfjs.esm';
-}
-*/
+/**
+ * Links types for all `Human` targets
+ */
 
 declare module '@vladmandic/human/dist/human.esm' {
+  // @ts-ignore no missing imports
+  // eslint-disable-next-line node/no-missing-import
   export * from '@vladmandic/human/types/src/human';
 }
 
 declare module '@vladmandic/human/dist/human.esm-nobundle' {
+  // @ts-ignore no missing imports
+  // eslint-disable-next-line node/no-missing-import
   export * from '@vladmandic/human/types/src/human';
 }
 
 declare module '@vladmandic/human/dist/human' {
+  // @ts-ignore no missing imports
+  // eslint-disable-next-line node/no-missing-import
   export * from '@vladmandic/human/types/src/human';
 }
 
 declare module '@vladmandic/human/dist/human.node' {
+  // @ts-ignore no missing imports
+  // eslint-disable-next-line node/no-missing-import
   export * from '@vladmandic/human/types/src/human';
 }
 
 declare module '@vladmandic/human/dist/human.node-gpu' {
+  // @ts-ignore no missing imports
+  // eslint-disable-next-line node/no-missing-import
   export * from '@vladmandic/human/types/src/human';
 }
 
 declare module '@vladmandic/human/dist/human.node-wasm' {
-  export * from '@vladmandic/human/types/src/human';
-}
-
-declare module '@vladmandic/human/dist/human.custom.esm' {
-  export * from '@vladmandic/human/types/src/human';
-}
-
-declare module '@vladmandic/human/dist/human.custom.esm' {
+  // @ts-ignore no missing imports
+  // eslint-disable-next-line node/no-missing-import
   export * from '@vladmandic/human/types/src/human';
 }

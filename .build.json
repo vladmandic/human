@@ -112,13 +112,13 @@
         "external": ["@tensorflow", "fs", "os", "buffer", "util"]
       },
       {
-        "name": "tfjs/browser/esm/bundle",
+        "name": "tfjs/browser/esm/custom",
         "platform": "browser",
+        "target": "esnext",
         "format": "esm",
-        "input": "tfjs/tf-browser.ts",
+        "input": "tfjs/tf-custom.ts",
         "output": "dist/tfjs.esm.js",
-        "minify": false,
-        "sourcemap": true,
+        "sourcemap": false,
         "external": ["fs", "os", "buffer", "util"]
       },
       {
@@ -134,31 +134,10 @@
       {
         "name": "human/browser/esm/bundle",
         "platform": "browser",
+        "target": "esnext",
         "format": "esm",
         "input": "src/human.ts",
         "output": "dist/human.esm.js",
-        "minify": true,
-        "sourcemap": true,
-        "external": ["fs", "os", "buffer", "util"]
-      },
-
-      {
-        "name": "tfjs/browser/esm/custom",
-        "platform": "browser",
-        "target": "esnext",
-        "format": "esm",
-        "input": "tfjs/tf-custom.ts",
-        "output": "dist/tfjs.esm.js",
-        "sourcemap": false,
-        "external": ["fs", "os", "buffer", "util"]
-      },
-      {
-        "name": "human/browser/esm/custom",
-        "platform": "browser",
-        "target": "esnext",
-        "format": "esm",
-        "input": "src/human.ts",
-        "output": "dist/human.custom.esm.js",
         "sourcemap": true,
         "minify": false,
         "external": ["fs", "os", "buffer", "util"],
@@ -174,7 +153,7 @@
         "output": "demo/typescript/index.js",
         "sourcemap": true,
         "minify": false,
-        "external": ["*/human.custom.esm.js"]
+        "external": ["*/human.esm.js"]
       }
     ]
   },

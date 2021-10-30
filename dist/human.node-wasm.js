@@ -10,6 +10,8 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __reflectGet = Reflect.get;
+var __reflectSet = Reflect.set;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __commonJS = (cb, mod) => function __require() {
@@ -63,6 +65,8 @@ var require_tfjs_esm = __commonJS({
     var __getOwnPropNames2 = Object.getOwnPropertyNames;
     var __getProtoOf2 = Object.getPrototypeOf;
     var __hasOwnProp2 = Object.prototype.hasOwnProperty;
+    var __reflectGet2 = Reflect.get;
+    var __reflectSet2 = Reflect.set;
     var __markAsModule2 = (target) => __defProp2(target, "__esModule", { value: true });
     var __reExport2 = (target, module22, desc) => {
       if (module22 && typeof module22 === "object" || typeof module22 === "function") {
@@ -1289,7 +1293,7 @@ var env = new Env();
 var tf28 = __toModule(require_tfjs_esm());
 
 // package.json
-var version = "2.4.3";
+var version = "2.5.0";
 
 // src/tfjs/humangl.ts
 var tf24 = __toModule(require_tfjs_esm());

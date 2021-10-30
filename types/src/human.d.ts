@@ -207,4 +207,3 @@ export declare class Human {
 }
 /** Class Human as default export */
 export { Human as default };
-//# sourceMappingURL=human.d.ts.map

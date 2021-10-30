@@ -36,4 +36,3 @@ export declare function reset(instance: Human): void;
 /** Load method preloads all instance.configured models on-demand */
 export declare function load(instance: Human): Promise<void>;
 export declare function validate(instance: Human): Promise<void>;
-//# sourceMappingURL=models.d.ts.map

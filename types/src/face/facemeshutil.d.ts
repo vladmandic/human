@@ -47,4 +47,3 @@ export declare const xyDistanceBetweenPoints: (a: any, b: any) => number;
 export declare function generateAnchors(inputSize: any): [number, number][];
 export declare function transformRawCoords(rawCoords: any, box: any, angle: any, rotationMatrix: any, inputSize: any): any;
 export declare function correctFaceRotation(box: any, input: any, inputSize: any): any[];
-//# sourceMappingURL=facemeshutil.d.ts.map

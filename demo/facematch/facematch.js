@@ -6,7 +6,7 @@
  */
 
 /** @type {Human} */
-import Human from '../../dist/human.custom.esm.js';
+import Human from '../../dist/human.esm.js';
 
 const userConfig = {
   backend: 'wasm',

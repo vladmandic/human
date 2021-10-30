@@ -48,4 +48,3 @@ export declare function clampVector(a: any, min: any, max: any): {
     y: any;
     x: any;
 };
-//# sourceMappingURL=posenetutils.d.ts.map

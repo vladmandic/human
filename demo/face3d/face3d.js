@@ -8,7 +8,7 @@
 
 import { DoubleSide, Mesh, MeshBasicMaterial, OrthographicCamera, Scene, sRGBEncoding, VideoTexture, WebGLRenderer, BufferGeometry, BufferAttribute } from '../helpers/three.js';
 import { OrbitControls } from '../helpers/three-orbitControls.js';
-import Human from '../../dist/human.custom.esm.js'; // equivalent of @vladmandic/human
+import Human from '../../dist/human.esm.js'; // equivalent of @vladmandic/human
 
 const userConfig = {
   backend: 'wasm',

@@ -16,4 +16,3 @@ export declare function validate(defaults: any, config: any, parent?: string, ms
 export declare function mergeDeep(...objects: any[]): any;
 export declare const minmax: (data: Array<number>) => number[];
 export declare function wait(time: any): Promise<void>;
-//# sourceMappingURL=util.d.ts.map

@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/29 mandic00@live.com
+### **HEAD -> main** 2021/10/30 mandic00@live.com
 
+- build and docs cleanup
 - fix firefox bug
 
 ### **2.4.3** 2021/10/28 mandic00@live.com

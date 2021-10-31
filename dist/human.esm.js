@@ -5,8 +5,6 @@
 */
 
 var __defProp = Object.defineProperty;
-var __reflectGet = Reflect.get;
-var __reflectSet = Reflect.set;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
@@ -689,8 +687,6 @@ __export(tfjs_esm_exports, {
   zeros: () => zeros,
   zerosLike: () => zerosLike
 });
-var __reflectGet2 = Reflect.get;
-var __reflectSet2 = Reflect.set;
 var __require2 = ((x) => typeof __require !== "undefined" ? __require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof __require !== "undefined" ? __require : a)[b]
 }) : x)(function(x) {

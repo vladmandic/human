@@ -4,8 +4,6 @@
   author: <https://github.com/vladmandic>'
 */
 
-var __reflectGet = Reflect.get;
-var __reflectSet = Reflect.set;
 var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
 }) : x)(function(x) {

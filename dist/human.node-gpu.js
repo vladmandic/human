@@ -240,7 +240,7 @@ var config = {
       modelPath: "handtrack.json"
     },
     skeleton: {
-      modelPath: "handskeleton.json"
+      modelPath: "handlandmark-full.json"
     }
   },
   object: {
@@ -9716,7 +9716,7 @@ async function detectFingers(input, h, config3) {
     t.crop = tf18.image.cropAndResize(input, [h.boxCrop], [0], [inputSize6[1][0], inputSize6[1][1]], "bilinear");
     t.cast = tf18.cast(t.crop, "float32");
     t.div = tf18.div(t.cast, 255);
-    [t.score, t.keypoints] = models2[1].execute(t.div);
+    [t.score, t.keypoints] = models2[1].execute(t.div, ["Identity_1", "Identity"]);
     const rawScore = (await t.score.data())[0];
     const score = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100;
     if (score >= (config3.hand.minConfidence || 0)) {
@@ -11307,7 +11307,7 @@ async function hand(inCanvas2, result, drawOptions) {
           return;
         for (let i = 0; i < part.length; i++) {
           ctx.beginPath();
-          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * part[i][2]}, ${127.5 - 2 * part[i][2]}, 255, 0.5)` : localOptions.color;
+          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + i * part[i][2]}, ${127.5 - i * part[i][2]}, 255, 0.5)` : localOptions.color;
           ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
           ctx.lineTo(part[i][0], part[i][1]);
           ctx.stroke();

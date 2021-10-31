@@ -171,7 +171,7 @@ var config = {
       modelPath: "handtrack.json"
     },
     skeleton: {
-      modelPath: "handskeleton.json"
+      modelPath: "handlandmark-full.json"
     }
   },
   object: {
@@ -70572,7 +70572,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211030";
+var externalVersion = "3.11.0-20211031";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,
@@ -79998,7 +79998,7 @@ async function detectFingers(input2, h, config3) {
     t.crop = image.cropAndResize(input2, [h.boxCrop], [0], [inputSize6[1][0], inputSize6[1][1]], "bilinear");
     t.cast = cast(t.crop, "float32");
     t.div = div(t.cast, 255);
-    [t.score, t.keypoints] = models2[1].execute(t.div);
+    [t.score, t.keypoints] = models2[1].execute(t.div, ["Identity_1", "Identity"]);
     const rawScore = (await t.score.data())[0];
     const score = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100;
     if (score >= (config3.hand.minConfidence || 0)) {
@@ -81577,7 +81577,7 @@ async function hand(inCanvas2, result, drawOptions) {
           return;
         for (let i = 0; i < part.length; i++) {
           ctx.beginPath();
-          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * part[i][2]}, ${127.5 - 2 * part[i][2]}, 255, 0.5)` : localOptions.color;
+          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + i * part[i][2]}, ${127.5 - i * part[i][2]}, 255, 0.5)` : localOptions.color;
           ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
           ctx.lineTo(part[i][0], part[i][1]);
           ctx.stroke();

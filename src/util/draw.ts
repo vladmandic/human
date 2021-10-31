@@ -409,7 +409,7 @@ export async function hand(inCanvas: AnyCanvas, result: Array<HandResult>, drawO
         if (!part || part.length === 0 || !part[0]) return;
         for (let i = 0; i < part.length; i++) {
           ctx.beginPath();
-          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + (2 * part[i][2])}, ${127.5 - (2 * part[i][2])}, 255, 0.5)` : localOptions.color;
+          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + (i * part[i][2])}, ${127.5 - (i * part[i][2])}, 255, 0.5)` : localOptions.color;
           ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
           ctx.lineTo(part[i][0], part[i][1]);
           ctx.stroke();

@@ -7,15 +7,23 @@
  * @license MIT
  */
 
+/// <reference path="../../types/src//human.d.ts" />
+
 import Human from '../../dist/human.esm.js'; // equivalent of @vladmandic/human
 
 const config = {
   modelBasePath: '../../models',
   backend: 'humangl',
   async: true,
+  face: { enabled: true },
+  body: { enabled: true },
+  hand: { enabled: true },
+  object: { enabled: false },
+  gesture: { enabled: true },
 };
 
 const human = new Human(config);
+human.env.perfadd = false;
 let result;
 
 const dom = {
@@ -88,7 +96,6 @@ async function drawLoop() {
 async function main() {
   log('human version:', human.version, 'tfjs:', human.tf.version_core);
   log('platform:', human.env.platform, 'agent:', human.env.agent);
-  human.env.perfadd = true;
   status('loading...');
   await human.load();
   status('initializing...');

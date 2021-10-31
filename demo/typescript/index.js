@@ -9,9 +9,15 @@ import Human from "../../dist/human.esm.js";
 var config = {
   modelBasePath: "../../models",
   backend: "humangl",
-  async: true
+  async: true,
+  face: { enabled: true },
+  body: { enabled: true },
+  hand: { enabled: true },
+  object: { enabled: false },
+  gesture: { enabled: true }
 };
 var human = new Human(config);
+human.env.perfadd = false;
 var result;
 var dom = {
   video: document.getElementById("video"),
@@ -80,7 +86,6 @@ async function drawLoop() {
 async function main() {
   log("human version:", human.version, "tfjs:", human.tf.version_core);
   log("platform:", human.env.platform, "agent:", human.env.agent);
-  human.env.perfadd = true;
   status("loading...");
   await human.load();
   status("initializing...");

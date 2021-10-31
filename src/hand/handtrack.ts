@@ -156,7 +156,7 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
     t.crop = tf.image.cropAndResize(input, [h.boxCrop], [0], [inputSize[1][0], inputSize[1][1]], 'bilinear');
     t.cast = tf.cast(t.crop, 'float32');
     t.div = tf.div(t.cast, 255);
-    [t.score, t.keypoints] = models[1].execute(t.div) as Tensor[];
+    [t.score, t.keypoints] = models[1].execute(t.div, ['Identity_1', 'Identity']) as Tensor[];
     const rawScore = (await t.score.data())[0];
     const score = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100; // reverse sigmoid value
     if (score >= (config.hand.minConfidence || 0)) {

@@ -35,7 +35,7 @@ export async function predict(image: Tensor, config: Config, idx, count) {
   skipped = 0;
   return new Promise(async (resolve) => {
     const resize = tf.image.resizeBilinear(image, [model?.inputs[0].shape ? model.inputs[0].shape[2] : 0, model?.inputs[0].shape ? model.inputs[0].shape[1] : 0], false);
-    const res = model?.predict(resize) as Tensor;
+    const res = model?.execute(resize) as Tensor;
     const num = (await res.data())[0];
     cached[idx] = Math.round(100 * num) / 100;
     lastCount = count;

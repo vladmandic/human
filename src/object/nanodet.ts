@@ -124,7 +124,7 @@ export async function predict(image: Tensor, config: Config): Promise<ObjectResu
     tf.dispose(resize);
 
     let objectT;
-    if (config.object.enabled) objectT = await model.predict(transpose);
+    if (config.object.enabled) objectT = model.execute(transpose);
     lastTime = now();
     tf.dispose(transpose);
 

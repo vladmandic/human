@@ -122,7 +122,7 @@ export class HandPipeline {
         const handImage = tf.div(croppedInput, 255);
         tf.dispose(croppedInput);
         tf.dispose(rotatedImage);
-        const [confidenceT, keypoints] = await this.handPoseModel.predict(handImage) as Array<Tensor>;
+        const [confidenceT, keypoints] = this.handPoseModel.execute(handImage) as Array<Tensor>;
         lastTime = now();
         tf.dispose(handImage);
         const confidence = (await confidenceT.data())[0];

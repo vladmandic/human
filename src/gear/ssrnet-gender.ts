@@ -65,7 +65,7 @@ export async function predict(image: Tensor, config: Config | any) {
     let genderT;
     const obj = { gender: '', confidence: 0 };
 
-    if (config.face.gender.enabled) genderT = await model.predict(enhance);
+    if (config.face.gender.enabled) genderT = model.execute(enhance);
     lastTime = now();
     tf.dispose(enhance);
 

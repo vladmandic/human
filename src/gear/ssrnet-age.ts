@@ -49,7 +49,7 @@ export async function predict(image: Tensor, config: Config | any) {
     let ageT;
     const obj = { age: 0 };
 
-    if (config.face.age.enabled) ageT = await model.predict(enhance);
+    if (config.face.age.enabled) ageT = model.execute(enhance);
     lastTime = now();
     tf.dispose(enhance);
 

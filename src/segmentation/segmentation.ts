@@ -40,7 +40,7 @@ export async function process(input: Input, background: Input | undefined, confi
   t.resize = tf.image.resizeBilinear(inputImage.tensor, [model.inputs[0].shape ? model.inputs[0].shape[1] : 0, model.inputs[0].shape ? model.inputs[0].shape[2] : 0], false);
   tf.dispose(inputImage.tensor);
   t.norm = tf.div(t.resize, 255);
-  t.res = model.predict(t.norm) as Tensor;
+  t.res = model.execute(t.norm) as Tensor;
 
   t.squeeze = tf.squeeze(t.res, 0); // meet.shape:[1,256,256,1], selfie.shape:[1,144,256,2]
   if (t.squeeze.shape[2] === 2) {

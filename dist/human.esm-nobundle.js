@@ -11616,9 +11616,9 @@ var iris3 = (res) => {
     const leftIrisCenterX = Math.abs(res[i].mesh[263][0] - res[i].annotations.leftEyeIris[0][0]) / res[i].box[2];
     if (leftIrisCenterX > 0.06 || rightIrisCenterX > 0.06)
       center = false;
-    if (leftIrisCenterX > 0.06)
+    if (leftIrisCenterX > 0.05)
       gestures.push({ iris: i, gesture: "looking right" });
-    if (rightIrisCenterX > 0.06)
+    if (rightIrisCenterX > 0.05)
       gestures.push({ iris: i, gesture: "looking left" });
     const rightIrisCenterY = Math.abs(res[i].mesh[145][1] - res[i].annotations.rightEyeIris[0][1]) / res[i].box[3];
     const leftIrisCenterY = Math.abs(res[i].mesh[374][1] - res[i].annotations.leftEyeIris[0][1]) / res[i].box[3];

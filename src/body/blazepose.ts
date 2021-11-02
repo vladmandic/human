@@ -102,7 +102,7 @@ async function detectParts(input: Tensor, config: Config, outputSize: [number, n
    * t.world: 39 keypoints [x,y,z] normalized to -1..1
    * t.poseflag: body score
    */
-  [t.ld/* 1,195(39*5) */, t.segmentation/* 1,256,256,1 */, t.heatmap/* 1,64,64,39 */, t.world/* 1,117(39*3) */, t.poseflag/* 1,1 */] = await models[1]?.execute(t.input, outputNodes) as Tensor[]; // run model
+  [t.ld/* 1,195(39*5) */, t.segmentation/* 1,256,256,1 */, t.heatmap/* 1,64,64,39 */, t.world/* 1,117(39*3) */, t.poseflag/* 1,1 */] = models[1]?.execute(t.input, outputNodes) as Tensor[]; // run model
   const poseScoreRaw = (await t.poseflag.data())[0];
   const poseScore = Math.max(0, (poseScoreRaw - 0.8) / (1 - 0.8)); // blow up score variance 5x
   const points = await t.ld.data();

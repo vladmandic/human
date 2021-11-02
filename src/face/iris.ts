@@ -124,7 +124,7 @@ export async function augmentIris(rawCoords, face, config, meshSize) {
   const combined = tf.concat([leftEyeCrop, rightEyeCrop]);
   tf.dispose(leftEyeCrop);
   tf.dispose(rightEyeCrop);
-  const eyePredictions = model.predict(combined) as Tensor;
+  const eyePredictions = model.execute(combined) as Tensor;
   tf.dispose(combined);
   const eyePredictionsData = await eyePredictions.data(); // inside tf.tidy
   tf.dispose(eyePredictions);

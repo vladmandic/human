@@ -108,7 +108,7 @@ export async function predict(image: Tensor, config: Config, idx, count) {
 
     if (config.face.description?.enabled) {
       const enhanced = enhance(image);
-      const resT = await model?.predict(enhanced) as Tensor[];
+      const resT = model?.execute(enhanced) as Tensor[];
       lastTime = now();
       tf.dispose(enhanced);
       const genderT = await resT.find((t) => t.shape[1] === 1) as Tensor;
@@ -129,7 +129,6 @@ export async function predict(image: Tensor, config: Config, idx, count) {
       // const reshape = desc.reshape([128, 8]); // reshape large 1024-element descriptor to 128 x 8
       // const reduce = reshape.logSumExp(1); // reduce 2nd dimension by calculating logSumExp on it which leaves us with 128-element descriptor
       const descriptor = desc ? await desc.data() : <number[]>[];
-      // obj.descriptor = [...descriptor];
       obj.descriptor = Array.from(descriptor);
       resT.forEach((t) => tf.dispose(t));
     }

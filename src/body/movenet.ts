@@ -150,7 +150,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
         t.crop = tf.image.cropAndResize(input, [cache.boxes[i]], [0], [inputSize, inputSize], 'bilinear');
         t.cast = tf.cast(t.crop, 'int32');
         // t.input = prepareImage(input);
-        t.res = await model?.predict(t.cast) as Tensor;
+        t.res = model?.execute(t.cast) as Tensor;
         const res = await t.res.array();
         const newBodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, cache.boxes[i]) : await parseMultiPose(res, config, input, cache.boxes[i]);
         cache.bodies = cache.bodies.concat(newBodies);
@@ -159,7 +159,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
     }
     if (cache.bodies.length !== config.body.maxDetected) { // did not find enough bodies based on cached boxes so run detection on full frame
       t.input = prepareImage(input);
-      t.res = await model?.predict(t.input) as Tensor;
+      t.res = model?.execute(t.input) as Tensor;
       const res = await t.res.array();
       cache.bodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, [0, 0, 1, 1]) : await parseMultiPose(res, config, input, [0, 0, 1, 1]);
       for (const body of cache.bodies) rescaleBody(body, [input.shape[2] || 1, input.shape[1] || 1]);
@@ -177,7 +177,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
 
     // run detection on squared input and no cached boxes
     t.input = fix.padInput(input, inputSize);
-    t.res = await model?.predict(t.input) as Tensor;
+    t.res = model?.execute(t.input) as Tensor;
     cache.last = now();
     const res = await t.res.array();
     cache.bodies = (t.res.shape[2] === 17)

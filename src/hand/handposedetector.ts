@@ -46,7 +46,7 @@ export class HandDetector {
 
   async getBoxes(input, config) {
     const t: Record<string, Tensor> = {};
-    t.batched = this.model.predict(input) as Tensor;
+    t.batched = this.model.execute(input) as Tensor;
     t.predictions = tf.squeeze(t.batched);
     t.scores = tf.tidy(() => tf.squeeze(tf.sigmoid(tf.slice(t.predictions, [0, 0], [-1, 1]))));
     const scores = await t.scores.data();

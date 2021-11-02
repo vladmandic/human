@@ -67,7 +67,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
     });
 
     let resT;
-    if (config.body.enabled) resT = await model?.predict(tensor);
+    if (config.body.enabled) resT = model?.execute(tensor);
     lastTime = now();
     tf.dispose(tensor);
 

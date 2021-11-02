@@ -9,8 +9,13 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/10/30 mandic00@live.com
+### **HEAD -> main** 2021/10/31 mandic00@live.com
 
+
+### **origin/main** 2021/10/31 mandic00@live.com
+
+- patch tfjs type defs
+- start 2.5 major version
 - build and docs cleanup
 - fix firefox bug
 

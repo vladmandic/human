@@ -48128,7 +48128,8 @@ function compileProgram(gpgpu, program, inputs, output) {
     flatOffset: null
   };
   const source = makeShader(inputInfos, outShapeInfo, program);
-  const webGLProgram = gpgpu.createProgram(source);
+  const fragmentShader = createFragmentShader(gpgpu.gl, source);
+  const webGLProgram = gpgpu.createProgram(fragmentShader);
   let infLoc = null;
   const nanLoc = gpgpu.getUniformLocation(webGLProgram, "NAN", false);
   if (env().getNumber("WEBGL_VERSION") === 1) {
@@ -48163,6 +48164,7 @@ function compileProgram(gpgpu, program, inputs, output) {
   }
   return {
     program,
+    fragmentShader,
     source,
     webGLProgram,
     uniformLocations,
@@ -48895,10 +48897,9 @@ var GPGPUContext = class {
   downloadMatrixFromPackedTexture(texture, physicalRows, physicalCols) {
     return this.downloadMatrixDriver(texture, () => downloadMatrixFromPackedOutputTexture(this.gl, physicalRows, physicalCols));
   }
-  createProgram(fragmentShaderSource) {
+  createProgram(fragmentShader) {
     this.throwIfDisposed();
     const gl = this.gl;
-    const fragmentShader = createFragmentShader(gl, fragmentShaderSource);
     if (this.vertexShader == null) {
       this.vertexShader = createVertexShader2(gl);
     }
@@ -65442,13 +65443,14 @@ var ScatterOptimizedProgram = class {
     }
     const updatesSnippet = `getUpdates(${updatesString})`;
     const atomicAddSnippet = this.type === "int32" ? `ignore(atomicAdd(&(result.numbers[flatIndex]), i32(updateValue)));` : `
-     var oldI32 = atomicLoad(&(result.numbers[flatIndex]));
-     var assumed = oldI32 - 1;
-     for (; assumed != oldI32;) {
-       assumed = oldI32;
+     var assumed = atomicLoad(&(result.numbers[flatIndex]));
+     var success = 0;
+     for (; success == 0;) {
        let new = bitcast<f32>(assumed) + updateValue;
        let newI32 = bitcast<i32>(new);
-       oldI32 = atomicCompareExchangeWeak(&(result.numbers[flatIndex]), assumed, newI32)[0];
+       let resValue = atomicCompareExchangeWeak(&(result.numbers[flatIndex]), assumed, newI32);
+       assumed = resValue[0];
+       success = resValue[1];
      }
      `;
     const userCode = `
@@ -65859,7 +65861,7 @@ function stridedSlice4(args) {
     const size2 = slice_util_exports.computeOutShape($begin, $end, $strides);
     const sliced = slice4({ inputs: { x }, backend: backend22, attrs: { begin: $begin, size: size2 } });
     result = reshape5({ inputs: { x: sliced }, backend: backend22, attrs: { shape: finalShape } });
-    backend22.disposeData(sliced);
+    backend22.disposeData(sliced.dataId);
   } else {
     const shouldExecuteOnCPU = backend22.shouldExecuteOnCPU([x]);
     if (shouldExecuteOnCPU) {
@@ -65870,7 +65872,9 @@ function stridedSlice4(args) {
     } else {
       const program = new StridedSliceProgram2(finalShapeSparse);
       const uniformData = [{ type: "int32", data: $begin }, { type: "int32", data: $strides }];
-      result = backend22.runWebGPUProgram(program, [x], x.dtype, uniformData);
+      const resultValues = backend22.runWebGPUProgram(program, [x], x.dtype, uniformData);
+      result = reshape5({ inputs: { x: resultValues }, backend: backend22, attrs: { shape: finalShape } });
+      backend22.disposeData(resultValues.dataId);
     }
   }
   return result;
@@ -70572,7 +70576,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211031";
+var externalVersion = "3.11.0-20211102";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,
@@ -71655,7 +71659,7 @@ async function predict(image7, config3, idx, count3) {
   skipped2 = 0;
   return new Promise(async (resolve) => {
     const resize = image.resizeBilinear(image7, [model3?.inputs[0].shape ? model3.inputs[0].shape[2] : 0, model3?.inputs[0].shape ? model3.inputs[0].shape[1] : 0], false);
-    const res = model3?.predict(resize);
+    const res = model3?.execute(resize);
     const num = (await res.data())[0];
     cached[idx] = Math.round(100 * num) / 100;
     lastCount = count3;
@@ -75312,7 +75316,7 @@ var sigmoid6 = (x) => 1 - 1 / (1 + Math.exp(x));
 async function detectParts(input2, config3, outputSize2) {
   const t = {};
   t.input = await prepareImage(input2);
-  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = await models[1]?.execute(t.input, outputNodes);
+  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = models[1]?.execute(t.input, outputNodes);
   const poseScoreRaw = (await t.poseflag.data())[0];
   const poseScore = Math.max(0, (poseScoreRaw - 0.8) / (1 - 0.8));
   const points = await t.ld.data();
@@ -75620,7 +75624,7 @@ async function predict4(image7, config3) {
     });
     let resT;
     if (config3.body.enabled)
-      resT = await model6?.predict(tensor2);
+      resT = model6?.execute(tensor2);
     lastTime4 = now();
     dispose(tensor2);
     if (resT) {
@@ -75728,7 +75732,7 @@ async function predict5(image7, config3, idx, count3) {
       dispose(blueNorm);
       const normalize = tidy(() => mul(sub(grayscale, 0.5), 2));
       dispose(grayscale);
-      const emotionT = await model7?.predict(normalize);
+      const emotionT = model7?.execute(normalize);
       lastTime5 = now();
       const data = await emotionT.data();
       dispose(emotionT);
@@ -75853,7 +75857,7 @@ async function augmentIris(rawCoords, face5, config3, meshSize) {
   const combined = concat([leftEyeCrop, rightEyeCrop]);
   dispose(leftEyeCrop);
   dispose(rightEyeCrop);
-  const eyePredictions = model8.predict(combined);
+  const eyePredictions = model8.execute(combined);
   dispose(combined);
   const eyePredictionsData = await eyePredictions.data();
   dispose(eyePredictions);
@@ -76057,7 +76061,7 @@ async function predict7(image7, config3, idx, count3) {
     };
     if (config3.face.description?.enabled) {
       const enhanced = enhance(image7);
-      const resT = await model10?.predict(enhanced);
+      const resT = model10?.execute(enhanced);
       lastTime7 = now();
       dispose(enhanced);
       const genderT = await resT.find((t) => t.shape[1] === 1);
@@ -79179,7 +79183,7 @@ var HandDetector = class {
   }
   async getBoxes(input2, config3) {
     const t = {};
-    t.batched = this.model.predict(input2);
+    t.batched = this.model.execute(input2);
     t.predictions = squeeze(t.batched);
     t.scores = tidy(() => squeeze(sigmoid(slice(t.predictions, [0, 0], [-1, 1]))));
     const scores = await t.scores.data();
@@ -79320,7 +79324,7 @@ var HandPipeline = class {
         const handImage = div(croppedInput, 255);
         dispose(croppedInput);
         dispose(rotatedImage);
-        const [confidenceT, keypoints] = await this.handPoseModel.predict(handImage);
+        const [confidenceT, keypoints] = this.handPoseModel.execute(handImage);
         lastTime8 = now();
         dispose(handImage);
         const confidence = (await confidenceT.data())[0];
@@ -80347,7 +80351,7 @@ async function predict10(input2, config3) {
     const t = {};
     skipped10 = 0;
     t.input = padInput(input2, inputSize7);
-    t.res = await model11?.predict(t.input);
+    t.res = model11?.execute(t.input);
     cache5.last = now();
     const res = await t.res.array();
     cache5.bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input2, [0, 0, 1, 1]) : await parseMultiPose(res, config3, input2, [0, 0, 1, 1]);
@@ -80460,7 +80464,7 @@ async function predict11(image7, config3) {
     dispose(resize);
     let objectT;
     if (config3.object.enabled)
-      objectT = await model12.predict(transpose6);
+      objectT = model12.execute(transpose6);
     lastTime10 = now();
     dispose(transpose6);
     const obj = await process4(objectT, model12.inputSize, outputSize2, config3);
@@ -80837,7 +80841,7 @@ async function process5(input2, background, config3) {
   t.resize = image.resizeBilinear(inputImage.tensor, [model14.inputs[0].shape ? model14.inputs[0].shape[1] : 0, model14.inputs[0].shape ? model14.inputs[0].shape[2] : 0], false);
   dispose(inputImage.tensor);
   t.norm = div(t.resize, 255);
-  t.res = model14.predict(t.norm);
+  t.res = model14.execute(t.norm);
   t.squeeze = squeeze(t.res, 0);
   if (t.squeeze.shape[2] === 2) {
     t.softmax = softmax(t.squeeze);

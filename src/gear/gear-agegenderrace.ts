@@ -54,7 +54,7 @@ export async function predict(image: Tensor, config: Config) {
     const obj = { age: 0 };
 
     // @ts-ignore array definition unavailable at compile time
-    if (config.face.agegenderrace.enabled) [ageT, genderT, raceT] = await model.execute(resize, ['age_output', 'gender_output', 'race_output']);
+    if (config.face.agegenderrace.enabled) [ageT, genderT, raceT] = model.execute(resize, ['age_output', 'gender_output', 'race_output']);
     lastTime = now();
     tf.dispose(resize);
     // tf.dispose(enhance);

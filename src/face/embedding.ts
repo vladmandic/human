@@ -72,31 +72,28 @@ export async function predict(input, config): Promise<number[]> {
     let data: Array<number> = [];
     if (config.face.embedding.enabled) {
       const image = enhance(input);
+      const dataT = model?.execute(image) as Tensor;
+      /*
       const dataT = tf.tidy(() => {
         /*
         // if needed convert from NHWC to NCHW
         const nchw = image.transpose([3, 0, 1, 2]);
-        */
 
-        const res = model?.predict(image);
+        const res = model.execute(image);
 
-        /*
         // optionally do it twice with flipped image and average results
-        const res1 = model.predict(image);
+        const res1 = model.execute(image);
         const flipped = tf.image.flipLeftRight(image);
-        const res2 = model.predict(flipped);
+        const res2 = model.execute(flipped);
         const merge = tf.stack([res1, res2], 2).squeeze();
         const res = reshape.logSumExp(1);
-        */
 
-        /*
         // optional normalize outputs with l2 normalization
         const scaled = tf.tidy(() => {
           const l2 = res.norm('euclidean');
           const scale = res.div(l2);
           return scale;
         });
-        */
 
         // optional reduce feature vector complexity
         const reshape = tf.reshape(res, [128, 2]); // split 256 vectors into 128 x 2
@@ -104,8 +101,9 @@ export async function predict(input, config): Promise<number[]> {
 
         return reduce;
       });
-      const output: Array<number> = await dataT.data();
-      data = [...output]; // convert typed array to simple array
+      */
+      const output = await dataT.data();
+      data = Array.from(output); // convert typed array to simple array
       tf.dispose(dataT);
       tf.dispose(image);
     }

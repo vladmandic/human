@@ -1328,7 +1328,7 @@ async function predict(image25, config3, idx, count2) {
   skipped2 = 0;
   return new Promise(async (resolve) => {
     const resize = tfjs_esm_exports.image.resizeBilinear(image25, [model2?.inputs[0].shape ? model2.inputs[0].shape[2] : 0, model2?.inputs[0].shape ? model2.inputs[0].shape[1] : 0], false);
-    const res = model2?.predict(resize);
+    const res = model2?.execute(resize);
     const num = (await res.data())[0];
     cached[idx] = Math.round(100 * num) / 100;
     lastCount = count2;
@@ -4985,7 +4985,7 @@ var sigmoid2 = (x) => 1 - 1 / (1 + Math.exp(x));
 async function detectParts(input, config3, outputSize2) {
   const t = {};
   t.input = await prepareImage(input);
-  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = await models[1]?.execute(t.input, outputNodes);
+  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = models[1]?.execute(t.input, outputNodes);
   const poseScoreRaw = (await t.poseflag.data())[0];
   const poseScore = Math.max(0, (poseScoreRaw - 0.8) / (1 - 0.8));
   const points = await t.ld.data();
@@ -5293,7 +5293,7 @@ async function predict4(image25, config3) {
     });
     let resT;
     if (config3.body.enabled)
-      resT = await model5?.predict(tensor3);
+      resT = model5?.execute(tensor3);
     lastTime4 = now();
     tfjs_esm_exports.dispose(tensor3);
     if (resT) {
@@ -5401,7 +5401,7 @@ async function predict5(image25, config3, idx, count2) {
       tfjs_esm_exports.dispose(blueNorm);
       const normalize = tfjs_esm_exports.tidy(() => tfjs_esm_exports.mul(tfjs_esm_exports.sub(grayscale, 0.5), 2));
       tfjs_esm_exports.dispose(grayscale);
-      const emotionT = await model6?.predict(normalize);
+      const emotionT = model6?.execute(normalize);
       lastTime5 = now();
       const data = await emotionT.data();
       tfjs_esm_exports.dispose(emotionT);
@@ -5526,7 +5526,7 @@ async function augmentIris(rawCoords, face5, config3, meshSize) {
   const combined = tfjs_esm_exports.concat([leftEyeCrop, rightEyeCrop]);
   tfjs_esm_exports.dispose(leftEyeCrop);
   tfjs_esm_exports.dispose(rightEyeCrop);
-  const eyePredictions = model7.predict(combined);
+  const eyePredictions = model7.execute(combined);
   tfjs_esm_exports.dispose(combined);
   const eyePredictionsData = await eyePredictions.data();
   tfjs_esm_exports.dispose(eyePredictions);
@@ -5730,7 +5730,7 @@ async function predict7(image25, config3, idx, count2) {
     };
     if (config3.face.description?.enabled) {
       const enhanced = enhance(image25);
-      const resT = await model9?.predict(enhanced);
+      const resT = model9?.execute(enhanced);
       lastTime7 = now();
       tfjs_esm_exports.dispose(enhanced);
       const genderT = await resT.find((t) => t.shape[1] === 1);
@@ -8852,7 +8852,7 @@ var HandDetector = class {
   }
   async getBoxes(input, config3) {
     const t = {};
-    t.batched = this.model.predict(input);
+    t.batched = this.model.execute(input);
     t.predictions = tfjs_esm_exports.squeeze(t.batched);
     t.scores = tfjs_esm_exports.tidy(() => tfjs_esm_exports.squeeze(tfjs_esm_exports.sigmoid(tfjs_esm_exports.slice(t.predictions, [0, 0], [-1, 1]))));
     const scores = await t.scores.data();
@@ -8993,7 +8993,7 @@ var HandPipeline = class {
         const handImage = tfjs_esm_exports.div(croppedInput, 255);
         tfjs_esm_exports.dispose(croppedInput);
         tfjs_esm_exports.dispose(rotatedImage);
-        const [confidenceT, keypoints] = await this.handPoseModel.predict(handImage);
+        const [confidenceT, keypoints] = this.handPoseModel.execute(handImage);
         lastTime8 = now();
         tfjs_esm_exports.dispose(handImage);
         const confidence = (await confidenceT.data())[0];
@@ -10020,7 +10020,7 @@ async function predict10(input, config3) {
     const t = {};
     skipped10 = 0;
     t.input = padInput(input, inputSize7);
-    t.res = await model10?.predict(t.input);
+    t.res = model10?.execute(t.input);
     cache5.last = now();
     const res = await t.res.array();
     cache5.bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, [0, 0, 1, 1]) : await parseMultiPose(res, config3, input, [0, 0, 1, 1]);
@@ -10133,7 +10133,7 @@ async function predict11(image25, config3) {
     tfjs_esm_exports.dispose(resize);
     let objectT;
     if (config3.object.enabled)
-      objectT = await model11.predict(transpose);
+      objectT = model11.execute(transpose);
     lastTime10 = now();
     tfjs_esm_exports.dispose(transpose);
     const obj = await process4(objectT, model11.inputSize, outputSize2, config3);
@@ -10510,7 +10510,7 @@ async function process5(input, background, config3) {
   t.resize = tfjs_esm_exports.image.resizeBilinear(inputImage.tensor, [model13.inputs[0].shape ? model13.inputs[0].shape[1] : 0, model13.inputs[0].shape ? model13.inputs[0].shape[2] : 0], false);
   tfjs_esm_exports.dispose(inputImage.tensor);
   t.norm = tfjs_esm_exports.div(t.resize, 255);
-  t.res = model13.predict(t.norm);
+  t.res = model13.execute(t.norm);
   t.squeeze = tfjs_esm_exports.squeeze(t.res, 0);
   if (t.squeeze.shape[2] === 2) {
     t.softmax = tfjs_esm_exports.softmax(t.squeeze);

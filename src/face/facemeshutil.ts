@@ -32,36 +32,39 @@ export const getRawBox = (box, input): Box => (box ? [
 export const scaleBoxCoordinates = (box, factor) => {
   const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
   const endPoint = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]];
-  return { startPoint, endPoint };
+  return { startPoint, endPoint, landmarks: box.landmarks, confidence: box.confidence };
 };
 
 export const cutBoxFromImageAndResize = (box, image, cropSize) => {
   const h = image.shape[1];
   const w = image.shape[2];
-  return tf.image.cropAndResize(image, [[box.startPoint[1] / h, box.startPoint[0] / w, box.endPoint[1] / h, box.endPoint[0] / w]], [0], cropSize);
+  const crop = tf.image.cropAndResize(image, [[box.startPoint[1] / h, box.startPoint[0] / w, box.endPoint[1] / h, box.endPoint[0] / w]], [0], cropSize);
+  const norm = tf.div(crop, 255);
+  tf.dispose(crop);
+  return norm;
 };
 
-export const enlargeBox = (box, factor = 1.5) => {
+export const enlargeBox = (box, factor) => {
   const center = getBoxCenter(box);
   const size = getBoxSize(box);
   const halfSize: [number, number] = [factor * size[0] / 2, factor * size[1] / 2];
-  return { startPoint: [center[0] - halfSize[0], center[1] - halfSize[1]] as Point, endPoint: [center[0] + halfSize[0], center[1] + halfSize[1]] as Point, landmarks: box.landmarks };
+  return { startPoint: [center[0] - halfSize[0], center[1] - halfSize[1]] as Point, endPoint: [center[0] + halfSize[0], center[1] + halfSize[1]] as Point, landmarks: box.landmarks, confidence: box.confidence };
 };
 
 export const squarifyBox = (box) => {
   const centers = getBoxCenter(box);
   const size = getBoxSize(box);
   const halfSize = Math.max(...size) / 2;
-  return { startPoint: [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)] as Point, endPoint: [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)] as Point, landmarks: box.landmarks };
+  return { startPoint: [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)] as Point, endPoint: [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)] as Point, landmarks: box.landmarks, confidence: box.confidence };
 };
 
 export const calculateLandmarksBoundingBox = (landmarks) => {
   const xs = landmarks.map((d) => d[0]);
   const ys = landmarks.map((d) => d[1]);
-  return { startPoint: [Math.min(...xs), Math.min(...ys)], endPoint: [Math.max(...xs), Math.max(...ys)], landmarks };
+  return { startPoint: [Math.min(...xs), Math.min(...ys)] as Point, endPoint: [Math.max(...xs), Math.max(...ys)] as Point, landmarks };
 };
 
-export const IDENTITY_MATRIX = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+export const fixedRotationMatrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
 
 export const normalizeRadians = (angle) => angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
 
@@ -71,7 +74,7 @@ export const radToDegrees = (rad) => rad * 180 / Math.PI;
 
 export const buildTranslationMatrix = (x, y) => [[1, 0, x], [0, 1, y], [0, 0, 1]];
 
-export const dot = (v1, v2) => {
+export const dot = (v1: number[], v2: number[]) => {
   let product = 0;
   for (let i = 0; i < v1.length; i++) product += v1[i] * v2[i];
   return product;
@@ -133,16 +136,17 @@ export function generateAnchors(inputSize) {
   return anchors;
 }
 
-export function transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize) {
-  const boxSize = getBoxSize({ startPoint: box.startPoint, endPoint: box.endPoint });
-  const coordsScaled = rawCoords.map((coord) => ([
+export function transformRawCoords(coordsRaw, box, angle, rotationMatrix, inputSize) {
+  const boxSize = getBoxSize(box);
+  const coordsScaled = coordsRaw.map((coord) => ([ // scaled around zero-point
     boxSize[0] / inputSize * (coord[0] - inputSize / 2),
     boxSize[1] / inputSize * (coord[1] - inputSize / 2),
     coord[2] || 0,
   ]));
-  const coordsRotationMatrix = (angle !== 0) ? buildRotationMatrix(angle, [0, 0]) : IDENTITY_MATRIX;
-  const coordsRotated = (angle !== 0) ? coordsScaled.map((coord) => ([...rotatePoint(coord, coordsRotationMatrix), coord[2]])) : coordsScaled;
-  const inverseRotationMatrix = (angle !== 0) ? invertTransformMatrix(rotationMatrix) : IDENTITY_MATRIX;
+  const largeAngle = angle && (angle !== 0) && (Math.abs(angle) > 0.2);
+  const coordsRotationMatrix = largeAngle ? buildRotationMatrix(angle, [0, 0]) : fixedRotationMatrix;
+  const coordsRotated = largeAngle ? coordsScaled.map((coord) => ([...rotatePoint(coord, coordsRotationMatrix), coord[2]])) : coordsScaled;
+  const inverseRotationMatrix = largeAngle ? invertTransformMatrix(rotationMatrix) : fixedRotationMatrix;
   const boxCenter = [...getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint }), 1];
   return coordsRotated.map((coord) => ([
     Math.round(coord[0] + dot(boxCenter, inverseRotationMatrix[0])),
@@ -154,13 +158,19 @@ export function transformRawCoords(rawCoords, box, angle, rotationMatrix, inputS
 export function correctFaceRotation(box, input, inputSize) {
   const symmetryLine = (box.landmarks.length >= coords.meshLandmarks.count) ? coords.meshLandmarks.symmetryLine : coords.blazeFaceLandmarks.symmetryLine;
   const angle: number = computeRotation(box.landmarks[symmetryLine[0]], box.landmarks[symmetryLine[1]]);
-  const faceCenter: Point = getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
-  const faceCenterNormalized: Point = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-  const rotated = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
-  const rotationMatrix = buildRotationMatrix(-angle, faceCenter);
-  const cut = cutBoxFromImageAndResize({ startPoint: box.startPoint, endPoint: box.endPoint }, rotated, [inputSize, inputSize]);
-  const face = tf.div(cut, 255);
-  tf.dispose(cut);
-  tf.dispose(rotated);
+  const largeAngle = angle && (angle !== 0) && (Math.abs(angle) > 0.2);
+  let rotationMatrix;
+  let face;
+  if (largeAngle) {
+    const faceCenter: Point = getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
+    const faceCenterNormalized: Point = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
+    const rotated = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
+    rotationMatrix = buildRotationMatrix(-angle, faceCenter);
+    face = cutBoxFromImageAndResize(box, rotated, [inputSize, inputSize]);
+    tf.dispose(rotated);
+  } else {
+    rotationMatrix = fixedRotationMatrix;
+    face = cutBoxFromImageAndResize(box, input, [inputSize, inputSize]);
+  }
   return [angle, rotationMatrix, face];
 }

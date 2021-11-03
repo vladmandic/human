@@ -15,11 +15,11 @@ const config = {
   modelBasePath: '../../models',
   backend: 'humangl',
   async: true,
-  face: { enabled: true },
-  body: { enabled: true },
-  hand: { enabled: true },
-  object: { enabled: false },
-  gesture: { enabled: true },
+  // face: { enabled: true, detector: { rotation: true }, iris: { enabled: false }, description: { enabled: false }, emotion: { enabled: false } },
+  // body: { enabled: false },
+  // hand: { enabled: false },
+  // object: { enabled: false },
+  // gesture: { enabled: true },
 };
 
 const human = new Human(config);
@@ -50,7 +50,7 @@ const perf = (msg) => {
 
 async function webCam() {
   status('starting webcam...');
-  const options = { audio: false, video: { facingMode: 'user', resizeMode: 'none', width: { ideal: document.body.clientWidth } } };
+  const options = { audio: false, video: { facingMode: 'user', resizeMode: 'crop-and-scale', width: { ideal: document.body.clientWidth } } };
   const stream: MediaStream = await navigator.mediaDevices.getUserMedia(options);
   const ready = new Promise((resolve) => { dom.video.onloadeddata = () => resolve(true); });
   dom.video.srcObject = stream;

@@ -43,7 +43,11 @@ export async function predict(image: Tensor, config: Config, idx, count) {
   return new Promise(async (resolve) => {
     const obj: Array<{ score: number, emotion: string }> = [];
     if (config.face.emotion?.enabled) {
-      const resize = tf.image.resizeBilinear(image, [model?.inputs[0].shape ? model.inputs[0].shape[2] : 0, model?.inputs[0].shape ? model.inputs[0].shape[1] : 0], false);
+      const inputSize = model?.inputs[0].shape ? model.inputs[0].shape[2] : 0;
+      const resize = tf.image.resizeBilinear(image, [inputSize, inputSize], false);
+      // const box = [[0.15, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
+      // const resize = tf.image.cropAndResize(image, box, [0], [inputSize, inputSize]);
+
       const [red, green, blue] = tf.split(resize, 3, 3);
       tf.dispose(resize);
       // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html

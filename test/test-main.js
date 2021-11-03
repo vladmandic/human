@@ -188,12 +188,19 @@ async function test(Human, inputConfig) {
   else log('state', 'passed: warmup none result match');
   config.warmup = 'face';
   res = await testWarmup(human, 'default');
-  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 1 || res?.gesture?.length !== 8) log('error', 'failed: warmup face result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 1 || res?.gesture?.length !== 7) log('error', 'failed: warmup face result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: warmup face result match');
   config.warmup = 'body';
   res = await testWarmup(human, 'default');
-  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 1 || res?.gesture?.length !== 7) log('error', 'failed: warmup body result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 1 || res?.gesture?.length !== 6) log('error', 'failed: warmup body result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: warmup body result match');
+  log('state', 'details:', {
+    face: { boxScore: res.face[0].boxScore, faceScore: res.face[0].faceScore, age: res.face[0].age, gender: res.face[0].gender, genderScore: res.face[0].genderScore },
+    emotion: res.face[0].emotion,
+    body: { score: res.body[0].score, keypoints: res.body[0].keypoints.length },
+    hand: { boxScore: res.hand[0].boxScore, fingerScore: res.hand[0].fingerScore, keypoints: res.hand[0].keypoints.length },
+    gestures: res.gesture,
+  });
 
   // test default config async
   log('info', 'test default');
@@ -201,8 +208,8 @@ async function test(Human, inputConfig) {
   config.async = true;
   config.cacheSensitivity = 0;
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
-  if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default result face mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
-  else log('state', 'passed: default result face match');
+  if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default result face mismatch', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
+  else log('state', 'passed: default result face match', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
 
   // test default config sync
   log('info', 'test sync');
@@ -210,8 +217,8 @@ async function test(Human, inputConfig) {
   config.async = false;
   config.cacheSensitivity = 0;
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
-  if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default sync', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
-  else log('state', 'passed: default sync');
+  if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default sync', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
+  else log('state', 'passed: default sync', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
 
   // test image processing
   const img1 = await human.image(null);
@@ -240,7 +247,7 @@ async function test(Human, inputConfig) {
   res1 = human.similarity(desc1, desc1);
   res2 = human.similarity(desc1, desc2);
   res3 = human.similarity(desc1, desc3);
-  if (res1 < 1 || res2 < 0.55 || res3 < 0.5) log('error', 'failed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
+  if (res1 < 1 || res2 < 0.50 || res3 < 0.50) log('error', 'failed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
   else log('state', 'passed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
 
   // test face matching
@@ -271,7 +278,7 @@ async function test(Human, inputConfig) {
   config.body = { minConfidence: 0.0001 };
   config.hand = { minConfidence: 0.0001 };
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
-  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 2 || res?.gesture?.length !== 9) log('error', 'failed: sensitive result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 2 || res?.gesture?.length !== 8) log('error', 'failed: sensitive result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: sensitive result match');
 
   // test sensitive details face
@@ -280,7 +287,7 @@ async function test(Human, inputConfig) {
     log('error', 'failed: sensitive face result mismatch', res?.face?.length, face?.box?.length, face?.mesh?.length, face?.embedding?.length, face?.rotation?.matrix?.length);
   } else log('state', 'passed: sensitive face result match');
   if (!face || face?.emotion?.length < 3) log('error', 'failed: sensitive face emotion result mismatch', face?.emotion.length);
-  else log('state', 'passed: sensitive face emotion result mismatch', face?.emotion.length);
+  else log('state', 'passed: sensitive face emotion result', face?.emotion.length);
 
   // test sensitive details body
   const body = res && res.body ? res.body[0] : null;

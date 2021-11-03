@@ -43,13 +43,14 @@ export function enhance(input): Tensor {
     const tensor = input.image || input.tensor || input;
     if (!(tensor instanceof tf.Tensor)) return null;
     // do a tight crop of image and resize it to fit the model
-    const box = [[0.05, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
-    // const box = [[0.0, 0.0, 1.0, 1.0]]; // basically no crop for test
     if (!model?.inputs[0].shape) return null; // model has no shape so no point continuing
+    const crop = tf.image.resizeBilinear(tensor, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+    /*
+    const box = [[0.05, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
     const crop = (tensor.shape.length === 3)
       ? tf.image.cropAndResize(tf.expandDims(tensor, 0), box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) // add batch dimension if missing
       : tf.image.cropAndResize(tensor, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
-
+    */
     /*
     // just resize to fit the embedding model instead of cropping
     const crop = tf.image.resizeBilinear(tensor, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);

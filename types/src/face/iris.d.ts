@@ -8,6 +8,7 @@ export declare const getEyeBox: (rawCoords: any, face: any, eyeInnerCornerIndex:
         startPoint: Point;
         endPoint: Point;
         landmarks: any;
+        confidence: any;
     };
     boxSize: [number, number];
     crop: any;

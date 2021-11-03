@@ -9,12 +9,7 @@ import Human from "../../dist/human.esm.js";
 var config = {
   modelBasePath: "../../models",
   backend: "humangl",
-  async: true,
-  face: { enabled: true },
-  body: { enabled: true },
-  hand: { enabled: true },
-  object: { enabled: false },
-  gesture: { enabled: true }
+  async: true
 };
 var human = new Human(config);
 human.env.perfadd = false;
@@ -39,7 +34,7 @@ var perf = (msg) => {
 };
 async function webCam() {
   status("starting webcam...");
-  const options = { audio: false, video: { facingMode: "user", resizeMode: "none", width: { ideal: document.body.clientWidth } } };
+  const options = { audio: false, video: { facingMode: "user", resizeMode: "crop-and-scale", width: { ideal: document.body.clientWidth } } };
   const stream = await navigator.mediaDevices.getUserMedia(options);
   const ready = new Promise((resolve) => {
     dom.video.onloadeddata = () => resolve(true);

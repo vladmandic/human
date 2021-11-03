@@ -4640,31 +4640,34 @@ var getRawBox = (box4, input) => box4 ? [
 var scaleBoxCoordinates = (box4, factor) => {
   const startPoint = [box4.startPoint[0] * factor[0], box4.startPoint[1] * factor[1]];
   const endPoint = [box4.endPoint[0] * factor[0], box4.endPoint[1] * factor[1]];
-  return { startPoint, endPoint };
+  return { startPoint, endPoint, landmarks: box4.landmarks, confidence: box4.confidence };
 };
 var cutBoxFromImageAndResize = (box4, image25, cropSize) => {
   const h = image25.shape[1];
   const w = image25.shape[2];
-  return tfjs_esm_exports.image.cropAndResize(image25, [[box4.startPoint[1] / h, box4.startPoint[0] / w, box4.endPoint[1] / h, box4.endPoint[0] / w]], [0], cropSize);
+  const crop2 = tfjs_esm_exports.image.cropAndResize(image25, [[box4.startPoint[1] / h, box4.startPoint[0] / w, box4.endPoint[1] / h, box4.endPoint[0] / w]], [0], cropSize);
+  const norm = tfjs_esm_exports.div(crop2, 255);
+  tfjs_esm_exports.dispose(crop2);
+  return norm;
 };
-var enlargeBox = (box4, factor = 1.5) => {
+var enlargeBox = (box4, factor) => {
   const center = getBoxCenter(box4);
   const size2 = getBoxSize(box4);
   const halfSize = [factor * size2[0] / 2, factor * size2[1] / 2];
-  return { startPoint: [center[0] - halfSize[0], center[1] - halfSize[1]], endPoint: [center[0] + halfSize[0], center[1] + halfSize[1]], landmarks: box4.landmarks };
+  return { startPoint: [center[0] - halfSize[0], center[1] - halfSize[1]], endPoint: [center[0] + halfSize[0], center[1] + halfSize[1]], landmarks: box4.landmarks, confidence: box4.confidence };
 };
 var squarifyBox = (box4) => {
   const centers = getBoxCenter(box4);
   const size2 = getBoxSize(box4);
   const halfSize = Math.max(...size2) / 2;
-  return { startPoint: [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)], endPoint: [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)], landmarks: box4.landmarks };
+  return { startPoint: [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)], endPoint: [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)], landmarks: box4.landmarks, confidence: box4.confidence };
 };
 var calculateLandmarksBoundingBox = (landmarks) => {
   const xs = landmarks.map((d) => d[0]);
   const ys = landmarks.map((d) => d[1]);
   return { startPoint: [Math.min(...xs), Math.min(...ys)], endPoint: [Math.max(...xs), Math.max(...ys)], landmarks };
 };
-var IDENTITY_MATRIX = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+var fixedRotationMatrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
 var normalizeRadians = (angle) => angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
 var computeRotation = (point1, point2) => normalizeRadians(Math.PI / 2 - Math.atan2(-(point2[1] - point1[1]), point2[0] - point1[0]));
 var buildTranslationMatrix = (x, y) => [[1, 0, x], [0, 1, y], [0, 0, 1]];
@@ -4725,16 +4728,17 @@ function generateAnchors(inputSize8) {
   }
   return anchors4;
 }
-function transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize8) {
-  const boxSize = getBoxSize({ startPoint: box4.startPoint, endPoint: box4.endPoint });
-  const coordsScaled = rawCoords.map((coord) => [
+function transformRawCoords(coordsRaw, box4, angle, rotationMatrix, inputSize8) {
+  const boxSize = getBoxSize(box4);
+  const coordsScaled = coordsRaw.map((coord) => [
     boxSize[0] / inputSize8 * (coord[0] - inputSize8 / 2),
     boxSize[1] / inputSize8 * (coord[1] - inputSize8 / 2),
     coord[2] || 0
   ]);
-  const coordsRotationMatrix = angle !== 0 ? buildRotationMatrix(angle, [0, 0]) : IDENTITY_MATRIX;
-  const coordsRotated = angle !== 0 ? coordsScaled.map((coord) => [...rotatePoint(coord, coordsRotationMatrix), coord[2]]) : coordsScaled;
-  const inverseRotationMatrix = angle !== 0 ? invertTransformMatrix(rotationMatrix) : IDENTITY_MATRIX;
+  const largeAngle = angle && angle !== 0 && Math.abs(angle) > 0.2;
+  const coordsRotationMatrix = largeAngle ? buildRotationMatrix(angle, [0, 0]) : fixedRotationMatrix;
+  const coordsRotated = largeAngle ? coordsScaled.map((coord) => [...rotatePoint(coord, coordsRotationMatrix), coord[2]]) : coordsScaled;
+  const inverseRotationMatrix = largeAngle ? invertTransformMatrix(rotationMatrix) : fixedRotationMatrix;
   const boxCenter = [...getBoxCenter({ startPoint: box4.startPoint, endPoint: box4.endPoint }), 1];
   return coordsRotated.map((coord) => [
     Math.round(coord[0] + dot(boxCenter, inverseRotationMatrix[0])),
@@ -4745,14 +4749,20 @@ function transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize8) 
 function correctFaceRotation(box4, input, inputSize8) {
   const symmetryLine = box4.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
   const angle = computeRotation(box4.landmarks[symmetryLine[0]], box4.landmarks[symmetryLine[1]]);
-  const faceCenter = getBoxCenter({ startPoint: box4.startPoint, endPoint: box4.endPoint });
-  const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-  const rotated = tfjs_esm_exports.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
-  const rotationMatrix = buildRotationMatrix(-angle, faceCenter);
-  const cut = cutBoxFromImageAndResize({ startPoint: box4.startPoint, endPoint: box4.endPoint }, rotated, [inputSize8, inputSize8]);
-  const face5 = tfjs_esm_exports.div(cut, 255);
-  tfjs_esm_exports.dispose(cut);
-  tfjs_esm_exports.dispose(rotated);
+  const largeAngle = angle && angle !== 0 && Math.abs(angle) > 0.2;
+  let rotationMatrix;
+  let face5;
+  if (largeAngle) {
+    const faceCenter = getBoxCenter({ startPoint: box4.startPoint, endPoint: box4.endPoint });
+    const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
+    const rotated = tfjs_esm_exports.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
+    rotationMatrix = buildRotationMatrix(-angle, faceCenter);
+    face5 = cutBoxFromImageAndResize(box4, rotated, [inputSize8, inputSize8]);
+    tfjs_esm_exports.dispose(rotated);
+  } else {
+    rotationMatrix = fixedRotationMatrix;
+    face5 = cutBoxFromImageAndResize(box4, input, [inputSize8, inputSize8]);
+  }
   return [angle, rotationMatrix, face5];
 }
 
@@ -5386,7 +5396,8 @@ async function predict5(image25, config3, idx, count2) {
   return new Promise(async (resolve) => {
     const obj = [];
     if (config3.face.emotion?.enabled) {
-      const resize = tfjs_esm_exports.image.resizeBilinear(image25, [model6?.inputs[0].shape ? model6.inputs[0].shape[2] : 0, model6?.inputs[0].shape ? model6.inputs[0].shape[1] : 0], false);
+      const inputSize8 = model6?.inputs[0].shape ? model6.inputs[0].shape[2] : 0;
+      const resize = tfjs_esm_exports.image.resizeBilinear(image25, [inputSize8, inputSize8], false);
       const [red, green, blue] = tfjs_esm_exports.split(resize, 3, 3);
       tfjs_esm_exports.dispose(resize);
       const redNorm = tfjs_esm_exports.mul(red, rgb[0]);
@@ -5555,35 +5566,33 @@ var model8 = null;
 var inputSize5 = 0;
 var skipped7 = Number.MAX_SAFE_INTEGER;
 var lastTime6 = 0;
-var detectedFaces = 0;
+var enlargeFact = 1.6;
 async function predict6(input, config3) {
   const skipTime = (config3.face.detector?.skipTime || 0) > now() - lastTime6;
   const skipFrame = skipped7 < (config3.face.detector?.skipFrames || 0);
-  if (!config3.skipAllowed || !skipTime || !skipFrame || detectedFaces === 0) {
-    const newBoxes2 = await getBoxes(input, config3);
+  if (!config3.skipAllowed || !skipTime || !skipFrame || boxCache.length === 0) {
+    const possibleBoxes = await getBoxes(input, config3);
     lastTime6 = now();
     boxCache = [];
-    for (const possible of newBoxes2.boxes) {
-      const startPoint = await possible.box.startPoint.data();
-      const endPoint = await possible.box.endPoint.data();
-      const landmarks = await possible.landmarks.array();
-      boxCache.push({ startPoint, endPoint, landmarks, confidence: possible.confidence });
+    for (const possible of possibleBoxes.boxes) {
+      const box4 = {
+        startPoint: await possible.box.startPoint.data(),
+        endPoint: await possible.box.endPoint.data(),
+        landmarks: await possible.landmarks.array(),
+        confidence: possible.confidence
+      };
+      boxCache.push(squarifyBox(enlargeBox(scaleBoxCoordinates(box4, possibleBoxes.scaleFactor), Math.sqrt(enlargeFact))));
     }
-    newBoxes2.boxes.forEach((prediction) => tfjs_esm_exports.dispose([prediction.box.startPoint, prediction.box.endPoint, prediction.landmarks]));
-    for (let i = 0; i < boxCache.length; i++) {
-      const scaledBox = scaleBoxCoordinates({ startPoint: boxCache[i].startPoint, endPoint: boxCache[i].endPoint }, newBoxes2.scaleFactor);
-      const enlargedBox = enlargeBox(scaledBox);
-      const squarifiedBox = squarifyBox(enlargedBox);
-      boxCache[i] = { ...squarifiedBox, confidence: boxCache[i].confidence, landmarks: boxCache[i].landmarks };
-    }
+    possibleBoxes.boxes.forEach((prediction) => tfjs_esm_exports.dispose([prediction.box.startPoint, prediction.box.endPoint, prediction.landmarks]));
     skipped7 = 0;
   } else {
     skipped7++;
   }
   const faces = [];
-  const newBoxes = [];
+  const newCache = [];
   let id = 0;
-  for (let box4 of boxCache) {
+  for (let i = 0; i < boxCache.length; i++) {
+    let box4 = boxCache[i];
     let angle = 0;
     let rotationMatrix;
     const face5 = {
@@ -5600,16 +5609,15 @@ async function predict6(input, config3) {
     if (config3.face.detector?.rotation && config3.face.mesh?.enabled && env.kernels.includes("rotatewithoffset")) {
       [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box4, input, inputSize5);
     } else {
-      rotationMatrix = IDENTITY_MATRIX;
-      const cut = cutBoxFromImageAndResize({ startPoint: box4.startPoint, endPoint: box4.endPoint }, input, config3.face.mesh?.enabled ? [inputSize5, inputSize5] : [size(), size()]);
-      face5.tensor = tfjs_esm_exports.div(cut, 255);
-      tfjs_esm_exports.dispose(cut);
+      rotationMatrix = fixedRotationMatrix;
+      face5.tensor = cutBoxFromImageAndResize(box4, input, config3.face.mesh?.enabled ? [inputSize5, inputSize5] : [size(), size()]);
     }
     face5.boxScore = Math.round(100 * box4.confidence) / 100;
     if (!config3.face.mesh?.enabled) {
       face5.box = getClampedBox(box4, input);
       face5.boxRaw = getRawBox(box4, input);
-      face5.score = Math.round(100 * box4.confidence || 0) / 100;
+      face5.boxScore = Math.round(100 * box4.confidence || 0) / 100;
+      face5.score = face5.boxScore;
       face5.mesh = box4.landmarks.map((pt) => [
         (box4.startPoint[0] + box4.endPoint[0]) / 2 + (box4.endPoint[0] + box4.startPoint[0]) * pt[0] / size(),
         (box4.startPoint[1] + box4.endPoint[1]) / 2 + (box4.endPoint[1] + box4.startPoint[1]) * pt[1] / size()
@@ -5622,40 +5630,30 @@ async function predict6(input, config3) {
         log("face mesh detection requested, but model is not loaded");
     } else {
       const [contours, confidence, contourCoords] = model8.execute(face5.tensor);
-      tfjs_esm_exports.dispose(contours);
-      const faceConfidence = (await confidence.data())[0];
-      tfjs_esm_exports.dispose(confidence);
+      const faceConfidence = await confidence.data();
+      face5.faceScore = Math.round(100 * faceConfidence[0]) / 100;
       const coordsReshaped = tfjs_esm_exports.reshape(contourCoords, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
-      tfjs_esm_exports.dispose(contourCoords);
-      tfjs_esm_exports.dispose(coordsReshaped);
-      if (faceConfidence < (config3.face.detector?.minConfidence || 1)) {
-        box4.confidence = faceConfidence;
+      tfjs_esm_exports.dispose([contourCoords, coordsReshaped, confidence, contours]);
+      if (face5.faceScore < (config3.face.detector?.minConfidence || 1)) {
+        box4.confidence = face5.faceScore;
       } else {
         if (config3.face.iris?.enabled)
           rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize5);
         face5.mesh = transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize5);
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize5]);
-        box4 = { ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), 1.5), confidence: box4.confidence };
         for (const key of Object.keys(meshAnnotations))
           face5.annotations[key] = meshAnnotations[key].map((index) => face5.mesh[index]);
-        if (config3.face.detector?.rotation && config3.face.mesh.enabled && config3.face.description?.enabled && env.kernels.includes("rotatewithoffset")) {
-          tfjs_esm_exports.dispose(face5.tensor);
-          [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box4, input, inputSize5);
-        }
+        box4 = squarifyBox(enlargeBox(calculateLandmarksBoundingBox(face5.mesh), enlargeFact));
         face5.box = getClampedBox(box4, input);
         face5.boxRaw = getRawBox(box4, input);
-        face5.score = Math.round(100 * faceConfidence || 100 * box4.confidence || 0) / 100;
-        face5.faceScore = Math.round(100 * faceConfidence) / 100;
-        box4 = { ...squarifyBox(box4), confidence: box4.confidence, faceConfidence };
+        face5.score = face5.faceScore;
+        newCache.push(box4);
       }
     }
     faces.push(face5);
-    newBoxes.push(box4);
   }
-  if (config3.face.mesh?.enabled)
-    boxCache = newBoxes.filter((a) => a.confidence > (config3.face.detector?.minConfidence || 0));
-  detectedFaces = faces.length;
+  boxCache = [...newCache];
   return faces;
 }
 async function load8(config3) {
@@ -5702,10 +5700,9 @@ function enhance(input) {
     const tensor3 = input.image || input.tensor || input;
     if (!(tensor3 instanceof Tensor))
       return null;
-    const box4 = [[0.05, 0.15, 0.85, 0.85]];
     if (!model9?.inputs[0].shape)
       return null;
-    const crop2 = tensor3.shape.length === 3 ? tfjs_esm_exports.image.cropAndResize(tfjs_esm_exports.expandDims(tensor3, 0), box4, [0], [model9.inputs[0].shape[2], model9.inputs[0].shape[1]]) : tfjs_esm_exports.image.cropAndResize(tensor3, box4, [0], [model9.inputs[0].shape[2], model9.inputs[0].shape[1]]);
+    const crop2 = tfjs_esm_exports.image.resizeBilinear(tensor3, [model9.inputs[0].shape[2], model9.inputs[0].shape[1]], false);
     const norm = tfjs_esm_exports.mul(crop2, 255);
     return norm;
   });
@@ -11612,14 +11609,17 @@ var iris3 = (res) => {
       center = true;
       gestures.push({ iris: i, gesture: "facing center" });
     }
-    const rightIrisCenterX = Math.abs(res[i].mesh[33][0] - res[i].annotations.rightEyeIris[0][0]) / res[i].box[2];
     const leftIrisCenterX = Math.abs(res[i].mesh[263][0] - res[i].annotations.leftEyeIris[0][0]) / res[i].box[2];
+    const rightIrisCenterX = Math.abs(res[i].mesh[33][0] - res[i].annotations.rightEyeIris[0][0]) / res[i].box[2];
     if (leftIrisCenterX > 0.06 || rightIrisCenterX > 0.06)
       center = false;
-    if (leftIrisCenterX > 0.05)
-      gestures.push({ iris: i, gesture: "looking right" });
-    if (rightIrisCenterX > 0.05)
-      gestures.push({ iris: i, gesture: "looking left" });
+    if (leftIrisCenterX > rightIrisCenterX) {
+      if (leftIrisCenterX > 0.05)
+        gestures.push({ iris: i, gesture: "looking right" });
+    } else {
+      if (rightIrisCenterX > 0.05)
+        gestures.push({ iris: i, gesture: "looking left" });
+    }
     const rightIrisCenterY = Math.abs(res[i].mesh[145][1] - res[i].annotations.rightEyeIris[0][1]) / res[i].box[3];
     const leftIrisCenterY = Math.abs(res[i].mesh[374][1] - res[i].annotations.leftEyeIris[0][1]) / res[i].box[3];
     if (leftIrisCenterY < 0.01 || rightIrisCenterY < 0.01 || leftIrisCenterY > 0.022 || rightIrisCenterY > 0.022)

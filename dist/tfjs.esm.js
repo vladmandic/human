@@ -6395,7 +6395,7 @@ var Tensor = class {
       const bytes = await data;
       try {
         return bytes.map((b) => decodeString(b));
-      } catch {
+      } catch (e) {
         throw new Error("Failed to decode the string bytes into utf-8. To get the original bytes, call tensor.bytes().");
       }
     }
@@ -6407,7 +6407,7 @@ var Tensor = class {
     if (this.dtype === "string") {
       try {
         return data.map((b) => decodeString(b));
-      } catch {
+      } catch (e) {
         throw new Error("Failed to decode the string bytes into utf-8. To get the original bytes, call tensor.bytes().");
       }
     }
@@ -38826,7 +38826,7 @@ var _MathBackendCPU = class extends KernelBackend {
     if (t.dtype === "string") {
       try {
         decodedData = data.map((d) => util_exports.decodeString(d));
-      } catch {
+      } catch (e) {
         throw new Error("Failed to decode encoded string bytes into utf-8");
       }
     }
@@ -49188,7 +49188,7 @@ var _MathBackendWebGL = class extends KernelBackend {
     if (t.dtype === "string") {
       try {
         decodedData = data.map((d) => util_exports.decodeString(d));
-      } catch {
+      } catch (e) {
         throw new Error("Failed to decode encoded string bytes into utf-8");
       }
     }
@@ -66376,7 +66376,7 @@ var _WebGPUBackend = class extends KernelBackend {
     if (t.dtype === "string") {
       try {
         decodedData = data.map((d) => util_exports.decodeString(d));
-      } catch {
+      } catch (e) {
         throw new Error("Failed to decode encoded string bytes into utf-8");
       }
     }

@@ -108,7 +108,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         face.score = face.faceScore;
         newCache.push(box);
 
-        // other modules prefer wider crop for a face so we dispose it and do it again
+        // other modules prefer different crop for a face so we dispose it and do it again
         /*
         tf.dispose(face.tensor);
         face.tensor = config.face.detector?.rotation && config.face.mesh?.enabled && env.kernels.includes('rotatewithoffset')

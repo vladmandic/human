@@ -107,7 +107,7 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
     if ((config.filter.height || 0) > 0) targetHeight = config.filter.height;
     else if ((config.filter.width || 0) > 0) targetHeight = originalHeight * ((config.filter.width || 0) / originalWidth);
     if (!targetWidth || !targetHeight) throw new Error('input cannot determine dimension');
-    if (!inCanvas || (inCanvas?.width !== targetWidth) || (inCanvas?.height !== targetHeight)) inCanvas = canvas(targetWidth, targetHeight);
+    if (!inCanvas || (inCanvas.width !== targetWidth) || (inCanvas.height !== targetHeight)) inCanvas = canvas(targetWidth, targetHeight);
 
     // draw input to our canvas
     const inCtx = inCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -117,14 +117,14 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
       if (config.filter.flip && typeof inCtx.translate !== 'undefined') {
         inCtx.translate(originalWidth, 0);
         inCtx.scale(-1, 1);
-        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
+        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas.width, inCanvas.height);
         inCtx.setTransform(1, 0, 0, 1, 0, 0); // resets transforms to defaults
       } else {
-        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
+        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas.width, inCanvas.height);
       }
     }
 
-    if (!outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas?.height !== outCanvas?.height)) outCanvas = canvas(inCanvas.width, inCanvas.height); // init output canvas
+    if (!outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas.height !== outCanvas.height)) outCanvas = canvas(inCanvas.width, inCanvas.height); // init output canvas
 
     // imagefx transforms using gl from input canvas to output canvas
     if (config.filter.enabled && env.webgl.supported) {
@@ -170,7 +170,7 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
         pixels = tf.tensor(arr, [input['height'], input['width'], depth], 'int32');
       }
     } else {
-      if (!tmpCanvas || (outCanvas.width !== tmpCanvas.width) || (outCanvas?.height !== tmpCanvas?.height)) tmpCanvas = canvas(outCanvas.width, outCanvas.height); // init output canvas
+      if (!tmpCanvas || (outCanvas.width !== tmpCanvas.width) || (outCanvas.height !== tmpCanvas.height)) tmpCanvas = canvas(outCanvas.width, outCanvas.height); // init output canvas
       if (tf.browser && env.browser) {
         if (config.backend === 'webgl' || config.backend === 'humangl' || config.backend === 'webgpu') {
           pixels = tf.browser.fromPixels(outCanvas); // safe to reuse since both backend and context are gl based

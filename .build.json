@@ -31,7 +31,7 @@
     },
   "build": {
     "global": {
-      "target": "es2020",
+      "target": "es2018",
       "sourcemap": false,
       "treeShaking": true,
       "ignoreAnnotations": true,
@@ -114,7 +114,6 @@
       {
         "name": "tfjs/browser/esm/custom",
         "platform": "browser",
-        "target": "esnext",
         "format": "esm",
         "input": "tfjs/tf-custom.ts",
         "output": "dist/tfjs.esm.js",
@@ -134,7 +133,6 @@
       {
         "name": "human/browser/esm/bundle",
         "platform": "browser",
-        "target": "esnext",
         "format": "esm",
         "input": "src/human.ts",
         "output": "dist/human.esm.js",
@@ -147,7 +145,6 @@
       {
         "name": "demo/browser",
         "platform": "browser",
-        "target": "esnext",
         "format": "esm",
         "input": "demo/typescript/index.ts",
         "output": "demo/typescript/index.js",

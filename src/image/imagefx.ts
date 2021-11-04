@@ -85,11 +85,11 @@ export function GLImageFilter() {
   }
 
   function createFramebufferTexture(width, height) {
-    const fbo = gl.createFramebuffer();
+    const fbo = gl.createFramebuffer() as WebGLFramebuffer;
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     const renderbuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
-    const texture = gl.createTexture();
+    const texture = gl.createTexture() as WebGLTexture;
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -104,7 +104,7 @@ export function GLImageFilter() {
 
   function getTempFramebuffer(index) {
     tempFramebuffers[index] = tempFramebuffers[index] || createFramebufferTexture(fxcanvas.width, fxcanvas.height);
-    return tempFramebuffers[index];
+    return tempFramebuffers[index] as { fbo: WebGLFramebuffer, texture: WebGLTexture };
   }
 
   function draw(flags = 0) {
@@ -113,14 +113,14 @@ export function GLImageFilter() {
     let target: WebGLFramebuffer | null = null;
     let flipY = false;
     if (drawCount === 0) source = sourceTexture; // First draw call - use the source texture
-    else source = getTempFramebuffer(currentFramebufferIndex)?.texture || null; // All following draw calls use the temp buffer last drawn to
+    else source = getTempFramebuffer(currentFramebufferIndex).texture || null; // All following draw calls use the temp buffer last drawn to
     drawCount++;
     if (lastInChain && !(flags & DRAW.INTERMEDIATE)) { // Last filter in our chain - draw directly to the WebGL Canvas. We may also have to flip the image vertically now
       target = null;
       flipY = drawCount % 2 === 0;
     } else {
       currentFramebufferIndex = (currentFramebufferIndex + 1) % 2;
-      target = getTempFramebuffer(currentFramebufferIndex)?.fbo || null; // Intermediate draw call - get a temp buffer to draw to
+      target = getTempFramebuffer(currentFramebufferIndex).fbo || null; // Intermediate draw call - get a temp buffer to draw to
     }
     gl.bindTexture(gl.TEXTURE_2D, source); // Bind the source and target and draw the two triangles
     gl.bindFramebuffer(gl.FRAMEBUFFER, target);
@@ -131,8 +131,8 @@ export function GLImageFilter() {
   function compileShader(fragmentSource) {
     if (shaderProgramCache[fragmentSource]) {
       currentProgram = shaderProgramCache[fragmentSource];
-      gl.useProgram(currentProgram?.id || null);
-      return currentProgram;
+      gl.useProgram((currentProgram ? currentProgram.id : null) || null);
+      return currentProgram as GLProgram;
     }
     currentProgram = new GLProgram(gl, shaders.vertexIdentity, fragmentSource);
     const floatSize = Float32Array.BYTES_PER_ELEMENT;
@@ -142,7 +142,7 @@ export function GLImageFilter() {
     gl.enableVertexAttribArray(currentProgram.attribute['uv']);
     gl.vertexAttribPointer(currentProgram.attribute['uv'], 2, gl.FLOAT, false, vertSize, 2 * floatSize);
     shaderProgramCache[fragmentSource] = currentProgram;
-    return currentProgram;
+    return currentProgram as GLProgram;
   }
 
   const filter = {
@@ -156,7 +156,7 @@ export function GLImageFilter() {
         ? shaders.colorMatrixWithoutAlpha
         : shaders.colorMatrixWithAlpha;
       const program = compileShader(shader);
-      gl.uniform1fv(program?.uniform['m'], m);
+      gl.uniform1fv(program.uniform['m'], m);
       draw();
     },
 
@@ -292,8 +292,8 @@ export function GLImageFilter() {
       const pixelSizeX = 1 / fxcanvas.width;
       const pixelSizeY = 1 / fxcanvas.height;
       const program = compileShader(shaders.convolution);
-      gl.uniform1fv(program?.uniform['m'], m);
-      gl.uniform2f(program?.uniform['px'], pixelSizeX, pixelSizeY);
+      gl.uniform1fv(program.uniform['m'], m);
+      gl.uniform2f(program.uniform['px'], pixelSizeX, pixelSizeY);
       draw();
     },
 
@@ -349,10 +349,10 @@ export function GLImageFilter() {
       const blurSizeY = (size / 7) / fxcanvas.height;
       const program = compileShader(shaders.blur);
       // Vertical
-      gl.uniform2f(program?.uniform['px'], 0, blurSizeY);
+      gl.uniform2f(program.uniform['px'], 0, blurSizeY);
       draw(DRAW.INTERMEDIATE);
       // Horizontal
-      gl.uniform2f(program?.uniform['px'], blurSizeX, 0);
+      gl.uniform2f(program.uniform['px'], blurSizeX, 0);
       draw();
     },
 
@@ -360,7 +360,7 @@ export function GLImageFilter() {
       const blurSizeX = (size) / fxcanvas.width;
       const blurSizeY = (size) / fxcanvas.height;
       const program = compileShader(shaders.pixelate);
-      gl.uniform2f(program?.uniform['size'], blurSizeX, blurSizeY);
+      gl.uniform2f(program.uniform['size'], blurSizeX, blurSizeY);
       draw();
     },
   };

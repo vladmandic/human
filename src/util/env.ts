@@ -134,14 +134,14 @@ export class Env {
     }
     this.webgpu.supported = this.browser && typeof navigator['gpu'] !== 'undefined';
     this.webgpu.backend = this.backends.includes('webgpu');
-    if (this.webgpu.supported) this.webgpu.adapter = (await navigator['gpu'].requestAdapter())?.name;
+    if (this.webgpu.supported) this.webgpu.adapter = (await navigator['gpu'].requestAdapter()).name;
     // enumerate kernels
     this.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
   }
 
   async updateCPU() {
     const cpu = { model: '', flags: [] };
-    if (this.node && this.platform?.startsWith('linux')) {
+    if (this.node && this.platform.startsWith('linux')) {
       // eslint-disable-next-line global-require
       const fs = require('fs');
       try {

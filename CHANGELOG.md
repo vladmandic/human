@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/02 mandic00@live.com
+### **HEAD -> main** 2021/11/03 mandic00@live.com
 
+- improve precision using wasm backend
 - refactor predict with execute
 - patch tfjs type defs
 - start 2.5 major version

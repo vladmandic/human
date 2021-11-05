@@ -3,6 +3,7 @@
  * See `handpose.ts` for entry point
  */
 import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Point } from '../result';
 export declare class HandDetector {
     model: GraphModel;
     anchors: number[][];
@@ -13,15 +14,10 @@ export declare class HandDetector {
     constructor(model: any);
     normalizeBoxes(boxes: any): any;
     normalizeLandmarks(rawPalmLandmarks: any, index: any): any;
-    getBoxes(input: any, config: any): Promise<{
-        box: Tensor;
-        palmLandmarks: Tensor;
-        confidence: number;
-    }[]>;
-    estimateHandBounds(input: any, config: any): Promise<{
-        startPoint: number[];
-        endPoint: number[];
-        palmLandmarks: number[];
+    predict(input: any, config: any): Promise<{
+        startPoint: Point;
+        endPoint: Point;
+        palmLandmarks: Point[];
         confidence: number;
     }[]>;
 }

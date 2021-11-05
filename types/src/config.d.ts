@@ -110,16 +110,20 @@ export interface SegmentationConfig extends GenericConfig {
 export interface FilterConfig {
     /** @property are image filters enabled? */
     enabled: boolean;
-    /** Resize input width
+    /** @property perform image histogram equalization */
+    equalization: boolean;
+    /** resize input width
     * - if both width and height are set to 0, there is no resizing
     * - if just one is set, second one is scaled automatically
     * - if both are set, values are used as-is
+    * @property
     */
     width: number;
-    /** Resize input height
+    /** resize input height
     * - if both width and height are set to 0, there is no resizing
     * - if just one is set, second one is scaled automatically
     * - if both are set, values are used as-is
+    * @property
     */
     height: number;
     /** @property return processed canvas imagedata in result */

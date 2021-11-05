@@ -193,6 +193,11 @@ export declare class Human {
     warmup(userConfig?: Partial<Config>): Promise<Result | {
         error: any;
     }>;
+    /** Run detect with tensorflow profiling
+     * - result object will contain total exeuction time information for top-20 kernels
+     * - actual detection object can be accessed via `human.result`
+    */
+    profile(input: Input, userConfig?: Partial<Config>): Promise<Record<string, number>>;
     /** Main detection method
      * - Analyze configuration: {@link Config}
      * - Pre-process input: {@link Input}

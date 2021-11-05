@@ -4,6 +4,7 @@
  */
 import type { Config } from '../config';
 import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Point } from '../result';
 export declare const size: () => number;
 export declare function load(config: Config): Promise<GraphModel>;
 export declare function getBoxes(inputImage: Tensor, config: Config): Promise<{
@@ -12,11 +13,10 @@ export declare function getBoxes(inputImage: Tensor, config: Config): Promise<{
 } | {
     boxes: {
         box: {
-            startPoint: Tensor;
-            endPoint: Tensor;
+            startPoint: Point;
+            endPoint: Point;
         };
-        landmarks: Tensor;
-        anchor: [number, number] | undefined;
+        landmarks: Point[];
         confidence: number;
     }[];
     scaleFactor: number[];

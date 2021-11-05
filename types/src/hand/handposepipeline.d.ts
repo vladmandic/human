@@ -4,14 +4,15 @@
  */
 import type * as detector from './handposedetector';
 import type { GraphModel } from '../tfjs/types';
+import type { Point } from '../result';
 export declare class HandPipeline {
     handDetector: detector.HandDetector;
     handPoseModel: GraphModel;
     inputSize: number;
     storedBoxes: Array<{
-        startPoint: number[];
-        endPoint: number[];
-        palmLandmarks: number[];
+        startPoint: Point;
+        endPoint: Point;
+        palmLandmarks: Point[];
         confidence: number;
     } | null>;
     skipped: number;
@@ -22,24 +23,24 @@ export declare class HandPipeline {
         endPoint: number[];
     };
     getBoxForPalmLandmarks(palmLandmarks: any, rotationMatrix: any): {
-        startPoint: number[];
-        endPoint: any[];
+        startPoint: Point;
+        endPoint: Point;
         palmLandmarks: any;
     };
     getBoxForHandLandmarks(landmarks: any): {
-        startPoint: number[];
-        endPoint: any[];
+        startPoint: Point;
+        endPoint: Point;
         palmLandmarks: any;
     };
     transformRawCoords(rawCoords: any, box2: any, angle: any, rotationMatrix: any): any;
     estimateHands(image: any, config: any): Promise<{
-        landmarks: number[];
+        landmarks: Point[];
         confidence: number;
         boxConfidence: number;
         fingerConfidence: number;
         box: {
-            topLeft: number[];
-            bottomRight: number[];
+            topLeft: Point;
+            bottomRight: Point;
         };
     }[]>;
 }

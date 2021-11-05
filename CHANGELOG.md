@@ -9,8 +9,14 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/03 mandic00@live.com
+### **HEAD -> main** 2021/11/05 mandic00@live.com
 
+- implement wasm missing ops
+- performance and memory optimizations
+
+### **origin/main** 2021/11/04 mandic00@live.com
+
+- improve box rescaling for all modules
 - improve precision using wasm backend
 - refactor predict with execute
 - patch tfjs type defs

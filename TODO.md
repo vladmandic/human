@@ -38,3 +38,20 @@ MoveNet MultiPose model does not work with WASM backend due to missing F32 broad
   <https://github.com/tensorflow/tfjs/issues/5516>  
 
 <br><hr><br>
+
+### Pending release
+
+- Supports all modules on all backends
+  via custom implementation of missing kernel ops
+- Performance and precision improvements
+  **face** and **hand** modules
+- Use custom built TFJS for bundled version
+  reduced bundle size and built-in support for all backends
+  `nobundle` and `node` versions link to standard `@tensorflow` packages
+- Add optional input histogram equalization
+  auto-level input for optimal brightness/contrast via `config.filter.equalization`
+- Fix **ReactJS** compatibility
+- Better precision using **WASM**
+  Previous issues due to math low-precision in WASM implementation
+- Full **TS** type definitions for all modules and imports
+- Focus on simplified demo

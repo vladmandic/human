@@ -9,6 +9,7 @@ import type * as detector from './handposedetector';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import { env } from '../util/env';
 import { now } from '../util/util';
+import type { Point } from '../result';
 
 const palmBoxEnlargeFactor = 5; // default 3
 const handBoxEnlargeFactor = 1.65; // default 1.65
@@ -21,7 +22,7 @@ export class HandPipeline {
   handDetector: detector.HandDetector;
   handPoseModel: GraphModel;
   inputSize: number;
-  storedBoxes: Array<{ startPoint: number[]; endPoint: number[]; palmLandmarks: number[]; confidence: number } | null>;
+  storedBoxes: Array<{ startPoint: Point; endPoint: Point; palmLandmarks: Point[]; confidence: number } | null>;
   skipped: number;
   detectedHands: number;
 
@@ -93,7 +94,7 @@ export class HandPipeline {
     const skipTime = (config.hand.skipTime || 0) > (now() - lastTime);
     const skipFrame = this.skipped < (config.hand.skipFrames || 0);
     if (config.skipAllowed && skipTime && skipFrame) {
-      boxes = await this.handDetector.estimateHandBounds(image, config);
+      boxes = await this.handDetector.predict(image, config);
       this.skipped = 0;
     }
     if (config.skipAllowed) this.skipped++;
@@ -105,7 +106,7 @@ export class HandPipeline {
       // for (const possible of boxes) this.storedBoxes.push(possible);
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }
-    const hands: Array<{ landmarks: number[], confidence: number, boxConfidence: number, fingerConfidence: number, box: { topLeft: number[], bottomRight: number[] } }> = [];
+    const hands: Array<{ landmarks: Point[], confidence: number, boxConfidence: number, fingerConfidence: number, box: { topLeft: Point, bottomRight: Point } }> = [];
 
     // go through working set of boxes
     for (let i = 0; i < this.storedBoxes.length; i++) {

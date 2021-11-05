@@ -1,4 +1,5 @@
 import * as tf from '../../dist/tfjs.esm.js';
+import type { Point } from '../result';
 
 export function getBoxSize(box) {
   return [
@@ -27,8 +28,8 @@ export function cutBoxFromImageAndResize(box, image, cropSize) {
 }
 
 export function scaleBoxCoordinates(box, factor) {
-  const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
-  const endPoint = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]];
+  const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]] as Point;
+  const endPoint = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]] as Point;
   const palmLandmarks = box.palmLandmarks.map((coord) => {
     const scaledCoord = [coord[0] * factor[0], coord[1] * factor[1]];
     return scaledCoord;
@@ -40,8 +41,8 @@ export function enlargeBox(box, factor = 1.5) {
   const center = getBoxCenter(box);
   const size = getBoxSize(box);
   const newHalfSize = [factor * size[0] / 2, factor * size[1] / 2];
-  const startPoint = [center[0] - newHalfSize[0], center[1] - newHalfSize[1]];
-  const endPoint = [center[0] + newHalfSize[0], center[1] + newHalfSize[1]];
+  const startPoint = [center[0] - newHalfSize[0], center[1] - newHalfSize[1]] as Point;
+  const endPoint = [center[0] + newHalfSize[0], center[1] + newHalfSize[1]] as Point;
   return { startPoint, endPoint, palmLandmarks: box.palmLandmarks };
 }
 
@@ -50,8 +51,8 @@ export function squarifyBox(box) {
   const size = getBoxSize(box);
   const maxEdge = Math.max(...size);
   const halfSize = maxEdge / 2;
-  const startPoint = [centers[0] - halfSize, centers[1] - halfSize];
-  const endPoint = [centers[0] + halfSize, centers[1] + halfSize];
+  const startPoint = [centers[0] - halfSize, centers[1] - halfSize] as Point;
+  const endPoint = [centers[0] + halfSize, centers[1] + halfSize] as Point;
   return { startPoint, endPoint, palmLandmarks: box.palmLandmarks };
 }
 
@@ -61,8 +62,8 @@ export function shiftBox(box, shiftFactor) {
     box.endPoint[1] - box.startPoint[1],
   ];
   const shiftVector = [boxSize[0] * shiftFactor[0], boxSize[1] * shiftFactor[1]];
-  const startPoint = [box.startPoint[0] + shiftVector[0], box.startPoint[1] + shiftVector[1]];
-  const endPoint = [box.endPoint[0] + shiftVector[0], box.endPoint[1] + shiftVector[1]];
+  const startPoint = [box.startPoint[0] + shiftVector[0], box.startPoint[1] + shiftVector[1]] as Point;
+  const endPoint = [box.endPoint[0] + shiftVector[0], box.endPoint[1] + shiftVector[1]] as Point;
   return { startPoint, endPoint, palmLandmarks: box.palmLandmarks };
 }
 

@@ -24,7 +24,7 @@ const inputSize = [[0, 0], [0, 0]];
 const classes = ['hand', 'fist', 'pinch', 'point', 'face', 'tip', 'pinchtip'];
 const faceIndex = 4;
 
-const boxExpandFact = 1.6;
+const boxExpandFact = 1.7;
 const maxDetectorResolution = 512;
 const detectorExpandFact = 1.4;
 

@@ -52,7 +52,7 @@ export const options: DrawOptions = {
   color: <string>'rgba(173, 216, 230, 0.6)', // 'lightblue' with light alpha channel
   labelColor: <string>'rgba(173, 216, 230, 1)', // 'lightblue' with dark alpha channel
   shadowColor: <string>'black',
-  font: <string>'small-caps 14px "Segoe UI"',
+  font: <string>'small-caps 16px "Segoe UI"',
   lineHeight: <number>18,
   lineWidth: <number>4,
   pointSize: <number>2,
@@ -106,14 +106,14 @@ function rect(ctx: CanvasRenderingContext2D, x, y, width, height, localOptions) 
   ctx.stroke();
 }
 
-function lines(ctx: CanvasRenderingContext2D, points: Point[] = [], localOptions) {
-  if (points === undefined || points.length === 0) return;
+function lines(ctx: CanvasRenderingContext2D, points: Point[], localOptions) {
+  if (points.length < 2) return;
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
   for (const pt of points) {
     const z = pt[2] || 0;
-    ctx.strokeStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
-    ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
+    ctx.strokeStyle = localOptions.useDepth && z !== 0 ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
+    ctx.fillStyle = localOptions.useDepth && z !== 0 ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
     ctx.lineTo(pt[0], Math.round(pt[1]));
   }
   ctx.stroke();
@@ -123,8 +123,8 @@ function lines(ctx: CanvasRenderingContext2D, points: Point[] = [], localOptions
   }
 }
 
-function curves(ctx: CanvasRenderingContext2D, points: Point[] = [], localOptions) {
-  if (points === undefined || points.length === 0) return;
+function curves(ctx: CanvasRenderingContext2D, points: Point[], localOptions) {
+  if (points.length < 2) return;
   if (!localOptions.useCurves || points.length <= 2) {
     lines(ctx, points, localOptions);
     return;

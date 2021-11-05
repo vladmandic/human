@@ -25,7 +25,9 @@ JavaScript module using TensorFlow/JS Machine Learning library
 
 <br>
 
-Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) app for processing of live WebCam video or static images  
+*Check out [**Simple Live Demo**](https://vladmandic.github.io/human/demo/typescript/index.html) fully annotated app as a good start starting point ([html](https://github.com/vladmandic/human/blob/main/demo/typescript/index.html))([code](https://github.com/vladmandic/human/blob/main/demo/typescript/index.ts))*  
+
+*Check out [**Main Live Demo**](https://vladmandic.github.io/human/demo/index.html) app for advanced processing of of webcam, video stream or images static images with all possible tunable options*  
 
 - To start video detection, simply press *Play*  
 - To process images, simply drag & drop in your Browser window  
@@ -38,6 +40,7 @@ Check out [**Live Demo**](https://vladmandic.github.io/human/demo/index.html) ap
 
 - [**List of all Demo applications**](https://github.com/vladmandic/human/wiki/Demos)
 - [*Live:* **Main Application**](https://vladmandic.github.io/human/demo/index.html)
+- [*Live:* **Simple Application**](https://vladmandic.github.io/human/demo/typescript/index.html)
 - [*Live:* **Face Extraction, Description, Identification and Matching**](https://vladmandic.github.io/human/demo/facematch/index.html)
 - [*Live:* **Face Extraction and 3D Rendering**](https://vladmandic.github.io/human/demo/face3d/index.html)
 - [*Live:* **Multithreaded Detection Showcasing Maximum Performance**](https://vladmandic.github.io/human/demo/multithread/index.html)

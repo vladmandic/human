@@ -2,17 +2,15 @@
 
 ## Work in Progress
 
-- Switch to custom `tfjs` for main `human` ESM bundle
-- Sort out incompatibility with latest `long.js` 5.0.0 due to CJS to ESM switch
-
 <br>
 
 ### Exploring
 
 - Optical Flow: <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
-- Histogram Equalization: Regular, Adaptive, Contrast Limited
+- Histogram Equalization: Regular, Adaptive, Contrast Limited, CLAHE
 - TFLite Models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
 - Body segmentation: `robust-video-matting`
+- TFJS incompatibility with latest `long.js` 5.0.0 due to CJS to ESM switch
 
 <br><hr><br>
 

@@ -7,6 +7,7 @@ import * as fxImage from './imagefx';
 import type { Input, AnyCanvas, Tensor, Config } from '../exports';
 import { env } from '../util/env';
 import { log, now } from '../util/util';
+import * as enhance from './enhance';
 
 const maxSize = 2048;
 // internal temp canvases
@@ -201,7 +202,7 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
     }
     if (!pixels) throw new Error('cannot create tensor from input');
     const casted = tf.cast(pixels, 'float32');
-    const tensor = tf.expandDims(casted, 0);
+    const tensor = config.filter.equalization ? enhance.histogramEqualization(casted) : tf.expandDims(casted, 0);
     tf.dispose([pixels, casted]);
     return { tensor, canvas: (config.filter.return ? outCanvas : null) };
   }

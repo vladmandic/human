@@ -108,6 +108,7 @@ var config = {
   skipAllowed: false,
   filter: {
     enabled: true,
+    equalization: false,
     width: 0,
     height: 0,
     flip: false,
@@ -71257,6 +71258,21 @@ function GLImageFilter() {
   };
 }
 
+// src/image/enhance.ts
+function histogramEqualization(input2) {
+  const channels = split(input2, 3, 2);
+  const min7 = [min(channels[0]), min(channels[1]), min(channels[2])];
+  const max7 = [max(channels[0]), max(channels[1]), max(channels[2])];
+  const sub5 = [sub(channels[0], min7[0]), sub(channels[1], min7[1]), sub(channels[2], min7[2])];
+  const range7 = [sub(max7[0], min7[0]), sub(max7[1], min7[1]), sub(max7[2], min7[2])];
+  const fact = [div(255, range7[0]), div(255, range7[1]), div(255, range7[2])];
+  const enh = [mul(sub5[0], fact[0]), mul(sub5[1], fact[1]), mul(sub5[2], fact[2])];
+  const rgb2 = stack([enh[0], enh[1], enh[2]], 2);
+  const reshape7 = reshape(rgb2, [1, input2.shape[0], input2.shape[1], 3]);
+  dispose([...channels, ...min7, ...max7, ...sub5, ...range7, ...fact, ...enh, rgb2]);
+  return reshape7;
+}
+
 // src/image/image.ts
 var maxSize = 2048;
 var inCanvas = null;
@@ -71442,7 +71458,7 @@ function process2(input2, config3, getTensor2 = true) {
     if (!pixels)
       throw new Error("cannot create tensor from input");
     const casted = cast(pixels, "float32");
-    const tensor2 = expandDims(casted, 0);
+    const tensor2 = config3.filter.equalization ? histogramEqualization(casted) : expandDims(casted, 0);
     dispose([pixels, casted]);
     return { tensor: tensor2, canvas: config3.filter.return ? outCanvas : null };
   }
@@ -75631,8 +75647,8 @@ async function predict4(image7, config3) {
       if (!(model6 == null ? void 0 : model6.inputs[0].shape))
         return null;
       const resize = image.resizeBilinear(image7, [model6.inputs[0].shape[2], model6.inputs[0].shape[1]], false);
-      const enhance2 = mul(resize, 2);
-      const norm2 = enhance2.sub(1);
+      const enhance3 = mul(resize, 2);
+      const norm2 = enhance3.sub(1);
       return norm2;
     });
     let resT;
@@ -76028,7 +76044,7 @@ async function load9(config3) {
     log("cached model:", modelUrl);
   return model10;
 }
-function enhance(input2) {
+function enhance2(input2) {
   const tensor2 = input2.image || input2.tensor || input2;
   if (!(model10 == null ? void 0 : model10.inputs[0].shape))
     return tensor2;
@@ -76057,7 +76073,7 @@ async function predict7(image7, config3, idx, count3) {
       descriptor: []
     };
     if ((_a2 = config3.face.description) == null ? void 0 : _a2.enabled) {
-      const enhanced = enhance(image7);
+      const enhanced = enhance2(image7);
       const resT = model10 == null ? void 0 : model10.execute(enhanced);
       lastTime7 = now();
       dispose(enhanced);
@@ -83172,7 +83188,7 @@ var Human = class {
     return process5(input2, background, this.config);
   }
   enhance(input2) {
-    return enhance(input2);
+    return enhance2(input2);
   }
   async init() {
     await check(this, true);

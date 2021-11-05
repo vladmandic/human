@@ -43,35 +43,27 @@ export async function predict(image: Tensor, config: Config, idx, count) {
   return new Promise(async (resolve) => {
     const obj: Array<{ score: number, emotion: string }> = [];
     if (config.face.emotion?.enabled) {
+      const t: Record<string, Tensor> = {};
       const inputSize = model?.inputs[0].shape ? model.inputs[0].shape[2] : 0;
-      const resize = tf.image.resizeBilinear(image, [inputSize, inputSize], false);
+      t.resize = tf.image.resizeBilinear(image, [inputSize, inputSize], false);
       // const box = [[0.15, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
       // const resize = tf.image.cropAndResize(image, box, [0], [inputSize, inputSize]);
-
-      const [red, green, blue] = tf.split(resize, 3, 3);
-      tf.dispose(resize);
+      [t.red, t.green, t.blue] = tf.split(t.resize, 3, 3);
       // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html
-      const redNorm = tf.mul(red, rgb[0]);
-      const greenNorm = tf.mul(green, rgb[1]);
-      const blueNorm = tf.mul(blue, rgb[2]);
-      tf.dispose(red);
-      tf.dispose(green);
-      tf.dispose(blue);
-      const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
-      tf.dispose(redNorm);
-      tf.dispose(greenNorm);
-      tf.dispose(blueNorm);
-      const normalize = tf.tidy(() => tf.mul(tf.sub(grayscale, 0.5), 2));
-      tf.dispose(grayscale);
-      const emotionT = model?.execute(normalize) as Tensor; // result is already in range 0..1, no need for additional activation
+      t.redNorm = tf.mul(t.red, rgb[0]);
+      t.greenNorm = tf.mul(t.green, rgb[1]);
+      t.blueNorm = tf.mul(t.blue, rgb[2]);
+      t.grayscale = tf.addN([t.redNorm, t.greenNorm, t.blueNorm]);
+      t.grayscaleSub = tf.sub(t.grayscale, 0.5);
+      t.grayscaleMul = tf.mul(t.grayscaleSub, 2);
+      t.emotion = model?.execute(t.grayscaleMul) as Tensor; // result is already in range 0..1, no need for additional activation
       lastTime = now();
-      const data = await emotionT.data();
-      tf.dispose(emotionT);
+      const data = await t.emotion.data();
       for (let i = 0; i < data.length; i++) {
         if (data[i] > (config.face.emotion?.minConfidence || 0)) obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] });
       }
       obj.sort((a, b) => b.score - a.score);
-      tf.dispose(normalize);
+      Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
     }
     last[idx] = obj;
     lastCount = count;

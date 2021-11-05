@@ -347,6 +347,26 @@ export class Human {
     return res;
   }
 
+  /** Run detect with tensorflow profiling
+   * - result object will contain total exeuction time information for top-20 kernels
+   * - actual detection object can be accessed via `human.result`
+  */
+  async profile(input: Input, userConfig?: Partial<Config>): Promise<Record<string, number>> {
+    const profile = await this.tf.profile(() => this.detect(input, userConfig));
+    const kernels = {};
+    for (const kernel of profile.kernels) { // sum kernel time values per kernel
+      if (kernels[kernel.name]) kernels[kernel.name] += kernel.kernelTimeMs;
+      else kernels[kernel.name] = kernel.kernelTimeMs;
+    }
+    const kernelArr: Array<{ name, ms }> = [];
+    Object.entries(kernels).forEach((key) => kernelArr.push({ name: key[0], ms: key[1] })); // convert to array
+    kernelArr.sort((a, b) => b.ms - a.ms); // sort
+    kernelArr.length = 20; // crop
+    const res: Record<string, number> = {};
+    for (const kernel of kernelArr) res[kernel.name] = kernel.ms; // create perf objects
+    return res;
+  }
+
   /** Main detection method
    * - Analyze configuration: {@link Config}
    * - Pre-process input: {@link Input}

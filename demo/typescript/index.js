@@ -6,14 +6,13 @@
 
 // demo/typescript/index.ts
 import Human from "../../dist/human.esm.js";
-var config = {
-  modelBasePath: "../../models",
-  backend: "humangl",
-  async: true
+var humanConfig = {
+  modelBasePath: "../../models"
 };
-var human = new Human(config);
-human.env.perfadd = false;
-var result;
+var human = new Human(humanConfig);
+human.env["perfadd"] = false;
+human.draw.options.font = 'small-caps 24px "Lato"';
+human.draw.options.lineHeight = 24;
 var dom = {
   video: document.getElementById("video"),
   canvas: document.getElementById("canvas"),
@@ -21,20 +20,17 @@ var dom = {
   fps: document.getElementById("status"),
   perf: document.getElementById("performance")
 };
+var timestamp = { detect: 0, draw: 0, tensors: 0 };
 var fps = { detect: 0, draw: 0 };
 var log = (...msg) => {
   dom.log.innerText += msg.join(" ") + "\n";
   console.log(...msg);
 };
-var status = (msg) => {
-  dom.fps.innerText = msg;
-};
-var perf = (msg) => {
-  dom.perf.innerText = "performance: " + JSON.stringify(msg).replace(/"|{|}/g, "").replace(/,/g, " | ");
-};
+var status = (msg) => dom.fps.innerText = msg;
+var perf = (msg) => dom.perf.innerText = "tensors:" + human.tf.memory().numTensors + " | performance: " + JSON.stringify(msg).replace(/"|{|}/g, "").replace(/,/g, " | ");
 async function webCam() {
   status("starting webcam...");
-  const options = { audio: false, video: { facingMode: "user", resizeMode: "crop-and-scale", width: { ideal: document.body.clientWidth } } };
+  const options = { audio: false, video: { facingMode: "user", resizeMode: "none", width: { ideal: document.body.clientWidth } } };
   const stream = await navigator.mediaDevices.getUserMedia(options);
   const ready = new Promise((resolve) => {
     dom.video.onloadeddata = () => resolve(true);
@@ -57,34 +53,39 @@ async function webCam() {
   };
 }
 async function detectionLoop() {
-  const t0 = human.now();
   if (!dom.video.paused) {
-    result = await human.detect(dom.video);
+    await human.detect(dom.video);
+    const tensors = human.tf.memory().numTensors;
+    if (tensors - timestamp.tensors !== 0)
+      log("allocated tensors:", tensors - timestamp.tensors);
+    timestamp.tensors = tensors;
   }
-  const t1 = human.now();
-  fps.detect = 1e3 / (t1 - t0);
+  const now = human.now();
+  fps.detect = 1e3 / (now - timestamp.detect);
+  timestamp.detect = now;
   requestAnimationFrame(detectionLoop);
 }
 async function drawLoop() {
-  const t0 = human.now();
   if (!dom.video.paused) {
-    const interpolated = await human.next(result);
+    const interpolated = await human.next(human.result);
     await human.draw.canvas(dom.video, dom.canvas);
     await human.draw.all(dom.canvas, interpolated);
     perf(interpolated.performance);
   }
-  const t1 = human.now();
-  fps.draw = 1e3 / (t1 - t0);
-  status(dom.video.paused ? "paused" : `fps: ${fps.detect.toFixed(1).padStart(5, " ")} detect / ${fps.draw.toFixed(1).padStart(5, " ")} draw`);
-  requestAnimationFrame(drawLoop);
+  const now = human.now();
+  fps.draw = 1e3 / (now - timestamp.draw);
+  timestamp.draw = now;
+  status(dom.video.paused ? "paused" : `fps: ${fps.detect.toFixed(1).padStart(5, " ")} detect | ${fps.draw.toFixed(1).padStart(5, " ")} draw`);
+  setTimeout(drawLoop, 30);
 }
 async function main() {
-  log("human version:", human.version, "tfjs:", human.tf.version_core);
+  log("human version:", human.version, "tfjs version:", human.tf.version_core);
   log("platform:", human.env.platform, "agent:", human.env.agent);
   status("loading...");
   await human.load();
+  log("backend:", human.tf.getBackend(), "| available:", human.env.backends);
+  log("loaded models:" + Object.values(human.models).filter((model) => model !== null).length);
   status("initializing...");
-  log("backend:", human.tf.getBackend(), "available:", human.env.backends);
   await human.warmup();
   await webCam();
   await detectionLoop();

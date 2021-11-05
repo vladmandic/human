@@ -327,10 +327,10 @@ async function drawResults(input) {
   `;
   ui.framesDraw++;
   ui.lastFrame = human.now();
-  // if buffered, immediate loop but limit frame rate although it's going to run slower as JS is singlethreaded
   if (ui.buffered) {
     if (isLive(input)) {
-      ui.drawThread = requestAnimationFrame(() => drawResults(input));
+      // ui.drawThread = requestAnimationFrame(() => drawResults(input));
+      ui.drawThread = setTimeout(() => drawResults(input), 25);
     } else {
       cancelAnimationFrame(ui.drawThread);
       videoPause();

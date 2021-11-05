@@ -37,14 +37,13 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
     boxCache = []; // empty cache
     for (const possible of possibleBoxes.boxes) { // extract data from detector
       const box: BoxCache = {
-        startPoint: await possible.box.startPoint.data() as unknown as Point,
-        endPoint: await possible.box.endPoint.data() as unknown as Point,
-        landmarks: await possible.landmarks.array() as Array<Point>,
+        startPoint: possible.box.startPoint,
+        endPoint: possible.box.endPoint,
+        landmarks: possible.landmarks,
         confidence: possible.confidence,
       };
       boxCache.push(util.squarifyBox(util.enlargeBox(util.scaleBoxCoordinates(box, possibleBoxes.scaleFactor), Math.sqrt(enlargeFact))));
     }
-    possibleBoxes.boxes.forEach((prediction) => tf.dispose([prediction.box.startPoint, prediction.box.endPoint, prediction.landmarks]));
     skipped = 0;
   } else {
     skipped++;

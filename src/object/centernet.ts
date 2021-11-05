@@ -11,7 +11,6 @@ import type { ObjectResult, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
-import { fakeOps } from '../tfjs/backend';
 
 let model: GraphModel | null;
 let inputSize = 0;
@@ -22,7 +21,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
   if (!model) {
-    fakeOps(['floormod'], config);
+    // fakeOps(['floormod'], config);
     model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath || '')) as unknown as GraphModel;
     const inputs = Object.values(model.modelSignature['inputs']);
     inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -86,7 +85,6 @@ export async function predict(input: Tensor, config: Config): Promise<ObjectResu
     return last;
   }
   skipped = 0;
-  if (!env.kernels.includes('mod') || !env.kernels.includes('sparsetodense')) return last;
   return new Promise(async (resolve) => {
     const outputSize = [input.shape[2], input.shape[1]];
     const resize = tf.image.resizeBilinear(input, [inputSize, inputSize]);

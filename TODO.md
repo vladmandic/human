@@ -18,10 +18,6 @@
 
 ## Known Issues
 
-### Type Definitions
-- `tfjs.esm.d.ts` missing namespace `OptimizerConstructors`
-- exports from `match` are marked as private
-
 #### WebGPU
 
 Experimental support only until support is officially added in Chromium
@@ -43,15 +39,4 @@ MoveNet MultiPose model does not work with WASM backend due to missing F32 broad
 - Backend WASM missing F32 broadcat implementation  
   <https://github.com/tensorflow/tfjs/issues/5516>  
 
-### Object Detection
-
-Object detection using CenterNet or NanoDet models is not working when using WASM backend due to missing kernel ops in TFJS  
-
-- Backend WASM missing kernel op `Mod`  
-  <https://github.com/tensorflow/tfjs/issues/5110>  
-- Backend WASM missing kernel op `SparseToDense`  
-  <https://github.com/tensorflow/tfjs/issues/4824>  
-
 <br><hr><br>
-
-> const mod = (a, b) => tf.sub(a, tf.mul(tf.div(a, tf.scalar(b, 'int32')), tf.scalar(b, 'int32'))); // modulus op implemented in tf

@@ -5,6 +5,26 @@ import { env } from '../util/env';
 import * as humangl from './humangl';
 import * as tf from '../../dist/tfjs.esm.js';
 
+function registerCustomOps() {
+  if (!env.kernels.includes('mod')) {
+    const kernelMod = {
+      kernelName: 'Mod',
+      backendName: tf.getBackend(),
+      kernelFunc: (op) => tf.tidy(() => tf.sub(op.inputs.a, tf.mul(tf.div(op.inputs.a, op.inputs.b), op.inputs.b))),
+    };
+    tf.registerKernel(kernelMod);
+  }
+  if (!env.kernels.includes('floormod')) {
+    const kernelMod = {
+      kernelName: 'FloorMod',
+      backendName: tf.getBackend(),
+      kernelFunc: (op) => tf.tidy(() => tf.floorDiv(op.inputs.a / op.inputs.b) * op.inputs.b + tf.mod(op.inputs.a, op.inputs.b)),
+    };
+    tf.registerKernel(kernelMod);
+  }
+  env.updateBackend();
+}
+
 export async function check(instance, force = false) {
   instance.state = 'backend';
   if (force || env.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
@@ -99,10 +119,12 @@ export async function check(instance, force = false) {
     // wait for ready
     tf.enableProdMode();
     await tf.ready();
+
     instance.performance.initBackend = Math.trunc(now() - timeStamp);
     instance.config.backend = tf.getBackend();
 
     env.updateBackend(); // update env on backend init
+    registerCustomOps();
   }
   return true;
 }

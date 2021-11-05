@@ -13,20 +13,20 @@ import Human from '../../dist/human.esm.js'; // equivalent of @vladmandic/human
 
 const humanConfig = { // user configuration for human, used to fine-tune behavior
   modelBasePath: '../../models',
-  // backend: 'humangl',
+  // backend: 'webgpu',
   // async: true,
   // face: { enabled: false, detector: { rotation: true }, iris: { enabled: false }, description: { enabled: false }, emotion: { enabled: false } },
   // body: { enabled: false },
   // hand: { enabled: false },
-  // object: { enabled: false },
+  // object: { enabled: true },
   // gesture: { enabled: true },
 };
 
 const human = new Human(humanConfig); // create instance of human with overrides from user configuration
 
 human.env['perfadd'] = false; // is performance data showing instant or total values
-human.draw.options.font = 'small-caps 24px "Lato"'; // set font used to draw labels when using draw methods
-human.draw.options.lineHeight = 24;
+human.draw.options.font = 'small-caps 18px "Lato"'; // set font used to draw labels when using draw methods
+human.draw.options.lineHeight = 20;
 
 const dom = { // grab instances of dom objects so we dont have to look them up later
   video: document.getElementById('video') as HTMLVideoElement,

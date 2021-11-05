@@ -11,8 +11,8 @@ var humanConfig = {
 };
 var human = new Human(humanConfig);
 human.env["perfadd"] = false;
-human.draw.options.font = 'small-caps 24px "Lato"';
-human.draw.options.lineHeight = 24;
+human.draw.options.font = 'small-caps 18px "Lato"';
+human.draw.options.lineHeight = 20;
 var dom = {
   video: document.getElementById("video"),
   canvas: document.getElementById("canvas"),

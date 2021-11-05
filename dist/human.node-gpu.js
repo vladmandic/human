@@ -12,8 +12,8 @@ var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[Object.keys(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+var __commonJS = (cb, mod2) => function __require() {
+  return mod2 || (0, cb[Object.keys(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
 };
 var __export = (target, all2) => {
   __markAsModule(target);
@@ -5179,7 +5179,6 @@ async function load4(config3) {
   if (env.initial)
     model4 = null;
   if (!model4) {
-    fakeOps(["floormod"], config3);
     model4 = await tf8.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model4.modelSignature["inputs"]);
     inputSize3 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -5245,8 +5244,6 @@ async function predict3(input, config3) {
     return last;
   }
   skipped4 = 0;
-  if (!env.kernels.includes("mod") || !env.kernels.includes("sparsetodense"))
-    return last;
   return new Promise(async (resolve) => {
     const outputSize2 = [input.shape[2], input.shape[1]];
     const resize = tf8.image.resizeBilinear(input, [inputSize3, inputSize3]);
@@ -5316,12 +5313,11 @@ async function load5(config3) {
 function max2d(inputs, minScore) {
   const [width, height] = inputs.shape;
   return tf9.tidy(() => {
-    const mod = (a, b) => tf9.sub(a, tf9.mul(tf9.div(a, tf9.scalar(b, "int32")), tf9.scalar(b, "int32")));
     const reshaped = tf9.reshape(inputs, [height * width]);
     const newScore = tf9.max(reshaped, 0).dataSync()[0];
     if (newScore > minScore) {
       const coordinates = tf9.argMax(reshaped, 0);
-      const x = mod(coordinates, width).dataSync()[0];
+      const x = tf9.mod(coordinates, width).dataSync()[0];
       const y = tf9.div(coordinates, tf9.scalar(width, "int32")).dataSync()[0];
       return [x, y, newScore];
     }
@@ -10858,6 +10854,25 @@ async function register(instance) {
 
 // src/tfjs/backend.ts
 var tf25 = __toModule(require_tfjs_esm());
+function registerCustomOps() {
+  if (!env.kernels.includes("mod")) {
+    const kernelMod = {
+      kernelName: "Mod",
+      backendName: tf25.getBackend(),
+      kernelFunc: (op) => tf25.tidy(() => tf25.sub(op.inputs.a, tf25.mul(tf25.div(op.inputs.a, op.inputs.b), op.inputs.b)))
+    };
+    tf25.registerKernel(kernelMod);
+  }
+  if (!env.kernels.includes("floormod")) {
+    const kernelMod = {
+      kernelName: "FloorMod",
+      backendName: tf25.getBackend(),
+      kernelFunc: (op) => tf25.tidy(() => tf25.floorDiv(op.inputs.a / op.inputs.b) * op.inputs.b + tf25.mod(op.inputs.a, op.inputs.b))
+    };
+    tf25.registerKernel(kernelMod);
+  }
+  env.updateBackend();
+}
 async function check(instance, force = false) {
   instance.state = "backend";
   if (force || env.initial || instance.config.backend && instance.config.backend.length > 0 && tf25.getBackend() !== instance.config.backend) {
@@ -10944,6 +10959,7 @@ async function check(instance, force = false) {
     instance.performance.initBackend = Math.trunc(now() - timeStamp);
     instance.config.backend = tf25.getBackend();
     env.updateBackend();
+    registerCustomOps();
   }
   return true;
 }

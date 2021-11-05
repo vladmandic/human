@@ -5148,7 +5148,6 @@ async function load4(config3) {
   if (env.initial)
     model4 = null;
   if (!model4) {
-    fakeOps(["floormod"], config3);
     model4 = await tfjs_esm_exports.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model4.modelSignature["inputs"]);
     inputSize3 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -5214,8 +5213,6 @@ async function predict3(input, config3) {
     return last;
   }
   skipped4 = 0;
-  if (!env.kernels.includes("mod") || !env.kernels.includes("sparsetodense"))
-    return last;
   return new Promise(async (resolve) => {
     const outputSize2 = [input.shape[2], input.shape[1]];
     const resize = tfjs_esm_exports.image.resizeBilinear(input, [inputSize3, inputSize3]);
@@ -5282,12 +5279,11 @@ async function load5(config3) {
 function max2d(inputs, minScore) {
   const [width, height] = inputs.shape;
   return tfjs_esm_exports.tidy(() => {
-    const mod = (a, b) => tfjs_esm_exports.sub(a, tfjs_esm_exports.mul(tfjs_esm_exports.div(a, tfjs_esm_exports.scalar(b, "int32")), tfjs_esm_exports.scalar(b, "int32")));
     const reshaped = tfjs_esm_exports.reshape(inputs, [height * width]);
     const newScore = tfjs_esm_exports.max(reshaped, 0).dataSync()[0];
     if (newScore > minScore) {
       const coordinates = tfjs_esm_exports.argMax(reshaped, 0);
-      const x = mod(coordinates, width).dataSync()[0];
+      const x = tfjs_esm_exports.mod(coordinates, width).dataSync()[0];
       const y = tfjs_esm_exports.div(coordinates, tfjs_esm_exports.scalar(width, "int32")).dataSync()[0];
       return [x, y, newScore];
     }
@@ -10799,6 +10795,25 @@ async function register(instance) {
 }
 
 // src/tfjs/backend.ts
+function registerCustomOps() {
+  if (!env.kernels.includes("mod")) {
+    const kernelMod = {
+      kernelName: "Mod",
+      backendName: tfjs_esm_exports.getBackend(),
+      kernelFunc: (op) => tfjs_esm_exports.tidy(() => tfjs_esm_exports.sub(op.inputs.a, tfjs_esm_exports.mul(tfjs_esm_exports.div(op.inputs.a, op.inputs.b), op.inputs.b)))
+    };
+    tfjs_esm_exports.registerKernel(kernelMod);
+  }
+  if (!env.kernels.includes("floormod")) {
+    const kernelMod = {
+      kernelName: "FloorMod",
+      backendName: tfjs_esm_exports.getBackend(),
+      kernelFunc: (op) => tfjs_esm_exports.tidy(() => tfjs_esm_exports.floorDiv(op.inputs.a / op.inputs.b) * op.inputs.b + tfjs_esm_exports.mod(op.inputs.a, op.inputs.b))
+    };
+    tfjs_esm_exports.registerKernel(kernelMod);
+  }
+  env.updateBackend();
+}
 async function check(instance, force = false) {
   instance.state = "backend";
   if (force || env.initial || instance.config.backend && instance.config.backend.length > 0 && tfjs_esm_exports.getBackend() !== instance.config.backend) {
@@ -10885,6 +10900,7 @@ async function check(instance, force = false) {
     instance.performance.initBackend = Math.trunc(now() - timeStamp);
     instance.config.backend = tfjs_esm_exports.getBackend();
     env.updateBackend();
+    registerCustomOps();
   }
   return true;
 }

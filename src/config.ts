@@ -339,7 +339,7 @@ const config: Config = {
     enabled: true,
     rotation: true,
     skipFrames: 99,
-    skipTime: 2000,
+    skipTime: 1000,
     minConfidence: 0.50,
     iouThreshold: 0.2,
     maxDetected: -1,
@@ -358,7 +358,7 @@ const config: Config = {
     iouThreshold: 0.4,
     maxDetected: 10,
     skipFrames: 99,
-    skipTime: 1000,
+    skipTime: 2000,
   },
   segmentation: {
     enabled: false,

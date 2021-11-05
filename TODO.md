@@ -53,3 +53,5 @@ Object detection using CenterNet or NanoDet models is not working when using WAS
   <https://github.com/tensorflow/tfjs/issues/4824>  
 
 <br><hr><br>
+
+> const mod = (a, b) => tf.sub(a, tf.mul(tf.div(a, tf.scalar(b, 'int32')), tf.scalar(b, 'int32'))); // modulus op implemented in tf

@@ -64,6 +64,7 @@ JavaScript module using TensorFlow/JS Machine Learning library
 - [**Configuration Details**](https://github.com/vladmandic/human/wiki/Config)
 - [**Result Details**](https://github.com/vladmandic/human/wiki/Result)
 - [**Caching & Smoothing**](https://github.com/vladmandic/human/wiki/Caching)
+- [**Input Processing**](https://github.com/vladmandic/human/wiki/Image)
 - [**Face Recognition & Face Description**](https://github.com/vladmandic/human/wiki/Embedding)
 - [**Gesture Recognition**](https://github.com/vladmandic/human/wiki/Gesture)
 - [**Common Issues**](https://github.com/vladmandic/human/wiki/Issues)

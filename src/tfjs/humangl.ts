@@ -68,13 +68,11 @@ export async function register(instance): Promise<void> {
           log('possible browser memory leak using webgl or conflict with multiple backend registrations');
           instance.emit('error');
           throw new Error('browser webgl error');
-          /*
-          log('resetting humangl backend');
-          env.initial = true;
-          models.reset(instance);
-          await tf.removeBackend(config.name);
-          await register(instance); // re-register
-          */
+          // log('resetting humangl backend');
+          // env.initial = true;
+          // models.reset(instance);
+          // await tf.removeBackend(config.name);
+          // await register(instance); // re-register
         });
         config.canvas.addEventListener('webglcontextrestored', (e) => {
           log('error: humangl context restored:', e);

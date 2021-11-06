@@ -5,7 +5,7 @@
 
 // export all from build bundle
 export * from '@tensorflow/tfjs/dist/index.js';
-// export * from '@tensorflow/tfjs-backend-webgl/dist/index.js';
+export * from '@tensorflow/tfjs-backend-webgl/dist/index.js';
 // export * from '@tensorflow/tfjs-backend-wasm/dist/index.js';
 
 // add webgpu to bundle, experimental

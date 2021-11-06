@@ -31,7 +31,7 @@ export async function process(input: Input, background: Input | undefined, confi
   if (busy) return { data: [], canvas: null, alpha: null };
   busy = true;
   if (!model) await load(config);
-  const inputImage = image.process(input, config);
+  const inputImage = await image.process(input, config);
   const width = inputImage.canvas?.width || 0;
   const height = inputImage.canvas?.height || 0;
   if (!inputImage.tensor) return { data: [], canvas: null, alpha: null };
@@ -85,7 +85,7 @@ export async function process(input: Input, background: Input | undefined, confi
   let mergedCanvas: HTMLCanvasElement | OffscreenCanvas | null = null;
   if (background && compositeCanvas) { // draw background with segmentation as overlay if background is present
     mergedCanvas = image.canvas(width, height);
-    const bgImage = image.process(background, config);
+    const bgImage = await image.process(background, config);
     tf.dispose(bgImage.tensor);
     const ctxMerge = mergedCanvas.getContext('2d') as CanvasRenderingContext2D;
     ctxMerge.drawImage(bgImage.canvas as HTMLCanvasElement, 0, 0, mergedCanvas.width, mergedCanvas.height);

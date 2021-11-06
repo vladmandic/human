@@ -13,10 +13,11 @@ import * as blazeface from './blazeface';
 import * as util from './facemeshutil';
 import * as coords from './facemeshcoords';
 import * as iris from './iris';
+import { histogramEqualization } from '../image/enhance';
+import { env } from '../util/env';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { FaceResult, Point } from '../result';
 import type { Config } from '../config';
-import { env } from '../util/env';
 
 type BoxCache = { startPoint: Point, endPoint: Point, landmarks: Array<Point>, confidence: number };
 let boxCache: Array<BoxCache> = [];
@@ -72,6 +73,11 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
     } else {
       rotationMatrix = util.fixedRotationMatrix;
       face.tensor = util.cutBoxFromImageAndResize(box, input, config.face.mesh?.enabled ? [inputSize, inputSize] : [blazeface.size(), blazeface.size()]);
+    }
+    if (config?.filter?.equalization) {
+      const equilized = await histogramEqualization(face.tensor as Tensor);
+      tf.dispose(face.tensor);
+      face.tensor = equilized;
     }
     face.boxScore = Math.round(100 * box.confidence) / 100;
     if (!config.face.mesh?.enabled) { // mesh not enabled, return resuts from detector only

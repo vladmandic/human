@@ -13,6 +13,7 @@ function registerCustomOps() {
       kernelFunc: (op) => tf.tidy(() => tf.sub(op.inputs.a, tf.mul(tf.div(op.inputs.a, op.inputs.b), op.inputs.b))),
     };
     tf.registerKernel(kernelMod);
+    env.kernels.push('mod');
   }
   if (!env.kernels.includes('floormod')) {
     const kernelMod = {
@@ -21,8 +22,8 @@ function registerCustomOps() {
       kernelFunc: (op) => tf.tidy(() => tf.floorDiv(op.inputs.a / op.inputs.b) * op.inputs.b + tf.mod(op.inputs.a, op.inputs.b)),
     };
     tf.registerKernel(kernelMod);
+    env.kernels.push('floormod');
   }
-  env.updateBackend();
 }
 
 export async function check(instance, force = false) {
@@ -123,8 +124,9 @@ export async function check(instance, force = false) {
     instance.performance.initBackend = Math.trunc(now() - timeStamp);
     instance.config.backend = tf.getBackend();
 
-    env.updateBackend(); // update env on backend init
+    await env.updateBackend(); // update env on backend init
     registerCustomOps();
+    // await env.updateBackend(); // update env on backend init
   }
   return true;
 }

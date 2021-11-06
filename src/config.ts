@@ -122,7 +122,9 @@ export interface SegmentationConfig extends GenericConfig {
 export interface FilterConfig {
   /** @property are image filters enabled? */
   enabled: boolean,
-  /** @property perform image histogram equalization */
+  /** @property perform image histogram equalization
+   * - equalization is performed on input as a whole and detected face before its passed for further analysis
+  */
   equalization: boolean,
   /** resize input width
   * - if both width and height are set to 0, there is no resizing
@@ -229,6 +231,9 @@ export interface Config {
   */
   cacheSensitivity: number;
 
+  /** Perform immediate garbage collection on deallocated tensors instead of caching them */
+  deallocate: boolean;
+
   /** Internal Variable */
   skipAllowed: boolean;
 
@@ -264,6 +269,7 @@ const config: Config = {
   warmup: 'full',
   cacheSensitivity: 0.70,
   skipAllowed: false,
+  deallocate: false,
   filter: {
     enabled: true,
     equalization: false,

@@ -289,16 +289,15 @@ And for even better results, you can run detection in a separate web worker thre
 
 Default models in Human library are:
 
-- **Face Detection**: MediaPipe BlazeFace - Back variation
+- **Face Detection**: MediaPipe BlazeFace Back variation
 - **Face Mesh**: MediaPipe FaceMesh
 - **Face Iris Analysis**: MediaPipe Iris
 - **Face Description**: HSE FaceRes
 - **Emotion Detection**: Oarriaga Emotion
-- **Body Analysis**: MoveNet - Lightning variation
-- **Hand Analysis**: MediaPipe Hands
+- **Body Analysis**: MoveNet Lightning variation
+- **Hand Analysis**: HandTrack & MediaPipe HandLandmarks
 - **Body Segmentation**: Google Selfie
-- **Object Detection**: MB3 CenterNet
-- **Body Segmentation**: Google Selfie
+- **Object Detection**: CenterNet with MobileNet v3
 
 Note that alternative models are provided and can be enabled via configuration  
 For example, `PoseNet` model can be switched for `BlazePose`, `EfficientPose` or `MoveNet` model depending on the use case  
@@ -315,7 +314,7 @@ For more info, see [**Configuration Details**](https://github.com/vladmandic/hum
 
 `Human` library is written in `TypeScript` [4.4](https://www.typescriptlang.org/docs/handbook/intro.html)  
 Conforming to latest `JavaScript` [ECMAScript version 2021](https://262.ecma-international.org/) standard  
-Build target is `JavaScript` [EMCAScript version 2020](https://262.ecma-international.org/11.0/)  
+Build target is `JavaScript` [EMCAScript version 2018](https://262.ecma-international.org/11.0/)  
 
 <br>
 

@@ -54,7 +54,9 @@ export const body = (res): GestureResult[] => {
     // leaning
     const leftShoulder = res[i].keypoints.find((a) => (a.part === 'leftShoulder'));
     const rightShoulder = res[i].keypoints.find((a) => (a.part === 'rightShoulder'));
-    if (leftShoulder && rightShoulder) gestures.push({ body: i, gesture: `leaning ${(leftShoulder.position[1] > rightShoulder.position[1]) ? 'left' : 'right'}` });
+    if (leftShoulder && rightShoulder && Math.abs(leftShoulder.positionRaw[1] - rightShoulder.positionRaw[1]) > 0.1) {
+      gestures.push({ body: i, gesture: `leaning ${(leftShoulder.position[1] > rightShoulder.position[1]) ? 'left' : 'right'}` });
+    }
   }
   return gestures;
 };

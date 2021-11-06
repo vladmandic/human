@@ -6,7 +6,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as fxImage from './imagefx';
 import type { Input, AnyCanvas, Tensor, Config } from '../exports';
 import { env } from '../util/env';
-import { log, now } from '../util/util';
+import { log } from '../util/util';
 import * as enhance from './enhance';
 
 const maxSize = 2048;
@@ -16,6 +16,13 @@ let outCanvas: AnyCanvas | null = null; // use global variable to avoid recreati
 let tmpCanvas: AnyCanvas | null = null; // use global variable to avoid recreating canvas on each frame
 // @ts-ignore // imagefx is js module that should be converted to a class
 let fx: fxImage.GLImageFilter | null; // instance of imagefx
+
+const last: { inputSum: number, cacheDiff: number, sumMethod: number, inputTensor: undefined | Tensor } = {
+  inputSum: 0,
+  cacheDiff: 1,
+  sumMethod: 0,
+  inputTensor: undefined,
+};
 
 export function canvas(width, height): AnyCanvas {
   let c;
@@ -48,7 +55,7 @@ export function copy(input: AnyCanvas, output?: AnyCanvas) {
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
 // input is resized and run through imagefx filter
-export function process(input: Input, config: Config, getTensor: boolean = true): { tensor: Tensor | null, canvas: AnyCanvas | null } {
+export async function process(input: Input, config: Config, getTensor: boolean = true): Promise<{ tensor: Tensor | null, canvas: AnyCanvas | null }> {
   if (!input) {
     // throw new Error('input is missing');
     if (config.debug) log('input is missing');
@@ -108,7 +115,7 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
     if ((config.filter.height || 0) > 0) targetHeight = config.filter.height;
     else if ((config.filter.width || 0) > 0) targetHeight = originalHeight * ((config.filter.width || 0) / originalWidth);
     if (!targetWidth || !targetHeight) throw new Error('input cannot determine dimension');
-    if (!inCanvas || (inCanvas.width !== targetWidth) || (inCanvas.height !== targetHeight)) inCanvas = canvas(targetWidth, targetHeight);
+    if (!inCanvas || (inCanvas?.width !== targetWidth) || (inCanvas?.height !== targetHeight)) inCanvas = canvas(targetWidth, targetHeight);
 
     // draw input to our canvas
     const inCtx = inCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -118,14 +125,14 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
       if (config.filter.flip && typeof inCtx.translate !== 'undefined') {
         inCtx.translate(originalWidth, 0);
         inCtx.scale(-1, 1);
-        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas.width, inCanvas.height);
+        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
         inCtx.setTransform(1, 0, 0, 1, 0, 0); // resets transforms to defaults
       } else {
-        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas.width, inCanvas.height);
+        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
       }
     }
 
-    if (!outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas.height !== outCanvas.height)) outCanvas = canvas(inCanvas.width, inCanvas.height); // init output canvas
+    if (!outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas?.height !== outCanvas?.height)) outCanvas = canvas(inCanvas.width, inCanvas.height); // init output canvas
 
     // imagefx transforms using gl from input canvas to output canvas
     if (config.filter.enabled && env.webgl.supported) {
@@ -192,26 +199,16 @@ export function process(input: Input, config: Config, getTensor: boolean = true)
       const rgb = tf.slice3d(pixels, [0, 0, 0], [-1, -1, 3]); // strip alpha channel
       tf.dispose(pixels);
       pixels = rgb;
-      /*
-      const channels = tf.split(pixels, 4, 2); // split rgba to channels
-      tf.dispose(pixels);
-      const rgb = tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb and ignore alpha
-      pixels = tf.reshape(rgb, [rgb.shape[0], rgb.shape[1], 3]); // move extra dim from the end of tensor and use it as batch number instead
-      tf.dispose([rgb, ...channels]);
-      */
     }
     if (!pixels) throw new Error('cannot create tensor from input');
     const casted = tf.cast(pixels, 'float32');
-    const tensor = config.filter.equalization ? enhance.histogramEqualization(casted) : tf.expandDims(casted, 0);
+    const tensor = config.filter.equalization ? await enhance.histogramEqualization(casted) : tf.expandDims(casted, 0);
     tf.dispose([pixels, casted]);
     return { tensor, canvas: (config.filter.return ? outCanvas : null) };
   }
 }
 
-let lastInputSum = 0;
-let lastCacheDiff = 1;
-let benchmarked = 0;
-
+/*
 const checksum = async (input: Tensor): Promise<number> => { // use tf sum or js based sum loop depending on which is faster
   const resizeFact = 48;
   const reduced: Tensor = tf.image.resizeBilinear(input, [Math.trunc((input.shape[1] || 1) / resizeFact), Math.trunc((input.shape[2] || 1) / resizeFact)]);
@@ -227,29 +224,51 @@ const checksum = async (input: Tensor): Promise<number> => { // use tf sum or js
     for (let i = 0; i < reducedData.length / 3; i++) sum0 += reducedData[3 * i + 2]; // look only at green value of each pixel
     return sum0;
   };
-  if (benchmarked === 0) {
+  if (last.sumMethod === 0) {
     const t0 = now();
     await jsSum();
     const t1 = now();
     await tfSum();
     const t2 = now();
-    benchmarked = t1 - t0 < t2 - t1 ? 1 : 2;
+    last.sumMethod = t1 - t0 < t2 - t1 ? 1 : 2;
   }
-  const res = benchmarked === 1 ? await jsSum() : await tfSum();
+  const res = last.sumMethod === 1 ? await jsSum() : await tfSum();
   tf.dispose(reduced);
   return res;
 };
+*/
 
 export async function skip(config, input: Tensor) {
-  if (config.cacheSensitivity === 0) return false;
-  const sum = await checksum(input);
-  const diff = 100 * (Math.max(sum, lastInputSum) / Math.min(sum, lastInputSum) - 1);
-  lastInputSum = sum;
+  let skipFrame = false;
+  if (config.cacheSensitivity === 0) return skipFrame;
+
+  /*
+  const checkSum = await checksum(input);
+  const diff = 100 * (Math.max(checkSum, last.inputSum) / Math.min(checkSum, last.inputSum) - 1);
+  last.inputSum = checkSum;
   // if previous frame was skipped, skip this frame if changed more than cacheSensitivity
   // if previous frame was not skipped, then look for cacheSensitivity or difference larger than one in previous frame to avoid resetting cache in subsequent frames unnecessarily
-  let skipFrame = diff < Math.max(config.cacheSensitivity, lastCacheDiff);
+  let skipFrame = diff < Math.max(config.cacheSensitivity, last.cacheDiff);
   // if difference is above 10x threshold, don't use last value to force reset cache for significant change of scenes or images
-  lastCacheDiff = diff > 10 * config.cacheSensitivity ? 0 : diff;
-  skipFrame = skipFrame && (lastCacheDiff > 0); // if no cached diff value then force no skip
+  last.cacheDiff = diff > 10 * config.cacheSensitivity ? 0 : diff;
+  skipFrame = skipFrame && (last.cacheDiff > 0); // if no cached diff value then force no skip
+  */
+
+  if (!last.inputTensor) {
+    last.inputTensor = tf.clone(input);
+  } else if (last.inputTensor.shape[1] !== input.shape[1] || last.inputTensor.shape[2] !== input.shape[2]) { // input resolution changed
+    tf.dispose(last.inputTensor);
+    last.inputTensor = tf.clone(input);
+  } else {
+    const t: Record<string, Tensor> = {};
+    t.diff = tf.sub(input, last.inputTensor);
+    t.squared = tf.mul(t.diff, t.diff);
+    t.sum = tf.sum(t.squared);
+    const diffSum = await t.sum.data();
+    const diffRelative = diffSum[0] / (input.shape[1] || 1) / (input.shape[2] || 1) / 255 / 3; // squared difference relative to input resolution and averaged per channel
+    tf.dispose([last.inputTensor, t.diff, t.squared, t.sum]);
+    last.inputTensor = tf.clone(input);
+    skipFrame = diffRelative <= config.cacheSensitivity;
+  }
   return skipFrame;
 }

@@ -9,25 +9,28 @@
 import Human from '../../dist/human.esm.js';
 
 const userConfig = {
-  backend: 'wasm',
-  async: false,
+  backend: 'humangl',
+  async: true,
   warmup: 'none',
   cacheSensitivity: 0,
   debug: true,
   modelBasePath: '../../models/',
+  deallocate: true,
+  filter: {
+    enabled: true,
+    equalization: true,
+  },
   face: {
     enabled: true,
     detector: { rotation: true, return: true, maxDetected: 50 },
     mesh: { enabled: true },
-    embedding: { enabled: false },
-    iris: { enabled: true },
+    iris: { enabled: false },
     emotion: { enabled: true },
     description: { enabled: true },
   },
   hand: { enabled: false },
-  gesture: { enabled: true },
+  gesture: { enabled: false },
   body: { enabled: false },
-  filter: { enabled: true },
   segmentation: { enabled: false },
 };
 
@@ -73,9 +76,7 @@ async function SelectFaceCanvas(face) {
       const squeeze = human.tf.squeeze(enhanced);
       const normalize = human.tf.div(squeeze, 255);
       await human.tf.browser.toPixels(normalize, c);
-      human.tf.dispose(enhanced);
-      human.tf.dispose(squeeze);
-      human.tf.dispose(normalize);
+      human.tf.dispose([enhanced, squeeze, normalize]);
       const ctx = c.getContext('2d');
       ctx.font = 'small-caps 0.4rem "Lato"';
       ctx.fillStyle = 'rgba(255, 255, 255, 1)';
@@ -134,7 +135,7 @@ async function SelectFaceCanvas(face) {
   title('Selected Face');
 }
 
-async function AddFaceCanvas(index, res, fileName) {
+function AddFaceCanvas(index, res, fileName) {
   all[index] = res.face;
   let ok = false;
   for (const i in res.face) {
@@ -161,7 +162,7 @@ async function AddFaceCanvas(index, res, fileName) {
     });
     // if we actually got face image tensor, draw canvas with that face
     if (res.face[i].tensor) {
-      await human.tf.browser.toPixels(res.face[i].tensor, canvas);
+      human.tf.browser.toPixels(res.face[i].tensor, canvas);
       document.getElementById('faces').appendChild(canvas);
       const ctx = canvas.getContext('2d');
       if (!ctx) return false;
@@ -169,7 +170,7 @@ async function AddFaceCanvas(index, res, fileName) {
       ctx.fillStyle = 'rgba(255, 255, 255, 1)';
       ctx.fillText(`${res.face[i].age}y ${(100 * (res.face[i].genderScore || 0)).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
       const arr = db.map((rec) => rec.embedding);
-      const result = await human.match(res.face[i].embedding, arr);
+      const result = human.match(res.face[i].embedding, arr);
       ctx.font = 'small-caps 1rem "Lato"';
       if (result.similarity && res.similarity > minScore) ctx.fillText(`${(100 * result.similarity).toFixed(1)}% ${db[result.index].name}`, 4, canvas.height - 30);
     }
@@ -184,7 +185,7 @@ async function AddImageElement(index, image, length) {
     const img = new Image(128, 128);
     img.onload = () => { // must wait until image is loaded
       human.detect(img, userConfig).then(async (res) => {
-        const ok = await AddFaceCanvas(index, res, image); // then wait until image is analyzed
+        const ok = AddFaceCanvas(index, res, image); // then wait until image is analyzed
         // log('Add image:', index + 1, image, 'faces:', res.face.length);
         if (ok) document.getElementById('images').appendChild(img); // and finally we can add it
         resolve(true);
@@ -199,7 +200,7 @@ async function AddImageElement(index, image, length) {
   });
 }
 
-async function createFaceMatchDB() {
+function createFaceMatchDB() {
   log('Creating Faces DB...');
   for (const image of all) {
     for (const face of image) db.push({ name: 'unknown', source: face.fileName, embedding: face.embedding });
@@ -246,6 +247,9 @@ async function main() {
   // images = ['/samples/in/solvay1927.jpg'];
 
   // download and analyze all images
+  // const promises = [];
+  // for (let i = 0; i < images.length; i++) promises.push(AddImageElement(i, images[i], images.length));
+  // await Promise.all(promises);
   for (let i = 0; i < images.length; i++) await AddImageElement(i, images[i], images.length);
 
   // print stats
@@ -254,7 +258,7 @@ async function main() {
   log(human.tf.engine().memory());
 
   // if we didn't download db, generate it from current faces
-  if (!db || db.length === 0) await createFaceMatchDB();
+  if (!db || db.length === 0) createFaceMatchDB();
 
   title('');
   log('Ready');

@@ -126,7 +126,7 @@
         "format": "iife",
         "input": "src/human.ts",
         "output": "dist/human.js",
-        "minify": true,
+        "minify": false,
         "globalName": "Human",
         "external": ["fs", "os", "buffer", "util"]
       },

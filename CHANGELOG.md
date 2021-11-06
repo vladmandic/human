@@ -11,11 +11,10 @@
   
 ### **HEAD -> main** 2021/11/05 mandic00@live.com
 
+- add histogram equalization
 - implement wasm missing ops
 - performance and memory optimizations
-
-### **origin/main** 2021/11/04 mandic00@live.com
-
+- fix react compatibility issues
 - improve box rescaling for all modules
 - improve precision using wasm backend
 - refactor predict with execute

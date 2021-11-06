@@ -41,6 +41,9 @@ export function enhance(input): Tensor {
   if (!model?.inputs[0].shape) return tensor; // model has no shape so no point continuing
   // do a tight crop of image and resize it to fit the model
   const crop = tf.image.resizeBilinear(tensor, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+  const norm = tf.mul(crop, 255);
+  tf.dispose(crop);
+  return norm;
   /*
   const box = [[0.05, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
   const crop = (tensor.shape.length === 3)
@@ -78,9 +81,6 @@ export function enhance(input): Tensor {
   const darken = crop.sub(crop.min());
   const lighten = darken.div(darken.max());
   */
-  const norm = tf.mul(crop, 255);
-  tf.dispose(crop);
-  return norm;
 }
 
 export async function predict(image: Tensor, config: Config, idx, count) {

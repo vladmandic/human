@@ -405,7 +405,7 @@ export class Human {
 
       timeStamp = now();
       this.state = 'image';
-      const img = image.process(input, this.config) as { canvas: HTMLCanvasElement | OffscreenCanvas, tensor: Tensor };
+      const img = await image.process(input, this.config) as { canvas: HTMLCanvasElement | OffscreenCanvas, tensor: Tensor };
       this.process = img;
       this.performance.inputProcess = this.env.perfadd ? (this.performance.inputProcess || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
@@ -423,7 +423,7 @@ export class Human {
       if (!this.performance.cachedFrames) this.performance.cachedFrames = 0;
       (this.performance.totalFrames as number)++;
       if (this.config.skipAllowed) this.performance.cachedFrames++;
-      this.performance.inputCheck = this.env.perfadd ? (this.performance.inputCheck || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      this.performance.cacheCheck = this.env.perfadd ? (this.performance.cacheCheck || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze('Check Changed:');
 
       // prepare where to store model results

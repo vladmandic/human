@@ -132,10 +132,10 @@ export declare class Human {
      * @param {boolean} input.getTensor should image processing also return tensor or just canvas
      * @returns { tensor, canvas }
      */
-    image(input: Input, getTensor?: boolean): {
+    image(input: Input, getTensor?: boolean): Promise<{
         tensor: Tensor<import("@tensorflow/tfjs-core").Rank> | null;
         canvas: import("./exports").AnyCanvas | null;
-    };
+    }>;
     /** Segmentation method takes any input and returns processed canvas with body segmentation
      *  - Segmentation is not triggered as part of detect process
      *

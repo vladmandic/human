@@ -106,6 +106,7 @@ var config = {
   warmup: "full",
   cacheSensitivity: 0.7,
   skipAllowed: false,
+  deallocate: false,
   filter: {
     enabled: true,
     equalization: false,
@@ -70569,7 +70570,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211105";
+var externalVersion = "3.11.0-20211106";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,
@@ -71259,17 +71260,20 @@ function GLImageFilter() {
 }
 
 // src/image/enhance.ts
-function histogramEqualization(input2) {
-  const channels = split(input2, 3, 2);
+async function histogramEqualization(inputImage) {
+  const squeeze2 = inputImage.shape.length === 4 ? squeeze(inputImage) : inputImage;
+  const channels = split(squeeze2, 3, 2);
   const min7 = [min(channels[0]), min(channels[1]), min(channels[2])];
   const max7 = [max(channels[0]), max(channels[1]), max(channels[2])];
+  const absMax = await Promise.all(max7.map((channel) => channel.data()));
+  const maxValue = 0.99 * Math.max(absMax[0][0], absMax[1][0], absMax[2][0]);
   const sub5 = [sub(channels[0], min7[0]), sub(channels[1], min7[1]), sub(channels[2], min7[2])];
   const range7 = [sub(max7[0], min7[0]), sub(max7[1], min7[1]), sub(max7[2], min7[2])];
-  const fact = [div(255, range7[0]), div(255, range7[1]), div(255, range7[2])];
+  const fact = [div(maxValue, range7[0]), div(maxValue, range7[1]), div(maxValue, range7[2])];
   const enh = [mul(sub5[0], fact[0]), mul(sub5[1], fact[1]), mul(sub5[2], fact[2])];
   const rgb2 = stack([enh[0], enh[1], enh[2]], 2);
-  const reshape7 = reshape(rgb2, [1, input2.shape[0], input2.shape[1], 3]);
-  dispose([...channels, ...min7, ...max7, ...sub5, ...range7, ...fact, ...enh, rgb2]);
+  const reshape7 = reshape(rgb2, [1, squeeze2.shape[0], squeeze2.shape[1], 3]);
+  dispose([...channels, ...min7, ...max7, ...sub5, ...range7, ...fact, ...enh, rgb2, squeeze2]);
   return reshape7;
 }
 
@@ -71279,6 +71283,12 @@ var inCanvas = null;
 var outCanvas = null;
 var tmpCanvas = null;
 var fx;
+var last = {
+  inputSum: 0,
+  cacheDiff: 1,
+  sumMethod: 0,
+  inputTensor: void 0
+};
 function canvas(width, height) {
   let c;
   if (env2.browser) {
@@ -71305,7 +71315,7 @@ function copy(input2, output) {
   ctx.drawImage(input2, 0, 0);
   return outputCanvas;
 }
-function process2(input2, config3, getTensor2 = true) {
+async function process2(input2, config3, getTensor2 = true) {
   if (!input2) {
     if (config3.debug)
       log("input is missing");
@@ -71355,7 +71365,7 @@ function process2(input2, config3, getTensor2 = true) {
       targetHeight = originalHeight * ((config3.filter.width || 0) / originalWidth);
     if (!targetWidth || !targetHeight)
       throw new Error("input cannot determine dimension");
-    if (!inCanvas || inCanvas.width !== targetWidth || inCanvas.height !== targetHeight)
+    if (!inCanvas || (inCanvas == null ? void 0 : inCanvas.width) !== targetWidth || (inCanvas == null ? void 0 : inCanvas.height) !== targetHeight)
       inCanvas = canvas(targetWidth, targetHeight);
     const inCtx = inCanvas.getContext("2d");
     if (typeof ImageData !== "undefined" && input2 instanceof ImageData) {
@@ -71364,13 +71374,13 @@ function process2(input2, config3, getTensor2 = true) {
       if (config3.filter.flip && typeof inCtx.translate !== "undefined") {
         inCtx.translate(originalWidth, 0);
         inCtx.scale(-1, 1);
-        inCtx.drawImage(input2, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas.width, inCanvas.height);
+        inCtx.drawImage(input2, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
         inCtx.setTransform(1, 0, 0, 1, 0, 0);
       } else {
-        inCtx.drawImage(input2, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas.width, inCanvas.height);
+        inCtx.drawImage(input2, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
       }
     }
-    if (!outCanvas || inCanvas.width !== outCanvas.width || inCanvas.height !== outCanvas.height)
+    if (!outCanvas || inCanvas.width !== outCanvas.width || (inCanvas == null ? void 0 : inCanvas.height) !== (outCanvas == null ? void 0 : outCanvas.height))
       outCanvas = canvas(inCanvas.width, inCanvas.height);
     if (config3.filter.enabled && env2.webgl.supported) {
       if (!fx)
@@ -71458,51 +71468,31 @@ function process2(input2, config3, getTensor2 = true) {
     if (!pixels)
       throw new Error("cannot create tensor from input");
     const casted = cast(pixels, "float32");
-    const tensor2 = config3.filter.equalization ? histogramEqualization(casted) : expandDims(casted, 0);
+    const tensor2 = config3.filter.equalization ? await histogramEqualization(casted) : expandDims(casted, 0);
     dispose([pixels, casted]);
     return { tensor: tensor2, canvas: config3.filter.return ? outCanvas : null };
   }
 }
-var lastInputSum = 0;
-var lastCacheDiff = 1;
-var benchmarked = 0;
-var checksum = async (input2) => {
-  const resizeFact = 48;
-  const reduced = image.resizeBilinear(input2, [Math.trunc((input2.shape[1] || 1) / resizeFact), Math.trunc((input2.shape[2] || 1) / resizeFact)]);
-  const tfSum = async () => {
-    const sumT = sum2(reduced);
-    const sum0 = await sumT.data();
-    dispose(sumT);
-    return sum0[0];
-  };
-  const jsSum = async () => {
-    const reducedData = await reduced.data();
-    let sum0 = 0;
-    for (let i = 0; i < reducedData.length / 3; i++)
-      sum0 += reducedData[3 * i + 2];
-    return sum0;
-  };
-  if (benchmarked === 0) {
-    const t0 = now();
-    await jsSum();
-    const t1 = now();
-    await tfSum();
-    const t2 = now();
-    benchmarked = t1 - t0 < t2 - t1 ? 1 : 2;
-  }
-  const res = benchmarked === 1 ? await jsSum() : await tfSum();
-  dispose(reduced);
-  return res;
-};
 async function skip(config3, input2) {
+  let skipFrame = false;
   if (config3.cacheSensitivity === 0)
-    return false;
-  const sum7 = await checksum(input2);
-  const diff = 100 * (Math.max(sum7, lastInputSum) / Math.min(sum7, lastInputSum) - 1);
-  lastInputSum = sum7;
-  let skipFrame = diff < Math.max(config3.cacheSensitivity, lastCacheDiff);
-  lastCacheDiff = diff > 10 * config3.cacheSensitivity ? 0 : diff;
-  skipFrame = skipFrame && lastCacheDiff > 0;
+    return skipFrame;
+  if (!last.inputTensor) {
+    last.inputTensor = clone(input2);
+  } else if (last.inputTensor.shape[1] !== input2.shape[1] || last.inputTensor.shape[2] !== input2.shape[2]) {
+    dispose(last.inputTensor);
+    last.inputTensor = clone(input2);
+  } else {
+    const t = {};
+    t.diff = sub(input2, last.inputTensor);
+    t.squared = mul(t.diff, t.diff);
+    t.sum = sum2(t.squared);
+    const diffSum = await t.sum.data();
+    const diffRelative = diffSum[0] / (input2.shape[1] || 1) / (input2.shape[2] || 1) / 255 / 3;
+    dispose([last.inputTensor, t.diff, t.squared, t.sum]);
+    last.inputTensor = clone(input2);
+    skipFrame = diffRelative <= config3.cacheSensitivity;
+  }
   return skipFrame;
 }
 
@@ -75484,7 +75474,7 @@ var labels = [
 // src/object/centernet.ts
 var model5;
 var inputSize3 = 0;
-var last = [];
+var last2 = [];
 var lastTime3 = 0;
 var skipped4 = Number.MAX_SAFE_INTEGER;
 async function load4(config3) {
@@ -75551,9 +75541,9 @@ async function process3(res, outputShape, config3) {
 async function predict3(input2, config3) {
   const skipTime = (config3.object.skipTime || 0) > now() - lastTime3;
   const skipFrame = skipped4 < (config3.object.skipFrames || 0);
-  if (config3.skipAllowed && skipTime && skipFrame && last.length > 0) {
+  if (config3.skipAllowed && skipTime && skipFrame && last2.length > 0) {
     skipped4++;
-    return last;
+    return last2;
   }
   skipped4 = 0;
   return new Promise(async (resolve) => {
@@ -75563,7 +75553,7 @@ async function predict3(input2, config3) {
     lastTime3 = now();
     dispose(resize);
     const obj = await process3(objectT, outputSize2, config3);
-    last = obj;
+    last2 = obj;
     resolve(obj);
   });
 }
@@ -75715,7 +75705,7 @@ async function predict4(image7, config3) {
 // src/gear/emotion.ts
 var annotations = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
 var model7;
-var last2 = [];
+var last3 = [];
 var lastCount2 = 0;
 var lastTime5 = 0;
 var skipped6 = Number.MAX_SAFE_INTEGER;
@@ -75740,9 +75730,9 @@ async function predict5(image7, config3, idx, count3) {
     return null;
   const skipFrame = skipped6 < (((_a = config3.face.emotion) == null ? void 0 : _a.skipFrames) || 0);
   const skipTime = (((_b = config3.face.emotion) == null ? void 0 : _b.skipTime) || 0) > now() - lastTime5;
-  if (config3.skipAllowed && skipTime && skipFrame && lastCount2 === count3 && last2[idx] && last2[idx].length > 0) {
+  if (config3.skipAllowed && skipTime && skipFrame && lastCount2 === count3 && last3[idx] && last3[idx].length > 0) {
     skipped6++;
-    return last2[idx];
+    return last3[idx];
   }
   skipped6 = 0;
   return new Promise(async (resolve) => {
@@ -75769,7 +75759,7 @@ async function predict5(image7, config3, idx, count3) {
       obj.sort((a, b) => b.score - a.score);
       Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
     }
-    last2[idx] = obj;
+    last3[idx] = obj;
     lastCount2 = count3;
     resolve(obj);
   });
@@ -75915,7 +75905,7 @@ var skipped7 = Number.MAX_SAFE_INTEGER;
 var lastTime6 = 0;
 var enlargeFact = 1.6;
 async function predict6(input2, config3) {
-  var _a, _b, _c, _d, _e, _f, _g, _h;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i;
   const skipTime = (((_a = config3.face.detector) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime6;
   const skipFrame = skipped7 < (((_b = config3.face.detector) == null ? void 0 : _b.skipFrames) || 0);
   if (!config3.skipAllowed || !skipTime || !skipFrame || boxCache.length === 0) {
@@ -75959,8 +75949,13 @@ async function predict6(input2, config3) {
       rotationMatrix = fixedRotationMatrix;
       face5.tensor = cutBoxFromImageAndResize(box4, input2, ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) ? [inputSize5, inputSize5] : [size(), size()]);
     }
+    if ((_f = config3 == null ? void 0 : config3.filter) == null ? void 0 : _f.equalization) {
+      const equilized = await histogramEqualization(face5.tensor);
+      dispose(face5.tensor);
+      face5.tensor = equilized;
+    }
     face5.boxScore = Math.round(100 * box4.confidence) / 100;
-    if (!((_f = config3.face.mesh) == null ? void 0 : _f.enabled)) {
+    if (!((_g = config3.face.mesh) == null ? void 0 : _g.enabled)) {
       face5.box = getClampedBox(box4, input2);
       face5.boxRaw = getRawBox(box4, input2);
       face5.boxScore = Math.round(100 * box4.confidence || 0) / 100;
@@ -75982,10 +75977,10 @@ async function predict6(input2, config3) {
       const coordsReshaped = reshape(contourCoords, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
       dispose([contourCoords, coordsReshaped, confidence, contours]);
-      if (face5.faceScore < (((_g = config3.face.detector) == null ? void 0 : _g.minConfidence) || 1)) {
+      if (face5.faceScore < (((_h = config3.face.detector) == null ? void 0 : _h.minConfidence) || 1)) {
         box4.confidence = face5.faceScore;
       } else {
-        if ((_h = config3.face.iris) == null ? void 0 : _h.enabled)
+        if ((_i = config3.face.iris) == null ? void 0 : _i.enabled)
           rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize5);
         face5.mesh = transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize5);
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input2.shape[2] || 0), pt[1] / (input2.shape[1] || 0), (pt[2] || 0) / inputSize5]);
@@ -76025,7 +76020,7 @@ var uvmap = UV468;
 
 // src/face/faceres.ts
 var model10;
-var last3 = [];
+var last4 = [];
 var lastTime7 = 0;
 var lastCount3 = 0;
 var skipped8 = Number.MAX_SAFE_INTEGER;
@@ -76059,9 +76054,9 @@ async function predict7(image7, config3, idx, count3) {
     return null;
   const skipFrame = skipped8 < (((_a = config3.face.description) == null ? void 0 : _a.skipFrames) || 0);
   const skipTime = (((_b = config3.face.description) == null ? void 0 : _b.skipTime) || 0) > now() - lastTime7;
-  if (config3.skipAllowed && skipFrame && skipTime && lastCount3 === count3 && ((_c = last3[idx]) == null ? void 0 : _c.age) && ((_d = last3[idx]) == null ? void 0 : _d.age) > 0) {
+  if (config3.skipAllowed && skipFrame && skipTime && lastCount3 === count3 && ((_c = last4[idx]) == null ? void 0 : _c.age) && ((_d = last4[idx]) == null ? void 0 : _d.age) > 0) {
     skipped8++;
-    return last3[idx];
+    return last4[idx];
   }
   skipped8 = 0;
   return new Promise(async (resolve) => {
@@ -76095,7 +76090,7 @@ async function predict7(image7, config3, idx, count3) {
       obj.descriptor = Array.from(descriptor);
       resT.forEach((t) => dispose(t));
     }
-    last3[idx] = obj;
+    last4[idx] = obj;
     lastCount3 = count3;
     resolve(obj);
   });
@@ -80384,7 +80379,7 @@ async function predict10(input2, config3) {
 
 // src/object/nanodet.ts
 var model12;
-var last4 = [];
+var last5 = [];
 var lastTime10 = 0;
 var skipped11 = Number.MAX_SAFE_INTEGER;
 var scaleBox = 2.5;
@@ -80467,13 +80462,13 @@ async function process4(res, inputSize8, outputShape, config3) {
 async function predict11(image7, config3) {
   const skipTime = (config3.object.skipTime || 0) > now() - lastTime10;
   const skipFrame = skipped11 < (config3.object.skipFrames || 0);
-  if (config3.skipAllowed && skipTime && skipFrame && last4.length > 0) {
+  if (config3.skipAllowed && skipTime && skipFrame && last5.length > 0) {
     skipped11++;
-    return last4;
+    return last5;
   }
   skipped11 = 0;
   if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
-    return last4;
+    return last5;
   return new Promise(async (resolve) => {
     const outputSize2 = [image7.shape[2], image7.shape[1]];
     const resize = image.resizeBilinear(image7, [model12.inputSize, model12.inputSize], false);
@@ -80487,7 +80482,7 @@ async function predict11(image7, config3) {
     lastTime10 = now();
     dispose(transpose6);
     const obj = await process4(objectT, model12.inputSize, outputSize2, config3);
-    last4 = obj;
+    last5 = obj;
     resolve(obj);
   });
 }
@@ -80853,7 +80848,7 @@ async function process5(input2, background, config3) {
   busy = true;
   if (!model14)
     await load14(config3);
-  const inputImage = process2(input2, config3);
+  const inputImage = await process2(input2, config3);
   const width = ((_a = inputImage.canvas) == null ? void 0 : _a.width) || 0;
   const height = ((_b = inputImage.canvas) == null ? void 0 : _b.height) || 0;
   if (!inputImage.tensor)
@@ -80904,7 +80899,7 @@ async function process5(input2, background, config3) {
   let mergedCanvas = null;
   if (background && compositeCanvas) {
     mergedCanvas = canvas(width, height);
-    const bgImage = process2(background, config3);
+    const bgImage = await process2(background, config3);
     dispose(bgImage.tensor);
     const ctxMerge = mergedCanvas.getContext("2d");
     ctxMerge.drawImage(bgImage.canvas, 0, 0, mergedCanvas.width, mergedCanvas.height);
@@ -81146,6 +81141,7 @@ function registerCustomOps() {
       kernelFunc: (op2) => tidy(() => sub(op2.inputs.a, mul(div(op2.inputs.a, op2.inputs.b), op2.inputs.b)))
     };
     registerKernel(kernelMod);
+    env2.kernels.push("mod");
   }
   if (!env2.kernels.includes("floormod")) {
     const kernelMod = {
@@ -81154,8 +81150,8 @@ function registerCustomOps() {
       kernelFunc: (op2) => tidy(() => floorDiv(op2.inputs.a / op2.inputs.b) * op2.inputs.b + mod(op2.inputs.a, op2.inputs.b))
     };
     registerKernel(kernelMod);
+    env2.kernels.push("floormod");
   }
-  env2.updateBackend();
 }
 async function check(instance, force = false) {
   instance.state = "backend";
@@ -81242,7 +81238,7 @@ async function check(instance, force = false) {
     await ready();
     instance.performance.initBackend = Math.trunc(now() - timeStamp);
     instance.config.backend = getBackend();
-    env2.updateBackend();
+    await env2.updateBackend();
     registerCustomOps();
   }
   return true;
@@ -81938,8 +81934,9 @@ var body2 = (res) => {
       gestures.push({ body: i, gesture: "raise right hand" });
     const leftShoulder = res[i].keypoints.find((a) => a.part === "leftShoulder");
     const rightShoulder = res[i].keypoints.find((a) => a.part === "rightShoulder");
-    if (leftShoulder && rightShoulder)
+    if (leftShoulder && rightShoulder && Math.abs(leftShoulder.positionRaw[1] - rightShoulder.positionRaw[1]) > 0.1) {
       gestures.push({ body: i, gesture: `leaning ${leftShoulder.position[1] > rightShoulder.position[1] ? "left" : "right"}` });
+    }
   }
   return gestures;
 };
@@ -83276,7 +83273,7 @@ var Human = class {
       await this.load();
       timeStamp = now();
       this.state = "image";
-      const img = process2(input2, this.config);
+      const img = await process2(input2, this.config);
       this.process = img;
       this.performance.inputProcess = this.env.perfadd ? (this.performance.inputProcess || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze("Get Image:");
@@ -83296,7 +83293,7 @@ var Human = class {
       this.performance.totalFrames++;
       if (this.config.skipAllowed)
         this.performance.cachedFrames++;
-      this.performance.inputCheck = this.env.perfadd ? (this.performance.inputCheck || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      this.performance.cacheCheck = this.env.perfadd ? (this.performance.cacheCheck || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze("Check Changed:");
       let faceRes = [];
       let bodyRes = [];

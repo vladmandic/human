@@ -36,6 +36,9 @@ JavaScript module using TensorFlow/JS Machine Learning library
 
 <br>
 
+## Releases
+- [Release Notes](https://github.com/vladmandic/human/releases)
+- [NPM](https://www.npmjs.com/package/@vladmandic/human)
 ## Demos
 
 - [**List of all Demo applications**](https://github.com/vladmandic/human/wiki/Demos)

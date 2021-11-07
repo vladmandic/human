@@ -135,10 +135,53 @@ async function testDetect(human, input, title, checkLeak = true) {
   }
   return detect;
 }
+
 const evt = { image: 0, detect: 0, warmup: 0 };
 async function events(event) {
   log('state', 'event:', event);
   evt[event]++;
+}
+
+const verify = (state, ...messages) => {
+  if (state) log('state', 'passed:', ...messages);
+  else log('error', 'failed:', ...messages);
+};
+
+async function verifyDetails(human) {
+  const res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
+  verify(res.face.length === 1, 'details face length', res.face.length);
+  for (const face of res.face) {
+    verify(face.score > 0.9 && face.boxScore > 0.9 && face.faceScore > 0.9, 'details face score', face.score, face.boxScore, face.faceScore);
+    verify(face.age > 29 && face.age < 30 && face.gender === 'female' && face.genderScore > 0.9 && face.iris > 70 && face.iris < 80, 'details face age/gender', face.age, face.gender, face.genderScore, face.iris);
+    verify(face.box.length === 4 && face.boxRaw.length === 4 && face.mesh.length === 478 && face.meshRaw.length === 478 && face.embedding.length === 1024, 'details face arrays', face.box.length, face.mesh.length, face.embedding.length);
+    verify(face.emotion.length === 3 && face.emotion[0].score > 0.5 && face.emotion[0].emotion === 'angry', 'details face emotion', face.emotion.length, face.emotion[0]);
+  }
+  verify(res.body.length === 1, 'details body length', res.body.length);
+  for (const body of res.body) {
+    verify(body.score > 0.9 && body.box.length === 4 && body.boxRaw.length === 4 && body.keypoints.length === 17 && Object.keys(body.annotations).length === 6, 'details body', body.score, body.keypoints.length, Object.keys(body.annotations).length);
+  }
+  verify(res.hand.length === 1, 'details hand length', res.hand.length);
+  for (const hand of res.hand) {
+    verify(hand.score > 0.5 && hand.boxScore > 0.5 && hand.fingerScore > 0.5 && hand.box.length === 4 && hand.boxRaw.length === 4 && hand.label === 'point', 'details hand', hand.boxScore, hand.fingerScore, hand.label);
+    verify(hand.keypoints.length === 21 && Object.keys(hand.landmarks).length === 5 && Object.keys(hand.annotations).length === 6, 'details hand arrays', hand.keypoints.length, Object.keys(hand.landmarks).length, Object.keys(hand.annotations).length);
+  }
+  verify(res.gesture.length === 5, 'details gesture length', res.gesture.length);
+  verify(res.gesture[0].gesture === 'facing right', 'details gesture first', res.gesture[0]);
+  verify(res.object.length === 1, 'details object length', res.object.length);
+  for (const obj of res.object) {
+    verify(obj.score > 0.7 && obj.label === 'person' && obj.box.length === 4 && obj.boxRaw.length === 4, 'details object', obj.score, obj.label);
+  }
+}
+
+async function verifyCompare(human) {
+  const t1 = await getImage(human, 'samples/in/ai-face.jpg');
+  const t2 = await getImage(human, 'samples/in/ai-body.jpg');
+  const n1 = await human.compare(t1, t1);
+  const n2 = await human.compare(t1, t2);
+  const n3 = await human.compare(t2, t1);
+  const n4 = await human.compare(t2, t2);
+  verify(n1 === 0 && n4 === 0 && Math.round(n2) === Math.round(n3) && n2 > 20 && n2 < 30, 'image compare', n1, n2);
+  human.tf.dispose([t1, t2]);
 }
 
 async function test(Human, inputConfig) {
@@ -201,6 +244,8 @@ async function test(Human, inputConfig) {
     hand: { boxScore: res.hand[0].boxScore, fingerScore: res.hand[0].fingerScore, keypoints: res.hand[0].keypoints.length },
     gestures: res.gesture,
   });
+
+  await verifyDetails(human);
 
   // test default config async
   log('info', 'test default');
@@ -356,6 +401,9 @@ async function test(Human, inputConfig) {
   const tensors3 = second.tf.engine().state.numTensors;
   if (tensors1 === tensors2 && tensors1 === tensors3 && tensors2 === tensors3) log('state', 'passeed: equal usage');
   else log('error', 'failed: equal usage', tensors1, tensors2, tensors3);
+
+  // validate cache compare algorithm
+  await verifyCompare(human);
 
   // tests end
   const t1 = process.hrtime.bigint();

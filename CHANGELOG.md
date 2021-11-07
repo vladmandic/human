@@ -9,8 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/05 mandic00@live.com
+### **HEAD -> main** 2021/11/07 mandic00@live.com
 
+
+### **origin/main** 2021/11/06 mandic00@live.com
+
+- new frame change detection algorithm
 - add histogram equalization
 - implement wasm missing ops
 - performance and memory optimizations

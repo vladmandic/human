@@ -148,6 +148,7 @@ const verify = (state, ...messages) => {
 };
 
 async function verifyDetails(human) {
+  log('info', 'test: details verification');
   const res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
   verify(res.face.length === 1, 'details face length', res.face.length);
   for (const face of res.face) {
@@ -174,6 +175,7 @@ async function verifyDetails(human) {
 }
 
 async function verifyCompare(human) {
+  log('info', 'test: input compare');
   const t1 = await getImage(human, 'samples/in/ai-face.jpg');
   const t2 = await getImage(human, 'samples/in/ai-body.jpg');
   const n1 = await human.compare(t1, t1);
@@ -203,6 +205,7 @@ async function test(Human, inputConfig) {
   human.events.addEventListener('detect', () => events('detect'));
 
   // test configuration validation
+  log('info', 'test: configuration validation');
   let invalid = human.validate();
   if (invalid.length === 0) log('state', 'passed: configuration default validation', invalid);
   else log('error', 'failed: configuration default validation', invalid);
@@ -213,6 +216,7 @@ async function test(Human, inputConfig) {
   delete config.invalid;
 
   // test model loading
+  log('info', 'test: model load');
   await human.load();
   const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
   const loaded = models.filter((model) => model.loaded);
@@ -223,6 +227,7 @@ async function test(Human, inputConfig) {
   config.face = { detector: { maxDetected: 20 } };
 
   // test warmup sequences
+  log('info', 'test: warmup');
   await testInstance(human);
   config.cacheSensitivity = 0;
   config.warmup = 'none';
@@ -266,12 +271,14 @@ async function test(Human, inputConfig) {
   else log('state', 'passed: default sync', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
 
   // test image processing
+  log('info', 'test: image process');
   const img1 = await human.image(null);
   const img2 = await human.image(await getImage(human, 'samples/in/ai-face.jpg'));
   if (!img1 || !img2 || img1.tensor !== null || img2.tensor?.shape?.length !== 4) log('error', 'failed: image input', img1?.tensor?.shape, img2?.tensor?.shape);
   else log('state', 'passed: image input', img1?.tensor?.shape, img2?.tensor?.shape);
 
   // test null input
+  log('info', 'test: image null');
   res = await human.detect(null);
   if (!res || !res.error) log('error', 'failed: invalid input', res);
   else log('state', 'passed: invalid input', res);
@@ -356,6 +363,7 @@ async function test(Human, inputConfig) {
   else log('state', 'passed: detector result hand match');
 
   // test multiple instances
+  log('info', 'test: multi-instance');
   const first = new Human(config);
   const second = new Human(config);
   await testDetect(human, null, 'default');
@@ -379,6 +387,7 @@ async function test(Human, inputConfig) {
   ]);
 
   // test monkey-patch
+  log('info', 'test: monkey-patch');
   globalThis.Canvas = canvasJS.Canvas; // monkey-patch to use external canvas library
   globalThis.ImageData = canvasJS.ImageData; // monkey-patch to use external canvas library
   const inputImage = await canvasJS.loadImage('samples/in/ai-face.jpg'); // load image using canvas library

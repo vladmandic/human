@@ -41,12 +41,14 @@ MoveNet MultiPose model does not work with WASM backend due to missing F32 broad
 
 ### Pending release
 
-- Supports all modules on all backends  
-  via custom implementation of missing kernel ops  
+New:
 - New frame change detection algorithm used for cache determination  
   based on temporal input difference  
 - New optional input histogram equalization  
   auto-level input for optimal brightness/contrast via `config.filter.equalization`  
+Changed:
+- Supports all modules on all backends  
+  via custom implementation of missing kernel ops  
 - Performance and precision improvements  
   **face**, **hand** and **gestures** modules  
 - Use custom built TFJS for bundled version  

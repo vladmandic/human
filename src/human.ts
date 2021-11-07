@@ -68,7 +68,7 @@ export class Human {
   version: string;
 
   /** Current configuration
-   * - Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L250)
+   * - Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L262)
    */
   config: Config;
 
@@ -265,6 +265,18 @@ export class Human {
   // eslint-disable-next-line class-methods-use-this
   enhance(input: Tensor): Tensor | null {
     return faceres.enhance(input);
+  }
+
+  /** Compare two input tensors for pixel simmilarity
+   * - use `human.image` to process any valid input and get a tensor that can be used for compare
+   * - when passing manually generated tensors:
+   *  - both input tensors must be in format [1, height, width, 3]
+   *  - if resolution of tensors does not match, second tensor will be resized to match resolution of the first tensor
+   * @returns {number}
+   * - return value is pixel similarity score normalized by input resolution and rgb channels
+  */
+  compare(firstImageTensor: Tensor, secondImageTensor: Tensor): Promise<number> {
+    return image.compare(this.config, firstImageTensor, secondImageTensor);
   }
 
   /** Explicit backend initialization

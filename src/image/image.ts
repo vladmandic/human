@@ -272,3 +272,24 @@ export async function skip(config, input: Tensor) {
   }
   return skipFrame;
 }
+
+export async function compare(config, input1: Tensor, input2: Tensor): Promise<number> {
+  const t: Record<string, Tensor> = {};
+  if (!input1 || !input2 || input1.shape.length !== 4 || input1.shape.length !== input2.shape.length) {
+    if (!config.debug) log('invalid input tensor or tensor shapes do not match:', input1.shape, input2.shape);
+    return 0;
+  }
+  if (input1.shape[0] !== 1 || input2.shape[0] !== 1 || input1.shape[3] !== 3 || input2.shape[3] !== 3) {
+    if (!config.debug) log('input tensors must be of shape [1, height, width, 3]:', input1.shape, input2.shape);
+    return 0;
+  }
+  t.input1 = tf.clone(input1);
+  t.input2 = (input1.shape[1] !== input2.shape[1] || input1.shape[2] !== input2.shape[2]) ? tf.image.resizeBilinear(input2, [input1.shape[1], input1.shape[2]]) : tf.clone(input2);
+  t.diff = tf.sub(t.input1, t.input2);
+  t.squared = tf.mul(t.diff, t.diff);
+  t.sum = tf.sum(t.squared);
+  const diffSum = await t.sum.data();
+  const diffRelative = diffSum[0] / (input1.shape[1] || 1) / (input1.shape[2] || 1) / 255 / 3;
+  tf.dispose([t.input1, t.input2, t.diff, t.squared, t.sum]);
+  return diffRelative;
+}

@@ -1290,7 +1290,7 @@ var Human = (() => {
       };
       LongPrototype.gte = LongPrototype.greaterThanOrEqual;
       LongPrototype.ge = LongPrototype.greaterThanOrEqual;
-      LongPrototype.compare = function compare(other) {
+      LongPrototype.compare = function compare2(other) {
         if (!isLong(other))
           other = fromValue(other);
         if (this.eq(other))
@@ -71505,6 +71505,28 @@ return a / b;`;
     }
     return skipFrame;
   }
+  async function compare(config3, input1, input2) {
+    const t = {};
+    if (!input1 || !input2 || input1.shape.length !== 4 || input1.shape.length !== input2.shape.length) {
+      if (!config3.debug)
+        log("invalid input tensor or tensor shapes do not match:", input1.shape, input2.shape);
+      return 0;
+    }
+    if (input1.shape[0] !== 1 || input2.shape[0] !== 1 || input1.shape[3] !== 3 || input2.shape[3] !== 3) {
+      if (!config3.debug)
+        log("input tensors must be of shape [1, height, width, 3]:", input1.shape, input2.shape);
+      return 0;
+    }
+    t.input1 = clone(input1);
+    t.input2 = input1.shape[1] !== input2.shape[1] || input1.shape[2] !== input2.shape[2] ? image.resizeBilinear(input2, [input1.shape[1], input1.shape[2]]) : clone(input2);
+    t.diff = sub(t.input1, t.input2);
+    t.squared = mul(t.diff, t.diff);
+    t.sum = sum2(t.squared);
+    const diffSum = await t.sum.data();
+    const diffRelative = diffSum[0] / (input1.shape[1] || 1) / (input1.shape[2] || 1) / 255 / 3;
+    dispose([t.input1, t.input2, t.diff, t.squared, t.sum]);
+    return diffRelative;
+  }
 
   // src/util/env.ts
   var Env = class {
@@ -80177,11 +80199,11 @@ return a / b;`;
         }
       }
     }
-    for (const [pair, compare] of relative) {
+    for (const [pair, compare2] of relative) {
       const left = body4.keypoints.findIndex((kp) => kp && kp.part === pair[0]);
       const right = body4.keypoints.findIndex((kp) => kp && kp.part === pair[1]);
-      const leftTo = body4.keypoints.findIndex((kp) => kp && kp.part === compare[0]);
-      const rightTo = body4.keypoints.findIndex((kp) => kp && kp.part === compare[1]);
+      const leftTo = body4.keypoints.findIndex((kp) => kp && kp.part === compare2[0]);
+      const rightTo = body4.keypoints.findIndex((kp) => kp && kp.part === compare2[1]);
       if (!body4.keypoints[leftTo] || !body4.keypoints[rightTo])
         continue;
       const distanceLeft = body4.keypoints[left] ? [
@@ -83196,6 +83218,9 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
     }
     enhance(input2) {
       return enhance2(input2);
+    }
+    compare(firstImageTensor, secondImageTensor) {
+      return compare(this.config, firstImageTensor, secondImageTensor);
     }
     async init() {
       await check(this, true);

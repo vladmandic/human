@@ -9,3 +9,4 @@ export declare function process(input: Input, config: Config, getTensor?: boolea
     canvas: AnyCanvas | null;
 }>;
 export declare function skip(config: any, input: Tensor): Promise<boolean>;
+export declare function compare(config: any, input1: Tensor, input2: Tensor): Promise<number>;

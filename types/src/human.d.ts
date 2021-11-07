@@ -160,6 +160,15 @@ export declare class Human {
      * @returns Tensor
      */
     enhance(input: Tensor): Tensor | null;
+    /** Compare two input tensors for pixel simmilarity
+     * - use `human.image` to process any valid input and get a tensor that can be used for compare
+     * - when passing manually generated tensors:
+     *  - both input tensors must be in format [1, height, width, 3]
+     *  - if resolution of tensors does not match, second tensor will be resized to match resolution of the first tensor
+     * @returns {number}
+     * - return value is pixel similarity score normalized by input resolution and rgb channels
+    */
+    compare(firstImageTensor: Tensor, secondImageTensor: Tensor): Promise<number>;
     /** Explicit backend initialization
      *  - Normally done implicitly during initial load phase
      *  - Call to explictly register and initialize TFJS backend without any other operations

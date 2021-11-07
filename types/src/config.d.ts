@@ -181,31 +181,37 @@ export interface Config {
     */
     backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu';
     /** Path to *.wasm files if backend is set to `wasm`
+     *
      * default: auto-detects to link to CDN `jsdelivr` when running in browser
     */
     wasmPath: string;
     /** Print debug statements to console
+     *
      * default: `true`
     */
     debug: boolean;
     /** Perform model loading and inference concurrently or sequentially
+     *
      * default: `true`
     */
     async: boolean;
     /** What to use for `human.warmup()`
      * - warmup pre-initializes all models for faster inference but can take significant time on startup
      * - used by `webgl`, `humangl` and `webgpu` backends
+     *
      * default: `full`
     */
     warmup: 'none' | 'face' | 'full' | 'body';
     /** Base model path (typically starting with file://, http:// or https://) for all models
      * - individual modelPath values are relative to this path
+     *
      * default: `../models/` for browsers and `file://models/` for nodejs
     */
     modelBasePath: string;
     /** Cache sensitivity
      * - values 0..1 where 0.01 means reset cache if input changed more than 1%
      * - set to 0 to disable caching
+     *
      * default: 0.7
     */
     cacheSensitivity: number;

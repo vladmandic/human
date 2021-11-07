@@ -920,8 +920,8 @@ function GLImageFilter() {
   this.get = function() {
     return filterChain;
   };
-  this.apply = function(image24) {
-    resize(image24.width, image24.height);
+  this.apply = function(image25) {
+    resize(image25.width, image25.height);
     drawCount = 0;
     if (!sourceTexture)
       sourceTexture = gl.createTexture();
@@ -930,7 +930,7 @@ function GLImageFilter() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image24);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image25);
     for (let i = 0; i < filterChain.length; i++) {
       lastInChain = i === filterChain.length - 1;
       const f = filterChain[i];
@@ -938,9 +938,9 @@ function GLImageFilter() {
     }
     return fxcanvas;
   };
-  this.draw = function(image24) {
+  this.draw = function(image25) {
     this.add("brightness", 0);
-    return this.apply(image24);
+    return this.apply(image25);
   };
 }
 
@@ -1181,6 +1181,28 @@ async function skip(config3, input) {
   }
   return skipFrame;
 }
+async function compare(config3, input1, input2) {
+  const t = {};
+  if (!input1 || !input2 || input1.shape.length !== 4 || input1.shape.length !== input2.shape.length) {
+    if (!config3.debug)
+      log("invalid input tensor or tensor shapes do not match:", input1.shape, input2.shape);
+    return 0;
+  }
+  if (input1.shape[0] !== 1 || input2.shape[0] !== 1 || input1.shape[3] !== 3 || input2.shape[3] !== 3) {
+    if (!config3.debug)
+      log("input tensors must be of shape [1, height, width, 3]:", input1.shape, input2.shape);
+    return 0;
+  }
+  t.input1 = tf2.clone(input1);
+  t.input2 = input1.shape[1] !== input2.shape[1] || input1.shape[2] !== input2.shape[2] ? tf2.image.resizeBilinear(input2, [input1.shape[1], input1.shape[2]]) : tf2.clone(input2);
+  t.diff = tf2.sub(t.input1, t.input2);
+  t.squared = tf2.mul(t.diff, t.diff);
+  t.sum = tf2.sum(t.squared);
+  const diffSum = await t.sum.data();
+  const diffRelative = diffSum[0] / (input1.shape[1] || 1) / (input1.shape[2] || 1) / 255 / 3;
+  tf2.dispose([t.input1, t.input2, t.diff, t.squared, t.sum]);
+  return diffRelative;
+}
 
 // src/util/env.ts
 var Env = class {
@@ -1340,7 +1362,7 @@ async function load2(config3) {
     log("cached model:", model2["modelUrl"]);
   return model2;
 }
-async function predict(image24, config3, idx, count2) {
+async function predict(image25, config3, idx, count2) {
   var _a, _b;
   if (!model2)
     return null;
@@ -1352,7 +1374,7 @@ async function predict(image24, config3, idx, count2) {
   }
   skipped2 = 0;
   return new Promise(async (resolve) => {
-    const resize = tf5.image.resizeBilinear(image24, [(model2 == null ? void 0 : model2.inputs[0].shape) ? model2.inputs[0].shape[2] : 0, (model2 == null ? void 0 : model2.inputs[0].shape) ? model2.inputs[0].shape[1] : 0], false);
+    const resize = tf5.image.resizeBilinear(image25, [(model2 == null ? void 0 : model2.inputs[0].shape) ? model2.inputs[0].shape[2] : 0, (model2 == null ? void 0 : model2.inputs[0].shape) ? model2.inputs[0].shape[1] : 0], false);
     const res = model2 == null ? void 0 : model2.execute(resize);
     const num = (await res.data())[0];
     cached[idx] = Math.round(100 * num) / 100;
@@ -4672,10 +4694,10 @@ var scaleBoxCoordinates = (box4, factor) => {
   const endPoint = [box4.endPoint[0] * factor[0], box4.endPoint[1] * factor[1]];
   return { startPoint, endPoint, landmarks: box4.landmarks, confidence: box4.confidence };
 };
-var cutBoxFromImageAndResize = (box4, image24, cropSize) => {
-  const h = image24.shape[1];
-  const w = image24.shape[2];
-  const crop2 = tf6.image.cropAndResize(image24, [[box4.startPoint[1] / h, box4.startPoint[0] / w, box4.endPoint[1] / h, box4.endPoint[0] / w]], [0], cropSize);
+var cutBoxFromImageAndResize = (box4, image25, cropSize) => {
+  const h = image25.shape[1];
+  const w = image25.shape[2];
+  const crop2 = tf6.image.cropAndResize(image25, [[box4.startPoint[1] / h, box4.startPoint[0] / w, box4.endPoint[1] / h, box4.endPoint[0] / w]], [0], cropSize);
   const norm = tf6.div(crop2, 255);
   tf6.dispose(crop2);
   return norm;
@@ -5332,7 +5354,7 @@ function max2d(inputs, minScore) {
     return [0, 0, newScore];
   });
 }
-async function predict4(image24, config3) {
+async function predict4(image25, config3) {
   const skipTime = (config3.body.skipTime || 0) > now() - lastTime4;
   const skipFrame = skipped5 < (config3.body.skipFrames || 0);
   if (config3.skipAllowed && skipTime && skipFrame && Object.keys(cache2.keypoints).length > 0) {
@@ -5345,7 +5367,7 @@ async function predict4(image24, config3) {
     const tensor3 = tf10.tidy(() => {
       if (!(model5 == null ? void 0 : model5.inputs[0].shape))
         return null;
-      const resize = tf10.image.resizeBilinear(image24, [model5.inputs[0].shape[2], model5.inputs[0].shape[1]], false);
+      const resize = tf10.image.resizeBilinear(image25, [model5.inputs[0].shape[2], model5.inputs[0].shape[1]], false);
       const enhance3 = tf10.mul(resize, 2);
       const norm = enhance3.sub(1);
       return norm;
@@ -5372,8 +5394,8 @@ async function predict4(image24, config3) {
               y2 / model5.inputs[0].shape[1]
             ],
             position: [
-              Math.round(image24.shape[2] * x2 / model5.inputs[0].shape[2]),
-              Math.round(image24.shape[1] * y2 / model5.inputs[0].shape[1])
+              Math.round(image25.shape[2] * x2 / model5.inputs[0].shape[2]),
+              Math.round(image25.shape[1] * y2 / model5.inputs[0].shape[1])
             ]
           });
         }
@@ -5434,7 +5456,7 @@ async function load6(config3) {
     log("cached model:", model6["modelUrl"]);
   return model6;
 }
-async function predict5(image24, config3, idx, count2) {
+async function predict5(image25, config3, idx, count2) {
   var _a, _b;
   if (!model6)
     return null;
@@ -5451,7 +5473,7 @@ async function predict5(image24, config3, idx, count2) {
     if ((_a2 = config3.face.emotion) == null ? void 0 : _a2.enabled) {
       const t = {};
       const inputSize8 = (model6 == null ? void 0 : model6.inputs[0].shape) ? model6.inputs[0].shape[2] : 0;
-      t.resize = tf11.image.resizeBilinear(image24, [inputSize8, inputSize8], false);
+      t.resize = tf11.image.resizeBilinear(image25, [inputSize8, inputSize8], false);
       [t.red, t.green, t.blue] = tf11.split(t.resize, 3, 3);
       t.redNorm = tf11.mul(t.red, rgb[0]);
       t.greenNorm = tf11.mul(t.green, rgb[1]);
@@ -5763,7 +5785,7 @@ function enhance2(input) {
   tf14.dispose(crop2);
   return norm;
 }
-async function predict7(image24, config3, idx, count2) {
+async function predict7(image25, config3, idx, count2) {
   var _a, _b, _c, _d;
   if (!model9)
     return null;
@@ -5783,7 +5805,7 @@ async function predict7(image24, config3, idx, count2) {
       descriptor: []
     };
     if ((_a2 = config3.face.description) == null ? void 0 : _a2.enabled) {
-      const enhanced = enhance2(image24);
+      const enhanced = enhance2(image25);
       const resT = model9 == null ? void 0 : model9.execute(enhanced);
       lastTime7 = now();
       tf14.dispose(enhanced);
@@ -5831,16 +5853,16 @@ function getBoxCenter2(box4) {
     box4.startPoint[1] + (box4.endPoint[1] - box4.startPoint[1]) / 2
   ];
 }
-function cutBoxFromImageAndResize2(box4, image24, cropSize) {
-  const h = image24.shape[1];
-  const w = image24.shape[2];
+function cutBoxFromImageAndResize2(box4, image25, cropSize) {
+  const h = image25.shape[1];
+  const w = image25.shape[2];
   const boxes = [[
     box4.startPoint[1] / h,
     box4.startPoint[0] / w,
     box4.endPoint[1] / h,
     box4.endPoint[0] / w
   ]];
-  return tf15.image.cropAndResize(image24, boxes, [0], cropSize);
+  return tf15.image.cropAndResize(image25, boxes, [0], cropSize);
 }
 function scaleBoxCoordinates2(box4, factor) {
   const startPoint = [box4.startPoint[0] * factor[0], box4.startPoint[1] * factor[1]];
@@ -9023,13 +9045,13 @@ var HandPipeline = class {
       Math.trunc(coord[2])
     ]);
   }
-  async estimateHands(image24, config3) {
+  async estimateHands(image25, config3) {
     let useFreshBox = false;
     let boxes;
     const skipTime = (config3.hand.skipTime || 0) > now() - lastTime8;
     const skipFrame = this.skipped < (config3.hand.skipFrames || 0);
     if (config3.skipAllowed && skipTime && skipFrame) {
-      boxes = await this.handDetector.predict(image24, config3);
+      boxes = await this.handDetector.predict(image25, config3);
       this.skipped = 0;
     }
     if (config3.skipAllowed)
@@ -9048,8 +9070,8 @@ var HandPipeline = class {
       if (config3.hand.landmarks) {
         const angle = config3.hand.rotation ? computeRotation2(currentBox.palmLandmarks[palmLandmarksPalmBase], currentBox.palmLandmarks[palmLandmarksMiddleFingerBase]) : 0;
         const palmCenter = getBoxCenter2(currentBox);
-        const palmCenterNormalized = [palmCenter[0] / image24.shape[2], palmCenter[1] / image24.shape[1]];
-        const rotatedImage = config3.hand.rotation && env.kernels.includes("rotatewithoffset") ? tf17.image.rotateWithOffset(image24, angle, 0, palmCenterNormalized) : image24.clone();
+        const palmCenterNormalized = [palmCenter[0] / image25.shape[2], palmCenter[1] / image25.shape[1]];
+        const rotatedImage = config3.hand.rotation && env.kernels.includes("rotatewithoffset") ? tf17.image.rotateWithOffset(image25, angle, 0, palmCenterNormalized) : image25.clone();
         const rotationMatrix = buildRotationMatrix2(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
         const croppedInput = cutBoxFromImageAndResize2(newBox, rotatedImage, [this.inputSize, this.inputSize]);
@@ -9895,11 +9917,11 @@ function bodyParts(body4) {
       }
     }
   }
-  for (const [pair, compare] of relative) {
+  for (const [pair, compare2] of relative) {
     const left = body4.keypoints.findIndex((kp) => kp && kp.part === pair[0]);
     const right = body4.keypoints.findIndex((kp) => kp && kp.part === pair[1]);
-    const leftTo = body4.keypoints.findIndex((kp) => kp && kp.part === compare[0]);
-    const rightTo = body4.keypoints.findIndex((kp) => kp && kp.part === compare[1]);
+    const leftTo = body4.keypoints.findIndex((kp) => kp && kp.part === compare2[0]);
+    const rightTo = body4.keypoints.findIndex((kp) => kp && kp.part === compare2[1]);
     if (!body4.keypoints[leftTo] || !body4.keypoints[rightTo])
       continue;
     const distanceLeft = body4.keypoints[left] ? [
@@ -9992,7 +10014,7 @@ async function load11(config3) {
     inputSize7 = 256;
   return model10;
 }
-async function parseSinglePose(res, config3, image24, inputBox) {
+async function parseSinglePose(res, config3, image25, inputBox) {
   const kpt4 = res[0][0];
   const keypoints = [];
   let score = 0;
@@ -10008,15 +10030,15 @@ async function parseSinglePose(res, config3, image24, inputBox) {
         part: kpt3[id],
         positionRaw,
         position: [
-          Math.round((image24.shape[2] || 0) * positionRaw[0]),
-          Math.round((image24.shape[1] || 0) * positionRaw[1])
+          Math.round((image25.shape[2] || 0) * positionRaw[0]),
+          Math.round((image25.shape[1] || 0) * positionRaw[1])
         ]
       });
     }
   }
   score = keypoints.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
   const bodies = [];
-  const newBox = calc(keypoints.map((pt) => pt.position), [image24.shape[2], image24.shape[1]]);
+  const newBox = calc(keypoints.map((pt) => pt.position), [image25.shape[2], image25.shape[1]]);
   const annotations2 = {};
   for (const [name, indexes] of Object.entries(connected3)) {
     const pt = [];
@@ -10033,7 +10055,7 @@ async function parseSinglePose(res, config3, image24, inputBox) {
   bodies.push(body4);
   return bodies;
 }
-async function parseMultiPose(res, config3, image24, inputBox) {
+async function parseMultiPose(res, config3, image25, inputBox) {
   const bodies = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt4 = res[0][id];
@@ -10051,11 +10073,11 @@ async function parseMultiPose(res, config3, image24, inputBox) {
             part: kpt3[i],
             score: Math.round(100 * score) / 100,
             positionRaw,
-            position: [Math.round((image24.shape[2] || 0) * positionRaw[0]), Math.round((image24.shape[1] || 0) * positionRaw[1])]
+            position: [Math.round((image25.shape[2] || 0) * positionRaw[0]), Math.round((image25.shape[1] || 0) * positionRaw[1])]
           });
         }
       }
-      const newBox = calc(keypoints.map((pt) => pt.position), [image24.shape[2], image24.shape[1]]);
+      const newBox = calc(keypoints.map((pt) => pt.position), [image25.shape[2], image25.shape[1]]);
       const annotations2 = {};
       for (const [name, indexes] of Object.entries(connected3)) {
         const pt = [];
@@ -10188,7 +10210,7 @@ async function process4(res, inputSize8, outputShape, config3) {
   results = results.filter((_val, idx) => nmsIdx.includes(idx)).sort((a, b) => b.score - a.score);
   return results;
 }
-async function predict11(image24, config3) {
+async function predict11(image25, config3) {
   const skipTime = (config3.object.skipTime || 0) > now() - lastTime10;
   const skipFrame = skipped11 < (config3.object.skipFrames || 0);
   if (config3.skipAllowed && skipTime && skipFrame && last5.length > 0) {
@@ -10199,8 +10221,8 @@ async function predict11(image24, config3) {
   if (!env.kernels.includes("mod") || !env.kernels.includes("sparsetodense"))
     return last5;
   return new Promise(async (resolve) => {
-    const outputSize2 = [image24.shape[2], image24.shape[1]];
-    const resize = tf22.image.resizeBilinear(image24, [model11.inputSize, model11.inputSize], false);
+    const outputSize2 = [image25.shape[2], image25.shape[1]];
+    const resize = tf22.image.resizeBilinear(image25, [model11.inputSize, model11.inputSize], false);
     const norm = tf22.div(resize, 255);
     const transpose = norm.transpose([0, 3, 1, 2]);
     tf22.dispose(norm);
@@ -12924,6 +12946,9 @@ var Human = class {
   }
   enhance(input) {
     return enhance2(input);
+  }
+  compare(firstImageTensor, secondImageTensor) {
+    return compare(this.config, firstImageTensor, secondImageTensor);
   }
   async init() {
     await check(this, true);

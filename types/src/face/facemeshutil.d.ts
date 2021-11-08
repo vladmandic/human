@@ -50,4 +50,4 @@ export declare const rotatePoint: (homogeneousCoordinate: any, rotationMatrix: a
 export declare const xyDistanceBetweenPoints: (a: any, b: any) => number;
 export declare function generateAnchors(inputSize: any): [number, number][];
 export declare function transformRawCoords(coordsRaw: any, box: any, angle: any, rotationMatrix: any, inputSize: any): any;
-export declare function correctFaceRotation(box: any, input: any, inputSize: any): any[];
+export declare function correctFaceRotation(rotate: any, box: any, input: any, inputSize: any): any[];

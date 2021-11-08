@@ -753,7 +753,7 @@ var __toModule = (module) => {
   return __reExport(__markAsModule2(__defProp2(module != null ? __create(__getProtoOf(module)) : {}, "default", module && module.__esModule && "default" in module ? { get: () => module.default, enumerable: true } : { value: module, enumerable: true })), module);
 };
 var require_long = __commonJS({
-  "src/node_modules/long/src/long.js"(exports, module) {
+  "node_modules/.pnpm/long@4.0.0/node_modules/long/src/long.js"(exports, module) {
     module.exports = Long2;
     var wasm = null;
     try {
@@ -1575,8 +1575,8 @@ var require_long = __commonJS({
     };
   }
 });
-var require_browser = __commonJS({
-  "(disabled):src/node_modules/node-fetch/browser.js"() {
+var require_node_fetch = __commonJS({
+  "(disabled):node-fetch"() {
   }
 });
 var require_util = __commonJS({
@@ -1584,7 +1584,7 @@ var require_util = __commonJS({
   }
 });
 var require_alea = __commonJS({
-  "src/node_modules/seedrandom/lib/alea.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/alea.js"(exports, module) {
     (function(global2, module2, define2) {
       function Alea(seed) {
         var me = this, mash = Mash();
@@ -1668,7 +1668,7 @@ var require_alea = __commonJS({
   }
 });
 var require_xor128 = __commonJS({
-  "src/node_modules/seedrandom/lib/xor128.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xor128.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this, strseed = "";
@@ -1734,7 +1734,7 @@ var require_xor128 = __commonJS({
   }
 });
 var require_xorwow = __commonJS({
-  "src/node_modules/seedrandom/lib/xorwow.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xorwow.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this, strseed = "";
@@ -1807,7 +1807,7 @@ var require_xorwow = __commonJS({
   }
 });
 var require_xorshift7 = __commonJS({
-  "src/node_modules/seedrandom/lib/xorshift7.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xorshift7.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this;
@@ -1896,7 +1896,7 @@ var require_xorshift7 = __commonJS({
   }
 });
 var require_xor4096 = __commonJS({
-  "src/node_modules/seedrandom/lib/xor4096.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xor4096.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this;
@@ -2000,7 +2000,7 @@ var require_xor4096 = __commonJS({
   }
 });
 var require_tychei = __commonJS({
-  "src/node_modules/seedrandom/lib/tychei.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/tychei.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this, strseed = "";
@@ -2076,7 +2076,7 @@ var require_crypto = __commonJS({
   }
 });
 var require_seedrandom = __commonJS({
-  "src/node_modules/seedrandom/seedrandom.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/seedrandom.js"(exports, module) {
     (function(global2, pool3, math) {
       var width = 256, chunks = 6, digits = 52, rngname = "random", startdenom = math.pow(width, chunks), significance = math.pow(2, digits), overflow = significance * 2, mask = width - 1, nodecrypto;
       function seedrandom5(seed, options3, callback) {
@@ -2207,7 +2207,7 @@ var require_seedrandom = __commonJS({
   }
 });
 var require_seedrandom2 = __commonJS({
-  "src/node_modules/seedrandom/index.js"(exports, module) {
+  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/index.js"(exports, module) {
     var alea5 = require_alea();
     var xor128 = require_xor128();
     var xorwow = require_xorwow();
@@ -3296,7 +3296,7 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
             return __require22("os").cpus().length;
           return navigator["hardwareConcurrency"];
         }
-        function _emscripten_proxy_to_main_thread_js(index, sync) {
+        function _emscripten_proxy_to_main_thread_js(index2, sync) {
           var numCallArgs = arguments.length - 2;
           var stack2 = stackSave();
           var serializedNumCallArgs = numCallArgs;
@@ -3306,7 +3306,7 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
             var arg = arguments[2 + i];
             GROWABLE_HEAP_F64()[b + i] = arg;
           }
-          var ret = _emscripten_run_in_main_runtime_thread_js(index, serializedNumCallArgs, args, sync);
+          var ret = _emscripten_run_in_main_runtime_thread_js(index2, serializedNumCallArgs, args, sync);
           stackRestore(stack2);
           return ret;
         }
@@ -3325,14 +3325,14 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           }
           return readAsmConstArgsArray;
         }
-        function _emscripten_receive_on_main_thread_js(index, numCallArgs, args) {
+        function _emscripten_receive_on_main_thread_js(index2, numCallArgs, args) {
           _emscripten_receive_on_main_thread_js_callArgs.length = numCallArgs;
           var b = args >> 3;
           for (var i = 0; i < numCallArgs; i++) {
             _emscripten_receive_on_main_thread_js_callArgs[i] = GROWABLE_HEAP_F64()[b + i];
           }
-          var isEmAsmConst = index < 0;
-          var func2 = !isEmAsmConst ? proxiedFunctionTable[index] : ASM_CONSTS[-index - 1];
+          var isEmAsmConst = index2 < 0;
+          var func2 = !isEmAsmConst ? proxiedFunctionTable[index2] : ASM_CONSTS[-index2 - 1];
           return func2.apply(null, _emscripten_receive_on_main_thread_js_callArgs);
         }
         function _emscripten_get_heap_size() {
@@ -3560,8 +3560,8 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
         function __webgl_enable_ANGLE_instanced_arrays(ctx) {
           var ext = ctx.getExtension("ANGLE_instanced_arrays");
           if (ext) {
-            ctx["vertexAttribDivisor"] = function(index, divisor) {
-              ext["vertexAttribDivisorANGLE"](index, divisor);
+            ctx["vertexAttribDivisor"] = function(index2, divisor) {
+              ext["vertexAttribDivisorANGLE"](index2, divisor);
             };
             ctx["drawArraysInstanced"] = function(mode, first, count22, primcount) {
               ext["drawArraysInstancedANGLE"](mode, first, count22, primcount);
@@ -5588,11 +5588,11 @@ function notYetImplemented(kernelName) {
 }
 function shuffle(array2) {
   let counter = array2.length;
-  let index = 0;
+  let index2 = 0;
   while (counter > 0) {
-    index = Math.random() * counter | 0;
+    index2 = Math.random() * counter | 0;
     counter--;
-    swap(array2, counter, index);
+    swap(array2, counter, index2);
   }
 }
 function shuffleCombo(array2, array22) {
@@ -5600,12 +5600,12 @@ function shuffleCombo(array2, array22) {
     throw new Error(`Array sizes must match to be shuffled together First array length was ${array2.length}Second array length was ${array22.length}`);
   }
   let counter = array2.length;
-  let index = 0;
+  let index2 = 0;
   while (counter > 0) {
-    index = Math.random() * counter | 0;
+    index2 = Math.random() * counter | 0;
     counter--;
-    swap(array2, counter, index);
-    swap(array22, counter, index);
+    swap(array2, counter, index2);
+    swap(array22, counter, index2);
   }
 }
 function clamp(min7, x, max7) {
@@ -6005,24 +6005,24 @@ function locToIndex(locs, rank, strides) {
   } else if (rank === 1) {
     return locs[0];
   }
-  let index = locs[locs.length - 1];
+  let index2 = locs[locs.length - 1];
   for (let i = 0; i < locs.length - 1; ++i) {
-    index += strides[i] * locs[i];
+    index2 += strides[i] * locs[i];
   }
-  return index;
+  return index2;
 }
-function indexToLoc(index, rank, strides) {
+function indexToLoc(index2, rank, strides) {
   if (rank === 0) {
     return [];
   } else if (rank === 1) {
-    return [index];
+    return [index2];
   }
   const locs = new Array(rank);
   for (let i = 0; i < locs.length - 1; ++i) {
-    locs[i] = Math.floor(index / strides[i]);
-    index -= locs[i] * strides[i];
+    locs[i] = Math.floor(index2 / strides[i]);
+    index2 -= locs[i] * strides[i];
   }
-  locs[locs.length - 1] = index;
+  locs[locs.length - 1] = index2;
   return locs;
 }
 function isPromise(object2) {
@@ -6999,8 +6999,8 @@ var TensorBuffer = class {
       locs = [0];
     }
     assert(locs.length === this.rank, () => `The number of provided coordinates (${locs.length}) must match the rank (${this.rank})`);
-    const index = this.locToIndex(locs);
-    this.values[index] = value;
+    const index2 = this.locToIndex(locs);
+    this.values[index2] = value;
   }
   get(...locs) {
     if (locs.length === 0) {
@@ -7014,11 +7014,11 @@ var TensorBuffer = class {
       }
       i++;
     }
-    let index = locs[locs.length - 1];
+    let index2 = locs[locs.length - 1];
     for (let i2 = 0; i2 < locs.length - 1; ++i2) {
-      index += this.strides[i2] * locs[i2];
+      index2 += this.strides[i2] * locs[i2];
     }
-    return this.values[index];
+    return this.values[index2];
   }
   locToIndex(locs) {
     if (this.rank === 0) {
@@ -7026,24 +7026,24 @@ var TensorBuffer = class {
     } else if (this.rank === 1) {
       return locs[0];
     }
-    let index = locs[locs.length - 1];
+    let index2 = locs[locs.length - 1];
     for (let i = 0; i < locs.length - 1; ++i) {
-      index += this.strides[i] * locs[i];
+      index2 += this.strides[i] * locs[i];
     }
-    return index;
+    return index2;
   }
-  indexToLoc(index) {
+  indexToLoc(index2) {
     if (this.rank === 0) {
       return [];
     } else if (this.rank === 1) {
-      return [index];
+      return [index2];
     }
     const locs = new Array(this.shape.length);
     for (let i = 0; i < locs.length - 1; ++i) {
-      locs[i] = Math.floor(index / this.strides[i]);
-      index -= locs[i] * this.strides[i];
+      locs[i] = Math.floor(index2 / this.strides[i]);
+      index2 -= locs[i] * this.strides[i];
     }
-    locs[locs.length - 1] = index;
+    locs[locs.length - 1] = index2;
     return locs;
   }
   get rank() {
@@ -8571,10 +8571,10 @@ function getFloat16Decoder() {
   return (quantizedArray) => {
     const buffer2 = new ArrayBuffer(4 * quantizedArray.length);
     const bufferUint32View = new Uint32Array(buffer2);
-    for (let index = 0; index < quantizedArray.length; index++) {
-      const float16Bits = quantizedArray[index];
+    for (let index2 = 0; index2 < quantizedArray.length; index2++) {
+      const float16Bits = quantizedArray[index2];
       const float32Bits = mantisaTable[offsetTable[float16Bits >> 10] + (float16Bits & 1023)] + exponentTable[float16Bits >> 10];
-      bufferUint32View[index] = float32Bits;
+      bufferUint32View[index2] = float32Bits;
     }
     return new Float32Array(buffer2);
   };
@@ -9106,7 +9106,7 @@ if (env().get("IS_BROWSER")) {
   }
 }
 var getNodeFetch = {
-  importFetch: () => require_browser()
+  importFetch: () => require_node_fetch()
 };
 var systemFetch;
 var PlatformNode = class {
@@ -13115,13 +13115,13 @@ function rfft_(input2, fftLength) {
   const zerosInput = zerosLike(adjustedInput);
   const complexInput = reshape(complex(adjustedInput, zerosInput), [batch, innerDimensionSize]);
   const ret = fft(complexInput);
-  const half = Math.floor(innerDimensionSize / 2) + 1;
+  const half2 = Math.floor(innerDimensionSize / 2) + 1;
   const realValues = real(ret);
   const imagValues = imag(ret);
-  const realComplexConjugate = split(realValues, [half, innerDimensionSize - half], realValues.shape.length - 1);
-  const imagComplexConjugate = split(imagValues, [half, innerDimensionSize - half], imagValues.shape.length - 1);
+  const realComplexConjugate = split(realValues, [half2, innerDimensionSize - half2], realValues.shape.length - 1);
+  const imagComplexConjugate = split(imagValues, [half2, innerDimensionSize - half2], imagValues.shape.length - 1);
   const outputShape = adjustedInput.shape.slice();
-  outputShape[adjustedInput.shape.length - 1] = half;
+  outputShape[adjustedInput.shape.length - 1] = half2;
   return reshape(complex(realComplexConjugate[0], imagComplexConjugate[0]), outputShape);
 }
 var rfft = op({ rfft_ });
@@ -14075,8 +14075,8 @@ function nonMaxSuppression_(boxes, scores, maxOutputSize, iouThreshold = 0.5, sc
 }
 var nonMaxSuppression = op({ nonMaxSuppression_ });
 function binaryInsert(arr, element, comparator) {
-  const index = binarySearch(arr, element, comparator);
-  const insertionPoint = index < 0 ? -(index + 1) : index;
+  const index2 = binarySearch(arr, element, comparator);
+  const insertionPoint = index2 < 0 ? -(index2 + 1) : index2;
   arr.splice(insertionPoint, 0, element);
 }
 function binarySearch(arr, target, comparator) {
@@ -14088,15 +14088,15 @@ function defaultComparator(a, b) {
 function binarySearch_(arr, target, comparator) {
   let left = 0;
   let right = arr.length;
-  let middle = 0;
+  let middle2 = 0;
   let found = false;
   while (left < right) {
-    middle = left + (right - left >>> 1);
-    const compareResult = comparator(target, arr[middle]);
+    middle2 = left + (right - left >>> 1);
+    const compareResult = comparator(target, arr[middle2]);
     if (compareResult > 0) {
-      left = middle + 1;
+      left = middle2 + 1;
     } else {
-      right = middle;
+      right = middle2;
       found = !compareResult;
     }
   }
@@ -14369,9 +14369,9 @@ function otsu(histogram, total) {
   let bestInBetVar = tensor1d([0]);
   let cInBetVar = tensor1d([0]);
   let classFirst, classSecond, meanFirst, meanSec, weightForeground, weightBack;
-  for (let index = 0; index < histogram.size - 1; index++) {
-    classFirst = slice(histogram, 0, index + 1);
-    classSecond = slice(histogram, index + 1);
+  for (let index2 = 0; index2 < histogram.size - 1; index2++) {
+    classFirst = slice(histogram, 0, index2 + 1);
+    classSecond = slice(histogram, index2 + 1);
     weightForeground = div(sum2(classFirst), total);
     weightBack = div(sum2(classSecond), total);
     const meanFirstDivA = sum2(mul(classFirst, range(0, classFirst.size)));
@@ -14386,7 +14386,7 @@ function otsu(histogram, total) {
     cInBetVar = mul(mul(cInBetVarMul, cInBetVarSubA), cInBetVarSubB);
     const condition = greater(cInBetVar, bestInBetVar);
     bestInBetVar = where(condition, cInBetVar, bestInBetVar);
-    bestThresh = where(condition, tensor1d([index]), bestThresh);
+    bestThresh = where(condition, tensor1d([index2]), bestThresh);
   }
   return bestThresh;
 }
@@ -14690,8 +14690,8 @@ function sigmoidCrossEntropy_(multiClassLabels, logits, weights, labelSmoothing 
   if (labelSmoothing > 0) {
     const labelSmoothingScalar = scalar(labelSmoothing);
     const one = scalar(1);
-    const half = scalar(0.5);
-    $multiClassLabels = add2(mul($multiClassLabels, sub(one, labelSmoothingScalar)), mul(half, labelSmoothingScalar));
+    const half2 = scalar(0.5);
+    $multiClassLabels = add2(mul($multiClassLabels, sub(one, labelSmoothingScalar)), mul(half2, labelSmoothingScalar));
   }
   const losses4 = sigmoidCrossEntropyWithLogits_($multiClassLabels, $logits);
   return computeWeightedLoss(losses4, $weights, reduction2);
@@ -15850,14 +15850,14 @@ function complexWithOddIndex(complex5) {
   }
   return { real: real5, imag: imag5 };
 }
-function getComplexWithIndex(complex5, index) {
-  const real5 = complex5[index * 2];
-  const imag5 = complex5[index * 2 + 1];
+function getComplexWithIndex(complex5, index2) {
+  const real5 = complex5[index2 * 2];
+  const imag5 = complex5[index2 * 2 + 1];
   return { real: real5, imag: imag5 };
 }
-function assignToTypedArray(data, real5, imag5, index) {
-  data[index * 2] = real5;
-  data[index * 2 + 1] = imag5;
+function assignToTypedArray(data, real5, imag5, index2) {
+  data[index2 * 2] = real5;
+  data[index2 * 2 + 1] = imag5;
 }
 function exponents(n, inverse) {
   const real5 = new Float32Array(n / 2);
@@ -15984,7 +15984,7 @@ function getEinsumComputePath(summedDims, idDims) {
   return { path, steps };
 }
 function isIdentityPermutation(perm) {
-  return perm.every((dim, index) => dim === index);
+  return perm.every((dim, index2) => dim === index2);
 }
 function findTermsWithDim(idDims, dim) {
   const termIndices = [];
@@ -18139,10 +18139,10 @@ function getUniqueTensorName(scopedName) {
   if (!nameMap.has(scopedName)) {
     nameMap.set(scopedName, 0);
   }
-  const index = nameMap.get(scopedName);
+  const index2 = nameMap.get(scopedName);
   nameMap.set(scopedName, nameMap.get(scopedName) + 1);
-  if (index > 0) {
-    const result = `${scopedName}_${index}`;
+  if (index2 > 0) {
+    const result = `${scopedName}_${index2}`;
     nameMap.set(result, 1);
     return result;
   } else {
@@ -19484,7 +19484,7 @@ var Layer = class extends serialization_exports.Serializable {
         const outputDType = guessOutputDType(inputs);
         this.warnOnIncompatibleInputShape(Array.isArray(inputs) ? inputShape[0] : inputShape);
         if (outputShape != null && outputShape.length > 0 && Array.isArray(outputShape[0])) {
-          output = outputShape.map((shape, index) => new SymbolicTensor(outputDType, shape, this, toList(inputs), kwargs, this.name, index));
+          output = outputShape.map((shape, index2) => new SymbolicTensor(outputDType, shape, this, toList(inputs), kwargs, this.name, index2));
         } else {
           output = new SymbolicTensor(outputDType, outputShape, this, toList(inputs), kwargs, this.name);
         }
@@ -20684,8 +20684,8 @@ function printLayerSummaryWithConnections(layer, positions, relevantNodes, print
     printRow(["", "", "", connections[i]], positions, printFn);
   }
 }
-function isArrayItemInputOrOutputName(key, index, value) {
-  return (key === "inboundNodes" || key === "outputLayers" || key === "inputLayers") && index === 0 && typeof value === "string";
+function isArrayItemInputOrOutputName(key, index2, value) {
+  return (key === "inboundNodes" || key === "outputLayers" || key === "inputLayers") && index2 === 0 && typeof value === "string";
 }
 function convertPythonicToTs(pythonicConfig, key) {
   if (pythonicConfig === null) {
@@ -20927,9 +20927,9 @@ function execute(fetches, feedDict, kwargs, probe) {
       if (!internalFeedDict.hasKey(outputSymbolicTensors[i2])) {
         internalFeedDict.add(outputSymbolicTensors[i2], outputTensors[i2], Array.isArray(outputMask) ? outputMask[0] : outputMask);
       }
-      const index = outputNames.indexOf(outputSymbolicTensors[i2].name);
-      if (index !== -1) {
-        finalOutputs[index] = outputTensors[i2];
+      const index2 = outputNames.indexOf(outputSymbolicTensors[i2].name);
+      if (index2 !== -1) {
+        finalOutputs[index2] = outputTensors[i2];
       }
     }
     if (!training) {
@@ -21533,12 +21533,12 @@ var Container = class extends Layer {
     }
     return nodeConversionMap;
   }
-  getLayer(name, index) {
-    if (index != null) {
-      if (this.layers.length <= index) {
-        throw new ValueError(`Was asked to retrieve layer at index ${index}, but model only has ${this.layers.length} layer(s).`);
+  getLayer(name, index2) {
+    if (index2 != null) {
+      if (this.layers.length <= index2) {
+        throw new ValueError(`Was asked to retrieve layer at index ${index2}, but model only has ${this.layers.length} layer(s).`);
       } else {
-        return this.layers[index];
+        return this.layers[index2];
       }
     } else {
       if (name == null) {
@@ -22746,9 +22746,9 @@ var LayersModel = class extends Container {
       const layerOutputs = Array.isArray(layer.output) ? layer.output : [layer.output];
       const layerOutputNames = layerOutputs.map((output) => output.name);
       for (let i = 0; i < symbolicTensorNames.length; ++i) {
-        const index = layerOutputNames.indexOf(symbolicTensorNames[i]);
-        if (index !== -1) {
-          outputSymbolicTensors[i] = layerOutputs[index];
+        const index2 = layerOutputNames.indexOf(symbolicTensorNames[i]);
+        if (index2 !== -1) {
+          outputSymbolicTensors[i] = layerOutputs[index2];
           outputsRemaining--;
         }
         if (outputsRemaining === 0) {
@@ -25053,14 +25053,14 @@ var _RNN = class extends Layer {
         } else {
           dispose(this.states_);
         }
-        for (let index = 0; index < this.states_.length; ++index) {
-          const value = states[index];
-          const dim = Array.isArray(this.cell.stateSize) ? this.cell.stateSize[index] : this.cell.stateSize;
+        for (let index2 = 0; index2 < this.states_.length; ++index2) {
+          const value = states[index2];
+          const dim = Array.isArray(this.cell.stateSize) ? this.cell.stateSize[index2] : this.cell.stateSize;
           const expectedShape = [batchSize, dim];
           if (!util_exports.arraysEqual(value.shape, expectedShape)) {
-            throw new ValueError(`State ${index} is incompatible with layer ${this.name}: expected shape=${expectedShape}, received shape=${value.shape}`);
+            throw new ValueError(`State ${index2} is incompatible with layer ${this.name}: expected shape=${expectedShape}, received shape=${value.shape}`);
           }
-          this.states_[index] = value;
+          this.states_[index2] = value;
         }
       }
       this.states_ = this.states_.map((state) => keep(state.clone()));
@@ -25920,13 +25920,13 @@ var ConvRNN2D = class extends RNN {
         } else {
           dispose(this.states_);
         }
-        for (let index = 0; index < this.states_.length; ++index) {
-          const value = states[index];
+        for (let index2 = 0; index2 < this.states_.length; ++index2) {
+          const value = states[index2];
           const expectedShape = stateShape;
           if (!util_exports.arraysEqual(value.shape, expectedShape)) {
-            throw new ValueError(`State ${index} is incompatible with layer ${this.name}: expected shape=${expectedShape}, received shape=${value.shape}`);
+            throw new ValueError(`State ${index2} is incompatible with layer ${this.name}: expected shape=${expectedShape}, received shape=${value.shape}`);
           }
-          this.states_[index] = value;
+          this.states_[index2] = value;
         }
       }
       this.states_ = this.states_.map((state) => keep(state.clone()));
@@ -26024,11 +26024,11 @@ var ConvLSTM2DCell = class extends LSTMCell {
         });
       }
       const dropoutMask = this.dropoutMask;
-      const applyDropout = (x2, mask, index) => {
-        if (!mask || !mask[index]) {
+      const applyDropout = (x2, mask, index2) => {
+        if (!mask || !mask[index2]) {
           return x2;
         }
-        return mul(mask[index], x2);
+        return mul(mask[index2], x2);
       };
       let xI = applyDropout(x, dropoutMask, 0);
       let xF = applyDropout(x, dropoutMask, 1);
@@ -28834,7 +28834,7 @@ function getParamValue(paramName, node2, tensorMap, context, resourceManager) {
   return attrParam && attrParam.value;
 }
 function getTensor(name, tensorsMap, context, resourceManager) {
-  const [nodeName, index] = parseNodeName(name);
+  const [nodeName, index2] = parseNodeName(name);
   if (resourceManager != null) {
     const tensor2 = resourceManager.getHashTableHandleByName(nodeName);
     if (tensor2 != null) {
@@ -28844,16 +28844,16 @@ function getTensor(name, tensorsMap, context, resourceManager) {
   const contextId = context.currentContextIds.find((contextId2) => {
     return !!tensorsMap[getNodeNameWithContextId(nodeName, contextId2)];
   });
-  return contextId !== void 0 ? tensorsMap[getNodeNameWithContextId(nodeName, contextId)][index] : void 0;
+  return contextId !== void 0 ? tensorsMap[getNodeNameWithContextId(nodeName, contextId)][index2] : void 0;
 }
 function getTensorsForCurrentContenxt(name, tensorsMap, context) {
   return tensorsMap[getNodeNameWithContextId(name, context.currentContextId)];
 }
 function getNodeNameAndIndex(inputName, context) {
-  const [nodeName, index, outputName] = parseNodeName(inputName);
+  const [nodeName, index2, outputName] = parseNodeName(inputName);
   return [
     getNodeNameWithContextId(nodeName, context && context.currentContextId),
-    index,
+    index2,
     outputName
   ];
 }
@@ -28867,8 +28867,8 @@ function parseNodeName(name) {
   }
   const nodeName = parts[0];
   const outputName = parts.length === 3 ? parts[1] : void 0;
-  const index = Number(parts[parts.length - 1]);
-  return [nodeName, index, outputName];
+  const index2 = Number(parts[parts.length - 1]);
+  return [nodeName, index2, outputName];
 }
 function getPadding(node2, tensorMap, context) {
   let pad3 = getParamValue("pad", node2, tensorMap, context);
@@ -34769,14 +34769,14 @@ var OperationMapper = class {
     const allNodes = Object.keys(nodes);
     allNodes.forEach((key) => {
       const node2 = nodes[key];
-      node2.inputNames.forEach((name, index) => {
+      node2.inputNames.forEach((name, index2) => {
         const [nodeName, , outputName] = getNodeNameAndIndex(name);
         const inputNode = nodes[nodeName];
         if (inputNode.outputs != null) {
           const outputIndex = inputNode.outputs.indexOf(outputName);
           if (outputIndex !== -1) {
             const inputName = `${nodeName}:${outputIndex}`;
-            node2.inputNames[index] = inputName;
+            node2.inputNames[index2] = inputName;
           }
         }
         node2.inputs.push(inputNode);
@@ -34976,14 +34976,14 @@ var OperationMapper = class {
     const allNodes = Object.keys(nodes);
     allNodes.forEach((key) => {
       const node2 = nodes[key];
-      node2.inputNames.forEach((name, index) => {
+      node2.inputNames.forEach((name, index2) => {
         const [nodeName, , outputName] = getNodeNameAndIndex(name);
         const inputNode = nodes[nodeName];
         if (inputNode.outputs != null) {
           const outputIndex = inputNode.outputs.indexOf(outputName);
           if (outputIndex !== -1) {
             const inputName = `${nodeName}:${outputIndex}`;
-            node2.inputNames[index] = inputName;
+            node2.inputNames[index2] = inputName;
           }
         }
         node2.inputs.push(inputNode);
@@ -34992,10 +34992,10 @@ var OperationMapper = class {
     });
     const returnNodeMap = functionDef.ret;
     functionDef.signature.outputArg.forEach((output) => {
-      const [nodeName, index] = getNodeNameAndIndex(returnNodeMap[output.name]);
+      const [nodeName, index2] = getNodeNameAndIndex(returnNodeMap[output.name]);
       const node2 = nodes[nodeName];
       if (node2 != null) {
-        node2.defaultOutput = index;
+        node2.defaultOutput = index2;
         outputs.push(node2);
       }
     });
@@ -35434,16 +35434,16 @@ var TensorArray = class {
   size() {
     return this.tensors.length;
   }
-  read(index) {
+  read(index2) {
     if (this.closed_) {
       throw new Error(`TensorArray ${this.name} has already been closed.`);
     }
-    if (index < 0 || index >= this.size()) {
-      throw new Error(`Tried to read from index ${index}, but array size is: ${this.size()}`);
+    if (index2 < 0 || index2 >= this.size()) {
+      throw new Error(`Tried to read from index ${index2}, but array size is: ${this.size()}`);
     }
-    const tensorWithState = this.tensors[index];
+    const tensorWithState = this.tensors[index2];
     if (tensorWithState.cleared) {
-      throw new Error(`TensorArray ${this.name}: Could not read index ${index} twice because it was cleared after a previous read (perhaps try setting clear_after_read = false?).`);
+      throw new Error(`TensorArray ${this.name}: Could not read index ${index2} twice because it was cleared after a previous read (perhaps try setting clear_after_read = false?).`);
     }
     if (this.clearAfterRead) {
       tensorWithState.cleared = true;
@@ -35452,40 +35452,40 @@ var TensorArray = class {
     return tensorWithState.tensor;
   }
   readMany(indices) {
-    return indices.map((index) => this.read(index));
+    return indices.map((index2) => this.read(index2));
   }
-  write(index, tensor2) {
+  write(index2, tensor2) {
     if (this.closed_) {
       throw new Error(`TensorArray ${this.name} has already been closed.`);
     }
-    if (index < 0 || !this.dynamicSize && index >= this.maxSize) {
-      throw new Error(`Tried to write to index ${index}, but array is not resizeable and size is: ${this.maxSize}`);
+    if (index2 < 0 || !this.dynamicSize && index2 >= this.maxSize) {
+      throw new Error(`Tried to write to index ${index2}, but array is not resizeable and size is: ${this.maxSize}`);
     }
-    const t = this.tensors[index] || {};
+    const t = this.tensors[index2] || {};
     if (tensor2.dtype !== this.dtype) {
-      throw new Error(`TensorArray ${this.name}: Could not write to TensorArray index ${index},
+      throw new Error(`TensorArray ${this.name}: Could not write to TensorArray index ${index2},
           because the value dtype is ${tensor2.dtype}, but TensorArray dtype is ${this.dtype}.`);
     }
     if (this.size() === 0 && (this.elementShape == null || this.elementShape.length === 0)) {
       this.elementShape = tensor2.shape;
     }
-    assertShapesMatchAllowUndefinedSize(this.elementShape, tensor2.shape, `TensorArray ${this.name}: Could not write to TensorArray index ${index}.`);
+    assertShapesMatchAllowUndefinedSize(this.elementShape, tensor2.shape, `TensorArray ${this.name}: Could not write to TensorArray index ${index2}.`);
     if (t.read) {
-      throw new Error(`TensorArray ${this.name}: Could not write to TensorArray index ${index}, because it has already been read.`);
+      throw new Error(`TensorArray ${this.name}: Could not write to TensorArray index ${index2}, because it has already been read.`);
     }
     if (t.written) {
-      throw new Error(`TensorArray ${this.name}: Could not write to TensorArray index ${index}, because it has already been written.`);
+      throw new Error(`TensorArray ${this.name}: Could not write to TensorArray index ${index2}, because it has already been written.`);
     }
     t.tensor = tensor2;
     keep(tensor2);
     t.written = true;
-    this.tensors[index] = t;
+    this.tensors[index2] = t;
   }
   writeMany(indices, tensors) {
     if (indices.length !== tensors.length) {
       throw new Error(`TensorArray ${this.name}: could not write multiple tensors,because the index size: ${indices.length} is not the same as tensors size: ${tensors.length}.`);
     }
-    indices.forEach((i, index) => this.write(i, tensors[index]));
+    indices.forEach((i, index2) => this.write(i, tensors[index2]));
   }
   gather(indices, dtype) {
     if (!!dtype && dtype !== this.dtype) {
@@ -35733,8 +35733,8 @@ function scatter(tensor2, indices, elementShape, numElements) {
   }
   const list = new TensorList([], elementShape, tensor2.dtype, numElements);
   const tensors = unstack(tensor2, 0);
-  indices.forEach((value, index) => {
-    list.setItem(value, tensors[index]);
+  indices.forEach((value, index2) => {
+    list.setItem(value, tensors[index2]);
   });
   return list;
 }
@@ -35868,10 +35868,10 @@ var executeOp3 = async (node2, tensorMap, context) => {
     }
     case "TensorArrayWriteV3": {
       const id = getParamValue("tensorArrayId", node2, tensorMap, context);
-      const index = getParamValue("index", node2, tensorMap, context);
+      const index2 = getParamValue("index", node2, tensorMap, context);
       const writeTensor = getParamValue("tensor", node2, tensorMap, context);
       const writeTensorArray = context.getTensorArray(id.id);
-      writeTensorArray.write(index, writeTensor);
+      writeTensorArray.write(index2, writeTensor);
       return [writeTensorArray.idTensor];
     }
     case "TensorArrayReadV3": {
@@ -35922,10 +35922,10 @@ var executeOp3 = async (node2, tensorMap, context) => {
     }
     case "TensorListSetItem": {
       const idTensor = getParamValue("tensorListId", node2, tensorMap, context);
-      const index = getParamValue("index", node2, tensorMap, context);
+      const index2 = getParamValue("index", node2, tensorMap, context);
       const writeTensor = getParamValue("tensor", node2, tensorMap, context);
       const tensorList = context.getTensorList(idTensor.id);
-      tensorList.setItem(index, writeTensor);
+      tensorList.setItem(index2, writeTensor);
       return [tensorList.idTensor];
     }
     case "TensorListGetItem": {
@@ -37283,9 +37283,9 @@ var GraphExecutor = class {
       const context = new ExecutionContext(this.weightMap, tensorArrayMap, tensorListMap, this.functionExecutorMap);
       const tensorsMap = { ...this.weightMap };
       Object.keys(inputs).forEach((name) => {
-        const [nodeName, index] = parseNodeName(name);
+        const [nodeName, index2] = parseNodeName(name);
         const tensors = [];
-        tensors[index] = inputs[name];
+        tensors[index2] = inputs[name];
         tensorsMap[nodeName] = tensors;
       });
       const tensorsToKeep = this.getFrozenTensorIds(tensorsMap);
@@ -37331,12 +37331,12 @@ var GraphExecutor = class {
                 if (!this.keepTensorForDebug) {
                   tensor2.dispose();
                 } else {
-                  const [nodeName2, index] = getNodeNameAndIndex(node2.name, context);
+                  const [nodeName2, index2] = getNodeNameAndIndex(node2.name, context);
                   if (this.intermediateTensors[nodeName2]) {
-                    this.intermediateTensors[nodeName2][index] = tensor2;
+                    this.intermediateTensors[nodeName2][index2] = tensor2;
                   } else {
                     this.intermediateTensors[nodeName2] = [];
-                    this.intermediateTensors[nodeName2][index] = tensor2;
+                    this.intermediateTensors[nodeName2][index2] = tensor2;
                   }
                 }
                 delete intermediateTensorConsumerCount[tensor2.id];
@@ -37410,8 +37410,8 @@ var GraphExecutor = class {
     return results;
   }
   async executeFunctionAsync(inputs, tensorArrayMap, tensorListMap) {
-    const mappedInputs = inputs.reduce((map, tensor2, index) => {
-      map[this.inputs[index].name] = tensor2;
+    const mappedInputs = inputs.reduce((map, tensor2, index2) => {
+      map[this.inputs[index2].name] = tensor2;
       return map;
     }, {});
     return this._executeAsync(mappedInputs, this.outputNodes, true, tensorArrayMap, tensorListMap);
@@ -37434,9 +37434,9 @@ var GraphExecutor = class {
     });
     const tensorsMap = { ...this.weightMap };
     Object.keys(inputs).forEach((name) => {
-      const [nodeName, index] = parseNodeName(name);
+      const [nodeName, index2] = parseNodeName(name);
       const tensors = [];
-      tensors[index] = inputs[name];
+      tensors[index2] = inputs[name];
       tensorsMap[nodeName] = tensors;
     });
     const intermediateTensorConsumerCount = {};
@@ -37524,7 +37524,7 @@ var GraphExecutor = class {
       const node2 = this.graph.nodes[nodeName];
       if (node2.attrParams["shape"] && node2.attrParams["shape"].value) {
         const shape = node2.attrParams["shape"].value;
-        const match4 = shape.length === input2.shape.length && input2.shape.every((dim, index) => shape[index] === -1 || shape[index] === dim);
+        const match4 = shape.length === input2.shape.length && input2.shape.every((dim, index2) => shape[index2] === -1 || shape[index2] === dim);
         util_exports.assert(match4, () => `The shape of dict['${node2.name}'] provided in model.execute(dict) must be [${shape}], but was [${input2.shape}]`);
       }
       if (node2.attrParams["dtype"] && node2.attrParams["dtype"].value) {
@@ -37919,23 +37919,23 @@ var RingBuffer = class {
     this.data = new Array(capacity);
     this.doubledCapacity = 2 * capacity;
   }
-  wrap(index) {
-    while (index < 0) {
-      index += this.doubledCapacity;
+  wrap(index2) {
+    while (index2 < 0) {
+      index2 += this.doubledCapacity;
     }
-    return index % this.doubledCapacity;
+    return index2 % this.doubledCapacity;
   }
-  get(index) {
-    if (index < 0) {
+  get(index2) {
+    if (index2 < 0) {
       throw new RangeError("Can't get item at a negative index.");
     }
-    return this.data[index % this.capacity];
+    return this.data[index2 % this.capacity];
   }
-  set(index, value) {
-    if (index < 0) {
+  set(index2, value) {
+    if (index2 < 0) {
       throw new RangeError("Can't set item at a negative index.");
     }
-    this.data[index % this.capacity] = value;
+    this.data[index2 % this.capacity] = value;
   }
   length() {
     let length = this.end - this.begin;
@@ -37991,9 +37991,9 @@ var RingBuffer = class {
     if (this.isEmpty()) {
       throw new RangeError("Ring buffer is empty.");
     }
-    const index = this.wrap(this.begin + relativeIndex);
-    const result = this.get(index);
-    this.set(index, this.pop());
+    const index2 = this.wrap(this.begin + relativeIndex);
+    const result = this.get(index2);
+    this.set(index2, this.pop());
     return result;
   }
 };
@@ -38834,8 +38834,8 @@ var CSVDataset = class extends Dataset {
     util_exports.assert(duplicateNames.length === 0, () => "Duplicate column names found: " + duplicateNames.toString());
     if (this.columnConfigs) {
       for (const key of Object.keys(this.columnConfigs)) {
-        const index = this.fullColumnNames.indexOf(key);
-        if (index === -1) {
+        const index2 = this.fullColumnNames.indexOf(key);
+        if (index2 === -1) {
           throw new Error('The key "' + key + '" provided in columnConfigs does not match any of the column names (' + this.fullColumnNames.toString() + ").");
         }
       }
@@ -40084,15 +40084,15 @@ var floorConfig = {
 function gatherNdImpl(indicesData, paramsBuf, dtype, numSlices, sliceRank, sliceSize, strides, paramsShape, paramsSize) {
   const outBuf = buffer([numSlices, sliceSize], dtype);
   for (let i = 0; i < numSlices; i++) {
-    const index = [];
+    const index2 = [];
     let flattenIndex = 0;
     for (let j = 0; j < sliceRank; j++) {
       const dim = indicesData[i * sliceRank + j];
       flattenIndex += dim * strides[j];
-      index.push(dim);
+      index2.push(dim);
     }
     if (flattenIndex < 0 || flattenIndex >= paramsSize / sliceSize) {
-      throw new Error(`Invalid indices: ${index} does not index into ${paramsShape}`);
+      throw new Error(`Invalid indices: ${index2} does not index into ${paramsShape}`);
     }
     for (let k = 0; k < sliceSize; k++) {
       outBuf.values[i * sliceSize + k] = paramsBuf.get(...paramsBuf.indexToLoc(flattenIndex * sliceSize + k));
@@ -40586,12 +40586,12 @@ function sparseSegmentReductionImpl(input2, inputShape, inputDType, indices, seg
       output.fill(defaultValue, uninitializedIndex * numCol, outIndex * numCol);
     }
     for (let i = start; i < end; ++i) {
-      const index = indices[i];
-      if (index < 0 || index >= inputFlat[0]) {
+      const index2 = indices[i];
+      if (index2 < 0 || index2 >= inputFlat[0]) {
         throw new Error(`Bad: indices[${i}] == ${indices[i]} out of range [0, ${inputFlat[0]})`);
       }
       for (let j = 0; j < numCol; j++) {
-        output[outIndex * numCol + j] += input2[index * numCol + j];
+        output[outIndex * numCol + j] += input2[index2 * numCol + j];
       }
     }
     if (isMean) {
@@ -40922,7 +40922,7 @@ function topKImpl(x, xShape, xDtype, k, sorted) {
     const offset = b * size2;
     const vals = x.subarray(offset, offset + size2);
     let valAndInd = new Array(vals.length);
-    vals.forEach((value, index) => valAndInd[index] = { value, index });
+    vals.forEach((value, index2) => valAndInd[index2] = { value, index: index2 });
     if (k < valAndInd.length) {
       select(valAndInd, k);
       valAndInd = valAndInd.slice(0, k);
@@ -43320,7 +43320,7 @@ function fftRadix2(realVals, imagVals, size2, inverse, cpuBackend) {
     return { real: realVals, imag: imagVals };
   }
   const data = backend_util_exports.mergeRealAndImagArrays(realVals, imagVals);
-  const half = size2 / 2;
+  const half2 = size2 / 2;
   const evenComplex = backend_util_exports.complexWithEvenIndex(data);
   const evenRealVals = evenComplex.real;
   const evenImagVals = evenComplex.imag;
@@ -43335,7 +43335,7 @@ function fftRadix2(realVals, imagVals, size2, inverse, cpuBackend) {
   const oddRealInfo = cpuBackend.makeTensorInfo(oddShape, "float32", oddRealVals);
   const oddImagInfo = cpuBackend.makeTensorInfo(oddShape, "float32", oddImagVals);
   const oddTensorInfo = complex2({ inputs: { real: oddRealInfo, imag: oddImagInfo }, backend: cpuBackend });
-  const $evenComplex = fftRadix2(evenRealVals, evenImagVals, half, inverse, cpuBackend);
+  const $evenComplex = fftRadix2(evenRealVals, evenImagVals, half2, inverse, cpuBackend);
   const $evenRealVals = $evenComplex.real;
   const $evenImagVals = $evenComplex.imag;
   const $evenShape = [$evenRealVals.length];
@@ -43345,7 +43345,7 @@ function fftRadix2(realVals, imagVals, size2, inverse, cpuBackend) {
     inputs: { real: $evenRealInfo, imag: $evenImagInfo },
     backend: cpuBackend
   });
-  const $oddComplex = fftRadix2(oddRealVals, oddImagVals, half, inverse, cpuBackend);
+  const $oddComplex = fftRadix2(oddRealVals, oddImagVals, half2, inverse, cpuBackend);
   const $oddRealVals = $oddComplex.real;
   const $oddImagVals = $oddComplex.imag;
   const $oddShape = [$oddRealVals.length];
@@ -43606,8 +43606,8 @@ function gatherV2(args) {
   const indicesVals = backend22.data.get(indices.dataId).values;
   const axisDim = x.shape[parsedAxis];
   for (let i = 0; i < indicesVals.length; ++i) {
-    const index = indicesVals[i];
-    util_exports.assert(index <= axisDim - 1 && index >= 0, () => `GatherV2: the index value ${index} is not in [0, ${axisDim - 1}]`);
+    const index2 = indicesVals[i];
+    util_exports.assert(index2 <= axisDim - 1 && index2 >= 0, () => `GatherV2: the index value ${index2} is not in [0, ${axisDim - 1}]`);
   }
   let $batchDims = batchDims;
   if (batchDims == null) {
@@ -44801,15 +44801,15 @@ function scatterImpl(indices, updates, shape, outputSize2, sliceSize, numUpdates
   const outBuf = buffer(flattenShape, updates.dtype);
   outBuf.values.fill(defaultValue);
   for (let i = 0; i < numUpdates; i++) {
-    const index = [];
+    const index2 = [];
     let flattenIndex = 0;
     for (let j = 0; j < sliceRank; j++) {
       const dim = indicesData[i * sliceRank + j];
-      index.push(dim);
+      index2.push(dim);
       flattenIndex += dim * strides[j];
     }
     if (flattenIndex < 0 || flattenIndex >= outputSize2 / sliceSize) {
-      throw new Error(`Invalid indices: ${index} does not index into ${shape}`);
+      throw new Error(`Invalid indices: ${index2} does not index into ${shape}`);
     }
     for (let k = 0; k < sliceSize; k++) {
       if (sumDupeIndices) {
@@ -44847,14 +44847,14 @@ function select2(args) {
   const eValues = backend22.data.get(e.dataId).values;
   const resultDtype = upcastType(t.dtype, e.dtype);
   const newValues = util_exports.makeZerosTypedArray(util_exports.sizeFromShape(t.shape), resultDtype);
-  let index = 0;
+  let index2 = 0;
   const offset = conditionRank === 0 || conditionRank > 1 || t.shape.length === 1 ? 1 : util_exports.sizeFromShape(t.shape.slice(1));
   for (let i = 0; i < values.length; i++) {
     for (let j = 0; j < offset; j++) {
       if (values[i] === 1) {
-        newValues[index++] = tValues[i];
+        newValues[index2++] = tValues[i];
       } else {
-        newValues[index++] = eValues[i];
+        newValues[index2++] = eValues[i];
       }
     }
   }
@@ -46509,19 +46509,19 @@ function getGlslDifferences() {
     defineRound
   };
 }
-function getLogicalCoordinatesFromFlatIndex(coords32, shape, index = "index") {
+function getLogicalCoordinatesFromFlatIndex(coords32, shape, index2 = "index") {
   const strides = util_exports.computeStrides(shape);
   return strides.map((stride, i) => {
-    const line1 = `int ${coords32[i]} = ${index} / ${stride}`;
-    const line2 = i === strides.length - 1 ? `int ${coords32[i + 1]} = ${index} - ${coords32[i]} * ${stride}` : `index -= ${coords32[i]} * ${stride}`;
+    const line1 = `int ${coords32[i]} = ${index2} / ${stride}`;
+    const line2 = i === strides.length - 1 ? `int ${coords32[i + 1]} = ${index2} - ${coords32[i]} * ${stride}` : `index -= ${coords32[i]} * ${stride}`;
     return `${line1}; ${line2};`;
   }).join("");
 }
-function getOutputLogicalCoordinatesFromFlatIndexByUniform(coords32, shape, index = "index") {
+function getOutputLogicalCoordinatesFromFlatIndexByUniform(coords32, shape, index2 = "index") {
   const strides = util_exports.computeStrides(shape);
   return strides.map((_, i) => {
-    const line1 = `int ${coords32[i]} = ${index} / outShapeStrides[${i}]`;
-    const line2 = i === strides.length - 1 ? `int ${coords32[i + 1]} = ${index} - ${coords32[i]} * outShapeStrides[${i}]` : `index -= ${coords32[i]} * outShapeStrides[${i}]`;
+    const line1 = `int ${coords32[i]} = ${index2} / outShapeStrides[${i}]`;
+    const line2 = i === strides.length - 1 ? `int ${coords32[i + 1]} = ${index2} - ${coords32[i]} * outShapeStrides[${i}]` : `index -= ${coords32[i]} * outShapeStrides[${i}]`;
     return `${line1}; ${line2};`;
   }).join("");
 }
@@ -46535,12 +46535,12 @@ function symbolicallyComputeStrides(indicesArr, variableName) {
   }
   return strides;
 }
-function getLogicalCoordinatesFromFlatIndexByUniform(coords32, variableName, index = "index") {
+function getLogicalCoordinatesFromFlatIndexByUniform(coords32, variableName, index2 = "index") {
   const indicesArray = coords32.map((_, i) => i);
   const strides = symbolicallyComputeStrides(indicesArray, variableName);
   return strides.map((_, i) => {
-    const line1 = `int ${coords32[i]} = ${index} / ${strides[i]}`;
-    const line2 = i === strides.length - 1 ? `int ${coords32[i + 1]} = ${index} - ${coords32[i]} * ${strides[i]}` : `index -= ${coords32[i]} * ${strides[i]}`;
+    const line1 = `int ${coords32[i]} = ${index2} / ${strides[i]}`;
+    const line2 = i === strides.length - 1 ? `int ${coords32[i + 1]} = ${index2} - ${coords32[i]} * ${strides[i]}` : `index -= ${coords32[i]} * ${strides[i]}`;
     return `${line1}; ${line2};`;
   }).join("");
 }
@@ -47754,15 +47754,15 @@ function getPackedSamplerND(inputInfo, enableShapeUniforms) {
   const valuesPerRow = Math.ceil(shape[rank - 1] / 2);
   let texelsInBatch = valuesPerRow * Math.ceil(shape[rank - 2] / 2);
   let params = `int b, int row, int col`;
-  let index = `b * ${texelsInBatch} + (row / 2) * ${valuesPerRow} + (col / 2)`;
+  let index2 = `b * ${texelsInBatch} + (row / 2) * ${valuesPerRow} + (col / 2)`;
   for (let b = 2; b < rank - 1; b++) {
     params = `int b${b}, ` + params;
     texelsInBatch *= shape[rank - b - 1];
-    index = `b${b} * ${texelsInBatch} + ` + index;
+    index2 = `b${b} * ${texelsInBatch} + ` + index2;
   }
   return `
     vec4 ${funcName}(${params}) {
-      int index = ${index};
+      int index = ${index2};
       int texR = index / ${texNumC};
       int texC = index - texR * ${texNumC};
       vec2 uv = (vec2(texC, texR) + halfCR) / vec2(${texNumC}, ${texNumR});
@@ -49147,12 +49147,12 @@ var GPGPUContext = class {
     });
   }
   pollItems() {
-    const index = linearSearchLastTrue(this.itemsToPoll.map((x) => x.isDoneFn));
-    for (let i = 0; i <= index; ++i) {
+    const index2 = linearSearchLastTrue(this.itemsToPoll.map((x) => x.isDoneFn));
+    for (let i = 0; i <= index2; ++i) {
       const { resolveFn } = this.itemsToPoll[i];
       resolveFn();
     }
-    this.itemsToPoll = this.itemsToPoll.slice(index + 1);
+    this.itemsToPoll = this.itemsToPoll.slice(index2 + 1);
   }
   addItemToPoll(isDoneFn, resolveFn) {
     this.itemsToPoll.push({ isDoneFn, resolveFn });
@@ -55775,8 +55775,8 @@ function gatherV22(args) {
   const indicesVals = backend22.readSync(indices.dataId);
   const axisDim = x.shape[parsedAxis];
   for (let i = 0; i < indicesVals.length; ++i) {
-    const index = indicesVals[i];
-    util_exports.assert(index <= axisDim - 1 && index >= 0, () => `GatherV2: the index value ${index} is not in [0, ${axisDim - 1}]`);
+    const index2 = indicesVals[i];
+    util_exports.assert(index2 <= axisDim - 1 && index2 >= 0, () => `GatherV2: the index value ${index2} is not in [0, ${axisDim - 1}]`);
   }
   const shapeInfo = backend_util_exports.segment_util.collectGatherOpShapeInfo(x, indices, parsedAxis, batchDims);
   const indicesSize = util_exports.sizeFromShape(indices.shape);
@@ -61872,18 +61872,18 @@ var ArgMinMaxProgram2 = class {
         setOutputFlatI32(flatOutputIndex, i32(bestIndex));
       }
     `;
-    const indexOutputCoords = (outputCoords, index) => {
+    const indexOutputCoords = (outputCoords, index2) => {
       if (this.outputShape.length === 1) {
         return outputCoords;
       } else {
-        return `${outputCoords}[${index}]`;
+        return `${outputCoords}[${index2}]`;
       }
     };
-    const indexInputShape = (index) => {
+    const indexInputShape = (index2) => {
       if (this.inputShape.length === 1) {
         return "uniforms.xShape";
       } else {
-        return `uniforms.xShape[${index}]`;
+        return `uniforms.xShape[${index2}]`;
       }
     };
     const userCode = `
@@ -62853,24 +62853,24 @@ var Conv2DMMVec4Program = class {
       tilesFitEvenlyIntoShape(tileSizeB, [dimInner, dimBOuter])
     ];
   }
-  getSampleAWithRemainder(index) {
-    return `let flatIndex${index} = getFlatIndex4D(coord, uniforms.xShape);
-    let divBy4Remainder${index} = flatIndex${index} % 4;
-    let divBy4Index${index} = flatIndex${index} / 4;
-    let curData${index} = x.numbers[divBy4Index${index}];
-    if (divBy4Remainder${index} == 0) {
-      temp = curData${index};
+  getSampleAWithRemainder(index2) {
+    return `let flatIndex${index2} = getFlatIndex4D(coord, uniforms.xShape);
+    let divBy4Remainder${index2} = flatIndex${index2} % 4;
+    let divBy4Index${index2} = flatIndex${index2} / 4;
+    let curData${index2} = x.numbers[divBy4Index${index2}];
+    if (divBy4Remainder${index2} == 0) {
+      temp = curData${index2};
     } else {
       // TODO: This could end up being a redundant load with another one in
       // the same shader invocation. Perhaps there's an opportunity for
       // optimization
-      let nextData${index} = x.numbers[divBy4Index${index} + 1];
-      if (divBy4Remainder${index} == 1) {
-        temp = vec4<f32>(curData${index}.yzw, nextData${index}.x);
-      } elseif (divBy4Remainder${index} == 2) {
-        temp = vec4<f32>(curData${index}.zw, nextData${index}.xy);
-      } elseif (divBy4Remainder${index} == 3) {
-        temp = vec4<f32>(curData${index}.w, nextData${index}.xyz);
+      let nextData${index2} = x.numbers[divBy4Index${index2} + 1];
+      if (divBy4Remainder${index2} == 1) {
+        temp = vec4<f32>(curData${index2}.yzw, nextData${index2}.x);
+      } elseif (divBy4Remainder${index2} == 2) {
+        temp = vec4<f32>(curData${index2}.zw, nextData${index2}.xy);
+      } elseif (divBy4Remainder${index2} == 3) {
+        temp = vec4<f32>(curData${index2}.w, nextData${index2}.xyz);
       }
     }
     `;
@@ -68843,8 +68843,8 @@ function gatherV24(args) {
   const indicesVals = backend22.readSync(indices.dataId);
   const axisDim = x.shape[parsedAxis];
   for (let i = 0; i < indicesVals.length; ++i) {
-    const index = indicesVals[i];
-    util_exports.assert(index <= axisDim - 1 && index >= 0, () => `GatherV2: the index value ${index} is not in [0, ${axisDim - 1}]`);
+    const index2 = indicesVals[i];
+    util_exports.assert(index2 <= axisDim - 1 && index2 >= 0, () => `GatherV2: the index value ${index2} is not in [0, ${axisDim - 1}]`);
   }
   const shapeInfo = backend_util_exports.segment_util.collectGatherOpShapeInfo(x, indices, parsedAxis, batchDims);
   const flattenX = reshape6({
@@ -70570,7 +70570,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211106";
+var externalVersion = "3.11.0-20211108";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,
@@ -70771,9 +70771,9 @@ function GLImageFilter() {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     return { fbo, texture };
   }
-  function getTempFramebuffer(index) {
-    tempFramebuffers[index] = tempFramebuffers[index] || createFramebufferTexture(fxcanvas.width, fxcanvas.height);
-    return tempFramebuffers[index];
+  function getTempFramebuffer(index2) {
+    tempFramebuffers[index2] = tempFramebuffers[index2] || createFramebufferTexture(fxcanvas.width, fxcanvas.height);
+    return tempFramebuffers[index2];
   }
   function draw2(flags = 0) {
     if (!currentProgram)
@@ -71629,7 +71629,7 @@ var Env = class {
 var env2 = new Env();
 
 // package.json
-var version = "2.5.0";
+var version = "2.5.1";
 
 // src/gear/gear-agegenderrace.ts
 var model2;
@@ -75098,21 +75098,25 @@ function transformRawCoords(coordsRaw, box4, angle, rotationMatrix, inputSize8) 
     Math.round(coord[2] || 0)
   ]);
 }
-function correctFaceRotation(box4, input2, inputSize8) {
+function correctFaceRotation(rotate, box4, input2, inputSize8) {
   const symmetryLine = box4.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
-  const angle = computeRotation(box4.landmarks[symmetryLine[0]], box4.landmarks[symmetryLine[1]]);
-  const largeAngle = angle && angle !== 0 && Math.abs(angle) > 0.2;
-  let rotationMatrix;
+  let angle = 0;
+  let rotationMatrix = fixedRotationMatrix;
   let face5;
-  if (largeAngle) {
-    const faceCenter = getBoxCenter({ startPoint: box4.startPoint, endPoint: box4.endPoint });
-    const faceCenterNormalized = [faceCenter[0] / input2.shape[2], faceCenter[1] / input2.shape[1]];
-    const rotated = image.rotateWithOffset(input2, angle, 0, faceCenterNormalized);
-    rotationMatrix = buildRotationMatrix(-angle, faceCenter);
-    face5 = cutBoxFromImageAndResize(box4, rotated, [inputSize8, inputSize8]);
-    dispose(rotated);
+  if (rotate && env2.kernels.includes("rotatewithoffset")) {
+    angle = computeRotation(box4.landmarks[symmetryLine[0]], box4.landmarks[symmetryLine[1]]);
+    const largeAngle = angle && angle !== 0 && Math.abs(angle) > 0.2;
+    if (largeAngle) {
+      const center = getBoxCenter({ startPoint: box4.startPoint, endPoint: box4.endPoint });
+      const centerRaw = [center[0] / input2.shape[2], center[1] / input2.shape[1]];
+      const rotated = image.rotateWithOffset(input2, angle, 0, centerRaw);
+      rotationMatrix = buildRotationMatrix(-angle, center);
+      face5 = cutBoxFromImageAndResize(box4, rotated, [inputSize8, inputSize8]);
+      dispose(rotated);
+    } else {
+      face5 = cutBoxFromImageAndResize(box4, input2, [inputSize8, inputSize8]);
+    }
   } else {
-    rotationMatrix = fixedRotationMatrix;
     face5 = cutBoxFromImageAndResize(box4, input2, [inputSize8, inputSize8]);
   }
   return [angle, rotationMatrix, face5];
@@ -75826,11 +75830,11 @@ function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
     const originalIndices = meshAnnotations[`${prefix}${key}`];
     if (!keys || keys.includes(key)) {
       for (let j = 0; j < indices.length; j++) {
-        const index = indices[j];
+        const index2 = indices[j];
         rawCoords[originalIndices[j]] = [
-          newCoords[index][0],
-          newCoords[index][1],
-          (newCoords[index][2] + rawCoords[originalIndices[j]][2]) / 2
+          newCoords[index2][0],
+          newCoords[index2][1],
+          (newCoords[index2][2] + rawCoords[originalIndices[j]][2]) / 2
         ];
       }
     }
@@ -75927,7 +75931,7 @@ var skipped7 = Number.MAX_SAFE_INTEGER;
 var lastTime6 = 0;
 var enlargeFact = 1.6;
 async function predict6(input2, config3) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i;
+  var _a, _b, _c, _d, _e, _f, _g, _h;
   const skipTime = (((_a = config3.face.detector) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime6;
   const skipFrame = skipped7 < (((_b = config3.face.detector) == null ? void 0 : _b.skipFrames) || 0);
   if (!config3.skipAllowed || !skipTime || !skipFrame || boxCache.length === 0) {
@@ -75965,19 +75969,14 @@ async function predict6(input2, config3) {
       faceScore: 0,
       annotations: {}
     };
-    if (((_c = config3.face.detector) == null ? void 0 : _c.rotation) && ((_d = config3.face.mesh) == null ? void 0 : _d.enabled) && env2.kernels.includes("rotatewithoffset")) {
-      [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box4, input2, inputSize5);
-    } else {
-      rotationMatrix = fixedRotationMatrix;
-      face5.tensor = cutBoxFromImageAndResize(box4, input2, ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) ? [inputSize5, inputSize5] : [size(), size()]);
-    }
-    if ((_f = config3 == null ? void 0 : config3.filter) == null ? void 0 : _f.equalization) {
+    [angle, rotationMatrix, face5.tensor] = correctFaceRotation(false, box4, input2, inputSize5);
+    if ((_d = config3 == null ? void 0 : config3.filter) == null ? void 0 : _d.equalization) {
       const equilized = await histogramEqualization(face5.tensor);
       dispose(face5.tensor);
       face5.tensor = equilized;
     }
     face5.boxScore = Math.round(100 * box4.confidence) / 100;
-    if (!((_g = config3.face.mesh) == null ? void 0 : _g.enabled)) {
+    if (!((_e = config3.face.mesh) == null ? void 0 : _e.enabled)) {
       face5.box = getClampedBox(box4, input2);
       face5.boxRaw = getRawBox(box4, input2);
       face5.boxScore = Math.round(100 * box4.confidence || 0) / 100;
@@ -75999,20 +75998,22 @@ async function predict6(input2, config3) {
       const coordsReshaped = reshape(contourCoords, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
       dispose([contourCoords, coordsReshaped, confidence, contours]);
-      if (face5.faceScore < (((_h = config3.face.detector) == null ? void 0 : _h.minConfidence) || 1)) {
+      if (face5.faceScore < (((_f = config3.face.detector) == null ? void 0 : _f.minConfidence) || 1)) {
         box4.confidence = face5.faceScore;
       } else {
-        if ((_i = config3.face.iris) == null ? void 0 : _i.enabled)
+        if ((_g = config3.face.iris) == null ? void 0 : _g.enabled)
           rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize5);
         face5.mesh = transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize5);
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input2.shape[2] || 0), pt[1] / (input2.shape[1] || 0), (pt[2] || 0) / inputSize5]);
         for (const key of Object.keys(meshAnnotations))
-          face5.annotations[key] = meshAnnotations[key].map((index) => face5.mesh[index]);
+          face5.annotations[key] = meshAnnotations[key].map((index2) => face5.mesh[index2]);
         box4 = squarifyBox(enlargeBox(calculateLandmarksBoundingBox(face5.mesh), enlargeFact));
         face5.box = getClampedBox(box4, input2);
         face5.boxRaw = getRawBox(box4, input2);
         face5.score = face5.faceScore;
         newCache.push(box4);
+        dispose(face5.tensor);
+        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_h = config3.face.detector) == null ? void 0 : _h.rotation, box4, input2, inputSize5);
       }
     }
     faces.push(face5);
@@ -79209,11 +79210,11 @@ var HandDetector = class {
     Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
     return res;
   }
-  normalizeLandmarks(rawPalmLandmarks, index) {
+  normalizeLandmarks(rawPalmLandmarks, index2) {
     const t = {};
     t.reshape = reshape(rawPalmLandmarks, [-1, 7, 2]);
     t.div = div(t.reshape, this.inputSizeTensor);
-    t.landmarks = add2(t.div, this.anchors[index]);
+    t.landmarks = add2(t.div, this.anchors[index2]);
     const res = mul(t.landmarks, this.inputSizeTensor);
     Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
     return res;
@@ -79234,17 +79235,17 @@ var HandDetector = class {
     t.nms = await image.nonMaxSuppressionAsync(t.norm, t.scores, 3 * config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
     const nms = await t.nms.array();
     const hands = [];
-    for (const index of nms) {
+    for (const index2 of nms) {
       const p2 = {};
-      p2.box = slice(t.norm, [index, 0], [1, -1]);
-      p2.slice = slice(t.predictions, [index, 5], [1, 14]);
-      p2.norm = this.normalizeLandmarks(p2.slice, index);
+      p2.box = slice(t.norm, [index2, 0], [1, -1]);
+      p2.slice = slice(t.predictions, [index2, 5], [1, 14]);
+      p2.norm = this.normalizeLandmarks(p2.slice, index2);
       p2.palmLandmarks = reshape(p2.norm, [-1, 2]);
       const box4 = await p2.box.data();
       const startPoint = box4.slice(0, 2);
       const endPoint = box4.slice(2, 4);
       const palmLandmarks = await p2.palmLandmarks.array();
-      const hand3 = { startPoint, endPoint, palmLandmarks, confidence: scores[index] };
+      const hand3 = { startPoint, endPoint, palmLandmarks, confidence: scores[index2] };
       const scaled = scaleBoxCoordinates2(hand3, [input2.shape[2] / this.inputSize, input2.shape[1] / this.inputSize]);
       hands.push(scaled);
       Object.keys(p2).forEach((tensor2) => dispose(p2[tensor2]));
@@ -79451,17 +79452,17 @@ var FingerGesture = class {
     this.weights = [1, 1, 1, 1, 1];
     this.weightsRelative = [1, 1, 1, 1, 1];
   }
-  addCurl(finger, curl, confidence) {
+  curl(finger, curl, confidence) {
     if (typeof this.curls[finger] === "undefined")
       this.curls[finger] = [];
     this.curls[finger].push([curl, confidence]);
   }
-  addDirection(finger, position, confidence) {
+  direction(finger, position, confidence) {
     if (!this.directions[finger])
       this.directions[finger] = [];
     this.directions[finger].push([position, confidence]);
   }
-  setWeight(finger, weight) {
+  weight(finger, weight) {
     this.weights[finger] = weight;
     const total = this.weights.reduce((a, b) => a + b, 0);
     this.weightsRelative = this.weights.map((el) => el * 5 / total);
@@ -79501,38 +79502,63 @@ var FingerGesture = class {
 };
 
 // src/hand/fingergesture.ts
+var { thumb, index, middle, ring, pinky } = Finger;
+var { none, half, full } = FingerCurl;
+var { verticalUp, verticalDown, horizontalLeft, horizontalRight, diagonalUpRight, diagonalUpLeft, diagonalDownRight, diagonalDownLeft } = FingerDirection;
 var ThumbsUp = new FingerGesture("thumbs up");
-ThumbsUp.addCurl(Finger.thumb, FingerCurl.none, 1);
-ThumbsUp.addDirection(Finger.thumb, FingerDirection.verticalUp, 1);
-ThumbsUp.addDirection(Finger.thumb, FingerDirection.diagonalUpLeft, 0.25);
-ThumbsUp.addDirection(Finger.thumb, FingerDirection.diagonalUpRight, 0.25);
+ThumbsUp.curl(thumb, none, 1);
+ThumbsUp.direction(thumb, verticalUp, 1);
+ThumbsUp.direction(thumb, diagonalUpLeft, 0.25);
+ThumbsUp.direction(thumb, diagonalUpRight, 0.25);
 for (const finger of [Finger.index, Finger.middle, Finger.ring, Finger.pinky]) {
-  ThumbsUp.addCurl(finger, FingerCurl.full, 1);
-  ThumbsUp.addDirection(finger, FingerDirection.horizontalLeft, 1);
-  ThumbsUp.addDirection(finger, FingerDirection.horizontalRight, 1);
+  ThumbsUp.curl(finger, full, 1);
+  ThumbsUp.direction(finger, horizontalLeft, 1);
+  ThumbsUp.direction(finger, horizontalRight, 1);
 }
 var Victory = new FingerGesture("victory");
-Victory.addCurl(Finger.thumb, FingerCurl.half, 0.5);
-Victory.addCurl(Finger.thumb, FingerCurl.none, 0.5);
-Victory.addDirection(Finger.thumb, FingerDirection.verticalUp, 1);
-Victory.addDirection(Finger.thumb, FingerDirection.diagonalUpLeft, 1);
-Victory.addCurl(Finger.index, FingerCurl.none, 1);
-Victory.addDirection(Finger.index, FingerDirection.verticalUp, 0.75);
-Victory.addDirection(Finger.index, FingerDirection.diagonalUpLeft, 1);
-Victory.addCurl(Finger.middle, FingerCurl.none, 1);
-Victory.addDirection(Finger.middle, FingerDirection.verticalUp, 1);
-Victory.addDirection(Finger.middle, FingerDirection.diagonalUpLeft, 0.75);
-Victory.addCurl(Finger.ring, FingerCurl.full, 1);
-Victory.addDirection(Finger.ring, FingerDirection.verticalUp, 0.2);
-Victory.addDirection(Finger.ring, FingerDirection.diagonalUpLeft, 1);
-Victory.addDirection(Finger.ring, FingerDirection.horizontalLeft, 0.2);
-Victory.addCurl(Finger.pinky, FingerCurl.full, 1);
-Victory.addDirection(Finger.pinky, FingerDirection.verticalUp, 0.2);
-Victory.addDirection(Finger.pinky, FingerDirection.diagonalUpLeft, 1);
-Victory.addDirection(Finger.pinky, FingerDirection.horizontalLeft, 0.2);
-Victory.setWeight(Finger.index, 2);
-Victory.setWeight(Finger.middle, 2);
-var fingergesture_default = [ThumbsUp, Victory];
+Victory.curl(thumb, half, 0.5);
+Victory.curl(thumb, none, 0.5);
+Victory.direction(thumb, verticalUp, 1);
+Victory.direction(thumb, diagonalUpLeft, 1);
+Victory.curl(index, none, 1);
+Victory.direction(index, verticalUp, 0.75);
+Victory.direction(index, diagonalUpLeft, 1);
+Victory.curl(middle, none, 1);
+Victory.direction(middle, verticalUp, 1);
+Victory.direction(middle, diagonalUpLeft, 0.75);
+Victory.curl(ring, full, 1);
+Victory.direction(ring, verticalUp, 0.2);
+Victory.direction(ring, diagonalUpLeft, 1);
+Victory.direction(ring, horizontalLeft, 0.2);
+Victory.curl(pinky, full, 1);
+Victory.direction(pinky, verticalUp, 0.2);
+Victory.direction(pinky, diagonalUpLeft, 1);
+Victory.direction(pinky, horizontalLeft, 0.2);
+Victory.weight(index, 2);
+Victory.weight(middle, 2);
+var Point = new FingerGesture("point");
+Point.curl(thumb, full, 1);
+Point.curl(index, none, 0.5);
+Point.curl(middle, full, 0.5);
+Point.curl(ring, full, 0.5);
+Point.curl(pinky, full, 0.5);
+Point.weight(index, 2);
+Point.weight(middle, 2);
+var MiddleFinger = new FingerGesture("middle finger");
+MiddleFinger.curl(thumb, none, 1);
+MiddleFinger.curl(index, full, 0.5);
+MiddleFinger.curl(middle, full, 0.5);
+MiddleFinger.curl(ring, full, 0.5);
+MiddleFinger.curl(pinky, full, 0.5);
+MiddleFinger.weight(index, 2);
+MiddleFinger.weight(middle, 2);
+var OpenPalm = new FingerGesture("open palm");
+OpenPalm.curl(thumb, none, 0.75);
+OpenPalm.curl(index, none, 0.75);
+OpenPalm.curl(middle, none, 0.75);
+OpenPalm.curl(ring, none, 0.75);
+OpenPalm.curl(pinky, none, 0.75);
+var fingergesture_default = [ThumbsUp, Victory, Point, MiddleFinger, OpenPalm];
 
 // src/hand/fingerpose.ts
 var minConfidence = 0.7;
@@ -79799,7 +79825,7 @@ async function predict8(input2, config3) {
     const annotations2 = {};
     if (predictions[i].landmarks) {
       for (const key of Object.keys(meshAnnotations2)) {
-        annotations2[key] = meshAnnotations2[key].map((index) => predictions[i].landmarks[index]);
+        annotations2[key] = meshAnnotations2[key].map((index2) => predictions[i].landmarks[index2]);
       }
     }
     const keypoints = predictions[i].landmarks;
@@ -79921,7 +79947,7 @@ var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "Stateful
 var inputSize6 = [[0, 0], [0, 0]];
 var classes = ["hand", "fist", "pinch", "point", "face", "tip", "pinchtip"];
 var faceIndex = 4;
-var boxExpandFact = 1.7;
+var boxExpandFact = 1.6;
 var maxDetectorResolution = 512;
 var detectorExpandFact = 1.4;
 var skipped9 = Number.MAX_SAFE_INTEGER;
@@ -80052,7 +80078,7 @@ async function detectFingers(input2, h, config3) {
       ]);
       hand3.landmarks = analyze(hand3.keypoints);
       for (const key of Object.keys(fingerMap)) {
-        hand3.annotations[key] = fingerMap[key].map((index) => hand3.landmarks && hand3.keypoints[index] ? hand3.keypoints[index] : null);
+        hand3.annotations[key] = fingerMap[key].map((index2) => hand3.landmarks && hand3.keypoints[index2] ? hand3.keypoints[index2] : null);
       }
     }
     Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
@@ -81484,7 +81510,7 @@ async function face(inCanvas2, result, drawOptions) {
               TRI468[i * 3 + 0],
               TRI468[i * 3 + 1],
               TRI468[i * 3 + 2]
-            ].map((index) => f.mesh[index]);
+            ].map((index2) => f.mesh[index2]);
             lines(ctx, points, localOptions);
           }
         }
@@ -82198,18 +82224,18 @@ function match2(descriptor, descriptors, options3 = { order: 2, multiplier: 20, 
     return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
   }
   let best = Number.MAX_SAFE_INTEGER;
-  let index = -1;
+  let index2 = -1;
   for (let i = 0; i < descriptors.length; i++) {
     const res = distance(descriptor, descriptors[i], options3);
     if (res < best) {
       best = res;
-      index = i;
+      index2 = i;
     }
     if (best < (options3.threshold || 0))
       break;
   }
   best = !options3.order || options3.order === 2 ? Math.sqrt(best) : best ** (1 / options3.order);
-  return { index, distance: best, similarity: Math.max(0, 100 - best) / 100 };
+  return { index: index2, distance: best, similarity: Math.max(0, 100 - best) / 100 };
 }
 
 // src/util/persons.ts

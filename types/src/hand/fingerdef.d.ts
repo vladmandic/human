@@ -65,8 +65,8 @@ export declare class FingerGesture {
     weights: any;
     weightsRelative: any;
     constructor(name: any);
-    addCurl(finger: any, curl: any, confidence: any): void;
-    addDirection(finger: any, position: any, confidence: any): void;
-    setWeight(finger: any, weight: any): void;
+    curl(finger: any, curl: any, confidence: any): void;
+    direction(finger: any, position: any, confidence: any): void;
+    weight(finger: any, weight: any): void;
     matchAgainst(detectedCurls: any, detectedDirections: any): number;
 }

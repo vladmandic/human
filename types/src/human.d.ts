@@ -40,7 +40,7 @@ export declare class Human {
     /** Current version of Human library in *semver* format */
     version: string;
     /** Current configuration
-     * - Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L250)
+     * - Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L262)
      */
     config: Config;
     /** Last known result of detect run

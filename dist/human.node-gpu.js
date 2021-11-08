@@ -455,9 +455,9 @@ function GLImageFilter() {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     return { fbo, texture };
   }
-  function getTempFramebuffer(index) {
-    tempFramebuffers[index] = tempFramebuffers[index] || createFramebufferTexture(fxcanvas.width, fxcanvas.height);
-    return tempFramebuffers[index];
+  function getTempFramebuffer(index2) {
+    tempFramebuffers[index2] = tempFramebuffers[index2] || createFramebufferTexture(fxcanvas.width, fxcanvas.height);
+    return tempFramebuffers[index2];
   }
   function draw2(flags = 0) {
     if (!currentProgram)
@@ -1317,7 +1317,7 @@ var env = new Env();
 var tf29 = __toModule(require_tfjs_esm());
 
 // package.json
-var version = "2.5.0";
+var version = "2.5.1";
 
 // src/tfjs/humangl.ts
 var tf25 = __toModule(require_tfjs_esm());
@@ -4797,21 +4797,25 @@ function transformRawCoords(coordsRaw, box4, angle, rotationMatrix, inputSize8) 
     Math.round(coord[2] || 0)
   ]);
 }
-function correctFaceRotation(box4, input, inputSize8) {
+function correctFaceRotation(rotate, box4, input, inputSize8) {
   const symmetryLine = box4.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
-  const angle = computeRotation(box4.landmarks[symmetryLine[0]], box4.landmarks[symmetryLine[1]]);
-  const largeAngle = angle && angle !== 0 && Math.abs(angle) > 0.2;
-  let rotationMatrix;
+  let angle = 0;
+  let rotationMatrix = fixedRotationMatrix;
   let face5;
-  if (largeAngle) {
-    const faceCenter = getBoxCenter({ startPoint: box4.startPoint, endPoint: box4.endPoint });
-    const faceCenterNormalized = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-    const rotated = tf6.image.rotateWithOffset(input, angle, 0, faceCenterNormalized);
-    rotationMatrix = buildRotationMatrix(-angle, faceCenter);
-    face5 = cutBoxFromImageAndResize(box4, rotated, [inputSize8, inputSize8]);
-    tf6.dispose(rotated);
+  if (rotate && env.kernels.includes("rotatewithoffset")) {
+    angle = computeRotation(box4.landmarks[symmetryLine[0]], box4.landmarks[symmetryLine[1]]);
+    const largeAngle = angle && angle !== 0 && Math.abs(angle) > 0.2;
+    if (largeAngle) {
+      const center = getBoxCenter({ startPoint: box4.startPoint, endPoint: box4.endPoint });
+      const centerRaw = [center[0] / input.shape[2], center[1] / input.shape[1]];
+      const rotated = tf6.image.rotateWithOffset(input, angle, 0, centerRaw);
+      rotationMatrix = buildRotationMatrix(-angle, center);
+      face5 = cutBoxFromImageAndResize(box4, rotated, [inputSize8, inputSize8]);
+      tf6.dispose(rotated);
+    } else {
+      face5 = cutBoxFromImageAndResize(box4, input, [inputSize8, inputSize8]);
+    }
   } else {
-    rotationMatrix = fixedRotationMatrix;
     face5 = cutBoxFromImageAndResize(box4, input, [inputSize8, inputSize8]);
   }
   return [angle, rotationMatrix, face5];
@@ -5539,11 +5543,11 @@ function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
     const originalIndices = meshAnnotations[`${prefix}${key}`];
     if (!keys || keys.includes(key)) {
       for (let j = 0; j < indices.length; j++) {
-        const index = indices[j];
+        const index2 = indices[j];
         rawCoords[originalIndices[j]] = [
-          newCoords[index][0],
-          newCoords[index][1],
-          (newCoords[index][2] + rawCoords[originalIndices[j]][2]) / 2
+          newCoords[index2][0],
+          newCoords[index2][1],
+          (newCoords[index2][2] + rawCoords[originalIndices[j]][2]) / 2
         ];
       }
     }
@@ -5640,7 +5644,7 @@ var skipped7 = Number.MAX_SAFE_INTEGER;
 var lastTime6 = 0;
 var enlargeFact = 1.6;
 async function predict6(input, config3) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i;
+  var _a, _b, _c, _d, _e, _f, _g, _h;
   const skipTime = (((_a = config3.face.detector) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime6;
   const skipFrame = skipped7 < (((_b = config3.face.detector) == null ? void 0 : _b.skipFrames) || 0);
   if (!config3.skipAllowed || !skipTime || !skipFrame || boxCache.length === 0) {
@@ -5678,19 +5682,14 @@ async function predict6(input, config3) {
       faceScore: 0,
       annotations: {}
     };
-    if (((_c = config3.face.detector) == null ? void 0 : _c.rotation) && ((_d = config3.face.mesh) == null ? void 0 : _d.enabled) && env.kernels.includes("rotatewithoffset")) {
-      [angle, rotationMatrix, face5.tensor] = correctFaceRotation(box4, input, inputSize5);
-    } else {
-      rotationMatrix = fixedRotationMatrix;
-      face5.tensor = cutBoxFromImageAndResize(box4, input, ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) ? [inputSize5, inputSize5] : [size(), size()]);
-    }
-    if ((_f = config3 == null ? void 0 : config3.filter) == null ? void 0 : _f.equalization) {
+    [angle, rotationMatrix, face5.tensor] = correctFaceRotation(false, box4, input, inputSize5);
+    if ((_d = config3 == null ? void 0 : config3.filter) == null ? void 0 : _d.equalization) {
       const equilized = await histogramEqualization(face5.tensor);
       tf13.dispose(face5.tensor);
       face5.tensor = equilized;
     }
     face5.boxScore = Math.round(100 * box4.confidence) / 100;
-    if (!((_g = config3.face.mesh) == null ? void 0 : _g.enabled)) {
+    if (!((_e = config3.face.mesh) == null ? void 0 : _e.enabled)) {
       face5.box = getClampedBox(box4, input);
       face5.boxRaw = getRawBox(box4, input);
       face5.boxScore = Math.round(100 * box4.confidence || 0) / 100;
@@ -5712,20 +5711,22 @@ async function predict6(input, config3) {
       const coordsReshaped = tf13.reshape(contourCoords, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
       tf13.dispose([contourCoords, coordsReshaped, confidence, contours]);
-      if (face5.faceScore < (((_h = config3.face.detector) == null ? void 0 : _h.minConfidence) || 1)) {
+      if (face5.faceScore < (((_f = config3.face.detector) == null ? void 0 : _f.minConfidence) || 1)) {
         box4.confidence = face5.faceScore;
       } else {
-        if ((_i = config3.face.iris) == null ? void 0 : _i.enabled)
+        if ((_g = config3.face.iris) == null ? void 0 : _g.enabled)
           rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize5);
         face5.mesh = transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize5);
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize5]);
         for (const key of Object.keys(meshAnnotations))
-          face5.annotations[key] = meshAnnotations[key].map((index) => face5.mesh[index]);
+          face5.annotations[key] = meshAnnotations[key].map((index2) => face5.mesh[index2]);
         box4 = squarifyBox(enlargeBox(calculateLandmarksBoundingBox(face5.mesh), enlargeFact));
         face5.box = getClampedBox(box4, input);
         face5.boxRaw = getRawBox(box4, input);
         face5.score = face5.faceScore;
         newCache.push(box4);
+        tf13.dispose(face5.tensor);
+        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_h = config3.face.detector) == null ? void 0 : _h.rotation, box4, input, inputSize5);
       }
     }
     faces.push(face5);
@@ -8930,11 +8931,11 @@ var HandDetector = class {
     Object.keys(t).forEach((tensor3) => tf16.dispose(t[tensor3]));
     return res;
   }
-  normalizeLandmarks(rawPalmLandmarks, index) {
+  normalizeLandmarks(rawPalmLandmarks, index2) {
     const t = {};
     t.reshape = tf16.reshape(rawPalmLandmarks, [-1, 7, 2]);
     t.div = tf16.div(t.reshape, this.inputSizeTensor);
-    t.landmarks = tf16.add(t.div, this.anchors[index]);
+    t.landmarks = tf16.add(t.div, this.anchors[index2]);
     const res = tf16.mul(t.landmarks, this.inputSizeTensor);
     Object.keys(t).forEach((tensor3) => tf16.dispose(t[tensor3]));
     return res;
@@ -8955,17 +8956,17 @@ var HandDetector = class {
     t.nms = await tf16.image.nonMaxSuppressionAsync(t.norm, t.scores, 3 * config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
     const nms = await t.nms.array();
     const hands = [];
-    for (const index of nms) {
+    for (const index2 of nms) {
       const p = {};
-      p.box = tf16.slice(t.norm, [index, 0], [1, -1]);
-      p.slice = tf16.slice(t.predictions, [index, 5], [1, 14]);
-      p.norm = this.normalizeLandmarks(p.slice, index);
+      p.box = tf16.slice(t.norm, [index2, 0], [1, -1]);
+      p.slice = tf16.slice(t.predictions, [index2, 5], [1, 14]);
+      p.norm = this.normalizeLandmarks(p.slice, index2);
       p.palmLandmarks = tf16.reshape(p.norm, [-1, 2]);
       const box4 = await p.box.data();
       const startPoint = box4.slice(0, 2);
       const endPoint = box4.slice(2, 4);
       const palmLandmarks = await p.palmLandmarks.array();
-      const hand3 = { startPoint, endPoint, palmLandmarks, confidence: scores[index] };
+      const hand3 = { startPoint, endPoint, palmLandmarks, confidence: scores[index2] };
       const scaled = scaleBoxCoordinates2(hand3, [input.shape[2] / this.inputSize, input.shape[1] / this.inputSize]);
       hands.push(scaled);
       Object.keys(p).forEach((tensor3) => tf16.dispose(p[tensor3]));
@@ -9173,17 +9174,17 @@ var FingerGesture = class {
     this.weights = [1, 1, 1, 1, 1];
     this.weightsRelative = [1, 1, 1, 1, 1];
   }
-  addCurl(finger, curl, confidence) {
+  curl(finger, curl, confidence) {
     if (typeof this.curls[finger] === "undefined")
       this.curls[finger] = [];
     this.curls[finger].push([curl, confidence]);
   }
-  addDirection(finger, position, confidence) {
+  direction(finger, position, confidence) {
     if (!this.directions[finger])
       this.directions[finger] = [];
     this.directions[finger].push([position, confidence]);
   }
-  setWeight(finger, weight) {
+  weight(finger, weight) {
     this.weights[finger] = weight;
     const total = this.weights.reduce((a, b) => a + b, 0);
     this.weightsRelative = this.weights.map((el) => el * 5 / total);
@@ -9223,38 +9224,63 @@ var FingerGesture = class {
 };
 
 // src/hand/fingergesture.ts
+var { thumb, index, middle, ring, pinky } = Finger;
+var { none, half, full } = FingerCurl;
+var { verticalUp, verticalDown, horizontalLeft, horizontalRight, diagonalUpRight, diagonalUpLeft, diagonalDownRight, diagonalDownLeft } = FingerDirection;
 var ThumbsUp = new FingerGesture("thumbs up");
-ThumbsUp.addCurl(Finger.thumb, FingerCurl.none, 1);
-ThumbsUp.addDirection(Finger.thumb, FingerDirection.verticalUp, 1);
-ThumbsUp.addDirection(Finger.thumb, FingerDirection.diagonalUpLeft, 0.25);
-ThumbsUp.addDirection(Finger.thumb, FingerDirection.diagonalUpRight, 0.25);
+ThumbsUp.curl(thumb, none, 1);
+ThumbsUp.direction(thumb, verticalUp, 1);
+ThumbsUp.direction(thumb, diagonalUpLeft, 0.25);
+ThumbsUp.direction(thumb, diagonalUpRight, 0.25);
 for (const finger of [Finger.index, Finger.middle, Finger.ring, Finger.pinky]) {
-  ThumbsUp.addCurl(finger, FingerCurl.full, 1);
-  ThumbsUp.addDirection(finger, FingerDirection.horizontalLeft, 1);
-  ThumbsUp.addDirection(finger, FingerDirection.horizontalRight, 1);
+  ThumbsUp.curl(finger, full, 1);
+  ThumbsUp.direction(finger, horizontalLeft, 1);
+  ThumbsUp.direction(finger, horizontalRight, 1);
 }
 var Victory = new FingerGesture("victory");
-Victory.addCurl(Finger.thumb, FingerCurl.half, 0.5);
-Victory.addCurl(Finger.thumb, FingerCurl.none, 0.5);
-Victory.addDirection(Finger.thumb, FingerDirection.verticalUp, 1);
-Victory.addDirection(Finger.thumb, FingerDirection.diagonalUpLeft, 1);
-Victory.addCurl(Finger.index, FingerCurl.none, 1);
-Victory.addDirection(Finger.index, FingerDirection.verticalUp, 0.75);
-Victory.addDirection(Finger.index, FingerDirection.diagonalUpLeft, 1);
-Victory.addCurl(Finger.middle, FingerCurl.none, 1);
-Victory.addDirection(Finger.middle, FingerDirection.verticalUp, 1);
-Victory.addDirection(Finger.middle, FingerDirection.diagonalUpLeft, 0.75);
-Victory.addCurl(Finger.ring, FingerCurl.full, 1);
-Victory.addDirection(Finger.ring, FingerDirection.verticalUp, 0.2);
-Victory.addDirection(Finger.ring, FingerDirection.diagonalUpLeft, 1);
-Victory.addDirection(Finger.ring, FingerDirection.horizontalLeft, 0.2);
-Victory.addCurl(Finger.pinky, FingerCurl.full, 1);
-Victory.addDirection(Finger.pinky, FingerDirection.verticalUp, 0.2);
-Victory.addDirection(Finger.pinky, FingerDirection.diagonalUpLeft, 1);
-Victory.addDirection(Finger.pinky, FingerDirection.horizontalLeft, 0.2);
-Victory.setWeight(Finger.index, 2);
-Victory.setWeight(Finger.middle, 2);
-var fingergesture_default = [ThumbsUp, Victory];
+Victory.curl(thumb, half, 0.5);
+Victory.curl(thumb, none, 0.5);
+Victory.direction(thumb, verticalUp, 1);
+Victory.direction(thumb, diagonalUpLeft, 1);
+Victory.curl(index, none, 1);
+Victory.direction(index, verticalUp, 0.75);
+Victory.direction(index, diagonalUpLeft, 1);
+Victory.curl(middle, none, 1);
+Victory.direction(middle, verticalUp, 1);
+Victory.direction(middle, diagonalUpLeft, 0.75);
+Victory.curl(ring, full, 1);
+Victory.direction(ring, verticalUp, 0.2);
+Victory.direction(ring, diagonalUpLeft, 1);
+Victory.direction(ring, horizontalLeft, 0.2);
+Victory.curl(pinky, full, 1);
+Victory.direction(pinky, verticalUp, 0.2);
+Victory.direction(pinky, diagonalUpLeft, 1);
+Victory.direction(pinky, horizontalLeft, 0.2);
+Victory.weight(index, 2);
+Victory.weight(middle, 2);
+var Point = new FingerGesture("point");
+Point.curl(thumb, full, 1);
+Point.curl(index, none, 0.5);
+Point.curl(middle, full, 0.5);
+Point.curl(ring, full, 0.5);
+Point.curl(pinky, full, 0.5);
+Point.weight(index, 2);
+Point.weight(middle, 2);
+var MiddleFinger = new FingerGesture("middle finger");
+MiddleFinger.curl(thumb, none, 1);
+MiddleFinger.curl(index, full, 0.5);
+MiddleFinger.curl(middle, full, 0.5);
+MiddleFinger.curl(ring, full, 0.5);
+MiddleFinger.curl(pinky, full, 0.5);
+MiddleFinger.weight(index, 2);
+MiddleFinger.weight(middle, 2);
+var OpenPalm = new FingerGesture("open palm");
+OpenPalm.curl(thumb, none, 0.75);
+OpenPalm.curl(index, none, 0.75);
+OpenPalm.curl(middle, none, 0.75);
+OpenPalm.curl(ring, none, 0.75);
+OpenPalm.curl(pinky, none, 0.75);
+var fingergesture_default = [ThumbsUp, Victory, Point, MiddleFinger, OpenPalm];
 
 // src/hand/fingerpose.ts
 var minConfidence = 0.7;
@@ -9521,7 +9547,7 @@ async function predict8(input, config3) {
     const annotations2 = {};
     if (predictions[i].landmarks) {
       for (const key of Object.keys(meshAnnotations2)) {
-        annotations2[key] = meshAnnotations2[key].map((index) => predictions[i].landmarks[index]);
+        annotations2[key] = meshAnnotations2[key].map((index2) => predictions[i].landmarks[index2]);
       }
     }
     const keypoints = predictions[i].landmarks;
@@ -9644,7 +9670,7 @@ var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "Stateful
 var inputSize6 = [[0, 0], [0, 0]];
 var classes = ["hand", "fist", "pinch", "point", "face", "tip", "pinchtip"];
 var faceIndex = 4;
-var boxExpandFact = 1.7;
+var boxExpandFact = 1.6;
 var maxDetectorResolution = 512;
 var detectorExpandFact = 1.4;
 var skipped9 = Number.MAX_SAFE_INTEGER;
@@ -9775,7 +9801,7 @@ async function detectFingers(input, h, config3) {
       ]);
       hand3.landmarks = analyze(hand3.keypoints);
       for (const key of Object.keys(fingerMap)) {
-        hand3.annotations[key] = fingerMap[key].map((index) => hand3.landmarks && hand3.keypoints[index] ? hand3.keypoints[index] : null);
+        hand3.annotations[key] = fingerMap[key].map((index2) => hand3.landmarks && hand3.keypoints[index2] ? hand3.keypoints[index2] : null);
       }
     }
     Object.keys(t).forEach((tensor3) => tf19.dispose(t[tensor3]));
@@ -11217,7 +11243,7 @@ async function face(inCanvas2, result, drawOptions) {
               TRI468[i * 3 + 0],
               TRI468[i * 3 + 1],
               TRI468[i * 3 + 2]
-            ].map((index) => f.mesh[index]);
+            ].map((index2) => f.mesh[index2]);
             lines(ctx, points, localOptions);
           }
         }
@@ -11934,18 +11960,18 @@ function match2(descriptor, descriptors, options3 = { order: 2, multiplier: 20, 
     return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
   }
   let best = Number.MAX_SAFE_INTEGER;
-  let index = -1;
+  let index2 = -1;
   for (let i = 0; i < descriptors.length; i++) {
     const res = distance(descriptor, descriptors[i], options3);
     if (res < best) {
       best = res;
-      index = i;
+      index2 = i;
     }
     if (best < (options3.threshold || 0))
       break;
   }
   best = !options3.order || options3.order === 2 ? Math.sqrt(best) : best ** (1 / options3.order);
-  return { index, distance: best, similarity: Math.max(0, 100 - best) / 100 };
+  return { index: index2, distance: best, similarity: Math.max(0, 100 - best) / 100 };
 }
 
 // src/util/persons.ts

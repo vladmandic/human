@@ -170,7 +170,7 @@ export interface GestureConfig {
  * Contains all configurable parameters
  * @typedef Config
  *
- * Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L292)
+ * Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L262)
  */
 export interface Config {
     /** Backend used for TFJS operations
@@ -234,6 +234,6 @@ export interface Config {
     /** {@link SegmentationConfig} */
     segmentation: Partial<SegmentationConfig>;
 }
-/** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L253) */
+/** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L262) */
 declare const config: Config;
 export { config as defaults };

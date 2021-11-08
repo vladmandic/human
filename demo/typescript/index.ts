@@ -7,9 +7,7 @@
  * @license MIT
  */
 
-/// <reference path="../../types/src//human.d.ts" />
-
-import Human from '../../dist/human.esm.js'; // equivalent of @vladmandic/human
+import { Human } from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 
 const humanConfig = { // user configuration for human, used to fine-tune behavior
   modelBasePath: '../../models',

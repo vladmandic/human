@@ -45069,7 +45069,7 @@ function getWebGLContext(webGLVersion) {
     }
   }
   const gl = contexts[webGLVersion];
-  if (gl.isContextLost()) {
+  if (gl == null || gl.isContextLost()) {
     delete contexts[webGLVersion];
     return getWebGLContext(webGLVersion);
   }

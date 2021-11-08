@@ -81121,6 +81121,12 @@ async function register(instance) {
     }
     try {
       config2.gl = (_a = config2.canvas) == null ? void 0 : _a.getContext("webgl2", config2.webGLattr);
+      const glv2 = config2.gl.getParameter(config2.gl.VERSION).includes("2.0");
+      if (!glv2) {
+        log("override: using fallback webgl backend as webgl 2.0 is not detected");
+        instance.config.backend = "webgl";
+        return;
+      }
       if (config2.canvas) {
         config2.canvas.addEventListener("webglcontextlost", async (e) => {
           log("error: humangl:", e.type);

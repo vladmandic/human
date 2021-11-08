@@ -5,7 +5,7 @@
 */
 
 // demo/typescript/index.ts
-import Human from "../../dist/human.esm.js";
+import { Human } from "../../dist/human.esm.js";
 var humanConfig = {
   modelBasePath: "../../models",
   filter: { equalization: false }

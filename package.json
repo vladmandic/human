@@ -23,7 +23,7 @@
   "scripts": {
     "start": "node --no-warnings demo/nodejs/node.js",
     "dev": "build --profile development",
-    "build": "rimraf test/build.log && build --profile production && cp src/tfjs/tfjs.esm.d.ts types/dist/",
+    "build": "rimraf test/build.log && build --profile production && cp src/tfjs/tfjs.esm.d.ts types/dist/ && cp src/human.d.ts dist/human.esm.d.ts",
     "test": "node --no-warnings --unhandled-rejections=strict --trace-uncaught test/node.js",
     "lint": "eslint src demo test",
     "scan": "npx auditjs@latest ossi --dev --quiet"
@@ -67,8 +67,8 @@
     "@tensorflow/tfjs-node": "^3.11.0",
     "@tensorflow/tfjs-node-gpu": "^3.11.0",
     "@types/node": "^16.11.6",
-    "@typescript-eslint/eslint-plugin": "^5.3.0",
-    "@typescript-eslint/parser": "^5.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.3.1",
+    "@typescript-eslint/parser": "^5.3.1",
     "@vladmandic/build": "^0.6.3",
     "@vladmandic/pilogger": "^0.3.5",
     "canvas": "^2.8.0",
@@ -81,7 +81,7 @@
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.1",
-    "node-fetch": "^3.0.0",
+    "node-fetch": "^3.1.0",
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
     "tslib": "^2.3.1",

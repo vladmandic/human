@@ -66,17 +66,17 @@ export class FingerGesture {
     this.weightsRelative = [1.0, 1.0, 1.0, 1.0, 1.0];
   }
 
-  addCurl(finger, curl, confidence) {
+  curl(finger, curl, confidence) {
     if (typeof this.curls[finger] === 'undefined') this.curls[finger] = [];
     this.curls[finger].push([curl, confidence]);
   }
 
-  addDirection(finger, position, confidence) {
+  direction(finger, position, confidence) {
     if (!this.directions[finger]) this.directions[finger] = [];
     this.directions[finger].push([position, confidence]);
   }
 
-  setWeight(finger, weight) {
+  weight(finger, weight) {
     this.weights[finger] = weight;
     // recalculate relative weights
     const total = this.weights.reduce((a, b) => a + b, 0);

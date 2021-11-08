@@ -6,6 +6,7 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './facemeshcoords';
 import type { Box, Point } from '../result';
+import { env } from '../util/env';
 
 export const createBox = (startEndTensor) => ({ startPoint: tf.slice(startEndTensor, [0, 0], [-1, 2]), endPoint: tf.slice(startEndTensor, [0, 2], [-1, 2]) });
 
@@ -155,21 +156,28 @@ export function transformRawCoords(coordsRaw, box, angle, rotationMatrix, inputS
   ]));
 }
 
-export function correctFaceRotation(box, input, inputSize) {
-  const symmetryLine = (box.landmarks.length >= coords.meshLandmarks.count) ? coords.meshLandmarks.symmetryLine : coords.blazeFaceLandmarks.symmetryLine;
-  const angle: number = computeRotation(box.landmarks[symmetryLine[0]], box.landmarks[symmetryLine[1]]);
-  const largeAngle = angle && (angle !== 0) && (Math.abs(angle) > 0.2);
-  let rotationMatrix;
-  let face;
-  if (largeAngle) {
-    const faceCenter: Point = getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
-    const faceCenterNormalized: Point = [faceCenter[0] / input.shape[2], faceCenter[1] / input.shape[1]];
-    const rotated = tf.image.rotateWithOffset(input, angle, 0, faceCenterNormalized); // rotateWithOffset is not defined for tfjs-node
-    rotationMatrix = buildRotationMatrix(-angle, faceCenter);
-    face = cutBoxFromImageAndResize(box, rotated, [inputSize, inputSize]);
-    tf.dispose(rotated);
+export function correctFaceRotation(rotate, box, input, inputSize) {
+  const symmetryLine = (box.landmarks.length >= coords.meshLandmarks.count)
+    ? coords.meshLandmarks.symmetryLine
+    : coords.blazeFaceLandmarks.symmetryLine;
+  let angle = 0; // default
+  let rotationMatrix = fixedRotationMatrix; // default
+  let face; // default
+
+  if (rotate && env.kernels.includes('rotatewithoffset')) {
+    angle = computeRotation(box.landmarks[symmetryLine[0]], box.landmarks[symmetryLine[1]]);
+    const largeAngle = angle && (angle !== 0) && (Math.abs(angle) > 0.2);
+    if (largeAngle) {
+      const center: Point = getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
+      const centerRaw: Point = [center[0] / input.shape[2], center[1] / input.shape[1]];
+      const rotated = tf.image.rotateWithOffset(input, angle, 0, centerRaw); // rotateWithOffset is not defined for tfjs-node
+      rotationMatrix = buildRotationMatrix(-angle, center);
+      face = cutBoxFromImageAndResize(box, rotated, [inputSize, inputSize]);
+      tf.dispose(rotated);
+    } else {
+      face = cutBoxFromImageAndResize(box, input, [inputSize, inputSize]);
+    }
   } else {
-    rotationMatrix = fixedRotationMatrix;
     face = cutBoxFromImageAndResize(box, input, [inputSize, inputSize]);
   }
   return [angle, rotationMatrix, face];

@@ -9,8 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/07 mandic00@live.com
+### **2.5.1** 2021/11/08 mandic00@live.com
 
+- new human.compare api
+- added links to release notes
 
 ### **origin/main** 2021/11/06 mandic00@live.com
 

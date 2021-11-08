@@ -61,6 +61,12 @@ export async function register(instance): Promise<void> {
     }
     try {
       config.gl = config.canvas?.getContext('webgl2', config.webGLattr) as WebGL2RenderingContext;
+      const glv2 = config.gl.getParameter(config.gl.VERSION).includes('2.0');
+      if (!glv2) {
+        log('override: using fallback webgl backend as webgl 2.0 is not detected');
+        instance.config.backend = 'webgl';
+        return;
+      }
       if (config.canvas) {
         config.canvas.addEventListener('webglcontextlost', async (e) => {
           log('error: humangl:', e.type);

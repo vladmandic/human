@@ -68,12 +68,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
       annotations: {},
     };
 
-    if (config.face.detector?.rotation && config.face.mesh?.enabled && env.kernels.includes('rotatewithoffset')) {
-      [angle, rotationMatrix, face.tensor] = util.correctFaceRotation(box, input, inputSize);
-    } else {
-      rotationMatrix = util.fixedRotationMatrix;
-      face.tensor = util.cutBoxFromImageAndResize(box, input, config.face.mesh?.enabled ? [inputSize, inputSize] : [blazeface.size(), blazeface.size()]);
-    }
+    [angle, rotationMatrix, face.tensor] = util.correctFaceRotation(false && config.face.detector?.rotation, box, input, inputSize); // optional rotate based on detector data // disabled
     if (config?.filter?.equalization) {
       const equilized = await histogramEqualization(face.tensor as Tensor);
       tf.dispose(face.tensor);
@@ -112,14 +107,8 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         face.boxRaw = util.getRawBox(box, input);
         face.score = face.faceScore;
         newCache.push(box);
-
-        // other modules prefer different crop for a face so we dispose it and do it again
-        /*
         tf.dispose(face.tensor);
-        face.tensor = config.face.detector?.rotation && config.face.mesh?.enabled && env.kernels.includes('rotatewithoffset')
-          ? face.tensor = util.correctFaceRotation(util.enlargeBox(box, Math.sqrt(enlargeFact)), input, inputSize)[2]
-          : face.tensor = util.cutBoxFromImageAndResize(util.enlargeBox(box, Math.sqrt(enlargeFact)), input, [inputSize, inputSize]);
-        */
+        [angle, rotationMatrix, face.tensor] = util.correctFaceRotation(config.face.detector?.rotation, box, input, inputSize); // optional rotate once more based on mesh data
       }
     }
     faces.push(face);

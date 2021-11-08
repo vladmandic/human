@@ -24,7 +24,7 @@ const inputSize = [[0, 0], [0, 0]];
 const classes = ['hand', 'fist', 'pinch', 'point', 'face', 'tip', 'pinchtip'];
 const faceIndex = 4;
 
-const boxExpandFact = 1.7;
+const boxExpandFact = 1.6;
 const maxDetectorResolution = 512;
 const detectorExpandFact = 1.4;
 
@@ -170,9 +170,7 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
         outputSize[1] * (kpt[1] + h.boxRaw[1]),
         (kpt[2] || 0),
       ]);
-      // hand.box = box.scale(h.box, 1 / detectorExpandFact); // scale box down for visual appeal
-      // hand.boxRaw = box.scale(h.boxRaw, 1 / detectorExpandFact); // scale box down for visual appeal
-      hand.landmarks = fingerPose.analyze(hand.keypoints) as HandResult['landmarks']; // calculate finger landmarks
+      hand.landmarks = fingerPose.analyze(hand.keypoints) as HandResult['landmarks']; // calculate finger gestures
       for (const key of Object.keys(fingerMap)) { // map keypoints to per-finger annotations
         hand.annotations[key] = fingerMap[key].map((index) => (hand.landmarks && hand.keypoints[index] ? hand.keypoints[index] : null));
       }
